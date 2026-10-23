@@ -118,7 +118,7 @@ public class ViewPIMConnectorsDisplayContext {
 				HashMapBuilder.<String, Object>put(
 					"active", Boolean.TRUE
 				).put(
-					"mappingComplete", Boolean.TRUE
+					"mappingStatus", "complete"
 				).build()
 			).build(
 				"execute"

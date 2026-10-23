@@ -6,7 +6,9 @@
 import {Breadcrumb} from '@liferay/site-cms-site-initializer';
 import React, {ComponentProps, useEffect, useState} from 'react';
 
-import {EVENT_FIELD_MAPPINGS_CHANGE} from './constants';
+import {EVENT_FIELD_MAPPINGS_CHANGE} from './FieldMappingsFDSPropsTransformer';
+
+type MappingStatus = 'complete' | 'incomplete';
 
 interface IActionItem {
 	id?: string;
@@ -15,22 +17,20 @@ interface IActionItem {
 
 export default function FieldMappingsBreadcrumb({
 	actionItems = [],
-	mappingComplete: initialMappingComplete,
+	mappingStatus: initialMappingStatus,
 	...props
 }: Omit<ComponentProps<typeof Breadcrumb>, 'actionItems'> & {
 	actionItems?: IActionItem[];
-	mappingComplete: boolean;
+	mappingStatus: MappingStatus;
 }) {
-	const [mappingComplete, setMappingComplete] = useState(
-		initialMappingComplete
-	);
+	const [mappingStatus, setMappingStatus] = useState(initialMappingStatus);
 
 	useEffect(() => {
 		const handleFieldMappingsChange = ({
-			mappingComplete,
+			mappingStatus,
 		}: {
-			mappingComplete: boolean;
-		}) => setMappingComplete(mappingComplete);
+			mappingStatus: MappingStatus;
+		}) => setMappingStatus(mappingStatus);
 
 		Liferay.on(EVENT_FIELD_MAPPINGS_CHANGE, handleFieldMappingsChange);
 
@@ -46,7 +46,10 @@ export default function FieldMappingsBreadcrumb({
 			{...props}
 			actionItems={
 				actionItems
-					.filter(({id}) => mappingComplete || id !== 'execute')
+					.filter(
+						({id}) =>
+							mappingStatus === 'complete' || id !== 'execute'
+					)
 					.map(
 						({id: _id, ...actionItem}) => actionItem
 					) as ComponentProps<typeof Breadcrumb>['actionItems']

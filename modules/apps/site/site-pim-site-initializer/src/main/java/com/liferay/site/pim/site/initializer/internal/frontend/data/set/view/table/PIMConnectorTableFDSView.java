@@ -44,13 +44,13 @@ public class PIMConnectorTableFDSView extends BasePIMTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"statusTableCellRenderer")
 		).add(
-			"mappingComplete", "mapping-status",
+			"mappingStatus", "mapping-status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"mappingStatusTableCellRenderer")
 		).add(
-			"lastExecution", "last-execution-status",
+			"lastExecutionStatus", "last-execution-status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
-				"lastExecutionTableCellRenderer")
+				"lastExecutionStatusTableCellRenderer")
 		).add(
 			_getLastExecutionDateFDSTableSchemaField()
 		).build();

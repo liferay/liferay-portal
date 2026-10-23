@@ -86,7 +86,7 @@ public class PIMConnectorDispatchTriggerUtil {
 				companyId);
 	}
 
-	public static DispatchLog fetchLatestFinishedDispatchLog(
+	public static DispatchLog fetchLatestDispatchLog(
 		long companyId, String objectEntryExternalReferenceCode) {
 
 		DispatchTrigger dispatchTrigger = fetchDispatchTrigger(

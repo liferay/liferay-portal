@@ -59,9 +59,9 @@ public class PIMConnectorContainerResponseFilter
 		ContainerRequestContext containerRequestContext,
 		ContainerResponseContext containerResponseContext) {
 
-		long companyId = CompanyThreadLocal.getCompanyId();
+		if (!FeatureFlagManagerUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), "LPD-96666")) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-96666")) {
 			return;
 		}
 
@@ -70,7 +70,7 @@ public class PIMConnectorContainerResponseFilter
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
 						EXTERNAL_REFERENCE_CODE_CONNECTOR,
-					companyId);
+					CompanyThreadLocal.getCompanyId());
 
 		if (objectDefinition == null) {
 			return;
@@ -122,11 +122,12 @@ public class PIMConnectorContainerResponseFilter
 		}
 
 		DispatchLog dispatchLog =
-			PIMConnectorDispatchTriggerUtil.fetchLatestFinishedDispatchLog(
+			PIMConnectorDispatchTriggerUtil.fetchLatestDispatchLog(
 				serviceBuilderObjectEntry.getCompanyId(),
 				serviceBuilderObjectEntry.getExternalReferenceCode());
 
-		properties.put("lastExecution", _getLastExecution(dispatchLog));
+		properties.put(
+			"lastExecutionStatus", _getLastExecutionStatus(dispatchLog));
 
 		if (dispatchLog != null) {
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
@@ -140,15 +141,16 @@ public class PIMConnectorContainerResponseFilter
 		}
 
 		properties.put(
-			"mappingComplete",
-			PIMConnectorFieldMappingsUtil.isMappingComplete(
-				serviceBuilderObjectEntry,
-				_pimConnectorRegistry.getPIMConnector(
-					MapUtil.getString(
-						serviceBuilderObjectEntry.getValues(), "key"))));
+			"mappingStatus",
+			_getMappingStatus(
+				PIMConnectorFieldMappingsUtil.isMappingComplete(
+					serviceBuilderObjectEntry,
+					_pimConnectorRegistry.getPIMConnector(
+						MapUtil.getString(
+							serviceBuilderObjectEntry.getValues(), "key")))));
 	}
 
-	private String _getLastExecution(DispatchLog dispatchLog) {
+	private String _getLastExecutionStatus(DispatchLog dispatchLog) {
 		if (dispatchLog == null) {
 			return "never-executed";
 		}
@@ -158,6 +160,14 @@ public class PIMConnectorContainerResponseFilter
 		}
 
 		return "success";
+	}
+
+	private String _getMappingStatus(boolean mappingComplete) {
+		if (mappingComplete) {
+			return "complete";
+		}
+
+		return "incomplete";
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

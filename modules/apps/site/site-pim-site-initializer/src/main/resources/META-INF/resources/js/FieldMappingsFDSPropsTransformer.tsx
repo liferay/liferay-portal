@@ -8,7 +8,8 @@ import {fetch} from 'frontend-js-web';
 
 import FieldMappingChannelFieldRenderer from './cell_renderers/FieldMappingChannelFieldRenderer';
 import FieldMappingSourceAttributesRenderer from './cell_renderers/FieldMappingSourceAttributesRenderer';
-import {EVENT_FIELD_MAPPINGS_CHANGE} from './constants';
+
+export const EVENT_FIELD_MAPPINGS_CHANGE = 'pimConnectorFieldMappings:change';
 
 export default function propsTransformer(props: {[key: string]: any}) {
 	return {
@@ -67,7 +68,7 @@ function clearFieldMappings(
 
 			if (required) {
 				Liferay.fire(EVENT_FIELD_MAPPINGS_CHANGE, {
-					mappingComplete: false,
+					mappingStatus: 'incomplete',
 				});
 			}
 

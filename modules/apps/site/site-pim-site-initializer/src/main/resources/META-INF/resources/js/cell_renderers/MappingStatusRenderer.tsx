@@ -6,15 +6,28 @@
 import ClayLabel from '@clayui/label';
 import React from 'react';
 
-export default function MappingStatusRenderer({value}: {value: boolean}) {
+const MAPPING_STATUSES = {
+	complete: {
+		displayType: 'success',
+		label: Liferay.Language.get('status-complete'),
+	},
+	incomplete: {
+		displayType: 'warning',
+		label: Liferay.Language.get('incomplete'),
+	},
+} as const;
+
+export default function MappingStatusRenderer({
+	value,
+}: {
+	value: keyof typeof MAPPING_STATUSES;
+}) {
+	const {displayType, label} =
+		MAPPING_STATUSES[value] ?? MAPPING_STATUSES.incomplete;
+
 	return (
-		<ClayLabel
-			className="font-weight-normal"
-			displayType={value ? 'success' : 'warning'}
-		>
-			{value
-				? Liferay.Language.get('mapping-complete')
-				: Liferay.Language.get('incomplete')}
+		<ClayLabel className="font-weight-normal" displayType={displayType}>
+			{label}
 		</ClayLabel>
 	);
 }

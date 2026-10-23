@@ -162,7 +162,7 @@ public class PIMConnectorFieldMappingsDisplayContext {
 		).put(
 			"hideSpace", true
 		).put(
-			"mappingComplete", mappingComplete
+			"mappingStatus", mappingComplete ? "complete" : "incomplete"
 		).put(
 			"size", "lg"
 		).build();

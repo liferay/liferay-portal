@@ -11,7 +11,7 @@ import {sub} from 'frontend-js-web';
 
 import ConnectorNameRenderer from './cell_renderers/ConnectorNameRenderer';
 import ConnectorStatusRenderer from './cell_renderers/ConnectorStatusRenderer';
-import LastExecutionRenderer from './cell_renderers/LastExecutionRenderer';
+import LastExecutionStatusRenderer from './cell_renderers/LastExecutionStatusRenderer';
 import MappingStatusRenderer from './cell_renderers/MappingStatusRenderer';
 
 export default function propsTransformer({
@@ -41,8 +41,8 @@ export default function propsTransformer({
 					type: 'internal',
 				},
 				{
-					component: LastExecutionRenderer,
-					name: 'lastExecutionTableCellRenderer',
+					component: LastExecutionStatusRenderer,
+					name: 'lastExecutionStatusTableCellRenderer',
 					type: 'internal',
 				},
 			],

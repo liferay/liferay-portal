@@ -6,7 +6,7 @@
 import ClayLabel from '@clayui/label';
 import React from 'react';
 
-const LAST_EXECUTIONS = {
+const LAST_EXECUTION_STATUSES = {
 	'failed': {
 		displayType: 'danger',
 		label: Liferay.Language.get('failed'),
@@ -21,13 +21,14 @@ const LAST_EXECUTIONS = {
 	},
 } as const;
 
-export default function LastExecutionRenderer({
+export default function LastExecutionStatusRenderer({
 	value,
 }: {
-	value: keyof typeof LAST_EXECUTIONS;
+	value: keyof typeof LAST_EXECUTION_STATUSES;
 }) {
 	const {displayType, label} =
-		LAST_EXECUTIONS[value] ?? LAST_EXECUTIONS['never-executed'];
+		LAST_EXECUTION_STATUSES[value] ??
+		LAST_EXECUTION_STATUSES['never-executed'];
 
 	return (
 		<ClayLabel className="font-weight-normal" displayType={displayType}>
