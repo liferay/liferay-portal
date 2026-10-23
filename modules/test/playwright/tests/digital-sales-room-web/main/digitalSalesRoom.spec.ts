@@ -9,6 +9,7 @@ import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {digitalSalesRoomPagesTest} from '../../../fixtures/digitalSalesRoomPagesTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {liferayConfig} from '../../../liferay.config';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
@@ -20,6 +21,18 @@ import {waitForAlert} from '../../../utils/waitForAlert';
 export const test = mergeTests(
 	dataApiHelpersTest,
 	digitalSalesRoomPagesTest,
+	featureFlagsTest({
+		'LPD-82960': {enabled: true},
+	}),
+	loginTest()
+);
+
+const featureFlagDisabledTest = mergeTests(
+	dataApiHelpersTest,
+	digitalSalesRoomPagesTest,
+	featureFlagsTest({
+		'LPD-82960': {enabled: false},
+	}),
 	loginTest()
 );
 
@@ -2315,6 +2328,54 @@ test(
 			await expect(digitalSalesRoomsPage.roomBannerHeading).toHaveText(
 				roomName
 			);
+		});
+	}
+);
+
+featureFlagDisabledTest(
+	'A room cannot be archived when site-level maintenance mode is disabled',
+	{tag: '@LPD-97751'},
+	async ({apiHelpers, digitalSalesRoomsPage}) => {
+		const account = await apiHelpers.headlessAdminUser.postAccount({
+			type: 'business',
+		});
+
+		const roomName = `A${getRandomInt()}`;
+
+		await apiHelpers.headlessDigitalSalesRoom.addRoom({
+			accountEntryId: account.id,
+			name: roomName,
+		});
+
+		await digitalSalesRoomsPage.goToRoomsPage();
+
+		await test.step('Try to archive the room', async () => {
+			await digitalSalesRoomsPage.clickRowActionsMenuItem(
+				roomName,
+				digitalSalesRoomsPage.archiveMenuItem
+			);
+
+			await expect(
+				digitalSalesRoomsPage.archivingNotAvailableModal
+			).toBeVisible();
+			await expect(
+				digitalSalesRoomsPage.archivingNotAvailableMessage
+			).toBeVisible();
+
+			await digitalSalesRoomsPage.closeButton.click();
+
+			await expect(
+				digitalSalesRoomsPage.archivingNotAvailableModal
+			).toBeHidden();
+		});
+
+		await test.step('The room is still active', async () => {
+			await expect(
+				digitalSalesRoomsPage.digitalSalesRoomsTable.cell(
+					roomName,
+					false
+				)
+			).toBeVisible();
 		});
 	}
 );

@@ -13,6 +13,9 @@ export class DigitalSalesRoomsPage {
 	readonly archiveMenuItem: Locator;
 	readonly archivedRoomWarning: Locator;
 	readonly archivedStatusFilterRadio: Locator;
+	readonly archivingNotAvailableMessage: Locator;
+	readonly archivingNotAvailableModal: Locator;
+	readonly closeButton: Locator;
 	readonly deleteButton: Locator;
 	readonly deleteConfirmationModal: Locator;
 	readonly deleteMenuItem: Locator;
@@ -51,6 +54,13 @@ export class DigitalSalesRoomsPage {
 		this.archivedStatusFilterRadio = page.getByRole('radio', {
 			name: 'Archived',
 		});
+		this.archivingNotAvailableMessage = page.getByText(
+			'Please enable the Site-Level Maintenance Mode feature flag to archive this room.'
+		);
+		this.archivingNotAvailableModal = page.getByRole('heading', {
+			name: 'Archiving Is Not Available',
+		});
+		this.closeButton = page.getByText('Close', {exact: true});
 		this.deleteButton = page.getByRole('button', {name: 'Delete'});
 		this.deleteConfirmationModal = page.getByRole('heading', {
 			name: 'Delete Digital Sales Room',
