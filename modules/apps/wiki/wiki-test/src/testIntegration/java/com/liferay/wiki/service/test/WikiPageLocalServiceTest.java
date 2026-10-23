@@ -68,6 +68,7 @@ import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiPageLocalService;
 import com.liferay.wiki.service.WikiPageLocalServiceUtil;
+import com.liferay.wiki.service.WikiPageServiceUtil;
 import com.liferay.wiki.test.util.WikiTestUtil;
 
 import java.io.Serializable;
@@ -697,7 +698,7 @@ public class WikiPageLocalServiceTest {
 			TestPropsValues.getUserId(), _node.getNodeId(), "Page2",
 			RandomTestUtil.randomString(), true, serviceContext);
 
-		List<WikiPage> recentPages = WikiPageLocalServiceUtil.getRecentChanges(
+		List<WikiPage> recentPages = WikiPageServiceUtil.getRecentChanges(
 			_group.getGroupId(), _node.getNodeId(), QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS);
 
@@ -732,7 +733,7 @@ public class WikiPageLocalServiceTest {
 
 		WikiPage updatedPage2 = WikiTestUtil.updatePage(page2);
 
-		List<WikiPage> recentPages = WikiPageLocalServiceUtil.getRecentChanges(
+		List<WikiPage> recentPages = WikiPageServiceUtil.getRecentChanges(
 			_group.getGroupId(), _node.getNodeId(), QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS);
 
@@ -777,7 +778,7 @@ public class WikiPageLocalServiceTest {
 			TestPropsValues.getUserId(), _node.getNodeId(), "Page2",
 			RandomTestUtil.randomString(), true, serviceContext);
 
-		List<WikiPage> recentPages = WikiPageLocalServiceUtil.getRecentChanges(
+		List<WikiPage> recentPages = WikiPageServiceUtil.getRecentChanges(
 			_group.getGroupId(), _node.getNodeId(), QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS);
 
@@ -802,7 +803,7 @@ public class WikiPageLocalServiceTest {
 
 		WikiPage updatedPage1 = WikiTestUtil.updatePage(page1);
 
-		List<WikiPage> recentPages = WikiPageLocalServiceUtil.getRecentChanges(
+		List<WikiPage> recentPages = WikiPageServiceUtil.getRecentChanges(
 			_group.getGroupId(), _node.getNodeId(), QueryUtil.ALL_POS,
 			QueryUtil.ALL_POS);
 

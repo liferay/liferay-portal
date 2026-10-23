@@ -65,7 +65,6 @@ import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.systemevent.SystemEventHierarchyEntryThreadLocal;
-import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
@@ -142,10 +141,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import java.sql.Timestamp;
-
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -1531,29 +1527,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		}
 
 		return getPage(page.getNodeId(), page.getTitle(), previousVersion);
-	}
-
-	@Override
-	public List<WikiPage> getRecentChanges(
-		long groupId, long nodeId, int start, int end) {
-
-		Calendar cal = CalendarFactoryUtil.getCalendar();
-
-		cal.add(Calendar.WEEK_OF_YEAR, -1);
-
-		return wikiPageFinder.findByModifiedDate(
-			groupId, nodeId, new Timestamp(cal.getTimeInMillis()), false, start,
-			end);
-	}
-
-	@Override
-	public int getRecentChangesCount(long groupId, long nodeId) {
-		Calendar cal = CalendarFactoryUtil.getCalendar();
-
-		cal.add(Calendar.WEEK_OF_YEAR, -1);
-
-		return wikiPageFinder.countByModifiedDate(
-			groupId, nodeId, cal.getTime(), false);
 	}
 
 	@Override
