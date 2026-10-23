@@ -201,17 +201,17 @@ public class PIMLinkEngineImplTest {
 		ObjectEntry objectEntry3 = _mockObjectEntry("CLUSTER-1", "PRODUCT-3");
 
 		_mockValuesList(
-			StringBundler.concat(
-				"sourceClassExternalReferenceCode eq 'PRODUCT-1' and ",
-				"sourceClassName eq '", _CLASS_NAME, "'"),
-			Collections.singletonList(
-				_getValues("CLUSTER-1", 1, false, "PRODUCT-1")));
-		_mockValuesList(
 			"clusterKey in ('CLUSTER-1')",
 			Arrays.asList(
 				_getValues("CLUSTER-1", 3, false, "PRODUCT-3"),
 				_getValues("CLUSTER-1", 1, false, "PRODUCT-1"),
 				_getValues("CLUSTER-1", 2, true, "PRODUCT-2")));
+		_mockValuesList(
+			StringBundler.concat(
+				"sourceClassExternalReferenceCode eq 'PRODUCT-1' and ",
+				"sourceClassName eq '", _CLASS_NAME, "'"),
+			Collections.singletonList(
+				_getValues("CLUSTER-1", 1, false, "PRODUCT-1")));
 
 		List<PIMLinkRelatedEntry> pimLinkRelatedEntries =
 			_pimLinkEngineImpl.getPIMLinkRelatedEntries(null, objectEntry1);
@@ -237,13 +237,13 @@ public class PIMLinkEngineImplTest {
 		ObjectEntry objectEntry4 = _mockObjectEntry("CLUSTER-2", "PRODUCT-4");
 
 		_mockValuesList(
-			StringBundler.concat(
-				"sourceClassExternalReferenceCode eq 'PRODUCT-4' and ",
-				"sourceClassName eq '", _CLASS_NAME, "'"),
+			"clusterKey in ('CLUSTER-2')",
 			Collections.singletonList(
 				_getValues("CLUSTER-2", 4, false, "PRODUCT-4")));
 		_mockValuesList(
-			"clusterKey in ('CLUSTER-2')",
+			StringBundler.concat(
+				"sourceClassExternalReferenceCode eq 'PRODUCT-4' and ",
+				"sourceClassName eq '", _CLASS_NAME, "'"),
 			Collections.singletonList(
 				_getValues("CLUSTER-2", 4, false, "PRODUCT-4")));
 
