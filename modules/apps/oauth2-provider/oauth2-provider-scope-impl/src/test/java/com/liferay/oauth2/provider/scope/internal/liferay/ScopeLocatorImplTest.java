@@ -381,6 +381,7 @@ public class ScopeLocatorImplTest {
 	public void testWaitForScopeAliases() throws Exception {
 		_testWaitForScopeAliasesWithFailingScopeFinder();
 		_testWaitForScopeAliasesWithNotificationDuringLookup();
+		_testWaitForScopeAliasesWithNotificationForAnotherApplication();
 	}
 
 	protected final Set<String> scopedSet2 = new HashSet<>(
@@ -520,7 +521,74 @@ public class ScopeLocatorImplTest {
 		Assert.assertEquals(0, atomicInteger.get());
 	}
 
+	private void _testWaitForScopeAliasesWithNotificationForAnotherApplication()
+		throws Exception {
+
+		AtomicInteger findScopesAtomicInteger = new AtomicInteger();
+		Set<String> scopes = new HashSet<>();
+
+		Builder builder = new Builder();
+
+		ScopeLocatorImpl scopeLocatorImpl = builder.withScopeFinders(
+			registrator -> {
+				registrator.register(
+					_COMPANY_ID, _APPLICATION_NAME,
+					() -> {
+						findScopesAtomicInteger.incrementAndGet();
+
+						return scopes;
+					});
+				registrator.register(
+					_COMPANY_ID, _APPLICATION_NAME_2, Collections::emptySet);
+			}
+		).build();
+
+		ServiceTrackerMap<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
+			scopeFinderByNameServiceTrackerMap =
+				ReflectionTestUtil.getFieldValue(
+					scopeLocatorImpl, "_scopeFinderByNameServiceTrackerMap");
+
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.containsKey(Mockito.anyString())
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			scopeFinderByNameServiceTrackerMap.keySet()
+		).thenReturn(
+			new HashSet<>(Arrays.asList(_APPLICATION_NAME, _APPLICATION_NAME_2))
+		);
+
+		AtomicInteger atomicInteger = new AtomicInteger();
+
+		Assert.assertEquals(
+			Collections.emptySet(),
+			scopeLocatorImpl.waitForScopeAliases(
+				_COMPANY_ID, Collections.singleton("everything"),
+				atomicInteger::incrementAndGet));
+
+		scopes.add("everything");
+
+		int count = findScopesAtomicInteger.get();
+
+		ReflectionTestUtil.invoke(
+			scopeLocatorImpl, "_notify", new Class<?>[] {String.class},
+			_APPLICATION_NAME_2);
+
+		Assert.assertEquals(count, findScopesAtomicInteger.get());
+		Assert.assertEquals(0, atomicInteger.get());
+
+		ReflectionTestUtil.invoke(
+			scopeLocatorImpl, "_notify", new Class<?>[] {String.class},
+			_APPLICATION_NAME);
+
+		Assert.assertEquals(1, atomicInteger.get());
+	}
+
 	private static final String _APPLICATION_NAME = "com.liferay.test1";
+
+	private static final String _APPLICATION_NAME_2 = "com.liferay.test2";
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
