@@ -40,7 +40,7 @@ public class DSCommerceOrderAttachmentException extends PortalException {
 			super(
 				"The file extension of commerce order attachment " +
 					commerceOrderAttachmentId +
-						" is not supported by digital signature");
+						" is not supported");
 		}
 
 	}

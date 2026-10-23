@@ -104,9 +104,8 @@ public class AddDSRequestMVCResourceCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
-
 		CommerceOrderAttachmentTestUtil.initialize(getClass());
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		_saveDigitalSignatureConfiguration(true);
 
@@ -145,9 +144,6 @@ public class AddDSRequestMVCResourceCommandTest {
 
 	@Test
 	public void testServeResource() throws Exception {
-		_testServeResourceWithFailedResponseWrite();
-		_testServeResourceWithSequentialFalse();
-
 		PortletException portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _serveResource(
@@ -367,6 +363,9 @@ public class AddDSRequestMVCResourceCommandTest {
 		_testServeResourceWithErrorMessage(
 			"This file extension is not supported by DocuSign.",
 			TestPropsValues.getUserId());
+
+		_testServeResourceWithFailedResponseWrite();
+		_testServeResourceWithSequentialFalse();
 	}
 
 	private void _assertDSRecipient(
@@ -539,6 +538,15 @@ public class AddDSRequestMVCResourceCommandTest {
 	}
 
 	private void _testServeResourceWithFailedResponseWrite() throws Exception {
+		CommerceOrderAttachment commerceOrderAttachment =
+			_commerceOrderAttachmentLocalService.addCommerceOrderAttachment(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_commerceOrder.getCommerceOrderId(),
+				RandomTestUtil.nextDouble(), false,
+				RandomTestUtil.randomString(), "invoice",
+				RandomTestUtil.randomString() + ".pdf",
+				new ByteArrayInputStream(RandomTestUtil.randomBytes()));
+
 		AtomicReference<String> dsEnvelopeIdAtomicReference =
 			new AtomicReference<>();
 		AtomicReference<String> voidedDSEnvelopeIdAtomicReference =
@@ -590,7 +598,7 @@ public class AddDSRequestMVCResourceCommandTest {
 				PortletException.class,
 				() -> _mvcResourceCommand.serveResource(
 					_getMockLiferayResourceRequest(
-						_commerceOrderAttachment.getCommerceOrderAttachmentId(),
+						commerceOrderAttachment.getCommerceOrderAttachmentId(),
 						0, TestPropsValues.getUser(),
 						TestPropsValues.getUserId()),
 					new MockLiferayResourceResponse() {
@@ -614,7 +622,7 @@ public class AddDSRequestMVCResourceCommandTest {
 		Assert.assertNull(
 			_dsRequestManager.fetchLatestFileEntryDSRequest(
 				_group.getCompanyId(),
-				_commerceOrderAttachment.getFileEntryId()));
+				commerceOrderAttachment.getFileEntryId()));
 		Assert.assertNotNull(dsEnvelopeIdAtomicReference.get());
 		Assert.assertEquals(
 			dsEnvelopeIdAtomicReference.get(),

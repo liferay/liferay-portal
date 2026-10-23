@@ -108,9 +108,8 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
-
 		CommerceOrderAttachmentTestUtil.initialize(getClass());
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		_saveDigitalSignatureConfiguration(true);
 
@@ -230,9 +229,6 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 
 		Assert.assertNull(addDSRequestModalProps.get("buyer"));
 
-		_testGetAdditionalPropsWithRestrictedCommerceOrderAttachment();
-		_testGetAdditionalPropsWithoutViewUsersPermission();
-
 		additionalProps = _getAdditionalProps(UserTestUtil.addUser());
 
 		Assert.assertNull(additionalProps.get("addDSRequestModalProps"));
@@ -244,6 +240,11 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 				"commerceOrderId", _commerceOrder.getCommerceOrderId()
 			).build(),
 			_getAdditionalProps(user));
+
+		_saveDigitalSignatureConfiguration(true);
+
+		_testGetAdditionalPropsWithRestrictedCommerceOrderAttachment();
+		_testGetAdditionalPropsWithoutViewUsersPermission();
 	}
 
 	@Test
@@ -557,7 +558,7 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 			(Map<String, Object>)additionalProps.get("addDSRequestModalProps");
 
 		JSONArray jsonArray = (JSONArray)addDSRequestModalProps.get(
-			"accountUsers");
+			"accountEntryUsers");
 
 		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 
@@ -572,7 +573,7 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 		addDSRequestModalProps = (Map<String, Object>)additionalProps.get(
 			"addDSRequestModalProps");
 
-		jsonArray = (JSONArray)addDSRequestModalProps.get("accountUsers");
+		jsonArray = (JSONArray)addDSRequestModalProps.get("accountEntryUsers");
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 

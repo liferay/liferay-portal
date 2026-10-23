@@ -181,7 +181,7 @@ public class CommerceOrderAttachmentsDisplayContext {
 		}
 
 		return HashMapBuilder.<String, Object>put(
-			"accountUsers",
+			"accountEntryUsers",
 			JSONUtil.toJSONArray(
 				DSCommerceOrderAttachmentUtil.getAccountEntryUsers(
 					_accountEntryModelResourcePermission, _commerceOrder,

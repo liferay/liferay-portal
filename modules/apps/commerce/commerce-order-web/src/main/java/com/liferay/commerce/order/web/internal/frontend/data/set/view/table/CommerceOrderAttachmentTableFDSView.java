@@ -6,8 +6,7 @@
 package com.liferay.commerce.order.web.internal.frontend.data.set.view.table;
 
 import com.liferay.commerce.order.web.internal.constants.CommerceOrderFDSNames;
-import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
-import com.liferay.digital.signature.configuration.DigitalSignatureConfigurationUtil;
+import com.liferay.commerce.order.web.internal.util.DSCommerceOrderAttachmentUtil;
 import com.liferay.frontend.data.set.constants.FDSTimeZoneBehaviorConstants;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.table.BaseTableFDSView;
@@ -15,7 +14,6 @@ import com.liferay.frontend.data.set.view.table.DateTimeFDSTableSchemaField;
 import com.liferay.frontend.data.set.view.table.FDSTableSchema;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilder;
 import com.liferay.frontend.data.set.view.table.FDSTableSchemaBuilderFactory;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 
 import java.util.Locale;
@@ -53,7 +51,9 @@ public class CommerceOrderAttachmentTableFDSView extends BaseTableFDSView {
 			fdsTableSchemaField -> fdsTableSchemaField.setSortable(true)
 		);
 
-		if (_isDigitalSignatureEnabled()) {
+		if (DSCommerceOrderAttachmentUtil.isEnabled(
+				CompanyThreadLocal.getCompanyId(), 0)) {
+
 			fdsTableSchemaBuilder.add(
 				"dsRequestStatus", "signature-status",
 				fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
@@ -91,26 +91,6 @@ public class CommerceOrderAttachmentTableFDSView extends BaseTableFDSView {
 			FDSTimeZoneBehaviorConstants.APPLY_THEME_DISPLAY_TIME_ZONE);
 
 		return dateFDSTableSchemaField;
-	}
-
-	private boolean _isDigitalSignatureEnabled() {
-		long companyId = CompanyThreadLocal.getCompanyId();
-
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
-			return false;
-		}
-
-		DigitalSignatureConfiguration digitalSignatureConfiguration =
-			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
-				companyId, 0);
-
-		if (digitalSignatureConfiguration.embeddedViewEnabled() &&
-			digitalSignatureConfiguration.enabled()) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	@Reference

@@ -89,9 +89,8 @@ public class ResendDSRequestMVCResourceCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
-
 		CommerceOrderAttachmentTestUtil.initialize(getClass());
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		_saveDigitalSignatureConfiguration(true);
 

@@ -40,7 +40,7 @@ function moveRecipient(index, offset, recipients) {
 }
 
 function RecipientUserAutocomplete({
-	accountUsers,
+	accountEntryUsers,
 	allowCountersigner,
 	commerceOrderId,
 	error,
@@ -104,19 +104,19 @@ function RecipientUserAutocomplete({
 
 	const lowerCaseQuery = query.toLowerCase();
 
-	const matchingAccountUsers = accountUsers.filter(
+	const matchingAccountEntryUsers = accountEntryUsers.filter(
 		({emailAddress, name, userId}) =>
 			!excludedUserIds.includes(userId) &&
 			(emailAddress.toLowerCase().includes(lowerCaseQuery) ||
 				name.toLowerCase().includes(lowerCaseQuery))
 	);
 
-	const accountUserIds = accountUsers.map(({userId}) => userId);
+	const accountEntryUserIds = accountEntryUsers.map(({userId}) => userId);
 
 	const countersigners = recipientUsers
 		.filter(
 			({userId}) =>
-				!accountUserIds.includes(userId) &&
+				!accountEntryUserIds.includes(userId) &&
 				!excludedUserIds.includes(userId)
 		)
 		.map((user) => ({...user, countersigner: true}));
@@ -134,7 +134,7 @@ function RecipientUserAutocomplete({
 			<ClayAutocomplete
 				filterKey="emailAddress"
 				id={id}
-				items={[...matchingAccountUsers, ...countersigners]}
+				items={[...matchingAccountEntryUsers, ...countersigners]}
 				menuTrigger="focus"
 				onChange={(nextQuery) => {
 					setQuery(nextQuery);
@@ -219,7 +219,7 @@ export default function AddDSRequestModal({
 	closeModal,
 }) {
 	const {
-		accountUsers,
+		accountEntryUsers,
 		buyer,
 		commerceOrderId,
 		getDSRequestRecipientUsersURL,
@@ -245,13 +245,13 @@ export default function AddDSRequestModal({
 	const [sequential, setSequential] = useState(true);
 	const [submitting, setSubmitting] = useState(false);
 
-	const accountUserIds = [
-		...accountUsers.map(({userId}) => userId),
+	const accountEntryUserIds = [
+		...accountEntryUsers.map(({userId}) => userId),
 		buyer?.userId,
 	];
 
 	const countersignerIndex = recipients.findIndex(
-		({userId}) => userId && !accountUserIds.includes(userId)
+		({userId}) => userId && !accountEntryUserIds.includes(userId)
 	);
 
 	const setRecipient = (recipientIndex, user) =>
@@ -382,9 +382,9 @@ export default function AddDSRequestModal({
 
 							<ClayInput.GroupItem>
 								<RecipientUserAutocomplete
-									accountUsers={[
+									accountEntryUsers={[
 										...(buyer ? [buyer] : []),
-										...accountUsers.filter(
+										...accountEntryUsers.filter(
 											({userId}) =>
 												userId !== buyer?.userId
 										),
@@ -615,7 +615,7 @@ export default function AddDSRequestModal({
 
 AddDSRequestModal.propTypes = {
 	addDSRequestModalProps: PropTypes.shape({
-		accountUsers: PropTypes.arrayOf(
+		accountEntryUsers: PropTypes.arrayOf(
 			PropTypes.shape({
 				emailAddress: PropTypes.string,
 				name: PropTypes.string,

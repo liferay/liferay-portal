@@ -21,7 +21,7 @@ function renderAddDSRequestModal() {
 	render(
 		<AddDSRequestModal
 			addDSRequestModalProps={{
-				accountUsers: [
+				accountEntryUsers: [
 					buyer,
 					{
 						emailAddress: 'other@liferay.com',

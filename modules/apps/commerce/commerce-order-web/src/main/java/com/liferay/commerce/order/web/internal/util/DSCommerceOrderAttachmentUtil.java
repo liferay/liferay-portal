@@ -73,17 +73,23 @@ public class DSCommerceOrderAttachmentUtil {
 			return false;
 		}
 
-		CommerceChannel commerceChannel =
-			CommerceChannelLocalServiceUtil.fetchCommerceChannelByGroupClassPK(
-				groupId);
+		long siteGroupId = 0;
 
-		if (commerceChannel == null) {
-			return false;
+		if (groupId > 0) {
+			CommerceChannel commerceChannel =
+				CommerceChannelLocalServiceUtil.
+					fetchCommerceChannelByGroupClassPK(groupId);
+
+			if (commerceChannel == null) {
+				return false;
+			}
+
+			siteGroupId = commerceChannel.getSiteGroupId();
 		}
 
 		DigitalSignatureConfiguration digitalSignatureConfiguration =
 			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
-				companyId, commerceChannel.getSiteGroupId());
+				companyId, siteGroupId);
 
 		if (digitalSignatureConfiguration.embeddedViewEnabled() &&
 			digitalSignatureConfiguration.enabled()) {
