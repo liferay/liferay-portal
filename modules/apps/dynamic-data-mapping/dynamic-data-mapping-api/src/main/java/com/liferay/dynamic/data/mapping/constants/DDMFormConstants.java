@@ -27,4 +27,7 @@ public class DDMFormConstants {
 	public static final String SERVICE_NAME =
 		"com.liferay.dynamic.data.mapping.form.web";
 
+	public static final String TEMP_FOLDER_NAME =
+		"com.liferay.dynamic.data.mapping";
+
 }
