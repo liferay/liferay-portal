@@ -1,0 +1,11 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Deployment Runtime Configs
+templates:
+    -   templates/deployment-runtime-configs.yaml
+tests:
+    -   asserts:
+            -   notExists:
+                    path: spec.serviceAccountTemplate
+        it: Omits the service account template so Crossplane never manages a shared service account

@@ -1,0 +1,46 @@
+{{- $runtimeConfigs := list
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-cloudplatform-config" "provider" "provider-gcp-cloudplatform" "serviceAccountName" "crossplane-iam")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-compute-config" "provider" "provider-gcp-compute" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "1Gi" "memoryRequest" "512Mi" "name" "gcp-family-config" "provider" "provider-family-gcp" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-kms-config" "provider" "provider-gcp-kms" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-sql-config" "provider" "provider-gcp-sql" "serviceAccountName" "crossplane-data")
+    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-storage-config" "provider" "provider-gcp-storage" "serviceAccountName" "crossplane-data")
+-}}
+{{- range $runtimeConfig := $runtimeConfigs }}
+---
+apiVersion: pkg.crossplane.io/v1beta1
+kind: DeploymentRuntimeConfig
+metadata:
+    annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "-90"
+    name: {{ $runtimeConfig.name }}
+spec:
+    deploymentTemplate:
+        spec:
+            selector:
+                matchLabels:
+                    pkg.crossplane.io/provider: {{ $runtimeConfig.provider }}
+            template:
+                metadata:
+                    annotations:
+                        instrumentation.opentelemetry.io/inject-dotnet: "false"
+                        instrumentation.opentelemetry.io/inject-java: "false"
+                        instrumentation.opentelemetry.io/inject-nodejs: "false"
+                        instrumentation.opentelemetry.io/inject-python: "false"
+                        sidecar.opentelemetry.io/inject: "false"
+                    labels:
+                        pkg.crossplane.io/provider: {{ $runtimeConfig.provider }}
+                spec:
+                    containers:
+                        -   name: package-runtime
+                            resources:
+                                limits:
+                                    memory: {{ $runtimeConfig.memoryLimit }}
+                                requests:
+                                    cpu: {{ $runtimeConfig.cpuRequest }}
+                                    memory: {{ $runtimeConfig.memoryRequest }}
+                            {{- include "crossplane-runtime-configs.containerSecurityContext" $ | nindent 28 }}
+                    {{- include "crossplane-runtime-configs.podSecurityContext" $ | nindent 20 }}
+                    serviceAccountName: {{ $runtimeConfig.serviceAccountName }}
+{{- end }}
