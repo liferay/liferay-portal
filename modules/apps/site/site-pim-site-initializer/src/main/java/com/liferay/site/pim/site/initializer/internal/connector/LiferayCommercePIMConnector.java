@@ -45,24 +45,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	public static final String KEY = "liferay-commerce";
 
 	@Override
-	public String execute(ObjectEntry pimConnectorObjectEntry)
-		throws Exception {
-
-		Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap =
-			getPIMFieldMappingObjectEntriesMap(pimConnectorObjectEntry);
-		Map<String, List<ObjectEntry>> pimProductObjectEntriesMap =
-			getPIMProductObjectEntriesMap(
-				pimConnectorObjectEntry.getCompanyId());
-
-		return String.valueOf(
-			JSONUtil.toJSONArray(
-				pimProductObjectEntriesMap.entrySet(),
-				entry -> _createProductJSONObject(
-					entry.getKey(), pimFieldMappingObjectEntriesMap,
-					entry.getValue())));
-	}
-
-	@Override
 	public String getKey() {
 		return KEY;
 	}
@@ -87,8 +69,29 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	}
 
 	@Override
+	public String getSettingsObjectDefinitionExternalReferenceCode() {
+		return "L_PIM_CONNECTOR_SETTINGS_LIFERAY_COMMERCE";
+	}
+
+	@Override
 	public boolean isActive(long companyId) {
 		return true;
+	}
+
+	@Override
+	protected String doExecute(
+			ObjectEntry pimConnectorObjectEntry,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
+			Map<String, Serializable> settings)
+		throws Exception {
+
+		return String.valueOf(
+			JSONUtil.toJSONArray(
+				pimProductObjectEntriesMap.entrySet(),
+				entry -> _createProductJSONObject(
+					entry.getKey(), pimFieldMappingObjectEntriesMap,
+					entry.getValue())));
 	}
 
 	private JSONObject _createLocalizedJSONObject(

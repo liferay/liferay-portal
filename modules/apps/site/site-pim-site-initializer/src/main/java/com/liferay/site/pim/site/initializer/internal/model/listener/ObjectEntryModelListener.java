@@ -30,10 +30,13 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.exception.DuplicatePIMLinkException;
+import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorDispatchTriggerUtil;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorSettingsUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMLinkUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
@@ -104,6 +107,47 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
+	@Override
+	public void onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws ModelListenerException {
+
+		try {
+			_onBeforeUpdate(originalObjectEntry, objectEntry);
+		}
+		catch (Exception exception) {
+			throw new ModelListenerException(exception);
+		}
+	}
+
+	private void _deletePIMConnectorSettingsObjectEntry(ObjectEntry objectEntry)
+		throws PortalException {
+
+		ObjectEntry pimConnectorSettingsObjectEntry =
+			PIMConnectorSettingsUtil.fetchObjectEntry(
+				_pimConnectorRegistry.getPIMConnector(
+					MapUtil.getString(objectEntry.getValues(), "key")),
+				objectEntry);
+
+		if (pimConnectorSettingsObjectEntry == null) {
+			return;
+		}
+
+		boolean skipObjectEntryResourcePermission =
+			ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission();
+
+		ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(true);
+
+		try {
+			_objectEntryLocalService.deleteObjectEntry(
+				pimConnectorSettingsObjectEntry);
+		}
+		finally {
+			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
+				skipObjectEntryResourcePermission);
+		}
+	}
+
 	private void _deletePIMLinkObjectEntries(ObjectEntry objectEntry)
 		throws PortalException {
 
@@ -146,6 +190,14 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		serviceContext.setUserId(PrincipalThreadLocal.getUserId());
 
 		return serviceContext;
+	}
+
+	private boolean _isPIMConnectorObjectEntry(ObjectEntry objectEntry) {
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		return Objects.equals(
+			objectDefinition.getExternalReferenceCode(),
+			PIMObjectDefinitionConstants.EXTERNAL_REFERENCE_CODE_CONNECTOR);
 	}
 
 	private boolean _isPIMLinkObjectEntry(ObjectEntry objectEntry) {
@@ -215,6 +267,8 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 					EXTERNAL_REFERENCE_CODE_CONNECTOR)) {
 
 			PIMConnectorDispatchTriggerUtil.deleteDispatchTrigger(objectEntry);
+
+			_deletePIMConnectorSettingsObjectEntry(objectEntry);
 		}
 		else if (_isPIMProductObjectEntry(objectEntry)) {
 			_deletePIMLinkObjectEntries(objectEntry);
@@ -268,6 +322,28 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 		else if (_isPIMProductObjectEntry(objectEntry)) {
 			_setObjectEntryFolderId(objectEntry);
+		}
+	}
+
+	private void _onBeforeUpdate(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws PortalException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				objectEntry.getCompanyId(), "LPD-96666") ||
+			(objectEntry.getObjectDefinition() == null) ||
+			!_isPIMConnectorObjectEntry(objectEntry)) {
+
+			return;
+		}
+
+		if (!Objects.equals(
+				MapUtil.getString(originalObjectEntry.getValues(), "key"),
+				MapUtil.getString(objectEntry.getValues(), "key"))) {
+
+			throw new PIMConnectorException(
+				"the-connector-type-cannot-be-changed-after-the-connector-is-" +
+					"created");
 		}
 	}
 
@@ -409,6 +485,9 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 	@Reference
 	private ObjectFolderLocalService _objectFolderLocalService;
+
+	@Reference
+	private PIMConnectorRegistry _pimConnectorRegistry;
 
 	@Reference
 	private PIMLinkTypeRegistry _pimLinkTypeRegistry;

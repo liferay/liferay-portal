@@ -34,6 +34,7 @@ import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConsta
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.link.VariantPIMLinkType;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorSettingsUtil;
 
 import java.io.Serializable;
 
@@ -53,9 +54,28 @@ import org.osgi.service.component.annotations.Reference;
 public abstract class BasePIMConnector implements PIMConnector {
 
 	@Override
+	public String execute(ObjectEntry pimConnectorObjectEntry)
+		throws Exception {
+
+		return doExecute(
+			pimConnectorObjectEntry,
+			getPIMFieldMappingObjectEntriesMap(pimConnectorObjectEntry),
+			getPIMProductObjectEntriesMap(
+				pimConnectorObjectEntry.getCompanyId()),
+			_getSettings(pimConnectorObjectEntry));
+	}
+
+	@Override
 	public String getName(Locale locale) {
 		return language.get(locale, getKey());
 	}
+
+	protected abstract String doExecute(
+			ObjectEntry pimConnectorObjectEntry,
+			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
+			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
+			Map<String, Serializable> settings)
+		throws Exception;
 
 	protected Map<String, List<ObjectEntry>> getPIMFieldMappingObjectEntriesMap(
 			ObjectEntry pimConnectorObjectEntry)
@@ -189,6 +209,19 @@ public abstract class BasePIMConnector implements PIMConnector {
 		}
 
 		return objectEntries;
+	}
+
+	private Map<String, Serializable> _getSettings(
+		ObjectEntry pimConnectorObjectEntry) {
+
+		ObjectEntry objectEntry = PIMConnectorSettingsUtil.fetchObjectEntry(
+			this, pimConnectorObjectEntry);
+
+		if (objectEntry == null) {
+			return Collections.emptyMap();
+		}
+
+		return objectEntry.getValues();
 	}
 
 	private Map<String, Map<String, Serializable>> _getVariantPIMLinkValuesMap(

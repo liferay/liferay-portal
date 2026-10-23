@@ -1,0 +1,77 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#C0S1",
+	"enableCategorization": false,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": false,
+	"enableLocalization": false,
+	"enableObjectEntryDraft": false,
+	"enableObjectEntryHistory": false,
+	"enableObjectEntrySchedule": false,
+	"enableObjectEntrySubscription": false,
+	"externalReferenceCode": "L_PIM_CONNECTOR_SETTINGS_LIFERAY_COMMERCE",
+	"label": {
+		"en_US": "Liferay Commerce Settings"
+	},
+	"modifiable": true,
+	"name": "PIMConnectorLiferayCommerceSettings",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+	],
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "CLIENT_ID",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Client ID"
+			},
+			"name": "clientId",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "CLIENT_SECRET",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Client Secret"
+			},
+			"name": "clientSecret",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "URL",
+			"indexed": false,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "URL"
+			},
+			"name": "url",
+			"required": true,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_PIM_DEFINITIONS",
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "Liferay Commerce Settings"
+	},
+	"scope": "company",
+	"system": true,
+	"titleObjectFieldName": "url",
+	"updateStrategy": "UPDATE"
+}
