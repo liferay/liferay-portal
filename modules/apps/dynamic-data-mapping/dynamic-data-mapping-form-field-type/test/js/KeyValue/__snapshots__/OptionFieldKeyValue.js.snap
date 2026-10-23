@@ -945,6 +945,11 @@ exports[`OptionFieldKeyValue is not editable 1`] = `
               />
             </div>
             <input
+              name="keyValueDisplayNameOptionFieldKeyValue"
+              type="hidden"
+              value=""
+            />
+            <input
               name="keyValueDisplayNameOptionFieldKeyValue_edited"
               type="hidden"
               value="false"

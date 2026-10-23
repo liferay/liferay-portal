@@ -564,6 +564,18 @@ describe('Field Numeric', () => {
 		).toBe('name');
 	});
 
+	it('submits the value with the form when readOnly is set', () => {
+		const {container} = render(
+			<form>
+				<Numeric name="numericField" readOnly value="123" />
+			</form>
+		);
+
+		const formData = new FormData(container.querySelector('form'));
+
+		expect(formData.getAll('numericField')).toEqual(['123']);
+	});
+
 	it('updates decimal symbol using the current value of symbols', () => {
 		const {container} = render(
 			<Numeric

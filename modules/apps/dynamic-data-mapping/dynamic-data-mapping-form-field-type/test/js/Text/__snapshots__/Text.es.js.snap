@@ -292,6 +292,11 @@ exports[`Field Text is readOnly 1`] = `
       />
     </div>
     <input
+      name="textField"
+      type="hidden"
+      value=""
+    />
+    <input
       name="textField_edited"
       type="hidden"
       value="false"

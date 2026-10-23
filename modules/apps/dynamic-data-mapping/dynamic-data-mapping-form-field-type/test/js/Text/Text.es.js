@@ -615,4 +615,24 @@ describe('Field Text', () => {
 
 		expect(container).toMatchSnapshot();
 	});
+
+	it('submits the value with the form when readOnly is set', () => {
+		const {container} = render(
+			<form>
+				<TextWithProvider
+					{...defaultTextConfig}
+					readOnly
+					value="value"
+				/>
+			</form>
+		);
+
+		act(() => {
+			jest.advanceTimersByTime(100);
+		});
+
+		const formData = new FormData(container.querySelector('form'));
+
+		expect(formData.getAll('textField')).toEqual(['value']);
+	});
 });
