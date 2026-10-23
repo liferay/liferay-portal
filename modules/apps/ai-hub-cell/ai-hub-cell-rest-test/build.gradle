@@ -9,7 +9,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:ai-hub-cell:ai-hub-cell-api")
 	testIntegrationImplementation project(":apps:ai-hub-cell:ai-hub-cell-rest-api")
 	testIntegrationImplementation project(":apps:ai-hub-cell:ai-hub-cell-rest-client")
-	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")

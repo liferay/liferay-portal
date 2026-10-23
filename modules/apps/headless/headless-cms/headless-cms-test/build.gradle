@@ -7,7 +7,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
-	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:headless:headless-cms:headless-cms-api")
 	testIntegrationImplementation project(":apps:headless:headless-cms:headless-cms-client")
 	testIntegrationImplementation project(":apps:layout:layout-api")
