@@ -614,17 +614,16 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		GitWorkingDirectory baseGitWorkingDirectory =
 			_basePortalWorkspaceGitRepository.getGitWorkingDirectory();
 
-		LocalGitBranch localGitBranch =
+		LocalGitBranch baseLocalGitBranch =
 			baseGitWorkingDirectory.getCurrentLocalGitBranch();
 
-		gitWorkingDirectory.fetch(
-			_basePortalWorkspaceGitRepository.getUpstreamBranchName(),
-			localGitBranch);
+		gitWorkingDirectory.fetchNoCheckout(
+			baseLocalGitBranch.getName(), baseLocalGitBranch);
 
 		Properties properties = new Properties();
 
 		properties.setProperty(
-			"public.branch.git.hash", localGitBranch.getSHA());
+			"public.branch.git.hash", baseLocalGitBranch.getSHA());
 
 		JenkinsResultsParserUtil.writePropertiesFile(
 			new File(
