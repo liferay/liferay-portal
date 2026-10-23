@@ -1,0 +1,15 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: RBAC
+templates:
+    -   templates/rbac.yaml
+tests:
+    -   asserts:
+            -   documentIndex: 1
+                equal:
+                    path: subjects[0].namespace
+                    value: custom-system
+        it: Follows the release namespace
+        release:
+            namespace: custom-system
