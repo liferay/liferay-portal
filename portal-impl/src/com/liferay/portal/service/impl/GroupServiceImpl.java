@@ -91,6 +91,19 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		if (liveGroupId != GroupConstants.DEFAULT_LIVE_GROUP_ID) {
+			Group liveGroup = groupLocalService.getGroup(liveGroupId);
+
+			User user = getUser();
+
+			if (liveGroup.getCompanyId() != user.getCompanyId()) {
+				throw new PrincipalException();
+			}
+
+			GroupPermissionUtil.check(
+				getPermissionChecker(), liveGroupId, ActionKeys.MANAGE_STAGING);
+		}
+
 		if (parentGroupId == GroupConstants.DEFAULT_PARENT_GROUP_ID) {
 			PortalPermissionUtil.check(
 				getPermissionChecker(), ActionKeys.ADD_COMMUNITY);
