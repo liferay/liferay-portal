@@ -142,7 +142,7 @@ public class EditPIMConnectorDisplayContextTest {
 		);
 
 		Mockito.when(
-			objectEntryLocalService.fetchObjectEntry(1L)
+			objectEntryLocalService.fetchObjectEntry(1)
 		).thenReturn(
 			objectEntry
 		);
@@ -231,7 +231,7 @@ public class EditPIMConnectorDisplayContextTest {
 			).put(
 				"key", "liferay-commerce"
 			).put(
-				"name", "Liferay Commerce Connector"
+				"name", RandomTestUtil.randomString()
 			).build()
 		);
 
@@ -239,7 +239,7 @@ public class EditPIMConnectorDisplayContextTest {
 			ObjectEntryLocalService.class);
 
 		Mockito.when(
-			objectEntryLocalService.fetchObjectEntry(1L)
+			objectEntryLocalService.fetchObjectEntry(1)
 		).thenReturn(
 			objectEntry
 		);
@@ -277,7 +277,7 @@ public class EditPIMConnectorDisplayContextTest {
 			settingsObjectEntry.getValues()
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
-				"clientSecret", "secret"
+				"clientSecret", RandomTestUtil.randomString()
 			).put(
 				"id", 2L
 			).put(

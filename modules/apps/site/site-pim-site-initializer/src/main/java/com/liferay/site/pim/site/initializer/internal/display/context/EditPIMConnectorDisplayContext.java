@@ -184,7 +184,10 @@ public class EditPIMConnectorDisplayContext {
 		).put(
 			"fields",
 			JSONUtil.toJSONArray(
-				_getSettingsObjectFields(objectDefinition),
+				ListUtil.filter(
+					ObjectFieldLocalServiceUtil.getObjectFields(
+						objectDefinition.getObjectDefinitionId()),
+					objectField -> !objectField.isMetadata()),
 				objectField -> JSONUtil.put(
 					"businessType", objectField.getBusinessType()
 				).put(
@@ -200,15 +203,6 @@ public class EditPIMConnectorDisplayContext {
 			"title",
 			LanguageUtil.format(_httpServletRequest, "x-settings", name)
 		);
-	}
-
-	private List<ObjectField> _getSettingsObjectFields(
-		ObjectDefinition objectDefinition) {
-
-		return ListUtil.filter(
-			ObjectFieldLocalServiceUtil.getObjectFields(
-				objectDefinition.getObjectDefinitionId()),
-			objectField -> !objectField.isMetadata());
 	}
 
 	private Object _getSettingsValue(ObjectField objectField, Object value) {
@@ -272,7 +266,6 @@ public class EditPIMConnectorDisplayContext {
 			settingsObjectEntry.getExternalReferenceCode());
 
 		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
-
 		Map<String, Serializable> values = settingsObjectEntry.getValues();
 
 		for (ObjectField objectField :
