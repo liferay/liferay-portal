@@ -9,15 +9,24 @@ import com.liferay.client.extension.type.FDSCellRendererCET;
 import com.liferay.client.extension.type.FDSFilterCET;
 import com.liferay.client.extension.type.FDSVisualizationModeCET;
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.frontend.data.set.FDSEntryItemImportPolicy;
 import com.liferay.frontend.data.set.action.FDSBulkActions;
+import com.liferay.frontend.data.set.action.FDSCreationMenu;
+import com.liferay.frontend.data.set.action.FDSItemsActions;
+import com.liferay.frontend.data.set.action.util.FDSActionUtil;
 import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.internal.url.FDSAPIURLResolverRegistryImpl;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItemBuilder;
+import com.liferay.frontend.data.set.model.FDSActionDropdownItemList;
 import com.liferay.frontend.data.set.model.FDSSortItem;
 import com.liferay.frontend.data.set.url.FDSAPIURLResolver;
 import com.liferay.frontend.data.set.url.FDSAPIURLResolverRegistry;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.object.rest.dto.v1_0.ObjectEntry;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -300,6 +309,58 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			_customFDSSerializer.serializeCreationMenu(
 				FDS_NAMES[0], httpServletRequest
 			).isEmpty());
+
+		_resetFDSSerializer();
+
+		// Proxied nested creation menu
+
+		DropdownItem dropdownItem = DropdownItemBuilder.putData(
+			"id", IDS[0]
+		).setDropdownItems(
+			DropdownItemListBuilder.add(
+				DropdownItemBuilder.putData(
+					"id", IDS[1]
+				).setLabel(
+					LABELS[1]
+				).build()
+			).build()
+		).setLabel(
+			LABELS[0]
+		).setType(
+			"contextual"
+		).build();
+
+		ServiceRegistration<FDSCreationMenu> serviceRegistration =
+			registerFDSCreationMenu(
+				CreationMenuBuilder.addPrimaryDropdownItem(
+					dropdownItem
+				).build(),
+				FDS_NAMES[0]);
+
+		for (FDSEntryItemImportPolicy fdsEntryItemImportPolicy :
+				new FDSEntryItemImportPolicy[] {
+					FDSEntryItemImportPolicy.GROUP_PROXY,
+					FDSEntryItemImportPolicy.ITEM_PROXY
+				}) {
+
+			_resetFDSSerializer();
+
+			_mockSerializeCreationMenu(
+				FDS_NAMES[0],
+				FDSActionUtil.getFDSCreationActionExternalReferenceCode(
+					FDS_NAMES[0], IDS[0]),
+				fdsEntryItemImportPolicy);
+
+			CreationMenu creationMenu =
+				_customFDSSerializer.serializeCreationMenu(
+					FDS_NAMES[0], httpServletRequest);
+
+			Assert.assertEquals(
+				Collections.singletonList(dropdownItem),
+				creationMenu.get("primaryItems"));
+		}
+
+		serviceRegistration.unregister();
 
 		_resetFDSSerializer();
 
@@ -810,6 +871,52 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			_customFDSSerializer.serializeItemsActions(
 				FDS_NAMES[0], httpServletRequest
 			).isEmpty());
+
+		_resetFDSSerializer();
+
+		// Proxied nested items actions
+
+		FDSActionDropdownItem fdsActionDropdownItem =
+			FDSActionDropdownItemBuilder.setFDSActionDropdownItems(
+				FDSActionDropdownItemList.of(
+					FDSActionDropdownItemBuilder.setLabel(
+						LABELS[1]
+					).build(
+						IDS[1]
+					))
+			).setLabel(
+				LABELS[0]
+			).setType(
+				"group"
+			).build(
+				IDS[0]
+			);
+
+		ServiceRegistration<FDSItemsActions> serviceRegistration =
+			registerFDSItemsActions(
+				Collections.singletonList(fdsActionDropdownItem), FDS_NAMES[0]);
+
+		for (FDSEntryItemImportPolicy fdsEntryItemImportPolicy :
+				new FDSEntryItemImportPolicy[] {
+					FDSEntryItemImportPolicy.GROUP_PROXY,
+					FDSEntryItemImportPolicy.ITEM_PROXY
+				}) {
+
+			_resetFDSSerializer();
+
+			_mockSerializeItemsActions(
+				FDS_NAMES[0],
+				FDSActionUtil.getFDSItemActionExternalReferenceCode(
+					FDS_NAMES[0], IDS[0]),
+				fdsEntryItemImportPolicy);
+
+			Assert.assertEquals(
+				Collections.singletonList(fdsActionDropdownItem),
+				_customFDSSerializer.serializeItemsActions(
+					FDS_NAMES[0], httpServletRequest));
+		}
+
+		serviceRegistration.unregister();
 
 		_resetFDSSerializer();
 
@@ -1690,6 +1797,21 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		return false;
 	}
 
+	private ObjectEntry _createProxyObjectEntry(
+		String externalReferenceCode,
+		FDSEntryItemImportPolicy fdsEntryItemImportPolicy) {
+
+		ObjectEntry objectEntry = new ObjectEntry();
+
+		objectEntry.setExternalReferenceCode(externalReferenceCode);
+		objectEntry.setProperties(
+			HashMapBuilder.<String, Object>put(
+				"target", fdsEntryItemImportPolicy.toString()
+			).build());
+
+		return objectEntry;
+	}
+
 	private Map<String, String> _getParameterMap(String relativeURL) {
 		Map<String, String> parameterMap = new HashMap<>();
 
@@ -1815,6 +1937,27 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		).thenCallRealMethod();
 	}
 
+	private void _mockSerializeCreationMenu(
+		String fdsName, String externalReferenceCode,
+		FDSEntryItemImportPolicy fdsEntryItemImportPolicy) {
+
+		Mockito.when(
+			_customFDSSerializer.getSortedRelatedObjectEntries(
+				Mockito.eq(fdsName), Mockito.eq(httpServletRequest),
+				Mockito.any(), Mockito.eq("creationActionsOrder"),
+				Mockito.eq("dataSetToDataSetActions"))
+		).thenReturn(
+			Collections.singletonList(
+				_createProxyObjectEntry(
+					externalReferenceCode, fdsEntryItemImportPolicy))
+		);
+
+		Mockito.when(
+			_customFDSSerializer.serializeCreationMenu(
+				fdsName, httpServletRequest)
+		).thenCallRealMethod();
+	}
+
 	private void _mockSerializeCreationMenu(String fdsName, String[] titles) {
 		List<ObjectEntry> objectEntries = TransformUtil.transformToList(
 			titles,
@@ -1887,6 +2030,27 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Mockito.when(
 			_customFDSSerializer.serializeHideManagementBarInEmptyState(
+				fdsName, httpServletRequest)
+		).thenCallRealMethod();
+	}
+
+	private void _mockSerializeItemsActions(
+		String fdsName, String externalReferenceCode,
+		FDSEntryItemImportPolicy fdsEntryItemImportPolicy) {
+
+		Mockito.when(
+			_customFDSSerializer.getSortedRelatedObjectEntries(
+				Mockito.eq(fdsName), Mockito.eq(httpServletRequest),
+				Mockito.any(), Mockito.eq("itemActionsOrder"),
+				Mockito.eq("dataSetToDataSetActions"))
+		).thenReturn(
+			Collections.singletonList(
+				_createProxyObjectEntry(
+					externalReferenceCode, fdsEntryItemImportPolicy))
+		);
+
+		Mockito.when(
+			_customFDSSerializer.serializeItemsActions(
 				fdsName, httpServletRequest)
 		).thenCallRealMethod();
 	}

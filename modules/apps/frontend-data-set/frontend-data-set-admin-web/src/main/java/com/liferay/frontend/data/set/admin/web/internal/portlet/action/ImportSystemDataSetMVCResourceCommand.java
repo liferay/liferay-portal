@@ -43,6 +43,8 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -65,10 +67,12 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
@@ -435,7 +439,9 @@ public class ImportSystemDataSetMVCResourceCommand
 			fdsCreationMenu.getFDSEntryItemImportPolicy();
 
 		if (fdsEntryItemImportPolicy == FDSEntryItemImportPolicy.DETACHED) {
-			for (DropdownItem dropdownItem : primaryDropdownItems) {
+			for (DropdownItem dropdownItem :
+					_getLeafDropdownItems(primaryDropdownItems)) {
+
 				Map<String, Serializable> objectEntryValues =
 					HashMapBuilder.<String, Serializable>put(
 						"icon",
@@ -508,6 +514,9 @@ public class ImportSystemDataSetMVCResourceCommand
 				}
 
 				if (id == null) {
+					_logSkippedGroupDropdownItem(
+						dropdownItem, "creation menu item", objectEntry);
+
 					continue;
 				}
 
@@ -648,7 +657,7 @@ public class ImportSystemDataSetMVCResourceCommand
 
 		if (fdsEntryItemImportPolicy == FDSEntryItemImportPolicy.DETACHED) {
 			for (FDSActionDropdownItem fdsActionDropdownItem :
-					fdsActionDropdownItems) {
+					_getLeafDropdownItems(fdsActionDropdownItems)) {
 
 				Map<String, Object> data =
 					(Map<String, Object>)fdsActionDropdownItem.get("data");
@@ -739,6 +748,9 @@ public class ImportSystemDataSetMVCResourceCommand
 				Object id = data.get("id");
 
 				if (id == null) {
+					_logSkippedGroupDropdownItem(
+						fdsActionDropdownItem, "item action", objectEntry);
+
 					continue;
 				}
 
@@ -888,6 +900,31 @@ public class ImportSystemDataSetMVCResourceCommand
 		return labels;
 	}
 
+	private <T extends DropdownItem> List<T> _getLeafDropdownItems(
+		List<T> dropdownItems) {
+
+		List<T> leafDropdownItems = new ArrayList<>();
+
+		for (T dropdownItem : dropdownItems) {
+			if (!_isGroupDropdownItem(dropdownItem)) {
+				leafDropdownItems.add(dropdownItem);
+
+				continue;
+			}
+
+			List<T> nestedDropdownItems = (List<T>)dropdownItem.get("items");
+
+			if (nestedDropdownItems == null) {
+				continue;
+			}
+
+			leafDropdownItems.addAll(
+				_getLeafDropdownItems(nestedDropdownItems));
+		}
+
+		return leafDropdownItems;
+	}
+
 	private Serializable _getLocalizeableValue(
 		String languageId, Object value) {
 
@@ -907,6 +944,46 @@ public class ImportSystemDataSetMVCResourceCommand
 
 		return String.valueOf(value);
 	}
+
+	private boolean _hasNestedDropdownItems(DropdownItem dropdownItem) {
+		if (_isGroupDropdownItem(dropdownItem) &&
+			(dropdownItem.get("items") != null)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isGroupDropdownItem(DropdownItem dropdownItem) {
+		Object type = dropdownItem.get("type");
+
+		if (Objects.equals(type, "contextual") ||
+			Objects.equals(type, "group")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private void _logSkippedGroupDropdownItem(
+		DropdownItem dropdownItem, String itemType, ObjectEntry objectEntry) {
+
+		if (!_hasNestedDropdownItems(dropdownItem) || !_log.isWarnEnabled()) {
+			return;
+		}
+
+		_log.warn(
+			StringBundler.concat(
+				"Skipping ", itemType, " ", dropdownItem.get("label"),
+				" and its nested items for frontend data set ",
+				objectEntry.getExternalReferenceCode(),
+				" because it has no data ID"));
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ImportSystemDataSetMVCResourceCommand.class);
 
 	@Reference
 	private FDSCreationMenuRegistry _fdsCreationMenuRegistry;

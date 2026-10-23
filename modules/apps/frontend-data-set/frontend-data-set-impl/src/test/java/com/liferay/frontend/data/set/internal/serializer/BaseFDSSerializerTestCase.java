@@ -22,6 +22,7 @@ import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.data.set.sort.FDSSorts;
 import com.liferay.frontend.data.set.view.FDSView;
 import com.liferay.frontend.data.set.view.FDSViewContextContributor;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerCustomizerFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -225,6 +226,42 @@ public abstract class BaseFDSSerializerTestCase {
 		return bundleContext.registerService(
 			FDSBulkActions.class,
 			new FDSBulkActions() {
+
+				@Override
+				public List<FDSActionDropdownItem> getFDSActionDropdownItems(
+					HttpServletRequest httpServletRequest) {
+
+					return fdsActionDropdownItems;
+				}
+
+			},
+			MapUtil.singletonDictionary("frontend.data.set.name", fdsName));
+	}
+
+	protected ServiceRegistration<FDSCreationMenu> registerFDSCreationMenu(
+		CreationMenu creationMenu, String fdsName) {
+
+		return bundleContext.registerService(
+			FDSCreationMenu.class,
+			new FDSCreationMenu() {
+
+				@Override
+				public CreationMenu getCreationMenu(
+					HttpServletRequest httpServletRequest) {
+
+					return creationMenu;
+				}
+
+			},
+			MapUtil.singletonDictionary("frontend.data.set.name", fdsName));
+	}
+
+	protected ServiceRegistration<FDSItemsActions> registerFDSItemsActions(
+		List<FDSActionDropdownItem> fdsActionDropdownItems, String fdsName) {
+
+		return bundleContext.registerService(
+			FDSItemsActions.class,
+			new FDSItemsActions() {
 
 				@Override
 				public List<FDSActionDropdownItem> getFDSActionDropdownItems(

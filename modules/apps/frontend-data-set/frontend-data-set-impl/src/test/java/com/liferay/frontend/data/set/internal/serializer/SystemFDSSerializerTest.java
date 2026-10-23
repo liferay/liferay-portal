@@ -6,8 +6,6 @@
 package com.liferay.frontend.data.set.internal.serializer;
 
 import com.liferay.frontend.data.set.SystemFDSEntry;
-import com.liferay.frontend.data.set.action.FDSCreationMenu;
-import com.liferay.frontend.data.set.action.FDSItemsActions;
 import com.liferay.frontend.data.set.constants.FDSConstants;
 import com.liferay.frontend.data.set.constants.FDSEntityFieldTypes;
 import com.liferay.frontend.data.set.filter.BaseClientExtensionFDSFilter;
@@ -302,7 +300,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		).build();
 
 		_registerServices(
-			_registerFDSCreationMenu(creationMenu1, FDS_NAMES[0]),
+			registerFDSCreationMenu(creationMenu1, FDS_NAMES[0]),
 			_registerSystemFDSEntry(FDS_NAMES[0]));
 
 		Assert.assertEquals(
@@ -319,7 +317,7 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		).build();
 
 		_registerServices(
-			_registerFDSCreationMenu(creationMenu2, FDS_NAMES[1]),
+			registerFDSCreationMenu(creationMenu2, FDS_NAMES[1]),
 			_registerSystemFDSEntry(FDS_NAMES[0]));
 
 		Assert.assertEquals(
@@ -357,8 +355,8 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		).build();
 
 		_registerServices(
-			_registerFDSCreationMenu(creationMenu1, FDS_NAMES[0]),
-			_registerFDSCreationMenu(creationMenu1, FDS_NAMES[1]),
+			registerFDSCreationMenu(creationMenu1, FDS_NAMES[0]),
+			registerFDSCreationMenu(creationMenu1, FDS_NAMES[1]),
 			_registerSystemFDSEntry(FDS_NAMES[0]),
 			_registerSystemFDSEntry(FDS_NAMES[1]));
 
@@ -934,8 +932,8 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 					"modal-permissions"));
 
 		_registerServices(
-			_registerFDSItemsActions(fdsActionDropdownItems1, FDS_NAMES[0]),
-			_registerFDSItemsActions(fdsActionDropdownItems2, FDS_NAMES[1]),
+			registerFDSItemsActions(fdsActionDropdownItems1, FDS_NAMES[0]),
+			registerFDSItemsActions(fdsActionDropdownItems2, FDS_NAMES[1]),
 			_registerSystemFDSEntry(FDS_NAMES[0]),
 			_registerSystemFDSEntry(FDS_NAMES[1]));
 
@@ -974,8 +972,8 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 				"headless"));
 
 		_registerServices(
-			_registerFDSItemsActions(fdsActionDropdownItems1, FDS_NAMES[0]),
-			_registerFDSItemsActions(fdsActionDropdownItems1, FDS_NAMES[1]),
+			registerFDSItemsActions(fdsActionDropdownItems1, FDS_NAMES[0]),
+			registerFDSItemsActions(fdsActionDropdownItems1, FDS_NAMES[1]),
 			_registerSystemFDSEntry(FDS_NAMES[0]),
 			_registerSystemFDSEntry(FDS_NAMES[1]));
 
@@ -1870,47 +1868,11 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 		};
 	}
 
-	private ServiceRegistration<FDSCreationMenu> _registerFDSCreationMenu(
-		CreationMenu creationMenu, String fdsName) {
-
-		return bundleContext.registerService(
-			FDSCreationMenu.class,
-			new FDSCreationMenu() {
-
-				@Override
-				public CreationMenu getCreationMenu(
-					HttpServletRequest httpServletRequest) {
-
-					return creationMenu;
-				}
-
-			},
-			MapUtil.singletonDictionary("frontend.data.set.name", fdsName));
-	}
-
 	private ServiceRegistration<FDSFilter> _registerFDSFilter(
 		FDSFilter fdsFilter, String fdsName) {
 
 		return bundleContext.registerService(
 			FDSFilter.class, fdsFilter,
-			MapUtil.singletonDictionary("frontend.data.set.name", fdsName));
-	}
-
-	private ServiceRegistration<FDSItemsActions> _registerFDSItemsActions(
-		List<FDSActionDropdownItem> fdsActionDropdownItems, String fdsName) {
-
-		return bundleContext.registerService(
-			FDSItemsActions.class,
-			new FDSItemsActions() {
-
-				@Override
-				public List<FDSActionDropdownItem> getFDSActionDropdownItems(
-					HttpServletRequest httpServletRequest) {
-
-					return fdsActionDropdownItems;
-				}
-
-			},
 			MapUtil.singletonDictionary("frontend.data.set.name", fdsName));
 	}
 

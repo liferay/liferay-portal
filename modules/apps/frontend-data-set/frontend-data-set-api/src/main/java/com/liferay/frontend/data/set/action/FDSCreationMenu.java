@@ -11,6 +11,16 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
+ * Provides the creation menu of a frontend data set.
+ *
+ * <p>
+ * Creation menu items can be nested. An item of type {@code group} renders its
+ * items as a section, and an item of type {@code contextual} renders them in a
+ * submenu. Give every group a {@code data.id}, because importing the frontend
+ * data set into Data Set Manager with the {@code ITEM_PROXY} policy only keeps
+ * the top level items that have one, together with their nested items.
+ * </p>
+ *
  * @author Daniel Sanz
  */
 public interface FDSCreationMenu {
