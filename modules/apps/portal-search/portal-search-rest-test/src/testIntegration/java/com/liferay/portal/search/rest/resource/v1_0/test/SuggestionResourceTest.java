@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -36,6 +37,8 @@ import com.liferay.portal.search.rest.client.dto.v1_0.SuggestionsContributorConf
 import com.liferay.portal.search.rest.client.dto.v1_0.SuggestionsContributorResults;
 import com.liferay.portal.search.rest.client.pagination.Page;
 import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.search.experiences.model.SXPBlueprint;
 import com.liferay.search.experiences.service.SXPBlueprintLocalService;
 
@@ -47,6 +50,8 @@ import java.util.Locale;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,6 +60,13 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class SuggestionResourceTest extends BaseSuggestionResourceTestCase {
+
+	@ClassRule
+	@Rule
+	public static final AggregateTestRule aggregateTestRule =
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(),
+			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Before
 	@Override
