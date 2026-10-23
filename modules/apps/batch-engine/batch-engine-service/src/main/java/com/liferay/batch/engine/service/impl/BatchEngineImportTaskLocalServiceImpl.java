@@ -262,29 +262,30 @@ public class BatchEngineImportTaskLocalServiceImpl
 	}
 
 	private Blob _getBlob(
-			BatchEngineImportTask batchEngineImportTask, byte[] bytes)
+			BatchEngineImportTask batchEngineImportTask, byte[] content)
 		throws PortalException {
 
 		if (Validator.isNull(PropsValues.BATCH_ENGINE_ENCRYPTION_KEY)) {
 			return new OutputBlob(
-				new UnsyncByteArrayInputStream(bytes), bytes.length);
+				new UnsyncByteArrayInputStream(content), content.length);
 		}
 
 		try {
 			Blob blob = _getBatchEngineImportTaskSanitizedContentBlob(
-				batchEngineImportTask, new UnsyncByteArrayInputStream(bytes),
+				batchEngineImportTask, new UnsyncByteArrayInputStream(content),
 				PasswordFieldUtil::encrypt);
 
 			if (blob == null) {
 				return new OutputBlob(
-					new UnsyncByteArrayInputStream(bytes), bytes.length);
+					new UnsyncByteArrayInputStream(content), content.length);
 			}
 
 			return blob;
 		}
 		catch (Exception exception) {
 			throw new PortalException(
-				"Unable to encrypt password fields of batch engine import task",
+				"Unable to encrypt password fields of the batch engine " +
+					"import task",
 				exception);
 		}
 	}

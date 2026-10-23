@@ -169,7 +169,7 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 			String content = _readContent(batchEngineImportTask);
 
-			Assert.assertFalse(content, content.contains(password));
+			Assert.assertFalse(content.contains(password));
 
 			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(content);
 
