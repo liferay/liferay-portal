@@ -130,33 +130,6 @@ module.exports = {
 					supportedTypes: [],
 				},
 			},
-			contactsCardTemplateTypes: {
-				cardTypes: {
-					associatedSegments: 10,
-					conversionHealth: 9,
-					coworkers: 11,
-					info: 1,
-					interests: 12,
-					profile: 0,
-					segmentDistribution: 3,
-					segmentGrowth: 4,
-					segmentMembership: 2,
-					similar: 13,
-				},
-				graphTypes: {
-					bar: 1,
-					pie: 2,
-				},
-				profileCardLayoutTypes: {
-					horizontal: 0,
-					noAvatar: 1,
-					vertical: 2,
-				},
-				segmentsMembershipCardOrders: {
-					alphabetical: 0,
-					numberOfMembers: 1,
-				},
-			},
 			credentialTypes: {
 				oAuth1: 'OAuth 1 Authentication',
 				oAuth2: 'OAuth 2 Authentication',
