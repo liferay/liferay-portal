@@ -11,7 +11,6 @@ import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.order.web.internal.exception.DSCommerceOrderAttachmentException;
 import com.liferay.commerce.order.web.internal.util.DSCommerceOrderAttachmentUtil;
 import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
-import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.digital.signature.exception.DSRequestException;
 import com.liferay.digital.signature.manager.DSRequestManager;
 import com.liferay.digital.signature.model.DSRequest;
@@ -64,27 +63,26 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 					ParamUtil.getLong(
 						resourceRequest, "commerceOrderAttachmentId"));
 
-			CommerceOrder commerceOrder =
-				_commerceOrderLocalService.getCommerceOrder(
-					commerceOrderAttachment.getCommerceOrderId());
-
-			_commerceOrderModelResourcePermission.check(
-				themeDisplay.getPermissionChecker(), commerceOrder,
-				ActionKeys.UPDATE);
-
 			_commerceOrderAttachmentModelResourcePermission.check(
 				themeDisplay.getPermissionChecker(), commerceOrderAttachment,
 				ActionKeys.UPDATE);
 
-			if (!DSCommerceOrderAttachmentUtil.isEnabled(commerceOrder)) {
-				throw new DSCommerceOrderAttachmentException.
-					MustHaveEmbeddedViewEnabled(
-						commerceOrder.getCommerceOrderId());
+			_commerceOrderModelResourcePermission.check(
+				themeDisplay.getPermissionChecker(),
+				commerceOrderAttachment.getCommerceOrderId(),
+				ActionKeys.UPDATE);
+
+			if (!DSCommerceOrderAttachmentUtil.isEnabled(
+					commerceOrderAttachment.getCompanyId(),
+					commerceOrderAttachment.getGroupId())) {
+
+				throw new DSRequestException.MustHaveEmbeddedViewEnabled(
+					commerceOrderAttachment.getGroupId());
 			}
 
 			DSRequest dsRequest =
 				_dsRequestManager.fetchLatestFileEntryDSRequest(
-					commerceOrder.getCompanyId(),
+					commerceOrderAttachment.getCompanyId(),
 					commerceOrderAttachment.getFileEntryId());
 
 			if (dsRequest == null) {
@@ -139,9 +137,6 @@ public class VoidDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 	)
 	private ModelResourcePermission<CommerceOrderAttachment>
 		_commerceOrderAttachmentModelResourcePermission;
-
-	@Reference
-	private CommerceOrderLocalService _commerceOrderLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"

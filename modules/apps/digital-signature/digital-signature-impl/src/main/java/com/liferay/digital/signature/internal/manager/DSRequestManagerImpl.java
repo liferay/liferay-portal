@@ -482,21 +482,39 @@ public class DSRequestManagerImpl implements DSRequestManager {
 			return;
 		}
 
-		List<DSRequestRecipient> dsRequestRecipients = _updateDSRequest(
-			objectEntry);
+		DSRequest dsRequest = fetchDSRequest(
+			objectEntry.getCompanyId(), dsRequestId);
 
-		if (dsRequestRecipients.isEmpty()) {
+		if (dsRequest == null) {
 			return;
 		}
 
-		DSRequest dsRequest = fetchDSRequest(
-			objectEntry.getCompanyId(), dsRequestId);
+		Set<Long> userIds = new HashSet<>(
+			TransformUtil.transform(
+				dsRequest.getDSRequestRecipients(),
+				dsRequestRecipient -> {
+					if (!Objects.equals(
+							DSRequestConstants.STATUS_CREATED,
+							dsRequestRecipient.getStatus())) {
+
+						return null;
+					}
+
+					return dsRequestRecipient.getUserId();
+				}));
+
+		dsRequest = _updateDSRequest(objectEntry);
 
 		if ((dsRequest == null) || dsRequest.isTerminal()) {
 			return;
 		}
 
-		_sendDSRequestNotifications(dsRequest, dsRequestRecipients);
+		_sendDSRequestNotifications(
+			dsRequest,
+			ListUtil.filter(
+				dsRequest.getDSRequestRecipients(),
+				dsRequestRecipient -> userIds.contains(
+					dsRequestRecipient.getUserId())));
 	}
 
 	@Override
@@ -1252,12 +1270,12 @@ public class DSRequestManagerImpl implements DSRequestManager {
 		return Date.from(localDateTime.toInstant(ZoneOffset.UTC));
 	}
 
-	private List<DSRequestRecipient> _updateDSRequest(ObjectEntry objectEntry) {
+	private DSRequest _updateDSRequest(ObjectEntry objectEntry) {
 		if (ArrayUtil.contains(
 				DSRequestConstants.STATUSES_REQUEST_TERMINAL,
 				MapUtil.getString(objectEntry.getValues(), "requestStatus"))) {
 
-			return Collections.emptyList();
+			return null;
 		}
 
 		long companyId = objectEntry.getCompanyId();
@@ -1282,10 +1300,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 					objectEntry.getUserId());
 			}
 
-			List<DSRequestRecipient> dsRequestRecipients =
-				_updateDSRequestRecipientStatuses(
-					companyId, dsEnvelope, dsRequestId, dsRequestStatus,
-					groupId);
+			_updateDSRequestRecipientStatuses(
+				companyId, dsEnvelope, dsRequestId, dsRequestStatus, groupId);
 
 			_objectEntryLocalService.partialUpdateObjectEntry(
 				objectEntry.getUserId(), dsRequestId,
@@ -1303,23 +1319,21 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				_getServiceContext(
 					companyId, groupId, objectEntry.getUserId()));
 
-			return dsRequestRecipients;
+			return fetchDSRequest(companyId, dsRequestId);
 		}
 		catch (Exception exception) {
 			_log.error(
 				"Unable to update digital signature request " + dsRequestId,
 				exception);
 
-			return Collections.emptyList();
+			return null;
 		}
 	}
 
-	private List<DSRequestRecipient> _updateDSRequestRecipientStatuses(
+	private void _updateDSRequestRecipientStatuses(
 			long companyId, DSEnvelope dsEnvelope, long dsRequestId,
 			String dsRequestStatus, long groupId)
 		throws Exception {
-
-		List<DSRequestRecipient> dsRequestRecipients = new ArrayList<>();
 
 		Map<String, DSRecipient> dsRecipients = new HashMap<>();
 
@@ -1335,7 +1349,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 					companyId);
 
 		if (objectDefinition == null) {
-			return dsRequestRecipients;
+			return;
 		}
 
 		for (Map<String, Serializable> values :
@@ -1364,15 +1378,14 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				continue;
 			}
 
-			String dsRequestRecipientStatus = _getDSRequestRecipientStatus(
-				dsRecipient, dsRequestStatus);
-
-			objectEntry = _objectEntryLocalService.partialUpdateObjectEntry(
+			_objectEntryLocalService.partialUpdateObjectEntry(
 				objectEntry.getUserId(), dsRequestRecipientId,
 				ObjectEntryFolderConstants.
 					PARENT_OBJECT_ENTRY_FOLDER_ID_DEFAULT,
 				HashMapBuilder.<String, Serializable>put(
-					"requestRecipientStatus", () -> dsRequestRecipientStatus
+					"requestRecipientStatus",
+					() -> _getDSRequestRecipientStatus(
+						dsRecipient, dsRequestStatus)
 				).put(
 					"requestRecipientStatusDate",
 					() -> _toDate(dsRecipient.getStatusLocalDateTime())
@@ -1382,21 +1395,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				).build(),
 				_getServiceContext(
 					companyId, groupId, objectEntry.getUserId()));
-
-			if (!Objects.equals(
-					DSRequestConstants.STATUS_CREATED,
-					MapUtil.getString(values, "requestRecipientStatus")) ||
-				!Objects.equals(
-					DSRequestConstants.STATUS_SENT, dsRequestRecipientStatus)) {
-
-				continue;
-			}
-
-			dsRequestRecipients.add(
-				new DSRequestRecipient(objectEntry.getValues()));
 		}
-
-		return dsRequestRecipients;
 	}
 
 	private void _updateFileEntries(

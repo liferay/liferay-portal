@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.frontend.taglib.servlet.taglib;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.order.web.internal.display.context.CommerceOrderAttachmentsDisplayContext;
@@ -60,7 +61,8 @@ public class CommerceOrderAttachmentsScreenNavigationEntry
 		CommerceOrderAttachmentsDisplayContext
 			commerceOrderAttachmentsDisplayContext =
 				new CommerceOrderAttachmentsDisplayContext(
-					commerceOrder, _commerceOrderAttachmentLocalService,
+					_accountEntryModelResourcePermission, commerceOrder,
+					_commerceOrderAttachmentLocalService,
 					_commerceOrderAttachmentModelResourcePermission,
 					_commerceOrderModelResourcePermission, _dsRequestManager,
 					httpServletRequest, _language, _portal, _portletURLFactory,
@@ -74,6 +76,12 @@ public class CommerceOrderAttachmentsScreenNavigationEntry
 			httpServletRequest, httpServletResponse,
 			"/commerce_order/attachments.jsp");
 	}
+
+	@Reference(
+		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
+	)
+	private ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
 
 	@Reference
 	private CommerceOrderAttachmentLocalService

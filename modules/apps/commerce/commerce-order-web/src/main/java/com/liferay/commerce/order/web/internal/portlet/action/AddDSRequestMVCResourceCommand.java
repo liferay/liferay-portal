@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderAttachment;
@@ -31,7 +32,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -53,7 +53,6 @@ import jakarta.portlet.ResourceResponse;
 
 import java.io.IOException;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -127,32 +126,33 @@ public class AddDSRequestMVCResourceCommand
 					ParamUtil.getLong(
 						resourceRequest, "commerceOrderAttachmentId"));
 
-			CommerceOrder commerceOrder =
-				_commerceOrderLocalService.getCommerceOrder(
-					commerceOrderAttachment.getCommerceOrderId());
-
 			ThemeDisplay themeDisplay =
 				(ThemeDisplay)resourceRequest.getAttribute(
 					WebKeys.THEME_DISPLAY);
-
-			_commerceOrderModelResourcePermission.check(
-				themeDisplay.getPermissionChecker(), commerceOrder,
-				ActionKeys.UPDATE);
 
 			_commerceOrderAttachmentModelResourcePermission.check(
 				themeDisplay.getPermissionChecker(), commerceOrderAttachment,
 				ActionKeys.UPDATE);
 
-			if (!DSCommerceOrderAttachmentUtil.isEnabled(commerceOrder)) {
-				throw new DSCommerceOrderAttachmentException.
-					MustHaveEmbeddedViewEnabled(
-						commerceOrder.getCommerceOrderId());
-			}
-
 			if (!_hasAllowedFileExtension(commerceOrderAttachment)) {
 				throw new DSCommerceOrderAttachmentException.
 					MustHaveSupportedFileExtension(
 						commerceOrderAttachment.getCommerceOrderAttachmentId());
+			}
+
+			CommerceOrder commerceOrder =
+				_commerceOrderLocalService.getCommerceOrder(
+					commerceOrderAttachment.getCommerceOrderId());
+
+			_commerceOrderModelResourcePermission.check(
+				themeDisplay.getPermissionChecker(), commerceOrder,
+				ActionKeys.UPDATE);
+
+			if (!DSCommerceOrderAttachmentUtil.isEnabled(
+					commerceOrder.getCompanyId(), commerceOrder.getGroupId())) {
+
+				throw new DSRequestException.MustHaveEmbeddedViewEnabled(
+					commerceOrder.getGroupId());
 			}
 
 			CommerceChannel commerceChannel =
@@ -202,72 +202,37 @@ public class AddDSRequestMVCResourceCommand
 			ResourceRequest resourceRequest)
 		throws PortalException {
 
-		List<DSRecipient> dsRecipients = new ArrayList<>();
+		List<User> users = TransformUtil.unsafeTransformToList(
+			ArrayUtil.unique(
+				ParamUtil.getLongValues(resourceRequest, "recipientUserIds")),
+			_userLocalService::getUser);
 
-		Set<Long> accountUserIds = new HashSet<>(
-			TransformUtil.transform(
-				DSCommerceOrderAttachmentUtil.getAccountUsers(commerceOrder),
-				User::getUserId));
+		_validateUsers(commerceOrder, permissionChecker, users);
 
-		int count = 0;
-		Set<Long> recipientUserIds = new HashSet<>();
 		boolean sequential = ParamUtil.getBoolean(
 			resourceRequest, "sequential", true);
 
-		for (long recipientUserId :
-				ParamUtil.getLongValues(resourceRequest, "recipientUserIds")) {
+		return TransformUtil.transform(
+			users,
+			user -> {
+				DSRecipient dsRecipient = new DSRecipient();
 
-			if (!recipientUserIds.add(recipientUserId)) {
-				continue;
-			}
+				int index = users.indexOf(user) + 1;
 
-			User user = _userLocalService.getUser(recipientUserId);
+				dsRecipient.setDSRecipientId(String.valueOf(index));
+				dsRecipient.setEmailAddress(user.getEmailAddress());
+				dsRecipient.setName(user.getFullName());
 
-			if ((user.getCompanyId() != commerceOrder.getCompanyId()) ||
-				(user.getType() != UserConstants.TYPE_REGULAR) ||
-				!user.isActive()) {
+				int routingOrder = 1;
 
-				throw new DSRequestException.MustHaveValidRecipient(
-					recipientUserId);
-			}
+				if (sequential) {
+					routingOrder = index;
+				}
 
-			if (!accountUserIds.contains(recipientUserId) &&
-				(recipientUserId != commerceOrder.getUserId())) {
+				dsRecipient.setRoutingOrder(routingOrder);
 
-				UserPermissionUtil.check(
-					permissionChecker, recipientUserId, ActionKeys.VIEW);
-
-				count++;
-			}
-
-			if (count > 1) {
-				throw new DSCommerceOrderAttachmentException.
-					MustNotHaveMultipleCountersigners();
-			}
-
-			DSRecipient dsRecipient = new DSRecipient();
-
-			dsRecipient.setDSRecipientId(
-				String.valueOf(dsRecipients.size() + 1));
-			dsRecipient.setEmailAddress(user.getEmailAddress());
-			dsRecipient.setName(user.getFullName());
-
-			int routingOrder = 1;
-
-			if (sequential) {
-				routingOrder = dsRecipients.size() + 1;
-			}
-
-			dsRecipient.setRoutingOrder(routingOrder);
-
-			dsRecipients.add(dsRecipient);
-		}
-
-		if (dsRecipients.isEmpty()) {
-			throw new DSCommerceOrderAttachmentException.MustHaveRecipient();
-		}
-
-		return dsRecipients;
+				return dsRecipient;
+			});
 	}
 
 	private boolean _hasAllowedFileExtension(
@@ -284,6 +249,50 @@ public class AddDSRequestMVCResourceCommand
 		return ArrayUtil.contains(
 			DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS,
 			fileEntry.getExtension());
+	}
+
+	private void _validateUsers(
+			CommerceOrder commerceOrder, PermissionChecker permissionChecker,
+			List<User> users)
+		throws PortalException {
+
+		if (users.isEmpty()) {
+			throw new DSCommerceOrderAttachmentException.MustHaveRecipient();
+		}
+
+		Set<Long> accountEntryUserIds = new HashSet<>(
+			TransformUtil.transform(
+				DSCommerceOrderAttachmentUtil.getAccountEntryUsers(
+					_accountEntryModelResourcePermission, commerceOrder,
+					permissionChecker),
+				User::getUserId));
+
+		int count = 0;
+
+		for (User user : users) {
+			if (!DSCommerceOrderAttachmentUtil.isValidDSRecipient(
+					commerceOrder.getCompanyId(), user)) {
+
+				throw new DSRequestException.MustHaveValidRecipient(
+					user.getUserId());
+			}
+
+			if (accountEntryUserIds.contains(user.getUserId()) ||
+				(user.getUserId() == commerceOrder.getUserId())) {
+
+				continue;
+			}
+
+			UserPermissionUtil.check(
+				permissionChecker, user.getUserId(), ActionKeys.VIEW);
+
+			count++;
+
+			if (count > 1) {
+				throw new DSCommerceOrderAttachmentException.
+					MustNotHaveMultipleCountersigners();
+			}
+		}
 	}
 
 	private void _voidDSEnvelope(ResourceRequest resourceRequest) {
@@ -310,6 +319,12 @@ public class AddDSRequestMVCResourceCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AddDSRequestMVCResourceCommand.class);
+
+	@Reference(
+		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
+	)
+	private ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;

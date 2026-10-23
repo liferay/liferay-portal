@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.display.context;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderAttachment;
@@ -29,7 +30,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletURLFactory;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -49,7 +48,6 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +57,8 @@ import java.util.Map;
 public class CommerceOrderAttachmentsDisplayContext {
 
 	public CommerceOrderAttachmentsDisplayContext(
+		ModelResourcePermission<AccountEntry>
+			accountEntryModelResourcePermission,
 		CommerceOrder commerceOrder,
 		CommerceOrderAttachmentLocalService commerceOrderAttachmentLocalService,
 		ModelResourcePermission<CommerceOrderAttachment>
@@ -70,6 +70,8 @@ public class CommerceOrderAttachmentsDisplayContext {
 		PortletURLFactory portletURLFactory,
 		UserLocalService userLocalService) {
 
+		_accountEntryModelResourcePermission =
+			accountEntryModelResourcePermission;
 		_commerceOrder = commerceOrder;
 		_commerceOrderAttachmentLocalService =
 			commerceOrderAttachmentLocalService;
@@ -181,8 +183,10 @@ public class CommerceOrderAttachmentsDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"accountUsers",
 			JSONUtil.toJSONArray(
-				DSCommerceOrderAttachmentUtil.getAccountUsers(_commerceOrder),
-				DSCommerceOrderAttachmentUtil::getUserJSONObject)
+				DSCommerceOrderAttachmentUtil.getAccountEntryUsers(
+					_accountEntryModelResourcePermission, _commerceOrder,
+					themeDisplay.getPermissionChecker()),
+				DSCommerceOrderAttachmentUtil::toJSONObject)
 		).put(
 			"allowedFileExtensions",
 			DigitalSignatureConstants.ALLOWED_FILE_EXTENSIONS
@@ -193,13 +197,13 @@ public class CommerceOrderAttachmentsDisplayContext {
 					_commerceOrder.getUserId());
 
 				if ((user == null) ||
-					(user.getType() != UserConstants.TYPE_REGULAR) ||
-					!user.isActive()) {
+					!DSCommerceOrderAttachmentUtil.isValidDSRecipient(
+						_commerceOrder.getCompanyId(), user)) {
 
 					return null;
 				}
 
-				return DSCommerceOrderAttachmentUtil.getUserJSONObject(user);
+				return DSCommerceOrderAttachmentUtil.toJSONObject(user);
 			}
 		).put(
 			"commerceOrderId", _commerceOrder.getCommerceOrderId()
@@ -224,33 +228,79 @@ public class CommerceOrderAttachmentsDisplayContext {
 			_commerceOrder.getCommerceOrderId(), "/attachments");
 	}
 
+	private List<CommerceOrderAttachment> _getCommerceOrderAttachments() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		try {
+			return TransformUtil.unsafeTransform(
+				_commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
+					_commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null),
+				commerceOrderAttachment -> {
+					if (!_commerceOrderAttachmentModelResourcePermission.
+							contains(
+								themeDisplay.getPermissionChecker(),
+								commerceOrderAttachment, ActionKeys.VIEW)) {
+
+						return null;
+					}
+
+					return commerceOrderAttachment;
+				});
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+
+			return Collections.emptyList();
+		}
+	}
+
 	private Map<String, Object> _getDSRequestAdditionalProps() {
-		if (!DSCommerceOrderAttachmentUtil.isEnabled(_commerceOrder)) {
+		if (!DSCommerceOrderAttachmentUtil.isEnabled(
+				_commerceOrder.getCompanyId(), _commerceOrder.getGroupId())) {
+
 			return Collections.emptyMap();
 		}
+
+		List<CommerceOrderAttachment> commerceOrderAttachments =
+			_getCommerceOrderAttachments();
+
+		Map<Long, DSRequest> fileEntryDSRequests =
+			_dsRequestManager.getLatestFileEntryDSRequests(
+				_commerceOrder.getCompanyId(),
+				TransformUtil.transformToLongArray(
+					commerceOrderAttachments,
+					CommerceOrderAttachment::getFileEntryId));
 
 		return HashMapBuilder.<String, Object>put(
 			"addDSRequestModalProps", this::_getAddDSRequestModalProps
 		).put(
-			"dsRequestStatuses", _getDSRequestStatuses()
+			"dsRequestStatuses",
+			_getDSRequestStatuses(commerceOrderAttachments, fileEntryDSRequests)
 		).put(
 			"replaceableCommerceOrderAttachmentIds",
 			TransformUtil.transform(
-				_getDSRequests().entrySet(),
-				entry -> {
-					DSRequest dsRequest = entry.getValue();
+				commerceOrderAttachments,
+				commerceOrderAttachment -> {
+					DSRequest dsRequest = fileEntryDSRequests.get(
+						commerceOrderAttachment.getFileEntryId());
 
-					if (!dsRequest.isReplaceable()) {
+					if ((dsRequest == null) || !dsRequest.isReplaceable()) {
 						return null;
 					}
 
-					return String.valueOf(entry.getKey());
+					return String.valueOf(
+						commerceOrderAttachment.getCommerceOrderAttachmentId());
 				})
 		).build();
 	}
 
 	private List<FDSActionDropdownItem> _getDSRequestFDSActionDropdownItems() {
-		if (!DSCommerceOrderAttachmentUtil.isEnabled(_commerceOrder)) {
+		if (!DSCommerceOrderAttachmentUtil.isEnabled(
+				_commerceOrder.getCompanyId(), _commerceOrder.getGroupId())) {
+
 			return Collections.emptyList();
 		}
 
@@ -299,73 +349,29 @@ public class CommerceOrderAttachmentsDisplayContext {
 			));
 	}
 
-	private Map<String, String> _getDSRequestStatuses() {
+	private Map<String, String> _getDSRequestStatuses(
+		List<CommerceOrderAttachment> commerceOrderAttachments,
+		Map<Long, DSRequest> fileEntryDSRequests) {
+
 		Map<String, String> dsRequestStatuses = new HashMap<>();
 
-		for (Map.Entry<Long, DSRequest> entry : _getDSRequests().entrySet()) {
-			DSRequest dsRequest = entry.getValue();
+		for (CommerceOrderAttachment commerceOrderAttachment :
+				commerceOrderAttachments) {
 
-			dsRequestStatuses.put(
-				String.valueOf(entry.getKey()), dsRequest.getStatus());
-		}
-
-		return dsRequestStatuses;
-	}
-
-	private Map<Long, DSRequest> _getDSRequests() {
-		if (_dsRequests != null) {
-			return _dsRequests;
-		}
-
-		Map<Long, Long> fileEntryIds = new LinkedHashMap<>();
-
-		try {
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)_httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
-
-			for (CommerceOrderAttachment commerceOrderAttachment :
-					_commerceOrderAttachmentLocalService.
-						getCommerceOrderAttachments(
-							_commerceOrder.getCommerceOrderId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
-				if (!_commerceOrderAttachmentModelResourcePermission.contains(
-						themeDisplay.getPermissionChecker(),
-						commerceOrderAttachment, ActionKeys.VIEW)) {
-
-					continue;
-				}
-
-				fileEntryIds.put(
-					commerceOrderAttachment.getCommerceOrderAttachmentId(),
-					commerceOrderAttachment.getFileEntryId());
-			}
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-
-			return Collections.emptyMap();
-		}
-
-		Map<Long, DSRequest> fileEntryDSRequests =
-			_dsRequestManager.getLatestFileEntryDSRequests(
-				_commerceOrder.getCompanyId(),
-				ArrayUtil.toLongArray(fileEntryIds.values()));
-
-		_dsRequests = new LinkedHashMap<>();
-
-		for (Map.Entry<Long, Long> entry : fileEntryIds.entrySet()) {
-			DSRequest dsRequest = fileEntryDSRequests.get(entry.getValue());
+			DSRequest dsRequest = fileEntryDSRequests.get(
+				commerceOrderAttachment.getFileEntryId());
 
 			if (dsRequest == null) {
 				continue;
 			}
 
-			_dsRequests.put(entry.getKey(), dsRequest);
+			dsRequestStatuses.put(
+				String.valueOf(
+					commerceOrderAttachment.getCommerceOrderAttachmentId()),
+				dsRequest.getStatus());
 		}
 
-		return _dsRequests;
+		return dsRequestStatuses;
 	}
 
 	private String _getEditURL() {
@@ -397,6 +403,8 @@ public class CommerceOrderAttachmentsDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		CommerceOrderAttachmentsDisplayContext.class);
 
+	private final ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
 	private final CommerceOrder _commerceOrder;
 	private final CommerceOrderAttachmentLocalService
 		_commerceOrderAttachmentLocalService;
@@ -406,7 +414,6 @@ public class CommerceOrderAttachmentsDisplayContext {
 		_commerceOrderModelResourcePermission;
 	private final CommerceOrderRequestHelper _commerceOrderRequestHelper;
 	private final DSRequestManager _dsRequestManager;
-	private Map<Long, DSRequest> _dsRequests;
 	private final HttpServletRequest _httpServletRequest;
 	private final Language _language;
 	private final Portal _portal;

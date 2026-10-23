@@ -23,17 +23,6 @@ public class DSCommerceOrderAttachmentException extends PortalException {
 
 	}
 
-	public static class MustHaveEmbeddedViewEnabled
-		extends DSCommerceOrderAttachmentException {
-
-		public MustHaveEmbeddedViewEnabled(long commerceOrderId) {
-			super(
-				"Digital signature with embedded view is not enabled for " +
-					"commerce order " + commerceOrderId);
-		}
-
-	}
-
 	public static class MustHaveRecipient
 		extends DSCommerceOrderAttachmentException {
 
@@ -51,7 +40,7 @@ public class DSCommerceOrderAttachmentException extends PortalException {
 			super(
 				"The file extension of commerce order attachment " +
 					commerceOrderAttachmentId +
-						" is not supported by DocuSign");
+						" is not supported by digital signature");
 		}
 
 	}

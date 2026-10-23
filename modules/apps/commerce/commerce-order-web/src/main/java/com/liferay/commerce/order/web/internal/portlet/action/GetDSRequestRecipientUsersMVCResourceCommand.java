@@ -5,11 +5,12 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action;
 
+import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.model.CommerceOrder;
-import com.liferay.commerce.order.web.internal.exception.DSCommerceOrderAttachmentException;
 import com.liferay.commerce.order.web.internal.util.DSCommerceOrderAttachmentUtil;
 import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.digital.signature.exception.DSRequestException;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -18,7 +19,6 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -74,16 +74,18 @@ public class GetDSRequestRecipientUsersMVCResourceCommand
 				themeDisplay.getPermissionChecker(), commerceOrder,
 				ActionKeys.UPDATE);
 
-			if (!DSCommerceOrderAttachmentUtil.isEnabled(commerceOrder)) {
-				throw new DSCommerceOrderAttachmentException.
-					MustHaveEmbeddedViewEnabled(
-						commerceOrder.getCommerceOrderId());
+			if (!DSCommerceOrderAttachmentUtil.isEnabled(
+					commerceOrder.getCompanyId(), commerceOrder.getGroupId())) {
+
+				throw new DSRequestException.MustHaveEmbeddedViewEnabled(
+					commerceOrder.getGroupId());
 			}
 
-			Set<Long> accountUserIds = new HashSet<>(
+			Set<Long> accountEntryUserIds = new HashSet<>(
 				TransformUtil.transform(
-					DSCommerceOrderAttachmentUtil.getAccountUsers(
-						commerceOrder),
+					DSCommerceOrderAttachmentUtil.getAccountEntryUsers(
+						_accountEntryModelResourcePermission, commerceOrder,
+						themeDisplay.getPermissionChecker()),
 					User::getUserId));
 
 			JSONPortletResponseUtil.writeJSON(
@@ -96,9 +98,9 @@ public class GetDSRequestRecipientUsersMVCResourceCommand
 							WorkflowConstants.STATUS_APPROVED, null, 0, 10,
 							(OrderByComparator<User>)null),
 						user -> _isAllowedDSRecipient(
-							accountUserIds, commerceOrder,
+							accountEntryUserIds, commerceOrder,
 							themeDisplay.getPermissionChecker(), user)),
-					DSCommerceOrderAttachmentUtil::getUserJSONObject));
+					DSCommerceOrderAttachmentUtil::toJSONObject));
 		}
 		catch (NoSuchModelException noSuchModelException) {
 			throw new PrincipalException(noSuchModelException);
@@ -121,14 +123,16 @@ public class GetDSRequestRecipientUsersMVCResourceCommand
 	}
 
 	private boolean _isAllowedDSRecipient(
-		Set<Long> accountUserIds, CommerceOrder commerceOrder,
+		Set<Long> accountEntryUserIds, CommerceOrder commerceOrder,
 		PermissionChecker permissionChecker, User user) {
 
-		if (user.getType() != UserConstants.TYPE_REGULAR) {
+		if (!DSCommerceOrderAttachmentUtil.isValidDSRecipient(
+				commerceOrder.getCompanyId(), user)) {
+
 			return false;
 		}
 
-		if (accountUserIds.contains(user.getUserId()) ||
+		if (accountEntryUserIds.contains(user.getUserId()) ||
 			(user.getUserId() == commerceOrder.getUserId())) {
 
 			return true;
@@ -140,6 +144,12 @@ public class GetDSRequestRecipientUsersMVCResourceCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetDSRequestRecipientUsersMVCResourceCommand.class);
+
+	@Reference(
+		target = "(model.class.name=com.liferay.account.model.AccountEntry)"
+	)
+	private ModelResourcePermission<AccountEntry>
+		_accountEntryModelResourcePermission;
 
 	@Reference
 	private CommerceOrderLocalService _commerceOrderLocalService;

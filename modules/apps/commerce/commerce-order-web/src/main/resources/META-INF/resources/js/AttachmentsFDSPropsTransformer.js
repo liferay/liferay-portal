@@ -6,7 +6,6 @@
 import {
 	DSRequestStatusDataRenderer,
 	formatActionUrl,
-	removeDSRequestStatusColumn,
 } from 'commerce-frontend-js';
 import {openModal, openToast} from 'frontend-js-components-web';
 import {escapeHTML, sub} from 'frontend-js-web';
@@ -269,9 +268,6 @@ const AttachmentsFDSPropsTransformer = (props) => {
 				});
 			}
 		},
-		views: Object.keys(dsRequestStatuses).length
-			? props.views
-			: removeDSRequestStatusColumn(props.views),
 	};
 };
 

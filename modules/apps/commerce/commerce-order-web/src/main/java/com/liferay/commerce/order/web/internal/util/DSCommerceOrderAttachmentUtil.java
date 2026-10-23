@@ -5,6 +5,7 @@
 
 package com.liferay.commerce.order.web.internal.util;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.order.web.internal.exception.DSCommerceOrderAttachmentException;
@@ -20,10 +21,13 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -33,16 +37,23 @@ import java.util.Map;
  */
 public class DSCommerceOrderAttachmentUtil {
 
-	public static List<User> getAccountUsers(CommerceOrder commerceOrder)
+	public static List<User> getAccountEntryUsers(
+			ModelResourcePermission<AccountEntry>
+				accountEntryModelResourcePermission,
+			CommerceOrder commerceOrder, PermissionChecker permissionChecker)
 		throws PortalException {
 
 		AccountEntry accountEntry = commerceOrder.getAccountEntry();
 
+		if (!accountEntryModelResourcePermission.contains(
+				permissionChecker, accountEntry, AccountActionKeys.VIEW_USERS)) {
+
+			return Collections.emptyList();
+		}
+
 		return ListUtil.filter(
 			accountEntry.fetchUsers(),
-			user ->
-				(user.getType() == UserConstants.TYPE_REGULAR) &&
-				user.isActive());
+			user -> isValidDSRecipient(commerceOrder.getCompanyId(), user));
 	}
 
 	public static String getErrorMessage(
@@ -57,26 +68,14 @@ public class DSCommerceOrderAttachmentUtil {
 		return language.get(locale, key);
 	}
 
-	public static JSONObject getUserJSONObject(User user) {
-		return JSONUtil.put(
-			"emailAddress", user.getEmailAddress()
-		).put(
-			"name", user.getFullName()
-		).put(
-			"userId", user.getUserId()
-		);
-	}
-
-	public static boolean isEnabled(CommerceOrder commerceOrder) {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				commerceOrder.getCompanyId(), "LPD-69290")) {
-
+	public static boolean isEnabled(long companyId, long groupId) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
 			return false;
 		}
 
 		CommerceChannel commerceChannel =
 			CommerceChannelLocalServiceUtil.fetchCommerceChannelByGroupClassPK(
-				commerceOrder.getGroupId());
+				groupId);
 
 		if (commerceChannel == null) {
 			return false;
@@ -84,7 +83,7 @@ public class DSCommerceOrderAttachmentUtil {
 
 		DigitalSignatureConfiguration digitalSignatureConfiguration =
 			DigitalSignatureConfigurationUtil.getDigitalSignatureConfiguration(
-				commerceOrder.getCompanyId(), commerceChannel.getSiteGroupId());
+				companyId, commerceChannel.getSiteGroupId());
 
 		if (digitalSignatureConfiguration.embeddedViewEnabled() &&
 			digitalSignatureConfiguration.enabled()) {
@@ -95,14 +94,30 @@ public class DSCommerceOrderAttachmentUtil {
 		return false;
 	}
 
+	public static boolean isValidDSRecipient(long companyId, User user) {
+		if ((user.getCompanyId() == companyId) &&
+			(user.getType() == UserConstants.TYPE_REGULAR) && user.isActive()) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	public static JSONObject toJSONObject(User user) {
+		return JSONUtil.put(
+			"emailAddress", user.getEmailAddress()
+		).put(
+			"name", user.getFullName()
+		).put(
+			"userId", user.getUserId()
+		);
+	}
+
 	private static final Map<Class<?>, String> _errorMessageKeys =
 		HashMapBuilder.<Class<?>, String>put(
 			DSCommerceOrderAttachmentException.MustHaveDSRequest.class,
 			"no-signature-request-was-found-for-this-document"
-		).put(
-			DSCommerceOrderAttachmentException.MustHaveEmbeddedViewEnabled.
-				class,
-			"digital-signature-is-not-enabled-for-this-order"
 		).put(
 			DSCommerceOrderAttachmentException.MustHaveRecipient.class,
 			"at-least-one-recipient-is-required"
