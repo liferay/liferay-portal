@@ -6,9 +6,7 @@ const NavigationWarning = ({
 	),
 	when
 }) => {
-	useUnsavedChangesPrompt(when, message);
-
-	return null;
+	return useUnsavedChangesPrompt(when, message);
 };
 
 export default NavigationWarning;
