@@ -26,6 +26,9 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cache.thread.local.Lifecycle;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCache;
+import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -36,6 +39,8 @@ import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -55,6 +60,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portlet.asset.service.impl.AssetEntryServiceImpl;
 import com.liferay.ratings.test.util.RatingsTestUtil;
 
 import java.util.ArrayList;
@@ -106,6 +112,58 @@ public class AssetEntryServiceTest {
 
 		Assert.assertEquals(
 			initialAssetEntriesCount + 1, actualAssetEntriesCount);
+	}
+
+	@Test
+	@TestInfo("LPD-110129")
+	public void testGetEntriesFiltersByViewPermission() throws Exception {
+		_privateGroup = GroupTestUtil.addGroupWithType(
+			GroupConstants.TYPE_SITE_PRIVATE);
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_privateGroup.getGroupId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		_blogsEntryLocalService.addEntry(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), serviceContext);
+
+		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		assetEntryQuery.setGroupIds(new long[] {_privateGroup.getGroupId()});
+
+		ThreadLocalCache<Object[]> threadLocalCache =
+			ThreadLocalCacheManager.getThreadLocalCache(
+				Lifecycle.REQUEST, AssetEntryServiceImpl.class.getName());
+
+		threadLocalCache.removeAll();
+
+		List<AssetEntry> adminAssetEntries = _assetEntryService.getEntries(
+			assetEntryQuery);
+
+		Assert.assertEquals(
+			adminAssetEntries.toString(), 1, adminAssetEntries.size());
+
+		UserTestUtil.setUser(UserTestUtil.addUser());
+
+		try {
+			threadLocalCache.removeAll();
+
+			List<AssetEntry> assetEntries = _assetEntryService.getEntries(
+				assetEntryQuery);
+
+			Assert.assertTrue(assetEntries.isEmpty());
+
+			int assetEntriesCount = _assetEntryService.getEntriesCount(
+				assetEntryQuery);
+
+			Assert.assertEquals(0, assetEntriesCount);
+		}
+		finally {
+			UserTestUtil.setUser(TestPropsValues.getUser());
+		}
 	}
 
 	@Test
@@ -489,6 +547,9 @@ public class AssetEntryServiceTest {
 
 	@Inject
 	private Portal _portal;
+
+	@DeleteAfterTestRun
+	private Group _privateGroup;
 
 	@Inject
 	private ViewCountManager _viewCountManager;
