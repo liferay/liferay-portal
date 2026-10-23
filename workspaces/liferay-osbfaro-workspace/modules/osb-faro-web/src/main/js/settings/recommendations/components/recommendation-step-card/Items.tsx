@@ -3,17 +3,17 @@ import ClayIcon from 'shared/components/Icon';
 import Constants from 'shared/util/constants';
 import Loading from 'shared/components/Loading';
 import React, {useEffect} from 'react';
+import MatchingPagesModal from 'shared/components/modals/MatchingPagesModal';
+import NewRuleModal from 'shared/components/modals/NewRuleModal';
 import RecommendationPageAssetsQuery from '../../queries/RecommendationPageAssetsQuery';
 import RuleItem from '../RuleItem';
 import Table from 'shared/components/table';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect} from 'react-redux';
 import {FieldArray} from 'formik';
 import {Filter, getPropertiesFromItems} from '../../utils/utils';
 import {get} from 'lodash';
-import {Modal} from 'shared/types';
 import {toLocale} from 'shared/util/numbers';
 import {useLazyQuery, useQuery} from '@apollo/client';
+import {useModal} from '@clayui/modal';
 
 const {
 	pagination: {orderDescending},
@@ -22,15 +22,14 @@ const {
 const CountCell = (params: {[key: string]: any}) => {
 	const {
 		className,
-		close,
 		data: {name, value},
-		open,
 	} = params as {
 		className: string;
-		close: Modal.close;
 		data: Filter;
-		open: Modal.open;
 	};
+
+	const matchingPagesModal = useModal();
+
 	const {data, loading} = useQuery(RecommendationPageAssetsQuery, {
 		variables: {
 			propertyFilters: [
@@ -62,14 +61,19 @@ const CountCell = (params: {[key: string]: any}) => {
 				className="button-root matching-pages-modal-button"
 				displayType="unstyled"
 				onClick={() => {
-					open(modalTypes.MATCHING_PAGES_MODAL, {
-						itemFilters: [{name, value}],
-						onClose: close,
-					});
+					matchingPagesModal.onOpenChange(true);
 				}}
 			>
 				{toLocale(get(data, ['pageAssets', 'total'], 0))}
 			</ClayButton>
+
+			{matchingPagesModal.open && (
+				<MatchingPagesModal
+					itemFilters={[{name, value}]}
+					observer={matchingPagesModal.observer}
+					onClose={() => matchingPagesModal.onOpenChange(false)}
+				/>
+			)}
 		</td>
 	);
 };
@@ -88,13 +92,13 @@ const RuleCell = (params: {[key: string]: any}) => {
 };
 
 interface IItemsProps {
-	close: Modal.close;
-	groupId: string;
 	itemFilters: Filter[];
-	open: Modal.open;
 }
 
-const Items: React.FC<IItemsProps> = ({close, groupId, itemFilters, open}) => {
+const Items: React.FC<IItemsProps> = ({itemFilters}) => {
+	const newRuleModal = useModal();
+	const totalPagesModal = useModal();
+
 	const [getPageAssetsTotal, {data, loading: pagesTotalLoading}] =
 		useLazyQuery(RecommendationPageAssetsQuery);
 
@@ -127,11 +131,7 @@ const Items: React.FC<IItemsProps> = ({close, groupId, itemFilters, open}) => {
 					className="button-root matching-pages-modal-button"
 					displayType="unstyled"
 					onClick={() => {
-						open(modalTypes.MATCHING_PAGES_MODAL, {
-							itemFilters,
-							onClose: close,
-							useNegateValue: true,
-						});
+						totalPagesModal.onOpenChange(true);
 					}}
 				>
 					{toLocale(get(data, ['pageAssets', 'total'], 0))}
@@ -160,25 +160,29 @@ const Items: React.FC<IItemsProps> = ({close, groupId, itemFilters, open}) => {
 
 								// Maybe add a toast alert to inform the user that this already exists therefore it was not added
 
-								open(modalTypes.NEW_RULE_MODAL, {
-									groupId,
-									onClose: close,
-									onSubmit: (filter: Filter) => {
-										if (
-											!itemFilters.find(
-												(item) => item.id === filter.id
-											)
-										) {
-											arrayHelpers.push(filter);
-										}
-
-										close();
-									},
-								});
+								newRuleModal.onOpenChange(true);
 							}}
 						>
 							{Liferay.Language.get('new-rule')}
 						</ClayButton>
+
+						{newRuleModal.open && (
+							<NewRuleModal
+								observer={newRuleModal.observer}
+								onClose={() => newRuleModal.onOpenChange(false)}
+								onSubmit={(filter: Filter) => {
+									if (
+										!itemFilters.find(
+											(item) => item.id === filter.id
+										)
+									) {
+										arrayHelpers.push(filter);
+									}
+
+									newRuleModal.onOpenChange(false);
+								}}
+							/>
+						)}
 
 						{!!itemFilters.length && (
 							<>
@@ -195,7 +199,6 @@ const Items: React.FC<IItemsProps> = ({close, groupId, itemFilters, open}) => {
 										{
 											accessor: 'value',
 											cellRenderer: CountCell,
-											cellRendererProps: {close, open},
 											className:
 												'count-cell table-column-text-end',
 											label: Liferay.Language.get(
@@ -253,8 +256,17 @@ const Items: React.FC<IItemsProps> = ({close, groupId, itemFilters, open}) => {
 					</>
 				)}
 			</FieldArray>
+
+			{totalPagesModal.open && (
+				<MatchingPagesModal
+					itemFilters={itemFilters}
+					observer={totalPagesModal.observer}
+					onClose={() => totalPagesModal.onOpenChange(false)}
+					useNegateValue
+				/>
+			)}
 		</div>
 	);
 };
 
-export default connect(null, {close, open})(Items);
+export default Items;

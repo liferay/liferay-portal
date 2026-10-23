@@ -1,7 +1,8 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import MetadataTag from 'settings/recommendations/components/MetadataTag';
-import Modal from 'shared/components/modal';
 import React from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import RecommendationPageAssetsQuery from 'settings/recommendations/queries/RecommendationPageAssetsQuery';
 import {
 	createOrderIOMap,
@@ -14,12 +15,15 @@ import {
 	getFilterValueBreakdown,
 } from 'settings/recommendations/utils/utils';
 import {getMapResultToProps} from 'shared/hoc/mappers/metrics';
+import {MODAL_SIZE_XL} from 'shared/components/modals/sizes';
 import {graphql} from '@apollo/client/react/hoc';
 import {isArray, isString} from 'lodash';
 import {omit} from 'lodash';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
 import {withBaseResults, withStatefulPagination} from 'shared/hoc';
+
+type MatchingFilter = Pick<Filter, 'name' | 'value'>;
 
 const withData = () =>
 	graphql(RecommendationPageAssetsQuery, {
@@ -32,7 +36,7 @@ const withData = () =>
 			useNegateValue,
 		}: {
 			delta: number;
-			itemFilters: Filter[];
+			itemFilters: MatchingFilter[];
 			orderIOMap: OrderedMap<string, OrderParams>;
 			page: number;
 			query: string;
@@ -70,7 +74,7 @@ const TableWithData = withStatefulPagination(
 			},
 			{
 				accessor: secondColumnHeader || 'url',
-				className: 'secondary-info table-cell-expand text-truncate',
+				className: 'table-cell-expand text-secondary text-truncate',
 				dataFormatter: (val: unknown) => {
 					if (isString(val)) {
 						return val;
@@ -96,13 +100,15 @@ const TableWithData = withStatefulPagination(
 );
 
 interface IMatchingPagesModalProps {
-	itemFilters: Filter[];
+	itemFilters: MatchingFilter[];
+	observer: Observer;
 	onClose: () => void;
-	useNegateValue: boolean;
+	useNegateValue?: boolean;
 }
 
 const MatchingPagesModal: React.FC<IMatchingPagesModalProps> = ({
 	itemFilters,
+	observer,
 	onClose,
 	useNegateValue = false,
 }) => {
@@ -113,16 +119,15 @@ const MatchingPagesModal: React.FC<IMatchingPagesModalProps> = ({
 	const customFilter = itemFilters.length === 1 && metadataTag;
 
 	return (
-		<Modal className="matching-pages-modal-root" size="xl">
-			<Modal.Header
-				onClose={onClose}
-				title={Liferay.Language.get('matching-pages')}
-			/>
+		<ClayModal observer={observer} size={MODAL_SIZE_XL}>
+			<ClayModal.Header>
+				{Liferay.Language.get('matching-pages')}
+			</ClayModal.Header>
 
-			<Modal.Body>
+			<ClayModal.Body>
 				{!!customFilter && !useNegateValue && (
 					<div>
-						<span className="include-exclude">
+						<span className="font-weight-semi-bold mr-2 text-secondary">
 							{`${
 								name === EXCLUDE
 									? Liferay.Language.get('exclude')
@@ -132,12 +137,12 @@ const MatchingPagesModal: React.FC<IMatchingPagesModalProps> = ({
 
 						<MetadataTag value={metadataTag} />
 
-						<span className="rule">
+						<span className="ml-2 text-secondary">
 							{exactMatchSign ? `"${rule}"` : rule}
 						</span>
 					</div>
 				)}
-			</Modal.Body>
+			</ClayModal.Body>
 
 			<TableWithData
 				itemFilters={itemFilters}
@@ -145,16 +150,20 @@ const MatchingPagesModal: React.FC<IMatchingPagesModalProps> = ({
 				useNegateValue={useNegateValue}
 			/>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					displayType="primary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('done')}
-				</ClayButton>
-			</Modal.Footer>
-		</Modal>
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							displayType="primary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('done')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</ClayModal>
 	);
 };
 

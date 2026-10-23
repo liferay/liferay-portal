@@ -1,13 +1,14 @@
 import BasePage from 'settings/components/base-page/BasePage';
 import Constants, {JobRunStatuses} from 'shared/util/constants';
 import OutputVersionsCard from '../components/OutputVersionsCard';
+import DeleteRecommendationModal from 'shared/components/modals/DeleteRecommendationModal';
+import ManuallyRetrainModelModal from 'shared/components/modals/ManuallyRetrainModelModal';
 import React from 'react';
 import RecommendationJobRunsQuery from '../queries/RecommendationJobRunsQuery';
 import TrainingItemsCard from '../components/TrainingItemsCard';
 import withRecommendation from 'shared/hoc/WithRecommendation';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {Filter, Job, JobParameter} from '../utils/utils';
@@ -20,6 +21,7 @@ import {
 } from '../queries/RecommendationMutation';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
+import {useModal} from '@clayui/modal';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useMutation, useQuery} from '@apollo/client';
 import {useParams} from 'react-router-dom';
@@ -29,7 +31,7 @@ import {withHistory} from 'shared/hoc';
 const {
 	pagination: {orderDescending},
 } = Constants;
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {addAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -40,13 +42,15 @@ interface IViewProps extends PropsFromRedux {
 	job: Job;
 }
 
-const View: React.FC<IViewProps> = ({addAlert, close, history, job, open}) => {
+const View: React.FC<IViewProps> = ({addAlert, history, job}) => {
 	const {groupId = '', jobId = ''} = useParams<{
 		groupId: string;
 		jobId: string;
 	}>();
 	const {timeZoneId} = useTimeZone();
 	const currentUser = useCurrentUser();
+	const deleteModal = useModal();
+	const retrainModal = useModal();
 
 	const {data: jobRuns, loading} = useQuery(RecommendationJobRunsQuery, {
 		variables: {
@@ -98,64 +102,7 @@ const View: React.FC<IViewProps> = ({addAlert, close, history, job, open}) => {
 										disabled: loading || jobRunRunning,
 										label: Liferay.Language.get('retrain'),
 										onClick: () => {
-											open(
-												modalTypes.MANUALLY_RETRAIN_MODEL_MODAL,
-												{
-													job,
-													onClose: close,
-													onSubmit: ({
-														runDataPeriod,
-													}: {
-														runDataPeriod: string;
-													}) => {
-														runRecommendationJob({
-															awaitRefetchQueries:
-																true,
-															refetchQueries: [
-																getOperationName(
-																	RecommendationJobRunsQuery
-																) as string,
-															],
-															variables: {
-																jobId,
-																runDataPeriod,
-															},
-														})
-															.then(() => {
-																addAlert({
-																	alertType:
-																		Alert
-																			.Types
-																			.Success,
-																	message:
-																		Liferay.Language.get(
-																			'retraining-has-been-started'
-																		),
-																});
-
-																close();
-															})
-															.catch(() => {
-																addAlert({
-																	alertType:
-																		Alert
-																			.Types
-																			.Error,
-																	message:
-																		Liferay.Language.get(
-																			'there-was-an-error-processing-your-request.-please-try-again'
-																		),
-																	timeout:
-																		false,
-																});
-															});
-													},
-													trainingPeriod: get(
-														job,
-														'trainingPeriod'
-													),
-												}
-											);
+											retrainModal.onOpenChange(true);
 										},
 									},
 									{
@@ -171,96 +118,7 @@ const View: React.FC<IViewProps> = ({addAlert, close, history, job, open}) => {
 									{
 										label: Liferay.Language.get('delete'),
 										onClick: () => {
-											open(
-												modalTypes.CONFIRMATION_MODAL,
-												{
-													message: (
-														<div>
-															<div className="h4 text-secondary">
-																{sub(
-																	Liferay.Language.get(
-																		'delete-x-and-its-historical-training-output-data'
-																	),
-																	[name]
-																)}
-															</div>
-
-															<p>
-																{Liferay.Language.get(
-																	'components-using-this-model-will-need-to-be-reconfigured'
-																)}
-															</p>
-														</div>
-													),
-													modalVariant:
-														'modal-warning',
-													onClose: close,
-													onSubmit: () => {
-														deleteRecommendationJobs(
-															{
-																variables: {
-																	jobIds: [
-																		jobId,
-																	],
-																},
-															}
-														)
-															.then(() => {
-																addAlert({
-																	alertType:
-																		Alert
-																			.Types
-																			.Success,
-																	message:
-																		sub(
-																			Liferay.Language.get(
-																				'x-has-been-deleted'
-																			),
-																			[
-																				name,
-																			]
-																		) as string,
-																});
-
-																history.push(
-																	toRoute(
-																		Routes.SETTINGS_RECOMMENDATIONS,
-																		{
-																			groupId,
-																		}
-																	)
-																);
-															})
-															.catch(() => {
-																addAlert({
-																	alertType:
-																		Alert
-																			.Types
-																			.Error,
-																	message:
-																		Liferay.Language.get(
-																			'there-was-an-error-processing-your-request.-please-try-again'
-																		),
-																	timeout:
-																		false,
-																});
-															});
-													},
-													submitButtonDisplay:
-														'warning',
-													submitMessage:
-														Liferay.Language.get(
-															'delete'
-														),
-													title: sub(
-														Liferay.Language.get(
-															'deleting-x'
-														),
-														[name]
-													),
-													titleIcon: 'warning-full',
-												}
-											);
+											deleteModal.onOpenChange(true);
 										},
 									},
 								]
@@ -278,6 +136,96 @@ const View: React.FC<IViewProps> = ({addAlert, close, history, job, open}) => {
 					<TrainingItemsCard itemFilters={itemFilters} />
 				</BasePage>
 			</div>
+
+			{deleteModal.open && (
+				<DeleteRecommendationModal
+					description={
+						sub(
+							Liferay.Language.get(
+								'delete-x-and-its-historical-training-output-data'
+							),
+							[name]
+						) as string
+					}
+					name={name}
+					observer={deleteModal.observer}
+					onClose={() => deleteModal.onOpenChange(false)}
+					onSubmit={() => {
+						deleteRecommendationJobs({
+							variables: {
+								jobIds: [jobId],
+							},
+						})
+							.then(() => {
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: sub(
+										Liferay.Language.get(
+											'x-has-been-deleted'
+										),
+										[name]
+									) as string,
+								});
+
+								history.push(
+									toRoute(Routes.SETTINGS_RECOMMENDATIONS, {
+										groupId,
+									})
+								);
+							})
+							.catch(() => {
+								addAlert({
+									alertType: Alert.Types.Error,
+									message: Liferay.Language.get(
+										'there-was-an-error-processing-your-request.-please-try-again'
+									),
+									timeout: false,
+								});
+							});
+					}}
+				/>
+			)}
+
+			{retrainModal.open && (
+				<ManuallyRetrainModelModal
+					job={job}
+					observer={retrainModal.observer}
+					onClose={() => retrainModal.onOpenChange(false)}
+					onSubmit={({runDataPeriod}: {runDataPeriod: string}) => {
+						runRecommendationJob({
+							awaitRefetchQueries: true,
+							refetchQueries: [
+								getOperationName(
+									RecommendationJobRunsQuery
+								) as string,
+							],
+							variables: {
+								jobId,
+								runDataPeriod,
+							},
+						})
+							.then(() => {
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: Liferay.Language.get(
+										'retraining-has-been-started'
+									),
+								});
+
+								retrainModal.onOpenChange(false);
+							})
+							.catch(() => {
+								addAlert({
+									alertType: Alert.Types.Error,
+									message: Liferay.Language.get(
+										'there-was-an-error-processing-your-request.-please-try-again'
+									),
+									timeout: false,
+								});
+							});
+					}}
+				/>
+			)}
 		</div>
 	);
 };

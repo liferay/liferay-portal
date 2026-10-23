@@ -14,10 +14,7 @@ import IndividualAttributesModal from './modals/IndividualAttributesModal';
 import InputModal from './modals/InputModal';
 import InterestTopicModal from './modals/InterestTopicsModal';
 import InviteUsersModal from './modals/InviteUsersModal';
-import ManuallyRetrainModelModal from './modals/ManuallyRetrainModelModal';
-import MatchingPagesModal from './modals/MatchingPagesModal';
 import NewRequestModal from './modals/NewRequestModal';
-import NewRuleModal from './modals/NewRuleModal';
 import React from 'react';
 import SelectChannelsModal from './modals/SelectChannelsModal';
 import SelectItemsModal from './modals/SelectItemsModal';
@@ -47,10 +44,7 @@ const COMPONENT_MAP = {
 	[modalTypes.INPUT_MODAL]: InputModal,
 	[modalTypes.INSERT_BLOCKED_KEYWORDS]: InterestTopicModal,
 	[modalTypes.INVITE_USERS_MODAL]: InviteUsersModal,
-	[modalTypes.MANUALLY_RETRAIN_MODEL_MODAL]: ManuallyRetrainModelModal,
-	[modalTypes.MATCHING_PAGES_MODAL]: MatchingPagesModal,
 	[modalTypes.NEW_REQUEST_MODAL]: NewRequestModal,
-	[modalTypes.NEW_RULE_MODAL]: NewRuleModal,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,

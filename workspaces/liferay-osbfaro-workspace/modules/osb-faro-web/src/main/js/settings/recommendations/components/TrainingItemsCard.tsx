@@ -4,15 +4,14 @@ import ClayIcon from 'shared/components/Icon';
 import Constants from 'shared/util/constants';
 import Loading from 'shared/components/Loading';
 import React from 'react';
+import MatchingPagesModal from 'shared/components/modals/MatchingPagesModal';
 import RecommendationPageAssetsQuery from '../queries/RecommendationPageAssetsQuery';
 import RuleItem from './RuleItem';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect} from 'react-redux';
 import {EXCLUDE, Filter} from '../utils/utils';
 import {get} from 'lodash';
-import {Modal} from 'shared/types';
 import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
+import {useModal} from '@clayui/modal';
 import {useQuery} from '@apollo/client';
 
 const {
@@ -20,49 +19,49 @@ const {
 } = Constants;
 
 interface ITrainingItemProps {
-	close: Modal.close;
 	name: string;
-	open: Modal.open;
 	value: string;
 }
 
-const TrainingItem: React.FC<ITrainingItemProps> = ({
-	close,
-	name,
-	open,
-	value,
-}) => (
-	<div className="training-item-root d-flex align-items-baseline">
-		<ClayButton
-			aria-label={Liferay.Language.get('watch')}
-			borderless
-			className="button-root"
-			displayType="secondary"
-			onClick={() => {
-				open(modalTypes.MATCHING_PAGES_MODAL, {
-					itemFilters: [{name, value}],
-					onClose: close,
-				});
-			}}
-		>
-			<ClayIcon className="icon-root" symbol="view" />
-		</ClayButton>
+const TrainingItem: React.FC<ITrainingItemProps> = ({name, value}) => {
+	const matchingPagesModal = useModal();
 
-		<RuleItem name={name} value={value} />
-	</div>
-);
+	return (
+		<div className="training-item-root d-flex align-items-baseline">
+			<ClayButton
+				aria-label={Liferay.Language.get('watch')}
+				borderless
+				className="button-root"
+				displayType="secondary"
+				onClick={() => {
+					matchingPagesModal.onOpenChange(true);
+				}}
+			>
+				<ClayIcon className="icon-root" symbol="view" />
+			</ClayButton>
+
+			<RuleItem name={name} value={value} />
+
+			{matchingPagesModal.open && (
+				<MatchingPagesModal
+					itemFilters={[{name, value}]}
+					observer={matchingPagesModal.observer}
+					onClose={() => matchingPagesModal.onOpenChange(false)}
+				/>
+			)}
+		</div>
+	);
+};
 
 interface ITrainingItemsCardProps {
-	close: Modal.close;
 	itemFilters: Filter[];
-	open: Modal.open;
 }
 
 const TrainingItemsCard: React.FC<ITrainingItemsCardProps> = ({
-	close,
 	itemFilters,
-	open,
 }) => {
+	const totalModal = useModal();
+
 	const {data, loading} = useQuery(RecommendationPageAssetsQuery, {
 		variables: {
 			propertyFilters: itemFilters.map(({name, value}) => ({
@@ -97,10 +96,8 @@ const TrainingItemsCard: React.FC<ITrainingItemsCardProps> = ({
 			<Card.Body>
 				{itemFilters.map(({name, value}) => (
 					<TrainingItem
-						close={close}
 						key={`${name}-${value}`}
 						name={name}
-						open={open}
 						value={value}
 					/>
 				))}
@@ -112,10 +109,7 @@ const TrainingItemsCard: React.FC<ITrainingItemsCardProps> = ({
 						className="button-root"
 						displayType="secondary"
 						onClick={() => {
-							open(modalTypes.MATCHING_PAGES_MODAL, {
-								itemFilters,
-								onClose: close,
-							});
+							totalModal.onOpenChange(true);
 						}}
 					>
 						<ClayIcon className="icon-root" symbol="view" />
@@ -127,9 +121,17 @@ const TrainingItemsCard: React.FC<ITrainingItemsCardProps> = ({
 						false
 					)}
 				</div>
+
+				{totalModal.open && (
+					<MatchingPagesModal
+						itemFilters={itemFilters}
+						observer={totalModal.observer}
+						onClose={() => totalModal.onOpenChange(false)}
+					/>
+				)}
 			</Card.Body>
 		</Card>
 	);
 };
 
-export default connect(null, {close, open})(TrainingItemsCard);
+export default TrainingItemsCard;

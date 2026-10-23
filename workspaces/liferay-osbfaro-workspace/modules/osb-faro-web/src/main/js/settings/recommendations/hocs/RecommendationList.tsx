@@ -11,6 +11,7 @@ import Constants, {
 } from 'shared/util/constants';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import Nav from 'shared/components/Nav';
+import DeleteRecommendationModal from 'shared/components/modals/DeleteRecommendationModal';
 import React from 'react';
 import RecommendationListQuery from '../queries/RecommendationListQuery';
 import {
@@ -20,7 +21,6 @@ import {
 } from 'shared/context/selection';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert, Router} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -43,6 +43,7 @@ import {RECOMMENDATION_DELETE_MUTATION} from '../queries/RecommendationMutation'
 import {RootState} from 'shared/store';
 import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
+import {useModal} from '@clayui/modal';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useMutation, useQuery} from '@apollo/client';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
@@ -61,7 +62,7 @@ const connector = connect(
 			'timeZoneId',
 		]),
 	}),
-	{addAlert, close, open}
+	{addAlert}
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -76,10 +77,8 @@ interface IRecommendationListProps extends PropsFromRedux {
 
 const RecommendationList: React.FC<IRecommendationListProps> = ({
 	addAlert,
-	close,
 	groupId,
 	history,
-	open,
 	timeZoneId,
 }: IRecommendationListProps) => {
 	const {selectedItems, selectionDispatch} = useSelectionContext();
@@ -103,6 +102,8 @@ const RecommendationList: React.FC<IRecommendationListProps> = ({
 	);
 
 	const currentUser = useCurrentUser();
+
+	const deleteModal = useModal();
 
 	const singleSelectedItem =
 		selectedItems.size === 1 ? selectedItems.first() : null;
@@ -187,45 +188,7 @@ const RecommendationList: React.FC<IRecommendationListProps> = ({
 								className="button-root"
 								displayType="secondary"
 								onClick={() => {
-									open(modalTypes.CONFIRMATION_MODAL, {
-										message: (
-											<div>
-												<div className="h4 text-secondary">
-													{confirmationMessage}
-												</div>
-
-												<p>
-													{singleSelectedItem
-														? Liferay.Language.get(
-																'components-using-this-model-will-need-to-be-reconfigured'
-															)
-														: Liferay.Language.get(
-																'components-using-these-models-will-need-to-be-reconfigured'
-															)}
-												</p>
-											</div>
-										),
-										modalVariant: 'modal-warning',
-										onClose: close,
-										onSubmit: handleSubmit,
-										submitButtonDisplay: 'warning',
-										submitMessage:
-											Liferay.Language.get('delete'),
-										title: sub(
-											Liferay.Language.get('deleting-x'),
-											[
-												singleSelectedItem
-													? singleSelectedItem.name
-													: sub(
-															Liferay.Language.get(
-																'x-models'
-															),
-															[selectedItemsCount]
-														),
-											]
-										),
-										titleIcon: 'warning-full',
-									});
+									deleteModal.onOpenChange(true);
 								}}
 								outline
 							>
@@ -258,98 +221,117 @@ const RecommendationList: React.FC<IRecommendationListProps> = ({
 	};
 
 	return (
-		<Card className="recommendations-list-root" pageDisplay>
-			<CrossPageSelect
-				columns={[
-					{
-						accessor: 'name',
-						cellRenderer: NameCell,
-						cellRendererProps: {
-							routeFn: ({data: {id}}: {data: {id: string}}) =>
-								toRoute(
-									Routes.SETTINGS_RECOMMENDATION_MODEL_VIEW,
-									{
-										groupId,
-										jobId: id,
-									}
-								),
+		<>
+			<Card className="recommendations-list-root" pageDisplay>
+				<CrossPageSelect
+					columns={[
+						{
+							accessor: 'name',
+							cellRenderer: NameCell,
+							cellRendererProps: {
+								routeFn: ({data: {id}}: {data: {id: string}}) =>
+									toRoute(
+										Routes.SETTINGS_RECOMMENDATION_MODEL_VIEW,
+										{
+											groupId,
+											jobId: id,
+										}
+									),
+							},
+							className: 'table-cell-expand',
+							label: Liferay.Language.get('name'),
 						},
-						className: 'table-cell-expand',
-						label: Liferay.Language.get('name'),
-					},
-					{
-						accessor: 'type',
-						dataFormatter: (type: JobTypes) =>
-							JOB_TYPES_LABEL_MAP[type],
-						label: Liferay.Language.get('training-model'),
-					},
-					{
-						accessor: 'runDataPeriod',
-						dataFormatter: (type: JobRunDataPeriods) =>
-							JOB_RUN_DATA_PERIODS_LABEL_MAP[type],
-						label: Liferay.Language.get('training-period'),
-					},
-					{
-						accessor: 'runFrequency',
-						dataFormatter: (type: JobRunFrequencies) =>
-							JOB_RUN_FREQUENCIES_LABEL_MAP[type],
-						label: Liferay.Language.get('training-frequency'),
-					},
-					{
-						accessor: 'runDate',
-						dataFormatter: (date: string) =>
-							formatDateToTimeZone(
-								date,
-								getCustomDateFormat(),
-								timeZoneId
+						{
+							accessor: 'type',
+							dataFormatter: (type: JobTypes) =>
+								JOB_TYPES_LABEL_MAP[type],
+							label: Liferay.Language.get('training-model'),
+						},
+						{
+							accessor: 'runDataPeriod',
+							dataFormatter: (type: JobRunDataPeriods) =>
+								JOB_RUN_DATA_PERIODS_LABEL_MAP[type],
+							label: Liferay.Language.get('training-period'),
+						},
+						{
+							accessor: 'runFrequency',
+							dataFormatter: (type: JobRunFrequencies) =>
+								JOB_RUN_FREQUENCIES_LABEL_MAP[type],
+							label: Liferay.Language.get('training-frequency'),
+						},
+						{
+							accessor: 'runDate',
+							dataFormatter: (date: string) =>
+								formatDateToTimeZone(
+									date,
+									getCustomDateFormat(),
+									timeZoneId
+								),
+							label: Liferay.Language.get('last-trained'),
+						},
+						{
+							accessor: 'status',
+							cellRenderer: ({
+								className,
+								data: {status},
+							}: {
+								className: string;
+								data: {status: JobStatuses};
+							}) => (
+								<td className={className}>
+									<ClayLabel
+										className="status"
+										displayType={
+											JOB_STATUSES_DISPLAY_MAP[
+												status
+											] as LabelDisplayType
+										}
+										inverse
+										size="lg"
+									>
+										{JOB_STATUSES_LABEL_MAP[status]}
+									</ClayLabel>
+								</td>
 							),
-						label: Liferay.Language.get('last-trained'),
-					},
-					{
-						accessor: 'status',
-						cellRenderer: ({
-							className,
-							data: {status},
-						}: {
-							className: string;
-							data: {status: JobStatuses};
-						}) => (
-							<td className={className}>
-								<ClayLabel
-									className="status"
-									displayType={
-										JOB_STATUSES_DISPLAY_MAP[
-											status
-										] as LabelDisplayType
-									}
-									inverse
-									size="lg"
-								>
-									{JOB_STATUSES_LABEL_MAP[status]}
-								</ClayLabel>
-							</td>
-						),
-						label: Liferay.Language.get('status'),
-					},
-				]}
-				delta={delta}
-				emptyTitle={getFormattedTitle(
-					Liferay.Language.get('recommendations').toLowerCase()
-				)}
-				entityLabel={Liferay.Language.get('recommendations')}
-				error={error}
-				items={get(data, ['jobs', 'jobs'], [])}
-				loading={loading}
-				orderIOMap={orderIOMap}
-				page={page}
-				primary
-				query={query}
-				refetch={refetch}
-				renderNav={renderNav}
-				rowIdentifier="id"
-				total={get(data, ['jobs', 'total'], 0)}
-			/>
-		</Card>
+							label: Liferay.Language.get('status'),
+						},
+					]}
+					delta={delta}
+					emptyTitle={getFormattedTitle(
+						Liferay.Language.get('recommendations').toLowerCase()
+					)}
+					entityLabel={Liferay.Language.get('recommendations')}
+					error={error}
+					items={get(data, ['jobs', 'jobs'], [])}
+					loading={loading}
+					orderIOMap={orderIOMap}
+					page={page}
+					primary
+					query={query}
+					refetch={refetch}
+					renderNav={renderNav}
+					rowIdentifier="id"
+					total={get(data, ['jobs', 'total'], 0)}
+				/>
+			</Card>
+
+			{deleteModal.open && (
+				<DeleteRecommendationModal
+					description={confirmationMessage as string}
+					multiple={!singleSelectedItem}
+					name={
+						singleSelectedItem
+							? singleSelectedItem.name
+							: (sub(Liferay.Language.get('x-models'), [
+									selectedItemsCount,
+								]) as string)
+					}
+					observer={deleteModal.observer}
+					onClose={() => deleteModal.onOpenChange(false)}
+					onSubmit={handleSubmit}
+				/>
+			)}
+		</>
 	);
 };
 
