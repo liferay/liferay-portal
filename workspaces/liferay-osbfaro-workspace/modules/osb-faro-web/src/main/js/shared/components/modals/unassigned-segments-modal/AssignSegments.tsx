@@ -1,7 +1,7 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
 import React, {useState} from 'react';
 import Table from 'shared/components/table';
 import {
@@ -162,17 +162,19 @@ const AssignSegments: React.FC<IAssignSegmentsProps> = ({groupId, onClose}) => {
 	};
 
 	return (
-		<div className="assign-segments">
-			<Modal.Body className="d-flex flex-column align-items-center">
-				<h2>{Liferay.Language.get('assign-existing-segments')}</h2>
+		<div className="pt-2">
+			<ClayModal.Body className="d-flex flex-column align-items-center">
+				<h2 className="font-weight-bold h4">
+					{Liferay.Language.get('assign-existing-segments')}
+				</h2>
 
-				<span className="subtitle">
+				<span className="d-block mb-4 text-secondary">
 					{Liferay.Language.get(
 						'your-existing-segments-will-be-hidden-until-they-have-been-assigned.-a-segment-can-only-belong-to-a-single-property'
 					)}
 				</span>
 
-				<div className="assign-segments-table-wrapper">
+				<div className="overflow-auto w-100" style={{height: 352}}>
 					<Table
 						columns={[
 							{
@@ -201,30 +203,35 @@ const AssignSegments: React.FC<IAssignSegmentsProps> = ({groupId, onClose}) => {
 						rowIdentifier="id"
 					/>
 				</div>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer className="d-flex justify-content-end">
-				<ClayButton
-					disabled={isSubmitting}
-					displayType="secondary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('skip-for-now')}
-				</ClayButton>
+			<ClayModal.Footer
+				className="d-flex justify-content-end"
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							disabled={isSubmitting}
+							displayType="secondary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('skip-for-now')}
+						</ClayButton>
 
-				<ClayButton
-					data-testid="submit-button"
-					disabled={isSubmitting || !isValid()}
-					displayType="primary"
-					onClick={handleSubmit}
-				>
-					{isSubmitting && <Loading align={Align.Left} />}
+						<ClayButton
+							data-testid="submit-button"
+							disabled={isSubmitting || !isValid()}
+							displayType="primary"
+							onClick={handleSubmit}
+						>
+							{isSubmitting && <Loading align={Align.Left} />}
 
-					{isSubmitting
-						? Liferay.Language.get('saving')
-						: Liferay.Language.get('done')}
-				</ClayButton>
-			</Modal.Footer>
+							{isSubmitting
+								? Liferay.Language.get('saving')
+								: Liferay.Language.get('done')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
 		</div>
 	);
 };

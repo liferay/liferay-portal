@@ -28,9 +28,9 @@ const isChannelOptional = (pathname: string) =>
 const WorkspaceModals: React.FC<{groupId: string}> = ({groupId}) => {
 	useOnboardingModal({groupId});
 
-	useUnassignedSegmentsModal({groupId});
+	const unassignedSegmentsModal = useUnassignedSegmentsModal({groupId});
 
-	return null;
+	return <>{unassignedSegmentsModal}</>;
 };
 
 const ChannelGate: React.FC<{groupId: string}> = ({groupId}) => {

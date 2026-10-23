@@ -1,19 +1,26 @@
 import * as API from 'shared/api';
+import ManageLifecycleNotificationsModal from 'shared/components/modals/ManageLifecycleNotificationsModal';
+import React from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {getLifecycleSaveErrorMessage} from 'lifecycle/utils/lifecycleErrors';
 import {ILifecycle} from 'shared/api/lifecycle';
 import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDispatch} from 'react-redux';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
+import {useModal} from '@clayui/modal';
 import {useParams} from 'react-router-dom';
 
 interface ILifecycleAction {
 	icon: {symbol: string};
 	label: string;
 	onClick: () => void;
+}
+
+interface IUseLifecycleActionsResult {
+	actions: ILifecycleAction[];
+	manageNotificationsModal: React.ReactNode;
 }
 
 interface IUseLifecycleActionsOptions {
@@ -28,8 +35,10 @@ export const useLifecycleActions = ({
 	onDefaultChange,
 	onShowDetails,
 	onView,
-}: IUseLifecycleActionsOptions): ILifecycleAction[] => {
+}: IUseLifecycleActionsOptions): IUseLifecycleActionsResult => {
 	const currentUser = useCurrentUser();
+
+	const notificationsModal = useModal();
 
 	const dispatch = useDispatch();
 
@@ -38,7 +47,7 @@ export const useLifecycleActions = ({
 	const {channelId, groupId} = useParams();
 
 	if (!lifecycle) {
-		return [];
+		return {actions: [], manageNotificationsModal: null};
 	}
 
 	const lifecycleId = lifecycle.id;
@@ -69,7 +78,7 @@ export const useLifecycleActions = ({
 				)
 			);
 
-	return [
+	const actions = [
 		...(onView
 			? [
 					{
@@ -108,14 +117,7 @@ export const useLifecycleActions = ({
 		{
 			icon: {symbol: 'bell-on'},
 			label: Liferay.Language.get('manage-notifications'),
-			onClick: () =>
-				dispatch(
-					open(modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL, {
-						groupId,
-						lifecycleId,
-						onClose: () => dispatch(close()),
-					})
-				),
+			onClick: () => notificationsModal.onOpenChange(true),
 		},
 		...(lifecycle.defaultAccountLifecycle === false
 			? [
@@ -136,4 +138,16 @@ export const useLifecycleActions = ({
 				]
 			: []),
 	];
+
+	return {
+		actions,
+		manageNotificationsModal: notificationsModal.open ? (
+			<ManageLifecycleNotificationsModal
+				groupId={groupId!}
+				lifecycleId={lifecycleId}
+				observer={notificationsModal.observer}
+				onClose={() => notificationsModal.onOpenChange(false)}
+			/>
+		) : null,
+	};
 };

@@ -38,7 +38,7 @@ const LifecycleRowActions: React.FC<ILifecycleRowActionsProps> = ({
 	onShowDetails,
 	onView,
 }) => {
-	const actions = useLifecycleActions({
+	const {actions, manageNotificationsModal} = useLifecycleActions({
 		lifecycle,
 		onDefaultChange,
 		onShowDetails,
@@ -46,15 +46,19 @@ const LifecycleRowActions: React.FC<ILifecycleRowActionsProps> = ({
 	});
 
 	return (
-		<PageActions
-			actions={actions}
-			actionsDisplayLimit={0}
-			triggerAriaLabel={
-				sub(Liferay.Language.get('actions-for-x'), [
-					lifecycle.name || lifecycle.id,
-				]) as string
-			}
-		/>
+		<>
+			<PageActions
+				actions={actions}
+				actionsDisplayLimit={0}
+				triggerAriaLabel={
+					sub(Liferay.Language.get('actions-for-x'), [
+						lifecycle.name || lifecycle.id,
+					]) as string
+				}
+			/>
+
+			{manageNotificationsModal}
+		</>
 	);
 };
 

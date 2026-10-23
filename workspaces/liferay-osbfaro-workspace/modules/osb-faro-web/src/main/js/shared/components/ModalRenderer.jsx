@@ -18,8 +18,6 @@ import InputModal from './modals/InputModal';
 import InterestTopicModal from './modals/InterestTopicsModal';
 import InviteUsersModal from './modals/InviteUsersModal';
 import LoadingModal from './modals/LoadingModal';
-import ManageLifecycleNotificationsModal from './modals/ManageLifecycleNotificationsModal';
-import ManageSegmentNotificationsModal from './modals/ManageSegmentNotificationsModal';
 import ManuallyRetrainModelModal from './modals/ManuallyRetrainModelModal';
 import MatchingPagesModal from './modals/MatchingPagesModal';
 import NewRequestModal from './modals/NewRequestModal';
@@ -31,7 +29,6 @@ import SelectItemsModal from './modals/SelectItemsModal';
 import TestModal from './modals/TestModal';
 import TimeZoneSelectionModal from './modals/TimeZoneSelectionModal';
 import UnableDeletePropertyModal from './modals/UnableDeletePropertyModal';
-import UnassignedSegmentsModal from './modals/unassigned-segments-modal';
 import {close, modalTypes} from '../actions/modals';
 import {connect} from 'react-redux';
 import {List} from 'immutable';
@@ -60,14 +57,11 @@ const COMPONENT_MAP = {
 	[modalTypes.INSERT_BLOCKED_KEYWORDS]: InterestTopicModal,
 	[modalTypes.INVITE_USERS_MODAL]: InviteUsersModal,
 	[modalTypes.LOADING_MODAL]: LoadingModal,
-	[modalTypes.MANAGE_LIFECYCLE_NOTIFICATIONS_MODAL]: ManageLifecycleNotificationsModal,
-	[modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL]: ManageSegmentNotificationsModal,
 	[modalTypes.MANUALLY_RETRAIN_MODEL_MODAL]: ManuallyRetrainModelModal,
 	[modalTypes.MATCHING_PAGES_MODAL]: MatchingPagesModal,
 	[modalTypes.NEW_REQUEST_MODAL]: NewRequestModal,
 	[modalTypes.NEW_RULE_MODAL]: NewRuleModal,
 	[modalTypes.ONBOARDING_MODAL]: OnboardingModal,
-	[modalTypes.UNASSIGNED_SEGMENTS_MODAL]: UnassignedSegmentsModal,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,

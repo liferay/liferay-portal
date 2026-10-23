@@ -1,5 +1,6 @@
 import ClayButton from '@clayui/button';
-import Modal from 'shared/components/modal';
+import ClayModal from '@clayui/modal';
+import propertyBuildingsURL from '../../../../../images/backgrounds/ac_property_buildings.svg?url';
 import React from 'react';
 
 interface IWelcomeProps {
@@ -8,28 +9,36 @@ interface IWelcomeProps {
 }
 
 const Welcome: React.FC<IWelcomeProps> = ({onNext}) => (
-	<div className="welcome">
-		<Modal.Body className="d-flex flex-column align-items-center">
+	<div className="pt-4">
+		<ClayModal.Body className="d-flex flex-column align-items-center">
 
 			{/* TODO: LRAC-7427 Adjust SVGs with Linear Gradients */}
-			<div className="ac-property-buildings" />
+			<img
+				alt=""
+				className="mw-100"
+				height={150}
+				src={propertyBuildingsURL}
+				width={700}
+			/>
 
-			<h2>{Liferay.Language.get('introducing-properties')}</h2>
+			<h2 className="h4">
+				{Liferay.Language.get('introducing-properties')}
+			</h2>
 
-			<span className="subtitle">
+			<span className="d-block mb-4 text-secondary">
 				{Liferay.Language.get(
 					'we-ve-upgraded-your-analytics-cloud-workspace-to-include-properties'
 				)}
 			</span>
 
-			<ul className="description">
+			<ul className="mb-0 text-secondary" style={{maxWidth: 588}}>
 				<li>
-					<p className="description-title">
+					<p className="font-weight-semi-bold mb-3 text-dark">
 						{Liferay.Language.get(
 							'track-user-activities-across-experiences-that-matter'
 						)}
 					</p>
-					<p className="description-subtitle">
+					<p className="mb-2 text-dark">
 						{Liferay.Language.get(
 							'scope-user-sessions-to-their-intended-experiences-by-combining-sites-for-each-property'
 						)}
@@ -41,30 +50,35 @@ const Welcome: React.FC<IWelcomeProps> = ({onNext}) => (
 					</p>
 				</li>
 				<li>
-					<p className="description-title">
+					<p className="font-weight-semi-bold mb-3 text-dark">
 						{Liferay.Language.get(
 							'take-control-of-the-data-access-with-property-permissions'
 						)}
 					</p>
-					<p className="description-subtitle">
+					<p className="mb-2 text-dark">
 						{Liferay.Language.get(
 							'flexible-user-access-controls-with-custom-permissioning-for-each-property'
 						)}
 					</p>
 				</li>
 			</ul>
-		</Modal.Body>
+		</ClayModal.Body>
 
-		<Modal.Footer className="d-flex justify-content-end">
-			<ClayButton
-				autoFocus
-				className="button-root wide"
-				displayType="secondary"
-				onClick={() => onNext()}
-			>
-				{Liferay.Language.get('next')}
-			</ClayButton>
-		</Modal.Footer>
+		<ClayModal.Footer
+			className="d-flex justify-content-end"
+			last={
+				<ClayButton.Group spaced>
+					<ClayButton
+						autoFocus
+						className="button-root"
+						displayType="secondary"
+						onClick={() => onNext()}
+					>
+						{Liferay.Language.get('next')}
+					</ClayButton>
+				</ClayButton.Group>
+			}
+		/>
 	</div>
 );
 

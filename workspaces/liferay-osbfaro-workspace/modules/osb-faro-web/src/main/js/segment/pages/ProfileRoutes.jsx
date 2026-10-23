@@ -7,6 +7,7 @@ import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
 import ErrorPage from 'shared/pages/ErrorPage';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
+import ManageSegmentNotificationsModal from 'shared/components/modals/ManageSegmentNotificationsModal';
 import React, {
 	lazy,
 	Suspense,
@@ -16,8 +17,6 @@ import React, {
 	useState
 } from 'react';
 import {ChannelContext} from 'shared/context/channel';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect} from 'react-redux';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {getMatchedRoute, Routes, SEGMENTS, toRoute} from 'shared/util/router';
@@ -35,6 +34,7 @@ import {
 	SegmentTypes
 } from 'shared/util/constants';
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
+import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const AccountProfile = lazy(() =>
@@ -89,14 +89,15 @@ const SEGMENTS_LANGUAGE_MAP = {
 	)
 };
 
-export const SegmentProfileRoutes = ({close, open}) => {
+export const SegmentProfileRoutes = () => {
 	const {selectedChannel} = useContext(ChannelContext);
 
 	const {channelId, groupId, id} = useParams();
 
 	const navigate = useNavigate();
 
-	const deleteSegments = useDeleteSegments(groupId);
+	const {deleteSegments, deleteSegmentsModal} = useDeleteSegments(groupId);
+	const notificationsModal = useModal();
 
 	const {data, error, loading} = useRequest({
 		dataSourceFn: API.individualSegment.fetch,
@@ -277,14 +278,7 @@ export const SegmentProfileRoutes = ({close, open}) => {
 										'manage-notifications'
 									),
 									onClick: () =>
-										open(
-											modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL,
-											{
-												groupId,
-												onClose: close,
-												segmentId: id
-											}
-										)
+										notificationsModal.onOpenChange(true)
 								},
 								{
 									className: 'text-danger',
@@ -369,8 +363,19 @@ export const SegmentProfileRoutes = ({close, open}) => {
 					<Loading />
 				)}
 			</BasePage.Body>
+
+			{deleteSegmentsModal}
+
+			{notificationsModal.open && (
+				<ManageSegmentNotificationsModal
+					groupId={groupId}
+					observer={notificationsModal.observer}
+					onClose={() => notificationsModal.onOpenChange(false)}
+					segmentId={id}
+				/>
+			)}
 		</BasePage>
 	);
 };
 
-export default connect(null, {close, open})(SegmentProfileRoutes);
+export default SegmentProfileRoutes;

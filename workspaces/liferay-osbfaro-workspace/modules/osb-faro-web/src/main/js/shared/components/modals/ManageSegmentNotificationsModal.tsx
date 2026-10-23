@@ -4,11 +4,12 @@ import NotificationSettingsModal, {
 } from './NotificationSettingsModal';
 import React from 'react';
 import {Frequency} from 'settings/channels/components/EmailReports';
-import {Modal as ModalTypes} from 'shared/types';
+import type {Observer} from '@clayui/modal/lib/types';
 
 interface IManageSegmentNotificationsModalProps {
 	groupId: string;
-	onClose: ModalTypes.close;
+	observer: Observer;
+	onClose: () => void;
 	segmentId: string;
 }
 
@@ -26,7 +27,7 @@ const DEFAULT_VALUES: NotificationSettings = {
 
 const ManageSegmentNotificationsModal: React.FC<
 	IManageSegmentNotificationsModalProps
-> = ({groupId, onClose, segmentId}) => (
+> = ({groupId, observer, onClose, segmentId}) => (
 	<NotificationSettingsModal
 		checkboxes={CHECKBOXES}
 		defaultValues={DEFAULT_VALUES}
@@ -38,6 +39,7 @@ const ManageSegmentNotificationsModal: React.FC<
 				.fetchSegmentNotifications({groupId, segmentId})
 				.then((preferences) => preferences[segmentId])
 		}
+		observer={observer}
 		onClose={onClose}
 		onSave={(values: NotificationSettings) =>
 			API.preferences.updateSegmentNotification({

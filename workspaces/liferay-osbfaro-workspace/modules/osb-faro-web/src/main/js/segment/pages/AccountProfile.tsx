@@ -3,9 +3,8 @@ import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet
 import BasePage from 'shared/components/base-page';
 import CriteriaCard from 'segment/components/criteria-card';
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
+import ManageSegmentNotificationsModal from 'shared/components/modals/ManageSegmentNotificationsModal';
 import React from 'react';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect, ConnectedProps} from 'react-redux';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
@@ -16,14 +15,11 @@ import {Segment} from 'shared/util/records';
 import {SegmentStates, SegmentTypes} from 'shared/util/constants';
 import {useChannelContext} from 'shared/context/channel';
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
+import {useModal} from '@clayui/modal';
 import {useNavigate} from 'react-router-dom';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface IAccountProfileProps extends PropsFromRedux {
+interface IAccountProfileProps {
 	channelId: string;
 	groupId: string;
 	segment: Segment;
@@ -31,9 +27,7 @@ interface IAccountProfileProps extends PropsFromRedux {
 
 const AccountProfile: React.FC<IAccountProfileProps> = ({
 	channelId,
-	close,
 	groupId,
-	open,
 	segment,
 }) => {
 	const {selectedChannel} = useChannelContext();
@@ -41,7 +35,8 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 
 	const navigate = useNavigate();
 
-	const deleteSegments = useDeleteSegments(groupId);
+	const {deleteSegments, deleteSegmentsModal} = useDeleteSegments(groupId);
+	const notificationsModal = useModal();
 
 	const {name} = segment;
 
@@ -110,14 +105,7 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 										'manage-notifications'
 									),
 									onClick: () =>
-										open(
-											modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL,
-											{
-												groupId,
-												onClose: close,
-												segmentId: segment.id,
-											}
-										),
+										notificationsModal.onOpenChange(true),
 								},
 								{
 									className: 'text-danger',
@@ -178,8 +166,19 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 					groupId={groupId}
 				/>
 			</BasePage.Body>
+
+			{deleteSegmentsModal}
+
+			{notificationsModal.open && (
+				<ManageSegmentNotificationsModal
+					groupId={groupId}
+					observer={notificationsModal.observer}
+					onClose={() => notificationsModal.onOpenChange(false)}
+					segmentId={segment.id}
+				/>
+			)}
 		</BasePage>
 	);
 };
 
-export default connector(AccountProfile);
+export default AccountProfile;

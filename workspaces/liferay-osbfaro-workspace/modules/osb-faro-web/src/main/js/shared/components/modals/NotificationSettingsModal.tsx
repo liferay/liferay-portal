@@ -1,8 +1,9 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import Form from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from '../modal';
 import React, {useEffect, useState} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {connect, ConnectedProps} from 'react-redux';
@@ -11,7 +12,6 @@ import {
 	FREQUENCIES,
 	FREQUENCY_KEYS,
 } from 'settings/channels/components/EmailReports';
-import {Modal as ModalTypes} from 'shared/types';
 import {pickBy} from 'lodash';
 
 export interface INotificationCheckbox {
@@ -33,7 +33,8 @@ interface INotificationSettingsModalProps extends PropsFromRedux {
 	defaultValues: NotificationSettings;
 	description: string;
 	fetchSavedValues: () => Promise<Partial<NotificationSettings> | undefined>;
-	onClose: ModalTypes.close;
+	observer: Observer;
+	onClose: () => void;
 	onSave: (values: NotificationSettings) => Promise<unknown>;
 	title: string;
 }
@@ -44,6 +45,7 @@ const NotificationSettingsModal: React.FC<INotificationSettingsModalProps> = ({
 	defaultValues,
 	description,
 	fetchSavedValues,
+	observer,
 	onClose,
 	onSave,
 	title,
@@ -78,19 +80,19 @@ const NotificationSettingsModal: React.FC<INotificationSettingsModalProps> = ({
 
 	if (!initialValues) {
 		return (
-			<Modal>
-				<Modal.Header onClose={onClose} title={title} />
+			<ClayModal observer={observer}>
+				<ClayModal.Header>{title}</ClayModal.Header>
 
-				<Modal.Body>
+				<ClayModal.Body>
 					<Loading />
-				</Modal.Body>
-			</Modal>
+				</ClayModal.Body>
+			</ClayModal>
 		);
 	}
 
 	return (
-		<Modal>
-			<Modal.Header onClose={onClose} title={title} />
+		<ClayModal observer={observer}>
+			<ClayModal.Header>{title}</ClayModal.Header>
 
 			<Form<NotificationSettings>
 				initialValues={initialValues}
@@ -119,7 +121,7 @@ const NotificationSettingsModal: React.FC<INotificationSettingsModalProps> = ({
 			>
 				{({handleSubmit, isSubmitting, values}) => (
 					<Form.Form onSubmit={handleSubmit}>
-						<Modal.Body>
+						<ClayModal.Body>
 							<p className="text-secondary">{description}</p>
 
 							<div className="font-weight-bold mb-2">
@@ -161,32 +163,38 @@ const NotificationSettingsModal: React.FC<INotificationSettingsModalProps> = ({
 									</Form.Select>
 								</Form.GroupItem>
 							</Form.Group>
-						</Modal.Body>
+						</ClayModal.Body>
 
-						<Modal.Footer>
-							<ClayButton
-								className="button-root"
-								displayType="secondary"
-								onClick={onClose}
-							>
-								{Liferay.Language.get('cancel')}
-							</ClayButton>
+						<ClayModal.Footer
+							last={
+								<ClayButton.Group spaced>
+									<ClayButton
+										className="button-root"
+										displayType="secondary"
+										onClick={onClose}
+									>
+										{Liferay.Language.get('cancel')}
+									</ClayButton>
 
-							<ClayButton
-								className="button-root"
-								disabled={isSubmitting}
-								displayType="primary"
-								type="submit"
-							>
-								{isSubmitting && <Loading align={Align.Left} />}
+									<ClayButton
+										className="button-root"
+										disabled={isSubmitting}
+										displayType="primary"
+										type="submit"
+									>
+										{isSubmitting && (
+											<Loading align={Align.Left} />
+										)}
 
-								{Liferay.Language.get('save')}
-							</ClayButton>
-						</Modal.Footer>
+										{Liferay.Language.get('save')}
+									</ClayButton>
+								</ClayButton.Group>
+							}
+						/>
 					</Form.Form>
 				)}
 			</Form>
-		</Modal>
+		</ClayModal>
 	);
 };
 

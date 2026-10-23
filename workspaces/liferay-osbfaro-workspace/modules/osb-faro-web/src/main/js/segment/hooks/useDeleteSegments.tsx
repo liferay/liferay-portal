@@ -1,10 +1,11 @@
 import * as API from 'shared/api';
-import React from 'react';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
+import React, {useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {sub} from 'shared/util/lang';
 import {useDispatch} from 'react-redux';
+import {useModal} from '@clayui/modal';
 
 interface IDeleteSegmentsParams {
 	ids: string[];
@@ -13,18 +14,29 @@ interface IDeleteSegmentsParams {
 }
 
 /**
- * Opens the shared "delete segment(s)" confirmation modal and issues the
+ * Owns the shared "delete segment(s)" confirmation modal and issues the
  * delete request, so the copy, modal styling, and API call stay identical
  * between the Segments list (which can delete more than one at a time) and
  * the Segment Dashboard (which only ever deletes the current segment).
  * Page-specific follow-up (reloading a table, navigating away, clearing a
- * selection) belongs in `onSuccess`.
+ * selection) belongs in `onSuccess`. The caller renders `deleteSegmentsModal`.
  */
 export function useDeleteSegments(groupId: string) {
 	const dispatch = useDispatch();
+	const modal = useModal();
 
-	return ({ids, name, onSuccess}: IDeleteSegmentsParams) => {
-		const isMultiple = ids.length > 1;
+	const [request, setRequest] = useState<IDeleteSegmentsParams>();
+
+	const deleteSegments = (params: IDeleteSegmentsParams) => {
+		setRequest(params);
+
+		modal.onOpenChange(true);
+	};
+
+	let deleteSegmentsModal: React.ReactNode = null;
+
+	if (modal.open && request) {
+		const isMultiple = request.ids.length > 1;
 
 		const confirmation = isMultiple
 			? Liferay.Language.get(
@@ -44,22 +56,22 @@ export function useDeleteSegments(groupId: string) {
 
 		const title = isMultiple
 			? Liferay.Language.get('delete-segments')
-			: sub(Liferay.Language.get('deleting-x'), [name]);
+			: sub(Liferay.Language.get('deleting-x'), [request.name]);
 
-		dispatch(
-			open(modalTypes.CONFIRMATION_MODAL, {
-				message: (
+		deleteSegmentsModal = (
+			<ConfirmationModal
+				message={
 					<div>
 						<div className="h4 text-secondary">{confirmation}</div>
 
 						<p>{subtitle}</p>
 					</div>
-				),
-				modalVariant: 'modal-warning',
-				onClose: () => dispatch(close()),
-				onSubmit: () =>
+				}
+				observer={modal.observer}
+				onClose={() => modal.onOpenChange(false)}
+				onSubmit={() =>
 					API.individualSegment
-						.delete({groupId, ids})
+						.delete({groupId, ids: request.ids})
 						.then(() => {
 							dispatch(
 								addAlert({
@@ -70,7 +82,7 @@ export function useDeleteSegments(groupId: string) {
 								})
 							);
 
-							onSuccess?.();
+							request.onSuccess?.();
 						})
 						.catch(() => {
 							dispatch(
@@ -79,12 +91,15 @@ export function useDeleteSegments(groupId: string) {
 									message: Liferay.Language.get('error'),
 								})
 							);
-						}),
-				submitButtonDisplay: 'warning',
-				submitMessage: Liferay.Language.get('delete'),
-				title,
-				titleIcon: 'warning-full',
-			})
+						})
+				}
+				submitButtonDisplay="warning"
+				submitMessage={Liferay.Language.get('delete')}
+				title={title}
+				type="warning"
+			/>
 		);
-	};
+	}
+
+	return {deleteSegments, deleteSegmentsModal};
 }

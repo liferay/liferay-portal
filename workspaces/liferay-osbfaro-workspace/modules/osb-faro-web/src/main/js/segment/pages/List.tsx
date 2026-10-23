@@ -11,6 +11,8 @@ import LinkCell from 'shared/components/table/cell-components/LinkCell';
 import getCN from 'classnames';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
+import ManageSegmentNotificationsModal from 'shared/components/modals/ManageSegmentNotificationsModal';
+import UnassignedSegmentsModal from 'shared/components/modals/unassigned-segments-modal';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';
@@ -27,9 +29,6 @@ import {
 	withSelectionProvider,
 } from 'shared/context/selection';
 import {ALERT_CONFIG_MAP, AlertTypes} from 'shared/components/Alert';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {compose} from 'shared/hoc';
-import {connect, ConnectedProps} from 'react-redux';
 import {createOrderIOMap} from 'shared/util/pagination';
 import {
 	DATE_MODIFIED,
@@ -68,6 +67,7 @@ import {
 import {setUriQueryValues} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {toThousands} from 'shared/util/numbers';
+import {useModal} from '@clayui/modal';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
@@ -89,11 +89,7 @@ function fetchDisabledSegments(
 	});
 }
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface IListProps extends PropsFromRedux {
+interface IListProps {
 	channelId: string;
 	groupId: string;
 	history: any;
@@ -195,17 +191,15 @@ const ORDER_BY_OPTIONS = [
 	},
 ];
 
-export const List: React.FC<IListProps> = ({
-	channelId,
-	close,
-	groupId,
-	history,
-	open,
-}) => {
+export const List: React.FC<IListProps> = ({channelId, groupId, history}) => {
 	const currentUser = useCurrentUser();
 	const LDPEnabled = useLDPEnabled({groupId});
 	const {selectedChannel} = useChannelContext();
-	const deleteSegments = useDeleteSegments(groupId);
+	const {deleteSegments, deleteSegmentsModal} = useDeleteSegments(groupId);
+	const notificationsModal = useModal();
+	const unassignedModal = useModal();
+
+	const [notificationsSegmentId, setNotificationsSegmentId] = useState('');
 	const _tableRef = useRef<HTMLDivElement & SearchableEntityTable>();
 
 	const {selectedItems, selectionDispatch} = useSelectionContext();
@@ -307,16 +301,7 @@ export const List: React.FC<IListProps> = ({
 	];
 
 	const handleUnassignedSegmentsAlert = () => {
-		const openModal = () => {
-			open(
-				modalTypes.UNASSIGNED_SEGMENTS_MODAL,
-				{
-					groupId,
-					onClose: close,
-				},
-				{closeOnBlur: false}
-			);
-		};
+		const openModal = () => unassignedModal.onOpenChange(true);
 
 		return {
 			message: sub(
@@ -406,12 +391,11 @@ export const List: React.FC<IListProps> = ({
 			{
 				iconSymbol: 'bell-on',
 				label: Liferay.Language.get('manage-notifications'),
-				onClick: () =>
-					open(modalTypes.MANAGE_SEGMENT_NOTIFICATIONS_MODAL, {
-						groupId,
-						onClose: close,
-						segmentId: id,
-					}),
+				onClick: () => {
+					setNotificationsSegmentId(id);
+
+					notificationsModal.onOpenChange(true);
+				},
 			},
 			{
 				className: 'text-danger',
@@ -843,7 +827,26 @@ export const List: React.FC<IListProps> = ({
 					</Card.Body>
 				</Card>
 			</BasePage.Body>
+
+			{deleteSegmentsModal}
+
+			{unassignedModal.open && (
+				<UnassignedSegmentsModal
+					groupId={groupId}
+					observer={unassignedModal.observer}
+					onClose={() => unassignedModal.onOpenChange(false)}
+				/>
+			)}
+
+			{notificationsModal.open && (
+				<ManageSegmentNotificationsModal
+					groupId={groupId}
+					observer={notificationsModal.observer}
+					onClose={() => notificationsModal.onOpenChange(false)}
+					segmentId={notificationsSegmentId}
+				/>
+			)}
 		</BasePage>
 	);
 };
-export default compose(connector, withSelectionProvider)(List);
+export default withSelectionProvider(List);

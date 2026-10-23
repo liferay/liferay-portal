@@ -4,12 +4,13 @@ import NotificationSettingsModal, {
 } from './NotificationSettingsModal';
 import React from 'react';
 import {Frequency} from 'settings/channels/components/EmailReports';
-import {Modal as ModalTypes} from 'shared/types';
+import type {Observer} from '@clayui/modal/lib/types';
 
 interface IManageLifecycleNotificationsModalProps {
 	groupId: string;
 	lifecycleId: string;
-	onClose: ModalTypes.close;
+	observer: Observer;
+	onClose: () => void;
 }
 
 const CHECKBOXES = [
@@ -46,7 +47,7 @@ const DEFAULT_VALUES: NotificationSettings = {
 
 const ManageLifecycleNotificationsModal: React.FC<
 	IManageLifecycleNotificationsModalProps
-> = ({groupId, lifecycleId, onClose}) => (
+> = ({groupId, lifecycleId, observer, onClose}) => (
 	<NotificationSettingsModal
 		checkboxes={CHECKBOXES}
 		defaultValues={DEFAULT_VALUES}
@@ -58,6 +59,7 @@ const ManageLifecycleNotificationsModal: React.FC<
 				.fetchLifecycleNotifications({groupId, lifecycleId})
 				.then((preferences) => preferences[lifecycleId])
 		}
+		observer={observer}
 		onClose={onClose}
 		onSave={(values: NotificationSettings) =>
 			API.preferences.updateLifecycleNotification({
