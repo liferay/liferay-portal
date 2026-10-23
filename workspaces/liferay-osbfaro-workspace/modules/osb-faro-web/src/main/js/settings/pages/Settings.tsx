@@ -127,7 +127,7 @@ export const Settings = () => {
 	const store = useStore();
 	const isLDP = useLDPEnabled({groupId});
 
-	useOnboardingModal({groupId});
+	const onboardingModal = useOnboardingModal({groupId});
 
 	const project = store.getState().getIn(['projects', groupId, 'data']);
 	const recommendationsEnabled = store
@@ -139,128 +139,142 @@ export const Settings = () => {
 	const IS_PROJECT_SAAS = subscriptionName?.includes('SaaS') || isLDP;
 
 	return (
-		<Suspense fallback={<Loading />}>
-			<RouterRoutes>
-				<Route
-					element={<BundleRouter data={DataSourceList} />}
-					path="data-source"
-				/>
-
-				<Route
-					element={<BundleRouter data={DataSourceOnboarding} />}
-					path="data-source/:id/onboarding"
-				/>
-
-				<Route
-					element={<BundleRouter data={DeleteDataSource} />}
-					path="data-source/:id/delete"
-				/>
-
-				<Route
-					element={<BundleRouter data={DataSourceEdit} />}
-					path="data-source/:id/edit"
-				/>
-
-				<Route
-					element={<BundleRouter data={DataSource} />}
-					path="data-source/:id/*"
-				/>
-
-				<Route element={<BundleRouter data={Users} />} path="users/*" />
-
-				{!IS_PROJECT_SAAS && (
+		<>
+			<Suspense fallback={<Loading />}>
+				<RouterRoutes>
 					<Route
-						element={<BundleRouter data={UsageOverview} />}
-						path="usage"
+						element={<BundleRouter data={DataSourceList} />}
+						path="data-source"
 					/>
-				)}
 
-				{IS_PROJECT_SAAS && (
 					<Route
-						element={<BundleRouter data={UsageOverviewExternal} />}
-						path="usage"
+						element={<BundleRouter data={DataSourceOnboarding} />}
+						path="data-source/:id/onboarding"
 					/>
-				)}
 
-				<Route
-					element={<BundleRouter data={Definitions} />}
-					path="definitions/*"
-				/>
+					<Route
+						element={<BundleRouter data={DeleteDataSource} />}
+						path="data-source/:id/delete"
+					/>
 
-				<Route
-					element={<BundleRouter data={DataPrivacy} />}
-					path="data-privacy/*"
-				/>
+					<Route
+						element={<BundleRouter data={DataSourceEdit} />}
+						path="data-source/:id/edit"
+					/>
 
-				<Route
-					element={<BundleRouter data={WorkspaceSettings} />}
-					path="workspace/*"
-				/>
+					<Route
+						element={<BundleRouter data={DataSource} />}
+						path="data-source/:id/*"
+					/>
 
-				<Route
-					element={<BundleRouter data={ChannelView} />}
-					path="properties/:id"
-				/>
+					<Route
+						element={<BundleRouter data={Users} />}
+						path="users/*"
+					/>
 
-				<Route
-					element={<BundleRouter data={ChannelList} />}
-					path="properties/*"
-				/>
+					{!IS_PROJECT_SAAS && (
+						<Route
+							element={<BundleRouter data={UsageOverview} />}
+							path="usage"
+						/>
+					)}
 
-				<Route element={<BundleRouter data={Apis} />} path="apis/*" />
-
-				{recommendationsEnabled && (
-					<Fragment key="RECOMMENDATIONS">
+					{IS_PROJECT_SAAS && (
 						<Route
 							element={
-								<BundleRouter
-									data={RecommendationList}
-									destructured={false}
-								/>
+								<BundleRouter data={UsageOverviewExternal} />
 							}
-							path="recommendations"
+							path="usage"
 						/>
+					)}
 
-						<Route
-							element={
-								<BundleRouter
-									data={RecommendationCreateItemSimilarity}
-									destructured={false}
-								/>
-							}
-							path="recommendations/create-item-similarity-model"
-						/>
+					<Route
+						element={<BundleRouter data={Definitions} />}
+						path="definitions/*"
+					/>
 
-						<Route
-							element={
-								<BundleRouter
-									data={RecommendationEdit}
-									destructured={false}
-								/>
-							}
-							path="recommendations/:jobId/edit"
-						/>
+					<Route
+						element={<BundleRouter data={DataPrivacy} />}
+						path="data-privacy/*"
+					/>
 
-						<Route
-							element={
-								<BundleRouter
-									data={RecommendationView}
-									destructured={false}
-								/>
-							}
-							path="recommendations/:jobId"
-						/>
-					</Fragment>
-				)}
+					<Route
+						element={<BundleRouter data={WorkspaceSettings} />}
+						path="workspace/*"
+					/>
 
-				<Route
-					element={<BundleRouter data={FeatureFlags} />}
-					path="feature-flags"
-				/>
+					<Route
+						element={<BundleRouter data={ChannelView} />}
+						path="properties/:id"
+					/>
 
-				<Route element={<ErrorPage />} path="*" />
-			</RouterRoutes>
-		</Suspense>
+					<Route
+						element={<BundleRouter data={ChannelList} />}
+						path="properties/*"
+					/>
+
+					<Route
+						element={<BundleRouter data={Apis} />}
+						path="apis/*"
+					/>
+
+					{recommendationsEnabled && (
+						<Fragment key="RECOMMENDATIONS">
+							<Route
+								element={
+									<BundleRouter
+										data={RecommendationList}
+										destructured={false}
+									/>
+								}
+								path="recommendations"
+							/>
+
+							<Route
+								element={
+									<BundleRouter
+										data={
+											RecommendationCreateItemSimilarity
+										}
+										destructured={false}
+									/>
+								}
+								path="recommendations/create-item-similarity-model"
+							/>
+
+							<Route
+								element={
+									<BundleRouter
+										data={RecommendationEdit}
+										destructured={false}
+									/>
+								}
+								path="recommendations/:jobId/edit"
+							/>
+
+							<Route
+								element={
+									<BundleRouter
+										data={RecommendationView}
+										destructured={false}
+									/>
+								}
+								path="recommendations/:jobId"
+							/>
+						</Fragment>
+					)}
+
+					<Route
+						element={<BundleRouter data={FeatureFlags} />}
+						path="feature-flags"
+					/>
+
+					<Route element={<ErrorPage />} path="*" />
+				</RouterRoutes>
+			</Suspense>
+
+			{onboardingModal}
+		</>
 	);
 };
 

@@ -1,5 +1,6 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import ClayIcon from 'shared/components/Icon';
 import Constants from 'shared/util/constants';
 import Form, {
@@ -8,7 +9,6 @@ import Form, {
 	validatePattern,
 } from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
 import React, {useRef, useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
@@ -54,7 +54,6 @@ const ConfigureWorkspaceWithEmailAddressDomains: React.FC<
 	emailAddressDomains: initialEmailAddressDomains,
 	groupId,
 	history,
-	onClose,
 	onNext,
 	updateProject,
 }) => {
@@ -157,9 +156,9 @@ const ConfigureWorkspaceWithEmailAddressDomains: React.FC<
 							handleSubmit(e);
 						}}
 					>
-						<Modal.Header onClose={onClose} />
+						<ClayModal.Header />
 
-						<Modal.Body>
+						<ClayModal.Body>
 							<div className="text-center">
 								<ClayIcon
 									className="icon-root"
@@ -169,7 +168,7 @@ const ConfigureWorkspaceWithEmailAddressDomains: React.FC<
 							</div>
 
 							<div className="text-center mb-4">
-								<Text size={10} weight="bold">
+								<Text size={6} weight="bold">
 									{Liferay.Language.get(
 										'configure-your-workspace-access'
 									)}
@@ -185,14 +184,14 @@ const ConfigureWorkspaceWithEmailAddressDomains: React.FC<
 									</Text>
 								</div>
 
-								<Text color="secondary" size={3}>
+								<Text color="secondary" size={4}>
 									{Liferay.Language.get(
 										'define-a-friendly-url-that-others-can-use-to-access-and-share-this-workspace.-this-value-cannot-be-changed-after-it-is-set'
 									)}
 								</Text>
 
 								<div className="mb-1">
-									<Text color="secondary" size={3}>
+									<Text color="secondary" size={4}>
 										{sub(
 											Liferay.Language.get('e.g.-x'),
 											[
@@ -244,14 +243,14 @@ const ConfigureWorkspaceWithEmailAddressDomains: React.FC<
 									</Text>
 								</div>
 
-								<Text color="secondary" size={3}>
+								<Text color="secondary" size={4}>
 									{Liferay.Language.get(
 										'define-which-email-domains-can-request-access-to-this-workspace'
 									)}
 								</Text>
 
 								<div className="mb-1">
-									<Text color="secondary" size={3}>
+									<Text color="secondary" size={4}>
 										{sub(
 											Liferay.Language.get('e.g.-x'),
 											[
@@ -287,24 +286,30 @@ const ConfigureWorkspaceWithEmailAddressDomains: React.FC<
 									validationFn={validateEmailDomain}
 								/>
 							</Form.Group>
-						</Modal.Body>
+						</ClayModal.Body>
 
-						<Modal.Footer>
-							<ClayButton
-								className="button-root ml-2"
-								disabled={
-									isSubmitting ||
-									!!errors.emailAddressDomains ||
-									!!errors.friendlyURL
-								}
-								displayType="primary"
-								type="submit"
-							>
-								{isSubmitting && <Loading align={Align.Left} />}
+						<ClayModal.Footer
+							last={
+								<ClayButton.Group spaced>
+									<ClayButton
+										className="button-root ml-2"
+										disabled={
+											isSubmitting ||
+											!!errors.emailAddressDomains ||
+											!!errors.friendlyURL
+										}
+										displayType="primary"
+										type="submit"
+									>
+										{isSubmitting && (
+											<Loading align={Align.Left} />
+										)}
 
-								{Liferay.Language.get('next')}
-							</ClayButton>
-						</Modal.Footer>
+										{Liferay.Language.get('next')}
+									</ClayButton>
+								</ClayButton.Group>
+							}
+						/>
 					</Form.Form>
 				)}
 			</Form>

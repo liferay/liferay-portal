@@ -1,8 +1,9 @@
+import ClayModal from '@clayui/modal';
 import ConfigureWorkspace from './ConfigureWorkspace';
 import ConnectDXP from './ConnectDXP';
 import InvitePeople from './InvitePeople';
-import Modal from 'shared/components/modal';
 import React, {useState} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import ReadyToGo from './ReadyToGo';
 import Welcome from './Welcome';
 
@@ -16,11 +17,13 @@ const MODAL_SCREENS = [
 
 interface IOnboardingModalProps {
 	groupId: string;
+	observer: Observer;
 	onClose: () => void;
 }
 
 const OnboardingModal: React.FC<IOnboardingModalProps> = ({
 	groupId,
+	observer,
 	onClose,
 }) => {
 	const [dxpConnected, setDxpConnected] = useState(false);
@@ -29,7 +32,7 @@ const OnboardingModal: React.FC<IOnboardingModalProps> = ({
 	const ScreenComponent = MODAL_SCREENS[step];
 
 	return (
-		<Modal className="onboarding-modal-root">
+		<ClayModal observer={observer}>
 			<ScreenComponent
 				dxpConnected={dxpConnected}
 				groupId={groupId}
@@ -39,7 +42,7 @@ const OnboardingModal: React.FC<IOnboardingModalProps> = ({
 				onNext={(increment = 1) => setStep(step + increment)}
 				onPrevious={() => setStep(step - 1)}
 			/>
-		</Modal>
+		</ClayModal>
 	);
 };
 

@@ -1,14 +1,22 @@
+import OnboardingModal from 'shared/components/modals/onboarding-modal';
+import React, {useContext, useEffect} from 'react';
 import SitesDashboardQuery from 'shared/queries/SitesDashboardQuery';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {isArray} from 'lodash';
 import {OnboardingContext} from 'shared/context/onboarding';
-import {useContext, useEffect} from 'react';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
-import {useDispatch} from 'react-redux';
+import {useModal} from '@clayui/modal';
 import {useQuery} from '@apollo/client';
 
-export const useOnboardingModal = ({groupId}: {groupId: string}) => {
-	const dispatch = useDispatch();
+/**
+ * Opens the onboarding for an administrator of a workspace with no data
+ * sources, once. The caller renders the returned modal.
+ */
+export const useOnboardingModal = ({
+	groupId,
+}: {
+	groupId: string;
+}): React.ReactNode => {
+	const modal = useModal();
 
 	const {onboardingTriggered, setOnboardingTriggered} =
 		useContext(OnboardingContext);
@@ -27,14 +35,21 @@ export const useOnboardingModal = ({groupId}: {groupId: string}) => {
 			isArray(data?.dataSources) &&
 			!data.dataSources.length
 		) {
-			dispatch(
-				open(modalTypes.ONBOARDING_MODAL, {
-					groupId,
-					onClose: () => dispatch(close()),
-				})
-			);
+			modal.onOpenChange(true);
 
 			setOnboardingTriggered();
 		}
 	}, [data]);
+
+	if (!modal.open) {
+		return null;
+	}
+
+	return (
+		<OnboardingModal
+			groupId={groupId}
+			observer={modal.observer}
+			onClose={() => modal.onOpenChange(false)}
+		/>
+	);
 };

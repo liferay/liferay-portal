@@ -1,11 +1,12 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import InfoPopover from 'shared/components/InfoPopover';
 import Input from 'shared/components/Input';
 import InputList, {Display} from 'shared/components/InputList';
 import Label from 'shared/components/form/Label';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
+import inviteURL from '../../../../../images/backgrounds/ac_invite.svg?url';
 import React, {useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
@@ -70,15 +71,20 @@ const InvitePeople: React.FC<IInvitePeopleProps> = ({
 
 	return (
 		<>
-			<Modal.Header onClose={onClose} />
+			<ClayModal.Header />
 
-			<Modal.Body>
+			<ClayModal.Body>
 
 				{/* TODO: LRAC-7427 Adjust SVGs with Linear Gradients */}
-				<div className="analytics-invite-user-icon icon" />
+				<img
+					alt=""
+					className="d-block mb-4 w-100"
+					height={300}
+					src={inviteURL}
+				/>
 
 				<div className="text-center mb-4">
-					<Text size={10} weight="bold">
+					<Text size={6} weight="bold">
 						{sent
 							? Liferay.Language.get('your-invite-was-sent')
 							: Liferay.Language.get(
@@ -89,7 +95,7 @@ const InvitePeople: React.FC<IInvitePeopleProps> = ({
 
 				{sent ? (
 					<div className="text-center">
-						<Text color="secondary" size={6}>
+						<Text color="secondary" size={4}>
 							{Liferay.Language.get(
 								'you-can-see-the-new-members-invitation-status-and-role-permissions-under-user-management-in-settings'
 							)}
@@ -141,7 +147,7 @@ const InvitePeople: React.FC<IInvitePeopleProps> = ({
 						</Input.Group>
 
 						<div className="mt-1">
-							<Text color="secondary" size={3}>
+							<Text color="secondary" size={4}>
 								{Liferay.Language.get(
 									'enter-email-addresses-separated-by-spaces-or-commas'
 								)}
@@ -149,42 +155,46 @@ const InvitePeople: React.FC<IInvitePeopleProps> = ({
 						</div>
 					</div>
 				)}
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					disabled={sent}
-					displayType="secondary"
-					onClick={dxpConnected ? () => onNext() : onClose}
-				>
-					{Liferay.Language.get('skip')}
-				</ClayButton>
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							disabled={sent}
+							displayType="secondary"
+							onClick={dxpConnected ? () => onNext() : onClose}
+						>
+							{Liferay.Language.get('skip')}
+						</ClayButton>
 
-				<ClayButton
-					className="button-root ml-2"
-					disabled={
-						(!inputValue && !emails.length) ||
-						(!!inputValue && !validateEmail(inputValue))
-					}
-					displayType="primary"
-					onClick={
-						sent
-							? dxpConnected
-								? () => onNext()
-								: onClose
-							: handleSubmit
-					}
-				>
-					{loading && <Loading align={Align.Left} />}
+						<ClayButton
+							className="button-root ml-2"
+							disabled={
+								(!inputValue && !emails.length) ||
+								(!!inputValue && !validateEmail(inputValue))
+							}
+							displayType="primary"
+							onClick={
+								sent
+									? dxpConnected
+										? () => onNext()
+										: onClose
+									: handleSubmit
+							}
+						>
+							{loading && <Loading align={Align.Left} />}
 
-					{sent
-						? dxpConnected
-							? Liferay.Language.get('next')
-							: Liferay.Language.get('done')
-						: Liferay.Language.get('send-invitations')}
-				</ClayButton>
-			</Modal.Footer>
+							{sent
+								? dxpConnected
+									? Liferay.Language.get('next')
+									: Liferay.Language.get('done')
+								: Liferay.Language.get('send-invitations')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
 		</>
 	);
 };

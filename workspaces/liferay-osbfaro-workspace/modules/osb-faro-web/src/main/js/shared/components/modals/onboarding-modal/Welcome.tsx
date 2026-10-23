@@ -1,5 +1,6 @@
 import ClayButton from '@clayui/button';
-import Modal from 'shared/components/modal';
+import ClayModal from '@clayui/modal';
+import welcomeURL from '../../../../../images/analytics_onboarding_welcome.svg?url';
 import React from 'react';
 import {Text} from '@clayui/core';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -10,20 +11,25 @@ interface IWelcomeProps {
 	onNext: (increment?: number) => void;
 }
 
-const Welcome: React.FC<IWelcomeProps> = ({groupId = '', onClose, onNext}) => {
+const Welcome: React.FC<IWelcomeProps> = ({groupId = '', onNext}) => {
 	const LDPEnabled = useLDPEnabled({groupId});
 
 	return (
 		<>
-			<Modal.Header onClose={onClose} />
+			<ClayModal.Header />
 
-			<Modal.Body>
+			<ClayModal.Body>
 
 				{/* TODO: LRAC-7427 Adjust SVGs with Linear Gradients */}
-				<div className="icon analytics-onboarding-welcome-usage-icon" />
+				<img
+					alt=""
+					className="d-block mb-4 w-100"
+					height={300}
+					src={welcomeURL}
+				/>
 
 				<div className="text-center">
-					<Text size={10} weight="bold">
+					<Text size={6} weight="bold">
 						{LDPEnabled
 							? Liferay.Language.get(
 									'welcome-to-liferay-data-platform'
@@ -34,25 +40,30 @@ const Welcome: React.FC<IWelcomeProps> = ({groupId = '', onClose, onNext}) => {
 					</Text>
 
 					<p>
-						<Text color="secondary" size={6}>
+						<Text color="secondary" size={4}>
 							{Liferay.Language.get(
 								'just-a-few-more-steps-to-set-up-your-workspace'
 							)}
 						</Text>
 					</p>
 				</div>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer className="d-flex justify-content-center">
-				<ClayButton
-					autoFocus
-					className="button-root"
-					displayType="primary"
-					onClick={() => onNext()}
-				>
-					{Liferay.Language.get('next')}
-				</ClayButton>
-			</Modal.Footer>
+			<ClayModal.Footer
+				className="d-flex justify-content-center"
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							autoFocus
+							className="button-root"
+							displayType="primary"
+							onClick={() => onNext()}
+						>
+							{Liferay.Language.get('next')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
 		</>
 	);
 };

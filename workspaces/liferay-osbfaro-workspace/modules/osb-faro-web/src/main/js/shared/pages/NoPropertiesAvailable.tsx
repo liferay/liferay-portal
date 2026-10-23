@@ -3,11 +3,11 @@ import BasePage from 'shared/components/base-page';
 import ClayButton from '@clayui/button';
 import Constants, {Sizes} from 'shared/util/constants';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
+import OnboardingModal from 'shared/components/modals/onboarding-modal';
 import React from 'react';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
-import {connect} from 'react-redux';
 import {User} from 'shared/util/records';
+import {useModal} from '@clayui/modal';
 import {withRequest} from 'shared/hoc';
 
 const {
@@ -16,20 +16,18 @@ const {
 
 interface INoPropertiesAvailableProps
 	extends React.HTMLAttributes<HTMLDivElement> {
-	close: () => void;
 	currentUser: User;
 	dataSources: boolean;
 	groupId: string;
-	open: (modalType: string, config: object) => void;
 }
 
 const NoPropertiesAvailable: React.FC<INoPropertiesAvailableProps> = ({
-	close,
 	currentUser,
 	dataSources,
 	groupId,
-	open,
 }) => {
+	const onboardingModal = useModal();
+
 	const admin = currentUser.isAdmin();
 
 	const description = admin
@@ -72,10 +70,7 @@ const NoPropertiesAvailable: React.FC<INoPropertiesAvailableProps> = ({
 									className="button-root"
 									displayType="primary"
 									onClick={() =>
-										open(modalTypes.ONBOARDING_MODAL, {
-											groupId,
-											onClose: close,
-										})
+										onboardingModal.onOpenChange(true)
 									}
 								>
 									{Liferay.Language.get('start')}
@@ -97,6 +92,14 @@ const NoPropertiesAvailable: React.FC<INoPropertiesAvailableProps> = ({
 					}
 				/>
 			</BasePage.Body>
+
+			{onboardingModal.open && (
+				<OnboardingModal
+					groupId={groupId}
+					observer={onboardingModal.observer}
+					onClose={() => onboardingModal.onOpenChange(false)}
+				/>
+			)}
 		</BasePage>
 	);
 };
@@ -113,6 +116,5 @@ export default compose<any>(
 		({total}: {total: number}) => ({
 			dataSources: !!total,
 		})
-	),
-	connect(null, {close, open})
+	)
 )(NoPropertiesAvailable);
