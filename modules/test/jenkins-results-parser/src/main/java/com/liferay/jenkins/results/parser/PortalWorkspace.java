@@ -554,9 +554,9 @@ public class PortalWorkspace extends BaseWorkspace {
 			return;
 		}
 
-		String basePortalBranchName = matcher.group("basePortalBranchName");
-
 		String basePortalRepositoryName = "liferay-portal";
+
+		String basePortalBranchName = matcher.group("basePortalBranchName");
 
 		if (!basePortalBranchName.equals("master")) {
 			basePortalRepositoryName += "-ee";

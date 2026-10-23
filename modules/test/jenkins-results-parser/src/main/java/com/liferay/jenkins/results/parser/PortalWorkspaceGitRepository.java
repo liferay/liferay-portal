@@ -723,13 +723,13 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	private void _checkoutBasePortalWorkspaceGitRepository() {
+		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+
 		GitWorkingDirectory baseGitWorkingDirectory =
 			_basePortalWorkspaceGitRepository.getGitWorkingDirectory();
 
 		LocalGitBranch baseLocalGitBranch =
 			baseGitWorkingDirectory.getCurrentLocalGitBranch();
-
-		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
 
 		gitWorkingDirectory.fetchNoCheckout(
 			baseLocalGitBranch.getName(), baseLocalGitBranch);
