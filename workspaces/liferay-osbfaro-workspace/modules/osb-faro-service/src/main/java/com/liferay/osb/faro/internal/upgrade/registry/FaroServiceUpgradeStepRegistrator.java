@@ -184,6 +184,12 @@ public class FaroServiceUpgradeStepRegistrator
 			"21.0.1", "22.0.0",
 			UpgradeProcessFactory.addColumns(
 				"OSBFaro_FaroProject", "salesforceAccountId VARCHAR(75) null"));
+
+		registry.register(
+			"22.0.0", "23.0.0",
+			UpgradeProcessFactory.dropTables(
+				"OSBFaro_ContactsCardTemplate",
+				"OSBFaro_ContactsLayoutTemplate"));
 	}
 
 }
