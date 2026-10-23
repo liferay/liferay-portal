@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
+import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.search.hits.SearchHits;
@@ -76,6 +77,10 @@ public interface AssetHelper {
 			long[] classNameIds, long[] classTypeIds,
 			long[] allAssetCategoryIds, String[] allAssetTagNames,
 			String redirect)
+		throws Exception;
+
+	public BooleanQuery getBooleanQuery(
+			SearchContext searchContext, AssetEntryQuery assetEntryQuery)
 		throws Exception;
 
 	public default boolean isValidWord(String word) {
