@@ -45,7 +45,7 @@
 			app.server.type=wildfly
 		</app-server-properties-update>
 
-		<set-app-server-version-number app.server.type="wildfly" app.server.version="30.0.0" />
+		<set-app-server-version-number app.server.type="wildfly" app.server.version="41.0.1" />
 
 		<antcall target="prepare-osgi-module-configurations" />
 
