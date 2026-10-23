@@ -1110,7 +1110,6 @@ public class KBArticleLocalServiceTest {
 		_serviceContext.setPortletId(KBPortletKeys.KNOWLEDGE_BASE_ADMIN);
 
 		KBArticle kbArticle = _addKbArticle();
-
 		User user = UserTestUtil.addUser(_group.getGroupId());
 
 		_kbArticleLocalService.subscribeKBArticle(

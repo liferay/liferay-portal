@@ -436,11 +436,11 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 		UserNotificationEvent userNotificationEvent =
 			userNotificationEvents.get(0);
 
-		JSONObject payloadJSONObject = JSONFactoryUtil.createJSONObject(
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
 			userNotificationEvent.getPayload());
 
 		Assert.assertEquals(
-			kbArticle.getTitle(), payloadJSONObject.getString("entryTitle"));
+			kbArticle.getTitle(), jsonObject.getString("entryTitle"));
 
 		UserNotificationFeedEntry userNotificationFeedEntry =
 			_userNotificationHandler.interpret(
