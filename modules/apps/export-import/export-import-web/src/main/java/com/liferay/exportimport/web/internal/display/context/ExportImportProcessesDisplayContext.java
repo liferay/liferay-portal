@@ -7,6 +7,7 @@ package com.liferay.exportimport.web.internal.display.context;
 
 import com.liferay.exportimport.util.ScopeUtil;
 import com.liferay.exportimport.web.internal.constants.ExportImportFDSNames;
+import com.liferay.exportimport.web.internal.util.ExportImportAPIURLUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
@@ -28,10 +29,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.net.URLEncoder;
-
-import java.nio.charset.StandardCharsets;
 
 import java.util.Arrays;
 import java.util.List;
@@ -160,15 +157,8 @@ public class ExportImportProcessesDisplayContext {
 	}
 
 	private String _getAPIURL(String endpoint) {
-		String portletId = _getPortletId();
-
-		if (Validator.isBlank(portletId)) {
-			return ScopeUtil.getAPIURL(_group, endpoint);
-		}
-
-		return StringBundler.concat(
-			ScopeUtil.getAPIURL(_group, endpoint), "?portletId=",
-			URLEncoder.encode(portletId, StandardCharsets.UTF_8));
+		return ExportImportAPIURLUtil.getAPIURL(
+			endpoint, _group, _themeDisplay.getPlid(), _getPortletId());
 	}
 
 	private FDSActionDropdownItem _getClearFDSActionDropdownItem(
