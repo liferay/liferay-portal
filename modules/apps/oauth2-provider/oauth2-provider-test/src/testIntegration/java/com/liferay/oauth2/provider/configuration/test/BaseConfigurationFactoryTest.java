@@ -86,6 +86,7 @@ public class BaseConfigurationFactoryTest {
 
 	@Test
 	public void testActivate() throws Exception {
+		_testActivateWithUnregisteredCompany();
 		_testActivateWithUnresolvedScopeAliases();
 	}
 
@@ -253,6 +254,56 @@ public class BaseConfigurationFactoryTest {
 			oAuth2Application.getOAuth2ApplicationScopeAliasesId());
 	}
 
+	private void _testActivateWithUnregisteredCompany() throws Exception {
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		Semaphore semaphore = new Semaphore(0);
+
+		ServiceRegistration<PortalK8sConfigMapModifier> serviceRegistration =
+			bundleContext.registerService(
+				PortalK8sConfigMapModifier.class,
+				(configMapModelConsumer, configMapName) -> {
+					semaphore.release();
+
+					return PortalK8sConfigMapModifier.Result.UNCHANGED;
+				},
+				MapUtil.singletonDictionary(
+					"service.ranking", Integer.MAX_VALUE));
+
+		try {
+			String webId = RandomTestUtil.randomString() + ".com";
+
+			Configuration configuration = _createFactoryConfiguration(
+				OAuth2ProviderApplicationUserAgentConfiguration.class.getName(),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"_portalK8sConfigMapModifier.cardinality.minimum", 0
+				).put(
+					"baseURL", "http://foo.me"
+				).put(
+					"dxp.lxc.liferay.com.virtualInstanceId", webId
+				).put(
+					"projectName", RandomTestUtil.randomString()
+				).build());
+
+			try {
+				_company = CompanyTestUtil.addCompanyWithWebId(webId);
+
+				semaphore.acquire();
+
+				Assert.assertNotNull(
+					_oAuth2ApplicationLocalService.
+						fetchOAuth2ApplicationByExternalReferenceCode(
+							_EXTERNAL_REFERENCE_CODE, _company.getCompanyId()));
+			}
+			finally {
+				ConfigurationTestUtil.deleteConfiguration(configuration);
+			}
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+	}
+
 	private void _testActivateWithUnresolvedScopeAliases() throws Exception {
 		JAXRSWhiteboardTestUtil.ensureReady();
 
@@ -410,6 +461,9 @@ public class BaseConfigurationFactoryTest {
 	}
 
 	private static final String _EXTERNAL_REFERENCE_CODE = "foo";
+
+	@DeleteAfterTestRun
+	private Company _company;
 
 	@Inject
 	private ConfigurationAdmin _configurationAdmin;
