@@ -144,6 +144,12 @@ public abstract class BaseWorkspaceGitRepository
 					JenkinsResultsParserUtil.getCurrentTimeMillis()));
 		}
 
+		String branchNamePrefix = getUpstreamBranchName() + "-temp";
+
+		if (!branchName.contains(branchNamePrefix)) {
+			branchName = branchName.replaceAll(".+-temp", branchNamePrefix);
+		}
+
 		_branchName = branchName;
 
 		return _branchName;
