@@ -1,11 +1,11 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import Form, {
 	validateMaxLength,
 	validateRequired,
 } from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
 import React from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
@@ -59,10 +59,9 @@ const ReportIssue: React.FC<IHelpWidgetScreenProps & PropsFromRedux> = ({
 
 	return (
 		<>
-			<Modal.Header
-				onClose={onClose}
-				title={Liferay.Language.get('report-an-issue')}
-			/>
+			<ClayModal.Header>
+				{Liferay.Language.get('report-an-issue')}
+			</ClayModal.Header>
 
 			<Form
 				initialValues={{description: '', issueTitle: ''}}
@@ -70,7 +69,7 @@ const ReportIssue: React.FC<IHelpWidgetScreenProps & PropsFromRedux> = ({
 			>
 				{({handleSubmit, isSubmitting, isValid}) => (
 					<Form.Form onSubmit={handleSubmit}>
-						<Modal.Body>
+						<ClayModal.Body>
 							<Form.Group>
 								<Form.GroupItem className="mb-4">
 									<Form.Input
@@ -104,28 +103,34 @@ const ReportIssue: React.FC<IHelpWidgetScreenProps & PropsFromRedux> = ({
 									)}
 								</Form.GroupItem>
 							</Form.Group>
-						</Modal.Body>
+						</ClayModal.Body>
 
-						<Modal.Footer>
-							<ClayButton
-								className="button-root"
-								displayType="secondary"
-								onClick={onClose}
-							>
-								{Liferay.Language.get('cancel')}
-							</ClayButton>
+						<ClayModal.Footer
+							last={
+								<ClayButton.Group spaced>
+									<ClayButton
+										className="button-root"
+										displayType="secondary"
+										onClick={onClose}
+									>
+										{Liferay.Language.get('cancel')}
+									</ClayButton>
 
-							<ClayButton
-								className="button-root"
-								disabled={!isValid}
-								displayType="primary"
-								type="submit"
-							>
-								{isSubmitting && <Loading align={Align.Left} />}
+									<ClayButton
+										className="button-root"
+										disabled={!isValid}
+										displayType="primary"
+										type="submit"
+									>
+										{isSubmitting && (
+											<Loading align={Align.Left} />
+										)}
 
-								{Liferay.Language.get('submit')}
-							</ClayButton>
-						</Modal.Footer>
+										{Liferay.Language.get('submit')}
+									</ClayButton>
+								</ClayButton.Group>
+							}
+						/>
 					</Form.Form>
 				)}
 			</Form>

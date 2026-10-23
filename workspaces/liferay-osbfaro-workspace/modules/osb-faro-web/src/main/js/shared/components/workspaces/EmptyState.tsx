@@ -1,63 +1,66 @@
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
+import ContactSalesModal from 'shared/components/modals/ContactSalesModal';
 import getCN from 'classnames';
 import React from 'react';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {connect} from 'react-redux';
 import {DisplayType} from 'shared/types';
 import {ENABLE_ADD_TRIAL_WORKSPACE, FaroEnv} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
+import {useModal} from '@clayui/modal';
 
-interface IEmptyStateProps extends React.HTMLAttributes<HTMLElement> {
-	close: () => void;
-	open: (modalType: string, props: object) => void;
-}
+type IEmptyStateProps = React.HTMLAttributes<HTMLElement>;
 
-const EmptyState: React.FC<IEmptyStateProps> = ({
-	className,
-	close,
-	open,
-	...otherProps
-}) => (
-	<div className={getCN('empty-container row', className)} {...otherProps}>
+const EmptyState: React.FC<IEmptyStateProps> = ({className, ...otherProps}) => {
+	const contactSalesModal = useModal();
+
+	return (
 		<div
-			className={
-				FARO_ENV === FaroEnv.Production ? 'col-xl-12' : 'col-xl-6'
-			}
+			className={getCN('empty-container row', className)}
+			{...otherProps}
 		>
-			<CardEmpty
-				buttonProps={{
-					displayType: 'primary',
-					label: Liferay.Language.get('contact-sales'),
-					onClick: () =>
-						open(modalTypes.CONTACT_SALES_MODAL, {
-							onClose: close,
-						}),
-				}}
-				description={Liferay.Language.get(
-					'do-more-with-our-business-&-enterprise-plans'
-				)}
-				icon="ac_integration"
-			/>
-		</div>
-
-		{ENABLE_ADD_TRIAL_WORKSPACE && (
-			<div className="col-xl-6">
+			<div
+				className={
+					FARO_ENV === FaroEnv.Production ? 'col-xl-12' : 'col-xl-6'
+				}
+			>
 				<CardEmpty
 					buttonProps={{
-						href: toRoute(Routes.WORKSPACE_ADD_TRIAL),
-						label: Liferay.Language.get('start-free-trial'),
+						displayType: 'primary',
+						label: Liferay.Language.get('contact-sales'),
+						onClick: () => contactSalesModal.onOpenChange(true),
 					}}
 					description={Liferay.Language.get(
-						'90-day-full-feature-trial'
+						'do-more-with-our-business-&-enterprise-plans'
 					)}
-					icon="ac_page_analytics"
+					icon="ac_integration"
 				/>
 			</div>
-		)}
-	</div>
-);
+
+			{ENABLE_ADD_TRIAL_WORKSPACE && (
+				<div className="col-xl-6">
+					<CardEmpty
+						buttonProps={{
+							href: toRoute(Routes.WORKSPACE_ADD_TRIAL),
+							label: Liferay.Language.get('start-free-trial'),
+						}}
+						description={Liferay.Language.get(
+							'90-day-full-feature-trial'
+						)}
+						icon="ac_page_analytics"
+					/>
+				</div>
+			)}
+
+			{contactSalesModal.open && (
+				<ContactSalesModal
+					observer={contactSalesModal.observer}
+					onClose={() => contactSalesModal.onOpenChange(false)}
+				/>
+			)}
+		</div>
+	);
+};
 
 interface ICardItemProps extends React.HTMLAttributes<HTMLElement> {
 	buttonProps: {
@@ -104,4 +107,4 @@ export const CardEmpty: React.FC<ICardItemProps> = ({
 	);
 };
 
-export default connect(null, {close, open})(EmptyState);
+export default EmptyState;

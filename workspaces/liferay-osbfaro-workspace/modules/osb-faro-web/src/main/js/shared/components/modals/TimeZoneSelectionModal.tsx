@@ -1,8 +1,8 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import Form from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
 import React, {useRef, useState} from 'react';
 import TimeZonePicker from 'shared/components/form/TimeZonePicker';
 import {connect, ConnectedProps} from 'react-redux';
@@ -12,9 +12,10 @@ import {
 	getDateNow,
 	TIME_FORMAT,
 } from 'shared/util/date';
-import {Modal as ModalType} from 'shared/types';
 import {RootState} from 'shared/store';
 import {TimeZone} from 'shared/util/records';
+import type {Observer} from '@clayui/modal/lib/types';
+import worldMapURL from '../../../../images/backgrounds/world_map.svg?url';
 
 const connector = connect((store: RootState, {groupId}: {groupId: string}) => ({
 	timeZone: new TimeZone(
@@ -27,12 +28,14 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 interface ITimeZoneSelectionModal extends PropsFromRedux {
 	groupId: string;
 	notificationId: string;
-	onClose: ModalType.close;
+	observer: Observer;
+	onClose: () => void;
 }
 
 const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 	groupId,
 	notificationId,
+	observer,
 	onClose,
 	timeZone,
 }) => {
@@ -54,8 +57,12 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 	};
 
 	return (
-		<Modal>
-			<Modal.Header title={Liferay.Language.get('workspace-timezone')} />
+		<ClayModal disableAutoClose observer={observer}>
+			<ClayModal.Header withTitle={false}>
+				<ClayModal.Title>
+					{Liferay.Language.get('workspace-timezone')}
+				</ClayModal.Title>
+			</ClayModal.Header>
 
 			<Form
 				initialValues={{
@@ -82,15 +89,23 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 
 					return (
 						<Form.Form onSubmit={handleSubmit}>
-							<Modal.Body>
+							<ClayModal.Body>
 								<div className="mb-4">
 									{Liferay.Language.get(
 										'your-workspace-now-supports-custom-timezones.-setting-timezones-will-only-impact-future-data.-expect-spiked-or-flat-data-for-1-2-days-following-a-change'
 									)}
 								</div>
 
-								<div className="picker-root-container">
-									<div className="pt-5 time-zone-spaced-select">
+								<div
+									className="mt-4 mx-4"
+									style={{
+										backgroundImage: `url(${worldMapURL})`,
+										backgroundPositionX: 'center',
+										backgroundRepeat: 'no-repeat',
+										minHeight: '15em',
+									}}
+								>
+									<div className="pt-5">
 										<TimeZonePicker
 											fieldName="timeZoneId"
 											initialTimeZone={timeZone}
@@ -107,44 +122,52 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 										/>
 									</div>
 
-									<span className="current-time-display">
+									<span className="h4 font-weight-semi-bold text-secondary">
 										{Liferay.Language.get(
 											'current-time-colon'
 										)}
 									</span>
-									<span className="current-time-value ml-4">
+									<span className="font-weight-bold h2 ml-4 text-secondary">
 										{currentTime}
 									</span>
 								</div>
-							</Modal.Body>
+							</ClayModal.Body>
 
-							<Modal.Footer>
-								<ClayButton
-									className="button-root"
-									displayType="secondary"
-									onClick={handleClose}
-								>
-									{Liferay.Language.get('do-this-later')}
-								</ClayButton>
+							<ClayModal.Footer
+								last={
+									<ClayButton.Group spaced>
+										<ClayButton
+											className="button-root"
+											displayType="secondary"
+											onClick={handleClose}
+										>
+											{Liferay.Language.get(
+												'do-this-later'
+											)}
+										</ClayButton>
 
-								<ClayButton
-									className="button-root"
-									disabled={!isValid}
-									displayType="primary"
-									type="submit"
-								>
-									{isSubmitting && (
-										<Loading align={Align.Left} />
-									)}
+										<ClayButton
+											className="button-root"
+											disabled={!isValid}
+											displayType="primary"
+											type="submit"
+										>
+											{isSubmitting && (
+												<Loading align={Align.Left} />
+											)}
 
-									{Liferay.Language.get('set-timezone')}
-								</ClayButton>
-							</Modal.Footer>
+											{Liferay.Language.get(
+												'set-timezone'
+											)}
+										</ClayButton>
+									</ClayButton.Group>
+								}
+							/>
 						</Form.Form>
 					);
 				}}
 			</Form>
-		</Modal>
+		</ClayModal>
 	);
 };
 

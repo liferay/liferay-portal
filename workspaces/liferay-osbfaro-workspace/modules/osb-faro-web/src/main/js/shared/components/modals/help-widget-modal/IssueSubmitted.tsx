@@ -1,29 +1,33 @@
+import ClayModal from '@clayui/modal';
 import ClayIcon from 'shared/components/Icon';
-import Modal from 'shared/components/modal';
 import React from 'react';
 import {IHelpWidgetScreenProps} from './types';
+import {Text} from '@clayui/core';
 
-const IssueSubmitted: React.FC<IHelpWidgetScreenProps> = ({onClose}) => (
+const IssueSubmitted: React.FC<IHelpWidgetScreenProps> = () => (
 	<>
-		<Modal.Header
-			onClose={onClose}
-			title={Liferay.Language.get('issue-submitted')}
-		/>
+		<ClayModal.Header>
+			{Liferay.Language.get('issue-submitted')}
+		</ClayModal.Header>
 
-		<Modal.Body className="d-flex flex-column align-items-center">
+		<ClayModal.Body className="d-flex flex-column align-items-center">
 			<ClayIcon
 				className="icon-root icon-size-xxxl my-5"
 				symbol="ac_no_sites"
 			/>
 
-			<h3>{Liferay.Language.get('message-received')}</h3>
+			<p>
+				<Text size={6} weight="bold">
+					{Liferay.Language.get('message-received')}
+				</Text>
+			</p>
 
-			<p className="description">
+			<p className="text-secondary">
 				{Liferay.Language.get(
 					'thanks-for-your-contribution-well-look-in-to-this-as-soon-as-possible'
 				)}
 			</p>
-		</Modal.Body>
+		</ClayModal.Body>
 	</>
 );
 

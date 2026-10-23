@@ -2,35 +2,26 @@ import ClayButton from '@clayui/button';
 import ClayDropDown, {Align} from '@clayui/drop-down';
 import ClayIcon from 'shared/components/Icon';
 import ClayLink from '@clayui/link';
+import HelpWidgetModal from 'shared/components/modals/help-widget-modal';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect, ConnectedProps} from 'react-redux';
 import {Map} from 'immutable';
-import {Modal} from 'shared/types';
 import {PLANS} from 'shared/util/subscriptions';
 import {RootState} from 'shared/store';
+import {useModal} from '@clayui/modal';
 
 const getDropdownItems = ({
-	close,
-	groupId,
-	open,
+	onReportIssue,
 	showModal,
 }: {
-	close: Modal.close;
-	groupId: string;
-	open: Modal.open;
+	onReportIssue: () => void;
 	showModal: boolean;
 }): {href?: string; label: string; onClick?: () => void; target?: string}[] => [
 	showModal
 		? {
 				label: Liferay.Language.get('report-an-issue'),
-				onClick: () => {
-					open(modalTypes.HELP_WIDGET_MODAL, {
-						groupId,
-						onClose: close,
-					});
-				},
+				onClick: onReportIssue,
 			}
 		: {
 				href: URLConstants.TicketPageLink,
@@ -44,15 +35,12 @@ const getDropdownItems = ({
 	},
 ];
 
-const connector = connect(
-	(store: RootState, {groupId}: {groupId: string}) => ({
-		faroSubscriptionIMap: store.getIn(
-			['projects', groupId, 'data', 'faroSubscription'],
-			Map()
-		),
-	}),
-	{close, open}
-);
+const connector = connect((store: RootState, {groupId}: {groupId: string}) => ({
+	faroSubscriptionIMap: store.getIn(
+		['projects', groupId, 'data', 'faroSubscription'],
+		Map()
+	),
+}));
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -61,11 +49,11 @@ interface IHelpWidgetProps extends PropsFromRedux {
 }
 
 const HelpWidget: React.FC<IHelpWidgetProps> = ({
-	close,
 	faroSubscriptionIMap,
 	groupId,
-	open,
 }) => {
+	const helpModal = useModal();
+
 	const basicTier =
 		faroSubscriptionIMap.get('name') === (PLANS as any).basic.name;
 
@@ -92,9 +80,7 @@ const HelpWidget: React.FC<IHelpWidgetProps> = ({
 				}
 			>
 				{getDropdownItems({
-					close,
-					groupId,
-					open,
+					onReportIssue: () => helpModal.onOpenChange(true),
 					showModal: basicTier,
 				}).map(({href, label, onClick, target}, index) => (
 					<ClayDropDown.Item key={index}>
@@ -118,6 +104,14 @@ const HelpWidget: React.FC<IHelpWidgetProps> = ({
 					</ClayDropDown.Item>
 				))}
 			</ClayDropDown>
+
+			{helpModal.open && (
+				<HelpWidgetModal
+					groupId={groupId}
+					observer={helpModal.observer}
+					onClose={() => helpModal.onOpenChange(false)}
+				/>
+			)}
 		</div>
 	);
 };

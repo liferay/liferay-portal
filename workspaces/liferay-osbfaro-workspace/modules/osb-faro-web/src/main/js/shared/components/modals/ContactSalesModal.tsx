@@ -1,6 +1,7 @@
+import ClayModal from '@clayui/modal';
 import HubspotForm from 'shared/components/HubspotForm';
-import Modal from 'shared/components/modal';
 import React from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {connect, ConnectedProps} from 'react-redux';
@@ -15,20 +16,21 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 interface IContactSalesModalProps
 	extends React.HTMLAttributes<HTMLElement>,
 		PropsFromRedux {
+	observer: Observer;
 	onClose: () => void;
 }
 
 const ContactSalesModal: React.FC<IContactSalesModalProps> = ({
 	addAlert,
+	observer,
 	onClose,
 }) => (
-	<Modal>
-		<Modal.Header
-			onClose={onClose}
-			title={Liferay.Language.get('contact-sales')}
-		/>
+	<ClayModal observer={observer}>
+		<ClayModal.Header>
+			{Liferay.Language.get('contact-sales')}
+		</ClayModal.Header>
 
-		<Modal.Body>
+		<ClayModal.Body>
 			<HubspotForm
 				css=""
 				cssClass="hs-form-container"
@@ -45,8 +47,8 @@ const ContactSalesModal: React.FC<IContactSalesModalProps> = ({
 				portalId={PORTAL_ID}
 				submitButtonClass="btn btn-block btn-primary"
 			/>
-		</Modal.Body>
-	</Modal>
+		</ClayModal.Body>
+	</ClayModal>
 );
 
 export default connector(ContactSalesModal);

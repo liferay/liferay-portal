@@ -1,5 +1,6 @@
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
 import Constants, {FaroEnv} from 'shared/util/constants';
 import Form, {
 	validateMaxLength,
@@ -15,13 +16,11 @@ import Sheet from 'shared/components/Sheet';
 import TimeZonePicker from '../form/TimeZonePicker';
 import URLConstants from 'shared/util/url-constants';
 import {BasePageContext} from './BasePage';
-import {close, open} from 'shared/actions/modals';
-import {connect, ConnectedProps} from 'react-redux';
-import {Modal} from 'shared/types';
 import {Project, TimeZone} from 'shared/util/records';
 import {sequence} from 'shared/util/promise';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
+import {useModal} from '@clayui/modal';
 import {
 	validateEmail,
 	validateEmailArr,
@@ -65,13 +64,7 @@ const getDefaultServerLocation = () => {
 	}
 };
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface IAddWorkspaceFormProps
-	extends React.HTMLAttributes<HTMLElement>,
-		PropsFromRedux {
+interface IAddWorkspaceFormProps extends React.HTMLAttributes<HTMLElement> {
 	disabled: boolean;
 	editing: boolean;
 	emailAddressDomains: string[];
@@ -81,17 +74,22 @@ interface IAddWorkspaceFormProps
 
 const AddWorkspaceForm: React.FC<IAddWorkspaceFormProps> = ({
 	className,
-	close,
 	disabled = false,
 	editing = false,
 	emailAddressDomains,
 	onSubmit,
-	open,
 	project,
 }) => {
 	const {currentUser} = useContext(BasePageContext);
 
 	const formRef = useRef<any>(null);
+
+	const urlModal = useModal();
+
+	const [pendingSubmit, setPendingSubmit] = useState<{
+		friendlyURL: string;
+		submit: () => Promise<any>;
+	}>();
 
 	const [inputListValue, setInputListValue] = useState<string>('');
 	const [emailAddressesInputValues, setEmailAddressesInputValues] =
@@ -138,33 +136,12 @@ const AddWorkspaceForm: React.FC<IAddWorkspaceFormProps> = ({
 		if (newFriendlyURL !== initialFriendlyURL) {
 			setSubmitting(false);
 
-			open(Modal.modalTypes.CONFIRMATION_MODAL, {
-				message: (
-					<div>
-						<p className="text-secondary">
-							{Liferay.Language.get(
-								'you-can-only-set-your-friendly-workspace-url-once.-are-you-sure-you-would-like-to-save-it-as-the-following-url'
-							)}
-						</p>
-
-						<p>
-							<span className="text-secondary">
-								{`${faroURL}/workspace-name/`}
-							</span>
-
-							<b>{newFriendlyURL}</b>
-						</p>
-					</div>
-				),
-				modalVariant: 'modal-info',
-				onClose: close,
-				onSubmit: submitFn,
-				submitMessage: editing
-					? Liferay.Language.get('save')
-					: Liferay.Language.get('create-workspace'),
-				title: Liferay.Language.get('setting-friendly-workspace-url'),
-				titleIcon: 'info-circle',
+			setPendingSubmit({
+				friendlyURL: newFriendlyURL,
+				submit: submitFn,
 			});
+
+			urlModal.onOpenChange(true);
 		}
 		else {
 			submitFn();
@@ -582,8 +559,42 @@ const AddWorkspaceForm: React.FC<IAddWorkspaceFormProps> = ({
 					)}
 				</Form>
 			</Sheet>
+
+			{urlModal.open && pendingSubmit && (
+				<ConfirmationModal
+					message={
+						<div>
+							<p className="text-secondary">
+								{Liferay.Language.get(
+									'you-can-only-set-your-friendly-workspace-url-once.-are-you-sure-you-would-like-to-save-it-as-the-following-url'
+								)}
+							</p>
+
+							<p>
+								<span className="text-secondary">
+									{`${faroURL}/workspace-name/`}
+								</span>
+
+								<b>{pendingSubmit.friendlyURL}</b>
+							</p>
+						</div>
+					}
+					observer={urlModal.observer}
+					onClose={() => urlModal.onOpenChange(false)}
+					onSubmit={() => pendingSubmit.submit()}
+					submitMessage={
+						editing
+							? Liferay.Language.get('save')
+							: Liferay.Language.get('create-workspace')
+					}
+					title={Liferay.Language.get(
+						'setting-friendly-workspace-url'
+					)}
+					type="info"
+				/>
+			)}
 		</div>
 	);
 };
 
-export default connector(AddWorkspaceForm);
+export default AddWorkspaceForm;
