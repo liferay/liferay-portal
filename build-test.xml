@@ -2056,15 +2056,9 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 
 					Properties gradleProperties = JenkinsResultsParserUtil.getProperties(new File[] {new File("@{workspace.dir}", "gradle.properties")});
 
-					String product = JenkinsResultsParserUtil.getProperty(gradleProperties, "liferay.workspace.product");
+					String workspaceBundleURL = JenkinsResultsParserUtil.getProperty(gradleProperties, "liferay.workspace.bundle.url");
 
-					if (JenkinsResultsParserUtil.isNullOrEmpty(product)) {
-						String workspaceBundleURL = JenkinsResultsParserUtil.getProperty(gradleProperties, "liferay.workspace.bundle.url");
-
-						if (JenkinsResultsParserUtil.isNullOrEmpty(workspaceBundleURL)) {
-							return;
-						}
-
+					if (!JenkinsResultsParserUtil.isNullOrEmpty(workspaceBundleURL)) {
 						File bundleFile = new File(mirrorDirName, workspaceBundleURL.replaceFirst("^https?://[^/]+/", ""));
 
 						if (bundleFile.exists()) {
@@ -2078,6 +2072,12 @@ jdbc.default.connectionProperties=oracle.jdbc.ReadTimeout=0;oracle.net.CONNECT_T
 							System.out.println("Using the workspace bundle at " + workspaceBundleURL);
 						}
 
+						return;
+					}
+
+					String product = JenkinsResultsParserUtil.getProperty(gradleProperties, "liferay.workspace.product");
+
+					if (JenkinsResultsParserUtil.isNullOrEmpty(product)) {
 						return;
 					}
 
