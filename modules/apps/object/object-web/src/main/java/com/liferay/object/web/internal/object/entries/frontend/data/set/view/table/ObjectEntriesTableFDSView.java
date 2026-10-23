@@ -210,7 +210,8 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 					businessType,
 					ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
 
-				stringFDSTableSchemaField.setContentRenderer("link");
+				stringFDSTableSchemaField.setContentRenderer(
+					"attachmentDataRenderer");
 			}
 			else if (Objects.equals(
 						businessType,
@@ -493,12 +494,6 @@ public class ObjectEntriesTableFDSView extends BaseTableFDSView {
 				businessType, ObjectFieldConstants.BUSINESS_TYPE_ASSIGNEE)) {
 
 			return fieldName + ".name";
-		}
-
-		if (Objects.equals(
-				businessType, ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT)) {
-
-			return fieldName + ".link";
 		}
 
 		if (Objects.equals(
