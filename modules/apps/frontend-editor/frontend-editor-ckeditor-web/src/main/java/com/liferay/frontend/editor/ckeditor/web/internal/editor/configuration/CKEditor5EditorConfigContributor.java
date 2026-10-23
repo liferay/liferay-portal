@@ -10,9 +10,11 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -59,7 +61,11 @@ public class CKEditor5EditorConfigContributor
 			inputEditorTaglibAttributes.get("liferay-ui:input-editor:name"));
 		String placeholder = LanguageUtil.format(
 			themeDisplay.getLocale(), "start-writing-content", false);
+
 		String licenseKey = _ckEditor5Configuration.licenseKey();
+
+		JSONObject licensePayloadJSONObject = _getLicensePayloadJSONObject(
+			licenseKey);
 
 		jsonObject.put(
 			"editorType", "ckeditor5"
@@ -73,10 +79,10 @@ public class CKEditor5EditorConfigContributor
 			"preset", "advanced"
 		).put(
 			"showPasteFromOfficeEnhanced",
-			ReleaseInfo.isDXP() && _isLicenseKeyValid(licenseKey)
+			_isLicenseFeatureEnabled(licensePayloadJSONObject, "POE")
 		).put(
 			"showSourceEditingEnhanced",
-			ReleaseInfo.isDXP() && _isLicenseKeyValid(licenseKey)
+			_isLicenseFeatureEnabled(licensePayloadJSONObject, "SEE")
 		);
 	}
 
@@ -87,15 +93,15 @@ public class CKEditor5EditorConfigContributor
 			CKEditor5Configuration.class, properties);
 	}
 
-	private boolean _isLicenseKeyValid(String licenseKey) {
+	private JSONObject _getLicensePayloadJSONObject(String licenseKey) {
 		if (Validator.isNull(licenseKey)) {
-			return false;
+			return null;
 		}
 
 		String[] parts = licenseKey.split("\\.");
 
 		if (parts.length != 3) {
-			return false;
+			return null;
 		}
 
 		try {
@@ -114,10 +120,10 @@ public class CKEditor5EditorConfigContributor
 			long expirationTime = payloadJSONObject.getLong("exp", 0);
 
 			if (expirationTime > (System.currentTimeMillis() / Time.SECOND)) {
-				return true;
+				return payloadJSONObject;
 			}
 
-			return false;
+			return null;
 		}
 		catch (IllegalArgumentException | JSONException exception) {
 			if (_log.isDebugEnabled()) {
@@ -125,8 +131,25 @@ public class CKEditor5EditorConfigContributor
 					"Unable to parse the CKEditor 5 license key", exception);
 			}
 
+			return null;
+		}
+	}
+
+	private boolean _isLicenseFeatureEnabled(
+		JSONObject licensePayloadJSONObject, String licenseFeatureCode) {
+
+		if (!ReleaseInfo.isDXP() || (licensePayloadJSONObject == null)) {
 			return false;
 		}
+
+		JSONArray featuresJSONArray = licensePayloadJSONObject.getJSONArray(
+			"features");
+
+		if (featuresJSONArray == null) {
+			return false;
+		}
+
+		return JSONUtil.hasValue(featuresJSONArray, licenseFeatureCode);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
