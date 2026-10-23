@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONObject;
 
@@ -186,12 +188,16 @@ public class PortalWorkspace extends BaseWorkspace {
 
 	protected PortalWorkspace(JSONObject jsonObject) {
 		super(jsonObject);
+
+		_setBasePortalWorkspaceGitRepository();
 	}
 
 	protected PortalWorkspace(
 		String primaryRepositoryName, String upstreamBranchName) {
 
 		super(primaryRepositoryName, upstreamBranchName);
+
+		_setBasePortalWorkspaceGitRepository();
 	}
 
 	protected PortalWorkspace(
@@ -199,6 +205,8 @@ public class PortalWorkspace extends BaseWorkspace {
 		String jobName) {
 
 		super(primaryRepositoryName, upstreamBranchName, jobName);
+
+		_setBasePortalWorkspaceGitRepository();
 	}
 
 	protected void copyLiferayOSBAsahRepositoryToModule() {
@@ -529,6 +537,47 @@ public class PortalWorkspace extends BaseWorkspace {
 		return (LiferayReleaseToolWorkspaceGitRepository)workspaceGitRepository;
 	}
 
+	private void _setBasePortalWorkspaceGitRepository() {
+		WorkspaceGitRepository primaryWorkspaceGitRepository =
+			getPrimaryWorkspaceGitRepository();
+
+		if (!(primaryWorkspaceGitRepository instanceof
+				PortalWorkspaceGitRepository)) {
+
+			return;
+		}
+
+		Matcher matcher = _portalPrivateBranchNamePattern.matcher(
+			primaryWorkspaceGitRepository.getUpstreamBranchName());
+
+		if (!matcher.matches()) {
+			return;
+		}
+
+		String basePortalBranchName = matcher.group("basePortalBranchName");
+
+		String basePortalRepositoryName = "liferay-portal";
+
+		if (!basePortalBranchName.equals("master")) {
+			basePortalRepositoryName += "-ee";
+		}
+
+		WorkspaceGitRepository workspaceGitRepository =
+			getWorkspaceGitRepository(
+				JenkinsResultsParserUtil.getGitDirectoryName(
+					basePortalRepositoryName, basePortalBranchName));
+
+		if (!(workspaceGitRepository instanceof PortalWorkspaceGitRepository)) {
+			return;
+		}
+
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			(PortalWorkspaceGitRepository)primaryWorkspaceGitRepository;
+
+		portalWorkspaceGitRepository.setBasePortalWorkspaceGitRepository(
+			(PortalWorkspaceGitRepository)workspaceGitRepository);
+	}
+
 	private boolean _updateWorkspaceGitRepository(
 		String gitCommitFilePath, String gitRepositoryName) {
 
@@ -567,6 +616,9 @@ public class PortalWorkspace extends BaseWorkspace {
 
 		return true;
 	}
+
+	private static final Pattern _portalPrivateBranchNamePattern =
+		Pattern.compile("(?<basePortalBranchName>.+)-private");
 
 	private boolean _commitOSBAsahModule;
 	private String _osbAsahGitHubURL;

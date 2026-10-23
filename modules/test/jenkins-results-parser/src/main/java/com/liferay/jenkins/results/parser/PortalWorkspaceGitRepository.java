@@ -138,6 +138,27 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 			"liferay-portal-ee", "master-private");
 	}
 
+	public void setBasePortalWorkspaceGitRepository(
+		PortalWorkspaceGitRepository basePortalWorkspaceGitRepository) {
+
+		_basePortalWorkspaceGitRepository = basePortalWorkspaceGitRepository;
+	}
+
+	@Override
+	public synchronized void setUp() {
+		if (isSetUp()) {
+			return;
+		}
+
+		if (_basePortalWorkspaceGitRepository != null) {
+			_basePortalWorkspaceGitRepository.setUp();
+		}
+
+		super.setUp();
+
+		_checkoutBasePortalWorkspaceGitRepository();
+	}
+
 	public void setUpPortalProfile() {
 		String setupProfileDXPBranchNamesString = null;
 
@@ -573,6 +594,56 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		}
 	}
 
+	private void _checkoutBasePortalWorkspaceGitRepository() {
+		if ((_basePortalWorkspaceGitRepository == null) ||
+			!JenkinsResultsParserUtil.isTopLevelJobName(
+				Environment.get("JOB_NAME"))) {
+
+			return;
+		}
+
+		File buildWorkingDirFile = new File(
+			getDirectory(), "build-working-dir.xml");
+
+		if (!buildWorkingDirFile.exists()) {
+			return;
+		}
+
+		GitWorkingDirectory gitWorkingDirectory = getGitWorkingDirectory();
+
+		GitWorkingDirectory baseGitWorkingDirectory =
+			_basePortalWorkspaceGitRepository.getGitWorkingDirectory();
+
+		LocalGitBranch localGitBranch =
+			baseGitWorkingDirectory.getCurrentLocalGitBranch();
+
+		gitWorkingDirectory.fetch(
+			_basePortalWorkspaceGitRepository.getUpstreamBranchName(),
+			localGitBranch);
+
+		Properties properties = new Properties();
+
+		properties.setProperty(
+			"public.branch.git.hash", localGitBranch.getSHA());
+
+		JenkinsResultsParserUtil.writePropertiesFile(
+			new File(
+				getDirectory(),
+				JenkinsResultsParserUtil.combine(
+					"working.dir.", Environment.get("HOSTNAME"),
+					".properties")),
+			properties, true);
+
+		try {
+			AntUtil.callTarget(
+				getDirectory(), buildWorkingDirFile.getName(),
+				"checkout-portal");
+		}
+		catch (AntException antException) {
+			throw new RuntimeException(antException);
+		}
+	}
+
 	private String _getLiferayFacesURL(
 		String repositoryName, String propertyName) {
 
@@ -718,6 +789,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 	}
 
 	private Properties _appServerProperties;
+	private PortalWorkspaceGitRepository _basePortalWorkspaceGitRepository;
 	private boolean _setUpBinariesCache;
 	private boolean _setUpYarn;
 	private boolean _setUpYarnCache;
