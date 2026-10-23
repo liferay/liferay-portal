@@ -1,20 +1,6 @@
 <?xml version="1.0"?>
 
 <custom-sql>
-	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.countByCreateDate">
-		<![CDATA[
-			SELECT
-				COUNT(*) AS COUNT_VALUE
-			FROM
-				WikiPage
-			WHERE
-				(groupId = ?) AND
-				(nodeId = ?) AND
-				(createDate [$CREATE_DATE_COMPARATOR$] ?) AND
-				(head = ?) AND
-				(status = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.countByModifiedDate">
 		<![CDATA[
 			SELECT
@@ -42,33 +28,6 @@
 				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$STATUS$])
 		]]>
 	</sql>
-	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.findByResourcePrimKey">
-		<![CDATA[
-			SELECT
-				{WikiPage.*}
-			FROM
-				WikiPage
-			WHERE
-				(resourcePrimKey = ?) AND
-				(head = [$TRUE$])
-		]]>
-	</sql>
-	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.findByCreateDate">
-		<![CDATA[
-			SELECT
-				{WikiPage.*}
-			FROM
-				WikiPage
-			WHERE
-				(groupId = ?) AND
-				(nodeId = ?) AND
-				(createDate [$CREATE_DATE_COMPARATOR$] ?) AND
-				(head = ?) AND
-				(status = ?)
-			ORDER BY
-				createDate DESC
-		]]>
-	</sql>
 	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.findByModifiedDate">
 		<![CDATA[
 			SELECT
@@ -83,20 +42,6 @@
 				(status = ?)
 			ORDER BY
 				modifiedDate DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.findByNoAssets">
-		<![CDATA[
-			SELECT
-				{WikiPage.*}
-			FROM
-				WikiPage
-			LEFT JOIN
-				AssetEntry ON
-					(AssetEntry.classNameId = ?) AND
-					(AssetEntry.classPK = WikiPage.resourcePrimKey)
-			WHERE
-				AssetEntry.classPK IS NULL
 		]]>
 	</sql>
 	<sql id="com.liferay.wiki.service.persistence.WikiPageFinder.findByG_N_H_S">
