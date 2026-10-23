@@ -1,10 +1,6 @@
 apiVersion: v2
 appVersion: latest
 dependencies:
-    -   condition: liferay-dxp-operator.enabled
-        name: liferay-dxp-operator
-        repository: file://../dxp-operator
-        version: 0.1.2
     -   condition: liferay-subchart-backup-controller.enabled
         name: liferay-subchart-backup-controller
         version: 0.1.2
