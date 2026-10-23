@@ -83,6 +83,8 @@ public class SAPEntryScopeDescriptorFinder
 
 				_sapEntryScopes.put(sapEntryScope.getScope(), sapEntryScope);
 			}
+
+			_initialized = true;
 		}
 	}
 
