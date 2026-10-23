@@ -1,4 +1,5 @@
 import * as API from 'shared/api';
+import AddChannelModal from 'shared/components/modals/AddChannelModal';
 import BasePage from 'settings/components/base-page/BasePage';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
@@ -7,9 +8,12 @@ import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import ListComponent from 'shared/hoc/ListComponent';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import React, {useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import TextTruncate from 'shared/components/TextTruncate';
+import ClearPropertyDataModal from 'shared/components/modals/ClearPropertyDataModal';
+import DeletePropertyModal from 'shared/components/modals/DeletePropertyModal';
+import UnableDeletePropertyModal from 'shared/components/modals/UnableDeletePropertyModal';
 import URLConstants from 'shared/util/url-constants';
 import {
 	ACTION_TYPES,
@@ -19,7 +23,6 @@ import {
 } from 'shared/context/selection';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {CREATE_TIME, createOrderIOMap} from 'shared/util/pagination';
@@ -31,9 +34,9 @@ import {Link} from 'react-router-dom';
 import {RootState} from 'shared/store';
 import {Routes, toRoute} from 'shared/util/router';
 import {Sizes} from 'shared/util/constants';
-import {UNAUTHORIZED_ACCESS} from 'shared/util/request';
 import {updateDefaultChannelId} from 'shared/actions/preferences';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
@@ -66,7 +69,7 @@ const connector = connect(
 			'data',
 		]),
 	}),
-	{addAlert, close, open, updateDefaultChannelId}
+	{addAlert, updateDefaultChannelId}
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -80,11 +83,9 @@ interface IChannelListProps extends IPagination, PropsFromRedux {
 
 const ChannelList: React.FC<IChannelListProps> = ({
 	addAlert,
-	close,
 	defaultChannelId,
 	groupId,
 	history,
-	open,
 	updateDefaultChannelId,
 }) => {
 	const {selectedItems, selectionDispatch} = useSelectionContext();
@@ -113,182 +114,56 @@ const ChannelList: React.FC<IChannelListProps> = ({
 
 	const {timeZoneId} = useTimeZone();
 
+	const addChannelModal = useModal();
+	const clearDataModal = useModal();
+	const unableToDeleteModal = useModal();
+	const deleteChannelModal = useModal();
+
+	const [clearTarget, setClearTarget] = useState<{
+		ids: string[];
+		name: string;
+	}>();
+	const [deleteTarget, setDeleteTarget] = useState<{
+		ids: string[];
+		name: string;
+	}>();
+
+	const clearIds = clearTarget?.ids ?? [];
+	const clearMessage = clearTarget
+		? (getPluralMessage(
+				clearTarget.name,
+				Liferay.Language.get('x-properties'),
+				clearIds.length
+			) as string)
+		: '';
+
+	const deleteIds = deleteTarget?.ids ?? [];
+	const deleteMessage = deleteTarget
+		? (getPluralMessage(
+				deleteTarget.name,
+				Liferay.Language.get('x-properties'),
+				deleteIds.length
+			) as string)
+		: '';
+
 	const handleAddChannel = () => {
-		open(modalTypes.ADD_CHANNEL_MODAL, {
-			onClose: close,
-			onSubmit: handleSubmit,
-		});
+		addChannelModal.onOpenChange(true);
 	};
 
 	const handleUnableToDeleteProperty = () => {
-		open(modalTypes.UNABLE_DELETE_PROPERTY_MODAL, {
-			onClose: close,
-		});
+		unableToDeleteModal.onOpenChange(true);
 	};
 
 	const handleClearData = (ids: string[], name: string) => {
-		const message: string = getPluralMessage(
-			name,
-			Liferay.Language.get('x-properties'),
-			ids.length
-		) as string;
+		setClearTarget({ids, name});
 
-		open(modalTypes.DELETE_CONFIRMATION_MODAL, {
-			children: (
-				<>
-					<p>
-						<strong>
-							{sub(
-								Liferay.Language.get(
-									'to-clear-data-from-x,-copy-the-sentence-below-to-confirm-your-intention-to-clear-data-from-this-property'
-								),
-								[message]
-							)}
-						</strong>
-					</p>
-
-					<p>
-						{Liferay.Language.get(
-							'this-will-result-in-the-complete-removal-of-this-propertys-historical-events.-you-will-not-be-able-to-undo-this-operation'
-						)}
-					</p>
-				</>
-			),
-			deleteButtonLabel: Liferay.Language.get('clear-data'),
-			deleteConfirmationText: sub(Liferay.Language.get('clear-x'), [
-				message,
-			]),
-			onClose: close,
-			onSubmit: () =>
-				API.channels
-					.clear({
-						groupId,
-						ids,
-					})
-					.then(() => {
-						const clearedMessage: string = getPluralMessage(
-							Liferay.Language.get('x-property-has-been-cleared'),
-							Liferay.Language.get(
-								'x-properties-have-been-cleared'
-							),
-							ids.length
-						) as string;
-
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: sub(
-								clearedMessage,
-								[<b key="clearedCount">{ids.length}</b>],
-								false
-							) as string,
-						});
-
-						selectionDispatch?.({type: ActionTypes.ClearAll});
-
-						refetchChannels?.();
-
-						close();
-					})
-					.catch((err) =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message:
-								err.message === UNAUTHORIZED_ACCESS
-									? Liferay.Language.get(
-											'unauthorized-access'
-										)
-									: Liferay.Language.get('error'),
-							timeout: false,
-						})
-					),
-			title: sub(Liferay.Language.get('clear-x-data?'), [message]),
-		});
+		clearDataModal.onOpenChange(true);
 	};
 
 	const handleDeleteChannel = (ids: string[], name: string) => {
-		const message: string = getPluralMessage(
-			name,
-			Liferay.Language.get('x-properties'),
-			ids.length
-		) as string;
+		setDeleteTarget({ids, name});
 
-		open(modalTypes.DELETE_CONFIRMATION_MODAL, {
-			children: (
-				<>
-					<p>
-						<strong>
-							{sub(
-								Liferay.Language.get(
-									'to-delete-x,-copy-the-sentence-below-to-confirm-your-intention-to-delete-property'
-								),
-								[message]
-							)}
-						</strong>
-					</p>
-
-					<p>
-						{Liferay.Language.get(
-							'this-will-result-in-the-complete-removal-of-this-propertys-historical-events.-you-will-not-be-able-to-undo-this-operation'
-						)}
-					</p>
-				</>
-			),
-			deleteButtonLabel: Liferay.Language.get('delete'),
-			deleteConfirmationText: sub(Liferay.Language.get('delete-x'), [
-				message,
-			]),
-			onClose: close,
-			onSubmit: () =>
-				API.channels
-					.delete({
-						groupId,
-						ids,
-					})
-					.then(() => {
-						const deletedMessage: string = getPluralMessage(
-							Liferay.Language.get('x-property-has-been-deleted'),
-							Liferay.Language.get(
-								'x-properties-have-been-deleted'
-							),
-							ids.length
-						) as string;
-
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: sub(
-								deletedMessage,
-								[<b key="deleteCount">{ids.length}</b>],
-								false
-							) as string,
-						});
-
-						if (ids.includes(defaultChannelId)) {
-							updateDefaultChannelId({
-								defaultChannelId: null,
-								groupId,
-							});
-						}
-
-						selectionDispatch?.({type: ACTION_TYPES.clearAll});
-
-						refetchChannels?.();
-
-						close();
-					})
-					.catch((err) =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message:
-								err.message === UNAUTHORIZED_ACCESS
-									? Liferay.Language.get(
-											'unauthorized-access'
-										)
-									: Liferay.Language.get('error'),
-							timeout: false,
-						})
-					),
-			title: sub(Liferay.Language.get('delete-x?'), [message]),
-		});
+		deleteChannelModal.onOpenChange(true);
 	};
 
 	const handleSubmit = (
@@ -305,7 +180,7 @@ const ChannelList: React.FC<IChannelListProps> = ({
 					]) as string,
 				});
 
-				close();
+				addChannelModal.onOpenChange(false);
 
 				history.push(
 					toRoute(Routes.SETTINGS_CHANNELS_VIEW, {
@@ -429,119 +304,241 @@ const ChannelList: React.FC<IChannelListProps> = ({
 	};
 
 	return (
-		<BasePage
-			key="sitesListPage"
-			pageDescription={
-				<>
-					<div>
-						{Liferay.Language.get(
-							'analytics-cloud-allows-for-customized-user-access-settings-per-property-managed'
-						)}
-					</div>
-					<div>
-						{Liferay.Language.get(
-							'by-default-property-access-settings-will-be-set-to-all-users'
-						)}
-					</div>
-				</>
-			}
-			pageTitle={Liferay.Language.get('properties')}
-		>
-			<Card pageDisplay>
-				<CrossPageSelect
-					columns={[
-						{
-							accessor: 'name',
-							cellRenderer: ChannelName,
-							cellRendererProps: {
-								hrefFormatter: ({id}: {id: string}) =>
-									toRoute(Routes.SETTINGS_CHANNELS_VIEW, {
-										groupId,
-										id,
-									}),
+		<>
+			<BasePage
+				key="sitesListPage"
+				pageDescription={
+					<>
+						<div>
+							{Liferay.Language.get(
+								'analytics-cloud-allows-for-customized-user-access-settings-per-property-managed'
+							)}
+						</div>
+						<div>
+							{Liferay.Language.get(
+								'by-default-property-access-settings-will-be-set-to-all-users'
+							)}
+						</div>
+					</>
+				}
+				pageTitle={Liferay.Language.get('properties')}
+			>
+				<Card pageDisplay>
+					<CrossPageSelect
+						columns={[
+							{
+								accessor: 'name',
+								cellRenderer: ChannelName,
+								cellRendererProps: {
+									hrefFormatter: ({id}: {id: string}) =>
+										toRoute(Routes.SETTINGS_CHANNELS_VIEW, {
+											groupId,
+											id,
+										}),
+								},
+								className: 'table-cell-expand',
+								label: Liferay.Language.get('property-name'),
 							},
-							className: 'table-cell-expand',
-							label: Liferay.Language.get('property-name'),
-						},
-						{
-							accessor: 'groupsCount',
-							className: 'text-right',
-							label: Liferay.Language.get('sites'),
-							sortable: false,
-						},
-						{
-							accessor: 'id',
-							className: 'text-right',
-							label: Liferay.Language.get('property-id'),
-							sortable: false,
-						},
-						{
-							accessor: 'permissionType',
-							dataFormatter: (value: number) =>
-								value === 0
-									? Liferay.Language.get('all-users')
-									: Liferay.Language.get('select-users'),
-							label: Liferay.Language.get('access-setting'),
-							sortable: false,
-						},
-						{
-							accessor: 'createTime',
-							dataFormatter: (date: string | number) =>
-								formatDateToTimeZone(
-									date,
-									getCustomDateFormat(),
-									timeZoneId
-								),
-							label: Liferay.Language.get('date-added'),
-						},
-					]}
-					currentUser={currentUser}
-					delta={delta}
-					entityLabel={Liferay.Language.get('properties')}
-					error={error}
-					items={data?.items}
-					loading={loading}
-					noResultsRenderer={
-						<NoResultsDisplay
-							description={
-								<>
-									{Liferay.Language.get(
-										'create-a-property-to-get-started'
-									)}
-
-									<ClayLink
-										className="d-block mb-3"
-										href={URLConstants.CreateProperty}
-										key="DOCUMENTATION"
-										target="_blank"
-									>
+							{
+								accessor: 'groupsCount',
+								className: 'text-right',
+								label: Liferay.Language.get('sites'),
+								sortable: false,
+							},
+							{
+								accessor: 'id',
+								className: 'text-right',
+								label: Liferay.Language.get('property-id'),
+								sortable: false,
+							},
+							{
+								accessor: 'permissionType',
+								dataFormatter: (value: number) =>
+									value === 0
+										? Liferay.Language.get('all-users')
+										: Liferay.Language.get('select-users'),
+								label: Liferay.Language.get('access-setting'),
+								sortable: false,
+							},
+							{
+								accessor: 'createTime',
+								dataFormatter: (date: string | number) =>
+									formatDateToTimeZone(
+										date,
+										getCustomDateFormat(),
+										timeZoneId
+									),
+								label: Liferay.Language.get('date-added'),
+							},
+						]}
+						currentUser={currentUser}
+						delta={delta}
+						entityLabel={Liferay.Language.get('properties')}
+						error={error}
+						items={data?.items}
+						loading={loading}
+						noResultsRenderer={
+							<NoResultsDisplay
+								description={
+									<>
 										{Liferay.Language.get(
-											'access-our-documentation-to-learn-more'
+											'create-a-property-to-get-started'
 										)}
-									</ClayLink>
-								</>
-							}
-							icon={{
-								border: false,
-								size: Sizes.XXXLarge,
-								symbol: 'ac_satellite',
-							}}
-							title={Liferay.Language.get('no-properties-found')}
-						/>
+
+										<ClayLink
+											className="d-block mb-3"
+											href={URLConstants.CreateProperty}
+											key="DOCUMENTATION"
+											target="_blank"
+										>
+											{Liferay.Language.get(
+												'access-our-documentation-to-learn-more'
+											)}
+										</ClayLink>
+									</>
+								}
+								icon={{
+									border: false,
+									size: Sizes.XXXLarge,
+									symbol: 'ac_satellite',
+								}}
+								title={Liferay.Language.get(
+									'no-properties-found'
+								)}
+							/>
+						}
+						orderIOMap={orderIOMap}
+						page={page}
+						query={query}
+						renderNav={authorized ? renderNav : null}
+						renderRowActions={authorized ? renderRowActions : null}
+						rowIdentifier="id"
+						showCheckbox={authorized}
+						total={data?.total}
+					>
+						{(props: any) => <ListComponent {...props} />}
+					</CrossPageSelect>
+				</Card>
+			</BasePage>
+
+			{clearDataModal.open && (
+				<ClearPropertyDataModal
+					addAlert={addAlert}
+					name={clearMessage}
+					observer={clearDataModal.observer}
+					onClose={() => clearDataModal.onOpenChange(false)}
+					onSubmit={() =>
+						API.channels
+							.clear({
+								groupId,
+								ids: clearIds,
+							})
+							.then(() => {
+								const clearedMessage: string = getPluralMessage(
+									Liferay.Language.get(
+										'x-property-has-been-cleared'
+									),
+									Liferay.Language.get(
+										'x-properties-have-been-cleared'
+									),
+									clearIds.length
+								) as string;
+
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: sub(
+										clearedMessage,
+										[
+											<b key="clearedCount">
+												{clearIds.length}
+											</b>,
+										],
+										false
+									) as string,
+								});
+
+								selectionDispatch?.({
+									type: ActionTypes.ClearAll,
+								});
+
+								refetchChannels?.();
+
+								clearDataModal.onOpenChange(false);
+							})
 					}
-					orderIOMap={orderIOMap}
-					page={page}
-					query={query}
-					renderNav={authorized ? renderNav : null}
-					renderRowActions={authorized ? renderRowActions : null}
-					rowIdentifier="id"
-					showCheckbox={authorized}
-					total={data?.total}
-				>
-					{(props: any) => <ListComponent {...props} />}
-				</CrossPageSelect>
-			</Card>
-		</BasePage>
+				/>
+			)}
+
+			{deleteChannelModal.open && (
+				<DeletePropertyModal
+					addAlert={addAlert}
+					name={deleteMessage}
+					observer={deleteChannelModal.observer}
+					onClose={() => deleteChannelModal.onOpenChange(false)}
+					onSubmit={() =>
+						API.channels
+							.delete({
+								groupId,
+								ids: deleteIds,
+							})
+							.then(() => {
+								const deletedMessage: string = getPluralMessage(
+									Liferay.Language.get(
+										'x-property-has-been-deleted'
+									),
+									Liferay.Language.get(
+										'x-properties-have-been-deleted'
+									),
+									deleteIds.length
+								) as string;
+
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: sub(
+										deletedMessage,
+										[
+											<b key="deleteCount">
+												{deleteIds.length}
+											</b>,
+										],
+										false
+									) as string,
+								});
+
+								if (deleteIds.includes(defaultChannelId)) {
+									updateDefaultChannelId({
+										defaultChannelId: null,
+										groupId,
+									});
+								}
+
+								selectionDispatch?.({
+									type: ACTION_TYPES.clearAll,
+								});
+
+								refetchChannels?.();
+
+								deleteChannelModal.onOpenChange(false);
+							})
+					}
+				/>
+			)}
+
+			{addChannelModal.open && (
+				<AddChannelModal
+					observer={addChannelModal.observer}
+					onClose={() => addChannelModal.onOpenChange(false)}
+					onSubmit={handleSubmit}
+				/>
+			)}
+
+			{unableToDeleteModal.open && (
+				<UnableDeletePropertyModal
+					observer={unableToDeleteModal.observer}
+					onClose={() => unableToDeleteModal.onOpenChange(false)}
+				/>
+			)}
+		</>
 	);
 };
 

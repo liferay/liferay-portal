@@ -3,12 +3,13 @@ import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
 import Loading, {Align} from 'shared/components/Loading';
+import EditEmailReportsModal from 'shared/components/modals/EditEmailReportsModal';
 import React, {useEffect, useState} from 'react';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect, ConnectedProps} from 'react-redux';
 import {sub} from 'shared/util/lang';
+import {useModal} from '@clayui/modal';
 import {useParams} from 'react-router-dom';
 
 export enum Frequency {
@@ -39,8 +40,6 @@ interface IEmailReportsProps
 
 const connector = connect(null, {
 	addAlert,
-	close,
-	open,
 });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -49,12 +48,12 @@ const EmailReports: React.FC<IEmailReportsProps> = ({
 	addAlert,
 	channelId,
 	className,
-	close,
-	open,
 	sitesSynced = false,
 }) => {
 	const {groupId} = useParams();
 	const [report, setReport] = useState<Report | null>(null);
+
+	const emailReportsModal = useModal();
 
 	useEffect(() => {
 		API.preferences
@@ -76,7 +75,7 @@ const EmailReports: React.FC<IEmailReportsProps> = ({
 		API.preferences
 			.updateEmailReport({channelId, groupId, report})
 			.then(() => {
-				close();
+				emailReportsModal.onOpenChange(false);
 
 				addAlert({
 					alertType: Alert.Types.Success,
@@ -126,11 +125,7 @@ const EmailReports: React.FC<IEmailReportsProps> = ({
 							return;
 						}
 
-						open(modalTypes.EDIT_EMAIL_REPORTS, {
-							onCancel: close,
-							onSave: handleSaveReport,
-							report,
-						});
+						emailReportsModal.onOpenChange(true);
 					}}
 					size="sm"
 				>
@@ -143,6 +138,15 @@ const EmailReports: React.FC<IEmailReportsProps> = ({
 						<ClayIcon className="icon-root" symbol="cog" />
 					</span>
 				</ClayButton>
+			)}
+
+			{emailReportsModal.open && report && (
+				<EditEmailReportsModal
+					observer={emailReportsModal.observer}
+					onCancel={() => emailReportsModal.onOpenChange(false)}
+					onSave={handleSaveReport}
+					report={report}
+				/>
 			)}
 		</span>
 	);

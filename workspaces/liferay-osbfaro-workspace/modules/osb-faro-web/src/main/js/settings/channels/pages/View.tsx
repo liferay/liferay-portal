@@ -3,6 +3,7 @@ import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'settings/components/base-page/BasePage';
 import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
 import Constants from 'shared/util/constants';
 import EmailReports from '../components/EmailReports';
 import Form, {
@@ -16,10 +17,12 @@ import React, {useState} from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import SyncedStripe from '../components/SyncedStripe';
 import TitleEditor from 'shared/components/TitleEditor';
+import ClearPropertyDataModal from 'shared/components/modals/ClearPropertyDataModal';
+import DeletePropertyModal from 'shared/components/modals/DeletePropertyModal';
+import UnableDeletePropertyModal from 'shared/components/modals/UnableDeletePropertyModal';
 import UserList from '../components/UserList';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert, IPaginationUnsorted} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {RootState} from 'shared/store';
@@ -27,9 +30,9 @@ import {Routes, toRoute} from 'shared/util/router';
 import {SafeResults} from 'shared/hoc/util';
 import {sequence} from 'shared/util/promise';
 import {sub} from 'shared/util/lang';
-import {UNAUTHORIZED_ACCESS} from 'shared/util/request';
 import {updateDefaultChannelId} from 'shared/actions/preferences';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const {channelPermissionTypes} = Constants;
@@ -93,7 +96,7 @@ const connector = connect(
 			'data',
 		]),
 	}),
-	{addAlert, close, open, updateDefaultChannelId}
+	{addAlert, updateDefaultChannelId}
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -113,12 +116,10 @@ interface IViewProps
 const View: React.FC<IViewProps> = ({
 	addAlert,
 	channel,
-	close,
 	defaultChannelId,
 	groupId,
 	history,
 	id,
-	open,
 	updateDefaultChannelId,
 	...otherProps
 }) => {
@@ -128,6 +129,14 @@ const View: React.FC<IViewProps> = ({
 	const [permissionType, setPermissionType] = useState(
 		channel.permissionType
 	);
+
+	const clearDataModal = useModal();
+	const unableToDeleteModal = useModal();
+	const deleteModal = useModal();
+	const permissionsModal = useModal();
+
+	const [pendingPermissionType, setPendingPermissionType] =
+		useState<number>();
 
 	const updatePermissions = (permissionType: number) =>
 		API.channels
@@ -148,9 +157,7 @@ const View: React.FC<IViewProps> = ({
 	const authorized = currentUser.isAdmin();
 
 	const handleUnableToDeleteProperty = () => {
-		open(modalTypes.UNABLE_DELETE_PROPERTY_MODAL, {
-			onClose: close,
-		});
+		unableToDeleteModal.onOpenChange(true);
 	};
 
 	return (
@@ -235,81 +242,7 @@ const View: React.FC<IViewProps> = ({
 								data-testid="clear-data"
 								displayType="secondary"
 								onClick={() =>
-									open(modalTypes.DELETE_CONFIRMATION_MODAL, {
-										children: (
-											<>
-												<p>
-													<strong>
-														{sub(
-															Liferay.Language.get(
-																'to-clear-data-from-x,-copy-the-sentence-below-to-confirm-your-intention-to-clear-data-from-this-property'
-															),
-															[name]
-														)}
-													</strong>
-												</p>
-
-												<p>
-													{Liferay.Language.get(
-														'this-will-result-in-the-complete-removal-of-this-propertys-historical-events.-you-will-not-be-able-to-undo-this-operation'
-													)}
-												</p>
-											</>
-										),
-										deleteButtonLabel:
-											Liferay.Language.get('clear-data'),
-										deleteConfirmationText: sub(
-											Liferay.Language.get('clear-x'),
-											[name]
-										),
-										onClose: close,
-										onSubmit: () => {
-											API.channels
-												.clear({
-													groupId,
-													ids: [id],
-												})
-												.then(() => {
-													const clearedMessage =
-														Liferay.Language.get(
-															'data-from-x-has-been-cleared'
-														);
-
-													addAlert({
-														alertType:
-															Alert.Types.Success,
-														message: sub(
-															clearedMessage,
-															[name]
-														) as string,
-													});
-
-													close();
-												})
-												.catch((err) =>
-													addAlert({
-														alertType:
-															Alert.Types.Error,
-														message:
-															err.message ===
-															UNAUTHORIZED_ACCESS
-																? Liferay.Language.get(
-																		'unauthorized-access'
-																	)
-																: Liferay.Language.get(
-																		'error'
-																	),
-														timeout: false,
-													})
-												);
-										},
-										title: sub(
-											Liferay.Language.get(
-												'clear-x-data?'
-											),
-											[name]
-										),
-									})
+									clearDataModal.onOpenChange(true)
 								}
 							>
 								{Liferay.Language.get('clear-data')}
@@ -326,99 +259,7 @@ const View: React.FC<IViewProps> = ({
 										return;
 									}
 
-									open(modalTypes.DELETE_CONFIRMATION_MODAL, {
-										children: (
-											<>
-												<p>
-													<strong>
-														{sub(
-															Liferay.Language.get(
-																'to-delete-x,-copy-the-sentence-below-to-confirm-your-intention-to-delete-property'
-															),
-															[name]
-														)}
-													</strong>
-												</p>
-
-												<p>
-													{Liferay.Language.get(
-														'this-will-result-in-the-complete-removal-of-this-propertys-historical-events.-you-will-not-be-able-to-undo-this-operation'
-													)}
-												</p>
-											</>
-										),
-										deleteButtonLabel:
-											Liferay.Language.get('delete'),
-										deleteConfirmationText: sub(
-											Liferay.Language.get('delete-x'),
-											[name]
-										),
-										onClose: close,
-										onSubmit: () => {
-											API.channels
-												.delete({
-													groupId,
-													ids: [id],
-												})
-												.then(() => {
-													const deletedMessage =
-														Liferay.Language.get(
-															'x-has-been-deleted'
-														);
-
-													close();
-
-													history.push(
-														toRoute(
-															Routes.SETTINGS_CHANNELS,
-															{
-																groupId,
-																id,
-															}
-														)
-													);
-
-													addAlert({
-														alertType:
-															Alert.Types.Success,
-														message: sub(
-															deletedMessage,
-															[name]
-														) as string,
-													});
-
-													if (
-														defaultChannelId === id
-													) {
-														updateDefaultChannelId({
-															defaultChannelId:
-																null,
-															groupId,
-														});
-													}
-												})
-												.catch((err) =>
-													addAlert({
-														alertType:
-															Alert.Types.Error,
-														message:
-															err.message ===
-															UNAUTHORIZED_ACCESS
-																? Liferay.Language.get(
-																		'unauthorized-access'
-																	)
-																: Liferay.Language.get(
-																		'error'
-																	),
-														timeout: false,
-													})
-												);
-										},
-										title: sub(
-											Liferay.Language.get('delete-x?'),
-											[name]
-										),
-									});
+									deleteModal.onOpenChange(true);
 								}}
 							>
 								{Liferay.Language.get('delete')}
@@ -439,28 +280,9 @@ const View: React.FC<IViewProps> = ({
 						name="permissionType"
 						onChange={(val) => {
 							if (val === channelPermissionTypes.selectUsers) {
-								open(modalTypes.CONFIRMATION_MODAL, {
-									message: (
-										<div className="text-secondary">
-											{Liferay.Language.get(
-												'property-permissions-will-be-changed-if-you-proceed-to-select-users.-add-users-from-your-workspace-to-give-access-to-this-property'
-											)}
-										</div>
-									),
-									modalVariant: 'modal-warning',
-									onClose: close,
-									onSubmit: () => {
-										updatePermissions(val);
+								setPendingPermissionType(val);
 
-										close();
-									},
-									submitButtonDisplay: 'warning',
-									submitMessage: Liferay.Language.get('okay'),
-									title: Liferay.Language.get(
-										'permissions-change'
-									),
-									titleIcon: 'warning-full',
-								});
+								permissionsModal.onOpenChange(true);
 							}
 							else {
 								updatePermissions(val);
@@ -507,6 +329,108 @@ const View: React.FC<IViewProps> = ({
 					</StatesRenderer>
 				</Card.Body>
 			</Card>
+			{clearDataModal.open && (
+				<ClearPropertyDataModal
+					addAlert={addAlert}
+					name={name}
+					observer={clearDataModal.observer}
+					onClose={() => clearDataModal.onOpenChange(false)}
+					onSubmit={() =>
+						API.channels
+							.clear({
+								groupId,
+								ids: [id],
+							})
+							.then(() => {
+								const clearedMessage = Liferay.Language.get(
+									'data-from-x-has-been-cleared'
+								);
+
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: sub(clearedMessage, [
+										name,
+									]) as string,
+								});
+
+								clearDataModal.onOpenChange(false);
+							})
+					}
+				/>
+			)}
+
+			{deleteModal.open && (
+				<DeletePropertyModal
+					addAlert={addAlert}
+					name={name}
+					observer={deleteModal.observer}
+					onClose={() => deleteModal.onOpenChange(false)}
+					onSubmit={() =>
+						API.channels
+							.delete({
+								groupId,
+								ids: [id],
+							})
+							.then(() => {
+								const deletedMessage =
+									Liferay.Language.get('x-has-been-deleted');
+
+								deleteModal.onOpenChange(false);
+
+								history.push(
+									toRoute(Routes.SETTINGS_CHANNELS, {
+										groupId,
+										id,
+									})
+								);
+
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: sub(deletedMessage, [
+										name,
+									]) as string,
+								});
+
+								if (defaultChannelId === id) {
+									updateDefaultChannelId({
+										defaultChannelId: null,
+										groupId,
+									});
+								}
+							})
+					}
+				/>
+			)}
+
+			{permissionsModal.open && (
+				<ConfirmationModal
+					message={
+						<div className="text-secondary">
+							{Liferay.Language.get(
+								'property-permissions-will-be-changed-if-you-proceed-to-select-users.-add-users-from-your-workspace-to-give-access-to-this-property'
+							)}
+						</div>
+					}
+					observer={permissionsModal.observer}
+					onClose={() => permissionsModal.onOpenChange(false)}
+					onSubmit={() => {
+						updatePermissions(pendingPermissionType as number);
+
+						permissionsModal.onOpenChange(false);
+					}}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('okay')}
+					title={Liferay.Language.get('permissions-change')}
+					type="warning"
+				/>
+			)}
+
+			{unableToDeleteModal.open && (
+				<UnableDeletePropertyModal
+					observer={unableToDeleteModal.observer}
+					onClose={() => unableToDeleteModal.onOpenChange(false)}
+				/>
+			)}
 		</BasePage>
 	);
 };

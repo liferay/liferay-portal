@@ -1,4 +1,3 @@
-import AddChannelModal from './modals/AddChannelModal';
 import autobind from 'autobind-decorator';
 import BatchActionModal from './modals/BatchActionModal';
 import ConfirmationModal from './modals/ConfirmationModal';
@@ -8,7 +7,6 @@ import CreateMappingModal from './modals/CreateMappingModal';
 import CSVPreviewModal from './modals/CSVPreviewModal';
 import DeleteChannelModal from './modals/DeleteChannelModal';
 import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
-import EditEmailReportsModal from './modals/EditEmailReportsModal';
 import ExportLogModal from './modals/ExportLogModal';
 import FieldPreviewModal from './modals/FieldPreviewModal';
 import HelpWidgetModal from './modals/help-widget-modal';
@@ -25,7 +23,6 @@ import SelectChannelsModal from './modals/SelectChannelsModal';
 import SelectItemsModal from './modals/SelectItemsModal';
 import TestModal from './modals/TestModal';
 import TimeZoneSelectionModal from './modals/TimeZoneSelectionModal';
-import UnableDeletePropertyModal from './modals/UnableDeletePropertyModal';
 import {close, modalTypes} from '../actions/modals';
 import {connect} from 'react-redux';
 import {List} from 'immutable';
@@ -35,7 +32,6 @@ import {PropTypes} from 'prop-types';
 const BODY_CLASSNAME = 'modal-open';
 
 const COMPONENT_MAP = {
-	[modalTypes.ADD_CHANNEL_MODAL]: AddChannelModal,
 	[modalTypes.BATCH_ACTION_MODAL]: BatchActionModal,
 	[modalTypes.CONFIRMATION_MODAL]: ConfirmationModal,
 	[modalTypes.CONNECT_DXP_MODAL]: ConnectDXPModal,
@@ -44,7 +40,6 @@ const COMPONENT_MAP = {
 	[modalTypes.CSV_PREVIEW_MODAL]: CSVPreviewModal,
 	[modalTypes.DELETE_CHANNEL_MODAL]: DeleteChannelModal,
 	[modalTypes.DELETE_CONFIRMATION_MODAL]: DeleteConfirmationModal,
-	[modalTypes.EDIT_EMAIL_REPORTS]: EditEmailReportsModal,
 	[modalTypes.EXPORT_LOG_MODAL]: ExportLogModal,
 	[modalTypes.FIELD_PREVIEW_MODAL]: FieldPreviewModal,
 	[modalTypes.HELP_WIDGET_MODAL]: HelpWidgetModal,
@@ -60,7 +55,6 @@ const COMPONENT_MAP = {
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,
 	[modalTypes.TIME_ZONE_SELECTION_MODAL]: TimeZoneSelectionModal,
-	[modalTypes.UNABLE_DELETE_PROPERTY_MODAL]: UnableDeletePropertyModal
 };
 
 function toggleBodyModalOpen(open = true) {
