@@ -98,6 +98,7 @@ const ItemList = ({
 };
 
 const CreationMenu = ({
+	closeOnClick = false,
 	maxPrimaryItems,
 	maxSecondaryItems,
 	maxTotalItems = 15,
@@ -182,6 +183,7 @@ const CreationMenu = ({
 				<ClayDropDown
 					active={active}
 					className="creation-menu"
+					closeOnClick={closeOnClick}
 					menuElementAttrs={{className: 'creation-menu-dropdown'}}
 					onActiveChange={setActive}
 					trigger={
