@@ -174,6 +174,18 @@ public class UserModelListenerTest {
 		_assertEquals(LocaleUtil.BRAZIL, objectDefinition);
 		_assertEqualsSorted(
 			new String[] {"es_ES", "en_US", "pt_BR"}, objectDefinition);
+
+		CompanyTestUtil.resetCompanyLocales(
+			_company.getCompanyId(),
+			ListUtil.fromArray(LocaleUtil.GERMANY, LocaleUtil.US),
+			LocaleUtil.GERMANY);
+
+		objectDefinition = _objectDefinitionLocalService.fetchObjectDefinition(
+			_company.getCompanyId(), _OBJECT_DEFINITION_NAME);
+
+		_assertEquals(LocaleUtil.GERMANY, objectDefinition);
+
+		Assert.assertEquals("en_US", objectDefinition.getDefaultLanguageId());
 	}
 
 	private void _assertEquals(
