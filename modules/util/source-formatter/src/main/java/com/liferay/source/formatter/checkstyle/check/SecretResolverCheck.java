@@ -19,6 +19,7 @@ import com.liferay.source.formatter.util.FileUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
+import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +101,7 @@ public class SecretResolverCheck extends BaseCheck {
 		if (_isPasswordAccessor(javaClass, methodName) &&
 			!_isResolvedThroughVariable(detailAST)) {
 
-			log(detailAST, _MSG_RESOLVE_REQUIRED, methodName + "()");
+			log(detailAST, _MSG_REQUIRED_RESOLVE, methodName + "()");
 		}
 	}
 
@@ -124,25 +125,10 @@ public class SecretResolverCheck extends BaseCheck {
 		if ((parentDetailAST != null) &&
 			(parentDetailAST.getType() == TokenTypes.VARIABLE_DEF)) {
 
-			DetailAST nameDetailAST = parentDetailAST.findFirstToken(
-				TokenTypes.IDENT);
-
-			if (nameDetailAST != null) {
-				return nameDetailAST.getText();
-			}
-
-			return null;
+			return getName(parentDetailAST);
 		}
 
-		DetailAST firstChildDetailAST = assignDetailAST.getFirstChild();
-
-		if ((firstChildDetailAST != null) &&
-			(firstChildDetailAST.getType() == TokenTypes.IDENT)) {
-
-			return firstChildDetailAST.getText();
-		}
-
-		return null;
+		return getName(assignDetailAST);
 	}
 
 	private synchronized Map<String, String> _getBundleSymbolicNamesMap(
@@ -226,8 +212,8 @@ public class SecretResolverCheck extends BaseCheck {
 	private boolean _isComparedWithNull(DetailAST detailAST) {
 		DetailAST parentDetailAST = detailAST.getParent();
 
-		if ((parentDetailAST.getType() != TokenTypes.EQUAL) &&
-			(parentDetailAST.getType() != TokenTypes.NOT_EQUAL)) {
+		if (!TokenUtil.isOfType(
+				parentDetailAST, TokenTypes.EQUAL, TokenTypes.NOT_EQUAL)) {
 
 			return false;
 		}
@@ -270,7 +256,7 @@ public class SecretResolverCheck extends BaseCheck {
 		}
 
 		DetailAST methodDefDetailAST = getParentWithTokenType(
-			detailAST, TokenTypes.METHOD_DEF, TokenTypes.CTOR_DEF);
+			detailAST, TokenTypes.CTOR_DEF, TokenTypes.METHOD_DEF);
 
 		if (methodDefDetailAST == null) {
 			return false;
@@ -314,7 +300,7 @@ public class SecretResolverCheck extends BaseCheck {
 		return false;
 	}
 
-	private static final String _MSG_RESOLVE_REQUIRED = "resolve.required";
+	private static final String _MSG_REQUIRED_RESOLVE = "resolve.required";
 
 	private static final String _SECRET_RESOLVER_EXCLUDES =
 		"secret.resolver.excludes";
