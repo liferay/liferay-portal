@@ -621,12 +621,6 @@ public class ObjectEntryModelListenerTest {
 			StringUtil.toLowerCase("A" + RandomTestUtil.randomString()),
 			TestPropsValues.getUserId());
 
-		Group group = _groupLocalService.fetchGroup(
-			TestPropsValues.getCompanyId(),
-			_classNameLocalService.getClassNameId(
-				_objectDefinition.getClassName()),
-			objectEntry.getObjectEntryId());
-
 		try {
 			_objectEntryLocalService.partialUpdateObjectEntry(
 				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
@@ -650,7 +644,11 @@ public class ObjectEntryModelListenerTest {
 				_objectEntryLocalService.getObjectEntry(
 					objectEntry.getObjectEntryId())));
 
-		group = _groupLocalService.getGroup(group.getGroupId());
+		Group group = _groupLocalService.fetchGroup(
+			TestPropsValues.getCompanyId(),
+			_classNameLocalService.getClassNameId(
+				_objectDefinition.getClassName()),
+			objectEntry.getObjectEntryId());
 
 		Assert.assertTrue(group.isActive());
 	}
