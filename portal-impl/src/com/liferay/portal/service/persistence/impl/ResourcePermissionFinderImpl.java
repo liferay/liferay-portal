@@ -22,12 +22,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.ResourcePermissionImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
-import java.io.Serializable;
-
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
@@ -36,14 +31,8 @@ public class ResourcePermissionFinderImpl
 	extends ResourcePermissionFinderBaseImpl
 	implements ResourcePermissionFinder {
 
-	public static final String COUNT_BY_R_S =
-		ResourcePermissionFinder.class.getName() + ".countByR_S";
-
 	public static final String COUNT_BY_C_N_S_P_R_A =
 		ResourcePermissionFinder.class.getName() + ".countByC_N_S_P_R_A";
-
-	public static final String FIND_BY_RESOURCE =
-		ResourcePermissionFinder.class.getName() + ".findByResource";
 
 	public static final String FIND_BY_R_S =
 		ResourcePermissionFinder.class.getName() + ".findByR_S";
@@ -62,46 +51,6 @@ public class ResourcePermissionFinderImpl
 				"companyId", "name", "scope", "primKey", "roleId", "actionIds"
 			},
 			false);
-
-	@Override
-	public int countByR_S(long roleId, int[] scopes) {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(COUNT_BY_R_S);
-
-			sql = StringUtil.replace(sql, "[$SCOPE$]", getScopes(scopes));
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(roleId);
-			queryPos.add(scopes);
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			if (iterator.hasNext()) {
-				Long count = iterator.next();
-
-				if (count != null) {
-					return count.intValue();
-				}
-			}
-
-			return 0;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
 
 	@Override
 	public int countByC_N_S_P_R_A(
@@ -173,51 +122,6 @@ public class ResourcePermissionFinderImpl
 		}
 
 		return count.intValue();
-	}
-
-	/**
-	 * @deprecated As of Cavanaugh (7.4.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public Map<Serializable, ResourcePermission> fetchByPrimaryKeys(
-		Set<Serializable> primaryKeys) {
-
-		return ResourcePermissionUtil.fetchByPrimaryKeys(primaryKeys);
-	}
-
-	@Override
-	public List<ResourcePermission> findByResource(
-		long companyId, long groupId, String name, String primKey) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_RESOURCE);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				"ResourcePermission", ResourcePermissionImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(companyId);
-			queryPos.add(name);
-			queryPos.add(primKey);
-			queryPos.add(String.valueOf(groupId));
-
-			return (List<ResourcePermission>)QueryUtil.list(
-				sqlQuery, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	@Override

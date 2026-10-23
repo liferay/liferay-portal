@@ -7,7 +7,6 @@ package com.liferay.portal.service.persistence.impl;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -22,13 +21,10 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
 import com.liferay.portal.kernel.service.persistence.OrganizationFinder;
 import com.liferay.portal.kernel.service.persistence.OrganizationUtil;
-import com.liferay.portal.kernel.service.persistence.UserUtil;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.impl.OrganizationImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
@@ -51,20 +47,11 @@ public class OrganizationFinderImpl
 	public static final String COUNT_O_BY_GROUP_ID =
 		OrganizationFinder.class.getName() + ".countO_ByGroupId";
 
-	public static final String COUNT_O_BY_ORGANIZATION_ID =
-		OrganizationFinder.class.getName() + ".countO_ByOrganizationId";
-
-	public static final String COUNT_O_BY_C_PO =
-		OrganizationFinder.class.getName() + ".countO_ByC_PO";
-
 	public static final String COUNT_O_BY_C_PO_N_S_C_Z_R_C =
 		OrganizationFinder.class.getName() + ".countO_ByC_PO_N_S_C_Z_R_C";
 
 	public static final String COUNT_O_BY_C_PO_N_L_S_C_Z_R_C =
 		OrganizationFinder.class.getName() + ".countO_ByC_PO_N_L_S_C_Z_R_C";
-
-	public static final String COUNT_U_BY_C_S_O =
-		OrganizationFinder.class.getName() + ".countU_ByC_S_O";
 
 	public static final String FIND_O_BY_NO_ASSETS =
 		OrganizationFinder.class.getName() + ".findO_ByNoAssets";
@@ -72,20 +59,11 @@ public class OrganizationFinderImpl
 	public static final String FIND_O_BY_GROUP_ID =
 		OrganizationFinder.class.getName() + ".findO_ByGroupId";
 
-	public static final String FIND_O_BY_C_P =
-		OrganizationFinder.class.getName() + ".findO_ByC_P";
-
-	public static final String FIND_O_BY_C_PO =
-		OrganizationFinder.class.getName() + ".findO_ByC_PO";
-
 	public static final String FIND_O_BY_C_PO_N_S_C_Z_R_C =
 		OrganizationFinder.class.getName() + ".findO_ByC_PO_N_S_C_Z_R_C";
 
 	public static final String FIND_O_BY_C_PO_N_L_S_C_Z_R_C =
 		OrganizationFinder.class.getName() + ".findO_ByC_PO_N_L_S_C_Z_R_C";
-
-	public static final String FIND_U_BY_C_S_O =
-		OrganizationFinder.class.getName() + ".findU_ByC_S_O";
 
 	public static final String JOIN_O_BY_ORGANIZATIONS_GROUPS =
 		OrganizationFinder.class.getName() + ".joinO_ByOrganizationsGroups";
@@ -129,28 +107,6 @@ public class OrganizationFinderImpl
 			companyId, parentOrganizationId, parentOrganizationIdComparator,
 			names, type, streets, cities, zips, regionId, countryId, params,
 			andOperator);
-	}
-
-	@Override
-	public int countO_ByO_U(long organizationId, long userId) {
-		LinkedHashMap<String, Object> params1 =
-			LinkedHashMapBuilder.<String, Object>put(
-				"usersOrgs", userId
-			).build();
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			return countO_ByOrganizationId(session, organizationId, params1);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	@Override
@@ -320,63 +276,6 @@ public class OrganizationFinderImpl
 	}
 
 	@Override
-	public int countO_U_ByC_P(
-		long companyId, long parentOrganizationId,
-		QueryDefinition<?> queryDefinition) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
-				StringBundler.concat(
-					StringPool.OPEN_PARENTHESIS,
-					CustomSQLUtil.get(COUNT_O_BY_C_PO), ") UNION ALL (",
-					getUsersSQL(COUNT_U_BY_C_S_O, queryDefinition),
-					StringPool.CLOSE_PARENTHESIS));
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(companyId);
-			queryPos.add(parentOrganizationId);
-			queryPos.add(companyId);
-
-			int status = queryDefinition.getStatus();
-
-			if (status != WorkflowConstants.STATUS_ANY) {
-				queryPos.add(status);
-			}
-
-			queryPos.add(parentOrganizationId);
-
-			int count = 0;
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			while (iterator.hasNext()) {
-				Long l = iterator.next();
-
-				if (l == null) {
-					continue;
-				}
-
-				count += l.intValue();
-			}
-
-			return count;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
 	public List<Organization> findO_ByKeywords(
 		long companyId, long parentOrganizationId,
 		String parentOrganizationIdComparator, String keywords, String type,
@@ -424,46 +323,6 @@ public class OrganizationFinderImpl
 				PortalUtil.getClassNameId(Organization.class.getName()));
 
 			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public List<Long> findO_ByC_P(
-		long companyId, long parentOrganizationId, long previousOrganizationId,
-		int size) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_O_BY_C_P);
-
-			if (previousOrganizationId == 0) {
-				sql = StringUtil.removeSubstring(
-					sql, "(organizationId > ?) AND");
-			}
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar("organizationId", Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			if (previousOrganizationId > 0) {
-				queryPos.add(previousOrganizationId);
-			}
-
-			queryPos.add(companyId);
-			queryPos.add(parentOrganizationId);
-
-			return (List<Long>)QueryUtil.list(sqlQuery, getDialect(), 0, size);
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
@@ -633,111 +492,6 @@ public class OrganizationFinderImpl
 		}
 	}
 
-	@Override
-	public List<Object> findO_U_ByC_P(
-		long companyId, long parentOrganizationId,
-		QueryDefinition<?> queryDefinition) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.replaceOrderBy(
-				StringBundler.concat(
-					StringPool.OPEN_PARENTHESIS,
-					CustomSQLUtil.get(FIND_O_BY_C_PO), ") UNION ALL (",
-					getUsersSQL(FIND_U_BY_C_S_O, queryDefinition),
-					StringPool.CLOSE_PARENTHESIS),
-				queryDefinition.getOrderByComparator());
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar("organizationId", Type.LONG);
-			sqlQuery.addScalar("userId", Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(companyId);
-			queryPos.add(parentOrganizationId);
-			queryPos.add(companyId);
-
-			int status = queryDefinition.getStatus();
-
-			if (status != WorkflowConstants.STATUS_ANY) {
-				queryPos.add(status);
-			}
-
-			queryPos.add(parentOrganizationId);
-
-			List<Object> models = new ArrayList<>();
-
-			Iterator<Object[]> iterator = (Iterator<Object[]>)QueryUtil.iterate(
-				sqlQuery, getDialect(), queryDefinition.getStart(),
-				queryDefinition.getEnd());
-
-			while (iterator.hasNext()) {
-				Object[] array = iterator.next();
-
-				long organizationId = (Long)array[0];
-
-				Object object = null;
-
-				if (organizationId > 0) {
-					object = OrganizationUtil.findByPrimaryKey(organizationId);
-				}
-				else {
-					long userId = (Long)array[1];
-
-					object = UserUtil.findByPrimaryKey(userId);
-				}
-
-				models.add(object);
-			}
-
-			return models;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected int countO_ByOrganizationId(
-			Session session, long organizationId,
-			LinkedHashMap<String, Object> params)
-		throws PortalException {
-
-		String sql = CustomSQLUtil.get(COUNT_O_BY_ORGANIZATION_ID);
-
-		sql = StringUtil.replace(sql, "[$JOIN$]", getJoin(params));
-		sql = StringUtil.replace(sql, "[$WHERE$]", getWhere(params));
-
-		SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-		sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-		QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-		setJoin(queryPos, params);
-
-		queryPos.add(organizationId);
-
-		Iterator<Long> iterator = sqlQuery.iterate();
-
-		if (iterator.hasNext()) {
-			Long count = iterator.next();
-
-			if (count != null) {
-				return count.intValue();
-			}
-		}
-
-		return 0;
-	}
-
 	protected String getJoin(LinkedHashMap<String, Object> params) {
 		if ((params == null) || params.isEmpty()) {
 			return StringPool.BLANK;
@@ -788,20 +542,6 @@ public class OrganizationFinderImpl
 		}
 
 		return join;
-	}
-
-	protected String getUsersSQL(
-		String id, QueryDefinition<?> queryDefinition) {
-
-		String sql = CustomSQLUtil.get(id);
-
-		int status = queryDefinition.getStatus();
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			sql = StringUtil.removeSubstring(sql, "(User_.status = ?) AND");
-		}
-
-		return sql;
 	}
 
 	protected String getWhere(LinkedHashMap<String, Object> params) {

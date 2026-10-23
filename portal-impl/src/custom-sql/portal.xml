@@ -338,29 +338,6 @@
 				Group_.groupId = ?
 		]]>
 	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.countO_ByOrganizationId">
-		<![CDATA[
-			SELECT
-				COUNT(*) AS COUNT_VALUE
-			FROM
-				Organization_
-			[$JOIN$]
-			WHERE
-				[$WHERE$]
-				(Organization_.organizationId = ?)
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.countO_ByC_PO">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT Organization_.organizationId) AS COUNT_VALUE
-			FROM
-				Organization_
-			WHERE
-				(companyId = ?) AND
-				(parentOrganizationId = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.countO_ByC_PO_N_S_C_Z_R_C">
 		<![CDATA[
 			SELECT
@@ -434,21 +411,6 @@
 				)
 		]]>
 	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.countU_ByC_S_O">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT User_.userId) AS COUNT_VALUE
-			FROM
-				User_
-			INNER JOIN
-				Users_Orgs ON
-					Users_Orgs.userId = User_.userId
-			WHERE
-				(User_.companyId = ?) AND
-				(User_.status = ?) AND
-				(Users_Orgs.organizationId = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findO_ByNoAssets">
 		<![CDATA[
 			SELECT
@@ -474,31 +436,6 @@
 					Group_.classPK = Organization_.organizationId
 			WHERE
 				Group_.groupId = ?
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findO_ByC_P">
-		<![CDATA[
-			SELECT
-				organizationId
-			FROM
-				Organization_
-			WHERE
-				(organizationId > ?) AND
-				(companyId = ?) AND
-				(parentOrganizationId = ?)
-			ORDER BY
-				organizationId ASC
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findO_ByC_PO">
-		<![CDATA[
-			SELECT
-				organizationId, 0 AS userId, name
-			FROM
-				Organization_
-			WHERE
-				(companyId = ?) AND
-				(parentOrganizationId = ?)
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findO_ByC_PO_N_S_C_Z_R_C">
@@ -572,21 +509,6 @@
 					(LOWER(Address.city) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
 					(LOWER(Address.zip) LIKE ? [$AND_OR_NULL_CHECK$])
 				)
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.findU_ByC_S_O">
-		<![CDATA[
-			SELECT
-				0 AS organizationId, User_.userId AS userId, User_.lastName AS name
-			FROM
-				User_
-			INNER JOIN
-				Users_Orgs ON
-					Users_Orgs.userId = User_.userId
-			WHERE
-				(User_.companyId = ?) AND
-				(User_.status = ?) AND
-				(Users_Orgs.organizationId = ?)
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.OrganizationFinder.joinO_ByOrganizationsGroups">
@@ -698,17 +620,6 @@
 				(Layout.privateLayout = ?)
 		]]>
 	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.ResourcePermissionFinder.countByR_S">
-		<![CDATA[
-			SELECT
-				COUNT(*) AS COUNT_VALUE
-			FROM
-				ResourcePermission
-			WHERE
-				(ResourcePermission.roleId = ?) AND
-				[$SCOPE$]
-		]]>
-	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.ResourcePermissionFinder.countByC_N_S_P_R_A">
 		<![CDATA[
 			SELECT
@@ -722,29 +633,6 @@
 				(ResourcePermission.primKey = ?) AND
 				(ResourcePermission.roleId = ?) AND
 				(BITAND(CAST_LONG(ResourcePermission.actionIds), ?) = ?)
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.ResourcePermissionFinder.findByResource">
-		<![CDATA[
-			SELECT
-				{ResourcePermission.*}
-			FROM
-				ResourcePermission
-			WHERE
-				(ResourcePermission.companyId = ?) AND
-				(ResourcePermission.name = ?) AND
-				(
-					(
-						(ResourcePermission.primKey = ?) AND
-						(ResourcePermission.scope = [$RESOURCE_SCOPE_INDIVIDUAL$])
-					) OR
-					(
-						(ResourcePermission.primKey = ?) AND
-						(ResourcePermission.scope = [$RESOURCE_SCOPE_GROUP$])
-					) OR
-					(ResourcePermission.scope = [$RESOURCE_SCOPE_COMPANY$]) OR
-					(ResourcePermission.scope = [$RESOURCE_SCOPE_GROUP_TEMPLATE$])
-				)
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.ResourcePermissionFinder.findByR_S">
@@ -1507,16 +1395,6 @@
 				loginDate = ?, loginIP = ?, lastLoginDate = ?, lastLoginIP = ?, failedLoginAttempts = ?
 			WHERE
 				userId = ?
-		]]>
-	</sql>
-	<sql id="com.liferay.util.dao.orm.CustomSQL.countBySelectSQL">
-		<![CDATA[
-			SELECT
-				COUNT(*) AS COUNT_VALUE
-			FROM
-				(
-					[$SELECT_SQL$]
-				) TEMP_TABLE
 		]]>
 	</sql>
 </custom-sql>
