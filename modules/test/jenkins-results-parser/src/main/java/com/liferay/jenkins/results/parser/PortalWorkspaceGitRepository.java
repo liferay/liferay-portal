@@ -806,7 +806,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		if (_isBasePortalCacheAvailable()) {
 			_downloadBasePortalCache();
 
-			_touchBasePortalCache();
+			CloudBucketUtil.touchS3File(_getBasePortalCacheS3ObjectPath());
 
 			_setUpBasePortalCache = true;
 
@@ -831,10 +831,6 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		_uploadBasePortalCache();
 
 		_setUpBasePortalCache = true;
-	}
-
-	private void _touchBasePortalCache() throws IOException {
-		CloudBucketUtil.touchS3File(_getBasePortalCacheS3ObjectPath());
 	}
 
 	private synchronized void _uploadBasePortalCache() throws IOException {
