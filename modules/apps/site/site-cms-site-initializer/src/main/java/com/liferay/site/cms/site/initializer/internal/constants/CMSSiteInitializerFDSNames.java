@@ -103,6 +103,10 @@ public class CMSSiteInitializerFDSNames {
 	public static final String TAG_USAGES =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME + "-tagUsages";
 
+	public static final String UNLINKED_CONTENT_SECTION =
+		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
+			"-unlinkedContentSection";
+
 	public static final String VIEW_CONTENTS_FOLDER =
 		CMSSiteInitializerConstants.BUNDLE_SYMBOLIC_NAME +
 			"-viewContentsFolder";
