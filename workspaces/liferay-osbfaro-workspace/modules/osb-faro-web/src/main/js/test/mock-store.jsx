@@ -26,12 +26,6 @@ export const mockStoreData = fromJS({
 	accounts: {
 		test: toRD(new Account(fromJS(data.mockAccount('test'))))
 	},
-	cards: {
-		test: {
-			card1: {},
-			card2: {}
-		}
-	},
 	cardTemplates: {
 		card1: data.mockCardTemplate('card1'),
 		card2: data.mockCardTemplate('card2')

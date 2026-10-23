@@ -7,7 +7,6 @@ import * as campaigns from './campaigns';
 import * as catalog from './catalog';
 import * as categories from './categories';
 import * as channels from './channels';
-import * as contactsCards from './contacts-cards';
 import * as csv from './csv';
 import * as dataSource from './data-source';
 import * as definitions from './definitions';
@@ -37,7 +36,6 @@ export {
 	catalog,
 	categories,
 	channels,
-	contactsCards,
 	csv,
 	dataSource,
 	definitions,

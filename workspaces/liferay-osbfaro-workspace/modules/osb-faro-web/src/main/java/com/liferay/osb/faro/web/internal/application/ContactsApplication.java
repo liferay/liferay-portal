@@ -18,10 +18,6 @@ import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryTagFaro
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryTypeFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.AssetSummaryVocabularyFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.CampaignFaroController;
-import com.liferay.osb.faro.web.internal.controller.contacts.ContactsCardFaroController;
-import com.liferay.osb.faro.web.internal.controller.contacts.ContactsCardTemplateFaroController;
-import com.liferay.osb.faro.web.internal.controller.contacts.ContactsLayoutFaroController;
-import com.liferay.osb.faro.web.internal.controller.contacts.ContactsLayoutTemplateFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.DataSourceFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.DataSourceMetricsFaroController;
 import com.liferay.osb.faro.web.internal.controller.contacts.FieldFaroController;
@@ -64,10 +60,6 @@ public class ContactsApplication extends BaseApplication {
 		controllers.add(_assetSummaryTypeFaroController);
 		controllers.add(_assetSummaryVocabularyFaroController);
 		controllers.add(_campaignFaroController);
-		controllers.add(_contactsCardFaroController);
-		controllers.add(_contactsCardTemplateFaroController);
-		controllers.add(_contactsLayoutFaroController);
-		controllers.add(_contactsLayoutTemplateFaroController);
 		controllers.add(_dataSourceFaroController);
 		controllers.add(_dataSourceMetricsFaroController);
 		controllers.add(_fieldFaroController);
@@ -120,20 +112,6 @@ public class ContactsApplication extends BaseApplication {
 
 	@Reference
 	private CampaignFaroController _campaignFaroController;
-
-	@Reference
-	private ContactsCardFaroController _contactsCardFaroController;
-
-	@Reference
-	private ContactsCardTemplateFaroController
-		_contactsCardTemplateFaroController;
-
-	@Reference
-	private ContactsLayoutFaroController _contactsLayoutFaroController;
-
-	@Reference
-	private ContactsLayoutTemplateFaroController
-		_contactsLayoutTemplateFaroController;
 
 	@Reference
 	private DataSourceFaroController _dataSourceFaroController;

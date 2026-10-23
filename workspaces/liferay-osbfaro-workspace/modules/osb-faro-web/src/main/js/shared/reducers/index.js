@@ -1,6 +1,5 @@
 import accounts from './accounts';
 import alerts from './alerts';
-import cards from './cards';
 import cardTemplates from './card-templates';
 import currentUser from './current-user';
 import dataSources from './data-sources';
@@ -26,7 +25,6 @@ export default composeReducers(
 	combineReducers({
 		accounts,
 		alerts,
-		cards,
 		cardTemplates,
 		currentUser,
 		dataSources,
