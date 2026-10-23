@@ -2,12 +2,14 @@ import * as API from 'shared/api';
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
+import ConfirmationDialog from 'shared/components/ConfirmationDialog';
 import Form, {validateInputMessage} from 'shared/components/form';
 import getCN from 'classnames';
+import MountedModal from 'shared/components/MountedModal';
 import React from 'react';
+import SearchableEntitiesTableModal from 'shared/components/modals/SearchableEntitiesTableModal';
 import Sheet from 'shared/components/Sheet';
 import TextTruncate from 'shared/components/TextTruncate';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {connect} from 'react-redux';
 import {DataSource} from 'shared/util/records';
 import {EntityTypes} from 'shared/util/constants';
@@ -151,80 +153,33 @@ class DataSourceItem extends React.Component {
 export class DeleteDataSource extends React.Component {
 	static propTypes = {
 		actionRequestFn: PropTypes.func.isRequired,
-		close: PropTypes.func.isRequired,
 		dataSource: PropTypes.instanceOf(DataSource).isRequired,
 		deleteMessage: PropTypes.string.isRequired,
 		deletePhrase: PropTypes.string.isRequired,
 		entitiesCount: PropTypes.object,
 		groupId: PropTypes.string.isRequired,
 		id: PropTypes.string.isRequired,
-		open: PropTypes.func.isRequired,
 		pageActionConfirmationText: PropTypes.string.isRequired,
 		pageActionText: PropTypes.string.isRequired,
 		timeZoneId: PropTypes.string
 	};
 
 	state = {
+		confirmationOpen: false,
+		entityModalType: null,
 		valid: false
 	};
 
 	@autobind
 	handleDeleteDataSource(_, {setSubmitting}) {
-		const {
-			actionRequestFn,
-			close,
-			open,
-			pageActionConfirmationText,
-			pageActionText
-		} = this.props;
-
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: (
-				<div>
-					<div className='h4 text-secondary'>
-						{pageActionConfirmationText}
-					</div>
-
-					<b>
-						{Liferay.Language.get(
-							'you-will-permanently-lose-all-contacts-and-analytics-data-collected-from-this-data-source.-you-will-not-be-able-to-undo-this-action'
-						)}
-					</b>
-				</div>
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: actionRequestFn,
-			submitButtonDisplay: 'warning',
-			submitMessage: pageActionText,
-			title: pageActionText,
-			titleIcon: 'warning'
-		});
+		this.setState({confirmationOpen: true});
 
 		setSubmitting(false);
 	}
 
 	@autobind
 	handleEntityModal(entityType) {
-		const {
-			close,
-			dataSource: {name},
-			groupId,
-			id,
-			open,
-			timeZoneId
-		} = this.props;
-
-		open(modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL, {
-			columns: getEntityColumns(entityType, timeZoneId),
-			dataSourceFn: getDataSourceFn(entityType),
-			dataSourceParams: {dataSourceId: id, groupId},
-			entityLabel: getTypeLangKey(entityType),
-			entityType: getRouteName(entityType),
-			onClose: close,
-			rowIdentifier: 'id',
-			title: getEntityTitle(entityType, name)
-		});
+		this.setState({entityModalType: entityType});
 	}
 
 	renderDataSourceItems() {
@@ -267,13 +222,17 @@ export class DeleteDataSource extends React.Component {
 		const {
 			props: {
 				className,
+				actionRequestFn,
 				dataSource: {name},
 				deleteMessage,
 				deletePhrase,
 				groupId,
 				id,
-				pageActionText
-			}
+				pageActionConfirmationText,
+				pageActionText,
+				timeZoneId
+			},
+			state: {entityModalType}
 		} = this;
 
 		return (
@@ -342,6 +301,52 @@ export class DeleteDataSource extends React.Component {
 						</Form.Form>
 					)}
 				</Form>
+
+				{entityModalType !== null && (
+					<MountedModal
+						onClose={() => this.setState({entityModalType: null})}
+					>
+						{observer => (
+							<SearchableEntitiesTableModal
+								columns={getEntityColumns(
+									entityModalType,
+									timeZoneId
+								)}
+								dataSourceFn={getDataSourceFn(entityModalType)}
+								dataSourceParams={{dataSourceId: id, groupId}}
+								entityLabel={getTypeLangKey(entityModalType)}
+								entityType={getRouteName(entityModalType)}
+								observer={observer}
+								rowIdentifier='id'
+								title={getEntityTitle(entityModalType, name)}
+							/>
+						)}
+					</MountedModal>
+				)}
+
+				{this.state.confirmationOpen && (
+					<ConfirmationDialog
+						message={
+							<div>
+								<div className='h4 text-secondary'>
+									{pageActionConfirmationText}
+								</div>
+
+								<b>
+									{Liferay.Language.get(
+										'you-will-permanently-lose-all-contacts-and-analytics-data-collected-from-this-data-source.-you-will-not-be-able-to-undo-this-action'
+									)}
+								</b>
+							</div>
+						}
+						onClose={() => this.setState({confirmationOpen: false})}
+						onSubmit={actionRequestFn}
+						submitButtonDisplay='warning'
+						submitMessage={pageActionText}
+						title={pageActionText}
+						type='warning'
+					/>
+				)}
 			</div>
 		);
 	}
@@ -356,9 +361,5 @@ export default connect(
 			'timeZone',
 			'timeZoneId'
 		])
-	}),
-	{
-		close,
-		open
-	}
+	})
 )(DeleteDataSource);

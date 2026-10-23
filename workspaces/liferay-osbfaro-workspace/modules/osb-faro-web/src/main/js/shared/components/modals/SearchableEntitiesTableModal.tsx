@@ -1,20 +1,25 @@
 import ClayButton from '@clayui/button';
-import Modal, {Size} from 'shared/components/modal';
+import ClayModal from '@clayui/modal';
+import getCN from 'classnames';
 import React from 'react';
+import type {Observer, Size} from '@clayui/modal/lib/types';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
+import {MODAL_SIZE_XL} from 'shared/components/modals/sizes';
 import {noop} from 'lodash';
 import {OrderedMap} from 'immutable';
 import {OrderParams} from 'shared/util/records';
 import {useStatefulPagination} from 'shared/hooks/useStatefulPagination';
 
 interface ISearchableEntitiesTableModalProps {
-	className: string;
-	defaultParams: {[key: string]: any};
+	[key: string]: any;
+	className?: string;
+	defaultParams?: {[key: string]: any};
 	initialDelta?: number;
 	initialOrderIOMap: OrderedMap<string, OrderParams>;
+	observer: Observer;
 	onClose: () => void;
-	size: Size;
+	size?: Size;
 	title: string;
 }
 
@@ -24,8 +29,9 @@ const SearchableEntitiesTableModal: React.FC<
 	className,
 	initialDelta = 10,
 	initialOrderIOMap = createOrderIOMap(NAME),
+	observer,
 	onClose = noop,
-	size = 'xxl',
+	size = MODAL_SIZE_XL,
 	title = 'entities',
 	...otherProps
 }) => {
@@ -44,10 +50,14 @@ const SearchableEntitiesTableModal: React.FC<
 	});
 
 	return (
-		<Modal className={className} size={size}>
-			<Modal.Header onClose={onClose} title={title} />
+		<ClayModal
+			className={getCN('searchable-entities-table-modal-root', className)}
+			observer={observer}
+			size={size}
+		>
+			<ClayModal.Header>{title}</ClayModal.Header>
 
-			<Modal.Body className="p-0">
+			<ClayModal.Body className="p-0">
 				<SearchableEntityTable
 					{...otherProps}
 					autoFocusSearch
@@ -60,18 +70,22 @@ const SearchableEntitiesTableModal: React.FC<
 					page={page}
 					query={query}
 				/>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					displayType="primary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('done')}
-				</ClayButton>
-			</Modal.Footer>
-		</Modal>
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							displayType="primary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('done')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</ClayModal>
 	);
 };
 

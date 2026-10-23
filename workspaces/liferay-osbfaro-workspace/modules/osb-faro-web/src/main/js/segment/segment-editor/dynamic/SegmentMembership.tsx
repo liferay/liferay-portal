@@ -5,6 +5,7 @@ import ClayLoadingIndicator from '@clayui/loading-indicator';
 import getCN from 'classnames';
 import InfoPopover from 'shared/components/InfoPopover';
 import React, {useId} from 'react';
+import SearchableEntitiesTableModal from 'shared/components/modals/SearchableEntitiesTableModal';
 import {ACCOUNT_NAME, createOrderIOMap, NAME} from 'shared/util/pagination';
 import {ACCOUNTS, INDIVIDUALS} from 'shared/util/router';
 import {
@@ -12,14 +13,13 @@ import {
 	individualsListColumns,
 } from 'shared/util/table-columns';
 import {ClayToggle} from '@clayui/form';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {Criteria} from './utils/types';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {toLocale} from 'shared/util/numbers';
-import {useDispatch} from 'react-redux';
 import {useField} from 'formik';
+import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
 import {validateSegmentInputs} from './utils/utils';
 
@@ -120,7 +120,7 @@ const SegmentMembership: React.FC<ISegmentMembershipProps> = ({
 	segmentCategory,
 	segmentType,
 }) => {
-	const dispatch = useDispatch();
+	const previewModal = useModal();
 
 	const criteriaValid = !!criteria && validateSegmentInputs(criteria);
 
@@ -152,40 +152,7 @@ const SegmentMembership: React.FC<ISegmentMembershipProps> = ({
 
 	const invalidCriteriaMessageId = useId();
 
-	const handlePreviewClick = () =>
-		dispatch(
-			open(modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL, {
-				...(isAccountSegment && {initialDelta: 20}),
-				columns: isAccountSegment
-					? [accountsListColumns.getAccountName({channelId, groupId})]
-					: [
-							{
-								...individualsListColumns.name,
-								className: 'w-50',
-							},
-							{
-								...individualsListColumns.accountName,
-								className: 'w-50',
-								label: Liferay.Language.get('account-name'),
-							},
-						],
-				dataSourceFn: (params: Partial<MembersParams>) =>
-					fetchMembers({...baseParams, ...params}),
-				entityLabel: isAccountSegment
-					? Liferay.Language.get('accounts')
-					: Liferay.Language.get('individuals'),
-				entityType: isAccountSegment ? ACCOUNTS : INDIVIDUALS,
-				initialOrderIOMap: createOrderIOMap(
-					isAccountSegment ? ACCOUNT_NAME : NAME
-				),
-				onClose: () => dispatch(close()),
-				rowIdentifier: 'id',
-				size: 'lg',
-				title: isAccountSegment
-					? Liferay.Language.get('segment-accounts')
-					: Liferay.Language.get('segment-membership'),
-			})
-		);
+	const handlePreviewClick = () => previewModal.onOpenChange(true);
 
 	return (
 		<>
@@ -261,6 +228,55 @@ const SegmentMembership: React.FC<ISegmentMembershipProps> = ({
 					</span>
 				)}
 			</div>
+
+			{previewModal.open && (
+				<SearchableEntitiesTableModal
+					{...(isAccountSegment && {initialDelta: 20})}
+					columns={
+						isAccountSegment
+							? [
+									accountsListColumns.getAccountName({
+										channelId,
+										groupId,
+									}),
+								]
+							: [
+									{
+										...individualsListColumns.name,
+										className: 'w-50',
+									},
+									{
+										...individualsListColumns.accountName,
+										className: 'w-50',
+										label: Liferay.Language.get(
+											'account-name'
+										),
+									},
+								]
+					}
+					dataSourceFn={(params: Partial<MembersParams>) =>
+						fetchMembers({...baseParams, ...params})
+					}
+					entityLabel={
+						isAccountSegment
+							? Liferay.Language.get('accounts')
+							: Liferay.Language.get('individuals')
+					}
+					entityType={isAccountSegment ? ACCOUNTS : INDIVIDUALS}
+					initialOrderIOMap={createOrderIOMap(
+						isAccountSegment ? ACCOUNT_NAME : NAME
+					)}
+					observer={previewModal.observer}
+					onClose={() => previewModal.onOpenChange(false)}
+					rowIdentifier="id"
+					size="lg"
+					title={
+						isAccountSegment
+							? Liferay.Language.get('segment-accounts')
+							: Liferay.Language.get('segment-membership')
+					}
+				/>
+			)}
 		</>
 	);
 };
