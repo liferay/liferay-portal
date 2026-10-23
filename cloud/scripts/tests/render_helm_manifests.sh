@@ -46,7 +46,7 @@ function main {
 
 	for chart in "${charts[@]}"
 	do
-		helm dependency update "${cloud_dir}/helm/${chart}"
+		"${cloud_dir}/scripts/update_helm_dependencies.sh" "${cloud_dir}/helm/${chart}"
 
 		local helm_template_args=()
 

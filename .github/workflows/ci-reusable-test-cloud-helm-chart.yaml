@@ -27,7 +27,7 @@ jobs:
                         local helm_lint_args=()
                         local render_values_file="cloud/scripts/tests/render-values/${{matrix.chart}}.yaml"
 
-                        helm dependency update "cloud/helm/${{matrix.chart}}"
+                        cloud/scripts/update_helm_dependencies.sh "cloud/helm/${{matrix.chart}}"
 
                         if [[ -f ${render_values_file} ]]
                         then

@@ -56,7 +56,7 @@ function main {
 
 		if [[ ${test_files} ]]
 		then
-			helm dependency update "${cloud_dir}/helm/${chart}"
+			"${cloud_dir}/scripts/update_helm_dependencies.sh" "${cloud_dir}/helm/${chart}"
 
 			helm unittest \
 				--output-file "${test_reports_dir}/helm-unittest-${chart}.xml" \

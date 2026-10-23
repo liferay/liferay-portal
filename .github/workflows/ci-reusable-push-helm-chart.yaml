@@ -14,7 +14,9 @@ jobs:
                     fetch-depth: 1
                     filter: tree:0
                     show-progress: false
-                    sparse-checkout: cloud/helm
+                    sparse-checkout: |
+                        cloud/helm
+                        cloud/scripts
             -   env:
                     HELM_CHART_REGISTRY_NONPRODUCTION: ${{vars.HELM_CHART_REGISTRY_NONPRODUCTION}}
                 id: vars
@@ -74,7 +76,7 @@ jobs:
 
                         mkdir --parents "${DIST_DIR}"
 
-                        helm dependency update
+                        "${GITHUB_WORKSPACE}/cloud/scripts/update_helm_dependencies.sh" .
 
                         helm package . --destination "${DIST_DIR}" --version "${CHART_VERSION}"
                     }
