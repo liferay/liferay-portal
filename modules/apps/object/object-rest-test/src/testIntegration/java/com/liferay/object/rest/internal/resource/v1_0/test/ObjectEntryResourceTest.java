@@ -9485,6 +9485,110 @@ public class ObjectEntryResourceTest {
 	}
 
 	@Test
+	public void testPatchCustomObjectEntryWithAttachmentObjectFieldScope()
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_addResourcePermission(
+			ObjectActionKeys.ADD_OBJECT_ENTRY,
+			_objectDefinition1.getResourceName(), role);
+
+		String password = RandomTestUtil.randomString();
+		String userName = RandomTestUtil.randomString();
+
+		User user = _addUser(userName, password);
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		Scope scope = Scope.of(_group, LocaleUtil.getDefault());
+
+		HTTPTestUtil.customize(
+		).withCredentials(
+			userName + "@liferay.com", password
+		).apply(
+			() -> {
+				JSONObject objectEntryJSONObject =
+					HTTPTestUtil.invokeToJSONObject(
+						JSONUtil.put(
+							_OBJECT_FIELD_NAME_1, "value1"
+						).toString(),
+						_objectDefinition1.getRESTContextPath(),
+						Http.Method.POST);
+
+				String endpoint = StringBundler.concat(
+					_objectDefinition1.getRESTContextPath(), StringPool.SLASH,
+					objectEntryJSONObject.get("id"));
+
+				// User who cannot add documents to the site
+
+				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry1 =
+					_toFileEntry(
+						Base64::encode, DLTestUtil.randomTextFileBytes(),
+						RandomTestUtil.randomString() + ".txt", null, null,
+						ContentTypes.TEXT_PLAIN);
+
+				fileEntry1.setExternalReferenceCode(
+					RandomTestUtil.randomString());
+				fileEntry1.setScope(scope);
+
+				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
+						_jsonFactory.createJSONObject(fileEntry1.toString())
+					).toString(),
+					endpoint, Http.Method.PATCH);
+
+				Assert.assertEquals(
+					"FORBIDDEN", jsonObject.getString("status"));
+
+				Assert.assertNull(
+					_dlFileEntryLocalService.
+						fetchDLFileEntryByExternalReferenceCode(
+							fileEntry1.getExternalReferenceCode(),
+							_group.getGroupId()));
+
+				// Site member
+
+				_userLocalService.addGroupUser(
+					_group.getGroupId(), user.getUserId());
+
+				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry2 =
+					_toFileEntry(
+						Base64::encode, DLTestUtil.randomTextFileBytes(),
+						RandomTestUtil.randomString() + ".txt", null, null,
+						ContentTypes.TEXT_PLAIN);
+
+				fileEntry2.setExternalReferenceCode(
+					RandomTestUtil.randomString());
+				fileEntry2.setScope(scope);
+
+				jsonObject = HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
+						_jsonFactory.createJSONObject(fileEntry2.toString())
+					).toString(),
+					endpoint, Http.Method.PATCH);
+
+				DLFileEntry dlFileEntry =
+					_dlFileEntryLocalService.
+						fetchDLFileEntryByExternalReferenceCode(
+							fileEntry2.getExternalReferenceCode(),
+							_group.getGroupId());
+
+				Assert.assertNotNull(dlFileEntry);
+				Assert.assertEquals(user.getUserId(), dlFileEntry.getUserId());
+
+				_assertAttachmentJSONObject(
+					dlFileEntry, null,
+					jsonObject.getJSONObject(
+						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1),
+					_jsonFactory.createJSONObject(scope.toString()));
+			}
+		);
+	}
+
+	@Test
 	public void testPatchObjectEntryWithAttachmentObjectFieldId()
 		throws Exception {
 
