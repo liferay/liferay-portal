@@ -58,4 +58,4 @@ public interface LayoutRevisionService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1152236263
+// LIFERAY-SERVICE-BUILDER-HASH:-390838112
