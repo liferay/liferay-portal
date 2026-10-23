@@ -15,6 +15,7 @@ import co.elastic.clients.elasticsearch._types.aggregations.AggregationBuilders;
 import co.elastic.clients.elasticsearch._types.aggregations.AggregationRange;
 import co.elastic.clients.elasticsearch._types.aggregations.AverageAggregation;
 import co.elastic.clients.elasticsearch._types.aggregations.Buckets;
+import co.elastic.clients.elasticsearch._types.aggregations.CalendarInterval;
 import co.elastic.clients.elasticsearch._types.aggregations.ChiSquareHeuristic;
 import co.elastic.clients.elasticsearch._types.aggregations.DateRangeExpression;
 import co.elastic.clients.elasticsearch._types.aggregations.ExtendedBounds;
@@ -208,11 +209,21 @@ public class ElasticsearchAggregationVisitor
 			DateHistogramAggregation.Builder dateHistogramAggregationBuilder =
 				AggregationBuilders.dateHistogram();
 
-		if (dateHistogramAggregation.getDateHistogramInterval() != null) {
-			dateHistogramAggregationBuilder.fixedInterval(
-				Time.of(
-					time -> time.time(
-						dateHistogramAggregation.getDateHistogramInterval())));
+		String dateHistogramInterval =
+			dateHistogramAggregation.getDateHistogramInterval();
+
+		if (dateHistogramInterval != null) {
+			CalendarInterval calendarInterval = _translateCalendarInterval(
+				dateHistogramInterval);
+
+			if (calendarInterval != null) {
+				dateHistogramAggregationBuilder.calendarInterval(
+					calendarInterval);
+			}
+			else {
+				dateHistogramAggregationBuilder.fixedInterval(
+					Time.of(time -> time.time(dateHistogramInterval)));
+			}
 		}
 
 		dateHistogramAggregationBuilder.field(
@@ -1631,6 +1642,25 @@ public class ElasticsearchAggregationVisitor
 		}
 
 		return fieldAndFormats;
+	}
+
+	private CalendarInterval _translateCalendarInterval(
+		String dateHistogramInterval) {
+
+		if (dateHistogramInterval.equals("1M")) {
+			return CalendarInterval.Month;
+		}
+		else if (dateHistogramInterval.equals("1q")) {
+			return CalendarInterval.Quarter;
+		}
+		else if (dateHistogramInterval.equals("1w")) {
+			return CalendarInterval.Week;
+		}
+		else if (dateHistogramInterval.equals("1y")) {
+			return CalendarInterval.Year;
+		}
+
+		return null;
 	}
 
 	private ChiSquareHeuristic _translateChiSquareHeuristic(
