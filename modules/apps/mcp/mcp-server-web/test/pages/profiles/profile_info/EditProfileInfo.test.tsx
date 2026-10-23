@@ -13,11 +13,6 @@ import '@testing-library/jest-dom';
 
 import EditProfileInfo from '../../../../src/main/resources/META-INF/resources/js/pages/profiles/profile_info/EditProfileInfo';
 
-jest.mock('frontend-js-web', () => ({
-	...(jest.requireActual('frontend-js-web') as object),
-	navigate: jest.fn(),
-}));
-
 const BACK_URL = '/profiles';
 
 function renderEditProfileInfo(profileERC = '') {

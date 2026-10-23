@@ -13,11 +13,6 @@ import '@testing-library/jest-dom';
 
 import EditDataMask from '../../../src/main/resources/META-INF/resources/js/pages/data_masks/EditDataMask';
 
-jest.mock('frontend-js-web', () => ({
-	...(jest.requireActual('frontend-js-web') as object),
-	navigate: jest.fn(),
-}));
-
 const BACK_URL = '/data-masks';
 
 describe('EditDataMask', () => {
