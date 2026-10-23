@@ -1,5 +1,5 @@
 {
-	"@generated": "5ab7261d97cf4448b55a0b185d2d8e6fa7a3fff3",
+	"@generated": "4f311c1c6dfd9cce0c3b5cae4f41443c7c03f8e3",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,12 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"@liferay/ai-hub-cell-js-components-web": [
+				"../../../../../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
+			],
+			"@liferay/ai-hub-cell-js-components-web/renderAIAssistantTrigger": [
+				"../../../../../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/js/renderAIAssistantTrigger.ts"
+			],
 			"@liferay/frontend-js-codemirror-web": [
 				"../../../../../../../frontend-js/frontend-js-codemirror-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
@@ -52,6 +58,9 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
+		{
+			"path": "../../../../../../../ai-hub-cell/ai-hub-cell-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
 		{
 			"path": "../../../../../../../frontend-js/frontend-js-codemirror-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
