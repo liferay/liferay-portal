@@ -254,106 +254,6 @@ public class SystemEventPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<SystemEvent, NoSuchSystemEventException>
-		_collectionPersistenceFinderByG_C_C;
-
-	/**
-	 * Returns an ordered range of all the system events where groupId = &#63; and classNameId = &#63; and classPK = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SystemEventModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param start the lower bound of the range of system events
-	 * @param end the upper bound of the range of system events (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching system events
-	 */
-	@Override
-	public List<SystemEvent> findByG_C_C(
-		long groupId, long classNameId, long classPK, int start, int end,
-		OrderByComparator<SystemEvent> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_C_C.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first system event in the ordered set where groupId = &#63; and classNameId = &#63; and classPK = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching system event
-	 * @throws NoSuchSystemEventException if a matching system event could not be found
-	 */
-	@Override
-	public SystemEvent findByG_C_C_First(
-			long groupId, long classNameId, long classPK,
-			OrderByComparator<SystemEvent> orderByComparator)
-		throws NoSuchSystemEventException {
-
-		return _collectionPersistenceFinderByG_C_C.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first system event in the ordered set where groupId = &#63; and classNameId = &#63; and classPK = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching system event, or <code>null</code> if a matching system event could not be found
-	 */
-	@Override
-	public SystemEvent fetchByG_C_C_First(
-		long groupId, long classNameId, long classPK,
-		OrderByComparator<SystemEvent> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_C_C.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the system events where groupId = &#63; and classNameId = &#63; and classPK = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 */
-	@Override
-	public void removeByG_C_C(long groupId, long classNameId, long classPK) {
-		_collectionPersistenceFinderByG_C_C.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK});
-	}
-
-	/**
-	 * Returns the number of system events where groupId = &#63; and classNameId = &#63; and classPK = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @return the number of matching system events
-	 */
-	@Override
-	public int countByG_C_C(long groupId, long classNameId, long classPK) {
-		return _collectionPersistenceFinderByG_C_C.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK});
-	}
-
-	private CollectionPersistenceFinder<SystemEvent, NoSuchSystemEventException>
 		_collectionPersistenceFinderByG_C_C_T;
 
 	/**
@@ -790,43 +690,6 @@ public class SystemEventPersistenceImpl
 				"systemEvent.", "systemEventSetKey", FinderColumn.Type.LONG,
 				"=", true, true, SystemEvent::getSystemEventSetKey));
 
-		_collectionPersistenceFinderByG_C_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "classNameId", "classPK"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Long.class.getName()
-				},
-				new String[] {"groupId", "classNameId", "classPK"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Long.class.getName()
-				},
-				new String[] {"groupId", "classNameId", "classPK"}, false),
-			_SQL_SELECT_SYSTEMEVENT_WHERE, _SQL_COUNT_SYSTEMEVENT_WHERE,
-			SystemEventModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"systemEvent.", "groupId", FinderColumn.Type.LONG, "=", true,
-				true, SystemEvent::getGroupId),
-			new FinderColumn<>(
-				"systemEvent.", "classNameId", FinderColumn.Type.LONG, "=",
-				true, true, SystemEvent::getClassNameId),
-			new FinderColumn<>(
-				"systemEvent.", "classPK", FinderColumn.Type.LONG, "=", true,
-				true, SystemEvent::getClassPK));
-
 		_collectionPersistenceFinderByG_C_C_T =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -902,4 +765,4 @@ public class SystemEventPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:823177538
+// LIFERAY-SERVICE-BUILDER-HASH:-1246142932

@@ -210,16 +210,6 @@ public class PortalPreferenceValuePersistenceTest {
 	}
 
 	@Test
-	public void testCountByP_K_N_SV() throws Exception {
-		_persistence.countByP_K_N_SV(RandomTestUtil.nextLong(), "", "", "");
-
-		_persistence.countByP_K_N_SV(0L, "null", "null", "null");
-
-		_persistence.countByP_K_N_SV(
-			0L, (String)null, (String)null, (String)null);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		PortalPreferenceValue newPortalPreferenceValue =
 			addPortalPreferenceValue();
@@ -600,4 +590,4 @@ public class PortalPreferenceValuePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2145948073
+// LIFERAY-SERVICE-BUILDER-HASH:-1175596090

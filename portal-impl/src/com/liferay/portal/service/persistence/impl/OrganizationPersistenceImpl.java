@@ -469,128 +469,6 @@ public class OrganizationPersistenceImpl
 
 	private FilterCollectionPersistenceFinder
 		<Organization, NoSuchOrganizationException>
-			_collectionPersistenceFinderByCompanyIdLocations;
-
-	/**
-	 * Returns an ordered range of all the organizations where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of organizations
-	 * @param end the upper bound of the range of organizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching organizations
-	 */
-	@Override
-	public List<Organization> findByCompanyIdLocations(
-		long companyId, int start, int end,
-		OrderByComparator<Organization> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyIdLocations.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first organization in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching organization
-	 * @throws NoSuchOrganizationException if a matching organization could not be found
-	 */
-	@Override
-	public Organization findByCompanyIdLocations_First(
-			long companyId, OrderByComparator<Organization> orderByComparator)
-		throws NoSuchOrganizationException {
-
-		return _collectionPersistenceFinderByCompanyIdLocations.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first organization in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching organization, or <code>null</code> if a matching organization could not be found
-	 */
-	@Override
-	public Organization fetchByCompanyIdLocations_First(
-		long companyId, OrderByComparator<Organization> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyIdLocations.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the organizations that the user has permissions to view where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>OrganizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of organizations
-	 * @param end the upper bound of the range of organizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching organizations that the user has permission to view
-	 */
-	@Override
-	public List<Organization> filterFindByCompanyIdLocations(
-		long companyId, int start, int end,
-		OrderByComparator<Organization> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyIdLocations.filterFind(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
-			end, orderByComparator, companyId, 0);
-	}
-
-	/**
-	 * Removes all the organizations where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyIdLocations(long companyId) {
-		_collectionPersistenceFinderByCompanyIdLocations.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of organizations where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching organizations
-	 */
-	@Override
-	public int countByCompanyIdLocations(long companyId) {
-		return _collectionPersistenceFinderByCompanyIdLocations.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of organizations that the user has permission to view where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching organizations that the user has permission to view
-	 */
-	@Override
-	public int filterCountByCompanyIdLocations(long companyId) {
-		return _collectionPersistenceFinderByCompanyIdLocations.filterCount(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			companyId, 0);
-	}
-
-	private FilterCollectionPersistenceFinder
-		<Organization, NoSuchOrganizationException>
 			_collectionPersistenceFinderByLogoId;
 
 	/**
@@ -3055,37 +2933,6 @@ public class OrganizationPersistenceImpl
 					"organization.", "companyId", FinderColumn.Type.LONG, "=",
 					true, true, Organization::getCompanyId));
 
-		_collectionPersistenceFinderByCompanyIdLocations =
-			new FilterCollectionPersistenceFinder<>(
-				this, Organization::getOrganizationId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyIdLocations",
-					new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				"organization.parentOrganizationId != 0",
-				OrganizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByCompanyIdLocations",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				_SQL_COUNT_ORGANIZATION_WHERE, _SQL_SELECT_ORGANIZATION_WHERE,
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyIdLocations",
-					new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				"organization.parentOrganizationId != 0",
-				new FinderColumn<>(
-					"organization.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, Organization::getCompanyId));
-
 		_collectionPersistenceFinderByLogoId =
 			new FilterCollectionPersistenceFinder<>(
 				this, Organization::getOrganizationId,
@@ -3347,4 +3194,4 @@ public class OrganizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-600075044
+// LIFERAY-SERVICE-BUILDER-HASH:-1899960836

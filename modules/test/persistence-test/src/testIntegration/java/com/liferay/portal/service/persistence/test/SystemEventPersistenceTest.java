@@ -209,15 +209,6 @@ public class SystemEventPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_C() throws Exception {
-		_persistence.countByG_C_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByG_C_C(0L, 0L, 0L);
-	}
-
-	@Test
 	public void testCountByG_C_C_T() throws Exception {
 		_persistence.countByG_C_C_T(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -515,4 +506,4 @@ public class SystemEventPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:847940466
+// LIFERAY-SERVICE-BUILDER-HASH:421315763

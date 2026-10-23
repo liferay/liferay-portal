@@ -181,15 +181,6 @@ public class PortletPreferenceValuePersistenceTest {
 	}
 
 	@Test
-	public void testCountByP_N() throws Exception {
-		_persistence.countByP_N(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByP_N(0L, "null");
-
-		_persistence.countByP_N(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByC_N_SV() throws Exception {
 		_persistence.countByC_N_SV(RandomTestUtil.nextLong(), "", "");
 
@@ -597,4 +588,4 @@ public class PortletPreferenceValuePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1179049396
+// LIFERAY-SERVICE-BUILDER-HASH:-1506101311

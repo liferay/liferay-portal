@@ -266,13 +266,6 @@ public class CountryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByActive() throws Exception {
-		_persistence.countByActive(RandomTestUtil.randomBoolean());
-
-		_persistence.countByActive(RandomTestUtil.randomBoolean());
-	}
-
-	@Test
 	public void testCountByC_A2() throws Exception {
 		_persistence.countByC_A2(RandomTestUtil.nextLong(), "");
 
@@ -334,40 +327,6 @@ public class CountryPersistenceTest {
 
 		_persistence.countByC_A_S(
 			0L, RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByC_A_B_G() throws Exception {
-		_persistence.countByC_A_B_G(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_A_B_G(
-			0L, RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByC_A_G_S() throws Exception {
-		_persistence.countByC_A_G_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_A_G_S(
-			0L, RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByC_A_B_G_S() throws Exception {
-		_persistence.countByC_A_B_G_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean());
-
-		_persistence.countByC_A_B_G_S(
-			0L, RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.randomBoolean());
 	}
 
 	@Test
@@ -783,4 +742,4 @@ public class CountryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:311387174
+// LIFERAY-SERVICE-BUILDER-HASH:-570197490

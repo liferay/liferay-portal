@@ -9,7 +9,6 @@ import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
-import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchPluginSettingException;
 import com.liferay.portal.kernel.model.PluginSetting;
@@ -18,10 +17,8 @@ import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.PluginSettingPersistence;
 import com.liferay.portal.kernel.service.persistence.PluginSettingUtil;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.model.impl.PluginSettingImpl;
@@ -32,7 +29,6 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationHandler;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -63,92 +59,6 @@ public class PluginSettingPersistenceImpl
 
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
 		FINDER_CLASS_NAME_ENTITY + ".List2";
-
-	private CollectionPersistenceFinder
-		<PluginSetting, NoSuchPluginSettingException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the plugin settings where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PluginSettingModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of plugin settings
-	 * @param end the upper bound of the range of plugin settings (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching plugin settings
-	 */
-	@Override
-	public List<PluginSetting> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<PluginSetting> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first plugin setting in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching plugin setting
-	 * @throws NoSuchPluginSettingException if a matching plugin setting could not be found
-	 */
-	@Override
-	public PluginSetting findByCompanyId_First(
-			long companyId, OrderByComparator<PluginSetting> orderByComparator)
-		throws NoSuchPluginSettingException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first plugin setting in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching plugin setting, or <code>null</code> if a matching plugin setting could not be found
-	 */
-	@Override
-	public PluginSetting fetchByCompanyId_First(
-		long companyId, OrderByComparator<PluginSetting> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the plugin settings where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of plugin settings where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching plugin settings
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {companyId});
-	}
 
 	private UniquePersistenceFinder<PluginSetting, NoSuchPluginSettingException>
 		_uniquePersistenceFinderByC_P_P;
@@ -412,32 +322,6 @@ public class PluginSettingPersistenceImpl
 	 * Initializes the plugin setting persistence.
 	 */
 	public void afterPropertiesSet() {
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_PLUGINSETTING_WHERE, _SQL_COUNT_PLUGINSETTING_WHERE,
-				PluginSettingModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-				"", null,
-				new FinderColumn<>(
-					"pluginSetting.", "companyId", FinderColumn.Type.LONG, "=",
-					true, true, PluginSetting::getCompanyId));
-
 		_uniquePersistenceFinderByC_P_P = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -470,17 +354,11 @@ public class PluginSettingPersistenceImpl
 		EntityCacheUtil.removeCache(PluginSettingImpl.class.getName());
 	}
 
-	private static final String _ENTITY_ALIAS_PREFIX =
-		PluginSettingModelImpl.ENTITY_ALIAS + ".";
-
 	private static final String _SQL_SELECT_PLUGINSETTING =
 		"SELECT pluginSetting FROM PluginSetting pluginSetting";
 
 	private static final String _SQL_SELECT_PLUGINSETTING_WHERE =
 		"SELECT pluginSetting FROM PluginSetting pluginSetting WHERE ";
-
-	private static final String _SQL_COUNT_PLUGINSETTING_WHERE =
-		"SELECT COUNT(pluginSetting) FROM PluginSetting pluginSetting WHERE ";
 
 	private static final Set<String> _badColumnNames = SetUtil.fromArray(
 		new String[] {"active"});
@@ -491,4 +369,4 @@ public class PluginSettingPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:333189551
+// LIFERAY-SERVICE-BUILDER-HASH:-582806316

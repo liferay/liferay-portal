@@ -165,102 +165,6 @@ public class PortletPreferenceValuePersistenceImpl
 
 	private CollectionPersistenceFinder
 		<PortletPreferenceValue, NoSuchPortletPreferenceValueException>
-			_collectionPersistenceFinderByP_N;
-
-	/**
-	 * Returns an ordered range of all the portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>PortletPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param start the lower bound of the range of portlet preference values
-	 * @param end the upper bound of the range of portlet preference values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching portlet preference values
-	 */
-	@Override
-	public List<PortletPreferenceValue> findByP_N(
-		long portletPreferencesId, String name, int start, int end,
-		OrderByComparator<PortletPreferenceValue> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByP_N.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {portletPreferencesId, name}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first portlet preference value in the ordered set where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching portlet preference value
-	 * @throws NoSuchPortletPreferenceValueException if a matching portlet preference value could not be found
-	 */
-	@Override
-	public PortletPreferenceValue findByP_N_First(
-			long portletPreferencesId, String name,
-			OrderByComparator<PortletPreferenceValue> orderByComparator)
-		throws NoSuchPortletPreferenceValueException {
-
-		return _collectionPersistenceFinderByP_N.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {portletPreferencesId, name}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first portlet preference value in the ordered set where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching portlet preference value, or <code>null</code> if a matching portlet preference value could not be found
-	 */
-	@Override
-	public PortletPreferenceValue fetchByP_N_First(
-		long portletPreferencesId, String name,
-		OrderByComparator<PortletPreferenceValue> orderByComparator) {
-
-		return _collectionPersistenceFinderByP_N.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {portletPreferencesId, name}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the portlet preference values where portletPreferencesId = &#63; and name = &#63; from the database.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 */
-	@Override
-	public void removeByP_N(long portletPreferencesId, String name) {
-		_collectionPersistenceFinderByP_N.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {portletPreferencesId, name});
-	}
-
-	/**
-	 * Returns the number of portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @return the number of matching portlet preference values
-	 */
-	@Override
-	public int countByP_N(long portletPreferencesId, String name) {
-		return _collectionPersistenceFinderByP_N.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {portletPreferencesId, name});
-	}
-
-	private CollectionPersistenceFinder
-		<PortletPreferenceValue, NoSuchPortletPreferenceValueException>
 			_collectionPersistenceFinderByC_N_SV;
 
 	/**
@@ -843,38 +747,6 @@ public class PortletPreferenceValuePersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					PortletPreferenceValue::getPortletPreferencesId));
 
-		_collectionPersistenceFinderByP_N = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByP_N",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"portletPreferencesId", "name"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByP_N",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"portletPreferencesId", "name"}, 0, 2, true,
-				null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByP_N",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"portletPreferencesId", "name"}, 0, 2, false,
-				null),
-			_SQL_SELECT_PORTLETPREFERENCEVALUE_WHERE,
-			_SQL_COUNT_PORTLETPREFERENCEVALUE_WHERE,
-			PortletPreferenceValueModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"portletPreferenceValue.", "portletPreferencesId",
-				FinderColumn.Type.LONG, "=", true, true,
-				PortletPreferenceValue::getPortletPreferencesId),
-			new FinderColumn<>(
-				"portletPreferenceValue.", "name", FinderColumn.Type.STRING,
-				"=", true, true, PortletPreferenceValue::getName));
-
 		_collectionPersistenceFinderByC_N_SV =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1019,4 +891,4 @@ public class PortletPreferenceValuePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:737259321
+// LIFERAY-SERVICE-BUILDER-HASH:1760036482

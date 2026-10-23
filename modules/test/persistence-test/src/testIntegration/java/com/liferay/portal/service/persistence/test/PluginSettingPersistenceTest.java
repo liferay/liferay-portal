@@ -150,13 +150,6 @@ public class PluginSettingPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByC_P_P() throws Exception {
 		_persistence.countByC_P_P(RandomTestUtil.nextLong(), "", "");
 
@@ -502,4 +495,4 @@ public class PluginSettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-965387399
+// LIFERAY-SERVICE-BUILDER-HASH:-848931419

@@ -148,13 +148,6 @@ public class ImagePersistenceTest {
 	}
 
 	@Test
-	public void testCountByLtSize() throws Exception {
-		_persistence.countByLtSize(RandomTestUtil.nextInt());
-
-		_persistence.countByLtSize(0);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		Image newImage = addImage();
 
@@ -411,4 +404,4 @@ public class ImagePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2008455373
+// LIFERAY-SERVICE-BUILDER-HASH:-1796734801

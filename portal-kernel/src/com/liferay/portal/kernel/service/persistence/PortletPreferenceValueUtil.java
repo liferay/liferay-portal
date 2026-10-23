@@ -211,87 +211,6 @@ public class PortletPreferenceValueUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.PortletPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param start the lower bound of the range of portlet preference values
-	 * @param end the upper bound of the range of portlet preference values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching portlet preference values
-	 */
-	public static List<PortletPreferenceValue> findByP_N(
-		long portletPreferencesId, String name, int start, int end,
-		OrderByComparator<PortletPreferenceValue> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByP_N(
-			portletPreferencesId, name, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first portlet preference value in the ordered set where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching portlet preference value
-	 * @throws NoSuchPortletPreferenceValueException if a matching portlet preference value could not be found
-	 */
-	public static PortletPreferenceValue findByP_N_First(
-			long portletPreferencesId, String name,
-			OrderByComparator<PortletPreferenceValue> orderByComparator)
-		throws com.liferay.portal.kernel.exception.
-			NoSuchPortletPreferenceValueException {
-
-		return getPersistence().findByP_N_First(
-			portletPreferencesId, name, orderByComparator);
-	}
-
-	/**
-	 * Returns the first portlet preference value in the ordered set where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching portlet preference value, or <code>null</code> if a matching portlet preference value could not be found
-	 */
-	public static PortletPreferenceValue fetchByP_N_First(
-		long portletPreferencesId, String name,
-		OrderByComparator<PortletPreferenceValue> orderByComparator) {
-
-		return getPersistence().fetchByP_N_First(
-			portletPreferencesId, name, orderByComparator);
-	}
-
-	/**
-	 * Removes all the portlet preference values where portletPreferencesId = &#63; and name = &#63; from the database.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 */
-	public static void removeByP_N(long portletPreferencesId, String name) {
-		getPersistence().removeByP_N(portletPreferencesId, name);
-	}
-
-	/**
-	 * Returns the number of portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @return the number of matching portlet preference values
-	 */
-	public static int countByP_N(long portletPreferencesId, String name) {
-		return getPersistence().countByP_N(portletPreferencesId, name);
-	}
-
-	/**
 	 * Returns an ordered range of all the portlet preference values where companyId = &#63; and name = &#63; and smallValue = &#63;.
 	 *
 	 * <p>
@@ -662,61 +581,6 @@ public class PortletPreferenceValueUtil {
 	}
 
 	/**
-	 * Returns all the portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @return the matching portlet preference values
-	 */
-	public static List<PortletPreferenceValue> findByP_N(
-		long portletPreferencesId, String name) {
-
-		return getPersistence().findByP_N(portletPreferencesId, name);
-	}
-
-	/**
-	 * Returns a range of all the portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.PortletPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param start the lower bound of the range of portlet preference values
-	 * @param end the upper bound of the range of portlet preference values (not inclusive)
-	 * @return the range of matching portlet preference values
-	 */
-	public static List<PortletPreferenceValue> findByP_N(
-		long portletPreferencesId, String name, int start, int end) {
-
-		return getPersistence().findByP_N(
-			portletPreferencesId, name, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the portlet preference values where portletPreferencesId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.PortletPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portletPreferencesId the portlet preferences ID
-	 * @param name the name
-	 * @param start the lower bound of the range of portlet preference values
-	 * @param end the upper bound of the range of portlet preference values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching portlet preference values
-	 */
-	public static List<PortletPreferenceValue> findByP_N(
-		long portletPreferencesId, String name, int start, int end,
-		OrderByComparator<PortletPreferenceValue> orderByComparator) {
-
-		return getPersistence().findByP_N(
-			portletPreferencesId, name, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the portlet preference values where companyId = &#63; and name = &#63; and smallValue = &#63;.
 	 *
 	 * @param companyId the company ID
@@ -848,4 +712,4 @@ public class PortletPreferenceValueUtil {
 	private static volatile PortletPreferenceValuePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1215443585
+// LIFERAY-SERVICE-BUILDER-HASH:-872349236

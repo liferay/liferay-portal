@@ -116,17 +116,11 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 	public static final boolean COLUMN_BITMASK_ENABLED = true;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long SIZE_COLUMN_BITMASK = 1L;
-
-	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long IMAGEID_COLUMN_BITMASK = 2L;
+	public static final long IMAGEID_COLUMN_BITMASK = 1L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -419,16 +413,6 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 		}
 
 		_size = size;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public int getOriginalSize() {
-		return GetterUtil.getInteger(
-			this.<Integer>getColumnOriginalValue("size_"));
 	}
 
 	public long getColumnBitmask() {
@@ -791,4 +775,4 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 	private Image _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1338524690
+// LIFERAY-SERVICE-BUILDER-HASH:259388064

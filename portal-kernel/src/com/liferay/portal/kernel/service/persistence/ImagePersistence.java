@@ -33,107 +33,6 @@ public interface ImagePersistence
 	 */
 
 	/**
-	 * Returns all the images where size &lt; &#63;.
-	 *
-	 * @param size the size
-	 * @return the matching images
-	 */
-	public java.util.List<Image> findByLtSize(int size);
-
-	/**
-	 * Returns a range of all the images where size &lt; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.ImageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param size the size
-	 * @param start the lower bound of the range of images
-	 * @param end the upper bound of the range of images (not inclusive)
-	 * @return the range of matching images
-	 */
-	public java.util.List<Image> findByLtSize(int size, int start, int end);
-
-	/**
-	 * Returns an ordered range of all the images where size &lt; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.ImageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param size the size
-	 * @param start the lower bound of the range of images
-	 * @param end the upper bound of the range of images (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching images
-	 */
-	public java.util.List<Image> findByLtSize(
-		int size, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Image>
-			orderByComparator);
-
-	/**
-	 * Returns an ordered range of all the images where size &lt; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.ImageModelImpl</code>.
-	 * </p>
-	 *
-	 * @param size the size
-	 * @param start the lower bound of the range of images
-	 * @param end the upper bound of the range of images (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching images
-	 */
-	public java.util.List<Image> findByLtSize(
-		int size, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<Image>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first image in the ordered set where size &lt; &#63;.
-	 *
-	 * @param size the size
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching image
-	 * @throws NoSuchImageException if a matching image could not be found
-	 */
-	public Image findByLtSize_First(
-			int size,
-			com.liferay.portal.kernel.util.OrderByComparator<Image>
-				orderByComparator)
-		throws NoSuchImageException;
-
-	/**
-	 * Returns the first image in the ordered set where size &lt; &#63;.
-	 *
-	 * @param size the size
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching image, or <code>null</code> if a matching image could not be found
-	 */
-	public Image fetchByLtSize_First(
-		int size,
-		com.liferay.portal.kernel.util.OrderByComparator<Image>
-			orderByComparator);
-
-	/**
-	 * Removes all the images where size &lt; &#63; from the database.
-	 *
-	 * @param size the size
-	 */
-	public void removeByLtSize(int size);
-
-	/**
-	 * Returns the number of images where size &lt; &#63;.
-	 *
-	 * @param size the size
-	 * @return the number of matching images
-	 */
-	public int countByLtSize(int size);
-
-	/**
 	 * Creates a new image with the primary key. Does not add the image to the database.
 	 *
 	 * @param imageId the primary key for the new image
@@ -170,4 +69,4 @@ public interface ImagePersistence
 	public Image fetchByPrimaryKey(long imageId);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:896005508
+// LIFERAY-SERVICE-BUILDER-HASH:-1037102267

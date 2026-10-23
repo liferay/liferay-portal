@@ -259,13 +259,6 @@ public class OrganizationPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyIdLocations() throws Exception {
-		_persistence.countByCompanyIdLocations(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyIdLocations(0L);
-	}
-
-	@Test
 	public void testCountByLogoId() throws Exception {
 		_persistence.countByLogoId(RandomTestUtil.nextLong());
 
@@ -709,4 +702,4 @@ public class OrganizationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2130425210
+// LIFERAY-SERVICE-BUILDER-HASH:788049740

@@ -485,108 +485,6 @@ public class PortalPreferenceValueUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the portal preference values where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.PortalPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @param start the lower bound of the range of portal preference values
-	 * @param end the upper bound of the range of portal preference values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching portal preference values
-	 */
-	public static List<PortalPreferenceValue> findByP_K_N_SV(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue, int start, int end,
-		OrderByComparator<PortalPreferenceValue> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByP_K_N_SV(
-			portalPreferencesId, key, namespace, smallValue, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first portal preference value in the ordered set where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching portal preference value
-	 * @throws NoSuchPreferenceValueException if a matching portal preference value could not be found
-	 */
-	public static PortalPreferenceValue findByP_K_N_SV_First(
-			long portalPreferencesId, String key, String namespace,
-			String smallValue,
-			OrderByComparator<PortalPreferenceValue> orderByComparator)
-		throws com.liferay.portal.kernel.exception.
-			NoSuchPreferenceValueException {
-
-		return getPersistence().findByP_K_N_SV_First(
-			portalPreferencesId, key, namespace, smallValue, orderByComparator);
-	}
-
-	/**
-	 * Returns the first portal preference value in the ordered set where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching portal preference value, or <code>null</code> if a matching portal preference value could not be found
-	 */
-	public static PortalPreferenceValue fetchByP_K_N_SV_First(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue,
-		OrderByComparator<PortalPreferenceValue> orderByComparator) {
-
-		return getPersistence().fetchByP_K_N_SV_First(
-			portalPreferencesId, key, namespace, smallValue, orderByComparator);
-	}
-
-	/**
-	 * Removes all the portal preference values where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63; from the database.
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 */
-	public static void removeByP_K_N_SV(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue) {
-
-		getPersistence().removeByP_K_N_SV(
-			portalPreferencesId, key, namespace, smallValue);
-	}
-
-	/**
-	 * Returns the number of portal preference values where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @return the number of matching portal preference values
-	 */
-	public static int countByP_K_N_SV(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue) {
-
-		return getPersistence().countByP_K_N_SV(
-			portalPreferencesId, key, namespace, smallValue);
-	}
-
-	/**
 	 * Creates a new portal preference value with the primary key. Does not add the portal preference value to the database.
 	 *
 	 * @param portalPreferenceValueId the primary key for the new portal preference value
@@ -878,72 +776,6 @@ public class PortalPreferenceValueUtil {
 			portalPreferencesId, key, namespace, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the portal preference values where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @return the matching portal preference values
-	 */
-	public static List<PortalPreferenceValue> findByP_K_N_SV(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue) {
-
-		return getPersistence().findByP_K_N_SV(
-			portalPreferencesId, key, namespace, smallValue);
-	}
-
-	/**
-	 * Returns a range of all the portal preference values where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.PortalPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @param start the lower bound of the range of portal preference values
-	 * @param end the upper bound of the range of portal preference values (not inclusive)
-	 * @return the range of matching portal preference values
-	 */
-	public static List<PortalPreferenceValue> findByP_K_N_SV(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue, int start, int end) {
-
-		return getPersistence().findByP_K_N_SV(
-			portalPreferencesId, key, namespace, smallValue, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the portal preference values where portalPreferencesId = &#63; and key = &#63; and namespace = &#63; and smallValue = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.PortalPreferenceValueModelImpl</code>.
-	 * </p>
-	 *
-	 * @param portalPreferencesId the portal preferences ID
-	 * @param key the key
-	 * @param namespace the namespace
-	 * @param smallValue the small value
-	 * @param start the lower bound of the range of portal preference values
-	 * @param end the upper bound of the range of portal preference values (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching portal preference values
-	 */
-	public static List<PortalPreferenceValue> findByP_K_N_SV(
-		long portalPreferencesId, String key, String namespace,
-		String smallValue, int start, int end,
-		OrderByComparator<PortalPreferenceValue> orderByComparator) {
-
-		return getPersistence().findByP_K_N_SV(
-			portalPreferencesId, key, namespace, smallValue, start, end,
-			orderByComparator);
-	}
-
 	public static PortalPreferenceValuePersistence getPersistence() {
 		return _persistence;
 	}
@@ -957,4 +789,4 @@ public class PortalPreferenceValueUtil {
 	private static volatile PortalPreferenceValuePersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1839608887
+// LIFERAY-SERVICE-BUILDER-HASH:180574032
