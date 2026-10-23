@@ -137,13 +137,10 @@ public class SourceFormatterReleaseUtil {
 				String filePath = line.substring(line.indexOf(" b/") + 3);
 
 				documentation =
-					filePath.equals(
-						JenkinsResultsParserUtil.combine(
-							_SOURCE_FORMATTER_PATH, "/README.md")) ||
+					filePath.equals(_SOURCE_FORMATTER_PATH + "/README.md") ||
 					filePath.startsWith(
-						JenkinsResultsParserUtil.combine(
-							_SOURCE_FORMATTER_PATH,
-							"/src/main/resources/documentation/"));
+						_SOURCE_FORMATTER_PATH +
+							"/src/main/resources/documentation/");
 
 				if (!documentation &&
 					!Arrays.asList(
