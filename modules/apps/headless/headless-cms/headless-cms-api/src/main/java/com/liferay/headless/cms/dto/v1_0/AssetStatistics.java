@@ -591,6 +591,47 @@ public class AssetStatistics implements Serializable {
 	private Supplier<Long> _totalCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
+	public Long getUnlinkedCount() {
+		if (_unlinkedCountSupplier != null) {
+			unlinkedCount = _unlinkedCountSupplier.get();
+
+			_unlinkedCountSupplier = null;
+		}
+
+		return unlinkedCount;
+	}
+
+	public void setUnlinkedCount(Long unlinkedCount) {
+		this.unlinkedCount = unlinkedCount;
+
+		_unlinkedCountSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setUnlinkedCount(
+		UnsafeSupplier<Long, Exception> unlinkedCountUnsafeSupplier) {
+
+		_unlinkedCountSupplier = () -> {
+			try {
+				return unlinkedCountUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Long unlinkedCount;
+
+	@JsonIgnore
+	private Supplier<Long> _unlinkedCountSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema
 	public Long getUpcomingReviewCount() {
 		if (_upcomingReviewCountSupplier != null) {
 			upcomingReviewCount = _upcomingReviewCountSupplier.get();
@@ -855,6 +896,18 @@ public class AssetStatistics implements Serializable {
 			sb.append(totalCount);
 		}
 
+		Long unlinkedCount = getUnlinkedCount();
+
+		if (unlinkedCount != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"unlinkedCount\": ");
+
+			sb.append(unlinkedCount);
+		}
+
 		Long upcomingReviewCount = getUpcomingReviewCount();
 
 		if (upcomingReviewCount != null) {
@@ -1001,4 +1054,4 @@ public class AssetStatistics implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:145811657
+// LIFERAY-REST-BUILDER-HASH:-1722021196

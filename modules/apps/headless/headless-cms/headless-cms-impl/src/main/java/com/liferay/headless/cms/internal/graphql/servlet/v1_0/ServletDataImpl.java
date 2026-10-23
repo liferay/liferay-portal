@@ -12,11 +12,13 @@ import com.liferay.headless.cms.internal.resource.v1_0.AssetStatisticsResourceIm
 import com.liferay.headless.cms.internal.resource.v1_0.AssetUsageResourceImpl;
 import com.liferay.headless.cms.internal.resource.v1_0.BrokenLinkAssetResourceImpl;
 import com.liferay.headless.cms.internal.resource.v1_0.MissingRequiredFieldsAssetResourceImpl;
+import com.liferay.headless.cms.internal.resource.v1_0.UnlinkedAssetResourceImpl;
 import com.liferay.headless.cms.resource.v1_0.AssetPermissionActionResource;
 import com.liferay.headless.cms.resource.v1_0.AssetStatisticsResource;
 import com.liferay.headless.cms.resource.v1_0.AssetUsageResource;
 import com.liferay.headless.cms.resource.v1_0.BrokenLinkAssetResource;
 import com.liferay.headless.cms.resource.v1_0.MissingRequiredFieldsAssetResource;
+import com.liferay.headless.cms.resource.v1_0.UnlinkedAssetResource;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
 
@@ -53,6 +55,8 @@ public class ServletDataImpl implements ServletData {
 			_brokenLinkAssetResourceComponentServiceObjects);
 		Query.setMissingRequiredFieldsAssetResourceComponentServiceObjects(
 			_missingRequiredFieldsAssetResourceComponentServiceObjects);
+		Query.setUnlinkedAssetResourceComponentServiceObjects(
+			_unlinkedAssetResourceComponentServiceObjects);
 	}
 
 	public String getApplicationName() {
@@ -115,6 +119,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							MissingRequiredFieldsAssetResourceImpl.class,
 							"getMissingRequiredFieldsAssetsPage"));
+					put(
+						"query#unlinkedAssets",
+						new ObjectValuePair<>(
+							UnlinkedAssetResourceImpl.class,
+							"getUnlinkedAssetsPage"));
 				}
 			};
 
@@ -138,5 +147,9 @@ public class ServletDataImpl implements ServletData {
 	private ComponentServiceObjects<MissingRequiredFieldsAssetResource>
 		_missingRequiredFieldsAssetResourceComponentServiceObjects;
 
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<UnlinkedAssetResource>
+		_unlinkedAssetResourceComponentServiceObjects;
+
 }
-// LIFERAY-REST-BUILDER-HASH:-2096479056
+// LIFERAY-REST-BUILDER-HASH:-300395040

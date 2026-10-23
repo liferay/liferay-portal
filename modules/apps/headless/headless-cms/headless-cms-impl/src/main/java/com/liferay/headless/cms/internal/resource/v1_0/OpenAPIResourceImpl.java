@@ -95,9 +95,11 @@ public class OpenAPIResourceImpl {
 
 			add(MissingRequiredFieldsAssetResourceImpl.class);
 
+			add(UnlinkedAssetResourceImpl.class);
+
 			add(OpenAPIResourceImpl.class);
 		}
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-878914061
+// LIFERAY-REST-BUILDER-HASH:-1768990341
