@@ -19,7 +19,6 @@ import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFo
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFormEvaluatorExpressionFieldAccessor;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFormEvaluatorExpressionObserver;
 import com.liferay.dynamic.data.mapping.form.evaluator.internal.expression.DDMFormEvaluatorExpressionParameterAccessor;
-import com.liferay.dynamic.data.mapping.form.evaluator.internal.function.CalculateFunction;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesRegistry;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueAccessor;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldValueEditingAware;
@@ -136,11 +135,17 @@ public class DDMFormEvaluatorHelper {
 			ddmFormRules = _ddmForm.getDDMFormRules();
 		}
 
-		_evaluateCalculateActions(ddmFormRules);
+		for (int i = 0; i < Math.min(ddmFormRules.size() + 1, 5); i++) {
+			Map<String, Object> fieldValues = _getFieldValues();
 
-		_evaluateDDMFormRules(ddmFormRules, false);
+			_evaluateDDMFormRules(ddmFormRules, false);
 
-		_evaluateDDMFormRules(ddmFormRules, true);
+			_evaluateDDMFormRules(ddmFormRules, true);
+
+			if (fieldValues.equals(_getFieldValues())) {
+				break;
+			}
+		}
 
 		_resetInvisibleFieldValue();
 
@@ -248,28 +253,6 @@ public class DDMFormEvaluatorHelper {
 			).withDDMExpressionParameterAccessor(
 				ddmFormEvaluatorExpressionParameterAccessor
 			).build());
-	}
-
-	private void _evaluateCalculateActions(List<DDMFormRule> ddmFormRules) {
-		for (DDMFormRule ddmFormRule : ddmFormRules) {
-			List<String> calculateActions = ListUtil.filter(
-				ddmFormRule.getActions(),
-				action -> action.startsWith(CalculateFunction.NAME + "("));
-
-			if (!ddmFormRule.isEnabled() || calculateActions.isEmpty() ||
-				Validator.isNull(ddmFormRule.getCondition()) ||
-				!Objects.equals(
-					Boolean.TRUE,
-					_evaluateDDMFormRuleCondition(
-						ddmFormRule.getCondition()))) {
-
-				continue;
-			}
-
-			for (String calculateAction : calculateActions) {
-				_evaluateDDMFormRuleAction(calculateAction);
-			}
-		}
 	}
 
 	private void _evaluateDDMFormPageChange() {
@@ -493,6 +476,29 @@ public class DDMFormEvaluatorHelper {
 				builder.build());
 
 		return getFieldPropertyResponse.getValue();
+	}
+
+	private Map<String, Object> _getFieldValues() {
+		Map<String, Object> fieldValues = new HashMap<>();
+
+		for (Map.Entry<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
+				entry : _ddmFormFieldsPropertyChanges.entrySet()) {
+
+			Map<String, Object> ddmFormFieldProperties = entry.getValue();
+
+			if (!ddmFormFieldProperties.containsKey("value")) {
+				continue;
+			}
+
+			DDMFormEvaluatorFieldContextKey ddmFormEvaluatorFieldContextKey =
+				entry.getKey();
+
+			fieldValues.put(
+				ddmFormEvaluatorFieldContextKey.getName(),
+				ddmFormFieldProperties.get("value"));
+		}
+
+		return fieldValues;
 	}
 
 	private Locale _getLocale() {
