@@ -1,0 +1,28 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Providers
+templates:
+    -   templates/providers.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits the providers when they are disabled
+        set:
+            providers:
+                enabled: false
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-family-gcp
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-85"
+            -   documentSelector:
+                    path: metadata.name
+                    value: provider-gcp-sql
+                equal:
+                    path: metadata.annotations["argocd.argoproj.io/sync-wave"]
+                    value: "-80"
+        it: Syncs the family provider one wave ahead of the other providers
