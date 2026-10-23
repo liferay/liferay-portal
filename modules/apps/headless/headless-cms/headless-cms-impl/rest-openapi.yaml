@@ -69,6 +69,10 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                unlinkedCount:
+                    format: int64
+                    readOnly: true
+                    type: integer
                 upcomingReviewCount:
                     format: int64
                     readOnly: true
@@ -159,6 +163,28 @@ components:
         ResetAssetPermissionAction:
             allOf:
                 -   $ref: "#/components/schemas/AssetPermissionAction"
+        UnlinkedAsset:
+            properties:
+                actions:
+                    additionalProperties:
+                        additionalProperties:
+                            type: string
+                        type: object
+                    readOnly: true
+                    type: object
+                href:
+                    readOnly: true
+                    type: string
+                id:
+                    format: int64
+                    readOnly: true
+                    type: integer
+                objectDefinitionExternalReferenceCode:
+                    readOnly: true
+                    type: string
+                title:
+                    readOnly: true
+                    type: string
 info:
     license:
         name: Apache 2.0
@@ -328,4 +354,44 @@ paths:
                                     $ref: "#/components/schemas/MissingRequiredFieldsAsset"
                                 type: array
             tags: ["MissingRequiredFieldsAsset"]
+            x-feature-flag: LPD-82226
+    "/unlinked-assets":
+        get:
+            operationId: getUnlinkedAssetsPage
+            parameters:
+                -   in: query
+                    name: assetLibraryId
+                    schema:
+                        format: int64
+                        type: integer
+                -   in: query
+                    name: page
+                    schema:
+                        type: integer
+                -   in: query
+                    name: pageSize
+                    schema:
+                        type: integer
+                -   in: query
+                    name: search
+                    schema:
+                        type: string
+                -   in: query
+                    name: sort
+                    schema:
+                        type: string
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UnlinkedAsset"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/UnlinkedAsset"
+                                type: array
+            tags: ["UnlinkedAsset"]
             x-feature-flag: LPD-82226
