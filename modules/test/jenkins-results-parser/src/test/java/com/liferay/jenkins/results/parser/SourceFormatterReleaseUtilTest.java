@@ -22,6 +22,7 @@ public class SourceFormatterReleaseUtilTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Before
+	@Override
 	public void setUp() throws Exception {
 		_artifactGitId = RandomTestUtil.randomSHA();
 		_artifactPropertiesFile = new File(
@@ -266,10 +267,10 @@ public class SourceFormatterReleaseUtilTest
 				JenkinsResultsParserUtil.combine(
 					_getVersionBumpGitDiff(),
 					_getGitDiff(
-						"\t_VERSION = \"1.0.2\";",
+						RandomTestUtil.randomString(),
 						"modules/util/source-formatter/src/main/java/com" +
 							"/liferay/source/formatter/SourceFormatter.java",
-						"\t_VERSION = \"1.0.1\";"))));
+						RandomTestUtil.randomString()))));
 	}
 
 	@Test
@@ -426,6 +427,12 @@ public class SourceFormatterReleaseUtilTest
 		String ref = RandomTestUtil.randomString();
 
 		Mockito.when(
+			gitWorkingDirectory.getWorkingDirectory()
+		).thenReturn(
+			temporaryFolder.getRoot()
+		);
+
+		Mockito.when(
 			gitWorkingDirectory.executeBashCommands(
 				Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong(),
 				Mockito.eq(
@@ -435,12 +442,6 @@ public class SourceFormatterReleaseUtilTest
 						" -- modules/util/source-formatter")))
 		).thenReturn(
 			new GitUtil.ExecutionResult(exitValue, "", standardOut)
-		);
-
-		Mockito.when(
-			gitWorkingDirectory.getWorkingDirectory()
-		).thenReturn(
-			temporaryFolder.getRoot()
 		);
 
 		return SourceFormatterReleaseUtil.isReleasedSourceMatch(
