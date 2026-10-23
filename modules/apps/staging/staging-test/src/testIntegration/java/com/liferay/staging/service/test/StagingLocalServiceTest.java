@@ -354,7 +354,11 @@ public class StagingLocalServiceTest {
 			_stagingLocalService.enableLocalStaging(
 				_user.getUserId(), group, false, false, new ServiceContext());
 
+			String typeSettings = group.getTypeSettings();
+
 			_stagingLocalService.disableStaging(group, new ServiceContext());
+
+			Assert.assertEquals(typeSettings, group.getTypeSettings());
 
 			group = _groupLocalService.getGroup(group.getGroupId());
 
