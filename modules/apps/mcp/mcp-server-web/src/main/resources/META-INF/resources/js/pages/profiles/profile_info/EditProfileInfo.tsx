@@ -9,11 +9,12 @@ import ClayLayout from '@clayui/layout';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {Form, FormikProvider, useFormik} from 'formik';
 import {navigate, sub} from 'frontend-js-web';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 
 import {FormField} from '../../../components/forms/FormField';
 import {FormSection} from '../../../components/forms/FormSection';
 import {FormToggle} from '../../../components/forms/FormToggle';
+import useFocusFirstInvalidField from '../../../hooks/useFocusFirstInvalidField';
 import useRequest from '../../../hooks/useRequest';
 import ProfileService from '../../../services/ProfileService';
 import {
@@ -83,6 +84,8 @@ function ProfileForm({
 }: ProfileFormProps) {
 	const isNew = !profile?.externalReferenceCode;
 
+	const formRef = useRef<HTMLFormElement>(null);
+
 	const formik = useFormik<ProfileFormValues>({
 		initialValues: {
 			active: profile?.profileStatus?.key === 'active',
@@ -134,21 +137,11 @@ function ProfileForm({
 		},
 	});
 
-	useEffect(() => {
-		if (!formik.submitCount || formik.isSubmitting) {
-			return;
-		}
-
-		document
-			.querySelector<HTMLElement>(
-				'.profile-form .form-group.has-error input:not([type="hidden"]), .profile-form .form-group.has-error textarea'
-			)
-			?.focus();
-	}, [formik.isSubmitting, formik.submitCount]);
+	useFocusFirstInvalidField(formRef, formik);
 
 	return (
 		<FormikProvider value={formik}>
-			<Form className="profile-form" noValidate>
+			<Form className="profile-form" noValidate ref={formRef}>
 				{isNew && (
 					<ClayAlert
 						displayType="info"
