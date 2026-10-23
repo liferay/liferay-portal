@@ -49,9 +49,14 @@ const renderPanel = (
 	render(
 		<LifecycleConditionsPanel
 			lifecycleName="Growth and Retention Hub"
+			onAddStage={jest.fn()}
+			onMoveStage={jest.fn()}
+			onRemoveStage={jest.fn()}
 			onSelect={jest.fn()}
 			selectedKey={null}
 			stageConfigs={STAGES}
+			stageErrorKeys={[]}
+			summaryError={false}
 			{...props}
 		/>
 	);
@@ -164,9 +169,14 @@ describe('LifecycleConditionsPanel', () => {
 		rerender(
 			<LifecycleConditionsPanel
 				lifecycleName="Growth and Retention Hub"
+				onAddStage={jest.fn()}
+				onMoveStage={jest.fn()}
+				onRemoveStage={jest.fn()}
 				onSelect={jest.fn()}
 				selectedKey="qualified"
 				stageConfigs={STAGES}
+				stageErrorKeys={[]}
+				summaryError={false}
 			/>
 		);
 

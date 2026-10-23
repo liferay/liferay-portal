@@ -3,13 +3,14 @@ import ClayEmptyState from '@clayui/empty-state';
 import ClayPopover from '@clayui/popover';
 import Label from '@clayui/label';
 import Loading from 'shared/components/Loading';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React from 'react';
 import {ButtonWithIcon, Icon, Text} from '@clayui/core';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {ILifecycleStage} from 'lifecycle/utils/types';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {getPluralMessage, sub} from 'shared/util/lang';
 import {formatPercent, toRounded, toThousands} from 'shared/util/numbers';
+import {useHorizontalScroll} from 'shared/hooks/useHorizontalScroll';
 import {useLifecycle} from 'lifecycle/context/LifecycleContext';
 import {sortBy} from 'lodash';
 
@@ -36,92 +37,29 @@ const getAverageDaysLabel = (averageStageDuration: number) =>
 		) as string
 	).toLowerCase();
 
-const useCardScroll = (itemCount: number) => {
-	const trackRef = useRef<HTMLDivElement>(null);
-
-	const [canScrollNext, setCanScrollNext] = useState(false);
-	const [canScrollPrevious, setCanScrollPrevious] = useState(false);
-
-	const updateArrows = useCallback(() => {
-		const track = trackRef.current;
-
-		if (!track) {
-			return;
-		}
-
-		const {clientWidth, scrollLeft, scrollWidth} = track;
-
-		setCanScrollPrevious(scrollLeft > 0);
-		setCanScrollNext(scrollLeft + clientWidth < scrollWidth - 1);
-	}, []);
-
-	useEffect(() => {
-		updateArrows();
-
-		window.addEventListener('resize', updateArrows);
-
-		return () => window.removeEventListener('resize', updateArrows);
-	}, [itemCount, updateArrows]);
-
-	const scrollByCard = (direction: 1 | -1) => {
-		const track = trackRef.current;
-
-		const card = track?.firstElementChild as HTMLElement | null;
-
-		if (!track || !card) {
-			return;
-		}
-
-		const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
-
-		track.scrollBy({
-			behavior: 'smooth',
-			left: direction * (card.offsetWidth + gap),
-		});
-	};
-
-	return {
-		canScrollNext,
-		canScrollPrevious,
-		scrollNext: () => scrollByCard(1),
-		scrollPrevious: () => scrollByCard(-1),
-		trackRef,
-		updateArrows,
-	};
-};
-
 interface IStageDescriptionProps {
 	description: string;
 	name: string;
 }
 
-const StageDescription = ({description, name}: IStageDescriptionProps) => {
-	const [show, setShow] = useState(false);
-
-	return (
-		<ClayPopover
-			alignPosition="top"
-			header={name}
-			onShowChange={setShow}
-			show={show}
-			trigger={
-				<ClayButtonWithIcon
-					aria-label={Liferay.Language.get('more-information')}
-					className="ml-1 text-secondary"
-					displayType="unstyled"
-					onBlur={() => setShow(false)}
-					onFocus={() => setShow(true)}
-					onMouseEnter={() => setShow(true)}
-					onMouseLeave={() => setShow(false)}
-					size="xs"
-					symbol="question-circle-full"
-				/>
-			}
-		>
-			{description}
-		</ClayPopover>
-	);
-};
+const StageDescription = ({description, name}: IStageDescriptionProps) => (
+	<ClayPopover
+		alignPosition="top"
+		closeOnClickOutside
+		header={name}
+		trigger={
+			<ClayButtonWithIcon
+				aria-label={Liferay.Language.get('more-information')}
+				className="ml-1 text-secondary"
+				displayType="unstyled"
+				size="xs"
+				symbol="question-circle-full"
+			/>
+		}
+	>
+		{description}
+	</ClayPopover>
+);
 
 interface IStageMetricsProps {
 	onFilterClick: (stageId: string) => void;
@@ -252,16 +190,12 @@ interface ILifecycleChartProps {
 	stages?: ILifecycleStage[];
 }
 
-const LifecycleChart = ({
-	description,
-	error,
-	loading,
-	name,
-	stages,
-}: ILifecycleChartProps) => {
-	const {selectStage} = useLifecycle();
+interface IStageCardsProps {
+	stages: ILifecycleStage[];
+}
 
-	const sortedStages = error ? [] : sortBy(stages ?? [], 'priority');
+const StageCards = ({stages}: IStageCardsProps) => {
+	const {selectStage} = useLifecycle();
 
 	const {
 		canScrollNext,
@@ -270,19 +204,78 @@ const LifecycleChart = ({
 		scrollPrevious,
 		trackRef,
 		updateArrows,
-	} = useCardScroll(loading ? 0 : sortedStages.length);
+	} = useHorizontalScroll(stages.length);
 
 	const referencePercentage = Math.max(
-		...sortedStages.map((stage) => stage.percentage),
+		...stages.map((stage) => stage.percentage),
 		0
 	);
+
+	return (
+		<div className="mt-4">
+			<div
+				className="c-gap-3 d-flex overflow-auto stage-metrics-track"
+				onScroll={updateArrows}
+				ref={trackRef}
+			>
+				{stages.map((stage) => (
+					<StageMetrics
+						key={stage.id}
+						onFilterClick={selectStage}
+						referencePercentage={referencePercentage}
+						stage={stage}
+					/>
+				))}
+			</div>
+
+			{(canScrollPrevious || canScrollNext) && (
+				<div className="align-items-center c-gap-3 d-flex justify-content-center mt-3">
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('previous')}
+						borderless
+						disabled={!canScrollPrevious}
+						displayType="secondary"
+						onClick={scrollPrevious}
+						size="sm"
+						symbol="angle-left"
+					/>
+
+					<Text color="secondary" size={3}>
+						{Liferay.Language.get('scroll-to-view-all-stages')}
+					</Text>
+
+					<ClayButtonWithIcon
+						aria-label={Liferay.Language.get('next')}
+						borderless
+						disabled={!canScrollNext}
+						displayType="secondary"
+						onClick={scrollNext}
+						size="sm"
+						symbol="angle-right"
+					/>
+				</div>
+			)}
+		</div>
+	);
+};
+
+const LifecycleChart = ({
+	description,
+	error,
+	loading,
+	name,
+	stages,
+}: ILifecycleChartProps) => {
+	if (!loading && !error && !stages?.length) {
+		return null;
+	}
 
 	const renderStages = () => {
 		if (loading) {
 			return <Loading />;
 		}
 
-		if (!sortedStages.length) {
+		if (error) {
 			return (
 				<ClayEmptyState
 					className="text-center"
@@ -295,52 +288,7 @@ const LifecycleChart = ({
 			);
 		}
 
-		return (
-			<div className="mt-4">
-				<div
-					className="d-flex overflow-auto stage-metrics-track"
-					onScroll={updateArrows}
-					ref={trackRef}
-				>
-					{sortedStages.map((stage) => (
-						<StageMetrics
-							key={stage.id}
-							onFilterClick={selectStage}
-							referencePercentage={referencePercentage}
-							stage={stage}
-						/>
-					))}
-				</div>
-
-				{(canScrollPrevious || canScrollNext) && (
-					<div className="align-items-center c-gap-3 d-flex justify-content-center mt-3">
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('previous')}
-							borderless
-							disabled={!canScrollPrevious}
-							displayType="secondary"
-							onClick={scrollPrevious}
-							size="sm"
-							symbol="angle-left"
-						/>
-
-						<Text color="secondary" size={3}>
-							{Liferay.Language.get('scroll-to-view-all-stages')}
-						</Text>
-
-						<ClayButtonWithIcon
-							aria-label={Liferay.Language.get('next')}
-							borderless
-							disabled={!canScrollNext}
-							displayType="secondary"
-							onClick={scrollNext}
-							size="sm"
-							symbol="angle-right"
-						/>
-					</div>
-				)}
-			</div>
-		);
+		return <StageCards stages={sortBy(stages, 'priority')} />;
 	};
 
 	return (
@@ -353,16 +301,12 @@ const LifecycleChart = ({
 				className="p-3"
 				minHeight={loading ? LOADING_CARD_MIN_HEIGHT : undefined}
 			>
-				<Card.Title>
-					{name || Liferay.Language.get('accounts-by-stage')}
-				</Card.Title>
+				<Card.Title>{name}</Card.Title>
 				<Card.Body noPadding>
 					<div className="mt-1">
-						{description && (
-							<Text color="secondary" size={3}>
-								{description}
-							</Text>
-						)}
+						<Text color="secondary" size={3}>
+							{description}
+						</Text>
 
 						{renderStages()}
 					</div>

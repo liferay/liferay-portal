@@ -38,7 +38,9 @@ describe('ConditionSticker', () => {
 	});
 
 	it('shows an outlined green check for success', () => {
-		const {container} = render(<ConditionSticker displayType="success" />);
+		const {container} = render(
+			<ConditionSticker displayType="success" symbol="check-circle" />
+		);
 
 		expect(container.querySelector('.sticker-success')).toBeInTheDocument();
 		expect(
@@ -47,7 +49,9 @@ describe('ConditionSticker', () => {
 	});
 
 	it('shows an outlined orange exclamation for warning', () => {
-		const {container} = render(<ConditionSticker displayType="warning" />);
+		const {container} = render(
+			<ConditionSticker displayType="warning" symbol="exclamation-circle" />
+		);
 
 		expect(container.querySelector('.sticker-warning')).toBeInTheDocument();
 		expect(

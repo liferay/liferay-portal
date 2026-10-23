@@ -149,13 +149,15 @@ describe('LifecycleChart', () => {
 		expect(container.querySelector('.stage-metrics')).toBeNull();
 	});
 
-	it('should render the empty state when there are no stages', () => {
-		const {container} = renderChart({stages: []});
+	it('should render nothing when the lifecycle has no stages', () => {
+		const {container} = renderChart({
+			name: 'Growth and Retention Hub',
+			stages: [],
+		});
 
-		expect(
-			screen.getByText(/lifecycle data will appear here when synced/i)
-		).toBeInTheDocument();
-		expect(container.querySelector('.stage-metrics')).toBeNull();
+		expect(screen.queryByText(/lifecycle stages/i)).toBeNull();
+		expect(screen.queryByText('Growth and Retention Hub')).toBeNull();
+		expect(container.querySelector('.card')).toBeNull();
 	});
 
 	it('should render every stage by name in display order, At Risk included', () => {
@@ -275,25 +277,21 @@ describe('LifecycleChart', () => {
 		expect(queryByText(/avg\. days/i)).toBeNull();
 	});
 
-	it('should show the stage description in a popover instead of inline text', () => {
+	it('should show the stage description in a popover only on click', () => {
 		renderChart({stages: sampleStages});
-
-		expect(
-			screen.queryByText(/cold accounts showing early intent/i)
-		).toBeNull();
 
 		const [awareHelp] = screen.getAllByRole('button', {
 			name: /more information/i,
 		});
 
 		fireEvent.focus(awareHelp);
+		fireEvent.mouseEnter(awareHelp);
 
 		expect(
-			screen.getByText(/cold accounts showing early intent/i)
-		).toBeInTheDocument();
+			screen.queryByText(/cold accounts showing early intent/i)
+		).toBeNull();
 
-		fireEvent.blur(awareHelp);
-		fireEvent.mouseEnter(awareHelp);
+		fireEvent.click(awareHelp);
 
 		expect(
 			screen.getByText(/cold accounts showing early intent/i)

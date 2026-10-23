@@ -211,7 +211,7 @@ const BaseLifecycle = () => {
 
 	const loading = dataSourcesLoading || lifecycleLoading;
 
-	const title = lifecycle?.name || Liferay.Language.get('lifecycles');
+	const title = lifecycle?.name ?? '';
 
 	const hasContent =
 		!loading &&
@@ -289,7 +289,7 @@ const BaseLifecycle = () => {
 	}
 
 	return (
-		<BasePage documentTitle={title}>
+		<BasePage documentTitle={title || Liferay.Language.get('lifecycles')}>
 			<LifecycleContextProvider
 				key={lifecycleId}
 				lifecycleId={lifecycleId}

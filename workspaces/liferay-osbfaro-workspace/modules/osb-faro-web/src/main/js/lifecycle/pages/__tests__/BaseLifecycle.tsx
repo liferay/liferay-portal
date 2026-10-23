@@ -310,12 +310,12 @@ describe('BaseLifecycle', () => {
 		).toBeInTheDocument();
 	});
 
-	it('titles the page generically when the lifecycle is unnamed', () => {
+	it('shows no generic title before the lifecycle name is known', () => {
 		renderPage();
 
 		expect(
-			screen.getByRole('heading', {name: /^lifecycles$/i})
-		).toBeInTheDocument();
+			screen.queryByRole('heading', {name: /^lifecycles$/i})
+		).toBeNull();
 	});
 
 	it('shows the lifecycle in the breadcrumb after the lifecycles', () => {

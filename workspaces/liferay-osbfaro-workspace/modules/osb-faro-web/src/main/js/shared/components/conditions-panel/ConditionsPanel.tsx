@@ -63,31 +63,25 @@ const ConditionsPanel: React.FC<IConditionsPanelProps> = ({
 	children,
 	dragTypes,
 	title,
-}) => {
-	const content = (
-		<div
-			className="conditions-panel-content d-flex flex-column"
-			data-report-expand
-		>
-			<div className="flex-shrink-0 px-4 py-3">
-				<Heading fontSize={6} level={2} weight="semi-bold">
-					{title}
-				</Heading>
-			</div>
+}) => (
+	<DndProvider backend={HTML5Backend}>
+		<ConditionsDropArea dragTypes={dragTypes}>
+			<div
+				className="conditions-panel-content d-flex flex-column"
+				data-report-expand
+			>
+				<div className="flex-shrink-0 px-4 py-3">
+					<Heading fontSize={6} level={2} weight="semi-bold">
+						{title}
+					</Heading>
+				</div>
 
-			<div className="flex-grow-1 overflow-auto" data-report-expand>
-				<AnnounceProvider>{children}</AnnounceProvider>
+				<div className="flex-grow-1 overflow-auto" data-report-expand>
+					<AnnounceProvider>{children}</AnnounceProvider>
+				</div>
 			</div>
-		</div>
-	);
-
-	return (
-		<DndProvider backend={HTML5Backend}>
-			<ConditionsDropArea dragTypes={dragTypes}>
-				{content}
-			</ConditionsDropArea>
-		</DndProvider>
-	);
-};
+		</ConditionsDropArea>
+	</DndProvider>
+);
 
 export default ConditionsPanel;

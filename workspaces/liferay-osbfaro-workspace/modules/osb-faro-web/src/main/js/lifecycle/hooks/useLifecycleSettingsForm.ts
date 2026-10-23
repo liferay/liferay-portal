@@ -45,12 +45,6 @@ const serializeLifecycle = (
 		})),
 	});
 
-/**
- * Owns the orchestration shared by the create and edit lifecycle pages: the
- * fields-catalog request, the editable lifecycle and stage state, the selected
- * panel item, the submit scaffold, and dashboard navigation. Each page supplies
- * only its initial values and the API call it runs on submit.
- */
 export const useLifecycleSettingsForm = ({
 	description: initialDescription,
 	name: initialName,
@@ -83,6 +77,8 @@ export const useLifecycleSettingsForm = ({
 	const [alertCount, setAlertCount] = useState(0);
 
 	const [alertVisible, setAlertVisible] = useState(false);
+
+	const [saving, setSaving] = useState(false);
 
 	const [submitted, setSubmitted] = useState(false);
 
@@ -133,7 +129,7 @@ export const useLifecycleSettingsForm = ({
 		if (submitted) {
 			history.push(lifecycleURL);
 		}
-	}, [submitted]);
+	}, [history, lifecycleURL, submitted]);
 
 	const updateStage = (key: string, value: IStageConfig) =>
 		setStageConfigs((previous) =>
@@ -217,6 +213,10 @@ export const useLifecycleSettingsForm = ({
 		submitAttempted || blurredFields.includes(id);
 
 	const submit = (run: () => Promise<unknown>, successMessage: string) => {
+		if (saving) {
+			return Promise.resolve();
+		}
+
 		setSubmitAttempted(true);
 
 		if (lifecycleErrorMessages.length) {
@@ -228,6 +228,8 @@ export const useLifecycleSettingsForm = ({
 		}
 
 		setAlertVisible(false);
+
+		setSaving(true);
 
 		return run()
 			.then(() => {
@@ -249,7 +251,8 @@ export const useLifecycleSettingsForm = ({
 						),
 					})
 				);
-			});
+			})
+			.finally(() => setSaving(false));
 	};
 
 	return {
@@ -270,6 +273,7 @@ export const useLifecycleSettingsForm = ({
 		moveStage,
 		refetchCatalog,
 		removeStage,
+		saving,
 		selectedStage,
 		setLifecycleDescription,
 		setLifecycleName,
@@ -278,12 +282,13 @@ export const useLifecycleSettingsForm = ({
 		stageErrorKeys: stageConfigs
 			.filter(
 				(stage) =>
-					hasStageChipError(stage) ||
-					duplicateStageKeys.includes(stage.key)
+					isFieldErrorVisible(`stageName-${stage.key}`) &&
+					(hasStageChipError(stage) ||
+						duplicateStageKeys.includes(stage.key))
 			)
 			.map((stage) => stage.key),
 		submit,
-		summaryError: !lifecycleName.trim(),
+		summaryError: !lifecycleName.trim() || !lifecycleDescription.trim(),
 		updateStage,
 	};
 };

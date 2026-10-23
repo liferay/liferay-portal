@@ -147,7 +147,11 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 				<Breadcrumbs
 					items={[
 						{label: lifecycleName},
-						{active: true, label: value.name},
+						{
+							active: true,
+							label:
+								value.name || Liferay.Language.get('new-stage'),
+						},
 					]}
 					onClick={onSelectSummary}
 				/>
@@ -287,7 +291,7 @@ const StageConfigurationPanel: React.FC<IStageConfigurationPanelProps> = ({
 							<div className="align-items-center border-bottom c-gap-2 d-flex p-3 stage-configuration-panel__match text-secondary">
 								{sub(
 									Liferay.Language.get(
-										'x-of-these-criteria-are-met'
+										'x-of-these-criteria-must-be-met'
 									),
 									[
 										<Picker

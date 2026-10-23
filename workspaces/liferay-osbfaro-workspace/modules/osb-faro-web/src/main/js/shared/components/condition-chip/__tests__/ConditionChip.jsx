@@ -177,7 +177,7 @@ describe('ConditionChip', () => {
 				{...defaultProps}
 				onSelect={jest.fn()}
 				selected
-				sticker={{displayType: 'warning'}}
+				sticker={{displayType: 'warning', symbol: 'exclamation-circle'}}
 			/>
 		);
 

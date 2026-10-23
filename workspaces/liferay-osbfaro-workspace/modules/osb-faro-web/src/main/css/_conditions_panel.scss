@@ -1,11 +1,5 @@
 $conditions-panel-toolbar-height: map-get($cadmin-component-tbar, height);
 
-.event-analysis-page {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-}
-
 .base-edit-page-sidebar .conditions-panel-content {
 	max-height: calc(100vh - #{$conditions-panel-toolbar-height});
 	position: sticky;

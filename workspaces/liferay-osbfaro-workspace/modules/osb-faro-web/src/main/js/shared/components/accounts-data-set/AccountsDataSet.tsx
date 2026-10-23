@@ -44,15 +44,6 @@ interface ILifecycleStageFieldValue {
 	stageType?: LifecycleStages;
 }
 
-const getLifecycleStageLabel = ({
-	externalReferenceCode,
-	stageName,
-	stageType,
-}: ILifecycleStageFieldValue) =>
-	stageName ??
-	(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
-	externalReferenceCode;
-
 const buildSelectionPreloadedData = (value?: string, label?: string) =>
 	value
 		? {
@@ -90,10 +81,15 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 	const lifecycleStages: ILifecycleStageFieldValue[] =
 		lifecycleStageFieldValues?.items ?? [];
 
-	const lifecycleStageItems = lifecycleStages.map((lifecycleStage) => ({
-		label: getLifecycleStageLabel(lifecycleStage),
-		value: lifecycleStage.externalReferenceCode,
-	}));
+	const lifecycleStageItems = lifecycleStages.map(
+		({externalReferenceCode, stageName, stageType}) => ({
+			label:
+				stageName ??
+				(stageType && lifecycleStagesLabelMap[stageType]?.label) ??
+				externalReferenceCode,
+			value: externalReferenceCode,
+		})
+	);
 
 	const preloadedRangeSelector = rangeSelectors.find(
 		({value}) => value === rangeKeyFilter
@@ -183,10 +179,11 @@ const AccountsDataSet: React.FC<IAccountsDataSetProps> = ({
 									name: 'status',
 									preloadedData: buildSelectionPreloadedData(
 										preloadedLifecycleStage?.externalReferenceCode,
-										preloadedLifecycleStage &&
-											getLifecycleStageLabel(
-												preloadedLifecycleStage
-											)
+										lifecycleStageItems.find(
+											({value}) =>
+												value ===
+												preloadedLifecycleStage?.externalReferenceCode
+										)?.label
 									),
 									type: 'selection' as const,
 								},

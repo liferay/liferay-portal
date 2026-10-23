@@ -55,6 +55,7 @@ const SortableConditionChip: React.FC<ISortableConditionChipProps> = ({
 						data-html2canvas-ignore
 						displayType="unstyled"
 						monospaced
+						onClick={(event) => event.stopPropagation()}
 						size="xs"
 						symbol="drag"
 						tabIndex={-1}

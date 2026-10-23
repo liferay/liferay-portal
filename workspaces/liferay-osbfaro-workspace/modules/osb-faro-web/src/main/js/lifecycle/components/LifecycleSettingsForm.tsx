@@ -1,11 +1,10 @@
 import BaseEditPage from 'shared/components/base-edit-page';
-import ClayAlert from '@clayui/alert';
 import LifecycleConditionsPanel from 'lifecycle/components/LifecycleConditionsPanel';
+import LifecycleErrorAlert from 'lifecycle/components/LifecycleErrorAlert';
 import LifecycleSummary from 'lifecycle/components/LifecycleSummary';
 import NavigationWarning from 'shared/components/NavigationWarning';
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import StageConfigurationPanel from 'lifecycle/components/StageConfigurationPanel';
-import {getPluralMessage} from 'shared/util/lang';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 
 interface ILifecycleSettingsFormProps {
@@ -27,45 +26,25 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 }) => {
 	const {
 		addStage,
-		alertCount,
-		alertMessages,
 		blurField,
-		catalogFields,
-		changed,
 		dismissAlert,
-		duplicateStageKeys,
-		isFieldErrorVisible,
-		lifecycleDescription,
-		lifecycleName,
-		lifecycleURL,
 		moveStage,
 		removeStage,
 		selectedStage,
 		setLifecycleDescription,
 		setLifecycleName,
 		setSelectedKey,
-		stageConfigs,
-		stageErrorKeys,
-		summaryError,
-		updateStage,
 	} = form;
-
-	const alertRef = useRef<HTMLDivElement>(null);
-
-	useEffect(() => {
-		if (alertCount) {
-			alertRef.current?.focus();
-		}
-	}, [alertCount]);
 
 	return (
 		<BaseEditPage className="d-flex flex-column" documentTitle={title}>
-			<NavigationWarning when={changed} />
+			<NavigationWarning when={form.changed} />
 
-			<BaseEditPage.Toolbar backURL={lifecycleURL} title={title}>
-				<BaseEditPage.Toolbar.Cancel href={lifecycleURL} />
+			<BaseEditPage.Toolbar backURL={form.lifecycleURL} title={title}>
+				<BaseEditPage.Toolbar.Cancel href={form.lifecycleURL} />
 
 				<BaseEditPage.Toolbar.Save
+					disabled={form.saving}
 					label={submitLabel}
 					onClick={onSubmit}
 				/>
@@ -77,57 +56,36 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 					position="left"
 				>
 					<LifecycleConditionsPanel
-						lifecycleName={lifecycleName}
+						lifecycleName={form.lifecycleName}
 						onAddStage={addStage}
 						onMoveStage={moveStage}
 						onRemoveStage={removeStage}
 						onSelect={setSelectedKey}
 						selectedKey={selectedStage?.key ?? null}
-						stageConfigs={stageConfigs}
-						stageErrorKeys={stageErrorKeys}
-						summaryError={summaryError}
+						stageConfigs={form.stageConfigs}
+						stageErrorKeys={form.stageErrorKeys}
+						summaryError={form.summaryError}
 					/>
 				</BaseEditPage.Sidebar>
 
 				<BaseEditPage.Main className="page-container">
-					{!!alertMessages.length && (
-						<div className="mb-4" ref={alertRef} tabIndex={-1}>
-							<ClayAlert
-								displayType="danger"
-								onClose={dismissAlert}
-								title={
-									getPluralMessage(
-										Liferay.Language.get(
-											'review-1-error-in-this-configuration'
-										),
-										Liferay.Language.get(
-											'review-x-errors-in-this-configuration'
-										),
-										alertMessages.length,
-										true
-									) as string
-								}
-							>
-								<ul className="mb-0 mt-1">
-									{alertMessages.map((message) => (
-										<li key={message}>{message}</li>
-									))}
-								</ul>
-							</ClayAlert>
-						</div>
-					)}
+					<LifecycleErrorAlert
+						alertCount={form.alertCount}
+						messages={form.alertMessages}
+						onClose={dismissAlert}
+					/>
 
 					{selectedStage ? (
 						<StageConfigurationPanel
-							fields={catalogFields?.items}
-							isFieldErrorVisible={isFieldErrorVisible}
+							fields={form.catalogFields?.items}
+							isFieldErrorVisible={form.isFieldErrorVisible}
 							key={selectedStage.key}
-							lifecycleName={lifecycleName}
-							nameTaken={duplicateStageKeys.includes(
+							lifecycleName={form.lifecycleName}
+							nameTaken={form.duplicateStageKeys.includes(
 								selectedStage.key
 							)}
 							onChange={(value) =>
-								updateStage(selectedStage.key, value)
+								form.updateStage(selectedStage.key, value)
 							}
 							onFieldBlur={blurField}
 							onSelectSummary={() => setSelectedKey(null)}
@@ -136,14 +94,14 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 					) : (
 						<LifecycleSummary
 							authorName={authorName}
-							description={lifecycleDescription}
-							isFieldErrorVisible={isFieldErrorVisible}
+							description={form.lifecycleDescription}
+							isFieldErrorVisible={form.isFieldErrorVisible}
 							modifiedDate={modifiedDate}
-							name={lifecycleName}
+							name={form.lifecycleName}
 							onDescriptionChange={setLifecycleDescription}
 							onFieldBlur={blurField}
 							onNameChange={setLifecycleName}
-							stageCount={stageConfigs.length}
+							stageCount={form.stageConfigs.length}
 						/>
 					)}
 				</BaseEditPage.Main>

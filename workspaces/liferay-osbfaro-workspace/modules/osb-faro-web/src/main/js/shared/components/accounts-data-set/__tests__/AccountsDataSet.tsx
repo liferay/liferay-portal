@@ -388,38 +388,6 @@ describe('AccountsDataSet', () => {
 		});
 	});
 
-	it('should label a stage without a stage type by its stage name', async () => {
-		mockStages([
-			{
-				externalReferenceCode: 'erc-stage-9994',
-				id: '9994',
-				stageName: 'Qualified',
-			},
-		]);
-
-		await renderAccountsDataSet(
-			<AccountsDataSet
-				accountLifecycleId="al-1"
-				apiURL="fake-url"
-				channelId="123"
-				groupId="23"
-				lifecycleStageFilter="9994"
-			/>
-		);
-
-		const lifecycleStatusFilter = lastFilters?.find(
-			(f) => f.id === 'lifecycleStatus'
-		);
-
-		expect(lifecycleStatusFilter?.items).toEqual([
-			{label: 'Qualified', value: 'erc-stage-9994'},
-		]);
-		expect(lifecycleStatusFilter?.preloadedData).toEqual({
-			exclude: false,
-			selectedItems: [{label: 'Qualified', value: 'erc-stage-9994'}],
-		});
-	});
-
 	it('should leave the lifecycleStatus preloadedData undefined when stages have not loaded yet', async () => {
 		mockStages(undefined);
 

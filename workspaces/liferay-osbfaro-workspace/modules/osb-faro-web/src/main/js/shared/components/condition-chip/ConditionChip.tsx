@@ -48,14 +48,6 @@ const ConditionChip = React.forwardRef<HTMLDivElement, IConditionChipProps>(
 				) ?? []
 			);
 
-		const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-			if ((event.target as HTMLElement).closest(CONTROL_SELECTOR)) {
-				return;
-			}
-
-			onSelect?.();
-		};
-
 		const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
 			if (event.defaultPrevented) {
 				return;
@@ -120,7 +112,7 @@ const ConditionChip = React.forwardRef<HTMLDivElement, IConditionChipProps>(
 						[`condition-chip-${dragState}`]: dragState,
 					}
 				)}
-				onClick={onSelect && handleClick}
+				onClick={onSelect}
 				onKeyDown={handleKeyDown}
 				ref={mergeRef(ref, chipRef)}
 				role="group"
@@ -164,7 +156,11 @@ const ConditionChip = React.forwardRef<HTMLDivElement, IConditionChipProps>(
 						data-html2canvas-ignore
 						displayType="unstyled"
 						monospaced
-						onClick={onRemove}
+						onClick={(event) => {
+							event.stopPropagation();
+
+							onRemove();
+						}}
 						size="sm"
 						symbol="times-circle"
 						tabIndex={-1}

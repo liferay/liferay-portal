@@ -212,6 +212,10 @@ describe('CreateLifecycle', () => {
 
 		fireEvent.change(nameInput, {target: {value: 'My Lifecycle'}});
 
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Qualified accounts'},
+		});
+
 		expect(nameInput).toHaveValue('My Lifecycle');
 		expect(
 			screen.getByRole('group', {name: /configuration summary/i})
@@ -358,20 +362,53 @@ describe('CreateLifecycle', () => {
 		).toBeInTheDocument();
 	});
 
-	it('shows the error icon on the summary chip from the start', () => {
+	it('shows the error icon on the summary chip until the name and description are filled', () => {
 		renderPage();
 
-		expect(
-			screen.getByRole('group', {name: /configuration summary/i})
-		).toHaveTextContent(/error/i);
+		const summary = () =>
+			screen.getByRole('group', {name: /configuration summary/i});
+
+		expect(summary()).toHaveTextContent(/error/i);
 
 		fireEvent.change(screen.getByLabelText(/^name/i), {
 			target: {value: 'My Lifecycle'},
 		});
 
+		expect(summary()).toHaveTextContent(/error/i);
+
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Qualified accounts'},
+		});
+
+		expect(summary()).not.toHaveTextContent(/error/i);
+	});
+
+	it('shows the error icon on a new stage chip only after a save attempt', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
 		expect(
-			screen.getByRole('group', {name: /configuration summary/i})
+			screen.getByRole('group', {name: /^stage 1$/i})
 		).not.toHaveTextContent(/error/i);
+
+		fireEvent.click(
+			screen.getByRole('button', {name: /create lifecycle/i})
+		);
+
+		expect(
+			screen.getByRole('group', {name: /^stage 1$/i})
+		).toHaveTextContent(/error/i);
+	});
+
+	it('names a new stage "New Stage" in the breadcrumb', () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		expect(
+			screen.getByRole('navigation', {name: /breadcrumb/i})
+		).toHaveTextContent(/new stage/i);
 	});
 
 	it('shows the name error once the empty name is left', () => {
@@ -492,6 +529,37 @@ describe('CreateLifecycle', () => {
 		fireEvent.click(screen.getByRole('button', {name: /reload/i}));
 
 		expect(refetch).toHaveBeenCalled();
+	});
+
+	it('sends a single create request while one is in flight', async () => {
+		mockedCreateStageConfig.mockReturnValue(buildStage(true));
+
+		(API.lifecycle.createLifecycle as jest.Mock).mockReturnValue(
+			new Promise(() => {})
+		);
+
+		renderPage();
+
+		fireEvent.change(screen.getByLabelText(/^name/i), {
+			target: {value: 'My Lifecycle'},
+		});
+
+		fireEvent.change(screen.getByLabelText(/^description/i), {
+			target: {value: 'Qualified accounts'},
+		});
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		const createButton = screen.getByRole('button', {
+			name: /create lifecycle/i,
+		});
+
+		fireEvent.click(createButton);
+		fireEvent.click(createButton);
+
+		await waitFor(() => expect(createButton).toBeDisabled());
+
+		expect(API.lifecycle.createLifecycle).toHaveBeenCalledTimes(1);
 	});
 
 	it('creates the lifecycle with the contract payload, alerts success, and navigates to the dashboard', async () => {

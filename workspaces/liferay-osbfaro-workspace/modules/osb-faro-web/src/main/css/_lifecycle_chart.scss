@@ -1,7 +1,4 @@
-$stage-metrics-gap: 1rem;
-
 .stage-metrics-track {
-	gap: $stage-metrics-gap;
 	scroll-snap-type: x mandatory;
 	scrollbar-width: none;
 
@@ -11,14 +8,12 @@ $stage-metrics-gap: 1rem;
 }
 
 .stage-metrics {
-	flex: 1 0 calc((100% - #{$stage-metrics-gap * 4}) / 5);
+	flex: 1 0 calc((100% - 4rem) / 5);
 	min-width: 11.5rem;
 	scroll-snap-align: start;
 
 	&__bar {
 		background-color: $cadmin-indigo;
-		border-radius: 8px;
-		max-height: 136px;
 
 		&--empty {
 			border: 1px dashed $cadmin-secondary-l2;

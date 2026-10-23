@@ -5,7 +5,7 @@ import {Heading, Text} from '@clayui/core';
 interface IConditionsSectionProps {
 	action?: React.ReactNode;
 	children?: React.ReactNode;
-	className: string;
+	className?: string;
 	title: string;
 }
 
