@@ -69,7 +69,7 @@ test(
 
 		await test.step('The connector was never executed', async () => {
 			await expect(
-				connectorsPage.getConnectorLastExecution(connectorName)
+				connectorsPage.getConnectorLastExecutionStatus(connectorName)
 			).toHaveText('Never Executed');
 			await expect(
 				connectorsPage.getConnectorLastExecutionDate(connectorName)
@@ -177,7 +177,7 @@ test(
 				await connectorsPage.goto();
 
 				await expect(
-					connectorsPage.getConnectorLastExecution(connectorName)
+					connectorsPage.getConnectorLastExecutionStatus(connectorName)
 				).toHaveText('Success');
 				await expect(
 					connectorsPage.getConnectorLastExecutionDate(connectorName)

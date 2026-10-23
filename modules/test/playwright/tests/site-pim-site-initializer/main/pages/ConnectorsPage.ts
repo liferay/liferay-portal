@@ -97,10 +97,10 @@ export class ConnectorsPage {
 		return this.dataSetFragmentPage.getRow(name).getByRole('link', {name});
 	}
 
-	getConnectorLastExecution(name: string) {
+	getConnectorLastExecutionStatus(name: string) {
 		return this.dataSetFragmentPage
 			.getRow(name)
-			.locator('.cell-lastExecution .label');
+			.locator('.cell-lastExecutionStatus .label');
 	}
 
 	getConnectorLastExecutionDate(name: string) {
@@ -112,7 +112,7 @@ export class ConnectorsPage {
 	getConnectorMappingStatus(name: string) {
 		return this.dataSetFragmentPage
 			.getRow(name)
-			.locator('.cell-mappingComplete .label');
+			.locator('.cell-mappingStatus .label');
 	}
 
 	getConnectorStatus(name: string) {
