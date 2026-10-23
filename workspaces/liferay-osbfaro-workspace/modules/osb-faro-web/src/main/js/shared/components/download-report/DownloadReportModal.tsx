@@ -53,112 +53,109 @@ export const DownloadReportModal: React.FC<IDownloadReportModal> = ({
 	return (
 		<ClayModal observer={observer}>
 			<ClayForm>
-				<div className="modal-content">
-					<ClayModal.Header>
-						{Liferay.Language.get('download-reports')}
-					</ClayModal.Header>
+				<ClayModal.Header>
+					{Liferay.Language.get('download-reports')}
+				</ClayModal.Header>
 
-					{openAlert && (
-						<ClayAlert
-							onClose={() => setOpenAlert(false)}
-							title={Liferay.Language.get('info')}
-							variant="stripe"
-						>
-							{infoMessage}
-						</ClayAlert>
+				{openAlert && (
+					<ClayAlert
+						onClose={() => setOpenAlert(false)}
+						title={Liferay.Language.get('info')}
+						variant="stripe"
+					>
+						{infoMessage}
+					</ClayAlert>
+				)}
+
+				<ClayModal.Body>
+					{showDateRange && (
+						<ClayForm.Group className="mb-0">
+							<label htmlFor="timeRange">
+								{Liferay.Language.get('date-range')}
+							</label>
+
+							<p>
+								<Text size={3}>{dateRangeDescription}</Text>
+							</p>
+
+							<DropdownRangeKey
+								alignmentPosition={Align.BottomLeft}
+								legacy={false}
+								onRangeSelectorChange={setRangeSelectors}
+								rangeSelectors={rangeSelectors}
+							/>
+						</ClayForm.Group>
 					)}
 
-					<ClayModal.Body>
-						{showDateRange && (
-							<ClayForm.Group className="mb-0">
-								<label htmlFor="timeRange">
-									{Liferay.Language.get('date-range')}
-								</label>
+					{children}
+				</ClayModal.Body>
 
-								<p>
-									<Text size={3}>{dateRangeDescription}</Text>
-								</p>
+				<ClayModal.Footer
+					last={
+						<ClayButton.Group spaced>
+							<ClayButton
+								data-testid="cancel"
+								displayType="secondary"
+								onClick={onClose}
+							>
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
 
-								<DropdownRangeKey
-									alignmentPosition={Align.BottomLeft}
-									legacy={false}
-									onRangeSelectorChange={setRangeSelectors}
-									rangeSelectors={rangeSelectors}
-								/>
-							</ClayForm.Group>
-						)}
+							<ClayButton
+								data-testid="submit"
+								disabled={disabled || submitDisabled}
+								onClick={() => {
+									setSubmitDisabled(true);
 
-						{children}
-					</ClayModal.Body>
+									onClose();
 
-					<ClayModal.Footer
-						last={
-							<ClayButton.Group spaced>
-								<ClayButton
-									data-testid="cancel"
-									displayType="secondary"
-									onClick={onClose}
-								>
-									{Liferay.Language.get('cancel')}
-								</ClayButton>
+									if (type === ReportType.CSV) {
+										onSubmit(rangeSelectors);
+										return;
+									}
 
-								<ClayButton
-									data-testid="submit"
-									disabled={disabled || submitDisabled}
-									onClick={() => {
-										setSubmitDisabled(true);
+									if (rangeSelectors) {
+										history.push(
+											setUriQueryValues(
+												pickBy({
+													downloadReport: true,
+													...rangeSelectors,
+												})
+											)
+										);
 
-										onClose();
+										const observer = new MutationObserver(
+											() => {
+												const loadingElement =
+													document.querySelectorAll(
+														'.page-container .loading-animation'
+													);
 
-										if (type === ReportType.CSV) {
-											onSubmit(rangeSelectors);
-											return;
-										}
+												if (!loadingElement.length) {
+													observer.disconnect();
 
-										if (rangeSelectors) {
-											history.push(
-												setUriQueryValues(
-													pickBy({
-														downloadReport: true,
-														...rangeSelectors,
-													})
-												)
-											);
+													onSubmit();
+												}
+											}
+										);
 
-											const observer =
-												new MutationObserver(() => {
-													const loadingElement =
-														document.querySelectorAll(
-															'.page-container .loading-animation'
-														);
-
-													if (
-														!loadingElement.length
-													) {
-														observer.disconnect();
-
-														onSubmit();
-													}
-												});
-
-											observer.observe(document.body, {
-												attributes: true,
-												characterData: true,
-												childList: true,
-												subtree: true,
-											});
-										}
-										else {
-											onSubmit();
-										}
-									}}
-								>
-									{Liferay.Language.get('download')}
-								</ClayButton>
-							</ClayButton.Group>
-						}
-					/>
-				</div>
+										observer.observe(document.body, {
+											attributes: true,
+											characterData: true,
+											childList: true,
+											subtree: true,
+										});
+									}
+									else {
+										onSubmit();
+									}
+								}}
+							>
+								{Liferay.Language.get('download')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
 			</ClayForm>
 		</ClayModal>
 	);
