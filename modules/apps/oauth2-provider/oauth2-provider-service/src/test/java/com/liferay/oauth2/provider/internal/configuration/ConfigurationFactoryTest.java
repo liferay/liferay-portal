@@ -214,12 +214,6 @@ public class ConfigurationFactoryTest {
 		_scopeLocator = Mockito.mock(ScopeLocator.class);
 
 		Mockito.when(
-			_scopeLocator.getLiferayOAuth2Scopes(_companyId)
-		).thenReturn(
-			new ArrayList<>()
-		);
-
-		Mockito.when(
 			_scopeLocator.getScopeAliases(_companyId)
 		).thenReturn(
 			new ArrayList<>()

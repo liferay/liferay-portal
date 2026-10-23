@@ -257,10 +257,6 @@ public abstract class BaseConfigurationFactory {
 			return;
 		}
 
-		// Make sure all scopes are registered
-
-		scopeLocator.getLiferayOAuth2Scopes(oAuth2Application.getCompanyId());
-
 		oAuth2ApplicationLocalService.updateScopeAliases(
 			oAuth2Application.getUserId(), oAuth2Application.getUserName(),
 			oAuth2Application.getOAuth2ApplicationId(), scopeAliasesList);
