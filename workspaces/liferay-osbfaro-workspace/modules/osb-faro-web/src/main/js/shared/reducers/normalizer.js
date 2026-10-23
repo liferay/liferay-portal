@@ -2,7 +2,6 @@ import {
 	Account,
 	DataSource,
 	Distribution,
-	EntityLayout,
 	Individual,
 	Project,
 	RemoteData,
@@ -18,7 +17,6 @@ const ENTITY_RECORD_MAP = {
 	dataSources: DataSource,
 	individuals: Individual,
 	interests: SearchResults,
-	layouts: EntityLayout,
 	projects: Project,
 	segments: Segment,
 	users: User,
@@ -47,11 +45,6 @@ export default (state = new Map(), action) => {
 					const entityRecord = ENTITY_RECORD_MAP[entityType];
 
 					switch (entityType) {
-						case 'cardTemplates':
-							return result.setIn(
-								[entityType, id],
-								fromJS(entity)
-							);
 						case 'distributions':
 							return result.setIn(
 								[entityType, id],
@@ -67,11 +60,6 @@ export default (state = new Map(), action) => {
 						case 'interests':
 							return result.setIn(
 								[entityType, meta.contactsEntityId],
-								getRequestState(entityRecord, entity.data)
-							);
-						case 'layouts':
-							return result.setIn(
-								[entityType, entity.data.type, id],
 								getRequestState(entityRecord, entity.data)
 							);
 						case 'projects':

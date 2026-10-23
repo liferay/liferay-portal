@@ -1,4 +1,4 @@
-import {Account, EntityLayout, Individual, Project, Segment} from '../index';
+import {Account, Individual, Project, Segment} from '../index';
 
 describe('Records', () => {
 	it('should return an Account Record', () => {
@@ -11,10 +11,6 @@ describe('Records', () => {
 
 	it('should return a Segment Record', () => {
 		expect(new Segment()).toMatchSnapshot();
-	});
-
-	it('should return an EntityLayout Record', () => {
-		expect(new EntityLayout()).toMatchSnapshot();
 	});
 
 	it('should return a Project Record', () => {

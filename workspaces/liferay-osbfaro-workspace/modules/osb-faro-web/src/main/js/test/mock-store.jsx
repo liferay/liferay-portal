@@ -26,10 +26,6 @@ export const mockStoreData = fromJS({
 	accounts: {
 		test: toRD(new Account(fromJS(data.mockAccount('test'))))
 	},
-	cardTemplates: {
-		card1: data.mockCardTemplate('card1'),
-		card2: data.mockCardTemplate('card2')
-	},
 	currentUser: new RemoteData({
 		data: '23',
 		loading: false
@@ -50,18 +46,6 @@ export const mockStoreData = fromJS({
 	},
 	individuals: {
 		test: toRD(new Individual(fromJS(data.mockIndividual('test'))))
-	},
-	layouts: {
-		1: {
-			contactsCardData: {1: {id: 'cardData1'}, 2: {id: 'cardData2'}},
-			contactsLayoutTemplate: {
-				contactsCardTemplatesList: [['card1']],
-				headerContactsCardTemplates: ['card2'],
-				id: 'layout1',
-				name: 'layoutTemplate'
-			},
-			faroEntity: 'test'
-		}
 	},
 	preferences: {
 		group: {

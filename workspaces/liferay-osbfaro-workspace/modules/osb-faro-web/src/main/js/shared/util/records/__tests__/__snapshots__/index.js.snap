@@ -74,16 +74,6 @@ Immutable.Record {
 }
 `;
 
-exports[`Records should return an EntityLayout Record 1`] = `
-Immutable.Record {
-  "contactsCardTemplatesList": Immutable.List [],
-  "headerContactsCardTemplates": Immutable.List [],
-  "id": null,
-  "name": "",
-  "type": null,
-}
-`;
-
 exports[`Records should return an Individual Record 1`] = `
 Immutable.Record {
   "accountName": null,

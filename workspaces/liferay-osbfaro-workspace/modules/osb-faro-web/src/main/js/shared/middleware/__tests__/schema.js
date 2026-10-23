@@ -1,19 +1,12 @@
 import {
 	dataSource,
 	getDistributionSchema,
-	getLayoutSchema,
 	individual,
 	individuals,
 	segment,
 	segments,
 } from 'shared/middleware/schema';
-import {EntityTypes} from 'shared/util/constants';
-import {
-	mockIndividual,
-	mockLayout,
-	mockLiferayDataSource,
-	mockSegment,
-} from 'test/data';
+import {mockIndividual, mockLiferayDataSource, mockSegment} from 'test/data';
 import {normalize} from 'normalizr';
 
 describe('Schema', () => {
@@ -107,56 +100,6 @@ describe('Schema', () => {
 					},
 				},
 			},
-		});
-	});
-
-	describe('getLayoutSchema', () => {
-		it('should normalize a layout schema with a faroEntity of individual', () => {
-			const action = mockLayout(1, mockIndividual());
-
-			const result = normalize(
-				action,
-				getLayoutSchema(EntityTypes.Individual)
-			);
-
-			expect(result).toMatchObject({
-				entities: {
-					individuals: expect.any(Object),
-					layouts: {
-						1: {
-							data: expect.objectContaining({id: 1}),
-						},
-					},
-				},
-				result: expect.objectContaining({
-					contactsLayoutTemplate: 1,
-					faroEntity: expect.any(String),
-				}),
-			});
-		});
-
-		it('should normalize a layout schema with a faroEntity of segment', () => {
-			const action = mockLayout(2);
-
-			const result = normalize(
-				action,
-				getLayoutSchema(EntityTypes.IndividualsSegment)
-			);
-
-			expect(result).toMatchObject({
-				entities: {
-					layouts: {
-						2: {
-							data: expect.objectContaining({id: 2}),
-						},
-					},
-					segments: expect.any(Object),
-				},
-				result: expect.objectContaining({
-					contactsLayoutTemplate: 2,
-					faroEntity: expect.any(String),
-				}),
-			});
 		});
 	});
 

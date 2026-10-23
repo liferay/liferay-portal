@@ -266,17 +266,6 @@ export function mockAsset(seed = 0, data = {}) {
 	};
 }
 
-export function mockCardTemplate(seed = 0, data = {}) {
-	return {
-		id: String(seed),
-		layoutId: String(seed),
-		name: '',
-		size: 2,
-		type: null,
-		...data,
-	};
-}
-
 export function mockCompany(seed = 0, data = {}) {
 	return {
 		companyId: 20155,
@@ -607,25 +596,6 @@ export function mockInterestObject(seed = 0, data = {}) {
 		individualCount: 5,
 		name: `interest${seed}`,
 		...data,
-	};
-}
-
-export function mockLayout(seed = 0, faroEntity = mockSegment()) {
-	return {
-		activitiesCount: 1000,
-		contactsCardData: {1: {id: 'cardData1'}, 2: {id: 'cardData2'}},
-		contactsLayoutTemplate: {
-			contactsCardTemplatesList: [
-				[mockCardTemplate('cardTemplate1')],
-				[mockCardTemplate('cardTemplate2')],
-			],
-			headerContactsCardTemplates: [
-				mockCardTemplate('headerCardTemplate1'),
-			],
-			id: seed,
-			name: 'layoutTemplate',
-		},
-		faroEntity,
 	};
 }
 

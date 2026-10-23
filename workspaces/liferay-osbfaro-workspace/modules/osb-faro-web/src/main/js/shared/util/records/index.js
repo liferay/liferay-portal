@@ -28,14 +28,6 @@ export const Distribution = new Record({
 	loading: true,
 });
 
-export const EntityLayout = new Record({
-	contactsCardTemplatesList: new List(),
-	headerContactsCardTemplates: new List(),
-	id: null,
-	name: '',
-	type: null,
-});
-
 export const Metric = new Record({
 	count: 0,
 	limit: 0,

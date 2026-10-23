@@ -1,4 +1,3 @@
-import {EntityTypes} from 'shared/util/constants';
 import {schema} from 'normalizr';
 
 function processStrategy(entity) {
@@ -6,7 +5,6 @@ function processStrategy(entity) {
 }
 
 export const account = new schema.Entity('accounts', {}, {processStrategy});
-export const cardTemplate = new schema.Entity('cardTemplates');
 export const dataSource = new schema.Entity(
 	'dataSources',
 	{},
@@ -32,42 +30,10 @@ export const segment = new schema.Entity('segments', {}, {processStrategy});
 export const user = new schema.Entity('users', {}, {processStrategy});
 
 export const accounts = new schema.Array(account);
-export const cardTemplates = new schema.Array(cardTemplate);
 export const dataSources = new schema.Array(dataSource);
 export const individuals = new schema.Array(individual);
 export const projects = new schema.Array(project);
 export const segments = new schema.Array(segment);
-
-export const layoutTemplate = new schema.Entity(
-	'layouts',
-	{
-		data: {
-			contactsCardTemplatesList: [cardTemplates],
-			headerContactsCardTemplates: cardTemplates,
-		},
-	},
-	{processStrategy}
-);
-
-const ENTITIES_SCHEMA_MAP = {
-	[EntityTypes.Account]: account,
-	[EntityTypes.Individual]: individual,
-	[EntityTypes.IndividualsSegment]: segment,
-};
-
-export function getLayoutSchema(type) {
-	return {
-		contactsLayoutTemplate: layoutTemplate,
-		faroEntity: ENTITIES_SCHEMA_MAP[type],
-	};
-}
-
-export function getCardSchema(type) {
-	return {
-		contactsCardTemplate: cardTemplate,
-		faroEntity: ENTITIES_SCHEMA_MAP[type],
-	};
-}
 
 /**
  * Returns the normalization schema for an entity's distribution. The
