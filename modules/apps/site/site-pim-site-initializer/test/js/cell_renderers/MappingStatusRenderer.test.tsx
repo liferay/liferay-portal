@@ -11,15 +11,15 @@ import MappingStatusRenderer from '../../../src/main/resources/META-INF/resource
 
 describe('MappingStatusRenderer', () => {
 	it('labels a complete mapping as complete', () => {
-		render(<MappingStatusRenderer value={true} />);
+		render(<MappingStatusRenderer value="complete" />);
 
 		expect(
-			screen.getByText('mapping-complete').closest('.label')
+			screen.getByText('status-complete').closest('.label')
 		).toHaveClass('label-success');
 	});
 
 	it('labels an incomplete mapping as incomplete', () => {
-		render(<MappingStatusRenderer value={false} />);
+		render(<MappingStatusRenderer value="incomplete" />);
 
 		expect(screen.getByText('incomplete').closest('.label')).toHaveClass(
 			'label-warning'

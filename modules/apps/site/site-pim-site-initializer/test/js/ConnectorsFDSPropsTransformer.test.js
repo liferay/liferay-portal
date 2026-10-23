@@ -50,7 +50,7 @@ describe('ConnectorsFDSPropsTransformer', () => {
 			'nameTableCellRenderer',
 			'statusTableCellRenderer',
 			'mappingStatusTableCellRenderer',
-			'lastExecutionTableCellRenderer',
+			'lastExecutionStatusTableCellRenderer',
 		]);
 	});
 

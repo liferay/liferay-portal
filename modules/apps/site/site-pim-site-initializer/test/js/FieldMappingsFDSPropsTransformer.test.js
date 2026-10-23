@@ -77,7 +77,7 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 
 		expect(Liferay.fire).toHaveBeenCalledWith(
 			'pimConnectorFieldMappings:change',
-			{mappingComplete: false}
+			{mappingStatus: 'incomplete'}
 		);
 	});
 

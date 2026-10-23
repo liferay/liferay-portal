@@ -51,7 +51,7 @@ describe('FieldMappingsBreadcrumb', () => {
 			<FieldMappingsBreadcrumb
 				actionItems={ACTION_ITEMS}
 				breadcrumbItems={[]}
-				mappingComplete={true}
+				mappingStatus="complete"
 			/>
 		);
 
@@ -72,13 +72,13 @@ describe('FieldMappingsBreadcrumb', () => {
 			<FieldMappingsBreadcrumb
 				actionItems={ACTION_ITEMS}
 				breadcrumbItems={[]}
-				mappingComplete={true}
+				mappingStatus="complete"
 			/>
 		);
 
 		act(() => {
 			handlers['pimConnectorFieldMappings:change']({
-				mappingComplete: false,
+				mappingStatus: 'incomplete',
 			});
 		});
 
@@ -90,7 +90,7 @@ describe('FieldMappingsBreadcrumb', () => {
 			<FieldMappingsBreadcrumb
 				actionItems={ACTION_ITEMS}
 				breadcrumbItems={[]}
-				mappingComplete={true}
+				mappingStatus="complete"
 			/>
 		);
 

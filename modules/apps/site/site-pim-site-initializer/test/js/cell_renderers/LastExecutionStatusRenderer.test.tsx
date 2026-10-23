@@ -7,11 +7,11 @@ import '@testing-library/jest-dom';
 import {render, screen} from '@testing-library/react';
 import React from 'react';
 
-import LastExecutionRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/LastExecutionRenderer';
+import LastExecutionStatusRenderer from '../../../src/main/resources/META-INF/resources/js/cell_renderers/LastExecutionStatusRenderer';
 
-describe('LastExecutionRenderer', () => {
+describe('LastExecutionStatusRenderer', () => {
 	it('labels a failed execution as failed', () => {
-		render(<LastExecutionRenderer value="failed" />);
+		render(<LastExecutionStatusRenderer value="failed" />);
 
 		expect(screen.getByText('failed').closest('.label')).toHaveClass(
 			'label-danger'
@@ -19,7 +19,7 @@ describe('LastExecutionRenderer', () => {
 	});
 
 	it('labels a connector that never ran as never executed', () => {
-		render(<LastExecutionRenderer value="never-executed" />);
+		render(<LastExecutionStatusRenderer value="never-executed" />);
 
 		expect(
 			screen.getByText('never-executed').closest('.label')
@@ -27,7 +27,7 @@ describe('LastExecutionRenderer', () => {
 	});
 
 	it('labels a successful execution as success', () => {
-		render(<LastExecutionRenderer value="success" />);
+		render(<LastExecutionStatusRenderer value="success" />);
 
 		expect(screen.getByText('success').closest('.label')).toHaveClass(
 			'label-success'
