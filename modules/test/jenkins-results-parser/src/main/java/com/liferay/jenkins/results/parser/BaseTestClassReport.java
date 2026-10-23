@@ -149,25 +149,31 @@ public abstract class BaseTestClassReport implements TestClassReport {
 	@Override
 	public String getTestTaskName() {
 		synchronized (_testReportsMap) {
-			if ((_testTaskName != null) || _testReportsMap.isEmpty()) {
+			if (_testTaskName != null) {
+				return _testTaskName;
+			}
+
+			if (_testReportsMap.isEmpty()) {
 				return null;
 			}
 
-			List<TestReport> testReports = _testReportsMap.get(0);
+			for (List<TestReport> testReports : _testReportsMap.values()) {
+				if ((testReports == null) || testReports.isEmpty()) {
+					continue;
+				}
 
-			if (testReports.isEmpty()) {
-				return null;
+				for (TestReport testReport : testReports) {
+					if (testReport == null) {
+						continue;
+					}
+
+					_testTaskName = testReport.getTestTaskName();
+
+					return _testTaskName;
+				}
 			}
 
-			TestReport testReport = testReports.get(0);
-
-			if (testReport == null) {
-				return null;
-			}
-
-			_testTaskName = testReport.getTestTaskName();
-
-			return _testTaskName;
+			return null;
 		}
 	}
 
