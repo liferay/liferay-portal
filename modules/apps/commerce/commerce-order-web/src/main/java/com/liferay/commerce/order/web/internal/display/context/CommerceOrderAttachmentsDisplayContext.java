@@ -229,11 +229,11 @@ public class CommerceOrderAttachmentsDisplayContext {
 	}
 
 	private List<CommerceOrderAttachment> _getCommerceOrderAttachments() {
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)_httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
 		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)_httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			return TransformUtil.unsafeTransform(
 				_commerceOrderAttachmentLocalService.
 					getCommerceOrderAttachments(
