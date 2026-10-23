@@ -34,6 +34,8 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
 import com.liferay.portal.search.spi.model.registrar.ModelSearchSettings;
 
+import java.util.List;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -69,6 +71,10 @@ public class CPDefinitionModelPreFilterContributor
 			_filterByAccountGroupIds(booleanFilter, searchContext);
 			_filterByCommerceChannelId(booleanFilter, searchContext);
 			_filterByGuestBrowsing(booleanFilter, searchContext);
+		}
+		else {
+			_filterByGuestBrowsingEnabledCommerceChannels(
+				booleanFilter, searchContext);
 		}
 
 		if (_isIndexersSuppressed(searchContext)) {
@@ -315,6 +321,61 @@ public class CPDefinitionModelPreFilterContributor
 				return;
 			}
 		}
+	}
+
+	private void _filterByGuestBrowsingEnabledCommerceChannels(
+		BooleanFilter booleanFilter, SearchContext searchContext) {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if ((permissionChecker == null) || permissionChecker.isSignedIn() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				searchContext.getCompanyId(), "LPD-109588")) {
+
+			return;
+		}
+
+		booleanFilter.addRequiredTerm(CPField.PUBLISHED, true);
+
+		List<CommerceChannel> commerceChannels =
+			_commerceChannelLocalService.getCommerceChannels(
+				searchContext.getCompanyId());
+
+		TermsFilter termsFilter = new TermsFilter(
+			CPField.COMMERCE_CHANNEL_GROUP_IDS);
+
+		for (CommerceChannel commerceChannel : commerceChannels) {
+			if (!CommerceChannelConfigurationUtil.isGuestBrowsingEnabled(
+					commerceChannel.getGroupId())) {
+
+				continue;
+			}
+
+			termsFilter.addValue(String.valueOf(commerceChannel.getGroupId()));
+		}
+
+		if (ArrayUtil.getLength(termsFilter.getValues()) ==
+				commerceChannels.size()) {
+
+			return;
+		}
+
+		if (termsFilter.isEmpty()) {
+			booleanFilter.addTerm(
+				Field.ENTRY_CLASS_PK, "-1", BooleanClauseOccur.MUST);
+
+			return;
+		}
+
+		BooleanFilter guestBrowsingBooleanFilter = new BooleanFilter();
+
+		guestBrowsingBooleanFilter.add(termsFilter, BooleanClauseOccur.SHOULD);
+		guestBrowsingBooleanFilter.addTerm(
+			CPField.CHANNEL_FILTER_ENABLED, Boolean.FALSE.toString(),
+			BooleanClauseOccur.SHOULD);
+
+		booleanFilter.add(guestBrowsingBooleanFilter, BooleanClauseOccur.MUST);
 	}
 
 	private void _filterByPublished(
