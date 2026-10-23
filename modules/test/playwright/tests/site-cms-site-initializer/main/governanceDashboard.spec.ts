@@ -19,6 +19,7 @@ import {
 	performUserSwitchViaApi,
 } from '../../../utils/performLogin';
 import {cmsPagesTest} from './fixtures/cmsPagesTest';
+import {registerUserCredentials} from './spaces/helpers/roleMembership';
 
 const test = mergeTests(
 	cmsPagesTest,
@@ -163,6 +164,89 @@ async function updateExpirationDate(
 	await page.getByRole('menuitem', {name: 'Update Expiration Date'}).click();
 
 	await fillScheduleDateModal(page, expirationDate);
+}
+
+async function addSpaceMember(
+	apiHelpers: DataApiHelpers,
+	space: {externalReferenceCode: string},
+	user: TUserAccount,
+	roleName?: string
+) {
+	await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
+		space.externalReferenceCode,
+		user.externalReferenceCode
+	);
+
+	if (roleName) {
+		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccountRoles(
+			space.externalReferenceCode,
+			user.externalReferenceCode,
+			[roleName]
+		);
+	}
+}
+
+async function addSpaceWithOverdueContent(
+	apiHelpers: DataApiHelpers,
+	spaceName: string,
+	title: string
+) {
+	const space = await apiHelpers.headlessAssetLibrary.createSpace({
+		name: spaceName,
+	});
+
+	const overdueContent = await apiHelpers.objectEntry.postObjectEntry(
+		{
+			displayDate: PAST_DATE,
+			objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+			reviewDate: PAST_DATE,
+			title,
+		},
+		APPLICATION_NAME,
+		spaceName
+	);
+
+	apiHelpers.data.push({id: overdueContent.id, type: 'document'});
+
+	return space;
+}
+
+async function addSpaceMemberAndSwitch(
+	apiHelpers: DataApiHelpers,
+	page: Page,
+	spaceName: string,
+	roleName?: string
+) {
+	const space = await apiHelpers.headlessAssetLibrary.createSpace({
+		name: spaceName,
+	});
+
+	const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+	registerUserCredentials(user);
+
+	await addSpaceMember(apiHelpers, space, user, roleName);
+
+	await performUserSwitchViaApi(page, user.alternateName);
+}
+
+async function expectSpaceOption(
+	page: Page,
+	spaceName: string,
+	visible: boolean
+) {
+	const searchInput = page.getByRole('textbox', {name: 'Search'});
+
+	await searchInput.fill(spaceName);
+
+	const option = page.getByRole('option', {name: spaceName});
+
+	if (visible) {
+		await expect(option).toBeVisible();
+	}
+	else {
+		await expect(option).toBeHidden();
+	}
 }
 
 async function selectSpace(page: Page, spaceName: string) {
@@ -1130,6 +1214,134 @@ test.describe('Operations section', () => {
 					page.getByText(recentDraftTitle, {exact: true})
 				).toBeHidden();
 			});
+		}
+	);
+});
+
+test.describe('Permissions', () => {
+	test.beforeEach(async ({page}) => {
+		await performUserSwitchViaApi(page, 'test');
+	});
+
+	test(
+		'A Space Administrator only sees the data and the spaces they administer',
+		{tag: '@LPD-111502'},
+		async ({apiHelpers, page}) => {
+			const administeredSpaceName = `space ${getRandomString()}`;
+			const administeredTitle = `overdue ${getRandomString()}`;
+			const reviewedSpaceName = `space ${getRandomString()}`;
+			const reviewedTitle = `overdue ${getRandomString()}`;
+
+			const administeredSpace = await addSpaceWithOverdueContent(
+				apiHelpers,
+				administeredSpaceName,
+				administeredTitle
+			);
+
+			const reviewedSpace = await addSpaceWithOverdueContent(
+				apiHelpers,
+				reviewedSpaceName,
+				reviewedTitle
+			);
+
+			const user = await apiHelpers.headlessAdminUser.postUserAccount();
+
+			registerUserCredentials(user);
+
+			await addSpaceMember(
+				apiHelpers,
+				administeredSpace,
+				user,
+				'Asset Library Administrator'
+			);
+			await addSpaceMember(
+				apiHelpers,
+				reviewedSpace,
+				user,
+				'Asset Library Content Reviewer'
+			);
+
+			await performUserSwitchViaApi(page, user.alternateName);
+
+			await page.goto('/web/cms/dashboard');
+
+			await expect(
+				page.getByRole('button', {exact: true, name: 'Governance'})
+			).toBeVisible();
+
+			await test.step('Lists only the content of the administered space', async () => {
+				await page
+					.getByRole('button', {name: /^Overdue Reviews/})
+					.click();
+
+				const overdueReviewsList = page.getByRole('region', {
+					name: 'Overdue Reviews',
+				});
+
+				await expect(
+					overdueReviewsList.getByText(administeredTitle, {
+						exact: true,
+					})
+				).toBeVisible();
+
+				await expect(
+					overdueReviewsList.getByText(reviewedTitle, {exact: true})
+				).toBeHidden();
+			});
+
+			await test.step('Offers only the administered space in the filter', async () => {
+				await page
+					.getByRole('combobox', {name: 'Filter by Spaces'})
+					.click();
+
+				await expectSpaceOption(page, administeredSpaceName, true);
+				await expectSpaceOption(page, reviewedSpaceName, false);
+			});
+		}
+	);
+
+	test(
+		'A Space Content Reviewer does not see the Governance tab',
+		{tag: '@LPD-111502'},
+		async ({apiHelpers, page}) => {
+			await addSpaceMemberAndSwitch(
+				apiHelpers,
+				page,
+				`space ${getRandomString()}`,
+				'Asset Library Content Reviewer'
+			);
+
+			await page.goto('/web/cms/dashboard');
+
+			await expect(
+				page.getByRole('heading', {name: 'What Is New'})
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('button', {exact: true, name: 'Governance'})
+			).toBeHidden();
+		}
+	);
+
+	test(
+		'A Space Member does not see the Governance tab',
+		{tag: '@LPD-111502'},
+		async ({apiHelpers, page}) => {
+			await addSpaceMemberAndSwitch(
+				apiHelpers,
+				page,
+				`space ${getRandomString()}`
+			);
+
+			await page.goto('/web/cms/dashboard');
+
+			await expect(
+				page.getByRole('heading', {name: 'What Is New'})
+			).toBeVisible();
+
+			await expect(
+				page.getByRole('button', {exact: true, name: 'Governance'})
+			).toBeHidden();
 		}
 	);
 });
