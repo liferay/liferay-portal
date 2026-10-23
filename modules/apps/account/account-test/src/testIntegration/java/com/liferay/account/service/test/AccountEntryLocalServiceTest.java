@@ -1633,15 +1633,13 @@ public class AccountEntryLocalServiceTest {
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
 				0, _portal.getClassNameId(accountEntry.getModelClassName()),
-				accountEntry.getPrimaryKey());
+				accountEntry.getPrimaryKey(), SystemEventConstants.TYPE_DELETE);
 
 		SystemEvent systemEvent = systemEvents.get(0);
 
 		Assert.assertEquals(
 			accountEntry.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 	}
 
 	private void _assertGetUserAccountEntriesWithKeywords(

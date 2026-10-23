@@ -5186,15 +5186,13 @@ public class ObjectEntryLocalServiceTest {
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
 				0, _portal.getClassNameId(objectEntry1.getModelClassName()),
-				objectEntry1.getPrimaryKey());
+				objectEntry1.getPrimaryKey(), SystemEventConstants.TYPE_DELETE);
 
 		SystemEvent systemEvent = systemEvents.get(0);
 
 		Assert.assertEquals(
 			objectEntry1.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 
 		AssertUtils.assertFailure(
 			NoSuchObjectEntryException.class,
@@ -5444,15 +5442,13 @@ public class ObjectEntryLocalServiceTest {
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
 				0, _portal.getClassNameId(objectEntry1.getModelClassName()),
-				objectEntry1.getPrimaryKey());
+				objectEntry1.getPrimaryKey(), SystemEventConstants.TYPE_DELETE);
 
 		SystemEvent systemEvent = systemEvents.get(0);
 
 		Assert.assertEquals(
 			objectEntry1.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 	}
 
 	@Test

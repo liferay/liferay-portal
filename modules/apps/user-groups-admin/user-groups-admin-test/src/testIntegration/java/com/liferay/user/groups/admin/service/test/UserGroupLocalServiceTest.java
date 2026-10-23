@@ -483,15 +483,13 @@ public class UserGroupLocalServiceTest {
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
 				0, _portal.getClassNameId(userGroup.getModelClassName()),
-				userGroup.getPrimaryKey());
+				userGroup.getPrimaryKey(), SystemEventConstants.TYPE_DELETE);
 
 		SystemEvent systemEvent = systemEvents.get(0);
 
 		Assert.assertEquals(
 			userGroup.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 	}
 
 	@Test

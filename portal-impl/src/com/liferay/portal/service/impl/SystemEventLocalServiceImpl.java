@@ -126,14 +126,6 @@ public class SystemEventLocalServiceImpl
 
 	@Override
 	public List<SystemEvent> getSystemEvents(
-		long groupId, long classNameId, long classPK) {
-
-		return systemEventPersistence.findByG_C_C(
-			groupId, classNameId, classPK);
-	}
-
-	@Override
-	public List<SystemEvent> getSystemEvents(
 		long groupId, long classNameId, long classPK, int type) {
 
 		return systemEventPersistence.findByG_C_C_T(

@@ -284,7 +284,7 @@ public class ObjectEntryTrashHandlerTest extends BaseTrashHandlerTestCase {
 			_systemEventLocalService.getSystemEvents(
 				groupId,
 				_portal.getClassNameId(objectEntry.getModelClassName()),
-				primaryKey);
+				primaryKey, SystemEventConstants.TYPE_DELETE);
 
 		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
 
@@ -293,8 +293,6 @@ public class ObjectEntryTrashHandlerTest extends BaseTrashHandlerTestCase {
 		Assert.assertEquals(
 			objectEntry.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 	}
 
 	private void _testCheckEntriesWithPermissions() throws Exception {

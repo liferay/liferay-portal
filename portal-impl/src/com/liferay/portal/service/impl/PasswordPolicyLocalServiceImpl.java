@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.service.persistence.PasswordPolicyRelPersistenc
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.base.PasswordPolicyLocalServiceBaseImpl;
@@ -337,20 +336,6 @@ public class PasswordPolicyLocalServiceImpl
 
 		return getPasswordPolicyByUser(
 			_userPersistence.findByPrimaryKey(userId));
-	}
-
-	@Override
-	public List<PasswordPolicy> search(
-		long companyId, String name, int start, int end,
-		OrderByComparator<PasswordPolicy> orderByComparator) {
-
-		return passwordPolicyFinder.findByC_N(
-			companyId, name, start, end, orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, String name) {
-		return passwordPolicyFinder.countByC_N(companyId, name);
 	}
 
 	@Override

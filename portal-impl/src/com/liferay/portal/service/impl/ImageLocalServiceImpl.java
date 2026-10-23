@@ -116,11 +116,6 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Image> getImagesBySize(int size) {
-		return imagePersistence.findByLtSize(size);
-	}
-
-	@Override
 	public Image moveImage(long imageId, byte[] bytes) throws PortalException {
 		Image image = fetchImage(imageId);
 

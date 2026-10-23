@@ -236,15 +236,13 @@ public class RoleLocalServiceTest {
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
 				0, _portal.getClassNameId(_role.getModelClassName()),
-				_role.getPrimaryKey());
+				_role.getPrimaryKey(), SystemEventConstants.TYPE_DELETE);
 
 		SystemEvent systemEvent = systemEvents.get(0);
 
 		Assert.assertEquals(
 			_role.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 
 		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 		User user = UserTestUtil.addUser();

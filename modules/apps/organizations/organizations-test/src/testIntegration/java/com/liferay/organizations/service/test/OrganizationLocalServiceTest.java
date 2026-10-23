@@ -556,15 +556,13 @@ public class OrganizationLocalServiceTest {
 		List<SystemEvent> systemEvents =
 			_systemEventLocalService.getSystemEvents(
 				0, _portal.getClassNameId(organization.getModelClassName()),
-				organization.getPrimaryKey());
+				organization.getPrimaryKey(), SystemEventConstants.TYPE_DELETE);
 
 		SystemEvent systemEvent = systemEvents.get(0);
 
 		Assert.assertEquals(
 			organization.getExternalReferenceCode(),
 			systemEvent.getClassExternalReferenceCode());
-		Assert.assertEquals(
-			SystemEventConstants.TYPE_DELETE, systemEvent.getType());
 	}
 
 	@Test
@@ -701,94 +699,6 @@ public class OrganizationLocalServiceTest {
 			Assert.assertEquals(
 				WorkflowConstants.STATUS_EMPTY, organization.getStatus());
 		}
-	}
-
-	@Test
-	public void testGetOrganizationsAndUsers() throws Exception {
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		Organization suborganization = OrganizationTestUtil.addOrganization(
-			organization.getOrganizationId(), RandomTestUtil.randomString(),
-			false);
-
-		_organizations.add(suborganization);
-
-		_organizations.add(organization);
-
-		_userLocalService.addOrganizationUser(
-			organization.getOrganizationId(), TestPropsValues.getUserId());
-
-		Assert.assertEquals(2, getOrganizationsAndUsersCount(organization));
-
-		List<Object> results = getOrganizationsAndUsers(organization);
-
-		Assert.assertEquals(results.toString(), 2, results.size());
-		Assert.assertTrue(
-			results.toString(), results.contains(suborganization));
-		Assert.assertTrue(
-			results.toString(), results.contains(TestPropsValues.getUser()));
-
-		_userLocalService.deleteOrganizationUser(
-			organization.getOrganizationId(), TestPropsValues.getUser());
-	}
-
-	@Test
-	public void testGetOrganizationsAndUsersWithNoSuborganizations()
-		throws Exception {
-
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization);
-
-		_userLocalService.addOrganizationUser(
-			organization.getOrganizationId(), TestPropsValues.getUserId());
-
-		Assert.assertEquals(1, getOrganizationsAndUsersCount(organization));
-
-		List<Object> results = getOrganizationsAndUsers(organization);
-
-		Assert.assertEquals(results.toString(), 1, results.size());
-		Assert.assertTrue(
-			results.toString(), results.contains(TestPropsValues.getUser()));
-
-		_userLocalService.deleteOrganizationUser(
-			organization.getOrganizationId(), TestPropsValues.getUser());
-	}
-
-	@Test
-	public void testGetOrganizationsAndUsersWithNoUsers() throws Exception {
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		Organization suborganization = OrganizationTestUtil.addOrganization(
-			organization.getOrganizationId(), RandomTestUtil.randomString(),
-			false);
-
-		_organizations.add(suborganization);
-
-		_organizations.add(organization);
-
-		Assert.assertEquals(1, getOrganizationsAndUsersCount(organization));
-
-		List<Object> results = getOrganizationsAndUsers(organization);
-
-		Assert.assertEquals(results.toString(), 1, results.size());
-		Assert.assertTrue(
-			results.toString(), results.contains(suborganization));
-	}
-
-	@Test
-	public void testGetOrganizationsAndUsersWithRootOrganization()
-		throws Exception {
-
-		Organization organization = OrganizationTestUtil.addOrganization();
-
-		_organizations.add(organization);
-
-		Assert.assertEquals(0, getOrganizationsAndUsersCount(organization));
-
-		List<Object> results = getOrganizationsAndUsers(organization);
-
-		Assert.assertTrue(results.toString(), results.isEmpty());
 	}
 
 	@Test
@@ -1386,19 +1296,6 @@ public class OrganizationLocalServiceTest {
 
 	@Rule
 	public SearchTestRule searchTestRule = new SearchTestRule();
-
-	protected List<Object> getOrganizationsAndUsers(Organization organization) {
-		return _organizationLocalService.getOrganizationsAndUsers(
-			organization.getCompanyId(), organization.getOrganizationId(),
-			WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			null);
-	}
-
-	protected int getOrganizationsAndUsersCount(Organization organization) {
-		return _organizationLocalService.getOrganizationsAndUsersCount(
-			organization.getCompanyId(), organization.getOrganizationId(),
-			WorkflowConstants.STATUS_ANY);
-	}
 
 	protected Hits searchOrganizationsAndUsers(
 			Organization parentOrganization, String keywords)
