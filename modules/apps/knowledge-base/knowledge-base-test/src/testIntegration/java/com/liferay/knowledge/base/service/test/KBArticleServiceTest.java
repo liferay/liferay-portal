@@ -52,6 +52,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.ByteArrayInputStream;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -144,6 +145,38 @@ public class KBArticleServiceTest {
 		}
 		finally {
 			_kbArticleService.deleteKBArticle(kbArticle.getResourcePrimKey());
+		}
+	}
+
+	@Test
+	public void testGetAllDescendantKBArticles() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group1, TestPropsValues.getUserId());
+
+		serviceContext.setAddGuestPermissions(false);
+
+		KBArticle kbArticle1 = _addKbArticle(new Date(), serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		KBArticle kbArticle2 = _addKbArticle(new Date(), serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			_assertGetAllDescendantKBArticles(
+				WorkflowConstants.STATUS_APPROVED, kbArticle1);
+			_assertGetAllDescendantKBArticles(
+				WorkflowConstants.STATUS_DRAFT, kbArticle2);
+		}
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			_assertGetAllDescendantKBArticles(
+				WorkflowConstants.STATUS_APPROVED);
+			_assertGetAllDescendantKBArticles(WorkflowConstants.STATUS_DRAFT);
 		}
 	}
 
@@ -265,6 +298,18 @@ public class KBArticleServiceTest {
 			new Date(),
 			ServiceContextTestUtil.getServiceContext(
 				group, TestPropsValues.getUserId()));
+	}
+
+	private void _assertGetAllDescendantKBArticles(
+			int status, KBArticle... expectedKBArticles)
+		throws Exception {
+
+		Assert.assertEquals(
+			Arrays.asList(expectedKBArticles),
+			_kbArticleService.getAllDescendantKBArticles(
+				_group1.getGroupId(),
+				KBFolderConstants.DEFAULT_PARENT_FOLDER_ID, status,
+				KBArticlePriorityComparator.getInstance(true)));
 	}
 
 	private void _assertNoSuchFileEntry(FileEntry fileEntry) {
