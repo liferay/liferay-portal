@@ -219,6 +219,7 @@ public class AssetEntryServiceImpl extends AssetEntryServiceBaseImpl {
 			AssetUtil.filterCategoryIds(
 				getPermissionChecker(), entryQuery.getAnyCategoryIds()));
 		filteredEntryQuery.setAnyTagIds(entryQuery.getAnyTagIds());
+		filteredEntryQuery.setEnablePermissions(true);
 
 		return filteredEntryQuery;
 	}
