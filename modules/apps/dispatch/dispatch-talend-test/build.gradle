@@ -2,5 +2,4 @@ dependencies {
 	testIntegrationImplementation project(":apps:dispatch:dispatch-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 	testIntegrationRuntimeOnly ext: "zip", group: "com.liferay.etl", name: "etl-talend-context-printer-sample", version: "1.0"
-	testIntegrationRuntimeOnly ext: "zip", group: "com.liferay.etl", name: "etl-talend-liferay-output-blog-sample", version: "1.0"
 }
