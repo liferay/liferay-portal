@@ -8,6 +8,7 @@ package com.liferay.fragment.web.internal.display.context;
 import com.liferay.fragment.collection.item.selector.FragmentCollectionItemSelectorCriterion;
 import com.liferay.fragment.constants.FragmentActionKeys;
 import com.liferay.fragment.constants.FragmentConstants;
+import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.web.internal.info.field.type.CaptchaInfoFieldType;
 import com.liferay.fragment.web.internal.info.field.type.FormButtonInfoFieldType;
 import com.liferay.fragment.web.internal.info.field.type.LocalizationSelectInfoFieldType;
@@ -36,10 +37,12 @@ import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
@@ -239,7 +242,42 @@ public class BasicFragmentManagementToolbarDisplayContext
 
 	@Override
 	public CreationMenu getCreationMenu() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		boolean generateFragmentWithAIEnabled =
+			FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-62272") &&
+			FeatureFlagManagerUtil.isEnabled(
+				themeDisplay.getCompanyId(), "LPD-94003");
+
 		return CreationMenuBuilder.addDropdownItem(
+			() -> generateFragmentWithAIEnabled,
+			dropdownItem -> {
+				dropdownItem.putData("action", "generateFragmentWithAI");
+
+				FragmentCollection fragmentCollection =
+					fragmentDisplayContext.getFragmentCollection();
+
+				if (fragmentCollection != null) {
+					dropdownItem.putData(
+						"fragmentSetExternalReferenceCode",
+						fragmentCollection.getExternalReferenceCode());
+				}
+
+				Group group = themeDisplay.getScopeGroup();
+
+				dropdownItem.putData(
+					"siteExternalReferenceCode",
+					group.getExternalReferenceCode());
+
+				dropdownItem.setIcon("stars");
+				dropdownItem.setLabel(
+					LanguageUtil.get(
+						httpServletRequest, "generate-fragment-with-ai"));
+			}
+		).addDropdownItem(
 			dropdownItem -> {
 				dropdownItem.putData("action", "addFragmentEntry");
 
@@ -259,8 +297,16 @@ public class BasicFragmentManagementToolbarDisplayContext
 				dropdownItem.putData(
 					"title",
 					LanguageUtil.get(httpServletRequest, "add-fragment"));
-				dropdownItem.setLabel(
-					LanguageUtil.get(httpServletRequest, "add"));
+
+				if (generateFragmentWithAIEnabled) {
+					dropdownItem.setIcon("code");
+					dropdownItem.setLabel(
+						LanguageUtil.get(httpServletRequest, "fragment"));
+				}
+				else {
+					dropdownItem.setLabel(
+						LanguageUtil.get(httpServletRequest, "add"));
+				}
 			}
 		).build();
 	}
