@@ -9,43 +9,12 @@ import path from 'path';
 export class FormViewPage {
 	readonly languageSelector: Locator;
 	readonly page: Page;
-	readonly unselectFile: Locator;
-	readonly uploadInput: Locator;
 
 	constructor(page: Page) {
 		this.languageSelector = page.getByRole('button', {
 			name: 'Select a language, current',
 		});
 		this.page = page;
-		this.unselectFile = page.getByLabel('Unselect File');
-		this.uploadInput = page.getByLabel('Upload');
-	}
-
-	/**
-	 * Retrieves the fileEntryId from the uploaded file.
-	 * It extracts the file entry value from the input field, parses it from JSON,
-	 * and returns the fileEntryId.
-	 *
-	 * @param page The Playwright page instance
-	 * @returns The extracted fileEntryId
-	 */
-
-	async getFileEntryId(page: Page): Promise<string> {
-		const DDM_FORM_PORTLET_PREFIX =
-			'_com_liferay_dynamic_data_mapping_form_web_portlet_DDMFormPortlet_';
-
-		const fileEntryIdValue = await page.getAttribute(
-			`input[name^="${DDM_FORM_PORTLET_PREFIX}ddm$$"][type="hidden"]`,
-			'value'
-		);
-
-		let parsedFileEntryId = JSON.parse(fileEntryIdValue);
-
-		if (typeof parsedFileEntryId === 'string') {
-			parsedFileEntryId = JSON.parse(parsedFileEntryId);
-		}
-
-		return parsedFileEntryId.fileEntryId;
 	}
 
 	async uploadFile(page: Page, dirName: string, filePath: string) {
