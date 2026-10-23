@@ -29,7 +29,8 @@ public class SourceFormatterReleaseUtil {
 			File ivyXMLFile = new File(
 				portalDirectory,
 				JenkinsResultsParserUtil.combine(
-					"tools/sdk/dependencies/", _PACKAGE_NAME, "/ivy.xml"));
+					"tools/sdk/dependencies/", _SOURCE_FORMATTER_PACKAGE_NAME,
+					"/ivy.xml"));
 
 			Document document = Dom4JUtil.parse(
 				JenkinsResultsParserUtil.read(ivyXMLFile));
@@ -43,7 +44,7 @@ public class SourceFormatterReleaseUtil {
 
 				if (!Objects.equals(
 						dependencyElement.attributeValue("name"),
-						_PACKAGE_NAME)) {
+						_SOURCE_FORMATTER_PACKAGE_NAME)) {
 
 					continue;
 				}
@@ -62,9 +63,9 @@ public class SourceFormatterReleaseUtil {
 		GitWorkingDirectory gitWorkingDirectory, String ref) {
 
 		try {
-			Properties artifactProperties = new Properties();
-
 			File portalDirectory = gitWorkingDirectory.getWorkingDirectory();
+
+			Properties artifactProperties = new Properties();
 
 			artifactProperties.load(
 				new StringReader(
@@ -176,7 +177,8 @@ public class SourceFormatterReleaseUtil {
 		return addedLines.equals(removedLines);
 	}
 
-	private static final String _PACKAGE_NAME = "com.liferay.source.formatter";
+	private static final String _SOURCE_FORMATTER_PACKAGE_NAME =
+		"com.liferay.source.formatter";
 
 	private static final String _SOURCE_FORMATTER_PATH =
 		"modules/util/source-formatter";
