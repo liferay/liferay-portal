@@ -5,9 +5,10 @@
 
 package com.liferay.commerce.order.web.internal.display.context.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -21,6 +22,7 @@ import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.DSCommerceOrderAttachmentTestUtil;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.constants.DSRequestConstants;
 import com.liferay.digital.signature.constants.DigitalSignatureConstants;
@@ -33,6 +35,7 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -105,13 +108,7 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.digital.signature.impl",
-			CommerceOrderAttachmentsDisplayContextTest.class,
-			new String[] {
-				".com.liferay.digital.signature.internal.batch.01.object." +
-					"definition"
-			});
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		CommerceOrderAttachmentTestUtil.initialize(getClass());
 
@@ -234,6 +231,7 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 		Assert.assertNull(addDSRequestModalProps.get("buyer"));
 
 		_testGetAdditionalPropsWithRestrictedCommerceOrderAttachment();
+		_testGetAdditionalPropsWithoutViewUsersPermission();
 
 		additionalProps = _getAdditionalProps(UserTestUtil.addUser());
 
@@ -520,6 +518,71 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 			).build(),
 			additionalProps.get("dsRequestStatuses"));
 	}
+
+	private void _testGetAdditionalPropsWithoutViewUsersPermission()
+		throws Exception {
+
+		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
+
+		_accountEntryUserRelLocalService.
+			deleteAccountEntryUserRelsByAccountEntryId(
+				accountEntry.getAccountEntryId());
+
+		User user1 = UserTestUtil.addUser();
+
+		_accountEntryUserRelLocalService.addAccountEntryUserRel(
+			accountEntry.getAccountEntryId(), user1.getUserId());
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
+			String.valueOf(accountEntry.getAccountEntryGroupId()),
+			role.getRoleId(),
+			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+		User user2 = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user2.getUserId(), role);
+
+		Map<String, Object> additionalProps = _getAdditionalProps(user2);
+
+		Map<String, Object> addDSRequestModalProps =
+			(Map<String, Object>)additionalProps.get("addDSRequestModalProps");
+
+		JSONArray jsonArray = (JSONArray)addDSRequestModalProps.get(
+			"accountUsers");
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_group.getCompanyId()), role.getRoleId(),
+			new String[] {AccountActionKeys.VIEW_USERS});
+
+		additionalProps = _getAdditionalProps(user2);
+
+		addDSRequestModalProps = (Map<String, Object>)additionalProps.get(
+			"addDSRequestModalProps");
+
+		jsonArray = (JSONArray)addDSRequestModalProps.get("accountUsers");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(user1.getUserId(), jsonObject.getLong("userId"));
+	}
+
+	@Inject
+	private AccountEntryUserRelLocalService _accountEntryUserRelLocalService;
 
 	private CommerceOrder _commerceOrder;
 	private CommerceOrderAttachment _commerceOrderAttachment;

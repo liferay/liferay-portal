@@ -7,7 +7,6 @@ package com.liferay.commerce.order.web.internal.portlet.action.test;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -18,6 +17,7 @@ import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.DSCommerceOrderAttachmentTestUtil;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.constants.DSRequestConstants;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
@@ -89,17 +89,7 @@ public class ResendDSRequestMVCResourceCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.digital.signature.impl",
-			ResendDSRequestMVCResourceCommandTest.class,
-			new String[] {
-				".com.liferay.digital.signature.internal.batch.01.object." +
-					"definition",
-				".com.liferay.digital.signature.internal.batch.02.object." +
-					"relationship",
-				".com.liferay.digital.signature.internal.batch.03." +
-					"notification.template"
-			});
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		CommerceOrderAttachmentTestUtil.initialize(getClass());
 
@@ -169,11 +159,12 @@ public class ResendDSRequestMVCResourceCommandTest {
 
 		_saveDigitalSignatureConfiguration(false);
 
-		_assertErrorMessage("Digital signature is not enabled for this order.");
+		_testServeResourceWithErrorMessage(
+			"Digital signature is not enabled for this order.");
 
 		_saveDigitalSignatureConfiguration(true);
 
-		_assertErrorMessage(
+		_testServeResourceWithErrorMessage(
 			"No signature request was found for this document.");
 
 		portletException = Assert.assertThrows(
@@ -187,7 +178,8 @@ public class ResendDSRequestMVCResourceCommandTest {
 		_addDSRequest(
 			DSRequestConstants.STATUS_COMPLETED, UserTestUtil.addUser());
 
-		_assertErrorMessage("This signature request is no longer active.");
+		_testServeResourceWithErrorMessage(
+			"This signature request is no longer active.");
 
 		_commerceOrderAttachment =
 			_commerceOrderAttachmentLocalService.addCommerceOrderAttachment(
@@ -261,15 +253,6 @@ public class ResendDSRequestMVCResourceCommandTest {
 			_group.getCompanyId(), dsEnvelope,
 			new long[] {_commerceOrderAttachment.getFileEntryId()},
 			_group.getGroupId(), user.getUserId());
-	}
-
-	private void _assertErrorMessage(String expectedMessage) throws Exception {
-		JSONObject jsonObject = _serveResource(
-			_commerceOrderAttachment.getCommerceOrderAttachmentId(),
-			TestPropsValues.getUser());
-
-		Assert.assertEquals(
-			expectedMessage, jsonObject.getString("errorMessage"));
 	}
 
 	private List<NotificationQueueEntry> _getNotificationQueueEntries(
@@ -351,6 +334,17 @@ public class ResendDSRequestMVCResourceCommandTest {
 				mockLiferayResourceResponse.getPortletOutputStream();
 
 		return _jsonFactory.createJSONObject(byteArrayOutputStream.toString());
+	}
+
+	private void _testServeResourceWithErrorMessage(String expectedMessage)
+		throws Exception {
+
+		JSONObject jsonObject = _serveResource(
+			_commerceOrderAttachment.getCommerceOrderAttachmentId(),
+			TestPropsValues.getUser());
+
+		Assert.assertEquals(
+			expectedMessage, jsonObject.getString("errorMessage"));
 	}
 
 	private CommerceOrder _commerceOrder;

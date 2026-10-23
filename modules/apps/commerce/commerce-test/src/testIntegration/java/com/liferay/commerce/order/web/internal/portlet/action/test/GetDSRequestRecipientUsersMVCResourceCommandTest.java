@@ -5,10 +5,10 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -18,6 +18,7 @@ import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.DSCommerceOrderAttachmentTestUtil;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -79,13 +80,7 @@ public class GetDSRequestRecipientUsersMVCResourceCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.digital.signature.impl",
-			GetDSRequestRecipientUsersMVCResourceCommandTest.class,
-			new String[] {
-				".com.liferay.digital.signature.internal.batch.01.object." +
-					"definition"
-			});
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		_saveDigitalSignatureConfiguration(true);
 
@@ -237,14 +232,14 @@ public class GetDSRequestRecipientUsersMVCResourceCommandTest {
 	private void _testServeResourceWithoutUserViewPermission()
 		throws Exception {
 
+		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
+
 		Role role = _roleLocalService.addRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
 			RandomTestUtil.randomString(), null, null,
 			RoleConstants.TYPE_REGULAR, null,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
-
-		AccountEntry accountEntry = _commerceOrder.getAccountEntry();
 
 		_resourcePermissionLocalService.setResourcePermissions(
 			_group.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
@@ -267,6 +262,19 @@ public class GetDSRequestRecipientUsersMVCResourceCommandTest {
 			accountEntry.getAccountEntryId(), user2.getUserId());
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray(
+			_serveResource(
+				_commerceOrder.getCommerceOrderId(), user2.getScreenName(),
+				user1));
+
+		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_group.getCompanyId()), role.getRoleId(),
+			new String[] {AccountActionKeys.VIEW_USERS});
+
+		jsonArray = _jsonFactory.createJSONArray(
 			_serveResource(
 				_commerceOrder.getCommerceOrderId(), user2.getScreenName(),
 				user1));

@@ -5,10 +5,10 @@
 
 package com.liferay.commerce.order.web.internal.portlet.action.test;
 
+import com.liferay.account.constants.AccountActionKeys;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.batch.engine.test.util.BatchEngineTestUtil;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
@@ -21,6 +21,7 @@ import com.liferay.commerce.service.CommerceOrderAttachmentLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceOrderAttachmentTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
+import com.liferay.commerce.test.util.DSCommerceOrderAttachmentTestUtil;
 import com.liferay.digital.signature.configuration.DigitalSignatureConfiguration;
 import com.liferay.digital.signature.constants.DSRequestConstants;
 import com.liferay.digital.signature.manager.DSEnvelopeManager;
@@ -103,17 +104,7 @@ public class AddDSRequestMVCResourceCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		BatchEngineTestUtil.processBatchEngineUnits(
-			"com.liferay.digital.signature.impl",
-			AddDSRequestMVCResourceCommandTest.class,
-			new String[] {
-				".com.liferay.digital.signature.internal.batch.01.object." +
-					"definition",
-				".com.liferay.digital.signature.internal.batch.02.object." +
-					"relationship",
-				".com.liferay.digital.signature.internal.batch.03." +
-					"notification.template"
-			});
+		DSCommerceOrderAttachmentTestUtil.initialize(getClass());
 
 		CommerceOrderAttachmentTestUtil.initialize(getClass());
 
@@ -154,11 +145,15 @@ public class AddDSRequestMVCResourceCommandTest {
 
 	@Test
 	public void testServeResource() throws Exception {
+		_testServeResourceWithFailedResponseWrite();
+		_testServeResourceWithSequentialFalse();
+
 		PortletException portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _serveResource(
-				_commerceOrderAttachment.getCommerceOrderAttachmentId(),
-				UserTestUtil.addUser()));
+				_getMockLiferayResourceRequest(
+					_commerceOrderAttachment.getCommerceOrderAttachmentId(), 0,
+					UserTestUtil.addUser())));
 
 		Assert.assertTrue(
 			portletException.getCause() instanceof
@@ -166,15 +161,17 @@ public class AddDSRequestMVCResourceCommandTest {
 
 		_saveDigitalSignatureConfiguration(false);
 
-		_assertErrorMessage("Digital signature is not enabled for this order.");
+		_testServeResourceWithErrorMessage(
+			"Digital signature is not enabled for this order.");
 
 		_saveDigitalSignatureConfiguration(true);
 
 		portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _serveResource(
-				RandomTestUtil.randomLong(), TestPropsValues.getUser(),
-				TestPropsValues.getUserId()));
+				_getMockLiferayResourceRequest(
+					RandomTestUtil.randomLong(), 0, TestPropsValues.getUser(),
+					TestPropsValues.getUserId())));
 
 		Assert.assertTrue(
 			portletException.getCause() instanceof PrincipalException);
@@ -185,18 +182,19 @@ public class AddDSRequestMVCResourceCommandTest {
 			user1.getUserId(), WorkflowConstants.STATUS_INACTIVE,
 			ServiceContextTestUtil.getServiceContext());
 
-		_assertErrorMessage(
+		_testServeResourceWithErrorMessage(
 			"One or more recipients cannot sign this order.",
 			user1.getUserId());
 
 		User user2 = UserTestUtil.addUser();
 		User user3 = UserTestUtil.addUser();
 
-		_assertErrorMessage(
+		_testServeResourceWithErrorMessage(
 			"Only one internal countersigner is allowed.", user2.getUserId(),
 			user3.getUserId());
 
-		_assertErrorMessage("At least one recipient is required.");
+		_testServeResourceWithErrorMessage(
+			"At least one recipient is required.");
 
 		Role role = _roleLocalService.addRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
@@ -219,6 +217,11 @@ public class AddDSRequestMVCResourceCommandTest {
 			String.valueOf(accountEntry.getAccountEntryGroupId()),
 			role.getRoleId(),
 			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+		_resourcePermissionLocalService.setResourcePermissions(
+			_group.getCompanyId(), AccountEntry.class.getName(),
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_group.getCompanyId()), role.getRoleId(),
+			new String[] {AccountActionKeys.VIEW_USERS});
 
 		User orderManagerUser = UserTestUtil.addUser();
 
@@ -229,8 +232,9 @@ public class AddDSRequestMVCResourceCommandTest {
 		portletException = Assert.assertThrows(
 			PortletException.class,
 			() -> _serveResource(
-				_commerceOrderAttachment.getCommerceOrderAttachmentId(),
-				orderManagerUser, countersignerUser.getUserId()));
+				_getMockLiferayResourceRequest(
+					_commerceOrderAttachment.getCommerceOrderAttachmentId(), 0,
+					orderManagerUser, countersignerUser.getUserId())));
 
 		PrincipalException.MustHavePermission mustHavePermission =
 			(PrincipalException.MustHavePermission)portletException.getCause();
@@ -239,9 +243,6 @@ public class AddDSRequestMVCResourceCommandTest {
 			countersignerUser.getUserId(), mustHavePermission.resourceId);
 		Assert.assertEquals(
 			User.class.getName(), mustHavePermission.resourceName);
-
-		_testServeResourceWithFailedResponseWrite();
-		_testServeResourceWithSequentialFalse();
 
 		_accountEntryUserRelLocalService.
 			deleteAccountEntryUserRelsByAccountEntryId(
@@ -329,7 +330,7 @@ public class AddDSRequestMVCResourceCommandTest {
 					}));
 
 		try {
-			_assertErrorMessage(
+			_testServeResourceWithErrorMessage(
 				"This document already has an active or completed signature " +
 					"request.",
 				TestPropsValues.getUserId());
@@ -337,8 +338,9 @@ public class AddDSRequestMVCResourceCommandTest {
 			dsEnvelope.setStatus(DSRequestConstants.STATUS_VOIDED);
 
 			JSONObject jsonObject = _serveResource(
-				_commerceOrderAttachment.getCommerceOrderAttachmentId(),
-				TestPropsValues.getUser(), TestPropsValues.getUserId());
+				_getMockLiferayResourceRequest(
+					_commerceOrderAttachment.getCommerceOrderAttachmentId(), 0,
+					TestPropsValues.getUser(), TestPropsValues.getUserId()));
 
 			Assert.assertEquals("{}", jsonObject.toString());
 		}
@@ -362,7 +364,7 @@ public class AddDSRequestMVCResourceCommandTest {
 				RandomTestUtil.randomString() + ".zip",
 				new ByteArrayInputStream(RandomTestUtil.randomBytes()));
 
-		_assertErrorMessage(
+		_testServeResourceWithErrorMessage(
 			"This file extension is not supported by DocuSign.",
 			TestPropsValues.getUserId());
 	}
@@ -374,18 +376,6 @@ public class AddDSRequestMVCResourceCommandTest {
 			user.getEmailAddress(), dsRecipient.getEmailAddress());
 		Assert.assertEquals(user.getFullName(), dsRecipient.getName());
 		Assert.assertEquals(routingOrder, dsRecipient.getRoutingOrder());
-	}
-
-	private void _assertErrorMessage(
-			String expectedMessage, long... recipientUserIds)
-		throws Exception {
-
-		JSONObject jsonObject = _serveResource(
-			_commerceOrderAttachment.getCommerceOrderAttachmentId(),
-			TestPropsValues.getUser(), recipientUserIds);
-
-		Assert.assertEquals(
-			expectedMessage, jsonObject.getString("errorMessage"));
 	}
 
 	private DSEnvelope _getDSEnvelope(
@@ -519,15 +509,6 @@ public class AddDSRequestMVCResourceCommandTest {
 	}
 
 	private JSONObject _serveResource(
-			long commerceOrderAttachmentId, User user, long... recipientUserIds)
-		throws Exception {
-
-		return _serveResource(
-			_getMockLiferayResourceRequest(
-				commerceOrderAttachmentId, 0, user, recipientUserIds));
-	}
-
-	private JSONObject _serveResource(
 			MockLiferayResourceRequest mockLiferayResourceRequest)
 		throws Exception {
 
@@ -542,6 +523,19 @@ public class AddDSRequestMVCResourceCommandTest {
 				mockLiferayResourceResponse.getPortletOutputStream();
 
 		return _jsonFactory.createJSONObject(byteArrayOutputStream.toString());
+	}
+
+	private void _testServeResourceWithErrorMessage(
+			String expectedMessage, long... recipientUserIds)
+		throws Exception {
+
+		JSONObject jsonObject = _serveResource(
+			_getMockLiferayResourceRequest(
+				_commerceOrderAttachment.getCommerceOrderAttachmentId(), 0,
+				TestPropsValues.getUser(), recipientUserIds));
+
+		Assert.assertEquals(
+			expectedMessage, jsonObject.getString("errorMessage"));
 	}
 
 	private void _testServeResourceWithFailedResponseWrite() throws Exception {
