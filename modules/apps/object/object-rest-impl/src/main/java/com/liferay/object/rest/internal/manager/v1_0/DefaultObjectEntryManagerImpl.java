@@ -119,6 +119,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
@@ -169,6 +170,7 @@ import com.liferay.portal.vulcan.scope.Scope;
 import com.liferay.portal.vulcan.util.ActionUtil;
 import com.liferay.portal.vulcan.util.ObjectMapperUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
+import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.roles.admin.role.type.contributor.provider.RoleTypeContributorProvider;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
@@ -2051,6 +2053,21 @@ public class DefaultObjectEntryManagerImpl
 			_objectEntryService.fetchObjectEntry(objectEntryId));
 	}
 
+	private void _checkAddDocumentPermission(
+			long groupId, ObjectDefinition objectDefinition, String scopeKey,
+			ServiceContext serviceContext)
+		throws Exception {
+
+		if (groupId == getGroupId(objectDefinition, scopeKey, true)) {
+			return;
+		}
+
+		_dlPortletResourcePermission.check(
+			permissionCheckerFactory.create(
+				userLocalService.getUser(serviceContext.getUserId())),
+			groupId, ActionKeys.ADD_DOCUMENT);
+	}
+
 	private void _checkAllowStandaloneObjectEntry(
 			ObjectDefinition objectDefinition, Map<String, Serializable> values)
 		throws Exception {
@@ -3467,13 +3484,17 @@ public class DefaultObjectEntryManagerImpl
 				objectField.getObjectFieldId(), serviceContext);
 		}
 		else {
+			long groupId = _getFileEntryGroupId(
+				groupExternalReferenceCode, objectDefinition, scopeKey);
+
+			_checkAddDocumentPermission(
+				groupId, objectDefinition, scopeKey, serviceContext);
+
 			serviceBuilderFileEntry = _attachmentManager.getOrAddFileEntry(
 				objectField.getCompanyId(),
 				fileEntry.getExternalReferenceCode(), fileContent,
-				fileEntry.getName(),
-				_getFileEntryGroupId(
-					groupExternalReferenceCode, objectDefinition, scopeKey),
-				objectField.getObjectFieldId(), serviceContext);
+				fileEntry.getName(), groupId, objectField.getObjectFieldId(),
+				serviceContext);
 		}
 
 		return serviceBuilderFileEntry.getFileEntryId();
@@ -4441,6 +4462,9 @@ public class DefaultObjectEntryManagerImpl
 
 	@Reference
 	private DLAppService _dlAppService;
+
+	@Reference(target = "(resource.name=" + DLConstants.RESOURCE_NAME + ")")
+	private PortletResourcePermission _dlPortletResourcePermission;
 
 	@Reference
 	private DTOConverterRegistry _dtoConverterRegistry;
