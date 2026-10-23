@@ -38,6 +38,7 @@ import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 
 import jakarta.ws.rs.core.MultivaluedMap;
 
@@ -90,7 +91,7 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 
 		UnlinkedAssetSearcher unlinkedAssetSearcher = new UnlinkedAssetSearcher(
 			_aggregations, _objectEntryLocalService, _searcher,
-			_searchRequestBuilderFactory);
+			_searchRequestBuilderFactory, _siteNavigationMenuItemLocalService);
 
 		SearchResponse searchResponse = unlinkedAssetSearcher.search(
 			contextCompany.getCompanyId(), selectedSpaceGroupIds,
@@ -200,5 +201,9 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 
 	@Reference
 	private Searcher _searcher;
+
+	@Reference
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
 
 }

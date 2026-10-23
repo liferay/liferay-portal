@@ -47,6 +47,7 @@ import com.liferay.portal.workflow.kaleo.model.KaleoTaskInstanceTokenTable;
 import com.liferay.portal.workflow.kaleo.service.KaleoTaskInstanceTokenLocalService;
 import com.liferay.portal.workflow.metrics.sla.processor.WorkflowMetricsSLAStatus;
 import com.liferay.site.cms.site.initializer.constants.CMSWorkflowConstants;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 
 import java.util.Date;
 import java.util.List;
@@ -376,7 +377,8 @@ public class AssetStatisticsResourceImpl
 			UnlinkedAssetSearcher unlinkedAssetSearcher =
 				new UnlinkedAssetSearcher(
 					_aggregations, _objectEntryLocalService, _searcher,
-					_searchRequestBuilderFactory);
+					_searchRequestBuilderFactory,
+					_siteNavigationMenuItemLocalService);
 
 			return unlinkedAssetSearcher.getCount(
 				contextCompany.getCompanyId(), groupIds);
@@ -478,5 +480,9 @@ public class AssetStatisticsResourceImpl
 
 	@Reference
 	private Searcher _searcher;
+
+	@Reference
+	private SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
 
 }

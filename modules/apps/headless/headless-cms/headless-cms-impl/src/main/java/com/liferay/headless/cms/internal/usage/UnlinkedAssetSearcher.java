@@ -17,6 +17,9 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.aggregation.Aggregations;
 import com.liferay.portal.search.query.BooleanQuery;
@@ -27,6 +30,9 @@ import com.liferay.portal.search.searcher.SearchResponse;
 import com.liferay.portal.search.searcher.Searcher;
 import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.site.cms.site.initializer.util.CMSOutboundLinksUtil;
+import com.liferay.site.navigation.model.SiteNavigationMenuItem;
+import com.liferay.site.navigation.model.SiteNavigationMenuItemTable;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
 
 import java.util.HashSet;
 import java.util.List;
@@ -40,12 +46,15 @@ public class UnlinkedAssetSearcher {
 	public UnlinkedAssetSearcher(
 		Aggregations aggregations,
 		ObjectEntryLocalService objectEntryLocalService, Searcher searcher,
-		SearchRequestBuilderFactory searchRequestBuilderFactory) {
+		SearchRequestBuilderFactory searchRequestBuilderFactory,
+		SiteNavigationMenuItemLocalService siteNavigationMenuItemLocalService) {
 
 		_aggregations = aggregations;
 		_objectEntryLocalService = objectEntryLocalService;
 		_searcher = searcher;
 		_searchRequestBuilderFactory = searchRequestBuilderFactory;
+		_siteNavigationMenuItemLocalService =
+			siteNavigationMenuItemLocalService;
 	}
 
 	public long getCount(long companyId, Long[] groupIds) {
@@ -117,6 +126,47 @@ public class UnlinkedAssetSearcher {
 			TransformUtil.transform(classPKs, String::valueOf));
 	}
 
+	private void _addNavigationMenuExternalReferenceCodes(
+		long companyId, Set<String> externalReferenceCodes) {
+
+		List<SiteNavigationMenuItem> siteNavigationMenuItems =
+			_siteNavigationMenuItemLocalService.dslQuery(
+				DSLQueryFactoryUtil.select(
+					SiteNavigationMenuItemTable.INSTANCE
+				).from(
+					SiteNavigationMenuItemTable.INSTANCE
+				).where(
+					SiteNavigationMenuItemTable.INSTANCE.companyId.eq(
+						companyId
+					).and(
+						SiteNavigationMenuItemTable.INSTANCE.type.like(
+							ObjectDefinitionConstants.
+								CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION +
+									StringPool.PERCENT)
+					)
+				));
+
+		for (SiteNavigationMenuItem siteNavigationMenuItem :
+				siteNavigationMenuItems) {
+
+			UnicodeProperties unicodeProperties =
+				UnicodePropertiesBuilder.create(
+					true
+				).fastLoad(
+					siteNavigationMenuItem.getTypeSettings()
+				).build();
+
+			String externalReferenceCode = unicodeProperties.getProperty(
+				"externalReferenceCode");
+
+			if (Validator.isNull(externalReferenceCode)) {
+				continue;
+			}
+
+			externalReferenceCodes.add(externalReferenceCode);
+		}
+	}
+
 	private void _addOutboundLinks(
 		long companyId, String outboundLinkPrefix, Set<String> outboundLinks) {
 
@@ -166,6 +216,9 @@ public class UnlinkedAssetSearcher {
 		_addLayoutObjectEntryIds(companyId, objectEntryIds);
 
 		Set<String> externalReferenceCodes = new HashSet<>();
+
+		_addNavigationMenuExternalReferenceCodes(
+			companyId, externalReferenceCodes);
 
 		Set<String> outboundLinks = new HashSet<>();
 
@@ -219,5 +272,7 @@ public class UnlinkedAssetSearcher {
 	private final ObjectEntryLocalService _objectEntryLocalService;
 	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private final Searcher _searcher;
+	private final SiteNavigationMenuItemLocalService
+		_siteNavigationMenuItemLocalService;
 
 }
