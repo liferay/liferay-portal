@@ -1,0 +1,6 @@
+deploymentContext:
+    deploymentName: liferay-example
+    projectId: liferay-example-project
+    projectNumber: "000000000000"
+    region: us-central1
+    vpcName: liferay-example-vpc
