@@ -21,6 +21,17 @@
 	}
 }
 
+.creation-menu-dropdown .dropdown-item[data-action='generateFragmentWithAI'] {
+	color: $purple;
+
+	&.focus,
+	&:focus-visible,
+	&:hover {
+		background-color: $purple-l5;
+		color: $purple;
+	}
+}
+
 .fragment-marketplace-sticker {
 	background-color: $indigo;
 	color: $white;
