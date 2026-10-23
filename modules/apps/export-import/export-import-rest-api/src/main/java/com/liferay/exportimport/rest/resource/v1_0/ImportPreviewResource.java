@@ -46,33 +46,33 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface ImportPreviewResource {
 
 	public ImportPreview postAssetLibraryImportPreview(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, MultipartBody multipartBody)
+			String assetLibraryExternalReferenceCode, String portletId,
+			MultipartBody multipartBody)
 		throws Exception;
 
 	public Response postAssetLibraryImportPreviewBatch(
-			String assetLibraryExternalReferenceCode, Long plid,
+			String assetLibraryExternalReferenceCode, String portletId,
+			MultipartBody multipartBody, String callbackURL, Object object)
+		throws Exception;
+
+	public ImportPreview postImportPreview(
+			String portletId, MultipartBody multipartBody)
+		throws Exception;
+
+	public Response postImportPreviewBatch(
 			String portletId, MultipartBody multipartBody, String callbackURL,
 			Object object)
 		throws Exception;
 
-	public ImportPreview postImportPreview(
-			Long plid, String portletId, MultipartBody multipartBody)
-		throws Exception;
-
-	public Response postImportPreviewBatch(
-			Long plid, String portletId, MultipartBody multipartBody,
-			String callbackURL, Object object)
-		throws Exception;
-
 	public ImportPreview postSiteImportPreview(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			MultipartBody multipartBody)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, MultipartBody multipartBody)
 		throws Exception;
 
 	public Response postSiteImportPreviewBatch(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			MultipartBody multipartBody, String callbackURL, Object object)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, MultipartBody multipartBody,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -171,4 +171,4 @@ public interface ImportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-358712738
+// LIFERAY-REST-BUILDER-HASH:-1068803892

@@ -44,19 +44,18 @@ public interface ExportPreviewResource {
 
 	public ExportPreview getAssetLibraryExportPreview(
 			String assetLibraryExternalReferenceCode, String dateFilterType,
-			Date endDate, Integer hours, Long plid, String portletId,
-			Date startDate)
+			Date endDate, Integer hours, String portletId, Date startDate)
 		throws Exception;
 
 	public ExportPreview getExportPreview(
-			String dateFilterType, Date endDate, Integer hours, Long plid,
+			String dateFilterType, Date endDate, Integer hours,
 			String portletId, Date startDate)
 		throws Exception;
 
 	public ExportPreview getSiteExportPreview(
 			String siteExternalReferenceCode, String dateFilterType,
-			Date endDate, Integer hours, Long plid, String portletId,
-			Date startDate)
+			Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, Date startDate)
 		throws Exception;
 
 	public default void setContextAcceptLanguage(
@@ -147,4 +146,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:232154049
+// LIFERAY-REST-BUILDER-HASH:-1240444858

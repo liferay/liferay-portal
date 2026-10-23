@@ -1212,7 +1212,8 @@ public abstract class BaseExportProcessResourceTestCase {
 		Page<ExportProcess> page =
 			exportProcessResource.getSiteExportProcessesPage(
 				siteExternalReferenceCode, null, RandomTestUtil.randomString(),
-				null, null, Pagination.of(1, 10), null);
+				null, RandomTestUtil.randomString(), null, Pagination.of(1, 10),
+				null);
 
 		long totalCount = page.getTotalCount();
 
@@ -1224,7 +1225,7 @@ public abstract class BaseExportProcessResourceTestCase {
 
 			page = exportProcessResource.getSiteExportProcessesPage(
 				irrelevantSiteExternalReferenceCode, null, null, null, null,
-				Pagination.of(1, (int)totalCount + 1), null);
+				null, Pagination.of(1, (int)totalCount + 1), null);
 
 			Assert.assertEquals(totalCount + 1, page.getTotalCount());
 
@@ -1245,7 +1246,7 @@ public abstract class BaseExportProcessResourceTestCase {
 				siteExternalReferenceCode, randomExportProcess());
 
 		page = exportProcessResource.getSiteExportProcessesPage(
-			siteExternalReferenceCode, null, null, null, null,
+			siteExternalReferenceCode, null, null, null, null, null,
 			Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
@@ -1293,7 +1294,8 @@ public abstract class BaseExportProcessResourceTestCase {
 
 		Page<ExportProcess> exportProcessesPage =
 			exportProcessResource.getSiteExportProcessesPage(
-				siteExternalReferenceCode, null, null, null, null, null, null);
+				siteExternalReferenceCode, null, null, null, null, null, null,
+				null);
 
 		int totalCount = GetterUtil.getInteger(
 			exportProcessesPage.getTotalCount());
@@ -1317,7 +1319,7 @@ public abstract class BaseExportProcessResourceTestCase {
 		if (totalCount >= (pageSizeLimit - 2)) {
 			Page<ExportProcess> page1 =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -1330,7 +1332,7 @@ public abstract class BaseExportProcessResourceTestCase {
 
 			Page<ExportProcess> page2 =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -1341,7 +1343,7 @@ public abstract class BaseExportProcessResourceTestCase {
 
 			Page<ExportProcess> page3 =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(
 						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
 						pageSizeLimit),
@@ -1353,7 +1355,7 @@ public abstract class BaseExportProcessResourceTestCase {
 		else {
 			Page<ExportProcess> page1 =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, totalCount + 2), null);
 
 			List<ExportProcess> exportProcesses1 =
@@ -1365,7 +1367,7 @@ public abstract class BaseExportProcessResourceTestCase {
 
 			Page<ExportProcess> page2 =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
@@ -1378,7 +1380,7 @@ public abstract class BaseExportProcessResourceTestCase {
 
 			Page<ExportProcess> page3 =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, (int)totalCount + 3), null);
 
 			assertContains(
@@ -1516,12 +1518,13 @@ public abstract class BaseExportProcessResourceTestCase {
 
 		Page<ExportProcess> page =
 			exportProcessResource.getSiteExportProcessesPage(
-				siteExternalReferenceCode, null, null, null, null, null, null);
+				siteExternalReferenceCode, null, null, null, null, null, null,
+				null);
 
 		for (EntityField entityField : entityFields) {
 			Page<ExportProcess> ascPage =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":asc");
 
@@ -1532,7 +1535,7 @@ public abstract class BaseExportProcessResourceTestCase {
 
 			Page<ExportProcess> descPage =
 				exportProcessResource.getSiteExportProcessesPage(
-					siteExternalReferenceCode, null, null, null, null,
+					siteExternalReferenceCode, null, null, null, null, null,
 					Pagination.of(1, (int)page.getTotalCount() + 1),
 					entityField.getName() + ":desc");
 
@@ -2757,4 +2760,4 @@ public abstract class BaseExportProcessResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-747273035
+// LIFERAY-REST-BUILDER-HASH:781126226

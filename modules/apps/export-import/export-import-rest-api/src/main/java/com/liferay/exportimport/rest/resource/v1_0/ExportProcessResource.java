@@ -77,19 +77,20 @@ public interface ExportProcessResource {
 
 	public Page<ExportProcess> getSiteExportProcessesPage(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status, Pagination pagination,
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
 	public ExportProcess postAssetLibraryExportProcess(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public Response postAssetLibraryExportProcessBatch(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ExportProcessRequest exportProcessRequest,
-			String callbackURL, Object object)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ExportProcessRequest exportProcessRequest, String callbackURL,
+			Object object)
 		throws Exception;
 
 	public Response postAssetLibraryExportProcessesPageExportBatch(
@@ -100,14 +101,12 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public ExportProcess postExportProcess(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest)
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public Response postExportProcessBatch(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest, String callbackURL,
-			Object object)
+			String portletId, ExportProcessRequest exportProcessRequest,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public ExportProcess postExportProcessRelaunch(Long exportProcessId)
@@ -120,19 +119,21 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public ExportProcess postSiteExportProcess(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public Response postSiteExportProcessBatch(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public Response postSiteExportProcessesPageExportBatch(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status,
+			String search, String sitePageExternalReferenceCode, Integer status,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
 			String contentType, String fieldNames)
 		throws Exception;
@@ -233,4 +234,4 @@ public interface ExportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:455619564
+// LIFERAY-REST-BUILDER-HASH:1675159856

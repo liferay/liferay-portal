@@ -35,71 +35,70 @@ public interface ImportPreviewResource {
 	}
 
 	public ImportPreview postAssetLibraryImportPreview(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ImportPreview importPreview,
-			Map<String, File> multipartFiles)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ImportPreview importPreview, Map<String, File> multipartFiles)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postAssetLibraryImportPreviewHttpResponse(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ImportPreview importPreview,
-			Map<String, File> multipartFiles)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ImportPreview importPreview, Map<String, File> multipartFiles)
 		throws Exception;
 
 	public void postAssetLibraryImportPreviewBatch(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ImportPreview importPreview,
-			Map<String, File> multipartFiles, String callbackURL, Object object)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ImportPreview importPreview, Map<String, File> multipartFiles,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postAssetLibraryImportPreviewBatchHttpResponse(
-				String assetLibraryExternalReferenceCode, Long plid,
-				String portletId, ImportPreview importPreview,
-				Map<String, File> multipartFiles, String callbackURL,
-				Object object)
+				String assetLibraryExternalReferenceCode, String portletId,
+				ImportPreview importPreview, Map<String, File> multipartFiles,
+				String callbackURL, Object object)
 		throws Exception;
 
 	public ImportPreview postImportPreview(
-			Long plid, String portletId, ImportPreview importPreview,
+			String portletId, ImportPreview importPreview,
 			Map<String, File> multipartFiles)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postImportPreviewHttpResponse(
-			Long plid, String portletId, ImportPreview importPreview,
+			String portletId, ImportPreview importPreview,
 			Map<String, File> multipartFiles)
 		throws Exception;
 
 	public void postImportPreviewBatch(
-			Long plid, String portletId, ImportPreview importPreview,
+			String portletId, ImportPreview importPreview,
 			Map<String, File> multipartFiles, String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postImportPreviewBatchHttpResponse(
-			Long plid, String portletId, ImportPreview importPreview,
+			String portletId, ImportPreview importPreview,
 			Map<String, File> multipartFiles, String callbackURL, Object object)
 		throws Exception;
 
 	public ImportPreview postSiteImportPreview(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			ImportPreview importPreview, Map<String, File> multipartFiles)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, ImportPreview importPreview,
+			Map<String, File> multipartFiles)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteImportPreviewHttpResponse(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			ImportPreview importPreview, Map<String, File> multipartFiles)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, ImportPreview importPreview,
+			Map<String, File> multipartFiles)
 		throws Exception;
 
 	public void postSiteImportPreviewBatch(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			ImportPreview importPreview, Map<String, File> multipartFiles,
-			String callbackURL, Object object)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, ImportPreview importPreview,
+			Map<String, File> multipartFiles, String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteImportPreviewBatchHttpResponse(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			ImportPreview importPreview, Map<String, File> multipartFiles,
-			String callbackURL, Object object)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, ImportPreview importPreview,
+			Map<String, File> multipartFiles, String callbackURL, Object object)
 		throws Exception;
 
 	public static class Builder {
@@ -212,15 +211,14 @@ public interface ImportPreviewResource {
 		implements ImportPreviewResource {
 
 		public ImportPreview postAssetLibraryImportPreview(
-				String assetLibraryExternalReferenceCode, Long plid,
-				String portletId, ImportPreview importPreview,
-				Map<String, File> multipartFiles)
+				String assetLibraryExternalReferenceCode, String portletId,
+				ImportPreview importPreview, Map<String, File> multipartFiles)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postAssetLibraryImportPreviewHttpResponse(
-					assetLibraryExternalReferenceCode, plid, portletId,
-					importPreview, multipartFiles);
+					assetLibraryExternalReferenceCode, portletId, importPreview,
+					multipartFiles);
 
 			String content = httpResponse.getContent();
 
@@ -283,8 +281,8 @@ public interface ImportPreviewResource {
 
 		public HttpInvoker.HttpResponse
 				postAssetLibraryImportPreviewHttpResponse(
-					String assetLibraryExternalReferenceCode, Long plid,
-					String portletId, ImportPreview importPreview,
+					String assetLibraryExternalReferenceCode, String portletId,
+					ImportPreview importPreview,
 					Map<String, File> multipartFiles)
 			throws Exception {
 
@@ -318,10 +316,6 @@ public interface ImportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -344,16 +338,15 @@ public interface ImportPreviewResource {
 		}
 
 		public void postAssetLibraryImportPreviewBatch(
-				String assetLibraryExternalReferenceCode, Long plid,
-				String portletId, ImportPreview importPreview,
-				Map<String, File> multipartFiles, String callbackURL,
-				Object object)
+				String assetLibraryExternalReferenceCode, String portletId,
+				ImportPreview importPreview, Map<String, File> multipartFiles,
+				String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postAssetLibraryImportPreviewBatchHttpResponse(
-					assetLibraryExternalReferenceCode, plid, portletId,
-					importPreview, multipartFiles, callbackURL, object);
+					assetLibraryExternalReferenceCode, portletId, importPreview,
+					multipartFiles, callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -405,8 +398,8 @@ public interface ImportPreviewResource {
 
 		public HttpInvoker.HttpResponse
 				postAssetLibraryImportPreviewBatchHttpResponse(
-					String assetLibraryExternalReferenceCode, Long plid,
-					String portletId, ImportPreview importPreview,
+					String assetLibraryExternalReferenceCode, String portletId,
+					ImportPreview importPreview,
 					Map<String, File> multipartFiles, String callbackURL,
 					Object object)
 			throws Exception {
@@ -433,10 +426,6 @@ public interface ImportPreviewResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
 
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
@@ -465,13 +454,13 @@ public interface ImportPreviewResource {
 		}
 
 		public ImportPreview postImportPreview(
-				Long plid, String portletId, ImportPreview importPreview,
+				String portletId, ImportPreview importPreview,
 				Map<String, File> multipartFiles)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postImportPreviewHttpResponse(
-					plid, portletId, importPreview, multipartFiles);
+					portletId, importPreview, multipartFiles);
 
 			String content = httpResponse.getContent();
 
@@ -533,7 +522,7 @@ public interface ImportPreviewResource {
 		}
 
 		public HttpInvoker.HttpResponse postImportPreviewHttpResponse(
-				Long plid, String portletId, ImportPreview importPreview,
+				String portletId, ImportPreview importPreview,
 				Map<String, File> multipartFiles)
 			throws Exception {
 
@@ -567,10 +556,6 @@ public interface ImportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -589,14 +574,14 @@ public interface ImportPreviewResource {
 		}
 
 		public void postImportPreviewBatch(
-				Long plid, String portletId, ImportPreview importPreview,
+				String portletId, ImportPreview importPreview,
 				Map<String, File> multipartFiles, String callbackURL,
 				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postImportPreviewBatchHttpResponse(
-					plid, portletId, importPreview, multipartFiles, callbackURL,
+					portletId, importPreview, multipartFiles, callbackURL,
 					object);
 
 			String content = httpResponse.getContent();
@@ -648,7 +633,7 @@ public interface ImportPreviewResource {
 		}
 
 		public HttpInvoker.HttpResponse postImportPreviewBatchHttpResponse(
-				Long plid, String portletId, ImportPreview importPreview,
+				String portletId, ImportPreview importPreview,
 				Map<String, File> multipartFiles, String callbackURL,
 				Object object)
 			throws Exception {
@@ -676,10 +661,6 @@ public interface ImportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -703,13 +684,15 @@ public interface ImportPreviewResource {
 		}
 
 		public ImportPreview postSiteImportPreview(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ImportPreview importPreview, Map<String, File> multipartFiles)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSiteImportPreviewHttpResponse(
-					siteExternalReferenceCode, plid, portletId, importPreview,
+					siteExternalReferenceCode, portletId,
+					sitePageExternalReferenceCode, importPreview,
 					multipartFiles);
 
 			String content = httpResponse.getContent();
@@ -772,7 +755,8 @@ public interface ImportPreviewResource {
 		}
 
 		public HttpInvoker.HttpResponse postSiteImportPreviewHttpResponse(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ImportPreview importPreview, Map<String, File> multipartFiles)
 			throws Exception {
 
@@ -806,12 +790,14 @@ public interface ImportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			httpInvoker.path(
@@ -831,14 +817,16 @@ public interface ImportPreviewResource {
 		}
 
 		public void postSiteImportPreviewBatch(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ImportPreview importPreview, Map<String, File> multipartFiles,
 				String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSiteImportPreviewBatchHttpResponse(
-					siteExternalReferenceCode, plid, portletId, importPreview,
+					siteExternalReferenceCode, portletId,
+					sitePageExternalReferenceCode, importPreview,
 					multipartFiles, callbackURL, object);
 
 			String content = httpResponse.getContent();
@@ -890,7 +878,8 @@ public interface ImportPreviewResource {
 		}
 
 		public HttpInvoker.HttpResponse postSiteImportPreviewBatchHttpResponse(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ImportPreview importPreview, Map<String, File> multipartFiles,
 				String callbackURL, Object object)
 			throws Exception {
@@ -918,12 +907,14 @@ public interface ImportPreviewResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			if (callbackURL != null) {
@@ -959,4 +950,4 @@ public interface ImportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1739599483
+// LIFERAY-REST-BUILDER-HASH:-398856379

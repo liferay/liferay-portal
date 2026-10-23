@@ -95,37 +95,37 @@ public interface ExportProcessResource {
 
 	public Page<ExportProcess> getSiteExportProcessesPage(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status, Pagination pagination,
-			String sortString)
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSiteExportProcessesPageHttpResponse(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status, Pagination pagination,
-			String sortString)
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination, String sortString)
 		throws Exception;
 
 	public ExportProcess postAssetLibraryExportProcess(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postAssetLibraryExportProcessHttpResponse(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public void postAssetLibraryExportProcessBatch(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ExportProcessRequest exportProcessRequest,
-			String callbackURL, Object object)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ExportProcessRequest exportProcessRequest, String callbackURL,
+			Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postAssetLibraryExportProcessBatchHttpResponse(
-				String assetLibraryExternalReferenceCode, Long plid,
-				String portletId, ExportProcessRequest exportProcessRequest,
-				String callbackURL, Object object)
+				String assetLibraryExternalReferenceCode, String portletId,
+				ExportProcessRequest exportProcessRequest, String callbackURL,
+				Object object)
 		throws Exception;
 
 	public void postAssetLibraryExportProcessesPageExportBatch(
@@ -143,25 +143,21 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public ExportProcess postExportProcess(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest)
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postExportProcessHttpResponse(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest)
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public void postExportProcessBatch(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest, String callbackURL,
-			Object object)
+			String portletId, ExportProcessRequest exportProcessRequest,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postExportProcessBatchHttpResponse(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest, String callbackURL,
-			Object object)
+			String portletId, ExportProcessRequest exportProcessRequest,
+			String callbackURL, Object object)
 		throws Exception;
 
 	public ExportProcess postExportProcessRelaunch(Long exportProcessId)
@@ -185,37 +181,43 @@ public interface ExportProcessResource {
 		throws Exception;
 
 	public ExportProcess postSiteExportProcess(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteExportProcessHttpResponse(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception;
 
 	public void postSiteExportProcessBatch(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse postSiteExportProcessBatchHttpResponse(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest, String callbackURL,
 			Object object)
 		throws Exception;
 
 	public void postSiteExportProcessesPageExportBatch(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status, String sortString,
-			String callbackURL, String contentType, String fieldNames)
+			String search, String sitePageExternalReferenceCode, Integer status,
+			String sortString, String callbackURL, String contentType,
+			String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
 			postSiteExportProcessesPageExportBatchHttpResponse(
 				String siteExternalReferenceCode, Long creatorId,
-				String portletId, String search, Integer status,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
 				String sortString, String callbackURL, String contentType,
 				String fieldNames)
 		throws Exception;
@@ -1114,14 +1116,16 @@ public interface ExportProcessResource {
 
 		public Page<ExportProcess> getSiteExportProcessesPage(
 				String siteExternalReferenceCode, Long creatorId,
-				String portletId, String search, Integer status,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
 				Pagination pagination, String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteExportProcessesPageHttpResponse(
 					siteExternalReferenceCode, creatorId, portletId, search,
-					status, pagination, sortString);
+					sitePageExternalReferenceCode, status, pagination,
+					sortString);
 
 			String content = httpResponse.getContent();
 
@@ -1184,7 +1188,8 @@ public interface ExportProcessResource {
 
 		public HttpInvoker.HttpResponse getSiteExportProcessesPageHttpResponse(
 				String siteExternalReferenceCode, Long creatorId,
-				String portletId, String search, Integer status,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
 				Pagination pagination, String sortString)
 			throws Exception {
 
@@ -1221,6 +1226,12 @@ public interface ExportProcessResource {
 				httpInvoker.parameter("search", String.valueOf(search));
 			}
 
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
+			}
+
 			if (status != null) {
 				httpInvoker.parameter("status", String.valueOf(status));
 			}
@@ -1253,13 +1264,13 @@ public interface ExportProcessResource {
 		}
 
 		public ExportProcess postAssetLibraryExportProcess(
-				String assetLibraryExternalReferenceCode, Long plid,
-				String portletId, ExportProcessRequest exportProcessRequest)
+				String assetLibraryExternalReferenceCode, String portletId,
+				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postAssetLibraryExportProcessHttpResponse(
-					assetLibraryExternalReferenceCode, plid, portletId,
+					assetLibraryExternalReferenceCode, portletId,
 					exportProcessRequest);
 
 			String content = httpResponse.getContent();
@@ -1323,8 +1334,8 @@ public interface ExportProcessResource {
 
 		public HttpInvoker.HttpResponse
 				postAssetLibraryExportProcessHttpResponse(
-					String assetLibraryExternalReferenceCode, Long plid,
-					String portletId, ExportProcessRequest exportProcessRequest)
+					String assetLibraryExternalReferenceCode, String portletId,
+					ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1351,10 +1362,6 @@ public interface ExportProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -1377,14 +1384,14 @@ public interface ExportProcessResource {
 		}
 
 		public void postAssetLibraryExportProcessBatch(
-				String assetLibraryExternalReferenceCode, Long plid,
-				String portletId, ExportProcessRequest exportProcessRequest,
-				String callbackURL, Object object)
+				String assetLibraryExternalReferenceCode, String portletId,
+				ExportProcessRequest exportProcessRequest, String callbackURL,
+				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postAssetLibraryExportProcessBatchHttpResponse(
-					assetLibraryExternalReferenceCode, plid, portletId,
+					assetLibraryExternalReferenceCode, portletId,
 					exportProcessRequest, callbackURL, object);
 
 			String content = httpResponse.getContent();
@@ -1437,8 +1444,8 @@ public interface ExportProcessResource {
 
 		public HttpInvoker.HttpResponse
 				postAssetLibraryExportProcessBatchHttpResponse(
-					String assetLibraryExternalReferenceCode, Long plid,
-					String portletId, ExportProcessRequest exportProcessRequest,
+					String assetLibraryExternalReferenceCode, String portletId,
+					ExportProcessRequest exportProcessRequest,
 					String callbackURL, Object object)
 			throws Exception {
 
@@ -1464,10 +1471,6 @@ public interface ExportProcessResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
 
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
@@ -1639,13 +1642,11 @@ public interface ExportProcessResource {
 		}
 
 		public ExportProcess postExportProcess(
-				Long plid, String portletId,
-				ExportProcessRequest exportProcessRequest)
+				String portletId, ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postExportProcessHttpResponse(
-					plid, portletId, exportProcessRequest);
+				postExportProcessHttpResponse(portletId, exportProcessRequest);
 
 			String content = httpResponse.getContent();
 
@@ -1707,8 +1708,7 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postExportProcessHttpResponse(
-				Long plid, String portletId,
-				ExportProcessRequest exportProcessRequest)
+				String portletId, ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1735,10 +1735,6 @@ public interface ExportProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -1757,14 +1753,13 @@ public interface ExportProcessResource {
 		}
 
 		public void postExportProcessBatch(
-				Long plid, String portletId,
-				ExportProcessRequest exportProcessRequest, String callbackURL,
-				Object object)
+				String portletId, ExportProcessRequest exportProcessRequest,
+				String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postExportProcessBatchHttpResponse(
-					plid, portletId, exportProcessRequest, callbackURL, object);
+					portletId, exportProcessRequest, callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -1815,9 +1810,8 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postExportProcessBatchHttpResponse(
-				Long plid, String portletId,
-				ExportProcessRequest exportProcessRequest, String callbackURL,
-				Object object)
+				String portletId, ExportProcessRequest exportProcessRequest,
+				String callbackURL, Object object)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -1842,10 +1836,6 @@ public interface ExportProcessResource {
 			}
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
-
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
 
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
@@ -2113,14 +2103,15 @@ public interface ExportProcessResource {
 		}
 
 		public ExportProcess postSiteExportProcess(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSiteExportProcessHttpResponse(
-					siteExternalReferenceCode, plid, portletId,
-					exportProcessRequest);
+					siteExternalReferenceCode, portletId,
+					sitePageExternalReferenceCode, exportProcessRequest);
 
 			String content = httpResponse.getContent();
 
@@ -2182,7 +2173,8 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postSiteExportProcessHttpResponse(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ExportProcessRequest exportProcessRequest)
 			throws Exception {
 
@@ -2210,12 +2202,14 @@ public interface ExportProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			httpInvoker.path(
@@ -2235,15 +2229,17 @@ public interface ExportProcessResource {
 		}
 
 		public void postSiteExportProcessBatch(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ExportProcessRequest exportProcessRequest, String callbackURL,
 				Object object)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				postSiteExportProcessBatchHttpResponse(
-					siteExternalReferenceCode, plid, portletId,
-					exportProcessRequest, callbackURL, object);
+					siteExternalReferenceCode, portletId,
+					sitePageExternalReferenceCode, exportProcessRequest,
+					callbackURL, object);
 
 			String content = httpResponse.getContent();
 
@@ -2294,7 +2290,8 @@ public interface ExportProcessResource {
 		}
 
 		public HttpInvoker.HttpResponse postSiteExportProcessBatchHttpResponse(
-				String siteExternalReferenceCode, Long plid, String portletId,
+				String siteExternalReferenceCode, String portletId,
+				String sitePageExternalReferenceCode,
 				ExportProcessRequest exportProcessRequest, String callbackURL,
 				Object object)
 			throws Exception {
@@ -2322,12 +2319,14 @@ public interface ExportProcessResource {
 
 			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			if (callbackURL != null) {
@@ -2353,7 +2352,8 @@ public interface ExportProcessResource {
 
 		public void postSiteExportProcessesPageExportBatch(
 				String siteExternalReferenceCode, Long creatorId,
-				String portletId, String search, Integer status,
+				String portletId, String search,
+				String sitePageExternalReferenceCode, Integer status,
 				String sortString, String callbackURL, String contentType,
 				String fieldNames)
 			throws Exception {
@@ -2361,7 +2361,8 @@ public interface ExportProcessResource {
 			HttpInvoker.HttpResponse httpResponse =
 				postSiteExportProcessesPageExportBatchHttpResponse(
 					siteExternalReferenceCode, creatorId, portletId, search,
-					status, sortString, callbackURL, contentType, fieldNames);
+					sitePageExternalReferenceCode, status, sortString,
+					callbackURL, contentType, fieldNames);
 
 			String content = httpResponse.getContent();
 
@@ -2414,7 +2415,8 @@ public interface ExportProcessResource {
 		public HttpInvoker.HttpResponse
 				postSiteExportProcessesPageExportBatchHttpResponse(
 					String siteExternalReferenceCode, Long creatorId,
-					String portletId, String search, Integer status,
+					String portletId, String search,
+					String sitePageExternalReferenceCode, Integer status,
 					String sortString, String callbackURL, String contentType,
 					String fieldNames)
 			throws Exception {
@@ -2452,6 +2454,12 @@ public interface ExportProcessResource {
 
 			if (search != null) {
 				httpInvoker.parameter("search", String.valueOf(search));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			if (status != null) {
@@ -2504,4 +2512,4 @@ public interface ExportProcessResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-519095865
+// LIFERAY-REST-BUILDER-HASH:780217

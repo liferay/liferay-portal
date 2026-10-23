@@ -37,36 +37,36 @@ public interface ExportPreviewResource {
 
 	public ExportPreview getAssetLibraryExportPreview(
 			String assetLibraryExternalReferenceCode, String dateFilterType,
-			java.util.Date endDate, Integer hours, Long plid, String portletId,
+			java.util.Date endDate, Integer hours, String portletId,
 			java.util.Date startDate)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getAssetLibraryExportPreviewHttpResponse(
 			String assetLibraryExternalReferenceCode, String dateFilterType,
-			java.util.Date endDate, Integer hours, Long plid, String portletId,
+			java.util.Date endDate, Integer hours, String portletId,
 			java.util.Date startDate)
 		throws Exception;
 
 	public ExportPreview getExportPreview(
 			String dateFilterType, java.util.Date endDate, Integer hours,
-			Long plid, String portletId, java.util.Date startDate)
+			String portletId, java.util.Date startDate)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getExportPreviewHttpResponse(
 			String dateFilterType, java.util.Date endDate, Integer hours,
-			Long plid, String portletId, java.util.Date startDate)
+			String portletId, java.util.Date startDate)
 		throws Exception;
 
 	public ExportPreview getSiteExportPreview(
 			String siteExternalReferenceCode, String dateFilterType,
-			java.util.Date endDate, Integer hours, Long plid, String portletId,
-			java.util.Date startDate)
+			java.util.Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, java.util.Date startDate)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse getSiteExportPreviewHttpResponse(
 			String siteExternalReferenceCode, String dateFilterType,
-			java.util.Date endDate, Integer hours, Long plid, String portletId,
-			java.util.Date startDate)
+			java.util.Date endDate, Integer hours, String portletId,
+			String sitePageExternalReferenceCode, java.util.Date startDate)
 		throws Exception;
 
 	public static class Builder {
@@ -180,14 +180,14 @@ public interface ExportPreviewResource {
 
 		public ExportPreview getAssetLibraryExportPreview(
 				String assetLibraryExternalReferenceCode, String dateFilterType,
-				java.util.Date endDate, Integer hours, Long plid,
-				String portletId, java.util.Date startDate)
+				java.util.Date endDate, Integer hours, String portletId,
+				java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getAssetLibraryExportPreviewHttpResponse(
 					assetLibraryExternalReferenceCode, dateFilterType, endDate,
-					hours, plid, portletId, startDate);
+					hours, portletId, startDate);
 
 			String content = httpResponse.getContent();
 
@@ -252,8 +252,7 @@ public interface ExportPreviewResource {
 				getAssetLibraryExportPreviewHttpResponse(
 					String assetLibraryExternalReferenceCode,
 					String dateFilterType, java.util.Date endDate,
-					Integer hours, Long plid, String portletId,
-					java.util.Date startDate)
+					Integer hours, String portletId, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -294,10 +293,6 @@ public interface ExportPreviewResource {
 				httpInvoker.parameter("hours", String.valueOf(hours));
 			}
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -326,12 +321,12 @@ public interface ExportPreviewResource {
 
 		public ExportPreview getExportPreview(
 				String dateFilterType, java.util.Date endDate, Integer hours,
-				Long plid, String portletId, java.util.Date startDate)
+				String portletId, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getExportPreviewHttpResponse(
-					dateFilterType, endDate, hours, plid, portletId, startDate);
+					dateFilterType, endDate, hours, portletId, startDate);
 
 			String content = httpResponse.getContent();
 
@@ -394,7 +389,7 @@ public interface ExportPreviewResource {
 
 		public HttpInvoker.HttpResponse getExportPreviewHttpResponse(
 				String dateFilterType, java.util.Date endDate, Integer hours,
-				Long plid, String portletId, java.util.Date startDate)
+				String portletId, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -435,10 +430,6 @@ public interface ExportPreviewResource {
 				httpInvoker.parameter("hours", String.valueOf(hours));
 			}
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
 			}
@@ -463,14 +454,14 @@ public interface ExportPreviewResource {
 
 		public ExportPreview getSiteExportPreview(
 				String siteExternalReferenceCode, String dateFilterType,
-				java.util.Date endDate, Integer hours, Long plid,
-				String portletId, java.util.Date startDate)
+				java.util.Date endDate, Integer hours, String portletId,
+				String sitePageExternalReferenceCode, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
 				getSiteExportPreviewHttpResponse(
 					siteExternalReferenceCode, dateFilterType, endDate, hours,
-					plid, portletId, startDate);
+					portletId, sitePageExternalReferenceCode, startDate);
 
 			String content = httpResponse.getContent();
 
@@ -533,8 +524,8 @@ public interface ExportPreviewResource {
 
 		public HttpInvoker.HttpResponse getSiteExportPreviewHttpResponse(
 				String siteExternalReferenceCode, String dateFilterType,
-				java.util.Date endDate, Integer hours, Long plid,
-				String portletId, java.util.Date startDate)
+				java.util.Date endDate, Integer hours, String portletId,
+				String sitePageExternalReferenceCode, java.util.Date startDate)
 			throws Exception {
 
 			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
@@ -575,12 +566,14 @@ public interface ExportPreviewResource {
 				httpInvoker.parameter("hours", String.valueOf(hours));
 			}
 
-			if (plid != null) {
-				httpInvoker.parameter("plid", String.valueOf(plid));
-			}
-
 			if (portletId != null) {
 				httpInvoker.parameter("portletId", String.valueOf(portletId));
+			}
+
+			if (sitePageExternalReferenceCode != null) {
+				httpInvoker.parameter(
+					"sitePageExternalReferenceCode",
+					String.valueOf(sitePageExternalReferenceCode));
 			}
 
 			if (startDate != null) {
@@ -616,4 +609,4 @@ public interface ExportPreviewResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:335156968
+// LIFERAY-REST-BUILDER-HASH:1969900056
