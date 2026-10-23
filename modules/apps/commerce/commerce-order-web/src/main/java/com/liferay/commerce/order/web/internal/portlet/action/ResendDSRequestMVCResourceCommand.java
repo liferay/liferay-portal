@@ -93,7 +93,8 @@ public class ResendDSRequestMVCResourceCommand extends BaseMVCResourceCommand {
 			_dsRequestManager.updateDSRequest(dsRequest.getDSRequestId());
 
 			dsRequest = _dsRequestManager.fetchDSRequest(
-				commerceOrderAttachment.getCompanyId(), dsRequest.getDSRequestId());
+				commerceOrderAttachment.getCompanyId(),
+				dsRequest.getDSRequestId());
 
 			if (dsRequest.isTerminal()) {
 				throw new DSRequestException.MustBeActive(

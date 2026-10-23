@@ -213,6 +213,7 @@ public class AddDSRequestMVCResourceCommandTest {
 			String.valueOf(accountEntry.getAccountEntryGroupId()),
 			role.getRoleId(),
 			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
 		_resourcePermissionLocalService.setResourcePermissions(
 			_group.getCompanyId(), AccountEntry.class.getName(),
 			ResourceConstants.SCOPE_COMPANY,

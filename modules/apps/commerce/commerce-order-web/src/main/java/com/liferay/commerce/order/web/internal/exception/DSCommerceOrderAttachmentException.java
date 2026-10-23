@@ -39,8 +39,7 @@ public class DSCommerceOrderAttachmentException extends PortalException {
 		public MustHaveSupportedFileExtension(long commerceOrderAttachmentId) {
 			super(
 				"The file extension of commerce order attachment " +
-					commerceOrderAttachmentId +
-						" is not supported");
+					commerceOrderAttachmentId + " is not supported");
 		}
 
 	}

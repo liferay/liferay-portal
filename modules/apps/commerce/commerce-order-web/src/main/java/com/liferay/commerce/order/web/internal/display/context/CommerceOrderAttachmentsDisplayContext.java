@@ -235,9 +235,10 @@ public class CommerceOrderAttachmentsDisplayContext {
 
 		try {
 			return TransformUtil.unsafeTransform(
-				_commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
-					_commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null),
+				_commerceOrderAttachmentLocalService.
+					getCommerceOrderAttachments(
+						_commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null),
 				commerceOrderAttachment -> {
 					if (!_commerceOrderAttachmentModelResourcePermission.
 							contains(

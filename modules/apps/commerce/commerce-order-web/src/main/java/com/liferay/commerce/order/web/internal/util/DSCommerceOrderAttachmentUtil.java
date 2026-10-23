@@ -46,7 +46,8 @@ public class DSCommerceOrderAttachmentUtil {
 		AccountEntry accountEntry = commerceOrder.getAccountEntry();
 
 		if (!accountEntryModelResourcePermission.contains(
-				permissionChecker, accountEntry, AccountActionKeys.VIEW_USERS)) {
+				permissionChecker, accountEntry,
+				AccountActionKeys.VIEW_USERS)) {
 
 			return Collections.emptyList();
 		}

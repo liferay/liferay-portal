@@ -220,6 +220,7 @@ public class AddDSRequestMVCResourceCommand
 				int index = users.indexOf(user) + 1;
 
 				dsRecipient.setDSRecipientId(String.valueOf(index));
+
 				dsRecipient.setEmailAddress(user.getEmailAddress());
 				dsRecipient.setName(user.getFullName());
 
