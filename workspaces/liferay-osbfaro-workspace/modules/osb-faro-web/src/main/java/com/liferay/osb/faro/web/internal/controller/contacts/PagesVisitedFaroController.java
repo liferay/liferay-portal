@@ -12,6 +12,7 @@ import com.liferay.osb.faro.web.internal.controller.BaseFaroController;
 import com.liferay.osb.faro.web.internal.controller.FaroController;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.param.FaroParam;
+import com.liferay.osb.faro.web.internal.util.ContactsUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.RoleConstants;
 
@@ -72,7 +73,7 @@ public class PagesVisitedFaroController extends BaseFaroController {
 
 		Results<PageVisited> results = contactsEngineClient.getPagesVisited(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId), channelId,
-			contactsEntityId, contactsHelper.getOwnerType(contactEntityType),
+			contactsEntityId, ContactsUtil.getOwnerType(contactEntityType),
 			query, interestName, startDateFaroParam.getValue(),
 			endDateFaroParam.getValue(), active, cur, delta,
 			orderByFieldsFaroParam.getValue());

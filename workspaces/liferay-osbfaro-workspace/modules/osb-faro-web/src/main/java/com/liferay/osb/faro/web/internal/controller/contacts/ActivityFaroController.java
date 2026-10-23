@@ -15,6 +15,7 @@ import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ActivityDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ActivityHistoryDisplay;
 import com.liferay.osb.faro.web.internal.param.FaroParam;
+import com.liferay.osb.faro.web.internal.util.ContactsUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.RoleConstants;
 
@@ -73,7 +74,7 @@ public class ActivityFaroController extends BaseFaroController {
 			contactsEngineClient.getActivityAggregations(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
 				channelId, contactsEntityId,
-				contactsHelper.getOwnerType(contactsEntityType), rangeEnd,
+				ContactsUtil.getOwnerType(contactsEntityType), rangeEnd,
 				rangeStart, interval, max * 2);
 
 		List<ActivityAggregation> activityAggregations = results.getItems();
@@ -104,7 +105,7 @@ public class ActivityFaroController extends BaseFaroController {
 
 		Results<Activity> results = contactsEngineClient.getActivities(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			contactsEntityId, contactsHelper.getOwnerType(contactsEntityType),
+			contactsEntityId, ContactsUtil.getOwnerType(contactsEntityType),
 			null, query, startDateFaroParam.getValue(),
 			endDateFaroParam.getValue(), action, cur, delta,
 			orderByFieldsFaroParam.getValue());
@@ -177,7 +178,7 @@ public class ActivityFaroController extends BaseFaroController {
 
 		Results<Activity> results = contactsEngineClient.getActivities(
 			faroProjectLocalService.getFaroProjectByGroupId(groupId),
-			contactsEntityId, contactsHelper.getOwnerType(contactsEntityType),
+			contactsEntityId, ContactsUtil.getOwnerType(contactsEntityType),
 			null, null, startDateFaroParam.getValue(),
 			endDateFaroParam.getValue(), action, 1, 1, null);
 

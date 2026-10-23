@@ -9,7 +9,6 @@ import com.liferay.osb.faro.engine.client.CerebroEngineClient;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.WorkspaceEngineClient;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
-import com.liferay.osb.faro.web.internal.helper.ContactsHelper;
 import com.liferay.osb.faro.web.internal.helper.ProjectHelper;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.search.FaroSearchContext;
@@ -91,9 +90,6 @@ public abstract class BaseFaroController implements FaroController {
 		policyOption = ReferencePolicyOption.GREEDY
 	)
 	protected volatile ContactsEngineClient contactsEngineClient;
-
-	@Reference
-	protected ContactsHelper contactsHelper;
 
 	@Reference
 	protected FaroProjectLocalService faroProjectLocalService;
