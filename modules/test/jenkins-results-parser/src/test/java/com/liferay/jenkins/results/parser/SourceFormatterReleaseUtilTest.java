@@ -425,12 +425,6 @@ public class SourceFormatterReleaseUtilTest
 		String ref = RandomTestUtil.randomString();
 
 		Mockito.when(
-			gitWorkingDirectory.getWorkingDirectory()
-		).thenReturn(
-			temporaryFolder.getRoot()
-		);
-
-		Mockito.when(
 			gitWorkingDirectory.executeBashCommands(
 				Mockito.anyInt(), Mockito.anyLong(), Mockito.anyLong(),
 				Mockito.eq(
@@ -440,6 +434,12 @@ public class SourceFormatterReleaseUtilTest
 						" -- modules/util/source-formatter")))
 		).thenReturn(
 			new GitUtil.ExecutionResult(exitValue, "", standardOut)
+		);
+
+		Mockito.when(
+			gitWorkingDirectory.getWorkingDirectory()
+		).thenReturn(
+			temporaryFolder.getRoot()
 		);
 
 		return SourceFormatterReleaseUtil.isReleasedSourceMatch(
