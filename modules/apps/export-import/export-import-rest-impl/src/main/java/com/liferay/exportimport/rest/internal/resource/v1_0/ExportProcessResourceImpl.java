@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
@@ -44,7 +45,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -61,6 +61,7 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.Serializable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -193,20 +194,32 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	@Override
 	public Page<ExportProcess> getSiteExportProcessesPage(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status, Pagination pagination, Sort[] sorts)
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		Group group = GroupUtil.getSiteGroup(
+			contextCompany.getCompanyId(), siteExternalReferenceCode,
+			portletId);
+
+		Layout layout = LayoutUtil.fetchPortletLayout(
+			group, portletId, sitePageExternalReferenceCode);
+
+		if ((layout == null) &&
+			Validator.isNotNull(sitePageExternalReferenceCode)) {
+
+			return Page.of(Collections.emptyList());
+		}
+
 		return _getExportProcessesPage(
-			creatorId,
-			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			creatorId, GroupUtil.getScopeGroup(group, layout, portletId),
 			pagination, portletId, search, sorts, status);
 	}
 
 	@Override
 	public ExportProcess postAssetLibraryExportProcess(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ExportProcessRequest exportProcessRequest)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
 		return _postExportProcess(
@@ -214,19 +227,18 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 			GroupUtil.getAssetLibraryGroup(
 				contextCompany.getCompanyId(),
 				assetLibraryExternalReferenceCode),
-			GetterUtil.getLong(plid), portletId);
+			portletId, null);
 	}
 
 	@Override
 	public ExportProcess postExportProcess(
-			Long plid, String portletId,
-			ExportProcessRequest exportProcessRequest)
+			String portletId, ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
 		return _postExportProcess(
 			exportProcessRequest,
-			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
-			GetterUtil.getLong(plid), portletId);
+			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()), portletId,
+			null);
 	}
 
 	@Override
@@ -274,15 +286,17 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 	@Override
 	public ExportProcess postSiteExportProcess(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ExportProcessRequest exportProcessRequest)
 		throws Exception {
 
 		return _postExportProcess(
 			exportProcessRequest,
 			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode),
-			GetterUtil.getLong(plid), portletId);
+				contextCompany.getCompanyId(), siteExternalReferenceCode,
+				portletId),
+			portletId, sitePageExternalReferenceCode);
 	}
 
 	private List<BackgroundTask> _getBackgroundTasks(
@@ -386,21 +400,21 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	private ExportProcess _postExportProcess(
-			ExportProcessRequest exportProcessRequest, Group group, long plid,
-			String portletId)
+			ExportProcessRequest exportProcessRequest, Group group,
+			String portletId, String sitePageExternalReferenceCode)
 		throws Exception {
 
-		if (Validator.isBlank(portletId)) {
+		Layout layout = LayoutUtil.getPortletLayout(
+			group, portletId, sitePageExternalReferenceCode);
+
+		if (layout == null) {
 			return _postLayoutExportProcess(exportProcessRequest, group);
 		}
 
-		if (plid <= 0) {
-			throw new BadRequestException(
-				"Exporting the portlet " + portletId + " requires a PLID");
-		}
-
 		return _postPortletExportProcess(
-			exportProcessRequest, group, plid, portletId);
+			exportProcessRequest,
+			GroupUtil.getScopeGroup(group, layout, portletId), layout,
+			portletId);
 	}
 
 	private ExportProcess _postLayoutExportProcess(
@@ -455,8 +469,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 	}
 
 	private ExportProcess _postPortletExportProcess(
-			ExportProcessRequest exportProcessRequest, Group group, long plid,
-			String portletId)
+			ExportProcessRequest exportProcessRequest, Group group,
+			Layout layout, String portletId)
 		throws Exception {
 
 		long groupId = group.getGroupId();
@@ -483,8 +497,8 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 				ParameterMapUtil.toParameterMap(
 					exportProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(
-						group, contextAcceptLanguage.getPreferredLocale(), plid,
-						_portletDataHandlerProvider,
+						group, contextAcceptLanguage.getPreferredLocale(),
+						layout.getPlid(), _portletDataHandlerProvider,
 						ListUtil.fromArray(portlet), true),
 					true),
 				contextUser);
@@ -492,8 +506,9 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		Map<String, Serializable> settingsMap =
 			_exportImportConfigurationSettingsMapFactory.
 				buildExportPortletSettingsMap(
-					contextUser.getUserId(), plid, groupId, portletId,
-					parameterMap, contextAcceptLanguage.getPreferredLocale(),
+					contextUser.getUserId(), layout.getPlid(), groupId,
+					portletId, parameterMap,
+					contextAcceptLanguage.getPreferredLocale(),
 					contextUser.getTimeZone(), fileName);
 
 		settingsMap.put("name", exportProcessRequest.getName());

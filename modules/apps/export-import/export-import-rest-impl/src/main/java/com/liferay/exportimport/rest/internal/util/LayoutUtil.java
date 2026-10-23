@@ -7,10 +7,15 @@ package com.liferay.exportimport.rest.internal.util;
 
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.BadRequestException;
 
@@ -25,6 +30,29 @@ import java.util.Set;
  * @author Daniel Raposo
  */
 public class LayoutUtil {
+
+	public static Layout fetchPortletLayout(
+			Group group, String portletId, String sitePageExternalReferenceCode)
+		throws PortalException {
+
+		if (Validator.isBlank(portletId)) {
+			if (Validator.isNotNull(sitePageExternalReferenceCode)) {
+				throw new BadRequestException(
+					"A site page external reference code requires a portlet " +
+						"ID");
+			}
+
+			return null;
+		}
+
+		if (Validator.isBlank(sitePageExternalReferenceCode)) {
+			return LayoutLocalServiceUtil.getLayout(
+				PortalUtil.getControlPanelPlid(group.getCompanyId()));
+		}
+
+		return LayoutLocalServiceUtil.fetchLayoutByExternalReferenceCode(
+			sitePageExternalReferenceCode, group.getGroupId());
+	}
 
 	public static long[] getLayoutIds(
 		List<Layout> layouts, Map<String, String[]> parameterMap) {
@@ -84,6 +112,24 @@ public class LayoutUtil {
 
 					return layout.getLayoutId();
 				}));
+	}
+
+	public static Layout getPortletLayout(
+			Group group, String portletId, String sitePageExternalReferenceCode)
+		throws PortalException {
+
+		Layout layout = fetchPortletLayout(
+			group, portletId, sitePageExternalReferenceCode);
+
+		if ((layout == null) &&
+			Validator.isNotNull(sitePageExternalReferenceCode)) {
+
+			throw new BadRequestException(
+				"No page exists with external reference code \"" +
+					sitePageExternalReferenceCode + "\"");
+		}
+
+		return layout;
 	}
 
 	public static boolean isPrivateLayout(Map<String, String[]> parameterMap) {

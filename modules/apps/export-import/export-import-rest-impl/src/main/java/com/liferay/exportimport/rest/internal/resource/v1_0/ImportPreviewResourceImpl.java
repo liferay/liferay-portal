@@ -17,6 +17,7 @@ import com.liferay.exportimport.rest.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PreviewSite;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
+import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
 import com.liferay.exportimport.rest.resource.v1_0.ImportPreviewResource;
@@ -24,12 +25,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.multipart.BinaryFile;
@@ -39,7 +40,6 @@ import jakarta.ws.rs.BadRequestException;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -56,41 +56,42 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 	@Override
 	public ImportPreview postAssetLibraryImportPreview(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, MultipartBody multipartBody)
+			String assetLibraryExternalReferenceCode, String portletId,
+			MultipartBody multipartBody)
 		throws Exception {
 
 		return _getImportPreview(
 			GroupUtil.getAssetLibraryGroup(
 				contextCompany.getCompanyId(),
 				assetLibraryExternalReferenceCode),
-			multipartBody, GetterUtil.getLong(plid), portletId);
+			multipartBody, portletId, null);
 	}
 
 	@Override
 	public ImportPreview postImportPreview(
-			Long plid, String portletId, MultipartBody multipartBody)
+			String portletId, MultipartBody multipartBody)
 		throws Exception {
 
 		return _getImportPreview(
 			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
-			multipartBody, GetterUtil.getLong(plid), portletId);
+			multipartBody, portletId, null);
 	}
 
 	@Override
 	public ImportPreview postSiteImportPreview(
-			String siteExternalReferenceCode, Long plid, String portletId,
-			MultipartBody multipartBody)
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode, MultipartBody multipartBody)
 		throws Exception {
 
 		return _getImportPreview(
 			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode),
-			multipartBody, GetterUtil.getLong(plid), portletId);
+				contextCompany.getCompanyId(), siteExternalReferenceCode,
+				portletId),
+			multipartBody, portletId, sitePageExternalReferenceCode);
 	}
 
 	private ExportImportConfiguration _addExportImportConfiguration(
-			long groupId, long plid, String portletId)
+			long groupId, Layout layout, String portletId)
 		throws Exception {
 
 		if (Validator.isBlank(portletId)) {
@@ -113,8 +114,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				ExportImportConfigurationConstants.TYPE_IMPORT_PORTLET,
 				ExportImportConfigurationSettingsMapFactoryUtil.
 					buildImportPortletSettingsMap(
-						contextUser.getUserId(), plid, groupId, portletId,
-						new HashMap<>(),
+						contextUser.getUserId(), layout.getPlid(), groupId,
+						portletId, new HashMap<>(),
 						contextAcceptLanguage.getPreferredLocale(),
 						contextUser.getTimeZone()),
 				new ServiceContext());
@@ -142,11 +143,16 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 	}
 
 	private ImportPreview _getImportPreview(
-			Group group, MultipartBody multipartBody, long plid,
-			String portletId)
+			Group group, MultipartBody multipartBody, String portletId,
+			String sitePageExternalReferenceCode)
 		throws Exception {
 
-		long groupId = group.getGroupId();
+		Layout layout = LayoutUtil.getPortletLayout(
+			group, portletId, sitePageExternalReferenceCode);
+
+		Group scopeGroup = GroupUtil.getScopeGroup(group, layout, portletId);
+
+		long groupId = scopeGroup.getGroupId();
 
 		PermissionUtil.checkImportPermission(
 			contextCompany.getCompanyId(), groupId,
@@ -154,9 +160,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 		FileEntry fileEntry = _addTempFileEntry(groupId, multipartBody);
 
-		_validateImportFile(fileEntry, groupId, plid, portletId);
-
-		Locale locale = contextAcceptLanguage.getPreferredLocale();
+		_validateImportFile(fileEntry, groupId, layout, portletId);
 
 		ManifestSummary manifestSummary =
 			_exportImportHelper.getManifestSummary(
@@ -174,7 +178,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 
 		PortletDataHandler[] importPortletDataHandlers =
 			PortletDataHandlerUtil.getImportPortletDataHandlers(
-				true, group, locale, manifestSummary, portlets, portletScoped);
+				true, scopeGroup, contextAcceptLanguage.getPreferredLocale(),
+				manifestSummary, portlets, portletScoped);
 
 		return new ImportPreview() {
 			{
@@ -229,11 +234,11 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 	}
 
 	private void _validateImportFile(
-			FileEntry fileEntry, long groupId, long plid, String portletId)
+			FileEntry fileEntry, long groupId, Layout layout, String portletId)
 		throws Exception {
 
 		ExportImportConfiguration exportImportConfiguration =
-			_addExportImportConfiguration(groupId, plid, portletId);
+			_addExportImportConfiguration(groupId, layout, portletId);
 
 		try {
 			if (Validator.isBlank(portletId)) {

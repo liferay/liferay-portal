@@ -5,8 +5,12 @@
 
 package com.liferay.exportimport.rest.internal.util;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
@@ -57,15 +61,34 @@ public class GroupUtil {
 		return liveGroup;
 	}
 
+	public static Group getScopeGroup(
+			Group group, Layout layout, String portletId)
+		throws PortalException {
+
+		if ((layout == null) || layout.isTypeControlPanel()) {
+			return group;
+		}
+
+		return GroupLocalServiceUtil.getGroup(
+			PortalUtil.getScopeGroupId(layout, portletId));
+	}
+
 	public static Group getSiteGroup(
 		long companyId, String externalReferenceCode) {
+
+		return getSiteGroup(companyId, externalReferenceCode, null);
+	}
+
+	public static Group getSiteGroup(
+		long companyId, String externalReferenceCode, String portletId) {
 
 		Group group = GroupLocalServiceUtil.fetchGroupByExternalReferenceCode(
 			externalReferenceCode, companyId);
 
 		if ((group == null) ||
 			(!group.isCMS() && !group.isLayoutSetPrototype() &&
-			 !group.isSite())) {
+			 !group.isSite() &&
+			 (!group.isLayout() || Validator.isBlank(portletId)))) {
 
 			throw new NotFoundException();
 		}

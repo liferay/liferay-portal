@@ -19,6 +19,7 @@ import com.liferay.exportimport.rest.dto.v1_0.ProcessProgress;
 import com.liferay.exportimport.rest.dto.v1_0.Status;
 import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
+import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
 import com.liferay.exportimport.rest.internal.util.PortletDataHandlerUtil;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -53,12 +55,12 @@ import com.liferay.portal.kernel.zip.ZipReaderFactory;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
-import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
 
 import java.io.InputStream;
 import java.io.Serializable;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -161,50 +163,63 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 	@Override
 	public Page<ImportProcess> getSiteImportProcessesPage(
 			String siteExternalReferenceCode, Long creatorId, String portletId,
-			String search, Integer status, Pagination pagination, Sort[] sorts)
+			String search, String sitePageExternalReferenceCode, Integer status,
+			Pagination pagination, Sort[] sorts)
 		throws Exception {
 
+		Group group = GroupUtil.getSiteGroup(
+			contextCompany.getCompanyId(), siteExternalReferenceCode,
+			portletId);
+
+		Layout layout = LayoutUtil.fetchPortletLayout(
+			group, portletId, sitePageExternalReferenceCode);
+
+		if ((layout == null) &&
+			Validator.isNotNull(sitePageExternalReferenceCode)) {
+
+			return Page.of(Collections.emptyList());
+		}
+
 		return _getImportProcessesPage(
-			creatorId,
-			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode),
+			creatorId, GroupUtil.getScopeGroup(group, layout, portletId),
 			pagination, portletId, search, sorts, status);
 	}
 
 	@Override
 	public ImportProcess postAssetLibraryImportProcess(
-			String assetLibraryExternalReferenceCode, Long plid,
-			String portletId, ImportProcessRequest importProcessRequest)
+			String assetLibraryExternalReferenceCode, String portletId,
+			ImportProcessRequest importProcessRequest)
 		throws Exception {
 
 		return _postImportProcess(
 			GroupUtil.getAssetLibraryGroup(
 				contextCompany.getCompanyId(),
 				assetLibraryExternalReferenceCode),
-			importProcessRequest, GetterUtil.getLong(plid), portletId);
+			importProcessRequest, portletId, null);
 	}
 
 	@Override
 	public ImportProcess postImportProcess(
-			Long plid, String portletId,
-			ImportProcessRequest importProcessRequest)
+			String portletId, ImportProcessRequest importProcessRequest)
 		throws Exception {
 
 		return _postImportProcess(
 			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()),
-			importProcessRequest, GetterUtil.getLong(plid), portletId);
+			importProcessRequest, portletId, null);
 	}
 
 	@Override
 	public ImportProcess postSiteImportProcess(
-			String siteExternalReferenceCode, Long plid, String portletId,
+			String siteExternalReferenceCode, String portletId,
+			String sitePageExternalReferenceCode,
 			ImportProcessRequest importProcessRequest)
 		throws Exception {
 
 		return _postImportProcess(
 			GroupUtil.getSiteGroup(
-				contextCompany.getCompanyId(), siteExternalReferenceCode),
-			importProcessRequest, GetterUtil.getLong(plid), portletId);
+				contextCompany.getCompanyId(), siteExternalReferenceCode,
+				portletId),
+			importProcessRequest, portletId, sitePageExternalReferenceCode);
 	}
 
 	private List<BackgroundTask> _getBackgroundTasks(
@@ -323,21 +338,20 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 	}
 
 	private ImportProcess _postImportProcess(
-			Group group, ImportProcessRequest importProcessRequest, long plid,
-			String portletId)
+			Group group, ImportProcessRequest importProcessRequest,
+			String portletId, String sitePageExternalReferenceCode)
 		throws Exception {
 
-		if (Validator.isBlank(portletId)) {
+		Layout layout = LayoutUtil.getPortletLayout(
+			group, portletId, sitePageExternalReferenceCode);
+
+		if (layout == null) {
 			return _postLayoutImportProcess(group, importProcessRequest);
 		}
 
-		if (plid <= 0) {
-			throw new BadRequestException(
-				"Importing the portlet " + portletId + " requires a PLID");
-		}
-
 		return _postPortletImportProcess(
-			group, importProcessRequest, plid, portletId);
+			GroupUtil.getScopeGroup(group, layout, portletId),
+			importProcessRequest, layout, portletId);
 	}
 
 	private ImportProcess _postLayoutImportProcess(
@@ -400,8 +414,8 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 	}
 
 	private ImportProcess _postPortletImportProcess(
-			Group group, ImportProcessRequest importProcessRequest, long plid,
-			String portletId)
+			Group group, ImportProcessRequest importProcessRequest,
+			Layout layout, String portletId)
 		throws Exception {
 
 		long groupId = group.getGroupId();
@@ -434,8 +448,9 @@ public class ImportProcessResourceImpl extends BaseImportProcessResourceImpl {
 		Map<String, Serializable> settingsMap =
 			_exportImportConfigurationSettingsMapFactory.
 				buildImportPortletSettingsMap(
-					contextUser.getUserId(), plid, groupId, portletId,
-					parameterMap, contextAcceptLanguage.getPreferredLocale(),
+					contextUser.getUserId(), layout.getPlid(), groupId,
+					portletId, parameterMap,
+					contextAcceptLanguage.getPreferredLocale(),
 					contextUser.getTimeZone());
 
 		settingsMap.put("name", name);
