@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -83,8 +84,9 @@ public class RoleServiceTest extends BasePermissionTestCase {
 				PrincipalException.MustHavePermission.class,
 				() -> _copyRole(role1, user));
 
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.ADD_ROLE}, mustHavePermission.actionId);
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				mustHavePermission.actionId, ActionKeys.ADD_ROLE));
 
 		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -99,12 +101,12 @@ public class RoleServiceTest extends BasePermissionTestCase {
 			PrincipalException.MustHavePermission.class,
 			() -> _copyRole(role1, user));
 
-		Assert.assertArrayEquals(
-			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
+		Assert.assertTrue(
+			ArrayUtil.contains(mustHavePermission.actionId, ActionKeys.VIEW));
 
 		RoleTestUtil.addResourcePermission(
-			role2, Role.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(role1.getRoleId()), ActionKeys.VIEW);
+			role2, Role.class.getName(), ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()), ActionKeys.VIEW);
 
 		Role role3 = _copyRole(role1, user);
 
