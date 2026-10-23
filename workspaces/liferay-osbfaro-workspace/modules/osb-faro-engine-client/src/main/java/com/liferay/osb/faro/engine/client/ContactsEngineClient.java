@@ -410,11 +410,6 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, int cur, int delta, List<String> ids,
 		List<OrderByField> orderByFields);
 
-	public Results<Individual> getCoworkerIndividuals(
-		FaroProject faroProject, String individualId, String query,
-		List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields);
-
 	public long getDXPUsersCount(FaroProject faroProject, String id);
 
 	public DataSource getDataSource(FaroProject faroProject, String id)
@@ -670,11 +665,6 @@ public interface ContactsEngineClient {
 	public Results<String> getSessionValues(
 		FaroProject faroProject, String channelId, String fieldName,
 		String filterString, String query, int cur, int delta);
-
-	public Results<Individual> getSimilarIndividuals(
-		FaroProject faroProject, String individualId, String query,
-		List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields);
 
 	public LifecycleTriggerResult getStalledAccountsLifecycleTriggerResult(
 			FaroProject faroProject, String id, int rangeKey)

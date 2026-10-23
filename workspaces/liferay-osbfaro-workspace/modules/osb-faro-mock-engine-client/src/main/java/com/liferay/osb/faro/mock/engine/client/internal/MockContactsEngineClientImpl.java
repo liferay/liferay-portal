@@ -7,19 +7,13 @@ package com.liferay.osb.faro.mock.engine.client.internal;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
-import com.liferay.osb.faro.engine.client.constants.FilterConstants;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.DataSourceUsageMetric;
-import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.engine.client.model.Individual;
 import com.liferay.osb.faro.engine.client.model.ProjectMetric;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
-import com.liferay.osb.faro.engine.client.util.FilterBuilder;
-import com.liferay.osb.faro.engine.client.util.FilterUtil;
-import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -54,41 +48,6 @@ public class MockContactsEngineClientImpl
 
 		return contactsEngineClient.getApiUsageMetrics(
 			faroProject, endDateString, startDateString);
-	}
-
-	@Override
-	public Results<Individual> getCoworkerIndividuals(
-		FaroProject faroProject, String individualId, String query,
-		List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		// PULPO-304
-
-		Individual individual = getIndividual(faroProject, individualId, null);
-
-		Map<String, List<Field>> demographics = individual.getDemographics();
-
-		List<Field> worksFor = demographics.get("worksFor");
-
-		if (ListUtil.isNull(worksFor)) {
-			return new Results<>();
-		}
-
-		Field field = worksFor.get(0);
-
-		Results<Individual> results = getIndividuals(
-			faroProject, field.getName(), field.getValue(), query, fields, cur,
-			delta, orderByFields);
-
-		List<Individual> individuals = ListUtil.filter(
-			results.getItems(),
-			curIndividual -> {
-				String id = curIndividual.getId();
-
-				return !id.equals(individual.getId());
-			});
-
-		return new Results<>(individuals, individuals.size());
 	}
 
 	@Override
@@ -184,41 +143,6 @@ public class MockContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<Individual> getSimilarIndividuals(
-		FaroProject faroProject, String individualId, String query,
-		List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		// PULPO-305
-
-		Individual individual = getIndividual(faroProject, individualId, null);
-
-		Map<String, List<Field>> demographics = individual.getDemographics();
-
-		List<Field> jobTitle = demographics.get("jobTitle");
-
-		if (ListUtil.isNull(jobTitle)) {
-			return new Results<>();
-		}
-
-		Field field = jobTitle.get(0);
-
-		Results<Individual> results = getIndividuals(
-			faroProject, field.getName(), field.getValue(), query, fields, cur,
-			delta, orderByFields);
-
-		List<Individual> individuals = ListUtil.filter(
-			results.getItems(),
-			curIndividual -> {
-				String id = curIndividual.getId();
-
-				return !id.equals(individual.getId());
-			});
-
-		return new Results<>(individuals, individuals.size());
-	}
-
-	@Override
 	public void insertBQProjects(List<FaroProject> faroProjects)
 		throws Exception {
 
@@ -230,24 +154,6 @@ public class MockContactsEngineClientImpl
 		throws Exception {
 
 		contactsEngineClient.updateBQProject(faroProject, startDate);
-	}
-
-	protected Results<Individual> getIndividuals(
-		FaroProject faroProject, String fieldName, String fieldValue,
-		String query, List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		FilterBuilder filterBuilder = new FilterBuilder();
-
-		filterBuilder.addFilter(
-			FilterUtil.getFieldName(
-				fieldName, FilterConstants.FIELD_NAME_CONTEXT_INDIVIDUAL),
-			FilterConstants.COMPARISON_OPERATOR_EQUALS, fieldValue);
-		filterBuilder.addSearchFilter(
-			query, fields, FilterConstants.FIELD_NAME_CONTEXT_INDIVIDUAL);
-
-		return getIndividuals(
-			faroProject, filterBuilder, false, cur, delta, orderByFields);
 	}
 
 	private static final Map<String, String> _liferayFieldNames =

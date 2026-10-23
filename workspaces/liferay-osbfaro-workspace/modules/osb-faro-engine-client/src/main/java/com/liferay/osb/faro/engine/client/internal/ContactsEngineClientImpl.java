@@ -2154,15 +2154,6 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<Individual> getCoworkerIndividuals(
-		FaroProject faroProject, String individualId, String query,
-		List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		return new Results<>();
-	}
-
-	@Override
 	public long getDXPUsersCount(FaroProject faroProject, String id) {
 		RestTemplate restTemplate = getRestTemplate(faroProject);
 
@@ -3818,15 +3809,6 @@ public class ContactsEngineClientImpl
 			uriVariables);
 
 		return pagedModel.getResults();
-	}
-
-	@Override
-	public Results<Individual> getSimilarIndividuals(
-		FaroProject faroProject, String individualId, String query,
-		List<String> fields, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		return new Results<>();
 	}
 
 	@Override
