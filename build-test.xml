@@ -4041,6 +4041,27 @@ tell application "Safari" to quit
 				<equals arg1="${browser.type}" arg2="chrome" />
 				<then>
 					<get-testcase-property append="true" delimiter=" " property.name="browser.chrome.bin.args" />
+
+					<if>
+						<isset property="browser.chrome.bin.args" />
+						<then>
+							<echo append="true" file="${test.ext.properties.file}">
+								browser.chrome.bin.args=${browser.chrome.bin.args}
+							</echo>
+						</then>
+					</if>
+
+					<propertycopy from="browser.chrome.bin.file[${browser.chrome.version}]" name="browser.chrome.bin.file" silent="true" />
+
+					<if>
+						<isset property="browser.chrome.bin.file" />
+						<then>
+							<echo append="true" file="${test.ext.properties.file}">
+								browser.chrome.bin.file=${browser.chrome.bin.file}
+							</echo>
+						</then>
+					</if>
+
 					<get-testcase-property property.name="test.liferay.virtual.instance" />
 
 					<if>
@@ -4068,26 +4089,6 @@ tell application "Safari" to quit
 									</if>
 								</then>
 							</if>
-						</then>
-					</if>
-
-					<if>
-						<isset property="browser.chrome.bin.args" />
-						<then>
-							<echo append="true" file="${test.ext.properties.file}">
-								browser.chrome.bin.args=${browser.chrome.bin.args}
-							</echo>
-						</then>
-					</if>
-
-					<propertycopy from="browser.chrome.bin.file[${browser.chrome.version}]" name="browser.chrome.bin.file" silent="true" />
-
-					<if>
-						<isset property="browser.chrome.bin.file" />
-						<then>
-							<echo append="true" file="${test.ext.properties.file}">
-								browser.chrome.bin.file=${browser.chrome.bin.file}
-							</echo>
 						</then>
 					</if>
 				</then>
