@@ -797,16 +797,6 @@ public class WikiPageLocalServiceUtil {
 		return getService().getPreviousVersionPage(page);
 	}
 
-	public static List<WikiPage> getRecentChanges(
-		long groupId, long nodeId, int start, int end) {
-
-		return getService().getRecentChanges(groupId, nodeId, start, end);
-	}
-
-	public static int getRecentChangesCount(long groupId, long nodeId) {
-		return getService().getRecentChangesCount(groupId, nodeId);
-	}
-
 	public static List<WikiPage> getRedirectorPages(
 		long nodeId, boolean head, String redirectTitle, int status) {
 
@@ -1087,4 +1077,4 @@ public class WikiPageLocalServiceUtil {
 			WikiPageLocalServiceUtil.class, WikiPageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:257494523
+// LIFERAY-SERVICE-BUILDER-HASH:-173878131

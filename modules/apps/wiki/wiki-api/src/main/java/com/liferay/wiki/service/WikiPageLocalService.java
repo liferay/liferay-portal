@@ -588,13 +588,6 @@ public interface WikiPageLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiPage> getRecentChanges(
-		long groupId, long nodeId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRecentChangesCount(long groupId, long nodeId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WikiPage> getRedirectorPages(
 		long nodeId, boolean head, String redirectTitle, int status);
 
@@ -788,4 +781,4 @@ public interface WikiPageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-24884529
+// LIFERAY-SERVICE-BUILDER-HASH:-2094897427

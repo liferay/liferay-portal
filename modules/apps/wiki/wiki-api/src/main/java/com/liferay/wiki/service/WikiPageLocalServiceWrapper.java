@@ -912,19 +912,6 @@ public class WikiPageLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<WikiPage> getRecentChanges(
-		long groupId, long nodeId, int start, int end) {
-
-		return _wikiPageLocalService.getRecentChanges(
-			groupId, nodeId, start, end);
-	}
-
-	@Override
-	public int getRecentChangesCount(long groupId, long nodeId) {
-		return _wikiPageLocalService.getRecentChangesCount(groupId, nodeId);
-	}
-
-	@Override
 	public java.util.List<WikiPage> getRedirectorPages(
 		long nodeId, boolean head, String redirectTitle, int status) {
 
@@ -1264,4 +1251,4 @@ public class WikiPageLocalServiceWrapper
 	private WikiPageLocalService _wikiPageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2109685178
+// LIFERAY-SERVICE-BUILDER-HASH:-1980032494
