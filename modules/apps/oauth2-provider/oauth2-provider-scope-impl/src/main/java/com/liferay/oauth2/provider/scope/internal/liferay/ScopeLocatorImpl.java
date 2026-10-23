@@ -16,11 +16,16 @@ import com.liferay.oauth2.provider.scope.spi.scope.mapper.ScopeMapper;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcher;
 import com.liferay.oauth2.provider.scope.spi.scope.matcher.ScopeMatcherFactory;
 import com.liferay.osgi.service.tracker.collections.ServiceReferenceServiceTuple;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ScopedServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ScopedServiceTrackerMapFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.remote.jaxrs.whiteboard.lifecycle.JAXRSLifecycle;
@@ -34,6 +39,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -291,6 +297,45 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		return scopesAliases;
 	}
 
+	@Override
+	public void stopWaitingForScopeAliases(Runnable runnable) {
+		_runnableScopeAliases.remove(runnable);
+	}
+
+	@Override
+	public Set<String> waitForScopeAliases(
+		long companyId, Set<String> scopeAliases, Runnable runnable) {
+
+		Set<String> unresolvedScopeAliases = _getUnresolvedScopeAliases(
+			companyId, scopeAliases);
+
+		if (unresolvedScopeAliases.isEmpty()) {
+			return new HashSet<>(scopeAliases);
+		}
+
+		Map.Entry<Long, Set<String>> entry = Map.entry(
+			companyId, unresolvedScopeAliases);
+
+		_runnableScopeAliases.put(runnable, entry);
+
+		unresolvedScopeAliases = _getUnresolvedScopeAliases(
+			companyId, unresolvedScopeAliases);
+
+		if (unresolvedScopeAliases.isEmpty()) {
+			_runnableScopeAliases.remove(runnable, entry);
+		}
+		else {
+			_runnableScopeAliases.replace(
+				runnable, entry, Map.entry(companyId, unresolvedScopeAliases));
+		}
+
+		Set<String> resolvedScopeAliases = new HashSet<>(scopeAliases);
+
+		resolvedScopeAliases.removeAll(unresolvedScopeAliases);
+
+		return resolvedScopeAliases;
+	}
+
 	@Activate
 	protected void activate(
 		BundleContext bundleContext, Map<String, Object> properties) {
@@ -318,8 +363,8 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		setScopeFindersScopedServiceTrackerMap(
 			ScopedServiceTrackerMapFactory.create(
 				bundleContext, ScopeFinder.class,
-				OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME,
-				() -> Collections::emptySet));
+				OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME, StringPool.BLANK,
+				() -> Collections::emptySet, this::_notify));
 		setScopeMappersScopedServiceTrackerMap(
 			ScopedServiceTrackerMapFactory.create(
 				bundleContext, ScopeMapper.class,
@@ -336,10 +381,20 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		setScopeMatcherFactoriesServiceTrackerMap(
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ScopeMatcherFactory.class, "company.id"));
+
+		ServiceReferenceMapper<String, ScopeFinder> serviceReferenceMapper =
+			new PropertyServiceReferenceMapper<>(
+				OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME);
+
 		setScopeFinderByNameServiceTrackerMap(
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext, ScopeFinder.class,
-				OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME,
+				"(" + OAuth2ProviderScopeConstants.OSGI_JAXRS_NAME + "=*)",
+				(serviceReference, emitter) -> {
+					serviceReferenceMapper.map(serviceReference, emitter);
+
+					_notify();
+				},
 				new ScopeFinderServiceTupleServiceTrackerCustomizer(
 					bundleContext)));
 	}
@@ -428,6 +483,54 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		return scopeMatcherFactory;
 	}
 
+	private Set<String> _getUnresolvedScopeAliases(
+		long companyId, Set<String> scopeAliases) {
+
+		Set<String> unresolvedScopeAliases = new HashSet<>();
+
+		for (String scopeAlias : scopeAliases) {
+			Collection<LiferayOAuth2Scope> liferayOAuth2Scopes =
+				getLiferayOAuth2Scopes(companyId, scopeAlias);
+
+			if (!liferayOAuth2Scopes.isEmpty()) {
+				continue;
+			}
+
+			unresolvedScopeAliases.add(scopeAlias);
+		}
+
+		return unresolvedScopeAliases;
+	}
+
+	private boolean _hasResolvedAny(long companyId, Set<String> scopeAliases) {
+		for (String scopeAlias : scopeAliases) {
+			Collection<LiferayOAuth2Scope> liferayOAuth2Scopes =
+				getLiferayOAuth2Scopes(companyId, scopeAlias);
+
+			if (!liferayOAuth2Scopes.isEmpty()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private void _notify() {
+		_runnableScopeAliases.forEach(
+			(runnable, entry) -> {
+				try {
+					if (_hasResolvedAny(entry.getKey(), entry.getValue()) &&
+						_runnableScopeAliases.remove(runnable, entry)) {
+
+						runnable.run();
+					}
+				}
+				catch (Exception exception) {
+					_log.error(exception);
+				}
+			});
+	}
+
 	private boolean _scopeMatchesScopesAlias(
 		String scope, ScopeMatcherFactory scopeMatcherFactory,
 		PrefixHandler prefixHandler, String scopesAlias) {
@@ -451,6 +554,9 @@ public class ScopeLocatorImpl implements ScopeLocator {
 		return scopeMatcher.match(scope);
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		ScopeLocatorImpl.class);
+
 	private static final Snapshot<PrefixHandlerFactory>
 		_defaultPrefixHandlerFactorySnapshot = new Snapshot<>(
 			ScopeLocatorImpl.class, PrefixHandlerFactory.class,
@@ -470,6 +576,8 @@ public class ScopeLocatorImpl implements ScopeLocator {
 
 	private ScopedServiceTrackerMap<PrefixHandlerFactory>
 		_prefixHandlerFactoriesScopedServiceTrackerMap;
+	private final Map<Runnable, Map.Entry<Long, Set<String>>>
+		_runnableScopeAliases = new ConcurrentHashMap<>();
 	private ServiceTrackerMap
 		<String, ServiceReferenceServiceTuple<?, ScopeFinder>>
 			_scopeFinderByNameServiceTrackerMap;

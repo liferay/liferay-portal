@@ -6,6 +6,7 @@
 package com.liferay.oauth2.provider.scope.liferay;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -77,5 +78,10 @@ public interface ScopeLocator {
 	 */
 	public Collection<String> getScopeAliases(
 		long companyId, String applicationName);
+
+	public void stopWaitingForScopeAliases(Runnable runnable);
+
+	public Set<String> waitForScopeAliases(
+		long companyId, Set<String> scopeAliases, Runnable runnable);
 
 }

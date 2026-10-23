@@ -6,7 +6,6 @@
 package com.liferay.oauth2.provider.internal.configuration;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.scope.liferay.LiferayOAuth2Scope;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
@@ -23,14 +22,19 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionConfig;
+import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.annotations.Activate;
@@ -64,6 +68,8 @@ public abstract class BaseConfigurationFactory {
 
 	@Deactivate
 	protected void deactivate(Integer reason) throws PortalException {
+		scopeLocator.stopWaitingForScopeAliases(_runnable);
+
 		if ((oAuth2Application == null) ||
 			(reason !=
 				ComponentConstants.DEACTIVATION_REASON_CONFIGURATION_DELETED)) {
@@ -246,7 +252,24 @@ public abstract class BaseConfigurationFactory {
 			OAuth2Application oAuth2Application, List<String> scopeAliasesList)
 		throws Exception {
 
-		if (_hasUpToDateScopeAliases(oAuth2Application, scopeAliasesList)) {
+		List<String> currentScopeAliasesList =
+			oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
+				oAuth2Application.getOAuth2ApplicationScopeAliasesId());
+
+		Set<String> scopeAliases = new HashSet<>(scopeAliasesList);
+
+		scopeAliases.removeAll(currentScopeAliasesList);
+
+		Set<String> resolvedScopeAliases = Collections.emptySet();
+
+		if (!scopeAliases.isEmpty()) {
+			resolvedScopeAliases = scopeLocator.waitForScopeAliases(
+				oAuth2Application.getCompanyId(), scopeAliases, _runnable);
+		}
+
+		if (scopeAliasesList.containsAll(currentScopeAliasesList) &&
+			resolvedScopeAliases.isEmpty()) {
+
 			return;
 		}
 
@@ -276,44 +299,23 @@ public abstract class BaseConfigurationFactory {
 	@Reference
 	protected UserLocalService userLocalService;
 
-	private void _apply() throws Exception {
-		ConfigurationFactoryUtil.executeAsCompany(
-			companyLocalService, _properties,
-			companyId -> {
-				String externalReferenceCode =
-					ConfigurationFactoryUtil.getExternalReferenceCode(
-						_properties);
+	private void _apply() {
+		try {
+			ConfigurationFactoryUtil.executeAsCompany(
+				companyLocalService, _properties,
+				companyId -> {
+					String externalReferenceCode =
+						ConfigurationFactoryUtil.getExternalReferenceCode(
+							_properties);
 
-				doActivate(_properties, companyId, externalReferenceCode);
-			});
-	}
-
-	private boolean _hasUpToDateScopeAliases(
-		OAuth2Application oAuth2Application, List<String> scopeAliasesList) {
-
-		List<String> currentScopeAliasesList =
-			oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
-				oAuth2Application.getOAuth2ApplicationScopeAliasesId());
-
-		if (!scopeAliasesList.containsAll(currentScopeAliasesList)) {
-			return false;
+					doActivate(_properties, companyId, externalReferenceCode);
+				});
 		}
+		catch (Exception exception) {
+			Log log = getLog();
 
-		for (String scopeAlias : scopeAliasesList) {
-			if (currentScopeAliasesList.contains(scopeAlias)) {
-				continue;
-			}
-
-			Collection<LiferayOAuth2Scope> liferayOAuth2Scopes =
-				scopeLocator.getLiferayOAuth2Scopes(
-					oAuth2Application.getCompanyId(), scopeAlias);
-
-			if (!liferayOAuth2Scopes.isEmpty()) {
-				return false;
-			}
+			log.error(exception);
 		}
-
-		return true;
 	}
 
 	private static final Snapshot<PortalK8sConfigMapModifier>
@@ -325,6 +327,24 @@ public abstract class BaseConfigurationFactory {
 	private volatile Map<String, String> _extensionProperties;
 	private volatile String _projectName;
 	private Map<String, Object> _properties;
+
+	private final Runnable _runnable = () -> {
+		try {
+			TransactionInvokerUtil.invoke(
+				TransactionConfig.Factory.create(
+					Propagation.NOT_SUPPORTED,
+					new Class<?>[] {Exception.class}),
+				() -> {
+					_apply();
+
+					return null;
+				});
+		}
+		catch (Throwable throwable) {
+			throw new RuntimeException(throwable);
+		}
+	};
+
 	private volatile String _virtualInstanceId;
 
 }

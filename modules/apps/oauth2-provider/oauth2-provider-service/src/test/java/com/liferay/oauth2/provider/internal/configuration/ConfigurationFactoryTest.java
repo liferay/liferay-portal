@@ -6,7 +6,6 @@
 package com.liferay.oauth2.provider.internal.configuration;
 
 import com.liferay.oauth2.provider.model.OAuth2Application;
-import com.liferay.oauth2.provider.scope.liferay.LiferayOAuth2Scope;
 import com.liferay.oauth2.provider.scope.liferay.ScopeLocator;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
@@ -407,9 +406,12 @@ public class ConfigurationFactoryTest {
 		);
 
 		Mockito.when(
-			_scopeLocator.getLiferayOAuth2Scopes(_companyId, scopeAlias2)
+			_scopeLocator.waitForScopeAliases(
+				Mockito.eq(_companyId),
+				Mockito.eq(Collections.singleton(scopeAlias2)),
+				Mockito.any(Runnable.class))
 		).thenReturn(
-			Collections.singletonList(Mockito.mock(LiferayOAuth2Scope.class))
+			Collections.singleton(scopeAlias2)
 		);
 
 		configurationFactory.updateScopes(_oAuth2Application, scopeAliasesList);
