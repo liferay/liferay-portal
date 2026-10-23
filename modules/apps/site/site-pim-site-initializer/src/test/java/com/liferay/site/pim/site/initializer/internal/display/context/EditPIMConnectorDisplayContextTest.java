@@ -500,8 +500,9 @@ public class EditPIMConnectorDisplayContextTest {
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
-	private static final String _SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
-		RandomTestUtil.randomString();
+	private static final String
+		_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
+			RandomTestUtil.randomString();
 
 	private static final long _SETTINGS_OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
