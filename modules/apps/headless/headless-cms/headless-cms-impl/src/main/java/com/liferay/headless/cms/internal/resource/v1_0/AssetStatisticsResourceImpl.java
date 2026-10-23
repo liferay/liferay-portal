@@ -11,6 +11,7 @@ import com.liferay.headless.cms.dto.v1_0.AssetStatistics;
 import com.liferay.headless.cms.internal.field.MissingRequiredFieldsAssetSearcher;
 import com.liferay.headless.cms.internal.link.BrokenLinkAssetSearcher;
 import com.liferay.headless.cms.internal.link.BrokenLinkTarget;
+import com.liferay.headless.cms.internal.usage.UnlinkedAssetSearcher;
 import com.liferay.headless.cms.internal.util.CMSGroupUtil;
 import com.liferay.headless.cms.resource.v1_0.AssetStatisticsResource;
 import com.liferay.object.constants.ObjectFolderConstants;
@@ -186,6 +187,8 @@ public class AssetStatisticsResourceImpl
 						selectedSpaceGroupIds, objectDefinitionIds,
 						ObjectEntryTable.INSTANCE.status.in(
 							CMSWorkflowConstants.STATUSES)));
+				setUnlinkedCount(
+					() -> _getUnlinkedCount(selectedSpaceGroupIds));
 				setUpcomingReviewCount(
 					() -> _getCount(
 						selectedSpaceGroupIds, objectDefinitionIds,
@@ -362,6 +365,31 @@ public class AssetStatisticsResourceImpl
 		return cardinalityAggregationResult.getValue();
 	}
 
+	private long _getUnlinkedCount(Long[] groupIds) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-82226")) {
+
+			return 0;
+		}
+
+		try {
+			UnlinkedAssetSearcher unlinkedAssetSearcher =
+				new UnlinkedAssetSearcher(
+					_aggregations, _objectEntryLocalService, _searcher,
+					_searchRequestBuilderFactory);
+
+			return unlinkedAssetSearcher.getCount(
+				contextCompany.getCompanyId(), groupIds);
+		}
+		catch (Exception exception) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Unable to get the unlinked count", exception);
+			}
+
+			return 0;
+		}
+	}
+
 	private long _getWorkflowTasksCount(
 		String[] classNames, Long[] groupIds, Predicate predicate) {
 
@@ -404,6 +432,7 @@ public class AssetStatisticsResourceImpl
 				setScheduledCount(() -> 0L);
 				setSlaBreachedWorkflowTasksCount(() -> 0L);
 				setTotalCount(() -> 0L);
+				setUnlinkedCount(() -> 0L);
 				setUpcomingReviewCount(() -> 0L);
 				setWorkflowTasksCount(() -> 0L);
 			}
