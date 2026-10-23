@@ -79,10 +79,13 @@ public class CKEditor5EditorConfigContributor
 			"preset", "advanced"
 		).put(
 			"showPasteFromOfficeEnhanced",
-			_isLicenseFeatureEnabled(licensePayloadJSONObject, "POE")
+			_isLicenseFeatureEnabled(
+				licensePayloadJSONObject,
+				_FEATURE_CODE_PASTE_FROM_OFFICE_ENHANCED)
 		).put(
 			"showSourceEditingEnhanced",
-			_isLicenseFeatureEnabled(licensePayloadJSONObject, "SEE")
+			_isLicenseFeatureEnabled(
+				licensePayloadJSONObject, _FEATURE_CODE_SOURCE_EDITING_ENHANCED)
 		);
 	}
 
@@ -119,11 +122,11 @@ public class CKEditor5EditorConfigContributor
 
 			long expirationTime = payloadJSONObject.getLong("exp", 0);
 
-			if (expirationTime > (System.currentTimeMillis() / Time.SECOND)) {
-				return payloadJSONObject;
+			if (expirationTime <= (System.currentTimeMillis() / Time.SECOND)) {
+				return null;
 			}
 
-			return null;
+			return payloadJSONObject;
 		}
 		catch (IllegalArgumentException | JSONException exception) {
 			if (_log.isDebugEnabled()) {
@@ -151,6 +154,11 @@ public class CKEditor5EditorConfigContributor
 
 		return JSONUtil.hasValue(featuresJSONArray, licenseFeatureCode);
 	}
+
+	private static final String _FEATURE_CODE_PASTE_FROM_OFFICE_ENHANCED =
+		"POE";
+
+	private static final String _FEATURE_CODE_SOURCE_EDITING_ENHANCED = "SEE";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		CKEditor5EditorConfigContributor.class);
