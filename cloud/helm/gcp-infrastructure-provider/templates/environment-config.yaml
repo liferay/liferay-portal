@@ -1,12 +1,13 @@
 apiVersion: apiextensions.crossplane.io/v1beta1
 data:
-    deploymentName: {{ $.Values.deploymentName | quote }}
-    projectId: {{ $.Values.global.gcp.projectId | quote }}
-    projectNumber: {{ $.Values.global.gcp.projectNumber | quote }}
-    vpcName: {{ $.Values.global.gcp.vpcName | quote }}
+    deploymentName: {{ .Values.deploymentContext.deploymentName | quote }}
+    projectId: {{ .Values.deploymentContext.projectId | quote }}
+    projectNumber: {{ .Values.deploymentContext.projectNumber | quote }}
+    region: {{ .Values.deploymentContext.region | quote }}
+    vpcName: {{ .Values.deploymentContext.vpcName | quote }}
 kind: EnvironmentConfig
 metadata:
     annotations:
         argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-        argocd.argoproj.io/sync-wave: "-40"
+        argocd.argoproj.io/sync-wave: "-100"
     name: environment-config

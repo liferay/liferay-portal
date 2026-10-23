@@ -1,0 +1,24 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+set:
+    deploymentContext:
+        deploymentName: liferay-test
+        projectId: liferay-test-project
+        projectNumber: "000000000000"
+        region: us-central1
+        vpcName: liferay-test-vpc
+suite: Environment Config
+templates:
+    -   templates/environment-config.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: data
+                    value:
+                        deploymentName: liferay-test
+                        projectId: liferay-test-project
+                        projectNumber: "000000000000"
+                        region: us-central1
+                        vpcName: liferay-test-vpc
+        it: Renders the deployment context the compositions consume
