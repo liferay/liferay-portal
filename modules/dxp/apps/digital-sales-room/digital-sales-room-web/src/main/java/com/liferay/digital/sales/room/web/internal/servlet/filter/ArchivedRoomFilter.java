@@ -92,9 +92,8 @@ public class ArchivedRoomFilter extends BaseFilter {
 			return _groupLocalService.fetchGroup(layout.getGroupId());
 		}
 
-		String requestURI = httpServletRequest.getRequestURI();
-
 		String contextPath = httpServletRequest.getContextPath();
+		String requestURI = httpServletRequest.getRequestURI();
 
 		if (Validator.isNotNull(contextPath) &&
 			requestURI.startsWith(contextPath)) {
