@@ -51,14 +51,6 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
-	public void testBuildFormContentWithoutParameters() {
-		testEquals(
-			"",
-			JenkinsResultsParserUtil.buildFormContent(Collections.emptyMap()));
-		testEquals("", JenkinsResultsParserUtil.buildFormContent(null));
-	}
-
-	@Test
 	public void testBuildFormContentWithReservedCharacters() {
 		testEquals(
 			"A=a%23b&B=a%26b&C=100%25+pass&D=a%3Db&E=a%2Bb&F=a+b",
@@ -66,6 +58,14 @@ public class JenkinsResultsParserUtilTest
 				_newParameters(
 					"A", "a#b", "B", "a&b", "C", "100% pass", "D", "a=b", "E",
 					"a+b", "F", "a b")));
+	}
+
+	@Test
+	public void testBuildFormContentWithoutParameters() {
+		testEquals(
+			"",
+			JenkinsResultsParserUtil.buildFormContent(Collections.emptyMap()));
+		testEquals("", JenkinsResultsParserUtil.buildFormContent(null));
 	}
 
 	@Test
@@ -560,19 +560,6 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
-	public void testGetQueryParametersWithoutQueryString() {
-		Map<String, String> emptyParameters =
-			JenkinsResultsParserUtil.getQueryParameters("");
-
-		testEquals(0, emptyParameters.size());
-
-		Map<String, String> nullParameters =
-			JenkinsResultsParserUtil.getQueryParameters(null);
-
-		testEquals(0, nullParameters.size());
-	}
-
-	@Test
 	public void testGetQueryParametersWithRawNumberSign() {
 		Map<String, String> parameters =
 			JenkinsResultsParserUtil.getQueryParameters(
@@ -607,6 +594,19 @@ public class JenkinsResultsParserUtilTest
 		testEquals("a b", parameters.get("E"));
 		testEquals("100% pass", parameters.get("F"));
 		testEquals(6, parameters.size());
+	}
+
+	@Test
+	public void testGetQueryParametersWithoutQueryString() {
+		Map<String, String> emptyParameters =
+			JenkinsResultsParserUtil.getQueryParameters("");
+
+		testEquals(0, emptyParameters.size());
+
+		Map<String, String> nullParameters =
+			JenkinsResultsParserUtil.getQueryParameters(null);
+
+		testEquals(0, nullParameters.size());
 	}
 
 	@Test
@@ -1188,6 +1188,17 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testNewURIBuilderWithUnsortedParameters() {
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			"http://test-1-1/job/x",
+			_newParameters("gamma", "3", "beta", "2", "alpha", "1"));
+
+		testEquals(
+			"http://test-1-1/job/x?alpha=1&beta=2&gamma=3",
+			uriBuilder.toString());
+	}
+
+	@Test
 	public void testNewURIBuilderWithoutParameters() {
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			"http://test-1-1/job/x/buildWithParameters",
@@ -1201,17 +1212,6 @@ public class JenkinsResultsParserUtilTest
 
 		testEquals(
 			"http://test-1-1/job/x/buildWithParameters", uriBuilder.toString());
-	}
-
-	@Test
-	public void testNewURIBuilderWithUnsortedParameters() {
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			"http://test-1-1/job/x",
-			_newParameters("gamma", "3", "beta", "2", "alpha", "1"));
-
-		testEquals(
-			"http://test-1-1/job/x?alpha=1&beta=2&gamma=3",
-			uriBuilder.toString());
 	}
 
 	@Test
