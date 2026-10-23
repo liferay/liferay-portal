@@ -100,9 +100,10 @@ public class PIMConnectorContainerResponseFilterTest {
 		JSONObject jsonObject = _getJSONObject(_endpoint);
 
 		Assert.assertEquals(
-			"never-executed", jsonObject.getString("lastExecution"));
+			"never-executed", jsonObject.getString("lastExecutionStatus"));
 		Assert.assertFalse(jsonObject.has("lastExecutionDate"));
-		Assert.assertFalse(jsonObject.getBoolean("mappingComplete"));
+		Assert.assertEquals(
+			"incomplete", jsonObject.getString("mappingStatus"));
 
 		DispatchTrigger dispatchTrigger =
 			_dispatchTriggerLocalService.
@@ -118,36 +119,31 @@ public class PIMConnectorContainerResponseFilterTest {
 
 		jsonObject = _getJSONObject(_endpoint);
 
-		Assert.assertEquals("success", jsonObject.getString("lastExecution"));
+		Assert.assertEquals(
+			"success", jsonObject.getString("lastExecutionStatus"));
 		Assert.assertTrue(jsonObject.has("lastExecutionDate"));
 
 		_dispatchLogLocalService.addDispatchLog(
 			TestPropsValues.getUserId(), dispatchTrigger.getDispatchTriggerId(),
 			null, null, null, new Date(), DispatchTaskStatus.FAILED);
 
+		jsonObject = _getJSONObject(_endpoint);
+
 		Assert.assertEquals(
-			"failed",
-			_getJSONObject(
-				_endpoint
-			).getString(
-				"lastExecution"
-			));
+			"failed", jsonObject.getString("lastExecutionStatus"));
 
 		for (String channelFieldName : _REQUIRED_CHANNEL_FIELD_NAMES) {
 			_addPIMConnectorFieldMappingObjectEntry(channelFieldName);
 		}
 
-		Assert.assertTrue(
-			_getJSONObject(
-				_endpoint
-			).getBoolean(
-				"mappingComplete"
-			));
+		jsonObject = _getJSONObject(_endpoint);
+
+		Assert.assertEquals("complete", jsonObject.getString("mappingStatus"));
 
 		jsonObject = _getJSONObject(_endpoint + "?fields=id,name");
 
-		Assert.assertFalse(jsonObject.has("lastExecution"));
-		Assert.assertFalse(jsonObject.has("mappingComplete"));
+		Assert.assertFalse(jsonObject.has("lastExecutionStatus"));
+		Assert.assertFalse(jsonObject.has("mappingStatus"));
 
 		jsonObject = _getJSONObject(
 			StringBundler.concat(
@@ -162,8 +158,9 @@ public class PIMConnectorContainerResponseFilterTest {
 
 		jsonObject = jsonArray.getJSONObject(0);
 
-		Assert.assertEquals("failed", jsonObject.getString("lastExecution"));
-		Assert.assertTrue(jsonObject.getBoolean("mappingComplete"));
+		Assert.assertEquals(
+			"failed", jsonObject.getString("lastExecutionStatus"));
+		Assert.assertEquals("complete", jsonObject.getString("mappingStatus"));
 
 		jsonObject = _getJSONObject(
 			_endpoint + "/pimConnectorToPIMConnectorFieldMappings");
@@ -174,8 +171,8 @@ public class PIMConnectorContainerResponseFilterTest {
 
 		jsonObject = jsonArray.getJSONObject(0);
 
-		Assert.assertFalse(jsonObject.has("lastExecution"));
-		Assert.assertFalse(jsonObject.has("mappingComplete"));
+		Assert.assertFalse(jsonObject.has("lastExecutionStatus"));
+		Assert.assertFalse(jsonObject.has("mappingStatus"));
 	}
 
 	private ObjectEntry _addPIMConnectorFieldMappingObjectEntry(
