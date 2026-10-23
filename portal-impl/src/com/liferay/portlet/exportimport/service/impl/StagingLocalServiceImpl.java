@@ -79,6 +79,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.comparator.LayoutSetBranchCreateDateComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -241,7 +242,11 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 		}
 
 		UnicodeProperties typeSettingsUnicodeProperties =
-			liveGroup.getTypeSettingsProperties();
+			UnicodePropertiesBuilder.create(
+				true
+			).fastLoad(
+				liveGroup.getTypeSettings()
+			).build();
 
 		boolean stagedLocally = GetterUtil.getBoolean(
 			typeSettingsUnicodeProperties.getProperty("staged"));
