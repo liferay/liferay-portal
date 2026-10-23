@@ -9,7 +9,9 @@ import {dataSetManagerApiHelpersTest} from '../../../fixtures/dataSetManagerApiH
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
+import {hoverAndExpectToBeVisible} from '../../../utils/hoverAndExpectToBeVisible';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {fdsSamplePageTest} from '../../frontend-data-set-web/main/fixtures/fdsSamplePageTest';
 import {actionsPageTest} from './fixtures/actionsPageTest';
@@ -58,7 +60,7 @@ async function findTextIndexInLocators(
 
 test(
 	'Import a system data set to customize',
-	{tag: ['@LPD-37531', '@LPD-40949', '@LPD-49128']},
+	{tag: ['@LPD-37531', '@LPD-40949', '@LPD-49128', '@LPD-111515']},
 	async ({
 		actionsPage,
 		fdsSamplePage,
@@ -307,6 +309,14 @@ test(
 
 			await form.cancelButton.click();
 
+			for (const label of ['New Form', 'New Task', 'New Template']) {
+				await expect(
+					actionsPage.creationActionsTable
+						.locator('tr')
+						.filter({hasText: label})
+				).toHaveCount(1);
+			}
+
 			await page.getByTitle('Back').click();
 		});
 
@@ -336,10 +346,13 @@ test(
 				.locator('tr')
 				.filter({hasText: 'System Action'});
 
-			await expect(creationActionRows).toHaveCount(1);
+			await expect(creationActionRows).toHaveCount(2);
 
 			await expect(
 				creationActionRows.getByText('Calendar', {exact: true})
+			).toBeVisible();
+			await expect(
+				creationActionRows.getByText('More', {exact: true})
 			).toBeVisible();
 
 			await page.getByTitle('Back').click();
@@ -604,6 +617,68 @@ test(
 
 			await page.getByTitle('Back').click();
 		});
+		await test.step('Imported creation actions keep their submenus and groups unless detached', async () => {
+			await fdsSamplePage.setupFDSSampleWidget({site});
+
+			const newButton = page.getByRole('button', {
+				exact: true,
+				name: 'New',
+			});
+
+			await fdsSamplePage.selectTab('Classic');
+
+			const moreMenuItem = page.getByRole('menuitem', {name: 'More'});
+
+			await clickAndExpectToBeVisible({
+				target: moreMenuItem,
+				trigger: newButton,
+			});
+
+			await hoverAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {name: 'New Wiki Page'}),
+				trigger: moreMenuItem,
+			});
+
+			await page.keyboard.press('Escape');
+
+			await fdsSamplePage.selectTab('Advanced');
+
+			const newFormMenuItem = page.getByRole('menuitem', {
+				name: 'New Form',
+			});
+
+			await clickAndExpectToBeVisible({
+				target: newFormMenuItem,
+				trigger: newButton,
+			});
+
+			await expect(
+				page.getByRole('menuitem', {name: 'New Task'})
+			).toBeVisible();
+			await expect(page.getByRole('group', {name: 'Forms'})).toBeHidden();
+
+			await page.keyboard.press('Escape');
+
+			await fdsSamplePage.selectTab('Custom Internal View');
+
+			const dateAndTimeGroup = page.getByRole('group', {
+				name: 'Date and Time',
+			});
+
+			await clickAndExpectToBeVisible({
+				target: dateAndTimeGroup,
+				trigger: newButton,
+			});
+
+			await expect(
+				dateAndTimeGroup.getByRole('menuitem', {name: 'Date'})
+			).toBeVisible();
+
+			await page.keyboard.press('Escape');
+
+			await systemDataSetsPage.goto();
+		});
+
 		await test.step('Delete an imported system data set', async () => {
 			await advancedSampleRow.locator('.dropdown-toggle').click();
 

@@ -21,6 +21,34 @@ export default function propsTransformer({...otherProps}: any) {
 	return {
 		...otherProps,
 		configInURLBehavior: EConfigInURLBehavior.OFF,
+		creationMenu: {
+			primaryItems: [
+				{
+					href: '#',
+					icon: 'plus',
+					label: 'Create New Item',
+					onClick: () => alert('Create New Item clicked!'),
+				},
+				{
+					data: {id: 'importItems'},
+					icon: 'upload',
+					items: [
+						{
+							data: {id: 'importFromFile'},
+							label: 'From File',
+							onClick: () => alert('From File clicked!'),
+						},
+						{
+							data: {id: 'importFromURL'},
+							label: 'From URL',
+							onClick: () => alert('From URL clicked!'),
+						},
+					],
+					label: 'Import Items',
+					type: 'contextual',
+				},
+			],
+		},
 		customRenderers: {
 			tableCell: [customAuthorTableCellRenderer],
 		},

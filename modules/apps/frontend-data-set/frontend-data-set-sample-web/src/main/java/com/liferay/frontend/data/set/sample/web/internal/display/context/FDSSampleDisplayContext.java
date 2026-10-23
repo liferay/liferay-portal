@@ -10,6 +10,9 @@ import com.liferay.client.extension.type.FDSVisualizationModeCET;
 import com.liferay.client.extension.type.manager.CETManager;
 import com.liferay.frontend.data.set.sample.web.internal.display.context.helper.FDSRequestHelper;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -47,7 +50,28 @@ public class FDSSampleDisplayContext {
 	}
 
 	public CreationMenu getCreationMenu() throws Exception {
-		return new CreationMenu();
+		return CreationMenuBuilder.addPrimaryDropdownItem(
+			DropdownItemBuilder.putData(
+				"id", "singleItemGroup"
+			).setDropdownItems(
+				DropdownItemListBuilder.add(
+					DropdownItemBuilder.putData(
+						"id", "newEntry"
+					).setHref(
+						"#"
+					).setLabel(
+						LanguageUtil.get(
+							_fdsRequestHelper.getRequest(), "new-entry")
+					).setTarget(
+						"link"
+					).build()
+				).build()
+			).setLabel(
+				LanguageUtil.get(_fdsRequestHelper.getRequest(), "more")
+			).setType(
+				"contextual"
+			).build()
+		).build();
 	}
 
 	public Map<String, Object> getEmptyState() {

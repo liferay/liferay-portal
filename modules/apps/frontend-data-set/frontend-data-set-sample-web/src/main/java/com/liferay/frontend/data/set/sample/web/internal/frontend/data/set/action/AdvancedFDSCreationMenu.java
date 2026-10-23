@@ -11,6 +11,7 @@ import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSN
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.Language;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,24 +32,83 @@ public class AdvancedFDSCreationMenu implements FDSCreationMenu {
 	public CreationMenu getCreationMenu(HttpServletRequest httpServletRequest) {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			DropdownItemBuilder.putData(
-				"confirmationMessage",
-				_language.get(httpServletRequest, "are-you-sure")
-			).putData(
-				"confirmationMessageType", "warning"
-			).putData(
-				"modalSize", "full-screen"
-			).putData(
-				"permissionKey", "update"
-			).putData(
-				"title", _language.get(httpServletRequest, "my-products")
+				"id", "newTask"
 			).setHref(
 				"#"
 			).setIcon(
-				"bolt"
+				"check-circle"
 			).setLabel(
-				_language.get(httpServletRequest, "open-form")
+				_language.get(httpServletRequest, "new-task")
 			).setTarget(
-				"modal"
+				"link"
+			).build()
+		).addPrimaryDropdownItem(
+			DropdownItemBuilder.putData(
+				"id", "formsGroup"
+			).setDropdownItems(
+				DropdownItemListBuilder.add(
+					DropdownItemBuilder.putData(
+						"confirmationMessage",
+						_language.get(httpServletRequest, "are-you-sure")
+					).putData(
+						"confirmationMessageType", "warning"
+					).putData(
+						"modalSize", "full-screen"
+					).putData(
+						"permissionKey", "update"
+					).putData(
+						"title",
+						_language.get(httpServletRequest, "my-products")
+					).setHref(
+						"#"
+					).setIcon(
+						"bolt"
+					).setLabel(
+						_language.get(httpServletRequest, "open-form")
+					).setTarget(
+						"modal"
+					).build()
+				).add(
+					DropdownItemBuilder.putData(
+						"id", "newForm"
+					).setHref(
+						"#"
+					).setIcon(
+						"forms"
+					).setLabel(
+						_language.get(httpServletRequest, "new-form")
+					).setTarget(
+						"link"
+					).build()
+				).build()
+			).setLabel(
+				_language.get(httpServletRequest, "forms")
+			).setSeparator(
+				true
+			).setType(
+				"group"
+			).build()
+		).addPrimaryDropdownItem(
+			DropdownItemBuilder.putData(
+				"id", "permissionTest"
+			).setDropdownItems(
+				DropdownItemListBuilder.add(
+					DropdownItemBuilder.putData(
+						"id", "newTemplate"
+					).putData(
+						"permissionKey", "update"
+					).setHref(
+						"#"
+					).setLabel(
+						_language.get(httpServletRequest, "new-template")
+					).setTarget(
+						"link"
+					).build()
+				).build()
+			).setLabel(
+				_language.get(httpServletRequest, "templates")
+			).setType(
+				"contextual"
 			).build()
 		).build();
 	}

@@ -69,6 +69,53 @@ const ReactFrontendDataSet = (initialProps: IFrontendDataSetProps) => {
 
 	const props: IFrontendDataSetProps = {
 		...initialProps,
+		creationMenu: {
+			primaryItems: [
+				{
+					data: {id: 'addSample'},
+					icon: 'plus',
+					label: 'Add Sample',
+					onClick: () => alert('Add Sample clicked!'),
+				},
+				{
+					data: {id: 'templates'},
+					items: [
+						{
+							data: {id: 'blankSample'},
+							label: 'Blank Sample',
+							onClick: () => alert('Blank Sample clicked!'),
+						},
+						{
+							data: {id: 'sampleFromTemplate'},
+							label: 'Sample from Template',
+							onClick: () =>
+								alert('Sample from Template clicked!'),
+						},
+					],
+					label: 'Templates',
+					separator: true,
+					type: 'group',
+				},
+				{
+					data: {id: 'importSamples'},
+					icon: 'upload',
+					items: [
+						{
+							data: {id: 'importFromFile'},
+							label: 'From File',
+							onClick: () => alert('From File clicked!'),
+						},
+						{
+							data: {id: 'importFromURL'},
+							label: 'From URL',
+							onClick: () => alert('From URL clicked!'),
+						},
+					],
+					label: 'Import Samples',
+					type: 'contextual',
+				},
+			],
+		},
 		sorts: [
 			{
 				active: true,

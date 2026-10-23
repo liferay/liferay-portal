@@ -13,5 +13,6 @@ FDSSampleDisplayContext fdsSampleDisplayContext = (FDSSampleDisplayContext)reque
 
 <frontend-data-set:headless-display
 	apiURL="<%= fdsSampleDisplayContext.getAPIURL() %>"
+	creationMenu="<%= fdsSampleDisplayContext.getCreationMenu() %>"
 	id="<%= FDSSampleFDSNames.MINIMUM %>"
 />

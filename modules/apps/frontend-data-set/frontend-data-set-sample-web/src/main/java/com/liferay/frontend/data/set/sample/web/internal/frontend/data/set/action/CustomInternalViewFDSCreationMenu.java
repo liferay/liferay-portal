@@ -11,6 +11,7 @@ import com.liferay.frontend.data.set.sample.web.internal.constants.FDSSampleFDSN
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemBuilder;
+import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
 import com.liferay.portal.kernel.language.Language;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,16 +31,26 @@ public class CustomInternalViewFDSCreationMenu implements FDSCreationMenu {
 	@Override
 	public CreationMenu getCreationMenu(HttpServletRequest httpServletRequest) {
 		return CreationMenuBuilder.addPrimaryDropdownItem(
-			DropdownItemBuilder.setIcon(
-				"date"
+			DropdownItemBuilder.putData(
+				"id", "dateAndTime"
+			).setDropdownItems(
+				DropdownItemListBuilder.add(
+					DropdownItemBuilder.setIcon(
+						"date"
+					).setLabel(
+						_language.get(httpServletRequest, "date")
+					).build()
+				).add(
+					DropdownItemBuilder.setIcon(
+						"time"
+					).setLabel(
+						_language.get(httpServletRequest, "time")
+					).build()
+				).build()
 			).setLabel(
-				_language.get(httpServletRequest, "date")
-			).build()
-		).addPrimaryDropdownItem(
-			DropdownItemBuilder.setIcon(
-				"time"
-			).setLabel(
-				_language.get(httpServletRequest, "time")
+				_language.get(httpServletRequest, "date-and-time")
+			).setType(
+				"group"
 			).build()
 		).build();
 	}
