@@ -225,6 +225,9 @@ public class PropsValues {
 		GetterUtil.getBoolean(
 			PropsUtil.get(PropsKeys.BASIC_AUTH_PASSWORD_REQUIRED));
 
+	public static final String BATCH_ENGINE_ENCRYPTION_KEY = PropsUtil.get(
+		PropsKeys.BATCH_ENGINE_ENCRYPTION_KEY);
+
 	public static final String BLOGS_DISPLAY_TEMPLATES_CONFIG = PropsUtil.get(
 		PropsKeys.BLOGS_DISPLAY_TEMPLATES_CONFIG);
 

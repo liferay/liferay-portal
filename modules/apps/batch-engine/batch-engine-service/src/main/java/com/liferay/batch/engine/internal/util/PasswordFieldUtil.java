@@ -15,8 +15,12 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.encryptor.EncryptorException;
+import com.liferay.portal.kernel.encryptor.EncryptorUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.util.Base64;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.jackson.databind.ObjectMapperProviderUtil;
@@ -27,13 +31,33 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import java.security.Key;
+
 import java.util.HashSet;
 import java.util.Set;
+
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * @author Adolfo Pérez
  */
 public class PasswordFieldUtil {
+
+	public static String decrypt(String value) throws EncryptorException {
+		if (value.isEmpty()) {
+			return value;
+		}
+
+		return EncryptorUtil.decryptAuthenticated(_getKey(), value);
+	}
+
+	public static String encrypt(String value) throws EncryptorException {
+		if (value.isEmpty()) {
+			return value;
+		}
+
+		return EncryptorUtil.encryptAuthenticated(_getKey(), value);
+	}
 
 	public static Set<String> getPasswordFieldNames(Class<?> clazz) {
 		Set<String> passwordFieldNames = new HashSet<>();
@@ -124,6 +148,11 @@ public class PasswordFieldUtil {
 		}
 
 		return field.getName();
+	}
+
+	private static Key _getKey() {
+		return new SecretKeySpec(
+			Base64.decode(PropsValues.BATCH_ENGINE_ENCRYPTION_KEY), "AES");
 	}
 
 	private static boolean _hasSchemaAnnotation(Class<?> clazz) {
