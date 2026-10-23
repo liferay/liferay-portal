@@ -11,7 +11,6 @@ import {Alert} from 'shared/types';
 import {AssignedPropertiesTable} from '../AssignedPropertiesTable';
 import {Card} from 'shared/components/revamping/Card';
 import {ClayInput} from '@clayui/form';
-import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {CopyInputValue} from '../CopyInputValue';
@@ -37,8 +36,6 @@ const TIMEOUT_INTERVAL = 5000;
 
 const connector = connect(null, {
 	addAlert,
-	close,
-	open,
 });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -49,9 +46,7 @@ interface ILiferayeOverviewProps extends PropsFromRedux {
 
 const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 	addAlert,
-	close,
 	dataSource: initialDataSource,
-	open,
 }) => {
 	const [dataSource, setDataSource] = useState(initialDataSource);
 	const [, setLoading] = useState(false);
@@ -73,15 +68,13 @@ const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 
 	const dataSourceActive = dataSource.status === DataSourceStatuses.Active;
 
-	const {handleDisconnect} = useDisconnectDataSource({
+	const {disconnectModal, handleDisconnect} = useDisconnectDataSource({
 		addAlert,
-		close,
 		groupId,
 		id,
 		onSubmit: async () => {
 			await handleUpdateDataSource();
 		},
-		open,
 	});
 
 	const handleUpdateDataSource = async () => {
@@ -316,7 +309,6 @@ const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 			>
 				<AssignedPropertiesTable
 					addAlert={addAlert}
-					close={close}
 					customColumns={[
 						{
 							accessor: 'groupsCount',
@@ -333,7 +325,6 @@ const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 					]}
 					dataSource={dataSource}
 					handleUpdateDataSource={handleUpdateDataSource}
-					open={open}
 					updateDataSourceFn={
 						updateLiferay as (params: {
 							[key: string]: any;
@@ -341,6 +332,8 @@ const LiferayOverview: React.FC<ILiferayeOverviewProps> = ({
 					}
 				/>
 			</Card>
+
+			{disconnectModal}
 		</BasePage>
 	);
 };

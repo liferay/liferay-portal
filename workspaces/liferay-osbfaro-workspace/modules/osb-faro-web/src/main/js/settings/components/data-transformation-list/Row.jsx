@@ -2,15 +2,15 @@ import * as API from 'shared/api';
 import autobind from 'autobind-decorator';
 import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
+import CreateMappingModal from 'shared/components/modals/CreateMappingModal';
 import debounce from 'shared/util/debounce-decorator';
 import FieldDropDown from './FieldDropDown';
+import FieldPreviewModal from 'shared/components/modals/FieldPreviewModal';
 import Form from 'shared/components/form';
 import getCN from 'classnames';
+import MountedModal from 'shared/components/MountedModal';
 import React from 'react';
 import {autoCancel, hasRequest} from 'shared/util/request-decorator';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {compose} from 'redux';
-import {connect} from 'react-redux';
 import {hasChanges} from 'shared/util/react';
 import {map, uniqBy} from 'lodash';
 import {Map} from 'immutable';
@@ -27,7 +27,6 @@ export class DataTransformationListRow extends React.Component {
 	};
 
 	static propTypes = {
-		close: PropTypes.func.isRequired,
 		dataSourceFn: PropTypes.func.isRequired,
 		fieldIMap: PropTypes.instanceOf(Map).isRequired,
 		fileVersionId: PropTypes.oneOfType([
@@ -42,7 +41,6 @@ export class DataTransformationListRow extends React.Component {
 		mappingSuggestions: PropTypes.object,
 		onChange: PropTypes.func,
 		onRemove: PropTypes.func,
-		open: PropTypes.func.isRequired,
 		readOnly: PropTypes.bool,
 		sourceFieldPlaceholder: PropTypes.string,
 		sourceFields: PropTypes.object,
@@ -55,6 +53,8 @@ export class DataTransformationListRow extends React.Component {
 		const {initialSearchedSuggestions} = this.props;
 
 		let initialState = {
+			createMappingOpen: false,
+			fieldPreviewOpen: false,
 			loading: true,
 			searchedSuggestions: [],
 			showHelpIcon: true,
@@ -120,32 +120,7 @@ export class DataTransformationListRow extends React.Component {
 
 	@autobind
 	handleFieldPreviewModal() {
-		const {close, fieldIMap, fileVersionId, groupId, id, open, sourceName} =
-			this.props;
-
-		const fieldName = fieldIMap.getIn(['source', 'name']);
-
-		open(modalTypes.FIELD_PREVIEW_MODAL, {
-			dataSourceFn: () =>
-				API.dataSource.fetchFieldValues(
-					fileVersionId
-						? {
-								count: FIELD_PREVIEW_COUNT,
-								fieldName,
-								fileVersionId,
-								groupId
-						  }
-						: {
-								count: FIELD_PREVIEW_COUNT,
-								fieldName,
-								groupId,
-								id
-						  }
-				),
-			fieldName,
-			onClose: close,
-			sourceName
-		});
+		this.setState({fieldPreviewOpen: true});
 	}
 
 	@autobind
@@ -282,17 +257,7 @@ export class DataTransformationListRow extends React.Component {
 
 	@autobind
 	openCreateMappingModal() {
-		const {close, groupId, open} = this.props;
-
-		open(modalTypes.CREATE_MAPPING_MODAL, {
-			groupId,
-			onClose: close,
-			onSubmit: item => {
-				this.handleMappingSelect(item);
-
-				close();
-			}
-		});
+		this.setState({createMappingOpen: true});
 	}
 
 	render() {
@@ -300,6 +265,9 @@ export class DataTransformationListRow extends React.Component {
 			props: {
 				className,
 				fieldIMap,
+				fileVersionId,
+				groupId,
+				id,
 				index,
 				isDuplicateTargetField,
 				readOnly,
@@ -307,7 +275,14 @@ export class DataTransformationListRow extends React.Component {
 				sourceFields,
 				sourceName
 			},
-			state: {loading, showHelpIcon, sourceQuery, suggestionQuery}
+			state: {
+				createMappingOpen,
+				fieldPreviewOpen,
+				loading,
+				showHelpIcon,
+				sourceQuery,
+				suggestionQuery
+			}
 		} = this;
 
 		const sourceIMap = fieldIMap.get('source', new Map());
@@ -425,18 +400,65 @@ export class DataTransformationListRow extends React.Component {
 						</Form.GroupItem>
 					</>
 				)}
+
+				{fieldPreviewOpen && (
+					<MountedModal
+						onClose={() => this.setState({fieldPreviewOpen: false})}
+					>
+						{observer => (
+							<FieldPreviewModal
+								dataSourceFn={() =>
+									API.dataSource.fetchFieldValues(
+										fileVersionId
+											? {
+													count: FIELD_PREVIEW_COUNT,
+													fieldName: fieldIMap.getIn([
+														'source',
+														'name'
+													]),
+													fileVersionId,
+													groupId
+											  }
+											: {
+													count: FIELD_PREVIEW_COUNT,
+													fieldName: fieldIMap.getIn([
+														'source',
+														'name'
+													]),
+													groupId,
+													id
+											  }
+									)
+								}
+								fieldName={fieldIMap.getIn(['source', 'name'])}
+								observer={observer}
+								sourceName={sourceName}
+							/>
+						)}
+					</MountedModal>
+				)}
+
+				{createMappingOpen && (
+					<MountedModal
+						onClose={() => this.setState({createMappingOpen: false})}
+					>
+						{(observer, close) => (
+							<CreateMappingModal
+								groupId={groupId}
+								observer={observer}
+								onClose={close}
+								onSubmit={item => {
+									this.handleMappingSelect(item);
+
+									close();
+								}}
+							/>
+						)}
+					</MountedModal>
+				)}
 			</Form.Group>
 		);
 	}
 }
 
-export default compose(
-	connect(
-		null,
-		{
-			close,
-			open
-		},
-		null
-	)
-)(DataTransformationListRow);
+export default DataTransformationListRow;

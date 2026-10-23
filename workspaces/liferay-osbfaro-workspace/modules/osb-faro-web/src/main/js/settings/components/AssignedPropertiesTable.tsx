@@ -1,8 +1,10 @@
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React, {useEffect, useRef, useState} from 'react';
+import SelectChannelsModal from 'shared/components/modals/SelectChannelsModal';
 import TextTruncate from 'shared/components/TextTruncate';
 import URLConstants from 'shared/util/url-constants';
 import {Alert} from 'shared/types';
@@ -13,10 +15,10 @@ import {DataSourceStatuses, Sizes} from 'shared/util/constants';
 import {fetchChannelDatasources} from 'shared/api/data-source';
 import {getChannelsAutoSelectFilter} from 'shared/util/data-sources';
 import {Link, useParams} from 'react-router-dom';
-import {modalTypes} from 'shared/actions/modals';
 import {Routes, toRoute} from 'shared/util/router';
 import {Text} from '@clayui/core';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
 
@@ -27,26 +29,24 @@ interface IChannel {
 
 interface IAssignedPropertiesTableProps {
 	addAlert: (alert: {alertType: string; message: string}) => void;
-	close: (...args: any[]) => void;
 	customColumns?: any[];
 	dataSource: any;
 	handleUpdateDataSource: (...args: any[]) => void;
 	loading?: boolean;
-	open: (...args: any[]) => void;
 	updateDataSourceFn: (params: {[key: string]: any}) => Promise<any>;
 }
 
 const AssignedPropertiesTable = ({
 	addAlert,
-	close,
 	customColumns = [],
 	dataSource,
 	handleUpdateDataSource,
 	loading: initialLoading = false,
-	open,
 	updateDataSourceFn,
 }: IAssignedPropertiesTableProps) => {
 	const [loading, setLoading] = useState(initialLoading);
+
+	const selectChannelsModal = useModal();
 	const {groupId} = useParams();
 
 	const currentUser = useCurrentUser();
@@ -237,7 +237,6 @@ const AssignedPropertiesTable = ({
 							cellRenderer: ({data}: {data: IChannel}) => (
 								<ToggleRenderer
 									addAlert={addAlert}
-									close={close}
 									data={data}
 									disabled={
 										loading ||
@@ -246,7 +245,6 @@ const AssignedPropertiesTable = ({
 									}
 									key={`${data.channelId}-toggle`}
 									onChange={handleToggleChannel}
-									open={open}
 								/>
 							),
 							label: '',
@@ -305,46 +303,7 @@ const AssignedPropertiesTable = ({
 								<ClayButton
 									disabled={!dataSourceActive}
 									onClick={() =>
-										open(modalTypes.SELECT_CHANNELS_MODAL, {
-											autoSelectFilter:
-												getChannelsAutoSelectFilter(
-													dataSource
-												),
-											groupId,
-											initialItems:
-												channelsConfigurationRef.current?.channels?.map(
-													({channelId}) => channelId
-												),
-											onClose: close,
-											onSelect: async (
-												items: string[]
-											) => {
-												setLoading(true);
-
-												await updateDataSourceFn({
-													channelsConfiguration: {
-														channels: items.map(
-															(
-																channelId: string
-															) => ({
-																channelId,
-																enabled: true,
-															})
-														),
-														enableAllChannels:
-															false,
-													},
-													groupId,
-													id: dataSource.id,
-												} as any);
-
-												await handleUpdateDataSource();
-
-												channelDatasources.refetch?.();
-
-												setLoading(false);
-											},
-										})
+										selectChannelsModal.onOpenChange(true)
 									}
 								>
 									{Liferay.Language.get('select-property')}
@@ -359,26 +318,57 @@ const AssignedPropertiesTable = ({
 					total={channelDatasources.data?.total}
 				/>
 			)}
+
+			{selectChannelsModal.open && (
+				<SelectChannelsModal
+					autoSelectFilter={getChannelsAutoSelectFilter(dataSource)}
+					groupId={groupId as string}
+					initialItems={channelsConfigurationRef.current?.channels?.map(
+						({channelId}) => channelId
+					)}
+					observer={selectChannelsModal.observer}
+					onClose={() => selectChannelsModal.onOpenChange(false)}
+					onSelect={async (items: string[]) => {
+						setLoading(true);
+
+						await updateDataSourceFn({
+							channelsConfiguration: {
+								channels: items.map((channelId: string) => ({
+									channelId,
+									enabled: true,
+								})),
+								enableAllChannels: false,
+							},
+							groupId,
+							id: dataSource.id,
+						} as any);
+
+						await handleUpdateDataSource();
+
+						channelDatasources.refetch?.();
+
+						setLoading(false);
+					}}
+				/>
+			)}
 		</>
 	);
 };
 
 const ToggleRenderer = ({
 	addAlert,
-	close,
 	data,
 	disabled,
 	onChange,
-	open,
 }: {
 	addAlert: (alert: {alertType: string; message: string}) => void;
-	close: (...args: any[]) => void;
 	data: IChannel;
 	disabled: boolean;
 	onChange: (channel: IChannel) => void;
-	open: (...args: any[]) => void;
 }) => {
 	const [state, setState] = useState(data.enabled);
+
+	const modal = useModal();
 
 	const handleChange = (newState: boolean) => {
 		setState(newState);
@@ -396,28 +386,7 @@ const ToggleRenderer = ({
 				disabled={disabled}
 				onToggle={() => {
 					if (state) {
-						open(modalTypes.CONFIRMATION_MODAL, {
-							cancelMessage: Liferay.Language.get('cancel'),
-							message: Liferay.Language.get(
-								'this-action-will-stop-syncing-new-data-from-your-liferay-dxp-instance-to-this-property.-data-that-was-already-synced-will-remain-available.-are-you-sure-you-want-to-continue'
-							),
-							modalVariant: 'modal-warning',
-							onClose: close,
-							onSubmit: () => {
-								handleChange(!state);
-
-								addAlert({
-									alertType: Alert.Types.Success,
-									message: Liferay.Language.get(
-										'properties-settings-have-been-saved'
-									),
-								});
-							},
-							submitButtonDisplay: 'warning',
-							submitMessage: Liferay.Language.get('stop-syncing'),
-							title: Liferay.Language.get('stop-syncing-data'),
-							titleIcon: 'warning-full',
-						});
+						modal.onOpenChange(true);
 					}
 					else {
 						handleChange(!state);
@@ -426,6 +395,30 @@ const ToggleRenderer = ({
 				sizing="sm"
 				toggled={state}
 			/>
+
+			{modal.open && (
+				<ConfirmationModal
+					message={Liferay.Language.get(
+						'this-action-will-stop-syncing-new-data-from-your-liferay-dxp-instance-to-this-property.-data-that-was-already-synced-will-remain-available.-are-you-sure-you-want-to-continue'
+					)}
+					observer={modal.observer}
+					onClose={() => modal.onOpenChange(false)}
+					onSubmit={() => {
+						handleChange(!state);
+
+						addAlert({
+							alertType: Alert.Types.Success,
+							message: Liferay.Language.get(
+								'properties-settings-have-been-saved'
+							),
+						});
+					}}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('stop-syncing')}
+					title={Liferay.Language.get('stop-syncing-data')}
+					type="warning"
+				/>
+			)}
 		</td>
 	);
 };

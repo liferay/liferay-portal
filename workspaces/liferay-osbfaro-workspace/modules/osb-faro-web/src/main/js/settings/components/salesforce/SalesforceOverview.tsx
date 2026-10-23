@@ -14,7 +14,6 @@ import {Alert} from 'shared/types';
 import {AssignedPropertiesTable} from '../AssignedPropertiesTable';
 import {Card} from 'shared/components/revamping/Card';
 import {ClayInput} from '@clayui/form';
-import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {ConnectSalesforceAuth} from './ConnectSalesforceAuth';
@@ -35,8 +34,6 @@ import {withSelectionProvider} from 'shared/context/selection';
 
 const connector = connect(null, {
 	addAlert,
-	close,
-	open,
 });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -47,9 +44,7 @@ interface ISalesforceOverviewProps extends PropsFromRedux {
 
 const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 	addAlert,
-	close,
 	dataSource: initialDataSource,
-	open,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [dataSource, setDataSource] = useState(initialDataSource);
@@ -143,15 +138,13 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 		enabledAllContacts,
 	]);
 
-	const {handleDisconnect} = useDisconnectDataSource({
+	const {disconnectModal, handleDisconnect} = useDisconnectDataSource({
 		addAlert,
-		close,
 		groupId,
 		id,
 		onSubmit: async () => {
 			await handleUpdateDataSource();
 		},
-		open,
 	});
 
 	const {display, label} = getDataSourceDisplayObject(dataSource);
@@ -318,11 +311,9 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 			>
 				<AssignedPropertiesTable
 					addAlert={addAlert}
-					close={close}
 					dataSource={dataSource}
 					handleUpdateDataSource={handleUpdateDataSource}
 					loading={loading}
-					open={open}
 					updateDataSourceFn={
 						updateSalesforce as (params: {
 							[key: string]: any;
@@ -330,6 +321,8 @@ const SalesforceOverview: React.FC<ISalesforceOverviewProps> = ({
 					}
 				/>
 			</Card>
+
+			{disconnectModal}
 		</BasePage>
 	);
 };

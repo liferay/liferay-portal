@@ -1,12 +1,13 @@
 import * as API from 'shared/api';
 import ClayAlert from '@clayui/alert';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import ClayForm from '@clayui/form';
 import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
-import Modal from 'shared/components/modal';
 import NoResultsDisplay from '../NoResultsDisplay';
 import React, {useEffect, useRef, useState} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import URLConstants from 'shared/util/url-constants';
 import {createOrderIOMap, NAME} from 'shared/util/pagination';
 import {Sizes} from 'shared/util/constants';
@@ -32,8 +33,9 @@ interface ISelectChannelsModalProps {
 	 */
 	autoSelectFilter?: (channel: ISelectableChannel) => boolean;
 	groupId: string;
-	onClose: () => {};
-	onSelect: (channels: string[]) => {};
+	observer: Observer;
+	onClose: () => void;
+	onSelect: (channels: string[]) => void;
 	initialItems: string[];
 }
 
@@ -45,6 +47,7 @@ const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
 	 */
 	groupId,
 	initialItems = [],
+	observer,
 	onClose,
 	onSelect,
 }) => {
@@ -113,11 +116,10 @@ const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
 	}, [data]);
 
 	return (
-		<Modal size="lg">
-			<Modal.Header
-				onClose={onClose}
-				title={Liferay.Language.get('select-properties')}
-			/>
+		<ClayModal observer={observer} size="lg">
+			<ClayModal.Header>
+				{Liferay.Language.get('select-properties')}
+			</ClayModal.Header>
 
 			<ClayForm
 				onSubmit={(event) => {
@@ -134,7 +136,7 @@ const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
 					onClose();
 				}}
 			>
-				<Modal.Body className="p-0" inlineScroller>
+				<ClayModal.Body className="p-0" scrollable>
 					{showAlert && (
 						<div className="px-4">
 							<ClayAlert
@@ -218,19 +220,26 @@ const SelectChannelsModal: React.FC<ISelectChannelsModalProps> = ({
 						showCheckbox
 						total={data?.total}
 					/>
-				</Modal.Body>
+				</ClayModal.Body>
 
-				<Modal.Footer>
-					<ClayButton displayType="secondary" onClick={onClose}>
-						{Liferay.Language.get('cancel')}
-					</ClayButton>
+				<ClayModal.Footer
+					last={
+						<ClayButton.Group spaced>
+							<ClayButton
+								displayType="secondary"
+								onClick={onClose}
+							>
+								{Liferay.Language.get('cancel')}
+							</ClayButton>
 
-					<ClayButton displayType="primary" type="submit">
-						{Liferay.Language.get('select')}
-					</ClayButton>
-				</Modal.Footer>
+							<ClayButton displayType="primary" type="submit">
+								{Liferay.Language.get('select')}
+							</ClayButton>
+						</ClayButton.Group>
+					}
+				/>
 			</ClayForm>
-		</Modal>
+		</ClayModal>
 	);
 };
 

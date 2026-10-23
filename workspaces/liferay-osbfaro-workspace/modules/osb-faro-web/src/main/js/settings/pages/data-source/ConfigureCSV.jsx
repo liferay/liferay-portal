@@ -11,7 +11,6 @@ import Sheet from 'shared/components/Sheet';
 import TextTruncate from 'shared/components/TextTruncate';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, open} from 'shared/actions/modals';
 import {compose, withAdminPermission} from 'shared/hoc';
 import {connect} from 'react-redux';
 import {DataSource} from 'shared/util/records';
@@ -24,7 +23,6 @@ import {UNAUTHORIZED_ACCESS} from 'shared/util/request';
 class ConfigureCSV extends React.Component {
 	static propTypes = {
 		addAlert: PropTypes.func.isRequired,
-		close: PropTypes.func.isRequired,
 		dataSource: PropTypes.instanceOf(DataSource),
 		fileVersionId: PropTypes.oneOfType([
 			PropTypes.string,
@@ -33,8 +31,7 @@ class ConfigureCSV extends React.Component {
 		groupId: PropTypes.string.isRequired,
 		history: PropTypes.object.isRequired,
 		id: PropTypes.string,
-		name: PropTypes.string,
-		open: PropTypes.func.isRequired
+		name: PropTypes.string
 	};
 
 	state = {
@@ -185,12 +182,12 @@ class ConfigureCSV extends React.Component {
 
 export {ConfigureCSV as ConfigureCSVTesting};
 
-const ConnectedConfigureCSV = connect(null, {addAlert, close, open})(
+const ConnectedConfigureCSV = connect(null, {addAlert})(
 	ConfigureCSV
 );
 export {ConnectedConfigureCSV as ConfigureCSV};
 
 export default compose(
 	withAdminPermission,
-	connect(null, {addAlert, close, open})
+	connect(null, {addAlert})
 )(ConfigureCSV);

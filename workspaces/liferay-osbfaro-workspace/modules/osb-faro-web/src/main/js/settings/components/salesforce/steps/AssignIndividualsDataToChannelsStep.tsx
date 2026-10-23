@@ -5,14 +5,15 @@ import ClayList from '@clayui/list';
 import ClaySticker from '@clayui/sticker';
 import getCN from 'classnames';
 import React, {useEffect, useState} from 'react';
-import {Alert, Modal} from 'shared/types';
+import SelectChannelsModal from 'shared/components/modals/SelectChannelsModal';
+import {Alert} from 'shared/types';
 import {ClayCheckbox} from '@clayui/form';
 import {DataSource} from 'shared/util/records';
 import {getChannelsAutoSelectFilter} from 'shared/util/data-sources';
-import {modalTypes} from 'shared/actions/modals';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
+import {useModal} from '@clayui/modal';
 import {useParams} from 'react-router-dom';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useWizardPage} from 'settings/components/base-page/WizardPageContext';
@@ -20,19 +21,15 @@ import {WizardPageButtonGroup} from 'settings/components/base-page/WizardPageBut
 
 interface IAssignIndividualsDataToPropertiesStepProps {
 	addAlert: Alert.AddAlert;
-	close: Modal.close;
 	onPrev: () => void;
 	onSubmit: (dataSource: DataSource) => void;
-	open: Modal.open;
 	updateDataSourceFn: (params: {[key: string]: any}) => Promise<any>;
 }
 
 const AssignIndividualsDataToPropertiesStep = ({
 	addAlert,
-	close,
 	onPrev,
 	onSubmit,
-	open,
 	updateDataSourceFn,
 }: IAssignIndividualsDataToPropertiesStepProps) => {
 	const history = useHistoryAdapter();
@@ -41,6 +38,7 @@ const AssignIndividualsDataToPropertiesStep = ({
 	const [allChannelsSelected, setAllChannelsSelected] = useState(false);
 	const {dataSource} = useWizardPage();
 	const [loading, setLoading] = useState(false);
+	const selectChannelsModal = useModal();
 
 	useEffect(() => {
 		const channelsConfiguration = dataSource?.provider?.get(
@@ -152,16 +150,7 @@ const AssignIndividualsDataToPropertiesStep = ({
 								disabled={allChannelsSelected}
 								displayType="secondary"
 								onClick={() => {
-									open(modalTypes.SELECT_CHANNELS_MODAL, {
-										autoSelectFilter:
-											getChannelsAutoSelectFilter(
-												dataSource
-											),
-										groupId,
-										initialItems: selectedItems,
-										onClose: close,
-										onSelect: setSelectedItems,
-									});
+									selectChannelsModal.onOpenChange(true);
 								}}
 								size="sm"
 							>
@@ -197,6 +186,17 @@ const AssignIndividualsDataToPropertiesStep = ({
 				onCancel={onPrev}
 				prevButtonLabel={Liferay.Language.get('previous')}
 			/>
+
+			{selectChannelsModal.open && (
+				<SelectChannelsModal
+					autoSelectFilter={getChannelsAutoSelectFilter(dataSource)}
+					groupId={groupId}
+					initialItems={selectedItems}
+					observer={selectChannelsModal.observer}
+					onClose={() => selectChannelsModal.onOpenChange(false)}
+					onSelect={setSelectedItems}
+				/>
+			)}
 		</ClayForm>
 	);
 };

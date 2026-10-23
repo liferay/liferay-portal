@@ -5,7 +5,6 @@ import ClayLink from '@clayui/link';
 import React, {useEffect, useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {addAlert} from 'shared/actions/alerts';
-import {close, open} from 'shared/actions/modals';
 import {connect, ConnectedProps} from 'react-redux';
 import {Heading, Text} from '@clayui/core';
 import {Routes, toRoute} from 'shared/util/router';
@@ -61,7 +60,7 @@ interface IWizardStepsProps extends PropsFromRedux {
 	steps: Step[];
 }
 
-const WizardSteps = ({addAlert, close, open, steps}: IWizardStepsProps) => {
+const WizardSteps = ({addAlert, steps}: IWizardStepsProps) => {
 	const {groupId = ''} = useParams<{groupId: string}>();
 	const history = useHistoryAdapter();
 	const params = useQueryParams();
@@ -127,7 +126,6 @@ const WizardSteps = ({addAlert, close, open, steps}: IWizardStepsProps) => {
 				{!loadingContext && (
 					<currentStep.content
 						addAlert={addAlert}
-						close={close}
 						groupId={groupId}
 						onNext={() => {
 							if (stepIndex < steps.length - 1) {
@@ -139,7 +137,6 @@ const WizardSteps = ({addAlert, close, open, steps}: IWizardStepsProps) => {
 								handleSetStep(stepIndex - 1);
 							}
 						}}
-						open={open}
 					/>
 				)}
 			</div>
@@ -149,8 +146,6 @@ const WizardSteps = ({addAlert, close, open, steps}: IWizardStepsProps) => {
 
 const connector = connect(null, {
 	addAlert,
-	close,
-	open,
 });
 
 const WizardPage = ({children}: {children: React.ReactNode}) => {

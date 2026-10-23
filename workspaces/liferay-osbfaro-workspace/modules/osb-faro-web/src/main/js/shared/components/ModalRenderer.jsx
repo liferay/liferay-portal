@@ -2,15 +2,11 @@ import autobind from 'autobind-decorator';
 import ConfirmationModal from './modals/ConfirmationModal';
 import ConnectDXPModal from './modals/ConnectDXPModal';
 import ContactSalesModal from './modals/ContactSalesModal';
-import CreateMappingModal from './modals/CreateMappingModal';
-import CSVPreviewModal from './modals/CSVPreviewModal';
 import DeleteChannelModal from './modals/DeleteChannelModal';
 import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
-import FieldPreviewModal from './modals/FieldPreviewModal';
 import HelpWidgetModal from './modals/help-widget-modal';
 import InputModal from './modals/InputModal';
 import React from 'react';
-import SelectChannelsModal from './modals/SelectChannelsModal';
 import SelectItemsModal from './modals/SelectItemsModal';
 import TestModal from './modals/TestModal';
 import TimeZoneSelectionModal from './modals/TimeZoneSelectionModal';
@@ -26,15 +22,11 @@ const COMPONENT_MAP = {
 	[modalTypes.CONFIRMATION_MODAL]: ConfirmationModal,
 	[modalTypes.CONNECT_DXP_MODAL]: ConnectDXPModal,
 	[modalTypes.CONTACT_SALES_MODAL]: ContactSalesModal,
-	[modalTypes.CREATE_MAPPING_MODAL]: CreateMappingModal,
-	[modalTypes.CSV_PREVIEW_MODAL]: CSVPreviewModal,
 	[modalTypes.DELETE_CHANNEL_MODAL]: DeleteChannelModal,
 	[modalTypes.DELETE_CONFIRMATION_MODAL]: DeleteConfirmationModal,
-	[modalTypes.FIELD_PREVIEW_MODAL]: FieldPreviewModal,
 	[modalTypes.HELP_WIDGET_MODAL]: HelpWidgetModal,
 	[modalTypes.INPUT_MODAL]: InputModal,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
-	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,
 	[modalTypes.TIME_ZONE_SELECTION_MODAL]: TimeZoneSelectionModal,
 };

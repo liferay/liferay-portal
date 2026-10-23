@@ -14,7 +14,6 @@ import {Alert} from 'shared/types';
 import {AssignedPropertiesTable} from '../AssignedPropertiesTable';
 import {Card} from 'shared/components/revamping/Card';
 import {ClayInput} from '@clayui/form';
-import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {ConnectMarketoCampaignAuth} from './ConnectMarketoCampaignAuth';
@@ -35,8 +34,6 @@ import {withSelectionProvider} from 'shared/context/selection';
 
 const connector = connect(null, {
 	addAlert,
-	close,
-	open,
 });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -47,9 +44,7 @@ interface IMarketoCampaignOverviewProps extends PropsFromRedux {
 
 const MarketoCampaignOverview: React.FC<IMarketoCampaignOverviewProps> = ({
 	addAlert,
-	close,
 	dataSource: initialDataSource,
-	open,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [dataSource, setDataSource] = useState(initialDataSource);
@@ -128,15 +123,13 @@ const MarketoCampaignOverview: React.FC<IMarketoCampaignOverviewProps> = ({
 		setAlert(connectionAlert);
 	}, [dataSourceActive, enableAllLeads]);
 
-	const {handleDisconnect} = useDisconnectDataSource({
+	const {disconnectModal, handleDisconnect} = useDisconnectDataSource({
 		addAlert,
-		close,
 		groupId,
 		id,
 		onSubmit: async () => {
 			await handleUpdateDataSource();
 		},
-		open,
 	});
 
 	const {display, label} = getDataSourceDisplayObject(dataSource);
@@ -297,14 +290,14 @@ const MarketoCampaignOverview: React.FC<IMarketoCampaignOverviewProps> = ({
 			>
 				<AssignedPropertiesTable
 					addAlert={addAlert}
-					close={close}
 					dataSource={dataSource}
 					handleUpdateDataSource={handleUpdateDataSource}
 					loading={loading}
-					open={open}
 					updateDataSourceFn={updateMarketoCampaign}
 				/>
 			</Card>
+
+			{disconnectModal}
 		</BasePage>
 	);
 };

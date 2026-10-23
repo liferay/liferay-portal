@@ -15,7 +15,6 @@ import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {AssignedPropertiesTable} from '../AssignedPropertiesTable';
 import {Card} from 'shared/components/revamping/Card';
-import {close, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -46,8 +45,6 @@ import {withSelectionProvider} from 'shared/context/selection';
 
 const connector = connect(null, {
 	addAlert,
-	close,
-	open,
 });
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -59,10 +56,8 @@ interface IConnectorOverviewProps extends PropsFromRedux {
 
 const ConnectorOverview: React.FC<IConnectorOverviewProps> = ({
 	addAlert,
-	close,
 	config,
 	dataSource: initialDataSource,
-	open,
 }) => {
 	const [loading, setLoading] = useState(false);
 	const [dataSource, setDataSource] = useState(initialDataSource);
@@ -158,20 +153,18 @@ const ConnectorOverview: React.FC<IConnectorOverviewProps> = ({
 		}
 	};
 
-	const {handleDisconnect} = useDisconnectDataSource({
+	const {disconnectModal, handleDisconnect} = useDisconnectDataSource({
 		addAlert,
 		beforeSubmit: async () => {
 			if (token) {
 				await revoke({groupId, token});
 			}
 		},
-		close,
 		groupId,
 		id,
 		onSubmit: async () => {
 			await handleUpdateDataSource();
 		},
-		open,
 	});
 
 	const {display, label} = getConnectorStatusDisplay(dataSource);
@@ -329,15 +322,15 @@ const ConnectorOverview: React.FC<IConnectorOverviewProps> = ({
 			>
 				<AssignedPropertiesTable
 					addAlert={addAlert}
-					close={close}
 					customColumns={config.columns ?? []}
 					dataSource={dataSource}
 					handleUpdateDataSource={handleUpdateDataSource}
 					loading={loading}
-					open={open}
 					updateDataSourceFn={updateDataSourceFn}
 				/>
 			</Card>
+
+			{disconnectModal}
 		</BasePage>
 	);
 };

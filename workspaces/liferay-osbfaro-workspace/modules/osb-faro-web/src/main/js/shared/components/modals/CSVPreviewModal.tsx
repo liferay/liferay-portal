@@ -1,8 +1,8 @@
+import ClayModal from '@clayui/modal';
 import * as API from 'shared/api';
 import ClayTable from '@clayui/table';
-import getCN from 'classnames';
-import Modal from 'shared/components/modal';
 import React, {useState} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {noop} from 'lodash';
 import {sub} from 'shared/util/lang';
 import {useEffect} from 'react';
@@ -15,7 +15,7 @@ interface ICSVPreviewModalProps extends React.HTMLAttributes<HTMLElement> {
 	groupId: string;
 	id: string;
 	name: string;
-	onClose?: () => void;
+	observer: Observer;
 }
 
 type CSVFieldData = {
@@ -30,7 +30,7 @@ const CSVPreviewModal: React.FC<ICSVPreviewModalProps> = ({
 	groupId,
 	id,
 	name,
-	onClose = noop,
+	observer,
 }) => {
 	const [data, setData] = useState<CSVFieldData[]>([]);
 
@@ -52,41 +52,48 @@ const CSVPreviewModal: React.FC<ICSVPreviewModalProps> = ({
 	}, [fieldName, fileVersionId, groupId, id]);
 
 	return (
-		<Modal className={getCN('csv-preview-modal-root', className)} size="lg">
-			<Modal.Header
-				onClose={onClose}
-				title={sub(Liferay.Language.get('data-preview-x'), [name])}
-			/>
+		<ClayModal className={className} observer={observer} size="lg">
+			<ClayModal.Header>
+				{sub(Liferay.Language.get('data-preview-x'), [name])}
+			</ClayModal.Header>
 
-			<Modal.Body>
-				<ClayTable>
-					<ClayTable.Head>
-						<ClayTable.Row>
-							{data.map(({name}, i) => (
-								<ClayTable.Cell expanded headingCell key={i}>
-									{name}
-								</ClayTable.Cell>
-							))}
-						</ClayTable.Row>
-					</ClayTable.Head>
+			<ClayModal.Body>
+				<div className="table-responsive">
+					<ClayTable className="table-bordered">
+						<ClayTable.Head>
+							<ClayTable.Row>
+								{data.map(({name}, i) => (
+									<ClayTable.Cell
+										expanded
+										headingCell
+										key={i}
+									>
+										{name}
+									</ClayTable.Cell>
+								))}
+							</ClayTable.Row>
+						</ClayTable.Head>
 
-					<ClayTable.Body>
-						{!!data.length &&
-							data[0].values.map((_val: string, row: number) => (
-								<ClayTable.Row key={row}>
-									{data.map((_val, column) => (
-										<ClayTable.Cell
-											key={`${column}-${row}`}
-										>
-											{data[column].values[row]}
-										</ClayTable.Cell>
-									))}
-								</ClayTable.Row>
-							))}
-					</ClayTable.Body>
-				</ClayTable>
-			</Modal.Body>
-		</Modal>
+						<ClayTable.Body>
+							{!!data.length &&
+								data[0].values.map(
+									(_val: string, row: number) => (
+										<ClayTable.Row key={row}>
+											{data.map((_val, column) => (
+												<ClayTable.Cell
+													key={`${column}-${row}`}
+												>
+													{data[column].values[row]}
+												</ClayTable.Cell>
+											))}
+										</ClayTable.Row>
+									)
+								)}
+						</ClayTable.Body>
+					</ClayTable>
+				</div>
+			</ClayModal.Body>
+		</ClayModal>
 	);
 };
 

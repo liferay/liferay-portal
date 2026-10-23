@@ -4,16 +4,16 @@ import autobind from 'autobind-decorator';
 import BasePage from 'settings/components/base-page/BasePage';
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
+import CSVPreviewModal from 'shared/components/modals/CSVPreviewModal';
 import DataTransformationList from 'settings/components/data-transformation-list';
 import DefinitionItem from 'shared/components/DefinitionItem';
 import getCN from 'classnames';
 import Loading from 'shared/components/Loading';
+import MountedModal from 'shared/components/MountedModal';
 import React from 'react';
 import Sheet from 'shared/components/Sheet';
 import {autoCancel, hasRequest} from 'shared/util/request-decorator';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
-import {connect} from 'react-redux';
 import {DataSource, User} from 'shared/util/records';
 import {FieldContexts} from 'shared/util/constants';
 import {hasChanges} from 'shared/util/react';
@@ -33,15 +33,14 @@ import {withCurrentUser} from 'shared/hoc';
 @hasRequest
 export class CSV extends React.Component {
 	static propTypes = {
-		close: PropTypes.func.isRequired,
 		currentUser: PropTypes.instanceOf(User).isRequired,
 		dataSource: PropTypes.instanceOf(DataSource).isRequired,
 		groupId: PropTypes.string.isRequired,
-		id: PropTypes.string,
-		open: PropTypes.func.isRequired
+		id: PropTypes.string
 	};
 
 	state = {
+		csvPreviewOpen: false,
 		fieldsIList: new List(),
 		fileName: '',
 		loading: true,
@@ -156,17 +155,7 @@ export class CSV extends React.Component {
 
 	@autobind
 	handleCSVPreviewModal() {
-		const {
-			props: {close, groupId, id, open},
-			state: {name}
-		} = this;
-
-		open(modalTypes.CSV_PREVIEW_MODAL, {
-			groupId,
-			id,
-			name,
-			onClose: close
-		});
+		this.setState({csvPreviewOpen: true});
 	}
 
 	@autobind
@@ -190,6 +179,7 @@ export class CSV extends React.Component {
 		const {
 			props: {className, currentUser, groupId, id},
 			state: {
+				csvPreviewOpen,
 				fieldsIList,
 				fileName,
 				loading,
@@ -304,9 +294,24 @@ export class CSV extends React.Component {
 						/>
 					)}
 				</Sheet>
+
+				{csvPreviewOpen && (
+					<MountedModal
+						onClose={() => this.setState({csvPreviewOpen: false})}
+					>
+						{observer => (
+							<CSVPreviewModal
+								groupId={groupId}
+								id={id}
+								name={name}
+								observer={observer}
+							/>
+						)}
+					</MountedModal>
+				)}
 			</BasePage>
 		);
 	}
 }
 
-export default compose(connect(null, {close, open}), withCurrentUser)(CSV);
+export default compose(withCurrentUser)(CSV);

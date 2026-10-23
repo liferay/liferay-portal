@@ -1,13 +1,13 @@
 import * as API from 'shared/api';
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import Form, {
 	toPromise,
 	validatePattern,
 	validateRequired,
 } from 'shared/components/form';
-import getCN from 'classnames';
-import Modal from 'shared/components/modal';
 import React, {useRef} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {FieldContexts} from 'shared/util/constants';
 import {noop, trim} from 'lodash';
 import {sequence} from 'shared/util/promise';
@@ -34,6 +34,7 @@ const TYPES = [
 interface ICreateMappingModalProps
 	extends React.HTMLAttributes<HTMLDivElement> {
 	groupId: string;
+	observer: Observer;
 	onClose: () => void;
 	onSubmit?: (fieldMapping: any) => void;
 }
@@ -41,6 +42,7 @@ interface ICreateMappingModalProps
 const CreateMappingModal: React.FC<ICreateMappingModalProps> = ({
 	className,
 	groupId,
+	observer,
 	onClose,
 	onSubmit = noop,
 }) => {
@@ -97,14 +99,10 @@ const CreateMappingModal: React.FC<ICreateMappingModalProps> = ({
 	};
 
 	return (
-		<Modal
-			className={getCN('create-mapping-modal-root', className)}
-			size="lg"
-		>
-			<Modal.Header
-				onClose={onClose}
-				title={Liferay.Language.get('create-new-csv-field')}
-			/>
+		<ClayModal className={className} observer={observer} size="lg">
+			<ClayModal.Header>
+				{Liferay.Language.get('create-new-csv-field')}
+			</ClayModal.Header>
 
 			<Form<CreateMappingFormValues>
 				initialValues={{name: '', type: {name: '', value: null}}}
@@ -112,7 +110,7 @@ const CreateMappingModal: React.FC<ICreateMappingModalProps> = ({
 			>
 				{({handleSubmit, isValid}) => (
 					<Form.Form onSubmit={handleSubmit}>
-						<Form.Group autoFit>
+						<Form.Group autoFit className="px-4 py-5">
 							<Form.Input
 								label={Liferay.Language.get('new-field-name')}
 								name="name"
@@ -131,7 +129,7 @@ const CreateMappingModal: React.FC<ICreateMappingModalProps> = ({
 								])}
 							/>
 
-							<div>
+							<Form.GroupItem shrink>
 								<label>
 									{Liferay.Language.get('field-type')}
 								</label>
@@ -146,31 +144,35 @@ const CreateMappingModal: React.FC<ICreateMappingModalProps> = ({
 									showSearch={false}
 									validate={validateRequired}
 								/>
-							</div>
+							</Form.GroupItem>
 						</Form.Group>
 
-						<Modal.Footer>
-							<ClayButton
-								className="button-root"
-								displayType="secondary"
-								onClick={onClose}
-							>
-								{Liferay.Language.get('cancel')}
-							</ClayButton>
+						<ClayModal.Footer
+							last={
+								<ClayButton.Group spaced>
+									<ClayButton
+										className="button-root"
+										displayType="secondary"
+										onClick={onClose}
+									>
+										{Liferay.Language.get('cancel')}
+									</ClayButton>
 
-							<ClayButton
-								className="button-root"
-								disabled={!isValid}
-								displayType="primary"
-								type="submit"
-							>
-								{Liferay.Language.get('create')}
-							</ClayButton>
-						</Modal.Footer>
+									<ClayButton
+										className="button-root"
+										disabled={!isValid}
+										displayType="primary"
+										type="submit"
+									>
+										{Liferay.Language.get('create')}
+									</ClayButton>
+								</ClayButton.Group>
+							}
+						/>
 					</Form.Form>
 				)}
 			</Form>
-		</Modal>
+		</ClayModal>
 	);
 };
 
