@@ -5,6 +5,7 @@
 
 package com.liferay.headless.cms.internal.resource.v1_0;
 
+import com.liferay.asset.link.service.AssetLinkLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.depot.service.DepotEntryService;
 import com.liferay.headless.cms.dto.v1_0.UnlinkedAsset;
@@ -92,10 +93,10 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 		}
 
 		UnlinkedAssetSearcher unlinkedAssetSearcher = new UnlinkedAssetSearcher(
-			_aggregations, _objectDefinitionLocalService,
-			_objectEntryLocalService, _objectRelationshipLocalService,
-			_searcher, _searchRequestBuilderFactory,
-			_siteNavigationMenuItemLocalService);
+			_aggregations, _assetLinkLocalService,
+			_objectDefinitionLocalService, _objectEntryLocalService,
+			_objectRelationshipLocalService, _searcher,
+			_searchRequestBuilderFactory, _siteNavigationMenuItemLocalService);
 
 		SearchResponse searchResponse = unlinkedAssetSearcher.search(
 			contextCompany.getCompanyId(), selectedSpaceGroupIds,
@@ -181,6 +182,9 @@ public class UnlinkedAssetResourceImpl extends BaseUnlinkedAssetResourceImpl {
 
 	@Reference
 	private Aggregations _aggregations;
+
+	@Reference
+	private AssetLinkLocalService _assetLinkLocalService;
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
