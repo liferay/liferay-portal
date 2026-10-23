@@ -14,6 +14,7 @@ import com.liferay.batch.engine.internal.reader.JSONLBatchEngineImportTaskItemRe
 import com.liferay.batch.engine.internal.reader.XLSBatchEngineImportTaskItemReaderImpl;
 import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.model.impl.BatchEngineImportTaskImpl;
+import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.StringBundler;
@@ -112,6 +113,36 @@ public class BatchEngineTaskContentSanitizerTest {
 				HashMapBuilder.<String, Serializable>put(
 					"delimiter", StringPool.SEMICOLON
 				).build()));
+	}
+
+	@Test
+	public void testSanitizeCSVWithPasswordFieldValueFunction()
+		throws Exception {
+
+		String login1 = StringUtil.randomString();
+		String login2 = StringUtil.randomString();
+		String password = StringUtil.randomString();
+
+		byte[] bytes = _sanitize(
+			BatchEngineTaskContentType.CSV, Collections.emptyMap(),
+			StringBundler.concat(
+				"login,password\n", login1, ", ", password, " \n", login2,
+				",\n"),
+			Collections.emptyMap(), StringUtil::upperCase);
+
+		_assertBatchEngineImportTaskItemReaderResult(
+			List.of(
+				HashMapBuilder.<String, Object>put(
+					"login", login1
+				).put(
+					"password", StringUtil.upperCase(password)
+				).build(),
+				HashMapBuilder.<String, Object>put(
+					"login", login2
+				).build()),
+			new CSVBatchEngineImportTaskItemReaderImpl(
+				StringPool.COMMA, new UnsyncByteArrayInputStream(bytes),
+				Collections.emptyMap()));
 	}
 
 	@Test
@@ -226,6 +257,45 @@ public class BatchEngineTaskContentSanitizerTest {
 	}
 
 	@Test
+	public void testSanitizeJSONWithPasswordFieldValueFunction()
+		throws Exception {
+
+		String login1 = StringUtil.randomString();
+		String login2 = StringUtil.randomString();
+		String password = StringUtil.randomString();
+
+		byte[] bytes = _sanitize(
+			BatchEngineTaskContentType.JSON, Collections.emptyMap(),
+			StringBundler.concat(
+				"[{\"credential\": {\"login\": \"", login1,
+				"\", \"password\": \"", password, "\"}, \"login\": \"", login1,
+				"\", \"password\": \"", password, "\"}, {\"login\": \"", login2,
+				"\", \"password\": null}]"),
+			Collections.emptyMap(), StringUtil::upperCase);
+
+		_assertBatchEngineImportTaskItemReaderResult(
+			List.of(
+				HashMapBuilder.<String, Object>put(
+					"credential",
+					HashMapBuilder.<String, Object>put(
+						"login", login1
+					).put(
+						"password", StringUtil.upperCase(password)
+					).build()
+				).put(
+					"login", login1
+				).put(
+					"password", StringUtil.upperCase(password)
+				).build(),
+				HashMapBuilder.<String, Object>put(
+					"login", login2
+				).build()),
+			new JSONBatchEngineImportTaskItemReaderImpl(
+				Collections.emptyList(),
+				new UnsyncByteArrayInputStream(bytes)));
+	}
+
+	@Test
 	public void testSanitizeMalformedCSV() throws Exception {
 		Assert.assertThrows(
 			Exception.class,
@@ -284,7 +354,8 @@ public class BatchEngineTaskContentSanitizerTest {
 
 		byte[] bytes = _sanitize(
 			BatchEngineTaskContentType.XLSX, Collections.emptyMap(),
-			unsyncByteArrayOutputStream.toByteArray(), Collections.emptyMap());
+			unsyncByteArrayOutputStream.toByteArray(), Collections.emptyMap(),
+			value -> null);
 
 		_assertBatchEngineImportTaskItemReaderResult(
 			List.of(
@@ -306,6 +377,41 @@ public class BatchEngineTaskContentSanitizerTest {
 				Assert.assertNotEquals(password, richTextString.getString());
 			}
 		}
+	}
+
+	@Test
+	public void testSanitizeXLSWithPasswordFieldValueFunction()
+		throws Exception {
+
+		String login = StringUtil.randomString();
+		String password = StringUtil.randomString();
+
+		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
+			new UnsyncByteArrayOutputStream();
+
+		try (XSSFWorkbook xssfWorkbook = new XSSFWorkbook()) {
+			Sheet sheet = xssfWorkbook.createSheet();
+
+			_createRow(sheet, 0, "login", "password");
+			_createRow(sheet, 1, login, password);
+
+			xssfWorkbook.write(unsyncByteArrayOutputStream);
+		}
+
+		_assertBatchEngineImportTaskItemReaderResult(
+			List.of(
+				HashMapBuilder.<String, Object>put(
+					"login", login
+				).put(
+					"password", StringUtil.upperCase(password)
+				).build()),
+			new XLSBatchEngineImportTaskItemReaderImpl(
+				Collections.emptyList(),
+				new UnsyncByteArrayInputStream(
+					_sanitize(
+						BatchEngineTaskContentType.XLSX, Collections.emptyMap(),
+						unsyncByteArrayOutputStream.toByteArray(),
+						Collections.emptyMap(), StringUtil::upperCase))));
 	}
 
 	private void _assertBatchEngineImportTaskItemReaderResult(
@@ -404,14 +510,17 @@ public class BatchEngineTaskContentSanitizerTest {
 	private byte[] _sanitize(
 			BatchEngineTaskContentType batchEngineTaskContentType,
 			Map<String, Serializable> fieldNameMapping, byte[] content,
-			Map<String, Serializable> parameters)
+			Map<String, Serializable> parameters,
+			UnsafeFunction<String, String, Exception>
+				passwordFieldValueUnsafeFunction)
 		throws Exception {
 
 		BatchEngineTaskContentSanitizer batchEngineTaskContentSanitizer =
 			new BatchEngineTaskContentSanitizer(
 				_createBatchEngineImportTask(
 					batchEngineTaskContentType, fieldNameMapping, parameters),
-				_configurationProvider, _passwordFieldNames);
+				_configurationProvider, _passwordFieldNames,
+				passwordFieldValueUnsafeFunction);
 
 		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
 			new UnsyncByteArrayOutputStream();
@@ -439,8 +548,22 @@ public class BatchEngineTaskContentSanitizerTest {
 		throws Exception {
 
 		return _sanitize(
+			batchEngineTaskContentType, fieldNameMapping, content, parameters,
+			value -> null);
+	}
+
+	private byte[] _sanitize(
+			BatchEngineTaskContentType batchEngineTaskContentType,
+			Map<String, Serializable> fieldNameMapping, String content,
+			Map<String, Serializable> parameters,
+			UnsafeFunction<String, String, Exception>
+				passwordFieldValueUnsafeFunction)
+		throws Exception {
+
+		return _sanitize(
 			batchEngineTaskContentType, fieldNameMapping,
-			content.getBytes(StandardCharsets.UTF_8), parameters);
+			content.getBytes(StandardCharsets.UTF_8), parameters,
+			passwordFieldValueUnsafeFunction);
 	}
 
 	private byte[] _zip(byte[] bytes) throws Exception {
