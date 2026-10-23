@@ -58,20 +58,18 @@ test(
 					.click();
 			});
 
-			await test.step('Check that the "/states/search_state.svg" image is displayed', async () => {
+			await test.step('Check that the "search-state" illustration is displayed', async () => {
 				await expect(
 					fdsSamplePage.emptyStateContainer.locator(
-						'img[src$="/states/search_state.svg"]'
-					)
-				).toBeVisible();
-			});
-
-			await test.step('Check that the "/states/search_state_reduced_motion.svg" image exists in the DOM', async () => {
-				await expect(
-					fdsSamplePage.emptyStateContainer.locator(
-						'img[src$="/states/search_state_reduced_motion.svg"]'
+						'use[href$="/clay/empty_states.svg#search-state"]'
 					)
 				).toBeAttached();
+
+				await expect(
+					fdsSamplePage.emptyStateContainer.locator(
+						'.c-empty-state-illustration svg'
+					)
+				).toBeVisible();
 			});
 
 			await test.step('Check that the text "No Results Found" is displayed', async () => {
@@ -137,20 +135,18 @@ test(
 				).toBeVisible();
 			});
 
-			await test.step('Check that the "/states/empty_state.svg" image is displayed', async () => {
+			await test.step('Check that the "empty-state" illustration is displayed', async () => {
 				await expect(
 					fdsSamplePage.emptyStateContainer.locator(
-						'img[src$="/states/empty_state.svg"]'
-					)
-				).toBeVisible();
-			});
-
-			await test.step('Check that the "/states/empty_state_reduced_motion.svg" image exists in the DOM', async () => {
-				await expect(
-					fdsSamplePage.emptyStateContainer.locator(
-						'img[src$="/states/empty_state_reduced_motion.svg"]'
+						'use[href$="/clay/empty_states.svg#empty-state"]'
 					)
 				).toBeAttached();
+
+				await expect(
+					fdsSamplePage.emptyStateContainer.locator(
+						'.c-empty-state-illustration svg'
+					)
+				).toBeVisible();
 			});
 
 			await test.step('Check that the button "Clear Search" is displayed', async () => {
@@ -212,20 +208,18 @@ test(
 					.click();
 			});
 
-			await test.step('Check that the "/states/search_state.svg" image is displayed', async () => {
+			await test.step('Check that the "search-state" illustration is displayed', async () => {
 				await expect(
 					fdsSamplePage.emptyStateContainer.locator(
-						'img[src$="/states/search_state.svg"]'
-					)
-				).toBeVisible();
-			});
-
-			await test.step('Check that the "/states/search_state_reduced_motion.svg" image exists in the DOM', async () => {
-				await expect(
-					fdsSamplePage.emptyStateContainer.locator(
-						'img[src$="/states/search_state_reduced_motion.svg"]'
+						'use[href$="/clay/empty_states.svg#search-state"]'
 					)
 				).toBeAttached();
+
+				await expect(
+					fdsSamplePage.emptyStateContainer.locator(
+						'.c-empty-state-illustration svg'
+					)
+				).toBeVisible();
 			});
 
 			await test.step('Check that the text "No Results Found" is displayed', async () => {

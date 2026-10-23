@@ -46,12 +46,31 @@ describe('EmptyState', () => {
 		return screen.getAllByRole('presentation')[0];
 	}
 
-	it('displays the default search state image', () => {
-		const image = renderEmptyState({});
+	it('displays the configured image', () => {
+		const image = renderEmptyState({
+			emptyStateConfiguration: {image: '/states/empty_state.svg'},
+		});
 
 		expect(image).toHaveAttribute(
 			'src',
-			expect.stringMatching(/\/states\/search_state\.svg$/)
+			expect.stringMatching(/\/states\/empty_state\.svg$/)
+		);
+	});
+
+	it('does not display a reduced motion image when only an image is configured', () => {
+		renderEmptyState({
+			emptyStateConfiguration: {image: '/states/empty_state.svg'},
+		});
+
+		expect(screen.getAllByRole('presentation')).toHaveLength(1);
+	});
+
+	it('displays the default search state illustration', () => {
+		const image = renderEmptyState({});
+
+		expect(image.querySelector('use')).toHaveAttribute(
+			'href',
+			expect.stringMatching(/\/clay\/empty_states\.svg#search-state$/)
 		);
 	});
 
