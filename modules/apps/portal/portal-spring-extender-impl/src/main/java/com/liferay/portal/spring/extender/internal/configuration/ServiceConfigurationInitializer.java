@@ -69,6 +69,10 @@ public class ServiceConfigurationInitializer {
 	}
 
 	public void stop() {
+		if (!_started) {
+			return;
+		}
+
 		try {
 			Closeable closeable = _futureTask.get();
 
@@ -80,6 +84,8 @@ public class ServiceConfigurationInitializer {
 	}
 
 	protected void start() {
+		_started = true;
+
 		if (GetterUtil.getBoolean(
 				PropsUtil.get(PropsKeys.DEPENDENCY_MANAGER_THREAD_POOL_ENABLED),
 				true) &&
@@ -140,6 +146,7 @@ public class ServiceConfigurationInitializer {
 		new ModuleResourceLoader();
 	private final ServiceComponentLocalService _serviceComponentLocalService;
 	private final Configuration _serviceConfiguration;
+	private volatile boolean _started;
 
 	private class ModuleResourceLoader
 		implements ServiceComponentConfiguration {
