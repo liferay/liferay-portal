@@ -103,7 +103,6 @@ function NavBar({creationMenu, showFilters, showSearch}) {
 NavBar.propTypes = {
 	creationMenu: PropTypes.shape({
 		primaryItems: PropTypes.array,
-		secondaryItems: PropTypes.array,
 	}),
 	showFilters: PropTypes.bool,
 	showSearch: PropTypes.bool,

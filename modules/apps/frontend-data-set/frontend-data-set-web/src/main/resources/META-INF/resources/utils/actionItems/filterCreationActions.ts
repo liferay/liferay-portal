@@ -4,6 +4,7 @@
  */
 
 import {ICreationActionItem} from '../types';
+import hasNestedActions from './hasNestedActions';
 
 const filterCreationActions = ({
 	customActions,
@@ -12,23 +13,41 @@ const filterCreationActions = ({
 	customActions: Array<ICreationActionItem>;
 	globalCollectionActions: any;
 }): Array<ICreationActionItem> => {
-	return customActions.filter((action: ICreationActionItem) => {
-		if (
-			!action.data?.permissionKey ||
-			(action.data?.permissionKey &&
-				globalCollectionActions &&
-				Object.keys(globalCollectionActions).some((globalAction) => {
-					if (action.data?.permissionKey) {
-						return (
-							globalAction.toLowerCase() ===
-							action.data.permissionKey.toLowerCase()
-						);
-					}
-				}))
-		) {
-			return action;
+	return customActions.flatMap((action: ICreationActionItem) => {
+		if (!hasPermission(action, globalCollectionActions)) {
+			return [];
 		}
+
+		if (hasNestedActions(action)) {
+			const items = filterCreationActions({
+				customActions: action.items,
+				globalCollectionActions,
+			});
+
+			return items.length ? [{...action, items}] : [];
+		}
+
+		return [action];
 	});
 };
+
+function hasPermission(
+	action: ICreationActionItem,
+	globalCollectionActions: any
+): boolean {
+	const permissionKey = action.data?.permissionKey;
+
+	if (!permissionKey) {
+		return true;
+	}
+
+	return (
+		!!globalCollectionActions &&
+		Object.keys(globalCollectionActions).some(
+			(globalAction) =>
+				globalAction.toLowerCase() === permissionKey.toLowerCase()
+		)
+	);
+}
 
 export default filterCreationActions;

@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {ClayDropDownWithItems} from '@clayui/drop-down';
 import {Atom} from '@liferay/frontend-js-state-web';
 import {ModalStatus} from 'frontend-js-components-web';
 import React from 'react';
@@ -141,6 +142,7 @@ export interface ICreationActionItem {
 	className?: string;
 	data?: {
 		disableHeader?: boolean;
+		id?: string;
 		permissionKey?: string;
 		size?: string;
 		title?: string;
@@ -148,8 +150,10 @@ export interface ICreationActionItem {
 	href?: string;
 	icon?: string;
 	id?: string;
+	items?: Array<ICreationActionItem>;
 	label: string;
 	onClick?: Function;
+	separator?: boolean;
 	target?:
 		| 'event'
 		| 'link'
@@ -159,6 +163,7 @@ export interface ICreationActionItem {
 		| 'modal-sm'
 		| 'sidePanel'
 		| string;
+	type?: EItemActionsType | `${EItemActionsType}`;
 }
 
 export enum EItemActionsType {
@@ -166,6 +171,11 @@ export enum EItemActionsType {
 	GROUP = 'group',
 	ITEM = 'item',
 }
+
+export type TClayDropDownItem = NonNullable<
+	React.ComponentProps<typeof ClayDropDownWithItems>['items']
+>[number] &
+	React.HTMLAttributes<HTMLLIElement>;
 
 export interface IItemsActions {
 	accessibleName?: string;
@@ -347,7 +357,6 @@ export interface IFrontendDataSetProps {
 	creationMenu?: {
 		loadData?: Function;
 		primaryItems: Array<ICreationActionItem>;
-		secondaryItems?: any[];
 	};
 	currentURL?: string;
 	customDataRenderers?: any;
@@ -426,7 +435,6 @@ export interface IManagementBarProps {
 	bulkActions: Array<IBulkActionItem>;
 	creationMenu?: {
 		primaryItems: Array<ICreationActionItem>;
-		secondaryItems?: any[];
 	};
 	dataLoading: boolean;
 	deselectItems: (value: any) => void;

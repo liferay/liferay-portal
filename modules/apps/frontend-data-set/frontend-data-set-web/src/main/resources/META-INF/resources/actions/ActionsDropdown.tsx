@@ -22,12 +22,8 @@ import {
 	EItemActionsType,
 	IActionsDropdown,
 	IItemsActions,
+	TClayDropDownItem,
 } from '../utils/types';
-
-type TClayDropDownItem = NonNullable<
-	React.ComponentProps<typeof ClayDropDownWithItems>['items']
->[number] &
-	React.HTMLAttributes<HTMLLIElement>;
 
 function isDefined(value: any) {
 	return value !== null && value !== undefined;

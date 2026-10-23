@@ -4,20 +4,92 @@
  */
 
 import ClayButton from '@clayui/button';
-import ClayDropDown from '@clayui/drop-down';
+import ClayDropDown, {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import {LinkOrButton} from '@clayui/shared';
 import classNames from 'classnames';
 import {sub} from 'frontend-js-web';
 import React, {Ref, useContext, useState} from 'react';
 
-import FrontendDataSetContext from '../../FrontendDataSetContext';
+import FrontendDataSetContext, {
+	IFrontendDataSetContext,
+} from '../../FrontendDataSetContext';
 import {ACTION_ITEM_TARGETS} from '../../utils/actionItems/constants';
+import hasNestedActions from '../../utils/actionItems/hasNestedActions';
 import {triggerAction} from '../../utils/actionItems/triggerAction';
-import {ICreationActionItem} from '../../utils/types';
+import {ICreationActionItem, TClayDropDownItem} from '../../utils/types';
 import {useWindowSize} from '../../utils/useWindowSize';
 
 const MEDIUM_BREAKPOINT = 768;
+
+function getDropDownItems(
+	items: Array<ICreationActionItem>,
+	onItemClick: (item: ICreationActionItem) => void
+): Array<TClayDropDownItem> {
+	const hasIcons = items.some((item) => !!item.icon);
+
+	return items.flatMap((item, index) => {
+		const dropDownItem: TClayDropDownItem = {
+			className: item.className,
+			label: item.label,
+		};
+
+		if (hasIcons) {
+			dropDownItem.symbolLeft = item.icon;
+		}
+
+		if (hasNestedActions(item)) {
+			dropDownItem.items = getDropDownItems(item.items, onItemClick);
+			dropDownItem.type = item.type;
+
+			if (item.separator && index > 0) {
+				return [{type: 'divider'}, dropDownItem];
+			}
+		}
+		else {
+			dropDownItem.onClick = (event: React.MouseEvent) => {
+				event.preventDefault();
+
+				onItemClick(item);
+			};
+		}
+
+		return [dropDownItem];
+	});
+}
+
+function getSingleItem(
+	primaryItems: Array<ICreationActionItem>
+): ICreationActionItem | null {
+	if (primaryItems.length !== 1) {
+		return null;
+	}
+
+	const [item] = primaryItems;
+
+	if (!hasNestedActions(item)) {
+		return item;
+	}
+
+	if (item.items.length === 1 && !hasNestedActions(item.items[0])) {
+		return item.items[0];
+	}
+
+	return null;
+}
+
+function triggerCreationAction(
+	item: ICreationActionItem,
+	frontendDataSetContext: IFrontendDataSetContext
+) {
+	item.onClick?.({
+		loadData: frontendDataSetContext.loadData,
+	});
+
+	if (item.href || item.target) {
+		triggerAction(item, frontendDataSetContext);
+	}
+}
 
 const DropdownTrigger = React.forwardRef(
 	(
@@ -92,22 +164,37 @@ const DropDown = ({
 }) => {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
-	const {loadData} = frontendDataSetContext;
-
 	const [active, setActive] = useState(false);
+
+	const onItemClick = (item: ICreationActionItem) => {
+		setActive(false);
+
+		triggerCreationAction(item, frontendDataSetContext);
+	};
+
+	const trigger = (
+		<DropdownTrigger
+			hideManagementBarInEmptyState={hideManagementBarInEmptyState}
+			inEmptyState={inEmptyState}
+		/>
+	);
+
+	if (primaryItems.some(hasNestedActions)) {
+		return (
+			<ClayDropDownWithItems
+				active={active}
+				items={getDropDownItems(primaryItems, onItemClick)}
+				onActiveChange={setActive}
+				trigger={trigger}
+			/>
+		);
+	}
 
 	return (
 		<ClayDropDown
 			active={active}
 			onActiveChange={setActive}
-			trigger={
-				<DropdownTrigger
-					hideManagementBarInEmptyState={
-						hideManagementBarInEmptyState
-					}
-					inEmptyState={inEmptyState}
-				/>
-			}
+			trigger={trigger}
 		>
 			<ClayDropDown.ItemList>
 				{primaryItems.map((item, i) => (
@@ -117,15 +204,7 @@ const DropDown = ({
 						onClick={(event) => {
 							event.preventDefault();
 
-							setActive(false);
-
-							item.onClick?.({
-								loadData,
-							});
-
-							if (item.href || item.target) {
-								triggerAction(item, frontendDataSetContext);
-							}
+							onItemClick(item);
 						}}
 					>
 						{item.icon && (
@@ -151,8 +230,6 @@ function CreationButton({
 }) {
 	const frontendDataSetContext = useContext(FrontendDataSetContext);
 
-	const {loadData} = frontendDataSetContext;
-
 	const opensInNewTab = firstItem.target === ACTION_ITEM_TARGETS.BLANK;
 
 	const {width} = useWindowSize();
@@ -168,13 +245,7 @@ function CreationButton({
 				return;
 			}
 
-			firstItem.onClick?.({
-				loadData,
-			});
-
-			if (firstItem.href || firstItem.target) {
-				triggerAction(firstItem, frontendDataSetContext);
-			}
+			triggerCreationAction(firstItem, frontendDataSetContext);
 		},
 		target: opensInNewTab ? '_blank' : undefined,
 	};
@@ -244,6 +315,8 @@ function CreationMenu({
 		return null;
 	}
 
+	const singleItem = getSingleItem(primaryItems);
+
 	return (
 		<ul
 			className={classNames('navbar-nav', {
@@ -251,18 +324,18 @@ function CreationMenu({
 			})}
 		>
 			<li className="nav-item">
-				{primaryItems.length > 1 ? (
+				{singleItem ? (
+					<CreationButton
+						firstItem={singleItem}
+						inEmptyState={inEmptyState}
+					/>
+				) : (
 					<DropDown
 						hideManagementBarInEmptyState={
 							hideManagementBarInEmptyState
 						}
 						inEmptyState={inEmptyState}
 						primaryItems={primaryItems}
-					/>
-				) : (
-					<CreationButton
-						firstItem={primaryItems[0]}
-						inEmptyState={inEmptyState}
 					/>
 				)}
 			</li>
