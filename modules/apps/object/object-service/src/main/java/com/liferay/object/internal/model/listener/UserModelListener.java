@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Locale;
@@ -96,10 +97,15 @@ public class UserModelListener extends BaseModelListener<User> {
 			Map<String, String> labelKeys =
 				systemObjectDefinitionManager.getLabelKeys();
 
+			Locale defaultLocale = LocaleUtil.fromLanguageId(
+				systemObjectDefinition.getDefaultLanguageId(), false);
+
 			systemObjectDefinition.setLabel(
-				_language.get(locale, labelKeys.get("label")), locale);
+				_language.get(locale, labelKeys.get("label")), locale,
+				defaultLocale);
 			systemObjectDefinition.setPluralLabel(
-				_language.get(locale, labelKeys.get("pluralLabel")), locale);
+				_language.get(locale, labelKeys.get("pluralLabel")), locale,
+				defaultLocale);
 
 			_objectDefinitionLocalService.updateObjectDefinition(
 				systemObjectDefinition);
