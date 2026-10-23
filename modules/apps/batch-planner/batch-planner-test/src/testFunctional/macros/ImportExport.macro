@@ -192,26 +192,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro assertStrategiesForEntityTypes(updateStrategy = null, entityTypes = null, importStrategy = null) {
-		Variables.assertDefined(parameterList = ${entityTypes});
-
-		for (var entityType : list ${entityTypes}) {
-			ImportExport.selectEntity(entityType = ${entityType});
-
-			if (isSet(importStrategy)) {
-				AssertTextEquals(
-					locator1 = "ImportExport#IMPORT_STRATEGY",
-					value1 = ${importStrategy});
-			}
-			else {
-				AssertTextEquals(
-					locator1 = "ImportExport#UPDATE_STRATEGY",
-					value1 = ${updateStrategy});
-			}
-		}
-	}
-
-	@summary = "Default summary"
 	macro configureExport(containsHeaders = null, templateName = null, entityType = null, scope = null, exportFields = null, exportFileFormat = null) {
 		Select(
 			key_selectFieldLabel = "Export File Format",
