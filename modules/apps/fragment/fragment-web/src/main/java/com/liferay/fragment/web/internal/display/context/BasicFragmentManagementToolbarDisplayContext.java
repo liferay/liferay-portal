@@ -260,11 +260,9 @@ public class BasicFragmentManagementToolbarDisplayContext
 				FragmentCollection fragmentCollection =
 					fragmentDisplayContext.getFragmentCollection();
 
-				if (fragmentCollection != null) {
-					dropdownItem.putData(
-						"fragmentSetExternalReferenceCode",
-						fragmentCollection.getExternalReferenceCode());
-				}
+				dropdownItem.putData(
+					"fragmentSetExternalReferenceCode",
+					fragmentCollection.getExternalReferenceCode());
 
 				Group group = themeDisplay.getScopeGroup();
 
