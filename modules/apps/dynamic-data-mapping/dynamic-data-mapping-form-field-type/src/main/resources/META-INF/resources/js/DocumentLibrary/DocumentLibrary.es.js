@@ -17,7 +17,7 @@ import {
 import {ReactFieldBase as FieldBase} from 'dynamic-data-mapping-form-field-type/api';
 import {openSelectionModal} from 'frontend-js-components-web';
 import {formatStorage, sub} from 'frontend-js-web';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 
 const MIME_TO_EXTENSION = {
 	'application/msword': 'doc',
@@ -27,8 +27,6 @@ const MIME_TO_EXTENSION = {
 		'docx',
 	'text/plain': 'txt',
 };
-
-const SUBMIT_EVENT = 'paginationControlsSubmitButtonClicked';
 
 const getFileEntryId = (fileEntryValue) => {
 	if (!fileEntryValue) {
@@ -341,122 +339,6 @@ const GuestUploadFile = ({
 	);
 };
 
-function useFileLifecycle({
-	currentValue,
-	fileEntryDeleteURL,
-	portletNamespace,
-	readOnly,
-	value,
-}) {
-	const originalFileEntryIdRef = useRef(null);
-	const pendingDeletionsRef = useRef([]);
-	const submitButtonClickedRef = useRef(false);
-
-	const deleteFileEntry = useCallback(
-		(fileEntryId, {beacon = false} = {}) => {
-			if (!fileEntryId || !fileEntryDeleteURL) {
-				return;
-			}
-
-			const formData = convertToFormData({
-				[`${portletNamespace}oldFileEntryId`]: fileEntryId,
-			});
-
-			// Use sendBeacon on unload because async XHRs are cancelled when
-			// the page tears down; foreground paths keep XHR for parity with
-			// the rest of the field.
-
-			if (beacon && navigator.sendBeacon) {
-				navigator.sendBeacon(fileEntryDeleteURL, formData);
-
-				return;
-			}
-
-			const request = new XMLHttpRequest();
-
-			request.open('POST', fileEntryDeleteURL);
-			request.send(formData);
-		},
-		[fileEntryDeleteURL, portletNamespace]
-	);
-
-	const stagePendingDeletion = (fileEntryId) => {
-		if (!fileEntryId || pendingDeletionsRef.current.includes(fileEntryId)) {
-			return;
-		}
-
-		pendingDeletionsRef.current = [
-			...pendingDeletionsRef.current,
-			fileEntryId,
-		];
-	};
-
-	useEffect(() => {
-
-		// Capture the file entry that was attached when the page loaded.
-		// The unload handler later compares this against the *current* value
-		// to decide whether the user replaced the file without saving — so it
-		// must reflect the page-load state, not the latest edit. That is why
-		// the deps array is empty.
-
-		originalFileEntryIdRef.current = getFileEntryId(value);
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
-		const handleBeforeUnload = () => {
-			if (readOnly || submitButtonClickedRef.current) {
-				return;
-			}
-
-			const currentFileEntryId = getFileEntryId(currentValue);
-			const originalFileEntryId = originalFileEntryIdRef.current;
-
-			if (
-				currentFileEntryId &&
-				currentFileEntryId !== originalFileEntryId
-			) {
-				deleteFileEntry(currentFileEntryId, {beacon: true});
-			}
-
-			pendingDeletionsRef.current.forEach((fileEntryId) => {
-				if (fileEntryId !== originalFileEntryId) {
-					deleteFileEntry(fileEntryId, {beacon: true});
-				}
-			});
-		};
-
-		window.addEventListener('beforeunload', handleBeforeUnload);
-		Liferay.on('beforeNavigate', handleBeforeUnload);
-
-		return () => {
-			window.removeEventListener('beforeunload', handleBeforeUnload);
-			Liferay.detach('beforeNavigate', handleBeforeUnload);
-		};
-	}, [currentValue, deleteFileEntry, readOnly]);
-
-	useEffect(() => {
-		const onSubmit = () => {
-			pendingDeletionsRef.current.forEach((fileEntryId) =>
-				deleteFileEntry(fileEntryId)
-			);
-
-			pendingDeletionsRef.current = [];
-
-			submitButtonClickedRef.current = true;
-		};
-
-		Liferay.on(SUBMIT_EVENT, onSubmit);
-
-		return () => {
-			Liferay.detach(SUBMIT_EVENT, onSubmit);
-		};
-	}, [deleteFileEntry]);
-
-	return {stagePendingDeletion};
-}
-
 const Main = ({
 	_onBlur,
 	_onFocus,
@@ -496,13 +378,20 @@ const Main = ({
 	const [valid, setValid] = useState(initialValid);
 	const [progress, setProgress] = useState(0);
 
-	const {stagePendingDeletion} = useFileLifecycle({
-		currentValue,
-		fileEntryDeleteURL,
-		portletNamespace,
-		readOnly,
-		value,
-	});
+	const deleteFileEntry = (fileEntryId) => {
+		if (!fileEntryId || !fileEntryDeleteURL) {
+			return;
+		}
+
+		const request = new XMLHttpRequest();
+
+		request.open('POST', fileEntryDeleteURL);
+		request.send(
+			convertToFormData({
+				[`${portletNamespace}oldFileEntryId`]: fileEntryId,
+			})
+		);
+	};
 
 	const isSignedIn = Liferay.ThemeDisplay.isSignedIn();
 
@@ -681,7 +570,7 @@ const Main = ({
 	const handleOnClearButtonClicked = (event, isSignedIn) => {
 		onFocus(event);
 
-		stagePendingDeletion(getFileEntryId(currentValue));
+		deleteFileEntry(getFileEntryId(currentValue));
 
 		setCurrentValue(null);
 
@@ -707,12 +596,10 @@ const Main = ({
 
 		onFocus(event);
 
-		stagePendingDeletion(getFileEntryId(currentValue));
-
-		uploadFileEntry(event);
+		uploadFileEntry(event, getFileEntryId(currentValue) || 0);
 	};
 
-	const uploadFileEntry = (event) => {
+	const uploadFileEntry = (event, oldFileEntryId) => {
 		const file = event.target.files[0];
 
 		if (isExceededUploadRequestSizeLimit(file.size)) {
@@ -752,7 +639,10 @@ const Main = ({
 				}
 				else {
 					handleGuestUploadFileChanged(
-						response.error.message,
+						response.error?.message ??
+							Liferay.Language.get(
+								'an-unexpected-error-occurred'
+							),
 						event,
 						null
 					);
@@ -766,7 +656,7 @@ const Main = ({
 		request.send(
 			convertToFormData({
 				[`${portletNamespace}file`]: file,
-				[`${portletNamespace}oldFileEntryId`]: 0,
+				[`${portletNamespace}oldFileEntryId`]: oldFileEntryId,
 			})
 		);
 	};
@@ -793,7 +683,7 @@ const Main = ({
 					name={name}
 					onBlur={onBlur}
 					onClearButtonClicked={(event) => {
-						handleOnClearButtonClicked(event, value, isSignedIn);
+						handleOnClearButtonClicked(event, isSignedIn);
 					}}
 					onFocus={onFocus}
 					onUploadSelectButtonClicked={(event) =>
@@ -821,7 +711,7 @@ const Main = ({
 					message={message}
 					name={name}
 					onClearButtonClicked={(event) => {
-						handleOnClearButtonClicked(event, value, isSignedIn);
+						handleOnClearButtonClicked(event, isSignedIn);
 					}}
 					onSelectButtonClicked={handleSelectButtonClicked}
 					placeholder={placeholder}
