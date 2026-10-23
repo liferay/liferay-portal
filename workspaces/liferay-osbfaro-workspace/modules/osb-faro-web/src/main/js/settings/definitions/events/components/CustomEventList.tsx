@@ -16,7 +16,9 @@ import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import NotificationAlertList, {
 	useNotificationsAPI,
 } from 'shared/components/NotificationAlertList';
-import React from 'react';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
+import HideEventsModal from 'shared/components/modals/HideEventsModal';
+import React, {useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import URLConstants from 'shared/util/url-constants';
 import {addAlert, removeAlert} from 'shared/actions/alerts';
@@ -26,7 +28,6 @@ import {
 	BlockCustomEventDefinitionsData,
 	BlockCustomEventDefinitionsVariables,
 } from 'event-analysis/queries/CustomEventDefinitions';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -44,6 +45,7 @@ import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {Sizes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useMutation, useQuery} from '@apollo/client';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {
@@ -51,7 +53,7 @@ import {
 	withSelectionProvider,
 } from 'shared/context/selection';
 
-const connector = connect(null, {addAlert, close, open, removeAlert});
+const connector = connect(null, {addAlert, removeAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -62,10 +64,8 @@ interface ICustomEventListProps extends PropsFromRedux {
 
 const CustomEventList: React.FC<ICustomEventListProps> = ({
 	addAlert,
-	close,
 	groupId,
 	history,
-	open,
 	removeAlert,
 }) => {
 	const {selectedItems, selectionDispatch} = useSelectionContext();
@@ -140,166 +140,25 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 
 	const currentUser = useCurrentUser();
 
+	const blockModal = useModal();
+	const hideModal = useModal();
+
+	const [eventsToBlock, setEventsToBlock] = useState<Event[]>([]);
+
+	const eventsCount = eventsToBlock.length;
+
+	const [eventsToHide, setEventsToHide] = useState<Event[]>([]);
+
 	const handleBlockEvents = (events: Event[] = []) => {
-		const eventsCount = events.length;
+		setEventsToBlock(events);
 
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: (
-				<p className="text-secondary">
-					{eventsCount > 1
-						? Liferay.Language.get(
-								'blocking-events-will-result-in-the-deletion-of-their-display-names-and-descriptions.-you-must-reassign-these-values-if-you-wish-to-unblock-these-events-in-the-future'
-							)
-						: sub(
-								Liferay.Language.get(
-									'blocking-x-will-result-in-the-deletion-of-its-display-name-and-description.-you-must-reassign-these-values-if-you-wish-to-unblock-the-event-in-the-future'
-								),
-								[events[0].displayName]
-							)}
-				</p>
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () => {
-				blockCustomEventDefinitions({
-					variables: {
-						eventDefinitionIds: events.map(({id}) => id),
-					},
-				})
-					.then(() => {
-						selectionDispatch?.({
-							type: 'clear-all',
-						});
-
-						const updatedPage = eventsCount > 1 ? 1 : page;
-
-						if (updatedPage !== page) {
-							const orderParams = orderIOMap.first();
-
-							const {field, sortOrder} = orderParams;
-
-							history.push(
-								setUriQueryValues(
-									{
-										field,
-										page: updatedPage,
-										sortOrder,
-									},
-									toRoute(
-										Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM,
-										{
-											groupId,
-										}
-									)
-								)
-							);
-						}
-						else {
-							refetch();
-						}
-
-						addAlert({
-							alertType: Alert.Types.Success,
-							message:
-								eventsCount > 1
-									? sub(
-											Liferay.Language.get(
-												'x-events-have-been-added-to-the-block-list'
-											),
-											[eventsCount]
-										)
-									: sub(
-											Liferay.Language.get(
-												'x-has-been-added-to-the-block-list'
-											),
-											[events[0].displayName]
-										),
-						});
-
-						removeAlert(LIMIT_REACHED_ALERT_ID);
-
-						notificationResponse.refetch();
-					})
-					.catch(() =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: Liferay.Language.get(
-								'there-was-an-error-processing-your-request.-please-try-again'
-							),
-							timeout: false,
-						})
-					);
-			},
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('block'),
-			title:
-				eventsCount > 1
-					? Liferay.Language.get('block-events')
-					: Liferay.Language.get('block-event'),
-			titleIcon: 'warning',
-		});
+		blockModal.onOpenChange(true);
 	};
 
 	const handleHideEvents = (events: Event[] = []) => {
-		const visibleEvents = events.filter(({hidden}) => !hidden);
+		setEventsToHide(events);
 
-		const visibleEventsCount = visibleEvents.length;
-
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: (
-				<p className="text-secondary">
-					{Liferay.Language.get(
-						'hiding-events-in-the-interface-may-require-reconfiguration-of-segments-and-other-analysis-using-this-event.-hidden-events-will-be-available-for-calculating-metrics'
-					)}
-				</p>
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () => {
-				hideEventDefinitions({
-					variables: {
-						eventDefinitionIds: events.map(({id}) => id),
-					},
-				})
-					.then(() => {
-						addAlert({
-							alertType: Alert.Types.Success,
-							message:
-								visibleEventsCount > 1
-									? sub(
-											Liferay.Language.get(
-												'x-events-have-been-set-to-hide'
-											),
-											[visibleEventsCount]
-										)
-									: sub(
-											Liferay.Language.get(
-												'x-has-been-set-to-hide'
-											),
-											[visibleEvents[0].displayName]
-										),
-						});
-					})
-					.catch(() =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: Liferay.Language.get(
-								'there-was-an-error-processing-your-request.-please-try-again'
-							),
-							timeout: false,
-						})
-					);
-			},
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('hide'),
-			title:
-				visibleEventsCount > 1
-					? Liferay.Language.get('hide-events')
-					: sub(Liferay.Language.get('hide-x'), [
-							visibleEvents[0].displayName,
-						]),
-			titleIcon: 'warning',
-		});
+		hideModal.onOpenChange(true);
 	};
 
 	const handleUnhideEvents = (events: Event[] = []) => {
@@ -380,132 +239,265 @@ const CustomEventList: React.FC<ICustomEventListProps> = ({
 
 	return (
 		<>
-			<div className="mx-4">
-				<NotificationAlertList
-					{...notificationResponse}
-					groupId={groupId}
-					subtypes={[NotificationSubtypes.BlockedEventsLimit]}
-				/>
-			</div>
-
-			<CrossPageSelect
-				columns={[
-					eventListColumns.getName({groupId}),
-					eventListColumns.displayName,
-					eventListColumns.description,
-					eventListColumns.hidden,
-				]}
-				delta={delta}
-				emptyDescription={Liferay.Language.get(
-					'visit-our-documentation-to-learn-how-to-add-custom-events-on-your-site'
-				)}
-				emptyTitle={Liferay.Language.get('create-some-custom-events')}
-				error={error}
-				items={get(data, ['eventDefinitions', 'eventDefinitions'], [])}
-				loading={loading}
-				noResultsRenderer={
-					<NoResultsDisplay
-						description={
-							<>
-								{Liferay.Language.get(
-									'create-some-custom-events-to-get-started'
-								)}
-
-								<ClayLink
-									className="d-block mb-3"
-									href={
-										URLConstants.CustomEventsDocumentation
-									}
-									key="DOCUMENTATION"
-									target="_blank"
-								>
-									{Liferay.Language.get(
-										'learn-how-to-add-custom-events-on-your-site'
-									)}
-								</ClayLink>
-							</>
-						}
-						icon={{
-							border: false,
-							size: Sizes.XXXLarge,
-							symbol: 'ac_satellite',
-						}}
-						title={Liferay.Language.get('no-custom-events-found')}
+			<>
+				<div className="mx-4">
+					<NotificationAlertList
+						{...notificationResponse}
+						groupId={groupId}
+						subtypes={[NotificationSubtypes.BlockedEventsLimit]}
 					/>
-				}
-				orderIOMap={orderIOMap}
-				page={page}
-				query={query}
-				refetch={refetch}
-				renderNav={
-					authorized && selectedItems.size
-						? () => (
-								<Nav>
-									<Nav.Item>
-										<ClayButton
-											borderless
-											className="button-root nav-btn"
-											displayType="secondary"
-											onClick={() => {
-												handleBlockEvents(
-													selectedItems.toArray()
-												);
-											}}
-										>
-											<ClayIcon
-												className="icon-root mr-2"
-												symbol="ac_block"
-											/>
+				</div>
 
-											{Liferay.Language.get(
-												'block-events'
-											)}
-										</ClayButton>
+				<CrossPageSelect
+					columns={[
+						eventListColumns.getName({groupId}),
+						eventListColumns.displayName,
+						eventListColumns.description,
+						eventListColumns.hidden,
+					]}
+					delta={delta}
+					emptyDescription={Liferay.Language.get(
+						'visit-our-documentation-to-learn-how-to-add-custom-events-on-your-site'
+					)}
+					emptyTitle={Liferay.Language.get(
+						'create-some-custom-events'
+					)}
+					error={error}
+					items={get(
+						data,
+						['eventDefinitions', 'eventDefinitions'],
+						[]
+					)}
+					loading={loading}
+					noResultsRenderer={
+						<NoResultsDisplay
+							description={
+								<>
+									{Liferay.Language.get(
+										'create-some-custom-events-to-get-started'
+									)}
 
-										<ClayButton
-											borderless
-											className="button-root nav-btn"
-											displayType="secondary"
-											onClick={() => {
-												const hideEventFn =
-													hasUnhiddenEvent(
-														selectedItems
-													)
-														? handleHideEvents
-														: handleUnhideEvents;
+									<ClayLink
+										className="d-block mb-3"
+										href={
+											URLConstants.CustomEventsDocumentation
+										}
+										key="DOCUMENTATION"
+										target="_blank"
+									>
+										{Liferay.Language.get(
+											'learn-how-to-add-custom-events-on-your-site'
+										)}
+									</ClayLink>
+								</>
+							}
+							icon={{
+								border: false,
+								size: Sizes.XXXLarge,
+								symbol: 'ac_satellite',
+							}}
+							title={Liferay.Language.get(
+								'no-custom-events-found'
+							)}
+						/>
+					}
+					orderIOMap={orderIOMap}
+					page={page}
+					query={query}
+					refetch={refetch}
+					renderNav={
+						authorized && selectedItems.size
+							? () => (
+									<Nav>
+										<Nav.Item>
+											<ClayButton
+												borderless
+												className="button-root nav-btn"
+												displayType="secondary"
+												onClick={() => {
+													handleBlockEvents(
+														selectedItems.toArray()
+													);
+												}}
+											>
+												<ClayIcon
+													className="icon-root mr-2"
+													symbol="ac_block"
+												/>
 
-												hideEventFn(
-													selectedItems.toArray()
-												);
-											}}
-										>
-											<ClayIcon
-												className="icon-root mr-2"
-												symbol={
-													hasUnhiddenEvent(
-														selectedItems
-													)
-														? 'ac_hidden'
-														: 'view'
+												{Liferay.Language.get(
+													'block-events'
+												)}
+											</ClayButton>
+
+											<ClayButton
+												borderless
+												className="button-root nav-btn"
+												displayType="secondary"
+												onClick={() => {
+													const hideEventFn =
+														hasUnhiddenEvent(
+															selectedItems
+														)
+															? handleHideEvents
+															: handleUnhideEvents;
+
+													hideEventFn(
+														selectedItems.toArray()
+													);
+												}}
+											>
+												<ClayIcon
+													className="icon-root mr-2"
+													symbol={
+														hasUnhiddenEvent(
+															selectedItems
+														)
+															? 'ac_hidden'
+															: 'view'
+													}
+												/>
+
+												{hasUnhiddenEvent(selectedItems)
+													? Liferay.Language.get(
+															'hide'
+														)
+													: Liferay.Language.get(
+															'show'
+														)}
+											</ClayButton>
+										</Nav.Item>
+									</Nav>
+								)
+							: null
+					}
+					renderRowActions={
+						authorized && !selectedItems.size
+							? renderRowActions
+							: null
+					}
+					rowIdentifier="id"
+					showCheckbox={authorized}
+					total={get(data, ['eventDefinitions', 'total'], 0)}
+				/>
+			</>
+
+			{blockModal.open && (
+				<ConfirmationModal
+					message={
+						<p className="text-secondary">
+							{eventsCount > 1
+								? Liferay.Language.get(
+										'blocking-events-will-result-in-the-deletion-of-their-display-names-and-descriptions.-you-must-reassign-these-values-if-you-wish-to-unblock-these-events-in-the-future'
+									)
+								: sub(
+										Liferay.Language.get(
+											'blocking-x-will-result-in-the-deletion-of-its-display-name-and-description.-you-must-reassign-these-values-if-you-wish-to-unblock-the-event-in-the-future'
+										),
+										[eventsToBlock[0].displayName]
+									)}
+						</p>
+					}
+					observer={blockModal.observer}
+					onClose={() => blockModal.onOpenChange(false)}
+					onSubmit={() => {
+						blockCustomEventDefinitions({
+							variables: {
+								eventDefinitionIds: eventsToBlock.map(
+									({id}) => id
+								),
+							},
+						})
+							.then(() => {
+								selectionDispatch?.({
+									type: 'clear-all',
+								});
+
+								const updatedPage = eventsCount > 1 ? 1 : page;
+
+								if (updatedPage !== page) {
+									const orderParams = orderIOMap.first();
+
+									const {field, sortOrder} = orderParams;
+
+									history.push(
+										setUriQueryValues(
+											{
+												field,
+												page: updatedPage,
+												sortOrder,
+											},
+											toRoute(
+												Routes.SETTINGS_DEFINITIONS_EVENTS_CUSTOM,
+												{
+													groupId,
 												}
-											/>
+											)
+										)
+									);
+								}
+								else {
+									refetch();
+								}
 
-											{hasUnhiddenEvent(selectedItems)
-												? Liferay.Language.get('hide')
-												: Liferay.Language.get('show')}
-										</ClayButton>
-									</Nav.Item>
-								</Nav>
-							)
-						: null
-				}
-				renderRowActions={
-					authorized && !selectedItems.size ? renderRowActions : null
-				}
-				rowIdentifier="id"
-				showCheckbox={authorized}
-				total={get(data, ['eventDefinitions', 'total'], 0)}
-			/>
+								addAlert({
+									alertType: Alert.Types.Success,
+									message:
+										eventsCount > 1
+											? sub(
+													Liferay.Language.get(
+														'x-events-have-been-added-to-the-block-list'
+													),
+													[eventsCount]
+												)
+											: sub(
+													Liferay.Language.get(
+														'x-has-been-added-to-the-block-list'
+													),
+													[
+														eventsToBlock[0]
+															.displayName,
+													]
+												),
+								});
+
+								removeAlert(LIMIT_REACHED_ALERT_ID);
+
+								notificationResponse.refetch();
+							})
+							.catch(() =>
+								addAlert({
+									alertType: Alert.Types.Error,
+									message: Liferay.Language.get(
+										'there-was-an-error-processing-your-request.-please-try-again'
+									),
+									timeout: false,
+								})
+							);
+					}}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('block')}
+					title={
+						eventsCount > 1
+							? Liferay.Language.get('block-events')
+							: Liferay.Language.get('block-event')
+					}
+					type="warning"
+				/>
+			)}
+
+			{hideModal.open && (
+				<HideEventsModal
+					addAlert={addAlert}
+					eventName={({displayName}) => displayName}
+					events={eventsToHide}
+					hideEvents={(eventDefinitionIds) =>
+						hideEventDefinitions({variables: {eventDefinitionIds}})
+					}
+					observer={hideModal.observer}
+					onClose={() => hideModal.onOpenChange(false)}
+				/>
+			)}
 		</>
 	);
 };

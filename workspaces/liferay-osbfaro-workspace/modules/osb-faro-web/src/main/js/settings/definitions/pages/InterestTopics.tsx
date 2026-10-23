@@ -9,7 +9,9 @@ import Nav from 'shared/components/Nav';
 import NoResultsDisplay, {
 	getFormattedTitle,
 } from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
+import InterestTopicsModal from 'shared/components/modals/InterestTopicsModal';
+import React, {useState} from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {
 	ActionTypes,
@@ -18,7 +20,6 @@ import {
 } from 'shared/context/selection';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {CREATE_DATE, createOrderIOMap, KEYWORD} from 'shared/util/pagination';
@@ -30,13 +31,14 @@ import {Sizes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {UNAUTHORIZED_ACCESS} from 'shared/util/request';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
 
 const INITIAL_PAGE = 1;
 
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {addAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -46,9 +48,7 @@ interface IInterestTopicsProps extends PropsFromRedux {
 
 const InterestTopics: React.FC<IInterestTopicsProps> = ({
 	addAlert,
-	close,
 	groupId,
-	open,
 }) => {
 	const currentUser = useCurrentUser();
 	const {timeZoneId} = useTimeZone();
@@ -70,10 +70,7 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 	});
 
 	const handleInsertModal = () => {
-		open(modalTypes.INSERT_BLOCKED_KEYWORDS, {
-			onClose: close,
-			onSubmit: handleAddKeywords,
-		});
+		insertModal.onOpenChange(true);
 	};
 
 	const handleAddKeywords = (keywords: string[]) => {
@@ -122,7 +119,7 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 
 				refetch();
 
-				close();
+				insertModal.onOpenChange(false);
 			})
 			.catch(() => {
 				addAlert({
@@ -132,61 +129,15 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 			});
 	};
 
+	const deleteModal = useModal();
+	const insertModal = useModal();
+
+	const [keywordIdsToDelete, setKeywordIdsToDelete] = useState<string[]>([]);
+
 	const handleDeleteKeyword = (ids: string[]) => () => {
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: sub(
-				Liferay.Language.get(
-					'are-you-sure-you-want-to-delete-x-keywords'
-				),
-				[<b key="confirmDeleteCount">{ids.length}</b>],
-				false
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () =>
-				API.blockedKeywords
-					.delete({
-						groupId,
-						ids,
-					})
-					.then(() => {
-						const deletedMessage =
-							ids.length > 1
-								? Liferay.Language.get(
-										'x-keywords-have-been-deleted'
-									)
-								: Liferay.Language.get(
-										'x-keyword-have-been-deleted'
-									);
+		setKeywordIdsToDelete(ids);
 
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: sub(
-								deletedMessage,
-								[<b key="deleteCount">{ids.length}</b>],
-								false
-							),
-						});
-
-						selectionDispatch?.({type: ActionTypes.ClearAll});
-
-						refetch();
-					})
-					.catch((err) =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message:
-								err.message === UNAUTHORIZED_ACCESS
-									? Liferay.Language.get(
-											'unauthorized-access'
-										)
-									: Liferay.Language.get('error'),
-							timeout: false,
-						})
-					),
-			title: Liferay.Language.get('delete-keyword'),
-			titleIcon: 'warning-full',
-		});
+		deleteModal.onOpenChange(true);
 	};
 
 	const renderNav = () => {
@@ -323,58 +274,139 @@ const InterestTopics: React.FC<IInterestTopicsProps> = ({
 	);
 
 	return (
-		<BasePage
-			breadcrumbItems={[
-				getDefinitions({groupId}),
-				{
-					active: true,
-					label: Liferay.Language.get('interest-topics'),
-				},
-			]}
-			key="interestTopicsPage"
-			pageDescription={renderPageDescription()}
-			pageTitle={Liferay.Language.get('interest-topics')}
-		>
-			<Card pageDisplay>
-				<CrossPageSelect
-					columns={[
-						{
-							accessor: KEYWORD,
-							className: 'table-cell-expand',
-							label: Liferay.Language.get('keyword'),
-							title: true,
-						},
-						{
-							accessor: CREATE_DATE,
-							dataFormatter: (date: string) =>
-								formatDateToTimeZone(
-									date,
-									getCustomDateFormat(),
-									timeZoneId
-								),
-							label: Liferay.Language.get('added'),
-						},
-					]}
-					delta={delta}
-					entityLabel={Liferay.Language.get('keywords')}
-					error={error}
-					items={data?.items}
-					loading={loading}
-					maxLength={900}
-					noResultsRenderer={renderNoResults()}
-					orderIOMap={orderIOMap}
-					page={page}
-					query={query}
-					renderInlineRowActions={
-						currentUser.isAdmin() ? renderInlineRowActions : null
-					}
-					renderNav={currentUser.isAdmin() ? renderNav : null}
-					rowIdentifier="id"
-					showCheckbox={currentUser.isAdmin()}
-					total={data?.total}
+		<>
+			<BasePage
+				breadcrumbItems={[
+					getDefinitions({groupId}),
+					{
+						active: true,
+						label: Liferay.Language.get('interest-topics'),
+					},
+				]}
+				key="interestTopicsPage"
+				pageDescription={renderPageDescription()}
+				pageTitle={Liferay.Language.get('interest-topics')}
+			>
+				<Card pageDisplay>
+					<CrossPageSelect
+						columns={[
+							{
+								accessor: KEYWORD,
+								className: 'table-cell-expand',
+								label: Liferay.Language.get('keyword'),
+								title: true,
+							},
+							{
+								accessor: CREATE_DATE,
+								dataFormatter: (date: string) =>
+									formatDateToTimeZone(
+										date,
+										getCustomDateFormat(),
+										timeZoneId
+									),
+								label: Liferay.Language.get('added'),
+							},
+						]}
+						delta={delta}
+						entityLabel={Liferay.Language.get('keywords')}
+						error={error}
+						items={data?.items}
+						loading={loading}
+						maxLength={900}
+						noResultsRenderer={renderNoResults()}
+						orderIOMap={orderIOMap}
+						page={page}
+						query={query}
+						renderInlineRowActions={
+							currentUser.isAdmin()
+								? renderInlineRowActions
+								: null
+						}
+						renderNav={currentUser.isAdmin() ? renderNav : null}
+						rowIdentifier="id"
+						showCheckbox={currentUser.isAdmin()}
+						total={data?.total}
+					/>
+				</Card>
+			</BasePage>
+
+			{insertModal.open && (
+				<InterestTopicsModal
+					className="insert-keywords-modal"
+					observer={insertModal.observer}
+					onClose={() => insertModal.onOpenChange(false)}
+					onSubmit={handleAddKeywords}
 				/>
-			</Card>
-		</BasePage>
+			)}
+
+			{deleteModal.open && (
+				<ConfirmationModal
+					message={sub(
+						Liferay.Language.get(
+							'are-you-sure-you-want-to-delete-x-keywords'
+						),
+						[
+							<b key="confirmDeleteCount">
+								{keywordIdsToDelete.length}
+							</b>,
+						],
+						false
+					)}
+					observer={deleteModal.observer}
+					onClose={() => deleteModal.onOpenChange(false)}
+					onSubmit={() =>
+						API.blockedKeywords
+							.delete({
+								groupId,
+								ids: keywordIdsToDelete,
+							})
+							.then(() => {
+								const deletedMessage =
+									keywordIdsToDelete.length > 1
+										? Liferay.Language.get(
+												'x-keywords-have-been-deleted'
+											)
+										: Liferay.Language.get(
+												'x-keyword-have-been-deleted'
+											);
+
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: sub(
+										deletedMessage,
+										[
+											<b key="deleteCount">
+												{keywordIdsToDelete.length}
+											</b>,
+										],
+										false
+									),
+								});
+
+								selectionDispatch?.({
+									type: ActionTypes.ClearAll,
+								});
+
+								refetch();
+							})
+							.catch((err) =>
+								addAlert({
+									alertType: Alert.Types.Error,
+									message:
+										err.message === UNAUTHORIZED_ACCESS
+											? Liferay.Language.get(
+													'unauthorized-access'
+												)
+											: Liferay.Language.get('error'),
+									timeout: false,
+								})
+							)
+					}
+					title={Liferay.Language.get('delete-keyword')}
+					type="warning"
+				/>
+			)}
+		</>
 	);
 };
 

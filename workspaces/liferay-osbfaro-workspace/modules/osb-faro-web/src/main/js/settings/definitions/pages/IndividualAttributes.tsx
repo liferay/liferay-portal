@@ -4,20 +4,19 @@ import Card from 'shared/components/Card';
 import ClayButton from '@clayui/button';
 import ClayLink from '@clayui/link';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import IndividualAttributesModal from 'shared/components/modals/IndividualAttributesModal';
+import React, {useState} from 'react';
 import SearchableEntityTable from 'shared/components/SearchableEntityTable';
 import URLConstants from 'shared/util/url-constants';
 import withStatefulPagination from 'shared/hoc/StatefulPagination';
 import {applyTimeZone, formatRelativeTime} from 'shared/util/date';
-import {close, modalTypes, open} from 'shared/actions/modals';
-import {compose} from 'shared/hoc';
-import {connect, ConnectedProps} from 'react-redux';
 import {createOrderIOMap} from 'shared/util/pagination';
 import {getDefinitions} from 'shared/util/breadcrumbs';
 import {omit} from 'lodash';
 import {Routes, toRoute} from 'shared/util/router';
 import {Sizes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
+import {useModal} from '@clayui/modal';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {User} from 'shared/util/records';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
@@ -30,33 +29,30 @@ const SearchableEntityTableHOC = withStatefulPagination(
 	(props: {[key: string]: any}) => omit(props, 'onSearchValueChange')
 );
 
-const connector = connect(null, {close, open});
-
-type PropsFromRedux = ConnectedProps<typeof connector>;
-
-interface IIndividualAttributesProps
-	extends PropsFromRedux,
-		React.HTMLAttributes<HTMLElement> {
+interface IIndividualAttributesProps extends React.HTMLAttributes<HTMLElement> {
 	currentUser: User;
 	groupId: string;
 }
 
 const IndividualAttributes: React.FC<IIndividualAttributesProps> = ({
-	close,
 	groupId,
-	open,
 }) => {
 	const currentUser = useCurrentUser();
 	const {timeZoneId} = useTimeZone();
 
+	const attributesModal = useModal();
+
+	const [selectedAttribute, setSelectedAttribute] = useState<{
+		dataSources: any;
+		fieldName: any;
+	}>();
+
 	const openModal =
 		({dataSources, fieldName}: {dataSources: any; fieldName: any}) =>
 		() => {
-			open(modalTypes.INDIVIDUAL_ATTRIBUTES_MODAL, {
-				dataSources,
-				fieldName,
-				onClose: close,
-			});
+			setSelectedAttribute({dataSources, fieldName});
+
+			attributesModal.onOpenChange(true);
 		};
 
 	const authorized = currentUser.isAdmin();
@@ -182,8 +178,16 @@ const IndividualAttributes: React.FC<IIndividualAttributesProps> = ({
 					showPagination={false}
 				/>
 			</Card>
+
+			{attributesModal.open && selectedAttribute && (
+				<IndividualAttributesModal
+					dataSources={selectedAttribute.dataSources}
+					fieldName={selectedAttribute.fieldName}
+					observer={attributesModal.observer}
+				/>
+			)}
 		</BasePage>
 	);
 };
 
-export default compose<any>(connector)(IndividualAttributes);
+export default IndividualAttributes;

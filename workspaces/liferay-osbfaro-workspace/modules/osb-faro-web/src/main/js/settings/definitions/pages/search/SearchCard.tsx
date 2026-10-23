@@ -8,16 +8,17 @@ import Form, {
 import Loading, {Align} from 'shared/components/Loading';
 import PreferenceMutation from 'settings/data-privacy/queries/PreferenceMutation';
 import PreferenceQuery from 'shared/queries/PreferenceQuery';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
 import React, {useRef} from 'react';
 import {addAlert} from 'shared/actions/alerts';
-import {Alert, Modal} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
+import {Alert} from 'shared/types';
 import {compose, withHistory} from 'shared/hoc';
 import {connect} from 'react-redux';
 import {FieldArray, FormikTouched, FormikValues} from 'formik';
 import {Routes, toRoute} from 'shared/util/router';
 import {sequence} from 'shared/util/promise';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useMutation, useQuery} from '@apollo/client';
 import {WrapSafeResults} from 'shared/hoc/util';
 
@@ -26,12 +27,10 @@ const SEARCH_QUERY_STRINGS_KEY = 'search-query-strings';
 
 interface ISearchCardProps {
 	addAlert: Alert.AddAlert;
-	close: Modal.close;
 	groupId: string;
 	history: {
 		push: (path: string) => void;
 	};
-	open: Modal.open;
 }
 
 const renderAddButton = (
@@ -65,12 +64,11 @@ const removeSpecialCharacters = (originalValue: string): string =>
 
 export const SearchCard: React.FC<ISearchCardProps> = ({
 	addAlert,
-	close,
 	groupId,
 	history,
-	open,
 }) => {
 	const currentUser = useCurrentUser();
+	const exitModal = useModal();
 	const {
 		data: searchQueryStringsData,
 		error,
@@ -128,23 +126,7 @@ export const SearchCard: React.FC<ISearchCardProps> = ({
 
 	const handleCancel = (touchedFields: FormikTouched<FormikValues>): void => {
 		Object.keys(touchedFields).length > 0
-			? open(modalTypes.CONFIRMATION_MODAL, {
-					cancelMessage: Liferay.Language.get('cancel'),
-					message: Liferay.Language.get(
-						'edits-made-to-search-queries-have-not-been-saved-do-you-want-to-exit-without-saving'
-					),
-					modalVariant: 'modal-warning',
-					onClose: close,
-					onSubmit: () => {
-						history.push(
-							toRoute(Routes.SETTINGS_DEFINITIONS, {groupId})
-						);
-					},
-					submitButtonDisplay: 'warning',
-					submitMessage: Liferay.Language.get('exit'),
-					title: Liferay.Language.get('exit-without-saving'),
-					titleIcon: 'warning-full',
-				})
+			? exitModal.onOpenChange(true)
 			: history.push(toRoute(Routes.SETTINGS_DEFINITIONS, {groupId}));
 	};
 
@@ -159,174 +141,201 @@ export const SearchCard: React.FC<ISearchCardProps> = ({
 	};
 
 	return (
-		<Card className="query-card-root">
-			<Card.Header className="mb-1">
-				<Card.Title>{Liferay.Language.get('query-string')}</Card.Title>
-			</Card.Header>
+		<>
+			<Card className="query-card-root">
+				<Card.Header className="mb-1">
+					<Card.Title>
+						{Liferay.Language.get('query-string')}
+					</Card.Title>
+				</Card.Header>
 
-			<Card.Body>
-				<WrapSafeResults
-					className="flex-grow-1"
-					error={error}
-					errorProps={{
-						className: 'flex-grow-1',
-					}}
-					loading={loading}
-					page={false}
-					pageDisplay={false}
-				>
-					<Form
-						initialValues={{
-							queryStringList: getQueryStringListInitialValue(),
+				<Card.Body>
+					<WrapSafeResults
+						className="flex-grow-1"
+						error={error}
+						errorProps={{
+							className: 'flex-grow-1',
 						}}
-						innerRef={_formRef as any}
-						onSubmit={handleSubmit}
+						loading={loading}
+						page={false}
+						pageDisplay={false}
 					>
-						{({
-							handleSubmit,
-							isSubmitting,
-							isValid,
-							setFieldTouched,
-							setFieldValue,
-							touched,
-							values,
-						}) => (
-							<Form.Form onSubmit={handleSubmit}>
-								<FieldArray
-									name="queryStringList"
-									render={(arrayHelpers) => (
-										<>
-											<div className="form-inline mb-3">
-												<Form.Input
-													className="query-input"
-													disabled
-													name="defaultQueryString"
-													value="q"
-												/>
+						<Form
+							initialValues={{
+								queryStringList:
+									getQueryStringListInitialValue(),
+							}}
+							innerRef={_formRef as any}
+							onSubmit={handleSubmit}
+						>
+							{({
+								handleSubmit,
+								isSubmitting,
+								isValid,
+								setFieldTouched,
+								setFieldValue,
+								touched,
+								values,
+							}) => (
+								<Form.Form onSubmit={handleSubmit}>
+									<FieldArray
+										name="queryStringList"
+										render={(arrayHelpers) => (
+											<>
+												<div className="form-inline mb-3">
+													<Form.Input
+														className="query-input"
+														disabled
+														name="defaultQueryString"
+														value="q"
+													/>
 
-												{renderAddButton(
-													authorized,
-													values.queryStringList
-														.length,
-													{
-														disabled: isSubmitting,
-														onClick: () =>
-															arrayHelpers.push(
-																''
-															),
-													}
-												)}
-											</div>
-
-											{values.queryStringList.map(
-												(queryString, index) => (
-													<div
-														className="form-inline mb-3"
-														key={index}
-													>
-														<Form.Input
-															className="query-input"
-															disabled={
-																!authorized
-															}
-															name={`queryStringList.${index}`}
-															onBlur={() =>
-																handleBlur(
-																	`queryStringList.${index}`,
-																	queryString,
-																	setFieldValue,
-																	setFieldTouched
-																)
-															}
-															validate={sequence([
-																validateRequired,
-																validateMaxLength(
-																	QUERY_STRING_SIZE_LIMIT
+													{renderAddButton(
+														authorized,
+														values.queryStringList
+															.length,
+														{
+															disabled:
+																isSubmitting,
+															onClick: () =>
+																arrayHelpers.push(
+																	''
 																),
-															])}
-														/>
-														{authorized && (
-															<ClayButton
-																aria-label={Liferay.Language.get(
-																	'delete'
-																)}
-																borderless
-																className="button-root ml-1"
+														}
+													)}
+												</div>
+
+												{values.queryStringList.map(
+													(queryString, index) => (
+														<div
+															className="form-inline mb-3"
+															key={index}
+														>
+															<Form.Input
+																className="query-input"
 																disabled={
-																	isSubmitting
+																	!authorized
 																}
-																displayType="secondary"
-																onClick={() =>
-																	arrayHelpers.remove(
-																		index
+																name={`queryStringList.${index}`}
+																onBlur={() =>
+																	handleBlur(
+																		`queryStringList.${index}`,
+																		queryString,
+																		setFieldValue,
+																		setFieldTouched
 																	)
 																}
-															>
-																<ClayIcon
-																	className="icon-root"
-																	symbol="trash"
-																/>
-															</ClayButton>
-														)}
+																validate={sequence(
+																	[
+																		validateRequired,
+																		validateMaxLength(
+																			QUERY_STRING_SIZE_LIMIT
+																		),
+																	]
+																)}
+															/>
+															{authorized && (
+																<ClayButton
+																	aria-label={Liferay.Language.get(
+																		'delete'
+																	)}
+																	borderless
+																	className="button-root ml-1"
+																	disabled={
+																		isSubmitting
+																	}
+																	displayType="secondary"
+																	onClick={() =>
+																		arrayHelpers.remove(
+																			index
+																		)
+																	}
+																>
+																	<ClayIcon
+																		className="icon-root"
+																		symbol="trash"
+																	/>
+																</ClayButton>
+															)}
 
-														{renderAddButton(
-															authorized,
-															values
-																.queryStringList
-																.length,
-															{
-																disabled:
-																	isSubmitting,
-																onClick: () =>
-																	arrayHelpers.push(
-																		''
-																	),
-															},
-															index
-														)}
-													</div>
-												)
-											)}
-										</>
+															{renderAddButton(
+																authorized,
+																values
+																	.queryStringList
+																	.length,
+																{
+																	disabled:
+																		isSubmitting,
+																	onClick:
+																		() =>
+																			arrayHelpers.push(
+																				''
+																			),
+																},
+																index
+															)}
+														</div>
+													)
+												)}
+											</>
+										)}
+									/>
+
+									{authorized && (
+										<div className="mt-4">
+											<ClayButton
+												className="button-root"
+												disabled={!isValid}
+												displayType="primary"
+												type="submit"
+											>
+												{isSubmitting && (
+													<Loading
+														align={Align.Left}
+													/>
+												)}
+
+												{Liferay.Language.get('save')}
+											</ClayButton>
+
+											<ClayButton
+												className="button-root ml-4"
+												displayType="secondary"
+												onClick={() =>
+													handleCancel(touched)
+												}
+											>
+												{Liferay.Language.get('cancel')}
+											</ClayButton>
+										</div>
 									)}
-								/>
+								</Form.Form>
+							)}
+						</Form>
+					</WrapSafeResults>
+				</Card.Body>
+			</Card>
 
-								{authorized && (
-									<div className="mt-4">
-										<ClayButton
-											className="button-root"
-											disabled={!isValid}
-											displayType="primary"
-											type="submit"
-										>
-											{isSubmitting && (
-												<Loading align={Align.Left} />
-											)}
-
-											{Liferay.Language.get('save')}
-										</ClayButton>
-
-										<ClayButton
-											className="button-root ml-4"
-											displayType="secondary"
-											onClick={() =>
-												handleCancel(touched)
-											}
-										>
-											{Liferay.Language.get('cancel')}
-										</ClayButton>
-									</div>
-								)}
-							</Form.Form>
-						)}
-					</Form>
-				</WrapSafeResults>
-			</Card.Body>
-		</Card>
+			{exitModal.open && (
+				<ConfirmationModal
+					message={Liferay.Language.get(
+						'edits-made-to-search-queries-have-not-been-saved-do-you-want-to-exit-without-saving'
+					)}
+					observer={exitModal.observer}
+					onClose={() => exitModal.onOpenChange(false)}
+					onSubmit={() => {
+						history.push(
+							toRoute(Routes.SETTINGS_DEFINITIONS, {groupId})
+						);
+					}}
+					submitButtonDisplay="warning"
+					submitMessage={Liferay.Language.get('exit')}
+					title={Liferay.Language.get('exit-without-saving')}
+					type="warning"
+				/>
+			)}
+		</>
 	);
 };
 
-export default compose<any>(
-	withHistory,
-	connect(null, {addAlert, close, open})
-)(SearchCard);
+export default compose<any>(withHistory, connect(null, {addAlert}))(SearchCard);

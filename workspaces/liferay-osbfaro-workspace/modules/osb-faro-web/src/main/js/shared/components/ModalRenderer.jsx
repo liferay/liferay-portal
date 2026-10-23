@@ -8,9 +8,7 @@ import DeleteChannelModal from './modals/DeleteChannelModal';
 import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
 import FieldPreviewModal from './modals/FieldPreviewModal';
 import HelpWidgetModal from './modals/help-widget-modal';
-import IndividualAttributesModal from './modals/IndividualAttributesModal';
 import InputModal from './modals/InputModal';
-import InterestTopicModal from './modals/InterestTopicsModal';
 import React from 'react';
 import SelectChannelsModal from './modals/SelectChannelsModal';
 import SelectItemsModal from './modals/SelectItemsModal';
@@ -34,9 +32,7 @@ const COMPONENT_MAP = {
 	[modalTypes.DELETE_CONFIRMATION_MODAL]: DeleteConfirmationModal,
 	[modalTypes.FIELD_PREVIEW_MODAL]: FieldPreviewModal,
 	[modalTypes.HELP_WIDGET_MODAL]: HelpWidgetModal,
-	[modalTypes.INDIVIDUAL_ATTRIBUTES_MODAL]: IndividualAttributesModal,
 	[modalTypes.INPUT_MODAL]: InputModal,
-	[modalTypes.INSERT_BLOCKED_KEYWORDS]: InterestTopicModal,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,

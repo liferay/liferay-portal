@@ -1,5 +1,6 @@
-import Modal from 'shared/components/modal';
+import ClayModal from '@clayui/modal';
 import React from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import Table from 'shared/components/table';
 
 interface IIndividualAttributesModalInterface
@@ -9,16 +10,16 @@ interface IIndividualAttributesModalInterface
 		dataSourceName: string;
 	}[];
 	fieldName: string;
-	onClose: () => void;
+	observer: Observer;
 }
 
 const IndividualAttributesModal: React.FC<
 	IIndividualAttributesModalInterface
-> = ({dataSources, fieldName, onClose}) => (
-	<Modal>
-		<Modal.Header onClose={onClose} title={fieldName} />
+> = ({dataSources, fieldName, observer}) => (
+	<ClayModal observer={observer}>
+		<ClayModal.Header>{fieldName}</ClayModal.Header>
 
-		<Modal.Body>
+		<ClayModal.Body>
 			<div className="h5">{Liferay.Language.get('data-sources')}</div>
 
 			<Table
@@ -37,8 +38,8 @@ const IndividualAttributesModal: React.FC<
 				items={dataSources}
 				rowIdentifier="dataSourceName"
 			/>
-		</Modal.Body>
-	</Modal>
+		</ClayModal.Body>
+	</ClayModal>
 );
 
 export default IndividualAttributesModal;

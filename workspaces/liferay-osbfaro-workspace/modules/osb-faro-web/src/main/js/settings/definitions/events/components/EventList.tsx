@@ -12,11 +12,11 @@ import EventDefinitionsQuery, {
 } from 'event-analysis/queries/EventDefinitionsQuery';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import HideEventsModal from 'shared/components/modals/HideEventsModal';
+import React, {useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -31,6 +31,7 @@ import {OrderedMap} from 'immutable';
 import {Sizes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useMutation, useQuery} from '@apollo/client';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {
@@ -38,7 +39,7 @@ import {
 	withSelectionProvider,
 } from 'shared/context/selection';
 
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {addAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -46,12 +47,7 @@ interface IEventListProps extends PropsFromRedux {
 	groupId: string;
 }
 
-const EventList: React.FC<IEventListProps> = ({
-	addAlert,
-	close,
-	groupId,
-	open,
-}) => {
+const EventList: React.FC<IEventListProps> = ({addAlert, groupId}) => {
 	const {selectedItems, selectionDispatch} = useSelectionContext();
 
 	const {delta, orderIOMap, page, query} = useQueryPagination({
@@ -116,66 +112,14 @@ const EventList: React.FC<IEventListProps> = ({
 
 	const currentUser = useCurrentUser();
 
+	const hideModal = useModal();
+
+	const [eventsToHide, setEventsToHide] = useState<Event[]>([]);
+
 	const handleHideEvents = (events: Event[] = []) => {
-		const visibleEvents = events.filter(({hidden}) => !hidden);
+		setEventsToHide(events);
 
-		const visibleEventsCount = visibleEvents.length;
-
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: (
-				<p className="text-secondary">
-					{Liferay.Language.get(
-						'hiding-events-in-the-interface-may-require-reconfiguration-of-segments-and-other-analysis-using-this-event.-hidden-events-will-be-available-for-calculating-metrics'
-					)}
-				</p>
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () => {
-				hideEventDefinitions({
-					variables: {
-						eventDefinitionIds: events.map(({id}) => id),
-					},
-				})
-					.then(() => {
-						addAlert({
-							alertType: Alert.Types.Success,
-							message:
-								visibleEventsCount > 1
-									? sub(
-											Liferay.Language.get(
-												'x-events-have-been-set-to-hide'
-											),
-											[visibleEventsCount]
-										)
-									: sub(
-											Liferay.Language.get(
-												'x-set-to-hide'
-											),
-											[visibleEvents[0].displayName]
-										),
-						});
-					})
-					.catch(() =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: Liferay.Language.get(
-								'there-was-an-error-processing-your-request.-please-try-again'
-							),
-							timeout: false,
-						})
-					);
-			},
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('hide'),
-			title:
-				visibleEventsCount > 1
-					? Liferay.Language.get('hide-events')
-					: sub(Liferay.Language.get('hide-x'), [
-							visibleEvents[0].displayName,
-						]),
-			titleIcon: 'warning',
-		});
+		hideModal.onOpenChange(true);
 	};
 
 	const handleUnhideEvents = (events: Event[] = []) => {
@@ -250,75 +194,99 @@ const EventList: React.FC<IEventListProps> = ({
 		events.some((event) => !event?.hidden);
 
 	return (
-		<CrossPageSelect
-			columns={[
-				eventListColumns.getName({groupId}),
-				eventListColumns.displayName,
-				eventListColumns.description,
-				eventListColumns.hidden,
-			]}
-			delta={delta}
-			emptyTitle={Liferay.Language.get('no-events-were-found')}
-			error={error}
-			items={get(data, ['eventDefinitions', 'eventDefinitions'], [])}
-			loading={loading}
-			noResultsRenderer={
-				<NoResultsDisplay
-					icon={{
-						border: false,
-						size: Sizes.XXXLarge,
-						symbol: 'ac_satellite',
-					}}
+		<>
+			<CrossPageSelect
+				columns={[
+					eventListColumns.getName({groupId}),
+					eventListColumns.displayName,
+					eventListColumns.description,
+					eventListColumns.hidden,
+				]}
+				delta={delta}
+				emptyTitle={Liferay.Language.get('no-events-were-found')}
+				error={error}
+				items={get(data, ['eventDefinitions', 'eventDefinitions'], [])}
+				loading={loading}
+				noResultsRenderer={
+					<NoResultsDisplay
+						icon={{
+							border: false,
+							size: Sizes.XXXLarge,
+							symbol: 'ac_satellite',
+						}}
+					/>
+				}
+				orderIOMap={orderIOMap}
+				page={page}
+				query={query}
+				refetch={refetch}
+				renderNav={
+					authorized && selectedItems.size
+						? () => (
+								<Nav>
+									<Nav.Item>
+										<ClayButton
+											borderless
+											className="button-root nav-btn"
+											displayType="secondary"
+											onClick={() => {
+												const hideEventFn =
+													hasUnhiddenEvent(
+														selectedItems
+													)
+														? handleHideEvents
+														: handleUnhideEvents;
+
+												hideEventFn(
+													selectedItems.toArray()
+												);
+											}}
+										>
+											<ClayIcon
+												className="mr-2"
+												symbol={
+													hasUnhiddenEvent(
+														selectedItems
+													)
+														? 'ac_hidden'
+														: 'view'
+												}
+											/>
+
+											{hasUnhiddenEvent(selectedItems)
+												? Liferay.Language.get('hide')
+												: Liferay.Language.get('show')}
+										</ClayButton>
+									</Nav.Item>
+								</Nav>
+							)
+						: null
+				}
+				renderRowActions={renderRowActions}
+				rowIdentifier="id"
+				showCheckbox={authorized}
+				showDropdownRangeKey={false}
+				total={get(data, ['eventDefinitions', 'total'], 0)}
+			/>
+
+			{hideModal.open && (
+				<HideEventsModal
+					addAlert={addAlert}
+					eventName={({displayName}) => displayName}
+					events={eventsToHide}
+					hideEvents={(eventDefinitionIds) =>
+						hideEventDefinitions({variables: {eventDefinitionIds}})
+					}
+					observer={hideModal.observer}
+					onClose={() => hideModal.onOpenChange(false)}
+					singleEventHiddenMessage={(name) =>
+						sub(Liferay.Language.get('x-set-to-hide'), [
+							name,
+						]) as string
+					}
 				/>
-			}
-			orderIOMap={orderIOMap}
-			page={page}
-			query={query}
-			refetch={refetch}
-			renderNav={
-				authorized && selectedItems.size
-					? () => (
-							<Nav>
-								<Nav.Item>
-									<ClayButton
-										borderless
-										className="button-root nav-btn"
-										displayType="secondary"
-										onClick={() => {
-											const hideEventFn =
-												hasUnhiddenEvent(selectedItems)
-													? handleHideEvents
-													: handleUnhideEvents;
-
-											hideEventFn(
-												selectedItems.toArray()
-											);
-										}}
-									>
-										<ClayIcon
-											className="mr-2"
-											symbol={
-												hasUnhiddenEvent(selectedItems)
-													? 'ac_hidden'
-													: 'view'
-											}
-										/>
-
-										{hasUnhiddenEvent(selectedItems)
-											? Liferay.Language.get('hide')
-											: Liferay.Language.get('show')}
-									</ClayButton>
-								</Nav.Item>
-							</Nav>
-						)
-					: null
-			}
-			renderRowActions={renderRowActions}
-			rowIdentifier="id"
-			showCheckbox={authorized}
-			showDropdownRangeKey={false}
-			total={get(data, ['eventDefinitions', 'total'], 0)}
-		/>
+			)}
+		</>
 	);
 };
 

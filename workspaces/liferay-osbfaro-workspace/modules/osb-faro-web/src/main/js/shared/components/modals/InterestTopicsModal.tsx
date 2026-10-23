@@ -1,9 +1,9 @@
 import ClayButton from '@clayui/button';
-import getCN from 'classnames';
+import ClayModal from '@clayui/modal';
 import Input from 'shared/components/Input';
 import InputList from 'shared/components/InputList';
-import Modal from 'shared/components/modal';
 import React, {useState} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {COMMA, ENTER} from 'shared/util/key-constants';
 
 //	regex to validate words with accents and avoid special characters
@@ -12,12 +12,14 @@ const KEYWORD_VALIDATOR_REGEX = /[\w\u00C0-\u00ff]+/;
 
 interface IInterestTopicsModalProps {
 	className: string;
+	observer: Observer;
 	onClose: () => void;
 	onSubmit: (keywords: string[]) => void;
 }
 
 const InterestTopicsModal: React.FC<IInterestTopicsModalProps> = ({
 	className,
+	observer,
 	onClose,
 	onSubmit,
 	...otherProps
@@ -38,17 +40,17 @@ const InterestTopicsModal: React.FC<IInterestTopicsModalProps> = ({
 		!!value && KEYWORD_VALIDATOR_REGEX.test(value);
 
 	return (
-		<Modal
+		<ClayModal
+			observer={observer}
 			{...otherProps}
-			className={getCN('invite-users-modal-root', className)}
+			className={className}
 			size="lg"
 		>
-			<Modal.Header
-				onClose={onClose}
-				title={Liferay.Language.get('insert-keywords')}
-			/>
+			<ClayModal.Header>
+				{Liferay.Language.get('insert-keywords')}
+			</ClayModal.Header>
 
-			<Modal.Body>
+			<ClayModal.Body>
 				<Input.Group>
 					<InputList
 						errorMessage={Liferay.Language.get(
@@ -66,32 +68,36 @@ const InterestTopicsModal: React.FC<IInterestTopicsModalProps> = ({
 						validationFn={validateKeyword}
 					/>
 				</Input.Group>
-				<div className="description form-text">
+				<div className="form-text mb-4">
 					{Liferay.Language.get(
 						'use-comma-or-enter-to-add-several-keywords'
 					)}
 				</div>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					displayType="secondary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('cancel')}
-				</ClayButton>
+			<ClayModal.Footer
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							displayType="secondary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('cancel')}
+						</ClayButton>
 
-				<ClayButton
-					className="button-root"
-					disabled={!inputValue && !keywords.length}
-					displayType="primary"
-					onClick={handleSubmit}
-				>
-					{Liferay.Language.get('send')}
-				</ClayButton>
-			</Modal.Footer>
-		</Modal>
+						<ClayButton
+							className="button-root"
+							disabled={!inputValue && !keywords.length}
+							displayType="primary"
+							onClick={handleSubmit}
+						>
+							{Liferay.Language.get('send')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</ClayModal>
 	);
 };
 

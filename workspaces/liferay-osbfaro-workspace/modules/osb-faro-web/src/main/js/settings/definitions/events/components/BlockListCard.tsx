@@ -14,7 +14,8 @@ import ClayLink from '@clayui/link';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import Nav from 'shared/components/Nav';
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
-import React from 'react';
+import HideEventsModal from 'shared/components/modals/HideEventsModal';
+import React, {useState} from 'react';
 import RowActions from 'shared/components/RowActions';
 import URLConstants from 'shared/util/url-constants';
 import {addAlert, removeAlert} from 'shared/actions/alerts';
@@ -25,7 +26,6 @@ import {
 	UnblockCustomEventDefinitions,
 } from 'event-analysis/queries/CustomEventDefinitions';
 import {BlockedCustomEvent} from 'event-analysis/utils/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'redux';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -42,6 +42,7 @@ import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {Sizes} from 'shared/util/constants';
 import {sub} from 'shared/util/lang';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
+import {useModal} from '@clayui/modal';
 import {useMutation, useQuery} from '@apollo/client';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {
@@ -62,7 +63,7 @@ const connector = connect(
 			'timeZoneId',
 		]),
 	}),
-	{addAlert, close, open, removeAlert}
+	{addAlert, removeAlert}
 );
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
@@ -75,10 +76,8 @@ interface IBlockListCardProps extends PropsFromRedux {
 
 const BlockListCard: React.FC<IBlockListCardProps> = ({
 	addAlert,
-	close,
 	groupId,
 	history,
-	open,
 	removeAlert,
 	timeZoneId,
 }) => {
@@ -150,66 +149,14 @@ const BlockListCard: React.FC<IBlockListCardProps> = ({
 
 	const currentUser = useCurrentUser();
 
+	const hideModal = useModal();
+
+	const [eventsToHide, setEventsToHide] = useState<BlockedCustomEvent[]>([]);
+
 	const handleHideEvents = (events: BlockedCustomEvent[] = []) => {
-		const visibleEvents = events.filter(({hidden}) => !hidden);
+		setEventsToHide(events);
 
-		const visibleEventsCount = visibleEvents.length;
-
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: (
-				<p className="text-secondary">
-					{Liferay.Language.get(
-						'hiding-events-in-the-interface-may-require-reconfiguration-of-segments-and-other-analysis-using-this-event.-hidden-events-will-be-available-for-calculating-metrics'
-					)}
-				</p>
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () => {
-				hideEventDefinitions({
-					variables: {
-						eventDefinitionIds: events.map(({id}) => id),
-					},
-				})
-					.then(() => {
-						addAlert({
-							alertType: Alert.Types.Success,
-							message:
-								visibleEventsCount > 1
-									? sub(
-											Liferay.Language.get(
-												'x-events-have-been-set-to-hide'
-											),
-											[visibleEventsCount]
-										)
-									: sub(
-											Liferay.Language.get(
-												'x-has-been-set-to-hide'
-											),
-											[visibleEvents[0].name]
-										),
-						});
-					})
-					.catch(() =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message: Liferay.Language.get(
-								'there-was-an-error-processing-your-request.-please-try-again'
-							),
-							timeout: false,
-						})
-					);
-			},
-			submitButtonDisplay: 'warning',
-			submitMessage: Liferay.Language.get('hide'),
-			title:
-				visibleEventsCount > 1
-					? Liferay.Language.get('hide-events')
-					: sub(Liferay.Language.get('hide-x'), [
-							visibleEvents[0].name,
-						]),
-			titleIcon: 'warning',
-		});
+		hideModal.onOpenChange(true);
 	};
 
 	const handleUnhideEvents = (events: BlockedCustomEvent[] = []) => {
@@ -383,131 +330,156 @@ const BlockListCard: React.FC<IBlockListCardProps> = ({
 		events.some((event) => !event?.hidden);
 
 	return (
-		<Card pageDisplay>
-			<CrossPageSelect
-				columns={[
-					eventListColumns.name,
-					eventListColumns.lastSeenURL,
-					eventListColumns.getLastSeenDate(timeZoneId),
-					eventListColumns.hidden,
-				]}
-				delta={delta}
-				error={error}
-				items={get(
-					data,
-					[
-						'blockedCustomEventDefinitions',
-						'blockedCustomEventDefinitions',
-					],
-					[]
-				)}
-				loading={loading}
-				noResultsRenderer={
-					<NoResultsDisplay
-						description={
-							<>
-								{Liferay.Language.get(
-									'to-block-events,-select-one-from-the-events-table'
-								)}
-
-								<ClayLink
-									className="d-block mb-3"
-									href={
-										URLConstants.DefinitionsForEventsDocumentation
-									}
-									key="DOCUMENTATION"
-									target="_blank"
-								>
+		<>
+			<Card pageDisplay>
+				<CrossPageSelect
+					columns={[
+						eventListColumns.name,
+						eventListColumns.lastSeenURL,
+						eventListColumns.getLastSeenDate(timeZoneId),
+						eventListColumns.hidden,
+					]}
+					delta={delta}
+					error={error}
+					items={get(
+						data,
+						[
+							'blockedCustomEventDefinitions',
+							'blockedCustomEventDefinitions',
+						],
+						[]
+					)}
+					loading={loading}
+					noResultsRenderer={
+						<NoResultsDisplay
+							description={
+								<>
 									{Liferay.Language.get(
-										'access-our-documentation-to-learn-how-to-manage-custom-events'
+										'to-block-events,-select-one-from-the-events-table'
 									)}
-								</ClayLink>
-							</>
-						}
-						icon={{
-							border: false,
-							size: Sizes.XXXLarge,
-							symbol: 'ac_satellite',
-						}}
-						title={Liferay.Language.get(
-							'there-are-no-events-blocked'
-						)}
-					/>
-				}
-				orderIOMap={orderIOMap}
-				page={page}
-				query={query}
-				refetch={refetch}
-				renderNav={
-					authorized && selectedItems.size
-						? () => (
-								<Nav>
-									<Nav.Item>
-										<ClayButton
-											borderless
-											className="button-root nav-btn"
-											displayType="secondary"
-											onClick={() => {
-												handleUnblockEvents(
-													selectedItems.toArray()
-												);
-											}}
-										>
-											<ClayIcon
-												className="icon-root mr-2"
-												symbol="undo"
-											/>
 
-											{Liferay.Language.get(
-												'unblock-events'
-											)}
-										</ClayButton>
+									<ClayLink
+										className="d-block mb-3"
+										href={
+											URLConstants.DefinitionsForEventsDocumentation
+										}
+										key="DOCUMENTATION"
+										target="_blank"
+									>
+										{Liferay.Language.get(
+											'access-our-documentation-to-learn-how-to-manage-custom-events'
+										)}
+									</ClayLink>
+								</>
+							}
+							icon={{
+								border: false,
+								size: Sizes.XXXLarge,
+								symbol: 'ac_satellite',
+							}}
+							title={Liferay.Language.get(
+								'there-are-no-events-blocked'
+							)}
+						/>
+					}
+					orderIOMap={orderIOMap}
+					page={page}
+					query={query}
+					refetch={refetch}
+					renderNav={
+						authorized && selectedItems.size
+							? () => (
+									<Nav>
+										<Nav.Item>
+											<ClayButton
+												borderless
+												className="button-root nav-btn"
+												displayType="secondary"
+												onClick={() => {
+													handleUnblockEvents(
+														selectedItems.toArray()
+													);
+												}}
+											>
+												<ClayIcon
+													className="icon-root mr-2"
+													symbol="undo"
+												/>
 
-										<ClayButton
-											borderless
-											className="button-root nav-btn"
-											displayType="secondary"
-											onClick={() => {
-												const hideEventFn =
-													hasUnhiddenEvent(
-														selectedItems
-													)
-														? handleHideEvents
-														: handleUnhideEvents;
+												{Liferay.Language.get(
+													'unblock-events'
+												)}
+											</ClayButton>
 
-												hideEventFn(
-													selectedItems.toArray()
-												);
-											}}
-										>
-											<ClayIcon
-												className="icon-root mr-2"
-												symbol={
-													hasUnhiddenEvent(
-														selectedItems
-													)
-														? 'ac_hidden'
-														: 'view'
-												}
-											/>
+											<ClayButton
+												borderless
+												className="button-root nav-btn"
+												displayType="secondary"
+												onClick={() => {
+													const hideEventFn =
+														hasUnhiddenEvent(
+															selectedItems
+														)
+															? handleHideEvents
+															: handleUnhideEvents;
 
-											{hasUnhiddenEvent(selectedItems)
-												? Liferay.Language.get('hide')
-												: Liferay.Language.get('show')}
-										</ClayButton>
-									</Nav.Item>
-								</Nav>
-							)
-						: null
-				}
-				renderRowActions={
-					authorized && !selectedItems.size ? renderRowActions : null
-				}
-				rowIdentifier="id"
-				showCheckbox={authorized}
-				total={get(data, ['blockedCustomEventDefinitions', 'total'], 0)}
-			/>
-		</Card>
+													hideEventFn(
+														selectedItems.toArray()
+													);
+												}}
+											>
+												<ClayIcon
+													className="icon-root mr-2"
+													symbol={
+														hasUnhiddenEvent(
+															selectedItems
+														)
+															? 'ac_hidden'
+															: 'view'
+													}
+												/>
+
+												{hasUnhiddenEvent(selectedItems)
+													? Liferay.Language.get(
+															'hide'
+														)
+													: Liferay.Language.get(
+															'show'
+														)}
+											</ClayButton>
+										</Nav.Item>
+									</Nav>
+								)
+							: null
+					}
+					renderRowActions={
+						authorized && !selectedItems.size
+							? renderRowActions
+							: null
+					}
+					rowIdentifier="id"
+					showCheckbox={authorized}
+					total={get(
+						data,
+						['blockedCustomEventDefinitions', 'total'],
+						0
+					)}
+				/>
+			</Card>
+
+			{hideModal.open && (
+				<HideEventsModal
+					addAlert={addAlert}
+					eventName={({name}) => name}
+					events={eventsToHide}
+					hideEvents={(eventDefinitionIds) =>
+						hideEventDefinitions({variables: {eventDefinitionIds}})
+					}
+					observer={hideModal.observer}
+					onClose={() => hideModal.onOpenChange(false)}
+				/>
+			)}
+		</>
 	);
 };
 
