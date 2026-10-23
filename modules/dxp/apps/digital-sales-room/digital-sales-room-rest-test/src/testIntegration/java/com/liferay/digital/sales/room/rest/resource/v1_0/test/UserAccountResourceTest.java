@@ -942,20 +942,20 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		UserAccountResource userAccountResource = _getUserAccountResource(
 			password, _addUser(password, RoleConstants.SITE_ADMINISTRATOR));
 
-		User user = UserTestUtil.addUser();
+		User user1 = UserTestUtil.addUser();
 
 		userAccountResource.postRoomUserAccount(
 			_objectEntry.getObjectEntryId(),
 			new UserAccount() {
 				{
-					emailAddress = user.getEmailAddress();
+					emailAddress = user1.getEmailAddress();
 					roleKey = DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR;
 				}
 			});
 
 		Assert.assertTrue(
 			_userGroupRoleLocalService.hasUserGroupRole(
-				user.getUserId(), _getGroupId(_objectEntry),
+				user1.getUserId(), _getGroupId(_objectEntry),
 				DSRRoleConstants.NAME_DSR_ROOM_COLLABORATOR));
 
 		AssertUtils.assertFailure(
@@ -965,8 +965,22 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 				_objectEntry.getObjectEntryId(),
 				new UserAccount() {
 					{
-						emailAddress = user.getEmailAddress();
+						emailAddress = user1.getEmailAddress();
 						roleKey = RoleConstants.SITE_OWNER;
+					}
+				}));
+
+		User user2 = _addUser(
+			RandomTestUtil.randomString(), RoleConstants.SITE_OWNER);
+
+		AssertUtils.assertFailure(
+			Problem.ProblemException.class, "Forbidden",
+			() -> userAccountResource.postRoomUserAccount(
+				_objectEntry.getObjectEntryId(),
+				new UserAccount() {
+					{
+						emailAddress = user2.getEmailAddress();
+						membershipExpirationDate = DateUtil.getTomorrowDate();
 					}
 				}));
 	}
