@@ -708,10 +708,6 @@ public class GitWorkingDirectory {
 		fetch(gitRemote.getRemoteURL(), noTags);
 	}
 
-	public LocalGitBranch fetch(LocalGitBranch localGitBranch) {
-		return fetch(null, localGitBranch);
-	}
-
 	public LocalGitBranch fetch(
 		LocalGitBranch localGitBranch, boolean noTags,
 		RemoteGitRef remoteGitRef) {
@@ -1063,15 +1059,6 @@ public class GitWorkingDirectory {
 		}
 	}
 
-	public LocalGitBranch fetch(
-		String branchName, LocalGitBranch localGitBranch) {
-
-		fetchNoCheckout(branchName, localGitBranch);
-
-		return createLocalGitBranch(
-			localGitBranch.getName(), true, localGitBranch.getSHA());
-	}
-
 	public void fetchGitCommitParentFromUpstream(String sha) {
 		GitRemote upstreamGitRemote = getUpstreamGitRemote();
 
@@ -1086,7 +1073,7 @@ public class GitWorkingDirectory {
 				" ", sha));
 	}
 
-	public void fetchNoCheckout(
+	public void fetchLocalGitBranch(
 		String branchName, LocalGitBranch localGitBranch) {
 
 		if (localGitBranch == null) {

@@ -731,7 +731,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		LocalGitBranch baseLocalGitBranch =
 			baseGitWorkingDirectory.getCurrentLocalGitBranch();
 
-		gitWorkingDirectory.fetchNoCheckout(
+		gitWorkingDirectory.fetchLocalGitBranch(
 			baseLocalGitBranch.getName(), baseLocalGitBranch);
 
 		Properties properties = new Properties();

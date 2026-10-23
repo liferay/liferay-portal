@@ -257,13 +257,8 @@ public class MergePortalSubrepositoryUtil {
 		GitWorkingDirectory portalGitWorkingDirectory,
 		GitWorkingDirectory subrepositoryGitWorkingDirectory) {
 
-		LocalGitBranch portalCurrentLocalGitBranch =
-			portalGitWorkingDirectory.getCurrentLocalGitBranch();
-
-		String portalCurrentBranchSHA = portalCurrentLocalGitBranch.getSHA();
-
 		try {
-			portalGitWorkingDirectory.fetch(
+			portalGitWorkingDirectory.fetchLocalGitBranch(
 				null,
 				subrepositoryGitWorkingDirectory.getCurrentLocalGitBranch());
 		}
@@ -274,9 +269,6 @@ public class MergePortalSubrepositoryUtil {
 			_reportError(
 				"Unable to fetch from " + subrepositoryWorkingDirectory,
 				jenkinsBuildURL, portalPullRequest, exception);
-		}
-		finally {
-			portalGitWorkingDirectory.reset("--hard " + portalCurrentBranchSHA);
 		}
 	}
 
