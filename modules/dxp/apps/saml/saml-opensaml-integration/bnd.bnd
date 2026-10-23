@@ -26,10 +26,6 @@ Import-Package:\
 	\
 	!javax.annotation.*,\
 	\
-	!javax.json.*,\
-	\
-	!javax.persistence.*,\
-	\
 	!javax.servlet.*,\
 	\
 	!junit.*,\
@@ -66,13 +62,9 @@ Import-Package:\
 	\
 	!org.checkerframework.*,\
 	\
-	!org.cryptacular.*,\
-	\
 	!org.jdom.*,\
 	\
 	!org.joda.convert,\
-	\
-	!org.ldaptive.*,\
 	\
 	!org.owasp.validator.html,\
 	\
@@ -86,13 +78,11 @@ Import-Package:\
 -includeresource:\
 	opensaml-core-*;lib:=true,\
 	opensaml-profile-api-*;lib:=true,\
-	opensaml-profile-impl-*;lib:=true,\
 	opensaml-saml-api-*;lib:=true,\
 	opensaml-security-impl-*;lib:=true,\
 	opensaml-soap-api-*;lib:=true,\
 	opensaml-soap-impl-*;lib:=true,\
 	opensaml-storage-api-*;lib:=true,\
-	opensaml-storage-impl-*;lib:=true,\
 	opensaml-xmlsec-api-*;lib:=true,\
 	opensaml-xmlsec-impl-*;lib:=true,\
 	org.opensaml.impl-*;lib:=true,\
