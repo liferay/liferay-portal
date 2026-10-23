@@ -194,6 +194,16 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		_checkPermission(group, userAccount.getRoleKey());
 
+		User user = _userLocalService.fetchUserByEmailAddress(
+			group.getCompanyId(), userAccount.getEmailAddress());
+
+		if ((user != null) &&
+			_userLocalService.hasGroupUser(
+				group.getGroupId(), user.getUserId())) {
+
+			_checkAssignMembersPermission(group, user.getUserId());
+		}
+
 		long accountEntryId = MapUtil.getLong(
 			values, "r_accountToDSRRooms_accountEntryId");
 
@@ -205,9 +215,6 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 
 		Ticket ticket = _addInviteMemberTicket(
 			accountEntryId, group.getCompanyId(), group, name, userAccount);
-
-		User user = _userLocalService.fetchUserByEmailAddress(
-			ticket.getCompanyId(), userAccount.getEmailAddress());
 
 		if (user == null) {
 			return new UserAccount() {
