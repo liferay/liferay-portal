@@ -240,9 +240,6 @@ public interface ImageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Image> getImages(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Image> getImagesBySize(int size);
-
 	/**
 	 * Returns the number of images.
 	 *
@@ -319,4 +316,4 @@ public interface ImageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:819164719
+// LIFERAY-SERVICE-BUILDER-HASH:1455960755

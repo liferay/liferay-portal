@@ -393,18 +393,6 @@ public class PasswordPolicyLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static List<PasswordPolicy> search(
-		long companyId, String name, int start, int end,
-		OrderByComparator<PasswordPolicy> orderByComparator) {
-
-		return getService().search(
-			companyId, name, start, end, orderByComparator);
-	}
-
-	public static int searchCount(long companyId, String name) {
-		return getService().searchCount(companyId, name);
-	}
-
 	public static PasswordPolicy updatePasswordPolicy(
 			long passwordPolicyId, String name, String description,
 			boolean changeable, boolean changeRequired, long minAge,
@@ -453,4 +441,4 @@ public class PasswordPolicyLocalServiceUtil {
 	private static volatile PasswordPolicyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1524807190
+// LIFERAY-SERVICE-BUILDER-HASH:-152017128

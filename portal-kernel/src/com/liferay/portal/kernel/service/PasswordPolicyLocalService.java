@@ -339,14 +339,6 @@ public interface PasswordPolicyLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<PasswordPolicy> search(
-		long companyId, String name, int start, int end,
-		OrderByComparator<PasswordPolicy> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(long companyId, String name);
-
 	public PasswordPolicy updatePasswordPolicy(
 			long passwordPolicyId, String name, String description,
 			boolean changeable, boolean changeRequired, long minAge,
@@ -373,4 +365,4 @@ public interface PasswordPolicyLocalService
 	public PasswordPolicy updatePasswordPolicy(PasswordPolicy passwordPolicy);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2089236586
+// LIFERAY-SERVICE-BUILDER-HASH:-498865142

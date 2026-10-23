@@ -546,20 +546,6 @@ public interface ResourcePermissionLocalService
 		long companyId, String name, int scope, String primKey);
 
 	/**
-	 * Returns the resource permissions that apply to the resource.
-	 *
-	 * @param companyId the primary key of the resource's company
-	 * @param groupId the primary key of the resource's group
-	 * @param name the resource's name, which can be either a class name or a
-	 portlet ID
-	 * @param primKey the primary key of the resource
-	 * @return the resource permissions associated with the resource
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<ResourcePermission> getResourceResourcePermissions(
-		long companyId, long groupId, String name, String primKey);
-
-	/**
 	 * Returns all the resource permissions for the role.
 	 *
 	 * @param roleId the primary key of the role
@@ -991,4 +977,4 @@ public interface ResourcePermissionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1739565303
+// LIFERAY-SERVICE-BUILDER-HASH:890216406

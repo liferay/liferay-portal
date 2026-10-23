@@ -335,14 +335,6 @@ public class SystemEventLocalServiceWrapper
 
 	@Override
 	public java.util.List<SystemEvent> getSystemEvents(
-		long groupId, long classNameId, long classPK) {
-
-		return _systemEventLocalService.getSystemEvents(
-			groupId, classNameId, classPK);
-	}
-
-	@Override
-	public java.util.List<SystemEvent> getSystemEvents(
 		long groupId, long classNameId, long classPK, int type) {
 
 		return _systemEventLocalService.getSystemEvents(
@@ -421,4 +413,4 @@ public class SystemEventLocalServiceWrapper
 	private SystemEventLocalService _systemEventLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-25325850
+// LIFERAY-SERVICE-BUILDER-HASH:484107589

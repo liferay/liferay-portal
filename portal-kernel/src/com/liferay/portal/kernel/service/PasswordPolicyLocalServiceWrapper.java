@@ -452,23 +452,6 @@ public class PasswordPolicyLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<com.liferay.portal.kernel.model.PasswordPolicy>
-		search(
-			long companyId, String name, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.kernel.model.PasswordPolicy>
-					orderByComparator) {
-
-		return _passwordPolicyLocalService.search(
-			companyId, name, start, end, orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, String name) {
-		return _passwordPolicyLocalService.searchCount(companyId, name);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.model.PasswordPolicy updatePasswordPolicy(
 			long passwordPolicyId, String name, String description,
 			boolean changeable, boolean changeRequired, long minAge,
@@ -527,4 +510,4 @@ public class PasswordPolicyLocalServiceWrapper
 	private PasswordPolicyLocalService _passwordPolicyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:282024609
+// LIFERAY-SERVICE-BUILDER-HASH:141608825

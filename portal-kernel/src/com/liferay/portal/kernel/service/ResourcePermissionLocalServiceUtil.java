@@ -621,23 +621,6 @@ public class ResourcePermissionLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the resource permissions that apply to the resource.
-	 *
-	 * @param companyId the primary key of the resource's company
-	 * @param groupId the primary key of the resource's group
-	 * @param name the resource's name, which can be either a class name or a
-	 portlet ID
-	 * @param primKey the primary key of the resource
-	 * @return the resource permissions associated with the resource
-	 */
-	public static List<ResourcePermission> getResourceResourcePermissions(
-		long companyId, long groupId, String name, String primKey) {
-
-		return getService().getResourceResourcePermissions(
-			companyId, groupId, name, primKey);
-	}
-
-	/**
 	 * Returns all the resource permissions for the role.
 	 *
 	 * @param roleId the primary key of the role
@@ -1124,4 +1107,4 @@ public class ResourcePermissionLocalServiceUtil {
 	private static volatile ResourcePermissionLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1987294269
+// LIFERAY-SERVICE-BUILDER-HASH:1507835299

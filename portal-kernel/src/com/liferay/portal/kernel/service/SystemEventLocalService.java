@@ -268,10 +268,6 @@ public interface SystemEventLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SystemEvent> getSystemEvents(
-		long groupId, long classNameId, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SystemEvent> getSystemEvents(
 		long groupId, long classNameId, long classPK, int type);
 
 	/**
@@ -313,4 +309,4 @@ public interface SystemEventLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:493866984
+// LIFERAY-SERVICE-BUILDER-HASH:1190774429

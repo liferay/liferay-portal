@@ -302,12 +302,6 @@ public class SystemEventLocalServiceUtil {
 	}
 
 	public static List<SystemEvent> getSystemEvents(
-		long groupId, long classNameId, long classPK) {
-
-		return getService().getSystemEvents(groupId, classNameId, classPK);
-	}
-
-	public static List<SystemEvent> getSystemEvents(
 		long groupId, long classNameId, long classPK, int type) {
 
 		return getService().getSystemEvents(
@@ -352,4 +346,4 @@ public class SystemEventLocalServiceUtil {
 	private static volatile SystemEventLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-679156878
+// LIFERAY-SERVICE-BUILDER-HASH:-776669980

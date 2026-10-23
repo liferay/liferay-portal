@@ -566,42 +566,6 @@ public interface OrganizationLocalService
 	public List<Organization> getOrganizations(long[] organizationIds)
 		throws PortalException;
 
-	/**
-	 * Returns all the organizations and users belonging to the parent
-	 * organization.
-	 *
-	 * @param companyId the primary key of the organization and user's company
-	 * @param parentOrganizationId the primary key of the organization and
-	 user's parent organization
-	 * @param status the user's workflow status
-	 * @param start the lower bound of the range of organizations and users to
-	 return
-	 * @param end the upper bound of the range of organizations and users to
-	 return (not inclusive)
-	 * @param orderByComparator the comparator to order the organizations and
-	 users (optionally <code>null</code>)
-	 * @return the organizations and users belonging to the parent organization
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Object> getOrganizationsAndUsers(
-		long companyId, long parentOrganizationId, int status, int start,
-		int end, OrderByComparator<?> orderByComparator);
-
-	/**
-	 * Returns the number of organizations and users belonging to the parent
-	 * organization.
-	 *
-	 * @param companyId the primary key of the organization and user's company
-	 * @param parentOrganizationId the primary key of the organization and
-	 user's parent organization
-	 * @param status the user's workflow status
-	 * @return the number of organizations and users belonging to the parent
-	 organization
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getOrganizationsAndUsersCount(
-		long companyId, long parentOrganizationId, int status);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Organization> getOrganizationsByLogoId(long logoId);
 
@@ -878,44 +842,11 @@ public interface OrganizationLocalService
 	public void rebuildTree(long companyId) throws PortalException;
 
 	/**
-	 * Returns an ordered range of all the organizations that match the
-	 * keywords, using the indexer. It is preferable to use this method instead
-	 * of the non-indexed version whenever possible for performance reasons.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the organization's company
-	 * @param parentOrganizationId the primary key of the organization's parent
-	 organization
-	 * @param keywords the keywords (space separated), which may occur in the
-	 organization's name, street, city, zipcode, type, region or
-	 country (optionally <code>null</code>)
-	 * @param params the finder parameters (optionally <code>null</code>).
-	 * @param start the lower bound of the range of organizations to return
-	 * @param end the upper bound of the range of organizations to return (not
-	 inclusive)
-	 * @param sort the field and direction by which to sort (optionally
-	 <code>null</code>)
-	 * @return the matching organizations ordered by name
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public Hits search(
-		long companyId, long parentOrganizationId, String keywords,
-		LinkedHashMap<String, Object> params, int start, int end, Sort sort);
-
-	/**
 	 * Returns a name ordered range of all the organizations that match the
 	 * keywords, type, region, and country, without using the indexer. It is
-	 * preferable to use the indexed version {@link #search(long, long, String,
-	 * LinkedHashMap, int, int, Sort)} instead of this method wherever possible
-	 * for performance reasons.
+	 * preferable to use the indexed version {@link #searchOrganizations(long,
+	 * long, String, LinkedHashMap, int, int, Sort)} instead of this method
+	 * wherever possible for performance reasons.
 	 *
 	 * <p>
 	 * Useful when paginating results. Returns a maximum of <code>end -
@@ -997,108 +928,6 @@ public interface OrganizationLocalService
 		int start, int end, OrderByComparator<Organization> orderByComparator);
 
 	/**
-	 * Returns a name ordered range of all the organizations with the type,
-	 * region, and country, and whose name, street, city, and zipcode match the
-	 * keywords specified for them, without using the indexer. It is preferable
-	 * to use the indexed version {@link #search(long, long, String, String,
-	 * String, String, String, String, String, LinkedHashMap, boolean, int, int,
-	 * Sort)} instead of this method wherever possible for performance reasons.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the organization's company
-	 * @param parentOrganizationId the primary key of the organization's parent
-	 * @param name the name keywords (space separated, optionally
-	 <code>null</code>)
-	 * @param type the organization's type (optionally <code>null</code>)
-	 * @param street the street keywords (optionally <code>null</code>)
-	 * @param city the city keywords (optionally <code>null</code>)
-	 * @param zip the zipcode keywords (optionally <code>null</code>)
-	 * @param regionId the primary key of the organization's region (optionally
-	 <code>null</code>)
-	 * @param countryId the primary key of the organization's country
-	 (optionally <code>null</code>)
-	 * @param params the finder parameters (optionally <code>null</code>). For
-	 more information see {@link
-	 com.liferay.portal.kernel.service.persistence.OrganizationFinder}
-	 * @param andOperator whether every field must match its keywords, or just
-	 one field. For example, &quot;organizations with the name
-	 'Employees' and city 'Chicago'&quot; vs &quot;organizations with
-	 the name 'Employees' or the city 'Chicago'&quot;.
-	 * @param start the lower bound of the range of organizations to return
-	 * @param end the upper bound of the range of organizations to return (not
-	 inclusive)
-	 * @return the matching organizations ordered by name
-	 * @see com.liferay.portal.kernel.service.persistence.OrganizationFinder
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Organization> search(
-		long companyId, long parentOrganizationId, String name, String type,
-		String street, String city, String zip, Long regionId, Long countryId,
-		LinkedHashMap<String, Object> params, boolean andOperator, int start,
-		int end);
-
-	/**
-	 * Returns an ordered range of all the organizations with the type, region,
-	 * and country, and whose name, street, city, and zipcode match the keywords
-	 * specified for them, without using the indexer. It is preferable to use
-	 * the indexed version {@link #search(long, long, String, String, String,
-	 * String, String, String, String, LinkedHashMap, boolean, int, int, Sort)}
-	 * instead of this method wherever possible for performance reasons.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the organization's company
-	 * @param parentOrganizationId the primary key of the organization's parent
-	 organization
-	 * @param name the name keywords (space separated, optionally
-	 <code>null</code>)
-	 * @param type the organization's type (optionally <code>null</code>)
-	 * @param street the street keywords (optionally <code>null</code>)
-	 * @param city the city keywords (optionally <code>null</code>)
-	 * @param zip the zipcode keywords (optionally <code>null</code>)
-	 * @param regionId the primary key of the organization's region (optionally
-	 <code>null</code>)
-	 * @param countryId the primary key of the organization's country
-	 (optionally <code>null</code>)
-	 * @param params the finder parameters (optionally <code>null</code>). For
-	 more information see {@link
-	 com.liferay.portal.kernel.service.persistence.OrganizationFinder}
-	 * @param andOperator whether every field must match its keywords, or just
-	 one field. For example, &quot;organizations with the name
-	 'Employees' and city 'Chicago'&quot; vs &quot;organizations with
-	 the name 'Employees' or the city 'Chicago'&quot;.
-	 * @param start the lower bound of the range of organizations to return
-	 * @param end the upper bound of the range of organizations to return (not
-	 inclusive)
-	 * @param orderByComparator the comparator to order the organizations
-	 (optionally <code>null</code>)
-	 * @return the matching organizations ordered by comparator
-	 <code>orderByComparator</code>
-	 * @see com.liferay.portal.kernel.service.persistence.OrganizationFinder
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Organization> search(
-		long companyId, long parentOrganizationId, String name, String type,
-		String street, String city, String zip, Long regionId, Long countryId,
-		LinkedHashMap<String, Object> params, boolean andOperator, int start,
-		int end, OrderByComparator<Organization> orderByComparator);
-
-	/**
 	 * Returns an ordered range of all the organizations whose name, type, or
 	 * location fields match the keywords specified for them, using the indexer.
 	 * It is preferable to use this method instead of the non-indexed version
@@ -1166,40 +995,6 @@ public interface OrganizationLocalService
 	public int searchCount(
 		long companyId, long parentOrganizationId, String keywords, String type,
 		Long regionId, Long countryId, LinkedHashMap<String, Object> params);
-
-	/**
-	 * Returns the number of organizations with the type, region, and country,
-	 * and whose name, street, city, and zipcode match the keywords specified
-	 * for them.
-	 *
-	 * @param companyId the primary key of the organization's company
-	 * @param parentOrganizationId the primary key of the organization's parent
-	 organization
-	 * @param name the name keywords (space separated, optionally
-	 <code>null</code>)
-	 * @param type the organization's type (optionally <code>null</code>)
-	 * @param street the street keywords (optionally <code>null</code>)
-	 * @param city the city keywords (optionally <code>null</code>)
-	 * @param zip the zipcode keywords (optionally <code>null</code>)
-	 * @param regionId the primary key of the organization's region (optionally
-	 <code>null</code>)
-	 * @param countryId the primary key of the organization's country
-	 (optionally <code>null</code>)
-	 * @param params the finder parameters (optionally <code>null</code>). For
-	 more information see {@link
-	 com.liferay.portal.kernel.service.persistence.OrganizationFinder}
-	 * @param andOperator whether every field must match its keywords, or just
-	 one field. For example, &quot;organizations with the name
-	 'Employees' and city 'Chicago'&quot; vs &quot;organizations with
-	 the name 'Employees' or the city 'Chicago'&quot;.
-	 * @return the number of matching organizations
-	 * @see com.liferay.portal.kernel.service.persistence.OrganizationFinder
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long parentOrganizationId, String name, String type,
-		String street, String city, String zip, Long regionId, Long countryId,
-		LinkedHashMap<String, Object> params, boolean andOperator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<Organization> searchOrganizations(
@@ -1360,4 +1155,4 @@ public interface OrganizationLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-122377503
+// LIFERAY-SERVICE-BUILDER-HASH:1743108533

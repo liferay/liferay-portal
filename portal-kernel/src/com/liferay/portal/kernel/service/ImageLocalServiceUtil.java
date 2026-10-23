@@ -250,10 +250,6 @@ public class ImageLocalServiceUtil {
 		return getService().getImages(start, end);
 	}
 
-	public static List<Image> getImagesBySize(int size) {
-		return getService().getImagesBySize(size);
-	}
-
 	/**
 	 * Returns the number of images.
 	 *
@@ -357,4 +353,4 @@ public class ImageLocalServiceUtil {
 	private static volatile ImageLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:297284853
+// LIFERAY-SERVICE-BUILDER-HASH:-2111681932

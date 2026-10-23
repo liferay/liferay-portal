@@ -275,11 +275,6 @@ public class ImageLocalServiceWrapper
 		return _imageLocalService.getImages(start, end);
 	}
 
-	@Override
-	public java.util.List<Image> getImagesBySize(int size) {
-		return _imageLocalService.getImagesBySize(size);
-	}
-
 	/**
 	 * Returns the number of images.
 	 *
@@ -419,4 +414,4 @@ public class ImageLocalServiceWrapper
 	private ImageLocalService _imageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1051363595
+// LIFERAY-SERVICE-BUILDER-HASH:1089434203
