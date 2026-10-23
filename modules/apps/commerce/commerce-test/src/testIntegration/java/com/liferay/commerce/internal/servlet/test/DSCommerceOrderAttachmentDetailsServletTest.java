@@ -175,11 +175,11 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 			_getContentAsString(
 				_commerceOrderAttachment.getCommerceOrderAttachmentId(), user));
 
-		DSRequest sentDSRequest = _addDSRequest(
-			DSRequestConstants.STATUS_SENT,
-			_createDSRecipient(DSRequestConstants.STATUS_SENT, user));
 		DSRequest voidedDSRequest = _addDSRequest(
 			DSRequestConstants.STATUS_VOIDED,
+			_createDSRecipient(DSRequestConstants.STATUS_SENT, user));
+		DSRequest sentDSRequest = _addDSRequest(
+			DSRequestConstants.STATUS_SENT,
 			_createDSRecipient(DSRequestConstants.STATUS_SENT, user));
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -187,10 +187,10 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 				_commerceOrderAttachment.getCommerceOrderAttachmentId(), user));
 
 		Assert.assertEquals(
-			voidedDSRequest.getExternalReferenceCode(),
+			sentDSRequest.getExternalReferenceCode(),
 			jsonObject.getString("externalReferenceCode"));
 		Assert.assertEquals(
-			DSRequestConstants.STATUS_VOIDED, jsonObject.getString("status"));
+			DSRequestConstants.STATUS_SENT, jsonObject.getString("status"));
 		Assert.assertEquals(
 			user.getFullName(), jsonObject.getString("userName"));
 
@@ -202,10 +202,10 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 		JSONObject historyJSONObject = historyJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			sentDSRequest.getExternalReferenceCode(),
+			voidedDSRequest.getExternalReferenceCode(),
 			historyJSONObject.getString("externalReferenceCode"));
 		Assert.assertEquals(
-			DSRequestConstants.STATUS_SENT,
+			DSRequestConstants.STATUS_VOIDED,
 			historyJSONObject.getString("status"));
 
 		JSONArray recipientsJSONArray = jsonObject.getJSONArray("recipients");
