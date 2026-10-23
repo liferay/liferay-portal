@@ -406,7 +406,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 	private String _getGuestUploadURL(
 		DDMFormField ddmFormField,
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext,
-		long folderId, HttpServletRequest httpServletRequest) {
+		HttpServletRequest httpServletRequest) {
 
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 			RequestBackedPortletURLFactoryUtil.create(httpServletRequest);
@@ -418,8 +418,6 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 					DDMPortletKeys.DYNAMIC_DATA_MAPPING_FORM))
 		).setActionName(
 			"/dynamic_data_mapping_form/upload_file_entry"
-		).setParameter(
-			"folderId", folderId
 		).setParameter(
 			"formInstanceId",
 			ParamUtil.getString(
@@ -709,14 +707,8 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 			return new HashMap<>();
 		}
 
-		long ddmFormFolderId = _getDDMFormFolderId(
-			themeDisplay.getCompanyId(), repository.getRepositoryId(),
-			httpServletRequest);
-
 		if (!themeDisplay.isSignedIn()) {
 			return HashMapBuilder.<String, Object>put(
-				"folderId", ddmFormFolderId
-			).put(
 				"guestUploadURL",
 				() -> {
 					String guestUploadURL = GetterUtil.getString(
@@ -728,14 +720,17 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributor
 
 					return _getGuestUploadURL(
 						ddmFormField, ddmFormFieldRenderingContext,
-						ddmFormFolderId, httpServletRequest);
+						httpServletRequest);
 				}
 			).build();
 		}
 
 		long privateUserFolderId = _getPrivateUserFolderId(
-			repository.getRepositoryId(), ddmFormFolderId, httpServletRequest,
-			themeDisplay.getUser());
+			repository.getRepositoryId(),
+			_getDDMFormFolderId(
+				themeDisplay.getCompanyId(), repository.getRepositoryId(),
+				httpServletRequest),
+			httpServletRequest, themeDisplay.getUser());
 
 		return HashMapBuilder.<String, Object>put(
 			"folderId", privateUserFolderId
