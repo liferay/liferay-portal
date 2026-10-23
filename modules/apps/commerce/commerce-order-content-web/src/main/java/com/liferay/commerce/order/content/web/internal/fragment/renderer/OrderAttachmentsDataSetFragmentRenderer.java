@@ -289,12 +289,10 @@ public class OrderAttachmentsDataSetFragmentRenderer
 	private Map<Long, DSRequest> _getDSRequests(
 		CommerceOrder commerceOrder, HttpServletRequest httpServletRequest) {
 
-		String key =
-			OrderAttachmentsDataSetFragmentRenderer.class.getName() +
-				commerceOrder.getCommerceOrderId();
-
 		Map<Long, DSRequest> dsRequests =
-			(Map<Long, DSRequest>)httpServletRequest.getAttribute(key);
+			(Map<Long, DSRequest>)httpServletRequest.getAttribute(
+				OrderAttachmentsDataSetFragmentRenderer.class.getName() +
+					commerceOrder.getCommerceOrderId());
 
 		if (dsRequests != null) {
 			return dsRequests;
@@ -348,7 +346,10 @@ public class OrderAttachmentsDataSetFragmentRenderer
 			dsRequests.put(entry.getKey(), dsRequest);
 		}
 
-		httpServletRequest.setAttribute(key, dsRequests);
+		httpServletRequest.setAttribute(
+			OrderAttachmentsDataSetFragmentRenderer.class.getName() +
+				commerceOrder.getCommerceOrderId(),
+			dsRequests);
 
 		return dsRequests;
 	}

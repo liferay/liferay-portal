@@ -4,9 +4,9 @@
  */
 
 import {
+	DSRequestDetails,
 	DSRequestStatusDataRenderer,
 	formatActionUrl,
-	openDSRequestDetailsModal,
 	removeDSRequestStatusColumn,
 } from 'commerce-frontend-js';
 import {openModal, openToast} from 'frontend-js-components-web';
@@ -158,11 +158,16 @@ const OrderAttachmentsFDSPropsTransformer = (props) => {
 			else if (actionId === 'view-signature-details') {
 				event?.preventDefault();
 
-				openDSRequestDetailsModal({
-					url: formatActionUrl(
-						action.data.dsRequestDetailsURL,
-						itemData
-					),
+				openModal({
+					bodyComponent: () =>
+						React.createElement(DSRequestDetails, {
+							url: formatActionUrl(
+								action.data.dsRequestDetailsURL,
+								itemData
+							),
+						}),
+					size: 'lg',
+					title: Liferay.Language.get('signature-details'),
 				});
 			}
 		},

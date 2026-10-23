@@ -296,10 +296,8 @@ public class DSRequestManagerImpl implements DSRequestManager {
 	public List<DSRequest> getFileEntryDSRequests(
 		long companyId, long fileEntryId) {
 
-		List<DSRequest> dsRequests = new ArrayList<>();
-
 		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-69290")) {
-			return dsRequests;
+			return new ArrayList<>();
 		}
 
 		ObjectDefinition objectDefinition =
@@ -310,7 +308,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 					companyId);
 
 		if (objectDefinition == null) {
-			return dsRequests;
+			return new ArrayList<>();
 		}
 
 		try {
@@ -328,16 +326,16 @@ public class DSRequestManagerImpl implements DSRequestManager {
 						"r_dsRequestToDSRequestDocuments_l_dsRequestId")));
 
 			if (dsRequestIds.isEmpty()) {
-				return dsRequests;
+				return new ArrayList<>();
 			}
 
-			Map<Long, DSRequest> dsRequestsMap = _getDSRequests(
+			Map<Long, DSRequest> dsRequests = _getDSRequests(
 				companyId, dsRequestIds);
 
 			return TransformUtil.transform(
 				dsRequestIds,
 				dsRequestId -> {
-					DSRequest dsRequest = dsRequestsMap.get(dsRequestId);
+					DSRequest dsRequest = dsRequests.get(dsRequestId);
 
 					if ((dsRequest == null) ||
 						!_isEnabled(companyId, dsRequest.getSiteGroupId())) {
@@ -355,7 +353,7 @@ public class DSRequestManagerImpl implements DSRequestManager {
 				exception);
 		}
 
-		return dsRequests;
+		return new ArrayList<>();
 	}
 
 	@Override

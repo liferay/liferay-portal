@@ -87,7 +87,7 @@ public class DSCommerceOrderAttachmentDetailsServlet extends HttpServlet {
 			ServletResponseUtil.write(
 				httpServletResponse,
 				String.valueOf(
-					_getJSONObject(
+					_toJSONObject(
 						_dsRequestManager.getFileEntryDSRequests(
 							user.getCompanyId(),
 							commerceOrderAttachment.getFileEntryId()))));
@@ -111,7 +111,31 @@ public class DSCommerceOrderAttachmentDetailsServlet extends HttpServlet {
 		}
 	}
 
-	private JSONObject _getDSRequestRecipientJSONObject(
+	private String _getDSRequestRecipientStatus(
+		DSRequest dsRequest, DSRequestRecipient dsRequestRecipient) {
+
+		String status = dsRequestRecipient.getStatus();
+
+		if (Objects.equals(
+				DSRequestConstants.STATUS_EXPIRED, dsRequest.getStatus()) &&
+			(Objects.equals(DSRequestConstants.STATUS_CREATED, status) ||
+			 Objects.equals(DSRequestConstants.STATUS_SENT, status))) {
+
+			return DSRequestConstants.STATUS_EXPIRED;
+		}
+
+		return status;
+	}
+
+	private void _sendError(HttpServletResponse httpServletResponse)
+		throws IOException {
+
+		if (!httpServletResponse.isCommitted()) {
+			httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+		}
+	}
+
+	private JSONObject _toDSRequestRecipientJSONObject(
 		DSRequest dsRequest, DSRequestRecipient dsRequestRecipient) {
 
 		return JSONUtil.put(
@@ -130,23 +154,7 @@ public class DSCommerceOrderAttachmentDetailsServlet extends HttpServlet {
 		);
 	}
 
-	private String _getDSRequestRecipientStatus(
-		DSRequest dsRequest, DSRequestRecipient dsRequestRecipient) {
-
-		String status = dsRequestRecipient.getStatus();
-
-		if (Objects.equals(
-				DSRequestConstants.STATUS_EXPIRED, dsRequest.getStatus()) &&
-			(Objects.equals(DSRequestConstants.STATUS_CREATED, status) ||
-			 Objects.equals(DSRequestConstants.STATUS_SENT, status))) {
-
-			return DSRequestConstants.STATUS_EXPIRED;
-		}
-
-		return status;
-	}
-
-	private JSONObject _getHistoryJSONObject(DSRequest dsRequest) {
+	private JSONObject _toHistoryJSONObject(DSRequest dsRequest) {
 		return JSONUtil.put(
 			"createDate", _toTime(dsRequest.getCreateDate())
 		).put(
@@ -158,7 +166,7 @@ public class DSCommerceOrderAttachmentDetailsServlet extends HttpServlet {
 		);
 	}
 
-	private JSONObject _getJSONObject(List<DSRequest> dsRequests)
+	private JSONObject _toJSONObject(List<DSRequest> dsRequests)
 		throws Exception {
 
 		if (dsRequests.isEmpty()) {
@@ -175,12 +183,12 @@ public class DSCommerceOrderAttachmentDetailsServlet extends HttpServlet {
 			"history",
 			JSONUtil.toJSONArray(
 				dsRequests.subList(1, dsRequests.size()),
-				this::_getHistoryJSONObject)
+				this::_toHistoryJSONObject)
 		).put(
 			"recipients",
 			JSONUtil.toJSONArray(
 				dsRequest.getDSRequestRecipients(),
-				dsRequestRecipient -> _getDSRequestRecipientJSONObject(
+				dsRequestRecipient -> _toDSRequestRecipientJSONObject(
 					dsRequest, dsRequestRecipient))
 		).put(
 			"status", dsRequest.getStatus()
@@ -189,14 +197,6 @@ public class DSCommerceOrderAttachmentDetailsServlet extends HttpServlet {
 		).put(
 			"userName", dsRequest.getUserName()
 		);
-	}
-
-	private void _sendError(HttpServletResponse httpServletResponse)
-		throws IOException {
-
-		if (!httpServletResponse.isCommitted()) {
-			httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
-		}
 	}
 
 	private Long _toTime(Date date) {
