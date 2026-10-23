@@ -129,99 +129,87 @@ public class OrphanReferencesDataCleanupUtilTest {
 	@Test
 	public void testCleanUpTableWithDeadlockRetry() throws Exception {
 		long companyId = RandomTestUtil.nextLong();
-
-		_db.runSQL(
-			_connection,
-			StringBundler.concat(
-				"insert into Portlet (mvccVersion, id_, companyId, portletId, ",
-				"active_) values (0, ", RandomTestUtil.nextLong(), ", ",
-				companyId, ", '", RandomTestUtil.randomString(),
-				"', [$FALSE$])"));
-		_db.runSQL(
-			_connection,
-			StringBundler.concat(
-				"insert into Portlet (mvccVersion, id_, companyId, portletId, ",
-				"active_) values (0, ", RandomTestUtil.nextLong(), ", ",
-				companyId, ", '", RandomTestUtil.randomString(),
-				"', [$FALSE$])"));
-
 		AtomicReference<String> deleteSQLAtomicReference =
 			new AtomicReference<>();
 
-		Connection connection = (Connection)ProxyUtil.newProxyInstance(
-			OrphanReferencesDataCleanupUtilTest.class.getClassLoader(),
-			new Class<?>[] {Connection.class},
-			(proxy, method, args) -> {
-				if (Objects.equals(method.getName(), "prepareStatement")) {
-					String sql = (String)args[0];
+		_testCleanUpTable(
+			logCapture -> {
+				List<LogEntry> logEntries = logCapture.getLogEntries();
 
-					if (sql.startsWith("delete") &&
-						deleteSQLAtomicReference.compareAndSet(null, sql)) {
+				Assert.assertEquals(
+					logEntries.toString(), 2, logEntries.size());
 
-						throw new SQLException(
-							RandomTestUtil.randomString(), "40001");
+				LogEntry logEntry = logEntries.get(0);
+
+				Assert.assertEquals(
+					"Retrying delete after a database deadlock: " +
+						deleteSQLAtomicReference.get(),
+					logEntry.getMessage());
+				Assert.assertEquals(
+					LoggerTestUtil.INFO, logEntry.getPriority());
+				Assert.assertNull(logEntry.getThrowable());
+
+				logEntry = logEntries.get(1);
+
+				Assert.assertEquals(
+					_getCleanUpTableExpectedMessage(
+						1, false, "companyId", "Portlet", "companyId",
+						"Company", companyId),
+					logEntry.getMessage());
+
+				try (PreparedStatement preparedStatement =
+						_connection.prepareStatement(
+							"select count(*) as portletsCount from Portlet " +
+								"where companyId = ?")) {
+
+					preparedStatement.setLong(1, companyId);
+
+					try (ResultSet resultSet =
+							preparedStatement.executeQuery()) {
+
+						resultSet.next();
+
+						Assert.assertEquals(
+							0, resultSet.getLong("portletsCount"));
 					}
 				}
-
-				try {
-					return method.invoke(_connection, args);
-				}
-				catch (InvocationTargetException invocationTargetException) {
-					throw invocationTargetException.getCause();
-				}
-			});
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				OrphanReferencesDataCleanupUtil.class.getName(),
-				LoggerTestUtil.INFO)) {
-
-			OrphanReferencesDataCleanupUtil.cleanUpTable(
-				connection, null, false, null,
-				_dbInspector.normalizeName("companyId"),
-				_dbInspector.normalizeName("Portlet"),
-				new String[] {_dbInspector.normalizeName("companyId")},
-				_dbInspector.normalizeName("Company"));
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 2, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"Retrying delete after a database deadlock: " +
-					deleteSQLAtomicReference.get(),
-				logEntry.getMessage());
-			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
-			Assert.assertNull(logEntry.getThrowable());
-
-			logEntry = logEntries.get(1);
-
-			Assert.assertEquals(
-				_getCleanUpTableExpectedMessage(
-					2, false, "companyId", "Portlet", "companyId", "Company",
-					companyId),
-				logEntry.getMessage());
-
-			try (PreparedStatement preparedStatement =
-					_connection.prepareStatement(
-						"select count(*) as portletCount from Portlet where " +
-							"companyId = ?")) {
-
-				preparedStatement.setLong(1, companyId);
-
-				try (ResultSet resultSet = preparedStatement.executeQuery()) {
-					resultSet.next();
-
-					Assert.assertEquals(0, resultSet.getLong("portletCount"));
-				}
-			}
-		}
-		finally {
-			_db.runSQL(
+			},
+			() -> _db.runSQL(
 				_connection,
-				"delete from Portlet where companyId = " + companyId);
-		}
+				"delete from Portlet where companyId = " + companyId),
+			(Connection)ProxyUtil.newProxyInstance(
+				OrphanReferencesDataCleanupUtilTest.class.getClassLoader(),
+				new Class<?>[] {Connection.class},
+				(proxy, method, args) -> {
+					if (Objects.equals(method.getName(), "prepareStatement")) {
+						String sql = (String)args[0];
+
+						if (sql.startsWith("delete") &&
+							deleteSQLAtomicReference.compareAndSet(null, sql)) {
+
+							throw new SQLException(
+								RandomTestUtil.randomString(), "40001");
+						}
+					}
+
+					try {
+						return method.invoke(_connection, args);
+					}
+					catch (InvocationTargetException
+								invocationTargetException) {
+
+						throw invocationTargetException.getCause();
+					}
+				}),
+			null,
+			() -> _db.runSQL(
+				_connection,
+				StringBundler.concat(
+					"insert into Portlet (mvccVersion, id_, companyId, ",
+					"portletId, active_) values (0, ",
+					RandomTestUtil.nextLong(), ", ", companyId, ", '",
+					RandomTestUtil.randomString(), "', [$FALSE$])")),
+			false, null, "companyId", "Portlet", "companyId", "Company");
 	}
 
 	@Test
@@ -521,7 +509,7 @@ public class OrphanReferencesDataCleanupUtilTest {
 	private void _testCleanUpTable(
 			UnsafeConsumer<LogCapture, Exception> assertUnsafeConsumer,
 			UnsafeRunnable<Exception> cleanUpDataUnsafeRunnable,
-			String customJoinClause,
+			Connection connection, String customJoinClause,
 			UnsafeRunnable<Exception> initializeDataUnsafeRunnable,
 			boolean readOnly, String sourceAdditionalWhereClause,
 			String sourceColumnName, String sourceTableName,
@@ -535,7 +523,7 @@ public class OrphanReferencesDataCleanupUtilTest {
 				LoggerTestUtil.INFO)) {
 
 			OrphanReferencesDataCleanupUtil.cleanUpTable(
-				_connection,
+				connection,
 				(customJoinClause != null) ? new String[] {customJoinClause} :
 					null,
 				readOnly, sourceAdditionalWhereClause,
@@ -549,6 +537,23 @@ public class OrphanReferencesDataCleanupUtilTest {
 		finally {
 			cleanUpDataUnsafeRunnable.run();
 		}
+	}
+
+	private void _testCleanUpTable(
+			UnsafeConsumer<LogCapture, Exception> assertUnsafeConsumer,
+			UnsafeRunnable<Exception> cleanUpDataUnsafeRunnable,
+			String customJoinClause,
+			UnsafeRunnable<Exception> initializeDataUnsafeRunnable,
+			boolean readOnly, String sourceAdditionalWhereClause,
+			String sourceColumnName, String sourceTableName,
+			String targetColumnName, String targetTableName)
+		throws Exception {
+
+		_testCleanUpTable(
+			assertUnsafeConsumer, cleanUpDataUnsafeRunnable, _connection,
+			customJoinClause, initializeDataUnsafeRunnable, readOnly,
+			sourceAdditionalWhereClause, sourceColumnName, sourceTableName,
+			targetColumnName, targetTableName);
 	}
 
 	private static Connection _connection;

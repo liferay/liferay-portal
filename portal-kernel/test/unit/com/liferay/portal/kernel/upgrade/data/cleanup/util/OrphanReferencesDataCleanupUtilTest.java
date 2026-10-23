@@ -16,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,64 +30,8 @@ public class OrphanReferencesDataCleanupUtilTest {
 
 	@Test
 	public void testExecuteDeleteWithRetry() throws Exception {
-		PreparedStatement preparedStatement = Mockito.mock(
-			PreparedStatement.class);
-
-		SQLException sqlException = new SQLException(
-			RandomTestUtil.randomString(), _SQL_STATE_DEADLOCK);
-
-		Mockito.doThrow(
-			sqlException
-		).doReturn(
-			RandomTestUtil.randomInt()
-		).doThrow(
-			sqlException
-		).doReturn(
-			RandomTestUtil.randomInt()
-		).when(
-			preparedStatement
-		).executeUpdate();
-
-		String deleteSQL = RandomTestUtil.randomString();
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				OrphanReferencesDataCleanupUtil.class.getName(),
-				LoggerTestUtil.WARN)) {
-
-			logCapture.resetPriority(LoggerTestUtil.INFO);
-
-			_invokeExecuteDelete(deleteSQL, preparedStatement);
-
-			List<LogEntry> logEntries = logCapture.getLogEntries();
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			LogEntry logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"Retrying delete after a database deadlock: " + deleteSQL,
-				logEntry.getMessage());
-			Assert.assertEquals(LoggerTestUtil.INFO, logEntry.getPriority());
-			Assert.assertNull(logEntry.getThrowable());
-
-			logEntries = logCapture.resetPriority(LoggerTestUtil.DEBUG);
-
-			_invokeExecuteDelete(deleteSQL, preparedStatement);
-
-			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-			logEntry = logEntries.get(0);
-
-			Assert.assertEquals(
-				"Retrying delete after a database deadlock: " + deleteSQL,
-				logEntry.getMessage());
-			Assert.assertEquals(LoggerTestUtil.DEBUG, logEntry.getPriority());
-			Assert.assertSame(sqlException, logEntry.getThrowable());
-		}
-
-		Mockito.verify(
-			preparedStatement, Mockito.times(4)
-		).executeUpdate();
+		_testExecuteDeleteWithRetry(LoggerTestUtil.DEBUG);
+		_testExecuteDeleteWithRetry(LoggerTestUtil.INFO);
 	}
 
 	@Test
@@ -187,6 +132,55 @@ public class OrphanReferencesDataCleanupUtilTest {
 			OrphanReferencesDataCleanupUtil.class, "_executeDelete",
 			new Class<?>[] {Connection.class, String.class}, connection,
 			deleteSQL);
+	}
+
+	private void _testExecuteDeleteWithRetry(String priority) throws Exception {
+		PreparedStatement preparedStatement = Mockito.mock(
+			PreparedStatement.class);
+
+		SQLException sqlException = new SQLException(
+			RandomTestUtil.randomString(), _SQL_STATE_DEADLOCK);
+
+		Mockito.doThrow(
+			sqlException
+		).doReturn(
+			RandomTestUtil.randomInt()
+		).when(
+			preparedStatement
+		).executeUpdate();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				OrphanReferencesDataCleanupUtil.class.getName(),
+				LoggerTestUtil.WARN)) {
+
+			logCapture.resetPriority(priority);
+
+			String deleteSQL = RandomTestUtil.randomString();
+
+			_invokeExecuteDelete(deleteSQL, preparedStatement);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Retrying delete after a database deadlock: " + deleteSQL,
+				logEntry.getMessage());
+			Assert.assertEquals(priority, logEntry.getPriority());
+
+			if (Objects.equals(priority, LoggerTestUtil.DEBUG)) {
+				Assert.assertSame(sqlException, logEntry.getThrowable());
+			}
+			else {
+				Assert.assertNull(logEntry.getThrowable());
+			}
+		}
+
+		Mockito.verify(
+			preparedStatement, Mockito.times(2)
+		).executeUpdate();
 	}
 
 	private static final String _SQL_STATE_CONSTRAINT_VIOLATION = "23000";
