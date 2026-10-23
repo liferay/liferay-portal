@@ -252,7 +252,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 			BatchEngineTaskContentSanitizer batchEngineTaskContentSanitizer =
 				new BatchEngineTaskContentSanitizer(
 					batchEngineImportTask, _configurationProvider,
-					passwordFieldNames);
+					passwordFieldNames, value -> null);
 
 			Blob blob = batchEngineImportTask.getContent();
 
