@@ -11,6 +11,7 @@ import getProjectEntryPoints from '../configuration/getProjectEntryPoints.mjs';
 import fileExists from '../fileExists.mjs';
 import getBuildableProjectDirs from '../getBuildableProjectDirs.mjs';
 import {MODULES_DIR, SRC_PATH} from '../locations.mjs';
+import hasTypeScriptFiles from './hasTypeScriptFiles.mjs';
 import visitProjectTsconfig from './visitProjectTsconfig.mjs';
 
 export default async function visitOutdatedTsconfigFiles(visitorFunction) {
@@ -33,6 +34,7 @@ export default async function visitOutdatedTsconfigFiles(visitorFunction) {
  * {
  *	 '@liferay/frontend-js-react-web': {
  *		dir: 'modules/apps/frontend-js/frontend-js-react-web',
+ *		hasTypeScript: true,
  *		path: {
  *			main: 'src/main/resources/META-INF/resources/js/index.ts',
  *			submodules: {
@@ -44,17 +46,24 @@ export default async function visitOutdatedTsconfigFiles(visitorFunction) {
  * }
  */
 async function getProjectsEntryPoints(projectDirs, modulesDir) {
-	return projectDirs.reduce((projectsEntryPoints, projectDir) => {
-		const {name} = getProjectDescription(projectDir);
-		const {typescript} = getProjectEntryPoints(projectDir);
+	const projectsEntryPoints = {};
 
-		projectsEntryPoints[name] = {
-			dir: path.relative(modulesDir, projectDir),
-			path: typescript,
-		};
+	await Promise.all(
+		projectDirs.map(async (projectDir) => {
+			const {name} = getProjectDescription(projectDir);
+			const {typescript} = getProjectEntryPoints(projectDir);
 
-		return projectsEntryPoints;
-	}, {});
+			projectsEntryPoints[name] = {
+				dir: path.relative(modulesDir, projectDir),
+				hasTypeScript: await hasTypeScriptFiles(
+					path.join(projectDir, SRC_PATH)
+				),
+				path: typescript,
+			};
+		})
+	);
+
+	return projectsEntryPoints;
 }
 
 async function processProject(

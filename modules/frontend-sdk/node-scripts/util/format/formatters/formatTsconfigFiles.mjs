@@ -23,7 +23,31 @@ export default async function formatTsconfigFiles(check) {
 	await visitOutdatedTsconfigFiles(async (filePath, json) => {
 		const relFilePath = path.relative(PORTAL_DIR, filePath);
 
-		if (check) {
+		if (json === null) {
+			if (check) {
+				print(
+					2,
+					print.error('ERROR:'),
+					'Obsolete file',
+					print.underline(relFilePath),
+					'found\n'
+				);
+
+				checksPassed = false;
+			}
+			else {
+				await fs.rm(filePath);
+
+				print(
+					2,
+					print.success('SUCCESS:'),
+					'Deleted file',
+					print.underline(relFilePath),
+					'\n'
+				);
+			}
+		}
+		else if (check) {
 			print(
 				2,
 				print.error('ERROR:'),

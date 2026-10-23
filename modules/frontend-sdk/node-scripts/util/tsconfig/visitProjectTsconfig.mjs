@@ -4,7 +4,6 @@
  */
 
 import crypto from 'crypto';
-import fg from 'fast-glob';
 import fs from 'fs/promises';
 import path from 'path';
 
@@ -20,6 +19,7 @@ import {
 } from '../locations.mjs';
 import objectSF from '../objectSF.mjs';
 import baseTsconfig from './baseTsconfig.mjs';
+import hasTypeScriptFiles from './hasTypeScriptFiles.mjs';
 
 const GENERATED = '@generated';
 
@@ -35,14 +35,14 @@ export default async function visitProjectTsconfig(
 		? path.join(projectDir, 'test')
 		: path.join(projectDir, SRC_PATH);
 
-	if (!(await fileExists(srcPath))) {
+	const configPath = path.join(srcPath, 'tsconfig.json');
+
+	if (!(await hasTypeScriptFiles(srcPath))) {
+		if (await fileExists(configPath)) {
+			await visitorFunction(configPath, null);
+		}
+
 		return;
-	}
-
-	const tsFiles = await fg('**/*.{ts,tsx}', {cwd: srcPath});
-
-	if (!tsFiles.length) {
-		return false;
 	}
 
 	const globalDTsFileProjectRelativePath = path.posix.relative(
@@ -129,6 +129,10 @@ export default async function visitProjectTsconfig(
 			}
 		);
 
+		if (!projectEntryPoint.hasTypeScript) {
+			continue;
+		}
+
 		const projectPath = path.posix.relative(
 			srcPath,
 			path.join(MODULES_DIR, projectEntryPoint.dir)
@@ -160,8 +164,6 @@ export default async function visitProjectTsconfig(
 	json[GENERATED] = hash(json);
 
 	let contents = '';
-
-	const configPath = path.join(srcPath, 'tsconfig.json');
 
 	if (await fileExists(configPath)) {
 		contents = await fs.readFile(configPath, 'utf8');
