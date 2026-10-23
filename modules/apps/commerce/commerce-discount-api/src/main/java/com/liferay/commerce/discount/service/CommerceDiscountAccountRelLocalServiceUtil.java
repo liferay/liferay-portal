@@ -331,14 +331,6 @@ public class CommerceDiscountAccountRelLocalServiceUtil {
 			commerceDiscountId, start, end, orderByComparator);
 	}
 
-	public static List<CommerceDiscountAccountRel>
-		getCommerceDiscountAccountRels(
-			long commerceDiscountId, String name, int start, int end) {
-
-		return getService().getCommerceDiscountAccountRels(
-			commerceDiscountId, name, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce discount account rels.
 	 *
@@ -353,13 +345,6 @@ public class CommerceDiscountAccountRelLocalServiceUtil {
 
 		return getService().getCommerceDiscountAccountRelsCount(
 			commerceDiscountId);
-	}
-
-	public static int getCommerceDiscountAccountRelsCount(
-		long commerceDiscountId, String name) {
-
-		return getService().getCommerceDiscountAccountRelsCount(
-			commerceDiscountId, name);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -422,4 +407,4 @@ public class CommerceDiscountAccountRelLocalServiceUtil {
 			CommerceDiscountAccountRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:447221628
+// LIFERAY-SERVICE-BUILDER-HASH:1161196225

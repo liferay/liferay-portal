@@ -377,17 +377,6 @@ public class CommerceDiscountRuleLocalServiceWrapper
 			commerceDiscountId, start, end, orderByComparator);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.discount.model.CommerceDiscountRule>
-				getCommerceDiscountRules(
-					long commerceDiscountId, String name, int start, int end)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceDiscountRuleLocalService.getCommerceDiscountRules(
-			commerceDiscountId, name, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce discount rules.
 	 *
@@ -403,15 +392,6 @@ public class CommerceDiscountRuleLocalServiceWrapper
 	public int getCommerceDiscountRulesCount(long commerceDiscountId) {
 		return _commerceDiscountRuleLocalService.getCommerceDiscountRulesCount(
 			commerceDiscountId);
-	}
-
-	@Override
-	public int getCommerceDiscountRulesCount(
-			long commerceDiscountId, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceDiscountRuleLocalService.getCommerceDiscountRulesCount(
-			commerceDiscountId, name);
 	}
 
 	@Override
@@ -505,4 +485,4 @@ public class CommerceDiscountRuleLocalServiceWrapper
 	private CommerceDiscountRuleLocalService _commerceDiscountRuleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-639307238
+// LIFERAY-SERVICE-BUILDER-HASH:-1393447135

@@ -285,10 +285,6 @@ public interface CommerceDiscountAccountRelLocalService
 		long commerceDiscountId, int start, int end,
 		OrderByComparator<CommerceDiscountAccountRel> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceDiscountAccountRel> getCommerceDiscountAccountRels(
-		long commerceDiscountId, String name, int start, int end);
-
 	/**
 	 * Returns the number of commerce discount account rels.
 	 *
@@ -299,10 +295,6 @@ public interface CommerceDiscountAccountRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceDiscountAccountRelsCount(long commerceDiscountId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceDiscountAccountRelsCount(
-		long commerceDiscountId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -341,4 +333,4 @@ public interface CommerceDiscountAccountRelLocalService
 		CommerceDiscountAccountRel commerceDiscountAccountRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1626942591
+// LIFERAY-SERVICE-BUILDER-HASH:-1569774766

@@ -571,10 +571,6 @@ public interface CommerceDiscountLocalService
 	public int getCommerceDiscountsCount(long companyId, String couponCode);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceDiscountsCountByPricingClassId(
-		long commercePricingClassId, String title);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -637,10 +633,6 @@ public interface CommerceDiscountLocalService
 	public CommerceDiscount incrementCommerceDiscountNumberOfUse(
 			long commerceDiscountId)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceDiscount> searchByCommercePricingClassId(
-		long commercePricingClassId, String title, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BaseModelSearchResult<CommerceDiscount> searchCommerceDiscounts(
@@ -809,4 +801,4 @@ public interface CommerceDiscountLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2107546501
+// LIFERAY-SERVICE-BUILDER-HASH:-1168353860

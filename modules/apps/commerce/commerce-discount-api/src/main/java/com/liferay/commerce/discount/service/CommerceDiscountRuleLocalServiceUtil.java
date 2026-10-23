@@ -322,14 +322,6 @@ public class CommerceDiscountRuleLocalServiceUtil {
 			commerceDiscountId, start, end, orderByComparator);
 	}
 
-	public static List<CommerceDiscountRule> getCommerceDiscountRules(
-			long commerceDiscountId, String name, int start, int end)
-		throws PortalException {
-
-		return getService().getCommerceDiscountRules(
-			commerceDiscountId, name, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce discount rules.
 	 *
@@ -341,14 +333,6 @@ public class CommerceDiscountRuleLocalServiceUtil {
 
 	public static int getCommerceDiscountRulesCount(long commerceDiscountId) {
 		return getService().getCommerceDiscountRulesCount(commerceDiscountId);
-	}
-
-	public static int getCommerceDiscountRulesCount(
-			long commerceDiscountId, String name)
-		throws PortalException {
-
-		return getService().getCommerceDiscountRulesCount(
-			commerceDiscountId, name);
 	}
 
 	public static
@@ -419,4 +403,4 @@ public class CommerceDiscountRuleLocalServiceUtil {
 			CommerceDiscountRuleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1608909208
+// LIFERAY-SERVICE-BUILDER-HASH:-2092738233
