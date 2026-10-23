@@ -23,20 +23,6 @@
 					"key": "orderByType2",
 					"value": "ASC"
 				}
-			],
-			"query": [
-				{
-					"key": "queryAndOperator",
-					"value": "true"
-				},
-				{
-					"key": "queryContains",
-					"value": "true"
-				},
-				{
-					"key": "queryName",
-					"value": "assetTags"
-				}
 			]
 		}
 	},
@@ -63,24 +49,6 @@
 				{
 					"key": "orderByType2",
 					"value": "ASC"
-				}
-			],
-			"query": [
-				{
-					"key": "queryAndOperator",
-					"value": "true"
-				},
-				{
-					"key": "queryContains",
-					"value": "true"
-				},
-				{
-					"key": "queryName",
-					"value": "assetTags"
-				},
-				{
-					"key": "queryTags",
-					"value": "[featured]"
 				}
 			]
 		}
@@ -109,20 +77,6 @@
 					"key": "orderByType2",
 					"value": "ASC"
 				}
-			],
-			"query": [
-				{
-					"key": "queryAndOperator",
-					"value": "true"
-				},
-				{
-					"key": "queryContains",
-					"value": "true"
-				},
-				{
-					"key": "queryName",
-					"value": "assetTags"
-				}
 			]
 		}
 	},
@@ -150,20 +104,6 @@
 					"key": "orderByType2",
 					"value": "ASC"
 				}
-			],
-			"query": [
-				{
-					"key": "queryAndOperator",
-					"value": "true"
-				},
-				{
-					"key": "queryContains",
-					"value": "true"
-				},
-				{
-					"key": "queryName",
-					"value": "assetTags"
-				}
 			]
 		}
 	},
@@ -190,20 +130,6 @@
 				{
 					"key": "orderByType2",
 					"value": "ASC"
-				}
-			],
-			"query": [
-				{
-					"key": "queryAndOperator",
-					"value": "true"
-				},
-				{
-					"key": "queryContains",
-					"value": "true"
-				},
-				{
-					"key": "queryName",
-					"value": "assetTags"
 				}
 			]
 		}
