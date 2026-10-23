@@ -413,13 +413,10 @@ describe('Field DocumentLibrary', () => {
 		expect(guestUploadFieldInput).not.toBe(null);
 	});
 
-	describe('file deletion lifecycle', () => {
-		const originalSendBeacon = navigator.sendBeacon;
+	describe('guest upload requests', () => {
 		const originalXMLHttpRequest = global.XMLHttpRequest;
 
-		let beaconCalls;
 		let xhrInstances;
-		let eventBus;
 
 		const renderField = (props = {}) =>
 			render(
@@ -434,25 +431,23 @@ describe('Field DocumentLibrary', () => {
 				/>
 			);
 
-		const triggerBeforeUnload = () => {
-			act(() => {
-				window.dispatchEvent(new Event('beforeunload'));
-			});
-		};
+		const valueParsed = (id) => JSON.parse(valueWithFileEntry(id));
 
-		const triggerBeforeNavigate = () => {
-			act(() => {
-				Liferay.fire('beforeNavigate');
-			});
-		};
+		const requestsTo = (url) =>
+			xhrInstances
+				.filter((instance) => instance.url === url)
+				.map((instance) =>
+					Number(
+						formDataValue(
+							instance.send.mock.calls[0]?.[0],
+							'oldFileEntryId'
+						)
+					)
+				);
 
-		const fireGlobal = (name) => {
-			act(() => {
-				(eventBus.get(name) || [])
-					.slice()
-					.forEach((handler) => handler());
-			});
-		};
+		const deleteCalls = () => requestsTo(fileEntryDeleteURL);
+
+		const uploadCalls = () => requestsTo(guestUploadURL);
 
 		const completeUpload = (newFileEntryId) => {
 			const uploadXhr = xhrInstances.find(
@@ -476,34 +471,6 @@ describe('Field DocumentLibrary', () => {
 			act(() => readyStateChangeHandler({}));
 		};
 
-		const valueParsed = (id) => JSON.parse(valueWithFileEntry(id));
-
-		const deleteCalls = () => {
-			const xhrDeletes = xhrInstances
-				.filter((instance) => instance.url === fileEntryDeleteURL)
-				.map((instance) =>
-					Number(
-						formDataValue(
-							instance.send.mock.calls[0]?.[0],
-							'oldFileEntryId'
-						)
-					)
-				);
-
-			const beaconDeletes = beaconCalls
-				.filter((call) => call.url === fileEntryDeleteURL)
-				.map((call) =>
-					Number(formDataValue(call.formData, 'oldFileEntryId'))
-				);
-
-			return [...xhrDeletes, ...beaconDeletes];
-		};
-
-		const expectDeleted = (...ids) =>
-			expect(deleteCalls().sort()).toEqual([...ids].sort());
-
-		const expectNoDeletes = () => expect(deleteCalls()).toEqual([]);
-
 		const clickClear = () => {
 			const clearButton = document.querySelector(
 				'[aria-label="unselect-file"]'
@@ -513,6 +480,22 @@ describe('Field DocumentLibrary', () => {
 
 			act(() => {
 				fireEvent.click(clearButton);
+			});
+		};
+
+		const selectViaModal = (newFileEntryId) => {
+			openSelectionModal.mockImplementation(({onSelect}) => {
+				act(() =>
+					onSelect({value: valueWithFileEntry(newFileEntryId)})
+				);
+			});
+
+			const selectButton = document.getElementById('uploadField');
+
+			expect(selectButton).not.toBe(null);
+
+			act(() => {
+				fireEvent.click(selectButton);
 			});
 		};
 
@@ -536,33 +519,10 @@ describe('Field DocumentLibrary', () => {
 			});
 		};
 
-		const selectViaModal = (newFileEntryId) => {
-			openSelectionModal.mockImplementation(({onSelect}) => {
-				act(() =>
-					onSelect({value: valueWithFileEntry(newFileEntryId)})
-				);
-			});
-
-			const selectButton = document.getElementById('uploadField');
-
-			expect(selectButton).not.toBe(null);
-
-			act(() => {
-				fireEvent.click(selectButton);
-			});
-		};
-
 		beforeEach(() => {
 			openSelectionModal.mockReset();
 
-			beaconCalls = [];
 			xhrInstances = [];
-
-			navigator.sendBeacon = jest.fn((url, formData) => {
-				beaconCalls.push({formData, url});
-
-				return true;
-			});
 
 			global.XMLHttpRequest = jest.fn(() => {
 				const instance = {
@@ -582,215 +542,63 @@ describe('Field DocumentLibrary', () => {
 				return instance;
 			});
 
-			eventBus = new Map();
-
-			Liferay.on.mockImplementation((name, handler) => {
-				if (!eventBus.has(name)) {
-					eventBus.set(name, []);
-				}
-
-				eventBus.get(name).push(handler);
-			});
-
-			Liferay.detach.mockImplementation((name, handler) => {
-				if (handler) {
-					const handlers = eventBus.get(name) || [];
-					const index = handlers.indexOf(handler);
-
-					if (index >= 0) {
-						handlers.splice(index, 1);
-					}
-				}
-				else {
-					eventBus.delete(name);
-				}
-			});
-
-			Liferay.fire.mockImplementation((name) => {
-				(eventBus.get(name) || [])
-					.slice()
-					.forEach((handler) => handler());
-			});
-
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => true);
+			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
 		});
 
 		afterEach(() => {
 			global.XMLHttpRequest = originalXMLHttpRequest;
-			navigator.sendBeacon = originalSendBeacon;
 		});
 
-		it('cleans up intermediate replacements on unload after multiple replaces in edit mode', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({
-				allowGuestUsers: true,
-				value: valueWithFileEntry(42),
-			});
-
-			triggerGuestUpload();
-			completeUpload(88);
-			triggerGuestUpload();
-			completeUpload(99);
-			triggerBeforeUnload();
-
-			expectDeleted(88, 99);
-		});
-
-		it('deletes the original on Save after Clear when the value is an object (LPD-100999)', () => {
-			renderField({value: valueParsed(42)});
-
-			clickClear();
-			fireGlobal('paginationControlsSubmitButtonClicked');
-
-			expectDeleted(42);
-		});
-
-		it('deletes both the previous and current upload on new-entry abandon after replace', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
+		it('does not send a delete request on unload', () => {
 			renderField({allowGuestUsers: true, value: '{}'});
 
 			triggerGuestUpload();
-			completeUpload(88);
-			triggerGuestUpload();
-			completeUpload(99);
-			triggerBeforeUnload();
-
-			expectDeleted(88, 99);
-		});
-
-		it('deletes only the replacement on unload when replacing in edit mode', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({
-				allowGuestUsers: true,
-				value: valueWithFileEntry(42),
-			});
-
-			triggerGuestUpload();
-			completeUpload(99);
-			triggerBeforeUnload();
-
-			expectDeleted(99);
-		});
-
-		it('deletes the new entry session upload on abandon', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({allowGuestUsers: true, value: '{}'});
-
-			triggerGuestUpload();
-			completeUpload(99);
-			triggerBeforeUnload();
-
-			expectDeleted(99);
-		});
-
-		it('deletes the original on Save after Clear', () => {
-			renderField({value: valueWithFileEntry(42)});
-
-			clickClear();
-			fireGlobal('paginationControlsSubmitButtonClicked');
-
-			expectDeleted(42);
-		});
-
-		it('deletes the previous on Save after Replace', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({
-				allowGuestUsers: true,
-				value: valueWithFileEntry(42),
-			});
-
-			triggerGuestUpload();
-			completeUpload(99);
-			fireGlobal('paginationControlsSubmitButtonClicked');
-
-			expectDeleted(42);
-		});
-
-		it('does not delete on unload when editing an existing entry without changes', () => {
-			renderField({value: valueWithFileEntry(42)});
-
-			triggerBeforeUnload();
-
-			expectNoDeletes();
-		});
-
-		it('cleans up the orphan on SPA navigation away from a replaced entry', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({
-				allowGuestUsers: true,
-				value: valueWithFileEntry(42),
-			});
-
-			triggerGuestUpload();
-			completeUpload(99);
-			triggerBeforeNavigate();
-
-			expectDeleted(99);
-		});
-
-		it('does not delete on unload when read-only (LPP-63922)', () => {
-			renderField({readOnly: true, value: valueWithFileEntry(42)});
-
-			triggerBeforeUnload();
-
-			expectNoDeletes();
-		});
-
-		it('does not delete the previous on Save when replaced via the document selector', () => {
-			renderField({value: valueWithFileEntry(42)});
-
-			selectViaModal(99);
-			fireGlobal('paginationControlsSubmitButtonClicked');
-
-			expectNoDeletes();
-		});
-
-		it('does not delete the uploaded file when the guest clicks the field before submitting (LPP-64664)', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({allowGuestUsers: true, value: '{}'});
-
-			triggerGuestUpload();
-
 			completeUpload(99);
 
 			act(() => {
-				fireEvent.click(document.getElementById('uploadField'));
+				window.dispatchEvent(new Event('beforeunload'));
 			});
 
-			fireGlobal('paginationControlsSubmitButtonClicked');
-
-			expectNoDeletes();
+			expect(deleteCalls()).toEqual([]);
 		});
 
-		it('does not delete when Clear is followed by Cancel (LPP-63917)', () => {
+		it('does not send a delete request when replacing via the document selector', () => {
+			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => true);
+
 			renderField({value: valueWithFileEntry(42)});
 
-			clickClear();
-			triggerBeforeUnload();
+			selectViaModal(99);
 
-			expectNoDeletes();
+			expect(deleteCalls()).toEqual([]);
 		});
 
-		it('preserves the original on Cancel after Replace and cleans the orphan on unload', () => {
-			Liferay.ThemeDisplay.isSignedIn = jest.fn(() => false);
-
-			renderField({
-				allowGuestUsers: true,
-				value: valueWithFileEntry(42),
-			});
+		it('sends a delete request for the current file on Clear', () => {
+			renderField({allowGuestUsers: true, value: '{}'});
 
 			triggerGuestUpload();
 			completeUpload(99);
-			triggerBeforeUnload();
+			clickClear();
 
-			expectDeleted(99);
+			expect(deleteCalls()).toEqual([99]);
+		});
+
+		it('sends the current file entry id as oldFileEntryId when replacing a file', () => {
+			renderField({allowGuestUsers: true, value: '{}'});
+
+			triggerGuestUpload();
+			completeUpload(88);
+			triggerGuestUpload();
+
+			expect(uploadCalls()).toEqual([0, 88]);
+			expect(deleteCalls()).toEqual([]);
+		});
+
+		it('sends zero as oldFileEntryId on the first upload', () => {
+			renderField({allowGuestUsers: true, value: '{}'});
+
+			triggerGuestUpload();
+
+			expect(uploadCalls()).toEqual([0]);
 		});
 	});
 });

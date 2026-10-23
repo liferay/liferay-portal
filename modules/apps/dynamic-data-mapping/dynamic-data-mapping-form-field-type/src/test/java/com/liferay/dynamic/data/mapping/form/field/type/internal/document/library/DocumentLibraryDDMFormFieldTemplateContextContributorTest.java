@@ -145,7 +145,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 				ddmFormField, _createDDMFormFieldRenderingContext());
 
 		Assert.assertTrue((boolean)parameters.get("allowGuestUsers"));
-		Assert.assertEquals(_FORMS_FOLDER_ID, parameters.get("folderId"));
+		Assert.assertFalse(parameters.containsKey("folderId"));
 
 		String guestUploadURL = String.valueOf(
 			parameters.get("guestUploadURL"));
@@ -164,7 +164,7 @@ public class DocumentLibraryDDMFormFieldTemplateContextContributorTest {
 			CoreMatchers.containsString("param_groupId=" + _GROUP_ID));
 		Assert.assertThat(
 			guestUploadURL,
-			CoreMatchers.containsString("param_folderId=" + _FORMS_FOLDER_ID));
+			CoreMatchers.not(CoreMatchers.containsString("param_folderId")));
 	}
 
 	@Test

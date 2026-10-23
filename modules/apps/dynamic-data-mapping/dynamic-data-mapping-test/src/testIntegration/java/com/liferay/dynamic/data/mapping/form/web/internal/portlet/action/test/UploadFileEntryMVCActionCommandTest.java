@@ -8,7 +8,6 @@ package com.liferay.dynamic.data.mapping.form.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.configuration.DLFileEntryMimeTypeConfiguration;
 import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.dynamic.data.mapping.constants.DDMFormConstants;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstance;
@@ -16,19 +15,16 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormInstanceTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMFormUtil;
 import com.liferay.petra.memory.DeleteFileFinalizeAction;
 import com.liferay.petra.memory.FinalizeManager;
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
-import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -43,17 +39,17 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.FileItem;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -68,7 +64,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -131,27 +126,12 @@ public class UploadFileEntryMVCActionCommandTest {
 		User user = DDMFormUtil.getDDMFormDefaultUser(
 			TestPropsValues.getCompanyId());
 
-		Repository repository = _portletFileRepository.addPortletRepository(
-			_group.getGroupId(), DDMFormConstants.SERVICE_NAME,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		Folder folder = _portletFileRepository.addPortletFolder(
-			user.getUserId(), repository.getRepositoryId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			DDMFormConstants.DDM_FORM_UPLOADED_FILES_FOLDER_NAME,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		_folderId = folder.getFolderId();
-
-		_oldDLFileEntry = _dlFileEntryLocalService.addFileEntry(
-			null, user.getUserId(), _group.getGroupId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, "file.txt",
-			ContentTypes.TEXT_PLAIN, "file.txt", StringUtil.randomString(),
-			StringPool.BLANK, StringPool.BLANK, -1, new HashMap<>(), null,
-			new ByteArrayInputStream(TestDataConstants.TEST_BYTE_ARRAY), 0,
-			null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+		_oldFileEntry = TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), user.getUserId(),
+			DDMFormConstants.TEMP_FOLDER_NAME,
+			TempFileEntryUtil.getTempFileName("file.txt"),
+			new ByteArrayInputStream(TestDataConstants.TEST_BYTE_ARRAY),
+			ContentTypes.TEXT_PLAIN);
 	}
 
 	@After
@@ -163,20 +143,30 @@ public class UploadFileEntryMVCActionCommandTest {
 	public void testProcessAction() throws Exception {
 		Assert.assertNotNull(
 			_dlFileEntryLocalService.fetchDLFileEntry(
-				_oldDLFileEntry.getFileEntryId()));
+				_oldFileEntry.getFileEntryId()));
 
 		JSONObject jsonObject = _processAction();
 
 		Assert.assertNull(
 			_dlFileEntryLocalService.fetchDLFileEntry(
-				_oldDLFileEntry.getFileEntryId()));
+				_oldFileEntry.getFileEntryId()));
 
 		JSONObject fileJSONObject = jsonObject.getJSONObject("file");
 
 		DLFileEntry dlFileEntry = _dlFileEntryLocalService.fetchDLFileEntry(
 			fileJSONObject.getLong("fileEntryId"));
 
-		Assert.assertNotNull(dlFileEntry);
+		Assert.assertEquals(
+			TempFileEntryUtil.getOriginalTempFileName(
+				dlFileEntry.getFileName()),
+			fileJSONObject.getString("title"));
+
+		FileEntry tempFileEntry = TempFileEntryUtil.getTempFileEntry(
+			_group.getGroupId(), dlFileEntry.getUserId(),
+			DDMFormConstants.TEMP_FOLDER_NAME, dlFileEntry.getTitle());
+
+		Assert.assertEquals(
+			dlFileEntry.getFileEntryId(), tempFileEntry.getFileEntryId());
 
 		User user = _userLocalService.getUserByExternalReferenceCode(
 			DDMFormConstants.DDM_FORM_DEFAULT_USER_EXTERNAL_REFERENCE_CODE,
@@ -187,16 +177,17 @@ public class UploadFileEntryMVCActionCommandTest {
 		Role role = RoleLocalServiceUtil.getRole(
 			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
 
-		Assert.assertEquals(
-			Collections.emptyList(),
-			_resourcePermissionLocalService.
-				getAvailableResourcePermissionActionIds(
-					TestPropsValues.getCompanyId(), DLFileEntry.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(dlFileEntry.getFileEntryId()),
-					role.getRoleId(),
-					_resourceActions.getModelResourceActions(
-						DLFileEntry.class.getName())));
+		Assert.assertTrue(
+			ListUtil.isEmpty(
+				_resourcePermissionLocalService.
+					getAvailableResourcePermissionActionIds(
+						TestPropsValues.getCompanyId(),
+						DLFileEntry.class.getName(),
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(dlFileEntry.getFileEntryId()),
+						role.getRoleId(),
+						_resourceActions.getModelResourceActions(
+							DLFileEntry.class.getName()))));
 	}
 
 	@Test
@@ -266,14 +257,12 @@ public class UploadFileEntryMVCActionCommandTest {
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.addParameter(
-			"folderId", String.valueOf(_folderId));
-		mockHttpServletRequest.addParameter(
 			"formInstanceId",
 			String.valueOf(_ddmFormInstance.getFormInstanceId()));
 		mockHttpServletRequest.addParameter(
 			"groupId", String.valueOf(_ddmFormInstance.getGroupId()));
 		mockHttpServletRequest.addParameter(
-			"oldFileEntryId", String.valueOf(_oldDLFileEntry.getFileEntryId()));
+			"oldFileEntryId", String.valueOf(_oldFileEntry.getFileEntryId()));
 
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -317,8 +306,6 @@ public class UploadFileEntryMVCActionCommandTest {
 	@Inject
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
-	private long _folderId;
-
 	@DeleteAfterTestRun
 	private Group _group;
 
@@ -330,13 +317,10 @@ public class UploadFileEntryMVCActionCommandTest {
 	)
 	private MVCActionCommand _mvcActionCommand;
 
-	private DLFileEntry _oldDLFileEntry;
+	private FileEntry _oldFileEntry;
 
 	@Inject
 	private Portal _portal;
-
-	@Inject
-	private PortletFileRepository _portletFileRepository;
 
 	@Inject
 	private ResourceActions _resourceActions;
