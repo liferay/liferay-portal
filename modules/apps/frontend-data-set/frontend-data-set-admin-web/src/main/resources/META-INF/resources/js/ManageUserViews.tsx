@@ -288,7 +288,7 @@ export default function ManageUserViews({
 						description: Liferay.Language.get(
 							'no-user-views-were-found'
 						),
-						image: '/states/empty_state.svg',
+						symbol: 'empty-state',
 						title: Liferay.Language.get('no-results-found'),
 					}}
 					filters={filters}

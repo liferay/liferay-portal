@@ -19,31 +19,33 @@ interface IEmptyStateProps {
 	onClearFilters: () => void;
 }
 
-const DEFAULT_SEARCH_STATE_IMAGE = '/states/search_state.svg';
-const DEFAULT_SEARCH_STATE_REDUCED_MOTION_IMAGE =
-	'/states/search_state_reduced_motion.svg';
+const DEFAULT_SEARCH_STATE_SYMBOL = 'search-state';
 
 const getImgSrc = (image: string) =>
 	`${Liferay.ThemeDisplay.getPathThemeImages()}${image}`;
 
-const getImageProps = (config?: IEmptyState) =>
-	config?.symbol
-		? {
-				image: (
-					<ClayIcon
-						className={`c-empty-state-icon c-empty-state-icon-${config.symbol}`}
-						illustration
-						symbol={config.symbol}
-					/>
-				),
-			}
-		: {
-				imgSrc: getImgSrc(config?.image ?? DEFAULT_SEARCH_STATE_IMAGE),
-				imgSrcReducedMotion: getImgSrc(
-					config?.imageReducedMotion ??
-						DEFAULT_SEARCH_STATE_REDUCED_MOTION_IMAGE
-				),
-			};
+const getImageProps = (config?: IEmptyState) => {
+	if (config?.image && !config.symbol) {
+		return {
+			imgSrc: getImgSrc(config.image),
+			imgSrcReducedMotion: config.imageReducedMotion
+				? getImgSrc(config.imageReducedMotion)
+				: undefined,
+		};
+	}
+
+	const symbol = config?.symbol ?? DEFAULT_SEARCH_STATE_SYMBOL;
+
+	return {
+		image: (
+			<ClayIcon
+				className={`c-empty-state-icon c-empty-state-icon-${symbol}`}
+				illustration
+				symbol={symbol}
+			/>
+		),
+	};
+};
 
 const EmptyState = ({
 	creationMenu,

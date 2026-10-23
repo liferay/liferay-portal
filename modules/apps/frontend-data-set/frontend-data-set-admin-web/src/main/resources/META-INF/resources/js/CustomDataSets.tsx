@@ -781,7 +781,7 @@ const CustomDataSets = ({
 					description: Liferay.Language.get(
 						'start-creating-one-to-show-your-data'
 					),
-					image: '/states/empty_state.svg',
+					symbol: 'empty-state',
 					title: Liferay.Language.get('no-data-sets-created'),
 				}}
 				id={`${namespace}CustomDataSets`}
