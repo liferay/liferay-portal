@@ -58,12 +58,12 @@ public class PortalGitWorkingDirectory extends GitWorkingDirectory {
 		GitUtil.ExecutionResult executionResult = executeBashCommands(
 			3, GitUtil.MILLIS_RETRY_DELAY, 1000 * 60 * 30,
 			JenkinsResultsParserUtil.combine(
-				"zip -q -r -y ", fileName,
-				" $(git ls-files --directory --no-empty-directory --others ",
-				"--exclude-standard)",
-				" $(git ls-files --directory --no-empty-directory --others ",
-				"--exclude-standard --ignored)",
-				" -x 'working.dir.*.properties'"));
+				"zip --quiet --recurse-paths --symlinks ", fileName,
+				" $(git ls-files --directory --exclude-standard ",
+				"--no-empty-directory --others)",
+				" $(git ls-files --directory --exclude-standard --ignored ",
+				"--no-empty-directory --others)",
+				" --exclude 'working.dir.*.properties'"));
 
 		if (executionResult.getExitValue() != 0) {
 			throw new GitWorkingDirectoryRuntimeException(
