@@ -44,15 +44,7 @@ import dxpTouchpoints from '../../../images/dxp_touchpoints.svg';
 import envelopeClose from '../../../images/envelope_close.svg';
 import faroConnectionErrorOvals from '../../../images/faro_connection_error_ovals.svg';
 import faroConnectionSuccessOvals from '../../../images/faro_connection_success_ovals.svg';
-import faroContactsBarChart from '../../../images/faro_contacts_bar_chart.svg';
-import faroContactsCardLayoutImageCenter from '../../../images/faro_contacts_card_layout_image_center.svg';
-import faroContactsCardLayoutImageLeft from '../../../images/faro_contacts_card_layout_image_left.svg';
-import faroContactsCardLayoutNoImage from '../../../images/faro_contacts_card_layout_no_image.svg';
-import faroContactsCardTemplateTypeContact from '../../../images/faro_contacts_card_template_type_contact.svg';
-import faroContactsCardTemplateTypeInfo from '../../../images/faro_contacts_card_template_type_info.svg';
-import faroContactsCardTemplateTypeSegment from '../../../images/faro_contacts_card_template_type_segment.svg';
 import faroContactsIndividuals from '../../../images/faro_contacts_individuals.svg';
-import faroContactsPieChart from '../../../images/faro_contacts_pie_chart.svg';
 import faroContactsSegments from '../../../images/faro_contacts_segments.svg';
 import faroCsv from '../../../images/faro_csv.svg';
 import faroDataSource from '../../../images/faro_data_source.svg';
@@ -135,17 +127,7 @@ const AC_ICONS: Record<
 	envelope_close: envelopeClose,
 	faro_connection_error_ovals: faroConnectionErrorOvals,
 	faro_connection_success_ovals: faroConnectionSuccessOvals,
-	faro_contacts_bar_chart: faroContactsBarChart,
-	faro_contacts_card_layout_image_center: faroContactsCardLayoutImageCenter,
-	faro_contacts_card_layout_image_left: faroContactsCardLayoutImageLeft,
-	faro_contacts_card_layout_no_image: faroContactsCardLayoutNoImage,
-	faro_contacts_card_template_type_contact:
-		faroContactsCardTemplateTypeContact,
-	faro_contacts_card_template_type_info: faroContactsCardTemplateTypeInfo,
-	faro_contacts_card_template_type_segment:
-		faroContactsCardTemplateTypeSegment,
 	faro_contacts_individuals: faroContactsIndividuals,
-	faro_contacts_pie_chart: faroContactsPieChart,
 	faro_contacts_segments: faroContactsSegments,
 	faro_csv: faroCsv,
 	faro_data_source: faroDataSource,

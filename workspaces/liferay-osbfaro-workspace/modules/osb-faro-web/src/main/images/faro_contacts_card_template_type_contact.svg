@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<svg height="16px" version="1.1" viewBox="0 0 512 512" width="15px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<rect class="lexicon-icon-outline" height="64" width="256" x="128" y="448" />
-	<rect class="lexicon-icon-outline" height="64" width="512" x="0" y="320" />
-	<circle class="lexicon-icon-outline" cx="256" cy="128" r="128" />
-</svg>

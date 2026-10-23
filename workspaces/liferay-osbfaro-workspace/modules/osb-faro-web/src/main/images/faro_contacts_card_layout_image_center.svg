@@ -1,7 +1,0 @@
-<?xml version="1.0"?>
-
-<svg height="16px" version="1.1" viewBox="0 0 512 512" width="15px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-	<path class="lexicon-icon-outline" d="M400,288H112c-8.8,0-16,7.2-16,16s7.2,16,16,16h288c8.8,0,16-7.2,16-16S408.8,288,400,288z" />
-	<path class="lexicon-icon-outline" d="M368,352H144c-8.8,0-16,7.2-16,16s7.2,16,16,16h224c8.8,0,16-7.2,16-16S376.8,352,368,352z" />
-	<path class="lexicon-icon-outline" d="M256,256c35.3,0,64-28.7,64-64s-28.7-64-64-64s-64,28.7-64,64S220.7,256,256,256z" />
-</svg>
