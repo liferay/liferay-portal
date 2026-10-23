@@ -5,13 +5,21 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.bean.BeanReference;
+import com.liferay.portal.kernel.exception.NoSuchLayoutRevisionException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
+import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetBranchPersistence;
 import com.liferay.portal.service.base.LayoutRevisionServiceBaseImpl;
 
@@ -34,6 +42,24 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		FeatureFlagManagerUtil.checkEnabled(
+			serviceContext.getCompanyId(), "LPD-105778");
+
+		_checkPermissions(layoutSetBranchId, plid);
+
+		_checkPortletPreferencesPlid(plid, portletPreferencesPlid);
+
+		return layoutRevisionLocalService.addLayoutRevision(
+			getUserId(), layoutSetBranchId, layoutBranchId,
+			parentLayoutRevisionId, head, plid, portletPreferencesPlid,
+			privateLayout, name, title, description, keywords, robots,
+			typeSettings, iconImage, iconImageId, themeId, colorSchemeId, css,
+			serviceContext);
+	}
+
+	private void _checkPermissions(long layoutSetBranchId, long plid)
+		throws PortalException {
+
 		LayoutSetBranch layoutSetBranch =
 			_layoutSetBranchPersistence.findByPrimaryKey(layoutSetBranchId);
 
@@ -41,12 +67,43 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 			getPermissionChecker(), layoutSetBranch.getGroupId(),
 			ActionKeys.ADD_LAYOUT_BRANCH);
 
-		return layoutRevisionLocalService.addLayoutRevision(
-			userId, layoutSetBranchId, layoutBranchId, parentLayoutRevisionId,
-			head, plid, portletPreferencesPlid, privateLayout, name, title,
-			description, keywords, robots, typeSettings, iconImage, iconImageId,
-			themeId, colorSchemeId, css, serviceContext);
+		Layout layout = _layoutPersistence.findByPrimaryKey(plid);
+
+		if ((layout.getGroupId() != layoutSetBranch.getGroupId()) ||
+			(layout.isPrivateLayout() != layoutSetBranch.isPrivateLayout())) {
+
+			throw new PrincipalException.MustHavePermission(
+				getPermissionChecker(), Layout.class.getName(), plid,
+				ActionKeys.UPDATE);
+		}
+
+		LayoutPermissionUtil.check(
+			getPermissionChecker(), layout, ActionKeys.UPDATE);
 	}
+
+	private void _checkPortletPreferencesPlid(
+			long plid, long portletPreferencesPlid)
+		throws PortalException {
+
+		if ((portletPreferencesPlid == LayoutConstants.DEFAULT_PLID) ||
+			(portletPreferencesPlid == plid)) {
+
+			return;
+		}
+
+		LayoutRevision layoutRevision =
+			layoutRevisionPersistence.fetchByPrimaryKey(portletPreferencesPlid);
+
+		if ((layoutRevision == null) || (layoutRevision.getPlid() != plid)) {
+			throw new NoSuchLayoutRevisionException(
+				StringBundler.concat(
+					"No layout revision exists with the primary key ",
+					portletPreferencesPlid, " for layout ", plid));
+		}
+	}
+
+	@BeanReference(type = LayoutPersistence.class)
+	private LayoutPersistence _layoutPersistence;
 
 	@BeanReference(type = LayoutSetBranchPersistence.class)
 	private LayoutSetBranchPersistence _layoutSetBranchPersistence;
