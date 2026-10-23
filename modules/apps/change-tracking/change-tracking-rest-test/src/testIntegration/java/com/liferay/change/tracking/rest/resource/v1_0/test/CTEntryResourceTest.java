@@ -27,9 +27,6 @@ import com.liferay.knowledge.base.test.util.KBTestUtil;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.messaging.Destination;
-import com.liferay.portal.kernel.messaging.DestinationStatistics;
-import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.ListTypeConstants;
@@ -37,6 +34,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ListTypeLocalService;
+import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -62,6 +60,7 @@ import org.junit.runner.RunWith;
  * @author Pei-Jung Lan
  */
 @RunWith(Arquillian.class)
+@Sync(destinationNames = CTDestinationNames.CT_ENTRY_REINDEX)
 public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 
 	@Before
@@ -105,8 +104,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 		JournalArticle journalArticle2 = JournalTestUtil.addArticle(
 			testGroup.getGroupId(), journalFolder.getFolderId());
 
-		_waitForReindex();
-
 		Page<CTEntry> page = ctEntryResource.getCTEntriesHistoryPage(
 			_journalArticleClassNameId, null, null, testGroup.getGroupId(),
 			null, Pagination.of(1, 10), null);
@@ -124,8 +121,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 			_getCTCollectionId(), journalArticle2);
 
 		List<CTEntry> ctEntries = Arrays.asList(ctEntry1, ctEntry2, ctEntry3);
-
-		_waitForReindex();
 
 		page = ctEntryResource.getCTEntriesHistoryPage(
 			_journalArticleClassNameId, journalArticle1.getId(), null,
@@ -593,8 +588,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 				_classNameLocalService.getClassNameId(Address.class),
 				address.getAddressId());
 
-		_waitForReindex();
-
 		return ctEntryResource.getCTEntry(serviceBuilderCTEntry.getCtEntryId());
 	}
 
@@ -626,8 +619,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 				ctCollectionId, _journalArticleClassNameId,
 				journalArticle.getId());
 
-		_waitForReindex();
-
 		return ctEntryResource.getCTEntry(serviceBuilderCTEntry.getCtEntryId());
 	}
 
@@ -658,8 +649,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 			ctCollectionHistoryProvider.getCTEntry(
 				ctCollectionId, _kbArticleClassNameId,
 				kbArticle.getKbArticleId());
-
-		_waitForReindex();
 
 		return ctEntryResource.getCTEntry(serviceBuilderCTEntry.getCtEntryId());
 	}
@@ -693,28 +682,6 @@ public class CTEntryResourceTest extends BaseCTEntryResourceTestCase {
 		_ctCollections.add(ctCollection);
 
 		return ctCollection.getCtCollectionId();
-	}
-
-	private void _waitForReindex() throws Exception {
-		Destination destination = MessageBusUtil.getDestination(
-			CTDestinationNames.CT_ENTRY_REINDEX);
-
-		DestinationStatistics destinationStatistics =
-			destination.getDestinationStatistics();
-
-		int i = 0;
-
-		while ((destinationStatistics.getActiveThreadCount() > 0) ||
-			   (destinationStatistics.getPendingMessageCount() > 0)) {
-
-			if (i++ > 60) {
-				break;
-			}
-
-			Thread.sleep(500);
-
-			destinationStatistics = destination.getDestinationStatistics();
-		}
 	}
 
 	@Inject
