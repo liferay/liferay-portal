@@ -37,6 +37,9 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ClassName;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.User;
@@ -48,6 +51,7 @@ import com.liferay.portal.kernel.repository.registry.RepositoryDefiner;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.RepositoryLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -72,6 +76,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.repository.liferayrepository.LiferayRepository;
 import com.liferay.portal.repository.registry.RepositoryClassDefinition;
@@ -462,6 +467,34 @@ public class CompanyLocalServiceDBPartitionTest
 		String factoryPid = configuration.getFactoryPid();
 		String pid = configuration.getPid();
 
+		String secondaryVirtualHostname = company.getVirtualHostname() + ".net";
+
+		_virtualHostLocalService.updateVirtualHosts(
+			company.getCompanyId(), 0,
+			TreeMapBuilder.put(
+				company.getVirtualHostname(), StringPool.BLANK
+			).put(
+				secondaryVirtualHostname, StringPool.BLANK
+			).build());
+
+		String siteVirtualHostname = "site." + company.getVirtualHostname();
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					company.getCompanyId())) {
+
+			Group group = _groupLocalService.getGroup(
+				company.getCompanyId(), GroupConstants.GUEST);
+
+			LayoutSet layoutSet = group.getPublicLayoutSet();
+
+			_virtualHostLocalService.updateVirtualHosts(
+				company.getCompanyId(), layoutSet.getLayoutSetId(),
+				TreeMapBuilder.put(
+					siteVirtualHostname, StringPool.BLANK
+				).build());
+		}
+
 		companyLocalService.exportCompany(company.getCompanyId());
 
 		Company exportedValuesCompany = null;
@@ -473,24 +506,17 @@ public class CompanyLocalServiceDBPartitionTest
 			String exportedVirtualHostname = company.getVirtualHostname();
 			String exportedWebId = company.getWebId();
 
+			String ipv6AddressHextet = Integer.toHexString(
+				RandomTestUtil.randomInt(1, 65535));
+
 			String name = "new" + company.getName();
-			String virtualHostname = "new" + exportedVirtualHostname;
+			String virtualHostname = "2001:db8::" + ipv6AddressHextet;
 			String webId = "new" + exportedWebId;
 
-			try {
-				company = companyLocalService.addDBPartitionCompany(
-					company.getCompanyId(), name, virtualHostname, webId);
-
-				Assert.fail();
-			}
-			catch (Exception exception) {
-				Assert.assertTrue(
-					exception instanceof IllegalArgumentException);
-
-				_assertExportedCompanyNotUpdated(
-					company.getCompanyId(), exportedVirtualHostname,
-					exportedWebId);
-			}
+			_assertAddDBPartitionCompanyFails(
+				company.getCompanyId(), IllegalArgumentException.class,
+				exportedVirtualHostname, exportedWebId, name, virtualHostname,
+				webId);
 
 			companyLocalService.deleteCompany(company);
 
@@ -499,31 +525,22 @@ public class CompanyLocalServiceDBPartitionTest
 				exportedVirtualHostname, 0, true, true, null, null, null, null,
 				null, null);
 
-			try {
-				companyLocalService.addDBPartitionCompany(
-					company.getCompanyId(), name, virtualHostname,
-					exportedWebId);
-
-				Assert.fail();
-			}
-			catch (CompanyWebIdException companyWebIdException) {
-				_assertExportedCompanyNotUpdated(
-					company.getCompanyId(), exportedVirtualHostname,
-					exportedWebId);
-			}
-
-			try {
-				companyLocalService.addDBPartitionCompany(
-					company.getCompanyId(), name, exportedVirtualHostname,
-					webId);
-
-				Assert.fail();
-			}
-			catch (CompanyVirtualHostException companyVirtualHostException) {
-				_assertExportedCompanyNotUpdated(
-					company.getCompanyId(), exportedVirtualHostname,
-					exportedWebId);
-			}
+			_assertAddDBPartitionCompanyFails(
+				company.getCompanyId(), CompanyVirtualHostException.class,
+				exportedVirtualHostname, exportedWebId, name,
+				exportedVirtualHostname, webId);
+			_assertAddDBPartitionCompanyFails(
+				company.getCompanyId(), CompanyVirtualHostException.class,
+				exportedVirtualHostname, exportedWebId, name,
+				secondaryVirtualHostname, webId);
+			_assertAddDBPartitionCompanyFails(
+				company.getCompanyId(), CompanyVirtualHostException.class,
+				exportedVirtualHostname, exportedWebId, name,
+				siteVirtualHostname, webId);
+			_assertAddDBPartitionCompanyFails(
+				company.getCompanyId(), CompanyWebIdException.class,
+				exportedVirtualHostname, exportedWebId, name, virtualHostname,
+				exportedWebId);
 
 			String invalidVirtualHostname = "-" + exportedVirtualHostname;
 
@@ -544,17 +561,9 @@ public class CompanyLocalServiceDBPartitionTest
 				preparedStatement.executeUpdate();
 			}
 
-			try {
-				companyLocalService.addDBPartitionCompany(
-					company.getCompanyId(), name, null, webId);
-
-				Assert.fail();
-			}
-			catch (CompanyVirtualHostException companyVirtualHostException) {
-				_assertExportedCompanyNotUpdated(
-					company.getCompanyId(), invalidVirtualHostname,
-					exportedWebId);
-			}
+			_assertAddDBPartitionCompanyFails(
+				company.getCompanyId(), CompanyVirtualHostException.class,
+				invalidVirtualHostname, exportedWebId, name, null, webId);
 
 			List<String> pids = new CopyOnWriteArrayList<>();
 
@@ -585,7 +594,9 @@ public class CompanyLocalServiceDBPartitionTest
 					company.getCompanyId()));
 
 			Assert.assertEquals(name, company.getName());
-			Assert.assertEquals(virtualHostname, company.getVirtualHostname());
+			Assert.assertEquals(
+				"2001:db8:0:0:0:0:0:" + ipv6AddressHextet,
+				company.getVirtualHostname());
 			Assert.assertEquals(webId, company.getWebId());
 
 			try (SafeCloseable safeCloseable =
@@ -1298,6 +1309,26 @@ public class CompanyLocalServiceDBPartitionTest
 		}
 	}
 
+	private void _assertAddDBPartitionCompanyFails(
+			long companyId, Class<? extends Exception> exceptionClass,
+			String exportedVirtualHostname, String exportedWebId, String name,
+			String virtualHostname, String webId)
+		throws Exception {
+
+		try {
+			companyLocalService.addDBPartitionCompany(
+				companyId, name, virtualHostname, webId);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(exceptionClass.isInstance(exception));
+
+			_assertExportedCompanyNotUpdated(
+				companyId, exportedVirtualHostname, exportedWebId);
+		}
+	}
+
 	private void _assertCache(long companyId, boolean cached) throws Exception {
 		Map<Long, Map<String, Long>> classNameIdsMap =
 			ReflectionTestUtil.getFieldValue(
@@ -1774,6 +1805,9 @@ public class CompanyLocalServiceDBPartitionTest
 
 	@Inject
 	private CounterLocalService _counterLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
