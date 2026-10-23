@@ -61,7 +61,8 @@ public class SecretResolverCheck extends BaseCheck {
 			detailAST);
 
 		if (!parameterExprDetailASTs.isEmpty() ||
-			_hasAcceptedEnclosingCall(detailAST)) {
+			_hasAcceptedEnclosingCall(detailAST) ||
+			_isComparedWithNull(detailAST)) {
 
 			return;
 		}
@@ -215,6 +216,27 @@ public class SecretResolverCheck extends BaseCheck {
 			Objects.equals(methodName, "isNotNull") ||
 			Objects.equals(methodName, "isNull") ||
 			Objects.equals(methodName, "resolve")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isComparedWithNull(DetailAST detailAST) {
+		DetailAST parentDetailAST = detailAST.getParent();
+
+		if ((parentDetailAST.getType() != TokenTypes.EQUAL) &&
+			(parentDetailAST.getType() != TokenTypes.NOT_EQUAL)) {
+
+			return false;
+		}
+
+		DetailAST firstChildDetailAST = parentDetailAST.getFirstChild();
+		DetailAST lastChildDetailAST = parentDetailAST.getLastChild();
+
+		if ((firstChildDetailAST.getType() == TokenTypes.LITERAL_NULL) ||
+			(lastChildDetailAST.getType() == TokenTypes.LITERAL_NULL)) {
 
 			return true;
 		}
