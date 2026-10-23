@@ -95,6 +95,22 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 			}
 		}
 
+		Collections.sort(
+			longRunningBuilds,
+			new Comparator<JenkinsMaster.RunningBuild>() {
+
+				@Override
+				public int compare(
+					JenkinsMaster.RunningBuild runningBuild1,
+					JenkinsMaster.RunningBuild runningBuild2) {
+
+					return Long.compare(
+						runningBuild2.getDuration(currentTimeMillis),
+						runningBuild1.getDuration(currentTimeMillis));
+				}
+
+			});
+
 		if (!longRunningBuilds.isEmpty()) {
 			messages.add(
 				0, _getLongRunningBuildsMessage(longRunningBuilds.size()));
@@ -117,7 +133,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		}
 
 		return new MonitorResult(
-			_getLinkURLs(currentTimeMillis, longRunningBuilds),
+			_getLinkURLs(longRunningBuilds),
 			JenkinsResultsParserUtil.join(". ", messages), metrics,
 			MonitorResult.Status.getMostSevere(statuses), currentTimeMillis);
 	}
@@ -146,28 +162,11 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 	}
 
 	private List<String> _getLinkURLs(
-		long currentTimeMillis,
 		List<JenkinsMaster.RunningBuild> longRunningBuilds) {
 
 		if (longRunningBuilds.isEmpty()) {
 			return null;
 		}
-
-		Collections.sort(
-			longRunningBuilds,
-			new Comparator<JenkinsMaster.RunningBuild>() {
-
-				@Override
-				public int compare(
-					JenkinsMaster.RunningBuild runningBuild1,
-					JenkinsMaster.RunningBuild runningBuild2) {
-
-					return Long.compare(
-						runningBuild2.getDuration(currentTimeMillis),
-						runningBuild1.getDuration(currentTimeMillis));
-				}
-
-			});
 
 		List<String> linkURLs = new ArrayList<>(getConfiguredLinkURLs());
 
