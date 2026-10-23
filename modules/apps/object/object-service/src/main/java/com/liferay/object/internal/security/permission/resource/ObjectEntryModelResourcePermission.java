@@ -220,7 +220,7 @@ public class ObjectEntryModelResourcePermission
 			objectEntry.getValues(), objectField.getName());
 
 		if (accountEntryId == 0) {
-			return true;
+			return false;
 		}
 
 		AccountEntry accountEntry = _accountEntryLocalService.getAccountEntry(
