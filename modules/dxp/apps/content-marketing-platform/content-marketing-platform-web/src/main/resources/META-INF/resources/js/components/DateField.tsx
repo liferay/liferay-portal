@@ -32,7 +32,11 @@ const acceptedFormat = dateConfig.momentFormat
 	.replace('DD', 'D');
 
 function parseDate(value: string) {
-	return moment(value.trim(), acceptedFormat, true);
+	return moment(
+		value.trim(),
+		[dateConfig.momentFormat, acceptedFormat],
+		true
+	);
 }
 
 export function getDateError(value: string, required: boolean) {
