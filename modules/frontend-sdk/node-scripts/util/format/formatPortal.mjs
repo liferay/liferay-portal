@@ -47,7 +47,13 @@ export default async function formatPortal(check, files) {
 	}
 
 	if (
-		(!files || !!files.find((file) => file.endsWith('/package.json'))) &&
+		(!files ||
+			!!files.find(
+				(file) =>
+					file.endsWith('/package.json') ||
+					file.endsWith('.ts') ||
+					file.endsWith('.tsx')
+			)) &&
 		!(await formatTsconfigFiles(check))
 	) {
 		checksPassed = false;
