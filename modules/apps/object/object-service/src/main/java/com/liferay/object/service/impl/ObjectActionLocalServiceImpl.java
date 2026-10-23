@@ -613,17 +613,19 @@ public class ObjectActionLocalServiceImpl
 			return labelMap;
 		}
 
+		Map<Locale, String> populatedLabelMap = new HashMap<>(labelMap);
+
 		if (labelMap.size() == 1) {
-			for (Map.Entry<Locale, String> entry : labelMap.entrySet()) {
-				labelMap.put(locale, entry.getValue());
+			for (String label : labelMap.values()) {
+				populatedLabelMap.put(locale, label);
 			}
 
-			return labelMap;
+			return populatedLabelMap;
 		}
 
-		labelMap.put(locale, name);
+		populatedLabelMap.put(locale, name);
 
-		return labelMap;
+		return populatedLabelMap;
 	}
 
 	private void _validateActive(
