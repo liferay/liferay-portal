@@ -36,7 +36,7 @@ public class DeleteFileEntryMVCActionCommand extends BaseMVCActionCommand {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		FileEntryMVCActionCommandUtil.deleteFileEntry(
+		FileEntryMVCActionCommandUtil.deleteTempFileEntry(
 			ParamUtil.getLong(actionRequest, "oldFileEntryId"),
 			(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY));
 	}
