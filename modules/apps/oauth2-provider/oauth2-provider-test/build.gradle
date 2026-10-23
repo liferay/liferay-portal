@@ -19,7 +19,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-string")
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.frontend.jaxrs", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.rs.client", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
-	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.rs.extension.providers", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay", name: "org.apache.cxf.rt.rs.security.jose.jaxrs", version: "3.6.13.JAKARTA-LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "org.mockito", name: "mockito-core", version: "1.10.8"
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
