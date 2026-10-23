@@ -44,9 +44,17 @@ function mockContributors(contributors: object[], totalCount: number) {
 	});
 }
 
-function renderContributorConcentration(space: object = {value: 'all'}) {
+function getGroupIds(space: {siteId?: number}) {
+	return space.siteId ? [space.siteId] : [];
+}
+
+function renderContributorConcentration(
+	space: {siteId?: number; value: string} = {value: 'all'}
+) {
 	return render(
-		<GovernanceContext.Provider value={{space} as any}>
+		<GovernanceContext.Provider
+			value={{groupIds: getGroupIds(space), space} as any}
+		>
 			<ContributorConcentration additionalProps={ADDITIONAL_PROPS} />
 		</GovernanceContext.Provider>
 	);
@@ -119,7 +127,7 @@ describe('ContributorConcentration', () => {
 
 		expect(GovernanceService.getContributors).toHaveBeenCalledWith(
 			'contentProgressFilter',
-			123
+			[123]
 		);
 	});
 

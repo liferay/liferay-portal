@@ -9,11 +9,15 @@ import {SpacePicker} from '../../common/SpacePicker';
 import {GovernanceContext} from '../GovernanceContext';
 
 export function Filters() {
-	const {setSpace, space} = useContext(GovernanceContext);
+	const {setSpace, space, spaceIds} = useContext(GovernanceContext);
 
 	return (
 		<div className="mb-4">
-			<SpacePicker onSelectSpace={setSpace} selectedSpace={space} />
+			<SpacePicker
+				onSelectSpace={setSpace}
+				selectedSpace={space}
+				spaceIds={spaceIds}
+			/>
 		</div>
 	);
 }

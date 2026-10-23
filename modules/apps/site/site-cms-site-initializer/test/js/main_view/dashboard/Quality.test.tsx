@@ -100,6 +100,10 @@ const LANGUAGE_KEYS: Record<string, string> = {
 	'x-of-x-assets': '{0} of {1} Assets',
 };
 
+function getGroupIds(space: {siteId?: number}) {
+	return space.siteId ? [space.siteId] : [];
+}
+
 function renderQuality({
 	space = {value: 'all'},
 	statistics = {
@@ -119,6 +123,7 @@ function renderQuality({
 		<GovernanceContext.Provider
 			value={
 				{
+					groupIds: getGroupIds(space),
 					loadingStatistics: false,
 					reloadStatistics: jest.fn(),
 					space,

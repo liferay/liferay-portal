@@ -101,7 +101,7 @@ export function ContentProgress({
 	const [buckets, setBuckets] = useState<FacetBucket[] | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [timeRangeDays, setTimeRangeDays] = useState(DEFAULT_TIME_RANGE_DAYS);
-	const {space} = useContext(GovernanceContext);
+	const {groupIds, space} = useContext(GovernanceContext);
 
 	useEffect(() => {
 		let stale = false;
@@ -112,7 +112,7 @@ export function ContentProgress({
 
 			const {data, error} = await GovernanceService.getContentProgress(
 				additionalProps.contentProgressFilter,
-				space.siteId,
+				groupIds,
 				timeRangeDays
 			);
 
@@ -129,7 +129,7 @@ export function ContentProgress({
 		return () => {
 			stale = true;
 		};
-	}, [additionalProps.contentProgressFilter, space.siteId, timeRangeDays]);
+	}, [additionalProps.contentProgressFilter, groupIds, timeRangeDays]);
 
 	const segments = useMemo(() => {
 		const createdSince = toDatePart(

@@ -85,6 +85,10 @@ const STATISTICS = {
 	upcomingReviewCount: 7,
 };
 
+function getGroupIds(space: {siteId?: number}) {
+	return space.siteId ? [space.siteId] : [];
+}
+
 function renderFreshness({
 	space = {value: 'all'},
 	statistics = STATISTICS,
@@ -96,6 +100,7 @@ function renderFreshness({
 		<GovernanceContext.Provider
 			value={
 				{
+					groupIds: getGroupIds(space),
 					loadingStatistics: false,
 					reloadStatistics,
 					space,

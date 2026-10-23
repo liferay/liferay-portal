@@ -64,7 +64,7 @@ describe('GovernanceService.getContentProgress', () => {
 			.spyOn(ApiHelper, 'post')
 			.mockResolvedValue({data: {}, error: null} as any);
 
-		GovernanceService.getContentProgress('someFilter');
+		GovernanceService.getContentProgress('someFilter', []);
 
 		expect(postSpy).toHaveBeenCalledWith(
 			'/o/search/v1.0/search?filter=someFilter',
@@ -88,12 +88,28 @@ describe('GovernanceService.getContentProgress', () => {
 			.spyOn(ApiHelper, 'post')
 			.mockResolvedValue({data: {}, error: null} as any);
 
-		GovernanceService.getContentProgress('someFilter', 123);
+		GovernanceService.getContentProgress('someFilter', [123]);
 
 		const [url] = postSpy.mock.calls[0];
 
 		expect(url).toBe(
 			'/o/search/v1.0/search?filter=someFilter+and+groupIds%2Fany%28g%3Ag+eq+123%29'
+		);
+	});
+
+	it('scopes the filter to every given group', () => {
+		const postSpy = jest
+			.spyOn(ApiHelper, 'post')
+			.mockResolvedValue({data: {}, error: null} as any);
+
+		GovernanceService.getContentProgress('someFilter', [123, 456]);
+
+		const [url] = postSpy.mock.calls[0];
+
+		expect(
+			new URL(url, 'http://localhost').searchParams.get('filter')
+		).toBe(
+			'someFilter and (groupIds/any(g:g eq 123) or groupIds/any(g:g eq 456))'
 		);
 	});
 
@@ -106,7 +122,7 @@ describe('GovernanceService.getContentProgress', () => {
 			.spyOn(ApiHelper, 'post')
 			.mockResolvedValue({data: {}, error: null} as any);
 
-		GovernanceService.getContentProgress('someFilter', 123, 7);
+		GovernanceService.getContentProgress('someFilter', [123], 7);
 
 		const [url] = postSpy.mock.calls[0];
 
@@ -133,7 +149,7 @@ describe('GovernanceService.getContributors', () => {
 	it('requests the top seven contributors scoped to the given space', async () => {
 		const postSpy = mockContributorsSearch([], 0);
 
-		await GovernanceService.getContributors('someFilter', 123);
+		await GovernanceService.getContributors('someFilter', [123]);
 
 		expect(postSpy).toHaveBeenCalledWith(
 			'/o/search/v1.0/search?filter=someFilter+and+groupIds%2Fany%28g%3Ag+eq+123%29&pageSize=1',
@@ -172,8 +188,10 @@ describe('GovernanceService.getContributors', () => {
 						} as any)
 			);
 
-		const {data, error} =
-			await GovernanceService.getContributors('someFilter');
+		const {data, error} = await GovernanceService.getContributors(
+			'someFilter',
+			[]
+		);
 
 		expect(getSpy).toHaveBeenCalledWith(
 			'/o/headless-admin-user/v1.0/user-accounts/1'
@@ -200,8 +218,10 @@ describe('GovernanceService.getContributors', () => {
 			status: 'FORBIDDEN',
 		} as any);
 
-		const {data, error} =
-			await GovernanceService.getContributors('someFilter');
+		const {data, error} = await GovernanceService.getContributors(
+			'someFilter',
+			[]
+		);
 
 		expect(data).toBeNull();
 		expect(error).toBe('Forbidden');
@@ -227,7 +247,8 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 
 		await GovernanceService.getContentAgeDistribution(
 			'someFilter',
-			'createDate'
+			'createDate',
+			[]
 		);
 
 		expect(postSpy).toHaveBeenCalledWith(
@@ -264,7 +285,7 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 		await GovernanceService.getContentAgeDistribution(
 			'someFilter',
 			'modified',
-			123
+			[123]
 		);
 
 		const [url, body] = postSpy.mock.calls[0];
@@ -300,7 +321,8 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 
 		const {data, error} = await GovernanceService.getContentAgeDistribution(
 			'someFilter',
-			'createDate'
+			'createDate',
+			[]
 		);
 
 		expect(data).toEqual([3, 0, 0, 7, 0]);
@@ -315,7 +337,8 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 
 		const {data, error} = await GovernanceService.getContentAgeDistribution(
 			'someFilter',
-			'createDate'
+			'createDate',
+			[]
 		);
 
 		expect(data).toBeNull();

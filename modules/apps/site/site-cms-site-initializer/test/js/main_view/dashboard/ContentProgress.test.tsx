@@ -80,9 +80,17 @@ function mockContentProgress(buckets: object[]) {
 	});
 }
 
-function renderContentProgress(space: object = {value: 'all'}) {
+function getGroupIds(space: {siteId?: number}) {
+	return space.siteId ? [space.siteId] : [];
+}
+
+function renderContentProgress(
+	space: {label?: string; siteId?: number; value: string} = {value: 'all'}
+) {
 	return render(
-		<GovernanceContext.Provider value={{space} as any}>
+		<GovernanceContext.Provider
+			value={{groupIds: getGroupIds(space), space} as any}
+		>
 			<ContentProgress additionalProps={ADDITIONAL_PROPS} />
 		</GovernanceContext.Provider>
 	);
@@ -290,7 +298,7 @@ describe('ContentProgress', () => {
 
 		expect(GovernanceService.getContentProgress).toHaveBeenCalledWith(
 			'contentProgressFilter',
-			123,
+			[123],
 			7
 		);
 	});
@@ -311,7 +319,7 @@ describe('ContentProgress', () => {
 
 		expect(GovernanceService.getContentProgress).toHaveBeenLastCalledWith(
 			'contentProgressFilter',
-			undefined,
+			[],
 			90
 		);
 	});

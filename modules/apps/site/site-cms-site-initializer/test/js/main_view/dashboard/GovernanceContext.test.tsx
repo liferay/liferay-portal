@@ -23,11 +23,18 @@ const mockedGovernanceService = GovernanceService as jest.Mocked<
 >;
 
 function StatisticsConsumer() {
-	const {loadingStatistics, reloadStatistics, setSpace, statistics} =
-		useContext(GovernanceContext);
+	const {
+		groupIds,
+		loadingStatistics,
+		reloadStatistics,
+		setSpace,
+		statistics,
+	} = useContext(GovernanceContext);
 
 	return (
 		<>
+			<span data-testid="groupIds">{groupIds.join()}</span>
+
 			<span data-testid="loadingStatistics">
 				{String(loadingStatistics)}
 			</span>
@@ -36,7 +43,11 @@ function StatisticsConsumer() {
 
 			<button onClick={reloadStatistics}>Reload</button>
 
-			<button onClick={() => setSpace({label: 'My Space', value: '999'})}>
+			<button
+				onClick={() =>
+					setSpace({label: 'My Space', siteId: 999, value: '999'})
+				}
+			>
 				Select Space
 			</button>
 		</>
@@ -52,13 +63,65 @@ describe('[CMS Dashboard] GovernanceContext', () => {
 		jest.clearAllMocks();
 	});
 
+	it('scopes the group ids to every administered space until one is selected', async () => {
+		mockedGovernanceService.getAssetStatistics.mockResolvedValue(
+			mockStatistics(1)
+		);
+
+		render(
+			<GovernanceContextProvider
+				allSpacesAdministered={false}
+				spaceGroupIds={['111', '222']}
+				spaceIds={['1', '2']}
+			>
+				<StatisticsConsumer />
+			</GovernanceContextProvider>
+		);
+
+		expect(screen.getByTestId('groupIds')).toHaveTextContent('111,222');
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Select Space'})
+		);
+
+		expect(screen.getByTestId('groupIds')).toHaveTextContent('999');
+	});
+
+	it('leaves the group ids empty when the user administers every space', async () => {
+		mockedGovernanceService.getAssetStatistics.mockResolvedValue(
+			mockStatistics(1)
+		);
+
+		render(
+			<GovernanceContextProvider
+				allSpacesAdministered={true}
+				spaceGroupIds={['111', '222']}
+				spaceIds={['1', '2']}
+			>
+				<StatisticsConsumer />
+			</GovernanceContextProvider>
+		);
+
+		expect(screen.getByTestId('groupIds')).toBeEmptyDOMElement();
+
+		await userEvent.click(
+			screen.getByRole('button', {name: 'Select Space'})
+		);
+
+		expect(screen.getByTestId('groupIds')).toHaveTextContent('999');
+	});
+
 	it('keeps showing the statistics while reloading them', async () => {
 		mockedGovernanceService.getAssetStatistics
 			.mockResolvedValueOnce(mockStatistics(1))
 			.mockReturnValueOnce(new Promise(() => {}));
 
 		render(
-			<GovernanceContextProvider>
+			<GovernanceContextProvider
+				allSpacesAdministered={false}
+				spaceGroupIds={[]}
+				spaceIds={[]}
+			>
 				<StatisticsConsumer />
 			</GovernanceContextProvider>
 		);
@@ -79,7 +142,11 @@ describe('[CMS Dashboard] GovernanceContext', () => {
 			.mockReturnValueOnce(new Promise(() => {}));
 
 		render(
-			<GovernanceContextProvider>
+			<GovernanceContextProvider
+				allSpacesAdministered={false}
+				spaceGroupIds={[]}
+				spaceIds={[]}
+			>
 				<StatisticsConsumer />
 			</GovernanceContextProvider>
 		);
@@ -108,7 +175,11 @@ describe('[CMS Dashboard] GovernanceContext', () => {
 			.mockResolvedValueOnce(mockStatistics(2));
 
 		render(
-			<GovernanceContextProvider>
+			<GovernanceContextProvider
+				allSpacesAdministered={false}
+				spaceGroupIds={[]}
+				spaceIds={[]}
+			>
 				<StatisticsConsumer />
 			</GovernanceContextProvider>
 		);

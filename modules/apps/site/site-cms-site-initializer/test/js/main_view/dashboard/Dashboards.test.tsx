@@ -62,7 +62,11 @@ function renderDashboards({
 				{} as DashboardAdditionalProps & GovernanceAdditionalProps
 			}
 			admin={false}
+			administeredSpaceGroupIds={administeredSpaceIds.map(
+				(id) => `1${id}`
+			)}
 			administeredSpaceIds={administeredSpaceIds}
+			allSpacesAdministered={false}
 			analyticsEnabled={true}
 			constants={{}}
 			freeTier={freeTier}
@@ -78,38 +82,50 @@ describe('Dashboards', () => {
 		};
 	});
 
-	it('shows the performance tab to space administrators', () => {
+	it('shows the governance and performance tabs to space administrators', () => {
 		renderDashboards();
+
+		expect(
+			screen.getByRole('button', {name: 'governance'})
+		).toBeInTheDocument();
 
 		expect(
 			screen.getByRole('button', {name: 'performance'})
 		).toBeInTheDocument();
 	});
 
-	it('hides the performance tab when no space is administered', () => {
+	it('shows only the inventory dashboard when no space is administered', () => {
 		renderDashboards({administeredSpaceIds: []});
 
 		expect(
-			screen.queryByRole('button', {name: 'performance'})
+			screen.queryByRole('button', {name: 'governance'})
 		).not.toBeInTheDocument();
-
-		expect(
-			screen.getByRole('button', {name: 'governance'})
-		).toBeInTheDocument();
-	});
-
-	it('shows only the inventory dashboard when the performance tab is the only one gated out', () => {
-		(global as any).Liferay.FeatureFlags = {
-			'LPD-82226': false,
-		};
-
-		renderDashboards({administeredSpaceIds: []});
 
 		expect(
 			screen.queryByRole('button', {name: 'inventory'})
 		).not.toBeInTheDocument();
 
+		expect(
+			screen.queryByRole('button', {name: 'performance'})
+		).not.toBeInTheDocument();
+
 		expect(screen.getByText('inventory-dashboard')).toBeInTheDocument();
+	});
+
+	it('hides the governance tab when its feature flag is off', () => {
+		(global as any).Liferay.FeatureFlags = {
+			'LPD-82226': false,
+		};
+
+		renderDashboards();
+
+		expect(
+			screen.queryByRole('button', {name: 'governance'})
+		).not.toBeInTheDocument();
+
+		expect(
+			screen.getByRole('button', {name: 'performance'})
+		).toBeInTheDocument();
 	});
 
 	it('shows the enterprise placeholder instead of any dashboard on the free tier', () => {

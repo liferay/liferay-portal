@@ -79,6 +79,10 @@ const NOW = Date.UTC(2026, 9, 8, 12, 0);
 
 const reloadStatistics = jest.fn();
 
+function getGroupIds(space: {siteId?: number}) {
+	return space.siteId ? [space.siteId] : [];
+}
+
 function renderOperations({
 	space = {value: 'all'},
 	statistics = {longStandingDraftsCount: 9, totalCount: 350},
@@ -90,6 +94,7 @@ function renderOperations({
 		<GovernanceContext.Provider
 			value={
 				{
+					groupIds: getGroupIds(space),
 					loadingStatistics: false,
 					reloadStatistics,
 					space,

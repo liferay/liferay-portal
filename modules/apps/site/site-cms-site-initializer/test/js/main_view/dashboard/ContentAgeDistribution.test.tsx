@@ -60,9 +60,17 @@ function mockContentAgeDistribution(
 	).mockResolvedValue({data: frequencies, error});
 }
 
-function renderContentAgeDistribution(space: object = {value: 'all'}) {
+function getGroupIds(space: {siteId?: number}) {
+	return space.siteId ? [space.siteId] : [];
+}
+
+function renderContentAgeDistribution(
+	space: {siteId?: number; value: string} = {value: 'all'}
+) {
 	return render(
-		<GovernanceContext.Provider value={{space} as any}>
+		<GovernanceContext.Provider
+			value={{groupIds: getGroupIds(space), space} as any}
+		>
 			<ContentAgeDistribution additionalProps={ADDITIONAL_PROPS} />
 		</GovernanceContext.Provider>
 	);
@@ -103,11 +111,7 @@ describe('[CMS Dashboard] ContentAgeDistribution', () => {
 		await waitFor(() =>
 			expect(
 				GovernanceService.getContentAgeDistribution
-			).toHaveBeenCalledWith(
-				'contentProgressFilter',
-				'createDate',
-				undefined
-			)
+			).toHaveBeenCalledWith('contentProgressFilter', 'createDate', [])
 		);
 	});
 
@@ -119,7 +123,9 @@ describe('[CMS Dashboard] ContentAgeDistribution', () => {
 		await waitFor(() =>
 			expect(
 				GovernanceService.getContentAgeDistribution
-			).toHaveBeenCalledWith('contentProgressFilter', 'createDate', 12345)
+			).toHaveBeenCalledWith('contentProgressFilter', 'createDate', [
+				12345,
+			])
 		);
 	});
 
@@ -159,11 +165,7 @@ describe('[CMS Dashboard] ContentAgeDistribution', () => {
 		await waitFor(() =>
 			expect(
 				GovernanceService.getContentAgeDistribution
-			).toHaveBeenLastCalledWith(
-				'contentProgressFilter',
-				'modified',
-				undefined
-			)
+			).toHaveBeenLastCalledWith('contentProgressFilter', 'modified', [])
 		);
 	});
 

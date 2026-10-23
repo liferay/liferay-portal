@@ -44,7 +44,7 @@ export function ContentAgeDistribution({
 		useState<ContentAgeDateField>('createDate');
 	const [error, setError] = useState<string | null>(null);
 	const [frequencies, setFrequencies] = useState<number[] | null>(null);
-	const {space} = useContext(GovernanceContext);
+	const {groupIds} = useContext(GovernanceContext);
 
 	const chartContainerRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +63,7 @@ export function ContentAgeDistribution({
 				await GovernanceService.getContentAgeDistribution(
 					additionalProps.contentProgressFilter,
 					dateField,
-					space.siteId
+					groupIds
 				);
 
 			if (stale) {
@@ -79,7 +79,7 @@ export function ContentAgeDistribution({
 		return () => {
 			stale = true;
 		};
-	}, [additionalProps.contentProgressFilter, dateField, space.siteId]);
+	}, [additionalProps.contentProgressFilter, dateField, groupIds]);
 
 	const data = useMemo(
 		() =>

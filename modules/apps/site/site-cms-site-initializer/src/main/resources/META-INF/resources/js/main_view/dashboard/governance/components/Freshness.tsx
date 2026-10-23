@@ -213,14 +213,14 @@ function FreshnessList({
 	additionalProps: GovernanceAdditionalProps;
 	card: FreshnessCard;
 }) {
-	const {space, statistics} = useContext(GovernanceContext);
+	const {groupIds, space, statistics} = useContext(GovernanceContext);
 
 	const {apiURL, viewAllHref} = useMemo(
 		() => ({
 			apiURL: GovernanceService.getFreshnessListURL(
 				card.listType,
 				additionalProps.contentProgressFilter,
-				space.siteId
+				groupIds
 			),
 			viewAllHref: getAllSectionHref(additionalProps.allSectionFDSName, {
 				filters: [
@@ -232,7 +232,7 @@ function FreshnessList({
 				sorts: [{direction: 'asc', key: card.viewAllSortKey}],
 			}),
 		}),
-		[additionalProps, card, space]
+		[additionalProps, card, groupIds, space]
 	);
 
 	return (

@@ -56,6 +56,10 @@ const STATISTICS = {
 	workflowTasksCount: 20,
 };
 
+const SPACE_GROUP_IDS = ['101', '102'];
+
+const SPACE_IDS = ['01', '02'];
+
 const ADDITIONAL_PROPS = {
 	editContentItemURL: '/edit-content-item?objectEntryId={embedded.id}',
 	fileMimeTypeCssClasses: {},
@@ -80,7 +84,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it("shows each card's count from the statistics", async () => {
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		const freshness = within(
 			screen.getByRole('group', {name: 'freshness'})
@@ -108,7 +119,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('requests all spaces on the initial render', async () => {
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		await waitFor(() =>
 			expect(
@@ -117,8 +135,40 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 		);
 	});
 
+	it('lists only the administered spaces in the filter', async () => {
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={['102']}
+				spaceIds={['02']}
+			/>
+		);
+
+		await userEvent.click(
+			screen.getByRole('combobox', {name: 'filter-by-spaces'})
+		);
+
+		const listbox = await screen.findByRole('listbox');
+
+		expect(
+			await within(listbox).findByRole('option', {name: 'space 02'})
+		).toBeInTheDocument();
+
+		expect(
+			within(listbox).queryByRole('option', {name: 'space 01'})
+		).not.toBeInTheDocument();
+	});
+
 	it('re-fetches the counts scoped by the selected space', async () => {
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		await waitFor(() =>
 			expect(
@@ -144,7 +194,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('shows the three sub-scores next to the global score', async () => {
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		const banner = await screen.findByRole('region', {
 			name: 'governance-health',
@@ -188,7 +245,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 			error: null,
 		} as any);
 
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		const banner = await screen.findByRole('region', {
 			name: 'governance-health',
@@ -200,7 +264,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('explains what the score measures in a popover', async () => {
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		const button = await screen.findByRole('button', {
 			name: 'about-governance-health',
@@ -226,7 +297,14 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 	});
 
 	it('closes the popover with the escape key', async () => {
-		render(<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />);
+		render(
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
+		);
 
 		const button = await screen.findByRole('button', {
 			name: 'about-governance-health',
@@ -245,7 +323,12 @@ describe('[CMS Dashboard] GovernanceDashboard', () => {
 
 	it('has no accessibility violations', async () => {
 		const {container} = render(
-			<GovernanceDashboard additionalProps={ADDITIONAL_PROPS} />
+			<GovernanceDashboard
+				additionalProps={ADDITIONAL_PROPS}
+				allSpacesAdministered={false}
+				spaceGroupIds={SPACE_GROUP_IDS}
+				spaceIds={SPACE_IDS}
+			/>
 		);
 
 		await checkAccessibility({bestPractices: true, context: container});

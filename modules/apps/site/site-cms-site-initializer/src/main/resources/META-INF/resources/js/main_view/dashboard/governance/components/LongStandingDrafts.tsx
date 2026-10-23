@@ -89,13 +89,13 @@ export function LongStandingDraftsList({
 }: {
 	additionalProps: GovernanceAdditionalProps;
 }) {
-	const {space, statistics} = useContext(GovernanceContext);
+	const {groupIds, space, statistics} = useContext(GovernanceContext);
 
 	const {apiURL, viewAllHref} = useMemo(
 		() => ({
 			apiURL: GovernanceService.getLongStandingDraftsURL(
 				additionalProps.contentProgressFilter,
-				space.siteId
+				groupIds
 			),
 			viewAllHref: getAllSectionHref(additionalProps.allSectionFDSName, {
 				filters: [
@@ -120,6 +120,7 @@ export function LongStandingDraftsList({
 		[
 			additionalProps.allSectionFDSName,
 			additionalProps.contentProgressFilter,
+			groupIds,
 			space,
 		]
 	);
