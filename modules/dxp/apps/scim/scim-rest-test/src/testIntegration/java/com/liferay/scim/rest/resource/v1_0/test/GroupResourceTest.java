@@ -863,7 +863,6 @@ public class GroupResourceTest extends BaseGroupResourceTestCase {
 
 		_assertListResponse(
 			groupResource.getV2Groups(5, null, 3, null), 3, 1, group3);
-
 		_assertListResponse(
 			groupResource.getV2Groups(10000, null, null, null), 3, 3, group1,
 			group2, group3);
