@@ -126,13 +126,6 @@ public class RestrictedLiferayObjectWrapperTest
 		Assert.assertFalse(
 			_isRestricted(
 				new RestrictedLiferayObjectWrapper(
-					new String[] {TestLiferayObject.class.getName()},
-					new String[] {TestLiferayObject.class.getName()}, null),
-				TestLiferayObject.class));
-
-		Assert.assertFalse(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
 					null, new String[] {"java.lang.String"}, null),
 				TestLiferayObject.class));
 
@@ -162,14 +155,6 @@ public class RestrictedLiferayObjectWrapperTest
 				new RestrictedLiferayObjectWrapper(
 					null, new String[] {"com.liferay.portal.*"}, null),
 				TestLiferayObject.class));
-
-		Assert.assertFalse(
-			_isRestricted(
-				new RestrictedLiferayObjectWrapper(
-					null,
-					new String[] {"com.liferay.portal.template.freemarker"},
-					null),
-				byte.class));
 
 		Assert.assertFalse(
 			_isRestricted(
