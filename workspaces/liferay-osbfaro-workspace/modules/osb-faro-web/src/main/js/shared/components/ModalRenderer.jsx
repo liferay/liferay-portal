@@ -17,7 +17,6 @@ import IndividualAttributesModal from './modals/IndividualAttributesModal';
 import InputModal from './modals/InputModal';
 import InterestTopicModal from './modals/InterestTopicsModal';
 import InviteUsersModal from './modals/InviteUsersModal';
-import LoadingModal from './modals/LoadingModal';
 import ManuallyRetrainModelModal from './modals/ManuallyRetrainModelModal';
 import MatchingPagesModal from './modals/MatchingPagesModal';
 import NewRequestModal from './modals/NewRequestModal';
@@ -55,7 +54,6 @@ const COMPONENT_MAP = {
 	[modalTypes.INPUT_MODAL]: InputModal,
 	[modalTypes.INSERT_BLOCKED_KEYWORDS]: InterestTopicModal,
 	[modalTypes.INVITE_USERS_MODAL]: InviteUsersModal,
-	[modalTypes.LOADING_MODAL]: LoadingModal,
 	[modalTypes.MANUALLY_RETRAIN_MODEL_MODAL]: ManuallyRetrainModelModal,
 	[modalTypes.MATCHING_PAGES_MODAL]: MatchingPagesModal,
 	[modalTypes.NEW_REQUEST_MODAL]: NewRequestModal,
