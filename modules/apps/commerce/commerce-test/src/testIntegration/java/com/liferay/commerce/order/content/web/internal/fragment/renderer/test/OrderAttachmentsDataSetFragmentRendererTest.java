@@ -138,9 +138,8 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 
 	@Test
 	public void testGetDSRequestAdditionalProps() throws Exception {
-		_testGetAdditionalProps();
-		_testGetAdditionalPropsWithRestrictedCommerceOrderAttachment();
-		_testGetAdditionalPropsWithDigitalSignatureDisabled();
+		_testGetDSRequestAdditionalProps();
+		_testGetDSRequestAdditionalPropsWithRestrictedCommerceOrderAttachment();
 	}
 
 	@Test
@@ -148,25 +147,27 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 		User user = TestPropsValues.getUser();
 
 		Assert.assertEquals(
-			Collections.emptyList(), _getFDSActionDropdownItemIds(user));
+			Collections.emptyList(),
+			_getDSRequestFDSActionDropdownItemIds(user));
 
 		_addDSRequest(_commerceOrderAttachment, user);
 
 		Assert.assertEquals(
 			List.of("sign", "view-signature-details"),
-			_getFDSActionDropdownItemIds(user));
+			_getDSRequestFDSActionDropdownItemIds(user));
 
 		Assert.assertEquals(
 			List.of("view-signature-details"),
-			_getFDSActionDropdownItemIds(_addOrderManagerUser()));
+			_getDSRequestFDSActionDropdownItemIds(_addOrderManagerUser()));
 		Assert.assertEquals(
 			Collections.emptyList(),
-			_getFDSActionDropdownItemIds(UserTestUtil.addUser()));
+			_getDSRequestFDSActionDropdownItemIds(UserTestUtil.addUser()));
 
 		_saveDigitalSignatureConfiguration(false);
 
 		Assert.assertEquals(
-			Collections.emptyList(), _getFDSActionDropdownItemIds(user));
+			Collections.emptyList(),
+			_getDSRequestFDSActionDropdownItemIds(user));
 	}
 
 	private void _addDSRequest(
@@ -231,7 +232,7 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 		return user;
 	}
 
-	private Map<String, Object> _getAdditionalProps(User user)
+	private Map<String, Object> _getDSRequestAdditionalProps(User user)
 		throws Exception {
 
 		return ReflectionTestUtil.invoke(
@@ -241,7 +242,7 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 			_commerceOrder, _getMockHttpServletRequest(user));
 	}
 
-	private List<String> _getFDSActionDropdownItemIds(User user)
+	private List<String> _getDSRequestFDSActionDropdownItemIds(User user)
 		throws Exception {
 
 		List<FDSActionDropdownItem> fdsActionDropdownItems =
@@ -315,17 +316,18 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 				).build());
 	}
 
-	private void _testGetAdditionalProps() throws Exception {
+	private void _testGetDSRequestAdditionalProps() throws Exception {
 		User user = TestPropsValues.getUser();
 
-		Assert.assertEquals(Collections.emptyMap(), _getAdditionalProps(user));
+		Assert.assertEquals(
+			Collections.emptyMap(), _getDSRequestAdditionalProps(user));
 
 		_addDSRequest(_commerceOrderAttachment, user);
 
 		String commerceOrderAttachmentId = String.valueOf(
 			_commerceOrderAttachment.getCommerceOrderAttachmentId());
-
-		Map<String, Object> additionalProps = _getAdditionalProps(user);
+		Map<String, Object> additionalProps = _getDSRequestAdditionalProps(
+			user);
 
 		Assert.assertEquals(
 			HashMapBuilder.put(
@@ -340,27 +342,18 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 			Collections.singleton(commerceOrderAttachmentId),
 			signDSRequestURLs.keySet());
 
-		additionalProps = _getAdditionalProps(_addOrderManagerUser());
+		additionalProps = _getDSRequestAdditionalProps(_addOrderManagerUser());
 
 		Assert.assertEquals(
 			Collections.emptyMap(), additionalProps.get("signDSRequestURLs"));
 
 		Assert.assertEquals(
 			Collections.emptyMap(),
-			_getAdditionalProps(UserTestUtil.addUser()));
+			_getDSRequestAdditionalProps(UserTestUtil.addUser()));
 	}
 
-	private void _testGetAdditionalPropsWithDigitalSignatureDisabled()
-		throws Exception {
-
-		_saveDigitalSignatureConfiguration(false);
-
-		Assert.assertEquals(
-			Collections.emptyMap(),
-			_getAdditionalProps(TestPropsValues.getUser()));
-	}
-
-	private void _testGetAdditionalPropsWithRestrictedCommerceOrderAttachment()
+	private void
+			_testGetDSRequestAdditionalPropsWithRestrictedCommerceOrderAttachment()
 		throws Exception {
 
 		CommerceOrderAttachment commerceOrderAttachment =
@@ -371,15 +364,14 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 				RandomTestUtil.randomString(), "invoice",
 				RandomTestUtil.randomString() + ".pdf",
 				new ByteArrayInputStream(RandomTestUtil.randomBytes()));
-
 		User user = _addOrderManagerUser();
 
 		_addDSRequest(commerceOrderAttachment, user);
 
 		String commerceOrderAttachmentId = String.valueOf(
 			_commerceOrderAttachment.getCommerceOrderAttachmentId());
-
-		Map<String, Object> additionalProps = _getAdditionalProps(user);
+		Map<String, Object> additionalProps = _getDSRequestAdditionalProps(
+			user);
 
 		Assert.assertEquals(
 			HashMapBuilder.put(
@@ -387,7 +379,8 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 			).build(),
 			additionalProps.get("dsRequestStatuses"));
 
-		additionalProps = _getAdditionalProps(TestPropsValues.getUser());
+		additionalProps = _getDSRequestAdditionalProps(
+			TestPropsValues.getUser());
 
 		Assert.assertEquals(
 			HashMapBuilder.put(
@@ -398,6 +391,12 @@ public class OrderAttachmentsDataSetFragmentRendererTest {
 				DSRequestConstants.STATUS_SENT
 			).build(),
 			additionalProps.get("dsRequestStatuses"));
+
+		_saveDigitalSignatureConfiguration(false);
+
+		Assert.assertEquals(
+			Collections.emptyMap(),
+			_getDSRequestAdditionalProps(TestPropsValues.getUser()));
 	}
 
 	private CommerceOrder _commerceOrder;

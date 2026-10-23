@@ -175,11 +175,11 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 			_getContentAsString(
 				_commerceOrderAttachment.getCommerceOrderAttachmentId(), user));
 
-		DSRequest voidedDSRequest = _addDSRequest(
-			DSRequestConstants.STATUS_VOIDED,
-			_createDSRecipient(DSRequestConstants.STATUS_SENT, user));
 		DSRequest sentDSRequest = _addDSRequest(
 			DSRequestConstants.STATUS_SENT,
+			_createDSRecipient(DSRequestConstants.STATUS_SENT, user));
+		DSRequest voidedDSRequest = _addDSRequest(
+			DSRequestConstants.STATUS_VOIDED,
 			_createDSRecipient(DSRequestConstants.STATUS_SENT, user));
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(
@@ -187,10 +187,10 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 				_commerceOrderAttachment.getCommerceOrderAttachmentId(), user));
 
 		Assert.assertEquals(
-			sentDSRequest.getExternalReferenceCode(),
+			voidedDSRequest.getExternalReferenceCode(),
 			jsonObject.getString("externalReferenceCode"));
 		Assert.assertEquals(
-			DSRequestConstants.STATUS_SENT, jsonObject.getString("status"));
+			DSRequestConstants.STATUS_VOIDED, jsonObject.getString("status"));
 		Assert.assertEquals(
 			user.getFullName(), jsonObject.getString("userName"));
 
@@ -202,10 +202,10 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 		JSONObject historyJSONObject = historyJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(
-			voidedDSRequest.getExternalReferenceCode(),
+			sentDSRequest.getExternalReferenceCode(),
 			historyJSONObject.getString("externalReferenceCode"));
 		Assert.assertEquals(
-			DSRequestConstants.STATUS_VOIDED,
+			DSRequestConstants.STATUS_SENT,
 			historyJSONObject.getString("status"));
 
 		JSONArray recipientsJSONArray = jsonObject.getJSONArray("recipients");
@@ -389,14 +389,13 @@ public class DSCommerceOrderAttachmentDetailsServletTest {
 	}
 
 	private void _testDoGetWithOrderManagerUser() throws Exception {
-		User user = UserTestUtil.addUser();
-
 		Role role = _roleLocalService.addRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
 			RandomTestUtil.randomString(), null, null,
 			RoleConstants.TYPE_REGULAR, null,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId()));
+		User user = UserTestUtil.addUser();
 
 		_roleLocalService.addUserRole(user.getUserId(), role);
 
