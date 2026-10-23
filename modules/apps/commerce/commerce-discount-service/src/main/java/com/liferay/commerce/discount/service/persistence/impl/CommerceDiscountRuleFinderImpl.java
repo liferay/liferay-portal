@@ -44,11 +44,6 @@ public class CommerceDiscountRuleFinderImpl
 			".findByCommerceDiscountId";
 
 	@Override
-	public int countByCommerceDiscountId(long commerceDiscountId, String name) {
-		return countByCommerceDiscountId(commerceDiscountId, name, false);
-	}
-
-	@Override
 	public int countByCommerceDiscountId(
 		long commerceDiscountId, String name, boolean inlineSQLHelper) {
 
@@ -111,14 +106,6 @@ public class CommerceDiscountRuleFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public List<CommerceDiscountRule> findByCommerceDiscountId(
-		long commerceDiscountId, String name, int start, int end) {
-
-		return findByCommerceDiscountId(
-			commerceDiscountId, name, start, end, false);
 	}
 
 	@Override

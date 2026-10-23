@@ -1136,7 +1136,6 @@ com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountAccountRe
 com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountAccountRelPersistenceImpl.getSelectSQL()Ljava/lang/String;:SAFE
 com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountCommerceAccountGroupRelPersistenceImpl.getPKDBName()Ljava/lang/String;:SAFE
 com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountCommerceAccountGroupRelPersistenceImpl.getSelectSQL()Ljava/lang/String;:SAFE
-com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountFinderImpl._setQueryPosDynamicParameters(Ljava/lang/Long;Ljava/lang/Long;[JLjava/lang/Long;Lcom/liferay/portal/kernel/dao/orm/QueryPos;)Lcom/liferay/portal/kernel/dao/orm/QueryPos;:0
 com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountFinderImpl.replaceQueryClassPKs(Ljava/lang/String;Ljava/lang/String;[J)Ljava/lang/String;:1,2
 com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountPersistenceImpl._getTime(Ljava/util/Date;)Ljava/lang/Long;:SAFE
 com/liferay/commerce/discount/service/persistence/impl/CommerceDiscountPersistenceImpl.create(J)Lcom/liferay/commerce/discount/model/CommerceDiscount;:SAFE

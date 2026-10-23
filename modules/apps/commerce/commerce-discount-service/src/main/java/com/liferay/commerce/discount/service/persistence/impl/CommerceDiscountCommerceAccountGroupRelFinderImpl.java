@@ -44,11 +44,6 @@ public class CommerceDiscountCommerceAccountGroupRelFinderImpl
 			".findByCommerceDiscountId";
 
 	@Override
-	public int countByCommerceDiscountId(long commerceDiscountId, String name) {
-		return countByCommerceDiscountId(commerceDiscountId, name, false);
-	}
-
-	@Override
 	public int countByCommerceDiscountId(
 		long commerceDiscountId, String name, boolean inlineSQLHelper) {
 
@@ -111,15 +106,6 @@ public class CommerceDiscountCommerceAccountGroupRelFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public List<CommerceDiscountCommerceAccountGroupRel>
-		findByCommerceDiscountId(
-			long commerceDiscountId, String name, int start, int end) {
-
-		return findByCommerceDiscountId(
-			commerceDiscountId, name, start, end, false);
 	}
 
 	@Override
