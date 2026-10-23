@@ -121,14 +121,14 @@ public class AddDSRequestMVCResourceCommand
 		throws Exception {
 
 		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)resourceRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
 			CommerceOrderAttachment commerceOrderAttachment =
 				_commerceOrderAttachmentLocalService.getCommerceOrderAttachment(
 					ParamUtil.getLong(
 						resourceRequest, "commerceOrderAttachmentId"));
-
-			ThemeDisplay themeDisplay =
-				(ThemeDisplay)resourceRequest.getAttribute(
-					WebKeys.THEME_DISPLAY);
 
 			_commerceOrderAttachmentModelResourcePermission.check(
 				themeDisplay.getPermissionChecker(), commerceOrderAttachment,

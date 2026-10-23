@@ -381,6 +381,15 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_REQUEST,
+			new MockLiferayPortletRenderRequest(mockHttpServletRequest));
+		mockHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
+			new MockLiferayPortletRenderResponse());
+		mockHttpServletRequest.setAttribute(
+			WebKeys.COMPANY_ID, _group.getCompanyId());
+
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
 		themeDisplay.setCompany(
@@ -397,14 +406,6 @@ public class CommerceOrderAttachmentsDisplayContextTest {
 		themeDisplay.setURLCurrent("/" + RandomTestUtil.randomString());
 		themeDisplay.setUser(user);
 
-		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_REQUEST,
-			new MockLiferayPortletRenderRequest(mockHttpServletRequest));
-		mockHttpServletRequest.setAttribute(
-			JavaConstants.JAKARTA_PORTLET_RESPONSE,
-			new MockLiferayPortletRenderResponse());
-		mockHttpServletRequest.setAttribute(
-			WebKeys.COMPANY_ID, _group.getCompanyId());
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 

@@ -2045,10 +2045,6 @@ public class DSRequestManagerTest {
 		List<NotificationQueueEntry> notificationQueueEntries =
 			_getNotificationQueueEntries(dsRequest);
 
-		Assert.assertEquals(
-			notificationQueueEntries.toString(), 1,
-			notificationQueueEntries.size());
-
 		Map<String, Object> notificationRecipientSettingsMap =
 			NotificationRecipientSettingUtil.
 				getNotificationRecipientSettingsMap(
@@ -2058,6 +2054,10 @@ public class DSRequestManagerTest {
 			user.getEmailAddress(),
 			notificationRecipientSettingsMap.get(
 				NotificationRecipientSettingConstants.NAME_TO));
+
+		Assert.assertEquals(
+			notificationQueueEntries.toString(), 1,
+			notificationQueueEntries.size());
 	}
 
 	private void _testUpdateDSRequestWithWorkflowFolder() throws Exception {
