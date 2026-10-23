@@ -142,21 +142,18 @@ public class SourceFormatterReleaseUtil {
 						_SOURCE_FORMATTER_PATH +
 							"/src/main/resources/documentation/");
 
-				if (!documentation &&
-					!Arrays.asList(
-						_SOURCE_FORMATTER_PATH + "/bnd.bnd",
-						_SOURCE_FORMATTER_PATH + "/samples/pom.xml",
-						JenkinsResultsParserUtil.combine(
-							_SOURCE_FORMATTER_PATH,
-							"/src/main/resources/META-INF/maven/com.liferay",
-							"/com.liferay.source.formatter/plugin-help.xml"),
-						JenkinsResultsParserUtil.combine(
-							_SOURCE_FORMATTER_PATH,
-							"/src/main/resources/META-INF/maven/", "plugin.xml")
-					).contains(
-						filePath
-					)) {
+				List<String> versionFilePaths = Arrays.asList(
+					_SOURCE_FORMATTER_PATH + "/bnd.bnd",
+					_SOURCE_FORMATTER_PATH + "/samples/pom.xml",
+					JenkinsResultsParserUtil.combine(
+						_SOURCE_FORMATTER_PATH,
+						"/src/main/resources/META-INF/maven/com.liferay",
+						"/com.liferay.source.formatter/plugin-help.xml"),
+					JenkinsResultsParserUtil.combine(
+						_SOURCE_FORMATTER_PATH,
+						"/src/main/resources/META-INF/maven/", "plugin.xml"));
 
+				if (!documentation && !versionFilePaths.contains(filePath)) {
 					return false;
 				}
 
