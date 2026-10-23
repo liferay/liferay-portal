@@ -208,6 +208,7 @@ import {config as portalSearchAdminWebConfig} from './tests/portal-search-admin-
 import {config as portalSearchWebConfig} from './tests/portal-search-web/main/config';
 import {config as portalSecurityAuditWebConfig} from './tests/portal-security-audit-web/main/config';
 import {config as portalSecurityContentSecurityPolicyConfig} from './tests/portal-security-content-security-policy/main/config';
+import {config as portalSecurityKeyImplConfig} from './tests/portal-security-key-impl/main/config';
 import {config as portalSecurityLdapConfig} from './tests/portal-security-ldap/main/config';
 import {config as portalSecurityScriptManagementWebConfig} from './tests/portal-security-script-management-web/main/config';
 import {config as portalSecurityServiceAccessPolicyService} from './tests/portal-security-service-access-policy-service/main/config';
@@ -492,6 +493,7 @@ export default defineConfig({
 		portalSearchWebConfig,
 		portalSecurityAuditWebConfig,
 		portalSecurityContentSecurityPolicyConfig,
+		portalSecurityKeyImplConfig,
 		portalSecurityLdapConfig,
 		portalSecurityScriptManagementWebConfig,
 		portalSecurityServiceAccessPolicyService,
