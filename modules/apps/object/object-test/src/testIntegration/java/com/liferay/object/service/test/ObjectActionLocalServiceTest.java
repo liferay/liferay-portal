@@ -1769,6 +1769,68 @@ public class ObjectActionLocalServiceTest {
 	}
 
 	@Test
+	public void testAddObjectActionWithUnmodifiableLabelMap() throws Exception {
+		Locale defaultLocale = _objectDefinition.getDefaultLocale();
+
+		Assert.assertNotEquals(LocaleUtil.BRAZIL, defaultLocale);
+
+		Map<Locale, String> labelMap = Collections.singletonMap(
+			LocaleUtil.BRAZIL, "pt_BR objectActionLabel");
+
+		ObjectAction objectAction1 = _addObjectAction(
+			StringPool.BLANK, labelMap, RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_GROOVY,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
+			new UnicodeProperties(), false);
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				defaultLocale, "pt_BR objectActionLabel"
+			).put(
+				LocaleUtil.BRAZIL, "pt_BR objectActionLabel"
+			).build(),
+			objectAction1.getLabelMap());
+
+		Assert.assertEquals(
+			Collections.singletonMap(
+				LocaleUtil.BRAZIL, "pt_BR objectActionLabel"),
+			labelMap);
+
+		labelMap = HashMapBuilder.put(
+			LocaleUtil.BRAZIL, "pt_BR objectActionLabel"
+		).put(
+			LocaleUtil.SPAIN, "es_ES objectActionLabel"
+		).build();
+
+		ObjectAction objectAction2 = _addObjectAction(
+			StringPool.BLANK, labelMap, RandomTestUtil.randomString(),
+			ObjectActionExecutorConstants.KEY_GROOVY,
+			ObjectActionTriggerConstants.KEY_ON_AFTER_DELETE,
+			new UnicodeProperties(), false);
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				defaultLocale, objectAction2.getName()
+			).put(
+				LocaleUtil.BRAZIL, "pt_BR objectActionLabel"
+			).put(
+				LocaleUtil.SPAIN, "es_ES objectActionLabel"
+			).build(),
+			objectAction2.getLabelMap());
+
+		Assert.assertEquals(
+			HashMapBuilder.put(
+				LocaleUtil.BRAZIL, "pt_BR objectActionLabel"
+			).put(
+				LocaleUtil.SPAIN, "es_ES objectActionLabel"
+			).build(),
+			labelMap);
+
+		_objectActionLocalService.deleteObjectAction(objectAction1);
+		_objectActionLocalService.deleteObjectAction(objectAction2);
+	}
+
+	@Test
 	public void testAddObjectActionWithUsePreferredLanguageForGuestsParameter()
 		throws Exception {
 
