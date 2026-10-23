@@ -165,18 +165,18 @@ public class KBArticleServiceTest {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_siteMemberUser)) {
 
-			_assertGetAllDescendantKBArticles(
+			_testGetAllDescendantKBArticles(
 				WorkflowConstants.STATUS_APPROVED, kbArticle1);
-			_assertGetAllDescendantKBArticles(
+			_testGetAllDescendantKBArticles(
 				WorkflowConstants.STATUS_DRAFT, kbArticle2);
 		}
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
 
-			_assertGetAllDescendantKBArticles(
+			_testGetAllDescendantKBArticles(
 				WorkflowConstants.STATUS_APPROVED);
-			_assertGetAllDescendantKBArticles(WorkflowConstants.STATUS_DRAFT);
+			_testGetAllDescendantKBArticles(WorkflowConstants.STATUS_DRAFT);
 		}
 	}
 
@@ -300,7 +300,7 @@ public class KBArticleServiceTest {
 				group, TestPropsValues.getUserId()));
 	}
 
-	private void _assertGetAllDescendantKBArticles(
+	private void _testGetAllDescendantKBArticles(
 			int status, KBArticle... expectedKBArticles)
 		throws Exception {
 
