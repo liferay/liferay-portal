@@ -39,9 +39,9 @@ export default async function visitProjectTsconfig(
 		return;
 	}
 
-	const tsTests = await fg('**/*.{ts,tsx}', {cwd: srcPath});
+	const tsFiles = await fg('**/*.{ts,tsx}', {cwd: srcPath});
 
-	if (!tsTests.length) {
+	if (!tsFiles.length) {
 		return false;
 	}
 
