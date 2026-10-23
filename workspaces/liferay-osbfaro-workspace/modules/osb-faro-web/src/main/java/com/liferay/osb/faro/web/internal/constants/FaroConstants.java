@@ -18,23 +18,10 @@ public class FaroConstants {
 
 	public static final int TYPE_ACCOUNT = 0;
 
-	public static final int TYPE_ASSET = 5;
-
 	public static final int TYPE_DATA_SOURCE = 1;
 
 	public static final int TYPE_INDIVIDUAL = 2;
 
-	public static final int TYPE_PAGE = 6;
-
-	public static final int TYPE_SEGMENT_ACCOUNTS = 3;
-
 	public static final int TYPE_SEGMENT_INDIVIDUALS = 4;
-
-	public static int[] getContactsTypes() {
-		return new int[] {
-			TYPE_ACCOUNT, TYPE_INDIVIDUAL, TYPE_SEGMENT_ACCOUNTS,
-			TYPE_SEGMENT_INDIVIDUALS
-		};
-	}
 
 }
