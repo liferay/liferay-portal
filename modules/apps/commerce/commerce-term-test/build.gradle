@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.github.ignaciotcrespo", name: "frutilla", version: "0.7.1"
 	testIntegrationImplementation project(":apps:commerce:commerce-term-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
