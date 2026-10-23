@@ -1,0 +1,15 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+set:
+    deploymentContext:
+        projectId: liferay-test-project
+suite: Cluster Provider Configs
+templates:
+    -   templates/cluster-provider-configs.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.projectID
+                    value: liferay-test-project
+        it: Targets the deployment's project
