@@ -14,8 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface PasswordPolicyFinder {
 
-	public int countByC_N(long companyId, String name);
-
 	public int filterCountByC_N(long companyId, String name);
 
 	public java.util.List<com.liferay.portal.kernel.model.PasswordPolicy>
@@ -25,12 +23,5 @@ public interface PasswordPolicyFinder {
 				<com.liferay.portal.kernel.model.PasswordPolicy>
 					orderByComparator);
 
-	public java.util.List<com.liferay.portal.kernel.model.PasswordPolicy>
-		findByC_N(
-			long companyId, String name, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.kernel.model.PasswordPolicy>
-					orderByComparator);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1223254114
+// LIFERAY-SERVICE-BUILDER-HASH:-231202357

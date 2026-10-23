@@ -13,31 +13,12 @@ import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
  */
 public class ResourcePermissionFinderUtil {
 
-	public static int countByR_S(long roleId, int[] scopes) {
-		return getFinder().countByR_S(roleId, scopes);
-	}
-
 	public static int countByC_N_S_P_R_A(
 		long companyId, String name, int scope, String primKey, long[] roleIds,
 		long actionId) {
 
 		return getFinder().countByC_N_S_P_R_A(
 			companyId, name, scope, primKey, roleIds, actionId);
-	}
-
-	public static java.util.Map
-		<java.io.Serializable,
-		 com.liferay.portal.kernel.model.ResourcePermission> fetchByPrimaryKeys(
-			java.util.Set<java.io.Serializable> primaryKeys) {
-
-		return getFinder().fetchByPrimaryKeys(primaryKeys);
-	}
-
-	public static java.util.List
-		<com.liferay.portal.kernel.model.ResourcePermission> findByResource(
-			long companyId, long groupId, String name, String primKey) {
-
-		return getFinder().findByResource(companyId, groupId, name, primKey);
 	}
 
 	public static java.util.List
@@ -63,4 +44,4 @@ public class ResourcePermissionFinderUtil {
 	private static ResourcePermissionFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-48231887
+// LIFERAY-SERVICE-BUILDER-HASH:1107212772

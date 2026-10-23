@@ -22,11 +22,6 @@ public interface PortletPreferencesFinder {
 		long ownerId, int ownerType, long plid, String portletId,
 		boolean excludeDefaultPreferences);
 
-	public java.util.Map
-		<java.io.Serializable,
-		 com.liferay.portal.kernel.model.PortletPreferences> fetchByPrimaryKeys(
-			java.util.Set<java.io.Serializable> primaryKeys);
-
 	public java.util.List<com.liferay.portal.kernel.model.PortletPreferences>
 		findByPortletId(String portletId);
 
@@ -36,4 +31,4 @@ public interface PortletPreferencesFinder {
 			String portletId, boolean privateLayout);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1597167270
+// LIFERAY-SERVICE-BUILDER-HASH:872737585

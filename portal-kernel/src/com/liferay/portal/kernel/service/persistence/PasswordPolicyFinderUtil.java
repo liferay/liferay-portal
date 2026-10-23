@@ -13,10 +13,6 @@ import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
  */
 public class PasswordPolicyFinderUtil {
 
-	public static int countByC_N(long companyId, String name) {
-		return getFinder().countByC_N(companyId, name);
-	}
-
 	public static int filterCountByC_N(long companyId, String name) {
 		return getFinder().filterCountByC_N(companyId, name);
 	}
@@ -29,17 +25,6 @@ public class PasswordPolicyFinderUtil {
 					orderByComparator) {
 
 		return getFinder().filterFindByC_N(
-			companyId, name, start, end, orderByComparator);
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.model.PasswordPolicy>
-		findByC_N(
-			long companyId, String name, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.kernel.model.PasswordPolicy>
-					orderByComparator) {
-
-		return getFinder().findByC_N(
 			companyId, name, start, end, orderByComparator);
 	}
 
@@ -59,4 +44,4 @@ public class PasswordPolicyFinderUtil {
 	private static PasswordPolicyFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1106155761
+// LIFERAY-SERVICE-BUILDER-HASH:1555389263

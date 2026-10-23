@@ -24,10 +24,6 @@ public class OrganizationFinderUtil {
 			keywords, type, regionId, countryId, params);
 	}
 
-	public static int countO_ByO_U(long organizationId, long userId) {
-		return getFinder().countO_ByO_U(organizationId, userId);
-	}
-
 	public static int countO_ByC_PO_N_T_S_C_Z_R_C(
 		long companyId, long parentOrganizationId,
 		String parentOrganizationIdComparator, String name, String type,
@@ -53,14 +49,6 @@ public class OrganizationFinderUtil {
 			andOperator);
 	}
 
-	public static int countO_U_ByC_P(
-		long companyId, long parentOrganizationId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition) {
-
-		return getFinder().countO_U_ByC_P(
-			companyId, parentOrganizationId, queryDefinition);
-	}
-
 	public static java.util.List<com.liferay.portal.kernel.model.Organization>
 		findO_ByKeywords(
 			long companyId, long parentOrganizationId,
@@ -81,14 +69,6 @@ public class OrganizationFinderUtil {
 		findO_ByNoAssets() {
 
 		return getFinder().findO_ByNoAssets();
-	}
-
-	public static java.util.List<Long> findO_ByC_P(
-		long companyId, long parentOrganizationId, long previousOrganizationId,
-		int size) {
-
-		return getFinder().findO_ByC_P(
-			companyId, parentOrganizationId, previousOrganizationId, size);
 	}
 
 	public static java.util.List<com.liferay.portal.kernel.model.Organization>
@@ -125,14 +105,6 @@ public class OrganizationFinderUtil {
 			andOperator, start, end, orderByComparator);
 	}
 
-	public static java.util.List<Object> findO_U_ByC_P(
-		long companyId, long parentOrganizationId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition) {
-
-		return getFinder().findO_U_ByC_P(
-			companyId, parentOrganizationId, queryDefinition);
-	}
-
 	public static OrganizationFinder getFinder() {
 		if (_finder == null) {
 			_finder = (OrganizationFinder)PortalBeanLocatorUtil.locate(
@@ -149,4 +121,4 @@ public class OrganizationFinderUtil {
 	private static OrganizationFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-52553465
+// LIFERAY-SERVICE-BUILDER-HASH:912236717

@@ -20,8 +20,6 @@ public interface OrganizationFinder {
 		Long regionId, Long countryId,
 		java.util.LinkedHashMap<String, Object> params);
 
-	public int countO_ByO_U(long organizationId, long userId);
-
 	public int countO_ByC_PO_N_T_S_C_Z_R_C(
 		long companyId, long parentOrganizationId,
 		String parentOrganizationIdComparator, String name, String type,
@@ -35,10 +33,6 @@ public interface OrganizationFinder {
 		Long countryId, java.util.LinkedHashMap<String, Object> params,
 		boolean andOperator);
 
-	public int countO_U_ByC_P(
-		long companyId, long parentOrganizationId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
-
 	public java.util.List<com.liferay.portal.kernel.model.Organization>
 		findO_ByKeywords(
 			long companyId, long parentOrganizationId,
@@ -51,10 +45,6 @@ public interface OrganizationFinder {
 
 	public java.util.List<com.liferay.portal.kernel.model.Organization>
 		findO_ByNoAssets();
-
-	public java.util.List<Long> findO_ByC_P(
-		long companyId, long parentOrganizationId, long previousOrganizationId,
-		int size);
 
 	public java.util.List<com.liferay.portal.kernel.model.Organization>
 		findO_ByC_PO_N_T_S_C_Z_R_C(
@@ -78,9 +68,5 @@ public interface OrganizationFinder {
 				<com.liferay.portal.kernel.model.Organization>
 					orderByComparator);
 
-	public java.util.List<Object> findO_U_ByC_P(
-		long companyId, long parentOrganizationId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:468917725
+// LIFERAY-SERVICE-BUILDER-HASH:-1922651618
