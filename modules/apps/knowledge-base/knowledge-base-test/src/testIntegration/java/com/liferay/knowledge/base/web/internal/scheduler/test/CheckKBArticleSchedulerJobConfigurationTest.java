@@ -369,7 +369,10 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 
 		_kbArticleLocalService.checkKBArticles(_group.getCompanyId());
 
-		Thread.sleep(1);
+		Assert.assertEquals(
+			0,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user.getUserId()));
 
 		kbArticle.setReviewDate(new Date());
 
@@ -407,7 +410,10 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 
 		Assert.assertEquals(reviewDate, kbArticle.getReviewDate());
 
-		Thread.sleep(1);
+		Assert.assertEquals(
+			0,
+			_userNotificationEventLocalService.getUserNotificationEventsCount(
+				user.getUserId()));
 
 		kbArticle.setReviewDate(new Date());
 
