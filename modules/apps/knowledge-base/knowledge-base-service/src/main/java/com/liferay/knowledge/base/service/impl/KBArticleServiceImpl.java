@@ -1140,13 +1140,13 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 				QueryUtil.ALL_POS, orderByComparator);
 		}
 		else if (status == WorkflowConstants.STATUS_APPROVED) {
-			curKBArticles = kbArticlePersistence.findByG_P_M_NotS(
+			curKBArticles = kbArticlePersistence.filterFindByG_P_M_NotS(
 				groupId, resourcePrimKey, true,
 				WorkflowConstants.STATUS_IN_TRASH, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, orderByComparator);
 		}
 		else {
-			curKBArticles = kbArticlePersistence.findByG_P_S(
+			curKBArticles = kbArticlePersistence.filterFindByG_P_S(
 				groupId, resourcePrimKey, status, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, orderByComparator);
 		}
