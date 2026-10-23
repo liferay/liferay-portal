@@ -8,7 +8,7 @@ package com.liferay.osb.faro.web.internal.controller.contacts;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
-import com.liferay.osb.faro.contacts.model.constants.ContactsConstants;
+import com.liferay.osb.faro.constants.ContactsConstants;
 import com.liferay.osb.faro.engine.client.constants.FieldMappingConstants;
 import com.liferay.osb.faro.engine.client.exception.InvalidFilterException;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;

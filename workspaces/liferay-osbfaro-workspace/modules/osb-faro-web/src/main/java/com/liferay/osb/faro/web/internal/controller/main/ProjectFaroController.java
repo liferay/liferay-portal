@@ -10,7 +10,7 @@ import com.liferay.batch.engine.pagination.Pagination;
 import com.liferay.osb.faro.constants.FaroNotificationConstants;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.constants.FaroUserConstants;
-import com.liferay.osb.faro.contacts.model.constants.JSONConstants;
+import com.liferay.osb.faro.constants.JSONConstants;
 import com.liferay.osb.faro.contacts.service.ContactsCardTemplateLocalService;
 import com.liferay.osb.faro.contacts.service.ContactsLayoutTemplateLocalService;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;

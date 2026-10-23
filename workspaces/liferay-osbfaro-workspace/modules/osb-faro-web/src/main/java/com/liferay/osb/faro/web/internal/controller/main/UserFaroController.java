@@ -6,7 +6,7 @@
 package com.liferay.osb.faro.web.internal.controller.main;
 
 import com.liferay.osb.faro.constants.FaroUserConstants;
-import com.liferay.osb.faro.contacts.model.constants.JSONConstants;
+import com.liferay.osb.faro.constants.JSONConstants;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.model.FaroUser;
 import com.liferay.osb.faro.service.FaroUserLocalService;

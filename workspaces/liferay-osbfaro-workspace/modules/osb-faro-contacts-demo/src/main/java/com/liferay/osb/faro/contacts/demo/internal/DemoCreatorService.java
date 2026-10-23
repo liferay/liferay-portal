@@ -15,13 +15,13 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedField;
 
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.constants.FaroUserConstants;
+import com.liferay.osb.faro.constants.JSONConstants;
 import com.liferay.osb.faro.contacts.demo.internal.model.display.contacts.mixin.BaseMixin;
 import com.liferay.osb.faro.contacts.demo.internal.model.display.contacts.mixin.CredentialsMixin;
 import com.liferay.osb.faro.contacts.demo.internal.model.display.contacts.mixin.OAuth1CredentialsMixin;
 import com.liferay.osb.faro.contacts.demo.internal.model.display.contacts.mixin.OAuth2CredentialsMixin;
 import com.liferay.osb.faro.contacts.demo.internal.model.display.contacts.mixin.PageVisitMixin;
 import com.liferay.osb.faro.contacts.demo.internal.model.display.contacts.mixin.TokenCredentialsMixin;
-import com.liferay.osb.faro.contacts.model.constants.JSONConstants;
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.Credentials;
