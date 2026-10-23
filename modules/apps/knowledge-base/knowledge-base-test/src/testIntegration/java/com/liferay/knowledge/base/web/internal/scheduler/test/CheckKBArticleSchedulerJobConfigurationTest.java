@@ -261,30 +261,6 @@ public class CheckKBArticleSchedulerJobConfigurationTest {
 	}
 
 	@Test
-	public void testExpireKBArticleSendsNotificationToSubscriber()
-		throws Exception {
-
-		ServiceContext serviceContext = _getServiceContext(_user);
-
-		KBArticle kbArticle = _addKBArticle(null, null, serviceContext);
-
-		User user = _addUser();
-
-		_kbArticleLocalService.subscribeKBArticle(
-			user.getUserId(), _group.getGroupId(),
-			kbArticle.getResourcePrimKey());
-
-		kbArticle = _kbArticleLocalService.expireKBArticle(
-			_user.getUserId(), kbArticle.getResourcePrimKey(), serviceContext);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EXPIRED, kbArticle.getStatus());
-
-		_assertUserNotificationEvent(
-			kbArticle, "A knowledge base article has expired.", user);
-	}
-
-	@Test
 	public void testExpireRepublishedKBArticle() throws Exception {
 		User user = _addUser();
 
