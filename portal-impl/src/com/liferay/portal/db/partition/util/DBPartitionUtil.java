@@ -1912,26 +1912,23 @@ public class DBPartitionUtil {
 		throws CompanyVirtualHostException, SQLException {
 
 		String sql = StringBundler.concat(
-			"select VirtualHost1.hostname from ", partitionName,
-			".VirtualHost VirtualHost1 inner join ", _defaultPartitionName,
-			".VirtualHost VirtualHost2 on VirtualHost1.hostname = ",
-			"VirtualHost2.hostname where VirtualHost1.companyId = ? and ",
-			"VirtualHost1.ctCollectionId = 0 and VirtualHost2.ctCollectionId ",
-			"= 0");
+			"select hostname from ", partitionName,
+			".VirtualHost where companyId = ? and ctCollectionId = 0 and ",
+			"(hostname = ? or hostname in (select hostname from ",
+			_defaultPartitionName, ".VirtualHost where ctCollectionId = 0))");
 
 		if (Validator.isNotNull(virtualHostname)) {
-			sql = StringBundler.concat(
-				sql, " and not (VirtualHost1.layoutSetId = 0 and ",
-				"VirtualHost1.defaultVirtualHost = ?)");
+			sql += " and not (layoutSetId = 0 and defaultVirtualHost = ?)";
 		}
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				sql)) {
 
 			preparedStatement.setLong(1, companyId);
+			preparedStatement.setString(2, virtualHostname);
 
 			if (Validator.isNotNull(virtualHostname)) {
-				preparedStatement.setBoolean(2, true);
+				preparedStatement.setBoolean(3, true);
 			}
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
