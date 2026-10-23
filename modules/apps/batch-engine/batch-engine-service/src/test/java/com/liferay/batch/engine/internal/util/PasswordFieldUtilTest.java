@@ -7,12 +7,15 @@ package com.liferay.batch.engine.internal.util;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -48,6 +51,84 @@ public class PasswordFieldUtilTest {
 			Set.of("credential.password", "password"),
 			PasswordFieldUtil.getPasswordFieldNames(
 				UnannotatedTestEntity.class));
+	}
+
+	@Test
+	public void testReplacePasswordFields() {
+		String password = StringUtil.randomString();
+
+		Map<String, Object> map = HashMapBuilder.<String, Object>put(
+			"credential",
+			HashMapBuilder.<String, Object>put(
+				"login", "login1"
+			).put(
+				"secret", password
+			).build()
+		).put(
+			"credential.secret", password
+		).put(
+			"credentials",
+			List.of(
+				HashMapBuilder.<String, Object>put(
+					"login", "login2"
+				).put(
+					"secret", password
+				).build())
+		).put(
+			"name", "login3"
+		).put(
+			"password", password
+		).build();
+
+		PasswordFieldUtil.replacePasswordFields(
+			map, Set.of("credential.secret", "credentials.secret", "password"),
+			StringUtil::upperCase);
+
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"credential",
+				HashMapBuilder.<String, Object>put(
+					"login", "login1"
+				).put(
+					"secret", StringUtil.upperCase(password)
+				).build()
+			).put(
+				"credential.secret", StringUtil.upperCase(password)
+			).put(
+				"credentials",
+				List.of(
+					HashMapBuilder.<String, Object>put(
+						"login", "login2"
+					).put(
+						"secret", StringUtil.upperCase(password)
+					).build())
+			).put(
+				"name", "login3"
+			).put(
+				"password", StringUtil.upperCase(password)
+			).build(),
+			map);
+
+		PasswordFieldUtil.replacePasswordFields(
+			map, Set.of("credential.secret", "credentials.secret", "password"),
+			value -> null);
+
+		Assert.assertEquals(
+			HashMapBuilder.<String, Object>put(
+				"credential",
+				HashMapBuilder.<String, Object>put(
+					"login", "login1"
+				).build()
+			).put(
+				"credentials",
+				List.of(
+					HashMapBuilder.<String, Object>put(
+						"login", "login2"
+					).build())
+			).put(
+				"name", "login3"
+			).build(),
+			map);
 	}
 
 	@Test
