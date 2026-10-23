@@ -1,9 +1,10 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import DateRangeInput, {DateRange} from 'shared/components/DateRangeInput';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
 import moment from 'moment';
 import React, {useState} from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {getCustomDateFormat} from 'shared/util/date';
 import {downloadDataAsFile} from 'shared/util/util';
 
@@ -11,6 +12,7 @@ interface IExportLogModalProps {
 	description: string;
 	fileName: string;
 	groupId: string;
+	observer: Observer;
 	onClose: () => void;
 	onSubmit: ({
 		fromDate,
@@ -26,6 +28,7 @@ const ExportLogModal: React.FC<IExportLogModalProps> = ({
 	description,
 	fileName,
 	groupId,
+	observer,
 	onClose,
 	onSubmit,
 	title,
@@ -43,10 +46,10 @@ const ExportLogModal: React.FC<IExportLogModalProps> = ({
 	const {end: toDate, start: fromDate} = dateRange;
 
 	return (
-		<Modal className="export-log-modal-root">
-			<Modal.Header onClose={onClose} title={title} />
+		<ClayModal observer={observer}>
+			<ClayModal.Header>{title}</ClayModal.Header>
 
-			<Modal.Body>
+			<ClayModal.Body>
 				<p className="text-secondary">{description}</p>
 
 				<div className="h4">
@@ -91,8 +94,8 @@ const ExportLogModal: React.FC<IExportLogModalProps> = ({
 						{Liferay.Language.get('download')}
 					</ClayButton>
 				</div>
-			</Modal.Body>
-		</Modal>
+			</ClayModal.Body>
+		</ClayModal>
 	);
 };
 

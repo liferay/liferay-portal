@@ -6,13 +6,11 @@ import CreateMappingModal from './modals/CreateMappingModal';
 import CSVPreviewModal from './modals/CSVPreviewModal';
 import DeleteChannelModal from './modals/DeleteChannelModal';
 import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
-import ExportLogModal from './modals/ExportLogModal';
 import FieldPreviewModal from './modals/FieldPreviewModal';
 import HelpWidgetModal from './modals/help-widget-modal';
 import IndividualAttributesModal from './modals/IndividualAttributesModal';
 import InputModal from './modals/InputModal';
 import InterestTopicModal from './modals/InterestTopicsModal';
-import NewRequestModal from './modals/NewRequestModal';
 import React from 'react';
 import SelectChannelsModal from './modals/SelectChannelsModal';
 import SelectItemsModal from './modals/SelectItemsModal';
@@ -34,13 +32,11 @@ const COMPONENT_MAP = {
 	[modalTypes.CSV_PREVIEW_MODAL]: CSVPreviewModal,
 	[modalTypes.DELETE_CHANNEL_MODAL]: DeleteChannelModal,
 	[modalTypes.DELETE_CONFIRMATION_MODAL]: DeleteConfirmationModal,
-	[modalTypes.EXPORT_LOG_MODAL]: ExportLogModal,
 	[modalTypes.FIELD_PREVIEW_MODAL]: FieldPreviewModal,
 	[modalTypes.HELP_WIDGET_MODAL]: HelpWidgetModal,
 	[modalTypes.INDIVIDUAL_ATTRIBUTES_MODAL]: IndividualAttributesModal,
 	[modalTypes.INPUT_MODAL]: InputModal,
 	[modalTypes.INSERT_BLOCKED_KEYWORDS]: InterestTopicModal,
-	[modalTypes.NEW_REQUEST_MODAL]: NewRequestModal,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,
 	[modalTypes.TEST]: TestModal,
