@@ -1,4 +1,5 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import client from 'shared/apollo/client';
 import Form, {
 	toPromise,
@@ -6,8 +7,8 @@ import Form, {
 	validateRequired,
 } from 'shared/components/form';
 import Loading, {Align} from 'shared/components/Loading';
-import Modal from 'shared/components/modal';
 import React from 'react';
+import type {Observer} from '@clayui/modal/lib/types';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {DataTypes} from 'shared/types/DataTypes';
@@ -27,7 +28,6 @@ import {
 	EventDefinitionVariables,
 	UpdateEventDefinitionVariables,
 } from 'event-analysis/queries/EventDefinitionQuery';
-import {Modal as ModalType} from 'shared/types/Modal';
 import {SafeResults} from 'shared/hoc/util';
 import {sequence} from 'shared/util/promise';
 import {sub} from 'shared/util/lang';
@@ -47,7 +47,8 @@ type PropsFromRedux = ConnectedProps<typeof connector>;
 interface IEditAttributeEventModalProps extends PropsFromRedux {
 	id: string;
 	mutation: DocumentNode;
-	onClose: (save: boolean) => ModalType.actionTypes;
+	observer: Observer;
+	onClose: (save: boolean) => void;
 	query: DocumentNode;
 	showTypecast?: boolean;
 }
@@ -56,6 +57,7 @@ const EditAttributeEventModal: React.FC<IEditAttributeEventModalProps> = ({
 	addAlert,
 	id,
 	mutation,
+	observer,
 	onClose,
 	query,
 	showTypecast,
@@ -125,7 +127,7 @@ const EditAttributeEventModal: React.FC<IEditAttributeEventModalProps> = ({
 		Promise.resolve(debouncedValidateDisplayName(value));
 
 	return (
-		<Modal>
+		<ClayModal observer={observer}>
 			<SafeResults {...result} page={false} pageDisplay={false}>
 				{(item: {
 					eventAttributeDefinition: Attribute;
@@ -136,14 +138,11 @@ const EditAttributeEventModal: React.FC<IEditAttributeEventModalProps> = ({
 
 					return (
 						<>
-							<Modal.Header
-								onClose={() => onClose(false)}
-								title={
-									displayName
-										? `${name} - ${displayName}`
-										: name
-								}
-							/>
+							<ClayModal.Header>
+								{displayName
+									? `${name} - ${displayName}`
+									: name}
+							</ClayModal.Header>
 
 							<Form
 								initialValues={
@@ -201,7 +200,7 @@ const EditAttributeEventModal: React.FC<IEditAttributeEventModalProps> = ({
 							>
 								{({handleSubmit, isSubmitting, isValid}) => (
 									<Form.Form onSubmit={handleSubmit}>
-										<Modal.Body>
+										<ClayModal.Body>
 											<Form.Group autoFit>
 												<Form.GroupItem>
 													<Form.Input
@@ -282,32 +281,44 @@ const EditAttributeEventModal: React.FC<IEditAttributeEventModalProps> = ({
 													</Form.GroupItem>
 												</Form.Group>
 											)}
-										</Modal.Body>
+										</ClayModal.Body>
 
-										<Modal.Footer>
-											<ClayButton
-												className="button-root"
-												displayType="secondary"
-												onClick={() => onClose(false)}
-											>
-												{Liferay.Language.get('cancel')}
-											</ClayButton>
+										<ClayModal.Footer
+											last={
+												<ClayButton.Group spaced>
+													<ClayButton
+														className="button-root"
+														displayType="secondary"
+														onClick={() =>
+															onClose(false)
+														}
+													>
+														{Liferay.Language.get(
+															'cancel'
+														)}
+													</ClayButton>
 
-											<ClayButton
-												className="button-root"
-												disabled={!isValid}
-												displayType="primary"
-												type="submit"
-											>
-												{isSubmitting && (
-													<Loading
-														align={Align.Left}
-													/>
-												)}
+													<ClayButton
+														className="button-root"
+														disabled={!isValid}
+														displayType="primary"
+														type="submit"
+													>
+														{isSubmitting && (
+															<Loading
+																align={
+																	Align.Left
+																}
+															/>
+														)}
 
-												{Liferay.Language.get('save')}
-											</ClayButton>
-										</Modal.Footer>
+														{Liferay.Language.get(
+															'save'
+														)}
+													</ClayButton>
+												</ClayButton.Group>
+											}
+										/>
 									</Form.Form>
 								)}
 							</Form>
@@ -315,7 +326,7 @@ const EditAttributeEventModal: React.FC<IEditAttributeEventModalProps> = ({
 					);
 				}}
 			</SafeResults>
-		</Modal>
+		</ClayModal>
 	);
 };
 

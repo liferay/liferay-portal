@@ -8,7 +8,6 @@ import CreateMappingModal from './modals/CreateMappingModal';
 import CSVPreviewModal from './modals/CSVPreviewModal';
 import DeleteChannelModal from './modals/DeleteChannelModal';
 import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
-import EditAttributeEventModal from './modals/EditAttributeEventModal';
 import EditEmailReportsModal from './modals/EditEmailReportsModal';
 import ExportLogModal from './modals/ExportLogModal';
 import FieldPreviewModal from './modals/FieldPreviewModal';
@@ -45,7 +44,6 @@ const COMPONENT_MAP = {
 	[modalTypes.CSV_PREVIEW_MODAL]: CSVPreviewModal,
 	[modalTypes.DELETE_CHANNEL_MODAL]: DeleteChannelModal,
 	[modalTypes.DELETE_CONFIRMATION_MODAL]: DeleteConfirmationModal,
-	[modalTypes.EDIT_ATTRIBUTE_EVENT_MODAL]: EditAttributeEventModal,
 	[modalTypes.EDIT_EMAIL_REPORTS]: EditEmailReportsModal,
 	[modalTypes.EXPORT_LOG_MODAL]: ExportLogModal,
 	[modalTypes.FIELD_PREVIEW_MODAL]: FieldPreviewModal,
