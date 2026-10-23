@@ -265,8 +265,8 @@ public class EditPIMConnectorDisplayContext {
 			"externalReferenceCode",
 			settingsObjectEntry.getExternalReferenceCode());
 
-		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
 		Map<String, Serializable> values = settingsObjectEntry.getValues();
+		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
 
 		for (ObjectField objectField :
 				ObjectFieldLocalServiceUtil.getObjectFields(

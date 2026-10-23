@@ -291,7 +291,7 @@ public class EditPIMConnectorDisplayContextTest {
 		Mockito.when(
 			pimConnector.getSettingsObjectDefinitionExternalReferenceCode()
 		).thenReturn(
-			"L_PIM_CONNECTOR_SETTINGS_LIFERAY_COMMERCE"
+			_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE
 		);
 
 		try (MockedStatic<ObjectDefinitionLocalServiceUtil>
@@ -308,7 +308,7 @@ public class EditPIMConnectorDisplayContextTest {
 				() ->
 					ObjectDefinitionLocalServiceUtil.
 						fetchObjectDefinitionByExternalReferenceCode(
-							"L_PIM_CONNECTOR_SETTINGS_LIFERAY_COMMERCE",
+							_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
 							_COMPANY_ID)
 			).thenReturn(
 				settingsObjectDefinition
@@ -499,6 +499,9 @@ public class EditPIMConnectorDisplayContextTest {
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
+
+	private static final String _SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
+		RandomTestUtil.randomString();
 
 	private static final long _SETTINGS_OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
