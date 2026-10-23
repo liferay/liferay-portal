@@ -1,10 +1,11 @@
 import ClayButton from '@clayui/button';
+import ClayModal from '@clayui/modal';
 import ClayDropDown from '@clayui/drop-down';
 import ClayIcon from 'shared/components/Icon';
 import getCN from 'classnames';
-import Modal from 'shared/components/modal';
 import React, {useEffect, useState} from 'react';
-import Table, {Column} from 'shared/components/table';
+import type {Observer} from '@clayui/modal/lib/types';
+import Table from 'shared/components/table';
 import {
 	ACTION_TYPES,
 	useSelectionContext,
@@ -19,10 +20,11 @@ interface IBatchActionModalProps extends React.HTMLAttributes<HTMLDivElement> {
 		options: {label: string; value: string}[];
 		optionsLabel: string;
 	};
-	columns: Column[];
+	columns: any[];
 	editableAttr: string;
 	fitContent: boolean;
 	items: any[];
+	observer: Observer;
 	onClose: () => void;
 	onSave: (params: {
 		edits: {[key: string]: string};
@@ -38,6 +40,7 @@ const BatchActionModal: React.FC<IBatchActionModalProps> = ({
 	editableAttr = '',
 	fitContent = false,
 	items = [],
+	observer,
 	onClose,
 	onSave,
 	title = '',
@@ -75,21 +78,19 @@ const BatchActionModal: React.FC<IBatchActionModalProps> = ({
 		}).then(onClose);
 	};
 
+	// Edit Permissions keeps its layout without dividers until its UX review.
+
 	return (
-		<Modal
-			className={getCN(
-				className,
-				'scroll-container',
-				'batch-action-modal-root',
-				{
-					'fit-content': fitContent,
-				}
-			)}
+		<ClayModal
+			className={getCN(className, 'scroll-container', {
+				'fit-content': fitContent,
+			})}
+			observer={observer}
 			size="lg"
 		>
-			<Modal.Header onClose={onClose} title={title} />
+			<ClayModal.Header className="border-0">{title}</ClayModal.Header>
 
-			<Modal.Body>
+			<ClayModal.Body className="border-0">
 				<div>
 					<ClayDropDown
 						closeOnClick
@@ -109,7 +110,6 @@ const BatchActionModal: React.FC<IBatchActionModalProps> = ({
 					>
 						{options.map((option) => (
 							<ClayDropDown.Item
-								className="set-max-zindex"
 								key={option.value}
 								onClick={() => handleEdits(option.value)}
 							>
@@ -118,7 +118,7 @@ const BatchActionModal: React.FC<IBatchActionModalProps> = ({
 						))}
 					</ClayDropDown>
 
-					<p className="text-secondary">
+					<p className="py-3 text-secondary">
 						{sub(
 							actionCountString,
 							[
@@ -139,30 +139,35 @@ const BatchActionModal: React.FC<IBatchActionModalProps> = ({
 					selectedItemsIOMap={selectedItemsIOMap}
 					showCheckbox
 				/>
-			</Modal.Body>
+			</ClayModal.Body>
 
-			<Modal.Footer>
-				<ClayButton
-					className="button-root"
-					displayType="secondary"
-					onClick={onClose}
-				>
-					{Liferay.Language.get('cancel')}
-				</ClayButton>
+			<ClayModal.Footer
+				className="border-0"
+				last={
+					<ClayButton.Group spaced>
+						<ClayButton
+							className="button-root"
+							displayType="secondary"
+							onClick={onClose}
+						>
+							{Liferay.Language.get('cancel')}
+						</ClayButton>
 
-				<ClayButton
-					className="button-root"
-					disabled={
-						selectedKey === optionsLabel ||
-						selectedItemsIOMap.isEmpty()
-					}
-					displayType="primary"
-					onClick={handleSave}
-				>
-					{Liferay.Language.get('save')}
-				</ClayButton>
-			</Modal.Footer>
-		</Modal>
+						<ClayButton
+							className="button-root"
+							disabled={
+								selectedKey === optionsLabel ||
+								selectedItemsIOMap.isEmpty()
+							}
+							displayType="primary"
+							onClick={handleSave}
+						>
+							{Liferay.Language.get('save')}
+						</ClayButton>
+					</ClayButton.Group>
+				}
+			/>
+		</ClayModal>
 	);
 };
 

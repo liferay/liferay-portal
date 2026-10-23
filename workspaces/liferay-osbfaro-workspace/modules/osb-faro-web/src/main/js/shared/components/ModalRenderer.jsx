@@ -1,5 +1,4 @@
 import autobind from 'autobind-decorator';
-import BatchActionModal from './modals/BatchActionModal';
 import ConfirmationModal from './modals/ConfirmationModal';
 import ConnectDXPModal from './modals/ConnectDXPModal';
 import ContactSalesModal from './modals/ContactSalesModal';
@@ -13,7 +12,6 @@ import HelpWidgetModal from './modals/help-widget-modal';
 import IndividualAttributesModal from './modals/IndividualAttributesModal';
 import InputModal from './modals/InputModal';
 import InterestTopicModal from './modals/InterestTopicsModal';
-import InviteUsersModal from './modals/InviteUsersModal';
 import NewRequestModal from './modals/NewRequestModal';
 import React from 'react';
 import SelectChannelsModal from './modals/SelectChannelsModal';
@@ -29,7 +27,6 @@ import {PropTypes} from 'prop-types';
 const BODY_CLASSNAME = 'modal-open';
 
 const COMPONENT_MAP = {
-	[modalTypes.BATCH_ACTION_MODAL]: BatchActionModal,
 	[modalTypes.CONFIRMATION_MODAL]: ConfirmationModal,
 	[modalTypes.CONNECT_DXP_MODAL]: ConnectDXPModal,
 	[modalTypes.CONTACT_SALES_MODAL]: ContactSalesModal,
@@ -43,7 +40,6 @@ const COMPONENT_MAP = {
 	[modalTypes.INDIVIDUAL_ATTRIBUTES_MODAL]: IndividualAttributesModal,
 	[modalTypes.INPUT_MODAL]: InputModal,
 	[modalTypes.INSERT_BLOCKED_KEYWORDS]: InterestTopicModal,
-	[modalTypes.INVITE_USERS_MODAL]: InviteUsersModal,
 	[modalTypes.NEW_REQUEST_MODAL]: NewRequestModal,
 	[modalTypes.SELECT_ITEMS_MODAL]: SelectItemsModal,
 	[modalTypes.SELECT_CHANNELS_MODAL]: SelectChannelsModal,

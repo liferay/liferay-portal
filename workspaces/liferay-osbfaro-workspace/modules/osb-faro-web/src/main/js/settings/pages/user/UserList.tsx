@@ -3,7 +3,10 @@ import ClayButton from '@clayui/button';
 import ClayIcon from 'shared/components/Icon';
 import CrossPageSelect from 'shared/hoc/CrossPageSelect';
 import Nav from 'shared/components/Nav';
-import React from 'react';
+import BatchActionModal from 'shared/components/modals/BatchActionModal';
+import ConfirmationModal from 'shared/components/ConfirmationModal';
+import InviteUsersModal from 'shared/components/modals/InviteUsersModal';
+import React, {useState} from 'react';
 import RoleRenderer from '../../components/user-list/RoleRenderer';
 import StatusRenderer from '../../components/user-list/StatusRenderer';
 import UserActionsRenderer from '../../components/user-list/UserActionsRenderer';
@@ -14,7 +17,6 @@ import {
 } from 'shared/context/selection';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
-import {close, modalTypes, open} from 'shared/actions/modals';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {
@@ -26,6 +28,7 @@ import {
 } from 'shared/util/pagination';
 import {getDisplayRole, getPluralMessage, sub} from 'shared/util/lang';
 import {UNAUTHORIZED_ACCESS} from 'shared/util/request';
+import {useModal} from '@clayui/modal';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {User} from 'shared/util/records';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -38,7 +41,7 @@ const userRoleOptions = [UserRoleNames.Member, UserRoleNames.Administrator].map(
 	})
 );
 
-const connector = connect(null, {addAlert, close, open});
+const connector = connect(null, {addAlert});
 
 type PropsFromRedux = ConnectedProps<typeof connector>;
 
@@ -49,10 +52,8 @@ interface IUserListProps extends PropsFromRedux {
 
 const UserList: React.FC<IUserListProps> = ({
 	addAlert,
-	close,
 	currentUser,
 	groupId,
-	open,
 }) => {
 	const {selectedItems, selectionDispatch} = useSelectionContext();
 
@@ -72,108 +73,69 @@ const UserList: React.FC<IUserListProps> = ({
 		},
 	});
 
+	const batchModal = useModal();
+	const deleteModal = useModal();
+	const inviteModal = useModal();
+
+	const [batchItems, setBatchItems] = useState<any[]>([]);
+
+	const [userIdsToDelete, setUserIdsToDelete] = useState<string[]>([]);
+
 	const handleActions = () => {
-		open(modalTypes.BATCH_ACTION_MODAL, {
-			actionOptions: {
-				actionCountString: Liferay.Language.get(
-					'changing-permissions-for-x-users'
-				),
-				options: userRoleOptions,
-				optionsLabel: Liferay.Language.get('select-permission'),
-			},
-			columns: [
-				{
-					accessor: 'name',
-					className: 'table-cell-expand',
-					label: Liferay.Language.get('name'),
-					sortable: false,
-					title: true,
-				},
-				{
-					accessor: 'emailAddress',
-					label: Liferay.Language.get('email'),
-					sortable: false,
-				},
-				{
-					accessor: 'status',
-					cellRenderer: StatusRenderer,
-					label: Liferay.Language.get('status'),
-					sortable: false,
-				},
-				{
-					accessor: 'roleName',
-					cellRenderer: RoleRenderer,
-					label: Liferay.Language.get('permission'),
-					sortable: false,
-				},
-			],
-			editableAttr: 'roleName',
-			fitContent: true,
-			items: selectedItems.toArray(),
-			onClose: close,
-			onSave: handleUserSave,
-			title: Liferay.Language.get('edit-permissions-for-selected-users'),
-		});
+		setBatchItems(selectedItems.toArray());
+
+		batchModal.onOpenChange(true);
 	};
 
+	const getBatchActionProps = () => ({
+		actionOptions: {
+			actionCountString: Liferay.Language.get(
+				'changing-permissions-for-x-users'
+			),
+			options: userRoleOptions,
+			optionsLabel: Liferay.Language.get('select-permission'),
+		},
+		columns: [
+			{
+				accessor: 'name',
+				className: 'table-cell-expand',
+				label: Liferay.Language.get('name'),
+				sortable: false,
+				title: true,
+			},
+			{
+				accessor: 'emailAddress',
+				label: Liferay.Language.get('email'),
+				sortable: false,
+			},
+			{
+				accessor: 'status',
+				cellRenderer: StatusRenderer,
+				label: Liferay.Language.get('status'),
+				sortable: false,
+			},
+			{
+				accessor: 'roleName',
+				cellRenderer: RoleRenderer,
+				label: Liferay.Language.get('permission'),
+				sortable: false,
+			},
+		],
+		editableAttr: 'roleName',
+		fitContent: true,
+		items: batchItems,
+		onSave: handleUserSave,
+		title: Liferay.Language.get('edit-permissions-for-selected-users'),
+	});
+
 	const handleInviteModal = () => {
-		open(modalTypes.INVITE_USERS_MODAL, {
-			onClose: close,
-			onSubmit: handleUserInvite,
-		});
+		inviteModal.onOpenChange(true);
 	};
 
 	const handleUserDelete = (ids: string[]) => {
-		open(modalTypes.CONFIRMATION_MODAL, {
-			message: getPluralMessage(
-				Liferay.Language.get('are-you-sure-you-want-to-delete-x-user'),
-				Liferay.Language.get('are-you-sure-you-want-to-delete-x-users'),
-				ids.length,
-				false,
-				[<b key="confirmDeleteCount">{ids.length}</b>]
-			),
-			modalVariant: 'modal-warning',
-			onClose: close,
-			onSubmit: () =>
-				API.user
-					.delete({
-						groupId,
-						ids,
-					})
-					.then((data) => {
-						addAlert({
-							alertType: Alert.Types.Success,
-							message: getPluralMessage(
-								Liferay.Language.get('x-user-has-been-deleted'),
-								Liferay.Language.get(
-									'x-users-have-been-deleted'
-								),
-								data?.length,
-								false,
-								[<b key="deleteCount">{data?.length}</b>]
-							),
-						});
+		setUserIdsToDelete(ids);
 
-						selectionDispatch?.({type: ActionTypes.ClearAll});
-
-						refetch?.();
-					})
-					.catch((err) =>
-						addAlert({
-							alertType: Alert.Types.Error,
-							message:
-								err.message === UNAUTHORIZED_ACCESS
-									? Liferay.Language.get(
-											'unauthorized-access'
-										)
-									: Liferay.Language.get('error'),
-							timeout: false,
-						})
-					),
-			submitButtonDisplay: 'warning',
-			title: Liferay.Language.get('delete-user'),
-			titleIcon: 'warning-full',
-		});
+		deleteModal.onOpenChange(true);
 	};
 
 	const handleUserInvite = (emailAddresses: string[]) =>
@@ -187,7 +149,7 @@ const UserList: React.FC<IUserListProps> = ({
 
 				refetch?.();
 
-				close();
+				inviteModal.onOpenChange(false);
 
 				return response;
 			})
@@ -325,69 +287,159 @@ const UserList: React.FC<IUserListProps> = ({
 	const authorized = currentUser.isAdmin();
 
 	return (
-		<CrossPageSelect
-			checkDisabled={isUserDisabled}
-			columns={[
-				{
-					accessor: 'name',
-					className: 'table-cell-expand',
-					label: Liferay.Language.get('name'),
-					title: true,
-				},
-				{
-					accessor: 'emailAddress',
-					label: Liferay.Language.get('email'),
-				},
-				{
-					accessor: 'status',
-					cellRenderer: StatusRenderer,
-					label: Liferay.Language.get('status'),
-				},
-				{
-					accessor: 'roleName',
-					cellRenderer: RoleRenderer,
-					cellRendererProps: {
-						options: userRoleOptions,
+		<>
+			<CrossPageSelect
+				checkDisabled={isUserDisabled}
+				columns={[
+					{
+						accessor: 'name',
+						className: 'table-cell-expand',
+						label: Liferay.Language.get('name'),
+						title: true,
 					},
-					editable: true,
-					label: Liferay.Language.get('permission'),
-				},
-			]}
-			delta={delta}
-			emptyTitle={sub(Liferay.Language.get('no-x-were-found'), [
-				Liferay.Language.get('users'),
-			])}
-			entityLabel={Liferay.Language.get('users')}
-			error={error}
-			filterBy={filterBy}
-			items={data?.items}
-			loading={loading}
-			orderByOptions={[
-				{
-					label: Liferay.Language.get('name'),
-					value: NAME,
-				},
-				{
-					label: Liferay.Language.get('email'),
-					value: EMAIL_ADDRESS,
-				},
-				{
-					label: Liferay.Language.get('permission'),
-					value: ROLE_NAME,
-				},
-				{
-					label: Liferay.Language.get('status'),
-					value: STATUS,
-				},
-			]}
-			orderIOMap={orderIOMap}
-			page={page}
-			query={query}
-			renderInlineRowActions={authorized ? renderInlineRowActions : null}
-			renderNav={authorized ? renderNav : null}
-			showCheckbox={authorized}
-			total={data?.total}
-		/>
+					{
+						accessor: 'emailAddress',
+						label: Liferay.Language.get('email'),
+					},
+					{
+						accessor: 'status',
+						cellRenderer: StatusRenderer,
+						label: Liferay.Language.get('status'),
+					},
+					{
+						accessor: 'roleName',
+						cellRenderer: RoleRenderer,
+						cellRendererProps: {
+							options: userRoleOptions,
+						},
+						editable: true,
+						label: Liferay.Language.get('permission'),
+					},
+				]}
+				delta={delta}
+				emptyTitle={sub(Liferay.Language.get('no-x-were-found'), [
+					Liferay.Language.get('users'),
+				])}
+				entityLabel={Liferay.Language.get('users')}
+				error={error}
+				filterBy={filterBy}
+				items={data?.items}
+				loading={loading}
+				orderByOptions={[
+					{
+						label: Liferay.Language.get('name'),
+						value: NAME,
+					},
+					{
+						label: Liferay.Language.get('email'),
+						value: EMAIL_ADDRESS,
+					},
+					{
+						label: Liferay.Language.get('permission'),
+						value: ROLE_NAME,
+					},
+					{
+						label: Liferay.Language.get('status'),
+						value: STATUS,
+					},
+				]}
+				orderIOMap={orderIOMap}
+				page={page}
+				query={query}
+				renderInlineRowActions={
+					authorized ? renderInlineRowActions : null
+				}
+				renderNav={authorized ? renderNav : null}
+				showCheckbox={authorized}
+				total={data?.total}
+			/>
+
+			{batchModal.open && (
+				<BatchActionModal
+					{...getBatchActionProps()}
+					observer={batchModal.observer}
+					onClose={() => batchModal.onOpenChange(false)}
+				/>
+			)}
+
+			{inviteModal.open && (
+				<InviteUsersModal
+					observer={inviteModal.observer}
+					onClose={() => inviteModal.onOpenChange(false)}
+					onSubmit={handleUserInvite}
+				/>
+			)}
+
+			{deleteModal.open && (
+				<ConfirmationModal
+					message={getPluralMessage(
+						Liferay.Language.get(
+							'are-you-sure-you-want-to-delete-x-user'
+						),
+						Liferay.Language.get(
+							'are-you-sure-you-want-to-delete-x-users'
+						),
+						userIdsToDelete.length,
+						false,
+						[
+							<b key="confirmDeleteCount">
+								{userIdsToDelete.length}
+							</b>,
+						]
+					)}
+					observer={deleteModal.observer}
+					onClose={() => deleteModal.onOpenChange(false)}
+					onSubmit={() =>
+						API.user
+							.delete({
+								groupId,
+								ids: userIdsToDelete,
+							})
+							.then((data) => {
+								addAlert({
+									alertType: Alert.Types.Success,
+									message: getPluralMessage(
+										Liferay.Language.get(
+											'x-user-has-been-deleted'
+										),
+										Liferay.Language.get(
+											'x-users-have-been-deleted'
+										),
+										data?.length,
+										false,
+										[
+											<b key="deleteCount">
+												{data?.length}
+											</b>,
+										]
+									),
+								});
+
+								selectionDispatch?.({
+									type: ActionTypes.ClearAll,
+								});
+
+								refetch?.();
+							})
+							.catch((err) =>
+								addAlert({
+									alertType: Alert.Types.Error,
+									message:
+										err.message === UNAUTHORIZED_ACCESS
+											? Liferay.Language.get(
+													'unauthorized-access'
+												)
+											: Liferay.Language.get('error'),
+									timeout: false,
+								})
+							)
+					}
+					submitButtonDisplay="warning"
+					title={Liferay.Language.get('delete-user')}
+					type="warning"
+				/>
+			)}
+		</>
 	);
 };
 
