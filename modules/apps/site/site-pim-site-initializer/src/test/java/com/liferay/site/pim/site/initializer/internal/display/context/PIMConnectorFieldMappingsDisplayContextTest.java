@@ -284,8 +284,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals(name, jsonObject.getString("label"));
 
 		Assert.assertEquals(Boolean.TRUE, breadcrumbProps.get("hideSpace"));
-		Assert.assertEquals(
-			Boolean.TRUE, breadcrumbProps.get("mappingComplete"));
+		Assert.assertEquals("complete", breadcrumbProps.get("mappingStatus"));
 		Assert.assertEquals("lg", breadcrumbProps.get("size"));
 
 		pimConnectorFieldMappingsDisplayContext =
@@ -316,65 +315,8 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 			jsonObject.getString("successMessage"));
 		Assert.assertEquals("play", jsonObject.getString("symbolLeft"));
 		Assert.assertEquals("asyncPost", jsonObject.getString("target"));
-	}
 
-	@Test
-	public void testGetBreadcrumbPropsWhenMappingIsIncomplete()
-		throws Exception {
-
-		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
-
-		Mockito.when(
-			pimConnector.getPIMConnectorChannelFields()
-		).thenReturn(
-			Collections.singletonList(
-				new PIMConnectorChannelField("sku", false, "sku", true, "Text"))
-		);
-
-		Mockito.when(
-			_pimConnectorRegistry.getPIMConnector(Mockito.anyString())
-		).thenReturn(
-			pimConnector
-		);
-
-		try (MockedStatic<ObjectRelationshipLocalServiceUtil>
-				objectRelationshipLocalServiceUtilMockedStatic =
-					Mockito.mockStatic(
-						ObjectRelationshipLocalServiceUtil.class)) {
-
-			PIMConnectorFieldMappingsDisplayContext
-				pimConnectorFieldMappingsDisplayContext =
-					_createPIMConnectorFieldMappingsDisplayContext(
-						HashMapBuilder.<String, Serializable>put(
-							"active", true
-						).put(
-							"key", "liferay-commerce"
-						).put(
-							"name", RandomTestUtil.randomString()
-						).build());
-
-			Map<String, Object> breadcrumbProps =
-				pimConnectorFieldMappingsDisplayContext.getBreadcrumbProps();
-
-			JSONArray jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
-
-			Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
-
-			JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-			Assert.assertEquals("edit", jsonObject.getString("label"));
-
-			jsonObject = jsonArray.getJSONObject(1);
-
-			Assert.assertEquals("schedule", jsonObject.getString("label"));
-
-			jsonObject = jsonArray.getJSONObject(2);
-
-			Assert.assertEquals("delete", jsonObject.getString("label"));
-
-			Assert.assertEquals(
-				Boolean.FALSE, breadcrumbProps.get("mappingComplete"));
-		}
+		_testGetBreadcrumbPropsWhenMappingIsIncomplete();
 	}
 
 	@Test
@@ -455,6 +397,64 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		);
 
 		return objectDefinition;
+	}
+
+	private void _testGetBreadcrumbPropsWhenMappingIsIncomplete()
+		throws Exception {
+
+		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
+
+		Mockito.when(
+			pimConnector.getPIMConnectorChannelFields()
+		).thenReturn(
+			Collections.singletonList(
+				new PIMConnectorChannelField("sku", false, "sku", true, "Text"))
+		);
+
+		Mockito.when(
+			_pimConnectorRegistry.getPIMConnector(Mockito.anyString())
+		).thenReturn(
+			pimConnector
+		);
+
+		try (MockedStatic<ObjectRelationshipLocalServiceUtil>
+				objectRelationshipLocalServiceUtilMockedStatic =
+					Mockito.mockStatic(
+						ObjectRelationshipLocalServiceUtil.class)) {
+
+			PIMConnectorFieldMappingsDisplayContext
+				pimConnectorFieldMappingsDisplayContext =
+					_createPIMConnectorFieldMappingsDisplayContext(
+						HashMapBuilder.<String, Serializable>put(
+							"active", true
+						).put(
+							"key", "liferay-commerce"
+						).put(
+							"name", RandomTestUtil.randomString()
+						).build());
+
+			Map<String, Object> breadcrumbProps =
+				pimConnectorFieldMappingsDisplayContext.getBreadcrumbProps();
+
+			JSONArray jsonArray = (JSONArray)breadcrumbProps.get("actionItems");
+
+			Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
+
+			JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+			Assert.assertEquals("edit", jsonObject.getString("label"));
+
+			jsonObject = jsonArray.getJSONObject(1);
+
+			Assert.assertEquals("schedule", jsonObject.getString("label"));
+
+			jsonObject = jsonArray.getJSONObject(2);
+
+			Assert.assertEquals("delete", jsonObject.getString("label"));
+
+			Assert.assertEquals(
+				"incomplete", breadcrumbProps.get("mappingStatus"));
+		}
 	}
 
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();

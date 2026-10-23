@@ -274,7 +274,7 @@ public class ViewPIMConnectorsDisplayContextTest {
 			HashMapBuilder.<String, Object>put(
 				"active", Boolean.TRUE
 			).put(
-				"mappingComplete", Boolean.TRUE
+				"mappingStatus", "complete"
 			).build(),
 			data.get("visibilityFilters"));
 
