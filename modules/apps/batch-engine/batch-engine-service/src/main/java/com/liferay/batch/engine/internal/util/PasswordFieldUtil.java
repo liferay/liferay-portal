@@ -34,7 +34,9 @@ import java.lang.reflect.Modifier;
 
 import java.security.Key;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import javax.crypto.spec.SecretKeySpec;
@@ -131,6 +133,40 @@ public class PasswordFieldUtil {
 				childJsonNode, Set.of(passwordFieldName.substring(index + 1)),
 				unsafeFunction);
 		}
+	}
+
+	public static <E extends Exception> Map<String, Object>
+			replacePasswordFields(
+				Map<String, Object> map, Set<String> passwordFieldNames,
+				UnsafeFunction<String, String, E> unsafeFunction)
+		throws E {
+
+		for (String passwordFieldName : passwordFieldNames) {
+			Object value = map.get(passwordFieldName);
+
+			if (value instanceof String) {
+				String passwordFieldValue = unsafeFunction.apply((String)value);
+
+				if (passwordFieldValue == null) {
+					map.remove(passwordFieldName);
+				}
+				else {
+					map.put(passwordFieldName, passwordFieldValue);
+				}
+			}
+
+			int index = passwordFieldName.indexOf(CharPool.PERIOD);
+
+			if (index == -1) {
+				continue;
+			}
+
+			_replacePasswordFields(
+				map.get(passwordFieldName.substring(0, index)),
+				Set.of(passwordFieldName.substring(index + 1)), unsafeFunction);
+		}
+
+		return map;
 	}
 
 	public static String toString(Object object) {
@@ -267,6 +303,30 @@ public class PasswordFieldUtil {
 		}
 
 		classes.remove(clazz);
+	}
+
+	private static <E extends Exception> void _replacePasswordFields(
+			Object object, Set<String> passwordFieldNames,
+			UnsafeFunction<String, String, E> unsafeFunction)
+		throws E {
+
+		if (object instanceof Collection) {
+			for (Object element : (Collection<?>)object) {
+				_replacePasswordFields(
+					element, passwordFieldNames, unsafeFunction);
+			}
+		}
+		else if (object instanceof Map) {
+			replacePasswordFields(
+				(Map<String, Object>)object, passwordFieldNames,
+				unsafeFunction);
+		}
+		else if (object instanceof Object[]) {
+			for (Object element : (Object[])object) {
+				_replacePasswordFields(
+					element, passwordFieldNames, unsafeFunction);
+			}
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
