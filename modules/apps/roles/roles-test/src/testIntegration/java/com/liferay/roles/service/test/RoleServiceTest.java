@@ -75,59 +75,40 @@ public class RoleServiceTest extends BasePermissionTestCase {
 
 	@Test
 	public void testCopyRole() throws Exception {
-		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		Role role1 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		User user = UserTestUtil.addUser();
+
+		PrincipalException.MustHavePermission mustHavePermission =
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _copyRole(role1, user));
+
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.ADD_ROLE}, mustHavePermission.actionId);
+
+		Role role2 = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
 		RoleTestUtil.addResourcePermission(
-			role, PortletKeys.PORTAL, ResourceConstants.SCOPE_COMPANY,
+			role2, PortletKeys.PORTAL, ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()),
 			ActionKeys.ADD_ROLE);
 
-		User user = UserTestUtil.addUser();
+		_userLocalService.addRoleUser(role2.getRoleId(), user.getUserId());
 
-		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+		mustHavePermission = Assert.assertThrows(
+			PrincipalException.MustHavePermission.class,
+			() -> _copyRole(role1, user));
 
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
+		Assert.assertArrayEquals(
+			new String[] {ActionKeys.VIEW}, mustHavePermission.actionId);
 
-			String name = RandomTestUtil.randomString();
+		RoleTestUtil.addResourcePermission(
+			role2, Role.class.getName(), ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(role1.getRoleId()), ActionKeys.VIEW);
 
-			Role targetRole = _roleService.copyRole(
-				TestPropsValues.getUserId(), name, _role.getRoleId(),
-				new ServiceContext());
+		Role role3 = _copyRole(role1, user);
 
-			Assert.assertEquals(name, targetRole.getName());
-			Assert.assertEquals(user.getUserId(), targetRole.getUserId());
-		}
-
-		Role sourceRole = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			_roleService.copyRole(
-				user.getUserId(), RandomTestUtil.randomString(),
-				sourceRole.getRoleId(), new ServiceContext());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			Assert.assertNotNull(principalException);
-		}
-
-		user = UserTestUtil.addUser();
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user, PermissionCheckerFactoryUtil.create(user))) {
-
-			_roleService.copyRole(
-				user.getUserId(), RandomTestUtil.randomString(),
-				_role.getRoleId(), new ServiceContext());
-
-			Assert.fail();
-		}
-		catch (PrincipalException.MustHavePermission principalException) {
-			Assert.assertNotNull(principalException);
-		}
+		Assert.assertEquals(user.getUserId(), role3.getUserId());
 	}
 
 	@Test
@@ -229,6 +210,16 @@ public class RoleServiceTest extends BasePermissionTestCase {
 			RandomTestUtil.randomLocaleStringMap(),
 			RandomTestUtil.randomLocaleStringMap(), RoleConstants.TYPE_REGULAR,
 			subtype, null);
+	}
+
+	private Role _copyRole(Role sourceRole, User user) throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			return _roleService.copyRole(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				sourceRole.getRoleId(), new ServiceContext());
+		}
 	}
 
 	private void _testSearch() throws Exception {
