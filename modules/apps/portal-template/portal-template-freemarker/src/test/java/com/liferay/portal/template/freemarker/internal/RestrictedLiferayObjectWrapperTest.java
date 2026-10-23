@@ -115,10 +115,7 @@ public class RestrictedLiferayObjectWrapperTest
 
 			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
 		}
-	}
 
-	@Test
-	public void testConstructorWithNoContextClassloader() {
 		try (SafeCloseable safeCloseable = ThreadContextClassLoaderUtil.swap(
 				null)) {
 
