@@ -6,6 +6,7 @@
 import {IBulkActionItem} from '@liferay/frontend-data-set-web';
 import React from 'react';
 
+import AttachmentDataRenderer from './FDSDataRenderers/AttachmentDataRenderer';
 import DecimalDataRenderer from './FDSDataRenderers/DecimalDataRenderer';
 import LocalizedMultiselectPicklistDataRenderer from './FDSDataRenderers/LocalizedMultiselectPicklistDataRenderer';
 import LocalizedPicklistDataRenderer from './FDSDataRenderers/LocalizedPicklistDataRenderer';
@@ -32,6 +33,7 @@ export default function ViewObjectEntriesFDSPropsTransformer({
 		bulkActions:
 			bulkActions && transformFDSBulkActions<ObjectEntry>(bulkActions),
 		customDataRenderers: {
+			attachmentDataRenderer: AttachmentDataRenderer,
 			decimalDataRenderer: DecimalDataRenderer,
 			localizedMultiselectPicklistDataRenderer:
 				LocalizedMultiselectPicklistDataRenderer,
