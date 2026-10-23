@@ -379,8 +379,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				"Company ID " + companyId + " is the default company ID");
 		}
 
-		String lowerCaseVirtualHostname = StringUtil.toLowerCase(
-			StringUtil.trim(virtualHostname));
+		String lowerCaseVirtualHostname = _normalizeVirtualHostname(
+			StringUtil.toLowerCase(StringUtil.trim(virtualHostname)));
 
 		_validateMaxLengths(name, lowerCaseVirtualHostname, webId);
 
@@ -433,15 +433,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 								company = companyPersistence.update(company);
 
 								_companyInfoPersistence.update(companyInfo);
-							}
-
-							if (Validator.isNotNull(lowerCaseVirtualHostname) &&
-								!StringUtil.equals(
-									company.getVirtualHostname(),
-									lowerCaseVirtualHostname)) {
-
-								company = updateVirtualHostname(
-									companyId, lowerCaseVirtualHostname);
 							}
 
 							return _addDBPartitionCompany(company);
@@ -1915,22 +1906,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		throws CompanyVirtualHostException {
 
 		if (Validator.isNotNull(virtualHostname)) {
-			try {
-				if (Validator.isIPv6Address(virtualHostname)) {
-					Inet6Address address = (Inet6Address)InetAddress.getByName(
-						virtualHostname);
-
-					virtualHostname = address.getHostAddress();
-				}
-			}
-			catch (UnknownHostException unknownHostException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(unknownHostException);
-				}
-
-				throw new CompanyVirtualHostException(
-					"Virtual hostname is not a valid IPv6 address");
-			}
+			virtualHostname = _normalizeVirtualHostname(virtualHostname);
 
 			VirtualHost virtualHost = _virtualHostPersistence.fetchByHostname(
 				virtualHostname);
@@ -2500,6 +2476,29 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 
 		return nextLong;
+	}
+
+	private String _normalizeVirtualHostname(String virtualHostname)
+		throws CompanyVirtualHostException {
+
+		if (!Validator.isIPv6Address(virtualHostname)) {
+			return virtualHostname;
+		}
+
+		try {
+			Inet6Address address = (Inet6Address)InetAddress.getByName(
+				virtualHostname);
+
+			return address.getHostAddress();
+		}
+		catch (UnknownHostException unknownHostException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(unknownHostException);
+			}
+
+			throw new CompanyVirtualHostException(
+				"Virtual hostname is not a valid IPv6 address");
+		}
 	}
 
 	private Company _registerDBPartitionCompany(Company company) {
