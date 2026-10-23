@@ -11,8 +11,6 @@ import com.liferay.osb.faro.constants.FaroNotificationConstants;
 import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.constants.FaroUserConstants;
 import com.liferay.osb.faro.constants.JSONConstants;
-import com.liferay.osb.faro.contacts.service.ContactsCardTemplateLocalService;
-import com.liferay.osb.faro.contacts.service.ContactsLayoutTemplateLocalService;
 import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.Workspace;
@@ -474,10 +472,6 @@ public class ProjectFaroController extends BaseFaroController {
 			_faroProjectLocalService.fetchFaroProjectByGroupId(groupId);
 
 		_validateLastSeenDate(faroProject);
-
-		_contactsCardTemplateLocalService.deleteContactsCardTemplates(groupId);
-		_contactsLayoutTemplateLocalService.deleteContactsLayoutTemplates(
-			groupId);
 
 		contactsEngineClient.deleteProject(faroProject, deleteData);
 
@@ -1987,13 +1981,6 @@ public class ProjectFaroController extends BaseFaroController {
 
 	private static final CopyOnWriteArraySet<Long> _initializingGroupIds =
 		new CopyOnWriteArraySet<>();
-
-	@Reference
-	private ContactsCardTemplateLocalService _contactsCardTemplateLocalService;
-
-	@Reference
-	private ContactsLayoutTemplateLocalService
-		_contactsLayoutTemplateLocalService;
 
 	@Reference
 	private DataSourceFaroController _dataSourceFaroController;
