@@ -733,7 +733,7 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		}
 		catch (IOException ioException) {
 			System.out.println(
-				"WARNING: Unable to get " +
+				"WARNING: Unable to get the property " +
 					"\"cloud.ci.s3.bucket.yarn.caches.path\"");
 
 			return null;
