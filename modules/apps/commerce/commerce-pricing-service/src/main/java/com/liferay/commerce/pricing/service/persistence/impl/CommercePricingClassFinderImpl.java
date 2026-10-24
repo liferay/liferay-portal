@@ -41,11 +41,6 @@ public class CommercePricingClassFinderImpl
 		CommercePricingClassFinder.class.getName() + ".findByCPDefinitionId";
 
 	@Override
-	public int countByCPDefinitionId(long cpDefinitionId, String title) {
-		return countByCPDefinitionId(cpDefinitionId, title, false);
-	}
-
-	@Override
 	public int countByCPDefinitionId(
 		long cpDefinitionId, String title, boolean inlineSQLHelper) {
 
@@ -107,13 +102,6 @@ public class CommercePricingClassFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public List<CommercePricingClass> findByCPDefinitionId(
-		long cpDefinitionId, String title, int start, int end) {
-
-		return findByCPDefinitionId(cpDefinitionId, title, start, end, false);
 	}
 
 	@Override

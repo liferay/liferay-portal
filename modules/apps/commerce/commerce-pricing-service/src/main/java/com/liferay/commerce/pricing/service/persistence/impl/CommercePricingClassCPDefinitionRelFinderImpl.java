@@ -45,14 +45,6 @@ public class CommercePricingClassCPDefinitionRelFinderImpl
 
 	@Override
 	public int countByCommercePricingClassId(
-		long commercePricingClassId, String name, String languageId) {
-
-		return countByCommercePricingClassId(
-			commercePricingClassId, name, languageId, false);
-	}
-
-	@Override
-	public int countByCommercePricingClassId(
 		long commercePricingClassId, String name, String languageId,
 		boolean inlineSQLHelper) {
 
@@ -116,16 +108,6 @@ public class CommercePricingClassCPDefinitionRelFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public List<CommercePricingClassCPDefinitionRel>
-		findByCommercePricingClassId(
-			long commercePricingClassId, String name, String languageId,
-			int start, int end) {
-
-		return findByCommercePricingClassId(
-			commercePricingClassId, name, languageId, start, end, false);
 	}
 
 	@Override

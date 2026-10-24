@@ -69,14 +69,6 @@ public class CommercePriceModifierRelFinderImpl
 
 	@Override
 	public int countCategoriesByCommercePriceModifierId(
-		long commercePriceModifierId, String name) {
-
-		return countCategoriesByCommercePriceModifierId(
-			commercePriceModifierId, name, false);
-	}
-
-	@Override
-	public int countCategoriesByCommercePriceModifierId(
 		long commercePriceModifierId, String name, boolean inlineSQLHelper) {
 
 		Session session = null;
@@ -139,14 +131,6 @@ public class CommercePriceModifierRelFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public int countCPDefinitionsByCommercePriceModifierId(
-		long commercePriceModifierId, String name, String languageId) {
-
-		return countCPDefinitionsByCommercePriceModifierId(
-			commercePriceModifierId, name, languageId, false);
 	}
 
 	@Override
@@ -215,14 +199,6 @@ public class CommercePriceModifierRelFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public int countPricingClassesByCommercePriceModifierId(
-		long commercePriceModifierId, String title) {
-
-		return countPricingClassesByCommercePriceModifierId(
-			commercePriceModifierId, title, false);
 	}
 
 	@Override
@@ -296,15 +272,6 @@ public class CommercePriceModifierRelFinderImpl
 	@Override
 	public List<CommercePriceModifierRel>
 		findCategoriesByCommercePriceModifierId(
-			long commercePriceModifierId, String name, int start, int end) {
-
-		return findCategoriesByCommercePriceModifierId(
-			commercePriceModifierId, name, start, end, false);
-	}
-
-	@Override
-	public List<CommercePriceModifierRel>
-		findCategoriesByCommercePriceModifierId(
 			long commercePriceModifierId, String name, int start, int end,
 			boolean inlineSQLHelper) {
 
@@ -367,16 +334,6 @@ public class CommercePriceModifierRelFinderImpl
 	public List<CommercePriceModifierRel>
 		findCPDefinitionsByCommercePriceModifierId(
 			long commercePriceModifierId, String name, String languageId,
-			int start, int end) {
-
-		return findCPDefinitionsByCommercePriceModifierId(
-			commercePriceModifierId, name, languageId, start, end, false);
-	}
-
-	@Override
-	public List<CommercePriceModifierRel>
-		findCPDefinitionsByCommercePriceModifierId(
-			long commercePriceModifierId, String name, String languageId,
 			int start, int end, boolean inlineSQLHelper) {
 
 		Session session = null;
@@ -433,15 +390,6 @@ public class CommercePriceModifierRelFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public List<CommercePriceModifierRel>
-		findPricingClassesByCommercePriceModifierId(
-			long commercePriceModifierId, String title, int start, int end) {
-
-		return findPricingClassesByCommercePriceModifierId(
-			commercePriceModifierId, title, start, end, false);
 	}
 
 	@Override
