@@ -292,8 +292,8 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				if (_log.isInfoEnabled()) {
 					_log.info(
 						StringBundler.concat(
-							"Unable to find class ", className,
-							". Registering as a package."),
+							"Registering ", className,
+							" as a package because the class cannot be found"),
 						classNotFoundException);
 				}
 
