@@ -6,12 +6,12 @@
 package com.liferay.organizations.internal.settings;
 
 import com.liferay.organizations.internal.configuration.OrganizationTypeConfigurationWrapper;
-import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.users.admin.kernel.organization.types.OrganizationTypesSettings;
 
 import org.osgi.framework.BundleContext;
@@ -87,10 +87,9 @@ public class OrganizationTypesSettingsImpl
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext, OrganizationTypeConfigurationWrapper.class, null,
-			ServiceReferenceMapperFactory.create(
-				bundleContext,
-				(organizationTypeConfigurationWrapper, emitter) -> emitter.emit(
-					organizationTypeConfigurationWrapper.getName())));
+			(serviceReference, emitter) -> emitter.emit(
+				GetterUtil.getString(
+					serviceReference.getProperty("name"), "organization")));
 	}
 
 	@Deactivate

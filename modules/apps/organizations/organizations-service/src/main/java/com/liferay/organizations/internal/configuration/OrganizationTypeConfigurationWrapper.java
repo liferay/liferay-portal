@@ -30,10 +30,6 @@ public class OrganizationTypeConfigurationWrapper {
 			Validator::isNotNull);
 	}
 
-	public String getName() {
-		return _organizationTypeConfiguration.name();
-	}
-
 	public boolean isCountryEnabled() {
 		return _organizationTypeConfiguration.countryEnabled();
 	}
