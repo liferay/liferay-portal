@@ -42,23 +42,13 @@ public class EntryFinderImpl
 		EntryFinder.class.getName() + ".findByG_CD_N_SN";
 
 	@Override
-	public int countByG_CD_N_SN(
-		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andOperator) {
-
-		return doCountByG_CD_N_SN(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andOperator, false);
-	}
-
-	@Override
 	public int filterCountByG_CD_N_SN(
 		long groupId, String definitionName, String userName, Date createDateGT,
 		Date createDateLT, boolean andOperator) {
 
-		return doCountByG_CD_N_SN(
+		return _countByG_CD_N_SN(
 			groupId, definitionName, userName, createDateGT, createDateLT,
-			andOperator, true);
+			andOperator);
 	}
 
 	@Override
@@ -67,25 +57,14 @@ public class EntryFinderImpl
 		Date createDateLT, boolean andOperator, int start, int end,
 		OrderByComparator<Entry> orderByComparator) {
 
-		return doFindByG_CD_N_SN(
+		return _findByG_CD_N_SN(
 			groupId, definitionName, userName, createDateGT, createDateLT,
-			andOperator, start, end, orderByComparator, true);
+			andOperator, start, end, orderByComparator);
 	}
 
-	@Override
-	public List<Entry> findByG_CD_N_SN(
+	private int _countByG_CD_N_SN(
 		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andOperator, int start, int end,
-		OrderByComparator<Entry> orderByComparator) {
-
-		return doFindByG_CD_N_SN(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andOperator, start, end, orderByComparator, false);
-	}
-
-	protected int doCountByG_CD_N_SN(
-		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andOperator, boolean inlineSQLHelper) {
+		Date createDateLT, boolean andOperator) {
 
 		if (Validator.isNull(definitionName) || Validator.isNull(userName)) {
 			andOperator = true;
@@ -101,11 +80,8 @@ public class EntryFinderImpl
 
 			String sql = _customSQL.get(getClass(), COUNT_BY_G_CD_N_SN);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, Entry.class.getName(), "Reports_Entry.entryId",
-					groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, Entry.class.getName(), "Reports_Entry.entryId", groupId);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(
@@ -172,10 +148,10 @@ public class EntryFinderImpl
 		}
 	}
 
-	protected List<Entry> doFindByG_CD_N_SN(
+	private List<Entry> _findByG_CD_N_SN(
 		long groupId, String definitionName, String userName, Date createDateGT,
 		Date createDateLT, boolean andOperator, int start, int end,
-		OrderByComparator<Entry> orderByComparator, boolean inlineSQLHelper) {
+		OrderByComparator<Entry> orderByComparator) {
 
 		if (Validator.isNull(definitionName) || Validator.isNull(userName)) {
 			andOperator = true;
@@ -191,11 +167,8 @@ public class EntryFinderImpl
 
 			String sql = _customSQL.get(getClass(), FIND_BY_G_CD_N_SN);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, Entry.class.getName(), "Reports_Entry.entryId",
-					groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, Entry.class.getName(), "Reports_Entry.entryId", groupId);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(

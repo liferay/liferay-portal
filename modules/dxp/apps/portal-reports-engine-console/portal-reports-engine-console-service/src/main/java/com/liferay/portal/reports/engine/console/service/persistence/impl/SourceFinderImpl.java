@@ -41,17 +41,10 @@ public class SourceFinderImpl
 		SourceFinder.class.getName() + ".findByG_N_DU";
 
 	@Override
-	public int countByG_N_DU(
-		long groupId, String name, String driverUrl, boolean andOperator) {
-
-		return doCountByG_N_DU(groupId, name, driverUrl, andOperator, false);
-	}
-
-	@Override
 	public int filterCountByG_N_DU(
 		long groupId, String name, String driverUrl, boolean andOperator) {
 
-		return doCountByG_N_DU(groupId, name, driverUrl, andOperator, true);
+		return _countByG_N_DU(groupId, name, driverUrl, andOperator);
 	}
 
 	@Override
@@ -59,24 +52,13 @@ public class SourceFinderImpl
 		long groupId, String name, String driverUrl, boolean andOperator,
 		int start, int end, OrderByComparator<Source> orderByComparator) {
 
-		return doFindByG_N_DU(
+		return _findByG_N_DU(
 			groupId, name, driverUrl, andOperator, start, end,
-			orderByComparator, true);
+			orderByComparator);
 	}
 
-	@Override
-	public List<Source> findByG_N_DU(
-		long groupId, String name, String driverUrl, boolean andOperator,
-		int start, int end, OrderByComparator<Source> orderByComparator) {
-
-		return doFindByG_N_DU(
-			groupId, name, driverUrl, andOperator, start, end,
-			orderByComparator, false);
-	}
-
-	protected int doCountByG_N_DU(
-		long groupId, String name, String driverUrl, boolean andOperator,
-		boolean inlineSQLHelper) {
+	private int _countByG_N_DU(
+		long groupId, String name, String driverUrl, boolean andOperator) {
 
 		if (Validator.isNull(name) || Validator.isNull(driverUrl)) {
 			andOperator = true;
@@ -92,11 +74,9 @@ public class SourceFinderImpl
 
 			String sql = _customSQL.get(getClass(), COUNT_BY_G_N_DU);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, Source.class.getName(), "Reports_Source.sourceId",
-					groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, Source.class.getName(), "Reports_Source.sourceId",
+				groupId);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(
@@ -145,10 +125,9 @@ public class SourceFinderImpl
 		}
 	}
 
-	protected List<Source> doFindByG_N_DU(
+	private List<Source> _findByG_N_DU(
 		long groupId, String name, String driverUrl, boolean andOperator,
-		int start, int end, OrderByComparator<Source> orderByComparator,
-		boolean inlineSQLHelper) {
+		int start, int end, OrderByComparator<Source> orderByComparator) {
 
 		if (Validator.isNull(name) || Validator.isNull(driverUrl)) {
 			andOperator = true;
@@ -164,11 +143,9 @@ public class SourceFinderImpl
 
 			String sql = _customSQL.get(getClass(), FIND_BY_G_N_DU);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, Source.class.getName(), "Reports_Source.sourceId",
-					groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, Source.class.getName(), "Reports_Source.sourceId",
+				groupId);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(

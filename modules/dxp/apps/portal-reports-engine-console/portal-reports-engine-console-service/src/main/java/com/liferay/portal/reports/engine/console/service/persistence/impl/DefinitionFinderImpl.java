@@ -41,23 +41,12 @@ public class DefinitionFinderImpl
 		DefinitionFinder.class.getName() + ".findByG_S_N_D_RN";
 
 	@Override
-	public int countByG_S_N_D_RN(
-		long groupId, String name, String description, long sourceId,
-		String reportName, boolean andOperator) {
-
-		return doCountByG_S_N_D_RN(
-			groupId, name, description, sourceId, reportName, andOperator,
-			false);
-	}
-
-	@Override
 	public int filterCountByG_S_N_D_RN(
 		long groupId, String name, String description, long sourceId,
 		String reportName, boolean andOperator) {
 
-		return doCountByG_S_N_D_RN(
-			groupId, name, description, sourceId, reportName, andOperator,
-			true);
+		return _countByG_S_N_D_RN(
+			groupId, name, description, sourceId, reportName, andOperator);
 	}
 
 	@Override
@@ -66,25 +55,14 @@ public class DefinitionFinderImpl
 		String reportName, boolean andOperator, int start, int end,
 		OrderByComparator<Definition> orderByComparator) {
 
-		return doFindByG_S_N_D_RN(
+		return _findByG_S_N_D_RN(
 			groupId, name, description, sourceId, reportName, andOperator,
-			start, end, orderByComparator, true);
+			start, end, orderByComparator);
 	}
 
-	@Override
-	public List<Definition> findByG_S_N_D_RN(
+	private int _countByG_S_N_D_RN(
 		long groupId, String name, String description, long sourceId,
-		String reportName, boolean andOperator, int start, int end,
-		OrderByComparator<Definition> orderByComparator) {
-
-		return doFindByG_S_N_D_RN(
-			groupId, name, description, sourceId, reportName, andOperator,
-			start, end, orderByComparator, false);
-	}
-
-	protected int doCountByG_S_N_D_RN(
-		long groupId, String name, String description, long sourceId,
-		String reportName, boolean andOperator, boolean inlineSQLHelper) {
+		String reportName, boolean andOperator) {
 
 		if (Validator.isNull(name) || Validator.isNull(description) ||
 			Validator.isNull(reportName)) {
@@ -103,11 +81,9 @@ public class DefinitionFinderImpl
 
 			String sql = _customSQL.get(getClass(), COUNT_BY_G_S_N_D_RN);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, Definition.class.getName(),
-					"Reports_Definition.definitionId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, Definition.class.getName(),
+				"Reports_Definition.definitionId", groupId);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(
@@ -170,11 +146,10 @@ public class DefinitionFinderImpl
 		}
 	}
 
-	protected List<Definition> doFindByG_S_N_D_RN(
+	private List<Definition> _findByG_S_N_D_RN(
 		long groupId, String name, String description, long sourceId,
 		String reportName, boolean andOperator, int start, int end,
-		OrderByComparator<Definition> orderByComparator,
-		boolean inlineSQLHelper) {
+		OrderByComparator<Definition> orderByComparator) {
 
 		if (Validator.isNull(name) || Validator.isNull(description) ||
 			Validator.isNull(reportName)) {
@@ -193,11 +168,9 @@ public class DefinitionFinderImpl
 
 			String sql = _customSQL.get(getClass(), FIND_BY_G_S_N_D_RN);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, Definition.class.getName(),
-					"Reports_Definition.definitionId", groupId);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, Definition.class.getName(),
+				"Reports_Definition.definitionId", groupId);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(
