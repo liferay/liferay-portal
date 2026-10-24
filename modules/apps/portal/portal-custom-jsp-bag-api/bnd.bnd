@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Custom JSP Bag API
 Bundle-SymbolicName: com.liferay.portal.custom.jsp.bag.api
-Bundle-Version: 5.0.8
+Bundle-Version: 5.0.9
 Export-Package: com.liferay.portal.custom.jsp.bag
