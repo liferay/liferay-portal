@@ -1,6 +1,6 @@
 Bundle-Name: Liferay OSGi Utilities
 Bundle-SymbolicName: com.liferay.osgi.util
-Bundle-Version: 8.1.6
+Bundle-Version: 8.1.7
 Export-Package:\
 	com.liferay.osgi.util,\
 	com.liferay.osgi.util.bundle,\
