@@ -15,24 +15,6 @@
 				(DDLRecord.recordSetId = ?)
 		]]>
 	</sql>
-	<sql id="com.liferay.dynamic.data.lists.service.persistence.DDLRecordFinder.countByC_S_S">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT DDLRecord.recordId) AS COUNT_VALUE
-			FROM
-				DDLRecord
-			INNER JOIN
-				DDLRecordVersion ON
-					DDLRecordVersion.recordId = DDLRecord.recordId
-			INNER JOIN
-				DDLRecordSet ON
-					DDLRecordSet.recordSetId = DDLRecord.recordSetId
-			WHERE
-				(DDLRecordVersion.status = ?) AND
-				(DDLRecordSet.scope = ?) AND
-				(DDLRecord.companyId = ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.dynamic.data.lists.service.persistence.DDLRecordFinder.findByR_S">
 		<![CDATA[
 			SELECT
@@ -47,37 +29,6 @@
 				(DDLRecord.recordSetId = ?)
 			ORDER BY
 				DDLRecord.recordId DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.dynamic.data.lists.service.persistence.DDLRecordFinder.findByC_S_S">
-		<![CDATA[
-			SELECT
-				DISTINCT {DDLRecord.*}
-			FROM
-				DDLRecord
-			INNER JOIN
-				DDLRecordVersion ON
-					DDLRecordVersion.recordId = DDLRecord.recordId
-			INNER JOIN
-				DDLRecordSet ON
-					DDLRecordSet.recordSetId = DDLRecord.recordSetId
-			WHERE
-				(DDLRecordVersion.status = ?) AND
-				(DDLRecordSet.scope = ?) AND
-				(DDLRecord.companyId = ?)
-			ORDER BY
-				DDLRecord.recordId DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.dynamic.data.lists.service.persistence.DDLRecordSetFinder.countByG_D">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT DDLRecordSet.recordSetId) AS COUNT_VALUE
-			FROM
-				DDLRecordSet
-			WHERE
-				(DDLRecordSet.groupId = ?) AND
-				(DDLRecordSet.DDMStructureId = ?)
 		]]>
 	</sql>
 	<sql id="com.liferay.dynamic.data.lists.service.persistence.DDLRecordSetFinder.countByC_G_N_D_S">

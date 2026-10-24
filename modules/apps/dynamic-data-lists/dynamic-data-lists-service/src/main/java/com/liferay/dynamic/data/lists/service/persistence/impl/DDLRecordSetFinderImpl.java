@@ -36,9 +36,6 @@ import org.osgi.service.component.annotations.Reference;
 public class DDLRecordSetFinderImpl
 	extends DDLRecordSetFinderBaseImpl implements DDLRecordSetFinder {
 
-	public static final String COUNT_BY_G_D =
-		DDLRecordSetFinder.class.getName() + ".countByG_D";
-
 	public static final String COUNT_BY_C_G_N_D_S =
 		DDLRecordSetFinder.class.getName() + ".countByC_G_N_D_S";
 
@@ -50,25 +47,6 @@ public class DDLRecordSetFinderImpl
 		long companyId, long groupId, String keywords, int scope) {
 
 		return doCountByKeywords(companyId, groupId, keywords, scope, false);
-	}
-
-	@Override
-	public int countByG_D(
-		long groupId, long ddmStructureId, boolean andOperator) {
-
-		return doCountByG_D(groupId, ddmStructureId, andOperator, false);
-	}
-
-	@Override
-	public int countByC_G_N_D_S(
-		long companyId, long groupId, String name, String description,
-		int scope, boolean andOperator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-
-		return doCountByC_G_N_D_S(
-			companyId, groupId, names, descriptions, scope, andOperator, false);
 	}
 
 	@Override
@@ -161,20 +139,6 @@ public class DDLRecordSetFinderImpl
 
 	@Override
 	public List<DDLRecordSet> findByC_G_N_D_S(
-		long companyId, long groupId, String name, String description,
-		int scope, boolean andOperator, int start, int end,
-		OrderByComparator<DDLRecordSet> orderByComparator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-
-		return findByC_G_N_D_S(
-			companyId, groupId, names, descriptions, scope, andOperator, start,
-			end, orderByComparator);
-	}
-
-	@Override
-	public List<DDLRecordSet> findByC_G_N_D_S(
 		long companyId, long groupId, String[] names, String[] descriptions,
 		int scope, boolean andOperator, int start, int end,
 		OrderByComparator<DDLRecordSet> orderByComparator) {
@@ -203,69 +167,6 @@ public class DDLRecordSetFinderImpl
 		return doCountByC_G_N_D_S(
 			companyId, groupId, names, descriptions, scope, andOperator,
 			inlineSQLHelper);
-	}
-
-	protected int doCountByG_D(
-		long groupId, long ddmStructureId, boolean andOperator,
-		boolean inlineSQLHelper) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = _customSQL.get(getClass(), COUNT_BY_G_D);
-
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, DDLRecordSet.class.getName(),
-					"DDLRecordSet.recordSetId", groupId);
-			}
-
-			if (groupId <= 0) {
-				sql = StringUtil.removeSubstring(
-					sql, "(DDLRecordSet.groupId = ?) AND");
-			}
-
-			if (ddmStructureId <= 0) {
-				sql = StringUtil.removeSubstring(
-					sql, "(DDLRecordSet.DDMStructureId = ?)");
-			}
-
-			sql = _customSQL.replaceAndOperator(sql, andOperator);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			if (groupId > 0) {
-				queryPos.add(groupId);
-			}
-
-			if (ddmStructureId > 0) {
-				queryPos.add(ddmStructureId);
-			}
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			if (iterator.hasNext()) {
-				Long count = iterator.next();
-
-				if (count != null) {
-					return count.intValue();
-				}
-			}
-
-			return 0;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	protected int doCountByC_G_N_D_S(
