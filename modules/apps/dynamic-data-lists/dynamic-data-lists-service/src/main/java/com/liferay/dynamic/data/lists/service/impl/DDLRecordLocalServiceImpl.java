@@ -362,59 +362,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns an ordered range of all the records matching the company,
-	 * workflow status, and scope.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil.ALL_POS</code> will return the
-	 * full result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the record's company
-	 * @param  status the record's workflow status. For more information search
-	 *         the portal kernel's WorkflowConstants class for constants
-	 *         starting with the "STATUS_" prefix.
-	 * @param  scope the record's scope. For more information search the
-	 *         dynamic-data-lists-api module's DDLRecordSetConstants class for
-	 *         constants starting with the "SCOPE_" prefix.
-	 * @param  start the lower bound of the range of records to return
-	 * @param  end the upper bound of the range of records to return (not
-	 *         inclusive)
-	 * @param  orderByComparator the comparator to order the records
-	 * @return the range of matching records ordered by the comparator
-	 */
-	@Override
-	public List<DDLRecord> getCompanyRecords(
-		long companyId, int status, int scope, int start, int end,
-		OrderByComparator<DDLRecord> orderByComparator) {
-
-		return ddlRecordFinder.findByC_S_S(
-			companyId, status, scope, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of records matching the company, workflow status, and
-	 * scope.
-	 *
-	 * @param  companyId the primary key of the record's company
-	 * @param  status the record's workflow status. For more information search
-	 *         the portal kernel's WorkflowConstants class for constants
-	 *         starting with the "STATUS_" prefix.
-	 * @param  scope the record's scope. For more information search the
-	 *         dynamic-data-lists-api module's DDLRecordSetConstants class for
-	 *         constants starting with the "SCOPE_" prefix.
-	 * @return the number of matching records
-	 */
-	@Override
-	public int getCompanyRecordsCount(long companyId, int status, int scope) {
-		return ddlRecordFinder.countByC_S_S(companyId, status, scope);
-	}
-
-	/**
 	 * Returns the DDM form values object associated with the record storage ID
 	 * See <code>DDLRecord#getDDMFormValues</code> in the
 	 * <code>com.liferay.dynamic.data.lists.api</code> module.
@@ -432,22 +379,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 		catch (PortalException portalException) {
 			throw new StorageException(portalException);
 		}
-	}
-
-	@Override
-	public Long[] getMinAndMaxCompanyRecordIds(
-		long companyId, int status, int scope) {
-
-		return ddlRecordFinder.findByC_S_S_MinAndMax(companyId, status, scope);
-	}
-
-	@Override
-	public List<DDLRecord> getMinAndMaxCompanyRecords(
-		long companyId, int status, int scope, long minRecordId,
-		long maxRecordId) {
-
-		return ddlRecordFinder.findByC_S_S_MinAndMax(
-			companyId, status, scope, minRecordId, maxRecordId);
 	}
 
 	/**
