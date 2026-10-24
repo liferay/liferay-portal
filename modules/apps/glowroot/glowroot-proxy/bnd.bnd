@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Glowroot Proxy
 Bundle-SymbolicName: com.liferay.glowroot.proxy
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Import-Package:\
 	!org.apache.avalon.framework.logger,\
 	!org.apache.log,\
