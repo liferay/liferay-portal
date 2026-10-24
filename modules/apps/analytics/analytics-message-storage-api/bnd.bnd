@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Analytics Message Storage API
 Bundle-SymbolicName: com.liferay.analytics.message.storage.api
-Bundle-Version: 14.0.0
+Bundle-Version: 14.0.1
 Export-Package:\
 	com.liferay.analytics.message.storage.exception,\
 	com.liferay.analytics.message.storage.model,\
