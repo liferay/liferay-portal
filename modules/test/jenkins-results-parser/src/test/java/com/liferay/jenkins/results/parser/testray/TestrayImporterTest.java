@@ -96,7 +96,7 @@ public class TestrayImporterTest
 		String message = _recordAxisTestClassGroupNoTestrayRun(
 			axisName, job, testrayContext);
 
-		Assert.assertTrue(message, message.contains(axisName));
+		Assert.assertTrue(message.contains(axisName));
 
 		Mockito.verify(
 			job
@@ -115,7 +115,7 @@ public class TestrayImporterTest
 		message = _recordAxisTestClassGroupNoTestrayRun(
 			axisName, testrayContextJob, testrayContext);
 
-		Assert.assertTrue(message, message.contains(axisName));
+		Assert.assertTrue(message.contains(axisName));
 
 		Mockito.verify(
 			testrayContextJob, Mockito.never()
@@ -126,7 +126,7 @@ public class TestrayImporterTest
 		message = _recordAxisTestClassGroupNoTestrayRun(
 			axisName, null, testrayContext);
 
-		Assert.assertTrue(message, message.contains(axisName));
+		Assert.assertTrue(message.contains(axisName));
 	}
 
 	@Test
