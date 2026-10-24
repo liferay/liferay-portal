@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Search Elasticsearch 8 API
 Bundle-SymbolicName: com.liferay.portal.search.elasticsearch8.api
-Bundle-Version: 1.1.2
+Bundle-Version: 1.1.3
 Export-Package:\
 	com.liferay.portal.search.elasticsearch8.configuration,\
 	com.liferay.portal.search.elasticsearch8.constants
