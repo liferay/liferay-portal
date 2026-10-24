@@ -8,13 +8,10 @@ package com.liferay.frontend.js.web.internal.resource.handler;
 import com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration;
 import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.internal.resource.HashedFileFrontendResource;
+import com.liferay.frontend.js.web.internal.util.FrontendJSWebUtil;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.settings.CompanyServiceSettingsLocator;
-import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
-import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.servlet.ServletException;
@@ -31,18 +28,15 @@ public class HashedFileFrontendResourceRequestHandler
 	implements FrontendResourceRequestHandler {
 
 	public HashedFileFrontendResourceRequestHandler(
-		String contentType, long defaultMaxAge, boolean defaultSendNoCache,
+		ConfigurationProvider configurationProvider, String contentType,
 		String fileExtension, HashedFilesRegistry hashedFilesRegistry,
-		String maxAgeKey, Portal portal, String sendNoCacheKey) {
+		Portal portal) {
 
+		_configurationProvider = configurationProvider;
 		_contentType = contentType;
-		_defaultMaxAge = defaultMaxAge;
-		_defaultSendNoCache = defaultSendNoCache;
 		_fileExtension = fileExtension;
 		_hashedFilesRegistry = hashedFilesRegistry;
-		_maxAgeKey = maxAgeKey;
 		_portal = portal;
-		_sendNoCacheKey = sendNoCacheKey;
 	}
 
 	@Override
@@ -80,36 +74,13 @@ public class HashedFileFrontendResourceRequestHandler
 		boolean sendNoCache = false;
 
 		if (!immutable) {
-			maxAge = _defaultMaxAge;
-			sendNoCache = _defaultSendNoCache;
+			FrontendCachingConfiguration frontendCachingConfiguration =
+				FrontendJSWebUtil.getFrontendCachingConfiguration(
+					_portal.getCompanyId(httpServletRequest),
+					_configurationProvider);
 
-			long companyId = _portal.getCompanyId(httpServletRequest);
-
-			try {
-				Class<FrontendCachingConfiguration>
-					frontendCachingConfigurationClass =
-						FrontendCachingConfiguration.class;
-
-				Settings settings = FallbackKeysSettingsUtil.getSettings(
-					new CompanyServiceSettingsLocator(
-						companyId, frontendCachingConfigurationClass.getName(),
-						frontendCachingConfigurationClass.getName()));
-
-				maxAge = Long.valueOf(
-					settings.getValue(
-						_maxAgeKey, String.valueOf(_defaultMaxAge)));
-				sendNoCache = Boolean.valueOf(
-					settings.getValue(
-						_sendNoCacheKey, String.valueOf(_defaultSendNoCache)));
-			}
-			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to get frontend caching configuration for " +
-							"company " + companyId,
-						exception);
-				}
-			}
+			maxAge = frontendCachingConfiguration.jsFilesMaxAge();
+			sendNoCache = frontendCachingConfiguration.sendNoCacheForJSFiles();
 		}
 
 		return new HashedFileFrontendResource(
@@ -117,16 +88,10 @@ public class HashedFileFrontendResourceRequestHandler
 			maxAge, sendNoCache, url);
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		HashedFileFrontendResourceRequestHandler.class);
-
+	private final ConfigurationProvider _configurationProvider;
 	private final String _contentType;
-	private final long _defaultMaxAge;
-	private final boolean _defaultSendNoCache;
 	private final String _fileExtension;
 	private final HashedFilesRegistry _hashedFilesRegistry;
-	private final String _maxAgeKey;
 	private final Portal _portal;
-	private final String _sendNoCacheKey;
 
 }

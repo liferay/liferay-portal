@@ -9,11 +9,8 @@ import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.test.util.FrontendJSWebTestUtil;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
-import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
-import com.liferay.portal.kernel.settings.Settings;
-import com.liferay.portal.kernel.settings.SettingsLocator;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,16 +18,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -56,44 +50,6 @@ public class HashedFileFrontendResourceRequestHandlerTest
 			});
 	}
 
-	@Before
-	public void setUp() {
-		super.setUp();
-
-		_fallbackKeysSettingsUtilMockedStatic = Mockito.mockStatic(
-			FallbackKeysSettingsUtil.class);
-
-		Settings settings = Mockito.mock(Settings.class);
-
-		Mockito.when(
-			settings.getValue(Mockito.eq("maxAgeKey"), Mockito.anyString())
-		).thenReturn(
-			String.valueOf(_MAX_AGE)
-		);
-
-		Mockito.when(
-			settings.getValue(Mockito.eq("sendNoCacheKey"), Mockito.anyString())
-		).thenReturn(
-			String.valueOf(_SEND_NO_CACHE)
-		);
-
-		_fallbackKeysSettingsUtilMockedStatic.when(
-			() -> FallbackKeysSettingsUtil.getSettings(
-				Mockito.any(SettingsLocator.class))
-		).thenReturn(
-			settings
-		);
-	}
-
-	@After
-	public void tearDown() {
-		if (_fallbackKeysSettingsUtilMockedStatic != null) {
-			_fallbackKeysSettingsUtilMockedStatic.close();
-
-			_fallbackKeysSettingsUtilMockedStatic = null;
-		}
-	}
-
 	@Test
 	public void test() throws Exception {
 		HashedFilesRegistry hashedFilesRegistry = Mockito.mock(
@@ -106,9 +62,14 @@ public class HashedFileFrontendResourceRequestHandlerTest
 		HashedFileFrontendResourceRequestHandler
 			hashedFileFrontendResourceRequestHandler =
 				new HashedFileFrontendResourceRequestHandler(
-					ContentTypes.APPLICATION_JSON, _MAX_AGE, _SEND_NO_CACHE,
-					".map", hashedFilesRegistry, "maxAgeKey",
-					Mockito.mock(Portal.class), "sendNoCacheKey");
+					mockConfigurationProvider(
+						HashMapBuilder.<String, Object>put(
+							"jsFilesMaxAge", _MAX_AGE
+						).put(
+							"sendNoCacheForJSFiles", _SEND_NO_CACHE
+						).build()),
+					ContentTypes.APPLICATION_JSON, ".map", hashedFilesRegistry,
+					mockPortal());
 
 		HttpServletRequest httpServletRequest = mockHttpServletRequest(
 			requestURL, null);
@@ -213,9 +174,6 @@ public class HashedFileFrontendResourceRequestHandlerTest
 		"/o/frontend-js-web/index.js.(" + _HASH + ").map";
 
 	private static final String _VALID_URL = "/o/frontend-js-web/index.js.map";
-
-	private MockedStatic<FallbackKeysSettingsUtil>
-		_fallbackKeysSettingsUtilMockedStatic;
 
 	private enum ExpectedETag {
 
