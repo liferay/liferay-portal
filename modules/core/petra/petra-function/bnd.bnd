@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Petra Function
 Bundle-SymbolicName: com.liferay.petra.function
-Bundle-Version: 5.8.2
+Bundle-Version: 5.8.3
 Export-Package:\
 	com.liferay.petra.function,\
 	com.liferay.petra.function.transform
