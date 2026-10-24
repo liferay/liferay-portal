@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Dynamic Data Mapping Data Provider Web
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.data.provider.web
-Bundle-Version: 5.0.71
+Bundle-Version: 5.0.72
 Web-ContextPath: /dynamic-data-mapping-data-provider-web
 -dsannotations-options: inherit
