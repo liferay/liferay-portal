@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Dynamic Data Mapping Form Renderer
 Bundle-SymbolicName: com.liferay.dynamic.data.mapping.form.renderer
-Bundle-Version: 6.0.88
+Bundle-Version: 6.0.89
 Web-ContextPath: /dynamic-data-mapping-form-renderer
