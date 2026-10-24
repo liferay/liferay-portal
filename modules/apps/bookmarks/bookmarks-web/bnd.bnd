@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Bookmarks Web
 Bundle-SymbolicName: com.liferay.bookmarks.web
-Bundle-Version: 5.0.80
+Bundle-Version: 5.0.81
 Liferay-JS-Config: /META-INF/resources/bookmarks/js/config.js
 Web-ContextPath: /bookmarks-web
