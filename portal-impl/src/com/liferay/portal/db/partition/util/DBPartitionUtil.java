@@ -1680,9 +1680,10 @@ public class DBPartitionUtil {
 		}
 
 		_defaultPartitionNamePattern = Pattern.compile(
-			"(?<![\\w$])[`\"]?" +
-				Pattern.quote(StringUtil.toLowerCase(_defaultPartitionName)) +
-					"[`\"]?(?:\\s|/\\*.*?\\*/)*\\.",
+			StringBundler.concat(
+				"(?<![\\w$])[`\"]?",
+				Pattern.quote(StringUtil.toLowerCase(_defaultPartitionName)),
+				"[`\"]?", _REGEX_SQL_WHITESPACE, "\\."),
 			Pattern.DOTALL);
 	}
 
@@ -1948,10 +1949,16 @@ public class DBPartitionUtil {
 					Matcher quotedStringMatcher = _quotedStringPattern.matcher(
 						lowerCaseSQL);
 
-					Matcher matcher = _defaultPartitionNamePattern.matcher(
-						quotedStringMatcher.replaceAll("''"));
+					String unquotedSQL = quotedStringMatcher.replaceAll("''");
 
-					if (matcher.find()) {
+					Matcher defaultPartitionNameMatcher =
+						_defaultPartitionNamePattern.matcher(unquotedSQL);
+					Matcher setPartitionMatcher = _setPartitionPattern.matcher(
+						unquotedSQL);
+
+					if (defaultPartitionNameMatcher.find() ||
+						setPartitionMatcher.lookingAt()) {
+
 						throw new UnsupportedOperationException(
 							"Unsupported SQL: " + sql);
 					}
@@ -2037,6 +2044,9 @@ public class DBPartitionUtil {
 	private static final String _CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION =
 		"com.liferay.object.model.ObjectDefinition#";
 
+	private static final String _REGEX_SQL_WHITESPACE =
+		"(?:\\s++|/\\*.*?\\*/|--[^\\n]*+|#[^\\n]*+)*+";
+
 	private static final String _TABLE_NAME_PREFIX_QUARTZ = GetterUtil.get(
 		PropsUtil.get("persisted.scheduler.org.quartz.jobStore.tablePrefix"),
 		"QUARTZ_");
@@ -2050,5 +2060,11 @@ public class DBPartitionUtil {
 	private static Pattern _defaultPartitionNamePattern;
 	private static final Pattern _quotedStringPattern = Pattern.compile(
 		"'(?:[^'\\\\]++|\\\\.|'')*+'");
+	private static final Pattern _setPartitionPattern = Pattern.compile(
+		StringBundler.concat(
+			_REGEX_SQL_WHITESPACE, "(?:use\\b|set\\b", _REGEX_SQL_WHITESPACE,
+			"(?:(?:local|session)\\b", _REGEX_SQL_WHITESPACE,
+			")?(?:schema|search_path)\\b)"),
+		Pattern.DOTALL);
 
 }
