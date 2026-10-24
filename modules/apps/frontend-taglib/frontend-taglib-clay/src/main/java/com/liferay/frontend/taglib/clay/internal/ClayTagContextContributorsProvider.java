@@ -6,8 +6,6 @@
 package com.liferay.frontend.taglib.clay.internal;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.contributor.ClayTagContextContributor;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
@@ -36,10 +34,7 @@ public class ClayTagContextContributorsProvider {
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundle.getBundleContext(), ClayTagContextContributor.class,
-			"(clay.tag.context.contributor.key=*)",
-			new PropertyServiceReferenceMapper<>(
-				"clay.tag.context.contributor.key"),
-			new PropertyServiceReferenceComparator<>("service.ranking"));
+			"clay.tag.context.contributor.key");
 	}
 
 }

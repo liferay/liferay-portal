@@ -7,7 +7,6 @@ package com.liferay.layout.display.page.internal;
 
 import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageMultiSelectionProviderRegistry;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
@@ -58,8 +57,7 @@ public class LayoutDisplayPageMultiSelectionProviderRegistryImpl
 				finally {
 					bundleContext.ungetService(serviceReference);
 				}
-			},
-			new PropertyServiceReferenceComparator<>("service.ranking"));
+			});
 	}
 
 	private ServiceTrackerMap

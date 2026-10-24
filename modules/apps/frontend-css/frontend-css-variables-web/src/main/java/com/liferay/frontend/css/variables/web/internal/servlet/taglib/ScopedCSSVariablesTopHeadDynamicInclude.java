@@ -9,7 +9,6 @@ import com.liferay.frontend.css.variables.ScopedCSSVariables;
 import com.liferay.frontend.css.variables.ScopedCSSVariablesProvider;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
@@ -72,8 +71,7 @@ public class ScopedCSSVariablesTopHeadDynamicInclude
 	protected void activate(BundleContext bundleContext) {
 		_scopedCssVariablesProviderServiceTrackerList =
 			ServiceTrackerListFactory.open(
-				bundleContext, ScopedCSSVariablesProvider.class,
-				new PropertyServiceReferenceComparator<>("service.ranking"));
+				bundleContext, ScopedCSSVariablesProvider.class);
 
 		setScopedCSSVariablesProviders(
 			_scopedCssVariablesProviderServiceTrackerList);

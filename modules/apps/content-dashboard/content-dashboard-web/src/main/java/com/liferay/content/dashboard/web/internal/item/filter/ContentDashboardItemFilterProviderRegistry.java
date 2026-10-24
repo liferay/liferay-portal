@@ -8,7 +8,6 @@ package com.liferay.content.dashboard.web.internal.item.filter;
 import com.liferay.content.dashboard.item.filter.provider.ContentDashboardItemFilterProvider;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 
 import java.util.List;
 
@@ -32,8 +31,7 @@ public class ContentDashboardItemFilterProviderRegistry {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerList = ServiceTrackerListFactory.open(
-			bundleContext, ContentDashboardItemFilterProvider.class,
-			new PropertyServiceReferenceComparator<>("service.ranking"));
+			bundleContext, ContentDashboardItemFilterProvider.class);
 	}
 
 	@Deactivate

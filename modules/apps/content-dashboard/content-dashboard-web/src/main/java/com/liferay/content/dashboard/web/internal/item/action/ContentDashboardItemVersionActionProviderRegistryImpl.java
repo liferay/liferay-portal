@@ -7,7 +7,6 @@ package com.liferay.content.dashboard.web.internal.item.action;
 
 import com.liferay.content.dashboard.item.action.ContentDashboardItemVersionActionProviderRegistry;
 import com.liferay.content.dashboard.item.action.provider.ContentDashboardItemVersionActionProvider;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
@@ -53,8 +52,7 @@ public class ContentDashboardItemVersionActionProviderRegistryImpl
 				bundleContext,
 				(contentDashboardItemVersionAction, emitter) -> emitter.emit(
 					GenericUtil.getGenericClassName(
-						contentDashboardItemVersionAction))),
-			new PropertyServiceReferenceComparator<>("service.ranking"));
+						contentDashboardItemVersionAction))));
 	}
 
 	@Deactivate

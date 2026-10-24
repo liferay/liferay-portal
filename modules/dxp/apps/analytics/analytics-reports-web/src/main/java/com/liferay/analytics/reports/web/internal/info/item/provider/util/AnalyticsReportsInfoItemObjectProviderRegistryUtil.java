@@ -6,7 +6,6 @@
 package com.liferay.analytics.reports.web.internal.info.item.provider.util;
 
 import com.liferay.analytics.reports.info.item.provider.AnalyticsReportsInfoItemObjectProvider;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 
@@ -55,8 +54,7 @@ public class AnalyticsReportsInfoItemObjectProviderRegistryUtil {
 					finally {
 						bundleContext.ungetService(serviceReference);
 					}
-				},
-				new PropertyServiceReferenceComparator<>("service.ranking"));
+				});
 	}
 
 }

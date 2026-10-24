@@ -7,7 +7,6 @@ package com.liferay.layout.display.page.internal;
 
 import com.liferay.layout.display.page.LayoutDisplayPageProvider;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
@@ -93,8 +92,7 @@ public class LayoutDisplayPageProviderRegistryImpl
 					finally {
 						bundleContext.ungetService(serviceReference);
 					}
-				},
-				new PropertyServiceReferenceComparator<>("service.ranking"));
+				});
 		_layoutDisplayPageProviderByURLSeparatorServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundleContext,
@@ -117,8 +115,7 @@ public class LayoutDisplayPageProviderRegistryImpl
 					finally {
 						bundleContext.ungetService(serviceReference);
 					}
-				},
-				new PropertyServiceReferenceComparator<>("service.ranking"));
+				});
 	}
 
 	private String _getKey(long companyId, String key) {
