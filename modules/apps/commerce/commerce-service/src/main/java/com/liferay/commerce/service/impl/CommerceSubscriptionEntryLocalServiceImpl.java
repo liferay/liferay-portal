@@ -223,15 +223,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceSubscriptionEntry> getActiveCommerceSubscriptionEntries(
-		long commerceAccountId) {
-
-		return commerceSubscriptionEntryFinder.findByA_S(
-			commerceAccountId,
-			CommerceSubscriptionEntryConstants.SUBSCRIPTION_STATUS_ACTIVE);
-	}
-
-	@Override
 	public List<CommerceSubscriptionEntry>
 		getCommerceDeliverySubscriptionEntriesToRenew() {
 
