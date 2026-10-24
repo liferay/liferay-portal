@@ -515,7 +515,7 @@ public class JenkinsResultsParserUtilTest
 			"F", "a b", "G a", "name with a space");
 
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			"http://test-1-1/job/x/buildWithParameters", parameters);
+			"http://" + RandomTestUtil.randomString(), parameters);
 
 		URL url = new URL(uriBuilder.toString());
 
