@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Layout Utility Page API
 Bundle-SymbolicName: com.liferay.layout.utility.page.api
-Bundle-Version: 13.0.0
+Bundle-Version: 13.0.1
 Export-Package:\
 	com.liferay.layout.utility.page.constants,\
 	com.liferay.layout.utility.page.converter,\
