@@ -9,6 +9,7 @@ import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.db.index.IndexUpdaterUtil;
+import com.liferay.portal.deploy.hot.ServiceWrapperRegistry;
 import com.liferay.portal.events.EventsProcessorUtil;
 import com.liferay.portal.events.ShutdownHelperUtil;
 import com.liferay.portal.events.StartupAction;
@@ -184,6 +185,10 @@ public class MainServlet extends HttpServlet {
 		}
 		catch (Exception exception) {
 			_log.error(exception);
+		}
+
+		if (_serviceWrapperRegistry != null) {
+			_serviceWrapperRegistry.close();
 		}
 	}
 
@@ -396,6 +401,8 @@ public class MainServlet extends HttpServlet {
 		}
 
 		servletContext.setAttribute(WebKeys.STARTUP_FINISHED, Boolean.TRUE);
+
+		_serviceWrapperRegistry = new ServiceWrapperRegistry();
 
 		_registerPortalInitialized();
 
@@ -1381,5 +1388,6 @@ public class MainServlet extends HttpServlet {
 	private PortalRequestProcessor _portalRequestProcessor;
 	private final List<ServiceRegistration<?>> _serviceRegistrations =
 		new ArrayList<>();
+	private ServiceWrapperRegistry _serviceWrapperRegistry;
 
 }

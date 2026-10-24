@@ -5,7 +5,6 @@
 
 package com.liferay.portal.spring.context;
 
-import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.lang.ClassLoaderPool;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
@@ -14,7 +13,6 @@ import com.liferay.portal.bean.BeanLocatorImpl;
 import com.liferay.portal.dao.init.DBInitUtil;
 import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.deploy.hot.CustomJspBagRegistryUtil;
-import com.liferay.portal.deploy.hot.ServiceWrapperRegistry;
 import com.liferay.portal.events.StartupHelperUtil;
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.cache.thread.local.ThreadLocalCacheManager;
@@ -26,10 +24,6 @@ import com.liferay.portal.kernel.exception.LoggedExceptionInInitializerError;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.log4j.Log4JUtil;
-import com.liferay.portal.kernel.messaging.MessageBus;
-import com.liferay.portal.kernel.module.util.ServiceLatch;
-import com.liferay.portal.kernel.module.util.SystemBundleUtil;
-import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.DirectServletRegistryUtil;
 import com.liferay.portal.kernel.servlet.ServletContextClassLoaderPool;
@@ -112,10 +106,6 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 		ModuleFrameworkUtil.unregisterContext(applicationContext);
 
 		ThreadLocalCacheManager.destroy();
-
-		if (_serviceWrapperRegistry != null) {
-			_serviceWrapperRegistry.close();
-		}
 
 		try {
 			DirectServletRegistryUtil.clearServlets();
@@ -319,15 +309,6 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 		ServletContextClassLoaderPool.register(
 			_portalServletContextName, portalClassLoader);
 
-		ServiceLatch serviceLatch = SystemBundleUtil.newServiceLatch();
-
-		serviceLatch.waitFor(MessageBus.class);
-		serviceLatch.waitFor(PortalExecutorManager.class);
-		serviceLatch.waitFor(SchedulerEngineHelper.class);
-
-		serviceLatch.openOn(
-			() -> _serviceWrapperRegistry = new ServiceWrapperRegistry());
-
 		FutureTask<Void> springInitTask = null;
 
 		if (ModuleFrameworkPropsValues.
@@ -462,7 +443,5 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 			throw new LoggedExceptionInInitializerError(exception);
 		}
 	}
-
-	private ServiceWrapperRegistry _serviceWrapperRegistry;
 
 }
