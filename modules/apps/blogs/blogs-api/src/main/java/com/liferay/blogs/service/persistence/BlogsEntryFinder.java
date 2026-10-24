@@ -14,16 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface BlogsEntryFinder {
 
-	public int countByOrganizationId(
-		long organizationId, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.blogs.model.BlogsEntry> queryDefinition);
-
-	public int countByOrganizationIds(
-		java.util.List<Long> organizationIds, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.blogs.model.BlogsEntry> queryDefinition);
-
 	public java.util.List<com.liferay.blogs.model.BlogsEntry> findByGroupIds(
 		long companyId, long groupId, java.util.Date displayDate,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
@@ -42,4 +32,4 @@ public interface BlogsEntryFinder {
 				<com.liferay.blogs.model.BlogsEntry> queryDefinition);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:544011503
+// LIFERAY-SERVICE-BUILDER-HASH:1202998607
