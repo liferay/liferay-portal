@@ -7,15 +7,11 @@ package com.liferay.layout.utility.page.kernel;
 
 import com.liferay.layout.utility.page.kernel.request.contributor.StatusLayoutUtilityPageEntryRequestContributor;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-
-import java.util.List;
-
-import org.osgi.framework.BundleContext;
 
 /**
  * @author Jürgen Kappler
@@ -37,33 +33,17 @@ public class StatusLayoutUtilityPageEntryRequestContributorRegistryUtil {
 			layoutUtilityPageEntryType);
 	}
 
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
-
 	private static final ServiceTrackerMap
 		<String, StatusLayoutUtilityPageEntryRequestContributor>
 			_layoutUtilityPageEntryViewRenderersServiceTrackerMap =
 				ServiceTrackerMapFactory.openSingleValueMap(
-					_bundleContext,
+					SystemBundleUtil.getBundleContext(),
 					(Class<StatusLayoutUtilityPageEntryRequestContributor>)
 						(Class)
 							StatusLayoutUtilityPageEntryRequestContributor.
 								class,
 					null,
-					(serviceReference, emitter) -> {
-						try {
-							List<String> utilityPageTypes = StringUtil.asList(
-								serviceReference.getProperty(
-									"utility.page.type"));
-
-							for (String utilityPageType : utilityPageTypes) {
-								emitter.emit(utilityPageType);
-							}
-						}
-						finally {
-							_bundleContext.ungetService(serviceReference);
-						}
-					},
+					new PropertyServiceReferenceMapper<>("utility.page.type"),
 					new PropertyServiceReferenceComparator<>(
 						"service.ranking"));
 
