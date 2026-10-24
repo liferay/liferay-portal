@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Export Import Changeset Web
 Bundle-SymbolicName: com.liferay.exportimport.changeset.web
-Bundle-Version: 4.0.30
+Bundle-Version: 4.0.31
 Web-ContextPath: /exportimport-changeset-web
 -dsannotations-options: inherit
