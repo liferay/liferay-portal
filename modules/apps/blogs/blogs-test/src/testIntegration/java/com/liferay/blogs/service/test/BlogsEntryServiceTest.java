@@ -15,6 +15,7 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -893,6 +895,36 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
+	public void testGetOrganizationEntriesWithViewPermission()
+		throws Exception {
+
+		_organization = OrganizationTestUtil.addOrganization();
+
+		_organizationUser = UserTestUtil.addOrganizationOwnerUser(
+			_organization);
+
+		BlogsEntry entry1 = _addEntry(_organizationUser);
+		BlogsEntry entry2 = _addEntry(_organizationUser);
+
+		_addEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			List<BlogsEntry> blogsEntries =
+				_blogsEntryService.getOrganizationEntries(
+					_organization.getOrganizationId(), new Date(),
+					WorkflowConstants.STATUS_APPROVED, 100);
+
+			Assert.assertEquals(
+				blogsEntries.toString(), 2, blogsEntries.size());
+
+			Assert.assertTrue(blogsEntries.contains(entry1));
+			Assert.assertTrue(blogsEntries.contains(entry2));
+		}
+	}
+
+	@Test
 	public void testMoveEntryToTrashWithDeletePermission() throws Exception {
 		BlogsEntry entry = _addEntry();
 
@@ -1214,6 +1246,13 @@ public class BlogsEntryServiceTest {
 	private Group _group;
 
 	private User _groupUser;
+
+	@DeleteAfterTestRun
+	private Organization _organization;
+
+	@DeleteAfterTestRun
+	private User _organizationUser;
+
 	private PermissionChecker _permissionChecker;
 
 	@Inject

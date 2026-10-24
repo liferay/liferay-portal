@@ -978,24 +978,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<BlogsEntry> getOrganizationEntries(
-		long organizationId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		return blogsEntryFinder.findByOrganizationId(
-			organizationId, displayDate, queryDefinition);
-	}
-
-	@Override
-	public int getOrganizationEntriesCount(
-		long organizationId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		return blogsEntryFinder.countByOrganizationId(
-			organizationId, displayDate, queryDefinition);
-	}
-
-	@Override
 	public String getUniqueUrlTitle(BlogsEntry entry) {
 		return _getUniqueUrlTitle(entry);
 	}
