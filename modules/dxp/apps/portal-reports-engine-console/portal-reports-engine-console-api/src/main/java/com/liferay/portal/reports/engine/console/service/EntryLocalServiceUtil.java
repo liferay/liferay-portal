@@ -274,17 +274,6 @@ public class EntryLocalServiceUtil {
 		return getService().getEntries(start, end);
 	}
 
-	public static List<Entry> getEntries(
-		long groupId, String definitionName, String userName,
-		java.util.Date createDateGT, java.util.Date createDateLT,
-		boolean andSearch, int start, int end,
-		OrderByComparator<Entry> orderByComparator) {
-
-		return getService().getEntries(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andSearch, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of entries.
 	 *
@@ -292,16 +281,6 @@ public class EntryLocalServiceUtil {
 	 */
 	public static int getEntriesCount() {
 		return getService().getEntriesCount();
-	}
-
-	public static int getEntriesCount(
-		long groupId, String definitionName, String userName,
-		java.util.Date createDateGT, java.util.Date createDateLT,
-		boolean andSearch) {
-
-		return getService().getEntriesCount(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andSearch);
 	}
 
 	/**
@@ -392,4 +371,4 @@ public class EntryLocalServiceUtil {
 		new Snapshot<>(EntryLocalServiceUtil.class, EntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1844110257
+// LIFERAY-SERVICE-BUILDER-HASH:-516966523

@@ -268,12 +268,6 @@ public interface DefinitionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Definition> getDefinitions(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Definition> getDefinitions(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch, int start,
-		int end, OrderByComparator<Definition> orderByComparator);
-
 	/**
 	 * Returns all the definitions matching the UUID and company.
 	 *
@@ -307,11 +301,6 @@ public interface DefinitionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getDefinitionsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getDefinitionsCount(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
@@ -361,4 +350,4 @@ public interface DefinitionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-684551723
+// LIFERAY-SERVICE-BUILDER-HASH:-1954988441

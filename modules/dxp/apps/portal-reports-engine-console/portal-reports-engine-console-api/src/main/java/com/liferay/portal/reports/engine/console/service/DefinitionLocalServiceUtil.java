@@ -295,16 +295,6 @@ public class DefinitionLocalServiceUtil {
 		return getService().getDefinitions(start, end);
 	}
 
-	public static List<Definition> getDefinitions(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch, int start,
-		int end, OrderByComparator<Definition> orderByComparator) {
-
-		return getService().getDefinitions(
-			groupId, definitionName, description, sourceId, reportName,
-			andSearch, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the definitions matching the UUID and company.
 	 *
@@ -343,15 +333,6 @@ public class DefinitionLocalServiceUtil {
 	 */
 	public static int getDefinitionsCount() {
 		return getService().getDefinitionsCount();
-	}
-
-	public static int getDefinitionsCount(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch) {
-
-		return getService().getDefinitionsCount(
-			groupId, definitionName, description, sourceId, reportName,
-			andSearch);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -431,4 +412,4 @@ public class DefinitionLocalServiceUtil {
 			DefinitionLocalServiceUtil.class, DefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1273338097
+// LIFERAY-SERVICE-BUILDER-HASH:1216053419

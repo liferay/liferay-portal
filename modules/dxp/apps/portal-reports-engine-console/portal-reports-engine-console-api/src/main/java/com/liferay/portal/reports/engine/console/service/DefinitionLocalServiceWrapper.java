@@ -343,22 +343,6 @@ public class DefinitionLocalServiceWrapper
 		return _definitionLocalService.getDefinitions(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.portal.reports.engine.console.model.Definition>
-			getDefinitions(
-				long groupId, String definitionName, String description,
-				String sourceId, String reportName, boolean andSearch,
-				int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.portal.reports.engine.console.model.Definition>
-						orderByComparator) {
-
-		return _definitionLocalService.getDefinitions(
-			groupId, definitionName, description, sourceId, reportName,
-			andSearch, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the definitions matching the UUID and company.
 	 *
@@ -406,16 +390,6 @@ public class DefinitionLocalServiceWrapper
 	@Override
 	public int getDefinitionsCount() {
 		return _definitionLocalService.getDefinitionsCount();
-	}
-
-	@Override
-	public int getDefinitionsCount(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch) {
-
-		return _definitionLocalService.getDefinitionsCount(
-			groupId, definitionName, description, sourceId, reportName,
-			andSearch);
 	}
 
 	@Override
@@ -522,4 +496,4 @@ public class DefinitionLocalServiceWrapper
 	private DefinitionLocalService _definitionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2119336597
+// LIFERAY-SERVICE-BUILDER-HASH:309064223

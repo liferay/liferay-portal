@@ -244,12 +244,6 @@ public interface EntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Entry> getEntries(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Entry> getEntries(
-		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andSearch, int start, int end,
-		OrderByComparator<Entry> orderByComparator);
-
 	/**
 	 * Returns the number of entries.
 	 *
@@ -257,11 +251,6 @@ public interface EntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getEntriesCount(
-		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andSearch);
 
 	/**
 	 * Returns the entry with the primary key.
@@ -320,4 +309,4 @@ public interface EntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2092253898
+// LIFERAY-SERVICE-BUILDER-HASH:-539474478

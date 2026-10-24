@@ -312,14 +312,6 @@ public class SourceLocalServiceUtil {
 		return getService().getSources(start, end);
 	}
 
-	public static List<Source> getSources(
-		long groupId, String name, String driverUrl, boolean andSearch,
-		int start, int end, OrderByComparator<Source> orderByComparator) {
-
-		return getService().getSources(
-			groupId, name, driverUrl, andSearch, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the sources matching the UUID and company.
 	 *
@@ -360,13 +352,6 @@ public class SourceLocalServiceUtil {
 		return getService().getSourcesCount();
 	}
 
-	public static int getSourcesCount(
-		long groupId, String name, String driverUrl, boolean andSearch) {
-
-		return getService().getSourcesCount(
-			groupId, name, driverUrl, andSearch);
-	}
-
 	public static Source updateSource(
 			long sourceId, Map<java.util.Locale, String> nameMap,
 			String driverClassName, String driverUrl, String driverUserName,
@@ -401,4 +386,4 @@ public class SourceLocalServiceUtil {
 		new Snapshot<>(SourceLocalServiceUtil.class, SourceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-839621897
+// LIFERAY-SERVICE-BUILDER-HASH:-1160030405

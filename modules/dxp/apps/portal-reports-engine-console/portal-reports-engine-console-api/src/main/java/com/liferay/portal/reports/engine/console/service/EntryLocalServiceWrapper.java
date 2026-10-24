@@ -313,21 +313,6 @@ public class EntryLocalServiceWrapper
 		return _entryLocalService.getEntries(start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.portal.reports.engine.console.model.Entry>
-		getEntries(
-			long groupId, String definitionName, String userName,
-			java.util.Date createDateGT, java.util.Date createDateLT,
-			boolean andSearch, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.reports.engine.console.model.Entry>
-					orderByComparator) {
-
-		return _entryLocalService.getEntries(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andSearch, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of entries.
 	 *
@@ -336,17 +321,6 @@ public class EntryLocalServiceWrapper
 	@Override
 	public int getEntriesCount() {
 		return _entryLocalService.getEntriesCount();
-	}
-
-	@Override
-	public int getEntriesCount(
-		long groupId, String definitionName, String userName,
-		java.util.Date createDateGT, java.util.Date createDateLT,
-		boolean andSearch) {
-
-		return _entryLocalService.getEntriesCount(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andSearch);
 	}
 
 	/**
@@ -463,4 +437,4 @@ public class EntryLocalServiceWrapper
 	private EntryLocalService _entryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:846713603
+// LIFERAY-SERVICE-BUILDER-HASH:931924345

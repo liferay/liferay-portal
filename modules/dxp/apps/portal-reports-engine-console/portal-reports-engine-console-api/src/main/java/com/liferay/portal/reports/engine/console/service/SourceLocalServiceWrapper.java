@@ -361,19 +361,6 @@ public class SourceLocalServiceWrapper
 		return _sourceLocalService.getSources(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.portal.reports.engine.console.model.Source> getSources(
-			long groupId, String name, String driverUrl, boolean andSearch,
-			int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.reports.engine.console.model.Source>
-					orderByComparator) {
-
-		return _sourceLocalService.getSources(
-			groupId, name, driverUrl, andSearch, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the sources matching the UUID and company.
 	 *
@@ -424,14 +411,6 @@ public class SourceLocalServiceWrapper
 	}
 
 	@Override
-	public int getSourcesCount(
-		long groupId, String name, String driverUrl, boolean andSearch) {
-
-		return _sourceLocalService.getSourcesCount(
-			groupId, name, driverUrl, andSearch);
-	}
-
-	@Override
 	public com.liferay.portal.reports.engine.console.model.Source updateSource(
 			long sourceId, java.util.Map<java.util.Locale, String> nameMap,
 			String driverClassName, String driverUrl, String driverUserName,
@@ -479,4 +458,4 @@ public class SourceLocalServiceWrapper
 	private SourceLocalService _sourceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:658109707
+// LIFERAY-SERVICE-BUILDER-HASH:-282234527

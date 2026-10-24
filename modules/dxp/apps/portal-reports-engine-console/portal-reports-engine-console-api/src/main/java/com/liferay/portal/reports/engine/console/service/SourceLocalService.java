@@ -280,11 +280,6 @@ public interface SourceLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Source> getSources(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Source> getSources(
-		long groupId, String name, String driverUrl, boolean andSearch,
-		int start, int end, OrderByComparator<Source> orderByComparator);
-
 	/**
 	 * Returns all the sources matching the UUID and company.
 	 *
@@ -319,10 +314,6 @@ public interface SourceLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getSourcesCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getSourcesCount(
-		long groupId, String name, String driverUrl, boolean andSearch);
-
 	public Source updateSource(
 			long sourceId, Map<Locale, String> nameMap, String driverClassName,
 			String driverUrl, String driverUserName, String driverPassword,
@@ -343,4 +334,4 @@ public interface SourceLocalService
 	public Source updateSource(Source source);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1675165875
+// LIFERAY-SERVICE-BUILDER-HASH:146849409
