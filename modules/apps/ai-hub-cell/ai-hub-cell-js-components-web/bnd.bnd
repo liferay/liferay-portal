@@ -1,4 +1,4 @@
 Bundle-Name: Liferay AI Hub Cell JS Components Web
 Bundle-SymbolicName: com.liferay.ai.hub.cell.js.components.web
-Bundle-Version: 1.0.9
+Bundle-Version: 1.0.10
 Web-ContextPath: /ai-hub-cell-js-components-web
