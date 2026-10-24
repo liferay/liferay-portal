@@ -2049,6 +2049,6 @@ public class DBPartitionUtil {
 	private static String _defaultPartitionName;
 	private static Pattern _defaultPartitionNamePattern;
 	private static final Pattern _quotedStringPattern = Pattern.compile(
-		"'(?:[^'\\\\]|\\\\.|'')*'");
+		"'(?:[^'\\\\]++|\\\\.|'')*+'");
 
 }
