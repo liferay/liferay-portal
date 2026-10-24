@@ -54,6 +54,10 @@ describe('AddDSRequestModal', () => {
 		}));
 	});
 
+	beforeEach(() => {
+		global.fetch.mockResolvedValue({json: () => Promise.resolve([])});
+	});
+
 	it('does not send the request to the selected user after the email is edited', async () => {
 		renderAddDSRequestModal();
 
