@@ -1,4 +1,4 @@
 Bundle-Name: Liferay OAuth2 Provider Web
 Bundle-SymbolicName: com.liferay.oauth2.provider.web
-Bundle-Version: 4.0.116
+Bundle-Version: 4.0.117
 Web-ContextPath: /oauth2-provider-web
