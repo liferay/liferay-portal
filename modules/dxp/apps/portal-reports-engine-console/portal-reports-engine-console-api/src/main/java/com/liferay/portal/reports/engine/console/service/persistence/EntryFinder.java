@@ -14,11 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface EntryFinder {
 
-	public int countByG_CD_N_SN(
-		long groupId, String definitionName, String userName,
-		java.util.Date createDateGT, java.util.Date createDateLT,
-		boolean andOperator);
-
 	public int filterCountByG_CD_N_SN(
 		long groupId, String definitionName, String userName,
 		java.util.Date createDateGT, java.util.Date createDateLT,
@@ -33,14 +28,5 @@ public interface EntryFinder {
 				<com.liferay.portal.reports.engine.console.model.Entry>
 					orderByComparator);
 
-	public java.util.List<com.liferay.portal.reports.engine.console.model.Entry>
-		findByG_CD_N_SN(
-			long groupId, String definitionName, String userName,
-			java.util.Date createDateGT, java.util.Date createDateLT,
-			boolean andOperator, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.reports.engine.console.model.Entry>
-					orderByComparator);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:563844898
+// LIFERAY-SERVICE-BUILDER-HASH:-706698729

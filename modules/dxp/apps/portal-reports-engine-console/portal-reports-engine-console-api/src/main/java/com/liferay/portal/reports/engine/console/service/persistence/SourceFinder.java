@@ -14,9 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SourceFinder {
 
-	public int countByG_N_DU(
-		long groupId, String name, String driverUrl, boolean andOperator);
-
 	public int filterCountByG_N_DU(
 		long groupId, String name, String driverUrl, boolean andOperator);
 
@@ -29,13 +26,5 @@ public interface SourceFinder {
 					<com.liferay.portal.reports.engine.console.model.Source>
 						orderByComparator);
 
-	public java.util.List
-		<com.liferay.portal.reports.engine.console.model.Source> findByG_N_DU(
-			long groupId, String name, String driverUrl, boolean andOperator,
-			int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.reports.engine.console.model.Source>
-					orderByComparator);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1548732365
+// LIFERAY-SERVICE-BUILDER-HASH:-1886789310
