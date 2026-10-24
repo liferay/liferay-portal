@@ -54,15 +54,18 @@ public class HttpMethodScopeLogicUtil {
 			ScopeFinder scopeFinder = bundleContext.getService(
 				serviceReference);
 
-			bundleContext.ungetService(serviceReference);
+			try {
+				Collection<String> scopes = scopeFinder.findScopes();
 
-			Collection<String> scopes = scopeFinder.findScopes();
+				if ((!scopes.contains(requestMethod) &&
+					 ignoreMissingScopes.contains(requestMethod)) ||
+					scopeChecker.checkScope(requestMethod)) {
 
-			if ((!scopes.contains(requestMethod) &&
-				 ignoreMissingScopes.contains(requestMethod)) ||
-				scopeChecker.checkScope(requestMethod)) {
-
-				return true;
+					return true;
+				}
+			}
+			finally {
+				bundleContext.ungetService(serviceReference);
 			}
 		}
 		catch (Exception exception) {
