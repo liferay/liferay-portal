@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Accessibility Settings State Web
 Bundle-SymbolicName: com.liferay.accessibility.settings.state.web
-Bundle-Version: 1.0.19
+Bundle-Version: 1.0.20
 Web-ContextPath: /accessibility-settings-state-web
