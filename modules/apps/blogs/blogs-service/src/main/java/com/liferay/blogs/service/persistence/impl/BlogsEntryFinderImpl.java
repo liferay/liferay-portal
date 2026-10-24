@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
-import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.CalendarUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -26,7 +25,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.sql.Timestamp;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -39,91 +37,11 @@ import org.osgi.service.component.annotations.Reference;
 public class BlogsEntryFinderImpl
 	extends BlogsEntryFinderBaseImpl implements BlogsEntryFinder {
 
-	public static final String COUNT_BY_ORGANIZATION_IDS =
-		BlogsEntryFinder.class.getName() + ".countByOrganizationIds";
-
 	public static final String FIND_BY_GROUP_IDS =
 		BlogsEntryFinder.class.getName() + ".findByGroupIds";
 
 	public static final String FIND_BY_ORGANIZATION_IDS =
 		BlogsEntryFinder.class.getName() + ".findByOrganizationIds";
-
-	public static final String FIND_BY_NO_ASSETS =
-		BlogsEntryFinder.class.getName() + ".findByNoAssets";
-
-	@Override
-	public int countByOrganizationId(
-		long organizationId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		return countByOrganizationIds(
-			ListUtil.fromArray(organizationId), displayDate, queryDefinition);
-	}
-
-	@Override
-	public int countByOrganizationIds(
-		List<Long> organizationIds, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		Timestamp displayDate_TS = CalendarUtil.getTimestamp(displayDate);
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = _customSQL.get(getClass(), COUNT_BY_ORGANIZATION_IDS);
-
-			if (queryDefinition.getStatus() != WorkflowConstants.STATUS_ANY) {
-				if (queryDefinition.isExcludeStatus()) {
-					sql = _customSQL.appendCriteria(
-						sql, "AND (BlogsEntry.status != ?)");
-				}
-				else {
-					sql = _customSQL.appendCriteria(
-						sql, "AND (BlogsEntry.status = ?)");
-				}
-			}
-
-			sql = StringUtil.replace(
-				sql, "[$ORGANIZATION_ID$]",
-				getOrganizationIds(organizationIds));
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			for (Long organizationId : organizationIds) {
-				queryPos.add(organizationId);
-			}
-
-			queryPos.add(displayDate_TS);
-
-			if (queryDefinition.getStatus() != WorkflowConstants.STATUS_ANY) {
-				queryPos.add(queryDefinition.getStatus());
-			}
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			if (iterator.hasNext()) {
-				Long count = iterator.next();
-
-				if (count != null) {
-					return count.intValue();
-				}
-			}
-
-			return 0;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
 
 	@Override
 	public List<BlogsEntry> findByGroupIds(
@@ -212,7 +130,7 @@ public class BlogsEntryFinderImpl
 
 			sql = StringUtil.replace(
 				sql, "[$ORGANIZATION_ID$]",
-				getOrganizationIds(organizationIds));
+				_getOrganizationIds(organizationIds));
 			sql = _customSQL.replaceOrderBy(
 				sql, queryDefinition.getOrderByComparator());
 
@@ -244,7 +162,7 @@ public class BlogsEntryFinderImpl
 		}
 	}
 
-	protected String getOrganizationIds(List<Long> organizationIds) {
+	private String _getOrganizationIds(List<Long> organizationIds) {
 		if (organizationIds.isEmpty()) {
 			return StringPool.BLANK;
 		}

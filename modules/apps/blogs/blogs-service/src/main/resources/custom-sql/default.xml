@@ -1,23 +1,6 @@
 <?xml version="1.0"?>
 
 <custom-sql>
-	<sql id="com.liferay.blogs.service.persistence.BlogsEntryFinder.countByOrganizationIds">
-		<![CDATA[
-			SELECT
-				COUNT(*) AS COUNT_VALUE
-			FROM
-				BlogsEntry
-			INNER JOIN
-				User_ ON
-					User_.userId = BlogsEntry.userId
-			INNER JOIN
-				Users_Orgs ON
-					Users_Orgs.userId = User_.userId
-			WHERE
-				[$ORGANIZATION_ID$] AND
-				(BlogsEntry.displayDate < ?)
-		]]>
-	</sql>
 	<sql id="com.liferay.blogs.service.persistence.BlogsEntryFinder.findByGroupIds">
 		<![CDATA[
 			SELECT
@@ -83,20 +66,6 @@
 				(BlogsEntry.displayDate < ?)
 			ORDER BY
 				BlogsEntry.displayDate DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.blogs.service.persistence.BlogsEntryFinder.findByNoAssets">
-		<![CDATA[
-			SELECT
-				{BlogsEntry.*}
-			FROM
-				BlogsEntry
-			LEFT JOIN
-				AssetEntry ON
-					(AssetEntry.classNameId = ?) AND
-					(AssetEntry.classPK = BlogsEntry.entryId)
-			WHERE
-				AssetEntry.classPK IS NULL
 		]]>
 	</sql>
 </custom-sql>
