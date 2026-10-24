@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Petra Process
 Bundle-SymbolicName: com.liferay.petra.process
-Bundle-Version: 5.0.14
+Bundle-Version: 5.0.15
 Export-Package:\
 	com.liferay.petra.process,\
 	com.liferay.petra.process.local
