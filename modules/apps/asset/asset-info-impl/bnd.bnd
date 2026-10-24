@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Asset Info Implementation
 Bundle-SymbolicName: com.liferay.asset.info.impl
-Bundle-Version: 2.0.49
+Bundle-Version: 2.0.50
 -dsannotations-options: inherit
