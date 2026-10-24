@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Category Property API
 Bundle-SymbolicName: com.liferay.asset.category.property.api
-Bundle-Version: 10.0.0
+Bundle-Version: 10.0.1
 Export-Package:\
 	com.liferay.asset.category.property.exception,\
 	com.liferay.asset.category.property.model,\
