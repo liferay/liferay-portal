@@ -18,7 +18,6 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -84,9 +83,9 @@ public class ObjectEntryLayoutDisplayPageProviderTest {
 
 		LayoutDisplayPageProvider<?> layoutDisplayPageProvider =
 			_layoutDisplayPageProviderRegistry.
-				getLayoutDisplayPageProviderByURLSeparator(
+				getLayoutDisplayPageProviderByClassName(
 					objectDefinition2.getCompanyId(),
-					FriendlyURLResolverConstants.URL_SEPARATOR_OBJECT_ENTRY);
+					objectDefinition2.getClassName());
 
 		Assert.assertEquals(
 			objectDefinition2.getClassName(),
