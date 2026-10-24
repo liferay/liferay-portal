@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Site Static Export API
 Bundle-SymbolicName: com.liferay.site.staticexport.api
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.1
 Export-Package:\
 	com.liferay.site.staticexport,\
 	com.liferay.site.staticexport.background.task
