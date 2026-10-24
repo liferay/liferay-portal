@@ -659,24 +659,6 @@ public class BlogsEntryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static List<BlogsEntry> getOrganizationEntries(
-		long organizationId, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<BlogsEntry>
-			queryDefinition) {
-
-		return getService().getOrganizationEntries(
-			organizationId, displayDate, queryDefinition);
-	}
-
-	public static int getOrganizationEntriesCount(
-		long organizationId, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<BlogsEntry>
-			queryDefinition) {
-
-		return getService().getOrganizationEntriesCount(
-			organizationId, displayDate, queryDefinition);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -910,4 +892,4 @@ public class BlogsEntryLocalServiceUtil {
 			BlogsEntryLocalServiceUtil.class, BlogsEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1453622075
+// LIFERAY-SERVICE-BUILDER-HASH:-2033522172

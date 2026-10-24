@@ -481,16 +481,6 @@ public interface BlogsEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BlogsEntry> getOrganizationEntries(
-		long organizationId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getOrganizationEntriesCount(
-		long organizationId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition);
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -649,4 +639,4 @@ public interface BlogsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1150081546
+// LIFERAY-SERVICE-BUILDER-HASH:466869834
