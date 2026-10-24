@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Security Auth Verifier
 Bundle-SymbolicName: com.liferay.portal.security.auth.verifier
-Bundle-Version: 6.0.39
+Bundle-Version: 6.0.40
 Require-Capability:\
 	osgi.extender;\
 		filter:="(&(osgi.extender=osgi.configurator)(version>=1.0)(!(version>=2.0)))"
