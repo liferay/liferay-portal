@@ -237,14 +237,6 @@ public class CommercePricingClassLocalServiceImpl
 	}
 
 	@Override
-	public int getCommercePricingClassCountByCPDefinitionId(
-		long cpDefinitionId, String title) {
-
-		return commercePricingClassFinder.countByCPDefinitionId(
-			cpDefinitionId, title);
-	}
-
-	@Override
 	public List<CommercePricingClass> getCommercePricingClasses(
 		long companyId, int start, int end,
 		OrderByComparator<CommercePricingClass> orderByComparator) {
@@ -256,14 +248,6 @@ public class CommercePricingClassLocalServiceImpl
 	@Override
 	public int getCommercePricingClassesCount(long companyId) {
 		return commercePricingClassPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public int getCommercePricingClassesCount(
-		long cpDefinitionId, String title) {
-
-		return commercePricingClassFinder.countByCPDefinitionId(
-			cpDefinitionId, title);
 	}
 
 	@Override
@@ -287,14 +271,6 @@ public class CommercePricingClassLocalServiceImpl
 			this::fetchCommercePricingClassByExternalReferenceCode,
 			this::getCommercePricingClassByExternalReferenceCode,
 			CommercePricingClass.class.getName());
-	}
-
-	@Override
-	public List<CommercePricingClass> searchByCPDefinitionId(
-		long cpDefinitionId, String title, int start, int end) {
-
-		return commercePricingClassFinder.findByCPDefinitionId(
-			cpDefinitionId, title, start, end);
 	}
 
 	@Override

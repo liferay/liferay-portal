@@ -129,45 +129,6 @@ public class CommercePriceModifierRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CommercePriceModifierRel>
-		getCPDefinitionsCommercePriceModifierRels(
-			long commercePriceModifierId, String name, String languageId,
-			int start, int end) {
-
-		return commercePriceModifierRelFinder.
-			findCPDefinitionsByCommercePriceModifierId(
-				commercePriceModifierId, name, languageId, start, end);
-	}
-
-	@Override
-	public int getCPDefinitionsCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name, String languageId) {
-
-		return commercePriceModifierRelFinder.
-			countCPDefinitionsByCommercePriceModifierId(
-				commercePriceModifierId, name, languageId);
-	}
-
-	@Override
-	public List<CommercePriceModifierRel>
-		getCategoriesCommercePriceModifierRels(
-			long commercePriceModifierId, String name, int start, int end) {
-
-		return commercePriceModifierRelFinder.
-			findCategoriesByCommercePriceModifierId(
-				commercePriceModifierId, name, start, end);
-	}
-
-	@Override
-	public int getCategoriesCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name) {
-
-		return commercePriceModifierRelFinder.
-			countCategoriesByCommercePriceModifierId(
-				commercePriceModifierId, name);
-	}
-
-	@Override
 	public long[] getClassPKs(long commercePriceModifierId, String className) {
 		return ListUtil.toLongArray(
 			commercePriceModifierRelPersistence.findByCPM_CN(
@@ -211,25 +172,6 @@ public class CommercePriceModifierRelLocalServiceImpl
 
 		return commercePriceModifierRelPersistence.findByCN_CPK(
 			_classNameLocalService.getClassNameId(className), classPK);
-	}
-
-	@Override
-	public List<CommercePriceModifierRel>
-		getCommercePricingClassesCommercePriceModifierRels(
-			long commercePriceModifierId, String title, int start, int end) {
-
-		return commercePriceModifierRelFinder.
-			findPricingClassesByCommercePriceModifierId(
-				commercePriceModifierId, title, start, end);
-	}
-
-	@Override
-	public int getCommercePricingClassesCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String title) {
-
-		return commercePriceModifierRelFinder.
-			countPricingClassesByCommercePriceModifierId(
-				commercePriceModifierId, title);
 	}
 
 	@Reference
