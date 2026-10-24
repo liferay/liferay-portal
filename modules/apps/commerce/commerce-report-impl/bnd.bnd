@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Report Implementation
 Bundle-SymbolicName: com.liferay.commerce.report.impl
-Bundle-Version: 1.0.32
+Bundle-Version: 1.0.33
 DynamicImport-Package: *
 Import-Package:\
 	!antlr.*,\
