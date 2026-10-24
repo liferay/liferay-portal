@@ -6,12 +6,13 @@
 package com.liferay.mail.messaging.internal;
 
 import com.liferay.mail.kernel.auth.token.provider.MailAuthTokenProvider;
-import com.liferay.mail.kernel.auth.token.provider.MailAuthTokenProviderRegistryUtil;
 import com.liferay.mail.kernel.model.Account;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
 import com.liferay.mail.settings.configuration.MailSettingCompanyConfiguration;
 import com.liferay.mail.settings.configuration.MailSettingSystemConfiguration;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -50,8 +51,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
@@ -221,8 +224,7 @@ public class MailServiceImpl
 		boolean oAuth2AuthEnable = false;
 
 		MailAuthTokenProvider pop3MailAuthTokenProvider =
-			MailAuthTokenProviderRegistryUtil.getMailAuthTokenProvider(
-				companyId, pop3Host, storeProtocol);
+			_getMailAuthTokenProvider(companyId, pop3Host, storeProtocol);
 
 		if (pop3MailAuthTokenProvider != null) {
 			oAuth2AuthEnable = true;
@@ -262,8 +264,7 @@ public class MailServiceImpl
 			transportPrefix + "auth", String.valueOf(smtpAuth));
 
 		MailAuthTokenProvider smtpMailAuthTokenProvider =
-			MailAuthTokenProviderRegistryUtil.getMailAuthTokenProvider(
-				companyId, smtpHost, transportProtocol);
+			_getMailAuthTokenProvider(companyId, smtpHost, transportProtocol);
 
 		if (smtpMailAuthTokenProvider != null) {
 			oAuth2AuthEnable = true;
@@ -390,8 +391,22 @@ public class MailServiceImpl
 	}
 
 	@Activate
+	protected void activate(
+		BundleContext bundleContext, Map<String, Object> properties) {
+
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, MailAuthTokenProvider.class, "mail.server.name");
+
+		modified(properties);
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
+	}
+
 	@Modified
-	protected void activate(Map<String, Object> properties) {
+	protected void modified(Map<String, Object> properties) {
 		_mailSettingSystemConfiguration = ConfigurableUtil.createConfigurable(
 			MailSettingSystemConfiguration.class, properties);
 	}
@@ -412,6 +427,21 @@ public class MailServiceImpl
 
 			_log.debug(StringBundler.concat(name, StringPool.EQUAL, value));
 		}
+	}
+
+	private MailAuthTokenProvider _getMailAuthTokenProvider(
+		long companyId, String mailServerName, String protocol) {
+
+		MailAuthTokenProvider mailAuthTokenProvider =
+			_serviceTrackerMap.getService(mailServerName);
+
+		if ((mailAuthTokenProvider == null) ||
+			!mailAuthTokenProvider.isProtocolSupported(companyId, protocol)) {
+
+			return null;
+		}
+
+		return mailAuthTokenProvider;
 	}
 
 	private Properties _getProperties(Account account) {
@@ -458,6 +488,7 @@ public class MailServiceImpl
 	@Reference
 	private SecretResolver _secretResolver;
 
+	private ServiceTrackerMap<String, MailAuthTokenProvider> _serviceTrackerMap;
 	private final Map<Long, Session> _sessions = new ConcurrentHashMap<>();
 
 }
