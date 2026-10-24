@@ -7,6 +7,8 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
@@ -41,13 +43,13 @@ import com.liferay.portal.kernel.model.ResourcePermissionConstants;
 import com.liferay.portal.kernel.model.ResourcePermissionTable;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.search.IndexWriterHelperUtil;
 import com.liferay.portal.kernel.search.ReindexCacheThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionUpdateHandler;
-import com.liferay.portal.kernel.security.permission.PermissionUpdateHandlerRegistryUtil;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -1846,8 +1848,7 @@ public class ResourcePermissionLocalServiceImpl
 				!ExportImportThreadLocal.isImportInProcess()) {
 
 				PermissionUpdateHandler permissionUpdateHandler =
-					PermissionUpdateHandlerRegistryUtil.
-						getPermissionUpdateHandler(name);
+					_permissionUpdateHandlers.getService(name);
 
 				if (permissionUpdateHandler != null) {
 					permissionUpdateHandler.updatedPermission(primKey);
@@ -2597,6 +2598,10 @@ public class ResourcePermissionLocalServiceImpl
 		ResourcePermissionLocalServiceImpl.class);
 
 	private static final Role _dummyRole = new RoleImpl();
+	private static final ServiceTrackerMap<String, PermissionUpdateHandler>
+		_permissionUpdateHandlers = ServiceTrackerMapFactory.openSingleValueMap(
+			SystemBundleUtil.getBundleContext(), PermissionUpdateHandler.class,
+			"model.class.name");
 
 	private FinderPath _finderPathWithoutPaginationFindByC_N_S_P;
 
