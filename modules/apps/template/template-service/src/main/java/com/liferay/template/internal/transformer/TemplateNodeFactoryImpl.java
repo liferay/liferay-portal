@@ -9,16 +9,14 @@ import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.templateparser.TemplateNode;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.template.info.field.transformer.BaseTemplateNodeTransformer;
 import com.liferay.template.info.field.transformer.TemplateNodeTransformer;
 import com.liferay.template.transformer.TemplateNodeFactory;
-
-import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -54,20 +52,7 @@ public class TemplateNodeFactoryImpl implements TemplateNodeFactory {
 			(Class<TemplateNodeTransformer>)
 				(Class)TemplateNodeTransformer.class,
 			null,
-			(serviceReference, emitter) -> {
-				try {
-					List<String> classNames = StringUtil.asList(
-						serviceReference.getProperty(
-							"info.field.type.class.name"));
-
-					for (String className : classNames) {
-						emitter.emit(className);
-					}
-				}
-				finally {
-					bundleContext.ungetService(serviceReference);
-				}
-			},
+			new PropertyServiceReferenceMapper<>("info.field.type.class.name"),
 			new PropertyServiceReferenceComparator<>("service.ranking"));
 	}
 
