@@ -776,6 +776,7 @@
 		<field name="parentLayoutId" type="long" />
 		<field name="classNameId" type="long" />
 		<field name="classPK" type="long" />
+		<field name="launchSetId" type="long" />
 		<field localized="true" name="name" type="String">
 			<hint name="display-width">210</hint>
 			<hint name="max-length">4000</hint>

@@ -199,7 +199,7 @@ create index IX_3103EF3D on Groups_Roles (roleId);
 create index IX_676FC818 on Groups_UserGroups (companyId);
 create index IX_3B69160F on Groups_UserGroups (userGroupId);
 
-create index IX_B8E1E6E5 on Layout (classNameId, classPK);
+create index IX_F7970C15 on Layout (classNameId, classPK, launchSetId);
 create index IX_C7FBC998 on Layout (companyId);
 create unique index IX_99328A41 on Layout (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_29D5F515 on Layout (groupId, masterLPTEERC[$COLUMN_LENGTH:75$]);

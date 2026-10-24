@@ -679,6 +679,11 @@ public class LayoutLocalServiceWrapper
 	}
 
 	@Override
+	public Layout fetchDraftLayout(long plid, long launchSetId) {
+		return _layoutLocalService.fetchDraftLayout(plid, launchSetId);
+	}
+
+	@Override
 	public java.util.Map<Layout, Layout> fetchDraftLayouts(
 		java.util.List<Layout> layouts) {
 
@@ -2319,4 +2324,4 @@ public class LayoutLocalServiceWrapper
 	private LayoutLocalService _layoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1295318816
+// LIFERAY-SERVICE-BUILDER-HASH:2028069245

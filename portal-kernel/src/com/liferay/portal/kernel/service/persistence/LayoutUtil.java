@@ -2075,6 +2075,134 @@ public class LayoutUtil {
 	}
 
 	/**
+	 * Returns an ordered range of all the layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long classPK, long launchSetId, int start, int end,
+		OrderByComparator<Layout> orderByComparator, boolean useFinderCache) {
+
+		return getPersistence().findByC_C_L(
+			classNameId, classPK, launchSetId, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Returns the first layout in the ordered set where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching layout
+	 * @throws NoSuchLayoutException if a matching layout could not be found
+	 */
+	public static Layout findByC_C_L_First(
+			long classNameId, long classPK, long launchSetId,
+			OrderByComparator<Layout> orderByComparator)
+		throws com.liferay.portal.kernel.exception.NoSuchLayoutException {
+
+		return getPersistence().findByC_C_L_First(
+			classNameId, classPK, launchSetId, orderByComparator);
+	}
+
+	/**
+	 * Returns the first layout in the ordered set where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
+	 * @return the first matching layout, or <code>null</code> if a matching layout could not be found
+	 */
+	public static Layout fetchByC_C_L_First(
+		long classNameId, long classPK, long launchSetId,
+		OrderByComparator<Layout> orderByComparator) {
+
+		return getPersistence().fetchByC_C_L_First(
+			classNameId, classPK, launchSetId, orderByComparator);
+	}
+
+	/**
+	 * Returns an ordered range of all the layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;, optionally using the finder cache.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param launchSetId the launch set ID
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @param useFinderCache whether to use the finder cache
+	 * @return the ordered range of matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long[] classPKs, long launchSetId, int start, int end,
+		OrderByComparator<Layout> orderByComparator, boolean useFinderCache) {
+
+		return getPersistence().findByC_C_L(
+			classNameId, classPKs, launchSetId, start, end, orderByComparator,
+			useFinderCache);
+	}
+
+	/**
+	 * Removes all the layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63; from the database.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 */
+	public static void removeByC_C_L(
+		long classNameId, long classPK, long launchSetId) {
+
+		getPersistence().removeByC_C_L(classNameId, classPK, launchSetId);
+	}
+
+	/**
+	 * Returns the number of layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @return the number of matching layouts
+	 */
+	public static int countByC_C_L(
+		long classNameId, long classPK, long launchSetId) {
+
+		return getPersistence().countByC_C_L(classNameId, classPK, launchSetId);
+	}
+
+	/**
+	 * Returns the number of layouts where classNameId = &#63; and classPK = any &#63; and launchSetId = &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param launchSetId the launch set ID
+	 * @return the number of matching layouts
+	 */
+	public static int countByC_C_L(
+		long classNameId, long[] classPKs, long launchSetId) {
+
+		return getPersistence().countByC_C_L(
+			classNameId, classPKs, launchSetId);
+	}
+
+	/**
 	 * Returns an ordered range of all the layouts where groupId = &#63; and privateLayout = &#63; and parentLayoutId = &#63; and hidden = &#63;.
 	 *
 	 * <p>
@@ -4362,6 +4490,123 @@ public class LayoutUtil {
 	}
 
 	/**
+	 * Returns all the layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @return the matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long classPK, long launchSetId) {
+
+		return getPersistence().findByC_C_L(classNameId, classPK, launchSetId);
+	}
+
+	/**
+	 * Returns a range of all the layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @return the range of matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long classPK, long launchSetId, int start, int end) {
+
+		return getPersistence().findByC_C_L(
+			classNameId, classPK, launchSetId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the layouts where classNameId = &#63; and classPK = &#63; and launchSetId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPK the class pk
+	 * @param launchSetId the launch set ID
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long classPK, long launchSetId, int start, int end,
+		OrderByComparator<Layout> orderByComparator) {
+
+		return getPersistence().findByC_C_L(
+			classNameId, classPK, launchSetId, start, end, orderByComparator);
+	}
+
+	/**
+	 * Returns all the layouts where classNameId = &#63; and classPK = any &#63; and launchSetId = &#63;.
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param launchSetId the launch set ID
+	 * @return the matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long[] classPKs, long launchSetId) {
+
+		return getPersistence().findByC_C_L(classNameId, classPKs, launchSetId);
+	}
+
+	/**
+	 * Returns a range of all the layouts where classNameId = &#63; and classPK = any &#63; and launchSetId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param launchSetId the launch set ID
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @return the range of matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long[] classPKs, long launchSetId, int start,
+		int end) {
+
+		return getPersistence().findByC_C_L(
+			classNameId, classPKs, launchSetId, start, end);
+	}
+
+	/**
+	 * Returns an ordered range of all the layouts where classNameId = &#63; and classPK = any &#63; and launchSetId = &#63;.
+	 *
+	 * <p>
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portal.model.impl.LayoutModelImpl</code>.
+	 * </p>
+	 *
+	 * @param classNameId the class name ID
+	 * @param classPKs the class pks
+	 * @param launchSetId the launch set ID
+	 * @param start the lower bound of the range of layouts
+	 * @param end the upper bound of the range of layouts (not inclusive)
+	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
+	 * @return the ordered range of matching layouts
+	 */
+	public static List<Layout> findByC_C_L(
+		long classNameId, long[] classPKs, long launchSetId, int start, int end,
+		OrderByComparator<Layout> orderByComparator) {
+
+		return getPersistence().findByC_C_L(
+			classNameId, classPKs, launchSetId, start, end, orderByComparator);
+	}
+
+	/**
 	 * Returns all the layouts where groupId = &#63; and privateLayout = &#63; and parentLayoutId = &#63; and hidden = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -4796,4 +5041,4 @@ public class LayoutUtil {
 	private static volatile LayoutPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:991845748
+// LIFERAY-SERVICE-BUILDER-HASH:-1237121751

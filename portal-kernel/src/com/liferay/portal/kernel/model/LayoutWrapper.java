@@ -51,6 +51,7 @@ public class LayoutWrapper
 		attributes.put("parentLayoutId", getParentLayoutId());
 		attributes.put("classNameId", getClassNameId());
 		attributes.put("classPK", getClassPK());
+		attributes.put("launchSetId", getLaunchSetId());
 		attributes.put("name", getName());
 		attributes.put("title", getTitle());
 		attributes.put("description", getDescription());
@@ -198,6 +199,12 @@ public class LayoutWrapper
 
 		if (classPK != null) {
 			setClassPK(classPK);
+		}
+
+		Long launchSetId = (Long)attributes.get("launchSetId");
+
+		if (launchSetId != null) {
+			setLaunchSetId(launchSetId);
 		}
 
 		String name = (String)attributes.get("name");
@@ -953,6 +960,16 @@ public class LayoutWrapper
 	@Override
 	public Date getLastPublishDate() {
 		return model.getLastPublishDate();
+	}
+
+	/**
+	 * Returns the launch set ID of this layout.
+	 *
+	 * @return the launch set ID of this layout
+	 */
+	@Override
+	public long getLaunchSetId() {
+		return model.getLaunchSetId();
 	}
 
 	/**
@@ -2320,6 +2337,16 @@ public class LayoutWrapper
 	}
 
 	/**
+	 * Sets the launch set ID of this layout.
+	 *
+	 * @param launchSetId the launch set ID of this layout
+	 */
+	@Override
+	public void setLaunchSetId(long launchSetId) {
+		model.setLaunchSetId(launchSetId);
+	}
+
+	/**
 	 * Sets the layout ID of this layout.
 	 *
 	 * @param layoutId the layout ID of this layout
@@ -2866,4 +2893,4 @@ public class LayoutWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1482886270
+// LIFERAY-SERVICE-BUILDER-HASH:-1405218114

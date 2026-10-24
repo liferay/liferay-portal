@@ -682,6 +682,7 @@ create table Layout (
 	parentLayoutId LONG,
 	classNameId LONG,
 	classPK LONG,
+	launchSetId LONG,
 	name STRING null,
 	title TEXT null,
 	description TEXT null,

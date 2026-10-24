@@ -80,14 +80,14 @@ public class LayoutModelImpl
 		{"modifiedDate", Types.TIMESTAMP}, {"parentPlid", Types.BIGINT},
 		{"privateLayout", Types.BOOLEAN}, {"layoutId", Types.BIGINT},
 		{"parentLayoutId", Types.BIGINT}, {"classNameId", Types.BIGINT},
-		{"classPK", Types.BIGINT}, {"name", Types.VARCHAR},
-		{"title", Types.CLOB}, {"description", Types.CLOB},
-		{"keywords", Types.VARCHAR}, {"robots", Types.VARCHAR},
-		{"type_", Types.VARCHAR}, {"typeSettings", Types.CLOB},
-		{"hidden_", Types.BOOLEAN}, {"system_", Types.BOOLEAN},
-		{"friendlyURL", Types.VARCHAR}, {"iconImageId", Types.BIGINT},
-		{"themeId", Types.VARCHAR}, {"colorSchemeId", Types.VARCHAR},
-		{"styleBookEntryERC", Types.VARCHAR},
+		{"classPK", Types.BIGINT}, {"launchSetId", Types.BIGINT},
+		{"name", Types.VARCHAR}, {"title", Types.CLOB},
+		{"description", Types.CLOB}, {"keywords", Types.VARCHAR},
+		{"robots", Types.VARCHAR}, {"type_", Types.VARCHAR},
+		{"typeSettings", Types.CLOB}, {"hidden_", Types.BOOLEAN},
+		{"system_", Types.BOOLEAN}, {"friendlyURL", Types.VARCHAR},
+		{"iconImageId", Types.BIGINT}, {"themeId", Types.VARCHAR},
+		{"colorSchemeId", Types.VARCHAR}, {"styleBookEntryERC", Types.VARCHAR},
 		{"styleBookEntryScopeERC", Types.VARCHAR}, {"css", Types.CLOB},
 		{"priority", Types.INTEGER}, {"faviconFileEntryERC", Types.VARCHAR},
 		{"faviconFileEntryScopeERC", Types.VARCHAR},
@@ -120,6 +120,7 @@ public class LayoutModelImpl
 		TABLE_COLUMNS_MAP.put("parentLayoutId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classNameId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classPK", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("launchSetId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("title", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("description", Types.CLOB);
@@ -153,7 +154,7 @@ public class LayoutModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Layout (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,plid LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentPlid LONG,privateLayout BOOLEAN,layoutId LONG,parentLayoutId LONG,classNameId LONG,classPK LONG,name STRING null,title TEXT null,description TEXT null,keywords STRING null,robots STRING null,type_ VARCHAR(75) null,typeSettings TEXT null,hidden_ BOOLEAN,system_ BOOLEAN,friendlyURL VARCHAR(255) null,iconImageId LONG,themeId VARCHAR(75) null,colorSchemeId VARCHAR(75) null,styleBookEntryERC VARCHAR(75) null,styleBookEntryScopeERC VARCHAR(75) null,css TEXT null,priority INTEGER,faviconFileEntryERC VARCHAR(75) null,faviconFileEntryScopeERC VARCHAR(75) null,masterLPTEERC VARCHAR(75) null,portletLPTEERC VARCHAR(75) null,portletLPTESERC VARCHAR(75) null,portletLPTELE BOOLEAN,layoutSetPrototypeLayoutERC VARCHAR(75) null,publishDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (plid, ctCollectionId))";
+		"create table Layout (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,plid LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,parentPlid LONG,privateLayout BOOLEAN,layoutId LONG,parentLayoutId LONG,classNameId LONG,classPK LONG,launchSetId LONG,name STRING null,title TEXT null,description TEXT null,keywords STRING null,robots STRING null,type_ VARCHAR(75) null,typeSettings TEXT null,hidden_ BOOLEAN,system_ BOOLEAN,friendlyURL VARCHAR(255) null,iconImageId LONG,themeId VARCHAR(75) null,colorSchemeId VARCHAR(75) null,styleBookEntryERC VARCHAR(75) null,styleBookEntryScopeERC VARCHAR(75) null,css TEXT null,priority INTEGER,faviconFileEntryERC VARCHAR(75) null,faviconFileEntryScopeERC VARCHAR(75) null,masterLPTEERC VARCHAR(75) null,portletLPTEERC VARCHAR(75) null,portletLPTESERC VARCHAR(75) null,portletLPTELE BOOLEAN,layoutSetPrototypeLayoutERC VARCHAR(75) null,publishDate DATE null,lastPublishDate DATE null,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (plid, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table Layout";
 
@@ -246,70 +247,76 @@ public class LayoutModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LAYOUTID_COLUMN_BITMASK = 256L;
+	public static final long LAUNCHSETID_COLUMN_BITMASK = 256L;
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 */
+	@Deprecated
+	public static final long LAYOUTID_COLUMN_BITMASK = 512L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
 	public static final long MASTERLAYOUTPAGETEMPLATEENTRYERC_COLUMN_BITMASK =
-		512L;
+		1024L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTLAYOUTID_COLUMN_BITMASK = 1024L;
+	public static final long PARENTLAYOUTID_COLUMN_BITMASK = 2048L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
 	public static final long PORTLETLAYOUTPAGETEMPLATEENTRYERC_COLUMN_BITMASK =
-		2048L;
+		4096L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
 	public static final long
-		PORTLETLAYOUTPAGETEMPLATEENTRYSCOPEERC_COLUMN_BITMASK = 4096L;
+		PORTLETLAYOUTPAGETEMPLATEENTRYSCOPEERC_COLUMN_BITMASK = 8192L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 8192L;
+	public static final long PRIORITY_COLUMN_BITMASK = 16384L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIVATELAYOUT_COLUMN_BITMASK = 16384L;
+	public static final long PRIVATELAYOUT_COLUMN_BITMASK = 32768L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STATUS_COLUMN_BITMASK = 32768L;
+	public static final long STATUS_COLUMN_BITMASK = 65536L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long SYSTEM_COLUMN_BITMASK = 65536L;
+	public static final long SYSTEM_COLUMN_BITMASK = 131072L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 131072L;
+	public static final long TYPE_COLUMN_BITMASK = 262144L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 262144L;
+	public static final long UUID_COLUMN_BITMASK = 524288L;
 
 	public static final long LOCK_EXPIRATION_TIME = GetterUtil.getLong(
 		com.liferay.portal.kernel.util.PropsUtil.get(
@@ -427,6 +434,7 @@ public class LayoutModelImpl
 				"parentLayoutId", Layout::getParentLayoutId);
 			attributeGetterFunctions.put("classNameId", Layout::getClassNameId);
 			attributeGetterFunctions.put("classPK", Layout::getClassPK);
+			attributeGetterFunctions.put("launchSetId", Layout::getLaunchSetId);
 			attributeGetterFunctions.put("name", Layout::getName);
 			attributeGetterFunctions.put("title", Layout::getTitle);
 			attributeGetterFunctions.put("description", Layout::getDescription);
@@ -534,6 +542,9 @@ public class LayoutModelImpl
 				(BiConsumer<Layout, Long>)Layout::setClassNameId);
 			attributeSetterBiConsumers.put(
 				"classPK", (BiConsumer<Layout, Long>)Layout::setClassPK);
+			attributeSetterBiConsumers.put(
+				"launchSetId",
+				(BiConsumer<Layout, Long>)Layout::setLaunchSetId);
 			attributeSetterBiConsumers.put(
 				"name", (BiConsumer<Layout, String>)Layout::setName);
 			attributeSetterBiConsumers.put(
@@ -1027,6 +1038,31 @@ public class LayoutModelImpl
 	@Deprecated
 	public long getOriginalClassPK() {
 		return GetterUtil.getLong(this.<Long>getColumnOriginalValue("classPK"));
+	}
+
+	@JSON
+	@Override
+	public long getLaunchSetId() {
+		return _launchSetId;
+	}
+
+	@Override
+	public void setLaunchSetId(long launchSetId) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_launchSetId = launchSetId;
+	}
+
+	/**
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *             #getColumnOriginalValue(String)}
+	 */
+	@Deprecated
+	public long getOriginalLaunchSetId() {
+		return GetterUtil.getLong(
+			this.<Long>getColumnOriginalValue("launchSetId"));
 	}
 
 	@JSON
@@ -2479,6 +2515,7 @@ public class LayoutModelImpl
 		layoutImpl.setParentLayoutId(getParentLayoutId());
 		layoutImpl.setClassNameId(getClassNameId());
 		layoutImpl.setClassPK(getClassPK());
+		layoutImpl.setLaunchSetId(getLaunchSetId());
 		layoutImpl.setName(getName());
 		layoutImpl.setTitle(getTitle());
 		layoutImpl.setDescription(getDescription());
@@ -2550,6 +2587,8 @@ public class LayoutModelImpl
 		layoutImpl.setClassNameId(
 			this.<Long>getColumnOriginalValue("classNameId"));
 		layoutImpl.setClassPK(this.<Long>getColumnOriginalValue("classPK"));
+		layoutImpl.setLaunchSetId(
+			this.<Long>getColumnOriginalValue("launchSetId"));
 		layoutImpl.setName(this.<String>getColumnOriginalValue("name"));
 		layoutImpl.setTitle(this.<String>getColumnOriginalValue("title"));
 		layoutImpl.setDescription(
@@ -2764,6 +2803,8 @@ public class LayoutModelImpl
 		layoutCacheModel.classNameId = getClassNameId();
 
 		layoutCacheModel.classPK = getClassPK();
+
+		layoutCacheModel.launchSetId = getLaunchSetId();
 
 		layoutCacheModel.name = getName();
 
@@ -3069,6 +3110,7 @@ public class LayoutModelImpl
 	private long _parentLayoutId;
 	private long _classNameId;
 	private long _classPK;
+	private long _launchSetId;
 	private String _name;
 	private String _nameCurrentLanguageId;
 	private String _title;
@@ -3153,6 +3195,7 @@ public class LayoutModelImpl
 		_columnOriginalValues.put("parentLayoutId", _parentLayoutId);
 		_columnOriginalValues.put("classNameId", _classNameId);
 		_columnOriginalValues.put("classPK", _classPK);
+		_columnOriginalValues.put("launchSetId", _launchSetId);
 		_columnOriginalValues.put("name", _name);
 		_columnOriginalValues.put("title", _title);
 		_columnOriginalValues.put("description", _description);
@@ -3257,65 +3300,67 @@ public class LayoutModelImpl
 
 		columnBitmasks.put("classPK", 65536L);
 
-		columnBitmasks.put("name", 131072L);
+		columnBitmasks.put("launchSetId", 131072L);
 
-		columnBitmasks.put("title", 262144L);
+		columnBitmasks.put("name", 262144L);
 
-		columnBitmasks.put("description", 524288L);
+		columnBitmasks.put("title", 524288L);
 
-		columnBitmasks.put("keywords", 1048576L);
+		columnBitmasks.put("description", 1048576L);
 
-		columnBitmasks.put("robots", 2097152L);
+		columnBitmasks.put("keywords", 2097152L);
 
-		columnBitmasks.put("type_", 4194304L);
+		columnBitmasks.put("robots", 4194304L);
 
-		columnBitmasks.put("typeSettings", 8388608L);
+		columnBitmasks.put("type_", 8388608L);
 
-		columnBitmasks.put("hidden_", 16777216L);
+		columnBitmasks.put("typeSettings", 16777216L);
 
-		columnBitmasks.put("system_", 33554432L);
+		columnBitmasks.put("hidden_", 33554432L);
 
-		columnBitmasks.put("friendlyURL", 67108864L);
+		columnBitmasks.put("system_", 67108864L);
 
-		columnBitmasks.put("iconImageId", 134217728L);
+		columnBitmasks.put("friendlyURL", 134217728L);
 
-		columnBitmasks.put("themeId", 268435456L);
+		columnBitmasks.put("iconImageId", 268435456L);
 
-		columnBitmasks.put("colorSchemeId", 536870912L);
+		columnBitmasks.put("themeId", 536870912L);
 
-		columnBitmasks.put("styleBookEntryERC", 1073741824L);
+		columnBitmasks.put("colorSchemeId", 1073741824L);
 
-		columnBitmasks.put("styleBookEntryScopeERC", 2147483648L);
+		columnBitmasks.put("styleBookEntryERC", 2147483648L);
 
-		columnBitmasks.put("css", 4294967296L);
+		columnBitmasks.put("styleBookEntryScopeERC", 4294967296L);
 
-		columnBitmasks.put("priority", 8589934592L);
+		columnBitmasks.put("css", 8589934592L);
 
-		columnBitmasks.put("faviconFileEntryERC", 17179869184L);
+		columnBitmasks.put("priority", 17179869184L);
 
-		columnBitmasks.put("faviconFileEntryScopeERC", 34359738368L);
+		columnBitmasks.put("faviconFileEntryERC", 34359738368L);
 
-		columnBitmasks.put("masterLPTEERC", 68719476736L);
+		columnBitmasks.put("faviconFileEntryScopeERC", 68719476736L);
 
-		columnBitmasks.put("portletLPTEERC", 137438953472L);
+		columnBitmasks.put("masterLPTEERC", 137438953472L);
 
-		columnBitmasks.put("portletLPTESERC", 274877906944L);
+		columnBitmasks.put("portletLPTEERC", 274877906944L);
 
-		columnBitmasks.put("portletLPTELE", 549755813888L);
+		columnBitmasks.put("portletLPTESERC", 549755813888L);
 
-		columnBitmasks.put("layoutSetPrototypeLayoutERC", 1099511627776L);
+		columnBitmasks.put("portletLPTELE", 1099511627776L);
 
-		columnBitmasks.put("publishDate", 2199023255552L);
+		columnBitmasks.put("layoutSetPrototypeLayoutERC", 2199023255552L);
 
-		columnBitmasks.put("lastPublishDate", 4398046511104L);
+		columnBitmasks.put("publishDate", 4398046511104L);
 
-		columnBitmasks.put("status", 8796093022208L);
+		columnBitmasks.put("lastPublishDate", 8796093022208L);
 
-		columnBitmasks.put("statusByUserId", 17592186044416L);
+		columnBitmasks.put("status", 17592186044416L);
 
-		columnBitmasks.put("statusByUserName", 35184372088832L);
+		columnBitmasks.put("statusByUserId", 35184372088832L);
 
-		columnBitmasks.put("statusDate", 70368744177664L);
+		columnBitmasks.put("statusByUserName", 70368744177664L);
+
+		columnBitmasks.put("statusDate", 140737488355328L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -3324,4 +3369,4 @@ public class LayoutModelImpl
 	private Layout _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1432645212
+// LIFERAY-SERVICE-BUILDER-HASH:-1862871209

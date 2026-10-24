@@ -67,7 +67,7 @@ public class LayoutCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(95);
+		StringBundler sb = new StringBundler(97);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -103,6 +103,8 @@ public class LayoutCacheModel
 		sb.append(classNameId);
 		sb.append(", classPK=");
 		sb.append(classPK);
+		sb.append(", launchSetId=");
+		sb.append(launchSetId);
 		sb.append(", name=");
 		sb.append(name);
 		sb.append(", title=");
@@ -221,6 +223,7 @@ public class LayoutCacheModel
 		layoutImpl.setParentLayoutId(parentLayoutId);
 		layoutImpl.setClassNameId(classNameId);
 		layoutImpl.setClassPK(classPK);
+		layoutImpl.setLaunchSetId(launchSetId);
 
 		if (name == null) {
 			layoutImpl.setName("");
@@ -437,6 +440,8 @@ public class LayoutCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
+
+		launchSetId = objectInput.readLong();
 		name = objectInput.readUTF();
 		title = (String)objectInput.readObject();
 		description = (String)objectInput.readObject();
@@ -525,6 +530,8 @@ public class LayoutCacheModel
 		objectOutput.writeLong(classNameId);
 
 		objectOutput.writeLong(classPK);
+
+		objectOutput.writeLong(launchSetId);
 
 		if (name == null) {
 			objectOutput.writeUTF("");
@@ -703,6 +710,7 @@ public class LayoutCacheModel
 	public long parentLayoutId;
 	public long classNameId;
 	public long classPK;
+	public long launchSetId;
 	public String name;
 	public String title;
 	public String description;
@@ -735,4 +743,4 @@ public class LayoutCacheModel
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1701508329
+// LIFERAY-SERVICE-BUILDER-HASH:681087377
