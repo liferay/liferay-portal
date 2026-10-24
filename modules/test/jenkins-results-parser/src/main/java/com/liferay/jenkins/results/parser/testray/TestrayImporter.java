@@ -710,7 +710,19 @@ public class TestrayImporter {
 		AxisTestClassGroup axisTestClassGroup,
 		TestrayCaseResult topLevelTestrayCaseResult) {
 
+		Job job = axisTestClassGroup.getJob();
+
+		if ((job != null) && (job.getTestrayContext() == null)) {
+			job.setTestrayContext(_testrayContext);
+		}
+
 		TestrayRun testrayRun = axisTestClassGroup.getTestrayRun();
+
+		if (testrayRun == null) {
+			throw new RuntimeException(
+				"Unable to find a Testray run for " +
+					axisTestClassGroup.getAxisName());
+		}
 
 		TestrayBuild testrayBuild = testrayRun.getTestrayBuild();
 

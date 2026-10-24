@@ -149,6 +149,12 @@ public class JobFactory {
 	}
 
 	public static String getKey(JSONObject jsonObject) {
+		String jobKey = jsonObject.optString("job_key");
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(jobKey)) {
+			return jobKey;
+		}
+
 		Job.BuildProfile buildProfile = Job.BuildProfile.DXP;
 
 		if (jsonObject.has("build_profile")) {

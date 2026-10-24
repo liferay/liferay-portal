@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
+import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
@@ -83,6 +84,49 @@ public class TestrayImporterTest
 			"modules/apps/a/b/test/js/c.js");
 
 		Assert.assertFalse(_isTestClassFileReported(jsUnitJUnitTestClass));
+	}
+
+	@Test
+	public void testRecordAxisTestClassGroupNoTestrayRun() throws Exception {
+		String axisName = RandomTestUtil.randomString();
+		TestrayContext testrayContext = Mockito.mock(TestrayContext.class);
+
+		Job job = Mockito.mock(Job.class);
+
+		String message = _recordAxisTestClassGroupNoTestrayRun(
+			axisName, job, testrayContext);
+
+		Assert.assertTrue(message, message.contains(axisName));
+
+		Mockito.verify(
+			job
+		).setTestrayContext(
+			testrayContext
+		);
+
+		Job testrayContextJob = Mockito.mock(Job.class);
+
+		Mockito.doReturn(
+			Mockito.mock(TestrayContext.class)
+		).when(
+			testrayContextJob
+		).getTestrayContext();
+
+		message = _recordAxisTestClassGroupNoTestrayRun(
+			axisName, testrayContextJob, testrayContext);
+
+		Assert.assertTrue(message, message.contains(axisName));
+
+		Mockito.verify(
+			testrayContextJob, Mockito.never()
+		).setTestrayContext(
+			Mockito.any()
+		);
+
+		message = _recordAxisTestClassGroupNoTestrayRun(
+			axisName, null, testrayContext);
+
+		Assert.assertTrue(message, message.contains(axisName));
 	}
 
 	@Test
@@ -376,6 +420,48 @@ public class TestrayImporterTest
 		);
 
 		return argumentCaptor.getValue();
+	}
+
+	private String _recordAxisTestClassGroupNoTestrayRun(
+		String axisName, Job job, TestrayContext testrayContext) {
+
+		AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+			AxisTestClassGroup.class);
+
+		Mockito.doReturn(
+			axisName
+		).when(
+			axisTestClassGroup
+		).getAxisName();
+
+		Mockito.doReturn(
+			job
+		).when(
+			axisTestClassGroup
+		).getJob();
+
+		TestrayImporter testrayImporter = Mockito.mock(TestrayImporter.class);
+
+		ReflectionTestUtil.setFieldValue(
+			testrayImporter, "_testrayContext", testrayContext);
+
+		try {
+			ReflectionTestUtil.invoke(
+				testrayImporter, "_recordAxisTestClassGroup",
+				new Class<?>[] {
+					AxisTestClassGroup.class, TestrayCaseResult.class
+				},
+				axisTestClassGroup, Mockito.mock(TestrayCaseResult.class));
+		}
+		catch (RuntimeException runtimeException) {
+			Throwable invocationThrowable = runtimeException.getCause();
+
+			Throwable throwable = invocationThrowable.getCause();
+
+			return throwable.getMessage();
+		}
+
+		throw new AssertionError("Expected the record to fail");
 	}
 
 	private void _testGetTestcaseElementName(int nameLength, int expectedLength)

@@ -502,6 +502,8 @@ public abstract class BaseJob implements Job {
 			).put(
 				"company_default_locale", getCompanyDefaultLocale()
 			).put(
+				"job_key", JobFactory.getKey(this)
+			).put(
 				"job_name", getJobName()
 			).put(
 				"job_properties", _getJobPropertiesMap()
