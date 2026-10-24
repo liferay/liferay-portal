@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Document Library Preview Video
 Bundle-SymbolicName: com.liferay.document.library.preview.video
-Bundle-Version: 3.0.10
+Bundle-Version: 3.0.11
 Web-ContextPath: /document-library-preview-video
 -dsannotations-options: inherit
