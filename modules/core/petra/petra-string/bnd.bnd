@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Petra String
 Bundle-SymbolicName: com.liferay.petra.string
-Bundle-Version: 5.3.9
+Bundle-Version: 5.3.10
 Export-Package: com.liferay.petra.string
