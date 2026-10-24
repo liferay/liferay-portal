@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Navigation Menu Item URL
 Bundle-SymbolicName: com.liferay.site.navigation.menu.item.url
-Bundle-Version: 4.0.19
+Bundle-Version: 4.0.20
 Web-ContextPath: /site-navigation-menu-item-url
