@@ -5,7 +5,11 @@
 
 package com.liferay.reading.time.taglib.servlet.taglib;
 
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupedModel;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -13,7 +17,6 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.reading.time.message.ReadingTimeMessageProvider;
 import com.liferay.reading.time.model.ReadingTimeEntry;
 import com.liferay.reading.time.service.ReadingTimeEntryLocalServiceUtil;
-import com.liferay.reading.time.taglib.internal.servlet.servlet.reading.time.ReadingTimeUtil;
 import com.liferay.taglib.util.AttributesTagSupport;
 
 import jakarta.portlet.RenderResponse;
@@ -26,6 +29,9 @@ import jakarta.servlet.jsp.tagext.BodyTag;
 import java.io.IOException;
 
 import java.time.Duration;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Alejandro Tardín
@@ -121,7 +127,7 @@ public class ReadingTimeTag extends AttributesTagSupport implements BodyTag {
 
 	private String _getReadingTimeMessage(Duration readingTimeDuration) {
 		ReadingTimeMessageProvider readingTimeMessageProvider =
-			ReadingTimeUtil.getReadingTimeMessageProvider(_displayStyle);
+			_getReadingTimeMessageProvider(_displayStyle);
 
 		if (readingTimeMessageProvider == null) {
 			return null;
@@ -129,6 +135,37 @@ public class ReadingTimeTag extends AttributesTagSupport implements BodyTag {
 
 		return readingTimeMessageProvider.provide(
 			readingTimeDuration, PortalUtil.getLocale(getRequest()));
+	}
+
+	private ReadingTimeMessageProvider _getReadingTimeMessageProvider(
+		String displayStyle) {
+
+		ReadingTimeMessageProvider readingTimeMessageProvider =
+			_serviceTrackerMap.getService(displayStyle);
+
+		if (readingTimeMessageProvider == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					String.format(
+						"Reading time provider \"%s\" is not available",
+						displayStyle));
+			}
+		}
+
+		return readingTimeMessageProvider;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(ReadingTimeTag.class);
+
+	private static final ServiceTrackerMap<String, ReadingTimeMessageProvider>
+		_serviceTrackerMap;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(ReadingTimeTag.class);
+
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundle.getBundleContext(), ReadingTimeMessageProvider.class,
+			"display.style");
 	}
 
 	private String _displayStyle = "simple";

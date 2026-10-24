@@ -36,7 +36,6 @@
 		<suppress checks="ComponentExposureCheck" files="portal-workflow/portal-workflow-taglib/src/main/java/com/liferay/portal/workflow/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="product-navigation/product-navigation-taglib/src/main/java/com/liferay/product/navigation/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="ratings/ratings-taglib/src/main/java/com/liferay/ratings/taglib/internal/servlet/ServletContextUtil\.java" />
-		<suppress checks="ComponentExposureCheck" files="reading-time/reading-time-taglib/src/main/java/com/liferay/reading/time/taglib/internal/servlet/servlet/reading/time/ReadingTimeUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="rss/rss-taglib/src/main/java/com/liferay/rss/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="segments/segments-web/src/main/java/com/liferay/segments/web/internal/util/SegmentsSourceDetailsProviderUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="site-navigation/site-navigation-taglib/src/main/java/com/liferay/site/navigation/taglib/internal/servlet/ServletContextUtil\.java" />
