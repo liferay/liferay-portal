@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Shared Dependencies Google Cloud
 Bundle-SymbolicName: com.liferay.shared.dependencies.google.cloud
-Bundle-Version: 1.0.4
+Bundle-Version: 1.0.5
 Import-Package:\
 	!io.opentelemetry.*,\
 	\
