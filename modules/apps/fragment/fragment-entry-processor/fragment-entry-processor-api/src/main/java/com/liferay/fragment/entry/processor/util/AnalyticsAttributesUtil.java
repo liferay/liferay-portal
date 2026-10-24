@@ -12,7 +12,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
-import com.liferay.fragment.entry.processor.analytics.AnalyticsAttributesContributorRegistryUtil;
+import com.liferay.fragment.entry.processor.analytics.AnalyticsAttributesContributor;
 import com.liferay.fragment.entry.processor.helper.FragmentEntryProcessorHelper;
 import com.liferay.fragment.entry.processor.helper.InfoItemFieldMapped;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
@@ -34,6 +34,8 @@ import com.liferay.info.type.WebImage;
 import com.liferay.object.constants.ObjectFolderConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
+import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -57,6 +59,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
 
 /**
  * @author Eudaldo Alonso
@@ -372,8 +377,7 @@ public class AnalyticsAttributesUtil {
 		InfoItemServiceRegistry infoItemServiceRegistry, Locale locale) {
 
 		return HashMapBuilder.<String, Object>putAll(
-			AnalyticsAttributesContributorRegistryUtil.getAnalyticsAttributes(
-				infoItemFieldMapped, locale)
+			_getAnalyticsAttributes(infoItemFieldMapped, locale)
 		).put(
 			"analytics-asset-categories",
 			() -> _getAnalyticsAssetCategories(
@@ -428,6 +432,27 @@ public class AnalyticsAttributesUtil {
 				return null;
 			}
 		).build();
+	}
+
+	private static Map<String, Object> _getAnalyticsAttributes(
+		InfoItemFieldMapped infoItemFieldMapped, Locale locale) {
+
+		Map<String, Object> analyticsAttributes = new HashMap<>();
+
+		for (AnalyticsAttributesContributor analyticsAttributesContributor :
+				_serviceTrackerList) {
+
+			try {
+				analyticsAttributes.putAll(
+					analyticsAttributesContributor.getAnalyticsAttributes(
+						infoItemFieldMapped, locale));
+			}
+			catch (PortalException portalException) {
+				_log.error(portalException);
+			}
+		}
+
+		return analyticsAttributes;
 	}
 
 	private static String _getAnalyticsExternalReferenceCode(
@@ -649,5 +674,15 @@ public class AnalyticsAttributesUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AnalyticsAttributesUtil.class);
+
+	private static final ServiceTrackerList<AnalyticsAttributesContributor>
+		_serviceTrackerList;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(AnalyticsAttributesUtil.class);
+
+		_serviceTrackerList = ServiceTrackerListFactory.open(
+			bundle.getBundleContext(), AnalyticsAttributesContributor.class);
+	}
 
 }
