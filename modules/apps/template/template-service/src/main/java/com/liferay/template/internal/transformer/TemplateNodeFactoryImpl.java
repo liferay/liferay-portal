@@ -14,6 +14,7 @@ import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory
 import com.liferay.portal.kernel.templateparser.TemplateNode;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.template.info.field.transformer.BaseTemplateNodeTransformer;
 import com.liferay.template.info.field.transformer.TemplateNodeTransformer;
 import com.liferay.template.transformer.TemplateNodeFactory;
 
@@ -62,10 +63,6 @@ public class TemplateNodeFactoryImpl implements TemplateNodeFactory {
 					for (String className : classNames) {
 						emitter.emit(className);
 					}
-
-					if (classNames.isEmpty()) {
-						emitter.emit(_CLASS_NAME_ANY);
-					}
 				}
 				finally {
 					bundleContext.ungetService(serviceReference);
@@ -89,10 +86,21 @@ public class TemplateNodeFactoryImpl implements TemplateNodeFactory {
 			return templateNodeTransformer;
 		}
 
-		return _serviceTrackerMap.getService(_CLASS_NAME_ANY);
+		return _defaultTemplateNodeTransformer;
 	}
 
-	private static final String _CLASS_NAME_ANY = "<ANY>";
+	private static final TemplateNodeTransformer
+		_defaultTemplateNodeTransformer = new BaseTemplateNodeTransformer() {
+
+			@Override
+			public TemplateNode transform(
+				InfoFieldValue<Object> infoFieldValue,
+				ThemeDisplay themeDisplay) {
+
+				return getDefaultTemplateNode(infoFieldValue, themeDisplay);
+			}
+
+		};
 
 	private ServiceTrackerMap<String, TemplateNodeTransformer>
 		_serviceTrackerMap;
