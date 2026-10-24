@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Adaptive Media Blogs Web Fragment
 Bundle-SymbolicName: com.liferay.adaptive.media.blogs.web.fragment
-Bundle-Version: 5.0.9
+Bundle-Version: 5.0.10
 Fragment-Host: com.liferay.blogs.web;bundle-version="[1.1.0,7.0.0)"
