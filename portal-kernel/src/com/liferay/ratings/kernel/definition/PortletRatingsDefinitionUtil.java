@@ -137,6 +137,8 @@ public class PortletRatingsDefinitionUtil {
 							portletRatingsDefinition.getDefaultRatingsType();
 
 						if (defaultRatingsType == null) {
+							_bundleContext.ungetService(serviceReference);
+
 							if (_log.isWarnEnabled()) {
 								_log.warn("Default ratings type is null");
 							}
@@ -148,6 +150,8 @@ public class PortletRatingsDefinitionUtil {
 							portletRatingsDefinition.getPortletId();
 
 						if (Validator.isNull(portletId)) {
+							_bundleContext.ungetService(serviceReference);
+
 							if (_log.isWarnEnabled()) {
 								_log.warn("Portlet ID is null");
 							}
