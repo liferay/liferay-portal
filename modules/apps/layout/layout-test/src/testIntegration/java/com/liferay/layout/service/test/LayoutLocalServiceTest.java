@@ -511,7 +511,6 @@ public class LayoutLocalServiceTest {
 		Layout mainDraftLayout = _layoutLocalService.fetchDraftLayout(
 			layout.getPlid());
 
-		Assert.assertNotNull(mainDraftLayout);
 		Assert.assertEquals(0, mainDraftLayout.getLaunchSetId());
 
 		Assert.assertEquals(
