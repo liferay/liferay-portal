@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Configuration Metatype API
 Bundle-SymbolicName: com.liferay.portal.configuration.metatype.api
-Bundle-Version: 6.6.2
+Bundle-Version: 6.6.3
 Export-Package:\
 	com.liferay.portal.configuration.metatype.annotations,\
 	com.liferay.portal.configuration.metatype.bnd.util,\
