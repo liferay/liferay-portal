@@ -566,17 +566,24 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 	@Test
 	public void testDefaultPartitionName() throws Exception {
 		_testDefaultPartitionName(
-			"drop view if exists " + defaultPartitionName + ".TestView", true);
-		_testDefaultPartitionName(
 			"drop view if exists " + defaultPartitionName + " .TestView", true);
 		_testDefaultPartitionName(
+			"drop view if exists " + defaultPartitionName + ".TestView", true);
+		_testDefaultPartitionName(
 			"drop view if exists " + defaultPartitionName + "/**/.TestView",
+			true);
+		_testDefaultPartitionName(
+			StringBundler.concat(
+				"drop view if exists ", defaultPartitionName, " -- ",
+				RandomTestUtil.randomString(), "\n.TestView"),
 			true);
 
 		if (db.getDBType() == DBType.POSTGRESQL) {
 			_testDefaultPartitionName(
 				"drop view if exists \"" + defaultPartitionName + "\".TestView",
 				true);
+			_testDefaultPartitionName(
+				"set search_path to " + defaultPartitionName, true);
 			_testDefaultPartitionName(
 				StringBundler.concat(
 					"drop view if exists ", dbInspector.getCatalog(), ".",
@@ -587,6 +594,7 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 			_testDefaultPartitionName(
 				"drop view if exists `" + defaultPartitionName + "`.TestView",
 				true);
+			_testDefaultPartitionName("use " + defaultPartitionName, true);
 		}
 
 		_testDefaultPartitionName(
@@ -597,14 +605,19 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 			false);
 		_testDefaultPartitionName(
 			StringBundler.concat(
-				"delete from ClassName_ where value = 'https://",
-				defaultPartitionName, ".com/", RandomTestUtil.randomString(),
-				"'"),
+				"delete from ClassName_ where value = '",
+				RandomTestUtil.randomString(100000), "'"),
 			false);
 		_testDefaultPartitionName(
 			StringBundler.concat(
 				"delete from ClassName_ where value = 'This is ",
 				defaultPartitionName, ". ", RandomTestUtil.randomString(), "'"),
+			false);
+		_testDefaultPartitionName(
+			StringBundler.concat(
+				"delete from ClassName_ where value = 'https://",
+				defaultPartitionName, ".com/", RandomTestUtil.randomString(),
+				"'"),
 			false);
 	}
 
