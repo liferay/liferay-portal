@@ -20,9 +20,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.reports.engine.console.exception.DefinitionFileException;
@@ -159,27 +157,6 @@ public class DefinitionLocalServiceImpl extends DefinitionLocalServiceBaseImpl {
 		return _store.getFileNames(
 			definition.getCompanyId(), CompanyConstants.SYSTEM,
 			definition.getAttachmentsDir());
-	}
-
-	@Override
-	public List<Definition> getDefinitions(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch, int start,
-		int end, OrderByComparator<Definition> orderByComparator) {
-
-		return definitionFinder.findByG_S_N_D_RN(
-			groupId, definitionName, description, GetterUtil.getLong(sourceId),
-			reportName, andSearch, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getDefinitionsCount(
-		long groupId, String definitionName, String description,
-		String sourceId, String reportName, boolean andSearch) {
-
-		return definitionFinder.countByG_S_N_D_RN(
-			groupId, definitionName, description, GetterUtil.getLong(sourceId),
-			reportName, andSearch);
 	}
 
 	@Override

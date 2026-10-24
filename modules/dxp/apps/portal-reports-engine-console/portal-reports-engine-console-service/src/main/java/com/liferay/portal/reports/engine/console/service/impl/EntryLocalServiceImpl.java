@@ -34,7 +34,6 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.Localization;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SubscriptionSender;
@@ -67,7 +66,6 @@ import java.text.DateFormat;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -304,27 +302,6 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 		return _store.getFileNames(
 			entry.getCompanyId(), CompanyConstants.SYSTEM,
 			entry.getAttachmentsDir());
-	}
-
-	@Override
-	public List<Entry> getEntries(
-		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andSearch, int start, int end,
-		OrderByComparator<Entry> orderByComparator) {
-
-		return entryFinder.findByG_CD_N_SN(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andSearch, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getEntriesCount(
-		long groupId, String definitionName, String userName, Date createDateGT,
-		Date createDateLT, boolean andSearch) {
-
-		return entryFinder.countByG_CD_N_SN(
-			groupId, definitionName, userName, createDateGT, createDateLT,
-			andSearch);
 	}
 
 	@Override

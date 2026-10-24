@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.reports.engine.console.exception.SourceDriverClassNameException;
@@ -128,22 +127,6 @@ public class SourceLocalServiceImpl extends SourceLocalServiceBaseImpl {
 	@Override
 	public Source getSource(long sourceId) throws PortalException {
 		return sourcePersistence.findByPrimaryKey(sourceId);
-	}
-
-	@Override
-	public List<Source> getSources(
-		long groupId, String name, String driverUrl, boolean andSearch,
-		int start, int end, OrderByComparator<Source> orderByComparator) {
-
-		return sourceFinder.findByG_N_DU(
-			groupId, name, driverUrl, andSearch, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getSourcesCount(
-		long groupId, String name, String driverUrl, boolean andSearch) {
-
-		return sourceFinder.countByG_N_DU(groupId, name, driverUrl, andSearch);
 	}
 
 	@Override
