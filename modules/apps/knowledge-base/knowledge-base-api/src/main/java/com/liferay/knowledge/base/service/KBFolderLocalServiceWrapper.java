@@ -412,14 +412,6 @@ public class KBFolderLocalServiceWrapper
 
 	@Override
 	public java.util.List<Object> getKBFoldersAndKBArticles(
-		long groupId, long parentResourcePrimKey) {
-
-		return _kbFolderLocalService.getKBFoldersAndKBArticles(
-			groupId, parentResourcePrimKey);
-	}
-
-	@Override
-	public java.util.List<Object> getKBFoldersAndKBArticles(
 		long groupId, long parentResourcePrimKey, int status) {
 
 		return _kbFolderLocalService.getKBFoldersAndKBArticles(
@@ -630,4 +622,4 @@ public class KBFolderLocalServiceWrapper
 	private KBFolderLocalService _kbFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-529300596
+// LIFERAY-SERVICE-BUILDER-HASH:1398529210

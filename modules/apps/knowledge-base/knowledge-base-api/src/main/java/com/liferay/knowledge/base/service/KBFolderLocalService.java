@@ -316,10 +316,6 @@ public interface KBFolderLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Object> getKBFoldersAndKBArticles(
-		long groupId, long parentResourcePrimKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Object> getKBFoldersAndKBArticles(
 		long groupId, long parentResourcePrimKey, int status);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -439,4 +435,4 @@ public interface KBFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-156381018
+// LIFERAY-SERVICE-BUILDER-HASH:1585547994

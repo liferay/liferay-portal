@@ -368,13 +368,6 @@ public class KBFolderLocalServiceUtil {
 	}
 
 	public static List<Object> getKBFoldersAndKBArticles(
-		long groupId, long parentResourcePrimKey) {
-
-		return getService().getKBFoldersAndKBArticles(
-			groupId, parentResourcePrimKey);
-	}
-
-	public static List<Object> getKBFoldersAndKBArticles(
 		long groupId, long parentResourcePrimKey, int status) {
 
 		return getService().getKBFoldersAndKBArticles(
@@ -537,4 +530,4 @@ public class KBFolderLocalServiceUtil {
 			KBFolderLocalServiceUtil.class, KBFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2070313128
+// LIFERAY-SERVICE-BUILDER-HASH:-140310027
