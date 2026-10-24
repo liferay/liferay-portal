@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Shared Dependencies XML Sec
 Bundle-SymbolicName: com.liferay.shared.dependencies.xmlsec
-Bundle-Version: 2.0.0
+Bundle-Version: 2.0.1
 Import-Package:\
 	!jakarta.xml.bind.*,\
 	\
