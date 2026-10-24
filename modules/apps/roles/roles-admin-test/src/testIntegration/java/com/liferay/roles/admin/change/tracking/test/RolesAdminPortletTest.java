@@ -279,14 +279,15 @@ public class RolesAdminPortletTest {
 				entry.getKey(), entry.getValue());
 		}
 
-		ThemeDisplay themeDisplay = _getThemeDisplay();
-
 		mockLiferayPortletActionRequest.setAttribute(
 			PortletServlet.PORTLET_SERVLET_REQUEST,
 			mockLiferayPortletActionRequest.getHttpServletRequest());
 		mockLiferayPortletActionRequest.setAttribute(WebKeys.LAYOUT, _layout);
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.PORTLET_ID, RolesAdminPortletKeys.ROLES_ADMIN);
+
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
 		mockLiferayPortletActionRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 		mockLiferayPortletActionRequest.setAttribute(
@@ -307,16 +308,18 @@ public class RolesAdminPortletTest {
 	private ThemeDisplay _getThemeDisplay() throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
 		themeDisplay.setCompany(
 			_companyLocalService.getCompany(TestPropsValues.getCompanyId()));
 		themeDisplay.setLayout(_layout);
 		themeDisplay.setLayoutSet(_layout.getLayoutSet());
 		themeDisplay.setLayoutTypePortlet(
 			(LayoutTypePortlet)_layout.getLayoutType());
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
 		themeDisplay.setPermissionChecker(permissionChecker);
+
 		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
 		themeDisplay.setSiteGroupId(TestPropsValues.getGroupId());
 		themeDisplay.setUser(permissionChecker.getUser());
