@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Petra Concurrent
 Bundle-SymbolicName: com.liferay.petra.concurrent
-Bundle-Version: 5.1.9
+Bundle-Version: 5.1.10
 Export-Package: com.liferay.petra.concurrent
