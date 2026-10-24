@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Object Scripting Implementation
 Bundle-SymbolicName: com.liferay.object.scripting.impl
-Bundle-Version: 1.0.11
+Bundle-Version: 1.0.12
 DynamicImport-Package: *
