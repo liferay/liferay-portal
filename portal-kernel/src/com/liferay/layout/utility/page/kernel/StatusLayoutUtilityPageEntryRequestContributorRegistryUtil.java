@@ -6,8 +6,6 @@
 package com.liferay.layout.utility.page.kernel;
 
 import com.liferay.layout.utility.page.kernel.request.contributor.StatusLayoutUtilityPageEntryRequestContributor;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -38,13 +36,7 @@ public class StatusLayoutUtilityPageEntryRequestContributorRegistryUtil {
 			_layoutUtilityPageEntryViewRenderersServiceTrackerMap =
 				ServiceTrackerMapFactory.openSingleValueMap(
 					SystemBundleUtil.getBundleContext(),
-					(Class<StatusLayoutUtilityPageEntryRequestContributor>)
-						(Class)
-							StatusLayoutUtilityPageEntryRequestContributor.
-								class,
-					null,
-					new PropertyServiceReferenceMapper<>("utility.page.type"),
-					new PropertyServiceReferenceComparator<>(
-						"service.ranking"));
+					StatusLayoutUtilityPageEntryRequestContributor.class,
+					"utility.page.type");
 
 }
