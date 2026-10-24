@@ -330,59 +330,6 @@ public class DDLRecordLocalServiceUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the records matching the company,
-	 * workflow status, and scope.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil.ALL_POS</code> will return the
-	 * full result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the record's company
-	 * @param status the record's workflow status. For more information search
-	 the portal kernel's WorkflowConstants class for constants
-	 starting with the "STATUS_" prefix.
-	 * @param scope the record's scope. For more information search the
-	 dynamic-data-lists-api module's DDLRecordSetConstants class for
-	 constants starting with the "SCOPE_" prefix.
-	 * @param start the lower bound of the range of records to return
-	 * @param end the upper bound of the range of records to return (not
-	 inclusive)
-	 * @param orderByComparator the comparator to order the records
-	 * @return the range of matching records ordered by the comparator
-	 */
-	public static List<DDLRecord> getCompanyRecords(
-		long companyId, int status, int scope, int start, int end,
-		OrderByComparator<DDLRecord> orderByComparator) {
-
-		return getService().getCompanyRecords(
-			companyId, status, scope, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of records matching the company, workflow status, and
-	 * scope.
-	 *
-	 * @param companyId the primary key of the record's company
-	 * @param status the record's workflow status. For more information search
-	 the portal kernel's WorkflowConstants class for constants
-	 starting with the "STATUS_" prefix.
-	 * @param scope the record's scope. For more information search the
-	 dynamic-data-lists-api module's DDLRecordSetConstants class for
-	 constants starting with the "SCOPE_" prefix.
-	 * @return the number of matching records
-	 */
-	public static int getCompanyRecordsCount(
-		long companyId, int status, int scope) {
-
-		return getService().getCompanyRecordsCount(companyId, status, scope);
-	}
-
-	/**
 	 * Returns the ddl record with the primary key.
 	 *
 	 * @param recordId the primary key of the ddl record
@@ -491,21 +438,6 @@ public class DDLRecordLocalServiceUtil {
 			getIndexableActionableDynamicQuery() {
 
 		return getService().getIndexableActionableDynamicQuery();
-	}
-
-	public static Long[] getMinAndMaxCompanyRecordIds(
-		long companyId, int status, int scope) {
-
-		return getService().getMinAndMaxCompanyRecordIds(
-			companyId, status, scope);
-	}
-
-	public static List<DDLRecord> getMinAndMaxCompanyRecords(
-		long companyId, int status, int scope, long minRecordId,
-		long maxRecordId) {
-
-		return getService().getMinAndMaxCompanyRecords(
-			companyId, status, scope, minRecordId, maxRecordId);
 	}
 
 	/**
@@ -793,4 +725,4 @@ public class DDLRecordLocalServiceUtil {
 			DDLRecordLocalServiceUtil.class, DDLRecordLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1380414430
+// LIFERAY-SERVICE-BUILDER-HASH:1779975162

@@ -609,21 +609,6 @@ public class DDLRecordSetLocalServiceWrapper
 	}
 
 	/**
-	 * Returns the number of all the record sets belonging the group and
-	 * associated with the DDMStructure.
-	 *
-	 * @param groupId the primary key of the record set's group
-	 * @return the number of record sets belonging to the group
-	 */
-	@Override
-	public int getRecordSetsCount(
-		long groupId, long ddmStructureId, boolean andOperator) {
-
-		return _ddlRecordSetLocalService.getRecordSetsCount(
-			groupId, ddmStructureId, andOperator);
-	}
-
-	/**
 	 * Returns a range of all record sets matching the parameters, including a
 	 * keywords parameter for matching string values to the record set's name or
 	 * description.
@@ -667,54 +652,6 @@ public class DDLRecordSetLocalServiceWrapper
 	}
 
 	/**
-	 * Returns an ordered range of record sets. Company ID and group ID must be
-	 * matched. If the and operator is set to <code>true</code>, only record
-	 * sets with a matching name, description, and scope are returned. If the
-	 * and operator is set to <code>false</code>, only one parameter of name,
-	 * description, and scope is needed to return matching record sets.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil.ALL_POS</code> will return the
-	 * full result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the record set's company
-	 * @param groupId the primary key of the record set's group
-	 * @param name the name keywords (space separated, optionally
-	 <code>null</code>)
-	 * @param description the description keywords (space separated, optionally
-	 <code>null</code>)
-	 * @param scope the record set's scope. A constant used to scope the record
-	 set's data. For more information search the
-	 <code>dynamic.data.lists.api</code> module's
-	 <code>DDLRecordSetConstants</code> class for constants prefixed
-	 with "SCOPE_".
-	 * @param andOperator whether every field must match its value or keywords,
-	 or just one field must match. Company and group must match their
-	 values.
-	 * @param start the lower bound of the range of record sets to return
-	 * @param end the upper bound of the range of recor sets to return (not
-	 inclusive)
-	 * @param orderByComparator the comparator to order the record sets
-	 * @return the range of matching record sets ordered by the comparator
-	 */
-	@Override
-	public java.util.List<DDLRecordSet> search(
-		long companyId, long groupId, String name, String description,
-		int scope, boolean andOperator, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DDLRecordSet>
-			orderByComparator) {
-
-		return _ddlRecordSetLocalService.search(
-			companyId, groupId, name, description, scope, andOperator, start,
-			end, orderByComparator);
-	}
-
-	/**
 	 * Returns the number of record sets matching the parameters. The keywords
 	 * parameter is used for matching the record set's name or description
 	 *
@@ -738,39 +675,6 @@ public class DDLRecordSetLocalServiceWrapper
 
 		return _ddlRecordSetLocalService.searchCount(
 			companyId, groupId, keywords, scope);
-	}
-
-	/**
-	 * Returns the number of all record sets matching the parameters. name and
-	 * description keywords. Company ID and group ID must be matched. If the and
-	 * operator is set to <code>true</code>, only record sets with a matching
-	 * name, description, and scope are counted. If the and operator is set to
-	 * <code>false</code>, only one parameter of name, description, and scope is
-	 * needed to count matching record sets.
-	 *
-	 * @param companyId the primary key of the record set's company
-	 * @param groupId the primary key of the record set's group
-	 * @param name the name keywords (space separated). This can be
-	 <code>null</code>.
-	 * @param description the description keywords (space separated). This can
-	 be <code>null</code>.
-	 * @param scope the record set's scope. A constant used to scope the record
-	 set's data. For more information search the
-	 <code>dynamic.data.lists.api</code> module's
-	 <code>DDLRecordSetConstants</code> class for constants prefixed
-	 with "SCOPE_".
-	 * @param andOperator whether every field must match its value or keywords,
-	 or just one field must match. Company and group must match their
-	 values.
-	 * @return the number of matching record sets
-	 */
-	@Override
-	public int searchCount(
-		long companyId, long groupId, String name, String description,
-		int scope, boolean andOperator) {
-
-		return _ddlRecordSetLocalService.searchCount(
-			companyId, groupId, name, description, scope, andOperator);
 	}
 
 	/**
@@ -932,4 +836,4 @@ public class DDLRecordSetLocalServiceWrapper
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1624794640
+// LIFERAY-SERVICE-BUILDER-HASH:-823556513
