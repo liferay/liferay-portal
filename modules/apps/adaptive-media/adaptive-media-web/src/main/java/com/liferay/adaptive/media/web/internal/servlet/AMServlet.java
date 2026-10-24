@@ -11,6 +11,8 @@ import com.liferay.adaptive.media.exception.AMException;
 import com.liferay.adaptive.media.handler.AMRequestHandler;
 import com.liferay.adaptive.media.web.internal.constants.AMWebConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -32,7 +34,10 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -48,6 +53,19 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AMServlet extends HttpServlet {
 
+	@Activate
+	protected void activate(BundleContext bundleContext) {
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext,
+			(Class<AMRequestHandler<?>>)(Class<?>)AMRequestHandler.class,
+			"adaptive.media.handler.pattern");
+	}
+
+	@Deactivate
+	protected void deactivate() {
+		_serviceTrackerMap.close();
+	}
+
 	@Override
 	protected void doGet(
 			HttpServletRequest httpServletRequest,
@@ -56,7 +74,7 @@ public class AMServlet extends HttpServlet {
 
 		try {
 			AMRequestHandler<?> amRequestHandler =
-				_amRequestHandlerLocator.locateForPattern(
+				_serviceTrackerMap.getService(
 					_getRequestHandlerPattern(httpServletRequest));
 
 			if (amRequestHandler == null) {
@@ -195,9 +213,8 @@ public class AMServlet extends HttpServlet {
 		"^/([^/]*)");
 
 	@Reference
-	private AMRequestHandlerLocator _amRequestHandlerLocator;
-
-	@Reference
 	private DLAppLocalService _dlAppLocalService;
+
+	private ServiceTrackerMap<String, AMRequestHandler<?>> _serviceTrackerMap;
 
 }

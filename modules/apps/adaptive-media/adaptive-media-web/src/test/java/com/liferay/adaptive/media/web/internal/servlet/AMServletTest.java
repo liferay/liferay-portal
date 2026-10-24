@@ -6,6 +6,7 @@
 package com.liferay.adaptive.media.web.internal.servlet;
 
 import com.liferay.adaptive.media.handler.AMRequestHandler;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -35,7 +36,7 @@ public class AMServletTest {
 	@Before
 	public void setUp() {
 		ReflectionTestUtil.setFieldValue(
-			_amServlet, "_amRequestHandlerLocator", _amRequestHandlerLocator);
+			_amServlet, "_serviceTrackerMap", _serviceTrackerMap);
 	}
 
 	@Test
@@ -47,7 +48,7 @@ public class AMServletTest {
 		);
 
 		Mockito.when(
-			(AMRequestHandler<Object>)_amRequestHandlerLocator.locateForPattern(
+			(AMRequestHandler<Object>)_serviceTrackerMap.getService(
 				Mockito.anyString())
 		).thenReturn(
 			(AMRequestHandler<Object>)_amRequestHandler
@@ -78,7 +79,7 @@ public class AMServletTest {
 		);
 
 		Mockito.when(
-			(AMRequestHandler<Object>)_amRequestHandlerLocator.locateForPattern(
+			(AMRequestHandler<Object>)_serviceTrackerMap.getService(
 				Mockito.anyString())
 		).thenReturn(
 			(AMRequestHandler<Object>)_amRequestHandler
@@ -109,7 +110,7 @@ public class AMServletTest {
 		);
 
 		Mockito.when(
-			(AMRequestHandler<Object>)_amRequestHandlerLocator.locateForPattern(
+			(AMRequestHandler<Object>)_serviceTrackerMap.getService(
 				Mockito.anyString())
 		).thenReturn(
 			(AMRequestHandler<Object>)_amRequestHandler
@@ -140,7 +141,7 @@ public class AMServletTest {
 		);
 
 		Mockito.when(
-			(AMRequestHandler<Object>)_amRequestHandlerLocator.locateForPattern(
+			(AMRequestHandler<Object>)_serviceTrackerMap.getService(
 				Mockito.anyString())
 		).thenReturn(
 			(AMRequestHandler<Object>)_amRequestHandler
@@ -171,7 +172,7 @@ public class AMServletTest {
 		);
 
 		Mockito.when(
-			_amRequestHandlerLocator.locateForPattern(Mockito.anyString())
+			_serviceTrackerMap.getService(Mockito.anyString())
 		).thenReturn(
 			null
 		);
@@ -188,12 +189,12 @@ public class AMServletTest {
 
 	private final AMRequestHandler<?> _amRequestHandler = Mockito.mock(
 		AMRequestHandler.class);
-	private final AMRequestHandlerLocator _amRequestHandlerLocator =
-		Mockito.mock(AMRequestHandlerLocator.class);
 	private final AMServlet _amServlet = new AMServlet();
 	private final HttpServletRequest _httpServletRequest = Mockito.mock(
 		HttpServletRequest.class);
 	private final HttpServletResponse _httpServletResponse = Mockito.mock(
 		HttpServletResponse.class);
+	private final ServiceTrackerMap<String, AMRequestHandler<?>>
+		_serviceTrackerMap = Mockito.mock(ServiceTrackerMap.class);
 
 }
