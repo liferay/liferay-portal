@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.upgrade.data.cleanup.UserAllTablesOrphanReferencesDataCleanupPreupgradeProcess;
@@ -72,9 +73,9 @@ public class UserAllTablesOrphanReferencesDataCleanupPreupgradeProcessTest
 				StringBundler.concat(
 					"insert into Layout (mvccVersion, ctCollectionId, plid, ",
 					"groupId, companyId, userId, layoutId) values (0, 0, ",
-					RandomTestUtil.nextLong(), ", ", RandomTestUtil.nextLong(),
-					", ", _companyId, ", ", _userId, ", ",
-					RandomTestUtil.nextLong(), ")"));
+					RandomTestUtil.nextLong(), ", ",
+					TestPropsValues.getGroupId(), ", ", _companyId, ", ",
+					_userId, ", ", RandomTestUtil.nextLong(), ")"));
 			db.runSQL(
 				connection,
 				StringBundler.concat(
