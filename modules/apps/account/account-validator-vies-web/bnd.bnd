@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Account Validator VIES Web
 Bundle-SymbolicName: com.liferay.account.validator.vies.web
-Bundle-Version: 1.0.3
+Bundle-Version: 1.0.4
 Web-ContextPath: /account-validator-vies-web
