@@ -222,10 +222,7 @@ public class SharingPermissionImpl implements SharingPermission {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, SharingPermissionChecker.class,
-			"(model.class.name=*)",
-			(serviceReference, emitter) -> emitter.emit(
-				(String)serviceReference.getProperty("model.class.name")));
+			bundleContext, SharingPermissionChecker.class, "model.class.name");
 	}
 
 	@Deactivate

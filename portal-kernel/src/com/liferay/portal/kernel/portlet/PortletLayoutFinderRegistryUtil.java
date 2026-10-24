@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.List;
 
@@ -38,15 +37,7 @@ public class PortletLayoutFinderRegistryUtil {
 	private static final ServiceTrackerMap<String, List<PortletLayoutFinder>>
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			SystemBundleUtil.getBundleContext(), PortletLayoutFinder.class,
-			"(model.class.name=*)",
-			(serviceReference, emitter) -> {
-				for (String modelClassName :
-						StringUtil.asList(
-							serviceReference.getProperty("model.class.name"))) {
-
-					emitter.emit(modelClassName);
-				}
-			});
+			"model.class.name");
 
 	private static class CompositePortletLayoutFinder
 		implements PortletLayoutFinder {

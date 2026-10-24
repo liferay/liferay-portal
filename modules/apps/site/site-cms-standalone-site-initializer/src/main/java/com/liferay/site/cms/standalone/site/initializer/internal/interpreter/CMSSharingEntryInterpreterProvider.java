@@ -48,10 +48,7 @@ public class CMSSharingEntryInterpreterProvider
 		_sharingEntryInterpreter = new CMSAssetRendererSharingEntryInterpreter(
 			_assetEntryLocalService);
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, SharingEntryInterpreter.class,
-			"(model.class.name=*)",
-			(serviceReference, emitter) -> emitter.emit(
-				(String)serviceReference.getProperty("model.class.name")));
+			bundleContext, SharingEntryInterpreter.class, "model.class.name");
 	}
 
 	@Deactivate

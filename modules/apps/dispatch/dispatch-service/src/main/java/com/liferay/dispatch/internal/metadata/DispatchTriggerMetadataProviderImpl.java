@@ -54,10 +54,8 @@ public class DispatchTriggerMetadataProviderImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, DispatchTriggerMetadataFactory.class, null,
-			(serviceReference, emitter) -> emitter.emit(
-				(String)serviceReference.getProperty(
-					_KEY_DISPATCH_TASK_EXECUTOR_TYPE)));
+			bundleContext, DispatchTriggerMetadataFactory.class,
+			_KEY_DISPATCH_TASK_EXECUTOR_TYPE);
 	}
 
 	@Deactivate

@@ -29,10 +29,7 @@ public class AMRequestHandlerLocator {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			bundleContext,
 			(Class<AMRequestHandler<?>>)(Class<?>)AMRequestHandler.class,
-			"(adaptive.media.handler.pattern=*)",
-			(serviceReference, emitter) -> emitter.emit(
-				(String)serviceReference.getProperty(
-					"adaptive.media.handler.pattern")));
+			"adaptive.media.handler.pattern");
 	}
 
 	@Deactivate

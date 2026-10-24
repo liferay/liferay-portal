@@ -94,10 +94,7 @@ public class AMImageRequestHandlerTest {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
 			SystemBundleUtil.getBundleContext(),
 			(Class<AMRequestHandler<?>>)(Class<?>)AMRequestHandler.class,
-			"(adaptive.media.handler.pattern=*)",
-			(serviceReference, emitter) -> emitter.emit(
-				(String)serviceReference.getProperty(
-					"adaptive.media.handler.pattern")));
+			"adaptive.media.handler.pattern");
 
 		AMRequestHandler<?> amRequestHandler = _serviceTrackerMap.getService(
 			"image");

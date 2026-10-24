@@ -55,10 +55,7 @@ public class SharingEntryInterpreterProviderImpl
 				new AssetRendererSharingEntryEditRenderer(),
 				new AssetRendererSharingEntryViewRenderer(_servletContext));
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, SharingEntryInterpreter.class,
-			"(model.class.name=*)",
-			(serviceReference, emitter) -> emitter.emit(
-				(String)serviceReference.getProperty("model.class.name")));
+			bundleContext, SharingEntryInterpreter.class, "model.class.name");
 	}
 
 	@Deactivate
