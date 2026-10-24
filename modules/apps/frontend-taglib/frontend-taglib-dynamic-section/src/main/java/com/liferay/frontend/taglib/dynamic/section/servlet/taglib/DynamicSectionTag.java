@@ -7,7 +7,8 @@ package com.liferay.frontend.taglib.dynamic.section.servlet.taglib;
 
 import com.liferay.frontend.taglib.dynamic.section.DynamicSection;
 import com.liferay.frontend.taglib.dynamic.section.DynamicSectionReplace;
-import com.liferay.frontend.taglib.dynamic.section.internal.util.DynamicSectionUtil;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.taglib.BaseBodyTagSupport;
 
@@ -17,6 +18,10 @@ import jakarta.servlet.jsp.JspWriter;
 import jakarta.servlet.jsp.tagext.BodyTag;
 
 import java.util.List;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Matthew Tambara
@@ -67,14 +72,15 @@ public class DynamicSectionTag extends BaseBodyTagSupport implements BodyTag {
 
 	@Override
 	public int doStartTag() {
-		_dynamicSectionReplace = DynamicSectionUtil.getReplace(_name);
+		_dynamicSectionReplace =
+			_dynamicSectionReplaceServiceTrackerMap.getService(_name);
 
 		if (_dynamicSectionReplace != null) {
 			return SKIP_BODY;
 		}
 
-		List<DynamicSection> dynamicSections = DynamicSectionUtil.getServices(
-			_name);
+		List<DynamicSection> dynamicSections =
+			_dynamicSectionServiceTrackerMap.getService(_name);
 
 		if ((dynamicSections != null) && !dynamicSections.isEmpty()) {
 			_dynamicSections = dynamicSections;
@@ -91,6 +97,25 @@ public class DynamicSectionTag extends BaseBodyTagSupport implements BodyTag {
 
 	private static final String _PREFIX =
 		DynamicSectionTag.class.getName() + "#";
+
+	private static final ServiceTrackerMap<String, DynamicSectionReplace>
+		_dynamicSectionReplaceServiceTrackerMap;
+	private static final ServiceTrackerMap<String, List<DynamicSection>>
+		_dynamicSectionServiceTrackerMap;
+
+	static {
+		Bundle bundle = FrameworkUtil.getBundle(DynamicSectionTag.class);
+
+		_dynamicSectionReplaceServiceTrackerMap =
+			ServiceTrackerMapFactory.openSingleValueMap(
+				bundle.getBundleContext(), DynamicSectionReplace.class, "name");
+		_dynamicSectionServiceTrackerMap =
+			ServiceTrackerMapFactory.openMultiValueMap(
+				bundle.getBundleContext(), DynamicSection.class, "(name=*)",
+				(serviceReference, emitter) -> emitter.emit(
+					(String)serviceReference.getProperty("name")),
+				ServiceReference::compareTo);
+	}
 
 	private DynamicSectionReplace _dynamicSectionReplace;
 	private List<DynamicSection> _dynamicSections;

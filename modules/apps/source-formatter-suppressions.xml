@@ -21,7 +21,6 @@
 		<suppress checks="ComponentExposureCheck" files="frontend-taglib/frontend-taglib-clay/src/main/java/com/liferay/frontend/taglib/clay/internal/ClayTagContextContributorsProvider\.java" />
 		<suppress checks="ComponentExposureCheck" files="frontend-taglib/frontend-taglib-clay/src/main/java/com/liferay/frontend/taglib/clay/internal/js/loader/modules/extender/npm/NPMResolverProvider\.java" />
 		<suppress checks="ComponentExposureCheck" files="frontend-taglib/frontend-taglib-clay/src/main/java/com/liferay/frontend/taglib/clay/internal/servlet/ServletContextUtil\.java" />
-		<suppress checks="ComponentExposureCheck" files="frontend-taglib/frontend-taglib-dynamic-section/src/main/java/com/liferay/frontend/taglib/dynamic/section/internal/util/DynamicSectionUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="image-uploader/image-uploader-web/src/main/java/com/liferay/image/uploader/web/internal/util/UploadImageUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="info/info-taglib/src/main/java/com/liferay/info/taglib/internal/servlet/ServletContextUtil\.java" />
 		<suppress checks="ComponentExposureCheck" files="item-selector/item-selector-taglib/src/main/java/com/liferay/item/selector/taglib/internal/servlet/ServletContextUtil\.java" />
