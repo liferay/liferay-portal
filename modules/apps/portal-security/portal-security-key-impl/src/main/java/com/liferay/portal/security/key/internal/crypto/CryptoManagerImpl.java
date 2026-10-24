@@ -5,7 +5,6 @@
 
 package com.liferay.portal.security.key.internal.crypto;
 
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -463,8 +462,7 @@ public class CryptoManagerImpl implements CryptoManager {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
-			bundleContext, CryptoProvider.class, "(crypto.provider.id=*)",
-			new PropertyServiceReferenceMapper<>("crypto.provider.id"));
+			bundleContext, CryptoProvider.class, "crypto.provider.id");
 	}
 
 	@Deactivate

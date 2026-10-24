@@ -5,7 +5,6 @@
 
 package com.liferay.portal.security.key.internal.secret;
 
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -200,8 +199,7 @@ public class SecretManagerImpl implements SecretManager {
 			SecretResolverImpl.PORTAL_CACHE_NAME);
 
 		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
-			bundleContext, SecretProvider.class, "(secret.provider.id=*)",
-			new PropertyServiceReferenceMapper<>("secret.provider.id"));
+			bundleContext, SecretProvider.class, "secret.provider.id");
 	}
 
 	@Deactivate

@@ -8,7 +8,6 @@ package com.liferay.site.navigation.internal.type;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
@@ -68,9 +67,8 @@ public class SiteNavigationMenuItemTypeRegistryImpl
 			bundleContext, SiteNavigationMenuItemType.class,
 			new PropertyServiceReferenceComparator<>("service.ranking"));
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, SiteNavigationMenuItemType.class, null,
-			new PropertyServiceReferenceMapper<>(
-				"site.navigation.menu.item.type"));
+			bundleContext, SiteNavigationMenuItemType.class,
+			"site.navigation.menu.item.type");
 	}
 
 	@Deactivate

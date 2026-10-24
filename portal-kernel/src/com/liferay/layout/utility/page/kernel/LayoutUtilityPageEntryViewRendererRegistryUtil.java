@@ -5,7 +5,6 @@
 
 package com.liferay.layout.utility.page.kernel;
 
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -51,7 +50,6 @@ public class LayoutUtilityPageEntryViewRendererRegistryUtil {
 			_layoutUtilityPageEntryViewRenderersServiceTrackerMap =
 				ServiceTrackerMapFactory.openSingleValueMap(
 					_bundleContext, LayoutUtilityPageEntryViewRenderer.class,
-					null,
-					new PropertyServiceReferenceMapper<>("utility.page.type"));
+					"utility.page.type");
 
 }
