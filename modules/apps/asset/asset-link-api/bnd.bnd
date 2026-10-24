@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Asset Link API
 Bundle-SymbolicName: com.liferay.asset.link.api
-Bundle-Version: 5.0.0
+Bundle-Version: 5.0.1
 Export-Package:\
 	com.liferay.asset.link.constants,\
 	com.liferay.asset.link.exception,\
