@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Site Navigation Language Web
 Bundle-SymbolicName: com.liferay.site.navigation.language.web
-Bundle-Version: 7.0.55
+Bundle-Version: 7.0.56
 Web-ContextPath: /site-navigation-language-web
