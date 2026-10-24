@@ -44,15 +44,15 @@ public class ConfigurationVisibilityUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Bundle bundle = FrameworkUtil.getBundle(
+		Bundle bundle1 = FrameworkUtil.getBundle(
 			ConfigurationVisibilityUtilTest.class);
 
-		_bundleContext = bundle.getBundleContext();
+		_bundleContext = bundle1.getBundleContext();
 
-		Bundle webBundle = BundleUtil.getBundle(
+		Bundle bundle2 = BundleUtil.getBundle(
 			_bundleContext, "com.liferay.configuration.admin.web");
 
-		_configurationVisibilityUtilClass = webBundle.loadClass(
+		_configurationVisibilityUtilClass = bundle2.loadClass(
 			"com.liferay.configuration.admin.web.internal.util." +
 				"ConfigurationVisibilityUtil");
 	}
