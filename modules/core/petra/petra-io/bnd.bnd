@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Petra IO
 Bundle-SymbolicName: com.liferay.petra.io
-Bundle-Version: 5.0.21
+Bundle-Version: 5.0.22
 Export-Package:\
 	com.liferay.petra.io,\
 	com.liferay.petra.io.constants,\
