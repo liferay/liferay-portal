@@ -119,37 +119,6 @@
 				(CommerceOrderItem.parentCommerceOrderItemId = 0)
 		]]>
 	</sql>
-	<sql id="com.liferay.commerce.service.persistence.CommerceOrderItemFinder.getCPInstanceQuantity">
-		<![CDATA[
-			SELECT
-				SUM(CommerceOrderItem.quantity) AS SUM_VALUE
-			FROM
-				CommerceOrderItem
-			INNER JOIN
-				CommerceOrder ON
-					CommerceOrderItem.commerceOrderId = CommerceOrder.commerceOrderId
-			LEFT JOIN
-				CommerceShipmentItem ON
-					CommerceShipmentItem.commerceOrderItemId = CommerceOrderItem.commerceOrderItemId
-			WHERE
-				(CommerceOrderItem.CPInstanceId = ?) AND
-				(CommerceShipmentItem.commerceOrderItemId IS NULL) AND
-				(CommerceOrder.status <> ?)
-		]]>
-	</sql>
-	<sql id="com.liferay.commerce.service.persistence.CommerceShipmentItemFinder.findByCommerceOrderItemId">
-		<![CDATA[
-			SELECT
-				CommerceShipmentItem.*
-			FROM
-				CommerceShipmentItem
-			INNER JOIN
-				CommerceOrderItem ON
-					CommerceOrderItem.commerceOrderItemId = CommerceShipmentItem.commerceOrderItemId
-			WHERE
-				CommerceOrderItem.commerceOrderItemId = ?
-		]]>
-	</sql>
 	<sql id="com.liferay.commerce.service.persistence.CommerceShipmentItemFinder.getCommerceShipmentOrderItemsQuantity">
 		<![CDATA[
 			SELECT
