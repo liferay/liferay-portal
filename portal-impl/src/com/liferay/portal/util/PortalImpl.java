@@ -11,10 +11,12 @@ import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
-import com.liferay.layout.utility.page.kernel.StatusLayoutUtilityPageEntryRequestContributorRegistryUtil;
+import com.liferay.layout.utility.page.kernel.LayoutUtilityPageEntryTypeUtil;
 import com.liferay.layout.utility.page.kernel.request.contributor.StatusLayoutUtilityPageEntryRequestContributor;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.io.BigEndianCodec;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
@@ -532,6 +534,10 @@ public class PortalImpl implements Portal {
 			_bundleContext, AlwaysAllowDoAsUser.class);
 		_portalInetSocketAddressEventListeners = ServiceTrackerListFactory.open(
 			_bundleContext, PortalInetSocketAddressEventListener.class);
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			_bundleContext,
+			StatusLayoutUtilityPageEntryRequestContributor.class,
+			"utility.page.type");
 	}
 
 	@Override
@@ -6125,9 +6131,7 @@ public class PortalImpl implements Portal {
 
 			StatusLayoutUtilityPageEntryRequestContributor
 				statusLayoutUtilityPageEntryRequestContributor =
-					StatusLayoutUtilityPageEntryRequestContributorRegistryUtil.
-						getStatusLayoutUtilityPageEntryRequestContributor(
-							status);
+					_getStatusLayoutUtilityPageEntryRequestContributor(status);
 
 			if (statusLayoutUtilityPageEntryRequestContributor != null) {
 				statusLayoutUtilityPageEntryRequestContributor.
@@ -8357,6 +8361,20 @@ public class PortalImpl implements Portal {
 		return group;
 	}
 
+	private StatusLayoutUtilityPageEntryRequestContributor
+		_getStatusLayoutUtilityPageEntryRequestContributor(int status) {
+
+		String layoutUtilityPageEntryType =
+			LayoutUtilityPageEntryTypeUtil.getStatusLayoutUtilityPageEntryType(
+				status);
+
+		if (Validator.isNull(layoutUtilityPageEntryType)) {
+			return null;
+		}
+
+		return _serviceTrackerMap.getService(layoutUtilityPageEntryType);
+	}
+
 	private long _getStrictVirtualHostBlockedPlid(
 		HttpServletRequest httpServletRequest) {
 
@@ -8708,6 +8726,9 @@ public class PortalImpl implements Portal {
 		_securePortalLocalInetSocketAddress = new AtomicReference<>();
 	private final AtomicReference<InetSocketAddress>
 		_securePortalServerInetSocketAddress = new AtomicReference<>();
+	private final ServiceTrackerMap
+		<String, StatusLayoutUtilityPageEntryRequestContributor>
+			_serviceTrackerMap;
 	private final String _servletContextName;
 	private final String[] _sortedSystemGroups;
 	private final String[] _sortedSystemOrganizationRoles;

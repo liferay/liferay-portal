@@ -5,7 +5,6 @@
 
 package com.liferay.portal.util;
 
-import com.liferay.layout.utility.page.kernel.StatusLayoutUtilityPageEntryRequestContributorRegistryUtil;
 import com.liferay.petra.io.BigEndianCodec;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -896,12 +895,7 @@ public class PortalImplUnitTest {
 				portalSessionThreadLocalMockedStatic = Mockito.mockStatic(
 					PortalSessionThreadLocal.class);
 			MockedStatic<SessionErrors> sessionErrorsMockedStatic =
-				Mockito.mockStatic(SessionErrors.class);
-			MockedStatic
-				<StatusLayoutUtilityPageEntryRequestContributorRegistryUtil>
-					statusLayoutUtilityPageEntryRequestContributorRegistryUtilMockedStatic =
-						Mockito.mockStatic(
-							StatusLayoutUtilityPageEntryRequestContributorRegistryUtil.class)) {
+				Mockito.mockStatic(SessionErrors.class)) {
 
 			portalSessionThreadLocalMockedStatic.when(
 				PortalSessionThreadLocal::getHttpSession
