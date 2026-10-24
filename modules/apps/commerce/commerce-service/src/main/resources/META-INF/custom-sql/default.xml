@@ -185,21 +185,4 @@
 				(CommerceSubscriptionEntry.subscriptionStatus = 0)
 		]]>
 	</sql>
-	<sql id="com.liferay.commerce.service.persistence.CommerceSubscriptionEntryFinder.findByA_S">
-		<![CDATA[
-			SELECT
-				CommerceSubscriptionEntry.*
-			FROM
-				CommerceSubscriptionEntry
-			INNER JOIN
-				CommerceOrderItem ON
-					CommerceOrderItem.commerceOrderItemId = CommerceSubscriptionEntry.commerceOrderItemId
-			INNER JOIN
-				CommerceOrder ON
-					CommerceOrder.commerceOrderId = CommerceOrderItem.commerceOrderId
-			WHERE
-				(CommerceOrder.commerceAccountId = ?) AND
-				(CommerceSubscriptionEntry.subscriptionStatus = ?)
-		]]>
-	</sql>
 </custom-sql>

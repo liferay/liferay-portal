@@ -37,9 +37,6 @@ public class CommerceSubscriptionEntryFinderImpl
 		CommerceSubscriptionEntryFinder.class.getName() +
 			".findByNextIterationDate";
 
-	public static final String FIND_BY_A_S =
-		CommerceSubscriptionEntryFinder.class.getName() + ".findByA_S";
-
 	@Override
 	public List<CommerceSubscriptionEntry> findByDeliveryNextIterationDate(
 		Date nextIterationDate) {
@@ -98,39 +95,6 @@ public class CommerceSubscriptionEntryFinderImpl
 			if (nextIterationDate != null) {
 				queryPos.add(nextIterationDate);
 			}
-
-			return (List<CommerceSubscriptionEntry>)QueryUtil.list(
-				sqlQuery, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public List<CommerceSubscriptionEntry> findByA_S(
-		long commerceAccountId, long subscriptionStatus) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = _customSQL.get(getClass(), FIND_BY_A_S);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				CommerceSubscriptionEntryImpl.TABLE_NAME,
-				CommerceSubscriptionEntryImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(commerceAccountId);
-			queryPos.add(subscriptionStatus);
 
 			return (List<CommerceSubscriptionEntry>)QueryUtil.list(
 				sqlQuery, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
