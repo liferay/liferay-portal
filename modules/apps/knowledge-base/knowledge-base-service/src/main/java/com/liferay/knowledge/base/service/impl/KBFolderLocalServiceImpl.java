@@ -251,14 +251,6 @@ public class KBFolderLocalServiceImpl extends KBFolderLocalServiceBaseImpl {
 
 	@Override
 	public List<Object> getKBFoldersAndKBArticles(
-		long groupId, long parentResourcePrimKey) {
-
-		return getKBFoldersAndKBArticles(
-			groupId, parentResourcePrimKey, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
-	public List<Object> getKBFoldersAndKBArticles(
 		long groupId, long parentResourcePrimKey, int status) {
 
 		QueryDefinition<?> queryDefinition = new QueryDefinition<>(status);
