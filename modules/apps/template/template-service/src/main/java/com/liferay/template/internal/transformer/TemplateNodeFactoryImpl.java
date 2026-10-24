@@ -8,8 +8,6 @@ package com.liferay.template.internal.transformer;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.InfoFieldType;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceComparator;
-import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.portal.kernel.templateparser.TemplateNode;
@@ -48,12 +46,8 @@ public class TemplateNodeFactoryImpl implements TemplateNodeFactory {
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext,
-			(Class<TemplateNodeTransformer>)
-				(Class)TemplateNodeTransformer.class,
-			null,
-			new PropertyServiceReferenceMapper<>("info.field.type.class.name"),
-			new PropertyServiceReferenceComparator<>("service.ranking"));
+			bundleContext, TemplateNodeTransformer.class,
+			"info.field.type.class.name");
 	}
 
 	@Deactivate
