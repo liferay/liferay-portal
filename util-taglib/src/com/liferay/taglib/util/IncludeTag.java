@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.util;
 
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
@@ -12,13 +14,13 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.log.LogUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Theme;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.PortletBag;
 import com.liferay.portal.kernel.portlet.PortletBagPool;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.servlet.DirectRequestDispatcherFactoryUtil;
 import com.liferay.portal.kernel.servlet.FileAvailabilityUtil;
 import com.liferay.portal.kernel.servlet.taglib.TagDynamicIdFactory;
-import com.liferay.portal.kernel.servlet.taglib.TagDynamicIdFactoryRegistry;
 import com.liferay.portal.kernel.servlet.taglib.TagDynamicIncludeUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.CustomJspRegistryUtil;
@@ -341,7 +343,7 @@ public class IncludeTag extends AttributesTagSupport {
 		}
 
 		TagDynamicIdFactory tagDynamicIdFactory =
-			TagDynamicIdFactoryRegistry.getTagDynamicIdFactory(tagClassName);
+			_tagDynamicIdFactories.getService(tagClassName);
 
 		HttpServletRequest httpServletRequest = getRequest();
 
@@ -534,6 +536,11 @@ public class IncludeTag extends AttributesTagSupport {
 			PropsUtil.get(PropsKeys.THEME_JSP_OVERRIDE_ENABLED));
 
 	private static final Log _log = LogFactoryUtil.getLog(IncludeTag.class);
+
+	private static final ServiceTrackerMap<String, TagDynamicIdFactory>
+		_tagDynamicIdFactories = ServiceTrackerMapFactory.openSingleValueMap(
+			SystemBundleUtil.getBundleContext(), TagDynamicIdFactory.class,
+			"tagClassName");
 
 	private String _page;
 	private Set<String> _setAttributeNames;
