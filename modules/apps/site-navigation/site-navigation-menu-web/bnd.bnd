@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Site Navigation Menu Web
 Bundle-SymbolicName: com.liferay.site.navigation.menu.web
-Bundle-Version: 6.0.87
+Bundle-Version: 6.0.88
 Liferay-JS-Config: /META-INF/resources/js/legacy/config.js
 Web-ContextPath: /site-navigation-menu-web
