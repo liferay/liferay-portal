@@ -5,7 +5,6 @@
 
 package com.liferay.translation.internal.exporter;
 
-import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapperFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.translation.exporter.TranslationInfoItemFieldValuesExporter;
@@ -42,12 +41,8 @@ public class TranslationInfoItemFieldValuesExporterRegistryImpl
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
-			bundleContext, TranslationInfoItemFieldValuesExporter.class, null,
-			ServiceReferenceMapperFactory.create(
-				bundleContext,
-				(translationInfoItemFieldValuesExporter, emitter) ->
-					emitter.emit(
-						translationInfoItemFieldValuesExporter.getMimeType())));
+			bundleContext, TranslationInfoItemFieldValuesExporter.class,
+			"content.type");
 	}
 
 	@Deactivate
