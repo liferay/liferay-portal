@@ -101,9 +101,7 @@ public class FDSSampleDisplayContext {
 	private FDSVisualizationModeCET _getFDSVisualizationModeCET()
 		throws Exception {
 
-		// Use the UI client extension if available
-
-		List<FDSVisualizationModeCET> fdsVisualizationModeCETs =
+\		List<FDSVisualizationModeCET> fdsVisualizationModeCETs =
 			(List)_cetManager.getCETs(
 				CompanyThreadLocal.getCompanyId(), null,
 				ClientExtensionEntryConstants.TYPE_FDS_VISUALIZATION_MODE,
@@ -116,8 +114,6 @@ public class FDSSampleDisplayContext {
 				return fdsVisualizationModeCET;
 			}
 		}
-
-		// Use the workspace client extension if available
 
 		for (FDSVisualizationModeCET fdsVisualizationModeCET :
 				fdsVisualizationModeCETs) {
