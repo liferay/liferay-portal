@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Headless Builder Web
 Bundle-SymbolicName: com.liferay.headless.builder.web
-Bundle-Version: 1.0.61
+Bundle-Version: 1.0.62
 Web-ContextPath: /headless-builder-web
