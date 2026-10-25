@@ -371,10 +371,6 @@ public interface DLFileEntryLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFileEntry> getDDMStructureFileEntries(
-		long groupId, long[] ddmStructureIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLFileEntry> getDDMStructureFileEntries(long[] ddmStructureIds);
 
 	/**
@@ -527,11 +523,6 @@ public interface DLFileEntryLocalService
 		QueryDefinition<DLFileEntry> queryDefinition);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFileEntriesCount(
-		long groupId, long userId, List<Long> folderIds, String[] mimeTypes,
-		QueryDefinition<DLFileEntry> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DLFileEntry getFileEntry(long fileEntryId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -560,11 +551,6 @@ public interface DLFileEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Map<Long, Long> getFileEntryTypeIds(
 		long companyId, long[] groupIds, String treePath);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, long rootFolderId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLFileEntry> getGroupFileEntries(
@@ -721,4 +707,4 @@ public interface DLFileEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-342129007
+// LIFERAY-SERVICE-BUILDER-HASH:-1719352316

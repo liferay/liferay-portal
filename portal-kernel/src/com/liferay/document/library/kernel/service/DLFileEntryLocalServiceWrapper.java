@@ -520,14 +520,6 @@ public class DLFileEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<DLFileEntry> getDDMStructureFileEntries(
-		long groupId, long[] ddmStructureIds) {
-
-		return _dlFileEntryLocalService.getDDMStructureFileEntries(
-			groupId, ddmStructureIds);
-	}
-
-	@Override
-	public java.util.List<DLFileEntry> getDDMStructureFileEntries(
 		long[] ddmStructureIds) {
 
 		return _dlFileEntryLocalService.getDDMStructureFileEntries(
@@ -781,17 +773,6 @@ public class DLFileEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getFileEntriesCount(
-		long groupId, long userId, java.util.List<Long> folderIds,
-		String[] mimeTypes,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<DLFileEntry>
-			queryDefinition) {
-
-		return _dlFileEntryLocalService.getFileEntriesCount(
-			groupId, userId, folderIds, mimeTypes, queryDefinition);
-	}
-
-	@Override
 	public DLFileEntry getFileEntry(long fileEntryId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -846,16 +827,6 @@ public class DLFileEntryLocalServiceWrapper
 
 		return _dlFileEntryLocalService.getFileEntryTypeIds(
 			companyId, groupIds, treePath);
-	}
-
-	@Override
-	public java.util.List<DLFileEntry> getGroupFileEntries(
-		long groupId, long userId, long rootFolderId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DLFileEntry>
-			orderByComparator) {
-
-		return _dlFileEntryLocalService.getGroupFileEntries(
-			groupId, userId, rootFolderId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -1166,4 +1137,4 @@ public class DLFileEntryLocalServiceWrapper
 	private DLFileEntryLocalService _dlFileEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1899145284
+// LIFERAY-SERVICE-BUILDER-HASH:1796900128
