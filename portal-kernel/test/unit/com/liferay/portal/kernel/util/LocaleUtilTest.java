@@ -5,6 +5,7 @@
 
 package com.liferay.portal.kernel.util;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.test.log.LogCapture;
@@ -286,6 +287,34 @@ public class LocaleUtilTest {
 			"catal\u00e0 (Espanya, valenci\u00e0)",
 			LocaleUtil.getLongDisplayName(
 				catalanValenciaLocale, duplicateLanguages));
+	}
+
+	@Test
+	public void testToJSONString() {
+		Locale defaultDisplayLocale = Locale.getDefault(
+			Locale.Category.DISPLAY);
+
+		Locale.setDefault(Locale.Category.DISPLAY, Locale.US);
+
+		try {
+			String json = LocaleUtil.toJSONString(Locale.US);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"{\"country\": \"US\", \"displayCountry\": \"United ",
+					"States\", \"displayLanguage\": \"English\", ",
+					"\"displayName\": \"English (United States)\", ",
+					"\"displayScript\": \"\", \"displayVariant\": \"\", ",
+					"\"extensionKeys\":[],\"ISO3Country\": \"USA\", ",
+					"\"ISO3Language\": \"eng\", \"language\": \"en\", ",
+					"\"script\": \"\", \"unicodeLocaleAttributes\":[], ",
+					"\"unicodeLocaleKeys\":[], \"variant\": \"\"}"),
+				json);
+			Assert.assertSame(json, LocaleUtil.toJSONString(Locale.US));
+		}
+		finally {
+			Locale.setDefault(Locale.Category.DISPLAY, defaultDisplayLocale);
+		}
 	}
 
 }
