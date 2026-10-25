@@ -66,17 +66,11 @@ test(
 				},
 			]);
 
-		await expect
-			.poll(
-				async () => {
-					const currentImportTask =
-						await headlessBatchEngine.getImportTask(importTask.id);
+		const finishedImportTask = await headlessBatchEngine.waitForImportTask(
+			importTask.id
+		);
 
-					return currentImportTask.executeStatus;
-				},
-				{intervals: [1000], timeout: 180 * 1000}
-			)
-			.toBe('FAILED');
+		expect(finishedImportTask.executeStatus).toBe('FAILED');
 
 		await notificationsPage.goto();
 

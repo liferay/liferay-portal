@@ -61,6 +61,7 @@ export class HeadlessPortalInstanceApiHelper {
 				data: portalInstanceIds.map((portalInstanceId) => ({
 					portalInstanceId,
 				})),
+				failOnStatusCode: true,
 			}
 		);
 
