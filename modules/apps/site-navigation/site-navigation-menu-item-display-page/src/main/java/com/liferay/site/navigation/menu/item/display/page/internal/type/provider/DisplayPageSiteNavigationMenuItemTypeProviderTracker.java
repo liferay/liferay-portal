@@ -33,6 +33,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -179,7 +180,7 @@ public class DisplayPageSiteNavigationMenuItemTypeProviderTracker {
 							_itemSelector, _jspRenderer, _portal,
 							_servletContext),
 						HashMapDictionaryBuilder.<String, Object>put(
-							"service.ranking:Integer", "300"
+							Constants.SERVICE_RANKING, 300
 						).put(
 							"site.navigation.menu.item.type", className
 						).build()));
