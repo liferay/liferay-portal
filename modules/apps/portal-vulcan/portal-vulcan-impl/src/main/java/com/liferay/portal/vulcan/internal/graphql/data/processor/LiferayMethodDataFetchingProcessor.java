@@ -8,6 +8,7 @@ package com.liferay.portal.vulcan.internal.graphql.data.processor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Company;
@@ -79,6 +80,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.jaxrs.impl.UriInfoImpl;
@@ -86,16 +88,13 @@ import org.apache.cxf.message.ExchangeImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-
 /**
  * @author Carlos Correa
  */
 public class LiferayMethodDataFetchingProcessor {
 
 	public LiferayMethodDataFetchingProcessor(
-		BundleContext bundleContext, CompanyLocalService companyLocalService,
+		CompanyLocalService companyLocalService,
 		DepotEntryLocalService depotEntryLocalService,
 		ExpressionConvert<Filter> expressionConvert,
 		FeatureFlagChecker featureFlagChecker,
@@ -107,11 +106,11 @@ public class LiferayMethodDataFetchingProcessor {
 		ResourceActionLocalService resourceActionLocalService,
 		ResourcePermissionLocalService resourcePermissionLocalService,
 		RoleLocalService roleLocalService,
+		Supplier<ScopeChecker> scopeCheckerSupplier,
 		SortParserProvider sortParserProvider,
 		VulcanBatchEngineImportTaskResourceFactory
 			vulcanBatchEngineImportTaskResourceFactory) {
 
-		_bundleContext = bundleContext;
 		_companyLocalService = companyLocalService;
 		_depotEntryLocalService = depotEntryLocalService;
 		_expressionConvert = expressionConvert;
@@ -126,6 +125,7 @@ public class LiferayMethodDataFetchingProcessor {
 		_resourceActionLocalService = resourceActionLocalService;
 		_resourcePermissionLocalService = resourcePermissionLocalService;
 		_roleLocalService = roleLocalService;
+		_scopeCheckerSupplier = scopeCheckerSupplier;
 		_sortParserProvider = sortParserProvider;
 		_vulcanBatchEngineImportTaskResourceFactory =
 			vulcanBatchEngineImportTaskResourceFactory;
@@ -388,7 +388,7 @@ public class LiferayMethodDataFetchingProcessor {
 
 				field.setAccessible(true);
 
-				field.set(instance, _getScopeChecker());
+				field.set(instance, _scopeCheckerSupplier.get());
 
 				continue;
 			}
@@ -675,18 +675,6 @@ public class LiferayMethodDataFetchingProcessor {
 		return null;
 	}
 
-	private Object _getScopeChecker() {
-		ServiceReference<?> serviceReference =
-			_bundleContext.getServiceReference(
-				"com.liferay.oauth2.provider.scope.ScopeChecker");
-
-		if (serviceReference != null) {
-			return _bundleContext.getService(serviceReference);
-		}
-
-		return null;
-	}
-
 	private Object _getService(Class<?> clazz) {
 		for (Object service : _graphQLContributorServiceTrackerList) {
 			if (clazz.isAssignableFrom(service.getClass())) {
@@ -697,7 +685,6 @@ public class LiferayMethodDataFetchingProcessor {
 		return null;
 	}
 
-	private final BundleContext _bundleContext;
 	private final CompanyLocalService _companyLocalService;
 	private final DepotEntryLocalService _depotEntryLocalService;
 	private final ExpressionConvert<Filter> _expressionConvert;
@@ -713,6 +700,7 @@ public class LiferayMethodDataFetchingProcessor {
 	private final ResourcePermissionLocalService
 		_resourcePermissionLocalService;
 	private final RoleLocalService _roleLocalService;
+	private final Supplier<ScopeChecker> _scopeCheckerSupplier;
 	private final SortParserProvider _sortParserProvider;
 	private final VulcanBatchEngineImportTaskResourceFactory
 		_vulcanBatchEngineImportTaskResourceFactory;

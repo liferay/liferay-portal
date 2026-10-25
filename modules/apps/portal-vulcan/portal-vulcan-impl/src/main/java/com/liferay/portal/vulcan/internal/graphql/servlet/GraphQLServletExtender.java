@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.oauth2.provider.scope.ScopeChecker;
 import com.liferay.osgi.service.tracker.collections.EagerServiceTrackerCustomizer;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -598,12 +600,13 @@ public class GraphQLServletExtender {
 
 		_liferayMethodDataFetchingProcessor =
 			new LiferayMethodDataFetchingProcessor(
-				_bundleContext, _companyLocalService, _depotEntryLocalService,
+				_companyLocalService, _depotEntryLocalService,
 				_expressionConvert, _featureFlagChecker, _filterParserProvider,
 				_graphQLContributorServiceTrackerList, _groupLocalService,
 				_language, _paginationProvider, _portal,
 				_resourceActionLocalService, _resourcePermissionLocalService,
-				_roleLocalService, _sortParserProvider,
+				_roleLocalService, _scopeCheckerSnapshot::get,
+				_sortParserProvider,
 				_vulcanBatchEngineImportTaskResourceFactory);
 
 		_servletContextHelperServiceRegistration =
@@ -1970,6 +1973,8 @@ public class GraphQLServletExtender {
 	private static final GraphQLScalarType _dateGraphQLScalarType;
 	private static final GraphQLScalarType _mapGraphQLScalarType;
 	private static final GraphQLScalarType _objectGraphQLScalarType;
+	private static final Snapshot<ScopeChecker> _scopeCheckerSnapshot =
+		new Snapshot<>(GraphQLServletExtender.class, ScopeChecker.class);
 
 	static {
 		GraphQLScalarType.Builder dateBuilder = new GraphQLScalarType.Builder();
