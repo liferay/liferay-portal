@@ -6,11 +6,13 @@
 package com.liferay.data.engine.taglib.servlet.taglib;
 
 import com.liferay.data.engine.taglib.servlet.taglib.DataLayoutBuilderTag.DataLayoutDDMFormAdapter;
+import com.liferay.data.engine.taglib.servlet.taglib.definition.DataLayoutBuilderDefinition;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.UnlocalizedValue;
 import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -77,6 +79,16 @@ public class DataLayoutBuilderTagTest {
 
 		_testDataLayoutDDMFormAdapterCreateDDMFormFieldValue(
 			propertyValue, propertyValue);
+	}
+
+	@Test
+	public void testGetDataLayoutBuilderDefinition() {
+		DataLayoutBuilderDefinition dataLayoutBuilderDefinition =
+			ReflectionTestUtil.invoke(
+				new DataLayoutBuilderTag(), "_getDataLayoutBuilderDefinition",
+				new Class<?>[] {String.class}, RandomTestUtil.randomString());
+
+		Assert.assertNotNull(dataLayoutBuilderDefinition);
 	}
 
 	private void _testDataLayoutDDMFormAdapterCreateDDMFormFieldValue(
