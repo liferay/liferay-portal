@@ -155,6 +155,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.UploadPortletRequest;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MimeTypes;
@@ -714,8 +715,9 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 							return portlet;
 						}),
 					HashMapDictionaryBuilder.<String, Object>put(
-						"panel.app.order:Integer",
-						objectDefinition.getPanelAppOrder()
+						"panel.app.order",
+						GetterUtil.getInteger(
+							objectDefinition.getPanelAppOrder())
 					).put(
 						"panel.category.key", panelCategoryKey
 					).build()));
