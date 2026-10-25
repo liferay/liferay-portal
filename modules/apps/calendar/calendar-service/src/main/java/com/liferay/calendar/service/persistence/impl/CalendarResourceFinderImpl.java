@@ -71,20 +71,6 @@ public class CalendarResourceFinderImpl
 
 	@Override
 	public int countByC_G_C_C_N_D_A(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator) {
-
-		String[] codes = _customSQL.keywords(code);
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-
-		return countByC_G_C_C_N_D_A(
-			companyId, groupIds, classNameIds, codes, names, descriptions,
-			active, andOperator);
-	}
-
-	@Override
-	public int countByC_G_C_C_N_D_A(
 		long companyId, long[] groupIds, long[] classNameIds, String[] codes,
 		String[] names, String[] descriptions, boolean active,
 		boolean andOperator) {
@@ -215,22 +201,6 @@ public class CalendarResourceFinderImpl
 		else {
 			andOperator = true;
 		}
-
-		return findByC_G_C_C_N_D_A(
-			companyId, groupIds, classNameIds, codes, names, descriptions,
-			active, andOperator, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CalendarResource> findByC_G_C_C_N_D_A(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator,
-		int start, int end,
-		OrderByComparator<CalendarResource> orderByComparator) {
-
-		String[] codes = _customSQL.keywords(code);
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
 
 		return findByC_G_C_C_N_D_A(
 			companyId, groupIds, classNameIds, codes, names, descriptions,
