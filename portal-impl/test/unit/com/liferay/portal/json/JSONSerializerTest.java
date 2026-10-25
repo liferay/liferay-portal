@@ -5,9 +5,13 @@
 
 package com.liferay.portal.json;
 
+import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONSerializable;
 import com.liferay.portal.kernel.json.JSONSerializer;
 import com.liferay.portal.kernel.model.UserTrackerPath;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -15,11 +19,17 @@ import com.liferay.portal.kernel.search.HitsImpl;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.service.permission.ModelPermissionsFactory;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.UserTrackerPathImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.LocalizationImpl;
+
+import java.util.Collections;
+
+import jodd.json.JsonSerializer;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -57,6 +67,73 @@ public class JSONSerializerTest {
 		String json = jsonSerializer.serialize(testClass);
 
 		Assert.assertTrue(json, json.contains("\"name\":\"test name\""));
+	}
+
+	@Test
+	public void testSerializeDeep() {
+		JSONInit.init();
+
+		for (int i = 0; i <= Character.MAX_VALUE; i++) {
+			_assertSerializeDeep(String.valueOf((char)i));
+		}
+
+		_assertSerializeDeep(Collections.singletonMap("null", null));
+		_assertSerializeDeep(Collections.singletonMap(1, "key"));
+		_assertSerializeDeep(
+			LinkedHashMapBuilder.<String, Object>put(
+				"array", new Object[] {"a", 1, null}
+			).put(
+				"boolean", true
+			).put(
+				"emptyList", Collections.emptyList()
+			).put(
+				"emptyMap", Collections.emptyMap()
+			).put(
+				"integer", -12
+			).put(
+				"jsonArray",
+				() -> {
+					JSONArray jsonArray = new JSONArrayImpl();
+
+					return jsonArray.put(
+						"a"
+					).put(
+						1
+					);
+				}
+			).put(
+				"jsonObject",
+				() -> {
+					JSONObject jsonObject = new JSONObjectImpl();
+
+					return jsonObject.put("key", "value");
+				}
+			).put(
+				"list",
+				ListUtil.fromArray(
+					Collections.singletonMap(
+						"href",
+						"https://www.liferay.com/web/guest?a=1&b=\"2\""),
+					"\\")
+			).put(
+				"long", -1234567890123L
+			).put(
+				"string", "<a href=\"/web/guest\">\b\f\n\r\t\\</a></script>"
+			).build());
+
+		Object[] array = new Object[1];
+
+		array[0] = array;
+
+		_assertSerializeDeep(array);
+
+		_assertSerializeDeep(Collections.singletonMap("double", 1.5));
+		_assertSerializeDeep(
+			Collections.singletonMap(
+				"inputStream", new UnsyncByteArrayInputStream(new byte[0])));
+		_assertSerializeDeep(
+			Collections.singletonMap(
+				"jsonSerializable", (JSONSerializable)() -> "{}"));
 	}
 
 	@Test
@@ -139,6 +216,22 @@ public class JSONSerializerTest {
 		String json2 = JSONFactoryUtil.serialize(deserializedServiceContext);
 
 		Assert.assertEquals(json1, json2);
+	}
+
+	private void _assertSerializeDeep(Object value) {
+		JsonSerializer jsonSerializer = new JsonSerializer();
+
+		jsonSerializer.deep(true);
+		jsonSerializer.strictStringEncoding(true);
+
+		StringBuilder sb = new StringBuilder();
+
+		jsonSerializer.serialize(value, sb);
+
+		JSONSerializerImpl jsonSerializerImpl = new JSONSerializerImpl();
+
+		Assert.assertEquals(
+			sb.toString(), jsonSerializerImpl.serializeDeep(value));
 	}
 
 	private class BaseTestClass {
