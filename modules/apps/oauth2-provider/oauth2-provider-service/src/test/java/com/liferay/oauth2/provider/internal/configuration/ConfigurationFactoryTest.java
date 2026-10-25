@@ -380,18 +380,14 @@ public class ConfigurationFactoryTest {
 
 		String scopeAlias1 = RandomTestUtil.randomString();
 
-		Mockito.when(
-			_oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
-				Mockito.anyLong())
-		).thenReturn(
-			Arrays.asList(scopeAlias1)
-		);
+		List<String> currentScopeAliasesList = Arrays.asList(scopeAlias1);
 
 		String scopeAlias2 = RandomTestUtil.randomString();
 
 		List<String> scopeAliasesList = Arrays.asList(scopeAlias1, scopeAlias2);
 
-		configurationFactory.updateScopes(_oAuth2Application, scopeAliasesList);
+		configurationFactory.updateScopes(
+			currentScopeAliasesList, _oAuth2Application, scopeAliasesList);
 
 		Mockito.verify(
 			_oAuth2ApplicationLocalService, Mockito.never()
@@ -409,7 +405,8 @@ public class ConfigurationFactoryTest {
 			Collections.singleton(scopeAlias2)
 		);
 
-		configurationFactory.updateScopes(_oAuth2Application, scopeAliasesList);
+		configurationFactory.updateScopes(
+			currentScopeAliasesList, _oAuth2Application, scopeAliasesList);
 
 		Mockito.verify(
 			_oAuth2ApplicationLocalService

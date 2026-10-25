@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 
@@ -48,33 +49,36 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 			String externalReferenceCode)
 		throws Exception {
 
-		Collection<String> scopeAliases = scopeLocator.getScopeAliases(
-			companyId);
-
 		OAuth2ProviderApplicationHeadlessServerConfiguration
 			oAuth2ProviderApplicationHeadlessServerConfiguration =
 				ConfigurableUtil.createConfigurable(
 					OAuth2ProviderApplicationHeadlessServerConfiguration.class,
 					properties);
 
-		List<String> scopeAliasesList = TransformUtil.transformToList(
-			oAuth2ProviderApplicationHeadlessServerConfiguration.scopes(),
-			scopeAlias -> {
-				if (!scopeAliases.contains(scopeAlias)) {
-					for (String curScopeAlias : scopeAliases) {
-						if (StringUtil.equalsIgnoreCase(
-								curScopeAlias, scopeAlias)) {
+		OAuth2Application currentOAuth2Application =
+			oAuth2ApplicationLocalService.
+				fetchOAuth2ApplicationByExternalReferenceCode(
+					externalReferenceCode, companyId);
 
-							return curScopeAlias;
-						}
-					}
-				}
+		List<String> currentScopeAliasesList = Collections.emptyList();
 
-				return scopeAlias;
-			});
+		if (currentOAuth2Application != null) {
+			currentScopeAliasesList =
+				oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
+					currentOAuth2Application.
+						getOAuth2ApplicationScopeAliasesId());
+		}
+
+		String[] scopes =
+			oAuth2ProviderApplicationHeadlessServerConfiguration.scopes();
+
+		List<String> scopeAliasesList = _getScopeAliasesList(
+			companyId, currentOAuth2Application, currentScopeAliasesList,
+			scopes);
 
 		oAuth2Application = _addOrUpdateOAuth2Application(
-			companyId, externalReferenceCode,
+			companyId, currentScopeAliasesList, externalReferenceCode,
+			currentOAuth2Application,
 			oAuth2ProviderApplicationHeadlessServerConfiguration,
 			scopeAliasesList);
 
@@ -109,16 +113,12 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 	}
 
 	private OAuth2Application _addOrUpdateOAuth2Application(
-			long companyId, String externalReferenceCode,
+			long companyId, List<String> currentScopeAliasesList,
+			String externalReferenceCode, OAuth2Application oAuth2Application,
 			OAuth2ProviderApplicationHeadlessServerConfiguration
 				oAuth2ProviderApplicationHeadlessServerConfiguration,
 			List<String> scopeAliasesList)
 		throws Exception {
-
-		OAuth2Application oAuth2Application =
-			oAuth2ApplicationLocalService.
-				fetchOAuth2ApplicationByExternalReferenceCode(
-					externalReferenceCode, companyId);
 
 		User user = userLocalService.getGuestUser(companyId);
 
@@ -171,11 +171,59 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 				Collections.emptyList(), false, true, null,
 				new ServiceContext());
 
-		updateScopes(oAuth2Application, scopeAliasesList);
+		updateScopes(
+			currentScopeAliasesList, oAuth2Application, scopeAliasesList);
 
 		logOAuth2Application(oAuth2Application);
 
 		return oAuth2Application;
+	}
+
+	private String _getScopeAlias(
+		String scopeAlias, Collection<String> scopeAliases) {
+
+		if (scopeAliases.contains(scopeAlias)) {
+			return scopeAlias;
+		}
+
+		for (String curScopeAlias : scopeAliases) {
+			if (StringUtil.equalsIgnoreCase(curScopeAlias, scopeAlias)) {
+				return curScopeAlias;
+			}
+		}
+
+		return null;
+	}
+
+	private List<String> _getScopeAliasesList(
+		long companyId, OAuth2Application currentOAuth2Application,
+		List<String> currentScopeAliasesList, String[] scopes) {
+
+		List<String> scopeAliasesList = TransformUtil.transformToList(
+			scopes,
+			scopeAlias -> _getScopeAlias(scopeAlias, currentScopeAliasesList));
+
+		if ((currentOAuth2Application != null) &&
+			(scopeAliasesList.size() == ArrayUtil.getLength(scopes)) &&
+			scopeAliasesList.containsAll(currentScopeAliasesList)) {
+
+			return scopeAliasesList;
+		}
+
+		Collection<String> scopeAliases = scopeLocator.getScopeAliases(
+			companyId);
+
+		return TransformUtil.transformToList(
+			scopes,
+			scopeAlias -> {
+				String curScopeAlias = _getScopeAlias(scopeAlias, scopeAliases);
+
+				if (curScopeAlias == null) {
+					return scopeAlias;
+				}
+
+				return curScopeAlias;
+			});
 	}
 
 	private User _getServiceUser(

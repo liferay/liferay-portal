@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -115,8 +116,13 @@ public class OAuth2ProviderApplicationUserAgentConfigurationFactory
 				fetchOAuth2ApplicationByExternalReferenceCode(
 					externalReferenceCode, companyId);
 
+		List<String> currentScopeAliasesList = Collections.emptyList();
+
 		if (oAuth2Application != null) {
 			clientId = oAuth2Application.getClientId();
+			currentScopeAliasesList =
+				oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
+					oAuth2Application.getOAuth2ApplicationScopeAliasesId());
 		}
 
 		String homePageURL = getHomePageURL(
@@ -139,7 +145,8 @@ public class OAuth2ProviderApplicationUserAgentConfigurationFactory
 					privacyPolicyURL(),
 				redirectURIsList, false, true, null, new ServiceContext());
 
-		updateScopes(oAuth2Application, scopeAliasesList);
+		updateScopes(
+			currentScopeAliasesList, oAuth2Application, scopeAliasesList);
 
 		logOAuth2Application(oAuth2Application);
 

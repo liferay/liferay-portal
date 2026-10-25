@@ -255,12 +255,9 @@ public abstract class BaseConfigurationFactory {
 	}
 
 	protected void updateScopes(
+			List<String> currentScopeAliasesList,
 			OAuth2Application oAuth2Application, List<String> scopeAliasesList)
 		throws Exception {
-
-		List<String> currentScopeAliasesList =
-			oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
-				oAuth2Application.getOAuth2ApplicationScopeAliasesId());
 
 		Set<String> scopeAliases = new HashSet<>(scopeAliasesList);
 
