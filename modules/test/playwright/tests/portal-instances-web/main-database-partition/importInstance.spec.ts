@@ -7,6 +7,7 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {loginTest} from '../../../fixtures/loginTest';
 import {virtualInstancesPagesTest} from '../../../fixtures/virtualInstancesPagesTest';
+import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 
@@ -31,7 +32,7 @@ test(
 test(
 	'LPD-92621 Importing an exported schema shows the import success message',
 	{tag: '@LPD-92621'},
-	async ({virtualInstancesPage}) => {
+	async ({page, virtualInstancesPage}) => {
 		test.setTimeout(5 * 180 * 1000);
 
 		const exportedWebId = getRandomString();
@@ -48,7 +49,21 @@ test(
 			const schemaName =
 				await virtualInstancesPage.exportVirtualInstance(exportedWebId);
 
-			await virtualInstancesPage.deleteVirtualInstance(exportedWebId);
+			const apiHelpers = new ApiHelpers(page);
+
+			const headlessBatchEngine = apiHelpers.headlessBatchEngine;
+
+			const headlessPortalInstance = apiHelpers.headlessPortalInstance;
+
+			const importTask =
+				await headlessPortalInstance.deleteVirtualInstancesBatch([
+					exportedWebId,
+				]);
+
+			const finishedImportTask =
+				await headlessBatchEngine.waitForImportTask(importTask.id);
+
+			expect(finishedImportTask.executeStatus).toBe('COMPLETED');
 
 			exportedCreated = false;
 
