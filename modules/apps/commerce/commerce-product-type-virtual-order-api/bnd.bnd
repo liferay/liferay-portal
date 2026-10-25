@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Product Type Virtual Order API
 Bundle-SymbolicName: com.liferay.commerce.product.type.virtual.order.api
-Bundle-Version: 13.1.0
+Bundle-Version: 13.1.1
 Export-Package:\
 	com.liferay.commerce.product.type.virtual.order.constants,\
 	com.liferay.commerce.product.type.virtual.order.exception,\
