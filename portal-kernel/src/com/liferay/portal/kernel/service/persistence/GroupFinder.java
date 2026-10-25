@@ -30,8 +30,6 @@ public interface GroupFinder {
 			long companyId, String groupKey)
 		throws com.liferay.portal.kernel.exception.NoSuchGroupException;
 
-	public java.util.List<Long> findByActiveGroupIds(long userId);
-
 	public java.util.List<com.liferay.portal.kernel.model.Group>
 		findByCompanyId(
 			long companyId, java.util.LinkedHashMap<String, Object> params,
@@ -45,20 +43,8 @@ public interface GroupFinder {
 		com.liferay.portal.kernel.util.OrderByComparator
 			<com.liferay.portal.kernel.model.Group> orderByComparator);
 
-	public java.util.List<com.liferay.portal.kernel.model.Group> findByLayouts(
-		long companyId, long parentGroupId, boolean site, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<com.liferay.portal.kernel.model.Group> orderByComparator);
-
 	public java.util.List<com.liferay.portal.kernel.model.Group>
 		findByLiveGroups();
-
-	public java.util.List<Long> findByC_P(
-		long companyId, long parentGroupId, long previousGroupId, int size);
-
-	public com.liferay.portal.kernel.model.Group findByC_GK(
-			long companyId, String groupKey)
-		throws com.liferay.portal.kernel.exception.NoSuchGroupException;
 
 	public java.util.List<Long> findByC_A(long companyId, boolean active);
 
@@ -80,4 +66,4 @@ public interface GroupFinder {
 		long companyId);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:382135008
+// LIFERAY-SERVICE-BUILDER-HASH:1824860953

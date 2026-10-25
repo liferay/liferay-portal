@@ -47,10 +47,6 @@ public class GroupFinderUtil {
 		return getFinder().fetchByC_GK(companyId, groupKey);
 	}
 
-	public static java.util.List<Long> findByActiveGroupIds(long userId) {
-		return getFinder().findByActiveGroupIds(userId);
-	}
-
 	public static java.util.List<com.liferay.portal.kernel.model.Group>
 		findByCompanyId(
 			long companyId, java.util.LinkedHashMap<String, Object> params,
@@ -75,34 +71,9 @@ public class GroupFinderUtil {
 	}
 
 	public static java.util.List<com.liferay.portal.kernel.model.Group>
-		findByLayouts(
-			long companyId, long parentGroupId, boolean site, int start,
-			int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.portal.kernel.model.Group> orderByComparator) {
-
-		return getFinder().findByLayouts(
-			companyId, parentGroupId, site, start, end, orderByComparator);
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.model.Group>
 		findByLiveGroups() {
 
 		return getFinder().findByLiveGroups();
-	}
-
-	public static java.util.List<Long> findByC_P(
-		long companyId, long parentGroupId, long previousGroupId, int size) {
-
-		return getFinder().findByC_P(
-			companyId, parentGroupId, previousGroupId, size);
-	}
-
-	public static com.liferay.portal.kernel.model.Group findByC_GK(
-			long companyId, String groupKey)
-		throws com.liferay.portal.kernel.exception.NoSuchGroupException {
-
-		return getFinder().findByC_GK(companyId, groupKey);
 	}
 
 	public static java.util.List<Long> findByC_A(
@@ -156,4 +127,4 @@ public class GroupFinderUtil {
 	private static GroupFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-381314832
+// LIFERAY-SERVICE-BUILDER-HASH:-1059314770

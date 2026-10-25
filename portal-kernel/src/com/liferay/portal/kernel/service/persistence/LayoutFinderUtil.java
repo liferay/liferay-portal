@@ -14,12 +14,6 @@ import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 public class LayoutFinderUtil {
 
 	public static java.util.List<com.liferay.portal.kernel.model.Layout>
-		findByNullFriendlyURL() {
-
-		return getFinder().findByNullFriendlyURL();
-	}
-
-	public static java.util.List<com.liferay.portal.kernel.model.Layout>
 		findByScopeGroup(long groupId) {
 
 		return getFinder().findByScopeGroup(groupId);
@@ -56,4 +50,4 @@ public class LayoutFinderUtil {
 	private static LayoutFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:202040760
+// LIFERAY-SERVICE-BUILDER-HASH:1540053891
