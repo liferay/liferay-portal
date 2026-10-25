@@ -45,8 +45,5 @@ public interface JournalFolderFinder {
 		long groupId, long folderId, long ddmStructureId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
-	public java.util.List<com.liferay.journal.model.JournalFolder>
-		findF_ByNoAssets();
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1676683917
+// LIFERAY-SERVICE-BUILDER-HASH:1150615527

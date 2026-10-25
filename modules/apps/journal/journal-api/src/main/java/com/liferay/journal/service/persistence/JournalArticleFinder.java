@@ -19,11 +19,6 @@ public interface JournalArticleFinder {
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.journal.model.JournalArticle> queryDefinition);
 
-	public int countByG_F_C(
-		long groupId, java.util.List<Long> folderIds, long classNameId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.journal.model.JournalArticle> queryDefinition);
-
 	public int filterCountByG_F(
 		long groupId, java.util.List<Long> folderIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
@@ -72,16 +67,6 @@ public interface JournalArticleFinder {
 			com.liferay.portal.kernel.dao.orm.QueryDefinition
 				<com.liferay.journal.model.JournalArticle> queryDefinition);
 
-	public java.util.List<com.liferay.journal.model.JournalArticle> findByG_F_L(
-		long groupId, java.util.List<Long> folderIds, java.util.Locale locale,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.journal.model.JournalArticle> queryDefinition);
-
-	public java.util.List<com.liferay.journal.model.JournalArticle> findByG_F_C(
-		long groupId, java.util.List<Long> folderIds, long classNameId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.journal.model.JournalArticle> queryDefinition);
-
 	public java.util.List<com.liferay.journal.model.JournalArticle>
 		findByG_F_C_S_L(
 			long groupId, java.util.List<Long> folderIds, long classNameId,
@@ -90,4 +75,4 @@ public interface JournalArticleFinder {
 				<com.liferay.journal.model.JournalArticle> queryDefinition);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:745632460
+// LIFERAY-SERVICE-BUILDER-HASH:-544120426
