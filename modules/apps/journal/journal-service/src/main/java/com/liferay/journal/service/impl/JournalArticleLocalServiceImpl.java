@@ -2876,48 +2876,6 @@ public class JournalArticleLocalServiceImpl
 	}
 
 	@Override
-	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long ddmStructureId, Locale locale, int status, int start,
-		int end, OrderByComparator<JournalArticle> orderByComparator) {
-
-		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
-			status, start, end, orderByComparator);
-
-		return journalArticleFinder.findByG_F_C_S_L(
-			groupId, Collections.emptyList(),
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, ddmStructureId,
-			locale, queryDefinition);
-	}
-
-	@Override
-	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId, int status,
-		int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
-
-		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
-			status, start, end, orderByComparator);
-
-		return journalArticleFinder.findByG_F_C_S_L(
-			groupId, Collections.emptyList(), classNameId, ddmStructureId,
-			LocaleUtil.getMostRelevantLocale(), queryDefinition);
-	}
-
-	@Override
-	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId, Locale locale,
-		int status, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
-
-		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
-			status, start, end, orderByComparator);
-
-		return journalArticleFinder.findByG_F_C_S_L(
-			groupId, Collections.emptyList(), classNameId, ddmStructureId,
-			locale, queryDefinition);
-	}
-
-	@Override
 	public List<Long> getArticlesClassPKsWithDefaultDisplayPage(
 		long groupId, long classTypeId) {
 
@@ -3643,22 +3601,6 @@ public class JournalArticleLocalServiceImpl
 			).where(
 				ResourcePermissionTable.INSTANCE.primKey.isNull()
 			));
-	}
-
-	/**
-	 * Returns the number of web content articles that are not recycled.
-	 *
-	 * @param  groupId the primary key of the web content article's group
-	 * @param  folderId the primary key of the web content article folder
-	 * @return the number of web content articles that are not recycled
-	 */
-	@Override
-	public int getNotInTrashArticlesCount(long groupId, long folderId) {
-		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
-			WorkflowConstants.STATUS_ANY);
-
-		return journalArticleFinder.countByG_F(
-			groupId, ListUtil.fromArray(folderId), queryDefinition);
 	}
 
 	/**

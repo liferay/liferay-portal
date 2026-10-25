@@ -6,8 +6,6 @@
 package com.liferay.journal.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.asset.kernel.model.AssetEntry;
-import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
@@ -92,26 +90,6 @@ public class JournalFolderLocalServiceTest {
 		_testGetFoldersAndArticlesCount(
 			1, folderIds, _group.getGroupId(),
 			WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Test
-	public void testGetNoAssetFolders() throws Exception {
-		_addJournalFolder();
-
-		JournalFolder folder = _addJournalFolder();
-
-		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
-			JournalFolder.class.getName(), folder.getFolderId());
-
-		Assert.assertNotNull(assetEntry);
-
-		_assetEntryLocalService.deleteAssetEntry(assetEntry);
-
-		List<JournalFolder> folders =
-			_journalFolderLocalService.getNoAssetFolders();
-
-		Assert.assertEquals(folders.toString(), 1, folders.size());
-		Assert.assertEquals(folders.toString(), folder, folders.get(0));
 	}
 
 	@Test
@@ -200,9 +178,6 @@ public class JournalFolderLocalServiceTest {
 			_journalFolderLocalService.getFoldersAndArticlesCount(
 				groupId, folderIds, status));
 	}
-
-	@Inject
-	private AssetEntryLocalService _assetEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

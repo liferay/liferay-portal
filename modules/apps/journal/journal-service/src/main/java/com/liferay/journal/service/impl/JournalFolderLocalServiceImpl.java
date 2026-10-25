@@ -437,16 +437,6 @@ public class JournalFolderLocalServiceImpl
 	}
 
 	@Override
-	public List<Object> getFoldersAndArticles(
-		long groupId, long folderId, int start, int end,
-		OrderByComparator<?> orderByComparator) {
-
-		return getFoldersAndArticles(
-			groupId, folderId, WorkflowConstants.STATUS_ANY, start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public int getFoldersAndArticlesCount(
 		long groupId, List<Long> folderIds, int status) {
 
@@ -471,15 +461,6 @@ public class JournalFolderLocalServiceImpl
 		articlesCount += getFoldersAndArticlesCount(groupId, folderIds, status);
 
 		return articlesCount;
-	}
-
-	@Override
-	public int getFoldersAndArticlesCount(long groupId, long folderId) {
-		QueryDefinition<?> queryDefinition = new QueryDefinition<>(
-			WorkflowConstants.STATUS_ANY);
-
-		return journalFolderFinder.countF_A_ByG_F_DDMSI(
-			groupId, folderId, 0, queryDefinition);
 	}
 
 	@Override
@@ -523,11 +504,6 @@ public class JournalFolderLocalServiceImpl
 		}
 
 		return folderId;
-	}
-
-	@Override
-	public List<JournalFolder> getNoAssetFolders() {
-		return journalFolderFinder.findF_ByNoAssets();
 	}
 
 	@Override

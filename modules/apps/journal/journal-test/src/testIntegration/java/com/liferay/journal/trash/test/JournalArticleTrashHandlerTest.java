@@ -21,6 +21,7 @@ import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleResourceLocalServiceUtil;
 import com.liferay.journal.service.JournalArticleServiceUtil;
+import com.liferay.journal.service.JournalFolderLocalServiceUtil;
 import com.liferay.journal.service.JournalFolderServiceUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
@@ -422,8 +424,9 @@ public class JournalArticleTrashHandlerTest
 
 		JournalFolder folder = (JournalFolder)parentBaseModel;
 
-		return JournalArticleLocalServiceUtil.getNotInTrashArticlesCount(
-			folder.getGroupId(), folder.getFolderId());
+		return JournalFolderLocalServiceUtil.getFoldersAndArticlesCount(
+			folder.getGroupId(), ListUtil.fromArray(folder.getFolderId()),
+			WorkflowConstants.STATUS_ANY);
 	}
 
 	@Override

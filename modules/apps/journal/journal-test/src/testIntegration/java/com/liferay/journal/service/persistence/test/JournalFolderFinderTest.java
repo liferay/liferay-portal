@@ -6,7 +6,6 @@
 package com.liferay.journal.service.persistence.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalArticleLocalServiceUtil;
@@ -15,7 +14,6 @@ import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.spring.orm.LastSessionRecorderHelperUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -260,22 +258,6 @@ public class JournalFolderFinderTest {
 			new int[] {WorkflowConstants.STATUS_EXPIRED}, queryDefinition);
 
 		Assert.assertEquals(results.toString(), 3, results.size());
-	}
-
-	@Test
-	public void testFindF_ByNoAssets() throws Exception {
-		AssetEntryLocalServiceUtil.deleteEntry(
-			JournalFolder.class.getName(), _folder2.getFolderId());
-
-		LastSessionRecorderHelperUtil.syncLastSessionState();
-
-		List<JournalFolder> folders = _journalFolderFinder.findF_ByNoAssets();
-
-		Assert.assertEquals(folders.toString(), 1, folders.size());
-
-		JournalFolder folder = folders.get(0);
-
-		Assert.assertEquals(_folder2.getFolderId(), folder.getFolderId());
 	}
 
 	private JournalFolder _folder1;
