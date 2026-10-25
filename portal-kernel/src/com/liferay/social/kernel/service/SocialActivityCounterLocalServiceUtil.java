@@ -466,105 +466,12 @@ public class SocialActivityCounterLocalServiceUtil {
 	}
 
 	/**
-	 * Returns all the activity counters with the given name and period offsets.
-	 *
-	 * <p>
-	 * The start and end offsets can belong to different periods. This method
-	 * groups the counters by name and returns the sum of their current values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startOffset the offset for the start period
-	 * @param endOffset the offset for the end period
-	 * @return the matching activity counters
-	 */
-	public static List<SocialActivityCounter> getOffsetActivityCounters(
-		long groupId, String name, int startOffset, int endOffset) {
-
-		return getService().getOffsetActivityCounters(
-			groupId, name, startOffset, endOffset);
-	}
-
-	/**
-	 * Returns the distribution of the activity counters with the given name and
-	 * period offsets.
-	 *
-	 * <p>
-	 * The start and end offsets can belong to different periods. This method
-	 * groups the counters by their owner entity (usually some asset) and
-	 * returns a counter for each entity class with the sum of the counters'
-	 * current values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startOffset the offset for the start period
-	 * @param endOffset the offset for the end period
-	 * @return the distribution of matching activity counters
-	 */
-	public static List<SocialActivityCounter>
-		getOffsetDistributionActivityCounters(
-			long groupId, String name, int startOffset, int endOffset) {
-
-		return getService().getOffsetDistributionActivityCounters(
-			groupId, name, startOffset, endOffset);
-	}
-
-	/**
 	 * Returns the OSGi service identifier.
 	 *
 	 * @return the OSGi service identifier
 	 */
 	public static String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
-	}
-
-	/**
-	 * Returns all the activity counters with the given name and time period.
-	 *
-	 * <p>
-	 * The start and end period values can belong to different periods. This
-	 * method groups the counters by name and returns the sum of their current
-	 * values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startPeriod the start period
-	 * @param endPeriod the end period
-	 * @return the matching activity counters
-	 */
-	public static List<SocialActivityCounter> getPeriodActivityCounters(
-		long groupId, String name, int startPeriod, int endPeriod) {
-
-		return getService().getPeriodActivityCounters(
-			groupId, name, startPeriod, endPeriod);
-	}
-
-	/**
-	 * Returns the distribution of activity counters with the given name and
-	 * time period.
-	 *
-	 * <p>
-	 * The start and end period values can belong to different periods. This
-	 * method groups the counters by their owner entity (usually some asset) and
-	 * returns a counter for each entity class with the sum of the counters'
-	 * current values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startPeriod the start period
-	 * @param endPeriod the end period
-	 * @return the distribution of matching activity counters
-	 */
-	public static List<SocialActivityCounter>
-		getPeriodDistributionActivityCounters(
-			long groupId, String name, int startPeriod, int endPeriod) {
-
-		return getService().getPeriodDistributionActivityCounters(
-			groupId, name, startPeriod, endPeriod);
 	}
 
 	/**
@@ -617,55 +524,6 @@ public class SocialActivityCounterLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the range of tuples that contain users and a list of activity
-	 * counters.
-	 *
-	 * <p>
-	 * The counters returned for each user are passed to this method in the
-	 * selectedNames array. The method also accepts an array of counter names
-	 * that are used to rank the users.
-	 * </p>
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param rankingNames the ranking counter names
-	 * @param selectedNames the counter names that will be returned with each
-	 user
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching tuples
-	 */
-	public static List<com.liferay.portal.kernel.util.Tuple>
-		getUserActivityCounters(
-			long groupId, String[] rankingNames, String[] selectedNames,
-			int start, int end) {
-
-		return getService().getUserActivityCounters(
-			groupId, rankingNames, selectedNames, start, end);
-	}
-
-	/**
-	 * Returns the number of users having a rank based on the given counters.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param rankingNames the ranking counter names
-	 * @return the number of matching users
-	 */
-	public static int getUserActivityCountersCount(
-		long groupId, String[] rankingNames) {
-
-		return getService().getUserActivityCountersCount(groupId, rankingNames);
-	}
-
-	/**
 	 * Increments the <code>user.achievements</code> counter for a user.
 	 *
 	 * <p>
@@ -710,4 +568,4 @@ public class SocialActivityCounterLocalServiceUtil {
 	private static volatile SocialActivityCounterLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1122034595
+// LIFERAY-SERVICE-BUILDER-HASH:-1073936513

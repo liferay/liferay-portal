@@ -291,19 +291,9 @@ public class SocialActivitySetLocalServiceUtil {
 	}
 
 	public static List<SocialActivitySet> getRelationActivitySets(
-		long userId, int start, int end) {
-
-		return getService().getRelationActivitySets(userId, start, end);
-	}
-
-	public static List<SocialActivitySet> getRelationActivitySets(
 		long userId, int type, int start, int end) {
 
 		return getService().getRelationActivitySets(userId, type, start, end);
-	}
-
-	public static int getRelationActivitySetsCount(long userId) {
-		return getService().getRelationActivitySetsCount(userId);
 	}
 
 	public static int getRelationActivitySetsCount(long userId, int type) {
@@ -428,4 +418,4 @@ public class SocialActivitySetLocalServiceUtil {
 	private static volatile SocialActivitySetLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-205466759
+// LIFERAY-SERVICE-BUILDER-HASH:-1407662068

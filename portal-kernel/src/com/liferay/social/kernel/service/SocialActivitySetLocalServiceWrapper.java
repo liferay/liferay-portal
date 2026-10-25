@@ -338,24 +338,10 @@ public class SocialActivitySetLocalServiceWrapper
 
 	@Override
 	public java.util.List<SocialActivitySet> getRelationActivitySets(
-		long userId, int start, int end) {
-
-		return _socialActivitySetLocalService.getRelationActivitySets(
-			userId, start, end);
-	}
-
-	@Override
-	public java.util.List<SocialActivitySet> getRelationActivitySets(
 		long userId, int type, int start, int end) {
 
 		return _socialActivitySetLocalService.getRelationActivitySets(
 			userId, type, start, end);
-	}
-
-	@Override
-	public int getRelationActivitySetsCount(long userId) {
-		return _socialActivitySetLocalService.getRelationActivitySetsCount(
-			userId);
 	}
 
 	@Override
@@ -532,4 +518,4 @@ public class SocialActivitySetLocalServiceWrapper
 	private SocialActivitySetLocalService _socialActivitySetLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:595185053
+// LIFERAY-SERVICE-BUILDER-HASH:1764731508

@@ -517,55 +517,6 @@ public class SocialActivityCounterLocalServiceWrapper
 	}
 
 	/**
-	 * Returns all the activity counters with the given name and period offsets.
-	 *
-	 * <p>
-	 * The start and end offsets can belong to different periods. This method
-	 * groups the counters by name and returns the sum of their current values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startOffset the offset for the start period
-	 * @param endOffset the offset for the end period
-	 * @return the matching activity counters
-	 */
-	@Override
-	public java.util.List<SocialActivityCounter> getOffsetActivityCounters(
-		long groupId, String name, int startOffset, int endOffset) {
-
-		return _socialActivityCounterLocalService.getOffsetActivityCounters(
-			groupId, name, startOffset, endOffset);
-	}
-
-	/**
-	 * Returns the distribution of the activity counters with the given name and
-	 * period offsets.
-	 *
-	 * <p>
-	 * The start and end offsets can belong to different periods. This method
-	 * groups the counters by their owner entity (usually some asset) and
-	 * returns a counter for each entity class with the sum of the counters'
-	 * current values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startOffset the offset for the start period
-	 * @param endOffset the offset for the end period
-	 * @return the distribution of matching activity counters
-	 */
-	@Override
-	public java.util.List<SocialActivityCounter>
-		getOffsetDistributionActivityCounters(
-			long groupId, String name, int startOffset, int endOffset) {
-
-		return _socialActivityCounterLocalService.
-			getOffsetDistributionActivityCounters(
-				groupId, name, startOffset, endOffset);
-	}
-
-	/**
 	 * Returns the OSGi service identifier.
 	 *
 	 * @return the OSGi service identifier
@@ -573,56 +524,6 @@ public class SocialActivityCounterLocalServiceWrapper
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _socialActivityCounterLocalService.getOSGiServiceIdentifier();
-	}
-
-	/**
-	 * Returns all the activity counters with the given name and time period.
-	 *
-	 * <p>
-	 * The start and end period values can belong to different periods. This
-	 * method groups the counters by name and returns the sum of their current
-	 * values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startPeriod the start period
-	 * @param endPeriod the end period
-	 * @return the matching activity counters
-	 */
-	@Override
-	public java.util.List<SocialActivityCounter> getPeriodActivityCounters(
-		long groupId, String name, int startPeriod, int endPeriod) {
-
-		return _socialActivityCounterLocalService.getPeriodActivityCounters(
-			groupId, name, startPeriod, endPeriod);
-	}
-
-	/**
-	 * Returns the distribution of activity counters with the given name and
-	 * time period.
-	 *
-	 * <p>
-	 * The start and end period values can belong to different periods. This
-	 * method groups the counters by their owner entity (usually some asset) and
-	 * returns a counter for each entity class with the sum of the counters'
-	 * current values.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param name the counter name
-	 * @param startPeriod the start period
-	 * @param endPeriod the end period
-	 * @return the distribution of matching activity counters
-	 */
-	@Override
-	public java.util.List<SocialActivityCounter>
-		getPeriodDistributionActivityCounters(
-			long groupId, String name, int startPeriod, int endPeriod) {
-
-		return _socialActivityCounterLocalService.
-			getPeriodDistributionActivityCounters(
-				groupId, name, startPeriod, endPeriod);
 	}
 
 	/**
@@ -681,58 +582,6 @@ public class SocialActivityCounterLocalServiceWrapper
 	public int getSocialActivityCountersCount() {
 		return _socialActivityCounterLocalService.
 			getSocialActivityCountersCount();
-	}
-
-	/**
-	 * Returns the range of tuples that contain users and a list of activity
-	 * counters.
-	 *
-	 * <p>
-	 * The counters returned for each user are passed to this method in the
-	 * selectedNames array. The method also accepts an array of counter names
-	 * that are used to rank the users.
-	 * </p>
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param groupId the primary key of the group
-	 * @param rankingNames the ranking counter names
-	 * @param selectedNames the counter names that will be returned with each
-	 user
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching tuples
-	 */
-	@Override
-	public java.util.List<com.liferay.portal.kernel.util.Tuple>
-		getUserActivityCounters(
-			long groupId, String[] rankingNames, String[] selectedNames,
-			int start, int end) {
-
-		return _socialActivityCounterLocalService.getUserActivityCounters(
-			groupId, rankingNames, selectedNames, start, end);
-	}
-
-	/**
-	 * Returns the number of users having a rank based on the given counters.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param rankingNames the ranking counter names
-	 * @return the number of matching users
-	 */
-	@Override
-	public int getUserActivityCountersCount(
-		long groupId, String[] rankingNames) {
-
-		return _socialActivityCounterLocalService.getUserActivityCountersCount(
-			groupId, rankingNames);
 	}
 
 	/**
@@ -813,4 +662,4 @@ public class SocialActivityCounterLocalServiceWrapper
 		_socialActivityCounterLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1833444269
+// LIFERAY-SERVICE-BUILDER-HASH:176678587

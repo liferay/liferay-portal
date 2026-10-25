@@ -260,14 +260,7 @@ public interface SocialActivitySetLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SocialActivitySet> getRelationActivitySets(
-		long userId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialActivitySet> getRelationActivitySets(
 		long userId, int type, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getRelationActivitySetsCount(long userId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getRelationActivitySetsCount(long userId, int type);
@@ -369,4 +362,4 @@ public interface SocialActivitySetLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-950438591
+// LIFERAY-SERVICE-BUILDER-HASH:-1020211200
