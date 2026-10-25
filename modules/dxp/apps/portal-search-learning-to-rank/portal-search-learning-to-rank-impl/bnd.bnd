@@ -1,5 +1,5 @@
 Bundle-Name: Liferay Portal Search Learning To Rank Implementation
 Bundle-SymbolicName: com.liferay.portal.search.learning.to.rank.impl
-Bundle-Version: 3.0.15
+Bundle-Version: 3.0.16
 Liferay-Enterprise-App: dxp.only=true;product.id=22b7e30f-34d4-4a63-9696-56987ad66e4e
 -fixupmessages: Classes found in the wrong directory: ...;is:=ignore
