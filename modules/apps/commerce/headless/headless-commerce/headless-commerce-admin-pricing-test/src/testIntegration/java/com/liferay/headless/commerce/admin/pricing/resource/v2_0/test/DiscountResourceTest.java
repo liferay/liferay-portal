@@ -986,18 +986,15 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 
 		_commerceDiscounts.add(commerceDiscount);
 
-		List<CommerceDiscountRel> commerceDiscountRels =
-			_commerceDiscountRelLocalService.getCommerceDiscountRels(
-				commerceDiscount.getCommerceDiscountId(),
-				CPInstance.class.getName());
-
 		Assert.assertEquals(
 			SetUtil.fromArray(
 				cpInstanceUnitOfMeasure1.getKey(),
 				cpInstanceUnitOfMeasure2.getKey()),
 			SetUtil.fromList(
 				ListUtil.toList(
-					commerceDiscountRels,
+					_commerceDiscountRelLocalService.getCommerceDiscountRels(
+						commerceDiscount.getCommerceDiscountId(),
+						CPInstance.class.getName()),
 					commerceDiscountRel -> {
 						UnicodeProperties typeSettingsUnicodeProperties =
 							commerceDiscountRel.
