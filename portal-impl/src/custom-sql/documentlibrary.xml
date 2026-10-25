@@ -15,25 +15,6 @@
 				(LENGTH(DLFileVersion.extraSettings) > 0)
 		]]>
 	</sql>
-	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileEntryFinder.countByG_M_R">
-		<![CDATA[
-			SELECT
-				COUNT(DLFileEntry.fileEntryId) AS COUNT_VALUE
-			FROM
-				DLFileEntry
-			INNER JOIN
-				DLFileVersion ON
-					(DLFileVersion.fileEntryId = DLFileEntry.fileEntryId) AND
-					(DLFileVersion.version = DLFileEntry.version)
-
-			WHERE
-				(DLFileEntry.groupId = ?) AND
-				(DLFileEntry.modifiedDate >= ?) AND
-				(DLFileEntry.modifiedDate <= ?) AND
-				(DLFileEntry.repositoryId = ?) AND
-				([$STATUS$])
-		]]>
-	</sql>
 	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileEntryFinder.countByG_F_S">
 		<![CDATA[
 			SELECT
@@ -44,28 +25,6 @@
 				(DLFileVersion.groupId = ?) AND
 				([$STATUS$])
 				[$FOLDER_ID$]
-		]]>
-	</sql>
-	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileEntryFinder.findByCompanyId">
-		<![CDATA[
-			SELECT
-				{DLFileEntry.*}
-			FROM
-				(
-					SELECT
-						DISTINCT DLFileEntry.fileEntryId
-					FROM
-						DLFileEntry
-					INNER JOIN
-						DLFileVersion ON
-							DLFileVersion.fileEntryId = DLFileEntry.fileEntryId
-					WHERE
-						(DLFileVersion.companyId = ?) AND
-						([$STATUS$])
-				) TEMP_TABLE
-				INNER JOIN
-					DLFileEntry ON
-						TEMP_TABLE.fileEntryId = DLFileEntry.fileEntryId
 		]]>
 	</sql>
 	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileEntryFinder.findByDDMStructureIds">
@@ -117,19 +76,6 @@
 				(LENGTH(DLFileVersion.extraSettings) > 0)
 			ORDER BY
 				DLFileEntry.modifiedDate DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileEntryFinder.findByOrphanedFileEntries">
-		<![CDATA[
-			SELECT
-				{DLFileEntry.*}
-			FROM
-				DLFileEntry
-			LEFT JOIN
-				Group_ ON
-					Group_.groupId = DLFileEntry.groupId
-			WHERE
-				Group_.groupId IS NULL
 		]]>
 	</sql>
 	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileEntryFinder.findByC_T">
@@ -248,31 +194,6 @@
 					(LOWER(DLFileEntryType.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
 					(DLFileEntryType.description LIKE ? [$AND_OR_NULL_CHECK$])
 				)
-		]]>
-	</sql>
-	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileRankFinder.findByStaleRanks">
-		<![CDATA[
-			SELECT
-				groupId, userId
-			FROM
-				DLFileRank
-			GROUP BY
-				groupId, userId
-			HAVING
-				COUNT(*) > ?
-		]]>
-	</sql>
-	<sql id="com.liferay.document.library.kernel.service.persistence.DLFileRankFinder.findByFolderId">
-		<![CDATA[
-			SELECT
-				{DLFileRank.*}
-			FROM
-				DLFileRank
-			INNER JOIN
-				DLFileEntry ON
-					DLFileEntry.fileEntryId = DLFileRank.fileEntryId
-			WHERE
-				DLFileEntry.folderId = ?
 		]]>
 	</sql>
 	<sql id="com.liferay.document.library.kernel.service.persistence.DLFolderFinder.countF_ByG_M_F">

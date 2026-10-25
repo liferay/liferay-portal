@@ -177,32 +177,6 @@ public class DLFolderFinderTest {
 	}
 
 	@Test
-	public void testCountFE_ByG_F() throws Exception {
-		QueryDefinition<?> queryDefinition = new QueryDefinition<>();
-
-		queryDefinition.setStatus(WorkflowConstants.STATUS_ANY);
-
-		Assert.assertEquals(
-			3,
-			DLFolderFinderUtil.countFE_ByG_F(
-				_group.getGroupId(), _folder.getFolderId(), queryDefinition));
-
-		queryDefinition.setStatus(WorkflowConstants.STATUS_IN_TRASH);
-
-		Assert.assertEquals(
-			1,
-			DLFolderFinderUtil.countFE_ByG_F(
-				_group.getGroupId(), _folder.getFolderId(), queryDefinition));
-
-		queryDefinition.setStatus(WorkflowConstants.STATUS_IN_TRASH, true);
-
-		Assert.assertEquals(
-			2,
-			DLFolderFinderUtil.countFE_ByG_F(
-				_group.getGroupId(), _folder.getFolderId(), queryDefinition));
-	}
-
-	@Test
 	public void testCountFE_FS_ByG_F() throws Exception {
 		QueryDefinition<?> queryDefinition = new QueryDefinition<>();
 

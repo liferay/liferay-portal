@@ -109,13 +109,6 @@ public class DLFolderFinderImpl
 	}
 
 	@Override
-	public int countFE_ByG_F(
-		long groupId, long folderId, QueryDefinition<?> queryDefinition) {
-
-		return doCountFE_ByG_F(groupId, folderId, queryDefinition, false);
-	}
-
-	@Override
 	public int countFE_FS_ByG_F(
 		long groupId, long folderId, QueryDefinition<?> queryDefinition) {
 
@@ -141,13 +134,6 @@ public class DLFolderFinderImpl
 		return doCountF_FE_FS_ByG_F_M_FETI_M(
 			groupId, folderId, mimeTypes, fileEntryTypeId, includeMountFolders,
 			queryDefinition, true);
-	}
-
-	@Override
-	public int filterCountFE_ByG_F(
-		long groupId, long folderId, QueryDefinition<?> queryDefinition) {
-
-		return doCountFE_ByG_F(groupId, folderId, queryDefinition, true);
 	}
 
 	@Override
@@ -480,51 +466,6 @@ public class DLFolderFinderImpl
 			}
 
 			return count;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	protected int doCountFE_ByG_F(
-		long groupId, long folderId, QueryDefinition<?> queryDefinition,
-		boolean inlineSQLHelper) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = getFileVersionsSQL(
-				COUNT_FE_BY_G_F, groupId, null, queryDefinition,
-				inlineSQLHelper);
-
-			sql = updateSQL(sql, folderId, false, false);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(groupId);
-			queryPos.add(queryDefinition.getStatus());
-			queryPos.add(folderId);
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			if (iterator.hasNext()) {
-				Long count = iterator.next();
-
-				if (count != null) {
-					return count.intValue();
-				}
-			}
-
-			return 0;
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);

@@ -59,14 +59,8 @@ public class DLFileEntryFinderImpl
 	public static final String COUNT_BY_EXTRA_SETTINGS =
 		DLFileEntryFinder.class.getName() + ".countByExtraSettings";
 
-	public static final String COUNT_BY_G_M_R =
-		DLFileEntryFinder.class.getName() + ".countByG_M_R";
-
 	public static final String COUNT_BY_G_F_S =
 		DLFileEntryFinder.class.getName() + ".countByG_F_S";
-
-	public static final String FIND_BY_COMPANY_ID =
-		DLFileEntryFinder.class.getName() + ".findByCompanyId";
 
 	public static final String FIND_BY_DDM_STRUCTURE_IDS =
 		DLFileEntryFinder.class.getName() + ".findByDDMStructureIds";
@@ -76,9 +70,6 @@ public class DLFileEntryFinderImpl
 
 	public static final String FIND_BY_EXTRA_SETTINGS =
 		DLFileEntryFinder.class.getName() + ".findByExtraSettings";
-
-	public static final String FIND_BY_ORPHANED_FILE_ENTRIES =
-		DLFileEntryFinder.class.getName() + ".findByOrphanedFileEntries";
 
 	public static final String FIND_BY_C_T =
 		DLFileEntryFinder.class.getName() + ".findByC_T";
@@ -125,27 +116,6 @@ public class DLFileEntryFinderImpl
 	}
 
 	@Override
-	public int countByG_R_F(
-		long groupId, List<Long> repositoryIds, List<Long> folderIds,
-		QueryDefinition<DLFileEntry> queryDefinition) {
-
-		return doCountByG_U_R_F_M(
-			groupId, 0, repositoryIds, folderIds, null, queryDefinition, false);
-	}
-
-	@Override
-	public int countByG_U_F_M(
-		long groupId, long userId, List<Long> folderIds, String[] mimeTypes,
-		QueryDefinition<DLFileEntry> queryDefinition) {
-
-		List<Long> repositoryIds = Collections.emptyList();
-
-		return doCountByG_U_R_F_M(
-			groupId, userId, repositoryIds, folderIds, mimeTypes,
-			queryDefinition, false);
-	}
-
-	@Override
 	public int countByG_U_R_F_M(
 		long groupId, long userId, List<Long> repositoryIds,
 		List<Long> folderIds, String[] mimeTypes,
@@ -162,15 +132,6 @@ public class DLFileEntryFinderImpl
 		QueryDefinition<DLFileEntry> queryDefinition) {
 
 		return doCountByG_F(groupId, folderIds, queryDefinition, true);
-	}
-
-	@Override
-	public int filterCountByG_R_F(
-		long groupId, List<Long> repositoryIds, List<Long> folderIds,
-		QueryDefinition<DLFileEntry> queryDefinition) {
-
-		return doCountByG_U_R_F_M(
-			groupId, 0, repositoryIds, folderIds, null, queryDefinition, true);
 	}
 
 	@Override
@@ -208,15 +169,6 @@ public class DLFileEntryFinderImpl
 	}
 
 	@Override
-	public List<DLFileEntry> filterFindByG_R_F(
-		long groupId, List<Long> repositoryIds, List<Long> folderIds,
-		QueryDefinition<DLFileEntry> queryDefinition) {
-
-		return doFindByG_U_R_F_M(
-			groupId, 0, repositoryIds, folderIds, null, queryDefinition, true);
-	}
-
-	@Override
 	public List<DLFileEntry> filterFindByG_U_F_M(
 		long groupId, long userId, List<Long> folderIds, String[] mimeTypes,
 		QueryDefinition<DLFileEntry> queryDefinition) {
@@ -237,44 +189,6 @@ public class DLFileEntryFinderImpl
 		return doFindByG_U_R_F_M(
 			groupId, userId, repositoryIds, folderIds, mimeTypes,
 			queryDefinition, true);
-	}
-
-	@Override
-	public List<DLFileEntry> findByCompanyId(
-		long companyId, QueryDefinition<DLFileEntry> queryDefinition) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(
-				FIND_BY_COMPANY_ID, queryDefinition,
-				DLFileVersionImpl.TABLE_NAME);
-
-			sql = CustomSQLUtil.replaceOrderBy(
-				sql, queryDefinition.getOrderByComparator());
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				DLFileEntryImpl.TABLE_NAME, DLFileEntryImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(companyId);
-			queryPos.add(queryDefinition.getStatus());
-
-			return (List<DLFileEntry>)QueryUtil.list(
-				sqlQuery, getDialect(), queryDefinition.getStart(),
-				queryDefinition.getEnd());
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	@Override
@@ -386,30 +300,6 @@ public class DLFileEntryFinderImpl
 			}
 
 			return Collections.unmodifiableList(dlFileEntries);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public List<DLFileEntry> findByOrphanedFileEntries() {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_ORPHANED_FILE_ENTRIES);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				DLFileEntryImpl.TABLE_NAME, DLFileEntryImpl.class);
-
-			return sqlQuery.list(true);
 		}
 		catch (Exception exception) {
 			throw new SystemException(exception);
