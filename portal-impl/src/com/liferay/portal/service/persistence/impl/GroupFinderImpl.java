@@ -86,9 +86,6 @@ public class GroupFinderImpl
 	public static final String COUNT_BY_GROUP_ID =
 		GroupFinder.class.getName() + ".countByGroupId";
 
-	public static final String FIND_BY_ACTIVE_GROUPS =
-		GroupFinder.class.getName() + ".findByActiveGroups";
-
 	public static final String FIND_BY_COMPANY_ID =
 		GroupFinder.class.getName() + ".findByCompanyId";
 
@@ -97,9 +94,6 @@ public class GroupFinderImpl
 
 	public static final String FIND_BY_LIVE_GROUPS =
 		GroupFinder.class.getName() + ".findByLiveGroups";
-
-	public static final String FIND_BY_C_P =
-		GroupFinder.class.getName() + ".findByC_P";
 
 	public static final String FIND_BY_C_GK =
 		GroupFinder.class.getName() + ".findByC_GK";
@@ -393,33 +387,6 @@ public class GroupFinderImpl
 	}
 
 	@Override
-	public List<Long> findByActiveGroupIds(long userId) {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_ACTIVE_GROUPS);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar("groupId", Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(userId);
-
-			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
 	public List<Group> findByCompanyId(
 		long companyId, LinkedHashMap<String, Object> params, int start,
 		int end, OrderByComparator<Group> orderByComparator) {
@@ -596,16 +563,6 @@ public class GroupFinderImpl
 	}
 
 	@Override
-	public List<Group> findByLayouts(
-		long companyId, long parentGroupId, boolean site, int start, int end,
-		OrderByComparator<Group> orderByComparator) {
-
-		return findByLayouts(
-			companyId, parentGroupId, site, null, start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public List<Group> findByLiveGroups() {
 		Session session = null;
 
@@ -626,60 +583,6 @@ public class GroupFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	@Override
-	public List<Long> findByC_P(
-		long companyId, long parentGroupId, long previousGroupId, int size) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_C_P);
-
-			if (previousGroupId <= 0) {
-				sql = StringUtil.removeSubstring(sql, "(groupId > ?) AND");
-			}
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar("groupId", Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			if (previousGroupId > 0) {
-				queryPos.add(previousGroupId);
-			}
-
-			queryPos.add(companyId);
-			queryPos.add(parentGroupId);
-
-			return (List<Long>)QueryUtil.list(sqlQuery, getDialect(), 0, size);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public Group findByC_GK(long companyId, String groupKey)
-		throws NoSuchGroupException {
-
-		Group group = fetchByC_GK(companyId, groupKey);
-
-		if (group == null) {
-			throw new NoSuchGroupException(
-				StringBundler.concat(
-					"No Group exists with the key {companyId=", companyId,
-					", groupKey=", groupKey, "}"));
-		}
-
-		return group;
 	}
 
 	@Override

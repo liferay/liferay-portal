@@ -65,14 +65,6 @@ public class GroupFinderTest {
 			new LiferayIntegrationTestRule(), TransactionalTestRule.INSTANCE);
 
 	@Test
-	public void testFindByActiveGroupIds() throws Exception {
-		List<Long> groups = _groupFinder.findByActiveGroupIds(
-			TestPropsValues.getUserId());
-
-		Assert.assertFalse(groups.toString(), groups.isEmpty());
-	}
-
-	@Test
 	public void testFindByC_C_N_DJoinByActionId() throws Exception {
 		_user = UserTestUtil.addUser();
 
@@ -350,7 +342,7 @@ public class GroupFinderTest {
 
 	private List<Group> _findByLayouts(long parentGroupId) throws Exception {
 		return _groupFinder.findByLayouts(
-			TestPropsValues.getCompanyId(), parentGroupId, true,
+			TestPropsValues.getCompanyId(), parentGroupId, true, null,
 			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 			new GroupNameComparator(true));
 	}

@@ -37,37 +37,6 @@ public class LayoutFinderImpl
 	extends LayoutFinderBaseImpl implements LayoutFinder {
 
 	@Override
-	public List<Layout> findByNullFriendlyURL() {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(
-				DSLQueryFactoryUtil.select(
-				).from(
-					LayoutTable.INSTANCE
-				).where(
-					LayoutTable.INSTANCE.friendlyURL.eq(
-						""
-					).or(
-						LayoutTable.INSTANCE.friendlyURL.isNull()
-					)
-				));
-
-			sqlQuery.addEntity("Layout", LayoutImpl.class);
-
-			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
 	public List<Layout> findByScopeGroup(long groupId) {
 		return _findByScopeGroup(
 			LayoutTable.INSTANCE.groupId.eq(

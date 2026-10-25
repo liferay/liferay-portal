@@ -30,20 +30,6 @@
 				(Group_.liveGroupId = 0)
 		]]>
 	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.findByActiveGroups">
-		<![CDATA[
-			SELECT
-				Group_.groupId
-			FROM
-				Group_
-			INNER JOIN
-				Users_Groups ON
-					Users_Groups.groupId = Group_.groupId
-			WHERE
-				(Users_Groups.userId = ?) AND
-				(Group_.active_ = [$TRUE$])
-		]]>
-	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.findByCompanyId">
 		<![CDATA[
 			SELECT
@@ -89,20 +75,6 @@
 						WHERE
 							Group_.liveGroupId != 0
 					)
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.findByC_P">
-		<![CDATA[
-			SELECT
-				groupId
-			FROM
-				Group_
-			WHERE
-				(groupId > ?) AND
-				(companyId = ?) AND
-				(parentGroupId = ?)
-			ORDER BY
-				groupId ASC
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.findByC_GK">
@@ -291,17 +263,6 @@
 		<![CDATA[
 			WHERE
 				Group_.type_ = ?
-		]]>
-	</sql>
-	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.joinByUserGroup">
-		<![CDATA[
-			INNER JOIN
-				UserGroupRole ON
-					UserGroupRole.userId = ?
-			WHERE
-				(Group_.liveGroupId = 0) AND
-				(UserGroupRole.groupId = Group_.groupId) AND
-				(UserGroupRole.roleId = ?)
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.GroupFinder.joinByUserGroupRole">
