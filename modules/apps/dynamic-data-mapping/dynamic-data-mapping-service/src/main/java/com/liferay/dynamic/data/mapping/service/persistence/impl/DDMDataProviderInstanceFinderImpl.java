@@ -44,25 +44,6 @@ public class DDMDataProviderInstanceFinderImpl
 		DDMDataProviderInstanceFinder.class.getName() + ".findByC_G_N_D";
 
 	@Override
-	public int countByKeywords(
-		long companyId, long[] groupIds, String keywords) {
-
-		return doCountByKeywords(companyId, groupIds, keywords, false);
-	}
-
-	@Override
-	public int countByC_G_N_D(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-
-		return doCountByC_G_N_D(
-			companyId, groupIds, names, descriptions, andOperator, false);
-	}
-
-	@Override
 	public List<DDMDataProviderInstance> filterByC_G(
 		long companyId, long[] groupIds, int start, int end) {
 
@@ -86,21 +67,21 @@ public class DDMDataProviderInstanceFinderImpl
 			andOperator = true;
 		}
 
-		return doFindByC_G_N_D(
+		return _findByC_G_N_D(
 			companyId, groupIds, names, descriptions, andOperator, start, end,
-			orderByComparator, true);
+			orderByComparator);
 	}
 
 	@Override
 	public int filterCountByKeywords(
 		long companyId, long[] groupIds, String keywords) {
 
-		return doCountByKeywords(companyId, groupIds, keywords, true);
+		return _countByKeywords(companyId, groupIds, keywords);
 	}
 
 	@Override
 	public int filterCountByC_G(long companyId, long[] groupIds) {
-		return doCountByKeywords(companyId, groupIds, null, true);
+		return _countByKeywords(companyId, groupIds, null);
 	}
 
 	@Override
@@ -111,8 +92,8 @@ public class DDMDataProviderInstanceFinderImpl
 		String[] names = _customSQL.keywords(name);
 		String[] descriptions = _customSQL.keywords(description, false);
 
-		return doCountByC_G_N_D(
-			companyId, groupIds, names, descriptions, andOperator, true);
+		return _countByC_G_N_D(
+			companyId, groupIds, names, descriptions, andOperator);
 	}
 
 	@Override
@@ -124,15 +105,13 @@ public class DDMDataProviderInstanceFinderImpl
 		String[] names = _customSQL.keywords(name);
 		String[] descriptions = _customSQL.keywords(description, false);
 
-		return doFindByC_G_N_D(
+		return _findByC_G_N_D(
 			companyId, groupIds, names, descriptions, andOperator, start, end,
-			orderByComparator, true);
+			orderByComparator);
 	}
 
-	@Override
-	public List<DDMDataProviderInstance> findByKeywords(
-		long companyId, long[] groupIds, String keywords, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
+	private int _countByKeywords(
+		long companyId, long[] groupIds, String keywords) {
 
 		String[] names = null;
 		String[] descriptions = null;
@@ -146,49 +125,13 @@ public class DDMDataProviderInstanceFinderImpl
 			andOperator = true;
 		}
 
-		return doFindByC_G_N_D(
-			companyId, groupIds, names, descriptions, andOperator, start, end,
-			orderByComparator, false);
+		return _countByC_G_N_D(
+			companyId, groupIds, names, descriptions, andOperator);
 	}
 
-	@Override
-	public List<DDMDataProviderInstance> findByC_G_N_D(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-
-		return doFindByC_G_N_D(
-			companyId, groupIds, names, descriptions, andOperator, start, end,
-			orderByComparator, false);
-	}
-
-	protected int doCountByKeywords(
-		long companyId, long[] groupIds, String keywords,
-		boolean inlineSQLHelper) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return doCountByC_G_N_D(
-			companyId, groupIds, names, descriptions, andOperator,
-			inlineSQLHelper);
-	}
-
-	protected int doCountByC_G_N_D(
+	private int _countByC_G_N_D(
 		long companyId, long[] groupIds, String[] names, String[] descriptions,
-		boolean andOperator, boolean inlineSQLHelper) {
+		boolean andOperator) {
 
 		names = _customSQL.keywords(names);
 		descriptions = _customSQL.keywords(descriptions, false);
@@ -200,14 +143,11 @@ public class DDMDataProviderInstanceFinderImpl
 
 			String sql = _customSQL.get(getClass(), COUNT_BY_C_G_N_D);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, DDMDataProviderInstance.class.getName(),
-					"DDMDataProviderInstance.dataProviderInstanceId", groupIds);
-			}
-
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, DDMDataProviderInstance.class.getName(),
+				"DDMDataProviderInstance.dataProviderInstanceId", groupIds);
 			sql = StringUtil.replace(
-				sql, "[$GROUP_ID$]", getGroupIds(groupIds));
+				sql, "[$GROUP_ID$]", _getGroupIds(groupIds));
 			sql = _customSQL.replaceKeywords(
 				sql, "LOWER(DDMDataProviderInstance.name)", StringPool.LIKE,
 				false, names);
@@ -251,11 +191,10 @@ public class DDMDataProviderInstanceFinderImpl
 		}
 	}
 
-	protected List<DDMDataProviderInstance> doFindByC_G_N_D(
+	private List<DDMDataProviderInstance> _findByC_G_N_D(
 		long companyId, long[] groupIds, String[] names, String[] descriptions,
 		boolean andOperator, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator,
-		boolean inlineSQLHelper) {
+		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
 
 		names = _customSQL.keywords(names);
 		descriptions = _customSQL.keywords(descriptions, false);
@@ -267,14 +206,11 @@ public class DDMDataProviderInstanceFinderImpl
 
 			String sql = _customSQL.get(getClass(), FIND_BY_C_G_N_D);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql, DDMDataProviderInstance.class.getName(),
-					"DDMDataProviderInstance.dataProviderInstanceId", groupIds);
-			}
-
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql, DDMDataProviderInstance.class.getName(),
+				"DDMDataProviderInstance.dataProviderInstanceId", groupIds);
 			sql = StringUtil.replace(
-				sql, "[$GROUP_ID$]", getGroupIds(groupIds));
+				sql, "[$GROUP_ID$]", _getGroupIds(groupIds));
 			sql = _customSQL.replaceKeywords(
 				sql, "LOWER(DDMDataProviderInstance.name)", StringPool.LIKE,
 				false, names);
@@ -311,7 +247,7 @@ public class DDMDataProviderInstanceFinderImpl
 		}
 	}
 
-	protected String getGroupIds(long[] groupIds) {
+	private String _getGroupIds(long[] groupIds) {
 		if (ArrayUtil.isEmpty(groupIds)) {
 			return StringPool.BLANK;
 		}

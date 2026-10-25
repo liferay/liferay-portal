@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Iterator;
@@ -56,239 +55,12 @@ public class DDMTemplateFinderImpl
 		DDMTemplateFinder.class.getName() + ".findByC_G_C_C_R_N_D_T_M_L_S";
 
 	@Override
-	public int countByKeywords(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return countByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int countByKeywords(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return countByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int countByG_SC_S(
-		long groupId, long structureClassNameId, int status) {
-
-		return doCountByG_C_SC_S(
-			new long[] {groupId}, _portal.getClassNameId(DDMStructure.class),
-			structureClassNameId, status, false);
-	}
-
-	@Override
-	public int countByC_G_C_C_R_T_M_S(
-		long companyId, long[] groupIds, long classNameId, long classPK,
-		long resourceClassNameId, String type, String mode, int status) {
-
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, new long[] {classNameId}, new long[] {classPK},
-			resourceClassNameId, null, null, types, modes, null, status, true,
-			false);
-	}
-
-	@Override
-	public int countByC_G_C_C_R_T_M_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String type, String mode, int status) {
-
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			null, null, types, modes, null, status, true, false);
-	}
-
-	@Override
-	public int countByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return countByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int countByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator) {
-
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, new long[] {groupId}, new long[] {classNameId},
-			new long[] {classPK}, resourceClassNameId, names, descriptions,
-			types, modes, languages, status, andOperator, false);
-	}
-
-	@Override
-	public int countByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return countByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int countByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator) {
-
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			false);
-	}
-
-	@Override
-	public int filterCountByKeywords(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return filterCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int filterCountByKeywords(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return filterCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
 	public int filterCountByG_SC_S(
 		long groupId, long structureClassNameId, int status) {
 
-		return doCountByG_C_SC_S(
+		return _countByG_C_SC_S(
 			new long[] {groupId}, _portal.getClassNameId(DDMStructure.class),
-			structureClassNameId, status, true);
-	}
-
-	@Override
-	public int filterCountByG_SC_S(
-		long[] groupIds, long structureClassNameId, int status) {
-
-		return doCountByG_C_SC_S(
-			groupIds, _portal.getClassNameId(DDMStructure.class),
-			structureClassNameId, status, true);
-	}
-
-	@Override
-	public int filterCountByC_G_C_C_R_T_M_S(
-		long companyId, long[] groupIds, long classNameId, long classPK,
-		long resourceClassNameId, String type, String mode, int status) {
-
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, new long[] {classNameId}, new long[] {classPK},
-			resourceClassNameId, null, null, types, modes, null, status, true,
-			true);
+			structureClassNameId, status);
 	}
 
 	@Override
@@ -299,127 +71,9 @@ public class DDMTemplateFinderImpl
 		String[] types = _customSQL.keywords(type, false);
 		String[] modes = _customSQL.keywords(mode, false);
 
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
+		return _countByC_G_C_C_R_N_D_T_M_L_S(
 			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			null, null, types, modes, null, status, true, true);
-	}
-
-	@Override
-	public int filterCountByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return filterCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int filterCountByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator) {
-
-		return filterCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, new long[] {groupId}, new long[] {classNameId},
-			new long[] {classPK}, resourceClassNameId, names, descriptions,
-			types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int filterCountByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return filterCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator);
-	}
-
-	@Override
-	public int filterCountByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator) {
-
-		return doCountByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			true);
-	}
-
-	@Override
-	public List<DDMTemplate> filterFindByKeywords(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return filterFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> filterFindByKeywords(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(languages, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return filterFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
+			null, null, types, modes, null, status, true);
 	}
 
 	@Override
@@ -427,18 +81,8 @@ public class DDMTemplateFinderImpl
 		long groupId, long structureClassNameId, int status, int start, int end,
 		OrderByComparator<DDMTemplate> orderByComparator) {
 
-		return doFindByG_C_SC_S(
+		return _findByG_C_SC_S(
 			new long[] {groupId}, _portal.getClassNameId(DDMStructure.class),
-			structureClassNameId, status, start, end, orderByComparator, true);
-	}
-
-	@Override
-	public List<DDMTemplate> filterFindByG_SC_S(
-		long[] groupIds, long structureClassNameId, int status, int start,
-		int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		return doFindByG_C_SC_S(
-			groupIds, _portal.getClassNameId(DDMStructure.class),
 			structureClassNameId, status, start, end, orderByComparator, true);
 	}
 
@@ -451,7 +95,7 @@ public class DDMTemplateFinderImpl
 		String[] types = _customSQL.keywords(type, false);
 		String[] modes = _customSQL.keywords(mode, false);
 
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
+		return _findByC_G_C_C_R_N_D_T_M_L_S(
 			companyId, groupIds, new long[] {classNameId}, new long[] {classPK},
 			resourceClassNameId, null, null, types, modes, null, status, true,
 			start, end, orderByComparator, true);
@@ -466,173 +110,23 @@ public class DDMTemplateFinderImpl
 		String[] types = _customSQL.keywords(type, false);
 		String[] modes = _customSQL.keywords(mode, false);
 
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
+		return _findByC_G_C_C_R_N_D_T_M_L_S(
 			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
 			null, null, types, modes, null, status, true, start, end,
 			orderByComparator, true);
 	}
 
 	@Override
-	public List<DDMTemplate> filterFindByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return filterFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> filterFindByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		return filterFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, new long[] {groupId}, new long[] {classNameId},
-			new long[] {classPK}, resourceClassNameId, names, descriptions,
-			types, modes, languages, status, andOperator, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> filterFindByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return filterFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> filterFindByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator, true);
-	}
-
-	@Override
-	public List<DDMTemplate> findByKeywords(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return findByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> findByKeywords(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-			languages = _customSQL.keywords(languages, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return findByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
 	public List<DDMTemplate> findByG_SC_S(
 		long groupId, long structureClassNameId, int status, int start, int end,
 		OrderByComparator<DDMTemplate> orderByComparator) {
 
-		return doFindByG_C_SC_S(
+		return _findByG_C_SC_S(
 			new long[] {groupId}, _portal.getClassNameId(DDMStructure.class),
 			structureClassNameId, status, start, end, orderByComparator, false);
 	}
 
 	@Override
-	public List<DDMTemplate> findByG_SC_S(
-		long[] groupIds, long structureClassNameId, int status, int start,
-		int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		return doFindByG_C_SC_S(
-			groupIds, _portal.getClassNameId(DDMStructure.class),
-			structureClassNameId, status, start, end, orderByComparator, false);
-	}
-
-	@Override
-	public List<DDMTemplate> findByC_G_C_C_R_T_M_S(
-		long companyId, long[] groupIds, long classNameId, long classPK,
-		long resourceClassNameId, String type, String mode, int status,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, new long[] {classNameId}, new long[] {classPK},
-			resourceClassNameId, null, null, types, modes, null, status, true,
-			start, end, orderByComparator, false);
-	}
-
-	@Override
 	public List<DDMTemplate> findByC_G_C_C_R_T_M_S(
 		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
 		long resourceClassNameId, String type, String mode, int status,
@@ -641,82 +135,15 @@ public class DDMTemplateFinderImpl
 		String[] types = _customSQL.keywords(type, false);
 		String[] modes = _customSQL.keywords(mode, false);
 
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
+		return _findByC_G_C_C_R_N_D_T_M_L_S(
 			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
 			null, null, types, modes, null, status, true, start, end,
 			orderByComparator, false);
 	}
 
-	@Override
-	public List<DDMTemplate> findByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return findByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupId, classNameId, classPK, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> findByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, new long[] {groupId}, new long[] {classNameId},
-			new long[] {classPK}, resourceClassNameId, names, descriptions,
-			types, modes, languages, status, andOperator, start, end,
-			orderByComparator, false);
-	}
-
-	@Override
-	public List<DDMTemplate> findByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		String[] names = _customSQL.keywords(name);
-		String[] descriptions = _customSQL.keywords(description, false);
-		String[] types = _customSQL.keywords(type, false);
-		String[] modes = _customSQL.keywords(mode, false);
-		String[] languages = _customSQL.keywords(language, false);
-
-		return findByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMTemplate> findByC_G_C_C_R_N_D_T_M_L_S(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String[] names, String[] descriptions,
-		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		return doFindByC_G_C_C_R_N_D_T_M_L_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			names, descriptions, types, modes, languages, status, andOperator,
-			start, end, orderByComparator, false);
-	}
-
-	protected int doCountByG_C_SC_S(
+	private int _countByG_C_SC_S(
 		long[] groupIds, long classNameId, long structureClassNameId,
-		int status, boolean inlineSQLHelper) {
+		int status) {
 
 		Session session = null;
 
@@ -725,17 +152,14 @@ public class DDMTemplateFinderImpl
 
 			String sql = _customSQL.get(getClass(), COUNT_BY_G_C_SC_S);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql,
-					_ddmPermissionSupport.getTemplateModelResourceName(
-						structureClassNameId),
-					"DDMTemplate.templateId", groupIds);
-			}
-
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql,
+				_ddmPermissionSupport.getTemplateModelResourceName(
+					structureClassNameId),
+				"DDMTemplate.templateId", groupIds);
 			sql = StringUtil.replace(
-				sql, "[$GROUP_ID$]", getGroupIds(groupIds));
-			sql = StringUtil.replace(sql, "[$STATUS$]", getStatus(status));
+				sql, "[$GROUP_ID$]", _getGroupIds(groupIds));
+			sql = StringUtil.replace(sql, "[$STATUS$]", _getStatus(status));
 
 			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
 
@@ -774,11 +198,11 @@ public class DDMTemplateFinderImpl
 		}
 	}
 
-	protected int doCountByC_G_C_C_R_N_D_T_M_L_S(
+	private int _countByC_G_C_C_R_N_D_T_M_L_S(
 		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
 		long resourceClassNameId, String[] names, String[] descriptions,
 		String[] types, String[] modes, String[] languages, int status,
-		boolean andOperator, boolean inlineSQLHelper) {
+		boolean andOperator) {
 
 		names = _customSQL.keywords(names);
 		descriptions = _customSQL.keywords(descriptions, false);
@@ -794,21 +218,18 @@ public class DDMTemplateFinderImpl
 			String sql = _customSQL.get(
 				getClass(), COUNT_BY_C_G_C_C_R_N_D_T_M_L_S);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql,
-					_ddmPermissionSupport.getTemplateModelResourceName(
-						resourceClassNameId),
-					"DDMTemplate.templateId", groupIds);
-			}
-
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql,
+				_ddmPermissionSupport.getTemplateModelResourceName(
+					resourceClassNameId),
+				"DDMTemplate.templateId", groupIds);
 			sql = StringUtil.replace(
-				sql, "[$GROUP_ID$]", getGroupIds(groupIds));
+				sql, "[$GROUP_ID$]", _getGroupIds(groupIds));
 			sql = StringUtil.replace(
-				sql, "[$CLASSNAME_ID$]", getClassNameIds(classNameIds));
+				sql, "[$CLASSNAME_ID$]", _getClassNameIds(classNameIds));
 			sql = StringUtil.replace(
-				sql, "[$CLASS_PK$]", getClassPKs(classPKs));
-			sql = StringUtil.replace(sql, "[$STATUS$]", getStatus(status));
+				sql, "[$CLASS_PK$]", _getClassPKs(classPKs));
+			sql = StringUtil.replace(sql, "[$STATUS$]", _getStatus(status));
 			sql = _customSQL.replaceKeywords(
 				sql, "LOWER(CAST_TEXT(DDMTemplate.name))", StringPool.LIKE,
 				false, names);
@@ -874,7 +295,7 @@ public class DDMTemplateFinderImpl
 		}
 	}
 
-	protected List<DDMTemplate> doFindByG_C_SC_S(
+	private List<DDMTemplate> _findByG_C_SC_S(
 		long[] groupIds, long classNameId, long structureClassNameId,
 		int status, int start, int end,
 		OrderByComparator<DDMTemplate> orderByComparator,
@@ -896,8 +317,8 @@ public class DDMTemplateFinderImpl
 			}
 
 			sql = StringUtil.replace(
-				sql, "[$GROUP_ID$]", getGroupIds(groupIds));
-			sql = StringUtil.replace(sql, "[$STATUS$]", getStatus(status));
+				sql, "[$GROUP_ID$]", _getGroupIds(groupIds));
+			sql = StringUtil.replace(sql, "[$STATUS$]", _getStatus(status));
 
 			if (orderByComparator != null) {
 				sql = _customSQL.replaceOrderBy(sql, orderByComparator);
@@ -931,7 +352,7 @@ public class DDMTemplateFinderImpl
 		}
 	}
 
-	protected List<DDMTemplate> doFindByC_G_C_C_R_N_D_T_M_L_S(
+	private List<DDMTemplate> _findByC_G_C_C_R_N_D_T_M_L_S(
 		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
 		long resourceClassNameId, String[] names, String[] descriptions,
 		String[] types, String[] modes, String[] languages, int status,
@@ -962,12 +383,12 @@ public class DDMTemplateFinderImpl
 			}
 
 			sql = StringUtil.replace(
-				sql, "[$GROUP_ID$]", getGroupIds(groupIds));
+				sql, "[$GROUP_ID$]", _getGroupIds(groupIds));
 			sql = StringUtil.replace(
-				sql, "[$CLASSNAME_ID$]", getClassNameIds(classNameIds));
+				sql, "[$CLASSNAME_ID$]", _getClassNameIds(classNameIds));
 			sql = StringUtil.replace(
-				sql, "[$CLASS_PK$]", getClassPKs(classPKs));
-			sql = StringUtil.replace(sql, "[$STATUS$]", getStatus(status));
+				sql, "[$CLASS_PK$]", _getClassPKs(classPKs));
+			sql = StringUtil.replace(sql, "[$STATUS$]", _getStatus(status));
 			sql = _customSQL.replaceKeywords(
 				sql, "LOWER(CAST_TEXT(DDMTemplate.name))", StringPool.LIKE,
 				false, names);
@@ -1028,7 +449,7 @@ public class DDMTemplateFinderImpl
 		}
 	}
 
-	protected String getClassNameIds(long[] classNameIds) {
+	private String _getClassNameIds(long[] classNameIds) {
 		if (ArrayUtil.isEmpty(classNameIds)) {
 			return StringPool.BLANK;
 		}
@@ -1046,7 +467,7 @@ public class DDMTemplateFinderImpl
 		return sb.toString();
 	}
 
-	protected String getClassPKs(long[] classPKs) {
+	private String _getClassPKs(long[] classPKs) {
 		if (ArrayUtil.isEmpty(classPKs)) {
 			return StringPool.BLANK;
 		}
@@ -1064,7 +485,7 @@ public class DDMTemplateFinderImpl
 		return sb.toString();
 	}
 
-	protected String getGroupIds(long[] groupIds) {
+	private String _getGroupIds(long[] groupIds) {
 		if (ArrayUtil.isEmpty(groupIds)) {
 			return StringPool.BLANK;
 		}
@@ -1082,7 +503,7 @@ public class DDMTemplateFinderImpl
 		return sb.toString();
 	}
 
-	protected String getStatus(int status) {
+	private String _getStatus(int status) {
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return StringPool.BLANK;
 		}

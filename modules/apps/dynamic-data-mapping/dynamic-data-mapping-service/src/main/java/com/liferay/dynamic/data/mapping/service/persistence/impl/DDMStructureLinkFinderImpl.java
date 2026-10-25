@@ -41,20 +41,12 @@ public class DDMStructureLinkFinderImpl
 		DDMStructureLinkFinder.class.getName() + ".findByC_C_N_D";
 
 	@Override
-	public int countByKeywords(
-		long classNameId, long classPK, String keywords) {
-
-		return _countByKeywords(
-			classNameId, classPK, null, keywords, null, false);
-	}
-
-	@Override
 	public int filterCountByKeywords(
 		long classNameId, long classPK, long[] groupIds, String keywords,
 		String resourceClassName) {
 
 		return _countByKeywords(
-			classNameId, classPK, groupIds, keywords, resourceClassName, true);
+			classNameId, classPK, groupIds, keywords, resourceClassName);
 	}
 
 	@Override
@@ -65,23 +57,33 @@ public class DDMStructureLinkFinderImpl
 
 		return _findByKeywords(
 			classNameId, classPK, groupIds, keywords, resourceClassName, start,
-			end, orderByComparator, true);
+			end, orderByComparator);
 	}
 
-	@Override
-	public List<DDMStructureLink> findByKeywords(
-		long classNameId, long classPK, String keywords, int start, int end,
-		OrderByComparator<DDMStructureLink> orderByComparator) {
+	private int _countByKeywords(
+		long classNameId, long classPK, long[] groupIds, String keywords,
+		String resourceClassName) {
 
-		return _findByKeywords(
-			classNameId, classPK, null, keywords, null, start, end,
-			orderByComparator, false);
+		String[] names = null;
+		String[] descriptions = null;
+		boolean andOperator = false;
+
+		if (Validator.isNotNull(keywords)) {
+			names = _customSQL.keywords(keywords);
+			descriptions = _customSQL.keywords(keywords, false);
+		}
+		else {
+			andOperator = true;
+		}
+
+		return _countByC_C_N_D(
+			classNameId, classPK, groupIds, names, descriptions,
+			resourceClassName, andOperator);
 	}
 
-	protected int doCountByC_C_N_D(
+	private int _countByC_C_N_D(
 		long classNameId, long classPK, long[] groupIds, String[] names,
-		String[] descriptions, String resourceClassName, boolean andOperator,
-		boolean inlineSQLHelper) {
+		String[] descriptions, String resourceClassName, boolean andOperator) {
 
 		names = _customSQL.keywords(names);
 		descriptions = _customSQL.keywords(descriptions, false);
@@ -93,13 +95,11 @@ public class DDMStructureLinkFinderImpl
 
 			String sql = _customSQL.get(getClass(), COUNT_BY_C_C_N_D);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql,
-					_ddmPermissionSupport.getStructureModelResourceName(
-						resourceClassName),
-					"DDMStructure.structureId", groupIds);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql,
+				_ddmPermissionSupport.getStructureModelResourceName(
+					resourceClassName),
+				"DDMStructure.structureId", groupIds);
 
 			sql = _customSQL.replaceKeywords(
 				sql, "LOWER(CAST_TEXT(DDMStructure.name))", StringPool.LIKE,
@@ -142,12 +142,33 @@ public class DDMStructureLinkFinderImpl
 		}
 	}
 
-	protected List<DDMStructureLink> doFindByC_C_N_D(
+	private List<DDMStructureLink> _findByKeywords(
+		long classNameId, long classPK, long[] groupIds, String keywords,
+		String resourceClassName, int start, int end,
+		OrderByComparator<DDMStructureLink> orderByComparator) {
+
+		String[] names = null;
+		String[] descriptions = null;
+		boolean andOperator = false;
+
+		if (Validator.isNotNull(keywords)) {
+			names = _customSQL.keywords(keywords);
+			descriptions = _customSQL.keywords(keywords, false);
+		}
+		else {
+			andOperator = true;
+		}
+
+		return _findByC_C_N_D(
+			classNameId, classPK, groupIds, names, descriptions,
+			resourceClassName, andOperator, start, end, orderByComparator);
+	}
+
+	private List<DDMStructureLink> _findByC_C_N_D(
 		long classNameId, long classPK, long[] groupIds, String[] names,
 		String[] descriptions, String resourceClassName, boolean andOperator,
 		int start, int end,
-		OrderByComparator<DDMStructureLink> orderByComparator,
-		boolean inlineSQLHelper) {
+		OrderByComparator<DDMStructureLink> orderByComparator) {
 
 		names = _customSQL.keywords(names);
 		descriptions = _customSQL.keywords(descriptions, false);
@@ -159,13 +180,11 @@ public class DDMStructureLinkFinderImpl
 
 			String sql = _customSQL.get(getClass(), FIND_BY_C_C_N_D);
 
-			if (inlineSQLHelper) {
-				sql = InlineSQLHelperUtil.replacePermissionCheck(
-					sql,
-					_ddmPermissionSupport.getStructureModelResourceName(
-						resourceClassName),
-					"DDMStructure.structureId", groupIds);
-			}
+			sql = InlineSQLHelperUtil.replacePermissionCheck(
+				sql,
+				_ddmPermissionSupport.getStructureModelResourceName(
+					resourceClassName),
+				"DDMStructure.structureId", groupIds);
 
 			sql = _customSQL.replaceKeywords(
 				sql, "LOWER(CAST_TEXT(DDMStructure.name))", StringPool.LIKE,
@@ -199,51 +218,6 @@ public class DDMStructureLinkFinderImpl
 		finally {
 			closeSession(session);
 		}
-	}
-
-	private int _countByKeywords(
-		long classNameId, long classPK, long[] groupIds, String keywords,
-		String resourceClassName, boolean inlineSQLHelper) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return doCountByC_C_N_D(
-			classNameId, classPK, groupIds, names, descriptions,
-			resourceClassName, andOperator, inlineSQLHelper);
-	}
-
-	private List<DDMStructureLink> _findByKeywords(
-		long classNameId, long classPK, long[] groupIds, String keywords,
-		String resourceClassName, int start, int end,
-		OrderByComparator<DDMStructureLink> orderByComparator,
-		boolean inlineSQLHelper) {
-
-		String[] names = null;
-		String[] descriptions = null;
-		boolean andOperator = false;
-
-		if (Validator.isNotNull(keywords)) {
-			names = _customSQL.keywords(keywords);
-			descriptions = _customSQL.keywords(keywords, false);
-		}
-		else {
-			andOperator = true;
-		}
-
-		return doFindByC_C_N_D(
-			classNameId, classPK, groupIds, names, descriptions,
-			resourceClassName, andOperator, start, end, orderByComparator,
-			inlineSQLHelper);
 	}
 
 	@Reference
