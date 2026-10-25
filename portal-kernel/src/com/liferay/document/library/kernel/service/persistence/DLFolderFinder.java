@@ -19,10 +19,6 @@ public interface DLFolderFinder {
 		boolean includeMountFolders,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
-	public int countFE_ByG_F(
-		long groupId, long folderId,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
-
 	public int countFE_FS_ByG_F(
 		long groupId, long folderId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
@@ -35,10 +31,6 @@ public interface DLFolderFinder {
 	public int filterCountF_FE_FS_ByG_F_M_FETI_M(
 		long groupId, long folderId, String[] mimeTypes, long fileEntryTypeId,
 		boolean includeMountFolders,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
-
-	public int filterCountFE_ByG_F(
-		long groupId, long folderId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
 	public int filterCountFE_FS_ByG_F(
@@ -79,4 +71,4 @@ public interface DLFolderFinder {
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<?> queryDefinition);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1448566093
+// LIFERAY-SERVICE-BUILDER-HASH:-694877477

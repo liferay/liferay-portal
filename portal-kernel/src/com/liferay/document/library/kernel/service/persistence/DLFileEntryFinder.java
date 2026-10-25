@@ -22,20 +22,6 @@ public interface DLFileEntryFinder {
 			<com.liferay.document.library.kernel.model.DLFileEntry>
 				queryDefinition);
 
-	public int countByG_R_F(
-		long groupId, java.util.List<Long> repositoryIds,
-		java.util.List<Long> folderIds,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.document.library.kernel.model.DLFileEntry>
-				queryDefinition);
-
-	public int countByG_U_F_M(
-		long groupId, long userId, java.util.List<Long> folderIds,
-		String[] mimeTypes,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.document.library.kernel.model.DLFileEntry>
-				queryDefinition);
-
 	public int countByG_U_R_F_M(
 		long groupId, long userId, java.util.List<Long> repositoryIds,
 		java.util.List<Long> folderIds, String[] mimeTypes,
@@ -45,13 +31,6 @@ public interface DLFileEntryFinder {
 
 	public int filterCountByG_F(
 		long groupId, java.util.List<Long> folderIds,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition
-			<com.liferay.document.library.kernel.model.DLFileEntry>
-				queryDefinition);
-
-	public int filterCountByG_R_F(
-		long groupId, java.util.List<Long> repositoryIds,
-		java.util.List<Long> folderIds,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition
 			<com.liferay.document.library.kernel.model.DLFileEntry>
 				queryDefinition);
@@ -78,14 +57,6 @@ public interface DLFileEntryFinder {
 					queryDefinition);
 
 	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
-		filterFindByG_R_F(
-			long groupId, java.util.List<Long> repositoryIds,
-			java.util.List<Long> folderIds,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.document.library.kernel.model.DLFileEntry>
-					queryDefinition);
-
-	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
 		filterFindByG_U_F_M(
 			long groupId, long userId, java.util.List<Long> folderIds,
 			String[] mimeTypes,
@@ -102,13 +73,6 @@ public interface DLFileEntryFinder {
 					queryDefinition);
 
 	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
-		findByCompanyId(
-			long companyId,
-			com.liferay.portal.kernel.dao.orm.QueryDefinition
-				<com.liferay.document.library.kernel.model.DLFileEntry>
-					queryDefinition);
-
-	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
 		findByDDMStructureIds(
 			long groupId, long[] ddmStructureIds, int start, int end);
 
@@ -120,9 +84,6 @@ public interface DLFileEntryFinder {
 
 	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
 		findByExtraSettings(int start, int end);
-
-	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
-		findByOrphanedFileEntries();
 
 	public java.util.List<com.liferay.document.library.kernel.model.DLFileEntry>
 		findByC_T(long classNameId, String treePath);
@@ -174,4 +135,4 @@ public interface DLFileEntryFinder {
 					queryDefinition);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:648598606
+// LIFERAY-SERVICE-BUILDER-HASH:-2075059817
