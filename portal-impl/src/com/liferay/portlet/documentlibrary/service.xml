@@ -255,10 +255,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="folderId" />
 		</finder>
-		<finder name="C_NotS" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
 		<finder name="G_F_A" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="folderId" />
@@ -422,10 +418,6 @@
 		<finder name="G_P" return-type="Collection">
 			<finder-column name="groupId" />
 			<finder-column name="parentFolderId" />
-		</finder>
-		<finder name="C_NotS" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 		<finder name="R_M" return-type="DLFolder">
 			<finder-column name="repositoryId" />
