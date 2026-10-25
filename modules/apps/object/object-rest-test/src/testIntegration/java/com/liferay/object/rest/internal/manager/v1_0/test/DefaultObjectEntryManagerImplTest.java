@@ -441,6 +441,23 @@ public class DefaultObjectEntryManagerImplTest
 
 	@AfterClass
 	public static void tearDownClass() throws Exception {
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			objectDefinitionLocalService,
+			new String[] {
+				_companyObjectDefinitionA.getName(),
+				_companyObjectDefinitionB.getName(),
+				_companyObjectDefinitionAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			objectDefinitionLocalService,
+			new String[] {
+				_siteObjectDefinitionA.getName(),
+				_siteObjectDefinitionB.getName(),
+				_siteObjectDefinitionAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
 		GroupLocalServiceUtil.deleteGroup(_group);
 
 		PermissionThreadLocal.setPermissionChecker(_originalPermissionChecker);
@@ -9309,6 +9326,13 @@ public class DefaultObjectEntryManagerImplTest
 			() -> _defaultObjectEntryManager.subscribeObjectEntry(
 				objectEntryAA.getExternalReferenceCode(), objectDefinitionAA,
 				objectEntryAA.getScopeKey()));
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			objectDefinitionLocalService,
+			new String[] {
+				objectDefinitionA.getName(), objectDefinitionAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
@@ -13991,6 +14015,9 @@ public class DefaultObjectEntryManagerImplTest
 	private static DefaultObjectEntryManager _defaultObjectEntryManager;
 	private static Group _group;
 
+	@Inject
+	private static ObjectEntryLocalService _objectEntryLocalService;
+
 	@Inject(
 		filter = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
 	)
@@ -14124,9 +14151,6 @@ public class DefaultObjectEntryManagerImplTest
 
 	@Inject
 	private ObjectEntryFolderLocalService _objectEntryFolderLocalService;
-
-	@Inject
-	private ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject
 	private ObjectEntryVersionLocalService _objectEntryVersionLocalService;
