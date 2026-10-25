@@ -1,4 +1,4 @@
 Bundle-Name: Liferay SAML Addon Keep Alive Web
 Bundle-SymbolicName: com.liferay.saml.addon.keep.alive.web
-Bundle-Version: 5.0.30
+Bundle-Version: 5.0.31
 Web-ContextPath: /saml-addon-keep-alive-web
