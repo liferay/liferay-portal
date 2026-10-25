@@ -438,38 +438,6 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String keywords, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
-
-		return getService().search(
-			companyId, groupIds, keywords, start, end, orderByComparator);
-	}
-
-	public static List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
-
-		return getService().search(
-			companyId, groupIds, name, description, andOperator, start, end,
-			orderByComparator);
-	}
-
-	public static int searchCount(
-		long companyId, long[] groupIds, String keywords) {
-
-		return getService().searchCount(companyId, groupIds, keywords);
-	}
-
-	public static int searchCount(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator) {
-
-		return getService().searchCount(
-			companyId, groupIds, name, description, andOperator);
-	}
-
 	public static DDMDataProviderInstance updateDataProviderInstance(
 			long userId, long dataProviderInstanceId,
 			Map<java.util.Locale, String> nameMap,
@@ -511,4 +479,4 @@ public class DDMDataProviderInstanceLocalServiceUtil {
 			DDMDataProviderInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1330733970
+// LIFERAY-SERVICE-BUILDER-HASH:-428885462

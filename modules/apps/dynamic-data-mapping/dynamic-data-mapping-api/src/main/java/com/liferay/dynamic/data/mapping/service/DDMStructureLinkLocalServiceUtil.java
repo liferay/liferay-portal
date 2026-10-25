@@ -366,42 +366,6 @@ public class DDMStructureLinkLocalServiceUtil {
 			classNameId, classPK, start, end);
 	}
 
-	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
-			getStructureLinkStructures(
-				long classNameId, long classPK, String keywords)
-		throws PortalException {
-
-		return getService().getStructureLinkStructures(
-			classNameId, classPK, keywords);
-	}
-
-	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
-			getStructureLinkStructures(
-				long classNameId, long classPK, String keywords, int start,
-				int end)
-		throws PortalException {
-
-		return getService().getStructureLinkStructures(
-			classNameId, classPK, keywords, start, end);
-	}
-
-	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
-			getStructureLinkStructures(
-				long classNameId, long classPK, String keywords, int start,
-				int end, OrderByComparator<DDMStructureLink> orderByComparator)
-		throws PortalException {
-
-		return getService().getStructureLinkStructures(
-			classNameId, classPK, keywords, start, end, orderByComparator);
-	}
-
-	public static int getStructureLinkStructuresCount(
-		long classNameId, long classPK, String keywords) {
-
-		return getService().getStructureLinkStructuresCount(
-			classNameId, classPK, keywords);
-	}
-
 	public static DDMStructureLink getUniqueStructureLink(
 			long classNameId, long classPK)
 		throws PortalException {
@@ -444,4 +408,4 @@ public class DDMStructureLinkLocalServiceUtil {
 			DDMStructureLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-665775855
+// LIFERAY-SERVICE-BUILDER-HASH:526579141

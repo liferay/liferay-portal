@@ -562,33 +562,6 @@ public class DDMFormInstanceLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<DDMFormInstance> search(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<DDMFormInstance>
-			orderByComparator) {
-
-		return _ddmFormInstanceLocalService.search(
-			companyId, groupId, names, descriptions, andOperator, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, long groupId, String keywords) {
-		return _ddmFormInstanceLocalService.searchCount(
-			companyId, groupId, keywords);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator) {
-
-		return _ddmFormInstanceLocalService.searchCount(
-			companyId, groupId, names, descriptions, andOperator);
-	}
-
-	@Override
 	public void sendEmail(
 			long userId, String message, String subject,
 			String[] toEmailAddresses)
@@ -699,4 +672,4 @@ public class DDMFormInstanceLocalServiceWrapper
 	private DDMFormInstanceLocalService _ddmFormInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1325083969
+// LIFERAY-SERVICE-BUILDER-HASH:916841985

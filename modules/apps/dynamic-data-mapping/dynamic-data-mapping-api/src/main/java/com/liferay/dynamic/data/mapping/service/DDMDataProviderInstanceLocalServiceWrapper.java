@@ -504,43 +504,6 @@ public class DDMDataProviderInstanceLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String keywords, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<DDMDataProviderInstance> orderByComparator) {
-
-		return _ddmDataProviderInstanceLocalService.search(
-			companyId, groupIds, keywords, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator
-			<DDMDataProviderInstance> orderByComparator) {
-
-		return _ddmDataProviderInstanceLocalService.search(
-			companyId, groupIds, name, description, andOperator, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, long[] groupIds, String keywords) {
-		return _ddmDataProviderInstanceLocalService.searchCount(
-			companyId, groupIds, keywords);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator) {
-
-		return _ddmDataProviderInstanceLocalService.searchCount(
-			companyId, groupIds, name, description, andOperator);
-	}
-
-	@Override
 	public DDMDataProviderInstance updateDataProviderInstance(
 			long userId, long dataProviderInstanceId,
 			java.util.Map<java.util.Locale, String> nameMap,
@@ -616,4 +579,4 @@ public class DDMDataProviderInstanceLocalServiceWrapper
 		_ddmDataProviderInstanceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1020238630
+// LIFERAY-SERVICE-BUILDER-HASH:112476418

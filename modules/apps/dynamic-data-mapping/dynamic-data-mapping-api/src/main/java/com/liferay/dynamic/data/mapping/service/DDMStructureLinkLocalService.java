@@ -310,26 +310,6 @@ public interface DDMStructureLinkLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructure> getStructureLinkStructures(
-			long classNameId, long classPK, String keywords)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructure> getStructureLinkStructures(
-			long classNameId, long classPK, String keywords, int start, int end)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMStructure> getStructureLinkStructures(
-			long classNameId, long classPK, String keywords, int start, int end,
-			OrderByComparator<DDMStructureLink> orderByComparator)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getStructureLinkStructuresCount(
-		long classNameId, long classPK, String keywords);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDMStructureLink getUniqueStructureLink(
 			long classNameId, long classPK)
 		throws PortalException;
@@ -369,4 +349,4 @@ public interface DDMStructureLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1075053711
+// LIFERAY-SERVICE-BUILDER-HASH:-1528983766

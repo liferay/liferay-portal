@@ -367,25 +367,6 @@ public interface DDMDataProviderInstanceLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String keywords, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(long companyId, long[] groupIds, String keywords);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator);
-
 	public DDMDataProviderInstance updateDataProviderInstance(
 			long userId, long dataProviderInstanceId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
@@ -422,4 +403,4 @@ public interface DDMDataProviderInstanceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1673822804
+// LIFERAY-SERVICE-BUILDER-HASH:1128889194

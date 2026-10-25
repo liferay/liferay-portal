@@ -494,30 +494,6 @@ public class DDMFormInstanceLocalServiceUtil {
 			companyId, groupId, keywords, start, end, orderByComparator);
 	}
 
-	public static List<DDMFormInstance> search(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMFormInstance> orderByComparator) {
-
-		return getService().search(
-			companyId, groupId, names, descriptions, andOperator, start, end,
-			orderByComparator);
-	}
-
-	public static int searchCount(
-		long companyId, long groupId, String keywords) {
-
-		return getService().searchCount(companyId, groupId, keywords);
-	}
-
-	public static int searchCount(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator) {
-
-		return getService().searchCount(
-			companyId, groupId, names, descriptions, andOperator);
-	}
-
 	public static void sendEmail(
 			long userId, String message, String subject,
 			String[] toEmailAddresses)
@@ -592,4 +568,4 @@ public class DDMFormInstanceLocalServiceUtil {
 			DDMFormInstanceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1194631872
+// LIFERAY-SERVICE-BUILDER-HASH:432827766
