@@ -1754,11 +1754,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			user.getUserId());
 	}
 
-	@Override
-	public List<Long> getActiveGroupIds(long userId) {
-		return groupFinder.findByActiveGroupIds(userId);
-	}
-
 	/**
 	 * Returns all the active or inactive groups associated with the company.
 	 *
@@ -2300,25 +2295,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns the number of groups that are children or the parent group and
-	 * that have at least one layout
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  parentGroupId the primary key of the parent group
-	 * @param  site whether the group is to be associated with a main site
-	 * @param  active whether to return only active groups, or only inactive
-	 *         groups
-	 * @return the number of matching groups
-	 */
-	@Override
-	public int getLayoutsGroupsCount(
-		long companyId, long parentGroupId, boolean site, boolean active) {
-
-		return groupFinder.countByLayouts(
-			companyId, parentGroupId, site, active);
-	}
-
-	/**
 	 * Returns all live groups.
 	 *
 	 * @return all live groups
@@ -2851,42 +2827,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				}
 
 			});
-	}
-
-	/**
-	 * Returns an ordered range of all the company's groups, optionally
-	 * including the user's inherited organization groups and user groups.
-	 * System and staged groups are not included.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  params the finder params (optionally <code>null</code>). To
-	 *         include a user's organizations, inherited organizations, and user
-	 *         groups in the search, add an entry with key
-	 *         &quot;usersGroups&quot; mapped to the user's ID and an entry with
-	 *         key &quot;inherit&quot; mapped to a non-<code>null</code> object.
-	 *         For more information see {@link
-	 *         com.liferay.portal.kernel.service.persistence.GroupFinder}.
-	 * @param  start the lower bound of the range of groups to return
-	 * @param  end the upper bound of the range of groups to return (not
-	 *         inclusive)
-	 * @return the matching groups ordered by name
-	 */
-	@Override
-	public List<Group> search(
-		long companyId, LinkedHashMap<String, Object> params, int start,
-		int end) {
-
-		return groupFinder.findByCompanyId(
-			companyId, params, start, end, new GroupNameComparator(true));
 	}
 
 	/**
@@ -3660,38 +3600,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns the number of groups belonging to the parent group and immediate
-	 * organization groups that match the name and description, optionally
-	 * including the user's inherited organization groups and user groups.
-	 * System and staged groups are not included.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  parentGroupId the primary key of the parent group
-	 * @param  name the group's name (optionally <code>null</code>)
-	 * @param  description the group's description (optionally
-	 *         <code>null</code>)
-	 * @param  params the finder params (optionally <code>null</code>). To
-	 *         include the user's inherited organization groups and user groups
-	 *         in the search, add entries having &quot;usersGroups&quot; and
-	 *         &quot;inherit&quot; as keys mapped to the the user's ID. For more
-	 *         information see {@link
-	 *         com.liferay.portal.kernel.service.persistence.GroupFinder}.
-	 * @param  andOperator whether every field must match its keywords, or just
-	 *         one field.
-	 * @return the number of matching groups
-	 */
-	@Override
-	@ThreadLocalCachable
-	public int searchCount(
-		long companyId, long parentGroupId, String name, String description,
-		LinkedHashMap<String, Object> params, boolean andOperator) {
-
-		return searchCount(
-			companyId, getClassNameIds(), parentGroupId, name, description,
-			params, andOperator);
-	}
-
-	/**
 	 * Returns the number of groups belonging to the parent group that match the
 	 * class name IDs, and keywords, optionally including the user's inherited
 	 * organization groups and user groups. System and staged groups are not
@@ -3811,38 +3719,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		return searchCount(
 			companyId, classNameIds, GroupConstants.ANY_PARENT_GROUP_ID,
 			keywords, params);
-	}
-
-	/**
-	 * Returns the number of groups that match the class name IDs, name, and
-	 * description, optionally including the user's inherited organization
-	 * groups and user groups. System and staged groups are not included.
-	 *
-	 * @param  companyId the primary key of the company
-	 * @param  classNameIds the primary keys of the class names of the entities
-	 *         the groups are related to (optionally <code>null</code>)
-	 * @param  name the group's name (optionally <code>null</code>)
-	 * @param  description the group's description (optionally
-	 *         <code>null</code>)
-	 * @param  params the finder params (optionally <code>null</code>). To
-	 *         include the user's inherited organization groups and user groups
-	 *         in the search, add entries having &quot;usersGroups&quot; and
-	 *         &quot;inherit&quot; as keys mapped to the the user's ID. For more
-	 *         information see {@link
-	 *         com.liferay.portal.kernel.service.persistence.GroupFinder}.
-	 * @param  andOperator whether every field must match its keywords, or just
-	 *         one field.
-	 * @return the number of matching groups
-	 */
-	@Override
-	@ThreadLocalCachable
-	public int searchCount(
-		long companyId, long[] classNameIds, String name, String description,
-		LinkedHashMap<String, Object> params, boolean andOperator) {
-
-		return searchCount(
-			companyId, classNameIds, GroupConstants.ANY_PARENT_GROUP_ID, name,
-			description, params, andOperator);
 	}
 
 	/**
