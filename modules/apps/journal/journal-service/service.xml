@@ -386,10 +386,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="name" />
 		</finder>
-		<finder name="C_NotS" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
 		<finder name="G_P_N" return-type="JournalFolder" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="parentFolderId" />
