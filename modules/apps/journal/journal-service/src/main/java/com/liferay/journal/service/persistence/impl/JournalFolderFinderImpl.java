@@ -25,7 +25,6 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -56,9 +55,6 @@ public class JournalFolderFinderImpl
 
 	public static final String FIND_A_BY_G_U_F_DDMSI_L_NOT_S =
 		JournalFolderFinder.class.getName() + ".findA_ByG_U_F_DDMSI_L_NotS";
-
-	public static final String FIND_F_BY_NO_ASSETS =
-		JournalFolderFinder.class.getName() + ".findF_ByNoAssets";
 
 	public static final String FIND_F_BY_G_F =
 		JournalFolderFinder.class.getName() + ".findF_ByG_F";
@@ -129,34 +125,6 @@ public class JournalFolderFinderImpl
 
 		return doFindF_A_ByG_F_DDMSI(
 			groupId, folderId, ddmStructureId, queryDefinition, false);
-	}
-
-	@Override
-	public List<JournalFolder> findF_ByNoAssets() {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = _customSQL.get(getClass(), FIND_F_BY_NO_ASSETS);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				JournalFolderImpl.TABLE_NAME, JournalFolderImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(_portal.getClassNameId(JournalFolder.class));
-
-			return sqlQuery.list(true);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
 	}
 
 	protected int doCountF_A_ByG_F_DDMSI_NotS(
@@ -551,8 +519,5 @@ public class JournalFolderFinderImpl
 
 	@Reference
 	private CustomSQL _customSQL;
-
-	@Reference
-	private Portal _portal;
 
 }

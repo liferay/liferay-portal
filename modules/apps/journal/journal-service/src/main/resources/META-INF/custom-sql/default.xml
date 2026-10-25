@@ -128,41 +128,6 @@
 				JournalArticle.id_ ASC
 		]]>
 	</sql>
-	<sql id="com.liferay.journal.service.persistence.JournalArticleFinder.findByG_U_F_C">
-		<![CDATA[
-			SELECT
-				JournalArticle.*
-			FROM
-				JournalArticle
-			LEFT JOIN
-				JournalArticle tempJournalArticle ON
-					[$STATUS_JOIN$] AND
-					(JournalArticle.groupId = tempJournalArticle.groupId) AND
-					(JournalArticle.articleId = tempJournalArticle.articleId) AND
-					(JournalArticle.version < tempJournalArticle.version)
-			LEFT JOIN
-				(
-					SELECT
-						JournalArticleLocalization.companyId, JournalArticleLocalization.articlePK, JournalArticleLocalization.title
-					FROM
-						JournalArticleLocalization
-					WHERE
-						1 = ?
-					GROUP BY
-						JournalArticleLocalization.companyId, JournalArticleLocalization.articlePK, JournalArticleLocalization.title
-				) JournalArticleLocalization ON
-					(JournalArticle.companyId = JournalArticleLocalization.companyId) AND
-					(JournalArticle.id_ = JournalArticleLocalization.articlePK)
-			WHERE
-				(JournalArticle.groupId = ?) AND
-				(JournalArticle.classNameId = ?) AND
-				([$FOLDER_ID$]) AND
-				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$STATUS$]) AND
-				(tempJournalArticle.id_ IS NULL)
-			ORDER BY
-				JournalArticle.id_ ASC
-		]]>
-	</sql>
 	<sql id="com.liferay.journal.service.persistence.JournalArticleFinder.findByG_U_F_C_L">
 		<![CDATA[
 			SELECT
@@ -301,20 +266,6 @@
 					(JournalArticle.companyId = JournalArticleLocalization.companyId) AND
 					(JournalArticle.id_ = JournalArticleLocalization.articlePK) AND
 					(JournalArticleLocalization.languageId = ?)
-		]]>
-	</sql>
-	<sql id="com.liferay.journal.service.persistence.JournalFolderFinder.findF_ByNoAssets">
-		<![CDATA[
-			SELECT
-				{JournalFolder.*}
-			FROM
-				JournalFolder
-			LEFT JOIN
-				AssetEntry ON
-					(AssetEntry.classNameId = ?) AND
-					(AssetEntry.classPK = JournalFolder.folderId)
-			WHERE
-				AssetEntry.classPK IS NULL
 		]]>
 	</sql>
 	<sql id="com.liferay.journal.service.persistence.JournalFolderFinder.findF_ByG_F">

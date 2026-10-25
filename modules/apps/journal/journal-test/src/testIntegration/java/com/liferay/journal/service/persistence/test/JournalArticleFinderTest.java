@@ -412,7 +412,7 @@ public class JournalArticleFinderTest {
 				"JournalArticleLocalization", "title", ascending));
 		queryDefinition.setStatus(WorkflowConstants.STATUS_ANY);
 
-		List<JournalArticle> articles = _journalArticleFinder.findByG_F_L(
+		List<JournalArticle> articles = _journalArticleFinder.filterFindByG_F_L(
 			groupId, folderIds, locale, queryDefinition);
 
 		int actualCount = articles.size();
@@ -435,15 +435,8 @@ public class JournalArticleFinderTest {
 			QueryDefinition<JournalArticle> queryDefinition, int expectedCount)
 		throws Exception {
 
-		int actualCount = _journalArticleFinder.countByG_F_C(
+		int actualCount = _journalArticleFinder.filterCountByG_F_C(
 			groupId, folderIds, classNameId, queryDefinition);
-
-		List<JournalArticle> articles = _journalArticleFinder.findByG_F_C(
-			groupId, folderIds, classNameId, queryDefinition);
-
-		Assert.assertEquals(expectedCount, actualCount);
-
-		actualCount = articles.size();
 
 		Assert.assertEquals(expectedCount, actualCount);
 	}
@@ -460,7 +453,7 @@ public class JournalArticleFinderTest {
 
 		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
 
-		List<JournalArticle> articles = _journalArticleFinder.findByG_F_L(
+		List<JournalArticle> articles = _journalArticleFinder.filterFindByG_F_L(
 			groupId, folderIds, siteDefaultLocale, queryDefinition);
 
 		actualCount = articles.size();
@@ -492,9 +485,10 @@ public class JournalArticleFinderTest {
 
 		Locale siteDefaultLocale = LocaleUtil.getSiteDefault();
 
-		List<JournalArticle> actualArticles = _journalArticleFinder.findByG_F_L(
-			_group.getGroupId(), _folderIds, siteDefaultLocale,
-			queryDefinition);
+		List<JournalArticle> actualArticles =
+			_journalArticleFinder.filterFindByG_F_L(
+				_group.getGroupId(), _folderIds, siteDefaultLocale,
+				queryDefinition);
 
 		Assert.assertEquals(expectedArticles, actualArticles);
 	}
