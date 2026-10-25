@@ -19,10 +19,6 @@ public interface CalendarResourceFinder {
 		boolean active);
 
 	public int countByC_G_C_C_N_D_A(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator);
-
-	public int countByC_G_C_C_N_D_A(
 		long companyId, long[] groupIds, long[] classNameIds, String[] codes,
 		String[] names, String[] descriptions, boolean active,
 		boolean andOperator);
@@ -76,15 +72,6 @@ public interface CalendarResourceFinder {
 
 	public java.util.List<com.liferay.calendar.model.CalendarResource>
 		findByC_G_C_C_N_D_A(
-			long companyId, long[] groupIds, long[] classNameIds, String code,
-			String name, String description, boolean active,
-			boolean andOperator, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.calendar.model.CalendarResource>
-					orderByComparator);
-
-	public java.util.List<com.liferay.calendar.model.CalendarResource>
-		findByC_G_C_C_N_D_A(
 			long companyId, long[] groupIds, long[] classNameIds,
 			String[] codes, String[] names, String[] descriptions,
 			boolean active, boolean andOperator, int start, int end,
@@ -93,4 +80,4 @@ public interface CalendarResourceFinder {
 					orderByComparator);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1983653852
+// LIFERAY-SERVICE-BUILDER-HASH:1661961123

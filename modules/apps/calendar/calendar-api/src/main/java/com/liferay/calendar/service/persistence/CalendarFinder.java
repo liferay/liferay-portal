@@ -14,53 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface CalendarFinder {
 
-	public int countByKeywords(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords);
-
-	public int countByC_G_C_N_D(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator);
-
-	public int countByC_G_C_N_D(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String[] names, String[] descriptions, boolean andOperator);
-
-	public int filterCountByKeywords(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords);
-
-	public int filterCountByC_G_C_N_D(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator);
-
-	public int filterCountByC_G_C_N_D(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String[] names, String[] descriptions, boolean andOperator);
-
-	public java.util.List<com.liferay.calendar.model.Calendar>
-		filterFindByKeywords(
-			long companyId, long[] groupIds, long[] calendarResourceIds,
-			String keywords, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.calendar.model.Calendar> orderByComparator);
-
-	public java.util.List<com.liferay.calendar.model.Calendar>
-		filterFindByC_G_C_N_D(
-			long companyId, long[] groupIds, long[] calendarResourceIds,
-			String name, String description, boolean andOperator, int start,
-			int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.calendar.model.Calendar> orderByComparator);
-
-	public java.util.List<com.liferay.calendar.model.Calendar>
-		filterFindByC_G_C_N_D(
-			long companyId, long[] groupIds, long[] calendarResourceIds,
-			String[] names, String[] descriptions, boolean andOperator,
-			int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.calendar.model.Calendar> orderByComparator);
-
 	public java.util.List<com.liferay.calendar.model.Calendar> findByKeywords(
 		long companyId, long[] groupIds, long[] calendarResourceIds,
 		String keywords, int start, int end,
@@ -82,4 +35,4 @@ public interface CalendarFinder {
 			<com.liferay.calendar.model.Calendar> orderByComparator);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1761416314
+// LIFERAY-SERVICE-BUILDER-HASH:1622778002
