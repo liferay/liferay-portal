@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Commerce Client Extension Web
 Bundle-SymbolicName: com.liferay.commerce.client.extension.web
-Bundle-Version: 1.0.18
+Bundle-Version: 1.0.19
 Web-ContextPath: /commerce-client-extension-web
