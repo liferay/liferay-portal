@@ -1,0 +1,53 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import org.osgi.service.component.annotations.Component;
+
+/**
+ * @author Shuyang Zhou
+ */
+@Component(
+	property = {"service.ranking:Integer=100", "service.vendor:String=Liferay"},
+	service = Object.class
+)
+public class TypedPropertyKey {
+
+	public void register() {
+		Dictionary<String, Object> dictionary = new Hashtable<>();
+
+		dictionary.put("service.ranking:Integer", 100);
+
+		_dictionary = HashMapDictionaryBuilder.<String, Object>put(
+			"service.ranking:Integer", 100
+		).put(
+			"service.vendor", "Liferay"
+		).build();
+
+		_dictionary = MapUtil.singletonDictionary("order:Double", 1.5);
+
+		_filter = "(&(service.ranking=1)(order:Double>=1))";
+
+		_filter = "(service.ranking=1)";
+
+		_filter = "(service.ranking:Integer=1)";
+
+		_message = "A \"key:Long\" in a message";
+		_plain = "service.ranking";
+	}
+
+	private Dictionary<String, Object> _dictionary;
+	private String _filter;
+	private String _message;
+	private String _plain;
+
+}

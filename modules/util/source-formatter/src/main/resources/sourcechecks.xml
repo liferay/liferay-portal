@@ -1010,6 +1010,10 @@
 			<category name="Bug Prevention" />
 			<description name="Finds direct `add*` or `get*` calls in `*ServiceImpl` (those should use the `*service` global variable instead)." />
 		</check>
+		<check name="JavaTypedPropertyKeyCheck">
+			<category name="Bug Prevention" />
+			<description name="Checks that a typed property key such as `service.ranking:Integer` is not used outside component property strings." />
+		</check>
 		<check name="JavaUniqueUpgradeProcessCheck">
 			<category name="Bug Prevention" />
 			<description name="Checks that only one regular `UpgradeProcess` is allowed when registering a new upgrade process" />
