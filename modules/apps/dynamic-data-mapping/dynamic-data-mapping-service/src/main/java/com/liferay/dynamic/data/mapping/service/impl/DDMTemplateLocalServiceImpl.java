@@ -922,26 +922,6 @@ public class DDMTemplateLocalServiceImpl
 	}
 
 	/**
-	 * Returns the number of templates matching the group, structure class name
-	 * ID, and status, including Generic Templates.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  structureClassNameId the primary key of the class name for the
-	 *         template's related structure
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @return the number of matching templates
-	 */
-	@Override
-	public int getTemplatesByStructureClassNameIdCount(
-		long groupId, long structureClassNameId, int status) {
-
-		return ddmTemplateFinder.countByG_SC_S(
-			groupId, structureClassNameId, status);
-	}
-
-	/**
 	 * Returns the number of templates belonging to the group.
 	 *
 	 * @param  groupId the primary key of the group
@@ -979,16 +959,6 @@ public class DDMTemplateLocalServiceImpl
 	public int getTemplatesCount(long groupId, long classNameId, long classPK) {
 		return ddmTemplatePersistence.countByG_C_C(
 			groupId, classNameId, classPK);
-	}
-
-	@Override
-	public int getTemplatesCount(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId) {
-
-		return ddmTemplateFinder.countByC_G_C_C_R_T_M_S(
-			companyId, groupIds, classNameIds, classPKs, resourceClassNameId,
-			StringPool.BLANK, StringPool.BLANK, WorkflowConstants.STATUS_ANY);
 	}
 
 	/**

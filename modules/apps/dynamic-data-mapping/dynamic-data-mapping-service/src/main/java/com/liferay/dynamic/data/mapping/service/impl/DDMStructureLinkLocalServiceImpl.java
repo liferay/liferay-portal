@@ -16,9 +16,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
@@ -140,45 +138,6 @@ public class DDMStructureLinkLocalServiceImpl
 		return TransformUtil.transform(
 			getStructureLinks(classNameId, classPK, start, end),
 			structureLink -> structureLink.getStructure());
-	}
-
-	@Override
-	public List<DDMStructure> getStructureLinkStructures(
-			long classNameId, long classPK, String keywords)
-		throws PortalException {
-
-		return getStructureLinkStructures(
-			classNameId, classPK, keywords, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
-	}
-
-	@Override
-	public List<DDMStructure> getStructureLinkStructures(
-			long classNameId, long classPK, String keywords, int start, int end)
-		throws PortalException {
-
-		return getStructureLinkStructures(
-			classNameId, classPK, keywords, start, end, null);
-	}
-
-	@Override
-	public List<DDMStructure> getStructureLinkStructures(
-			long classNameId, long classPK, String keywords, int start, int end,
-			OrderByComparator<DDMStructureLink> orderByComparator)
-		throws PortalException {
-
-		return TransformUtil.transform(
-			ddmStructureLinkFinder.findByKeywords(
-				classNameId, classPK, keywords, start, end, orderByComparator),
-			structureLink -> structureLink.getStructure());
-	}
-
-	@Override
-	public int getStructureLinkStructuresCount(
-		long classNameId, long classPK, String keywords) {
-
-		return ddmStructureLinkFinder.countByKeywords(
-			classNameId, classPK, keywords);
 	}
 
 	@Override

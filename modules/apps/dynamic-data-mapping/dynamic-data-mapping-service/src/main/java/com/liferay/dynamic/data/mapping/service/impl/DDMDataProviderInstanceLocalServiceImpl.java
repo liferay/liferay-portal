@@ -253,41 +253,6 @@ public class DDMDataProviderInstanceLocalServiceImpl
 	}
 
 	@Override
-	public List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String keywords, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
-
-		return ddmDataProviderInstanceFinder.findByKeywords(
-			companyId, groupIds, keywords, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<DDMDataProviderInstance> search(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMDataProviderInstance> orderByComparator) {
-
-		return ddmDataProviderInstanceFinder.findByC_G_N_D(
-			companyId, groupIds, name, description, andOperator, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, long[] groupIds, String keywords) {
-		return ddmDataProviderInstanceFinder.countByKeywords(
-			companyId, groupIds, keywords);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator) {
-
-		return ddmDataProviderInstanceFinder.countByC_G_N_D(
-			companyId, groupIds, name, description, andOperator);
-	}
-
-	@Override
 	public DDMDataProviderInstance updateDataProviderInstance(
 			long userId, long dataProviderInstanceId,
 			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,

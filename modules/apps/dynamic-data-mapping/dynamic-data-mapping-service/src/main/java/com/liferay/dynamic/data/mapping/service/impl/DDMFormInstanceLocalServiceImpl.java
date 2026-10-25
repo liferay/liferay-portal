@@ -350,32 +350,6 @@ public class DDMFormInstanceLocalServiceImpl
 	}
 
 	@Override
-	public List<DDMFormInstance> search(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator, int start, int end,
-		OrderByComparator<DDMFormInstance> orderByComparator) {
-
-		return ddmFormInstanceFinder.findByC_G_N_D(
-			companyId, groupId, names, descriptions, andOperator, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, long groupId, String keywords) {
-		return ddmFormInstanceFinder.countByKeywords(
-			companyId, groupId, keywords);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long groupId, String[] names, String[] descriptions,
-		boolean andOperator) {
-
-		return ddmFormInstanceFinder.countByC_G_N_D(
-			companyId, groupId, names, descriptions, andOperator);
-	}
-
-	@Override
 	public void sendEmail(
 			long userId, String message, String subject,
 			String[] toEmailAddresses)
