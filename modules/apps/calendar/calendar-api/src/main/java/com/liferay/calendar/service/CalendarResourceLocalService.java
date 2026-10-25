@@ -340,13 +340,6 @@ public interface CalendarResourceLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CalendarResource> search(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator,
-		int start, int end,
-		OrderByComparator<CalendarResource> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CalendarResource> searchByKeywords(
 		long companyId, long[] groupIds, long[] classNameIds, String keywords,
 		boolean active, boolean andOperator, int start, int end,
@@ -356,11 +349,6 @@ public interface CalendarResourceLocalService
 	public int searchCount(
 		long companyId, long[] groupIds, long[] classNameIds, String keywords,
 		boolean active);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator);
 
 	public void updateAsset(
 			long userId, CalendarResource calendarResource,
@@ -403,4 +391,4 @@ public interface CalendarResourceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1170779507
+// LIFERAY-SERVICE-BUILDER-HASH:864864071

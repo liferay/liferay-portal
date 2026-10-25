@@ -387,17 +387,6 @@ public class CalendarResourceLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static List<CalendarResource> search(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator,
-		int start, int end,
-		OrderByComparator<CalendarResource> orderByComparator) {
-
-		return getService().search(
-			companyId, groupIds, classNameIds, code, name, description, active,
-			andOperator, start, end, orderByComparator);
-	}
-
 	public static List<CalendarResource> searchByKeywords(
 		long companyId, long[] groupIds, long[] classNameIds, String keywords,
 		boolean active, boolean andOperator, int start, int end,
@@ -414,15 +403,6 @@ public class CalendarResourceLocalServiceUtil {
 
 		return getService().searchCount(
 			companyId, groupIds, classNameIds, keywords, active);
-	}
-
-	public static int searchCount(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator) {
-
-		return getService().searchCount(
-			companyId, groupIds, classNameIds, code, name, description, active,
-			andOperator);
 	}
 
 	public static void updateAsset(
@@ -472,4 +452,4 @@ public class CalendarResourceLocalServiceUtil {
 			CalendarResourceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1529605779
+// LIFERAY-SERVICE-BUILDER-HASH:997615981

@@ -652,28 +652,6 @@ public class CalendarBookingLocalServiceUtil {
 			orderByComparator);
 	}
 
-	public static int searchCount(
-		long companyId, long[] groupIds, long[] calendarIds,
-		long[] calendarResourceIds, long parentCalendarBookingId,
-		String keywords, long startTime, long endTime, int[] statuses) {
-
-		return getService().searchCount(
-			companyId, groupIds, calendarIds, calendarResourceIds,
-			parentCalendarBookingId, keywords, startTime, endTime, statuses);
-	}
-
-	public static int searchCount(
-		long companyId, long[] groupIds, long[] calendarIds,
-		long[] calendarResourceIds, long parentCalendarBookingId, String title,
-		String description, String location, long startTime, long endTime,
-		int[] statuses, boolean andOperator) {
-
-		return getService().searchCount(
-			companyId, groupIds, calendarIds, calendarResourceIds,
-			parentCalendarBookingId, title, description, location, startTime,
-			endTime, statuses, andOperator);
-	}
-
 	public static void updateAsset(
 			long userId, CalendarBooking calendarBooking,
 			long[] assetCategoryIds, String[] assetTagNames,
@@ -841,4 +819,4 @@ public class CalendarBookingLocalServiceUtil {
 			CalendarBookingLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:157156017
+// LIFERAY-SERVICE-BUILDER-HASH:-1530595973

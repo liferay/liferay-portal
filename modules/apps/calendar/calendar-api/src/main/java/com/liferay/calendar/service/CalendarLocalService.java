@@ -344,28 +344,6 @@ public interface CalendarLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean isStagingCalendar(Calendar calendar);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Calendar> search(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords, boolean andOperator, int start, int end,
-		OrderByComparator<Calendar> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Calendar> search(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator, int start,
-		int end, OrderByComparator<Calendar> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords, boolean andOperator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator);
-
 	/**
 	 * Updates the calendar in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -415,4 +393,4 @@ public interface CalendarLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-526624798
+// LIFERAY-SERVICE-BUILDER-HASH:1988031260

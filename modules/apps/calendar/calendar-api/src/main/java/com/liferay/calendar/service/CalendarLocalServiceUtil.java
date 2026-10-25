@@ -393,43 +393,6 @@ public class CalendarLocalServiceUtil {
 		return getService().isStagingCalendar(calendar);
 	}
 
-	public static List<Calendar> search(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords, boolean andOperator, int start, int end,
-		OrderByComparator<Calendar> orderByComparator) {
-
-		return getService().search(
-			companyId, groupIds, calendarResourceIds, keywords, andOperator,
-			start, end, orderByComparator);
-	}
-
-	public static List<Calendar> search(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator, int start,
-		int end, OrderByComparator<Calendar> orderByComparator) {
-
-		return getService().search(
-			companyId, groupIds, calendarResourceIds, name, description,
-			andOperator, start, end, orderByComparator);
-	}
-
-	public static int searchCount(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords, boolean andOperator) {
-
-		return getService().searchCount(
-			companyId, groupIds, calendarResourceIds, keywords, andOperator);
-	}
-
-	public static int searchCount(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator) {
-
-		return getService().searchCount(
-			companyId, groupIds, calendarResourceIds, name, description,
-			andOperator);
-	}
-
 	/**
 	 * Updates the calendar in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -490,4 +453,4 @@ public class CalendarLocalServiceUtil {
 			CalendarLocalServiceUtil.class, CalendarLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:839344023
+// LIFERAY-SERVICE-BUILDER-HASH:-57361511

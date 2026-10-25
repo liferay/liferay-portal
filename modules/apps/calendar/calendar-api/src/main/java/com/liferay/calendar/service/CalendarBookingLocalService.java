@@ -492,19 +492,6 @@ public interface CalendarBookingLocalService
 		boolean recurring, int[] statuses, boolean andOperator, int start,
 		int end, OrderByComparator<CalendarBooking> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarIds,
-		long[] calendarResourceIds, long parentCalendarBookingId,
-		String keywords, long startTime, long endTime, int[] statuses);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarIds,
-		long[] calendarResourceIds, long parentCalendarBookingId, String title,
-		String description, String location, long startTime, long endTime,
-		int[] statuses, boolean andOperator);
-
 	public void updateAsset(
 			long userId, CalendarBooking calendarBooking,
 			long[] assetCategoryIds, String[] assetTagNames,
@@ -612,4 +599,4 @@ public interface CalendarBookingLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1662623616
+// LIFERAY-SERVICE-BUILDER-HASH:1448514413
