@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Sharing Web
 Bundle-SymbolicName: com.liferay.sharing.web
-Bundle-Version: 3.0.104
+Bundle-Version: 3.0.105
 Web-ContextPath: /sharing-web
