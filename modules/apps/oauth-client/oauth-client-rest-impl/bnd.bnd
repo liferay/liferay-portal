@@ -1,3 +1,3 @@
 Bundle-Name: Liferay OAuth Client REST Implementation
 Bundle-SymbolicName: com.liferay.oauth.client.rest.impl
-Bundle-Version: 1.0.8
+Bundle-Version: 1.0.9
