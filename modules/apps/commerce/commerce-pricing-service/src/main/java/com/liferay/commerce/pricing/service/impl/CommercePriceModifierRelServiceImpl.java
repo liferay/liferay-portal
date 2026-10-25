@@ -114,7 +114,7 @@ public class CommercePriceModifierRelServiceImpl
 
 		return commercePriceModifierRelFinder.
 			countCPDefinitionsByCommercePriceModifierId(
-				commercePriceModifierId, languageId, name, true);
+				commercePriceModifierId, name, languageId, true);
 	}
 
 	@Override

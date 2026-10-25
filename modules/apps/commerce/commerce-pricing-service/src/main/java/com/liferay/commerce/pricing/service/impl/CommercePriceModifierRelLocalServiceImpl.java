@@ -145,7 +145,7 @@ public class CommercePriceModifierRelLocalServiceImpl
 
 		return commercePriceModifierRelFinder.
 			countCPDefinitionsByCommercePriceModifierId(
-				commercePriceModifierId, languageId, name);
+				commercePriceModifierId, name, languageId);
 	}
 
 	@Override
