@@ -1128,30 +1128,6 @@ public class CalendarBookingLocalServiceImpl
 	}
 
 	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarIds,
-		long[] calendarResourceIds, long parentCalendarBookingId,
-		String keywords, long startTime, long endTime, int[] statuses) {
-
-		return calendarBookingFinder.countByKeywords(
-			companyId, groupIds, calendarIds, calendarResourceIds,
-			parentCalendarBookingId, keywords, startTime, endTime, statuses);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarIds,
-		long[] calendarResourceIds, long parentCalendarBookingId, String title,
-		String description, String location, long startTime, long endTime,
-		int[] statuses, boolean andOperator) {
-
-		return calendarBookingFinder.countByC_G_C_C_P_T_D_L_S_E_S(
-			companyId, groupIds, calendarIds, calendarResourceIds,
-			parentCalendarBookingId, title, description, location, startTime,
-			endTime, statuses, andOperator);
-	}
-
-	@Override
 	public void updateAsset(
 			long userId, CalendarBooking calendarBooking,
 			long[] assetCategoryIds, String[] assetTagNames,

@@ -38,7 +38,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -253,47 +252,6 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 	@Override
 	public boolean isStagingCalendar(Calendar calendar) {
 		return CalendarUtil.isStagingCalendar(calendar, _groupLocalService);
-	}
-
-	@Override
-	public List<Calendar> search(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords, boolean andOperator, int start, int end,
-		OrderByComparator<Calendar> orderByComparator) {
-
-		return calendarFinder.findByKeywords(
-			companyId, groupIds, calendarResourceIds, keywords, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<Calendar> search(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator, int start,
-		int end, OrderByComparator<Calendar> orderByComparator) {
-
-		return calendarFinder.findByC_G_C_N_D(
-			companyId, groupIds, calendarResourceIds, name, description,
-			andOperator, start, end, orderByComparator);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String keywords, boolean andOperator) {
-
-		return calendarFinder.countByKeywords(
-			companyId, groupIds, calendarResourceIds, keywords);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] calendarResourceIds,
-		String name, String description, boolean andOperator) {
-
-		return calendarFinder.countByC_G_C_N_D(
-			companyId, groupIds, calendarResourceIds, name, description,
-			andOperator);
 	}
 
 	@Override

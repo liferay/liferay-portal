@@ -224,18 +224,6 @@ public class CalendarResourceLocalServiceImpl
 	}
 
 	@Override
-	public List<CalendarResource> search(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator,
-		int start, int end,
-		OrderByComparator<CalendarResource> orderByComparator) {
-
-		return calendarResourceFinder.findByC_G_C_C_N_D_A(
-			companyId, groupIds, classNameIds, code, name, description, active,
-			andOperator, start, end, orderByComparator);
-	}
-
-	@Override
 	public List<CalendarResource> searchByKeywords(
 		long companyId, long[] groupIds, long[] classNameIds, String keywords,
 		boolean active, boolean andOperator, int start, int end,
@@ -253,16 +241,6 @@ public class CalendarResourceLocalServiceImpl
 
 		return calendarResourceFinder.countByKeywords(
 			companyId, groupIds, classNameIds, keywords, active);
-	}
-
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] classNameIds, String code,
-		String name, String description, boolean active, boolean andOperator) {
-
-		return calendarResourceFinder.countByC_G_C_C_N_D_A(
-			companyId, groupIds, classNameIds, code, name, description, active,
-			andOperator);
 	}
 
 	@Override
