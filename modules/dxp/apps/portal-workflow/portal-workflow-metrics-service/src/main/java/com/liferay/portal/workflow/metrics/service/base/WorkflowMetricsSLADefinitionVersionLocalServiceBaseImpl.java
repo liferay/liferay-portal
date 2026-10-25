@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.workflow.metrics.model.WorkflowMetricsSLADefinitionVersion;
 import com.liferay.portal.workflow.metrics.service.WorkflowMetricsSLADefinitionVersionLocalService;
-import com.liferay.portal.workflow.metrics.service.persistence.WorkflowMetricsSLADefinitionVersionFinder;
 import com.liferay.portal.workflow.metrics.service.persistence.WorkflowMetricsSLADefinitionVersionPersistence;
 
 import java.io.Serializable;
@@ -689,10 +688,6 @@ public abstract class WorkflowMetricsSLADefinitionVersionLocalServiceBaseImpl
 		workflowMetricsSLADefinitionVersionPersistence;
 
 	@Reference
-	protected WorkflowMetricsSLADefinitionVersionFinder
-		workflowMetricsSLADefinitionVersionFinder;
-
-	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
 
@@ -700,4 +695,4 @@ public abstract class WorkflowMetricsSLADefinitionVersionLocalServiceBaseImpl
 		WorkflowMetricsSLADefinitionVersionLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1498725375
+// LIFERAY-SERVICE-BUILDER-HASH:1661973428
