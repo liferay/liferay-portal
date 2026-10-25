@@ -28,7 +28,6 @@ import com.liferay.portal.workflow.metrics.model.WorkflowMetricsSLADefinitionVer
 
 import java.io.Serializable;
 
-import java.util.Date;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
@@ -300,11 +299,6 @@ public interface WorkflowMetricsSLADefinitionVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<WorkflowMetricsSLADefinitionVersion>
 		getWorkflowMetricsSLADefinitionVersions(
-			long companyId, Date createDate, Long processId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WorkflowMetricsSLADefinitionVersion>
-		getWorkflowMetricsSLADefinitionVersions(
 			long workflowMetricsSLADefinitionId,
 			OrderByComparator<WorkflowMetricsSLADefinitionVersion>
 				orderByComparator);
@@ -363,4 +357,4 @@ public interface WorkflowMetricsSLADefinitionVersionLocalService
 				workflowMetricsSLADefinitionVersion);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:305389855
+// LIFERAY-SERVICE-BUILDER-HASH:-1465110410
