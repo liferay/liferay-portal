@@ -10,7 +10,6 @@ import com.liferay.portal.db.partition.util.DBPartitionUtil;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -72,9 +71,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 			_portalInstanceImportResource
 		);
 
-		ReflectionTestUtil.setFieldValue(
-			_addDBPartitionCompanyMVCActionCommand, "_companyLocalService",
-			_companyLocalService);
 		ReflectionTestUtil.setFieldValue(
 			_addDBPartitionCompanyMVCActionCommand, "_componentServiceObjects",
 			_componentServiceObjects);
@@ -300,14 +296,14 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void testValidateSchemaNameWithAnExistingCompany() {
-		Mockito.when(
-			_companyLocalService.fetchCompany(_COMPANY_ID)
-		).thenReturn(
-			Mockito.mock(Company.class)
-		);
-
 		try (MockedStatic<PortalInstancePool> portalInstancePoolMockedStatic =
 				_mockDefaultCompanyId(RandomTestUtil.randomLong())) {
+
+			portalInstancePoolMockedStatic.when(
+				PortalInstancePool::getCompanyIds
+			).thenReturn(
+				new long[] {_COMPANY_ID}
+			);
 
 			_validateSchemaName(_SCHEMA_NAME);
 		}
@@ -389,8 +385,6 @@ public class AddDBPartitionCompanyMVCActionCommandTest {
 	private final AddDBPartitionCompanyMVCActionCommand
 		_addDBPartitionCompanyMVCActionCommand =
 			new AddDBPartitionCompanyMVCActionCommand();
-	private final CompanyLocalService _companyLocalService = Mockito.mock(
-		CompanyLocalService.class);
 	private final ComponentServiceObjects<PortalInstanceImportResource>
 		_componentServiceObjects = Mockito.mock(ComponentServiceObjects.class);
 	private MockedStatic<DBPartitionUtil> _dbPartitionUtilMockedStatic;

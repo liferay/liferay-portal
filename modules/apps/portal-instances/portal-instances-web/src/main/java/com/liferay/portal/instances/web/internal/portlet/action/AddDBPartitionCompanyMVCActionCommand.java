@@ -20,7 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -166,7 +166,7 @@ public class AddDBPartitionCompanyMVCActionCommand
 				"Invalid schema name \"" + schemaName + "\"");
 		}
 
-		if (_companyLocalService.fetchCompany(companyId) != null) {
+		if (ArrayUtil.contains(PortalInstancePool.getCompanyIds(), companyId)) {
 			throw new IllegalArgumentException(
 				"Company ID " + companyId + " already exists");
 		}
@@ -179,9 +179,6 @@ public class AddDBPartitionCompanyMVCActionCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AddDBPartitionCompanyMVCActionCommand.class);
-
-	@Reference
-	private CompanyLocalService _companyLocalService;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<PortalInstanceImportResource>
