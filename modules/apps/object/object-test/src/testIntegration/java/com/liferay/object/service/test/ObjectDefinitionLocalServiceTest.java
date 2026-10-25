@@ -153,6 +153,7 @@ import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.UserNotificationEventTable;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -5316,6 +5317,29 @@ public class ObjectDefinitionLocalServiceTest {
 			));
 	}
 
+	private Object _getPanelAppOrder(ObjectDefinition objectDefinition)
+		throws Exception {
+
+		Bundle bundle = FrameworkUtil.getBundle(
+			ObjectDefinitionLocalServiceTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		for (ServiceReference<PanelApp> serviceReference :
+				bundleContext.getServiceReferences(
+					PanelApp.class,
+					StringBundler.concat(
+						"(panel.category.key=",
+						SystemBundleUtil.escapeFilterValue(
+							objectDefinition.getPanelCategoryKey()),
+						")"))) {
+
+			return serviceReference.getProperty("panel.app.order");
+		}
+
+		return null;
+	}
+
 	private String _getPortletDisplayCategory(ObjectDefinition objectDefinition)
 		throws Exception {
 
@@ -6199,6 +6223,7 @@ public class ObjectDefinitionLocalServiceTest {
 		// Panel app is not visible and the portlet is not selectable as a page
 		// widget when the allow standalone object entry setting is disabled
 
+		objectDefinition.setPanelAppOrder("300");
 		objectDefinition.setPanelCategoryKey(RandomTestUtil.randomString());
 
 		objectDefinition = _updateCustomObjectDefinition(
@@ -6231,6 +6256,7 @@ public class ObjectDefinitionLocalServiceTest {
 				).build()));
 
 		Assert.assertTrue(_isPanelAppRegistered(objectDefinition));
+		Assert.assertEquals(300, _getPanelAppOrder(objectDefinition));
 		Assert.assertEquals(
 			"category.object", _getPortletDisplayCategory(objectDefinition));
 	}
