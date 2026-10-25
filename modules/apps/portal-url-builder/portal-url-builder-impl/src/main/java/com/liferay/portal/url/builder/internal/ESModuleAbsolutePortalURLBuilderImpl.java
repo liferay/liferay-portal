@@ -5,10 +5,9 @@
 
 package com.liferay.portal.url.builder.internal;
 
+import com.liferay.portal.kernel.frontend.hashed.files.CachingStrategy;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera Avellón
@@ -19,13 +18,12 @@ public class ESModuleAbsolutePortalURLBuilderImpl
 	implements ESModuleAbsolutePortalURLBuilder {
 
 	public ESModuleAbsolutePortalURLBuilderImpl(
-		String cdnHost, String esModulePath,
-		HashedFilesRegistry hashedFilesRegistry,
-		HttpServletRequest httpServletRequest, String pathModule,
+		CachingStrategy cachingStrategy, String cdnHost, String esModulePath,
+		HashedFilesRegistry hashedFilesRegistry, String pathModule,
 		String pathProxy, String webContextPath) {
 
 		super(
-			cdnHost, true, hashedFilesRegistry, httpServletRequest, pathModule,
+			cachingStrategy, cdnHost, true, hashedFilesRegistry, pathModule,
 			pathProxy, "/__liferay__/" + esModulePath, webContextPath);
 	}
 

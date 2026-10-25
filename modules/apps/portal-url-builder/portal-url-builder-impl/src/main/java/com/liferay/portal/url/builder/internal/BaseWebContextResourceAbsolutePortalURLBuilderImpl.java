@@ -14,8 +14,6 @@ import com.liferay.portal.url.builder.facet.CDNAwareAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.facet.PathProxyAwareAbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.internal.util.URLUtil;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 /**
  * @author Iván Zaera Avellón
  */
@@ -25,9 +23,9 @@ public abstract class BaseWebContextResourceAbsolutePortalURLBuilderImpl<T>
 			   PathProxyAwareAbsolutePortalURLBuilder<T> {
 
 	public BaseWebContextResourceAbsolutePortalURLBuilderImpl(
-		String cdnHost, boolean enableUseOneHashPerWebContext,
-		HashedFilesRegistry hashedFilesRegistry,
-		HttpServletRequest httpServletRequest, String pathModule,
+		CachingStrategy cachingStrategy, String cdnHost,
+		boolean enableUseOneHashPerWebContext,
+		HashedFilesRegistry hashedFilesRegistry, String pathModule,
 		String pathProxy, String resourcePath, String webContextName) {
 
 		if (!resourcePath.startsWith(StringPool.SLASH)) {
@@ -35,9 +33,6 @@ public abstract class BaseWebContextResourceAbsolutePortalURLBuilderImpl<T>
 		}
 
 		String webContextPath = StringPool.SLASH + webContextName;
-
-		CachingStrategy cachingStrategy =
-			hashedFilesRegistry.getCachingStrategy(httpServletRequest);
 
 		if (!enableUseOneHashPerWebContext &&
 			(cachingStrategy == CachingStrategy.USE_ONE_HASH_PER_WEB_CONTEXT)) {

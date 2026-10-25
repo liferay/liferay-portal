@@ -5,10 +5,9 @@
 
 package com.liferay.portal.url.builder.internal;
 
+import com.liferay.portal.kernel.frontend.hashed.files.CachingStrategy;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
 import com.liferay.portal.url.builder.WebContextStylesheetAbsolutePortalURLBuilder;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Iván Zaera Avellón
@@ -19,12 +18,12 @@ public class WebContextStylesheetAbsolutePortalURLBuilderImpl
 	implements WebContextStylesheetAbsolutePortalURLBuilder {
 
 	public WebContextStylesheetAbsolutePortalURLBuilderImpl(
-		String cdnHost, HashedFilesRegistry hashedFilesRegistry,
-		HttpServletRequest httpServletRequest, String pathModule,
+		CachingStrategy cachingStrategy, String cdnHost,
+		HashedFilesRegistry hashedFilesRegistry, String pathModule,
 		String pathProxy, String stylesheetPath, String webContextPath) {
 
 		super(
-			cdnHost, false, hashedFilesRegistry, httpServletRequest, pathModule,
+			cachingStrategy, cdnHost, false, hashedFilesRegistry, pathModule,
 			pathProxy, stylesheetPath, webContextPath);
 	}
 
