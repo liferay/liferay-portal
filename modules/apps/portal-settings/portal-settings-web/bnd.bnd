@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Portal Settings Web
 Bundle-SymbolicName: com.liferay.portal.settings.web
-Bundle-Version: 5.0.83
+Bundle-Version: 5.0.84
 Web-ContextPath: /portal-settings-web
