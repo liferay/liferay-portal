@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.service.VirtualHostLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
@@ -266,7 +268,8 @@ public class ConfigurationFactoryTest {
 	public void testOAuth2ProviderApplicationHeadlessServerConfigurationFactory()
 		throws Exception {
 
-		_activateHeadlessServerConfigurationFactory(false);
+		_activateHeadlessServerConfigurationFactory(
+			false, _scopeLocator, new String[0]);
 
 		Assert.assertEquals(
 			_webId, _labels.get("dxp.lxc.liferay.com/virtualInstanceId"));
@@ -284,9 +287,12 @@ public class ConfigurationFactoryTest {
 			"ext-init", _labels.get("lxc.liferay.com/metadataType"));
 		Assert.assertFalse(_featuresList.contains("upstream.token.forwarding"));
 
-		_activateHeadlessServerConfigurationFactory(true);
+		_activateHeadlessServerConfigurationFactory(
+			true, _scopeLocator, new String[0]);
 
 		Assert.assertTrue(_featuresList.contains("upstream.token.forwarding"));
+
+		_testActivateHeadlessServerConfigurationFactoryScopes();
 	}
 
 	@Test
@@ -416,7 +422,8 @@ public class ConfigurationFactoryTest {
 	}
 
 	private void _activateHeadlessServerConfigurationFactory(
-			boolean forwardUpstreamToken)
+			boolean forwardUpstreamToken, ScopeLocator scopeLocator,
+			String[] scopes)
 		throws Exception {
 
 		OAuth2ProviderApplicationHeadlessServerConfigurationFactory
@@ -428,7 +435,7 @@ public class ConfigurationFactoryTest {
 			_oAuth2ApplicationLocalService;
 		configurationFactory.oAuth2ApplicationScopeAliasesLocalService =
 			_oAuth2ApplicationScopeAliasesLocalService;
-		configurationFactory.scopeLocator = _scopeLocator;
+		configurationFactory.scopeLocator = scopeLocator;
 		configurationFactory.userLocalService = _userLocalService;
 
 		ReflectionTestUtil.setFieldValue(
@@ -460,10 +467,85 @@ public class ConfigurationFactoryTest {
 			).put(
 				"projectName", _projectName
 			).put(
+				"scopes", scopes
+			).put(
 				"service.factoryPid", "foo"
 			).put(
 				"service.pid", "foo~" + _externalReferenceCode
 			).build());
+	}
+
+	private void _testActivateHeadlessServerConfigurationFactoryScopes()
+		throws Exception {
+
+		List<String> methodNames = new ArrayList<>();
+		String scopeAlias = "Liferay.Segments.Asah.REST.everything";
+
+		ScopeLocator scopeLocator = (ScopeLocator)ProxyUtil.newProxyInstance(
+			ScopeLocator.class.getClassLoader(),
+			new Class<?>[] {ScopeLocator.class},
+			(proxy, method, args) -> {
+				methodNames.add(method.getName());
+
+				if (Objects.equals(method.getName(), "getScopeAliases")) {
+					return Arrays.asList(scopeAlias);
+				}
+
+				if (Objects.equals(method.getName(), "waitForScopeAliases")) {
+					return args[1];
+				}
+
+				return null;
+			});
+
+		Mockito.when(
+			_oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
+				Mockito.anyLong())
+		).thenReturn(
+			Arrays.asList(scopeAlias)
+		);
+
+		String[] scopes = {"LIFERAY.SEGMENTS.ASAH.REST.EVERYTHING"};
+
+		_activateHeadlessServerConfigurationFactory(
+			false, scopeLocator, scopes);
+
+		Assert.assertTrue(methodNames.toString(), methodNames.isEmpty());
+
+		Mockito.verify(
+			_oAuth2ApplicationLocalService, Mockito.never()
+		).updateScopeAliases(
+			Mockito.anyLong(), Mockito.anyString(), Mockito.anyLong(),
+			Mockito.anyList()
+		);
+
+		Mockito.when(
+			_oAuth2ApplicationLocalService.
+				fetchOAuth2ApplicationByExternalReferenceCode(
+					_externalReferenceCode, _companyId)
+		).thenReturn(
+			null
+		);
+
+		Mockito.when(
+			_oAuth2ApplicationScopeAliasesLocalService.getScopeAliasesList(
+				Mockito.anyLong())
+		).thenReturn(
+			Collections.emptyList()
+		);
+
+		_activateHeadlessServerConfigurationFactory(
+			false, scopeLocator, scopes);
+
+		Assert.assertEquals(
+			Arrays.asList("getScopeAliases", "waitForScopeAliases"),
+			methodNames);
+
+		Mockito.verify(
+			_oAuth2ApplicationLocalService
+		).updateScopeAliases(
+			1, "UserName", 1, Arrays.asList(scopeAlias)
+		);
 	}
 
 	private Company _company;
