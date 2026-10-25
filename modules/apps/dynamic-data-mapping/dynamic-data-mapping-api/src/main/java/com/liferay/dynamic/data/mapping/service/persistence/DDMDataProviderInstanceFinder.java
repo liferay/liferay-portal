@@ -14,13 +14,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface DDMDataProviderInstanceFinder {
 
-	public int countByKeywords(
-		long companyId, long[] groupIds, String keywords);
-
-	public int countByC_G_N_D(
-		long companyId, long[] groupIds, String name, String description,
-		boolean andOperator);
-
 	public java.util.List
 		<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance>
 			filterByC_G(long companyId, long[] groupIds, int start, int end);
@@ -52,23 +45,5 @@ public interface DDMDataProviderInstanceFinder {
 					<com.liferay.dynamic.data.mapping.model.
 						DDMDataProviderInstance> orderByComparator);
 
-	public java.util.List
-		<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance>
-			findByKeywords(
-				long companyId, long[] groupIds, String keywords, int start,
-				int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.
-						DDMDataProviderInstance> orderByComparator);
-
-	public java.util.List
-		<com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance>
-			findByC_G_N_D(
-				long companyId, long[] groupIds, String name,
-				String description, boolean andOperator, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.dynamic.data.mapping.model.
-						DDMDataProviderInstance> orderByComparator);
-
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1399964584
+// LIFERAY-SERVICE-BUILDER-HASH:1973428710
