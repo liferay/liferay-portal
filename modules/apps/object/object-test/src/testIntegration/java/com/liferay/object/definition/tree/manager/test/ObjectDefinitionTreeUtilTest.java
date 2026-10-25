@@ -158,7 +158,16 @@ public class ObjectDefinitionTreeUtilTest {
 	}
 
 	@After
-	public void tearDown() {
+	public void tearDown() throws Exception {
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				_objectDefinitionA.getName(), _objectDefinitionB.getName(),
+				_objectDefinitionAA.getName(), _objectDefinitionAB.getName(),
+				_objectDefinitionAAA.getName(), _objectDefinitionAAAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+
 		ObjectDefinitionTreeUtil.invalidate();
 	}
 
