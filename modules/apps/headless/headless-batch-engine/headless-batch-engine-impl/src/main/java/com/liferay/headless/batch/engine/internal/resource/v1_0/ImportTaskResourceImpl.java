@@ -65,7 +65,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ServiceScope;
@@ -234,16 +233,19 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 			null, importStrategy, taskItemDelegateName, updateStrategy);
 	}
 
-	@Activate
-	protected void activate(Map<String, Object> properties) {
+	private static Map<String, Integer> _getItemClassBatchSizeMap() {
+		Map<String, Integer> itemClassBatchSizeMap = new HashMap<>();
+
 		Properties batchSizeProperties = PropsUtil.getProperties(
 			"batch.size.", true);
 
 		for (Map.Entry<Object, Object> entry : batchSizeProperties.entrySet()) {
-			_itemClassBatchSizeMap.put(
+			itemClassBatchSizeMap.put(
 				String.valueOf(entry.getKey()),
 				GetterUtil.getInteger(entry.getValue()));
 		}
+
+		return itemClassBatchSizeMap;
 	}
 
 	private String _getBatchEngineTaskContentType(String contentType) {
@@ -622,7 +624,7 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 		Arrays.asList(
 			"callbackURL", "fieldNameMapping", "taskItemDelegateName"));
 	private static final Map<String, Integer> _itemClassBatchSizeMap =
-		new HashMap<>();
+		_getItemClassBatchSizeMap();
 
 	@Reference
 	private BatchEngineImportTaskExecutor _batchEngineImportTaskExecutor;
