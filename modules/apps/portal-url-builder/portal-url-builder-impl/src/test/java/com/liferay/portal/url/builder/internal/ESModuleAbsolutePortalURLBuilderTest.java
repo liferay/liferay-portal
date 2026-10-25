@@ -6,9 +6,13 @@
 package com.liferay.portal.url.builder.internal;
 
 import com.liferay.portal.kernel.frontend.hashed.files.CachingStrategy;
+import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistry;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.url.builder.AbsolutePortalURLBuilder;
 import com.liferay.portal.url.builder.ESModuleAbsolutePortalURLBuilder;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,6 +25,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import org.mockito.Mockito;
 
 /**
  * @author Iván Zaera Avellón
@@ -144,6 +150,46 @@ public class ESModuleAbsolutePortalURLBuilderTest
 		Assert.assertEquals(
 			_RESULTS_IGNORE_PROXY[index],
 			esModuleAbsolutePortalURLBuilder.build());
+	}
+
+	@Test
+	public void testForESModuleComputesRequestValuesOnce() throws Exception {
+		HashedFilesRegistry hashedFilesRegistry = mockHashedFilesRegistry(
+			cachingStrategy);
+		HttpServletRequest httpServletRequest = mockHttpServletRequest();
+		Portal portal = mockPortal(context, proxy, cdnHost);
+
+		AbsolutePortalURLBuilder absolutePortalURLBuilder =
+			new AbsolutePortalURLBuilderImpl(
+				mockCacheHelper(), hashedFilesRegistry, portal,
+				httpServletRequest);
+
+		ESModuleAbsolutePortalURLBuilder esModuleAbsolutePortalURLBuilder =
+			absolutePortalURLBuilder.forESModule("frontend-js-web", "index.js");
+
+		String url = esModuleAbsolutePortalURLBuilder.build();
+
+		Assert.assertEquals(_RESULTS[index], url);
+
+		for (int i = 0; i < 5; i++) {
+			esModuleAbsolutePortalURLBuilder =
+				absolutePortalURLBuilder.forESModule(
+					"frontend-js-web", "index.js");
+
+			Assert.assertEquals(url, esModuleAbsolutePortalURLBuilder.build());
+		}
+
+		Mockito.verify(
+			portal, Mockito.times(1)
+		).getCDNHost(
+			httpServletRequest
+		);
+
+		Mockito.verify(
+			hashedFilesRegistry, Mockito.times(1)
+		).getCachingStrategy(
+			httpServletRequest
+		);
 	}
 
 	@Parameterized.Parameter(1)
