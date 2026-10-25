@@ -15,9 +15,6 @@ import com.liferay.social.kernel.model.SocialActivityCounterConstants;
 import com.liferay.social.kernel.model.SocialActivityLimit;
 import com.liferay.social.kernel.service.SocialActivityCounterLocalServiceUtil;
 import com.liferay.social.kernel.service.SocialActivitySettingLocalServiceUtil;
-import com.liferay.social.kernel.util.SocialCounterPeriodUtil;
-
-import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -141,13 +138,6 @@ public class SocialActivityCounterLocalServiceTest
 		Assert.assertNotNull(contribution);
 		Assert.assertEquals(1, contribution.getCurrentValue());
 
-		List<SocialActivityCounter> counters =
-			SocialActivityCounterLocalServiceUtil.getPeriodActivityCounters(
-				group.getGroupId(), "asset.test.2",
-				SocialCounterPeriodUtil.getStartPeriod(), -1);
-
-		Assert.assertEquals(counters.toString(), 1, counters.size());
-
 		SocialActivityCounterLocalServiceUtil.disableActivityCounters(
 			assetEntry.getClassName(), assetEntry.getClassPK());
 
@@ -165,13 +155,6 @@ public class SocialActivityCounterLocalServiceTest
 		Assert.assertNotNull(counter);
 		Assert.assertFalse(counter.isActive());
 
-		counters =
-			SocialActivityCounterLocalServiceUtil.getPeriodActivityCounters(
-				group.getGroupId(), "asset.test.2",
-				SocialCounterPeriodUtil.getStartPeriod(), -1);
-
-		Assert.assertEquals(counters.toString(), 0, counters.size());
-
 		SocialActivityCounterLocalServiceUtil.enableActivityCounters(
 			assetEntry.getClassName(), assetEntry.getClassPK());
 
@@ -187,13 +170,6 @@ public class SocialActivityCounterLocalServiceTest
 
 		Assert.assertNotNull(counter);
 		Assert.assertTrue(counter.isActive());
-
-		counters =
-			SocialActivityCounterLocalServiceUtil.getPeriodActivityCounters(
-				group.getGroupId(), "asset.test.2",
-				SocialCounterPeriodUtil.getStartPeriod(), -1);
-
-		Assert.assertEquals(counters.toString(), 1, counters.size());
 	}
 
 }

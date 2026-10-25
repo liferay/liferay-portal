@@ -143,22 +143,10 @@ public class SocialActivitySetLocalServiceImpl
 
 	@Override
 	public List<SocialActivitySet> getRelationActivitySets(
-		long userId, int start, int end) {
-
-		return socialActivitySetFinder.findByRelation(userId, start, end);
-	}
-
-	@Override
-	public List<SocialActivitySet> getRelationActivitySets(
 		long userId, int type, int start, int end) {
 
 		return socialActivitySetFinder.findByRelationType(
 			userId, type, start, end);
-	}
-
-	@Override
-	public int getRelationActivitySetsCount(long userId) {
-		return socialActivitySetFinder.countByRelation(userId);
 	}
 
 	@Override
