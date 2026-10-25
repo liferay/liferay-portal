@@ -9,9 +9,6 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.service.persistence.AssetEntryPersistence;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.bean.BeanReference;
-import com.liferay.portal.kernel.cache.PortalCache;
-import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
-import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.lock.LockProtectedAction;
 import com.liferay.portal.kernel.model.Group;
@@ -35,7 +32,6 @@ import com.liferay.social.kernel.model.SocialActivityLimit;
 import com.liferay.social.kernel.model.SocialActivityProcessor;
 import com.liferay.social.kernel.service.SocialActivityLimitLocalService;
 import com.liferay.social.kernel.service.SocialActivitySettingLocalService;
-import com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder;
 import com.liferay.social.kernel.service.persistence.SocialActivityLimitPersistence;
 import com.liferay.social.kernel.util.SocialCounterPeriodUtil;
 
@@ -336,8 +332,6 @@ public class SocialActivityCounterLocalServiceImpl
 		_socialActivitySettingLocalService.deleteActivitySetting(
 			assetEntry.getGroupId(), assetEntry.getClassName(),
 			assetEntry.getClassPK());
-
-		clearFinderCache();
 	}
 
 	/**
@@ -364,8 +358,6 @@ public class SocialActivityCounterLocalServiceImpl
 
 			_socialActivityLimitPersistence.removeByUserId(classPK);
 		}
-
-		clearFinderCache();
 	}
 
 	/**
@@ -392,8 +384,6 @@ public class SocialActivityCounterLocalServiceImpl
 
 			_socialActivityLimitPersistence.removeByUserId(classPK);
 		}
-
-		clearFinderCache();
 	}
 
 	/**
@@ -437,8 +427,6 @@ public class SocialActivityCounterLocalServiceImpl
 
 			socialActivityCounterPersistence.update(activityCounter);
 		}
-
-		clearFinderCache();
 	}
 
 	/**
@@ -502,8 +490,6 @@ public class SocialActivityCounterLocalServiceImpl
 
 			socialActivityCounterPersistence.update(activityCounter);
 		}
-
-		clearFinderCache();
 	}
 
 	/**
@@ -788,15 +774,6 @@ public class SocialActivityCounterLocalServiceImpl
 		}
 
 		return false;
-	}
-
-	protected void clearFinderCache() {
-		PortalCache<String, SocialActivityCounter> portalCache =
-			PortalCacheHelperUtil.getPortalCache(
-				PortalCacheManagerNames.MULTI_VM,
-				SocialActivityCounterFinder.class.getName());
-
-		portalCache.removeAll();
 	}
 
 	protected long getClassNameId(AssetEntry assetEntry, int ownerType) {

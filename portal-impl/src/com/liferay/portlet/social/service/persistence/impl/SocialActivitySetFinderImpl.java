@@ -28,9 +28,6 @@ public class SocialActivitySetFinderImpl
 	public static final String COUNT_BY_ORGANIZATION_ID =
 		SocialActivitySetFinder.class.getName() + ".countByOrganizationId";
 
-	public static final String COUNT_BY_RELATION =
-		SocialActivitySetFinder.class.getName() + ".countByRelation";
-
 	public static final String COUNT_BY_RELATION_TYPE =
 		SocialActivitySetFinder.class.getName() + ".countByRelationType";
 
@@ -42,9 +39,6 @@ public class SocialActivitySetFinderImpl
 
 	public static final String FIND_BY_ORGANIZATION_ID =
 		SocialActivitySetFinder.class.getName() + ".findByOrganizationId";
-
-	public static final String FIND_BY_RELATION =
-		SocialActivitySetFinder.class.getName() + ".findByRelation";
 
 	public static final String FIND_BY_RELATION_TYPE =
 		SocialActivitySetFinder.class.getName() + ".findByRelationType";
@@ -69,43 +63,6 @@ public class SocialActivitySetFinderImpl
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
 			queryPos.add(organizationId);
-
-			Iterator<Long> iterator = sqlQuery.iterate();
-
-			if (iterator.hasNext()) {
-				Long count = iterator.next();
-
-				if (count != null) {
-					return count.intValue();
-				}
-			}
-
-			return 0;
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public int countByRelation(long userId) {
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(COUNT_BY_RELATION);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addScalar(COUNT_COLUMN_NAME, Type.LONG);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(userId);
 
 			Iterator<Long> iterator = sqlQuery.iterate();
 
@@ -264,37 +221,6 @@ public class SocialActivitySetFinderImpl
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
 			queryPos.add(organizationId);
-
-			return (List<SocialActivitySet>)QueryUtil.list(
-				sqlQuery, getDialect(), start, end);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-		finally {
-			closeSession(session);
-		}
-	}
-
-	@Override
-	public List<SocialActivitySet> findByRelation(
-		long userId, int start, int end) {
-
-		Session session = null;
-
-		try {
-			session = openSession();
-
-			String sql = CustomSQLUtil.get(FIND_BY_RELATION);
-
-			SQLQuery sqlQuery = session.createSynchronizedSQLQuery(sql);
-
-			sqlQuery.addEntity(
-				"SocialActivitySet", SocialActivitySetImpl.class);
-
-			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
-
-			queryPos.add(userId);
 
 			return (List<SocialActivitySet>)QueryUtil.list(
 				sqlQuery, getDialect(), start, end);

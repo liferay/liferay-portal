@@ -1,105 +1,6 @@
 <?xml version="1.0"?>
 
 <custom-sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder.countU_ByG_C_N_S_E">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT classPK) AS COUNT_VALUE
-			FROM
-				SocialActivityCounter
-			INNER JOIN
-				User_ ON
-					SocialActivityCounter.classPK = User_.userId
-			WHERE
-				(groupId = ?) AND
-				(classNameId = ?) AND
-				(name IN ([$NAME$])) AND
-				(startPeriod + ? >= ?) AND
-				(endPeriod = -1) AND
-				(User_.type_ != 0) AND
-				(User_.status = 0) AND
-				(SocialActivityCounter.active_ = [$TRUE$])
-		]]>
-	</sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder.findAC_ByG_N_S_E_1">
-		<![CDATA[
-			SELECT
-				name, SUM(currentValue) currentValue, startPeriod, endPeriod
-			FROM
-				SocialActivityCounter
-			WHERE
-				(groupId = ?) AND
-				(name = ?) AND
-				(startPeriod >= ?) AND
-				(startPeriod <= ?) AND
-				(startPeriod + ? <= ? + 1) AND
-				(active_ = [$TRUE$])
-			GROUP BY
-				name, startPeriod, endPeriod
-			ORDER BY
-				startPeriod
-		]]>
-	</sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder.findAC_ByG_N_S_E_2">
-		<![CDATA[
-			SELECT
-				classNameId, name, SUM(currentValue) currentValue
-			FROM
-				SocialActivityCounter
-			WHERE
-				(groupId = ?) AND
-				(name = ?) AND
-				(startPeriod >= ?) AND
-				(startPeriod <= ?) AND
-				(startPeriod + ? <= ? + 1) AND
-				(active_ = [$TRUE$])
-			GROUP BY
-				classNameId, name
-			ORDER BY
-				currentValue DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder.findAC_By_G_C_C_N_S_E">
-		<![CDATA[
-			SELECT
-				{SocialActivityCounter.*}
-			FROM
-				SocialActivityCounter
-			WHERE
-				(groupId = ?) AND
-				(classNameId = ?) AND
-				(classPK IN ([$CLASS_PK$])) AND
-				(name IN ([$NAME$])) AND
-				(endPeriod = -1) AND
-				(active_ = [$TRUE$])
-			ORDER BY
-				classPK
-		]]>
-	</sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder.findU_ByG_C_N_S_E">
-		<![CDATA[
-			SELECT
-				classPK
-			FROM
-				SocialActivityCounter
-			INNER JOIN
-				User_ ON
-					SocialActivityCounter.classPK = User_.userId
-			WHERE
-				(groupId = ?) AND
-				(classNameId = ?) AND
-				(name IN ([$NAME$])) AND
-				(startPeriod >= ?) AND
-				(endPeriod = -1) AND
-				(User_.type_ != 0) AND
-				(User_.status = 0) AND
-				(active_ = [$TRUE$])
-			GROUP BY
-				classPK
-			ORDER BY
-				SUM(currentValue) DESC
-		]]>
-	</sql>
 	<sql id="com.liferay.social.kernel.service.persistence.SocialActivityFinder.countByGroupId">
 		<![CDATA[
 			SELECT
@@ -541,19 +442,6 @@
 				Organization_.organizationId = ?
 		]]>
 	</sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivitySetFinder.countByRelation">
-		<![CDATA[
-			SELECT
-				COUNT(DISTINCT SocialActivitySet.activitySetId) AS COUNT_VALUE
-			FROM
-				SocialActivitySet
-			INNER JOIN
-				SocialRelation ON
-					SocialRelation.userId2 = SocialActivitySet.userId
-			WHERE
-				SocialRelation.userId1 = ?
-		]]>
-	</sql>
 	<sql id="com.liferay.social.kernel.service.persistence.SocialActivitySetFinder.countByRelationType">
 		<![CDATA[
 			SELECT
@@ -681,21 +569,6 @@
 				(Organization_.organizationId = ?)
 			ORDER BY
 				SocialActivity.createDate DESC
-		]]>
-	</sql>
-	<sql id="com.liferay.social.kernel.service.persistence.SocialActivitySetFinder.findByRelation">
-		<![CDATA[
-			SELECT
-				DISTINCT {SocialActivitySet.*}
-			FROM
-				SocialActivitySet
-			INNER JOIN
-				SocialRelation ON
-					SocialRelation.userId2 = SocialActivitySet.userId
-			WHERE
-				(SocialRelation.userId1 = ?)
-			ORDER BY
-				SocialActivitySet.modifiedDate DESC
 		]]>
 	</sql>
 	<sql id="com.liferay.social.kernel.service.persistence.SocialActivitySetFinder.findByRelationType">
