@@ -33,6 +33,7 @@ import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectDefinitionSettingLocalService;
+import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectLayoutLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
@@ -84,6 +85,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -178,6 +180,26 @@ public class ObjectEntryDisplayContextTest {
 		_siteObjectEntryAAA = _addRelatedObjectEntry(
 			_siteObjectEntryAA, _siteObjectRelationshipAA_AAA,
 			_group.getGroupKey());
+	}
+
+	@AfterClass
+	public static void tearDownClass() throws Exception {
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				_companyObjectDefinitionA.getName(),
+				_companyObjectDefinitionAA.getName(),
+				_companyObjectDefinitionAAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				_siteObjectDefinitionA.getName(),
+				_siteObjectDefinitionAA.getName(),
+				_siteObjectDefinitionAAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
@@ -669,6 +691,9 @@ public class ObjectEntryDisplayContextTest {
 
 	@Inject
 	private static ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private static ObjectEntryLocalService _objectEntryLocalService;
 
 	@Inject(
 		filter = "object.entry.manager.storage.type=" + ObjectDefinitionConstants.STORAGE_TYPE_DEFAULT
