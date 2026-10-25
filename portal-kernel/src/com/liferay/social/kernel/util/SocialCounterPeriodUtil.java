@@ -33,10 +33,6 @@ public class SocialCounterPeriodUtil {
 		return (int)((time / Time.DAY) - (_BASE_TIME / Time.DAY));
 	}
 
-	public static Date getDate(int activityDay) {
-		return new Date(_BASE_TIME + (activityDay * Time.DAY));
-	}
-
 	public static int getEndPeriod() {
 		if (_isWithinPeriod(_startPeriod, _endPeriod, getActivityDay())) {
 			return _endPeriod;
@@ -45,70 +41,6 @@ public class SocialCounterPeriodUtil {
 		_endPeriod = getStartPeriod() + getPeriodLength() - 1;
 
 		return _endPeriod;
-	}
-
-	public static int getEndPeriod(int offset) {
-		if (_isMonthlyPeriod()) {
-			Calendar calendar = new GregorianCalendar();
-
-			calendar.set(Calendar.DATE, 1);
-
-			calendar.add(Calendar.MONTH, offset + 1);
-			calendar.add(Calendar.DATE, -1);
-
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-
-			return getActivityDay(calendar);
-		}
-
-		return getEndPeriod() - (offset * getPeriodLength());
-	}
-
-	public static int getEndPeriod(long time) {
-		int activityDay = getActivityDay(time);
-
-		int offset = 0;
-
-		while (getStartPeriod(offset) > activityDay) {
-			offset--;
-		}
-
-		return getEndPeriod(offset);
-	}
-
-	public static int getFirstActivityDayOfYear() {
-		Calendar calendar = new GregorianCalendar();
-
-		calendar.set(Calendar.MONTH, 0);
-		calendar.set(Calendar.DATE, 1);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-
-		return getActivityDay(calendar);
-	}
-
-	public static int getOffset(int activityDay) {
-		if (_isMonthlyPeriod()) {
-			Calendar calendar1 = new GregorianCalendar();
-
-			Calendar calendar2 = new GregorianCalendar();
-
-			calendar2.setTimeInMillis(_BASE_TIME + (activityDay * Time.DAY));
-
-			int monthDelta =
-				calendar1.get(Calendar.MONTH) - calendar2.get(Calendar.MONTH);
-			int yearDelta =
-				calendar1.get(Calendar.YEAR) - calendar2.get(Calendar.YEAR);
-
-			return -((yearDelta * 12) + monthDelta);
-		}
-
-		return -((getStartPeriod() - activityDay) / getPeriodLength());
 	}
 
 	public static int getPeriodLength() {
@@ -142,23 +74,6 @@ public class SocialCounterPeriodUtil {
 		return _periodLength;
 	}
 
-	public static int getPeriodLength(int offset) {
-		if (_isMonthlyPeriod()) {
-			Calendar calendar = new GregorianCalendar();
-
-			calendar.set(Calendar.DATE, 1);
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.add(Calendar.MONTH, offset);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-
-			return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		}
-
-		return getPeriodLength();
-	}
-
 	public static int getStartPeriod() {
 		if (_isWithinPeriod(_startPeriod, _endPeriod, getActivityDay())) {
 			return _startPeriod;
@@ -181,37 +96,6 @@ public class SocialCounterPeriodUtil {
 		_startPeriod = getActivityDay() / getPeriodLength() * getPeriodLength();
 
 		return _startPeriod;
-	}
-
-	public static int getStartPeriod(int offset) {
-		if (_isMonthlyPeriod()) {
-			Calendar calendar = new GregorianCalendar();
-
-			calendar.set(Calendar.DATE, 1);
-			calendar.set(Calendar.HOUR_OF_DAY, 0);
-			calendar.set(Calendar.MINUTE, 0);
-			calendar.add(Calendar.MONTH, offset);
-			calendar.set(Calendar.SECOND, 0);
-			calendar.set(Calendar.MILLISECOND, 0);
-
-			Date calendarTime = calendar.getTime();
-
-			return getActivityDay(calendarTime.getTime());
-		}
-
-		return getStartPeriod() + (offset * getPeriodLength());
-	}
-
-	public static int getStartPeriod(long time) {
-		int activityDay = getActivityDay(time);
-
-		int offset = 0;
-
-		while (getStartPeriod(offset) > activityDay) {
-			offset--;
-		}
-
-		return getStartPeriod(offset);
 	}
 
 	private static boolean _isMonthlyPeriod() {

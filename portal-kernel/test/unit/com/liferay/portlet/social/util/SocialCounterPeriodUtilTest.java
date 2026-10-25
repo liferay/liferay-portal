@@ -59,38 +59,8 @@ public class SocialCounterPeriodUtilTest {
 	}
 
 	@Test
-	public void testGetDate() {
-		Calendar calendar = new GregorianCalendar(2011, Calendar.JANUARY, 1);
-
-		Assert.assertEquals(
-			calendar.getTime(), SocialCounterPeriodUtil.getDate(0));
-
-		calendar = new GregorianCalendar(2011, Calendar.FEBRUARY, 1);
-
-		Assert.assertEquals(
-			calendar.getTime(), SocialCounterPeriodUtil.getDate(31));
-	}
-
-	@Test
 	public void testGetPeriodLength() {
 		Assert.assertEquals(1, SocialCounterPeriodUtil.getPeriodLength());
-		Assert.assertEquals(1, SocialCounterPeriodUtil.getPeriodLength(-1));
-	}
-
-	@Test
-	public void testGetStartPeriod() {
-		Calendar calendar = new GregorianCalendar(2011, Calendar.JANUARY, 15);
-
-		Assert.assertEquals(
-			14,
-			SocialCounterPeriodUtil.getStartPeriod(calendar.getTimeInMillis()));
-
-		int startPeriod = SocialCounterPeriodUtil.getStartPeriod();
-
-		Assert.assertEquals(
-			startPeriod, SocialCounterPeriodUtil.getStartPeriod(0));
-		Assert.assertEquals(
-			startPeriod - 1, SocialCounterPeriodUtil.getStartPeriod(-1));
 	}
 
 	private static final MockedStatic<PropsUtil> _propsUtilMockedStatic =
