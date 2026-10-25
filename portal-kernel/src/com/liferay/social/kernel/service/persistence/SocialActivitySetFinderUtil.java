@@ -17,10 +17,6 @@ public class SocialActivitySetFinderUtil {
 		return getFinder().countByOrganizationId(organizationId);
 	}
 
-	public static int countByRelation(long userId) {
-		return getFinder().countByRelation(userId);
-	}
-
 	public static int countByRelationType(long userId, int type) {
 		return getFinder().countByRelationType(userId, type);
 	}
@@ -38,13 +34,6 @@ public class SocialActivitySetFinderUtil {
 			findByOrganizationId(long organizationId, int start, int end) {
 
 		return getFinder().findByOrganizationId(organizationId, start, end);
-	}
-
-	public static java.util.List
-		<com.liferay.social.kernel.model.SocialActivitySet> findByRelation(
-			long userId, int start, int end) {
-
-		return getFinder().findByRelation(userId, start, end);
 	}
 
 	public static java.util.List
@@ -84,4 +73,4 @@ public class SocialActivitySetFinderUtil {
 	private static SocialActivitySetFinder _finder;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-733932497
+// LIFERAY-SERVICE-BUILDER-HASH:-2144153862

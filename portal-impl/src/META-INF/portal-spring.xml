@@ -370,7 +370,6 @@
 	<bean class="com.liferay.portlet.social.service.impl.SocialActivityCounterLocalServiceImpl" id="com.liferay.social.kernel.service.SocialActivityCounterLocalService" />
 	<bean class="com.liferay.portlet.social.service.persistence.impl.SocialActivityCounterModelArgumentsResolver" id="com.liferay.portlet.social.service.persistence.impl.SocialActivityCounterModelArgumentsResolver" />
 	<bean class="com.liferay.portlet.social.service.persistence.impl.SocialActivityCounterPersistenceImpl" id="com.liferay.social.kernel.service.persistence.SocialActivityCounterPersistence" />
-	<bean class="com.liferay.portlet.social.service.persistence.impl.SocialActivityCounterFinderImpl" id="com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder" />
 	<bean class="com.liferay.portlet.social.service.impl.SocialActivityInterpreterLocalServiceImpl" id="com.liferay.social.kernel.service.SocialActivityInterpreterLocalService" />
 	<bean class="com.liferay.portlet.social.service.impl.SocialActivityLimitLocalServiceImpl" id="com.liferay.social.kernel.service.SocialActivityLimitLocalService" />
 	<bean class="com.liferay.portlet.social.service.persistence.impl.SocialActivityLimitModelArgumentsResolver" id="com.liferay.portlet.social.service.persistence.impl.SocialActivityLimitModelArgumentsResolver" />

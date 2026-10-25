@@ -16,8 +16,6 @@ public interface SocialActivitySetFinder {
 
 	public int countByOrganizationId(long organizationId);
 
-	public int countByRelation(long userId);
-
 	public int countByRelationType(long userId, int type);
 
 	public int countByUser(long userId);
@@ -26,9 +24,6 @@ public interface SocialActivitySetFinder {
 
 	public java.util.List<com.liferay.social.kernel.model.SocialActivitySet>
 		findByOrganizationId(long organizationId, int start, int end);
-
-	public java.util.List<com.liferay.social.kernel.model.SocialActivitySet>
-		findByRelation(long userId, int start, int end);
 
 	public java.util.List<com.liferay.social.kernel.model.SocialActivitySet>
 		findByRelationType(long userId, int type, int start, int end);
@@ -40,4 +35,4 @@ public interface SocialActivitySetFinder {
 		findByUserGroups(long userId, int start, int end);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:319723592
+// LIFERAY-SERVICE-BUILDER-HASH:-1335779846

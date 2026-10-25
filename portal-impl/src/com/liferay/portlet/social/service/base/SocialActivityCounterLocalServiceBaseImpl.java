@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.social.kernel.model.SocialActivityCounter;
 import com.liferay.social.kernel.service.SocialActivityCounterLocalService;
 import com.liferay.social.kernel.service.SocialActivityCounterLocalServiceUtil;
-import com.liferay.social.kernel.service.persistence.SocialActivityCounterFinder;
 import com.liferay.social.kernel.service.persistence.SocialActivityCounterPersistence;
 
 import java.io.Serializable;
@@ -442,26 +441,6 @@ public abstract class SocialActivityCounterLocalServiceBaseImpl
 	}
 
 	/**
-	 * Returns the social activity counter finder.
-	 *
-	 * @return the social activity counter finder
-	 */
-	public SocialActivityCounterFinder getSocialActivityCounterFinder() {
-		return socialActivityCounterFinder;
-	}
-
-	/**
-	 * Sets the social activity counter finder.
-	 *
-	 * @param socialActivityCounterFinder the social activity counter finder
-	 */
-	public void setSocialActivityCounterFinder(
-		SocialActivityCounterFinder socialActivityCounterFinder) {
-
-		this.socialActivityCounterFinder = socialActivityCounterFinder;
-	}
-
-	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -563,9 +542,6 @@ public abstract class SocialActivityCounterLocalServiceBaseImpl
 	@BeanReference(type = SocialActivityCounterPersistence.class)
 	protected SocialActivityCounterPersistence socialActivityCounterPersistence;
 
-	@BeanReference(type = SocialActivityCounterFinder.class)
-	protected SocialActivityCounterFinder socialActivityCounterFinder;
-
 	@BeanReference(
 		type = com.liferay.counter.kernel.service.CounterLocalService.class
 	)
@@ -576,4 +552,4 @@ public abstract class SocialActivityCounterLocalServiceBaseImpl
 		SocialActivityCounterLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1485715914
+// LIFERAY-SERVICE-BUILDER-HASH:1191457153
