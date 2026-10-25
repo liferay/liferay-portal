@@ -792,6 +792,13 @@ public class ObjectRelationshipLocalServiceTest {
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			systemObjectRelationship);
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				_objectDefinition1.getName(), _objectDefinition2.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
