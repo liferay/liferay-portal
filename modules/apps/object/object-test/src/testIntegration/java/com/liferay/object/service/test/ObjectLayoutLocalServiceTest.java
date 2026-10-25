@@ -230,6 +230,44 @@ public class ObjectLayoutLocalServiceTest {
 	}
 
 	@Test
+	public void testAddObjectLayoutWithObjectLayoutTabs() throws Exception {
+		ObjectLayout objectLayout = _addObjectLayout(
+			_customObjectDefinition, true,
+			_createObjectLayoutTab(
+				_createObjectLayoutBox(
+					_createObjectLayoutColumn(_customObjectDefinition))),
+			_createObjectLayoutTab(
+				_createObjectLayoutBox(
+					_createObjectLayoutColumn(_customObjectDefinition))),
+			_createObjectLayoutTab(
+				_createObjectLayoutBox(
+					_createObjectLayoutColumn(_customObjectDefinition))));
+
+		List<ObjectLayoutTab> objectLayoutTabs =
+			objectLayout.getObjectLayoutTabs();
+
+		List<ScreenNavigationCategory> screenNavigationCategories =
+			ScreenNavigationRegistryUtil.getScreenNavigationCategories(
+				_customObjectDefinition.getClassName(),
+				TestPropsValues.getUser(), null);
+
+		Assert.assertEquals(
+			screenNavigationCategories.toString(), objectLayoutTabs.size(),
+			screenNavigationCategories.size());
+
+		for (int i = 0; i < objectLayoutTabs.size(); i++) {
+			ObjectLayoutTab objectLayoutTab = objectLayoutTabs.get(i);
+
+			ScreenNavigationCategory screenNavigationCategory =
+				screenNavigationCategories.get(i);
+
+			Assert.assertEquals(
+				String.valueOf(objectLayoutTab.getObjectLayoutTabId()),
+				screenNavigationCategory.getCategoryKey());
+		}
+	}
+
+	@Test
 	public void testDeleteObjectLayout() throws Exception {
 		ObjectLayout objectLayout = _addObjectLayout(
 			_customObjectDefinition,
