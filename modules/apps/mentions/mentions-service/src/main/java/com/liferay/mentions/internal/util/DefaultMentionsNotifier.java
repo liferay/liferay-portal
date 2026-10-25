@@ -61,15 +61,7 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 			return mentionsMatcher;
 		}
 
-		MentionsMatcher defaultMentionsMatcher = _serviceTrackerMap.getService(
-			"*");
-
-		if (defaultMentionsMatcher == null) {
-			throw new IllegalStateException(
-				"Unable to get default mentions matcher");
-		}
-
-		return defaultMentionsMatcher;
+		return _defaultMentionsMatcher;
 	}
 
 	@Override
@@ -216,6 +208,9 @@ public class DefaultMentionsNotifier implements MentionsNotifier {
 
 		return mentionedUsersScreenNames.toArray(new String[0]);
 	}
+
+	private static final MentionsMatcher _defaultMentionsMatcher =
+		new DefaultMentionsMatcher();
 
 	@Reference
 	private LayoutPermission _layoutPermission;

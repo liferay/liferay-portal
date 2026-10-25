@@ -6,20 +6,11 @@
 package com.liferay.mentions.internal.util;
 
 import com.liferay.mentions.matcher.BaseRegularExpressionMentionsMatcher;
-import com.liferay.mentions.matcher.MentionsMatcher;
 import com.liferay.mentions.matcher.MentionsMatcherUtil;
-
-import org.osgi.service.component.annotations.Component;
 
 /**
  * @author Adolfo Pérez
  */
-@Component(
-	property = {
-		"model.class.name=*", "service.ranking:Integer=" + Integer.MIN_VALUE
-	},
-	service = MentionsMatcher.class
-)
 public class DefaultMentionsMatcher
 	extends BaseRegularExpressionMentionsMatcher {
 
