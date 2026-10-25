@@ -19,7 +19,7 @@ import com.liferay.portal.kernel.cluster.Clusterable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.MapUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -103,8 +103,9 @@ public class ObjectLayoutTabLocalServiceImpl
 		ObjectDefinition objectDefinition,
 		List<ObjectLayoutTab> objectLayoutTabs) {
 
-		for (int i = objectLayoutTabs.size() - 1; i >= 0; i--) {
+		for (int i = 0; i < objectLayoutTabs.size(); i++) {
 			ObjectLayoutTab objectLayoutTab = objectLayoutTabs.get(i);
+			int order = i;
 
 			_serviceRegistrations.computeIfAbsent(
 				_getServiceRegistrationKey(objectDefinition, objectLayoutTab),
@@ -117,13 +118,8 @@ public class ObjectLayoutTabLocalServiceImpl
 						objectDefinition, objectLayoutTab,
 						_objectRelationshipPersistence.fetchByPrimaryKey(
 							objectLayoutTab.getObjectRelationshipId())),
-					HashMapDictionaryBuilder.<String, Object>put(
-						"screen.navigation.category.order:Integer",
-						objectLayoutTab.getObjectLayoutTabId()
-					).put(
-						"screen.navigation.entry.order:Integer",
-						objectLayoutTab.getObjectLayoutId()
-					).build()));
+					MapUtil.singletonDictionary(
+						"screen.navigation.category.order", order)));
 		}
 	}
 
