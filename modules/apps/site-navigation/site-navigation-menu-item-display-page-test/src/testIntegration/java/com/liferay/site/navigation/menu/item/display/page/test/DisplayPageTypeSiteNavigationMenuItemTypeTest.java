@@ -83,6 +83,7 @@ import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 
 import java.io.File;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -98,7 +99,9 @@ import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -191,6 +194,30 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 				AssetCategory.class.getName());
 
 		Assert.assertTrue(siteNavigationMenuItemType.isMultiSelection());
+	}
+
+	@Test
+	public void testDisplayPageTypeServiceRanking() throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(
+			SiteNavigationMenuItemType.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		Collection<ServiceReference<SiteNavigationMenuItemType>>
+			serviceReferences = bundleContext.getServiceReferences(
+				SiteNavigationMenuItemType.class,
+				"(site.navigation.menu.item.type=" +
+					JournalArticle.class.getName() + ")");
+
+		Assert.assertEquals(
+			serviceReferences.toString(), 1, serviceReferences.size());
+
+		for (ServiceReference<SiteNavigationMenuItemType> serviceReference :
+				serviceReferences) {
+
+			Assert.assertEquals(
+				300, serviceReference.getProperty(Constants.SERVICE_RANKING));
+		}
 	}
 
 	@Test
