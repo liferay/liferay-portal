@@ -1597,36 +1597,6 @@ public class JournalArticleLocalServiceUtil {
 			groupId, ddmStructureId, start, end, orderByComparator);
 	}
 
-	public static List<JournalArticle> getArticlesByStructureId(
-		long groupId, long ddmStructureId, java.util.Locale locale, int status,
-		int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
-
-		return getService().getArticlesByStructureId(
-			groupId, ddmStructureId, locale, status, start, end,
-			orderByComparator);
-	}
-
-	public static List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId, int status,
-		int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
-
-		return getService().getArticlesByStructureId(
-			groupId, classNameId, ddmStructureId, status, start, end,
-			orderByComparator);
-	}
-
-	public static List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId,
-		java.util.Locale locale, int status, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator) {
-
-		return getService().getArticlesByStructureId(
-			groupId, classNameId, ddmStructureId, locale, status, start, end,
-			orderByComparator);
-	}
-
 	public static List<Long> getArticlesClassPKsWithDefaultDisplayPage(
 		long groupId, long classTypeId) {
 
@@ -2149,17 +2119,6 @@ public class JournalArticleLocalServiceUtil {
 
 	public static List<JournalArticle> getNoPermissionArticles() {
 		return getService().getNoPermissionArticles();
-	}
-
-	/**
-	 * Returns the number of web content articles that are not recycled.
-	 *
-	 * @param groupId the primary key of the web content article's group
-	 * @param folderId the primary key of the web content article folder
-	 * @return the number of web content articles that are not recycled
-	 */
-	public static int getNotInTrashArticlesCount(long groupId, long folderId) {
-		return getService().getNotInTrashArticlesCount(groupId, folderId);
 	}
 
 	/**
@@ -3043,4 +3002,4 @@ public class JournalArticleLocalServiceUtil {
 			JournalArticleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1826817557
+// LIFERAY-SERVICE-BUILDER-HASH:1280626842

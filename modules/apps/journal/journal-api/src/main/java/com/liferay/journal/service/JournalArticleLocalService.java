@@ -1348,23 +1348,6 @@ public interface JournalArticleLocalService
 		OrderByComparator<JournalArticle> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long ddmStructureId, Locale locale, int status, int start,
-		int end, OrderByComparator<JournalArticle> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId, int status,
-		int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId, Locale locale,
-		int status, int start, int end,
-		OrderByComparator<JournalArticle> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<Long> getArticlesClassPKsWithDefaultDisplayPage(
 		long groupId, long classTypeId);
 
@@ -1802,16 +1785,6 @@ public interface JournalArticleLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<JournalArticle> getNoPermissionArticles();
-
-	/**
-	 * Returns the number of web content articles that are not recycled.
-	 *
-	 * @param groupId the primary key of the web content article's group
-	 * @param folderId the primary key of the web content article folder
-	 * @return the number of web content articles that are not recycled
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getNotInTrashArticlesCount(long groupId, long folderId);
 
 	/**
 	 * Returns the oldest web content article with the group and article ID.
@@ -2561,4 +2534,4 @@ public interface JournalArticleLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-579955552
+// LIFERAY-SERVICE-BUILDER-HASH:-821973873

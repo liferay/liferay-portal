@@ -377,23 +377,11 @@ public class JournalFolderLocalServiceUtil {
 			groupId, folderId, status, start, end, orderByComparator);
 	}
 
-	public static List<Object> getFoldersAndArticles(
-		long groupId, long folderId, int start, int end,
-		OrderByComparator<?> orderByComparator) {
-
-		return getService().getFoldersAndArticles(
-			groupId, folderId, start, end, orderByComparator);
-	}
-
 	public static int getFoldersAndArticlesCount(
 		long groupId, List<Long> folderIds, int status) {
 
 		return getService().getFoldersAndArticlesCount(
 			groupId, folderIds, status);
-	}
-
-	public static int getFoldersAndArticlesCount(long groupId, long folderId) {
-		return getService().getFoldersAndArticlesCount(groupId, folderId);
 	}
 
 	public static int getFoldersAndArticlesCount(
@@ -516,10 +504,6 @@ public class JournalFolderLocalServiceUtil {
 	 */
 	public static int getJournalFoldersCount() {
 		return getService().getJournalFoldersCount();
-	}
-
-	public static List<JournalFolder> getNoAssetFolders() {
-		return getService().getNoAssetFolders();
 	}
 
 	/**
@@ -710,4 +694,4 @@ public class JournalFolderLocalServiceUtil {
 			JournalFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1590034457
+// LIFERAY-SERVICE-BUILDER-HASH:318397648

@@ -1706,42 +1706,6 @@ public class JournalArticleLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<JournalArticle> getArticlesByStructureId(
-		long groupId, long ddmStructureId, java.util.Locale locale, int status,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<JournalArticle>
-			orderByComparator) {
-
-		return _journalArticleLocalService.getArticlesByStructureId(
-			groupId, ddmStructureId, locale, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public java.util.List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId, int status,
-		int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<JournalArticle>
-			orderByComparator) {
-
-		return _journalArticleLocalService.getArticlesByStructureId(
-			groupId, classNameId, ddmStructureId, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public java.util.List<JournalArticle> getArticlesByStructureId(
-		long groupId, long classNameId, long ddmStructureId,
-		java.util.Locale locale, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<JournalArticle>
-			orderByComparator) {
-
-		return _journalArticleLocalService.getArticlesByStructureId(
-			groupId, classNameId, ddmStructureId, locale, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public java.util.List<Long> getArticlesClassPKsWithDefaultDisplayPage(
 		long groupId, long classTypeId) {
 
@@ -2314,19 +2278,6 @@ public class JournalArticleLocalServiceWrapper
 	@Override
 	public java.util.List<JournalArticle> getNoPermissionArticles() {
 		return _journalArticleLocalService.getNoPermissionArticles();
-	}
-
-	/**
-	 * Returns the number of web content articles that are not recycled.
-	 *
-	 * @param groupId the primary key of the web content article's group
-	 * @param folderId the primary key of the web content article folder
-	 * @return the number of web content articles that are not recycled
-	 */
-	@Override
-	public int getNotInTrashArticlesCount(long groupId, long folderId) {
-		return _journalArticleLocalService.getNotInTrashArticlesCount(
-			groupId, folderId);
 	}
 
 	/**
@@ -3287,4 +3238,4 @@ public class JournalArticleLocalServiceWrapper
 	private JournalArticleLocalService _journalArticleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2137345677
+// LIFERAY-SERVICE-BUILDER-HASH:730744852
