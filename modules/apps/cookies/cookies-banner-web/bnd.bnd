@@ -1,4 +1,4 @@
 Bundle-Name: Liferay Cookies Banner Web
 Bundle-SymbolicName: com.liferay.cookies.banner.web
-Bundle-Version: 1.0.54
+Bundle-Version: 1.0.55
 Web-ContextPath: /cookies-banner-web
