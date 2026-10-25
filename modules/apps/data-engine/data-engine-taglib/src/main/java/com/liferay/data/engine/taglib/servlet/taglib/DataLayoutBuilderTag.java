@@ -724,8 +724,7 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 				contentType);
 
 		if (dataLayoutBuilderDefinition == null) {
-			return _dataLayoutBuilderDefinitionserviceTrackerMap.getService(
-				"default");
+			return _defaultDataLayoutBuilderDefinition;
 		}
 
 		return dataLayoutBuilderDefinition;
@@ -1052,6 +1051,10 @@ public class DataLayoutBuilderTag extends BaseDataLayoutBuilderTag {
 	private static final Snapshot<DDMStructureLocalService>
 		_ddmStructureLocalServiceSnapshot = new Snapshot<>(
 			DataLayoutBuilderTag.class, DDMStructureLocalService.class);
+	private static final DataLayoutBuilderDefinition
+		_defaultDataLayoutBuilderDefinition =
+			new DataLayoutBuilderDefinition() {
+			};
 	private static final Snapshot<DDMFormLayoutDeserializer>
 		_jsonDDMFormLayoutDeserializerSnapshot = new Snapshot<>(
 			DataLayoutBuilderTag.class, DDMFormLayoutDeserializer.class,
