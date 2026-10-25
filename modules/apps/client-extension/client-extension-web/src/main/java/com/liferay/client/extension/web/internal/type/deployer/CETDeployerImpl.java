@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.ConfigurationAction;
 import com.liferay.portal.kernel.portlet.FriendlyURLMapper;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
@@ -159,8 +160,9 @@ public class CETDeployerImpl implements CETDeployer {
 						portletId,
 						() -> _portletLocalService.getPortletById(portletId)),
 					HashMapDictionaryBuilder.<String, Object>put(
-						"panel.app.order:Integer",
-						customElementCET.getPanelAppOrder()
+						"panel.app.order",
+						GetterUtil.getInteger(
+							customElementCET.getPanelAppOrder())
 					).put(
 						"panel.category.key",
 						customElementCET.getPanelCategoryKey()
