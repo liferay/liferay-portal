@@ -7,7 +7,6 @@ package com.liferay.oauth2.provider.service.base;
 
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
-import com.liferay.oauth2.provider.service.persistence.OAuth2AuthorizationFinder;
 import com.liferay.oauth2.provider.service.persistence.OAuth2AuthorizationPersistence;
 import com.liferay.oauth2.provider.service.persistence.OAuth2ScopeGrantPersistence;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
@@ -648,9 +647,6 @@ public abstract class OAuth2AuthorizationLocalServiceBaseImpl
 	protected OAuth2AuthorizationPersistence oAuth2AuthorizationPersistence;
 
 	@Reference
-	protected OAuth2AuthorizationFinder oAuth2AuthorizationFinder;
-
-	@Reference
 	protected com.liferay.counter.kernel.service.CounterLocalService
 		counterLocalService;
 
@@ -661,4 +657,4 @@ public abstract class OAuth2AuthorizationLocalServiceBaseImpl
 		OAuth2AuthorizationLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-841780390
+// LIFERAY-SERVICE-BUILDER-HASH:-98108833
