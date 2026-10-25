@@ -10129,6 +10129,13 @@ public class ObjectEntryLocalServiceTest {
 			WorkflowConstants.STATUS_EXPIRED, objectEntryAA.getStatus());
 		Assert.assertTrue(
 			DateUtil.equals(expirationDate, objectEntryAA.getExpirationDate()));
+
+		TreeTestUtil.deleteObjectDefinitionHierarchy(
+			_objectDefinitionLocalService,
+			new String[] {
+				objectDefinitionA.getName(), objectDefinitionAA.getName()
+			},
+			_objectEntryLocalService, _objectRelationshipLocalService);
 	}
 
 	@Test
