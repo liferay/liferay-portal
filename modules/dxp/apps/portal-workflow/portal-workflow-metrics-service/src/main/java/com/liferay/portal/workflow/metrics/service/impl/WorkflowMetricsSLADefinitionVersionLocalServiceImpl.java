@@ -12,7 +12,6 @@ import com.liferay.portal.workflow.metrics.exception.NoSuchSLADefinitionVersionE
 import com.liferay.portal.workflow.metrics.model.WorkflowMetricsSLADefinitionVersion;
 import com.liferay.portal.workflow.metrics.service.base.WorkflowMetricsSLADefinitionVersionLocalServiceBaseImpl;
 
-import java.util.Date;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -45,16 +44,6 @@ public class WorkflowMetricsSLADefinitionVersionLocalServiceImpl
 		return workflowMetricsSLADefinitionVersionPersistence.
 			findByWorkflowMetricsSLADefinitionId(
 				workflowMetricsSLADefinitionId);
-	}
-
-	@Override
-	public List<WorkflowMetricsSLADefinitionVersion>
-		getWorkflowMetricsSLADefinitionVersions(
-			long companyId, Date createDate, Long processId, int status) {
-
-		return workflowMetricsSLADefinitionVersionFinder.findByC_CD_P_S(
-			companyId, createDate, processId, status, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS);
 	}
 
 	@Override
