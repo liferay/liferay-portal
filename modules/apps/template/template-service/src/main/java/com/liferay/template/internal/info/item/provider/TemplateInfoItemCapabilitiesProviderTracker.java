@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.annotations.Activate;
@@ -142,9 +143,9 @@ public class TemplateInfoItemCapabilitiesProviderTracker {
 							_infoItemServiceRegistry, _stagingGroupHelper,
 							_templateEntryLocalService, _templateNodeFactory),
 						HashMapDictionaryBuilder.<String, Object>put(
-							"item.class.name", className
+							Constants.SERVICE_RANKING, 200
 						).put(
-							"service.ranking:Integer", "200"
+							"item.class.name", className
 						).build()));
 			}
 			catch (Throwable throwable) {
