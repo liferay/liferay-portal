@@ -1084,6 +1084,10 @@ org.apache.level=WARNING]]>
 
 		<antcall target="create-weblogic-domain" />
 
+		<execute dir="${app.server.weblogic.bin.dir}">
+			sed -i '/^\s*JAVA_HOME="\//d' setDomainEnv.sh
+		</execute>
+
 		<execute dir="${app.server.weblogic.instance.dir}/nodemanager">
 			sed -i "s;SecureListener=.*;SecureListener=false;g" nodemanager.properties
 
