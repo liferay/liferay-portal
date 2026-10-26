@@ -3,9 +3,6 @@
 <suppressions>
 	<source-check>
 		<suppress checks="GradleDependencyArtifactsCheck" files=".*" />
-		<suppress checks="JavaComponentAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/graphql/client/FaroGraphQLClient\.java" />
-		<suppress checks="JavaComponentAnnotationsCheck" files="osb-faro-contacts-demo/.*" />
-		<suppress checks="JavaComponentAnnotationsCheck" files="osb-faro-web/.*" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/BaseMock.*.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/dto/v1_0/converter/IndividualDTOConverter\.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/resource/v1_0/.*ResourceImpl\.java" />
