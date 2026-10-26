@@ -9501,8 +9501,6 @@ public class ObjectEntryResourceTest {
 
 		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
 
-		Scope scope = Scope.of(_group, LocaleUtil.getDefault());
-
 		HTTPTestUtil.customize(
 		).withCredentials(
 			userName + "@liferay.com", password
@@ -9520,7 +9518,7 @@ public class ObjectEntryResourceTest {
 					_objectDefinition1.getRESTContextPath(), StringPool.SLASH,
 					objectEntryJSONObject.get("id"));
 
-				// User who cannot add documents to the site
+				// Default scope
 
 				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry1 =
 					_toFileEntry(
@@ -9530,28 +9528,28 @@ public class ObjectEntryResourceTest {
 
 				fileEntry1.setExternalReferenceCode(
 					RandomTestUtil.randomString());
-				fileEntry1.setScope(scope);
 
-				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+				HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 						_jsonFactory.createJSONObject(fileEntry1.toString())
 					).toString(),
 					endpoint, Http.Method.PATCH);
 
-				Assert.assertEquals(
-					"FORBIDDEN", jsonObject.getString("status"));
+				Company company = _companyLocalService.getCompany(
+					_objectDefinition1.getCompanyId());
 
-				Assert.assertNull(
+				DLFileEntry dlFileEntry =
 					_dlFileEntryLocalService.
 						fetchDLFileEntryByExternalReferenceCode(
 							fileEntry1.getExternalReferenceCode(),
-							_group.getGroupId()));
+							company.getGroupId());
 
-				// Site member
+				Assert.assertEquals(user.getUserId(), dlFileEntry.getUserId());
 
-				_userLocalService.addGroupUser(
-					_group.getGroupId(), user.getUserId());
+				// User who cannot add documents to the site
+
+				Scope scope = Scope.of(_group, LocaleUtil.getDefault());
 
 				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry2 =
 					_toFileEntry(
@@ -9563,17 +9561,48 @@ public class ObjectEntryResourceTest {
 					RandomTestUtil.randomString());
 				fileEntry2.setScope(scope);
 
-				jsonObject = HTTPTestUtil.invokeToJSONObject(
+				JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
 					JSONUtil.put(
 						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
 						_jsonFactory.createJSONObject(fileEntry2.toString())
 					).toString(),
 					endpoint, Http.Method.PATCH);
 
-				DLFileEntry dlFileEntry =
+				Assert.assertEquals(
+					"FORBIDDEN", jsonObject.getString("status"));
+
+				Assert.assertNull(
 					_dlFileEntryLocalService.
 						fetchDLFileEntryByExternalReferenceCode(
 							fileEntry2.getExternalReferenceCode(),
+							_group.getGroupId()));
+
+				// Site member
+
+				_userLocalService.addGroupUser(
+					_group.getGroupId(), user.getUserId());
+
+				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry3 =
+					_toFileEntry(
+						Base64::encode, DLTestUtil.randomTextFileBytes(),
+						RandomTestUtil.randomString() + ".txt", null, null,
+						ContentTypes.TEXT_PLAIN);
+
+				fileEntry3.setExternalReferenceCode(
+					RandomTestUtil.randomString());
+				fileEntry3.setScope(scope);
+
+				jsonObject = HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.put(
+						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1,
+						_jsonFactory.createJSONObject(fileEntry3.toString())
+					).toString(),
+					endpoint, Http.Method.PATCH);
+
+				dlFileEntry =
+					_dlFileEntryLocalService.
+						fetchDLFileEntryByExternalReferenceCode(
+							fileEntry3.getExternalReferenceCode(),
 							_group.getGroupId());
 
 				Assert.assertEquals(user.getUserId(), dlFileEntry.getUserId());
