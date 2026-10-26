@@ -95,24 +95,6 @@ export const COMPOSITION_LABEL_MAP = {
 	[CompositionTypes.SearchTerms]: Liferay.Language.get('search-terms'),
 };
 
-export const DETAILS_LABEL_MAP = {
-	accountDate: Liferay.Language.get('account-date'),
-	accountNumber: Liferay.Language.get('account-number'),
-	accountType: Liferay.Language.get('account-type'),
-	annualRevenue: Liferay.Language.get('annual-revenue'),
-	billingAddress: Liferay.Language.get('billing-address'),
-	description: Liferay.Language.get('description'),
-	fax: Liferay.Language.get('fax-number'),
-	industry: Liferay.Language.get('industry'),
-	name: Liferay.Language.get('name'),
-	numberOfEmployees: Liferay.Language.get('employees'),
-	ownership: Liferay.Language.get('ownership'),
-	phone: Liferay.Language.get('phone-number'),
-	shippingAddress: Liferay.Language.get('shipping-address'),
-	website: Liferay.Language.get('website'),
-	yearStarted: Liferay.Language.get('year-started'),
-};
-
 const ENTITY_LANG_MAP = {
 	[EntityTypes.Account]: Liferay.Language.get('accounts'),
 	[EntityTypes.Asset]: Liferay.Language.get('assets'),
