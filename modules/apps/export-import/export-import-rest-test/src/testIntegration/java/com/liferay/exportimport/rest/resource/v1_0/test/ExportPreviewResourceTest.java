@@ -527,6 +527,15 @@ public class ExportPreviewResourceTest
 				unsafeBiFunction)
 		throws Exception {
 
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			testGroup, false, false);
+
+		long time = System.currentTimeMillis();
+
+		layout.setModifiedDate(new Date(time - (2 * Time.DAY)));
+
+		_layoutLocalService.updateLayout(layout);
+
 		LayoutTestUtil.addTypeContentLayout(testGroup, false, false);
 		LayoutTestUtil.addTypeContentLayout(testGroup, true, false);
 		LayoutTestUtil.addTypeContentLayout(testGroup, true, false);
@@ -535,12 +544,41 @@ public class ExportPreviewResourceTest
 			LayoutTestUtil.addTypeContentLayout(testGroup, false, false),
 			ServiceContextTestUtil.getServiceContext());
 
+		String portletId = LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS;
+
 		PortletDataHandler portletDataHandler = _getPortletDataHandler(
-			unsafeBiFunction.apply(null, null),
-			"PORTLET_DATA_com_liferay_layout_admin_web_portlet_" +
-				"LayoutSetLayoutsPortlet");
+			unsafeBiFunction.apply(null, null), "PORTLET_DATA_" + portletId);
 
 		Choice choice = _getChoice(portletDataHandler, "public-pages");
+
+		Assert.assertEquals(2L, GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(1L, GetterUtil.getLong(choice.getDeletionCount()));
+
+		choice = _getChoice(portletDataHandler, "private-pages");
+
+		Assert.assertEquals(2L, GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
+
+		portletDataHandler = _getPortletDataHandler(
+			unsafeBiFunction.apply(
+				new Date(time - (3 * Time.DAY)), new Date(time - Time.DAY)),
+			"PORTLET_DATA_" + portletId);
+
+		choice = _getChoice(portletDataHandler, "public-pages");
+
+		Assert.assertEquals(1L, GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
+
+		choice = _getChoice(portletDataHandler, "private-pages");
+
+		Assert.assertEquals(0L, GetterUtil.getLong(choice.getAdditionCount()));
+		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
+
+		portletDataHandler = _getPortletDataHandler(
+			unsafeBiFunction.apply(new Date(time - Time.DAY), null),
+			"PORTLET_DATA_" + portletId);
+
+		choice = _getChoice(portletDataHandler, "public-pages");
 
 		Assert.assertEquals(1L, GetterUtil.getLong(choice.getAdditionCount()));
 		Assert.assertEquals(1L, GetterUtil.getLong(choice.getDeletionCount()));
