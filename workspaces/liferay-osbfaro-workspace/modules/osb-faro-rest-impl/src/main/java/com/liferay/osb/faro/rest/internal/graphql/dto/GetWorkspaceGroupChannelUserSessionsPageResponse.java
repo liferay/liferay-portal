@@ -32,12 +32,12 @@ public class GetWorkspaceGroupChannelUserSessionsPageResponse {
 			return _browserName;
 		}
 
-		@JsonFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
+		@JsonFormat(locale = "en", pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
 		public Date getCompleteDate() {
 			return _completeDate;
 		}
 
-		@JsonFormat(pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
+		@JsonFormat(locale = "en", pattern = "EEE MMM dd HH:mm:ss zzz yyyy")
 		public Date getCreateDate() {
 			return _createDate;
 		}
