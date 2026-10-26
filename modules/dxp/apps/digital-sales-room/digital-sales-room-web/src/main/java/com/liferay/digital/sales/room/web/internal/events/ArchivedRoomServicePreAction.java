@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.web.internal.events;
 
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -19,6 +20,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,7 +60,12 @@ public class ArchivedRoomServicePreAction extends Action {
 		Group group = _groupLocalService.fetchGroup(
 			_portal.getScopeGroupId(httpServletRequest));
 
-		if (group == null) {
+		if ((group == null) ||
+			!StringUtil.startsWith(
+				group.getClassName(),
+				ObjectDefinitionConstants.
+					CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION)) {
+
 			return;
 		}
 
