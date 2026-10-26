@@ -33,7 +33,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
-import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -423,10 +422,16 @@ public class PayPalCommercePaymentIntegration
 	}
 
 	@Override
-	public void validate(
+	public boolean validate(
 			HttpServletRequest httpServletRequest,
 			CommercePaymentEntry commercePaymentEntry)
 		throws PortalException {
+
+		if (commercePaymentEntry.getPaymentStatus() !=
+				CommercePaymentEntryConstants.STATUS_CREATED) {
+
+			return true;
+		}
 
 		String token = ParamUtil.getString(httpServletRequest, "token");
 		String transactionCode = commercePaymentEntry.getTransactionCode();
@@ -436,10 +441,10 @@ public class PayPalCommercePaymentIntegration
 				token.getBytes(StandardCharsets.UTF_8),
 				transactionCode.getBytes(StandardCharsets.UTF_8))) {
 
-			throw new PrincipalException(
-				"Invalid token for payment entry " +
-					commercePaymentEntry.getCommercePaymentEntryId());
+			return false;
 		}
+
+		return true;
 	}
 
 	private void _debug(HttpRequest httpRequest) {

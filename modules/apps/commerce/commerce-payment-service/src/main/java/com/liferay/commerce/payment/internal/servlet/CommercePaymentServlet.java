@@ -402,8 +402,20 @@ public class CommercePaymentServlet extends HttpServlet {
 						httpServletRequest, commercePaymentEntry));
 		}
 		else {
-			commercePaymentIntegration.validate(
-				httpServletRequest, commercePaymentEntry);
+			if (!commercePaymentIntegration.validate(
+					httpServletRequest, commercePaymentEntry)) {
+
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						"Invalid request for payment entry " +
+							commercePaymentEntry.getCommercePaymentEntryId());
+				}
+
+				httpServletResponse.sendRedirect(
+					_portal.getPortalURL(httpServletRequest));
+
+				return;
+			}
 
 			boolean cancel = ParamUtil.getBoolean(httpServletRequest, "cancel");
 

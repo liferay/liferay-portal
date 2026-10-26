@@ -11,6 +11,8 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.payment.constants.CommercePaymentIntegrationConstants;
+import com.liferay.commerce.payment.integration.CommercePaymentIntegration;
+import com.liferay.commerce.payment.integration.CommercePaymentIntegrationRegistry;
 import com.liferay.commerce.payment.model.CommercePaymentEntry;
 import com.liferay.commerce.payment.service.CommercePaymentEntryLocalService;
 import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
@@ -127,6 +129,13 @@ public class PayPalCommercePaymentIntegrationTest {
 			CommercePaymentEntryConstants.STATUS_CREATED,
 			commercePaymentEntry.getPaymentStatus());
 
+		int paymentStatus = commerceOrder.getPaymentStatus();
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(paymentStatus, commerceOrder.getPaymentStatus());
+
 		_service(
 			commercePaymentEntry, commercePaymentEntry.getTransactionCode(),
 			user);
@@ -138,6 +147,20 @@ public class PayPalCommercePaymentIntegrationTest {
 		Assert.assertEquals(
 			CommercePaymentEntryConstants.STATUS_CANCELLED,
 			commercePaymentEntry.getPaymentStatus());
+
+		CommercePaymentIntegration commercePaymentIntegration =
+			_commercePaymentIntegrationRegistry.getCommercePaymentIntegration(
+				"paypal-integration");
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.addParameter(
+			"token", RandomTestUtil.randomString());
+
+		Assert.assertTrue(
+			commercePaymentIntegration.validate(
+				mockHttpServletRequest, commercePaymentEntry));
 	}
 
 	private void _service(
@@ -169,6 +192,10 @@ public class PayPalCommercePaymentIntegrationTest {
 
 	@Inject
 	private CommercePaymentEntryLocalService _commercePaymentEntryLocalService;
+
+	@Inject
+	private CommercePaymentIntegrationRegistry
+		_commercePaymentIntegrationRegistry;
 
 	@Inject
 	private CommercePaymentMethodGroupRelLocalService
