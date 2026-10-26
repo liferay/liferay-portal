@@ -11,7 +11,6 @@ import com.liferay.segments.asah.connector.internal.client.model.ExperimentSetti
 import com.liferay.segments.asah.connector.internal.client.model.Individual;
 import com.liferay.segments.asah.connector.internal.client.model.IndividualSegment;
 import com.liferay.segments.asah.connector.internal.client.model.Results;
-import com.liferay.segments.asah.connector.internal.client.model.Topic;
 import com.liferay.segments.asah.connector.internal.client.util.OrderByField;
 
 import java.util.List;
@@ -95,16 +94,6 @@ public interface AsahFaroBackendClient {
 	 */
 	public Results<IndividualSegment> getIndividualSegmentResults(
 		long companyId, int cur, int delta, List<OrderByField> orderByFields);
-
-	/**
-	 * Returns the results for interest terms for the user.
-	 *
-	 * @param  companyId the company ID
-	 * @param  userId the user's ID
-	 * @return the results for interest terms for the user
-	 */
-	public Results<Topic> getInterestTermsResults(
-		long companyId, String userId);
 
 	/**
 	 * Updates an {@link Experiment}.

@@ -30,14 +30,12 @@ import com.liferay.segments.asah.connector.internal.client.constants.FilterConst
 import com.liferay.segments.asah.connector.internal.client.data.binding.ExperimentJSONObjectMapper;
 import com.liferay.segments.asah.connector.internal.client.data.binding.IndividualJSONObjectMapper;
 import com.liferay.segments.asah.connector.internal.client.data.binding.IndividualSegmentJSONObjectMapper;
-import com.liferay.segments.asah.connector.internal.client.data.binding.InterestTermsJSONObjectMapper;
 import com.liferay.segments.asah.connector.internal.client.model.DXPVariants;
 import com.liferay.segments.asah.connector.internal.client.model.Experiment;
 import com.liferay.segments.asah.connector.internal.client.model.ExperimentSettings;
 import com.liferay.segments.asah.connector.internal.client.model.Individual;
 import com.liferay.segments.asah.connector.internal.client.model.IndividualSegment;
 import com.liferay.segments.asah.connector.internal.client.model.Results;
-import com.liferay.segments.asah.connector.internal.client.model.Topic;
 import com.liferay.segments.asah.connector.internal.client.util.FilterBuilder;
 import com.liferay.segments.asah.connector.internal.client.util.OrderByField;
 
@@ -243,23 +241,6 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 		catch (Exception exception) {
 			throw new NestableRuntimeException(
 				_ERROR_MSG + exception.getMessage(), exception);
-		}
-	}
-
-	@Override
-	public Results<Topic> getInterestTermsResults(
-		long companyId, String userId) {
-
-		try {
-			return _get(
-				companyId, new MultivaluedHashMap<>(),
-				StringUtil.replace(_PATH_INTERESTS_TERMS, "{userId}", userId),
-				_interestTermsJSONObjectMapper::mapToResults);
-		}
-		catch (Exception exception) {
-			throw new NestableRuntimeException(
-				"Unable to handle JSON response: " + exception.getMessage(),
-				exception);
 		}
 	}
 
@@ -530,9 +511,6 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 
 	private static final String _PATH_INDIVIDUALS = "api/1.0/individuals";
 
-	private static final String _PATH_INTERESTS_TERMS =
-		"api/1.0/interests/terms/{userId}";
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		AsahFaroBackendClientImpl.class);
 
@@ -543,8 +521,6 @@ public class AsahFaroBackendClientImpl implements AsahFaroBackendClient {
 	private static final IndividualSegmentJSONObjectMapper
 		_individualSegmentJSONObjectMapper =
 			new IndividualSegmentJSONObjectMapper();
-	private static final InterestTermsJSONObjectMapper
-		_interestTermsJSONObjectMapper = new InterestTermsJSONObjectMapper();
 	private static final ObjectMapper _objectMapper = new ObjectMapper() {
 		{
 			configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
