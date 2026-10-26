@@ -326,7 +326,9 @@ public class FriendlyURLServlet extends HttpServlet {
 						if (AuthLoginGroupSettingsUtil.isPromptEnabled(
 								group.getGroupId())) {
 
-							if (layout.isTypeURL()) {
+							if (layout.isTypeLinkToLayout() ||
+								layout.isTypeURL()) {
+
 								long groupId = 0;
 
 								if (layout instanceof VirtualLayout) {
