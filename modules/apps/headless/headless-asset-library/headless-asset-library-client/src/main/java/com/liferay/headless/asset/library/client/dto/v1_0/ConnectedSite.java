@@ -314,7 +314,8 @@ public class ConnectedSite implements Cloneable, Serializable {
 
 	public static enum Type {
 
-		SITE("Site"), SITE_TEMPLATE("SiteTemplate");
+		DESIGN_LIBRARY("DesignLibrary"), SITE("Site"),
+		SITE_TEMPLATE("SiteTemplate");
 
 		public static Type create(String value) {
 			for (Type type : values()) {
@@ -346,4 +347,4 @@ public class ConnectedSite implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:787305991
+// LIFERAY-REST-BUILDER-HASH:-1035538388

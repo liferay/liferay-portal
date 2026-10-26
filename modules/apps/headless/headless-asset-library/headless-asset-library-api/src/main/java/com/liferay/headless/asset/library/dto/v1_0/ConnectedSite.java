@@ -725,7 +725,8 @@ public class ConnectedSite implements Serializable {
 	@GraphQLName("Type")
 	public static enum Type {
 
-		SITE("Site"), SITE_TEMPLATE("SiteTemplate");
+		DESIGN_LIBRARY("DesignLibrary"), SITE("Site"),
+		SITE_TEMPLATE("SiteTemplate");
 
 		@JsonCreator
 		public static Type create(String value) {
@@ -870,4 +871,4 @@ public class ConnectedSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1341573462
+// LIFERAY-REST-BUILDER-HASH:949923407
