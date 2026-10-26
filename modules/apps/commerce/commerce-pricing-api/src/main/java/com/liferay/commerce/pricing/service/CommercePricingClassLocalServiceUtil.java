@@ -329,13 +329,6 @@ public class CommercePricingClassLocalServiceUtil {
 			uuid, companyId);
 	}
 
-	public static int getCommercePricingClassCountByCPDefinitionId(
-		long cpDefinitionId, String title) {
-
-		return getService().getCommercePricingClassCountByCPDefinitionId(
-			cpDefinitionId, title);
-	}
-
 	/**
 	 * Returns a range of all the commerce pricing classes.
 	 *
@@ -372,13 +365,6 @@ public class CommercePricingClassLocalServiceUtil {
 
 	public static int getCommercePricingClassesCount(long companyId) {
 		return getService().getCommercePricingClassesCount(companyId);
-	}
-
-	public static int getCommercePricingClassesCount(
-		long cpDefinitionId, String title) {
-
-		return getService().getCommercePricingClassesCount(
-			cpDefinitionId, title);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -420,13 +406,6 @@ public class CommercePricingClassLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<CommercePricingClass> searchByCPDefinitionId(
-		long cpDefinitionId, String title, int start, int end) {
-
-		return getService().searchByCPDefinitionId(
-			cpDefinitionId, title, start, end);
 	}
 
 	public static com.liferay.portal.kernel.search.BaseModelSearchResult
@@ -486,4 +465,4 @@ public class CommercePricingClassLocalServiceUtil {
 			CommercePricingClassLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1773621989
+// LIFERAY-SERVICE-BUILDER-HASH:-1697607242

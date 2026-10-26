@@ -329,13 +329,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 			commercePricingClassId);
 	}
 
-	public static int getCommercePricingClassCPDefinitionRelsCount(
-		long commercePricingClassId, String name, String languageId) {
-
-		return getService().getCommercePricingClassCPDefinitionRelsCount(
-			commercePricingClassId, name, languageId);
-	}
-
 	public static long[] getCPDefinitionIds(long commercePricingClassId) {
 		return getService().getCPDefinitionIds(commercePricingClassId);
 	}
@@ -363,15 +356,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	public static List<CommercePricingClassCPDefinitionRel>
-		searchByCommercePricingClassId(
-			long commercePricingClassId, String name, String languageId,
-			int start, int end) {
-
-		return getService().searchByCommercePricingClassId(
-			commercePricingClassId, name, languageId, start, end);
 	}
 
 	/**
@@ -404,4 +388,4 @@ public class CommercePricingClassCPDefinitionRelLocalServiceUtil {
 				CommercePricingClassCPDefinitionRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:512668748
+// LIFERAY-SERVICE-BUILDER-HASH:1940719708

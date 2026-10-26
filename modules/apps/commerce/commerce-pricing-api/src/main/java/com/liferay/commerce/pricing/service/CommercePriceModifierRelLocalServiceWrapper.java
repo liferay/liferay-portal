@@ -287,25 +287,6 @@ public class CommercePriceModifierRelLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<CommercePriceModifierRel>
-		getCategoriesCommercePriceModifierRels(
-			long commercePriceModifierId, String name, int start, int end) {
-
-		return _commercePriceModifierRelLocalService.
-			getCategoriesCommercePriceModifierRels(
-				commercePriceModifierId, name, start, end);
-	}
-
-	@Override
-	public int getCategoriesCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name) {
-
-		return _commercePriceModifierRelLocalService.
-			getCategoriesCommercePriceModifierRelsCount(
-				commercePriceModifierId, name);
-	}
-
-	@Override
 	public long[] getClassPKs(long commercePriceModifierId, String className) {
 		return _commercePriceModifierRelLocalService.getClassPKs(
 			commercePriceModifierId, className);
@@ -394,45 +375,6 @@ public class CommercePriceModifierRelLocalServiceWrapper
 
 		return _commercePriceModifierRelLocalService.
 			getCommercePriceModifiersRels(className, classPK);
-	}
-
-	@Override
-	public java.util.List<CommercePriceModifierRel>
-		getCommercePricingClassesCommercePriceModifierRels(
-			long commercePriceModifierId, String title, int start, int end) {
-
-		return _commercePriceModifierRelLocalService.
-			getCommercePricingClassesCommercePriceModifierRels(
-				commercePriceModifierId, title, start, end);
-	}
-
-	@Override
-	public int getCommercePricingClassesCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String title) {
-
-		return _commercePriceModifierRelLocalService.
-			getCommercePricingClassesCommercePriceModifierRelsCount(
-				commercePriceModifierId, title);
-	}
-
-	@Override
-	public java.util.List<CommercePriceModifierRel>
-		getCPDefinitionsCommercePriceModifierRels(
-			long commercePriceModifierId, String name, String languageId,
-			int start, int end) {
-
-		return _commercePriceModifierRelLocalService.
-			getCPDefinitionsCommercePriceModifierRels(
-				commercePriceModifierId, name, languageId, start, end);
-	}
-
-	@Override
-	public int getCPDefinitionsCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name, String languageId) {
-
-		return _commercePriceModifierRelLocalService.
-			getCPDefinitionsCommercePriceModifierRelsCount(
-				commercePriceModifierId, name, languageId);
 	}
 
 	@Override
@@ -526,4 +468,4 @@ public class CommercePriceModifierRelLocalServiceWrapper
 		_commercePriceModifierRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:106416644
+// LIFERAY-SERVICE-BUILDER-HASH:2435058

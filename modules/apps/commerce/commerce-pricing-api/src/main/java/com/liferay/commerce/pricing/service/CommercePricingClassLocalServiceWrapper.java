@@ -367,14 +367,6 @@ public class CommercePricingClassLocalServiceWrapper
 			getCommercePricingClassByUuidAndCompanyId(uuid, companyId);
 	}
 
-	@Override
-	public int getCommercePricingClassCountByCPDefinitionId(
-		long cpDefinitionId, String title) {
-
-		return _commercePricingClassLocalService.
-			getCommercePricingClassCountByCPDefinitionId(cpDefinitionId, title);
-	}
-
 	/**
 	 * Returns a range of all the commerce pricing classes.
 	 *
@@ -419,14 +411,6 @@ public class CommercePricingClassLocalServiceWrapper
 	public int getCommercePricingClassesCount(long companyId) {
 		return _commercePricingClassLocalService.getCommercePricingClassesCount(
 			companyId);
-	}
-
-	@Override
-	public int getCommercePricingClassesCount(
-		long cpDefinitionId, String title) {
-
-		return _commercePricingClassLocalService.getCommercePricingClassesCount(
-			cpDefinitionId, title);
 	}
 
 	@Override
@@ -477,14 +461,6 @@ public class CommercePricingClassLocalServiceWrapper
 
 		return _commercePricingClassLocalService.getPersistedModel(
 			primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List<CommercePricingClass> searchByCPDefinitionId(
-		long cpDefinitionId, String title, int start, int end) {
-
-		return _commercePricingClassLocalService.searchByCPDefinitionId(
-			cpDefinitionId, title, start, end);
 	}
 
 	@Override
@@ -579,4 +555,4 @@ public class CommercePricingClassLocalServiceWrapper
 	private CommercePricingClassLocalService _commercePricingClassLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1301183075
+// LIFERAY-SERVICE-BUILDER-HASH:-1410284591

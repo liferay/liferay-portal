@@ -289,10 +289,6 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 		long commercePricingClassId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePricingClassCPDefinitionRelsCount(
-		long commercePricingClassId, String name, String languageId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long[] getCPDefinitionIds(long commercePricingClassId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -312,12 +308,6 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePricingClassCPDefinitionRel>
-		searchByCommercePricingClassId(
-			long commercePricingClassId, String name, String languageId,
-			int start, int end);
 
 	/**
 	 * Updates the commerce pricing class cp definition rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
@@ -353,4 +343,4 @@ public interface CommercePricingClassCPDefinitionRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1240369061
+// LIFERAY-SERVICE-BUILDER-HASH:1990908479

@@ -382,15 +382,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommercePricingClassCPDefinitionRelsCount(
-		long commercePricingClassId, String name, String languageId) {
-
-		return _commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRelsCount(
-				commercePricingClassId, name, languageId);
-	}
-
-	@Override
 	public long[] getCPDefinitionIds(long commercePricingClassId) {
 		return _commercePricingClassCPDefinitionRelLocalService.
 			getCPDefinitionIds(commercePricingClassId);
@@ -425,17 +416,6 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 
 		return _commercePricingClassCPDefinitionRelLocalService.
 			getPersistedModel(primaryKeyObj);
-	}
-
-	@Override
-	public java.util.List<CommercePricingClassCPDefinitionRel>
-		searchByCommercePricingClassId(
-			long commercePricingClassId, String name, String languageId,
-			int start, int end) {
-
-		return _commercePricingClassCPDefinitionRelLocalService.
-			searchByCommercePricingClassId(
-				commercePricingClassId, name, languageId, start, end);
 	}
 
 	/**
@@ -507,4 +487,4 @@ public class CommercePricingClassCPDefinitionRelLocalServiceWrapper
 		_commercePricingClassCPDefinitionRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1992137095
+// LIFERAY-SERVICE-BUILDER-HASH:239822637

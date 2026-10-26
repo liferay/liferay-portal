@@ -253,21 +253,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<CommercePriceModifierRel>
-		getCategoriesCommercePriceModifierRels(
-			long commercePriceModifierId, String name, int start, int end) {
-
-		return getService().getCategoriesCommercePriceModifierRels(
-			commercePriceModifierId, name, start, end);
-	}
-
-	public static int getCategoriesCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name) {
-
-		return getService().getCategoriesCommercePriceModifierRelsCount(
-			commercePriceModifierId, name);
-	}
-
 	public static long[] getClassPKs(
 		long commercePriceModifierId, String className) {
 
@@ -343,38 +328,6 @@ public class CommercePriceModifierRelLocalServiceUtil {
 		return getService().getCommercePriceModifiersRels(className, classPK);
 	}
 
-	public static List<CommercePriceModifierRel>
-		getCommercePricingClassesCommercePriceModifierRels(
-			long commercePriceModifierId, String title, int start, int end) {
-
-		return getService().getCommercePricingClassesCommercePriceModifierRels(
-			commercePriceModifierId, title, start, end);
-	}
-
-	public static int getCommercePricingClassesCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String title) {
-
-		return getService().
-			getCommercePricingClassesCommercePriceModifierRelsCount(
-				commercePriceModifierId, title);
-	}
-
-	public static List<CommercePriceModifierRel>
-		getCPDefinitionsCommercePriceModifierRels(
-			long commercePriceModifierId, String name, String languageId,
-			int start, int end) {
-
-		return getService().getCPDefinitionsCommercePriceModifierRels(
-			commercePriceModifierId, name, languageId, start, end);
-	}
-
-	public static int getCPDefinitionsCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String name, String languageId) {
-
-		return getService().getCPDefinitionsCommercePriceModifierRelsCount(
-			commercePriceModifierId, name, languageId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -427,4 +380,4 @@ public class CommercePriceModifierRelLocalServiceUtil {
 			CommercePriceModifierRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:784528991
+// LIFERAY-SERVICE-BUILDER-HASH:462834807
