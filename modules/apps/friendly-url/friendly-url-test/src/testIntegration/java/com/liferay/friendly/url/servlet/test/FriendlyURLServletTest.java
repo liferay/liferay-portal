@@ -466,6 +466,49 @@ public class FriendlyURLServletTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110209")
+	public void testGetRedirectOnLinkToLayoutLayoutWithoutViewPermission()
+		throws Throwable {
+
+		Layout linkToLayoutLayout = LayoutTestUtil.addTypeLinkToLayoutLayout(
+			_group.getGroupId(), _layout.getLayoutId());
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(linkToLayoutLayout.getPlid()), ActionKeys.VIEW);
+
+		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
+
+		String friendlyURLPath = getPath(_group, linkToLayoutLayout);
+		String layoutIdPath =
+			_group.getFriendlyURL() + StringPool.SLASH +
+				linkToLayoutLayout.getLayoutId();
+
+		Object expectedRedirect = _redirectConstructor1.newInstance(
+			getURL(_layout));
+
+		_testGetRedirectForUser(
+			guestUser, friendlyURLPath, expectedRedirect, 404);
+		_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect, 404);
+
+		expectedRedirect = _redirectConstructor1.newInstance(
+			getURL(linkToLayoutLayout));
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					_PID,
+					HashMapDictionaryBuilder.<String, Object>put(
+						"promptEnabled", true
+					).build())) {
+
+			_testGetRedirectForUser(
+				guestUser, friendlyURLPath, expectedRedirect);
+			_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect);
+		}
+	}
+
+	@Test
 	public void testGetRedirectOnLinkToURLLayoutWithDoAsUserId()
 		throws Throwable {
 
