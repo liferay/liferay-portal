@@ -505,28 +505,19 @@ public class FriendlyURLServletTest {
 
 		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
 
-		List<String> paths = Arrays.asList(
-			getPath(_group, linkToURLLayout),
+		String friendlyURLPath = getPath(_group, linkToURLLayout);
+		String layoutIdPath =
 			_group.getFriendlyURL() + StringPool.SLASH +
-				linkToURLLayout.getLayoutId());
-
-		for (String path : paths) {
-			MockHttpServletRequest mockHttpServletRequest =
-				new MockHttpServletRequest();
-
-			mockHttpServletRequest.setAttribute(WebKeys.USER, guestUser);
-
-			MockHttpServletResponse mockHttpServletResponse =
-				new MockHttpServletResponse();
-
-			testGetRedirect(
-				mockHttpServletRequest, mockHttpServletResponse, path,
-				_redirectConstructor1.newInstance(getURL(_layout)));
-
-			Assert.assertEquals(404, mockHttpServletResponse.getStatus());
-		}
+				linkToURLLayout.getLayoutId();
 
 		Object expectedRedirect = _redirectConstructor1.newInstance(
+			getURL(_layout));
+
+		_testGetRedirectForUser(
+			guestUser, friendlyURLPath, expectedRedirect, 404);
+		_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect, 404);
+
+		expectedRedirect = _redirectConstructor1.newInstance(
 			getURL(linkToURLLayout));
 
 		try (GroupConfigurationTemporarySwapper
@@ -537,14 +528,9 @@ public class FriendlyURLServletTest {
 							"promptEnabled", true
 						).build())) {
 
-			for (String path : paths) {
-				MockHttpServletRequest mockHttpServletRequest =
-					new MockHttpServletRequest();
-
-				mockHttpServletRequest.setAttribute(WebKeys.USER, guestUser);
-
-				testGetRedirect(mockHttpServletRequest, path, expectedRedirect);
-			}
+			_testGetRedirectForUser(
+				guestUser, friendlyURLPath, expectedRedirect);
+			_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect);
 		}
 	}
 
@@ -1482,6 +1468,34 @@ public class FriendlyURLServletTest {
 					getPathInfo(),
 				expectedRedirect);
 		}
+	}
+
+	private void _testGetRedirectForUser(
+			Object expectedRedirect, int expectedStatus, String path, User user)
+		throws Throwable {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		testGetRedirect(
+			mockHttpServletRequest, mockHttpServletResponse, path,
+			expectedRedirect);
+
+		Assert.assertEquals(
+			expectedStatus, mockHttpServletResponse.getStatus());
+	}
+
+	private void _testGetRedirectForUser(
+			Object expectedRedirect, String path, User user)
+		throws Throwable {
+
+		_testGetRedirectForUser(
+			expectedRedirect, HttpServletResponse.SC_OK, path, user);
 	}
 
 	private void _testGetRedirectOnUtilityPage(boolean guestViewable)
