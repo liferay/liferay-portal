@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
@@ -42,6 +43,7 @@ import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -225,7 +227,7 @@ public class StyleBookEntryLocalServiceImpl
 		for (StyleBookEntry styleBookEntry :
 				styleBookEntryPersistence.findByGroupId_Head(groupId, true)) {
 
-			deleteStyleBookEntry(styleBookEntry);
+			styleBookEntryLocalService.deleteStyleBookEntry(styleBookEntry);
 		}
 	}
 
@@ -233,23 +235,26 @@ public class StyleBookEntryLocalServiceImpl
 	public StyleBookEntry deleteStyleBookEntry(long styleBookEntryId)
 		throws PortalException {
 
-		return deleteStyleBookEntry(getStyleBookEntry(styleBookEntryId));
+		return styleBookEntryLocalService.deleteStyleBookEntry(
+			getStyleBookEntry(styleBookEntryId));
 	}
 
-	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public StyleBookEntry deleteStyleBookEntry(
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.fetchByERC_G_Head(
-				externalReferenceCode, groupId, true);
-
-		return deleteStyleBookEntry(styleBookEntry);
+		return styleBookEntryLocalService.deleteStyleBookEntry(
+			getStyleBookEntryByExternalReferenceCode(
+				externalReferenceCode, groupId));
 	}
 
+	@Indexable(type = IndexableType.DELETE)
 	@Override
+	@SystemEvent(
+		action = SystemEventConstants.ACTION_SKIP,
+		type = SystemEventConstants.TYPE_DELETE
+	)
 	public StyleBookEntry deleteStyleBookEntry(StyleBookEntry styleBookEntry)
 		throws PortalException {
 

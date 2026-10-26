@@ -32,6 +32,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.style.book.constants.StyleBookActionKeys;
+import com.liferay.style.book.exception.NoSuchEntryException;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.service.StyleBookEntryService;
@@ -161,17 +162,14 @@ public class StyleBookEntryServiceTest {
 				RandomTestUtil.randomString(), null,
 				RandomTestUtil.randomString(), _serviceContext);
 
+		UserTestUtil.setUser(
+			UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
+
 		try {
-			UserTestUtil.setUser(
-				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER));
-
-			_styleBookEntryService.deleteStyleBookEntry(
-				styleBookEntry.getExternalReferenceCode(),
-				styleBookEntry.getGroupId());
-
-			Assert.fail();
-		}
-		catch (PrincipalException principalException) {
+			_assertDeleteStyleBookEntryWithoutPermission(
+				RandomTestUtil.randomString());
+			_assertDeleteStyleBookEntryWithoutPermission(
+				styleBookEntry.getExternalReferenceCode());
 		}
 		finally {
 			UserTestUtil.setUser(TestPropsValues.getUser());
@@ -184,6 +182,16 @@ public class StyleBookEntryServiceTest {
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId()));
+
+		try {
+			_styleBookEntryService.deleteStyleBookEntry(
+				styleBookEntry.getExternalReferenceCode(),
+				styleBookEntry.getGroupId());
+
+			Assert.fail();
+		}
+		catch (NoSuchEntryException noSuchEntryException) {
+		}
 	}
 
 	@Test
@@ -321,6 +329,20 @@ public class StyleBookEntryServiceTest {
 		Assert.assertEquals(
 			frontendTokenDefinition,
 			styleBookEntry.getFrontendTokenDefinition());
+	}
+
+	private void _assertDeleteStyleBookEntryWithoutPermission(
+			String externalReferenceCode)
+		throws Exception {
+
+		try {
+			_styleBookEntryService.deleteStyleBookEntry(
+				externalReferenceCode, _group.getGroupId());
+
+			Assert.fail();
+		}
+		catch (PrincipalException principalException) {
+		}
 	}
 
 	private StyleBookEntry _getOrAddEmptyStyleBookEntry(

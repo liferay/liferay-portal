@@ -109,11 +109,12 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.fetchByERC_G_Head(
-				externalReferenceCode, groupId, true);
+		_portletResourcePermission.check(
+			getPermissionChecker(), groupId,
+			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 
-		return deleteStyleBookEntry(styleBookEntry);
+		return styleBookEntryLocalService.deleteStyleBookEntry(
+			externalReferenceCode, groupId);
 	}
 
 	@Override
