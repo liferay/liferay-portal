@@ -22,7 +22,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alec Sloan
  */
 @Component(
-	property = "type=" + TemplateContextContributor.TYPE_GLOBAL,
+	property = {
+		"template.context.keys=commerceOrderHttpHelper",
+		"template.context.keys=commerceReturnsEnabled",
+		"type=" + TemplateContextContributor.TYPE_GLOBAL
+	},
 	service = TemplateContextContributor.class
 )
 public class CommerceOrderHttpHelperTemplateContextContributor
