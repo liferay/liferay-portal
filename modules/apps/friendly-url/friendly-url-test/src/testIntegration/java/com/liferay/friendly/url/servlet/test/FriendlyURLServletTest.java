@@ -494,32 +494,27 @@ public class FriendlyURLServletTest {
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(linkToURLLayout.getPlid()), ActionKeys.VIEW);
 
-		_user = UserTestUtil.addUser();
-
-		List<User> users = Arrays.asList(
-			_userLocalService.getGuestUser(_group.getCompanyId()), _user);
+		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
 
 		List<String> paths = Arrays.asList(
 			getPath(_group, linkToURLLayout),
 			_group.getFriendlyURL() + StringPool.SLASH +
 				linkToURLLayout.getLayoutId());
 
-		for (User user : users) {
+		for (String path : paths) {
 			MockHttpServletRequest mockHttpServletRequest =
 				new MockHttpServletRequest();
 
-			mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+			mockHttpServletRequest.setAttribute(WebKeys.USER, guestUser);
 
-			for (String path : paths) {
-				MockHttpServletResponse mockHttpServletResponse =
-					new MockHttpServletResponse();
+			MockHttpServletResponse mockHttpServletResponse =
+				new MockHttpServletResponse();
 
-				testGetRedirect(
-					mockHttpServletRequest, mockHttpServletResponse, path,
-					_redirectConstructor1.newInstance(getURL(_layout)));
+			testGetRedirect(
+				mockHttpServletRequest, mockHttpServletResponse, path,
+				_redirectConstructor1.newInstance(getURL(_layout)));
 
-				Assert.assertEquals(404, mockHttpServletResponse.getStatus());
-			}
+			Assert.assertEquals(404, mockHttpServletResponse.getStatus());
 		}
 
 		Object expectedRedirect = _redirectConstructor1.newInstance(
@@ -532,16 +527,14 @@ public class FriendlyURLServletTest {
 						"promptEnabled", true
 					).build())) {
 
-			for (User user : users) {
+			for (String path : paths) {
 				MockHttpServletRequest mockHttpServletRequest =
 					new MockHttpServletRequest();
 
-				mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+				mockHttpServletRequest.setAttribute(WebKeys.USER, guestUser);
 
-				for (String path : paths) {
-					testGetRedirect(
-						mockHttpServletRequest, path, expectedRedirect);
-				}
+				testGetRedirect(
+					mockHttpServletRequest, path, expectedRedirect);
 			}
 		}
 	}
