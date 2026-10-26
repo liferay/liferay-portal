@@ -166,8 +166,10 @@ public class DLFileEntryModelResourcePermissionWrapper
 				return null;
 			}
 
-			if (fileEntry.isInTrash()) {
-				return _dlFolderLocalService.fetchDLFolder(folderId);
+			DLFolder dlFolder = _dlFolderLocalService.fetchDLFolder(folderId);
+
+			if ((dlFolder != null) || fileEntry.isInTrash()) {
+				return dlFolder;
 			}
 
 			return _dlFolderLocalService.getFolder(folderId);
