@@ -79,33 +79,6 @@ public class AnalyticsUsersManager {
 		return _getUsersCount(searchContext);
 	}
 
-	public int getOrganizationUsersCount(long organizationId) {
-		if (!_isIndexerEnabled()) {
-			try {
-				return _userLocalService.getOrganizationUsersCount(
-					organizationId, WorkflowConstants.STATUS_APPROVED);
-			}
-			catch (Exception exception) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to get organization users count", exception);
-				}
-
-				return 0;
-			}
-		}
-
-		SearchContext searchContext = _createSearchContext();
-
-		searchContext.setAttribute(
-			"selectedOrganizationIds", new long[] {organizationId});
-		searchContext.setCompanyId(CompanyThreadLocal.getCompanyId());
-
-		_populateSearchContext(searchContext);
-
-		return _getUsersCount(searchContext);
-	}
-
 	public int getOrganizationsAndUserGroupsUsersCount(
 		long[] organizationIds, long[] userGroupIds) {
 
@@ -143,33 +116,6 @@ public class AnalyticsUsersManager {
 		}
 
 		return Collections.emptyList();
-	}
-
-	public int getUserGroupUsersCount(long userGroupId) {
-		if (!_isIndexerEnabled()) {
-			try {
-				return _userLocalService.getUserGroupUsersCount(
-					userGroupId, WorkflowConstants.STATUS_APPROVED);
-			}
-			catch (Exception exception) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(
-						"Unable to get user group users count", exception);
-				}
-
-				return 0;
-			}
-		}
-
-		SearchContext searchContext = _createSearchContext();
-
-		searchContext.setAttribute(
-			"selectedUserGroupIds", new long[] {userGroupId});
-		searchContext.setCompanyId(CompanyThreadLocal.getCompanyId());
-
-		_populateSearchContext(searchContext);
-
-		return _getUsersCount(searchContext);
 	}
 
 	private SearchContext _createSearchContext() {
