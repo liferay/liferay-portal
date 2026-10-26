@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -491,6 +492,7 @@ public class FriendlyURLServletTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110209")
 	public void testGetRedirectOnLinkToURLLayoutWithoutViewPermission()
 		throws Throwable {
 
