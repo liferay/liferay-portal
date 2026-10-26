@@ -161,9 +161,11 @@ public class PreviewableResolverUtil {
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
 			Object to = pkMap.get(fromBaseModel.getPrimaryKeyObj());
 
-			if ((to != null) && !(to instanceof UnsafeSupplierValue)) {
-				toPKs.add((Serializable)to);
+			if ((to == null) || (to instanceof UnsafeSupplierValue)) {
+				continue;
 			}
+
+			toPKs.add((Serializable)to);
 		}
 
 		Map<Serializable, PersistedModel> toPersistedModels =
