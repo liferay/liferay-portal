@@ -1,5 +1,32 @@
 components:
     schemas:
+        AssetLibrary:
+            description:
+                Represents an asset library an instance process can export or import in full.
+            properties:
+                descriptiveName:
+                    description:
+                        The asset library's name.
+                    readOnly: true
+                    type: string
+                existsInInstance:
+                    description:
+                        A flag that indicates whether the instance already has an asset library of the same external reference code and type, which only the import preview sets.
+                    readOnly: true
+                    type: boolean
+                externalReferenceCode:
+                    description:
+                        The asset library's external reference code, which is the only property the instance requests send.
+                    type: string
+                type:
+                    description:
+                        The asset library's type.
+                    enum: [AssetLibrary, DesignLibrary, Project, Space]
+                    readOnly: true
+                    type: string
+            required:
+                -   externalReferenceCode
+            type: object
         DateFilter:
             description:
                 Represents the dates that select the content of a process. The type determines the other properties.
@@ -96,12 +123,6 @@ components:
             type: object
         ExportProcessRequest:
             properties:
-                assetLibraryExternalReferenceCodes:
-                    description:
-                        The external reference codes of the asset libraries to export.
-                    items:
-                        type: string
-                    type: array
                 comments:
                     default: false
                     type: boolean
@@ -146,6 +167,13 @@ components:
                     format: int64
                     readOnly: true
                     type: integer
+                assetLibraries:
+                    description:
+                        The asset libraries the file contains, when it was exported from an instance.
+                    items:
+                        $ref: "#/components/schemas/AssetLibrary"
+                    readOnly: true
+                    type: array
                 author:
                     description:
                         The name of the user who exported the file.
@@ -171,11 +199,6 @@ components:
                 portletDataHandlers:
                     items:
                         $ref: "#/components/schemas/PortletDataHandler"
-                    readOnly: true
-                    type: array
-                previewAssetLibraries:
-                    items:
-                        $ref: "#/components/schemas/PreviewAssetLibrary"
                     readOnly: true
                     type: array
                 sites:
@@ -231,12 +254,6 @@ components:
             type: object
         ImportProcessRequest:
             properties:
-                assetLibraryExternalReferenceCodes:
-                    description:
-                        The external reference codes of the asset libraries to import from the file.
-                    items:
-                        type: string
-                    type: array
                 comments:
                     default: false
                     type: boolean
@@ -278,6 +295,12 @@ components:
             allOf:
                 -   $ref: "#/components/schemas/ExportProcessRequest"
                 -   properties:
+                        assetLibraries:
+                            description:
+                                The asset libraries to export in full, from the export preview's asset libraries.
+                            items:
+                                $ref: "#/components/schemas/AssetLibrary"
+                            type: array
                         sites:
                             description:
                                 The sites to export in full, from the export preview's sites.
@@ -285,7 +308,7 @@ components:
                                 $ref: "#/components/schemas/Site"
                             type: array
             description:
-                Represents an export of the instance, which can include whole sites.
+                Represents an export of the instance, which can include whole sites and asset libraries.
             required:
                 -   name
             type: object
@@ -293,6 +316,12 @@ components:
             allOf:
                 -   $ref: "#/components/schemas/ImportProcessRequest"
                 -   properties:
+                        assetLibraries:
+                            description:
+                                The asset libraries to import in full, from the import preview's asset libraries.
+                            items:
+                                $ref: "#/components/schemas/AssetLibrary"
+                            type: array
                         sites:
                             description:
                                 The sites to import in full, from the import preview's sites.
@@ -300,7 +329,7 @@ components:
                                 $ref: "#/components/schemas/Site"
                             type: array
             description:
-                Represents an import into the instance, which can include whole sites.
+                Represents an import into the instance, which can include whole sites and asset libraries.
             type: object
         LastHoursDateFilter:
             allOf:
@@ -511,36 +540,6 @@ components:
                             type: array
             description:
                 Represents a control that selects items of a tree by external reference code. The most specific rule wins, in the order of an item list, a subtree list, the closest ancestor's subtree list, and the selectAll flag. An included list wins over the excluded one at the same level. The pages control takes the external reference codes of the Headless Admin Site API's site pages.
-            type: object
-        PreviewAssetLibrary:
-            description:
-                An asset library that can be exported from the instance or that a file to import contains.
-            properties:
-                descriptiveName:
-                    description:
-                        The asset library's name.
-                    readOnly: true
-                    type: string
-                existsInInstance:
-                    description:
-                        Whether the instance being imported into already has an asset library of the same external reference code. Set only when previewing a file to import.
-                    readOnly: true
-                    type: boolean
-                externalReferenceCode:
-                    description:
-                        The asset library's external reference code.
-                    readOnly: true
-                    type: string
-                type:
-                    description:
-                        The asset library's type.
-                    enum: [AssetLibrary, DesignLibrary, Project, Space]
-                    readOnly: true
-                    type: string
-            required:
-                -   descriptiveName
-                -   externalReferenceCode
-                -   type
             type: object
         ProcessProgress:
             properties:
@@ -1206,11 +1205,11 @@ paths:
                             schema:
                                 $ref: "#/components/schemas/ExportPreview"
             tags: ["ExportPreview"]
-    "/export-preview/preview-asset-libraries":
+    "/export-preview/asset-libraries":
         get:
             description:
-                Retrieves the asset libraries that can be exported.
-            operationId: getExportPreviewPreviewAssetLibrariesPage
+                Retrieves the asset libraries the instance can export in full.
+            operationId: getExportPreviewAssetLibrariesPage
             parameters:
                 -   in: query
                     name: filter
@@ -1238,14 +1237,15 @@ paths:
                         application/json:
                             schema:
                                 items:
-                                    $ref: "#/components/schemas/PreviewAssetLibrary"
+                                    $ref: "#/components/schemas/AssetLibrary"
                                 type: array
                         application/xml:
                             schema:
                                 items:
-                                    $ref: "#/components/schemas/PreviewAssetLibrary"
+                                    $ref: "#/components/schemas/AssetLibrary"
                                 type: array
-            tags: ["PreviewAssetLibrary"]
+            tags: ["AssetLibrary"]
+            x-feature-flag: LPD-41307
     "/export-preview/sites":
         get:
             description:
@@ -1348,7 +1348,7 @@ paths:
             tags: ["ExportProcess"]
         post:
             description:
-                Starts an export of the instance, or of one of its portlets. The sites in the request are exported in full, unless a portlet ID is given.
+                Starts an export of the instance, or of one of its portlets. The sites and asset libraries in the request are exported in full, unless a portlet ID is given.
             operationId: postExportProcess
             parameters:
                 -   in: query
@@ -1586,7 +1586,7 @@ paths:
             tags: ["ImportProcess"]
         post:
             description:
-                Imports the user's last uploaded file into the instance, or into one of its portlets. The sites in the request are imported in full, unless a portlet ID is given. Returns a 404 when there is no uploaded file.
+                Imports the user's last uploaded file into the instance, or into one of its portlets. The sites and asset libraries in the request are imported in full, unless a portlet ID is given. Returns a 404 when there is no uploaded file.
             operationId: postImportProcess
             parameters:
                 -   in: query
