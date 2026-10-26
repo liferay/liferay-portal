@@ -17,6 +17,7 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
 import com.liferay.portal.kernel.service.version.VersionService;
 import com.liferay.portal.kernel.service.version.VersionServiceListener;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -147,7 +149,6 @@ public interface StyleBookEntryLocalService
 	public StyleBookEntry deleteStyleBookEntry(long styleBookEntryId)
 		throws PortalException;
 
-	@Indexable(type = IndexableType.DELETE)
 	public StyleBookEntry deleteStyleBookEntry(
 			String externalReferenceCode, long groupId)
 		throws PortalException;
@@ -164,6 +165,10 @@ public interface StyleBookEntryLocalService
 	 * @throws PortalException
 	 */
 	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(
+		action = SystemEventConstants.ACTION_SKIP,
+		type = SystemEventConstants.TYPE_DELETE
+	)
 	public StyleBookEntry deleteStyleBookEntry(StyleBookEntry styleBookEntry)
 		throws PortalException;
 
@@ -532,4 +537,4 @@ public interface StyleBookEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-520241872
+// LIFERAY-SERVICE-BUILDER-HASH:1458902673
