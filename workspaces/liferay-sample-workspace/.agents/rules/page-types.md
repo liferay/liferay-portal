@@ -119,6 +119,7 @@ com.liferay.object.internal.info.collection.provider.OneToManyObjectRelationship
 
 | Flag | Default | Unlocks |
 | --- | --- | --- |
+| `LPD-35443` | off | Page Management API: every `site-pages` and `master-pages` call (`400` without it; beta on 2026.Q2, release on 2026.Q3) |
 | `LPD-38869` | on | Private layout REST access |
 | `LPD-39244` | off | Fragment and page composition REST API (absent on 2026.Q1, hidden dev on 2026.Q2, beta on 2026.Q3) |
 | `LPD-74328` | off | Page element / page-specification creation and update |

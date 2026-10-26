@@ -52,7 +52,16 @@ Reread the state and confirm every required flag is in the desired state. Report
 
 ### Live, No Restart (Runtime Toggle)
 
-A flag can be flipped on the running portal with `POST /o/com-liferay-feature-flag-web/set-enabled`, form params `key` and `enabled=true`. It takes **session auth only** (a browser session or `Liferay.Util.fetch`), not Basic auth or OAuth. `POST /o/com-liferay-feature-flag-web/is-enabled` with `key` reads one flag back. The change takes effect immediately with no restart and is stored as a portal preference, the same mechanism as the Feature Flags toggle in Instance Settings (System Settings for system flags). Prefer it for iterating, and still record the flag in `portal-ext.properties` so a fresh environment matches.
+A flag can be flipped on the running portal, with no restart, in Instance Settings → Feature Flags (System Settings for system flags). The change is stored as a portal preference. A switch stays greyed out until every flag listed under its "Dependencies" is on, so turn those on first (on 2026.Q2, `LPD-34594` before `LPD-17564`). On a fresh bundle a Liferay Enterprise Search notice can open over the page and block the switches; close it with **Done**.
+
+The screen's endpoint, `POST /o/com-liferay-feature-flag-web/set-enabled` (form params `key` and `enabled`), takes **session auth only** (a browser session or `Liferay.Util.fetch`), not Basic auth or OAuth. Whether a direct call works depends on the release:
+
+- **2026.Q3.8:** it works both ways (`enabled=true` and `enabled=false`, each `200 {"dependentFeatureFlags": []}`), and `POST /o/com-liferay-feature-flag-web/is-enabled` with `key` answers `200` with the flag's state.
+- **2026.Q2.12:** it answers the same `200` and changes nothing, even for `LPD-34594`, which has no dependency, and `is-enabled` answers `404`. Use the switch.
+
+Either way, verify by effect: reload a page and read `Liferay.FeatureFlags['<KEY>']`. Still record the flag in `portal-ext.properties` so a fresh environment matches.
+
+**Turning on a flag can start work in the background.** On a Hypersonic bundle (2026.Q3.8), enabling `LPS-164563` (Data Sets) started a batch engine import, and the portal stopped answering: every request waited on a language resource lock held by a thread blocked on a Hypersonic table lock. A restart cleared it, and the flag stayed on. This was seen on Hypersonic and not tried on another database.
 
 ### Gotcha: A Stored Toggle Overrides `portal-ext.properties`
 
@@ -112,6 +121,7 @@ For the full table see `rules/feature-flags-catalog.md`.
 | `LPD-39244` | off | Headless Admin Fragment / composition API (absent on 2026.Q1, hidden dev on 2026.Q2, beta on 2026.Q3) |
 | `LPD-17564` | off | CMS, including the object collaborators API, on 2026.Q1 and 2026.Q2 (needs `LPD-34594`). The flag is gone from 2026.Q3, where neither needs a flag |
 | `LPD-32867` | off | Content provider for dynamic content sets (headless-delivery) |
+| `LPD-35443` | off | Page Management API: `headless-admin-site` `site-pages` and `master-pages` (beta on 2026.Q2, release on 2026.Q3) |
 | `LPD-74328` | off | Page element / page-specification creation and update |
 
 ## Diagnosing an Unknown Flag Gate

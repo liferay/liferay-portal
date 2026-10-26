@@ -25,7 +25,7 @@ The tables below list the common endpoints per module — they are not exhaustiv
 
 **Style books are behind a flag.** `StyleBookResourceImpl` (`/sites/{siteExternalReferenceCode}/style-books`) answers `400 UnsupportedOperationException` on every call unless its flag is on: `LPD-57283` (release, off by default) on 2026.Q3 and later, the hidden `LPD-56718` on 2026.Q1 and 2026.Q2. Without the flag, create style books in the site initializer tree (`style-books/`). A page's `settings.styleBookItemExternalReference` pointing at a missing style book is accepted with `200` and only a `WARN [LogUtil]` "Optional reference generated…", the same tolerance as for master pages (see `skills/manage-pages/SKILL.md`).
 
-**Required flag:** `LPD-38869` (on by default) for the private layout API. Composing page elements and page specifications additionally requires `LPD-74328`.
+**Required flag:** `LPD-35443` ("Page Management API", off by default: beta on 2026.Q2, release on 2026.Q3, under Instance Settings → Feature Flags). Without it every `site-pages` and `master-pages` call answers `400 UnsupportedOperationException` with the title "Feature flag LPD-35443 is disabled for company <companyId>" (verified on 2026.Q3.8; 2026.Q2.12 answered the same `400`). `LPD-38869` (private layout REST access) is not this gate: with it on and `LPD-35443` off, the calls still failed. A whole-page `PUT` that changed only the page specifications' `settings` applied with `LPD-74328` off; composing page elements without `LPD-74328` was not retested.
 
 **OAuth scope:** `Liferay.Headless.Admin.Site.everything`
 
