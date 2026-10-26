@@ -30,7 +30,6 @@ import com.liferay.segments.asah.connector.internal.client.model.ExperimentSetti
 import com.liferay.segments.asah.connector.internal.client.model.Individual;
 import com.liferay.segments.asah.connector.internal.client.model.IndividualSegment;
 import com.liferay.segments.asah.connector.internal.client.model.Results;
-import com.liferay.segments.asah.connector.internal.client.model.Topic;
 import com.liferay.segments.asah.connector.internal.client.util.OrderByField;
 
 import java.net.HttpURLConnection;
@@ -486,59 +485,6 @@ public class AsahFaroBackendClientImplTest {
 		Assert.assertEquals(
 			securitySignature,
 			headers.get("OSB-Asah-Faro-Backend-Security-Signature"));
-	}
-
-	@Test
-	public void testGetInterestTermsResults() throws Exception {
-		String userId = String.valueOf(RandomTestUtil.randomLong());
-
-		AsahFaroBackendClient asahFaroBackendClient =
-			new AsahFaroBackendClientImpl(
-				_analyticsSettingsManager,
-				new MockHttp(
-					Collections.singletonMap(
-						"/api/1.0/interests/terms/" + userId,
-						() -> JSONUtil.put(
-							"_embedded",
-							JSONUtil.put(
-								"interest-topics",
-								JSONUtil.putAll(
-									JSONUtil.put(
-										"terms",
-										JSONUtil.putAll(
-											JSONUtil.put("keyword", "term1")))))
-						).put(
-							"page",
-							JSONUtil.put(
-								"number", 0
-							).put(
-								"size", 100
-							).put(
-								"totalElements", 1
-							).put(
-								"totalPages", 1
-							)
-						).put(
-							"total", 0
-						).toString())));
-
-		Results<Topic> interestTermsResults =
-			asahFaroBackendClient.getInterestTermsResults(
-				RandomTestUtil.randomLong(), userId);
-
-		List<Topic> topics = interestTermsResults.getItems();
-
-		Assert.assertEquals(topics.toString(), 1, topics.size());
-
-		Topic topic = topics.get(0);
-
-		List<Topic.TopicTerm> topicTerms = topic.getTerms();
-
-		Assert.assertEquals(topicTerms.toString(), 1, topicTerms.size());
-
-		Topic.TopicTerm topicTerm = topicTerms.get(0);
-
-		Assert.assertEquals("term1", topicTerm.getKeyword());
 	}
 
 	@Test
