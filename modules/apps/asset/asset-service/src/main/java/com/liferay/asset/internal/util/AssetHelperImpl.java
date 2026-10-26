@@ -307,15 +307,23 @@ public class AssetHelperImpl implements AssetHelper {
 
 	@Override
 	public String getAssetKeywords(String className, long classPK) {
+		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+			className, classPK);
+
+		if (assetEntry == null) {
+			return StringPool.BLANK;
+		}
+
 		List<String> keywords = new ArrayList<>();
 
 		keywords.addAll(
 			ListUtil.toList(
-				_assetTagLocalService.getTags(className, classPK),
+				_assetTagLocalService.getEntryTags(assetEntry.getEntryId()),
 				AssetTag.NAME_ACCESSOR));
 		keywords.addAll(
 			ListUtil.toList(
-				_assetCategoryLocalService.getCategories(className, classPK),
+				_assetCategoryLocalService.getEntryCategories(
+					assetEntry.getEntryId()),
 				AssetCategory.NAME_ACCESSOR));
 
 		return StringUtil.merge(keywords);
@@ -325,15 +333,23 @@ public class AssetHelperImpl implements AssetHelper {
 	public String getAssetKeywords(
 		String className, long classPK, Locale locale) {
 
+		AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+			className, classPK);
+
+		if (assetEntry == null) {
+			return StringPool.BLANK;
+		}
+
 		List<String> keywords = new ArrayList<>();
 
 		keywords.addAll(
 			ListUtil.toList(
-				_assetTagLocalService.getTags(className, classPK),
+				_assetTagLocalService.getEntryTags(assetEntry.getEntryId()),
 				AssetTag.NAME_ACCESSOR));
 		keywords.addAll(
 			ListUtil.toList(
-				_assetCategoryLocalService.getCategories(className, classPK),
+				_assetCategoryLocalService.getEntryCategories(
+					assetEntry.getEntryId()),
 				assetCategory -> assetCategory.getTitle(locale)));
 
 		return StringUtil.merge(keywords);
