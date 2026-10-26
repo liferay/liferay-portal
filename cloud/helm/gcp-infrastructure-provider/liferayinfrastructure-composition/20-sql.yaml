@@ -64,7 +64,6 @@ metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: database-primary-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
     name: {{ $databaseInstanceName }}
 spec:
@@ -111,7 +110,6 @@ metadata:
         crossplane.io/external-name: {{ $databaseName }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
     name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
 spec:
@@ -131,7 +129,6 @@ metadata:
         crossplane.io/external-name: {{ $databaseIamUser }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-iam-user-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
     name: {{ $xr.metadata.name }}-db-user-{{ $dataPlane }}
 spec:
