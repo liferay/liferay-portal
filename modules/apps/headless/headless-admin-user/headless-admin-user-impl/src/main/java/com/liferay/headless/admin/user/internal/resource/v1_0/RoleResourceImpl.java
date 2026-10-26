@@ -554,11 +554,10 @@ public class RoleResourceImpl
 			}
 
 			String resourceName =
-				ObjectDefinitionResourceNameUtil.
-					toObjectDefinitionIdResourceName(
-						rolePermission.getResourceName(),
-						contextCompany.getCompanyId(),
-						_objectDefinitionLocalService);
+				ObjectDefinitionResourceNameUtil.toResourceName(
+					contextCompany.getCompanyId(),
+					_objectDefinitionLocalService,
+					rolePermission.getResourceName());
 
 			for (String actionId : rolePermission.getActionIds()) {
 				try {
@@ -586,27 +585,25 @@ public class RoleResourceImpl
 			}
 		}
 
-		if (!unresolvedPermissionNames.isEmpty()) {
-			_exportImportReportEntryLocalService.
-				getOrAddExportImportReportEntry(
-					0, contextCompany.getCompanyId(),
-					serviceBuilderRole.getExternalReferenceCode(),
-					_portal.getClassNameId(
-						com.liferay.portal.kernel.model.Role.class),
-					serviceBuilderRole.getRoleId(),
-					GetterUtil.getLong(
-						ExportImportThreadLocal.
-							getExportImportConfigurationId()),
-					ExportImportReportEntryConstants.TYPE_WARNING,
-					_language.format(
-						LocaleUtil.US,
-						"the-following-permissions-were-not-imported-because-" +
-							"their-resources-do-not-exist-x",
-						StringUtil.merge(
-							unresolvedPermissionNames,
-							StringPool.COMMA_AND_SPACE)),
-					null, _LABEL_LANGUAGE_KEY);
+		if (unresolvedPermissionNames.isEmpty()) {
+			return;
 		}
+
+		_exportImportReportEntryLocalService.getOrAddExportImportReportEntry(
+			0, contextCompany.getCompanyId(),
+			serviceBuilderRole.getExternalReferenceCode(),
+			_portal.getClassNameId(com.liferay.portal.kernel.model.Role.class),
+			serviceBuilderRole.getRoleId(),
+			GetterUtil.getLong(
+				ExportImportThreadLocal.getExportImportConfigurationId()),
+			ExportImportReportEntryConstants.TYPE_WARNING,
+			_language.format(
+				LocaleUtil.US,
+				"the-following-permissions-were-not-imported-because-their-" +
+					"resources-do-not-exist-x",
+				StringUtil.merge(
+					unresolvedPermissionNames, StringPool.COMMA_AND_SPACE)),
+			null, _LABEL_LANGUAGE_KEY);
 	}
 
 	private void _checkRoleType(long roleId, int type) throws Exception {

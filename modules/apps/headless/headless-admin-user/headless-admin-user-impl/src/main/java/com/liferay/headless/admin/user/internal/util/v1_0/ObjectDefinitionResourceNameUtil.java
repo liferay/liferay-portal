@@ -6,6 +6,8 @@
 package com.liferay.headless.admin.user.internal.util.v1_0;
 
 import com.liferay.object.constants.ObjectConstants;
+import com.liferay.object.constants.ObjectDefinitionConstants;
+import com.liferay.object.constants.ObjectPortletKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.petra.string.StringPool;
@@ -18,48 +20,102 @@ import com.liferay.portal.kernel.util.StringUtil;
 public class ObjectDefinitionResourceNameUtil {
 
 	public static String toExternalReferenceCodeResourceName(
-		String resourceName,
-		ObjectDefinitionLocalService objectDefinitionLocalService) {
+		long companyId,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		String resourceName) {
 
-		if (!StringUtil.startsWith(resourceName, _RESOURCE_NAME_PREFIX)) {
-			return resourceName;
+		if (StringUtil.startsWith(resourceName, _PREFIX_CLASS_NAME)) {
+			return _getResourceName(
+				objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+					companyId, resourceName),
+				_PREFIX_CLASS_NAME, resourceName);
 		}
 
-		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.fetchObjectDefinition(
-				GetterUtil.getLong(
-					resourceName.substring(_RESOURCE_NAME_PREFIX.length())));
+		if (StringUtil.startsWith(resourceName, _PREFIX_PORTLET_ID)) {
+			return _getResourceName(
+				objectDefinitionLocalService.fetchObjectDefinitionByClassName(
+					companyId,
+					_PREFIX_CLASS_NAME +
+						resourceName.substring(_PREFIX_PORTLET_ID.length())),
+				_PREFIX_PORTLET_ID, resourceName);
+		}
+
+		if (StringUtil.startsWith(resourceName, _PREFIX_RESOURCE_NAME)) {
+			return _getResourceName(
+				objectDefinitionLocalService.fetchObjectDefinition(
+					GetterUtil.getLong(
+						resourceName.substring(
+							_PREFIX_RESOURCE_NAME.length()))),
+				_PREFIX_RESOURCE_NAME, resourceName);
+		}
+
+		return resourceName;
+	}
+
+	public static String toResourceName(
+		long companyId,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		String resourceName) {
+
+		if (StringUtil.startsWith(resourceName, _PREFIX_CLASS_NAME)) {
+			ObjectDefinition objectDefinition = _fetchObjectDefinition(
+				companyId, objectDefinitionLocalService, _PREFIX_CLASS_NAME,
+				resourceName);
+
+			if (objectDefinition != null) {
+				return objectDefinition.getClassName();
+			}
+		}
+		else if (StringUtil.startsWith(resourceName, _PREFIX_PORTLET_ID)) {
+			ObjectDefinition objectDefinition = _fetchObjectDefinition(
+				companyId, objectDefinitionLocalService, _PREFIX_PORTLET_ID,
+				resourceName);
+
+			if (objectDefinition != null) {
+				return objectDefinition.getPortletId();
+			}
+		}
+		else if (StringUtil.startsWith(resourceName, _PREFIX_RESOURCE_NAME)) {
+			ObjectDefinition objectDefinition = _fetchObjectDefinition(
+				companyId, objectDefinitionLocalService, _PREFIX_RESOURCE_NAME,
+				resourceName);
+
+			if (objectDefinition != null) {
+				return _PREFIX_RESOURCE_NAME +
+					objectDefinition.getObjectDefinitionId();
+			}
+		}
+
+		return resourceName;
+	}
+
+	private static ObjectDefinition _fetchObjectDefinition(
+		long companyId,
+		ObjectDefinitionLocalService objectDefinitionLocalService,
+		String prefix, String resourceName) {
+
+		return objectDefinitionLocalService.
+			fetchObjectDefinitionByExternalReferenceCode(
+				resourceName.substring(prefix.length()), companyId);
+	}
+
+	private static String _getResourceName(
+		ObjectDefinition objectDefinition, String prefix, String resourceName) {
 
 		if (objectDefinition == null) {
 			return resourceName;
 		}
 
-		return _RESOURCE_NAME_PREFIX +
-			objectDefinition.getExternalReferenceCode();
+		return prefix + objectDefinition.getExternalReferenceCode();
 	}
 
-	public static String toObjectDefinitionIdResourceName(
-		String resourceName, long companyId,
-		ObjectDefinitionLocalService objectDefinitionLocalService) {
+	private static final String _PREFIX_CLASS_NAME =
+		ObjectDefinitionConstants.CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION;
 
-		if (!StringUtil.startsWith(resourceName, _RESOURCE_NAME_PREFIX)) {
-			return resourceName;
-		}
+	private static final String _PREFIX_PORTLET_ID =
+		ObjectPortletKeys.OBJECT_DEFINITIONS + StringPool.UNDERLINE;
 
-		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					resourceName.substring(_RESOURCE_NAME_PREFIX.length()),
-					companyId);
-
-		if (objectDefinition == null) {
-			return resourceName;
-		}
-
-		return _RESOURCE_NAME_PREFIX + objectDefinition.getObjectDefinitionId();
-	}
-
-	private static final String _RESOURCE_NAME_PREFIX =
+	private static final String _PREFIX_RESOURCE_NAME =
 		ObjectConstants.RESOURCE_NAME + StringPool.POUND;
 
 }

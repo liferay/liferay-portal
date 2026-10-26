@@ -203,8 +203,9 @@ public class RoleDTOConverter
 					() ->
 						ObjectDefinitionResourceNameUtil.
 							toExternalReferenceCodeResourceName(
-								resourcePermission.getName(),
-								_objectDefinitionLocalService));
+								resourcePermission.getCompanyId(),
+								_objectDefinitionLocalService,
+								resourcePermission.getName()));
 				setRoleId(resourcePermission::getRoleId);
 				setScope(() -> (long)resourcePermission.getScope());
 			}
