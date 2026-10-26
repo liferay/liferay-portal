@@ -11,5 +11,5 @@ export type Site = {
 	name: string;
 	searchable: boolean;
 	stagingType?: 'LIVE' | 'STAGING';
-	type?: 'Site' | 'SiteTemplate';
+	type?: 'DesignLibrary' | 'Site' | 'SiteTemplate';
 };

@@ -13,6 +13,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -74,20 +75,19 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 				dropdownItem.putData("groupId", _groupId);
 				dropdownItem.putData("title", _getSpaceSitesHeaderTitle());
 				dropdownItem.setLabel(
-					_language.get(_httpServletRequest, "connect-sites"));
+					_language.get(_httpServletRequest, "connect"));
 			}
 		).build();
 	}
 
 	public Map<String, Object> getEmptyState() {
 		return HashMapBuilder.<String, Object>put(
-			"description",
-			_language.get(_httpServletRequest, "connect-sites-to-this-space")
+			"description", _getEmptyStateDescription()
 		).put(
 			"image", "/states/cms_empty_state.svg"
 		).put(
 			"title",
-			_language.get(_httpServletRequest, "no-connected-sites-yet")
+			_language.get(_httpServletRequest, "nothing-is-connected-yet")
 		).build();
 	}
 
@@ -114,7 +114,7 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 	public Map<String, Object> getHeaderProps() throws Exception {
 		Map<String, Object> headerProps =
 			SpaceSummaryHeaderUtil.getSpaceSummaryHeaderProps(
-				getAPIURL(), null, _httpServletRequest, "view-all-sites",
+				getAPIURL(), null, _httpServletRequest, "view-all-connections",
 				HashMapBuilder.<String, Object>put(
 					"hasConnectSitesPermission", _hasConnectSitesPermission()
 				).build(),
@@ -123,7 +123,7 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 				).put(
 					"externalReferenceCode", _externalReferenceCode
 				).build(),
-				"sites", StringPool.BLANK);
+				"connections", StringPool.BLANK);
 
 		headerProps.put("totalCount", _getDepotEntryGroupRelsCount());
 
@@ -133,6 +133,20 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 	private int _getDepotEntryGroupRelsCount() throws Exception {
 		return _depotEntryGroupRelLocalService.getDepotEntryGroupRelsCount(
 			_depotEntryService.getGroupDepotEntry(_groupId));
+	}
+
+	private String _getEmptyStateDescription() {
+		if (FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-57283")) {
+
+			return _language.get(
+				_httpServletRequest,
+				"connect-sites-site-templates-and-design-libraries-to-this-" +
+					"space");
+		}
+
+		return _language.get(
+			_httpServletRequest, "connect-sites-to-this-space");
 	}
 
 	private FDSActionDropdownItem _getSearchableFDSActionDropdownItem(
@@ -157,7 +171,7 @@ public class ViewSpaceSitesSummarySectionDisplayContext {
 
 	private String _getSpaceSitesHeaderTitle() throws Exception {
 		return StringBundler.concat(
-			_language.get(_httpServletRequest, "sites"), StringPool.SPACE,
+			_language.get(_httpServletRequest, "connections"), StringPool.SPACE,
 			StringPool.OPEN_PARENTHESIS, _getDepotEntryGroupRelsCount(),
 			StringPool.CLOSE_PARENTHESIS);
 	}

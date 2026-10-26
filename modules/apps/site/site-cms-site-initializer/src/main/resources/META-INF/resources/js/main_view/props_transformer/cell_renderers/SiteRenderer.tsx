@@ -6,12 +6,18 @@
 import ClaySticker from '@clayui/sticker';
 import React from 'react';
 
-import {SITE_TEMPLATE_TYPE} from '../../../common/utils/constants';
+import {
+	DESIGN_LIBRARY_TYPE,
+	SITE_TEMPLATE_TYPE,
+} from '../../../common/utils/constants';
 
 const SiteRenderer = ({itemData, value}: {itemData: any; value: string}) => {
 	let label = value;
 
-	if (itemData.type === SITE_TEMPLATE_TYPE) {
+	if (itemData.type === DESIGN_LIBRARY_TYPE) {
+		label = `${value} (${Liferay.Language.get('design-library')})`;
+	}
+	else if (itemData.type === SITE_TEMPLATE_TYPE) {
 		label = `${value} (${Liferay.Language.get('site-template')})`;
 	}
 	else if (itemData.stagingType === 'STAGING') {

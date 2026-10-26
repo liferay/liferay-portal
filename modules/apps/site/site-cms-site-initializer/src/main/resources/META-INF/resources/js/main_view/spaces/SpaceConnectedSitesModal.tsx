@@ -14,14 +14,24 @@ import React, {useEffect, useId, useMemo, useState} from 'react';
 
 import {InputGroupWithSelect} from '../../common/components/InputGroupWithSelect';
 import ConnectedSiteService from '../../common/services/ConnectedSiteService';
+import {DesignLibrary} from '../../common/types/DesignLibrary';
 import {Site} from '../../common/types/Site';
 import {SiteTemplate} from '../../common/types/SiteTemplate';
-import {SITE_TEMPLATE_TYPE} from '../../common/utils/constants';
+import {
+	DESIGN_LIBRARY_TYPE,
+	SITE_TEMPLATE_TYPE,
+	SITE_TYPE,
+} from '../../common/utils/constants';
 
 enum ConnectableKind {
+	DESIGN_LIBRARIES = 'design-libraries',
 	SITES = 'sites',
 	SITE_TEMPLATES = 'site-templates',
 }
+
+const DESIGN_LIBRARIES_API_URL = `${location.origin}/o/headless-asset-library/v1.0/asset-libraries?filter=${encodeURIComponent(
+	`type eq '${DESIGN_LIBRARY_TYPE}'`
+)}`;
 
 const SITES_API_URL = `${location.origin}/o/headless-admin-site/v1.0/sites`;
 
@@ -41,9 +51,27 @@ const showSuccessMessage = (message: string) => {
 	});
 };
 
+const isDesignLibrary = (site: Site) => site.type === DESIGN_LIBRARY_TYPE;
+
 const isSiteTemplate = (site: Site) => site.type === SITE_TEMPLATE_TYPE;
 
+const getConnectableType = (kind: ConnectableKind) => {
+	if (kind === ConnectableKind.DESIGN_LIBRARIES) {
+		return DESIGN_LIBRARY_TYPE;
+	}
+
+	if (kind === ConnectableKind.SITE_TEMPLATES) {
+		return SITE_TEMPLATE_TYPE;
+	}
+
+	return SITE_TYPE;
+};
+
 const getConnectionLabel = (site: Site) => {
+	if (isDesignLibrary(site)) {
+		return `${site.descriptiveName} (${Liferay.Language.get('design-library')})`;
+	}
+
 	if (isSiteTemplate(site)) {
 		return `${site.descriptiveName} (${Liferay.Language.get('site-template')})`;
 	}
@@ -53,6 +81,24 @@ const getConnectionLabel = (site: Site) => {
 	}
 
 	return site.descriptiveName;
+};
+
+const getDisconnectedMessage = (site: Site) => {
+	if (isDesignLibrary(site)) {
+		return Liferay.Language.get(
+			'design-library-x-was-successfully-disconnected-from-the-space'
+		);
+	}
+
+	if (isSiteTemplate(site)) {
+		return Liferay.Language.get(
+			'site-template-x-was-successfully-disconnected-from-the-space'
+		);
+	}
+
+	return Liferay.Language.get(
+		'site-x-was-successfully-disconnected-from-the-space'
+	);
 };
 
 const ConnectableActions = ({
@@ -80,17 +126,9 @@ const ConnectableActions = ({
 
 		onConnectionDisconnected(site);
 
-		const successMessage = isSiteTemplate(site)
-			? Liferay.Language.get(
-					'site-template-x-was-successfully-disconnected-from-the-space'
-				)
-			: Liferay.Language.get(
-					'site-x-was-successfully-disconnected-from-the-space'
-				);
-
 		showSuccessMessage(
 			sub(
-				successMessage,
+				getDisconnectedMessage(site),
 				`<strong>${Liferay.Util.escapeHTML(site.descriptiveName)}</strong>`
 			)
 		);
@@ -112,12 +150,16 @@ const ConnectableActions = ({
 	};
 
 	const items = [
-		{
-			label: site.searchable
-				? Liferay.Language.get('make-unsearchable')
-				: Liferay.Language.get('make-searchable'),
-			onClick: changeSearchable,
-		},
+		...(isDesignLibrary(site)
+			? []
+			: [
+					{
+						label: site.searchable
+							? Liferay.Language.get('make-unsearchable')
+							: Liferay.Language.get('make-searchable'),
+						onClick: changeSearchable,
+					},
+				]),
 		{
 			label: Liferay.Language.get('disconnect'),
 			onClick: disconnect,
@@ -130,9 +172,11 @@ const ConnectableActions = ({
 
 	return (
 		<div className="align-items-center d-flex">
-			<span className="c-mr-3 text-2 text-secondary">
-				{`${Liferay.Language.get('searchable-content')}: ${isSearchableLabel}`}
-			</span>
+			{!isDesignLibrary(site) && (
+				<span className="c-mr-3 text-2 text-secondary">
+					{`${Liferay.Language.get('searchable-content')}: ${isSearchableLabel}`}
+				</span>
+			)}
 
 			<ClayDropDownWithItems
 				items={items}
@@ -164,6 +208,7 @@ const ConnectableSelector = ({
 	onConnectionAdded: (site: Site) => void;
 }) => {
 	const [kind, setKind] = useState<ConnectableKind>(ConnectableKind.SITES);
+	const [designLibrary, setDesignLibrary] = useState<DesignLibrary>();
 	const [site, setSite] = useState<Site>();
 	const [siteTemplate, setSiteTemplate] = useState<SiteTemplate>();
 	const [disableConnectButton, setDisableConnectButton] =
@@ -173,8 +218,7 @@ const ConnectableSelector = ({
 		connections.some(
 			(connection) =>
 				connection.externalReferenceCode === id &&
-				isSiteTemplate(connection) ===
-					(kind === ConnectableKind.SITE_TEMPLATES)
+				connection.type === getConnectableType(kind)
 		);
 
 	const sitesAPIURL = useMemo(() => {
@@ -183,7 +227,7 @@ const ConnectableSelector = ({
 		url.searchParams.set('active', 'true');
 
 		connections
-			.filter((connection) => !isSiteTemplate(connection))
+			.filter((connection) => connection.type === SITE_TYPE)
 			.forEach((connection) =>
 				url.searchParams.append(
 					'excludedExternalReferenceCodes',
@@ -200,7 +244,7 @@ const ConnectableSelector = ({
 		url.searchParams.set('active', 'true');
 
 		connections
-			.filter((connection) => isSiteTemplate(connection))
+			.filter((connection) => connection.type === SITE_TEMPLATE_TYPE)
 			.forEach((connection) =>
 				url.searchParams.append(
 					'excludedSiteExternalReferenceCodes',
@@ -212,90 +256,111 @@ const ConnectableSelector = ({
 	}, [connections]);
 
 	const resetSelection = () => {
+		setDesignLibrary(undefined);
 		setSite(undefined);
 		setSiteTemplate(undefined);
 		setDisableConnectButton(true);
 	};
 
-	const connect = async () => {
+	const getSelection = () => {
+		if (kind === ConnectableKind.DESIGN_LIBRARIES && designLibrary) {
+			return {
+				body: {},
+				externalReferenceCode: designLibrary.externalReferenceCode,
+				name: designLibrary.name,
+				successMessage: Liferay.Language.get(
+					'design-library-x-was-successfully-connected-to-the-space'
+				),
+			};
+		}
+
 		if (kind === ConnectableKind.SITES && site) {
-			const {data, error} = await ConnectedSiteService.connectSiteToSpace(
-				externalReferenceCode,
-				site.externalReferenceCode
-			);
-
-			if (data) {
-				onConnectionAdded(data);
-				showSuccessMessage(
-					sub(
-						Liferay.Language.get(
-							'site-x-was-successfully-connected-to-the-space'
-						),
-						`<strong>${Liferay.Util.escapeHTML(site.descriptiveName)}</strong>`
-					)
-				);
-			}
-			else if (error) {
-				showErrorMessage(error);
-			}
-
-			resetSelection();
-
-			return;
+			return {
+				body: {searchable: true},
+				externalReferenceCode: site.externalReferenceCode,
+				name: site.descriptiveName,
+				successMessage: Liferay.Language.get(
+					'site-x-was-successfully-connected-to-the-space'
+				),
+			};
 		}
 
 		if (
 			kind === ConnectableKind.SITE_TEMPLATES &&
 			siteTemplate?.siteExternalReferenceCode
 		) {
-			const {data, error} = await ConnectedSiteService.connectSiteToSpace(
-				externalReferenceCode,
-				siteTemplate.siteExternalReferenceCode,
-				{}
-			);
-
-			if (data) {
-				onConnectionAdded(data);
-				showSuccessMessage(
-					sub(
-						Liferay.Language.get(
-							'site-template-x-was-successfully-connected-to-the-space'
-						),
-						`<strong>${Liferay.Util.escapeHTML(siteTemplate.name)}</strong>`
-					)
-				);
-			}
-			else if (error) {
-				showErrorMessage(error);
-			}
-
-			resetSelection();
+			return {
+				body: {},
+				externalReferenceCode: siteTemplate.siteExternalReferenceCode,
+				name: siteTemplate.name,
+				successMessage: Liferay.Language.get(
+					'site-template-x-was-successfully-connected-to-the-space'
+				),
+			};
 		}
 	};
+
+	const connect = async () => {
+		const selection = getSelection();
+
+		if (!selection) {
+			return;
+		}
+
+		const {data, error} = await ConnectedSiteService.connectSiteToSpace(
+			externalReferenceCode,
+			selection.externalReferenceCode,
+			selection.body
+		);
+
+		if (data) {
+			onConnectionAdded(data);
+			showSuccessMessage(
+				sub(
+					selection.successMessage,
+					`<strong>${Liferay.Util.escapeHTML(selection.name)}</strong>`
+				)
+			);
+		}
+		else if (error) {
+			showErrorMessage(error);
+		}
+
+		resetSelection();
+	};
+
+	const options = [
+		{
+			label: Liferay.Language.get('sites'),
+			value: ConnectableKind.SITES,
+		},
+		{
+			label: Liferay.Language.get('site-templates'),
+			value: ConnectableKind.SITE_TEMPLATES,
+		},
+	];
+
+	if (Liferay.FeatureFlags['LPD-57283']) {
+		options.push({
+			label: Liferay.Language.get('design-libraries'),
+			value: ConnectableKind.DESIGN_LIBRARIES,
+		});
+	}
 
 	return (
 		<div className="align-items-end autofit-row c-gap-3 c-mb-4">
 			<div className="autofit-col autofit-col-expand">
 				<InputGroupWithSelect
 					className="mb-0"
-					label={Liferay.Language.get('sites')}
+					label={Liferay.Language.get('type')}
 					onSelectChange={(value) => {
 						setKind(value as ConnectableKind);
 						resetSelection();
 					}}
-					options={[
-						{
-							label: Liferay.Language.get('sites'),
-							value: ConnectableKind.SITES,
-						},
-						{
-							label: Liferay.Language.get('site-templates'),
-							value: ConnectableKind.SITE_TEMPLATES,
-						},
-					]}
+					options={options}
 					selectValue={kind}
 				>
-					{kind === ConnectableKind.SITES ? (
+					{kind === ConnectableKind.SITES && (
 						<ItemSelector
 							apiURL={sitesAPIURL}
 							id="connectableSelector"
@@ -340,7 +405,9 @@ const ConnectableSelector = ({
 								</ItemSelector.Item>
 							)}
 						</ItemSelector>
-					) : (
+					)}
+
+					{kind === ConnectableKind.SITE_TEMPLATES && (
 						<ItemSelector
 							apiURL={siteTemplatesAPIURL}
 							id="connectableSelector"
@@ -384,6 +451,46 @@ const ConnectableSelector = ({
 										/>
 									</ClaySticker>
 
+									{item.name}
+								</ItemSelector.Item>
+							)}
+						</ItemSelector>
+					)}
+
+					{kind === ConnectableKind.DESIGN_LIBRARIES && (
+						<ItemSelector
+							apiURL={DESIGN_LIBRARIES_API_URL}
+							id="connectableSelector"
+							items={designLibrary ? [designLibrary] : []}
+							itemsFilter={(item: DesignLibrary) =>
+								!isAlreadyConnected(item.externalReferenceCode)
+							}
+							key={DESIGN_LIBRARIES_API_URL}
+							onItemsChange={(items: DesignLibrary[]) => {
+								if (items.length) {
+									const item = items[0];
+									setDesignLibrary(item);
+									setDisableConnectButton(
+										isAlreadyConnected(
+											item.externalReferenceCode
+										)
+									);
+								}
+								else {
+									setDesignLibrary(undefined);
+									setDisableConnectButton(true);
+								}
+							}}
+							placeholder={Liferay.Language.get(
+								'select-a-design-library'
+							)}
+						>
+							{(item: DesignLibrary) => (
+								<ItemSelector.Item
+									className="align-items-center d-flex"
+									key={item.id}
+									textValue={item.name}
+								>
 									{item.name}
 								</ItemSelector.Item>
 							)}
@@ -437,7 +544,7 @@ export default function SpaceConnectedSitesModal({
 					(existing) =>
 						existing.externalReferenceCode ===
 							site.externalReferenceCode &&
-						isSiteTemplate(existing) === isSiteTemplate(site)
+						existing.type === site.type
 				)
 			) {
 				return current;
@@ -460,7 +567,7 @@ export default function SpaceConnectedSitesModal({
 					!(
 						existing.externalReferenceCode ===
 							site.externalReferenceCode &&
-						isSiteTemplate(existing) === isSiteTemplate(site)
+						existing.type === site.type
 					)
 			)
 		);
@@ -470,7 +577,7 @@ export default function SpaceConnectedSitesModal({
 		setConnections((current) =>
 			current.map((existing) =>
 				existing.externalReferenceCode === site.externalReferenceCode &&
-				isSiteTemplate(existing) === isSiteTemplate(site)
+				existing.type === site.type
 					? site
 					: existing
 			)
@@ -482,16 +589,20 @@ export default function SpaceConnectedSitesModal({
 			<ClayModal.Header
 				closeButtonAriaLabel={Liferay.Language.get('close')}
 			>
-				{Liferay.Language.get('all-sites')}
+				{Liferay.Language.get('connections')}
 			</ClayModal.Header>
 
 			<ClayModal.Body>
 				{hasConnectSitesPermission && (
 					<>
 						<p className="c-mb-4 text-secondary">
-							{Liferay.Language.get(
-								'connect-sites-and-site-templates-to-this-space'
-							)}
+							{Liferay.FeatureFlags['LPD-57283']
+								? Liferay.Language.get(
+										'connect-sites-site-templates-and-design-libraries-to-this-space'
+									)
+								: Liferay.Language.get(
+										'connect-sites-and-site-templates-to-this-space'
+									)}
 						</p>
 
 						<ConnectableSelector
@@ -505,7 +616,7 @@ export default function SpaceConnectedSitesModal({
 				{!connections.length ? (
 					<div className="text-center">
 						<h2 className="font-weight-semi-bold text-4">
-							{Liferay.Language.get('no-sites-are-connected-yet')}
+							{Liferay.Language.get('nothing-is-connected-yet')}
 						</h2>
 					</div>
 				) : (
@@ -515,7 +626,7 @@ export default function SpaceConnectedSitesModal({
 								className="c-mb-2 c-mt-n2 d-block"
 								id={listLabelId}
 							>
-								{Liferay.Language.get('connected-sites')}
+								{Liferay.Language.get('connections')}
 							</label>
 						)}
 
@@ -526,7 +637,7 @@ export default function SpaceConnectedSitesModal({
 							{connections.map((connection) => (
 								<li
 									className="align-items-center c-py-2 d-flex font-weight-semi-bold justify-content-between text-3"
-									key={`${isSiteTemplate(connection) ? 'st' : 's'}:${connection.externalReferenceCode}`}
+									key={`${connection.type}:${connection.externalReferenceCode}`}
 								>
 									<div className="align-items-center d-flex">
 										<ClaySticker
