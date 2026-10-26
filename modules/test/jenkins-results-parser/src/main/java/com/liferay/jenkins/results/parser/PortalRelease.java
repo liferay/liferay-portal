@@ -853,7 +853,7 @@ public class PortalRelease {
 	private static final Pattern _quarterlyReleaseVersionPattern =
 		Pattern.compile(_QUARTERLY_RELEASE_VERSION_REGEX);
 	private static final Pattern _standaloneBundleURLPattern = Pattern.compile(
-		"https?://.+/liferay-dxp-tomcat-.+-" +
+		"https?://.+/liferay-[a-z]+-tomcat-.+-" +
 			"(?<buildProfile>[a-z]+-standalone)-\\d+\\.(7z|tar\\.gz|zip)");
 	private static final Pattern _tomcatBundlePropertyPattern = Pattern.compile(
 		"portal.bundle.tomcat\\[(?<portalVersion>.+)\\]");
