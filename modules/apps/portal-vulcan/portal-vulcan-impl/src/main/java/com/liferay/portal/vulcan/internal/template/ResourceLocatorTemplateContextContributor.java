@@ -26,7 +26,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Shuyang Zhou
  */
 @Component(
-	property = "type=" + TemplateContextContributor.TYPE_GLOBAL,
+	property = {
+		"template.context.keys=resourceLocator",
+		"type=" + TemplateContextContributor.TYPE_GLOBAL
+	},
 	service = TemplateContextContributor.class
 )
 public class ResourceLocatorTemplateContextContributor

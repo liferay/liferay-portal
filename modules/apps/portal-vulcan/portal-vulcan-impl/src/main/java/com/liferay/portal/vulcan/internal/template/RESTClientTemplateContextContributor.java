@@ -25,7 +25,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Alejandro Tardín
  */
 @Component(
-	property = "type=" + TemplateContextContributor.TYPE_GLOBAL,
+	property = {
+		"template.context.keys=restClient",
+		"type=" + TemplateContextContributor.TYPE_GLOBAL
+	},
 	service = TemplateContextContributor.class
 )
 public class RESTClientTemplateContextContributor
