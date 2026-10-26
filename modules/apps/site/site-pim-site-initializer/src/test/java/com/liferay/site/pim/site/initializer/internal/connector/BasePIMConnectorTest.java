@@ -204,7 +204,6 @@ public class BasePIMConnectorTest {
 
 		Assert.assertEquals(
 			"executed", _pimConnector.execute(_pimConnectorObjectEntry));
-
 		Assert.assertEquals(
 			HashMapBuilder.put(
 				"name", Collections.singletonList(nameObjectEntry)
