@@ -1449,31 +1449,37 @@ public class FriendlyURLServletTest {
 	}
 
 	private void _testGetRedirectForUser(
-			Object expectedRedirect, int expectedStatus, String path, User user)
+			Object expectedRedirect, int expectedStatus, String path,
+			boolean promptEnabled, User user)
 		throws Throwable {
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
+		mockHttpServletRequest.setPathInfo(path);
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
 
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
-		testGetRedirect(
-			mockHttpServletRequest, mockHttpServletResponse, path,
-			expectedRedirect);
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"promptEnabled", promptEnabled
+						).build())) {
+
+			testGetRedirect(
+				mockHttpServletRequest, mockHttpServletResponse, path,
+				expectedRedirect);
+		}
 
 		Assert.assertEquals(
 			expectedStatus, mockHttpServletResponse.getStatus());
-	}
-
-	private void _testGetRedirectForUser(
-			Object expectedRedirect, String path, User user)
-		throws Throwable {
-
-		_testGetRedirectForUser(
-			expectedRedirect, HttpServletResponse.SC_OK, path, user);
 	}
 
 	private void _testGetRedirectOnLinkLayoutWithoutViewPermission(
@@ -1488,30 +1494,29 @@ public class FriendlyURLServletTest {
 		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
 
 		String friendlyURLPath = getPath(_group, layout);
-		String layoutIdPath =
-			_group.getFriendlyURL() + StringPool.SLASH + layout.getLayoutId();
 
 		Object expectedRedirect = _redirectConstructor1.newInstance(
 			getURL(_layout));
 
 		_testGetRedirectForUser(
-			expectedRedirect, 404, friendlyURLPath, guestUser);
-		_testGetRedirectForUser(expectedRedirect, 404, layoutIdPath, guestUser);
+			expectedRedirect, HttpServletResponse.SC_NOT_FOUND, friendlyURLPath,
+			false, guestUser);
+
+		String layoutIdPath =
+			_group.getFriendlyURL() + StringPool.SLASH + layout.getLayoutId();
+
+		_testGetRedirectForUser(
+			expectedRedirect, HttpServletResponse.SC_NOT_FOUND, layoutIdPath,
+			false, guestUser);
 
 		expectedRedirect = _redirectConstructor1.newInstance(getURL(layout));
 
-		try (GroupConfigurationTemporarySwapper
-				groupConfigurationTemporarySwapper =
-					new GroupConfigurationTemporarySwapper(
-						_group.getGroupId(), _PID,
-						HashMapDictionaryBuilder.<String, Object>put(
-							"promptEnabled", true
-						).build())) {
-
-			_testGetRedirectForUser(
-				expectedRedirect, friendlyURLPath, guestUser);
-			_testGetRedirectForUser(expectedRedirect, layoutIdPath, guestUser);
-		}
+		_testGetRedirectForUser(
+			expectedRedirect, HttpServletResponse.SC_OK, friendlyURLPath, true,
+			guestUser);
+		_testGetRedirectForUser(
+			expectedRedirect, HttpServletResponse.SC_OK, layoutIdPath, true,
+			guestUser);
 	}
 
 	private void _testGetRedirectOnUtilityPage(boolean guestViewable)
