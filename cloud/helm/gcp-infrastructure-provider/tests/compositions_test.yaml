@@ -1,0 +1,195 @@
+release:
+    name: my-release
+    namespace: crossplane-system
+suite: Compositions
+templates:
+    -   templates/compositions.yaml
+tests:
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+apiVersion: kms\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: KeyRing"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+encryptionKeyName: \\{\\{ \\$[A-Za-z]+ \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+encryption:\\s+defaultKmsKeyName: \\{\\{ \\$[A-Za-z]+ \\}\\}\\s+\\{\\{- end \\}\\}\\s+forceDestroy: \\{\\{ or"
+        it: Creates the key and encrypts the database and the document library only when customer managed keys are enabled
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "deletionProtection: \\{\\{ and \\(not \\$forceDestroy\\) \\(eq \\$dataPlane \\$[A-Za-z]+\\) \\}\\}"
+        it: Protects only the active database instance from deletion unless forceDestroy is set
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "edition: \\{\\{ hasPrefix \"db-perf-optimized-\" \\$[A-Za-z]+ \\| ternary \"ENTERPRISE_PLUS\" \"ENTERPRISE\" \\}\\}"
+        it: Derives the Cloud SQL edition from the instance type
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "age: \\{\\{ add \\$backup\\.retentionDays 2 \\}\\}"
+        it: Expires the document library backups two days after the retention period
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}\\s+apiVersion: storage\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: BucketIAMMember"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+crossplane\\.io/external-name: [^\\n]+\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: overlay-bucket-details-secret"
+        it: Grants and publishes the overlay bucket only when overlay access is enabled
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if not \\(and \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\(eq \\$restorePhase \"provisioning\"\\)\\) \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: User"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if and \\$[A-Za-z]+ \\(not \\(and \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$dataPlane \\$targetActiveDataPlane\\)\\)\\) \\}\\}[\\s\\S]+?composition-resource-name: liferay-db-grant-job-"
+        it: Holds the database user and its grants back from the restore target while it is provisioning
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+            -   documentIndex: 0
+                equal:
+                    path: metadata.name
+                    value: liferay-infrastructure
+            -   documentIndex: 0
+                equal:
+                    path: spec.compositeTypeRef.kind
+                    value: LiferayInfrastructure
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: database-primary-\\{\\{ \\$dataPlane \\}\\}\\s"
+            -   documentIndex: 1
+                equal:
+                    path: metadata.name
+                    value: liferay-overlay
+            -   documentIndex: 1
+                equal:
+                    path: spec.compositeTypeRef.kind
+                    value: LiferayOverlay
+            -   documentIndex: 1
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: liferay-overlay-bucket\\s"
+        it: Implements the shared Liferay APIs through the packaged function pipeline
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "userLabels:\\s+\\{\\{- merge \\(dict \"active\" \\(eq \\$dataPlane \\$[A-Za-z]+ \\| toString\\)\\) \\$[A-Za-z]+ \\| toYaml"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "labels:\\s+\\{\\{- merge \\(dict \"active\" \\(eq \\$dataPlane \\$[A-Za-z]+ \\| toString\\)\\) \\$[A-Za-z]+ \\$xr\\.spec\\.storage\\.tags \\| toYaml"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := merge \\(dict \"should-back-up\" \"true\"\\) \\$[A-Za-z]+ -\\}\\}"
+        it: Labels the database and each bucket with their backup selection over the custom tags
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "merge \\(dict \"is-backup-vault\" \"true\"\\) \\$[A-Za-z]+ \\$backup\\.vaultTags"
+        it: Labels the backup vault as the vault over the vault tags
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := merge \\(dict \"app\" \"liferay\" \"deployment-name\" \\$env\\.deploymentName \"environment-id\" \\$environmentId \"project-id\" \\$projectId\\) \\$xr\\.spec\\.commonTags"
+            -   documentIndex: 1
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "merge \\(dict \"app\" \"liferay\" \"deployment-name\" \\$env\\.deploymentName \"project-id\" \\$xr\\.spec\\.projectId\\) \\$xr\\.spec\\.commonTags"
+        it: Lets the derived labels win over the common tags
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "managementPolicies: \\{\\{ \\$xr\\.spec\\.backup\\.enabled \\| ternary \\(\\(list \"\\*\"\\) \\| toJson\\) \\$managementPolicies \\}\\}"
+        it: Lets Crossplane delete the database instance once backups are enabled even when orphaning on delete
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "databaseVersion: \\{\\{ printf \"POSTGRES_%s\" \\(\\$database\\.version \\| default \"18\"\\) \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "availabilityType: \\{\\{ \\$database\\.highAvailability \\| ternary \"REGIONAL\" \"ZONAL\" \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "diskSize: \\{\\{ \\$database\\.storageGB \\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := \\$database\\.instanceType \\| default \"db-custom-1-3840\""
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "tier: \\{\\{ \\$[A-Za-z]+ \\}\\}"
+        it: Maps the shared database fields onto the Cloud SQL instance
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$backup\\.enabled \\}\\}\\s+\\{\\{- \\$[A-Za-z]+ := printf \"principal://[^\\n]+\\s+apiVersion: cloudplatform\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: ProjectIAMMember\\s+metadata:\\s+annotations:\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: backup-restore-cloudsql-admin"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "composition-resource-name: \\{\\{ \\$baseName \\}\\}-vault[\\s\\S]+?\\{\\{- end \\}\\}\\s*$"
+        it: Provisions the backup vault and its identities only once backups are enabled
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- else if or \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$restorePhase \"provisioning-database-user\"\\) -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = \\(eq \\$targetActiveDataPlane \"blue\"\\) \\| ternary \"green\" \"blue\" -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = list \"blue\" \"green\" -\\}\\}"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\(eq \\$restorePhase \"promoting\"\\) -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = list \"blue\" \"green\" -\\}\\}"
+        it: Provisions the inactive data plane alongside the active one during a restore
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if eq \\$xr\\.spec\\.search\\.engine \"opensearch\" -\\}\\}\\s+\\{\\{- fail "
+        it: Rejects OpenSearch because GCP has no managed OpenSearch
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := printf \"liferay-database-%s-root-password\" \\$dataPlane"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "key: password\\s+name: liferay-database-\\{\\{ \\$dataPlane \\}\\}-root-password"
+        it: Runs the database grants with the root password generated for the same data plane
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := \\$env\\.region"
+            -   documentIndex: 0
+                notMatchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\.region \\| default"
+            -   documentIndex: 1
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "location: \\{\\{ \\$env\\.region \\}\\}"
+        it: Takes the region from the cluster environment config
