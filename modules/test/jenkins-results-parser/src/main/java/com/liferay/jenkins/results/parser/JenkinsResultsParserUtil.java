@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.CountingInputStream;
+import com.google.common.net.PercentEscaper;
 
 import com.liferay.poshi.core.pql.PQLEntityFactory;
 
@@ -110,6 +111,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
+import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -6397,29 +6399,15 @@ public class JenkinsResultsParserUtil {
 				i++;
 			}
 			else {
-				int codePoint = value.codePointAt(i);
+				int endIndex = value.offsetByCodePoints(i, 1);
 
-				_escapeCodePoint(codePoint, sb);
+				sb.append(_percentEscaper.escape(value.substring(i, endIndex)));
 
-				i = i + Character.charCount(codePoint);
+				i = endIndex;
 			}
 		}
 
 		return sb.toString();
-	}
-
-	private static void _escapeCodePoint(int codePoint, StringBuilder sb) {
-		String codePointString = new String(Character.toChars(codePoint));
-
-		byte[] bytes = codePointString.getBytes(StandardCharsets.UTF_8);
-
-		for (byte b : bytes) {
-			int octet = b & 0xff;
-
-			sb.append("%");
-			sb.append(_HEXADECIMAL_CHARACTERS.charAt(octet >> 4));
-			sb.append(_HEXADECIMAL_CHARACTERS.charAt(octet & 0x0f));
-		}
 	}
 
 	private static String _escapePropertiesValue(String value) {
@@ -7202,9 +7190,7 @@ public class JenkinsResultsParserUtil {
 		}
 
 		for (int i = index + 1; i <= (index + 2); i++) {
-			char c = value.charAt(i);
-
-			if (_HEXADECIMAL_CHARACTERS.indexOf(c) == -1) {
+			if (!CharUtils.isHex(value.charAt(i))) {
 				return false;
 			}
 		}
@@ -7309,9 +7295,6 @@ public class JenkinsResultsParserUtil {
 	private static final String _DIST_PORTAL_BUNDLES_URL_DEFAULT =
 		"http://test-1-0/userContent/bundles/test-portal-acceptance-upstream";
 
-	private static final String _HEXADECIMAL_CHARACTERS =
-		"0123456789ABCDEFabcdef";
-
 	private static final String _JENKINS_DIST_ROOT_PATH_DEFAULT = "/tmp/dist";
 
 	private static final String _LEGAL_PATH_CHARACTERS = "-._~!$&'()*+,;=:@/";
@@ -7406,6 +7389,8 @@ public class JenkinsResultsParserUtil {
 			")?((files|releases).liferay.com)");
 	private static final Pattern _nestedPropertyPattern = Pattern.compile(
 		"\\$\\{([^\\}]+)\\}");
+	private static final PercentEscaper _percentEscaper = new PercentEscaper(
+		"", false);
 	private static final Pattern _poshiFileNamePattern = Pattern.compile(
 		".*\\.(function|macro|path|prose|testcase)");
 	private static final Set<String> _redactTokens = new HashSet<>();
