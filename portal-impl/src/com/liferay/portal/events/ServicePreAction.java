@@ -1658,7 +1658,13 @@ public class ServicePreAction extends Action {
 				urlControlPanel, "refererGroupId", refererGroupId);
 		}
 		else if (scopeGroupId > 0) {
-			Layout refererLayout = LayoutLocalServiceUtil.fetchLayout(plid);
+			Layout refererLayout = layout;
+
+			if ((refererLayout == null) ||
+				(refererLayout instanceof VirtualLayout)) {
+
+				refererLayout = LayoutLocalServiceUtil.fetchLayout(plid);
+			}
 
 			if (refererLayout != null) {
 				Group refererLayoutGroup = refererLayout.getGroup();
