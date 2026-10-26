@@ -772,7 +772,9 @@ public class DBPartitionUtil {
 		String targetPartitionName = getPartitionName(toCompanyId);
 
 		try {
-			_copySchema(connection, sourcePartitionName, targetPartitionName);
+			_copySchema(
+				connection, sourcePartitionName, targetPartitionName,
+				"RememberMeToken");
 
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
 
@@ -963,7 +965,7 @@ public class DBPartitionUtil {
 
 	private static void _copySchema(
 			Connection connection, String sourcePartitionName,
-			String targetPartitionName)
+			String targetPartitionName, String... excludedDataTableNames)
 		throws SQLException {
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
@@ -1000,7 +1002,9 @@ public class DBPartitionUtil {
 							targetPartitionName, fromTableName, fromTableName));
 
 					if (StringUtil.equalsIgnoreCase(
-							fromTableName, "Configuration_")) {
+							fromTableName, "Configuration_") ||
+						ArrayUtil.contains(
+							excludedDataTableNames, fromTableName, true)) {
 
 						continue;
 					}
