@@ -322,6 +322,52 @@ public class StyleBook implements Serializable {
 	private Supplier<String> _externalReferenceCodeSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The style book's custom frontend token definition."
+	)
+	public String getFrontendTokenDefinition() {
+		if (_frontendTokenDefinitionSupplier != null) {
+			frontendTokenDefinition = _frontendTokenDefinitionSupplier.get();
+
+			_frontendTokenDefinitionSupplier = null;
+		}
+
+		return frontendTokenDefinition;
+	}
+
+	public void setFrontendTokenDefinition(String frontendTokenDefinition) {
+		this.frontendTokenDefinition = frontendTokenDefinition;
+
+		_frontendTokenDefinitionSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setFrontendTokenDefinition(
+		UnsafeSupplier<String, Exception>
+			frontendTokenDefinitionUnsafeSupplier) {
+
+		_frontendTokenDefinitionSupplier = () -> {
+			try {
+				return frontendTokenDefinitionUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The style book's custom frontend token definition."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected String frontendTokenDefinition;
+
+	@JsonIgnore
+	private Supplier<String> _frontendTokenDefinitionSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The style book's tokens values."
 	)
 	public String getFrontendTokensValues() {
@@ -744,6 +790,22 @@ public class StyleBook implements Serializable {
 			sb.append("\"");
 		}
 
+		String frontendTokenDefinition = getFrontendTokenDefinition();
+
+		if (frontendTokenDefinition != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"frontendTokenDefinition\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(frontendTokenDefinition));
+
+			sb.append("\"");
+		}
+
 		String frontendTokensValues = getFrontendTokensValues();
 
 		if (frontendTokensValues != null) {
@@ -971,4 +1033,4 @@ public class StyleBook implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-485047941
+// LIFERAY-REST-BUILDER-HASH:-1535970903

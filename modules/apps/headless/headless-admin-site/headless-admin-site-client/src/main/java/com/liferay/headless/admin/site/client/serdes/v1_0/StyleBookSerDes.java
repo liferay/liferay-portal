@@ -125,6 +125,20 @@ public class StyleBookSerDes {
 			sb.append("\"");
 		}
 
+		if (styleBook.getFrontendTokenDefinition() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"frontendTokenDefinition\": ");
+
+			sb.append("\"");
+
+			sb.append(_escape(styleBook.getFrontendTokenDefinition()));
+
+			sb.append("\"");
+		}
+
 		if (styleBook.getFrontendTokensValues() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -287,6 +301,15 @@ public class StyleBookSerDes {
 				String.valueOf(styleBook.getExternalReferenceCode()));
 		}
 
+		if (styleBook.getFrontendTokenDefinition() == null) {
+			map.put("frontendTokenDefinition", null);
+		}
+		else {
+			map.put(
+				"frontendTokenDefinition",
+				String.valueOf(styleBook.getFrontendTokenDefinition()));
+		}
+
 		if (styleBook.getFrontendTokensValues() == null) {
 			map.put("frontendTokensValues", null);
 		}
@@ -379,6 +402,11 @@ public class StyleBookSerDes {
 				return false;
 			}
 			else if (Objects.equals(
+						jsonParserFieldName, "frontendTokenDefinition")) {
+
+				return false;
+			}
+			else if (Objects.equals(
 						jsonParserFieldName, "frontendTokensValues")) {
 
 				return false;
@@ -448,6 +476,14 @@ public class StyleBookSerDes {
 
 				if (jsonParserFieldValue != null) {
 					styleBook.setExternalReferenceCode(
+						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(
+						jsonParserFieldName, "frontendTokenDefinition")) {
+
+				if (jsonParserFieldValue != null) {
+					styleBook.setFrontendTokenDefinition(
 						(String)jsonParserFieldValue);
 				}
 			}
@@ -582,4 +618,4 @@ public class StyleBookSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:174516762
+// LIFERAY-REST-BUILDER-HASH:-1942700792

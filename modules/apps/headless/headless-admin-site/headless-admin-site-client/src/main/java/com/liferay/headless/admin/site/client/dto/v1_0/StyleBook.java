@@ -154,6 +154,29 @@ public class StyleBook implements Cloneable, Serializable {
 
 	protected String externalReferenceCode;
 
+	public String getFrontendTokenDefinition() {
+		return frontendTokenDefinition;
+	}
+
+	public void setFrontendTokenDefinition(String frontendTokenDefinition) {
+		this.frontendTokenDefinition = frontendTokenDefinition;
+	}
+
+	public void setFrontendTokenDefinition(
+		UnsafeSupplier<String, Exception>
+			frontendTokenDefinitionUnsafeSupplier) {
+
+		try {
+			frontendTokenDefinition =
+				frontendTokenDefinitionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected String frontendTokenDefinition;
+
 	public String getFrontendTokensValues() {
 		return frontendTokensValues;
 	}
@@ -336,4 +359,4 @@ public class StyleBook implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:642849199
+// LIFERAY-REST-BUILDER-HASH:-1119664938

@@ -190,6 +190,7 @@ public abstract class BaseStyleBookResourceTestCase {
 		StyleBook styleBook = randomStyleBook();
 
 		styleBook.setExternalReferenceCode(regex);
+		styleBook.setFrontendTokenDefinition(regex);
 		styleBook.setFrontendTokensValues(regex);
 		styleBook.setKey(regex);
 		styleBook.setName(regex);
@@ -203,6 +204,7 @@ public abstract class BaseStyleBookResourceTestCase {
 		styleBook = StyleBookSerDes.toDTO(json);
 
 		Assert.assertEquals(regex, styleBook.getExternalReferenceCode());
+		Assert.assertEquals(regex, styleBook.getFrontendTokenDefinition());
 		Assert.assertEquals(regex, styleBook.getFrontendTokensValues());
 		Assert.assertEquals(regex, styleBook.getKey());
 		Assert.assertEquals(regex, styleBook.getName());
@@ -1731,6 +1733,16 @@ public abstract class BaseStyleBookResourceTestCase {
 			}
 
 			if (Objects.equals(
+					"frontendTokenDefinition", additionalAssertFieldName)) {
+
+				if (styleBook.getFrontendTokenDefinition() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
 					"frontendTokensValues", additionalAssertFieldName)) {
 
 				if (styleBook.getFrontendTokensValues() == null) {
@@ -1965,6 +1977,19 @@ public abstract class BaseStyleBookResourceTestCase {
 				if (!Objects.deepEquals(
 						styleBook1.getExternalReferenceCode(),
 						styleBook2.getExternalReferenceCode())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals(
+					"frontendTokenDefinition", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						styleBook1.getFrontendTokenDefinition(),
+						styleBook2.getFrontendTokenDefinition())) {
 
 					return false;
 				}
@@ -2232,6 +2257,52 @@ public abstract class BaseStyleBookResourceTestCase {
 
 		if (entityFieldName.equals("externalReferenceCode")) {
 			Object object = styleBook.getExternalReferenceCode();
+
+			String value = String.valueOf(object);
+
+			if (operator.equals("contains")) {
+				sb = new StringBundler();
+
+				sb.append("contains(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 2)) {
+					sb.append(value.substring(1, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else if (operator.equals("startswith")) {
+				sb = new StringBundler();
+
+				sb.append("startswith(");
+				sb.append(entityFieldName);
+				sb.append(",'");
+
+				if ((object != null) && (value.length() > 1)) {
+					sb.append(value.substring(0, value.length() - 1));
+				}
+				else {
+					sb.append(value);
+				}
+
+				sb.append("')");
+			}
+			else {
+				sb.append("'");
+				sb.append(value);
+				sb.append("'");
+			}
+
+			return sb.toString();
+		}
+
+		if (entityFieldName.equals("frontendTokenDefinition")) {
+			Object object = styleBook.getFrontendTokenDefinition();
 
 			String value = String.valueOf(object);
 
@@ -2569,6 +2640,8 @@ public abstract class BaseStyleBookResourceTestCase {
 				defaultStyleBook = RandomTestUtil.randomBoolean();
 				externalReferenceCode = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
+				frontendTokenDefinition = StringUtil.toLowerCase(
+					RandomTestUtil.randomString());
 				frontendTokensValues = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
@@ -2824,4 +2897,4 @@ public abstract class BaseStyleBookResourceTestCase {
 		_styleBookResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1912454625
+// LIFERAY-REST-BUILDER-HASH:-1411686847
