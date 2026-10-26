@@ -201,7 +201,7 @@ public class SecretResolverCheck extends BaseCheck {
 		if (Objects.equals(methodName, "isBlank") ||
 			Objects.equals(methodName, "isNotNull") ||
 			Objects.equals(methodName, "isNull") ||
-			Objects.equals(methodName, "resolve")) {
+			_isResolveCall(methodCallDetailAST)) {
 
 			return true;
 		}
@@ -248,6 +248,29 @@ public class SecretResolverCheck extends BaseCheck {
 		return false;
 	}
 
+	private boolean _isResolveCall(DetailAST methodCallDetailAST) {
+		if (!Objects.equals(getMethodName(methodCallDetailAST), "resolve")) {
+			return false;
+		}
+
+		String variableName = getVariableName(methodCallDetailAST);
+
+		if (variableName == null) {
+			return false;
+		}
+
+		String variableTypeName = getVariableTypeName(
+			methodCallDetailAST, variableName, false);
+
+		if (Objects.equals(variableTypeName, "SecretResolver") ||
+			Objects.equals(variableTypeName, "SecretResolverUtil")) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private boolean _isResolvedThroughVariable(DetailAST detailAST) {
 		String variableName = _getAssignedVariableName(detailAST);
 
@@ -266,9 +289,7 @@ public class SecretResolverCheck extends BaseCheck {
 				getAllChildTokens(
 					methodDefDetailAST, true, TokenTypes.METHOD_CALL)) {
 
-			if (!Objects.equals(
-					getMethodName(methodCallDetailAST), "resolve")) {
-
+			if (!_isResolveCall(methodCallDetailAST)) {
 				continue;
 			}
 
