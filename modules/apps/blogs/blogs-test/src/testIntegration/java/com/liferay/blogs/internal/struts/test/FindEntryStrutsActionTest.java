@@ -16,8 +16,13 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -61,8 +66,23 @@ public class FindEntryStrutsActionTest {
 				"securityMode", "domain"
 			).build());
 
-		Assert.assertNotEquals(
-			"https://google.co", _execute("https://google.co"));
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.util.PortalImpl", LoggerTestUtil.WARN)) {
+
+			Assert.assertNotEquals(
+				"https://google.co", _execute("https://google.co"));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Redirect URL https://google.co is not allowed",
+				logEntry.getMessage());
+		}
+
 		Assert.assertEquals(
 			"https://mail.google.com", _execute("https://mail.google.com"));
 	}
