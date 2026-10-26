@@ -5,11 +5,18 @@
 
 package com.liferay.launch.internal.entry.manager;
 
+import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.item.selector.LayoutItemSelectorReturnType;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
+import com.liferay.layout.util.structure.DeletedLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructure;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -284,6 +291,45 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 		return _layoutLocalService.getLayout(targetLayout.getPlid());
 	}
 
+	private void _deleteMarkedForDeletionItems(
+			long groupId, long plid, long userId)
+		throws PortalException {
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			_layoutPageTemplateStructureLocalService.
+				fetchLayoutPageTemplateStructure(groupId, plid);
+
+		if (layoutPageTemplateStructure == null) {
+			return;
+		}
+
+		_fragmentEntryLinkLocalService.deleteFragmentEntryLinks(
+			groupId, plid, true);
+
+		for (LayoutPageTemplateStructureRel layoutPageTemplateStructureRel :
+				_layoutPageTemplateStructureRelLocalService.
+					getLayoutPageTemplateStructureRels(
+						layoutPageTemplateStructure.
+							getLayoutPageTemplateStructureId())) {
+
+			LayoutStructure layoutStructure = LayoutStructure.of(
+				layoutPageTemplateStructureRel.getData());
+
+			for (DeletedLayoutStructureItem deletedLayoutStructureItem :
+					layoutStructure.getDeletedLayoutStructureItems()) {
+
+				layoutStructure.deleteLayoutStructureItem(
+					deletedLayoutStructureItem.getItemId());
+			}
+
+			_layoutPageTemplateStructureLocalService.
+				updateLayoutPageTemplateStructureData(
+					userId, groupId, plid,
+					layoutPageTemplateStructureRel.getSegmentsExperienceId(),
+					layoutStructure.toString());
+		}
+	}
+
 	private Layout _fetchLaunchDraftLayout(long classPK, long draftId) {
 		Layout launchDraftLayout = _layoutLocalService.fetchLayout(draftId);
 
@@ -345,6 +391,13 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 		finally {
 			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
 		}
+
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		_deleteMarkedForDeletionItems(
+			draftLayout.getGroupId(), draftLayout.getPlid(),
+			serviceContext.getUserId());
 
 		draftLayout = _layoutLocalService.getLayout(draftLayout.getPlid());
 
@@ -497,6 +550,17 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 	private LayoutLocalService _layoutLocalService;
 
 	@Reference
+	private LayoutPageTemplateStructureLocalService
+		_layoutPageTemplateStructureLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureRelLocalService
+		_layoutPageTemplateStructureRelLocalService;
+
+	@Reference
 	private Portal _portal;
+
+	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
