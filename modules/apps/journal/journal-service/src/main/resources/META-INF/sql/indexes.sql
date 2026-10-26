@@ -39,5 +39,4 @@ create index IX_E988689E on JournalFolder (groupId, name[$COLUMN_LENGTH:100$]);
 create unique index IX_A2109363 on JournalFolder (groupId, parentFolderId, name[$COLUMN_LENGTH:100$], ctCollectionId);
 create index IX_EFD9CAC on JournalFolder (groupId, parentFolderId, status);
 create unique index IX_1965F913 on JournalFolder (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_8D6902B7 on JournalFolder (status, companyId);
 create index IX_63BDFA69 on JournalFolder (uuid_[$COLUMN_LENGTH:75$]);
