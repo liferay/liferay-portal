@@ -280,11 +280,10 @@ test(
 
 		await addButton.click();
 
-		await expect(
-			classicPage.editable
-				.frameLocator('iframe')
-				.getByLabel('YouTube Video Player')
-		).toBeVisible();
+		await expect(classicPage.editable.locator('iframe')).toHaveAttribute(
+			'src',
+			/youtube\.com\/embed\/2EPZxIC5ogU/
+		);
 	}
 );
 
