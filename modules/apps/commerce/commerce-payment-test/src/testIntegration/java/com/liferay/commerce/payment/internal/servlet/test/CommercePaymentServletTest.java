@@ -363,7 +363,24 @@ public class CommercePaymentServletTest {
 			CommerceOrder commerceOrder = _addCommerceOrder();
 
 			CommercePaymentEntry commercePaymentEntry =
-				_addCommercePaymentEntry(commerceOrder);
+				_commercePaymentEntryLocalService.addCommercePaymentEntry(
+					_user.getUserId(),
+					PortalUtil.getClassNameId(CommerceOrder.class),
+					commerceOrder.getCommerceOrderId(),
+					_commerceChannel.getCommerceChannelId(), BigDecimal.TEN,
+					null, null, _commerceCurrency.getCode(),
+					LocaleUtil.toLanguageId(LocaleUtil.US), null, null, _KEY,
+					CommercePaymentIntegrationConstants.TYPE_INTERNAL_OFFLINE,
+					null, RandomTestUtil.randomString(),
+					CommercePaymentEntryConstants.TYPE_PAYMENT,
+					_serviceContext);
+
+			commercePaymentEntry.setPaymentStatus(
+				CommercePaymentEntryConstants.STATUS_CREATED);
+
+			commercePaymentEntry =
+				_commercePaymentEntryLocalService.updateCommercePaymentEntry(
+					commercePaymentEntry);
 
 			User user = UserTestUtil.addUser();
 
@@ -793,29 +810,6 @@ public class CommercePaymentServletTest {
 			CommerceTestUtil.addB2CCommerceOrder(
 				_user.getUserId(), _commerceChannel.getGroupId(),
 				_commerceCurrency));
-	}
-
-	private CommercePaymentEntry _addCommercePaymentEntry(
-			CommerceOrder commerceOrder)
-		throws Exception {
-
-		CommercePaymentEntry commercePaymentEntry =
-			_commercePaymentEntryLocalService.addCommercePaymentEntry(
-				_user.getUserId(),
-				PortalUtil.getClassNameId(CommerceOrder.class),
-				commerceOrder.getCommerceOrderId(),
-				_commerceChannel.getCommerceChannelId(), BigDecimal.TEN, null,
-				null, _commerceCurrency.getCode(),
-				LocaleUtil.toLanguageId(LocaleUtil.US), null, null, _KEY,
-				CommercePaymentIntegrationConstants.TYPE_INTERNAL_OFFLINE, null,
-				RandomTestUtil.randomString(),
-				CommercePaymentEntryConstants.TYPE_PAYMENT, _serviceContext);
-
-		commercePaymentEntry.setPaymentStatus(
-			CommercePaymentEntryConstants.STATUS_CREATED);
-
-		return _commercePaymentEntryLocalService.updateCommercePaymentEntry(
-			commercePaymentEntry);
 	}
 
 	private MockHttpServletRequest _getCancelMockHttpServletRequest(
