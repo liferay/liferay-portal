@@ -18,12 +18,13 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -2368,18 +2369,26 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			return 0;
 		}
 
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		try {
+			PermissionChecker permissionChecker = getPermissionChecker();
 
-		if ((permissionChecker == null) ||
-			permissionChecker.isContentReviewer(
-				permissionChecker.getCompanyId(), groupId)) {
+			if (permissionChecker.isContentReviewer(
+					permissionChecker.getCompanyId(), groupId)) {
 
-			return 0;
+				return 0;
+			}
+
+			return permissionChecker.getUserId();
+		}
+		catch (PrincipalException principalException) {
+			_log.error(principalException);
 		}
 
-		return permissionChecker.getUserId();
+		return 0;
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		JournalArticleServiceImpl.class);
 
 	@Reference(
 		target = "(model.class.name=com.liferay.dynamic.data.mapping.model.DDMStructure)"
