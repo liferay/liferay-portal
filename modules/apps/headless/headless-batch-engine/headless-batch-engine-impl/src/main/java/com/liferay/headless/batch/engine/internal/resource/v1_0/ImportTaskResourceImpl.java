@@ -99,8 +99,7 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 			String importStrategy, String taskItemDelegateName, Object object)
 		throws Exception {
 
-		String contentType = contextHttpServletRequest.getHeader(
-			HttpHeaders.CONTENT_TYPE);
+		String contentType = _getContentType();
 
 		return _importFile(
 			BatchEngineTaskOperation.DELETE, null,
@@ -191,8 +190,7 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 			String taskItemDelegateName, Object object)
 		throws Exception {
 
-		String contentType = contextHttpServletRequest.getHeader(
-			HttpHeaders.CONTENT_TYPE);
+		String contentType = _getContentType();
 
 		return _importFile(
 			BatchEngineTaskOperation.CREATE, batchExternalReferenceCode,
@@ -223,8 +221,7 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 			String updateStrategy, Object object)
 		throws Exception {
 
-		String contentType = contextHttpServletRequest.getHeader(
-			HttpHeaders.CONTENT_TYPE);
+		String contentType = _getContentType();
 
 		return _importFile(
 			BatchEngineTaskOperation.UPDATE, null,
@@ -316,6 +313,14 @@ public class ImportTaskResourceImpl extends BaseImportTaskResourceImpl {
 		return new AbstractMap.SimpleImmutableEntry<>(
 			unsyncByteArrayOutputStream.toByteArray(),
 			_file.getExtension(fileName));
+	}
+
+	private String _getContentType() {
+		MediaType mediaType = MediaType.valueOf(
+			contextHttpServletRequest.getHeader(HttpHeaders.CONTENT_TYPE));
+
+		return StringUtil.toLowerCase(
+			mediaType.getType() + "/" + mediaType.getSubtype());
 	}
 
 	private int _getImportBatchSize(long companyId) throws Exception {
