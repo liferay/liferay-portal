@@ -151,11 +151,6 @@ public class OAuth2AuthorizationExpandoPortalInstanceLifecycleListener
 			expandoTable.getTableId(), name, type);
 	}
 
-	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED, unbind = "-")
-	protected void setModuleServiceLifecycle(
-		ModuleServiceLifecycle moduleServiceLifecycle) {
-	}
-
 	private void _addSAPEntries(long companyId) throws Exception {
 		for (String[] sapEntryObjectArray : _SAP_ENTRY_OBJECT_ARRAYS) {
 			String sapEntryName = sapEntryObjectArray[0];
@@ -226,6 +221,9 @@ public class OAuth2AuthorizationExpandoPortalInstanceLifecycleListener
 
 	@Reference
 	private ExpandoTableLocalService _expandoTableLocalService;
+
+	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED)
+	private ModuleServiceLifecycle _moduleServiceLifecycle;
 
 	@Reference
 	private SAPEntryLocalService _sapEntryLocalService;
