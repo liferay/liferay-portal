@@ -33,6 +33,15 @@ resource "google_container_cluster" "primary" {
 		services_secondary_range_name="${var.deployment_name}-services"
 	}
 	location=var.regional_cluster ? var.region : local.first_zone
+	logging_config {
+		enable_components=[
+			"APISERVER",
+			"CONTROLLER_MANAGER",
+			"SCHEDULER",
+			"SYSTEM_COMPONENTS",
+			"WORKLOADS",
+		]
+	}
 	master_auth {
 		client_certificate_config {
 			issue_client_certificate=false
