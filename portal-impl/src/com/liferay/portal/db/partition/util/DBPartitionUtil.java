@@ -603,12 +603,9 @@ public class DBPartitionUtil {
 					"Database partition ", partitionName, " already exists"));
 		}
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				_dbPartitionDB.getCreatePartitionSQL(
-					connection, partitionName))) {
+		_createPartition(connection, partitionName);
 
-			preparedStatement.executeUpdate();
-
+		try {
 			DBInspector dbInspector = new DBInspector(connection);
 
 			DatabaseMetaData databaseMetaData = connection.getMetaData();
@@ -767,9 +764,12 @@ public class DBPartitionUtil {
 			Connection connection, long fromCompanyId, long toCompanyId)
 		throws PortalException {
 
+		String targetPartitionName = getPartitionName(toCompanyId);
+
+		_createPartition(connection, targetPartitionName);
+
 		List<String> quartzTableNames = new ArrayList<>();
 		String sourcePartitionName = getPartitionName(fromCompanyId);
-		String targetPartitionName = getPartitionName(toCompanyId);
 
 		try {
 			_copySchema(
@@ -979,64 +979,70 @@ public class DBPartitionUtil {
 			String targetPartitionName, String... excludedDataTableNames)
 		throws SQLException {
 
+		DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+		try (ResultSet resultSet = databaseMetaData.getTables(
+				_dbPartitionDB.getCatalog(connection, sourcePartitionName),
+				_dbPartitionDB.getSchema(connection, sourcePartitionName), null,
+				new String[] {"TABLE", "VIEW"});
+			Statement statement = connection.createStatement()) {
+
+			while (resultSet.next()) {
+				String fromTableName = resultSet.getString("TABLE_NAME");
+
+				if (Objects.equals(resultSet.getString("TABLE_TYPE"), "VIEW")) {
+					statement.executeUpdate(
+						_dbPartitionDB.getCreateViewSQL(
+							_defaultPartitionName, targetPartitionName,
+							fromTableName));
+
+					continue;
+				}
+
+				statement.executeUpdate(
+					_dbPartitionDB.getCreateTableSQL(
+						connection, sourcePartitionName, targetPartitionName,
+						fromTableName, fromTableName));
+
+				if (StringUtil.equalsIgnoreCase(
+						fromTableName, "Configuration_") ||
+					ArrayUtil.contains(
+						excludedDataTableNames, fromTableName, true)) {
+
+					continue;
+				}
+
+				statement.executeUpdate(
+					_getCopyDataSQL(
+						sourcePartitionName, targetPartitionName, fromTableName,
+						fromTableName,
+						_getColumnNames(
+							connection, sourcePartitionName, fromTableName),
+						StringPool.BLANK));
+			}
+		}
+
+		try (Statement statement = connection.createStatement()) {
+			for (String createRuleSQL :
+					_dbPartitionDB.getCreateRulesSQL(targetPartitionName)) {
+
+				statement.executeUpdate(createRuleSQL);
+			}
+		}
+	}
+
+	private static void _createPartition(
+			Connection connection, String partitionName)
+		throws PortalException {
+
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
 				_dbPartitionDB.getCreatePartitionSQL(
-					connection, targetPartitionName))) {
+					connection, partitionName))) {
 
 			preparedStatement.executeUpdate();
-
-			DatabaseMetaData databaseMetaData = connection.getMetaData();
-
-			try (ResultSet resultSet = databaseMetaData.getTables(
-					_dbPartitionDB.getCatalog(connection, sourcePartitionName),
-					_dbPartitionDB.getSchema(connection, sourcePartitionName),
-					null, new String[] {"TABLE", "VIEW"});
-				Statement statement = connection.createStatement()) {
-
-				while (resultSet.next()) {
-					String fromTableName = resultSet.getString("TABLE_NAME");
-
-					if (Objects.equals(
-							resultSet.getString("TABLE_TYPE"), "VIEW")) {
-
-						statement.executeUpdate(
-							_dbPartitionDB.getCreateViewSQL(
-								_defaultPartitionName, targetPartitionName,
-								fromTableName));
-
-						continue;
-					}
-
-					statement.executeUpdate(
-						_dbPartitionDB.getCreateTableSQL(
-							connection, sourcePartitionName,
-							targetPartitionName, fromTableName, fromTableName));
-
-					if (StringUtil.equalsIgnoreCase(
-							fromTableName, "Configuration_") ||
-						ArrayUtil.contains(
-							excludedDataTableNames, fromTableName, true)) {
-
-						continue;
-					}
-
-					statement.executeUpdate(
-						_getCopyDataSQL(
-							sourcePartitionName, targetPartitionName,
-							fromTableName, fromTableName,
-							_getColumnNames(
-								connection, sourcePartitionName, fromTableName),
-							StringPool.BLANK));
-				}
-			}
-
-			try (Statement statement = connection.createStatement()) {
-				for (String createRuleSQL :
-						_dbPartitionDB.getCreateRulesSQL(targetPartitionName)) {
-
-					statement.executeUpdate(createRuleSQL);
-				}
-			}
+		}
+		catch (SQLException sqlException) {
+			throw new PortalException(sqlException);
 		}
 	}
 
@@ -1129,64 +1135,56 @@ public class DBPartitionUtil {
 
 		_checkExportedPartition(companyId, connection, exportedPartitionName);
 
+		_createPartition(connection, exportedPartitionName);
+
 		try {
-			try (PreparedStatement preparedStatement =
-					connection.prepareStatement(
-						_dbPartitionDB.getCreatePartitionSQL(
-							connection, exportedPartitionName))) {
+			DatabaseMetaData databaseMetaData = connection.getMetaData();
 
-				preparedStatement.executeUpdate();
+			DBInspector dbInspector = new DBInspector(connection);
 
-				DatabaseMetaData databaseMetaData = connection.getMetaData();
+			try (ResultSet resultSet = databaseMetaData.getTables(
+					_dbPartitionDB.getCatalog(
+						connection, _defaultPartitionName),
+					_dbPartitionDB.getSchema(connection, _defaultPartitionName),
+					null, new String[] {"TABLE"});
+				Statement statement = connection.createStatement()) {
 
-				DBInspector dbInspector = new DBInspector(connection);
+				while (resultSet.next()) {
+					String tableName = resultSet.getString("TABLE_NAME");
 
-				try (ResultSet resultSet = databaseMetaData.getTables(
-						_dbPartitionDB.getCatalog(
-							connection, _defaultPartitionName),
-						_dbPartitionDB.getSchema(
-							connection, _defaultPartitionName),
-						null, new String[] {"TABLE"});
-					Statement statement = connection.createStatement()) {
+					if (StringUtil.equalsIgnoreCase(
+							tableName, "Configuration_")) {
 
-					while (resultSet.next()) {
-						String tableName = resultSet.getString("TABLE_NAME");
+						statement.executeUpdate(
+							_dbPartitionDB.getCreateTableSQL(
+								connection, _defaultPartitionName,
+								exportedPartitionName, tableName));
 
-						if (StringUtil.equalsIgnoreCase(
-								tableName, "Configuration_")) {
-
-							statement.executeUpdate(
-								_dbPartitionDB.getCreateTableSQL(
-									connection, _defaultPartitionName,
-									exportedPartitionName, tableName));
-
-							continue;
-						}
-
-						if (dbInspector.isObjectTable(tableName) &&
-							!dbInspector.isObjectTable(
-								List.of(companyId), tableName)) {
-
-							continue;
-						}
-
-						_exportTable(
-							companyId, connection, tableName, statement,
-							dbInspector, false);
-
-						if (!StringUtil.equalsIgnoreCase(
-								tableName, "DLFileEntryType")) {
-
-							continue;
-						}
-
-						_moveData(
-							_defaultPartitionName, exportedPartitionName,
-							tableName,
-							_getColumnNames(
-								connection, _defaultPartitionName, tableName),
-							statement, " where companyId = 0", false);
+						continue;
 					}
+
+					if (dbInspector.isObjectTable(tableName) &&
+						!dbInspector.isObjectTable(
+							List.of(companyId), tableName)) {
+
+						continue;
+					}
+
+					_exportTable(
+						companyId, connection, tableName, statement,
+						dbInspector, false);
+
+					if (!StringUtil.equalsIgnoreCase(
+							tableName, "DLFileEntryType")) {
+
+						continue;
+					}
+
+					_moveData(
+						_defaultPartitionName, exportedPartitionName, tableName,
+						_getColumnNames(
+							connection, _defaultPartitionName, tableName),
+						statement, " where companyId = 0", false);
 				}
 			}
 		}
@@ -1212,6 +1210,8 @@ public class DBPartitionUtil {
 		String exportedPartitionName = getExportedPartitionName(companyId);
 
 		_checkExportedPartition(companyId, connection, exportedPartitionName);
+
+		_createPartition(connection, exportedPartitionName);
 
 		DBInspector dbInspector = new DBInspector(connection);
 
