@@ -98,6 +98,7 @@ const LifecycleSettingsForm: React.FC<ILifecycleSettingsFormProps> = ({
 							isFieldErrorVisible={form.isFieldErrorVisible}
 							modifiedDate={modifiedDate}
 							name={form.lifecycleName}
+							nameTaken={form.nameTaken}
 							onDescriptionChange={setLifecycleDescription}
 							onFieldBlur={blurField}
 							onNameChange={setLifecycleName}

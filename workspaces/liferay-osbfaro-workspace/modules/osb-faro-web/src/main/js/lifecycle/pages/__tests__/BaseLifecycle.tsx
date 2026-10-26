@@ -503,11 +503,17 @@ describe('BaseLifecycle', () => {
 		});
 
 		it('renders the "almost ready" processing state', () => {
-			renderPage();
+			const {container} = renderPage();
 
 			expect(
 				screen.getByText('Your dashboard is almost ready!')
 			).toBeInTheDocument();
+			expect(
+				screen.getByText(/metrics will appear in the dashboard/i)
+			).toBeInTheDocument();
+			expect(
+				container.querySelectorAll('.c-empty-state-image img')
+			).toHaveLength(2);
 			expect(screen.queryByTestId('overview-section')).toBeNull();
 			expect(screen.queryByTestId('filter-industryFilter')).toBeNull();
 		});

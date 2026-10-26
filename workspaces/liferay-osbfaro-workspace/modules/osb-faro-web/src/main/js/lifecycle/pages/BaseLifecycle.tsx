@@ -1,7 +1,10 @@
 import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
+import processingStateReducedMotionURL from '../../../images/states/lifecycle_processing_state_reduced_motion.svg?url';
+import processingStateURL from '../../../images/states/lifecycle_processing_state.svg?url';
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
+import ClayEmptyState from '@clayui/empty-state';
 import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
 import ErrorPage from 'shared/pages/ErrorPage';
 import FilterPicker from '../components/FilterPicker';
@@ -29,7 +32,7 @@ import {
 } from '../context/LifecycleContext';
 import {NoDataSourcesEmptyState} from 'lifecycle/components/LifecycleEmptyStates';
 import {useParams} from 'react-router-dom';
-import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
+import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -39,19 +42,16 @@ import {useRequest} from 'shared/hooks/useRequest';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
 
 const ProcessingLifecycleEmptyState = () => (
-	<NoResultsDisplay
-		description={Liferay.Language.get(
-			'your-configuration-is-complete.-metrics-will-appear-in-the-dashboard-once-processing-is-complete'
-		)}
-		displayCard
-		icon={{
-			border: false,
-			size: Sizes.XXXLarge,
-			symbol: 'ac_no_sites',
-		}}
-		spacer
-		title={Liferay.Language.get('your-dashboard-is-almost-ready')}
-	/>
+	<NoResultsDisplay displayCard title="">
+		<ClayEmptyState
+			description={Liferay.Language.get(
+				'your-configuration-is-complete.-metrics-will-appear-in-the-dashboard-once-processing-is-complete'
+			)}
+			imgSrc={processingStateURL}
+			imgSrcReducedMotion={processingStateReducedMotionURL}
+			title={Liferay.Language.get('your-dashboard-is-almost-ready')}
+		/>
+	</NoResultsDisplay>
 );
 
 const LifecycleOverview = () => {

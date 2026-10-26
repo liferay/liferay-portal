@@ -9,6 +9,7 @@ import {
 	getLifecycleErrorMessages,
 	getStageErrorMessages,
 	getStageErrors,
+	hasLifecycleName,
 	hasStageChipError,
 	isAtCharacterLimit,
 } from 'lifecycle/utils/lifecycleValidation';
@@ -218,5 +219,41 @@ describe('isAtCharacterLimit', () => {
 	it('reaches the limit at the maximum length', () => {
 		expect(isAtCharacterLimit('a'.repeat(23), 24)).toBe(false);
 		expect(isAtCharacterLimit('a'.repeat(24), 24)).toBe(true);
+	});
+});
+
+describe('hasLifecycleName', () => {
+	const lifecycles = [
+		{
+			externalReferenceCode: 'erc-1',
+			id: '1',
+			name: 'Growth and Retention Hub',
+		},
+		{externalReferenceCode: 'erc-2', id: '2', name: 'Partner Lifecycle'},
+	];
+
+	it('matches a name ignoring case and surrounding spaces', () => {
+		expect(
+			hasLifecycleName(lifecycles, '  growth AND retention hub ')
+		).toBe(true);
+	});
+
+	it('does not match a name that only contains a used one', () => {
+		expect(hasLifecycleName(lifecycles, 'Growth and Retention')).toBe(
+			false
+		);
+		expect(hasLifecycleName(lifecycles, 'Partner Lifecycle 2')).toBe(false);
+	});
+
+	it('ignores the lifecycle being edited', () => {
+		expect(hasLifecycleName(lifecycles, 'Partner Lifecycle', 'erc-2')).toBe(
+			false
+		);
+	});
+
+	it('ignores lifecycles without a name', () => {
+		expect(
+			hasLifecycleName([{externalReferenceCode: 'erc-3', id: '3'}], 'Hub')
+		).toBe(false);
 	});
 });

@@ -18,6 +18,7 @@ interface ILifecycleSummaryProps {
 	isFieldErrorVisible?: (id: string) => boolean;
 	modifiedDate?: number | null;
 	name: string;
+	nameTaken?: boolean;
 	onDescriptionChange: (description: string) => void;
 	onFieldBlur?: (id: string) => void;
 	onNameChange: (name: string) => void;
@@ -30,6 +31,7 @@ const LifecycleSummary: React.FC<ILifecycleSummaryProps> = ({
 	isFieldErrorVisible = () => false,
 	modifiedDate,
 	name,
+	nameTaken = false,
 	onDescriptionChange,
 	onFieldBlur = noop,
 	onNameChange,
@@ -50,6 +52,9 @@ const LifecycleSummary: React.FC<ILifecycleSummaryProps> = ({
 		maxLength: LIFECYCLE_NAME_MAX_LENGTH,
 		requiredMessage: Liferay.Language.get('the-name-field-is-required'),
 		showErrors: isFieldErrorVisible('lifecycleName'),
+		takenMessage: nameTaken
+			? Liferay.Language.get('enter-a-unique-name')
+			: undefined,
 		value: name,
 	});
 

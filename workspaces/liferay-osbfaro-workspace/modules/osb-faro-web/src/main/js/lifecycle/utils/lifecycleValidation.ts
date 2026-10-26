@@ -2,6 +2,7 @@ import {
 	isConditionComplete,
 	isStageConfigured,
 } from 'lifecycle/utils/lifecycleOperators';
+import {ILifecycle} from 'shared/api/lifecycle';
 import {IStageConfig} from 'lifecycle/utils/stageConfiguration';
 
 export const isAtCharacterLimit = (value: string, maxLength: number) =>
@@ -37,6 +38,20 @@ export const getFieldErrorMessage = ({
 
 const normalizeStageName = (name: string) =>
 	name.trim().replace(/\s+/g, ' ').toLowerCase();
+
+const normalizeLifecycleName = (name: string) => name.trim().toLowerCase();
+
+export const hasLifecycleName = (
+	lifecycles: ILifecycle[],
+	name: string,
+	excludedLifecycleERC?: string
+) =>
+	lifecycles.some(
+		(lifecycle) =>
+			lifecycle.externalReferenceCode !== excludedLifecycleERC &&
+			normalizeLifecycleName(lifecycle.name ?? '') ===
+				normalizeLifecycleName(name)
+	);
 
 export const getDuplicateStageKeys = (stageConfigs: IStageConfig[]) => {
 	const keysByName = new Map<string, string[]>();

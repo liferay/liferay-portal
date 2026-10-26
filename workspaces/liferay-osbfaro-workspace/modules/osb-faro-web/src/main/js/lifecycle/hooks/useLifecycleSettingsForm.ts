@@ -11,8 +11,10 @@ import {
 	getDuplicateStageKeys,
 	getLifecycleErrorMessages,
 	getStageErrorMessages,
+	hasLifecycleName,
 	hasStageChipError,
 } from 'lifecycle/utils/lifecycleValidation';
+import {ILifecycleDetail} from 'shared/api/lifecycle';
 import {Routes, toRoute} from 'shared/util/router';
 import {useDispatch} from 'react-redux';
 import {moveItem} from 'shared/util/array';
@@ -20,6 +22,22 @@ import {useEffect, useMemo, useRef, useState} from 'react';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
 import {useLocation, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
+
+const LIFECYCLE_NAME_LOOKUP_PAGE_SIZE = 100;
+
+const NAME_IS_ALREADY_USED = 'name-is-already-used';
+
+interface IRedirect {
+	replace?: boolean;
+	url: string;
+}
+
+interface ISubmitOptions {
+	errorMessage: string;
+	redirect?: (lifecycle: ILifecycleDetail) => IRedirect;
+	run: () => Promise<ILifecycleDetail>;
+	successMessage: (lifecycle: ILifecycleDetail) => string;
+}
 
 const serializeLifecycle = (
 	name: string,
@@ -83,7 +101,11 @@ export const useLifecycleSettingsForm = ({
 
 	const [saving, setSaving] = useState(false);
 
-	const [submitted, setSubmitted] = useState(false);
+	const [nameTaken, setNameTaken] = useState(false);
+
+	const [redirect, setRedirect] = useState<IRedirect | null>(null);
+
+	const submitted = !!redirect;
 
 	const initialSnapshotRef = useRef<string | null>(null);
 
@@ -123,11 +145,6 @@ export const useLifecycleSettingsForm = ({
 		}
 	}, [catalogError, dispatch]);
 
-	const lifecycleURL = toRoute(
-		lifecycleId ? Routes.LIFECYCLE_DASHBOARD : Routes.LIFECYCLE,
-		{channelId, groupId, lifecycleId}
-	);
-
 	const backLifecycleId = lifecycleId ?? state?.lifecycleId;
 
 	const backURL = toRoute(
@@ -136,10 +153,19 @@ export const useLifecycleSettingsForm = ({
 	);
 
 	useEffect(() => {
-		if (submitted) {
-			history.push(lifecycleURL);
+		if (redirect?.replace) {
+			history.replace(redirect.url);
 		}
-	}, [history, lifecycleURL, submitted]);
+		else if (redirect) {
+			history.push(redirect.url);
+		}
+	}, [history, redirect]);
+
+	const changeLifecycleName = (name: string) => {
+		setLifecycleName(name);
+
+		setNameTaken(false);
+	};
 
 	const updateStage = (key: string, value: IStageConfig) =>
 		setStageConfigs((previous) =>
@@ -199,7 +225,16 @@ export const useLifecycleSettingsForm = ({
 	if (alertVisible) {
 		alertMessages = selectedStageErrorMessages.length
 			? selectedStageErrorMessages
-			: lifecycleErrorMessages;
+			: [
+					...lifecycleErrorMessages,
+					...(nameTaken
+						? [
+								Liferay.Language.get(
+									'this-lifecycle-name-is-currently-in-use.-please-try-a-different-one'
+								),
+							]
+						: []),
+				];
 	}
 
 	const snapshot = useMemo(
@@ -222,7 +257,35 @@ export const useLifecycleSettingsForm = ({
 	const isFieldErrorVisible = (id: string) =>
 		submitAttempted || blurredFields.includes(id);
 
-	const submit = (run: () => Promise<unknown>, successMessage: string) => {
+	const showNameTaken = () => {
+		setNameTaken(true);
+
+		setAlertVisible(true);
+
+		setAlertCount((count) => count + 1);
+
+		setSelectedKey(null);
+	};
+
+	const isNameTaken = () =>
+		API.lifecycle
+			.fetchLifecyclesPage({
+				channelId,
+				groupId: groupId!,
+				page: 1,
+				pageSize: LIFECYCLE_NAME_LOOKUP_PAGE_SIZE,
+				search: lifecycleName,
+			})
+			.then(({items}) =>
+				hasLifecycleName(items, lifecycleName, lifecycleId)
+			);
+
+	const submit = ({
+		errorMessage,
+		redirect: getRedirect = () => ({url: backURL}),
+		run,
+		successMessage,
+	}: ISubmitOptions) => {
 		if (saving) {
 			return Promise.resolve();
 		}
@@ -241,22 +304,39 @@ export const useLifecycleSettingsForm = ({
 
 		setSaving(true);
 
-		return run()
-			.then(() => {
-				dispatch(
-					addAlert({
-						alertType: Alert.Types.Success,
-						message: successMessage,
-					})
-				);
+		return isNameTaken()
+			.then((taken) => {
+				if (taken) {
+					showNameTaken();
 
-				setSubmitted(true);
+					return;
+				}
+
+				return run().then((lifecycle) => {
+					dispatch(
+						addAlert({
+							alertType: Alert.Types.Success,
+							message: successMessage(lifecycle),
+						})
+					);
+
+					setRedirect(getRedirect(lifecycle));
+				});
 			})
 			.catch((error) => {
+				if (error?.message === NAME_IS_ALREADY_USED) {
+					showNameTaken();
+
+					return;
+				}
+
 				dispatch(
 					addAlert({
 						alertType: Alert.Types.Error,
-						message: getLifecycleSaveErrorMessage(error),
+						message: getLifecycleSaveErrorMessage(
+							error,
+							errorMessage
+						),
 					})
 				);
 			})
@@ -266,8 +346,8 @@ export const useLifecycleSettingsForm = ({
 	return {
 		addStage,
 		alertCount,
-		backURL,
 		alertMessages,
+		backURL,
 		blurField,
 		catalogError,
 		catalogFields,
@@ -278,14 +358,14 @@ export const useLifecycleSettingsForm = ({
 		isFieldErrorVisible,
 		lifecycleDescription,
 		lifecycleName,
-		lifecycleURL,
 		moveStage,
+		nameTaken,
 		refetchCatalog,
 		removeStage,
 		saving,
 		selectedStage,
 		setLifecycleDescription,
-		setLifecycleName,
+		setLifecycleName: changeLifecycleName,
 		setSelectedKey,
 		stageConfigs,
 		stageErrorKeys: stageConfigs

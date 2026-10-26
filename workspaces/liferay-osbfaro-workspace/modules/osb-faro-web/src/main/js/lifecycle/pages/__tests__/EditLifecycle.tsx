@@ -115,6 +115,9 @@ describe('EditLifecycle', () => {
 
 		(API as any).lifecycle = {
 			fetchLifecycle: jest.fn(),
+			fetchLifecyclesPage: jest.fn().mockResolvedValue({
+				items: [{id: '9', name: 'Growth and Retention Hub'}],
+			}),
 			updateLifecycle: jest.fn().mockResolvedValue({}),
 		};
 
@@ -470,6 +473,57 @@ describe('EditLifecycle', () => {
 
 		expect(mockDispatch).toHaveBeenCalledWith(
 			expect.objectContaining({alertType: Alert.Types.Success})
+		);
+	});
+
+	it('saves when only the edited lifecycle uses the name', async () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		await waitFor(() =>
+			expect(API.lifecycle.updateLifecycle).toHaveBeenCalled()
+		);
+
+		expect(API.lifecycle.fetchLifecyclesPage).toHaveBeenCalledWith(
+			expect.objectContaining({
+				channelId: '123',
+				search: 'Growth and Retention Hub',
+			})
+		);
+	});
+
+	it('asks for a unique name when another lifecycle of the channel uses it', async () => {
+		(API.lifecycle.fetchLifecyclesPage as jest.Mock).mockResolvedValue({
+			items: [
+				{id: '9', name: 'Growth and Retention Hub'},
+				{id: '10', name: 'growth and retention hub'},
+			],
+		});
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		expect(
+			await screen.findByText(/this lifecycle name is currently in use/i)
+		).toBeInTheDocument();
+		expect(screen.getByText(/enter a unique name/i)).toBeInTheDocument();
+		expect(API.lifecycle.updateLifecycle).not.toHaveBeenCalled();
+	});
+
+	it('keeps the update toast after saving', async () => {
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		await waitFor(() =>
+			expect(mockDispatch).toHaveBeenCalledWith(
+				expect.objectContaining({
+					alertType: Alert.Types.Success,
+					message: expect.stringMatching(/lifecycle was updated/i),
+				})
+			)
 		);
 	});
 });

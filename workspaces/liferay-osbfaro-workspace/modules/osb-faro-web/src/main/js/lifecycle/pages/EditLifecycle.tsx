@@ -49,8 +49,9 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 	}
 
 	const handleSave = () =>
-		submit(
-			() =>
+		submit({
+			errorMessage: Liferay.Language.get('an-unexpected-error-occurred'),
+			run: () =>
 				API.lifecycle.updateLifecycle(
 					buildUpdateLifecyclePayload({
 						description: lifecycleDescription,
@@ -60,8 +61,9 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 						stageConfigs,
 					})
 				),
-			Liferay.Language.get('the-lifecycle-was-updated-successfully')
-		);
+			successMessage: () =>
+				Liferay.Language.get('the-lifecycle-was-updated-successfully'),
+		});
 
 	return (
 		<LifecycleSettingsForm

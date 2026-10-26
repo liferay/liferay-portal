@@ -3,10 +3,12 @@ import ErrorDisplay from 'shared/components/ErrorDisplay';
 import LifecycleSettingsForm from 'lifecycle/components/LifecycleSettingsForm';
 import Loading from 'shared/components/Loading';
 import React from 'react';
+import {Routes, toRoute} from 'shared/util/router';
 import {buildCreateLifecyclePayload} from 'lifecycle/utils/lifecyclePayload';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useParams} from 'react-router-dom';
+import {sub} from 'shared/util/lang';
 
 const CreateLifecycle = () => {
 	const {channelId, groupId} = useParams();
@@ -42,8 +44,19 @@ const CreateLifecycle = () => {
 	}
 
 	const handleCreate = () =>
-		submit(
-			() =>
+		submit({
+			errorMessage: Liferay.Language.get(
+				'the-creation-process-failed-to-complete.-try-again-later'
+			),
+			redirect: ({externalReferenceCode}) => ({
+				replace: true,
+				url: toRoute(Routes.LIFECYCLE_DASHBOARD, {
+					channelId,
+					groupId,
+					lifecycleId: externalReferenceCode,
+				}),
+			}),
+			run: () =>
 				API.lifecycle.createLifecycle(
 					buildCreateLifecyclePayload({
 						channelId: channelId!,
@@ -53,8 +66,11 @@ const CreateLifecycle = () => {
 						stageConfigs,
 					})
 				),
-			Liferay.Language.get('the-lifecycle-was-created-successfully')
-		);
+			successMessage: ({name}) =>
+				sub(Liferay.Language.get('x-was-created'), [
+					name || lifecycleName.trim(),
+				]) as string,
+		});
 
 	return (
 		<LifecycleSettingsForm
