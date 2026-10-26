@@ -5,7 +5,7 @@ kind: Bucket
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-overlay-bucket
-    name: {{ printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $env.projectId (printf "%s-%s" $env.deploymentName $env.projectId | sha256sum | trunc 6)) }}
+    name: {{ printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $xr.spec.projectId (printf "%s-%s-%s" $env.projectId $env.deploymentName $xr.spec.projectId | sha256sum | trunc 6)) }}
 spec:
     forProvider:
         forceDestroy: {{ $xr.spec.forceDestroy }}

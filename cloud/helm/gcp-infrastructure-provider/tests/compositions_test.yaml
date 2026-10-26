@@ -147,6 +147,16 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "printf \"%s-overlay-%s\" \\$env\\.deploymentName \\(printf \"%\\.18s-%s\" \\$projectId \\(printf \"%s-%s-%s\" \\$env\\.projectId \\$env\\.deploymentName \\$projectId \\| sha256sum \\| trunc 6\\)\\)"
+            -   documentIndex: 1
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "printf \"%s-overlay-%s\" \\$env\\.deploymentName \\(printf \"%\\.18s-%s\" \\$xr\\.spec\\.projectId \\(printf \"%s-%s-%s\" \\$env\\.projectId \\$env\\.deploymentName \\$xr\\.spec\\.projectId \\| sha256sum \\| trunc 6\\)\\)"
+        it: Names the overlay bucket after the Liferay project in both compositions
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "\\{\\{- if \\$backup\\.enabled \\}\\}\\s+\\{\\{- \\$[A-Za-z]+ := printf \"principal://[^\\n]+\\s+apiVersion: cloudplatform\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: ProjectIAMMember\\s+metadata:\\s+annotations:\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: backup-restore-cloudsql-admin"
             -   documentIndex: 0
                 matchRegex:

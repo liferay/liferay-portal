@@ -13,7 +13,6 @@
 {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
 {{- $namespace := $xr.metadata.namespace -}}
 {{- $overlayAccess := $xr.spec.overlayAccess -}}
-{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $env.projectId (printf "%s-%s" $env.deploymentName $env.projectId | sha256sum | trunc 6)) -}}
 {{- $projectId := $xr.spec.projectId -}}
 {{- $region := $env.region -}}
 {{- $restorePhase := $xr.spec.restorePhase -}}
@@ -24,6 +23,7 @@
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $gsaEmail := printf "%s@%s.iam.gserviceaccount.com" $gsaName $env.projectId -}}
 {{- $labels := merge (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) $xr.spec.commonTags -}}
+{{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $projectId (printf "%s-%s-%s" $env.projectId $env.deploymentName $projectId | sha256sum | trunc 6)) -}}
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
 
 {{- if (eq $restorePhase "promoting") -}}
