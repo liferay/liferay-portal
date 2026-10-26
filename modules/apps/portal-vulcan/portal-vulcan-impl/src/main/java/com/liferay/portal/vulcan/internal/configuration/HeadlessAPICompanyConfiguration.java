@@ -23,6 +23,12 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface HeadlessAPICompanyConfiguration {
 
 	@Meta.AD(
+		deflt = "1", description = "graphql-batch-operation-limit-description",
+		name = "graphql-batch-operation-limit", required = false
+	)
+	public int graphQLBatchOperationLimit();
+
+	@Meta.AD(
 		deflt = "500", description = "page-size-limit-description",
 		name = "page-size-limit", required = false
 	)
