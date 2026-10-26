@@ -92,22 +92,7 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 		stopWatch.start();
 
 		try {
-			int end = searchContext.getEnd();
 			int start = searchContext.getStart();
-
-			SearchRequest searchRequest = _getSearchRequest(searchContext);
-
-			Integer from = searchRequest.getFrom();
-			Integer size = searchRequest.getSize();
-
-			if ((from == null) && (size != null)) {
-				end = size;
-				start = 0;
-			}
-			else if ((from != null) && (size != null)) {
-				end = from + size;
-				start = from;
-			}
 
 			if (start == QueryUtil.ALL_POS) {
 				start = 0;
@@ -115,6 +100,8 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 			else if (start < 0) {
 				throw new IllegalArgumentException("Invalid start " + start);
 			}
+
+			int end = searchContext.getEnd();
 
 			if (end == QueryUtil.ALL_POS) {
 				end = GetterUtil.getInteger(
@@ -130,6 +117,8 @@ public class OpenSearchIndexSearcher extends BaseIndexSearcher {
 			if ((end - start) > maxResultWindow) {
 				end = start + maxResultWindow;
 			}
+
+			SearchRequest searchRequest = _getSearchRequest(searchContext);
 
 			SearchResponseBuilder searchResponseBuilder =
 				_getSearchResponseBuilder(searchContext);
