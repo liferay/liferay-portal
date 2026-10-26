@@ -15,28 +15,14 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface CommercePriceModifierRelFinder {
 
 	public int countCategoriesByCommercePriceModifierId(
-		long commercePriceModifierId, String name);
-
-	public int countCategoriesByCommercePriceModifierId(
 		long commercePriceModifierId, String name, boolean inlineSQLHelper);
-
-	public int countCPDefinitionsByCommercePriceModifierId(
-		long commercePriceModifierId, String name, String languageId);
 
 	public int countCPDefinitionsByCommercePriceModifierId(
 		long commercePriceModifierId, String name, String languageId,
 		boolean inlineSQLHelper);
 
 	public int countPricingClassesByCommercePriceModifierId(
-		long commercePriceModifierId, String title);
-
-	public int countPricingClassesByCommercePriceModifierId(
 		long commercePriceModifierId, String title, boolean inlineSQLHelper);
-
-	public java.util.List
-		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
-			findCategoriesByCommercePriceModifierId(
-				long commercePriceModifierId, String name, int start, int end);
 
 	public java.util.List
 		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
@@ -48,18 +34,7 @@ public interface CommercePriceModifierRelFinder {
 		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
 			findCPDefinitionsByCommercePriceModifierId(
 				long commercePriceModifierId, String name, String languageId,
-				int start, int end);
-
-	public java.util.List
-		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
-			findCPDefinitionsByCommercePriceModifierId(
-				long commercePriceModifierId, String name, String languageId,
 				int start, int end, boolean inlineSQLHelper);
-
-	public java.util.List
-		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
-			findPricingClassesByCommercePriceModifierId(
-				long commercePriceModifierId, String title, int start, int end);
 
 	public java.util.List
 		<com.liferay.commerce.pricing.model.CommercePriceModifierRel>
@@ -68,4 +43,4 @@ public interface CommercePriceModifierRelFinder {
 				boolean inlineSQLHelper);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1381804596
+// LIFERAY-SERVICE-BUILDER-HASH:1189690203

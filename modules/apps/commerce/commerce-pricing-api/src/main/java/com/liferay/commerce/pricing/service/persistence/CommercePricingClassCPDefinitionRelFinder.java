@@ -15,17 +15,8 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface CommercePricingClassCPDefinitionRelFinder {
 
 	public int countByCommercePricingClassId(
-		long commercePricingClassId, String name, String languageId);
-
-	public int countByCommercePricingClassId(
 		long commercePricingClassId, String name, String languageId,
 		boolean inlineSQLHelper);
-
-	public java.util.List
-		<com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel>
-			findByCommercePricingClassId(
-				long commercePricingClassId, String name, String languageId,
-				int start, int end);
 
 	public java.util.List
 		<com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel>
@@ -34,4 +25,4 @@ public interface CommercePricingClassCPDefinitionRelFinder {
 				int start, int end, boolean inlineSQLHelper);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-550647114
+// LIFERAY-SERVICE-BUILDER-HASH:-671774505
