@@ -20,6 +20,7 @@ import com.liferay.dynamic.data.mapping.test.util.DDMFormValuesTestUtil;
 import com.liferay.dynamic.data.mapping.util.DDMFormFactory;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
@@ -307,6 +308,34 @@ public class DDMRESTDataProviderTest {
 		Assert.assertEquals(
 			firstName + StringPool.SPACE + lastName,
 			ddmDataProviderResponse.getOutput(outputParameterId, String.class));
+	}
+
+	@Test
+	public void testGetDataWithLocalNetworkAccessDisabled() throws Exception {
+		_setUserPermissionChecker(false);
+
+		long ddmDataProviderId = _addDDMDataProviderInstance(
+			_createDDMDataProviderDDMFormValues(
+				false, false, null, null, null, null, null, null, null,
+				_getCountriesURL),
+			false);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					DDMDataProviderConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"accessLocalNetwork", false
+					).build())) {
+
+			DDMDataProviderResponse ddmDataProviderResponse =
+				_ddmDataProvider.getData(
+					_createDDMDataProviderRequest(
+						ddmDataProviderId, null, null, null, null, null, null));
+
+			Assert.assertEquals(
+				DDMDataProviderResponseStatus.SERVICE_UNAVAILABLE,
+				ddmDataProviderResponse.getStatus());
+		}
 	}
 
 	@Test
