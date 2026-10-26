@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.text.DateFormat;
@@ -83,12 +84,16 @@ public class ObjectEntryInfoItemCreator
 			Map<String, Object> curProperties = _getProperties(
 				infoItemFieldValues, objectDefinition, themeDisplay);
 
+			DTOConverterContext dtoConverterContext =
+				new DefaultDTOConverterContext(
+					false, null, null, null, null, themeDisplay.getLocale(),
+					null, themeDisplay.getUser());
+
+			dtoConverterContext.setAttribute("addActions", Boolean.FALSE);
+
 			com.liferay.object.rest.dto.v1_0.ObjectEntry objectEntry =
 				objectEntryManager.addObjectEntry(
-					new DefaultDTOConverterContext(
-						false, null, null, null, null, themeDisplay.getLocale(),
-						null, themeDisplay.getUser()),
-					objectDefinition,
+					dtoConverterContext, objectDefinition,
 					new com.liferay.object.rest.dto.v1_0.ObjectEntry() {
 						{
 							setDisplayDate(

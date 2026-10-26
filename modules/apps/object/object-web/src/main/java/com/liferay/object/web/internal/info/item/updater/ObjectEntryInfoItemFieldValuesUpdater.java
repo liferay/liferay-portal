@@ -130,6 +130,8 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 					false, null, null, null, null, themeDisplay.getLocale(),
 					null, themeDisplay.getUser());
 
+			dtoConverterContext.setAttribute("addActions", Boolean.FALSE);
+
 			_deleteRelatedObjectEntries(
 				themeDisplay.getCompanyId(), dtoConverterContext,
 				infoItemFieldValues, objectEntry, scopeKey);
@@ -223,6 +225,8 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 				new DefaultDTOConverterContext(
 					false, null, null, null, null, themeDisplay.getLocale(),
 					null, themeDisplay.getUser());
+
+			updateDTOConverterContext.setAttribute("addActions", Boolean.FALSE);
 
 			if (objectEntryManager instanceof
 					DefaultObjectEntryManager defaultObjectEntryManager) {
