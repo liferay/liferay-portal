@@ -111,6 +111,12 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 				Group group = _groupLocalService.fetchGroup(groupId);
 
 				if (group != null) {
+					if (_stagingGroupHelper.isCompanyGroup(group)) {
+						throw new IllegalArgumentException(
+							"Group " + groupId +
+								" is the export/import company group");
+					}
+
 					companyId = group.getCompanyId();
 				}
 
