@@ -13,6 +13,10 @@ import com.liferay.exportimport.kernel.lar.ExportImportDateUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.exportimport.rest.client.dto.v1_0.DateFilter;
+import com.liferay.exportimport.rest.client.dto.v1_0.DateRangeDateFilter;
+import com.liferay.exportimport.rest.client.dto.v1_0.FromLastPublishDateFilter;
+import com.liferay.exportimport.rest.client.dto.v1_0.LastHoursDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerBoolean;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
@@ -141,9 +145,7 @@ public class ScheduledPublishProcessResourceTest
 		PublishProcessRequest publishProcessRequest =
 			scheduledPublishProcessRequest.getPublishProcessRequest();
 
-		Assert.assertEquals(
-			PublishProcessRequest.DateRangeType.ALL,
-			publishProcessRequest.getDateRangeType());
+		Assert.assertNull(publishProcessRequest.getDateFilter());
 		Assert.assertEquals(
 			scheduledPublishProcess.getName(), publishProcessRequest.getName());
 	}
@@ -172,7 +174,7 @@ public class ScheduledPublishProcessResourceTest
 		Assert.assertEquals(
 			publishProcessName, getScheduledPublishProcess.getName());
 
-		_testPostSiteScheduledPublishProcessWithDateRangeType();
+		_testPostSiteScheduledPublishProcessWithDateFilter();
 		_testPostSiteScheduledPublishProcessWithInvalidCronExpression();
 		_testPostSiteScheduledPublishProcessWithInvalidTimeZoneId();
 		_testPostSiteScheduledPublishProcessWithOneTimeCronExpression();
@@ -227,9 +229,7 @@ public class ScheduledPublishProcessResourceTest
 	}
 
 	private void _assertScheduledPublishProcess(
-			String expectedRange,
-			PublishProcessRequest.DateRangeType publishProcessDateRangeType,
-			Date publishProcessStartDate, Date publishProcessEndDate,
+			String expectedRange, DateFilter publishProcessDateFilter,
 			PortletDataHandler... publishProcessPortletDataHandlers)
 		throws Exception {
 
@@ -241,12 +241,10 @@ public class ScheduledPublishProcessResourceTest
 						cronExpression = _CRON_EXPRESSION;
 						publishProcessRequest = new PublishProcessRequest() {
 							{
-								dateRangeType = publishProcessDateRangeType;
-								endDate = publishProcessEndDate;
+								dateFilter = publishProcessDateFilter;
 								name = RandomTestUtil.randomString();
 								portletDataHandlers =
 									publishProcessPortletDataHandlers;
-								startDate = publishProcessStartDate;
 							}
 						};
 						timeZoneId = "UTC";
@@ -259,9 +257,15 @@ public class ScheduledPublishProcessResourceTest
 		PublishProcessRequest publishProcessRequest =
 			scheduledPublishProcessRequest.getPublishProcessRequest();
 
-		Assert.assertEquals(
-			_toDateRangeType(expectedRange),
-			publishProcessRequest.getDateRangeType());
+		DateFilter dateFilter = publishProcessRequest.getDateFilter();
+
+		if (publishProcessDateFilter == null) {
+			Assert.assertNull(dateFilter);
+		}
+		else {
+			Assert.assertEquals(
+				publishProcessDateFilter.getType(), dateFilter.getType());
+		}
 
 		if (ArrayUtil.isNotEmpty(publishProcessPortletDataHandlers)) {
 			PortletDataHandler portletDataHandler = null;
@@ -331,12 +335,16 @@ public class ScheduledPublishProcessResourceTest
 		}
 
 		if (expectedRange.equals(ExportImportDateUtil.RANGE_DATE_RANGE)) {
+			DateRangeDateFilter dateRangeDateFilter =
+				(DateRangeDateFilter)publishProcessDateFilter;
+
 			Assert.assertEquals(
-				publishProcessEndDate != null,
+				dateRangeDateFilter.getEndDate() != null,
 				parameterMap.containsKey("endDateSecond"));
 			Assert.assertEquals(
-				publishProcessEndDate != null,
+				dateRangeDateFilter.getEndDate() != null,
 				parameterMap.containsKey("endDateYear"));
+
 			Assert.assertTrue(parameterMap.containsKey("startDateSecond"));
 			Assert.assertTrue(parameterMap.containsKey("startDateYear"));
 		}
@@ -345,31 +353,25 @@ public class ScheduledPublishProcessResourceTest
 		}
 	}
 
-	private void _testPostSiteScheduledPublishProcessWithDateRangeType()
+	private void _testPostSiteScheduledPublishProcessWithDateFilter()
 		throws Exception {
 
 		long time = System.currentTimeMillis();
 
+		_assertScheduledPublishProcess(ExportImportDateUtil.RANGE_ALL, null);
 		_assertScheduledPublishProcess(
-			ExportImportDateUtil.RANGE_ALL, null, null, null);
+			ExportImportDateUtil.RANGE_DATE_RANGE,
+			_toDateRangeDateFilter(
+				new Date(time - (2 * Time.HOUR)), new Date(time - Time.HOUR)));
 		_assertScheduledPublishProcess(
-			ExportImportDateUtil.RANGE_LAST,
-			PublishProcessRequest.DateRangeType.LAST,
-			new Date(time - Time.HOUR), null);
-		_assertScheduledPublishProcess(
-			ExportImportDateUtil.RANGE_DATE_RANGE, null,
-			new Date(time - (2 * Time.HOUR)), new Date(time - Time.HOUR));
-		_assertScheduledPublishProcess(
-			ExportImportDateUtil.RANGE_DATE_RANGE, null,
-			new Date(time - (2 * Time.HOUR)), null);
+			ExportImportDateUtil.RANGE_DATE_RANGE,
+			_toDateRangeDateFilter(new Date(time - (2 * Time.HOUR)), null));
 		_assertScheduledPublishProcess(
 			ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE,
-			PublishProcessRequest.DateRangeType.FROM_LAST_PUBLISH_DATE, null,
-			null);
+			_toFromLastPublishDateFilter());
 		_assertScheduledPublishProcess(
 			ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE,
-			PublishProcessRequest.DateRangeType.FROM_LAST_PUBLISH_DATE, null,
-			null,
+			_toFromLastPublishDateFilter(),
 			new PortletDataHandler() {
 				{
 					name =
@@ -390,6 +392,14 @@ public class ScheduledPublishProcessResourceTest
 								}
 							}
 						};
+				}
+			});
+		_assertScheduledPublishProcess(
+			ExportImportDateUtil.RANGE_LAST,
+			new LastHoursDateFilter() {
+				{
+					hours = 1;
+					type = Type.LAST_HOURS;
 				}
 			});
 	}
@@ -631,20 +641,24 @@ public class ScheduledPublishProcessResourceTest
 			timeZone.getID(), scheduledPublishProcessRequest.getTimeZoneId());
 	}
 
-	private PublishProcessRequest.DateRangeType _toDateRangeType(String range) {
-		if (range.equals(ExportImportDateUtil.RANGE_DATE_RANGE)) {
-			return PublishProcessRequest.DateRangeType.DATE_RANGE;
-		}
+	private DateRangeDateFilter _toDateRangeDateFilter(
+		Date dateRangeDateFilterStartDate, Date dateRangeDateFilterEndDate) {
 
-		if (range.equals(ExportImportDateUtil.RANGE_FROM_LAST_PUBLISH_DATE)) {
-			return PublishProcessRequest.DateRangeType.FROM_LAST_PUBLISH_DATE;
-		}
+		return new DateRangeDateFilter() {
+			{
+				endDate = dateRangeDateFilterEndDate;
+				startDate = dateRangeDateFilterStartDate;
+				type = Type.DATE_RANGE;
+			}
+		};
+	}
 
-		if (range.equals(ExportImportDateUtil.RANGE_LAST)) {
-			return PublishProcessRequest.DateRangeType.LAST;
-		}
-
-		return PublishProcessRequest.DateRangeType.ALL;
+	private FromLastPublishDateFilter _toFromLastPublishDateFilter() {
+		return new FromLastPublishDateFilter() {
+			{
+				type = Type.FROM_LAST_PUBLISH_DATE;
+			}
+		};
 	}
 
 	private PublishProcessRequest _toPublishProcessRequest(

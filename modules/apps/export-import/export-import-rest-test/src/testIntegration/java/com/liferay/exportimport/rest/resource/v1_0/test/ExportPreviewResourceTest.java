@@ -8,6 +8,7 @@ package com.liferay.exportimport.rest.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.rest.client.dto.v1_0.Choice;
+import com.liferay.exportimport.rest.client.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerBoolean;
@@ -67,6 +68,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -156,29 +159,32 @@ public class ExportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			404,
 			_exportPreviewResource.getAssetLibraryExportPreviewHttpResponse(
-				externalReferenceCode, null, null, 0L, null, null));
+				externalReferenceCode, null, null, null, 0L, null, null));
 
 		_testGetExportPreviewWithDateFilter(
 			_depotObjectDefinition,
 			(startDate, endDate) ->
 				exportPreviewResource.getAssetLibraryExportPreview(
-					externalReferenceCode, null, endDate, 0L, null, startDate));
+					externalReferenceCode,
+					_toDateFilterType(endDate, startDate), endDate, null, 0L,
+					null, startDate));
 		_testGetExportPreviewWithDateFilter(
 			_depotObjectDefinition,
 			(startDate, endDate) ->
 				exportPreviewResource.getAssetLibraryExportPreview(
-					externalReferenceCode, null, endDate, 0L, portletId,
-					startDate));
+					externalReferenceCode,
+					_toDateFilterType(endDate, startDate), endDate, null, 0L,
+					portletId, startDate));
 		_testGetExportPreviewWithDifferentScope(
 			exportPreviewResource.getAssetLibraryExportPreview(
-				externalReferenceCode, null, null, 0L, null, null),
+				externalReferenceCode, null, null, null, 0L, null, null),
 			_companyObjectDefinition, _siteObjectDefinition);
 
 		long plid = _addLayoutWithPortlet(testDepotEntryGroup, portletId);
 
 		_testGetPortletExportPreview(
 			exportPreviewResource.getAssetLibraryExportPreview(
-				externalReferenceCode, null, null, plid, portletId, null),
+				externalReferenceCode, null, null, null, plid, portletId, null),
 			portletId);
 	}
 
@@ -190,30 +196,33 @@ public class ExportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			404,
 			_exportPreviewResource.getExportPreviewHttpResponse(
-				null, null, 0L, null, null));
+				null, null, null, 0L, null, null));
 
 		_testGetExportPreviewWithDateFilter(
 			_companyObjectDefinition,
 			(startDate, endDate) -> exportPreviewResource.getExportPreview(
-				null, endDate, 0L, null, startDate));
+				_toDateFilterType(endDate, startDate), endDate, null, 0L, null,
+				startDate));
 		_testGetExportPreviewWithDateFilter(
 			_companyObjectDefinition,
 			(startDate, endDate) -> exportPreviewResource.getExportPreview(
-				null, endDate, 0L, portletId, startDate));
+				_toDateFilterType(endDate, startDate), endDate, null, 0L,
+				portletId, startDate));
 		_testGetExportPreviewWithDeletions(
 			GroupConstants.DEFAULT_PARENT_GROUP_ID,
 			ObjectDefinitionConstants.SCOPE_COMPANY,
 			() -> exportPreviewResource.getExportPreview(
-				null, null, 0L, null, null));
+				null, null, null, 0L, null, null));
 		_testGetExportPreviewWithDifferentScope(
-			exportPreviewResource.getExportPreview(null, null, 0L, null, null),
+			exportPreviewResource.getExportPreview(
+				null, null, null, 0L, null, null),
 			_depotObjectDefinition, _siteObjectDefinition);
 
 		long plid = _addLayoutWithPortlet(testGroup, portletId);
 
 		_testGetPortletExportPreview(
 			exportPreviewResource.getExportPreview(
-				null, null, plid, portletId, null),
+				null, null, null, plid, portletId, null),
 			portletId);
 	}
 
@@ -227,35 +236,39 @@ public class ExportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			404,
 			_exportPreviewResource.getSiteExportPreviewHttpResponse(
-				externalReferenceCode, null, null, 0L, null, null));
+				externalReferenceCode, null, null, null, 0L, null, null));
 
 		_testGetExportPreviewWithDateFilter(
 			_siteObjectDefinition,
 			(startDate, endDate) -> exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, endDate, 0L, null, startDate));
+				externalReferenceCode, _toDateFilterType(startDate, endDate),
+				endDate, null, 0L, null, startDate));
 		_testGetExportPreviewWithDateFilter(
 			_siteObjectDefinition,
 			(startDate, endDate) -> exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, endDate, 0L, portletId,
-				startDate));
+				externalReferenceCode, _toDateFilterType(startDate, endDate),
+				endDate, null, 0L, portletId, startDate));
 		_testGetExportPreviewWithDeletions(
 			testGroup.getGroupId(), ObjectDefinitionConstants.SCOPE_SITE,
 			() -> exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, null, 0L, null, null));
+				externalReferenceCode, null, null, null, 0L, null, null));
 		_testGetExportPreviewWithDifferentScope(
 			exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, null, 0L, null, null),
+				externalReferenceCode, null, null, null, 0L, null, null),
 			_companyObjectDefinition, _depotObjectDefinition);
 		_testGetExportPreviewWithLayoutSet(
 			(startDate, endDate) -> exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, endDate, 0L, null, startDate));
+				externalReferenceCode, _toDateFilterType(startDate, endDate),
+				endDate, null, 0L, null, startDate));
+		_testGetSiteExportPreviewWithFromLastPublishDateFilter(
+			externalReferenceCode);
 		_testGetSiteExportPreviewWithLayoutPageTemplateEntries();
 
 		long plid = _addLayoutWithPortlet(testGroup, portletId);
 
 		_testGetPortletExportPreview(
 			exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, null, plid, portletId, null),
+				externalReferenceCode, null, null, null, plid, portletId, null),
 			portletId);
 		_testGetSiteExportPreviewWithGroupPermissions(
 			externalReferenceCode, plid, portletId);
@@ -615,6 +628,23 @@ public class ExportPreviewResourceTest
 				portletDataHandlers[0].getPortletDataHandlerControls()));
 	}
 
+	private void _testGetSiteExportPreviewWithFromLastPublishDateFilter(
+			String externalReferenceCode)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				exportPreviewResource.getSiteExportPreviewHttpResponse(
+					externalReferenceCode, "FromLastPublishDate", null, null,
+					0L, null, null));
+		}
+	}
+
 	@TestInfo("LPD-105790")
 	private void _testGetSiteExportPreviewWithGroupPermissions(
 			String externalReferenceCode, long plid, String portletId)
@@ -626,7 +656,8 @@ public class ExportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			404,
 			_exportPreviewResource.getSiteExportPreviewHttpResponse(
-				externalReferenceCode, null, null, plid, portletId, null));
+				externalReferenceCode, null, null, null, plid, portletId,
+				null));
 
 		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -643,13 +674,13 @@ public class ExportPreviewResourceTest
 
 		_testGetPortletExportPreview(
 			_exportPreviewResource.getSiteExportPreview(
-				externalReferenceCode, null, null, plid, portletId, null),
+				externalReferenceCode, null, null, null, plid, portletId, null),
 			portletId);
 
 		assertHttpResponseStatusCode(
 			404,
 			_exportPreviewResource.getSiteExportPreviewHttpResponse(
-				externalReferenceCode, null, null, 0L, null, null));
+				externalReferenceCode, null, null, null, 0L, null, null));
 
 		RoleTestUtil.addResourcePermission(
 			_role, Group.class.getName(), ResourceConstants.SCOPE_GROUP,
@@ -659,7 +690,7 @@ public class ExportPreviewResourceTest
 		assertHttpResponseStatusCode(
 			200,
 			_exportPreviewResource.getSiteExportPreviewHttpResponse(
-				externalReferenceCode, null, null, 0L, null, null));
+				externalReferenceCode, null, null, null, 0L, null, null));
 	}
 
 	@TestInfo({"LPD-67433", "LPD-90359"})
@@ -696,8 +727,8 @@ public class ExportPreviewResourceTest
 
 		PortletDataHandler portletDataHandler = _getPortletDataHandler(
 			exportPreviewResource.getSiteExportPreview(
-				testGroup.getExternalReferenceCode(), null, null, 0L, null,
-				null),
+				testGroup.getExternalReferenceCode(), null, null, null, 0L,
+				null, null),
 			"PORTLET_DATA_" +
 				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES);
 
@@ -757,7 +788,8 @@ public class ExportPreviewResourceTest
 
 		PortletDataHandler portletDataHandler = _getPortletDataHandler(
 			exportPreviewResource.getSiteExportPreview(
-				group.getExternalReferenceCode(), null, null, 0L, null, null),
+				group.getExternalReferenceCode(), null, null, null, 0L, null,
+				null),
 			"PORTLET_DATA_" + LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS);
 
 		Assert.assertNull(_getChoice(portletDataHandler, "public-pages"));
@@ -769,6 +801,14 @@ public class ExportPreviewResourceTest
 			GetterUtil.getLong(choice.getAdditionCount()));
 		Assert.assertEquals(
 			choice.getAdditionCount(), portletDataHandler.getAdditionCount());
+	}
+
+	private String _toDateFilterType(Date startDate, Date endDate) {
+		if ((startDate == null) && (endDate == null)) {
+			return null;
+		}
+
+		return String.valueOf(DateFilter.Type.DATE_RANGE);
 	}
 
 	private ObjectDefinition _companyObjectDefinition;

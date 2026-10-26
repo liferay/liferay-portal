@@ -134,7 +134,7 @@ public class ExportImportInstancePerformanceTest {
 		throws Exception {
 
 		ExportPreview exportPreview = _exportPreviewResource.getExportPreview(
-			null, null, null, null, null);
+			null, null, null, null, null, null);
 
 		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
 

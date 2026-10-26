@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
+import com.liferay.exportimport.rest.client.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
@@ -324,9 +325,14 @@ public class PublishProcessResourceTest
 					testGroup.getExternalReferenceCode(),
 					new PublishProcessRequest() {
 						{
-							endDate = new Date(time - Time.HOUR);
+							dateFilter = new DateRangeDateFilter() {
+								{
+									endDate = new Date(time - Time.HOUR);
+									startDate = new Date(time);
+									type = Type.DATE_RANGE;
+								}
+							};
 							name = RandomTestUtil.randomString();
-							startDate = new Date(time);
 						}
 					}));
 		}

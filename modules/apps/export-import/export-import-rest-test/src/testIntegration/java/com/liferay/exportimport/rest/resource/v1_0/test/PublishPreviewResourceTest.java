@@ -6,9 +6,9 @@
 package com.liferay.exportimport.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.exportimport.rest.client.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishPreview;
-import com.liferay.exportimport.rest.client.dto.v1_0.PublishProcessRequest;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -56,7 +56,8 @@ public class PublishPreviewResourceTest
 				assertHttpResponseStatusCode(
 					400,
 					publishPreviewResource.getSitePublishPreviewHttpResponse(
-						group.getExternalReferenceCode(), null, null, null));
+						group.getExternalReferenceCode(), null, null, null,
+						null));
 			}
 			finally {
 				GroupTestUtil.deleteGroup(group);
@@ -71,7 +72,7 @@ public class PublishPreviewResourceTest
 
 		PublishPreview publishPreview =
 			publishPreviewResource.getSitePublishPreview(
-				testGroup.getExternalReferenceCode(), null, null, null);
+				testGroup.getExternalReferenceCode(), null, null, null, null);
 
 		Assert.assertNotNull(publishPreview.getAdditionCount());
 
@@ -83,8 +84,7 @@ public class PublishPreviewResourceTest
 		PublishPreview lastPublishDatePublishPreview =
 			publishPreviewResource.getSitePublishPreview(
 				testGroup.getExternalReferenceCode(),
-				String.valueOf(
-					PublishProcessRequest.DateRangeType.FROM_LAST_PUBLISH_DATE),
+				String.valueOf(DateFilter.Type.FROM_LAST_PUBLISH_DATE), null,
 				null, null);
 
 		Assert.assertNotNull(lastPublishDatePublishPreview.getAdditionCount());

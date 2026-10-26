@@ -7,9 +7,11 @@ package com.liferay.exportimport.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
+import com.liferay.exportimport.rest.client.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcessRequest;
+import com.liferay.exportimport.rest.client.dto.v1_0.FromLastPublishDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerBoolean;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
@@ -902,22 +904,19 @@ public class ExportProcessResourceTest
 						exportProcessResource.postExportProcess(
 							0L, null, exportProcessRequest),
 					objectDefinition,
-					exportProcessRequest -> {
-						exportProcessRequest.setEndDate(
-							new Date(time - Time.DAY));
-						exportProcessRequest.setStartDate(
-							new Date(time - (2 * Time.DAY)));
-					}),
+					exportProcessRequest -> exportProcessRequest.setDateFilter(
+						_toDateRangeDateFilter(
+							new Date(time - (2 * Time.DAY)),
+							new Date(time - Time.DAY)))),
 				groupId, objectDefinition));
 
 		ExportProcess exportProcess = _postExportProcess(
 			exportProcessRequest -> exportProcessResource.postExportProcess(
 				0L, null, exportProcessRequest),
 			objectDefinition,
-			exportProcessRequest -> {
-				exportProcessRequest.setEndDate(new Date(time));
-				exportProcessRequest.setStartDate(new Date(time - Time.HOUR));
-			});
+			exportProcessRequest -> exportProcessRequest.setDateFilter(
+				_toDateRangeDateFilter(
+					new Date(time - Time.HOUR), new Date(time))));
 
 		_assertExportedExternalReferenceCodes(
 			_backgroundTaskLocalService.getBackgroundTask(
@@ -942,10 +941,21 @@ public class ExportProcessResourceTest
 
 			long time = System.currentTimeMillis();
 
-			exportProcessRequest.setEndDate(new Date(time - Time.DAY));
+			exportProcessRequest.setDateFilter(
+				_toDateRangeDateFilter(
+					new Date(time), new Date(time - Time.DAY)));
 
 			exportProcessRequest.setName(RandomTestUtil.randomString());
-			exportProcessRequest.setStartDate(new Date(time));
+
+			assertHttpResponseStatusCode(
+				400, unsafeFunction.apply(exportProcessRequest));
+
+			exportProcessRequest.setDateFilter(
+				new FromLastPublishDateFilter() {
+					{
+						type = Type.FROM_LAST_PUBLISH_DATE;
+					}
+				});
 
 			assertHttpResponseStatusCode(
 				400, unsafeFunction.apply(exportProcessRequest));
@@ -1122,8 +1132,8 @@ public class ExportProcessResourceTest
 
 		ExportPreview exportPreview =
 			exportPreviewResource.getSiteExportPreview(
-				testGroup.getExternalReferenceCode(), null, null, 0L, null,
-				null);
+				testGroup.getExternalReferenceCode(), null, null, null, 0L,
+				null, null);
 
 		PortletDataHandler[] portletDataHandlers =
 			exportPreview.getPortletDataHandlers();
@@ -1330,6 +1340,18 @@ public class ExportProcessResourceTest
 					_toExportProcessRequest(
 						_toLayoutSetPortletDataHandler(null, "public-pages"))));
 		}
+	}
+
+	private DateRangeDateFilter _toDateRangeDateFilter(
+		Date dateRangeDateFilterStartDate, Date dateRangeDateFilterEndDate) {
+
+		return new DateRangeDateFilter() {
+			{
+				endDate = dateRangeDateFilterEndDate;
+				startDate = dateRangeDateFilterStartDate;
+				type = Type.DATE_RANGE;
+			}
+		};
 	}
 
 	private ExportProcessRequest _toExportProcessRequest(
