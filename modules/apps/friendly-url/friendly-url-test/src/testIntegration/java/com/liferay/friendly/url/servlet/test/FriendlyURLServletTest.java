@@ -1486,17 +1486,25 @@ public class FriendlyURLServletTest {
 			Layout layout)
 		throws Throwable {
 
+		Object expectedRedirect = _redirectConstructor1.newInstance(
+			_portal.getLayoutActualURL(layout, Portal.PATH_MAIN));
+		String friendlyURLPath = getPath(_group, layout);
+
+		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
+
+		_testGetRedirectForUser(
+			expectedRedirect, HttpServletResponse.SC_OK, friendlyURLPath, false,
+			guestUser);
+		_testGetRedirectForUser(
+			expectedRedirect, HttpServletResponse.SC_OK, friendlyURLPath, true,
+			guestUser);
+
 		RoleTestUtil.removeResourcePermission(
 			RoleConstants.GUEST, Layout.class.getName(),
 			ResourceConstants.SCOPE_INDIVIDUAL,
 			String.valueOf(layout.getPlid()), ActionKeys.VIEW);
 
-		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
-
-		String friendlyURLPath = getPath(_group, layout);
-
-		Object expectedRedirect = _redirectConstructor1.newInstance(
-			getURL(_layout));
+		expectedRedirect = _redirectConstructor1.newInstance(getURL(_layout));
 
 		_testGetRedirectForUser(
 			expectedRedirect, HttpServletResponse.SC_NOT_FOUND, friendlyURLPath,
