@@ -3,7 +3,6 @@
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
 {{- range $i, $dataPlane := $dataPlanes }}
-{{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
 {{- $rootPasswordName := printf "liferay-database-%s-root-password" $dataPlane }}
 {{- if $i }}
 ---
@@ -59,6 +58,25 @@ spec:
     managementPolicies: {{ $managementPolicies }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
+kind: Database
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $databaseName }}
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
+    labels:
+        dataPlane: {{ $dataPlane }}
+    name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
+spec:
+    forProvider:
+        charset: UTF8
+        collation: en_US.UTF8
+        instanceSelector:
+            matchLabels:
+                dataPlane: {{ $dataPlane }}
+    managementPolicies: ["Create", "Observe", "Update"]
+---
+{{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
+apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: DatabaseInstance
 metadata:
     annotations:
@@ -104,24 +122,6 @@ spec:
             userLabels:
                 {{- merge (dict "active" (eq $dataPlane $activeDataPlane | toString)) $backupTargetLabels | toYaml | nindent 16 }}
     managementPolicies: {{ $xr.spec.backup.enabled | ternary ((list "*") | toJson) $managementPolicies }}
----
-apiVersion: sql.gcp.m.upbound.io/v1beta1
-kind: Database
-metadata:
-    annotations:
-        crossplane.io/external-name: {{ $databaseName }}
-        gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
-    labels:
-        dataPlane: {{ $dataPlane }}
-    name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
-spec:
-    forProvider:
-        charset: UTF8
-        collation: en_US.UTF8
-        instanceSelector:
-            matchLabels:
-                dataPlane: {{ $dataPlane }}
-    managementPolicies: ["Create", "Observe", "Update"]
 {{- if not (and (eq $dataPlane $targetActiveDataPlane) (eq $restorePhase "provisioning")) }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1

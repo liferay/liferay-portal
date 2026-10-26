@@ -16,14 +16,14 @@ spec:
                 name: liferay-default
                 namespace: {{ $namespace }}
 {{- range $dataPlane := $dataPlanes }}
-{{- $dbReady := false }}
-{{- $observedDatabase := dig (printf "database-primary-%s" $dataPlane) "resource" dict $observedResources }}
-{{- range $condition := dig "status" "conditions" list $observedDatabase }}
+{{- $isDatabaseInstanceReady := false }}
+{{- $observedDatabaseInstance := dig (printf "database-primary-%s" $dataPlane) "resource" dict $observedResources }}
+{{- range $condition := dig "status" "conditions" list $observedDatabaseInstance }}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
-        {{- $dbReady = true }}
+        {{- $isDatabaseInstanceReady = true }}
     {{- end }}
 {{- end }}
-{{- if and $dbReady (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
+{{- if and $isDatabaseInstanceReady (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
 {{- $jobName := printf "%s-db-grant-%s" $xr.metadata.name $dataPlane }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
@@ -128,7 +128,7 @@ spec:
                                     -   --port={{ $databasePort }}
                                     -   --private-ip
                                     -   --structured-logs
-                                    -   "{{ dig "status" "atProvider" "connectionName" "" $observedDatabase }}"
+                                    -   "{{ dig "status" "atProvider" "connectionName" "" $observedDatabaseInstance }}"
                                 image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
                                 name: cloud-sql-proxy
                                 resources:
@@ -158,20 +158,20 @@ spec:
                         volumes:
                             -   emptyDir: {}
                                 name: term-log
-    managementPolicies: ["Create", "Observe", "Delete"]
+    managementPolicies: ["Create", "Delete", "Observe"]
     readiness:
         celQuery: object.status.succeeded == 1
         policy: DeriveFromCelQuery
 {{- end }}
 {{- end }}
 ---
-{{- $isReady := false }}
+{{- $isDatabaseBootstrapped := false }}
 {{- range $condition := dig (printf "liferay-db-grant-job-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
-        {{- $isReady = true }}
+        {{- $isDatabaseBootstrapped = true }}
     {{- end }}
 {{- end }}
-{{- if $isReady }}
+{{- if $isDatabaseBootstrapped }}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -222,4 +222,4 @@ spec:
 apiVersion: liferay.com/v1alpha1
 kind: LiferayInfrastructure
 status:
-    managedServiceDetailsReady: {{ $isReady }}
+    managedServiceDetailsReady: {{ $isDatabaseBootstrapped }}

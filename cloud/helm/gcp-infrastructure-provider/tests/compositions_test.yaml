@@ -37,12 +37,6 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "deletionProtection: \\{\\{ and \\(not \\$forceDestroy\\) \\(eq \\$dataPlane \\$[A-Za-z]+\\) \\}\\}"
-        it: Protects only the active database instance from deletion unless forceDestroy is set
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "edition: \\{\\{ hasPrefix \"db-perf-optimized-\" \\$[A-Za-z]+ \\| ternary \"ENTERPRISE_PLUS\" \"ENTERPRISE\" \\}\\}"
         it: Derives the Cloud SQL edition from the instance type
     -   asserts:
@@ -50,7 +44,7 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\{\\{- if \\$database\\.highAvailability \\}\\}\\s+backupConfiguration:\\s+backupRetentionSettings:\\s+retainedBackups: 7\\s+enabled: true\\s+pointInTimeRecoveryEnabled: true\\s+transactionLogRetentionDays: 7\\s+\\{\\{- end \\}\\}"
-        it: Enables automated backups and point-in-time recovery only on a regional instance, which Cloud SQL requires
+        it: Enables automated backups and point in time recovery only on a regional instance, which Cloud SQL requires
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -109,6 +103,12 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "merge \\(dict \"is-backup-vault\" \"true\"\\) \\$[A-Za-z]+ \\$backup\\.vaultTags"
+        it: Labels the backup vault as the vault over the vault tags
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "userLabels:\\s+\\{\\{- merge \\(dict \"active\" \\(eq \\$dataPlane \\$[A-Za-z]+ \\| toString\\)\\) \\$[A-Za-z]+ \\| toYaml"
             -   documentIndex: 0
                 matchRegex:
@@ -123,8 +123,8 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "merge \\(dict \"is-backup-vault\" \"true\"\\) \\$[A-Za-z]+ \\$backup\\.vaultTags"
-        it: Labels the backup vault as the vault over the vault tags
+                    pattern: "managementPolicies: \\{\\{ \\$xr\\.spec\\.backup\\.enabled \\| ternary \\(\\(list \"\\*\"\\) \\| toJson\\) \\$managementPolicies \\}\\}"
+        it: Lets Crossplane delete the database instance once backups are enabled even when orphaning on delete
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -135,12 +135,6 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "merge \\(dict \"app\" \"liferay\" \"deployment-name\" \\$env\\.deploymentName \"project-id\" \\$xr\\.spec\\.projectId\\) \\$xr\\.spec\\.commonTags"
         it: Lets the derived labels win over the common tags
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "managementPolicies: \\{\\{ \\$xr\\.spec\\.backup\\.enabled \\| ternary \\(\\(list \"\\*\"\\) \\| toJson\\) \\$managementPolicies \\}\\}"
-        it: Lets Crossplane delete the database instance once backups are enabled even when orphaning on delete
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
@@ -173,6 +167,12 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "printf \"%s-overlay-%s\" \\$env\\.deploymentName \\(printf \"%\\.18s-%s\" \\$xr\\.spec\\.projectId \\(printf \"%s-%s-%s\" \\$env\\.projectId \\$env\\.deploymentName \\$xr\\.spec\\.projectId \\| sha256sum \\| trunc 6\\)\\)"
         it: Names the overlay bucket after the Liferay project in both compositions
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "deletionProtection: \\{\\{ and \\(not \\$forceDestroy\\) \\(eq \\$dataPlane \\$[A-Za-z]+\\) \\}\\}"
+        it: Protects only the active database instance from deletion unless forceDestroy is set
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
