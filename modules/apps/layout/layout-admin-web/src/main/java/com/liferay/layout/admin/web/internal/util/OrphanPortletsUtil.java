@@ -43,7 +43,9 @@ public class OrphanPortletsUtil {
 		}
 
 		List<PortletPreferences> portletPreferencesList =
-			_getPortletPreferences(layout);
+			PortletPreferencesLocalServiceUtil.getPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
 
 		if (portletPreferencesList.isEmpty()) {
 			return Collections.emptyList();
@@ -52,21 +54,11 @@ public class OrphanPortletsUtil {
 		List<String> explicitlyAddedPortletIds = _getExplicitlyAddedPortletIds(
 			layout, portletRegistry);
 
-		List<Portlet> orphanPortlets = new ArrayList<>();
-
-		for (PortletPreferences portletPreferences : portletPreferencesList) {
-			Portlet portlet = _fetchOrphanPortlet(
+		return TransformUtil.transform(
+			portletPreferencesList,
+			portletPreferences -> _fetchOrphanPortlet(
 				layout.getCompanyId(), explicitlyAddedPortletIds,
-				portletPreferences.getPortletId());
-
-			if (portlet == null) {
-				continue;
-			}
-
-			orphanPortlets.add(portlet);
-		}
-
-		return orphanPortlets;
+				portletPreferences.getPortletId()));
 	}
 
 	public static boolean hasOrphanPortlets(
@@ -169,14 +161,6 @@ public class OrphanPortletsUtil {
 		return _getFragmentEntryLinkPortletIds(
 			masterLayoutPageTemplateEntry.getGroupId(),
 			masterLayoutPageTemplateEntry.getPlid(), portletRegistry);
-	}
-
-	private static List<PortletPreferences> _getPortletPreferences(
-		Layout layout) {
-
-		return PortletPreferencesLocalServiceUtil.getPortletPreferences(
-			PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
 	}
 
 }
