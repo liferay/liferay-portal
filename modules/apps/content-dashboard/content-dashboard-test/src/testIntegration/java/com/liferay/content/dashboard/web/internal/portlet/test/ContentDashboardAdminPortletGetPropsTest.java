@@ -83,10 +83,10 @@ public class ContentDashboardAdminPortletGetPropsTest {
 				"vocabulary", serviceContext);
 
 		AssetCategory assetCategory1 = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(), "category-1",
+			TestPropsValues.getUserId(), _company.getGroupId(), "category-b",
 			assetVocabulary.getVocabularyId(), serviceContext);
 		AssetCategory assetCategory2 = _assetCategoryLocalService.addCategory(
-			TestPropsValues.getUserId(), _company.getGroupId(), "category-2",
+			TestPropsValues.getUserId(), _company.getGroupId(), "category-a",
 			assetVocabulary.getVocabularyId(), serviceContext);
 
 		try {
@@ -117,7 +117,7 @@ public class ContentDashboardAdminPortletGetPropsTest {
 					JSONUtil.put(
 						"key", String.valueOf(assetCategory1.getCategoryId())
 					).put(
-						"name", "category-1"
+						"name", "category-b"
 					).put(
 						"value", 1L
 					).put(
@@ -126,7 +126,7 @@ public class ContentDashboardAdminPortletGetPropsTest {
 					JSONUtil.put(
 						"key", String.valueOf(assetCategory2.getCategoryId())
 					).put(
-						"name", "category-2"
+						"name", "category-a"
 					).put(
 						"value", 2L
 					).put(
