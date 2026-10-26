@@ -279,7 +279,7 @@ public class EditPIMConnectorDisplayContextTest {
 			HashMapBuilder.<String, Serializable>put(
 				"clientSecret", RandomTestUtil.randomString()
 			).put(
-				"id", 2L
+				"id", RandomTestUtil.randomLong()
 			).put(
 				"url", "https://commerce.minium.com"
 			).build()

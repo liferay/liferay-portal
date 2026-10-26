@@ -214,14 +214,15 @@ public abstract class BasePIMConnector implements PIMConnector {
 	private Map<String, Serializable> _getSettings(
 		ObjectEntry pimConnectorObjectEntry) {
 
-		ObjectEntry objectEntry = PIMConnectorSettingsUtil.fetchObjectEntry(
-			this, pimConnectorObjectEntry);
+		ObjectEntry settingsObjectEntry =
+			PIMConnectorSettingsUtil.fetchObjectEntry(
+				this, pimConnectorObjectEntry);
 
-		if (objectEntry == null) {
+		if (settingsObjectEntry == null) {
 			return Collections.emptyMap();
 		}
 
-		return objectEntry.getValues();
+		return settingsObjectEntry.getValues();
 	}
 
 	private Map<String, Map<String, Serializable>> _getVariantPIMLinkValuesMap(
