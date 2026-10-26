@@ -29,10 +29,10 @@ public class JWTAssertionUtil {
 	public static final String JWKS = _readJWKS();
 
 	public static String getJWTWithClientId(String clientId) throws Exception {
-		JWTClaimsSet.Builder builder = _getJWTClaimsSetBuilder("localhost");
-
 		return _getJWT(
-			builder.claim(
+			_getJWTClaimsSetBuilder(
+				"localhost"
+			).claim(
 				"client_id", clientId
 			).build());
 	}
@@ -41,10 +41,10 @@ public class JWTAssertionUtil {
 			String externalReferenceCode, String issuer)
 		throws Exception {
 
-		JWTClaimsSet.Builder builder = _getJWTClaimsSetBuilder(issuer);
-
 		return _getJWT(
-			builder.claim(
+			_getJWTClaimsSetBuilder(
+				issuer
+			).claim(
 				"client_id", String.valueOf(UUID.randomUUID())
 			).claim(
 				"external_reference_code", externalReferenceCode

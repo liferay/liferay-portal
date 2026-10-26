@@ -229,10 +229,8 @@ public class LiferayOAuth2ResourceServerEnableWebSecurity {
 				return false;
 			}
 
-			String jwtIssuer = jwt.getClaimAsString("iss");
-
 			for (String lxcDXPDomain : _lxcDXPDomains.split("\\s*[,\n]\\s*")) {
-				if (lxcDXPDomain.equals(jwtIssuer)) {
+				if (lxcDXPDomain.equals(jwt.getClaimAsString("iss"))) {
 					return true;
 				}
 			}

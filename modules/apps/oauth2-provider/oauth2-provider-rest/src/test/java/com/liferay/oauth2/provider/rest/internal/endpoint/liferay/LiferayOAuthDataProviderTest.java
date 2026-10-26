@@ -74,21 +74,22 @@ public class LiferayOAuthDataProviderTest {
 
 	@Test
 	public void testCreateJwtAccessToken() {
-		long companyId = RandomTestUtil.randomLong();
-		String clientId = RandomTestUtil.randomString();
-		String externalReferenceCode = RandomTestUtil.randomString();
-
 		OAuth2ApplicationLocalService oAuth2ApplicationLocalService =
 			Mockito.mock(OAuth2ApplicationLocalService.class);
 
 		OAuth2Application oAuth2Application = Mockito.mock(
 			OAuth2Application.class);
 
+		String externalReferenceCode = RandomTestUtil.randomString();
+
 		Mockito.when(
 			oAuth2Application.getExternalReferenceCode()
 		).thenReturn(
 			externalReferenceCode
 		);
+
+		String clientId = RandomTestUtil.randomString();
+		long companyId = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			oAuth2ApplicationLocalService.fetchOAuth2Application(
@@ -113,7 +114,7 @@ public class LiferayOAuthDataProviderTest {
 			).build());
 
 		JwtClaims jwtClaims = liferayOAuthDataProvider.createJwtAccessToken(
-			new BearerAccessToken(client, 3600));
+			new BearerAccessToken(client, RandomTestUtil.randomInt()));
 
 		Assert.assertEquals(
 			externalReferenceCode,

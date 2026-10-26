@@ -23,7 +23,6 @@ import org.apache.cxf.rs.security.jose.jws.JwsHeaders;
 import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactConsumer;
 import org.apache.cxf.rs.security.jose.jws.JwsSignatureVerifier;
 import org.apache.cxf.rs.security.jose.jws.JwsUtils;
-import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 
 import org.junit.Assert;
@@ -75,11 +74,9 @@ public class IssueJWTAccessTokenTest extends BaseTokenEndpointTestCase {
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
 				TestPropsValues.getCompanyId(), TEST_CLIENT_ID_1);
 
-		JwtClaims jwtClaims = jwtToken.getClaims();
-
 		Assert.assertEquals(
 			oAuth2Application.getExternalReferenceCode(),
-			jwtClaims.getClaim("external_reference_code"));
+			jwtToken.getClaim("external_reference_code"));
 	}
 
 	@Inject
