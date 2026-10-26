@@ -3293,8 +3293,8 @@ public class JenkinsResultsParserUtil {
 
 			if (parameters.containsKey(name)) {
 				System.out.println(
-					"WARNING: Ignoring the repeated query string parameter " +
-						name);
+					"WARNING: Ignoring the repeated query string parameter \"" +
+						name + "\"");
 
 				continue;
 			}
