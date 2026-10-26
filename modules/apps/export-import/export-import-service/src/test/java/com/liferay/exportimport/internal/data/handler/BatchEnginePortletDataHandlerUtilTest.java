@@ -75,8 +75,8 @@ public class BatchEnginePortletDataHandlerUtilTest {
 
 	@Test
 	public void testBuildExportParametersWithEndDate() {
-		_testBuildExportParametersWithEndDate(RandomTestUtil.randomString());
 		_testBuildExportParametersWithEndDate(Layout.class.getName());
+		_testBuildExportParametersWithEndDate(RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -108,9 +108,9 @@ public class BatchEnginePortletDataHandlerUtilTest {
 	@Test
 	public void testBuildExportParametersWithEndDateAndStartDateAndFilterParameter() {
 		_testBuildExportParametersWithEndDateAndStartDateAndFilterParameter(
-			RandomTestUtil.randomString());
-		_testBuildExportParametersWithEndDateAndStartDateAndFilterParameter(
 			Layout.class.getName());
+		_testBuildExportParametersWithEndDateAndStartDateAndFilterParameter(
+			RandomTestUtil.randomString());
 	}
 
 	@Test
@@ -205,8 +205,8 @@ public class BatchEnginePortletDataHandlerUtilTest {
 
 	@Test
 	public void testBuildExportParametersWithStartDate() {
-		_testBuildExportParametersWithStartDate(RandomTestUtil.randomString());
 		_testBuildExportParametersWithStartDate(Layout.class.getName());
+		_testBuildExportParametersWithStartDate(RandomTestUtil.randomString());
 	}
 
 	@Test
