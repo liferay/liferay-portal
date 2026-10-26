@@ -18,7 +18,7 @@ spec:
 {{- range $dataPlane := $dataPlanes }}
 {{- $dbReady := false }}
 {{- $observedDatabase := dig (printf "database-primary-%s" $dataPlane) "resource" dict $observedResources }}
-{{- range $condition := dig "status" "conditions" (list) $observedDatabase }}
+{{- range $condition := dig "status" "conditions" list $observedDatabase }}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
         {{- $dbReady = true }}
     {{- end }}
@@ -166,7 +166,7 @@ spec:
 {{- end }}
 ---
 {{- $isReady := false }}
-{{- range $condition := dig (printf "liferay-db-grant-job-%s" $activeDataPlane) "resource" "status" "conditions" (list) $observedResources }}
+{{- range $condition := dig (printf "liferay-db-grant-job-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
         {{- $isReady = true }}
     {{- end }}

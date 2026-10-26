@@ -3,7 +3,7 @@
 {{- $isDatabaseBootstrapped := false -}}
 {{- $isDoclibContainerReady := false -}}
 
-{{- range $condition := dig "database-bootstrap-job" "resource" "status" "conditions" (list) $observedResources -}}
+{{- range $condition := dig "database-bootstrap-job" "resource" "status" "conditions" list $observedResources -}}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") -}}
         {{- $isDatabaseBootstrapped = true -}}
     {{- end -}}
@@ -11,7 +11,7 @@
 
 {{- $isDatabaseReady := and (ne $activeDatabaseFqdn "") $isDatabaseBootstrapped }}
 
-{{- range $condition := dig (printf "liferay-storage-container-%s" $activeDataPlane) "resource" "status" "conditions" (list) $observedResources -}}
+{{- range $condition := dig (printf "liferay-storage-container-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources -}}
     {{- if and (eq $condition.type "Ready") (eq $condition.status "True") -}}
         {{- $isDoclibContainerReady = true -}}
     {{- end -}}
