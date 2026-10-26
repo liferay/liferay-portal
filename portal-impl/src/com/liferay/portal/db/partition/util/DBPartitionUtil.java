@@ -140,6 +140,15 @@ public class DBPartitionUtil {
 
 			AutoCloseable autoCloseable = _disableAutoCommit(connection)) {
 
+			String partitionName = getPartitionName(toCompanyId);
+
+			if (_dbPartitionDB.existsPartition(connection, partitionName)) {
+				throw new IllegalArgumentException(
+					StringBundler.concat(
+						"Database partition ", partitionName,
+						" already exists"));
+			}
+
 			_copyDBPartition(connection, fromCompanyId, toCompanyId);
 		}
 		catch (PortalException portalException) {

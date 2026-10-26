@@ -591,7 +591,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		}
 		else if ((toCompanyId == 0) ||
 				 ArrayUtil.contains(
-					 PortalInstancePool.getCompanyIds(), toCompanyId)) {
+					 PortalInstancePool.getCompanyIds(), toCompanyId) ||
+				 (companyPersistence.fetchByPrimaryKey(toCompanyId) != null)) {
 
 			throw new IllegalArgumentException(
 				"Company ID " + toCompanyId + " already exists");
