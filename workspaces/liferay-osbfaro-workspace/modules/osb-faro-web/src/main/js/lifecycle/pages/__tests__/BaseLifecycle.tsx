@@ -357,13 +357,36 @@ describe('BaseLifecycle', () => {
 			);
 		});
 
-		it('renders the not found page', () => {
+		it('renders the dashboard not found state inside the page', () => {
 			renderPage();
 
+			expect(screen.getByText('404')).toBeInTheDocument();
 			expect(
-				screen.getByText(/lifecycle not found/i)
+				screen.getByText(/dashboard not found/i)
+			).toBeInTheDocument();
+			expect(
+				screen.getByText(/lifecycle dashboard you are looking for/i)
 			).toBeInTheDocument();
 			expect(screen.queryByTestId('overview-section')).toBeNull();
+			expect(screen.queryByRole('heading', {level: 1})).toBeNull();
+		});
+
+		it('keeps the breadcrumb up to the lifecycles', () => {
+			const {container} = renderPage();
+
+			const breadcrumb = container.querySelector(
+				'.breadcrumbs-root'
+			) as HTMLElement;
+
+			expect(breadcrumb.querySelectorAll('.breadcrumb-item')).toHaveLength(
+				2
+			);
+			expect(
+				within(breadcrumb).getByRole('link', {name: /^lifecycles$/i})
+			).toHaveAttribute(
+				'href',
+				toRoute(Routes.LIFECYCLE, {channelId: '123', groupId: '23'})
+			);
 		});
 
 		it('links back to the lifecycles', () => {

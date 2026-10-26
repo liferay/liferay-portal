@@ -6,13 +6,13 @@ import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet
 import BasePage from 'shared/components/base-page';
 import ClayEmptyState from '@clayui/empty-state';
 import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
-import ErrorPage from 'shared/pages/ErrorPage';
 import FilterPicker from '../components/FilterPicker';
 import getCN from 'classnames';
 import LifecycleSwitchPanel, {
 	LifecyclePanelView,
 } from 'lifecycle/components/LifecycleSwitchPanel';
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
+import LifecycleNotFound from 'lifecycle/components/LifecycleNotFound';
 import LifecycleSticker from 'lifecycle/components/LifecycleSticker';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import Loading from 'shared/components/Loading';
@@ -308,16 +308,7 @@ const BaseLifecycle = () => {
 	}
 
 	if (lifecycleError || !lifecycle) {
-		return (
-			<ErrorPage
-				href={toRoute(Routes.LIFECYCLE, {channelId, groupId})}
-				linkLabel={Liferay.Language.get('go-to-lifecycles')}
-				message={Liferay.Language.get(
-					'the-lifecycle-you-are-looking-for-does-not-exist'
-				)}
-				subtitle={Liferay.Language.get('lifecycle-not-found')}
-			/>
-		);
+		return <LifecycleNotFound />;
 	}
 
 	return (
