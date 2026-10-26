@@ -111,7 +111,21 @@ public class PayPalCommercePaymentIntegrationTest {
 			_commercePaymentEntryLocalService.updateCommercePaymentEntry(
 				commercePaymentEntry);
 
-		_testValidateWithInvalidToken(commercePaymentEntry, user);
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.commerce.payment.internal.servlet." +
+					"CommercePaymentServlet",
+				LoggerTestUtil.OFF)) {
+
+			_service(commercePaymentEntry, RandomTestUtil.randomString(), user);
+		}
+
+		commercePaymentEntry =
+			_commercePaymentEntryLocalService.getCommercePaymentEntry(
+				commercePaymentEntry.getCommercePaymentEntryId());
+
+		Assert.assertEquals(
+			CommercePaymentEntryConstants.STATUS_CREATED,
+			commercePaymentEntry.getPaymentStatus());
 
 		_service(
 			commercePaymentEntry, commercePaymentEntry.getTransactionCode(),
@@ -148,27 +162,6 @@ public class PayPalCommercePaymentIntegrationTest {
 			_servlet.service(
 				mockHttpServletRequest, new MockHttpServletResponse());
 		}
-	}
-
-	private void _testValidateWithInvalidToken(
-			CommercePaymentEntry commercePaymentEntry, User user)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.commerce.payment.internal.servlet." +
-					"CommercePaymentServlet",
-				LoggerTestUtil.OFF)) {
-
-			_service(commercePaymentEntry, RandomTestUtil.randomString(), user);
-		}
-
-		commercePaymentEntry =
-			_commercePaymentEntryLocalService.getCommercePaymentEntry(
-				commercePaymentEntry.getCommercePaymentEntryId());
-
-		Assert.assertEquals(
-			CommercePaymentEntryConstants.STATUS_CREATED,
-			commercePaymentEntry.getPaymentStatus());
 	}
 
 	@Inject
