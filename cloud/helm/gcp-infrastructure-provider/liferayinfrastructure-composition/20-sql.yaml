@@ -1,22 +1,11 @@
 {{- $database := $xr.spec.database }}
 {{- $databaseInstanceNameFormat := printf "%s-db-instance-%%s" $xr.metadata.name }}
 {{- $availabilityType := $database.availabilityType | default "ZONAL" }}
-{{- $backupConfiguration := $database.backupConfiguration | default dict }}
 {{- $edition := $database.edition | default "ENTERPRISE" }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
 {{- if and (eq $edition "ENTERPRISE_PLUS") (not (hasPrefix "db-perf-optimized-" $instanceType)) }}
 {{- fail (printf "database.edition=ENTERPRISE_PLUS requires a db-perf-optimized-* instance type (got %q)" $instanceType) }}
-{{- end }}
-
-{{- if eq $availabilityType "REGIONAL" }}
-{{- if not $backupConfiguration.enabled }}
-{{- fail "database.availabilityType=REGIONAL requires database.backupConfiguration.enabled=true" }}
-{{- end }}
-
-{{- if not $backupConfiguration.pointInTimeRecoveryEnabled }}
-{{- fail "database.availabilityType=REGIONAL requires database.backupConfiguration.pointInTimeRecoveryEnabled=true" }}
-{{- end }}
 {{- end }}
 
 {{- range $i, $dataPlane := $dataPlanes }}
@@ -46,11 +35,12 @@ spec:
             name: {{ $database.rootPasswordSecretName }}
         settings:
             availabilityType: {{ $availabilityType }}
-            {{- if or $backupConfiguration.enabled $backupConfiguration.pointInTimeRecoveryEnabled }}
             backupConfiguration:
-                enabled: {{ $backupConfiguration.enabled | default false }}
-                pointInTimeRecoveryEnabled: {{ $backupConfiguration.pointInTimeRecoveryEnabled | default false }}
-            {{- end }}
+                backupRetentionSettings:
+                    retainedBackups: 7
+                enabled: true
+                pointInTimeRecoveryEnabled: true
+                transactionLogRetentionDays: 7
             databaseFlags:
                 -   name: cloudsql.iam_authentication
                     value: "on"
