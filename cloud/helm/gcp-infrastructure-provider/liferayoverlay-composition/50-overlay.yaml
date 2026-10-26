@@ -1,17 +1,19 @@
+{{- $env := index .context "apiextensions.crossplane.io/environment" }}
+{{- $xr := .observed.composite.resource }}
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-overlay-bucket
-    name: {{ $overlayBucketName }}
+    name: {{ printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $env.projectId (printf "%s-%s" $env.deploymentName $env.projectId | sha256sum | trunc 6)) }}
 spec:
     forProvider:
-        forceDestroy: {{ $forceDestroy }}
+        forceDestroy: {{ $xr.spec.forceDestroy }}
         labels:
-            {{- $labels | toYaml | nindent 12 }}
-        location: {{ $region }}
+            {{- merge (dict "app" "liferay" "deployment-name" $env.deploymentName "project-id" $xr.spec.projectId) $xr.spec.commonTags | toYaml | nindent 12 }}
+        location: {{ $env.region }}
         storageClass: STANDARD
         uniformBucketLevelAccess: true
         versioning:
             enabled: true
-    managementPolicies: {{ $managementPolicies }}
+    managementPolicies: {{ $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson }}
