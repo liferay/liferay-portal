@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -576,22 +577,22 @@ public class ObjectEntrySitemapURLProviderTest {
 					objectDefinition.getScope(),
 					ObjectDefinitionConstants.SCOPE_SITE)) {
 
-				Group childGroup = GroupTestUtil.addGroup(groupId);
+				_childGroup = GroupTestUtil.addGroup(groupId);
 
-				LayoutTestUtil.addTypePortletLayout(childGroup);
+				LayoutTestUtil.addTypePortletLayout(_childGroup);
 
 				_addDisplayPageTemplate(
-					childGroup.getGroupId(), objectDefinition);
+					_childGroup.getGroupId(), objectDefinition);
 
 				ObjectEntry childObjectEntry = _addObjectEntry(
-					childGroup.getGroupId(), objectDefinition);
+					_childGroup.getGroupId(), objectDefinition);
 
 				LayoutSet layoutSet = _layoutSetLocalService.getLayoutSet(
-					childGroup.getGroupId(), false);
+					_childGroup.getGroupId(), false);
 
 				_assertRootElement(
 					true, layoutSet, objectDefinition, childObjectEntry,
-					_getThemeDisplay(childGroup, layoutSet));
+					_getThemeDisplay(_childGroup, layoutSet));
 			}
 
 			_assertRootElement(
@@ -634,6 +635,9 @@ public class ObjectEntrySitemapURLProviderTest {
 
 	private static final String _PID_SITEMAP_COMPANY_CONFIGURATION =
 		"com.liferay.site.internal.configuration.SitemapCompanyConfiguration";
+
+	@DeleteAfterTestRun
+	private Group _childGroup;
 
 	private ObjectDefinition _companyObjectDefinition;
 	private DepotEntry _depotEntry;
