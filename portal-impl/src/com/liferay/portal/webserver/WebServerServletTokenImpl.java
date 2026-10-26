@@ -23,6 +23,10 @@ public class WebServerServletTokenImpl implements WebServerServletToken {
 
 	@Override
 	public String getToken(long imageId) {
+		if (imageId <= 0) {
+			return StringPool.BLANK;
+		}
+
 		Image image = ImageLocalServiceUtil.fetchImage(imageId);
 
 		if (image == null) {
