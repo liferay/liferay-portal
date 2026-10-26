@@ -202,8 +202,11 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				throw new InfoFormInvalidGroupException();
 			}
 
+			Map<Long, FragmentEntryLink> fragmentEntryLinks = new HashMap<>();
+
 			FragmentEntryLink captchaFragmentEntryLink =
-				_getCaptchaFragmentEntryLink(formItemId, layoutStructure);
+				_getCaptchaFragmentEntryLink(
+					formItemId, fragmentEntryLinks, layoutStructure);
 
 			if (captchaFragmentEntryLink != null) {
 				try {
@@ -217,7 +220,8 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 			}
 
 			_validateRequiredFields(
-				httpServletRequest, infoFieldValues, layoutStructure);
+				fragmentEntryLinks, httpServletRequest, infoFieldValues,
+				layoutStructure);
 
 			Object infoItem = null;
 
@@ -527,8 +531,31 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 		}
 	}
 
+	private FragmentEntryLink _fetchFragmentEntryLink(
+		long fragmentEntryLinkId,
+		Map<Long, FragmentEntryLink> fragmentEntryLinks) {
+
+		FragmentEntryLink fragmentEntryLink = fragmentEntryLinks.get(
+			fragmentEntryLinkId);
+
+		if (fragmentEntryLink != null) {
+			return fragmentEntryLink;
+		}
+
+		fragmentEntryLink =
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
+				fragmentEntryLinkId);
+
+		if (fragmentEntryLink != null) {
+			fragmentEntryLinks.put(fragmentEntryLinkId, fragmentEntryLink);
+		}
+
+		return fragmentEntryLink;
+	}
+
 	private FragmentEntryLink _getCaptchaFragmentEntryLink(
-			String formItemId, LayoutStructure layoutStructure)
+			String formItemId, Map<Long, FragmentEntryLink> fragmentEntryLinks,
+			LayoutStructure layoutStructure)
 		throws InfoFormException {
 
 		for (String itemId :
@@ -555,9 +582,8 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 				continue;
 			}
 
-			FragmentEntryLink fragmentEntryLink =
-				_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-					fragmentEntryLinkId);
+			FragmentEntryLink fragmentEntryLink = _fetchFragmentEntryLink(
+				fragmentEntryLinkId, fragmentEntryLinks);
 
 			if ((fragmentEntryLink == null) ||
 				!fragmentEntryLink.isTypeInput()) {
@@ -759,6 +785,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 	}
 
 	private void _validateRequiredField(
+			Map<Long, FragmentEntryLink> fragmentEntryLinks,
 			Map<String, InfoFieldValue<Object>> infoFieldValues,
 			LayoutStructureItem layoutStructureItem)
 		throws InfoFormValidationException.RequiredInfoField {
@@ -773,9 +800,9 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 		FragmentStyledLayoutStructureItem fragmentStyledLayoutStructureItem =
 			(FragmentStyledLayoutStructureItem)layoutStructureItem;
 
-		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
+		FragmentEntryLink fragmentEntryLink = _fetchFragmentEntryLink(
+			fragmentStyledLayoutStructureItem.getFragmentEntryLinkId(),
+			fragmentEntryLinks);
 
 		if ((fragmentEntryLink == null) ||
 			!GetterUtil.getBoolean(
@@ -804,6 +831,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 	}
 
 	private void _validateRequiredFields(
+			Map<Long, FragmentEntryLink> fragmentEntryLinks,
 			HttpServletRequest httpServletRequest,
 			Map<String, InfoFieldValue<Object>> infoFieldValues,
 			LayoutStructure layoutStructure)
@@ -824,7 +852,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 					formLayoutStructureItem.getItemId(), layoutStructure)) {
 
 			_validateRequiredField(
-				infoFieldValues,
+				fragmentEntryLinks, infoFieldValues,
 				layoutStructure.getLayoutStructureItem(itemId));
 		}
 	}
