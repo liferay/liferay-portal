@@ -9,6 +9,16 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "-   \"\\{\\{ dig \\(printf \"database-primary-%s\" \\$dataPlane\\) \"resource\" \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\}\\}\""
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "DATABASE_INSTANCE_NAME: \\{\\{ dig \\(printf \"database-primary-%s\" \\$[A-Za-z]+\\) \"resource\" \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\| b64enc \\| quote \\}\\}"
+        it: Connects to the database instance by the connection name Cloud SQL reports
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+apiVersion: kms\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: KeyRing"
             -   documentIndex: 0
                 matchRegex:

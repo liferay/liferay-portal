@@ -1,5 +1,6 @@
 {{- $databaseName := "lportal" -}}
 {{- $env := index .context "apiextensions.crossplane.io/environment" -}}
+{{- $observedResources := .observed.resources | default dict -}}
 {{- $xr := .observed.composite.resource -}}
 
 {{- if eq $xr.spec.search.engine "opensearch" -}}
