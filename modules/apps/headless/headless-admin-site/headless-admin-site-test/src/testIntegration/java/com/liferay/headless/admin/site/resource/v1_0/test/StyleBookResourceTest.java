@@ -10,15 +10,17 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
-import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.StyleBookResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -66,18 +68,11 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	public void testGetDesignLibraryStyleBooksPage() throws Exception {
 		super.testGetDesignLibraryStyleBooksPage();
 
-		try {
-			styleBookResource.getDesignLibraryStyleBooksPage(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> styleBookResource.getDesignLibraryStyleBooksPage(
 				testGroup.getExternalReferenceCode(), null, null, null,
-				Pagination.of(1, 10), null);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+				Pagination.of(1, 10), null));
 	}
 
 	@Override
@@ -100,18 +95,11 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	public void testGetSiteStyleBook() throws Exception {
 		super.testGetSiteStyleBook();
 
-		try {
-			styleBookResource.getSiteStyleBook(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> styleBookResource.getSiteStyleBook(
 				testGetSiteStyleBook_getSiteExternalReferenceCode(),
-				RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+				RandomTestUtil.randomString()));
 	}
 
 	@Override
@@ -137,8 +125,13 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		_testPostSiteStyleBookWithBlankThemeId();
 		_testPostSiteStyleBookWithDuplicateExternalReferenceCode();
+		_testPostSiteStyleBookWithDuplicateFrontendToken();
 		_testPostSiteStyleBookWithDuplicateKey();
+		_testPostSiteStyleBookWithDuplicateName();
 		_testPostSiteStyleBookWithFrontendTokenDefinition();
+		_testPostSiteStyleBookWithInvalidFrontendTokenDefinition();
+		_testPostSiteStyleBookWithInvalidFrontendTokensValues();
+		_testPostSiteStyleBookWithMalformedFrontendTokensValues();
 		_testPostSiteStyleBookWithNullDefaultStyleBook();
 	}
 
@@ -157,6 +150,7 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		super.testPutSiteStyleBook();
 
 		_testPutSiteStyleBookWithFrontendTokenDefinition();
+		_testPutSiteStyleBookWithInvalidFrontendTokenDefinition();
 		_testPutSiteStyleBookWithNullDefaultStyleBook();
 		_testPutSiteStyleBookWithoutFrontendTokenDefinition();
 	}
@@ -617,18 +611,11 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private void _testGetSitePageSpecificationStyleBooksPageWithUnknownPageSpecification()
 		throws Exception {
 
-		try {
-			styleBookResource.getSitePageSpecificationStyleBooksPage(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> styleBookResource.getSitePageSpecificationStyleBooksPage(
 				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString(), null, Pagination.of(1, 10));
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+				RandomTestUtil.randomString(), null, Pagination.of(1, 10)));
 	}
 
 	private void _testGetSitePageSpecificationStyleBooksPageWithoutPermission()
@@ -654,18 +641,11 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 
-		try {
-			styleBookResource.getSitePageSpecificationStyleBooksPage(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> styleBookResource.getSitePageSpecificationStyleBooksPage(
 				testGroup.getExternalReferenceCode(),
-				layout.getExternalReferenceCode(), null, Pagination.of(1, 10));
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+				layout.getExternalReferenceCode(), null, Pagination.of(1, 10)));
 	}
 
 	private void _testPatchDesignLibraryStyleBook() throws Exception {
@@ -695,18 +675,11 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private void _testPatchDesignLibraryStyleBookForNonexistingStyleBook()
 		throws Exception {
 
-		try {
-			styleBookResource.patchDesignLibraryStyleBook(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> styleBookResource.patchDesignLibraryStyleBook(
 				_getDesignLibraryExternalReferenceCode(),
-				RandomTestUtil.randomString(), randomPatchStyleBook());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+				RandomTestUtil.randomString(), randomPatchStyleBook()));
 	}
 
 	private void _testPatchDesignLibraryStyleBookWithoutFrontendTokenDefinition()
@@ -754,18 +727,11 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	private void _testPatchSiteStyleBookForNonexistingStyleBook()
 		throws Exception {
 
-		try {
-			styleBookResource.patchSiteStyleBook(
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> styleBookResource.patchSiteStyleBook(
 				testGroup.getExternalReferenceCode(),
-				RandomTestUtil.randomString(), randomPatchStyleBook());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("NOT_FOUND", problem.getStatus());
-		}
+				RandomTestUtil.randomString(), randomPatchStyleBook()));
 	}
 
 	private void _testPatchSiteStyleBookWithoutFrontendTokenDefinition()
@@ -788,71 +754,87 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	}
 
 	private void _testPostSiteStyleBookWithBlankThemeId() throws Exception {
-		try {
-			StyleBook randomStyleBook = randomStyleBook();
+		StyleBook randomStyleBook = randomStyleBook();
 
-			randomStyleBook.setThemeId(StringPool.BLANK);
+		randomStyleBook.setThemeId(StringPool.BLANK);
 
-			testPostSiteStyleBook_addStyleBook(randomStyleBook);
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Assert.assertEquals(
-				"Theme ID must not be null", problemException.getMessage());
-		}
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", "Theme ID must not be null",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
 	}
 
 	private void _testPostSiteStyleBookWithDuplicateExternalReferenceCode()
 		throws Exception {
 
-		try {
-			StyleBook randomStyleBook1 = randomStyleBook();
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook());
 
-			randomStyleBook1 = testPostSiteStyleBook_addStyleBook(
-				randomStyleBook1);
+		StyleBook randomStyleBook = randomStyleBook();
 
-			StyleBook randomStyleBook2 = randomStyleBook();
+		randomStyleBook.setExternalReferenceCode(
+			postStyleBook.getExternalReferenceCode());
 
-			randomStyleBook2.setExternalReferenceCode(
-				randomStyleBook1.getExternalReferenceCode());
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			_language.get(
+				LocaleUtil.getDefault(),
+				"this-external-reference-code-is-already-in-use"),
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
+	}
 
-			testPostSiteStyleBook_addStyleBook(randomStyleBook2);
+	private void _testPostSiteStyleBookWithDuplicateFrontendToken()
+		throws Exception {
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
+		String frontendTokenName = RandomTestUtil.randomString();
 
-			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
-			Assert.assertEquals(
-				_language.get(
-					LocaleUtil.getDefault(),
-					"this-external-reference-code-is-already-in-use"),
-				problem.getTitle());
-		}
+		JSONObject frontendTokenDefinitionJSONObject =
+			JSONFactoryUtil.createJSONObject(
+				FrontendTokenDefinitionTestUtil.getFrontendTokenDefinition(
+					frontendTokenName));
+
+		JSONArray frontendTokenCategoriesJSONArray =
+			frontendTokenDefinitionJSONObject.getJSONArray(
+				"frontendTokenCategories");
+
+		frontendTokenCategoriesJSONArray.put(
+			frontendTokenCategoriesJSONArray.getJSONObject(0));
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setFrontendTokenDefinition(
+			frontendTokenDefinitionJSONObject.toString());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"Frontend token \"" + frontendTokenName +
+				"\" is defined more than once",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
 	}
 
 	private void _testPostSiteStyleBookWithDuplicateKey() throws Exception {
-		try {
-			StyleBook randomStyleBook1 = randomStyleBook();
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook());
 
-			randomStyleBook1 = testPostSiteStyleBook_addStyleBook(
-				randomStyleBook1);
+		StyleBook randomStyleBook = randomStyleBook();
 
-			StyleBook randomStyleBook2 = randomStyleBook();
+		randomStyleBook.setKey(postStyleBook.getKey());
 
-			randomStyleBook2.setKey(randomStyleBook1.getKey());
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", "A style book with the same key already exists",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
+	}
 
-			testPostSiteStyleBook_addStyleBook(randomStyleBook2);
+	private void _testPostSiteStyleBookWithDuplicateName() throws Exception {
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook());
 
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Assert.assertEquals(
-				"A style book with the same key already exists",
-				problemException.getMessage());
-		}
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setName(postStyleBook.getName());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"CONFLICT", "A style book with the same name already exists",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
 	}
 
 	private void _testPostSiteStyleBookWithFrontendTokenDefinition()
@@ -880,6 +862,57 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		Assert.assertEquals(
 			getStyleBook.getFrontendTokensValues(),
 			postDesignLibraryStyleBook.getFrontendTokensValues());
+	}
+
+	private void _testPostSiteStyleBookWithInvalidFrontendTokenDefinition()
+		throws Exception {
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setFrontendTokenDefinition(
+			JSONUtil.put(
+				"frontendTokenCategories", RandomTestUtil.randomString()
+			).toString());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", "Unable to parse frontend token definition",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
+	}
+
+	private void _testPostSiteStyleBookWithInvalidFrontendTokensValues()
+		throws Exception {
+
+		String frontendTokenName = RandomTestUtil.randomString();
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setFrontendTokensValues(
+			JSONUtil.put(
+				frontendTokenName,
+				JSONUtil.put(
+					"value",
+					StringPool.LESS_THAN + RandomTestUtil.randomString())
+			).toString());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			StringBundler.concat(
+				"Frontend token value \"", randomStyleBook.getThemeId(),
+				StringPool.COLON, frontendTokenName,
+				"\" contains invalid characters"),
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
+	}
+
+	private void _testPostSiteStyleBookWithMalformedFrontendTokensValues()
+		throws Exception {
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setFrontendTokensValues(RandomTestUtil.randomString());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", "Unable to parse frontend tokens values",
+			() -> testPostSiteStyleBook_addStyleBook(randomStyleBook));
 	}
 
 	private void _testPostSiteStyleBookWithNullDefaultStyleBook()
@@ -951,6 +984,26 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 				testGroup.getExternalReferenceCode(),
 				putStyleBook.getExternalReferenceCode()),
 			randomStyleBook);
+	}
+
+	private void _testPutSiteStyleBookWithInvalidFrontendTokenDefinition()
+		throws Exception {
+
+		StyleBook postStyleBook = testPostSiteStyleBook_addStyleBook(
+			randomStyleBook());
+
+		StyleBook randomStyleBook = randomStyleBook();
+
+		randomStyleBook.setFrontendTokenDefinition(
+			JSONUtil.put(
+				"frontendTokenCategories", RandomTestUtil.randomString()
+			).toString());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", "Unable to parse frontend token definition",
+			() -> styleBookResource.putSiteStyleBook(
+				testGroup.getExternalReferenceCode(),
+				postStyleBook.getExternalReferenceCode(), randomStyleBook));
 	}
 
 	private void _testPutSiteStyleBookWithNullDefaultStyleBook()

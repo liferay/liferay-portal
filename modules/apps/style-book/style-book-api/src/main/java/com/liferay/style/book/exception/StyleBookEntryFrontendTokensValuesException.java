@@ -17,8 +17,8 @@ public class StyleBookEntryFrontendTokensValuesException
 	public static class MustBeValidJSON
 		extends StyleBookEntryFrontendTokensValuesException {
 
-		public MustBeValidJSON(Throwable throwable) {
-			super("Unable to parse frontend tokens values", throwable);
+		public MustBeValidJSON() {
+			super("Unable to parse frontend tokens values");
 		}
 
 	}
@@ -37,12 +37,6 @@ public class StyleBookEntryFrontendTokensValuesException
 
 	private StyleBookEntryFrontendTokensValuesException(String msg) {
 		super(msg);
-	}
-
-	private StyleBookEntryFrontendTokensValuesException(
-		String msg, Throwable throwable) {
-
-		super(msg, throwable);
 	}
 
 }
