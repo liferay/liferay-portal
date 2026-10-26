@@ -12,6 +12,7 @@ import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.constants.OAuth2AuthorizationConstants;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
+import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -581,8 +582,19 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 			Assert.assertFalse(
 				responseJSONObject.has("registration_client_uri"));
 
-			registerWebTarget = getRegisterWebTarget(
-				responseJSONObject.getString(OAuthConstants.CLIENT_ID));
+			String clientId = responseJSONObject.getString(
+				OAuthConstants.CLIENT_ID);
+
+			OAuth2Application oAuth2Application =
+				_oAuth2ApplicationLocalService.fetchOAuth2Application(
+					TestPropsValues.getCompanyId(), clientId);
+
+			Assert.assertEquals(
+				0,
+				_oAuth2AuthorizationLocalService.getOAuth2AuthorizationsCount(
+					oAuth2Application.getOAuth2ApplicationId()));
+
+			registerWebTarget = getRegisterWebTarget(clientId);
 
 			invocationBuilder = registerWebTarget.request();
 
@@ -1533,6 +1545,9 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 	@Inject
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
+
+	@Inject
+	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 
