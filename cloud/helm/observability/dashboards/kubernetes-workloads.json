@@ -662,7 +662,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod, area) (avg_over_time({\"__name__\"=\"jvm_memory_used_bytes\", \"namespace\"=\"$environment\", \"pod\"=~\"liferay-.*\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
+							"expr": "sum by (pod, area) (avg_over_time({\"__name__\"=\"jvm_memory_used_bytes\", \"namespace\"=\"$environment\", \"pod\"=~\"liferay-.*\", \"cluster\"=~\"${CLUSTER}\"}[$__rate_interval]))",
 							"legendFormat": "{{pod}} | {{area}}",
 							"range": true,
 							"refId": "jvm_threads"
@@ -768,7 +768,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod, state) (avg_over_time({\"__name__\"=\"jvm_threads_state\", \"namespace\"=\"$environment\", \"pod\"=~\"liferay-.*\", cluster=~\"${CLUSTER}\"}[$__rate_interval])) > 0",
+							"expr": "sum by (pod, state) (avg_over_time({\"__name__\"=\"jvm_threads_state\", \"namespace\"=\"$environment\", \"pod\"=~\"liferay-.*\", \"cluster\"=~\"${CLUSTER}\"}[$__rate_interval])) > 0",
 							"legendFormat": "{{pod}} | {{state}}",
 							"range": true,
 							"refId": "jvm_threads"
@@ -875,7 +875,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod, gc) (rate({\"__name__\"=\"jvm_gc_collection_seconds_sum\", \"namespace\"=\"$environment\", \"pod\"=~\"liferay-.*\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
+							"expr": "sum by (pod, gc) (rate({\"__name__\"=\"jvm_gc_collection_seconds_sum\", \"namespace\"=\"$environment\", \"pod\"=~\"liferay-.*\", \"cluster\"=~\"${CLUSTER}\"}[$__rate_interval]))",
 							"legendFormat": "{{pod}} | {{gc}}",
 							"range": true,
 							"refId": "jvm_threads"

@@ -153,7 +153,7 @@
 				{
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "avg by (name) (avg_over_time({\"__name__\"=\"kube_customresource_liferay_backup_start_time_seconds\", \"namespace\"=\"$environment\", cluster=~\"${CLUSTER}\"}[$__range])) * 1000",
+					"expr": "avg by (name) (avg_over_time({\"__name__\"=\"kube_customresource_liferay_backup_start_time_seconds\", \"namespace\"=\"$environment\", \"cluster\"=~\"${CLUSTER}\"}[$__range])) * 1000",
 					"format": "table",
 					"instant": true,
 					"legendFormat": "__auto",
@@ -167,7 +167,7 @@
 					},
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "avg by (name) (avg_over_time({\"__name__\"=\"kube_customresource_liferay_backup_completion_time_seconds\", \"namespace\"=\"$environment\", cluster=~\"${CLUSTER}\"}[$__range])) * 1000",
+					"expr": "avg by (name) (avg_over_time({\"__name__\"=\"kube_customresource_liferay_backup_completion_time_seconds\", \"namespace\"=\"$environment\", \"cluster\"=~\"${CLUSTER}\"}[$__range])) * 1000",
 					"format": "table",
 					"instant": true,
 					"legendFormat": "__auto",

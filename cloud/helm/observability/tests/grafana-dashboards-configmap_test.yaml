@@ -249,7 +249,7 @@ tests:
             cloudProvider: azure
     -   asserts:
             -   failedTemplate:
-                    errorPattern: gcp.clusterName must be set when cloudProvider=gcp
+                    errorPattern: .gcp.clusterName. must be set when .cloudProvider. is .gcp.
         it: Rejects GCP without a cluster name
         set:
             cloudProvider: gcp

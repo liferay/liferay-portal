@@ -12,7 +12,7 @@ azure-monitor
 
 {{- define "observability.clusterPattern" -}}
 {{- if eq (include "observability.cloudProvider" .) "gcp" -}}
-{{- required "gcp.clusterName must be set when cloudProvider=gcp" .Values.gcp.clusterName -}}
+{{- required "\"gcp.clusterName\" must be set when \"cloudProvider\" is \"gcp\"" .Values.gcp.clusterName -}}
 {{- else -}}
 .*
 {{- end -}}
