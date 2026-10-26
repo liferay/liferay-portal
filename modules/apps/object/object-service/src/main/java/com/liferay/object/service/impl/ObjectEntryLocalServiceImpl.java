@@ -8884,27 +8884,19 @@ public class ObjectEntryLocalServiceImpl
 	}
 
 	private void _validateTextMaxLength(
-			int defaultMaxLength, String objectEntryValue, long objectFieldId,
-			String objectFieldName, List<ValidationError> validationErrors)
+			int defaultMaxLength, String objectEntryValue,
+			ObjectField objectField, List<ValidationError> validationErrors)
 		throws PortalException {
 
-		int maxLength;
-
-		ObjectFieldSetting objectFieldSetting =
-			_objectFieldSettingPersistence.fetchByOFI_N(
-				objectFieldId, "maxLength");
-
-		if (objectFieldSetting != null) {
-			maxLength = GetterUtil.getInteger(objectFieldSetting.getValue());
-		}
-		else {
-			maxLength = defaultMaxLength;
-		}
+		int maxLength = GetterUtil.getInteger(
+			ObjectFieldSettingUtil.getValue(
+				ObjectFieldSettingConstants.NAME_MAX_LENGTH, objectField),
+			defaultMaxLength);
 
 		if (objectEntryValue.length() > maxLength) {
 			_handle(
 				new ObjectEntryValuesException.ExceedsTextMaxLength(
-					maxLength, objectFieldName),
+					maxLength, objectField.getName()),
 				validationErrors);
 		}
 	}
@@ -8914,9 +8906,7 @@ public class ObjectEntryLocalServiceImpl
 			String value)
 		throws PortalException {
 
-		_validateTextMaxLength(
-			280, value, objectField.getObjectFieldId(), objectField.getName(),
-			validationErrors);
+		_validateTextMaxLength(280, value, objectField, validationErrors);
 	}
 
 	private void _validateUniqueValues(
@@ -9040,8 +9030,7 @@ public class ObjectEntryLocalServiceImpl
 					ObjectFieldConstants.BUSINESS_TYPE_LONG_TEXT)) {
 
 			_validateTextMaxLength(
-				65000, GetterUtil.getString(value),
-				objectField.getObjectFieldId(), objectField.getName(),
+				65000, GetterUtil.getString(value), objectField,
 				validationErrors);
 		}
 		else if (StringUtil.equals(
@@ -9159,8 +9148,7 @@ public class ObjectEntryLocalServiceImpl
 			_validateTextMaxLength(
 				DynamicObjectDefinitionTableUtil.getMaxLength(
 					objectField.getBusinessType()),
-				GetterUtil.getString(value), objectField.getObjectFieldId(),
-				objectField.getName(), validationErrors);
+				GetterUtil.getString(value), objectField, validationErrors);
 		}
 
 		if (objectField.getListTypeDefinitionId() != 0) {
