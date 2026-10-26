@@ -9,10 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewAssetLibrary;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -40,19 +41,17 @@ import org.junit.runner.RunWith;
 	}
 )
 @RunWith(Arquillian.class)
-public class PreviewAssetLibraryResourceTest
-	extends BasePreviewAssetLibraryResourceTestCase {
+public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	@Override
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPage()
-		throws Exception {
+	public void testGetExportPreviewAssetLibrariesPage() throws Exception {
+		super.testGetExportPreviewAssetLibrariesPage();
 
-		super.testGetExportPreviewPreviewAssetLibrariesPage();
-
-		_testGetExportPreviewPreviewAssetLibrariesPage();
-		_testGetExportPreviewPreviewAssetLibrariesPageWithFilter();
-		_testGetExportPreviewPreviewAssetLibrariesPageWithSearch();
+		_testGetExportPreviewAssetLibrariesPage();
+		_testGetExportPreviewAssetLibrariesPageWithFilter();
+		_testGetExportPreviewAssetLibrariesPageWithInactiveAssetLibrary();
+		_testGetExportPreviewAssetLibrariesPageWithSearch();
 	}
 
 	@Override
@@ -66,19 +65,18 @@ public class PreviewAssetLibraryResourceTest
 	}
 
 	@Override
-	protected PreviewAssetLibrary
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				PreviewAssetLibrary previewAssetLibrary)
+	protected AssetLibrary
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				AssetLibrary assetLibrary)
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
 		Group group = depotEntry.getGroup();
 
-		previewAssetLibrary.setExternalReferenceCode(
-			group.getExternalReferenceCode());
+		assetLibrary.setExternalReferenceCode(group.getExternalReferenceCode());
 
-		return previewAssetLibrary;
+		return assetLibrary;
 	}
 
 	private DepotEntry _addDepotEntry(int type) throws Exception {
@@ -96,75 +94,65 @@ public class PreviewAssetLibraryResourceTest
 		return depotEntry;
 	}
 
-	private PreviewAssetLibrary _getExportPreviewAssetLibrary(
-			String externalReferenceCode)
+	private AssetLibrary _getExportAssetLibrary(String externalReferenceCode)
 		throws Exception {
 
-		return _getExportPreviewAssetLibrary(externalReferenceCode, null);
+		return _getExportAssetLibrary(externalReferenceCode, null);
 	}
 
-	private PreviewAssetLibrary _getExportPreviewAssetLibrary(
+	private AssetLibrary _getExportAssetLibrary(
 			String externalReferenceCode, String filterString)
 		throws Exception {
 
-		Page<PreviewAssetLibrary> page =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					null, filterString, null, null);
+		Page<AssetLibrary> page =
+			assetLibraryResource.getExportPreviewAssetLibrariesPage(
+				null, filterString, null, null);
 
-		page =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					null, filterString,
-					Pagination.of(1, (int)page.getTotalCount()), null);
+		page = assetLibraryResource.getExportPreviewAssetLibrariesPage(
+			null, filterString, Pagination.of(1, (int)page.getTotalCount()),
+			null);
 
-		for (PreviewAssetLibrary previewAssetLibrary : page.getItems()) {
+		for (AssetLibrary assetLibrary : page.getItems()) {
 			if (externalReferenceCode.equals(
-					previewAssetLibrary.getExternalReferenceCode())) {
+					assetLibrary.getExternalReferenceCode())) {
 
-				return previewAssetLibrary;
+				return assetLibrary;
 			}
 		}
 
 		return null;
 	}
 
-	private void _testGetExportPreviewPreviewAssetLibrariesPage()
-		throws Exception {
-
+	private void _testGetExportPreviewAssetLibrariesPage() throws Exception {
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
 
 		Group group = depotEntry.getGroup();
 
-		PreviewAssetLibrary previewAssetLibrary = _getExportPreviewAssetLibrary(
+		AssetLibrary assetLibrary = _getExportAssetLibrary(
 			group.getExternalReferenceCode());
 
 		Assert.assertEquals(
-			group.getDescriptiveName(),
-			previewAssetLibrary.getDescriptiveName());
-		Assert.assertEquals(
-			PreviewAssetLibrary.Type.SPACE, previewAssetLibrary.getType());
+			group.getDescriptiveName(), assetLibrary.getDescriptiveName());
+		Assert.assertEquals(AssetLibrary.Type.SPACE, assetLibrary.getType());
 
 		depotEntry = _addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY);
 
 		group = depotEntry.getGroup();
 
-		previewAssetLibrary = _getExportPreviewAssetLibrary(
-			group.getExternalReferenceCode());
+		assetLibrary = _getExportAssetLibrary(group.getExternalReferenceCode());
 
 		Assert.assertEquals(
-			PreviewAssetLibrary.Type.ASSET_LIBRARY,
-			previewAssetLibrary.getType());
+			AssetLibrary.Type.ASSET_LIBRARY, assetLibrary.getType());
 
 		group = GroupTestUtil.addGroup();
 
 		_groups.add(group);
 
 		Assert.assertNull(
-			_getExportPreviewAssetLibrary(group.getExternalReferenceCode()));
+			_getExportAssetLibrary(group.getExternalReferenceCode()));
 	}
 
-	private void _testGetExportPreviewPreviewAssetLibrariesPageWithFilter()
+	private void _testGetExportPreviewAssetLibrariesPageWithFilter()
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(
@@ -177,24 +165,39 @@ public class PreviewAssetLibraryResourceTest
 		Group spaceGroup = depotEntry.getGroup();
 
 		Assert.assertNull(
-			_getExportPreviewAssetLibrary(
+			_getExportAssetLibrary(
 				assetLibraryGroup.getExternalReferenceCode(),
 				"type eq 'Space'"));
 		Assert.assertNotNull(
-			_getExportPreviewAssetLibrary(
+			_getExportAssetLibrary(
 				spaceGroup.getExternalReferenceCode(), "type eq 'Space'"));
 
 		Assert.assertNotNull(
-			_getExportPreviewAssetLibrary(
+			_getExportAssetLibrary(
 				assetLibraryGroup.getExternalReferenceCode(),
 				"type eq 'AssetLibrary'"));
 		Assert.assertNull(
-			_getExportPreviewAssetLibrary(
+			_getExportAssetLibrary(
 				spaceGroup.getExternalReferenceCode(),
 				"type eq 'AssetLibrary'"));
 	}
 
-	private void _testGetExportPreviewPreviewAssetLibrariesPageWithSearch()
+	private void _testGetExportPreviewAssetLibrariesPageWithInactiveAssetLibrary()
+		throws Exception {
+
+		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		Group group = depotEntry.getGroup();
+
+		group.setActive(false);
+
+		group = _groupLocalService.updateGroup(group);
+
+		Assert.assertNull(
+			_getExportAssetLibrary(group.getExternalReferenceCode()));
+	}
+
+	private void _testGetExportPreviewAssetLibrariesPageWithSearch()
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
@@ -203,26 +206,26 @@ public class PreviewAssetLibraryResourceTest
 
 		Group group = depotEntry.getGroup();
 
-		Page<PreviewAssetLibrary> page =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					group.getDescriptiveName(), null, Pagination.of(1, 10),
-					null);
+		Page<AssetLibrary> page =
+			assetLibraryResource.getExportPreviewAssetLibrariesPage(
+				group.getDescriptiveName(), null, Pagination.of(1, 10), null);
 
 		Assert.assertEquals(1, page.getTotalCount());
 
-		List<PreviewAssetLibrary> previewAssetLibraries =
-			(List<PreviewAssetLibrary>)page.getItems();
+		List<AssetLibrary> assetLibraries = (List<AssetLibrary>)page.getItems();
 
-		PreviewAssetLibrary previewAssetLibrary = previewAssetLibraries.get(0);
+		AssetLibrary assetLibrary = assetLibraries.get(0);
 
 		Assert.assertEquals(
 			group.getExternalReferenceCode(),
-			previewAssetLibrary.getExternalReferenceCode());
+			assetLibrary.getExternalReferenceCode());
 	}
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@DeleteAfterTestRun
 	private final List<Group> _groups = new ArrayList<>();

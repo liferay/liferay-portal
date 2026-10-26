@@ -15,10 +15,10 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewAssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
@@ -395,6 +395,26 @@ public class ImportPreviewResourceTest
 		return portletDataHandler.getAdditionCount();
 	}
 
+	private AssetLibrary _getAssetLibrary(
+		ImportPreview importPreview, String externalReferenceCode) {
+
+		AssetLibrary[] assetLibraries = importPreview.getAssetLibraries();
+
+		if (assetLibraries == null) {
+			return null;
+		}
+
+		for (AssetLibrary assetLibrary : assetLibraries) {
+			if (externalReferenceCode.equals(
+					assetLibrary.getExternalReferenceCode())) {
+
+				return assetLibrary;
+			}
+		}
+
+		return null;
+	}
+
 	private Map<String, String[]> _getExportLayoutParameterMap(
 		Group... groups) {
 
@@ -435,27 +455,6 @@ public class ImportPreviewResourceTest
 					portletDataHandler.getName())) {
 
 				return portletDataHandler;
-			}
-		}
-
-		return null;
-	}
-
-	private PreviewAssetLibrary _getPreviewAssetLibrary(
-		ImportPreview importPreview, String externalReferenceCode) {
-
-		PreviewAssetLibrary[] previewAssetLibraries =
-			importPreview.getPreviewAssetLibraries();
-
-		if (previewAssetLibraries == null) {
-			return null;
-		}
-
-		for (PreviewAssetLibrary previewAssetLibrary : previewAssetLibraries) {
-			if (externalReferenceCode.equals(
-					previewAssetLibrary.getExternalReferenceCode())) {
-
-				return previewAssetLibrary;
 			}
 		}
 
@@ -538,22 +537,19 @@ public class ImportPreviewResourceTest
 
 		ImportPreview importPreview = _postImportPreview(file);
 
-		PreviewAssetLibrary previewAssetLibrary = _getPreviewAssetLibrary(
+		AssetLibrary assetLibrary = _getAssetLibrary(
 			importPreview, _depotGroup.getExternalReferenceCode());
 
 		Assert.assertEquals(
 			_depotGroup.getDescriptiveName(),
-			previewAssetLibrary.getDescriptiveName());
-		Assert.assertTrue(previewAssetLibrary.getExistsInInstance());
-		Assert.assertEquals(
-			PreviewAssetLibrary.Type.SPACE, previewAssetLibrary.getType());
+			assetLibrary.getDescriptiveName());
+		Assert.assertTrue(assetLibrary.getExistsInInstance());
+		Assert.assertEquals(AssetLibrary.Type.SPACE, assetLibrary.getType());
 
 		Assert.assertNull(
-			_getPreviewAssetLibrary(
-				importPreview, group.getExternalReferenceCode()));
+			_getAssetLibrary(importPreview, group.getExternalReferenceCode()));
 		Assert.assertNull(
-			_getSite(
-				importPreview, _depotGroup.getExternalReferenceCode()));
+			_getSite(importPreview, _depotGroup.getExternalReferenceCode()));
 		Assert.assertNotNull(
 			_getSite(importPreview, group.getExternalReferenceCode()));
 
@@ -565,12 +561,14 @@ public class ImportPreviewResourceTest
 
 		group.setExternalReferenceCode(externalReferenceCode);
 
-		_groupLocalService.updateGroup(group);
+		group = _groupLocalService.updateGroup(group);
 
-		previewAssetLibrary = _getPreviewAssetLibrary(
+		assetLibrary = _getAssetLibrary(
 			_postImportPreview(file), externalReferenceCode);
 
-		Assert.assertFalse(previewAssetLibrary.getExistsInInstance());
+		Assert.assertFalse(assetLibrary.getExistsInInstance());
+
+		_groupLocalService.deleteGroup(group);
 	}
 
 	private void _testPostImportPreviewWithInvalidFile(
@@ -659,8 +657,7 @@ public class ImportPreviewResourceTest
 		ImportPreview importPreview = _postImportPreview(
 			_exportLayoutAsFile(companyGroup.getGroupId()));
 
-		Assert.assertTrue(
-			ArrayUtil.isEmpty(importPreview.getPreviewAssetLibraries()));
+		Assert.assertTrue(ArrayUtil.isEmpty(importPreview.getAssetLibraries()));
 		Assert.assertTrue(ArrayUtil.isEmpty(importPreview.getSites()));
 	}
 

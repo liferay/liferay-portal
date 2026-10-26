@@ -15,6 +15,7 @@ import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalServiceUtil;
 import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcessRequest;
@@ -23,6 +24,7 @@ import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.client.dto.v1_0.ProcessProgress;
+import com.liferay.exportimport.rest.client.dto.v1_0.Site;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
@@ -44,6 +46,7 @@ import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.UnsafeSupplier;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
@@ -61,6 +64,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -75,6 +79,8 @@ import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.staging.StagingGroupHelper;
 
@@ -247,6 +253,11 @@ public class ImportProcessResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-85946")
+		}
+	)
 	@Override
 	@Test
 	public void testPostImportProcess() throws Exception {
@@ -308,6 +319,7 @@ public class ImportProcessResourceTest
 			importProcessRequest -> importProcessResource.postImportProcess(
 				null, _toInstanceImportProcessRequest(importProcessRequest)));
 
+		_testPostImportProcessWithAssetLibraries(companyGroup.getGroupId());
 		_testPostImportProcessWithPreviewForOtherGroup(
 			testGroup.getGroupId(),
 			file -> _importPreviewResource.postSiteImportPreview(
@@ -804,6 +816,82 @@ public class ImportProcessResourceTest
 		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
 		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
+	}
+
+	private void _testPostImportProcessWithAssetLibraries(
+			long exportImportGroupId)
+		throws Exception {
+
+		_importPreviewResource.postImportPreview(
+			null, null,
+			HashMapBuilder.put(
+				"file", _exportLayoutAsFile(exportImportGroupId)
+			).build());
+
+		InstanceImportProcessRequest instanceImportProcessRequest =
+			new InstanceImportProcessRequest() {
+				{
+					assetLibraries = new AssetLibrary[] {
+						new AssetLibrary() {
+							{
+								externalReferenceCode =
+									testDepotEntryGroup.
+										getExternalReferenceCode();
+							}
+						}
+					};
+					sites = new Site[] {
+						new Site() {
+							{
+								externalReferenceCode =
+									testGroup.getExternalReferenceCode();
+							}
+						}
+					};
+				}
+			};
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-41307")) {
+
+			assertHttpResponseStatusCode(
+				400,
+				importProcessResource.postImportProcessHttpResponse(
+					null, instanceImportProcessRequest));
+		}
+
+		ImportProcess importProcess = importProcessResource.postImportProcess(
+			null, instanceImportProcessRequest);
+
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.getBackgroundTask(
+				importProcess.getId());
+
+		ExportImportConfiguration exportImportConfiguration =
+			ExportImportConfigurationLocalServiceUtil.
+				getExportImportConfiguration(
+					MapUtil.getLong(
+						backgroundTask.getTaskContextMap(),
+						"exportImportConfigurationId"));
+
+		Map<String, Serializable> settingsMap =
+			exportImportConfiguration.getSettingsMap();
+
+		Map<String, String[]> parameterMap =
+			(Map<String, String[]>)settingsMap.get("parameterMap");
+
+		Assert.assertArrayEquals(
+			new String[] {
+				testDepotEntryGroup.getExternalReferenceCode(),
+				testGroup.getExternalReferenceCode()
+			},
+			parameterMap.get(
+				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 	}
 
 	private void _testPostImportProcessWithLayoutSet(

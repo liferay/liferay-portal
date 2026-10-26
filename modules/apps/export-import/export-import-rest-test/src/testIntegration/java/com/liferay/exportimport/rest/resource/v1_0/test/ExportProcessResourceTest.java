@@ -10,6 +10,7 @@ import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
 import com.liferay.exportimport.kernel.lar.ExportImportGroup;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcess;
@@ -44,6 +45,7 @@ import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
@@ -64,6 +66,7 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -76,6 +79,7 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
+import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.staging.StagingGroupHelper;
 
@@ -311,7 +315,11 @@ public class ExportProcessResourceTest
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
-	@FeatureFlag("LPD-85946")
+	@FeatureFlags(
+		featureFlags = {
+			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-85946")
+		}
+	)
 	@Override
 	@Test
 	public void testPostExportProcess() throws Exception {
@@ -349,6 +357,7 @@ public class ExportProcessResourceTest
 		_testPostExportProcessWithPermissions(
 			companyGroup.getGroupId(), objectDefinition, objectEntries);
 
+		_testPostExportProcessWithAssetLibraries();
 		_testPostExportProcessWithSameName(companyGroup.getGroupId());
 		_testPostExportProcessWithSites();
 
@@ -885,6 +894,69 @@ public class ExportProcessResourceTest
 		Assert.assertFalse(errorMessage, errorMessage.contains(".java:"));
 		Assert.assertFalse(errorMessage, errorMessage.contains("\tat "));
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
+	}
+
+	private void _testPostExportProcessWithAssetLibraries() throws Exception {
+		InstanceExportProcessRequest instanceExportProcessRequest =
+			new InstanceExportProcessRequest() {
+				{
+					assetLibraries = new AssetLibrary[] {
+						new AssetLibrary() {
+							{
+								externalReferenceCode =
+									testDepotEntryGroup.
+										getExternalReferenceCode();
+							}
+						}
+					};
+					name = RandomTestUtil.randomString();
+					sites = new Site[] {
+						new Site() {
+							{
+								externalReferenceCode =
+									testGroup.getExternalReferenceCode();
+							}
+						}
+					};
+				}
+			};
+
+		ExportProcess exportProcess = exportProcessResource.postExportProcess(
+			null, instanceExportProcessRequest);
+
+		ExportImportTestUtil.assertBackgroundTaskSuccessful(
+			exportProcess.getId());
+
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.getBackgroundTask(
+				exportProcess.getId());
+
+		List<FileEntry> fileEntries =
+			backgroundTask.getAttachmentsFileEntries();
+
+		Assert.assertEquals(fileEntries.toString(), 1, fileEntries.size());
+
+		Assert.assertEquals(
+			Arrays.asList(
+				testDepotEntryGroup.getExternalReferenceCode(),
+				testGroup.getExternalReferenceCode()),
+			TransformUtil.transform(
+				_exportImportHelper.getExportImportGroups(fileEntries.get(0)),
+				ExportImportGroup::getExternalReferenceCode));
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-41307")) {
+
+			assertHttpResponseStatusCode(
+				400,
+				exportProcessResource.postExportProcessHttpResponse(
+					null, instanceExportProcessRequest));
+		}
 	}
 
 	@TestInfo("LPD-90359")

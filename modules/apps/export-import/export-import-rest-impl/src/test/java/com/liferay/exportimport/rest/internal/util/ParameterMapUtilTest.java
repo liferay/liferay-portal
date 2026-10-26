@@ -11,7 +11,6 @@ import com.liferay.exportimport.rest.dto.v1_0.Choice;
 import com.liferay.exportimport.rest.dto.v1_0.DateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
-import com.liferay.exportimport.rest.dto.v1_0.ImportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.LastHoursDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandlerBoolean;
@@ -28,8 +27,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
-import com.liferay.portal.test.rule.FeatureFlags;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.ws.rs.BadRequestException;
@@ -58,29 +55,33 @@ public class ParameterMapUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	public void testPutSiteExternalReferenceCodes() {
-		_testPutSiteExternalReferenceCodes(
-			new String[] {_SITE_EXTERNAL_REFERENCE_CODE_1},
-			new String[] {_SITE_EXTERNAL_REFERENCE_CODE_1, null});
-		_testPutSiteExternalReferenceCodes(
+	public void testPutGroupExternalReferenceCodes() {
+		_testPutGroupExternalReferenceCodes(
+			new String[] {_GROUP_EXTERNAL_REFERENCE_CODE_1},
+			new String[] {_GROUP_EXTERNAL_REFERENCE_CODE_1, null});
+		_testPutGroupExternalReferenceCodes(
 			new String[] {
-				_SITE_EXTERNAL_REFERENCE_CODE_1, _SITE_EXTERNAL_REFERENCE_CODE_2
+				_GROUP_EXTERNAL_REFERENCE_CODE_1,
+				_GROUP_EXTERNAL_REFERENCE_CODE_2
 			},
 			new String[] {
-				_SITE_EXTERNAL_REFERENCE_CODE_1, _SITE_EXTERNAL_REFERENCE_CODE_2
+				_GROUP_EXTERNAL_REFERENCE_CODE_1,
+				_GROUP_EXTERNAL_REFERENCE_CODE_2
 			});
-		_testPutSiteExternalReferenceCodes(
+		_testPutGroupExternalReferenceCodes(
 			new String[] {
-				_SITE_EXTERNAL_REFERENCE_CODE_1, _SITE_EXTERNAL_REFERENCE_CODE_2
+				_GROUP_EXTERNAL_REFERENCE_CODE_1,
+				_GROUP_EXTERNAL_REFERENCE_CODE_2
 			},
 			new String[] {
-				_SITE_EXTERNAL_REFERENCE_CODE_1,
-				_SITE_EXTERNAL_REFERENCE_CODE_2, _SITE_EXTERNAL_REFERENCE_CODE_1
+				_GROUP_EXTERNAL_REFERENCE_CODE_1,
+				_GROUP_EXTERNAL_REFERENCE_CODE_2,
+				_GROUP_EXTERNAL_REFERENCE_CODE_1
 			});
-		_testPutSiteExternalReferenceCodes(null, new String[0]);
-		_testPutSiteExternalReferenceCodes(
+		_testPutGroupExternalReferenceCodes(null, new String[0]);
+		_testPutGroupExternalReferenceCodes(
 			null, new String[] {StringPool.BLANK, StringPool.THREE_SPACES});
-		_testPutSiteExternalReferenceCodes(null, null);
+		_testPutGroupExternalReferenceCodes(null, null);
 	}
 
 	@Test
@@ -172,92 +173,6 @@ public class ParameterMapUtilTest {
 		Assert.assertArrayEquals(
 			new String[] {"true"},
 			parameterMap.get(_PORTLET_DATA_HANDLER_NAME));
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
-	@Test
-	public void testToParameterMapWhenExportAssetLibraryAndSiteExternalReferenceCodesAreSet() {
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
-
-		exportProcessRequest.setAssetLibraryExternalReferenceCodes(
-			new String[] {_EXTERNAL_REFERENCE_CODE_1, StringPool.BLANK});
-
-		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
-			exportProcessRequest, new PortletDataHandler[0], false);
-
-		ParameterMapUtil.putSiteExternalReferenceCodes(
-			parameterMap,
-			new String[] {
-				_EXTERNAL_REFERENCE_CODE_2, _EXTERNAL_REFERENCE_CODE_1
-			});
-
-		Assert.assertArrayEquals(
-			new String[] {
-				_EXTERNAL_REFERENCE_CODE_1, _EXTERNAL_REFERENCE_CODE_2
-			},
-			parameterMap.get(
-				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
-	@Test
-	public void testToParameterMapWhenExportAssetLibraryExternalReferenceCodesAreSet() {
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
-
-		exportProcessRequest.setAssetLibraryExternalReferenceCodes(
-			new String[] {_EXTERNAL_REFERENCE_CODE_1});
-
-		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
-			exportProcessRequest, new PortletDataHandler[0], false);
-
-		Assert.assertArrayEquals(
-			new String[] {_EXTERNAL_REFERENCE_CODE_1},
-			parameterMap.get(
-				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
-	}
-
-	@Test(expected = BadRequestException.class)
-	public void testToParameterMapWhenExportAssetLibraryExternalReferenceCodesAreSetWithoutFeatureFlag() {
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
-
-		exportProcessRequest.setAssetLibraryExternalReferenceCodes(
-			new String[] {_EXTERNAL_REFERENCE_CODE_1});
-
-		ParameterMapUtil.toParameterMap(
-			exportProcessRequest, new PortletDataHandler[0], false);
-	}
-
-	@FeatureFlags(featureFlags = @FeatureFlag("LPD-41307"))
-	@Test
-	public void testToParameterMapWhenImportAssetLibraryAndSiteExternalReferenceCodesAreSet() {
-		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
-
-		importProcessRequest.setAssetLibraryExternalReferenceCodes(
-			new String[] {_EXTERNAL_REFERENCE_CODE_1});
-
-		Map<String, String[]> parameterMap = ParameterMapUtil.toParameterMap(
-			importProcessRequest, new PortletDataHandler[0], false);
-
-		ParameterMapUtil.putSiteExternalReferenceCodes(
-			parameterMap, new String[] {_EXTERNAL_REFERENCE_CODE_2});
-
-		Assert.assertArrayEquals(
-			new String[] {
-				_EXTERNAL_REFERENCE_CODE_1, _EXTERNAL_REFERENCE_CODE_2
-			},
-			parameterMap.get(
-				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
-	}
-
-	@Test(expected = BadRequestException.class)
-	public void testToParameterMapWhenImportAssetLibraryExternalReferenceCodesAreSetWithoutFeatureFlag() {
-		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
-
-		importProcessRequest.setAssetLibraryExternalReferenceCodes(
-			new String[] {_EXTERNAL_REFERENCE_CODE_1});
-
-		ParameterMapUtil.toParameterMap(
-			importProcessRequest, new PortletDataHandler[0], false);
 	}
 
 	@Test
@@ -552,17 +467,17 @@ public class ParameterMapUtilTest {
 		};
 	}
 
-	private void _testPutSiteExternalReferenceCodes(
-		String[] expectedSiteExternalReferenceCodes,
-		String[] siteExternalReferenceCodes) {
+	private void _testPutGroupExternalReferenceCodes(
+		String[] expectedGroupExternalReferenceCodes,
+		String[] groupExternalReferenceCodes) {
 
 		Map<String, String[]> parameterMap = new HashMap<>();
 
-		ParameterMapUtil.putSiteExternalReferenceCodes(
-			parameterMap, siteExternalReferenceCodes);
+		ParameterMapUtil.putGroupExternalReferenceCodes(
+			parameterMap, groupExternalReferenceCodes);
 
 		Assert.assertArrayEquals(
-			expectedSiteExternalReferenceCodes,
+			expectedGroupExternalReferenceCodes,
 			parameterMap.get(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
 	}
@@ -703,19 +618,13 @@ public class ParameterMapUtilTest {
 	private static final String _CONTROL_NAME_VISIBILITY =
 		"_" + RandomTestUtil.randomString() + "_visibility";
 
-	private static final String _EXTERNAL_REFERENCE_CODE_1 =
+	private static final String _GROUP_EXTERNAL_REFERENCE_CODE_1 =
 		RandomTestUtil.randomString();
 
-	private static final String _EXTERNAL_REFERENCE_CODE_2 =
+	private static final String _GROUP_EXTERNAL_REFERENCE_CODE_2 =
 		RandomTestUtil.randomString();
 
 	private static final String _PORTLET_DATA_HANDLER_NAME =
 		"PORTLET_DATA_" + RandomTestUtil.randomString();
-
-	private static final String _SITE_EXTERNAL_REFERENCE_CODE_1 =
-		RandomTestUtil.randomString();
-
-	private static final String _SITE_EXTERNAL_REFERENCE_CODE_2 =
-		RandomTestUtil.randomString();
 
 }
