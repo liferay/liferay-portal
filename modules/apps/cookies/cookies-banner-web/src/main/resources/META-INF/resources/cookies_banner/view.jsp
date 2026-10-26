@@ -36,7 +36,7 @@ CookiesBannerDisplayContext cookiesBannerDisplayContext = (CookiesBannerDisplayC
 	</c:choose>
 </c:if>
 
-<div aria-labelledby="<portlet:namespace />cookiesBannerTitle" aria-modal="true" class="cookies-banner cookies-banner-bottom" role="dialog">
+<div aria-labelledby="<portlet:namespace />cookiesBannerTitle" class="cookies-banner cookies-banner-bottom" role="region">
 	<clay:container-fluid
 		cssClass="container-view"
 	>

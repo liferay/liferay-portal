@@ -33,7 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Eduardo García
  */
 @Component(service = DynamicInclude.class)
-public class CookiesBannerBottomJSPDynamicInclude
+public class CookiesBannerBodyTopJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
 	@Override
@@ -111,7 +111,8 @@ public class CookiesBannerBottomJSPDynamicInclude
 
 	@Override
 	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
+		dynamicIncludeRegistry.register(
+			"/html/common/themes/body_top.jsp#post");
 	}
 
 	@Override
@@ -125,7 +126,7 @@ public class CookiesBannerBottomJSPDynamicInclude
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		CookiesBannerBottomJSPDynamicInclude.class);
+		CookiesBannerBodyTopJSPDynamicInclude.class);
 
 	@Reference
 	private CookiesConfigurationProvider _cookiesConfigurationProvider;

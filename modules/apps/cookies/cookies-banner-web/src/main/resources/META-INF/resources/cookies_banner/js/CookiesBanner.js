@@ -395,6 +395,16 @@ export default function ({
 		}
 	}
 
+	const resizeObserver = new ResizeObserver(() => {
+		const height = cookieBanner.offsetHeight;
+
+		document.documentElement.style.scrollPaddingBottom = height
+			? `${height}px`
+			: '';
+	});
+
+	resizeObserver.observe(cookieBanner);
+
 	checkFloatingIcon(cookieBanner, namespace);
 }
 
