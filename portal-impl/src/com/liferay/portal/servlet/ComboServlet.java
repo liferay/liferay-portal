@@ -276,7 +276,7 @@ public class ComboServlet extends HttpServlet {
 					return;
 				}
 
-				byte[] bytes = new byte[0];
+				FileContentBag fileContentBag = _EMPTY_FILE_CONTENT_BAG;
 
 				if (Validator.isNotNull(modulePath)) {
 					RequestDispatcher requestDispatcher =
@@ -294,12 +294,14 @@ public class ComboServlet extends HttpServlet {
 						return;
 					}
 
-					bytes = getResourceContent(
+					fileContentBag = getResourceContent(
 						requestDispatcher, httpServletRequest,
 						httpServletResponse, modulePath, minifierType);
 				}
 
-				if (bytes == null) {
+				byte[] bytes = null;
+
+				if (fileContentBag == null) {
 					cacheEnabled = false;
 
 					bytes = _EMPTY_FILE_CONTENT_BAG._fileContent;
@@ -307,11 +309,16 @@ public class ComboServlet extends HttpServlet {
 					httpServletResponse.setHeader(
 						HttpHeaders.CACHE_CONTROL, "max-age=1, no-cache");
 				}
-				else if ((PropsValues.COMBO_ALLOWED_FILE_MAX_SIZE > 0) &&
-						 (bytes.length >
-							 PropsValues.COMBO_ALLOWED_FILE_MAX_SIZE)) {
+				else {
+					bytes = fileContentBag._fileContent;
 
-					cacheEnabled = false;
+					if (!fileContentBag._cacheable ||
+						((PropsValues.COMBO_ALLOWED_FILE_MAX_SIZE > 0) &&
+						 (bytes.length >
+							 PropsValues.COMBO_ALLOWED_FILE_MAX_SIZE))) {
+
+						cacheEnabled = false;
+					}
 				}
 
 				bytesArray[i] = bytes;
@@ -335,7 +342,7 @@ public class ComboServlet extends HttpServlet {
 		ServletResponseUtil.write(httpServletResponse, bytesArray);
 	}
 
-	protected byte[] getResourceContent(
+	protected FileContentBag getResourceContent(
 			RequestDispatcher requestDispatcher,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String modulePath,
@@ -360,7 +367,7 @@ public class ComboServlet extends HttpServlet {
 			fileContentKey);
 
 		if ((fileContentBag != null) && !PropsValues.COMBO_CHECK_TIMESTAMP) {
-			return fileContentBag._fileContent;
+			return fileContentBag;
 		}
 
 		if ((fileContentBag != null) && PropsValues.COMBO_CHECK_TIMESTAMP) {
@@ -374,7 +381,7 @@ public class ComboServlet extends HttpServlet {
 					requestDispatcher, httpServletRequest, httpServletResponse);
 
 				if (lastModified == fileContentBag._lastModified) {
-					return fileContentBag._fileContent;
+					return fileContentBag;
 				}
 			}
 
@@ -502,6 +509,7 @@ public class ComboServlet extends HttpServlet {
 			}
 
 			fileContentBag = new FileContentBag(
+				!cacheControl.contains(HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE),
 				stringFileContent.getBytes(StringPool.UTF8),
 				GetterUtil.getLong(
 					bufferCacheServletResponse.getHeader(
@@ -509,7 +517,7 @@ public class ComboServlet extends HttpServlet {
 					-1));
 		}
 
-		if (PropsValues.COMBO_CHECK_TIMESTAMP) {
+		if (fileContentBag._cacheable && PropsValues.COMBO_CHECK_TIMESTAMP) {
 			int timeToLive =
 				(int)(PropsValues.COMBO_CHECK_TIMESTAMP_INTERVAL / Time.SECOND);
 
@@ -517,7 +525,7 @@ public class ComboServlet extends HttpServlet {
 				fileContentKey, fileContentBag, timeToLive);
 		}
 
-		return fileContentBag._fileContent;
+		return fileContentBag;
 	}
 
 	protected RequestDispatcher getResourceRequestDispatcher(
@@ -645,7 +653,7 @@ public class ComboServlet extends HttpServlet {
 	private static final String _CSS_MINIFIED_DOT_SUFFIX = ".min.css";
 
 	private static final FileContentBag _EMPTY_FILE_CONTENT_BAG =
-		new FileContentBag(new byte[0], 0);
+		new FileContentBag(true, new byte[0], 0);
 
 	private static final String _JAVASCRIPT_MINIFIED_DASH_SUFFIX = "-min.js";
 
@@ -668,11 +676,15 @@ public class ComboServlet extends HttpServlet {
 
 	private static class FileContentBag implements Serializable {
 
-		public FileContentBag(byte[] fileContent, long lastModified) {
+		public FileContentBag(
+			boolean cacheable, byte[] fileContent, long lastModified) {
+
+			_cacheable = cacheable;
 			_fileContent = fileContent;
 			_lastModified = lastModified;
 		}
 
+		private final boolean _cacheable;
 		private final byte[] _fileContent;
 		private final long _lastModified;
 
