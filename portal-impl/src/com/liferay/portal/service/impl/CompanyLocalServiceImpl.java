@@ -637,6 +637,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		validateWebId(webId);
 
+		String key = _generateKey(toCompanyId);
+
 		try (SafeCloseable safeCloseable1 =
 				PortalInstances.setCopyInProcessCompanyIdWithSafeCloseable(
 					fromCompanyId)) {
@@ -660,6 +662,10 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 							company.setWebId(webId);
 							company.setName(name);
 							company.setNew(true);
+
+							company.setIndexNameCurrent(null);
+							company.setIndexNameNext(null);
+							company.setKey(key);
 
 							CompanyInfo companyInfo = company.getCompanyInfo();
 
