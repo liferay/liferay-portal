@@ -30,7 +30,7 @@ spec:
             resource:
                 action: patch
                 manifest: |-
-                    apiVersion: gcp.liferay.com/v1alpha1
+                    apiVersion: liferay.com/v1alpha1
                     kind: LiferayInfrastructure
                     metadata:
                         name: {{ "{{" }}inputs.parameters.liferay-infrastructure-name}}

@@ -35,7 +35,7 @@ rules:
         verbs:
             -   create
             -   patch
-    -   apiGroups: ["gcp.liferay.com"]
+    -   apiGroups: ["liferay.com"]
         resources: ["liferayinfrastructures"]
         verbs:
             -   get
