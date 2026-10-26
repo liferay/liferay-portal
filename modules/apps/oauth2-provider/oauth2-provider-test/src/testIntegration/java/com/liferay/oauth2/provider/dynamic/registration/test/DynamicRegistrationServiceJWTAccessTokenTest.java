@@ -60,24 +60,40 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testUpdateClientRegistration() throws Exception {
-		String jwtAccessToken = _getJWTAccessToken();
+	public void testRegister() throws Exception {
+		String token = getToken(getDynamicRegistratorOAuth2Application());
 
-		String clientName = RandomTestUtil.randomString();
+		Response response = _register(token);
 
-		Response response = _updateClientRegistration(
-			clientName, jwtAccessToken);
-
-		Assert.assertEquals(200, response.getStatus());
+		Assert.assertEquals(201, response.getStatus());
 
 		JSONObject jsonObject = parseJSONObject(response);
 
-		Assert.assertEquals(clientName, jsonObject.getString("client_name"));
-
-		revokeOAuth2AuthorizationByAccessToken(jwtAccessToken);
+		String clientName = RandomTestUtil.randomString();
 
 		response = _updateClientRegistration(
-			RandomTestUtil.randomString(), jwtAccessToken);
+			jsonObject.getString(OAuthConstants.CLIENT_ID), clientName,
+			jsonObject.getString("registration_access_token"));
+
+		Assert.assertEquals(200, response.getStatus());
+
+		jsonObject = parseJSONObject(response);
+
+		Assert.assertEquals(clientName, jsonObject.getString("client_name"));
+
+		revokeOAuth2AuthorizationByAccessToken(token);
+
+		response = _register(token);
+
+		Assert.assertEquals(401, response.getStatus());
+	}
+
+	@Test
+	public void testUpdateClientRegistration() throws Exception {
+		String clientName = RandomTestUtil.randomString();
+
+		Response response = _updateClientRegistration(
+			_CLIENT_ID, clientName, _getJWTAccessToken());
 
 		Assert.assertEquals(401, response.getStatus());
 
@@ -85,7 +101,7 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
 				TestPropsValues.getCompanyId(), _CLIENT_ID);
 
-		Assert.assertEquals(clientName, oAuth2Application.getName());
+		Assert.assertNotEquals(clientName, oAuth2Application.getName());
 	}
 
 	@Override
@@ -111,15 +127,34 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 		return jwtAccessToken;
 	}
 
+	private Response _register(String token) {
+		WebTarget webTarget = getOAuth2WebTarget();
+
+		WebTarget registerWebTarget = webTarget.path("register");
+
+		Invocation.Builder invocationBuilder = authorize(
+			registerWebTarget.request(), token);
+
+		return invocationBuilder.method(
+			"post",
+			Entity.json(
+				JSONUtil.put(
+					"client_name", RandomTestUtil.randomString()
+				).put(
+					"grant_types",
+					new String[] {OAuthConstants.RESOURCE_OWNER_GRANT}
+				).toString()));
+	}
+
 	private Response _updateClientRegistration(
-		String clientName, String jwtAccessToken) {
+		String clientId, String clientName, String token) {
 
 		WebTarget webTarget = getOAuth2WebTarget();
 
-		WebTarget registerWebTarget = webTarget.path("register/" + _CLIENT_ID);
+		WebTarget registerWebTarget = webTarget.path("register/" + clientId);
 
 		Invocation.Builder invocationBuilder = authorize(
-			registerWebTarget.request(), jwtAccessToken);
+			registerWebTarget.request(), token);
 
 		return invocationBuilder.method(
 			"put",

@@ -5,12 +5,18 @@
 
 package com.liferay.oauth2.provider.client.test;
 
+import com.liferay.oauth2.provider.constants.OAuth2ApplicationConstants;
+import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.json.JSONObjectImpl;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -20,6 +26,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.DigesterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -42,6 +49,7 @@ import jakarta.ws.rs.ext.RuntimeDelegate;
 import java.net.URI;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -51,9 +59,11 @@ import java.util.regex.Pattern;
 
 import org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl;
 import org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl;
+import org.apache.cxf.rs.security.oauth2.utils.OAuthConstants;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
@@ -454,6 +464,30 @@ public abstract class BaseClientTestCase {
 				login, password, hostname, invocationBuilderFunction));
 	}
 
+	protected OAuth2Application getDynamicRegistratorOAuth2Application()
+		throws Exception {
+
+		DynamicQuery dynamicQuery =
+			_oAuth2ApplicationLocalService.dynamicQuery();
+
+		Property companyIdProperty = PropertyFactoryUtil.forName("companyId");
+
+		dynamicQuery.add(companyIdProperty.eq(TestPropsValues.getCompanyId()));
+
+		Property nameProperty = PropertyFactoryUtil.forName("name");
+
+		dynamicQuery.add(
+			nameProperty.eq(
+				OAuth2ApplicationConstants.NAME_DYNAMIC_REGISTRATOR));
+
+		List<OAuth2Application> oAuth2Applications =
+			_oAuth2ApplicationLocalService.dynamicQuery(dynamicQuery);
+
+		Assert.assertFalse(oAuth2Applications.isEmpty());
+
+		return oAuth2Applications.get(0);
+	}
+
 	protected BiFunction<String, Invocation.Builder, Response>
 		getExchangeAuthorizationCodeBiFunction(
 			String authorizationCode, String redirectUri) {
@@ -568,6 +602,31 @@ public abstract class BaseClientTestCase {
 
 			return invocationBuilder.post(Entity.form(formData));
 		};
+	}
+
+	protected String getToken(OAuth2Application oAuth2Application) {
+		WebTarget tokenWebTarget = getTokenWebTarget();
+
+		Invocation.Builder invocationBuilder = tokenWebTarget.request();
+
+		String tokenString = parseTokenString(
+			invocationBuilder.post(
+				Entity.form(
+					new MultivaluedHashMap<>(
+						HashMapBuilder.put(
+							OAuthConstants.CLIENT_ID,
+							oAuth2Application.getClientId()
+						).put(
+							OAuthConstants.CLIENT_SECRET,
+							oAuth2Application.getClientSecret()
+						).put(
+							OAuthConstants.GRANT_TYPE,
+							OAuthConstants.CLIENT_CREDENTIALS_GRANT
+						).build()))));
+
+		Assert.assertNotNull(tokenString);
+
+		return tokenString;
 	}
 
 	protected String getToken(String clientId) {
@@ -709,6 +768,9 @@ public abstract class BaseClientTestCase {
 
 	private BundleActivator _bundleActivator;
 	private BundleContext _bundleContext;
+
+	@Inject
+	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 	@Inject
 	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;

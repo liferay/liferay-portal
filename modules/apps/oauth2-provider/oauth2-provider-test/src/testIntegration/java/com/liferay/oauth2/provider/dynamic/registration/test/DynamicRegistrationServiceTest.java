@@ -9,7 +9,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.client.test.BaseClientTestCase;
 import com.liferay.oauth2.provider.client.test.BaseTestPreparatorBundleActivator;
 import com.liferay.oauth2.provider.constants.GrantType;
-import com.liferay.oauth2.provider.constants.OAuth2ApplicationConstants;
 import com.liferay.oauth2.provider.constants.OAuth2AuthorizationConstants;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
@@ -18,9 +17,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.audit.AuditMessage;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -134,7 +130,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(
+			getToken(
 				_oAuth2ApplicationLocalService.fetchOAuth2Application(
 					companyId, "oauthDynamicRegisterTestApplication")));
 
@@ -144,7 +140,25 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(_getDynamicRegistratorOAuth2Application()));
+			getToken(getDynamicRegistratorOAuth2Application()));
+
+		response = invocationBuilder.delete();
+
+		Assert.assertEquals(401, response.getStatus());
+
+		Assert.assertNotNull(
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(
+				oAuth2Application.getOAuth2ApplicationId()));
+
+		oAuth2Application =
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(
+				companyId, _CLIENT_ID_OTHER);
+
+		registerWebTarget = getRegisterWebTarget(
+			oAuth2Application.getClientId());
+
+		invocationBuilder = authorize(
+			registerWebTarget.request(), getToken(oAuth2Application));
 
 		response = invocationBuilder.delete();
 
@@ -178,7 +192,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(
+			getToken(
 				_oAuth2ApplicationLocalService.fetchOAuth2Application(
 					TestPropsValues.getCompanyId(),
 					"oauthDynamicRegisterTestApplication")));
@@ -207,10 +221,10 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		Assert.assertEquals(401, response.getStatus());
 
 		OAuth2Application oAuth2Application =
-			_getDynamicRegistratorOAuth2Application();
+			getDynamicRegistratorOAuth2Application();
 
 		invocationBuilder = authorize(
-			registerWebTarget.request(), _getToken(oAuth2Application));
+			registerWebTarget.request(), getToken(oAuth2Application));
 
 		response = invocationBuilder.method(
 			"post", Entity.json(jsonObject.toString()));
@@ -249,7 +263,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		registerWebTarget = getRegisterWebTarget(clientId);
 
 		invocationBuilder = authorize(
-			registerWebTarget.request(), _getToken(oAuth2Application));
+			registerWebTarget.request(), getToken(oAuth2Application));
 
 		response = invocationBuilder.get();
 
@@ -321,7 +335,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		registerWebTarget = getRegisterWebTarget();
 
 		invocationBuilder = authorize(
-			registerWebTarget.request(), _getToken(oAuth2Application));
+			registerWebTarget.request(), getToken(oAuth2Application));
 
 		_testRegisterWithClientCredentialsGrant(
 			OAuthConstants.CLIENT_CREDENTIALS_GRANT, invocationBuilder);
@@ -786,7 +800,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(_getDynamicRegistratorOAuth2Application()));
+			getToken(getDynamicRegistratorOAuth2Application()));
 
 		JSONObject jsonObject = _createAuthenticatedRegistrationJSONObject(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
@@ -849,7 +863,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 			Invocation.Builder invocationBuilder = authorize(
 				registerWebTarget.request(),
-				_getToken(_getDynamicRegistratorOAuth2Application()));
+				getToken(getDynamicRegistratorOAuth2Application()));
 
 			Response response = invocationBuilder.method(
 				"post", Entity.json(bodyJSON));
@@ -874,7 +888,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		JwtClaims jwtClaims = new JwtClaims();
 
 		OAuth2Application dynamicRegistratorOAuth2Application =
-			_getDynamicRegistratorOAuth2Application();
+			getDynamicRegistratorOAuth2Application();
 
 		jwtClaims.setClaim(
 			"client_id", dynamicRegistratorOAuth2Application.getClientId());
@@ -931,9 +945,9 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		_testUpdateClientRegistrationWithRevokedTokenContent();
 
 		OAuth2Application dynamicRegistratorOAuth2Application =
-			_getDynamicRegistratorOAuth2Application();
+			getDynamicRegistratorOAuth2Application();
 
-		String dynamicRegistratorTokenString = _getToken(
+		String dynamicRegistratorTokenString = getToken(
 			dynamicRegistratorOAuth2Application);
 
 		_testUpdateClientRegistrationWithUnauthorizedToken(
@@ -944,13 +958,20 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 				TestPropsValues.getCompanyId(), "oauthDeleteMeApplication");
 
 		_testUpdateClientRegistrationWithUnauthorizedToken(
+			oAuth2Application, dynamicRegistratorTokenString);
+		_testUpdateClientRegistrationWithUnauthorizedToken(
 			oAuth2Application,
-			_getToken(
+			getToken(
 				_oAuth2ApplicationLocalService.fetchOAuth2Application(
 					TestPropsValues.getCompanyId(),
 					"oauthDynamicRegisterTestApplication")));
+
+		oAuth2Application =
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(
+				TestPropsValues.getCompanyId(), _CLIENT_ID_OTHER);
+
 		_testUpdateClientRegistrationWithUnauthorizedToken(
-			oAuth2Application, dynamicRegistratorTokenString);
+			oAuth2Application, getToken(oAuth2Application));
 	}
 
 	protected static WebTarget getRegisterWebTarget() {
@@ -1066,59 +1087,10 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 		return null;
 	}
 
-	private OAuth2Application _getDynamicRegistratorOAuth2Application()
-		throws Exception {
-
-		DynamicQuery dynamicQuery =
-			_oAuth2ApplicationLocalService.dynamicQuery();
-
-		Property companyIdProperty = PropertyFactoryUtil.forName("companyId");
-
-		dynamicQuery.add(companyIdProperty.eq(TestPropsValues.getCompanyId()));
-
-		Property nameProperty = PropertyFactoryUtil.forName("name");
-
-		dynamicQuery.add(
-			nameProperty.eq(
-				OAuth2ApplicationConstants.NAME_DYNAMIC_REGISTRATOR));
-
-		List<OAuth2Application> oAuth2Applications =
-			_oAuth2ApplicationLocalService.dynamicQuery(dynamicQuery);
-
-		Assert.assertFalse(oAuth2Applications.isEmpty());
-
-		return oAuth2Applications.get(0);
-	}
-
 	private String _getRandomRedirectURI() {
 		return StringBundler.concat(
 			Http.HTTPS_WITH_SLASH, RandomTestUtil.randomString(),
 			".com/callback");
-	}
-
-	private String _getToken(OAuth2Application oAuth2Application) {
-		WebTarget tokenWebTarget = getTokenWebTarget();
-
-		Invocation.Builder invocationBuilder = tokenWebTarget.request();
-
-		String tokenString = parseTokenString(
-			invocationBuilder.post(
-				Entity.form(
-					new MultivaluedHashMap<>(
-						HashMapBuilder.put(
-							OAuthConstants.CLIENT_ID,
-							oAuth2Application.getClientId()
-						).put(
-							OAuthConstants.CLIENT_SECRET,
-							oAuth2Application.getClientSecret()
-						).put(
-							OAuthConstants.GRANT_TYPE,
-							OAuthConstants.CLIENT_CREDENTIALS_GRANT
-						).build()))));
-
-		Assert.assertNotNull(tokenString);
-
-		return tokenString;
 	}
 
 	private JSONObject _register() throws Exception {
@@ -1126,7 +1098,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(_getDynamicRegistratorOAuth2Application()));
+			getToken(getDynamicRegistratorOAuth2Application()));
 
 		Response response = invocationBuilder.method(
 			"post",
@@ -1323,7 +1295,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(_getDynamicRegistratorOAuth2Application()));
+			getToken(getDynamicRegistratorOAuth2Application()));
 
 		JSONObject jsonObject = _createAuthenticatedRegistrationJSONObject(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
@@ -1344,7 +1316,7 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		Invocation.Builder invocationBuilder = authorize(
 			registerWebTarget.request(),
-			_getToken(_getDynamicRegistratorOAuth2Application()));
+			getToken(getDynamicRegistratorOAuth2Application()));
 
 		Response response = invocationBuilder.method(
 			"post",
@@ -1394,15 +1366,30 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 	private void _testUpdateClientRegistrationWithClientCredentialsGrant()
 		throws Exception {
 
+		JSONObject jsonObject = _register();
+
 		OAuth2Application oAuth2Application =
 			_oAuth2ApplicationLocalService.fetchOAuth2Application(
-				TestPropsValues.getCompanyId(), _CLIENT_ID_OTHER);
+				TestPropsValues.getCompanyId(),
+				jsonObject.getString(OAuthConstants.CLIENT_ID));
+
+		List<GrantType> allowedGrantTypesList =
+			oAuth2Application.getAllowedGrantTypesList();
+
+		allowedGrantTypesList.add(GrantType.CLIENT_CREDENTIALS);
+
+		oAuth2Application.setAllowedGrantTypesList(allowedGrantTypesList);
+
+		oAuth2Application =
+			_oAuth2ApplicationLocalService.updateOAuth2Application(
+				oAuth2Application);
 
 		WebTarget registerWebTarget = getRegisterWebTarget(
 			oAuth2Application.getClientId());
 
 		Invocation.Builder invocationBuilder = authorize(
-			registerWebTarget.request(), _getToken(oAuth2Application));
+			registerWebTarget.request(),
+			jsonObject.getString("registration_access_token"));
 
 		Response response = invocationBuilder.method(
 			"put",
