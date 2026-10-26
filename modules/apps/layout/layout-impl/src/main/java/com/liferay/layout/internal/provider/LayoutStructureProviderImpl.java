@@ -106,6 +106,10 @@ public class LayoutStructureProviderImpl implements LayoutStructureProvider {
 	}
 
 	private String _getMasterLayoutData(long masterLayoutPlid) {
+		if (masterLayoutPlid <= 0) {
+			return null;
+		}
+
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);

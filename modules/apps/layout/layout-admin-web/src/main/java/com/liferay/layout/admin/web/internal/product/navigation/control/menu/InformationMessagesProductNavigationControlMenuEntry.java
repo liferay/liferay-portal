@@ -95,7 +95,7 @@ public class InformationMessagesProductNavigationControlMenuEntry
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
 
-		if (layoutPageTemplateEntry == null) {
+		if ((layoutPageTemplateEntry == null) && (layout.getClassPK() > 0)) {
 			layoutPageTemplateEntry =
 				_layoutPageTemplateEntryLocalService.
 					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
@@ -114,13 +114,17 @@ public class InformationMessagesProductNavigationControlMenuEntry
 			return false;
 		}
 
-		LayoutUtilityPageEntry layoutUtilityPageEntry =
-			_layoutUtilityPageEntryLocalService.
-				fetchLayoutUtilityPageEntryByPlid(layout.getClassPK());
+		if (layout.getClassPK() > 0) {
+			LayoutUtilityPageEntry layoutUtilityPageEntry =
+				_layoutUtilityPageEntryLocalService.
+					fetchLayoutUtilityPageEntryByPlid(layout.getClassPK());
 
-		if ((layoutUtilityPageEntry != null) ||
-			!_isLinkedLayout(themeDisplay)) {
+			if (layoutUtilityPageEntry != null) {
+				return false;
+			}
+		}
 
+		if (!_isLinkedLayout(themeDisplay)) {
 			return false;
 		}
 

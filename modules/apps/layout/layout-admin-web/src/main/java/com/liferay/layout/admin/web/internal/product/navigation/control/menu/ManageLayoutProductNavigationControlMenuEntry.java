@@ -206,7 +206,7 @@ public class ManageLayoutProductNavigationControlMenuEntry
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
 
-		if (layoutPageTemplateEntry == null) {
+		if ((layoutPageTemplateEntry == null) && (layout.getClassPK() > 0)) {
 			layoutPageTemplateEntry =
 				_layoutPageTemplateEntryLocalService.
 					fetchLayoutPageTemplateEntryByPlid(layout.getClassPK());
