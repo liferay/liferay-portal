@@ -7,11 +7,13 @@ package com.liferay.depot.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.exception.DepotEntryGroupRelToGroupException;
 import com.liferay.depot.exception.NoSuchEntryGroupRelException;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.SetUtil;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -119,6 +122,38 @@ public class DepotEntryGroupRelLocalServiceTest {
 			finalDepotEntryGroupRel.getToGroupId());
 	}
 
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testAddDepotEntryGroupRelWithDesignLibrary() throws Exception {
+		DepotEntry designLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		Group designLibraryGroup = designLibraryDepotEntry.getGroup();
+
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		DepotEntryGroupRel depotEntryGroupRel1 =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				assetLibraryDepotEntry.getDepotEntryId(),
+				designLibraryGroup.getGroupId());
+
+		Assert.assertEquals(
+			designLibraryGroup.getGroupId(),
+			depotEntryGroupRel1.getToGroupId());
+
+		DepotEntry spaceDepotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		DepotEntryGroupRel depotEntryGroupRel2 =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				spaceDepotEntry.getDepotEntryId(),
+				designLibraryGroup.getGroupId());
+
+		Assert.assertEquals(
+			designLibraryGroup.getGroupId(),
+			depotEntryGroupRel2.getToGroupId());
+	}
+
 	@Test
 	public void testAddDepotEntryGroupRelWithLayoutSetPrototypeWithPropagation()
 		throws Exception {
@@ -183,6 +218,56 @@ public class DepotEntryGroupRelLocalServiceTest {
 			_depotEntryGroupRelLocalService.
 				fetchDepotEntryGroupRelByDepotEntryIdToGroupId(
 					depotEntry.getDepotEntryId(), _group2.getGroupId()));
+	}
+
+	@FeatureFlag("LPD-57283")
+	@Test
+	public void testAddDepotEntryGroupRelWithUnacceptedDepotEntryType()
+		throws Exception {
+
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+		DepotEntry spaceDepotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		_assertUnacceptedDepotEntryType(
+			assetLibraryDepotEntry, spaceDepotEntry.getGroup());
+		_assertUnacceptedDepotEntryType(
+			spaceDepotEntry, assetLibraryDepotEntry.getGroup());
+
+		DepotEntry designLibraryDepotEntry1 = _addDepotEntry(
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+		DepotEntry designLibraryDepotEntry2 = _addDepotEntry(
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+
+		_assertUnacceptedDepotEntryType(
+			designLibraryDepotEntry1, designLibraryDepotEntry2.getGroup());
+
+		DepotEntry projectDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_PROJECT);
+
+		_assertUnacceptedDepotEntryType(
+			projectDepotEntry, designLibraryDepotEntry1.getGroup());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-57283")
+	@Test
+	public void testAddDepotEntryGroupRelWithUnacceptedDepotEntryTypeWithFeatureFlagDisabled()
+		throws Exception {
+
+		DepotEntry spaceDepotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
+
+		Group spaceGroup = spaceDepotEntry.getGroup();
+
+		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
+			DepotConstants.TYPE_ASSET_LIBRARY);
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				assetLibraryDepotEntry.getDepotEntryId(),
+				spaceGroup.getGroupId());
+
+		Assert.assertEquals(
+			spaceGroup.getGroupId(), depotEntryGroupRel.getToGroupId());
 	}
 
 	@Test
@@ -532,6 +617,19 @@ public class DepotEntryGroupRelLocalServiceTest {
 		_depotEntries.add(depotEntry);
 
 		return depotEntry;
+	}
+
+	private void _assertUnacceptedDepotEntryType(
+			DepotEntry depotEntry, Group toGroup)
+		throws Exception {
+
+		AssertUtils.assertFailure(
+			DepotEntryGroupRelToGroupException.MustAcceptDepotEntryType.class,
+			StringBundler.concat(
+				"A depot entry of type ", depotEntry.getType(),
+				" cannot be connected to group ", toGroup.getGroupId()),
+			() -> _depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				depotEntry.getDepotEntryId(), toGroup.getGroupId()));
 	}
 
 	private Group _setUpLayoutSetPrototypeGroup(
