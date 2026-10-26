@@ -7,6 +7,7 @@ package com.liferay.headless.asset.library.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.headless.asset.library.client.dto.v1_0.UserAccount;
@@ -22,7 +23,9 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -146,6 +149,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	public void testPutAssetLibraryUserAccount() throws Exception {
 		super.testPutAssetLibraryUserAccount();
 
+		_testPutAssetLibraryUserAccountWithAssetLibraryAdministrator();
 		_testPutAssetLibraryUserAccountWithAssignMembersAndViewPermission();
 		_testPutAssetLibraryUserAccountWithoutAssignMembersPermission();
 		_testPutAssetLibraryUserAccountWithSiteExternalReferenceCode();
@@ -234,6 +238,39 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	private void _assertFailure(UnsafeRunnable<Exception> unsafeRunnable) {
 		AssertUtils.assertFailure(
 			Problem.ProblemException.class, null, unsafeRunnable);
+	}
+
+	private UserAccountResource
+			_getAssetLibraryAdministratorUserAccountResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		User user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {testDepotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), testDepotEntry.getGroupId(),
+			new long[] {role.getRoleId()});
+
+		return UserAccountResource.builder(
+		).authentication(
+			user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private UserAccountResource _getAssetLibraryMemberUserAccountResource(
@@ -428,6 +465,23 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 			});
 	}
 
+	private void _testPutAssetLibraryUserAccountWithAssetLibraryAdministrator()
+		throws Exception {
+
+		UserAccountResource assetLibraryAdministratorUserAccountResource =
+			_getAssetLibraryAdministratorUserAccountResource();
+
+		UserAccount userAccount = randomUserAccount();
+
+		UserAccount putUserAccount =
+			assetLibraryAdministratorUserAccountResource.
+				putAssetLibraryUserAccount(
+					testDepotEntryGroup.getExternalReferenceCode(),
+					userAccount.getExternalReferenceCode());
+
+		assertValid(putUserAccount);
+	}
+
 	private void _testPutAssetLibraryUserAccountWithAssignMembersAndViewPermission()
 		throws Exception {
 
@@ -482,8 +536,14 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 	@Inject
 	private ResourceActions _resourceActions;
 
+	@Inject
+	private RoleLocalService _roleLocalService;
+
 	private DepotEntry _spaceDepotEntry;
 	private User _testUser;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;

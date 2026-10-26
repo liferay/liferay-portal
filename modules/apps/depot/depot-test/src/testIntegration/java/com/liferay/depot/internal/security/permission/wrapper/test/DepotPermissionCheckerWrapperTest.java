@@ -308,9 +308,22 @@ public class DepotPermissionCheckerWrapperTest {
 							permissionChecker.hasPermission(
 								null, User.class.getName(), _user.getUserId(),
 								ActionKeys.UPDATE));
+						Assert.assertFalse(
+							permissionChecker.hasPermission(
+								null, User.class.getName(), _user.getUserId(),
+								ActionKeys.VIEW));
+						Assert.assertFalse(
+							permissionChecker.hasPermission(
+								depotEntry.getGroupId(), User.class.getName(),
+								_user.getUserId(), ActionKeys.VIEW));
 						Assert.assertTrue(
 							permissionChecker.hasPermission(
 								null, User.class.getName(),
+								assetLibraryMemberUser.getUserId(),
+								ActionKeys.VIEW));
+						Assert.assertTrue(
+							permissionChecker.hasPermission(
+								depotEntry.getGroupId(), User.class.getName(),
 								assetLibraryMemberUser.getUserId(),
 								ActionKeys.VIEW));
 					}));
