@@ -49,6 +49,12 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$database\\.highAvailability \\}\\}\\s+backupConfiguration:\\s+backupRetentionSettings:\\s+retainedBackups: 7\\s+enabled: true\\s+pointInTimeRecoveryEnabled: true\\s+transactionLogRetentionDays: 7\\s+\\{\\{- end \\}\\}"
+        it: Enables automated backups and point-in-time recovery only on a regional instance, which Cloud SQL requires
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
                     pattern: "age: \\{\\{ add \\$backup\\.retentionDays 2 \\}\\}"
         it: Expires the document library backups two days after the retention period
     -   asserts:

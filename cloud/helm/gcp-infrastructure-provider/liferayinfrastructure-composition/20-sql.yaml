@@ -79,12 +79,14 @@ spec:
             name: {{ $rootPasswordName }}
         settings:
             availabilityType: {{ $database.highAvailability | ternary "REGIONAL" "ZONAL" }}
+            {{- if $database.highAvailability }}
             backupConfiguration:
                 backupRetentionSettings:
                     retainedBackups: 7
                 enabled: true
                 pointInTimeRecoveryEnabled: true
                 transactionLogRetentionDays: 7
+            {{- end }}
             databaseFlags:
                 -   name: cloudsql.iam_authentication
                     value: "on"
