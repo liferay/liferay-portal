@@ -99,14 +99,6 @@ public class StyleBookEntryIndexerReindexTest {
 		newName = RandomTestUtil.randomString();
 
 		_styleBookEntryLocalService.updateStyleBookEntry(
-			styleBookEntryId, styleBookEntry.getFrontendTokenDefinition(),
-			frontendTokensValues, newName, _serviceContext);
-
-		_assertFieldValue(Field.NAME, newName, styleBookEntryKey);
-
-		newName = RandomTestUtil.randomString();
-
-		_styleBookEntryLocalService.updateStyleBookEntry(
 			TestPropsValues.getUserId(), styleBookEntryId, true,
 			styleBookEntry.getFrontendTokenDefinition(), frontendTokensValues,
 			newName, styleBookEntryKey, 0L, styleBookEntry.getThemeId(),

@@ -859,53 +859,6 @@ public class StyleBookEntryLocalServiceImpl
 			styleBookEntryPersistence.update(styleBookEntry, serviceContext));
 	}
 
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokenDefinition,
-			String frontendTokensValues, String name,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		if (styleBookEntry != null) {
-			styleBookEntry = fetchPublished(styleBookEntry);
-		}
-
-		if (styleBookEntry == null) {
-			return null;
-		}
-
-		_validate(
-			styleBookEntry.getGroupId(), name,
-			styleBookEntry.getStyleBookEntryId());
-
-		_validateFrontendTokenDefinition(frontendTokenDefinition);
-
-		frontendTokensValues =
-			StyleBookEntryFrontendTokensValuesUtil.
-				normalizeFrontendTokensValues(
-					frontendTokenDefinition, frontendTokensValues,
-					styleBookEntry.getThemeId());
-
-		_validateFrontendTokensValues(frontendTokensValues, styleBookEntry);
-
-		styleBookEntry.setFrontendTokenDefinition(frontendTokenDefinition);
-		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
-		styleBookEntry.setName(name);
-
-		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
-
-		if (draftStyleBookEntry != null) {
-			styleBookEntryLocalService.deleteDraft(draftStyleBookEntry);
-		}
-
-		return _deleteStyleBookEntryVersions(
-			styleBookEntryPersistence.update(styleBookEntry, serviceContext));
-	}
-
 	private long _copyStyleBookEntryPreviewFileEntry(
 			long userId, long groupId, StyleBookEntry sourceStyleBookEntry,
 			StyleBookEntry copyStyleBookEntry)

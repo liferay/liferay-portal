@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Repository;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.FileItem;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -281,10 +283,15 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 
 		StyleBookEntry updatedStyleBookEntry =
 			_styleBookEntryLocalService.updateStyleBookEntry(
+				TestPropsValues.getUserId(),
 				styleBookEntry.getStyleBookEntryId(),
+				styleBookEntry.isDefaultStyleBookEntry(),
 				styleBookEntry.getFrontendTokenDefinition(),
 				_read("updated-frontend-tokens-values.json"),
 				RandomTestUtil.randomString(),
+				styleBookEntry.getStyleBookEntryKey(),
+				styleBookEntry.getPreviewFileEntryId(),
+				styleBookEntry.getThemeId(),
 				ServiceContextTestUtil.getServiceContext(
 					_sourceGroup, TestPropsValues.getUserId()));
 
@@ -332,9 +339,14 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 
 		StyleBookEntry updatedStyleBookEntry =
 			_styleBookEntryLocalService.updateStyleBookEntry(
+				TestPropsValues.getUserId(),
 				styleBookEntry.getStyleBookEntryId(),
+				styleBookEntry.isDefaultStyleBookEntry(),
 				styleBookEntry.getFrontendTokenDefinition(),
 				_read("updated-frontend-tokens-values.json"), name,
+				styleBookEntry.getStyleBookEntryKey(),
+				styleBookEntry.getPreviewFileEntryId(),
+				styleBookEntry.getThemeId(),
 				ServiceContextTestUtil.getServiceContext(
 					_sourceGroup, TestPropsValues.getUserId()));
 
@@ -401,6 +413,45 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 		Assert.assertTrue(
 			Validator.isBlank(
 				updatedTargetGroupStyleBookEntry.getFrontendTokenDefinition()));
+	}
+
+	@Test
+	public void testExportImportSingleStyleBookEntryAndOverwriteWithAnotherUser()
+		throws Exception {
+
+		String styleBookEntryKey = RandomTestUtil.randomString();
+		String themeId = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				null, TestPropsValues.getUserId(), _sourceGroup.getGroupId(),
+				false, StringPool.BLANK, _read("frontend-tokens-values.json"),
+				RandomTestUtil.randomString(), styleBookEntryKey, themeId,
+				ServiceContextTestUtil.getServiceContext(
+					_sourceGroup, TestPropsValues.getUserId()));
+
+		_user = UserTestUtil.addUser();
+
+		_styleBookEntryLocalService.addStyleBookEntry(
+			null, _user.getUserId(), _targetGroup.getGroupId(), false,
+			StringPool.BLANK, null, RandomTestUtil.randomString(),
+			styleBookEntryKey, themeId,
+			ServiceContextTestUtil.getServiceContext(
+				_targetGroup, _user.getUserId()));
+
+		_importStyleBookEntry(
+			_exportStyleBookEntry(styleBookEntry.getStyleBookEntryId()), true);
+
+		StyleBookEntry targetGroupStyleBookEntry =
+			_styleBookEntryLocalService.fetchStyleBookEntry(
+				_targetGroup.getGroupId(), styleBookEntryKey);
+
+		Assert.assertEquals(
+			styleBookEntry.getName(), targetGroupStyleBookEntry.getName());
+		Assert.assertEquals(
+			_user.getUserId(), targetGroupStyleBookEntry.getUserId());
+		Assert.assertEquals(
+			_user.getFullName(), targetGroupStyleBookEntry.getUserName());
 	}
 
 	@FeatureFlag("LPD-84497")
@@ -902,5 +953,8 @@ public class ExportImportStyleBookEntriesMVCResourceCommandTest {
 
 	@DeleteAfterTestRun
 	private Group _targetGroup;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }

@@ -1047,13 +1047,19 @@ public class StyleBookEntryLocalServiceTest {
 			String name, long styleBookEntryId)
 		throws Exception {
 
+		StyleBookEntry styleBookEntry =
+			_styleBookEntryLocalService.getStyleBookEntry(styleBookEntryId);
+
 		return _styleBookEntryLocalService.updateStyleBookEntry(
-			styleBookEntryId, frontendTokenDefinition,
+			TestPropsValues.getUserId(), styleBookEntryId,
+			styleBookEntry.isDefaultStyleBookEntry(), frontendTokenDefinition,
 			JSONUtil.put(
 				frontendTokenName,
 				JSONUtil.put("value", RandomTestUtil.randomString())
 			).toString(),
-			name, _serviceContext);
+			name, styleBookEntry.getStyleBookEntryKey(),
+			styleBookEntry.getPreviewFileEntryId(), styleBookEntry.getThemeId(),
+			_serviceContext);
 	}
 
 	private static final String _THEME_ID = RandomTestUtil.randomString();

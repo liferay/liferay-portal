@@ -388,25 +388,6 @@ public class StyleBookEntryServiceImpl extends StyleBookEntryServiceBaseImpl {
 			styleBookEntryKey, previewFileEntryId, themeId, serviceContext);
 	}
 
-	@Override
-	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokenDefinition,
-			String frontendTokensValues, String name,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.findByPrimaryKey(styleBookEntryId);
-
-		_portletResourcePermission.check(
-			getPermissionChecker(), styleBookEntry.getGroupId(),
-			StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
-
-		return styleBookEntryLocalService.updateStyleBookEntry(
-			styleBookEntryId, frontendTokenDefinition, frontendTokensValues,
-			name, serviceContext);
-	}
-
 	@Reference(
 		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
 	)

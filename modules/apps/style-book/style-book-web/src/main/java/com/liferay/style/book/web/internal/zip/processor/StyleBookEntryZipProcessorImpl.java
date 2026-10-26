@@ -15,6 +15,8 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -24,6 +26,8 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.zip.ZipWriter;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
+import com.liferay.style.book.constants.StyleBookActionKeys;
+import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
 import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
@@ -131,11 +135,19 @@ public class StyleBookEntryZipProcessorImpl
 					ServiceContextThreadLocal.getServiceContext());
 			}
 			else {
+				_portletResourcePermission.check(
+					PermissionThreadLocal.getPermissionChecker(), groupId,
+					StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
+
 				styleBookEntry =
-					_styleBookEntryEntryService.updateStyleBookEntry(
+					_styleBookEntryEntryLocalService.updateStyleBookEntry(
+						styleBookEntry.getUserId(),
 						styleBookEntry.getStyleBookEntryId(),
+						styleBookEntry.isDefaultStyleBookEntry(),
 						frontendTokenDefinition, frontendTokensValues, name,
-						new ServiceContext());
+						styleBookEntry.getStyleBookEntryKey(),
+						styleBookEntry.getPreviewFileEntryId(),
+						styleBookEntry.getThemeId(), new ServiceContext());
 			}
 
 			_importResultEntries.add(
@@ -380,6 +392,11 @@ public class StyleBookEntryZipProcessorImpl
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference(
+		target = "(resource.name=" + StyleBookConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryEntryLocalService;

@@ -438,9 +438,12 @@ public class StyleBookEntryStagedModelDataHandlerTest
 		Thread.sleep(1000);
 
 		return _styleBookEntryLocalService.updateStyleBookEntry(
-			styleBookEntry.getStyleBookEntryId(),
+			TestPropsValues.getUserId(), styleBookEntry.getStyleBookEntryId(),
+			styleBookEntry.isDefaultStyleBookEntry(),
 			styleBookEntry.getFrontendTokenDefinition(), "{}",
 			RandomTestUtil.randomString(),
+			styleBookEntry.getStyleBookEntryKey(),
+			styleBookEntry.getPreviewFileEntryId(), styleBookEntry.getThemeId(),
 			ServiceContextTestUtil.getServiceContext(
 				styleBookEntry.getGroupId(), TestPropsValues.getUserId()));
 	}
