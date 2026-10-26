@@ -62,14 +62,13 @@ public class CETDeployerImplTest {
 
 		cetDeployerImpl.activate(bundleContext);
 
+		PortalUtil portalUtil = new PortalUtil();
+
 		Portal portal = new PortalImpl();
 
 		ReflectionTestUtil.setFieldValue(cetDeployerImpl, "_portal", portal);
 
-		new PortalUtil(
-		).setPortal(
-			portal
-		);
+		portalUtil.setPortal(portal);
 
 		CustomElementCET customElementCET =
 			(CustomElementCET)ProxyUtil.newProxyInstance(
