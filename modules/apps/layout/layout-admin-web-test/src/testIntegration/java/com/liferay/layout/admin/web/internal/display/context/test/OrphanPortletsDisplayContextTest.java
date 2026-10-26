@@ -74,6 +74,7 @@ public class OrphanPortletsDisplayContextTest {
 		_testGetOrphanPortletsWithOrphanPortletAndMasterLayoutPortlet();
 		_testGetOrphanPortletsWithTypeContentLayout();
 		_testGetOrphanPortletsWithTypePortletLayout();
+		_testGetOrphanPortletsWithTypePortletLayoutAndMasterLayoutPortlet();
 	}
 
 	private void _addPortletPreferences(Layout layout, String portletId)
@@ -247,6 +248,38 @@ public class OrphanPortletsDisplayContextTest {
 		layout = _layoutLocalService.getLayout(layout.getPlid());
 
 		_assertPortletPreferences(layout, portletId);
+
+		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
+
+		Assert.assertTrue(orphanPortlets.isEmpty());
+	}
+
+	private void _testGetOrphanPortletsWithTypePortletLayoutAndMasterLayoutPortlet()
+		throws Exception {
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout masterLayout = _layoutLocalService.getLayout(
+			masterLayoutPageTemplateEntry.getPlid());
+
+		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addPortletToLayout(
+			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		layout = _layoutLocalService.updateMasterLayoutPageTemplateEntryERC(
+			layout.getGroupId(), layout.isPrivateLayout(), layout.getLayoutId(),
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		_addPortletPreferences(layout, _getPortletId(masterLayout));
 
 		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
 
