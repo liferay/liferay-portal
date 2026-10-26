@@ -127,7 +127,7 @@ public class CompanyServiceUtil {
 	 *
 	 * @return the companies
 	 */
-	public static List<Company> getCompanies() {
+	public static List<Company> getCompanies() throws PortalException {
 		return getService().getCompanies();
 	}
 
@@ -400,4 +400,4 @@ public class CompanyServiceUtil {
 	private static volatile CompanyService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:248367970
+// LIFERAY-SERVICE-BUILDER-HASH:336559248

@@ -124,7 +124,7 @@ public interface CompanyService extends BaseService {
 	 * @return the companies
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Company> getCompanies();
+	public List<Company> getCompanies() throws PortalException;
 
 	/**
 	 * Returns the company with the primary key.
@@ -337,4 +337,4 @@ public interface CompanyService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-242736753
+// LIFERAY-SERVICE-BUILDER-HASH:-1707876381

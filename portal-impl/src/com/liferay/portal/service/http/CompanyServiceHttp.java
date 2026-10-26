@@ -365,7 +365,8 @@ public class CompanyServiceHttp {
 	}
 
 	public static java.util.List<com.liferay.portal.kernel.model.Company>
-		getCompanies(HttpPrincipal httpPrincipal) {
+			getCompanies(HttpPrincipal httpPrincipal)
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		try {
 			MethodKey methodKey = new MethodKey(
@@ -380,6 +381,13 @@ public class CompanyServiceHttp {
 				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
 			}
 			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
 				throw new com.liferay.portal.kernel.exception.SystemException(
 					exception);
 			}
@@ -962,4 +970,4 @@ public class CompanyServiceHttp {
 		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1288900740
+// LIFERAY-SERVICE-BUILDER-HASH:1882718878

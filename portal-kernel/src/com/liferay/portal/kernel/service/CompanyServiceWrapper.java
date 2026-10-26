@@ -141,7 +141,8 @@ public class CompanyServiceWrapper
 	 */
 	@Override
 	public java.util.List<com.liferay.portal.kernel.model.Company>
-		getCompanies() {
+			getCompanies()
+		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _companyService.getCompanies();
 	}
@@ -443,4 +444,4 @@ public class CompanyServiceWrapper
 	private CompanyService _companyService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1216564989
+// LIFERAY-SERVICE-BUILDER-HASH:1174012437
