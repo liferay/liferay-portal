@@ -25,6 +25,7 @@ import com.liferay.gradle.plugins.defaults.internal.JSDocDefaultsPlugin;
 import com.liferay.gradle.plugins.defaults.internal.JaCoCoPlugin;
 import com.liferay.gradle.plugins.defaults.internal.LiferayRelengPlugin;
 import com.liferay.gradle.plugins.defaults.internal.PublishPluginDefaultsPlugin;
+import com.liferay.gradle.plugins.defaults.internal.SchemaManifestBuilderPlugin;
 import com.liferay.gradle.plugins.defaults.internal.SpotBugsDefaultsPlugin;
 import com.liferay.gradle.plugins.defaults.internal.WhipDefaultsPlugin;
 import com.liferay.gradle.plugins.defaults.internal.util.BackupFilesBuildAdapter;
@@ -345,6 +346,16 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		_applyConfigScripts(project);
 
 		_addDependenciesPmd(project);
+
+		if (_hasUpgradeStepRegistrator(project)) {
+			SchemaManifestBuilderPlugin.INSTANCE.apply(project);
+
+			_configureLocalPortalTool(
+				project, portalRootDir,
+				SchemaManifestBuilderPlugin.
+					SCHEMA_MANIFEST_BUILDER_CONFIGURATION_NAME,
+				_SCHEMA_MANIFEST_BUILDER_PORTAL_TOOL_NAME);
+		}
 
 		if (testProject || _hasTests(project)) {
 			GradleUtil.applyPlugin(project, WhipPlugin.class);
@@ -4673,6 +4684,17 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 		return !sourceDirectorySet.isEmpty();
 	}
 
+	private boolean _hasUpgradeStepRegistrator(Project project) {
+		Map<String, Object> args = new HashMap<>();
+
+		args.put("dir", project.file("src/main/java"));
+		args.put("include", "**/upgrade/registry/*UpgradeStepRegistrator.java");
+
+		FileTree fileTree = project.fileTree(args);
+
+		return !fileTree.isEmpty();
+	}
+
 	private boolean _isPublishing(Project project) {
 		Gradle gradle = project.getGradle();
 
@@ -4945,6 +4967,9 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 
 	private static final String _REST_BUILDER_PORTAL_TOOL_NAME =
 		"com.liferay.portal.tools.rest.builder";
+
+	private static final String _SCHEMA_MANIFEST_BUILDER_PORTAL_TOOL_NAME =
+		"com.liferay.portal.tools.schema.manifest.builder";
 
 	private static final String _SERVICE_BUILDER_PORTAL_TOOL_NAME =
 		"com.liferay.portal.tools.service.builder";
