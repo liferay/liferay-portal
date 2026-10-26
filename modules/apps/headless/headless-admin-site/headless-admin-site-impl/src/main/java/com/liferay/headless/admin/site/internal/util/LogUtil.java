@@ -14,6 +14,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.scope.Scope;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 /**
  * @author Alberto Chaparro
@@ -36,7 +38,7 @@ public class LogUtil {
 			_log.warn(sb.toString());
 		}
 
-		EmptyModelManagerUtil.reportMissingReference(
+		_reportMissingReference(
 			modelClass.getName(), modelExternalReferenceCode, scopeId);
 	}
 
@@ -96,8 +98,25 @@ public class LogUtil {
 			groupId = scopeId;
 		}
 
-		EmptyModelManagerUtil.reportMissingReference(
-			className, externalReferenceCode, groupId);
+		_reportMissingReference(className, externalReferenceCode, groupId);
+	}
+
+	private static void _reportMissingReference(
+		String className, String externalReferenceCode, long groupId) {
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if (stagingGroupHelper.isCompanyGroup(companyId, groupId)) {
+			EmptyModelManagerUtil.reportMissingReference(
+				className, companyId, externalReferenceCode);
+		}
+		else {
+			EmptyModelManagerUtil.reportMissingReference(
+				className, externalReferenceCode, groupId);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(LogUtil.class);

@@ -127,6 +127,8 @@ import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalServiceUti
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalServiceUtil;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 import com.liferay.site.navigation.type.util.SiteNavigationMenuItemTypeRegistryUtil;
+import com.liferay.staging.StagingGroupHelper;
+import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -483,8 +485,19 @@ public class ConfigurationUtil {
 			_log.warn(sb.toString());
 		}
 
-		EmptyModelManagerUtil.reportMissingReference(
-			className, externalReferenceCode, groupId);
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		StagingGroupHelper stagingGroupHelper =
+			StagingGroupHelperUtil.getStagingGroupHelper();
+
+		if (stagingGroupHelper.isCompanyGroup(companyId, groupId)) {
+			EmptyModelManagerUtil.reportMissingReference(
+				className, companyId, externalReferenceCode);
+		}
+		else {
+			EmptyModelManagerUtil.reportMissingReference(
+				className, externalReferenceCode, groupId);
+		}
 	}
 
 	private static Boolean _toBoolean(
