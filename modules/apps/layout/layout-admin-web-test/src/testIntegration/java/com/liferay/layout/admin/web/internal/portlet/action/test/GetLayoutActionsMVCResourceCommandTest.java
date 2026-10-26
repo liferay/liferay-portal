@@ -167,9 +167,7 @@ public class GetLayoutActionsMVCResourceCommandTest {
 		List<String> actionDropdownItemLabels = _getActionDropdownItemLabels(
 			plid);
 
-		Assert.assertFalse(
-			actionDropdownItemLabels.toString(),
-			actionDropdownItemLabels.contains("Orphan Widgets"));
+		Assert.assertFalse(actionDropdownItemLabels.contains("Orphan Widgets"));
 	}
 
 	private List<String> _getActionDropdownItemLabels(long plid)

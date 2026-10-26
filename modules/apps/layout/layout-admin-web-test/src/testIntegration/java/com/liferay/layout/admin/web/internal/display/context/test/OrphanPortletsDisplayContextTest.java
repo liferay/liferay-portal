@@ -83,7 +83,7 @@ public class OrphanPortletsDisplayContextTest {
 
 		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
 
-		Assert.assertTrue(orphanPortlets.toString(), orphanPortlets.isEmpty());
+		Assert.assertTrue(orphanPortlets.isEmpty());
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class OrphanPortletsDisplayContextTest {
 
 		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
 
-		Assert.assertTrue(orphanPortlets.toString(), orphanPortlets.isEmpty());
+		Assert.assertTrue(orphanPortlets.isEmpty());
 	}
 
 	@Test
@@ -175,7 +175,7 @@ public class OrphanPortletsDisplayContextTest {
 
 		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
 
-		Assert.assertTrue(orphanPortlets.toString(), orphanPortlets.isEmpty());
+		Assert.assertTrue(orphanPortlets.isEmpty());
 	}
 
 	private void _addPortletPreferences(Layout layout, String portletId)
