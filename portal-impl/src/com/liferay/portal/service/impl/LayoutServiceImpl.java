@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.PluginSettingLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
@@ -159,6 +160,8 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 				permissionChecker, groupId, privateLayout, parentLayoutId,
 				ActionKeys.ADD_LAYOUT);
 		}
+
+		_checkLayoutPermission(classNameId, classPK, groupId);
 
 		Layout layout = layoutLocalService.addLayout(
 			externalReferenceCode, getUserId(), groupId, privateLayout,
@@ -383,8 +386,12 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws Exception {
 
+		Layout layout = layoutLocalService.getLayout(plid);
+
 		LayoutPermissionUtil.checkLayoutUpdatePermission(
-			getPermissionChecker(), layoutLocalService.getLayout(plid));
+			getPermissionChecker(), layout);
+
+		_checkLayoutPermission(classNameId, classPK, layout.getGroupId());
 
 		return layoutLocalService.convertEmptyLayout(
 			getUserId(), plid, nameMap, type, classNameId, classPK,
@@ -1889,6 +1896,29 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 		return portletIds;
 	}
 
+	private void _checkLayoutPermission(
+			long classNameId, long classPK, long groupId)
+		throws PortalException {
+
+		if (classNameId != _classNameLocalService.getClassNameId(
+				Layout.class)) {
+
+			return;
+		}
+
+		Layout layout = layoutLocalService.getLayout(classPK);
+
+		if (layout.getGroupId() != groupId) {
+			throw new NoSuchLayoutException(
+				StringBundler.concat(
+					"No layout exists with primary key ", classPK, " in group ",
+					groupId));
+		}
+
+		LayoutPermissionUtil.checkLayoutUpdatePermission(
+			getPermissionChecker(), layout);
+	}
+
 	private Layout _getFirstLayout(
 		long groupId, boolean privateLayout, boolean published) {
 
@@ -1944,6 +1974,9 @@ public class LayoutServiceImpl extends LayoutServiceBaseImpl {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LayoutServiceImpl.class);
+
+	@BeanReference(type = ClassNameLocalService.class)
+	private ClassNameLocalService _classNameLocalService;
 
 	@BeanReference(type = ExportImportConfigurationLocalService.class)
 	private ExportImportConfigurationLocalService
