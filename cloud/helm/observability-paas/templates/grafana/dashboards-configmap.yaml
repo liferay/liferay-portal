@@ -1,0 +1,16 @@
+{{- $observability := index .Subcharts "observability" -}}
+{{- $dashboardHeaders := dict
+    "builds" (dict "label" "Build ID" "subtitle" "Execution timeline and step-level diagnostics." "title" "Build Details" "value" "$build_id")
+    "custom-domains" (dict "subtitle" "Domain configuration and SSL status across the platform." "title" "Custom Domains")
+    "secrets" (dict "links" (list (dict "emoji" "🔐" "href" "https://cd.${dns_zone}/secrets" "subtitle" "Manage Secrets in ArgoCD" "title" "Secret Management")) "subtitle" "Inventory and lifecycle of deployed Secrets." "title" "Secrets")
+-}}
+{{- range $key, $entry := .Values.dashboards.items }}
+{{- if not (eq $entry.enabled false) }}
+{{- $replacements := dict -}}
+{{- if eq $key "custom-domains" -}}
+{{- $_ := set $replacements "${CUSTOM_DOMAINS_GUIDE_HTML}" ($.Files.Get "dashboards/html/custom-domains-guide.html") -}}
+{{- end }}
+---
+{{ include "observability.dashboardConfigMap" (dict "context" $observability "files" $.Files "header" (index $dashboardHeaders $key) "key" $key "path" $entry.file "replacements" $replacements) }}
+{{- end }}
+{{- end }}

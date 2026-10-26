@@ -1,0 +1,25 @@
+set:
+    observability.gcp.clusterName: liferay-test-gke
+    observability.gcp.projectId: liferay-test
+    observability.grafana.route.main.hostnames:
+        -   monitoring.example.com
+    observability.grafana.route.redirect.hostnames:
+        -   monitoring.example.com
+suite: kube-state-metrics
+templates:
+    -   charts/observability/templates/kube-state-metrics/configuration.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: data["config.yaml"]
+                    pattern: "kind: Certificate(.|\n)*kind: HTTPRoute(.|\n)*kind: LiferayBackup"
+            -   matchRegex:
+                    path: data["options.yaml"]
+                    pattern: "kube_namespace_labels: [{][}](.|\n)*kube_secret_labels: [{][}]"
+            -   matchRegex:
+                    path: data["options.yaml"]
+                    pattern: "namespaces:\n  - environmentId\n  - liferay.com/observable\n  - projectCustomer\n"
+        documentSelector:
+            path: kind
+            value: ConfigMap
+        it: Adds the PaaS custom resources, metrics and labels to those of the observability chart

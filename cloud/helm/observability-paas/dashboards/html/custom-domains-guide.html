@@ -1,0 +1,46 @@
+<style>
+	.cdg-code { background: #f3f4f6; padding: 1px 6px; border-radius: 3px; font-size: 12px; }
+	.cdg-header { margin-bottom: 20px; border-left: 6px solid #3274d9; padding-left: 16px; }
+	.cdg-panel { padding: 24px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; font-family: 'Inter', system-ui, sans-serif; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); box-sizing: border-box; width: 100%; }
+	.cdg-pre { background: #f3f4f6; padding: 12px; border-radius: 6px; margin: 8px 0; font-size: 12px; overflow-x: auto; }
+	.cdg-step { margin-bottom: 14px; }
+	.cdg-steps { padding-left: 20px; margin: 0; color: #1f2937; font-size: 13px; line-height: 1.7; }
+	.cdg-sub { margin: 4px 0 0 0; color: #4b5563; font-size: 13px; line-height: 1.5; }
+	.cdg-title { margin: 0; color: #111827; font-size: 20px; font-weight: 800; letter-spacing: -0.3px; }
+	.cdg-warning { background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; margin-top: 20px; font-size: 13px; color: #92400e; }
+</style>
+
+<div class="cdg-panel">
+	<div class="cdg-header">
+		<h2 class="cdg-title">Adding a custom domain</h2>
+
+		<p class="cdg-sub">Make your environment accessible under your own domain (e.g. <code class="cdg-code">app.yourcompany.com</code>) in three steps.</p>
+	</div>
+
+	<ol class="cdg-steps">
+		<li class="cdg-step">
+			<strong>Declare the domain in your <code class="cdg-code">liferay.yaml</code>.</strong> Add it under <code class="cdg-code">networks.domains</code>:
+
+			<pre class="cdg-pre">networks:
+&#32;&#32;domains:
+&#32;&#32;&#32;&#32;- app.yourcompany.com</pre>
+
+			After the deploy, the domain appears in the table above within a few minutes.
+		</li>
+		<li class="cdg-step">
+			<strong>Create two CNAME records at your DNS provider.</strong> One points your domain to the environment we provisioned, the other allows the platform to issue and renew the SSL certificate automatically:
+
+			<pre class="cdg-pre">app.yourcompany.com. CNAME liferay-${environment}.${dns_zone}.
+_acme-challenge.app.yourcompany.com. CNAME _acme-challenge.app.yourcompany.com.${dns_zone}.</pre>
+
+			Replace <code class="cdg-code">app.yourcompany.com</code> with your own domain. The targets above already match the <strong>${environment}</strong> environment selected at the top.
+		</li>
+		<li>
+			<strong>Wait a few minutes.</strong> Once both records propagate, your domain becomes accessible over HTTPS — no further action required.
+		</li>
+	</ol>
+
+	<div class="cdg-warning">
+		<strong>⚠️ Heads up:</strong> until both CNAMEs are in place, the domain shows up in the table above but HTTPS will not work yet.
+	</div>
+</div>

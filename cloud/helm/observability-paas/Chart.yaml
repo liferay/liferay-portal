@@ -1,0 +1,16 @@
+apiVersion: v2
+appVersion: latest
+dependencies:
+    -   name: observability
+        repository: file://../observability
+        version: 2.0.0
+    -   condition: prometheus-pushgateway.enabled
+        name: prometheus-pushgateway
+        repository: https://prometheus-community.github.io/helm-charts
+        version: 3.9.1
+description:
+    Liferay is an all-in-one DXP, LCAP, and Commerce platform. This chart extends the observability chart with the dashboards, exposure, and integrations of Liferay PaaS on GCP.
+icon: https://www-cdn.liferay.com/documents/d/guest/liferay-logo
+name: observability-paas
+type: application
+version: 1.0.0

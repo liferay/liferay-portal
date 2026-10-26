@@ -1,0 +1,236 @@
+cloudLogging:
+    bucketFilter: .*/buckets/workspace
+dashboards:
+    items:
+        builds:
+            file: dashboards/builds.json
+        custom-domains:
+            file: dashboards/custom-domains.json
+        secrets:
+            file: dashboards/secrets.json
+fullnameOverride: ""
+nameOverride: ""
+observability:
+    alloy:
+        scrape:
+            nodeExporter:
+                enabled: false
+    centralHub:
+        monitoringTiles:
+            -   emoji: 🏗️
+                href: /d/builds/builds
+                subtitle: Cloud Build Runs
+                title: Builds
+            -   emoji: 🔑
+                href: /d/secrets/secrets
+                subtitle: Managed Secrets
+                title: Secrets
+            -   emoji: 🌐
+                href: /d/custom-domains/custom-domains
+                subtitle: Routes and Certificates
+                title: Custom Domains
+    cloudProvider: gcp
+    clusterSecretStore:
+        name: gcpsm-css
+    gateway:
+        enabled: true
+        name: monitoring-stack-grafana-gateway
+        provider:
+            envoy:
+                backendTrafficPolicySpec:
+                    healthCheck:
+                        active:
+                            healthyThreshold: 1
+                            http:
+                                path: /api/health
+                            interval: 60s
+                            type: HTTP
+                            unhealthyThreshold: 3
+                    loadBalancer:
+                        consistentHash:
+                            type: SourceIP
+                        type: ConsistentHash
+                    timeout:
+                        http:
+                            requestTimeout: 180s
+                className: envoy-gateway-l4
+                clientTrafficPolicySpec:
+                    tls:
+                        ciphers:
+                            -   ECDHE-ECDSA-CHACHA20-POLY1305
+                            -   ECDHE-RSA-CHACHA20-POLY1305
+                            -   ECDHE-ECDSA-AES128-GCM-SHA256
+                            -   ECDHE-RSA-AES128-GCM-SHA256
+                            -   ECDHE-ECDSA-AES256-GCM-SHA384
+                            -   ECDHE-RSA-AES256-GCM-SHA384
+                        maxVersion: "1.3"
+                        minVersion: "1.2"
+            gke:
+                backendPolicy:
+                    logging:
+                        enabled: true
+                        sampleRate: 100000
+                    sessionAffinity:
+                        type: CLIENT_IP
+                    timeoutSec: 180
+                gatewayPolicy:
+                    sslPolicy: restricted
+                healthCheck:
+                    checkIntervalSec: 60
+                    config:
+                        httpHealthCheck:
+                            requestPath: /api/health
+                        type: HTTP
+                    healthyThreshold: 1
+                    logConfig:
+                        enabled: true
+        tls:
+            clusterIssuer: letsencrypt-prod
+    grafana:
+        grafana.ini:
+            auth.okta:
+                auto_login: false
+                name: Liferay
+                use_refresh_token: true
+                validate_id_token: true
+            smtp:
+                ehlo_identity: "{{ first .Values.route.main.hostnames }}"
+                from_address: workspace@liferay.cloud
+                from_name: "\"[CNE] Grafana Alerting\""
+                host: smtp.sparkpostmail.com:587
+                skip_verify: true
+            users:
+                auto_assign_org_role: Viewer
+        networkPolicy:
+            allowExternal: false
+            enabled: true
+            ingress: true
+        plugins:
+            -   googlecloud-logging-datasource
+        route:
+            main:
+                enabled: true
+                filters:
+                    -   responseHeaderModifier:
+                            set:
+                                -   name: Strict-Transport-Security
+                                    value: max-age=31536000; includeSubDomains; preload
+                        type: ResponseHeaderModifier
+                hostnames: []
+                parentRefs:
+                    -   group: gateway.networking.k8s.io
+                        kind: Gateway
+                        name: monitoring-stack-grafana-gateway
+                        sectionName: https
+            redirect:
+                enabled: true
+                hostnames: []
+                parentRefs:
+                    -   group: gateway.networking.k8s.io
+                        kind: Gateway
+                        name: monitoring-stack-grafana-gateway
+                        sectionName: http
+        shadowBundledPlugins: true
+    kubeStateMetrics:
+        customResources:
+            certificate:
+                plural: certificates
+                resource:
+                    groupVersionKind:
+                        group: cert-manager.io
+                        kind: Certificate
+                        version: v1
+                    labelsFromPath:
+                        name:
+                            -   metadata
+                            -   name
+                        namespace:
+                            -   metadata
+                            -   namespace
+                    metrics:
+                        -   each:
+                                info:
+                                    labelsFromPath:
+                                        hostname: []
+                                    path:
+                                        -   spec
+                                        -   dnsNames
+                                type: Info
+                            help: Certificate DNS name information, one series per spec.dnsNames entry
+                            name: certificate_dnsname_info
+            httproute:
+                plural: httproutes
+                resource:
+                    groupVersionKind:
+                        group: gateway.networking.k8s.io
+                        kind: HTTPRoute
+                        version: v1
+                    labelsFromPath:
+                        name:
+                            -   metadata
+                            -   name
+                        namespace:
+                            -   metadata
+                            -   namespace
+                    metrics:
+                        -   each:
+                                info:
+                                    labelsFromPath:
+                                        hostname: []
+                                    path:
+                                        -   spec
+                                        -   hostnames
+                                type: Info
+                            help: HTTPRoute hostname information, one series per spec.hostnames entry
+                            name: httproute_info
+        metricAllowlist:
+            kube_secret_labels: true
+        metricLabelsAllowlist:
+            namespaces:
+                environmentId: true
+                projectCustomer: true
+            secrets:
+                sme-created-at: true
+                sme-managed: true
+                sme-updated-at: true
+                sme-user-create: true
+                sme-user-update: true
+    prometheus-node-exporter:
+        enabled: false
+    smtp:
+        credentialsSecretKey: lcp_cne_grafana_smtp_json
+        enabled: true
+    sso:
+        credentialsSecretKey: okta_sso_oidc_properties_json
+        provider: okta
+        secretStoreName: gcpsm-customer-css
+prometheus-pushgateway:
+    automountServiceAccountToken: false
+    enabled: false
+    extraArgs:
+        -   --log.format=json
+        -   --log.level=error
+        -   --persistence.file=/data/pushgateway.data
+        -   --persistence.interval=1m
+    extraContainers:
+        -   args:
+                -   --sync-period=1m
+                -   --ttl=1m
+            image: ghcr.io/abatilo/pushgateway-cleaner:v0.1.4
+            name: pushgateway-cleaner
+            resources:
+                limits:
+                    cpu: 40m
+                    memory: 16Mi
+                requests:
+                    cpu: 20m
+                    memory: 4Mi
+    networkPolicy:
+        allowAll: true
+    resources:
+        limits:
+            cpu: 100m
+            memory: 50Mi
+        requests:
+            cpu: 100m
+            memory: 30Mi

@@ -1,0 +1,100 @@
+set:
+    observability.gcp.clusterName: liferay-test-gke
+    observability.gcp.projectId: liferay-test
+    observability.grafana.route.main.hostnames:
+        -   monitoring.example.com
+    observability.grafana.route.redirect.hostnames:
+        -   monitoring.example.com
+suite: Grafana
+templates:
+    -   templates/grafana/dashboards-configmap.yaml
+tests:
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-builds
+                matchRegex:
+                    path: data["builds.json"]
+                    pattern: "Build ID:"
+                template: templates/grafana/dashboards-configmap.yaml
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-builds
+                notMatchRegex:
+                    path: data["builds.json"]
+                    pattern: HEADER_HTML
+                template: templates/grafana/dashboards-configmap.yaml
+        it: Labels the builds dashboard header with the build ID
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-secrets
+                matchRegex:
+                    path: data["secrets.json"]
+                    pattern: cd.[$][{]dns_zone[}]/secrets
+                template: templates/grafana/dashboards-configmap.yaml
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-secrets
+                notMatchRegex:
+                    path: data["secrets.json"]
+                    pattern: HEADER_HTML
+                template: templates/grafana/dashboards-configmap.yaml
+        it: Links the secrets dashboard header to secret management in ArgoCD
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-custom-domains
+                matchRegex:
+                    path: data["custom-domains.json"]
+                    pattern: cdg-panel
+                template: templates/grafana/dashboards-configmap.yaml
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-custom-domains
+                notMatchRegex:
+                    path: data["custom-domains.json"]
+                    pattern: CUSTOM_DOMAINS_GUIDE_HTML
+                template: templates/grafana/dashboards-configmap.yaml
+        it: Renders the custom domains guide from its HTML file
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-secrets
+                matchRegex:
+                    path: data["secrets.json"]
+                    pattern: cluster=~.{2}liferay-test-gke.{2}
+                template: templates/grafana/dashboards-configmap.yaml
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-secrets
+                notMatchRegex:
+                    path: data["secrets.json"]
+                    pattern: "[$][{]CLUSTER[}]"
+                template: templates/grafana/dashboards-configmap.yaml
+        it: Scopes the dashboard queries to the GCP cluster
+    -   asserts:
+            -   hasDocuments:
+                    count: 2
+                template: templates/grafana/dashboards-configmap.yaml
+        it: Skips a dashboard when its enabled is false
+        set:
+            dashboards.items.builds.enabled: false
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-builds
+                matchRegex:
+                    path: data["builds.json"]
+                    pattern: "\"uid\": \"custom-uid\""
+                template: templates/grafana/dashboards-configmap.yaml
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-observability-dashboard-builds
+                notMatchRegex:
+                    path: data["builds.json"]
+                    pattern: DS_PROMETHEUS
+                template: templates/grafana/dashboards-configmap.yaml
+        it: Substitutes the observability datasource UID into the dashboards
+        set:
+            observability.datasource.uid: custom-uid

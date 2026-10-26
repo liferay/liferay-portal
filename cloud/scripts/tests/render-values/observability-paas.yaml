@@ -1,0 +1,12 @@
+observability:
+    gcp:
+        clusterName: liferay-example-gke
+        projectId: liferay-example
+    grafana:
+        route:
+            main:
+                hostnames:
+                    -   monitoring.example.com
+            redirect:
+                hostnames:
+                    -   monitoring.example.com

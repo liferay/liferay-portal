@@ -1,0 +1,1071 @@
+{
+	"annotations": {
+		"list": [
+			{
+				"builtIn": 1,
+				"datasource": {
+					"type": "grafana",
+					"uid": "-- Grafana --"
+				},
+				"enable": true,
+				"hide": true,
+				"iconColor": "rgba(0, 211, 255, 1)",
+				"name": "Annotations & Alerts",
+				"type": "dashboard"
+			}
+		]
+	},
+	"description": "",
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"liveNow": false,
+	"panels": [
+		{
+			"gridPos": {
+				"h": 5,
+				"w": 15,
+				"x": 0,
+				"y": 0
+			},
+			"id": 2,
+			"options": {
+				"code": {
+					"language": "plaintext",
+					"showLineNumbers": false,
+					"showMiniMap": false
+				},
+				"content": "${HEADER_HTML}",
+				"mode": "html"
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+			],
+			"title": "",
+			"transparent": true,
+			"type": "text"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							}
+						]
+					},
+					"unit": "none"
+				}
+			},
+			"gridPos": {
+				"h": 5,
+				"w": 3,
+				"x": 15,
+				"y": 0
+			},
+			"id": 5,
+			"options": {
+				"colorMode": "background",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "horizontal",
+				"percentChangeColorMode": "standard",
+				"reduceOptions": {
+					"calcs": [
+						"sum"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"disableTextWrap": false,
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "count(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=\"DONE\"}[$__range])\r\n  )\r\n)",
+					"format": "table",
+					"fullMetaSearch": false,
+					"includeNullMetadata": true,
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "A",
+					"useBackend": false
+				}
+			],
+			"title": "SUCCESS RUNS #",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "0"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							},
+							{
+								"color": "red",
+								"value": 1
+							}
+						]
+					},
+					"unit": "none"
+				}
+			},
+			"gridPos": {
+				"h": 5,
+				"w": 3,
+				"x": 18,
+				"y": 0
+			},
+			"id": 6,
+			"options": {
+				"colorMode": "value",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "auto",
+				"percentChangeColorMode": "standard",
+				"reduceOptions": {
+					"calcs": [
+						"sum"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"disableTextWrap": false,
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "count(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=~\"ERROR|FAILURE|TIMEOUT|CANCELLED\"}[$__range])\r\n  )\r\n)",
+					"format": "table",
+					"fullMetaSearch": false,
+					"includeNullMetadata": true,
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "A",
+					"useBackend": false
+				}
+			],
+			"title": "FAILED RUNS #",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							}
+						]
+					},
+					"unit": "none"
+				}
+			},
+			"gridPos": {
+				"h": 5,
+				"w": 3,
+				"x": 21,
+				"y": 0
+			},
+			"id": 7,
+			"options": {
+				"colorMode": "value",
+				"graphMode": "area",
+				"justifyMode": "auto",
+				"orientation": "auto",
+				"percentChangeColorMode": "standard",
+				"reduceOptions": {
+					"calcs": [
+						"sum"
+					],
+					"fields": "",
+					"values": false
+				},
+				"showPercentChange": false,
+				"textMode": "auto",
+				"wideLayout": true
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"disableTextWrap": false,
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "count(\r\n  sum by (build_id) (\r\n    last_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status!=\"starting\"}[$__range])\r\n  )\r\n)",
+					"format": "table",
+					"fullMetaSearch": false,
+					"includeNullMetadata": true,
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "A",
+					"useBackend": false
+				}
+			],
+			"title": "TOTAL RUNS #",
+			"type": "stat"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"custom": {
+						"align": "auto",
+						"cellOptions": {
+							"type": "auto"
+						},
+						"footer": {
+							"reducers": [
+							]
+						},
+						"inspect": false,
+						"wrapHeaderText": false,
+						"wrapText": false
+					},
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							},
+							{
+								"color": "red",
+								"value": 80
+							}
+						]
+					}
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "build_id"
+						},
+						"properties": [
+							{
+								"id": "custom.cellOptions",
+								"value": {
+									"type": "color-text"
+								}
+							},
+							{
+								"id": "links",
+								"value": [
+									{
+										"title": "Select Build",
+										"url": "${__url.path}?var-build_id=${__data.fields[\"Build Id\"]}"
+									}
+								]
+							},
+							{
+								"id": "color",
+								"value": {
+									"fixedColor": "dark-green",
+									"mode": "fixed"
+								}
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Build Id"
+						},
+						"properties": [
+							{
+								"id": "custom.width",
+								"value": 338
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Status"
+						},
+						"properties": [
+							{
+								"id": "mappings",
+								"value": [
+									{
+										"options": {
+											"pattern": "^(DONE)$",
+											"result": {
+												"index": 0,
+												"text": "🟢 $1"
+											}
+										},
+										"type": "regex"
+									},
+									{
+										"options": {
+											"pattern": "^(ERROR)$",
+											"result": {
+												"index": 1,
+												"text": "🔴 $1"
+											}
+										},
+										"type": "regex"
+									},
+									{
+										"options": {
+											"pattern": "^((?!DONE|ERROR).+)$",
+											"result": {
+												"index": 2,
+												"text": "🟡 $1"
+											}
+										},
+										"type": "regex"
+									}
+								]
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Source"
+						},
+						"properties": [
+							{
+								"id": "mappings",
+								"value": [
+									{
+										"options": {
+											"pattern": ".*",
+											"result": {
+												"index": 0,
+												"text": "🔗 Commit"
+											}
+										},
+										"type": "regex"
+									}
+								]
+							},
+							{
+								"id": "links",
+								"value": [
+									{
+										"targetBlank": true,
+										"title": "Open commit on GitHub",
+										"url": "${__value.raw}"
+									}
+								]
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 8,
+				"w": 15,
+				"x": 0,
+				"y": 5
+			},
+			"id": 1,
+			"options": {
+				"cellHeight": "sm",
+				"frameIndex": 1,
+				"showHeader": true,
+				"sortBy": [
+					{
+						"desc": true,
+						"displayName": "Started"
+					}
+				]
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (build_id, build_trigger_id) (min_over_time(timestamp({\"__name__\"=\"logging.googleapis.com/user/cloudbuild-build-lifecycle-total\", \"status\"=\"starting\"})[$__range:])) * 1000",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "started"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (build_id, status) (min_over_time(timestamp({\"__name__\"=\"logging.googleapis.com/user/cloudbuild-build-lifecycle-total\", \"status\"!=\"starting\"})[$__range:])) * 1000",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "finished"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (build_id, git_commit_url) (last_over_time({\"__name__\"=\"logging.googleapis.com/user/cloudbuild-commit-metadata-total\"}[$__range]))",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "commit"
+				}
+			],
+			"title": "Builds",
+			"transformations": [
+				{
+					"id": "joinByField",
+					"options": {
+						"byField": "build_id",
+						"mode": "outerTabular"
+					}
+				},
+				{
+					"id": "convertFieldType",
+					"options": {
+						"conversions": [
+							{
+								"destinationType": "time",
+								"targetField": "Value #started"
+							},
+							{
+								"destinationType": "time",
+								"targetField": "Value #finished"
+							}
+						],
+						"fields": {
+						}
+					}
+				},
+				{
+					"id": "organize",
+					"options": {
+						"excludeByName": {
+							"Time 1": true,
+							"Time 2": true,
+							"Time 3": true,
+							"Value #commit": true,
+							"Value #finished": false,
+							"Value #started": false,
+							"build_trigger_id": true
+						},
+						"includeByName": {
+						},
+						"indexByName": {
+							"Time 1": 6,
+							"Time 2": 7,
+							"Time 3": 8,
+							"Value #commit": 9,
+							"Value #finished": 3,
+							"Value #started": 2,
+							"build_id": 1,
+							"build_trigger_id": 0,
+							"git_commit_url": 5,
+							"status": 4
+						},
+						"renameByName": {
+							"Time 1": "",
+							"Value #commit": "",
+							"Value #finished": "Finished",
+							"Value #started": "Started",
+							"build_id": "Build Id",
+							"build_trigger_id": "Trigger Id",
+							"git_commit_url": "Source",
+							"status": "Status"
+						}
+					}
+				}
+			],
+			"type": "table"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"mappings": [
+						{
+							"options": {
+								"match": "null",
+								"result": {
+									"index": 0,
+									"text": "N/A"
+								}
+							},
+							"type": "special"
+						}
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							},
+							{
+								"color": "orange",
+								"value": null
+							},
+							{
+								"color": "red",
+								"value": 16
+							}
+						]
+					},
+					"unit": "percentunit"
+				}
+			},
+			"gridPos": {
+				"h": 8,
+				"w": 9,
+				"x": 15,
+				"y": 5
+			},
+			"id": 8,
+			"options": {
+				"barShape": "flat",
+				"barWidthFactor": 0.5,
+				"effects": {
+					"barGlow": false,
+					"centerGlow": false,
+					"gradient": false
+				},
+				"endpointMarker": "point",
+				"minVizHeight": 75,
+				"minVizWidth": 75,
+				"orientation": "auto",
+				"reduceOptions": {
+					"calcs": [
+						"lastNotNull"
+					],
+					"fields": "",
+					"values": false
+				},
+				"segmentCount": 1,
+				"segmentSpacing": 0.3,
+				"shape": "gauge",
+				"showThresholdLabels": false,
+				"showThresholdMarkers": true,
+				"sizing": "auto",
+				"sparkline": false,
+				"textMode": "auto"
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "count(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=~\"ERROR|FAILURE|TIMEOUT|CANCELLED\"}[$__range])\r\n  )\r\n)\r\n/\r\ncount(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status!=\"starting\"}[$__range])\r\n  )\r\n)",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "A"
+				}
+			],
+			"title": "Build Failure Rate",
+			"type": "gauge"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"custom": {
+						"align": "auto",
+						"cellOptions": {
+							"type": "auto"
+						},
+						"footer": {
+							"reducers": [
+							]
+						},
+						"inspect": false,
+						"wrapHeaderText": false,
+						"wrapText": true
+					},
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							},
+							{
+								"color": "red",
+								"value": 80
+							}
+						]
+					}
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Number"
+						},
+						"properties": [
+							{
+								"id": "custom.width",
+								"value": 74
+							}
+						]
+					},
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Status"
+						},
+						"properties": [
+							{
+								"id": "custom.width",
+								"value": 150
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 10,
+				"w": 9,
+				"x": 0,
+				"y": 13
+			},
+			"id": 3,
+			"options": {
+				"cellHeight": "sm",
+				"frameIndex": 1,
+				"showHeader": true,
+				"sortBy": [
+					{
+						"desc": false,
+						"displayName": "Step Number"
+					}
+				]
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (step_number, step_name) (min_over_time(timestamp({\"__name__\"=\"logging.googleapis.com/user/cloudbuild-step-lifecycle-total\", \"build_id\"=\"$build_id\", status=\"Starting\"})[$__range:])) * 1000",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "started"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (step_number, status) (min_over_time(timestamp({\"__name__\"=\"logging.googleapis.com/user/cloudbuild-step-lifecycle-total\", \"build_id\"=\"$build_id\", status!=\"Starting\"})[$__range:])) * 1000",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "finished"
+				}
+			],
+			"title": "Steps - Build ID: $build_id",
+			"transformations": [
+				{
+					"id": "joinByField",
+					"options": {
+						"byField": "step_number",
+						"mode": "outerTabular"
+					}
+				},
+				{
+					"id": "convertFieldType",
+					"options": {
+						"conversions": [
+							{
+								"destinationType": "time",
+								"targetField": "Value #started"
+							},
+							{
+								"destinationType": "time",
+								"targetField": "Value #finished"
+							}
+						],
+						"fields": {
+						}
+					}
+				},
+				{
+					"id": "organize",
+					"options": {
+						"excludeByName": {
+							"Time 1": true,
+							"Time 2": true,
+							"Value #finished": false,
+							"Value #started": false
+						},
+						"includeByName": {
+						},
+						"indexByName": {
+							"Time 1": 5,
+							"Time 2": 6,
+							"Value #finished": 3,
+							"Value #started": 2,
+							"status": 4,
+							"step_name": 1,
+							"step_number": 0
+						},
+						"renameByName": {
+							"Time 1": "",
+							"Value #finished": "Finished",
+							"Value #started": "Started",
+							"build_id": "Build Id",
+							"build_trigger_id": "Trigger Id",
+							"status": "Status",
+							"step_name": "Name",
+							"step_number": "Number"
+						}
+					}
+				}
+			],
+			"type": "table"
+		},
+		{
+			"datasource": {
+				"type": "googlecloud-logging-datasource",
+				"uid": "googlecloud-logging-datasource"
+			},
+			"gridPos": {
+				"h": 10,
+				"w": 15,
+				"x": 9,
+				"y": 13
+			},
+			"id": 4,
+			"options": {
+				"dedupStrategy": "exact",
+				"enableInfiniteScrolling": false,
+				"enableLogDetails": true,
+				"prettifyLogMessage": false,
+				"showControls": true,
+				"showFieldSelector": false,
+				"showLabels": false,
+				"showLevel": true,
+				"showTime": true,
+				"sortOrder": "Descending",
+				"syntaxHighlighting": true,
+				"timestampResolution": "ms",
+				"unwrappedColumns": false,
+				"wrapLogMessage": true
+			},
+			"pluginVersion": "13.0.1",
+			"targets": [
+				{
+					"bucketId": "$logging_bucket",
+					"datasource": {
+						"type": "googlecloud-logging-datasource",
+						"uid": "googlecloud-logging-datasource"
+					},
+					"projectId": "$gcp_project",
+					"queryText": "severity >= DEFAULT\nresource.type = \"build\"\nresource.labels.build_id = \"$build_id\"",
+					"refId": "A",
+					"viewId": "$logging_view"
+				}
+			],
+			"title": "Logs - Build ID: $build_id",
+			"type": "logs"
+		}
+	],
+	"preload": false,
+	"refresh": "",
+	"schemaVersion": 42,
+	"tags": [
+		"Liferay",
+		"Builds"
+	],
+	"templating": {
+		"list": [
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${DS_PROMETHEUS}"
+				},
+				"definition": "query_result(count by (build_id) (max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total[$__range])))",
+				"hide": 0,
+				"includeAll": false,
+				"label": "Build ID",
+				"multi": false,
+				"name": "build_id",
+				"options": [
+				],
+				"query": {
+					"qryType": 3,
+					"query": "query_result(count by (build_id) (max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total[$__range])))",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 2,
+				"regex": "/build_id=\"([^\"]+)\"/",
+				"regexApplyTo": "value",
+				"skipUrlSync": false,
+				"sort": 3,
+				"type": "query"
+			},
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "googlecloud-logging-datasource",
+					"uid": "googlecloud-logging-datasource"
+				},
+				"definition": "",
+				"hide": 2,
+				"includeAll": false,
+				"multi": false,
+				"name": "gcp_project",
+				"options": [
+				],
+				"query": {
+					"bucketId": "",
+					"loading": false,
+					"projectId": "",
+					"projects": [
+						""
+					],
+					"refId": "CloudLoggingVariableQueryEditor-VariableQuery",
+					"selectedQueryType": "projects",
+					"viewId": ""
+				},
+				"refresh": 1,
+				"regex": "",
+				"regexApplyTo": "value",
+				"skipUrlSync": false,
+				"sort": 0,
+				"type": "query"
+			},
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "googlecloud-logging-datasource",
+					"uid": "googlecloud-logging-datasource"
+				},
+				"definition": "",
+				"hide": 2,
+				"includeAll": false,
+				"multi": false,
+				"name": "logging_bucket",
+				"options": [
+				],
+				"query": {
+					"bucketId": "",
+					"loading": false,
+					"projectId": "$gcp_project",
+					"projects": [
+						""
+					],
+					"refId": "CloudLoggingVariableQueryEditor-VariableQuery",
+					"selectedQueryType": "buckets",
+					"viewId": ""
+				},
+				"refresh": 1,
+				"regex": "",
+				"regexApplyTo": "value",
+				"skipUrlSync": false,
+				"sort": 0,
+				"type": "query"
+			},
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "googlecloud-logging-datasource",
+					"uid": "googlecloud-logging-datasource"
+				},
+				"definition": "",
+				"hide": 2,
+				"includeAll": false,
+				"multi": false,
+				"name": "logging_view",
+				"options": [
+				],
+				"query": {
+					"bucketId": "$logging_bucket",
+					"loading": false,
+					"projectId": "$gcp_project",
+					"projects": [
+						""
+					],
+					"refId": "CloudLoggingVariableQueryEditor-VariableQuery",
+					"selectedQueryType": "views",
+					"viewId": "",
+					"views": [
+					]
+				},
+				"refresh": 1,
+				"regex": "/^(?!\\s*$).+/",
+				"regexApplyTo": "value",
+				"skipUrlSync": false,
+				"sort": 0,
+				"type": "query"
+			}
+		]
+	},
+	"time": {
+		"from": "now-30d",
+		"to": "now"
+	},
+	"timepicker": {
+		"refresh_intervals": [
+			"1m",
+			"5m",
+			"15m",
+			"30m",
+			"1h",
+			"2h",
+			"1d"
+		]
+	},
+	"timezone": "browser",
+	"title": "Builds",
+	"uid": "builds",
+	"version": 1,
+	"weekStart": ""
+}

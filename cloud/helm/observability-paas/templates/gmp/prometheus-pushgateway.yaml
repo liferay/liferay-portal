@@ -1,0 +1,28 @@
+{{- if (index .Values "prometheus-pushgateway" "enabled") -}}
+apiVersion: monitoring.googleapis.com/v1
+kind: PodMonitoring
+metadata:
+    labels:
+        {{- include "observability-paas.labels" . | nindent 8 }}
+    name: {{ printf "%s-prometheus-pushgateway" (include "observability-paas.fullname" .) | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability-paas.namespace" . | quote }}
+spec:
+    endpoints:
+        -   interval: 1m
+            metricRelabeling:
+                -   separator: _
+                    sourceLabels:
+                        -   project_id
+                        -   cluster
+                    targetLabel: lcp_cluster_name
+                -   action: keep
+                    regex: lcp_(.+)
+                    sourceLabels:
+                        -   __name__
+            port: metrics
+    selector:
+        matchLabels:
+            {{- include "prometheus-pushgateway.selectorLabels" (index .Subcharts "prometheus-pushgateway") | nindent 12 }}
+    targetLabels:
+        metadata: []
+{{- end -}}

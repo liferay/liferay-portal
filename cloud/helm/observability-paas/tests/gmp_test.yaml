@@ -1,0 +1,30 @@
+set:
+    observability.gcp.clusterName: liferay-test-gke
+    observability.gcp.projectId: liferay-test
+    observability.grafana.route.main.hostnames:
+        -   monitoring.example.com
+    observability.grafana.route.redirect.hostnames:
+        -   monitoring.example.com
+suite: Google Managed Prometheus
+templates:
+    -   templates/gmp/prometheus-pushgateway.yaml
+tests:
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Renders no Pushgateway pod monitoring when the Pushgateway is disabled
+    -   asserts:
+            -   equal:
+                    path: spec.selector.matchLabels["app.kubernetes.io/instance"]
+                    value: RELEASE-NAME
+        it: Scrapes the Pushgateway of the release when the Pushgateway is enabled
+        set:
+            prometheus-pushgateway.enabled: true
+    -   asserts:
+            -   equal:
+                    path: spec.selector.matchLabels["app.kubernetes.io/name"]
+                    value: custom-pushgateway
+        it: Selects the Pushgateway by its overridden name
+        set:
+            prometheus-pushgateway.enabled: true
+            prometheus-pushgateway.nameOverride: custom-pushgateway

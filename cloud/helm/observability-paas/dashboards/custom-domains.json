@@ -1,0 +1,390 @@
+{
+	"annotations": {
+		"list": [
+			{
+				"builtIn": 1,
+				"datasource": {
+					"type": "grafana",
+					"uid": "-- Grafana --"
+				},
+				"enable": true,
+				"hide": true,
+				"iconColor": "rgba(0, 211, 255, 1)",
+				"name": "Annotations & Alerts",
+				"type": "dashboard"
+			}
+		]
+	},
+	"editable": true,
+	"fiscalYearStartMonth": 0,
+	"graphTooltip": 0,
+	"links": [
+	],
+	"panels": [
+		{
+			"fieldConfig": {
+				"defaults": {
+				},
+				"overrides": [
+				]
+			},
+			"gridPos": {
+				"h": 5,
+				"w": 24,
+				"x": 0,
+				"y": 0
+			},
+			"id": 2,
+			"options": {
+				"code": {
+					"language": "plaintext",
+					"showLineNumbers": false,
+					"showMiniMap": false
+				},
+				"content": "${HEADER_HTML}",
+				"mode": "html"
+			},
+			"pluginVersion": "12.4.2",
+			"title": "",
+			"transparent": true,
+			"type": "text"
+		},
+		{
+			"fieldConfig": {
+				"defaults": {
+				},
+				"overrides": [
+				]
+			},
+			"gridPos": {
+				"h": 20,
+				"w": 12,
+				"x": 0,
+				"y": 5
+			},
+			"id": 3,
+			"options": {
+				"code": {
+					"language": "plaintext",
+					"showLineNumbers": false,
+					"showMiniMap": false
+				},
+				"content": "${CUSTOM_DOMAINS_GUIDE_HTML}",
+				"mode": "html"
+			},
+			"pluginVersion": "12.4.2",
+			"title": "",
+			"transparent": true,
+			"type": "text"
+		},
+		{
+			"datasource": {
+				"type": "prometheus",
+				"uid": "${DS_PROMETHEUS}"
+			},
+			"fieldConfig": {
+				"defaults": {
+					"color": {
+						"mode": "thresholds"
+					},
+					"custom": {
+						"align": "auto",
+						"cellOptions": {
+							"type": "auto"
+						},
+						"footer": {
+							"reducers": [
+							]
+						},
+						"inspect": false
+					},
+					"mappings": [
+					],
+					"thresholds": {
+						"mode": "absolute",
+						"steps": [
+							{
+								"color": "green",
+								"value": 0
+							},
+							{
+								"color": "red",
+								"value": 80
+							}
+						]
+					}
+				},
+				"overrides": [
+					{
+						"matcher": {
+							"id": "byName",
+							"options": "Status"
+						},
+						"properties": [
+							{
+								"id": "mappings",
+								"value": [
+									{
+										"options": {
+											"False": {
+												"color": "red",
+												"index": 1,
+												"text": "Failed"
+											},
+											"True": {
+												"color": "green",
+												"index": 0,
+												"text": "Ready"
+											},
+											"Unknown": {
+												"color": "orange",
+												"index": 2,
+												"text": "Issuing"
+											}
+										},
+										"type": "value"
+									},
+									{
+										"options": {
+											"match": "null",
+											"result": {
+												"color": "blue",
+												"index": 3,
+												"text": "Pending"
+											}
+										},
+										"type": "special"
+									},
+									{
+										"options": {
+											"match": "empty",
+											"result": {
+												"color": "blue",
+												"index": 4,
+												"text": "Pending"
+											}
+										},
+										"type": "special"
+									}
+								]
+							},
+							{
+								"id": "custom.cellOptions",
+								"value": {
+									"type": "color-text"
+								}
+							}
+						]
+					}
+				]
+			},
+			"gridPos": {
+				"h": 14,
+				"w": 12,
+				"x": 12,
+				"y": 5
+			},
+			"id": 1,
+			"options": {
+				"cellHeight": "sm",
+				"showHeader": true
+			},
+			"pluginVersion": "12.4.2",
+			"targets": [
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (hostname) (\n  last_over_time(kube_customresource_httproute_info{cluster=~\"${CLUSTER}\"}[1h])\n  and on (namespace) last_over_time(kube_namespace_labels{label_environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[1h])\n)",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "A"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "group by (hostname, condition) (\n  (\n    last_over_time(kube_customresource_certificate_dnsname_info{cluster=~\"${CLUSTER}\"}[1h])\n    and on (namespace) last_over_time(kube_namespace_labels{label_environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[1h])\n  )\n  * on (name, namespace) group_left(condition)\n  (label_replace(last_over_time(certmanager_certificate_ready_status{cluster=~\"${CLUSTER}\"}[1h]), \"namespace\", \"$1\", \"exported_namespace\", \"(.+)\") > 0)\n)",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "B"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "sum by (hostname) (\n  (\n    last_over_time(kube_customresource_certificate_dnsname_info{cluster=~\"${CLUSTER}\"}[1h])\n    and on (namespace) last_over_time(kube_namespace_labels{label_environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[1h])\n  )\n  * on (name, namespace) group_left\n  label_replace(last_over_time(certmanager_certificate_expiration_timestamp_seconds{cluster=~\"${CLUSTER}\"}[1h]), \"namespace\", \"$1\", \"exported_namespace\", \"(.+)\")\n) * 1000",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "C"
+				},
+				{
+					"datasource": {
+						"type": "prometheus",
+						"uid": "${DS_PROMETHEUS}"
+					},
+					"editorMode": "code",
+					"exemplar": false,
+					"expr": "group by (hostname, reason) (\n  label_replace(\n    label_replace(last_over_time(certmanager_certificate_challenge_status{cluster=~\"${CLUSTER}\"}[1h]) == 1, \"namespace\", \"$1\", \"exported_namespace\", \"(.+)\"),\n    \"hostname\", \"$1\", \"domain\", \"(.+)\"\n  )\n  and on (namespace, hostname) (\n    last_over_time(kube_customresource_certificate_dnsname_info{cluster=~\"${CLUSTER}\", hostname!~\".+\\\\.${dns_zone}\"}[1h])\n    and on (namespace) last_over_time(kube_namespace_labels{label_environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[1h])\n  )\n)",
+					"format": "table",
+					"instant": true,
+					"legendFormat": "__auto",
+					"range": false,
+					"refId": "D"
+				}
+			],
+			"title": "Custom Domains",
+			"transformations": [
+				{
+					"id": "joinByField",
+					"options": {
+						"byField": "hostname",
+						"mode": "outerTabular"
+					}
+				},
+				{
+					"id": "convertFieldType",
+					"options": {
+						"conversions": [
+							{
+								"destinationType": "time",
+								"targetField": "Value #C"
+							}
+						],
+						"fields": {
+						}
+					}
+				},
+				{
+					"id": "organize",
+					"options": {
+						"excludeByName": {
+							"Time 1": true,
+							"Time 2": true,
+							"Time 3": true,
+							"Time 4": true,
+							"Value #A": true,
+							"Value #B": true,
+							"Value #D": true
+						},
+						"includeByName": {
+						},
+						"indexByName": {
+							"Value #C": 4,
+							"condition": 2,
+							"hostname": 0,
+							"name": 1,
+							"reason": 3
+						},
+						"renameByName": {
+							"Value #C": "Expires",
+							"condition": "Status",
+							"hostname": "Hostname",
+							"name": "",
+							"reason": "Reason"
+						}
+					}
+				}
+			],
+			"transparent": true,
+			"type": "table"
+		}
+	],
+	"preload": false,
+	"schemaVersion": 42,
+	"tags": [
+		"Liferay",
+		"Custom Domains"
+	],
+	"templating": {
+		"list": [
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${DS_PROMETHEUS}"
+				},
+				"definition": "label_values(kube_namespace_labels{label_project_customer=\"yes\", cluster=~\"${CLUSTER}\"},label_environment_id)",
+				"label": "Environment",
+				"name": "environment",
+				"options": [
+				],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(kube_namespace_labels{label_project_customer=\"yes\", cluster=~\"${CLUSTER}\"},label_environment_id)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"regexApplyTo": "value",
+				"sort": 1,
+				"type": "query"
+			},
+			{
+				"allowCustomValue": false,
+				"current": {
+					"text": "",
+					"value": ""
+				},
+				"datasource": {
+					"type": "prometheus",
+					"uid": "${DS_PROMETHEUS}"
+				},
+				"definition": "label_values(lcp:cluster_info:1h,dns_zones)",
+				"hide": 2,
+				"label": "DNS Zone",
+				"name": "dns_zone",
+				"options": [
+				],
+				"query": {
+					"qryType": 1,
+					"query": "label_values(lcp:cluster_info:1h,dns_zones)",
+					"refId": "PrometheusVariableQueryEditor-VariableQuery"
+				},
+				"refresh": 1,
+				"regex": "",
+				"regexApplyTo": "value",
+				"type": "query"
+			}
+		]
+	},
+	"time": {
+		"from": "now-1h",
+		"to": "now"
+	},
+	"timepicker": {
+		"refresh_intervals": [
+			"1m",
+			"5m",
+			"15m",
+			"30m",
+			"1h",
+			"2h",
+			"1d"
+		]
+	},
+	"timezone": "browser",
+	"title": "Custom Domains",
+	"uid": "custom-domains",
+	"version": 1,
+	"weekStart": ""
+}
