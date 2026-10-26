@@ -39,14 +39,30 @@ public class PortletPreferencesPlidUtil {
 			return null;
 		}
 
-		if (LayoutStagingUtil.isBranchingLayout(layout)) {
-			LayoutStagingHandler layoutStagingHandler =
-				new LayoutStagingHandler(layout);
+		return _getLayoutRevision(layout);
+	}
 
-			return layoutStagingHandler.getLayoutRevision();
+	public static long swapPlidForPortletPreferences(
+		Layout layout, LayoutRevisionPersistence layoutRevisionPersistence) {
+
+		if (!StagingAdvicesThreadLocal.isEnabled()) {
+			return layout.getPlid();
 		}
 
-		return null;
+		LayoutRevision layoutRevision =
+			layoutRevisionPersistence.fetchByPrimaryKey(layout.getPlid());
+
+		if (layoutRevision != null) {
+			return layoutRevision.getLayoutRevisionId();
+		}
+
+		layoutRevision = _getLayoutRevision(layout);
+
+		if (layoutRevision == null) {
+			return layout.getPlid();
+		}
+
+		return layoutRevision.getLayoutRevisionId();
 	}
 
 	public static long swapPlidForPortletPreferences(
@@ -65,6 +81,17 @@ public class PortletPreferencesPlidUtil {
 		}
 
 		return layoutRevision.getLayoutRevisionId();
+	}
+
+	private static LayoutRevision _getLayoutRevision(Layout layout) {
+		if (!LayoutStagingUtil.isBranchingLayout(layout)) {
+			return null;
+		}
+
+		LayoutStagingHandler layoutStagingHandler = new LayoutStagingHandler(
+			layout);
+
+		return layoutStagingHandler.getLayoutRevision();
 	}
 
 }

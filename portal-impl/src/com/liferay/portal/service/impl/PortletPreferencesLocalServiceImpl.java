@@ -267,12 +267,21 @@ public class PortletPreferencesLocalServiceImpl
 	public PortletPreferences fetchPortletPreferences(
 		long ownerId, int ownerType, long plid, String portletId) {
 
-		if (!_exists(plid, portletId)) {
+		if (plid == PortletKeys.PREFS_PLID_SHARED) {
+			return portletPreferencesPersistence.fetchByO_O_P_P(
+				ownerId, ownerType, plid, portletId);
+		}
+
+		Layout layout = _layoutPersistence.fetchByPrimaryKey(plid);
+
+		if ((layout == null) ||
+			!_exists(plid, layout.getCompanyId(), portletId)) {
+
 			return null;
 		}
 
 		return portletPreferencesPersistence.fetchByO_O_P_P(
-			ownerId, ownerType, _swapPlidForPortletPreferences(plid),
+			ownerId, ownerType, _swapPlidForPortletPreferences(layout),
 			portletId);
 	}
 
@@ -469,12 +478,21 @@ public class PortletPreferencesLocalServiceImpl
 	public long getPortletPreferencesCount(
 		int ownerType, long plid, String portletId) {
 
-		if (!_exists(plid, portletId)) {
+		if (plid == PortletKeys.PREFS_PLID_SHARED) {
+			return portletPreferencesPersistence.countByO_P_P(
+				ownerType, plid, portletId);
+		}
+
+		Layout layout = _layoutPersistence.fetchByPrimaryKey(plid);
+
+		if ((layout == null) ||
+			!_exists(plid, layout.getCompanyId(), portletId)) {
+
 			return 0;
 		}
 
 		return portletPreferencesPersistence.countByO_P_P(
-			ownerType, _swapPlidForPortletPreferences(plid), portletId);
+			ownerType, _swapPlidForPortletPreferences(layout), portletId);
 	}
 
 	@Override
@@ -792,20 +810,6 @@ public class PortletPreferencesLocalServiceImpl
 		return false;
 	}
 
-	private boolean _exists(long plid, String portletId) {
-		if (plid == PortletKeys.PREFS_PLID_SHARED) {
-			return true;
-		}
-
-		Layout layout = _layoutPersistence.fetchByPrimaryKey(plid);
-
-		if (layout == null) {
-			return false;
-		}
-
-		return _exists(plid, layout.getCompanyId(), portletId);
-	}
-
 	private LayoutRevision _getLayoutRevision(long plid) {
 		return PortletPreferencesPlidUtil.getLayoutRevision(
 			plid, _layoutRevisionPersistence, _layoutPersistence);
@@ -844,6 +848,11 @@ public class PortletPreferencesLocalServiceImpl
 
 		return _portletPreferenceValueLocalService.getPreferences(
 			portletPreferences);
+	}
+
+	private long _swapPlidForPortletPreferences(Layout layout) {
+		return PortletPreferencesPlidUtil.swapPlidForPortletPreferences(
+			layout, _layoutRevisionPersistence);
 	}
 
 	private long _swapPlidForPortletPreferences(long plid) {
