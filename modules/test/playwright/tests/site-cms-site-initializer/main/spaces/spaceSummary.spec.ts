@@ -263,7 +263,7 @@ test(
 		await spaceSummaryPage.connectSite(siteName);
 
 		await expect(
-			page.getByRole('heading', {name: 'Sites (1)'})
+			page.getByRole('heading', {name: 'Connections (1)'})
 		).toBeVisible();
 		await expect(globalSiteLocator).toBeVisible();
 
@@ -275,7 +275,7 @@ test(
 
 		await expect(globalSiteLocator).not.toBeVisible();
 		await expect(
-			page.getByRole('heading', {name: 'Sites (0)'})
+			page.getByRole('heading', {name: 'Connections (0)'})
 		).toBeVisible();
 	}
 );

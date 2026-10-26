@@ -66,7 +66,7 @@ test(
 		await spaceSummaryPage.connectSiteTemplate(siteTemplateName);
 
 		await expect(
-			page.getByRole('heading', {name: 'Sites (2)'})
+			page.getByRole('heading', {name: 'Connections (2)'})
 		).toBeVisible();
 		await expect(globalRowLocator).toBeVisible();
 		await expect(templateRowLocator).toBeVisible();
@@ -111,7 +111,7 @@ test(
 		await spaceSummaryPage.openConnectedSitesModal();
 
 		const templateRow = page
-			.getByLabel('Connected Sites')
+			.getByLabel('Connections')
 			.getByRole('listitem')
 			.filter({
 				has: page.getByText(templateLabel(siteTemplateName), {
@@ -178,7 +178,7 @@ test(
 		const dialog = page.getByRole('dialog');
 
 		await expect(
-			dialog.getByLabel('Sites', {exact: true})
+			dialog.getByLabel('Type', {exact: true})
 		).not.toBeVisible();
 		await expect(
 			dialog.getByRole('button', {exact: true, name: 'Connect'})
@@ -269,7 +269,7 @@ test(
 
 		await spaceSummaryPage.openConnectedSitesModal();
 
-		await page.getByLabel('Sites', {exact: true}).click();
+		await page.getByLabel('Type', {exact: true}).click();
 
 		await page
 			.getByRole('option', {exact: true, name: 'Site Templates'})
@@ -284,7 +284,10 @@ test(
 		await page
 			.getByRole('option', {exact: true, name: connectedTemplateName})
 			.click();
-		await page.getByRole('button', {exact: true, name: 'Connect'}).click();
+		await page
+			.getByRole('dialog')
+			.getByRole('button', {exact: true, name: 'Connect'})
+			.click();
 
 		await waitForAlert(
 			page,
@@ -293,7 +296,7 @@ test(
 		);
 
 		await page
-			.getByLabel('Connected Sites')
+			.getByLabel('Connections')
 			.getByText(templateLabel(connectedTemplateName), {exact: true})
 			.waitFor();
 
@@ -308,7 +311,7 @@ test(
 			page.getByRole('option', {exact: true, name: connectedTemplateName})
 		).toHaveCount(0);
 
-		await page.getByLabel('Sites', {exact: true}).click();
+		await page.getByLabel('Type', {exact: true}).click();
 
 		await page.getByRole('option', {exact: true, name: 'Sites'}).click();
 

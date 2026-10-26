@@ -71,7 +71,7 @@ export class SpaceSummaryPage {
 		});
 
 		this.viewAllSitesLink = this.page.getByRole('button', {
-			name: 'View All Sites',
+			name: 'View All Connections',
 		});
 	}
 
@@ -276,7 +276,7 @@ export class SpaceSummaryPage {
 	async connectSite(siteName: string) {
 		await this.openConnectSitesDialog();
 
-		await expect(this.page.getByLabel('Sites', {exact: true})).toHaveText(
+		await expect(this.page.getByLabel('Type', {exact: true})).toHaveText(
 			'Sites'
 		);
 
@@ -285,13 +285,11 @@ export class SpaceSummaryPage {
 			.click();
 		await this.page.getByRole('option', {name: siteName}).click();
 		await this.page
+			.getByRole('dialog')
 			.getByRole('button', {exact: true, name: 'Connect'})
 			.click();
 
-		await this.page
-			.getByLabel('Connected Sites')
-			.getByText(siteName)
-			.waitFor();
+		await this.page.getByLabel('Connections').getByText(siteName).waitFor();
 
 		await this.closeButton.click();
 	}
@@ -299,7 +297,7 @@ export class SpaceSummaryPage {
 	async connectSiteTemplate(siteTemplateName: string) {
 		await this.openConnectSitesDialog();
 
-		await this.page.getByLabel('Sites', {exact: true}).click();
+		await this.page.getByLabel('Type', {exact: true}).click();
 
 		await this.page
 			.getByRole('option', {exact: true, name: 'Site Templates'})
@@ -310,11 +308,12 @@ export class SpaceSummaryPage {
 			.click();
 		await this.page.getByRole('option', {name: siteTemplateName}).click();
 		await this.page
+			.getByRole('dialog')
 			.getByRole('button', {exact: true, name: 'Connect'})
 			.click();
 
 		await this.page
-			.getByLabel('Connected Sites')
+			.getByLabel('Connections')
 			.getByText(`${siteTemplateName} (Site Template)`, {exact: true})
 			.waitFor();
 
@@ -339,7 +338,7 @@ export class SpaceSummaryPage {
 		const label = isSiteTemplate ? `${siteName} (Site Template)` : siteName;
 
 		await this.page
-			.getByLabel('Connected Sites')
+			.getByLabel('Connections')
 			.getByRole('listitem')
 			.filter({
 				has: this.page.getByText(label, {
@@ -366,10 +365,10 @@ export class SpaceSummaryPage {
 		await this.page.getByRole('dialog').waitFor();
 	}
 
-	private async openConnectSitesDialog() {
+	async openConnectSitesDialog() {
 		await this.page
-			.getByRole('button', {name: 'Connect Sites'})
-			.or(this.page.getByRole('button', {name: 'View All Sites'}))
+			.getByRole('button', {exact: true, name: 'Connect'})
+			.or(this.page.getByRole('button', {name: 'View All Connections'}))
 			.click();
 
 		await this.page.getByRole('dialog').waitFor();
