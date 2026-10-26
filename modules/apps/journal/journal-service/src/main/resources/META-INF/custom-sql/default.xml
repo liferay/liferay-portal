@@ -10,12 +10,14 @@
 			LEFT JOIN
 				JournalArticle tempJournalArticle ON
 					[$STATUS_JOIN$] AND
+					[$VIEWABLE_STATUS_JOIN$] AND
 					(JournalArticle.groupId = tempJournalArticle.groupId) AND
 					(JournalArticle.articleId = tempJournalArticle.articleId) AND
 					(JournalArticle.version < tempJournalArticle.version)
 			WHERE
 				(JournalArticle.groupId = ?) AND
 				[$STATUS$] AND
+				[$VIEWABLE_STATUS$] AND
 				[$FOLDER_ID$] AND
 				(tempJournalArticle.id_ IS NULL)
 		]]>

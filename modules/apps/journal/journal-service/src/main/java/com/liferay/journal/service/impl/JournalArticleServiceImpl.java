@@ -1085,6 +1085,8 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		QueryDefinition<JournalArticle> queryDefinition = new QueryDefinition<>(
 			status);
 
+		queryDefinition.setOwnerUserId(_getOwnerUserId(groupId, status));
+
 		return journalArticleFinder.filterCountByG_F(
 			groupId, folderIds, queryDefinition);
 	}
