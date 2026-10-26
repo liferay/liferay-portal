@@ -9,7 +9,6 @@
 
 <%
 AnalyticsConfiguration analyticsConfiguration = (AnalyticsConfiguration)request.getAttribute(AnalyticsSettingsWebKeys.ANALYTICS_CONFIGURATION);
-AnalyticsUsersManager analyticsUsersManager = (AnalyticsUsersManager)request.getAttribute(AnalyticsSettingsWebKeys.ANALYTICS_USERS_MANAGER);
 
 boolean connected = false;
 String[] syncedGroupIds = new String[0];
@@ -26,7 +25,7 @@ if (analyticsConfiguration != null) {
 	}
 
 	if (analyticsConfiguration.syncAllContacts()) {
-		totalContactsSelected = analyticsUsersManager.getCompanyUsersCount(themeDisplay.getCompanyId());
+		totalContactsSelected = AnalyticsUsersUtil.getCompanyUsersCount(themeDisplay.getCompanyId());
 	}
 	else {
 		String[] syncedOrganizationIds = GetterUtil.getStringValues(analyticsConfiguration.syncedOrganizationIds());
@@ -45,7 +44,7 @@ if (analyticsConfiguration != null) {
 			syncedUserGroupIdsLong[i] = GetterUtil.getLong(syncedUserGroupIds[i]);
 		}
 
-		totalContactsSelected = analyticsUsersManager.getOrganizationsAndUserGroupsUsersCount(syncedOrganizationIdsLong, syncedUserGroupIdsLong);
+		totalContactsSelected = AnalyticsUsersUtil.getOrganizationsAndUserGroupsUsersCount(syncedOrganizationIdsLong, syncedUserGroupIdsLong);
 	}
 }
 %>

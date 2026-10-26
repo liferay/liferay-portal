@@ -7,7 +7,6 @@ package com.liferay.analytics.settings.web.internal.portlet.action;
 
 import com.liferay.analytics.settings.configuration.AnalyticsConfiguration;
 import com.liferay.analytics.settings.web.internal.constants.AnalyticsSettingsWebKeys;
-import com.liferay.analytics.settings.web.internal.user.AnalyticsUsersManager;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -64,9 +63,6 @@ public abstract class BaseAnalyticsMVCRenderCommand
 	protected abstract String getJspPath();
 
 	@Reference
-	protected AnalyticsUsersManager analyticsUsersManager;
-
-	@Reference
 	protected ConfigurationProvider configurationProvider;
 
 	@Reference(
@@ -86,10 +82,6 @@ public abstract class BaseAnalyticsMVCRenderCommand
 			AnalyticsSettingsWebKeys.ANALYTICS_CONFIGURATION,
 			configurationProvider.getCompanyConfiguration(
 				AnalyticsConfiguration.class, themeDisplay.getCompanyId()));
-
-		httpServletRequest.setAttribute(
-			AnalyticsSettingsWebKeys.ANALYTICS_USERS_MANAGER,
-			analyticsUsersManager);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

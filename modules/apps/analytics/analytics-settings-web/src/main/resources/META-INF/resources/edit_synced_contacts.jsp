@@ -17,7 +17,6 @@ String redirect = PortletURLBuilder.createRenderURL(
 ).buildString();
 
 AnalyticsConfiguration analyticsConfiguration = (AnalyticsConfiguration)request.getAttribute(AnalyticsSettingsWebKeys.ANALYTICS_CONFIGURATION);
-AnalyticsUsersManager analyticsUsersManager = (AnalyticsUsersManager)request.getAttribute(AnalyticsSettingsWebKeys.ANALYTICS_USERS_MANAGER);
 
 boolean connected = false;
 
@@ -82,7 +81,7 @@ PortalUtil.addPortletBreadcrumbEntry(request, LanguageUtil.get(resourceBundle, "
 					<span class="toggle-switch-handle"></span>
 				</span>
 				<span class="toggle-switch-text toggle-switch-text-right">
-					<liferay-ui:message arguments="<%= analyticsUsersManager.getCompanyUsersCount(themeDisplay.getCompanyId()) %>" key="sync-all-x-contacts" />
+					<liferay-ui:message arguments="<%= AnalyticsUsersUtil.getCompanyUsersCount(themeDisplay.getCompanyId()) %>" key="sync-all-x-contacts" />
 				</span>
 			</label>
 		</fieldset>
