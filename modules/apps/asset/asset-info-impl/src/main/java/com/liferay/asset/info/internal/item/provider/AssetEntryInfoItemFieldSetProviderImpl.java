@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.ScopeUtil;
 import com.liferay.portal.kernel.util.SortedArrayList;
 import com.liferay.portal.kernel.util.Validator;
@@ -62,7 +63,8 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 	@Override
 	public InfoFieldSet getInfoFieldSet(AssetEntry assetEntry) {
 		return _getInfoFieldSet(
-			_getNoninternalAssetVocabularies(assetEntry),
+			_getNoninternalAssetVocabularies(
+				assetEntry, assetEntry.getClassName()),
 			ScopeUtil.getScopeGroupId(0));
 	}
 
@@ -86,57 +88,7 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 	public List<InfoFieldValue<Object>> getInfoFieldValues(
 		AssetEntry assetEntry) {
 
-		List<InfoFieldValue<Object>> infoFieldValues = new ArrayList<>();
-
-		long scopeGroupId = ScopeUtil.getScopeGroupId(0);
-
-		Set<AssetVocabulary> assetVocabularies =
-			_getNoninternalAssetVocabularies(assetEntry);
-
-		for (AssetVocabulary assetVocabulary : assetVocabularies) {
-			infoFieldValues.add(
-				new InfoFieldValue<>(
-					InfoField.builder(
-					).infoFieldType(
-						CategoriesInfoFieldType.INSTANCE
-					).uniqueId(
-						AssetVocabulary.class.getSimpleName() +
-							StringPool.UNDERLINE +
-								assetVocabulary.getVocabularyId()
-					).name(
-						assetVocabulary.getName()
-					).externalUniqueId(
-						_getExternalUniqueId(
-							assetVocabulary.getExternalReferenceCode(),
-							assetVocabulary.getGroupId(), scopeGroupId)
-					).labelInfoLocalizedValue(
-						InfoLocalizedValue.<String>builder(
-						).defaultLocale(
-							LocaleUtil.fromLanguageId(
-								assetVocabulary.getDefaultLanguageId())
-						).values(
-							assetVocabulary.getTitleMap()
-						).build()
-					).build(),
-					() -> _getKeyLocalizedLabelPairs(
-						_filterByVocabularyId(
-							assetEntry.getCategories(),
-							assetVocabulary.getVocabularyId()))));
-		}
-
-		infoFieldValues.add(
-			new InfoFieldValue<>(
-				_categoriesInfoField,
-				() -> _getKeyLocalizedLabelPairs(
-					_filterByVisibilityType(assetEntry.getCategories()))));
-		infoFieldValues.add(
-			new InfoFieldValue<>(
-				_tagsInfoField, () -> _getTags(assetEntry.getTags())));
-		infoFieldValues.addAll(
-			_infoItemFieldReaderFieldSetProvider.getInfoFieldValues(
-				AssetEntry.class.getName(), assetEntry));
-
-		return infoFieldValues;
+		return _getInfoFieldValues(assetEntry, assetEntry.getClassName());
 	}
 
 	@Override
@@ -156,8 +108,16 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 				itemClassName);
 
 		try {
-			return getInfoFieldValues(
-				assetRendererFactory.getAssetEntry(itemClassName, itemClassPK));
+			AssetEntry assetEntry = assetRendererFactory.getAssetEntry(
+				itemClassName, itemClassPK);
+
+			if (assetEntry.getClassNameId() == PortalUtil.getClassNameId(
+					itemClassName)) {
+
+				return _getInfoFieldValues(assetEntry, itemClassName);
+			}
+
+			return getInfoFieldValues(assetEntry);
 		}
 		catch (NoSuchEntryException noSuchEntryException) {
 			throw new NoSuchInfoItemException(
@@ -264,6 +224,62 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 		).build();
 	}
 
+	private List<InfoFieldValue<Object>> _getInfoFieldValues(
+		AssetEntry assetEntry, String itemClassName) {
+
+		List<InfoFieldValue<Object>> infoFieldValues = new ArrayList<>();
+
+		long scopeGroupId = ScopeUtil.getScopeGroupId(0);
+
+		Set<AssetVocabulary> assetVocabularies =
+			_getNoninternalAssetVocabularies(assetEntry, itemClassName);
+
+		for (AssetVocabulary assetVocabulary : assetVocabularies) {
+			infoFieldValues.add(
+				new InfoFieldValue<>(
+					InfoField.builder(
+					).infoFieldType(
+						CategoriesInfoFieldType.INSTANCE
+					).uniqueId(
+						AssetVocabulary.class.getSimpleName() +
+							StringPool.UNDERLINE +
+								assetVocabulary.getVocabularyId()
+					).name(
+						assetVocabulary.getName()
+					).externalUniqueId(
+						_getExternalUniqueId(
+							assetVocabulary.getExternalReferenceCode(),
+							assetVocabulary.getGroupId(), scopeGroupId)
+					).labelInfoLocalizedValue(
+						InfoLocalizedValue.<String>builder(
+						).defaultLocale(
+							LocaleUtil.fromLanguageId(
+								assetVocabulary.getDefaultLanguageId())
+						).values(
+							assetVocabulary.getTitleMap()
+						).build()
+					).build(),
+					() -> _getKeyLocalizedLabelPairs(
+						_filterByVocabularyId(
+							assetEntry.getCategories(),
+							assetVocabulary.getVocabularyId()))));
+		}
+
+		infoFieldValues.add(
+			new InfoFieldValue<>(
+				_categoriesInfoField,
+				() -> _getKeyLocalizedLabelPairs(
+					_filterByVisibilityType(assetEntry.getCategories()))));
+		infoFieldValues.add(
+			new InfoFieldValue<>(
+				_tagsInfoField, () -> _getTags(assetEntry.getTags())));
+		infoFieldValues.addAll(
+			_infoItemFieldReaderFieldSetProvider.getInfoFieldValues(
+				AssetEntry.class.getName(), assetEntry));
+
+		return infoFieldValues;
+	}
+
 	private KeyLocalizedLabelPair _getKeyLocalizedLabelPair(
 		AssetCategory assetCategory) {
 
@@ -289,11 +305,11 @@ public class AssetEntryInfoItemFieldSetProviderImpl
 	}
 
 	private Set<AssetVocabulary> _getNoninternalAssetVocabularies(
-		AssetEntry assetEntry) {
+		AssetEntry assetEntry, String itemClassName) {
 
 		Set<AssetVocabulary> assetVocabularies = new HashSet<>(
 			_getNoninternalAssetVocabularies(
-				assetEntry.getClassName(), assetEntry.getClassTypeId(),
+				itemClassName, assetEntry.getClassTypeId(),
 				assetEntry.getGroupId()));
 
 		for (AssetCategory assetCategory : assetEntry.getCategories()) {
