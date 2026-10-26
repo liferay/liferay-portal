@@ -453,7 +453,7 @@ public class ExportPreviewResourceTest
 				unsafeBiFunction)
 		throws Exception {
 
-		long now = System.currentTimeMillis();
+		long time = System.currentTimeMillis();
 
 		String portletId = objectDefinition.getPortletId();
 
@@ -463,38 +463,38 @@ public class ExportPreviewResourceTest
 		Assert.assertEquals(
 			1L,
 			_getAdditionCount(
-				unsafeBiFunction.apply(new Date(now - (24 * Time.HOUR)), null),
+				unsafeBiFunction.apply(new Date(time - (24 * Time.HOUR)), null),
 				portletId));
 		Assert.assertEquals(
 			1L,
 			_getAdditionCount(
-				unsafeBiFunction.apply(null, new Date(now - (24 * Time.HOUR))),
+				unsafeBiFunction.apply(null, new Date(time - (24 * Time.HOUR))),
 				portletId));
 		Assert.assertEquals(
 			1L,
 			_getAdditionCount(
 				unsafeBiFunction.apply(
-					new Date(now - (24 * Time.HOUR)), new Date(now)),
+					new Date(time - (24 * Time.HOUR)), new Date(time)),
 				portletId));
 		Assert.assertEquals(
 			2L,
 			_getAdditionCount(
 				unsafeBiFunction.apply(
-					new Date(now - (48 * Time.HOUR)), new Date(now)),
+					new Date(time - (48 * Time.HOUR)), new Date(time)),
 				portletId));
 		Assert.assertEquals(
 			1L,
 			_getAdditionCount(
 				unsafeBiFunction.apply(
-					new Date(now - (26 * Time.HOUR)),
-					new Date(now - (24 * Time.HOUR))),
+					new Date(time - (26 * Time.HOUR)),
+					new Date(time - (24 * Time.HOUR))),
 				portletId));
 		Assert.assertEquals(
 			0L,
 			_getAdditionCount(
 				unsafeBiFunction.apply(
-					new Date(now - (3 * Time.DAY)),
-					new Date(now - (2 * Time.DAY))),
+					new Date(time - (3 * Time.DAY)),
+					new Date(time - (2 * Time.DAY))),
 				portletId));
 	}
 
@@ -545,12 +545,12 @@ public class ExportPreviewResourceTest
 				unsafeBiFunction)
 		throws Exception {
 
-		long now = System.currentTimeMillis();
-
 		Layout layout = LayoutTestUtil.addTypeContentLayout(
 			testGroup, false, false);
 
-		layout.setModifiedDate(new Date(now - (2 * Time.DAY)));
+		long time = System.currentTimeMillis();
+
+		layout.setModifiedDate(new Date(time - (2 * Time.DAY)));
 
 		_layoutLocalService.updateLayout(layout);
 
@@ -585,7 +585,7 @@ public class ExportPreviewResourceTest
 
 		previewPortletDataHandler = _getPreviewPortletDataHandler(
 			unsafeBiFunction.apply(
-				new Date(now - (3 * Time.DAY)), new Date(now - Time.DAY)),
+				new Date(time - (3 * Time.DAY)), new Date(time - Time.DAY)),
 			"PORTLET_DATA_" + portletId);
 
 		Assert.assertNotNull(previewPortletDataHandler);
@@ -601,7 +601,7 @@ public class ExportPreviewResourceTest
 		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
 
 		previewPortletDataHandler = _getPreviewPortletDataHandler(
-			unsafeBiFunction.apply(new Date(now - Time.DAY), null),
+			unsafeBiFunction.apply(new Date(time - Time.DAY), null),
 			"PORTLET_DATA_" + portletId);
 
 		Assert.assertNotNull(previewPortletDataHandler);
