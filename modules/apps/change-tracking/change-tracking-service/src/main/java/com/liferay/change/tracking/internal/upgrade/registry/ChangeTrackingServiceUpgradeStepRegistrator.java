@@ -162,6 +162,9 @@ public class ChangeTrackingServiceUpgradeStepRegistrator
 			"2.14.0", "2.15.0",
 			new com.liferay.change.tracking.internal.upgrade.v2_15_0.
 				CTCollectionUpgradeProcess());
+
+		registry.register(
+			"2.15.0", "3.0.0", UpgradeProcessFactory.dropTables("CTScore"));
 	}
 
 	@Reference
