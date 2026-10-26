@@ -23,6 +23,7 @@ import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.layout.service.LayoutClassedModelUsageLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -31,6 +32,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
+import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.PortletIdCodec;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -102,6 +104,7 @@ public class JournalArticleAssetRendererTest {
 	@Test
 	public void testGetURLViewInContext() throws Exception {
 		_testGetURLViewInContext();
+		_testGetURLViewInContextWhenArticleIsFromAnotherSite();
 		_testGetURLViewInContextWhenArticleIsPending();
 	}
 
@@ -301,6 +304,42 @@ public class JournalArticleAssetRendererTest {
 		_assertURL(article, false, themeDisplay);
 	}
 
+	private void _testGetURLViewInContextWhenArticleIsFromAnotherSite()
+		throws Exception {
+
+		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
+			_group.getGroupId(), true);
+
+		DisplayPageTemplateTestUtil.addDisplayPageTemplate(
+			_group.getGroupId(),
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			article.getDDMStructureKey(), true,
+			WorkflowConstants.STATUS_APPROVED);
+
+		_assetPublisherGroup = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_assetPublisherGroup);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		String portletId = _addAssetPublisherPortletToLayout(draftLayout);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
+			_assetPublisherGroup.getGroupId(), StringPool.BLANK,
+			_portal.getClassNameId(JournalArticle.class.getName()),
+			article.getResourcePrimKey(), portletId,
+			_portal.getClassNameId(Portlet.class), layout.getPlid(),
+			_serviceContext);
+
+		_assertURL(
+			article, false,
+			ContentLayoutTestUtil.getThemeDisplay(
+				_company, _assetPublisherGroup, layout));
+	}
+
 	private void _testGetURLViewInContextWhenArticleIsPending()
 		throws Exception {
 
@@ -341,6 +380,9 @@ public class JournalArticleAssetRendererTest {
 			JournalArticleConstants.DDM_STRUCTURE_ID_ALL, null);
 	}
 
+	@DeleteAfterTestRun
+	private Group _assetPublisherGroup;
+
 	private Company _company;
 
 	@Inject
@@ -354,6 +396,10 @@ public class JournalArticleAssetRendererTest {
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;
+
+	@Inject
+	private LayoutClassedModelUsageLocalService
+		_layoutClassedModelUsageLocalService;
 
 	@Inject
 	private LayoutDisplayPageProviderRegistry
