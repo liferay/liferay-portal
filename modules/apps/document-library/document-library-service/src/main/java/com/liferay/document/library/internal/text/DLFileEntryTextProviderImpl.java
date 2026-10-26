@@ -50,19 +50,21 @@ import org.osgi.service.component.annotations.Reference;
 public class DLFileEntryTextProviderImpl implements DLFileEntryTextProvider {
 
 	@Override
-	public String getText(DLFileEntry dlFileEntry) {
+	public String getText(
+		DLFileEntry dlFileEntry, DLFileVersion dlFileVersion) {
+
 		if (!_isIndexContent(dlFileEntry)) {
 			return null;
 		}
 
 		try {
-			return _getText(dlFileEntry, dlFileEntry.getFileVersion());
+			return _getText(dlFileEntry, dlFileVersion);
 		}
 		catch (Throwable throwable) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Unable to extract text from file entry " +
-						dlFileEntry.getFileEntryId());
+					"Unable to extract text from file version " +
+						dlFileVersion.getFileVersionId());
 			}
 
 			if (_log.isDebugEnabled()) {

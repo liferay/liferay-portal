@@ -6,12 +6,13 @@
 package com.liferay.document.library.text;
 
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileVersion;
 
 /**
  * @author Jhosseph Gonzalez
  */
 public interface DLFileEntryTextProvider {
 
-	public String getText(DLFileEntry dlFileEntry);
+	public String getText(DLFileEntry dlFileEntry, DLFileVersion dlFileVersion);
 
 }

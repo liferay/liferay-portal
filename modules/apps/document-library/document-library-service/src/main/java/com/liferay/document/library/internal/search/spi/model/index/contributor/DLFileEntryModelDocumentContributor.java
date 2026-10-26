@@ -79,7 +79,7 @@ public class DLFileEntryModelDocumentContributor
 
 			_addFile(
 				document, Field.getLocalizedName(defaultLocale, Field.CONTENT),
-				dlFileEntry);
+				dlFileEntry, dlFileVersion);
 
 			document.addKeyword(
 				Field.CLASS_TYPE_ID, dlFileEntry.getFileEntryTypeId());
@@ -176,9 +176,11 @@ public class DLFileEntryModelDocumentContributor
 	}
 
 	private void _addFile(
-		Document document, String fieldName, DLFileEntry dlFileEntry) {
+		Document document, String fieldName, DLFileEntry dlFileEntry,
+		DLFileVersion dlFileVersion) {
 
-		String text = _dlFileEntryTextProvider.getText(dlFileEntry);
+		String text = _dlFileEntryTextProvider.getText(
+			dlFileEntry, dlFileVersion);
 
 		if (text == null) {
 			return;

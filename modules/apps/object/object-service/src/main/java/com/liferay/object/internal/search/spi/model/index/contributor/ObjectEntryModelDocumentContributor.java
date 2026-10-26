@@ -32,6 +32,7 @@ import com.liferay.petra.sql.dsl.query.DSLQuery;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
@@ -218,10 +219,11 @@ public class ObjectEntryModelDocumentContributor
 	}
 
 	private void _contribute(
-		Document document, FieldArray fieldArray, String fieldName,
-		Object fieldValue, String locale, ObjectDefinition objectDefinition,
-		ObjectEntry objectEntry, ObjectField objectField,
-		TextEmbeddingContentHelper<ObjectEntry> textEmbeddingContentHelper) {
+			Document document, FieldArray fieldArray, String fieldName,
+			Object fieldValue, String locale, ObjectDefinition objectDefinition,
+			ObjectEntry objectEntry, ObjectField objectField,
+			TextEmbeddingContentHelper<ObjectEntry> textEmbeddingContentHelper)
+		throws PortalException {
 
 		if (!objectField.isIndexed()) {
 			return;
@@ -693,7 +695,7 @@ public class ObjectEntryModelDocumentContributor
 		return _format.format(value);
 	}
 
-	private String _getFileEntryText(long fileEntryId) {
+	private String _getFileEntryText(long fileEntryId) throws PortalException {
 		if (fileEntryId == 0) {
 			return null;
 		}
@@ -705,7 +707,8 @@ public class ObjectEntryModelDocumentContributor
 			return null;
 		}
 
-		return _dlFileEntryTextProvider.getText(dlFileEntry);
+		return _dlFileEntryTextProvider.getText(
+			dlFileEntry, dlFileEntry.getFileVersion());
 	}
 
 	private String _getFileName(
