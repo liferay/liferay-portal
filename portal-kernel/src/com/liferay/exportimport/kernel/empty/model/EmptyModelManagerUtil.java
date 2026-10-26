@@ -64,6 +64,19 @@ public class EmptyModelManagerUtil {
 	}
 
 	public static void reportMissingReference(
+		String className, long companyId, String externalReferenceCode) {
+
+		EmptyModelManager emptyModelManager = _emptyModelManagerSnapshot.get();
+
+		if (emptyModelManager == null) {
+			return;
+		}
+
+		emptyModelManager.reportMissingReference(
+			className, companyId, externalReferenceCode);
+	}
+
+	public static void reportMissingReference(
 		String className, String externalReferenceCode, long groupId) {
 
 		EmptyModelManager emptyModelManager = _emptyModelManagerSnapshot.get();

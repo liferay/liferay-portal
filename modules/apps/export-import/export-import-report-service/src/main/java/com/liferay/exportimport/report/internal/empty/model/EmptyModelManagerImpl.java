@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.staging.StagingGroupHelper;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -135,6 +136,23 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 
 	@Override
 	public void reportMissingReference(
+		String className, long companyId, String externalReferenceCode) {
+
+		if (!ExportImportThreadLocal.isImportInProcess()) {
+			return;
+		}
+
+		_exportImportReportEntryLocalService.getOrAddExportImportReportEntry(
+			0, companyId, externalReferenceCode,
+			_classNameLocalService.getClassNameId(className), 0,
+			GetterUtil.getLong(
+				ExportImportThreadLocal.getExportImportConfigurationId()),
+			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE, null, null,
+			className);
+	}
+
+	@Override
+	public void reportMissingReference(
 		String className, String externalReferenceCode, long groupId) {
 
 		if (!ExportImportThreadLocal.isImportInProcess()) {
@@ -145,6 +163,11 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 
 		if (group == null) {
 			return;
+		}
+
+		if (_stagingGroupHelper.isCompanyGroup(group)) {
+			throw new IllegalArgumentException(
+				"Group " + groupId + " is the export/import company group");
 		}
 
 		_exportImportReportEntryLocalService.getOrAddExportImportReportEntry(
@@ -232,5 +255,8 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private StagingGroupHelper _stagingGroupHelper;
 
 }
