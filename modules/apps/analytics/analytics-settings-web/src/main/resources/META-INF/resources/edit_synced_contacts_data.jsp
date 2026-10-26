@@ -9,7 +9,6 @@
 
 <%
 AnalyticsConfiguration analyticsConfiguration = (AnalyticsConfiguration)request.getAttribute(AnalyticsSettingsWebKeys.ANALYTICS_CONFIGURATION);
-AnalyticsUsersManager analyticsUsersManager = (AnalyticsUsersManager)request.getAttribute(AnalyticsSettingsWebKeys.ANALYTICS_USERS_MANAGER);
 
 boolean connected = false;
 
@@ -26,7 +25,7 @@ Set<String> syncedUserGroupIds = SetUtil.fromArray(analyticsConfiguration.synced
 long totalContactsSelected = 0;
 
 if (analyticsConfiguration.syncAllContacts()) {
-	totalContactsSelected = analyticsUsersManager.getCompanyUsersCount(themeDisplay.getCompanyId());
+	totalContactsSelected = AnalyticsUsersUtil.getCompanyUsersCount(themeDisplay.getCompanyId());
 }
 else {
 	String[] syncedOrganizationIdsArray = GetterUtil.getStringValues(analyticsConfiguration.syncedOrganizationIds());
@@ -45,7 +44,7 @@ else {
 		syncedUserGroupIdsLong[i] = GetterUtil.getLong(syncedUserGroupIdsArray[i]);
 	}
 
-	totalContactsSelected = analyticsUsersManager.getOrganizationsAndUserGroupsUsersCount(syncedOrganizationIdsLong, syncedUserGroupIdsLong);
+	totalContactsSelected = AnalyticsUsersUtil.getOrganizationsAndUserGroupsUsersCount(syncedOrganizationIdsLong, syncedUserGroupIdsLong);
 }
 %>
 

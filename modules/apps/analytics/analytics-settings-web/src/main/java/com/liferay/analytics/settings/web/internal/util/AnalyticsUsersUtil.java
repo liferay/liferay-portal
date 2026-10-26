@@ -3,13 +3,13 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.analytics.settings.web.internal.user;
+package com.liferay.analytics.settings.web.internal.util;
 
 import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoTable;
 import com.liferay.expando.kernel.model.ExpandoTableConstants;
-import com.liferay.expando.kernel.service.ExpandoColumnLocalService;
-import com.liferay.expando.kernel.service.ExpandoTableLocalService;
+import com.liferay.expando.kernel.service.ExpandoColumnLocalServiceUtil;
+import com.liferay.expando.kernel.service.ExpandoTableLocalServiceUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Role;
@@ -22,9 +22,9 @@ import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
-import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.RoleLocalService;
-import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.constants.SearchContextAttributes;
@@ -32,18 +32,14 @@ import com.liferay.portal.search.constants.SearchContextAttributes;
 import java.util.Collections;
 import java.util.List;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Rachael Koestartyo
  */
-@Component(service = AnalyticsUsersManager.class)
-public class AnalyticsUsersManager {
+public class AnalyticsUsersUtil {
 
-	public int getCompanyUsersCount(long companyId) {
+	public static int getCompanyUsersCount(long companyId) {
 		if (!_isIndexerEnabled()) {
-			int activeUsersCount = _userLocalService.getUsersCount(
+			int activeUsersCount = UserLocalServiceUtil.getUsersCount(
 				companyId, WorkflowConstants.STATUS_APPROVED);
 
 			int analyticsAdministratorsCount = 0;
@@ -54,7 +50,7 @@ public class AnalyticsUsersManager {
 			if (analyticsAdministratorRole != null) {
 				try {
 					analyticsAdministratorsCount =
-						_userLocalService.getRoleUsersCount(
+						UserLocalServiceUtil.getRoleUsersCount(
 							analyticsAdministratorRole.getRoleId(),
 							WorkflowConstants.STATUS_APPROVED);
 				}
@@ -79,7 +75,7 @@ public class AnalyticsUsersManager {
 		return _getUsersCount(searchContext);
 	}
 
-	public int getOrganizationsAndUserGroupsUsersCount(
+	public static int getOrganizationsAndUserGroupsUsersCount(
 		long[] organizationIds, long[] userGroupIds) {
 
 		if (ArrayUtil.isEmpty(organizationIds) &&
@@ -89,7 +85,7 @@ public class AnalyticsUsersManager {
 		}
 
 		if (!_isIndexerEnabled()) {
-			return _userLocalService.getOrganizationsAndUserGroupsUsersCount(
+			return UserLocalServiceUtil.getOrganizationsAndUserGroupsUsersCount(
 				organizationIds, userGroupIds);
 		}
 
@@ -104,21 +100,21 @@ public class AnalyticsUsersManager {
 		return _getUsersCount(searchContext);
 	}
 
-	public List<ExpandoColumn> getUserExpandoColumns(long companyId) {
-		ExpandoTable expandoTable = _expandoTableLocalService.fetchTable(
+	public static List<ExpandoColumn> getUserExpandoColumns(long companyId) {
+		ExpandoTable expandoTable = ExpandoTableLocalServiceUtil.fetchTable(
 			companyId,
-			_classNameLocalService.getClassNameId(User.class.getName()),
+			ClassNameLocalServiceUtil.getClassNameId(User.class.getName()),
 			ExpandoTableConstants.DEFAULT_TABLE_NAME);
 
 		if (expandoTable != null) {
-			return _expandoColumnLocalService.getColumns(
+			return ExpandoColumnLocalServiceUtil.getColumns(
 				expandoTable.getTableId());
 		}
 
 		return Collections.emptyList();
 	}
 
-	private SearchContext _createSearchContext() {
+	private static SearchContext _createSearchContext() {
 		SearchContext searchContext = new SearchContext();
 
 		searchContext.setAttribute(
@@ -132,13 +128,13 @@ public class AnalyticsUsersManager {
 		return searchContext;
 	}
 
-	private Role _fetchAnalyticsAdministratorRole() {
-		return _roleLocalService.fetchRole(
+	private static Role _fetchAnalyticsAdministratorRole() {
+		return RoleLocalServiceUtil.fetchRole(
 			CompanyThreadLocal.getCompanyId(),
 			RoleConstants.ANALYTICS_ADMINISTRATOR);
 	}
 
-	private int _getUsersCount(SearchContext searchContext) {
+	private static int _getUsersCount(SearchContext searchContext) {
 		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 
 		try {
@@ -153,13 +149,13 @@ public class AnalyticsUsersManager {
 		}
 	}
 
-	private boolean _isIndexerEnabled() {
+	private static boolean _isIndexerEnabled() {
 		Indexer<?> indexer = IndexerRegistryUtil.nullSafeGetIndexer(User.class);
 
 		return indexer.isIndexerEnabled();
 	}
 
-	private void _populateSearchContext(SearchContext searchContext) {
+	private static void _populateSearchContext(SearchContext searchContext) {
 		Role role = _fetchAnalyticsAdministratorRole();
 
 		if (role != null) {
@@ -169,21 +165,6 @@ public class AnalyticsUsersManager {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
-		AnalyticsUsersManager.class);
-
-	@Reference
-	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private ExpandoColumnLocalService _expandoColumnLocalService;
-
-	@Reference
-	private ExpandoTableLocalService _expandoTableLocalService;
-
-	@Reference
-	private RoleLocalService _roleLocalService;
-
-	@Reference
-	private UserLocalService _userLocalService;
+		AnalyticsUsersUtil.class);
 
 }
