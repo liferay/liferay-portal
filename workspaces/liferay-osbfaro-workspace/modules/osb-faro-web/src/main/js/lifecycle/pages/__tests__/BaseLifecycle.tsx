@@ -516,6 +516,45 @@ describe('BaseLifecycle', () => {
 	const openActionsMenu = () =>
 		fireEvent.click(screen.getByRole('button', {name: 'Menu'}));
 
+	describe('the New Lifecycle button', () => {
+		it('links admins to the lifecycle editor of the channel', () => {
+			renderPage();
+
+			const button = screen.getByRole('link', {name: /new lifecycle/i});
+
+			expect(button).toHaveAttribute(
+				'href',
+				toRoute(Routes.LIFECYCLE_CREATE, {
+					channelId: '123',
+					groupId: '23',
+				})
+			);
+			expect(button).toHaveClass('btn-primary', 'rounded-lg');
+		});
+
+		it('shows while the lifecycle is processing', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({processedDate: null})
+			);
+
+			renderPage();
+
+			expect(
+				screen.getByRole('link', {name: /new lifecycle/i})
+			).toBeInTheDocument();
+		});
+
+		it('is hidden for non-admins', () => {
+			mockedUseCurrentUser.mockReturnValue({isAdmin: () => false});
+
+			renderPage();
+
+			expect(
+				screen.queryByRole('link', {name: /new lifecycle/i})
+			).toBeNull();
+		});
+	});
+
 	describe('the Edit action', () => {
 		it('navigates to the edit route when clicked by an admin', () => {
 			renderPage();

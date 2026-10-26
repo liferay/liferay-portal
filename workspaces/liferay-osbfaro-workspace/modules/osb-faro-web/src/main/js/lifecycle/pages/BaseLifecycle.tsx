@@ -209,6 +209,17 @@ const BaseLifecycle = () => {
 
 	const authorized = currentUser.isAdmin();
 
+	const newLifecycleActions = [
+		{
+			button: true,
+			className: 'rounded-lg',
+			displayType: 'primary',
+			href: toRoute(Routes.LIFECYCLE_CREATE, {channelId, groupId}),
+			label: Liferay.Language.get('new-lifecycle'),
+			state: {lifecycleId},
+		},
+	];
+
 	const title = lifecycle?.name ?? '';
 
 	const hasContent =
@@ -357,6 +368,14 @@ const BaseLifecycle = () => {
 								title={Liferay.Language.get('switch-dashboard')}
 							/>
 						</BasePage.Header.TitleSection>
+
+						{authorized && (
+							<BasePage.Header.Section className="mb-3">
+								<BasePage.Header.PageActions
+									actions={newLifecycleActions}
+								/>
+							</BasePage.Header.Section>
+						)}
 					</BasePage.Row>
 				</BasePage.Header>
 				{hasContent && (

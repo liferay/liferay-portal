@@ -3,22 +3,15 @@ import ErrorDisplay from 'shared/components/ErrorDisplay';
 import LifecycleSettingsForm from 'lifecycle/components/LifecycleSettingsForm';
 import Loading from 'shared/components/Loading';
 import React from 'react';
-import RouteNotFound from 'shared/components/RouteNotFound';
 import {buildCreateLifecyclePayload} from 'lifecycle/utils/lifecyclePayload';
 import {useLifecycleSettingsForm} from 'lifecycle/hooks/useLifecycleSettingsForm';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useParams} from 'react-router-dom';
-import {useRequest} from 'shared/hooks/useRequest';
 
 const CreateLifecycle = () => {
 	const {channelId, groupId} = useParams();
 
 	const currentUser = useCurrentUser();
-
-	const {data: lifecycles, loading} = useRequest({
-		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {channelId, groupId: groupId!},
-	});
 
 	const form = useLifecycleSettingsForm({
 		description: '',
@@ -36,12 +29,8 @@ const CreateLifecycle = () => {
 		submit,
 	} = form;
 
-	if (loading || catalogLoading) {
+	if (catalogLoading) {
 		return <Loading />;
-	}
-
-	if (lifecycles?.length) {
-		return <RouteNotFound />;
 	}
 
 	if (catalogError) {

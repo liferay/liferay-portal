@@ -18,7 +18,7 @@ import {useDispatch} from 'react-redux';
 import {moveItem} from 'shared/util/array';
 import {useEffect, useMemo, useRef, useState} from 'react';
 import {useHistoryAdapter} from 'shared/hooks/useHistoryAdapter';
-import {useParams} from 'react-router-dom';
+import {useLocation, useParams} from 'react-router-dom';
 import {useRequest} from 'shared/hooks/useRequest';
 
 const serializeLifecycle = (
@@ -60,6 +60,8 @@ export const useLifecycleSettingsForm = ({
 	const history = useHistoryAdapter();
 
 	const {channelId, groupId, lifecycleId} = useParams();
+
+	const {state} = useLocation();
 
 	const [stageConfigs, setStageConfigs] =
 		useState<IStageConfig[]>(initialStageConfigs);
@@ -124,6 +126,13 @@ export const useLifecycleSettingsForm = ({
 	const lifecycleURL = toRoute(
 		lifecycleId ? Routes.LIFECYCLE_DASHBOARD : Routes.LIFECYCLE,
 		{channelId, groupId, lifecycleId}
+	);
+
+	const backLifecycleId = lifecycleId ?? state?.lifecycleId;
+
+	const backURL = toRoute(
+		backLifecycleId ? Routes.LIFECYCLE_DASHBOARD : Routes.LIFECYCLE,
+		{channelId, groupId, lifecycleId: backLifecycleId}
 	);
 
 	useEffect(() => {
@@ -257,6 +266,7 @@ export const useLifecycleSettingsForm = ({
 	return {
 		addStage,
 		alertCount,
+		backURL,
 		alertMessages,
 		blurField,
 		catalogError,

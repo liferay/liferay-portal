@@ -90,9 +90,13 @@ jest.mock('shared/hooks/useHistoryAdapter', () => ({
 
 const mockedUseRequest = useRequest as jest.Mock;
 
-const renderPage = () =>
+const renderPage = (
+	initialEntries: React.ComponentProps<
+		typeof MemoryRouter
+	>['initialEntries'] = ['/workspace/23/123/lifecycle/new']
+) =>
 	render(
-		<MemoryRouter>
+		<MemoryRouter initialEntries={initialEntries}>
 			<CreateLifecycle />
 		</MemoryRouter>
 	);
@@ -222,7 +226,7 @@ describe('CreateLifecycle', () => {
 		).toHaveTextContent(/my lifecycle/i);
 	});
 
-	it('links cancel and back to the dashboard', () => {
+	it('links cancel and back to the lifecycles when opened from a deep link', () => {
 		renderPage();
 
 		expect(screen.getByRole('link', {name: /cancel/i})).toHaveAttribute(
@@ -232,6 +236,30 @@ describe('CreateLifecycle', () => {
 		expect(screen.getByRole('link', {name: /back/i})).toHaveAttribute(
 			'href',
 			lifecycleURL
+		);
+	});
+
+	it('links cancel and back to the dashboard it was opened from', () => {
+		renderPage([
+			{
+				pathname: '/workspace/23/123/lifecycle/new',
+				state: {lifecycleId: '7'},
+			},
+		]);
+
+		const dashboardURL = toRoute(Routes.LIFECYCLE_DASHBOARD, {
+			channelId: '123',
+			groupId: '23',
+			lifecycleId: '7',
+		});
+
+		expect(screen.getByRole('link', {name: /cancel/i})).toHaveAttribute(
+			'href',
+			dashboardURL
+		);
+		expect(screen.getByRole('link', {name: /back/i})).toHaveAttribute(
+			'href',
+			dashboardURL
 		);
 	});
 
@@ -445,6 +473,22 @@ describe('CreateLifecycle', () => {
 		);
 	});
 
+	it('leaves from Back or Cancel without a prompt when nothing changed', () => {
+		const mockedPrompt = useUnsavedChangesPrompt as jest.Mock;
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /add.stage/i}));
+
+		fireEvent.click(screen.getByRole('button', {name: /remove.stage 1/i}));
+
+		expect(mockedPrompt).toHaveBeenLastCalledWith(false, expect.anything());
+		expect(screen.getByRole('link', {name: /cancel/i})).toHaveAttribute(
+			'href',
+			lifecycleURL
+		);
+	});
+
 	it('warns about unsaved changes only once something changed', () => {
 		const mockedPrompt = useUnsavedChangesPrompt as jest.Mock;
 
@@ -465,7 +509,7 @@ describe('CreateLifecycle', () => {
 		expect(mockedPrompt).toHaveBeenLastCalledWith(false, expect.anything());
 	});
 
-	it('renders a loading state while lifecycles are loading', () => {
+	it('renders a loading state while the catalog is loading', () => {
 		mockedUseRequest.mockReturnValue({data: undefined, loading: true});
 
 		renderPage();
@@ -473,24 +517,15 @@ describe('CreateLifecycle', () => {
 		expect(screen.queryByText(/new lifecycle/i)).toBeNull();
 	});
 
-	it('redirects to a 404 when a lifecycle already exists', () => {
-		mockedUseRequest.mockReturnValue({
-			data: [{id: '1'}],
-			loading: false,
-		});
-
+	it('opens for a channel that already has lifecycles', () => {
 		renderPage();
 
-		expect(screen.queryByText(/new lifecycle/i)).toBeNull();
-	});
-
-	it('checks for lifecycles in the current channel', () => {
-		renderPage();
-
-		expect(mockedUseRequest).toHaveBeenCalledWith(
+		expect(
+			screen.getByRole('heading', {level: 1, name: /new lifecycle/i})
+		).toBeInTheDocument();
+		expect(mockedUseRequest).not.toHaveBeenCalledWith(
 			expect.objectContaining({
 				dataSourceFn: API.lifecycle.fetchLifecycles,
-				variables: {channelId: '123', groupId: '23'},
 			})
 		);
 	});
