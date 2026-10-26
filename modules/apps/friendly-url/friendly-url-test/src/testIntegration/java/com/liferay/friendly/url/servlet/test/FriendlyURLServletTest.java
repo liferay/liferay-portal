@@ -18,7 +18,6 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
@@ -530,12 +529,13 @@ public class FriendlyURLServletTest {
 		Object expectedRedirect = _redirectConstructor1.newInstance(
 			getURL(linkToURLLayout));
 
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					_PID,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"promptEnabled", true
-					).build())) {
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"promptEnabled", true
+						).build())) {
 
 			for (String path : paths) {
 				MockHttpServletRequest mockHttpServletRequest =
