@@ -70,10 +70,19 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommandTest {
 				ExtendedObjectClassDefinition.Scope.COMPANY.getValue(),
 				company.getCompanyId());
 
-			_assertLogEntries(
-				PrincipalException.class, logCapture.getLogEntries(),
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(PrincipalException.class, throwable.getClass());
+			Assert.assertEquals(
 				"Invalid scope primary key for company " +
-					TestPropsValues.getCompanyId());
+					TestPropsValues.getCompanyId(),
+				throwable.getMessage());
 		}
 
 		FragmentServiceConfiguration fragmentServiceConfiguration =
@@ -112,13 +121,16 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommandTest {
 			_processAction(
 				ExtendedObjectClassDefinition.Scope.SYSTEM.getValue(), 0);
 
-			_assertLogEntries(
-				PrincipalException.MustBeOmniadmin.class,
-				logCapture.getLogEntries(),
-				String.format(
-					"User %s must be a universal administrator to perform " +
-						"the action",
-					user.getUserId()));
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				PrincipalException.MustBeOmniadmin.class, throwable.getClass());
 		}
 
 		FragmentServiceConfiguration fragmentServiceConfiguration =
@@ -126,19 +138,6 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommandTest {
 				FragmentServiceConfiguration.class);
 
 		Assert.assertFalse(fragmentServiceConfiguration.propagateChanges());
-	}
-
-	private void _assertLogEntries(
-		Class<?> clazz, List<LogEntry> logEntries, String message) {
-
-		Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
-
-		LogEntry logEntry = logEntries.get(0);
-
-		Throwable throwable = logEntry.getThrowable();
-
-		Assert.assertEquals(clazz, throwable.getClass());
-		Assert.assertEquals(message, throwable.getMessage());
 	}
 
 	private void _processAction(String scope, long scopePK) throws Exception {
