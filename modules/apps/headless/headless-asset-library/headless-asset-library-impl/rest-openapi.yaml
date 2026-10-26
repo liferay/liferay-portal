@@ -179,7 +179,7 @@ components:
                     readOnly: true
                     type: string
                 type:
-                    enum: [Site, SiteTemplate]
+                    enum: [DesignLibrary, Site, SiteTemplate]
                     readOnly: true
                     type: string
             type: object
