@@ -16,6 +16,9 @@ import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.permission.Permission;
 import com.liferay.headless.admin.site.client.resource.v1_0.PageTemplateSetResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionTestUtil;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
+import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
@@ -24,6 +27,8 @@ import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -45,6 +50,7 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.props.test.util.PropsTemporarySwapper;
@@ -55,6 +61,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -132,6 +139,12 @@ public class PageTemplateSetResourceTest
 					pageTemplateSet.getExternalReferenceCode(),
 					testGroup.getGroupId()));
 
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageTemplateSetResource.deleteSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(),
+				pageTemplateSet.getExternalReferenceCode()));
+
 		PageTemplateSet liveGroupPageTemplateSet =
 			testGetSitePageTemplateSetsPage_addPageTemplateSet(
 				irrelevantGroup.getExternalReferenceCode(),
@@ -200,6 +213,12 @@ public class PageTemplateSetResourceTest
 				testGroup.getExternalReferenceCode(), randomPageTemplateSet());
 
 		_testGetSitePageTemplateSet(pageTemplateSet);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageTemplateSetResource.getSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString()));
 
 		_enableLocalStaging();
 
@@ -320,6 +339,12 @@ public class PageTemplateSetResourceTest
 		assertEquals(pageTemplateSet, patchPageTemplateSet);
 		assertValid(patchPageTemplateSet);
 
+		ProblemExceptionTestUtil.assertProblemException(
+			"NOT_FOUND", null,
+			() -> pageTemplateSetResource.patchSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(),
+				RandomTestUtil.randomString(), randomPageTemplateSet()));
+
 		_enableLocalStaging();
 
 		ProblemExceptionTestUtil.assertProblemException(
@@ -333,8 +358,11 @@ public class PageTemplateSetResourceTest
 	@Test
 	public void testPostSitePageTemplateSet() throws Exception {
 		_testPostSitePageTemplateSetWithBlankKey();
+		_testPostSitePageTemplateSetWithDuplicateExternalReferenceCode();
 		_testPostSitePageTemplateSetWithDuplicateName();
+		_testPostSitePageTemplateSetWithImportTask();
 		_testPostSitePageTemplateSetWithInvalidKey();
+		_testPostSitePageTemplateSetWithInvalidName();
 		_testPostSitePageTemplateSetWithValidKey();
 	}
 
@@ -629,7 +657,7 @@ public class PageTemplateSetResourceTest
 	}
 
 	private void _postSitePageTemplateSetWithInvalidKey(
-			String key, String title)
+			String key, String status, String title)
 		throws Exception {
 
 		PageTemplateSet pageTemplateSet = randomPageTemplateSet();
@@ -637,7 +665,21 @@ public class PageTemplateSetResourceTest
 		pageTemplateSet.setKey(key);
 
 		ProblemExceptionTestUtil.assertProblemException(
-			"CONFLICT", title,
+			status, title,
+			() -> pageTemplateSetResource.postSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(), pageTemplateSet));
+	}
+
+	private void _postSitePageTemplateSetWithInvalidName(
+			String name, String title)
+		throws Exception {
+
+		PageTemplateSet pageTemplateSet = randomPageTemplateSet();
+
+		pageTemplateSet.setName(name);
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", title,
 			() -> pageTemplateSetResource.postSitePageTemplateSet(
 				testGroup.getExternalReferenceCode(), pageTemplateSet));
 	}
@@ -823,6 +865,24 @@ public class PageTemplateSetResourceTest
 		Assert.assertTrue(Validator.isNotNull(postPageTemplateSet.getKey()));
 	}
 
+	private void _testPostSitePageTemplateSetWithDuplicateExternalReferenceCode()
+		throws Exception {
+
+		PageTemplateSet pageTemplateSet1 =
+			pageTemplateSetResource.postSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(), randomPageTemplateSet());
+
+		PageTemplateSet pageTemplateSet2 = randomPageTemplateSet();
+
+		pageTemplateSet2.setExternalReferenceCode(
+			pageTemplateSet1.getExternalReferenceCode());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST", "This external reference code is already in use.",
+			() -> pageTemplateSetResource.postSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(), pageTemplateSet2));
+	}
+
 	private void _testPostSitePageTemplateSetWithDuplicateName()
 		throws Exception {
 
@@ -842,12 +902,68 @@ public class PageTemplateSetResourceTest
 				testGroup.getExternalReferenceCode(), pageTemplateSet2));
 	}
 
+	private void _testPostSitePageTemplateSetWithImportTask() throws Exception {
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			"siteExternalReferenceCode", testGroup.getExternalReferenceCode()
+		).build();
+
+		PageTemplateSet pageTemplateSet1 = randomPageTemplateSet();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			PageTemplateSet pageTemplateSet2 = randomPageTemplateSet();
+
+			pageTemplateSet2.setName((String)null);
+
+			ImportTask importTask = importTaskResource.postImportTask(
+				"com.liferay.headless.admin.site.dto.v1_0.PageTemplateSet",
+				null, null, null, "INSERT", null, null, "ON_ERROR_CONTINUE",
+				null,
+				JSONUtil.putAll(
+					_jsonFactory.createJSONObject(pageTemplateSet1.toString()),
+					_jsonFactory.createJSONObject(
+						pageTemplateSet2.toString())));
+
+			waitForFinish("COMPLETED", JSONUtil.put("id", importTask.getId()));
+
+			ImportTask completedImportTask = importTaskResource.getImportTask(
+				importTask.getId());
+
+			FailedItem[] failedItems = completedImportTask.getFailedItems();
+
+			Assert.assertEquals(
+				Arrays.toString(failedItems), 1, failedItems.length);
+
+			FailedItem failedItem = failedItems[0];
+
+			Assert.assertEquals(
+				"A name is required for each template folder or set",
+				failedItem.getMessage());
+		}
+
+		Assert.assertNotNull(
+			pageTemplateSetResource.getSitePageTemplateSet(
+				testGroup.getExternalReferenceCode(),
+				pageTemplateSet1.getExternalReferenceCode()));
+	}
+
 	private void _testPostSitePageTemplateSetWithInvalidKey() throws Exception {
 		PageTemplateSet postPageTemplateSet = _testPostSitePageTemplateSet(
 			randomPageTemplateSet());
 
 		_postSitePageTemplateSetWithInvalidKey(
-			postPageTemplateSet.getKey(),
+			postPageTemplateSet.getKey(), "CONFLICT",
 			StringBundler.concat(
 				"Duplicate page template set for group ",
 				testGroup.getGroupId(), " with key ",
@@ -858,7 +974,7 @@ public class PageTemplateSetResourceTest
 				RandomTestUtil.randomString();
 
 		_postSitePageTemplateSetWithInvalidKey(
-			key,
+			key, "BAD_REQUEST",
 			StringBundler.concat(
 				"Key ", key,
 				" must contain only alphanumeric characters, dashes, and ",
@@ -867,9 +983,19 @@ public class PageTemplateSetResourceTest
 		key = RandomTestUtil.randomString(80);
 
 		_postSitePageTemplateSetWithInvalidKey(
-			key,
+			key, "BAD_REQUEST",
 			StringBundler.concat(
 				"Key ", key, " must have fewer than 75 characters"));
+	}
+
+	private void _testPostSitePageTemplateSetWithInvalidName()
+		throws Exception {
+
+		_postSitePageTemplateSetWithInvalidName(
+			null, "A name is required for each template folder or set");
+		_postSitePageTemplateSetWithInvalidName(
+			RandomTestUtil.randomString(300),
+			"The name for the template folder or set is too long");
 	}
 
 	private void _testPostSitePageTemplateSetWithValidKey() throws Exception {
@@ -932,6 +1058,9 @@ public class PageTemplateSetResourceTest
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private JSONFactory _jsonFactory;
 
 	@Inject
 	private LayoutPageTemplateCollectionLocalService
