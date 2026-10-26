@@ -75,6 +75,8 @@ public class StyleBookDTOConverter
 				setDefaultStyleBook(styleBookEntry::getDefaultStyleBookEntry);
 				setExternalReferenceCode(
 					styleBookEntry::getExternalReferenceCode);
+				setFrontendTokenDefinition(
+					styleBookEntry::getFrontendTokenDefinition);
 				setFrontendTokensValues(
 					styleBookEntry::getFrontendTokensValues);
 				setId(styleBookEntry::getStyleBookEntryId);

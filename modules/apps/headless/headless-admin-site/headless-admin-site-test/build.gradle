@@ -55,6 +55,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:staging:staging-api")
 	testIntegrationImplementation project(":apps:style-book:style-book-api")
+	testIntegrationImplementation project(":apps:style-book:style-book-test-util")
 	testIntegrationImplementation project(":apps:template:template-api")
 	testIntegrationImplementation project(":apps:template:template-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
