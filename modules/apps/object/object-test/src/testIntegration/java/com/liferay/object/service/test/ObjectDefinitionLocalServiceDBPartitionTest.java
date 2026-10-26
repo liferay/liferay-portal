@@ -10,6 +10,7 @@ import com.liferay.counter.kernel.model.Counter;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectRelationshipConstants;
+import com.liferay.object.definition.tree.util.ObjectDefinitionTreeUtil;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.AssumeTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -42,6 +44,7 @@ import jakarta.portlet.Portlet;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Assume;
@@ -158,6 +161,25 @@ public class ObjectDefinitionLocalServiceDBPartitionTest {
 				_companyLocalService.deleteCompany(company);
 			}
 		}
+	}
+
+	@Test
+	public void testDeleteCompanyRemovesRootObjectDefinitionIds()
+		throws Exception {
+
+		Company company = CompanyTestUtil.addCompany();
+
+		Map<Long, Map<Long, long[]>> rootObjectDefinitionIdsMaps =
+			ReflectionTestUtil.getFieldValue(
+				ObjectDefinitionTreeUtil.class, "_rootObjectDefinitionIdsMaps");
+
+		Assert.assertTrue(
+			rootObjectDefinitionIdsMaps.containsKey(company.getCompanyId()));
+
+		_companyLocalService.deleteCompany(company);
+
+		Assert.assertFalse(
+			rootObjectDefinitionIdsMaps.containsKey(company.getCompanyId()));
 	}
 
 	@Test
