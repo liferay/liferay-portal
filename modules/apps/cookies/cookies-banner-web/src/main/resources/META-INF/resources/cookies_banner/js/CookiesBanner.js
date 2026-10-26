@@ -60,6 +60,8 @@ export default function ({
 		return;
 	}
 
+	reserveBannerSpace(cookieBanner);
+
 	const editMode = document.body.classList.contains('has-edit-mode-menu');
 
 	if (!editMode) {
@@ -484,6 +486,18 @@ async function isCookiesPreferenceHandlingConfigurationModified(modifiedDate) {
 	}
 
 	return false;
+}
+
+function reserveBannerSpace(cookieBanner) {
+	const resizeObserver = new ResizeObserver(() => {
+		const height = cookieBanner.offsetHeight;
+
+		document.documentElement.style.scrollPaddingBottom = height
+			? `${height}px`
+			: '';
+	});
+
+	resizeObserver.observe(cookieBanner);
 }
 
 function setBannerVisibility(cookieBanner, modifiedDate) {
