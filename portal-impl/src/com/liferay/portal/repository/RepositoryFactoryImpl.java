@@ -26,9 +26,8 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
 	public LocalRepository createLocalRepository(long repositoryId)
 		throws PortalException {
 
-		RepositoryFactory repositoryFactory = getRepositoryFactory(
-			_getRepositoryCompanyId(repositoryId),
-			getRepositoryClassName(repositoryId));
+		RepositoryFactory repositoryFactory = _getRepositoryFactory(
+			repositoryId);
 
 		return repositoryFactory.createLocalRepository(repositoryId);
 	}
@@ -37,22 +36,10 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
 	public Repository createRepository(long repositoryId)
 		throws PortalException {
 
-		RepositoryFactory repositoryFactory = getRepositoryFactory(
-			_getRepositoryCompanyId(repositoryId),
-			getRepositoryClassName(repositoryId));
+		RepositoryFactory repositoryFactory = _getRepositoryFactory(
+			repositoryId);
 
 		return repositoryFactory.createRepository(repositoryId);
-	}
-
-	protected String getRepositoryClassName(long repositoryId) {
-		com.liferay.portal.kernel.model.Repository repository =
-			_repositoryLocalService.fetchRepository(repositoryId);
-
-		if (repository != null) {
-			return repository.getClassName();
-		}
-
-		return LiferayRepository.class.getName();
 	}
 
 	protected RepositoryFactory getRepositoryFactory(
@@ -69,15 +56,17 @@ public class RepositoryFactoryImpl implements RepositoryFactory {
 		return repositoryDefinition;
 	}
 
-	private long _getRepositoryCompanyId(long repositoryId) {
+	private RepositoryFactory _getRepositoryFactory(long repositoryId) {
 		com.liferay.portal.kernel.model.Repository repository =
 			_repositoryLocalService.fetchRepository(repositoryId);
 
-		if (repository != null) {
-			return repository.getCompanyId();
+		if (repository == null) {
+			return getRepositoryFactory(
+				CompanyConstants.SYSTEM, LiferayRepository.class.getName());
 		}
 
-		return CompanyConstants.SYSTEM;
+		return getRepositoryFactory(
+			repository.getCompanyId(), repository.getClassName());
 	}
 
 	@BeanReference(type = RepositoryClassDefinitionCatalog.class)
