@@ -167,27 +167,28 @@ public class SegmentsServicePreAction extends Action {
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
 
-		String portletNamespace = _portal.getPortletNamespace(
-			ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET);
-
-		SegmentsExperience segmentsExperience =
-			_segmentsExperienceLocalService.fetchSegmentsExperience(
-				ParamUtil.getLong(
-					httpServletRequest,
-					portletNamespace + "segmentsExperienceId"));
-
 		if (permissionChecker.isGroupAdmin(themeDisplay.getScopeGroupId()) &&
 			Objects.equals(
 				ParamUtil.getString(
 					httpServletRequest, "p_l_mode", Constants.VIEW),
-				Constants.EDIT) &&
-			(segmentsExperience != null)) {
+				Constants.EDIT)) {
 
-			httpServletRequest.setAttribute(
-				SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
-				new long[] {segmentsExperience.getSegmentsExperienceId()});
+			String portletNamespace = _portal.getPortletNamespace(
+				ContentPageEditorPortletKeys.CONTENT_PAGE_EDITOR_PORTLET);
 
-			return;
+			SegmentsExperience segmentsExperience =
+				_segmentsExperienceLocalService.fetchSegmentsExperience(
+					ParamUtil.getLong(
+						httpServletRequest,
+						portletNamespace + "segmentsExperienceId"));
+
+			if (segmentsExperience != null) {
+				httpServletRequest.setAttribute(
+					SegmentsWebKeys.SEGMENTS_EXPERIENCE_IDS,
+					new long[] {segmentsExperience.getSegmentsExperienceId()});
+
+				return;
+			}
 		}
 
 		if (!themeDisplay.isLifecycleRender()) {
