@@ -30,7 +30,9 @@ import com.liferay.portal.kernel.util.WebKeys;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -59,9 +61,14 @@ public class ClientExtensionsServicePreAction extends Action {
 			return;
 		}
 
-		themeDisplay.setFaviconURL(_getFaviconURL(layout));
+		Map<String, List<ClientExtensionEntryRel>> clientExtensionEntryRelsMap =
+			new HashMap<>();
 
-		ThemeCSSCET themeCSSCET = _getThemeCSSCET(layout);
+		themeDisplay.setFaviconURL(
+			_getFaviconURL(clientExtensionEntryRelsMap, layout));
+
+		ThemeCSSCET themeCSSCET = _getThemeCSSCET(
+			clientExtensionEntryRelsMap, layout);
 
 		if (themeCSSCET != null) {
 			if (_portal.isRightToLeft(httpServletRequest)) {
@@ -74,7 +81,8 @@ public class ClientExtensionsServicePreAction extends Action {
 			}
 		}
 
-		ThemeSpritemapCET themeSpritemapCET = _getThemeSpritemapCET(layout);
+		ThemeSpritemapCET themeSpritemapCET = _getThemeSpritemapCET(
+			clientExtensionEntryRelsMap, layout);
 
 		if (themeSpritemapCET != null) {
 			themeDisplay.setPathThemeSpritemap(themeSpritemapCET.getURL());
@@ -82,18 +90,35 @@ public class ClientExtensionsServicePreAction extends Action {
 	}
 
 	private CET _getCET(
-		long classNameId, long classPK, long companyId, String type) {
+		long classNameId, long classPK,
+		Map<String, List<ClientExtensionEntryRel>> clientExtensionEntryRelsMap,
+		long companyId, String type) {
 
-		ClientExtensionEntryRel clientExtensionEntryRel =
-			_clientExtensionEntryRelLocalService.fetchClientExtensionEntryRel(
-				classNameId, classPK, type);
+		String key = StringBundler.concat(
+			classNameId, StringPool.POUND, classPK);
 
-		if (clientExtensionEntryRel == null) {
-			return null;
+		List<ClientExtensionEntryRel> clientExtensionEntryRels =
+			clientExtensionEntryRelsMap.get(key);
+
+		if (clientExtensionEntryRels == null) {
+			clientExtensionEntryRels =
+				_clientExtensionEntryRelLocalService.
+					getClientExtensionEntryRels(classNameId, classPK);
+
+			clientExtensionEntryRelsMap.put(key, clientExtensionEntryRels);
 		}
 
-		return _cetManager.getCET(
-			companyId, clientExtensionEntryRel.getCETExternalReferenceCode());
+		for (ClientExtensionEntryRel clientExtensionEntryRel :
+				clientExtensionEntryRels) {
+
+			if (type.equals(clientExtensionEntryRel.getType())) {
+				return _cetManager.getCET(
+					companyId,
+					clientExtensionEntryRel.getCETExternalReferenceCode());
+			}
+		}
+
+		return null;
 	}
 
 	private ThemeCSSCET _getControlPanelThemeCSSCET(Layout layout) {
@@ -116,10 +141,13 @@ public class ClientExtensionsServicePreAction extends Action {
 			clientExtensionEntryRel.getCETExternalReferenceCode());
 	}
 
-	private String _getFaviconURL(Layout layout) {
+	private String _getFaviconURL(
+		Map<String, List<ClientExtensionEntryRel>> clientExtensionEntryRelsMap,
+		Layout layout) {
+
 		String faviconURL = _getThemeFaviconCETURL(
 			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			layout.getCompanyId());
+			clientExtensionEntryRelsMap, layout.getCompanyId());
 
 		if (Validator.isNotNull(faviconURL)) {
 			return faviconURL;
@@ -140,7 +168,8 @@ public class ClientExtensionsServicePreAction extends Action {
 			if (masterLayout != null) {
 				faviconURL = _getThemeFaviconCETURL(
 					_portal.getClassNameId(Layout.class),
-					masterLayout.getPlid(), layout.getCompanyId());
+					masterLayout.getPlid(), clientExtensionEntryRelsMap,
+					layout.getCompanyId());
 
 				if (Validator.isNotNull(faviconURL)) {
 					return faviconURL;
@@ -158,7 +187,7 @@ public class ClientExtensionsServicePreAction extends Action {
 
 		faviconURL = _getThemeFaviconCETURL(
 			_portal.getClassNameId(LayoutSet.class), layoutSet.getLayoutSetId(),
-			layout.getCompanyId());
+			clientExtensionEntryRelsMap, layout.getCompanyId());
 
 		if (Validator.isNotNull(faviconURL)) {
 			return faviconURL;
@@ -202,20 +231,24 @@ public class ClientExtensionsServicePreAction extends Action {
 		return _layoutLocalService.fetchLayout(selPlid);
 	}
 
-	private ThemeCSSCET _getThemeCSSCET(Layout layout) {
+	private ThemeCSSCET _getThemeCSSCET(
+		Map<String, List<ClientExtensionEntryRel>> clientExtensionEntryRelsMap,
+		Layout layout) {
+
 		if (layout.isTypeControlPanel()) {
 			return _getControlPanelThemeCSSCET(layout);
 		}
 
 		CET cet = _getCET(
 			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			layout.getCompanyId(),
+			clientExtensionEntryRelsMap, layout.getCompanyId(),
 			ClientExtensionEntryConstants.TYPE_THEME_CSS);
 
 		if ((cet == null) && (layout.getMasterLayoutPlid() > 0)) {
 			cet = _getCET(
 				_portal.getClassNameId(Layout.class),
-				layout.getMasterLayoutPlid(), layout.getCompanyId(),
+				layout.getMasterLayoutPlid(), clientExtensionEntryRelsMap,
+				layout.getCompanyId(),
 				ClientExtensionEntryConstants.TYPE_THEME_CSS);
 		}
 
@@ -224,7 +257,8 @@ public class ClientExtensionsServicePreAction extends Action {
 
 			cet = _getCET(
 				_portal.getClassNameId(LayoutSet.class),
-				layoutSet.getLayoutSetId(), layout.getCompanyId(),
+				layoutSet.getLayoutSetId(), clientExtensionEntryRelsMap,
+				layout.getCompanyId(),
 				ClientExtensionEntryConstants.TYPE_THEME_CSS);
 		}
 
@@ -236,10 +270,12 @@ public class ClientExtensionsServicePreAction extends Action {
 	}
 
 	private String _getThemeFaviconCETURL(
-		long classNameId, long classPK, long companyId) {
+		long classNameId, long classPK,
+		Map<String, List<ClientExtensionEntryRel>> clientExtensionEntryRelsMap,
+		long companyId) {
 
 		CET cet = _getCET(
-			classNameId, classPK, companyId,
+			classNameId, classPK, clientExtensionEntryRelsMap, companyId,
 			ClientExtensionEntryConstants.TYPE_THEME_FAVICON);
 
 		if (cet == null) {
@@ -251,16 +287,20 @@ public class ClientExtensionsServicePreAction extends Action {
 		return themeFaviconCET.getURL();
 	}
 
-	private ThemeSpritemapCET _getThemeSpritemapCET(Layout layout) {
+	private ThemeSpritemapCET _getThemeSpritemapCET(
+		Map<String, List<ClientExtensionEntryRel>> clientExtensionEntryRelsMap,
+		Layout layout) {
+
 		CET cet = _getCET(
 			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			layout.getCompanyId(),
+			clientExtensionEntryRelsMap, layout.getCompanyId(),
 			ClientExtensionEntryConstants.TYPE_THEME_SPRITEMAP);
 
 		if ((cet == null) && (layout.getMasterLayoutPlid() > 0)) {
 			cet = _getCET(
 				_portal.getClassNameId(Layout.class),
-				layout.getMasterLayoutPlid(), layout.getCompanyId(),
+				layout.getMasterLayoutPlid(), clientExtensionEntryRelsMap,
+				layout.getCompanyId(),
 				ClientExtensionEntryConstants.TYPE_THEME_SPRITEMAP);
 		}
 
@@ -269,7 +309,8 @@ public class ClientExtensionsServicePreAction extends Action {
 
 			cet = _getCET(
 				_portal.getClassNameId(LayoutSet.class),
-				layoutSet.getLayoutSetId(), layout.getCompanyId(),
+				layoutSet.getLayoutSetId(), clientExtensionEntryRelsMap,
+				layout.getCompanyId(),
 				ClientExtensionEntryConstants.TYPE_THEME_SPRITEMAP);
 		}
 
