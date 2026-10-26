@@ -413,9 +413,6 @@ public class ComboServletTest {
 
 		mockHttpServletRequest.setQueryString(path);
 
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
 		PortalCache<String, byte[][]> bytesArrayPortalCache =
 			ReflectionTestUtil.getFieldValue(
 				_comboServlet, "_bytesArrayPortalCache");
@@ -426,20 +423,23 @@ public class ComboServletTest {
 
 		String responseContent = RandomTestUtil.randomString();
 
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
 		try (SafeCloseable safeCloseable = _setUpHttpServletResponse(
-				HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE, ContentTypes.TEXT_CSS,
-				mockHttpServletResponse, responseContent)) {
+				HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE, responseContent,
+				ContentTypes.TEXT_CSS, mockHttpServletResponse)) {
 
 			_comboServlet.service(
 				mockHttpServletRequest, mockHttpServletResponse);
 
 			Assert.assertEquals(
 				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-			Assert.assertTrue(
-				mockHttpServletResponse.getContentAsString(
-				).contains(
-					responseContent
-				));
+
+			String content = mockHttpServletResponse.getContentAsString();
+
+			Assert.assertTrue(content.contains(responseContent));
+
 			Assert.assertNull(bytesArrayPortalCache.get(key));
 		}
 	}
@@ -513,12 +513,12 @@ public class ComboServletTest {
 		HttpServletResponse httpServletResponse, String content) {
 
 		return _setUpHttpServletResponse(
-			null, ContentTypes.TEXT_JAVASCRIPT, httpServletResponse, content);
+			null, content, ContentTypes.TEXT_JAVASCRIPT, httpServletResponse);
 	}
 
 	private SafeCloseable _setUpHttpServletResponse(
-		String cacheControl, String contentType,
-		HttpServletResponse httpServletResponse, String content) {
+		String cacheControl, String content, String contentType,
+		HttpServletResponse httpServletResponse) {
 
 		MockedStatic<RequestDispatcherUtil> requestDispatcherUtilMockedStatic =
 			Mockito.mockStatic(RequestDispatcherUtil.class);
