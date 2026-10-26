@@ -95,7 +95,7 @@ public class WorkflowDefinitionImportTaskPreAction
 			_portal.getClassNameId(KaleoDefinition.class), 0,
 			GetterUtil.getLong(
 				ExportImportThreadLocal.getExportImportConfigurationId()),
-			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			ExportImportReportEntryConstants.TYPE_WARNING,
 			_language.format(
 				LocaleUtil.getDefault(),
 				"the-following-users-do-not-exist-and-were-removed-from-" +
