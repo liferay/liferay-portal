@@ -4655,10 +4655,8 @@ public class JenkinsResultsParserUtil {
 			return new URIBuilder(url);
 		}
 		catch (URISyntaxException uriSyntaxException1) {
-			String normalizedURL = normalizeURL(url);
-
 			try {
-				return new URIBuilder(normalizedURL);
+				return new URIBuilder(normalizeURL(url));
 			}
 			catch (URISyntaxException uriSyntaxException2) {
 				throw new RuntimeException(
