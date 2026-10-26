@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.InetAddressUtil;
 import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -370,6 +371,16 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 
 		URI uri = new URI(url);
 
+		if (!_ddmDataProviderConfiguration.accessLocalNetwork() &&
+			InetAddressUtil.isLocalInetAddress(
+				InetAddressUtil.getInetAddressByName(uri.getHost()))) {
+
+			return DDMDataProviderResponse.Builder.newBuilder(
+			).withStatus(
+				DDMDataProviderResponseStatus.SERVICE_UNAVAILABLE
+			).build();
+		}
+
 		for (String queryParameter :
 				StringUtil.split(uri.getQuery(), StringPool.AMPERSAND)) {
 
@@ -430,16 +441,7 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 		JSONWebServiceClient jsonWebServiceClient =
 			_jsonWebServiceClientFactory.getInstance(
 				HashMapBuilder.<String, Object>put(
-					"hostName",
-					() -> {
-						String host = uri.getHost();
-
-						if (StringUtil.startsWith(host, "www.")) {
-							return host.substring(4);
-						}
-
-						return host;
-					}
+					"hostName", uri.getHost()
 				).put(
 					"hostPort",
 					() -> {
