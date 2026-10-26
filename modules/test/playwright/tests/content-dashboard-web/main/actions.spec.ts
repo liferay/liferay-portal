@@ -14,6 +14,7 @@ import {pageEditorPagesTest} from '../../../fixtures/pageEditorPagesTest';
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {PageEditorPage} from '../../../pages/layout-content-page-editor-web/PageEditorPage';
 import {DisplayPageTemplatesPage} from '../../../pages/layout-page-template-admin-web/DisplayPageTemplatesPage';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi, performLogout} from '../../../utils/performLogin';
@@ -691,9 +692,15 @@ test(
 
 			await expect(blogTitleInput).toHaveValue(editedBlogTitle);
 
-			await page
-				.getByRole('button', {exact: true, name: 'Publish'})
-				.click();
+			const publishButton = page.getByRole('button', {
+				exact: true,
+				name: 'Publish',
+			});
+
+			await clickAndExpectToBeHidden({
+				target: publishButton,
+				trigger: publishButton,
+			});
 
 			await waitForContentDashboardRedirect(page);
 
@@ -715,7 +722,10 @@ test(
 				editedDocumentTitle
 			);
 
-			await documentLibraryEditFilePage.publishButton.click();
+			await clickAndExpectToBeHidden({
+				target: documentLibraryEditFilePage.publishButton,
+				trigger: documentLibraryEditFilePage.publishButton,
+			});
 
 			await waitForContentDashboardRedirect(page);
 
