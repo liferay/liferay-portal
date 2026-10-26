@@ -186,11 +186,13 @@ public class TemplateInfoItemFieldSetProviderImpl
 
 		long ddmStructureKey = GetterUtil.getLong(infoItemFormVariationKey);
 
-		DDMStructure ddmStructure = _ddmStructureLocalService.fetchStructure(
-			ddmStructureKey);
+		if (ddmStructureKey > 0) {
+			DDMStructure ddmStructure =
+				_ddmStructureLocalService.fetchStructure(ddmStructureKey);
 
-		if (ddmStructure != null) {
-			groupIds.add(ddmStructure.getGroupId());
+			if (ddmStructure != null) {
+				groupIds.add(ddmStructure.getGroupId());
+			}
 		}
 
 		groupIds.add(
