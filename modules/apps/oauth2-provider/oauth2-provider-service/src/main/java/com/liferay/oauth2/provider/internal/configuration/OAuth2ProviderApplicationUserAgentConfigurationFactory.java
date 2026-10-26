@@ -107,15 +107,14 @@ public class OAuth2ProviderApplicationUserAgentConfigurationFactory
 			List<String> redirectURIsList, List<String> scopeAliasesList)
 		throws Exception {
 
-		User user = userLocalService.getGuestUser(companyId);
-
-		String clientId = OAuth2SecureRandomGenerator.generateClientId();
-
 		OAuth2Application oAuth2Application =
 			oAuth2ApplicationLocalService.
 				fetchOAuth2ApplicationByExternalReferenceCode(
 					externalReferenceCode, companyId);
 
+		User user = userLocalService.getGuestUser(companyId);
+
+		String clientId = OAuth2SecureRandomGenerator.generateClientId();
 		List<String> currentScopeAliasesList = Collections.emptyList();
 
 		if (oAuth2Application != null) {

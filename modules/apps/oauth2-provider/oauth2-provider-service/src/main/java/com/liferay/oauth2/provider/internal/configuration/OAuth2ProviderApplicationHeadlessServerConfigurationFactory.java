@@ -55,12 +55,12 @@ public class OAuth2ProviderApplicationHeadlessServerConfigurationFactory
 					OAuth2ProviderApplicationHeadlessServerConfiguration.class,
 					properties);
 
+		List<String> currentScopeAliasesList = Collections.emptyList();
+
 		OAuth2Application currentOAuth2Application =
 			oAuth2ApplicationLocalService.
 				fetchOAuth2ApplicationByExternalReferenceCode(
 					externalReferenceCode, companyId);
-
-		List<String> currentScopeAliasesList = Collections.emptyList();
 
 		if (currentOAuth2Application != null) {
 			currentScopeAliasesList =
