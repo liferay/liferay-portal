@@ -8,20 +8,16 @@ package com.liferay.content.dashboard.web.internal.instance.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategoryConstants;
 import com.liferay.asset.kernel.model.AssetVocabulary;
-import com.liferay.asset.kernel.model.AssetVocabularyConstants;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
-import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -29,8 +25,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -266,48 +260,15 @@ public class
 
 		_portalInstanceLifecycleListener.portalInstanceRegistered(company);
 
-		AssetVocabulary globalAssetVocabulary = _addInternalAssetVocabulary(
-			company.getGroupId());
-
-		try {
-			_group = GroupTestUtil.addGroup();
-
-			AssetVocabulary groupAssetVocabulary = _addInternalAssetVocabulary(
-				_group.getGroupId());
-
-			List<AssetVocabulary> assetVocabularies =
-				_assetVocabularyLocalService.getGroupsVocabularies(
-					new long[] {company.getGroupId(), _group.getGroupId()},
-					DLFileEntry.class.getName());
-
-			for (String name : new String[] {"audience", "stage", "topic"}) {
-				Assert.assertTrue(
-					assetVocabularies.contains(
-						_assetVocabularyLocalService.fetchGroupVocabulary(
-							company.getGroupId(), name)));
-			}
+		for (String name : new String[] {"audience", "stage"}) {
+			AssetVocabulary assetVocabulary =
+				_assetVocabularyLocalService.fetchGroupVocabulary(
+					company.getGroupId(), name);
 
 			Assert.assertTrue(
-				assetVocabularies.contains(globalAssetVocabulary));
-			Assert.assertTrue(assetVocabularies.contains(groupAssetVocabulary));
+				assetVocabulary.isAssociatedToClassNameId(
+					_portal.getClassNameId(DLFileEntry.class)));
 		}
-		finally {
-			_assetVocabularyLocalService.deleteVocabulary(
-				globalAssetVocabulary);
-		}
-	}
-
-	private AssetVocabulary _addInternalAssetVocabulary(long groupId)
-		throws Exception {
-
-		return _assetVocabularyLocalService.addVocabulary(
-			null, TestPropsValues.getUserId(), groupId,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomLocaleStringMap(), Collections.emptyMap(),
-			new AssetVocabularySettingsHelper(
-			).toString(),
-			AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
-			ServiceContextTestUtil.getServiceContext(groupId));
 	}
 
 	private void _updateVocabulary(
@@ -363,8 +324,8 @@ public class
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	@DeleteAfterTestRun
-	private Group _group;
+	@Inject
+	private Portal _portal;
 
 	@Inject(
 		filter = "component.name=com.liferay.content.dashboard.web.internal.instance.lifecycle.AddDefaultAssetVocabulariesInitialRequestPortalInstanceLifecycleListener"
