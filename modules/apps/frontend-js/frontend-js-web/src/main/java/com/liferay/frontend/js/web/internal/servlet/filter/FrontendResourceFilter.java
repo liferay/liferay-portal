@@ -5,7 +5,6 @@
 
 package com.liferay.frontend.js.web.internal.servlet.filter;
 
-import com.liferay.frontend.js.web.internal.configuration.CompressionStrategy;
 import com.liferay.frontend.js.web.internal.configuration.FrontendCachingConfiguration;
 import com.liferay.frontend.js.web.internal.resource.FrontendResource;
 import com.liferay.frontend.js.web.internal.resource.handler.FrontendResourceRequestHandler;
@@ -49,6 +48,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.Deflater;
 import java.util.zip.GZIPOutputStream;
@@ -275,29 +275,24 @@ public class FrontendResourceFilter extends BasePortalFilter {
 			FrontendJSWebUtil.getFrontendCachingConfiguration(
 				CompanyThreadLocal.getCompanyId(), _configurationProvider);
 
-		CompressionStrategy compressionStrategy = CompressionStrategy.fromValue(
-			frontendCachingConfiguration.compressionStrategy(),
-			CompressionStrategy.USE_SYSTEM_DEFAULTS);
+		String compressionStrategy =
+			frontendCachingConfiguration.compressionStrategy();
 
-		if (compressionStrategy == CompressionStrategy.DO_NOT_COMPRESS) {
+		if (Objects.equals(compressionStrategy, "do-not-compress")) {
 			return Deflater.NO_COMPRESSION;
 		}
 
-		if (compressionStrategy ==
-				CompressionStrategy.USE_BEST_SPEED_COMPRESSION) {
-
+		if (Objects.equals(compressionStrategy, "use-best-speed-compression")) {
 			return Deflater.BEST_SPEED;
 		}
 
-		if (compressionStrategy ==
-				CompressionStrategy.USE_INTERMEDIATE_COMPRESSION) {
+		if (Objects.equals(
+				compressionStrategy, "use-intermediate-compression")) {
 
 			return 6;
 		}
 
-		if (compressionStrategy ==
-				CompressionStrategy.USE_MAXIMUM_COMPRESSION) {
-
+		if (Objects.equals(compressionStrategy, "use-maximum-compression")) {
 			return Deflater.BEST_COMPRESSION;
 		}
 
