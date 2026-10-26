@@ -5,11 +5,12 @@
 
 package com.liferay.segments.asah.connector.internal.cache;
 
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
-import com.liferay.segments.asah.connector.internal.configuration.provider.SegmentsAsahConfigurationProvider;
+import com.liferay.segments.asah.connector.internal.configuration.SegmentsAsahCompanyConfiguration;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,20 +31,27 @@ public class AsahSegmentsEntryCacheTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() {
-		ReflectionTestUtil.setFieldValue(
-			_asahSegmentsEntryCacheImpl, "_portalCache", _portalCache);
-		ReflectionTestUtil.setFieldValue(
-			_asahSegmentsEntryCacheImpl, "_segmentsAsahConfigurationProvider",
-			new SegmentsAsahConfigurationProvider() {
+	public void setUp() throws Exception {
+		Mockito.when(
+			_configurationProvider.getCompanyConfiguration(
+				Mockito.eq(SegmentsAsahCompanyConfiguration.class),
+				Mockito.anyLong())
+		).thenReturn(
+			new SegmentsAsahCompanyConfiguration() {
 
-				public int getAnonymousUserSegmentsCacheExpirationTime(
-					long companyId) {
-
+				@Override
+				public int anonymousUserSegmentsCacheExpirationTime() {
 					return 0;
 				}
 
-			});
+			}
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_asahSegmentsEntryCacheImpl, "_configurationProvider",
+			_configurationProvider);
+		ReflectionTestUtil.setFieldValue(
+			_asahSegmentsEntryCacheImpl, "_portalCache", _portalCache);
 	}
 
 	@Test
@@ -99,6 +107,8 @@ public class AsahSegmentsEntryCacheTest {
 
 	private final AsahSegmentsEntryCacheImpl _asahSegmentsEntryCacheImpl =
 		new AsahSegmentsEntryCacheImpl();
+	private final ConfigurationProvider _configurationProvider = Mockito.mock(
+		ConfigurationProvider.class);
 	private final PortalCache<String, long[]> _portalCache = Mockito.mock(
 		PortalCache.class);
 

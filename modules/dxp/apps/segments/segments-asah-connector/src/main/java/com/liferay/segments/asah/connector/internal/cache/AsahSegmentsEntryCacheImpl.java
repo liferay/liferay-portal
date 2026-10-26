@@ -5,6 +5,7 @@
 
 package com.liferay.segments.asah.connector.internal.cache;
 
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.log.Log;
@@ -12,7 +13,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.segments.asah.connector.cache.AsahSegmentsEntryCache;
-import com.liferay.segments.asah.connector.internal.configuration.provider.SegmentsAsahConfigurationProvider;
+import com.liferay.segments.asah.connector.internal.configuration.SegmentsAsahCompanyConfiguration;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -33,10 +34,14 @@ public class AsahSegmentsEntryCacheImpl implements AsahSegmentsEntryCache {
 		int anonymousTimeToLiveInSeconds = PortalCache.DEFAULT_TIME_TO_LIVE;
 
 		try {
+			SegmentsAsahCompanyConfiguration segmentsAsahCompanyConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					SegmentsAsahCompanyConfiguration.class,
+					CompanyThreadLocal.getCompanyId());
+
 			anonymousTimeToLiveInSeconds =
-				_segmentsAsahConfigurationProvider.
-					getAnonymousUserSegmentsCacheExpirationTime(
-						CompanyThreadLocal.getCompanyId());
+				segmentsAsahCompanyConfiguration.
+					anonymousUserSegmentsCacheExpirationTime();
 		}
 		catch (ConfigurationException configurationException) {
 			_log.error(configurationException);
@@ -68,12 +73,11 @@ public class AsahSegmentsEntryCacheImpl implements AsahSegmentsEntryCache {
 		AsahSegmentsEntryCacheImpl.class);
 
 	@Reference
+	private ConfigurationProvider _configurationProvider;
+
+	@Reference
 	private MultiVMPool _multiVMPool;
 
 	private PortalCache<String, long[]> _portalCache;
-
-	@Reference
-	private SegmentsAsahConfigurationProvider
-		_segmentsAsahConfigurationProvider;
 
 }
