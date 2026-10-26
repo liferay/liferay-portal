@@ -736,7 +736,7 @@ public class EmptyModelManagerImplTest {
 					ExportImportThreadLocal.class)) {
 
 			ExportImportReportEntry exportImportReportEntry =
-				_mockResolveMissingReference(
+				_testResolveMissingReference(
 					exportImportThreadLocalMockedStatic, true);
 
 			Mockito.verify(
@@ -775,7 +775,7 @@ public class EmptyModelManagerImplTest {
 				exportImportThreadLocalMockedStatic = Mockito.mockStatic(
 					ExportImportThreadLocal.class)) {
 
-			_mockResolveMissingReference(
+			_testResolveMissingReference(
 				exportImportThreadLocalMockedStatic, false);
 		}
 	}
@@ -889,7 +889,7 @@ public class EmptyModelManagerImplTest {
 				WorkflowConstants.STATUS_APPROVED, RandomTestUtil::randomInt));
 	}
 
-	private ExportImportReportEntry _mockResolveMissingReference(
+	private ExportImportReportEntry _testResolveMissingReference(
 		MockedStatic<ExportImportThreadLocal>
 			exportImportThreadLocalMockedStatic,
 		boolean reportEntryExists) {

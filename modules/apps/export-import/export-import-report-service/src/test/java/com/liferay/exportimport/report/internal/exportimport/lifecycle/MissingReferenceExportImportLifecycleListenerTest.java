@@ -131,21 +131,9 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 		);
 
 		Mockito.when(
-			fileEntry.getCompanyId()
-		).thenReturn(
-			_COMPANY_ID
-		);
-
-		Mockito.when(
 			fileEntry.getGroupId()
 		).thenReturn(
 			_GROUP_ID
-		);
-
-		Mockito.when(
-			fileEntry.getModelClassName()
-		).thenReturn(
-			RandomTestUtil.randomString()
 		);
 
 		_missingReferenceExportImportLifecycleListener.
@@ -280,7 +268,7 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 	}
 
 	@Test
-	public void testOnExportImportLifecycleEventWithoutExternalReferenceCode()
+	public void testOnExportImportLifecycleEventWithoutExternalReferenceCodeModel()
 		throws Exception {
 
 		_missingReferenceExportImportLifecycleListener.
@@ -364,12 +352,6 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 			externalReferenceCodeModel.getExternalReferenceCode()
 		).thenReturn(
 			externalReferenceCode
-		);
-
-		Mockito.when(
-			stagedGroupedModel.getCompanyId()
-		).thenReturn(
-			_COMPANY_ID
 		);
 
 		Mockito.when(
