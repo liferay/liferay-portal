@@ -21,14 +21,6 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 public interface SegmentsAsahConfiguration {
 
 	@Meta.AD(
-		deflt = "86400",
-		description = "anonymous-user-segments-cache-expiration-time-description",
-		name = "anonymous-user-segments-cache-expiration-time-name",
-		required = false
-	)
-	public int anonymousUserSegmentsCacheExpirationTime();
-
-	@Meta.AD(
 		deflt = "60", description = "check-interval-description", min = "1",
 		name = "update-interval", required = false
 	)
