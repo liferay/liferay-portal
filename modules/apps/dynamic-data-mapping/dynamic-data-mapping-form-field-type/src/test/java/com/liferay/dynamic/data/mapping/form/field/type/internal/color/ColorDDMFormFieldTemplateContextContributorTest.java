@@ -8,6 +8,7 @@ package com.liferay.dynamic.data.mapping.form.field.type.internal.color;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.util.Map;
@@ -37,7 +38,7 @@ public class ColorDDMFormFieldTemplateContextContributorTest {
 
 		Map<String, Object> parameters =
 			_colorDDMFormFieldTemplateContextContributor.getParameters(
-				new DDMFormField("field", "color"),
+				new DDMFormField(RandomTestUtil.randomString(), "color"),
 				ddmFormFieldRenderingContext);
 
 		Assert.assertEquals("000000", parameters.get("value"));
