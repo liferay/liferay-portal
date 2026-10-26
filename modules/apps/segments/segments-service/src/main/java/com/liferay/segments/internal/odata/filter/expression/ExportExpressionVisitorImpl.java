@@ -33,7 +33,7 @@ import com.liferay.portal.odata.filter.expression.PropertyExpression;
 import com.liferay.portal.odata.filter.expression.UnaryExpression;
 import com.liferay.segments.field.customizer.SegmentsFieldCustomizer;
 import com.liferay.segments.field.customizer.SegmentsFieldCustomizerRegistry;
-import com.liferay.segments.internal.odata.entity.EntityModelFieldMapper;
+import com.liferay.segments.internal.odata.entity.EntityModelFieldMapperUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -46,17 +46,16 @@ public class ExportExpressionVisitorImpl implements ExpressionVisitor<Object> {
 
 	public ExportExpressionVisitorImpl(
 		PortletDataContext portletDataContext, StagedModel stagedModel,
-		EntityModel entityModel, EntityModelFieldMapper entityModelFieldMapper,
+		EntityModel entityModel,
 		SegmentsFieldCustomizerRegistry segmentsFieldCustomizerRegistry) {
 
 		_portletDataContext = portletDataContext;
 		_stagedModel = stagedModel;
 		_entityModel = entityModel;
-		_entityModelFieldMapper = entityModelFieldMapper;
 		_segmentsFieldCustomizerRegistry = segmentsFieldCustomizerRegistry;
 
 		_customFieldEntityFields =
-			entityModelFieldMapper.getCustomFieldEntityFields(entityModel);
+			EntityModelFieldMapperUtil.getCustomFieldEntityFields(entityModel);
 	}
 
 	@Override
@@ -170,8 +169,8 @@ public class ExportExpressionVisitorImpl implements ExpressionVisitor<Object> {
 	private void _exportEntityFieldCustomFieldReferences(
 		EntityField entityField) {
 
-		ExpandoColumn expandoColumn = _entityModelFieldMapper.getExpandoColumn(
-			entityField.getName());
+		ExpandoColumn expandoColumn =
+			EntityModelFieldMapperUtil.getExpandoColumn(entityField.getName());
 
 		if (expandoColumn == null) {
 			return;
@@ -227,7 +226,6 @@ public class ExportExpressionVisitorImpl implements ExpressionVisitor<Object> {
 
 	private final Map<String, EntityField> _customFieldEntityFields;
 	private final EntityModel _entityModel;
-	private final EntityModelFieldMapper _entityModelFieldMapper;
 	private final PortletDataContext _portletDataContext;
 	private final SegmentsFieldCustomizerRegistry
 		_segmentsFieldCustomizerRegistry;

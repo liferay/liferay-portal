@@ -25,7 +25,7 @@ import com.liferay.segments.criteria.CriteriaSerializer;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributorRegistry;
 import com.liferay.segments.field.customizer.SegmentsFieldCustomizerRegistry;
-import com.liferay.segments.internal.odata.entity.EntityModelFieldMapper;
+import com.liferay.segments.internal.odata.entity.EntityModelFieldMapperUtil;
 import com.liferay.segments.internal.odata.filter.expression.ExportExpressionVisitorImpl;
 import com.liferay.segments.internal.odata.filter.expression.ImportExpressionVisitorImpl;
 import com.liferay.segments.model.SegmentsEntry;
@@ -130,7 +130,7 @@ public class SegmentsEntryExportImportContentProcessor
 				new ExportExpressionVisitorImpl(
 					portletDataContext, stagedModel,
 					segmentsCriteriaContributor.getEntityModel(),
-					_entityModelFieldMapper, _segmentsFieldCustomizerRegistry));
+					_segmentsFieldCustomizerRegistry));
 		}
 
 		return CriteriaSerializer.serialize(criteria);
@@ -205,7 +205,7 @@ public class SegmentsEntryExportImportContentProcessor
 			}
 
 			String fieldName =
-				_entityModelFieldMapper.getExpandoColumnEntityFieldName(
+				EntityModelFieldMapperUtil.getExpandoColumnEntityFieldName(
 					expandoColumn);
 
 			matcher.appendReplacement(
@@ -253,7 +253,7 @@ public class SegmentsEntryExportImportContentProcessor
 				new ImportExpressionVisitorImpl(
 					portletDataContext,
 					segmentsCriteriaContributor.getEntityModel(),
-					_entityModelFieldMapper, criterion.getFilterString(),
+					criterion.getFilterString(),
 					_segmentsFieldCustomizerRegistry));
 
 			segmentsCriteriaContributor.contribute(
@@ -268,9 +268,6 @@ public class SegmentsEntryExportImportContentProcessor
 		"customField\\\\/_(\\d+)_[^ ]+");
 	private static final Pattern _importCustomFieldPattern = Pattern.compile(
 		"customField\\\\/_([\\w\\.]+)#([\\w]+)#([^ ]+)");
-
-	@Reference
-	private EntityModelFieldMapper _entityModelFieldMapper;
 
 	@Reference
 	private ExpandoColumnLocalService _expandoColumnLocalService;

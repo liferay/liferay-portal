@@ -20,7 +20,7 @@ import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.criteria.mapper.SegmentsCriteriaJSONObjectMapper;
 import com.liferay.segments.field.Field;
-import com.liferay.segments.internal.odata.entity.EntityModelFieldMapper;
+import com.liferay.segments.internal.odata.entity.EntityModelFieldMapperUtil;
 import com.liferay.segments.internal.odata.entity.OrganizationEntityModel;
 import com.liferay.segments.odata.retriever.ODataRetriever;
 
@@ -125,7 +125,8 @@ public class UserOrganizationSegmentsCriteriaContributor
 
 	@Override
 	public List<Field> getFields(PortletRequest portletRequest) {
-		return _entityModelFieldMapper.getFields(_entityModel, portletRequest);
+		return EntityModelFieldMapperUtil.getFields(
+			_entityModel, portletRequest);
 	}
 
 	@Override
@@ -148,9 +149,6 @@ public class UserOrganizationSegmentsCriteriaContributor
 		target = "(entity.model.name=" + OrganizationEntityModel.NAME + ")"
 	)
 	private EntityModel _entityModel;
-
-	@Reference
-	private EntityModelFieldMapper _entityModelFieldMapper;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.portal.kernel.model.Organization)"

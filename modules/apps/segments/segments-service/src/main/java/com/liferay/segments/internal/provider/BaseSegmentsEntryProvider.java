@@ -46,7 +46,7 @@ import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributorRegistry;
 import com.liferay.segments.internal.checker.UserSegmentsEntryMembershipChecker;
 import com.liferay.segments.internal.odata.entity.BaseExpandoEntityModel;
-import com.liferay.segments.internal.odata.entity.EntityModelFieldMapper;
+import com.liferay.segments.internal.odata.entity.EntityModelFieldMapperUtil;
 import com.liferay.segments.internal.odata.entity.UserEntityModel;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsEntryRel;
@@ -385,9 +385,6 @@ public abstract class BaseSegmentsEntryProvider
 	protected ClassNameLocalService classNameLocalService;
 
 	@Reference
-	protected EntityModelFieldMapper entityModelFieldMapper;
-
-	@Reference
 	protected ExpandoColumnLocalService expandoColumnLocalService;
 
 	@Reference
@@ -453,7 +450,7 @@ public abstract class BaseSegmentsEntryProvider
 					user.getUserId());
 
 				String encodedName =
-					entityModelFieldMapper.getExpandoColumnEntityFieldName(
+					EntityModelFieldMapperUtil.getExpandoColumnEntityFieldName(
 						expandoColumn);
 
 				String key = "customField/" + encodedName;

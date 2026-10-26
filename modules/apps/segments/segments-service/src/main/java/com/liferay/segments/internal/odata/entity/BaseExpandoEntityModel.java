@@ -97,9 +97,6 @@ public abstract class BaseExpandoEntityModel implements EntityModel {
 	protected ClassNameLocalService classNameLocalService;
 
 	@Reference
-	protected EntityModelFieldMapper entityModelFieldMapper;
-
-	@Reference
 	protected ExpandoColumnLocalService expandoColumnLocalService;
 
 	@Reference
@@ -184,7 +181,7 @@ public abstract class BaseExpandoEntityModel implements EntityModel {
 		EntityField entityField = null;
 
 		String encodedName =
-			entityModelFieldMapper.getExpandoColumnEntityFieldName(
+			EntityModelFieldMapperUtil.getExpandoColumnEntityFieldName(
 				expandoColumn);
 		String encodedIndexedFieldName = ExpandoBridgeUtil.encodeFieldName(
 			expandoColumn);

@@ -11,7 +11,7 @@ import com.liferay.segments.criteria.Criteria;
 import com.liferay.segments.criteria.contributor.SegmentsCriteriaContributor;
 import com.liferay.segments.criteria.mapper.SegmentsCriteriaJSONObjectMapper;
 import com.liferay.segments.field.Field;
-import com.liferay.segments.internal.odata.entity.EntityModelFieldMapper;
+import com.liferay.segments.internal.odata.entity.EntityModelFieldMapperUtil;
 import com.liferay.segments.internal.odata.entity.SegmentsEntryEntityModel;
 
 import jakarta.portlet.PortletRequest;
@@ -72,7 +72,8 @@ public class SegmentsEntrySegmentsCriteriaContributor
 
 	@Override
 	public List<Field> getFields(PortletRequest portletRequest) {
-		return _entityModelFieldMapper.getFields(_entityModel, portletRequest);
+		return EntityModelFieldMapperUtil.getFields(
+			_entityModel, portletRequest);
 	}
 
 	@Override
@@ -92,9 +93,6 @@ public class SegmentsEntrySegmentsCriteriaContributor
 		target = "(entity.model.name=" + SegmentsEntryEntityModel.NAME + ")"
 	)
 	private volatile EntityModel _entityModel;
-
-	@Reference
-	private EntityModelFieldMapper _entityModelFieldMapper;
 
 	@Reference(target = "(segments.criteria.mapper.key=odata)")
 	private SegmentsCriteriaJSONObjectMapper _segmentsCriteriaJSONObjectMapper;
