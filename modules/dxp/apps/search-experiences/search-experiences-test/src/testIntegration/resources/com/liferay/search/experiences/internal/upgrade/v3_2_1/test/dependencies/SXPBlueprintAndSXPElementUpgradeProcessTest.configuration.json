@@ -1,0 +1,59 @@
+{
+	"advancedConfiguration": {
+	},
+	"aggregationConfiguration": {
+		"aggs": {
+			"priority_ranges": {
+				"range": {
+					"field": "priority",
+					"ranges": [
+						{
+							"from": 0,
+							"to": 3
+						},
+						{
+							"from": 3
+						}
+					]
+				}
+			}
+		}
+	},
+	"generalConfiguration": {
+		"clauseContributorsExcludes": [
+		],
+		"clauseContributorsIncludes": [
+			"*"
+		],
+		"searchableAssetTypes": [
+		]
+	},
+	"highlightConfiguration": {
+	},
+	"parameterConfiguration": {
+	},
+	"queryConfiguration": {
+		"applyIndexerClauses": false,
+		"queryEntries": [
+			{
+				"clauses": [
+					{
+						"context": "query",
+						"occur": "filter",
+						"query": {
+							"range": {
+								"priority": {
+									"from": 1,
+									"include_lower": false,
+									"to": 5
+								}
+							}
+						}
+					}
+				]
+			}
+		]
+	},
+	"sortConfiguration": {
+	}
+}

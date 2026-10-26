@@ -1,0 +1,46 @@
+{
+	"category": "filter",
+	"configuration": {
+		"queryConfiguration": {
+			"queryEntries": [
+				{
+					"clauses": [
+						{
+							"context": "query",
+							"occur": "filter",
+							"query": {
+								"range": {
+									"createDate": {
+										"from": "${configuration.start_date}",
+										"include_lower": true,
+										"include_upper": true,
+										"to": "${configuration.end_date}"
+									}
+								}
+							}
+						}
+					]
+				}
+			]
+		}
+	},
+	"icon": "filter",
+	"uiConfiguration": {
+		"fieldSets": [
+			{
+				"fields": [
+					{
+						"label": "create-date-from",
+						"name": "start_date",
+						"type": "date"
+					},
+					{
+						"label": "create-date-to",
+						"name": "end_date",
+						"type": "date"
+					}
+				]
+			}
+		]
+	}
+}

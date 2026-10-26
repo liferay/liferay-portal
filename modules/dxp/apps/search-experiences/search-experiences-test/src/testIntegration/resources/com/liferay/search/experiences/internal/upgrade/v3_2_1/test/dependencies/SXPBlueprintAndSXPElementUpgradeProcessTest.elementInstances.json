@@ -1,0 +1,211 @@
+[
+	{
+		"configurationEntry": {
+			"queryConfiguration": {
+				"queryEntries": [
+					{
+						"clauses": [
+							{
+								"context": "query",
+								"occur": "filter",
+								"query": {
+									"range": {
+										"createDate": {
+											"from": "20261025000000",
+											"include_lower": true,
+											"include_upper": true,
+											"to": "20261027000000"
+										}
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"sxpElement": {
+			"elementDefinition": {
+				"category": "filter",
+				"configuration": {
+					"queryConfiguration": {
+						"queryEntries": [
+							{
+								"clauses": [
+									{
+										"context": "query",
+										"occur": "filter",
+										"query": {
+											"range": {
+												"createDate": {
+													"from": "${configuration.start_date}",
+													"include_lower": true,
+													"include_upper": true,
+													"to": "${configuration.end_date}"
+												}
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				},
+				"icon": "filter",
+				"uiConfiguration": {
+					"fieldSets": [
+						{
+							"fields": [
+								{
+									"label": "create-date-from",
+									"name": "start_date",
+									"type": "date"
+								},
+								{
+									"label": "create-date-to",
+									"name": "end_date",
+									"type": "date"
+								}
+							]
+						}
+					]
+				}
+			},
+			"externalReferenceCode": "LIMIT_SEARCH_TO_CONTENTS_CREATED_WITHIN_A_PERIOD_OF_TIME",
+			"readOnly": true,
+			"title": "Limit Search to Contents Created Within a Period of Time"
+		},
+		"uiConfigurationValues": {
+			"end_date": "2026-10-27",
+			"start_date": "2026-10-25"
+		}
+	},
+	{
+		"configurationEntry": {
+			"queryConfiguration": {
+				"queryEntries": [
+					{
+						"clauses": [
+							{
+								"context": "query",
+								"occur": "filter",
+								"query": "{\"range\": {\"modified\": {\"from\": null, \"to\": \"20300101000000\"}}}"
+							}
+						]
+					}
+				]
+			}
+		},
+		"sxpElement": {
+			"elementDefinition": {
+				"category": "custom",
+				"configuration": {
+					"queryConfiguration": {
+						"queryEntries": [
+							{
+								"clauses": [
+									{
+										"context": "query",
+										"occur": "${configuration.occur}",
+										"query": "${configuration.query}"
+									}
+								]
+							}
+						]
+					}
+				},
+				"icon": "custom-field",
+				"uiConfiguration": {
+					"fieldSets": [
+						{
+							"fields": [
+								{
+									"defaultValue": "must",
+									"label": "occur",
+									"name": "occur",
+									"type": "select"
+								},
+								{
+									"defaultValue": "",
+									"label": "query",
+									"name": "query",
+									"type": "json"
+								}
+							]
+						}
+					]
+				}
+			},
+			"externalReferenceCode": "PASTE_ANY_ELASTICSEARCH_QUERY",
+			"readOnly": true,
+			"title": "Paste Any Elasticsearch Query"
+		},
+		"uiConfigurationValues": {
+			"occur": "filter",
+			"query": "{\n\t\"range\": {\n\t\t\"modified\": {\n\t\t\t\"from\": null,\n\t\t\t\"to\": \"20300101000000\"\n\t\t}\n\t}\n}"
+		}
+	},
+	{
+		"configurationEntry": {
+			"queryConfiguration": {
+				"queryEntries": [
+					{
+						"clauses": [
+							{
+								"context": "query",
+								"occur": "must",
+								"query": {
+									"range": {
+										"createDate": {
+											"from": "20200101000000",
+											"include_lower": true,
+											"include_upper": false,
+											"to": "20300101000000"
+										}
+									}
+								}
+							}
+						]
+					}
+				]
+			}
+		},
+		"sxpElement": {
+			"elementDefinition": {
+				"category": "custom",
+				"configuration": {
+					"queryConfiguration": {
+						"queryEntries": [
+							{
+								"clauses": [
+									{
+										"context": "query",
+										"occur": "must",
+										"query": {
+											"range": {
+												"createDate": {
+													"from": "20200101000000",
+													"include_lower": true,
+													"include_upper": false,
+													"to": "20300101000000"
+												}
+											}
+										}
+									}
+								]
+							}
+						]
+					}
+				},
+				"icon": "custom-field",
+				"uiConfiguration": {
+				}
+			},
+			"externalReferenceCode": "LEGACY_RANGE",
+			"readOnly": false,
+			"title": "Legacy Range"
+		},
+		"uiConfigurationValues": {
+		}
+	}
+]
