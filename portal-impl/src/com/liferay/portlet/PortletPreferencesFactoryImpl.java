@@ -929,19 +929,20 @@ public class PortletPreferencesFactoryImpl
 			if (portlet.isPreferencesUniquePerLayout()) {
 				ownerId = PortletKeys.PREFS_OWNER_ID_DEFAULT;
 
+				plid = layout.getPlid();
+
 				long masterLayoutPlid = layout.getMasterLayoutPlid();
 
-				long portletPreferencesCount =
-					PortletPreferencesLocalServiceUtil.
-						getPortletPreferencesCount(
-							PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
-							masterLayoutPlid, portletId);
+				if (masterLayoutPlid > 0) {
+					long portletPreferencesCount =
+						PortletPreferencesLocalServiceUtil.
+							getPortletPreferencesCount(
+								PortletKeys.PREFS_OWNER_TYPE_LAYOUT,
+								masterLayoutPlid, portletId);
 
-				if ((masterLayoutPlid > 0) && (portletPreferencesCount > 0)) {
-					plid = masterLayoutPlid;
-				}
-				else {
-					plid = layout.getPlid();
+					if (portletPreferencesCount > 0) {
+						plid = masterLayoutPlid;
+					}
 				}
 
 				if (themeDisplay != null) {
