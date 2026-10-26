@@ -76,6 +76,7 @@ import jakarta.portlet.ActionResponse;
 import jakarta.portlet.PortletPreferences;
 import jakarta.portlet.ReadOnlyException;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
@@ -289,28 +290,19 @@ public class EditCompanyMVCActionCommand extends BaseFormMVCActionCommand {
 
 		Enumeration<String> enumeration = portletPreferences.getNames();
 
-		try {
-			while (enumeration.hasMoreElements()) {
-				String curName = enumeration.nextElement();
+		List<String> legacyKeys = new ArrayList<>();
 
-				for (String discardLegacyKey : discardLegacyKeys) {
-					if (!curName.startsWith(discardLegacyKey + "_")) {
-						continue;
-					}
+		while (enumeration.hasMoreElements()) {
+			String curName = enumeration.nextElement();
 
-					if (_log.isDebugEnabled()) {
-						_log.debug("Discarding property key " + curName);
-					}
-
-					portletPreferences.reset(curName);
-					unicodeProperties.remove(curName);
+			for (String discardLegacyKey : discardLegacyKeys) {
+				if (!curName.startsWith(discardLegacyKey + "_")) {
+					continue;
 				}
-			}
 
-			portletPreferences.store();
-		}
-		catch (ReadOnlyException readOnlyException) {
-			throw new SystemException(readOnlyException);
+				legacyKeys.add(curName);
+				unicodeProperties.remove(curName);
+			}
 		}
 
 		String name = ParamUtil.getString(
@@ -352,6 +344,27 @@ public class EditCompanyMVCActionCommand extends BaseFormMVCActionCommand {
 			emailAddresses, phones, websites, unicodeProperties);
 
 		_portal.resetCDNHosts();
+
+		if (legacyKeys.isEmpty()) {
+			return;
+		}
+
+		portletPreferences = _prefsProps.getPreferences(companyId);
+
+		try {
+			for (String legacyKey : legacyKeys) {
+				if (_log.isDebugEnabled()) {
+					_log.debug("Discarding property key " + legacyKey);
+				}
+
+				portletPreferences.reset(legacyKey);
+			}
+
+			portletPreferences.store();
+		}
+		catch (ReadOnlyException readOnlyException) {
+			throw new SystemException(readOnlyException);
+		}
 	}
 
 	private void _validateAvailableLanguages(ActionRequest actionRequest)
