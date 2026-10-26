@@ -328,21 +328,6 @@ public class EmptyModelManagerImplTest {
 	public void testGetOrAddEmptyModelGroupScopedWithEnabledLazyReferencingAndAddingEmptyItem()
 		throws Exception {
 
-		StagingGroupHelper stagingGroupHelper = Mockito.mock(
-			StagingGroupHelper.class);
-
-		Mockito.when(
-			stagingGroupHelper.isCompanyGroup(_group)
-		).thenReturn(
-			false
-		);
-
-		_stagingGroupHelperUtilMockedStatic.when(
-			StagingGroupHelperUtil::getStagingGroupHelper
-		).thenReturn(
-			stagingGroupHelper
-		);
-
 		try (MockedStatic<ExportImportThreadLocal>
 				exportImportThreadLocalMockedStatic = Mockito.mockStatic(
 					ExportImportThreadLocal.class);
@@ -365,26 +350,18 @@ public class EmptyModelManagerImplTest {
 				companyId
 			);
 
-			String groupExternalReferenceCode = RandomTestUtil.randomString();
-
-			Mockito.when(
-				_group.getExternalReferenceCode()
-			).thenReturn(
-				groupExternalReferenceCode
-			);
-
-			Mockito.when(
-				_group.isCompany()
-			).thenReturn(
-				false
-			);
-
 			long groupId = RandomTestUtil.randomLong();
 
 			Mockito.when(
 				_groupLocalService.fetchGroup(groupId)
 			).thenReturn(
 				_group
+			);
+
+			Mockito.when(
+				_stagingGroupHelper.isCompanyGroup(_group)
+			).thenReturn(
+				false
 			);
 
 			exportImportThreadLocalMockedStatic.when(
@@ -433,12 +410,83 @@ public class EmptyModelManagerImplTest {
 			);
 
 			Mockito.verify(
+				_stagingGroupHelper
+			).isCompanyGroup(
+				_group
+			);
+
+			Mockito.verify(
 				_exportImportReportEntryLocalService
 			).getOrAddExportImportReportEntry(
 				groupId, companyId, userExternalReferenceCode, classNameId, 0,
 				exportImportConfigurationId,
 				ExportImportReportEntryConstants.TYPE_EMPTY, null, null,
 				User.class.getName()
+			);
+		}
+	}
+
+	@Test
+	public void testGetOrAddEmptyModelGroupScopedWithEnabledLazyReferencingAndCompanyGroup()
+		throws Exception {
+
+		try (MockedStatic<ExportImportThreadLocal>
+				exportImportThreadLocalMockedStatic = Mockito.mockStatic(
+					ExportImportThreadLocal.class);
+			SafeCloseable safeCloseable =
+				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+
+			long groupId = RandomTestUtil.randomLong();
+
+			Mockito.when(
+				_groupLocalService.fetchGroup(groupId)
+			).thenReturn(
+				_group
+			);
+
+			Mockito.when(
+				_stagingGroupHelper.isCompanyGroup(_group)
+			).thenReturn(
+				true
+			);
+
+			exportImportThreadLocalMockedStatic.when(
+				ExportImportThreadLocal::isImportInProcess
+			).thenReturn(
+				true
+			);
+
+			try {
+				_emptyModelManager.getOrAddEmptyModel(
+					User.class.getName(), RandomTestUtil.randomLong(),
+					() -> _user, RandomTestUtil.randomString(),
+					_toBiFunction(() -> null),
+					_toUnsafeBiFunction(
+						() -> {
+							Assert.fail();
+
+							return null;
+						}),
+					groupId, User.class.getName());
+
+				Assert.fail();
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+				Assert.assertEquals(
+					"Group " + groupId + " is the export/import company group",
+					illegalArgumentException.getMessage());
+			}
+
+			Mockito.verify(
+				_groupLocalService
+			).fetchGroup(
+				groupId
+			);
+
+			Mockito.verify(
+				_stagingGroupHelper
+			).isCompanyGroup(
+				_group
 			);
 		}
 	}
