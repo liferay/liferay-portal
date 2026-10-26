@@ -48,6 +48,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.io.ByteArrayOutputStream;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Assert;
@@ -98,16 +99,8 @@ public class GetLayoutActionsMVCResourceCommandTest {
 	private void _assertActionDropdownItems(long plid, String... actions)
 		throws Exception {
 
-		List<String> actionDropdownItemLabels = _getActionDropdownItemLabels(
-			plid);
-
 		Assert.assertEquals(
-			actionDropdownItemLabels.toString(), actions.length,
-			actionDropdownItemLabels.size());
-
-		for (int i = 0; i < actions.length; i++) {
-			Assert.assertEquals(actions[i], actionDropdownItemLabels.get(i));
-		}
+			Arrays.asList(actions), _getActionDropdownItemLabels(plid));
 	}
 
 	private void _assertNoOrphanWidgetsActionDropdownItem(long plid)
@@ -273,16 +266,16 @@ public class GetLayoutActionsMVCResourceCommandTest {
 
 		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
 
-		_layout = LayoutTestUtil.addTypeContentLayout(
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
 			_group, false, false,
 			masterLayoutPageTemplateEntry.getExternalReferenceCode());
 
 		_portletPreferencesLocalService.addPortletPreferences(
-			_layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+			layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid(),
 			_getPortletId(masterLayout), null, null);
 
-		_assertNoOrphanWidgetsActionDropdownItem(_layout.getPlid());
+		_assertNoOrphanWidgetsActionDropdownItem(layout.getPlid());
 	}
 
 	@Inject
