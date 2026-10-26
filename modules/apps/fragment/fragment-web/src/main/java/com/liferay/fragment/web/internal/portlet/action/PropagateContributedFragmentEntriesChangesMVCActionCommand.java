@@ -24,6 +24,9 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.PortalPreferencesLocalService;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.TransactionConfig;
@@ -32,7 +35,6 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -94,7 +96,37 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 		hideDefaultSuccessMessage(actionRequest);
 	}
 
-	private void _propagateContributedFragmentEntriesChanges()
+	private void _checkPermission(ActionRequest actionRequest)
+		throws Exception {
+
+		String scope = ParamUtil.getString(actionRequest, "scope");
+
+		if (scope.equals(
+				ExtendedObjectClassDefinition.Scope.COMPANY.getValue())) {
+
+			long companyId = _portal.getCompanyId(actionRequest);
+
+			if (ParamUtil.getLong(actionRequest, "scopePK") != companyId) {
+				throw new PrincipalException(
+					"Invalid scope primary key for company " + companyId);
+			}
+		}
+		else if (scope.equals(
+					ExtendedObjectClassDefinition.Scope.SYSTEM.getValue())) {
+
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			if (!permissionChecker.isOmniadmin()) {
+				throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+			}
+		}
+		else {
+			throw new PortalException("Unsupported scope: " + scope);
+		}
+	}
+
+	private void _propagateContributedFragmentEntriesChanges(long companyId)
 		throws Exception {
 
 		Map<String, FragmentEntry> fragmentCollectionContributorEntries =
@@ -108,6 +140,7 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 			ActionableDynamicQuery actionableDynamicQuery =
 				_fragmentEntryLinkLocalService.getActionableDynamicQuery();
 
+			actionableDynamicQuery.setCompanyId(companyId);
 			actionableDynamicQuery.setAddCriteriaMethod(
 				dynamicQuery -> {
 					Property rendererKeyProperty = PropertyFactoryUtil.forName(
@@ -132,22 +165,6 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 			ActionRequest actionRequest)
 		throws Exception {
 
-		String scope = ParamUtil.getString(actionRequest, "scope");
-
-		if (Validator.isNull(scope)) {
-			throw new PortalException("Unsupported scope: " + scope);
-		}
-
-		long scopePK = ParamUtil.getLong(actionRequest, "scopePK");
-
-		if ((scopePK == 0) &&
-			!scope.equals(
-				ExtendedObjectClassDefinition.Scope.SYSTEM.getValue())) {
-
-			throw new PortalException(
-				"Invalid scope primary key 0 for scope " + scope);
-		}
-
 		Dictionary<String, Object> properties =
 			HashMapDictionaryBuilder.<String, Object>put(
 				"propagateChanges",
@@ -158,11 +175,14 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 					actionRequest, "propagateContributedFragmentChanges")
 			).build();
 
+		String scope = ParamUtil.getString(actionRequest, "scope");
+
 		if (scope.equals(
 				ExtendedObjectClassDefinition.Scope.COMPANY.getValue())) {
 
 			_configurationProvider.saveCompanyConfiguration(
-				FragmentServiceConfiguration.class, scopePK, properties);
+				FragmentServiceConfiguration.class,
+				_portal.getCompanyId(actionRequest), properties);
 		}
 		else {
 			_configurationProvider.saveSystemConfiguration(
@@ -217,7 +237,9 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 
 		@Override
 		public Object call() throws Exception {
-			_propagateContributedFragmentEntriesChanges();
+			_checkPermission(_actionRequest);
+			_propagateContributedFragmentEntriesChanges(
+				_portal.getCompanyId(_actionRequest));
 			_updateFragmentServiceConfiguration(_actionRequest);
 			_updatePropagateContributedFragmentChangesPortletPreference(
 				_actionRequest);
