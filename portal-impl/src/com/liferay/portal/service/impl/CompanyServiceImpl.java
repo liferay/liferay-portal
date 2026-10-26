@@ -310,7 +310,13 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 * @return the companies
 	 */
 	@Override
-	public List<Company> getCompanies() {
+	public List<Company> getCompanies() throws PortalException {
+		PermissionChecker permissionChecker = getPermissionChecker();
+
+		if (!permissionChecker.isOmniadmin()) {
+			throw new PrincipalException.MustBeOmniadmin(permissionChecker);
+		}
+
 		return companyPersistence.findAll();
 	}
 
