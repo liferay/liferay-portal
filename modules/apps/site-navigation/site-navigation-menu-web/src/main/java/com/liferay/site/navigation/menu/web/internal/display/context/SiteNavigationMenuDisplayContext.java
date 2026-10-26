@@ -525,7 +525,7 @@ public class SiteNavigationMenuDisplayContext {
 		return false;
 	}
 
-	private int _getDefaultSelectSiteNavigationMenuType() {
+	private int _calculateDefaultSelectSiteNavigationMenuType() {
 		Layout layout = _themeDisplay.getLayout();
 		Group scopeGroup = _themeDisplay.getScopeGroup();
 
@@ -549,6 +549,15 @@ public class SiteNavigationMenuDisplayContext {
 		}
 
 		return SiteNavigationConstants.TYPE_PRIMARY;
+	}
+
+	private int _getDefaultSelectSiteNavigationMenuType() {
+		if (_defaultSelectSiteNavigationMenuType == null) {
+			_defaultSelectSiteNavigationMenuType =
+				_calculateDefaultSelectSiteNavigationMenuType();
+		}
+
+		return _defaultSelectSiteNavigationMenuType;
 	}
 
 	private long _getDisplayStyleGroupId() {
@@ -660,6 +669,7 @@ public class SiteNavigationMenuDisplayContext {
 
 	private String _alertKey;
 	private String _ddmTemplateKey;
+	private Integer _defaultSelectSiteNavigationMenuType;
 	private int _displayDepth = -1;
 	private String _displayStyle;
 	private long _displayStyleGroupId;
