@@ -6,13 +6,16 @@
 package com.liferay.portal.vulcan.internal.graphql.servlet.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManager;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.CompanyConstants;
@@ -25,6 +28,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -282,6 +286,45 @@ public class GraphQLServletTest {
 	}
 
 	@Test
+	public void testQueryBatchOperationLimit() throws Exception {
+		_assertBatch(1);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.ERROR)) {
+
+			Assert.assertEquals(
+				400,
+				HTTPTestUtil.invokeToHttpCode(
+					_getBatchJSONArray(
+						2
+					).toString(),
+					"graphql", Http.Method.POST));
+		}
+
+		_withGraphQLBatchOperationLimit(-1, () -> _assertBatch(11));
+		_withGraphQLBatchOperationLimit(0, () -> _assertBatch(11));
+		_withGraphQLBatchOperationLimit(
+			2,
+			() -> {
+				_assertBatch(2);
+
+				try (LogCapture logCapture =
+						LoggerTestUtil.configureLog4JLogger(
+							"portal_web.docroot.errors.code_jsp",
+							LoggerTestUtil.ERROR)) {
+
+					Assert.assertEquals(
+						400,
+						HTTPTestUtil.invokeToHttpCode(
+							_getBatchJSONArray(
+								3
+							).toString(),
+							"graphql", Http.Method.POST));
+				}
+			});
+	}
+
+	@Test
 	public void testQueryDepthLimit() throws Exception {
 		Configuration[] configurations = _configurationAdmin.listConfigurations(
 			StringBundler.concat(
@@ -355,6 +398,52 @@ public class GraphQLServletTest {
 				factoryConfiguration.update(configuration.getProperties());
 			}
 		}
+	}
+
+	@Test
+	public void testQueryIntrospectionFieldLimit() throws Exception {
+		_assertIntrospectionFieldLimitExceeded(
+			"__Field.args",
+			new GraphQLField(
+				"__schema",
+				new GraphQLField(
+					"types",
+					new GraphQLField(
+						"fields",
+						new GraphQLField("a: args", new GraphQLField("name")),
+						new GraphQLField(
+							"b: args", new GraphQLField("name"))))));
+		_assertIntrospectionFieldLimitExceeded(
+			"__Schema.types",
+			new GraphQLField(
+				"__schema",
+				new GraphQLField("a: types", new GraphQLField("name")),
+				new GraphQLField("b: types", new GraphQLField("name"))));
+		_assertIntrospectionFieldLimitExceeded(
+			"query.__schema",
+			new GraphQLField(
+				"a: __schema",
+				new GraphQLField("queryType", new GraphQLField("name"))),
+			new GraphQLField(
+				"b: __schema",
+				new GraphQLField("queryType", new GraphQLField("name"))));
+
+		Assert.assertNotNull(
+			JSONUtil.getValueAsJSONArray(
+				_invoke(
+					new GraphQLField(
+						"__schema",
+						new GraphQLField(
+							"directives",
+							new GraphQLField("args", new GraphQLField("name"))),
+						new GraphQLField(
+							"types",
+							new GraphQLField(
+								"fields",
+								new GraphQLField(
+									"args", new GraphQLField("name"))))),
+					"query"),
+				"JSONObject/data", "JSONObject/__schema", "JSONArray/types"));
 	}
 
 	@Test
@@ -1054,6 +1143,25 @@ public class GraphQLServletTest {
 		}
 	}
 
+	private void _assertBatch(int size) throws Exception {
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
+			HTTPTestUtil.invokeToString(
+				_getBatchJSONArray(
+					size
+				).toString(),
+				"graphql", Http.Method.POST));
+
+		Assert.assertEquals(size, jsonArray.length());
+
+		for (int i = 0; i < size; i++) {
+			_assertEquals(
+				false, _testDTO1,
+				JSONUtil.getValueAsJSONObject(
+					jsonArray.getJSONObject(i), "JSONObject/data",
+					"JSONObject/testDTO1"));
+		}
+	}
+
 	private void _assertEquals(
 		boolean assertExtendedProperties, TestDTO1 expectedTestDTO1,
 		JSONObject jsonObject) {
@@ -1094,6 +1202,47 @@ public class GraphQLServletTest {
 			).toString(),
 			String.valueOf(_getJSONObject(fieldsJSONArray, operationName)),
 			JSONCompareMode.LENIENT);
+	}
+
+	private void _assertIntrospectionFieldLimitExceeded(
+			String fieldCoordinates, GraphQLField... graphQLFields)
+		throws Exception {
+
+		JSONObject jsonObject = _invoke(
+			new GraphQLField("query", graphQLFields));
+
+		Assert.assertNull(
+			JSONUtil.getValueAsJSONObject(jsonObject, "JSONObject/data"));
+		JSONAssert.assertEquals(
+			JSONUtil.put(
+				"extensions",
+				JSONUtil.put(
+					"code", "Bad Request"
+				).put(
+					"exception", JSONUtil.put("errno", 400)
+				)
+			).put(
+				"message", fieldCoordinates + " is present more than once"
+			).toString(),
+			JSONUtil.getValueAsString(
+				jsonObject, "JSONArray/errors", "Object/0"),
+			JSONCompareMode.LENIENT);
+	}
+
+	private JSONArray _getBatchJSONArray(int size) {
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		GraphQLField graphQLField = new GraphQLField(
+			"query",
+			new GraphQLField(
+				"testDTO1", new GraphQLField("id"), new GraphQLField("map"),
+				new GraphQLField("string")));
+
+		for (int i = 0; i < size; i++) {
+			jsonArray.put(JSONUtil.put("query", graphQLField.toString()));
+		}
+
+		return jsonArray;
 	}
 
 	private JSONObject _getContributedTestDTO1JSONObject() throws Exception {
@@ -1182,16 +1331,20 @@ public class GraphQLServletTest {
 		return false;
 	}
 
-	private JSONObject _invoke(GraphQLField graphQLField, String type)
+	private JSONObject _invoke(GraphQLField queryGraphQLField)
 		throws Exception {
-
-		GraphQLField queryGraphQLField = new GraphQLField(type, graphQLField);
 
 		return HTTPTestUtil.invokeToJSONObject(
 			JSONUtil.put(
 				"query", queryGraphQLField.toString()
 			).toString(),
 			"graphql", Http.Method.POST);
+	}
+
+	private JSONObject _invoke(GraphQLField graphQLField, String type)
+		throws Exception {
+
+		return _invoke(new GraphQLField(type, graphQLField));
 	}
 
 	private void _test(
@@ -1325,6 +1478,25 @@ public class GraphQLServletTest {
 		sb.append("}");
 
 		return sb.toString();
+	}
+
+	private void _withGraphQLBatchOperationLimit(
+			int graphQLBatchOperationLimit,
+			UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						"com.liferay.portal.vulcan.internal.configuration." +
+							"HeadlessAPICompanyConfiguration",
+						MapUtil.singletonDictionary(
+							"graphQLBatchOperationLimit",
+							graphQLBatchOperationLimit))) {
+
+			unsafeRunnable.run();
+		}
 	}
 
 	private static final String _FEATURE_FLAG_KEY = "GRAPHQL-123";
