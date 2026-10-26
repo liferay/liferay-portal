@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -337,6 +338,24 @@ public class ObjectFieldInfoFieldConverter {
 
 		return _objectDefinitionLocalService.fetchObjectDefinition(
 			objectRelationship.getObjectDefinitionId1());
+	}
+
+	private User _fetchUser(ServiceContext serviceContext) {
+		ThemeDisplay themeDisplay = serviceContext.getThemeDisplay();
+
+		if (themeDisplay == null) {
+			return _userLocalService.fetchUser(serviceContext.getUserId());
+		}
+
+		User user = themeDisplay.getUser();
+
+		if ((user != null) &&
+			(user.getUserId() == serviceContext.getUserId())) {
+
+			return user;
+		}
+
+		return _userLocalService.fetchUser(serviceContext.getUserId());
 	}
 
 	private String _getAcceptedFileExtensions(ObjectField objectField) {
@@ -683,7 +702,7 @@ public class ObjectFieldInfoFieldConverter {
 			return true;
 		}
 
-		User user = _userLocalService.fetchUser(serviceContext.getUserId());
+		User user = _fetchUser(serviceContext);
 
 		if ((user == null) || user.isGuestUser()) {
 			return true;
