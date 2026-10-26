@@ -6,6 +6,7 @@
 package com.liferay.portal.servlet;
 
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -15,10 +16,12 @@ import com.liferay.portal.kernel.model.PortletWrapper;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceWrapper;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.RequestDispatcherUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PrefsProps;
@@ -29,6 +32,7 @@ import com.liferay.portal.model.impl.PortletAppImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.tools.ToolDependencies;
 import com.liferay.portal.util.PortalImpl;
+import com.liferay.portlet.documentlibrary.constants.DLFriendlyURLConstants;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -393,6 +397,53 @@ public class ComboServletTest {
 			_pluginServletContext);
 	}
 
+	@NewEnv(type = NewEnv.Type.CLASSLOADER)
+	@Test
+	public void testServiceWithPrivateResource() throws Exception {
+		ReflectionTestUtil.setFieldValue(
+			PropsValues.class, "COMBO_ALLOWED_FILE_MAX_SIZE", 0);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		String path = StringBundler.concat(
+			DLFriendlyURLConstants.PATH_PREFIX_DOCUMENT,
+			RandomTestUtil.randomString(), StringPool.SLASH,
+			RandomTestUtil.randomString());
+
+		mockHttpServletRequest.setQueryString(path);
+
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
+		PortalCache<String, byte[][]> bytesArrayPortalCache =
+			ReflectionTestUtil.getFieldValue(
+				_comboServlet, "_bytesArrayPortalCache");
+
+		String key = "[" + path + "]#null";
+
+		Assert.assertNull(bytesArrayPortalCache.get(key));
+
+		String responseContent = RandomTestUtil.randomString();
+
+		try (SafeCloseable safeCloseable = _setUpHttpServletResponse(
+				HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE, ContentTypes.TEXT_CSS,
+				mockHttpServletResponse, responseContent)) {
+
+			_comboServlet.service(
+				mockHttpServletRequest, mockHttpServletResponse);
+
+			Assert.assertEquals(
+				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+			Assert.assertTrue(
+				mockHttpServletResponse.getContentAsString(
+				).contains(
+					responseContent
+				));
+			Assert.assertNull(bytesArrayPortalCache.get(key));
+		}
+	}
+
 	@Test
 	public void testServiceWithoutPortletIdButWithContext() throws Exception {
 		_testService(
@@ -461,13 +512,26 @@ public class ComboServletTest {
 	private SafeCloseable _setUpHttpServletResponse(
 		HttpServletResponse httpServletResponse, String content) {
 
+		return _setUpHttpServletResponse(
+			null, ContentTypes.TEXT_JAVASCRIPT, httpServletResponse, content);
+	}
+
+	private SafeCloseable _setUpHttpServletResponse(
+		String cacheControl, String contentType,
+		HttpServletResponse httpServletResponse, String content) {
+
 		MockedStatic<RequestDispatcherUtil> requestDispatcherUtilMockedStatic =
 			Mockito.mockStatic(RequestDispatcherUtil.class);
 
 		BufferCacheServletResponse bufferCacheServletResponse =
 			new BufferCacheServletResponse(httpServletResponse);
 
-		bufferCacheServletResponse.setContentType("text/javascript");
+		if (cacheControl != null) {
+			bufferCacheServletResponse.setHeader(
+				HttpHeaders.CACHE_CONTROL, cacheControl);
+		}
+
+		bufferCacheServletResponse.setContentType(contentType);
 		bufferCacheServletResponse.setString(content);
 		bufferCacheServletResponse.setStatus(HttpServletResponse.SC_OK);
 
