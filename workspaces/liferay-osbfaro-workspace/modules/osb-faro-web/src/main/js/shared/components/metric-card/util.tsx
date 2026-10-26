@@ -420,27 +420,6 @@ export const getMetricData = ({
 	};
 };
 
-export const getMetricsData = (
-	result: TMetricsResult,
-	metrics: Metric[],
-	rangeSelectors: Partial<RangeSelectors> = {},
-	chartDataMapFn: (...args: any[]) => any = getMetricsChartData,
-	interval: string = INTERVAL_KEY_MAP.day
-) =>
-	metrics.map(({compositeMetrics, name, title, tooltipTitle, type}) =>
-		getMetricData({
-			chartDataMapFn,
-			compositeMetrics,
-			interval,
-			name,
-			rangeSelectors,
-			result,
-			title,
-			tooltipTitle,
-			type,
-		})
-	);
-
 export const getSiteMetricsChartData = ({
 	compositeData,
 	histogram,
