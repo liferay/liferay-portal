@@ -538,6 +538,14 @@ public class PortalUtil {
 		return _portal.getCompany(httpServletRequest);
 	}
 
+	public static Company getCompany(
+			HttpServletRequest httpServletRequest,
+			boolean fallbackToDefaultCompany)
+		throws PortalException {
+
+		return _portal.getCompany(httpServletRequest, fallbackToDefaultCompany);
+	}
+
 	public static Company getCompany(PortletRequest portletRequest)
 		throws PortalException {
 

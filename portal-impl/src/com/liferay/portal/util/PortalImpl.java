@@ -1846,6 +1846,15 @@ public class PortalImpl implements Portal {
 	public Company getCompany(HttpServletRequest httpServletRequest)
 		throws PortalException {
 
+		return getCompany(httpServletRequest, true);
+	}
+
+	@Override
+	public Company getCompany(
+			HttpServletRequest httpServletRequest,
+			boolean fallbackToDefaultCompany)
+		throws PortalException {
+
 		long companyId = getCompanyId(httpServletRequest);
 
 		if (companyId <= 0) {
@@ -1862,11 +1871,20 @@ public class PortalImpl implements Portal {
 			company = CompanyLocalServiceUtil.fetchCompanyById(companyId);
 
 			if (company == null) {
+				if (!fallbackToDefaultCompany) {
+					return null;
+				}
+
 				company = CompanyLocalServiceUtil.getCompanyById(
 					PortalInstancePool.getDefaultCompanyId());
 			}
 
 			httpServletRequest.setAttribute(WebKeys.COMPANY, company);
+		}
+		else if (!fallbackToDefaultCompany &&
+				 (company.getCompanyId() != companyId)) {
+
+			return null;
 		}
 
 		return company;

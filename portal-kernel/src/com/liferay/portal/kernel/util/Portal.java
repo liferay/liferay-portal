@@ -420,6 +420,11 @@ public interface Portal {
 	public Company getCompany(HttpServletRequest httpServletRequest)
 		throws PortalException;
 
+	public Company getCompany(
+			HttpServletRequest httpServletRequest,
+			boolean fallbackToDefaultCompany)
+		throws PortalException;
+
 	public Company getCompany(PortletRequest portletRequest)
 		throws PortalException;
 
