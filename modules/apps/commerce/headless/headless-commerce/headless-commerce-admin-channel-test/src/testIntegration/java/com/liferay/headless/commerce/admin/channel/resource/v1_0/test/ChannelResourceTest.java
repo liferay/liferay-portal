@@ -95,6 +95,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		super.testPutChannel();
 
 		_testPutChannelWithAccountExternalReferenceCode();
+		_testPutChannelWithoutSiteGroupId();
 	}
 
 	@Override
@@ -107,7 +108,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 	@Override
 	protected String[] getAdditionalAssertFieldNames() {
-		return new String[] {"currencyCode", "name", "type"};
+		return new String[] {"currencyCode", "name", "siteGroupId", "type"};
 	}
 
 	@Override
@@ -142,6 +143,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
+				siteGroupId = RandomTestUtil.randomLong();
 				type = CommerceChannelConstants.CHANNEL_TYPE_SITE;
 			}
 		};
@@ -530,6 +532,19 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		Assert.assertEquals(
 			accountEntry.getExternalReferenceCode(),
 			getChannel.getAccountExternalReferenceCode());
+	}
+
+	private void _testPutChannelWithoutSiteGroupId() throws Exception {
+		Channel postChannel = testPutChannel_addChannel();
+
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setSiteGroupId((Long)null);
+
+		Channel putChannel = channelResource.putChannel(
+			postChannel.getId(), randomChannel);
+
+		Assert.assertEquals(0, GetterUtil.getLong(putChannel.getSiteGroupId()));
 	}
 
 	private Channel _toChannel(CommerceChannel commerceChannel) {
