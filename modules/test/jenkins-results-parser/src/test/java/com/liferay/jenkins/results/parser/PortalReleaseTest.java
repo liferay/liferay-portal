@@ -101,6 +101,9 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		_testGetPortalVersion(
 			"2026.q2.3", "liferay-dxp-tomcat-2026.q2.3-1780905368.7z");
 		_testGetPortalVersion(
+			"2026.q4.0",
+			"liferay-cms-tomcat-2026.q4.0-cms-standalone-1792785628.7z");
+		_testGetPortalVersion(
 			"7.0.10.17-sp17",
 			"liferay-dxp-digital-enterprise-tomcat-7.0.10.17-sp17.7z");
 		_testGetPortalVersion(
@@ -127,14 +130,19 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z",
 			true);
 		_testGetStandaloneBuildProfile(
-			"foo-standalone",
-			"liferay-dxp-tomcat-7.4.13-u154-foo-standalone-1791273379.zip",
-			true);
-		_testGetStandaloneBuildProfile(
 			null, "liferay-dxp-tomcat-7.4.13-u154-1791054167.7z", true);
 		_testGetStandaloneBuildProfile(
 			null, "liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.7z",
 			false);
+
+		String productName = RandomTestUtil.randomLowerCaseString();
+
+		_testGetStandaloneBuildProfile(
+			productName + "-standalone",
+			JenkinsResultsParserUtil.combine(
+				"liferay-", productName, "-tomcat-7.4.13-u154-", productName,
+				"-standalone-1791273379.zip"),
+			true);
 	}
 
 	@Test
@@ -195,6 +203,14 @@ public class PortalReleaseTest extends com.liferay.jenkins.results.parser.Test {
 		_testIsStandaloneBundleURL(
 			true,
 			"liferay-dxp-tomcat-7.4.13-u154-cms-standalone-1791273379.zip");
+
+		String productName = RandomTestUtil.randomLowerCaseString();
+
+		_testIsStandaloneBundleURL(
+			true,
+			JenkinsResultsParserUtil.combine(
+				"liferay-", productName, "-tomcat-7.4.13-u154-", productName,
+				"-standalone-1791273379.zip"));
 	}
 
 	@Test

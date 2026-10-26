@@ -25,6 +25,16 @@ public class RandomTestUtil {
 		return _random.nextLong();
 	}
 
+	public static String randomLowerCaseString() {
+		StringBuilder sb = new StringBuilder(10);
+
+		for (int i = 0; i < 10; i++) {
+			sb.append((char)('a' + _random.nextInt(26)));
+		}
+
+		return sb.toString();
+	}
+
 	public static String randomSHA() {
 		StringBuilder sb = new StringBuilder(40);
 
