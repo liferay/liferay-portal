@@ -108,17 +108,12 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 
 		Layout layout = themeDisplay.getLayout();
 
-		try {
-			if (!_hasGuestViewPermission(layout) && !layout.isPrivateLayout()) {
-				sb.append("<span class=\"sr-only\">");
-				sb.append(_language.get(httpServletRequest, "restricted-page"));
-				sb.append("</span>");
-			}
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
+		boolean restrictedPage = _isRestrictedPage(layout);
+
+		if (restrictedPage) {
+			sb.append("<span class=\"sr-only\">");
+			sb.append(_language.get(httpServletRequest, "restricted-page"));
+			sb.append("</span>");
 		}
 
 		sb.append("</h1>");
@@ -132,40 +127,35 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 
 		sb.append("</span>");
 
-		try {
-			if (layout.isDraftLayout()) {
-				layout = _layoutLocalService.fetchLayout(layout.getClassPK());
-			}
+		if (layout.isDraftLayout()) {
+			layout = _layoutLocalService.fetchLayout(layout.getClassPK());
 
-			if (!_hasGuestViewPermission(layout) && !layout.isPrivateLayout()) {
-				sb.append("<span class=\"align-items-center c-ml-3 d-flex ");
-				sb.append("lfr-portal-tooltip text-white\" title=\"");
-				sb.append(_language.get(httpServletRequest, "restricted-page"));
-				sb.append("\">");
-
-				IconTag iconTag = new IconTag();
-
-				iconTag.setCssClass("c-mt-0");
-				iconTag.setSymbol("password-policies");
-
-				try {
-					sb.append(
-						iconTag.doTagAsString(
-							httpServletRequest, httpServletResponse));
-				}
-				catch (JspException jspException) {
-					if (_log.isDebugEnabled()) {
-						_log.debug(jspException);
-					}
-				}
-
-				sb.append("</span>");
-			}
+			restrictedPage = _isRestrictedPage(layout);
 		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
+
+		if (restrictedPage) {
+			sb.append("<span class=\"align-items-center c-ml-3 d-flex ");
+			sb.append("lfr-portal-tooltip text-white\" title=\"");
+			sb.append(_language.get(httpServletRequest, "restricted-page"));
+			sb.append("\">");
+
+			IconTag iconTag = new IconTag();
+
+			iconTag.setCssClass("c-mt-0");
+			iconTag.setSymbol("password-policies");
+
+			try {
+				sb.append(
+					iconTag.doTagAsString(
+						httpServletRequest, httpServletResponse));
 			}
+			catch (JspException jspException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(jspException);
+				}
+			}
+
+			sb.append("</span>");
 		}
 
 		if (_isDraftLayout(httpServletRequest)) {
@@ -346,6 +336,21 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 		}
 
 		return true;
+	}
+
+	private boolean _isRestrictedPage(Layout layout) {
+		try {
+			if (!_hasGuestViewPermission(layout) && !layout.isPrivateLayout()) {
+				return true;
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
