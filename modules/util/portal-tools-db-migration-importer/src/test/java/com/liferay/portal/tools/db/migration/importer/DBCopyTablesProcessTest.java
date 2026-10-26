@@ -30,6 +30,8 @@ public class DBCopyTablesProcessTest {
 	@TestInfo("LPD-110097")
 	public void testGetPostgreSQLColumnType() {
 		_testGetPostgreSQLColumnType(0, Types.NUMERIC, 0, "numeric");
+		_testGetPostgreSQLColumnType(1, Types.NUMERIC, 0, "numeric(1, 0)");
+		_testGetPostgreSQLColumnType(10, Types.DECIMAL, 0, "numeric(10, 0)");
 		_testGetPostgreSQLColumnType(10, Types.DECIMAL, 2, "decimal(30, 16)");
 		_testGetPostgreSQLColumnType(20, Types.DECIMAL, -2, "numeric");
 		_testGetPostgreSQLColumnType(20, Types.DECIMAL, 18, "numeric(20, 18)");

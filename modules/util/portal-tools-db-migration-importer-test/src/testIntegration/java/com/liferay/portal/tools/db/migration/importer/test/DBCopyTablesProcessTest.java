@@ -206,31 +206,7 @@ public class DBCopyTablesProcessTest {
 	@Test
 	@TestInfo("LPD-110097")
 	public void testRunWithIncludeCustomSchema() throws Exception {
-		_createTable(
-			"create table TestTable (id INTEGER, charColumn CHAR(10), " +
-				"longColumn LONG, testColumn VARCHAR(75))",
-			"create table TestTable (id INTEGER, testColumn VARCHAR(75))");
-
-		_insertValues(RandomTestUtil.randomStrings(_TABLE_SIZE));
-
-		String charColumnValue = RandomTestUtil.randomString(10);
-		long longColumnValue = RandomTestUtil.randomLong();
-
-		_sourceDB.runSQL(
-			StringBundler.concat(
-				"update TestTable set charColumn = '", charColumnValue,
-				"', longColumn = ", longColumnValue));
-
-		new DBCopyTablesProcess(
-			true, InfrastructureUtil.getDataSource(), _targetDataSource
-		).run();
-
-		_assertValues(
-			"charColumn", value -> charColumnValue, new Object[_TABLE_SIZE],
-			Function.identity());
-		_assertValues(
-			"longColumn", value -> longColumnValue, new Object[_TABLE_SIZE],
-			GetterUtil::getLong);
+		_testRunWithIncludeCustomSchema();
 	}
 
 	@Test
@@ -253,6 +229,40 @@ public class DBCopyTablesProcessTest {
 		}
 		catch (PortalException portalException) {
 			Assert.assertEquals("Invalid type 1", portalException.getMessage());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110097")
+	public void testRunWithIncludeCustomSchemaInPartition() throws Exception {
+		String partitionName = "test" + RandomTestUtil.randomInt();
+
+		try (Connection connection = _targetDataSource.getConnection()) {
+			_targetDB.runSQL(connection, "create schema " + partitionName);
+		}
+
+		DataSource targetDataSource = _targetDataSource;
+
+		_targetDataSource = DataSourceFactoryUtil.initDataSource(
+			System.getProperty("database.postgresql.driver"),
+			System.getProperty("database.postgresql.url") + "?currentSchema=" +
+				partitionName,
+			System.getProperty("database.postgresql.username"),
+			System.getProperty("database.postgresql.password"),
+			StringPool.BLANK);
+
+		try {
+			_testRunWithIncludeCustomSchema();
+		}
+		finally {
+			DataSourceFactoryUtil.destroyDataSource(_targetDataSource);
+
+			_targetDataSource = targetDataSource;
+
+			try (Connection connection = _targetDataSource.getConnection()) {
+				_targetDB.runSQL(
+					connection, "drop schema " + partitionName + " cascade");
+			}
 		}
 	}
 
@@ -309,6 +319,27 @@ public class DBCopyTablesProcessTest {
 		_testColumnTypeOf(
 			Function.identity(), Function.identity(), "VARCHAR(10)",
 			() -> RandomTestUtil.randomString(10));
+	}
+
+	private void _assertColumnType(String columnName, String expectedColumnType)
+		throws Exception {
+
+		try (Connection connection = _targetDataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select format_type(atttypid, atttypmod) as columnType from " +
+					"pg_attribute where attrelid = ?::regclass and attname = " +
+						"?")) {
+
+			preparedStatement.setString(1, _targetTableName);
+			preparedStatement.setString(2, StringUtil.toLowerCase(columnName));
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+				Assert.assertEquals(
+					expectedColumnType, resultSet.getString("columnType"));
+			}
+		}
 	}
 
 	private void _assertValues(
@@ -431,6 +462,43 @@ public class DBCopyTablesProcessTest {
 		_copyTable();
 
 		_assertValues("testColumn", expectedFunction, values, getFunction);
+	}
+
+	private void _testRunWithIncludeCustomSchema() throws Exception {
+		_createTable(
+			"create table TestTable (id INTEGER, charColumn CHAR(10), " +
+				"longColumn LONG, testColumn VARCHAR(75))",
+			"create table TestTable (id INTEGER, testColumn VARCHAR(75))");
+
+		_insertValues(RandomTestUtil.randomStrings(_TABLE_SIZE));
+
+		String charColumnValue = RandomTestUtil.randomString(10);
+		long longColumnValue = RandomTestUtil.randomLong();
+
+		_sourceDB.runSQL(
+			StringBundler.concat(
+				"update TestTable set charColumn = '", charColumnValue,
+				"', longColumn = ", longColumnValue));
+
+		new DBCopyTablesProcess(
+			true, InfrastructureUtil.getDataSource(), _targetDataSource
+		).run();
+
+		_assertValues(
+			"charColumn", value -> charColumnValue, new Object[_TABLE_SIZE],
+			Function.identity());
+		_assertValues(
+			"longColumn", value -> longColumnValue, new Object[_TABLE_SIZE],
+			GetterUtil::getLong);
+
+		_assertColumnType("charColumn", "text");
+
+		if (_sourceDB.getDBType() == DBType.ORACLE) {
+			_assertColumnType("longColumn", "numeric(30,0)");
+		}
+		else {
+			_assertColumnType("longColumn", "bigint");
+		}
 	}
 
 	private static final int _TABLE_SIZE = 5000;
