@@ -60,45 +60,32 @@ export default async function checkProjects(projectDirs) {
  * @return {Promise<boolean>}
  */
 async function checkProject(projectDir, errors) {
-	let configPath;
+	const configPaths = [];
 
 	if (await fileExists(path.join(projectDir, SRC_TSCONFIG_PATH))) {
-		configPath = path.join(
-			'src',
-			'main',
-			'resources',
-			'META-INF',
-			'resources',
-			'tsconfig.json'
-		);
+		configPaths.push(SRC_TSCONFIG_PATH);
 	}
 	else if (await fileExists(path.join(projectDir, 'tsconfig.json'))) {
-		configPath = 'tsconfig.json';
-	}
-	else {
-		return true;
+		configPaths.push('tsconfig.json');
 	}
 
-	const {all} = await $({
-		all: true,
-		cwd: projectDir,
-		reject: false,
-		stdout: 'pipe',
-	})`${TSC_PATH} -b ${configPath}`;
+	const testConfigPath = path.join('test', 'tsconfig.json');
 
-	let output = all;
+	if (await fileExists(path.join(projectDir, testConfigPath))) {
+		configPaths.push(testConfigPath);
+	}
 
-	const testConfigPath = path.join(projectDir, 'test', 'tsconfig.json');
+	let output = '';
 
-	if (await fileExists(testConfigPath)) {
-		const {all: testAll} = await $({
+	for (const configPath of configPaths) {
+		const {all} = await $({
 			all: true,
 			cwd: projectDir,
 			reject: false,
 			stdout: 'pipe',
-		})`${TSC_PATH} -b ${testConfigPath}`;
+		})`${TSC_PATH} -b ${configPath}`;
 
-		output += '\n' + testAll;
+		output += '\n' + all;
 	}
 
 	output = output.trim();
