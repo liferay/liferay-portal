@@ -438,6 +438,37 @@ public class CompanyLocalServiceDBPartitionTest
 					exportedWebId);
 			}
 
+			String invalidVirtualHostname = "-" + exportedVirtualHostname;
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"update ",
+							DBPartitionUtil.getExportedPartitionName(
+								company.getCompanyId()),
+							".VirtualHost set hostname = ? where companyId = ",
+							"? and layoutSetId = 0 and defaultVirtualHost = ",
+							"?"))) {
+
+				preparedStatement.setString(1, invalidVirtualHostname);
+				preparedStatement.setLong(2, company.getCompanyId());
+				preparedStatement.setBoolean(3, true);
+
+				preparedStatement.executeUpdate();
+			}
+
+			try {
+				companyLocalService.addDBPartitionCompany(
+					company.getCompanyId(), name, null, webId);
+
+				Assert.fail();
+			}
+			catch (CompanyVirtualHostException companyVirtualHostException) {
+				_assertExportedCompanyNotUpdated(
+					company.getCompanyId(), invalidVirtualHostname,
+					exportedWebId);
+			}
+
 			List<String> pids = new CopyOnWriteArrayList<>();
 
 			ServiceRegistration<ManagedServiceFactory> serviceRegistration =
