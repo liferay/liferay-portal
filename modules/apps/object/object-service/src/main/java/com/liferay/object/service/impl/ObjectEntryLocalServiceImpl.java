@@ -1791,6 +1791,8 @@ public class ObjectEntryLocalServiceImpl
 		if (!objectDefinition.isUnmodifiableSystemObject()) {
 			ObjectEntry objectEntry = getObjectEntry(primaryKey);
 
+			objectEntry.setObjectDefinition(objectDefinition);
+
 			return objectEntry.getTitleValue();
 		}
 
