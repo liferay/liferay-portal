@@ -345,7 +345,9 @@ public class JournalArticleAssetRenderer
 			ThemeDisplay themeDisplay, String noSuchEntryRedirect)
 		throws PortalException {
 
-		if (!_isShowDisplayPage(themeDisplay.getScopeGroupId(), _article)) {
+		if (!_isShowDisplayPage(
+				_getDisplayPageGroupId(themeDisplay), _article)) {
+
 			return _getHitLayoutURL(noSuchEntryRedirect, themeDisplay);
 		}
 
@@ -574,6 +576,16 @@ public class JournalArticleAssetRenderer
 		}
 
 		return layout;
+	}
+
+	private long _getDisplayPageGroupId(ThemeDisplay themeDisplay) {
+		Group group = GroupLocalServiceUtil.fetchGroup(_article.getGroupId());
+
+		if ((group == null) || group.isCompany() || group.isDepot()) {
+			return themeDisplay.getScopeGroupId();
+		}
+
+		return group.getGroupId();
 	}
 
 	private String _getHitLayoutURL(
