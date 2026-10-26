@@ -80,7 +80,7 @@ public class GetLayoutActionsMVCResourceCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPS-132422")
+	@TestInfo({"LPD-110311", "LPS-132422"})
 	public void testGetActionDropdownItems() throws Exception {
 		_assertActionDropdownItems(
 			_layout.getPlid(), "Edit", "Translate", "View", "Preview Draft",
@@ -90,60 +90,9 @@ public class GetLayoutActionsMVCResourceCommandTest {
 		Layout layout = LayoutTestUtil.addTypeEmptyLayout(_group);
 
 		_assertActionDropdownItems(layout.getPlid(), "Edit", "Delete");
-	}
 
-	@Test
-	@TestInfo("LPD-110311")
-	public void testGetActionDropdownItemsWithLayoutPortlet() throws Exception {
-		Layout draftLayout = _layout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.addPortletToLayout(
-			draftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, _layout);
-
-		_layout = _layoutLocalService.getLayout(_layout.getPlid());
-
-		Assert.assertNotNull(
-			_portletPreferencesLocalService.fetchPortletPreferences(
-				PortletKeys.PREFS_OWNER_ID_DEFAULT,
-				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-				_getPortletId(_layout)));
-
-		_assertNoOrphanWidgetsActionDropdownItem(_layout.getPlid());
-	}
-
-	@Test
-	@TestInfo("LPD-110311")
-	public void testGetActionDropdownItemsWithMasterLayoutPortlet()
-		throws Exception {
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		Layout masterLayout = _layoutLocalService.getLayout(
-			masterLayoutPageTemplateEntry.getPlid());
-
-		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.addPortletToLayout(
-			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
-
-		_layout = LayoutTestUtil.addTypeContentLayout(
-			_group, false, false,
-			masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		_portletPreferencesLocalService.addPortletPreferences(
-			_layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
-			_getPortletId(masterLayout), null, null);
-
-		_assertNoOrphanWidgetsActionDropdownItem(_layout.getPlid());
+		_testGetActionDropdownItemsWithLayoutPortlet();
+		_testGetActionDropdownItemsWithMasterLayoutPortlet();
 	}
 
 	private void _assertActionDropdownItems(long plid, String... actions)
@@ -282,6 +231,58 @@ public class GetLayoutActionsMVCResourceCommandTest {
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private void _testGetActionDropdownItemsWithLayoutPortlet()
+		throws Exception {
+
+		Layout draftLayout = _layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addPortletToLayout(
+			draftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, _layout);
+
+		_layout = _layoutLocalService.getLayout(_layout.getPlid());
+
+		Assert.assertNotNull(
+			_portletPreferencesLocalService.fetchPortletPreferences(
+				PortletKeys.PREFS_OWNER_ID_DEFAULT,
+				PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+				_getPortletId(_layout)));
+
+		_assertNoOrphanWidgetsActionDropdownItem(_layout.getPlid());
+	}
+
+	private void _testGetActionDropdownItemsWithMasterLayoutPortlet()
+		throws Exception {
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout masterLayout = _layoutLocalService.getLayout(
+			masterLayoutPageTemplateEntry.getPlid());
+
+		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addPortletToLayout(
+			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
+
+		_layout = LayoutTestUtil.addTypeContentLayout(
+			_group, false, false,
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		_portletPreferencesLocalService.addPortletPreferences(
+			_layout.getCompanyId(), PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, _layout.getPlid(),
+			_getPortletId(masterLayout), null, null);
+
+		_assertNoOrphanWidgetsActionDropdownItem(_layout.getPlid());
 	}
 
 	@Inject
