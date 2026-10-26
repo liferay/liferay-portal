@@ -92,13 +92,16 @@ public class ExportImportTaskUtil {
 			Http.Method method, Map<String, String> parameters)
 		throws Exception {
 
-		ImportTask importTask = ImportTaskSerDes.toDTO(
-			HTTPTestUtil.invokeToString(
-				body,
-				StringBundler.concat(
-					"headless-batch-engine/v1.0/import-task/", className,
-					_getQueryString(parameters)),
-				method));
+		String json = HTTPTestUtil.invokeToString(
+			body,
+			StringBundler.concat(
+				"headless-batch-engine/v1.0/import-task/", className,
+				_getQueryString(parameters)),
+			method);
+
+		ImportTask importTask = ImportTaskSerDes.toDTO(json);
+
+		Assert.assertNotNull(json, importTask.getExternalReferenceCode());
 
 		while (true) {
 			importTask = ImportTaskSerDes.toDTO(
