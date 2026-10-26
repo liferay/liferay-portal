@@ -407,6 +407,8 @@ definition {
 
 		var attributes = FileUtil.read(${wifCredentialsFile});
 
+		var attributes = StringUtil.regexReplaceAll(${attributes}, "[\r\n]", "");
+
 		return ${attributes};
 	}
 
