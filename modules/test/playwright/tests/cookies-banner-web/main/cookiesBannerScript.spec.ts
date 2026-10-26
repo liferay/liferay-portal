@@ -75,7 +75,7 @@ test(
 			await page.goto('/');
 
 			await page
-				.locator('div[role="dialog"][aria-modal="true"]')
+				.locator('div[role="region"].cookies-banner')
 				.waitFor({state: 'visible'});
 
 			const acceptAll = page.getByRole('button', {name: 'Accept All'});

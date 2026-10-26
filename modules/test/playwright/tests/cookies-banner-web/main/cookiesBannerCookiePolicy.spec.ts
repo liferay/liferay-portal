@@ -60,11 +60,11 @@ test('LPD-30561 Cookie Banner Cookie Policy Page', async ({
 		await page.goto('/');
 
 		await page
-			.locator('div[role="dialog"][aria-modal="true"]')
+			.locator('div[role="region"].cookies-banner')
 			.waitFor({state: 'visible'});
 
 		const cookiesBannerContainer = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
+			'div[role="region"].cookies-banner'
 		);
 
 		await expect(cookiesBannerContainer).toBeVisible();
@@ -120,9 +120,7 @@ test(
 			});
 		});
 
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		// Accept All cookies so the Cookies Banner doesn't break the test
 
@@ -207,7 +205,7 @@ test(
 				await guestPage.goto('/');
 
 				const cookiesBannerContainer = guestPage.locator(
-					'div[role="dialog"][aria-modal="true"]'
+					'div[role="region"].cookies-banner'
 				);
 
 				await expect(cookiesBannerContainer).toBeVisible();

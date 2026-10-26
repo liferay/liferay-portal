@@ -8,6 +8,7 @@ import {expect, mergeTests} from '@playwright/test';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {
 	clearConsentCookies,
 	resetConsentManagerConfiguration,
@@ -26,49 +27,90 @@ test.afterEach(async ({systemSettingsPage}) => {
 	});
 });
 
-test('LPD-30822 Cookie Banner Accessibility', async ({page}) => {
-	await test.step('Enable Third Party Cookies', async () => {
-		await updateConsentManagerConfiguration(page, {
-			enabled: true,
-			forceReload: true,
+test(
+	'LPD-30822 Cookie Banner Accessibility',
+	{tag: '@LPD-111751'},
+	async ({page}) => {
+		await test.step('Enable Third Party Cookies', async () => {
+			await updateConsentManagerConfiguration(page, {
+				enabled: true,
+				forceReload: true,
+			});
 		});
-	});
-
-	await test.step('Check role, aria-modal, aria-labelledby, heading and paragraph', async () => {
-		await page.goto('/');
 
 		const cookiesBannerContainer = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
+			'div[role="region"].cookies-banner'
 		);
 
-		await cookiesBannerContainer.waitFor({state: 'visible'});
+		await test.step('Check role, aria-labelledby, heading and paragraph', async () => {
+			await page.goto('/');
 
-		await expect(cookiesBannerContainer).toBeVisible();
+			await cookiesBannerContainer.waitFor({state: 'visible'});
 
-		await expect(cookiesBannerContainer).toHaveAttribute(
-			'aria-modal',
-			'true'
-		);
-		await expect(cookiesBannerContainer).toHaveAttribute('aria-labelledby');
-		await expect(cookiesBannerContainer).not.toHaveAttribute('aria-label');
+			await expect(cookiesBannerContainer).toBeVisible();
 
-		const bannerTitle = cookiesBannerContainer.locator('h2');
+			await expect(cookiesBannerContainer).not.toHaveAttribute(
+				'aria-label'
+			);
+			await expect(cookiesBannerContainer).toHaveAttribute(
+				'aria-labelledby'
+			);
+			await expect(cookiesBannerContainer).not.toHaveAttribute(
+				'aria-modal'
+			);
 
-		await expect(bannerTitle).toBeVisible();
-
-		const paragraph = cookiesBannerContainer.locator('p.mb-0');
-
-		await expect(paragraph).toBeVisible();
-	});
-
-	await test.step('Run axe accessibility check on banner', async () => {
-		await checkAccessibility({
-			page,
-			selectors: ['div[role="dialog"][aria-modal="true"]'],
-			soft: false,
+			await expect(cookiesBannerContainer.locator('h2')).toBeVisible();
+			await expect(
+				cookiesBannerContainer.locator('p.mb-0')
+			).toBeVisible();
 		});
-	});
-});
+
+		await test.step('Run axe accessibility check on banner', async () => {
+			await checkAccessibility({
+				page,
+				selectors: ['div[role="region"].cookies-banner'],
+				soft: false,
+			});
+		});
+
+		await test.step('Check the banner follows the skip link in the focus order', async () => {
+			await page.keyboard.press('Tab');
+
+			await expect(
+				page.getByRole('link', {name: 'Skip to Main Content'})
+			).toBeFocused();
+
+			await page.keyboard.press('Tab');
+
+			await expect(
+				cookiesBannerContainer.getByRole('link')
+			).toBeFocused();
+		});
+
+		await test.step('Check the banner reserves its height as scroll padding', async () => {
+			const bannerHeight = await cookiesBannerContainer.evaluate(
+				(element: HTMLElement) => element.offsetHeight
+			);
+
+			await expect(page.locator('html')).toHaveCSS(
+				'scroll-padding-bottom',
+				`${bannerHeight}px`
+			);
+
+			await clickAndExpectToBeHidden({
+				target: cookiesBannerContainer,
+				trigger: cookiesBannerContainer.getByRole('button', {
+					name: 'Accept All',
+				}),
+			});
+
+			await expect(page.locator('html')).toHaveCSS(
+				'scroll-padding-bottom',
+				'auto'
+			);
+		});
+	}
+);
 
 test('LPD-67788 Cookie Panel toggle switches have aria-labels', async ({
 	page,
@@ -84,7 +126,7 @@ test('LPD-67788 Cookie Panel toggle switches have aria-labels', async ({
 		await page.goto('/');
 
 		await page
-			.locator('div[role="dialog"][aria-modal="true"]')
+			.locator('div[role="region"].cookies-banner')
 			.waitFor({state: 'visible'});
 
 		const configButton = page.getByRole('button', {name: 'Configuration'});

@@ -70,9 +70,7 @@ test.beforeEach(async ({page}) => {
 	});
 
 	await test.step('Verify Cookies Banner appears, then Accept All cookies', async () => {
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		await expect(cookiesBanner).toBeVisible();
 
@@ -140,7 +138,7 @@ test(
 			await performLogin(newUserPage, userAccount.alternateName);
 
 			await newUserPage
-				.locator('div[role="dialog"][aria-modal="true"]')
+				.locator('div[role="region"].cookies-banner')
 				.waitFor();
 
 			await newUserPage.getByLabel('Store Consent').setChecked(true);
@@ -158,7 +156,7 @@ test(
 			).toBeVisible();
 
 			await expect(
-				newUserPage.locator('div[role="dialog"][aria-modal="true"]')
+				newUserPage.locator('div[role="region"].cookies-banner')
 			).toBeVisible();
 
 			await newUserPage
@@ -170,7 +168,7 @@ test(
 			await performLogin(newUserPage, userAccount.alternateName);
 
 			await expect(
-				newUserPage.locator('div[role="dialog"][aria-modal="true"]')
+				newUserPage.locator('div[role="region"].cookies-banner')
 			).not.toBeVisible();
 
 			await newUserPage.reload();
@@ -231,7 +229,7 @@ test(
 			).toBeVisible();
 
 			await expect(
-				newUserPage.locator('div[role="dialog"][aria-modal="true"]')
+				newUserPage.locator('div[role="region"].cookies-banner')
 			).toBeVisible();
 
 			await newUserPage.getByRole('button', {name: 'Accept All'}).click();
@@ -241,7 +239,7 @@ test(
 			await performLogin(newUserPage, userAccount.alternateName);
 
 			await expect(
-				newUserPage.locator('div[role="dialog"][aria-modal="true"]')
+				newUserPage.locator('div[role="region"].cookies-banner')
 			).not.toBeVisible();
 
 			const cookies = await newUserPage.context().cookies();
@@ -327,7 +325,7 @@ test(
 			await performLogin(newUserPage, userAccount.alternateName);
 
 			await newUserPage
-				.locator('div[role="dialog"][aria-modal="true"]')
+				.locator('div[role="region"].cookies-banner')
 				.waitFor();
 
 			await newUserPage.getByLabel('Store Consent').setChecked(true);
@@ -345,7 +343,7 @@ test(
 			).toBeVisible();
 
 			await expect(
-				newUserPage.locator('div[role="dialog"][aria-modal="true"]')
+				newUserPage.locator('div[role="region"].cookies-banner')
 			).toBeVisible();
 
 			const cookies = await newUserPage.context().cookies();
@@ -363,7 +361,7 @@ test(
 			await performLogin(newUserPage, userAccount.alternateName);
 
 			await expect(
-				newUserPage.locator('div[role="dialog"][aria-modal="true"]')
+				newUserPage.locator('div[role="region"].cookies-banner')
 			).not.toBeVisible();
 
 			const cookies = await newUserPage.context().cookies();
@@ -398,7 +396,7 @@ test(
 			await page.goto('/');
 
 			const cookiesBanner = page.locator(
-				'div[role="dialog"][aria-modal="true"]'
+				'div[role="region"].cookies-banner'
 			);
 
 			await cookiesBanner.waitFor();
@@ -465,9 +463,7 @@ test(
 			await clearConsentCookies(page);
 		});
 
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		await test.step('Accept all consent preference cookies without storing consent', async () => {
 			await page.goto('/');
@@ -502,9 +498,7 @@ test(
 			await clearConsentCookies(page);
 		});
 
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		await test.step('Accept all consent preference cookies and store consent', async () => {
 			await page.goto('/');
@@ -563,7 +557,7 @@ test(
 			await performLogin(newUserPage, userAccount.alternateName);
 
 			await newUserPage
-				.locator('div[role="dialog"][aria-modal="true"]')
+				.locator('div[role="region"].cookies-banner')
 				.waitFor();
 
 			await newUserPage.getByLabel('Store Consent').setChecked(true);
@@ -612,9 +606,7 @@ test(
 			await clearConsentCookies(page);
 		});
 
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		await test.step('Accept all consent preference cookies and store consent', async () => {
 			await page.goto('/');
