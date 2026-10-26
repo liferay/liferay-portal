@@ -140,7 +140,6 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 			ActionableDynamicQuery actionableDynamicQuery =
 				_fragmentEntryLinkLocalService.getActionableDynamicQuery();
 
-			actionableDynamicQuery.setCompanyId(companyId);
 			actionableDynamicQuery.setAddCriteriaMethod(
 				dynamicQuery -> {
 					Property rendererKeyProperty = PropertyFactoryUtil.forName(
@@ -150,6 +149,7 @@ public class PropagateContributedFragmentEntriesChangesMVCActionCommand
 						rendererKeyProperty.eq(
 							fragmentEntry.getFragmentEntryKey()));
 				});
+			actionableDynamicQuery.setCompanyId(companyId);
 			actionableDynamicQuery.setPerformActionMethod(
 				(FragmentEntryLink fragmentEntryLink) ->
 					_fragmentEntryLinkLocalService.updateLatestChanges(
