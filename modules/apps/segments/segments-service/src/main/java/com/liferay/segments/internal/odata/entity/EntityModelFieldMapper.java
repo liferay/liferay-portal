@@ -90,48 +90,11 @@ public class EntityModelFieldMapper {
 
 		entityFieldsMap.forEach(
 			(entityFieldName, entityField) -> fields.addAll(
-				getFields(entityModel, entityField, portletRequest)));
+				_getFields(entityModel, entityField, portletRequest)));
 
 		Collections.sort(fields);
 
 		return fields;
-	}
-
-	protected List<Field> getFields(
-		EntityModel entityModel, EntityField entityField,
-		PortletRequest portletRequest) {
-
-		Locale locale = _portal.getLocale(portletRequest);
-
-		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
-			locale, getClass());
-
-		EntityField.Type entityFieldType = entityField.getType();
-
-		if (entityFieldType == EntityField.Type.COMPLEX) {
-			ComplexEntityField complexEntityField =
-				(ComplexEntityField)entityField;
-
-			return _getComplexFields(
-				entityModel.getName(), entityField.getName(),
-				complexEntityField.getEntityFieldsMap(), locale, portletRequest,
-				resourceBundle);
-		}
-
-		SegmentsFieldCustomizer segmentsFieldCustomizer =
-			_segmentsFieldCustomizerRegistry.getSegmentsFieldCustomizer(
-				entityModel.getName(), entityField.getName());
-
-		if ((entityFieldType == EntityField.Type.ID) &&
-			(segmentsFieldCustomizer == null)) {
-
-			return Collections.emptyList();
-		}
-
-		return Collections.singletonList(
-			_getField(
-				entityField.getName(), _getType(entityField.getType()),
-				portletRequest, resourceBundle, segmentsFieldCustomizer));
 	}
 
 	private List<Field> _getComplexFields(
@@ -270,6 +233,43 @@ public class EntityModelFieldMapper {
 			resourceBundle, "field." + CamelCaseUtil.fromCamelCase(fieldName));
 
 		return new Field(fieldName, fieldLabel, fieldType);
+	}
+
+	private List<Field> _getFields(
+		EntityModel entityModel, EntityField entityField,
+		PortletRequest portletRequest) {
+
+		Locale locale = _portal.getLocale(portletRequest);
+
+		ResourceBundle resourceBundle = ResourceBundleUtil.getBundle(
+			locale, getClass());
+
+		EntityField.Type entityFieldType = entityField.getType();
+
+		if (entityFieldType == EntityField.Type.COMPLEX) {
+			ComplexEntityField complexEntityField =
+				(ComplexEntityField)entityField;
+
+			return _getComplexFields(
+				entityModel.getName(), entityField.getName(),
+				complexEntityField.getEntityFieldsMap(), locale, portletRequest,
+				resourceBundle);
+		}
+
+		SegmentsFieldCustomizer segmentsFieldCustomizer =
+			_segmentsFieldCustomizerRegistry.getSegmentsFieldCustomizer(
+				entityModel.getName(), entityField.getName());
+
+		if ((entityFieldType == EntityField.Type.ID) &&
+			(segmentsFieldCustomizer == null)) {
+
+			return Collections.emptyList();
+		}
+
+		return Collections.singletonList(
+			_getField(
+				entityField.getName(), _getType(entityField.getType()),
+				portletRequest, resourceBundle, segmentsFieldCustomizer));
 	}
 
 	private String _getType(EntityField.Type entityFieldType) {
