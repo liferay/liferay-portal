@@ -108,23 +108,17 @@ public class SecretResolverCheck extends BaseCheck {
 	private String _getAssignedVariableName(DetailAST detailAST) {
 		DetailAST assignDetailAST = detailAST.getParent();
 
-		while ((assignDetailAST != null) &&
-			   (assignDetailAST.getType() == TokenTypes.EXPR)) {
-
+		while (assignDetailAST.getType() == TokenTypes.EXPR) {
 			assignDetailAST = assignDetailAST.getParent();
 		}
 
-		if ((assignDetailAST == null) ||
-			(assignDetailAST.getType() != TokenTypes.ASSIGN)) {
-
+		if (assignDetailAST.getType() != TokenTypes.ASSIGN) {
 			return null;
 		}
 
 		DetailAST parentDetailAST = assignDetailAST.getParent();
 
-		if ((parentDetailAST != null) &&
-			(parentDetailAST.getType() == TokenTypes.VARIABLE_DEF)) {
-
+		if (parentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
 			return getName(parentDetailAST);
 		}
 
@@ -144,10 +138,6 @@ public class SecretResolverCheck extends BaseCheck {
 
 	private JavaClass _getJavaClass(
 		String absolutePath, String fullyQualifiedTypeName) {
-
-		if (fullyQualifiedTypeName == null) {
-			return null;
-		}
 
 		JavaClass javaClass = _javaClasses.get(fullyQualifiedTypeName);
 
@@ -272,9 +262,9 @@ public class SecretResolverCheck extends BaseCheck {
 	}
 
 	private boolean _isResolvedThroughVariable(DetailAST detailAST) {
-		String variableName = _getAssignedVariableName(detailAST);
+		String assignedVariableName = _getAssignedVariableName(detailAST);
 
-		if (variableName == null) {
+		if (assignedVariableName == null) {
 			return false;
 		}
 
@@ -302,15 +292,14 @@ public class SecretResolverCheck extends BaseCheck {
 
 					DetailAST parentDetailAST = identDetailAST.getParent();
 
-					if ((parentDetailAST != null) &&
-						(parentDetailAST.getType() == TokenTypes.DOT) &&
+					if ((parentDetailAST.getType() == TokenTypes.DOT) &&
 						(parentDetailAST.getLastChild() == identDetailAST)) {
 
 						continue;
 					}
 
 					if (Objects.equals(
-							identDetailAST.getText(), variableName)) {
+							identDetailAST.getText(), assignedVariableName)) {
 
 						return true;
 					}
