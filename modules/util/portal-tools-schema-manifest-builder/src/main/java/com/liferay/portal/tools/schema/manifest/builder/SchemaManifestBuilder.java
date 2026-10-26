@@ -40,7 +40,7 @@ public class SchemaManifestBuilder {
 		Map<String, String> arguments = ArgumentsUtil.parseArguments(args);
 
 		String baseDirName = GetterUtil.getString(
-			arguments.get("schema.manifest.base.dir"), "./");
+			arguments.get("schema.manifest.base.dir"), ".");
 		String manifestFileName = GetterUtil.getString(
 			arguments.get("schema.manifest.file"),
 			"src/main/resources/META-INF/schema/manifest.json");
@@ -71,7 +71,7 @@ public class SchemaManifestBuilder {
 			StringBundler.concat(
 				"Database changes manifest of one Liferay module, generated ",
 				"by Liferay Schema Manifest Builder. Do not edit it by hand. ",
-				"Top-level keys: 'module' is the module's ",
+				"Top level keys: 'module' is the module's ",
 				"Bundle-SymbolicName, or 'portal' for portal core; ",
 				"'timestamp' is when the content last changed.")
 		).put(
@@ -98,7 +98,7 @@ public class SchemaManifestBuilder {
 
 		if (Validator.isNull(bundleSymbolicName)) {
 			throw new IllegalArgumentException(
-				"Unable to find Bundle-SymbolicName in " +
+				"Unable to find \"Bundle-SymbolicName\" in " +
 					bndFile.getAbsolutePath());
 		}
 
