@@ -390,6 +390,12 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				PortalInstances.setImportInProcessCompanyIdWithSafeCloseable(
 					companyId)) {
 
+			if (Validator.isNull(lowerCaseVirtualHostname)) {
+				validateVirtualHost(
+					GetterUtil.getString(webId),
+					DBPartitionUtil.getExportedVirtualHostname(companyId));
+			}
+
 			DBPartitionUtil.importDBPartition(
 				companyId, lowerCaseVirtualHostname, webId);
 

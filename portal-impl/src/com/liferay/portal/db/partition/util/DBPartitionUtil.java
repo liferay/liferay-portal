@@ -349,6 +349,47 @@ public class DBPartitionUtil {
 		return DATABASE_EXPORTED_PARTITION_SCHEMA_NAME_PREFIX + companyId;
 	}
 
+	public static String getExportedVirtualHostname(long companyId)
+		throws PortalException {
+
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
+		_initializeDBPartitionDB(dataSource);
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					_defaultCompanyId);
+
+			Connection connection = dataSource.getConnection()) {
+
+			_checkImportDBPartition(connection, companyId);
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"select hostname from ",
+							getExportedPartitionName(companyId),
+							".VirtualHost where companyId = ? and layoutSetId ",
+							"= 0 and ctCollectionId = 0 and ",
+							"defaultVirtualHost = ?"))) {
+
+				preparedStatement.setLong(1, companyId);
+				preparedStatement.setBoolean(2, true);
+
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					if (resultSet.next()) {
+						return resultSet.getString("hostname");
+					}
+
+					return null;
+				}
+			}
+		}
+		catch (SQLException sqlException) {
+			throw new PortalException(sqlException);
+		}
+	}
+
 	public static String getPartitionKey(Object key) {
 		if (!PropsValues.DATABASE_PARTITION_ENABLED) {
 			return key.toString();
@@ -691,6 +732,28 @@ public class DBPartitionUtil {
 		}
 		catch (SQLException sqlException) {
 			throw new PortalException(sqlException);
+		}
+	}
+
+	private static void _checkImportDBPartition(
+			Connection connection, long companyId)
+		throws SQLException {
+
+		String targetPartitionName = getPartitionName(companyId);
+
+		if (_dbPartitionDB.existsPartition(connection, targetPartitionName)) {
+			throw new IllegalArgumentException(
+				StringBundler.concat(
+					"Database partition ", targetPartitionName,
+					" already exists"));
+		}
+
+		String sourcePartitionName = getExportedPartitionName(companyId);
+
+		if (!_dbPartitionDB.existsPartition(connection, sourcePartitionName)) {
+			throw new IllegalArgumentException(
+				"Unable to insert the database partition " +
+					sourcePartitionName + " because it does not exist");
 		}
 	}
 
@@ -1495,22 +1558,7 @@ public class DBPartitionUtil {
 		String targetPartitionName = getPartitionName(companyId);
 
 		try {
-			if (_dbPartitionDB.existsPartition(
-					connection, targetPartitionName)) {
-
-				throw new IllegalArgumentException(
-					StringBundler.concat(
-						"Database partition ", targetPartitionName,
-						" already exists"));
-			}
-
-			if (!_dbPartitionDB.existsPartition(
-					connection, sourcePartitionName)) {
-
-				throw new IllegalArgumentException(
-					"Unable to insert the database partition " +
-						sourcePartitionName + " because it does not exist");
-			}
+			_checkImportDBPartition(connection, companyId);
 
 			if (Validator.isNull(webId)) {
 				_validateWebId(connection, companyId, sourcePartitionName);
