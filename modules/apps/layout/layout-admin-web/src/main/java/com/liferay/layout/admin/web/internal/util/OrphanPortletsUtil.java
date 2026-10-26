@@ -72,33 +72,7 @@ public class OrphanPortletsUtil {
 	public static boolean hasOrphanPortlets(
 		Layout layout, PortletRegistry portletRegistry) {
 
-		if (!layout.isSupportsEmbeddedPortlets()) {
-			return false;
-		}
-
-		List<PortletPreferences> portletPreferencesList =
-			_getPortletPreferences(layout);
-
-		if (portletPreferencesList.isEmpty()) {
-			return false;
-		}
-
-		List<String> explicitlyAddedPortletIds = _getExplicitlyAddedPortletIds(
-			layout, portletRegistry);
-
-		return ListUtil.exists(
-			portletPreferencesList,
-			portletPreferences -> {
-				Portlet portlet = _fetchOrphanPortlet(
-					layout.getCompanyId(), explicitlyAddedPortletIds,
-					portletPreferences.getPortletId());
-
-				if (portlet == null) {
-					return false;
-				}
-
-				return true;
-			});
+		return ListUtil.isNotEmpty(getOrphanPortlets(layout, portletRegistry));
 	}
 
 	private static Portlet _fetchOrphanPortlet(
