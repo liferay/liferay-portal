@@ -2,7 +2,6 @@
 {{- $providers := list
     (dict "name" "provider-family-gcp" "runtimeConfigName" "gcp-family-config" "syncWave" "-85")
     (dict "name" "provider-gcp-cloudplatform" "runtimeConfigName" "gcp-cloudplatform-config")
-    (dict "name" "provider-gcp-compute" "runtimeConfigName" "gcp-compute-config")
     (dict "name" "provider-gcp-kms" "runtimeConfigName" "gcp-kms-config")
     (dict "name" "provider-gcp-sql" "runtimeConfigName" "gcp-sql-config")
     (dict "name" "provider-gcp-storage" "runtimeConfigName" "gcp-storage-config")

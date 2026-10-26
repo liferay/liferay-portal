@@ -1,6 +1,5 @@
 {{- $runtimeConfigs := list
     (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-cloudplatform-config" "provider" "provider-gcp-cloudplatform" "serviceAccountName" "crossplane-iam")
-    (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-compute-config" "provider" "provider-gcp-compute" "serviceAccountName" "crossplane-data")
     (dict "cpuRequest" "200m" "memoryLimit" "1Gi" "memoryRequest" "512Mi" "name" "gcp-family-config" "provider" "provider-family-gcp" "serviceAccountName" "crossplane-data")
     (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-kms-config" "provider" "provider-gcp-kms" "serviceAccountName" "crossplane-data")
     (dict "cpuRequest" "200m" "memoryLimit" "2Gi" "memoryRequest" "512Mi" "name" "gcp-sql-config" "provider" "provider-gcp-sql" "serviceAccountName" "crossplane-data")

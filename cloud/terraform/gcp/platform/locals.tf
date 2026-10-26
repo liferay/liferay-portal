@@ -36,7 +36,6 @@ locals {
 			crossplane_data=[
 				"roles/cloudkms.admin",
 				"roles/cloudsql.admin",
-				"roles/compute.admin",
 				"roles/storage.admin",
 			]
 			crossplane_iam=[
