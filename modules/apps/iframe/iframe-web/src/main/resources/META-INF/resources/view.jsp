@@ -170,7 +170,7 @@
 			'Authorization',
 			'Basic ' +
 				btoa(
-					'<%= iFramePortletInstanceConfiguration.basicUserName() %>:<%= iFramePortletInstanceConfiguration.basicPassword() %>'
+					'<%= iFramePortletInstanceConfiguration.basicUserName() %>:<%= iFrameDisplayContext.getBasicPassword() %>'
 				)
 		);
 
