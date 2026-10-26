@@ -1,3 +1,6 @@
+set:
+    cloudProvider: gcp
+    gcp.projectId: liferay-test
 suite: GCP recording rules
 templates:
     -   templates/gcp/recording-rules.yaml
@@ -11,9 +14,34 @@ tests:
             -   notContains:
                     any: true
                     content:
+                        record: liferay:container_cpu_limit_utilization:ratio
+                    path: spec.groups[0].rules
+        documentSelector:
+            path: kind
+            value: GlobalRules
+        it: Evaluates the Cloud SQL rules over the whole project
+    -   asserts:
+            -   contains:
+                    any: true
+                    content:
+                        record: liferay:container_cpu_limit_utilization:ratio
+                    path: spec.groups[0].rules
+            -   notContains:
+                    any: true
+                    content:
+                        record: liferay:db_cpu_utilization_percent
+                    path: spec.groups[0].rules
+        documentSelector:
+            path: kind
+            value: ClusterRules
+        it: Evaluates the container rules over the current cluster only
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
                         record: liferay:db_memory_utilization_percent
                     path: spec.groups[0].rules
+        documentSelector:
+            path: kind
+            value: GlobalRules
         it: Excludes the Azure database rules from the GMP global rules
-        set:
-            cloudProvider: gcp
-            gcp.projectId: liferay-test
