@@ -107,7 +107,7 @@ public class UserAccountResourceImpl extends BaseUserAccountResourceImpl {
 		throws Exception {
 
 		Group group = _getGroup(assetLibraryExternalReferenceCode);
-		User user = _userService.getUserByExternalReferenceCode(
+		User user = _userLocalService.getUserByExternalReferenceCode(
 			userAccountExternalReferenceCode, contextCompany.getCompanyId());
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
