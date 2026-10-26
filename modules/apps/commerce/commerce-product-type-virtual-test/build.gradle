@@ -6,5 +6,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-product-type-virtual-test-util")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal-security:portal-security-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
