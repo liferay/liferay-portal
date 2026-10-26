@@ -46,8 +46,17 @@ public class ExportImportTaskUtil {
 			Map<String, String> parameters)
 		throws Exception {
 
+		return postImportTask(
+			body, className, expectedExecuteStatus, null, parameters);
+	}
+
+	public static ImportTask postImportTask(
+			String body, String className, String expectedExecuteStatus,
+			Map<String, String> headers, Map<String, String> parameters)
+		throws Exception {
+
 		return _executeImportTask(
-			body, className, expectedExecuteStatus, Http.Method.POST,
+			body, className, expectedExecuteStatus, headers, Http.Method.POST,
 			parameters);
 	}
 
@@ -57,7 +66,7 @@ public class ExportImportTaskUtil {
 		throws Exception {
 
 		return _executeImportTask(
-			body, className, expectedExecuteStatus, Http.Method.PUT,
+			body, className, expectedExecuteStatus, null, Http.Method.PUT,
 			parameters);
 	}
 
@@ -89,7 +98,8 @@ public class ExportImportTaskUtil {
 
 	private static ImportTask _executeImportTask(
 			String body, String className, String expectedExecuteStatus,
-			Http.Method method, Map<String, String> parameters)
+			Map<String, String> headers, Http.Method method,
+			Map<String, String> parameters)
 		throws Exception {
 
 		String json = HTTPTestUtil.invokeToString(
@@ -97,7 +107,7 @@ public class ExportImportTaskUtil {
 			StringBundler.concat(
 				"headless-batch-engine/v1.0/import-task/", className,
 				_getQueryString(parameters)),
-			method);
+			headers, method);
 
 		ImportTask importTask = ImportTaskSerDes.toDTO(json);
 

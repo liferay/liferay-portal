@@ -19,6 +19,7 @@ import com.liferay.headless.delivery.client.dto.v1_0.Document;
 import com.liferay.headless.delivery.client.resource.v1_0.DocumentResource;
 import com.liferay.headless.delivery.client.serdes.v1_0.DocumentSerDes;
 import com.liferay.petra.function.UnsafeTriConsumer;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -32,6 +33,7 @@ import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.pwd.PasswordEncryptorUtil;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -163,6 +165,31 @@ public class ImportTaskResourceTest {
 					failedItem.getMessage());
 			}
 		}
+	}
+
+	@Test
+	public void testPostImportTaskWithContentTypeParameters() throws Exception {
+		_testPostImportTaskWithContentTypeParameters(
+			JSONUtil.put(
+				"intValue", RandomTestUtil.randomInt()
+			).put(
+				"textValue", RandomTestUtil.randomString()
+			).toString(),
+			"application/x-ndjson; charset=utf-8");
+		_testPostImportTaskWithContentTypeParameters(
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"intValue", RandomTestUtil.randomInt()
+				).put(
+					"textValue", RandomTestUtil.randomString()
+				)
+			).toString(),
+			"application/json; charset=utf-8");
+		_testPostImportTaskWithContentTypeParameters(
+			StringBundler.concat(
+				"intValue,textValue\n", RandomTestUtil.randomInt(), ",",
+				RandomTestUtil.randomString(), "\n"),
+			"text/csv; charset=utf-8");
 	}
 
 	@Test
@@ -323,6 +350,32 @@ public class ImportTaskResourceTest {
 			zipInputStream.getNextEntry();
 
 			return StringUtil.read(zipInputStream);
+		}
+	}
+
+	private void _testPostImportTaskWithContentTypeParameters(
+			String body, String contentType)
+		throws Exception {
+
+		try (BatchEngineTaskItemDelegateAutoCloseable
+				batchEngineTaskItemDelegateAutoCloseable =
+					new BatchEngineTaskItemDelegateAutoCloseable()) {
+
+			ImportTask importTask = ExportImportTaskUtil.postImportTask(
+				body, TestEntity.class.getName(), "COMPLETED",
+				HashMapBuilder.put(
+					HttpHeaders.CONTENT_TYPE, contentType
+				).build(),
+				HashMapBuilder.put(
+					"createStrategy", "INSERT"
+				).put(
+					"taskItemDelegateName",
+					batchEngineTaskItemDelegateAutoCloseable.
+						getTaskItemDelegateName()
+				).build());
+
+			Assert.assertEquals(1, (int)importTask.getProcessedItemsCount());
+			Assert.assertEquals(1, (int)importTask.getTotalItemsCount());
 		}
 	}
 
