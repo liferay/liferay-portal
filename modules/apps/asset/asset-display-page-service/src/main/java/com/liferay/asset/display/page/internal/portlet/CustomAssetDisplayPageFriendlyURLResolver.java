@@ -98,8 +98,7 @@ public class CustomAssetDisplayPageFriendlyURLResolver
 
 		return layoutDisplayPageProvider.getLayoutDisplayPageObjectProvider(
 			new InfoItemReference(
-				portal.getClassName(GetterUtil.getLong(parts[1])),
-				infoItemIdentifier));
+				layoutDisplayPageProvider.getClassName(), infoItemIdentifier));
 	}
 
 	@Override
