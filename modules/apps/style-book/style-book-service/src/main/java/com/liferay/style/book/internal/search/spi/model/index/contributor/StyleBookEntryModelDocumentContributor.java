@@ -25,6 +25,7 @@ public class StyleBookEntryModelDocumentContributor
 	@Override
 	public void contribute(Document document, StyleBookEntry styleBookEntry) {
 		document.addText(Field.NAME, styleBookEntry.getName());
+		document.addKeyword(Field.STATUS, styleBookEntry.getStatus());
 		document.addText(Field.TITLE, styleBookEntry.getName());
 		document.addKeyword(
 			"defaultStyleBookEntry", styleBookEntry.isDefaultStyleBookEntry());

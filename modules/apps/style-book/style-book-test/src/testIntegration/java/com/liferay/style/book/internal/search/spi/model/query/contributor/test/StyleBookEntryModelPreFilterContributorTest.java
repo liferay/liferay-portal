@@ -7,14 +7,21 @@ package com.liferay.style.book.internal.search.spi.model.query.contributor.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.search.BooleanClause;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.kernel.search.filter.Filter;
+import com.liferay.portal.kernel.search.filter.TermFilter;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,6 +60,21 @@ public class StyleBookEntryModelPreFilterContributorTest {
 
 		Assert.assertTrue(
 			booleanFilterString, booleanFilterString.contains("head"));
+
+		List<BooleanClause<Filter>> mustNotBooleanClauses =
+			booleanFilter.getMustNotBooleanClauses();
+
+		Assert.assertEquals(
+			mustNotBooleanClauses.toString(), 1, mustNotBooleanClauses.size());
+
+		BooleanClause<Filter> booleanClause = mustNotBooleanClauses.get(0);
+
+		TermFilter termFilter = (TermFilter)booleanClause.getClause();
+
+		Assert.assertEquals(Field.STATUS, termFilter.getField());
+		Assert.assertEquals(
+			String.valueOf(WorkflowConstants.STATUS_EMPTY),
+			termFilter.getValue());
 
 		booleanFilter = new BooleanFilter();
 

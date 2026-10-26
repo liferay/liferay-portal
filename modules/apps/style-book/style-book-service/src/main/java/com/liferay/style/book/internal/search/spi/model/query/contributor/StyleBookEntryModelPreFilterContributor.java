@@ -5,9 +5,12 @@
 
 package com.liferay.style.book.internal.search.spi.model.query.contributor;
 
+import com.liferay.portal.kernel.search.BooleanClauseOccur;
+import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.search.spi.model.query.contributor.ModelPreFilterContributor;
 import com.liferay.portal.search.spi.model.registrar.ModelSearchSettings;
 
@@ -34,6 +37,10 @@ public class StyleBookEntryModelPreFilterContributor
 		if (head) {
 			booleanFilter.addRequiredTerm("head", Boolean.TRUE);
 		}
+
+		booleanFilter.addTerm(
+			Field.STATUS, String.valueOf(WorkflowConstants.STATUS_EMPTY),
+			BooleanClauseOccur.MUST_NOT);
 	}
 
 }
