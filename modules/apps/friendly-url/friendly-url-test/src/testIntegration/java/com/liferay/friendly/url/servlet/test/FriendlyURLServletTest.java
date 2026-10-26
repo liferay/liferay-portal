@@ -470,42 +470,9 @@ public class FriendlyURLServletTest {
 	public void testGetRedirectOnLinkToLayoutLayoutWithoutViewPermission()
 		throws Throwable {
 
-		Layout linkToLayoutLayout = LayoutTestUtil.addTypeLinkToLayoutLayout(
-			_group.getGroupId(), _layout.getLayoutId());
-
-		RoleTestUtil.removeResourcePermission(
-			RoleConstants.GUEST, Layout.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(linkToLayoutLayout.getPlid()), ActionKeys.VIEW);
-
-		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
-
-		String friendlyURLPath = getPath(_group, linkToLayoutLayout);
-		String layoutIdPath =
-			_group.getFriendlyURL() + StringPool.SLASH +
-				linkToLayoutLayout.getLayoutId();
-
-		Object expectedRedirect = _redirectConstructor1.newInstance(
-			getURL(_layout));
-
-		_testGetRedirectForUser(
-			guestUser, friendlyURLPath, expectedRedirect, 404);
-		_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect, 404);
-
-		expectedRedirect = _redirectConstructor1.newInstance(
-			getURL(linkToLayoutLayout));
-
-		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
-				new ConfigurationTemporarySwapper(
-					_PID,
-					HashMapDictionaryBuilder.<String, Object>put(
-						"promptEnabled", true
-					).build())) {
-
-			_testGetRedirectForUser(
-				guestUser, friendlyURLPath, expectedRedirect);
-			_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect);
-		}
+		_testGetRedirectOnLinkLayoutWithoutViewPermission(
+			LayoutTestUtil.addTypeLinkToLayoutLayout(
+				_group.getGroupId(), _layout.getLayoutId()));
 	}
 
 	@Test
@@ -539,44 +506,10 @@ public class FriendlyURLServletTest {
 	public void testGetRedirectOnLinkToURLLayoutWithoutViewPermission()
 		throws Throwable {
 
-		Layout linkToURLLayout = LayoutTestUtil.addTypeLinkToURLLayout(
-			_group.getGroupId(),
-			"https://" + RandomTestUtil.randomString() + ".com");
-
-		RoleTestUtil.removeResourcePermission(
-			RoleConstants.GUEST, Layout.class.getName(),
-			ResourceConstants.SCOPE_INDIVIDUAL,
-			String.valueOf(linkToURLLayout.getPlid()), ActionKeys.VIEW);
-
-		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
-
-		String friendlyURLPath = getPath(_group, linkToURLLayout);
-		String layoutIdPath =
-			_group.getFriendlyURL() + StringPool.SLASH +
-				linkToURLLayout.getLayoutId();
-
-		Object expectedRedirect = _redirectConstructor1.newInstance(
-			getURL(_layout));
-
-		_testGetRedirectForUser(
-			guestUser, friendlyURLPath, expectedRedirect, 404);
-		_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect, 404);
-
-		expectedRedirect = _redirectConstructor1.newInstance(
-			getURL(linkToURLLayout));
-
-		try (GroupConfigurationTemporarySwapper
-				groupConfigurationTemporarySwapper =
-					new GroupConfigurationTemporarySwapper(
-						_group.getGroupId(), _PID,
-						HashMapDictionaryBuilder.<String, Object>put(
-							"promptEnabled", true
-						).build())) {
-
-			_testGetRedirectForUser(
-				guestUser, friendlyURLPath, expectedRedirect);
-			_testGetRedirectForUser(guestUser, layoutIdPath, expectedRedirect);
-		}
+		_testGetRedirectOnLinkLayoutWithoutViewPermission(
+			LayoutTestUtil.addTypeLinkToURLLayout(
+				_group.getGroupId(),
+				"https://" + RandomTestUtil.randomString() + ".com"));
 	}
 
 	@Test
@@ -1541,6 +1474,44 @@ public class FriendlyURLServletTest {
 
 		_testGetRedirectForUser(
 			expectedRedirect, HttpServletResponse.SC_OK, path, user);
+	}
+
+	private void _testGetRedirectOnLinkLayoutWithoutViewPermission(
+			Layout layout)
+		throws Throwable {
+
+		RoleTestUtil.removeResourcePermission(
+			RoleConstants.GUEST, Layout.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(layout.getPlid()), ActionKeys.VIEW);
+
+		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
+
+		String friendlyURLPath = getPath(_group, layout);
+		String layoutIdPath =
+			_group.getFriendlyURL() + StringPool.SLASH + layout.getLayoutId();
+
+		Object expectedRedirect = _redirectConstructor1.newInstance(
+			getURL(_layout));
+
+		_testGetRedirectForUser(
+			expectedRedirect, 404, friendlyURLPath, guestUser);
+		_testGetRedirectForUser(expectedRedirect, 404, layoutIdPath, guestUser);
+
+		expectedRedirect = _redirectConstructor1.newInstance(getURL(layout));
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"promptEnabled", true
+						).build())) {
+
+			_testGetRedirectForUser(
+				expectedRedirect, friendlyURLPath, guestUser);
+			_testGetRedirectForUser(expectedRedirect, layoutIdPath, guestUser);
+		}
 	}
 
 	private void _testGetRedirectOnUtilityPage(boolean guestViewable)
