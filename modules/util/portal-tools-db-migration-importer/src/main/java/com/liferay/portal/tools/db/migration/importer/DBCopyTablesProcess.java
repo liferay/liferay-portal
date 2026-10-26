@@ -562,7 +562,9 @@ public class DBCopyTablesProcess {
 				return "numeric";
 			}
 
-			if (((columnSize - decimalDigits) <= 14) && (decimalDigits <= 16)) {
+			if ((decimalDigits > 0) && ((columnSize - decimalDigits) <= 14) &&
+				(decimalDigits <= 16)) {
+
 				return "decimal(30, 16)";
 			}
 
