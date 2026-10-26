@@ -49,7 +49,7 @@ test('LPD-25440 Cookie Banner Cadmin', async ({page}) => {
 		await page.goto('/');
 
 		await page
-			.locator('div[role="dialog"][aria-modal="true"]')
+			.locator('div[role="region"].cookies-banner')
 			.waitFor({state: 'visible'});
 
 		const configuration = page.getByRole('button', {name: 'Configuration'});

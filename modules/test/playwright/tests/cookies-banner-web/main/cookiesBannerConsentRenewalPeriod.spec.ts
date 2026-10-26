@@ -55,9 +55,7 @@ test.beforeEach(async ({page}) => {
 	});
 
 	await test.step('Verify Cookies Banner appears, then Accept All cookies', async () => {
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		await expect(cookiesBanner).toBeVisible();
 
@@ -192,9 +190,7 @@ test(
 	'Verify clicking Forced Re-Consent button retriggers the Cookies Banner',
 	{tag: ['@LPD-86096', '@LPD-87281']},
 	async ({consentManagerConfigurationPage, page}) => {
-		const cookiesBanner = page.locator(
-			'div[role="dialog"][aria-modal="true"]'
-		);
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
 
 		await test.step('Initial state: Verify Cookies Banner is not visible after acceptance', async () => {
 			await expect(cookiesBanner).not.toBeVisible();
@@ -334,7 +330,7 @@ test(
 			});
 
 			await page
-				.locator('div[role="dialog"][aria-modal="true"]')
+				.locator('div[role="region"].cookies-banner')
 				.waitFor({state: 'visible'});
 		});
 
