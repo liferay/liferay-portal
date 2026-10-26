@@ -186,13 +186,26 @@ public class DLFileEntryModelDocumentContributor
 			return;
 		}
 
-		document.addText(fieldName, text);
+		try {
+			document.addText(fieldName, text);
 
-		_textEmbeddingDocumentContributor.contribute(
-			document, dlFileEntry,
-			StringBundler.concat(
-				dlFileEntry.getTitle(), StringPool.PERIOD, StringPool.SPACE,
-				text));
+			_textEmbeddingDocumentContributor.contribute(
+				document, dlFileEntry,
+				StringBundler.concat(
+					dlFileEntry.getTitle(), StringPool.PERIOD, StringPool.SPACE,
+					text));
+		}
+		catch (Throwable throwable) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to extract text from file version " +
+						dlFileVersion.getFileVersionId());
+			}
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(throwable);
+			}
+		}
 	}
 
 	private Map<DDMStructure, DDMFormValues> _getDDMFormValues(
