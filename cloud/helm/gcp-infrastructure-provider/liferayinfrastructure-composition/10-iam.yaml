@@ -3,8 +3,6 @@ kind: ServiceAccount
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gsa
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $gsaName }}
 spec:
     forProvider:
@@ -15,8 +13,6 @@ kind: ServiceAccountIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-wi-binding
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         member: serviceAccount:{{ $env.projectId }}.svc.id.goog[{{ $namespace }}/liferay-default]
@@ -29,8 +25,6 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-instance-user-role
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         member: serviceAccount:{{ $gsaEmail }}
@@ -42,8 +36,6 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-client-role
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         member: serviceAccount:{{ $gsaEmail }}

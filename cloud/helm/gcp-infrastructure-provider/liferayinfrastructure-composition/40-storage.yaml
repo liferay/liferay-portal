@@ -8,7 +8,6 @@ metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gcs-bucket-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
     name: {{ $baseName }}-dl-{{ $dataPlane }}
 spec:
@@ -34,7 +33,6 @@ metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gcs-iam-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
 spec:
     forProvider:

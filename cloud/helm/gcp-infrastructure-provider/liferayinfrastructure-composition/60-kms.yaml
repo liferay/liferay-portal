@@ -4,8 +4,6 @@ kind: KeyRing
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-keyring
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $baseName }}-keyring
 spec:
     forProvider:
@@ -17,8 +15,6 @@ kind: CryptoKey
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-cryptokey
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $baseName }}-key
 spec:
     forProvider:
@@ -33,8 +29,6 @@ kind: CryptoKeyIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-kms-binding
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         cryptoKeyIdRef:
@@ -48,8 +42,6 @@ kind: CryptoKeyIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-storage-kms-binding
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         cryptoKeyIdRef:

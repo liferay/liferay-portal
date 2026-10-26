@@ -3,8 +3,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-ksa
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $xr.metadata.name }}-ksa
 spec:
     forProvider:
@@ -14,8 +12,6 @@ spec:
             metadata:
                 annotations:
                     iam.gke.io/gcp-service-account: {{ $gsaEmail }}
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: liferay-default
                 namespace: {{ $namespace }}
 {{- range $dataPlane := $dataPlanes }}
@@ -41,7 +37,6 @@ metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-grant-job-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
     name: {{ $jobName }}
 spec:
@@ -50,8 +45,6 @@ spec:
             apiVersion: batch/v1
             kind: Job
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                     dataPlane: {{ $dataPlane }}
                 name: {{ $jobName }}
                 namespace: {{ $namespace }}
@@ -195,8 +188,6 @@ metadata:
     annotations:
         crossplane.io/external-name: {{ $baseName }}-managed-service-details-secret
         gotemplating.fn.crossplane.io/composition-resource-name: managed-service-details-secret
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $baseName }}-managed-service-details-secret
 spec:
     forProvider:
@@ -210,8 +201,6 @@ spec:
                 LIFERAY_GCS_BUCKET_NAME: {{ printf "%s-dl-%s" $baseName $activeDataPlane | b64enc | quote }}
             kind: Secret
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: managed-service-details
                 namespace: {{ $namespace }}
             type: Opaque
@@ -225,8 +214,6 @@ metadata:
     annotations:
         crossplane.io/external-name: {{ $baseName }}-overlay-bucket-details-secret
         gotemplating.fn.crossplane.io/composition-resource-name: overlay-bucket-details-secret
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $baseName }}-overlay-bucket-details-secret
 spec:
     forProvider:
@@ -236,8 +223,6 @@ spec:
                 LIFERAY_OVERLAY_BUCKET_NAME: {{ $overlayBucketName | b64enc | quote }}
             kind: Secret
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: overlay-bucket-details
                 namespace: {{ $namespace }}
             type: Opaque

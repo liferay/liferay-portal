@@ -6,8 +6,6 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-cloudsql-admin
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         member: {{ $backupRestorePrincipal | quote }}
@@ -20,8 +18,6 @@ kind: ProjectIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-sts-admin
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         member: {{ $backupRestorePrincipal | quote }}
@@ -34,8 +30,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-create-role-binding
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: backup-create-role-binding
 spec:
     forProvider:
@@ -43,8 +37,6 @@ spec:
             apiVersion: rbac.authorization.k8s.io/v1
             kind: RoleBinding
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: backup-create-role-binding
                 namespace: {{ $namespace }}
             roleRef:
@@ -62,8 +54,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-create-service-account
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: backup-create-service-account
 spec:
     forProvider:
@@ -71,8 +61,6 @@ spec:
             apiVersion: v1
             kind: ServiceAccount
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: backup-create-service-account
                 namespace: {{ $namespace }}
     managementPolicies: {{ $managementPolicies }}
@@ -82,8 +70,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-backup-reader-cluster-role-binding
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: backup-restore-backup-reader-cluster-role-binding-{{ $baseName }}
 spec:
     forProvider:
@@ -91,8 +77,6 @@ spec:
             apiVersion: rbac.authorization.k8s.io/v1
             kind: ClusterRoleBinding
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: backup-restore-backup-reader-cluster-role-binding-{{ $baseName }}
             roleRef:
                 apiGroup: rbac.authorization.k8s.io
@@ -109,8 +93,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-role-binding
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: backup-restore-role-binding
 spec:
     forProvider:
@@ -118,8 +100,6 @@ spec:
             apiVersion: rbac.authorization.k8s.io/v1
             kind: RoleBinding
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: backup-restore-role-binding
                 namespace: {{ $namespace }}
             roleRef:
@@ -137,8 +117,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-service-account
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: backup-restore-service-account
 spec:
     forProvider:
@@ -146,8 +124,6 @@ spec:
             apiVersion: v1
             kind: ServiceAccount
             metadata:
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: backup-restore-service-account
                 namespace: {{ $namespace }}
     managementPolicies: {{ $managementPolicies }}
@@ -157,8 +133,6 @@ kind: Object
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-service-account-token
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: backup-restore-service-account-token
 spec:
     forProvider:
@@ -168,8 +142,6 @@ spec:
             metadata:
                 annotations:
                     kubernetes.io/service-account.name: backup-restore-service-account
-                labels:
-                    {{- $labels | toYaml | nindent 20 }}
                 name: backup-restore-service-account.service-account-token
                 namespace: {{ $namespace }}
             type: kubernetes.io/service-account-token
@@ -180,8 +152,6 @@ kind: Bucket
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: {{ $baseName }}-vault
-    labels:
-        {{- $backupVaultLabels | toYaml | nindent 8 }}
     name: {{ $baseName }}-vault
 spec:
     forProvider:
@@ -209,7 +179,6 @@ metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-restore-dl-writer-{{ $dataPlane }}
     labels:
-        {{- $labels | toYaml | nindent 8 }}
         dataPlane: {{ $dataPlane }}
 spec:
     forProvider:

@@ -4,8 +4,6 @@ kind: BucketIAMMember
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gsa-overlay-bucket-iam
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
 spec:
     forProvider:
         bucket: {{ $overlayBucketName }}

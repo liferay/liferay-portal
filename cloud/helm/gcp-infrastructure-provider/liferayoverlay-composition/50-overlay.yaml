@@ -3,8 +3,6 @@ kind: Bucket
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-overlay-bucket
-    labels:
-        {{- $labels | toYaml | nindent 8 }}
     name: {{ $overlayBucketName }}
 spec:
     forProvider:
