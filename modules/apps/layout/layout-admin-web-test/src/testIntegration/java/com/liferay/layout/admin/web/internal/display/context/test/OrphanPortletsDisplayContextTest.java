@@ -69,113 +69,11 @@ public class OrphanPortletsDisplayContextTest {
 
 	@Test
 	@TestInfo("LPD-110311")
-	public void testGetOrphanPortletsWithLayoutPortlet() throws Exception {
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.addPortletToLayout(
-			draftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
-
-		_assertPortletPreferences(layout, _getPortletId(layout));
-
-		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
-
-		Assert.assertTrue(orphanPortlets.isEmpty());
-	}
-
-	@Test
-	@TestInfo("LPD-110311")
-	public void testGetOrphanPortletsWithMasterLayoutPortlet()
-		throws Exception {
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		Layout masterLayout = _layoutLocalService.getLayout(
-			masterLayoutPageTemplateEntry.getPlid());
-
-		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.addPortletToLayout(
-			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			_group, false, false,
-			masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		_addPortletPreferences(layout, _getPortletId(masterLayout));
-
-		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
-
-		Assert.assertTrue(orphanPortlets.isEmpty());
-	}
-
-	@Test
-	@TestInfo("LPD-110311")
-	public void testGetOrphanPortletsWithOrphanPortletAndMasterLayoutPortlet()
-		throws Exception {
-
-		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
-			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
-				_group.getGroupId(),
-				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
-				WorkflowConstants.STATUS_APPROVED);
-
-		Layout masterLayout = _layoutLocalService.getLayout(
-			masterLayoutPageTemplateEntry.getPlid());
-
-		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
-
-		ContentLayoutTestUtil.addPortletToLayout(
-			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
-
-		Assert.assertNotEquals(
-			JournalContentPortletKeys.JOURNAL_CONTENT,
-			_getPortletId(masterLayout));
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			_group, false, false,
-			masterLayoutPageTemplateEntry.getExternalReferenceCode());
-
-		_addPortletPreferences(
-			layout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
-
-		Assert.assertEquals(
-			orphanPortlets.toString(), 1, orphanPortlets.size());
-
-		Portlet portlet = orphanPortlets.get(0);
-
-		Assert.assertEquals(
-			JournalContentPortletKeys.JOURNAL_CONTENT, portlet.getPortletId());
-	}
-
-	@Test
-	@TestInfo("LPD-110311")
-	public void testGetOrphanPortletsWithTypePortletLayout() throws Exception {
-		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
-
-		String portletId = LayoutTestUtil.addPortletToLayout(
-			layout, JournalContentPortletKeys.JOURNAL_CONTENT);
-
-		layout = _layoutLocalService.getLayout(layout.getPlid());
-
-		_assertPortletPreferences(layout, portletId);
-
-		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
-
-		Assert.assertTrue(orphanPortlets.isEmpty());
+	public void testGetOrphanPortlets() throws Exception {
+		_testGetOrphanPortletsWithMasterLayoutPortlet();
+		_testGetOrphanPortletsWithOrphanPortletAndMasterLayoutPortlet();
+		_testGetOrphanPortletsWithTypeContentLayout();
+		_testGetOrphanPortletsWithTypePortletLayout();
 	}
 
 	private void _addPortletPreferences(Layout layout, String portletId)
@@ -246,6 +144,113 @@ public class OrphanPortletsDisplayContextTest {
 		Assert.assertEquals(portletIds.toString(), 1, portletIds.size());
 
 		return portletIds.get(0);
+	}
+
+	private void _testGetOrphanPortletsWithMasterLayoutPortlet()
+		throws Exception {
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout masterLayout = _layoutLocalService.getLayout(
+			masterLayoutPageTemplateEntry.getPlid());
+
+		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addPortletToLayout(
+			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_group, false, false,
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		_addPortletPreferences(layout, _getPortletId(masterLayout));
+
+		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
+
+		Assert.assertTrue(orphanPortlets.isEmpty());
+	}
+
+	private void _testGetOrphanPortletsWithOrphanPortletAndMasterLayoutPortlet()
+		throws Exception {
+
+		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				_group.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_APPROVED);
+
+		Layout masterLayout = _layoutLocalService.getLayout(
+			masterLayoutPageTemplateEntry.getPlid());
+
+		Layout masterDraftLayout = masterLayout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addPortletToLayout(
+			masterDraftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		ContentLayoutTestUtil.publishLayout(masterDraftLayout, masterLayout);
+
+		Assert.assertNotEquals(
+			JournalContentPortletKeys.JOURNAL_CONTENT,
+			_getPortletId(masterLayout));
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_group, false, false,
+			masterLayoutPageTemplateEntry.getExternalReferenceCode());
+
+		_addPortletPreferences(
+			layout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
+
+		Assert.assertEquals(
+			orphanPortlets.toString(), 1, orphanPortlets.size());
+
+		Portlet portlet = orphanPortlets.get(0);
+
+		Assert.assertEquals(
+			JournalContentPortletKeys.JOURNAL_CONTENT, portlet.getPortletId());
+	}
+
+	private void _testGetOrphanPortletsWithTypeContentLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addPortletToLayout(
+			draftLayout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		_assertPortletPreferences(layout, _getPortletId(layout));
+
+		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
+
+		Assert.assertTrue(orphanPortlets.isEmpty());
+	}
+
+	private void _testGetOrphanPortletsWithTypePortletLayout()
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			layout, JournalContentPortletKeys.JOURNAL_CONTENT);
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		_assertPortletPreferences(layout, portletId);
+
+		List<Portlet> orphanPortlets = _getOrphanPortlets(layout);
+
+		Assert.assertTrue(orphanPortlets.isEmpty());
 	}
 
 	@Inject
