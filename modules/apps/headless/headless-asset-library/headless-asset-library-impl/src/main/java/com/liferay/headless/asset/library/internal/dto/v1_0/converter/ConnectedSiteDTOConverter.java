@@ -5,8 +5,11 @@
 
 package com.liferay.headless.asset.library.internal.dto.v1_0.converter;
 
+import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
+import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.asset.library.dto.v1_0.ConnectedSite;
 import com.liferay.headless.asset.library.internal.resource.v1_0.BaseConnectedSiteResourceImpl;
 import com.liferay.portal.kernel.model.Group;
@@ -99,6 +102,17 @@ public class ConnectedSiteDTOConverter
 					});
 				setType(
 					() -> {
+						DepotEntry groupDepotEntry =
+							_depotEntryLocalService.fetchGroupDepotEntry(
+								group.getGroupId());
+
+						if ((groupDepotEntry != null) &&
+							(groupDepotEntry.getType() ==
+								DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+							return ConnectedSite.Type.DESIGN_LIBRARY;
+						}
+
 						if (group.isLayoutSetPrototype()) {
 							return ConnectedSite.Type.SITE_TEMPLATE;
 						}
@@ -114,6 +128,9 @@ public class ConnectedSiteDTOConverter
 
 	@Reference
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
+
+	@Reference
+	private DepotEntryLocalService _depotEntryLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
