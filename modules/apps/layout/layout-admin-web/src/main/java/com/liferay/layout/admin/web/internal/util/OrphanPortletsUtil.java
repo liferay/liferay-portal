@@ -59,9 +59,11 @@ public class OrphanPortletsUtil {
 				layout.getCompanyId(), explicitlyAddedPortletIds,
 				portletPreferences.getPortletId());
 
-			if (portlet != null) {
-				orphanPortlets.add(portlet);
+			if (portlet == null) {
+				continue;
 			}
+
+			orphanPortlets.add(portlet);
 		}
 
 		return orphanPortlets;
