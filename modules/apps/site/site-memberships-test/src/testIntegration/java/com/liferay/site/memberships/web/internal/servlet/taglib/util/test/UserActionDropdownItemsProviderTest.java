@@ -65,8 +65,6 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.FrameworkUtil;
 
-import org.springframework.mock.web.MockHttpServletRequest;
-
 /**
  * @author Brian Wulbern
  */
@@ -188,10 +186,10 @@ public class UserActionDropdownItemsProviderTest {
 
 		List<String> actions = new ArrayList<>();
 
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			new MockLiferayPortletRenderRequest();
 
-		mockHttpServletRequest.setAttribute(
+		mockLiferayPortletRenderRequest.setAttribute(
 			JavaConstants.JAKARTA_PORTLET_CONFIG,
 			PortletConfigFactoryUtil.create(
 				_portletLocalService.getPortletById(
@@ -207,11 +205,8 @@ public class UserActionDropdownItemsProviderTest {
 		themeDisplay.setScopeGroupId(_depotEntry.getGroupId());
 		themeDisplay.setSiteGroupId(_depotEntry.getGroupId());
 
-		mockHttpServletRequest.setAttribute(
+		mockLiferayPortletRenderRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			new MockLiferayPortletRenderRequest(mockHttpServletRequest);
 
 		List<Map<String, Object>> dropdownItems = ReflectionTestUtil.invoke(
 			_constructor.newInstance(
