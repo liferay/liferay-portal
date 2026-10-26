@@ -129,10 +129,12 @@ public class DDMRESTDataProviderTest {
 			password
 		);
 
+		String hostName = "www." + RandomTestUtil.randomString() + ".com";
+
 		Mockito.when(
 			ddmRESTDataProviderSettings.url()
 		).thenReturn(
-			"http://" + RandomTestUtil.randomString()
+			"http://" + hostName
 		);
 
 		Mockito.when(
@@ -184,9 +186,19 @@ public class DDMRESTDataProviderTest {
 			_ddmrestDataProvider, "_jsonWebServiceClientFactory",
 			jsonWebServiceClientFactory);
 
+		DDMDataProviderConfiguration ddmDataProviderConfiguration =
+			Mockito.mock(DDMDataProviderConfiguration.class);
+
+		Mockito.when(
+			ddmDataProviderConfiguration.accessLocalNetwork()
+		).thenReturn(
+			true
+		);
+
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_ddmDataProviderConfiguration",
-			Mockito.mock(DDMDataProviderConfiguration.class));
+			ddmDataProviderConfiguration);
+
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_portalCache",
 			Mockito.mock(PortalCache.class));
@@ -208,7 +220,9 @@ public class DDMRESTDataProviderTest {
 
 		Map<String, Object> properties = argumentCaptor.getValue();
 
+		Assert.assertEquals(hostName, properties.get("hostName"));
 		Assert.assertEquals(resolvedPassword, properties.get("password"));
+		Assert.assertEquals(Boolean.FALSE, properties.get("redirectsEnabled"));
 	}
 
 	@Test
