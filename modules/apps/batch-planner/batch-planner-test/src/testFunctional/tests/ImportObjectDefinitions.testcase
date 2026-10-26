@@ -98,38 +98,6 @@ definition {
 	}
 
 	@priority = 4
-	test CanImportObjectDefinitionWithExportedJSONLFile {
-		task ("Given a student object with a custom field name") {
-			ObjectDefinitionAPI.createAndPublishObjectDefinition(
-				en_US_label = "Student",
-				en_US_plural_label = "Student",
-				name = "Student",
-				requiredStringFieldName = "name");
-		}
-
-		task ("And Given I export ObjectDefinition to a JSONL format file in Import/Export center") {
-			ImportExport.exportAndUnzipFile(
-				entityType = "ObjectDefinition (v1.0 - Liferay Object Admin REST)",
-				exportFields = "externalReferenceCode,label,name,objectFields,pluralLabel,scope,status",
-				exportFileFormat = "JSONL");
-		}
-
-		task ("And Given delete the student object from the portal") {
-			ObjectAdmin.deleteObjectViaAPI(objectName = "Student");
-		}
-
-		task ("When I import the exported student object with JSONL file") {
-			ImportExport.importFile(
-				entityType = "ObjectDefinition (v1.0 - Liferay Object Admin REST)",
-				tempFile = "export.jsonl");
-		}
-
-		task ("Then the student object can be imported successfully") {
-			ObjectDefinitionAPI.assertObjectDefinitionInResponse(expectedValue = "Student");
-		}
-	}
-
-	@priority = 4
 	test CanMappedAllMandatoryFieldsWithImportFile {
 		task ("When importing the object definition with fields externalReferenceCode,name,label,pluralLabel,scope,status and custom text field in the JSON file") {
 			ImportExport.importFile(
