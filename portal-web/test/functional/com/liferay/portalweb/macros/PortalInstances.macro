@@ -89,6 +89,39 @@ definition {
 
 		AssertElementPresent(locator1 = "Notifications#NOTIFICATIONS_CONTENT");
 
+		var companyId = JSONCompany.getCompanyId(portalInstanceName = ${virtualHost});
+
+		if (!(isSet(port))) {
+			var port = 8080;
+		}
+
+		var javaScript = '''
+		if (typeof Liferay === "undefined") {
+			return "";
+		}
+
+		return Liferay.ThemeDisplay.getCompanyId();
+		''';
+
+		Navigator.openSpecificURL(url = "http://${virtualHost}:${port}/web/guest");
+
+		var instanceCompanyId = selenium.getEval(${javaScript});
+
+		while ((${instanceCompanyId} != ${companyId}) && (maxIterations = "60")) {
+
+			// Wait until the new instance serves its own guest site. The notification is sent before the instance initializes its sites. Needed for LPD-112057.
+
+			Pause(value1 = 5000);
+
+			Navigator.openSpecificURL(url = "http://${virtualHost}:${port}/web/guest");
+
+			var instanceCompanyId = selenium.getEval(${javaScript});
+		}
+
+		if (${instanceCompanyId} != ${companyId}) {
+			fail("The instance ${webId} did not serve its guest site at ${virtualHost}.");
+		}
+
 		Navigator.openSpecificURL(url = ${virtualInstancesAdminURL});
 
 		var key_virtualHost = ${virtualHost};
