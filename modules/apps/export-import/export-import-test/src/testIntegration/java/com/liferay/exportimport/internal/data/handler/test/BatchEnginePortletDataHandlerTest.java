@@ -3686,7 +3686,7 @@ public class BatchEnginePortletDataHandlerTest {
 			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
-			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			ExportImportReportEntryConstants.TYPE_WARNING,
 			exportImportReportEntries.get(0));
 
 		_userLocalService.deleteUser(user1);
@@ -3741,7 +3741,7 @@ public class BatchEnginePortletDataHandlerTest {
 			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
-			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			ExportImportReportEntryConstants.TYPE_WARNING,
 			exportImportReportEntries.get(0));
 		_assertExportImportReportEntry(
 			_classNameLocalService.getClassNameId(KaleoDefinition.class),
@@ -3951,7 +3951,7 @@ public class BatchEnginePortletDataHandlerTest {
 			workflowDefinition.getExternalReferenceCode(), 0,
 			"workflow-definitions",
 			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
-			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+			ExportImportReportEntryConstants.TYPE_WARNING,
 			exportImportReportEntries.get(0));
 
 		_userLocalService.deleteUser(user1);
