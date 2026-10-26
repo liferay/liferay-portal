@@ -3,24 +3,15 @@
 <suppressions>
 	<source-check>
 		<suppress checks="GradleDependencyArtifactsCheck" files=".*" />
-		<suppress checks="GradleDependencyVersionCheck" files=".*" />
-		<suppress checks="GradleTestDependencyVersionCheck" files=".*" />
-		<suppress checks="GradleVersionCheck" files=".*" />
 		<suppress checks="JavaComponentAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/graphql/client/FaroGraphQLClient\.java" />
 		<suppress checks="JavaComponentAnnotationsCheck" files="osb-faro-contacts-demo/.*" />
 		<suppress checks="JavaComponentAnnotationsCheck" files="osb-faro-web/.*" />
-		<suppress checks="JavaModuleTestCheck" files=".*/src/testIntegration/java/com/liferay/osb/faro/functional/test/steps/FaroHooks.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/BaseMock.*.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/dto/v1_0/converter/IndividualDTOConverter\.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/rest/internal/resource/v1_0/.*ResourceImpl\.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/web/internal/activator/OAuth2AuthorizationExpandoPortalInstanceLifecycleListener\.java" />
 		<suppress checks="JavaReferenceAnnotationsCheck" files=".*/com/liferay/osb/faro/web/internal/card/template/ContactsCardTemplateManagerHelper\.java" />
-		<suppress checks="JavaUpgradeCreateTableCheck" files="osb-faro-service/.*" />
+		<suppress checks="JavaUpgradeCreateTableCheck" files=".*/com/liferay/osb/faro/internal/upgrade/registry/FaroServiceUpgradeStepRegistrator\.java" />
 		<suppress checks="JavaUpgradeMissingTestCheck" files="osb-faro-contacts-service/.*" />
-		<suppress checks="JavaUpgradeMissingTestCheck" files="osb-faro-service/.*" />
-
-		<suppress checks="JSONPackageJSONDependencyVersionCheck" files=".*" />
-		<suppress checks="PropertiesLiferayPluginPackageLiferayVersionsCheck" files=".*" />
-		<suppress checks="SQLLongNamesCheck" files=".*" />
 	</source-check>
 </suppressions>
