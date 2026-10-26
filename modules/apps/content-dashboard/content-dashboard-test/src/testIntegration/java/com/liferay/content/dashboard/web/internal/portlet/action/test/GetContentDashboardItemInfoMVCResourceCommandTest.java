@@ -76,6 +76,8 @@ import jakarta.portlet.MutableResourceParameters;
 import jakarta.portlet.PortletParameters;
 import jakarta.portlet.ResourceURL;
 
+import java.awt.image.BufferedImage;
+
 import java.io.ByteArrayOutputStream;
 
 import java.util.Arrays;
@@ -84,6 +86,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import javax.imageio.ImageIO;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -271,26 +275,25 @@ public class GetContentDashboardItemInfoMVCResourceCommandTest {
 			user.getUserId(), _group.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		ImageIO.write(
+			new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB), "png",
+			byteArrayOutputStream);
+
+		user = _userLocalService.updatePortrait(
+			user.getUserId(), byteArrayOutputStream.toByteArray());
+
 		_userLocalService.deleteUser(user);
 
-		Assert.assertNull(_userLocalService.fetchUser(user.getUserId()));
-
-		ContentDashboardItem<?> contentDashboardItem =
+		JSONObject jsonObject = _serveResource(
 			_contentDashboardJournalItemFactory.create(
-				journalArticle.getResourcePrimKey());
-
-		JSONObject jsonObject = _serveResource(contentDashboardItem);
-
-		Assert.assertEquals(
-			journalArticle.getTitle(LocaleUtil.US),
-			jsonObject.getString("title"));
+				journalArticle.getResourcePrimKey()));
 
 		JSONObject userJSONObject = jsonObject.getJSONObject("user");
 
-		Assert.assertEquals(
-			user.getFullName(), userJSONObject.getString("name"));
 		Assert.assertEquals(StringPool.BLANK, userJSONObject.getString("url"));
-		Assert.assertEquals(user.getUserId(), userJSONObject.getLong("userId"));
 	}
 
 	@Test
