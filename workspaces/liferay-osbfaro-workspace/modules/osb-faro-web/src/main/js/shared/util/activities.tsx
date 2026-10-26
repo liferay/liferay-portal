@@ -1,6 +1,5 @@
 import moment from 'moment';
 import React from 'react';
-import {DEFAULT_ACTIVITY_MAX} from 'shared/api/activities';
 import getEventDashboardUrl, {
 	EventDashboardContext,
 } from './getEventDashboardUrl';
@@ -15,10 +14,8 @@ import {AssetTypes, TimeIntervals} from 'shared/util/constants';
 import {RangeSelectors} from 'shared/types';
 import {Routes, toRoute} from 'shared/util/router';
 import {sub} from 'shared/util/lang';
-import {toLocale} from 'shared/util/numbers';
 import {UserSession, UserSessionEvent} from 'shared/queries/UserSessionQuery';
 
-export const CHART_ACTIVITY_ID = 'activities';
 export const CHART_ID = 'individualActivity';
 
 export const INTERVAL_MAP = {
@@ -182,33 +179,6 @@ export const mapEventMetricToActivityHistory = (
 					?.value,
 		})
 	) ?? [];
-
-/**
- * Format actvitiy metrics for use in ChangeLegend
- * @param {Object} changeMetrics - History data points.
- * @param {number} changeMetrics.activityChange - The activity count change from
- *                                                previous period.
- * @param {number} changeMetrics.activityCount - The activity count.
- * @return {Array} Activity metrics formatted for use in ChangeLegend.
- */
-export const buildLegendItems = ({
-	activityChange,
-	activityCount,
-}: {
-	activityChange: number;
-	activityCount: number;
-}): {change: number; id: string; secondaryInfo: string; title: string}[] => [
-	{
-		change: activityChange,
-		id: CHART_ACTIVITY_ID,
-		secondaryInfo: sub(Liferay.Language.get('x-day-change'), [
-			DEFAULT_ACTIVITY_MAX,
-		]) as string,
-		title: sub(Liferay.Language.get('total-activity-count-x'), [
-			toLocale(activityCount),
-		]) as string,
-	},
-];
 
 /**
  * An external data source reaches Analytics Cloud through a webhook, which it

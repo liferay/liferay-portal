@@ -28,7 +28,6 @@ import {
 } from 'shared/context/selection';
 import {ALERT_CONFIG_MAP, AlertTypes} from 'shared/components/Alert';
 import {close, modalTypes, open} from 'shared/actions/modals';
-import {FilterByType} from 'shared/types';
 import {compose} from 'shared/hoc';
 import {connect, ConnectedProps} from 'react-redux';
 import {createOrderIOMap} from 'shared/util/pagination';
@@ -75,16 +74,6 @@ import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
 import {useQueryPagination} from 'shared/hooks/useQueryPagination';
 import {useRequest} from 'shared/hooks/useRequest';
-
-export interface FetchSegmentsParams {
-	channelId: string;
-	delta?: number;
-	filterBy: FilterByType;
-	groupId: string;
-	orderIOMap: OrderedMap<string, OrderParams>;
-	page: number;
-	query: string;
-}
 
 function fetchDisabledSegments(
 	channelId: string,

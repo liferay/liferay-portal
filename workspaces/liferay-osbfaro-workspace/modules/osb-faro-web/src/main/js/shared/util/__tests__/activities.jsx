@@ -1,6 +1,5 @@
 import * as data from 'test/data';
 import {
-	buildLegendItems,
 	buildCampaignUrls,
 	buildTouchIndividualUrls,
 	formatEvents,
@@ -18,24 +17,6 @@ import {
 } from '../activities';
 
 describe('activities', () => {
-	describe('buildLegendItems', () => {
-		it('should return an array formatted for use as items in ChangeLegend', () => {
-			const mockChangeData = {
-				activityChange: 20,
-				activityCount: 10
-			};
-
-			const result = buildLegendItems(mockChangeData);
-
-			expect(Array.isArray(result)).toBe(true);
-			expect(result.length).toBe(1);
-			expect(result[0].change).toBe(20);
-			expect(result[0].id).toBe('activities');
-			expect(result[0].secondaryInfo).toContain('30');
-			expect(result[0].title).toContain('10');
-		});
-	});
-
 	describe('formatGroupingTime', () => {
 		it('should format grouping time', () => {
 			const result = formatGroupingTime(data.getTimestamp());
