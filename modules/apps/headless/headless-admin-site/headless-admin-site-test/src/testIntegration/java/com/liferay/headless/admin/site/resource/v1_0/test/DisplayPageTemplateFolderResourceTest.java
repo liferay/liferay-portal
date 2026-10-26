@@ -361,7 +361,7 @@ public class DisplayPageTemplateFolderResourceTest
 				randomDisplayPageTemplateFolder());
 
 		_testPostSiteDisplayPageTemplateFolderWithInvalidKey(
-			postDisplayPageTemplateFolder.getKey(),
+			postDisplayPageTemplateFolder.getKey(), "CONFLICT",
 			StringBundler.concat(
 				"Duplicate display page template folder for group ",
 				testGroup.getGroupId(), " with key ",
@@ -372,7 +372,7 @@ public class DisplayPageTemplateFolderResourceTest
 				RandomTestUtil.randomString();
 
 		_testPostSiteDisplayPageTemplateFolderWithInvalidKey(
-			key,
+			key, "BAD_REQUEST",
 			StringBundler.concat(
 				"Key ", key,
 				" must contain only alphanumeric characters, dashes, and ",
@@ -381,7 +381,7 @@ public class DisplayPageTemplateFolderResourceTest
 		key = RandomTestUtil.randomString(80);
 
 		_testPostSiteDisplayPageTemplateFolderWithInvalidKey(
-			key,
+			key, "BAD_REQUEST",
 			StringBundler.concat(
 				"Key ", key, " must have fewer than 75 characters"));
 
@@ -986,7 +986,7 @@ public class DisplayPageTemplateFolderResourceTest
 	}
 
 	private void _testPostSiteDisplayPageTemplateFolderWithInvalidKey(
-			String key, String title)
+			String key, String status, String title)
 		throws Exception {
 
 		DisplayPageTemplateFolder displayPageTemplateFolder =
@@ -995,7 +995,7 @@ public class DisplayPageTemplateFolderResourceTest
 		displayPageTemplateFolder.setKey(key);
 
 		ProblemExceptionTestUtil.assertProblemException(
-			"CONFLICT", title,
+			status, title,
 			() ->
 				displayPageTemplateFolderResource.
 					postSiteDisplayPageTemplateFolder(
