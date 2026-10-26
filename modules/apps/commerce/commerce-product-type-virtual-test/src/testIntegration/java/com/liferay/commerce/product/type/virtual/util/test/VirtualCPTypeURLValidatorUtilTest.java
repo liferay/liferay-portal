@@ -39,13 +39,13 @@ public class VirtualCPTypeURLValidatorUtilTest {
 		Assert.assertFalse(
 			VirtualCPTypeURLValidatorUtil.isValidURL(
 				companyId, "file:///" + RandomTestUtil.randomString()));
-		Assert.assertTrue(
-			VirtualCPTypeURLValidatorUtil.isValidURL(
-				companyId, "https://8.8.8.8/" + RandomTestUtil.randomString()));
 		Assert.assertFalse(
 			VirtualCPTypeURLValidatorUtil.isValidURL(
 				companyId,
 				"http://localhost/" + RandomTestUtil.randomString()));
+		Assert.assertTrue(
+			VirtualCPTypeURLValidatorUtil.isValidURL(
+				companyId, "https://8.8.8.8/" + RandomTestUtil.randomString()));
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
