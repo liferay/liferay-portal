@@ -8,18 +8,22 @@ package com.liferay.oauth2.provider.token.endpoint.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.oauth2.provider.internal.test.PasswordAuthorizationGrant;
 import com.liferay.oauth2.provider.internal.test.util.JWTAssertionUtil;
+import com.liferay.oauth2.provider.model.OAuth2Application;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.test.rule.Inject;
 
 import org.apache.cxf.rs.security.jose.jwk.JwkUtils;
 import org.apache.cxf.rs.security.jose.jws.JwsHeaders;
 import org.apache.cxf.rs.security.jose.jws.JwsJwtCompactConsumer;
 import org.apache.cxf.rs.security.jose.jws.JwsSignatureVerifier;
 import org.apache.cxf.rs.security.jose.jws.JwsUtils;
+import org.apache.cxf.rs.security.jose.jwt.JwtClaims;
 import org.apache.cxf.rs.security.jose.jwt.JwtToken;
 
 import org.junit.Assert;
@@ -50,7 +54,7 @@ public class IssueJWTAccessTokenTest extends BaseTokenEndpointTestCase {
 		return new IssueJWTAccessTokenTestPreparatorBundleActivator();
 	}
 
-	private void _verifyJWTAccessToken(String jwtAccessToken) {
+	private void _verifyJWTAccessToken(String jwtAccessToken) throws Exception {
 		JwsJwtCompactConsumer jwsJwtCompactConsumer = new JwsJwtCompactConsumer(
 			jwtAccessToken);
 
@@ -66,7 +70,20 @@ public class IssueJWTAccessTokenTest extends BaseTokenEndpointTestCase {
 			jwsSignatureVerifier.verify(
 				jwsHeaders, jwsJwtCompactConsumer.getUnsignedEncodedSequence(),
 				jwsJwtCompactConsumer.getDecodedSignature()));
+
+		OAuth2Application oAuth2Application =
+			_oAuth2ApplicationLocalService.fetchOAuth2Application(
+				TestPropsValues.getCompanyId(), TEST_CLIENT_ID_1);
+
+		JwtClaims jwtClaims = jwtToken.getClaims();
+
+		Assert.assertEquals(
+			oAuth2Application.getExternalReferenceCode(),
+			jwtClaims.getClaim("external_reference_code"));
 	}
+
+	@Inject
+	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
 
 	private class IssueJWTAccessTokenTestPreparatorBundleActivator
 		extends TestPreparatorBundleActivator {
