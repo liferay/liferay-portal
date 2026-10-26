@@ -304,8 +304,7 @@ public class I18nFilter extends BasePortalFilter {
 			Group group = _groupLocalService.getFriendlyURLGroup(
 				companyId, friendlyURL);
 
-			return LocaleUtil.toLanguageId(
-				_portal.getSiteDefaultLocale(group.getGroupId()));
+			return LocaleUtil.toLanguageId(_portal.getSiteDefaultLocale(group));
 		}
 		catch (PortalException portalException) {
 			if (_log.isDebugEnabled()) {
