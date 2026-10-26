@@ -327,43 +327,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro _addCommerceProductImageLinkedToOptionValue(optionValue = null, productERC = null, optionName = null) {
-		Variables.assertDefined(parameterList = "${productERC},${optionName},${optionValue}");
-
-		var baseURL = JSONCompany.getPortalURL();
-
-		if (!(isSet(imageTitle))) {
-			var imageTitle = "Simple Image Title API";
-		}
-
-		if (!(isSet(src))) {
-			var src = "${baseURL}/documents/d/guest/tree-png";
-		}
-
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${baseURL}/o/headless-commerce-admin-catalog/v1.0/products/by-externalReferenceCode/${productERC}/images \
-				-u ${userLoginInfo} \
-				-H 'accept: application/json' \
-				-H 'Content-Type: application/json' \
-				-d '{
-					"options": {
-						"${optionName}": "${optionValue}"
-					},
-					"src": "${src}",
-					"title": {
-						"en_US": "${imageTitle}"
-					}
-				}'
-		''';
-
-		var responseBody = JSONCurlUtil.post(${curl});
-
-		return ${responseBody};
-	}
-
-	@summary = "Default summary"
 	macro _addCommerceProductSku(skuName = null, productName = null) {
 		Variables.assertDefined(parameterList = "${productName},${skuName}");
 
