@@ -63,7 +63,7 @@ public class PayPalCommercePaymentIntegrationTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testValidate() throws Exception {
+	public void testIsValid() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		CommerceCurrency commerceCurrency =
