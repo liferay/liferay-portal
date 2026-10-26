@@ -395,17 +395,25 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 			SiteNavigationMenuItem siteNavigationMenuItem)
 		throws PortalException {
 
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.fastLoad(
+				siteNavigationMenuItem.getTypeSettings()
+			).build();
+
+		if (!hasModel(
+				siteNavigationMenuItem.getCompanyId(),
+				siteNavigationMenuItem.getGroupId(),
+				typeSettingsUnicodeProperties)) {
+
+			return false;
+		}
+
 		InfoItemPermissionProvider infoItemPermissionProvider =
 			_displayPageTypeContext.getInfoItemPermissionProvider();
 
 		if (infoItemPermissionProvider == null) {
 			return true;
 		}
-
-		UnicodeProperties typeSettingsUnicodeProperties =
-			UnicodePropertiesBuilder.fastLoad(
-				siteNavigationMenuItem.getTypeSettings()
-			).build();
 
 		String className = typeSettingsUnicodeProperties.get("className");
 

@@ -433,13 +433,17 @@ public class AssetVocabularySiteNavigationMenuItemType
 
 		AssetVocabulary assetVocabulary =
 			_assetVocabularyLocalService.
-				getAssetVocabularyByExternalReferenceCode(
+				fetchAssetVocabularyByExternalReferenceCode(
 					typeSettingsUnicodeProperties.get("externalReferenceCode"),
 					_getGroupId(
 						siteNavigationMenuItem.getCompanyId(),
 						siteNavigationMenuItem.getGroupId(),
 						typeSettingsUnicodeProperties.get(
 							"scopeExternalReferenceCode")));
+
+		if (assetVocabulary == null) {
+			return false;
+		}
 
 		return AssetVocabularyPermission.contains(
 			permissionChecker, assetVocabulary, ActionKeys.VIEW);
