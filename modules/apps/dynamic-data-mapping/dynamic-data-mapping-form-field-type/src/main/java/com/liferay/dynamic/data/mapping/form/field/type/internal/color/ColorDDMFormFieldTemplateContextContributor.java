@@ -10,7 +10,9 @@ import com.liferay.dynamic.data.mapping.form.field.type.constants.DDMFormFieldTy
 import com.liferay.dynamic.data.mapping.form.field.type.internal.util.DDMFormFieldTypeUtil;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.Map;
 
@@ -38,8 +40,10 @@ public class ColorDDMFormFieldTemplateContextContributor
 				"predefinedValue")
 		).put(
 			"value",
-			DDMFormFieldTypeUtil.getPropertyValue(
-				ddmFormFieldRenderingContext, "value")
+			StringUtil.removeSubstring(
+				DDMFormFieldTypeUtil.getPropertyValue(
+					ddmFormFieldRenderingContext, "value"),
+				StringPool.POUND)
 		).build();
 	}
 
