@@ -170,7 +170,7 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 
 		if (_log.isDebugEnabled()) {
 			_log.debug(
-				"No additional queued background tasks for " +
+				"There are no additional queued background tasks for " +
 					taskExecutorClassName);
 		}
 	}
