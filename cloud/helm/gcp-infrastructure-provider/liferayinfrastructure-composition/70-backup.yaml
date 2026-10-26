@@ -1,6 +1,6 @@
+{{- $backup := $xr.spec.backup }}
 {{- if $backup.enabled }}
 {{- $backupRestorePrincipal := printf "principal://iam.googleapis.com/projects/%s/locations/global/workloadIdentityPools/%s.svc.id.goog/subject/ns/%s/sa/backup-restore-service-account" $env.projectNumber $env.projectId $namespace }}
-{{- $backupVaultLabels := merge (dict) $labels (dict "is-backup-vault" "true") }}
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ProjectIAMMember
 metadata:
@@ -145,7 +145,7 @@ spec:
                 name: backup-restore-service-account.service-account-token
                 namespace: {{ $namespace }}
             type: kubernetes.io/service-account-token
-    managementPolicies: {{ $managementPoliciesNoUpdate }}
+    managementPolicies: {{ $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson }}
 ---
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket
@@ -161,14 +161,14 @@ spec:
         {{- end }}
         forceDestroy: {{ $forceDestroy }}
         labels:
-            {{- merge (dict) $backupVaultLabels ($backup.vaultTags | default dict) | toYaml | nindent 12 }}
+            {{- merge (dict "is-backup-vault" "true") $labels $backup.vaultTags | toYaml | nindent 12 }}
         lifecycleRule:
             -   action:
                     type: Delete
                 condition:
                     age: {{ add $backup.retentionDays 2 }}
-        location: {{ $backup.region | default $region }}
-        storageClass: {{ $backup.storageClass | quote }}
+        location: {{ $region }}
+        storageClass: NEARLINE
         uniformBucketLevelAccess: true
     managementPolicies: {{ $managementPolicies }}
 {{- range $dataPlane := $dataPlanes }}
