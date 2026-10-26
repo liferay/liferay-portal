@@ -13,6 +13,10 @@ definition {
 			User.firstLoginPG();
 		}
 
+		task ("Enable the Staging Page Variations deprecation feature flag") {
+			Staging.enablePageVariationsFeatureFlag();
+		}
+
 		task ("Add a site") {
 			HeadlessSite.addSite(siteName = "Test Site Name");
 		}
