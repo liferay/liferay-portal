@@ -28,6 +28,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
@@ -274,14 +275,28 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				_getAccountEntryId(
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
-				channel.getType(), null, commerceCurrency.getCode(), null,
-				false));
+				channel.getType(),
+				commerceChannel.getTypeSettingsUnicodeProperties(),
+				commerceCurrency.getCode(),
+				commerceChannel.getPriceDisplayType(),
+				commerceChannel.isDiscountsTargetNetPrice()));
 	}
 
 	@Override
 	public Channel putChannelByExternalReferenceCode(
 			String externalReferenceCode, Channel channel)
 		throws Exception {
+
+		CommerceChannel commerceChannel =
+			_commerceChannelService.fetchCommerceChannelByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
+
+		UnicodeProperties typeSettingsUnicodeProperties = null;
+
+		if (commerceChannel != null) {
+			typeSettingsUnicodeProperties =
+				commerceChannel.getTypeSettingsUnicodeProperties();
+		}
 
 		CommerceCurrency commerceCurrency =
 			CommerceCurrencyUtil.getCommerceCurrency(
@@ -295,7 +310,8 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				_getAccountEntryId(
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
 				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
-				channel.getType(), null, commerceCurrency.getCode(),
+				channel.getType(), typeSettingsUnicodeProperties,
+				commerceCurrency.getCode(),
 				_serviceContextHelper.getServiceContext()));
 	}
 
