@@ -8,13 +8,12 @@ package com.liferay.exportimport.rest.internal.resource.v1_0;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary;
-import com.liferay.exportimport.rest.internal.odata.entity.v1_0.PreviewAssetLibraryEntityModel;
+import com.liferay.exportimport.rest.dto.v1_0.AssetLibrary;
+import com.liferay.exportimport.rest.internal.odata.entity.v1_0.AssetLibraryEntityModel;
+import com.liferay.exportimport.rest.internal.util.AssetLibraryUtil;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.PermissionUtil;
-import com.liferay.exportimport.rest.internal.util.PreviewAssetLibraryUtil;
-import com.liferay.exportimport.rest.resource.v1_0.PreviewAssetLibraryResource;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.exportimport.rest.resource.v1_0.AssetLibraryResource;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.Field;
@@ -45,11 +44,10 @@ import org.osgi.service.component.annotations.ServiceScope;
  * @author Petteri Karttunen
  */
 @Component(
-	properties = "OSGI-INF/liferay/rest/v1_0/preview-asset-library.properties",
-	scope = ServiceScope.PROTOTYPE, service = PreviewAssetLibraryResource.class
+	properties = "OSGI-INF/liferay/rest/v1_0/asset-library.properties",
+	scope = ServiceScope.PROTOTYPE, service = AssetLibraryResource.class
 )
-public class PreviewAssetLibraryResourceImpl
-	extends BasePreviewAssetLibraryResourceImpl {
+public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 
 	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
@@ -57,12 +55,9 @@ public class PreviewAssetLibraryResourceImpl
 	}
 
 	@Override
-	public Page<PreviewAssetLibrary> getExportPreviewPreviewAssetLibrariesPage(
+	public Page<AssetLibrary> getExportPreviewAssetLibrariesPage(
 			String search, Filter filter, Pagination pagination, Sort[] sorts)
 		throws Exception {
-
-		FeatureFlagManagerUtil.checkEnabled(
-			contextCompany.getCompanyId(), "LPD-41307");
 
 		Group companyGroup = GroupUtil.getCompanyGroup(
 			contextCompany.getCompanyId());
@@ -110,30 +105,29 @@ public class PreviewAssetLibraryResourceImpl
 			searchContext -> searchContext.setCompanyId(
 				contextCompany.getCompanyId()),
 			sorts,
-			document -> _toPreviewAssetLibrary(
+			document -> _toAssetLibrary(
 				_depotEntryLocalService.getDepotEntry(
 					GetterUtil.getLong(document.get(Field.ENTRY_CLASS_PK)))));
 	}
 
-	private PreviewAssetLibrary _toPreviewAssetLibrary(DepotEntry depotEntry)
+	private AssetLibrary _toAssetLibrary(DepotEntry depotEntry)
 		throws Exception {
 
 		Group group = depotEntry.getGroup();
 
-		return new PreviewAssetLibrary() {
+		return new AssetLibrary() {
 			{
 				setDescriptiveName(
 					() -> group.getDescriptiveName(
 						contextAcceptLanguage.getPreferredLocale()));
 				setExternalReferenceCode(group::getExternalReferenceCode);
-				setType(
-					() -> PreviewAssetLibraryUtil.toType(depotEntry.getType()));
+				setType(() -> AssetLibraryUtil.toType(depotEntry.getType()));
 			}
 		};
 	}
 
 	private static final EntityModel _entityModel =
-		new PreviewAssetLibraryEntityModel();
+		new AssetLibraryEntityModel();
 
 	@Reference
 	private DepotEntryLocalService _depotEntryLocalService;
