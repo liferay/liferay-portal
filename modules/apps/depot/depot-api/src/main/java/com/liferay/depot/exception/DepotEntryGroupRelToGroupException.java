@@ -5,12 +5,25 @@
 
 package com.liferay.depot.exception;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
 /**
  * @author Brian Wing Shun Chan
  */
 public class DepotEntryGroupRelToGroupException extends PortalException {
+
+	public static class MustAcceptDepotEntryType
+		extends DepotEntryGroupException {
+
+		public MustAcceptDepotEntryType(int depotEntryType, long toGroupId) {
+			super(
+				StringBundler.concat(
+					"A depot entry of type ", depotEntryType,
+					" cannot be connected to group ", toGroupId));
+		}
+
+	}
 
 	public static class MustBeLocallyStaged extends DepotEntryGroupException {
 
