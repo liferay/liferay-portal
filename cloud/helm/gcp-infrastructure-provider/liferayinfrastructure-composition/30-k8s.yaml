@@ -44,6 +44,7 @@ spec:
             apiVersion: batch/v1
             kind: Job
             metadata:
+                labels:
                     dataPlane: {{ $dataPlane }}
                 name: {{ $jobName }}
                 namespace: {{ $namespace }}
