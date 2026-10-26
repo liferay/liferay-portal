@@ -1,5 +1,6 @@
 import * as API from 'shared/api';
 import CreateLifecycle from '../CreateLifecycle';
+import mockStore from 'test/mock-store';
 import React from 'react';
 import {Alert} from 'shared/types';
 import {
@@ -17,10 +18,13 @@ import {
 	within,
 } from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
+import {Provider} from 'react-redux';
 import {CATALOG_FIELDS_MAX_PAGE_SIZE} from 'shared/api/catalog';
 import {Routes, toRoute} from 'shared/util/router';
+import {useLifecycleAccountData} from 'lifecycle/hooks/useLifecycleAccountData';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useUnsavedChangesPrompt} from 'shared/hooks/useUnsavedChangesPrompt';
+import {AccountDataStatus} from 'lifecycle/utils/types';
 
 jest.unmock('react-dom');
 
@@ -31,7 +35,12 @@ jest.mock('shared/hooks/useRequest', () => ({
 const mockDispatch = jest.fn();
 
 jest.mock('react-redux', () => ({
+	...jest.requireActual('react-redux'),
 	useDispatch: () => mockDispatch,
+}));
+
+jest.mock('lifecycle/hooks/useLifecycleAccountData', () => ({
+	useLifecycleAccountData: jest.fn(),
 }));
 
 jest.mock('shared/actions/alerts', () => ({
@@ -79,7 +88,7 @@ jest.mock('shared/hooks/useUnsavedChangesPrompt', () => ({
 }));
 
 jest.mock('shared/hooks/useCurrentUser', () => ({
-	useCurrentUser: () => ({name: 'Anneta Smith'}),
+	useCurrentUser: () => ({isAdmin: () => true, name: 'Anneta Smith'}),
 }));
 
 jest.mock('shared/hooks/useTimeZone', () => ({
@@ -115,13 +124,11 @@ describe('CreateLifecycle', () => {
 		(API as any).catalog = {fetchCatalogFields: jest.fn()};
 
 		(API as any).lifecycle = {
-			createLifecycle: jest
-				.fn()
-				.mockResolvedValue({
-					externalReferenceCode: 'lifecycle-erc-42',
-					id: '42',
-					name: 'My Lifecycle',
-				}),
+			createLifecycle: jest.fn().mockResolvedValue({
+				externalReferenceCode: 'lifecycle-erc-42',
+				id: '42',
+				name: 'My Lifecycle',
+			}),
 			fetchLifecycles: jest.fn(),
 			fetchLifecyclesPage: jest.fn().mockResolvedValue({items: []}),
 		};
@@ -129,6 +136,61 @@ describe('CreateLifecycle', () => {
 		mockedCreateStageConfig.mockReturnValue(buildStage(false));
 
 		mockedUseRequest.mockReturnValue({data: [], loading: false});
+
+		(useLifecycleAccountData as jest.Mock).mockReturnValue({
+			refetch: jest.fn(),
+			status: AccountDataStatus.Ready,
+		});
+	});
+
+	describe('when the channel has no account data', () => {
+		const renderWithStore = () =>
+			render(
+				<Provider store={mockStore()}>
+					<MemoryRouter
+						initialEntries={['/workspace/23/123/lifecycle/new']}
+					>
+						<CreateLifecycle />
+					</MemoryRouter>
+				</Provider>
+			);
+
+		it('shows the empty state instead of the editor', () => {
+			(useLifecycleAccountData as jest.Mock).mockReturnValue({
+				refetch: jest.fn(),
+				status: AccountDataStatus.NoAccountData,
+			});
+
+			renderWithStore();
+
+			expect(
+				screen.getByText(/no account data available/i)
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole('heading', {name: /^lifecycles$/i})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('button', {name: /create lifecycle/i})
+			).toBeNull();
+		});
+
+		it('shows an error with reload when the account metrics fail', () => {
+			const refetch = jest.fn();
+
+			(useLifecycleAccountData as jest.Mock).mockReturnValue({
+				refetch,
+				status: AccountDataStatus.Error,
+			});
+
+			renderWithStore();
+
+			fireEvent.click(screen.getByRole('button', {name: /reload/i}));
+
+			expect(refetch).toHaveBeenCalled();
+			expect(
+				screen.queryByRole('button', {name: /create lifecycle/i})
+			).toBeNull();
+		});
 	});
 
 	it('opens on the configuration summary with the new lifecycle toolbar', () => {
@@ -713,9 +775,9 @@ describe('CreateLifecycle', () => {
 		beforeEach(() => {
 			mockedCreateStageConfig.mockReturnValue(buildStage(true));
 
-			(API.lifecycle.fetchLifecyclesPage as jest.Mock).mockResolvedValue(
-				{items: [{id: '5', name: '  my LIFECYCLE '}]}
-			);
+			(API.lifecycle.fetchLifecyclesPage as jest.Mock).mockResolvedValue({
+				items: [{id: '5', name: '  my LIFECYCLE '}],
+			});
 		});
 
 		it('looks the name up among the lifecycles of the channel', async () => {
@@ -750,9 +812,10 @@ describe('CreateLifecycle', () => {
 			).closest('.alert') as HTMLElement;
 
 			expect(alert).toHaveClass('alert-danger');
-			expect(alert).toHaveTextContent(/^error:/i);
-			expect(screen.queryByText(/review 1 error/i)).toBeNull();
-			expect(screen.getByText(/enter a unique name/i)).toBeInTheDocument();
+			expect(alert).toHaveTextContent(/review 1 error/i);
+			expect(
+				screen.getByText(/enter a unique name/i)
+			).toBeInTheDocument();
 			expect(
 				screen.getByRole('group', {name: /configuration summary/i})
 			).toHaveAttribute('aria-current', 'true');
@@ -791,12 +854,16 @@ describe('CreateLifecycle', () => {
 				)
 			).closest('.alert') as HTMLElement;
 
-			fireEvent.click(within(alert).getByRole('button', {name: /close/i}));
+			fireEvent.click(
+				within(alert).getByRole('button', {name: /close/i})
+			);
 
 			expect(
 				screen.queryByText(/this lifecycle name is currently in use/i)
 			).toBeNull();
-			expect(screen.getByText(/enter a unique name/i)).toBeInTheDocument();
+			expect(
+				screen.getByText(/enter a unique name/i)
+			).toBeInTheDocument();
 		});
 	});
 

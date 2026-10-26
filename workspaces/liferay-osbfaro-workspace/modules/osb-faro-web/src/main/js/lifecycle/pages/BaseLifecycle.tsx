@@ -5,7 +5,6 @@ import processingStateURL from '../../../images/states/lifecycle_processing_stat
 import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet';
 import BasePage from 'shared/components/base-page';
 import ClayEmptyState from '@clayui/empty-state';
-import DataSourceEmptyState from 'shared/components/DataSourceEmptyState';
 import FilterPicker from '../components/FilterPicker';
 import getCN from 'classnames';
 import LifecycleSwitchPanel, {
@@ -14,36 +13,33 @@ import LifecycleSwitchPanel, {
 import LifecycleChart from 'lifecycle/components/LifecycleChart';
 import LifecycleNotFound from 'lifecycle/components/LifecycleNotFound';
 import LifecycleSticker from 'lifecycle/components/LifecycleSticker';
+import LifecyclesPage from 'lifecycle/components/LifecyclesPage';
 import TrailingNinetyDayRange from 'shared/components/TrailingNinetyDayRange';
 import Loading from 'shared/components/Loading';
-import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import OverviewSection from '../components/OverviewSection';
 import React, {useContext, useRef, useState} from 'react';
 import SegmentDropdown from 'shared/components/SegmentDropdown';
-import {
-	AccountMetricType,
-	IAccountMetric,
-} from 'contacts/pages/account/utils/types';
 import {ChannelContext} from 'shared/context/channel';
 import {ClayButtonWithIcon} from '@clayui/button';
 import {
 	LifecycleContextProvider,
 	useLifecycle,
 } from '../context/LifecycleContext';
-import {NoDataSourcesEmptyState} from 'lifecycle/components/LifecycleEmptyStates';
+import {LifecycleAccountDataEmptyState} from 'lifecycle/components/LifecycleEmptyStates';
 import {useParams} from 'react-router-dom';
 import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
-import {useDataSources} from 'shared/context/dataSources';
+import {useLifecycleAccountData} from 'lifecycle/hooks/useLifecycleAccountData';
 import {useLifecycleActions} from 'lifecycle/hooks/useLifecycleActions';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
 import {noop} from 'lodash';
+import {AccountDataStatus} from 'lifecycle/utils/types';
 
 const ProcessingLifecycleEmptyState = () => (
-	<NoResultsDisplay displayCard title="">
+	<div className="card mt-4 py-8">
 		<ClayEmptyState
 			description={Liferay.Language.get(
 				'your-configuration-is-complete.-metrics-will-appear-in-the-dashboard-once-processing-is-complete'
@@ -52,7 +48,7 @@ const ProcessingLifecycleEmptyState = () => (
 			imgSrcReducedMotion={processingStateReducedMotionURL}
 			title={Liferay.Language.get('your-dashboard-is-almost-ready')}
 		/>
-	</NoResultsDisplay>
+	</div>
 );
 
 const LifecycleOverview = () => {
@@ -151,8 +147,8 @@ const BaseLifecycle = () => {
 
 	const {channelId, groupId, lifecycleId} = useParams();
 
-	const {empty: noDataSources, loading: dataSourcesLoading} =
-		useDataSources();
+	const {refetch: refetchAccountData, status: accountDataStatus} =
+		useLifecycleAccountData();
 
 	const {segmentId, segmentName, setSegment} = useSegmentFilter();
 
@@ -215,17 +211,6 @@ const BaseLifecycle = () => {
 
 	const processing = lifecycle?.processedDate == null;
 
-	const {data: accountMetrics, loading: accountMetricsLoading} = useRequest({
-		dataSourceFn: API.accounts.fetchMetrics,
-		skipRequest: noDataSources,
-		variables: {channelId: channelId!, groupId: groupId!},
-	});
-
-	const totalAccounts =
-		(accountMetrics as IAccountMetric[] | undefined)?.find(
-			(metric) => metric.metricType === AccountMetricType.Total
-		)?.value ?? 0;
-
 	const authorized = currentUser.isAdmin();
 
 	const newLifecycleActions = [
@@ -241,70 +226,25 @@ const BaseLifecycle = () => {
 
 	const title = lifecycle?.name ?? '';
 
-	const hasContent =
-		!dataSourcesLoading &&
-		!noDataSources &&
-		!processing &&
-		!accountMetricsLoading &&
-		!!totalAccounts;
-
-	const renderBody = () => {
-		if (dataSourcesLoading) {
-			return <Loading />;
-		}
-
-		if (noDataSources) {
-			return (
-				<NoDataSourcesEmptyState
-					authorized={authorized}
-					groupId={groupId!}
-				/>
-			);
-		}
-
-		if (processing) {
-			return <ProcessingLifecycleEmptyState />;
-		}
-
-		if (accountMetricsLoading) {
-			return <Loading />;
-		}
-
-		if (!totalAccounts) {
-			return (
-				<DataSourceEmptyState
-					authorized={authorized}
-					description={
-						authorized
-							? Liferay.Language.get(
-									'connect-a-data-source-containing-account-data'
-								)
-							: Liferay.Language.get(
-									'contact-an-administrator-to-connect-a-data-source-containing-account-data'
-								)
-					}
-					groupId={groupId!}
-					title={Liferay.Language.get('no-account-data-available')}
-				/>
-			);
-		}
-
+	if (accountDataStatus === AccountDataStatus.Loading || lifecycleLoading) {
 		return (
-			<>
-				<LifecycleOverview />
-
-				<LifecycleStagesSection
-					description={lifecycle?.description}
-					name={lifecycle?.name}
-				/>
-
-				<LifecycleAccounts />
-			</>
+			<LifecyclesPage showTitle={false}>
+				<Loading />
+			</LifecyclesPage>
 		);
-	};
+	}
 
-	if (lifecycleLoading) {
-		return <Loading />;
+	if (accountDataStatus !== AccountDataStatus.Ready) {
+		return (
+			<LifecyclesPage>
+				<LifecycleAccountDataEmptyState
+					authorized={authorized}
+					groupId={groupId!}
+					onReload={refetchAccountData}
+					status={accountDataStatus}
+				/>
+			</LifecyclesPage>
+		);
 	}
 
 	if (lifecycleError || !lifecycle) {
@@ -388,7 +328,7 @@ const BaseLifecycle = () => {
 						)}
 					</BasePage.Row>
 				</BasePage.Header>
-				{hasContent && (
+				{!processing && (
 					<BasePage.SubHeader fluid>
 						<div className="d-flex justify-content-between w-100">
 							<div className="d-flex">
@@ -421,7 +361,22 @@ const BaseLifecycle = () => {
 						</div>
 					</BasePage.SubHeader>
 				)}
-				<BasePage.Body fluid>{renderBody()}</BasePage.Body>
+				<BasePage.Body fluid>
+					{processing ? (
+						<ProcessingLifecycleEmptyState />
+					) : (
+						<>
+							<LifecycleOverview />
+
+							<LifecycleStagesSection
+								description={lifecycle.description}
+								name={lifecycle.name}
+							/>
+
+							<LifecycleAccounts />
+						</>
+					)}
+				</BasePage.Body>
 			</LifecycleContextProvider>
 
 			<LifecycleSwitchPanel

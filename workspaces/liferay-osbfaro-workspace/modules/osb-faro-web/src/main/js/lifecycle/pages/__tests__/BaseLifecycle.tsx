@@ -138,10 +138,13 @@ const buildAccountMetrics = (totalCount: number) =>
 		value: metricType === 'totalCount' ? totalCount : 0,
 	}));
 
+const mockRefetchMetrics = jest.fn();
+
 const useRequestImpl =
 	({
 		lifecycle = {id: '1'},
 		lifecycleError = false,
+		metricsError = false,
 		metricsLoading = false,
 		processedDate = 1700000000000,
 		totalCount = 1,
@@ -153,6 +156,7 @@ const useRequestImpl =
 			processedDate?: number | null;
 		} | null;
 		lifecycleError?: boolean;
+		metricsError?: boolean;
 		metricsLoading?: boolean;
 		processedDate?: number | null;
 		totalCount?: number;
@@ -170,9 +174,10 @@ const useRequestImpl =
 
 		if (dataSourceFn === API.accounts.fetchMetrics) {
 			return {
-				data: buildAccountMetrics(totalCount),
-				error: false,
+				data: metricsError ? null : buildAccountMetrics(totalCount),
+				error: metricsError,
 				loading: metricsLoading,
+				refetch: mockRefetchMetrics,
 			};
 		}
 
@@ -213,10 +218,10 @@ describe('BaseLifecycle', () => {
 		(API as any).accounts = {fetchMetrics: jest.fn()};
 		(API as any).lifecycle = {
 			deleteLifecycle: jest.fn(() => Promise.resolve({})),
+			fetchLifecycle: jest.fn(),
 			fetchLifecycles: jest.fn(() =>
 				Promise.resolve([{defaultAccountLifecycle: true, id: '1'}])
 			),
-			fetchLifecycle: jest.fn(),
 			fetchLifecyclesPage: jest.fn(),
 			setDefaultLifecycle: jest.fn(() => Promise.resolve()),
 		};
@@ -378,9 +383,9 @@ describe('BaseLifecycle', () => {
 				'.breadcrumbs-root'
 			) as HTMLElement;
 
-			expect(breadcrumb.querySelectorAll('.breadcrumb-item')).toHaveLength(
-				2
-			);
+			expect(
+				breadcrumb.querySelectorAll('.breadcrumb-item')
+			).toHaveLength(2);
 			expect(
 				within(breadcrumb).getByRole('link', {name: /^lifecycles$/i})
 			).toHaveAttribute(
@@ -440,6 +445,52 @@ describe('BaseLifecycle', () => {
 		expect(screen.queryByTestId('overview-section')).toBeNull();
 	});
 
+	describe('when the account metrics fail to load', () => {
+		beforeEach(() => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({
+					lifecycle: {id: '1', name: 'Growth Hub'},
+					metricsError: true,
+				})
+			);
+		});
+
+		it('shows an error instead of the empty state', () => {
+			renderPage();
+
+			expect(
+				screen.getByText(/an.unexpected.error.occurred/i)
+			).toBeInTheDocument();
+			expect(screen.queryByText('No Account Data Available')).toBeNull();
+			expect(screen.queryByText('Growth Hub')).toBeNull();
+		});
+
+		it('reloads the account metrics', () => {
+			renderPage();
+
+			fireEvent.click(screen.getByRole('button', {name: /reload/i}));
+
+			expect(mockRefetchMetrics).toHaveBeenCalled();
+		});
+	});
+
+	it('does not show the lifecycle header while the metrics load', () => {
+		mockedUseRequest.mockImplementation(
+			useRequestImpl({
+				lifecycle: {id: '1', name: 'Growth Hub'},
+				metricsLoading: true,
+			})
+		);
+
+		renderPage();
+
+		expect(screen.queryByText('Growth Hub')).toBeNull();
+		expect(
+			screen.queryByRole('button', {name: /switch dashboard/i})
+		).toBeNull();
+		expect(screen.queryByRole('heading', {level: 1})).toBeNull();
+	});
+
 	describe('when no data sources are connected', () => {
 		beforeEach(() => {
 			mockedUseDataSources.mockReturnValue({empty: true, loading: false});
@@ -493,8 +544,32 @@ describe('BaseLifecycle', () => {
 	describe('when data sources have no account data', () => {
 		beforeEach(() => {
 			mockedUseRequest.mockImplementation(
-				useRequestImpl({totalCount: 0})
+				useRequestImpl({
+					lifecycle: {
+						defaultAccountLifecycle: true,
+						id: '1',
+						name: 'Lifecycle Settings Demo',
+					},
+					totalCount: 0,
+				})
 			);
+		});
+
+		it('renders like the lifecycles page, without the lifecycle', () => {
+			renderPage();
+
+			expect(
+				screen.getByRole('heading', {name: /^lifecycles$/i})
+			).toBeInTheDocument();
+			expect(screen.queryByText('Lifecycle Settings Demo')).toBeNull();
+			expect(screen.queryByRole('img', {name: /default/i})).toBeNull();
+			expect(screen.queryByRole('button', {name: 'Menu'})).toBeNull();
+			expect(
+				screen.queryByRole('button', {name: /switch dashboard/i})
+			).toBeNull();
+			expect(
+				screen.queryByRole('link', {name: /new lifecycle/i})
+			).toBeNull();
 		});
 
 		it('renders the "No Account Data Available" empty state', () => {
@@ -1031,7 +1106,9 @@ describe('BaseLifecycle', () => {
 				screen.getByRole('button', {name: /switch dashboard/i})
 			);
 
-			expect(container.querySelector('.title-section .sticker')).toBeNull();
+			expect(
+				container.querySelector('.title-section .sticker')
+			).toBeNull();
 
 			fireEvent.click(
 				within(getRow('Partner Lifecycle')).getByRole('button', {

@@ -1,5 +1,13 @@
 import {Metric} from '../../contacts/pages/account/utils/types';
 
+export enum AccountDataStatus {
+	Error = 'error',
+	Loading = 'loading',
+	NoAccountData = 'noAccountData',
+	NoDataSources = 'noDataSources',
+	Ready = 'ready',
+}
+
 export enum OverviewMetricType {
 	AtRisk = 'at-risk',
 	NewPipeline = 'new-pipeline',
