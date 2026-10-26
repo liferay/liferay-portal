@@ -113,7 +113,7 @@
 					"disableTextWrap": false,
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "count(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=\"DONE\"}[$__range])\r\n  )\r\n)",
+					"expr": "count(\n  sum by (build_id) (\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=\"DONE\"}[$__range])\n  )\n)",
 					"format": "table",
 					"fullMetaSearch": false,
 					"includeNullMetadata": true,
@@ -124,7 +124,7 @@
 					"useBackend": false
 				}
 			],
-			"title": "SUCCESS RUNS #",
+			"title": "Successful Runs",
 			"type": "stat"
 		},
 		{
@@ -199,7 +199,7 @@
 					"disableTextWrap": false,
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "count(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=~\"ERROR|FAILURE|TIMEOUT|CANCELLED\"}[$__range])\r\n  )\r\n)",
+					"expr": "count(\n  sum by (build_id) (\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=~\"ERROR|FAILURE|TIMEOUT|CANCELLED\"}[$__range])\n  )\n)",
 					"format": "table",
 					"fullMetaSearch": false,
 					"includeNullMetadata": true,
@@ -210,7 +210,7 @@
 					"useBackend": false
 				}
 			],
-			"title": "FAILED RUNS #",
+			"title": "Failed Runs",
 			"type": "stat"
 		},
 		{
@@ -281,7 +281,7 @@
 					"disableTextWrap": false,
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "count(\r\n  sum by (build_id) (\r\n    last_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status!=\"starting\"}[$__range])\r\n  )\r\n)",
+					"expr": "count(\n  sum by (build_id) (\n    last_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status!=\"starting\"}[$__range])\n  )\n)",
 					"format": "table",
 					"fullMetaSearch": false,
 					"includeNullMetadata": true,
@@ -292,7 +292,7 @@
 					"useBackend": false
 				}
 			],
-			"title": "TOTAL RUNS #",
+			"title": "Total Runs",
 			"type": "stat"
 		},
 		{
@@ -350,7 +350,7 @@
 								"value": [
 									{
 										"title": "Select Build",
-										"url": "${__url.path}?var-build_id=${__data.fields[\"Build Id\"]}"
+										"url": "${__url.path}?var-build_id=${__data.fields[\"Build ID\"]}"
 									}
 								]
 							},
@@ -366,7 +366,7 @@
 					{
 						"matcher": {
 							"id": "byName",
-							"options": "Build Id"
+							"options": "Build ID"
 						},
 						"properties": [
 							{
@@ -444,7 +444,7 @@
 								"value": [
 									{
 										"targetBlank": true,
-										"title": "Open commit on GitHub",
+										"title": "Open Commit on GitHub",
 										"url": "${__value.raw}"
 									}
 								]
@@ -573,8 +573,8 @@
 							"Value #commit": "",
 							"Value #finished": "Finished",
 							"Value #started": "Started",
-							"build_id": "Build Id",
-							"build_trigger_id": "Trigger Id",
+							"build_id": "Build ID",
+							"build_trigger_id": "Trigger ID",
 							"git_commit_url": "Source",
 							"status": "Status"
 						}
@@ -669,7 +669,7 @@
 					},
 					"editorMode": "code",
 					"exemplar": false,
-					"expr": "count(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=~\"ERROR|FAILURE|TIMEOUT|CANCELLED\"}[$__range])\r\n  )\r\n)\r\n/\r\ncount(\r\n  sum by (build_id) (\r\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status!=\"starting\"}[$__range])\r\n  )\r\n)",
+					"expr": "count(\n  sum by (build_id) (\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status=~\"ERROR|FAILURE|TIMEOUT|CANCELLED\"}[$__range])\n  )\n)\n/\ncount(\n  sum by (build_id) (\n    max_over_time(logging_googleapis_com:user_cloudbuild_build_lifecycle_total{status!=\"starting\"}[$__range])\n  )\n)",
 					"format": "table",
 					"instant": true,
 					"legendFormat": "__auto",
@@ -843,8 +843,8 @@
 							"Time 1": "",
 							"Value #finished": "Finished",
 							"Value #started": "Started",
-							"build_id": "Build Id",
-							"build_trigger_id": "Trigger Id",
+							"build_id": "Build ID",
+							"build_trigger_id": "Trigger ID",
 							"status": "Status",
 							"step_name": "Name",
 							"step_number": "Number"
@@ -904,8 +904,8 @@
 	"refresh": "",
 	"schemaVersion": 42,
 	"tags": [
-		"Liferay",
-		"Builds"
+		"Builds",
+		"Liferay"
 	],
 	"templating": {
 		"list": [

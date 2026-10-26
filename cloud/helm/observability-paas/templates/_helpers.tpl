@@ -30,8 +30,8 @@ helm.sh/chart: {{ include "observability-paas.chart" . }}
 {{- end }}
 
 {{- define "observability-paas.namespace" -}}
-{{- .Release.Namespace | trunc 63 | trimSuffix "-" -}}
-{{- end -}}
+{{- .Release.Namespace | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{- define "observability-paas.selectorLabels" -}}
 app.kubernetes.io/instance: {{ .Release.Name }}

@@ -308,8 +308,8 @@
 	"preload": false,
 	"schemaVersion": 42,
 	"tags": [
-		"Liferay",
-		"Custom Domains"
+		"Custom Domains",
+		"Liferay"
 	],
 	"templating": {
 		"list": [

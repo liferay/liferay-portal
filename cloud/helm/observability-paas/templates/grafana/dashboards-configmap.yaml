@@ -1,9 +1,9 @@
-{{- $observability := index .Subcharts "observability" -}}
 {{- $dashboardHeaders := dict
-    "builds" (dict "label" "Build ID" "subtitle" "Execution timeline and step-level diagnostics." "title" "Build Details" "value" "$build_id")
+    "builds" (dict "label" "Build ID" "subtitle" "Execution timeline and step level diagnostics." "title" "Build Details" "value" "$build_id")
     "custom-domains" (dict "subtitle" "Domain configuration and SSL status across the platform." "title" "Custom Domains")
     "secrets" (dict "links" (list (dict "emoji" "🔐" "href" "https://cd.${dns_zone}/secrets" "subtitle" "Manage Secrets in ArgoCD" "title" "Secret Management")) "subtitle" "Inventory and lifecycle of deployed Secrets." "title" "Secrets")
 -}}
+{{- $observability := index .Subcharts "observability" -}}
 {{- range $key, $entry := .Values.dashboards.items }}
 {{- if not (eq $entry.enabled false) }}
 {{- $replacements := dict -}}
