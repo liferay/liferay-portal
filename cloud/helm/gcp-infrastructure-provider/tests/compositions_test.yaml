@@ -9,7 +9,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "-   \"\\{\\{ dig \\(printf \"database-primary-%s\" \\$dataPlane\\) \"resource\" \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\}\\}\""
+                    pattern: "\\$[A-Za-z]+ := dig \\(printf \"database-primary-%s\" \\$dataPlane\\) \"resource\" dict \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "-   \"\\{\\{ dig \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\}\\}\""
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template

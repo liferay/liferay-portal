@@ -16,15 +16,11 @@ spec:
                 name: liferay-default
                 namespace: {{ $namespace }}
 {{- range $dataPlane := $dataPlanes }}
-{{- $dbInstanceResourceName := printf "database-primary-%s" $dataPlane }}
 {{- $dbReady := false }}
-{{- if $.observed.resources }}
-    {{- if (index $.observed.resources $dbInstanceResourceName) }}
-        {{- range $cond := (index $.observed.resources $dbInstanceResourceName).resource.status.conditions | default list }}
-            {{- if and (eq $cond.type "Ready") (eq $cond.status "True") }}
-                {{- $dbReady = true }}
-            {{- end }}
-        {{- end }}
+{{- $observedDatabase := dig (printf "database-primary-%s" $dataPlane) "resource" dict $observedResources }}
+{{- range $condition := dig "status" "conditions" (list) $observedDatabase }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $dbReady = true }}
     {{- end }}
 {{- end }}
 {{- if and $dbReady (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
@@ -132,7 +128,7 @@ spec:
                                     -   --port={{ $databasePort }}
                                     -   --private-ip
                                     -   --structured-logs
-                                    -   "{{ dig (printf "database-primary-%s" $dataPlane) "resource" "status" "atProvider" "connectionName" "" $observedResources }}"
+                                    -   "{{ dig "status" "atProvider" "connectionName" "" $observedDatabase }}"
                                 image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
                                 name: cloud-sql-proxy
                                 resources:
@@ -170,14 +166,9 @@ spec:
 {{- end }}
 ---
 {{- $isReady := false }}
-{{- if .observed.resources }}
-    {{- $activeJobResourceName := printf "liferay-db-grant-job-%s" $activeDataPlane }}
-    {{- if (index .observed.resources $activeJobResourceName) }}
-        {{- range $cond := (index .observed.resources $activeJobResourceName).resource.status.conditions | default list }}
-            {{- if and (eq $cond.type "Ready") (eq $cond.status "True") }}
-                {{- $isReady = true }}
-            {{- end }}
-        {{- end }}
+{{- range $condition := dig (printf "liferay-db-grant-job-%s" $activeDataPlane) "resource" "status" "conditions" (list) $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isReady = true }}
     {{- end }}
 {{- end }}
 {{- if $isReady }}
