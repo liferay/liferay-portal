@@ -486,8 +486,11 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			ObjectEntry objectEntry, String actionId)
 		throws PortalException {
 
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
 		ModelResourcePermission<ObjectEntry> modelResourcePermission =
-			getModelResourcePermission(objectEntry.getObjectDefinitionId());
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				objectDefinition.getClassName());
 
 		return modelResourcePermission.contains(
 			getPermissionChecker(), objectEntry, actionId);
