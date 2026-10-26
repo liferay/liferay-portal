@@ -4,9 +4,60 @@
 
 {{- range $i, $dataPlane := $dataPlanes }}
 {{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
+{{- $rootPasswordName := printf "liferay-database-%s-root-password" $dataPlane }}
 {{- if $i }}
 ---
 {{- end }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-root-password-generator-{{ $dataPlane }}
+    name: {{ $baseName }}-db-root-password-generator-{{ $dataPlane }}
+spec:
+    forProvider:
+        manifest:
+            apiVersion: generators.external-secrets.io/v1alpha1
+            kind: Password
+            metadata:
+                name: {{ $rootPasswordName }}
+                namespace: {{ $namespace }}
+            spec:
+                allowRepeat: false
+                digits: 5
+                length: 24
+                noUpper: false
+                symbolCharacters: -_$@
+                symbols: 2
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: database-root-password-{{ $dataPlane }}
+    name: {{ $baseName }}-db-root-password-{{ $dataPlane }}
+spec:
+    forProvider:
+        manifest:
+            apiVersion: external-secrets.io/v1
+            kind: ExternalSecret
+            metadata:
+                name: {{ $rootPasswordName }}
+                namespace: {{ $namespace }}
+            spec:
+                dataFrom:
+                    -   sourceRef:
+                            generatorRef:
+                                apiVersion: generators.external-secrets.io/v1alpha1
+                                kind: Password
+                                name: {{ $rootPasswordName }}
+                refreshInterval: 0s
+                target:
+                    creationPolicy: Owner
+                    name: {{ $rootPasswordName }}
+    managementPolicies: {{ $managementPolicies }}
+---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: DatabaseInstance
 metadata:
@@ -26,7 +77,7 @@ spec:
         region: {{ $region }}
         rootPasswordSecretRef:
             key: password
-            name: {{ $database.rootPasswordSecretName }}
+            name: {{ $rootPasswordName }}
         settings:
             availabilityType: {{ $database.highAvailability | ternary "REGIONAL" "ZONAL" }}
             backupConfiguration:
