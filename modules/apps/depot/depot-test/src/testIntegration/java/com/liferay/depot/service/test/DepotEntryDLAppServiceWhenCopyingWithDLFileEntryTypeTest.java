@@ -168,7 +168,7 @@ public class DepotEntryDLAppServiceWhenCopyingWithDLFileEntryTypeTest {
 			dlFileEntry2.getFileEntryTypeId());
 	}
 
-	@Test(expected = InvalidFileEntryTypeException.class)
+	@Test
 	public void testCopyFileEntryShouldNotCopyDLFileEntryTypeFromRelatedGroupUnlessDLFileEntryTypeAvailable()
 		throws Exception {
 
@@ -189,10 +189,17 @@ public class DepotEntryDLAppServiceWhenCopyingWithDLFileEntryTypeTest {
 			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
 			dlFileEntry1.getFileEntryTypeId());
 
-		_copyFileEntry(_group.getGroupId(), fileEntry1.getFileEntryId());
+		FileEntry fileEntry2 = _copyFileEntry(
+			_group.getGroupId(), fileEntry1.getFileEntryId());
+
+		DLFileEntry dlFileEntry2 = (DLFileEntry)fileEntry2.getModel();
+
+		Assert.assertEquals(
+			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
+			dlFileEntry2.getFileEntryTypeId());
 	}
 
-	@Test(expected = InvalidFileEntryTypeException.class)
+	@Test
 	public void testCopyFileEntryShouldNotCopyDLFileEntryTypeFromUnrelatedGroup()
 		throws Exception {
 
@@ -209,10 +216,17 @@ public class DepotEntryDLAppServiceWhenCopyingWithDLFileEntryTypeTest {
 			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
 			dlFileEntry1.getFileEntryTypeId());
 
-		_copyFileEntry(_depotGroup.getGroupId(), fileEntry1.getFileEntryId());
+		FileEntry fileEntry2 = _copyFileEntry(
+			_depotGroup.getGroupId(), fileEntry1.getFileEntryId());
+
+		DLFileEntry dlFileEntry2 = (DLFileEntry)fileEntry2.getModel();
+
+		Assert.assertEquals(
+			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
+			dlFileEntry2.getFileEntryTypeId());
 	}
 
-	@Test(expected = InvalidFileEntryTypeException.class)
+	@Test
 	public void testCopyFileEntryShouldNotCopyDLFileEntryTypeToUnrelatedGroup()
 		throws Exception {
 
@@ -230,10 +244,17 @@ public class DepotEntryDLAppServiceWhenCopyingWithDLFileEntryTypeTest {
 			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
 			dlFileEntry1.getFileEntryTypeId());
 
-		_copyFileEntry(_group.getGroupId(), fileEntry1.getFileEntryId());
+		FileEntry fileEntry2 = _copyFileEntry(
+			_group.getGroupId(), fileEntry1.getFileEntryId());
+
+		DLFileEntry dlFileEntry2 = (DLFileEntry)fileEntry2.getModel();
+
+		Assert.assertEquals(
+			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
+			dlFileEntry2.getFileEntryTypeId());
 	}
 
-	@Test(expected = InvalidFileEntryTypeException.class)
+	@Test
 	public void testCopyFileEntryShouldNotCopyDLFileEntryTypeUnlessDLFileEntryTypeAvailable()
 		throws Exception {
 
@@ -253,7 +274,14 @@ public class DepotEntryDLAppServiceWhenCopyingWithDLFileEntryTypeTest {
 			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
 			dlFileEntry1.getFileEntryTypeId());
 
-		_copyFileEntry(_depotGroup.getGroupId(), fileEntry1.getFileEntryId());
+		FileEntry fileEntry2 = _copyFileEntry(
+			_depotGroup.getGroupId(), fileEntry1.getFileEntryId());
+
+		DLFileEntry dlFileEntry2 = (DLFileEntry)fileEntry2.getModel();
+
+		Assert.assertEquals(
+			DLFileEntryTypeConstants.COMPANY_ID_BASIC_DOCUMENT,
+			dlFileEntry2.getFileEntryTypeId());
 	}
 
 	private FileEntry _addFileEntry(long groupId, long fileEntryTypeId)
