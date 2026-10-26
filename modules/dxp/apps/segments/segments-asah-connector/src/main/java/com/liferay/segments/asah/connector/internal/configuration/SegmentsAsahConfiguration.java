@@ -34,11 +34,4 @@ public interface SegmentsAsahConfiguration {
 	)
 	public int checkInterval();
 
-	@Meta.AD(
-		deflt = "86400",
-		description = "interest-terms-cache-expiration-time-description",
-		name = "interest-terms-cache-expiration-time-name", required = false
-	)
-	public int interestTermsCacheExpirationTime();
-
 }
