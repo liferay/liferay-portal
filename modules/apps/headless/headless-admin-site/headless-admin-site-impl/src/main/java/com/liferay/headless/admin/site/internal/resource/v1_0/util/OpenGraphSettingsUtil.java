@@ -5,7 +5,6 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0.util;
 
-import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.headless.admin.site.dto.v1_0.ItemExternalReference;
 import com.liferay.headless.admin.site.dto.v1_0.OpenGraphSettings;
 import com.liferay.headless.admin.site.internal.dto.v1_0.util.ItemScopeUtil;
@@ -25,7 +24,7 @@ import java.util.Map;
 public class OpenGraphSettingsUtil {
 
 	public static OpenGraphSettings getOpenGraphSettings(
-		DLAppService dlAppService, LayoutSEOEntry layoutSEOEntry) {
+		LayoutSEOEntry layoutSEOEntry) {
 
 		if ((layoutSEOEntry == null) ||
 			(MapUtil.isEmpty(layoutSEOEntry.getOpenGraphDescriptionMap()) &&
@@ -58,27 +57,21 @@ public class OpenGraphSettingsUtil {
 							return null;
 						}
 
-						FileEntry fileEntry =
-							dlAppService.fetchFileEntryByExternalReferenceCode(
-								openGraphImageFileEntryERC,
+						ItemExternalReference itemExternalReference =
+							new ItemExternalReference();
+
+						itemExternalReference.setClassName(
+							FileEntry.class::getName);
+						itemExternalReference.setExternalReferenceCode(
+							() -> openGraphImageFileEntryERC);
+						itemExternalReference.setScope(
+							() -> ItemScopeUtil.getItemScope(
+								layoutSEOEntry.getCompanyId(),
 								layoutSEOEntry.
-									getOpenGraphImageFileEntryGroupId());
+									getOpenGraphImageFileEntryScopeERC(),
+								layoutSEOEntry.getGroupId()));
 
-						if (fileEntry == null) {
-							return null;
-						}
-
-						return new ItemExternalReference() {
-							{
-								setClassName(FileEntry.class::getName);
-								setExternalReferenceCode(
-									fileEntry::getExternalReferenceCode);
-								setScope(
-									() -> ItemScopeUtil.getItemScope(
-										fileEntry.getGroupId(),
-										layoutSEOEntry.getGroupId()));
-							}
-						};
+						return itemExternalReference;
 					});
 				setImageAlt_i18n(
 					() -> {

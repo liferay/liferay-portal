@@ -5,7 +5,6 @@
 
 package com.liferay.headless.admin.site.internal.dto.v1_0.converter;
 
-import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSettings;
 import com.liferay.headless.admin.site.dto.v1_0.CustomMetaTag;
 import com.liferay.headless.admin.site.dto.v1_0.EmbeddedPageSettings;
@@ -285,8 +284,7 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 			() -> layout.getTypeSettingsProperty(
 				LayoutTypePortletConstants.DEFAULT_ASSET_PUBLISHER_PORTLET_ID));
 		contentPageSettings.setOpenGraphSettings(
-			() -> OpenGraphSettingsUtil.getOpenGraphSettings(
-				_dlAppService, layoutSEOEntry));
+			() -> OpenGraphSettingsUtil.getOpenGraphSettings(layoutSEOEntry));
 		contentPageSettings.setSeoSettings(
 			() -> SEOSettingsUtil.getSeoSettings(layout, layoutSEOEntry));
 
@@ -381,8 +379,7 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 			() -> layout.getTypeSettingsProperty(
 				LayoutTypePortletConstants.LAYOUT_TEMPLATE_ID));
 		widgetPageSettings.setOpenGraphSettings(
-			() -> OpenGraphSettingsUtil.getOpenGraphSettings(
-				_dlAppService, layoutSEOEntry));
+			() -> OpenGraphSettingsUtil.getOpenGraphSettings(layoutSEOEntry));
 		widgetPageSettings.setSeoSettings(
 			() -> SEOSettingsUtil.getSeoSettings(layout, layoutSEOEntry));
 		widgetPageSettings.setType(
@@ -411,9 +408,6 @@ public class SitePageDTOConverter implements DTOConverter<Layout, SitePage> {
 
 		return widgetPageSettings;
 	}
-
-	@Reference
-	private DLAppService _dlAppService;
 
 	@Reference
 	private LayoutLocalService _layoutLocalService;
