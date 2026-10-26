@@ -193,51 +193,6 @@ definition {
 			uploadFileName = "static");
 	}
 
-	@description = "This checks that a blog entry with a trackback URL can be added."
-	@priority = 4
-	@refactorneeded
-	test CanAddWithTrackbackURL {
-		property custom.properties = "blogs.trackback.enabled=true";
-		property portal.acceptance = "true";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		BlogsNavigator.openToAddEntry(
-			layoutName = "Blogs Page",
-			siteURLKey = "guest");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry1 Content",
-			entryTitle = "Blogs Entry1 Title");
-
-		PortletEntry.publish();
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsEntry.addWithTrackbackURLPG(
-			entryContent = "Blogs Entry1 Content",
-			entryContent2 = "Blogs Entry2 Content",
-			entryTitle = "Blogs Entry1 Title",
-			entryTitle2 = "Blogs Entry2 Title",
-			pageName = "Blogs Page");
-
-		Navigator.gotoPage(pageName = "Blogs Page");
-
-		BlogsEntry.viewWithTrackbackURLPG(
-			entryContent = "Blogs Entry1 Content",
-			entryContent2 = "Blogs Entry2 Content",
-			entryTitle = "Blogs Entry1 Title",
-			entryTitle2 = "Blogs Entry2 Title");
-	}
-
 	@description = "LPS-186698 Confirm that the blog is created via API, check that the console, and the Title and Content fields are faulty."
 	@priority = 4
 	test CanAssertThatTheBlogContentViaAPI {

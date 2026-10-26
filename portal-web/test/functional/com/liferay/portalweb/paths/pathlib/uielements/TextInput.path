@@ -761,11 +761,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>TRACKBACKS</td>
-	<td>//input[contains(@id,'trackbacks')]</td>
-	<td></td>
-</tr>
-<tr>
 	<td>TRANSLATIONS_TARGET_FIELD</td>
 	<td>//div[contains(@class,'form-group')]//label[text()='${key_fieldName}']/following::input[not(@readonly)]</td>
 	<td></td>

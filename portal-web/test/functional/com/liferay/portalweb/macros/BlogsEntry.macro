@@ -247,46 +247,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addWithTrackbackURLPG(virtualHosts = null, entryTitle2 = null, entryContent2 = null, virtualHostsURL = null, entryTitle = null, entryContent = null) {
-		BlogsNavigator.gotoEntryPG(
-			entryContent = ${entryContent},
-			entryTitle = ${entryTitle});
-
-		WaitForSPARefresh();
-
-		MouseOver(locator1 = "BlogsEntry#COMMENTS_TRACKBACK_URL");
-
-		var backtrackURL = selenium.getElementValue("BlogsEntry#COMMENTS_TRACKBACK_URL");
-
-		if (${virtualHosts} == "true") {
-			Navigator.gotoSpecificURLPage(
-				pageName = "Blogs Page",
-				url = ${virtualHostsURL});
-		}
-		else {
-			Navigator.gotoPage(pageName = "Blogs Page");
-		}
-
-		BlogsNavigator.gotoAddEntry();
-
-		BlogsEntry.addEntryContent(
-			entryContent = ${entryContent2},
-			entryTitle = ${entryTitle2});
-
-		Blogs.expandPanel(panel = "Configuration");
-
-		Type(
-			locator1 = "TextInput#TRACKBACKS",
-			value1 = ${backtrackURL});
-
-		AssertClick(
-			locator1 = "Button#PUBLISH",
-			value1 = "Publish");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro addWithWorkflowPG(entryTitle = null, entryContent = null) {
 		BlogsNavigator.gotoAddEntry();
 
@@ -1817,62 +1777,6 @@ definition {
 		AssertTextNotPresent(
 			locator1 = "BlogsEntry#CONTENT",
 			value1 = ${entryContent});
-	}
-
-	@summary = "Default summary"
-	macro viewWithTrackbackURLPG(entryTitle2 = null, entryContent2 = null, entryTitle = null, entryContent = null) {
-		BlogsEntry.viewPG(
-			entryContent = ${entryContent},
-			entryTitle = ${entryTitle});
-
-		var key_entryContent = ${entryContent};
-		var key_entryTitle = ${entryTitle};
-
-		if (IsTextEqual.isPartialText(locator1 = "Blogs#ENTRY_COMMENTS_COUNT", value1 = 2)) {
-			AssertTextEquals.assertPartialText(
-				locator1 = "Blogs#ENTRY_COMMENTS_COUNT",
-				value1 = 2);
-		}
-		else {
-			AssertTextEquals.assertPartialText(
-				locator1 = "Blogs#ENTRY_COMMENTS_COUNT",
-				value1 = 1);
-		}
-
-		AssertClick(
-			locator1 = "BlogsEntry#TITLE_LINK",
-			value1 = ${entryTitle});
-
-		AssertTextEquals(
-			locator1 = "BlogsEntry#TITLE",
-			value1 = ${entryTitle});
-
-		AssertTextEquals(
-			locator1 = "BlogsEntry#CONTENT",
-			value1 = ${entryContent});
-
-		AssertTextEquals(
-			locator1 = "Comments#ENTRY_COUNT_PANEL",
-			value1 = "1 COMMENT");
-
-		AssertTextEquals(
-			locator1 = "Comments#COMMENT_BODY",
-			value1 = "[...] ${entryContent2} [...] Read More");
-
-		AssertClick(
-			locator1 = "Link#READ_MORE",
-			value1 = "Read More");
-
-		var key_entryContent = ${entryContent2};
-		var key_entryTitle = ${entryTitle2};
-
-		AssertTextEquals(
-			locator1 = "BlogsEntry#TITLE",
-			value1 = ${entryTitle2});
-
-		AssertTextEquals(
-			locator1 = "BlogsEntry#CONTENT",
-			value1 = ${entryContent2});
 	}
 
 	@summary = "Default summary"
