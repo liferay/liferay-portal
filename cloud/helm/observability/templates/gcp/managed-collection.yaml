@@ -44,12 +44,11 @@ spec:
 {{- end }}
 {{- if $scrape.kubeStateMetrics.enabled }}
 apiVersion: monitoring.googleapis.com/v1
-kind: PodMonitoring
+kind: ClusterPodMonitoring
 metadata:
     labels:
         {{- include "observability.labels" . | nindent 8 }}
     name: {{ printf "%s-kube-state-metrics" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" }}
-    namespace: {{ include "observability.namespace" . | quote }}
 spec:
     endpoints:
         -   interval: {{ $interval | quote }}
@@ -57,7 +56,10 @@ spec:
             port: {{ $scrape.kubeStateMetrics.port }}
     selector:
         matchLabels:
+            app.kubernetes.io/instance: {{ .Release.Name }}
             app.kubernetes.io/name: {{ $kubeStateMetricsName }}
+    targetLabels:
+        metadata: []
 ---
 {{- end }}
 {{- if $scrape.liferay.enabled }}

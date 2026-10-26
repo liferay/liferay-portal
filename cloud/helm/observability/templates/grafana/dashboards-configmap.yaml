@@ -10,10 +10,6 @@
 {{- $folder := .Values.dashboards.folder -}}
 {{- $items := deepCopy .Values.dashboards.items -}}
 {{- $namespace := include "observability.namespace" . -}}
-{{- $nsLabel := "namespace" -}}
-{{- if eq $cloudProvider "gcp" -}}
-{{- $nsLabel = "exported_namespace" -}}
-{{- end -}}
 {{- $region := "" -}}
 {{- with .Values.aws -}}
 {{- $region = (.region | default "") -}}
@@ -66,7 +62,7 @@
 {{- if not $raw -}}
 {{- fail (printf "Dashboard file %s not found in chart" $entry.file) -}}
 {{- end -}}
-{{- $rendered := $raw | replace "${AZURE_RESOURCE_GROUP}" $azureResourceGroupName | replace "${AZURE_SUBSCRIPTION_ID}" $azureSubscriptionId | replace "${CLOUD_PROVIDER}" $cloudProvider | replace "${DS_AZURE_MONITOR}" $azureDatasourceUid | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${NS_LABEL}" $nsLabel | replace "${region}" $region -}}
+{{- $rendered := $raw | replace "${AZURE_RESOURCE_GROUP}" $azureResourceGroupName | replace "${AZURE_SUBSCRIPTION_ID}" $azureSubscriptionId | replace "${CLOUD_PROVIDER}" $cloudProvider | replace "${DS_AZURE_MONITOR}" $azureDatasourceUid | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${region}" $region -}}
 {{- if hasKey $dashboardHeaders $key -}}
 {{- $rendered = $rendered | replace "\"${HEADER_HTML}\"" (tpl ($.Files.Get "dashboards/html/dashboard-header.html") (index $dashboardHeaders $key) | toJson) -}}
 {{- end -}}

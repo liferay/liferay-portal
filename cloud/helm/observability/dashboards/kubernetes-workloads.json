@@ -230,7 +230,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"memory\", ${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"memory\", namespace=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Requests",
 							"range": true,
@@ -242,7 +242,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_limits{resource=\"memory\", ${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_limits{resource=\"memory\", namespace=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Limits",
 							"range": true,
@@ -431,7 +431,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"cpu\", ${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"cpu\", namespace=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Request",
 							"range": true,
@@ -443,7 +443,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (avg_over_time(\n    kube_pod_container_resource_limits{resource=\"cpu\", ${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (avg_over_time(\n    kube_pod_container_resource_limits{resource=\"cpu\", namespace=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Limits",
 							"range": true,
@@ -554,7 +554,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod) (\n  kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}\n  - kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"} offset $__interval\n)",
+							"expr": "sum by (pod) (\n  kube_pod_container_status_restarts_total{namespace=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"}\n  - kube_pod_container_status_restarts_total{namespace=\"$environment\", pod=~\"liferay-.*\", container!=\"cloud-sql-proxy\"} offset $__interval\n)",
 							"format": "time_series",
 							"instant": false,
 							"interval": "",
@@ -1070,7 +1070,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"memory\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"memory\", namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Requests",
 							"range": true,
@@ -1082,7 +1082,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_limits{resource=\"memory\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_limits{resource=\"memory\", namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Limits",
 							"range": true,
@@ -1271,7 +1271,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"cpu\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (\n    avg_over_time(kube_pod_container_resource_requests{resource=\"cpu\", namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Request",
 							"range": true,
@@ -1283,7 +1283,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "avg(\n  sum by (pod) (avg_over_time(\n    kube_pod_container_resource_limits{resource=\"cpu\", ${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
+							"expr": "avg(\n  sum by (pod) (avg_over_time(\n    kube_pod_container_resource_limits{resource=\"cpu\", namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}[$__rate_interval])\n  )\n)",
 							"instant": false,
 							"legendFormat": "Limits",
 							"range": true,
@@ -1394,7 +1394,7 @@
 								"uid": "${DS_PROMETHEUS}"
 							},
 							"editorMode": "code",
-							"expr": "sum by (pod) (\n  kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}\n  - kube_pod_container_status_restarts_total{${NS_LABEL}=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"} offset $__interval\n)",
+							"expr": "sum by (pod) (\n  kube_pod_container_status_restarts_total{namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"}\n  - kube_pod_container_status_restarts_total{namespace=\"$environment-elasticsearch\", container=~\"elasticsearch|opensearch\"} offset $__interval\n)",
 							"format": "time_series",
 							"instant": false,
 							"interval": "",
@@ -1431,14 +1431,14 @@
 					"type": "prometheus",
 					"uid": "${DS_PROMETHEUS}"
 				},
-				"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+				"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
 				"label": "Environment",
 				"name": "environment",
 				"options": [
 				],
 				"query": {
 					"qryType": 1,
-					"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+					"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
 					"refId": "PrometheusVariableQueryEditor-VariableQuery"
 				},
 				"refresh": 1,

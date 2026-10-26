@@ -1292,7 +1292,7 @@
 						"text": "",
 						"value": ""
 					},
-					"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+					"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
 					"hide": "dontHide",
 					"includeAll": false,
 					"label": "Environment",
@@ -1308,7 +1308,7 @@
 						"kind": "DataQuery",
 						"spec": {
 							"qryType": 1,
-							"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},${NS_LABEL})",
+							"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
 							"refId": "PrometheusVariableQueryEditor-VariableQuery"
 						},
 						"version": "v0"
