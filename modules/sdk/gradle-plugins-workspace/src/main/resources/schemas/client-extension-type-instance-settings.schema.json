@@ -4802,12 +4802,6 @@
 					"title": "Anonymous User Segments Cache Expiration Time",
 					"type": "number"
 				},
-				"interestTermsCacheExpirationTime": {
-					"default": 86400,
-					"description": "Define the time (in seconds) before clearing the Interest Terms cache.",
-					"title": "Interest Terms Cache Expiration Time",
-					"type": "number"
-				},
 				"pid": {
 					"const": "com.liferay.segments.asah.connector.internal.configuration.SegmentsAsahCompanyConfiguration",
 					"title": "Liferay Data Platform Segments"
