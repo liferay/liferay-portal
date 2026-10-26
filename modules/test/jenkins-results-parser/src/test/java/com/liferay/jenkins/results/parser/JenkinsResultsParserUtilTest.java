@@ -97,6 +97,9 @@ public class JenkinsResultsParserUtilTest
 		testEquals(
 			"0%201%202", JenkinsResultsParserUtil.encodeLegacyURLPart("0 1 2"));
 		testEquals(
+			"100%%20pass",
+			JenkinsResultsParserUtil.encodeLegacyURLPart("100% pass"));
+		testEquals(
 			"ABC%28123",
 			JenkinsResultsParserUtil.encodeLegacyURLPart("ABC(123"));
 		testEquals(
@@ -108,10 +111,6 @@ public class JenkinsResultsParserUtilTest
 		testEquals(
 			"ABC%5D123",
 			JenkinsResultsParserUtil.encodeLegacyURLPart("ABC]123"));
-
-		testEquals(
-			"100%%20pass",
-			JenkinsResultsParserUtil.encodeLegacyURLPart("100% pass"));
 		testEquals("a+b", JenkinsResultsParserUtil.encodeLegacyURLPart("a+b"));
 	}
 
