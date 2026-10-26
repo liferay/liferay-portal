@@ -61,7 +61,7 @@ public class PayPalCommercePaymentIntegrationTest {
 			PermissionCheckerMethodTestRule.INSTANCE);
 
 	@Test
-	public void testService() throws Exception {
+	public void testValidate() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
 		CommerceCurrency commerceCurrency =
@@ -111,7 +111,7 @@ public class PayPalCommercePaymentIntegrationTest {
 			_commercePaymentEntryLocalService.updateCommercePaymentEntry(
 				commercePaymentEntry);
 
-		_testServiceWithInvalidToken(commercePaymentEntry, user);
+		_testValidateWithInvalidToken(commercePaymentEntry, user);
 
 		_service(
 			commercePaymentEntry, commercePaymentEntry.getTransactionCode(),
@@ -150,7 +150,7 @@ public class PayPalCommercePaymentIntegrationTest {
 		}
 	}
 
-	private void _testServiceWithInvalidToken(
+	private void _testValidateWithInvalidToken(
 			CommercePaymentEntry commercePaymentEntry, User user)
 		throws Exception {
 
