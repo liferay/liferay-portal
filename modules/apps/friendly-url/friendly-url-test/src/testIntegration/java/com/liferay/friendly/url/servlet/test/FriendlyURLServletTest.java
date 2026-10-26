@@ -19,6 +19,7 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
+import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
@@ -448,11 +449,20 @@ public class FriendlyURLServletTest {
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
 
-		testGetRedirect(
-			mockHttpServletRequest, mockHttpServletResponse,
-			group.getFriendlyURL(),
-			_redirectConstructor1.newInstance(getURL(layout1)));
-		Assert.assertEquals(404, mockHttpServletResponse.getStatus());
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						group.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"promptEnabled", false
+						).build())) {
+
+			testGetRedirect(
+				mockHttpServletRequest, mockHttpServletResponse,
+				group.getFriendlyURL(),
+				_redirectConstructor1.newInstance(getURL(layout1)));
+			Assert.assertEquals(404, mockHttpServletResponse.getStatus());
+		}
 	}
 
 	@Test
@@ -533,8 +543,7 @@ public class FriendlyURLServletTest {
 
 				mockHttpServletRequest.setAttribute(WebKeys.USER, guestUser);
 
-				testGetRedirect(
-					mockHttpServletRequest, path, expectedRedirect);
+				testGetRedirect(mockHttpServletRequest, path, expectedRedirect);
 			}
 		}
 	}
@@ -1531,13 +1540,22 @@ public class FriendlyURLServletTest {
 			expectedURL = getURL(layout);
 		}
 
-		testGetRedirect(
-			mockHttpServletRequest, mockHttpServletResponse,
-			getPath(group, layoutUtilityPageEntryLayout),
-			_redirectConstructor1.newInstance(expectedURL));
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						group.getGroupId(), _PID,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"promptEnabled", false
+						).build())) {
 
-		Assert.assertEquals(
-			expectedStatus, mockHttpServletResponse.getStatus());
+			testGetRedirect(
+				mockHttpServletRequest, mockHttpServletResponse,
+				getPath(group, layoutUtilityPageEntryLayout),
+				_redirectConstructor1.newInstance(expectedURL));
+
+			Assert.assertEquals(
+				expectedStatus, mockHttpServletResponse.getStatus());
+		}
 	}
 
 	private void _testServiceLinkToURLRedirect(
