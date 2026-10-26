@@ -309,7 +309,8 @@ public class FriendlyURLServlet extends HttpServlet {
 										user.getUserId(), layout.getGroupId()),
 									ActionKeys.VIEW)) {
 
-							if (AuthLoginGroupSettingsUtil.isPromptEnabled(
+							if (user.isGuestUser() &&
+								AuthLoginGroupSettingsUtil.isPromptEnabled(
 									group.getGroupId())) {
 
 								return new Redirect(
@@ -323,7 +324,8 @@ public class FriendlyURLServlet extends HttpServlet {
 					else if (!LayoutPermissionUtil.contains(
 								permissionChecker, layout, ActionKeys.VIEW)) {
 
-						if (AuthLoginGroupSettingsUtil.isPromptEnabled(
+						if (user.isGuestUser() &&
+							AuthLoginGroupSettingsUtil.isPromptEnabled(
 								group.getGroupId())) {
 
 							if (layout.isTypeLinkToLayout() ||
