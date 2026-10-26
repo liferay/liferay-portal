@@ -790,11 +790,14 @@ public class AssetVocabularySiteNavigationMenuItemTypeTest {
 
 		serviceContext.setAddGuestPermissions(false);
 
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.addVocabulary(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				RandomTestUtil.randomString(), serviceContext);
+
 		SiteNavigationMenuItem siteNavigationMenuItem =
 			_addSiteNavigationMenuItem(
-				_assetVocabularyLocalService.addVocabulary(
-					TestPropsValues.getUserId(), _group.getGroupId(),
-					RandomTestUtil.randomString(), serviceContext),
+				assetVocabulary,
 				_portal.getSiteDefaultLocale(_group.getGroupId()), "{}", false);
 
 		Assert.assertTrue(
@@ -805,6 +808,13 @@ public class AssetVocabularySiteNavigationMenuItemTypeTest {
 			siteNavigationMenuItemType.hasPermission(
 				PermissionCheckerFactoryUtil.create(
 					_userLocalService.getGuestUser(_group.getCompanyId())),
+				siteNavigationMenuItem));
+
+		_assetVocabularyLocalService.deleteVocabulary(assetVocabulary);
+
+		Assert.assertFalse(
+			siteNavigationMenuItemType.hasPermission(
+				PermissionThreadLocal.getPermissionChecker(),
 				siteNavigationMenuItem));
 	}
 

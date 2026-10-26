@@ -481,6 +481,29 @@ public class DisplayPageTypeSiteNavigationMenuItemTypeTest {
 				PermissionCheckerFactoryUtil.create(
 					_userLocalService.getGuestUser(_group.getCompanyId())),
 				siteNavigationMenuItem));
+
+		journalArticle = _journalArticleLocalService.moveArticleToTrash(
+			TestPropsValues.getUserId(), journalArticle);
+
+		Assert.assertFalse(
+			siteNavigationMenuItemType.hasPermission(
+				PermissionThreadLocal.getPermissionChecker(),
+				siteNavigationMenuItem));
+
+		journalArticle = _journalArticleLocalService.restoreArticleFromTrash(
+			TestPropsValues.getUserId(), journalArticle);
+
+		Assert.assertTrue(
+			siteNavigationMenuItemType.hasPermission(
+				PermissionThreadLocal.getPermissionChecker(),
+				siteNavigationMenuItem));
+
+		_journalArticleLocalService.deleteArticle(journalArticle);
+
+		Assert.assertFalse(
+			siteNavigationMenuItemType.hasPermission(
+				PermissionThreadLocal.getPermissionChecker(),
+				siteNavigationMenuItem));
 	}
 
 	@Test
