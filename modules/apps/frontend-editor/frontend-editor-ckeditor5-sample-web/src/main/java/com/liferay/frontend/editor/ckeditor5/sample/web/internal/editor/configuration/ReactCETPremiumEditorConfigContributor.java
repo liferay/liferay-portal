@@ -78,7 +78,7 @@ public class ReactCETPremiumEditorConfigContributor
 		String[] parts = licenseKey.split("\\.");
 
 		if (parts.length != 3) {
-			return JSONUtil.putAll();
+			return _jsonFactory.createJSONArray();
 		}
 
 		try {
@@ -98,7 +98,7 @@ public class ReactCETPremiumEditorConfigContributor
 				"features");
 
 			if (featuresJSONArray == null) {
-				return JSONUtil.putAll();
+				return _jsonFactory.createJSONArray();
 			}
 
 			return featuresJSONArray;
@@ -109,7 +109,7 @@ public class ReactCETPremiumEditorConfigContributor
 					"Unable to parse the CKEditor 5 license key", exception);
 			}
 
-			return JSONUtil.putAll();
+			return _jsonFactory.createJSONArray();
 		}
 	}
 
