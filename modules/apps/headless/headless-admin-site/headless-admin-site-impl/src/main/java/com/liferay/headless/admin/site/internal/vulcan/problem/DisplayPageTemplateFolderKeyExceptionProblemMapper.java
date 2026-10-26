@@ -38,6 +38,15 @@ public class DisplayPageTemplateFolderKeyExceptionProblemMapper
 			name = "display page template folder";
 		}
 
+		Problem.Status status = Problem.Status.BAD_REQUEST;
+
+		if (
+				layoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException instanceof
+					LayoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException.MustNotBeDuplicate) {
+
+			status = Problem.Status.CONFLICT;
+		}
+
 		return ProblemUtil.getProblem(
 			StringUtil.replace(
 				layoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException.
@@ -48,7 +57,7 @@ public class DisplayPageTemplateFolderKeyExceptionProblemMapper
 					"layout page template collection"
 				},
 				new String[] {"Key", "key", name}),
-			Problem.Status.CONFLICT,
+			status,
 			layoutPageTemplateCollectionLayoutPageTemplateCollectionKeyException);
 	}
 
