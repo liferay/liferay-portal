@@ -1,3 +1,4 @@
+{{- $databasePort := "5432" }}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -19,8 +20,7 @@ spec:
 {{- $dbReady := false }}
 {{- if $.observed.resources }}
     {{- if (index $.observed.resources $dbInstanceResourceName) }}
-        {{- $db := index $.observed.resources $dbInstanceResourceName }}
-        {{- range $cond := $db.resource.status.conditions | default list }}
+        {{- range $cond := (index $.observed.resources $dbInstanceResourceName).resource.status.conditions | default list }}
             {{- if and (eq $cond.type "Ready") (eq $cond.status "True") }}
                 {{- $dbReady = true }}
             {{- end }}
@@ -28,7 +28,6 @@ spec:
     {{- end }}
 {{- end }}
 {{- if and $dbReady (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
-{{- $instanceConnectionName := printf "%s:%s:%s-db-instance-%s" $env.projectId $region $xr.metadata.name $dataPlane }}
 {{- $jobName := printf "%s-db-grant-%s" $xr.metadata.name $dataPlane }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
@@ -107,7 +106,7 @@ spec:
                                         valueFrom:
                                             secretKeyRef:
                                                 key: password
-                                                name: {{ $database.rootPasswordSecretName }}
+                                                name: liferay-database-{{ $dataPlane }}-root-password
                                 image: postgres:18-alpine
                                 name: sql-runner
                                 resources:
@@ -132,7 +131,7 @@ spec:
                                     -   --port={{ $databasePort }}
                                     -   --private-ip
                                     -   --structured-logs
-                                    -   "{{ $instanceConnectionName }}"
+                                    -   "{{ printf "%s:%s:%s-db-instance-%s" $env.projectId $region $xr.metadata.name $dataPlane }}"
                                 image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
                                 name: cloud-sql-proxy
                                 resources:
@@ -162,19 +161,18 @@ spec:
                         volumes:
                             -   emptyDir: {}
                                 name: term-log
-    managementPolicies: {{ $managementPoliciesOnce }}
+    managementPolicies: ["Create", "Observe", "Delete"]
     readiness:
         celQuery: object.status.succeeded == 1
         policy: DeriveFromCelQuery
 {{- end }}
 {{- end }}
 ---
-{{- $isReady = false }}
+{{- $isReady := false }}
 {{- if .observed.resources }}
     {{- $activeJobResourceName := printf "liferay-db-grant-job-%s" $activeDataPlane }}
     {{- if (index .observed.resources $activeJobResourceName) }}
-        {{- $job := index .observed.resources $activeJobResourceName }}
-        {{- range $cond := $job.resource.status.conditions | default list }}
+        {{- range $cond := (index .observed.resources $activeJobResourceName).resource.status.conditions | default list }}
             {{- if and (eq $cond.type "Ready") (eq $cond.status "True") }}
                 {{- $isReady = true }}
             {{- end }}
