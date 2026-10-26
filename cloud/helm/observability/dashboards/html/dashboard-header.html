@@ -7,7 +7,9 @@
 	.dh-hub-icon { margin-bottom: 8px; height: 28px; display: flex; align-items: center; }
 	.dh-hub-sub { color: #64748b; font-size: 12px; line-height: 1.3; }
 	.dh-hub-title { color: #1e3a8a; font-weight: 800; font-size: 16px; margin-bottom: 2px; }
+	.dh-hub-title-link { color: #4c1d95; }
 	.dh-hub-tile { background-color: #f8fafc; border: 2px solid #3274d9; border-radius: 10px; padding: 16px; text-decoration: none; display: flex; flex-direction: column; height: 100%; box-sizing: border-box; }
+	.dh-hub-tile-link { border-color: #7c3aed; }
 	.dh-sub { margin: 4px 0 0 0; color: #4b5563; font-size: 13px; }
 	.dh-title { margin: 0; color: #111827; font-size: 20px; font-weight: 800; }
 	.dh-title-block { margin-left: 24px; }
@@ -22,6 +24,17 @@
 		<div class="dh-hub-title">Central Hub</div>
 		<div class="dh-hub-sub">Platform Overview</div>
 	</a>
+	{{- range .links }}
+
+	<a class="dh-hub-tile dh-hub-tile-link" href="{{ .href }}" target="_blank">
+		<div class="dh-hub-icon">
+			<span class="dh-hub-emoji">{{ .emoji }}</span>
+		</div>
+
+		<div class="dh-hub-title dh-hub-title-link">{{ .title }}</div>
+		<div class="dh-hub-sub">{{ .subtitle }}</div>
+	</a>
+	{{- end }}
 
 	<div class="dh-title-block">
 		<h2 class="dh-title">{{ .title }}</h2>
@@ -30,7 +43,7 @@
 	</div>
 
 	<div class="dh-env">
-		<span class="dh-env-label">Environment:</span>
-		<span class="dh-env-value">${environment:text}</span>
+		<span class="dh-env-label">{{ .label | default "Environment" }}:</span>
+		<span class="dh-env-value">{{ .value | default "${environment:text}" }}</span>
 	</div>
 </div>
