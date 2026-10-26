@@ -1,3 +1,5 @@
+{{- $database := $xr.spec.database }}
+{{- $databaseInstanceNameFormat := printf "%s-db-instance-%%s" $xr.metadata.name }}
 {{- $availabilityType := $database.availabilityType | default "ZONAL" }}
 {{- $backupConfiguration := $database.backupConfiguration | default dict }}
 {{- $edition := $database.edition | default "ENTERPRISE" }}
@@ -18,7 +20,7 @@
 {{- end }}
 
 {{- range $i, $dataPlane := $dataPlanes }}
-{{- $databaseInstanceName := printf "%s-db-instance-%s" $xr.metadata.name $dataPlane }}
+{{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
 {{- if $i }}
 ---
 {{- end }}
@@ -66,7 +68,7 @@ spec:
             userLabels:
                 {{- $backupTargetLabels | toYaml | nindent 16 }}
                 active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
-    managementPolicies: {{ $databaseInstanceManagementPolicies }}
+    managementPolicies: {{ $xr.spec.backup.enabled | ternary ((list "*") | toJson) $managementPolicies }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: Database
@@ -108,10 +110,8 @@ spec:
 {{- end }}
 {{- end }}
 {{- range $dataPlane := list "blue" "green" }}
-{{- $databaseInstanceName := printf "%s-db-instance-%s" $xr.metadata.name $dataPlane }}
-{{- $databaseResourceName := printf "liferay-db-%s" $dataPlane }}
-{{- $userResourceName := printf "liferay-iam-user-%s" $dataPlane }}
-{{- if or (has $dataPlane $dataPlanes) (and $.observed.resources (index $.observed.resources $databaseResourceName)) }}
+{{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
+{{- if or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-db-%s" $dataPlane)) }}
 ---
 apiVersion: protection.crossplane.io/v1beta1
 kind: Usage
@@ -132,7 +132,7 @@ spec:
         resourceRef:
             name: {{ $databaseInstanceName }}
 {{- end }}
-{{- if and (or (has $dataPlane $dataPlanes) (and $.observed.resources (index $.observed.resources $userResourceName))) (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
+{{- if and (or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-iam-user-%s" $dataPlane))) (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
 ---
 apiVersion: protection.crossplane.io/v1beta1
 kind: Usage
