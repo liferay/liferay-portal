@@ -270,6 +270,32 @@ public class PayPalCommercePaymentIntegration
 	}
 
 	@Override
+	public boolean isValid(
+			HttpServletRequest httpServletRequest,
+			CommercePaymentEntry commercePaymentEntry)
+		throws PortalException {
+
+		if (commercePaymentEntry.getPaymentStatus() !=
+				CommercePaymentEntryConstants.STATUS_CREATED) {
+
+			return true;
+		}
+
+		String token = ParamUtil.getString(httpServletRequest, "token");
+		String transactionCode = commercePaymentEntry.getTransactionCode();
+
+		if (Validator.isBlank(token) || Validator.isBlank(transactionCode) ||
+			!MessageDigest.isEqual(
+				token.getBytes(StandardCharsets.UTF_8),
+				transactionCode.getBytes(StandardCharsets.UTF_8))) {
+
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public CommercePaymentEntry refund(
 			HttpServletRequest httpServletRequest,
 			CommercePaymentEntry commercePaymentEntry)
@@ -419,32 +445,6 @@ public class PayPalCommercePaymentIntegration
 		}
 
 		return commercePaymentEntry;
-	}
-
-	@Override
-	public boolean isValid(
-			HttpServletRequest httpServletRequest,
-			CommercePaymentEntry commercePaymentEntry)
-		throws PortalException {
-
-		if (commercePaymentEntry.getPaymentStatus() !=
-				CommercePaymentEntryConstants.STATUS_CREATED) {
-
-			return true;
-		}
-
-		String token = ParamUtil.getString(httpServletRequest, "token");
-		String transactionCode = commercePaymentEntry.getTransactionCode();
-
-		if (Validator.isBlank(token) || Validator.isBlank(transactionCode) ||
-			!MessageDigest.isEqual(
-				token.getBytes(StandardCharsets.UTF_8),
-				transactionCode.getBytes(StandardCharsets.UTF_8))) {
-
-			return false;
-		}
-
-		return true;
 	}
 
 	private void _debug(HttpRequest httpRequest) {
