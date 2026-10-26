@@ -1,54 +1,39 @@
 {{- $databaseName := "lportal" -}}
-{{- $databasePort := "5432" -}}
-{{- $elasticsearchHealth := "" -}}
 {{- $env := index .context "apiextensions.crossplane.io/environment" -}}
-{{- $isReady := false -}}
-{{- $isSearchReady := false -}}
-{{- $managementPoliciesOnce := (list "Create" "Observe" "Delete") | toJson -}}
 {{- $xr := .observed.composite.resource -}}
 
-{{- $backup := $xr.spec.backup | default dict -}}
-{{- $cmkEnabled := $xr.spec.cmk.enabled | default false -}}
-{{- $database := $xr.spec.database -}}
+{{- if eq $xr.spec.search.engine "opensearch" -}}
+{{- fail "GCP has no managed OpenSearch, so search.engine must be elasticsearch" -}}
+{{- end -}}
+
+{{- $cmkEnabled := $xr.spec.cmk.enabled -}}
 {{- $environmentId := $xr.spec.environmentId -}}
-{{- $forceDestroy := $xr.spec.forceDestroy | default false -}}
+{{- $forceDestroy := $xr.spec.forceDestroy -}}
 {{- $gsaName := printf "%s-sa" $xr.metadata.name -}}
 {{- $managementPolicies := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe" "Update") (list "*") | toJson -}}
-{{- $managementPoliciesNoUpdate := $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson -}}
 {{- $namespace := $xr.metadata.namespace -}}
-{{- $overlayAccess := $xr.spec.overlayAccess | default dict -}}
-{{- $projectId := $xr.spec.projectId -}}
-{{- $restorePhase := $xr.spec.restorePhase | default "none" -}}
-{{- $searchName := printf "%s-es" $xr.metadata.name -}}
-{{- $storage := $xr.spec.storage | default dict -}}
-{{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane | default "blue" -}}
-
+{{- $overlayAccess := $xr.spec.overlayAccess -}}
 {{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $env.projectId (printf "%s-%s" $env.deploymentName $env.projectId | sha256sum | trunc 6)) -}}
+{{- $projectId := $xr.spec.projectId -}}
+{{- $region := $env.region -}}
+{{- $restorePhase := $xr.spec.restorePhase -}}
+{{- $targetActiveDataPlane := $xr.spec.targetActiveDataPlane -}}
 
 {{- $activeDataPlane := $targetActiveDataPlane -}}
 {{- $databaseIamUser := printf "%s@%s.iam" $gsaName $env.projectId -}}
-{{- $databaseInstanceManagementPolicies := $backup.enabled | ternary ((list "*") | toJson) $managementPolicies -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
 {{- $gsaEmail := printf "%s@%s.iam.gserviceaccount.com" $gsaName $env.projectId -}}
-{{- $hash := printf "%s-%s" $databaseName $env.projectId | sha256sum | trunc 7 -}}
-{{- $labels := merge ($xr.spec.commonTags | default dict) (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) -}}
-
+{{- $labels := merge (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) $xr.spec.commonTags -}}
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
-{{- $region := $database.region | default $xr.spec.region -}}
-{{- $searchNamespace := printf "%s-elasticsearch" $namespace -}}
-{{- $searchSecretName := printf "%s-es-elastic-user" $searchName -}}
-{{- $targetInactiveDataPlane := (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
 
 {{- if (eq $restorePhase "promoting") -}}
     {{- $dataPlanes = list "blue" "green" -}}
 {{- else if or (eq $restorePhase "provisioning") (eq $restorePhase "provisioning-database-user") -}}
-    {{- $activeDataPlane = $targetInactiveDataPlane -}}
+    {{- $activeDataPlane = (eq $targetActiveDataPlane "blue") | ternary "green" "blue" -}}
     {{- $dataPlanes = list "blue" "green" -}}
 {{- end }}
 
-{{- $backupTargetLabels := merge (dict) $labels (dict "should-back-up" "true") -}}
-{{- $uidHash := printf "%s-%s" $env.projectNumber $projectIdFull | sha256sum | trunc 6 -}}
-
-{{- $baseName := printf "%.18s-%s" $projectIdFull $uidHash -}}
+{{- $backupTargetLabels := merge (dict "should-back-up" "true") $labels -}}
+{{- $baseName := printf "%.18s-%s" $projectIdFull (printf "%s-%s" $env.projectNumber $projectIdFull | sha256sum | trunc 6) -}}
 
 {{- $cmkKeyName := printf "projects/%s/locations/%s/keyRings/%s-keyring/cryptoKeys/%s-key" $env.projectId $region $baseName $baseName -}}
