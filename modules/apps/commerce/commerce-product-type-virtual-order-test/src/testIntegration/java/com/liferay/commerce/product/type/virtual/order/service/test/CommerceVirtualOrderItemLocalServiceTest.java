@@ -24,8 +24,10 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.virtual.constants.VirtualCPTypeConstants;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
+import com.liferay.commerce.product.type.virtual.order.exception.CommerceVirtualOrderItemUrlException;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItem;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntry;
+import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemFileEntryLocalService;
 import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemLocalService;
 import com.liferay.commerce.product.type.virtual.order.util.CommerceVirtualOrderItemChecker;
 import com.liferay.commerce.product.type.virtual.service.CPDVirtualSettingFileEntryLocalServiceUtil;
@@ -48,6 +50,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -499,10 +502,45 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 		finally {
 			file.delete();
 		}
+
+		_assertGetFileFails(
+			commerceVirtualOrderItemFileEntry.
+				getCommerceVirtualOrderItemFileEntryId(),
+			commerceVirtualOrderItem.getCommerceVirtualOrderItemId(),
+			"file:/" + RandomTestUtil.randomString());
+		_assertGetFileFails(
+			commerceVirtualOrderItemFileEntry.
+				getCommerceVirtualOrderItemFileEntryId(),
+			commerceVirtualOrderItem.getCommerceVirtualOrderItemId(),
+			"http://localhost:" + PortalUtil.getPortalServerPort(false));
 	}
 
 	@Rule
 	public FrutillaRule frutillaRule = new FrutillaRule();
+
+	private void _assertGetFileFails(
+			long commerceVirtualOrderItemFileEntryId,
+			long commerceVirtualOrderItemId, String url)
+		throws Exception {
+
+		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
+			_commerceVirtualOrderItemFileEntryLocalService.
+				getCommerceVirtualOrderItemFileEntry(
+					commerceVirtualOrderItemFileEntryId);
+
+		commerceVirtualOrderItemFileEntry.setFileEntryId(0);
+		commerceVirtualOrderItemFileEntry.setUrl(url);
+
+		_commerceVirtualOrderItemFileEntryLocalService.
+			updateCommerceVirtualOrderItemFileEntry(
+				commerceVirtualOrderItemFileEntry);
+
+		Assert.assertThrows(
+			CommerceVirtualOrderItemUrlException.class,
+			() -> _commerceVirtualOrderItemLocalService.getFile(
+				commerceVirtualOrderItemId,
+				commerceVirtualOrderItemFileEntryId));
+	}
 
 	private CPInstance _setCPInstanceSubscriptionInfo(
 		CPInstance cpInstance, int subscriptionLength,
@@ -551,6 +589,10 @@ public class CommerceVirtualOrderItemLocalServiceTest {
 
 	@Inject
 	private CommerceVirtualOrderItemChecker _commerceVirtualOrderItemChecker;
+
+	@Inject
+	private CommerceVirtualOrderItemFileEntryLocalService
+		_commerceVirtualOrderItemFileEntryLocalService;
 
 	@Inject
 	private CommerceVirtualOrderItemLocalService
