@@ -5,12 +5,15 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
+
 export class CommerceThemeMiniumPage {
 	readonly goToMiniumLink: (siteName: string) => Promise<Locator>;
 	readonly miniCartButton: Locator;
 	readonly miniCartSubmitButton: Locator;
 	readonly myProfileItemMenu: Locator;
 	readonly page: Page;
+	readonly productMenuCloseButton: Locator;
 	readonly stickerUserNav: Locator;
 
 	constructor(page: Page) {
@@ -21,6 +24,17 @@ export class CommerceThemeMiniumPage {
 		this.miniCartSubmitButton = page.getByRole('button', {name: 'Submit'});
 		this.page = page;
 		this.myProfileItemMenu = page.getByRole('link', {name: 'My Profile'});
-		this.stickerUserNav = page.locator('.sticker').first();
+		this.productMenuCloseButton = page
+			.getByRole('navigation', {name: 'Product Menu'})
+			.getByRole('button', {exact: true, name: 'Close'});
+		this.stickerUserNav = page.locator('.minium-user-nav__avatar');
+	}
+
+	async closeProductMenu() {
+		await clickAndExpectToBeHidden({
+			target: this.productMenuCloseButton,
+			timeout: 2000,
+			trigger: this.productMenuCloseButton,
+		});
 	}
 }

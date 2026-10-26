@@ -33,6 +33,8 @@ test('LPD-3391 Minium sidebar user navigation items are clickable in responsive 
 
 	await page.goto(`/web/${site.name}`);
 
+	await commerceThemeMiniumPage.closeProductMenu();
+
 	await commerceThemeMiniumPage.stickerUserNav.click();
 	await commerceThemeMiniumPage.myProfileItemMenu.click();
 
