@@ -66,7 +66,7 @@ public class DBPartitionPostgreSQLDB implements DBPartitionDB {
 			Connection connection, String partitionName)
 		throws SQLException {
 
-		return "create schema if not exists " + partitionName;
+		return "create schema " + partitionName;
 	}
 
 	@Override
