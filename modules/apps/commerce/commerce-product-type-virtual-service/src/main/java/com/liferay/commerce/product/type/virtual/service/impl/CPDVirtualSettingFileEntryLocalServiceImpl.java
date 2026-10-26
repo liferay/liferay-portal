@@ -10,6 +10,7 @@ import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSe
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingURLException;
 import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.service.base.CPDVirtualSettingFileEntryLocalServiceBaseImpl;
+import com.liferay.commerce.product.type.virtual.util.VirtualCPTypeURLValidatorUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.aop.AopService;
@@ -21,9 +22,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.io.InputStream;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import java.util.List;
 
@@ -55,7 +53,7 @@ public class CPDVirtualSettingFileEntryLocalServiceImpl
 			url = null;
 		}
 
-		_validate(fileEntryId, url);
+		_validate(user.getCompanyId(), fileEntryId, url);
 
 		long cpdVirtualSettingFileEntryId = counterLocalService.increment();
 
@@ -169,7 +167,7 @@ public class CPDVirtualSettingFileEntryLocalServiceImpl
 			url = null;
 		}
 
-		_validate(fileEntryId, url);
+		_validate(cpdVirtualSettingFileEntry.getCompanyId(), fileEntryId, url);
 
 		cpdVirtualSettingFileEntry.setFileEntryId(fileEntryId);
 		cpdVirtualSettingFileEntry.setUrl(url);
@@ -179,7 +177,7 @@ public class CPDVirtualSettingFileEntryLocalServiceImpl
 			cpdVirtualSettingFileEntry);
 	}
 
-	private void _validate(long fileEntryId, String url)
+	private void _validate(long companyId, long fileEntryId, String url)
 		throws PortalException {
 
 		if (fileEntryId > 0) {
@@ -194,14 +192,8 @@ public class CPDVirtualSettingFileEntryLocalServiceImpl
 		else if (Validator.isNull(url)) {
 			throw new CPDefinitionVirtualSettingException();
 		}
-		else {
-			try {
-				new URL(url);
-			}
-			catch (MalformedURLException malformedURLException) {
-				throw new CPDefinitionVirtualSettingURLException(
-					malformedURLException);
-			}
+		else if (!VirtualCPTypeURLValidatorUtil.isValidURL(companyId, url)) {
+			throw new CPDefinitionVirtualSettingURLException();
 		}
 	}
 

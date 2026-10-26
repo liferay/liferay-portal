@@ -9,6 +9,7 @@ import com.liferay.commerce.product.type.virtual.order.exception.CommerceVirtual
 import com.liferay.commerce.product.type.virtual.order.exception.CommerceVirtualOrderItemUrlException;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntry;
 import com.liferay.commerce.product.type.virtual.order.service.base.CommerceVirtualOrderItemFileEntryLocalServiceBaseImpl;
+import com.liferay.commerce.product.type.virtual.util.VirtualCPTypeURLValidatorUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.aop.AopService;
@@ -137,6 +138,13 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceImpl
 		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
 			commerceVirtualOrderItemFileEntryPersistence.fetchByPrimaryKey(
 				commerceVirtualOrderItemFileEntryId);
+
+		if (Validator.isNotNull(url) &&
+			!VirtualCPTypeURLValidatorUtil.isValidURL(
+				commerceVirtualOrderItemFileEntry.getCompanyId(), url)) {
+
+			throw new CommerceVirtualOrderItemUrlException();
+		}
 
 		commerceVirtualOrderItemFileEntry.setFileEntryId(fileEntryId);
 		commerceVirtualOrderItemFileEntry.setUrl(url);

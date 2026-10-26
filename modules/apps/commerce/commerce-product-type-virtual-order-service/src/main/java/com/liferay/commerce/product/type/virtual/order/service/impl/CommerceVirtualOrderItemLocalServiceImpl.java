@@ -19,6 +19,7 @@ import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSetting;
 import com.liferay.commerce.product.type.virtual.model.CPDefinitionVirtualSettingTable;
+import com.liferay.commerce.product.type.virtual.order.exception.CommerceVirtualOrderItemUrlException;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItem;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntry;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntryTable;
@@ -27,11 +28,13 @@ import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOr
 import com.liferay.commerce.product.type.virtual.order.service.base.CommerceVirtualOrderItemLocalServiceBaseImpl;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingLocalService;
 import com.liferay.commerce.product.type.virtual.service.persistence.CPDVirtualSettingFileEntryPersistence;
+import com.liferay.commerce.product.type.virtual.util.VirtualCPTypeURLValidatorUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceSubscriptionEntryLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -40,7 +43,9 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -49,6 +54,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -266,9 +272,9 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 			extension = fileEntry.getExtension();
 		}
 		else {
-			URL url = new URL(commerceVirtualOrderItemFileEntry.getUrl());
-
-			contentInputStream = url.openStream();
+			contentInputStream = _getContentInputStream(
+				commerceVirtualOrderItem.getCompanyId(),
+				commerceVirtualOrderItemFileEntry.getUrl());
 
 			String mimeType = URLConnection.guessContentTypeFromStream(
 				contentInputStream);
@@ -517,6 +523,54 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 		);
 	}
 
+	private InputStream _getContentInputStream(long companyId, String url)
+		throws Exception {
+
+		URL currentURL = new URL(url);
+
+		for (int i = 0; i <= _MAX_REDIRECTS; i++) {
+			if (!VirtualCPTypeURLValidatorUtil.isValidURL(
+					companyId, currentURL.toString())) {
+
+				throw new CommerceVirtualOrderItemUrlException();
+			}
+
+			Http.Options options = new Http.Options();
+
+			options.setFollowRedirects(false);
+			options.setLocation(currentURL.toString());
+
+			InputStream inputStream = _http.URLtoInputStream(options);
+
+			Http.Response response = options.getResponse();
+
+			int responseCode = response.getResponseCode();
+
+			if (responseCode >= HttpURLConnection.HTTP_BAD_REQUEST) {
+				inputStream.close();
+
+				throw new IOException(
+					StringBundler.concat(
+						"Unable to download ", currentURL,
+						" with response code ", responseCode));
+			}
+
+			String location = response.getHeader(HttpHeaders.LOCATION);
+
+			if ((responseCode < HttpURLConnection.HTTP_MULT_CHOICE) ||
+				Validator.isNull(location)) {
+
+				return inputStream;
+			}
+
+			inputStream.close();
+
+			currentURL = new URL(currentURL, location);
+		}
+
+		throw new CommerceVirtualOrderItemUrlException();
+	}
+
 	private DSLQuery _getOverrideCPInstanceIdsDSLQuery() {
 		return DSLQueryFactoryUtil.select(
 			CPDefinitionVirtualSettingTable.INSTANCE.classPK
@@ -560,6 +614,8 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 		return commerceVirtualOrderItem;
 	}
 
+	private static final int _MAX_REDIRECTS = 5;
+
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
@@ -590,6 +646,9 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 
 	@Reference
 	private com.liferay.portal.kernel.util.File _file;
+
+	@Reference
+	private Http _http;
 
 	@Reference
 	private UserLocalService _userLocalService;
