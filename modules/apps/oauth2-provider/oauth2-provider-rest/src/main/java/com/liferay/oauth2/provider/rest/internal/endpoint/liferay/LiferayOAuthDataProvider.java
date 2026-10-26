@@ -972,6 +972,15 @@ public class LiferayOAuthDataProvider
 				OAuthUtils.convertPermissionsToScope(oAuthPermissions));
 		}
 
+		OAuth2Application oAuth2Application = resolveOAuth2Application(
+			serverAccessToken.getClient());
+
+		if (oAuth2Application != null) {
+			jwtClaims.setClaim(
+				"external_reference_code",
+				oAuth2Application.getExternalReferenceCode());
+		}
+
 		return jwtClaims;
 	}
 
