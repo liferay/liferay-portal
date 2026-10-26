@@ -4677,7 +4677,7 @@ public class JenkinsResultsParserUtil {
 		Map<String, String> sortedParameters = new TreeMap<>(parameters);
 
 		for (Map.Entry<String, String> entry : sortedParameters.entrySet()) {
-			uriBuilder.addParameter(entry.getKey(), entry.getValue());
+			uriBuilder.setParameter(entry.getKey(), entry.getValue());
 		}
 
 		return uriBuilder;
