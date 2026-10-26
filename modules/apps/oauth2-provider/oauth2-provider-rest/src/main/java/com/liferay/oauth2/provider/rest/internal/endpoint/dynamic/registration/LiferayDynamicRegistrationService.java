@@ -164,6 +164,10 @@ public class LiferayDynamicRegistrationService
 
 	@Override
 	protected String createRegAccessToken(Client client) {
+		if (_isOpenRegistration(client)) {
+			return null;
+		}
+
 		String registrationAccessToken = OAuthUtils.generateRandomTokenKey();
 
 		Map<String, String> properties = client.getProperties();
