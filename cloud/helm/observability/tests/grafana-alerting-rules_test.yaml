@@ -1,0 +1,28 @@
+suite: Grafana alerting rules
+templates:
+    -   templates/grafana/alerting/rules.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: data["cpu-limit-utilization.yaml"]
+                    pattern: cluster=~"[.][*]"
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-alert-cpu-limit-utilization
+        it: Matches every cluster when the cloud provider is not GCP
+        set:
+            cloudProvider: aws
+    -   asserts:
+            -   matchRegex:
+                    path: data["cpu-limit-utilization.yaml"]
+                    pattern: ratio[{]cluster=~"liferay-test-gke"[}]
+            -   notMatchRegex:
+                    path: data["cpu-limit-utilization.yaml"]
+                    pattern: "[$][{]CLUSTER[}]"
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-alert-cpu-limit-utilization
+        it: Scopes the alert queries to gcp.clusterName when the cloud provider is GCP
+        set:
+            cloudProvider: gcp
+            gcp.clusterName: liferay-test-gke

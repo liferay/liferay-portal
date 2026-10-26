@@ -379,9 +379,9 @@ alerting:
     rules:
         cpu-limit-utilization:
             expr: |
-                avg_over_time(liferay:container_cpu_limit_utilization:ratio[2m]) > 0.8
+                avg_over_time(liferay:container_cpu_limit_utilization:ratio{cluster=~"${CLUSTER}"}[2m]) > 0.8
                 and on(namespace)
-                kube_namespace_labels{label_liferay_com_observable="true"}
+                kube_namespace_labels{label_liferay_com_observable="true", cluster=~"${CLUSTER}"}
             for: 5m
             interval: 2m
             labels:
@@ -392,10 +392,10 @@ alerting:
         frequent-pod-restarts:
             expr: |
                 sum by (container, namespace, pod) (
-                    increase(kube_pod_container_status_restarts_total[30m])
+                    increase(kube_pod_container_status_restarts_total{cluster=~"${CLUSTER}"}[30m])
                 ) > 3
                 and on(namespace)
-                kube_namespace_labels{label_liferay_com_observable="true"}
+                kube_namespace_labels{label_liferay_com_observable="true", cluster=~"${CLUSTER}"}
             labels:
                 aggregation_period: 30m
                 type: warning
@@ -403,9 +403,9 @@ alerting:
             title: High Rate of Pod Restarts Detected
         memory-limit-utilization:
             expr: |
-                avg_over_time(liferay:container_memory_limit_utilization:ratio[2m]) > 0.8
+                avg_over_time(liferay:container_memory_limit_utilization:ratio{cluster=~"${CLUSTER}"}[2m]) > 0.8
                 and on(namespace)
-                kube_namespace_labels{label_liferay_com_observable="true"}
+                kube_namespace_labels{label_liferay_com_observable="true", cluster=~"${CLUSTER}"}
             for: 5m
             interval: 2m
             labels:
@@ -416,12 +416,12 @@ alerting:
         zero-ready-replicas:
             expr: |
                 (
-                    max_over_time(kube_deployment_status_replicas_ready[10m]) == 0
+                    max_over_time(kube_deployment_status_replicas_ready{cluster=~"${CLUSTER}"}[10m]) == 0
                     or
-                    max_over_time(kube_statefulset_status_replicas_ready[10m]) == 0
+                    max_over_time(kube_statefulset_status_replicas_ready{cluster=~"${CLUSTER}"}[10m]) == 0
                 )
                 and on(namespace)
-                kube_namespace_labels{label_liferay_com_observable="true"}
+                kube_namespace_labels{label_liferay_com_observable="true", cluster=~"${CLUSTER}"}
             labels:
                 aggregation_period: 10m
                 type: critical
@@ -572,6 +572,7 @@ frontend:
             memory: 32Mi
 fullnameOverride: ""
 gcp:
+    clusterName: ""
     projectId: ""
 grafana:
     admin:

@@ -80,6 +80,21 @@ run "should_pass_deployment_identity_to_the_provider_application" {
 	}
 	command=plan
 }
+run "should_pass_the_cluster_name_to_the_observability_application" {
+	assert {
+		condition=length([
+			for p in kubernetes_manifest.observability_application[0].manifest.spec.sources[0].helm.parameters : p
+			if p.name == "gcp.clusterName" && p.value == "liferay-test-gke"
+		]) == 1
+		error_message="The observability Application must pass the GKE cluster name, since its dashboards and alerts scope their queries to it"
+	}
+	command=plan
+	variables {
+		observability_config={
+			enabled=true
+		}
+	}
+}
 run "should_pass_the_configured_operator_settings_to_the_provider_application" {
 	assert {
 		condition=length([

@@ -103,7 +103,7 @@
 			"pluginVersion": "12.4.2",
 			"targets": [
 				{
-					"expr": "sum(rate(envoy_http_downstream_rq_total{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[$__rate_interval]))",
+					"expr": "sum(rate(envoy_http_downstream_rq_total{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
 					"refId": "A"
 				}
 			],
@@ -168,7 +168,7 @@
 			"pluginVersion": "12.4.2",
 			"targets": [
 				{
-					"expr": "histogram_quantile(0.95, sum(rate(envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[5m])) by (le)) / 1000",
+					"expr": "histogram_quantile(0.95, sum(rate(envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[5m])) by (le)) / 1000",
 					"refId": "A"
 				}
 			],
@@ -233,7 +233,7 @@
 			"pluginVersion": "12.4.2",
 			"targets": [
 				{
-					"expr": "sum(rate(envoy_http_downstream_cx_rx_bytes_total{gateway_namespace=\"$environment\"}[$__rate_interval]))",
+					"expr": "sum(rate(envoy_http_downstream_cx_rx_bytes_total{gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
 					"refId": "A"
 				}
 			],
@@ -298,7 +298,7 @@
 			"pluginVersion": "12.4.2",
 			"targets": [
 				{
-					"expr": "sum(rate(envoy_http_downstream_cx_tx_bytes_total{gateway_namespace=\"$environment\"}[$__rate_interval]))",
+					"expr": "sum(rate(envoy_http_downstream_cx_tx_bytes_total{gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
 					"refId": "A"
 				}
 			],
@@ -470,7 +470,7 @@
 			"targets": [
 				{
 					"editorMode": "code",
-					"expr": "sum by (envoy_response_code_class) (rate(envoy_http_downstream_rq_xx{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[$__rate_interval])) > 0",
+					"expr": "sum by (envoy_response_code_class) (rate(envoy_http_downstream_rq_xx{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[$__rate_interval])) > 0",
 					"legendFormat": "HTTP {{envoy_response_code_class}}xx",
 					"range": true,
 					"refId": "A"
@@ -599,12 +599,12 @@
 			"pluginVersion": "12.4.2",
 			"targets": [
 				{
-					"expr": "histogram_quantile(0.95, sum(rate(envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[5m])) by (le))",
+					"expr": "histogram_quantile(0.95, sum(rate(envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[5m])) by (le))",
 					"legendFormat": "P95 Latency",
 					"refId": "A"
 				},
 				{
-					"expr": "histogram_quantile(0.50, sum(rate(envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[5m])) by (le))",
+					"expr": "histogram_quantile(0.50, sum(rate(envoy_http_downstream_rq_time_bucket{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[5m])) by (le))",
 					"legendFormat": "P50 Latency",
 					"refId": "B"
 				}
@@ -733,14 +733,14 @@
 			"targets": [
 				{
 					"editorMode": "code",
-					"expr": "sum(rate(envoy_http_downstream_cx_rx_bytes_total{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[$__rate_interval]))",
+					"expr": "sum(rate(envoy_http_downstream_cx_rx_bytes_total{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
 					"legendFormat": "RX (Ingress)",
 					"range": true,
 					"refId": "A"
 				},
 				{
 					"editorMode": "code",
-					"expr": "sum(rate(envoy_http_downstream_cx_tx_bytes_total{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\"}[$__rate_interval]))",
+					"expr": "sum(rate(envoy_http_downstream_cx_tx_bytes_total{envoy_http_conn_manager_prefix=\"https-10443\", gateway_namespace=\"$environment\", cluster=~\"${CLUSTER}\"}[$__rate_interval]))",
 					"legendFormat": "TX (Egress)",
 					"range": true,
 					"refId": "B"
@@ -767,12 +767,12 @@
 					"type": "prometheus",
 					"uid": "${DS_PROMETHEUS}"
 				},
-				"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
+				"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\", cluster=~\"${CLUSTER}\"},namespace)",
 				"label": "Environment",
 				"name": "environment",
 				"options": [
 				],
-				"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
+				"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\", cluster=~\"${CLUSTER}\"},namespace)",
 				"refresh": 1,
 				"regex": "/(?<value>.*-(?<text>.*))/",
 				"regexApplyTo": "value",

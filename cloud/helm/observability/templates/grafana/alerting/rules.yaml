@@ -1,3 +1,4 @@
+{{- $clusterPattern := include "observability.clusterPattern" . -}}
 {{- $datasourceUid := include "observability.datasourceUid" . -}}
 {{- $defaultInterval := .Values.alerting.interval -}}
 {{- $folder := .Values.alerting.folder -}}
@@ -33,7 +34,7 @@ data:
                                         type: prometheus
                                         uid: {{ $datasourceUid | quote }}
                                     expr: |
-                                        {{- $rule.expr | nindent 40 }}
+                                        {{- $rule.expr | replace "${CLUSTER}" $clusterPattern | nindent 40 }}
                                     format: {{ $rule.format | default "table" }}
                                     instant: {{ if hasKey $rule "instant" }}{{ index $rule "instant" }}{{ else }}true{{ end }}
                                     range: {{ if hasKey $rule "range" }}{{ index $rule "range" }}{{ else }}false{{ end }}

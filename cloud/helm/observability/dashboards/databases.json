@@ -97,7 +97,7 @@
 											"spec": {
 												"editorMode": "code",
 												"exemplar": false,
-												"expr": "avg(\n  avg_over_time(\n    liferay:db_memory_total_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg(\n  avg_over_time(\n    liferay:db_memory_total_bytes{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"format": "time_series",
 												"instant": false,
 												"legendFormat": "Capacity",
@@ -120,7 +120,7 @@
 											"kind": "DataQuery",
 											"spec": {
 												"editorMode": "code",
-												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_used_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_used_bytes{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"instant": false,
 												"legendFormat": "__auto",
 												"range": true
@@ -275,7 +275,7 @@
 											"spec": {
 												"editorMode": "code",
 												"exemplar": false,
-												"expr": "avg(\n  avg_over_time(\n    liferay:db_disk_total_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg(\n  avg_over_time(\n    liferay:db_disk_total_bytes{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"format": "time_series",
 												"instant": false,
 												"legendFormat": "Capacity",
@@ -298,7 +298,7 @@
 											"kind": "DataQuery",
 											"spec": {
 												"editorMode": "code",
-												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_disk_used_bytes{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_disk_used_bytes{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"instant": false,
 												"legendFormat": "__auto",
 												"range": true
@@ -453,7 +453,7 @@
 											"spec": {
 												"editorMode": "code",
 												"exemplar": false,
-												"expr": "avg(\n  avg_over_time(\n    liferay:db_cpu_reserved_cores{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg(\n  avg_over_time(\n    liferay:db_cpu_reserved_cores{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"format": "time_series",
 												"instant": false,
 												"legendFormat": "Capacity",
@@ -476,7 +476,7 @@
 											"kind": "DataQuery",
 											"spec": {
 												"editorMode": "code",
-												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_used_cores{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_used_cores{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"instant": false,
 												"legendFormat": "__auto",
 												"range": true
@@ -631,7 +631,7 @@
 											"spec": {
 												"editorMode": "code",
 												"exemplar": false,
-												"expr": "avg by (database_id, data_plane, state) (\n  last_over_time(\n    liferay:db_instance_state{environment_id=\"$environment\"}[${__interval}]\n  ) > 0\n)",
+												"expr": "avg by (database_id, data_plane, state) (\n  last_over_time(\n    liferay:db_instance_state{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  ) > 0\n)",
 												"format": "time_series",
 												"instant": false,
 												"legendFormat": "{{database_id}} - {{state}}",
@@ -847,7 +847,7 @@
 											"kind": "DataQuery",
 											"spec": {
 												"editorMode": "code",
-												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_utilization_percent{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_cpu_utilization_percent{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"instant": false,
 												"legendFormat": "__auto",
 												"range": true
@@ -974,7 +974,7 @@
 											"kind": "DataQuery",
 											"spec": {
 												"editorMode": "code",
-												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_utilization_percent{environment_id=\"$environment\"}[${__interval}]\n  )\n)",
+												"expr": "avg by (database_id, data_plane) (\n  avg_over_time(\n    liferay:db_memory_utilization_percent{environment_id=\"$environment\", cluster=~\"${CLUSTER}\"}[${__interval}]\n  )\n)",
 												"instant": false,
 												"legendFormat": "__auto",
 												"range": true
@@ -1292,7 +1292,7 @@
 						"text": "",
 						"value": ""
 					},
-					"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
+					"definition": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\", cluster=~\"${CLUSTER}\"},namespace)",
 					"hide": "dontHide",
 					"includeAll": false,
 					"label": "Environment",
@@ -1308,7 +1308,7 @@
 						"kind": "DataQuery",
 						"spec": {
 							"qryType": 1,
-							"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\"},namespace)",
+							"query": "label_values(kube_namespace_labels{label_liferay_com_observable=\"true\", cluster=~\"${CLUSTER}\"},namespace)",
 							"refId": "PrometheusVariableQueryEditor-VariableQuery"
 						},
 						"version": "v0"

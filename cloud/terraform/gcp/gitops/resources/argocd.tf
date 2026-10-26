@@ -582,6 +582,10 @@ resource "kubernetes_manifest" "observability_application" {
 									value="gcp"
 								},
 								{
+									name="gcp.clusterName"
+									value="${var.deployment_name}-gke"
+								},
+								{
 									name="gcp.projectId"
 									value=var.project_id
 								},

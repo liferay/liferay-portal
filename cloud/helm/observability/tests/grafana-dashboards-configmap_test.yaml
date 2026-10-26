@@ -131,6 +131,7 @@ tests:
         it: Keeps the LiferayBackup metrics when the cloud provider is GCP
         set:
             cloudProvider: gcp
+            gcp.clusterName: liferay-test-gke
     -   asserts:
             -   matchRegex:
                     path: data["backups.json"]
@@ -193,6 +194,16 @@ tests:
             cloudProvider: azure
     -   asserts:
             -   matchRegex:
+                    path: data["kubernetes-workloads.json"]
+                    pattern: cluster=~.{2}[.][*].{2}
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-kubernetes-workloads
+        it: Matches every cluster when the cloud provider is not GCP
+        set:
+            cloudProvider: aws
+    -   asserts:
+            -   matchRegex:
                     path: data["backups.json"]
                     pattern: azb-tile-muted azb-tile-row\\" href=\\"#\\"
             -   matchRegex:
@@ -237,6 +248,12 @@ tests:
             azure.subscriptionId: 00000000-0000-0000-0000-000000000000
             cloudProvider: azure
     -   asserts:
+            -   failedTemplate:
+                    errorPattern: gcp.clusterName must be set when cloudProvider=gcp
+        it: Rejects GCP without a cluster name
+        set:
+            cloudProvider: gcp
+    -   asserts:
             -   matchRegex:
                     path: data["databases.json"]
                     pattern: "\"apiVersion\": \"dashboard.grafana.app/v2beta1\""
@@ -270,6 +287,21 @@ tests:
         it: Renders the databases dashboard as a v2 resource carrying both the capacity and the utilization panels
         set:
             cloudProvider: gcp
+            gcp.clusterName: liferay-test-gke
+    -   asserts:
+            -   matchRegex:
+                    path: data["kubernetes-workloads.json"]
+                    pattern: cluster=~.{2}liferay-test-gke.{2}
+            -   notMatchRegex:
+                    path: data["kubernetes-workloads.json"]
+                    pattern: "[$][{]CLUSTER[}]"
+        documentSelector:
+            path: metadata.name
+            value: RELEASE-NAME-observability-dashboard-kubernetes-workloads
+        it: Scopes every query to gcp.clusterName when the cloud provider is GCP
+        set:
+            cloudProvider: gcp
+            gcp.clusterName: liferay-test-gke
     -   asserts:
             -   matchRegex:
                     path: data["kubernetes-workloads.json"]
@@ -318,3 +350,4 @@ tests:
         it: Selects the dedicated Elasticsearch namespace when the cloud provider is GCP
         set:
             cloudProvider: gcp
+            gcp.clusterName: liferay-test-gke

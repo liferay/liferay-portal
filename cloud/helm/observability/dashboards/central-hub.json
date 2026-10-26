@@ -68,14 +68,14 @@
 					"type": "prometheus",
 					"uid": "${DS_PROMETHEUS}"
 				},
-				"definition": "label_values(kube_statefulset_labels{statefulset=~\"liferay-.*\"},label_helm_sh_chart)",
+				"definition": "label_values(kube_statefulset_labels{statefulset=~\"liferay-.*\", cluster=~\"${CLUSTER}\"},label_helm_sh_chart)",
 				"hide": 2,
 				"name": "liferay_chart_version",
 				"options": [
 				],
 				"query": {
 					"qryType": 1,
-					"query": "label_values(kube_statefulset_labels{statefulset=~\"liferay-.*\"},label_helm_sh_chart)",
+					"query": "label_values(kube_statefulset_labels{statefulset=~\"liferay-.*\", cluster=~\"${CLUSTER}\"},label_helm_sh_chart)",
 					"refId": "PrometheusVariableQueryEditor-VariableQuery"
 				},
 				"refresh": 1,

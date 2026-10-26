@@ -10,6 +10,14 @@ azure-monitor
 {{- .Values.cloudProvider -}}
 {{- end -}}
 
+{{- define "observability.clusterPattern" -}}
+{{- if eq (include "observability.cloudProvider" .) "gcp" -}}
+{{- required "gcp.clusterName must be set when cloudProvider=gcp" .Values.gcp.clusterName -}}
+{{- else -}}
+.*
+{{- end -}}
+{{- end -}}
+
 {{- define "observability.customLabels" -}}
 {{- with .Values.customLabels }}
 {{ toYaml . }}
