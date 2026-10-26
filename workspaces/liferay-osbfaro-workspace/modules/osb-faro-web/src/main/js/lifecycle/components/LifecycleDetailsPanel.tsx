@@ -13,7 +13,11 @@ import {
 	getStageCountLabel,
 } from 'lifecycle/utils/lifecycleLabels';
 import {getStageTrigger} from 'lifecycle/utils/stageTrigger';
-import {ILifecycleDetail, ILifecycleStage} from 'shared/api/lifecycle';
+import {
+	ILifecycle,
+	ILifecycleDetail,
+	ILifecycleStage,
+} from 'shared/api/lifecycle';
 import {PageActions} from 'shared/components/base-page/Header';
 import {SidePanel, Text} from '@clayui/core';
 import {useLifecycleActions} from 'lifecycle/hooks/useLifecycleActions';
@@ -119,6 +123,7 @@ interface ILifecycleDetailsPanelProps {
 	lifecycleId: string;
 	onBack?: () => void;
 	onDefaultChange?: (lifecycleId: string) => void;
+	onDelete?: (lifecycle: ILifecycle) => void;
 	onView?: () => void;
 }
 
@@ -127,6 +132,7 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 	lifecycleId,
 	onBack,
 	onDefaultChange,
+	onDelete,
 	onView,
 }) => {
 	const {groupId} = useParams();
@@ -152,6 +158,7 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 
 			onDefaultChange?.(lifecycleId);
 		},
+		onDelete,
 		onView,
 	});
 

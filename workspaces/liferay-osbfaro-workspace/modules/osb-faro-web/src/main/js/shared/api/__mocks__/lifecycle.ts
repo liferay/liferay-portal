@@ -1,5 +1,7 @@
 export const createLifecycle = jest.fn(() => Promise.resolve({stages: []}));
 
+export const deleteLifecycle = jest.fn(() => Promise.resolve({}));
+
 export const fetchAccountLifecycles = jest.fn(() => Promise.resolve([]));
 
 export const fetchLifecycle = jest.fn(() => Promise.resolve({stages: []}));

@@ -40,6 +40,7 @@ import {useDataSources} from 'shared/context/dataSources';
 import {useLifecycleActions} from 'lifecycle/hooks/useLifecycleActions';
 import {useRequest} from 'shared/hooks/useRequest';
 import {useSegmentFilter} from 'shared/hooks/useSegmentFilter';
+import {noop} from 'lodash';
 
 const ProcessingLifecycleEmptyState = () => (
 	<NoResultsDisplay displayCard title="">
@@ -186,6 +187,24 @@ const BaseLifecycle = () => {
 		: lifecycle?.defaultAccountLifecycle;
 
 	const openLifecycle = lifecycle && {...lifecycle, defaultAccountLifecycle};
+
+	const refreshDefault = () =>
+		API.lifecycle
+			.fetchLifecycles({
+				channelId,
+				defaultAccountLifecycle: true,
+				groupId: groupId!,
+			})
+			.then((lifecycles) => {
+				const nextDefault = lifecycles.find(
+					({defaultAccountLifecycle}) => defaultAccountLifecycle
+				);
+
+				if (nextDefault) {
+					changeDefault(nextDefault.id);
+				}
+			})
+			.catch(noop);
 
 	const {actions, manageNotificationsModal} = useLifecycleActions({
 		lifecycle: openLifecycle,
@@ -417,6 +436,7 @@ const BaseLifecycle = () => {
 			<LifecycleSwitchPanel
 				defaultChangeCount={defaultChange.count}
 				onDefaultChange={changeDefault}
+				onDefaultDelete={refreshDefault}
 				onViewChange={setPanelView}
 				openLifecycle={openLifecycle}
 				triggerRef={switchButtonRef}

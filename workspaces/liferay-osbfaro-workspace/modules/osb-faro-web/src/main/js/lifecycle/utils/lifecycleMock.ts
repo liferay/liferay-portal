@@ -1,4 +1,9 @@
-import {ILifecycleDetail, ILifecycleStagePayload} from 'shared/api/lifecycle';
+import {
+	ILifecycle,
+	ILifecycleDetail,
+	ILifecyclesPage,
+	ILifecycleStagePayload,
+} from 'shared/api/lifecycle';
 import {buildStageRuleName} from 'lifecycle/utils/lifecyclePayload';
 import {ILifecycleStage as ILifecycleStageMetric} from 'lifecycle/utils/types';
 import {sortBy} from 'lodash';
@@ -107,6 +112,10 @@ let mockLifecycle = MOCK_LIFECYCLE;
 
 let stageCount = 0;
 
+let deletedLifecycleIds: string[] = [];
+
+let mockDefaultLifecycle: ILifecycle | null | undefined;
+
 export const getMockLifecycle = (): Promise<ILifecycleDetail> =>
 	Promise.resolve(mockLifecycle);
 
@@ -184,6 +193,64 @@ export const getMockLifecycleStageFieldValues = () =>
 		),
 	});
 
+export const isMockLifecycleDeleted = (id: string) =>
+	deletedLifecycleIds.includes(id);
+
+export const getMockDefaultLifecycle = () => mockDefaultLifecycle;
+
+export const applyMockDeletes = <T extends ILifecycle>(lifecycles: T[]): T[] =>
+	lifecycles
+		.filter(({id}) => !isMockLifecycleDeleted(id))
+		.map((lifecycle) =>
+			mockDefaultLifecycle === undefined
+				? lifecycle
+				: {
+						...lifecycle,
+						defaultAccountLifecycle:
+							lifecycle.id === mockDefaultLifecycle?.id,
+					}
+		);
+
+export const deleteMockLifecycle = (
+	id: string,
+	lifecycles: ILifecycle[]
+): Promise<unknown> => {
+	const remaining = applyMockDeletes(lifecycles);
+
+	deletedLifecycleIds = [...deletedLifecycleIds, id];
+
+	if (
+		remaining.find((lifecycle) => lifecycle.id === id)
+			?.defaultAccountLifecycle
+	) {
+		const nextLifecycle = remaining.find(
+			(lifecycle) => lifecycle.id !== id
+		);
+
+		mockDefaultLifecycle = nextLifecycle
+			? {...nextLifecycle, defaultAccountLifecycle: true}
+			: null;
+	}
+
+	return Promise.resolve({});
+};
+
+export const removeMockDeletedLifecycles = (
+	page: ILifecyclesPage
+): ILifecyclesPage => {
+	const items = applyMockDeletes(page.items);
+
+	return {
+		...page,
+		items,
+		totalCount: page.totalCount - (page.items.length - items.length),
+	};
+};
+
 export const resetMockLifecycle = () => {
+	deletedLifecycleIds = [];
+
+	mockDefaultLifecycle = undefined;
+
 	mockLifecycle = MOCK_LIFECYCLE;
 };

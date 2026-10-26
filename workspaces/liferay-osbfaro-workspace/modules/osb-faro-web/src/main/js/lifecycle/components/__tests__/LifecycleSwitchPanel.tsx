@@ -3,6 +3,7 @@ import LifecycleSwitchPanel, {
 	LifecyclePanelView,
 } from '../LifecycleSwitchPanel';
 import mockStore from 'test/mock-store';
+import ModalRenderer from 'shared/components/ModalRenderer';
 import BasePage from 'shared/components/base-page';
 import React, {useState} from 'react';
 import {
@@ -11,6 +12,7 @@ import {
 	fireEvent,
 	render,
 	screen,
+	waitFor,
 	within,
 } from '@testing-library/react';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
@@ -79,10 +81,12 @@ const LIFECYCLES: ILifecycleDetail[] = [
 const Panel = ({
 	initialView = {type: 'switch'},
 	onDefaultChange = jest.fn(),
+	onDefaultDelete,
 	openLifecycle = LIFECYCLES[0],
 }: {
 	initialView?: LifecyclePanelView | null;
 	onDefaultChange?: (lifecycleId: string) => void;
+	onDefaultDelete?: () => void;
 	openLifecycle?: ILifecycleDetail;
 }) => {
 	const [view, setView] = useState<LifecyclePanelView | null>(initialView);
@@ -94,6 +98,7 @@ const Panel = ({
 			<LifecycleSwitchPanel
 				defaultChangeCount={0}
 				onDefaultChange={onDefaultChange}
+				onDefaultDelete={onDefaultDelete}
 				onViewChange={setView}
 				openLifecycle={openLifecycle}
 				view={view}
@@ -120,7 +125,9 @@ const mockLifecyclesPage = (items: ILifecycleDetail[], totalCount = 3) =>
 							pageSize: 20,
 							totalCount,
 						}
-					: LIFECYCLES.find(({id}) => id === variables.lifecycleId),
+					: [...items, ...LIFECYCLES].find(
+							({id}) => id === variables.lifecycleId
+						),
 			error: false,
 			loading: false,
 			refetch: jest.fn(),
@@ -139,6 +146,8 @@ const getPageRequests = () =>
 const renderPanel = (props: React.ComponentProps<typeof Panel> = {}) =>
 	render(
 		<Provider store={mockStore()}>
+			<ModalRenderer />
+
 			<MemoryRouter>
 				<Panel {...props} />
 			</MemoryRouter>
@@ -464,5 +473,165 @@ describe('LifecycleSwitchPanel', () => {
 		expect(screen.getByTestId('view')).toHaveTextContent(
 			JSON.stringify({type: 'switch'})
 		);
+	});
+
+	describe('the Delete action', () => {
+		const deleteRow = (name: string) => {
+			openRowMenu(name);
+
+			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
+
+			fireEvent.click(
+				within(screen.getByRole('dialog')).getByRole('button', {
+					name: /^delete$/i,
+				})
+			);
+		};
+
+		it('comes last in the row menu', () => {
+			renderPanel();
+
+			openRowMenu('Partner Lifecycle');
+
+			const items = screen.getAllByRole('menuitem');
+
+			expect(items[items.length - 1]).toHaveTextContent(/^delete$/i);
+		});
+
+		it('shows on the default lifecycle', () => {
+			renderPanel();
+
+			openRowMenu('Growth and Retention Hub');
+
+			expect(
+				screen.getByRole('menuitem', {name: /^delete$/i})
+			).toBeInTheDocument();
+		});
+
+		const PARTNER_DEFAULT = LIFECYCLES.map((lifecycle) => ({
+			...lifecycle,
+			defaultAccountLifecycle: lifecycle.id === '2',
+		}));
+
+		it('reports a deleted default so the new default is shown', async () => {
+			const onDefaultDelete = jest.fn();
+
+			mockLifecyclesPage(PARTNER_DEFAULT);
+
+			renderPanel({onDefaultDelete});
+
+			deleteRow('Partner Lifecycle');
+
+			await waitFor(() => expect(onDefaultDelete).toHaveBeenCalled());
+
+			expect(getPageRequests().pop()).toEqual(
+				expect.objectContaining({refreshCount: 1})
+			);
+		});
+
+		it('does not report a deleted lifecycle that was not the default', async () => {
+			const onDefaultDelete = jest.fn();
+
+			renderPanel({onDefaultDelete});
+
+			deleteRow('Expansion Lifecycle');
+
+			await waitFor(() =>
+				expect(getPageRequests().pop()).toEqual(
+					expect.objectContaining({refreshCount: 1})
+				)
+			);
+
+			expect(onDefaultDelete).not.toHaveBeenCalled();
+		});
+
+		it('reloads the current page and stays open after a delete', async () => {
+			mockLifecyclesPage(LIFECYCLES, 45);
+
+			renderPanel();
+
+			fireEvent.click(screen.getByText('2', {selector: '.page-link'}));
+
+			deleteRow('Partner Lifecycle');
+
+			await waitFor(() =>
+				expect(getPageRequests().pop()).toEqual(
+					expect.objectContaining({page: 2, refreshCount: 1})
+				)
+			);
+
+			expect(screen.getByTestId('view')).toHaveTextContent(
+				JSON.stringify({type: 'switch'})
+			);
+		});
+
+		it('goes back a page when the deleted row was alone on its page', async () => {
+			mockLifecyclesPage([LIFECYCLES[1]], 21);
+
+			renderPanel();
+
+			fireEvent.click(screen.getByText('2', {selector: '.page-link'}));
+
+			deleteRow('Partner Lifecycle');
+
+			await waitFor(() =>
+				expect(getPageRequests().pop()).toEqual(
+					expect.objectContaining({page: 1, refreshCount: 0})
+				)
+			);
+		});
+
+		it('reports a default deleted from its details', async () => {
+			const onDefaultDelete = jest.fn();
+
+			mockLifecyclesPage(PARTNER_DEFAULT);
+
+			renderPanel({
+				initialView: {
+					lifecycleId: '2',
+					parent: 'switch',
+					type: 'details',
+				},
+				onDefaultDelete,
+			});
+
+			fireEvent.click(screen.getByRole('button', {name: /^menu$/i}));
+
+			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
+
+			fireEvent.click(
+				within(screen.getByRole('dialog')).getByRole('button', {
+					name: /^delete$/i,
+				})
+			);
+
+			await waitFor(() => expect(onDefaultDelete).toHaveBeenCalled());
+		});
+
+		it('returns to the list after a delete from the details', async () => {
+			renderPanel({
+				initialView: {
+					lifecycleId: '2',
+					parent: 'switch',
+					type: 'details',
+				},
+			});
+
+			fireEvent.click(screen.getByRole('button', {name: /^menu$/i}));
+
+			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
+
+			fireEvent.click(
+				within(screen.getByRole('dialog')).getByRole('button', {
+					name: /^delete$/i,
+				})
+			);
+
+			await waitFor(() =>
+				expect(screen.getByTestId('view')).toHaveTextContent(
+					JSON.stringify({type: 'switch'})
+				)
+			);
+		});
 	});
 });

@@ -1,6 +1,7 @@
 import * as API from 'shared/api';
 import BaseLifecycle from '../BaseLifecycle';
 import mockStore from 'test/mock-store';
+import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ChannelContext} from 'shared/context/channel';
@@ -9,6 +10,7 @@ import {
 	fireEvent,
 	render,
 	screen,
+	waitFor,
 	within,
 } from '@testing-library/react';
 import {MemoryRouter, useLocation} from 'react-router-dom';
@@ -192,6 +194,8 @@ const LocationProbe = () => (
 const renderPage = (initialEntries = ['/workspace/23/123/lifecycle/erc-1']) =>
 	render(
 		<Provider store={mockStore()}>
+			<ModalRenderer />
+
 			<ChannelContext.Provider value={mockChannelContext() as any}>
 				<MemoryRouter initialEntries={initialEntries}>
 					<BaseLifecycle />
@@ -208,6 +212,10 @@ describe('BaseLifecycle', () => {
 
 		(API as any).accounts = {fetchMetrics: jest.fn()};
 		(API as any).lifecycle = {
+			deleteLifecycle: jest.fn(() => Promise.resolve({})),
+			fetchLifecycles: jest.fn(() =>
+				Promise.resolve([{defaultAccountLifecycle: true, id: '1'}])
+			),
 			fetchLifecycle: jest.fn(),
 			fetchLifecyclesPage: jest.fn(),
 			setDefaultLifecycle: jest.fn(() => Promise.resolve()),
@@ -663,6 +671,84 @@ describe('BaseLifecycle', () => {
 		});
 	});
 
+	describe('the Delete action', () => {
+		const confirmDelete = () =>
+			fireEvent.click(
+				within(screen.getByRole('dialog')).getByRole('button', {
+					name: /^delete$/i,
+				})
+			);
+
+		it('shows on the default lifecycle', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({
+					lifecycle: {defaultAccountLifecycle: true, id: '1'},
+				})
+			);
+
+			renderPage();
+
+			openActionsMenu();
+
+			expect(
+				screen.getByRole('menuitem', {name: /^delete$/i})
+			).toBeInTheDocument();
+		});
+
+		it('comes last in the menu', () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({
+					lifecycle: {defaultAccountLifecycle: false, id: '1'},
+				})
+			);
+
+			renderPage();
+
+			openActionsMenu();
+
+			const items = screen.getAllByRole('menuitem');
+
+			expect(items[items.length - 1]).toHaveTextContent(/^delete$/i);
+		});
+
+		it('opens the default lifecycle after deleting the open one', async () => {
+			mockedUseRequest.mockImplementation(
+				useRequestImpl({
+					lifecycle: {
+						defaultAccountLifecycle: false,
+						id: '1',
+						name: 'Growth Hub',
+					},
+				})
+			);
+
+			renderPage();
+
+			openActionsMenu();
+
+			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
+
+			confirmDelete();
+
+			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
+				channelId: '123',
+				groupId: '23',
+				lifecycleId: '1',
+			});
+
+			await waitFor(() =>
+				expect(screen.getByTestId('location')).toHaveTextContent(
+					new RegExp(
+						`^${toRoute(Routes.LIFECYCLE, {
+							channelId: '123',
+							groupId: '23',
+						})}$`
+					)
+				)
+			);
+		});
+	});
+
 	describe('the Show Details action', () => {
 		it('opens the details of the open lifecycle in the side panel', () => {
 			mockedUseRequest.mockImplementation(
@@ -807,6 +893,7 @@ describe('BaseLifecycle', () => {
 		const LIST_LIFECYCLES = [
 			{id: '1', name: 'Growth Hub'},
 			{id: '2', name: 'Partner Lifecycle'},
+			{id: '3', name: 'Retention Lifecycle'},
 		];
 
 		beforeEach(() => {
@@ -864,6 +951,108 @@ describe('BaseLifecycle', () => {
 			)
 				.getByRole('link', {name})
 				.closest('li') as HTMLElement;
+
+		it('reloads the list and stays open after deleting another lifecycle', async () => {
+			renderPage();
+
+			fireEvent.click(
+				screen.getByRole('button', {name: /switch dashboard/i})
+			);
+
+			const listRequests = () =>
+				mockedUseRequest.mock.calls.filter(
+					([{dataSourceFn}]) =>
+						dataSourceFn === API.lifecycle.fetchLifecyclesPage
+				);
+
+			const lastRefreshCount = () =>
+				listRequests()[listRequests().length - 1][0].variables
+					.refreshCount;
+
+			expect(lastRefreshCount()).toBe(0);
+
+			fireEvent.click(
+				within(getRow('Retention Lifecycle')).getByRole('button', {
+					name: /actions for/i,
+				})
+			);
+
+			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
+
+			fireEvent.click(
+				within(screen.getByRole('dialog')).getByRole('button', {
+					name: /^delete$/i,
+				})
+			);
+
+			await waitFor(() => expect(lastRefreshCount()).toBe(1));
+
+			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
+				channelId: '123',
+				groupId: '23',
+				lifecycleId: '3',
+			});
+			expect(API.lifecycle.fetchLifecycles).not.toHaveBeenCalled();
+			expect(
+				screen.getByRole('button', {name: /switch dashboard/i})
+			).toHaveAttribute('aria-expanded', 'true');
+			expect(screen.getByTestId('location')).toHaveTextContent(
+				'/workspace/23/123/lifecycle/1'
+			);
+		});
+
+		it('pins the open lifecycle when the deleted default hands it over', async () => {
+			const {container} = renderPage();
+
+			fireEvent.click(
+				screen.getByRole('button', {name: /switch dashboard/i})
+			);
+
+			expect(container.querySelector('.title-section .sticker')).toBeNull();
+
+			fireEvent.click(
+				within(getRow('Partner Lifecycle')).getByRole('button', {
+					name: /actions for/i,
+				})
+			);
+
+			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
+
+			fireEvent.click(
+				within(screen.getByRole('dialog')).getByRole('button', {
+					name: /^delete$/i,
+				})
+			);
+
+			await waitFor(() =>
+				expect(
+					container.querySelector('.title-section .sticker')
+				).not.toBeNull()
+			);
+
+			expect(API.lifecycle.fetchLifecycles).toHaveBeenCalledWith({
+				channelId: '123',
+				defaultAccountLifecycle: true,
+				groupId: '23',
+			});
+			expect(
+				within(getRow('Growth Hub')).getByRole('img', {
+					name: /default/i,
+				})
+			).toBeInTheDocument();
+			expect(
+				screen.getByRole('button', {name: /switch dashboard/i})
+			).toHaveAttribute('aria-expanded', 'true');
+			expect(screen.getByTestId('location')).toHaveTextContent(
+				'/workspace/23/123/lifecycle/1'
+			);
+
+			openActionsMenu();
+
+			expect(
+				screen.queryByRole('menuitem', {name: /set.default/i})
+			).toBeNull();
+		});
 
 		it('moves the pin in the list when the header sets the default', async () => {
 			renderPage();

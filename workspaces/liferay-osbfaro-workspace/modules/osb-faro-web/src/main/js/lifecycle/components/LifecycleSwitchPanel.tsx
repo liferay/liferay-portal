@@ -2,7 +2,7 @@ import BasePage from 'shared/components/base-page';
 import LifecycleDetailsPanel from './LifecycleDetailsPanel';
 import LifecycleSwitchList from './LifecycleSwitchList';
 import React from 'react';
-import {ILifecycleDetail} from 'shared/api/lifecycle';
+import {ILifecycle, ILifecycleDetail} from 'shared/api/lifecycle';
 import {useSidebarOverlay} from 'shared/components/base-page/Sidebar';
 
 export type LifecyclePanelView =
@@ -12,6 +12,7 @@ export type LifecyclePanelView =
 interface ILifecycleSwitchPanelProps {
 	defaultChangeCount: number;
 	onDefaultChange: (lifecycleId: string) => void;
+	onDefaultDelete?: () => void;
 	onViewChange: (view: LifecyclePanelView | null) => void;
 	openLifecycle?: ILifecycleDetail | null;
 	triggerRef?: React.RefObject<HTMLElement>;
@@ -21,6 +22,7 @@ interface ILifecycleSwitchPanelProps {
 const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 	defaultChangeCount,
 	onDefaultChange,
+	onDefaultDelete,
 	onViewChange,
 	openLifecycle,
 	triggerRef,
@@ -29,6 +31,14 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 	const overlay = useSidebarOverlay();
 
 	const backToSwitch = () => onViewChange({type: 'switch'});
+
+	const deleteFromDetails = ({defaultAccountLifecycle}: ILifecycle) => {
+		backToSwitch();
+
+		if (defaultAccountLifecycle) {
+			onDefaultDelete?.();
+		}
+	};
 
 	const closeOverlay = () => {
 		if (overlay) {
@@ -56,6 +66,7 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 					lifecycleId={view.lifecycleId}
 					onBack={view.parent ? backToSwitch : undefined}
 					onDefaultChange={onDefaultChange}
+					onDelete={deleteFromDetails}
 					onView={
 						view.parent && view.lifecycleId !== openLifecycle?.id
 							? viewFromDetails
@@ -80,6 +91,7 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 							<LifecycleSwitchList
 								defaultChangeCount={defaultChangeCount}
 								onDefaultChange={onDefaultChange}
+								onDefaultDelete={onDefaultDelete}
 								onNavigate={closeOverlay}
 								onShowDetails={(lifecycleId) =>
 									onViewChange({
