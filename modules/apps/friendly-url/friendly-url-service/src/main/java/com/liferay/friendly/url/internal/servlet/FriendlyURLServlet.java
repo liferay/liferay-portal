@@ -327,10 +327,10 @@ public class FriendlyURLServlet extends HttpServlet {
 								group.getGroupId())) {
 
 							if (layout.isTypeURL()) {
-								long pvlsgid = 0;
+								long groupId = 0;
 
 								if (layout instanceof VirtualLayout) {
-									pvlsgid = layout.getGroupId();
+									groupId = layout.getGroupId();
 								}
 
 								return new Redirect(
@@ -338,7 +338,7 @@ public class FriendlyURLServlet extends HttpServlet {
 										Portal.PATH_MAIN,
 										"/portal/layout?p_l_id=",
 										layout.getPlid(), "&p_v_l_s_g_id=",
-										pvlsgid));
+										groupId));
 							}
 
 							return new Redirect(
