@@ -100,7 +100,7 @@ public class IndividualSegmentsCheckerTest {
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
-						"configuration.SegmentsAsahConfiguration",
+						"configuration.SegmentsAsahCompanyConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
@@ -159,7 +159,7 @@ public class IndividualSegmentsCheckerTest {
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
-						"configuration.SegmentsAsahConfiguration",
+						"configuration.SegmentsAsahCompanyConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
@@ -223,7 +223,7 @@ public class IndividualSegmentsCheckerTest {
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
-						"configuration.SegmentsAsahConfiguration",
+						"configuration.SegmentsAsahCompanyConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
@@ -282,7 +282,7 @@ public class IndividualSegmentsCheckerTest {
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
-						"configuration.SegmentsAsahConfiguration",
+						"configuration.SegmentsAsahCompanyConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
@@ -320,7 +320,7 @@ public class IndividualSegmentsCheckerTest {
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
-						"configuration.SegmentsAsahConfiguration",
+						"configuration.SegmentsAsahCompanyConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
@@ -393,7 +393,7 @@ public class IndividualSegmentsCheckerTest {
 			ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
 					"com.liferay.segments.asah.connector.internal." +
-						"configuration.SegmentsAsahConfiguration",
+						"configuration.SegmentsAsahCompanyConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"anonymousUserSegmentsCacheExpirationTime", "60"
 					).build())) {
