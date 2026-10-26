@@ -120,17 +120,26 @@ public class OrphanPortletsUtil {
 	private static List<String> _getExplicitlyAddedPortletIds(
 		Layout layout, PortletRegistry portletRegistry) {
 
+		List<String> portletIds = new ArrayList<>(
+			_getMasterLayoutPortletIds(layout, portletRegistry));
+
 		if (layout.isTypeContent()) {
-			return _getTypeContentExplicitlyAddedPortletIds(
-				layout, portletRegistry);
+			portletIds.addAll(
+				_getFragmentEntryLinkPortletIds(
+					layout.getGroupId(), layout.getPlid(), portletRegistry));
+
+			return portletIds;
 		}
 
 		LayoutTypePortlet layoutTypePortlet =
 			(LayoutTypePortlet)layout.getLayoutType();
 
-		return TransformUtil.transform(
-			layoutTypePortlet.getExplicitlyAddedPortlets(),
-			Portlet::getPortletId);
+		portletIds.addAll(
+			TransformUtil.transform(
+				layoutTypePortlet.getExplicitlyAddedPortlets(),
+				Portlet::getPortletId));
+
+		return portletIds;
 	}
 
 	private static List<String> _getFragmentEntryLinkPortletIds(
@@ -166,25 +175,13 @@ public class OrphanPortletsUtil {
 		return portletIds;
 	}
 
-	private static List<PortletPreferences> _getPortletPreferences(
-		Layout layout) {
-
-		return PortletPreferencesLocalServiceUtil.getPortletPreferences(
-			PortletKeys.PREFS_OWNER_ID_DEFAULT,
-			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
-	}
-
-	private static List<String> _getTypeContentExplicitlyAddedPortletIds(
+	private static List<String> _getMasterLayoutPortletIds(
 		Layout layout, PortletRegistry portletRegistry) {
-
-		List<String> portletIds = new ArrayList<>(
-			_getFragmentEntryLinkPortletIds(
-				layout.getGroupId(), layout.getPlid(), portletRegistry));
 
 		long masterLayoutPlid = layout.getMasterLayoutPlid();
 
 		if (masterLayoutPlid == LayoutConstants.DEFAULT_PLID) {
-			return portletIds;
+			return Collections.emptyList();
 		}
 
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
@@ -192,15 +189,20 @@ public class OrphanPortletsUtil {
 				fetchLayoutPageTemplateEntryByPlid(masterLayoutPlid);
 
 		if (masterLayoutPageTemplateEntry == null) {
-			return portletIds;
+			return Collections.emptyList();
 		}
 
-		portletIds.addAll(
-			_getFragmentEntryLinkPortletIds(
-				masterLayoutPageTemplateEntry.getGroupId(),
-				masterLayoutPageTemplateEntry.getPlid(), portletRegistry));
+		return _getFragmentEntryLinkPortletIds(
+			masterLayoutPageTemplateEntry.getGroupId(),
+			masterLayoutPageTemplateEntry.getPlid(), portletRegistry);
+	}
 
-		return portletIds;
+	private static List<PortletPreferences> _getPortletPreferences(
+		Layout layout) {
+
+		return PortletPreferencesLocalServiceUtil.getPortletPreferences(
+			PortletKeys.PREFS_OWNER_ID_DEFAULT,
+			PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
 	}
 
 }
