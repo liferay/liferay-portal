@@ -472,6 +472,8 @@ public class DDMRESTDataProvider implements DDMDataProvider {
 				).put(
 					"protocol", uri.getScheme()
 				).put(
+					"redirectsEnabled", false
+				).put(
 					"trustSelfSignedCertificates",
 					_ddmDataProviderConfiguration.trustSelfSignedCertificates()
 				).putAll(

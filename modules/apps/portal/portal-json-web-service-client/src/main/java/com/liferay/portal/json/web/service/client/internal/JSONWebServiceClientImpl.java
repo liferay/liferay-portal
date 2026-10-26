@@ -63,6 +63,12 @@ public class JSONWebServiceClientImpl extends BaseJSONWebServiceClientImpl {
 			setProxyPassword(getString("proxyPassword", properties));
 		}
 
+		if (properties.get("redirectsEnabled") instanceof
+				Boolean redirectsEnabled) {
+
+			setRedirectsEnabled(redirectsEnabled);
+		}
+
 		if (properties.get("trustSelfSignedCertificates") instanceof
 				Boolean trustSelfSignedCertificates) {
 

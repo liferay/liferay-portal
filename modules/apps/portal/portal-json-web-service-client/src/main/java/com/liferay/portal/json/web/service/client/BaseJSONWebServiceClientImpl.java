@@ -255,6 +255,8 @@ public abstract class BaseJSONWebServiceClientImpl
 			RequestConfig.custom(
 			).setCookieSpec(
 				CookieSpecs.STANDARD
+			).setRedirectsEnabled(
+				_redirectsEnabled
 			).build());
 
 		addHeaders(httpGet, headers);
@@ -730,6 +732,10 @@ public abstract class BaseJSONWebServiceClientImpl
 
 	public void setProxyWorkstation(String proxyWorkstation) {
 		_proxyWorkstation = proxyWorkstation;
+	}
+
+	public void setRedirectsEnabled(boolean redirectsEnabled) {
+		_redirectsEnabled = redirectsEnabled;
 	}
 
 	@Override
@@ -1245,6 +1251,7 @@ public abstract class BaseJSONWebServiceClientImpl
 	private String _proxyLogin;
 	private String _proxyPassword;
 	private String _proxyWorkstation;
+	private boolean _redirectsEnabled = true;
 	private boolean _trustSelfSignedCertificates = true;
 
 }
