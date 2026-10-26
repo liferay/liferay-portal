@@ -23,7 +23,19 @@ public class PageTemplateSetNameExceptionProblemMapper
 		LayoutPageTemplateCollectionNameException
 			layoutPageTemplateCollectionNameException) {
 
+		String message = "A name is required";
+
+		String exceptionMessage =
+			layoutPageTemplateCollectionNameException.getMessage();
+
+		if ((exceptionMessage != null) &&
+			exceptionMessage.startsWith("Maximum length")) {
+
+			message = "The name is too long";
+		}
+
 		return ProblemUtil.getProblem(
+			message, Problem.Status.BAD_REQUEST,
 			layoutPageTemplateCollectionNameException);
 	}
 
