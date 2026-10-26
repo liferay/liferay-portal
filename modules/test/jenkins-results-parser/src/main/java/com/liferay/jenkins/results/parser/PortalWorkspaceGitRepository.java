@@ -386,6 +386,8 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 
 	@Override
 	protected void setUpAdditionalCaches() throws IOException {
+		_configurePortalPublicWorkspaceGitRepository();
+
 		_setUpBasePortalCache();
 
 		if (isBinariesCacheEnabled()) {
@@ -613,6 +615,40 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		catch (AntException antException) {
 			throw new RuntimeException(antException);
 		}
+	}
+
+	private void _configurePortalPublicWorkspaceGitRepository() {
+		if (_basePortalWorkspaceGitRepository == null) {
+			return;
+		}
+
+		String upstreamBranchName = getUpstreamBranchName();
+
+		if (!upstreamBranchName.endsWith("-private")) {
+			return;
+		}
+
+		String gitCommit = getFileContent("git-commit/liferay-portal");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(gitCommit)) {
+			return;
+		}
+
+		if (JenkinsResultsParserUtil.isSHA(gitCommit)) {
+			_basePortalWorkspaceGitRepository.setCommitFileIsSHA(true);
+
+			_basePortalWorkspaceGitRepository.setSenderBranchSHA(gitCommit);
+
+			return;
+		}
+
+		if (!GitUtil.isValidGitHubRefURL(gitCommit) &&
+			!PullRequest.isValidGitHubPullRequestURL(gitCommit)) {
+
+			return;
+		}
+
+		_basePortalWorkspaceGitRepository.setGitHubURL(gitCommit);
 	}
 
 	private void _downloadBasePortalCache() throws IOException {
