@@ -356,11 +356,12 @@ public class PreviewableResolverUtilTest {
 	}
 
 	private Map<Class<?>, Map<Serializable, Object>> _createPreviewableMap(
-		Serializable fromPrimaryKey, Object to) {
+		Serializable fromPrimaryKey, Object previewValue) {
 
 		return Collections.<Class<?>, Map<Serializable, Object>>singletonMap(
 			TestModel.class,
-			Collections.<Serializable, Object>singletonMap(fromPrimaryKey, to));
+			Collections.<Serializable, Object>singletonMap(
+				fromPrimaryKey, previewValue));
 	}
 
 	private ServiceRegistration<PersistedModelLocalService>

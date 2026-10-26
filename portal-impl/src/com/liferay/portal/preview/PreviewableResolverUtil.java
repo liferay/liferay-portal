@@ -96,14 +96,16 @@ public class PreviewableResolverUtil {
 			return baseModel;
 		}
 
-		Object to = pkMap.get(baseModel.getPrimaryKeyObj());
+		Object previewValue = pkMap.get(baseModel.getPrimaryKeyObj());
 
-		if (to == null) {
+		if (previewValue == null) {
 			return baseModel;
 		}
 
 		try {
-			if (to instanceof UnsafeSupplierValue<?, ?> unsafeSupplierValue) {
+			if (previewValue instanceof
+					UnsafeSupplierValue<?, ?> unsafeSupplierValue) {
+
 				return (BaseModel<?>)unsafeSupplierValue.getValue();
 			}
 
@@ -112,7 +114,7 @@ public class PreviewableResolverUtil {
 					getPersistedModelLocalService(modelClass.getName());
 
 			return (BaseModel<?>)persistedModelLocalService.getPersistedModel(
-				(Serializable)to);
+				(Serializable)previewValue);
 		}
 		catch (Throwable throwable) {
 			return ReflectionUtil.throwException(throwable);
@@ -159,13 +161,15 @@ public class PreviewableResolverUtil {
 		Set<Serializable> toPKs = new TreeSet<>();
 
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
-			Object to = pkMap.get(fromBaseModel.getPrimaryKeyObj());
+			Object previewValue = pkMap.get(fromBaseModel.getPrimaryKeyObj());
 
-			if ((to == null) || (to instanceof UnsafeSupplierValue)) {
+			if ((previewValue == null) ||
+				(previewValue instanceof UnsafeSupplierValue)) {
+
 				continue;
 			}
 
-			toPKs.add((Serializable)to);
+			toPKs.add((Serializable)previewValue);
 		}
 
 		Map<Serializable, PersistedModel> toPersistedModels =
@@ -174,12 +178,12 @@ public class PreviewableResolverUtil {
 		Throwable throwable1 = null;
 
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
-			Object to = pkMap.get(fromBaseModel.getPrimaryKeyObj());
+			Object previewValue = pkMap.get(fromBaseModel.getPrimaryKeyObj());
 
-			if (to == null) {
+			if (previewValue == null) {
 				toBaseModels.add(fromBaseModel);
 			}
-			else if (to instanceof
+			else if (previewValue instanceof
 						UnsafeSupplierValue<?, ?> unsafeSupplierValue) {
 
 				try {
@@ -191,7 +195,7 @@ public class PreviewableResolverUtil {
 				}
 			}
 			else {
-				Serializable toPK = (Serializable)to;
+				Serializable toPK = (Serializable)previewValue;
 
 				PersistedModel toPersistedModel = toPersistedModels.get(toPK);
 
