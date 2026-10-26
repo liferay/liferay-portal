@@ -41,6 +41,16 @@ public abstract class BasePermissionChecker implements PermissionChecker {
 
 	@Override
 	public long getOwnerRoleId() {
+		if (ownerRole == null) {
+			try {
+				ownerRole = RoleLocalServiceUtil.getRole(
+					user.getCompanyId(), RoleConstants.OWNER);
+			}
+			catch (Exception exception) {
+				_log.error(exception);
+			}
+		}
+
 		return ownerRole.getRoleId();
 	}
 
@@ -117,13 +127,7 @@ public abstract class BasePermissionChecker implements PermissionChecker {
 			signedIn = true;
 		}
 
-		try {
-			ownerRole = RoleLocalServiceUtil.getRole(
-				user.getCompanyId(), RoleConstants.OWNER);
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
+		ownerRole = null;
 	}
 
 	@Override
