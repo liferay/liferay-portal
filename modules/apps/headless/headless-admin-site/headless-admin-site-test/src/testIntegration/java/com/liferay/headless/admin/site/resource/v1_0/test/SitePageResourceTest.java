@@ -16,7 +16,6 @@ import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.publisher.constants.AssetPublisherPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
-import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.DLTestUtil;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
@@ -277,7 +276,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-78718", "LPD-101791"})
+	@TestInfo({"LPD-78718", "LPD-101791", "LPD-110512"})
 	public void testGetSiteSitePage() throws Exception {
 		SitePage postSitePage = testGetSiteSitePagesPage_addSitePage(
 			testGroup.getExternalReferenceCode(), randomSitePage());
@@ -2614,28 +2613,20 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	}
 
 	private void _testGetSiteSitePageWithDeletedOpenGraphImage(
+			Layout layout, String openGraphImageFileEntryERC,
+			String openGraphImageFileEntryScopeERC,
 			ServiceContext serviceContext)
 		throws Exception {
-
-		Layout layout = _addLayout(
-			LayoutConstants.TYPE_CONTENT, null, serviceContext);
-
-		DLFolder dlFolder = DLTestUtil.addDLFolder(testGroup.getGroupId());
-
-		DLFileEntry dlFileEntry = DLTestUtil.addDLFileEntry(
-			dlFolder.getFolderId());
 
 		_layoutSEOEntryLocalService.updateLayoutSEOEntry(
 			TestPropsValues.getUserId(), testGroup.getGroupId(), false,
 			layout.getLayoutId(), false, Collections.emptyMap(),
-			Collections.emptyMap(), dlFileEntry.getExternalReferenceCode(),
-			testGroup.getExternalReferenceCode(), true,
+			Collections.emptyMap(), openGraphImageFileEntryERC,
+			openGraphImageFileEntryScopeERC, true,
 			HashMapBuilder.put(
 				LocaleUtil.US, RandomTestUtil.randomString()
 			).build(),
 			serviceContext);
-
-		_dlAppLocalService.deleteFileEntry(dlFileEntry.getFileEntryId());
 
 		SitePage sitePage = sitePageResource.getSiteSitePage(
 			testGroup.getExternalReferenceCode(),
@@ -2647,8 +2638,41 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		OpenGraphSettings openGraphSettings =
 			contentPageSettings.getOpenGraphSettings();
 
-		Assert.assertNull(openGraphSettings.getImage());
+		ItemExternalReference image = openGraphSettings.getImage();
+
+		Assert.assertEquals(FileEntry.class.getName(), image.getClassName());
+		Assert.assertEquals(
+			openGraphImageFileEntryERC, image.getExternalReferenceCode());
+
+		Scope scope = image.getScope();
+
+		if (openGraphImageFileEntryScopeERC == null) {
+			Assert.assertNull(scope);
+		}
+		else {
+			Assert.assertEquals(
+				openGraphImageFileEntryScopeERC,
+				scope.getExternalReferenceCode());
+			Assert.assertEquals(Scope.Type.SITE, scope.getType());
+		}
+
 		Assert.assertNotNull(openGraphSettings.getTitle_i18n());
+	}
+
+	private void _testGetSiteSitePageWithDeletedOpenGraphImage(
+			ServiceContext serviceContext)
+		throws Exception {
+
+		Layout layout = _addLayout(
+			LayoutConstants.TYPE_CONTENT, null, serviceContext);
+
+		String openGraphImageFileEntryERC = RandomTestUtil.randomString();
+
+		_testGetSiteSitePageWithDeletedOpenGraphImage(
+			layout, openGraphImageFileEntryERC, RandomTestUtil.randomString(),
+			serviceContext);
+		_testGetSiteSitePageWithDeletedOpenGraphImage(
+			layout, openGraphImageFileEntryERC, null, serviceContext);
 	}
 
 	private void _testGetSiteSitePageWithNestedFields(SitePage sitePage)
@@ -5689,9 +5713,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 	@Inject
 	private DefaultInputFragmentEntryConfigurationProvider
 		_defaultInputFragmentEntryConfigurationProvider;
-
-	@Inject
-	private DLAppLocalService _dlAppLocalService;
 
 	@Inject
 	private FragmentCollectionContributorRegistry
