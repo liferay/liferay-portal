@@ -50,22 +50,6 @@ public class SegmentsAsahConfigurationProvider {
 			anonymousUserSegmentsCacheExpirationTime();
 	}
 
-	public int getInterestTermsCacheExpirationTime(long companyId)
-		throws ConfigurationException {
-
-		if (!_isSegmentsAsahCompanyConfigurationDefined(companyId)) {
-			return _segmentsAsahConfiguration.
-				interestTermsCacheExpirationTime();
-		}
-
-		SegmentsAsahCompanyConfiguration segmentsAsahCompanyConfiguration =
-			_configurationProvider.getCompanyConfiguration(
-				SegmentsAsahCompanyConfiguration.class, companyId);
-
-		return segmentsAsahCompanyConfiguration.
-			interestTermsCacheExpirationTime();
-	}
-
 	@Activate
 	@Modified
 	protected void activate(Map<String, Object> properties) {
