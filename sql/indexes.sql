@@ -128,7 +128,7 @@ create index IX_90724726 on DLFileEntryType (uuid_[$COLUMN_LENGTH:75$]);
 create index IX_2E64D9F9 on DLFileEntryTypes_DLFolders (companyId);
 create index IX_6E00A2EC on DLFileEntryTypes_DLFolders (folderId);
 
-create index IX_8571953E on DLFileShortcut (companyId, status);
+create index IX_A4BB2E58 on DLFileShortcut (companyId);
 create unique index IX_5AF71D81 on DLFileShortcut (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_17EE3098 on DLFileShortcut (groupId, folderId, active_, status);
 create unique index IX_86FE17F8 on DLFileShortcut (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
@@ -153,7 +153,6 @@ create unique index IX_53E6B584 on DLFolder (groupId, uuid_[$COLUMN_LENGTH:75$],
 create index IX_D6D77780 on DLFolder (mountPoint, repositoryId);
 create index IX_56F3D47C on DLFolder (parentFolderId, repositoryId);
 create index IX_EE29C715 on DLFolder (repositoryId);
-create index IX_B199E2A6 on DLFolder (status, companyId);
 create index IX_CBC408D8 on DLFolder (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_2A2CB130 on EmailAddress (companyId, classNameId, classPK, primary_);

@@ -303,14 +303,6 @@ public class DLFileShortcutPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_NotS() throws Exception {
-		_persistence.countByC_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_NotS(0L, 0);
-	}
-
-	@Test
 	public void testCountByG_F_A() throws Exception {
 		_persistence.countByG_F_A(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -738,4 +730,4 @@ public class DLFileShortcutPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1505347270
+// LIFERAY-SERVICE-BUILDER-HASH:276602882

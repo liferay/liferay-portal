@@ -302,14 +302,6 @@ public class DLFolderPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_NotS() throws Exception {
-		_persistence.countByC_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_NotS(0L, 0);
-	}
-
-	@Test
 	public void testCountByR_M() throws Exception {
 		_persistence.countByR_M(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean());
@@ -824,4 +816,4 @@ public class DLFolderPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2066973059
+// LIFERAY-SERVICE-BUILDER-HASH:-2143462983
