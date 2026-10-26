@@ -829,3 +829,43 @@ Removed updateLatestObjectEntryVersionModifiedDate(Date, long).
 
 Its only caller was ObjectEntryLocalService.updateModifiedDate.
 ```
+
+----
+
+# a09a6cef52de84def0920986a448d94d66e8488a
+
+The commit message is missing a breaking change. The correct message is:
+
+```
+LPD-111671 Regenerate
+
+# breaking
+
+## What modules/apps/commerce/commerce-api/src/main/java/com/liferay/commerce/service/CommerceSubscriptionEntryLocalService.java
+
+Removed getActiveCommerceSubscriptionEntries(long) from CommerceSubscriptionEntryLocalService and CommerceSubscriptionEntryLocalServiceUtil.
+
+## Why
+
+It had no caller. The overload without arguments stays for the OSGi command.
+```
+
+----
+
+# 9cfbad800d1d75361874b64436862abd88321ebb
+
+The commit message is missing a breaking change. The correct message is:
+
+```
+LPD-111671 Regenerate
+
+# breaking
+
+## What modules/apps/commerce/commerce-api/src/main/java/com/liferay/commerce/service/persistence/CommerceSubscriptionEntryFinder.java
+
+Removed findByA_S(long, long) from CommerceSubscriptionEntryFinder.
+
+## Why
+
+Its only caller was CommerceSubscriptionEntryLocalService.getActiveCommerceSubscriptionEntries(long), which was removed in the same change.
+```
