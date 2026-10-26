@@ -66,7 +66,9 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 
 		int status = message.getInteger("status");
 
-		if (status == BackgroundTaskConstants.STATUS_CANCELLED) {
+		if ((status == BackgroundTaskConstants.STATUS_CANCELLED) ||
+			(status == BackgroundTaskConstants.STATUS_COMPLETED_WITH_ERRORS)) {
+
 			_executeBackgroundTasks(message);
 		}
 		else if (status == BackgroundTaskConstants.STATUS_FAILED) {
