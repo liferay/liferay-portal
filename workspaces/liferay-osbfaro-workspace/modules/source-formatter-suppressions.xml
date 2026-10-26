@@ -21,7 +21,6 @@
 
 		<suppress checks="JSONPackageJSONDependencyVersionCheck" files=".*" />
 		<suppress checks="PropertiesLiferayPluginPackageLiferayVersionsCheck" files=".*" />
-		<suppress checks="SHSubshellCheck" files="set_nexus_credentials\.sh" />
 		<suppress checks="SQLLongNamesCheck" files=".*" />
 	</source-check>
 </suppressions>
