@@ -92,13 +92,15 @@ public class CommercePriceModifierRelServiceTest {
 
 		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinition(
 			commerceCatalog.getGroupId());
-		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinition(
-			commerceCatalog.getGroupId());
 
 		CommercePriceModifierRelTestUtil.addCommercePriceModifierRel(
 			commercePriceModifier.getCommercePriceModifierId(),
 			CPDefinition.class.getName(), cpDefinition1.getCPDefinitionId(),
 			serviceContext);
+
+		CPDefinition cpDefinition2 = CPTestUtil.addCPDefinition(
+			commerceCatalog.getGroupId());
+
 		CommercePriceModifierRelTestUtil.addCommercePriceModifierRel(
 			commercePriceModifier.getCommercePriceModifierId(),
 			CPDefinition.class.getName(), cpDefinition2.getCPDefinitionId(),
@@ -107,17 +109,17 @@ public class CommercePriceModifierRelServiceTest {
 		String languageId = LocaleUtil.toLanguageId(LocaleUtil.getDefault());
 
 		Assert.assertEquals(
-			2,
-			_commercePriceModifierRelService.
-				getCPDefinitionsCommercePriceModifierRelsCount(
-					commercePriceModifier.getCommercePriceModifierId(), null,
-					languageId));
-		Assert.assertEquals(
 			1,
 			_commercePriceModifierRelService.
 				getCPDefinitionsCommercePriceModifierRelsCount(
 					commercePriceModifier.getCommercePriceModifierId(),
 					cpDefinition1.getName(languageId), languageId));
+		Assert.assertEquals(
+			2,
+			_commercePriceModifierRelService.
+				getCPDefinitionsCommercePriceModifierRelsCount(
+					commercePriceModifier.getCommercePriceModifierId(), null,
+					languageId));
 	}
 
 	@Inject
