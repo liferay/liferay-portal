@@ -45,14 +45,6 @@ public class CommerceCheckoutPreAction extends Action {
 		HttpServletResponse httpServletResponse) {
 
 		try {
-			CommerceChannel commerceChannel =
-				_commerceChannelLocalService.fetchCommerceChannelBySiteGroupId(
-					_portal.getScopeGroupId(httpServletRequest));
-
-			if (commerceChannel == null) {
-				return;
-			}
-
 			HttpServletRequest originalHttpServletRequest =
 				PortalUtil.getOriginalServletRequest(httpServletRequest);
 
@@ -66,26 +58,36 @@ public class CommerceCheckoutPreAction extends Action {
 				httpSession.getAttribute(
 					CommerceCheckoutWebKeys.SUFFIX_IMMEDIATE_CHECKOUT));
 
-			if ((commerceOrder == null) && immediateCheckout) {
-				PortletURL commerceCheckoutPortletURL =
-					PortletProviderUtil.getPortletURL(
-						httpServletRequest,
-						_groupLocalService.getGroup(
-							commerceChannel.getSiteGroupId()),
-						CommercePortletKeys.COMMERCE_CHECKOUT,
-						PortletProvider.Action.VIEW);
+			if ((commerceOrder != null) || !immediateCheckout) {
+				return;
+			}
 
-				if (commerceCheckoutPortletURL != null) {
-					httpSession.removeAttribute(
-						CommerceCheckoutWebKeys.SUFFIX_IMMEDIATE_CHECKOUT);
+			CommerceChannel commerceChannel =
+				_commerceChannelLocalService.fetchCommerceChannelBySiteGroupId(
+					_portal.getScopeGroupId(httpServletRequest));
 
-					httpServletResponse.sendRedirect(
-						PortletURLBuilder.create(
-							commerceCheckoutPortletURL
-						).setMVCRenderCommandName(
-							"/commerce_checkout/checkout_redirect"
-						).buildString());
-				}
+			if (commerceChannel == null) {
+				return;
+			}
+
+			PortletURL commerceCheckoutPortletURL =
+				PortletProviderUtil.getPortletURL(
+					httpServletRequest,
+					_groupLocalService.getGroup(
+						commerceChannel.getSiteGroupId()),
+					CommercePortletKeys.COMMERCE_CHECKOUT,
+					PortletProvider.Action.VIEW);
+
+			if (commerceCheckoutPortletURL != null) {
+				httpSession.removeAttribute(
+					CommerceCheckoutWebKeys.SUFFIX_IMMEDIATE_CHECKOUT);
+
+				httpServletResponse.sendRedirect(
+					PortletURLBuilder.create(
+						commerceCheckoutPortletURL
+					).setMVCRenderCommandName(
+						"/commerce_checkout/checkout_redirect"
+					).buildString());
 			}
 		}
 		catch (Exception exception) {
