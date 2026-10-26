@@ -13,6 +13,7 @@ import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 
 import ConnectedSiteService from '../../../../src/main/resources/META-INF/resources/js/common/services/ConnectedSiteService';
+import {DesignLibrary} from '../../../../src/main/resources/META-INF/resources/js/common/types/DesignLibrary';
 import {Site} from '../../../../src/main/resources/META-INF/resources/js/common/types/Site';
 import {SiteTemplate} from '../../../../src/main/resources/META-INF/resources/js/common/types/SiteTemplate';
 import SpaceConnectedSitesModal from '../../../../src/main/resources/META-INF/resources/js/main_view/spaces/SpaceConnectedSitesModal';
@@ -43,6 +44,16 @@ const mockDisconnectSiteFromSpace =
 
 const mockedOpenToast = openToast as jest.Mock;
 
+const mockConnectedDesignLibrary: Site = {
+	descriptiveName: 'Connected Design Library',
+	externalReferenceCode: '201',
+	id: '201',
+	logo: '',
+	name: 'Connected Design Library',
+	searchable: true,
+	type: 'DesignLibrary',
+};
+
 const mockConnectedSites: Site[] = [
 	{
 		descriptiveName: 'Connected Site 1',
@@ -51,6 +62,7 @@ const mockConnectedSites: Site[] = [
 		logo: 'logo1.png',
 		name: 'Guest',
 		searchable: true,
+		type: 'Site',
 	},
 	{
 		descriptiveName: 'Connected Site 2',
@@ -59,8 +71,15 @@ const mockConnectedSites: Site[] = [
 		logo: 'logo2.png',
 		name: 'Connected Site 2',
 		searchable: false,
+		type: 'Site',
 	},
 ];
+
+const mockUnconnectedDesignLibrary: DesignLibrary = {
+	externalReferenceCode: '202',
+	id: '202',
+	name: 'Unconnected Design Library',
+};
 
 const mockUnconnectedSite: Site = {
 	descriptiveName: 'Unconnected Site 3',
@@ -69,6 +88,7 @@ const mockUnconnectedSite: Site = {
 	logo: 'logo3.png',
 	name: 'Unconnected Site 3',
 	searchable: true,
+	type: 'Site',
 };
 
 const mockConnectedSiteTemplate: Site = {
@@ -88,15 +108,21 @@ const mockUnconnectedSiteTemplate: SiteTemplate = {
 };
 
 const mockAutocompleteFetch = ({
+	designLibraries = [],
 	siteTemplates = [],
 	sites = [],
 }: {
+	designLibraries?: DesignLibrary[];
 	siteTemplates?: SiteTemplate[];
 	sites?: Site[];
 } = {}) => {
-	const itemsByPathname: Record<string, Site[] | SiteTemplate[]> = {
+	const itemsByPathname: Record<
+		string,
+		DesignLibrary[] | Site[] | SiteTemplate[]
+	> = {
 		'/o/headless-admin-site/v1.0/site-templates': siteTemplates,
 		'/o/headless-admin-site/v1.0/sites': sites,
+		'/o/headless-asset-library/v1.0/asset-libraries': designLibraries,
 	};
 
 	mockFetch.mockImplementation(async (...args: unknown[]) => {
@@ -185,6 +211,7 @@ describe('SpaceConnectedSitesModal', () => {
 					logo: mockUnconnectedSite.logo,
 					name: mockUnconnectedSite.name,
 					searchable: body?.searchable ?? false,
+					type: 'Site',
 				},
 				error: null,
 			})
@@ -201,6 +228,8 @@ describe('SpaceConnectedSitesModal', () => {
 	});
 
 	afterEach(() => {
+		delete Liferay.FeatureFlags['LPD-57283'];
+
 		jest.restoreAllMocks();
 		mockedOpenToast.mockClear();
 	});
@@ -216,7 +245,7 @@ describe('SpaceConnectedSitesModal', () => {
 	it('renders the modal header and the description', async () => {
 		renderComponent();
 
-		expect(screen.getByText('all-sites')).toBeInTheDocument();
+		expect(screen.getByText('connections')).toBeInTheDocument();
 		expect(
 			screen.getByText('connect-sites-and-site-templates-to-this-space')
 		).toBeInTheDocument();
@@ -240,7 +269,7 @@ describe('SpaceConnectedSitesModal', () => {
 		renderComponent();
 
 		expect(
-			await screen.findByText('no-sites-are-connected-yet')
+			await screen.findByText('nothing-is-connected-yet')
 		).toBeInTheDocument();
 	});
 
@@ -301,7 +330,8 @@ describe('SpaceConnectedSitesModal', () => {
 			await waitFor(() => {
 				expect(mockConnectSiteToSpace).toHaveBeenCalledWith(
 					DEFAULT_PROPS.externalReferenceCode,
-					mockUnconnectedSite.externalReferenceCode
+					mockUnconnectedSite.externalReferenceCode,
+					{searchable: true}
 				);
 			});
 
@@ -362,7 +392,7 @@ describe('SpaceConnectedSitesModal', () => {
 			renderComponent();
 			await waitForComponentRendering();
 
-			await userEvent.click(screen.getByLabelText('sites'));
+			await userEvent.click(screen.getByLabelText('type'));
 
 			await userEvent.click(
 				screen.getByRole('option', {name: 'site-templates'})
@@ -596,7 +626,7 @@ describe('SpaceConnectedSitesModal', () => {
 				`${mockConnectedSiteTemplate.descriptiveName} (site-template)`
 			);
 
-			await userEvent.click(screen.getByLabelText('sites'));
+			await userEvent.click(screen.getByLabelText('type'));
 
 			await userEvent.click(
 				screen.getByRole('option', {name: 'site-templates'})
@@ -629,7 +659,7 @@ describe('SpaceConnectedSitesModal', () => {
 				screen.getByPlaceholderText('select-a-site')
 			).toBeInTheDocument();
 
-			await userEvent.click(screen.getByLabelText('sites'));
+			await userEvent.click(screen.getByLabelText('type'));
 
 			await userEvent.click(
 				screen.getByRole('option', {name: 'site-templates'})
@@ -665,7 +695,7 @@ describe('SpaceConnectedSitesModal', () => {
 			renderComponent();
 			await waitForComponentRendering();
 
-			await userEvent.click(screen.getByLabelText('sites'));
+			await userEvent.click(screen.getByLabelText('type'));
 
 			await userEvent.click(
 				screen.getByRole('option', {name: 'site-templates'})
@@ -725,7 +755,7 @@ describe('SpaceConnectedSitesModal', () => {
 			renderComponent();
 			await waitForComponentRendering();
 
-			await userEvent.click(screen.getByLabelText('sites'));
+			await userEvent.click(screen.getByLabelText('type'));
 
 			await userEvent.click(
 				screen.getByRole('option', {name: 'site-templates'})
@@ -781,7 +811,7 @@ describe('SpaceConnectedSitesModal', () => {
 				)
 			).toBeInTheDocument();
 
-			await userEvent.click(screen.getByLabelText('sites'));
+			await userEvent.click(screen.getByLabelText('type'));
 
 			await userEvent.click(
 				screen.getByRole('option', {name: 'site-templates'})
@@ -852,6 +882,86 @@ describe('SpaceConnectedSitesModal', () => {
 				screen.queryByText(
 					`${mockConnectedSiteTemplate.descriptiveName} (site-template)`
 				)
+			).not.toBeInTheDocument();
+		});
+
+		it('does not offer making a connected design library searchable', async () => {
+			mockGetConnectedSitesFromSpace.mockResolvedValue({
+				data: {items: [mockConnectedDesignLibrary]},
+				error: null,
+			});
+
+			renderComponent();
+
+			const designLibraryRow = (
+				await screen.findByText(
+					`${mockConnectedDesignLibrary.descriptiveName} (design-library)`
+				)
+			).closest('li')!;
+
+			expect(
+				within(designLibraryRow).queryByText(/searchable-content/)
+			).not.toBeInTheDocument();
+
+			await userEvent.click(
+				within(designLibraryRow).getByRole('button', {
+					name: 'actions-for-x',
+				})
+			);
+
+			expect(
+				await screen.findByRole('menuitem', {name: 'disconnect'})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('menuitem', {name: 'make-unsearchable'})
+			).not.toBeInTheDocument();
+		});
+
+		it('excludes already-connected design libraries from the autocomplete options', async () => {
+			Liferay.FeatureFlags['LPD-57283'] = true;
+
+			mockGetConnectedSitesFromSpace.mockResolvedValue({
+				data: {items: [mockConnectedDesignLibrary]},
+				error: null,
+			});
+
+			mockAutocompleteFetch({
+				designLibraries: [
+					{
+						externalReferenceCode:
+							mockConnectedDesignLibrary.externalReferenceCode,
+						id: mockConnectedDesignLibrary.id,
+						name: mockConnectedDesignLibrary.name,
+					},
+					mockUnconnectedDesignLibrary,
+				],
+			});
+
+			renderComponent();
+
+			await screen.findByText(
+				`${mockConnectedDesignLibrary.descriptiveName} (design-library)`
+			);
+
+			await userEvent.click(screen.getByLabelText('type'));
+
+			await userEvent.click(
+				screen.getByRole('option', {name: 'design-libraries'})
+			);
+
+			await userEvent.click(
+				screen.getByPlaceholderText('select-a-design-library')
+			);
+
+			expect(
+				await screen.findByRole('option', {
+					name: mockUnconnectedDesignLibrary.name,
+				})
+			).toBeInTheDocument();
+			expect(
+				screen.queryByRole('option', {
+					name: mockConnectedDesignLibrary.name,
+				})
 			).not.toBeInTheDocument();
 		});
 	});
