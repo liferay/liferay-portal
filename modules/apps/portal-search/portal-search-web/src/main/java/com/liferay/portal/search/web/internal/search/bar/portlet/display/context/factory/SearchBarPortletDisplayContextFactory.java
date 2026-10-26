@@ -343,7 +343,11 @@ public class SearchBarPortletDisplayContextFactory {
 
 		Group scopeGroup = themeDisplay.getScopeGroup();
 
-		User user = _userLocalService.fetchUserById(scopeGroup.getClassPK());
+		User user = null;
+
+		if (scopeGroup.isUser()) {
+			user = _userLocalService.fetchUserById(scopeGroup.getClassPK());
+		}
 
 		if (user == null) {
 			user = themeDisplay.getUser();
