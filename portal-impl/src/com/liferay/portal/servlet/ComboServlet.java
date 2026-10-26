@@ -294,7 +294,7 @@ public class ComboServlet extends HttpServlet {
 						return;
 					}
 
-					fileContentBag = getResourceContent(
+					fileContentBag = _getFileContentBag(
 						requestDispatcher, httpServletRequest,
 						httpServletResponse, modulePath, minifierType);
 				}
@@ -342,7 +342,129 @@ public class ComboServlet extends HttpServlet {
 		ServletResponseUtil.write(httpServletResponse, bytesArray);
 	}
 
-	protected FileContentBag getResourceContent(
+	protected byte[] getResourceContent(
+			RequestDispatcher requestDispatcher,
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, String modulePath,
+			String minifierType)
+		throws Exception {
+
+		FileContentBag fileContentBag = _getFileContentBag(
+			requestDispatcher, httpServletRequest, httpServletResponse,
+			modulePath, minifierType);
+
+		if (fileContentBag == null) {
+			return null;
+		}
+
+		return fileContentBag._fileContent;
+	}
+
+	protected RequestDispatcher getResourceRequestDispatcher(
+			HttpServletRequest httpServletRequest,
+			HttpServletResponse httpServletResponse, String modulePath)
+		throws Exception {
+
+		String portletId = getModulePortletId(modulePath);
+
+		Portlet portlet = PortletLocalServiceUtil.getPortletById(portletId);
+
+		if ((portlet == null) || portlet.isUndeployedPortlet()) {
+			return null;
+		}
+
+		String resourcePath = getResourcePath(modulePath);
+
+		if (!StringUtil.startsWith(resourcePath, CharPool.SLASH) ||
+			!PortalUtil.isValidResourceId(resourcePath)) {
+
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					StringBundler.concat(
+						"Invalid resource ", httpServletRequest.getRequestURL(),
+						"?", httpServletRequest.getQueryString()));
+			}
+
+			return null;
+		}
+
+		PortletApp portletApp = portlet.getPortletApp();
+
+		ServletContext servletContext = portletApp.getServletContext();
+
+		return servletContext.getRequestDispatcher(resourcePath);
+	}
+
+	protected boolean validateModuleExtension(String moduleName)
+		throws Exception {
+
+		moduleName = getResourcePath(moduleName);
+
+		int index = moduleName.indexOf(CharPool.QUESTION);
+
+		if (index != -1) {
+			moduleName = moduleName.substring(0, index);
+		}
+
+		if (moduleName.startsWith(
+				DLFriendlyURLConstants.PATH_PREFIX_DOCUMENT)) {
+
+			return true;
+		}
+
+		boolean validModuleExtension = false;
+
+		String[] fileExtensions = PrefsPropsUtil.getStringArray(
+			PropsKeys.COMBO_ALLOWED_FILE_EXTENSIONS, StringPool.COMMA);
+
+		for (String fileExtension : fileExtensions) {
+			if (StringPool.STAR.equals(fileExtension) ||
+				StringUtil.endsWith(moduleName, fileExtension)) {
+
+				validModuleExtension = true;
+
+				break;
+			}
+		}
+
+		return validModuleExtension;
+	}
+
+	private String _canonicalizePath(String path) {
+		if (!path.contains(StringPool.PERIOD)) {
+			return path;
+		}
+
+		List<String> canonicalParts = new ArrayList<>();
+
+		String[] parts = StringUtil.split(path, StringPool.SLASH);
+
+		for (int i = 0; i < parts.length; i++) {
+			String part = parts[i];
+
+			if (((i != 0) && Validator.isBlank(part)) ||
+				part.equals(StringPool.PERIOD)) {
+
+				continue;
+			}
+
+			if (part.equals(StringPool.DOUBLE_PERIOD)) {
+				if (canonicalParts.isEmpty()) {
+					return null;
+				}
+
+				canonicalParts.remove(canonicalParts.size() - 1);
+
+				continue;
+			}
+
+			canonicalParts.add(part);
+		}
+
+		return StringUtil.merge(canonicalParts, StringPool.SLASH);
+	}
+
+	private FileContentBag _getFileContentBag(
 			RequestDispatcher requestDispatcher,
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String modulePath,
@@ -526,110 +648,6 @@ public class ComboServlet extends HttpServlet {
 		}
 
 		return fileContentBag;
-	}
-
-	protected RequestDispatcher getResourceRequestDispatcher(
-			HttpServletRequest httpServletRequest,
-			HttpServletResponse httpServletResponse, String modulePath)
-		throws Exception {
-
-		String portletId = getModulePortletId(modulePath);
-
-		Portlet portlet = PortletLocalServiceUtil.getPortletById(portletId);
-
-		if ((portlet == null) || portlet.isUndeployedPortlet()) {
-			return null;
-		}
-
-		String resourcePath = getResourcePath(modulePath);
-
-		if (!StringUtil.startsWith(resourcePath, CharPool.SLASH) ||
-			!PortalUtil.isValidResourceId(resourcePath)) {
-
-			if (_log.isWarnEnabled()) {
-				_log.warn(
-					StringBundler.concat(
-						"Invalid resource ", httpServletRequest.getRequestURL(),
-						"?", httpServletRequest.getQueryString()));
-			}
-
-			return null;
-		}
-
-		PortletApp portletApp = portlet.getPortletApp();
-
-		ServletContext servletContext = portletApp.getServletContext();
-
-		return servletContext.getRequestDispatcher(resourcePath);
-	}
-
-	protected boolean validateModuleExtension(String moduleName)
-		throws Exception {
-
-		moduleName = getResourcePath(moduleName);
-
-		int index = moduleName.indexOf(CharPool.QUESTION);
-
-		if (index != -1) {
-			moduleName = moduleName.substring(0, index);
-		}
-
-		if (moduleName.startsWith(
-				DLFriendlyURLConstants.PATH_PREFIX_DOCUMENT)) {
-
-			return true;
-		}
-
-		boolean validModuleExtension = false;
-
-		String[] fileExtensions = PrefsPropsUtil.getStringArray(
-			PropsKeys.COMBO_ALLOWED_FILE_EXTENSIONS, StringPool.COMMA);
-
-		for (String fileExtension : fileExtensions) {
-			if (StringPool.STAR.equals(fileExtension) ||
-				StringUtil.endsWith(moduleName, fileExtension)) {
-
-				validModuleExtension = true;
-
-				break;
-			}
-		}
-
-		return validModuleExtension;
-	}
-
-	private String _canonicalizePath(String path) {
-		if (!path.contains(StringPool.PERIOD)) {
-			return path;
-		}
-
-		List<String> canonicalParts = new ArrayList<>();
-
-		String[] parts = StringUtil.split(path, StringPool.SLASH);
-
-		for (int i = 0; i < parts.length; i++) {
-			String part = parts[i];
-
-			if (((i != 0) && Validator.isBlank(part)) ||
-				part.equals(StringPool.PERIOD)) {
-
-				continue;
-			}
-
-			if (part.equals(StringPool.DOUBLE_PERIOD)) {
-				if (canonicalParts.isEmpty()) {
-					return null;
-				}
-
-				canonicalParts.remove(canonicalParts.size() - 1);
-
-				continue;
-			}
-
-			canonicalParts.add(part);
-		}
-
-		return StringUtil.merge(canonicalParts, StringPool.SLASH);
 	}
 
 	private String _getModulePathExtension(String modulePath) {
