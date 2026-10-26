@@ -31,22 +31,7 @@ public class AsahSegmentsEntryCacheTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Before
-	public void setUp() throws Exception {
-		Mockito.when(
-			_configurationProvider.getCompanyConfiguration(
-				Mockito.eq(SegmentsAsahCompanyConfiguration.class),
-				Mockito.anyLong())
-		).thenReturn(
-			new SegmentsAsahCompanyConfiguration() {
-
-				@Override
-				public int anonymousUserSegmentsCacheExpirationTime() {
-					return 0;
-				}
-
-			}
-		);
-
+	public void setUp() {
 		ReflectionTestUtil.setFieldValue(
 			_asahSegmentsEntryCacheImpl, "_configurationProvider",
 			_configurationProvider);
@@ -82,7 +67,25 @@ public class AsahSegmentsEntryCacheTest {
 	}
 
 	@Test
-	public void testPutSegmentsEntryIds() {
+	public void testPutSegmentsEntryIds() throws Exception {
+		int anonymousUserSegmentsCacheExpirationTime =
+			RandomTestUtil.randomInt();
+
+		Mockito.when(
+			_configurationProvider.getCompanyConfiguration(
+				Mockito.eq(SegmentsAsahCompanyConfiguration.class),
+				Mockito.anyLong())
+		).thenReturn(
+			new SegmentsAsahCompanyConfiguration() {
+
+				@Override
+				public int anonymousUserSegmentsCacheExpirationTime() {
+					return anonymousUserSegmentsCacheExpirationTime;
+				}
+
+			}
+		);
+
 		String userId = RandomTestUtil.randomString();
 
 		long[] segmentsEntryIds = {
@@ -97,7 +100,7 @@ public class AsahSegmentsEntryCacheTest {
 		Mockito.verify(
 			_portalCache, Mockito.times(1)
 		).put(
-			cacheKey, segmentsEntryIds, 0
+			cacheKey, segmentsEntryIds, anonymousUserSegmentsCacheExpirationTime
 		);
 	}
 
