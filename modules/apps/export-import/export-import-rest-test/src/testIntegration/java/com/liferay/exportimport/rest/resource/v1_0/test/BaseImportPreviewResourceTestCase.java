@@ -379,6 +379,14 @@ public abstract class BaseImportPreviewResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("assetLibraries", additionalAssertFieldName)) {
+				if (importPreview.getAssetLibraries() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("author", additionalAssertFieldName)) {
 				if (importPreview.getAuthor() == null) {
 					valid = false;
@@ -423,16 +431,6 @@ public abstract class BaseImportPreviewResourceTestCase {
 					"portletDataHandlers", additionalAssertFieldName)) {
 
 				if (importPreview.getPortletDataHandlers() == null) {
-					valid = false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"previewAssetLibraries", additionalAssertFieldName)) {
-
-				if (importPreview.getPreviewAssetLibraries() == null) {
 					valid = false;
 				}
 
@@ -585,6 +583,17 @@ public abstract class BaseImportPreviewResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("assetLibraries", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						importPreview1.getAssetLibraries(),
+						importPreview2.getAssetLibraries())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("author", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
 						importPreview1.getAuthor(),
@@ -646,19 +655,6 @@ public abstract class BaseImportPreviewResourceTestCase {
 				if (!Objects.deepEquals(
 						importPreview1.getPortletDataHandlers(),
 						importPreview2.getPortletDataHandlers())) {
-
-					return false;
-				}
-
-				continue;
-			}
-
-			if (Objects.equals(
-					"previewAssetLibraries", additionalAssertFieldName)) {
-
-				if (!Objects.deepEquals(
-						importPreview1.getPreviewAssetLibraries(),
-						importPreview2.getPreviewAssetLibraries())) {
 
 					return false;
 				}
@@ -784,6 +780,11 @@ public abstract class BaseImportPreviewResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("additionCount")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
+		if (entityFieldName.equals("assetLibraries")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -920,11 +921,6 @@ public abstract class BaseImportPreviewResourceTestCase {
 		}
 
 		if (entityFieldName.equals("portletDataHandlers")) {
-			throw new IllegalArgumentException(
-				"Invalid entity field " + entityFieldName);
-		}
-
-		if (entityFieldName.equals("previewAssetLibraries")) {
 			throw new IllegalArgumentException(
 				"Invalid entity field " + entityFieldName);
 		}
@@ -1221,4 +1217,4 @@ public abstract class BaseImportPreviewResourceTestCase {
 		_importPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1466608682
+// LIFERAY-REST-BUILDER-HASH:73461298

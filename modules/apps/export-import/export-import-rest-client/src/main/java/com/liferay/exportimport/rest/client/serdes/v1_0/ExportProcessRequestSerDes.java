@@ -48,37 +48,6 @@ public class ExportProcessRequestSerDes {
 
 		sb.append("{");
 
-		if (exportProcessRequest.getAssetLibraryExternalReferenceCodes() !=
-				null) {
-
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"assetLibraryExternalReferenceCodes\": ");
-
-			sb.append("[");
-
-			for (int i = 0;
-				 i < exportProcessRequest.
-					 getAssetLibraryExternalReferenceCodes().length;
-				 i++) {
-
-				sb.append(
-					_toJSON(
-						exportProcessRequest.
-							getAssetLibraryExternalReferenceCodes()[i]));
-
-				if ((i + 1) < exportProcessRequest.
-						getAssetLibraryExternalReferenceCodes().length) {
-
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
 		if (exportProcessRequest.getComments() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -191,19 +160,6 @@ public class ExportProcessRequestSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (exportProcessRequest.getAssetLibraryExternalReferenceCodes() ==
-				null) {
-
-			map.put("assetLibraryExternalReferenceCodes", null);
-		}
-		else {
-			map.put(
-				"assetLibraryExternalReferenceCodes",
-				String.valueOf(
-					exportProcessRequest.
-						getAssetLibraryExternalReferenceCodes()));
-		}
-
 		if (exportProcessRequest.getComments() == null) {
 			map.put("comments", null);
 		}
@@ -281,13 +237,7 @@ public class ExportProcessRequestSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(
-					jsonParserFieldName,
-					"assetLibraryExternalReferenceCodes")) {
-
-				return false;
-			}
-			else if (Objects.equals(jsonParserFieldName, "comments")) {
+			if (Objects.equals(jsonParserFieldName, "comments")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "dateFilter")) {
@@ -319,16 +269,7 @@ public class ExportProcessRequestSerDes {
 			ExportProcessRequest exportProcessRequest,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(
-					jsonParserFieldName,
-					"assetLibraryExternalReferenceCodes")) {
-
-				if (jsonParserFieldValue != null) {
-					exportProcessRequest.setAssetLibraryExternalReferenceCodes(
-						toStrings((Object[])jsonParserFieldValue));
-				}
-			}
-			else if (Objects.equals(jsonParserFieldName, "comments")) {
+			if (Objects.equals(jsonParserFieldName, "comments")) {
 				if (jsonParserFieldValue != null) {
 					exportProcessRequest.setComments(
 						(Boolean)jsonParserFieldValue);
@@ -470,4 +411,4 @@ public class ExportProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1999371330
+// LIFERAY-REST-BUILDER-HASH:1015287136

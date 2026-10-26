@@ -25,31 +25,27 @@ public class InstanceExportProcessRequest implements Cloneable, Serializable {
 		return InstanceExportProcessRequestSerDes.toDTO(json);
 	}
 
-	public String[] getAssetLibraryExternalReferenceCodes() {
-		return assetLibraryExternalReferenceCodes;
+	public AssetLibrary[] getAssetLibraries() {
+		return assetLibraries;
 	}
 
-	public void setAssetLibraryExternalReferenceCodes(
-		String[] assetLibraryExternalReferenceCodes) {
-
-		this.assetLibraryExternalReferenceCodes =
-			assetLibraryExternalReferenceCodes;
+	public void setAssetLibraries(AssetLibrary[] assetLibraries) {
+		this.assetLibraries = assetLibraries;
 	}
 
-	public void setAssetLibraryExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			assetLibraryExternalReferenceCodesUnsafeSupplier) {
+	public void setAssetLibraries(
+		UnsafeSupplier<AssetLibrary[], Exception>
+			assetLibrariesUnsafeSupplier) {
 
 		try {
-			assetLibraryExternalReferenceCodes =
-				assetLibraryExternalReferenceCodesUnsafeSupplier.get();
+			assetLibraries = assetLibrariesUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String[] assetLibraryExternalReferenceCodes;
+	protected AssetLibrary[] assetLibraries;
 
 	public Boolean getComments() {
 		return comments;
@@ -256,4 +252,4 @@ public class InstanceExportProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1927356886
+// LIFERAY-REST-BUILDER-HASH:2120672212

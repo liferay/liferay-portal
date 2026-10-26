@@ -5,8 +5,9 @@
 
 package com.liferay.exportimport.rest.internal.resource.v1_0.factory;
 
+import com.liferay.exportimport.rest.internal.resource.v1_0.BaseAssetLibraryResourceImpl;
 import com.liferay.exportimport.rest.internal.security.permission.LiberalPermissionChecker;
-import com.liferay.exportimport.rest.resource.v1_0.PreviewAssetLibraryResource;
+import com.liferay.exportimport.rest.resource.v1_0.AssetLibraryResource;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.filter.Filter;
@@ -27,12 +28,14 @@ import com.liferay.portal.odata.filter.ExpressionConvert;
 import com.liferay.portal.odata.filter.FilterParserProvider;
 import com.liferay.portal.odata.sort.SortParserProvider;
 import com.liferay.portal.vulcan.accept.language.AcceptLanguage;
+import com.liferay.portal.vulcan.feature.flag.FeatureFlagChecker;
 
 import jakarta.annotation.Generated;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.lang.reflect.Constructor;
@@ -55,29 +58,29 @@ import org.osgi.service.component.annotations.ReferenceScope;
  * @generated
  */
 @Component(
-	property = "resource.locator.key=/export-import/v1.0/PreviewAssetLibrary",
-	service = PreviewAssetLibraryResource.Factory.class
+	property = "resource.locator.key=/export-import/v1.0/AssetLibrary",
+	service = AssetLibraryResource.Factory.class
 )
 @Generated("")
-public class PreviewAssetLibraryResourceFactoryImpl
-	implements PreviewAssetLibraryResource.Factory {
+public class AssetLibraryResourceFactoryImpl
+	implements AssetLibraryResource.Factory {
 
 	@Override
-	public PreviewAssetLibraryResource.Builder create() {
-		return new PreviewAssetLibraryResource.Builder() {
+	public AssetLibraryResource.Builder create() {
+		return new AssetLibraryResource.Builder() {
 
 			@Override
-			public PreviewAssetLibraryResource build() {
+			public AssetLibraryResource build() {
 				if (_user == null) {
 					throw new IllegalArgumentException("User is not set");
 				}
 
-				Function<InvocationHandler, PreviewAssetLibraryResource>
-					previewAssetLibraryResourceProxyProviderFunction =
+				Function<InvocationHandler, AssetLibraryResource>
+					assetLibraryResourceProxyProviderFunction =
 						ResourceProxyProviderFunctionHolder.
-							_previewAssetLibraryResourceProxyProviderFunction;
+							_assetLibraryResourceProxyProviderFunction;
 
-				return previewAssetLibraryResourceProxyProviderFunction.apply(
+				return assetLibraryResourceProxyProviderFunction.apply(
 					(proxy, method, arguments) -> _invoke(
 						method, arguments, _checkPermissions,
 						_httpServletRequest, _httpServletResponse,
@@ -85,7 +88,7 @@ public class PreviewAssetLibraryResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewAssetLibraryResource.Builder checkPermissions(
+			public AssetLibraryResource.Builder checkPermissions(
 				boolean checkPermissions) {
 
 				_checkPermissions = checkPermissions;
@@ -94,7 +97,7 @@ public class PreviewAssetLibraryResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewAssetLibraryResource.Builder httpServletRequest(
+			public AssetLibraryResource.Builder httpServletRequest(
 				HttpServletRequest httpServletRequest) {
 
 				_httpServletRequest = httpServletRequest;
@@ -103,7 +106,7 @@ public class PreviewAssetLibraryResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewAssetLibraryResource.Builder httpServletResponse(
+			public AssetLibraryResource.Builder httpServletResponse(
 				HttpServletResponse httpServletResponse) {
 
 				_httpServletResponse = httpServletResponse;
@@ -112,7 +115,7 @@ public class PreviewAssetLibraryResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewAssetLibraryResource.Builder preferredLocale(
+			public AssetLibraryResource.Builder preferredLocale(
 				Locale preferredLocale) {
 
 				_preferredLocale = preferredLocale;
@@ -121,16 +124,14 @@ public class PreviewAssetLibraryResourceFactoryImpl
 			}
 
 			@Override
-			public PreviewAssetLibraryResource.Builder uriInfo(
-				UriInfo uriInfo) {
-
+			public AssetLibraryResource.Builder uriInfo(UriInfo uriInfo) {
 				_uriInfo = uriInfo;
 
 				return this;
 			}
 
 			@Override
-			public PreviewAssetLibraryResource.Builder user(User user) {
+			public AssetLibraryResource.Builder user(User user) {
 				_user = user;
 
 				return this;
@@ -146,17 +147,17 @@ public class PreviewAssetLibraryResourceFactoryImpl
 		};
 	}
 
-	private static Function<InvocationHandler, PreviewAssetLibraryResource>
+	private static Function<InvocationHandler, AssetLibraryResource>
 		_getProxyProviderFunction() {
 
 		Class<?> proxyClass = ProxyUtil.getProxyClass(
-			PreviewAssetLibraryResource.class.getClassLoader(),
-			PreviewAssetLibraryResource.class);
+			AssetLibraryResource.class.getClassLoader(),
+			AssetLibraryResource.class);
 
 		try {
-			Constructor<PreviewAssetLibraryResource> constructor =
-				(Constructor<PreviewAssetLibraryResource>)
-					proxyClass.getConstructor(InvocationHandler.class);
+			Constructor<AssetLibraryResource> constructor =
+				(Constructor<AssetLibraryResource>)proxyClass.getConstructor(
+					InvocationHandler.class);
 
 			return invocationHandler -> {
 				try {
@@ -181,6 +182,14 @@ public class PreviewAssetLibraryResourceFactoryImpl
 			UriInfo uriInfo, User user)
 		throws Throwable {
 
+		if (!_featureFlagChecker.isEnabled(
+				user.getCompanyId(),
+				BaseAssetLibraryResourceImpl.class.getMethod(
+					method.getName(), method.getParameterTypes()))) {
+
+			throw new NotFoundException();
+		}
+
 		String name = PrincipalThreadLocal.getName();
 
 		PrincipalThreadLocal.setName(user.getUserId());
@@ -197,41 +206,38 @@ public class PreviewAssetLibraryResourceFactoryImpl
 				new LiberalPermissionChecker(user));
 		}
 
-		PreviewAssetLibraryResource previewAssetLibraryResource =
+		AssetLibraryResource assetLibraryResource =
 			_componentServiceObjects.getService();
 
-		previewAssetLibraryResource.setContextAcceptLanguage(
+		assetLibraryResource.setContextAcceptLanguage(
 			new AcceptLanguageImpl(httpServletRequest, preferredLocale, user));
 
 		Company company = _companyLocalService.getCompany(user.getCompanyId());
 
-		previewAssetLibraryResource.setContextCompany(company);
+		assetLibraryResource.setContextCompany(company);
 
-		previewAssetLibraryResource.setContextHttpServletRequest(
-			httpServletRequest);
-		previewAssetLibraryResource.setContextHttpServletResponse(
-			httpServletResponse);
-		previewAssetLibraryResource.setContextUriInfo(uriInfo);
-		previewAssetLibraryResource.setContextUser(user);
-		previewAssetLibraryResource.setExpressionConvert(_expressionConvert);
-		previewAssetLibraryResource.setFilterParserProvider(
-			_filterParserProvider);
-		previewAssetLibraryResource.setGroupLocalService(_groupLocalService);
-		previewAssetLibraryResource.setResourceActionLocalService(
+		assetLibraryResource.setContextHttpServletRequest(httpServletRequest);
+		assetLibraryResource.setContextHttpServletResponse(httpServletResponse);
+		assetLibraryResource.setContextUriInfo(uriInfo);
+		assetLibraryResource.setContextUser(user);
+		assetLibraryResource.setExpressionConvert(_expressionConvert);
+		assetLibraryResource.setFilterParserProvider(_filterParserProvider);
+		assetLibraryResource.setGroupLocalService(_groupLocalService);
+		assetLibraryResource.setResourceActionLocalService(
 			_resourceActionLocalService);
-		previewAssetLibraryResource.setResourcePermissionLocalService(
+		assetLibraryResource.setResourcePermissionLocalService(
 			_resourcePermissionLocalService);
-		previewAssetLibraryResource.setRoleLocalService(_roleLocalService);
-		previewAssetLibraryResource.setSortParserProvider(_sortParserProvider);
+		assetLibraryResource.setRoleLocalService(_roleLocalService);
+		assetLibraryResource.setSortParserProvider(_sortParserProvider);
 
 		try {
-			return method.invoke(previewAssetLibraryResource, arguments);
+			return method.invoke(assetLibraryResource, arguments);
 		}
 		catch (InvocationTargetException invocationTargetException) {
 			throw invocationTargetException.getTargetException();
 		}
 		finally {
-			_componentServiceObjects.ungetService(previewAssetLibraryResource);
+			_componentServiceObjects.ungetService(assetLibraryResource);
 
 			PrincipalThreadLocal.setName(name);
 
@@ -243,7 +249,7 @@ public class PreviewAssetLibraryResourceFactoryImpl
 	private CompanyLocalService _companyLocalService;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
-	private ComponentServiceObjects<PreviewAssetLibraryResource>
+	private ComponentServiceObjects<AssetLibraryResource>
 		_componentServiceObjects;
 
 	@Reference
@@ -253,6 +259,9 @@ public class PreviewAssetLibraryResourceFactoryImpl
 		target = "(result.class.name=com.liferay.portal.kernel.search.filter.Filter)"
 	)
 	private ExpressionConvert<Filter> _expressionConvert;
+
+	@Reference
+	private FeatureFlagChecker _featureFlagChecker;
 
 	@Reference
 	private FilterParserProvider _filterParserProvider;
@@ -277,10 +286,9 @@ public class PreviewAssetLibraryResourceFactoryImpl
 
 	private static class ResourceProxyProviderFunctionHolder {
 
-		private static final Function
-			<InvocationHandler, PreviewAssetLibraryResource>
-				_previewAssetLibraryResourceProxyProviderFunction =
-					_getProxyProviderFunction();
+		private static final Function<InvocationHandler, AssetLibraryResource>
+			_assetLibraryResourceProxyProviderFunction =
+				_getProxyProviderFunction();
 
 	}
 
@@ -335,4 +343,4 @@ public class PreviewAssetLibraryResourceFactoryImpl
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1807800245
+// LIFERAY-REST-BUILDER-HASH:107391863

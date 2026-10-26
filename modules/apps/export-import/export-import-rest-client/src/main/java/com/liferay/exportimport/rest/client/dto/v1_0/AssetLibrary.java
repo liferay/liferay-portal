@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.client.dto.v1_0;
 
 import com.liferay.exportimport.rest.client.function.UnsafeSupplier;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewAssetLibrarySerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.AssetLibrarySerDes;
 
 import jakarta.annotation.Generated;
 
@@ -19,10 +19,10 @@ import java.util.Objects;
  * @generated
  */
 @Generated("")
-public class PreviewAssetLibrary implements Cloneable, Serializable {
+public class AssetLibrary implements Cloneable, Serializable {
 
-	public static PreviewAssetLibrary toDTO(String json) {
-		return PreviewAssetLibrarySerDes.toDTO(json);
+	public static AssetLibrary toDTO(String json) {
+		return AssetLibrarySerDes.toDTO(json);
 	}
 
 	public String getDescriptiveName() {
@@ -116,8 +116,8 @@ public class PreviewAssetLibrary implements Cloneable, Serializable {
 	protected Type type;
 
 	@Override
-	public PreviewAssetLibrary clone() throws CloneNotSupportedException {
-		return (PreviewAssetLibrary)super.clone();
+	public AssetLibrary clone() throws CloneNotSupportedException {
+		return (AssetLibrary)super.clone();
 	}
 
 	@Override
@@ -126,13 +126,13 @@ public class PreviewAssetLibrary implements Cloneable, Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewAssetLibrary)) {
+		if (!(object instanceof AssetLibrary)) {
 			return false;
 		}
 
-		PreviewAssetLibrary previewAssetLibrary = (PreviewAssetLibrary)object;
+		AssetLibrary assetLibrary = (AssetLibrary)object;
 
-		return Objects.equals(toString(), previewAssetLibrary.toString());
+		return Objects.equals(toString(), assetLibrary.toString());
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public class PreviewAssetLibrary implements Cloneable, Serializable {
 	}
 
 	public String toString() {
-		return PreviewAssetLibrarySerDes.toJSON(this);
+		return AssetLibrarySerDes.toJSON(this);
 	}
 
 	public static enum Type {
@@ -181,4 +181,4 @@ public class PreviewAssetLibrary implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1176605305
+// LIFERAY-REST-BUILDER-HASH:916500843

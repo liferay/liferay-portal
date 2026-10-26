@@ -5,12 +5,12 @@
 
 package com.liferay.exportimport.rest.client.resource.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewAssetLibrary;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.problem.Problem;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewAssetLibrarySerDes;
+import com.liferay.exportimport.rest.client.serdes.v1_0.AssetLibrarySerDes;
 
 import jakarta.annotation.Generated;
 
@@ -28,30 +28,30 @@ import java.util.logging.Logger;
  * @generated
  */
 @Generated("")
-public interface PreviewAssetLibraryResource {
+public interface AssetLibraryResource {
 
 	public static Builder builder() {
 		return new Builder();
 	}
 
-	public Page<PreviewAssetLibrary> getExportPreviewPreviewAssetLibrariesPage(
+	public Page<AssetLibrary> getExportPreviewAssetLibrariesPage(
 			String search, String filterString, Pagination pagination,
 			String sortString)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			getExportPreviewPreviewAssetLibrariesPageHttpResponse(
+			getExportPreviewAssetLibrariesPageHttpResponse(
 				String search, String filterString, Pagination pagination,
 				String sortString)
 		throws Exception;
 
-	public void postExportPreviewPreviewAssetLibrariesPageExportBatch(
+	public void postExportPreviewAssetLibrariesPageExportBatch(
 			String search, String filterString, String sortString,
 			String callbackURL, String contentType, String fieldNames)
 		throws Exception;
 
 	public HttpInvoker.HttpResponse
-			postExportPreviewPreviewAssetLibrariesPageExportBatchHttpResponse(
+			postExportPreviewAssetLibrariesPageExportBatchHttpResponse(
 				String search, String filterString, String sortString,
 				String callbackURL, String contentType, String fieldNames)
 		throws Exception;
@@ -69,8 +69,8 @@ public interface PreviewAssetLibraryResource {
 			return header("Authorization", "Bearer " + token);
 		}
 
-		public PreviewAssetLibraryResource build() {
-			return new PreviewAssetLibraryResourceImpl(this);
+		public AssetLibraryResource build() {
+			return new AssetLibraryResourceImpl(this);
 		}
 
 		public Builder contextPath(String contextPath) {
@@ -162,17 +162,16 @@ public interface PreviewAssetLibraryResource {
 
 	}
 
-	public static class PreviewAssetLibraryResourceImpl
-		implements PreviewAssetLibraryResource {
+	public static class AssetLibraryResourceImpl
+		implements AssetLibraryResource {
 
-		public Page<PreviewAssetLibrary>
-				getExportPreviewPreviewAssetLibrariesPage(
-					String search, String filterString, Pagination pagination,
-					String sortString)
+		public Page<AssetLibrary> getExportPreviewAssetLibrariesPage(
+				String search, String filterString, Pagination pagination,
+				String sortString)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				getExportPreviewPreviewAssetLibrariesPageHttpResponse(
+				getExportPreviewAssetLibrariesPageHttpResponse(
 					search, filterString, pagination, sortString);
 
 			String content = httpResponse.getContent();
@@ -223,7 +222,7 @@ public interface PreviewAssetLibraryResource {
 			}
 
 			try {
-				return Page.of(content, PreviewAssetLibrarySerDes::toDTO);
+				return Page.of(content, AssetLibrarySerDes::toDTO);
 			}
 			catch (Exception e) {
 				_logger.log(
@@ -235,7 +234,7 @@ public interface PreviewAssetLibraryResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				getExportPreviewPreviewAssetLibrariesPageHttpResponse(
+				getExportPreviewAssetLibrariesPageHttpResponse(
 					String search, String filterString, Pagination pagination,
 					String sortString)
 			throws Exception {
@@ -283,7 +282,7 @@ public interface PreviewAssetLibraryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/export-preview/preview-asset-libraries");
+						"/o/export-import/v1.0/export-preview/asset-libraries");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -293,13 +292,13 @@ public interface PreviewAssetLibraryResource {
 			return httpInvoker.invoke();
 		}
 
-		public void postExportPreviewPreviewAssetLibrariesPageExportBatch(
+		public void postExportPreviewAssetLibrariesPageExportBatch(
 				String search, String filterString, String sortString,
 				String callbackURL, String contentType, String fieldNames)
 			throws Exception {
 
 			HttpInvoker.HttpResponse httpResponse =
-				postExportPreviewPreviewAssetLibrariesPageExportBatchHttpResponse(
+				postExportPreviewAssetLibrariesPageExportBatchHttpResponse(
 					search, filterString, sortString, callbackURL, contentType,
 					fieldNames);
 
@@ -352,7 +351,7 @@ public interface PreviewAssetLibraryResource {
 		}
 
 		public HttpInvoker.HttpResponse
-				postExportPreviewPreviewAssetLibrariesPageExportBatchHttpResponse(
+				postExportPreviewAssetLibrariesPageExportBatchHttpResponse(
 					String search, String filterString, String sortString,
 					String callbackURL, String contentType, String fieldNames)
 			throws Exception {
@@ -409,7 +408,7 @@ public interface PreviewAssetLibraryResource {
 			httpInvoker.path(
 				_builder._scheme + "://" + _builder._host + ":" +
 					_builder._port + _builder._contextPath +
-						"/o/export-import/v1.0/export-preview/preview-asset-libraries/export-batch");
+						"/o/export-import/v1.0/export-preview/asset-libraries/export-batch");
 
 			if ((_builder._login != null) && (_builder._password != null)) {
 				httpInvoker.userNameAndPassword(
@@ -419,16 +418,16 @@ public interface PreviewAssetLibraryResource {
 			return httpInvoker.invoke();
 		}
 
-		private PreviewAssetLibraryResourceImpl(Builder builder) {
+		private AssetLibraryResourceImpl(Builder builder) {
 			_builder = builder;
 		}
 
 		private static final Logger _logger = Logger.getLogger(
-			PreviewAssetLibraryResource.class.getName());
+			AssetLibraryResource.class.getName());
 
 		private Builder _builder;
 
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:967028036
+// LIFERAY-REST-BUILDER-HASH:781627838

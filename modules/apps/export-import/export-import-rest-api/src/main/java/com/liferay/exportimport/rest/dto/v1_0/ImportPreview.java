@@ -103,6 +103,53 @@ public class ImportPreview implements Serializable {
 	private Supplier<Long> _additionCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The asset libraries the file contains, when it was exported from an instance."
+	)
+	@Valid
+	public AssetLibrary[] getAssetLibraries() {
+		if (_assetLibrariesSupplier != null) {
+			assetLibraries = _assetLibrariesSupplier.get();
+
+			_assetLibrariesSupplier = null;
+		}
+
+		return assetLibraries;
+	}
+
+	public void setAssetLibraries(AssetLibrary[] assetLibraries) {
+		this.assetLibraries = assetLibraries;
+
+		_assetLibrariesSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setAssetLibraries(
+		UnsafeSupplier<AssetLibrary[], Exception>
+			assetLibrariesUnsafeSupplier) {
+
+		_assetLibrariesSupplier = () -> {
+			try {
+				return assetLibrariesUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "The asset libraries the file contains, when it was exported from an instance."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected AssetLibrary[] assetLibraries;
+
+	@JsonIgnore
+	private Supplier<AssetLibrary[]> _assetLibrariesSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The name of the user who exported the file."
 	)
 	public String getAuthor() {
@@ -356,51 +403,6 @@ public class ImportPreview implements Serializable {
 	@JsonIgnore
 	private Supplier<PortletDataHandler[]> _portletDataHandlersSupplier;
 
-	@io.swagger.v3.oas.annotations.media.Schema
-	@Valid
-	public PreviewAssetLibrary[] getPreviewAssetLibraries() {
-		if (_previewAssetLibrariesSupplier != null) {
-			previewAssetLibraries = _previewAssetLibrariesSupplier.get();
-
-			_previewAssetLibrariesSupplier = null;
-		}
-
-		return previewAssetLibraries;
-	}
-
-	public void setPreviewAssetLibraries(
-		PreviewAssetLibrary[] previewAssetLibraries) {
-
-		this.previewAssetLibraries = previewAssetLibraries;
-
-		_previewAssetLibrariesSupplier = null;
-	}
-
-	@JsonIgnore
-	public void setPreviewAssetLibraries(
-		UnsafeSupplier<PreviewAssetLibrary[], Exception>
-			previewAssetLibrariesUnsafeSupplier) {
-
-		_previewAssetLibrariesSupplier = () -> {
-			try {
-				return previewAssetLibrariesUnsafeSupplier.get();
-			}
-			catch (RuntimeException runtimeException) {
-				throw runtimeException;
-			}
-			catch (Exception exception) {
-				throw new RuntimeException(exception);
-			}
-		};
-	}
-
-	@GraphQLField
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	protected PreviewAssetLibrary[] previewAssetLibraries;
-
-	@JsonIgnore
-	private Supplier<PreviewAssetLibrary[]> _previewAssetLibrariesSupplier;
-
 	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The sites the file contains, when it was exported from an instance."
 	)
@@ -487,6 +489,28 @@ public class ImportPreview implements Serializable {
 			sb.append("\"additionCount\": ");
 
 			sb.append(additionCount);
+		}
+
+		AssetLibrary[] assetLibraries = getAssetLibraries();
+
+		if (assetLibraries != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"assetLibraries\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < assetLibraries.length; i++) {
+				sb.append(String.valueOf(assetLibraries[i]));
+
+				if ((i + 1) < assetLibraries.length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
 		}
 
 		String author = getAuthor();
@@ -576,29 +600,6 @@ public class ImportPreview implements Serializable {
 				sb.append(String.valueOf(portletDataHandlers[i]));
 
 				if ((i + 1) < portletDataHandlers.length) {
-					sb.append(", ");
-				}
-			}
-
-			sb.append("]");
-		}
-
-		PreviewAssetLibrary[] previewAssetLibraries =
-			getPreviewAssetLibraries();
-
-		if (previewAssetLibraries != null) {
-			if (sb.length() > 1) {
-				sb.append(", ");
-			}
-
-			sb.append("\"previewAssetLibraries\": ");
-
-			sb.append("[");
-
-			for (int i = 0; i < previewAssetLibraries.length; i++) {
-				sb.append(String.valueOf(previewAssetLibraries[i]));
-
-				if ((i + 1) < previewAssetLibraries.length) {
 					sb.append(", ");
 				}
 			}
@@ -750,4 +751,4 @@ public class ImportPreview implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:230685577
+// LIFERAY-REST-BUILDER-HASH:-1266624263

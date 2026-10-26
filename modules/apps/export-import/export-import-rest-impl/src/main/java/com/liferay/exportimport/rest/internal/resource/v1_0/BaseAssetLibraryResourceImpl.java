@@ -6,13 +6,15 @@
 package com.liferay.exportimport.rest.internal.resource.v1_0;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
-import com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary;
-import com.liferay.exportimport.rest.resource.v1_0.PreviewAssetLibraryResource;
+import com.liferay.exportimport.rest.dto.v1_0.AssetLibrary;
+import com.liferay.exportimport.rest.resource.v1_0.AssetLibraryResource;
 import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
@@ -43,6 +45,7 @@ import jakarta.annotation.Generated;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.NotSupportedException;
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -64,17 +67,18 @@ import java.util.Set;
  */
 @Generated("")
 @jakarta.ws.rs.Path("/v1.0")
-public abstract class BasePreviewAssetLibraryResourceImpl
-	implements EntityModelResource, PreviewAssetLibraryResource,
-			   VulcanBatchEngineTaskItemDelegate<PreviewAssetLibrary> {
+public abstract class BaseAssetLibraryResourceImpl
+	implements AssetLibraryResource, EntityModelResource,
+			   VulcanBatchEngineTaskItemDelegate<AssetLibrary> {
 
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-asset-libraries'  -u 'test@liferay.com:test'
+	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/export-preview/asset-libraries'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-41307")
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Retrieves the asset libraries that can be exported."
+		description = "Retrieves the asset libraries the instance can export in full."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -101,17 +105,13 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {
-			@io.swagger.v3.oas.annotations.tags.Tag(
-				name = "PreviewAssetLibrary"
-			)
-		}
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "AssetLibrary")}
 	)
 	@jakarta.ws.rs.GET
-	@jakarta.ws.rs.Path("/export-preview/preview-asset-libraries")
+	@jakarta.ws.rs.Path("/export-preview/asset-libraries")
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
-	public Page<PreviewAssetLibrary> getExportPreviewPreviewAssetLibrariesPage(
+	public Page<AssetLibrary> getExportPreviewAssetLibrariesPage(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -128,8 +128,9 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-preview/preview-asset-libraries/export-batch'  -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/export-import/v1.0/export-preview/asset-libraries/export-batch'  -u 'test@liferay.com:test'
 	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-41307")
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -159,18 +160,14 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		}
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {
-			@io.swagger.v3.oas.annotations.tags.Tag(
-				name = "PreviewAssetLibrary"
-			)
-		}
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "AssetLibrary")}
 	)
 	@jakarta.ws.rs.Consumes("application/json")
-	@jakarta.ws.rs.Path("/export-preview/preview-asset-libraries/export-batch")
+	@jakarta.ws.rs.Path("/export-preview/asset-libraries/export-batch")
 	@jakarta.ws.rs.POST
 	@jakarta.ws.rs.Produces("application/json")
 	@Override
-	public Response postExportPreviewPreviewAssetLibrariesPageExportBatch(
+	public Response postExportPreviewAssetLibrariesPageExportBatch(
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,
@@ -204,7 +201,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 
 		return responseBuilder.entity(
 			vulcanBatchEngineExportTaskResource.postExportTask(
-				PreviewAssetLibrary.class.getName(), callbackURL, contentType,
+				AssetLibrary.class.getName(), callbackURL, contentType,
 				fieldNames)
 		).build();
 	}
@@ -212,7 +209,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 	@Override
 	@SuppressWarnings("PMD.UnusedLocalVariable")
 	public void create(
-			Collection<PreviewAssetLibrary> previewAssetLibraries,
+			Collection<AssetLibrary> assetLibraries,
 			Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -222,7 +219,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 
 	@Override
 	public void delete(
-			Collection<PreviewAssetLibrary> previewAssetLibraries,
+			Collection<AssetLibrary> assetLibraries,
 			Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -247,7 +244,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 	}
 
 	public String getResourceName() {
-		return "PreviewAssetLibrary";
+		return "AssetLibrary";
 	}
 
 	public String getVersion() {
@@ -255,7 +252,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 	}
 
 	@Override
-	public Page<PreviewAssetLibrary> read(
+	public Page<AssetLibrary> read(
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts,
@@ -263,7 +260,13 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		throws Exception {
 
 		if (parameters.containsKey("search")) {
-			return getExportPreviewPreviewAssetLibrariesPage(
+			if (!FeatureFlagManagerUtil.isEnabled(
+					CompanyThreadLocal.getCompanyId(), "LPD-41307")) {
+
+				throw new NotFoundException();
+			}
+
+			return getExportPreviewAssetLibrariesPage(
 				search, filter, pagination, sorts);
 		}
 		else {
@@ -305,7 +308,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 
 	@Override
 	public void update(
-			Collection<PreviewAssetLibrary> previewAssetLibraries,
+			Collection<AssetLibrary> assetLibraries,
 			Map<String, Serializable> parameters)
 		throws Exception {
 
@@ -326,19 +329,17 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 
 	public void setContextBatchUnsafeBiConsumer(
 		UnsafeBiConsumer
-			<Collection<PreviewAssetLibrary>,
-			 UnsafeFunction
-				 <PreviewAssetLibrary, PreviewAssetLibrary, Exception>,
-			 Exception> contextBatchUnsafeBiConsumer) {
+			<Collection<AssetLibrary>,
+			 UnsafeFunction<AssetLibrary, AssetLibrary, Exception>, Exception>
+				contextBatchUnsafeBiConsumer) {
 
 		this.contextBatchUnsafeBiConsumer = contextBatchUnsafeBiConsumer;
 	}
 
 	public void setContextBatchUnsafeConsumer(
 		UnsafeBiConsumer
-			<Collection<PreviewAssetLibrary>,
-			 UnsafeConsumer<PreviewAssetLibrary, Exception>, Exception>
-				contextBatchUnsafeConsumer) {
+			<Collection<AssetLibrary>, UnsafeConsumer<AssetLibrary, Exception>,
+			 Exception> contextBatchUnsafeConsumer) {
 
 		this.contextBatchUnsafeConsumer = contextBatchUnsafeConsumer;
 	}
@@ -847,13 +848,12 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 
 	protected AcceptLanguage contextAcceptLanguage;
 	protected UnsafeBiConsumer
-		<Collection<PreviewAssetLibrary>,
-		 UnsafeFunction<PreviewAssetLibrary, PreviewAssetLibrary, Exception>,
-		 Exception> contextBatchUnsafeBiConsumer;
+		<Collection<AssetLibrary>,
+		 UnsafeFunction<AssetLibrary, AssetLibrary, Exception>, Exception>
+			contextBatchUnsafeBiConsumer;
 	protected UnsafeBiConsumer
-		<Collection<PreviewAssetLibrary>,
-		 UnsafeConsumer<PreviewAssetLibrary, Exception>, Exception>
-			contextBatchUnsafeConsumer;
+		<Collection<AssetLibrary>, UnsafeConsumer<AssetLibrary, Exception>,
+		 Exception> contextBatchUnsafeConsumer;
 	protected com.liferay.portal.kernel.model.Company contextCompany;
 	protected HttpServletRequest contextHttpServletRequest;
 	protected HttpServletResponse contextHttpServletResponse;
@@ -874,7 +874,7 @@ public abstract class BasePreviewAssetLibraryResourceImpl
 		vulcanBatchEngineImportTaskResource;
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BasePreviewAssetLibraryResourceImpl.class);
+		LogFactoryUtil.getLog(BaseAssetLibraryResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1982858051
+// LIFERAY-REST-BUILDER-HASH:181523624

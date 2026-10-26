@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.resource.v1_0;
 
-import com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary;
+import com.liferay.exportimport.rest.dto.v1_0.AssetLibrary;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -44,16 +44,16 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @Generated("")
 @ProviderType
-public interface PreviewAssetLibraryResource {
+public interface AssetLibraryResource {
 
-	public Page<PreviewAssetLibrary> getExportPreviewPreviewAssetLibrariesPage(
+	public Page<AssetLibrary> getExportPreviewAssetLibrariesPage(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			Pagination pagination,
 			com.liferay.portal.kernel.search.Sort[] sorts)
 		throws Exception;
 
-	public Response postExportPreviewPreviewAssetLibrariesPageExportBatch(
+	public Response postExportPreviewAssetLibrariesPageExportBatch(
 			String search,
 			com.liferay.portal.kernel.search.filter.Filter filter,
 			com.liferay.portal.kernel.search.Sort[] sorts, String callbackURL,
@@ -130,7 +130,7 @@ public interface PreviewAssetLibraryResource {
 	@ProviderType
 	public interface Builder {
 
-		public PreviewAssetLibraryResource build();
+		public AssetLibraryResource build();
 
 		public Builder checkPermissions(boolean checkPermissions);
 
@@ -156,4 +156,4 @@ public interface PreviewAssetLibraryResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1856193216
+// LIFERAY-REST-BUILDER-HASH:41754026

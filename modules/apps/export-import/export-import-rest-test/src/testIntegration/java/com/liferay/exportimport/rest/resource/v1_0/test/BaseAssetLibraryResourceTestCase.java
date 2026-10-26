@@ -13,13 +13,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewAssetLibrary;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.Type;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
-import com.liferay.exportimport.rest.client.resource.v1_0.PreviewAssetLibraryResource;
-import com.liferay.exportimport.rest.client.serdes.v1_0.PreviewAssetLibrarySerDes;
+import com.liferay.exportimport.rest.client.resource.v1_0.AssetLibraryResource;
+import com.liferay.exportimport.rest.client.serdes.v1_0.AssetLibrarySerDes;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.reflect.ReflectionUtil;
@@ -80,7 +80,7 @@ import org.junit.Test;
  * @generated
  */
 @Generated("")
-public abstract class BasePreviewAssetLibraryResourceTestCase {
+public abstract class BaseAssetLibraryResourceTestCase {
 
 	@ClassRule
 	@Rule
@@ -103,12 +103,12 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		testCompany = CompanyLocalServiceUtil.getCompany(
 			testGroup.getCompanyId());
 
-		_previewAssetLibraryResource.setContextCompany(testCompany);
+		_assetLibraryResource.setContextCompany(testCompany);
 
 		_testCompanyAdminUser = UserTestUtil.getAdminUser(
 			testCompany.getCompanyId());
 
-		previewAssetLibraryResource = PreviewAssetLibraryResource.builder(
+		assetLibraryResource = AssetLibraryResource.builder(
 		).authentication(
 			_testCompanyAdminUser.getEmailAddress(),
 			PropsValues.DEFAULT_ADMIN_PASSWORD
@@ -130,24 +130,23 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	public void testClientSerDesToDTO() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		PreviewAssetLibrary previewAssetLibrary1 = randomPreviewAssetLibrary();
+		AssetLibrary assetLibrary1 = randomAssetLibrary();
 
-		String json = objectMapper.writeValueAsString(previewAssetLibrary1);
+		String json = objectMapper.writeValueAsString(assetLibrary1);
 
-		PreviewAssetLibrary previewAssetLibrary2 =
-			PreviewAssetLibrarySerDes.toDTO(json);
+		AssetLibrary assetLibrary2 = AssetLibrarySerDes.toDTO(json);
 
-		Assert.assertTrue(equals(previewAssetLibrary1, previewAssetLibrary2));
+		Assert.assertTrue(equals(assetLibrary1, assetLibrary2));
 	}
 
 	@Test
 	public void testClientSerDesToJSON() throws Exception {
 		ObjectMapper objectMapper = getClientSerDesObjectMapper();
 
-		PreviewAssetLibrary previewAssetLibrary = randomPreviewAssetLibrary();
+		AssetLibrary assetLibrary = randomAssetLibrary();
 
-		String json1 = objectMapper.writeValueAsString(previewAssetLibrary);
-		String json2 = PreviewAssetLibrarySerDes.toJSON(previewAssetLibrary);
+		String json1 = objectMapper.writeValueAsString(assetLibrary);
+		String json2 = AssetLibrarySerDes.toJSON(assetLibrary);
 
 		Assert.assertEquals(
 			objectMapper.readTree(json1), objectMapper.readTree(json2));
@@ -175,59 +174,50 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	public void testEscapeRegexInStringFields() throws Exception {
 		String regex = "^[0-9]+(\\.[0-9]{1,2})\"?";
 
-		PreviewAssetLibrary previewAssetLibrary = randomPreviewAssetLibrary();
+		AssetLibrary assetLibrary = randomAssetLibrary();
 
-		previewAssetLibrary.setDescriptiveName(regex);
-		previewAssetLibrary.setExternalReferenceCode(regex);
+		assetLibrary.setDescriptiveName(regex);
+		assetLibrary.setExternalReferenceCode(regex);
 
-		String json = PreviewAssetLibrarySerDes.toJSON(previewAssetLibrary);
+		String json = AssetLibrarySerDes.toJSON(assetLibrary);
 
 		Assert.assertFalse(json.contains(regex));
 
-		previewAssetLibrary = PreviewAssetLibrarySerDes.toDTO(json);
+		assetLibrary = AssetLibrarySerDes.toDTO(json);
 
-		Assert.assertEquals(regex, previewAssetLibrary.getDescriptiveName());
-		Assert.assertEquals(
-			regex, previewAssetLibrary.getExternalReferenceCode());
+		Assert.assertEquals(regex, assetLibrary.getDescriptiveName());
+		Assert.assertEquals(regex, assetLibrary.getExternalReferenceCode());
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPage()
-		throws Exception {
-
-		Page<PreviewAssetLibrary> page =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					null, null, Pagination.of(1, 10), null);
+	public void testGetExportPreviewAssetLibrariesPage() throws Exception {
+		Page<AssetLibrary> page =
+			assetLibraryResource.getExportPreviewAssetLibrariesPage(
+				null, null, Pagination.of(1, 10), null);
 
 		long totalCount = page.getTotalCount();
 
-		PreviewAssetLibrary previewAssetLibrary1 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary1 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
-		PreviewAssetLibrary previewAssetLibrary2 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary2 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
-		page =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					null, null, Pagination.of(1, (int)totalCount + 2), null);
+		page = assetLibraryResource.getExportPreviewAssetLibrariesPage(
+			null, null, Pagination.of(1, (int)totalCount + 2), null);
 
 		Assert.assertEquals(totalCount + 2, page.getTotalCount());
 
-		assertContains(
-			previewAssetLibrary1, (List<PreviewAssetLibrary>)page.getItems());
-		assertContains(
-			previewAssetLibrary2, (List<PreviewAssetLibrary>)page.getItems());
+		assertContains(assetLibrary1, (List<AssetLibrary>)page.getItems());
+		assertContains(assetLibrary2, (List<AssetLibrary>)page.getItems());
 		assertValid(
-			page,
-			testGetExportPreviewPreviewAssetLibrariesPage_getExpectedActions());
+			page, testGetExportPreviewAssetLibrariesPage_getExpectedActions());
 	}
 
 	protected Map<String, Map<String, String>>
-			testGetExportPreviewPreviewAssetLibrariesPage_getExpectedActions()
+			testGetExportPreviewAssetLibrariesPage_getExpectedActions()
 		throws Exception {
 
 		Map<String, Map<String, String>> expectedActions = new HashMap<>();
@@ -236,7 +226,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterDateTimeEquals()
+	public void testGetExportPreviewAssetLibrariesPageWithFilterDateTimeEquals()
 		throws Exception {
 
 		List<EntityField> entityFields = getEntityFields(
@@ -246,60 +236,57 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			return;
 		}
 
-		PreviewAssetLibrary previewAssetLibrary1 = randomPreviewAssetLibrary();
+		AssetLibrary assetLibrary1 = randomAssetLibrary();
 
-		previewAssetLibrary1 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				previewAssetLibrary1);
+		assetLibrary1 = testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+			assetLibrary1);
 
 		for (EntityField entityField : entityFields) {
-			Page<PreviewAssetLibrary> page =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null,
-						getFilterString(
-							entityField, "between", previewAssetLibrary1),
-						Pagination.of(1, 2), null);
+			Page<AssetLibrary> page =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null,
+					getFilterString(entityField, "between", assetLibrary1),
+					Pagination.of(1, 2), null);
 
 			assertEquals(
-				Collections.singletonList(previewAssetLibrary1),
-				(List<PreviewAssetLibrary>)page.getItems());
+				Collections.singletonList(assetLibrary1),
+				(List<AssetLibrary>)page.getItems());
 		}
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterDoubleEquals()
+	public void testGetExportPreviewAssetLibrariesPageWithFilterDoubleEquals()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+		testGetExportPreviewAssetLibrariesPageWithFilter(
 			"eq", EntityField.Type.DOUBLE);
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterStringContains()
+	public void testGetExportPreviewAssetLibrariesPageWithFilterStringContains()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+		testGetExportPreviewAssetLibrariesPageWithFilter(
 			"contains", EntityField.Type.STRING);
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterStringEquals()
+	public void testGetExportPreviewAssetLibrariesPageWithFilterStringEquals()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+		testGetExportPreviewAssetLibrariesPageWithFilter(
 			"eq", EntityField.Type.STRING);
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithFilterStringStartsWith()
+	public void testGetExportPreviewAssetLibrariesPageWithFilterStringStartsWith()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+		testGetExportPreviewAssetLibrariesPageWithFilter(
 			"startswith", EntityField.Type.STRING);
 	}
 
-	protected void testGetExportPreviewPreviewAssetLibrariesPageWithFilter(
+	protected void testGetExportPreviewAssetLibrariesPageWithFilter(
 			String operator, EntityField.Type type)
 		throws Exception {
 
@@ -309,194 +296,170 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			return;
 		}
 
-		PreviewAssetLibrary previewAssetLibrary1 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary1 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
 		@SuppressWarnings("PMD.UnusedLocalVariable")
-		PreviewAssetLibrary previewAssetLibrary2 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary2 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
 		for (EntityField entityField : entityFields) {
-			Page<PreviewAssetLibrary> page =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null,
-						getFilterString(
-							entityField, operator, previewAssetLibrary1),
-						Pagination.of(1, 2), null);
+			Page<AssetLibrary> page =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, getFilterString(entityField, operator, assetLibrary1),
+					Pagination.of(1, 2), null);
 
 			assertEquals(
-				Collections.singletonList(previewAssetLibrary1),
-				(List<PreviewAssetLibrary>)page.getItems());
+				Collections.singletonList(assetLibrary1),
+				(List<AssetLibrary>)page.getItems());
 		}
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithPagination()
+	public void testGetExportPreviewAssetLibrariesPageWithPagination()
 		throws Exception {
 
-		Page<PreviewAssetLibrary> previewAssetLibrariesPage =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					null, null, null, null);
+		Page<AssetLibrary> assetLibrariesPage =
+			assetLibraryResource.getExportPreviewAssetLibrariesPage(
+				null, null, null, null);
 
 		int totalCount = GetterUtil.getInteger(
-			previewAssetLibrariesPage.getTotalCount());
+			assetLibrariesPage.getTotalCount());
 
-		PreviewAssetLibrary previewAssetLibrary1 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary1 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
-		PreviewAssetLibrary previewAssetLibrary2 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary2 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
-		PreviewAssetLibrary previewAssetLibrary3 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				randomPreviewAssetLibrary());
+		AssetLibrary assetLibrary3 =
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				randomAssetLibrary());
 
 		// See com.liferay.portal.vulcan.internal.configuration.HeadlessAPICompanyConfiguration#pageSizeLimit
 
 		int pageSizeLimit = 500;
 
 		if (totalCount >= (pageSizeLimit - 2)) {
-			Page<PreviewAssetLibrary> page1 =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null,
-						Pagination.of(
-							(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
-							pageSizeLimit),
-						null);
+			Page<AssetLibrary> page1 =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 1.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
 
 			Assert.assertEquals(totalCount + 3, page1.getTotalCount());
 
-			assertContains(
-				previewAssetLibrary1,
-				(List<PreviewAssetLibrary>)page1.getItems());
+			assertContains(assetLibrary1, (List<AssetLibrary>)page1.getItems());
 
-			Page<PreviewAssetLibrary> page2 =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null,
-						Pagination.of(
-							(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
-							pageSizeLimit),
-						null);
+			Page<AssetLibrary> page2 =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 2.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
 
-			assertContains(
-				previewAssetLibrary2,
-				(List<PreviewAssetLibrary>)page2.getItems());
+			assertContains(assetLibrary2, (List<AssetLibrary>)page2.getItems());
 
-			Page<PreviewAssetLibrary> page3 =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null,
-						Pagination.of(
-							(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
-							pageSizeLimit),
-						null);
+			Page<AssetLibrary> page3 =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null,
+					Pagination.of(
+						(int)Math.ceil((totalCount + 3.0) / pageSizeLimit),
+						pageSizeLimit),
+					null);
 
-			assertContains(
-				previewAssetLibrary3,
-				(List<PreviewAssetLibrary>)page3.getItems());
+			assertContains(assetLibrary3, (List<AssetLibrary>)page3.getItems());
 		}
 		else {
-			Page<PreviewAssetLibrary> page1 =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null, Pagination.of(1, totalCount + 2), null);
+			Page<AssetLibrary> page1 =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null, Pagination.of(1, totalCount + 2), null);
 
-			List<PreviewAssetLibrary> previewAssetLibraries1 =
-				(List<PreviewAssetLibrary>)page1.getItems();
+			List<AssetLibrary> assetLibraries1 =
+				(List<AssetLibrary>)page1.getItems();
 
 			Assert.assertEquals(
-				previewAssetLibraries1.toString(), totalCount + 2,
-				previewAssetLibraries1.size());
+				assetLibraries1.toString(), totalCount + 2,
+				assetLibraries1.size());
 
-			Page<PreviewAssetLibrary> page2 =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null, Pagination.of(2, totalCount + 2), null);
+			Page<AssetLibrary> page2 =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null, Pagination.of(2, totalCount + 2), null);
 
 			Assert.assertEquals(totalCount + 3, page2.getTotalCount());
 
-			List<PreviewAssetLibrary> previewAssetLibraries2 =
-				(List<PreviewAssetLibrary>)page2.getItems();
+			List<AssetLibrary> assetLibraries2 =
+				(List<AssetLibrary>)page2.getItems();
 
 			Assert.assertEquals(
-				previewAssetLibraries2.toString(), 1,
-				previewAssetLibraries2.size());
+				assetLibraries2.toString(), 1, assetLibraries2.size());
 
-			Page<PreviewAssetLibrary> page3 =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null, Pagination.of(1, (int)totalCount + 3),
-						null);
+			Page<AssetLibrary> page3 =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null, Pagination.of(1, (int)totalCount + 3), null);
 
-			assertContains(
-				previewAssetLibrary1,
-				(List<PreviewAssetLibrary>)page3.getItems());
-			assertContains(
-				previewAssetLibrary2,
-				(List<PreviewAssetLibrary>)page3.getItems());
-			assertContains(
-				previewAssetLibrary3,
-				(List<PreviewAssetLibrary>)page3.getItems());
+			assertContains(assetLibrary1, (List<AssetLibrary>)page3.getItems());
+			assertContains(assetLibrary2, (List<AssetLibrary>)page3.getItems());
+			assertContains(assetLibrary3, (List<AssetLibrary>)page3.getItems());
 		}
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithSortDateTime()
+	public void testGetExportPreviewAssetLibrariesPageWithSortDateTime()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithSort(
+		testGetExportPreviewAssetLibrariesPageWithSort(
 			EntityField.Type.DATE_TIME,
-			(entityField, previewAssetLibrary1, previewAssetLibrary2) -> {
+			(entityField, assetLibrary1, assetLibrary2) -> {
 				BeanTestUtil.setProperty(
-					previewAssetLibrary1, entityField.getName(),
+					assetLibrary1, entityField.getName(),
 					new Date(System.currentTimeMillis() - (2 * Time.MINUTE)));
 			});
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithSortDouble()
+	public void testGetExportPreviewAssetLibrariesPageWithSortDouble()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithSort(
+		testGetExportPreviewAssetLibrariesPageWithSort(
 			EntityField.Type.DOUBLE,
-			(entityField, previewAssetLibrary1, previewAssetLibrary2) -> {
+			(entityField, assetLibrary1, assetLibrary2) -> {
 				BeanTestUtil.setProperty(
-					previewAssetLibrary1, entityField.getName(), 0.1);
+					assetLibrary1, entityField.getName(), 0.1);
 				BeanTestUtil.setProperty(
-					previewAssetLibrary2, entityField.getName(), 0.5);
+					assetLibrary2, entityField.getName(), 0.5);
 			});
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithSortInteger()
+	public void testGetExportPreviewAssetLibrariesPageWithSortInteger()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithSort(
+		testGetExportPreviewAssetLibrariesPageWithSort(
 			EntityField.Type.INTEGER,
-			(entityField, previewAssetLibrary1, previewAssetLibrary2) -> {
+			(entityField, assetLibrary1, assetLibrary2) -> {
 				BeanTestUtil.setProperty(
-					previewAssetLibrary1, entityField.getName(), 0);
+					assetLibrary1, entityField.getName(), 0);
 				BeanTestUtil.setProperty(
-					previewAssetLibrary2, entityField.getName(), 1);
+					assetLibrary2, entityField.getName(), 1);
 			});
 	}
 
 	@Test
-	public void testGetExportPreviewPreviewAssetLibrariesPageWithSortString()
+	public void testGetExportPreviewAssetLibrariesPageWithSortString()
 		throws Exception {
 
-		testGetExportPreviewPreviewAssetLibrariesPageWithSort(
+		testGetExportPreviewAssetLibrariesPageWithSort(
 			EntityField.Type.STRING,
-			(entityField, previewAssetLibrary1, previewAssetLibrary2) -> {
-				Class<?> clazz = previewAssetLibrary1.getClass();
+			(entityField, assetLibrary1, assetLibrary2) -> {
+				Class<?> clazz = assetLibrary1.getClass();
 
 				String entityFieldName = entityField.getName();
 
@@ -507,21 +470,21 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 				if (returnType.isAssignableFrom(Map.class)) {
 					BeanTestUtil.setProperty(
-						previewAssetLibrary1, entityFieldName,
+						assetLibrary1, entityFieldName,
 						Collections.singletonMap("Aaa", "Aaa"));
 					BeanTestUtil.setProperty(
-						previewAssetLibrary2, entityFieldName,
+						assetLibrary2, entityFieldName,
 						Collections.singletonMap("Bbb", "Bbb"));
 				}
 				else if (entityFieldName.contains("email")) {
 					BeanTestUtil.setProperty(
-						previewAssetLibrary1, entityFieldName,
+						assetLibrary1, entityFieldName,
 						"aaa" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()) +
 									"@liferay.com");
 					BeanTestUtil.setProperty(
-						previewAssetLibrary2, entityFieldName,
+						assetLibrary2, entityFieldName,
 						"bbb" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()) +
@@ -529,12 +492,12 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 				}
 				else {
 					BeanTestUtil.setProperty(
-						previewAssetLibrary1, entityFieldName,
+						assetLibrary1, entityFieldName,
 						"aaa" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()));
 					BeanTestUtil.setProperty(
-						previewAssetLibrary2, entityFieldName,
+						assetLibrary2, entityFieldName,
 						"bbb" +
 							StringUtil.toLowerCase(
 								RandomTestUtil.randomString()));
@@ -542,11 +505,11 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			});
 	}
 
-	protected void testGetExportPreviewPreviewAssetLibrariesPageWithSort(
+	protected void testGetExportPreviewAssetLibrariesPageWithSort(
 			EntityField.Type type,
 			UnsafeTriConsumer
-				<EntityField, PreviewAssetLibrary, PreviewAssetLibrary,
-				 Exception> unsafeTriConsumer)
+				<EntityField, AssetLibrary, AssetLibrary, Exception>
+					unsafeTriConsumer)
 		throws Exception {
 
 		List<EntityField> entityFields = getEntityFields(type);
@@ -555,61 +518,49 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			return;
 		}
 
-		PreviewAssetLibrary previewAssetLibrary1 = randomPreviewAssetLibrary();
-		PreviewAssetLibrary previewAssetLibrary2 = randomPreviewAssetLibrary();
+		AssetLibrary assetLibrary1 = randomAssetLibrary();
+		AssetLibrary assetLibrary2 = randomAssetLibrary();
 
 		for (EntityField entityField : entityFields) {
-			unsafeTriConsumer.accept(
-				entityField, previewAssetLibrary1, previewAssetLibrary2);
+			unsafeTriConsumer.accept(entityField, assetLibrary1, assetLibrary2);
 		}
 
-		previewAssetLibrary1 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				previewAssetLibrary1);
+		assetLibrary1 = testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+			assetLibrary1);
 
-		previewAssetLibrary2 =
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				previewAssetLibrary2);
+		assetLibrary2 = testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+			assetLibrary2);
 
-		Page<PreviewAssetLibrary> page =
-			previewAssetLibraryResource.
-				getExportPreviewPreviewAssetLibrariesPage(
-					null, null, null, null);
+		Page<AssetLibrary> page =
+			assetLibraryResource.getExportPreviewAssetLibrariesPage(
+				null, null, null, null);
 
 		for (EntityField entityField : entityFields) {
-			Page<PreviewAssetLibrary> ascPage =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null,
-						Pagination.of(1, (int)page.getTotalCount() + 1),
-						entityField.getName() + ":asc");
+			Page<AssetLibrary> ascPage =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":asc");
 
 			assertContains(
-				previewAssetLibrary1,
-				(List<PreviewAssetLibrary>)ascPage.getItems());
+				assetLibrary1, (List<AssetLibrary>)ascPage.getItems());
 			assertContains(
-				previewAssetLibrary2,
-				(List<PreviewAssetLibrary>)ascPage.getItems());
+				assetLibrary2, (List<AssetLibrary>)ascPage.getItems());
 
-			Page<PreviewAssetLibrary> descPage =
-				previewAssetLibraryResource.
-					getExportPreviewPreviewAssetLibrariesPage(
-						null, null,
-						Pagination.of(1, (int)page.getTotalCount() + 1),
-						entityField.getName() + ":desc");
+			Page<AssetLibrary> descPage =
+				assetLibraryResource.getExportPreviewAssetLibrariesPage(
+					null, null, Pagination.of(1, (int)page.getTotalCount() + 1),
+					entityField.getName() + ":desc");
 
 			assertContains(
-				previewAssetLibrary2,
-				(List<PreviewAssetLibrary>)descPage.getItems());
+				assetLibrary2, (List<AssetLibrary>)descPage.getItems());
 			assertContains(
-				previewAssetLibrary1,
-				(List<PreviewAssetLibrary>)descPage.getItems());
+				assetLibrary1, (List<AssetLibrary>)descPage.getItems());
 		}
 	}
 
-	protected PreviewAssetLibrary
-			testGetExportPreviewPreviewAssetLibrariesPage_addPreviewAssetLibrary(
-				PreviewAssetLibrary previewAssetLibrary)
+	protected AssetLibrary
+			testGetExportPreviewAssetLibrariesPage_addAssetLibrary(
+				AssetLibrary assetLibrary)
 		throws Exception {
 
 		throw new UnsupportedOperationException(
@@ -625,13 +576,12 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	protected void assertContains(
-		PreviewAssetLibrary previewAssetLibrary,
-		List<PreviewAssetLibrary> previewAssetLibraries) {
+		AssetLibrary assetLibrary, List<AssetLibrary> assetLibraries) {
 
 		boolean contains = false;
 
-		for (PreviewAssetLibrary item : previewAssetLibraries) {
-			if (equals(previewAssetLibrary, item)) {
+		for (AssetLibrary item : assetLibraries) {
+			if (equals(assetLibrary, item)) {
 				contains = true;
 
 				break;
@@ -639,8 +589,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		}
 
 		Assert.assertTrue(
-			previewAssetLibraries + " does not contain " + previewAssetLibrary,
-			contains);
+			assetLibraries + " does not contain " + assetLibrary, contains);
 	}
 
 	protected void assertHttpResponseStatusCode(
@@ -652,47 +601,38 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	}
 
 	protected void assertEquals(
-		PreviewAssetLibrary previewAssetLibrary1,
-		PreviewAssetLibrary previewAssetLibrary2) {
+		AssetLibrary assetLibrary1, AssetLibrary assetLibrary2) {
 
 		Assert.assertTrue(
-			previewAssetLibrary1 + " does not equal " + previewAssetLibrary2,
-			equals(previewAssetLibrary1, previewAssetLibrary2));
+			assetLibrary1 + " does not equal " + assetLibrary2,
+			equals(assetLibrary1, assetLibrary2));
 	}
 
 	protected void assertEquals(
-		List<PreviewAssetLibrary> previewAssetLibraries1,
-		List<PreviewAssetLibrary> previewAssetLibraries2) {
+		List<AssetLibrary> assetLibraries1,
+		List<AssetLibrary> assetLibraries2) {
 
-		Assert.assertEquals(
-			previewAssetLibraries1.size(), previewAssetLibraries2.size());
+		Assert.assertEquals(assetLibraries1.size(), assetLibraries2.size());
 
-		for (int i = 0; i < previewAssetLibraries1.size(); i++) {
-			PreviewAssetLibrary previewAssetLibrary1 =
-				previewAssetLibraries1.get(i);
-			PreviewAssetLibrary previewAssetLibrary2 =
-				previewAssetLibraries2.get(i);
+		for (int i = 0; i < assetLibraries1.size(); i++) {
+			AssetLibrary assetLibrary1 = assetLibraries1.get(i);
+			AssetLibrary assetLibrary2 = assetLibraries2.get(i);
 
-			assertEquals(previewAssetLibrary1, previewAssetLibrary2);
+			assertEquals(assetLibrary1, assetLibrary2);
 		}
 	}
 
 	protected void assertEqualsIgnoringOrder(
-		List<PreviewAssetLibrary> previewAssetLibraries1,
-		List<PreviewAssetLibrary> previewAssetLibraries2) {
+		List<AssetLibrary> assetLibraries1,
+		List<AssetLibrary> assetLibraries2) {
 
-		Assert.assertEquals(
-			previewAssetLibraries1.size(), previewAssetLibraries2.size());
+		Assert.assertEquals(assetLibraries1.size(), assetLibraries2.size());
 
-		for (PreviewAssetLibrary previewAssetLibrary1 :
-				previewAssetLibraries1) {
-
+		for (AssetLibrary assetLibrary1 : assetLibraries1) {
 			boolean contains = false;
 
-			for (PreviewAssetLibrary previewAssetLibrary2 :
-					previewAssetLibraries2) {
-
-				if (equals(previewAssetLibrary1, previewAssetLibrary2)) {
+			for (AssetLibrary assetLibrary2 : assetLibraries2) {
+				if (equals(assetLibrary1, assetLibrary2)) {
 					contains = true;
 
 					break;
@@ -700,18 +640,15 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			}
 
 			Assert.assertTrue(
-				previewAssetLibraries2 + " does not contain " +
-					previewAssetLibrary1,
+				assetLibraries2 + " does not contain " + assetLibrary1,
 				contains);
 		}
 	}
 
-	protected void assertValid(PreviewAssetLibrary previewAssetLibrary)
-		throws Exception {
-
+	protected void assertValid(AssetLibrary assetLibrary) throws Exception {
 		boolean valid = true;
 
-		if (previewAssetLibrary.getExternalReferenceCode() == null) {
+		if (assetLibrary.getExternalReferenceCode() == null) {
 			valid = false;
 		}
 
@@ -719,7 +656,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 				getAdditionalAssertFieldNames()) {
 
 			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
-				if (previewAssetLibrary.getDescriptiveName() == null) {
+				if (assetLibrary.getDescriptiveName() == null) {
 					valid = false;
 				}
 
@@ -727,7 +664,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			}
 
 			if (Objects.equals("existsInInstance", additionalAssertFieldName)) {
-				if (previewAssetLibrary.getExistsInInstance() == null) {
+				if (assetLibrary.getExistsInInstance() == null) {
 					valid = false;
 				}
 
@@ -737,7 +674,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			if (Objects.equals(
 					"externalReferenceCode", additionalAssertFieldName)) {
 
-				if (previewAssetLibrary.getExternalReferenceCode() == null) {
+				if (assetLibrary.getExternalReferenceCode() == null) {
 					valid = false;
 				}
 
@@ -745,7 +682,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			}
 
 			if (Objects.equals("type", additionalAssertFieldName)) {
-				if (previewAssetLibrary.getType() == null) {
+				if (assetLibrary.getType() == null) {
 					valid = false;
 				}
 
@@ -760,20 +697,19 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		Assert.assertTrue(valid);
 	}
 
-	protected void assertValid(Page<PreviewAssetLibrary> page) {
+	protected void assertValid(Page<AssetLibrary> page) {
 		assertValid(page, Collections.emptyMap());
 	}
 
 	protected void assertValid(
-		Page<PreviewAssetLibrary> page,
+		Page<AssetLibrary> page,
 		Map<String, Map<String, String>> expectedActions) {
 
 		boolean valid = false;
 
-		java.util.Collection<PreviewAssetLibrary> previewAssetLibraries =
-			page.getItems();
+		java.util.Collection<AssetLibrary> assetLibraries = page.getItems();
 
-		int size = previewAssetLibraries.size();
+		int size = assetLibraries.size();
 
 		if ((page.getLastPage() > 0) && (page.getPage() > 0) &&
 			(page.getPageSize() > 0) && (page.getTotalCount() > 0) &&
@@ -815,7 +751,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 		for (java.lang.reflect.Field field :
 				getDeclaredFields(
-					com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary.
+					com.liferay.exportimport.rest.dto.v1_0.AssetLibrary.
 						class)) {
 
 			if (!ArrayUtil.contains(
@@ -865,10 +801,9 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	}
 
 	protected boolean equals(
-		PreviewAssetLibrary previewAssetLibrary1,
-		PreviewAssetLibrary previewAssetLibrary2) {
+		AssetLibrary assetLibrary1, AssetLibrary assetLibrary2) {
 
-		if (previewAssetLibrary1 == previewAssetLibrary2) {
+		if (assetLibrary1 == assetLibrary2) {
 			return true;
 		}
 
@@ -877,8 +812,8 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						previewAssetLibrary1.getDescriptiveName(),
-						previewAssetLibrary2.getDescriptiveName())) {
+						assetLibrary1.getDescriptiveName(),
+						assetLibrary2.getDescriptiveName())) {
 
 					return false;
 				}
@@ -888,8 +823,8 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 			if (Objects.equals("existsInInstance", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						previewAssetLibrary1.getExistsInInstance(),
-						previewAssetLibrary2.getExistsInInstance())) {
+						assetLibrary1.getExistsInInstance(),
+						assetLibrary2.getExistsInInstance())) {
 
 					return false;
 				}
@@ -901,8 +836,8 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 					"externalReferenceCode", additionalAssertFieldName)) {
 
 				if (!Objects.deepEquals(
-						previewAssetLibrary1.getExternalReferenceCode(),
-						previewAssetLibrary2.getExternalReferenceCode())) {
+						assetLibrary1.getExternalReferenceCode(),
+						assetLibrary2.getExternalReferenceCode())) {
 
 					return false;
 				}
@@ -912,8 +847,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 
 			if (Objects.equals("type", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
-						previewAssetLibrary1.getType(),
-						previewAssetLibrary2.getType())) {
+						assetLibrary1.getType(), assetLibrary2.getType())) {
 
 					return false;
 				}
@@ -977,13 +911,13 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	protected java.util.Collection<EntityField> getEntityFields()
 		throws Exception {
 
-		if (!(_previewAssetLibraryResource instanceof EntityModelResource)) {
+		if (!(_assetLibraryResource instanceof EntityModelResource)) {
 			throw new UnsupportedOperationException(
 				"Resource is not an instance of EntityModelResource");
 		}
 
 		EntityModelResource entityModelResource =
-			(EntityModelResource)_previewAssetLibraryResource;
+			(EntityModelResource)_assetLibraryResource;
 
 		EntityModel entityModel = entityModelResource.getEntityModel(
 			new MultivaluedHashMap());
@@ -1016,8 +950,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	}
 
 	protected String getFilterString(
-		EntityField entityField, String operator,
-		PreviewAssetLibrary previewAssetLibrary) {
+		EntityField entityField, String operator, AssetLibrary assetLibrary) {
 
 		StringBundler sb = new StringBundler();
 
@@ -1030,7 +963,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		sb.append(" ");
 
 		if (entityFieldName.equals("descriptiveName")) {
-			Object object = previewAssetLibrary.getDescriptiveName();
+			Object object = assetLibrary.getDescriptiveName();
 
 			String value = String.valueOf(object);
 
@@ -1081,7 +1014,7 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		}
 
 		if (entityFieldName.equals("externalReferenceCode")) {
-			Object object = previewAssetLibrary.getExternalReferenceCode();
+			Object object = assetLibrary.getExternalReferenceCode();
 
 			String value = String.valueOf(object);
 
@@ -1175,8 +1108,8 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 			invoke(queryGraphQLField.toString()));
 	}
 
-	protected PreviewAssetLibrary randomPreviewAssetLibrary() throws Exception {
-		return new PreviewAssetLibrary() {
+	protected AssetLibrary randomAssetLibrary() throws Exception {
+		return new AssetLibrary() {
 			{
 				descriptiveName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
@@ -1187,22 +1120,17 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 		};
 	}
 
-	protected PreviewAssetLibrary randomIrrelevantPreviewAssetLibrary()
-		throws Exception {
+	protected AssetLibrary randomIrrelevantAssetLibrary() throws Exception {
+		AssetLibrary randomIrrelevantAssetLibrary = randomAssetLibrary();
 
-		PreviewAssetLibrary randomIrrelevantPreviewAssetLibrary =
-			randomPreviewAssetLibrary();
-
-		return randomIrrelevantPreviewAssetLibrary;
+		return randomIrrelevantAssetLibrary;
 	}
 
-	protected PreviewAssetLibrary randomPatchPreviewAssetLibrary()
-		throws Exception {
-
-		return randomPreviewAssetLibrary();
+	protected AssetLibrary randomPatchAssetLibrary() throws Exception {
+		return randomAssetLibrary();
 	}
 
-	protected PreviewAssetLibraryResource previewAssetLibraryResource;
+	protected AssetLibraryResource assetLibraryResource;
 	protected com.liferay.portal.kernel.model.Group irrelevantGroup;
 	protected com.liferay.portal.kernel.model.Company testCompany;
 	protected com.liferay.portal.kernel.model.Group testGroup;
@@ -1401,16 +1329,15 @@ public abstract class BasePreviewAssetLibraryResourceTestCase {
 	}
 
 	private static final com.liferay.portal.kernel.log.Log _log =
-		LogFactoryUtil.getLog(BasePreviewAssetLibraryResourceTestCase.class);
+		LogFactoryUtil.getLog(BaseAssetLibraryResourceTestCase.class);
 
 	private static Format _format;
 
 	private com.liferay.portal.kernel.model.User _testCompanyAdminUser;
 
 	@Inject
-	private
-		com.liferay.exportimport.rest.resource.v1_0.PreviewAssetLibraryResource
-			_previewAssetLibraryResource;
+	private com.liferay.exportimport.rest.resource.v1_0.AssetLibraryResource
+		_assetLibraryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1032390327
+// LIFERAY-REST-BUILDER-HASH:1348678273

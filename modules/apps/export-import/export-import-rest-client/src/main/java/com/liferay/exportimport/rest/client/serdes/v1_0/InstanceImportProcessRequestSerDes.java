@@ -5,6 +5,7 @@
 
 package com.liferay.exportimport.rest.client.serdes.v1_0;
 
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.InstanceImportProcessRequest;
 import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.Site;
@@ -53,29 +54,26 @@ public class InstanceImportProcessRequestSerDes {
 
 		sb.append("{");
 
-		if (instanceImportProcessRequest.
-				getAssetLibraryExternalReferenceCodes() != null) {
-
+		if (instanceImportProcessRequest.getAssetLibraries() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"assetLibraryExternalReferenceCodes\": ");
+			sb.append("\"assetLibraries\": ");
 
 			sb.append("[");
 
 			for (int i = 0;
-				 i < instanceImportProcessRequest.
-					 getAssetLibraryExternalReferenceCodes().length;
+				 i < instanceImportProcessRequest.getAssetLibraries().length;
 				 i++) {
 
 				sb.append(
-					_toJSON(
-						instanceImportProcessRequest.
-							getAssetLibraryExternalReferenceCodes()[i]));
+					String.valueOf(
+						instanceImportProcessRequest.getAssetLibraries()[i]));
 
-				if ((i + 1) < instanceImportProcessRequest.
-						getAssetLibraryExternalReferenceCodes().length) {
+				if ((i + 1) <
+						instanceImportProcessRequest.
+							getAssetLibraries().length) {
 
 					sb.append(", ");
 				}
@@ -237,17 +235,14 @@ public class InstanceImportProcessRequestSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (instanceImportProcessRequest.
-				getAssetLibraryExternalReferenceCodes() == null) {
-
-			map.put("assetLibraryExternalReferenceCodes", null);
+		if (instanceImportProcessRequest.getAssetLibraries() == null) {
+			map.put("assetLibraries", null);
 		}
 		else {
 			map.put(
-				"assetLibraryExternalReferenceCodes",
+				"assetLibraries",
 				String.valueOf(
-					instanceImportProcessRequest.
-						getAssetLibraryExternalReferenceCodes()));
+					instanceImportProcessRequest.getAssetLibraries()));
 		}
 
 		if (instanceImportProcessRequest.getComments() == null) {
@@ -350,10 +345,7 @@ public class InstanceImportProcessRequestSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(
-					jsonParserFieldName,
-					"assetLibraryExternalReferenceCodes")) {
-
+			if (Objects.equals(jsonParserFieldName, "assetLibraries")) {
 				return false;
 			}
 			else if (Objects.equals(jsonParserFieldName, "comments")) {
@@ -394,14 +386,21 @@ public class InstanceImportProcessRequestSerDes {
 			InstanceImportProcessRequest instanceImportProcessRequest,
 			String jsonParserFieldName, Object jsonParserFieldValue) {
 
-			if (Objects.equals(
-					jsonParserFieldName,
-					"assetLibraryExternalReferenceCodes")) {
-
+			if (Objects.equals(jsonParserFieldName, "assetLibraries")) {
 				if (jsonParserFieldValue != null) {
-					instanceImportProcessRequest.
-						setAssetLibraryExternalReferenceCodes(
-							toStrings((Object[])jsonParserFieldValue));
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					AssetLibrary[] assetLibrariesArray =
+						new AssetLibrary[jsonParserFieldValues.length];
+
+					for (int i = 0; i < assetLibrariesArray.length; i++) {
+						assetLibrariesArray[i] = AssetLibrarySerDes.toDTO(
+							(String)jsonParserFieldValues[i]);
+					}
+
+					instanceImportProcessRequest.setAssetLibraries(
+						assetLibrariesArray);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "comments")) {
@@ -570,4 +569,4 @@ public class InstanceImportProcessRequestSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:380609093
+// LIFERAY-REST-BUILDER-HASH:-1900379733

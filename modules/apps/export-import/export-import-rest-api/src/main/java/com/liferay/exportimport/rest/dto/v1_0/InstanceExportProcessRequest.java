@@ -40,11 +40,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "Represents an export of the instance, which can include whole sites.",
+	description = "Represents an export of the instance, which can include whole sites and asset libraries.",
 	value = "InstanceExportProcessRequest"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "Represents an export of the instance, which can include whole sites.",
+	description = "Represents an export of the instance, which can include whole sites and asset libraries.",
 	requiredProperties = {"name"}
 )
 @JsonFilter("Liferay.Vulcan")
@@ -62,36 +62,33 @@ public class InstanceExportProcessRequest implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The external reference codes of the asset libraries to export."
+		description = "The asset libraries to export in full, from the export preview's asset libraries."
 	)
-	public String[] getAssetLibraryExternalReferenceCodes() {
-		if (_assetLibraryExternalReferenceCodesSupplier != null) {
-			assetLibraryExternalReferenceCodes =
-				_assetLibraryExternalReferenceCodesSupplier.get();
+	@Valid
+	public AssetLibrary[] getAssetLibraries() {
+		if (_assetLibrariesSupplier != null) {
+			assetLibraries = _assetLibrariesSupplier.get();
 
-			_assetLibraryExternalReferenceCodesSupplier = null;
+			_assetLibrariesSupplier = null;
 		}
 
-		return assetLibraryExternalReferenceCodes;
+		return assetLibraries;
 	}
 
-	public void setAssetLibraryExternalReferenceCodes(
-		String[] assetLibraryExternalReferenceCodes) {
+	public void setAssetLibraries(AssetLibrary[] assetLibraries) {
+		this.assetLibraries = assetLibraries;
 
-		this.assetLibraryExternalReferenceCodes =
-			assetLibraryExternalReferenceCodes;
-
-		_assetLibraryExternalReferenceCodesSupplier = null;
+		_assetLibrariesSupplier = null;
 	}
 
 	@JsonIgnore
-	public void setAssetLibraryExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			assetLibraryExternalReferenceCodesUnsafeSupplier) {
+	public void setAssetLibraries(
+		UnsafeSupplier<AssetLibrary[], Exception>
+			assetLibrariesUnsafeSupplier) {
 
-		_assetLibraryExternalReferenceCodesSupplier = () -> {
+		_assetLibrariesSupplier = () -> {
 			try {
-				return assetLibraryExternalReferenceCodesUnsafeSupplier.get();
+				return assetLibrariesUnsafeSupplier.get();
 			}
 			catch (RuntimeException runtimeException) {
 				throw runtimeException;
@@ -103,13 +100,13 @@ public class InstanceExportProcessRequest implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "The external reference codes of the asset libraries to export."
+		description = "The asset libraries to export in full, from the export preview's asset libraries."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected String[] assetLibraryExternalReferenceCodes;
+	protected AssetLibrary[] assetLibraries;
 
 	@JsonIgnore
-	private Supplier<String[]> _assetLibraryExternalReferenceCodesSupplier;
+	private Supplier<AssetLibrary[]> _assetLibrariesSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	public Boolean getComments() {
@@ -489,28 +486,21 @@ public class InstanceExportProcessRequest implements Serializable {
 
 		sb.append("{");
 
-		String[] assetLibraryExternalReferenceCodes =
-			getAssetLibraryExternalReferenceCodes();
+		AssetLibrary[] assetLibraries = getAssetLibraries();
 
-		if (assetLibraryExternalReferenceCodes != null) {
+		if (assetLibraries != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
-			sb.append("\"assetLibraryExternalReferenceCodes\": ");
+			sb.append("\"assetLibraries\": ");
 
 			sb.append("[");
 
-			for (int i = 0; i < assetLibraryExternalReferenceCodes.length;
-				 i++) {
+			for (int i = 0; i < assetLibraries.length; i++) {
+				sb.append(String.valueOf(assetLibraries[i]));
 
-				sb.append("\"");
-
-				sb.append(_escape(assetLibraryExternalReferenceCodes[i]));
-
-				sb.append("\"");
-
-				if ((i + 1) < assetLibraryExternalReferenceCodes.length) {
+				if ((i + 1) < assetLibraries.length) {
 					sb.append(", ");
 				}
 			}
@@ -760,4 +750,4 @@ public class InstanceExportProcessRequest implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1356868158
+// LIFERAY-REST-BUILDER-HASH:-557440523

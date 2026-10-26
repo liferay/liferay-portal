@@ -25,32 +25,6 @@ public class ImportProcessRequest implements Cloneable, Serializable {
 		return ImportProcessRequestSerDes.toDTO(json);
 	}
 
-	public String[] getAssetLibraryExternalReferenceCodes() {
-		return assetLibraryExternalReferenceCodes;
-	}
-
-	public void setAssetLibraryExternalReferenceCodes(
-		String[] assetLibraryExternalReferenceCodes) {
-
-		this.assetLibraryExternalReferenceCodes =
-			assetLibraryExternalReferenceCodes;
-	}
-
-	public void setAssetLibraryExternalReferenceCodes(
-		UnsafeSupplier<String[], Exception>
-			assetLibraryExternalReferenceCodesUnsafeSupplier) {
-
-		try {
-			assetLibraryExternalReferenceCodes =
-				assetLibraryExternalReferenceCodesUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected String[] assetLibraryExternalReferenceCodes;
-
 	public Boolean getComments() {
 		return comments;
 	}
@@ -338,4 +312,4 @@ public class ImportProcessRequest implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-771772825
+// LIFERAY-REST-BUILDER-HASH:543266703

@@ -24,7 +24,6 @@ import jakarta.annotation.Generated;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -44,24 +43,23 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An asset library that can be exported from the instance or that a file to import contains.",
-	value = "PreviewAssetLibrary"
+	description = "Represents an asset library an instance process can export or import in full.",
+	value = "AssetLibrary"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "An asset library that can be exported from the instance or that a file to import contains.",
-	requiredProperties = {"descriptiveName", "externalReferenceCode", "type"}
+	description = "Represents an asset library an instance process can export or import in full.",
+	requiredProperties = {"externalReferenceCode"}
 )
 @JsonFilter("Liferay.Vulcan")
-@XmlRootElement(name = "PreviewAssetLibrary")
-public class PreviewAssetLibrary implements Serializable {
+@XmlRootElement(name = "AssetLibrary")
+public class AssetLibrary implements Serializable {
 
-	public static PreviewAssetLibrary toDTO(String json) {
-		return ObjectMapperUtil.readValue(PreviewAssetLibrary.class, json);
+	public static AssetLibrary toDTO(String json) {
+		return ObjectMapperUtil.readValue(AssetLibrary.class, json);
 	}
 
-	public static PreviewAssetLibrary unsafeToDTO(String json) {
-		return ObjectMapperUtil.unsafeReadValue(
-			PreviewAssetLibrary.class, json);
+	public static AssetLibrary unsafeToDTO(String json) {
+		return ObjectMapperUtil.unsafeReadValue(AssetLibrary.class, json);
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
@@ -102,14 +100,13 @@ public class PreviewAssetLibrary implements Serializable {
 
 	@GraphQLField(description = "The asset library's name.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	@NotEmpty
 	protected String descriptiveName;
 
 	@JsonIgnore
 	private Supplier<String> _descriptiveNameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Whether the instance being imported into already has an asset library of the same external reference code. Set only when previewing a file to import."
+		description = "A flag that indicates whether the instance already has an asset library of the same external reference code and type, which only the import preview sets."
 	)
 	public Boolean getExistsInInstance() {
 		if (_existsInInstanceSupplier != null) {
@@ -145,7 +142,7 @@ public class PreviewAssetLibrary implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Whether the instance being imported into already has an asset library of the same external reference code. Set only when previewing a file to import."
+		description = "A flag that indicates whether the instance already has an asset library of the same external reference code and type, which only the import preview sets."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Boolean existsInInstance;
@@ -154,7 +151,7 @@ public class PreviewAssetLibrary implements Serializable {
 	private Supplier<Boolean> _existsInInstanceSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "The asset library's external reference code."
+		description = "The asset library's external reference code, which is the only property the instance requests send."
 	)
 	public String getExternalReferenceCode() {
 		if (_externalReferenceCodeSupplier != null) {
@@ -189,8 +186,10 @@ public class PreviewAssetLibrary implements Serializable {
 		};
 	}
 
-	@GraphQLField(description = "The asset library's external reference code.")
-	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	@GraphQLField(
+		description = "The asset library's external reference code, which is the only property the instance requests send."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	@NotEmpty
 	protected String externalReferenceCode;
 
@@ -246,7 +245,6 @@ public class PreviewAssetLibrary implements Serializable {
 
 	@GraphQLField(description = "The asset library's type.")
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
-	@NotNull
 	protected Type type;
 
 	@JsonIgnore
@@ -258,13 +256,13 @@ public class PreviewAssetLibrary implements Serializable {
 			return true;
 		}
 
-		if (!(object instanceof PreviewAssetLibrary)) {
+		if (!(object instanceof AssetLibrary)) {
 			return false;
 		}
 
-		PreviewAssetLibrary previewAssetLibrary = (PreviewAssetLibrary)object;
+		AssetLibrary assetLibrary = (AssetLibrary)object;
 
-		return Objects.equals(toString(), previewAssetLibrary.toString());
+		return Objects.equals(toString(), assetLibrary.toString());
 	}
 
 	@Override
@@ -344,7 +342,7 @@ public class PreviewAssetLibrary implements Serializable {
 
 	@io.swagger.v3.oas.annotations.media.Schema(
 		accessMode = io.swagger.v3.oas.annotations.media.Schema.AccessMode.READ_ONLY,
-		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.PreviewAssetLibrary",
+		defaultValue = "com.liferay.exportimport.rest.dto.v1_0.AssetLibrary",
 		name = "x-class-name"
 	)
 	public String xClassName;
@@ -498,4 +496,4 @@ public class PreviewAssetLibrary implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1356141599
+// LIFERAY-REST-BUILDER-HASH:-503974985

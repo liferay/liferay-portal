@@ -5,7 +5,7 @@
 
 package com.liferay.exportimport.rest.client.serdes.v1_0;
 
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewAssetLibrary;
+import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.json.BaseJSONParser;
 
 import jakarta.annotation.Generated;
@@ -22,24 +22,24 @@ import java.util.TreeMap;
  * @generated
  */
 @Generated("")
-public class PreviewAssetLibrarySerDes {
+public class AssetLibrarySerDes {
 
-	public static PreviewAssetLibrary toDTO(String json) {
-		PreviewAssetLibraryJSONParser previewAssetLibraryJSONParser =
-			new PreviewAssetLibraryJSONParser();
+	public static AssetLibrary toDTO(String json) {
+		AssetLibraryJSONParser assetLibraryJSONParser =
+			new AssetLibraryJSONParser();
 
-		return previewAssetLibraryJSONParser.parseToDTO(json);
+		return assetLibraryJSONParser.parseToDTO(json);
 	}
 
-	public static PreviewAssetLibrary[] toDTOs(String json) {
-		PreviewAssetLibraryJSONParser previewAssetLibraryJSONParser =
-			new PreviewAssetLibraryJSONParser();
+	public static AssetLibrary[] toDTOs(String json) {
+		AssetLibraryJSONParser assetLibraryJSONParser =
+			new AssetLibraryJSONParser();
 
-		return previewAssetLibraryJSONParser.parseToDTOs(json);
+		return assetLibraryJSONParser.parseToDTOs(json);
 	}
 
-	public static String toJSON(PreviewAssetLibrary previewAssetLibrary) {
-		if (previewAssetLibrary == null) {
+	public static String toJSON(AssetLibrary assetLibrary) {
+		if (assetLibrary == null) {
 			return "null";
 		}
 
@@ -47,7 +47,7 @@ public class PreviewAssetLibrarySerDes {
 
 		sb.append("{");
 
-		if (previewAssetLibrary.getDescriptiveName() != null) {
+		if (assetLibrary.getDescriptiveName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -56,22 +56,22 @@ public class PreviewAssetLibrarySerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(previewAssetLibrary.getDescriptiveName()));
+			sb.append(_escape(assetLibrary.getDescriptiveName()));
 
 			sb.append("\"");
 		}
 
-		if (previewAssetLibrary.getExistsInInstance() != null) {
+		if (assetLibrary.getExistsInInstance() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
 
 			sb.append("\"existsInInstance\": ");
 
-			sb.append(previewAssetLibrary.getExistsInInstance());
+			sb.append(assetLibrary.getExistsInInstance());
 		}
 
-		if (previewAssetLibrary.getExternalReferenceCode() != null) {
+		if (assetLibrary.getExternalReferenceCode() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -80,12 +80,12 @@ public class PreviewAssetLibrarySerDes {
 
 			sb.append("\"");
 
-			sb.append(_escape(previewAssetLibrary.getExternalReferenceCode()));
+			sb.append(_escape(assetLibrary.getExternalReferenceCode()));
 
 			sb.append("\"");
 		}
 
-		if (previewAssetLibrary.getType() != null) {
+		if (assetLibrary.getType() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
 			}
@@ -93,7 +93,7 @@ public class PreviewAssetLibrarySerDes {
 			sb.append("\"type\": ");
 
 			sb.append("\"");
-			sb.append(previewAssetLibrary.getType());
+			sb.append(assetLibrary.getType());
 			sb.append("\"");
 		}
 
@@ -103,69 +103,67 @@ public class PreviewAssetLibrarySerDes {
 	}
 
 	public static Map<String, Object> toMap(String json) {
-		PreviewAssetLibraryJSONParser previewAssetLibraryJSONParser =
-			new PreviewAssetLibraryJSONParser();
+		AssetLibraryJSONParser assetLibraryJSONParser =
+			new AssetLibraryJSONParser();
 
-		return previewAssetLibraryJSONParser.parseToMap(json);
+		return assetLibraryJSONParser.parseToMap(json);
 	}
 
-	public static Map<String, String> toMap(
-		PreviewAssetLibrary previewAssetLibrary) {
-
-		if (previewAssetLibrary == null) {
+	public static Map<String, String> toMap(AssetLibrary assetLibrary) {
+		if (assetLibrary == null) {
 			return null;
 		}
 
 		Map<String, String> map = new TreeMap<>();
 
-		if (previewAssetLibrary.getDescriptiveName() == null) {
+		if (assetLibrary.getDescriptiveName() == null) {
 			map.put("descriptiveName", null);
 		}
 		else {
 			map.put(
 				"descriptiveName",
-				String.valueOf(previewAssetLibrary.getDescriptiveName()));
+				String.valueOf(assetLibrary.getDescriptiveName()));
 		}
 
-		if (previewAssetLibrary.getExistsInInstance() == null) {
+		if (assetLibrary.getExistsInInstance() == null) {
 			map.put("existsInInstance", null);
 		}
 		else {
 			map.put(
 				"existsInInstance",
-				String.valueOf(previewAssetLibrary.getExistsInInstance()));
+				String.valueOf(assetLibrary.getExistsInInstance()));
 		}
 
-		if (previewAssetLibrary.getExternalReferenceCode() == null) {
+		if (assetLibrary.getExternalReferenceCode() == null) {
 			map.put("externalReferenceCode", null);
 		}
 		else {
 			map.put(
 				"externalReferenceCode",
-				String.valueOf(previewAssetLibrary.getExternalReferenceCode()));
+				String.valueOf(assetLibrary.getExternalReferenceCode()));
 		}
 
-		if (previewAssetLibrary.getType() == null) {
+		if (assetLibrary.getType() == null) {
 			map.put("type", null);
 		}
 		else {
-			map.put("type", String.valueOf(previewAssetLibrary.getType()));
+			map.put("type", String.valueOf(assetLibrary.getType()));
 		}
 
 		return map;
 	}
 
-	public static class PreviewAssetLibraryJSONParser
-		extends BaseJSONParser<PreviewAssetLibrary> {
+	public static class AssetLibraryJSONParser
+		extends BaseJSONParser<AssetLibrary> {
 
 		@Override
-		protected PreviewAssetLibrary createDTO() {
-			return new PreviewAssetLibrary();
+		protected AssetLibrary createDTO() {
+			return new AssetLibrary();
 		}
 
 		@Override
-		protected PreviewAssetLibrary[] createDTOArray(int size) {
-			return new PreviewAssetLibrary[size];
+		protected AssetLibrary[] createDTOArray(int size) {
+			return new AssetLibrary[size];
 		}
 
 		@Override
@@ -190,18 +188,18 @@ public class PreviewAssetLibrarySerDes {
 
 		@Override
 		protected void setField(
-			PreviewAssetLibrary previewAssetLibrary, String jsonParserFieldName,
+			AssetLibrary assetLibrary, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
 			if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
 				if (jsonParserFieldValue != null) {
-					previewAssetLibrary.setDescriptiveName(
+					assetLibrary.setDescriptiveName(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "existsInInstance")) {
 				if (jsonParserFieldValue != null) {
-					previewAssetLibrary.setExistsInInstance(
+					assetLibrary.setExistsInInstance(
 						(Boolean)jsonParserFieldValue);
 				}
 			}
@@ -209,15 +207,14 @@ public class PreviewAssetLibrarySerDes {
 						jsonParserFieldName, "externalReferenceCode")) {
 
 				if (jsonParserFieldValue != null) {
-					previewAssetLibrary.setExternalReferenceCode(
+					assetLibrary.setExternalReferenceCode(
 						(String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "type")) {
 				if (jsonParserFieldValue != null) {
-					previewAssetLibrary.setType(
-						PreviewAssetLibrary.Type.create(
-							(String)jsonParserFieldValue));
+					assetLibrary.setType(
+						AssetLibrary.Type.create((String)jsonParserFieldValue));
 				}
 			}
 		}
@@ -307,4 +304,4 @@ public class PreviewAssetLibrarySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-414808551
+// LIFERAY-REST-BUILDER-HASH:502391889
