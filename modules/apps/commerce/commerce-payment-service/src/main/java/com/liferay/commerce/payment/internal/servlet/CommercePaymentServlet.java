@@ -402,7 +402,7 @@ public class CommercePaymentServlet extends HttpServlet {
 						httpServletRequest, commercePaymentEntry));
 		}
 		else {
-			if (!commercePaymentIntegration.validate(
+			if (!commercePaymentIntegration.isValid(
 					httpServletRequest, commercePaymentEntry)) {
 
 				if (_log.isWarnEnabled()) {

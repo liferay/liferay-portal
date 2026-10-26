@@ -62,7 +62,7 @@ public interface CommercePaymentIntegration {
 		return commercePaymentEntry;
 	}
 
-	public default boolean validate(
+	public default boolean isValid(
 			HttpServletRequest httpServletRequest,
 			CommercePaymentEntry commercePaymentEntry)
 		throws PortalException {

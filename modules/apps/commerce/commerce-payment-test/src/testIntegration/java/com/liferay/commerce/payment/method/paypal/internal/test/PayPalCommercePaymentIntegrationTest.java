@@ -79,7 +79,7 @@ public class PayPalCommercePaymentIntegrationTest {
 				user.getUserId(), commerceChannel.getGroupId(),
 				RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(), true, null,
-				"paypal-integration", 99, null);
+				"paypal-integration", RandomTestUtil.randomDouble(), null);
 
 		CommerceOrder commerceOrder = CommerceTestUtil.addB2CCommerceOrder(
 			user.getUserId(), commerceChannel.getGroupId(), commerceCurrency);
@@ -148,18 +148,18 @@ public class PayPalCommercePaymentIntegrationTest {
 			CommercePaymentEntryConstants.STATUS_CANCELLED,
 			commercePaymentEntry.getPaymentStatus());
 
-		CommercePaymentIntegration commercePaymentIntegration =
-			_commercePaymentIntegrationRegistry.getCommercePaymentIntegration(
-				"paypal-integration");
-
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
 		mockHttpServletRequest.addParameter(
 			"token", RandomTestUtil.randomString());
 
+		CommercePaymentIntegration commercePaymentIntegration =
+			_commercePaymentIntegrationRegistry.getCommercePaymentIntegration(
+				"paypal-integration");
+
 		Assert.assertTrue(
-			commercePaymentIntegration.validate(
+			commercePaymentIntegration.isValid(
 				mockHttpServletRequest, commercePaymentEntry));
 	}
 
