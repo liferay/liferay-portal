@@ -269,7 +269,7 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 	}
 
 	private String _getRedirect(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
+			long segmentsExperienceId, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		Layout draftLayout = _layoutLocalService.fetchDraftLayout(
@@ -283,9 +283,6 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 			draftLayout, themeDisplay);
 
 		String layoutURL = _portal.getLayoutURL(themeDisplay);
-
-		long segmentsExperienceId = _getSegmentsExperienceId(
-			httpServletRequest, themeDisplay);
 
 		if (segmentsExperienceId != -1) {
 			layoutURL = HttpComponentsUtil.setParameter(
@@ -313,8 +310,11 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 
 		String layoutURL = _portal.getLayoutURL(themeDisplay);
 
+		long selectedSegmentsExperienceId = _getSelectedSegmentsExperienceId(
+			httpServletRequest);
+
 		long segmentsExperienceId = _getSegmentsExperienceId(
-			httpServletRequest, themeDisplay);
+			selectedSegmentsExperienceId, themeDisplay);
 
 		if (segmentsExperienceId != -1) {
 			layoutURL = HttpComponentsUtil.setParameter(
@@ -326,7 +326,7 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 				httpServletRequest, SegmentsPortletKeys.SEGMENTS_EXPERIMENT,
 				PortletRequest.RESOURCE_PHASE)
 		).setRedirect(
-			_getRedirect(httpServletRequest, themeDisplay)
+			_getRedirect(segmentsExperienceId, themeDisplay)
 		).setBackURL(
 			layoutURL
 		).setParameter(
@@ -339,8 +339,7 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 		).setParameter(
 			"plid", themeDisplay.getPlid()
 		).setParameter(
-			"segmentsExperienceId",
-			_getSelectedSegmentsExperienceId(httpServletRequest)
+			"segmentsExperienceId", selectedSegmentsExperienceId
 		).buildPortletURL();
 
 		resourceURL.setResourceID("/segments_experiment/get_data");
@@ -349,12 +348,12 @@ public class SegmentsExperimentProductNavigationControlMenuEntry
 	}
 
 	private long _getSegmentsExperienceId(
-			HttpServletRequest httpServletRequest, ThemeDisplay themeDisplay)
+			long selectedSegmentsExperienceId, ThemeDisplay themeDisplay)
 		throws Exception {
 
 		SegmentsExperience segmentsExperience =
 			_segmentsExperienceLocalService.fetchSegmentsExperience(
-				_getSelectedSegmentsExperienceId(httpServletRequest));
+				selectedSegmentsExperienceId);
 
 		SegmentsExperiment segmentsExperiment =
 			_segmentsExperimentService.fetchSegmentsExperiment(
