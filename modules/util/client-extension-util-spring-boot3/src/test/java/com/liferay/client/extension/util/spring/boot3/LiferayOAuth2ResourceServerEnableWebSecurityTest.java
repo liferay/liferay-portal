@@ -224,6 +224,41 @@ public class LiferayOAuth2ResourceServerEnableWebSecurityTest {
 		_jwtDecoder.decode(JWTAssertionUtil.getJWTWithClientId("987654321"));
 	}
 
+	@Test
+	public void testGetJWTWithExternalReferenceCode() throws Exception {
+		_jwtDecoder.decode(
+			JWTAssertionUtil.getJWTWithExternalReferenceCode(
+				"foo-baker", "localhost"));
+	}
+
+	@Test
+	public void testGetJWTWithExternalReferenceCodeFromAnotherIssuer()
+		throws Exception {
+
+		expectedException.expect(JwtValidationException.class);
+		expectedException.expectMessage(
+			"An error occurred while attempting to decode the Jwt: The " +
+				"client_id does not match");
+
+		_jwtDecoder.decode(
+			JWTAssertionUtil.getJWTWithExternalReferenceCode(
+				"foo-baker", "another.example.com"));
+	}
+
+	@Test
+	public void testGetJWTWithExternalReferenceCodeNotInProperties()
+		throws Exception {
+
+		expectedException.expect(JwtValidationException.class);
+		expectedException.expectMessage(
+			"An error occurred while attempting to decode the Jwt: The " +
+				"client_id does not match");
+
+		_jwtDecoder.decode(
+			JWTAssertionUtil.getJWTWithExternalReferenceCode(
+				"foo-dog", "localhost"));
+	}
+
 	@Rule
 	public ExpectedException expectedException = ExpectedException.none();
 
