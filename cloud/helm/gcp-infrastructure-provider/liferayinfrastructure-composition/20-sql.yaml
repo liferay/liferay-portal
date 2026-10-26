@@ -1,12 +1,6 @@
 {{- $database := $xr.spec.database }}
 {{- $databaseInstanceNameFormat := printf "%s-db-instance-%%s" $xr.metadata.name }}
-{{- $availabilityType := $database.availabilityType | default "ZONAL" }}
-{{- $edition := $database.edition | default "ENTERPRISE" }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
-
-{{- if and (eq $edition "ENTERPRISE_PLUS") (not (hasPrefix "db-perf-optimized-" $instanceType)) }}
-{{- fail (printf "database.edition=ENTERPRISE_PLUS requires a db-perf-optimized-* instance type (got %q)" $instanceType) }}
-{{- end }}
 
 {{- range $i, $dataPlane := $dataPlanes }}
 {{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
@@ -24,8 +18,8 @@ metadata:
     name: {{ $databaseInstanceName }}
 spec:
     forProvider:
-        databaseVersion: {{ $database.databaseVersion | default "POSTGRES_18" }}
-        deletionProtection: {{ and ($database.deletionProtection | default ($xr.spec.deletionProtection | default false)) (eq $dataPlane $activeDataPlane) }}
+        databaseVersion: {{ printf "POSTGRES_%s" ($database.version | default "18") }}
+        deletionProtection: {{ and (not $forceDestroy) (eq $dataPlane $activeDataPlane) }}
         {{- if $cmkEnabled }}
         encryptionKmsKeyName: {{ $cmkKeyName }}
         {{- end }}
@@ -34,7 +28,7 @@ spec:
             key: password
             name: {{ $database.rootPasswordSecretName }}
         settings:
-            availabilityType: {{ $availabilityType }}
+            availabilityType: {{ $database.highAvailability | ternary "REGIONAL" "ZONAL" }}
             backupConfiguration:
                 backupRetentionSettings:
                     retainedBackups: 7
@@ -44,11 +38,11 @@ spec:
             databaseFlags:
                 -   name: cloudsql.iam_authentication
                     value: "on"
-            diskSize: {{ $database.storageGB | default 10 }}
+            diskSize: {{ $database.storageGB }}
             diskType: PD_SSD
-            edition: {{ $edition }}
+            edition: {{ hasPrefix "db-perf-optimized-" $instanceType | ternary "ENTERPRISE_PLUS" "ENTERPRISE" }}
             insightsConfig:
-                queryInsightsEnabled: {{ $database.queryInsightsEnabled | default true }}
+                queryInsightsEnabled: true
             ipConfiguration:
                 ipv4Enabled: false
                 privateNetwork: projects/{{ $env.projectId }}/global/networks/{{ $env.vpcName }}
