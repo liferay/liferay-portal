@@ -37,6 +37,7 @@ import com.liferay.portal.kernel.util.Validator;
 import java.io.Serializable;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Michael C. Han
@@ -85,7 +86,8 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 						_backgroundTaskLocalService.fetchBackgroundTask(
 							backgroundTaskId)))) {
 
-				_executeBackgroundTasks(message);
+				_backgroundTaskLocalService.resumeBackgroundTask(
+					backgroundTaskId);
 			}
 		}
 		else if (status == BackgroundTaskConstants.STATUS_SUCCESSFUL) {
@@ -144,22 +146,47 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 					taskExecutorClassName);
 		}
 
-		BackgroundTask backgroundTask =
-			_backgroundTaskLocalService.fetchFirstBackgroundTask(
-				taskExecutorClassName, BackgroundTaskConstants.STATUS_QUEUED);
+		String lockKey = _getLockKey(message);
 
-		if (backgroundTask == null) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"No additional queued background tasks for " +
-						taskExecutorClassName);
+		for (BackgroundTask backgroundTask :
+				_backgroundTaskLocalService.getBackgroundTasks(
+					taskExecutorClassName,
+					BackgroundTaskConstants.STATUS_QUEUED)) {
+
+			if ((lockKey != null) &&
+				!Objects.equals(
+					lockKey,
+					_backgroundTaskLockHelper.getLockKey(
+						new BackgroundTaskImpl(backgroundTask)))) {
+
+				continue;
 			}
+
+			_backgroundTaskLocalService.resumeBackgroundTask(
+				backgroundTask.getBackgroundTaskId());
 
 			return;
 		}
 
-		_backgroundTaskLocalService.resumeBackgroundTask(
-			backgroundTask.getBackgroundTaskId());
+		if (_log.isDebugEnabled()) {
+			_log.debug(
+				"No additional queued background tasks for " +
+					taskExecutorClassName);
+		}
+	}
+
+	private String _getLockKey(Message message) {
+		BackgroundTask backgroundTask =
+			_backgroundTaskLocalService.fetchBackgroundTask(
+				message.getLong(
+					BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID));
+
+		if (backgroundTask == null) {
+			return null;
+		}
+
+		return _backgroundTaskLockHelper.getLockKey(
+			new BackgroundTaskImpl(backgroundTask));
 	}
 
 	private void _sendUserNotificationEvents(Message message) throws Exception {
