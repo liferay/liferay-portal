@@ -4484,6 +4484,12 @@
 		},
 		{
 			"properties": {
+				"graphQLBatchOperationLimit": {
+					"default": 1,
+					"description": "Set the maximum number of operations that can be sent in a single batched GraphQL request. Enter a negative number or zero for an unlimited number of operations.",
+					"title": "GraphQL Batch Operation Limit",
+					"type": "number"
+				},
 				"pageSizeLimit": {
 					"default": 500,
 					"description": "Set the page size limit of elements that can be recovered through REST. Enter a negative number or zero for unlimited page size.",
