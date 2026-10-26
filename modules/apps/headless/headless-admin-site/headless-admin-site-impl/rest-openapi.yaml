@@ -3986,6 +3986,10 @@ components:
                     description:
                         The style book's external reference code.
                     type: string
+                frontendTokenDefinition:
+                    description:
+                        The style book's custom frontend token definition.
+                    type: string
                 frontendTokensValues:
                     description:
                         The style book's tokens values.
