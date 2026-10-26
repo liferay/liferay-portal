@@ -72,7 +72,7 @@ spec:
         databaseVersion: {{ printf "POSTGRES_%s" ($database.version | default "18") }}
         deletionProtection: {{ and (not $forceDestroy) (eq $dataPlane $activeDataPlane) }}
         {{- if $cmkEnabled }}
-        encryptionKmsKeyName: {{ $cmkKeyName }}
+        encryptionKeyName: {{ $cmkKeyName }}
         {{- end }}
         region: {{ $region }}
         rootPasswordSecretRef:
@@ -101,8 +101,7 @@ spec:
             retainBackupsOnDelete: true
             tier: {{ $instanceType }}
             userLabels:
-                {{- $backupTargetLabels | toYaml | nindent 16 }}
-                active: {{ printf "%t" (eq $dataPlane $activeDataPlane) | quote }}
+                {{- merge (dict "active" (eq $dataPlane $activeDataPlane | toString)) $backupTargetLabels | toYaml | nindent 16 }}
     managementPolicies: {{ $xr.spec.backup.enabled | ternary ((list "*") | toJson) $managementPolicies }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
