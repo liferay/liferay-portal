@@ -166,9 +166,10 @@ public class PortalReleasePortalTopLevelBuildTest
 		_testGetPortalReleaseStandaloneFailure(
 			JenkinsResultsParserUtil.combine(
 				"Invalid standalone bundle URL ", regularTomcatURLString,
-				". The file name must match liferay-<product>-tomcat-",
-				"<version>-<build profile>-<timestamp>.(7z|tar.gz|zip), ",
-				"where the build profile ends in -standalone."),
+				". The file name must match ",
+				"\"liferay-<product>-tomcat-<version>-<build ",
+				"profile>-<timestamp>.(7z|tar.gz|zip)\", where the ",
+				"build profile ends in \"-standalone\"."),
 			regularTomcatURLString);
 	}
 

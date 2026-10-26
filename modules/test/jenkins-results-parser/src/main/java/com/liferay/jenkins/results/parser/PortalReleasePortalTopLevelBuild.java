@@ -294,10 +294,10 @@ public class PortalReleasePortalTopLevelBuild
 				throw new RuntimeException(
 					JenkinsResultsParserUtil.combine(
 						"Invalid standalone bundle URL ", tomcatURLString,
-						". The file name must match liferay-<product>-tomcat-",
-						"<version>-<build profile>-<timestamp>.",
-						"(7z|tar.gz|zip), where the build profile ends in ",
-						"-standalone."));
+						". The file name must match ",
+						"\"liferay-<product>-tomcat-<version>-<build ",
+						"profile>-<timestamp>.(7z|tar.gz|zip)\", where the ",
+						"build profile ends in \"-standalone\"."));
 			}
 
 			PortalRelease portalRelease = PortalReleaseFactory.newPortalRelease(
