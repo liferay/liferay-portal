@@ -334,11 +334,11 @@ public class FriendlyURLServlet extends HttpServlet {
 								}
 
 								return new Redirect(
-									StringBundler.concat(
-										Portal.PATH_MAIN,
-										"/portal/layout?p_l_id=",
-										layout.getPlid(), "&p_v_l_s_g_id=",
-										groupId));
+									HttpComponentsUtil.addParameter(
+										HttpComponentsUtil.addParameter(
+											Portal.PATH_MAIN + "/portal/layout",
+											"p_l_id", layout.getPlid()),
+										"p_v_l_s_g_id", groupId));
 							}
 
 							return new Redirect(
