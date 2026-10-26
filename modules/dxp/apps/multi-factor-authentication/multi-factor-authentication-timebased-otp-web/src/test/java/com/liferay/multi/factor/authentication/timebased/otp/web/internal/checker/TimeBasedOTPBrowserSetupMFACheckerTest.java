@@ -83,7 +83,9 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 
 		portalUtil.setPortal(_portal);
 
-		_serviceRegistration = _bundleContext.registerService(
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		_serviceRegistration = bundleContext.registerService(
 			AuditRouter.class, _auditRouter, null);
 
 		ReflectionTestUtil.setFieldValue(
@@ -326,9 +328,6 @@ public class TimeBasedOTPBrowserSetupMFACheckerTest {
 	private static final long _REAL_USER_ID = RandomTestUtil.randomLong();
 
 	private static final String _REAL_USER_NAME = RandomTestUtil.randomString();
-
-	private static final BundleContext _bundleContext =
-		SystemBundleUtil.getBundleContext();
 
 	private final AuditRouter _auditRouter = Mockito.mock(AuditRouter.class);
 	private final MFATimeBasedOTPEntryLocalService
