@@ -736,18 +736,6 @@ public class StyleBookEntryLocalServiceWrapper
 			styleBookEntryKey, previewFileEntryId, themeId, serviceContext);
 	}
 
-	@Override
-	public StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokenDefinition,
-			String frontendTokensValues, String name,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _styleBookEntryLocalService.updateStyleBookEntry(
-			styleBookEntryId, frontendTokenDefinition, frontendTokensValues,
-			name, serviceContext);
-	}
-
 	/**
 	 * Updates the style book entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -807,4 +795,4 @@ public class StyleBookEntryLocalServiceWrapper
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1005015963
+// LIFERAY-SERVICE-BUILDER-HASH:-968706649

@@ -254,17 +254,6 @@ public class StyleBookEntryServiceUtil {
 			themeId, serviceContext);
 	}
 
-	public static StyleBookEntry updateStyleBookEntry(
-			long styleBookEntryId, String frontendTokenDefinition,
-			String frontendTokensValues, String name,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().updateStyleBookEntry(
-			styleBookEntryId, frontendTokenDefinition, frontendTokensValues,
-			name, serviceContext);
-	}
-
 	public static StyleBookEntryService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -274,4 +263,4 @@ public class StyleBookEntryServiceUtil {
 			StyleBookEntryServiceUtil.class, StyleBookEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:801241432
+// LIFERAY-SERVICE-BUILDER-HASH:2033060010
