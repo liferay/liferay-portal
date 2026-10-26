@@ -28,7 +28,7 @@ import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 
 import org.junit.Assert;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -44,8 +44,8 @@ public class FrontendResourceFilterTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
-	@BeforeClass
-	public static void setUpClass() {
+	@Before
+	public void setUp() {
 		ToolDependencies.wireCaches();
 	}
 
@@ -135,7 +135,7 @@ public class FrontendResourceFilterTest {
 		Assert.assertArrayEquals(
 			bytes, mockHttpServletResponse.getContentAsByteArray());
 
-		Assert.assertEquals(1, _inputStreamCount.get());
+		Assert.assertEquals(1, _inputStreamsCount.get());
 	}
 
 	@Test
@@ -181,13 +181,13 @@ public class FrontendResourceFilterTest {
 			_CONTENT,
 			_getGZipContent(frontendResource, maximumFrontendResourceFilter));
 
-		Assert.assertEquals(2, _inputStreamCount.get());
+		Assert.assertEquals(2, _inputStreamsCount.get());
 
 		Assert.assertEquals(
 			_CONTENT,
 			_getGZipContent(frontendResource, bestSpeedFrontendResourceFilter));
 
-		Assert.assertEquals(2, _inputStreamCount.get());
+		Assert.assertEquals(2, _inputStreamsCount.get());
 	}
 
 	@Test
@@ -263,7 +263,7 @@ public class FrontendResourceFilterTest {
 				"gzip", mockHttpServletResponse.getHeader("Content-Encoding"));
 		}
 
-		Assert.assertEquals(2, _inputStreamCount.get());
+		Assert.assertEquals(2, _inputStreamsCount.get());
 	}
 
 	@Test
@@ -441,6 +441,9 @@ public class FrontendResourceFilterTest {
 		FrontendResourceFilter frontendResourceFilter =
 			new FrontendResourceFilter();
 
+		ConfigurationProvider configurationProvider = Mockito.mock(
+			ConfigurationProvider.class);
+
 		FrontendCachingConfiguration frontendCachingConfiguration =
 			Mockito.mock(FrontendCachingConfiguration.class);
 
@@ -449,9 +452,6 @@ public class FrontendResourceFilterTest {
 		).thenReturn(
 			compressionStrategy
 		);
-
-		ConfigurationProvider configurationProvider = Mockito.mock(
-			ConfigurationProvider.class);
 
 		Mockito.when(
 			configurationProvider.getCompanyConfiguration(
@@ -540,7 +540,7 @@ public class FrontendResourceFilterTest {
 
 			@Override
 			public InputStream getInputStream() {
-				_inputStreamCount.incrementAndGet();
+				_inputStreamsCount.incrementAndGet();
 
 				return new ByteArrayInputStream(
 					content.getBytes(StandardCharsets.UTF_8));
@@ -573,6 +573,6 @@ public class FrontendResourceFilterTest {
 
 	private static final String _CONTENT_TYPE = "application/javascript";
 
-	private final AtomicInteger _inputStreamCount = new AtomicInteger();
+	private final AtomicInteger _inputStreamsCount = new AtomicInteger();
 
 }

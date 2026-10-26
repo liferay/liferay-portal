@@ -126,11 +126,14 @@ public class HashedFilesRegistryImplTest {
 				new Class<?>[] {Map.class}, hashedFileURIs));
 	}
 
-	private CachingStrategy _getCachingStrategy(String cachingStrategy)
+	private CachingStrategy _getCachingStrategy(String cachingStrategyString)
 		throws Exception {
 
 		HashedFilesRegistryImpl hashedFilesRegistryImpl =
 			new HashedFilesRegistryImpl();
+
+		ConfigurationProvider configurationProvider = Mockito.mock(
+			ConfigurationProvider.class);
 
 		FrontendCachingConfiguration frontendCachingConfiguration =
 			Mockito.mock(FrontendCachingConfiguration.class);
@@ -138,11 +141,8 @@ public class HashedFilesRegistryImplTest {
 		Mockito.when(
 			frontendCachingConfiguration.cachingStrategy()
 		).thenReturn(
-			cachingStrategy
+			cachingStrategyString
 		);
-
-		ConfigurationProvider configurationProvider = Mockito.mock(
-			ConfigurationProvider.class);
 
 		Mockito.when(
 			configurationProvider.getCompanyConfiguration(

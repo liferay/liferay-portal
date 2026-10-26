@@ -98,7 +98,10 @@ public class FrontendResourceFilter extends BasePortalFilter {
 		_gZipBytesPortalCache = PortalCacheHelperUtil.getPortalCache(
 			PortalCacheManagerNames.SINGLE_VM, _GZIP_BYTES_PORTAL_CACHE_NAME);
 
-		if (GetterUtil.getBoolean(PropsUtil.get(_GZIP_FILTER))) {
+		if (GetterUtil.getBoolean(
+				PropsUtil.get(
+					"com.liferay.portal.servlet.filters.gzip.GZipFilter"))) {
+
 			_systemCompressionLevel = PropsValues.GZIP_COMPRESSION_LEVEL;
 		}
 		else {
@@ -336,9 +339,6 @@ public class FrontendResourceFilter extends BasePortalFilter {
 
 	private static final String _GZIP_BYTES_PORTAL_CACHE_NAME =
 		FrontendResourceFilter.class.getName() + "._gZipBytesPortalCache";
-
-	private static final String _GZIP_FILTER =
-		"com.liferay.portal.servlet.filters.gzip.GZipFilter";
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
