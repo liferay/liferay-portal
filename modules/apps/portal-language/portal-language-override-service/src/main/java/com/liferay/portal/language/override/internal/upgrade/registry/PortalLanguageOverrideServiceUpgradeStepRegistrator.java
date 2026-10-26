@@ -5,6 +5,7 @@
 
 package com.liferay.portal.language.override.internal.upgrade.registry;
 
+import com.liferay.portal.kernel.upgrade.DummyUpgradeStep;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.language.override.internal.upgrade.v1_1_0.PLOEntryExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.language.override.internal.upgrade.v1_2_0.PLOEntryLanguageIdUpgradeProcess;
@@ -21,8 +22,10 @@ public class PortalLanguageOverrideServiceUpgradeStepRegistrator
 
 	@Override
 	public void register(Registry registry) {
+		registry.register("1.0.0", "1.0.1", new DummyUpgradeStep());
+
 		registry.register(
-			"1.0.0", "1.1.0",
+			"1.0.1", "1.1.0",
 			(UpgradeProcess)new PLOEntryExternalReferenceCodeUpgradeProcess());
 
 		registry.register(
