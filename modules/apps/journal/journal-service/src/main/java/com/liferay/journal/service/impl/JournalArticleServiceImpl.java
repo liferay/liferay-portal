@@ -2372,8 +2372,8 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		try {
 			PermissionChecker permissionChecker = getPermissionChecker();
 
-			if (permissionChecker.isContentReviewer(
-					permissionChecker.getCompanyId(), groupId)) {
+			if (permissionChecker.isCompanyAdmin() ||
+				permissionChecker.isGroupAdmin(groupId)) {
 
 				return 0;
 			}
