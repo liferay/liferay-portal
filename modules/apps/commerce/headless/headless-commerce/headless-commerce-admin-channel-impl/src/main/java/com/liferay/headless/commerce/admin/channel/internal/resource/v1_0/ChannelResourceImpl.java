@@ -172,7 +172,8 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				channelId,
 				_getAccountEntryId(
 					channel, commerceChannel.getAccountEntryId()),
-				commerceChannel.getSiteGroupId(),
+				GetterUtil.getLong(
+					channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
 				GetterUtil.getString(
 					channel.getName(), commerceChannel.getName()),
 				GetterUtil.getString(
@@ -220,7 +221,8 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				commerceChannel.getCommerceChannelId(),
 				_getAccountEntryId(
 					channel, commerceChannel.getAccountEntryId()),
-				commerceChannel.getSiteGroupId(),
+				GetterUtil.getLong(
+					channel.getSiteGroupId(), commerceChannel.getSiteGroupId()),
 				GetterUtil.getString(
 					channel.getName(), commerceChannel.getName()),
 				GetterUtil.getString(
@@ -244,7 +246,7 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				channel.getExternalReferenceCode(),
 				_getAccountEntryId(
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
-				GetterUtil.get(channel.getSiteGroupId(), 0), channel.getName(),
+				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
 				channel.getType(), null, commerceCurrency.getCode(),
 				_serviceContextHelper.getServiceContext(contextUser)));
 	}
@@ -271,8 +273,9 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 				channelId,
 				_getAccountEntryId(
 					channel, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT),
-				channel.getSiteGroupId(), channel.getName(), channel.getType(),
-				null, commerceCurrency.getCode(), null, false));
+				GetterUtil.getLong(channel.getSiteGroupId()), channel.getName(),
+				channel.getType(), null, commerceCurrency.getCode(), null,
+				false));
 	}
 
 	@Override
