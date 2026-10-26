@@ -5,6 +5,7 @@
 
 package com.liferay.portal.tika.internal.configuration.helper;
 
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -13,6 +14,8 @@ import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.tika.internal.configuration.TikaConfiguration;
 
 import java.io.InputStream;
+
+import java.net.URL;
 
 import java.util.Map;
 
@@ -32,7 +35,7 @@ import org.osgi.service.component.annotations.Modified;
 public class TikaConfigurationHelper {
 
 	public TikaConfig getTikaConfig() {
-		return _tikaConfig;
+		return _tikaConfigDCLSingleton.getSingleton(this::_createTikaConfig);
 	}
 
 	public boolean useForkProcess(String mimeType) {
@@ -58,44 +61,57 @@ public class TikaConfigurationHelper {
 			ConfigurableUtil.createConfigurable(
 				TikaConfiguration.class, properties);
 
-		String tikaConfigXml = tikaConfiguration.tikaConfigXml();
+		_tikaConfigURL = _getTikaConfigURL(tikaConfiguration.tikaConfigXml());
+		_tikaConfiguration = tikaConfiguration;
 
-		Class<?> clazz = TikaConfigurationHelper.class;
+		_tikaConfigDCLSingleton.destroy(null);
+	}
 
-		InputStream inputStream = clazz.getResourceAsStream(tikaConfigXml);
-
-		if (inputStream == null) {
-			ClassLoader classLoader = clazz.getClassLoader();
-
-			inputStream = classLoader.getResourceAsStream(tikaConfigXml);
-
-			if (inputStream == null) {
-				classLoader = PortalClassLoaderUtil.getClassLoader();
-
-				inputStream = classLoader.getResourceAsStream(tikaConfigXml);
-
-				if (inputStream == null) {
-					throw new IllegalArgumentException(
-						"Unable to read tika configuration " + tikaConfigXml);
-				}
-			}
-		}
-
-		try {
-			_tikaConfig = new TikaConfig(inputStream);
+	private TikaConfig _createTikaConfig() {
+		try (InputStream inputStream = _tikaConfigURL.openStream()) {
+			return new TikaConfig(inputStream);
 		}
 		catch (Exception exception) {
 			throw new IllegalStateException(
 				"Unable to create tika configuration", exception);
 		}
+	}
 
-		_tikaConfiguration = tikaConfiguration;
+	private URL _getTikaConfigURL(String tikaConfigXml) {
+		Class<?> clazz = TikaConfigurationHelper.class;
+
+		URL url = clazz.getResource(tikaConfigXml);
+
+		if (url != null) {
+			return url;
+		}
+
+		ClassLoader classLoader = clazz.getClassLoader();
+
+		url = classLoader.getResource(tikaConfigXml);
+
+		if (url != null) {
+			return url;
+		}
+
+		classLoader = PortalClassLoaderUtil.getClassLoader();
+
+		url = classLoader.getResource(tikaConfigXml);
+
+		if (url != null) {
+			return url;
+		}
+
+		throw new IllegalArgumentException(
+			"Unable to read tika configuration " + tikaConfigXml);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		TikaConfigurationHelper.class);
 
-	private volatile TikaConfig _tikaConfig;
+	private final DCLSingleton<TikaConfig> _tikaConfigDCLSingleton =
+		new DCLSingleton<>();
+	private volatile URL _tikaConfigURL;
 	private volatile TikaConfiguration _tikaConfiguration;
 
 }
