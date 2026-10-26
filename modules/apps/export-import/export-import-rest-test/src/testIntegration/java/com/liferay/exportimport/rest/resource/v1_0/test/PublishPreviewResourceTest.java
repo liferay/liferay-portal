@@ -6,7 +6,7 @@
 package com.liferay.exportimport.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.PublishProcessRequest;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -75,10 +75,10 @@ public class PublishPreviewResourceTest
 
 		Assert.assertNotNull(publishPreview.getAdditionCount());
 
-		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections =
-			publishPreview.getPreviewPortletDataHandlerSections();
+		PortletDataHandler[] portletDataHandlers =
+			publishPreview.getPortletDataHandlers();
 
-		Assert.assertTrue(previewPortletDataHandlerSections.length > 0);
+		Assert.assertTrue(portletDataHandlers.length > 0);
 
 		PublishPreview lastPublishDatePublishPreview =
 			publishPreviewResource.getSitePublishPreview(

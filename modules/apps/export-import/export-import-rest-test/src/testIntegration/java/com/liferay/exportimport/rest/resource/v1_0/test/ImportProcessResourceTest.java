@@ -17,14 +17,17 @@ import com.liferay.exportimport.kernel.service.ExportImportLocalServiceUtil;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcessRequest;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerTreeSelection;
 import com.liferay.exportimport.rest.client.dto.v1_0.ProcessProgress;
-import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.pagination.Page;
 import com.liferay.exportimport.rest.client.pagination.Pagination;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ImportProcessResource;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectDefinitionSettingConstants;
@@ -683,7 +686,32 @@ public class ImportProcessResourceTest
 		postImportPreviewUnsafeFunction.apply(file);
 
 		ImportProcess importProcess = postImportProcessUnsafeFunction.apply(
-			new ImportProcessRequest());
+			new ImportProcessRequest() {
+				{
+					portletDataHandlers = new PortletDataHandler[] {
+						new PortletDataHandler() {
+							{
+								name =
+									"PORTLET_DATA_" +
+										LayoutAdminPortletKeys.
+											LAYOUT_SET_LAYOUTS;
+								portletDataHandlerControls =
+									new PortletDataHandlerControl[] {
+										new PortletDataHandlerTreeSelection() {
+											{
+												name = "_layout_set_pages";
+												selected = true;
+												type =
+													PortletDataHandlerControl.
+														Type.TREE_SELECTION;
+											}
+										}
+									};
+							}
+						}
+					};
+				}
+			});
 
 		assertValid(importProcess);
 
@@ -809,9 +837,9 @@ public class ImportProcessResourceTest
 
 		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
 
-		importProcessRequest.setRequestPortletDataHandlers(
-			new RequestPortletDataHandler[] {
-				new RequestPortletDataHandler() {
+		importProcessRequest.setPortletDataHandlers(
+			new PortletDataHandler[] {
+				new PortletDataHandler() {
 					{
 						name =
 							"PORTLET_DATA_" + objectDefinition.getPortletId();
@@ -957,9 +985,9 @@ public class ImportProcessResourceTest
 
 		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
 
-		importProcessRequest.setRequestPortletDataHandlers(
-			new RequestPortletDataHandler[] {
-				new RequestPortletDataHandler() {
+		importProcessRequest.setPortletDataHandlers(
+			new PortletDataHandler[] {
+				new PortletDataHandler() {
 					{
 						name = "PORTLET_DATA_" + portletId;
 					}

@@ -9,12 +9,12 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.constants.ExportImportConstants;
 import com.liferay.exportimport.rest.client.dto.v1_0.Choice;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandler;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerBoolean;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerChoice;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerControl;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandler;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerBoolean;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerChoice;
+import com.liferay.exportimport.rest.client.dto.v1_0.PortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportPreviewResource;
+import com.liferay.layout.admin.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
@@ -328,35 +328,32 @@ public class ExportPreviewResourceTest
 	private long _getAdditionCount(
 		ExportPreview exportPreview, String portletId) {
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			_getPreviewPortletDataHandler(
-				exportPreview, "PORTLET_DATA_" + portletId);
+		PortletDataHandler portletDataHandler = _getPortletDataHandler(
+			exportPreview, "PORTLET_DATA_" + portletId);
 
-		if (previewPortletDataHandler == null) {
+		if (portletDataHandler == null) {
 			return 0L;
 		}
 
-		return previewPortletDataHandler.getAdditionCount();
+		return portletDataHandler.getAdditionCount();
 	}
 
 	private Choice _getChoice(
-		PreviewPortletDataHandler previewPortletDataHandler, String name) {
+		PortletDataHandler portletDataHandler, String name) {
 
-		for (PreviewPortletDataHandlerControl previewPortletDataHandlerControl :
-				previewPortletDataHandler.
-					getPreviewPortletDataHandlerControls()) {
+		for (PortletDataHandlerControl portletDataHandlerControl :
+				portletDataHandler.getPortletDataHandlerControls()) {
 
-			if (!(previewPortletDataHandlerControl instanceof
-					PreviewPortletDataHandlerChoice)) {
+			if (!(portletDataHandlerControl instanceof
+					PortletDataHandlerChoice)) {
 
 				continue;
 			}
 
-			PreviewPortletDataHandlerChoice previewPortletDataHandlerChoice =
-				(PreviewPortletDataHandlerChoice)
-					previewPortletDataHandlerControl;
+			PortletDataHandlerChoice portletDataHandlerChoice =
+				(PortletDataHandlerChoice)portletDataHandlerControl;
 
-			for (Choice choice : previewPortletDataHandlerChoice.getChoices()) {
+			for (Choice choice : portletDataHandlerChoice.getChoices()) {
 				if (name.equals(choice.getName())) {
 					return choice;
 				}
@@ -366,55 +363,41 @@ public class ExportPreviewResourceTest
 		return null;
 	}
 
-	private PreviewPortletDataHandler _getPreviewPortletDataHandler(
+	private PortletDataHandler _getPortletDataHandler(
 		ExportPreview exportPreview, String name) {
 
-		for (PreviewPortletDataHandlerSection previewPortletDataHandlerSection :
-				exportPreview.getPreviewPortletDataHandlerSections()) {
+		for (PortletDataHandler portletDataHandler :
+				exportPreview.getPortletDataHandlers()) {
 
-			for (PreviewPortletDataHandler previewPortletDataHandler :
-					previewPortletDataHandlerSection.
-						getPreviewPortletDataHandlers()) {
-
-				if (name.equals(previewPortletDataHandler.getName())) {
-					return previewPortletDataHandler;
-				}
+			if (name.equals(portletDataHandler.getName())) {
+				return portletDataHandler;
 			}
 		}
 
 		return null;
 	}
 
-	private PreviewPortletDataHandlerBoolean
-		_getPreviewPortletDataHandlerBoolean(
-			PreviewPortletDataHandler previewPortletDataHandler, String name) {
+	private PortletDataHandlerBoolean _getPortletDataHandlerBoolean(
+		PortletDataHandler portletDataHandler, String name) {
 
-		for (PreviewPortletDataHandlerControl previewPortletDataHandlerControl :
-				previewPortletDataHandler.
-					getPreviewPortletDataHandlerControls()) {
+		for (PortletDataHandlerControl portletDataHandlerControl :
+				portletDataHandler.getPortletDataHandlerControls()) {
 
-			if (name.equals(previewPortletDataHandlerControl.getName())) {
-				return (PreviewPortletDataHandlerBoolean)
-					previewPortletDataHandlerControl;
+			if (name.equals(portletDataHandlerControl.getName())) {
+				return (PortletDataHandlerBoolean)portletDataHandlerControl;
 			}
 		}
 
 		return null;
 	}
 
-	private PreviewPortletDataHandlerSection
-		_getPreviewPortletDataHandlerSection(
-			ExportPreview exportPreview, String name) {
+	private PortletDataHandler[] _getPortletDataHandlers(
+		ExportPreview exportPreview, String sectionKey) {
 
-		for (PreviewPortletDataHandlerSection previewPortletDataHandlerSection :
-				exportPreview.getPreviewPortletDataHandlerSections()) {
-
-			if (name.equals(previewPortletDataHandlerSection.getName())) {
-				return previewPortletDataHandlerSection;
-			}
-		}
-
-		return null;
+		return ArrayUtil.filter(
+			exportPreview.getPortletDataHandlers(),
+			portletDataHandler -> sectionKey.equals(
+				portletDataHandler.getSectionKey()));
 	}
 
 	private ObjectDefinition _publishObjectDefinitionWithEntries(
@@ -516,15 +499,14 @@ public class ExportPreviewResourceTest
 
 		_objectEntryLocalService.deleteObjectEntry(objectEntries.get(0));
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			_getPreviewPortletDataHandler(
-				unsafeSupplier.get(),
-				"PORTLET_DATA_" + objectDefinition.getPortletId());
+		PortletDataHandler portletDataHandler = _getPortletDataHandler(
+			unsafeSupplier.get(),
+			"PORTLET_DATA_" + objectDefinition.getPortletId());
 
 		Assert.assertEquals(
-			Long.valueOf(1), previewPortletDataHandler.getAdditionCount());
+			Long.valueOf(1), portletDataHandler.getAdditionCount());
 		Assert.assertEquals(
-			Long.valueOf(1), previewPortletDataHandler.getDeletionCount());
+			Long.valueOf(1), portletDataHandler.getDeletionCount());
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
@@ -534,7 +516,7 @@ public class ExportPreviewResourceTest
 
 		for (ObjectDefinition objectDefinition : objectDefinitions) {
 			Assert.assertNull(
-				_getPreviewPortletDataHandler(
+				_getPortletDataHandler(
 					exportPreview,
 					"PORTLET_DATA_" + objectDefinition.getPortletId()));
 		}
@@ -545,15 +527,6 @@ public class ExportPreviewResourceTest
 				unsafeBiFunction)
 		throws Exception {
 
-		Layout layout = LayoutTestUtil.addTypeContentLayout(
-			testGroup, false, false);
-
-		long time = System.currentTimeMillis();
-
-		layout.setModifiedDate(new Date(time - (2 * Time.DAY)));
-
-		_layoutLocalService.updateLayout(layout);
-
 		LayoutTestUtil.addTypeContentLayout(testGroup, false, false);
 		LayoutTestUtil.addTypeContentLayout(testGroup, true, false);
 		LayoutTestUtil.addTypeContentLayout(testGroup, true, false);
@@ -562,56 +535,17 @@ public class ExportPreviewResourceTest
 			LayoutTestUtil.addTypeContentLayout(testGroup, false, false),
 			ServiceContextTestUtil.getServiceContext());
 
-		String portletId =
-			"com_liferay_layout_admin_web_portlet_LayoutSetLayoutsPortlet";
+		PortletDataHandler portletDataHandler = _getPortletDataHandler(
+			unsafeBiFunction.apply(null, null),
+			"PORTLET_DATA_com_liferay_layout_admin_web_portlet_" +
+				"LayoutSetLayoutsPortlet");
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			_getPreviewPortletDataHandler(
-				unsafeBiFunction.apply(null, null),
-				"PORTLET_DATA_" + portletId);
-
-		Assert.assertNotNull(previewPortletDataHandler);
-
-		Choice choice = _getChoice(
-			previewPortletDataHandler, "publicLayoutPages");
-
-		Assert.assertEquals(2L, GetterUtil.getLong(choice.getAdditionCount()));
-		Assert.assertEquals(1L, GetterUtil.getLong(choice.getDeletionCount()));
-
-		choice = _getChoice(previewPortletDataHandler, "privateLayoutPages");
-
-		Assert.assertEquals(2L, GetterUtil.getLong(choice.getAdditionCount()));
-		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
-
-		previewPortletDataHandler = _getPreviewPortletDataHandler(
-			unsafeBiFunction.apply(
-				new Date(time - (3 * Time.DAY)), new Date(time - Time.DAY)),
-			"PORTLET_DATA_" + portletId);
-
-		Assert.assertNotNull(previewPortletDataHandler);
-
-		choice = _getChoice(previewPortletDataHandler, "publicLayoutPages");
-
-		Assert.assertEquals(1L, GetterUtil.getLong(choice.getAdditionCount()));
-		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
-
-		choice = _getChoice(previewPortletDataHandler, "privateLayoutPages");
-
-		Assert.assertEquals(0L, GetterUtil.getLong(choice.getAdditionCount()));
-		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
-
-		previewPortletDataHandler = _getPreviewPortletDataHandler(
-			unsafeBiFunction.apply(new Date(time - Time.DAY), null),
-			"PORTLET_DATA_" + portletId);
-
-		Assert.assertNotNull(previewPortletDataHandler);
-
-		choice = _getChoice(previewPortletDataHandler, "publicLayoutPages");
+		Choice choice = _getChoice(portletDataHandler, "public-pages");
 
 		Assert.assertEquals(1L, GetterUtil.getLong(choice.getAdditionCount()));
 		Assert.assertEquals(1L, GetterUtil.getLong(choice.getDeletionCount()));
 
-		choice = _getChoice(previewPortletDataHandler, "privateLayoutPages");
+		choice = _getChoice(portletDataHandler, "private-pages");
 
 		Assert.assertEquals(2L, GetterUtil.getLong(choice.getAdditionCount()));
 		Assert.assertEquals(0L, GetterUtil.getLong(choice.getDeletionCount()));
@@ -620,36 +554,27 @@ public class ExportPreviewResourceTest
 	private void _testGetPortletExportPreview(
 		ExportPreview exportPreview, String portletId) {
 
-		PreviewPortletDataHandlerSection previewPortletDataHandlerSection =
-			_getPreviewPortletDataHandlerSection(
-				exportPreview, ExportImportConstants.SECTION_KEY_CONTENT);
-
-		PreviewPortletDataHandler[] previewPortletDataHandlers =
-			previewPortletDataHandlerSection.getPreviewPortletDataHandlers();
+		PortletDataHandler[] portletDataHandlers = _getPortletDataHandlers(
+			exportPreview, ExportImportConstants.SECTION_KEY_CONTENT);
 
 		Assert.assertEquals(
-			Arrays.toString(previewPortletDataHandlers), 1,
-			previewPortletDataHandlers.length);
+			Arrays.toString(portletDataHandlers), 1,
+			portletDataHandlers.length);
 		Assert.assertEquals(
-			"PORTLET_DATA_" + portletId,
-			previewPortletDataHandlers[0].getName());
+			"PORTLET_DATA_" + portletId, portletDataHandlers[0].getName());
 
-		previewPortletDataHandlerSection = _getPreviewPortletDataHandlerSection(
+		portletDataHandlers = _getPortletDataHandlers(
 			exportPreview, ExportImportConstants.SECTION_KEY_CONFIGURATION);
 
-		previewPortletDataHandlers =
-			previewPortletDataHandlerSection.getPreviewPortletDataHandlers();
-
 		Assert.assertEquals(
-			Arrays.toString(previewPortletDataHandlers), 1,
-			previewPortletDataHandlers.length);
+			Arrays.toString(portletDataHandlers), 1,
+			portletDataHandlers.length);
 		Assert.assertEquals(
 			"PORTLET_CONFIGURATION_" + portletId,
-			previewPortletDataHandlers[0].getName());
+			portletDataHandlers[0].getName());
 		Assert.assertTrue(
 			ArrayUtil.isNotEmpty(
-				previewPortletDataHandlers[0].
-					getPreviewPortletDataHandlerControls()));
+				portletDataHandlers[0].getPortletDataHandlerControls()));
 	}
 
 	@TestInfo("LPD-105790")
@@ -731,22 +656,21 @@ public class ExportPreviewResourceTest
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			_getPreviewPortletDataHandler(
-				exportPreviewResource.getSiteExportPreview(
-					testGroup.getExternalReferenceCode(), null, null, 0L, null,
-					null),
-				"PORTLET_DATA_" +
-					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES);
+		PortletDataHandler portletDataHandler = _getPortletDataHandler(
+			exportPreviewResource.getSiteExportPreview(
+				testGroup.getExternalReferenceCode(), null, null, 0L, null,
+				null),
+			"PORTLET_DATA_" +
+				LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES);
 
 		Assert.assertEquals(
-			Long.valueOf(3), previewPortletDataHandler.getAdditionCount());
+			Long.valueOf(3), portletDataHandler.getAdditionCount());
 		Assert.assertEquals(
-			Long.valueOf(2), previewPortletDataHandler.getDeletionCount());
+			Long.valueOf(2), portletDataHandler.getDeletionCount());
 
-		PreviewPortletDataHandlerBoolean basicPreviewPortletDataHandlerBoolean =
-			_getPreviewPortletDataHandlerBoolean(
-				previewPortletDataHandler,
+		PortletDataHandlerBoolean basicPortletDataHandlerBoolean =
+			_getPortletDataHandlerBoolean(
+				portletDataHandler,
 				StringBundler.concat(
 					"_",
 					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
@@ -754,29 +678,25 @@ public class ExportPreviewResourceTest
 					LayoutPageTemplateEntryTypeConstants.BASIC));
 
 		Assert.assertEquals(
-			Long.valueOf(1),
-			basicPreviewPortletDataHandlerBoolean.getAdditionCount());
+			Long.valueOf(1), basicPortletDataHandlerBoolean.getAdditionCount());
 		Assert.assertEquals(
-			Long.valueOf(1),
-			basicPreviewPortletDataHandlerBoolean.getDeletionCount());
+			Long.valueOf(1), basicPortletDataHandlerBoolean.getDeletionCount());
 
-		PreviewPortletDataHandlerBoolean
-			masterLayoutPreviewPortletDataHandlerBoolean =
-				_getPreviewPortletDataHandlerBoolean(
-					previewPortletDataHandler,
-					StringBundler.concat(
-						"_",
-						LayoutPageTemplateAdminPortletKeys.
-							LAYOUT_PAGE_TEMPLATES,
-						"_", LayoutPageTemplateEntry.class.getName(), "-",
-						LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
+		PortletDataHandlerBoolean masterLayoutPortletDataHandlerBoolean =
+			_getPortletDataHandlerBoolean(
+				portletDataHandler,
+				StringBundler.concat(
+					"_",
+					LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
+					"_", LayoutPageTemplateEntry.class.getName(), "-",
+					LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT));
 
 		Assert.assertEquals(
 			Long.valueOf(1),
-			masterLayoutPreviewPortletDataHandlerBoolean.getAdditionCount());
+			masterLayoutPortletDataHandlerBoolean.getAdditionCount());
 		Assert.assertEquals(
 			Long.valueOf(1),
-			masterLayoutPreviewPortletDataHandlerBoolean.getDeletionCount());
+			masterLayoutPortletDataHandlerBoolean.getDeletionCount());
 
 		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
 			basicLayoutPageTemplateEntry);
@@ -797,26 +717,20 @@ public class ExportPreviewResourceTest
 
 		LayoutTestUtil.addTypePortletLayout(group, true);
 
-		PreviewPortletDataHandler previewPortletDataHandler =
-			_getPreviewPortletDataHandler(
-				exportPreviewResource.getSiteExportPreview(
-					group.getExternalReferenceCode(), null, null, 0L, null,
-					null),
-				"PORTLET_DATA_com_liferay_layout_admin_web_portlet_" +
-					"LayoutSetLayoutsPortlet");
+		PortletDataHandler portletDataHandler = _getPortletDataHandler(
+			exportPreviewResource.getSiteExportPreview(
+				group.getExternalReferenceCode(), null, null, 0L, null, null),
+			"PORTLET_DATA_" + LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS);
 
-		Assert.assertNull(
-			_getChoice(previewPortletDataHandler, "publicLayoutPages"));
+		Assert.assertNull(_getChoice(portletDataHandler, "public-pages"));
 
-		Choice choice = _getChoice(
-			previewPortletDataHandler, "privateLayoutPages");
+		Choice choice = _getChoice(portletDataHandler, "private-pages");
 
 		Assert.assertEquals(
 			_layoutLocalService.getLayoutsCount(group, true),
 			GetterUtil.getLong(choice.getAdditionCount()));
 		Assert.assertEquals(
-			choice.getAdditionCount(),
-			previewPortletDataHandler.getAdditionCount());
+			choice.getAdditionCount(), portletDataHandler.getAdditionCount());
 	}
 
 	private ObjectDefinition _companyObjectDefinition;

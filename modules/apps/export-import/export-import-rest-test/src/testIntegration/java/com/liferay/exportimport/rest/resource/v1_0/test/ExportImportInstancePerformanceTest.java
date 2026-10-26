@@ -12,14 +12,6 @@ import com.liferay.exportimport.rest.client.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportPreview;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcess;
 import com.liferay.exportimport.rest.client.dto.v1_0.ImportProcessRequest;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandler;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerBoolean;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerChoice;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerControl;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSection;
-import com.liferay.exportimport.rest.client.dto.v1_0.PreviewPortletDataHandlerSetting;
-import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandler;
-import com.liferay.exportimport.rest.client.dto.v1_0.RequestPortletDataHandlerControl;
 import com.liferay.exportimport.rest.client.http.HttpInvoker;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportPreviewResource;
 import com.liferay.exportimport.rest.client.resource.v1_0.ExportProcessResource;
@@ -40,8 +32,6 @@ import java.io.File;
 
 import java.nio.file.Files;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.BeforeClass;
@@ -124,9 +114,8 @@ public class ExportImportInstancePerformanceTest {
 		ImportProcessRequest importProcessRequest = new ImportProcessRequest();
 
 		importProcessRequest.setName(RandomTestUtil.randomString());
-		importProcessRequest.setRequestPortletDataHandlers(
-			_toRequestPortletDataHandlers(
-				importPreview.getPreviewPortletDataHandlerSections()));
+		importProcessRequest.setPortletDataHandlers(
+			importPreview.getPortletDataHandlers());
 
 		try (Closeable closeable = new PerformanceTimer(
 				_IMPORT_MAX_TIME, "Import a full unscoped instance export")) {
@@ -141,90 +130,6 @@ public class ExportImportInstancePerformanceTest {
 		}
 	}
 
-	private static RequestPortletDataHandlerControl
-		_toRequestPortletDataHandlerControl(
-			PreviewPortletDataHandlerControl previewPortletDataHandlerControl) {
-
-		RequestPortletDataHandlerControl requestPortletDataHandlerControl =
-			new RequestPortletDataHandlerControl();
-
-		requestPortletDataHandlerControl.setName(
-			previewPortletDataHandlerControl.getName());
-
-		if (previewPortletDataHandlerControl instanceof
-				PreviewPortletDataHandlerBoolean) {
-
-			PreviewPortletDataHandlerBoolean previewPortletDataHandlerBoolean =
-				(PreviewPortletDataHandlerBoolean)
-					previewPortletDataHandlerControl;
-
-			Boolean defaultState =
-				previewPortletDataHandlerBoolean.getDefaultState();
-
-			if (defaultState != null) {
-				requestPortletDataHandlerControl.setValues(
-					new String[] {String.valueOf(defaultState)});
-			}
-
-			requestPortletDataHandlerControl.
-				setRequestPortletDataHandlerControls(
-					_toRequestPortletDataHandlerControls(
-						previewPortletDataHandlerBoolean.
-							getPreviewPortletDataHandlerControls()));
-		}
-		else if (previewPortletDataHandlerControl instanceof
-					PreviewPortletDataHandlerChoice) {
-
-			PreviewPortletDataHandlerChoice previewPortletDataHandlerChoice =
-				(PreviewPortletDataHandlerChoice)
-					previewPortletDataHandlerControl;
-
-			String defaultChoice =
-				previewPortletDataHandlerChoice.getDefaultChoice();
-
-			if (defaultChoice != null) {
-				requestPortletDataHandlerControl.setValues(
-					new String[] {defaultChoice});
-			}
-		}
-
-		return requestPortletDataHandlerControl;
-	}
-
-	private static RequestPortletDataHandlerControl[]
-		_toRequestPortletDataHandlerControls(
-			PreviewPortletDataHandlerControl[]
-				previewPortletDataHandlerControls) {
-
-		if (previewPortletDataHandlerControls == null) {
-			return null;
-		}
-
-		List<RequestPortletDataHandlerControl>
-			requestPortletDataHandlerControls = new ArrayList<>();
-
-		for (PreviewPortletDataHandlerControl previewPortletDataHandlerControl :
-				previewPortletDataHandlerControls) {
-
-			if (previewPortletDataHandlerControl instanceof
-					PreviewPortletDataHandlerSetting) {
-
-				continue;
-			}
-
-			requestPortletDataHandlerControls.add(
-				_toRequestPortletDataHandlerControl(
-					previewPortletDataHandlerControl));
-		}
-
-		if (requestPortletDataHandlerControls.isEmpty()) {
-			return null;
-		}
-
-		return requestPortletDataHandlerControls.toArray(
-			new RequestPortletDataHandlerControl[0]);
-	}
-
 	private ExportProcess _postExportProcess(long backgroundTaskMaxWaitTime)
 		throws Exception {
 
@@ -234,9 +139,8 @@ public class ExportImportInstancePerformanceTest {
 		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
 
 		exportProcessRequest.setName(RandomTestUtil.randomString());
-		exportProcessRequest.setRequestPortletDataHandlers(
-			_toRequestPortletDataHandlers(
-				exportPreview.getPreviewPortletDataHandlerSections()));
+		exportProcessRequest.setPortletDataHandlers(
+			exportPreview.getPortletDataHandlers());
 
 		ExportProcess exportProcess = _exportProcessResource.postExportProcess(
 			null, null, exportProcessRequest);
@@ -246,43 +150,6 @@ public class ExportImportInstancePerformanceTest {
 			TimeUnit.MILLISECONDS);
 
 		return exportProcess;
-	}
-
-	private RequestPortletDataHandler _toRequestPortletDataHandler(
-		PreviewPortletDataHandler previewPortletDataHandler) {
-
-		RequestPortletDataHandler requestPortletDataHandler =
-			new RequestPortletDataHandler();
-
-		requestPortletDataHandler.setName(previewPortletDataHandler.getName());
-		requestPortletDataHandler.setRequestPortletDataHandlerControls(
-			_toRequestPortletDataHandlerControls(
-				previewPortletDataHandler.
-					getPreviewPortletDataHandlerControls()));
-
-		return requestPortletDataHandler;
-	}
-
-	private RequestPortletDataHandler[] _toRequestPortletDataHandlers(
-		PreviewPortletDataHandlerSection[] previewPortletDataHandlerSections) {
-
-		List<RequestPortletDataHandler> requestPortletDataHandlers =
-			new ArrayList<>();
-
-		for (PreviewPortletDataHandlerSection previewPortletDataHandlerSection :
-				previewPortletDataHandlerSections) {
-
-			for (PreviewPortletDataHandler previewPortletDataHandler :
-					previewPortletDataHandlerSection.
-						getPreviewPortletDataHandlers()) {
-
-				requestPortletDataHandlers.add(
-					_toRequestPortletDataHandler(previewPortletDataHandler));
-			}
-		}
-
-		return requestPortletDataHandlers.toArray(
-			new RequestPortletDataHandler[0]);
 	}
 
 	private static final long _EXPORT_BACKGROUND_TASK_MAX_WAIT_TIME = 150000;
