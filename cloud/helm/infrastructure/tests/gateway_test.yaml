@@ -61,7 +61,8 @@ tests:
         set:
             endpoints:
                 mydomain:
-                    port: 8080
+                    hostname: mydomain.example.com
+                    port: 80
                     protocol: HTTP
                     tls:
                         externalSecretKeys:
@@ -100,6 +101,19 @@ tests:
                     port: 80
                     protocol: HTTP
     -   asserts:
+            -   failedTemplate:
+                    errorPattern: The admin endpoint uses port 8443, but gateways only listen on ports 80 and 443
+        it: Fails when an endpoint uses a port other than 80 or 443
+        set:
+            endpoints:
+                admin:
+                    hostname: admin.example.com
+                    port: 8443
+                    protocol: HTTPS
+                    tls:
+                        externalSecretKeys:
+                            -   liferay-certificates-admin
+    -   asserts:
             -   equal:
                     path: metadata.annotations["argocd.argoproj.io/sync-wave"]
                     value: "-30"
@@ -133,11 +147,11 @@ tests:
                 -   203.0.113.0/24
     -   asserts:
             -   equal:
+                    path: spec.listeners[0].hostname
+                    value: www.example.com
+            -   equal:
                     path: spec.listeners[0].name
                     value: http
-            -   equal:
-                    path: spec.listeners[0].port
-                    value: 8080
             -   lengthEqual:
                     count: 1
                     path: spec.listeners
@@ -145,7 +159,8 @@ tests:
         set:
             endpoints:
                 http:
-                    port: 8080
+                    hostname: www.example.com
+                    port: 80
                     protocol: HTTP
     -   asserts:
             -   equal:

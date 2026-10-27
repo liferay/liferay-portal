@@ -35,6 +35,9 @@ readOnlyRootFilesystem: false
 
 {{- define "liferay.validateEndpoint" -}}
 {{- $externalSecretKeys := dig "tls" "externalSecretKeys" (list) .endpoint -}}
+{{- if not (has (int .endpoint.port) (list 80 443)) -}}
+{{- fail (printf "The %s endpoint uses port %v, but gateways only listen on ports 80 and 443" .name .endpoint.port) -}}
+{{- end -}}
 {{- if and (eq (int .endpoint.port) 80) (not .endpoint.hostname) (ne .name "http") -}}
 {{- fail (printf "The %s endpoint uses port 80 without a hostname, which collides with the implicit http listener" .name) -}}
 {{- end -}}
