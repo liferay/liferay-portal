@@ -177,26 +177,7 @@ public class ShipmentResourceImpl extends BaseShipmentResourceImpl {
 
 	@Override
 	public Shipment postShipment(Shipment shipment) throws Exception {
-		CommerceOrder commerceOrder;
-
-		long orderId = GetterUtil.getLong(shipment.getOrderId());
-
-		if (orderId > 0) {
-			commerceOrder = _commerceOrderService.getCommerceOrder(
-				shipment.getOrderId());
-		}
-		else {
-			commerceOrder =
-				_commerceOrderService.fetchCommerceOrderByExternalReferenceCode(
-					shipment.getOrderExternalReferenceCode(),
-					contextCompany.getCompanyId());
-
-			if (commerceOrder == null) {
-				throw new NoSuchOrderException(
-					"Unable to find order with external reference code " +
-						shipment.getOrderExternalReferenceCode());
-			}
-		}
+		CommerceOrder commerceOrder = _getCommerceOrder(shipment);
 
 		CommerceShipment commerceShipment =
 			_commerceShipmentService.addCommerceShipment(
@@ -320,11 +301,10 @@ public class ShipmentResourceImpl extends BaseShipmentResourceImpl {
 					contextCompany.getCompanyId(), externalReferenceCode);
 
 		if (commerceShipment == null) {
-			CommerceOrder commerceOrder =
-				_commerceOrderService.getCommerceOrder(shipment.getOrderId());
+			CommerceOrder commerceOrder = _getCommerceOrder(shipment);
 
 			commerceShipment = _commerceShipmentService.addCommerceShipment(
-				shipment.getExternalReferenceCode(), commerceOrder.getGroupId(),
+				externalReferenceCode, commerceOrder.getGroupId(),
 				commerceOrder.getCommerceAccountId(),
 				commerceOrder.getShippingAddressId(),
 				commerceOrder.getCommerceShippingMethodId(),
@@ -364,6 +344,29 @@ public class ShipmentResourceImpl extends BaseShipmentResourceImpl {
 				"com.liferay.commerce.model.CommerceShipment",
 				commerceShipment.getGroupId())
 		).build();
+	}
+
+	private CommerceOrder _getCommerceOrder(Shipment shipment)
+		throws Exception {
+
+		long orderId = GetterUtil.getLong(shipment.getOrderId());
+
+		if (orderId > 0) {
+			return _commerceOrderService.getCommerceOrder(orderId);
+		}
+
+		CommerceOrder commerceOrder =
+			_commerceOrderService.fetchCommerceOrderByExternalReferenceCode(
+				shipment.getOrderExternalReferenceCode(),
+				contextCompany.getCompanyId());
+
+		if (commerceOrder == null) {
+			throw new NoSuchOrderException(
+				"Unable to find order with external reference code " +
+					shipment.getOrderExternalReferenceCode());
+		}
+
+		return commerceOrder;
 	}
 
 	private Shipment _toShipment(CommerceShipment commerceShipment)
