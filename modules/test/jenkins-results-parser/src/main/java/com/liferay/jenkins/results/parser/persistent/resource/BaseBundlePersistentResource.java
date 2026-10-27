@@ -238,7 +238,7 @@ public abstract class BaseBundlePersistentResource
 			setProducerBuildURL(producerBuildURL);
 
 			if (JenkinsResultsParserUtil.isURL(producerBuildURL) &&
-				!_isProducerBuildDiscarded(producerBuildURL)) {
+				!_isSkipProducerBuild(producerBuildURL)) {
 
 				_updateBuild(producerBuildURL);
 			}
@@ -774,7 +774,7 @@ public abstract class BaseBundlePersistentResource
 			apiJSONObject.optString("result"));
 	}
 
-	private boolean _isProducerBuildDiscarded(String producerBuildURL) {
+	private boolean _isSkipProducerBuild(String producerBuildURL) {
 		if (Objects.equals(producerBuildURL, _discardedProducerBuildURL)) {
 			return true;
 		}
