@@ -1,11 +1,5 @@
-.bb-legend {
-	&-background {
-		stroke-width: 0;
-	}
-
-	&-item a {
-		color: inherit;
-	}
+.bb-legend-item a {
+	color: inherit;
 }
 
 .bb-tooltip-container {
@@ -13,29 +7,6 @@
 	border-radius: 3px;
 	max-width: none;
 	padding: 0;
-
-	.bb-tooltip {
-		box-shadow: none;
-
-		td,
-		th {
-			font-size: $fontSizeExtraSmall;
-			padding: 2px 14px;
-		}
-
-		th {
-			border-bottom: 1px solid $mainLighten65;
-			padding: 6px 14px;
-		}
-
-		tr:nth-child(2) td {
-			padding-top: 6px;
-		}
-
-		tr:last-child td {
-			padding-bottom: 6px;
-		}
-	}
 
 	.analytics-tooltip-chart {
 		display: block;

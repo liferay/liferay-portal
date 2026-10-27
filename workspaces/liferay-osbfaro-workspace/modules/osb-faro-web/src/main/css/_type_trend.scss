@@ -20,15 +20,6 @@
 		.chart-root {
 			margin-right: 1rem;
 			width: 30%;
-
-			.bb-xgrid-line line,
-			.bb-ygrids line {
-				stroke: none;
-			}
-
-			.bb-zoom-rect {
-				stroke: none;
-			}
 		}
 
 		&:not(:first-child) {

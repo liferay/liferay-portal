@@ -1,13 +1,6 @@
 $c: '.analytics-devices-card';
 
 #{$c} {
-	.bb-axis-x tspan {
-		fill: $secondary;
-		font-family: $font-family;
-		font-size: $font-size-sm;
-		font-weight: $fontWeightSemiBold;
-	}
-
 	.card-header {
 		padding-bottom: 8px;
 	}

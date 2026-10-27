@@ -16,10 +16,6 @@
 		position: relative;
 
 		.chart-root {
-			.bb-tooltip {
-				text-transform: capitalize;
-			}
-
 			.tick {
 				tspan {
 					font-size: $fontSizeSmall;

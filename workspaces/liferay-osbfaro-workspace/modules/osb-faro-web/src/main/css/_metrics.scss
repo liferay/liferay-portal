@@ -67,16 +67,4 @@ $tc: '.analytics-tooltip-chart';
 			color: $main;
 		}
 	}
-
-	.bb-axis-x {
-		transform: translateY(271px);
-	}
-
-	.bb-line-data-previous {
-		stroke-width: 2px;
-	}
-
-	.chart-root svg .bb-circles .bb-circle._expanded_ {
-		fill: $chartBlue !important;
-	}
 }
