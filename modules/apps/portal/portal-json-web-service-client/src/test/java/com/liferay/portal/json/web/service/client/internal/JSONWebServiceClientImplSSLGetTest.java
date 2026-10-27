@@ -121,19 +121,21 @@ public class JSONWebServiceClientImplSSLGetTest
 
 		System.setProperty("https.protocols", "TLSv1.2");
 
-		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-
-		keyStore.load(null);
+		JSONWebServiceClientImpl jsonWebServiceClientImpl =
+			new JSONWebServiceClientImpl();
 
 		Map<String, Object> properties = getBaseProperties();
 
 		properties.put("hostPort", 9443);
+
+		KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+
+		keyStore.load(null);
+
 		properties.put("keyStore", keyStore);
+
 		properties.put("protocol", "https");
 		properties.put("trustSelfSignedCertificates", false);
-
-		JSONWebServiceClientImpl jsonWebServiceClientImpl =
-			new JSONWebServiceClientImpl();
 
 		jsonWebServiceClientImpl.activate(properties);
 
