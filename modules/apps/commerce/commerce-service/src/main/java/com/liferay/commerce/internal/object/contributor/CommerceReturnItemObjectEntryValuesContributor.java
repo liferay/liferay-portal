@@ -17,9 +17,8 @@ import com.liferay.commerce.util.CommerceReturnThreadLocal;
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.entry.ObjectEntryContext;
 import com.liferay.object.entry.contributor.ObjectEntryValuesContributor;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.object.scope.ObjectDefinitionScoped;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -32,6 +31,8 @@ import java.io.Serializable;
 
 import java.math.BigDecimal;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
@@ -42,7 +43,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(service = ObjectEntryValuesContributor.class)
 public class CommerceReturnItemObjectEntryValuesContributor
-	implements ObjectEntryValuesContributor {
+	implements ObjectDefinitionScoped, ObjectEntryValuesContributor {
 
 	@Override
 	public void contribute(ObjectEntryContext objectEntryContext) {
@@ -54,18 +55,13 @@ public class CommerceReturnItemObjectEntryValuesContributor
 		}
 	}
 
+	@Override
+	public List<String> getAllowedObjectDefinitionNames() {
+		return Collections.singletonList("CommerceReturnItem");
+	}
+
 	private void _contribute(ObjectEntryContext objectEntryContext)
 		throws Exception {
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.getObjectDefinition(
-				objectEntryContext.getObjectDefinitionId());
-
-		if (!StringUtil.equals(
-				objectDefinition.getName(), "CommerceReturnItem")) {
-
-			return;
-		}
 
 		Map<String, Serializable> values = objectEntryContext.getValues();
 
@@ -116,7 +112,7 @@ public class CommerceReturnItemObjectEntryValuesContributor
 						"r_commerceReturnToCommerceReturnItems_l_" +
 							"commerceReturnERC")),
 				ObjectDefinitionConstants.GROUP_ID_DEFAULT,
-				objectDefinition.getObjectDefinitionId());
+				objectEntryContext.getObjectDefinitionId());
 
 			if (originalObjectEntry == null) {
 				return;
@@ -241,9 +237,6 @@ public class CommerceReturnItemObjectEntryValuesContributor
 
 	@Reference
 	private CommerceOrderPriceCalculation _commerceOrderPriceCalculation;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
