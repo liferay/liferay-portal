@@ -1,4 +1,3 @@
-import 'test/mock-modal';
 import GenerateTokenCard from '../GenerateTokenCard';
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react';

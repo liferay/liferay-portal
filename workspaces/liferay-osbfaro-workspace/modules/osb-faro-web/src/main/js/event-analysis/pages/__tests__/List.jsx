@@ -1,4 +1,3 @@
-import 'test/mock-modal';
 
 import * as useDataSources from 'shared/context/dataSources';
 import client from 'shared/apollo/client';
@@ -11,7 +10,6 @@ import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEmptyState, mockSuccessState} from 'test/__mocks__/mock-objects';
 import {mockEventAnalysisListReq} from 'test/graphql-data';
-import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
 import {Routes} from 'shared/util/router';
 import {useRequest} from 'shared/hooks/useRequest';
@@ -112,22 +110,6 @@ describe('Event Analysis List', () => {
 		).toHaveTextContent(
 			'Create an analysis to get started.Access our documentation to learn more.'
 		);
-	});
-
-	xit('should open modal to delete the event analysis when clicking on trash button', async () => {
-		const {container} = render(
-			<WrappedComponent eventAnalyses={eventAnalysis} />
-		);
-
-		await waitForLoadingToBeRemoved(container);
-
-		const deleteButton = container.querySelector(
-			'table tbody tr button[title="Delete"]'
-		);
-
-		fireEvent.click(deleteButton);
-
-		expect(open).toBeCalled();
 	});
 
 	it('should render a trash icon when item is checked', async () => {

@@ -6,12 +6,19 @@ import {cleanup, render, waitFor} from '@testing-library/react';
 import {InMemoryCache} from '@apollo/client';
 import {MemoryRouter, Route, Routes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
-import {noop} from 'lodash';
 import {Provider} from 'react-redux';
+import {useModal} from '@clayui/modal';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
 const mockGroupId = '23';
+
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <CSVPreviewModal observer={observer} {...props} />;
+};
 
 const Wrapper = ({children}) => (
 	<Provider store={mockStore()}>
@@ -31,7 +38,7 @@ describe('CSVPreviewModal', () => {
 	afterEach(cleanup);
 
 	it('should render', async () => {
-		const {container} = render(
+		render(
 			<Wrapper>
 				<MockedProvider
 					cache={
@@ -41,18 +48,19 @@ describe('CSVPreviewModal', () => {
 					}
 					mocks={[]}
 				>
-					<CSVPreviewModal
+					<TestModal
 						fileName='test'
 						groupId={mockGroupId}
 						id='test'
 						name='test'
-						onClose={noop}
 					/>
 				</MockedProvider>
 			</Wrapper>
 		);
 
-		expect(container).toMatchSnapshot();
+		await waitForModal();
+
+		expect(document.body).toMatchSnapshot();
 	});
 
 	it('should render with a title on the heading', async () => {
@@ -66,12 +74,11 @@ describe('CSVPreviewModal', () => {
 					}
 					mocks={[]}
 				>
-					<CSVPreviewModal
+					<TestModal
 						fileName='test'
 						groupId={mockGroupId}
 						id='test'
 						name='CSV Test Title'
-						onClose={noop}
 					/>
 				</MockedProvider>
 			</Wrapper>

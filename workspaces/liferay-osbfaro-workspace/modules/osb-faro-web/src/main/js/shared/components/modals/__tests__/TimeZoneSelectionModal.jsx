@@ -2,12 +2,13 @@ import * as pedantic from 'test/pedantic';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import TimeZoneSelectionModal from '../TimeZoneSelectionModal';
-import {cleanup, fireEvent, render, waitFor} from '@testing-library/react';
+import {cleanup, fireEvent, screen, waitFor} from '@testing-library/react';
 import {fromJS} from 'immutable';
 import {InMemoryCache} from '@apollo/client';
 import {MemoryRouter} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
+import {renderModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
@@ -18,7 +19,11 @@ jest.mock('shared/util/date', () => ({
 
 const mockGroupId = '23';
 
-const DefaultComponent = ({timeZone = {timeZoneId: 'UTC'}, ...props}) => (
+const DefaultComponent = ({
+	observer,
+	timeZone = {timeZoneId: 'UTC'},
+	...props
+}) => (
 	<Provider
 		store={mockStore(
 			fromJS({
@@ -44,6 +49,7 @@ const DefaultComponent = ({timeZone = {timeZoneId: 'UTC'}, ...props}) => (
 				<TimeZoneSelectionModal
 					groupId={mockGroupId}
 					notificationId='123'
+					observer={observer}
 					onClose={jest.fn()}
 					{...props}
 				/>
@@ -51,6 +57,11 @@ const DefaultComponent = ({timeZone = {timeZoneId: 'UTC'}, ...props}) => (
 		</MemoryRouter>
 	</Provider>
 );
+
+const renderTimeZoneModal = props =>
+	renderModal(observer => (
+		<DefaultComponent observer={observer} {...props} />
+	));
 
 describe('TimeZoneSelectionModal', () => {
 	beforeEach(() => {
@@ -62,8 +73,10 @@ describe('TimeZoneSelectionModal', () => {
 		cleanup();
 	});
 
-	it('should render', () => {
-		const {getByText} = render(<DefaultComponent />);
+	it('should render', async () => {
+		await renderTimeZoneModal();
+
+		const {getByText} = screen;
 
 		expect(getByText('Workspace Timezone')).toBeInTheDocument();
 		expect(
@@ -77,28 +90,26 @@ describe('TimeZoneSelectionModal', () => {
 		expect(getByText('Set Timezone')).toBeInTheDocument();
 	});
 
-	it('renders the current time in the workspace time zone', () => {
-		const {getByText} = render(
-			<DefaultComponent
-				timeZone={{country: 'Brazil', timeZoneId: 'America/Recife'}}
-			/>
-		);
+	it('renders the current time in the workspace time zone', async () => {
+		await renderTimeZoneModal({
+			timeZone: {country: 'Brazil', timeZoneId: 'America/Recife'}
+		});
 
-		expect(getByText('9:10 AM')).toBeInTheDocument();
+		expect(screen.getByText('9:10 AM')).toBeInTheDocument();
 	});
 
 	it('renders the current UTC time after the country changes', async () => {
-		const {container, getByText} = render(
-			<DefaultComponent
-				timeZone={{country: 'Brazil', timeZoneId: 'America/Recife'}}
-			/>
-		);
+		await renderTimeZoneModal({
+			timeZone: {country: 'Brazil', timeZoneId: 'America/Recife'}
+		});
+
+		const {getByText} = screen;
 
 		await waitFor(() =>
 			expect(getByText('Chile')).toBeInTheDocument()
 		);
 
-		fireEvent.change(container.querySelector('select'), {
+		fireEvent.change(document.querySelector('select'), {
 			target: {value: 'Chile'}
 		});
 

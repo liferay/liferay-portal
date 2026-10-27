@@ -1,7 +1,9 @@
 import React from 'react';
 import SelectChannelsModal, {ISelectableChannel} from '../SelectChannelsModal';
 import {fireEvent, render} from '@testing-library/react';
+import {useModal} from '@clayui/modal';
 import {useRequest} from 'shared/hooks/useRequest';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
@@ -22,6 +24,14 @@ const mockChannels = [
 
 const hasSyncedSites = (channel: ISelectableChannel) => channel.groupsCount > 0;
 
+const TestModal = (
+	props: Omit<React.ComponentProps<typeof SelectChannelsModal>, 'observer'>
+) => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <SelectChannelsModal {...props} observer={observer} />;
+};
+
 const defaultProps = {
 	groupId: '23',
 	initialItems: [],
@@ -41,26 +51,30 @@ describe('SelectChannelsModal', () => {
 		});
 	});
 
-	it('should not preselect any channel when no filter is given', () => {
+	it('should not preselect any channel when no filter is given', async () => {
 		const onSelect = jest.fn();
 
-		render(<SelectChannelsModal {...defaultProps} onSelect={onSelect} />);
+		render(<TestModal {...defaultProps} onSelect={onSelect} />);
+
+		await waitForModal();
 
 		fireEvent.click(submitButton());
 
 		expect(onSelect).not.toHaveBeenCalled();
 	});
 
-	it('should auto-select the channels matching the given filter on first data load', () => {
+	it('should auto-select the channels matching the given filter on first data load', async () => {
 		const onSelect = jest.fn();
 
 		render(
-			<SelectChannelsModal
+			<TestModal
 				{...defaultProps}
 				autoSelectFilter={hasSyncedSites}
 				onSelect={onSelect}
 			/>
 		);
+
+		await waitForModal();
 
 		fireEvent.click(submitButton());
 
@@ -69,33 +83,37 @@ describe('SelectChannelsModal', () => {
 		);
 	});
 
-	it('should not auto-select the channels rejected by the given filter', () => {
+	it('should not auto-select the channels rejected by the given filter', async () => {
 		const onSelect = jest.fn();
 
 		render(
-			<SelectChannelsModal
+			<TestModal
 				{...defaultProps}
 				autoSelectFilter={hasSyncedSites}
 				onSelect={onSelect}
 			/>
 		);
+
+		await waitForModal();
 
 		fireEvent.click(submitButton());
 
 		expect(onSelect.mock.calls[0][0]).not.toContain('channel-2');
 	});
 
-	it('should not duplicate channels already present in initialItems', () => {
+	it('should not duplicate channels already present in initialItems', async () => {
 		const onSelect = jest.fn();
 
 		render(
-			<SelectChannelsModal
+			<TestModal
 				{...defaultProps}
 				autoSelectFilter={hasSyncedSites}
 				initialItems={['channel-1']}
 				onSelect={onSelect}
 			/>
 		);
+
+		await waitForModal();
 
 		fireEvent.click(submitButton());
 

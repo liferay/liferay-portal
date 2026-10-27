@@ -1,13 +1,17 @@
-import 'test/mock-modal';
 import * as API from 'shared/api';
 import * as data from 'test/data';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {AccessTokenList} from '../AccessTokenList';
-import {cleanup, fireEvent, getByText, render} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	getByText,
+	render,
+	screen
+} from '@testing-library/react';
 import {getISODate} from 'shared/util/date';
 import {mockGetDateNow} from 'test/mock-date';
-import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -86,7 +90,9 @@ describe('AccessTokenList', () => {
 
 		fireEvent.click(getByText('Revoke'));
 
-		expect(open).toBeCalled();
+		expect(await screen.findByRole('dialog')).toBeInTheDocument();
+
+		expect(await screen.findByText('Revoke Token')).toBeInTheDocument();
 	});
 
 	it('should display the "Generate Token" card  above the table if the token is expired', async () => {

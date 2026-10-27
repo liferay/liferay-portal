@@ -1,4 +1,3 @@
-import 'test/mock-modal';
 import * as API from 'shared/api';
 import * as data from 'test/data';
 import mockStore, {mockStoreDataLDP} from 'test/mock-store';

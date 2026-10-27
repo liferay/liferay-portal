@@ -1,46 +1,67 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ContactSalesModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog"
       >
         <div
-          class="h4 modal-title"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
-          Contact Sales
-        </div>
-        <button
-          aria-label="Close"
-          class="button-root close btn btn-secondary"
-          type="button"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-times icon-root"
-            role="presentation"
+          <div
+            class="modal-header"
           >
-            <use
-              href="#times"
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
+            >
+              Contact Sales
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
+              >
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            class="modal-body"
+          >
+            <div
+              id="hubspotForm"
             />
-          </svg>
-        </button>
-      </div>
-      <div
-        class="modal-body"
-      >
-        <div
-          id="hubspotForm"
-        />
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</body>
 `;

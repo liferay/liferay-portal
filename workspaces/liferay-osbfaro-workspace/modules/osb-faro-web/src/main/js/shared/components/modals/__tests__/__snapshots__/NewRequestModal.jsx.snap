@@ -1,173 +1,92 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`NewRequestModal renders 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog new-request-modal-root"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog"
       >
         <div
-          class="h4 modal-title"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
-          New Request
-        </div>
-      </div>
-      <form
-        class="form-root"
-      >
-        <div
-          class="modal-body"
-        >
-          <p
-            class="text-secondary"
-          >
-            New requests will be added to the queue and you will be notified once the job has completed running.
-          </p>
           <div
-            class="form-group"
+            class="modal-header"
           >
-            <div
-              class="h4"
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
             >
-              Job Type
-            </div>
-            <div
-              class="form-group-item"
+              New Request
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
             >
-              <div
-                class="custom-control custom-checkbox"
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
               >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    form="[object Object]"
-                    name="accessRequest"
-                    type="checkbox"
-                    value="false"
-                  />
-                  <span
-                    class="custom-control-label"
-                  >
-                    <span
-                      class="custom-control-label-text"
-                    >
-                      <span
-                        class="checkbox-label"
-                      >
-                        Access
-                        <span
-                          class="text-secondary"
-                        >
-                           - Creates downloadable file of all the data collected related to a user.
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </div>
-            <div
-              class="form-group-item"
-            >
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    form="[object Object]"
-                    name="deleteRequest"
-                    type="checkbox"
-                    value="false"
-                  />
-                  <span
-                    class="custom-control-label"
-                  >
-                    <span
-                      class="custom-control-label-text"
-                    >
-                      <span
-                        class="checkbox-label"
-                      >
-                        Delete
-                        <span
-                          class="text-secondary"
-                        >
-                           - Delete user's PII and add them to the suppression list.
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </div>
-            <div
-              class="form-group-item"
-            >
-              <div
-                class="custom-control custom-checkbox"
-              >
-                <label>
-                  <input
-                    class="custom-control-input"
-                    form="[object Object]"
-                    name="suppressRequest"
-                    type="checkbox"
-                    value="false"
-                  />
-                  <span
-                    class="custom-control-label"
-                  >
-                    <span
-                      class="custom-control-label-text"
-                    >
-                      <span
-                        class="checkbox-label"
-                      >
-                        Suppress
-                        <span
-                          class="text-secondary"
-                        >
-                           - Suppress identity resolution of users based on their email.
-                        </span>
-                      </span>
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </div>
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
           </div>
-          <div
-            class="form-group"
+          <form
+            class="form-root"
           >
             <div
-              class="h4"
+              class="modal-body"
             >
-              Data Subject ID
-            </div>
-            <div
-              class="form-group-item"
-            >
-              <div>
+              <p
+                class="text-secondary"
+              >
+                New requests will be added to the queue and you will be notified once the job has completed running.
+              </p>
+              <div
+                class="form-group"
+              >
                 <div
-                  class="radio-group-root"
+                  class="h4"
                 >
+                  Job Type
+                </div>
+                <div
+                  class="form-group-item ml-2"
+                >
+                  <span
+                    hidden=""
+                  />
                   <div
-                    class="custom-control custom-radio"
+                    class="custom-control custom-checkbox"
                   >
                     <label>
                       <input
-                        checked=""
                         class="custom-control-input"
-                        name="subjectIdType"
-                        type="radio"
+                        form="[object Object]"
+                        name="accessRequest"
+                        type="checkbox"
+                        value="false"
                       />
                       <span
                         class="custom-control-label"
@@ -175,149 +94,294 @@ exports[`NewRequestModal renders 1`] = `
                         <span
                           class="custom-control-label-text"
                         >
-                          Find by Email
+                          <span>
+                            Access
+                            <span
+                              class="font-weight-normal text-secondary"
+                            >
+                               - Creates downloadable file of all the data collected related to a user.
+                            </span>
+                          </span>
                         </span>
                       </span>
                     </label>
                   </div>
+                </div>
+                <div
+                  class="form-group-item ml-2"
+                >
                   <div
-                    class="radio-group-subsection-root"
+                    class="custom-control custom-checkbox"
                   >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        form="[object Object]"
+                        name="deleteRequest"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        class="custom-control-label"
+                      >
+                        <span
+                          class="custom-control-label-text"
+                        >
+                          <span>
+                            Delete
+                            <span
+                              class="font-weight-normal text-secondary"
+                            >
+                               - Delete user's PII and add them to the suppression list.
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+                <div
+                  class="form-group-item ml-2"
+                >
+                  <div
+                    class="custom-control custom-checkbox"
+                  >
+                    <label>
+                      <input
+                        class="custom-control-input"
+                        form="[object Object]"
+                        name="suppressRequest"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        class="custom-control-label"
+                      >
+                        <span
+                          class="custom-control-label-text"
+                        >
+                          <span>
+                            Suppress
+                            <span
+                              class="font-weight-normal text-secondary"
+                            >
+                               - Suppress identity resolution of users based on their email.
+                            </span>
+                          </span>
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-group"
+              >
+                <div
+                  class="h4"
+                >
+                  Data Subject ID
+                </div>
+                <div
+                  class="form-group-item ml-2"
+                >
+                  <div>
                     <div
-                      class="input-group"
+                      class="radio-group-root"
                     >
                       <div
-                        class="form-control form-control-tag-group input-group"
+                        class="custom-control custom-radio"
+                      >
+                        <label>
+                          <input
+                            checked=""
+                            class="custom-control-input"
+                            name="subjectIdType"
+                            type="radio"
+                          />
+                          <span
+                            class="custom-control-label"
+                          >
+                            <span
+                              class="custom-control-label-text"
+                            >
+                              Find by Email
+                            </span>
+                          </span>
+                        </label>
+                      </div>
+                      <div
+                        class="radio-group-subsection-root"
                       >
                         <div
-                          class="input-group-item"
+                          class="input-group"
                         >
                           <div
-                            class="input-group"
+                            class="form-control form-control-tag-group input-group"
                           >
                             <div
-                              class="input-group-item d-contents input-group-item-shrink input-group-prepend"
-                              role="grid"
-                            />
-                            <div
-                              class="input-group-item input-group-prepend"
+                              class="input-group-item"
                             >
-                              <input
-                                aria-autocomplete="list"
-                                aria-controls="clay-id-2"
-                                aria-expanded="false"
-                                autocomplete="off"
-                                autocorrect="off"
-                                class="form-control-inset"
-                                placeholder="example@email.com"
-                                role="combobox"
-                                spellcheck="false"
-                                type="text"
-                                value=""
+                              <div
+                                class="input-group"
+                              >
+                                <div
+                                  class="input-group-item d-contents input-group-item-shrink input-group-prepend"
+                                  role="grid"
+                                />
+                                <div
+                                  class="input-group-item input-group-prepend"
+                                >
+                                  <input
+                                    aria-autocomplete="list"
+                                    aria-controls="clay-id-2"
+                                    aria-expanded="false"
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    class="form-control-inset"
+                                    placeholder="example@email.com"
+                                    role="combobox"
+                                    spellcheck="false"
+                                    type="text"
+                                    value=""
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                            <div
+                              class="sr-only"
+                            >
+                              <span
+                                id="clay-id-1"
+                              >
+                                Press backspace to delete the current row.
+                              </span>
+                              <span
+                                aria-live="polite"
+                                aria-relevant="text"
                               />
                             </div>
                           </div>
                         </div>
-                        <div
-                          class="sr-only"
-                        >
-                          <span
-                            id="clay-id-1"
-                          >
-                            Press backspace to delete the current row.
-                          </span>
-                          <span
-                            aria-live="polite"
-                            aria-relevant="text"
+                      </div>
+                      <div
+                        class="custom-control custom-radio"
+                      >
+                        <label>
+                          <input
+                            class="custom-control-input"
+                            name="subjectIdType"
+                            type="radio"
                           />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="custom-control custom-radio"
-                  >
-                    <label>
-                      <input
-                        class="custom-control-input"
-                        name="subjectIdType"
-                        type="radio"
-                      />
-                      <span
-                        class="custom-control-label"
-                      >
-                        <span
-                          class="custom-control-label-text"
-                        >
-                          Upload File
-                        </span>
-                      </span>
-                    </label>
-                  </div>
-                  <div
-                    class="radio-group-subsection-root hide"
-                  >
-                    <div>
-                      <div
-                        class="file-drop-target-root"
-                      >
-                        <div
-                          class="drop-target-container"
-                        >
-                          <button
-                            class="button-root btn btn-sm btn-secondary"
-                            type="button"
+                          <span
+                            class="custom-control-label"
                           >
-                            Select File
-                          </button>
+                            <span
+                              class="custom-control-label-text"
+                            >
+                              Upload File
+                            </span>
+                          </span>
+                        </label>
+                      </div>
+                      <div
+                        class="radio-group-subsection-root d-none"
+                      >
+                        <div>
                           <div
-                            class="drop-zone"
+                            class="file-drop-target-root"
                           >
-                            Or Drag and Drop Files Here
+                            <div
+                              class="drop-target-container"
+                            >
+                              <button
+                                class="button-root btn btn-sm btn-secondary"
+                                type="button"
+                              >
+                                Select File
+                              </button>
+                              <div
+                                class="drop-zone"
+                              >
+                                Or Drag and Drop Files Here
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div
-                        class="example-file-text mt-2 text-secondary"
-                      >
-                        Please upload files in CSV format. A sample file can be found 
-                        <a
-                          class=""
-                          download="example_user_request.csv"
-                          href="data:text/octet-stream;charset=utf-8,user@example.com
+                          <div
+                            class="mt-2 text-secondary"
+                          >
+                            Please upload files in CSV format. A sample file can be found 
+                            <a
+                              class=""
+                              download="example_user_request.csv"
+                              href="data:text/octet-stream;charset=utf-8,user@example.com
 user1@example.com
 user2@example.com"
-                        >
-                          here
-                        </a>
-                        .
+                            >
+                              here
+                            </a>
+                            .
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+            <div
+              class="modal-footer"
+            >
+              <div
+                class="modal-item-last"
+              >
+                <div
+                  class="btn-group-spaced"
+                  role="group"
+                >
+                  <button
+                    class="button-root btn btn-secondary"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="button-root btn btn-primary"
+                    disabled=""
+                    type="submit"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
-        <div
-          class="modal-footer"
-        >
-          <button
-            class="button-root btn btn-secondary"
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            class="button-root btn btn-primary"
-            disabled=""
-            type="submit"
-          >
-            Save
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+  <div
+    data-live-announcer="true"
+    style="border: 0px; clip-path: inset(50%); height: 1px; margin: 0px -1px -1px 0px; overflow: hidden; padding: 0px; position: absolute; white-space: nowrap; width: 1px;"
+  >
+    <div
+      aria-live="assertive"
+      aria-relevant="additions"
+      role="log"
+    />
+    <div
+      aria-live="polite"
+      aria-relevant="additions"
+      role="log"
+    />
+  </div>
+  <input
+    accept=".csv"
+    aria-hidden="true"
+    data-suppressed="true"
+    hidden="true"
+    id="fileUploader1"
+    type="file"
+  />
+</body>
 `;

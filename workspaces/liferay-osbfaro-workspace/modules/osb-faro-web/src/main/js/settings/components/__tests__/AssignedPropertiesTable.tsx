@@ -3,13 +3,23 @@ import {AssignedPropertiesTable} from '../AssignedPropertiesTable';
 import {DataSourceStatuses, DataSourceTypes} from 'shared/util/constants';
 import {fireEvent, render, screen} from '@testing-library/react';
 import {fromJS} from 'immutable';
-import {modalTypes} from 'shared/actions/modals';
 
 jest.unmock('react-dom');
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({groupId: '23'}),
+}));
+
+let mockSelectChannelsModalProps: any;
+
+jest.mock('shared/components/modals/SelectChannelsModal', () => ({
+	__esModule: true,
+	default: (props: any) => {
+		mockSelectChannelsModalProps = props;
+
+		return <div data-testid="select-channels-modal" />;
+	},
 }));
 
 jest.mock('shared/api/data-source', () => ({
@@ -53,32 +63,30 @@ const mockDataSource = (providerType: DataSourceTypes) => ({
 
 const defaultProps = {
 	addAlert: jest.fn(),
-	close: jest.fn(),
 	handleUpdateDataSource: jest.fn(),
 	updateDataSourceFn: jest.fn(),
 };
 
-const openSelectChannelsModal = (
-	open: jest.Mock,
-	providerType: DataSourceTypes
-) => {
+const openSelectChannelsModal = (providerType: DataSourceTypes) => {
 	render(
 		<AssignedPropertiesTable
 			{...defaultProps}
 			dataSource={mockDataSource(providerType)}
-			open={open}
 		/>
 	);
 
+	expect(screen.queryByTestId('select-channels-modal')).toBeNull();
+
 	fireEvent.click(screen.getByText(Liferay.Language.get('select-property')));
 
-	return open.mock.calls[0][1];
+	expect(screen.getByTestId('select-channels-modal')).toBeInTheDocument();
+
+	return mockSelectChannelsModalProps;
 };
 
 describe('AssignedPropertiesTable', () => {
 	it('should preselect the properties syncing a site for a Demandbase data source', () => {
 		const {autoSelectFilter} = openSelectChannelsModal(
-			jest.fn(),
 			DataSourceTypes.Demandbase
 		);
 
@@ -87,18 +95,14 @@ describe('AssignedPropertiesTable', () => {
 	});
 
 	it('should not preselect any property for a non Demandbase data source', () => {
-		const open = jest.fn();
-
-		const modalProps = openSelectChannelsModal(
-			open,
-			DataSourceTypes.Liferay
-		);
-
-		expect(open).toHaveBeenCalledWith(
-			modalTypes.SELECT_CHANNELS_MODAL,
-			expect.anything()
-		);
+		const modalProps = openSelectChannelsModal(DataSourceTypes.Liferay);
 
 		expect(modalProps.autoSelectFilter).toBeUndefined();
+	});
+
+	it('should open the modal for the group of the page', () => {
+		const modalProps = openSelectChannelsModal(DataSourceTypes.Liferay);
+
+		expect(modalProps.groupId).toBe('23');
 	});
 });

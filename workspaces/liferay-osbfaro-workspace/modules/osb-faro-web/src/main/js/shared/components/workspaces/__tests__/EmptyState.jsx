@@ -2,7 +2,7 @@ import EmptyState, {CardEmpty} from '../EmptyState';
 import mockStore from 'test/mock-store';
 import React from 'react';
 import {BrowserRouter} from 'react-router-dom';
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {Provider} from 'react-redux';
 
 jest.unmock('react-dom');
@@ -20,6 +20,25 @@ describe('Workspace Empty State', () => {
 		);
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('should open the contact sales modal', async () => {
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<EmptyState />
+				</BrowserRouter>
+			</Provider>
+		);
+
+		expect(screen.queryByRole('dialog')).toBeNull();
+
+		fireEvent.click(screen.getByText('Contact Sales'));
+
+		expect(await screen.findByRole('dialog')).toBeInTheDocument();
+		expect(
+			await screen.findByRole('heading', {name: 'Contact Sales'})
+		).toBeInTheDocument();
 	});
 });
 

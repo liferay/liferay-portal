@@ -2,11 +2,21 @@ import React from 'react';
 import {AssignIndividualsDataToPropertiesStep} from '../AssignIndividualsDataToChannelsStep';
 import {DataSourceTypes} from 'shared/util/constants';
 import {fireEvent, render, screen} from '@testing-library/react';
-import {modalTypes} from 'shared/actions/modals';
 
 jest.unmock('react-dom');
 
 const useWizardPageMock = jest.fn();
+
+let mockSelectChannelsModalProps: any;
+
+jest.mock('shared/components/modals/SelectChannelsModal', () => ({
+	__esModule: true,
+	default: (props: any) => {
+		mockSelectChannelsModalProps = props;
+
+		return <div data-testid="select-channels-modal" />;
+	},
+}));
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
@@ -29,23 +39,23 @@ const mockDataSource = (providerType: DataSourceTypes) => ({
 
 const defaultProps = {
 	addAlert: jest.fn(),
-	close: jest.fn(),
 	onPrev: jest.fn(),
 	onSubmit: jest.fn(),
 	updateDataSourceFn: jest.fn(),
 };
 
-const openSelectChannelsModal = (open: jest.Mock) => {
+const openSelectChannelsModal = () => {
 	render(
-		<AssignIndividualsDataToPropertiesStep
-			{...(defaultProps as any)}
-			open={open}
-		/>
+		<AssignIndividualsDataToPropertiesStep {...(defaultProps as any)} />
 	);
+
+	expect(screen.queryByTestId('select-channels-modal')).toBeNull();
 
 	fireEvent.click(screen.getByText(Liferay.Language.get('select')));
 
-	return open.mock.calls[0][1];
+	expect(screen.getByTestId('select-channels-modal')).toBeInTheDocument();
+
+	return mockSelectChannelsModalProps;
 };
 
 describe('AssignIndividualsDataToPropertiesStep', () => {
@@ -54,7 +64,7 @@ describe('AssignIndividualsDataToPropertiesStep', () => {
 			dataSource: mockDataSource(DataSourceTypes.Demandbase),
 		});
 
-		const {autoSelectFilter} = openSelectChannelsModal(jest.fn());
+		const {autoSelectFilter} = openSelectChannelsModal();
 
 		expect(autoSelectFilter({groupsCount: 1})).toBe(true);
 		expect(autoSelectFilter({groupsCount: 0})).toBe(false);
@@ -65,14 +75,7 @@ describe('AssignIndividualsDataToPropertiesStep', () => {
 			dataSource: mockDataSource(DataSourceTypes.Salesforce),
 		});
 
-		const open = jest.fn();
-
-		const modalProps = openSelectChannelsModal(open);
-
-		expect(open).toHaveBeenCalledWith(
-			modalTypes.SELECT_CHANNELS_MODAL,
-			expect.anything()
-		);
+		const modalProps = openSelectChannelsModal();
 
 		expect(modalProps.autoSelectFilter).toBeUndefined();
 	});

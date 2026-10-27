@@ -1,102 +1,142 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`BatchActionModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog scroll-container batch-action-modal-root modal-lg"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block scroll-container show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog modal-lg"
       >
         <div
-          class="h4 modal-title"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
-          Batch Action
-        </div>
-        <button
-          aria-label="Close"
-          class="button-root close btn btn-secondary"
-          type="button"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-times icon-root"
-            role="presentation"
-          >
-            <use
-              href="#times"
-            />
-          </svg>
-        </button>
-      </div>
-      <div
-        class="modal-body"
-      >
-        <div>
           <div
-            class="dropdown"
+            class="modal-header border-0"
           >
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
+            >
+              Batch Action
+            </h1>
             <button
-              aria-expanded="false"
-              aria-haspopup="true"
-              class="dropdown-toggle button-root btn btn-secondary"
+              aria-label="Close"
+              class="close btn btn-unstyled"
               type="button"
             >
-              <span />
               <svg
-                class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                class="lexicon-icon lexicon-icon-times"
                 role="presentation"
               >
                 <use
-                  href="#caret-bottom"
+                  href="#times"
                 />
               </svg>
             </button>
           </div>
-          <p
-            class="text-secondary"
-          />
-        </div>
-        <div
-          class="flex-grow-1 mx-4 table-root"
-        >
           <div
-            class="table-responsive"
+            class="modal-body border-0"
           >
-            <table
-              class="table table-autofit table-list table-nowrap table-head-bordered table-hover table-striped"
+            <div>
+              <div
+                class="dropdown"
+              >
+                <button
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  class="dropdown-toggle button-root btn btn-secondary"
+                  type="button"
+                >
+                  <span />
+                  <svg
+                    class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                    role="presentation"
+                  >
+                    <use
+                      href="#caret-bottom"
+                    />
+                  </svg>
+                </button>
+              </div>
+              <p
+                class="py-3 text-secondary"
+              />
+            </div>
+            <div
+              class="flex-grow-1 mx-4 table-root"
             >
-              <thead>
-                <tr>
-                  <th />
-                </tr>
-              </thead>
-            </table>
+              <div
+                class="table-responsive"
+              >
+                <table
+                  class="table table-autofit table-list table-nowrap table-head-bordered table-hover table-striped"
+                >
+                  <thead>
+                    <tr>
+                      <th />
+                    </tr>
+                  </thead>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div
+            class="modal-footer border-0"
+          >
+            <div
+              class="modal-item-last"
+            >
+              <div
+                class="btn-group-spaced"
+                role="group"
+              >
+                <button
+                  class="button-root btn btn-secondary"
+                  type="button"
+                >
+                  Cancel
+                </button>
+                <button
+                  class="button-root btn btn-primary"
+                  disabled=""
+                  type="button"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-      <div
-        class="modal-footer"
-      >
-        <button
-          class="button-root btn btn-secondary"
-          type="button"
-        >
-          Cancel
-        </button>
-        <button
-          class="button-root btn btn-primary"
-          disabled=""
-          type="button"
-        >
-          Save
-        </button>
+      <div>
+        <div>
+          <div
+            aria-hidden="true"
+            class="dropdown-menu"
+            id="clay-dropdown-menu-1"
+            role="presentation"
+          />
+        </div>
       </div>
     </div>
   </div>
-</div>
+</body>
 `;

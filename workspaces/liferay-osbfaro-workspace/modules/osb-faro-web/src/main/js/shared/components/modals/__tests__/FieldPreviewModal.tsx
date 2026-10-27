@@ -1,32 +1,41 @@
 import FieldPreviewModal from '../FieldPreviewModal';
 import React from 'react';
-import {noop} from 'lodash';
 import {render} from '@testing-library/react';
+import {useModal} from '@clayui/modal';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = (
 	props: Partial<React.ComponentProps<typeof FieldPreviewModal>> = {}
-) => (
-	<FieldPreviewModal
-		dataSourceFn={() => Promise.resolve()}
-		onClose={noop}
-		sourceName="foo"
-		{...props}
-	/>
-);
+) => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return (
+		<FieldPreviewModal
+			dataSourceFn={() => Promise.resolve()}
+			observer={observer}
+			sourceName="foo"
+			{...props}
+		/>
+	);
+};
 
 describe('FieldPreviewModal', () => {
-	it('should render', () => {
-		const {container} = render(<DefaultComponent />);
+	it('should render', async () => {
+		render(<DefaultComponent />);
 
-		expect(container).toMatchSnapshot();
+		await waitForModal();
+
+		expect(document.body).toMatchSnapshot();
 	});
 
-	it('should render with fieldname', () => {
+	it('should render with fieldname', async () => {
 		const fieldName = 'bar';
 
 		const {getByText} = render(<DefaultComponent fieldName={fieldName} />);
+
+		await waitForModal();
 
 		expect(getByText(fieldName)).toBeTruthy();
 	});

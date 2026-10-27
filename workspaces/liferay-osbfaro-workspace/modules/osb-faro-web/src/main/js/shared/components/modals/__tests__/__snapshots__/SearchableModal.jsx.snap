@@ -86,7 +86,8 @@ exports[`SearchableModal should render 1`] = `
         </nav>
       </div>
       <div
-        class="modal-info-bar-root"
+        class="bg-light d-flex font-weight-semi-bold justify-content-end px-4 text-capitalize text-secondary"
+        style="font-size: 12px;"
       >
         3 Items
       </div>

@@ -125,4 +125,25 @@ describe('SearchCard', () => {
 			container.querySelectorAll('.query-card-root button')
 		).toHaveLength(0);
 	});
+
+	it('should ask for a confirmation before leaving with unsaved edits', async () => {
+		useCurrentUser.mockImplementation(() => ({isAdmin: () => true}));
+
+		render(<WrappedComponent />);
+
+		await waitForLoadingToBeRemoved();
+
+		const input = screen.getByDisplayValue('jackson');
+
+		fireEvent.change(input, {target: {value: 'jackson2'}});
+		fireEvent.blur(input);
+
+		expect(screen.queryByRole('dialog')).toBeNull();
+
+		fireEvent.click(screen.getByText('Cancel'));
+
+		expect(
+			await screen.findByText('Exit without saving?')
+		).toBeInTheDocument();
+	});
 });

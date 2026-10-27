@@ -4,40 +4,52 @@ import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import {DndProvider} from 'react-dnd';
 import {HTML5Backend} from 'react-dnd-html5-backend';
+import {useModal} from '@clayui/modal';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
+
+const TestModal = () => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <NewRequestModal observer={observer} />;
+};
 
 describe('NewRequestModal', () => {
 	afterEach(cleanup);
 
 	it('renders', async () => {
-		const {container} = render(
+		render(
 			<Provider store={mockStore()}>
 				<DndProvider backend={HTML5Backend}>
-					<NewRequestModal />
+					<TestModal />
 				</DndProvider>
 			</Provider>
 		);
 
-		await waitForLoadingToBeRemoved(container, {
+		await waitForModal();
+
+		await waitForLoadingToBeRemoved(document.body, {
 			selector: '.loading-animation'
 		});
 
-		expect(container).toMatchSnapshot();
+		expect(document.body).toMatchSnapshot();
 	});
 
 	it('checks both Delete & Suppress checkbox when Delete is clicked', async () => {
-		const {container, getByLabelText} = render(
+		const {getByLabelText} = render(
 			<Provider store={mockStore()}>
 				<DndProvider backend={HTML5Backend}>
-					<NewRequestModal />
+					<TestModal />
 				</DndProvider>
 			</Provider>
 		);
 
-		await waitForLoadingToBeRemoved(container, {
+		await waitForModal();
+
+		await waitForLoadingToBeRemoved(document.body, {
 			selector: '.loading-animation'
 		});
 
@@ -54,19 +66,21 @@ describe('NewRequestModal', () => {
 	});
 
 	it('checks if download sample CSV link is present', async () => {
-		const {container} = render(
+		render(
 			<Provider store={mockStore()}>
 				<DndProvider backend={HTML5Backend}>
-					<NewRequestModal />
+					<TestModal />
 				</DndProvider>
 			</Provider>
 		);
 
-		await waitForLoadingToBeRemoved(container, {
+		await waitForModal();
+
+		await waitForLoadingToBeRemoved(document.body, {
 			selector: '.loading-animation'
 		});
 
-		const anchor = container.querySelector('div.example-file-text a');
+		const anchor = document.querySelector('a[download="example_user_request.csv"]');
 
 		expect(anchor).toHaveAttribute(
 			'href',

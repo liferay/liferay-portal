@@ -1,110 +1,209 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CreateMappingModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog create-mapping-modal-root modal-lg"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog modal-lg"
       >
         <div
-          class="h4 modal-title"
-        >
-          Create New CSV Field
-        </div>
-        <button
-          aria-label="Close"
-          class="button-root close btn btn-secondary"
-          type="button"
-        >
-          <svg
-            class="lexicon-icon lexicon-icon-times icon-root"
-            role="presentation"
-          >
-            <use
-              href="#times"
-            />
-          </svg>
-        </button>
-      </div>
-      <form
-        class="form-root"
-      >
-        <div
-          class="form-group form-group-autofit"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
           <div
-            class=""
+            class="modal-header"
           >
-            <label
-              class="form-control-label label-root"
-              for="name"
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
             >
-              <span
-                class="content-container"
+              Create New CSV Field
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
               >
-                New Field Name
-              </span>
-            </label>
-            <input
-              class="input-root form-control"
-              id="name"
-              name="name"
-              placeholder="Enter new field name..."
-              type="text"
-              value=""
-            />
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
           </div>
-          <div>
-            <label>
-              Field Type
-            </label>
+          <form
+            class="form-root"
+          >
             <div
-              class="dropdown searchable-select-root"
+              class="form-group px-4 py-5 form-group-autofit"
             >
-              <button
-                aria-expanded="false"
-                aria-haspopup="true"
-                class="dropdown-toggle button-root d-flex align-items-center justify-content-between w-100 btn btn-unstyled"
-                type="button"
+              <div
+                class=""
               >
-                Select
-                <svg
-                  class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                <label
+                  class="form-control-label label-root"
+                  for="name"
+                >
+                  <span
+                    class="content-container"
+                  >
+                    New Field Name
+                  </span>
+                </label>
+                <input
+                  class="input-root form-control"
+                  id="name"
+                  name="name"
+                  placeholder="Enter new field name..."
+                  type="text"
+                  value=""
+                />
+              </div>
+              <div
+                class="form-group-item form-group-item-shrink"
+              >
+                <label>
+                  Field Type
+                </label>
+                <div
+                  class="dropdown searchable-select-root"
+                >
+                  <button
+                    aria-expanded="false"
+                    aria-haspopup="true"
+                    class="dropdown-toggle button-root d-flex align-items-center justify-content-between w-100 btn btn-unstyled"
+                    type="button"
+                  >
+                    Select
+                    <svg
+                      class="lexicon-icon lexicon-icon-caret-bottom icon-root ml-2"
+                      role="presentation"
+                    >
+                      <use
+                        href="#caret-bottom"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal-footer"
+            >
+              <div
+                class="modal-item-last"
+              >
+                <div
+                  class="btn-group-spaced"
+                  role="group"
+                >
+                  <button
+                    class="button-root btn btn-secondary"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="button-root btn btn-primary"
+                    type="submit"
+                  >
+                    Create
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div>
+        <div>
+          <div
+            aria-hidden="true"
+            class="dropdown-menu"
+            id="clay-dropdown-menu-1"
+            role="presentation"
+          >
+            <li
+              role="none"
+            >
+              <div
+                class="dropdown-section items-wrapper"
+              >
+                <li
                   role="presentation"
                 >
-                  <use
-                    href="#caret-bottom"
-                  />
-                </svg>
-              </button>
-            </div>
+                  <button
+                    aria-selected="false"
+                    class="dropdown-item"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Text
+                  </button>
+                </li>
+                <li
+                  role="presentation"
+                >
+                  <button
+                    aria-selected="false"
+                    class="dropdown-item"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Number
+                  </button>
+                </li>
+                <li
+                  role="presentation"
+                >
+                  <button
+                    aria-selected="false"
+                    class="dropdown-item"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Boolean
+                  </button>
+                </li>
+                <li
+                  role="presentation"
+                >
+                  <button
+                    aria-selected="false"
+                    class="dropdown-item"
+                    role="menuitem"
+                    tabindex="-1"
+                  >
+                    Date
+                  </button>
+                </li>
+              </div>
+            </li>
           </div>
         </div>
-        <div
-          class="modal-footer"
-        >
-          <button
-            class="button-root btn btn-secondary"
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            class="button-root btn btn-primary"
-            type="submit"
-          >
-            Create
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+</body>
 `;

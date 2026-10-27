@@ -1,90 +1,82 @@
 import * as API from 'shared/api';
 import * as data from 'test/data';
-import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
-import {close, open} from 'shared/actions/modals';
-import {connect} from 'react-redux';
-import {fireEvent, render, waitFor} from '@testing-library/react';
-import {mockGetDateNow} from 'test/mock-date';
 import {
 	NotificationSubtypes,
 	NotificationTypes
 } from 'shared/util/records/Notification';
-import {Provider} from 'react-redux';
+import {act, renderHook, waitFor} from '@testing-library/react';
 import {range} from 'lodash';
 import {useModalNotifications} from 'shared/hooks/useModalNotifications';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/components/modals/NewRequestModal', () => () => null);
+jest.mock(
+	'shared/components/modals/TimeZoneSelectionModal',
+	() =>
+		({notificationId, onClose}) => (
+			<button data-testid={`modal-${notificationId}`} onClick={onClose} />
+		)
+);
 
-const WrapperComponent = connect(null, {close, open})(({close, open}) => {
-	useModalNotifications(close, '23', open);
-
-	return (
-		<div>
-			<span>{'testing'}</span>
-		</div>
+const mockNotifications = count =>
+	Promise.resolve(
+		range(count).map(i =>
+			data.mockNotification(i, {
+				subtype: NotificationSubtypes.TimeZoneAdmin,
+				type: NotificationTypes.Modal
+			})
+		)
 	);
-});
 
 describe('useModalNotifications', () => {
-	it('should open a notification modal', async () => {
-		mockGetDateNow(data.getTimestamp(0));
-
+	it('should return a notification modal', async () => {
 		API.notifications.fetchNotifications.mockReturnValueOnce(
-			Promise.resolve(
-				range(1).map(i =>
-					data.mockNotification(i, {
-						subtype: NotificationSubtypes.TimeZoneAdmin,
-						type: NotificationTypes.Modal
-					})
-				)
-			)
+			mockNotifications(1)
 		);
 
-		const {getByText} = render(
-			<Provider store={mockStore()}>
-				<ModalRenderer />
-				<WrapperComponent />
-			</Provider>
-		);
+		const {result} = renderHook(() => useModalNotifications('23'));
 
-		jest.runAllTimers();
+		await waitFor(() => expect(result.current).not.toBeNull());
 
-		await waitFor(() => getByText('Set Timezone'));
-
-		expect(getByText('Set Timezone')).toBeInTheDocument();
+		expect(result.current.props.groupId).toBe('23');
 	});
 
-	it('should open another notification modal after closing one when having multiple modals', async () => {
-		mockGetDateNow(data.getTimestamp(0));
-
+	it('should return another notification modal after closing one when having multiple modals', async () => {
 		API.notifications.fetchNotifications.mockReturnValue(
-			Promise.resolve(
-				range(2).map(i =>
-					data.mockNotification(i, {
-						subtype: NotificationSubtypes.TimeZoneAdmin,
-						type: NotificationTypes.Modal
-					})
-				)
-			)
+			mockNotifications(2)
 		);
 
-		const {getByText} = render(
-			<Provider store={mockStore()}>
-				<ModalRenderer />
-				<WrapperComponent />
-			</Provider>
+		const {result} = renderHook(() => useModalNotifications('23'));
+
+		await waitFor(() => expect(result.current).not.toBeNull());
+
+		const firstId = result.current.props.notificationId;
+
+		act(() => result.current.props.onClose());
+
+		await waitFor(() =>
+			expect(result.current?.props.notificationId).not.toBe(firstId)
 		);
 
-		jest.runAllTimers();
+		expect(result.current).not.toBeNull();
 
-		await waitFor(() => getByText('Do This Later'));
+		act(() => result.current.props.onClose());
 
-		fireEvent.click(getByText('Do This Later'));
+		await waitFor(() => expect(result.current).toBeNull());
+	});
 
-		expect(getByText('Set Timezone')).toBeTruthy();
+	it('should return nothing when there are no notifications', async () => {
+		API.notifications.fetchNotifications.mockReturnValueOnce(
+			mockNotifications(0)
+		);
+
+		const {result} = renderHook(() => useModalNotifications('23'));
+
+		await waitFor(() =>
+			expect(API.notifications.fetchNotifications).toHaveBeenCalled()
+		);
+
+		expect(result.current).toBeNull();
 	});
 });

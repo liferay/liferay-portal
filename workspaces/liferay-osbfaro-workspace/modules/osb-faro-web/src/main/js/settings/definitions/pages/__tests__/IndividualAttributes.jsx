@@ -1,10 +1,7 @@
-import 'test/mock-modal';
-
 import IndividualAttributes from '../IndividualAttributes';
 import mockStore from 'test/mock-store';
 import React from 'react';
-import {cleanup, fireEvent, render} from '@testing-library/react';
-import {open} from 'shared/actions/modals';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
@@ -65,6 +62,8 @@ describe('IndividualAttributes', () => {
 
 		fireEvent.click(getByText('testFildName0'));
 
-		expect(open).toBeCalled();
+		expect(
+			await screen.findByRole('heading', {name: 'testFildName0'})
+		).toBeInTheDocument();
 	});
 });

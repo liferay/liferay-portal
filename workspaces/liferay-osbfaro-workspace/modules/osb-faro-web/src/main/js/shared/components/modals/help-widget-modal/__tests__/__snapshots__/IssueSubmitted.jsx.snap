@@ -1,46 +1,81 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`IssueSubmitted should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    class="modal-header has-title"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="h4 modal-title"
-    >
-      Issue Submitted
-    </div>
-    <button
-      aria-label="Close"
-      class="button-root close btn btn-secondary"
-      type="button"
-    >
-      <svg
-        class="lexicon-icon lexicon-icon-times icon-root"
-        role="presentation"
-      >
-        <use
-          href="#times"
-        />
-      </svg>
-    </button>
-  </div>
-  <div
-    class="modal-body d-flex flex-column align-items-center"
-  >
-    <svg
-      class="lexicon-icon lexicon-icon-ac_no_sites icon-root icon-size-xxxl my-5"
-      data-file="ac_no_sites.svg"
-      role="presentation"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
     />
-    <h3>
-      Message Received
-    </h3>
-    <p
-      class="description"
+    <div
+      class="fade modal d-block show"
     >
-      Thanks for your contribution. We will look in to this as soon as possible.
-    </p>
+      <div
+        class="modal-dialog"
+      >
+        <div
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
+        >
+          <div
+            class="modal-header"
+          >
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
+            >
+              Issue Submitted
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
+              >
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            class="modal-body d-flex flex-column align-items-center"
+          >
+            <svg
+              class="lexicon-icon lexicon-icon-ac_no_sites icon-root icon-size-xxxl my-5"
+              data-file="ac_no_sites.svg"
+              role="presentation"
+            />
+            <p>
+              <span
+                class="text-6 font-weight-bold"
+              >
+                Message Received
+              </span>
+            </p>
+            <p
+              class="text-secondary"
+            >
+              Thanks for your contribution. We will look in to this as soon as possible.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</body>
 `;

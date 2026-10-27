@@ -1,6 +1,6 @@
 import React from 'react';
 import {disconnect} from 'shared/api/data-source';
-import {render} from '@testing-library/react';
+import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {useDisconnectDataSource} from '../utils';
 
 jest.unmock('react-dom');
@@ -18,37 +18,37 @@ const runDisconnectFlow = async ({
 	beforeSubmit,
 	onSubmit = () => Promise.resolve(),
 }: RunFlowOptions = {}) => {
-	const open = jest.fn();
-	const close = jest.fn();
 	const addAlert = jest.fn();
 
-	let handleDisconnect: () => void = () => {};
-
 	const Capture: React.FC = () => {
-		const hook = useDisconnectDataSource({
+		const {disconnectModal, handleDisconnect} = useDisconnectDataSource({
 			addAlert,
 			beforeSubmit,
-			close,
 			groupId: '23',
 			id: 'ds-1',
 			onSubmit,
-			open,
 		});
 
-		handleDisconnect = hook.handleDisconnect;
+		return (
+			<>
+				<button onClick={handleDisconnect} type="button">
+					{'trigger'}
+				</button>
 
-		return null;
+				{disconnectModal}
+			</>
+		);
 	};
 
 	render(<Capture />);
 
-	handleDisconnect();
+	fireEvent.click(screen.getByText('trigger'));
 
-	const modalConfig = open.mock.calls[0][1];
+	fireEvent.click(await screen.findByText('Disconnect'));
 
-	await modalConfig.onSubmit();
+	await waitFor(() => expect(addAlert).toHaveBeenCalled());
 
-	return {addAlert, close, open};
+	return {addAlert};
 };
 
 describe('useDisconnectDataSource', () => {
@@ -116,5 +116,22 @@ describe('useDisconnectDataSource', () => {
 
 		expect(disconnect).not.toHaveBeenCalled();
 		expect(onSubmit).not.toHaveBeenCalled();
+	});
+
+	it('does not render the modal until the disconnect is requested', () => {
+		const Capture: React.FC = () => {
+			const {disconnectModal} = useDisconnectDataSource({
+				addAlert: jest.fn(),
+				groupId: '23',
+				id: 'ds-1',
+				onSubmit: jest.fn(),
+			});
+
+			return <>{disconnectModal}</>;
+		};
+
+		render(<Capture />);
+
+		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 });

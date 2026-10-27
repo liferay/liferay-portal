@@ -9,11 +9,19 @@ import {MockedProvider} from '@apollo/client/testing';
 import {noop} from 'lodash';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
+import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
+
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <CreateMappingModal observer={observer} {...props} />;
+};
 
 describe('CreateMappingModal', () => {
 	it('should render', async () => {
-		const {container} = render(
+		render(
 			<Provider store={mockStore()}>
 				<MemoryRouter initialEntries={['/workspace/23']}>
 					<Routes>
@@ -27,10 +35,7 @@ describe('CreateMappingModal', () => {
 									}
 									mocks={[]}
 								>
-									<CreateMappingModal
-										groupId='23'
-										onClose={noop}
-									/>
+									<TestModal groupId='23' onClose={noop} />
 								</MockedProvider>
 							}
 							path='/workspace/:groupId'
@@ -40,8 +45,10 @@ describe('CreateMappingModal', () => {
 			</Provider>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForModal();
 
-		expect(container).toMatchSnapshot();
+		await waitForLoadingToBeRemoved(document.body);
+
+		expect(document.body).toMatchSnapshot();
 	});
 });
