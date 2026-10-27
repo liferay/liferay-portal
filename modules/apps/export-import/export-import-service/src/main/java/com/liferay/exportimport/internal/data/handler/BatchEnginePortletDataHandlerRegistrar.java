@@ -7,6 +7,7 @@ package com.liferay.exportimport.internal.data.handler;
 
 import com.liferay.batch.engine.BatchEngineExportTaskExecutor;
 import com.liferay.batch.engine.BatchEngineImportTaskExecutor;
+import com.liferay.batch.engine.ItemClassRegistry;
 import com.liferay.batch.engine.service.BatchEngineExportTaskLocalService;
 import com.liferay.batch.engine.service.BatchEngineImportTaskService;
 import com.liferay.changeset.service.ChangesetEntryLocalService;
@@ -102,6 +103,9 @@ public class BatchEnginePortletDataHandlerRegistrar {
 	@Reference
 	private GroupLocalService _groupLocalService;
 
+	@Reference
+	private ItemClassRegistry _itemClassRegistry;
+
 	private final Map<String, ServiceRegistration<PortletDataHandler>>
 		_portletIdServiceRegistrations = new ConcurrentHashMap<>();
 	private final DCLSingleton
@@ -155,7 +159,7 @@ public class BatchEnginePortletDataHandlerRegistrar {
 						_batchEngineImportTaskService,
 						_changesetEntryLocalService, _classNameLocalService,
 						_exportImportHelper, _groupLocalService,
-						_stagingGroupHelper);
+						_itemClassRegistry, _stagingGroupHelper);
 
 				batchEnginePortletDataHandler.setPortletId(
 					exportImportDescriptor.getPortletId());

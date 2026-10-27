@@ -8,7 +8,6 @@ package com.liferay.portal.tools.rest.builder.test.internal.resource.v1_0;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.odata.entity.EntityModel;
 import com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity;
@@ -92,27 +91,6 @@ public class TestEntityResourceImpl
 	@Override
 	public ExportImportDescriptor getExportImportDescriptor() {
 		return new ExportImportDescriptor() {
-
-			@Override
-			public JSONObject getDeletionJSONObject(
-				String externalReferenceCode, long groupId) {
-
-				for (TestEntity testEntity : _testEntities) {
-					if (Objects.equals(
-							externalReferenceCode,
-							testEntity.getExternalReferenceCode())) {
-
-						JSONObject jsonObject =
-							ExportImportDescriptor.super.getDeletionJSONObject(
-								externalReferenceCode, groupId);
-
-						return jsonObject.put(
-							"type", testEntity.getTypeAsString());
-					}
-				}
-
-				return null;
-			}
 
 			@Override
 			public String getKey() {
