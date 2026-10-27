@@ -11,7 +11,10 @@ import com.liferay.exportimport.web.internal.util.ExportImportAPIURLUtil;
 import com.liferay.frontend.data.set.model.FDSActionDropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTask;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskManagerUtil;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.staticexport.background.task.StaticSiteExportBackgroundTaskExecutorNames;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -154,6 +158,15 @@ public class ExportImportProcessesDisplayContext {
 
 	public String getImportTitle() {
 		return _getTitle("import");
+	}
+
+	public long[] getStaticSiteExportBackgroundTaskIds() {
+		return TransformUtil.transformToLongArray(
+			BackgroundTaskManagerUtil.getBackgroundTasks(
+				_groupId,
+				StaticSiteExportBackgroundTaskExecutorNames.
+					STATIC_SITE_EXPORT_BACKGROUND_TASK_EXECUTOR),
+			BackgroundTask::getBackgroundTaskId);
 	}
 
 	private String _getAPIURL(String endpoint) {

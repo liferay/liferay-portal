@@ -7,6 +7,7 @@ import {getLiveProcess} from './liveProcesses';
 
 export interface ItemAction {
 	data?: {
+		id?: string;
 		visibilityFilters?: Record<string, unknown>;
 	};
 }

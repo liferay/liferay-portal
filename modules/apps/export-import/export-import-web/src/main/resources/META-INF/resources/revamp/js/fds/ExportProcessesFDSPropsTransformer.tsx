@@ -13,9 +13,11 @@ import ProcessTitleRenderer from './cell_renderers/ProcessTitleRenderer';
 import {ItemAction, toLiveVisibilityAction} from './liveVisibilityAction';
 
 export default function ExportProcessesFDSPropsTransformer({
+	additionalProps,
 	itemsActions,
 	...otherProps
 }: {
+	additionalProps: {staticSiteExportBackgroundTaskIds: number[]};
 	itemsActions?: ItemAction[];
 }) {
 	return {
@@ -49,6 +51,18 @@ export default function ExportProcessesFDSPropsTransformer({
 				} as IInternalRenderer,
 			],
 		},
-		itemsActions: itemsActions?.map(toLiveVisibilityAction),
+		itemsActions: itemsActions?.map((itemAction) => {
+			if (itemAction.data?.id === 'relaunch') {
+				return {
+					...itemAction,
+					isVisible: (itemData: {id: number}) =>
+						!additionalProps.staticSiteExportBackgroundTaskIds.includes(
+							itemData.id
+						),
+				};
+			}
+
+			return toLiveVisibilityAction(itemAction);
+		}),
 	};
 }
