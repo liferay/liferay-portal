@@ -1,6 +1,5 @@
 import * as API from 'shared/api';
 import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import {
 	cleanup,
@@ -47,7 +46,7 @@ const ActionsProbe = ({
 	onShowDetails?: () => void;
 	onView?: () => void;
 }) => {
-	const actions = useLifecycleActions({
+	const {actions, manageNotificationsModal} = useLifecycleActions({
 		lifecycle,
 		onDefaultChange,
 		onShowDetails,
@@ -55,15 +54,19 @@ const ActionsProbe = ({
 	});
 
 	return (
-		<ul>
-			{actions.map(({label, onClick}) => (
-				<li key={label}>
-					<button onClick={onClick} type="button">
-						{label}
-					</button>
-				</li>
-			))}
-		</ul>
+		<>
+			<ul>
+				{actions.map(({label, onClick}) => (
+					<li key={label}>
+						<button onClick={onClick} type="button">
+							{label}
+						</button>
+					</li>
+				))}
+			</ul>
+
+			{manageNotificationsModal}
+		</>
 	);
 };
 
@@ -74,8 +77,6 @@ const LocationProbe = () => (
 const renderActions = (props: React.ComponentProps<typeof ActionsProbe>) =>
 	render(
 		<Provider store={mockStore()}>
-			<ModalRenderer />
-
 			<MemoryRouter>
 				<ActionsProbe {...props} />
 
@@ -201,7 +202,7 @@ describe('useLifecycleActions', () => {
 		);
 	});
 
-	it('opens the notifications modal on Manage Notifications', () => {
+	it('opens the notifications modal on Manage Notifications', async () => {
 		renderActions({lifecycle: {externalReferenceCode: 'erc-5', id: '5'}});
 
 		fireEvent.click(
@@ -209,7 +210,7 @@ describe('useLifecycleActions', () => {
 		);
 
 		expect(
-			screen.getByText(/manage lifecycle notifications/i)
+			await screen.findByText(/manage lifecycle notifications/i)
 		).toBeInTheDocument();
 	});
 

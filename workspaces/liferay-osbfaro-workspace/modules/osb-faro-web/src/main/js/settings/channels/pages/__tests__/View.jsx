@@ -1,14 +1,11 @@
 import * as API from 'shared/api';
 import * as data from 'test/data';
 import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import View from '../View';
 import {
 	cleanup,
 	fireEvent,
-	getByText,
-	queryByText,
 	render,
 	screen
 } from '@testing-library/react';
@@ -36,8 +33,6 @@ const DefaultComponent = props => {
 
 	return (
 		<Provider store={mockStore()}>
-			<ModalRenderer />
-
 			<MemoryRouter>
 				<View {...defaultProps} {...props} />
 			</MemoryRouter>
@@ -122,16 +117,10 @@ describe('View Channel', () => {
 
 		fireEvent.click(deleteBtn);
 
-		expect(
-			container.querySelector('div.modal-container')
-		).toBeInTheDocument();
-
-		expect(container.querySelector('div.modal-container')).toHaveClass(
-			'show'
-		);
+		expect(await screen.findByRole('dialog')).toBeInTheDocument();
 
 		expect(
-			screen.getByText('Unable to Delete Property')
+			await screen.findByText('Unable to Delete Property')
 		).toBeInTheDocument();
 
 		const modalText = screen.getByText((content, node) => {
@@ -185,15 +174,11 @@ describe('View Channel', () => {
 
 		fireEvent.click(deleteBtn);
 
+		expect(await screen.findByRole('dialog')).toBeInTheDocument();
+
 		expect(
-			container.querySelector('div.modal-container')
+			await screen.findByText('Delete Channel 1?')
 		).toBeInTheDocument();
-
-		expect(container.querySelector('div.modal-container')).toHaveClass(
-			'show'
-		);
-
-		expect(screen.getByText('Delete Channel 1?')).toBeInTheDocument();
 
 		expect(
 			screen.getByText(
@@ -204,15 +189,13 @@ describe('View Channel', () => {
 
 	it('should render a warning modal when the user toggles from All User to Select User property permissions', async () => {
 		const {container} = render(<DefaultComponent />);
-		const modalContainer = container.querySelector('.modal-renderer-root');
-		const customMatcher = content => content === 'Permissions Change';
 
 		await waitForLoadingToBeRemoved(container);
 
-		expect(queryByText(modalContainer, customMatcher)).toBeNull();
+		expect(screen.queryByText('Permissions Change')).toBeNull();
 
 		fireEvent.click(screen.getByLabelText('Select Users'));
 
-		expect(getByText(modalContainer, customMatcher)).toBeTruthy();
+		expect(await screen.findByText('Permissions Change')).toBeTruthy();
 	});
 });

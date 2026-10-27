@@ -1,4 +1,8 @@
-import 'test/mock-modal';
+import {
+	getModalProps,
+	isModalOpen,
+	resetModalProps
+} from 'test/mock-searchable-table-modal';
 
 import * as API from 'shared/api';
 import mockStore from 'test/mock-store';
@@ -8,7 +12,6 @@ import SelectPageAssetInput, {
 	getCompatibleAssetTypes
 } from '../SelectPageAssetInput';
 import {act, cleanup, fireEvent, render, waitFor} from '@testing-library/react';
-import {close, open} from 'shared/actions/modals';
 import {OrderedMap} from 'immutable';
 import {Provider} from 'react-redux';
 import {useLDPEnabled} from 'shared/hooks/useLDPEnabled';
@@ -126,13 +129,11 @@ describe('getCompatibleAssetTypes (asset types the picker offers)', () => {
 
 describe('SelectPageAssetInput', () => {
 	beforeAll(() => {
-		close.mockReturnValue({type: 'close'});
 	});
 
 	afterEach(() => {
 		cleanup();
-		open.mockClear();
-		close.mockClear();
+		resetModalProps();
 		API.activities.searchAssets.mockClear();
 		API.assets.searchTypes.mockClear();
 		useLDPEnabled.mockReturnValue(true);
@@ -206,9 +207,9 @@ describe('SelectPageAssetInput', () => {
 			fireEvent.click(getByText('Page'));
 			fireEvent.click(getByText(/add pages/i));
 
-			expect(open).toHaveBeenCalled();
+			expect(isModalOpen()).toBe(true);
 
-			const config = open.mock.calls[0][1];
+			const config = getModalProps();
 
 			expect(config.title).toBe('Select Page');
 			expect(config.rowIdentifier).toBe('id');
@@ -265,7 +266,7 @@ describe('SelectPageAssetInput', () => {
 
 			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
-			const config = open.mock.calls[0][1];
+			const config = getModalProps();
 
 			expect(config.title).toBe('Select Asset');
 			expect(config.rowIdentifier).toBe('id');
@@ -291,7 +292,7 @@ describe('SelectPageAssetInput', () => {
 			expect(getByText('About')).toBeTruthy();
 		});
 
-		it('should emit every selected item as a selection on modal submit', () => {
+		it('should emit every selected item as a selection on modal submit', async () => {
 			const onSelectionsChange = jest.fn();
 
 			const {getByRole, getByText} = render(
@@ -305,7 +306,7 @@ describe('SelectPageAssetInput', () => {
 			fireEvent.click(getByText('Page'));
 			fireEvent.click(getByText(/add pages/i));
 
-			const {onSubmit} = open.mock.calls[0][1];
+			const {onSubmit} = getModalProps();
 
 			act(() => {
 				onSubmit(
@@ -332,7 +333,7 @@ describe('SelectPageAssetInput', () => {
 					}
 				]
 			});
-			expect(close).toHaveBeenCalled();
+			await waitFor(() => expect(isModalOpen()).toBe(false));
 		});
 
 		it('should emit the remaining selections when a chip is removed', () => {
@@ -451,7 +452,7 @@ describe('SelectPageAssetInput', () => {
 
 			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
-			const {onSubmit} = open.mock.calls[0][1];
+			const {onSubmit} = getModalProps();
 
 			act(() => {
 				onSubmit(
@@ -528,7 +529,7 @@ describe('SelectPageAssetInput', () => {
 
 			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
-			const {dataSourceFn} = open.mock.calls[0][1];
+			const {dataSourceFn} = getModalProps();
 
 			await dataSourceFn({delta: 20, page: 1, query: ''});
 
@@ -564,7 +565,7 @@ describe('SelectPageAssetInput', () => {
 
 			fireEvent.click(getByText(/add assets/i));
 
-			const {dataSourceFn} = open.mock.calls[0][1];
+			const {dataSourceFn} = getModalProps();
 
 			await dataSourceFn({delta: 20, page: 1, query: ''});
 
@@ -602,7 +603,7 @@ describe('SelectPageAssetInput', () => {
 
 			fireEvent.click(getByRole('button', {name: /add assets/i}));
 
-			const {onSubmit} = open.mock.calls[0][1];
+			const {onSubmit} = getModalProps();
 
 			act(() => {
 				onSubmit(
@@ -741,7 +742,7 @@ describe('SelectPageAssetInput', () => {
 			fireEvent.click(getByText('Page'));
 			fireEvent.click(getByText(/add pages/i));
 
-			const config = open.mock.calls[0][1];
+			const config = getModalProps();
 			const byAccessor = Object.fromEntries(
 				config.columns.map(column => [column.accessor, column])
 			);
@@ -769,7 +770,7 @@ describe('SelectPageAssetInput', () => {
 			fireEvent.click(getByText('Page'));
 			fireEvent.click(getByText(/add pages/i));
 
-			const config = open.mock.calls[0][1];
+			const config = getModalProps();
 			const countColumn = config.columns.find(
 				(column) => column.accessor === 'count'
 			);
@@ -798,7 +799,7 @@ describe('SelectPageAssetInput', () => {
 			fireEvent.click(getByText('Page'));
 			fireEvent.click(getByText(/add pages/i));
 
-			const {dataSourceFn} = open.mock.calls[0][1];
+			const {dataSourceFn} = getModalProps();
 
 			const {items, total} = await dataSourceFn({
 				delta: 10,

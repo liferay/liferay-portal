@@ -1,131 +1,173 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ManuallyRetrainModelModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog manually-retrain-model-modal-root"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog"
       >
         <div
-          class="h4 modal-title"
-        >
-          Manually Retrain Model
-        </div>
-      </div>
-      <form
-        class="form-root"
-      >
-        <div
-          class="modal-body"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
           <div
-            class="description"
+            class="modal-header"
           >
-            Select an interaction period for the selected items.
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
+            >
+              Manually Retrain Model
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
+              >
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
           </div>
-          <div
-            class="form-group"
+          <form
+            class="form-root"
           >
             <div
-              class="form-group-item"
+              class="modal-body"
             >
               <div
-                class=""
+                class="mb-3"
               >
-                <label
-                  class="form-control-label label-root"
-                  for="runDataPeriod"
+                Select an interaction period for the selected items.
+              </div>
+              <div
+                class="form-group"
+              >
+                <div
+                  class="form-group-item"
                 >
+                  <div
+                    class=""
+                  >
+                    <label
+                      class="form-control-label label-root"
+                      for="runDataPeriod"
+                    >
+                      <span
+                        class="content-container"
+                      >
+                        Select Interaction Period
+                      </span>
+                    </label>
+                    <select
+                      class="form-control select-root"
+                      id="runDataPeriod"
+                      name="runDataPeriod"
+                    >
+                      <option
+                        value="LAST_7_DAYS"
+                      >
+                        Last 7 days
+                      </option>
+                      <option
+                        value="LAST_30_DAYS"
+                      >
+                        Last 30 days
+                      </option>
+                      <option
+                        value="LAST_180_DAYS"
+                      >
+                        Last 180 days
+                      </option>
+                      <option
+                        value="LAST_365_DAYS"
+                      >
+                        Last Year
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div
+                  class="font-weight-semi-bold mb-2"
+                >
+                  Monthly Training Allowance
+                </div>
+                <div
+                  class="d-flex"
+                >
+                  Scheduled:
                   <span
-                    class="content-container"
+                    class="font-weight-semi-bold ml-3"
                   >
-                    Select Interaction Period
+                    3
                   </span>
-                </label>
-                <select
-                  class="form-control select-root"
-                  id="runDataPeriod"
-                  name="runDataPeriod"
+                </div>
+                <div
+                  class="d-flex"
                 >
-                  <option
-                    value="LAST_7_DAYS"
+                  Remaining:
+                  <span
+                    class="font-weight-semi-bold ml-3"
                   >
-                    Last 7 days
-                  </option>
-                  <option
-                    value="LAST_30_DAYS"
-                  >
-                    Last 30 days
-                  </option>
-                  <option
-                    value="LAST_180_DAYS"
-                  >
-                    Last 180 days
-                  </option>
-                  <option
-                    value="LAST_365_DAYS"
-                  >
-                    Last Year
-                  </option>
-                </select>
+                    3
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-          <div
-            class="training-allowance"
-          >
             <div
-              class="title"
+              class="modal-footer"
             >
-              Monthly Training Allowance
-            </div>
-            <div
-              class="d-flex"
-            >
-              Scheduled:
-              <span
-                class="count"
+              <div
+                class="modal-item-last"
               >
-                3
-              </span>
+                <div
+                  class="btn-group-spaced"
+                  role="group"
+                >
+                  <button
+                    class="button-root btn btn-secondary"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="button-root btn btn-primary"
+                    type="button"
+                  >
+                    Retrain
+                  </button>
+                </div>
+              </div>
             </div>
-            <div
-              class="d-flex"
-            >
-              Remaining:
-              <span
-                class="count"
-              >
-                3
-              </span>
-            </div>
-          </div>
+          </form>
         </div>
-        <div
-          class="modal-footer"
-        >
-          <button
-            class="button-root btn btn-secondary"
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            class="button-root btn btn-primary"
-            type="button"
-          >
-            Retrain
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+</body>
 `;

@@ -5,7 +5,9 @@ import {createOrderIOMap, EMAIL_ADDRESS} from 'shared/util/pagination';
 import {noop} from 'lodash';
 import {OrderByDirections} from 'shared/util/constants';
 import {MemoryRouter} from 'react-router';
+import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
@@ -14,9 +16,15 @@ const ITEMS = [
 	{emailAddress: 'bar@liferay.com', name: 'Bar'}
 ];
 
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <SearchableEntitiesTableModal observer={observer} {...props} />;
+};
+
 const DefaultComponent = props => (
 	<MemoryRouter>
-		<SearchableEntitiesTableModal
+		<TestModal
 			columns={[
 				{
 					accessor: 'name',
@@ -42,18 +50,20 @@ const DefaultComponent = props => (
 describe('SearchableEntitiesTableModal', () => {
 	afterEach(cleanup);
 
-	it('should render loading state without ghost table', () => {
-		const {container, getByText} = render(
+	it('should render loading state without ghost table', async () => {
+		const {getByText} = render(
 			<DefaultComponent dataSourceFn={() => new Promise(() => {})} />
 		);
 
+		await waitForModal();
+
 		expect(getByText('entities')).toBeTruthy();
-		expect(container.querySelector('.loading-root')).toBeTruthy();
-		expect(container.querySelector('table')).toBeFalsy();
+		expect(document.querySelector('.loading-root')).toBeTruthy();
+		expect(document.querySelector('table')).toBeFalsy();
 	});
 
 	it('should render w/ defaultParams', async () => {
-		const {container} = render(
+		render(
 			<DefaultComponent
 				initialOrderIOMap={createOrderIOMap(
 					EMAIL_ADDRESS,
@@ -62,11 +72,13 @@ describe('SearchableEntitiesTableModal', () => {
 			/>
 		);
 
+		await waitForModal();
+
 		jest.runAllTimers();
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForLoadingToBeRemoved(document.body);
 
-		const emailHeaderButton = container.querySelectorAll(
+		const emailHeaderButton = document.querySelectorAll(
 			'.table-head-title > button'
 		)[1];
 

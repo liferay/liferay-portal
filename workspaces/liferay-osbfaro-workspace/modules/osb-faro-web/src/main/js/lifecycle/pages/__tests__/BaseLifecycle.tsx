@@ -1,7 +1,6 @@
 import * as API from 'shared/api';
 import BaseLifecycle from '../BaseLifecycle';
 import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import URLConstants from 'shared/util/url-constants';
 import {ChannelContext} from 'shared/context/channel';
@@ -193,8 +192,6 @@ const LocationProbe = () => (
 const renderPage = (initialEntries = ['/workspace/23/123/lifecycle/erc-1']) =>
 	render(
 		<Provider store={mockStore()}>
-			<ModalRenderer />
-
 			<ChannelContext.Provider value={mockChannelContext() as any}>
 				<MemoryRouter initialEntries={initialEntries}>
 					<BaseLifecycle />
@@ -657,7 +654,7 @@ describe('BaseLifecycle', () => {
 	});
 
 	describe('the Manage Notifications action', () => {
-		it('opens the manage notifications modal when clicked', () => {
+		it('opens the manage notifications modal when clicked', async () => {
 			renderPage();
 
 			openActionsMenu();
@@ -667,7 +664,7 @@ describe('BaseLifecycle', () => {
 			);
 
 			expect(
-				screen.getByText('Manage Lifecycle Notifications')
+				await screen.findByText('Manage Lifecycle Notifications')
 			).toBeInTheDocument();
 		});
 

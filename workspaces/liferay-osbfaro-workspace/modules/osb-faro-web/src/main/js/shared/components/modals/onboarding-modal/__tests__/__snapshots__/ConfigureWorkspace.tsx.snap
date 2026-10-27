@@ -8,13 +8,17 @@ exports[`ConfigureWorkspace renders 1`] = `
     <div
       class="modal-header"
     >
+      <h1
+        class="modal-title"
+        tabindex="-1"
+      />
       <button
         aria-label="Close"
-        class="button-root close btn btn-secondary"
+        class="close btn btn-unstyled"
         type="button"
       >
         <svg
-          class="lexicon-icon lexicon-icon-times icon-root"
+          class="lexicon-icon lexicon-icon-times"
           role="presentation"
         >
           <use
@@ -40,7 +44,7 @@ exports[`ConfigureWorkspace renders 1`] = `
         class="text-center mb-4"
       >
         <span
-          class="text-10 font-weight-bold"
+          class="text-6 font-weight-bold"
         >
           Configure Your Workspace Access
         </span>
@@ -56,7 +60,7 @@ exports[`ConfigureWorkspace renders 1`] = `
           </span>
         </div>
         <span
-          class="text-3 text-secondary"
+          class="text-4 text-secondary"
         >
           Define a friendly URL that others can use to access and share this workspace. This value cannot be changed after it is set.
         </span>
@@ -64,7 +68,7 @@ exports[`ConfigureWorkspace renders 1`] = `
           class="mb-1"
         >
           <span
-            class="text-3 text-secondary"
+            class="text-4 text-secondary"
           >
             e.g. 
             <span>
@@ -117,7 +121,7 @@ exports[`ConfigureWorkspace renders 1`] = `
           </span>
         </div>
         <span
-          class="text-3 text-secondary"
+          class="text-4 text-secondary"
         >
           Define which email domains can request access to this workspace.
         </span>
@@ -125,7 +129,7 @@ exports[`ConfigureWorkspace renders 1`] = `
           class="mb-1"
         >
           <span
-            class="text-3 text-secondary"
+            class="text-4 text-secondary"
           >
             e.g. 
             <span>
@@ -208,12 +212,21 @@ exports[`ConfigureWorkspace renders 1`] = `
     <div
       class="modal-footer"
     >
-      <button
-        class="button-root ml-2 btn btn-primary"
-        type="submit"
+      <div
+        class="modal-item-last"
       >
-        Next
-      </button>
+        <div
+          class="btn-group-spaced"
+          role="group"
+        >
+          <button
+            class="button-root ml-2 btn btn-primary"
+            type="submit"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </div>
   </form>
 </div>

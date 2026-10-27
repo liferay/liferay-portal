@@ -1,29 +1,52 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`LoadingModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog loading-modal-root modal-sm"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="icon-container"
+        class="modal-dialog modal-sm"
       >
-        <span
-          aria-hidden="true"
-          class="loading-root center loading-animation"
-        />
+        <div
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
+        >
+          <div
+            class="modal-body align-items-center d-flex flex-column"
+          >
+            <div
+              class="icon-container"
+            >
+              <span
+                aria-hidden="true"
+                class="loading-root center loading-animation"
+              />
+            </div>
+            <p
+              class="text-center"
+            >
+              Loading
+            </p>
+          </div>
+        </div>
       </div>
-      <p
-        class="message"
-      >
-        Loading
-      </p>
     </div>
   </div>
-</div>
+</body>
 `;

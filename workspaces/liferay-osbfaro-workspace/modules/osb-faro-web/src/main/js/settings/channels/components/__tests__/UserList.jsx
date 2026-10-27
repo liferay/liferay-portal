@@ -1,4 +1,5 @@
 import * as API from 'shared/api';
+import {isModalOpen} from 'test/mock-searchable-table-modal';
 import * as pedantic from 'test/pedantic';
 import mockStore from 'test/mock-store';
 import React from 'react';
@@ -6,7 +7,6 @@ import UserList from '../UserList';
 import {ClayIconSpriteContext} from '@clayui/icon';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
-import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
 
@@ -15,20 +15,6 @@ jest.unmock('react-dom');
 jest.mock('shared/actions/alerts', () => ({
 	actionTypes: {},
 	addAlert: jest.fn(() => ({meta: {}, payload: {}, type: 'addAlert'}))
-}));
-
-jest.mock('shared/actions/modals', () => ({
-	actionTypes: {
-		CLOSE_ALL_MODALS: 'CLOSE_ALL_MODALS',
-		CLOSE_MODAL: 'CLOSE_MODAL',
-		OPEN_MODAL: 'OPEN_MODAL'
-	},
-	close: jest.fn(() => ({meta: {}, payload: {}, type: 'close'})),
-	modalTypes: {
-		CONFIRMATION_MODAL: 'CONFIRMATION_MODAL',
-		SEARCHABLE_TABLE_MODAL: 'SEARCHABLE_TABLE_MODAL'
-	},
-	open: jest.fn(() => ({meta: {}, payload: {}, type: 'open'}))
 }));
 
 // Mock NameCell to avoid potential complex dependencies or meta property issues
@@ -127,12 +113,11 @@ describe('ChannelUserList', () => {
 
 		await waitForLoadingToBeRemoved();
 
+		expect(isModalOpen()).toBe(false);
+
 		fireEvent.click(screen.getByText('Add User'));
 
-		expect(open).toHaveBeenCalledWith(
-			'SEARCHABLE_TABLE_MODAL',
-			expect.any(Object)
-		);
+		expect(isModalOpen()).toBe(true);
 	});
 
 	it('should open a modal to remove users', async () => {
@@ -147,9 +132,6 @@ describe('ChannelUserList', () => {
 		const deleteButtons = screen.getAllByTestId('delete-user');
 		fireEvent.click(deleteButtons[0]);
 
-		expect(open).toHaveBeenCalledWith(
-			'CONFIRMATION_MODAL',
-			expect.any(Object)
-		);
+		expect(await screen.findByText('Remove User')).toBeInTheDocument();
 	});
 });

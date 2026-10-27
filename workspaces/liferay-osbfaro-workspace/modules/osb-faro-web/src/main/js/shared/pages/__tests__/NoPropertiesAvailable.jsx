@@ -1,17 +1,13 @@
-jest.mock('shared/actions/modals', () => ({
-	actionTypes: {},
-	close: jest.fn(),
-	modalTypes: {},
-	open: jest.fn(() => ({meta: {}, payload: {}, type: 'open'}))
-}));
+jest.mock('shared/components/modals/onboarding-modal', () => () => (
+	<div data-testid="onboarding-modal" />
+));
 
 import * as API from 'shared/api';
 import mockStore from 'test/mock-store';
 import NoPropertiesAvailable from '../NoPropertiesAvailable';
 import React from 'react';
-import {cleanup, fireEvent, render} from '@testing-library/react';
+import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import {getImmutableMock, mockMemberUser, mockUser} from 'test/data';
-import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
 import {MemoryRouter} from 'react-router';
 import {User} from 'shared/util/records';
@@ -58,14 +54,12 @@ describe('NoPropertiesAvailable', () => {
 		expect(queryByRole('button')).toBeNull();
 	});
 
-	it('should call open on "Start" click', async () => {
+	it('should open the onboarding modal on "Start" click', async () => {
 		API.dataSource.search.mockReturnValueOnce(Promise.resolve({total: 0}));
 
-		const {container, queryByText} = render(
-			<DefaultComponent open={open} />
-		);
+		const {container, queryByText} = render(<DefaultComponent />);
 
-		expect(open).not.toBeCalled();
+		expect(screen.queryByTestId('onboarding-modal')).toBeNull();
 
 		jest.runAllTimers();
 
@@ -73,6 +67,6 @@ describe('NoPropertiesAvailable', () => {
 
 		fireEvent.click(queryByText('Start'));
 
-		expect(open).toBeCalled();
+		expect(await screen.findByTestId('onboarding-modal')).toBeInTheDocument();
 	});
 });

@@ -3,26 +3,28 @@
 exports[`AssignSegments should render 1`] = `
 <div>
   <div
-    class="assign-segments"
+    class="pt-2"
   >
     <div
       class="modal-body d-flex flex-column align-items-center"
     >
       <h2
         aria-hidden="true"
+        class="font-weight-bold h4"
         data-aria-hidden="true"
       >
         Assign Existing Segments
       </h2>
       <span
         aria-hidden="true"
-        class="subtitle"
+        class="d-block mb-4 text-secondary"
         data-aria-hidden="true"
       >
         Your existing segments will be hidden until they have been assigned. A segment can only belong to a single property.
       </span>
       <div
-        class="assign-segments-table-wrapper"
+        class="overflow-auto w-100"
+        style="height: 352px;"
       >
         <div
           class="flex-grow-1 mx-4 table-root"
@@ -181,20 +183,29 @@ exports[`AssignSegments should render 1`] = `
       class="modal-footer d-flex justify-content-end"
       data-aria-hidden="true"
     >
-      <button
-        class="btn btn-secondary"
-        type="button"
+      <div
+        class="modal-item-last"
       >
-        Skip for Now
-      </button>
-      <button
-        class="btn btn-primary"
-        data-testid="submit-button"
-        disabled=""
-        type="button"
-      >
-        Done
-      </button>
+        <div
+          class="btn-group-spaced"
+          role="group"
+        >
+          <button
+            class="btn btn-secondary"
+            type="button"
+          >
+            Skip for Now
+          </button>
+          <button
+            class="btn btn-primary"
+            data-testid="submit-button"
+            disabled=""
+            type="button"
+          >
+            Done
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

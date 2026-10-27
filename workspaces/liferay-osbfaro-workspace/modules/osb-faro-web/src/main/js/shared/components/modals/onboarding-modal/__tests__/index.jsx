@@ -1,22 +1,23 @@
 import mockStore from 'test/mock-store';
 import OnboardingModal from '../index';
 import React from 'react';
-import {cleanup, render} from '@testing-library/react';
+import {cleanup} from '@testing-library/react';
 import {noop} from 'lodash';
 import {Provider} from 'react-redux';
+import {renderModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
 describe('OnboardingModal', () => {
 	afterEach(cleanup);
 
-	it('renders', () => {
-		const {container} = render(
+	it('renders', async () => {
+		await renderModal(observer => (
 			<Provider store={mockStore()}>
-				<OnboardingModal onClose={noop} />
+				<OnboardingModal observer={observer} onClose={noop} />
 			</Provider>
-		);
+		));
 
-		expect(container).toMatchSnapshot();
+		expect(document.body).toMatchSnapshot();
 	});
 });

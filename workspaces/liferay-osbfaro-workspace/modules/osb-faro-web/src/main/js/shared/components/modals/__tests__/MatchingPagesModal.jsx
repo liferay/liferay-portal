@@ -6,17 +6,25 @@ import {mockRecommendationPageAssetsReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
 import {render} from '@testing-library/react';
 import {MemoryRouter} from 'react-router-dom';
-import {waitForLoading} from 'test/helpers';
+import {useModal} from '@clayui/modal';
+import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <MatchingPagesModal observer={observer} {...props} />;
+};
+
 describe('MatchingPagesModal', () => {
 	it('should render', async () => {
-		const {container} = render(
+		render(
 			<MemoryRouter>
 				<MockedProvider mocks={[mockRecommendationPageAssetsReq([])]}>
 					<Provider store={mockStore()}>
-						<MatchingPagesModal
+						<TestModal
 							itemFilters={[
 								{
 									name: 'includeFilter',
@@ -29,10 +37,12 @@ describe('MatchingPagesModal', () => {
 			</MemoryRouter>
 		);
 
-		await waitForLoading(container);
+		await waitForModal();
+
+		await waitForLoadingToBeRemoved(document.body);
 
 		jest.runAllTimers();
 
-		expect(container).toMatchSnapshot();
+		expect(document.body).toMatchSnapshot();
 	});
 });

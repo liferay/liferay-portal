@@ -1,113 +1,157 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`MatchingPagesModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog matching-pages-modal-root modal-xl"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog modal-xl"
       >
         <div
-          class="h4 modal-title"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
-          Matching Pages
-        </div>
-      </div>
-      <div
-        class="modal-body"
-      />
-      <div
-        class="d-flex flex-column flex-grow-1 justify-content-between"
-      >
-        <div
-          class="search-toolbar-root"
-        >
-          <nav
-            class="navbar navbar-root management-bar management-bar-light navbar-expand"
+          <div
+            class="modal-header"
+          >
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
+            >
+              Matching Pages
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
+              >
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
+          </div>
+          <div
+            class="modal-body"
+          />
+          <div
+            class="d-flex flex-column flex-grow-1 justify-content-between"
           >
             <div
-              class="container-fluid"
+              class="search-toolbar-root"
             >
-              <ul
-                class="nav-root front-nav navbar-nav"
-                role="tablist"
-              />
-              <div
-                class="navbar-form navbar-form-autofit mx-2"
+              <nav
+                class="navbar navbar-root management-bar management-bar-light navbar-expand"
               >
                 <div
-                  class="input-group search"
+                  class="container-fluid"
                 >
+                  <ul
+                    class="nav-root front-nav navbar-nav"
+                    role="tablist"
+                  />
                   <div
-                    class="input-group-item"
+                    class="navbar-form navbar-form-autofit mx-2"
                   >
-                    <input
-                      class="input-root form-control input-group-inset input-group-inset-after"
-                      placeholder="Search"
-                      type="text"
-                      value=""
-                    />
                     <div
-                      class="input-group-inset-item input-group-inset-item-after"
+                      class="input-group search"
                     >
-                      <button
-                        aria-label="Search"
-                        class="button-root btn btn-unstyled"
-                        type="button"
+                      <div
+                        class="input-group-item"
                       >
-                        <svg
-                          class="lexicon-icon lexicon-icon-search icon-root"
-                          role="presentation"
+                        <input
+                          class="input-root form-control input-group-inset input-group-inset-after"
+                          placeholder="Search"
+                          type="text"
+                          value=""
+                        />
+                        <div
+                          class="input-group-inset-item input-group-inset-item-after"
                         >
-                          <use
-                            href="#search"
-                          />
-                        </svg>
-                      </button>
+                          <button
+                            aria-label="Search"
+                            class="button-root btn btn-unstyled"
+                            type="button"
+                          >
+                            <svg
+                              class="lexicon-icon lexicon-icon-search icon-root"
+                              role="presentation"
+                            >
+                              <use
+                                href="#search"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </nav>
+            </div>
+            <div
+              class="error-display-root flex-grow-1 error-spacer no-results-root flex-grow-1"
+            >
+              <div
+                class="no-results-content"
+              >
+                <div
+                  class="h4 no-results-title"
+                >
+                  An unexpected error occurred.
+                </div>
+                <button
+                  class="button-root btn btn-secondary"
+                  type="button"
+                >
+                  Reload
+                </button>
               </div>
             </div>
-          </nav>
-        </div>
-        <div
-          class="error-display-root flex-grow-1 error-spacer no-results-root flex-grow-1"
-        >
+          </div>
           <div
-            class="no-results-content"
+            class="modal-footer"
           >
             <div
-              class="h4 no-results-title"
+              class="modal-item-last"
             >
-              An unexpected error occurred.
+              <div
+                class="btn-group-spaced"
+                role="group"
+              >
+                <button
+                  class="button-root btn btn-primary"
+                  type="button"
+                >
+                  Done
+                </button>
+              </div>
             </div>
-            <button
-              class="button-root btn btn-secondary"
-              type="button"
-            >
-              Reload
-            </button>
           </div>
         </div>
       </div>
-      <div
-        class="modal-footer"
-      >
-        <button
-          class="button-root btn btn-primary"
-          type="button"
-        >
-          Done
-        </button>
-      </div>
     </div>
   </div>
-</div>
+</body>
 `;

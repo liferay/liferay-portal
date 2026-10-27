@@ -5,13 +5,17 @@ exports[`InvitePeople renders 1`] = `
   <div
     class="modal-header"
   >
+    <h1
+      class="modal-title"
+      tabindex="-1"
+    />
     <button
       aria-label="Close"
-      class="button-root close btn btn-secondary"
+      class="close btn btn-unstyled"
       type="button"
     >
       <svg
-        class="lexicon-icon lexicon-icon-times icon-root"
+        class="lexicon-icon lexicon-icon-times"
         role="presentation"
       >
         <use
@@ -23,14 +27,17 @@ exports[`InvitePeople renders 1`] = `
   <div
     class="modal-body"
   >
-    <div
-      class="analytics-invite-user-icon icon"
+    <img
+      alt=""
+      class="d-block mb-4 w-100"
+      height="300"
+      src="ac_invite.svg"
     />
     <div
       class="text-center mb-4"
     >
       <span
-        class="text-10 font-weight-bold"
+        class="text-6 font-weight-bold"
       >
         Invite People to Workspace
       </span>
@@ -94,7 +101,7 @@ exports[`InvitePeople renders 1`] = `
         class="mt-1"
       >
         <span
-          class="text-3 text-secondary"
+          class="text-4 text-secondary"
         >
           Enter email addresses, separated by spaces or commas.
         </span>
@@ -104,19 +111,28 @@ exports[`InvitePeople renders 1`] = `
   <div
     class="modal-footer"
   >
-    <button
-      class="button-root btn btn-secondary"
-      type="button"
+    <div
+      class="modal-item-last"
     >
-      Skip
-    </button>
-    <button
-      class="button-root ml-2 btn btn-primary"
-      disabled=""
-      type="button"
-    >
-      Send Invitations
-    </button>
+      <div
+        class="btn-group-spaced"
+        role="group"
+      >
+        <button
+          class="button-root btn btn-secondary"
+          type="button"
+        >
+          Skip
+        </button>
+        <button
+          class="button-root ml-2 btn btn-primary"
+          disabled=""
+          type="button"
+        >
+          Send Invitations
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 `;

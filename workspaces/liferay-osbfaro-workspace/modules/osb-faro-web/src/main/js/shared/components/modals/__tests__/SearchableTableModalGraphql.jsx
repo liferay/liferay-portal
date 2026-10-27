@@ -13,7 +13,9 @@ import {noop, range} from 'lodash';
 import {Provider} from 'react-redux';
 import {render, screen, waitFor} from '@testing-library/react';
 import {Routes} from 'shared/util/router';
+import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
@@ -40,6 +42,12 @@ const defaultProps = {
 	mapResultToProps: getMapResultToProps('organizations'),
 	onClose: noop,
 	onSubmit: noop
+};
+
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <SearchableTableModalGraphql observer={observer} {...props} />;
 };
 
 const DefaultComponent = ({
@@ -73,7 +81,7 @@ const DefaultComponent = ({
 				<Route
 					element={
 						<MockedProvider addTypename={false} mocks={mocks}>
-							<SearchableTableModalGraphql {...defaultProps} {...props} />
+							<TestModal {...defaultProps} {...props} />
 						</MockedProvider>
 					}
 					path={`${Routes.SETTINGS_DATA_SOURCE_LIST}/*`}
@@ -85,25 +93,31 @@ const DefaultComponent = ({
 
 describe('SearchableTableModalGraphql', () => {
 	it('should render', async () => {
-		const {container} = render(<DefaultComponent />);
+		render(<DefaultComponent />);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForModal();
 
-		expect(container).toMatchSnapshot();
+		await waitForLoadingToBeRemoved(document.body);
+
+		expect(document.body).toMatchSnapshot();
 	});
 
 	it('should render with a custom title', async () => {
-		const {container} = render(<DefaultComponent title='Custom Title' />);
+		render(<DefaultComponent title='Custom Title' />);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForModal();
 
-		expect(container.querySelector('.modal-title')).toHaveTextContent(
+		await waitForLoadingToBeRemoved(document.body);
+
+		expect(document.querySelector('.modal-title')).toHaveTextContent(
 			'Custom Title'
 		);
 	});
 
 	it('should render with a custom submit button message', async () => {
 		render(<DefaultComponent submitMessage='Custom Submit Message' />);
+
+		await waitForModal();
 
 		await waitForLoadingToBeRemoved();
 
@@ -115,16 +129,18 @@ describe('SearchableTableModalGraphql', () => {
 	});
 
 	it('should render with preselected items', async () => {
-		const {container} = render(
+		render(
 			<DefaultComponent
 				selectedItems={[{id: '0', name: 'fooOrganization-0'}]}
 			/>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForModal();
+
+		await waitForLoadingToBeRemoved(document.body);
 
 		expect(
-			container.querySelector('input[type="checkbox"]:checked')
+			document.querySelector('input[type="checkbox"]:checked')
 		).toBeTruthy();
 	});
 });

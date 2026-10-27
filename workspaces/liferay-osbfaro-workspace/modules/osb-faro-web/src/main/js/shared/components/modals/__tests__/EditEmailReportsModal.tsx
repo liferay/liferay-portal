@@ -3,12 +3,13 @@ import mockStore from 'test/mock-store';
 import React from 'react';
 import {act, fireEvent, render, waitFor} from '@testing-library/react';
 import {addAlert} from 'shared/actions/alerts';
-import {close} from 'shared/actions/modals';
 import {Frequency} from 'settings/channels/components/EmailReports';
 import {InMemoryCache} from '@apollo/client';
 import {MemoryRouter} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {Provider} from 'react-redux';
+import {useModal} from '@clayui/modal';
+import {waitForModal} from 'test/render-modal';
 
 jest.mock('shared/actions/alerts', () => ({
 	actionTypes: {},
@@ -24,45 +25,54 @@ jest.unmock('react-dom');
 const DefaultComponent = (
 	props: Omit<
 		React.ComponentProps<typeof EditEmailReportsModal>,
-		'onCancel' | 'onSave'
+		'observer' | 'onCancel' | 'onSave'
 	>
-) => (
-	<Provider store={mockStore()}>
-		<MemoryRouter>
-			<MockedProvider
-				cache={
-					new InMemoryCache({
-						addTypename: false,
-					})
-				}
-			>
-				<EditEmailReportsModal
-					onCancel={close}
-					onSave={() => addAlert()}
-					{...props}
-				/>
-			</MockedProvider>
-		</MemoryRouter>
-	</Provider>
-);
+) => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return (
+		<Provider store={mockStore()}>
+			<MemoryRouter>
+				<MockedProvider
+					cache={
+						new InMemoryCache({
+							addTypename: false,
+						})
+					}
+				>
+					<EditEmailReportsModal
+						observer={observer}
+						onCancel={jest.fn()}
+						onSave={() => addAlert()}
+						{...props}
+					/>
+				</MockedProvider>
+			</MemoryRouter>
+		</Provider>
+	);
+};
 
 describe('EditEmailReportsModal', () => {
-	it('should render', () => {
-		const {container} = render(
+	it('should render', async () => {
+		render(
 			<DefaultComponent
 				report={{enabled: false, frequency: Frequency.Monthly}}
 			/>
 		);
 
-		expect(container).toMatchSnapshot();
+		await waitForModal();
+
+		expect(document.body).toMatchSnapshot();
 	});
 
-	it('should click the toggle switch, check if its value has changed to true and if frequency options are enabled', () => {
-		const {container} = render(
+	it('should click the toggle switch, check if its value has changed to true and if frequency options are enabled', async () => {
+		render(
 			<DefaultComponent
 				report={{enabled: false, frequency: Frequency.Monthly}}
 			/>
 		);
+
+		await waitForModal();
 
 		const frequency = document.getElementById('frequency');
 
@@ -70,9 +80,9 @@ describe('EditEmailReportsModal', () => {
 			'input.toggle-switch-check'
 		);
 
-		expect(container).toContainElement(toggleSwitch as HTMLElement);
+		expect(document.body).toContainElement(toggleSwitch as HTMLElement);
 
-		expect(container).toContainElement(frequency);
+		expect(document.body).toContainElement(frequency);
 
 		expect(toggleSwitch).toHaveAttribute('value', 'false');
 
@@ -93,6 +103,8 @@ describe('EditEmailReportsModal', () => {
 				report={{enabled: true, frequency: Frequency.Monthly}}
 			/>
 		);
+
+		await waitForModal();
 
 		const frequency = document.getElementById('frequency');
 
@@ -128,6 +140,8 @@ describe('EditEmailReportsModal', () => {
 			/>
 		);
 
+		await waitForModal();
+
 		const frequency = document.getElementById('frequency');
 
 		const saveBtn = document.querySelector(
@@ -161,6 +175,8 @@ describe('EditEmailReportsModal', () => {
 				report={{enabled: true, frequency: Frequency.Daily}}
 			/>
 		);
+
+		await waitForModal();
 
 		const daily = document.querySelector('option[value="daily"]');
 

@@ -7,7 +7,7 @@ import {ApolloProvider} from '@apollo/client';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockEventDefinitionReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
-import {render} from '@testing-library/react';
+import {fireEvent, render, screen} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 import {waitForLoading} from 'test/helpers';
 
@@ -57,5 +57,41 @@ describe('Event View page', () => {
 		jest.runAllTimers();
 
 		expect(container).toMatchSnapshot();
+	});
+
+	it('should open the edit modal from the edit page action', async () => {
+		const definition = data.mockEventDefinition(0, {
+			eventAttributeDefinitions: []
+		});
+
+		const {container} = render(
+			<ApolloProvider client={client}>
+				<Provider store={mockStore()}>
+					<MockedProvider
+						mocks={[
+							mockEventDefinitionReq(definition, {id: '0'}),
+							mockEventDefinitionReq(definition, {id: '0'})
+						]}
+					>
+						<MemoryRouter>
+							<View eventId='0' groupId='23' />
+						</MemoryRouter>
+					</MockedProvider>
+				</Provider>
+			</ApolloProvider>
+		);
+
+		await waitForLoading(container);
+
+		expect(screen.queryByRole('dialog')).toBeNull();
+
+		fireEvent.click(screen.getByText('Edit'));
+
+		expect(await screen.findByRole('dialog')).toBeInTheDocument();
+		expect(
+			await screen.findByRole('heading', {
+				name: new RegExp(definition.name)
+			})
+		).toBeInTheDocument();
 	});
 });

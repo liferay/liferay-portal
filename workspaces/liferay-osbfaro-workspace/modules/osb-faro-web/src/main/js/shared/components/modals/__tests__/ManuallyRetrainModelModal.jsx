@@ -4,7 +4,9 @@ import RecommendationJobRunsMonthlyStatisticsQuery from 'settings/recommendation
 import {MockedProvider} from '@apollo/client/testing';
 import {mockRecommendationJobRunsMonthlyStatistics} from 'test/data';
 import {render} from '@testing-library/react';
-import {waitForLoading} from 'test/helpers';
+import {useModal} from '@clayui/modal';
+import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 function mockRecommendationJobRunsMonthlyStatisticsReq() {
 	return {
@@ -27,20 +29,28 @@ function mockRecommendationJobRunsMonthlyStatisticsReq() {
 
 jest.unmock('react-dom');
 
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <ManuallyRetrainModelModal observer={observer} {...props} />;
+};
+
 describe('ManuallyRetrainModelModal', () => {
 	it('should render', async () => {
-		const {container} = render(
+		render(
 			<MockedProvider
 				mocks={[mockRecommendationJobRunsMonthlyStatisticsReq()]}
 			>
-				<ManuallyRetrainModelModal job={{id: '321'}} />
+				<TestModal job={{id: '321'}} />
 			</MockedProvider>
 		);
 
-		await waitForLoading(container);
+		await waitForModal();
+
+		await waitForLoadingToBeRemoved(document.body);
 
 		jest.runAllTimers();
 
-		expect(container).toMatchSnapshot();
+		expect(document.body).toMatchSnapshot();
 	});
 });

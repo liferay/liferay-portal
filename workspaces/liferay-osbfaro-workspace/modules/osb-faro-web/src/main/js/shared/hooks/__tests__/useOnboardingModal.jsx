@@ -1,17 +1,21 @@
-import 'test/mock-modal';
 import mockStore, {mockStoreData} from 'test/mock-store';
 import React from 'react';
 import SitesDashboardQuery from 'shared/queries/SitesDashboardQuery';
 import {InMemoryCache, useQuery} from '@apollo/client';
 import {mockDataSourcesReq} from 'test/graphql-data';
 import {MockedProvider} from '@apollo/client/testing';
-import {modalTypes, open} from 'shared/actions/modals';
 import {OnboardingContext} from 'shared/context/onboarding';
 import {Provider} from 'react-redux';
 import {renderHook, waitFor} from '@testing-library/react';
 import {useOnboardingModal} from 'shared/hooks/useOnboardingModal';
 
 jest.unmock('react-dom');
+
+jest.mock('shared/components/modals/onboarding-modal', () => ({groupId}) => (
+	<div data-testid="onboarding-modal">{groupId}</div>
+));
+
+const getModal = result => result.current.modal;
 
 const renderUseOnboardingModal = ({
 	mocks = [mockDataSourcesReq()],
@@ -21,9 +25,12 @@ const renderUseOnboardingModal = ({
 } = {}) =>
 	renderHook(
 		() => {
-			useOnboardingModal({groupId: '23'});
+			const modal = useOnboardingModal({groupId: '23'});
 
-			return useQuery(SitesDashboardQuery, {variables: {type: null}});
+			return {
+				modal,
+				...useQuery(SitesDashboardQuery, {variables: {type: null}}),
+			};
 		},
 		{
 			wrapper: ({children}) => (
@@ -48,22 +55,19 @@ describe('useOnboardingModal', () => {
 		jest.clearAllMocks();
 	});
 
-	it('opens the onboarding modal when the workspace has no data sources', async () => {
+	it('returns the onboarding modal when the workspace has no data sources', async () => {
 		const setOnboardingTriggered = jest.fn();
 
-		renderUseOnboardingModal({setOnboardingTriggered});
+		const {result} = renderUseOnboardingModal({setOnboardingTriggered});
 
-		await waitFor(() =>
-			expect(open).toHaveBeenCalledWith(
-				modalTypes.ONBOARDING_MODAL,
-				expect.objectContaining({groupId: '23'})
-			)
-		);
+		await waitFor(() => expect(getModal(result)).not.toBeNull());
+
+		expect(getModal(result).props.groupId).toBe('23');
 
 		expect(setOnboardingTriggered).toHaveBeenCalled();
 	});
 
-	it('does not open the onboarding modal when the workspace has data sources', async () => {
+	it('does not return the onboarding modal when the workspace has data sources', async () => {
 		const setOnboardingTriggered = jest.fn();
 
 		const {result} = renderUseOnboardingModal({
@@ -82,25 +86,25 @@ describe('useOnboardingModal', () => {
 
 		await waitFor(() => expect(result.current.loading).toBe(false));
 
-		expect(open).not.toHaveBeenCalled();
+		expect(getModal(result)).toBeNull();
 		expect(setOnboardingTriggered).not.toHaveBeenCalled();
 	});
 
-	it('does not open the onboarding modal for non-admin users', async () => {
+	it('does not return the onboarding modal for non-admin users', async () => {
 		const {result} = renderUseOnboardingModal({
 			store: mockStore(mockStoreData.setIn(['currentUser', 'data'], '24')),
 		});
 
 		await waitFor(() => expect(result.current.loading).toBe(false));
 
-		expect(open).not.toHaveBeenCalled();
+		expect(getModal(result)).toBeNull();
 	});
 
-	it('does not open the onboarding modal twice', async () => {
+	it('does not return the onboarding modal twice', async () => {
 		const {result} = renderUseOnboardingModal({onboardingTriggered: true});
 
 		await waitFor(() => expect(result.current.loading).toBe(false));
 
-		expect(open).not.toHaveBeenCalled();
+		expect(getModal(result)).toBeNull();
 	});
 });

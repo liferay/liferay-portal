@@ -1,7 +1,6 @@
 import * as API from 'shared/api';
 import DataSourcesProvider from 'shared/context/dataSources';
 import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import {ChannelContext} from 'shared/context/channel';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
@@ -45,8 +44,6 @@ const ENTITY_ROUTE = `${Routes.CONTACTS_SEGMENT}/*`;
 const renderProfileRoutes = () =>
 	render(
 		<Provider store={mockStore()}>
-			<ModalRenderer />
-
 			<MemoryRouter initialEntries={[ENTITY_URL]}>
 				<ChannelContext.Provider value={mockChannelContext()}>
 					<DataSourcesProvider groupId='23'>
@@ -132,7 +129,7 @@ describe('SegmentProfileRoutes', () => {
 		);
 
 		expect(
-			screen.getByText('Manage Segment Notifications')
+			await screen.findByText('Manage Segment Notifications')
 		).toBeInTheDocument();
 	});
 });

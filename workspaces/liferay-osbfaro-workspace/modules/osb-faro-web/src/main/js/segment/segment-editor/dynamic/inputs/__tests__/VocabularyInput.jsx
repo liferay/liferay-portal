@@ -1,4 +1,3 @@
-import 'test/mock-modal';
 
 import mockStore from 'test/mock-store';
 import React from 'react';

@@ -3,9 +3,6 @@
 exports[`View Channel should render 1`] = `
 <div>
   <div
-    class="modal-renderer-root"
-  />
-  <div
     class="settings-root"
   >
     <nav

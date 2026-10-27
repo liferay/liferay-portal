@@ -13,7 +13,10 @@ jest.mock('shared/components/download-report/DownloadPDFReport', () => ({
 
 jest.mock('shared/components/NavigationWarning', () => () => null);
 
-import * as modalActions from 'shared/actions/modals';
+jest.mock('shared/components/modals/LoadingModal', () => ({title}) => (
+	<div data-testid='loading-modal'>{title}</div>
+));
+
 import BaseEventAnalysisPage from '../BaseEventAnalysisPage';
 import DataSourcesProvider from 'shared/context/dataSources';
 import EventAnalysisEditor from '../event-analysis-editor';
@@ -73,8 +76,6 @@ describe('BaseEventAnalysisPage', () => {
 	});
 
 	it('shows the creating title while saving a new analysis', async () => {
-		const openSpy = jest.spyOn(modalActions, 'open');
-
 		renderPage();
 
 		fireEvent.change(screen.getByLabelText(/^title/i), {
@@ -83,12 +84,8 @@ describe('BaseEventAnalysisPage', () => {
 
 		fireEvent.click(screen.getByText('Save Analysis'));
 
-		await waitFor(() =>
-			expect(openSpy).toHaveBeenCalledWith(
-				modalActions.modalTypes.LOADING_MODAL,
-				expect.objectContaining({title: 'Creating...'}),
-				{closeOnBlur: false}
-			)
+		expect(await screen.findByTestId('loading-modal')).toHaveTextContent(
+			'Creating...'
 		);
 
 		expect(

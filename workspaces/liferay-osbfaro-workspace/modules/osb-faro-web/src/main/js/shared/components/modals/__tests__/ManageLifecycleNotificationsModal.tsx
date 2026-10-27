@@ -2,25 +2,30 @@ import * as API from 'shared/api';
 import ManageLifecycleNotificationsModal from '../ManageLifecycleNotificationsModal';
 import mockStore from 'test/mock-store';
 import React from 'react';
-import {close} from 'shared/actions/modals';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
+import {useModal} from '@clayui/modal';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = ({
-	onClose = jest.fn(close),
+	onClose = jest.fn(),
 }: {
-	onClose?: typeof close;
-} = {}) => (
-	<Provider store={mockStore()}>
-		<ManageLifecycleNotificationsModal
-			groupId="23"
-			lifecycleId="1"
-			onClose={onClose}
-		/>
-	</Provider>
-);
+	onClose?: () => void;
+} = {}) => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return (
+		<Provider store={mockStore()}>
+			<ManageLifecycleNotificationsModal
+				groupId="23"
+				lifecycleId="1"
+				observer={observer}
+				onClose={onClose}
+			/>
+		</Provider>
+	);
+};
 
 describe('ManageLifecycleNotificationsModal', () => {
 	beforeEach(() => {
@@ -67,7 +72,7 @@ describe('ManageLifecycleNotificationsModal', () => {
 	});
 
 	it('closes without saving when Cancel is clicked', async () => {
-		const onClose = jest.fn(close);
+		const onClose = jest.fn();
 
 		render(<DefaultComponent onClose={onClose} />);
 
@@ -77,7 +82,7 @@ describe('ManageLifecycleNotificationsModal', () => {
 	});
 
 	it('saves the current values, including unchecked ones, and closes when Save is clicked', async () => {
-		const onClose = jest.fn(close);
+		const onClose = jest.fn();
 
 		render(<DefaultComponent onClose={onClose} />);
 

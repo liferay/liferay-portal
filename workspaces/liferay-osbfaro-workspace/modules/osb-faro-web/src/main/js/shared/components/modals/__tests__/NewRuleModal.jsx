@@ -7,7 +7,9 @@ import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {MockedProvider} from '@apollo/client/testing';
 import {mockRecommendationPageAssetsReq} from 'test/graphql-data';
 import {Provider} from 'react-redux';
+import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
@@ -36,18 +38,26 @@ const DefaultWrapper = ({children, mocks = []}) => (
 	</Provider>
 );
 
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <NewRuleModal observer={observer} {...props} />;
+};
+
 describe('NewRuleModal', () => {
 	afterEach(cleanup);
 
 	it('should render', async () => {
-		const {container} = render(
+		render(
 			<DefaultWrapper mocks={[mockRecommendationPageAssetsReq([])]}>
-				<NewRuleModal />
+				<TestModal />
 			</DefaultWrapper>
 		);
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForModal();
 
-		expect(container).toMatchSnapshot();
+		await waitForLoadingToBeRemoved(document.body);
+
+		expect(document.body).toMatchSnapshot();
 	});
 });

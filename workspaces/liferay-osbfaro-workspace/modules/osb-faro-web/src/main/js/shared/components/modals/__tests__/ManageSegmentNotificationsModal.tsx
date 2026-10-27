@@ -2,25 +2,30 @@ import * as API from 'shared/api';
 import ManageSegmentNotificationsModal from '../ManageSegmentNotificationsModal';
 import mockStore from 'test/mock-store';
 import React from 'react';
-import {close} from 'shared/actions/modals';
 import {fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
+import {useModal} from '@clayui/modal';
 
 jest.unmock('react-dom');
 
 const DefaultComponent = ({
-	onClose = jest.fn(close),
+	onClose = jest.fn(),
 }: {
-	onClose?: typeof close;
-} = {}) => (
-	<Provider store={mockStore()}>
-		<ManageSegmentNotificationsModal
-			groupId="23"
-			onClose={onClose}
-			segmentId="1"
-		/>
-	</Provider>
-);
+	onClose?: () => void;
+} = {}) => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return (
+		<Provider store={mockStore()}>
+			<ManageSegmentNotificationsModal
+				groupId="23"
+				observer={observer}
+				onClose={onClose}
+				segmentId="1"
+			/>
+		</Provider>
+	);
+};
 
 describe('ManageSegmentNotificationsModal', () => {
 	beforeEach(() => {
@@ -64,7 +69,7 @@ describe('ManageSegmentNotificationsModal', () => {
 	});
 
 	it('closes without saving when Cancel is clicked', async () => {
-		const onClose = jest.fn(close);
+		const onClose = jest.fn();
 
 		render(<DefaultComponent onClose={onClose} />);
 
@@ -74,7 +79,7 @@ describe('ManageSegmentNotificationsModal', () => {
 	});
 
 	it('saves the current values and closes when Save is clicked', async () => {
-		const onClose = jest.fn(close);
+		const onClose = jest.fn();
 
 		render(<DefaultComponent onClose={onClose} />);
 

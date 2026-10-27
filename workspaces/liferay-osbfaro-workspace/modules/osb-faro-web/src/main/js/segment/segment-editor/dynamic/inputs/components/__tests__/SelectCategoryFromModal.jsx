@@ -1,10 +1,13 @@
-import 'test/mock-modal';
+import {
+	getModalProps,
+	isModalOpen,
+	resetModalProps
+} from 'test/mock-searchable-table-modal';
 
 import mockStore from 'test/mock-store';
 import React from 'react';
 import SelectCategoryFromModal from '../SelectCategoryFromModal';
-import {cleanup, fireEvent, render} from '@testing-library/react';
-import {close, open} from 'shared/actions/modals';
+import {act, cleanup, fireEvent, render, waitFor} from '@testing-library/react';
 import {OrderedMap} from 'immutable';
 import {Provider} from 'react-redux';
 
@@ -26,13 +29,11 @@ const DefaultComponent = props => (
 
 describe('SelectCategoryFromModal', () => {
 	beforeAll(() => {
-		close.mockReturnValue({type: 'close'});
 	});
 
 	afterEach(() => {
 		cleanup();
-		open.mockClear();
-		close.mockClear();
+		resetModalProps();
 	});
 
 	describe('render with zero categories', () => {
@@ -87,7 +88,7 @@ describe('SelectCategoryFromModal', () => {
 
 			fireEvent.click(getByText(/add category/i));
 
-			expect(open).toHaveBeenCalled();
+			expect(isModalOpen()).toBe(true);
 		});
 
 		it('should open the modal when clicking select from non-empty state', () => {
@@ -99,7 +100,7 @@ describe('SelectCategoryFromModal', () => {
 
 			fireEvent.click(getByText(/select/i));
 
-			expect(open).toHaveBeenCalled();
+			expect(isModalOpen()).toBe(true);
 		});
 
 		it('should pass current selectedCategories as initialSelectedItems', () => {
@@ -111,7 +112,7 @@ describe('SelectCategoryFromModal', () => {
 
 			fireEvent.click(getByText(/select/i));
 
-			expect(open.mock.calls[0][1].initialSelectedItems).toEqual(
+			expect(getModalProps().initialSelectedItems).toEqual(
 				selectedCategories
 			);
 		});
@@ -193,7 +194,7 @@ describe('SelectCategoryFromModal', () => {
 
 			fireEvent.click(getByText(/add category/i));
 
-			const {onSubmit} = open.mock.calls[0][1];
+			const {onSubmit} = getModalProps();
 			const submittedItems = new OrderedMap({
 				'cat-1': {id: 'cat-1', name: 'Category One'},
 				'cat-2': {id: 'cat-2', name: 'Category Two'}
@@ -207,18 +208,22 @@ describe('SelectCategoryFromModal', () => {
 			]);
 		});
 
-		it('should close the modal after submit', () => {
+		it('should close the modal after submit', async () => {
 			const {getByText} = render(
 				<DefaultComponent selectedCategories={[]} />
 			);
 
 			fireEvent.click(getByText(/add category/i));
 
-			const {onSubmit} = open.mock.calls[0][1];
+			const {onSubmit} = getModalProps();
 
-			onSubmit(new OrderedMap({'cat-1': {id: 'cat-1', name: 'Cat 1'}}));
+			act(() => {
+				onSubmit(
+					new OrderedMap({'cat-1': {id: 'cat-1', name: 'Cat 1'}})
+				);
+			});
 
-			expect(close).toHaveBeenCalled();
+			await waitFor(() => expect(isModalOpen()).toBe(false));
 		});
 	});
 });

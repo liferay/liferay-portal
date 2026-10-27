@@ -1,10 +1,13 @@
-import 'test/mock-modal';
+import {
+	getModalProps,
+	isModalOpen,
+	resetModalProps
+} from 'test/mock-searchable-table-modal';
 
 import mockStore from 'test/mock-store';
 import React from 'react';
 import SelectEntityFromModal from '../SelectEntityFromModal';
 import {cleanup, fireEvent, render} from '@testing-library/react';
-import {open} from 'shared/actions/modals';
 import {Property} from 'shared/util/records';
 import {Provider} from 'react-redux';
 
@@ -39,7 +42,7 @@ describe('SelectEntityFromModal', () => {
 
 		jest.runAllTimers();
 
-		expect(open).toBeCalled();
+		expect(isModalOpen()).toBe(true);
 	});
 
 	it('should render with a preselected entity', () => {

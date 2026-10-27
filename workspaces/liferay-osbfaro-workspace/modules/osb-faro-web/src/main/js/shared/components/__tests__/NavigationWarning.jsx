@@ -1,8 +1,13 @@
 import mockStore from 'test/mock-store';
 import NavigationWarning from '../NavigationWarning';
 import React from 'react';
-import {actionTypes, modalTypes} from 'shared/actions/modals';
-import {cleanup, render} from '@testing-library/react';
+import {
+	cleanup,
+	fireEvent,
+	render,
+	screen,
+	waitFor,
+} from '@testing-library/react';
 import {MemoryRouter} from 'react-router';
 import {Provider} from 'react-redux';
 import {useBlocker} from 'react-router-dom';
@@ -14,6 +19,34 @@ jest.mock('react-router-dom', () => ({
 	useBlocker: jest.fn(),
 }));
 
+// Like the router, the blocker leaves the `blocked` state once it is reset or
+// allowed to proceed.
+
+const mockBlocker = () => {
+	let state = 'blocked';
+
+	const proceed = jest.fn(() => {
+		state = 'proceeding';
+	});
+
+	const reset = jest.fn(() => {
+		state = 'unblocked';
+	});
+
+	useBlocker.mockImplementation(() => ({proceed, reset, state}));
+
+	return {proceed, reset};
+};
+
+const renderComponent = () =>
+	render(
+		<Provider store={mockStore()}>
+			<MemoryRouter>
+				<NavigationWarning when />
+			</MemoryRouter>
+		</Provider>
+	);
+
 describe('NavigationWarning', () => {
 	afterEach(() => {
 		cleanup();
@@ -21,53 +54,66 @@ describe('NavigationWarning', () => {
 		useBlocker.mockReset();
 	});
 
-	it('should render', () => {
+	it('should render nothing while the navigation is not blocked', () => {
 		useBlocker.mockReturnValue({state: 'unblocked'});
 
-		const {container} = render(
-			<Provider store={mockStore()}>
-				<MemoryRouter>
-					<NavigationWarning when />
-				</MemoryRouter>
-			</Provider>
-		);
+		renderComponent();
 
-		expect(container).toBeTruthy();
+		expect(screen.queryByRole('dialog')).toBeNull();
 	});
 
-	it('opens the confirmation modal and wires proceed and reset when blocked', () => {
-		const proceed = jest.fn();
-		const reset = jest.fn();
+	it('opens the confirmation modal when the navigation is blocked', async () => {
+		useBlocker.mockReturnValue({
+			proceed: jest.fn(),
+			reset: jest.fn(),
+			state: 'blocked',
+		});
 
-		useBlocker.mockReturnValue({proceed, reset, state: 'blocked'});
+		renderComponent();
 
-		const store = mockStore();
-		const dispatch = jest.spyOn(store, 'dispatch');
+		expect(await screen.findByRole('dialog')).toBeInTheDocument();
+		expect(
+			await screen.findByRole('heading', {name: /unsaved changes/i})
+		).toBeInTheDocument();
+	});
 
-		render(
-			<Provider store={store}>
-				<MemoryRouter>
-					<NavigationWarning when />
-				</MemoryRouter>
-			</Provider>
-		);
+	it('proceeds with the navigation when the user leaves the page', async () => {
+		const {proceed, reset} = mockBlocker();
 
-		const openModalCall = dispatch.mock.calls.find(
-			([action]) =>
-				action.type === actionTypes.OPEN_MODAL &&
-				action.payload.type === modalTypes.CONFIRMATION_MODAL
-		);
+		renderComponent();
 
-		expect(openModalCall).toBeTruthy();
+		fireEvent.click(await screen.findByText(/leave page/i));
 
-		const {props} = openModalCall[0].payload;
+		await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
 
-		props.onSubmit();
+		expect(proceed).toHaveBeenCalledTimes(1);
+		expect(reset).not.toHaveBeenCalled();
+	});
 
-		expect(proceed).toHaveBeenCalled();
+	it('resets the navigation when the user stays on the page', async () => {
+		const {proceed, reset} = mockBlocker();
 
-		props.onClose();
+		renderComponent();
 
-		expect(reset).toHaveBeenCalled();
+		fireEvent.click(await screen.findByText(/stay on page/i));
+
+		await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+
+		expect(reset).toHaveBeenCalledTimes(1);
+		expect(proceed).not.toHaveBeenCalled();
+	});
+
+	it('resets the navigation when the modal is dismissed with Esc', async () => {
+		const {proceed, reset} = mockBlocker();
+
+		renderComponent();
+
+		await screen.findByText(/leave page/i);
+
+		fireEvent.keyDown(document, {key: 'Escape'});
+
+		await waitFor(() => expect(reset).toHaveBeenCalledTimes(1));
+
+		expect(proceed).not.toHaveBeenCalled();
 	});
 });

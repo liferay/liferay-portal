@@ -5,11 +5,21 @@ import React from 'react';
 import SegmentMembership from '../SegmentMembership';
 import {cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {Formik} from 'formik';
-import {modalTypes} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
 import {SegmentCategories, SegmentTypes} from 'shared/util/constants';
 
 jest.unmock('react-dom');
+
+let mockModalProps;
+
+jest.mock('shared/components/modals/SearchableEntitiesTableModal', () => ({
+	__esModule: true,
+	default: props => {
+		mockModalProps = props;
+
+		return <div data-testid='searchable-entities-table-modal' />;
+	}
+}));
 
 const renderMembership = (props = {}, store = mockStore()) => {
 	let formik;
@@ -215,33 +225,30 @@ describe('SegmentMembership', () => {
 			Promise.resolve({items: [], totalCount: 1})
 		);
 
-		const store = mockStore();
-
-		const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-		renderMembership(
-			{
-				criteria: data.mockNewCriteria(1, {valid: true}),
-				segmentCategory: SegmentCategories.Account
-			},
-			store
-		);
+		renderMembership({
+			criteria: data.mockNewCriteria(1, {valid: true}),
+			segmentCategory: SegmentCategories.Account
+		});
 
 		const previewButton = screen.getByTestId('preview-criteria-button');
 
 		await waitFor(() => expect(previewButton).toBeEnabled());
 
+		expect(
+			screen.queryByTestId('searchable-entities-table-modal')
+		).not.toBeInTheDocument();
+
 		fireEvent.click(previewButton);
 
-		expect(dispatchSpy).toHaveBeenCalledWith(
+		expect(
+			screen.getByTestId('searchable-entities-table-modal')
+		).toBeInTheDocument();
+
+		expect(mockModalProps).toEqual(
 			expect.objectContaining({
-				payload: expect.objectContaining({
-					props: expect.objectContaining({
-						entityLabel: 'Accounts',
-						title: 'Segment Accounts'
-					}),
-					type: modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL
-				})
+				entityLabel: 'Accounts',
+				initialDelta: 20,
+				title: 'Segment Accounts'
 			})
 		);
 	});
@@ -251,18 +258,11 @@ describe('SegmentMembership', () => {
 			Promise.resolve({items: [], total: 1})
 		);
 
-		const store = mockStore();
-
-		const dispatchSpy = jest.spyOn(store, 'dispatch');
-
-		renderMembership(
-			{
-				criteria: data.mockNewCriteria(1, {valid: true}),
-				criteriaString: 'filter',
-				includeAnonymousUsers: true
-			},
-			store
-		);
+		renderMembership({
+			criteria: data.mockNewCriteria(1, {valid: true}),
+			criteriaString: 'filter',
+			includeAnonymousUsers: true
+		});
 
 		const previewButton = screen.getByTestId('preview-criteria-button');
 
@@ -270,33 +270,29 @@ describe('SegmentMembership', () => {
 
 		fireEvent.click(previewButton);
 
-		expect(dispatchSpy).toHaveBeenCalledWith(
+		expect(
+			screen.getByTestId('searchable-entities-table-modal')
+		).toBeInTheDocument();
+
+		expect(mockModalProps).toEqual(
 			expect.objectContaining({
-				payload: expect.objectContaining({
-					props: expect.objectContaining({
-						columns: [
-							expect.objectContaining({
-								accessor: 'name',
-								className: 'w-50'
-							}),
-							expect.objectContaining({
-								accessor: 'accountName',
-								className: 'w-50',
-								label: 'Account Name'
-							})
-						],
-						entityLabel: 'Individuals',
-						title: 'Segment Membership'
+				columns: [
+					expect.objectContaining({
+						accessor: 'name',
+						className: 'w-50'
 					}),
-					type: modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL
-				})
+					expect.objectContaining({
+						accessor: 'accountName',
+						className: 'w-50',
+						label: 'Account Name'
+					})
+				],
+				entityLabel: 'Individuals',
+				title: 'Segment Membership'
 			})
 		);
 
-		const {dataSourceFn} = dispatchSpy.mock.calls.find(
-			([action]) =>
-				action.payload?.type === modalTypes.SEARCHABLE_ENTITIES_TABLE_MODAL
-		)[0].payload.props;
+		const {dataSourceFn} = mockModalProps;
 
 		API.individuals.search.mockClear();
 

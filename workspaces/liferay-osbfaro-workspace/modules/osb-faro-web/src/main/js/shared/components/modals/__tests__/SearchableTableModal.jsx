@@ -6,7 +6,9 @@ import {createOrderIOMap} from 'shared/util/pagination';
 import {MemoryRouter, Route, Routes as RouterRoutes} from 'react-router-dom';
 import {noop} from 'lodash';
 import {Routes} from 'shared/util/router';
+import {useModal} from '@clayui/modal';
 import {waitForLoadingToBeRemoved} from 'test/helpers';
+import {waitForModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
 
@@ -31,12 +33,18 @@ const defaultProps = {
 	onClose: noop
 };
 
+const TestModal = props => {
+	const {observer} = useModal({defaultOpen: true});
+
+	return <SearchableTableModal observer={observer} {...props} />;
+};
+
 const DefaultComponent = props => (
 	<MemoryRouter initialEntries={['/workspace/23/settings/data-source']}>
 		<RouterRoutes>
 			<Route
 				element={
-					<SearchableTableModal {...defaultProps} {...props} />
+					<TestModal {...defaultProps} {...props} />
 				}
 				path={`${Routes.SETTINGS_DATA_SOURCE_LIST}/*`}
 			/>
@@ -48,39 +56,45 @@ describe('SearchableTableModal', () => {
 	afterEach(cleanup);
 
 	it('should render', async () => {
-		const {container} = render(<DefaultComponent />);
+		render(<DefaultComponent />);
+
+		await waitForModal();
 
 		jest.runAllTimers();
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForLoadingToBeRemoved(document.body);
 
-		expect(container).toMatchSnapshot();
+		expect(document.body).toMatchSnapshot();
 	});
 
-	it('should render with a custom title', () => {
-		const {container} = render(<DefaultComponent title='Custom Title' />);
+	it('should render with a custom title', async () => {
+		render(<DefaultComponent title='Custom Title' />);
+
+		await waitForModal();
 
 		jest.runAllTimers();
 
-		expect(container.querySelector('.modal-title')).toHaveTextContent(
+		expect(document.querySelector('.modal-title')).toHaveTextContent(
 			'Custom Title'
 		);
 	});
 
-	it('should render with a custom submit button message', () => {
-		const {container} = render(
+	it('should render with a custom submit button message', async () => {
+		render(
 			<DefaultComponent submitMessage='Custom Submit Message' />
 		);
 
+		await waitForModal();
+
 		jest.runAllTimers();
 
-		expect(container.querySelector('.btn-primary')).toHaveTextContent(
+		expect(document.querySelector('.btn-primary')).toHaveTextContent(
 			'Custom Submit Message'
 		);
 	});
 
 	it('should render with preselected items', async () => {
-		const {container} = render(
+		render(
 			<DefaultComponent
 				dataSourceFn={() =>
 					Promise.resolve(
@@ -92,12 +106,14 @@ describe('SearchableTableModal', () => {
 			/>
 		);
 
+		await waitForModal();
+
 		jest.runAllTimers();
 
-		await waitForLoadingToBeRemoved(container);
+		await waitForLoadingToBeRemoved(document.body);
 
 		expect(
-			container.querySelector(
+			document.querySelector(
 				'.table > tbody:nth-of-type(1) > tr .custom-checkbox input:checked'
 			).checked
 		).toBeTrue();

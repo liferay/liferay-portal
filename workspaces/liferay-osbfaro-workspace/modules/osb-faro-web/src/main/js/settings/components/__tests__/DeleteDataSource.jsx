@@ -7,30 +7,27 @@ import {
 	fireEvent,
 	render,
 	screen,
-	waitFor
+	waitFor,
+	within
 } from '@testing-library/react';
 import {DataSource} from 'shared/util/records';
 import {DeleteDataSource} from '../DeleteDataSource';
 import {EntityTypes} from 'shared/util/constants';
 import {fromJS} from 'immutable';
 import {MemoryRouter} from 'react-router-dom';
-import {open} from 'shared/actions/modals';
 import {Provider} from 'react-redux';
 
 jest.unmock('react-dom');
 
-jest.mock('shared/actions/modals', () => ({
-	actionTypes: {
-		CLOSE_ALL_MODALS: 'CLOSE_ALL_MODALS',
-		CLOSE_MODAL: 'CLOSE_MODAL',
-		OPEN_MODAL: 'OPEN_MODAL'
-	},
-	close: jest.fn(() => ({meta: {}, payload: {}, type: 'close'})),
-	modalTypes: {
-		CONFIRMATION_MODAL: 'CONFIRMATION_MODAL',
-		SEARCHABLE_ENTITIES_TABLE_MODAL: 'SEARCHABLE_ENTITIES_TABLE_MODAL'
-	},
-	open: jest.fn(() => ({meta: {}, payload: {}, type: 'open'}))
+let mockEntitiesModalProps;
+
+jest.mock('shared/components/modals/SearchableEntitiesTableModal', () => ({
+	__esModule: true,
+	default: props => {
+		mockEntitiesModalProps = props;
+
+		return <div data-testid='searchable-entities-table-modal' />;
+	}
 }));
 
 describe('DeleteDataSource', () => {
@@ -77,14 +74,12 @@ describe('DeleteDataSource', () => {
 			<MemoryRouter>
 				<DeleteDataSource
 					actionRequestFn={jest.fn()}
-					close={jest.fn()}
 					dataSource={dataSource}
 					deleteMessage='Test delete message'
 					deletePhrase={Liferay.Language.get('remove-x')}
 					entitiesCount={entitiesCount}
 					groupId={groupId}
 					id='123'
-					open={open}
 					pageActionConfirmationText='Confirm?'
 					pageActionText={Liferay.Language.get('delete-data-source')}
 					{...props}
@@ -132,14 +127,58 @@ describe('DeleteDataSource', () => {
 		await waitFor(() => expect(deleteButton).toBeDisabled());
 	});
 
+	it('should ask for a confirmation before deleting the data source', async () => {
+		const actionRequestFn = jest.fn();
+
+		render(<DefaultComponent actionRequestFn={actionRequestFn} />);
+
+		fireEvent.change(screen.getByTestId('confirmation-input'), {
+			target: {value: `remove ${dataSource.name}`}
+		});
+
+		const deleteButton = screen
+			.getByText('Delete Data Source')
+			.closest('button');
+
+		await waitFor(() => expect(deleteButton).not.toBeDisabled());
+
+		expect(screen.queryByRole('dialog')).toBeNull();
+
+		fireEvent.click(deleteButton);
+
+		const dialog = await screen.findByRole('dialog');
+
+		expect(await within(dialog).findByText('Confirm?')).toBeInTheDocument();
+
+		expect(actionRequestFn).not.toHaveBeenCalled();
+
+		fireEvent.click(
+			within(dialog).getByText('Delete Data Source', {selector: 'button'})
+		);
+
+		expect(actionRequestFn).toHaveBeenCalledTimes(1);
+
+		await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
+	});
+
 	it('should open the data source entities modal', async () => {
 		render(<DefaultComponent />);
 
+		expect(
+			screen.queryByTestId('searchable-entities-table-modal')
+		).toBeNull();
+
 		fireEvent.click(screen.getByText('12 Segments'));
 
-		expect(open).toHaveBeenCalledWith(
-			'SEARCHABLE_ENTITIES_TABLE_MODAL',
-			expect.any(Object)
+		expect(
+			screen.getByTestId('searchable-entities-table-modal')
+		).toBeInTheDocument();
+
+		expect(mockEntitiesModalProps).toEqual(
+			expect.objectContaining({
+				dataSourceParams: {dataSourceId: '123', groupId: '23'},
+				rowIdentifier: 'id'
+			})
 		);
 	});
 });

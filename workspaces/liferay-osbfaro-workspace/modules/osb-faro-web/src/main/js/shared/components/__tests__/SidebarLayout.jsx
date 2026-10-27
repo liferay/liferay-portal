@@ -3,7 +3,6 @@ jest.mock(
 	() => () => 'NoPropertiesAvailable'
 );
 
-import 'test/mock-modal';
 import * as data from 'test/data';
 import mockStore from 'test/mock-store';
 import React from 'react';

@@ -1,136 +1,180 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditEmailReportsModal should render 1`] = `
-<div>
+<body
+  class="dxp modal-open"
+>
   <div
-    aria-modal="true"
-    class="modal-dialog"
-    role="dialog"
-  >
+    aria-hidden="true"
+    data-suppressed="true"
+  />
+  <div>
     <div
-      class="modal-content"
+      aria-hidden="true"
+      class="modal-backdrop fade show"
+      data-suppressed="true"
+    />
+    <div
+      class="fade modal d-block show"
     >
       <div
-        class="modal-header has-title"
+        class="modal-dialog"
       >
         <div
-          class="h4 modal-title"
-        >
-          Configure Email Reports
-        </div>
-      </div>
-      <form
-        class="form-root"
-      >
-        <div
-          class="modal-body"
+          aria-labelledby="clay-modal-label-1"
+          aria-modal="true"
+          class="modal-content"
+          role="dialog"
+          tabindex="-1"
         >
           <div
-            class="form-group align-items-center d-flex form-group-autofit"
+            class="modal-header"
           >
-            <div>
-              <div
-                class="font-weight-semibold mb-2"
+            <h1
+              class="modal-title"
+              id="clay-modal-label-1"
+              tabindex="-1"
+            >
+              Configure Email Reports
+            </h1>
+            <button
+              aria-label="Close"
+              class="close btn btn-unstyled"
+              type="button"
+            >
+              <svg
+                class="lexicon-icon lexicon-icon-times"
+                role="presentation"
               >
-                Enable Email Reports
-              </div>
-              <div
-                class="text-secondary"
-              >
-                Enable email reports to configure how frequently you would like to receive notifications about this property activities. Other users will not be affected by this action.
-              </div>
-            </div>
-            <div>
-              <div
-                class="form-group-item ml-3"
-              >
-                <label
-                  class="toggle-switch toggle-switch-root"
-                  for="enabled"
-                >
-                  <input
-                    class="toggle-switch-check"
-                    data-testid="toggle-switch-input"
-                    id="enabled"
-                    name="enabled"
-                    type="checkbox"
-                    value="false"
-                  />
-                  <span
-                    aria-hidden="true"
-                    class="toggle-switch-bar"
-                  >
-                    <span
-                      class="toggle-switch-handle"
-                    />
-                  </span>
-                </label>
-              </div>
-            </div>
+                <use
+                  href="#times"
+                />
+              </svg>
+            </button>
           </div>
-          <div
-            class="form-group form-group-autofit"
+          <form
+            class="form-root"
           >
             <div
-              class="form-group-item"
+              class="modal-body"
             >
               <div
-                class=""
+                class="form-group align-items-center d-flex form-group-autofit"
               >
-                <label
-                  class="form-control-label label-root"
-                  for="frequency"
+                <div>
+                  <div
+                    class="font-weight-semibold mb-2"
+                  >
+                    Enable Email Reports
+                  </div>
+                  <div
+                    class="text-secondary"
+                  >
+                    Enable email reports to configure how frequently you would like to receive notifications about this property activities. Other users will not be affected by this action.
+                  </div>
+                </div>
+                <div>
+                  <div
+                    class="form-group-item ml-3"
+                  >
+                    <label
+                      class="toggle-switch toggle-switch-root"
+                      for="enabled"
+                    >
+                      <input
+                        class="toggle-switch-check"
+                        data-testid="toggle-switch-input"
+                        id="enabled"
+                        name="enabled"
+                        type="checkbox"
+                        value="false"
+                      />
+                      <span
+                        aria-hidden="true"
+                        class="toggle-switch-bar"
+                      >
+                        <span
+                          class="toggle-switch-handle"
+                        />
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="form-group form-group-autofit"
+              >
+                <div
+                  class="form-group-item"
                 >
-                  <span
-                    class="content-container"
+                  <div
+                    class=""
                   >
-                    Frequency
-                  </span>
-                </label>
-                <select
-                  class="form-control select-root"
-                  disabled=""
-                  id="frequency"
-                  name="frequency"
-                >
-                  <option
-                    value="daily"
-                  >
-                    Daily
-                  </option>
-                  <option
-                    value="weekly"
-                  >
-                    Weekly
-                  </option>
-                  <option
-                    value="monthly"
-                  >
-                    Monthly
-                  </option>
-                </select>
+                    <label
+                      class="form-control-label label-root"
+                      for="frequency"
+                    >
+                      <span
+                        class="content-container"
+                      >
+                        Frequency
+                      </span>
+                    </label>
+                    <select
+                      class="form-control select-root"
+                      disabled=""
+                      id="frequency"
+                      name="frequency"
+                    >
+                      <option
+                        value="daily"
+                      >
+                        Daily
+                      </option>
+                      <option
+                        value="weekly"
+                      >
+                        Weekly
+                      </option>
+                      <option
+                        value="monthly"
+                      >
+                        Monthly
+                      </option>
+                    </select>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+            <div
+              class="modal-footer"
+            >
+              <div
+                class="modal-item-last"
+              >
+                <div
+                  class="btn-group-spaced"
+                  role="group"
+                >
+                  <button
+                    class="button-root btn btn-secondary"
+                    type="button"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    class="button-root btn btn-primary"
+                    type="submit"
+                  >
+                    Save
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
         </div>
-        <div
-          class="modal-footer"
-        >
-          <button
-            class="button-root btn btn-secondary"
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            class="button-root btn btn-primary"
-            type="submit"
-          >
-            Save
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
+</body>
 `;

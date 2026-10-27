@@ -1,30 +1,32 @@
 import LoadingModal from '../LoadingModal';
 import React from 'react';
-import {cleanup, render} from '@testing-library/react';
-import {noop} from 'lodash';
+import {cleanup} from '@testing-library/react';
+import {renderModal} from 'test/render-modal';
 
 jest.unmock('react-dom');
+
+const renderLoadingModal = props =>
+	renderModal(observer => <LoadingModal observer={observer} {...props} />);
 
 describe('LoadingModal', () => {
 	afterEach(cleanup);
 
-	it('should render', () => {
-		const {container} = render(<LoadingModal onClose={noop} />);
-		expect(container).toMatchSnapshot();
+	it('should render', async () => {
+		await renderLoadingModal();
+
+		expect(document.body).toMatchSnapshot();
 	});
 
-	it('should render with a message and a title', () => {
-		const {queryByText} = render(
-			<LoadingModal message='foo' onClose={noop} title='bar' />
-		);
+	it('should render with a message and a title', async () => {
+		await renderLoadingModal({message: 'foo', title: 'bar'});
 
-		expect(queryByText('foo')).toBeTruthy();
-		expect(queryByText('bar')).toBeTruthy();
+		expect(document.body).toHaveTextContent('foo');
+		expect(document.body).toHaveTextContent('bar');
 	});
 
-	it('should render an icon', () => {
-		const {container} = render(<LoadingModal icon='foo' onClose={noop} />);
+	it('should render an icon', async () => {
+		await renderLoadingModal({icon: 'foo'});
 
-		expect(container.querySelector('.icon-root')).toBeTruthy();
+		expect(document.querySelector('.icon-root')).toBeTruthy();
 	});
 });
