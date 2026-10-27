@@ -30,9 +30,9 @@ jest.mock('shared/components/dropdown-range-key/DropdownRangeKey', () => ({
 	},
 }));
 
-jest.mock('../../components/TouchedAccountsCard', () => ({
+jest.mock('../../components/MembershipsCard', () => ({
 	__esModule: true,
-	default: () => <div data-testid="touched-accounts-card" />,
+	default: () => <div data-testid="memberships-card" />,
 }));
 
 const fetchCampaign = API.campaigns.fetchCampaign as jest.Mock;

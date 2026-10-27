@@ -1,8 +1,8 @@
 import * as API from 'shared/api';
 import * as breadcrumbs from 'shared/util/breadcrumbs';
 import BasePage from 'shared/components/base-page';
+import MembershipsCard from '../components/MembershipsCard';
 import React, {useContext} from 'react';
-import TouchedAccountsCard from '../components/TouchedAccountsCard';
 import {ChannelContext} from 'shared/context/channel';
 import {DropdownRangeKey} from 'shared/components/dropdown-range-key/DropdownRangeKey';
 import {pickBy} from 'lodash';
@@ -87,7 +87,7 @@ const CampaignDetail: React.FC = () => {
 			</BasePage.SubHeader>
 
 			<BasePage.Body>
-				<TouchedAccountsCard
+				<MembershipsCard
 					campaignId={id!}
 					channelId={channelId!}
 					groupId={groupId!}
