@@ -7,6 +7,7 @@ import {Locator, Page, expect} from '@playwright/test';
 
 import {TSpConnection} from '../../helpers/SamlProviderConnectionHelper';
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
+import {waitForAlert} from '../../utils/waitForAlert';
 import {GlobalMenuPage} from '../product-navigation-applications-menu/GlobalMenuPage';
 
 export class ServiceProviderConnectionsPage {
@@ -28,7 +29,6 @@ export class ServiceProviderConnectionsPage {
 	readonly saveButton: Locator;
 	readonly serviceProviderConnectionsTab: Locator;
 	readonly serviceProviderConnectionsTable: Locator;
-	readonly successMessage: Locator;
 
 	constructor(page: Page) {
 		this.addServiceProviderConnectionButton = page.getByRole('button', {
@@ -68,9 +68,6 @@ export class ServiceProviderConnectionsPage {
 		});
 		this.serviceProviderConnectionsTable = page.locator(
 			'#_com_liferay_saml_web_internal_portlet_SamlAdminPortlet_samlIdpSpConnectionsSearchContainer'
-		);
-		this.successMessage = page.getByText(
-			'Your request completed successfully'
 		);
 	}
 
@@ -119,11 +116,7 @@ export class ServiceProviderConnectionsPage {
 				trigger: row.locator('.dropdown-toggle'),
 			});
 
-			await expect(await this.successMessage).toBeVisible();
-
-			// Prevent the above expect from passing due to previous success
-
-			await this.page.getByLabel('Close').click();
+			await waitForAlert(this.page);
 		}
 	}
 
@@ -174,9 +167,7 @@ export class ServiceProviderConnectionsPage {
 			trigger: row.locator('.dropdown-toggle'),
 		});
 
-		await expect(await this.successMessage).toBeVisible();
-
-		await this.page.getByLabel('Close').click();
+		await waitForAlert(this.page);
 	}
 
 	private async populateAndSaveServiceProviderConnectionDetails(
@@ -241,7 +232,7 @@ export class ServiceProviderConnectionsPage {
 		}
 
 		await this.saveButton.click();
-		await expect(await this.successMessage).toBeVisible();
-		await this.page.getByLabel('Close').click();
+
+		await waitForAlert(this.page);
 	}
 }
