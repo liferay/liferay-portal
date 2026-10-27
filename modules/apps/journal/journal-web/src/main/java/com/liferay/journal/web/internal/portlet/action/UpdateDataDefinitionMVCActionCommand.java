@@ -9,7 +9,6 @@ import com.liferay.data.engine.field.type.util.LocalizedValueUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinitionField;
 import com.liferay.data.engine.rest.dto.v2_0.DataLayout;
-import com.liferay.data.engine.rest.resource.exception.DataDefinitionValidationException;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
@@ -21,7 +20,6 @@ import com.liferay.journal.service.persistence.JournalArticleUtil;
 import com.liferay.journal.web.internal.exception.DDMStructureValidationModelListenerException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -29,7 +27,6 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-import jakarta.portlet.PortletException;
 
 import java.util.List;
 import java.util.Map;
@@ -49,50 +46,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class UpdateDataDefinitionMVCActionCommand
 	extends BaseTransactionalMVCActionCommand {
-
-	@Override
-	public boolean processAction(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws PortletException {
-
-		try {
-			return super.processAction(actionRequest, actionResponse);
-		}
-		catch (PortletException portletException) {
-			if (portletException.getCause() instanceof
-					DataDefinitionValidationException) {
-
-				DataDefinitionValidationException
-					dataDefinitionValidationException =
-						(DataDefinitionValidationException)
-							portletException.getCause();
-
-				SessionErrors.add(
-					actionRequest, dataDefinitionValidationException.getClass(),
-					dataDefinitionValidationException);
-			}
-			else if (portletException.getCause() instanceof
-						DDMStructureValidationModelListenerException) {
-
-				DDMStructureValidationModelListenerException
-					ddmStructureValidationModelListenerException =
-						(DDMStructureValidationModelListenerException)
-							portletException.getCause();
-
-				SessionErrors.add(
-					actionRequest,
-					ddmStructureValidationModelListenerException.getClass(),
-					ddmStructureValidationModelListenerException);
-
-				hideDefaultErrorMessage(actionRequest);
-			}
-			else {
-				throw portletException;
-			}
-		}
-
-		return false;
-	}
 
 	@Override
 	protected void doTransactionalCommand(
@@ -141,8 +94,17 @@ public class UpdateDataDefinitionMVCActionCommand
 				_localization.getLocalizationMap(
 					actionRequest, "description")));
 
-		dataDefinitionResource.putDataDefinition(
-			dataDefinitionId, dataDefinition);
+		try {
+			dataDefinitionResource.putDataDefinition(
+				dataDefinitionId, dataDefinition);
+		}
+		catch (DDMStructureValidationModelListenerException
+					ddmStructureValidationModelListenerException) {
+
+			hideDefaultErrorMessage(actionRequest);
+
+			throw ddmStructureValidationModelListenerException;
+		}
 
 		List<JournalArticle> journalArticles =
 			_journalArticleLocalService.getStructureArticles(dataDefinitionId);
