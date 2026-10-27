@@ -1655,6 +1655,10 @@ export const iconsData = [
 		name: 'product-menu',
 	},
 	{
+		aliases: ['goods', 'item', 'unit'],
+		name: 'product',
+	},
+	{
 		aliases: ['catalog', 'inventory', 'packages'],
 		name: 'products',
 	},
