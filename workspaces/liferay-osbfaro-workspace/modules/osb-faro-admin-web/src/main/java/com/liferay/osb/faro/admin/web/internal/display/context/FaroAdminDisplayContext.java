@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -125,27 +124,29 @@ public class FaroAdminDisplayContext {
 
 		SearchContext searchContext = new SearchContext();
 
-		if (_isBasic()) {
+		String navigation = _getNavigation();
+
+		if (navigation.equals("basic")) {
 			searchContext.setAttribute("subscriptionName", "Basic");
 		}
-		else if (_isBusiness()) {
+		else if (navigation.equals("business")) {
 			searchContext.setAttribute("subscriptionName", "Business");
 		}
-		else if (_isEnterprise()) {
+		else if (navigation.equals("enterprise")) {
 			searchContext.setAttribute("subscriptionName", "Enterprise");
 		}
-		else if (_isInactive()) {
+		else if (navigation.equals("inactive")) {
 			searchContext.setAttribute("inactive", Boolean.TRUE);
 		}
-		else if (_isNavigationUsageLimitApproaching()) {
+		else if (navigation.equals("usage-limit-approaching")) {
 			searchContext.setAttribute("maxUsage", 100);
 			searchContext.setAttribute("minUsage", 70);
 		}
-		else if (_isNavigationUsageLimitExceeded()) {
+		else if (navigation.equals("usage-limit-exceeded")) {
 			searchContext.setAttribute("maxUsage", Integer.MAX_VALUE);
 			searchContext.setAttribute("minUsage", 100);
 		}
-		else if (_isOffline()) {
+		else if (navigation.equals("offline")) {
 			searchContext.setAttribute("offline", Boolean.TRUE);
 		}
 
@@ -227,34 +228,6 @@ public class FaroAdminDisplayContext {
 			_httpServletRequest, "orderByType", "asc");
 
 		return _orderByType;
-	}
-
-	private boolean _isBasic() {
-		return StringUtil.equals(_getNavigation(), "basic");
-	}
-
-	private boolean _isBusiness() {
-		return StringUtil.equals(_getNavigation(), "business");
-	}
-
-	private boolean _isEnterprise() {
-		return StringUtil.equals(_getNavigation(), "enterprise");
-	}
-
-	private boolean _isInactive() {
-		return StringUtil.equals(_getNavigation(), "inactive");
-	}
-
-	private boolean _isNavigationUsageLimitApproaching() {
-		return StringUtil.equals(_getNavigation(), "usage-limit-approaching");
-	}
-
-	private boolean _isNavigationUsageLimitExceeded() {
-		return StringUtil.equals(_getNavigation(), "usage-limit-exceeded");
-	}
-
-	private boolean _isOffline() {
-		return StringUtil.equals(_getNavigation(), "offline");
 	}
 
 	private final HttpServletRequest _httpServletRequest;
