@@ -109,6 +109,9 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 	@Override
 	@Test
 	public void testPutShipmentByExternalReferenceCode() throws Exception {
+		super.testPutShipmentByExternalReferenceCode();
+
+		_testPutShipmentByExternalReferenceCodeWithOrderExternalReferenceCode();
 	}
 
 	@Ignore
@@ -348,6 +351,35 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 		Assert.assertEquals(
 			randomShippingAddress.getExternalReferenceCode(),
 			getShippingAddress.getExternalReferenceCode());
+	}
+
+	private void _testPutShipmentByExternalReferenceCodeWithOrderExternalReferenceCode()
+		throws Exception {
+
+		Shipment randomShipment = randomShipment();
+
+		randomShipment.setExternalReferenceCode((String)null);
+		randomShipment.setOrderExternalReferenceCode(
+			_commerceOrder.getExternalReferenceCode());
+		randomShipment.setOrderId(0L);
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+
+		Shipment putShipment =
+			shipmentResource.putShipmentByExternalReferenceCode(
+				externalReferenceCode, randomShipment);
+
+		_commerceShipments.add(
+			CommerceShipmentLocalServiceUtil.getCommerceShipment(
+				putShipment.getId()));
+
+		Assert.assertEquals(
+			randomShipment.getAccountId(), putShipment.getAccountId());
+		Assert.assertEquals(
+			externalReferenceCode, putShipment.getExternalReferenceCode());
+		Assert.assertEquals(
+			randomShipment.getShippingMethodId(),
+			putShipment.getShippingMethodId());
 	}
 
 	private Shipment _toShipment(CommerceShipment commerceShipment)
