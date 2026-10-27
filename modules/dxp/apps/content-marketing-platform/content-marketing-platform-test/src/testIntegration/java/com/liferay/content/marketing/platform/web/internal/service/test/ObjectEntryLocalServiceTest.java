@@ -12,14 +12,17 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
 import java.io.Serializable;
 
@@ -41,7 +44,8 @@ public class ObjectEntryLocalServiceTest {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
-			PermissionCheckerMethodTestRule.INSTANCE);
+			PermissionCheckerMethodTestRule.INSTANCE,
+			SynchronousMailTestRule.INSTANCE);
 
 	@Before
 	public void setUp() throws Exception {
@@ -114,6 +118,46 @@ public class ObjectEntryLocalServiceTest {
 		Assert.assertNull(
 			_objectEntryLocalService.fetchObjectEntry(
 				cmpTaskLinkObjectEntry.getObjectEntryId()));
+	}
+
+	@Test
+	public void testUpdateCMPProjectObjectEntry() throws Exception {
+		_testUpdateCMPObjectEntry(CMPTestUtil.addCMPProjectObjectEntry());
+	}
+
+	@Test
+	public void testUpdateCMPTaskObjectEntry() throws Exception {
+		_testUpdateCMPObjectEntry(CMPTestUtil.addCMPTaskObjectEntry());
+	}
+
+	private void _testUpdateCMPObjectEntry(ObjectEntry cmpObjectEntry)
+		throws Exception {
+
+		_objectEntryLocalService.subscribeObjectEntry(
+			TestPropsValues.getUserId(), cmpObjectEntry.getGroupId(),
+			cmpObjectEntry.getObjectEntryId());
+
+		_objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), cmpObjectEntry.getObjectEntryId(),
+			cmpObjectEntry.getObjectEntryFolderId(),
+			HashMapBuilder.<String, Serializable>putAll(
+				cmpObjectEntry.getValues()
+			).put(
+				"description",
+				StringBundler.concat(
+					"<p><strong>bold</strong></p><p><img src=\"",
+					RandomTestUtil.randomString(),
+					"\"></p><figure class=\"media\"><oembed url=\"",
+					RandomTestUtil.randomString(),
+					"\"></oembed></figure><p><iframe data-video-liferay src=\"",
+					RandomTestUtil.randomString(), "\"></iframe></p>")
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Assert.assertTrue(
+			MailServiceTestUtil.lastMailMessageContains(
+				"<p><strong>bold</strong></p><p>[Image]</p><figure " +
+					"class=\"media\">[Video]</figure><p>[Video]</p>"));
 	}
 
 	private ObjectDefinition _cmpProjectLinkObjectDefinition;
