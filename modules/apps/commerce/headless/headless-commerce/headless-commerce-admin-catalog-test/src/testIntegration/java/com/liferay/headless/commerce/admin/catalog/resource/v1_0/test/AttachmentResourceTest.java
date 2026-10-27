@@ -14,7 +14,6 @@ import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
-import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
@@ -845,11 +844,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 		randomAttachment.setOptions(
 			HashMapBuilder.put(
-				() -> {
-					CPOption cpOption = cpDefinitionOptionRel.getCPOption();
-
-					return cpOption.getKey();
-				},
+				cpDefinitionOptionRel.getKey(),
 				cpDefinitionOptionValueRel.getKey()
 			).build());
 
