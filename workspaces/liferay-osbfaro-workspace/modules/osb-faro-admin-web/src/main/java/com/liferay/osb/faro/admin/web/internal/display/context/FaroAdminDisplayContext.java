@@ -131,6 +131,8 @@ public class FaroAdminDisplayContext {
 		SearchContainer<FaroProject> searchContainer = new SearchContainer<>(
 			_renderRequest, getPortletURL(), null, "there-are-no-projects");
 
+		searchContainer.setId("faro_admin");
+
 		searchContainer.setOrderByCol(_getOrderByCol());
 		searchContainer.setOrderByType(_getOrderByType());
 

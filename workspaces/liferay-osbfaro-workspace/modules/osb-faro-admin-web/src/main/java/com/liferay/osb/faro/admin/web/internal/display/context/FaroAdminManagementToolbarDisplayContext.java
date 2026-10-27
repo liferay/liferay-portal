@@ -93,11 +93,6 @@ public class FaroAdminManagementToolbarDisplayContext
 	}
 
 	@Override
-	public String getSearchContainerId() {
-		return "faro_admin";
-	}
-
-	@Override
 	protected String[] getNavigationKeys() {
 		return new String[] {
 			"all", "basic", "business", "enterprise", "inactive", "offline",

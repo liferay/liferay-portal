@@ -9,25 +9,26 @@
 
 <%
 FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(request, renderRequest, renderResponse);
+
+FaroAdminManagementToolbarDisplayContext faroAdminManagementToolbarDisplayContext = new FaroAdminManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, faroAdminDisplayContext.getSearchContainer());
 %>
 
 <clay:management-toolbar
-	displayContext="<%= new FaroAdminManagementToolbarDisplayContext(request, liferayPortletRequest, liferayPortletResponse, faroAdminDisplayContext.getSearchContainer()) %>"
+	displayContext="<%= faroAdminManagementToolbarDisplayContext %>"
 />
 
-<div class="closed sidenav-container sidenav-right" id="<portlet:namespace />infoPanelId">
+<div class="closed sidenav-container sidenav-right" id="<portlet:namespace /><%= faroAdminManagementToolbarDisplayContext.getInfoPanelId() %>">
 	<liferay-portlet:resourceURL copyCurrentRenderParameters="<%= false %>" id="/faro_admin/info_panel" var="sidebarPanelURL" />
 
 	<liferay-frontend:sidebar-panel
 		resourceURL="<%= sidebarPanelURL %>"
-		searchContainerId="faro_admin"
+		searchContainerId="<%= faroAdminManagementToolbarDisplayContext.getSearchContainerId() %>"
 	>
 		<liferay-util:include page="" servletContext="<%= application %>" />
 	</liferay-frontend:sidebar-panel>
 
 	<div class="container-fluid sidenav-content">
 		<liferay-ui:search-container
-			id="faro_admin"
 			searchContainer="<%= faroAdminDisplayContext.getSearchContainer() %>"
 		>
 			<liferay-ui:search-container-row
