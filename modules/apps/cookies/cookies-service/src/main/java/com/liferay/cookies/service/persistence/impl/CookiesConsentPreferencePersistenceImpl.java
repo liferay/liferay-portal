@@ -31,7 +31,6 @@ import java.io.Serializable;
 
 import java.lang.reflect.InvocationHandler;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -156,92 +155,6 @@ public class CookiesConsentPreferencePersistenceImpl
 	public int countByUserId(long userId) {
 		return _collectionPersistenceFinderByUserId.count(
 			finderCache, new Object[] {userId});
-	}
-
-	private CollectionPersistenceFinder
-		<CookiesConsentPreference, NoSuchCookiesConsentPreferenceException>
-			_collectionPersistenceFinderByExpirationDate;
-
-	/**
-	 * Returns an ordered range of all the cookies consent preferences where expirationDate = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CookiesConsentPreferenceModelImpl</code>.
-	 * </p>
-	 *
-	 * @param expirationDate the expiration date
-	 * @param start the lower bound of the range of cookies consent preferences
-	 * @param end the upper bound of the range of cookies consent preferences (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cookies consent preferences
-	 */
-	@Override
-	public List<CookiesConsentPreference> findByExpirationDate(
-		Date expirationDate, int start, int end,
-		OrderByComparator<CookiesConsentPreference> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByExpirationDate.find(
-			finderCache, new Object[] {expirationDate}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cookies consent preference in the ordered set where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cookies consent preference
-	 * @throws NoSuchCookiesConsentPreferenceException if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference findByExpirationDate_First(
-			Date expirationDate,
-			OrderByComparator<CookiesConsentPreference> orderByComparator)
-		throws NoSuchCookiesConsentPreferenceException {
-
-		return _collectionPersistenceFinderByExpirationDate.findFirst(
-			finderCache, new Object[] {expirationDate}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first cookies consent preference in the ordered set where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cookies consent preference, or <code>null</code> if a matching cookies consent preference could not be found
-	 */
-	@Override
-	public CookiesConsentPreference fetchByExpirationDate_First(
-		Date expirationDate,
-		OrderByComparator<CookiesConsentPreference> orderByComparator) {
-
-		return _collectionPersistenceFinderByExpirationDate.fetchFirst(
-			finderCache, new Object[] {expirationDate}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the cookies consent preferences where expirationDate = &#63; from the database.
-	 *
-	 * @param expirationDate the expiration date
-	 */
-	@Override
-	public void removeByExpirationDate(Date expirationDate) {
-		_collectionPersistenceFinderByExpirationDate.remove(
-			finderCache, new Object[] {expirationDate});
-	}
-
-	/**
-	 * Returns the number of cookies consent preferences where expirationDate = &#63;.
-	 *
-	 * @param expirationDate the expiration date
-	 * @return the number of matching cookies consent preferences
-	 */
-	@Override
-	public int countByExpirationDate(Date expirationDate) {
-		return _collectionPersistenceFinderByExpirationDate.count(
-			finderCache, new Object[] {expirationDate});
 	}
 
 	private CollectionPersistenceFinder
@@ -625,36 +538,6 @@ public class CookiesConsentPreferencePersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					CookiesConsentPreference::getUserId));
 
-		_collectionPersistenceFinderByExpirationDate =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION,
-					"findByExpirationDate",
-					new String[] {
-						Date.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"expirationDate"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByExpirationDate", new String[] {Date.class.getName()},
-					new String[] {"expirationDate"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByExpirationDate",
-					new String[] {Date.class.getName()},
-					new String[] {"expirationDate"}, false),
-				_SQL_SELECT_COOKIESCONSENTPREFERENCE_WHERE,
-				_SQL_COUNT_COOKIESCONSENTPREFERENCE_WHERE,
-				CookiesConsentPreferenceModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"cookiesConsentPreference.", "expirationDate",
-					FinderColumn.Type.DATE, "=", true, true,
-					CookiesConsentPreference::getExpirationDate));
-
 		_collectionPersistenceFinderByU_D = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -767,4 +650,4 @@ public class CookiesConsentPreferencePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:450718252
+// LIFERAY-SERVICE-BUILDER-HASH:-2036987645
