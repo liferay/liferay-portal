@@ -30,7 +30,7 @@ const getImageProps = (config?: IEmptyState) => {
 			imgSrc: getImgSrc(config.image),
 			imgSrcReducedMotion: config.imageReducedMotion
 				? getImgSrc(config.imageReducedMotion)
-				: undefined,
+				: null,
 		};
 	}
 
