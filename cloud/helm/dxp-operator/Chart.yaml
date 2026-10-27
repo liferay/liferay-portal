@@ -6,4 +6,4 @@ icon: https://www-cdn.liferay.com/documents/d/guest/liferay-logo
 kubeVersion: ^1.30.0-0
 name: liferay-dxp-operator
 type: application
-version: 0.1.2
+version: 0.2.0
