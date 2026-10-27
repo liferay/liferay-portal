@@ -331,76 +331,6 @@ public class LayoutLocalizationUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the layout localizations where plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.model.impl.LayoutLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout localizations
-	 * @param end the upper bound of the range of layout localizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching layout localizations
-	 */
-	public static List<LayoutLocalization> findByPlid(
-		long plid, int start, int end,
-		OrderByComparator<LayoutLocalization> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByPlid(
-			plid, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first layout localization in the ordered set where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout localization
-	 * @throws NoSuchLayoutLocalizationException if a matching layout localization could not be found
-	 */
-	public static LayoutLocalization findByPlid_First(
-			long plid, OrderByComparator<LayoutLocalization> orderByComparator)
-		throws com.liferay.layout.exception.NoSuchLayoutLocalizationException {
-
-		return getPersistence().findByPlid_First(plid, orderByComparator);
-	}
-
-	/**
-	 * Returns the first layout localization in the ordered set where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout localization, or <code>null</code> if a matching layout localization could not be found
-	 */
-	public static LayoutLocalization fetchByPlid_First(
-		long plid, OrderByComparator<LayoutLocalization> orderByComparator) {
-
-		return getPersistence().fetchByPlid_First(plid, orderByComparator);
-	}
-
-	/**
-	 * Removes all the layout localizations where plid = &#63; from the database.
-	 *
-	 * @param plid the plid
-	 */
-	public static void removeByPlid(long plid) {
-		getPersistence().removeByPlid(plid);
-	}
-
-	/**
-	 * Returns the number of layout localizations where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @return the number of matching layout localizations
-	 */
-	public static int countByPlid(long plid) {
-		return getPersistence().countByPlid(plid);
-	}
-
-	/**
 	 * Returns the layout localization where languageId = &#63; and plid = &#63; or throws a <code>NoSuchLayoutLocalizationException</code> if it could not be found.
 	 *
 	 * @param languageId the language ID
@@ -703,54 +633,6 @@ public class LayoutLocalizationUtil {
 			uuid, companyId, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the layout localizations where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @return the matching layout localizations
-	 */
-	public static List<LayoutLocalization> findByPlid(long plid) {
-		return getPersistence().findByPlid(plid);
-	}
-
-	/**
-	 * Returns a range of all the layout localizations where plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.model.impl.LayoutLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout localizations
-	 * @param end the upper bound of the range of layout localizations (not inclusive)
-	 * @return the range of matching layout localizations
-	 */
-	public static List<LayoutLocalization> findByPlid(
-		long plid, int start, int end) {
-
-		return getPersistence().findByPlid(plid, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the layout localizations where plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.layout.model.impl.LayoutLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout localizations
-	 * @param end the upper bound of the range of layout localizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching layout localizations
-	 */
-	public static List<LayoutLocalization> findByPlid(
-		long plid, int start, int end,
-		OrderByComparator<LayoutLocalization> orderByComparator) {
-
-		return getPersistence().findByPlid(plid, start, end, orderByComparator);
-	}
-
 	public static LayoutLocalizationPersistence getPersistence() {
 		return _persistence;
 	}
@@ -764,4 +646,4 @@ public class LayoutLocalizationUtil {
 	private static volatile LayoutLocalizationPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:333642955
+// LIFERAY-SERVICE-BUILDER-HASH:-1968392085

@@ -326,90 +326,6 @@ public class LayoutLocalizationPersistenceImpl
 			finderCache, new Object[] {uuid, companyId});
 	}
 
-	private CollectionPersistenceFinder
-		<LayoutLocalization, NoSuchLayoutLocalizationException>
-			_collectionPersistenceFinderByPlid;
-
-	/**
-	 * Returns an ordered range of all the layout localizations where plid = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutLocalizationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param plid the plid
-	 * @param start the lower bound of the range of layout localizations
-	 * @param end the upper bound of the range of layout localizations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching layout localizations
-	 */
-	@Override
-	public List<LayoutLocalization> findByPlid(
-		long plid, int start, int end,
-		OrderByComparator<LayoutLocalization> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByPlid.find(
-			finderCache, new Object[] {plid}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first layout localization in the ordered set where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout localization
-	 * @throws NoSuchLayoutLocalizationException if a matching layout localization could not be found
-	 */
-	@Override
-	public LayoutLocalization findByPlid_First(
-			long plid, OrderByComparator<LayoutLocalization> orderByComparator)
-		throws NoSuchLayoutLocalizationException {
-
-		return _collectionPersistenceFinderByPlid.findFirst(
-			finderCache, new Object[] {plid}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first layout localization in the ordered set where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout localization, or <code>null</code> if a matching layout localization could not be found
-	 */
-	@Override
-	public LayoutLocalization fetchByPlid_First(
-		long plid, OrderByComparator<LayoutLocalization> orderByComparator) {
-
-		return _collectionPersistenceFinderByPlid.fetchFirst(
-			finderCache, new Object[] {plid}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the layout localizations where plid = &#63; from the database.
-	 *
-	 * @param plid the plid
-	 */
-	@Override
-	public void removeByPlid(long plid) {
-		_collectionPersistenceFinderByPlid.remove(
-			finderCache, new Object[] {plid});
-	}
-
-	/**
-	 * Returns the number of layout localizations where plid = &#63;.
-	 *
-	 * @param plid the plid
-	 * @return the number of matching layout localizations
-	 */
-	@Override
-	public int countByPlid(long plid) {
-		return _collectionPersistenceFinderByPlid.count(
-			finderCache, new Object[] {plid});
-	}
-
 	private UniquePersistenceFinder
 		<LayoutLocalization, NoSuchLayoutLocalizationException>
 			_uniquePersistenceFinderByL_P;
@@ -930,31 +846,6 @@ public class LayoutLocalizationPersistenceImpl
 					"layoutLocalization.", "companyId", FinderColumn.Type.LONG,
 					"=", true, true, LayoutLocalization::getCompanyId));
 
-		_collectionPersistenceFinderByPlid = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByPlid",
-				new String[] {
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"plid"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByPlid",
-				new String[] {Long.class.getName()}, new String[] {"plid"},
-				true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByPlid",
-				new String[] {Long.class.getName()}, new String[] {"plid"},
-				false),
-			_SQL_SELECT_LAYOUTLOCALIZATION_WHERE,
-			_SQL_COUNT_LAYOUTLOCALIZATION_WHERE,
-			LayoutLocalizationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "",
-			"", null,
-			new FinderColumn<>(
-				"layoutLocalization.", "plid", FinderColumn.Type.LONG, "=",
-				true, true, LayoutLocalization::getPlid));
-
 		_uniquePersistenceFinderByL_P = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1060,4 +951,4 @@ public class LayoutLocalizationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1306063421
+// LIFERAY-SERVICE-BUILDER-HASH:574936604

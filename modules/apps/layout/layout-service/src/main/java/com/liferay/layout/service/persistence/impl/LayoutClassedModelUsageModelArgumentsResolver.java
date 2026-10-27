@@ -185,9 +185,6 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 		_whereColumnBitmasks.put("CN_CPK", whereColumnBitmask);
 
 		_whereBiPredicates.put("CN_CPK", whereBiPredicate);
-		_whereColumnBitmasks.put("C_CERC_CN", whereColumnBitmask);
-
-		_whereBiPredicates.put("C_CERC_CN", whereBiPredicate);
 		_whereColumnBitmasks.put("C_CN_CT", whereColumnBitmask);
 
 		_whereBiPredicates.put("C_CN_CT", whereBiPredicate);
@@ -197,10 +194,7 @@ public class LayoutClassedModelUsageModelArgumentsResolver
 		_whereColumnBitmasks.put("CK_CT_P", whereColumnBitmask);
 
 		_whereBiPredicates.put("CK_CT_P", whereBiPredicate);
-		_whereColumnBitmasks.put("C_CERC_CN_T", whereColumnBitmask);
-
-		_whereBiPredicates.put("C_CERC_CN_T", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-384729305
+// LIFERAY-SERVICE-BUILDER-HASH:-163248955
