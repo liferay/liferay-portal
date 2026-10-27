@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.friendly.url.model.FriendlyURLEntryLocalizationModel;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.friendly.url.util.comparator.FriendlyURLEntryLocalizationComparator;
@@ -31,8 +32,11 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -63,9 +67,7 @@ public class FriendlyUrlHistoryResourceImpl
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
 					displayPageTemplateExternalReferenceCode,
-					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
+					_getGroupId(siteExternalReferenceCode));
 
 		if (layoutPageTemplateEntry.getType() !=
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE) {
@@ -161,6 +163,23 @@ public class FriendlyUrlHistoryResourceImpl
 		}
 
 		return jsonObject;
+	}
+
+	private long _getGroupId(String siteExternalReferenceCode)
+		throws Exception {
+
+		if (Validator.isNotNull(siteExternalReferenceCode)) {
+			return GroupUtil.getGroupId(
+				true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+		}
+
+		MultivaluedMap<String, String> pathParameters =
+			contextUriInfo.getPathParameters();
+
+		return GroupUtil.getDepotGroupId(
+			contextCompany.getCompanyId(),
+			pathParameters.getFirst("designLibraryExternalReferenceCode"),
+			DepotConstants.TYPE_DESIGN_LIBRARY);
 	}
 
 	private FriendlyUrlHistory _toFriendlyUrlHistory(Layout layout)
