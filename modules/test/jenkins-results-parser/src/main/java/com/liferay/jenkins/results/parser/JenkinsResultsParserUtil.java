@@ -4690,15 +4690,14 @@ public class JenkinsResultsParserUtil {
 			return url;
 		}
 
-		String remainder = url;
-
 		String fragment = null;
+
+		String remainder = url;
 
 		int index = remainder.indexOf('#');
 
 		if (index != -1) {
 			fragment = remainder.substring(index + 1);
-
 			remainder = remainder.substring(0, index);
 		}
 
@@ -4708,7 +4707,6 @@ public class JenkinsResultsParserUtil {
 
 		if (index != -1) {
 			queryString = remainder.substring(index + 1);
-
 			remainder = remainder.substring(0, index);
 		}
 
