@@ -5,9 +5,11 @@
 
 package com.liferay.depot.web.internal.display.context;
 
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalServiceUtil;
+import com.liferay.depot.service.DepotEntryLocalServiceUtil;
 import com.liferay.depot.web.internal.constants.DepotAdminWebKeys;
 import com.liferay.depot.web.internal.util.DepotEntryURLUtil;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemList;
@@ -63,6 +65,7 @@ public class DepotAdminSitesDisplayContext {
 		return DropdownItemListBuilder.add(
 			dropdownItem -> {
 				dropdownItem.setDisabled(
+					_isDesignLibrary(depotEntryGroupRel) ||
 					_isLayoutSetPrototype(depotEntryGroupRel));
 				dropdownItem.setHref(
 					String.valueOf(
@@ -177,6 +180,9 @@ public class DepotAdminSitesDisplayContext {
 		if (_isLayoutSetPrototype(depotEntryGroupRel)) {
 			_appendSuffix(sb, "site-template");
 		}
+		else if (_isDesignLibrary(depotEntryGroupRel)) {
+			_appendSuffix(sb, "design-library");
+		}
 		else if (group.isStaged() && !group.isStagedRemotely() &&
 				 group.isStagingGroup()) {
 
@@ -227,6 +233,19 @@ public class DepotAdminSitesDisplayContext {
 		}
 
 		return "make-searchable";
+	}
+
+	private boolean _isDesignLibrary(DepotEntryGroupRel depotEntryGroupRel) {
+		DepotEntry depotEntry = DepotEntryLocalServiceUtil.fetchGroupDepotEntry(
+			depotEntryGroupRel.getToGroupId());
+
+		if ((depotEntry != null) &&
+			(depotEntry.getType() == DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private boolean _isLayoutSetPrototype(DepotEntryGroupRel depotEntryGroupRel)
