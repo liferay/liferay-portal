@@ -7,10 +7,6 @@
 		flex-grow: 1;
 		min-height: 10rem;
 		position: relative;
-
-		&.flex-row {
-			flex-direction: row;
-		}
 	}
 
 	.header-container,
@@ -35,21 +31,12 @@
 			top: 0;
 			z-index: 10;
 		}
-
-		> .children-wrapper {
-			padding-top: 16px;
-		}
 	}
 
 	.header-root {
 		background-color: $white;
 		border-bottom: 1px solid $mainLighten74;
 		padding-top: 16px;
-
-		.breadcrumbs-root {
-			margin-bottom: 8px;
-			padding: 0;
-		}
 
 		.header-actions {
 			bottom: 0;
@@ -59,10 +46,6 @@
 			position: absolute;
 			right: 0;
 			top: 0;
-		}
-
-		.header-content {
-			width: 100%;
 		}
 
 		.header-section {
@@ -76,19 +59,11 @@
 		}
 
 		.title-section {
-			&.subtitle {
-				margin-bottom: 0;
-			}
-
 			.page-actions-toolbar {
 				background-color: transparent;
 				border: 0;
 				min-height: 0;
 				padding: 0;
-
-				.tbar-item {
-					padding: 0;
-				}
 			}
 
 			.subtitle,

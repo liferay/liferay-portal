@@ -221,7 +221,7 @@ const PageActionsToolbar: React.FC<IPageActionsToolbarProps> = ({
 }) => (
 	<ClayToolbar className="page-actions-toolbar">
 		<ClayToolbar.Nav>
-			<ClayToolbar.Item>
+			<ClayToolbar.Item className="p-0">
 				<ClayDropDown
 					alignmentPosition={Align.BottomRight}
 					closeOnClick
@@ -279,7 +279,12 @@ const TitleSection: React.FC<ITitleSectionProps> = ({
 	title,
 	topLabel,
 }) => (
-	<Section className={getCN('title-section', className, {subtitle})}>
+	<Section
+		className={getCN('title-section', className, {
+			'mb-0': subtitle,
+			subtitle,
+		})}
+	>
 		{topLabel && (
 			<div className="mb-1">
 				<ClayLabel displayType="secondary" inverse size="lg">
@@ -359,7 +364,10 @@ const Header: React.FC<IHeaderProps> & {
 				<div className="mx-5">
 					{breadcrumbs && (
 						<Row>
-							<Breadcrumbs items={breadcrumbs} />
+							<Breadcrumbs
+								className="mb-2 p-0"
+								items={breadcrumbs}
+							/>
 						</Row>
 					)}
 
@@ -380,7 +388,7 @@ const Header: React.FC<IHeaderProps> & {
 			<div className="header-container">
 				{breadcrumbs && (
 					<Row>
-						<Breadcrumbs items={breadcrumbs} />
+						<Breadcrumbs className="mb-2 p-0" items={breadcrumbs} />
 					</Row>
 				)}
 

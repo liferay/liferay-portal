@@ -37,7 +37,11 @@ const Body: React.FC<IBodyProps> = ({
 				className
 			)}
 		>
-			<span className="children-wrapper">{children}</span>
+			<span
+				className={getCN('children-wrapper', {'pt-3': pageContainer})}
+			>
+				{children}
+			</span>
 		</div>
 	);
 };
