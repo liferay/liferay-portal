@@ -292,7 +292,7 @@ public class LayoutPermissionImpl implements LayoutPermission {
 		throws PortalException {
 
 		return _containsWithoutViewableGroup(
-			permissionChecker, layout, checkLayoutUpdateable, actionId);
+			permissionChecker, layout, null, checkLayoutUpdateable, actionId);
 	}
 
 	@Override
@@ -302,20 +302,6 @@ public class LayoutPermissionImpl implements LayoutPermission {
 
 		return containsWithoutViewableGroup(
 			permissionChecker, layout, true, actionId);
-	}
-
-	protected boolean containsWithViewableGroup(
-			PermissionChecker permissionChecker, Layout layout,
-			boolean checkViewableGroup, String actionId)
-		throws PortalException {
-
-		if (actionId.equals(ActionKeys.VIEW) && checkViewableGroup) {
-			return isViewableGroup(
-				permissionChecker, layout, checkViewableGroup);
-		}
-
-		return containsWithoutViewableGroup(
-			permissionChecker, layout, actionId);
 	}
 
 	protected boolean isAttemptToModifyLockedLayout(
@@ -558,12 +544,16 @@ public class LayoutPermissionImpl implements LayoutPermission {
 			}
 		}
 
-		return containsWithViewableGroup(
-			permissionChecker, layout, checkViewableGroup, actionId);
+		if (actionId.equals(ActionKeys.VIEW) && checkViewableGroup) {
+			return isViewableGroup(permissionChecker, layout, true);
+		}
+
+		return _containsWithoutViewableGroup(
+			permissionChecker, layout, group, true, actionId);
 	}
 
 	private boolean _containsWithoutViewableGroup(
-			PermissionChecker permissionChecker, Layout layout,
+			PermissionChecker permissionChecker, Layout layout, Group group,
 			boolean checkLayoutUpdateable, String actionId)
 		throws PortalException {
 
@@ -619,7 +609,9 @@ public class LayoutPermissionImpl implements LayoutPermission {
 			}
 		}
 
-		Group group = layout.getGroup();
+		if (group == null) {
+			group = layout.getGroup();
+		}
 
 		if (checkLayoutUpdateable && !group.isLayoutSetPrototype() &&
 			isAttemptToModifyLockedLayout(layout, actionId)) {
