@@ -20,6 +20,7 @@ import com.liferay.change.tracking.web.internal.display.DisplayContextImpl;
 import com.liferay.change.tracking.web.internal.util.PublicationsPortletURLUtil;
 import com.liferay.diff.DiffHtml;
 import com.liferay.knowledge.base.model.KBArticleModel;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.io.unsync.UnsyncStringReader;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.lang.SafeCloseable;
@@ -181,33 +182,41 @@ public class GetEntryRenderDataMVCResourceCommand
 			return null;
 		}
 
-		Matcher matcher = _documentsURLPattern.matcher(html);
+		Matcher matcher = _urlAttributePattern.matcher(html);
 
 		return matcher.replaceAll(
 			matchResult -> {
-				String host = matchResult.group(3);
-				String url = matchResult.group(2);
+				String value = matchResult.group(2);
 
-				if (((host != null) &&
-					 !_portal.isValidPortalDomain(companyId, host)) ||
-					!Objects.equals(
-						matchResult.group(4), _portal.getPathContext()) ||
-					Validator.isNotNull(
-						HttpComponentsUtil.getParameter(
-							StringUtil.replace(
-								url, StringPool.AMPERSAND_ENCODED,
-								StringPool.AMPERSAND),
-							"previewCTCollectionId", false))) {
+				if (Objects.equals(matchResult.group(1), "srcset")) {
+					List<String> candidates = TransformUtil.transformToList(
+						StringUtil.split(value),
+						candidate -> {
+							candidate = StringUtil.trim(candidate);
 
-					return Matcher.quoteReplacement(matchResult.group());
+							int index = candidate.indexOf(CharPool.SPACE);
+
+							if (index == -1) {
+								index = candidate.length();
+							}
+
+							String previewURL = _getPreviewURL(
+								companyId, ctCollectionId,
+								candidate.substring(0, index));
+
+							return previewURL + candidate.substring(index);
+						});
+
+					value = StringUtil.merge(
+						candidates, StringPool.COMMA_AND_SPACE);
+				}
+				else {
+					value = _getPreviewURL(companyId, ctCollectionId, value);
 				}
 
 				return Matcher.quoteReplacement(
 					StringBundler.concat(
-						matchResult.group(1), "=\"",
-						HttpComponentsUtil.addParameter(
-							url, "previewCTCollectionId", ctCollectionId),
-						"\""));
+						matchResult.group(1), "=\"", value, "\""));
 			});
 	}
 
@@ -1016,6 +1025,33 @@ public class GetEntryRenderDataMVCResourceCommand
 		}
 	}
 
+	private String _getPreviewURL(
+		long companyId, long ctCollectionId, String url) {
+
+		Matcher matcher = _previewURLPattern.matcher(url);
+
+		if (!matcher.lookingAt()) {
+			return url;
+		}
+
+		String host = matcher.group(1);
+
+		if (((host != null) && !_portal.isValidPortalDomain(companyId, host)) ||
+			!Objects.equals(matcher.group(2), _portal.getPathContext()) ||
+			Validator.isNotNull(
+				HttpComponentsUtil.getParameter(
+					StringUtil.replace(
+						url, StringPool.AMPERSAND_ENCODED,
+						StringPool.AMPERSAND),
+					"previewCTCollectionId", false))) {
+
+			return url;
+		}
+
+		return HttpComponentsUtil.addParameter(
+			url, "previewCTCollectionId", ctCollectionId);
+	}
+
 	private <T extends BaseModel<T>> JSONObject
 			_getProductionRenderDataJSONObject(
 				ResourceRequest resourceRequest,
@@ -1723,9 +1759,12 @@ public class GetEntryRenderDataMVCResourceCommand
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetEntryRenderDataMVCResourceCommand.class);
 
-	private static final Pattern _documentsURLPattern = Pattern.compile(
-		"(href|src)=\"((?:https?://([^/:\"]+)(?::\\d+)?)?([^\"]*?)/documents/" +
-			"(?:\\d+/\\d+/|d/|portlet_file_entry/\\d+/)[^\"]*)\"");
+	private static final Pattern _previewURLPattern = Pattern.compile(
+		"(?:https?://([^/:\"]+)(?::\\d+)?)?(.*?)/(?:documents/" +
+			"(?:\\d+/\\d+/|d/|portlet_file_entry/\\d+/)|" +
+				"o/adaptive-media/image/\\d+/)");
+	private static final Pattern _urlAttributePattern = Pattern.compile(
+		"(href|src|srcset)=\"([^\"]*)\"");
 
 	@Reference
 	private BasePersistenceRegistry _basePersistenceRegistry;

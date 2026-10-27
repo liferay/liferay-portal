@@ -118,6 +118,42 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testAddPreviewCTCollectionIdWithAdaptiveMediaURL() {
+		String html = StringBundler.concat(
+			"<picture><source media=\"(max-width:1000px)\" srcset=\"/o",
+			"/adaptive-media/image/20/Preview-1000x0/image.png?t=1\" />",
+			"<img src=\"/documents/20/0/image.png/uuid\" /></picture>");
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<picture><source media=\"(max-width:1000px)\" srcset=\"/o",
+				"/adaptive-media/image/20/Preview-1000x0/image.png?t=1",
+				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\" />",
+				"<img src=\"/documents/20/0/image.png/uuid",
+				"?previewCTCollectionId=", _CT_COLLECTION_ID,
+				"\" /></picture>"),
+			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<picture><source media=\"(max-width:1000px)\" srcset=\"/o",
+				"/adaptive-media/image/20/Preview-1000x0/image.png?t=1",
+				"&previewCTCollectionId=",
+				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" />",
+				"<img src=\"/documents/20/0/image.png/uuid",
+				"?previewCTCollectionId=",
+				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" /></picture>"),
+			_addPreviewCTCollectionId(
+				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
+
+		html =
+			"<img srcset=\"https://example.com/o/adaptive-media/image/20" +
+				"/Preview-1000x0/image.png\" />";
+
+		Assert.assertEquals(
+			html, _addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+	}
+
+	@Test
 	public void testAddPreviewCTCollectionIdWithDocumentsInURL() {
 		String html = "<a href=\"/web/guest/documents/reports\">reports</a>";
 
@@ -170,6 +206,32 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 
 		Assert.assertEquals(
 			html, _addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+	}
+
+	@Test
+	public void testAddPreviewCTCollectionIdWithHDAdaptiveMediaURL() {
+		String html = StringBundler.concat(
+			"<source srcset=\"/o/adaptive-media/image/20/Preview-1000x0",
+			"/image.png, /o/adaptive-media/image/20/Preview-1000x0-2x",
+			"/image.png 2x\" />");
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<source srcset=\"/o/adaptive-media/image/20/Preview-1000x0",
+				"/image.png?previewCTCollectionId=", _CT_COLLECTION_ID,
+				", /o/adaptive-media/image/20/Preview-1000x0-2x/image.png",
+				"?previewCTCollectionId=", _CT_COLLECTION_ID, " 2x\" />"),
+			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<source srcset=\"/o/adaptive-media/image/20/Preview-1000x0",
+				"/image.png?previewCTCollectionId=",
+				CTConstants.CT_COLLECTION_ID_PRODUCTION,
+				", /o/adaptive-media/image/20/Preview-1000x0-2x/image.png",
+				"?previewCTCollectionId=",
+				CTConstants.CT_COLLECTION_ID_PRODUCTION, " 2x\" />"),
+			_addPreviewCTCollectionId(
+				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
 	}
 
 	@Test
