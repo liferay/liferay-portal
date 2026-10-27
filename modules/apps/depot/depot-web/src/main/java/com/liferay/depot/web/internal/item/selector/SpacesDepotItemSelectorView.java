@@ -19,7 +19,13 @@ import org.osgi.service.component.annotations.Component;
 	property = "item.selector.view.order:Integer=500",
 	service = ItemSelectorView.class
 )
-public class SpacesDepotItemSelectorView extends BaseDepotItemSelectorView {
+public class SpacesDepotItemSelectorView
+	extends BaseDepotItemSelectorView<GroupItemSelectorCriterion> {
+
+	@Override
+	public Class<GroupItemSelectorCriterion> getItemSelectorCriterionClass() {
+		return GroupItemSelectorCriterion.class;
+	}
 
 	@Override
 	public boolean isVisible(

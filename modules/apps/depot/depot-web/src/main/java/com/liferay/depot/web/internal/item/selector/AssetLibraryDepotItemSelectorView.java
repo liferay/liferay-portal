@@ -18,7 +18,12 @@ import org.osgi.service.component.annotations.Component;
 	service = ItemSelectorView.class
 )
 public class AssetLibraryDepotItemSelectorView
-	extends BaseDepotItemSelectorView {
+	extends BaseDepotItemSelectorView<GroupItemSelectorCriterion> {
+
+	@Override
+	public Class<GroupItemSelectorCriterion> getItemSelectorCriterionClass() {
+		return GroupItemSelectorCriterion.class;
+	}
 
 	@Override
 	protected void customizeGroupItemSelectorCriterion(

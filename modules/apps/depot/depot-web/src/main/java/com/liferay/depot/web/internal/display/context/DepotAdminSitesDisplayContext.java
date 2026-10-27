@@ -6,6 +6,7 @@
 package com.liferay.depot.web.internal.display.context;
 
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.item.selector.DepotGroupItemSelectorCriterion;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalServiceUtil;
@@ -18,6 +19,7 @@ import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
@@ -158,10 +160,27 @@ public class DepotAdminSitesDisplayContext {
 		siteItemSelectorCriterion.setIncludeLayoutSetPrototypes(
 			!group.isStaged());
 
+		if (!_isDesignLibraryConnectable(depotEntry)) {
+			return itemSelector.getItemSelectorURL(
+				RequestBackedPortletURLFactoryUtil.create(
+					_liferayPortletRequest),
+				_liferayPortletResponse.getNamespace() + "selectSite",
+				siteItemSelectorCriterion);
+		}
+
+		DepotGroupItemSelectorCriterion depotGroupItemSelectorCriterion =
+			new DepotGroupItemSelectorCriterion();
+
+		depotGroupItemSelectorCriterion.setDepotEntryType(
+			DepotConstants.TYPE_DESIGN_LIBRARY);
+		depotGroupItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
+			new URLItemSelectorReturnType());
+		depotGroupItemSelectorCriterion.setIncludeAllVisibleGroups(true);
+
 		return itemSelector.getItemSelectorURL(
 			RequestBackedPortletURLFactoryUtil.create(_liferayPortletRequest),
 			_liferayPortletResponse.getNamespace() + "selectSite",
-			siteItemSelectorCriterion);
+			siteItemSelectorCriterion, depotGroupItemSelectorCriterion);
 	}
 
 	public String getSiteName(DepotEntryGroupRel depotEntryGroupRel)
@@ -241,6 +260,27 @@ public class DepotAdminSitesDisplayContext {
 
 		if ((depotEntry != null) &&
 			(depotEntry.getType() == DepotConstants.TYPE_DESIGN_LIBRARY)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean _isDesignLibraryConnectable(DepotEntry depotEntry)
+		throws PortalException {
+
+		Group group = depotEntry.getGroup();
+
+		if (group.isStaged() ||
+			!FeatureFlagManagerUtil.isEnabled(
+				_themeDisplay.getCompanyId(), "LPD-57283")) {
+
+			return false;
+		}
+
+		if ((depotEntry.getType() == DepotConstants.TYPE_ASSET_LIBRARY) ||
+			(depotEntry.getType() == DepotConstants.TYPE_SPACE)) {
 
 			return true;
 		}
