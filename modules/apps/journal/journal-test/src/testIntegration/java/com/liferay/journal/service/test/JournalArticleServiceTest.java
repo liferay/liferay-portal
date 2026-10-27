@@ -1475,16 +1475,15 @@ public class JournalArticleServiceTest {
 				_journalArticleService.getLatestArticles(
 					_group.getGroupId(), WorkflowConstants.STATUS_DRAFT,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
-
-			Assert.assertEquals(
-				1,
-				_journalArticleService.getLatestArticlesCount(
-					_group.getGroupId(), WorkflowConstants.STATUS_DRAFT));
 			Assert.assertEquals(
 				Collections.emptyList(),
 				_journalArticleService.getLatestArticles(
 					_group.getGroupId(), WorkflowConstants.STATUS_SCHEDULED,
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
+			Assert.assertEquals(
+				1,
+				_journalArticleService.getLatestArticlesCount(
+					_group.getGroupId(), WorkflowConstants.STATUS_DRAFT));
 			Assert.assertEquals(
 				0,
 				_journalArticleService.getLatestArticlesCount(
