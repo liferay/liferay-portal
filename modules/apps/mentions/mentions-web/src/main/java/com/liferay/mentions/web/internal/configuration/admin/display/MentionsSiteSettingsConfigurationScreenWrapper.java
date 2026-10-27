@@ -10,10 +10,12 @@ import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.mentions.constants.MentionsWebKeys;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PrefsParamUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -27,6 +29,9 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serializable;
+
+import java.util.Dictionary;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -46,6 +51,9 @@ public class MentionsSiteSettingsConfigurationScreenWrapper
 	}
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private Language _language;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.mentions.web)")
@@ -57,6 +65,20 @@ public class MentionsSiteSettingsConfigurationScreenWrapper
 
 	private class MentionsSiteSettingsConfigurationScreenContributor
 		implements SiteSettingsConfigurationScreenContributor {
+
+		@Override
+		public Dictionary<String, Object> exportProperties(
+			Serializable scopePK) {
+
+			return HashMapDictionaryBuilder.<String, Object>put(
+				"mentionsEnabled",
+				() -> {
+					Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+					return group.getTypeSettingsProperty("mentionsEnabled");
+				}
+			).build();
+		}
 
 		@Override
 		public String getCategoryKey() {
@@ -81,6 +103,30 @@ public class MentionsSiteSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public void importProperties(
+				Dictionary<String, Object> properties, Serializable scopePK)
+			throws Exception {
+
+			Object mentionsEnabled = properties.get("mentionsEnabled");
+
+			if (mentionsEnabled == null) {
+				return;
+			}
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			typeSettingsUnicodeProperties.put(
+				"mentionsEnabled",
+				String.valueOf(GetterUtil.getBoolean(mentionsEnabled)));
+
+			_groupLocalService.updateGroup(
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 
 		@Override
