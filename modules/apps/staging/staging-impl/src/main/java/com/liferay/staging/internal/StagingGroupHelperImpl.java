@@ -151,10 +151,12 @@ public class StagingGroupHelperImpl implements StagingGroupHelper {
 
 	@Override
 	public long getStagedPortletGroupId(long groupId, String portletId) {
-		if (!isStagedPortlet(groupId, portletId) &&
-			!isRemoteStagingGroup(groupId)) {
+		Group group = _groupLocalService.fetchGroup(groupId);
 
-			Group liveGroup = fetchLiveGroup(groupId);
+		if (!isStagedPortlet(group, portletId) &&
+			!isRemoteStagingGroup(group)) {
+
+			Group liveGroup = fetchLiveGroup(group);
 
 			if (liveGroup != null) {
 				return liveGroup.getGroupId();
