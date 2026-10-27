@@ -83,11 +83,13 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 						httpServletRequest,
 						"repeatableGroupObjectDefinitions"));
 
-			_updateStructure(
-				deletedGroupERCs, deletedObjectRelationshipsJSONArray,
-				httpServletRequest, objectDefinitionJSON,
-				objectRelationshipsJSONArray,
-				repeatableGroupObjectDefinitionsJSONArray);
+			jsonObject.put(
+				"id",
+				_updateStructure(
+					deletedGroupERCs, deletedObjectRelationshipsJSONArray,
+					httpServletRequest, objectDefinitionJSON,
+					objectRelationshipsJSONArray,
+					repeatableGroupObjectDefinitionsJSONArray));
 		}
 		catch (Exception exception) {
 			jsonObject = _jsonFactory.createJSONObject();
@@ -297,7 +299,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				new ObjectRelationship[0]));
 	}
 
-	private void _updateStructure(
+	private long _updateStructure(
 			String[] deletedGroupERCs,
 			JSONArray deletedObjectRelationshipsJSONArray,
 			HttpServletRequest httpServletRequest, String objectDefinitionJSON,
@@ -312,9 +314,11 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 		JSONObject objectDefinitionJSONObject = _jsonFactory.createJSONObject(
 			objectDefinitionJSON);
 
-		UpdateStructureCallable callable = new UpdateStructureCallable(
-			themeDisplay.getCompanyId(), deletedGroupERCs,
-			deletedObjectRelationshipsJSONArray,
+		List<String> addedObjectDefinitionERCs = new ArrayList<>();
+
+		Callable<Long> callable = new UpdateStructureCallable(
+			addedObjectDefinitionERCs, themeDisplay.getCompanyId(),
+			deletedGroupERCs, deletedObjectRelationshipsJSONArray,
 			ObjectDefinition.toDTO(objectDefinitionJSON),
 			objectDefinitionJSONObject.getLong("id"),
 			_getObjectRelationships(objectRelationshipsJSONArray),
@@ -322,11 +326,11 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			themeDisplay.getUser());
 
 		try {
-			TransactionInvokerUtil.invoke(_transactionConfig, callable);
+			return TransactionInvokerUtil.invoke(_transactionConfig, callable);
 		}
 		catch (Throwable throwable) {
 			_deleteObjectDefinitions(
-				themeDisplay.getCompanyId(), callable._addedGroupERCs);
+				themeDisplay.getCompanyId(), addedObjectDefinitionERCs);
 
 			if (throwable instanceof Exception) {
 				throw (Exception)throwable;
@@ -368,10 +372,10 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 	@Reference
 	private ObjectRelationshipService _objectRelationshipService;
 
-	private class UpdateStructureCallable implements Callable<Void> {
+	private class UpdateStructureCallable implements Callable<Long> {
 
 		@Override
-		public Void call() throws Exception {
+		public Long call() throws Exception {
 			if (!JSONUtil.isEmpty(_deletedObjectRelationshipsJSONArray)) {
 				for (int i = 0;
 					 i < _deletedObjectRelationshipsJSONArray.length(); i++) {
@@ -449,17 +453,8 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				for (ObjectDefinition objectDefinition :
 						_repeatableGroupObjectDefinitions) {
 
-					com.liferay.object.model.ObjectDefinition
-						serviceBuilderObjectDefinition =
-							_objectDefinitionLocalService.
-								fetchObjectDefinitionByExternalReferenceCode(
-									objectDefinition.getExternalReferenceCode(),
-									_companyId);
-
-					if (serviceBuilderObjectDefinition == null) {
-						_addedGroupERCs.add(
-							objectDefinition.getExternalReferenceCode());
-					}
+					_addNewObjectDefinitionERC(
+						objectDefinition.getExternalReferenceCode());
 
 					objectDefinitionResource.
 						putObjectDefinitionByExternalReferenceCode(
@@ -472,12 +467,24 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				}
 			}
 
-			_updateObjectRelationships(
-				_objectDefinition, _objectDefinitionId,
-				objectDefinitionResource);
+			ObjectDefinition objectDefinition;
 
-			objectDefinitionResource.putObjectDefinition(
-				_objectDefinitionId, _objectDefinition);
+			if (_objectDefinitionId == 0) {
+				_addNewObjectDefinitionERC(
+					_objectDefinition.getExternalReferenceCode());
+
+				objectDefinition =
+					objectDefinitionResource.postObjectDefinition(
+						_objectDefinition);
+			}
+			else {
+				_updateObjectRelationships(
+					_objectDefinition, _objectDefinitionId,
+					objectDefinitionResource);
+
+				objectDefinition = objectDefinitionResource.putObjectDefinition(
+					_objectDefinitionId, _objectDefinition);
+			}
 
 			_deleteObjectRelationships(
 				_companyId, _objectDefinition.getExternalReferenceCode());
@@ -497,17 +504,19 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 				}
 			}
 
-			return null;
+			return objectDefinition.getId();
 		}
 
 		private UpdateStructureCallable(
-			long companyId, String[] deletedGroupERCs,
+			List<String> addedObjectDefinitionERCs, long companyId,
+			String[] deletedGroupERCs,
 			JSONArray deletedObjectRelationshipsJSONArray,
 			ObjectDefinition objectDefinition, long objectDefinitionId,
 			List<ObjectRelationship> objectRelationships,
 			List<ObjectDefinition> repeatableGroupObjectDefinitions,
 			User user) {
 
+			_addedObjectDefinitionERCs = addedObjectDefinitionERCs;
 			_companyId = companyId;
 			_deletedGroupERCs = deletedGroupERCs;
 			_deletedObjectRelationshipsJSONArray =
@@ -520,7 +529,19 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			_user = user;
 		}
 
-		private final List<String> _addedGroupERCs = new ArrayList<>();
+		private void _addNewObjectDefinitionERC(String externalReferenceCode) {
+			com.liferay.object.model.ObjectDefinition
+				serviceBuilderObjectDefinition =
+					_objectDefinitionLocalService.
+						fetchObjectDefinitionByExternalReferenceCode(
+							externalReferenceCode, _companyId);
+
+			if (serviceBuilderObjectDefinition == null) {
+				_addedObjectDefinitionERCs.add(externalReferenceCode);
+			}
+		}
+
+		private final List<String> _addedObjectDefinitionERCs;
 		private final long _companyId;
 		private final String[] _deletedGroupERCs;
 		private final JSONArray _deletedObjectRelationshipsJSONArray;
