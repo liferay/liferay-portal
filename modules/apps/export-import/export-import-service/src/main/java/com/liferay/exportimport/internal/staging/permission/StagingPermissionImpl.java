@@ -30,8 +30,12 @@ public class StagingPermissionImpl implements StagingPermission {
 		PermissionChecker permissionChecker, Group group, String className,
 		long classPK, String portletId, String actionId) {
 
+		if (!_isLockedAction(actionId)) {
+			return null;
+		}
+
 		try {
-			return _hasPermission(group, portletId, actionId);
+			return _hasPermission(group, portletId);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -45,9 +49,13 @@ public class StagingPermissionImpl implements StagingPermission {
 		PermissionChecker permissionChecker, long groupId, String className,
 		long classPK, String portletId, String actionId) {
 
+		if (!_isLockedAction(actionId)) {
+			return null;
+		}
+
 		try {
 			return _hasPermission(
-				_groupLocalService.getGroup(groupId), portletId, actionId);
+				_groupLocalService.getGroup(groupId), portletId);
 		}
 		catch (Exception exception) {
 			_log.error(exception);
@@ -56,17 +64,24 @@ public class StagingPermissionImpl implements StagingPermission {
 		return null;
 	}
 
-	private Boolean _hasPermission(
-			Group group, String portletId, String actionId)
-		throws Exception {
+	private Boolean _hasPermission(Group group, String portletId) {
+		if (group.hasLocalOrRemoteStagingGroup() &&
+			(Validator.isNull(portletId) || group.isStagedPortlet(portletId))) {
 
+			return false;
+		}
+
+		return null;
+	}
+
+	private boolean _isLockedAction(String actionId) {
 		if (!PropsValues.STAGING_LIVE_GROUP_LOCKING_ENABLED ||
 			ExportImportThreadLocal.isExportInProcess() ||
 			ExportImportThreadLocal.isImportInProcess() ||
 			ExportImportThreadLocal.isInitialLayoutStagingInProcess() ||
 			ExportImportThreadLocal.isStagingInProcess()) {
 
-			return null;
+			return false;
 		}
 
 		if (!actionId.equals(ActionKeys.ACCESS) &&
@@ -80,14 +95,12 @@ public class StagingPermissionImpl implements StagingPermission {
 			!actionId.equals(ActionKeys.DELETE_DISCUSSION) &&
 			!actionId.equals(ActionKeys.DOWNLOAD) &&
 			!actionId.equals(ActionKeys.UPDATE_DISCUSSION) &&
-			!actionId.equals(ActionKeys.VIEW) &&
-			group.hasLocalOrRemoteStagingGroup() &&
-			(Validator.isNull(portletId) || group.isStagedPortlet(portletId))) {
+			!actionId.equals(ActionKeys.VIEW)) {
 
-			return false;
+			return true;
 		}
 
-		return null;
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
