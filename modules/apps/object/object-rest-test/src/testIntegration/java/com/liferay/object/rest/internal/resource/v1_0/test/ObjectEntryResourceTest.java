@@ -9506,6 +9506,9 @@ public class ObjectEntryResourceTest {
 			userName + "@liferay.com", password
 		).apply(
 			() -> {
+
+				// Default scope
+
 				JSONObject objectEntryJSONObject =
 					HTTPTestUtil.invokeToJSONObject(
 						JSONUtil.put(
@@ -9517,8 +9520,6 @@ public class ObjectEntryResourceTest {
 				String endpoint = StringBundler.concat(
 					_objectDefinition1.getRESTContextPath(), StringPool.SLASH,
 					objectEntryJSONObject.get("id"));
-
-				// Default scope
 
 				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry1 =
 					_toFileEntry(
