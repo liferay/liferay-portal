@@ -16,13 +16,6 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.WebKeys;
-
-import jakarta.portlet.ActionRequest;
-import jakarta.portlet.PortletURL;
-import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -36,16 +29,11 @@ public class FaroAdminManagementToolbarDisplayContext
 		HttpServletRequest httpServletRequest,
 		LiferayPortletRequest liferayPortletRequest,
 		LiferayPortletResponse liferayPortletResponse,
-		RenderResponse renderResponse, SearchContainer<?> searchContainer) {
+		SearchContainer<?> searchContainer) {
 
 		super(
-			liferayPortletRequest, liferayPortletResponse, httpServletRequest,
+			httpServletRequest, liferayPortletRequest, liferayPortletResponse,
 			searchContainer);
-
-		_renderResponse = renderResponse;
-
-		_themeDisplay = (ThemeDisplay)httpServletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
 	}
 
 	@Override
@@ -66,21 +54,21 @@ public class FaroAdminManagementToolbarDisplayContext
 			return null;
 		}
 
-		PortletURL portletURL = PortletURLBuilder.create(
-			_renderResponse.createActionURL()
-		).setRedirect(
-			ParamUtil.getString(
-				liferayPortletRequest.getHttpServletRequest(), "redirect",
-				_themeDisplay.getURLCurrent())
-		).buildPortletURL();
-
 		return CreationMenuBuilder.addDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(
-					portletURL, ActionRequest.ACTION_NAME,
-					"/faro_admin/refresh_project", "groupId", -1);
+					PortletURLBuilder.create(
+						liferayPortletResponse.createActionURL()
+					).setActionName(
+						"/faro_admin/refresh_project"
+					).setRedirect(
+						currentURLObj
+					).setParameter(
+						"groupId", -1
+					).buildPortletURL());
 				dropdownItem.setLabel(
-					LanguageUtil.get(request, "refresh-all-projects"));
+					LanguageUtil.get(
+						httpServletRequest, "refresh-all-projects"));
 			}
 		).build();
 	}
@@ -107,11 +95,6 @@ public class FaroAdminManagementToolbarDisplayContext
 	}
 
 	@Override
-	public Boolean isDisabled() {
-		return false;
-	}
-
-	@Override
 	protected String[] getNavigationKeys() {
 		return new String[] {
 			"all", "basic", "business", "enterprise", "inactive", "offline",
@@ -125,8 +108,5 @@ public class FaroAdminManagementToolbarDisplayContext
 			"createDate", "individualsUsage", "name", "pageViewsUsage"
 		};
 	}
-
-	private final RenderResponse _renderResponse;
-	private final ThemeDisplay _themeDisplay;
 
 }
