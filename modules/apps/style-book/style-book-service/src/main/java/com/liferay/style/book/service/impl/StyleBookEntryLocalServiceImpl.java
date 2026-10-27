@@ -818,7 +818,13 @@ public class StyleBookEntryLocalServiceImpl
 				styleBookEntry.getGroupId(), styleBookEntryKey);
 		}
 
-		styleBookEntry.setUserId(userId);
+		if (userId != styleBookEntry.getUserId()) {
+			User user = _userLocalService.getUser(userId);
+
+			styleBookEntry.setUserId(user.getUserId());
+			styleBookEntry.setUserName(user.getFullName());
+		}
+
 		styleBookEntry.setFrontendTokenDefinition(frontendTokenDefinition);
 		styleBookEntry.setFrontendTokensValues(frontendTokensValues);
 		styleBookEntry.setName(name);
