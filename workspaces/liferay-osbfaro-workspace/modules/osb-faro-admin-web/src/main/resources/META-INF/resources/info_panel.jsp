@@ -8,69 +8,69 @@
 <%@ include file="/init.jsp" %>
 
 <%
-FaroProjectAdminDisplay faroProjectAdminDisplay = (FaroProjectAdminDisplay)request.getAttribute(FaroProjectAdminDisplay.class.getName());
+FaroProject faroProject = (FaroProject)request.getAttribute(FaroProject.class.getName());
 long[] rowIds = ParamUtil.getLongValues(request, "rowIds");
 %>
 
 <c:choose>
-	<c:when test="<%= faroProjectAdminDisplay != null %>">
+	<c:when test="<%= faroProject != null %>">
 		<div class="sidebar-header">
-			<div class="h4"><%= HtmlUtil.escape(faroProjectAdminDisplay.getName()) %></div>
+			<div class="h4"><%= HtmlUtil.escape(faroProject.getName()) %></div>
 		</div>
 
 		<div class="sidebar-body">
 			<div class="h5"><liferay-ui:message key="group-id" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getGroupId() %>
+				<%= faroProject.getGroupId() %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="corp-project-uuid" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getCorpProjectUuid() %>
+				<%= faroProject.getCorpProjectUuid() %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="corp-project-name" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getCorpProjectName() %>
+				<%= faroProject.getCorpProjectName() %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="wedeploy-key" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getWeDeployKey() %>
+				<%= faroProject.getWeDeployKey() %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="last-access-date" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getLastAccessDate() %>
+				<%= faroProject.getLastAccessDate() %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="individuals-usage" /></div>
 
 			<p>
-				<%= StringBundler.concat(faroProjectAdminDisplay.getIndividualsCount(), " / ", faroProjectAdminDisplay.getIndividualsLimit(), " (", faroProjectAdminDisplay.getIndividualsUsage(), "%)") %>
+				<%= StringBundler.concat(faroProject.getIndividualsCountSinceLastAnniversary(), " / ", faroProject.getIndividualsLimit(), " (", faroProject.getIndividualsUsage(), "%)") %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="page-views-usage" /></div>
 
 			<p>
-				<%= StringBundler.concat(faroProjectAdminDisplay.getPageViewsCount(), " / ", faroProjectAdminDisplay.getPageViewsLimit(), " (", faroProjectAdminDisplay.getPageViewsUsage(), "%)") %>
+				<%= StringBundler.concat(faroProject.getPageViewsCountSinceLastAnniversary(), " / ", faroProject.getPageViewsLimit(), " (", faroProject.getPageViewsUsage(), "%)") %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="subscription" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getSubscription() %>
+				<%= faroProject.getSubscription() %>
 			</p>
 
 			<div class="h5"><liferay-ui:message key="serverLocation" /></div>
 
 			<p>
-				<%= faroProjectAdminDisplay.getServerLocation() %>
+				<%= faroProject.getServerLocation() %>
 			</p>
 		</div>
 	</c:when>

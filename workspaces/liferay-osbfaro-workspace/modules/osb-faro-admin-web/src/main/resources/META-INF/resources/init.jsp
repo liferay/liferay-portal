@@ -20,7 +20,7 @@ taglib uri="http://liferay.com/tld/util" prefix="liferay-util" %>
 <%@ page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem" %><%@
 page import="com.liferay.osb.faro.admin.web.internal.display.context.FaroAdminDisplayContext" %><%@
 page import="com.liferay.osb.faro.admin.web.internal.display.context.FaroAdminManagementToolbarDisplayContext" %><%@
-page import="com.liferay.osb.faro.admin.web.internal.model.FaroProjectAdminDisplay" %><%@
+page import="com.liferay.osb.faro.model.FaroProject" %><%@
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ListUtil" %><%@

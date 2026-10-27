@@ -6,22 +6,14 @@
 package com.liferay.osb.faro.admin.web.internal.portlet.action;
 
 import com.liferay.osb.faro.admin.web.internal.constants.FaroAdminPortletKeys;
-import com.liferay.osb.faro.admin.web.internal.model.FaroProjectAdminDisplay;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
-import com.liferay.portal.kernel.search.Document;
-import com.liferay.portal.kernel.search.Hits;
-import com.liferay.portal.kernel.search.Indexer;
-import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -47,25 +39,9 @@ public class InfoPanelMVCResourceCommand extends BaseMVCResourceCommand {
 			resourceRequest, "rowIds");
 
 		if (faroProjectIds.length == 1) {
-			Indexer<FaroProject> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(FaroProject.class);
-
-			SearchContext searchContext = new SearchContext();
-
-			searchContext.setAttribute("faroProjectId", faroProjectIds[0]);
-
-			Hits hits = indexer.search(searchContext);
-
-			List<Document> documents = hits.toList();
-
-			if (!documents.isEmpty()) {
-				resourceRequest.setAttribute(
-					FaroProjectAdminDisplay.class.getName(),
-					new FaroProjectAdminDisplay(
-						_faroProjectLocalService.getFaroProject(
-							faroProjectIds[0]),
-						documents.get(0)));
-			}
+			resourceRequest.setAttribute(
+				FaroProject.class.getName(),
+				_faroProjectLocalService.fetchFaroProject(faroProjectIds[0]));
 		}
 
 		include(resourceRequest, resourceResponse, "/info_panel.jsp");
