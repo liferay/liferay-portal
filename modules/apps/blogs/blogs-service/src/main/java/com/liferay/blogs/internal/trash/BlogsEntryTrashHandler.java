@@ -88,8 +88,12 @@ public class BlogsEntryTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
-	public boolean isInTrash(long classPK) throws PortalException {
-		BlogsEntry entry = _blogsEntryLocalService.getEntry(classPK);
+	public boolean isInTrash(long classPK) {
+		BlogsEntry entry = _blogsEntryLocalService.fetchBlogsEntry(classPK);
+
+		if (entry == null) {
+			return false;
+		}
 
 		return entry.isInTrash();
 	}
