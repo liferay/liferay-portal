@@ -30,7 +30,7 @@ ContractionsCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds contra
 DockerfileEmptyLinesCheck | Dockerfile | Finds missing and unnecessary empty lines. |
 DockerfileInstructionCheck | Dockerfile | Performs styling rules on instructions in `Dockerfile` files. |
 [EarlyLoopExitCheck](check/early_loop_exit_check.md#earlyloopexitcheck) | .java | Finds if-statements at the end of a loop body that can be inverted to use `break`, `continue`, `return`, or `throw` as early as possible. |
-EmbeddedJSONCheck | .action, .function, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
+EmbeddedJSONCheck | .action, .function, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .tf, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
 EmptyCollectionCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 EnumConstantDividerCheck | .java | Find unnecessary empty lines between enum constants. |
 EnumConstantOrderCheck | .java | Checks the order of enum constants. |
@@ -176,7 +176,10 @@ SlantedQuotesCheck | | Finds `slanted quote` (`\u201a`, `\u201b`, `\u201c`, `\u2
 SoyEmptyLinesCheck | .soy | Finds missing and unnecessary empty lines. |
 StringIndexOfCallCheck | .java | Finds calls to `indexOf` (use `contains` instead). |
 [StringLiteralEqualityCheck](https://checkstyle.sourceforge.io/checks/coding/stringliteralequality.html) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that string literals are not used with == or !=. |
-TFBlockOrderCheck | .tf | Checks the order of blocks in `.tf` file. |
+TFBlockOrderCheck | .tf | Checks the order of blocks and attributes in `.tf` files. |
+TFEmptyLinesCheck | .tf | Finds unnecessary empty lines. |
+TFIndentationCheck | .tf | Finds incorrect indentation in `.tf` files. |
+TFStylingCheck | .tf | Applies rules to enforce consistency in code style. |
 TLDElementOrderCheck | .tld | Checks the order of attributes in `.tld` file. |
 TLDStylingCheck | .tld | Applies rules to enforce consistency in code style. |
 TSSpecFileStylingCheck | .ts or .tsx | Applies rules to enforce consistency in code style. |

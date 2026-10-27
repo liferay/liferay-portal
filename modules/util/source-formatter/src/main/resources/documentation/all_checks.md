@@ -85,7 +85,7 @@ DeprecatedClassesCheck | [Bug Prevention](bug_prevention_checks.md#bug-preventio
 DockerfileEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | Dockerfile | Finds missing and unnecessary empty lines. |
 DockerfileInstructionCheck | [Styling](styling_checks.md#styling-checks) | Dockerfile | Performs styling rules on instructions in `Dockerfile` files. |
 [EarlyLoopExitCheck](check/early_loop_exit_check.md#earlyloopexitcheck) | [Styling](styling_checks.md#styling-checks) | .java | Finds if-statements at the end of a loop body that can be inverted to use `break`, `continue`, `return`, or `throw` as early as possible. |
-EmbeddedJSONCheck | [Styling](styling_checks.md#styling-checks) | .action, .function, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
+EmbeddedJSONCheck | [Styling](styling_checks.md#styling-checks) | .action, .function, .jelly, .jrxml, .macro, .markdown, .md, .pom, .project, .properties, .qti, .svg, .testcase, .tf, .toggle, .tpl, .wsdl, .xlf, .xml, or .xsd | Ensures consistent formatting for embedded JSON. |
 EmptyCollectionCheck | [Styling](styling_checks.md#styling-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Collections.EMPTY_LIST`, `Collections.EMPTY_MAP` or `Collections.EMPTY_SET`. |
 EmptyConstructorCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds unnecessary empty constructors. |
 EnumConstantDividerCheck | [Styling](styling_checks.md#styling-checks) | .java | Find unnecessary empty lines between enum constants. |
@@ -536,7 +536,10 @@ StringIndexOfCallCheck | [Styling](styling_checks.md#styling-checks) | .java | F
 [StringMethodsCheck](check/string_methods_check.md#stringmethodscheck) | [Performance](performance_checks.md#performance-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks if performance can be improved by using different String operation methods. |
 SubstringCheck | [Performance](performance_checks.md#performance-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases like `s.substring(1, s.length())` (use `s.substring(1)` instead). |
 SystemEventCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing or redundant usage of @SystemEvent for delete events. |
-TFBlockOrderCheck | [Styling](styling_checks.md#styling-checks) | .tf | Checks the order of blocks in `.tf` file. |
+TFBlockOrderCheck | [Styling](styling_checks.md#styling-checks) | .tf | Checks the order of blocks and attributes in `.tf` files. |
+TFEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | .tf | Finds unnecessary empty lines. |
+TFIndentationCheck | [Styling](styling_checks.md#styling-checks) | .tf | Finds incorrect indentation in `.tf` files. |
+TFStylingCheck | [Styling](styling_checks.md#styling-checks) | .tf | Applies rules to enforce consistency in code style. |
 TLDElementOrderCheck | [Styling](styling_checks.md#styling-checks) | .tld | Checks the order of attributes in `.tld` file. |
 TLDStylingCheck | [Styling](styling_checks.md#styling-checks) | .tld | Applies rules to enforce consistency in code style. |
 TLDTypeCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .tld | Ensures the fully qualified name is used for types in `.tld` file. |
