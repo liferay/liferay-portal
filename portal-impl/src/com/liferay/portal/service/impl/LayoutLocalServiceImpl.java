@@ -2613,47 +2613,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	@Override
-	public boolean hasLayouts(Group group) throws PortalException {
-		List<LayoutSet> groupLayoutSets = _layoutSetPersistence.findByGroupId(
-			group.getGroupId());
-
-		for (LayoutSet layoutSet : groupLayoutSets) {
-			if (layoutSet.getPageCount() > 0) {
-				return true;
-			}
-		}
-
-		if (!group.isUser()) {
-			return false;
-		}
-
-		long[] userGroupIds = _userPersistence.getUserGroupPrimaryKeys(
-			group.getClassPK());
-
-		if (userGroupIds.length != 0) {
-			long userGroupClassNameId = _classNameLocalService.getClassNameId(
-				UserGroup.class);
-
-			for (long userGroupId : userGroupIds) {
-				Group userGroupGroup = _groupPersistence.findByC_C_C(
-					group.getCompanyId(), userGroupClassNameId, userGroupId);
-
-				List<LayoutSet> userGroupGroupLayoutSets =
-					_layoutSetPersistence.findByGroupId(
-						userGroupGroup.getGroupId());
-
-				for (LayoutSet layoutSet : userGroupGroupLayoutSets) {
-					if (layoutSet.getPageCount() > 0) {
-						return true;
-					}
-				}
-			}
-		}
-
-		return false;
-	}
-
-	@Override
 	public boolean hasLayouts(Group group, boolean privateLayout)
 		throws PortalException {
 
