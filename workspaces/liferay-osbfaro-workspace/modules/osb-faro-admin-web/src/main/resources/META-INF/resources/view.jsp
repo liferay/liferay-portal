@@ -24,7 +24,7 @@ FaroAdminManagementToolbarDisplayContext faroAdminManagementToolbarDisplayContex
 		resourceURL="<%= sidebarPanelURL %>"
 		searchContainerId="<%= faroAdminManagementToolbarDisplayContext.getSearchContainerId() %>"
 	>
-		<liferay-util:include page="" servletContext="<%= application %>" />
+		<liferay-util:include page="/info_panel.jsp" servletContext="<%= application %>" />
 	</liferay-frontend:sidebar-panel>
 
 	<div class="container-fluid sidenav-content">
