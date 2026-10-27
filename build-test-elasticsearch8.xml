@@ -259,6 +259,7 @@ elasticsearch.ssl.certificateAuthorities: [ "${elasticsearch.dir}/config/certs/c
 server.ssl.certificate: ${elasticsearch.dir}/config/certs/elastic-certificates.crt
 server.ssl.enabled: true
 server.ssl.key: ${elasticsearch.dir}/config/certs/elastic-certificates.key
+xpack.encryptedSavedObjects.encryptionKey: "xsomethingxelsexatxleastx32xcharactersx"
 xpack.security.encryptionKey: "xsomethingxatxleastx32xcharactersx"
 xpack.security.session.idleTimeout: 600000</echo>
 
