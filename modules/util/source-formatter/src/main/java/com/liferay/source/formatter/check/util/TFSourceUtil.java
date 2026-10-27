@@ -131,24 +131,24 @@ public class TFSourceUtil {
 	}
 
 	public static String removeComment(String line) {
-		int i = 0;
+		int index = 0;
 
-		while (i < line.length()) {
-			char c = line.charAt(i);
+		while (index < line.length()) {
+			char c = line.charAt(index);
 
-			if ((c == CharPool.POUND) || line.startsWith("//", i) ||
-				line.startsWith("/*", i)) {
+			if ((c == CharPool.POUND) || line.startsWith("//", index) ||
+				line.startsWith("/*", index)) {
 
-				return line.substring(0, i);
+				return line.substring(0, index);
 			}
 
 			if (c == CharPool.QUOTE) {
-				i = getStringEndIndex(line, i + 1);
+				index = getStringEndIndex(line, index + 1);
 
 				continue;
 			}
 
-			i++;
+			index++;
 		}
 
 		return line;
