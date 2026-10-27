@@ -96,6 +96,37 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecuteWithMissingCatalog();
 	}
 
+	private void _addPIMConnectorFieldMappingObjectEntry(
+			String channelFieldName, ObjectEntry pimConnectorObjectEntry,
+			ObjectField objectField, String sourceFieldName, String type,
+			String value)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
+					TestPropsValues.getCompanyId());
+
+		_objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"channelFieldName", channelFieldName
+			).put(
+				objectField.getName(),
+				pimConnectorObjectEntry.getObjectEntryId()
+			).put(
+				"sourceFieldName", sourceFieldName
+			).put(
+				"type", type
+			).put(
+				"value", value
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
 	private ObjectEntry _addPIMConnectorObjectEntry(
 			String catalogExternalReferenceCode)
 		throws Exception {
@@ -138,8 +169,8 @@ public class LiferayCommercePIMConnectorTest {
 		_addPIMConnectorFieldMappingObjectEntry(
 			"name", objectEntry, objectField, "title", "dynamicValue", null);
 		_addPIMConnectorFieldMappingObjectEntry(
-			"productOptions", objectEntry, objectField, "title",
-			"dynamicValue", null);
+			"productOptions", objectEntry, objectField, "title", "dynamicValue",
+			null);
 		_addPIMConnectorFieldMappingObjectEntry(
 			"productType", objectEntry, objectField, null, "fixedValue",
 			"simple");
@@ -171,37 +202,6 @@ public class LiferayCommercePIMConnectorTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		return objectEntry;
-	}
-
-	private void _addPIMConnectorFieldMappingObjectEntry(
-			String channelFieldName, ObjectEntry pimConnectorObjectEntry,
-			ObjectField objectField, String sourceFieldName, String type,
-			String value)
-		throws Exception {
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
-					TestPropsValues.getCompanyId());
-
-		_objectEntryLocalService.addObjectEntry(
-			0, TestPropsValues.getUserId(),
-			objectDefinition.getObjectDefinitionId(), 0, null,
-			HashMapBuilder.<String, Serializable>put(
-				"channelFieldName", channelFieldName
-			).put(
-				objectField.getName(),
-				pimConnectorObjectEntry.getObjectEntryId()
-			).put(
-				"sourceFieldName", sourceFieldName
-			).put(
-				"type", type
-			).put(
-				"value", value
-			).build(),
-			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private JSONObject _execute(ObjectEntry pimConnectorObjectEntry)
@@ -265,8 +265,8 @@ public class LiferayCommercePIMConnectorTest {
 				false, new ServiceContext());
 
 		_commerceCatalog = _commerceCatalogLocalService.addCommerceCatalog(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			"USD", LocaleUtil.toLanguageId(LocaleUtil.US),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), "USD",
+			LocaleUtil.toLanguageId(LocaleUtil.US),
 			ServiceContextTestUtil.getServiceContext());
 
 		ObjectEntry pimProductObjectEntry1 =

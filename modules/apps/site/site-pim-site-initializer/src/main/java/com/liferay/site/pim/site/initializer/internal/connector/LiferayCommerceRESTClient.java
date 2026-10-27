@@ -93,8 +93,8 @@ public class LiferayCommerceRESTClient {
 
 		Http.Options options = _createOptions(
 			StringBundler.concat(
-				"/o/headless-batch-engine/v1.0/import-task/",
-				"com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
+				"/o/headless-batch-engine/v1.0/import-task",
+				"/com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
 				"?createStrategy=UPSERT&externalReferenceCode=",
 				URLCodec.encodeURL(externalReferenceCode),
 				"&importStrategy=ON_ERROR_CONTINUE"));
@@ -160,9 +160,7 @@ public class LiferayCommerceRESTClient {
 		return options;
 	}
 
-	private String _invoke(Object body, Http.Options options)
-		throws Exception {
-
+	private String _invoke(Object body, Http.Options options) throws Exception {
 		JSONObject jsonObject = JSONUtil.put(
 			"request",
 			JSONUtil.put(

@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.connector;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -264,10 +265,11 @@ public class LiferayCommerceRESTClientTest {
 		Http.Options options = _optionsList.get(0);
 
 		Assert.assertEquals(
-			"http://localhost:8080/o/headless-batch-engine/v1.0/import-task" +
-				"/com.liferay.headless.commerce.admin.catalog.dto.v1_0." +
-					"Product?createStrategy=UPSERT&externalReferenceCode=" +
-						"BATCH-1&importStrategy=ON_ERROR_CONTINUE",
+			StringBundler.concat(
+				"http://localhost:8080/o/headless-batch-engine/v1.0",
+				"/import-task/com.liferay.headless.commerce.admin.catalog.dto.",
+				"v1_0.Product?createStrategy=UPSERT&externalReferenceCode=",
+				"BATCH-1&importStrategy=ON_ERROR_CONTINUE"),
 			options.getLocation());
 		Assert.assertEquals(Http.Method.POST, options.getMethod());
 
