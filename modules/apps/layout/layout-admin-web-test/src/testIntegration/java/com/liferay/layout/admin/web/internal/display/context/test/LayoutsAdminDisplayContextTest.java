@@ -6,11 +6,15 @@
 package com.liferay.layout.admin.web.internal.display.context.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
@@ -28,6 +32,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -36,6 +41,7 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -173,6 +179,27 @@ public class LayoutsAdminDisplayContextTest {
 		}
 	}
 
+	@Test
+	public void testIsPrivateLayoutWithDisplayPageTemplateInLayoutSetPrototype()
+		throws Exception {
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
+
+		Group group = layoutSetPrototype.getGroup();
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				null, TestPropsValues.getUserId(), group.getGroupId(), 0, null,
+				RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE, 0,
+				WorkflowConstants.STATUS_APPROVED,
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		Assert.assertFalse(
+			_isPrivateLayout(group, layoutPageTemplateEntry.getPlid()));
+	}
+
 	private List<String> _getAvailableActions(Group group, Layout layout)
 		throws Exception {
 
@@ -245,6 +272,25 @@ public class LayoutsAdminDisplayContextTest {
 		return mockLiferayPortletRenderRequest;
 	}
 
+	private boolean _isPrivateLayout(Group group, long plid) throws Exception {
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(group);
+
+		mockLiferayPortletRenderRequest.addParameter(
+			"selPlid", String.valueOf(plid));
+
+		mvcPortlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		return ReflectionTestUtil.invoke(
+			mockLiferayPortletRenderRequest.getAttribute(
+				"LAYOUT_PAGE_LAYOUT_ADMIN_DISPLAY_CONTEXT"),
+			"isPrivateLayout", new Class<?>[0]);
+	}
+
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
@@ -256,6 +302,10 @@ public class LayoutsAdminDisplayContextTest {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.layout.admin.web.internal.portlet.GroupPagesPortlet"
