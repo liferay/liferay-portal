@@ -64,6 +64,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -104,6 +105,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -154,6 +157,58 @@ public class GetEntryRenderDataMVCResourceCommand
 						_portal.getHttpServletRequest(resourceRequest),
 						"an-unexpected-error-occurred")));
 		}
+	}
+
+	private JSONObject _addPreviewCTCollectionId(
+		long companyId, long ctCollectionId, JSONObject jsonObject) {
+
+		JSONObject previewJSONObject = _jsonFactory.createJSONObject();
+
+		for (String key : jsonObject.keySet()) {
+			previewJSONObject.put(
+				key,
+				_addPreviewCTCollectionId(
+					companyId, ctCollectionId, jsonObject.getString(key)));
+		}
+
+		return previewJSONObject;
+	}
+
+	private String _addPreviewCTCollectionId(
+		long companyId, long ctCollectionId, String html) {
+
+		if (html == null) {
+			return null;
+		}
+
+		Matcher matcher = _documentsURLPattern.matcher(html);
+
+		return matcher.replaceAll(
+			matchResult -> {
+				String host = matchResult.group(3);
+				String url = matchResult.group(2);
+
+				if (((host != null) &&
+					 !_portal.isValidPortalDomain(companyId, host)) ||
+					!Objects.equals(
+						matchResult.group(4), _portal.getPathContext()) ||
+					Validator.isNotNull(
+						HttpComponentsUtil.getParameter(
+							StringUtil.replace(
+								url, StringPool.AMPERSAND_ENCODED,
+								StringPool.AMPERSAND),
+							"previewCTCollectionId", false))) {
+
+					return Matcher.quoteReplacement(matchResult.group());
+				}
+
+				return Matcher.quoteReplacement(
+					StringBundler.concat(
+						matchResult.group(1), "=\"",
+						HttpComponentsUtil.addParameter(
+							url, "previewCTCollectionId", ctCollectionId),
+						"\""));
+			});
 	}
 
 	private Function<String, ServiceContext> _createServiceContextFunction() {
@@ -207,6 +262,7 @@ public class GetEntryRenderDataMVCResourceCommand
 		JSONObject editInProductionJSONObject = null;
 		JSONObject editInPublicationJSONObject = null;
 		JSONObject localizedTitlesJSONObject = _jsonFactory.createJSONObject();
+		long rightCtCollectionId = CTConstants.CT_COLLECTION_ID_PRODUCTION;
 		String rightPreview = null;
 		String rightPreviewStyles = null;
 		JSONObject rightLocalizedPreviewJSONObject = null;
@@ -224,6 +280,8 @@ public class GetEntryRenderDataMVCResourceCommand
 				ctCollectionId = _ctEntryLocalService.getCTRowCTCollectionId(
 					ctEntry);
 			}
+
+			rightCtCollectionId = ctCollectionId;
 
 			CTSQLModeThreadLocal.CTSQLMode ctSQLMode =
 				_ctDisplayRendererRegistry.getCTSQLMode(
@@ -520,6 +578,8 @@ public class GetEntryRenderDataMVCResourceCommand
 						_ctEntryLocalService.getCTRowCTCollectionId(ctEntry);
 				}
 
+				rightCtCollectionId = ctCollectionId;
+
 				CTSQLModeThreadLocal.CTSQLMode ctSQLMode =
 					CTSQLModeThreadLocal.CTSQLMode.DEFAULT;
 
@@ -605,7 +665,10 @@ public class GetEntryRenderDataMVCResourceCommand
 
 		if (leftLocalizedPreviewJSONObject != null) {
 			jsonObject.put(
-				"leftLocalizedPreview", leftLocalizedPreviewJSONObject);
+				"leftLocalizedPreview",
+				_addPreviewCTCollectionId(
+					themeDisplay.getCompanyId(), leftCtCollectionId,
+					leftLocalizedPreviewJSONObject));
 		}
 
 		if (leftLocalizedRenderJSONObject != null) {
@@ -614,7 +677,11 @@ public class GetEntryRenderDataMVCResourceCommand
 		}
 
 		if (leftPreview != null) {
-			jsonObject.put("leftPreview", leftPreview);
+			jsonObject.put(
+				"leftPreview",
+				_addPreviewCTCollectionId(
+					themeDisplay.getCompanyId(), leftCtCollectionId,
+					leftPreview));
 		}
 
 		if (leftPreviewStyles != null) {
@@ -630,7 +697,11 @@ public class GetEntryRenderDataMVCResourceCommand
 		}
 
 		if (rightPreview != null) {
-			jsonObject.put("rightPreview", rightPreview);
+			jsonObject.put(
+				"rightPreview",
+				_addPreviewCTCollectionId(
+					themeDisplay.getCompanyId(), rightCtCollectionId,
+					rightPreview));
 		}
 
 		if (rightPreviewStyles != null) {
@@ -639,7 +710,10 @@ public class GetEntryRenderDataMVCResourceCommand
 
 		if (rightLocalizedPreviewJSONObject != null) {
 			jsonObject.put(
-				"rightLocalizedPreview", rightLocalizedPreviewJSONObject);
+				"rightLocalizedPreview",
+				_addPreviewCTCollectionId(
+					themeDisplay.getCompanyId(), rightCtCollectionId,
+					rightLocalizedPreviewJSONObject));
 		}
 
 		if (rightLocalizedRenderJSONObject != null) {
@@ -660,9 +734,11 @@ public class GetEntryRenderDataMVCResourceCommand
 
 			jsonObject.put(
 				"unifiedPreview",
-				_diffHtml.diff(
-					new UnsyncStringReader(leftPreview),
-					new UnsyncStringReader(rightPreview)));
+				_addPreviewCTCollectionId(
+					themeDisplay.getCompanyId(), rightCtCollectionId,
+					_diffHtml.diff(
+						new UnsyncStringReader(leftPreview),
+						new UnsyncStringReader(rightPreview))));
 		}
 
 		if (_ctDisplayRendererRegistry.isWorkflowEnabled(ctEntry, rightModel) &&
@@ -707,9 +783,11 @@ public class GetEntryRenderDataMVCResourceCommand
 
 				unifiedLocalizedPreviewJSONObject.put(
 					languageId,
-					_diffHtml.diff(
-						new UnsyncStringReader(leftLocalizedPreview),
-						new UnsyncStringReader(rightLocalizedPreview)));
+					_addPreviewCTCollectionId(
+						themeDisplay.getCompanyId(), rightCtCollectionId,
+						_diffHtml.diff(
+							new UnsyncStringReader(leftLocalizedPreview),
+							new UnsyncStringReader(rightLocalizedPreview))));
 			}
 
 			jsonObject.put(
@@ -1644,6 +1722,10 @@ public class GetEntryRenderDataMVCResourceCommand
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		GetEntryRenderDataMVCResourceCommand.class);
+
+	private static final Pattern _documentsURLPattern = Pattern.compile(
+		"(href|src)=\"((?:https?://([^/:\"]+)(?::\\d+)?)?([^\"]*?)/documents/" +
+			"(?:\\d+/\\d+/|d/|portlet_file_entry/\\d+/)[^\"]*)\"");
 
 	@Reference
 	private BasePersistenceRegistry _basePersistenceRegistry;
