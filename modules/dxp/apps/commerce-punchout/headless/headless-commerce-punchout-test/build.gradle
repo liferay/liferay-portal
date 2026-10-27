@@ -1,0 +1,12 @@
+dependencies {
+	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
+	testIntegrationImplementation project(":apps:account:account-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
+	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")
+	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
+	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
+	testIntegrationImplementation project(":dxp:apps:commerce-punchout:commerce-punchout-api")
+	testIntegrationImplementation project(":dxp:apps:commerce-punchout:headless:headless-commerce-punchout-api")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
