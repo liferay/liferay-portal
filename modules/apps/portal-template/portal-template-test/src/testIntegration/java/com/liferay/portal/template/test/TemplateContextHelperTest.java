@@ -27,6 +27,7 @@ import java.io.InputStream;
 
 import java.net.URL;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,7 +67,7 @@ public class TemplateContextHelperTest {
 
 		Map<String, Object> lazyContext =
 			templateContextHelper.createLazyContext(
-				mockHttpServletRequest, false);
+				new HashMap<>(), mockHttpServletRequest, false);
 
 		Assert.assertEquals(
 			" nonce=\"TEST_NONCE\"", lazyContext.get("nonceAttribute"));

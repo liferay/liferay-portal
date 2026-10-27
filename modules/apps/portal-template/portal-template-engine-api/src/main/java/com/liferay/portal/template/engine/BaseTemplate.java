@@ -108,7 +108,7 @@ public abstract class BaseTemplate implements Template {
 
 		chainedMap._setRequestContext(
 			_templateContextHelper.createLazyContext(
-				httpServletRequest, _restricted));
+				this, httpServletRequest, _restricted));
 
 		_templateContextHelper.prepare(this, httpServletRequest);
 	}

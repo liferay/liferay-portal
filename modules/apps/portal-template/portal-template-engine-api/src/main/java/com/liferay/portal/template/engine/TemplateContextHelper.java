@@ -5,8 +5,10 @@
 
 package com.liferay.portal.template.engine;
 
-import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
-import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.osgi.service.tracker.collections.map.PropertyServiceReferenceMapper;
+import com.liferay.osgi.service.tracker.collections.map.ServiceReferenceMapper;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -101,6 +103,7 @@ import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -154,25 +157,24 @@ public class TemplateContextHelper {
 	}
 
 	public Map<String, Object> createLazyContext(
+		Map<String, Object> contextObjects,
 		HttpServletRequest httpServletRequest, boolean restricted) {
 
+		Set<String> restrictedVariables = Collections.emptySet();
+
 		if (restricted) {
-			return new LazyContext(
-				httpServletRequest,
-				_lazyContextFunctionsDCLSingleton.getSingleton(
-					this::_createLazyContextFunctions),
-				getRestrictedVariables());
+			restrictedVariables = getRestrictedVariables();
 		}
 
 		return new LazyContext(
-			httpServletRequest,
+			contextObjects, httpServletRequest,
 			_lazyContextFunctionsDCLSingleton.getSingleton(
 				this::_createLazyContextFunctions),
-			Collections.emptySet());
+			restrictedVariables, _serviceTrackerMap);
 	}
 
 	public void destory() {
-		_serviceTrackerList.close();
+		_serviceTrackerMap.close();
 	}
 
 	public Map<String, Object> getHelperUtilities(boolean restricted) {
@@ -212,9 +214,20 @@ public class TemplateContextHelper {
 	}
 
 	public void init(BundleContext bundleContext) {
-		_serviceTrackerList = ServiceTrackerListFactory.open(
+		_serviceTrackerMap = ServiceTrackerMapFactory.openMultiValueMap(
 			bundleContext, TemplateContextContributor.class,
-			"(type=" + TemplateContextContributor.TYPE_GLOBAL + ")");
+			"(type=" + TemplateContextContributor.TYPE_GLOBAL + ")",
+			(serviceReference, emitter) -> {
+				if (serviceReference.getProperty(_TEMPLATE_CONTEXT_KEYS) ==
+						null) {
+
+					emitter.emit(_UNDECLARED_KEYS);
+
+					return;
+				}
+
+				_serviceReferenceMapper.map(serviceReference, emitter);
+			});
 	}
 
 	public void prepare(
@@ -249,7 +262,14 @@ public class TemplateContextHelper {
 	protected Iterable<TemplateContextContributor>
 		getTemplateContextContributors() {
 
-		return _serviceTrackerList;
+		List<TemplateContextContributor> templateContextContributors =
+			_serviceTrackerMap.getService(_UNDECLARED_KEYS);
+
+		if (templateContextContributors == null) {
+			return Collections.emptyList();
+		}
+
+		return templateContextContributors;
 	}
 
 	protected void populateCommonHelperUtilities(
@@ -902,14 +922,24 @@ public class TemplateContextHelper {
 		return listMergeable.mergeToString(StringPool.SPACE);
 	}
 
+	private static final String _TEMPLATE_CONTEXT_KEYS =
+		"template.context.keys";
+
+	private static final String _UNDECLARED_KEYS = StringPool.STAR;
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		TemplateContextHelper.class);
+
+	private static final ServiceReferenceMapper
+		<String, TemplateContextContributor> _serviceReferenceMapper =
+			new PropertyServiceReferenceMapper<>(_TEMPLATE_CONTEXT_KEYS);
 
 	private Map<String, Object>[] _helperUtilitiesMapArray;
 	private final DCLSingleton
 		<Map<String, Function<HttpServletRequest, Object>>>
 			_lazyContextFunctionsDCLSingleton = new DCLSingleton<>();
-	private ServiceTrackerList<TemplateContextContributor> _serviceTrackerList;
+	private ServiceTrackerMap<String, List<TemplateContextContributor>>
+		_serviceTrackerMap;
 
 	private static class HttpWrapper implements Http {
 
@@ -1142,10 +1172,9 @@ public class TemplateContextHelper {
 
 		@Override
 		public Object get(Object key) {
-			Function<HttpServletRequest, Object> function =
-				_lazyContextFunctions.get(key);
+			if (_restrictedVariables.contains(key) ||
+				_UNDECLARED_KEYS.equals(key)) {
 
-			if ((function == null) || _restrictedVariables.contains(key)) {
 				return null;
 			}
 
@@ -1153,6 +1182,21 @@ public class TemplateContextHelper {
 
 			if ((value != null) || _values.containsKey(key)) {
 				return value;
+			}
+
+			_prepareTemplateContextContributors((String)key);
+
+			value = _values.get(key);
+
+			if (value != null) {
+				return value;
+			}
+
+			Function<HttpServletRequest, Object> function =
+				_lazyContextFunctions.get(key);
+
+			if (function == null) {
+				return null;
 			}
 
 			value = function.apply(_httpServletRequest);
@@ -1168,20 +1212,31 @@ public class TemplateContextHelper {
 		}
 
 		private LazyContext(
+			Map<String, Object> contextObjects,
 			HttpServletRequest httpServletRequest,
 			Map<String, Function<HttpServletRequest, Object>>
 				lazyContextFunctions,
-			Set<String> restrictedVariables) {
+			Set<String> restrictedVariables,
+			ServiceTrackerMap<String, List<TemplateContextContributor>>
+				serviceTrackerMap) {
 
+			_contextObjects = contextObjects;
 			_httpServletRequest = httpServletRequest;
 			_lazyContextFunctions = lazyContextFunctions;
 			_restrictedVariables = restrictedVariables;
+			_serviceTrackerMap = serviceTrackerMap;
 		}
 
 		private List<Entry<String, Object>> _getEntries() {
 			List<Entry<String, Object>> entries = new ArrayList<>();
 
-			for (String key : _lazyContextFunctions.keySet()) {
+			Set<String> keys = new HashSet<>(_lazyContextFunctions.keySet());
+
+			if (_serviceTrackerMap != null) {
+				keys.addAll(_serviceTrackerMap.keySet());
+			}
+
+			for (String key : keys) {
 				Object value = get(key);
 
 				if (value == null) {
@@ -1194,11 +1249,72 @@ public class TemplateContextHelper {
 			return entries;
 		}
 
+		private void _prepareTemplateContextContributors(String key) {
+			if (_serviceTrackerMap == null) {
+				return;
+			}
+
+			List<TemplateContextContributor> templateContextContributors =
+				_serviceTrackerMap.getService(key);
+
+			if (templateContextContributors == null) {
+				return;
+			}
+
+			for (TemplateContextContributor templateContextContributor :
+					templateContextContributors) {
+
+				if (!_templateContextContributors.add(
+						templateContextContributor)) {
+
+					continue;
+				}
+
+				templateContextContributor.prepare(
+					new TemplateContextContributorContext(),
+					_httpServletRequest);
+			}
+		}
+
+		private final Map<String, Object> _contextObjects;
 		private final HttpServletRequest _httpServletRequest;
 		private final Map<String, Function<HttpServletRequest, Object>>
 			_lazyContextFunctions;
 		private final Set<String> _restrictedVariables;
+		private final ServiceTrackerMap
+			<String, List<TemplateContextContributor>> _serviceTrackerMap;
+		private final Set<TemplateContextContributor>
+			_templateContextContributors = new HashSet<>();
 		private final Map<String, Object> _values = new HashMap<>();
+
+		private class TemplateContextContributorContext
+			extends AbstractMap<String, Object> {
+
+			@Override
+			public boolean containsKey(Object key) {
+				return _contextObjects.containsKey(key);
+			}
+
+			@Override
+			public Set<Entry<String, Object>> entrySet() {
+				return _contextObjects.entrySet();
+			}
+
+			@Override
+			public Object get(Object key) {
+				return _contextObjects.get(key);
+			}
+
+			@Override
+			public Object put(String key, Object value) {
+				if ((value == null) || _restrictedVariables.contains(key)) {
+					return null;
+				}
+
+				return _values.put(key, value);
+			}
+
+		}
 
 	}
 
