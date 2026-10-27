@@ -41,6 +41,8 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
+import jakarta.portlet.PortletException;
+
 import java.io.Serializable;
 
 import java.util.Date;
@@ -235,15 +237,28 @@ public class ScheduleLaunchMVCActionCommandTest {
 		MockLiferayPortletActionResponse mockLiferayPortletActionResponse =
 			new MockLiferayPortletActionResponse();
 
-		_mvcActionCommand.processAction(
-			mockLiferayPortletActionRequest, mockLiferayPortletActionResponse);
+		boolean thrown = false;
+
+		try {
+			_mvcActionCommand.processAction(
+				mockLiferayPortletActionRequest,
+				mockLiferayPortletActionResponse);
+		}
+		catch (PortletException portletException) {
+			thrown = true;
+		}
 
 		MockHttpServletResponse mockHttpServletResponse =
 			(MockHttpServletResponse)
 				mockLiferayPortletActionResponse.getHttpServletResponse();
 
-		return _jsonFactory.createJSONObject(
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
 			mockHttpServletResponse.getContentAsString());
+
+		Assert.assertEquals(
+			jsonObject.toString(), jsonObject.has("error"), thrown);
+
+		return jsonObject;
 	}
 
 	private JSONObject _processAction(long publishTime, User user)

@@ -27,11 +27,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-import jakarta.portlet.PortletException;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import java.io.IOException;
 
 import java.util.Date;
 
@@ -50,34 +47,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class ScheduleLaunchMVCActionCommand
 	extends BaseTransactionalMVCActionCommand {
-
-	@Override
-	public boolean processAction(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws PortletException {
-
-		try {
-			return super.processAction(actionRequest, actionResponse);
-		}
-		catch (PortletException portletException) {
-			if (!(portletException.getCause() instanceof PortalException)) {
-				throw portletException;
-			}
-
-			try {
-				JSONPortletResponseUtil.writeJSON(
-					actionRequest, actionResponse,
-					_getErrorJSONObject(
-						actionRequest,
-						(PortalException)portletException.getCause()));
-			}
-			catch (IOException ioException) {
-				throw new PortletException(ioException);
-			}
-		}
-
-		return false;
-	}
 
 	@Override
 	protected void doTransactionalCommand(
@@ -101,17 +70,28 @@ public class ScheduleLaunchMVCActionCommand
 			return;
 		}
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		long launchSetId = ParamUtil.getLong(actionRequest, "launchSetId");
 
-		_objectEntryService.checkModelResourcePermission(
-			_objectEntryLocalService.getObjectEntry(launchSetId),
-			ActionKeys.UPDATE);
+		try {
+			_objectEntryService.checkModelResourcePermission(
+				_objectEntryLocalService.getObjectEntry(launchSetId),
+				ActionKeys.UPDATE);
 
-		_launchSetPublisher.schedulePublish(
-			launchSetId, themeDisplay.getUserId(), publishDate);
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
+			_launchSetPublisher.schedulePublish(
+				launchSetId, themeDisplay.getUserId(), publishDate);
+		}
+		catch (PortalException portalException) {
+			hideDefaultErrorMessage(actionRequest);
+
+			JSONPortletResponseUtil.writeJSON(
+				actionRequest, actionResponse,
+				_getErrorJSONObject(actionRequest, portalException));
+
+			throw portalException;
+		}
 
 		JSONPortletResponseUtil.writeJSON(
 			actionRequest, actionResponse,
