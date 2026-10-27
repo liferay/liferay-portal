@@ -79,198 +79,25 @@ public class StagingServiceTest {
 	@Test
 	@TestInfo("LPD-110878")
 	public void testCleanUpStagingRequest() throws Exception {
-		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			long stagingRequestId = _addStagingRequest(file);
-
-			StagingServiceUtil.cleanUpStagingRequest(stagingRequestId);
-
-			Assert.assertThrows(
-				NoSuchFolderException.class,
-				() -> PortletFileRepositoryUtil.getPortletFolder(
-					stagingRequestId));
-		}
-		finally {
-			FileUtil.delete(file);
-		}
+		_testCleanUpStagingRequest();
+		_testCleanUpStagingRequestWithFolder();
 	}
 
 	@Test
-	@TestInfo("LPD-110878")
-	public void testCleanUpStagingRequestWithFolder() throws Exception {
-		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
-
-		DLAppTestUtil.addFileEntry(folder);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> StagingServiceUtil.cleanUpStagingRequest(
-					folder.getFolderId()));
-		}
-
-		Assert.assertEquals(
-			1,
-			DLFileEntryLocalServiceUtil.getFileEntriesCount(
-				_group.getGroupId(), folder.getFolderId()));
-	}
-
-	@Test
-	@TestInfo("LPD-110192")
+	@TestInfo({"LPD-110192", "LPD-110878"})
 	public void testPublishStagingRequest() throws Exception {
-		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			Assert.assertNotNull(
-				StagingServiceUtil.publishStagingRequest(
-					_addStagingRequest(file),
-					_addExportImportConfiguration(_group)));
-		}
-		finally {
-			FileUtil.delete(file);
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-110192")
-	public void testPublishStagingRequestToAnotherGroup() throws Exception {
-		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			long stagingRequestId = _addStagingRequest(file);
-
-			ExportImportConfiguration exportImportConfiguration =
-				_addExportImportConfiguration(_targetGroup);
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> StagingServiceUtil.publishStagingRequest(
-					stagingRequestId, exportImportConfiguration));
-		}
-		finally {
-			FileUtil.delete(file);
-		}
-
-		Assert.assertEquals(
-			1, LayoutLocalServiceUtil.getLayoutsCount(_targetGroup, false));
+		_testPublishStagingRequest();
+		_testPublishStagingRequestToAnotherGroup();
+		_testPublishStagingRequestWithFolder();
+		_testPublishStagingRequestWithPortlet();
+		_testPublishStagingRequestWithPortletToControlPanelLayout();
+		_testPublishStagingRequestWithPortletToLayoutInAnotherGroup();
 	}
 
 	@Test
 	@TestInfo("LPD-110878")
-	public void testPublishStagingRequestWithFolder() throws Exception {
-		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			ExportImportConfiguration exportImportConfiguration =
-				_addExportImportConfiguration(_group);
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> StagingServiceUtil.publishStagingRequest(
-					folder.getFolderId(), exportImportConfiguration));
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-110192")
-	public void testPublishStagingRequestWithPortlet() throws Exception {
-		File file = ExportImportTestUtil.exportPortletInfoAsFile(
-			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			Assert.assertNotNull(
-				StagingServiceUtil.publishStagingRequest(
-					_addStagingRequest(file),
-					_addPortletExportImportConfiguration(_layout.getPlid())));
-		}
-		finally {
-			FileUtil.delete(file);
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-110192")
-	public void testPublishStagingRequestWithPortletToControlPanelLayout()
-		throws Exception {
-
-		File file = ExportImportTestUtil.exportPortletInfoAsFile(
-			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			Assert.assertNotNull(
-				StagingServiceUtil.publishStagingRequest(
-					_addStagingRequest(file),
-					_addPortletExportImportConfiguration(
-						PortalUtil.getControlPanelPlid(
-							_group.getCompanyId()))));
-		}
-		finally {
-			FileUtil.delete(file);
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-110192")
-	public void testPublishStagingRequestWithPortletToLayoutInAnotherGroup()
-		throws Exception {
-
-		File file = ExportImportTestUtil.exportPortletInfoAsFile(
-			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			long stagingRequestId = _addStagingRequest(file);
-
-			ExportImportConfiguration exportImportConfiguration =
-				_addPortletExportImportConfiguration(_targetLayout.getPlid());
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> StagingServiceUtil.publishStagingRequest(
-					stagingRequestId, exportImportConfiguration));
-		}
-		finally {
-			FileUtil.delete(file);
-		}
-	}
-
-	@Test
-	@TestInfo("LPD-110878")
-	public void testUpdateStagingRequestWithFolder() throws Exception {
-		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
-
-		DLAppTestUtil.addFileEntry(folder);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_user)) {
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> StagingServiceUtil.updateStagingRequest(
-					folder.getFolderId(), RandomTestUtil.randomString(),
-					RandomTestUtil.randomBytes()));
-		}
-
-		Assert.assertEquals(
-			1,
-			DLFileEntryLocalServiceUtil.getFileEntriesCount(
-				_group.getGroupId(), folder.getFolderId()));
+	public void testUpdateStagingRequest() throws Exception {
+		_testUpdateStagingRequestWithFolder();
 	}
 
 	private ExportImportConfiguration _addExportImportConfiguration(
@@ -321,6 +148,185 @@ public class StagingServiceTest {
 			stagingRequestId, file.getName(), FileUtil.getBytes(file));
 
 		return stagingRequestId;
+	}
+
+	private void _testCleanUpStagingRequest() throws Exception {
+		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			long stagingRequestId = _addStagingRequest(file);
+
+			StagingServiceUtil.cleanUpStagingRequest(stagingRequestId);
+
+			Assert.assertThrows(
+				NoSuchFolderException.class,
+				() -> PortletFileRepositoryUtil.getPortletFolder(
+					stagingRequestId));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	private void _testCleanUpStagingRequestWithFolder() throws Exception {
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		DLAppTestUtil.addFileEntry(folder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.cleanUpStagingRequest(
+					folder.getFolderId()));
+		}
+
+		Assert.assertEquals(
+			1,
+			DLFileEntryLocalServiceUtil.getFileEntriesCount(
+				_group.getGroupId(), folder.getFolderId()));
+	}
+
+	private void _testPublishStagingRequest() throws Exception {
+		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(
+				StagingServiceUtil.publishStagingRequest(
+					_addStagingRequest(file),
+					_addExportImportConfiguration(_group)));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	private void _testPublishStagingRequestToAnotherGroup() throws Exception {
+		File file = ExportImportTestUtil.exportLayoutsAsFile(_group, _layout);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			long stagingRequestId = _addStagingRequest(file);
+
+			ExportImportConfiguration exportImportConfiguration =
+				_addExportImportConfiguration(_targetGroup);
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.publishStagingRequest(
+					stagingRequestId, exportImportConfiguration));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+
+		Assert.assertEquals(
+			1, LayoutLocalServiceUtil.getLayoutsCount(_targetGroup, false));
+	}
+
+	private void _testPublishStagingRequestWithFolder() throws Exception {
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			ExportImportConfiguration exportImportConfiguration =
+				_addExportImportConfiguration(_group);
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.publishStagingRequest(
+					folder.getFolderId(), exportImportConfiguration));
+		}
+	}
+
+	private void _testPublishStagingRequestWithPortlet() throws Exception {
+		File file = ExportImportTestUtil.exportPortletInfoAsFile(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(
+				StagingServiceUtil.publishStagingRequest(
+					_addStagingRequest(file),
+					_addPortletExportImportConfiguration(_layout.getPlid())));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	private void _testPublishStagingRequestWithPortletToControlPanelLayout()
+		throws Exception {
+
+		File file = ExportImportTestUtil.exportPortletInfoAsFile(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(
+				StagingServiceUtil.publishStagingRequest(
+					_addStagingRequest(file),
+					_addPortletExportImportConfiguration(
+						PortalUtil.getControlPanelPlid(
+							_group.getCompanyId()))));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	private void _testPublishStagingRequestWithPortletToLayoutInAnotherGroup()
+		throws Exception {
+
+		File file = ExportImportTestUtil.exportPortletInfoAsFile(
+			_group, _layout, DLPortletKeys.DOCUMENT_LIBRARY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			long stagingRequestId = _addStagingRequest(file);
+
+			ExportImportConfiguration exportImportConfiguration =
+				_addPortletExportImportConfiguration(_targetLayout.getPlid());
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.publishStagingRequest(
+					stagingRequestId, exportImportConfiguration));
+		}
+		finally {
+			FileUtil.delete(file);
+		}
+	}
+
+	private void _testUpdateStagingRequestWithFolder() throws Exception {
+		Folder folder = DLAppTestUtil.addFolder(_group.getGroupId());
+
+		DLAppTestUtil.addFileEntry(folder);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertThrows(
+				PrincipalException.class,
+				() -> StagingServiceUtil.updateStagingRequest(
+					folder.getFolderId(), RandomTestUtil.randomString(),
+					RandomTestUtil.randomBytes()));
+		}
+
+		Assert.assertEquals(
+			1,
+			DLFileEntryLocalServiceUtil.getFileEntriesCount(
+				_group.getGroupId(), folder.getFolderId()));
 	}
 
 	@DeleteAfterTestRun
