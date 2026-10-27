@@ -38,18 +38,10 @@ $fieldPurple: var(--cadmin-purple-l2);
 /**
  * Layout
  */
-$dataCardMaxHeight: 450px;
 $gridGap: 24px;
 $gridMaxPageWidth: map-get($cadmin-grid-breakpoints, xl);
-$gridMaxPageWidthLg: map-get($cadmin-grid-breakpoints, lg);
-$headerCardMaxHeight: 230px;
 $listPadding: 24px;
-$maxGridItems: 4;
-$maxGridItemsMd: 3;
-$maxGridItemsSm: 2;
-$navbarHeight: 72px;
 $pagePadding: 48px;
-$profileHeaderMargin: 16px;
 $sidebarGutter: 16px;
 $sidebarOpenWidth: 280px;
 $toolbarHeight: 56px;
@@ -79,7 +71,6 @@ $mainLighten65: var(--cadmin-gray-400);
 $mainLighten74: var(--cadmin-gray-300);
 $secondary: $mainLighten28;
 $secondaryHover: var(--cadmin-gray-100);
-$secondaryL0: var(--cadmin-secondary-l0);
 
 $primary: var(--cadmin-primary);
 $primaryDarken5: var(--cadmin-primary-d1);
@@ -191,7 +182,6 @@ $alertZIndex: 6000;
 $helpWidgetZIndex: 100;
 $menuZIndex: 5000;
 $overlayZIndex: 1000;
-$tooltipZIndex: 10000;
 $windowZIndex: 1200;
 
 // Cerebro variables
@@ -206,16 +196,8 @@ $font-size-sm-1x: 0.75rem; //12px
 $font-size-sm-2x: 0.625rem; //10px
 
 $font-size-md: 1rem; //16px
-$font-size-md-1x: 1.125rem; //18px
-$font-size-md-2x: 1.25rem; //20px
-$font-size-md-3x: 1.5rem; //22px
 
-$font-size-lg-1x: 1.75rem; //28px
 $font-size-lg-2x: 2rem; //32px
-$font-size-lg-3x: 2.25rem; //36px
-$font-size-lg-4x: 2.5rem; //40px
-$font-size-lg-5x: 2.75rem; //44px
-$font-size-lg-6x: 3rem; //48px
 
 /**
  * Font family
@@ -233,35 +215,6 @@ $font-family:
 	'Apple Color Emoji',
 	'Segoe UI Emoji',
 	'Segoe UI Symbol';
-
-$data-card-max-height: 450px;
-$data-card-width: 350px;
-$navbar-height: 72px;
-$sidebar-closed-width: 80px;
-$sidebar-open-width: 224px;
-
-/**
- * Card
- */
-$card-min-height: 536px;
-
-/**
- * Header
- */
-$header-subtitle-color: $primary;
-$header-subtitle-font-weight: $fontWeightRegular;
-$header-title-font-size: 1.5rem;
-$header-title-font-weight: bold;
-
-/**
- * Sankey
- */
-$sankey-font-weight: $fontWeightSemiBold;
-$sankey-title-font-size: $font-size-md;
-$sankey-transition:
-	fill 0.2s ease-in-out,
-	stroke 0.2s ease-in-out;
-$sankey-views-font-size: 12px;
 
 /**
  * Tooltip
