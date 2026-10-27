@@ -47,9 +47,9 @@ test(
 		});
 
 		await test.step('Every channel field of a new connector is unmapped', async () => {
-			await expect(fieldMappingsPage.status('Catalog ID')).toHaveText(
-				'Required - Not Mapped'
-			);
+			await expect(
+				fieldMappingsPage.status('Catalog External Reference Code')
+			).toHaveText('Required - Not Mapped');
 			await expect(fieldMappingsPage.status('Description')).toHaveText(
 				'Not Mapped'
 			);
