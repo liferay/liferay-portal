@@ -31,11 +31,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
-import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionChecker;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -149,27 +145,15 @@ public class GroupServiceTest {
 
 		Group liveGroup = GroupTestUtil.addGroup();
 
-		String name = PrincipalThreadLocal.getName();
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
+		UserTestUtil.setUser(user);
 
-		try {
-			PrincipalThreadLocal.setName(user.getUserId());
-			PermissionThreadLocal.setPermissionChecker(
-				PermissionCheckerFactoryUtil.create(user));
-
-			_groupService.addGroup(
-				RandomTestUtil.randomString(),
-				GroupConstants.DEFAULT_PARENT_GROUP_ID, liveGroup.getGroupId(),
-				RandomTestUtil.randomLocaleStringMap(), null,
-				GroupConstants.TYPE_SITE_OPEN, null, true,
-				GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false,
-				false, true, ServiceContextTestUtil.getServiceContext());
-		}
-		finally {
-			PrincipalThreadLocal.setName(name);
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
+		_groupService.addGroup(
+			RandomTestUtil.randomString(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, liveGroup.getGroupId(),
+			RandomTestUtil.randomLocaleStringMap(), null,
+			GroupConstants.TYPE_SITE_OPEN, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, false, false,
+			true, ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test
