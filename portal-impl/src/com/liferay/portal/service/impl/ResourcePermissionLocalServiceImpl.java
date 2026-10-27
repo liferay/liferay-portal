@@ -1141,38 +1141,9 @@ public class ResourcePermissionLocalServiceImpl
 			return false;
 		}
 
-		ResourceAction resourceAction =
-			_resourceActionLocalService.getResourceAction(name, actionId);
-
-		if (roleIds.length >
-				PropsValues.
-					PERMISSIONS_ROLE_RESOURCE_PERMISSION_QUERY_THRESHOLD) {
-
-			int count = resourcePermissionFinder.countByC_N_S_P_R_A(
-				companyId, name, scope, primKey, roleIds,
-				resourceAction.getBitwiseValue());
-
-			if (count > 0) {
-				return true;
-			}
-		}
-		else {
-			List<ResourcePermission> resourcePermissions =
-				resourcePermissionPersistence.findByC_N_S_P_R(
-					companyId, name, scope, primKey, roleIds);
-
-			if (resourcePermissions.isEmpty()) {
-				return false;
-			}
-
-			for (ResourcePermission resourcePermission : resourcePermissions) {
-				if (resourcePermission.hasAction(resourceAction)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
+		return _hasResourcePermission(
+			companyId, name, scope, primKey, roleIds,
+			_resourceActionLocalService.getResourceAction(name, actionId));
 	}
 
 	/**
@@ -2290,6 +2261,41 @@ public class ResourcePermissionLocalServiceImpl
 		}
 
 		return roles;
+	}
+
+	private boolean _hasResourcePermission(
+		long companyId, String name, int scope, String primKey, long[] roleIds,
+		ResourceAction resourceAction) {
+
+		if (roleIds.length >
+				PropsValues.
+					PERMISSIONS_ROLE_RESOURCE_PERMISSION_QUERY_THRESHOLD) {
+
+			int count = resourcePermissionFinder.countByC_N_S_P_R_A(
+				companyId, name, scope, primKey, roleIds,
+				resourceAction.getBitwiseValue());
+
+			if (count > 0) {
+				return true;
+			}
+		}
+		else {
+			List<ResourcePermission> resourcePermissions =
+				resourcePermissionPersistence.findByC_N_S_P_R(
+					companyId, name, scope, primKey, roleIds);
+
+			if (resourcePermissions.isEmpty()) {
+				return false;
+			}
+
+			for (ResourcePermission resourcePermission : resourcePermissions) {
+				if (resourcePermission.hasAction(resourceAction)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private void _initDefaultPermissions(
