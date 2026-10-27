@@ -686,9 +686,18 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 
 	@Override
 	public void uploadBuildDatabaseFileToCloudBucket() {
+		String s3BucketDistPath = Environment.get("S3_BUCKET_DIST_PATH");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(s3BucketDistPath)) {
+			System.out.println(
+				"WARNING: Skipping the build database upload because " +
+					"S3_BUCKET_DIST_PATH is not set");
+
+			return;
+		}
+
 		uploadBuildDatabaseFileToCloudBucket(
-			Environment.get("S3_BUCKET_DIST_PATH") + "/" +
-				FILE_NAME_BUILD_DATABASE_JSON);
+			s3BucketDistPath + "/" + FILE_NAME_BUILD_DATABASE_JSON);
 	}
 
 	@Override
