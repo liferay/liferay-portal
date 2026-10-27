@@ -203,10 +203,12 @@ public class ObjectFieldUtil {
 
 		String groupExternalReferenceCode = StringPool.BLANK;
 
-		Group group = GroupLocalServiceUtil.fetchGroup(groupId);
+		if (groupId > 0) {
+			Group group = GroupLocalServiceUtil.fetchGroup(groupId);
 
-		if (group != null) {
-			groupExternalReferenceCode = group.getExternalReferenceCode();
+			if (group != null) {
+				groupExternalReferenceCode = group.getExternalReferenceCode();
+			}
 		}
 
 		downloadURL = HttpComponentsUtil.addParameter(
