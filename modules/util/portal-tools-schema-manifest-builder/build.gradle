@@ -1,20 +1,13 @@
-
 dependencies {
+	api group: "org.apache.logging.log4j", name: "log4j-core", version: "2.26.1"
 	compileInclude group: "org.json", name: "json", version: "20231013"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.concurrent", version: "5.1.7"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.function", version: "5.5.0"
+	compileOnly group: "com.liferay", name: "com.liferay.petra.io", version: "5.0.5"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.lang", version: "5.2.0"
 	compileOnly group: "com.liferay", name: "com.liferay.petra.string", version: "5.3.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel"
-
-	constraints {
-		compileOnly(group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "109.0.0") {
-			because "Java 8 runtime support is required"
-		}
-		compileOnly(group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "154.0.0") {
-			because "Java 8 runtime support is required"
-		}
-	}
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "134.0.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "195.0.0"
 }
 
 liferay {

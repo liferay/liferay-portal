@@ -3,6 +3,9 @@ Bundle-SymbolicName: com.liferay.portal.tools.schema.manifest.builder
 Bundle-Version: 1.0.0
 Main-Class: com.liferay.portal.tools.schema.manifest.builder.SchemaManifestBuilder
 -includeresource:\
+	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/DCLSingleton.class,\
+	@com.liferay.petra.function-*.jar!/com/liferay/petra/function/UnsafeSupplier.class,\
+	@com.liferay.petra.io-*.jar!/com/liferay/petra/io/unsync/*,\
 	@com.liferay.petra.lang-*.jar!/com/liferay/petra/lang/CentralizedThreadLocal.class,\
 	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/CharPool.class,\
 	@com.liferay.petra.string-*.jar!/com/liferay/petra/string/StringBundler.class,\
@@ -11,6 +14,9 @@ Main-Class: com.liferay.portal.tools.schema.manifest.builder.SchemaManifestBuild
 	@com.liferay.portal.impl-*.jar!/com/liferay/portal/tools/ArgumentsUtil.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/exception/NestableException.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/exception/PortalException.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/internal/log4j/Log4jLogContextLogWrapper.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/internal/log4j/Log4jLogFactoryImpl.class,\
+	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/internal/log4j/Log4jLogImpl.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/io/unsync/*,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONArray.class,\
 	@com.liferay.portal.kernel-*.jar!/com/liferay/portal/kernel/json/JSONException.class,\
