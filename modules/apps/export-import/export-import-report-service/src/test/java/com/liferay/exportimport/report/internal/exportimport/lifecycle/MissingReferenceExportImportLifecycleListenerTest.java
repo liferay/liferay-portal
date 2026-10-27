@@ -280,7 +280,7 @@ public class MissingReferenceExportImportLifecycleListenerTest {
 	}
 
 	@Test
-	public void testOnExportImportLifecycleEventWithoutGroup()
+	public void testOnExportImportLifecycleEventWithoutGroupedModel()
 		throws Exception {
 
 		StagedModel stagedModel = Mockito.mock(
