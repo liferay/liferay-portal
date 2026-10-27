@@ -9,8 +9,6 @@ import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -67,13 +65,8 @@ public class FaroProjectFilter extends BaseFilter {
 				return;
 			}
 
-			JSONObject subscriptionJSONObject = _jsonFactory.createJSONObject(
-				faroProject.getSubscription());
-
-			String subscriptionName = subscriptionJSONObject.getString("name");
-
 			if (!Objects.equals(
-					subscriptionName,
+					faroProject.getSubscriptionName(),
 					ProductConstants.
 						PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA)) {
 
@@ -82,19 +75,10 @@ public class FaroProjectFilter extends BaseFilter {
 				return;
 			}
 
-			long individualsCountSinceLastAnniversary =
-				subscriptionJSONObject.getLong(
-					"individualsCountSinceLastAnniversary");
-			long individualsLimit = subscriptionJSONObject.getLong(
-				"individualsLimit");
-			long pageViewsCountSinceLastAnniversary =
-				subscriptionJSONObject.getLong(
-					"pageViewsCountSinceLastAnniversary");
-			long pageViewsLimit = subscriptionJSONObject.getLong(
-				"pageViewsLimit");
-
-			if ((individualsCountSinceLastAnniversary >= individualsLimit) ||
-				(pageViewsCountSinceLastAnniversary >= pageViewsLimit)) {
+			if ((faroProject.getIndividualsCountSinceLastAnniversary() >=
+					faroProject.getIndividualsLimit()) ||
+				(faroProject.getPageViewsCountSinceLastAnniversary() >=
+					faroProject.getPageViewsLimit())) {
 
 				httpServletResponse.sendRedirect(StringPool.FORWARD_SLASH);
 
@@ -154,9 +138,6 @@ public class FaroProjectFilter extends BaseFilter {
 
 	@Reference
 	private GroupLocalService _groupLocalService;
-
-	@Reference
-	private JSONFactory _jsonFactory;
 
 	@Reference
 	private Portal _portal;
