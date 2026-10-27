@@ -30,6 +30,12 @@ export class DepotAdminPage {
 		);
 	}
 
+	async gotoSites(depotEntryId: string) {
+		await this.page.goto(
+			`/group/guest${PORTLET_URLS.depotAdmin}&${DEPOT_ADMIN_NAMESPACE}mvcRenderCommandName=%2Fdepot%2Fedit_depot_entry&${DEPOT_ADMIN_NAMESPACE}depotEntryId=${depotEntryId}&${DEPOT_ADMIN_NAMESPACE}screenNavigationEntryKey=sites`
+		);
+	}
+
 	async setApplications(
 		depotEntryId: string,
 		applications: string[],
