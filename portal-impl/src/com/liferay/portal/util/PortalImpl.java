@@ -2131,17 +2131,21 @@ public class PortalImpl implements Portal {
 	public List<Group> getCurrentAndAncestorSiteGroups(
 		long groupId, boolean checkContentSharingWithChildrenEnabled) {
 
+		Group siteGroup = _getSiteGroup(groupId);
+
+		if (siteGroup == null) {
+			return new ArrayList<>();
+		}
+
 		Set<Group> groups = new LinkedHashSet<>();
 
-		Group siteGroup = getCurrentSiteGroup(groupId);
-
-		if (siteGroup != null) {
+		if (!siteGroup.isLayoutPrototype()) {
 			groups.add(siteGroup);
 		}
 
 		groups.addAll(
-			getAncestorSiteGroups(
-				groupId, checkContentSharingWithChildrenEnabled));
+			_getAncestorSiteGroups(
+				siteGroup, checkContentSharingWithChildrenEnabled));
 
 		return new ArrayList<>(groups);
 	}
