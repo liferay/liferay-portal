@@ -9547,7 +9547,10 @@ public class ObjectEntryResourceTest {
 
 				Assert.assertEquals(user.getUserId(), dlFileEntry.getUserId());
 
-				// User who cannot add documents to the site
+				// Site member
+
+				_userLocalService.addGroupUser(
+					_group.getGroupId(), user.getUserId());
 
 				Scope scope = Scope.of(_group, LocaleUtil.getDefault());
 
@@ -9568,19 +9571,24 @@ public class ObjectEntryResourceTest {
 					).toString(),
 					endpoint, Http.Method.PATCH);
 
-				Assert.assertEquals(
-					"FORBIDDEN", jsonObject.getString("status"));
-
-				Assert.assertNull(
+				dlFileEntry =
 					_dlFileEntryLocalService.
 						fetchDLFileEntryByExternalReferenceCode(
 							fileEntry2.getExternalReferenceCode(),
-							_group.getGroupId()));
+							_group.getGroupId());
 
-				// Site member
+				Assert.assertEquals(user.getUserId(), dlFileEntry.getUserId());
 
-				_userLocalService.addGroupUser(
+				_assertAttachmentJSONObject(
+					dlFileEntry, null,
+					jsonObject.getJSONObject(
+						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1),
+					_jsonFactory.createJSONObject(scope.toString()));
+
+				_userLocalService.deleteGroupUser(
 					_group.getGroupId(), user.getUserId());
+
+				// User who cannot add documents to the site
 
 				com.liferay.object.rest.dto.v1_0.FileEntry fileEntry3 =
 					_toFileEntry(
@@ -9599,19 +9607,14 @@ public class ObjectEntryResourceTest {
 					).toString(),
 					endpoint, Http.Method.PATCH);
 
-				dlFileEntry =
+				Assert.assertEquals(
+					"FORBIDDEN", jsonObject.getString("status"));
+
+				Assert.assertNull(
 					_dlFileEntryLocalService.
 						fetchDLFileEntryByExternalReferenceCode(
 							fileEntry3.getExternalReferenceCode(),
-							_group.getGroupId());
-
-				Assert.assertEquals(user.getUserId(), dlFileEntry.getUserId());
-
-				_assertAttachmentJSONObject(
-					dlFileEntry, null,
-					jsonObject.getJSONObject(
-						_OBJECT_FIELD_NAME_ATTACHMENT_USER_COMPUTER_TO_DOCS_AND_MEDIA_SOURCE_1),
-					_jsonFactory.createJSONObject(scope.toString()));
+							_group.getGroupId()));
 			}
 		);
 	}
