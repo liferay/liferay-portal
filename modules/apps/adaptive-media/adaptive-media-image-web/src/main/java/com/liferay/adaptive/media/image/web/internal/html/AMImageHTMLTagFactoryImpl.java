@@ -5,17 +5,24 @@
 
 package com.liferay.adaptive.media.image.web.internal.html;
 
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
+import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
 import com.liferay.adaptive.media.image.html.AMImageHTMLTagFactory;
 import com.liferay.adaptive.media.image.html.constants.AMImageHTMLConstants;
 import com.liferay.adaptive.media.image.media.query.Condition;
 import com.liferay.adaptive.media.image.media.query.MediaQuery;
 import com.liferay.adaptive.media.image.media.query.MediaQueryProvider;
+import com.liferay.adaptive.media.image.url.AMImageURLFactory;
+import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.StringUtil;
+
+import java.net.URI;
 
 import java.util.List;
 
@@ -46,6 +53,8 @@ public class AMImageHTMLTagFactoryImpl implements AMImageHTMLTagFactory {
 		sb.append(fileEntry.getFileEntryId());
 		sb.append("\">");
 
+		_appendViewportSourceElements(fileEntry, originalImgTag, sb);
+
 		sourceElements.forEach(sb::append);
 
 		sb.append(originalImgTag);
@@ -53,6 +62,68 @@ public class AMImageHTMLTagFactoryImpl implements AMImageHTMLTagFactory {
 		sb.append("</picture>");
 
 		return sb.toString();
+	}
+
+	private void _appendViewportSourceElements(
+			FileEntry fileEntry, String originalImgTag, StringBundler sb)
+		throws PortalException {
+
+		ViewportSize[] viewportSizes = ViewportSize.values();
+
+		for (int i = viewportSizes.length - 1; i >= 0; i--) {
+			ViewportSize viewportSize = viewportSizes[i];
+
+			String configuration = _getConfiguration(
+				originalImgTag, viewportSize);
+
+			if (configuration == null) {
+				continue;
+			}
+
+			AMImageConfigurationEntry amImageConfigurationEntry =
+				_amImageConfigurationHelper.getAMImageConfigurationEntry(
+					fileEntry.getCompanyId(), configuration);
+
+			if (amImageConfigurationEntry == null) {
+				continue;
+			}
+
+			URI uri = _amImageURLFactory.createFileEntryURL(
+				fileEntry.getFileVersion(), amImageConfigurationEntry);
+
+			sb.append("<source media=\"");
+
+			if (viewportSize != ViewportSize.DESKTOP) {
+				sb.append("(max-width:");
+				sb.append(viewportSize.getMaxWidth());
+				sb.append("px) and ");
+			}
+
+			sb.append("(min-width:");
+			sb.append(viewportSize.getMinWidth());
+			sb.append("px)\" srcset=\"");
+			sb.append(uri.toString());
+			sb.append("\" />");
+		}
+	}
+
+	private String _getConfiguration(
+		String originalImgTag, ViewportSize viewportSize) {
+
+		String attributeName = StringBundler.concat(
+			" data-", StringUtil.toLowerCase(viewportSize.getViewportSizeId()),
+			"-configuration=\"");
+
+		int index = originalImgTag.indexOf(attributeName);
+
+		if (index == -1) {
+			return null;
+		}
+
+		index += attributeName.length();
+
+		return originalImgTag.substring(
+			index, originalImgTag.indexOf(CharPool.QUOTE, index));
 	}
 
 	private String _getMediaQueryString(MediaQuery mediaQuery) {
@@ -101,6 +172,12 @@ public class AMImageHTMLTagFactoryImpl implements AMImageHTMLTagFactory {
 			_mediaQueryProvider.getMediaQueries(fileEntry),
 			this::_getSourceElement);
 	}
+
+	@Reference
+	private AMImageConfigurationHelper _amImageConfigurationHelper;
+
+	@Reference
+	private AMImageURLFactory _amImageURLFactory;
 
 	@Reference
 	private MediaQueryProvider _mediaQueryProvider;

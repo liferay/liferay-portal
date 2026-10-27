@@ -205,10 +205,10 @@ public class LayoutAdaptiveMediaProcessorTest {
 
 		ViewportSize viewportSize = ViewportSize.TABLET;
 
-		sb.append("(min-width:");
-		sb.append(viewportSize.getMinWidth());
-		sb.append("px) and (max-width:");
+		sb.append("(max-width:");
 		sb.append(viewportSize.getMaxWidth());
+		sb.append("px) and (min-width:");
+		sb.append(viewportSize.getMinWidth());
 		sb.append("px)");
 
 		Assert.assertThat(content, CoreMatchers.containsString(sb.toString()));

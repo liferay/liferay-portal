@@ -73,6 +73,14 @@ public class LayoutAdaptiveMediaProcessorImpl
 						continue;
 					}
 
+					Element parentElement = element.parent();
+
+					if (StringUtil.equalsIgnoreCase(
+							parentElement.tagName(), "picture")) {
+
+						continue;
+					}
+
 					String configuration = element.attr(entry.getValue());
 
 					long fileEntryId = GetterUtil.getLong(
