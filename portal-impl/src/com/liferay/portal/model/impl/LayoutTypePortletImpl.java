@@ -481,22 +481,32 @@ public class LayoutTypePortletImpl
 
 	@Override
 	public LayoutTemplate getLayoutTemplate() {
-		LayoutTemplate layoutTemplate =
-			LayoutTemplateLocalServiceUtil.getLayoutTemplate(
-				getLayoutTemplateId(), false, getThemeId());
+		String layoutTemplateId = getLayoutTemplateId();
+		String themeId = getThemeId();
 
-		if (layoutTemplate == null) {
-			layoutTemplate = new LayoutTemplateImpl(
-				StringPool.BLANK, StringPool.BLANK);
+		if (!layoutTemplateId.equals(_layoutTemplateId) ||
+			!Objects.equals(themeId, _layoutTemplateThemeId)) {
 
-			List<String> columns = new ArrayList<>(10);
-
-			for (int i = 1; i <= 10; i++) {
-				columns.add(LayoutTypePortletConstants.COLUMN_PREFIX + i);
-			}
-
-			layoutTemplate.setColumns(columns);
+			_layoutTemplate = LayoutTemplateLocalServiceUtil.getLayoutTemplate(
+				layoutTemplateId, false, themeId);
+			_layoutTemplateId = layoutTemplateId;
+			_layoutTemplateThemeId = themeId;
 		}
+
+		if (_layoutTemplate != null) {
+			return _layoutTemplate;
+		}
+
+		LayoutTemplate layoutTemplate = new LayoutTemplateImpl(
+			StringPool.BLANK, StringPool.BLANK);
+
+		List<String> columns = new ArrayList<>(10);
+
+		for (int i = 1; i <= 10; i++) {
+			columns.add(LayoutTypePortletConstants.COLUMN_PREFIX + i);
+		}
+
+		layoutTemplate.setColumns(columns);
 
 		return layoutTemplate;
 	}
@@ -2235,6 +2245,9 @@ public class LayoutTypePortletImpl
 	private boolean _enablePortletLayoutListener = true;
 	private Group _group;
 	private Layout _layoutSetPrototypeLayout;
+	private LayoutTemplate _layoutTemplate;
+	private String _layoutTemplateId;
+	private String _layoutTemplateThemeId;
 	private PortalPreferences _portalPreferences;
 	private boolean _updatePermission;
 
