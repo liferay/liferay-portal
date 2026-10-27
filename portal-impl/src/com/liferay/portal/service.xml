@@ -960,9 +960,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="LayoutSetPrototypeUuid" return-type="Collection">
 			<finder-column name="layoutSetPrototypeUuid" />
 		</finder>
