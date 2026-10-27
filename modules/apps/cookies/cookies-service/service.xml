@@ -28,9 +28,6 @@
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
-		<finder name="ExpirationDate" return-type="Collection">
-			<finder-column name="expirationDate" />
-		</finder>
 		<finder name="U_D" return-type="Collection">
 			<finder-column name="userId" />
 			<finder-column name="domain" />
