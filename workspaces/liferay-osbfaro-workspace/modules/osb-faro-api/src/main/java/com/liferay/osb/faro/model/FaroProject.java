@@ -47,9 +47,27 @@ public interface FaroProject extends FaroProjectModel, PersistedModel {
 
 		};
 
+	public java.util.Date getCreateDate();
+
+	public long getIndividualsCountSinceLastAnniversary() throws Exception;
+
+	public long getIndividualsLimit() throws Exception;
+
+	public double getIndividualsUsage() throws Exception;
+
+	public java.util.Date getLastAccessDate();
+
 	public java.util.Date getLastAnniversaryDate() throws Exception;
 
+	public long getPageViewsCountSinceLastAnniversary() throws Exception;
+
+	public long getPageViewsLimit() throws Exception;
+
+	public double getPageViewsUsage() throws Exception;
+
 	public String getProjectId();
+
+	public String getShortSubscriptionName() throws Exception;
 
 	public java.util.Date getStartDate() throws Exception;
 
@@ -59,7 +77,9 @@ public interface FaroProject extends FaroProjectModel, PersistedModel {
 
 	public boolean isDataPlatform();
 
+	public boolean isOffline();
+
 	public boolean isTrial();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2145338527
+// LIFERAY-SERVICE-BUILDER-HASH:-559126755

@@ -284,6 +284,11 @@ public class FaroProjectWrapper
 		return model.getCorpProjectUuid();
 	}
 
+	@Override
+	public Date getCreateDate() {
+		return model.getCreateDate();
+	}
+
 	/**
 	 * Returns the create time of this faro project.
 	 *
@@ -334,6 +339,21 @@ public class FaroProjectWrapper
 		return model.getIncidentReportEmailAddresses();
 	}
 
+	@Override
+	public long getIndividualsCountSinceLastAnniversary() throws Exception {
+		return model.getIndividualsCountSinceLastAnniversary();
+	}
+
+	@Override
+	public long getIndividualsLimit() throws Exception {
+		return model.getIndividualsLimit();
+	}
+
+	@Override
+	public double getIndividualsUsage() throws Exception {
+		return model.getIndividualsUsage();
+	}
+
 	/**
 	 * Returns the ip addresses of this faro project.
 	 *
@@ -342,6 +362,11 @@ public class FaroProjectWrapper
 	@Override
 	public String getIpAddresses() {
 		return model.getIpAddresses();
+	}
+
+	@Override
+	public Date getLastAccessDate() {
+		return model.getLastAccessDate();
 	}
 
 	/**
@@ -387,6 +412,21 @@ public class FaroProjectWrapper
 	@Override
 	public String getName() {
 		return model.getName();
+	}
+
+	@Override
+	public long getPageViewsCountSinceLastAnniversary() throws Exception {
+		return model.getPageViewsCountSinceLastAnniversary();
+	}
+
+	@Override
+	public long getPageViewsLimit() throws Exception {
+		return model.getPageViewsLimit();
+	}
+
+	@Override
+	public double getPageViewsUsage() throws Exception {
+		return model.getPageViewsUsage();
 	}
 
 	/**
@@ -442,6 +482,11 @@ public class FaroProjectWrapper
 	@Override
 	public String getServices() {
 		return model.getServices();
+	}
+
+	@Override
+	public String getShortSubscriptionName() throws Exception {
+		return model.getShortSubscriptionName();
 	}
 
 	@Override
@@ -552,6 +597,11 @@ public class FaroProjectWrapper
 	@Override
 	public boolean isDataSourceConnected() {
 		return model.isDataSourceConnected();
+	}
+
+	@Override
+	public boolean isOffline() {
+		return model.isOffline();
 	}
 
 	/**
@@ -867,4 +917,4 @@ public class FaroProjectWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-826915521
+// LIFERAY-SERVICE-BUILDER-HASH:115260971
