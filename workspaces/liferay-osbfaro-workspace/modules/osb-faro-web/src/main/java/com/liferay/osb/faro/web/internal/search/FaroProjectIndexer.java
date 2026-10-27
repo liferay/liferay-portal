@@ -51,9 +51,8 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 			Field.COMPANY_ID, Field.ENTRY_CLASS_NAME, Field.ENTRY_CLASS_PK,
 			Field.GROUP_ID, Field.NAME, Field.UID, Field.USER_ID,
 			"corpProjectName", "corpProjectUuid", "createDate",
-			"dataSourceConnected", "individualsLimit", "individualsUsage",
-			"lastAccessDate", "offline", "pageViewsLimit", "pageViewsUsage",
-			"subscription", "subscriptionName");
+			"individualsUsage", "lastAccessDate", "offline", "pageViewsUsage",
+			"subscriptionName");
 	}
 
 	@Override
@@ -158,24 +157,16 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 		document.addKeyword(
 			"corpProjectUuid", faroProject.getCorpProjectUuid());
 		document.addDate("createDate", new Date(faroProject.getCreateTime()));
-		document.addKeyword(
-			"dataSourceConnected", faroProject.isDataSourceConnected());
 
 		FaroSubscriptionDisplay faroSubscriptionDisplay = JSONUtil.readValue(
 			faroProject.getSubscription(), FaroSubscriptionDisplay.class);
 
-		document.addNumber(
-			"individualsLimit", faroSubscriptionDisplay.getIndividualsLimit());
 		document.addNumber(
 			"individualsUsage",
 			_getUsage(
 				faroSubscriptionDisplay.
 					getIndividualsCountSinceLastAnniversary(),
 				faroSubscriptionDisplay.getIndividualsLimit()));
-		document.addDate(
-			"lastAnniversaryDate",
-			faroSubscriptionDisplay.getLastAnniversaryDate());
-
 		document.addDate(
 			"lastAccessDate", new Date(faroProject.getLastAccessTime()));
 
@@ -184,15 +175,10 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 		}
 
 		document.addNumber(
-			"pageViewsLimit", faroSubscriptionDisplay.getPageViewsLimit());
-		document.addNumber(
 			"pageViewsUsage",
 			_getUsage(
 				faroSubscriptionDisplay.getPageViewsCountSinceLastAnniversary(),
 				faroSubscriptionDisplay.getPageViewsLimit()));
-		document.addKeyword(
-			"subscription",
-			JSONUtil.writeValueAsString(faroSubscriptionDisplay));
 		document.addKeyword(
 			"subscriptionName",
 			StringUtil.removeSubstring(
