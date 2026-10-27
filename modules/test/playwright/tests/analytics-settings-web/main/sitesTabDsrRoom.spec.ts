@@ -61,9 +61,7 @@ test(
 
 		const channelRow = await findChannel({channelName: channel.name, page});
 
-		await channelRow.locator('button').click();
-
-		await page.getByRole('tab', {name: 'Sites'}).click();
+		await channelRow.locator("[role='assign-button']").click();
 
 		await page
 			.getByText(
@@ -71,17 +69,16 @@ test(
 			)
 			.waitFor({state: 'visible'});
 
-		await page.locator('.active').getByPlaceholder('Search').fill(roomName);
+		const modal = page.getByRole('dialog');
 
-		await page
-			.locator('.active')
-			.getByRole('button', {name: 'Search'})
-			.click();
+		await modal.getByPlaceholder('Search').fill(roomName);
+
+		await modal.getByRole('button', {name: 'Search'}).click();
 
 		await expect(page.locator('span[data-testid="loading"]')).toBeHidden();
 
 		await expect(
-			page.locator('[data-testid="sites"]').getByRole('cell', {
+			modal.getByRole('cell', {
 				exact: true,
 				name: roomName,
 			})
