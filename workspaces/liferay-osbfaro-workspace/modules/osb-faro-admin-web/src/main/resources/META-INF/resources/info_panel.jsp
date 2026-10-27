@@ -10,8 +10,6 @@
 <%
 FaroProjectAdminDisplay faroProjectAdminDisplay = (FaroProjectAdminDisplay)request.getAttribute(FaroProjectAdminDisplay.class.getName());
 long[] rowIds = ParamUtil.getLongValues(request, "rowIds");
-
-request.removeAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 %>
 
 <c:choose>

@@ -24,8 +24,7 @@ page import="com.liferay.osb.faro.admin.web.internal.model.FaroProjectAdminDispl
 page import="com.liferay.petra.string.StringBundler" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ListUtil" %><%@
-page import="com.liferay.portal.kernel.util.ParamUtil" %><%@
-page import="com.liferay.portal.kernel.util.WebKeys" %>
+page import="com.liferay.portal.kernel.util.ParamUtil" %>
 
 <%@ page import="java.util.List" %>
 
