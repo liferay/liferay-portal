@@ -4,13 +4,16 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
+	testIntegrationImplementation project(":apps:asset:asset-link-api")
 	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
+	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:headless:headless-cms:headless-cms-api")
 	testIntegrationImplementation project(":apps:headless:headless-cms:headless-cms-client")
 	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
+	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-rest-api")
@@ -24,6 +27,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-metrics-sla-api")
 	testIntegrationImplementation project(":apps:sharing:sharing-api")
+	testIntegrationImplementation project(":apps:site-navigation:site-navigation-api")
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:site:site-cms-site-initializer-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

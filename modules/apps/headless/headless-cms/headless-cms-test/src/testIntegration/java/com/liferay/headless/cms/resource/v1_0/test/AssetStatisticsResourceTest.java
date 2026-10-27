@@ -282,6 +282,7 @@ public class AssetStatisticsResourceTest
 		_testGetAssetStatisticsByAssetLibrary();
 		_testGetAssetStatisticsMissingRequiredFieldsCount();
 		_testGetAssetStatisticsSLABreachedWorkflowTasksCount();
+		_testGetAssetStatisticsUnlinkedCount();
 		_testGetAssetStatisticsWithFreeTier();
 		_testGetAssetStatisticsWorkflowTasksCounts();
 	}
@@ -470,6 +471,22 @@ public class AssetStatisticsResourceTest
 				expectedSLABreachedWorkflowTasksCount,
 				GetterUtil.getLong(
 					assetStatistics.getSlaBreachedWorkflowTasksCount()));
+		}
+	}
+
+	private void _assertUnlinkedCount(
+			Long assetLibraryId, long expectedUnlinkedCount)
+		throws Exception {
+
+		for (AssetStatisticsResource assetStatisticsResource :
+				_assetStatisticsResources) {
+
+			AssetStatistics assetStatistics =
+				assetStatisticsResource.getAssetStatistics(assetLibraryId);
+
+			Assert.assertEquals(
+				expectedUnlinkedCount,
+				GetterUtil.getLong(assetStatistics.getUnlinkedCount()));
 		}
 	}
 
@@ -919,6 +936,36 @@ public class AssetStatisticsResourceTest
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry1.getDepotEntryId());
 		_depotEntryLocalService.deleteDepotEntry(depotEntry2.getDepotEntryId());
+	}
+
+	private void _testGetAssetStatisticsUnlinkedCount() throws Exception {
+		DepotEntry depotEntry = _addSpaceDepotEntry(
+			ServiceContextTestUtil.getServiceContext());
+
+		try {
+			ObjectDefinition objectDefinition =
+				_getCMSBasicWebContentObjectDefinition();
+
+			ObjectEntry objectEntry = _addObjectEntry(
+				depotEntry, objectDefinition);
+
+			_assertUnlinkedCount(depotEntry.getGroupId(), 1);
+
+			_addObjectEntry(depotEntry, objectDefinition);
+
+			_assertUnlinkedCount(depotEntry.getGroupId(), 2);
+
+			_addObjectEntry(
+				CMSOutboundLinkTestUtil.getImageHTML(
+					objectEntry.getExternalReferenceCode()),
+				depotEntry, objectDefinition);
+
+			_assertUnlinkedCount(depotEntry.getGroupId(), 2);
+		}
+		finally {
+			_depotEntryLocalService.deleteDepotEntry(
+				depotEntry.getDepotEntryId());
+		}
 	}
 
 	private void _testGetAssetStatisticsWithFreeTier() throws Exception {
