@@ -276,7 +276,6 @@ public class DocumentMetadataSetResourceImpl
 							contextAcceptLanguage.getPreferredLocale(),
 							documentMetadataSet.getName(),
 							documentMetadataSet.getName_i18n())));
-				setSiteId(() -> siteId);
 				setUserId(contextUser::getUserId);
 			}
 		};

@@ -184,7 +184,6 @@ public class DocumentDataDefinitionTypeResourceImpl
 						setName(
 							() -> LocalizedValueUtil.toStringObjectMap(
 								nameMap));
-						setSiteId(() -> siteId);
 						setUserId(contextUser::getUserId);
 					}
 				});
