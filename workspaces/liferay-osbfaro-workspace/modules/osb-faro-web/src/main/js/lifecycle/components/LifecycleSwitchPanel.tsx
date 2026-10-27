@@ -3,7 +3,6 @@ import LifecycleDetailsPanel from './LifecycleDetailsPanel';
 import LifecycleSwitchList from './LifecycleSwitchList';
 import React from 'react';
 import {ILifecycleDetail} from 'shared/api/lifecycle';
-import {useParams} from 'react-router-dom';
 import {useSidebarOverlay} from 'shared/components/base-page/Sidebar';
 
 export type LifecyclePanelView =
@@ -27,8 +26,6 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 	triggerRef,
 	view,
 }) => {
-	const {lifecycleId} = useParams();
-
 	const overlay = useSidebarOverlay();
 
 	const backToSwitch = () => onViewChange({type: 'switch'});
@@ -60,7 +57,7 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 					onBack={view.parent ? backToSwitch : undefined}
 					onDefaultChange={onDefaultChange}
 					onView={
-						view.parent && view.lifecycleId !== lifecycleId
+						view.parent && view.lifecycleId !== openLifecycle?.id
 							? viewFromDetails
 							: undefined
 					}
@@ -90,6 +87,9 @@ const LifecycleSwitchPanel: React.FC<ILifecycleSwitchPanelProps> = ({
 										parent: 'switch',
 										type: 'details',
 									})
+								}
+								openLifecycleERC={
+									openLifecycle?.externalReferenceCode
 								}
 							/>
 						)}

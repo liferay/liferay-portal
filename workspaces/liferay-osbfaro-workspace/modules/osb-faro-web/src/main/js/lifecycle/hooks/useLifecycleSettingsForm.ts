@@ -1,6 +1,7 @@
 import * as API from 'shared/api';
 import {Alert} from 'shared/types';
 import {addAlert} from 'shared/actions/alerts';
+import {getLifecycleSaveErrorMessage} from 'lifecycle/utils/lifecycleErrors';
 import {CATALOG_FIELDS_MAX_PAGE_SIZE} from 'shared/api/catalog';
 import {
 	createStageConfig,
@@ -242,13 +243,11 @@ export const useLifecycleSettingsForm = ({
 
 				setSubmitted(true);
 			})
-			.catch(() => {
+			.catch((error) => {
 				dispatch(
 					addAlert({
 						alertType: Alert.Types.Error,
-						message: Liferay.Language.get(
-							'an-unexpected-error-occurred'
-						),
+						message: getLifecycleSaveErrorMessage(error),
 					})
 				);
 			})

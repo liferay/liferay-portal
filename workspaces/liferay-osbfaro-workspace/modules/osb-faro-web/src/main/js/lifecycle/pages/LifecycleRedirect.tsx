@@ -48,7 +48,7 @@ const LifecycleRedirect = () => {
 				to={toRoute(Routes.LIFECYCLE_DASHBOARD, {
 					channelId,
 					groupId,
-					lifecycleId: defaultLifecycle.id,
+					lifecycleId: defaultLifecycle.externalReferenceCode,
 				})}
 			/>
 		);

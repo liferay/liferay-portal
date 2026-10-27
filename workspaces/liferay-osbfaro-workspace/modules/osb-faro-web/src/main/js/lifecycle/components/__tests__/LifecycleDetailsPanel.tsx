@@ -37,6 +37,7 @@ const LIFECYCLE: ILifecycleDetail = {
 	authorName: 'Anneta Smith',
 	defaultAccountLifecycle: true,
 	description: 'Unifies acquisition and expansion.',
+	externalReferenceCode: 'erc-1',
 	id: '1',
 	modifiedDate: Date.UTC(2025, 1, 25, 9, 0),
 	name: 'Account Lifecycle',

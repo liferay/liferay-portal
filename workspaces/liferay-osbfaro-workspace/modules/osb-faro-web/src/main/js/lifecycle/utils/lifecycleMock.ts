@@ -27,6 +27,7 @@ const buildRule = (
 const MOCK_LIFECYCLE: ILifecycleDetail = {
 	authorName: 'Anneta Smith',
 	description: 'Lifecycle for marketing-qualified accounts',
+	externalReferenceCode: 'mock-lifecycle-erc',
 	id: '4100',
 	modifiedDate: 1791556330000,
 	name: LIFECYCLE_NAME,
@@ -106,24 +107,22 @@ let mockLifecycle = MOCK_LIFECYCLE;
 
 let stageCount = 0;
 
-export const getMockLifecycle = (id: string): Promise<ILifecycleDetail> =>
-	Promise.resolve({...mockLifecycle, id});
+export const getMockLifecycle = (): Promise<ILifecycleDetail> =>
+	Promise.resolve(mockLifecycle);
 
 export const saveMockLifecycle = ({
 	description,
-	id = mockLifecycle.id,
 	name,
 	stages,
 }: {
 	description: string;
-	id?: string;
 	name: string;
 	stages: ILifecycleStagePayload[];
 }): Promise<ILifecycleDetail> => {
 	mockLifecycle = {
 		...mockLifecycle,
 		description,
-		id,
+		id: String(Number(mockLifecycle.id) + 1),
 		modifiedDate: Date.now(),
 		name,
 		stages: stages.map((stage) => {

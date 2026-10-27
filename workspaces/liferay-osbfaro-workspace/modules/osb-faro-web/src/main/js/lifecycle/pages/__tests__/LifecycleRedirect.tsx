@@ -35,7 +35,11 @@ const mockedUseDataSources = useDataSources as jest.Mock;
 const mockedUseRequest = useRequest as jest.Mock;
 
 const mockLifecycles = (
-	lifecycles: {defaultAccountLifecycle?: boolean; id: string}[],
+	lifecycles: {
+		defaultAccountLifecycle?: boolean;
+		externalReferenceCode: string;
+		id: string;
+	}[],
 	loading = false
 ) =>
 	mockedUseRequest.mockReturnValue({
@@ -78,18 +82,30 @@ describe('LifecycleRedirect', () => {
 
 	afterEach(cleanup);
 
-	it('redirects to the default lifecycle of the channel', () => {
-		mockLifecycles([{defaultAccountLifecycle: true, id: '8'}]);
+	it('redirects to the default lifecycle of the channel by its external reference code', () => {
+		mockLifecycles([
+			{
+				defaultAccountLifecycle: true,
+				externalReferenceCode: 'erc-8',
+				id: '8',
+			},
+		]);
 
 		renderPage();
 
 		expect(screen.getByTestId('location')).toHaveTextContent(
-			dashboardURL('8')
+			dashboardURL('erc-8')
 		);
 	});
 
 	it('asks for the default lifecycle of the current channel', () => {
-		mockLifecycles([{defaultAccountLifecycle: true, id: '8'}]);
+		mockLifecycles([
+			{
+				defaultAccountLifecycle: true,
+				externalReferenceCode: 'erc-8',
+				id: '8',
+			},
+		]);
 
 		renderPage();
 

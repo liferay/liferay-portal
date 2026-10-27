@@ -182,16 +182,16 @@ const BaseLifecycle = () => {
 		}));
 
 	const defaultAccountLifecycle = defaultLifecycleId
-		? defaultLifecycleId === lifecycleId
+		? defaultLifecycleId === lifecycle?.id
 		: lifecycle?.defaultAccountLifecycle;
 
 	const openLifecycle = lifecycle && {...lifecycle, defaultAccountLifecycle};
 
 	const actions = useLifecycleActions({
 		lifecycle: openLifecycle,
-		onDefaultChange: () => changeDefault(lifecycleId!),
+		onDefaultChange: () => changeDefault(lifecycle!.id),
 		onShowDetails: () =>
-			setPanelView({lifecycleId: lifecycleId!, type: 'details'}),
+			setPanelView({lifecycleId: lifecycle!.id, type: 'details'}),
 	});
 
 	const processing = lifecycle?.processedDate == null;
@@ -292,7 +292,7 @@ const BaseLifecycle = () => {
 		<BasePage documentTitle={title || Liferay.Language.get('lifecycles')}>
 			<LifecycleContextProvider
 				key={lifecycleId}
-				lifecycleId={lifecycleId}
+				lifecycleId={lifecycle?.id}
 			>
 				<BasePage.Header
 					breadcrumbs={[

@@ -12,6 +12,7 @@ export interface ILifecycle {
 	authorName?: string | null;
 	defaultAccountLifecycle?: boolean;
 	description?: string;
+	externalReferenceCode: string;
 	id: string;
 	modifiedDate?: number | null;
 	name?: string;
@@ -118,7 +119,7 @@ export const fetchLifecycle = ({
 	lifecycleId,
 }: IFetchLifecycle): Promise<ILifecycleDetail> => {
 	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
-		return getMockLifecycle(lifecycleId);
+		return getMockLifecycle();
 	}
 
 	return sendRequest({
@@ -188,7 +189,7 @@ export async function updateLifecycle({
 	stages,
 }: IUpdateLifecycle): Promise<ILifecycleDetail> {
 	if (ENABLE_LIFECYCLE_STAGES_MOCK_DATA) {
-		return saveMockLifecycle({description, id: lifecycleId, name, stages});
+		return saveMockLifecycle({description, name, stages});
 	}
 
 	return sendRequest({

@@ -82,6 +82,7 @@ interface ILifecycleSwitchListProps {
 	onDefaultChange: (lifecycleId: string) => void;
 	onNavigate: () => void;
 	onShowDetails: (lifecycleId: string) => void;
+	openLifecycleERC?: string;
 }
 
 const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
@@ -89,8 +90,9 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 	onDefaultChange,
 	onNavigate,
 	onShowDetails,
+	openLifecycleERC,
 }) => {
-	const {channelId, groupId, lifecycleId} = useParams();
+	const {channelId, groupId} = useParams();
 
 	const {timeZoneId} = useTimeZone();
 
@@ -148,12 +150,11 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 				{lifecycles.map((lifecycle) => {
 					const meta = getMeta(lifecycle, timeZoneId);
 
+					const open =
+						lifecycle.externalReferenceCode === openLifecycleERC;
+
 					return (
-						<ClayList.Item
-							active={lifecycle.id === lifecycleId}
-							flex
-							key={lifecycle.id}
-						>
+						<ClayList.Item active={open} flex key={lifecycle.id}>
 							<ClayList.ItemField>
 								{lifecycle.defaultAccountLifecycle ? (
 									<LifecycleSticker pinned />
@@ -167,15 +168,12 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 
 							<ClayList.ItemField expand>
 								<ClayList.ItemTitle
-									aria-current={
-										lifecycle.id === lifecycleId
-											? 'page'
-											: undefined
-									}
+									aria-current={open ? 'page' : undefined}
 									href={toRoute(Routes.LIFECYCLE_DASHBOARD, {
 										channelId,
 										groupId,
-										lifecycleId: lifecycle.id,
+										lifecycleId:
+											lifecycle.externalReferenceCode,
 									})}
 									onClick={onNavigate}
 								>
@@ -220,11 +218,7 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 									onShowDetails={() =>
 										onShowDetails(lifecycle.id)
 									}
-									onView={
-										lifecycle.id === lifecycleId
-											? undefined
-											: onNavigate
-									}
+									onView={open ? undefined : onNavigate}
 								/>
 							</ClayList.ItemField>
 						</ClayList.Item>

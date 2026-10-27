@@ -29,7 +29,7 @@ const mockPush = jest.fn();
 
 jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
-	useParams: () => ({channelId: '123', groupId: '23', lifecycleId: '9'}),
+	useParams: () => ({channelId: '123', groupId: '23', lifecycleId: 'erc-9'}),
 }));
 
 jest.mock('shared/hooks/useUnsavedChangesPrompt', () => ({
@@ -71,6 +71,7 @@ const buildStages = (): ILifecycleStage[] =>
 const lifecycle = {
 	authorName: 'Anneta Smith',
 	description: 'Lifecycle for qualified accounts',
+	externalReferenceCode: 'erc-9',
 	id: '9',
 	modifiedDate: 1791556330000,
 	name: 'Growth and Retention Hub',
@@ -103,7 +104,7 @@ const renderPage = () =>
 const lifecycleURL = toRoute(Routes.LIFECYCLE_DASHBOARD, {
 	channelId: '123',
 	groupId: '23',
-	lifecycleId: '9',
+	lifecycleId: 'erc-9',
 });
 
 describe('EditLifecycle', () => {
@@ -389,6 +390,27 @@ describe('EditLifecycle', () => {
 		expect(mockPush).not.toHaveBeenCalled();
 	});
 
+	it('tells the user to reload when someone else changed the lifecycle', async () => {
+		(API.lifecycle.updateLifecycle as jest.Mock).mockRejectedValue(
+			Object.assign(new Error('Request error'), {status: 409})
+		);
+
+		renderPage();
+
+		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));
+
+		await waitFor(() =>
+			expect(mockDispatch).toHaveBeenCalledWith(
+				expect.objectContaining({
+					alertType: Alert.Types.Error,
+					message: expect.stringMatching(/changed.by.another.user/i),
+				})
+			)
+		);
+
+		expect(mockPush).not.toHaveBeenCalled();
+	});
+
 	it('renders a loading state while the lifecycle is loading', () => {
 		mockedUseRequest.mockReturnValue({data: undefined, loading: true});
 
@@ -409,7 +431,7 @@ describe('EditLifecycle', () => {
 		expect(screen.queryByText(/edit lifecycle/i)).toBeNull();
 	});
 
-	it('saves the contract payload, alerts success, and navigates to the dashboard', async () => {
+	it('saves the loaded version by its id, alerts success, and navigates to the dashboard', async () => {
 		renderPage();
 
 		fireEvent.click(screen.getByRole('button', {name: /save lifecycle/i}));

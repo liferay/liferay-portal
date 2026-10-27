@@ -158,7 +158,8 @@ describe('Lifecycle API', () => {
 			});
 
 			expect(sendRequest).not.toHaveBeenCalled();
-			expect(lifecycle.id).toBe('9');
+			expect(lifecycle.externalReferenceCode).toEqual(expect.any(String));
+			expect(lifecycle.id).toEqual(expect.any(String));
 			expect(lifecycle.authorName).toEqual(expect.any(String));
 			expect(lifecycle.modifiedDate).toEqual(expect.any(Number));
 			expect(lifecycle.stages!.length).toBeGreaterThanOrEqual(4);
@@ -208,8 +209,13 @@ describe('Lifecycle API', () => {
 			);
 		});
 
-		it('keeps an update for the rest of the session', async () => {
-			await updateLifecycle({
+		it('keeps an update for the rest of the session as a new version', async () => {
+			const previous = await fetchLifecycle({
+				groupId: '23',
+				lifecycleId: '9',
+			});
+
+			const updated = await updateLifecycle({
 				description: 'Qualified accounts',
 				groupId: '23',
 				lifecycleId: '9',
@@ -226,6 +232,11 @@ describe('Lifecycle API', () => {
 			});
 
 			expect(sendRequest).not.toHaveBeenCalled();
+			expect(updated.id).not.toBe(previous.id);
+			expect(updated.externalReferenceCode).toBe(
+				previous.externalReferenceCode
+			);
+			expect(lifecycle.id).toBe(updated.id);
 			expect(lifecycle.name).toBe('Renamed Hub');
 			expect(lifecycle.stages!.map(({stageName}) => stageName)).toEqual([
 				'Aware',

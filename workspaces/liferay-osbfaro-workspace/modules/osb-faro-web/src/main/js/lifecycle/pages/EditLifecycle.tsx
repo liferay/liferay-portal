@@ -18,7 +18,7 @@ interface IEditLifecycleFormProps {
 }
 
 const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
-	const {groupId, lifecycleId} = useParams();
+	const {groupId} = useParams();
 
 	const form = useLifecycleSettingsForm({
 		description: lifecycle.description ?? '',
@@ -55,7 +55,7 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 					buildUpdateLifecyclePayload({
 						description: lifecycleDescription,
 						groupId: groupId!,
-						lifecycleId: lifecycleId!,
+						lifecycleId: lifecycle.id,
 						name: lifecycleName,
 						stageConfigs,
 					})

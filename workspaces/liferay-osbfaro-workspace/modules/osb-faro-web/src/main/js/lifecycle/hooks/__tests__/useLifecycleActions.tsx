@@ -104,7 +104,11 @@ describe('useLifecycleActions', () => {
 
 	it('lists every action in order for a non-default lifecycle', () => {
 		renderActions({
-			lifecycle: {defaultAccountLifecycle: false, id: '1'},
+			lifecycle: {
+				defaultAccountLifecycle: false,
+				externalReferenceCode: 'erc-1',
+				id: '1',
+			},
 			onShowDetails: jest.fn(),
 			onView: jest.fn(),
 		});
@@ -120,7 +124,13 @@ describe('useLifecycleActions', () => {
 	});
 
 	it('hides View and Show Details when no handler is given', () => {
-		renderActions({lifecycle: {defaultAccountLifecycle: false, id: '1'}});
+		renderActions({
+			lifecycle: {
+				defaultAccountLifecycle: false,
+				externalReferenceCode: 'erc-1',
+				id: '1',
+			},
+		});
 
 		expect(screen.queryByRole('button', {name: /^view$/i})).toBeNull();
 		expect(
@@ -131,7 +141,7 @@ describe('useLifecycleActions', () => {
 	it('hides Edit for non-admins', () => {
 		mockedUseCurrentUser.mockReturnValue({isAdmin: () => false});
 
-		renderActions({lifecycle: {id: '1'}});
+		renderActions({lifecycle: {externalReferenceCode: 'erc-1', id: '1'}});
 
 		expect(screen.queryByRole('button', {name: /^edit$/i})).toBeNull();
 		expect(
@@ -140,21 +150,30 @@ describe('useLifecycleActions', () => {
 	});
 
 	it('hides Set Default on the default lifecycle', () => {
-		renderActions({lifecycle: {defaultAccountLifecycle: true, id: '1'}});
+		renderActions({
+			lifecycle: {
+				defaultAccountLifecycle: true,
+				externalReferenceCode: 'erc-1',
+				id: '1',
+			},
+		});
 
 		expect(screen.queryByRole('button', {name: /set.default/i})).toBeNull();
 	});
 
 	it('hides Set Default while the default is unknown', () => {
-		renderActions({lifecycle: {id: '1'}});
+		renderActions({lifecycle: {externalReferenceCode: 'erc-1', id: '1'}});
 
 		expect(screen.queryByRole('button', {name: /set.default/i})).toBeNull();
 	});
 
-	it('opens the lifecycle dashboard on View', () => {
+	it('opens the lifecycle dashboard by its external reference code on View', () => {
 		const onView = jest.fn();
 
-		renderActions({lifecycle: {id: '5'}, onView});
+		renderActions({
+			lifecycle: {externalReferenceCode: 'erc-5', id: '5'},
+			onView,
+		});
 
 		fireEvent.click(screen.getByRole('button', {name: /^view$/i}));
 
@@ -162,14 +181,14 @@ describe('useLifecycleActions', () => {
 			toRoute(Routes.LIFECYCLE_DASHBOARD, {
 				channelId: '123',
 				groupId: '23',
-				lifecycleId: '5',
+				lifecycleId: 'erc-5',
 			})
 		);
 		expect(onView).toHaveBeenCalled();
 	});
 
-	it('opens the lifecycle editor on Edit', () => {
-		renderActions({lifecycle: {id: '5'}});
+	it('opens the lifecycle editor by its external reference code on Edit', () => {
+		renderActions({lifecycle: {externalReferenceCode: 'erc-5', id: '5'}});
 
 		fireEvent.click(screen.getByRole('button', {name: /^edit$/i}));
 
@@ -177,13 +196,13 @@ describe('useLifecycleActions', () => {
 			toRoute(Routes.LIFECYCLE_EDIT, {
 				channelId: '123',
 				groupId: '23',
-				lifecycleId: '5',
+				lifecycleId: 'erc-5',
 			})
 		);
 	});
 
 	it('opens the notifications modal on Manage Notifications', () => {
-		renderActions({lifecycle: {id: '5'}});
+		renderActions({lifecycle: {externalReferenceCode: 'erc-5', id: '5'}});
 
 		fireEvent.click(
 			screen.getByRole('button', {name: /manage.notifications/i})
@@ -194,11 +213,15 @@ describe('useLifecycleActions', () => {
 		).toBeInTheDocument();
 	});
 
-	it('sets the lifecycle as default on Set Default', async () => {
+	it('sets the current lifecycle version as default on Set Default', async () => {
 		const onDefaultChange = jest.fn();
 
 		renderActions({
-			lifecycle: {defaultAccountLifecycle: false, id: '5'},
+			lifecycle: {
+				defaultAccountLifecycle: false,
+				externalReferenceCode: 'erc-5',
+				id: '5',
+			},
 			onDefaultChange,
 		});
 
@@ -219,7 +242,10 @@ describe('useLifecycleActions', () => {
 	it('calls the details handler on Show Details', () => {
 		const onShowDetails = jest.fn();
 
-		renderActions({lifecycle: {id: '5'}, onShowDetails});
+		renderActions({
+			lifecycle: {externalReferenceCode: 'erc-5', id: '5'},
+			onShowDetails,
+		});
 
 		fireEvent.click(screen.getByRole('button', {name: /show.details/i}));
 

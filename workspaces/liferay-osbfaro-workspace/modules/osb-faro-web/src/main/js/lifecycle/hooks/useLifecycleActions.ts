@@ -2,6 +2,7 @@ import * as API from 'shared/api';
 import {addAlert} from 'shared/actions/alerts';
 import {Alert} from 'shared/types';
 import {close, modalTypes, open} from 'shared/actions/modals';
+import {getLifecycleSaveErrorMessage} from 'lifecycle/utils/lifecycleErrors';
 import {ILifecycle} from 'shared/api/lifecycle';
 import {Routes, toRoute} from 'shared/util/router';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
@@ -42,6 +43,8 @@ export const useLifecycleActions = ({
 
 	const lifecycleId = lifecycle.id;
 
+	const lifecycleERC = lifecycle.externalReferenceCode;
+
 	const setDefault = () =>
 		API.lifecycle
 			.setDefaultLifecycle({groupId: groupId!, lifecycleId})
@@ -57,13 +60,11 @@ export const useLifecycleActions = ({
 
 				onDefaultChange?.();
 			})
-			.catch(() =>
+			.catch((error) =>
 				dispatch(
 					addAlert({
 						alertType: Alert.Types.Error,
-						message: Liferay.Language.get(
-							'an-unexpected-error-occurred'
-						),
+						message: getLifecycleSaveErrorMessage(error),
 					})
 				)
 			);
@@ -79,7 +80,7 @@ export const useLifecycleActions = ({
 								toRoute(Routes.LIFECYCLE_DASHBOARD, {
 									channelId,
 									groupId,
-									lifecycleId,
+									lifecycleId: lifecycleERC,
 								})
 							);
 
@@ -98,7 +99,7 @@ export const useLifecycleActions = ({
 								toRoute(Routes.LIFECYCLE_EDIT, {
 									channelId,
 									groupId,
-									lifecycleId,
+									lifecycleId: lifecycleERC,
 								})
 							),
 					},
