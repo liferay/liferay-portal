@@ -1,4 +1,3 @@
-{{- $databasePort := "5432" }}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -15,6 +14,7 @@ spec:
                     iam.gke.io/gcp-service-account: {{ $gsaEmail }}
                 name: liferay-default
                 namespace: {{ $namespace }}
+{{- $databasePort := "5432" }}
 {{- range $dataPlane := $dataPlanes }}
 {{- $isDatabaseInstanceReady := false }}
 {{- $observedDatabaseInstance := dig (printf "database-primary-%s" $dataPlane) "resource" dict $observedResources }}
@@ -186,7 +186,7 @@ spec:
             data:
                 DATABASE_ENDPOINT: {{ "localhost" | b64enc | quote }}
                 DATABASE_INSTANCE_NAME: {{ dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "connectionName" "" $observedResources | b64enc | quote }}
-                DATABASE_PORT: {{ $databasePort | default 5432 | toString | b64enc | quote }}
+                DATABASE_PORT: {{ $databasePort | b64enc | quote }}
                 DATABASE_USERNAME: {{ $databaseIamUser | toString | b64enc | quote }}
                 LIFERAY_GCS_BUCKET_NAME: {{ printf "%s-dl-%s" $baseName $activeDataPlane | b64enc | quote }}
             kind: Secret
