@@ -25,18 +25,18 @@ public class TestrayRunTest extends com.liferay.jenkins.results.parser.Test {
 		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
 
 		Mockito.doReturn(
+			testrayServer
+		).when(
+			testrayBuild
+		).getTestrayServer();
+
+		Mockito.doReturn(
 			"{}"
 		).when(
 			testrayServer
 		).requestGet(
 			Mockito.anyString()
 		);
-
-		Mockito.doReturn(
-			testrayServer
-		).when(
-			testrayBuild
-		).getTestrayServer();
 
 		TestrayRun testrayRun = new TestrayRun(
 			testrayBuild, RandomTestUtil.randomString());
