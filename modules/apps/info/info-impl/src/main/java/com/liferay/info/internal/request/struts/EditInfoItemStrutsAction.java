@@ -202,10 +202,7 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 
 			long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
 
-			if ((groupId == 0) ||
-				_stagingGroupHelper.isLocalStagingGroup(groupId) ||
-				_stagingGroupHelper.isRemoteStagingGroup(groupId)) {
-
+			if ((groupId == 0) || _stagingGroupHelper.isStagingGroup(groupId)) {
 				throw new InfoFormInvalidGroupException();
 			}
 

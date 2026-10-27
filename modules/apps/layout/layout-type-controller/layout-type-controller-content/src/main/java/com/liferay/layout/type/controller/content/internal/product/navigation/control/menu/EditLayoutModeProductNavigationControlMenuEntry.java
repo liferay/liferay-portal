@@ -155,11 +155,7 @@ public class EditLayoutModeProductNavigationControlMenuEntry
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		long scopeGroupId = themeDisplay.getScopeGroupId();
-
-		if (_stagingGroupHelper.isLocalLiveGroup(scopeGroupId) ||
-			_stagingGroupHelper.isRemoteLiveGroup(scopeGroupId)) {
-
+		if (_stagingGroupHelper.isLiveGroup(themeDisplay.getScopeGroupId())) {
 			return false;
 		}
 
