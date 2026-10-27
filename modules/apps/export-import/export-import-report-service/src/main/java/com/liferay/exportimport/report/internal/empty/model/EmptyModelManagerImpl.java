@@ -8,9 +8,7 @@ package com.liferay.exportimport.report.internal.empty.model;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
-import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
-import com.liferay.exportimport.report.service.persistence.ExportImportReportEntryPersistence;
 import com.liferay.petra.function.UnsafeBiFunction;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.lang.SafeCloseable;
@@ -194,26 +192,21 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 			return;
 		}
 
-		ExportImportReportEntry exportImportReportEntry =
-			_exportImportReportEntryPersistence.fetchByG_C_C_C_E_T(
-				groupId, companyId, externalReferenceCode,
-				_classNameLocalService.getClassNameId(className),
-				GetterUtil.getLong(
-					ExportImportThreadLocal.getExportImportConfigurationId()),
-				ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE, false);
-
-		if (exportImportReportEntry == null) {
-			return;
+		try {
+			_exportImportReportEntryLocalService.
+				resolveMissingReferenceExportImportReportEntries(
+					groupId, companyId, externalReferenceCode,
+					_classNameLocalService.getClassNameId(className));
 		}
-
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"Deleting resolved missing reference report entry " +
-					exportImportReportEntry.getExportImportReportEntryId());
+		catch (Exception exception) {
+			_log.error(
+				StringBundler.concat(
+					"Unable to resolve the export/import report entries for ",
+					"the class external reference code \"",
+					externalReferenceCode, "\" and class name \"", className,
+					"\""),
+				exception);
 		}
-
-		_exportImportReportEntryLocalService.deleteExportImportReportEntry(
-			exportImportReportEntry);
 	}
 
 	@Override
@@ -254,10 +247,6 @@ public class EmptyModelManagerImpl implements EmptyModelManager {
 	@Reference
 	private ExportImportReportEntryLocalService
 		_exportImportReportEntryLocalService;
-
-	@Reference
-	private ExportImportReportEntryPersistence
-		_exportImportReportEntryPersistence;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
