@@ -92,6 +92,7 @@ export {default as SitesFDSPropsTransformer} from './main_view/props_transformer
 export {default as StructureUsagesFDSPropsTransformer} from './main_view/props_transformer/StructureUsagesFDSPropsTransformer';
 export {default as StructuresFDSPropsTransformer} from './main_view/props_transformer/StructuresFDSPropsTransformer';
 export {default as TagUsagesFDSPropsTransformer} from './main_view/props_transformer/TagUsagesFDSPropsTransformer';
+export {default as TasksFDSPropsTransformer} from './main_view/props_transformer/TasksFDSPropsTransformer';
 export {default as ViewVersionHistoryFDSPropsTransformer} from './main_view/props_transformer/ViewVersionHistoryFDSPropsTransformer';
 export {default as VocabularyFDSPropsTransformer} from './main_view/props_transformer/VocabularyFDSPropsTransformer';
 export {default as confirmAndDeleteEntryAction} from './main_view/props_transformer/actions/confirmAndDeleteEntryAction';

@@ -183,6 +183,22 @@
 					"zh_TW": "系統管理"
 				},
 				"type": "node"
+			},
+			{
+				"externalReferenceCode": "CMSPRIMARYNAVIGATION11",
+				"menuItems": [
+					{
+						"displayIcon": "paste",
+						"externalReferenceCode": "CMSPRIMARYNAVIGATION12",
+						"friendlyURL": "/tasks",
+						"privateLayout": false,
+						"type": "layout"
+					}
+				],
+				"name_i18n": {
+					"en_US": "Planning"
+				},
+				"type": "node"
 			}
 		],
 		"name": "CMS Primary Navigation"
