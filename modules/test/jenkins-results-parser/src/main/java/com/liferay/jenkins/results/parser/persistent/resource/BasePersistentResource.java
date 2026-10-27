@@ -13,6 +13,7 @@ import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -310,6 +311,26 @@ public abstract class BasePersistentResource implements PersistentResource {
 		return _buildCachingEnabled;
 	}
 
+	protected boolean isBuildDiscarded(String buildURL) {
+		if (!JenkinsResultsParserUtil.isURL(buildURL)) {
+			return false;
+		}
+
+		try {
+			JenkinsResultsParserUtil.toString(
+				JenkinsResultsParserUtil.getLocalURL(buildURL) +
+					"/api/json?tree=number",
+				false, 0, 0, 5000);
+		}
+		catch (FileNotFoundException fileNotFoundException) {
+			return true;
+		}
+		catch (IOException ioException) {
+		}
+
+		return false;
+	}
+
 	protected boolean isController() {
 		return Objects.equals(
 			getCurrentTopLevelBuildURL(), getControllerBuildURL());
@@ -324,6 +345,10 @@ public abstract class BasePersistentResource implements PersistentResource {
 
 		if (!JenkinsResultsParserUtil.isURL(controllerBuildURL)) {
 			return false;
+		}
+
+		if (isBuildDiscarded(controllerBuildURL)) {
+			return true;
 		}
 
 		JSONObject apiJSONObject = JenkinsAPIUtil.getAPIJSONObject(
