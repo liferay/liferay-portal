@@ -5,6 +5,7 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.File;
 import java.io.IOException;
 
 import java.util.ArrayList;
@@ -156,19 +157,27 @@ public class GenerateReportsControllerBuildRunner
 			}
 		}
 
-		for (GenerateReportsBuildRunner.Report report :
-				GenerateReportsBuildRunner.Report.values()) {
+		return latestReportInvocationTimes;
+	}
 
-			String reportName = report.toString();
+	private long _getReportGeneratedTime(
+		GenerateReportsBuildRunner.Report report) {
 
-			long defaultStartTime =
-				buildData.getStartTime() - _getReportStaleDuration(reportName);
+		File dataFile = report.getDataFile();
 
-			latestReportInvocationTimes.putIfAbsent(
-				reportName, defaultStartTime);
+		if (dataFile == null) {
+			return 0;
 		}
 
-		return latestReportInvocationTimes;
+		try {
+			return JenkinsResultsParserUtil.getGeneratedTimestamp(
+				JenkinsResultsParserUtil.read(dataFile));
+		}
+		catch (IOException ioException) {
+			System.out.println("Unable to read " + dataFile);
+
+			return 0;
+		}
 	}
 
 	private long _getReportStaleDuration(String reportName) {
@@ -206,25 +215,38 @@ public class GenerateReportsControllerBuildRunner
 
 		long startTime = buildData.getStartTime();
 
-		for (Map.Entry<String, Long> entry :
-				latestReportInvocationTimes.entrySet()) {
+		for (GenerateReportsBuildRunner.Report report :
+				GenerateReportsBuildRunner.Report.values()) {
 
-			String reportName = entry.getKey();
+			String reportName = report.toString();
 
-			long reportStaleDuration = startTime - entry.getValue();
+			Long latestReportInvocationTime = latestReportInvocationTimes.get(
+				reportName);
 
-			if (reportStaleDuration < _getReportStaleDuration(reportName)) {
+			long reportGeneratedTime = _getReportGeneratedTime(report);
+
+			long reportStaleDuration = _getReportStaleDuration(reportName);
+
+			if (!_isReportStale(
+					startTime, latestReportInvocationTime, reportGeneratedTime,
+					reportStaleDuration)) {
+
 				continue;
 			}
 
-			System.out.println(
-				JenkinsResultsParserUtil.combine(
-					reportName, " was last generated ",
-					JenkinsResultsParserUtil.toDurationString(
-						reportStaleDuration),
-					" ago which exceeds the stale duration of ",
-					JenkinsResultsParserUtil.toDurationString(
-						_getReportStaleDuration(reportName))));
+			if (reportGeneratedTime <= 0) {
+				System.out.println(reportName + " has no generated date");
+			}
+			else {
+				System.out.println(
+					JenkinsResultsParserUtil.combine(
+						reportName, " was last generated ",
+						JenkinsResultsParserUtil.toDurationString(
+							startTime - reportGeneratedTime),
+						" ago which exceeds the stale duration of ",
+						JenkinsResultsParserUtil.toDurationString(
+							reportStaleDuration)));
+			}
 
 			_selectedReportNames.add(reportName);
 		}
@@ -277,6 +299,35 @@ public class GenerateReportsControllerBuildRunner
 		_invoke(invocationParameters);
 	}
 
+	private boolean _isReportStale(
+		long currentTime, Long latestReportInvocationTime,
+		long reportGeneratedTime, long reportStaleDuration) {
+
+		long reportStaleTime = reportGeneratedTime + reportStaleDuration;
+
+		if (currentTime < reportStaleTime) {
+			return false;
+		}
+
+		if ((latestReportInvocationTime == null) ||
+			(latestReportInvocationTime < reportStaleTime)) {
+
+			return true;
+		}
+
+		long reportRetryDuration = Math.min(
+			reportStaleDuration,
+			Math.max(
+				_REPORT_RETRY_DURATION_MINIMUM,
+				latestReportInvocationTime - reportStaleTime));
+
+		if (currentTime < (latestReportInvocationTime + reportRetryDuration)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	private void _updateBuildDescription(List<String> reportNames) {
 		StringBuilder sb = new StringBuilder();
 
@@ -296,6 +347,8 @@ public class GenerateReportsControllerBuildRunner
 	}
 
 	private static final long _DEFAULT_REPORT_STALE_DURATION = 1440 * 60 * 1000;
+
+	private static final long _REPORT_RETRY_DURATION_MINIMUM = 120 * 60 * 1000;
 
 	private List<String> _selectedReportNames;
 	private Workspace _workspace;
