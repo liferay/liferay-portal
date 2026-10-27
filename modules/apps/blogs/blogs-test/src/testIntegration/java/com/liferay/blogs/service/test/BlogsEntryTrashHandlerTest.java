@@ -16,8 +16,11 @@ import com.liferay.portal.kernel.model.ClassedModel;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -30,9 +33,11 @@ import com.liferay.trash.test.util.WhenIsAssetable;
 import com.liferay.trash.test.util.WhenIsAssetableBaseModel;
 import com.liferay.trash.test.util.WhenIsIndexableBaseModel;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -101,6 +106,19 @@ public class BlogsEntryTrashHandlerTest
 		UserTestUtil.setUser(TestPropsValues.getUser());
 
 		super.setUp();
+	}
+
+	@Test
+	public void testIsInTrash() throws Exception {
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntryWithWorkflow(
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(), true,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		BlogsEntryLocalServiceUtil.deleteEntry(blogsEntry);
+
+		TrashHandler trashHandler = getTrashHandler(getBaseModelClassName());
+
+		Assert.assertFalse(trashHandler.isInTrash(blogsEntry.getEntryId()));
 	}
 
 	@Override
