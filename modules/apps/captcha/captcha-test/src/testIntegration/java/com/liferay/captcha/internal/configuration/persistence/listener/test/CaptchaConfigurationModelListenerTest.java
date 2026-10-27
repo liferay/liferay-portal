@@ -12,6 +12,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -52,9 +53,9 @@ public class CaptchaConfigurationModelListenerTest {
 			"reCaptchaNoScriptURL",
 			"https://www.google.com/recaptcha/api/fallback?k="
 		).put(
-			"reCaptchaPrivateKey", "test"
+			"reCaptchaPrivateKey", RandomTestUtil.randomString()
 		).put(
-			"reCaptchaPublicKey", "test"
+			"reCaptchaPublicKey", RandomTestUtil.randomString()
 		).put(
 			"reCaptchaScriptURL", "https://www.google.com/recaptcha/api.js"
 		).put(
@@ -95,7 +96,15 @@ public class CaptchaConfigurationModelListenerTest {
 		_test(
 			_reCaptchaProperties, "the-recaptcha-no-script-url-is-not-valid",
 			"reCaptchaNoScriptURL",
-			"https://www.test.com/recaptcha/api/fallback?k=");
+			"https://" + RandomTestUtil.randomString() + ".com");
+		_test(
+			_reCaptchaProperties, "the-recaptcha-no-script-url-is-not-valid",
+			"reCaptchaNoScriptURL",
+			"https://www.google.com." + RandomTestUtil.randomString() + ".com");
+		_test(
+			_reCaptchaProperties, "the-recaptcha-no-script-url-is-not-valid",
+			"reCaptchaNoScriptURL",
+			"https://www.google.com@" + RandomTestUtil.randomString() + ".com");
 		_test(
 			_reCaptchaProperties, "the-recaptcha-private-key-is-not-valid",
 			"reCaptchaPrivateKey", StringPool.BLANK);
@@ -104,11 +113,28 @@ public class CaptchaConfigurationModelListenerTest {
 			"reCaptchaPublicKey", StringPool.BLANK);
 		_test(
 			_reCaptchaProperties, "the-recaptcha-script-url-is-not-valid",
-			"reCaptchaScriptURL", "https://www.test.com/recaptcha/api.js");
+			"reCaptchaScriptURL",
+			"https://" + RandomTestUtil.randomString() + ".com");
+		_test(
+			_reCaptchaProperties, "the-recaptcha-script-url-is-not-valid",
+			"reCaptchaScriptURL",
+			"https://www.google.com." + RandomTestUtil.randomString() + ".com");
+		_test(
+			_reCaptchaProperties, "the-recaptcha-script-url-is-not-valid",
+			"reCaptchaScriptURL",
+			"https://www.google.com@" + RandomTestUtil.randomString() + ".com");
 		_test(
 			_reCaptchaProperties, "the-recaptcha-verify-url-is-not-valid",
 			"reCaptchaVerifyURL",
-			"https://www.test.com/recaptcha/api/siteverify");
+			"https://" + RandomTestUtil.randomString() + ".com");
+		_test(
+			_reCaptchaProperties, "the-recaptcha-verify-url-is-not-valid",
+			"reCaptchaVerifyURL",
+			"https://www.google.com." + RandomTestUtil.randomString() + ".com");
+		_test(
+			_reCaptchaProperties, "the-recaptcha-verify-url-is-not-valid",
+			"reCaptchaVerifyURL",
+			"https://www.google.com@" + RandomTestUtil.randomString() + ".com");
 		_test(
 			_simpleCaptchaProperties,
 			"the-simplecaptcha-background-producers-configuration-cannot-be-" +
