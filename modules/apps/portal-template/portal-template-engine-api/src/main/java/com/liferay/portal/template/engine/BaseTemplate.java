@@ -20,8 +20,15 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.Writer;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -46,13 +53,7 @@ public abstract class BaseTemplate implements Template {
 
 		_templateResource = templateResource;
 
-		this.context = new HashMap<>();
-
-		if (context != null) {
-			for (Map.Entry<String, Object> entry : context.entrySet()) {
-				put(entry.getKey(), entry.getValue());
-			}
-		}
+		this.context = new ChainedMap(context);
 
 		_templateContextHelper = templateContextHelper;
 		_restricted = restricted;
@@ -255,10 +256,179 @@ public abstract class BaseTemplate implements Template {
 		return context.put(key, clazz);
 	}
 
+	protected void setTaglibContext(Map<String, ?> taglibContext) {
+		ChainedMap chainedMap = (ChainedMap)context;
+
+		chainedMap._setTaglibContext(taglibContext);
+	}
+
 	protected Map<String, Object> context;
 
 	private final boolean _restricted;
 	private final TemplateContextHelper _templateContextHelper;
 	private final TemplateResource _templateResource;
+
+	private static class ChainedMap extends AbstractMap<String, Object> {
+
+		@Override
+		public void clear() {
+			_map.clear();
+			_removedKeys.clear();
+
+			_sharedContext = null;
+			_taglibContext = null;
+		}
+
+		@Override
+		public boolean containsKey(Object key) {
+			if (_map.containsKey(key)) {
+				return true;
+			}
+
+			if (_removedKeys.contains(key)) {
+				return false;
+			}
+
+			if (_getChainedValue(key) != null) {
+				return true;
+			}
+
+			return false;
+		}
+
+		@Override
+		public Set<Entry<String, Object>> entrySet() {
+			return new AbstractSet<>() {
+
+				@Override
+				public Iterator<Entry<String, Object>> iterator() {
+					List<Entry<String, Object>> entries =
+						Collections.unmodifiableList(_getEntries());
+
+					return entries.iterator();
+				}
+
+				@Override
+				public int size() {
+					List<Entry<String, Object>> entries = _getEntries();
+
+					return entries.size();
+				}
+
+			};
+		}
+
+		@Override
+		public Object get(Object key) {
+			Object value = _map.get(key);
+
+			if ((value != null) || _map.containsKey(key)) {
+				return value;
+			}
+
+			if (_removedKeys.contains(key)) {
+				return null;
+			}
+
+			return _getChainedValue(key);
+		}
+
+		@Override
+		public Object put(String key, Object value) {
+			Object previousValue = _map.put(key, value);
+
+			if (!_removedKeys.isEmpty()) {
+				_removedKeys.remove(key);
+			}
+
+			return previousValue;
+		}
+
+		@Override
+		public Object remove(Object key) {
+			Object value = get(key);
+
+			_map.remove(key);
+
+			if (_getChainedValue(key) != null) {
+				_removedKeys.add((String)key);
+			}
+
+			return value;
+		}
+
+		private ChainedMap(Map<String, ?> sharedContext) {
+			_sharedContext = sharedContext;
+		}
+
+		private void _addEntries(
+			Map<String, ?> chainedContext, List<Entry<String, Object>> entries,
+			Set<String> keys) {
+
+			if (chainedContext == null) {
+				return;
+			}
+
+			for (Entry<String, ?> entry : chainedContext.entrySet()) {
+				if ((entry.getValue() == null) || !keys.add(entry.getKey())) {
+					continue;
+				}
+
+				entries.add(new SimpleImmutableEntry<>(entry));
+			}
+		}
+
+		private Object _getChainedValue(Object key) {
+			Object value = _getValue(_taglibContext, key);
+
+			if (value != null) {
+				return value;
+			}
+
+			return _getValue(_sharedContext, key);
+		}
+
+		private List<Entry<String, Object>> _getEntries() {
+			List<Entry<String, Object>> entries = new ArrayList<>(
+				_map.entrySet());
+
+			Set<String> keys = new HashSet<>(_map.keySet());
+
+			keys.addAll(_removedKeys);
+
+			_addEntries(_taglibContext, entries, keys);
+			_addEntries(_sharedContext, entries, keys);
+
+			return entries;
+		}
+
+		private Object _getValue(Map<String, ?> chainedContext, Object key) {
+			if (chainedContext == null) {
+				return null;
+			}
+
+			return chainedContext.get(key);
+		}
+
+		private void _removeKeys(Map<String, ?> chainedContext) {
+			Set<String> keys = _map.keySet();
+
+			keys.removeIf(key -> chainedContext.get(key) != null);
+
+			_removedKeys.removeIf(key -> chainedContext.get(key) != null);
+		}
+
+		private void _setTaglibContext(Map<String, ?> taglibContext) {
+			_removeKeys(taglibContext);
+
+			_taglibContext = taglibContext;
+		}
+
+		private final Map<String, Object> _map = new HashMap<>();
+		private final Set<String> _removedKeys = new HashSet<>();
+		private Map<String, ?> _sharedContext;
+		private Map<String, ?> _taglibContext;
+
+	}
 
 }

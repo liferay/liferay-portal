@@ -78,6 +78,10 @@ public class FreeMarkerTemplate extends BaseTemplate {
 
 		_freeMarkerManager.addTaglibSupport(
 			context, httpServletRequest, httpServletResponse, _beansWrapper);
+
+		setTaglibContext(
+			_freeMarkerManager.getContributedTemplateModels(
+				httpServletRequest.getServletContext(), _beansWrapper));
 	}
 
 	@Override
