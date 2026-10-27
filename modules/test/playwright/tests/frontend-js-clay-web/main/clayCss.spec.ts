@@ -211,3 +211,52 @@ test(
 		).toBe('rgb(0, 40, 117)');
 	}
 );
+
+test(
+	'High contrast palette replaces the OS palette when forced colors are active',
+	{tag: '@LPD-90825'},
+	async ({page}) => {
+		await page.emulateMedia({colorScheme: 'light', forcedColors: 'active'});
+
+		await page.goto('/group/control_panel/manage');
+
+		const body = page.locator('body');
+		const cadmin = page.locator('.cadmin').first();
+		const html = page.locator('html');
+
+		await expect(html).toHaveCSS('forced-color-adjust', 'none');
+
+		await test.step('Light color scheme', async () => {
+			await expect(html).toHaveAttribute('data-color-scheme', 'light');
+
+			await expect(body).toHaveCSS(
+				'background-color',
+				'rgb(255, 255, 255)'
+			);
+
+			expect(await getResolvedColor(body, 'var(--link-color)')).toBe(
+				'rgb(0, 40, 117)'
+			);
+
+			expect(
+				await getResolvedColor(cadmin, 'var(--cadmin-link-color)')
+			).toBe('rgb(0, 40, 117)');
+		});
+
+		await test.step('Dark color scheme', async () => {
+			await html.evaluate((element) =>
+				element.setAttribute('data-color-scheme', 'dark')
+			);
+
+			await expect(body).toHaveCSS('background-color', 'rgb(7, 11, 19)');
+
+			expect(await getResolvedColor(body, 'var(--link-color)')).toBe(
+				'rgb(179, 205, 255)'
+			);
+
+			expect(
+				await getResolvedColor(cadmin, 'var(--cadmin-link-color)')
+			).toBe('rgb(179, 205, 255)');
+		});
+	}
+);
