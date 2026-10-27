@@ -29,5 +29,5 @@ liferayOSGi {
 
 updateFileVersions {
 	match(/\t\t<dependency name="com.liferay.portal.tools.schema.manifest.builder" org="com.liferay" rev="(\d.+)" \/>/, "../../../tools/sdk/dependencies/com.liferay.portal.tools.schema.manifest.builder/ivy.xml")
-	match(/com\.liferay\.portal\.tools\.schema\.manifest\.builder=(\d.+)/, "../../sdk/gradle-plugins/src/main/resources/com/liferay/gradle/plugins/dependencies/portal-tools.properties")
+	match(/private static final String _VERSION = "(\d.+)";/, "../../sdk/gradle-plugins-defaults/src/main/java/com/liferay/gradle/plugins/defaults/internal/SchemaManifestBuilderPlugin.java")
 }

@@ -75,7 +75,7 @@ public class SchemaManifestBuilderPlugin implements Plugin<Project> {
 						project, SCHEMA_MANIFEST_BUILDER_CONFIGURATION_NAME,
 						"com.liferay",
 						"com.liferay.portal.tools.schema.manifest.builder",
-						"1.0.0");
+						_VERSION);
 				}
 
 			});
@@ -117,5 +117,7 @@ public class SchemaManifestBuilderPlugin implements Plugin<Project> {
 
 			});
 	}
+
+	private static final String _VERSION = "1.0.0";
 
 }
