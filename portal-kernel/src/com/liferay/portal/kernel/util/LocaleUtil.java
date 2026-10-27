@@ -327,7 +327,7 @@ public class LocaleUtil {
 		return displayNames;
 	}
 
-	public static String toJSONString(Locale locale) {
+	public static String toJSON(Locale locale) {
 		String json = _jsons.get(locale);
 
 		if (json != null) {
