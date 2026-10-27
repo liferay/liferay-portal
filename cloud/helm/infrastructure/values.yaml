@@ -5,6 +5,8 @@ clusterSecretStoreName: ""
 cmk: {}
 commonTags: {}
 database: {}
+databaseAppPassword:
+    enabled: true
 enabled: true
 endpoints: {}
 environmentId: ""
