@@ -1,0 +1,78 @@
+locals {
+    bucket_name="${var.deployment_name}-${var.region}"
+  is_active=var.data_active=="blue"
+}
+resource "aws_iam_policy" "s3" {
+	description="Policy for accessing the Liferay S3 bucket"
+    name="${var.deployment_name}-s3-policy"
+	policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action=["s3:GetObject"]
+				Effect="Allow"
+					Resource="arn:aws:s3:::${local.bucket_name}/*" # ${'{'}
+				}
+			]
+		})
+}
+resource "aws_opensearch_domain" "os" {
+	access_policies=<<POLICY
+{
+    "Version": ${var.version}
+}
+POLICY
+  domain_name="${var.deployment_name}-os-d"
+}
+resource "terraform_data" "script" {
+	provisioner "local-exec" {
+		command=<<-EOT
+			if [ -n "${var.name}" ]; then
+			    echo "{"
+			fi
+		EOT
+	}
+}
+resource "terraform_data" "triggers" {
+  /* {
+	[ comment */
+  # see <<EOF
+  triggers_replace={
+  escaped=concat(["$${"], [var.name])
+  name=var.name
+  }
+}
+resource "terraform_data" "user_data" {
+  input=<<END-OF-INPUT
+  {
+    [
+  END-OF-INPUT
+  name=var.name
+}
+resource "terraform_data" "values" {
+  escaped="\"{"
+  formatted=format("#%s", <<EOT
+{
+EOT
+  )
+  // see <<EOF
+  marker="<<EOF"
+  name=var.name
+  nested="${var.enabled ? "}" : "#"}"
+}
+resource "terraform_data" "workspace" {
+    /*
+    resource "a" "b" {
+        x=1
+    }
+x
+    */
+    input=var.name
+}
+resource "terraform_data" "zone" {
+  input=(
+    var.enabled ?
+    var.x :
+  null
+  )
+}

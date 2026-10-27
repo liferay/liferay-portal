@@ -1,0 +1,33 @@
+resource "aws_s3_bucket" "logs" {
+	# Keep logs for one year
+	lifecycle_rule={
+		expiration=365
+	}
+	# Required by the CDN.
+	# Do not remove.
+	cors_rule={
+		allowed_origins="*"
+	}
+	bucket="logs" # main bucket
+	acl="private"
+
+	# Tags
+	tags={
+		Name="logs"
+	}
+	force_destroy=true
+	# TODO: add encryption
+}
+resource "aws_s3_bucket" "backups" {
+	bucket="backups"
+	/*
+	tags={
+		b="1"
+		a="2"
+	}
+	*/
+}
+locals {
+	b=1
+	a=2
+}

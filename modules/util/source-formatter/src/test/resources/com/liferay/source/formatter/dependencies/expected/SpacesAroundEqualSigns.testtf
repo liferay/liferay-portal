@@ -1,0 +1,20 @@
+locals {
+	aligned="value"
+	comparison=var.a == var.b && var.c != var.d
+	for_map={ for k, v in var.map : k => v }
+	inline={ a=1, b="x = y" }
+	range=var.min <= var.max && var.max >= var.min
+	tags={
+		"Name"="logs"
+	}
+	template="${var.name} = ${var.value}"
+	tight=var.name # keep = in comment
+}
+resource "aws_iam_policy" "s3" {
+	/* name = "commented"
+	value = "commented" */
+	name="s3"
+	policy=<<EOF
+key = value
+EOF
+}

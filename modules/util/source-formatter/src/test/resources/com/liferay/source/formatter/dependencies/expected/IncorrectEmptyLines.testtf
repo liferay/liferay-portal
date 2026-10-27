@@ -1,0 +1,18 @@
+locals {
+	a=1
+	b=2
+	c=(
+		var.enabled ?
+		var.x :
+		null
+	)
+}
+resource "terraform_data" "script" {
+	provisioner "local-exec" {
+		command=<<-EOT
+			echo "a"
+
+			echo "b"
+		EOT
+	}
+}

@@ -1,0 +1,27 @@
+resource "aws_opensearch_domain" "os" {
+	access_policies=<<POLICY
+{
+	"Statement": [
+		{
+			"Action": "es:*",
+			"Effect": "Allow",
+			"Resource": "arn:${var.region}:es/*"
+		}
+	],
+	"Version": "2012-10-17"
+}
+POLICY
+	domain_name="os"
+	policy=<<-EOT
+		{
+			"b": ${var.x},
+			"a": 1
+		}
+	EOT
+	tags_json=<<-EOT
+		{
+			"a": "1",
+			"b": "2"
+		}
+	EOT
+}

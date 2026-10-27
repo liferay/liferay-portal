@@ -1,0 +1,13 @@
+# Bucket for assets
+# Shared with the CDN
+resource "aws_s3_bucket" "assets" {
+	bucket="assets"
+}
+# Bucket for backups
+resource "aws_s3_bucket" "backups" {
+	bucket="backups"
+}
+# Bucket for logs
+resource "aws_s3_bucket" "logs" {
+	bucket="logs"
+}

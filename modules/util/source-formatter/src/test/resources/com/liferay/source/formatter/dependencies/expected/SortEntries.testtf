@@ -1,0 +1,67 @@
+locals {
+	tags={
+		Environment="prod"
+		Name="logs",
+	}
+}
+resource "aws_iam_policy" "s3" {
+	description="Policy for accessing the Liferay S3 bucket"
+	name="${var.deployment_name}-s3-policy"
+	policy=jsonencode(
+		{
+			Statement=[
+				{
+					Action=[
+						"s3:PutObject",
+						"s3:GetObject",
+						"s3:DeleteObject",
+						"s3:ListBucket"
+					]
+					Effect="Allow"
+					Resource=[
+						"arn:aws:s3:::bucket/*",
+						"arn:aws:s3:::bucket"
+					]
+				}
+			]
+			Version="2012-10-17"
+		})
+}
+resource "aws_opensearch_domain" "os" {
+	advanced_options={
+		"rest.action.multi.allow_explicit_index"="true"
+	}
+	domain_name="${var.deployment_name}-os-d"
+}
+resource "aws_subnet" "private" {
+	cidr_block=var.private_subnets[count.index]
+	count=length(var.private_subnets)
+	tags={
+		DeploymentName=var.deployment_name
+		Name="${var.deployment_name}-private-sn-${count.index}"
+		"kubernetes.io/role/internal-elb"="1"
+	}
+	vpc_id=aws_vpc.main.id
+}
+resource "null_resource" "script" {
+	depends_on=[
+		aws_subnet.private,
+		aws_iam_policy.s3,
+	]
+	provisioner "local-exec" {
+		command=<<-EOT
+			if [ -z "$FOO" ]; then
+				echo "z"
+				echo "a"
+			fi
+		EOT
+	}
+}
+resource "terraform_data" "comment" {
+	# see <<EOF
+	input=var.name
+}
+resource "terraform_data" "sorted" {
+	input=var.a
+	triggers_replace=var.b
+}

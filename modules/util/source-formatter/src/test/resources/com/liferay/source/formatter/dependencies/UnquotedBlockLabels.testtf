@@ -1,0 +1,15 @@
+resource aws_s3_bucket logs {
+	bucket="logs"
+	dynamic rule {
+		content {
+			id="expire"
+		}
+	}
+}
+resource "aws_s3_bucket" assets {
+	bucket="assets"
+	policy=<<POLICY
+statement allow {
+}
+POLICY
+}

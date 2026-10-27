@@ -1,0 +1,9 @@
+resource "aws_s3_bucket" "logs" {
+	tags={
+	Name="logs"
+}
+}
+}
+resource "aws_s3_bucket" "assets" {
+	bucket="assets"
+}

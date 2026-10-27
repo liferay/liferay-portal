@@ -1,36 +1,31 @@
 module "project" {
-  folder           = "599834336962"
-  name             = var.name
-  project          = var.project
-  project_services = var.project_services
-  source           = "../../modules/project"
+	folder="599834336962"
+	name=var.name
+	project=var.project
+	project_services=var.project_services
+	source="../../modules/project"
 }
-
 provider "google" {
-  credentials = file("~/terraform.json")
-  project     = var.project
-  region      = var.region
-  zone        = var.zone
+	credentials=file("~/terraform.json")
+	project=var.project
+	region=var.region
+	zone=var.zone
 }
-
 resource "google_project_iam_binding" "project" {
-  project = var.project
-  role    = "roles/cloudtranslate.user"
-
-  members = [
-    "serviceAccount:${google_service_account.translate_account.email}",
-  ]
+	members=[
+		"serviceAccount:${google_service_account.translate_account.email}",
+	]
+	project=var.project
+	role="roles/cloudtranslate.user"
 }
-
 resource "google_service_account" "translate_account" {
-  account_id   = var.account
-  display_name = var.account
+	account_id=var.account
+	display_name=var.account
 }
-
 terraform {
-  backend "gcs" {
-    bucket      = "lfris-cloud-infrastructure-state"
-    credentials = "~/terraform.json"
-    prefix      = "terraform/engineering/translate"
-  }
+	backend "gcs" {
+		bucket="lfris-cloud-infrastructure-state"
+		credentials="~/terraform.json"
+		prefix="terraform/engineering/translate"
+	}
 }
