@@ -1,0 +1,73 @@
+{{- if index .Values "kube-state-metrics" "enabled" -}}
+{{- $labelsAllowList := dict -}}
+{{- range $resourceName, $labels := .Values.kubeStateMetrics.metricLabelsAllowlist -}}
+{{- $enabledLabels := list -}}
+{{- range $label, $enabled := $labels -}}
+{{- if $enabled -}}
+{{- $enabledLabels = append $enabledLabels $label -}}
+{{- end -}}
+{{- end -}}
+{{- if $enabledLabels -}}
+{{- $_ := set $labelsAllowList $resourceName $enabledLabels -}}
+{{- end -}}
+{{- end -}}
+{{- $metricAllowlist := dict -}}
+{{- range $metric, $enabled := .Values.kubeStateMetrics.metricAllowlist -}}
+{{- if $enabled -}}
+{{- $_ := set $metricAllowlist $metric (dict) -}}
+{{- end -}}
+{{- end -}}
+{{- $cloudProvider := include "observability.cloudProvider" . -}}
+{{- $resources := list -}}
+{{- $rules := list -}}
+{{- range $name, $customResource := .Values.kubeStateMetrics.customResources -}}
+{{- if and $customResource (or (not $customResource.cloudProvider) (eq $customResource.cloudProvider $cloudProvider)) -}}
+{{- $resources = append $resources $customResource.resource -}}
+{{- $rules = append $rules (dict "apiGroups" (list $customResource.resource.groupVersionKind.group) "resources" (list $customResource.plural) "verbs" (list "list" "watch")) -}}
+{{- range $customResource.resource.metrics -}}
+{{- $_ := set $metricAllowlist (printf "%s_%s" ($customResource.resource.metricNamePrefix | default "kube_customresource") .name) (dict) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- $clusterRoleName := printf "%s-kube-state-metrics-custom-resources" (include "observability.fullname" .) | trunc 63 | trimSuffix "-" -}}
+{{- $kubeStateMetrics := index .Subcharts "kube-state-metrics" -}}
+{{- $kubeStateMetricsNamespace := include "kube-state-metrics.namespace" $kubeStateMetrics | trim -}}
+apiVersion: v1
+data:
+    config.yaml: |
+        {{- dict "kind" "CustomResourceStateMetrics" "spec" (dict "resources" $resources) | toYaml | nindent 8 }}
+    options.yaml: |
+        {{- dict "labels_allow_list" $labelsAllowList "metric_allowlist" $metricAllowlist | toYaml | nindent 8 }}
+kind: ConfigMap
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ include "kube-state-metrics.crsConfigMapName" $kubeStateMetrics | trim | quote }}
+    namespace: {{ $kubeStateMetricsNamespace | quote }}
+{{- if $rules }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ $clusterRoleName | quote }}
+rules:
+    {{- toYaml $rules | nindent 4 }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ $clusterRoleName | quote }}
+roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: ClusterRole
+    name: {{ $clusterRoleName | quote }}
+subjects:
+    -   kind: ServiceAccount
+        name: {{ include "kube-state-metrics.serviceAccountName" $kubeStateMetrics | trim | quote }}
+        namespace: {{ $kubeStateMetricsNamespace | quote }}
+{{- end }}
+{{- end -}}

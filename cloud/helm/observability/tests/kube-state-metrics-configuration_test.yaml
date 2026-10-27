@@ -1,0 +1,119 @@
+suite: kube-state-metrics configuration
+templates:
+    -   templates/kube-state-metrics/configuration.yaml
+tests:
+    -   asserts:
+            -   matchRegex:
+                    path: data["options.yaml"]
+                    pattern: "kube_customresource_widgets_count: [{][}]"
+        documentSelector:
+            path: kind
+            value: ConfigMap
+        it: Allows the metrics of a custom resource
+        set:
+            cloudProvider: aws
+            kubeStateMetrics.customResources.widget:
+                plural: widgets
+                resource:
+                    groupVersionKind:
+                        group: example.com
+                        kind: Widget
+                        version: v1
+                    metrics:
+                        -   help: Number of widgets
+                            name: widgets_count
+    -   asserts:
+            -   equal:
+                    path: subjects[0].name
+                    value: RELEASE-NAME-kube-state-metrics
+        documentSelector:
+            path: kind
+            value: ClusterRoleBinding
+        it: Binds the custom resource access to the kube-state-metrics service account
+        set:
+            cloudProvider: gcp
+    -   asserts:
+            -   notMatchRegex:
+                    path: data["options.yaml"]
+                    pattern: "kube_node_info:"
+            -   matchRegex:
+                    path: data["options.yaml"]
+                    pattern: "pods:\n  - app\n"
+        documentSelector:
+            path: kind
+            value: ConfigMap
+        it: Drops the metrics and labels that are set to false
+        set:
+            cloudProvider: gcp
+            kubeStateMetrics.metricAllowlist.kube_node_info: false
+            kubeStateMetrics.metricLabelsAllowlist.pods.app: true
+            kubeStateMetrics.metricLabelsAllowlist.pods.team: false
+    -   asserts:
+            -   contains:
+                    content:
+                        apiGroups:
+                            -   example.com
+                        resources:
+                            -   widgets
+                        verbs:
+                            -   list
+                            -   watch
+                    path: rules
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Grants kube-state-metrics access to a custom resource
+        set:
+            cloudProvider: aws
+            kubeStateMetrics.customResources.widget:
+                plural: widgets
+                resource:
+                    groupVersionKind:
+                        group: example.com
+                        kind: Widget
+                        version: v1
+                    metrics:
+                        -   help: Number of widgets
+                            name: widgets_count
+    -   asserts:
+            -   hasDocuments:
+                    count: 1
+            -   notMatchRegex:
+                    path: data["config.yaml"]
+                    pattern: LiferayBackup
+            -   notMatchRegex:
+                    path: data["options.yaml"]
+                    pattern: kube_customresource_liferay_backup
+        it: Omits the LiferayBackup metrics when the cloud provider is not GCP
+        set:
+            cloudProvider: aws
+    -   asserts:
+            -   contains:
+                    content:
+                        apiGroups:
+                            -   backup.liferay.cloud
+                        resources:
+                            -   liferaybackups
+                        verbs:
+                            -   list
+                            -   watch
+                    path: rules
+        documentSelector:
+            path: kind
+            value: ClusterRole
+        it: Renders the LiferayBackup access when the cloud provider is GCP
+        set:
+            cloudProvider: gcp
+    -   asserts:
+            -   matchRegex:
+                    path: data["config.yaml"]
+                    pattern: "kind: LiferayBackup"
+            -   matchRegex:
+                    path: data["options.yaml"]
+                    pattern: "kube_customresource_liferay_backup_status_condition: [{][}]"
+        documentSelector:
+            path: kind
+            value: ConfigMap
+        it: Renders the LiferayBackup metrics when the cloud provider is GCP
+        set:
+            cloudProvider: gcp
