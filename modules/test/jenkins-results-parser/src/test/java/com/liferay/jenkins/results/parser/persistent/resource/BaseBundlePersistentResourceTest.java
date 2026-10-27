@@ -1263,7 +1263,6 @@ public class BaseBundlePersistentResourceTest
 				String methodName = method.getName();
 
 				Assert.assertFalse(
-					methodName,
 					methodName.equals("isBuildDiscarded") ||
 					methodName.equals("isMissing") ||
 					methodName.equals("update"));
@@ -1479,8 +1478,9 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	private String _getBuildURL() {
-		return "https://" + RandomTestUtil.randomString() + "/job/" +
-			RandomTestUtil.randomString() + "/1/";
+		return JenkinsResultsParserUtil.combine(
+			"https://", RandomTestUtil.randomString(), "/job/",
+			RandomTestUtil.randomString(), "/1");
 	}
 
 	private JSONObject _getDataJSONObject(

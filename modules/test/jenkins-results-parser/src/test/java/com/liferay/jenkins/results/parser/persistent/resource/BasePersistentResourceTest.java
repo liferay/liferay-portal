@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.persistent.resource;
 
 import com.liferay.jenkins.results.parser.CloudBucketUtil;
 import com.liferay.jenkins.results.parser.JenkinsAPIUtil;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.io.File;
@@ -153,8 +154,9 @@ public class BasePersistentResourceTest
 			BasePersistentResource.class);
 
 		Mockito.doReturn(
-			"https://" + RandomTestUtil.randomString() + "/job/" +
-				RandomTestUtil.randomString() + "/1/"
+			JenkinsResultsParserUtil.combine(
+				"https://", RandomTestUtil.randomString(), "/job/",
+				RandomTestUtil.randomString(), "/1")
 		).when(
 			basePersistentResource
 		).getControllerBuildURL();
@@ -485,9 +487,9 @@ public class BasePersistentResourceTest
 			boolean expectedBuildDiscarded, IOException ioException)
 		throws Exception {
 
-		String buildURL =
-			"https://" + RandomTestUtil.randomString() + "/job/" +
-				RandomTestUtil.randomString() + "/1/";
+		String buildURL = JenkinsResultsParserUtil.combine(
+			"https://", RandomTestUtil.randomString(), "/job/",
+			RandomTestUtil.randomString(), "/1");
 
 		if (ioException != null) {
 			setURLReaderException(ioException, buildURL);
@@ -517,9 +519,9 @@ public class BasePersistentResourceTest
 			boolean expectedMissing, IOException ioException, String result)
 		throws Exception {
 
-		String controllerBuildURL =
-			"https://" + RandomTestUtil.randomString() + "/job/" +
-				RandomTestUtil.randomString() + "/1/";
+		String controllerBuildURL = JenkinsResultsParserUtil.combine(
+			"https://", RandomTestUtil.randomString(), "/job/",
+			RandomTestUtil.randomString(), "/1");
 
 		if (ioException != null) {
 			setURLReaderException(ioException, controllerBuildURL);
