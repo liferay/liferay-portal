@@ -149,6 +149,7 @@ public class BatchTestEntityExportImportTest {
 			).locale(
 				LocaleUtil.getDefault()
 			).build();
+
 		_testEntityResource = TestEntityResource.builder(
 		).authentication(
 			testCompanyAdminUser.getEmailAddress(),
@@ -159,6 +160,13 @@ public class BatchTestEntityExportImportTest {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+
+		Page<TestEntity> testEntitiesPage =
+			_testEntityResource.getTestEntitiesPage(null);
+
+		for (TestEntity testEntity : testEntitiesPage.getItems()) {
+			_testEntityResource.deleteTestEntity(testEntity.getId(), null);
+		}
 	}
 
 	@After
@@ -187,13 +195,6 @@ public class BatchTestEntityExportImportTest {
 				deleteSharedInternalModelBatchTestEntityByExternalReferenceCode(
 					sharedInternalModelBatchTestEntity.
 						getExternalReferenceCode());
-		}
-
-		Page<TestEntity> testEntitiesPage =
-			_testEntityResource.getTestEntitiesPage(null);
-
-		for (TestEntity testEntity : testEntitiesPage.getItems()) {
-			_testEntityResource.deleteTestEntity(testEntity.getId(), null);
 		}
 	}
 
