@@ -171,16 +171,20 @@ public class ObjectDefinitionImplTest {
 			ObjectFolder objectFolder = Mockito.mock(ObjectFolder.class);
 
 			Mockito.when(
-				objectFolder.getObjectFolderId()
+				objectFolder.getCompanyId()
 			).thenReturn(
-				objectFolderId
+				companyId
+			);
+
+			Mockito.when(
+				objectFolder.getExternalReferenceCode()
+			).thenReturn(
+				objectFolderExternalReferenceCode
 			);
 
 			_objectFolderLocalServiceUtilMockedStatic.when(
-				() ->
-					ObjectFolderLocalServiceUtil.
-						fetchObjectFolderByExternalReferenceCode(
-							objectFolderExternalReferenceCode, companyId)
+				() -> ObjectFolderLocalServiceUtil.fetchObjectFolder(
+					objectFolderId)
 			).thenReturn(
 				objectFolder
 			);
