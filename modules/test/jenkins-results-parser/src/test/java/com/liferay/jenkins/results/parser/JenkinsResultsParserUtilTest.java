@@ -1231,6 +1231,17 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testNormalizeURLWithEscapeSequences() {
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"http://test-1-1/job/x?V=%250/%20%250:%20%250@%20%250G%20",
+				"%250%60%20%250g%20%09%20%0A%20%0F%20%0a%20%0f"),
+			JenkinsResultsParserUtil.normalizeURL(
+				"http://test-1-1/job/x?V=%0/ %0: %0@ %0G %0` %0g %09 %0A %0F " +
+					"%0a %0f"));
+	}
+
+	@Test
 	public void testNormalizeURLWithFragment() {
 		testEquals(
 			"http://test-1-1/job/x?a=1%202#summary",
