@@ -37,7 +37,7 @@ tests:
                         -   responseHeaderModifier:
                                 set:
                                     -   name: Strict-Transport-Security
-                                        value: max-age=31536000; includeSubDomains; preload
+                                        value: max-age=31536000
                             type: ResponseHeaderModifier
         documentSelector:
             path: metadata.name
