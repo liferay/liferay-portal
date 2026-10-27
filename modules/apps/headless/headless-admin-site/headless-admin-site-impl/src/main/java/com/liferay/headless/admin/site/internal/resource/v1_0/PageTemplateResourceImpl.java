@@ -135,8 +135,10 @@ public class PageTemplateResourceImpl
 				getApplicableModelFunction() {
 
 				return layoutPageTemplateEntry ->
-					layoutPageTemplateEntry.getType() ==
-						LayoutPageTemplateEntryTypeConstants.BASIC;
+					(layoutPageTemplateEntry.getType() ==
+						LayoutPageTemplateEntryTypeConstants.BASIC) ||
+					(layoutPageTemplateEntry.getType() ==
+						LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
 			}
 
 			@Override
