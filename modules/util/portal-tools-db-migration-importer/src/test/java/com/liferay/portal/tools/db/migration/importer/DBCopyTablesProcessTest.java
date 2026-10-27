@@ -6,10 +6,13 @@
 package com.liferay.portal.tools.db.migration.importer;
 
 import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Types;
 
 import java.util.Arrays;
@@ -28,11 +31,38 @@ public class DBCopyTablesProcessTest {
 
 	@Test
 	@TestInfo("LPD-110097")
+	public void testGetAndSetColumnFailsWhenTargetColumnIsNotText() {
+		try {
+			ReflectionTestUtil.invoke(
+				new DBCopyTablesProcess(null, null), "_getAndSetColumn",
+				new Class<?>[] {
+					String.class, int.class, PreparedStatement.class,
+					ResultSet.class, int.class, int.class
+				},
+				RandomTestUtil.randomString(), RandomTestUtil.randomInt(), null,
+				null, Types.OTHER, Types.INTEGER);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertTrue(exception instanceof PortalException);
+			Assert.assertEquals("Invalid type 1111", exception.getMessage());
+		}
+	}
+
+	@Test
+	@TestInfo({"LPD-110097", "LPD-110098"})
 	public void testGetPostgreSQLColumnType() {
+		_testGetPostgreSQLColumnType(
+			0, Types.CHAR, RandomTestUtil.randomInt(), "text");
 		_testGetPostgreSQLColumnType(0, Types.NUMERIC, 0, "numeric");
 		_testGetPostgreSQLColumnType(1, Types.NUMERIC, 0, "numeric(1, 0)");
+		_testGetPostgreSQLColumnType(
+			10, Types.CHAR, RandomTestUtil.randomInt(), "varchar(10)");
 		_testGetPostgreSQLColumnType(10, Types.DECIMAL, 0, "numeric(10, 0)");
 		_testGetPostgreSQLColumnType(10, Types.DECIMAL, 2, "decimal(30, 16)");
+		_testGetPostgreSQLColumnType(
+			10, Types.NCHAR, RandomTestUtil.randomInt(), "varchar(10)");
 		_testGetPostgreSQLColumnType(20, Types.DECIMAL, -2, "numeric");
 		_testGetPostgreSQLColumnType(20, Types.DECIMAL, 18, "numeric(20, 18)");
 		_testGetPostgreSQLColumnType(30, Types.NUMERIC, 0, "numeric(30, 0)");
@@ -43,6 +73,15 @@ public class DBCopyTablesProcessTest {
 		_testGetPostgreSQLColumnType(
 			DB.SQL_VARCHAR_MAX_SIZE_THRESHOLD, Types.VARCHAR,
 			RandomTestUtil.randomInt(), "text");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), -101, RandomTestUtil.randomInt(),
+			"timestamp with time zone");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), -155, RandomTestUtil.randomInt(),
+			"timestamp with time zone");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), 100, RandomTestUtil.randomInt(),
+			"double precision");
 		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), 101, RandomTestUtil.randomInt(),
 			"double precision");
@@ -62,11 +101,11 @@ public class DBCopyTablesProcessTest {
 			RandomTestUtil.randomInt(), Types.BOOLEAN,
 			RandomTestUtil.randomInt(), "bool");
 		_testGetPostgreSQLColumnType(
-			RandomTestUtil.randomInt(), Types.CHAR, RandomTestUtil.randomInt(),
-			"text");
-		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.CLOB, RandomTestUtil.randomInt(),
 			"text");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.DATE, RandomTestUtil.randomInt(),
+			"timestamp");
 		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.DOUBLE,
 			RandomTestUtil.randomInt(), "double precision");
@@ -77,17 +116,32 @@ public class DBCopyTablesProcessTest {
 			RandomTestUtil.randomInt(), Types.INTEGER,
 			RandomTestUtil.randomInt(), "integer");
 		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.LONGNVARCHAR,
+			RandomTestUtil.randomInt(), "text");
+		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.LONGVARBINARY,
 			RandomTestUtil.randomInt(), "bytea");
 		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.LONGVARCHAR,
 			RandomTestUtil.randomInt(), "text");
 		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.NCLOB, RandomTestUtil.randomInt(),
+			"text");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.REAL, RandomTestUtil.randomInt(),
+			"double precision");
+		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.SMALLINT,
 			RandomTestUtil.randomInt(), "integer");
 		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.TIME, RandomTestUtil.randomInt(),
+			"time");
+		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.TIMESTAMP,
 			RandomTestUtil.randomInt(), "timestamp");
+		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), Types.TIMESTAMP_WITH_TIMEZONE,
+			RandomTestUtil.randomInt(), "timestamp with time zone");
 		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), Types.TINYINT,
 			RandomTestUtil.randomInt(), "integer");
@@ -114,7 +168,6 @@ public class DBCopyTablesProcessTest {
 		}
 		catch (Exception exception) {
 			Assert.assertTrue(exception instanceof IllegalArgumentException);
-
 			Assert.assertEquals(
 				"Column emailAddress of source table User_ does not exist in " +
 					"target table User_ in the default schema\n",
@@ -133,7 +186,6 @@ public class DBCopyTablesProcessTest {
 		}
 		catch (Exception exception) {
 			Assert.assertTrue(exception instanceof IllegalArgumentException);
-
 			Assert.assertEquals(
 				"Column email of source table User_ does not exist in target " +
 					"table User_ in the default schema\n",
