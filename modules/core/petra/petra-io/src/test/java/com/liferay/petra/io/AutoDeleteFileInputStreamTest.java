@@ -6,15 +6,14 @@
 package com.liferay.petra.io;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.SwappableSecurityManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
-import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.DirectoryNotEmptyException;
 import java.nio.file.Files;
 
 import org.junit.After;
@@ -83,38 +82,31 @@ public class AutoDeleteFileInputStreamTest {
 		Assert.assertFalse(_tempFile.exists());
 	}
 
-	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testUnableToDeleteOnClose() throws IOException {
-		try (SwappableSecurityManager autoCloseSwappableSecurityManager =
-				new SwappableSecurityManager() {
+		AutoDeleteFileInputStream autoDeleteFileInputStream =
+			new AutoDeleteFileInputStream(_tempFile);
 
-					@Override
-					public void checkDelete(String file) {
-						if (file.equals(_tempFile.getPath())) {
-							throw new SecurityException("Unable to delete");
-						}
-					}
+		Assert.assertTrue(_tempFile.delete());
+		Assert.assertTrue(_tempFile.mkdir());
 
-				}) {
+		File file = new File(_tempFile, "file");
 
-			autoCloseSwappableSecurityManager.install();
+		Assert.assertTrue(file.createNewFile());
 
-			try (AutoDeleteFileInputStream autoDeleteFileInputStream =
-					new AutoDeleteFileInputStream(_tempFile)) {
-
-				Assert.assertTrue(_tempFile.exists());
-			}
+		try {
+			autoDeleteFileInputStream.close();
 
 			Assert.fail();
 		}
-		catch (SecurityException securityException) {
+		catch (DirectoryNotEmptyException directoryNotEmptyException) {
 			Assert.assertEquals(
-				"Unable to delete", securityException.getMessage());
+				_tempFile.getPath(), directoryNotEmptyException.getMessage());
 		}
 
-		Assert.assertTrue(_tempFile.exists());
+		Assert.assertTrue(_tempFile.isDirectory());
+
+		Assert.assertTrue(file.delete());
 	}
 
 	private final File _tempFile = new File("tempFile");
