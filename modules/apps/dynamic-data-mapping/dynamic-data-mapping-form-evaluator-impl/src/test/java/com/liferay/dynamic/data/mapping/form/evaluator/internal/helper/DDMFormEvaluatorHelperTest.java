@@ -1095,7 +1095,6 @@ public class DDMFormEvaluatorHelperTest {
 			_createDDMFormField("text1", "text", FieldConstants.STRING));
 		ddmForm.addDDMFormField(
 			_createDDMFormField("text2", "text", FieldConstants.STRING));
-
 		ddmForm.addDDMFormRule(
 			new DDMFormRule(
 				List.of("setVisible('text1', true)"),

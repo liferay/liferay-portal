@@ -139,7 +139,6 @@ public class DDMFormEvaluatorHelper {
 			Map<String, Object> fieldValues = _getFieldValues();
 
 			_evaluateDDMFormRules(ddmFormRules, false);
-
 			_evaluateDDMFormRules(ddmFormRules, true);
 
 			if (fieldValues.equals(_getFieldValues())) {
