@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
@@ -17,6 +18,7 @@ const AI_CREATOR_MODAL = 'iframe[title="AI Creator"]';
 const test = mergeTests(
 	aiCreatorPagesTest,
 	dataApiHelpersTest,
+	featureFlagsTest({'LPD-93786': {enabled: true}}),
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest()

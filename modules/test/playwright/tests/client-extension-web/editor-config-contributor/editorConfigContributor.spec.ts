@@ -96,7 +96,7 @@ test('Add a toolbar button to a CKEditor, by applying editor config contributor 
 	).toBeEditable();
 
 	await expect(
-		newEditorConfigContributorPage.aiCreatorEditorToolbarButton
+		newEditorConfigContributorPage.subscriptEditorToolbarButton
 	).toBeVisible();
 });
 

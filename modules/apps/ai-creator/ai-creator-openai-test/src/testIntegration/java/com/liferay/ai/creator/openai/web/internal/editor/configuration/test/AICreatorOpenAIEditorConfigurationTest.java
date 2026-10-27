@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -45,6 +46,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 /**
  * @author Lourdes Fernández Besada
  */
+@FeatureFlag("LPD-93786")
 @RunWith(Arquillian.class)
 public class AICreatorOpenAIEditorConfigurationTest {
 
@@ -118,6 +120,23 @@ public class AICreatorOpenAIEditorConfigurationTest {
 
 		_assertCKEditor5EditorConfigurationConfigJSONObject(
 			false, RandomTestUtil.randomString());
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-93786")
+	@Test
+	public void testAICreatorCKEditor5ConfigFeatureFlagDisabled()
+		throws Exception {
+
+		_aiCreatorOpenAIConfigurationManager.
+			saveAICreatorOpenAICompanyConfiguration(
+				_group.getCompanyId(), RandomTestUtil.randomString(), true,
+				true);
+		_aiCreatorOpenAIConfigurationManager.
+			saveAICreatorOpenAIGroupConfiguration(
+				_group.getGroupId(), RandomTestUtil.randomString(), true, true);
+
+		_assertCKEditor5EditorConfigurationConfigJSONObject(
+			false, JournalPortletKeys.JOURNAL);
 	}
 
 	@Test
@@ -214,6 +233,27 @@ public class AICreatorOpenAIEditorConfigurationTest {
 
 		_assertEditorConfigurationConfigJSONObject(
 			false, false, false, JournalPortletKeys.JOURNAL);
+	}
+
+	@FeatureFlag(enable = false, value = "LPD-93786")
+	@Test
+	public void testAICreatorToolbarFeatureFlagDisabled() throws Exception {
+		_aiCreatorOpenAIConfigurationManager.
+			saveAICreatorOpenAICompanyConfiguration(
+				_group.getCompanyId(), RandomTestUtil.randomString(), true,
+				true);
+		_aiCreatorOpenAIConfigurationManager.
+			saveAICreatorOpenAIGroupConfiguration(
+				_group.getGroupId(), RandomTestUtil.randomString(), true, true);
+
+		Assert.assertFalse(
+			_aiCreatorOpenAIConfigurationManager.
+				isAICreatorChatGPTCompanyEnabled(_group.getCompanyId()));
+		Assert.assertFalse(
+			_aiCreatorOpenAIConfigurationManager.isAICreatorChatGPTGroupEnabled(
+				_group.getCompanyId(), _group.getGroupId()));
+		_assertEditorConfigurationConfigJSONObject(
+			true, false, false, JournalPortletKeys.JOURNAL);
 	}
 
 	private void _assertCKEditor5EditorConfigurationConfigJSONObject(

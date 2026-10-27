@@ -8,7 +8,7 @@ import {Locator, Page} from '@playwright/test';
 import {EditClientExtensionsPage} from '../../pages/EditClientExtensionsPage';
 
 export class EditEditorConfigContributorPage extends EditClientExtensionsPage {
-	readonly aiCreatorEditorToolbarButton: Locator;
+	readonly subscriptEditorToolbarButton: Locator;
 	readonly editorConfigKeysInput: Locator;
 	readonly editorNamesInput: Locator;
 	readonly portletNamesInput: Locator;
@@ -17,8 +17,7 @@ export class EditEditorConfigContributorPage extends EditClientExtensionsPage {
 	constructor(page: Page) {
 		super(page, 'editorConfigContributor');
 
-		this.aiCreatorEditorToolbarButton =
-			page.getByTitle('Create AI Content');
+		this.subscriptEditorToolbarButton = page.getByTitle('Subscript');
 		this.urlInput = page.locator(`#_${this.portletName}_url`);
 		this.portletNamesInput = page.locator(
 			`[name=_${this.portletName}_portletNames]`

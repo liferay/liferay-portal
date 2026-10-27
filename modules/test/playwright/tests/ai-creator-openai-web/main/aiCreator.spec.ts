@@ -6,6 +6,7 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {journalPagesTest} from '../../journal-web/main/fixtures/journalPagesTest';
@@ -14,12 +15,22 @@ import {aiCreatorPagesTest} from './fixtures/aiCreatorPagesTest';
 const LEARN_MORE_HREF =
 	'https://learn.liferay.com/w/dxp/content-authoring-and-management/web-content/web-content-articles/generating-text-content-using-ai';
 
-const test = mergeTests(
+const baseTest = mergeTests(
 	aiCreatorPagesTest,
 	dataApiHelpersTest,
 	isolatedSiteTest,
 	journalPagesTest,
 	loginTest()
+);
+
+const aiCreatorDisabledTest = mergeTests(
+	baseTest,
+	featureFlagsTest({'LPD-93786': {enabled: false}})
+);
+
+const test = mergeTests(
+	baseTest,
+	featureFlagsTest({'LPD-93786': {enabled: true}})
 );
 
 test(
@@ -330,5 +341,52 @@ test(
 		await expect(aiCreatorInstanceSettingsPage.apiKeyInput).toHaveValue(
 			apiKey
 		);
+	}
+);
+
+aiCreatorDisabledTest(
+	'The AI Creator button is not available in the Web Content editor while the feature flag is disabled',
+	{tag: '@LPD-108694'},
+	async ({journalPage, page, site}) => {
+		await journalPage.goto(site.friendlyUrlPath);
+		await journalPage.goToCreateArticle('Basic Web Content');
+
+		await journalPage.articleContentTextBox.click();
+
+		await expect(
+			page.getByRole('button', {name: 'Bold'}).first()
+		).toBeVisible();
+		await expect(
+			page.getByRole('button', {name: 'Create AI Content'})
+		).toHaveCount(0);
+	}
+);
+
+aiCreatorDisabledTest(
+	'The ChatGPT option is not available in the OpenAI configuration while the feature flag is disabled',
+	{tag: '@LPD-108694'},
+	async ({aiCreatorInstanceSettingsPage, page, site, siteSettingsPage}) => {
+		await aiCreatorInstanceSettingsPage.goto();
+
+		await expect(aiCreatorInstanceSettingsPage.dalleCheckbox).toBeChecked();
+		await expect(aiCreatorInstanceSettingsPage.chatGPTCheckbox).toHaveCount(
+			0
+		);
+
+		await siteSettingsPage.goToSiteSetting(
+			'AI Creator',
+			'OpenAI',
+			site.friendlyUrlPath
+		);
+
+		await expect(aiCreatorInstanceSettingsPage.dalleCheckbox).toBeChecked();
+		await expect(aiCreatorInstanceSettingsPage.chatGPTCheckbox).toHaveCount(
+			0
+		);
+		await expect(
+			page.getByText(
+				'To enable ChatGPT for this site, first enable it for your instance.'
+			)
+		).toHaveCount(0);
 	}
 );
