@@ -1,0 +1,156 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.sharing.web.internal.configuration.admin.display.test;
+
+import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.configuration.admin.display.ConfigurationScreen;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
+import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMapFactory;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.test.rule.Inject;
+import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.Dictionary;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+
+/**
+ * @author Jürgen Kappler
+ */
+@RunWith(Arquillian.class)
+public class ContentSharingSiteSettingsConfigurationScreenWrapperTest {
+
+	@ClassRule
+	@Rule
+	public static final LiferayIntegrationTestRule liferayIntegrationTestRule =
+		new LiferayIntegrationTestRule();
+
+	@Before
+	public void setUp() {
+		Bundle bundle = FrameworkUtil.getBundle(
+			ContentSharingSiteSettingsConfigurationScreenWrapperTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
+			bundleContext, ConfigurationScreen.class, null,
+			(serviceReference, emitter) -> {
+				ConfigurationScreen configurationScreen =
+					bundleContext.getService(serviceReference);
+
+				emitter.emit(configurationScreen.getKey());
+			});
+	}
+
+	@After
+	public void tearDown() {
+		_serviceTrackerMap.close();
+	}
+
+	@Test
+	public void testExportImportProperties() throws Exception {
+		Group sourceGroup = GroupTestUtil.addGroup();
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			sourceGroup.getTypeSettingsProperties();
+
+		typeSettingsUnicodeProperties.put(
+			"contentSharingWithChildrenEnabled", "0");
+
+		_groupLocalService.updateGroup(
+			sourceGroup.getGroupId(), typeSettingsUnicodeProperties.toString());
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-content-sharing");
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(sourceGroup.getGroupId());
+
+		Assert.assertEquals(
+			"0", properties.get("contentSharingWithChildrenEnabled"));
+
+		Group targetGroup = GroupTestUtil.addGroup();
+
+		Assert.assertTrue(targetGroup.isContentSharingWithChildrenEnabled());
+
+		configurationScreen.importProperties(
+			properties, targetGroup.getGroupId());
+
+		targetGroup = _groupLocalService.getGroup(targetGroup.getGroupId());
+
+		Assert.assertFalse(targetGroup.isContentSharingWithChildrenEnabled());
+
+		properties = configurationScreen.exportProperties(
+			sourceGroup.getGroupId());
+
+		Assert.assertEquals(
+			"0", properties.get("contentSharingWithChildrenEnabled"));
+	}
+
+	@Test
+	public void testExportProperties() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-content-sharing");
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertTrue(properties.isEmpty());
+	}
+
+	@Test
+	public void testImportProperties() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-content-sharing");
+
+		configurationScreen.importProperties(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"contentSharingWithChildrenEnabled",
+				RandomTestUtil.randomString()
+			).build(),
+			group.getGroupId());
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals(
+			"-1", properties.get("contentSharingWithChildrenEnabled"));
+
+		configurationScreen.importProperties(
+			new HashMapDictionary<>(), group.getGroupId());
+
+		properties = configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals(
+			"-1", properties.get("contentSharingWithChildrenEnabled"));
+	}
+
+	@Inject
+	private GroupLocalService _groupLocalService;
+
+	private ServiceTrackerMap<String, ConfigurationScreen> _serviceTrackerMap;
+
+}
