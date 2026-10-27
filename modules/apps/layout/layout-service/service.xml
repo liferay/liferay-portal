@@ -43,11 +43,6 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
-		<finder name="C_CERC_CN" return-type="Collection" where="containerKey IS NOT NULL">
-			<finder-column name="companyId" />
-			<finder-column name="classExternalReferenceCode" />
-			<finder-column name="classNameId" />
-		</finder>
 		<finder name="C_CN_CT" return-type="Collection" where="containerKey IS NOT NULL">
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
@@ -62,12 +57,6 @@
 			<finder-column name="containerKey" />
 			<finder-column name="containerType" />
 			<finder-column name="plid" />
-		</finder>
-		<finder name="C_CERC_CN_T" return-type="Collection" where="containerKey IS NOT NULL">
-			<finder-column name="companyId" />
-			<finder-column name="classExternalReferenceCode" />
-			<finder-column name="classNameId" />
-			<finder-column name="type" />
 		</finder>
 		<finder name="G_CERC_CN_CPK_CK_CT_P" return-type="LayoutClassedModelUsage" unique="true">
 			<finder-column name="groupId" />
@@ -104,9 +93,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="Plid" return-type="Collection">
-			<finder-column name="plid" />
-		</finder>
 		<finder name="L_P" return-type="LayoutLocalization" unique="true">
 			<finder-column name="languageId" />
 			<finder-column name="plid" />
