@@ -80,6 +80,7 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -96,6 +97,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.randomizerbumpers.NumericStringRandomizerBumper;
 import com.liferay.portal.kernel.test.randomizerbumpers.UniqueStringRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -118,6 +120,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
@@ -148,6 +151,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.function.ThrowingRunnable;
 import org.junit.runner.RunWith;
 
 import org.osgi.service.cm.Configuration;
@@ -821,6 +825,26 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 			0,
 			_workflowTaskManager.getWorkflowTaskCountByUser(
 				user.getCompanyId(), user.getUserId(), false));
+
+		_deactivateWorkflow(BlogsEntry.class.getName(), 0, 0);
+	}
+
+	@Test
+	public void testGetAssignableUsers() throws Exception {
+		_activateSingleApproverWorkflow(BlogsEntry.class.getName(), 0, 0);
+
+		_addBlogsEntry();
+
+		WorkflowTask workflowTask = _getWorkflowTask();
+
+		Assert.assertFalse(
+			ListUtil.isEmpty(
+				_workflowTaskManager.getAssignableUsers(
+					workflowTask.getWorkflowTaskId())));
+
+		_assertMustHavePermission(
+			() -> _workflowTaskManager.getAssignableUsers(
+				workflowTask.getWorkflowTaskId()));
 
 		_deactivateWorkflow(BlogsEntry.class.getName(), 0, 0);
 	}
@@ -1745,6 +1769,21 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 					workflowTask2.getWorkflowTaskId(),
 				workflowTask1.getWorkflowTaskId(),
 				workflowTask2.getWorkflowTaskId());
+		}
+	}
+
+	private void _assertMustHavePermission(ThrowingRunnable throwingRunnable)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			WorkflowException workflowException = Assert.assertThrows(
+				WorkflowException.class, throwingRunnable);
+
+			Assert.assertTrue(
+				workflowException.getCause() instanceof
+					PrincipalException.MustHavePermission);
 		}
 	}
 
