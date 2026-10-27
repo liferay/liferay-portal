@@ -9,7 +9,11 @@ import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.sharing.configuration.SharingConfiguration;
 import com.liferay.sharing.configuration.SharingConfigurationFactory;
@@ -21,6 +25,9 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.Serializable;
+
+import java.util.Dictionary;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -40,6 +47,9 @@ public class SharingSiteSettingsConfigurationScreenWrapper
 	}
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private Language _language;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.sharing.web)")
@@ -54,6 +64,20 @@ public class SharingSiteSettingsConfigurationScreenWrapper
 
 	private class SharingSiteSettingsConfigurationScreenContributor
 		implements SiteSettingsConfigurationScreenContributor {
+
+		@Override
+		public Dictionary<String, Object> exportProperties(
+			Serializable scopePK) {
+
+			return HashMapDictionaryBuilder.<String, Object>put(
+				"sharingEnabled",
+				() -> {
+					Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+					return group.getTypeSettingsProperty("sharingEnabled");
+				}
+			).build();
+		}
 
 		@Override
 		public String getCategoryKey() {
@@ -78,6 +102,30 @@ public class SharingSiteSettingsConfigurationScreenWrapper
 		@Override
 		public ServletContext getServletContext() {
 			return _servletContext;
+		}
+
+		@Override
+		public void importProperties(
+				Dictionary<String, Object> properties, Serializable scopePK)
+			throws Exception {
+
+			Object sharingEnabled = properties.get("sharingEnabled");
+
+			if (sharingEnabled == null) {
+				return;
+			}
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			typeSettingsUnicodeProperties.put(
+				"sharingEnabled",
+				String.valueOf(GetterUtil.getBoolean(sharingEnabled)));
+
+			_groupLocalService.updateGroup(
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 
 		@Override
