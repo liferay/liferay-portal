@@ -36,6 +36,7 @@ public class IsolatedAttributesHttpServletRequestTest {
 		_testGetAttribute();
 		_testGetAttributeWithReplacedRequest();
 		_testGetAttributeWithRequestDispatcherAttribute();
+		_testGetAttributeWithRestoredRequest();
 	}
 
 	@Test
@@ -177,6 +178,41 @@ public class IsolatedAttributesHttpServletRequestTest {
 		Assert.assertEquals(
 			value2,
 			isolatedAttributesHttpServletRequest2.getAttribute(
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
+	}
+
+	private void _testGetAttributeWithRestoredRequest() {
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+
+		IsolatedAttributesHttpServletRequest
+			isolatedAttributesHttpServletRequest1 =
+				new IsolatedAttributesHttpServletRequest(httpServletRequest);
+
+		String value = RandomTestUtil.randomString();
+
+		isolatedAttributesHttpServletRequest1.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH, value);
+
+		isolatedAttributesHttpServletRequest1.setRequest(
+			new MockHttpServletRequest());
+
+		isolatedAttributesHttpServletRequest1.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH,
+			RandomTestUtil.randomString());
+
+		isolatedAttributesHttpServletRequest1.setRequest(httpServletRequest);
+
+		IsolatedAttributesHttpServletRequest
+			isolatedAttributesHttpServletRequest2 =
+				new IsolatedAttributesHttpServletRequest(httpServletRequest);
+
+		isolatedAttributesHttpServletRequest2.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH,
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			value,
+			isolatedAttributesHttpServletRequest1.getAttribute(
 				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
 	}
 
