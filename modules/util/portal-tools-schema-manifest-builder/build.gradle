@@ -10,6 +10,16 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "195.0.0"
 }
 
+deployDependencies {
+	from (configurations.compileClasspath) {
+		include "log4j-api-*.jar"
+		include "log4j-core-*.jar"
+	}
+
+	rename(/log4j-api-(.+)\.jar/, "log4j-api" + renameSuffix)
+	rename(/log4j-core-(.+)\.jar/, "log4j-core" + renameSuffix)
+}
+
 liferay {
 	deployDir = "../../../tools/sdk/dependencies/com.liferay.portal.tools.schema.manifest.builder/lib"
 }
