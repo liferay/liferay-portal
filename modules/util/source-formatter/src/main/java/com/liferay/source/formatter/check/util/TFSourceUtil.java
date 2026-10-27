@@ -35,14 +35,14 @@ public class TFSourceUtil {
 		while (index < line.length()) {
 			char c = line.charAt(index);
 
+			if ((c == CharPool.POUND) || line.startsWith("//", index)) {
+				return false;
+			}
+
 			if (c == CharPool.QUOTE) {
 				index = getStringEndIndex(line, index + 1);
 
 				continue;
-			}
-
-			if ((c == CharPool.POUND) || line.startsWith("//", index)) {
-				return false;
 			}
 
 			if (line.startsWith("/*", index)) {
@@ -136,16 +136,16 @@ public class TFSourceUtil {
 		while (i < line.length()) {
 			char c = line.charAt(i);
 
-			if (c == CharPool.QUOTE) {
-				i = getStringEndIndex(line, i + 1);
-
-				continue;
-			}
-
 			if ((c == CharPool.POUND) || line.startsWith("//", i) ||
 				line.startsWith("/*", i)) {
 
 				return line.substring(0, i);
+			}
+
+			if (c == CharPool.QUOTE) {
+				i = getStringEndIndex(line, i + 1);
+
+				continue;
 			}
 
 			i++;
@@ -166,15 +166,15 @@ public class TFSourceUtil {
 				continue;
 			}
 
-			if (c == CharPool.OPEN_CURLY_BRACE) {
-				level++;
-			}
-			else if (c == CharPool.CLOSE_CURLY_BRACE) {
+			if (c == CharPool.CLOSE_CURLY_BRACE) {
 				if (level == 0) {
 					return index + 1;
 				}
 
 				level--;
+			}
+			else if (c == CharPool.OPEN_CURLY_BRACE) {
+				level++;
 			}
 
 			index++;
