@@ -7,11 +7,13 @@ package com.liferay.portlet.configuration.icon.locator.internal;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Portlet;
+import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.configuration.icon.locator.PortletConfigurationIconLocator;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletRequest;
@@ -42,9 +44,8 @@ public class LegacyConfigurationIconLocator
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
-		String portletId = portletDisplay.getRootPortletId();
-
-		Portlet portlet = _portletLocalService.getPortletById(portletId);
+		Portlet portlet = _getPortlet(
+			portletRequest, portletDisplay.getRootPortletId());
 
 		if (portlet == null) {
 			return StringPool.BLANK;
@@ -61,6 +62,24 @@ public class LegacyConfigurationIconLocator
 
 		return StringPool.BLANK;
 	}
+
+	private Portlet _getPortlet(
+		PortletRequest portletRequest, String rootPortletId) {
+
+		LiferayPortletRequest liferayPortletRequest =
+			_portal.getLiferayPortletRequest(portletRequest);
+
+		Portlet portlet = liferayPortletRequest.getPortlet();
+
+		if (rootPortletId.equals(portlet.getRootPortletId())) {
+			return portlet;
+		}
+
+		return _portletLocalService.getPortletById(rootPortletId);
+	}
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private PortletLocalService _portletLocalService;
