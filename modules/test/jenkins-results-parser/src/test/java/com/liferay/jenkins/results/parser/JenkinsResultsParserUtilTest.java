@@ -1271,6 +1271,18 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testNormalizeURLWithNonASCIICharacters() {
+		String normalizedURL = JenkinsResultsParserUtil.normalizeURL(
+			"http://test-1-1/job/café/x?name=é");
+
+		testEquals(
+			"http://test-1-1/job/caf%C3%A9/x?name=%C3%A9", normalizedURL);
+		testEquals(
+			normalizedURL,
+			JenkinsResultsParserUtil.normalizeURL(normalizedURL));
+	}
+
+	@Test
 	public void testNormalizeURLWithNormalizedURL() {
 		String normalizedURL = JenkinsResultsParserUtil.normalizeURL(
 			"http://test-1-1/job/x?tree=actions[parameters[name,value]]");
