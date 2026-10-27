@@ -32,10 +32,8 @@
 														{
 															"range": {
 																"displayDate_sortable": {
-																	"from": "-9223372036854775808",
-																	"include_lower": true,
-																	"include_upper": true,
-																	"to": "${time.current_date|date_format=timestamp}"
+																	"gte": "-9223372036854775808",
+																	"lte": "${time.current_date|date_format=timestamp}"
 																}
 															}
 														}
@@ -55,20 +53,16 @@
 														{
 															"range": {
 																"displayDate_sortable": {
-																	"from": "-9223372036854775808",
-																	"include_lower": true,
-																	"include_upper": true,
-																	"to": "${time.current_date|date_format=timestamp}"
+																	"gte": "-9223372036854775808",
+																	"lte": "${time.current_date|date_format=timestamp}"
 																}
 															}
 														},
 														{
 															"range": {
 																"expirationDate_sortable": {
-																	"from": "${time.current_date|date_format=timestamp}",
-																	"include_lower": true,
-																	"include_upper": true,
-																	"to": "9223372036854775807"
+																	"gte": "${time.current_date|date_format=timestamp}",
+																	"lte": "9223372036854775807"
 																}
 															}
 														}
