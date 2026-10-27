@@ -324,9 +324,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="SegmentsExperimentKey" return-type="Collection">
 			<finder-column name="segmentsExperimentKey" />
 		</finder>
