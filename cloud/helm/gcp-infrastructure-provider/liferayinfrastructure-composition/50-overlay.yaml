@@ -1,4 +1,5 @@
 {{- if $overlayAccess.enabled }}
+{{- if $gsaMember }}
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: BucketIAMMember
 metadata:
@@ -7,10 +8,11 @@ metadata:
 spec:
     forProvider:
         bucket: {{ $overlayBucketName }}
-        member: serviceAccount:{{ $gsaEmail }}
+        member: {{ $gsaMember }}
         role: roles/storage.objectViewer
     managementPolicies: {{ $managementPolicies }}
 ---
+{{- end }}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:

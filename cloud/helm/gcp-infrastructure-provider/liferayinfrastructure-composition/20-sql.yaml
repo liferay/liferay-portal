@@ -1,5 +1,4 @@
 {{- $database := $xr.spec.database }}
-{{- $databaseInstanceNameFormat := printf "%s-db-instance-%%s" $xr.metadata.name }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
 {{- range $dataPlane := $dataPlanes }}
@@ -62,6 +61,8 @@ metadata:
         crossplane.io/external-name: {{ $databaseName }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-db-{{ $dataPlane }}
     labels:
+        app: liferay
+        component: database
         dataPlane: {{ $dataPlane }}
     name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
 spec:
@@ -70,24 +71,28 @@ spec:
         collation: en_US.UTF8
         instanceSelector:
             matchLabels:
+                app: liferay
+                component: database-instance
                 dataPlane: {{ $dataPlane }}
     managementPolicies: ["Create", "Observe", "Update"]
+{{- if $isCmkKeyReady }}
 ---
-{{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
 apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: DatabaseInstance
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: database-primary-{{ $dataPlane }}
     labels:
+        app: liferay
+        component: database-instance
         dataPlane: {{ $dataPlane }}
-    name: {{ $databaseInstanceName }}
+    name: {{ $xr.metadata.name }}-db-instance-{{ $dataPlane }}
 spec:
     forProvider:
         databaseVersion: {{ printf "POSTGRES_%s" ($database.version | default "18") }}
         deletionProtection: {{ and (not $forceDestroy) (eq $dataPlane $activeDataPlane) }}
         {{- if $cmkEnabled }}
-        encryptionKeyName: {{ $cmkKeyName }}
+        encryptionKeyName: {{ $cmkKeyId }}
         {{- end }}
         region: {{ $region }}
         rootPasswordSecretRef:
@@ -120,7 +125,8 @@ spec:
             userLabels:
                 {{- merge (dict "active" (eq $dataPlane $activeDataPlane | toString)) $backupTargetLabels | toYaml | nindent 16 }}
     managementPolicies: {{ $xr.spec.backup.enabled | ternary ((list "*") | toJson) $managementPolicies }}
-{{- if not (and (eq $dataPlane $targetActiveDataPlane) (eq $restorePhase "provisioning")) }}
+{{- end }}
+{{- if and $gsaEmail (not (and (eq $dataPlane $targetActiveDataPlane) (eq $restorePhase "provisioning"))) }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
@@ -129,12 +135,16 @@ metadata:
         crossplane.io/external-name: {{ $databaseIamUser }}
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-iam-user-{{ $dataPlane }}
     labels:
+        app: liferay
+        component: database-user
         dataPlane: {{ $dataPlane }}
     name: {{ $xr.metadata.name }}-db-user-{{ $dataPlane }}
 spec:
     forProvider:
         instanceSelector:
             matchLabels:
+                app: liferay
+                component: database-instance
                 dataPlane: {{ $dataPlane }}
         type: CLOUD_IAM_SERVICE_ACCOUNT
     managementPolicies: ["Create", "Observe", "Update"]
@@ -289,7 +299,6 @@ spec:
 {{- end }}
 {{- end }}
 {{- range $dataPlane := list "blue" "green" }}
-{{- $databaseInstanceName := printf $databaseInstanceNameFormat $dataPlane }}
 {{- if or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-db-%s" $dataPlane)) }}
 ---
 apiVersion: protection.crossplane.io/v1beta1
@@ -303,15 +312,21 @@ spec:
     by:
         apiVersion: sql.gcp.m.upbound.io/v1beta1
         kind: Database
-        resourceRef:
-            name: {{ $xr.metadata.name }}-db-{{ $dataPlane }}
+        resourceSelector:
+            matchLabels:
+                app: liferay
+                component: database
+                dataPlane: {{ $dataPlane }}
     of:
         apiVersion: sql.gcp.m.upbound.io/v1beta1
         kind: DatabaseInstance
-        resourceRef:
-            name: {{ $databaseInstanceName }}
+        resourceSelector:
+            matchLabels:
+                app: liferay
+                component: database-instance
+                dataPlane: {{ $dataPlane }}
 {{- end }}
-{{- if and (or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-iam-user-%s" $dataPlane))) (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
+{{- if and $gsaEmail (or (has $dataPlane $dataPlanes) (hasKey $observedResources (printf "liferay-iam-user-%s" $dataPlane))) (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
 ---
 apiVersion: protection.crossplane.io/v1beta1
 kind: Usage
@@ -324,13 +339,19 @@ spec:
     by:
         apiVersion: sql.gcp.m.upbound.io/v1beta1
         kind: User
-        resourceRef:
-            name: {{ $xr.metadata.name }}-db-user-{{ $dataPlane }}
+        resourceSelector:
+            matchLabels:
+                app: liferay
+                component: database-user
+                dataPlane: {{ $dataPlane }}
     of:
         apiVersion: sql.gcp.m.upbound.io/v1beta1
         kind: DatabaseInstance
-        resourceRef:
-            name: {{ $databaseInstanceName }}
+        resourceSelector:
+            matchLabels:
+                app: liferay
+                component: database-instance
+                dataPlane: {{ $dataPlane }}
 {{- end }}
 {{- end }}
 {{- $activeDatabaseConnectionName := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "connectionName" "" $observedResources }}

@@ -4,6 +4,9 @@ kind: KeyRing
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-keyring
+    labels:
+        app: liferay
+        component: cmk-key-ring
     name: {{ $baseName }}-keyring
 spec:
     forProvider:
@@ -15,11 +18,16 @@ kind: CryptoKey
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-cryptokey
+    labels:
+        app: liferay
+        component: cmk-key
     name: {{ $baseName }}-key
 spec:
     forProvider:
         keyRingSelector:
-            matchControllerRef: true
+            matchLabels:
+                app: liferay
+                component: cmk-key-ring
         purpose: ENCRYPT_DECRYPT
         rotationPeriod: 86400s
     managementPolicies: {{ $managementPolicies }}
@@ -31,8 +39,10 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-kms-binding
 spec:
     forProvider:
-        cryptoKeyIdRef:
-            name: {{ $baseName }}-key
+        cryptoKeyIdSelector:
+            matchLabels:
+                app: liferay
+                component: cmk-key
         member: serviceAccount:service-{{ $env.projectNumber }}@gcp-sa-cloud-sql.iam.gserviceaccount.com
         role: roles/cloudkms.cryptoKeyEncrypterDecrypter
     managementPolicies: {{ $managementPolicies }}
@@ -44,8 +54,10 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-storage-kms-binding
 spec:
     forProvider:
-        cryptoKeyIdRef:
-            name: {{ $baseName }}-key
+        cryptoKeyIdSelector:
+            matchLabels:
+                app: liferay
+                component: cmk-key
         member: serviceAccount:service-{{ $env.projectNumber }}@gs-project-accounts.iam.gserviceaccount.com
         role: roles/cloudkms.cryptoKeyEncrypterDecrypter
     managementPolicies: {{ $managementPolicies }}

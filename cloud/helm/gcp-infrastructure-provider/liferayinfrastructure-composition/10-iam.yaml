@@ -3,10 +3,13 @@ kind: ServiceAccount
 metadata:
     annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gsa
-    name: {{ $gsaName }}
+    labels:
+        app: liferay
+        component: liferay-service-account
+    name: {{ $baseName }}-sa
 spec:
     forProvider:
-        displayName: Liferay {{ $gsaName }} Service Account
+        displayName: Liferay {{ $projectId }} {{ $environmentId }}
 ---
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ServiceAccountIAMMember
@@ -17,8 +20,11 @@ spec:
     forProvider:
         member: serviceAccount:{{ $env.projectId }}.svc.id.goog[{{ $namespace }}/liferay-default]
         role: roles/iam.workloadIdentityUser
-        serviceAccountIdRef:
-            name: {{ $gsaName }}
+        serviceAccountIdSelector:
+            matchLabels:
+                app: liferay
+                component: liferay-service-account
+{{- if $gsaMember }}
 ---
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
 kind: ProjectIAMMember
@@ -27,7 +33,7 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-instance-user-role
 spec:
     forProvider:
-        member: serviceAccount:{{ $gsaEmail }}
+        member: {{ $gsaMember }}
         project: {{ $env.projectId }}
         role: roles/cloudsql.instanceUser
 ---
@@ -38,9 +44,11 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-sql-client-role
 spec:
     forProvider:
-        member: serviceAccount:{{ $gsaEmail }}
+        member: {{ $gsaMember }}
         project: {{ $env.projectId }}
         role: roles/cloudsql.client
+{{- end }}
+{{- if $gsaEmail }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
@@ -58,3 +66,4 @@ spec:
                     iam.gke.io/gcp-service-account: {{ $gsaEmail }}
                 name: liferay-default
                 namespace: {{ $namespace }}
+{{- end }}

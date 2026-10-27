@@ -146,6 +146,7 @@ spec:
                 namespace: {{ $namespace }}
             type: kubernetes.io/service-account-token
     managementPolicies: {{ $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson }}
+{{- if $isCmkKeyReady }}
 ---
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket
@@ -157,7 +158,7 @@ spec:
     forProvider:
         {{- if $cmkEnabled }}
         encryption:
-            defaultKmsKeyName: {{ $cmkKeyName | quote }}
+            defaultKmsKeyName: {{ $cmkKeyId | quote }}
         {{- end }}
         forceDestroy: {{ $forceDestroy }}
         labels:
@@ -171,6 +172,7 @@ spec:
         storageClass: NEARLINE
         uniformBucketLevelAccess: true
     managementPolicies: {{ $managementPolicies }}
+{{- end }}
 {{- range $dataPlane := $dataPlanes }}
 ---
 apiVersion: storage.gcp.m.upbound.io/v1beta1
@@ -184,6 +186,8 @@ spec:
     forProvider:
         bucketSelector:
             matchLabels:
+                app: liferay
+                component: document-library
                 dataPlane: {{ $dataPlane }}
         member: {{ $backupRestorePrincipal | quote }}
         role: roles/storage.objectUser

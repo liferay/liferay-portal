@@ -51,13 +51,17 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}(?:[^{]|\\{[^{]|\\{\\{[^-])*?composition-resource-name: liferay-gsa-overlay-bucket-iam(?:[^{]|\\{[^{]|\\{\\{[^-])*?composition-resource-name: overlay-bucket-details-secret"
+                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}\\s+\\{\\{- if \\$[A-Za-z]+ \\}\\}\\s+apiVersion: storage\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: BucketIAMMember"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "---\\s+\\{\\{- end \\}\\}\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1(?:[^{]|\\{[^{]|\\{\\{[^-])*?composition-resource-name: overlay-bucket-details-secret"
         it: Grants and publishes the overlay bucket only when overlay access is enabled
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if not \\(and \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\(eq \\$restorePhase \"provisioning\"\\)\\) \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: User"
+                    pattern: "\\{\\{- if and \\$[A-Za-z]+ \\(not \\(and \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\(eq \\$restorePhase \"provisioning\"\\)\\)\\) \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: User"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
@@ -193,3 +197,25 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\{\\{- if eq \\$xr\\.spec\\.search\\.engine \"opensearch\" -\\}\\}\\s+\\{\\{- fail "
         it: Rejects OpenSearch because GCP has no managed OpenSearch
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := dig \"liferay-gsa\" \"resource\" \"status\" \"atProvider\" \"email\" \"\" \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := dig \"liferay-gsa\" \"resource\" \"status\" \"atProvider\" \"member\" \"\" \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$[A-Za-z]+ := dig \"liferay-cryptokey\" \"resource\" \"status\" \"atProvider\" \"id\" \"\" \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\$isCmkKeyReady := or \\(not \\$cmkEnabled\\) \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if \\$isCmkKeyReady \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: DatabaseInstance"
+        it: Takes the service account and key identities GCP reports
