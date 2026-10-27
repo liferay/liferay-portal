@@ -12,17 +12,13 @@ import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-import jakarta.portlet.PortletException;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,40 +40,6 @@ public class UpdateDataDefinitionMVCActionCommand
 	extends BaseTransactionalMVCActionCommand {
 
 	@Override
-	public boolean processAction(
-			ActionRequest actionRequest, ActionResponse actionResponse)
-		throws PortletException {
-
-		try {
-			return super.processAction(actionRequest, actionResponse);
-		}
-		catch (PortletException portletException) {
-			if (portletException.getCause() instanceof
-					DataDefinitionValidationException) {
-
-				DataDefinitionValidationException
-					dataDefinitionValidationException =
-						(DataDefinitionValidationException)
-							portletException.getCause();
-
-				SessionMessages.add(
-					actionRequest,
-					_portal.getPortletId(actionRequest) +
-						SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-
-				SessionErrors.add(
-					actionRequest, dataDefinitionValidationException.getClass(),
-					dataDefinitionValidationException);
-			}
-			else {
-				throw portletException;
-			}
-		}
-
-		return false;
-	}
-
-	@Override
 	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
@@ -93,6 +55,8 @@ public class UpdateDataDefinitionMVCActionCommand
 				ParamUtil.getString(actionRequest, "dataLayout")));
 
 		if (ArrayUtil.isEmpty(dataDefinition.getDataDefinitionFields())) {
+			hideDefaultErrorMessage(actionRequest);
+
 			throw new DataDefinitionValidationException.MustSetFields();
 		}
 
@@ -104,15 +68,21 @@ public class UpdateDataDefinitionMVCActionCommand
 				themeDisplay.getUser()
 			).build();
 
-		dataDefinitionResource.putDataDefinition(
-			ParamUtil.getLong(actionRequest, "dataDefinitionId"),
-			dataDefinition);
+		try {
+			dataDefinitionResource.putDataDefinition(
+				ParamUtil.getLong(actionRequest, "dataDefinitionId"),
+				dataDefinition);
+		}
+		catch (DataDefinitionValidationException
+					dataDefinitionValidationException) {
+
+			hideDefaultErrorMessage(actionRequest);
+
+			throw dataDefinitionValidationException;
+		}
 	}
 
 	@Reference
 	private DataDefinitionResource.Factory _dataDefinitionResourceFactory;
-
-	@Reference
-	private Portal _portal;
 
 }
