@@ -2638,13 +2638,16 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		OpenGraphSettings openGraphSettings =
 			contentPageSettings.getOpenGraphSettings();
 
-		ItemExternalReference image = openGraphSettings.getImage();
+		ItemExternalReference itemExternalReference =
+			openGraphSettings.getImage();
 
-		Assert.assertEquals(FileEntry.class.getName(), image.getClassName());
 		Assert.assertEquals(
-			openGraphImageFileEntryERC, image.getExternalReferenceCode());
+			FileEntry.class.getName(), itemExternalReference.getClassName());
+		Assert.assertEquals(
+			openGraphImageFileEntryERC,
+			itemExternalReference.getExternalReferenceCode());
 
-		Scope scope = image.getScope();
+		Scope scope = itemExternalReference.getScope();
 
 		if (openGraphImageFileEntryScopeERC == null) {
 			Assert.assertNull(scope);
