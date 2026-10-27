@@ -142,9 +142,7 @@ public class PageSpecificationResourceImpl
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
 					masterPageExternalReferenceCode,
-					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
+					_getGroupId(siteExternalReferenceCode));
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
