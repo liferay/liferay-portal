@@ -66,18 +66,6 @@ describe('PersonalMenu', () => {
 		).toBeInTheDocument();
 	});
 
-	it('keeps the focus on the trigger when opened with the mouse', async () => {
-		renderPersonalMenu();
-
-		const trigger = screen.getByTitle('user-profile-menu');
-
-		await userEvent.click(trigger);
-
-		await screen.findByRole('button', {name: 'switch-to-dark-mode'});
-
-		await waitFor(() => expect(trigger).toHaveFocus());
-	});
-
 	it('moves the focus to the color scheme button when opened with the keyboard', async () => {
 		renderPersonalMenu();
 

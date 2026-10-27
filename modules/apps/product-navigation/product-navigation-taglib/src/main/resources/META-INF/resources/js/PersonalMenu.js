@@ -80,11 +80,6 @@ function PersonalMenu({
 		}
 	}
 
-	// Clay moves the focus into the menu when it opens. Keep that for
-	// keyboard users, also when the items arrive after the menu is open, and
-	// give the focus back to the trigger when the menu was opened with a
-	// pointer, so the header button does not get focused and show its tooltip.
-
 	useEffect(() => {
 		if (preloadPromiseRef.current && keyboardInteractionRef.current) {
 			const firstElement = document.querySelector(
@@ -106,8 +101,6 @@ function PersonalMenu({
 			pointerOpenRef.current = false;
 		}
 	};
-
-	// ClayDropDownWithItems only forwards function refs to the trigger.
 
 	const triggerProps = {
 		onFocus: preloadItems,
