@@ -8,6 +8,7 @@ package com.liferay.layout.internal.servlet;
 import com.liferay.portal.kernel.servlet.PersistentHttpServletRequestWrapper;
 import com.liferay.portal.kernel.servlet.RequestDispatcherAttributeNames;
 
+import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Collections;
@@ -31,6 +32,12 @@ public class IsolatedAttributesHttpServletRequest
 
 	@Override
 	public Object getAttribute(String name) {
+		if (RequestDispatcherAttributeNames.contains(name) &&
+			(getRequest() != _requestDispatcherAttributesServletRequest)) {
+
+			return super.getAttribute(name);
+		}
+
 		Object value = _attributes.get(name);
 
 		if (value == _nullValue) {
@@ -77,6 +84,8 @@ public class IsolatedAttributesHttpServletRequest
 	public void removeAttribute(String name) {
 		if (RequestDispatcherAttributeNames.contains(name)) {
 			super.removeAttribute(name);
+
+			_resetRequestDispatcherAttributes();
 		}
 
 		_attributes.put(name, _nullValue);
@@ -86,6 +95,8 @@ public class IsolatedAttributesHttpServletRequest
 	public void setAttribute(String name, Object value) {
 		if (RequestDispatcherAttributeNames.contains(name)) {
 			super.setAttribute(name, value);
+
+			_resetRequestDispatcherAttributes();
 		}
 
 		if (value == null) {
@@ -95,8 +106,23 @@ public class IsolatedAttributesHttpServletRequest
 		_attributes.put(name, value);
 	}
 
+	private void _resetRequestDispatcherAttributes() {
+		ServletRequest servletRequest = getRequest();
+
+		if (servletRequest == _requestDispatcherAttributesServletRequest) {
+			return;
+		}
+
+		Set<String> names = _attributes.keySet();
+
+		names.removeIf(RequestDispatcherAttributeNames::contains);
+
+		_requestDispatcherAttributesServletRequest = servletRequest;
+	}
+
 	private static final Object _nullValue = new Object();
 
 	private final Map<String, Object> _attributes = new HashMap<>();
+	private ServletRequest _requestDispatcherAttributesServletRequest;
 
 }
