@@ -45,6 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -80,6 +81,11 @@ public class ObjectEntryInfoItemFormProviderUtil {
 				objectDefinitionId, objectDefinitionLocalService);
 		}
 
+		List<ObjectRelationship> oneToManyObjectRelationships =
+			objectRelationshipLocalService.getObjectRelationships(
+				objectDefinitionId,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY);
+
 		return InfoForm.builder(
 		).infoFieldSetEntry(
 			basicInformationInfoFieldSet
@@ -101,7 +107,8 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							currentObjectDefinition,
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
-							objectRelationshipLocalService, null));
+							objectRelationshipLocalService,
+							oneToManyObjectRelationships, null));
 				}
 			}
 		).infoFieldSetEntry(
@@ -216,9 +223,7 @@ public class ObjectEntryInfoItemFormProviderUtil {
 		).infoFieldSetEntry(
 			unsafeConsumer -> {
 				for (ObjectRelationship objectRelationship :
-						objectRelationshipLocalService.getObjectRelationships(
-							objectDefinitionId,
-							ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+						oneToManyObjectRelationships) {
 
 					if (!FeatureFlagManagerUtil.isEnabled(
 							objectDefinition.getCompanyId(), "LPD-60546")) {
@@ -273,7 +278,14 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							relatedObjectDefinition,
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
-							objectRelationshipLocalService, objectDefinition));
+							objectRelationshipLocalService,
+							objectRelationshipLocalService.
+								getObjectRelationships(
+									relatedObjectDefinition.
+										getObjectDefinitionId(),
+									ObjectRelationshipConstants.
+										TYPE_ONE_TO_MANY),
+							objectDefinition));
 				}
 			}
 		).infoFieldSetEntry(
@@ -338,6 +350,7 @@ public class ObjectEntryInfoItemFormProviderUtil {
 		ObjectDefinitionLocalService objectDefinitionLocalService,
 		ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter,
 		ObjectRelationshipLocalService objectRelationshipLocalService,
+		List<ObjectRelationship> oneToManyObjectRelationships,
 		ObjectDefinition parentObjectDefinition) {
 
 		return InfoFieldSet.builder(
@@ -458,9 +471,7 @@ public class ObjectEntryInfoItemFormProviderUtil {
 					objectDefinition.getObjectDefinitionId());
 
 				for (ObjectRelationship objectRelationship :
-						objectRelationshipLocalService.getObjectRelationships(
-							objectDefinition.getObjectDefinitionId(),
-							ObjectRelationshipConstants.TYPE_ONE_TO_MANY)) {
+						oneToManyObjectRelationships) {
 
 					if (objectRelationship.isSelf() ||
 						objectDefinitionIds.contains(
@@ -527,7 +538,14 @@ public class ObjectEntryInfoItemFormProviderUtil {
 							relatedObjectDefinition,
 							objectDefinitionLocalService,
 							objectFieldInfoFieldConverter,
-							objectRelationshipLocalService, objectDefinition));
+							objectRelationshipLocalService,
+							objectRelationshipLocalService.
+								getObjectRelationships(
+									relatedObjectDefinition.
+										getObjectDefinitionId(),
+									ObjectRelationshipConstants.
+										TYPE_ONE_TO_MANY),
+							objectDefinition));
 				}
 			}
 		).labelInfoLocalizedValue(
