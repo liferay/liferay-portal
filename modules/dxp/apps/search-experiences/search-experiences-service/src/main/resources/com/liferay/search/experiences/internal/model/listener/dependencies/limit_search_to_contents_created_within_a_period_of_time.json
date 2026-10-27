@@ -15,10 +15,8 @@
 								"query": {
 									"range": {
 										"createDate": {
-											"from": "${configuration.start_date}",
-											"include_lower": true,
-											"include_upper": true,
-											"to": "${configuration.end_date}"
+											"gte": "${configuration.start_date}",
+											"lte": "${configuration.end_date}"
 										}
 									}
 								}
