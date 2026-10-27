@@ -9,6 +9,7 @@ import com.liferay.ai.creator.openai.configuration.AICreatorOpenAICompanyConfigu
 import com.liferay.ai.creator.openai.configuration.AICreatorOpenAIGroupConfiguration;
 import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -80,6 +81,10 @@ public class AICreatorOpenAIConfigurationManagerImpl
 	@Override
 	public boolean isAICreatorChatGPTCompanyEnabled(long companyId)
 		throws ConfigurationException {
+
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-93786")) {
+			return false;
+		}
 
 		AICreatorOpenAICompanyConfiguration
 			aiCreatorOpenAICompanyConfiguration =
