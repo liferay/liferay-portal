@@ -46,14 +46,6 @@
 		<finder name="Plid" return-type="Collection">
 			<finder-column name="plid" />
 		</finder>
-		<finder name="G_DH" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="dataHash" />
-		</finder>
-		<finder name="G_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="status" />
-		</finder>
 		<finder name="P_V" return-type="LayoutContentVersion" unique="true">
 			<finder-column name="plid" />
 			<finder-column name="version" />
