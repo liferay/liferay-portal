@@ -1,7 +1,7 @@
 dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "6.4.0"
 	compileOnly group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.19"
-	compileOnly group: "com.liferay", name: "com.liferay.whip", version: "1.0.5"
+	compileOnly group: "com.liferay", name: "com.liferay.whip", version: "1.0.6"
 	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.19.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
