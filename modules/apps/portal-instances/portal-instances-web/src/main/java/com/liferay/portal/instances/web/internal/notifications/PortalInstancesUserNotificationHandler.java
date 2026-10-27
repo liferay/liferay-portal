@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletRequest;
 
+import java.util.Objects;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -192,6 +194,16 @@ public class PortalInstancesUserNotificationHandler
 
 				return serviceContext.translate(
 					"the-instance-x-was-created",
+					jsonObject.getString("portalInstanceId"));
+			}
+
+			if (Objects.equals(
+					jsonObject.getString("errorMessageKey"),
+					"the-instance-was-created-but-its-initialization-failed-" +
+						"check-the-server-logs")) {
+
+				return serviceContext.translate(
+					"the-instance-x-was-created-with-errors",
 					jsonObject.getString("portalInstanceId"));
 			}
 
