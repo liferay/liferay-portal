@@ -365,4 +365,4 @@ public interface CommerceDiscountRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:580388480
+// LIFERAY-SERVICE-BUILDER-HASH:-1569103187
