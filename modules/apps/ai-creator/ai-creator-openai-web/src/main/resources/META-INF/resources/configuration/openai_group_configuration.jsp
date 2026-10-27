@@ -10,6 +10,7 @@
 <%
 AICreatorOpenAIGroupConfigurationDisplayContext aiCreatorOpenAIGroupConfigurationDisplayContext = (AICreatorOpenAIGroupConfigurationDisplayContext)request.getAttribute(AICreatorOpenAIGroupConfigurationDisplayContext.class.getName());
 
+boolean aiCreatorFeatureFlagEnabled = FeatureFlagManagerUtil.isEnabled(themeDisplay.getCompanyId(), "LPD-93786");
 boolean companyChatGPTEnabled = aiCreatorOpenAIGroupConfigurationDisplayContext.isCompanyChatGPTEnabled();
 boolean companyDALLEEnabled = aiCreatorOpenAIGroupConfigurationDisplayContext.isCompanyDALLEEnabled();
 %>
@@ -25,17 +26,17 @@ boolean companyDALLEEnabled = aiCreatorOpenAIGroupConfigurationDisplayContext.is
 		expand="<%= true %>"
 	>
 		<c:choose>
-			<c:when test="<%= !companyChatGPTEnabled && !companyDALLEEnabled %>">
+			<c:when test="<%= aiCreatorFeatureFlagEnabled && !companyChatGPTEnabled && !companyDALLEEnabled %>">
 				<clay:alert
 					message="to-enable-openai-in-this-site,-it-must-also-be-enabled-from-instance-settings"
 				/>
 			</c:when>
-			<c:when test="<%= !companyChatGPTEnabled && companyDALLEEnabled %>">
+			<c:when test="<%= aiCreatorFeatureFlagEnabled && !companyChatGPTEnabled && companyDALLEEnabled %>">
 				<clay:alert
 					message="to-enable-chatgpt-for-this-site,-first-enable-it-for-your-instance"
 				/>
 			</c:when>
-			<c:when test="<%= companyChatGPTEnabled && !companyDALLEEnabled %>">
+			<c:when test="<%= (!aiCreatorFeatureFlagEnabled || companyChatGPTEnabled) && !companyDALLEEnabled %>">
 				<clay:alert
 					message="to-enable-dalle-for-this-site,-first-enable-it-for-your-instance"
 				/>
@@ -68,32 +69,34 @@ boolean companyDALLEEnabled = aiCreatorOpenAIGroupConfigurationDisplayContext.is
 	</clay:content-col>
 </clay:content-row>
 
-<clay:content-row>
-	<clay:content-col
-		cssClass="ai-creator-config-checkbox"
-		expand="<%= true %>"
-	>
-		<c:choose>
-			<c:when test="<%= companyChatGPTEnabled %>">
-				<clay:checkbox
-					checked="<%= aiCreatorOpenAIGroupConfigurationDisplayContext.isChatGPTEnabled() %>"
-					id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-					label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
-					name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-				/>
-			</c:when>
-			<c:otherwise>
-				<clay:checkbox
-					checked="<%= false %>"
-					disabled="<%= true %>"
-					id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-					label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
-					name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
-				/>
-			</c:otherwise>
-		</c:choose>
-	</clay:content-col>
-</clay:content-row>
+<c:if test="<%= aiCreatorFeatureFlagEnabled %>">
+	<clay:content-row>
+		<clay:content-col
+			cssClass="ai-creator-config-checkbox"
+			expand="<%= true %>"
+		>
+			<c:choose>
+				<c:when test="<%= companyChatGPTEnabled %>">
+					<clay:checkbox
+						checked="<%= aiCreatorOpenAIGroupConfigurationDisplayContext.isChatGPTEnabled() %>"
+						id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
+						label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
+						name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
+					/>
+				</c:when>
+				<c:otherwise>
+					<clay:checkbox
+						checked="<%= false %>"
+						disabled="<%= true %>"
+						id='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
+						label='<%= LanguageUtil.get(request, "enable-chatgpt-to-create-content") %>'
+						name='<%= liferayPortletResponse.getNamespace() + "enableChatGPT" %>'
+					/>
+				</c:otherwise>
+			</c:choose>
+		</clay:content-col>
+	</clay:content-row>
+</c:if>
 
 <clay:content-row
 	cssClass="c-mt-5"
