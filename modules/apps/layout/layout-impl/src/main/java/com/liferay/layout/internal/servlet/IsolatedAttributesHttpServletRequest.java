@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,13 +33,9 @@ public class IsolatedAttributesHttpServletRequest
 
 	@Override
 	public Object getAttribute(String name) {
-		if (RequestDispatcherAttributeNames.contains(name) &&
-			(getRequest() != _requestDispatcherAttributesServletRequest)) {
+		Map<String, Object> attributes = _getAttributes(name);
 
-			return super.getAttribute(name);
-		}
-
-		Object value = _attributes.get(name);
+		Object value = attributes.get(name);
 
 		if (value == _nullValue) {
 			return null;
@@ -55,7 +52,16 @@ public class IsolatedAttributesHttpServletRequest
 	public Enumeration<String> getAttributeNames() {
 		Enumeration<String> enumeration = super.getAttributeNames();
 
-		if (_attributes.isEmpty()) {
+		Map<String, Object> attributes = new HashMap<>(_attributes);
+
+		Map<String, Object> requestDispatcherAttributes =
+			_requestDispatcherAttributes.get(getRequest());
+
+		if (requestDispatcherAttributes != null) {
+			attributes.putAll(requestDispatcherAttributes);
+		}
+
+		if (attributes.isEmpty()) {
 			return enumeration;
 		}
 
@@ -65,7 +71,7 @@ public class IsolatedAttributesHttpServletRequest
 			names.add(enumeration.nextElement());
 		}
 
-		for (Map.Entry<String, Object> entry : _attributes.entrySet()) {
+		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
 			String key = entry.getKey();
 			Object value = entry.getValue();
 
@@ -84,45 +90,41 @@ public class IsolatedAttributesHttpServletRequest
 	public void removeAttribute(String name) {
 		if (RequestDispatcherAttributeNames.contains(name)) {
 			super.removeAttribute(name);
-
-			_resetRequestDispatcherAttributes();
 		}
 
-		_attributes.put(name, _nullValue);
+		Map<String, Object> attributes = _getAttributes(name);
+
+		attributes.put(name, _nullValue);
 	}
 
 	@Override
 	public void setAttribute(String name, Object value) {
 		if (RequestDispatcherAttributeNames.contains(name)) {
 			super.setAttribute(name, value);
-
-			_resetRequestDispatcherAttributes();
 		}
 
 		if (value == null) {
 			value = _nullValue;
 		}
 
-		_attributes.put(name, value);
+		Map<String, Object> attributes = _getAttributes(name);
+
+		attributes.put(name, value);
 	}
 
-	private void _resetRequestDispatcherAttributes() {
-		ServletRequest servletRequest = getRequest();
-
-		if (servletRequest == _requestDispatcherAttributesServletRequest) {
-			return;
+	private Map<String, Object> _getAttributes(String name) {
+		if (!RequestDispatcherAttributeNames.contains(name)) {
+			return _attributes;
 		}
 
-		Set<String> names = _attributes.keySet();
-
-		names.removeIf(RequestDispatcherAttributeNames::contains);
-
-		_requestDispatcherAttributesServletRequest = servletRequest;
+		return _requestDispatcherAttributes.computeIfAbsent(
+			getRequest(), servletRequest -> new HashMap<>());
 	}
 
 	private static final Object _nullValue = new Object();
 
 	private final Map<String, Object> _attributes = new HashMap<>();
-	private ServletRequest _requestDispatcherAttributesServletRequest;
+	private final Map<ServletRequest, Map<String, Object>>
+		_requestDispatcherAttributes = new IdentityHashMap<>();
 
 }
