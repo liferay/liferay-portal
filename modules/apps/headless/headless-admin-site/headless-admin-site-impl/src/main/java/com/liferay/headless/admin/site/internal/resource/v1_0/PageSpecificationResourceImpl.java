@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
 import com.liferay.client.extension.type.manager.CETManager;
+import com.liferay.depot.constants.DepotConstants;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.headless.admin.site.dto.v1_0.ContentPageSpecification;
 import com.liferay.headless.admin.site.dto.v1_0.DisplayPageTemplate;
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
@@ -52,6 +54,8 @@ import com.liferay.portal.vulcan.pagination.Page;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.tags.Tags;
+
+import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.List;
 import java.util.Objects;
@@ -110,9 +114,7 @@ public class PageSpecificationResourceImpl
 			_layoutPageTemplateEntryService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
 					displayPageTemplateExternalReferenceCode,
-					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
-						siteExternalReferenceCode));
+					_getGroupId(siteExternalReferenceCode));
 
 		if (!Objects.equals(
 				LayoutPageTemplateEntryTypeConstants.DISPLAY_PAGE,
@@ -448,6 +450,23 @@ public class PageSpecificationResourceImpl
 					"The page status is not valid");
 			}
 		}
+	}
+
+	private long _getGroupId(String siteExternalReferenceCode)
+		throws Exception {
+
+		if (Validator.isNotNull(siteExternalReferenceCode)) {
+			return GroupUtil.getGroupId(
+				true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+		}
+
+		MultivaluedMap<String, String> pathParameters =
+			contextUriInfo.getPathParameters();
+
+		return GroupUtil.getDepotGroupId(
+			contextCompany.getCompanyId(),
+			pathParameters.getFirst("designLibraryExternalReferenceCode"),
+			DepotConstants.TYPE_DESIGN_LIBRARY);
 	}
 
 	private Layout _getLayout(
