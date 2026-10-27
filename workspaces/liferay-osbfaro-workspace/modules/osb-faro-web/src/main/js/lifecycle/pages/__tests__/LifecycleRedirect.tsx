@@ -175,6 +175,15 @@ describe('LifecycleRedirect', () => {
 			).toBeInTheDocument();
 		});
 
+		it('shows the Lifecycles breadcrumb as the current page, not a link', () => {
+			const {container} = renderPage();
+
+			const crumb = container.querySelector('.breadcrumb-item.active');
+
+			expect(crumb).toHaveTextContent(/^lifecycles$/i);
+			expect(crumb!.querySelector('a')).toBeNull();
+		});
+
 		it('renders the "Configure a New Lifecycle" empty state', () => {
 			renderPage();
 

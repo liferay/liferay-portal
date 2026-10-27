@@ -89,10 +89,13 @@ const LifecycleRedirect = () => {
 						groupId: groupId!,
 						label: selectedChannel?.name,
 					}),
-					breadcrumbs.getLifecycles({
-						channelId: channelId!,
-						groupId: groupId!,
-					}),
+					{
+						...breadcrumbs.getLifecycles({
+							channelId: channelId!,
+							groupId: groupId!,
+						}),
+						active: true,
+					},
 				]}
 				fluid
 				groupId={groupId!}
