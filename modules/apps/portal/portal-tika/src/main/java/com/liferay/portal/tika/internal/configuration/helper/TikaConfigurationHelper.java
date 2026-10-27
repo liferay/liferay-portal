@@ -73,7 +73,7 @@ public class TikaConfigurationHelper {
 		}
 		catch (Exception exception) {
 			throw new IllegalStateException(
-				"Unable to create tika configuration", exception);
+				"Unable to create Tika configuration", exception);
 		}
 	}
 
@@ -103,7 +103,7 @@ public class TikaConfigurationHelper {
 		}
 
 		throw new IllegalArgumentException(
-			"Unable to read tika configuration " + tikaConfigXml);
+			"Unable to read Tika configuration " + tikaConfigXml);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
