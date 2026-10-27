@@ -329,6 +329,16 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		_testReplaceExportContentReferencesWithZeroFileEntryId();
 	}
 
+	@Test
+	public void testReplaceImportContentReferences() throws Exception {
+		_testReplaceImportContentReferencesWithImageInPlaceOfPicture();
+		_testReplaceImportContentReferencesWithNoReferences();
+		_testReplaceImportContentReferencesWithPictureReference();
+		_testReplaceImportContentReferencesWithReferenceBeforeOtherAttributes();
+		_testReplaceImportContentReferencesWithReferenceInText();
+		_testReplaceImportContentReferencesWithValidReferences();
+	}
+
 	@Test(expected = NoSuchFileEntryException.class)
 	public void testValidateContentFailsWithInvalidReferences()
 		throws Exception {
@@ -575,6 +585,130 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		).getFileEntry(
 			0
 		);
+	}
+
+	private void _testReplaceImportContentReferencesWithImageInPlaceOfPicture()
+		throws Exception {
+
+		FileEntry fileEntry = Mockito.mock(FileEntry.class);
+		long fileEntryId = RandomTestUtil.randomLong();
+
+		_setUpFileEntryToImport(fileEntryId, fileEntry);
+
+		Mockito.when(
+			_amImageHTMLTagFactory.create(
+				Mockito.anyString(), Mockito.eq(fileEntry))
+		).thenAnswer(
+			invocation -> invocation.getArgument(0, String.class)
+		);
+
+		String prefix = RandomTestUtil.randomString();
+		String suffix = RandomTestUtil.randomString();
+
+		String urlFileEntry = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				prefix, "<img src=\"", urlFileEntry, "\" data-fileentryid=\"",
+				fileEntryId, "\" />", suffix),
+			_import(
+				StringBundler.concat(
+					prefix, "<picture export-import-path=\"PATH_", fileEntryId,
+					"\"><source /><img src=\"", urlFileEntry,
+					"\" export-import-path=\"PATH_", fileEntryId,
+					"\" /></picture>", suffix)));
+	}
+
+	private void _testReplaceImportContentReferencesWithNoReferences()
+		throws Exception {
+
+		String content = StringBundler.concat(
+			RandomTestUtil.randomString(), " & ", RandomTestUtil.randomString(),
+			"<br>", RandomTestUtil.randomString());
+
+		Assert.assertEquals(content, _import(content));
+	}
+
+	private void _testReplaceImportContentReferencesWithPictureReference()
+		throws Exception {
+
+		String prefix = RandomTestUtil.randomString();
+		String suffix = RandomTestUtil.randomString();
+
+		String urlFileEntry1 = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				prefix, "<picture data-fileentryid=\"", _FILE_ENTRY_ID_1,
+				"\"><source/><img alt=\"\" data-fileentryid=\"",
+				_FILE_ENTRY_ID_1, "\" src=\"", urlFileEntry1, "\"></picture>",
+				suffix),
+			_import(
+				StringBundler.concat(
+					prefix, "<picture export-import-path=\"PATH_",
+					_FILE_ENTRY_ID_1, "\"><source media=\"",
+					RandomTestUtil.randomString(), "\" srcset=\"",
+					RandomTestUtil.randomString(),
+					"\" /><img alt=\"\" export-import-path=\"PATH_",
+					_FILE_ENTRY_ID_1, "\" src=\"", urlFileEntry1,
+					"\"></picture>", suffix)));
+	}
+
+	private void _testReplaceImportContentReferencesWithReferenceBeforeOtherAttributes()
+		throws Exception {
+
+		String urlFileEntry1 = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<img data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" src=\"",
+				urlFileEntry1, "\">"),
+			_import(
+				StringBundler.concat(
+					"<img export-import-path=\"PATH_", _FILE_ENTRY_ID_1,
+					"\" src=\"", urlFileEntry1, "\">")));
+	}
+
+	private void _testReplaceImportContentReferencesWithReferenceInText()
+		throws Exception {
+
+		String content = StringBundler.concat(
+			"<p>&lt;img export-import-path=\"PATH_", _FILE_ENTRY_ID_1,
+			"\"&gt;</p>");
+
+		Assert.assertEquals(content, _import(content));
+	}
+
+	private void _testReplaceImportContentReferencesWithValidReferences()
+		throws Exception {
+
+		String infix = RandomTestUtil.randomString();
+		String prefix = RandomTestUtil.randomString();
+		String suffix = RandomTestUtil.randomString();
+
+		String urlFileEntry1 = RandomTestUtil.randomString();
+		String urlFileEntry2 = RandomTestUtil.randomString();
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				prefix, "<p><img data-fileentryid=\"", _FILE_ENTRY_ID_1,
+				"\" src=\"", urlFileEntry1, "\"><br>", infix,
+				" & </p><picture data-fileentryid=\"", _FILE_ENTRY_ID_2,
+				"\"><source/><img data-fileentryid=\"", _FILE_ENTRY_ID_2,
+				"\" src=\"", urlFileEntry2,
+				"\"></picture><img data-fileentryid=\"", _FILE_ENTRY_ID_1,
+				"\" src=\"", urlFileEntry1, "\">", suffix),
+			_import(
+				StringBundler.concat(
+					prefix, "<p><img export-import-path=\"PATH_",
+					_FILE_ENTRY_ID_1, "\" src=\"", urlFileEntry1, "\"><br>",
+					infix, " & </p><picture export-import-path=\"PATH_",
+					_FILE_ENTRY_ID_2,
+					"\"><source /><img export-import-path=\"PATH_",
+					_FILE_ENTRY_ID_2, "\" src=\"", urlFileEntry2,
+					"\"></picture><img export-import-path=\"PATH_",
+					_FILE_ENTRY_ID_1, "\" src=\"", urlFileEntry1, "\">",
+					suffix)));
 	}
 
 	private void _testValidateContentReferencesWithInvalidReferenceAfterValidReference()
