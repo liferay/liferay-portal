@@ -1287,3 +1287,275 @@ test(
 		});
 	}
 );
+
+test(
+	'A products limit rule blocks the order and flags the option values of a bundle product',
+	{tag: ['@COMMERCE-12796', '@LPD-111701']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceInstanceSettingsPage,
+		commerceMiniCartPage,
+		page,
+		productDetailsPage,
+		site,
+	}) => {
+		test.setTimeout(180000);
+
+		await commerceInstanceSettingsPage.toggleShowUnselectableOptions(true);
+
+		try {
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+					name: getRandomString(),
+				});
+
+			for (const widgetName of [
+				'com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet',
+				'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet',
+			]) {
+				await apiHelpers.headlessDelivery.createSitePage({
+					pageDefinition: getPageDefinition([
+						getWidgetDefinition({
+							id: getRandomString(),
+							widgetName,
+						}),
+					]),
+					siteId: site.id,
+					title: getRandomString(),
+				});
+			}
+
+			await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: getRandomString(),
+						widgetName:
+							'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+					}),
+					getFragmentDefinition({
+						id: getRandomString(),
+						key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			const channel =
+				await apiHelpers.headlessCommerceAdminChannel.postChannel({
+					siteGroupId: site.id,
+				});
+
+			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+				channel.name,
+				'B2B'
+			);
+
+			await waitForAlert(page);
+
+			const {buyerUser} = await createAccountWithBuyerUser(
+				apiHelpers,
+				site.id
+			);
+
+			const bundleProductName = getRandomString();
+
+			let linkedProduct1;
+			let linkedProduct2;
+
+			await test.step('Create a bundle product whose default option values add two linked products', async () => {
+				linkedProduct1 =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						productConfiguration: {allowBackOrder: true},
+					});
+				linkedProduct2 =
+					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+						catalogId: catalog.id,
+						productConfiguration: {allowBackOrder: true},
+					});
+
+				const option1 =
+					await apiHelpers.headlessCommerceAdminCatalog.postOption(
+						'select',
+						`option-${getRandomInt()}`,
+						'Option1',
+						1
+					);
+				const option2 =
+					await apiHelpers.headlessCommerceAdminCatalog.postOption(
+						'select',
+						`option-${getRandomInt()}`,
+						'Option2',
+						1
+					);
+
+				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+					catalogId: catalog.id,
+					name: {en_US: bundleProductName},
+					productConfiguration: {allowBackOrder: true},
+					productOptions: [
+						{
+							fieldType: 'select',
+							key: option1.key,
+							name: {en_US: 'Option1'},
+							optionId: option1.id,
+							priceType: 'static',
+							priority: 1,
+							productOptionValues: [
+								{
+									deltaPrice: 0.0,
+									key: 'value1',
+									name: {en_US: 'Value1'},
+									preselected: true,
+									priority: 1,
+									quantity: 1,
+									skuId: linkedProduct1.skus[0].id,
+								},
+								{
+									deltaPrice: 0.0,
+									key: 'value2',
+									name: {en_US: 'Value2'},
+									priority: 2,
+								},
+							],
+							required: true,
+							skuContributor: false,
+						},
+						{
+							fieldType: 'select',
+							key: option2.key,
+							name: {en_US: 'Option2'},
+							optionId: option2.id,
+							priceType: 'static',
+							priority: 2,
+							productOptionValues: [
+								{
+									deltaPrice: 0.0,
+									key: 'value3',
+									name: {en_US: 'Value3'},
+									preselected: true,
+									priority: 1,
+									quantity: 1,
+									skuId: linkedProduct2.skus[0].id,
+								},
+								{
+									deltaPrice: 0.0,
+									key: 'value4',
+									name: {en_US: 'Value4'},
+									priority: 2,
+								},
+							],
+							required: true,
+							skuContributor: false,
+						},
+					],
+					skus: [
+						{
+							cost: 0,
+							price: 50,
+							published: true,
+							purchasable: true,
+							sku: `SKU-${bundleProductName}`,
+						},
+					],
+				});
+			});
+
+			await test.step('Create an active order rule limiting both linked products to one', async () => {
+				await apiHelpers.headlessCommerceAdminOrder.postOrderRule({
+					type: 'products-limit',
+					typeSettings:
+						'products-limit-field-product-external-reference-codes=' +
+						`${linkedProduct1.externalReferenceCode},` +
+						`${linkedProduct2.externalReferenceCode}\n` +
+						'products-limit-field-product-quantity=1\n',
+				});
+			});
+
+			await test.step('Add the bundle to the cart as the buyer and submit the order', async () => {
+				await performLogout(page);
+
+				await performLoginViaApi({
+					page,
+					screenName: buyerUser.alternateName,
+				});
+
+				await page.goto(`/web/${site.name}/p/${bundleProductName}`);
+
+				await expect(
+					productDetailsPage.optionSelector('Option1')
+				).toBeVisible();
+
+				await productDetailsPage.addToCartButton.click();
+
+				await commerceMiniCartPage.miniCartButton.click();
+
+				await expect(
+					commerceMiniCartPage.miniCartItem(bundleProductName)
+				).toBeVisible();
+
+				await commerceMiniCartPage.submitButton.click();
+			});
+
+			const warningMessage =
+				'No more than 1 products in this product range can be purchased together.';
+
+			await test.step('Verify the order is rejected because the two linked products total two', async () => {
+				await expect(
+					page.getByRole('dialog').getByText(warningMessage)
+				).toBeVisible();
+
+				await expect(
+					page.locator('.commerce-multi-step-nav')
+				).toBeHidden();
+			});
+
+			await test.step('Verify selecting Value1 flags Value3', async () => {
+				await page.goto(`/web/${site.name}/p/${bundleProductName}`);
+
+				await productDetailsPage.optionSelector('Option1').click();
+
+				await page
+					.getByRole('option', {exact: true, name: 'Value1'})
+					.click();
+
+				await productDetailsPage.optionSelector('Option2').click();
+
+				await expect(
+					page.getByRole('option', {
+						name: `Value3 ${warningMessage}`,
+					})
+				).toBeVisible();
+			});
+
+			await test.step('Verify selecting Value3 flags Value1', async () => {
+				await page.goto(`/web/${site.name}/p/${bundleProductName}`);
+
+				await productDetailsPage.optionSelector('Option2').click();
+
+				await page
+					.getByRole('option', {exact: true, name: 'Value3'})
+					.click();
+
+				await productDetailsPage.optionSelector('Option1').click();
+
+				await expect(
+					page.getByRole('option', {
+						name: `Value1 ${warningMessage}`,
+					})
+				).toBeVisible();
+			});
+		}
+		finally {
+			await performLogout(page);
+
+			await performLoginViaApi({page, screenName: 'test'});
+
+			await commerceInstanceSettingsPage.toggleShowUnselectableOptions(
+				false
+			);
+		}
+	}
+);
