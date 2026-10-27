@@ -31,9 +31,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="GroupId" return-type="Collection">
-			<finder-column name="groupId" />
-		</finder>
 		<finder name="LayoutPageTemplateEntryId" return-type="Collection">
 			<finder-column name="layoutPageTemplateEntryId" />
 		</finder>
