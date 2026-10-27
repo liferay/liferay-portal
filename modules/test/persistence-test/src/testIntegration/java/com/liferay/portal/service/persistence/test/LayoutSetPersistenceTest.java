@@ -190,13 +190,6 @@ public class LayoutSetPersistenceTest {
 	}
 
 	@Test
-	public void testCountByGroupId() throws Exception {
-		_persistence.countByGroupId(RandomTestUtil.nextLong());
-
-		_persistence.countByGroupId(0L);
-	}
-
-	@Test
 	public void testCountByLayoutSetPrototypeUuid() throws Exception {
 		_persistence.countByLayoutSetPrototypeUuid("");
 
@@ -579,4 +572,4 @@ public class LayoutSetPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1550424385
+// LIFERAY-SERVICE-BUILDER-HASH:-310615209

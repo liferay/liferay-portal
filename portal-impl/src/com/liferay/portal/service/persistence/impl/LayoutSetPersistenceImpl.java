@@ -75,91 +75,6 @@ public class LayoutSetPersistenceImpl
 		FINDER_CLASS_NAME_ENTITY + ".List2";
 
 	private CollectionPersistenceFinder<LayoutSet, NoSuchLayoutSetException>
-		_collectionPersistenceFinderByGroupId;
-
-	/**
-	 * Returns an ordered range of all the layout sets where groupId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>LayoutSetModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param start the lower bound of the range of layout sets
-	 * @param end the upper bound of the range of layout sets (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching layout sets
-	 */
-	@Override
-	public List<LayoutSet> findByGroupId(
-		long groupId, int start, int end,
-		OrderByComparator<LayoutSet> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByGroupId.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first layout set in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout set
-	 * @throws NoSuchLayoutSetException if a matching layout set could not be found
-	 */
-	@Override
-	public LayoutSet findByGroupId_First(
-			long groupId, OrderByComparator<LayoutSet> orderByComparator)
-		throws NoSuchLayoutSetException {
-
-		return _collectionPersistenceFinderByGroupId.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first layout set in the ordered set where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching layout set, or <code>null</code> if a matching layout set could not be found
-	 */
-	@Override
-	public LayoutSet fetchByGroupId_First(
-		long groupId, OrderByComparator<LayoutSet> orderByComparator) {
-
-		return _collectionPersistenceFinderByGroupId.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the layout sets where groupId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 */
-	@Override
-	public void removeByGroupId(long groupId) {
-		_collectionPersistenceFinderByGroupId.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId});
-	}
-
-	/**
-	 * Returns the number of layout sets where groupId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @return the number of matching layout sets
-	 */
-	@Override
-	public int countByGroupId(long groupId) {
-		return _collectionPersistenceFinderByGroupId.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId});
-	}
-
-	private CollectionPersistenceFinder<LayoutSet, NoSuchLayoutSetException>
 		_collectionPersistenceFinderByLayoutSetPrototypeUuid;
 
 	/**
@@ -790,32 +705,6 @@ public class LayoutSetPersistenceImpl
 	 * Initializes the layout set persistence.
 	 */
 	public void afterPropertiesSet() {
-		_collectionPersistenceFinderByGroupId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByGroupId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByGroupId",
-					new String[] {Long.class.getName()},
-					new String[] {"groupId"}, false),
-				_SQL_SELECT_LAYOUTSET_WHERE, _SQL_COUNT_LAYOUTSET_WHERE,
-				LayoutSetModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
-				new FinderColumn<>(
-					"layoutSet.", "groupId", FinderColumn.Type.LONG, "=", true,
-					true, LayoutSet::getGroupId));
-
 		_collectionPersistenceFinderByLayoutSetPrototypeUuid =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -950,4 +839,4 @@ public class LayoutSetPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1104197287
+// LIFERAY-SERVICE-BUILDER-HASH:-592669421
