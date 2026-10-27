@@ -1,0 +1,27 @@
+{{- define "observability.dashboardConfigMap" -}}
+{{- $context := .context -}}
+{{- $raw := .files.Get .path -}}
+{{- if not $raw -}}
+{{- fail (printf "Dashboard file %q was not found in the chart" .path) -}}
+{{- end -}}
+{{- $rendered := $raw | replace "${AZURE_RESOURCE_GROUP}" $context.Values.azure.resourceGroupName | replace "${AZURE_SUBSCRIPTION_ID}" $context.Values.azure.subscriptionId | replace "${CLOUD_PROVIDER}" $context.Values.cloudProvider | replace "${CLUSTER}" (include "observability.clusterPattern" $context) | replace "${DS_AZURE_MONITOR}" (include "observability.azureMonitorDatasourceUid" $context) | replace "${DS_PROMETHEUS}" (include "observability.datasourceUid" $context) | replace "${region}" $context.Values.aws.region -}}
+{{- with .header -}}
+{{- $rendered = $rendered | replace "\"${HEADER_HTML}\"" (tpl ($context.Files.Get "dashboards/html/dashboard-header.html") . | toJson) -}}
+{{- end -}}
+{{- range $placeholder, $html := .replacements -}}
+{{- $rendered = $rendered | replace (printf "%q" $placeholder) ($html | toJson) -}}
+{{- end -}}
+apiVersion: v1
+data:
+    {{ .key }}.json: |
+        {{- $rendered | nindent 8 }}
+kind: ConfigMap
+metadata:
+    annotations:
+        grafana_folder: {{ $context.Values.dashboards.folder | quote }}
+    labels:
+        {{- include "observability.labels" $context | nindent 8 }}
+        grafana_dashboard: "true"
+    name: {{ printf "%s-dashboard-%s" (include "observability.fullname" $context) (.key | lower | replace "_" "-") | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" $context | quote }}
+{{- end -}}

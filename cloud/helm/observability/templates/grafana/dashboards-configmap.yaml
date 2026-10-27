@@ -1,20 +1,5 @@
-{{- $azureDatasourceUid := include "observability.azureMonitorDatasourceUid" . -}}
-{{- $azureResourceGroupName := "" -}}
-{{- $azureSubscriptionId := "" -}}
-{{- with .Values.azure -}}
-{{- $azureResourceGroupName = (.resourceGroupName | default "") -}}
-{{- $azureSubscriptionId = (.subscriptionId | default "") -}}
-{{- end -}}
 {{- $cloudProvider := .Values.cloudProvider -}}
-{{- $clusterPattern := include "observability.clusterPattern" . -}}
-{{- $datasourceUid := include "observability.datasourceUid" . -}}
-{{- $folder := .Values.dashboards.folder -}}
 {{- $items := deepCopy .Values.dashboards.items -}}
-{{- $namespace := include "observability.namespace" . -}}
-{{- $region := "" -}}
-{{- with .Values.aws -}}
-{{- $region = (.region | default "") -}}
-{{- end -}}
 {{- if eq $cloudProvider "aws" -}}
 {{- if hasKey $items "backups" -}}
 {{- $_ := set (index $items "backups") "file" "dashboards/backups-aws.json" -}}
@@ -68,43 +53,24 @@
 -}}
 {{- range $key, $entry := $items }}
 {{- if not (eq $entry.enabled false) }}
-{{- $raw := $.Files.Get $entry.file -}}
-{{- if not $raw -}}
-{{- fail (printf "Dashboard file %s not found in chart" $entry.file) -}}
-{{- end -}}
-{{- $rendered := $raw | replace "${AZURE_RESOURCE_GROUP}" $azureResourceGroupName | replace "${AZURE_SUBSCRIPTION_ID}" $azureSubscriptionId | replace "${CLOUD_PROVIDER}" $cloudProvider | replace "${CLUSTER}" $clusterPattern | replace "${DS_AZURE_MONITOR}" $azureDatasourceUid | replace "${DS_PROMETHEUS}" $datasourceUid | replace "${region}" $region -}}
-{{- if hasKey $dashboardHeaders $key -}}
-{{- $rendered = $rendered | replace "\"${HEADER_HTML}\"" (tpl ($.Files.Get "dashboards/html/dashboard-header.html") (index $dashboardHeaders $key) | toJson) -}}
-{{- end -}}
+{{- $replacements := dict -}}
 {{- if and (eq $key "backups") (eq $cloudProvider "aws") -}}
-{{- $rendered = $rendered | replace "\"${AWS_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/aws-backup.html") (dict "region" $region) | toJson) -}}
+{{- $_ := set $replacements "${AWS_BACKUP_HTML}" (tpl ($.Files.Get "dashboards/html/aws-backup.html") (dict "region" $.Values.aws.region)) -}}
 {{- end -}}
 {{- if and (eq $key "backups") (eq $cloudProvider "azure") -}}
-{{- $azureBackupCtx := dict "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" "azb-tile-muted" "resourceGroupName" $azureResourceGroupName "subscriptionId" $azureSubscriptionId -}}
+{{- $azureBackupCtx := dict "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" "azb-tile-muted" "resourceGroupName" $.Values.azure.resourceGroupName "subscriptionId" $.Values.azure.subscriptionId -}}
 {{- if $.Values.centralHub.argoWorkflowsURL -}}
 {{- $_ := set $azureBackupCtx "argoWfDescription" "Submit the Backup Restore Cluster Workflow Template Into the ${environment} Namespace" -}}
 {{- $_ := set $azureBackupCtx "argoWfHref" (printf "%s/cluster-workflow-templates/backup-restore-cluster-workflow-template?sidePanel=true" (trimSuffix "/" $.Values.centralHub.argoWorkflowsURL)) -}}
 {{- $_ := set $azureBackupCtx "argoWfTileStyle" "azb-tile" -}}
 {{- end -}}
-{{- $rendered = $rendered | replace "\"${AZURE_BACKUP_HTML}\"" (tpl ($.Files.Get "dashboards/html/azure-backup.html") $azureBackupCtx | toJson) -}}
+{{- $_ := set $replacements "${AZURE_BACKUP_HTML}" (tpl ($.Files.Get "dashboards/html/azure-backup.html") $azureBackupCtx) -}}
 {{- end -}}
 {{- if eq $key "central-hub" -}}
 {{- $centralHubCtx := dict "argocdDescription" $argocdDescription "argocdHref" $argocdHref "argocdTileStyle" $argocdTileStyle "argoWfDescription" $argoWfDescription "argoWfHref" $argoWfHref "argoWfTileStyle" $argoWfTileStyle "gitDescription" $gitDescription "gitHref" $gitHref "gitTileStyle" $gitTileStyle "monitoringColumns" $monitoringColumns -}}
-{{- $rendered = $rendered | replace "\"${CENTRAL_HUB_HTML}\"" (tpl ($.Files.Get "dashboards/html/central-hub.html") $centralHubCtx | toJson) -}}
+{{- $_ := set $replacements "${CENTRAL_HUB_HTML}" (tpl ($.Files.Get "dashboards/html/central-hub.html") $centralHubCtx) -}}
 {{- end }}
 ---
-apiVersion: v1
-data:
-    {{ $key }}.json: |
-        {{- $rendered | nindent 8 }}
-kind: ConfigMap
-metadata:
-    annotations:
-        grafana_folder: {{ $folder | quote }}
-    labels:
-        {{- include "observability.labels" $ | nindent 8 }}
-        grafana_dashboard: "true"
-    name: {{ printf "%s-dashboard-%s" (include "observability.fullname" $) ($key | lower | replace "_" "-") | trunc 63 | trimSuffix "-" | quote }}
-    namespace: {{ $namespace | quote }}
+{{ include "observability.dashboardConfigMap" (dict "context" $ "files" $.Files "header" (index $dashboardHeaders $key) "key" $key "path" $entry.file "replacements" $replacements) }}
 {{- end }}
 {{- end }}
