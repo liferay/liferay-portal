@@ -72,7 +72,8 @@ public class AMImageHTMLExportImportContentProcessor
 	public void validateContentReferences(long groupId, String content)
 		throws PortalException {
 
-		int index = _getFileEntryIdAttributeIndex(content, 0);
+		int index = _getAttributeIndex(
+			content, _FILE_ENTRY_ID_ATTRIBUTE_PREFIX, 0);
 
 		while (index != -1) {
 			int fileEntryIdIndex =
@@ -106,12 +107,15 @@ public class AMImageHTMLExportImportContentProcessor
 				}
 			}
 
-			index = _getFileEntryIdAttributeIndex(content, fileEntryIdEndIndex);
+			index = _getAttributeIndex(
+				content, _FILE_ENTRY_ID_ATTRIBUTE_PREFIX, fileEntryIdEndIndex);
 		}
 	}
 
-	private int _getFileEntryIdAttributeIndex(String content, int fromIndex) {
-		int index = content.indexOf(_FILE_ENTRY_ID_ATTRIBUTE_PREFIX, fromIndex);
+	private int _getAttributeIndex(
+		String content, String attributePrefix, int fromIndex) {
+
+		int index = content.indexOf(attributePrefix, fromIndex);
 
 		while (index != -1) {
 			if (content.lastIndexOf(CharPool.LESS_THAN, index) >
@@ -121,8 +125,7 @@ public class AMImageHTMLExportImportContentProcessor
 			}
 
 			index = content.indexOf(
-				_FILE_ENTRY_ID_ATTRIBUTE_PREFIX,
-				index + _FILE_ENTRY_ID_ATTRIBUTE_PREFIX.length());
+				attributePrefix, index + attributePrefix.length());
 		}
 
 		return -1;
@@ -210,8 +213,8 @@ public class AMImageHTMLExportImportContentProcessor
 		StringBundler sb = new StringBundler();
 
 		int beginIndex = 0;
-
-		int index = _getFileEntryIdAttributeIndex(content, 0);
+		int index = _getAttributeIndex(
+			content, _FILE_ENTRY_ID_ATTRIBUTE_PREFIX, 0);
 
 		while (index != -1) {
 			int fileEntryIdIndex =
@@ -247,7 +250,8 @@ public class AMImageHTMLExportImportContentProcessor
 				}
 			}
 
-			index = _getFileEntryIdAttributeIndex(content, fileEntryIdEndIndex);
+			index = _getAttributeIndex(
+				content, _FILE_ENTRY_ID_ATTRIBUTE_PREFIX, fileEntryIdEndIndex);
 		}
 
 		if (sb.index() == 0) {
