@@ -108,7 +108,7 @@ test(
 
 		await test.step('Check if count and percentage are correct in Search Terms tab', async () => {
 			await viewNameOnTableList({
-				itemNames: ['test', '100.00%'],
+				itemNames: ['test', '100%'],
 				page,
 			});
 
@@ -201,7 +201,7 @@ test(
 			await viewNameOnTableList({
 				itemNames: [
 					'atenção com a criança,子供との注意,atención al niño',
-					'100.00%',
+					'100%',
 				],
 				page,
 			});
