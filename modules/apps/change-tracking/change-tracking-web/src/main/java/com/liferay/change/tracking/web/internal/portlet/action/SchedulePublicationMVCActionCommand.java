@@ -12,7 +12,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
+import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -39,10 +39,11 @@ import org.osgi.service.component.annotations.Reference;
 	},
 	service = MVCActionCommand.class
 )
-public class SchedulePublicationMVCActionCommand extends BaseMVCActionCommand {
+public class SchedulePublicationMVCActionCommand
+	extends BaseTransactionalMVCActionCommand {
 
 	@Override
-	protected void doProcessAction(
+	protected void doTransactionalCommand(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
@@ -86,6 +87,8 @@ public class SchedulePublicationMVCActionCommand extends BaseMVCActionCommand {
 				_log.warn(exception);
 			}
 
+			hideDefaultErrorMessage(actionRequest);
+
 			JSONPortletResponseUtil.writeJSON(
 				actionRequest, actionResponse,
 				JSONUtil.put(
@@ -94,7 +97,7 @@ public class SchedulePublicationMVCActionCommand extends BaseMVCActionCommand {
 						_portal.getHttpServletRequest(actionRequest),
 						"an-unexpected-error-occurred")));
 
-			return;
+			throw exception;
 		}
 
 		JSONPortletResponseUtil.writeJSON(
