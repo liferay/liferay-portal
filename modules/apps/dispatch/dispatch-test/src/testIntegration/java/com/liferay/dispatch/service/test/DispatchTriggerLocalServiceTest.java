@@ -263,28 +263,35 @@ public class DispatchTriggerLocalServiceTest {
 		DispatchTrigger activeAllNodesDispatchTrigger = _updateDispatchTrigger(
 			_addDispatchTrigger(
 				DispatchTriggerTestUtil.randomDispatchTrigger(
-					user, _getRandomDispatchExecutorType(),
+					user,
+					TestDispatchTaskExecutor.DISPATCH_TASK_EXECUTOR_TYPE_TEST,
 					RandomTestUtil.nextInt())),
 			true, DispatchTaskClusterMode.ALL_NODES);
 		DispatchTrigger activeSingleNodeMemoryClusteredDispatchTrigger =
 			_updateDispatchTrigger(
 				_addDispatchTrigger(
 					DispatchTriggerTestUtil.randomDispatchTrigger(
-						user, _getRandomDispatchExecutorType(),
+						user,
+						TestDispatchTaskExecutor.
+							DISPATCH_TASK_EXECUTOR_TYPE_TEST,
 						RandomTestUtil.nextInt())),
 				true, DispatchTaskClusterMode.SINGLE_NODE_MEMORY_CLUSTERED);
 		DispatchTrigger activeSingleNodePersistedDispatchTrigger =
 			_updateDispatchTrigger(
 				_addDispatchTrigger(
 					DispatchTriggerTestUtil.randomDispatchTrigger(
-						user, _getRandomDispatchExecutorType(),
+						user,
+						TestDispatchTaskExecutor.
+							DISPATCH_TASK_EXECUTOR_TYPE_TEST,
 						RandomTestUtil.nextInt())),
 				true, DispatchTaskClusterMode.SINGLE_NODE_PERSISTED);
 		DispatchTrigger inactiveAllNodesDispatchTrigger =
 			_updateDispatchTrigger(
 				_addDispatchTrigger(
 					DispatchTriggerTestUtil.randomDispatchTrigger(
-						user, _getRandomDispatchExecutorType(),
+						user,
+						TestDispatchTaskExecutor.
+							DISPATCH_TASK_EXECUTOR_TYPE_TEST,
 						RandomTestUtil.nextInt())),
 				false, DispatchTaskClusterMode.ALL_NODES);
 
