@@ -10,7 +10,7 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "org.aspectj", name: "aspectjweaver", version: "1.9.22.1"
+	testImplementation group: "org.aspectj", name: "aspectjweaver", version: "1.9.26"
 	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testImplementation project(":core:petra:petra-concurrent")
 	testImplementation project(":core:petra:petra-lang")
