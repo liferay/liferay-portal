@@ -315,13 +315,18 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 
 	@Override
 	public boolean isGroupAdmin(long groupId) {
-		groupId = StagingUtil.getLiveGroupId(groupId);
+		Group group = null;
+
+		if (groupId > 0) {
+			group = GroupLocalServiceUtil.fetchGroup(groupId);
+		}
+
+		Group liveGroup = StagingUtil.getLiveGroup(group);
 
 		try {
-			Group group = null;
-
-			if (groupId > 0) {
-				group = GroupLocalServiceUtil.fetchGroup(groupId);
+			if ((liveGroup != null) && (liveGroup != group)) {
+				group = GroupLocalServiceUtil.fetchGroup(
+					liveGroup.getGroupId());
 			}
 
 			return _isGroupAdminImpl(group);
