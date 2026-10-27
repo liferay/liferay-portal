@@ -63,7 +63,7 @@
 		},
 		{
 			"body": {
-				"en_US": "<p>Hello,</p><p>The project was updated.</p><p>Current Description: ${ObjectField_description.getData()}</p><p>Current Due Date: ${ObjectField_dueDate.getData()}</p><p>Current Title: ${ObjectField_title.getData()}</p><p><a href='${portalURL + portalUtil.getPathFriendlyURLPublic() + \"/cms/e/project/\" + classNameId + \"/\" + ObjectEntry_objectEntryId.getData()}'>View ${ObjectField_title.getData()}</a></p>"
+				"en_US": "<p>Hello,</p><p>The project was updated.</p><p>Current Description: ${ObjectField_description.getData()?replace('<img[^>]*>', '[Image]', 'r')?replace('<(iframe|oembed|video)[^>]*>', '[Video]', 'r')?replace('</(iframe|oembed|video)>', '', 'r')}</p><p>Current Due Date: ${ObjectField_dueDate.getData()}</p><p>Current Title: ${ObjectField_title.getData()}</p><p><a href='${portalURL + portalUtil.getPathFriendlyURLPublic() + \"/cms/e/project/\" + classNameId + \"/\" + ObjectEntry_objectEntryId.getData()}'>View ${ObjectField_title.getData()}</a></p>"
 			},
 			"editorType": "freeMarker",
 			"externalReferenceCode": "L_CMP_PROJECT_SUBSCRIPTION_UPDATED_NOTIFICATION_TEMPLATE",
@@ -163,7 +163,7 @@
 		},
 		{
 			"body": {
-				"en_US": "<p>Hello,</p><p>The task ${ObjectField_title.getData()} was updated.</p><#if ObjectField_assignTo.getData()?has_content><#assign assignee = jsonFactoryUtil.createJSONObject(ObjectField_assignTo.getData()) /><#if assignee?? && assignee.name??>Current Assignee: ${assignee.name}</#if></#if><p>Current Description: ${ObjectField_description.getData()}</p>\n<p>Current Due Date: ${ObjectField_dueDate.getData()}</p><p>Current State: ${ObjectField_state.getData()}</p><p>Current Title: ${ObjectField_title.getData()}</p><p><a href='${portalURL + portalUtil.getPathFriendlyURLPublic() + \"/cms/e/task/\" + classNameId + \"/\" + ObjectEntry_objectEntryId.getData()}'>View task ${ObjectField_title.getData()}</a></p>"
+				"en_US": "<p>Hello,</p><p>The task ${ObjectField_title.getData()} was updated.</p><#if ObjectField_assignTo.getData()?has_content><#assign assignee = jsonFactoryUtil.createJSONObject(ObjectField_assignTo.getData()) /><#if assignee?? && assignee.name??>Current Assignee: ${assignee.name}</#if></#if><p>Current Description: ${ObjectField_description.getData()?replace('<img[^>]*>', '[Image]', 'r')?replace('<(iframe|oembed|video)[^>]*>', '[Video]', 'r')?replace('</(iframe|oembed|video)>', '', 'r')}</p>\n<p>Current Due Date: ${ObjectField_dueDate.getData()}</p><p>Current State: ${ObjectField_state.getData()}</p><p>Current Title: ${ObjectField_title.getData()}</p><p><a href='${portalURL + portalUtil.getPathFriendlyURLPublic() + \"/cms/e/task/\" + classNameId + \"/\" + ObjectEntry_objectEntryId.getData()}'>View task ${ObjectField_title.getData()}</a></p>"
 			},
 			"editorType": "freeMarker",
 			"externalReferenceCode": "L_CMP_TASK_SUBSCRIPTION_UPDATED_NOTIFICATION_TEMPLATE",
