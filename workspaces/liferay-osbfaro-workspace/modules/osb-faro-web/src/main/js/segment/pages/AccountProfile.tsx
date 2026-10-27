@@ -3,18 +3,20 @@ import AccountsDataSet from 'shared/components/accounts-data-set/AccountsDataSet
 import BasePage from 'shared/components/base-page';
 import CriteriaCard from 'segment/components/criteria-card';
 import EmbeddedAlertList from 'shared/components/EmbeddedAlertList';
+import Loading from 'shared/components/Loading';
 import ManageSegmentNotificationsModal from 'shared/components/modals/ManageSegmentNotificationsModal';
 import React from 'react';
 import {CSVType} from 'shared/components/download-report/utils';
 import {DownloadStaticCSVReport} from 'shared/components/download-report/DownloadStaticCSVReport';
 import {ReferencedObjectsProvider} from 'segment/segment-editor/dynamic/context/referencedObjects';
-import {Routes, SEGMENTS, toRoute} from 'shared/util/router';
+import {Routes, SEGMENTS, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {getSegmentAlerts} from 'segment/utils/alerts';
 import {Segment} from 'shared/util/records';
 import {SegmentStates, SegmentTypes} from 'shared/util/constants';
 import {useChannelContext} from 'shared/context/channel';
 import {useDeleteSegments} from 'segment/hooks/useDeleteSegments';
+import {useLifecycleDetails} from 'lifecycle/hooks/useLifecycleDetails';
 import {useModal} from '@clayui/modal';
 import {useNavigate} from 'react-router-dom';
 import {useTimeZone} from 'shared/hooks/useTimeZone';
@@ -37,6 +39,11 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 
 	const {deleteSegments, deleteSegmentsModal} = useDeleteSegments(groupId);
 	const notificationsModal = useModal();
+
+	const {lifecycles, loading: lifecyclesLoading} = useLifecycleDetails({
+		channelId,
+		groupId,
+	});
 
 	const {name} = segment;
 
@@ -159,12 +166,23 @@ const AccountProfile: React.FC<IAccountProfileProps> = ({
 					title={Liferay.Language.get('segment-membership')}
 				/>
 
-				<AccountsDataSet
-					apiURL={`/o/faro/contacts/${groupId}/account/search?channelId=${channelId}&segmentId=${segment.id}`}
-					channelId={channelId}
-					dataSetId="segment-accounts-dataset"
-					groupId={groupId}
-				/>
+				{lifecyclesLoading ? (
+					<Loading spacer />
+				) : (
+					<AccountsDataSet
+						apiURL={setUriQueryValues(
+							{
+								accountLifecycleId: lifecycles?.[0]?.id,
+								channelId,
+								segmentId: segment.id,
+							},
+							`/o/faro/contacts/${groupId}/account/search`
+						)}
+						channelId={channelId}
+						dataSetId="segment-accounts-dataset"
+						groupId={groupId}
+					/>
+				)}
 			</BasePage.Body>
 
 			{deleteSegmentsModal}

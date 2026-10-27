@@ -13,11 +13,12 @@ import {Alert} from 'shared/types';
 import {CATALOG_FIELDS_MAX_PAGE_SIZE} from 'shared/api/catalog';
 import {isNil} from 'lodash/fp';
 import {RangeKeyTimeRanges, Sizes} from 'shared/util/constants';
-import {Routes, toRoute} from 'shared/util/router';
+import {Routes, setUriQueryValues, toRoute} from 'shared/util/router';
 import {SectionHeader} from 'shared/components/SectionHeader';
 import {useChannelContext} from 'shared/context/channel';
 import {useCurrentUser} from 'shared/hooks/useCurrentUser';
 import {useDispatch} from 'react-redux';
+import {useLifecycleDetails} from 'lifecycle/hooks/useLifecycleDetails';
 import {useRequest} from 'shared/hooks/useRequest';
 
 interface IListProps {
@@ -52,9 +53,9 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 		},
 	});
 
-	const {data: lifecycles, loading: lifecyclesLoading} = useRequest({
-		dataSourceFn: API.lifecycle.fetchLifecycles,
-		variables: {channelId, defaultAccountLifecycle: true, groupId},
+	const {lifecycles, loading: lifecyclesLoading} = useLifecycleDetails({
+		channelId,
+		groupId,
 	});
 
 	useEffect(() => {
@@ -129,6 +130,8 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 		return <Loading />;
 	}
 
+	const accountLifecycleId = lifecycles?.[0]?.id;
+
 	return (
 		<BasePage documentTitle={Liferay.Language.get('accounts')}>
 			<BasePage.Header
@@ -161,8 +164,11 @@ const List: React.FC<IListProps> = ({channelId, groupId}) => {
 							<Loading spacer />
 						) : (
 							<AccountsDataSet
-								accountLifecycleId={lifecycles?.[0]?.id}
-								apiURL={`/o/faro/contacts/${groupId}/account/search?channelId=${channelId}`}
+								accountLifecycleId={accountLifecycleId}
+								apiURL={setUriQueryValues(
+									{accountLifecycleId, channelId},
+									`/o/faro/contacts/${groupId}/account/search`
+								)}
 								channelId={channelId}
 								fieldCatalog={fieldCatalogData?.items}
 								groupId={groupId}

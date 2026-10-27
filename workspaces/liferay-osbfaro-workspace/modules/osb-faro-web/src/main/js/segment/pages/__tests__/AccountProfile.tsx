@@ -144,6 +144,25 @@ describe('AccountProfile', () => {
 		expect(lastDataSetId).toBe('segment-accounts-dataset');
 	});
 
+	it('should send the default lifecycle to the accounts endpoint', async () => {
+		(API.lifecycle.fetchLifecycles as jest.Mock).mockResolvedValueOnce([
+			{id: '55'},
+		]);
+
+		renderAccountProfile();
+
+		await screen.findByTestId('fds-component');
+
+		expect(API.lifecycle.fetchLifecycles).toHaveBeenCalledWith({
+			channelId: '123',
+			defaultAccountLifecycle: true,
+			groupId: '23',
+		});
+		expect(lastApiURL).toBe(
+			'/o/faro/contacts/23/account/search?accountLifecycleId=55&channelId=123&segmentId=0'
+		);
+	});
+
 	it('should list the accounts matching the segment without any filter applied', async () => {
 		renderAccountProfile();
 
