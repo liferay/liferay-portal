@@ -54,8 +54,6 @@ import com.liferay.portal.search.internal.facet.FacetImpl;
 import com.liferay.portal.search.internal.facet.NestedFacetImpl;
 import com.liferay.portal.search.internal.facet.SimpleFacetCollector;
 import com.liferay.portal.search.internal.searcher.SearchResponseImpl;
-import com.liferay.portal.search.legacy.searcher.SearchRequestBuilderFactory;
-import com.liferay.portal.search.searcher.SearchRequestBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -81,7 +79,6 @@ public class DefaultSearchResultPermissionFilter
 		PermissionChecker permissionChecker,
 		RelatedEntryIndexerRegistry relatedEntryIndexerRegistry,
 		Function<SearchContext, Hits> searchFunction,
-		SearchRequestBuilderFactory searchRequestBuilderFactory,
 		ServiceTrackerMap
 			<String, ModelResourcePermission<? extends ClassedModel>>
 				serviceTrackerMap) {
@@ -91,7 +88,6 @@ public class DefaultSearchResultPermissionFilter
 		_permissionChecker = permissionChecker;
 		_relatedEntryIndexerRegistry = relatedEntryIndexerRegistry;
 		_searchFunction = searchFunction;
-		_searchRequestBuilderFactory = searchRequestBuilderFactory;
 		_serviceTrackerMap = serviceTrackerMap;
 
 		_accurateCountThreshold =
@@ -143,8 +139,6 @@ public class DefaultSearchResultPermissionFilter
 			end = PropsValues.INDEX_SEARCH_LIMIT;
 
 			searchContext.setEnd(end);
-
-			_setSearchRequestFromAndSize(searchContext);
 		}
 
 		if (_isGroupAdmin(searchContext)) {
@@ -366,15 +360,6 @@ public class DefaultSearchResultPermissionFilter
 		return false;
 	}
 
-	private void _setSearchRequestFromAndSize(SearchContext searchContext) {
-		SearchRequestBuilder searchRequestBuilder =
-			_searchRequestBuilderFactory.builder(searchContext);
-
-		searchRequestBuilder.from(searchContext.getStart());
-		searchRequestBuilder.size(
-			searchContext.getEnd() - searchContext.getStart());
-	}
-
 	private void _updateSearchHits(Hits hits, SearchContext searchContext) {
 		SearchResponseImpl searchResponseImpl =
 			(SearchResponseImpl)searchContext.getAttribute("search.response");
@@ -432,7 +417,6 @@ public class DefaultSearchResultPermissionFilter
 	private final RelatedEntryIndexerRegistry _relatedEntryIndexerRegistry;
 	private final Function<SearchContext, Hits> _searchFunction;
 	private final int _searchQueryResultWindowLimit;
-	private final SearchRequestBuilderFactory _searchRequestBuilderFactory;
 	private volatile ServiceTrackerMap
 		<String, ModelResourcePermission<? extends ClassedModel>>
 			_serviceTrackerMap;
@@ -523,8 +507,6 @@ public class DefaultSearchResultPermissionFilter
 				searchContext.setEnd(slidingWindowEnd);
 
 				searchContext.setStart(slidingWindowStart);
-
-				_setSearchRequestFromAndSize(searchContext);
 
 				Hits hits = _getHits(searchContext);
 
