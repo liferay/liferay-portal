@@ -852,21 +852,27 @@ public class BatchTestEntityExportImportTest {
 			"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity",
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
-			StringPool.BLANK);
+			JSONUtil.put(
+				"jsonTypeInfoPropertyValue", "ChildTestEntity1"
+			).toString());
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
 			testEntities[0].getExternalReferenceCode(),
 			"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity",
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
-			StringPool.BLANK);
+			JSONUtil.put(
+				"jsonTypeInfoPropertyValue", "ChildTestEntity1"
+			).toString());
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
 			testEntities[2].getExternalReferenceCode(),
 			"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity",
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
-			StringPool.BLANK);
+			JSONUtil.put(
+				"jsonTypeInfoPropertyValue", "ChildTestEntity2"
+			).toString());
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.batch.engine.internal." +
