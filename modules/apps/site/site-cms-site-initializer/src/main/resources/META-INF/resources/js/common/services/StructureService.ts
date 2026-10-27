@@ -62,38 +62,14 @@ async function createStructure({
 	titleFieldName: Structure['titleFieldName'];
 	workflows: Structure['workflows'];
 }) {
-
-	// Publish object definitions for repeatable groups
-
-	const objectDefinitions = buildGroupObjectDefinitions({
+	return saveStructure({
 		children,
-		publishedChildren,
-	});
-
-	const ids: number[] = [];
-
-	for (const objectDefinition of objectDefinitions) {
-		const {data, error, type} = await ApiHelper.put<{id: number}>(
-			`/o/object-admin/v1.0/object-definitions/by-external-reference-code/${objectDefinition.externalReferenceCode}`,
-			objectDefinition
-		);
-
-		if (error !== null) {
-			await deleteStructures(ids);
-
-			return {data: null, error: classifyError(type)};
-		}
-
-		ids.push(data.id);
-	}
-
-	// Publish the main object definition
-
-	const mainObjectDefinition = buildObjectDefinition({
-		children,
+		deletedGroupERCs: [],
+		deletedRelationships: [],
 		erc,
 		label,
 		name,
+		publishedChildren,
 		settings,
 		slug,
 		spaces,
@@ -101,42 +77,6 @@ async function createStructure({
 		titleFieldName,
 		workflows,
 	});
-
-	const result = await ApiHelper.post<{id: number}>(
-		'/o/object-admin/v1.0/object-definitions',
-		mainObjectDefinition
-	);
-
-	if (result.error !== null) {
-		await deleteStructures(ids);
-
-		return {data: null, error: classifyError(result.type)};
-	}
-
-	const {data} = result;
-
-	const objectRelationships = buildObjectRelationships({
-		children,
-		structureERC: erc,
-	});
-
-	for (const objectRelationship of objectRelationships) {
-		const {error, type} = await ApiHelper.post(
-			`/o/object-admin/v1.0/object-definitions/by-external-reference-code/${objectRelationship.objectDefinitionExternalReferenceCode1}/object-relationships`,
-			objectRelationship
-		);
-
-		if (error !== null) {
-			await deleteStructures([data.id, ...ids]);
-
-			return {data: null, error: classifyError(type)};
-		}
-	}
-
-	return {
-		data,
-		error: null,
-	};
 }
 
 async function updateStructure({
@@ -158,6 +98,55 @@ async function updateStructure({
 	erc: Structure['erc'];
 	history: State['history'];
 	id: Structure['id'];
+	label: Structure['label'];
+	name: Structure['name'];
+	publishedChildren: State['publishedChildren'];
+	settings: Structure['settings'];
+	slug: Structure['slug'];
+	spaces: Structure['spaces'];
+	status: Structure['status'];
+	titleFieldName: Structure['titleFieldName'];
+	workflows: Structure['workflows'];
+}) {
+	return saveStructure({
+		children,
+		deletedGroupERCs: history.deletedGroupERCs,
+		deletedRelationships: history.deletedRelationships,
+		erc,
+		id,
+		label,
+		name,
+		publishedChildren,
+		settings,
+		slug,
+		spaces,
+		status,
+		titleFieldName,
+		workflows,
+	});
+}
+
+async function saveStructure({
+	children,
+	deletedGroupERCs,
+	deletedRelationships,
+	erc,
+	id,
+	label,
+	name,
+	publishedChildren,
+	settings,
+	slug,
+	spaces,
+	status,
+	titleFieldName,
+	workflows,
+}: {
+	children: Structure['children'];
+	deletedGroupERCs: State['history']['deletedGroupERCs'];
+	deletedRelationships: State['history']['deletedRelationships'];
+	erc: Structure['erc'];
+	id?: Structure['id'];
 	label: Structure['label'];
 	name: Structure['name'];
 	publishedChildren: State['publishedChildren'];
@@ -199,14 +188,14 @@ async function updateStructure({
 	formData.append(
 		'deletedObjectRelationships',
 		JSON.stringify(
-			history.deletedRelationships.map((relationship) => ({
+			deletedRelationships.map((relationship) => ({
 				objectDefinitionERC: relationship.structureERC,
 				objectRelationshipERC: relationship.relationshipERC,
 			}))
 		)
 	);
 
-	formData.append('deletedGroupERCs', history.deletedGroupERCs.join(','));
+	formData.append('deletedGroupERCs', deletedGroupERCs.join(','));
 
 	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
 
@@ -217,16 +206,16 @@ async function updateStructure({
 		JSON.stringify(groupObjectDefinitions)
 	);
 
-	const response = await ApiHelper.postFormData(
+	const response = await ApiHelper.postFormData<{id: string}>(
 		formData,
 		`${pathMain}/cms/update-structure`
 	);
 
 	if (response.error !== null) {
-		return {error: classifyError(response.type)};
+		return {data: null, error: classifyError(response.type)};
 	}
 
-	return response;
+	return {data: {id: Number(response.data.id)}, error: null};
 }
 
 async function deleteStructure({id}: {id: Structure['id']}) {
@@ -243,12 +232,6 @@ async function deleteStructure({id}: {id: Structure['id']}) {
 
 	if (response?.error) {
 		return {error: response.error};
-	}
-}
-
-async function deleteStructures(ids: number[]) {
-	for (const id of ids) {
-		await deleteStructure({id});
 	}
 }
 
