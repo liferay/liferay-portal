@@ -998,6 +998,7 @@ function EditSXPBlueprintForm({
 						indexConfig={formik.values.indexConfig}
 						parameterConfig={formik.values.parameterConfig}
 						searchIndexes={searchIndexes}
+						searchableTypes={searchableTypes?.items}
 						setFieldTouched={formik.setFieldTouched}
 						setFieldValue={formik.setFieldValue}
 						sortConfig={formik.values.sortConfig}
