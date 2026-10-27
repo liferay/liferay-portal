@@ -15,8 +15,6 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -74,11 +72,6 @@ public class LayoutLocalizationLocalServiceImpl
 		throws PortalException {
 
 		return layoutLocalizationPersistence.findByL_P(languageId, plid);
-	}
-
-	@Override
-	public List<LayoutLocalization> getLayoutLocalizations(long plid) {
-		return layoutLocalizationPersistence.findByPlid(plid);
 	}
 
 	@Override
