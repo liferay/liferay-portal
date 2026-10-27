@@ -15,16 +15,9 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Portal;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
-
-import jakarta.servlet.http.HttpServletRequest;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -65,23 +58,6 @@ public class DisconnectDataSourcesMVCActionCommand
 		}
 	}
 
-	protected Map<String, String> getHeaders(ActionRequest actionRequest) {
-		Map<String, String> headers = new HashMap<>();
-
-		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
-			actionRequest);
-
-		Enumeration<String> enumeration = httpServletRequest.getHeaderNames();
-
-		while (enumeration.hasMoreElements()) {
-			String headerName = enumeration.nextElement();
-
-			headers.put(headerName, httpServletRequest.getHeader(headerName));
-		}
-
-		return headers;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		DisconnectDataSourcesMVCActionCommand.class);
 
@@ -90,8 +66,5 @@ public class DisconnectDataSourcesMVCActionCommand
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;
-
-	@Reference
-	private Portal _portal;
 
 }
