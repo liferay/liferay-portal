@@ -210,6 +210,7 @@ import org.gradle.api.tasks.javadoc.Javadoc;
 import org.gradle.api.tasks.testing.JUnitXmlReport;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.api.tasks.testing.TestTaskReports;
+import org.gradle.api.tasks.util.PatternFilterable;
 import org.gradle.execution.ProjectConfigurer;
 import org.gradle.external.javadoc.CoreJavadocOptions;
 import org.gradle.external.javadoc.StandardJavadocDocletOptions;
@@ -4685,12 +4686,21 @@ public class LiferayOSGiDefaultsPlugin implements Plugin<Project> {
 	}
 
 	private boolean _hasUpgradeStepRegistrator(Project project) {
-		Map<String, Object> args = new HashMap<>();
+		SourceSet sourceSet = GradleUtil.getSourceSet(
+			project, SourceSet.MAIN_SOURCE_SET_NAME);
 
-		args.put("dir", project.file("src/main/java"));
-		args.put("include", "**/upgrade/registry/*UpgradeStepRegistrator.java");
+		SourceDirectorySet sourceDirectorySet = sourceSet.getJava();
 
-		FileTree fileTree = project.fileTree(args);
+		FileTree fileTree = sourceDirectorySet.matching(
+			new Action<PatternFilterable>() {
+
+				@Override
+				public void execute(PatternFilterable patternFilterable) {
+					patternFilterable.include(
+						"**/upgrade/registry/*UpgradeStepRegistrator.java");
+				}
+
+			});
 
 		return !fileTree.isEmpty();
 	}
