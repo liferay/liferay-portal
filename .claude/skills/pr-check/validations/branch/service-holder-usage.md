@@ -1,10 +1,10 @@
 # Service Holder Usage
 
-Catches hand written production Java that gets or releases a service so that the service's use count no longer follows its owner's lifetime: a service released in the call that got it, such as with `ungetService`, `SystemBundleUtil.callService`, `ServiceReferenceMapperFactory.create`, a tracker that lives for one method, or a `ServiceLatch`, a release without a get, and a get that is never released. A use count that drops to 0 too early can dispose the provider, with everything it references, and the next get activates the provider again, while a use count that never drops keeps a provider alive that its owner no longer needs.
+Catches hand written production Java that gets or releases a service so that the service's use count no longer follows its owner's lifetime: a service released in the call that got it, a release without a get, or a get that is never released. The first happens with `ungetService` in the method that got the service, `SystemBundleUtil.callService`, `ServiceReferenceMapperFactory.create`, a tracker that lives for one method, or a `ServiceLatch`. A use count that drops to 0 too early can dispose the provider, with everything it references, and the next get activates the provider again, while a use count that never drops keeps a provider alive that its owner no longer needs.
 
 ## Match
 
-`\.java$ &! /src/test/|/src/testIntegration/|-test-util/|^[^/]+/test/|^portal-test`
+`\.java$ &! -test-util/|/src/test/|/src/testIntegration/|^[^/]+/test/|^portal-test`
 
 ## Command
 
@@ -14,18 +14,18 @@ A generated file carries the `@generated` Javadoc marker that Service Builder an
 
 Anchor that match to a Javadoc tag or an annotation rather than searching the whole file for the bare word, or a class that only mentions `@generated` in prose drops out of the scan entirely.
 
-The scan numbers each added line by its line in the file and keeps the lines that contain any of these:
+The scan numbers each added line with its line number in the file and keeps the lines that contain any of these:
 
-- `ungetService(`, the release of a get from a `BundleContext`, `ServiceObjects`, or `ComponentServiceObjects`.
-- `getServiceObjects(`.
-- `bundleContext.getService(` on any receiver whose name ends in `bundleContext` or `BundleContext`, which gets a service from a `BundleContext`.
-- `serviceObjects.getService(` on any receiver whose name ends in `serviceObjects` or `ServiceObjects`, which gets a service from a `ServiceObjects` or a `ComponentServiceObjects`.
-- `SystemBundleUtil.callService(`, which gets a service, calls it, and releases it.
 - `ServiceLatch`, which covers `SystemBundleUtil.newServiceLatch`.
 - `ServiceReferenceMapperFactory.create(` or `ServiceReferenceMapperFactory.createFromFunction(`, which wrap a mapper that gets the service, reads it, and releases it before the mapper returns.
-- `ServiceTrackerFactory.open(`, `ServiceTrackerMapFactory.open`, `ServiceTrackerListFactory.open(`, `new ServiceTracker<`, or `new ServiceTracker(`, which open a tracker in code.
+- `ServiceTrackerFactory.open(`, `ServiceTrackerListFactory.open(`, `ServiceTrackerMapFactory.open`, `new ServiceTracker<`, or `new ServiceTracker(`, which open a tracker in code.
+- `SystemBundleUtil.callService(`, which gets a service, calls it, and releases it.
+- `bundleContext.getService(` on any receiver whose name ends in `bundleContext` or `BundleContext`, which gets a service from a `BundleContext`.
+- `getServiceObjects(`.
+- `serviceObjects.getService(` on any receiver whose name ends in `serviceObjects` or `ServiceObjects`, which gets a service from a `ServiceObjects` or a `ComponentServiceObjects`.
+- `ungetService(`, the release of a get from a `BundleContext`, `ServiceObjects`, or `ComponentServiceObjects`.
 
-A removed line is never a candidate. A bare `getService(` is one only when its receiver is one of the two above, since `ServiceTrackerMap.getService(key)` and `ServiceTracker.getService()` own no use count.
+A removed line is never a candidate. A bare `getService(` is one only when its receiver is a `BundleContext` or a `ServiceObjects` as matched above, since `ServiceTrackerMap.getService(key)` and `ServiceTracker.getService()` own no use count.
 
 Each candidate prints as `<path>:<line>:<added line>`.
 
@@ -86,7 +86,7 @@ FINDINGS=$(
 printf '%s' "${FINDINGS}"
 ```
 
-**Judge this from `${FINDINGS}` and never from the exit status**, which carries no verdict in either direction. The loop's status is whatever its last iteration happened to leave behind, so it reports on the diff's last Java file rather than on the diff. A clean branch ends on a `command grep` that matched nothing and exits 1. A branch with a candidate in an early file that ends on a clean one also exits 1. `continue` returns 0, so a diff whose last Java file is generated exits 0 whatever preceded it. Both statuses occur on both verdicts.
+**Judge this from `${FINDINGS}` and never from the exit status**, which carries no verdict in either direction. The loop's status is whatever its last iteration happened to leave behind, so it reports on the diff's last Java file rather than on the diff. A clean branch can end on a `command grep` that matched nothing and exits 1. A branch with a candidate in an early file that ends on a clean one also exits 1. `continue` returns 0, so a diff whose last Java file is generated exits 0 whatever preceded it. Both statuses occur on both verdicts.
 
 Run the loop from `${REPO_ROOT}`. The changed paths are relative to the repository root, so from any directory below it, every file test fails and the check passes without scanning anything.
 
@@ -96,7 +96,7 @@ When `${FINDINGS}` is empty, the branch adds no service get, release, tracker, o
 
 Otherwise, each printed line is a candidate, not a finding. Read it in its file, with the whole method around it, and check it against the known mistakes below. A candidate is not a finding when it only imports, renames, reformats, or moves existing code. A service held for its owner's lifetime is not a mistake either: one got in `addingService` and released in `removedService`, one got in `@Activate` and released in `@Deactivate`, and a tracker opened in `@Activate` and closed in `@Deactivate`.
 
-1. **A service released in the call that got it.** The branch gets a service from a `BundleContext`, `ServiceObjects`, or `ComponentServiceObjects` and releases it before the method that got it returns, in a `finally` block or not, or calls a helper that gets, calls, and releases, such as `SystemBundleUtil.callService`. This covers a new instance of a prototype scoped service for each call or request.
+1. **A service released in the call that got it.** The branch gets a service from a `BundleContext`, `ServiceObjects`, or `ComponentServiceObjects` and releases it before the method that got it returns, in a `finally` block or not, or calls a helper that gets, calls, and releases, such as `SystemBundleUtil.callService`. This covers getting a new instance of a service with prototype scope for each call or request.
 
 1. **A tracker or latch for one call.** The branch opens a `ServiceTracker`, `ServiceTrackerMap`, or `ServiceTrackerList` and closes it, or drops it, before the method that opened it returns, so every service it got is released when the call ends. Waiting for a service with a `ServiceLatch` is the same mistake, since the latch closes its trackers, and releases every service it got, as soon as the last one arrives.
 
