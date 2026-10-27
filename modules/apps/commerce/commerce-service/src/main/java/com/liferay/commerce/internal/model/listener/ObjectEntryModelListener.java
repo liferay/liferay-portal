@@ -165,9 +165,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	private void _updateCommerceReturnItemResourcePermissions(
 		ObjectEntry objectEntry) {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if (!StringUtil.equals(
 				objectDefinition.getName(), "CommerceReturnItem")) {
