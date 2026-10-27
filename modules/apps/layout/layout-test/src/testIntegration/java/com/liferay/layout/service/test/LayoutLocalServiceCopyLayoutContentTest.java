@@ -136,6 +136,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.imageio.ImageIO;
@@ -565,6 +566,59 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_assertLayoutClassedModelUsageContainerKeys(
 			layout, instanceablePortletId2,
 			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET);
+	}
+
+	@Test
+	@TestInfo("LPD-110721")
+	public void testCopyLayoutContentPreservesLineage() throws Exception {
+		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+
+		Layout mainDraftLayout = _addFragmentEntryLinkAndGetLayout(
+			RandomTestUtil.randomString(), layout.fetchDraftLayout());
+
+		FragmentEntryLink mainDraftFragmentEntryLink1 = _getFragmentEntryLink(
+			mainDraftLayout);
+
+		_testCopyLayoutContentPreservesLineage(
+			new String[] {
+				mainDraftFragmentEntryLink1.getExternalReferenceCode()
+			},
+			mainDraftLayout, layout);
+
+		mainDraftLayout = _addFragmentEntryLinkAndGetLayout(
+			RandomTestUtil.randomString(), layout.fetchDraftLayout());
+
+		FragmentEntryLink mainDraftFragmentEntryLink2 = _getFragmentEntryLink(
+			2, mainDraftFragmentEntryLink1.getExternalReferenceCode(),
+			mainDraftLayout);
+
+		Layout launchDraftLayout = _addLaunchDraftLayout(
+			RandomTestUtil.randomLong(), layout);
+
+		_testCopyLayoutContentPreservesLineage(
+			new String[] {
+				mainDraftFragmentEntryLink1.getExternalReferenceCode(),
+				mainDraftFragmentEntryLink2.getExternalReferenceCode()
+			},
+			mainDraftLayout, launchDraftLayout);
+		_testCopyLayoutContentPreservesLineage(
+			new FragmentEntryLink[] {
+				mainDraftFragmentEntryLink1, mainDraftFragmentEntryLink2
+			},
+			launchDraftLayout, mainDraftLayout);
+
+		_testCopyLayoutContentPreservesLineage(
+			new String[] {
+				mainDraftFragmentEntryLink1.getExternalReferenceCode(),
+				mainDraftFragmentEntryLink2.getExternalReferenceCode()
+			},
+			mainDraftLayout, layout);
+		_testCopyLayoutContentPreservesLineage(
+			new String[] {
+				mainDraftFragmentEntryLink1.getExternalReferenceCode(),
+				mainDraftFragmentEntryLink2.getExternalReferenceCode()
+			},
+			layout, _addLaunchDraftLayout(RandomTestUtil.randomLong(), layout));
 	}
 
 	@Test
@@ -1691,6 +1745,26 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		return _layoutLocalService.getLayout(layout.getPlid());
 	}
 
+	private Layout _addLaunchDraftLayout(long launchSetId, Layout layout)
+		throws Exception {
+
+		Layout launchDraftLayout = _layoutLocalService.addLayout(
+			StringBundler.concat(
+				layout.getExternalReferenceCode(), "-launch-", launchSetId),
+			TestPropsValues.getUserId(), layout.getGroupId(),
+			layout.isPrivateLayout(), layout.getParentLayoutId(),
+			_portal.getClassNameId(Layout.class), layout.getPlid(),
+			layout.getNameMap(), layout.getTitleMap(),
+			layout.getDescriptionMap(), layout.getKeywordsMap(),
+			layout.getRobotsMap(), layout.getType(), layout.getTypeSettings(),
+			true, true, Collections.emptyMap(),
+			layout.getMasterLayoutPageTemplateEntryERC(), _serviceContext);
+
+		launchDraftLayout.setLaunchSetId(launchSetId);
+
+		return _layoutLocalService.updateLayout(launchDraftLayout);
+	}
+
 	private void _addLayoutPageTemplateStructureRel(
 			LayoutPageTemplateStructure layoutPageTemplateStructure,
 			SegmentsExperience segmentsExperience)
@@ -2016,6 +2090,42 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		return externalReferenceCode + "_" + groupId;
 	}
 
+	private FragmentEntryLink _getFragmentEntryLink(
+		int count, String excludedExternalReferenceCode, Layout layout) {
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_getFragmentEntryLinks(count, layout)) {
+
+			if (Objects.equals(
+					fragmentEntryLink.getExternalReferenceCode(),
+					excludedExternalReferenceCode)) {
+
+				continue;
+			}
+
+			return fragmentEntryLink;
+		}
+
+		throw new AssertionError();
+	}
+
+	private FragmentEntryLink _getFragmentEntryLink(Layout layout) {
+		return _getFragmentEntryLink(1, null, layout);
+	}
+
+	private List<FragmentEntryLink> _getFragmentEntryLinks(
+		int count, Layout layout) {
+
+		List<FragmentEntryLink> fragmentEntryLinks =
+			_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+				_group.getGroupId(), layout.getPlid());
+
+		Assert.assertEquals(
+			fragmentEntryLinks.toString(), count, fragmentEntryLinks.size());
+
+		return fragmentEntryLinks;
+	}
+
 	private String _getLayoutContent(Layout layout, Locale locale)
 		throws Exception {
 
@@ -2284,6 +2394,40 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			targetLayout);
 		_assertSegmentsExperience(
 			StringPool.BLANK, segmentsExperience2, targetLayout);
+	}
+
+	private void _testCopyLayoutContentPreservesLineage(
+			FragmentEntryLink[] expectedFragmentEntryLinks, Layout sourceLayout,
+			Layout targetLayout)
+		throws Exception {
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		List<FragmentEntryLink> fragmentEntryLinks = _getFragmentEntryLinks(
+			expectedFragmentEntryLinks.length, targetLayout);
+
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				fragmentEntryLinks.toArray(new FragmentEntryLink[0]),
+				expectedFragmentEntryLinks));
+	}
+
+	private void _testCopyLayoutContentPreservesLineage(
+			String[] expectedOriginalFragmentEntryLinkERCs, Layout sourceLayout,
+			Layout targetLayout)
+		throws Exception {
+
+		_layoutLocalService.copyLayoutContent(sourceLayout, targetLayout);
+
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				TransformUtil.transformToArray(
+					_getFragmentEntryLinks(
+						expectedOriginalFragmentEntryLinkERCs.length,
+						targetLayout),
+					FragmentEntryLink::getOriginalFragmentEntryLinkERC,
+					String.class),
+				expectedOriginalFragmentEntryLinkERCs));
 	}
 
 	private static final int _NUMBER_FRAGMENT_ENTRY_LINKS = 10;
