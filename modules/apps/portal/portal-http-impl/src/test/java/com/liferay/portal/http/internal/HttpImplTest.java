@@ -15,10 +15,22 @@ import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.util.PortalImpl;
 
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
+
+import java.io.InputStream;
+
+import java.net.InetSocketAddress;
 import java.net.URI;
+
+import java.security.KeyStore;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLHandshakeException;
 
 import org.apache.http.ConnectionReuseStrategy;
 import org.apache.http.Header;
@@ -28,6 +40,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -218,6 +231,47 @@ public class HttpImplTest {
 			Collections.singletonMap("tcpKeepAliveEnabled", true));
 
 		_testTCPKeepAlive(true);
+	}
+
+	@Test
+	public void testUntrustedCertificate() throws Exception {
+		KeyStore keyStore = KeyStore.getInstance("PKCS12");
+		char[] password = "liferay".toCharArray();
+
+		try (InputStream inputStream = HttpImplTest.class.getResourceAsStream(
+				"dependencies/localhost.p12")) {
+
+			keyStore.load(inputStream, password);
+		}
+
+		KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(
+			KeyManagerFactory.getDefaultAlgorithm());
+
+		keyManagerFactory.init(keyStore, password);
+
+		SSLContext sslContext = SSLContext.getInstance("TLS");
+
+		sslContext.init(keyManagerFactory.getKeyManagers(), null, null);
+
+		HttpsServer httpsServer = HttpsServer.create(
+			new InetSocketAddress(0), 0);
+
+		httpsServer.setHttpsConfigurator(new HttpsConfigurator(sslContext));
+
+		httpsServer.start();
+
+		try {
+			InetSocketAddress inetSocketAddress = httpsServer.getAddress();
+
+			Assert.assertThrows(
+				SSLHandshakeException.class,
+				() -> _closeableHttpClient.execute(
+					new HttpGet(
+						"https://localhost:" + inetSocketAddress.getPort())));
+		}
+		finally {
+			httpsServer.stop(0);
+		}
 	}
 
 	private Tuple _getTuple() {
