@@ -4,6 +4,9 @@ apply plugin: "com.liferay.patcher"
 
 task patch(type: PatchTask)
 
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
 copyPatchOriginalLibClasses {
 	doLast {
 		File file = file("classes/META-INF/versions")
