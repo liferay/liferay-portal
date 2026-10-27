@@ -32,10 +32,10 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 				searchContainer="<%= faroAdminDisplayContext.getSearchContainer() %>"
 			>
 				<liferay-ui:search-container-row
-					className="com.liferay.osb.faro.admin.web.internal.model.FaroProjectAdminDisplay"
+					className="com.liferay.osb.faro.model.FaroProject"
 					escapedModel="<%= true %>"
 					keyProperty="faroProjectId"
-					modelVar="faroProjectAdminDisplay"
+					modelVar="faroProject"
 					rowIdProperty="faroProjectId"
 				>
 					<liferay-ui:search-container-column-text
@@ -44,7 +44,8 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 					/>
 
 					<liferay-ui:search-container-column-text
-						property="owner"
+						name="owner"
+						value="<%= faroAdminDisplayContext.getOwner(faroProject) %>"
 					/>
 
 					<liferay-ui:search-container-column-date
@@ -55,7 +56,7 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 
 					<liferay-ui:search-container-column-text
 						name="subscription"
-						property="subscriptionName"
+						property="shortSubscriptionName"
 					/>
 
 					<liferay-ui:search-container-column-text
@@ -76,7 +77,7 @@ FaroAdminDisplayContext faroAdminDisplayContext = new FaroAdminDisplayContext(re
 						<c:if test="<%= permissionChecker.isOmniadmin() %>">
 
 							<%
-							List<DropdownItem> dropdownItems = faroAdminDisplayContext.getActionDropdownItems(faroProjectAdminDisplay);
+							List<DropdownItem> dropdownItems = faroAdminDisplayContext.getActionDropdownItems(faroProject);
 							%>
 
 							<c:if test="<%= ListUtil.isNotEmpty(dropdownItems) %>">
