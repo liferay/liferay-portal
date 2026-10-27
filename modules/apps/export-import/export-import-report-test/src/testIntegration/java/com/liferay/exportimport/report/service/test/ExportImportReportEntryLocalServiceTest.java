@@ -585,6 +585,86 @@ public class ExportImportReportEntryLocalServiceTest {
 			originalExportImportConfigurationId);
 	}
 
+	@Test
+	public void testResolveMissingReferenceExportImportReportEntries()
+		throws Exception {
+
+		String classExternalReferenceCode = RandomTestUtil.randomString();
+		long classNameId = RandomTestUtil.randomLong();
+		long companyId = TestPropsValues.getCompanyId();
+		long exportImportConfigurationId1 = RandomTestUtil.randomLong();
+		long exportImportConfigurationId2 = RandomTestUtil.randomLong();
+		long groupId = TestPropsValues.getGroupId();
+
+		ExportImportReportEntry exportImportReportEntry1 =
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					groupId, companyId, classExternalReferenceCode, classNameId,
+					0, exportImportConfigurationId1,
+					ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+					null, null, RandomTestUtil.randomString());
+		ExportImportReportEntry exportImportReportEntry2 =
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					groupId, companyId, classExternalReferenceCode, classNameId,
+					0, exportImportConfigurationId2,
+					ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+					null, null, RandomTestUtil.randomString());
+
+		ExportImportReportEntry randomExportImportReportEntry1 =
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					groupId, companyId, classExternalReferenceCode, classNameId,
+					0, exportImportConfigurationId1,
+					ExportImportReportEntryConstants.TYPE_EMPTY, null, null,
+					RandomTestUtil.randomString());
+		ExportImportReportEntry randomExportImportReportEntry2 =
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					groupId, companyId, classExternalReferenceCode, classNameId,
+					0, exportImportConfigurationId1,
+					ExportImportReportEntryConstants.TYPE_WARNING,
+					RandomTestUtil.randomString(), null,
+					RandomTestUtil.randomString());
+		ExportImportReportEntry randomExportImportReportEntry3 =
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					groupId, companyId, RandomTestUtil.randomString(),
+					classNameId, 0, exportImportConfigurationId1,
+					ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
+					null, null, RandomTestUtil.randomString());
+
+		Long originalExportImportConfigurationId =
+			ExportImportThreadLocal.getExportImportConfigurationId();
+
+		ExportImportThreadLocal.setExportImportConfigurationId(
+			exportImportConfigurationId1);
+
+		_exportImportReportEntryLocalService.
+			resolveMissingReferenceExportImportReportEntries(
+				groupId, companyId, classExternalReferenceCode, classNameId);
+
+		Assert.assertNull(
+			_exportImportReportEntryLocalService.fetchExportImportReportEntry(
+				exportImportReportEntry1.getExportImportReportEntryId()));
+
+		_assertStatus(
+			exportImportReportEntry2,
+			ExportImportReportEntryConstants.STATUS_RESOLVED, true);
+		_assertStatus(
+			randomExportImportReportEntry1,
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED, false);
+		_assertStatus(
+			randomExportImportReportEntry2,
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED, false);
+		_assertStatus(
+			randomExportImportReportEntry3,
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED, false);
+
+		ExportImportThreadLocal.setExportImportConfigurationId(
+			originalExportImportConfigurationId);
+	}
+
 	private void _assertStatus(
 			ExportImportReportEntry exportImportReportEntry, int status,
 			boolean updated)
