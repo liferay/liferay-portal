@@ -87,7 +87,7 @@ public class UpstreamJobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		String message = monitorResult.getMessage();
 
@@ -113,13 +113,65 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
+	public void testExecuteMissingControllerTimestamp() throws Exception {
+		String sha = _newSHA();
+
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(0, sha),
+			new JSONObject(
+			).put(
+				"description", _newInvocationDescription(sha)
+			));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"Unable to determine the last build timestamp for ",
+				"controller job ", _CONTROLLER_JOB_NAME),
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testExecuteMissingInvocationSHA() throws Exception {
+		_setURLReaderOutput(
+			null, _newBuildJSONObject(0, "<strong>GIT ID</strong> - "));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(
+			"Unable to determine the commit the upstream testsuite for " +
+				"branch master last ran against",
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+	}
+
+	@Test
+	public void testExecuteMissingMergeTimestamp() throws Exception {
+		_setURLReaderOutput(
+			new JSONObject(
+			).put(
+				"sha", _newSHA()
+			),
+			_newBuildJSONObject(0, _newInvocationDescription(_newSHA())));
+
+		MonitorResult monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(
+			"Unable to determine when branch master was last merged",
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
+	}
+
+	@Test
 	public void testExecuteNoInvocationInWindow() throws Exception {
 		_setURLReaderOutput(
 			_newHeadCommitJSONObject(0, _newSHA()), _newBuildJSONObject(0, ""));
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 
 		String message = monitorResult.getMessage();
 

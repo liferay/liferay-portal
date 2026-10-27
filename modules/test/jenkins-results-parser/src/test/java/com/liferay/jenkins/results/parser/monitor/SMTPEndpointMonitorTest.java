@@ -414,7 +414,7 @@ public class SMTPEndpointMonitorTest
 			JenkinsResultsParserUtil.combine(
 				"Invalid url for monitor[a].parameter[url]: ", url),
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	private void _testExecuteOK(String expectedOutput, InetAddress localAddress)

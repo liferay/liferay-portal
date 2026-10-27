@@ -131,7 +131,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 					hangingTestMonitor.getId());
 
 			testEquals(
-				MonitorResult.Status.UNKNOWN, latestMonitorResult.getStatus());
+				MonitorResult.Status.CRITICAL, latestMonitorResult.getStatus());
 			testEquals(
 				"Monitor a timed out after 1000 ms",
 				latestMonitorResult.getMessage());
@@ -148,7 +148,7 @@ public class MonitorEngineTest extends com.liferay.jenkins.results.parser.Test {
 				throwingTestMonitor.getId());
 
 			testEquals(
-				MonitorResult.Status.UNKNOWN, latestMonitorResult.getStatus());
+				MonitorResult.Status.CRITICAL, latestMonitorResult.getStatus());
 			testEquals(
 				"Monitor c failed: Unable to execute the monitor",
 				latestMonitorResult.getMessage());

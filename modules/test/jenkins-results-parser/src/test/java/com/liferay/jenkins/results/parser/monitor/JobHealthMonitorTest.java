@@ -237,10 +237,10 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 		testEquals(
-			"Unable to read the schedule for job " +
-				"generate-reports-controller: Invalid cron spec: @daily",
+			"Job generate-reports-controller has an invalid schedule: " +
+				"Invalid cron spec: @daily",
 			monitorResult.getMessage());
 	}
 
@@ -278,7 +278,7 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 		testEquals(
 			"Job generate-reports-controller has an invalid schedule: 0 0 31 " +
 				"2 *",
@@ -298,7 +298,7 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		testEquals(
 			"Unable to read the schedule for job " +
 				"generate-reports-controller: java.io.IOException",
@@ -387,7 +387,7 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(monitorProperties);
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 		testEquals(
 			"Unable to determine the last build timestamp for job " +
 				"generate-reports-controller",
@@ -405,7 +405,7 @@ public class JobHealthMonitorTest
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 		testEquals(
 			"Job generate-reports-controller has no cadence and no schedule, " +
 				"so it is not checked for being on time",

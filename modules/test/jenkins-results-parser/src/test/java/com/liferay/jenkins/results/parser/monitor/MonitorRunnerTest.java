@@ -203,7 +203,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 
 		testEquals(
 			"Monitor a timed out after 100 ms", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test(timeout = 5000)
@@ -238,7 +238,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 
 		MonitorResult monitorResult = monitorResultsMap.get(testMonitor1);
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		monitorResult = monitorResultsMap.get(testMonitor2);
 
@@ -267,7 +267,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
 
 		testEquals("Monitor a was interrupted", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test(timeout = 5000)
@@ -290,17 +290,17 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		MonitorResult monitorResult = monitorResultsMap.get(testMonitor1);
 
 		testEquals("Monitor a was interrupted", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		monitorResult = monitorResultsMap.get(testMonitor2);
 
 		testEquals("Monitor b was interrupted", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		monitorResult = monitorResultsMap.get(testMonitor3);
 
 		testEquals("Monitor c was interrupted", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test
@@ -348,7 +348,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 
 		testEquals(
 			"Monitor a timed out after 1000 ms", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test(timeout = 5000)
@@ -426,7 +426,8 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 			testEquals(
 				MonitorResult.DURATION_MILLIS_UNMEASURED,
 				monitorResult.getDurationMillis());
-			testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+			testEquals(
+				MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		}
 		finally {
 			releaseCountDownLatch.countDown();
@@ -523,7 +524,8 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		Assert.assertTrue((System.currentTimeMillis() - startTimestamp) < 600);
 
 		for (MonitorResult monitorResult : monitorResultsMap.values()) {
-			testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+			testEquals(
+				MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 		}
 	}
 
@@ -546,7 +548,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		MonitorResult monitorResult = monitorResultsMap.get(testMonitor);
 
 		testEquals("Monitor a returned no result", monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test(timeout = 5000)
@@ -602,7 +604,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(
 			"Monitor a failed: Unable to execute the monitor",
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		monitorResult = monitorResultsMap.get(testMonitor2);
 
@@ -630,7 +632,7 @@ public class MonitorRunnerTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(
 			"Monitor a failed: java.lang.RuntimeException",
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	private TestMonitor _newConcurrentTestMonitor(

@@ -114,14 +114,13 @@ public class MonitorMetricsWriterTest
 				"monitor_message_info{message=\"", message,
 				"\",monitor=\"disk\"} 1.0\n",
 				"# HELP monitor_status Monitor status severity rank, ",
-				"0 OK, 1 UNKNOWN, 2 WARN, 3 CRITICAL\n",
-				"# TYPE monitor_status gauge\n",
+				"0 OK, 2 WARN, 3 CRITICAL\n", "# TYPE monitor_status gauge\n",
 				"monitor_status{monitor=\"disk\",severity=\"high\",",
 				"type=\"resource-threshold\"} 3.0\n",
 				"monitor_status{monitor=\"queue\",severity=\"medium\",",
 				"type=\"job-health\"} 0.0\n",
 				"monitor_status{monitor=\"testray\",severity=\"low\",",
-				"type=\"external-status\"} 1.0\n"),
+				"type=\"external-status\"} 3.0\n"),
 			read(metricsFile));
 	}
 
@@ -455,7 +454,7 @@ public class MonitorMetricsWriterTest
 			content,
 			content.contains(
 				"monitor_status{monitor=\"disk\",severity=\"high\"," +
-					"type=\"resource-threshold\"} 1.0\n"));
+					"type=\"resource-threshold\"} 3.0\n"));
 	}
 
 	@Test

@@ -110,7 +110,7 @@ public class ExternalStatusMonitorTest
 		testEquals(
 			"Unable to read status page " + _STATUS_PAGE_URL,
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test
@@ -209,7 +209,7 @@ public class ExternalStatusMonitorTest
 		testEquals(
 			"Unable to read status page " + _STATUS_PAGE_URL,
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		verifyURLReaderAttemptsCount(2, _URL);
 	}
@@ -435,7 +435,7 @@ public class ExternalStatusMonitorTest
 			"Unable to determine the component statuses from status page " +
 				_STATUS_PAGE_URL,
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 	}
 
 	private void _testExecuteUnknownComponentStatus(
@@ -457,7 +457,7 @@ public class ExternalStatusMonitorTest
 				"Status page ", _STATUS_PAGE_URL, " reports ",
 				_COMPONENT_NAME_2, ": ", componentStatusString),
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.WARN, monitorResult.getStatus());
 	}
 
 	private void _testExternalStatusMonitorExpectedIllegalArgumentException(

@@ -333,7 +333,7 @@ public class RunningBuildDurationMonitorTest
 		testEquals(
 			"Unable to find a master in cohort " + cohortName,
 			monitorResult.getMessage());
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 	}
 
 	@Test
@@ -372,7 +372,7 @@ public class RunningBuildDurationMonitorTest
 			".liferay.com: ", exceptionMessage);
 
 		_testExecute(
-			null, 0, unreadableMessage, 0, MonitorResult.Status.UNKNOWN);
+			null, 0, unreadableMessage, 0, MonitorResult.Status.CRITICAL);
 
 		setURLReaderOutput(
 			"{}", "http://" + _MASTER_NAME_2 + "/computer/api/json");
@@ -388,7 +388,7 @@ public class RunningBuildDurationMonitorTest
 					"Unable to read running builds on http://", _MASTER_NAME_2,
 					".liferay.com: ")));
 
-		testEquals(MonitorResult.Status.UNKNOWN, monitorResult.getStatus());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
 		String buildURL = _newBuildURL(_MASTER_NAME_1);
 		String fullDisplayName = RandomTestUtil.randomString();
