@@ -291,146 +291,8 @@ public class LayoutPermissionImpl implements LayoutPermission {
 			boolean checkLayoutUpdateable, String actionId)
 		throws PortalException {
 
-		if (layout.isTypeControlPanel()) {
-			return false;
-		}
-
-		if (checkLayoutUpdateable && !actionId.equals(ActionKeys.CUSTOMIZE) &&
-			!actionId.equals(ActionKeys.VIEW) &&
-			(layout instanceof VirtualLayout)) {
-
-			return false;
-		}
-
-		if (actionId.equals(ActionKeys.CUSTOMIZE) &&
-			(layout instanceof VirtualLayout)) {
-
-			VirtualLayout virtualLayout = (VirtualLayout)layout;
-
-			layout = virtualLayout.getWrappedModel();
-		}
-
-		if (actionId.equals(ActionKeys.ADD_LAYOUT)) {
-			if ((layout instanceof VirtualLayout) ||
-				!layout.isLayoutSortable()) {
-
-				return false;
-			}
-
-			LayoutType layoutType = layout.getLayoutType();
-
-			if (!layoutType.isParentable()) {
-				return false;
-			}
-		}
-
-		if (actionId.equals(ActionKeys.DELETE) &&
-			((layout instanceof VirtualLayout) ||
-			 !layout.isLayoutDeleteable())) {
-
-			return false;
-		}
-
-		if (layout.isPending() &&
-			(!actionId.equals(ActionKeys.VIEW) || !layout.isPublished())) {
-
-			Boolean hasPermission = WorkflowPermissionUtil.hasPermission(
-				permissionChecker, layout.getGroupId(), Layout.class.getName(),
-				layout.getPlid(), actionId);
-
-			if (hasPermission != null) {
-				return hasPermission;
-			}
-		}
-
-		Group group = layout.getGroup();
-
-		if (checkLayoutUpdateable && !group.isLayoutSetPrototype() &&
-			isAttemptToModifyLockedLayout(layout, actionId)) {
-
-			return false;
-		}
-
-		if (actionId.equals(ActionKeys.ADD_LAYOUT) &&
-			GroupPermissionUtil.contains(
-				permissionChecker, group, ActionKeys.ADD_LAYOUT)) {
-
-			return true;
-		}
-
-		if (PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE &&
-			actionId.equals(ActionKeys.VIEW)) {
-
-			// Check upward recursively to see if any pages above forbid the
-			// action
-
-			long layoutGroupId = layout.getGroupId();
-
-			if (layout instanceof VirtualLayout) {
-				VirtualLayout virtualLayout = (VirtualLayout)layout;
-
-				layoutGroupId = virtualLayout.getSourceGroupId();
-			}
-
-			long parentLayoutId = layout.getParentLayoutId();
-
-			while (parentLayoutId != LayoutConstants.DEFAULT_PARENT_LAYOUT_ID) {
-				Layout parentLayout = LayoutLocalServiceUtil.getLayout(
-					layoutGroupId, layout.isPrivateLayout(), parentLayoutId);
-
-				if (!contains(permissionChecker, parentLayout, actionId)) {
-					return false;
-				}
-
-				parentLayoutId = parentLayout.getParentLayoutId();
-			}
-		}
-
-		if ((layout.isDraftLayout() &&
-			 permissionChecker.hasPermission(
-				 group, Layout.class.getName(), layout.getClassPK(),
-				 actionId)) ||
-			permissionChecker.hasPermission(
-				group, Layout.class.getName(), layout.getPlid(), actionId)) {
-
-			return true;
-		}
-
-		if (GroupPermissionUtil.contains(
-				permissionChecker, group, ActionKeys.MANAGE_LAYOUTS)) {
-
-			return true;
-		}
-
-		User user = permissionChecker.getUser();
-
-		if (!user.isGuestUser() && !group.isUser()) {
-
-			// This is new way of doing an ownership check without having to
-			// have a userId field on the model. When the instance model was
-			// first created, we set the user's userId as the ownerId of the
-			// individual scope ResourcePermission of the Owner Role. Therefore,
-			// ownership can be determined by obtaining the Owner role
-			// ResourcePermission for the current instance model and testing it
-			// with the hasOwnerPermission call.
-
-			ResourcePermission resourcePermission =
-				ResourcePermissionLocalServiceUtil.getResourcePermission(
-					layout.getCompanyId(), Layout.class.getName(),
-					ResourceConstants.SCOPE_INDIVIDUAL,
-					String.valueOf(layout.getPlid()),
-					permissionChecker.getOwnerRoleId());
-
-			if (permissionChecker.hasOwnerPermission(
-					layout.getCompanyId(), Layout.class.getName(),
-					String.valueOf(layout.getPlid()),
-					resourcePermission.getOwnerId(), actionId)) {
-
-				return true;
-			}
-		}
-
-		return false;
+		return _containsWithoutViewableGroup(
+			permissionChecker, layout, checkLayoutUpdateable, actionId);
 	}
 
 	@Override
@@ -698,6 +560,153 @@ public class LayoutPermissionImpl implements LayoutPermission {
 
 		return containsWithViewableGroup(
 			permissionChecker, layout, checkViewableGroup, actionId);
+	}
+
+	private boolean _containsWithoutViewableGroup(
+			PermissionChecker permissionChecker, Layout layout,
+			boolean checkLayoutUpdateable, String actionId)
+		throws PortalException {
+
+		if (layout.isTypeControlPanel()) {
+			return false;
+		}
+
+		if (checkLayoutUpdateable && !actionId.equals(ActionKeys.CUSTOMIZE) &&
+			!actionId.equals(ActionKeys.VIEW) &&
+			(layout instanceof VirtualLayout)) {
+
+			return false;
+		}
+
+		if (actionId.equals(ActionKeys.CUSTOMIZE) &&
+			(layout instanceof VirtualLayout)) {
+
+			VirtualLayout virtualLayout = (VirtualLayout)layout;
+
+			layout = virtualLayout.getWrappedModel();
+		}
+
+		if (actionId.equals(ActionKeys.ADD_LAYOUT)) {
+			if ((layout instanceof VirtualLayout) ||
+				!layout.isLayoutSortable()) {
+
+				return false;
+			}
+
+			LayoutType layoutType = layout.getLayoutType();
+
+			if (!layoutType.isParentable()) {
+				return false;
+			}
+		}
+
+		if (actionId.equals(ActionKeys.DELETE) &&
+			((layout instanceof VirtualLayout) ||
+			 !layout.isLayoutDeleteable())) {
+
+			return false;
+		}
+
+		if (layout.isPending() &&
+			(!actionId.equals(ActionKeys.VIEW) || !layout.isPublished())) {
+
+			Boolean hasPermission = WorkflowPermissionUtil.hasPermission(
+				permissionChecker, layout.getGroupId(), Layout.class.getName(),
+				layout.getPlid(), actionId);
+
+			if (hasPermission != null) {
+				return hasPermission;
+			}
+		}
+
+		Group group = layout.getGroup();
+
+		if (checkLayoutUpdateable && !group.isLayoutSetPrototype() &&
+			isAttemptToModifyLockedLayout(layout, actionId)) {
+
+			return false;
+		}
+
+		if (actionId.equals(ActionKeys.ADD_LAYOUT) &&
+			GroupPermissionUtil.contains(
+				permissionChecker, group, ActionKeys.ADD_LAYOUT)) {
+
+			return true;
+		}
+
+		if (PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE &&
+			actionId.equals(ActionKeys.VIEW)) {
+
+			// Check upward recursively to see if any pages above forbid the
+			// action
+
+			long layoutGroupId = layout.getGroupId();
+
+			if (layout instanceof VirtualLayout) {
+				VirtualLayout virtualLayout = (VirtualLayout)layout;
+
+				layoutGroupId = virtualLayout.getSourceGroupId();
+			}
+
+			long parentLayoutId = layout.getParentLayoutId();
+
+			while (parentLayoutId != LayoutConstants.DEFAULT_PARENT_LAYOUT_ID) {
+				Layout parentLayout = LayoutLocalServiceUtil.getLayout(
+					layoutGroupId, layout.isPrivateLayout(), parentLayoutId);
+
+				if (!contains(permissionChecker, parentLayout, actionId)) {
+					return false;
+				}
+
+				parentLayoutId = parentLayout.getParentLayoutId();
+			}
+		}
+
+		if ((layout.isDraftLayout() &&
+			 permissionChecker.hasPermission(
+				 group, Layout.class.getName(), layout.getClassPK(),
+				 actionId)) ||
+			permissionChecker.hasPermission(
+				group, Layout.class.getName(), layout.getPlid(), actionId)) {
+
+			return true;
+		}
+
+		if (GroupPermissionUtil.contains(
+				permissionChecker, group, ActionKeys.MANAGE_LAYOUTS)) {
+
+			return true;
+		}
+
+		User user = permissionChecker.getUser();
+
+		if (!user.isGuestUser() && !group.isUser()) {
+
+			// This is new way of doing an ownership check without having to
+			// have a userId field on the model. When the instance model was
+			// first created, we set the user's userId as the ownerId of the
+			// individual scope ResourcePermission of the Owner Role. Therefore,
+			// ownership can be determined by obtaining the Owner role
+			// ResourcePermission for the current instance model and testing it
+			// with the hasOwnerPermission call.
+
+			ResourcePermission resourcePermission =
+				ResourcePermissionLocalServiceUtil.getResourcePermission(
+					layout.getCompanyId(), Layout.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(layout.getPlid()),
+					permissionChecker.getOwnerRoleId());
+
+			if (permissionChecker.hasOwnerPermission(
+					layout.getCompanyId(), Layout.class.getName(),
+					String.valueOf(layout.getPlid()),
+					resourcePermission.getOwnerId(), actionId)) {
+
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static class CacheKey {
