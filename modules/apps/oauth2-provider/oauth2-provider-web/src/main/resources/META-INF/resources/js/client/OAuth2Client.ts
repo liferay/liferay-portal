@@ -358,7 +358,7 @@ export async function getUserAgentApplication(externalReferenceCode: string) {
 
 	// eslint-disable-next-line @liferay/portal/no-global-fetch
 	const res = await fetch(
-		`${Liferay.ThemeDisplay.getPathContext()}/o/oauth2/application?externalReferenceCode=${externalReferenceCode}`
+		`${Liferay.ThemeDisplay.getPathContext()}/o/oauth2/application?externalReferenceCode=${encodeURIComponent(externalReferenceCode)}`
 	);
 
 	if (res.status === 400) {
