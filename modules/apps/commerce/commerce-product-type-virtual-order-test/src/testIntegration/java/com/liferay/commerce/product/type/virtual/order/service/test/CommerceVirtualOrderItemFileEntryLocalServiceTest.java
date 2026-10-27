@@ -7,6 +7,7 @@ package com.liferay.commerce.product.type.virtual.order.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.type.virtual.order.exception.CommerceVirtualOrderItemUrlException;
+import com.liferay.commerce.product.type.virtual.order.exception.NoSuchVirtualOrderItemFileEntryException;
 import com.liferay.commerce.product.type.virtual.order.model.CommerceVirtualOrderItemFileEntry;
 import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOrderItemFileEntryLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -50,6 +51,15 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceTest {
 						commerceVirtualOrderItemFileEntry.
 							getCommerceVirtualOrderItemFileEntryId(),
 						0, "file:///" + RandomTestUtil.randomString(), 0,
+						RandomTestUtil.randomString()));
+
+		Assert.assertThrows(
+			NoSuchVirtualOrderItemFileEntryException.class,
+			() ->
+				_commerceVirtualOrderItemFileEntryLocalService.
+					updateCommerceVirtualOrderItemFileEntry(
+						RandomTestUtil.randomLong(), 0,
+						"https://" + RandomTestUtil.randomString(), 0,
 						RandomTestUtil.randomString()));
 	}
 
