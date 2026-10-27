@@ -756,12 +756,19 @@ public abstract class BaseBundlePersistentResource
 			return false;
 		}
 
-		if (isBuildDiscarded(controllerBuildURL)) {
-			return true;
-		}
+		JSONObject apiJSONObject;
 
-		JSONObject apiJSONObject = JenkinsAPIUtil.getAPIJSONObject(
-			controllerBuildURL, "result");
+		try {
+			apiJSONObject = JenkinsAPIUtil.getAPIJSONObject(
+				controllerBuildURL, "result");
+		}
+		catch (RuntimeException runtimeException) {
+			if (isBuildDiscarded(controllerBuildURL)) {
+				return true;
+			}
+
+			throw runtimeException;
+		}
 
 		return !JenkinsResultsParserUtil.isNullOrEmpty(
 			apiJSONObject.optString("result"));
