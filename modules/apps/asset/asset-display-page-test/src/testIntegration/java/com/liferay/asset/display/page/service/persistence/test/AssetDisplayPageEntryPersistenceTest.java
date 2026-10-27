@@ -231,13 +231,6 @@ public class AssetDisplayPageEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByGroupId() throws Exception {
-		_persistence.countByGroupId(RandomTestUtil.nextLong());
-
-		_persistence.countByGroupId(0L);
-	}
-
-	@Test
 	public void testCountByLayoutPageTemplateEntryId() throws Exception {
 		_persistence.countByLayoutPageTemplateEntryId(
 			RandomTestUtil.nextLong());
@@ -665,4 +658,4 @@ public class AssetDisplayPageEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:553453720
+// LIFERAY-SERVICE-BUILDER-HASH:565159234
