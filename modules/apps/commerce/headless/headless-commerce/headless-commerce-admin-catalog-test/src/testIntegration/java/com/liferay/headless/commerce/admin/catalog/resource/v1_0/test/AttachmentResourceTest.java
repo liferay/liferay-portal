@@ -11,7 +11,6 @@ import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPActionKeys;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.constants.CPConstants;
-import com.liferay.commerce.product.model.CPAttachmentFileEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -37,9 +36,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -82,6 +78,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -860,22 +857,13 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			attachmentResource.postProductByExternalReferenceCodeImage(
 				_cProduct.getExternalReferenceCode(), randomAttachment);
 
-		CPAttachmentFileEntry cpAttachmentFileEntry =
-			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
-				postAttachment.getId());
+		Map<String, String> options = postAttachment.getOptions();
 
-		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
-			cpAttachmentFileEntry.getJson());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertEquals(
-			cpDefinitionOptionRel.getKey(), jsonObject.getString("key"));
 		Assert.assertEquals(
 			JSONUtil.put(
 				cpDefinitionOptionValueRel.getKey()
 			).toString(),
-			jsonObject.getString("value"));
+			options.get(cpDefinitionOptionRel.getKey()));
 	}
 
 	private void _testPostProductIdAttachmentByUrlWithLocalNetworkURL()
