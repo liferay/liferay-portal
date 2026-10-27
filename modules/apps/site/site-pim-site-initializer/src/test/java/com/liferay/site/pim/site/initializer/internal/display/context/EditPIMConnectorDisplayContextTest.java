@@ -326,11 +326,11 @@ public class EditPIMConnectorDisplayContextTest {
 					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED,
 					"Client Secret", false, "clientSecret", true),
 				_mockObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER, "ID", true,
-					"id", false),
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
+					RandomTestUtil.randomString(), true, "id", false),
 				_mockObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_TEXT, "URL", false,
-					"url", true));
+					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+					RandomTestUtil.randomString(), false, "url", true));
 
 			objectFieldLocalServiceUtilMockedStatic.when(
 				() -> ObjectFieldLocalServiceUtil.getObjectFields(
