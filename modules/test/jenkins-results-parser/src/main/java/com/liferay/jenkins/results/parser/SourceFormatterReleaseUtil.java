@@ -77,7 +77,6 @@ public class SourceFormatterReleaseUtil {
 
 			String artifactGitId = artifactProperties.getProperty(
 				"artifact.git.id");
-
 			Matcher matcher = _artifactURLPattern.matcher(
 				artifactProperties.getProperty("artifact.url", ""));
 
