@@ -255,7 +255,7 @@ export default function CriteriaSidebar({
 				</div>
 			)}
 
-			<div className="sidebar-search">
+			<div className="px-4 py-3 sidebar-search">
 				<CriteriaSidebarSearchBar
 					onChange={setSearchValue}
 					searchValue={searchValue}

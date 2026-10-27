@@ -334,7 +334,7 @@ const NewRequestModal: React.FC<INewRequestModalProps> = ({
 													uploadURL={`/o/proxy/download/data-control-tasks?projectGroupId=${groupId}`}
 												/>
 
-												<div className="example-file-text text-secondary">
+												<div className="example-file-text mt-2 text-secondary">
 													{sub(
 														Liferay.Language.get(
 															'please-upload-files-in-csv-format.-a-sample-file-can-be-found-x'

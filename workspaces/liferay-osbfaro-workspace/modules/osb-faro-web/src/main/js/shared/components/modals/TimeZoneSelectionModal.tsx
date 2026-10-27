@@ -90,7 +90,7 @@ const TimeZoneSelectionModal: React.FC<ITimeZoneSelectionModal> = ({
 								</div>
 
 								<div className="picker-root-container">
-									<div className="time-zone-spaced-select">
+									<div className="pt-5 time-zone-spaced-select">
 										<TimeZonePicker
 											fieldName="timeZoneId"
 											initialTimeZone={timeZone}

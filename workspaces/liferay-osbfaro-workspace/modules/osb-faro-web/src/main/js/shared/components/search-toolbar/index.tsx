@@ -287,7 +287,7 @@ const SearchToolbar: React.FC<ISearchToolbarProps> = ({
 					expand
 					managementBar
 				>
-					<Nav className="front-nav">
+					<Nav className="front-nav mr-auto">
 						{showCheckbox && (
 							<Nav.Item>
 								<Checkbox

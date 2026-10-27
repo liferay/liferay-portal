@@ -98,7 +98,7 @@ export const FileItem: React.FC<IFileItemProps> = ({file, onCancel}) => {
 							{file.name}
 						</TextTruncate>
 
-						<div className="status-wrapper">
+						<div className="ml-2 status-wrapper">
 							{getFileStatusIcon(file)}
 						</div>
 					</div>
@@ -114,7 +114,7 @@ export const FileItem: React.FC<IFileItemProps> = ({file, onCancel}) => {
 
 				<div className="d-flex align-items-center">
 					{file && file.completed && !error && !!file.size && (
-						<div className="file-size">
+						<div className="file-size mr-2">
 							{getFileSizeLabel(file.size)}
 						</div>
 					)}

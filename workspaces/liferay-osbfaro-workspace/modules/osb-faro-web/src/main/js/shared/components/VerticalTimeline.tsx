@@ -329,7 +329,10 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 	return (
 		<li className="timeline-row individual-row bg-white w-100">
 			<div className="row-content flex-fill d-flex align-items-center">
-				<ClaySticker className="individual-sticker" shape="user-icon">
+				<ClaySticker
+					className="flex-shrink-0 individual-sticker"
+					shape="user-icon"
+				>
 					<ClayIcon
 						color="gray"
 						symbol={isAnonymous ? 'anonymize' : 'user'}

@@ -107,7 +107,7 @@ const Toolbar: React.FC<IToolbarProps> & {
 
 		<BaseToolbar.Item className="ml-auto">
 			<ul
-				className="base-edit-page-toolbar-actions tbar-nav"
+				className="base-edit-page-toolbar-actions justify-content-end tbar-nav"
 				data-testid="toolbar-actions"
 			>
 				{children}
