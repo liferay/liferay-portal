@@ -111,6 +111,7 @@ public class ReCaptchaImpl extends SimpleCaptchaImpl {
 		CaptchaConfiguration captchaConfiguration =
 			captchaProvider.getCaptchaConfiguration();
 
+		options.setFollowRedirects(false);
 		options.setLocation(captchaConfiguration.reCaptchaVerifyURL());
 
 		try {
