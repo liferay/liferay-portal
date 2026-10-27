@@ -68,7 +68,7 @@ public class StreamURLReader extends BaseURLReader<InputStream> {
 			Map<String, String> requestHeaders, int timeout, String url)
 		throws IOException {
 
-		URL urlObject = new URL(JenkinsResultsParserUtil.fixURL(url));
+		URL urlObject = new URL(JenkinsResultsParserUtil.normalizeURL(url));
 
 		HttpURLConnection httpURLConnection =
 			(HttpURLConnection)urlObject.openConnection();

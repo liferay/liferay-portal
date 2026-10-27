@@ -64,7 +64,7 @@ public abstract class BaseURLReader<T> implements URLReader<T> {
 			}
 		}
 
-		url = JenkinsResultsParserUtil.fixURL(url);
+		url = JenkinsResultsParserUtil.normalizeURL(url);
 
 		String cacheFileKey = null;
 
