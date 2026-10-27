@@ -190,7 +190,7 @@ public class SecurityTest extends BaseClientTestCase {
 			getToken(
 				_CLIENT_ID_CODE_PKCE_1, null,
 				getExchangeAuthorizationCodePKCEBiFunction(
-					authorizationCode, null, "wrongCodeVerifier"),
+					authorizationCode, "wrongCodeVerifier", null),
 				this::parseError));
 	}
 

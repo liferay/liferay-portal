@@ -326,7 +326,7 @@ public abstract class BaseClientTestCase {
 			BiFunction<String, Invocation.Builder, Response>
 				authorizationCodePKCEBiFunction =
 					getExchangeAuthorizationCodePKCEBiFunction(
-						authorizationCode, null, codeVerifier);
+						authorizationCode, codeVerifier, null);
 
 			return authorizationCodePKCEBiFunction.apply(
 				clientId, invocationBuilder);
@@ -523,7 +523,7 @@ public abstract class BaseClientTestCase {
 
 	protected BiFunction<String, Invocation.Builder, Response>
 		getExchangeAuthorizationCodePKCEBiFunction(
-			String authorizationCode, String redirectUri, String codeVerifier) {
+			String authorizationCode, String codeVerifier, String redirectUri) {
 
 		return (clientId, invocationBuilder) -> invocationBuilder.post(
 			Entity.form(
