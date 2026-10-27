@@ -81,7 +81,7 @@ const OverlaySidebar: React.FC<ISidebarProps> = ({
 				<ClayButtonWithIcon
 					aria-label={Liferay.Language.get('close')}
 					borderless
-					className="base-edit-page-sidebar-close"
+					className="base-edit-page-sidebar-close position-absolute"
 					displayType="secondary"
 					monospaced
 					onClick={() => setOpen(false)}

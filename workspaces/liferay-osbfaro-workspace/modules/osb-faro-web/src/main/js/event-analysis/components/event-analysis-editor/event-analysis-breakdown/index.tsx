@@ -389,7 +389,7 @@ const getColumns = ({
 				},
 				label: (
 					<div>
-						<span className="breakdown-category">
+						<span className="breakdown-category d-block text-uppercase">
 							{attributeType}
 						</span>
 

@@ -48,7 +48,7 @@ export const GenericDonutChart: React.FC<IGenericDonutChart> = ({
 								<Cell key={`cell-${index}`} stroke="none" />
 							))}
 							<Label
-								className="generic-pie-label"
+								className="font-weight-bold generic-pie-label"
 								position="center"
 								value="##"
 							/>

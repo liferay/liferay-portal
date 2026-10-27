@@ -372,7 +372,7 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 					{singleRow &&
 						!root &&
 						connectDragSource(
-							<div className="criteria-group-drag-icon drag-icon">
+							<div className="align-items-center criteria-group-drag-icon d-flex drag-icon h-100 position-absolute">
 								<ClayIcon className="icon-root" symbol="drag" />
 							</div>
 						)}

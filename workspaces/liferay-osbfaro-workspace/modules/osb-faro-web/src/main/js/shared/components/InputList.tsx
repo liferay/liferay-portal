@@ -218,7 +218,7 @@ const InputList: FC<IInputListProps> = ({
 			{!valid && errorMessage && (
 				<div className="form-feedback-group">
 					<div className="form-feedback-item">
-						<span className="form-feedback-indicator">
+						<span className="form-feedback-indicator mr-2">
 							<ClayIcon
 								className={`icon-root icon-size-${size}`}
 								symbol={display}

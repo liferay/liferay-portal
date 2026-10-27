@@ -2,7 +2,6 @@
 	background: $primaryLighten33;
 	border-radius: 4px;
 	flex: none;
-	flex-grow: 0;
 	height: 24px;
 	order: 0;
 	width: 203px;
@@ -34,7 +33,6 @@
 	.generic-pie-label {
 		fill: var(--cadmin-dark-l1);
 		font-size: 1.75rem;
-		font-weight: bold;
 	}
 }
 

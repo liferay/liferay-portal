@@ -230,7 +230,7 @@ const PayloadCode: FC<{payload: Record<string, unknown>}> = ({payload}) => {
 		<div className="payload-code-root position-relative">
 			<CopyButton
 				borderless
-				className="payload-copy"
+				className="payload-copy position-absolute"
 				displayType="secondary"
 				label={Liferay.Language.get('copy-details')}
 				monospaced
@@ -339,7 +339,7 @@ const IndividualRow: FC<{item: VerticalTimelineIndividual}> = ({
 					/>
 				</ClaySticker>
 
-				<div className="individual-info">
+				<div className="align-items-start d-flex flex-column individual-info">
 					{individualUrl ? (
 						<ClayLink
 							className="individual-title"
@@ -521,7 +521,7 @@ const PageGroupRow: FC<IRowProps<VerticalTimelinePageGroup>> = ({
 						)}
 					</div>
 
-					<div className="page-info">
+					<div className="d-flex flex-column page-info">
 						{subtitle && <ExternalLink url={subtitle} />}
 
 						<div className="row-metrics d-flex align-items-center">
@@ -613,7 +613,7 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 						</span>
 					</div>
 
-					<div className="event-info">
+					<div className="d-flex event-info flex-column">
 						{description && (
 							<div className="description align-self-start font-weight-normal mw-100 text-secondary">
 								{descriptionUrl ? (

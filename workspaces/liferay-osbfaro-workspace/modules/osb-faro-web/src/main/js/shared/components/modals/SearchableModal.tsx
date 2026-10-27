@@ -94,7 +94,7 @@ const SearchableModal: React.FC<ISearchableModalProps> = ({
 				<div>
 					{children}
 
-					<div className="load-more-container">
+					<div className="load-more-container text-center">
 						<ClayButton
 							className="button-root"
 							displayType="secondary"

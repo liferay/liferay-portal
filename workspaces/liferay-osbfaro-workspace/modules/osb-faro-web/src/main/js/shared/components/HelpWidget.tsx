@@ -80,7 +80,7 @@ const HelpWidget: React.FC<IHelpWidgetProps> = ({
 					<ClayButton
 						aria-label={Liferay.Language.get('help')}
 						borderless
-						className="button-root help-button"
+						className="button-root help-button position-relative"
 						displayType="info"
 						size="sm"
 					>

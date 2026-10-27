@@ -151,7 +151,7 @@ const DropZone: React.FC<IDropZoneProps> = ({
 					})}
 				>
 					{((canDrop && hover) || keyboardTarget) && (
-						<div className="drop-zone-indicator" />
+						<div className="drop-zone-indicator w-100" />
 					)}
 				</div>
 			)}

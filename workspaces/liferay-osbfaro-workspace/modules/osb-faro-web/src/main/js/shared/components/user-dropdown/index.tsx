@@ -180,7 +180,7 @@ const Label = React.forwardRef<HTMLButtonElement, ILabelProps>(
 			{...otherProps}
 		>
 			<div className="text-truncate">
-				<Sticker circle className="avatar">
+				<Sticker circle className="avatar mr-3">
 					{getInitials(userName)}
 				</Sticker>
 

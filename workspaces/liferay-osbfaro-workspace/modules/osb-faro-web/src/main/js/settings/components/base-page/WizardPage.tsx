@@ -184,12 +184,12 @@ const WizardPage = ({children}: {children: React.ReactNode}) => {
 				<ClayLayout.Container fluid>
 					<ClayLayout.Row>
 						<ClayLayout.Col md={6} sm={12}>
-							<div className="wizard-page__content-col">
+							<div className="d-flex h-100 m-auto w-100 wizard-page__content-col">
 								{children}
 							</div>
 						</ClayLayout.Col>
 						<ClayLayout.Col size={6}>
-							<div className="wizard-page__onboarding-col">
+							<div className="p-0 wizard-page__onboarding-col">
 								<div className="wizard-page__onboarding-image" />
 							</div>
 						</ClayLayout.Col>

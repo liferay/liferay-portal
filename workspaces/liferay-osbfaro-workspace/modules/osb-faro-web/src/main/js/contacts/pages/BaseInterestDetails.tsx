@@ -231,7 +231,7 @@ const BaseInterestDetails: React.FC<IBaseInterestDetailsProps> = ({
 						))}
 					</ClayNavigationBar>
 
-					<div className="h4 list-title">
+					<div className="h4 list-title pb-3 pt-4 px-0">
 						{tabId === tabIds.INDIVIDUALS
 							? sub(
 									Liferay.Language.get(

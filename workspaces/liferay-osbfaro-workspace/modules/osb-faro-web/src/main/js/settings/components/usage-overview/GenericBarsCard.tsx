@@ -16,7 +16,7 @@ export const GenericBarsCard: React.FC<IGenericBarsCard> = ({
 			<Card.Header>
 				<Card.Title>
 					{redactTitle ? (
-						<div className="card-title-rectangle">
+						<div className="card-title-rectangle flex-grow-0">
 							<span className="sr-only">{cardTitle}</span>
 						</div>
 					) : (

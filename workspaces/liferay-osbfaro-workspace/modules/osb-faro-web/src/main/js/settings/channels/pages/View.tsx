@@ -236,7 +236,7 @@ const View: React.FC<IViewProps> = ({
 					/>
 
 					{authorized && (
-						<span className="header-action-buttons pl-3">
+						<span className="d-inline-block header-action-buttons pl-3">
 							<ClayButton
 								className="button-root mr-3"
 								data-testid="clear-data"

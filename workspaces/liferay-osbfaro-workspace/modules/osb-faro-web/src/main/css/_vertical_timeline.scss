@@ -137,7 +137,6 @@
 			// without the code having to leave a gutter for it.
 
 			.payload-copy {
-				position: absolute;
 				right: 0;
 				top: 0;
 			}
@@ -243,9 +242,6 @@
 		}
 
 		.individual-info {
-			align-items: flex-start;
-			display: flex;
-			flex-direction: column;
 			gap: 4px;
 			min-width: 0;
 		}
@@ -315,8 +311,6 @@
 		}
 
 		.page-info {
-			display: flex;
-			flex-direction: column;
 			margin-left: $timeColumnWidth + $baseline * 8;
 			row-gap: $baseline;
 		}
@@ -341,8 +335,6 @@
 		}
 
 		.event-info {
-			display: flex;
-			flex-direction: column;
 			margin-left: $timeColumnWidth + $baseline * 8 + $rowIndent;
 			row-gap: 4px;
 		}

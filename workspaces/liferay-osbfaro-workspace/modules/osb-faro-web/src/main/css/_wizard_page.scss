@@ -3,12 +3,8 @@
 	height: 100vh;
 
 	&__content-col {
-		display: flex;
-		height: 100%;
-		margin: auto;
 		max-width: 608px;
 		padding: 8rem 1rem 0;
-		width: 100%;
 	}
 
 	&__onboarding-col {
@@ -16,7 +12,6 @@
 		border: 1px solid $mainLighten74;
 		border-radius: 8px;
 		min-height: calc(100vh - 100px);
-		padding: 0;
 	}
 
 	&__onboarding-image {
