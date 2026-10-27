@@ -6,12 +6,18 @@
 package com.liferay.jenkins.results.parser.persistent.resource;
 
 import com.liferay.jenkins.results.parser.CloudBucketUtil;
+import com.liferay.jenkins.results.parser.JenkinsAPIUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.lang.reflect.Method;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,6 +99,98 @@ public class BasePersistentResourceTest
 			basePersistentResource.getArtifacts();
 
 		testEquals(artifacts1, artifacts2);
+	}
+
+	@Test
+	public void testIsBuildDiscarded() throws Exception {
+		mockURLReaders();
+
+		_testIsBuildDiscarded(
+			false, new ConnectException(RandomTestUtil.randomString()));
+		_testIsBuildDiscarded(
+			false, new IOException(RandomTestUtil.randomString()));
+		_testIsBuildDiscarded(
+			false, new SocketTimeoutException(RandomTestUtil.randomString()));
+		_testIsBuildDiscarded(
+			false, new UnknownHostException(RandomTestUtil.randomString()));
+		_testIsBuildDiscarded(false, null);
+		_testIsBuildDiscarded(
+			true, new FileNotFoundException(RandomTestUtil.randomString()));
+
+		BasePersistentResource basePersistentResource = Mockito.mock(
+			BasePersistentResource.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePersistentResource
+		).isBuildDiscarded(
+			Mockito.any()
+		);
+
+		Assert.assertFalse(basePersistentResource.isBuildDiscarded(""));
+		Assert.assertFalse(
+			basePersistentResource.isBuildDiscarded(
+				RandomTestUtil.randomString()));
+		Assert.assertFalse(basePersistentResource.isBuildDiscarded(null));
+	}
+
+	@Test
+	public void testIsMissing() throws Exception {
+		mockURLReaders();
+
+		_testIsMissing(false, null, "");
+		_testIsMissing(
+			true, new FileNotFoundException(RandomTestUtil.randomString()),
+			null);
+		_testIsMissing(true, null, RandomTestUtil.randomString());
+	}
+
+	@Test
+	public void testIsMissingSkipped() {
+		mockURLReaders();
+
+		BasePersistentResource basePersistentResource = Mockito.mock(
+			BasePersistentResource.class);
+
+		Mockito.doReturn(
+			"https://" + RandomTestUtil.randomString() + "/job/" +
+				RandomTestUtil.randomString() + "/1/"
+		).when(
+			basePersistentResource
+		).getControllerBuildURL();
+
+		Mockito.doReturn(
+			true
+		).when(
+			basePersistentResource
+		).isArtifactsAvailable();
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePersistentResource
+		).isMissing();
+
+		Assert.assertFalse(basePersistentResource.isMissing());
+
+		Mockito.doReturn(
+			false
+		).when(
+			basePersistentResource
+		).isArtifactsAvailable();
+
+		Mockito.doReturn(
+			true
+		).when(
+			basePersistentResource
+		).isController();
+
+		Assert.assertFalse(basePersistentResource.isMissing());
+
+		Mockito.verify(
+			basePersistentResource, Mockito.never()
+		).isBuildDiscarded(
+			Mockito.any()
+		);
 	}
 
 	@Test
@@ -381,6 +479,101 @@ public class BasePersistentResourceTest
 
 				return null;
 			});
+	}
+
+	private void _testIsBuildDiscarded(
+			boolean expectedBuildDiscarded, IOException ioException)
+		throws Exception {
+
+		String buildURL =
+			"https://" + RandomTestUtil.randomString() + "/job/" +
+				RandomTestUtil.randomString() + "/1/";
+
+		if (ioException != null) {
+			setURLReaderException(ioException, buildURL);
+		}
+		else {
+			setURLReaderOutput(String.valueOf(new JSONObject()), buildURL);
+		}
+
+		BasePersistentResource basePersistentResource = Mockito.mock(
+			BasePersistentResource.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePersistentResource
+		).isBuildDiscarded(
+			Mockito.any()
+		);
+
+		Assert.assertEquals(
+			expectedBuildDiscarded,
+			basePersistentResource.isBuildDiscarded(buildURL));
+
+		verifyURLReaderAttemptsCount(1, buildURL);
+	}
+
+	private void _testIsMissing(
+			boolean expectedMissing, IOException ioException, String result)
+		throws Exception {
+
+		String controllerBuildURL =
+			"https://" + RandomTestUtil.randomString() + "/job/" +
+				RandomTestUtil.randomString() + "/1/";
+
+		if (ioException != null) {
+			setURLReaderException(ioException, controllerBuildURL);
+		}
+		else {
+			setURLReaderOutput(
+				String.valueOf(
+					new JSONObject(
+					).put(
+						"result", result
+					)),
+				controllerBuildURL);
+		}
+
+		BasePersistentResource basePersistentResource = Mockito.mock(
+			BasePersistentResource.class);
+
+		Mockito.doReturn(
+			controllerBuildURL
+		).when(
+			basePersistentResource
+		).getControllerBuildURL();
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePersistentResource
+		).isBuildDiscarded(
+			Mockito.any()
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			basePersistentResource
+		).isMissing();
+
+		if (ioException == null) {
+			Assert.assertEquals(
+				expectedMissing, basePersistentResource.isMissing());
+		}
+		else {
+			try (MockedStatic<JenkinsAPIUtil> jenkinsAPIUtilMockedStatic =
+					Mockito.mockStatic(
+						JenkinsAPIUtil.class,
+						invocation -> {
+							throw new RuntimeException(
+								RandomTestUtil.randomString());
+						})) {
+
+				Assert.assertEquals(
+					expectedMissing, basePersistentResource.isMissing());
+			}
+		}
+
+		verifyURLReaderAttemptsCount(1, controllerBuildURL);
 	}
 
 }

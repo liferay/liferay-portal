@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser.persistent.resource;
 
 import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.BuildFactory;
 import com.liferay.jenkins.results.parser.JenkinsAPIUtil;
 import com.liferay.jenkins.results.parser.JenkinsCohort;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
@@ -13,6 +14,7 @@ import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.JenkinsStopBuildUtil;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
+import com.liferay.jenkins.results.parser.TopLevelBuild;
 
 import java.io.IOException;
 
@@ -212,6 +214,42 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	@Test
+	public void testUpdateControllerDiscardedProducerBuild() {
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getBaseBundlePersistentResource(_getJenkinsMaster(), 0);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_producerBuildURL", _getBuildURL());
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_status",
+			PersistentResource.Status.IN_PROGRESS);
+
+		RuntimeException runtimeException1 = new RuntimeException(
+			RandomTestUtil.randomString());
+
+		try (MockedStatic<JenkinsAPIUtil> jenkinsAPIUtilMockedStatic =
+				Mockito.mockStatic(
+					JenkinsAPIUtil.class,
+					invocation -> {
+						throw runtimeException1;
+					})) {
+
+			baseBundlePersistentResource.update();
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException2) {
+			Assert.assertSame(runtimeException1, runtimeException2);
+		}
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.never()
+		).isBuildDiscarded(
+			Mockito.any()
+		);
+	}
+
+	@Test
 	public void testUpdateControllerHandover() {
 		String currentTopLevelBuildURL =
 			"https://" + RandomTestUtil.randomString() + "/job/" +
@@ -329,6 +367,35 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	@Test
+	public void testUpdateFollowerControllerBuildLookupFailure() {
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(
+				_getDataJSONObject(0, PersistentResource.Status.IN_PROGRESS));
+
+		RuntimeException runtimeException1 = new RuntimeException(
+			RandomTestUtil.randomString());
+
+		try (MockedStatic<JenkinsAPIUtil> jenkinsAPIUtilMockedStatic =
+				Mockito.mockStatic(
+					JenkinsAPIUtil.class,
+					invocation -> {
+						throw runtimeException1;
+					})) {
+
+			baseBundlePersistentResource.update();
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException2) {
+			Assert.assertSame(runtimeException1, runtimeException2);
+		}
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.never()
+		).save();
+	}
+
+	@Test
 	public void testUpdateFollowerControllerFinished() {
 		for (PersistentResource.Status status :
 				new PersistentResource.Status[] {
@@ -351,6 +418,152 @@ public class BaseBundlePersistentResourceTest
 			PersistentResource.Status.IN_QUEUE);
 		_testUpdateFollowerControllerRunning(
 			PersistentResource.Status.NOT_STARTED);
+	}
+
+	@Test
+	public void testUpdateFollowerDiscardedControllerBuild() {
+		_testUpdateFollowerDiscardedControllerBuild(
+			PersistentResource.Status.IN_PROGRESS);
+		_testUpdateFollowerDiscardedControllerBuild(
+			PersistentResource.Status.IN_QUEUE);
+		_testUpdateFollowerDiscardedControllerBuild(
+			PersistentResource.Status.NOT_STARTED);
+	}
+
+	@Test
+	public void testUpdateFollowerDiscardedProducerBuild() {
+		JSONObject dataJSONObject = _getDataJSONObject(
+			0, PersistentResource.Status.SUCCESS);
+
+		String producerBuildURL = _getBuildURL();
+
+		dataJSONObject.put("producer_build_url", producerBuildURL);
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(dataJSONObject);
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isArtifactsAvailable();
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isBuildDiscarded(
+			producerBuildURL
+		);
+
+		TopLevelBuild topLevelBuild = Mockito.mock(TopLevelBuild.class);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_topLevelBuild", topLevelBuild);
+
+		RuntimeException runtimeException1 = new RuntimeException(
+			RandomTestUtil.randomString());
+
+		try (MockedStatic<BuildFactory> buildFactoryMockedStatic =
+				Mockito.mockStatic(
+					BuildFactory.class,
+					invocation -> {
+						throw runtimeException1;
+					})) {
+
+			_update(baseBundlePersistentResource, 2);
+
+			Assert.assertEquals(
+				PersistentResource.Status.SUCCESS,
+				baseBundlePersistentResource.getStatus());
+
+			Mockito.verify(
+				topLevelBuild, Mockito.never()
+			).addDownstreamBuild(
+				Mockito.any()
+			);
+
+			Mockito.verify(
+				baseBundlePersistentResource
+			).isBuildDiscarded(
+				producerBuildURL
+			);
+
+			Mockito.verify(
+				baseBundlePersistentResource
+			).print(
+				"WARNING: Producer build " + producerBuildURL + " was discarded"
+			);
+
+			Mockito.verify(
+				baseBundlePersistentResource, Mockito.never()
+			).save();
+
+			Mockito.verify(
+				baseBundlePersistentResource, Mockito.times(2)
+			).touch();
+
+			String redispatchedProducerBuildURL = _getBuildURL();
+
+			dataJSONObject.put(
+				"producer_build_url", redispatchedProducerBuildURL);
+
+			try {
+				baseBundlePersistentResource.update();
+
+				Assert.fail();
+			}
+			catch (RuntimeException runtimeException2) {
+				Assert.assertSame(runtimeException1, runtimeException2);
+			}
+
+			buildFactoryMockedStatic.verify(
+				() -> BuildFactory.newBuild(
+					redispatchedProducerBuildURL, topLevelBuild));
+		}
+	}
+
+	@Test
+	public void testUpdateFollowerDiscardedProducerBuildControllerRunning() {
+		JSONObject dataJSONObject = _getDataJSONObject(
+			0, PersistentResource.Status.IN_PROGRESS);
+
+		String producerBuildURL = _getBuildURL();
+
+		dataJSONObject.put("producer_build_url", producerBuildURL);
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(dataJSONObject);
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isBuildDiscarded(
+			producerBuildURL
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_topLevelBuild",
+			Mockito.mock(TopLevelBuild.class));
+
+		try (MockedStatic<BuildFactory> buildFactoryMockedStatic =
+				Mockito.mockStatic(BuildFactory.class);
+			MockedStatic<JenkinsAPIUtil> jenkinsAPIUtilMockedStatic =
+				_mockJenkinsAPIUtil("")) {
+
+			baseBundlePersistentResource.update();
+
+			buildFactoryMockedStatic.verifyNoInteractions();
+		}
+
+		Assert.assertEquals(
+			PersistentResource.Status.IN_PROGRESS,
+			baseBundlePersistentResource.getStatus());
+
+		Mockito.verify(
+			baseBundlePersistentResource, Mockito.never()
+		).save();
 	}
 
 	@Test
@@ -433,6 +646,52 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	@Test
+	public void testUpdateFollowerMissingArtifactsDiscardedControllerBuild() {
+		JSONObject dataJSONObject = _getDataJSONObject(
+			0, PersistentResource.Status.SUCCESS);
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(dataJSONObject);
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isBuildDiscarded(
+			dataJSONObject.getString("controller_build_url")
+		);
+
+		try (MockedStatic<JenkinsAPIUtil> jenkinsAPIUtilMockedStatic =
+				Mockito.mockStatic(
+					JenkinsAPIUtil.class,
+					invocation -> {
+						throw new RuntimeException(
+							RandomTestUtil.randomString());
+					});
+			MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic =
+					_mockJenkinsResultsParserUtil(
+						Collections.<String, Answer<Object>>emptyMap())) {
+
+			baseBundlePersistentResource.update();
+
+			Assert.assertEquals(
+				PersistentResource.Status.IN_PROGRESS,
+				baseBundlePersistentResource.getStatus());
+
+			Mockito.verify(
+				baseBundlePersistentResource, Mockito.never()
+			).save();
+
+			baseBundlePersistentResource.update();
+
+			Mockito.verify(
+				baseBundlePersistentResource
+			).save();
+		}
+	}
+
+	@Test
 	public void testUpdateFollowerMissingArtifactsFailed() {
 		BaseBundlePersistentResource baseBundlePersistentResource =
 			_getFollowerBaseBundlePersistentResource(
@@ -451,6 +710,53 @@ public class BaseBundlePersistentResourceTest
 		Mockito.verify(
 			baseBundlePersistentResource, Mockito.never()
 		).save();
+	}
+
+	@Test
+	public void testUpdateFollowerProducerBuild() {
+		JSONObject dataJSONObject = _getDataJSONObject(
+			0, PersistentResource.Status.SUCCESS);
+
+		String producerBuildURL = _getBuildURL();
+
+		dataJSONObject.put("producer_build_url", producerBuildURL);
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(dataJSONObject);
+
+		TopLevelBuild topLevelBuild = Mockito.mock(TopLevelBuild.class);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_topLevelBuild", topLevelBuild);
+
+		RuntimeException runtimeException1 = new RuntimeException(
+			RandomTestUtil.randomString());
+
+		try (MockedStatic<BuildFactory> buildFactoryMockedStatic =
+				Mockito.mockStatic(
+					BuildFactory.class,
+					invocation -> {
+						throw runtimeException1;
+					})) {
+
+			try {
+				baseBundlePersistentResource.update();
+
+				Assert.fail();
+			}
+			catch (RuntimeException runtimeException2) {
+				Assert.assertSame(runtimeException1, runtimeException2);
+			}
+
+			buildFactoryMockedStatic.verify(
+				() -> BuildFactory.newBuild(producerBuildURL, topLevelBuild));
+		}
+
+		Mockito.verify(
+			baseBundlePersistentResource
+		).isBuildDiscarded(
+			producerBuildURL
+		);
 	}
 
 	@Test
@@ -941,6 +1247,31 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	@Test
+	public void testUpdateSubclasses() {
+		for (Class<?> clazz :
+				new Class<?>[] {
+					AsahBundlePersistentResource.class,
+					FaroBundlePersistentResource.class,
+					PortalBundlePersistentResource.class,
+					WorkspaceBundlePersistentResource.class
+				}) {
+
+			Assert.assertSame(
+				BaseBundlePersistentResource.class, clazz.getSuperclass());
+
+			for (Method method : clazz.getDeclaredMethods()) {
+				String methodName = method.getName();
+
+				Assert.assertFalse(
+					methodName,
+					methodName.equals("isBuildDiscarded") ||
+					methodName.equals("isMissing") ||
+					methodName.equals("update"));
+			}
+		}
+	}
+
+	@Test
 	public void testUpdateTransientFailure() {
 		BaseBundlePersistentResource baseBundlePersistentResource =
 			_getBaseBundlePersistentResource(
@@ -1145,6 +1476,11 @@ public class BaseBundlePersistentResourceTest
 			PersistentResource.Status.IN_QUEUE);
 
 		return baseBundlePersistentResource;
+	}
+
+	private String _getBuildURL() {
+		return "https://" + RandomTestUtil.randomString() + "/job/" +
+			RandomTestUtil.randomString() + "/1/";
 	}
 
 	private JSONObject _getDataJSONObject(
@@ -1434,6 +1770,48 @@ public class BaseBundlePersistentResourceTest
 
 		Mockito.verify(
 			followerBaseBundlePersistentResource, Mockito.never()
+		).isBuildDiscarded(
+			Mockito.any()
+		);
+
+		Mockito.verify(
+			followerBaseBundlePersistentResource, Mockito.never()
+		).save();
+	}
+
+	private void _testUpdateFollowerDiscardedControllerBuild(
+		PersistentResource.Status status) {
+
+		JSONObject dataJSONObject = _getDataJSONObject(0, status);
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(dataJSONObject);
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isBuildDiscarded(
+			dataJSONObject.getString("controller_build_url")
+		);
+
+		try (MockedStatic<JenkinsAPIUtil> jenkinsAPIUtilMockedStatic =
+				Mockito.mockStatic(
+					JenkinsAPIUtil.class,
+					invocation -> {
+						throw new RuntimeException(
+							RandomTestUtil.randomString());
+					});
+			MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic =
+					_mockJenkinsResultsParserUtil(
+						Collections.<String, Answer<Object>>emptyMap())) {
+
+			baseBundlePersistentResource.update();
+		}
+
+		Mockito.verify(
+			baseBundlePersistentResource
 		).save();
 	}
 
