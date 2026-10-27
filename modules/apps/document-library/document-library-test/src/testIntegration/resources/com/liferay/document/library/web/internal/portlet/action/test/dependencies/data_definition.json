@@ -1,0 +1,98 @@
+{
+	"availableLanguageIds": [
+		"en_US"
+	],
+	"contentType": "document-library",
+	"dataDefinitionFields": [
+		{
+			"customProperties": {
+				"autocomplete": false,
+				"dataSourceType": "manual",
+				"dataType": "string",
+				"ddmDataProviderInstanceId": [
+				],
+				"ddmDataProviderInstanceOutput": [
+				],
+				"displayStyle": "singleline",
+				"fieldNamespace": "",
+				"fieldReference": "Text1",
+				"options": {
+					"en_US": [
+						{
+							"label": "Option",
+							"reference": "",
+							"value": "Option"
+						}
+					]
+				},
+				"placeholder": {
+					"en_US": ""
+				},
+				"tooltip": {
+					"en_US": ""
+				},
+				"visibilityExpression": ""
+			},
+			"defaultValue": {
+				"en_US": ""
+			},
+			"fieldType": "text",
+			"indexType": "keyword",
+			"indexable": true,
+			"label": {
+				"en_US": "Text"
+			},
+			"localizable": true,
+			"name": "Text1",
+			"nestedDataDefinitionFields": [
+			],
+			"readOnly": false,
+			"repeatable": false,
+			"required": false,
+			"showLabel": true,
+			"tip": {
+				"en_US": ""
+			}
+		}
+	],
+	"defaultDataLayout": {
+		"dataLayoutFields": {
+		},
+		"dataLayoutPages": [
+			{
+				"dataLayoutRows": [
+					{
+						"dataLayoutColumns": [
+							{
+								"columnSize": 12,
+								"fieldNames": [
+									"Text1"
+								]
+							}
+						]
+					}
+				],
+				"description": {
+					"en_US": "Description"
+				},
+				"title": {
+					"en_US": "Page"
+				}
+			}
+		],
+		"dataRules": [
+		],
+		"description": {
+		},
+		"name": {
+		},
+		"paginationMode": "single-page"
+	},
+	"defaultLanguageId": "en_US",
+	"description": {
+	},
+	"name": {
+		"en_US": "Test Structure"
+	},
+	"storageType": "default"
+}
