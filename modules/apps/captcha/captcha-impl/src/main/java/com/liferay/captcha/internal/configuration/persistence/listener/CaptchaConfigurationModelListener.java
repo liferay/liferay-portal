@@ -11,13 +11,21 @@ import com.liferay.captcha.simplecaptcha.SimpleCaptchaImpl;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListenerException;
 import com.liferay.portal.kernel.captcha.CaptchaConfigurationException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Http;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import java.util.Dictionary;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import org.osgi.service.component.annotations.Component;
@@ -69,13 +77,32 @@ public class CaptchaConfigurationModelListener
 		return _resourceBundle;
 	}
 
+	private boolean _isAllowedURL(String url) {
+		try {
+			URI uri = HttpComponentsUtil.getURI(url);
+
+			if (Objects.equals(uri.getHost(), "www.google.com") &&
+				Objects.equals(uri.getScheme(), Http.HTTPS)) {
+
+				return true;
+			}
+		}
+		catch (URISyntaxException uriSyntaxException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(uriSyntaxException);
+			}
+		}
+
+		return false;
+	}
+
 	private void _validateReCaptcha(Dictionary<String, Object> properties)
 		throws CaptchaConfigurationException {
 
 		String reCaptchaNoScriptURL = (String)properties.get(
 			"reCaptchaNoScriptURL");
 
-		if (!reCaptchaNoScriptURL.startsWith(_RECAPTCHA_URL)) {
+		if (!_isAllowedURL(reCaptchaNoScriptURL)) {
 			throw new CaptchaConfigurationException(
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
@@ -105,7 +132,7 @@ public class CaptchaConfigurationModelListener
 		String reCaptchaScriptURL = (String)properties.get(
 			"reCaptchaScriptURL");
 
-		if (!reCaptchaScriptURL.startsWith(_RECAPTCHA_URL)) {
+		if (!_isAllowedURL(reCaptchaScriptURL)) {
 			throw new CaptchaConfigurationException(
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
@@ -115,7 +142,7 @@ public class CaptchaConfigurationModelListener
 		String reCaptchaVerifyURL = (String)properties.get(
 			"reCaptchaVerifyURL");
 
-		if (!reCaptchaVerifyURL.startsWith(_RECAPTCHA_URL)) {
+		if (!_isAllowedURL(reCaptchaVerifyURL)) {
 			throw new CaptchaConfigurationException(
 				ResourceBundleUtil.getString(
 					_getResourceBundle(),
@@ -182,7 +209,8 @@ public class CaptchaConfigurationModelListener
 		}
 	}
 
-	private static final String _RECAPTCHA_URL = "https://www.google.com";
+	private static final Log _log = LogFactoryUtil.getLog(
+		CaptchaConfigurationModelListener.class);
 
 	private ResourceBundle _resourceBundle;
 
