@@ -169,10 +169,10 @@ public class AMImageHTMLExportImportContentProcessor
 				continue;
 			}
 
-			int tagIndex = content.lastIndexOf(CharPool.LESS_THAN, index);
-
 			String fileEntryIdAttribute =
 				_FILE_ENTRY_ID_ATTRIBUTE_PREFIX + fileEntry.getFileEntryId();
+
+			int tagIndex = content.lastIndexOf(CharPool.LESS_THAN, index);
 
 			if (content.startsWith("<picture ", tagIndex)) {
 				int imgIndex = content.indexOf("<img ", pathEndIndex);

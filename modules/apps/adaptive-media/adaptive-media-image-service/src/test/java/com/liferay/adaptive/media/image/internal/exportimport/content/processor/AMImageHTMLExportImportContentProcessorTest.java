@@ -549,7 +549,6 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		String prefix = RandomTestUtil.randomString();
 		String infix = RandomTestUtil.randomString();
 		String suffix = RandomTestUtil.randomString();
-
 		String urlFileEntry1 = RandomTestUtil.randomString();
 		String urlFileEntry2 = RandomTestUtil.randomString();
 
@@ -604,7 +603,6 @@ public class AMImageHTMLExportImportContentProcessorTest {
 
 		String prefix = RandomTestUtil.randomString();
 		String suffix = RandomTestUtil.randomString();
-
 		String urlFileEntry = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
@@ -685,7 +683,6 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		String infix = RandomTestUtil.randomString();
 		String prefix = RandomTestUtil.randomString();
 		String suffix = RandomTestUtil.randomString();
-
 		String urlFileEntry1 = RandomTestUtil.randomString();
 		String urlFileEntry2 = RandomTestUtil.randomString();
 
