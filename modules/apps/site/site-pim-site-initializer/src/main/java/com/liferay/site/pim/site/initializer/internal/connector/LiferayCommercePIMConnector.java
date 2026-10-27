@@ -368,6 +368,8 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					"name", JSONUtil.put("en_US", value)
 				).put(
 					"priority", atomicInteger.getAndIncrement()
+				).put(
+					"quantity", 0
 				);
 			});
 

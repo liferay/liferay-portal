@@ -77,6 +77,8 @@ public class LiferayCommerceRESTClientTest {
 
 		Assert.assertEquals(
 			"Bearer null", headers.get(HttpHeaders.AUTHORIZATION));
+		Assert.assertEquals(
+			"application/json", headers.get(HttpHeaders.CONTENT_TYPE));
 	}
 
 	private void _assertPIMConnectorException(

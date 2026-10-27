@@ -1054,6 +1054,7 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals(
 			"red", productOptionValueJSONObject.getString("key"));
+		Assert.assertEquals(0, productOptionValueJSONObject.getInt("quantity"));
 
 		productOptionValueJSONObject = jsonArray.getJSONObject(1);
 

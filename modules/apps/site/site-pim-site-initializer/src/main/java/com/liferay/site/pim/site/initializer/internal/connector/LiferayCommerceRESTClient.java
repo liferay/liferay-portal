@@ -99,6 +99,8 @@ public class LiferayCommerceRESTClient {
 				URLCodec.encodeURL(externalReferenceCode),
 				"&importStrategy=ON_ERROR_CONTINUE"));
 
+		options.addHeader(
+			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
 		options.setBody(
 			jsonArray.toString(), ContentTypes.APPLICATION_JSON,
 			StringPool.UTF8);
@@ -119,6 +121,8 @@ public class LiferayCommerceRESTClient {
 				"/by-externalReferenceCode/" +
 					URLCodec.encodeURL(externalReferenceCode));
 
+		options.addHeader(
+			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
 		options.setBody(
 			jsonObject.toString(), ContentTypes.APPLICATION_JSON,
 			StringPool.UTF8);
