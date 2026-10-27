@@ -41,6 +41,7 @@ import co.elastic.clients.util.NamedValue;
 
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.aggregation.Aggregation;
@@ -213,7 +214,7 @@ public class ElasticsearchAggregationVisitor
 			dateHistogramAggregation.getDateHistogramInterval();
 
 		if (dateHistogramInterval != null) {
-			CalendarInterval calendarInterval = _translateCalendarInterval(
+			CalendarInterval calendarInterval = _calendarIntervals.get(
 				dateHistogramInterval);
 
 			if (calendarInterval != null) {
@@ -1644,25 +1645,6 @@ public class ElasticsearchAggregationVisitor
 		return fieldAndFormats;
 	}
 
-	private CalendarInterval _translateCalendarInterval(
-		String dateHistogramInterval) {
-
-		if (dateHistogramInterval.equals("1M")) {
-			return CalendarInterval.Month;
-		}
-		else if (dateHistogramInterval.equals("1q")) {
-			return CalendarInterval.Quarter;
-		}
-		else if (dateHistogramInterval.equals("1w")) {
-			return CalendarInterval.Week;
-		}
-		else if (dateHistogramInterval.equals("1y")) {
-			return CalendarInterval.Year;
-		}
-
-		return null;
-	}
-
 	private ChiSquareHeuristic _translateChiSquareHeuristic(
 		ChiSquareSignificanceHeuristic chiSquareSignificanceHeuristic) {
 
@@ -1794,6 +1776,17 @@ public class ElasticsearchAggregationVisitor
 				scriptTranslator.translate(
 					scriptSignificanceHeuristic.getScript())));
 	}
+
+	private static final Map<String, CalendarInterval> _calendarIntervals =
+		HashMapBuilder.put(
+			"1M", CalendarInterval.Month
+		).put(
+			"1q", CalendarInterval.Quarter
+		).put(
+			"1w", CalendarInterval.Week
+		).put(
+			"1y", CalendarInterval.Year
+		).build();
 
 	private final GeoTranslator _geoTranslator = new GeoTranslator();
 	private final HighlightTranslator _highlightTranslator =
