@@ -77,11 +77,13 @@ public class LayoutRevisionServiceTest {
 		_testAddLayoutRevision();
 		_testAddLayoutRevisionWhenFeatureFlagDisabled();
 		_testAddLayoutRevisionWithAnotherLayoutPortletPreferencesPlid();
+		_testAddLayoutRevisionWithInvalidParentLayoutRevisionId();
 		_testAddLayoutRevisionWithLayoutFromAnotherGroup();
 	}
 
 	private LayoutRevision _addLayoutRevision(
-			Layout layout, long portletPreferencesPlid)
+			Layout layout, long parentLayoutRevisionId,
+			long portletPreferencesPlid)
 		throws Exception {
 
 		LayoutBranch layoutBranch =
@@ -91,8 +93,7 @@ public class LayoutRevisionServiceTest {
 		return _layoutRevisionService.addLayoutRevision(
 			RandomTestUtil.randomLong(),
 			_layoutSetBranch.getLayoutSetBranchId(),
-			layoutBranch.getLayoutBranchId(),
-			LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID, false,
+			layoutBranch.getLayoutBranchId(), parentLayoutRevisionId, false,
 			layout.getPlid(), portletPreferencesPlid, layout.isPrivateLayout(),
 			layout.getName(), layout.getTitle(), layout.getDescription(),
 			layout.getKeywords(), layout.getRobots(), layout.getTypeSettings(),
@@ -138,7 +139,8 @@ public class LayoutRevisionServiceTest {
 				"</value></preference></portlet-preferences>"));
 
 		LayoutRevision layoutRevision = _addLayoutRevision(
-			_layout, LayoutConstants.DEFAULT_PLID);
+			_layout, LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID,
+			LayoutConstants.DEFAULT_PLID);
 
 		Assert.assertEquals(
 			TestPropsValues.getUserId(), layoutRevision.getUserId());
@@ -146,8 +148,16 @@ public class LayoutRevisionServiceTest {
 		_assertPortletPreferences(layoutRevision, portletId);
 
 		_assertPortletPreferences(
-			_addLayoutRevision(_layout, layoutRevision.getLayoutRevisionId()),
+			_addLayoutRevision(
+				_layout,
+				LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID,
+				layoutRevision.getLayoutRevisionId()),
 			portletId);
+
+		Assert.assertNotNull(
+			_addLayoutRevision(
+				_layout, layoutRevision.getLayoutRevisionId(),
+				LayoutConstants.DEFAULT_PLID));
 	}
 
 	private void _testAddLayoutRevisionWhenFeatureFlagDisabled()
@@ -162,7 +172,9 @@ public class LayoutRevisionServiceTest {
 				"Feature flag LPD-105778 is disabled for company " +
 					TestPropsValues.getCompanyId(),
 				() -> _addLayoutRevision(
-					_layout, LayoutConstants.DEFAULT_PLID));
+					_layout,
+					LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID,
+					LayoutConstants.DEFAULT_PLID));
 		}
 	}
 
@@ -186,7 +198,10 @@ public class LayoutRevisionServiceTest {
 			StringBundler.concat(
 				"No layout revision exists with the primary key ",
 				layout.getPlid(), " for layout ", _layout.getPlid()),
-			() -> _addLayoutRevision(_layout, layout.getPlid()));
+			() -> _addLayoutRevision(
+				_layout,
+				LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID,
+				layout.getPlid()));
 
 		AssertUtils.assertFailure(
 			NoSuchLayoutRevisionException.class,
@@ -195,7 +210,49 @@ public class LayoutRevisionServiceTest {
 				layoutRevision.getLayoutRevisionId(), " for layout ",
 				_layout.getPlid()),
 			() -> _addLayoutRevision(
-				_layout, layoutRevision.getLayoutRevisionId()));
+				_layout,
+				LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID,
+				layoutRevision.getLayoutRevisionId()));
+	}
+
+	private void _testAddLayoutRevisionWithInvalidParentLayoutRevisionId()
+		throws Exception {
+
+		// Nonexistent parent layout revision
+
+		long parentLayoutRevisionId = RandomTestUtil.randomLong();
+
+		AssertUtils.assertFailure(
+			NoSuchLayoutRevisionException.class,
+			StringBundler.concat(
+				"No layout revision exists with the primary key ",
+				parentLayoutRevisionId, " for layout ", _layout.getPlid()),
+			() -> _addLayoutRevision(
+				_layout, parentLayoutRevisionId, LayoutConstants.DEFAULT_PLID));
+
+		// Parent layout revision from another group
+
+		Group group = GroupTestUtil.addGroup();
+
+		_groups.add(group);
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(group);
+
+		LayoutSetBranch layoutSetBranch = _addLayoutSetBranch(group);
+
+		LayoutRevision layoutRevision =
+			_layoutRevisionLocalService.fetchLatestLayoutRevision(
+				layoutSetBranch.getLayoutSetBranchId(), layout.getPlid());
+
+		AssertUtils.assertFailure(
+			NoSuchLayoutRevisionException.class,
+			StringBundler.concat(
+				"No layout revision exists with the primary key ",
+				layoutRevision.getLayoutRevisionId(), " for layout ",
+				_layout.getPlid()),
+			() -> _addLayoutRevision(
+				_layout, layoutRevision.getLayoutRevisionId(),
+				LayoutConstants.DEFAULT_PLID));
 	}
 
 	private void _testAddLayoutRevisionWithLayoutFromAnotherGroup()
@@ -213,7 +270,10 @@ public class LayoutRevisionServiceTest {
 				"User ", TestPropsValues.getUserId(),
 				" must have UPDATE permission for ", Layout.class.getName(),
 				" ", layout.getPlid()),
-			() -> _addLayoutRevision(layout, LayoutConstants.DEFAULT_PLID));
+			() -> _addLayoutRevision(
+				layout,
+				LayoutRevisionConstants.DEFAULT_PARENT_LAYOUT_REVISION_ID,
+				LayoutConstants.DEFAULT_PLID));
 	}
 
 	@DeleteAfterTestRun
