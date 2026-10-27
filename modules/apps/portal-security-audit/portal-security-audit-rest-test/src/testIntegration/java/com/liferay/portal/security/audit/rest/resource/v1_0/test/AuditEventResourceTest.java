@@ -216,7 +216,7 @@ public class AuditEventResourceTest extends BaseAuditEventResourceTestCase {
 		AuditEvent auditEvent) {
 
 		AuditMessage auditMessage = new AuditMessage(
-			0L, testCompany.getCompanyId(), 0L, null, null,
+			0, testCompany.getCompanyId(), 0, null, null,
 			auditEvent.getAccountId(), null, auditEvent.getEntityType(),
 			String.valueOf(auditEvent.getEntityId()),
 			auditEvent.getContextName(), auditEvent.getEventType(), null);

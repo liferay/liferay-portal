@@ -89,11 +89,11 @@ public class AuditMessageTest {
 		_assertImpersonatedUser(
 			_getAuditMessage(String.valueOf(_impersonatedUser.getUserId())));
 		_assertNoImpersonatedUser(
+			_getAuditMessage(String.valueOf(_user.getUserId())));
+		_assertNoImpersonatedUser(
 			_getAuditMessage(
 				String.valueOf(
 					_userLocalService.getGuestUserId(_user.getCompanyId()))));
-		_assertNoImpersonatedUser(
-			_getAuditMessage(String.valueOf(_user.getUserId())));
 		_assertNoImpersonatedUser(_getAuditMessage(null));
 
 		_testConstructorWhenFeatureFlagIsDisabled();
