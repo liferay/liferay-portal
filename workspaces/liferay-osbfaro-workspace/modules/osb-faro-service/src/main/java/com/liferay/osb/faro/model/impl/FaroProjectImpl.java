@@ -26,12 +26,9 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 
 	@Override
 	public Date getLastAnniversaryDate() throws Exception {
-		if (_subscriptionJSONObject == null) {
-			_subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
-				getSubscription());
-		}
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
 
-		return new Date(_subscriptionJSONObject.getLong("lastAnniversaryDate"));
+		return new Date(subscriptionJSONObject.getLong("lastAnniversaryDate"));
 	}
 
 	@Override
@@ -41,23 +38,17 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 
 	@Override
 	public Date getStartDate() throws Exception {
-		if (_subscriptionJSONObject == null) {
-			_subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
-				getSubscription());
-		}
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
 
 		return new Date(
-			_subscriptionJSONObject.getLong("startDate", getCreateTime()));
+			subscriptionJSONObject.getLong("startDate", getCreateTime()));
 	}
 
 	@Override
 	public String getSubscriptionName() throws Exception {
-		if (_subscriptionJSONObject == null) {
-			_subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
-				getSubscription());
-		}
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
 
-		return _subscriptionJSONObject.getString("name");
+		return subscriptionJSONObject.getString("name");
 	}
 
 	@Override
@@ -131,6 +122,15 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 
 			return true;
 		}
+	}
+
+	private JSONObject _getSubscriptionJSONObject() throws Exception {
+		if (_subscriptionJSONObject == null) {
+			_subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
+				getSubscription());
+		}
+
+		return _subscriptionJSONObject;
 	}
 
 	private boolean _matches(String ipAddress1, String ipAddress2)
