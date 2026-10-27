@@ -703,10 +703,13 @@ public class ServicePreAction extends Action {
 
 		List<Layout> accessibleLayouts = new ArrayList<>();
 
+		long plid = layout.getPlid();
+
 		for (Layout curLayout : layouts) {
 			if ((!ignoreHiddenLayouts && curLayout.isHidden()) ||
-				!curLayout.isPublished() ||
-				!_hasAccessPermission(permissionChecker, curLayout, false)) {
+				!_isAccessible(
+					curLayout, permissionChecker, plid, requirePublishedLayout,
+					hasViewLayoutPermission)) {
 
 				continue;
 			}
@@ -1825,6 +1828,32 @@ public class ServicePreAction extends Action {
 		themeDisplay.setURLSignOut(mainPath.concat(_PATH_PORTAL_LOGOUT));
 
 		return themeDisplay;
+	}
+
+	private boolean _isAccessible(
+			Layout curLayout, PermissionChecker permissionChecker, long plid,
+			boolean requirePublishedLayout, boolean viewLayoutPermission)
+		throws Exception {
+
+		if (curLayout.getPlid() == plid) {
+			if (requirePublishedLayout) {
+				return viewLayoutPermission;
+			}
+
+			if (viewLayoutPermission && curLayout.isPublished()) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (curLayout.isPublished() &&
+			_hasAccessPermission(permissionChecker, curLayout, false)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
