@@ -234,26 +234,26 @@ public class LaunchSetPublisherTest {
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
-				launchSetId, TestPropsValues.getUserId(),
-				new Date(System.currentTimeMillis() - Time.MINUTE)));
+				new Date(System.currentTimeMillis() - Time.MINUTE), launchSetId,
+				TestPropsValues.getUserId()));
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
-				launchSetId, TestPropsValues.getUserId(), null));
+				null, launchSetId, TestPropsValues.getUserId()));
 
 		Date date = new Date(System.currentTimeMillis() + Time.DAY);
 
 		_launchSetPublisher.schedulePublish(
-			launchSetId, TestPropsValues.getUserId(), date);
+			date, launchSetId, TestPropsValues.getUserId());
 
-		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
+		_assertScheduledDateAndStatus(date, WorkflowConstants.STATUS_SCHEDULED);
 
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
-				launchSetId, TestPropsValues.getUserId(),
-				new Date(System.currentTimeMillis() + Time.DAY)));
-		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
+				new Date(System.currentTimeMillis() + Time.DAY), launchSetId,
+				TestPropsValues.getUserId()));
+		_assertScheduledDateAndStatus(date, WorkflowConstants.STATUS_SCHEDULED);
 	}
 
 	@Test
@@ -262,22 +262,22 @@ public class LaunchSetPublisherTest {
 
 		_launchSetPublisher.unschedulePublish(launchSetId);
 
-		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
 		_launchSetPublisher.schedulePublish(
-			launchSetId, TestPropsValues.getUserId(),
-			new Date(System.currentTimeMillis() + Time.DAY));
+			new Date(System.currentTimeMillis() + Time.DAY), launchSetId,
+			TestPropsValues.getUserId());
 
 		_launchSetPublisher.unschedulePublish(launchSetId);
 
-		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
 		Date date = new Date(System.currentTimeMillis() + Time.WEEK);
 
 		_launchSetPublisher.schedulePublish(
-			launchSetId, TestPropsValues.getUserId(), date);
+			date, launchSetId, TestPropsValues.getUserId());
 
-		_assertScheduledDate(date, WorkflowConstants.STATUS_SCHEDULED);
+		_assertScheduledDateAndStatus(date, WorkflowConstants.STATUS_SCHEDULED);
 	}
 
 	private ObjectEntry _addLaunchEntryObjectEntry(
@@ -347,7 +347,8 @@ public class LaunchSetPublisherTest {
 				MapUtil.getLong(values, "classPK"), draftId));
 	}
 
-	private void _assertScheduledDate(Date expectedDate, int expectedStatus)
+	private void _assertScheduledDateAndStatus(
+			Date expectedDate, int expectedStatus)
 		throws Exception {
 
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
@@ -357,14 +358,14 @@ public class LaunchSetPublisherTest {
 
 		Assert.assertEquals(expectedStatus, launchSetObjectEntry.getStatus());
 
-		Date scheduledDate = null;
-
 		SchedulerResponse schedulerResponse =
 			_schedulerEngineHelper.getScheduledJob(
 				StringBundler.concat(
 					launchSetId, StringPool.AT,
 					launchSetObjectEntry.getCompanyId()),
 				"liferay/launch_set_scheduled_publish", StorageType.PERSISTED);
+
+		Date scheduledDate = null;
 
 		if (schedulerResponse != null) {
 			scheduledDate = _schedulerEngineHelper.getStartDate(

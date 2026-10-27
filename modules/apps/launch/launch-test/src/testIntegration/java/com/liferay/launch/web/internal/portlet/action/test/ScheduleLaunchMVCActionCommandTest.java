@@ -111,31 +111,6 @@ public class ScheduleLaunchMVCActionCommandTest {
 	@Test
 	public void testProcessAction() throws Exception {
 
-		// Without permission
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		_user = UserTestUtil.addUser();
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_user));
-
-		try {
-			JSONObject jsonObject = _processAction(
-				System.currentTimeMillis() + Time.DAY, _user);
-
-			Assert.assertEquals(
-				_language.get(
-					LocaleUtil.US, "you-do-not-have-the-required-permissions"),
-				jsonObject.getString("error"));
-		}
-		finally {
-			PermissionThreadLocal.setPermissionChecker(permissionChecker);
-		}
-
-		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
-
 		// Date in the past
 
 		JSONObject jsonObject = _processAction(
@@ -147,7 +122,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 				LocaleUtil.US, "the-publish-time-must-be-in-the-future"),
 			jsonObject.getString("validationError"));
 
-		_assertScheduledDate(null, WorkflowConstants.STATUS_DRAFT);
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
 
 		// External redirect
 
@@ -177,6 +152,31 @@ public class ScheduleLaunchMVCActionCommandTest {
 		_launchSetPublisher.unschedulePublish(
 			_launchSetObjectEntry.getObjectEntryId());
 
+		// Without permission
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		_user = UserTestUtil.addUser();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_user));
+
+		try {
+			jsonObject = _processAction(
+				System.currentTimeMillis() + Time.DAY, _user);
+
+			Assert.assertEquals(
+				_language.get(
+					LocaleUtil.US, "you-do-not-have-the-required-permissions"),
+				jsonObject.getString("error"));
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(permissionChecker);
+		}
+
+		_assertScheduledDateAndStatus(null, WorkflowConstants.STATUS_DRAFT);
+
 		// Future date
 
 		long publishTime = System.currentTimeMillis() + Time.DAY;
@@ -185,7 +185,7 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		Assert.assertEquals(_REDIRECT, jsonObject.getString("redirect"));
 
-		_assertScheduledDate(
+		_assertScheduledDateAndStatus(
 			new Date(publishTime), WorkflowConstants.STATUS_SCHEDULED);
 
 		// Already scheduled
@@ -217,11 +217,12 @@ public class ScheduleLaunchMVCActionCommandTest {
 			_language.get(LocaleUtil.US, "an-unexpected-error-occurred"),
 			jsonObject.getString("error"));
 
-		_assertScheduledDate(
+		_assertScheduledDateAndStatus(
 			new Date(publishTime), WorkflowConstants.STATUS_SCHEDULED);
 	}
 
-	private void _assertScheduledDate(Date expectedDate, int expectedStatus)
+	private void _assertScheduledDateAndStatus(
+			Date expectedDate, int expectedStatus)
 		throws Exception {
 
 		ObjectEntry launchSetObjectEntry =

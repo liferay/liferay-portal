@@ -118,8 +118,11 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 
 		_assertStatus(WorkflowConstants.STATUS_DRAFT);
 
+		List<BackgroundTask> backgroundTasks = _getBackgroundTasks();
+
 		Assert.assertEquals(
-			_getBackgroundTasks().toString(), 0, _getBackgroundTasks().size());
+			backgroundTasks.toString(), 0, backgroundTasks.size());
+
 		Assert.assertNotEquals(title, _getPublishedTitle());
 
 		// Missing launch set, for example deleted after it was scheduled

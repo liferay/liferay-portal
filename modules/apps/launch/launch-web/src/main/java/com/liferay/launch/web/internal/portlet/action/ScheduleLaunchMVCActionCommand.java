@@ -81,7 +81,7 @@ public class ScheduleLaunchMVCActionCommand
 				(ThemeDisplay)actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
 
 			_launchSetPublisher.schedulePublish(
-				launchSetId, themeDisplay.getUserId(), publishDate);
+				publishDate, launchSetId, themeDisplay.getUserId());
 		}
 		catch (PortalException portalException) {
 			hideDefaultErrorMessage(actionRequest);

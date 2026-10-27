@@ -19,7 +19,7 @@ public interface LaunchSetPublisher {
 
 	public void publish(long launchSetId) throws PortalException;
 
-	public void schedulePublish(long launchSetId, long userId, Date date)
+	public void schedulePublish(Date date, long launchSetId, long userId)
 		throws PortalException;
 
 	public void unschedulePublish(long launchSetId) throws PortalException;

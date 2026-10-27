@@ -64,20 +64,21 @@ public class LaunchSetScheduledPublishMessageListener
 			_objectEntryLocalService.fetchObjectEntry(
 				message.getLong("launchSetId"));
 
-		if ((launchSetObjectEntry != null) &&
-			(launchSetObjectEntry.getStatus() ==
+		if ((launchSetObjectEntry == null) ||
+			(launchSetObjectEntry.getStatus() !=
 				WorkflowConstants.STATUS_SCHEDULED)) {
 
-			_backgroundTaskManager.addBackgroundTask(
-				message.getLong("userId"),
-				BackgroundTaskConstants.GROUP_ID_DEFAULT,
-				String.valueOf(launchSetObjectEntry.getObjectEntryId()), null,
-				LaunchSetScheduledPublishBackgroundTaskExecutor.class,
-				HashMapBuilder.<String, Serializable>put(
-					"launchSetId", launchSetObjectEntry.getObjectEntryId()
-				).build(),
-				null);
+			return;
 		}
+
+		_backgroundTaskManager.addBackgroundTask(
+			message.getLong("userId"), BackgroundTaskConstants.GROUP_ID_DEFAULT,
+			String.valueOf(launchSetObjectEntry.getObjectEntryId()), null,
+			LaunchSetScheduledPublishBackgroundTaskExecutor.class,
+			HashMapBuilder.<String, Serializable>put(
+				"launchSetId", launchSetObjectEntry.getObjectEntryId()
+			).build(),
+			null);
 	}
 
 	@Reference

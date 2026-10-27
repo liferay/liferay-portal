@@ -103,7 +103,7 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 	}
 
 	@Override
-	public void schedulePublish(long launchSetId, long userId, Date date)
+	public void schedulePublish(Date date, long launchSetId, long userId)
 		throws PortalException {
 
 		ObjectEntry launchSetObjectEntry =
@@ -126,7 +126,7 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 			launchSetObjectEntry, userId);
 
 		_updateScheduledDate(
-			launchSetObjectEntry, userId, date, serviceContext);
+			date, launchSetObjectEntry, serviceContext, userId);
 
 		_objectEntryLocalService.updateStatus(
 			userId, launchSetId, WorkflowConstants.STATUS_SCHEDULED,
@@ -177,7 +177,7 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 			serviceContext);
 
 		_updateScheduledDate(
-			launchSetObjectEntry, userId, null, serviceContext);
+			null, launchSetObjectEntry, serviceContext, userId);
 	}
 
 	private ServiceContext _createServiceContext(
@@ -199,8 +199,8 @@ public class LaunchSetPublisherImpl implements LaunchSetPublisher {
 	}
 
 	private void _updateScheduledDate(
-			ObjectEntry launchSetObjectEntry, long userId, Date date,
-			ServiceContext serviceContext)
+			Date date, ObjectEntry launchSetObjectEntry,
+			ServiceContext serviceContext, long userId)
 		throws PortalException {
 
 		Map<String, Serializable> values = launchSetObjectEntry.getValues();
