@@ -1780,7 +1780,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 				companyConfigurationTemporarySwapper =
 					new CompanyConfigurationTemporarySwapper(
 						testCompany.getCompanyId(),
-						_URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID,
+						"com.liferay.portal.security.configuration." +
+							"URLFetchSecurityCompanyConfiguration",
 						HashMapDictionaryBuilder.<String, Object>put(
 							"urlLocalNetworkAccessEnabled", true
 						).build())) {
@@ -1799,9 +1800,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 					attachmentExternalReferenceCode,
 					testCompany.getCompanyId());
 
+		Assert.assertNotNull(cpAttachmentFileEntry.fetchFileEntry());
 		Assert.assertEquals(
 			attachmentTitle, cpAttachmentFileEntry.getTitle(LocaleUtil.US));
-		Assert.assertNotNull(cpAttachmentFileEntry.fetchFileEntry());
 	}
 
 	private void _testPostProductWithImagesWhenProductStatusIsDraft()
@@ -2306,10 +2307,6 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	}
 
 	private static final String _DIAGRAM_TYPE_DEFAULT = "diagram.type.default";
-
-	private static final String _URL_FETCH_SECURITY_COMPANY_CONFIGURATION_PID =
-		"com.liferay.portal.security.configuration." +
-			"URLFetchSecurityCompanyConfiguration";
 
 	@DeleteAfterTestRun
 	private AccountGroup _accountGroup;
