@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -51,6 +50,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -62,7 +62,6 @@ import org.junit.runner.RunWith;
 /**
  * @author David Truong
  */
-@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 
@@ -91,6 +90,20 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 		).locale(
 			LocaleUtil.getDefault()
 		).build();
+	}
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		CTPreferences ctPreferences =
+			_ctPreferencesLocalService.fetchCTPreferences(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
+
+		if (ctPreferences != null) {
+			_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
+		}
+
+		super.tearDown();
 	}
 
 	@Ignore

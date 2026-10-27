@@ -7,16 +7,17 @@ package com.liferay.change.tracking.rest.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.model.CTPreferences;
 import com.liferay.change.tracking.rest.client.dto.v1_0.CTProcess;
 import com.liferay.change.tracking.rest.client.pagination.Page;
 import com.liferay.change.tracking.rest.client.pagination.Pagination;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
-import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -24,6 +25,7 @@ import com.liferay.portal.test.rule.Inject;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,9 +33,22 @@ import org.junit.runner.RunWith;
 /**
  * @author Pei-Jung Lan
  */
-@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class CTProcessResourceTest extends BaseCTProcessResourceTestCase {
+
+	@After
+	@Override
+	public void tearDown() throws Exception {
+		CTPreferences ctPreferences =
+			_ctPreferencesLocalService.fetchCTPreferences(
+				TestPropsValues.getCompanyId(), TestPropsValues.getUserId());
+
+		if (ctPreferences != null) {
+			_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
+		}
+
+		super.tearDown();
+	}
 
 	@Ignore
 	@Override
@@ -159,6 +174,9 @@ public class CTProcessResourceTest extends BaseCTProcessResourceTestCase {
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTPreferencesLocalService _ctPreferencesLocalService;
 
 	@Inject
 	private CTProcessLocalService _ctProcessLocalService;
