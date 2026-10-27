@@ -5,28 +5,15 @@
 
 package com.liferay.source.formatter.checkstyle.check;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.source.formatter.check.util.BNDSourceUtil;
-import com.liferay.source.formatter.check.util.JavaSourceUtil;
-import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaClass;
-import com.liferay.source.formatter.parser.JavaClassParser;
 import com.liferay.source.formatter.parser.JavaTerm;
-import com.liferay.source.formatter.parser.ParseException;
-import com.liferay.source.formatter.util.FileUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -88,7 +75,7 @@ public class SecretResolverCheck extends BaseCheck {
 			return;
 		}
 
-		JavaClass javaClass = _getJavaClass(
+		JavaClass javaClass = getJavaClass(
 			absolutePath,
 			getFullyQualifiedTypeName(variableTypeName, detailAST, true));
 
@@ -123,59 +110,6 @@ public class SecretResolverCheck extends BaseCheck {
 		}
 
 		return getName(assignDetailAST);
-	}
-
-	private synchronized Map<String, String> _getBundleSymbolicNamesMap(
-		String absolutePath) {
-
-		if (_bundleSymbolicNamesMap == null) {
-			_bundleSymbolicNamesMap = BNDSourceUtil.getBundleSymbolicNamesMap(
-				_getRootDirName(absolutePath));
-		}
-
-		return _bundleSymbolicNamesMap;
-	}
-
-	private JavaClass _getJavaClass(
-		String absolutePath, String fullyQualifiedTypeName) {
-
-		JavaClass javaClass = _javaClasses.get(fullyQualifiedTypeName);
-
-		if (javaClass != null) {
-			return javaClass;
-		}
-
-		File javaFile = JavaSourceUtil.getJavaFile(
-			fullyQualifiedTypeName, _getRootDirName(absolutePath),
-			_getBundleSymbolicNamesMap(absolutePath));
-
-		if (javaFile == null) {
-			return null;
-		}
-
-		try {
-			javaClass = JavaClassParser.parseJavaClass(
-				SourceUtil.getAbsolutePath(javaFile), FileUtil.read(javaFile));
-
-			_javaClasses.put(fullyQualifiedTypeName, javaClass);
-
-			return javaClass;
-		}
-		catch (IOException | ParseException exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			return null;
-		}
-	}
-
-	private synchronized String _getRootDirName(String absolutePath) {
-		if (_rootDirName == null) {
-			_rootDirName = SourceUtil.getRootDirName(absolutePath);
-		}
-
-		return _rootDirName;
 	}
 
 	private boolean _hasAcceptedEnclosingCall(DetailAST detailAST) {
@@ -314,12 +248,5 @@ public class SecretResolverCheck extends BaseCheck {
 
 	private static final String _SECRET_RESOLVER_EXCLUDES =
 		"secret.resolver.excludes";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		SecretResolverCheck.class);
-
-	private volatile Map<String, String> _bundleSymbolicNamesMap;
-	private final Map<String, JavaClass> _javaClasses = new HashMap<>();
-	private volatile String _rootDirName;
 
 }

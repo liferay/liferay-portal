@@ -5,31 +5,18 @@
 
 package com.liferay.source.formatter.checkstyle.check;
 
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.source.formatter.check.util.BNDSourceUtil;
-import com.liferay.source.formatter.check.util.JavaSourceUtil;
-import com.liferay.source.formatter.check.util.SourceUtil;
 import com.liferay.source.formatter.parser.JavaClass;
-import com.liferay.source.formatter.parser.JavaClassParser;
 import com.liferay.source.formatter.parser.JavaMethod;
 import com.liferay.source.formatter.parser.JavaParameter;
 import com.liferay.source.formatter.parser.JavaSignature;
 import com.liferay.source.formatter.parser.JavaTerm;
-import com.liferay.source.formatter.parser.ParseException;
-import com.liferay.source.formatter.util.FileUtil;
 
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.FullIdent;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-import java.io.File;
-import java.io.IOException;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author Alan Huang
@@ -84,7 +71,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			}
 		}
 
-		JavaClass javaClass = _getJavaClass(
+		JavaClass javaClass = getJavaClass(
 			absolutePath, fullyQualifiedTypeName);
 
 		if ((javaClass == null) ||
@@ -218,61 +205,6 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 		}
 	}
 
-	private synchronized Map<String, String> _getBundleSymbolicNamesMap(
-		String absolutePath) {
-
-		if (_bundleSymbolicNamesMap == null) {
-			_bundleSymbolicNamesMap = BNDSourceUtil.getBundleSymbolicNamesMap(
-				_getRootDirName(absolutePath));
-		}
-
-		return _bundleSymbolicNamesMap;
-	}
-
-	private JavaClass _getJavaClass(
-		String absolutePath, String fullyQualifiedTypeName) {
-
-		JavaClass javaClass = _javaClasses.get(fullyQualifiedTypeName);
-
-		if (javaClass != null) {
-			return javaClass;
-		}
-
-		File javaFile = JavaSourceUtil.getJavaFile(
-			fullyQualifiedTypeName, _getRootDirName(absolutePath),
-			_getBundleSymbolicNamesMap(absolutePath));
-
-		if (javaFile == null) {
-			return null;
-		}
-
-		try {
-			javaClass = JavaClassParser.parseJavaClass(
-				SourceUtil.getAbsolutePath(javaFile), FileUtil.read(javaFile));
-
-			_javaClasses.put(fullyQualifiedTypeName, javaClass);
-
-			return javaClass;
-		}
-		catch (IOException | ParseException exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-
-			return null;
-		}
-	}
-
-	private synchronized String _getRootDirName(String absolutePath) {
-		if (_rootDirName != null) {
-			return _rootDirName;
-		}
-
-		_rootDirName = SourceUtil.getRootDirName(absolutePath);
-
-		return _rootDirName;
-	}
-
 	private boolean _hasReplaceableMethodSignature(
 		String methodName, JavaClass javaClass) {
 
@@ -351,7 +283,7 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 			return false;
 		}
 
-		JavaClass javaClass = _getJavaClass(
+		JavaClass javaClass = getJavaClass(
 			absolutePath, fullyQualifiedTypeName);
 
 		if (javaClass == null) {
@@ -387,12 +319,5 @@ public class RESTDTOSetCallCheck extends BaseCheck {
 
 	private static final String _MSG_USE_SET_METHOD_INSTEAD =
 		"set.method.use.instead";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		RESTDTOSetCallCheck.class);
-
-	private volatile Map<String, String> _bundleSymbolicNamesMap;
-	private final Map<String, JavaClass> _javaClasses = new HashMap<>();
-	private volatile String _rootDirName;
 
 }
