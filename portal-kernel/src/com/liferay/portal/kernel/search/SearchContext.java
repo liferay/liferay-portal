@@ -9,7 +9,6 @@ import com.liferay.petra.concurrent.NoticeableFuture;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.facet.Facet;
@@ -576,7 +575,7 @@ public class SearchContext implements Serializable {
 	private long[] _classTypeIds;
 	private boolean _commitImmediately;
 	private long _companyId;
-	private int _end = QueryUtil.ALL_POS;
+	private int _end = 5;
 	private String[] _entryClassNames;
 	private final Map<String, Facet> _facets = new ConcurrentHashMap<>();
 	private long[] _folderIds;
@@ -601,7 +600,7 @@ public class SearchContext implements Serializable {
 	private boolean _scopeStrict = true;
 	private float _scoresThreshold;
 	private Sort[] _sorts;
-	private int _start = QueryUtil.ALL_POS;
+	private int _start;
 	private final Map<String, Stats> _stats = new ConcurrentHashMap<>();
 	private TimeZone _timeZone;
 	private long _userId;
