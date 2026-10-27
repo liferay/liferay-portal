@@ -16,6 +16,7 @@ import {
 	getNestedPortletDataHandlerControls,
 	getPortletDataHandlerSelection,
 	getSelectionSummary,
+	isPrivateLayoutDefault,
 	isSelected,
 	updateSelection,
 } from '../../../utils/contentSelection';
@@ -57,6 +58,9 @@ export default function PortletDataControl({
 						? portletDataHandlerControl.additionCount
 						: undefined
 				}
+				defaultPrivateLayout={isPrivateLayoutDefault(
+					portletDataHandlerControl
+				)}
 				deletionCount={
 					portletDataHandlerControl.type === 'Boolean' &&
 					showDeletions

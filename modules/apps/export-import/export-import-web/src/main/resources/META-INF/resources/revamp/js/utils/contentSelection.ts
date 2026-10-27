@@ -111,7 +111,7 @@ export function isSelected(
 	);
 }
 
-function isPrivateLayoutDefault(
+export function isPrivateLayoutDefault(
 	portletDataHandlerControl: PortletDataHandlerControl
 ): boolean {
 	const visibilityPortletDataHandlerControl =

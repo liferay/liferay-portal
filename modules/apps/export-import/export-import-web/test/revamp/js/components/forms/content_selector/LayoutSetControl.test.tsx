@@ -18,15 +18,20 @@ jest.mock('@liferay/layout-js-components-web', () => ({
 	PageTreePickerModal: () => null,
 }));
 
-function renderLayoutSetControl({
-	onChange = jest.fn(),
-	portletDataHandlerSelection = {all: true, privateLayout: false},
-}: {
-	onChange?: jest.Mock;
-	portletDataHandlerSelection?: PortletDataHandlerSelection;
-} = {}) {
+function renderLayoutSetControl(
+	{
+		defaultPrivateLayout,
+		onChange = jest.fn(),
+		portletDataHandlerSelection,
+	}: {
+		defaultPrivateLayout?: boolean;
+		onChange?: jest.Mock;
+		portletDataHandlerSelection?: PortletDataHandlerSelection;
+	} = {portletDataHandlerSelection: {all: true, privateLayout: false}}
+) {
 	return render(
 		<LayoutSetControl
+			defaultPrivateLayout={defaultPrivateLayout}
 			label="Pages"
 			onChange={onChange}
 			pageTreeModalConfiguration={{
@@ -81,6 +86,16 @@ describe('LayoutSetControl', () => {
 
 			unmount();
 		}
+	});
+
+	it('selects the private pages again when they are the default', async () => {
+		const onChange = jest.fn();
+
+		renderLayoutSetControl({defaultPrivateLayout: true, onChange});
+
+		await userEvent.click(screen.getByRole('checkbox', {name: 'Pages'}));
+
+		expect(onChange).toHaveBeenCalledWith({all: true, privateLayout: true});
 	});
 
 	it('has no accessibility violations', async () => {

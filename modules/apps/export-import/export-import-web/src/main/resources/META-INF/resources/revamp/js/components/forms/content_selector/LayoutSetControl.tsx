@@ -20,6 +20,7 @@ import SectionTags from './SectionTags';
 
 interface Props {
 	additionCount?: number;
+	defaultPrivateLayout?: boolean;
 	deletionCount?: number;
 	label: string;
 	onChange: (value: PortletDataHandlerSelection | undefined) => void;
@@ -94,6 +95,7 @@ function LayoutVisibilitySelector({
 
 export default function LayoutSetControl({
 	additionCount,
+	defaultPrivateLayout = false,
 	deletionCount,
 	label,
 	onChange,
@@ -117,7 +119,7 @@ export default function LayoutSetControl({
 			: {}
 	) as LayoutSetSelection;
 
-	const {privateLayout = false} = layoutSetSelection;
+	const {privateLayout = defaultPrivateLayout} = layoutSetSelection;
 
 	const isAll = isAllLayoutsSelected(portletDataHandlerSelection);
 
