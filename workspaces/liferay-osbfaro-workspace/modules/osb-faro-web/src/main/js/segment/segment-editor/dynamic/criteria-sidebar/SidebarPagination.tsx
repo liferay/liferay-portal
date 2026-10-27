@@ -18,7 +18,7 @@ const SidebarPagination: React.FC<ISidebarPaginationProps> = ({
 	}
 
 	return (
-		<PaginationBar className="justify-content-center sidebar-pagination">
+		<PaginationBar className="flex-shrink-0 justify-content-center px-0 py-1 sidebar-pagination">
 			<ClayPaginationWithBasicItems
 				active={activePage}
 				onActiveChange={onPageChange}

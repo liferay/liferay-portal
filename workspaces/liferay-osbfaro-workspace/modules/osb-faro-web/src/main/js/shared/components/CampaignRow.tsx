@@ -16,7 +16,10 @@ const TouchRow: FC<{
 }> = ({individualUrl, member: {individualName, jobTitle, status}}) => (
 	<li className="timeline-row touch-row bg-white w-100">
 		<div className="row-content flex-fill d-flex align-items-center">
-			<ClaySticker className="touch-sticker" shape="user-icon">
+			<ClaySticker
+				className="flex-shrink-0 touch-sticker"
+				shape="user-icon"
+			>
 				<ClayIcon color="gray" symbol="user" />
 			</ClaySticker>
 
