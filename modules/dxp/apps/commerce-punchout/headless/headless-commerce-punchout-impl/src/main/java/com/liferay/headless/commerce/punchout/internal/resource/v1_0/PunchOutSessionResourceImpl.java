@@ -20,6 +20,7 @@ import com.liferay.commerce.punchout.oauth2.provider.PunchOutAccessTokenProvider
 import com.liferay.commerce.punchout.oauth2.provider.model.PunchOutAccessToken;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
+import com.liferay.commerce.util.CommerceURLValidatorUtil;
 import com.liferay.headless.commerce.core.helper.ServiceContextHelper;
 import com.liferay.headless.commerce.punchout.dto.v1_0.Cart;
 import com.liferay.headless.commerce.punchout.dto.v1_0.CartItem;
@@ -93,10 +94,23 @@ public class PunchOutSessionResourceImpl
 
 		if (!_punchOutEnabled(commerceChannel.getGroupId())) {
 			_log.error(
-				"Punch out request not allowed. Punch out is disabled for " +
+				"Punch out request is not allowed. Punch out is disabled for " +
 					"channel " + commerceChannel.getName());
 
-			throw new ForbiddenException("Punch out not allowed for channel");
+			throw new ForbiddenException(
+				"Punch out is not allowed for channel");
+		}
+
+		if (!CommerceURLValidatorUtil.isValidURL(
+				contextCompany.getCompanyId(),
+				punchOutSession.getPunchOutReturnURL())) {
+
+			_log.error(
+				"Punch out return URL " +
+					punchOutSession.getPunchOutReturnURL() + " is not allowed");
+
+			throw new BadRequestException(
+				"Punch out return URL is not allowed");
 		}
 
 		User buyerUser = punchOutSession.getBuyerUser();
