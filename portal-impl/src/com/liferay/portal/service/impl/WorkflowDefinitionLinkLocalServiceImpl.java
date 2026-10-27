@@ -114,21 +114,21 @@ public class WorkflowDefinitionLinkLocalServiceImpl
 		long companyId, long groupId, String className, long classPK,
 		long typePK, boolean strict) {
 
+		long classNameId = _classNameLocalService.getClassNameId(className);
+
 		WorkflowDefinitionLink workflowDefinitionLink = _fetchByG_C_C_C_T(
-			StagingUtil.getLiveGroupId(groupId), companyId,
-			_classNameLocalService.getClassNameId(className), classPK, typePK);
+			StagingUtil.getLiveGroupId(groupId), companyId, classNameId,
+			classPK, typePK);
 
 		if (!strict && (workflowDefinitionLink == null)) {
 			workflowDefinitionLink = _fetchByG_C_C_C_T(
-				PortalUtil.getSiteGroupId(groupId), companyId,
-				_classNameLocalService.getClassNameId(className), classPK,
-				typePK);
+				PortalUtil.getSiteGroupId(groupId), companyId, classNameId,
+				classPK, typePK);
 
 			if (workflowDefinitionLink == null) {
 				workflowDefinitionLink = _fetchByG_C_C_C_T(
-					WorkflowConstants.DEFAULT_GROUP_ID, companyId,
-					_classNameLocalService.getClassNameId(className), classPK,
-					typePK);
+					WorkflowConstants.DEFAULT_GROUP_ID, companyId, classNameId,
+					classPK, typePK);
 			}
 		}
 
