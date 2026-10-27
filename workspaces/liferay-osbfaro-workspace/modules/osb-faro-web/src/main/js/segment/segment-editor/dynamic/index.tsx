@@ -514,7 +514,7 @@ class SegmentEditor extends React.Component<ISegmentEditorProps> {
 											</BaseEditPage.Sidebar>
 
 											<div className="criteria-builder-section-main">
-												<BaseEditPage.Main>
+												<BaseEditPage.Main className="position-relative">
 													<SegmentTitle />
 
 													<SegmentDetails

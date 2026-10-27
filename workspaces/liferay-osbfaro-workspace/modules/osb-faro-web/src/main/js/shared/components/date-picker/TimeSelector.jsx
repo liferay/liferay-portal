@@ -35,6 +35,7 @@ export default class TimeSelector extends React.Component {
 				<ClayIcon className='icon-root' symbol='time' />
 
 				<Input
+					className='w-auto'
 					onChange={this.handleChange}
 					type='time'
 					value={

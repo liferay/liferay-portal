@@ -23,7 +23,12 @@ const STICKER_DISPLAY_MAP = {
 
 const Item = ({name, rawType}) => (
 	<div className='field-display-root'>
-		<Sticker circle display={STICKER_DISPLAY_MAP[rawType]} size='sm'>
+		<Sticker
+			circle
+			className='flex-shrink-0 mr-2'
+			display={STICKER_DISPLAY_MAP[rawType]}
+			size='sm'
+		>
 			{ITEM_DISPLAY_LANG_MAP[rawType]}
 		</Sticker>
 

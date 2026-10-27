@@ -15,7 +15,7 @@ const WorkspaceNotFound: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 	>
 		<Sheet>
 			<Sheet.Header>
-				<Sheet.Section className="title">
+				<Sheet.Section className="mx-auto my-0 title">
 					<ClayIcon
 						className="icon-root text-danger"
 						symbol="exclamation-circle"
@@ -29,7 +29,7 @@ const WorkspaceNotFound: React.FC<React.HTMLAttributes<HTMLElement>> = ({
 						'make-sure-youve-typed-the-correct-workspace-url-or-check-with-the-workspace-administrator-for-access'
 					)}`}
 				</Sheet.Section>
-				<Sheet.Section>
+				<Sheet.Section className="mx-auto my-0">
 					<ClayLink
 						button
 						className="button-root"

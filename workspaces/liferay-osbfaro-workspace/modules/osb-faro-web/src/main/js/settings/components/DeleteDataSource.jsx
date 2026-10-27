@@ -278,7 +278,7 @@ export class DeleteDataSource extends React.Component {
 
 							<Sheet.Footer divider={false}>
 								<ClayButton
-									className='button-root delete-button'
+									className='button-root delete-button mr-4'
 									disabled={!isValid || isSubmitting}
 									displayType='warning'
 									type='submit'
