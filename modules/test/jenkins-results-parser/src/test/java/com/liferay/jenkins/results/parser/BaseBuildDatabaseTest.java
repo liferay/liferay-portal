@@ -5,6 +5,10 @@
 
 package com.liferay.jenkins.results.parser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+
+import java.util.Collections;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 
@@ -18,7 +22,8 @@ import org.mockito.Mockito;
 /**
  * @author Michael Hashimoto
  */
-public class BaseBuildDatabaseTest {
+public class BaseBuildDatabaseTest
+	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testPutPropertyConcurrent() throws Exception {
@@ -76,6 +81,69 @@ public class BaseBuildDatabaseTest {
 			propertyValue, properties.getProperty(propertyName));
 
 		Assert.assertTrue(buildDatabase.hasWorkspace(workspaceKey));
+	}
+
+	@Test
+	public void testUploadBuildDatabaseFileToCloudBucket() {
+		_testUploadBuildDatabaseFileToCloudBucket(null, " ");
+		_testUploadBuildDatabaseFileToCloudBucket(null, "");
+		_testUploadBuildDatabaseFileToCloudBucket(null, null);
+
+		String s3BucketDistPath = RandomTestUtil.randomString();
+
+		_testUploadBuildDatabaseFileToCloudBucket(
+			s3BucketDistPath + "/" +
+				BuildDatabase.FILE_NAME_BUILD_DATABASE_JSON,
+			s3BucketDistPath);
+	}
+
+	private void _testUploadBuildDatabaseFileToCloudBucket(
+		String expectedPath, String s3BucketDistPath) {
+
+		mockEnvironment(
+			Collections.singletonMap("S3_BUCKET_DIST_PATH", s3BucketDistPath));
+
+		BaseBuildDatabase baseBuildDatabase = Mockito.mock(
+			BaseBuildDatabase.class);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuildDatabase
+		).uploadBuildDatabaseFileToCloudBucket();
+
+		PrintStream printStream = System.out;
+
+		ByteArrayOutputStream byteArrayOutputStream =
+			new ByteArrayOutputStream();
+
+		System.setOut(new PrintStream(byteArrayOutputStream));
+
+		try {
+			baseBuildDatabase.uploadBuildDatabaseFileToCloudBucket();
+		}
+		finally {
+			System.setOut(printStream);
+		}
+
+		String output = byteArrayOutputStream.toString();
+
+		if (expectedPath == null) {
+			Assert.assertTrue(output.startsWith("WARNING:"));
+
+			Mockito.verify(
+				baseBuildDatabase, Mockito.never()
+			).uploadBuildDatabaseFileToCloudBucket(
+				Mockito.anyString()
+			);
+
+			return;
+		}
+
+		Mockito.verify(
+			baseBuildDatabase
+		).uploadBuildDatabaseFileToCloudBucket(
+			expectedPath
+		);
 	}
 
 	private void _waitForBlocked(Thread thread) throws Exception {
