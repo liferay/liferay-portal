@@ -8,11 +8,8 @@
 <%@ include file="/init.jsp" %>
 
 <%
-List<FaroProjectAdminDisplay> faroProjectAdminDisplays = (List<FaroProjectAdminDisplay>)request.getAttribute(FaroAdminWebKeys.FARO_PROJECT_ENTRIES);
-
-if (faroProjectAdminDisplays == null) {
-	faroProjectAdminDisplays = Collections.emptyList();
-}
+FaroProjectAdminDisplay faroProjectAdminDisplay = (FaroProjectAdminDisplay)request.getAttribute(FaroProjectAdminDisplay.class.getName());
+long[] rowIds = ParamUtil.getLongValues(request, "rowIds");
 
 String tab = GetterUtil.getString(request.getAttribute("tab"), "details");
 
@@ -32,12 +29,7 @@ request.removeAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 %>
 
 <c:choose>
-	<c:when test="<%= faroProjectAdminDisplays.size() == 1 %>">
-
-		<%
-		FaroProjectAdminDisplay faroProjectAdminDisplay = faroProjectAdminDisplays.get(0);
-		%>
-
+	<c:when test="<%= faroProjectAdminDisplay != null %>">
 		<div class="sidebar-header">
 			<div class="h4"><%= HtmlUtil.escape(faroProjectAdminDisplay.getName()) %></div>
 		</div>
@@ -104,16 +96,11 @@ request.removeAttribute(WebKeys.SEARCH_CONTAINER_RESULT_ROW);
 					</p>
 				</div>
 			</c:when>
-			<c:otherwise>
-				<div class="sidebar-header">
-					<div class="h4"><liferay-ui:message arguments="<%= faroProjectAdminDisplays.size() %>" key="x-items-are-selected" /></div>
-				</div>
-			</c:otherwise>
 		</c:choose>
 	</c:when>
 	<c:otherwise>
 		<div class="sidebar-header">
-			<div class="h4"><liferay-ui:message arguments="<%= (int)request.getAttribute(FaroAdminWebKeys.FARO_PROJECT_ENTRIES_COUNT) %>" key="x-items-are-selected" /></div>
+			<div class="h4"><liferay-ui:message arguments="<%= rowIds.length %>" key="x-items-are-selected" /></div>
 		</div>
 	</c:otherwise>
 </c:choose>

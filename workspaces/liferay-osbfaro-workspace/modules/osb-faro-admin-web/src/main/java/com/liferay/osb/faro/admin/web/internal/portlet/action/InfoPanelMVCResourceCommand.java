@@ -6,7 +6,6 @@
 package com.liferay.osb.faro.admin.web.internal.portlet.action;
 
 import com.liferay.osb.faro.admin.web.internal.constants.FaroAdminPortletKeys;
-import com.liferay.osb.faro.admin.web.internal.constants.FaroAdminWebKeys;
 import com.liferay.osb.faro.admin.web.internal.model.FaroProjectAdminDisplay;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -22,7 +21,6 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import jakarta.portlet.ResourceRequest;
 import jakarta.portlet.ResourceResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -45,9 +43,6 @@ public class InfoPanelMVCResourceCommand extends BaseMVCResourceCommand {
 			ResourceRequest resourceRequest, ResourceResponse resourceResponse)
 		throws Exception {
 
-		List<FaroProjectAdminDisplay> faroProjectAdminDisplays =
-			new ArrayList<>();
-
 		long[] faroProjectIds = ParamUtil.getLongValues(
 			resourceRequest, "rowIds");
 
@@ -64,18 +59,14 @@ public class InfoPanelMVCResourceCommand extends BaseMVCResourceCommand {
 			List<Document> documents = hits.toList();
 
 			if (!documents.isEmpty()) {
-				faroProjectAdminDisplays.add(
+				resourceRequest.setAttribute(
+					FaroProjectAdminDisplay.class.getName(),
 					new FaroProjectAdminDisplay(
 						_faroProjectLocalService.getFaroProject(
 							faroProjectIds[0]),
 						documents.get(0)));
 			}
 		}
-
-		resourceRequest.setAttribute(
-			FaroAdminWebKeys.FARO_PROJECT_ENTRIES, faroProjectAdminDisplays);
-		resourceRequest.setAttribute(
-			FaroAdminWebKeys.FARO_PROJECT_ENTRIES_COUNT, faroProjectIds.length);
 
 		include(resourceRequest, resourceResponse, "/info_panel.jsp");
 	}
