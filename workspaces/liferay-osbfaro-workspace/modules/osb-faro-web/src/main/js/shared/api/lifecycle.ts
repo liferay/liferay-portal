@@ -1,15 +1,11 @@
 import sendRequest from 'shared/util/request';
 import {buildSortString, NAME} from 'shared/util/pagination';
-import {
-	ENABLE_LIFECYCLE_DASHBOARDS_API,
-	ENABLE_LIFECYCLE_STAGES_MOCK_DATA,
-} from 'shared/util/feature-flags';
+import {ENABLE_LIFECYCLE_STAGES_MOCK_DATA} from 'shared/util/feature-flags';
 import {
 	getMockLifecycle,
 	getMockLifecycleStages,
 	saveMockLifecycle,
 } from 'lifecycle/utils/lifecycleMock';
-import {legacyLifecycleApi} from './lifecycle-legacy';
 import {OrderByDirections} from 'shared/util/constants';
 
 export interface ILifecycle {
@@ -90,12 +86,12 @@ const requestFirstLifecyclePage = ({
 		path: `contacts/${groupId}/account-lifecycle`,
 	});
 
-const requestFirstLifecycles = async (
+export const fetchLifecycles = async (
 	params: IFetchLifecycles
 ): Promise<ILifecycleDetail[]> =>
 	(await requestFirstLifecyclePage(params)).items;
 
-const requestLifecyclesPage = ({
+export const fetchLifecyclesPage = ({
 	channelId,
 	groupId,
 	page,
@@ -117,7 +113,7 @@ const requestLifecyclesPage = ({
 		path: `contacts/${groupId}/account-lifecycle`,
 	});
 
-const requestLifecycle = ({
+export const fetchLifecycle = ({
 	groupId,
 	lifecycleId,
 }: IFetchLifecycle): Promise<ILifecycleDetail> => {
@@ -131,7 +127,7 @@ const requestLifecycle = ({
 	});
 };
 
-const requestDefaultLifecycle = ({
+export const setDefaultLifecycle = ({
 	groupId,
 	lifecycleId,
 }: IFetchLifecycle): Promise<ILifecycleDetail> =>
@@ -140,24 +136,6 @@ const requestDefaultLifecycle = ({
 		method: 'PATCH',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}`,
 	});
-
-const realLifecycleApi = {
-	fetchLifecycle: requestLifecycle,
-	fetchLifecycles: requestFirstLifecycles,
-	fetchLifecyclesPage: requestLifecyclesPage,
-	setDefaultLifecycle: requestDefaultLifecycle,
-};
-
-const lifecycleApi: typeof realLifecycleApi = ENABLE_LIFECYCLE_DASHBOARDS_API
-	? realLifecycleApi
-	: {...realLifecycleApi, ...legacyLifecycleApi};
-
-export const {
-	fetchLifecycle,
-	fetchLifecycles,
-	fetchLifecyclesPage,
-	setDefaultLifecycle,
-} = lifecycleApi;
 
 export interface ILifecycleStagePayload {
 	accountLifecycleStageRule: IAccountLifecycleStageRule;
