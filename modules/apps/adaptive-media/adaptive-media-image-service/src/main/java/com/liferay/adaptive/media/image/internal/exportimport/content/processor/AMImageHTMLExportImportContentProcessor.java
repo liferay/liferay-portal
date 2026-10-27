@@ -21,13 +21,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
-
-import java.util.Objects;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -112,6 +106,18 @@ public class AMImageHTMLExportImportContentProcessor
 		}
 	}
 
+	private FileEntry _fetchFileEntry(
+			AMEmbeddedReferenceSet amEmbeddedReferenceSet, String path)
+		throws Exception {
+
+		if (!amEmbeddedReferenceSet.containsReference(path)) {
+			return null;
+		}
+
+		return _dlAppLocalService.fetchFileEntry(
+			amEmbeddedReferenceSet.importReference(path));
+	}
+
 	private int _getAttributeIndex(
 		String content, String attributePrefix, int fromIndex) {
 
@@ -131,80 +137,80 @@ public class AMImageHTMLExportImportContentProcessor
 		return -1;
 	}
 
-	private Document _parseDocument(String html) {
-		Document document = Jsoup.parseBodyFragment(html);
-
-		Document.OutputSettings outputSettings = new Document.OutputSettings();
-
-		outputSettings.prettyPrint(false);
-		outputSettings.syntax(Document.OutputSettings.Syntax.xml);
-
-		document.outputSettings(outputSettings);
-
-		return document;
-	}
-
-	private Element _parseNode(String tag) {
-		Document document = _parseDocument(tag);
-
-		Element bodyElement = document.body();
-
-		return bodyElement.child(0);
-	}
-
 	private String _replace(
 			String content, AMEmbeddedReferenceSet amEmbeddedReferenceSet)
 		throws Exception {
 
-		Document document = _parseDocument(content);
+		StringBundler sb = new StringBundler();
 
-		Elements elements = document.getElementsByAttribute(
-			_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
+		int beginIndex = 0;
+		int index = _getAttributeIndex(
+			content, _EXPORT_IMPORT_PATH_ATTRIBUTE_PREFIX, 0);
 
-		for (Element element : elements) {
-			String path = element.attr(_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
+		while (index != -1) {
+			int pathIndex =
+				index + _EXPORT_IMPORT_PATH_ATTRIBUTE_PREFIX.length();
 
-			if (!amEmbeddedReferenceSet.containsReference(path)) {
-				continue;
+			int pathEndIndex = content.indexOf(CharPool.QUOTE, pathIndex);
+
+			if (pathEndIndex == -1) {
+				break;
 			}
 
-			long fileEntryId = amEmbeddedReferenceSet.importReference(path);
-
-			FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
-				fileEntryId);
+			FileEntry fileEntry = _fetchFileEntry(
+				amEmbeddedReferenceSet,
+				content.substring(pathIndex, pathEndIndex));
 
 			if (fileEntry == null) {
+				index = _getAttributeIndex(
+					content, _EXPORT_IMPORT_PATH_ATTRIBUTE_PREFIX,
+					pathEndIndex);
+
 				continue;
 			}
 
-			element.attr(
-				AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
-				String.valueOf(fileEntryId));
-			element.removeAttr(_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
+			int tagIndex = content.lastIndexOf(CharPool.LESS_THAN, index);
 
-			if (!Objects.equals(element.tagName(), "picture")) {
-				continue;
+			String fileEntryIdAttribute =
+				_FILE_ENTRY_ID_ATTRIBUTE_PREFIX + fileEntry.getFileEntryId();
+
+			if (content.startsWith("<picture ", tagIndex)) {
+				int imgIndex = content.indexOf("<img ", pathEndIndex);
+
+				String imgTag = content.substring(
+					imgIndex,
+					content.indexOf(CharPool.GREATER_THAN, imgIndex) + 1);
+
+				sb.append(content.substring(beginIndex, tagIndex));
+				sb.append(
+					_amImageHTMLTagFactory.create(
+						StringUtil.replace(
+							imgTag, content.substring(index, pathEndIndex),
+							fileEntryIdAttribute),
+						fileEntry));
+
+				beginIndex =
+					content.indexOf(_PICTURE_END_TAG, pathEndIndex) +
+						_PICTURE_END_TAG.length();
+			}
+			else {
+				sb.append(content.substring(beginIndex, index));
+				sb.append(fileEntryIdAttribute);
+
+				beginIndex = pathEndIndex;
 			}
 
-			Elements imgElements = element.getElementsByTag("img");
-
-			Element imgElement = imgElements.first();
-
-			imgElement.attr(
-				AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID,
-				String.valueOf(fileEntryId));
-			imgElement.removeAttr(_ATTRIBUTE_NAME_EXPORT_IMPORT_PATH);
-
-			Element picture = _parseNode(
-				_amImageHTMLTagFactory.create(
-					imgElement.toString(), fileEntry));
-
-			element.html(picture.html());
+			index = _getAttributeIndex(
+				content, _EXPORT_IMPORT_PATH_ATTRIBUTE_PREFIX, beginIndex);
 		}
 
-		Element bodyElement = document.body();
+		if (sb.index() == 0) {
+			return content;
+		}
 
-		return bodyElement.html();
+		sb.append(content.substring(beginIndex));
+
+		return sb.toString();
 	}
 
 	private String _replace(
@@ -271,6 +277,8 @@ public class AMImageHTMLExportImportContentProcessor
 
 	private static final String _FILE_ENTRY_ID_ATTRIBUTE_PREFIX =
 		AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID + "=\"";
+
+	private static final String _PICTURE_END_TAG = "</picture>";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		AMImageHTMLExportImportContentProcessor.class);

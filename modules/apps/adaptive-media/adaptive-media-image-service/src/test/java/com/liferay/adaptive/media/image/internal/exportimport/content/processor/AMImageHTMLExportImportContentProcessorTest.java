@@ -153,18 +153,12 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		String urlFileEntry1 = RandomTestUtil.randomString();
 		String urlFileEntry2 = RandomTestUtil.randomString();
 
-		Assert.assertEquals(
-			StringBundler.concat(
-				prefix, "<img src=\"", urlFileEntry1, "\" data-fileentryid=\"",
-				_FILE_ENTRY_ID_1, "\" />", infix, "<img src=\"", urlFileEntry2,
-				"\" data-fileentryid=\"", _FILE_ENTRY_ID_2, "\" />", suffix),
-			_import(
-				_export(
-					StringBundler.concat(
-						prefix, "<img data-fileentryid=\"", _FILE_ENTRY_ID_1,
-						"\" src=\"", urlFileEntry1, "\" />", infix,
-						"<img data-fileentryid=\"", _FILE_ENTRY_ID_2,
-						"\" src=\"", urlFileEntry2, "\" />", suffix))));
+		String content = StringBundler.concat(
+			prefix, "<img data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" src=\"",
+			urlFileEntry1, "\" />", infix, "<img data-fileentryid=\"",
+			_FILE_ENTRY_ID_2, "\" src=\"", urlFileEntry2, "\" />", suffix);
+
+		Assert.assertEquals(content, _import(_export(content)));
 	}
 
 	@Test
@@ -181,10 +175,10 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				prefix, "<picture data-fileentryid=\"", _FILE_ENTRY_ID_1,
-				"\"><source /><img src=\"", urlFileEntry1,
+				"\"><source/><img src=\"", urlFileEntry1,
 				"\" data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" /></picture>",
 				infix, "<picture data-fileentryid=\"", _FILE_ENTRY_ID_2,
-				"\"><source /><img src=\"", urlFileEntry2,
+				"\"><source/><img src=\"", urlFileEntry2,
 				"\" data-fileentryid=\"", _FILE_ENTRY_ID_2, "\" /></picture>",
 				suffix),
 			_import(
@@ -214,25 +208,11 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		String prefix = RandomTestUtil.randomString();
 		String suffix = RandomTestUtil.randomString();
 
-		StringBundler expectedSB = new StringBundler(7);
+		String content = StringBundler.concat(
+			prefix, "<img data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" src=\"",
+			RandomTestUtil.randomString(), "\" />", suffix);
 
-		String urlFileEntry1 = RandomTestUtil.randomString();
-
-		expectedSB.append(prefix);
-		expectedSB.append("<img src=\"");
-		expectedSB.append(urlFileEntry1);
-		expectedSB.append("\" data-fileentryid=\"");
-		expectedSB.append(_FILE_ENTRY_ID_1);
-		expectedSB.append("\" />");
-		expectedSB.append(suffix);
-
-		Assert.assertEquals(
-			expectedSB.toString(),
-			_import(
-				_export(
-					StringBundler.concat(
-						prefix, "<img data-fileentryid=\"", _FILE_ENTRY_ID_1,
-						"\" src=\"", urlFileEntry1, "\" />", suffix))));
+		Assert.assertEquals(content, _import(_export(content)));
 	}
 
 	@Test
@@ -242,19 +222,12 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		String prefix = RandomTestUtil.randomString();
 		String suffix = RandomTestUtil.randomString();
 
-		String urlFileEntry1 = RandomTestUtil.randomString();
+		String content = StringBundler.concat(
+			prefix, "<img attr1=\"1\" data-fileentryid=\"", _FILE_ENTRY_ID_1,
+			"\" attr2=\"2\" src=\"", RandomTestUtil.randomString(),
+			"\" attr3=\"3\"/>", suffix);
 
-		Assert.assertEquals(
-			StringBundler.concat(
-				prefix, "<img attr1=\"1\" attr2=\"2\" src=\"", urlFileEntry1,
-				"\" attr3=\"3\" data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" />",
-				suffix),
-			_import(
-				_export(
-					StringBundler.concat(
-						prefix, "<img attr1=\"1\" data-fileentryid=\"",
-						_FILE_ENTRY_ID_1, "\" attr2=\"2\" src=\"",
-						urlFileEntry1, "\" attr3=\"3\"/>", suffix))));
+		Assert.assertEquals(content, _import(_export(content)));
 	}
 
 	@Test
@@ -267,7 +240,7 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				prefix, "<picture data-fileentryid=\"", _FILE_ENTRY_ID_1,
-				"\"><source /><img src=\"", urlFileEntry1,
+				"\"><source/><img src=\"", urlFileEntry1,
 				"\" data-fileentryid=\"", _FILE_ENTRY_ID_1, "\" /></picture>",
 				suffix),
 			_import(
@@ -288,7 +261,7 @@ public class AMImageHTMLExportImportContentProcessorTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<picture data-fileentryid=\"", _FILE_ENTRY_ID_1,
-				"\"><source /><img src=\"", urlFileEntry1,
+				"\"><source/><img src=\"", urlFileEntry1,
 				"\" class=\"pretty\" data-fileentryid=\"", _FILE_ENTRY_ID_1,
 				"\" /></picture>"),
 			_import(
@@ -472,6 +445,12 @@ public class AMImageHTMLExportImportContentProcessorTest {
 			fileEntryId
 		);
 
+		Mockito.doReturn(
+			fileEntryId
+		).when(
+			fileEntry
+		).getFileEntryId();
+
 		Mockito.when(
 			_amImageHTMLTagFactory.create(
 				Mockito.anyString(), Mockito.eq(fileEntry))
@@ -479,7 +458,9 @@ public class AMImageHTMLExportImportContentProcessorTest {
 			invocation -> {
 				String imgTag = invocation.getArgument(0, String.class);
 
-				return "<picture><source/>" + imgTag + "</picture>";
+				return StringBundler.concat(
+					"<picture data-fileentryid=\"", fileEntryId, "\"><source/>",
+					imgTag, "</picture>");
 			}
 		);
 	}
