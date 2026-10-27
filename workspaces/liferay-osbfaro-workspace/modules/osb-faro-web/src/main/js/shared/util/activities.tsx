@@ -39,6 +39,7 @@ export type TimelineCampaign = {
 export type SessionEvent = {
 	attributes: Record<string, unknown>;
 	campaign?: TimelineCampaign;
+	campaignUrl?: string;
 	description: string;
 	descriptionUrl?: string;
 	subtitle: string | undefined;
@@ -241,6 +242,8 @@ export const formatEvents = (
 
 		const campaign = getEventCampaign(event);
 
+		const {channelId, groupId} = context;
+
 		return {
 			attributes: {
 				applicationId,
@@ -256,8 +259,25 @@ export const formatEvents = (
 						acquisitionProperties
 					),
 				}),
+
+				// The campaign is its own group rather than an event attribute,
+				// and only an event that carried one has it, so the details of
+				// an event without a campaign show no campaign at all.
+
+				...(campaign && {
+					campaign: {campaignName: campaign.campaignName},
+				}),
 			},
 			...(campaign && {campaign}),
+			...(campaign &&
+				channelId &&
+				groupId && {
+					campaignUrl: toRoute(Routes.CAMPAIGNS_DETAIL, {
+						channelId,
+						groupId,
+						id: campaign.campaignId,
+					}),
+				}),
 			description: assetTitle || pageTitle,
 			descriptionUrl: getEventDashboardUrl(event, {
 				...context,
@@ -388,7 +408,8 @@ export const groupEventsByPage = (
 
 				// The page group's own subtitle and campaign label already show
 				// the page URL and the touch it came from, so its nested
-				// events don't repeat either.
+				// events don't repeat either. Their details still name the
+				// campaign, which lives in their attributes.
 
 				nestedItems: formattedPageEvents.map((event) => ({
 					...event,

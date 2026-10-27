@@ -204,13 +204,21 @@ const PayloadTable: FC<{table: IPayloadTable}> = ({table: {rows, title}}) => (
 			</ClayTable.Head>
 
 			<ClayTable.Body>
-				{rows.map(({property, value}) => (
+				{rows.map(({href, property, value}) => (
 					<ClayTable.Row key={property}>
 						<ClayTable.Cell className="text-dark" headingCell>
 							{property}
 						</ClayTable.Cell>
 
-						<ClayTable.Cell>{value}</ClayTable.Cell>
+						<ClayTable.Cell>
+							{href ? (
+								<ClayLink className="text-dark" href={href}>
+									{value}
+								</ClayLink>
+							) : (
+								value
+							)}
+						</ClayTable.Cell>
 					</ClayTable.Row>
 				))}
 			</ClayTable.Body>
@@ -285,7 +293,10 @@ const PayloadViewSelector: FC<{
  * component, which the timeline instantiates once per row, so switching one
  * row to the raw payload leaves every other row on the tables.
  */
-const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
+const RowAttributes: FC<{
+	campaignUrl?: string;
+	payload: Record<string, unknown>;
+}> = ({campaignUrl, payload}) => {
 	const [view, setView] = useState<PayloadView>('table');
 
 	return (
@@ -299,7 +310,7 @@ const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
 			</div>
 
 			{view === 'table' ? (
-				formatPayloadTables(payload).map((table) => (
+				formatPayloadTables(payload, {campaignUrl}).map((table) => (
 					<PayloadTable key={table.title} table={table} />
 				))
 			) : (
@@ -580,6 +591,7 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 	item: {
 		attributes,
 		campaign,
+		campaignUrl,
 		description,
 		descriptionUrl,
 		subtitle,
@@ -656,7 +668,9 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 				</div>
 			</RowMain>
 
-			{expanded && <RowAttributes payload={attributes} />}
+			{expanded && (
+				<RowAttributes campaignUrl={campaignUrl} payload={attributes} />
+			)}
 		</li>
 	);
 };

@@ -19,10 +19,18 @@ const HEADER_KEY = 'header';
  */
 const NESTED_KEYS = {
 	acquisitionProperties: 'utm',
+	campaign: 'campaign',
 	properties: 'attributes',
 } as const;
 
+/**
+ * The campaign group's property that names the campaign, which the table links
+ * to the campaign's own page.
+ */
+const CAMPAIGN_NAME_KEY = 'campaignName';
+
 export type PayloadTableRow = {
+	href?: string;
 	property: string;
 	value: string;
 };
@@ -42,23 +50,36 @@ const isNestedGroup = (value: unknown): value is Record<string, unknown> =>
 
 /**
  * Splits an event or session payload into the tables the activity timeline
- * renders when a row is expanded: the payload's own attributes, and the
- * acquisition parameters that came with the touch. A table with no rows is
- * left out entirely, so a payload carrying no UTM parameter renders one table
- * and an empty payload renders none.
+ * renders when a row is expanded: the payload's own attributes, the campaign
+ * the touch carried, and the acquisition parameters that came with it. A table
+ * with no rows is left out entirely, so a payload carrying no UTM parameter
+ * renders no UTM table and an empty payload renders none. A campaign that did
+ * not resolve to a name has nothing to link, so only a named one is a link.
  */
 export const formatPayloadTables = (
-	payload: Record<string, unknown>
+	payload: Record<string, unknown>,
+	{campaignUrl}: {campaignUrl?: string} = {}
 ): PayloadTable[] => {
 	const rowsByGroup: Record<string, PayloadTableRow[]> = {
 		attributes: [],
+		campaign: [],
 		utm: [],
 	};
 
 	let title = Liferay.Language.get('event-attributes');
 
-	const addRow = (group: string, property: string, value: unknown) =>
-		rowsByGroup[group].push({property, value: formatValue(value)});
+	const addRow = (group: string, property: string, value: unknown) => {
+		const formattedValue = formatValue(value);
+
+		rowsByGroup[group].push({
+			...(campaignUrl &&
+				group === 'campaign' &&
+				property === CAMPAIGN_NAME_KEY &&
+				formattedValue !== EMPTY_VALUE && {href: campaignUrl}),
+			property,
+			value: formattedValue,
+		});
+	};
 
 	Object.entries(payload).forEach(([key, value]) => {
 		if (key === HEADER_KEY) {
@@ -82,6 +103,13 @@ export const formatPayloadTables = (
 
 	if (rowsByGroup.attributes.length) {
 		tables.push({rows: rowsByGroup.attributes, title});
+	}
+
+	if (rowsByGroup.campaign.length) {
+		tables.push({
+			rows: rowsByGroup.campaign,
+			title: Liferay.Language.get('campaign'),
+		});
 	}
 
 	if (rowsByGroup.utm.length) {
