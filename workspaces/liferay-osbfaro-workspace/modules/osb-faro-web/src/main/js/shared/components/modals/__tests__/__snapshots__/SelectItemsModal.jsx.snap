@@ -63,7 +63,7 @@ exports[`SelectItemsModal should render 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -182,7 +182,7 @@ exports[`SelectItemsModal should render items as an entity list 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -301,7 +301,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -353,7 +353,7 @@ exports[`SelectItemsModal should render with a blank submit 1`] = `
             class="no-results-content spacer"
           >
             <div
-              class="h4 no-results-title"
+              class="h4 mb-3 no-results-title"
             >
               No items were found.
             </div>
@@ -432,7 +432,7 @@ exports[`SelectItemsModal should render with a custom submit message 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -551,7 +551,7 @@ exports[`SelectItemsModal should render with a custom title 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -670,7 +670,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -722,7 +722,7 @@ exports[`SelectItemsModal should render with a successful submit 1`] = `
             class="no-results-content spacer"
           >
             <div
-              class="h4 no-results-title"
+              class="h4 mb-3 no-results-title"
             >
               No items were found.
             </div>
@@ -797,7 +797,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -849,7 +849,7 @@ exports[`SelectItemsModal should render with an unsuccessful submit 1`] = `
             class="no-results-content spacer"
           >
             <div
-              class="h4 no-results-title"
+              class="h4 mb-3 no-results-title"
             >
               No items were found.
             </div>
@@ -928,7 +928,7 @@ exports[`SelectItemsModal should render with selectedItems 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -1047,7 +1047,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div
@@ -1099,7 +1099,7 @@ exports[`SelectItemsModal should render with selectedItems with the disable sele
             class="no-results-content spacer"
           >
             <div
-              class="h4 no-results-title"
+              class="h4 mb-3 no-results-title"
             >
               No items were found.
             </div>
@@ -1242,7 +1242,7 @@ exports[`SelectItemsModal should render without the sort button 1`] = `
             class="container-fluid"
           >
             <ul
-              class="nav-root front-nav navbar-nav"
+              class="nav-root front-nav mr-auto navbar-nav"
               role="tablist"
             />
             <div

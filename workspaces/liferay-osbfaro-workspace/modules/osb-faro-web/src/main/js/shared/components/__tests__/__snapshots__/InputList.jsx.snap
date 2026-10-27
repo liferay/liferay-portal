@@ -22,7 +22,7 @@ exports[`InputList should paste a text in inputList 1`] = `
         class="form-feedback-item"
       >
         <span
-          class="form-feedback-indicator"
+          class="form-feedback-indicator mr-2"
         >
           <svg
             class="lexicon-icon lexicon-icon-info-circle icon-root icon-size-sm"

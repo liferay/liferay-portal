@@ -278,7 +278,7 @@ exports[`NewRequestModal renders 1`] = `
                         </div>
                       </div>
                       <div
-                        class="example-file-text text-secondary"
+                        class="example-file-text mt-2 text-secondary"
                       >
                         Please upload files in CSV format. A sample file can be found 
                         <a

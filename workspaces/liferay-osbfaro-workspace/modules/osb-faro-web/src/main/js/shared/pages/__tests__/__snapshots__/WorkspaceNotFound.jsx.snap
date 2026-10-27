@@ -34,7 +34,7 @@ exports[`WorkspaceNotFound should render 1`] = `
             class="text-truncate"
           >
             <div
-              class="sticker sticker-root sticker-static avatar sticker-circle"
+              class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
             >
               TT
             </div>
@@ -68,12 +68,12 @@ exports[`WorkspaceNotFound should render 1`] = `
             class="logo-container"
           >
             <svg
-              class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
+              class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon mr-4"
               data-file="ac_logo.svg"
               role="presentation"
             />
             <span
-              class="logo-text"
+              class="logo-text text-uppercase"
             >
               Analytics Cloud
             </span>
@@ -92,7 +92,7 @@ exports[`WorkspaceNotFound should render 1`] = `
             class="sheet-header"
           >
             <div
-              class="sheet-section title"
+              class="sheet-section mx-auto my-0 title"
             >
               <svg
                 class="lexicon-icon lexicon-icon-exclamation-circle icon-root text-danger"
@@ -111,7 +111,7 @@ exports[`WorkspaceNotFound should render 1`] = `
               Either this workspace does not exist or you do not have access to it. Make sure you have typed the correct workspace URL or check with the workspace administrator for access.
             </div>
             <div
-              class="sheet-section"
+              class="sheet-section mx-auto my-0"
             >
               <a
                 class="button-root btn btn-secondary"

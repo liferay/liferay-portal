@@ -52,7 +52,7 @@ exports[`SegmentEditor should render 1`] = `
             class="ml-auto tbar-item"
           >
             <ul
-              class="base-edit-page-toolbar-actions tbar-nav"
+              class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
               data-testid="toolbar-actions"
             >
               <li
@@ -94,7 +94,7 @@ exports[`SegmentEditor should render 1`] = `
           class="criteria-builder-section-main"
         >
           <div
-            class="base-edit-page-main py-4 container-fluid container-fluid-max-xl"
+            class="base-edit-page-main py-4 position-relative container-fluid container-fluid-max-xl"
           >
             <div
               class="form-group mb-0"

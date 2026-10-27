@@ -15,7 +15,7 @@ exports[`CustomEventList should render 1`] = `
         class="container-fluid"
       >
         <ul
-          class="nav-root front-nav navbar-nav"
+          class="nav-root front-nav mr-auto navbar-nav"
           role="tablist"
         >
           <li
@@ -412,7 +412,7 @@ exports[`CustomEventList should render alert notification 1`] = `
         class="container-fluid"
       >
         <ul
-          class="nav-root front-nav navbar-nav"
+          class="nav-root front-nav mr-auto navbar-nav"
           role="tablist"
         >
           <li

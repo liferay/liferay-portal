@@ -68,7 +68,7 @@ exports[`MatchingPagesModal should render 1`] = `
                   class="container-fluid"
                 >
                   <ul
-                    class="nav-root front-nav navbar-nav"
+                    class="nav-root front-nav mr-auto navbar-nav"
                     role="tablist"
                   />
                   <div
@@ -117,7 +117,7 @@ exports[`MatchingPagesModal should render 1`] = `
                 class="no-results-content"
               >
                 <div
-                  class="h4 no-results-title"
+                  class="h4 mb-3 no-results-title"
                 >
                   An unexpected error occurred.
                 </div>

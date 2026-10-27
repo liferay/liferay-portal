@@ -12,7 +12,7 @@ exports[`CrossPageSelect should render the selected list when the user presses t
         class="container-fluid"
       >
         <ul
-          class="nav-root front-nav navbar-nav"
+          class="nav-root front-nav mr-auto navbar-nav"
           role="tablist"
         >
           <li
@@ -278,7 +278,7 @@ exports[`CrossPageSelect should render the server data list by default 1`] = `
         class="container-fluid"
       >
         <ul
-          class="nav-root front-nav navbar-nav"
+          class="nav-root front-nav mr-auto navbar-nav"
           role="tablist"
         >
           <li

@@ -18,7 +18,7 @@ exports[`List rendering should match the snapshot 1`] = `
           class="row-root align-items-center d-flex justify-content-between"
         >
           <ol
-            class="breadcrumb breadcrumbs-root"
+            class="breadcrumb breadcrumbs-root mb-2 p-0"
           >
             <li
               class="breadcrumb-item"
@@ -64,7 +64,7 @@ exports[`List rendering should match the snapshot 1`] = `
       class="body-root page-container"
     >
       <span
-        class="children-wrapper"
+        class="children-wrapper pt-3"
       >
         <div
           class="row"

@@ -18,7 +18,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
           class="row-root align-items-center d-flex justify-content-between"
         >
           <ol
-            class="breadcrumb breadcrumbs-root"
+            class="breadcrumb breadcrumbs-root mb-2 p-0"
           >
             <li
               class="breadcrumb-item"
@@ -54,7 +54,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
           </ol>
         </div>
         <div
-          class="header-section title-section subtitle"
+          class="header-section title-section mb-0 subtitle"
         >
           <span
             class="align-items-center d-flex"
@@ -178,7 +178,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
       class="body-root page-container"
     >
       <span
-        class="children-wrapper"
+        class="children-wrapper pt-3"
       >
         <div
           class="card card-root associated-segments-list-root page-display"
@@ -233,7 +233,7 @@ exports[`IndividualProfileRoutes should render 1`] = `
                   class="container-fluid"
                 >
                   <ul
-                    class="nav-root front-nav navbar-nav"
+                    class="nav-root front-nav mr-auto navbar-nav"
                     role="tablist"
                   >
                     <li

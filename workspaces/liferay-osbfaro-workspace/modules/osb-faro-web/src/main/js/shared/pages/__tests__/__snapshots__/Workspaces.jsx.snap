@@ -37,7 +37,7 @@ exports[`Workspaces should render a list of projects if there is only one projec
               class="text-truncate"
             >
               <div
-                class="sticker sticker-root sticker-static avatar sticker-circle"
+                class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
               >
                 TT
               </div>
@@ -71,12 +71,12 @@ exports[`Workspaces should render a list of projects if there is only one projec
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon mr-4"
                 data-file="ac_logo.svg"
                 role="presentation"
               />
               <span
-                class="logo-text"
+                class="logo-text text-uppercase"
               >
                 Analytics Cloud
               </span>
@@ -206,7 +206,7 @@ exports[`Workspaces should render empty state 1`] = `
               class="text-truncate"
             >
               <div
-                class="sticker sticker-root sticker-static avatar sticker-circle"
+                class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
               >
                 TT
               </div>
@@ -240,12 +240,12 @@ exports[`Workspaces should render empty state 1`] = `
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon mr-4"
                 data-file="ac_logo.svg"
                 role="presentation"
               />
               <span
-                class="logo-text"
+                class="logo-text text-uppercase"
               >
                 Analytics Cloud
               </span>
@@ -355,7 +355,7 @@ exports[`Workspaces should render with a message that all basic tier plans have 
               class="text-truncate"
             >
               <div
-                class="sticker sticker-root sticker-static avatar sticker-circle"
+                class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
               >
                 TT
               </div>
@@ -389,12 +389,12 @@ exports[`Workspaces should render with a message that all basic tier plans have 
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon mr-4"
                 data-file="ac_logo.svg"
                 role="presentation"
               />
               <span
-                class="logo-text"
+                class="logo-text text-uppercase"
               >
                 Analytics Cloud
               </span>
@@ -574,7 +574,7 @@ exports[`Workspaces should render with a message that one or more basic tier wor
               class="text-truncate"
             >
               <div
-                class="sticker sticker-root sticker-static avatar sticker-circle"
+                class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
               >
                 TT
               </div>
@@ -608,12 +608,12 @@ exports[`Workspaces should render with a message that one or more basic tier wor
               class="logo-container"
             >
               <svg
-                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon"
+                class="lexicon-icon lexicon-icon-ac_logo icon-root logo-icon mr-4"
                 data-file="ac_logo.svg"
                 role="presentation"
               />
               <span
-                class="logo-text"
+                class="logo-text text-uppercase"
               >
                 Analytics Cloud
               </span>

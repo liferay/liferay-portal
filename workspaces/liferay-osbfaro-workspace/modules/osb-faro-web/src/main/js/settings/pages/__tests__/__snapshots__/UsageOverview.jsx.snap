@@ -400,7 +400,7 @@ exports[`UsageOverview should render 1`] = `
           class="ml-auto tbar-item"
         >
           <ul
-            class="base-edit-page-toolbar-actions tbar-nav"
+            class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
             data-testid="toolbar-actions"
           />
         </li>

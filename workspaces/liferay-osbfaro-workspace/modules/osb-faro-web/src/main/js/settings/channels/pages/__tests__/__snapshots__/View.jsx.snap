@@ -49,7 +49,7 @@ exports[`View Channel should render 1`] = `
           class="ml-auto tbar-item"
         >
           <ul
-            class="base-edit-page-toolbar-actions tbar-nav"
+            class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
             data-testid="toolbar-actions"
           />
         </li>
@@ -372,7 +372,7 @@ exports[`View Channel should render 1`] = `
                   </button>
                 </span>
                 <span
-                  class="header-action-buttons pl-3"
+                  class="d-inline-block header-action-buttons pl-3"
                 >
                   <button
                     class="button-root mr-3 btn btn-secondary"
@@ -482,12 +482,12 @@ exports[`View Channel should render 1`] = `
                       />
                     </div>
                     <div
-                      class="h4 no-results-title"
+                      class="h4 mb-3 no-results-title"
                     >
                       All Aboard!
                     </div>
                     <div
-                      class="no-results-description"
+                      class="mb-3 no-results-description"
                     >
                       All users from this workspace have access to this property.
                     </div>

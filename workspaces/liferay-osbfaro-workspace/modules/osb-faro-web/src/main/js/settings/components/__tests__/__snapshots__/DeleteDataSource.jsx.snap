@@ -82,7 +82,7 @@ exports[`DeleteDataSource should render 1`] = `
         class="sheet-footer"
       >
         <button
-          class="button-root delete-button btn btn-warning"
+          class="button-root delete-button mr-4 btn btn-warning"
           type="submit"
         >
           Delete Data Source

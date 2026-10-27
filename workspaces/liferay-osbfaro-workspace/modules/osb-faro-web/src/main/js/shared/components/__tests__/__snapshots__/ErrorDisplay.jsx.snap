@@ -9,7 +9,7 @@ exports[`ErrorDisplay should render 1`] = `
       class="no-results-content"
     >
       <div
-        class="h4 no-results-title"
+        class="h4 mb-3 no-results-title"
       >
         An unexpected error occurred.
       </div>

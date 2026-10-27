@@ -49,7 +49,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
           class="ml-auto tbar-item"
         >
           <ul
-            class="base-edit-page-toolbar-actions tbar-nav"
+            class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
             data-testid="toolbar-actions"
           />
         </li>
@@ -491,7 +491,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
                     class="no-results-content"
                   >
                     <div
-                      class="h4 no-results-title"
+                      class="h4 mb-3 no-results-title"
                     >
                       An unexpected error occurred.
                     </div>
@@ -597,7 +597,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
                       class="container-fluid"
                     >
                       <ul
-                        class="nav-root front-nav navbar-nav"
+                        class="nav-root front-nav mr-auto navbar-nav"
                         role="tablist"
                       >
                         <li
@@ -699,7 +699,7 @@ exports[`MarketoCampaignOverview should render an error when the count requests 
                     class="no-results-content"
                   >
                     <div
-                      class="h4 no-results-title"
+                      class="h4 mb-3 no-results-title"
                     >
                       An unexpected error occurred.
                     </div>
@@ -764,7 +764,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
           class="ml-auto tbar-item"
         >
           <ul
-            class="base-edit-page-toolbar-actions tbar-nav"
+            class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
             data-testid="toolbar-actions"
           />
         </li>
@@ -1449,7 +1449,7 @@ exports[`MarketoCampaignOverview should render the connected data source with th
                       class="container-fluid"
                     >
                       <ul
-                        class="nav-root front-nav navbar-nav"
+                        class="nav-root front-nav mr-auto navbar-nav"
                         role="tablist"
                       >
                         <li
@@ -1560,12 +1560,12 @@ exports[`MarketoCampaignOverview should render the connected data source with th
                       />
                     </div>
                     <div
-                      class="h4 no-results-title"
+                      class="h4 mb-3 no-results-title"
                     >
                       No properties were found.
                     </div>
                     <div
-                      class="no-results-description"
+                      class="mb-3 no-results-description"
                     >
                       Go to Properties under Workspace Settings to create a property.
                       <a
@@ -1643,7 +1643,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
           class="ml-auto tbar-item"
         >
           <ul
-            class="base-edit-page-toolbar-actions tbar-nav"
+            class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
             data-testid="toolbar-actions"
           />
         </li>
@@ -2414,7 +2414,7 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                       class="container-fluid"
                     >
                       <ul
-                        class="nav-root front-nav navbar-nav"
+                        class="nav-root front-nav mr-auto navbar-nav"
                         role="tablist"
                       >
                         <li
@@ -2526,12 +2526,12 @@ exports[`MarketoCampaignOverview should render the reconnect view when the data 
                       />
                     </div>
                     <div
-                      class="h4 no-results-title"
+                      class="h4 mb-3 no-results-title"
                     >
                       No properties were found.
                     </div>
                     <div
-                      class="no-results-description"
+                      class="mb-3 no-results-description"
                     >
                       Go to Properties under Workspace Settings to create a property.
                       <a

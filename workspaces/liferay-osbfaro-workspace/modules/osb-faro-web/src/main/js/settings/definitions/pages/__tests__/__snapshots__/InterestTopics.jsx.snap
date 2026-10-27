@@ -49,7 +49,7 @@ exports[`InterestTopics should render 1`] = `
           class="ml-auto tbar-item"
         >
           <ul
-            class="base-edit-page-toolbar-actions tbar-nav"
+            class="base-edit-page-toolbar-actions justify-content-end tbar-nav"
             data-testid="toolbar-actions"
           />
         </li>
@@ -348,7 +348,7 @@ exports[`InterestTopics should render 1`] = `
                     class="container-fluid"
                   >
                     <ul
-                      class="nav-root front-nav navbar-nav"
+                      class="nav-root front-nav mr-auto navbar-nav"
                       role="tablist"
                     >
                       <li
@@ -667,7 +667,7 @@ exports[`InterestTopics should render page not found if an invalid page is provi
     class="no-results-content"
   >
     <div
-      class="h4 no-results-title"
+      class="h4 mb-3 no-results-title"
     >
       Page Not Found
     </div>
@@ -698,12 +698,12 @@ exports[`InterestTopics should render with a member-specific message to add keyw
       />
     </div>
     <div
-      class="h4 no-results-title"
+      class="h4 mb-3 no-results-title"
     >
       No Keywords Found
     </div>
     <div
-      class="no-results-description"
+      class="mb-3 no-results-description"
     >
       Please contact your site administrator to add keywords.
     </div>
@@ -728,12 +728,12 @@ exports[`InterestTopics should render with a message to add keywords if there ar
       />
     </div>
     <div
-      class="h4 no-results-title"
+      class="h4 mb-3 no-results-title"
     >
       No Keywords Found
     </div>
     <div
-      class="no-results-description"
+      class="mb-3 no-results-description"
     >
       Add a keyword to be blocked.
       <a
@@ -771,12 +771,12 @@ exports[`InterestTopics should render with an empty state 1`] = `
       />
     </div>
     <div
-      class="h4 no-results-title"
+      class="h4 mb-3 no-results-title"
     >
       No results were found.
     </div>
     <div
-      class="no-results-description"
+      class="mb-3 no-results-description"
     >
       Please try a different search term.
     </div>

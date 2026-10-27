@@ -9,7 +9,7 @@ exports[`NoResultsDisplay should render component 1`] = `
       class="no-results-content"
     >
       <div
-        class="h4 no-results-title"
+        class="h4 mb-3 no-results-title"
       >
         No items were found.
       </div>
@@ -39,7 +39,7 @@ exports[`NoResultsDisplay should render component with icon 1`] = `
         </svg>
       </div>
       <div
-        class="h4 no-results-title"
+        class="h4 mb-3 no-results-title"
       >
         No items were found.
       </div>

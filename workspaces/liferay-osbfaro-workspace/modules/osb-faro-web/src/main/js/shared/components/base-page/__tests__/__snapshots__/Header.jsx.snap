@@ -268,7 +268,7 @@ exports[`BasePage.Header TitleSection renders TitleSection w/ label & no subtitl
 exports[`BasePage.Header TitleSection renders TitleSection w/ subtitle & label 1`] = `
 <div>
   <div
-    class="header-section title-section subtitle"
+    class="header-section title-section mb-0 subtitle"
   >
     <span
       class="align-items-center d-flex"
@@ -300,7 +300,7 @@ exports[`BasePage.Header TitleSection renders TitleSection w/ subtitle & label 1
 exports[`BasePage.Header TitleSection renders TitleSection w/ subtitle 1`] = `
 <div>
   <div
-    class="header-section title-section subtitle"
+    class="header-section title-section mb-0 subtitle"
   >
     <span
       class="align-items-center d-flex"
@@ -375,7 +375,7 @@ exports[`BasePage.Header renders Header w/ Breadcrumbs 1`] = `
         class="row-root align-items-center d-flex justify-content-between"
       >
         <ol
-          class="breadcrumb breadcrumbs-root"
+          class="breadcrumb breadcrumbs-root mb-2 p-0"
         >
           <li
             class="breadcrumb-item"

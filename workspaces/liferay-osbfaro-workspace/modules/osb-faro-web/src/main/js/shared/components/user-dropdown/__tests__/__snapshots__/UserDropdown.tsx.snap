@@ -11,7 +11,7 @@ exports[`UserDropdown should render 1`] = `
         class="text-truncate"
       >
         <div
-          class="sticker sticker-root sticker-static avatar sticker-circle"
+          class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
         >
           TT
         </div>
@@ -44,7 +44,7 @@ exports[`UserDropdown should render dropdown menu when clicked 1`] = `
           class="text-truncate"
         >
           <div
-            class="sticker sticker-root sticker-static avatar sticker-circle"
+            class="sticker sticker-root sticker-static avatar mr-3 sticker-circle"
           >
             TT
           </div>

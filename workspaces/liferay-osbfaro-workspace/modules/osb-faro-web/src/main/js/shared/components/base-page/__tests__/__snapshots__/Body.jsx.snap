@@ -6,7 +6,7 @@ exports[`BasePage.Body renders Body 1`] = `
     class="body-root page-container"
   >
     <span
-      class="children-wrapper"
+      class="children-wrapper pt-3"
     >
       Test Test
     </span>
@@ -20,7 +20,7 @@ exports[`BasePage.Body renders Body w/ disabled 1`] = `
     class="body-root page-container"
   >
     <span
-      class="children-wrapper"
+      class="children-wrapper pt-3"
     >
       Test Test
     </span>
