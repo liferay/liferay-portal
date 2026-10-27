@@ -270,6 +270,42 @@ public abstract class BaseExportPreviewResourceImpl
 		return new ExportPreview();
 	}
 
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'GET' 'http://localhost:8080/o/export-import/v1.0/site-templates/{siteTemplateId}/export-preview'  -u 'test@liferay.com:test'
+	 */
+	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-82107")
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Retrieves the exportable data of the specified site template."
+	)
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "siteTemplateId", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "ExportPreview")
+		}
+	)
+	@jakarta.ws.rs.GET
+	@jakarta.ws.rs.Path("/site-templates/{siteTemplateId}/export-preview")
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public ExportPreview getSiteTemplateExportPreview(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("siteTemplateId")
+			Long siteTemplateId)
+		throws Exception {
+
+		return new ExportPreview();
+	}
+
 	public void setContextAcceptLanguage(AcceptLanguage contextAcceptLanguage) {
 		this.contextAcceptLanguage = contextAcceptLanguage;
 	}
@@ -715,4 +751,4 @@ public abstract class BaseExportPreviewResourceImpl
 		LogFactoryUtil.getLog(BaseExportPreviewResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:526038344
+// LIFERAY-REST-BUILDER-HASH:-1657190237

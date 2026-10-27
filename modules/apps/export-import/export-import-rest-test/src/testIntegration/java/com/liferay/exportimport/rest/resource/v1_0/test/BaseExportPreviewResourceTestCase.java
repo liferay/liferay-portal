@@ -224,6 +224,11 @@ public abstract class BaseExportPreviewResourceTestCase {
 		Assert.assertTrue(false);
 	}
 
+	@Test
+	public void testGetSiteTemplateExportPreview() throws Exception {
+		Assert.assertTrue(false);
+	}
+
 	protected void assertContains(
 		ExportPreview exportPreview, List<ExportPreview> exportPreviews) {
 
@@ -879,4 +884,4 @@ public abstract class BaseExportPreviewResourceTestCase {
 		_exportPreviewResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1806497724
+// LIFERAY-REST-BUILDER-HASH:351194986
