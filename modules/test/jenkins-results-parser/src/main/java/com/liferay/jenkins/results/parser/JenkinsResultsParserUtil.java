@@ -2013,6 +2013,28 @@ public class JenkinsResultsParserUtil {
 		return matchingFiles.get(0);
 	}
 
+	public static long getGeneratedTimestamp(String content) {
+		long generatedTimestamp = 0;
+
+		for (Pattern pattern : _generatedTimestampPatterns) {
+			Matcher matcher = pattern.matcher(content);
+
+			while (matcher.find()) {
+				long timestamp = Long.parseLong(matcher.group("timestamp"));
+
+				if ((generatedTimestamp != 0) &&
+					(timestamp >= generatedTimestamp)) {
+
+					continue;
+				}
+
+				generatedTimestamp = timestamp;
+			}
+		}
+
+		return generatedTimestamp;
+	}
+
 	public static String getGitDirectoryName(
 		String repositoryName, String upstreamBranchName) {
 
@@ -7370,6 +7392,13 @@ public class JenkinsResultsParserUtil {
 			"(?<name>[^/:\\s]+)(:(?<version>[^@:\\s]+))?)" +
 				"(@sha256:[^\\s]+)?");
 	private static volatile Set<String> _forbiddenRedactTokens;
+	private static final List<Pattern> _generatedTimestampPatterns =
+		Arrays.asList(
+			Pattern.compile(
+				"var\\s+\\w*GeneratedDate\\s*=\\s*new Date\\(" +
+					"(?<timestamp>\\d+)\\)"),
+			Pattern.compile(
+				"\"modification_date\"\\s*:\\s*(?<timestamp>\\d+)"));
 	private static JSONArray _gitDirectoriesJSONArray;
 	private static final DateFormat _gitHubDateFormat;
 	private static final Pattern _gitSHAPattern = Pattern.compile(

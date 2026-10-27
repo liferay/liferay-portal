@@ -7,13 +7,9 @@ package com.liferay.jenkins.results.parser.monitor;
 
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author Brittney Nguyen
@@ -56,7 +52,8 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
-		long generatedTimestamp = _getGeneratedTimestamp(reportData);
+		long generatedTimestamp =
+			JenkinsResultsParserUtil.getGeneratedTimestamp(reportData);
 
 		if (generatedTimestamp <= 0) {
 			return new MonitorResult(
@@ -94,28 +91,6 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 			metrics, MonitorResult.Status.OK, currentTimeMillis);
 	}
 
-	private long _getGeneratedTimestamp(String reportData) {
-		long generatedTimestamp = 0;
-
-		for (Pattern pattern : _generatedTimestampPatterns) {
-			Matcher matcher = pattern.matcher(reportData);
-
-			while (matcher.find()) {
-				long timestamp = Long.parseLong(matcher.group("timestamp"));
-
-				if ((generatedTimestamp != 0) &&
-					(timestamp >= generatedTimestamp)) {
-
-					continue;
-				}
-
-				generatedTimestamp = timestamp;
-			}
-		}
-
-		return generatedTimestamp;
-	}
-
 	private String _getReadFailureMessage(Exception exception) {
 		return JenkinsResultsParserUtil.combine(
 			"Unable to read ", _reportDataURL, ": ",
@@ -132,14 +107,6 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 			JenkinsResultsParserUtil.toDurationString(
 				_overdueGraceSeconds * 1000));
 	}
-
-	private static final List<Pattern> _generatedTimestampPatterns =
-		Arrays.asList(
-			Pattern.compile(
-				"var\\s+\\w*GeneratedDate\\s*=\\s*new Date\\(" +
-					"(?<timestamp>\\d+)\\)"),
-			Pattern.compile(
-				"\"modification_date\"\\s*:\\s*(?<timestamp>\\d+)"));
 
 	private final long _cadenceSeconds;
 	private final long _overdueGraceSeconds;
