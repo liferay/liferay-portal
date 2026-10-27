@@ -5,7 +5,6 @@
 
 package com.liferay.osb.faro.web.internal.search;
 
-import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
@@ -180,9 +179,7 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 		document.addDate(
 			"lastAccessDate", new Date(faroProject.getLastAccessTime()));
 
-		if (!StringUtil.equals(
-				faroProject.getState(), FaroProjectConstants.STATE_READY)) {
-
+		if (faroProject.isOffline()) {
 			document.addKeyword("offline", StringPool.TRUE);
 		}
 
