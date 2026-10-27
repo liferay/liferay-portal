@@ -9,7 +9,6 @@ import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
-import com.liferay.osb.faro.service.FaroProjectUsageLocalService;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -181,26 +180,10 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 		document.addDate(
 			"lastAccessDate", new Date(faroProject.getLastAccessTime()));
 
-		try {
-			if (!StringUtil.equals(
-					faroProject.getState(), FaroProjectConstants.STATE_READY)) {
+		if (!StringUtil.equals(
+				faroProject.getState(), FaroProjectConstants.STATE_READY)) {
 
-				document.addKeyword("offline", StringPool.TRUE);
-			}
-			else {
-				faroSubscriptionDisplay.setCounts(
-					faroProject, _faroProjectUsageLocalService);
-
-				if (_log.isInfoEnabled()) {
-					_log.info(
-						"Finished setting counts " + faroProject.getGroupId());
-				}
-			}
-		}
-		catch (Exception exception) {
 			document.addKeyword("offline", StringPool.TRUE);
-
-			_log.error(exception);
 		}
 
 		document.addNumber(
@@ -287,9 +270,6 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 
 	@Reference
 	private FaroProjectLocalService _faroProjectLocalService;
-
-	@Reference
-	private FaroProjectUsageLocalService _faroProjectUsageLocalService;
 
 	@Reference
 	private IndexWriterHelper _indexWriterHelper;
