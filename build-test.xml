@@ -10968,7 +10968,10 @@ org.apache.catalina.ha.session.level=INFO]]>
 					</delete>
 
 					<if>
-						<equals arg1="${database.version}" arg2="2022" />
+						<or>
+							<equals arg1="${database.version}" arg2="2022" />
+							<equals arg1="${database.version}" arg2="2025" />
+						</or>
 						<then>
 							<mirrors-get
 								dest="${todir}"

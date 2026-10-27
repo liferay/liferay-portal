@@ -7236,6 +7236,10 @@ information. Make sure to commit in all format-javadoc results.
 		<run-functional-test app.server.type="tomcat" database.type="sqlserver" database.version="2022" test.portal.log.assert="true" />
 	</target>
 
+	<target name="functional-smoke-tomcat101-sqlserver2025">
+		<run-functional-test app.server.type="tomcat" database.type="sqlserver" database.version="2025" test.portal.log.assert="true" />
+	</target>
+
 	<target name="functional-smoke-weblogic151-mysql">
 		<set-app-server-version-number app.server.type="weblogic" app.server.version="15.1.1" />
 
@@ -7784,6 +7788,28 @@ information. Make sure to commit in all format-javadoc results.
 		/>
 	</target>
 
+	<target name="functional-tomcat-sqlserver2025-jdk21_zulu">
+		<set-tomcat-version-number liferay.portal.bundle="${test.portal.bundle.version}" />
+
+		<run-functional-test
+			app.server.type="tomcat"
+			database.type="sqlserver"
+			database.version="2025"
+			setup.proxy="false"
+			test.build.fix.pack.zip.url="${test.build.fix.pack.zip.url}"
+			test.cmp.license.url="${test.cmp.license.url}"
+			test.dsr.license.url="${test.dsr.license.url}"
+			test.fix.pack.base.url="${test.fix.pack.base.url}"
+			test.license.xml.url="${test.license.xml.url}"
+			test.plugin.zip.url="${test.plugin.zip.url}"
+			test.plugins.war.zip.url="${test.plugins.war.zip.url}"
+			test.portal.bundle.version="${test.portal.bundle.version}"
+			test.portal.bundle.zip.url="${test.portal.bundle.zip.url}"
+			test.portal.lpkg.name="${test.portal.lpkg.name}"
+			test.sql.zip.url="${test.sql.zip.url}"
+		/>
+	</target>
+
 	<target name="functional-tomcat101-db2">
 		<run-functional-test app.server.type="tomcat" database.type="db2" />
 	</target>
@@ -7950,6 +7976,10 @@ information. Make sure to commit in all format-javadoc results.
 
 	<target name="functional-tomcat101-sqlserver2022">
 		<run-functional-test app.server.type="tomcat" database.type="sqlserver" database.version="2022" />
+	</target>
+
+	<target name="functional-tomcat101-sqlserver2025">
+		<run-functional-test app.server.type="tomcat" database.type="sqlserver" database.version="2025" />
 	</target>
 
 	<target name="functional-ubuntu14-tomcat101-mysql">
@@ -8186,6 +8216,10 @@ information. Make sure to commit in all format-javadoc results.
 
 	<target name="functional-upgrade-tomcat101-sqlserver2022">
 		<run-functional-test app.server.type="tomcat" database.type="sqlserver" database.version="2022" />
+	</target>
+
+	<target name="functional-upgrade-tomcat101-sqlserver2025">
+		<run-functional-test app.server.type="tomcat" database.type="sqlserver" database.version="2025" />
 	</target>
 
 	<target name="functional-upgrade-weblogic151-mysql">
@@ -9126,6 +9160,10 @@ information. Make sure to commit in all format-javadoc results.
 		<run-legacy-database-dump database.type="sqlserver" database.version="2022" />
 	</target>
 
+	<target name="legacy-functional-tomcat-sqlserver2025">
+		<run-legacy-database-dump database.type="sqlserver" database.version="2025" />
+	</target>
+
 	<target name="lpkg-container-mysql80">
 		<run-lpkg-container-test database.type="mysql" database.version="8.0" />
 	</target>
@@ -9734,6 +9772,10 @@ information. Make sure to commit in all format-javadoc results.
 		<run-modules-integration-test database.type="sqlserver" database.version="2022" />
 	</target>
 
+	<target name="modules-integration-sqlserver2025">
+		<run-modules-integration-test database.type="sqlserver" database.version="2025" />
+	</target>
+
 	<target name="modules-unit">
 		<run-batch-test>
 			<test-action>
@@ -9991,6 +10033,10 @@ ${output.content}</echo>
 		<run-playwright-js-test database.type="sqlserver" />
 	</target>
 
+	<target name="playwright-js-smoke-tomcat101-sqlserver2025">
+		<run-playwright-js-test database.type="sqlserver" />
+	</target>
+
 	<target name="playwright-js-smoke-wildfly410-mariadb106">
 		<run-playwright-js-test app.server.type="wildfly" database.type="mariadb" />
 	</target>
@@ -10039,6 +10085,10 @@ ${output.content}</echo>
 		<run-playwright-js-test database.type="sqlserver" />
 	</target>
 
+	<target name="playwright-js-tomcat101-sqlserver2025">
+		<run-playwright-js-test database.type="sqlserver" />
+	</target>
+
 	<target name="playwright-js-upgrade-tomcat101-db2111">
 		<run-playwright-js-test database.type="db2" />
 	</target>
@@ -10060,6 +10110,10 @@ ${output.content}</echo>
 	</target>
 
 	<target name="playwright-js-upgrade-tomcat101-sqlserver2022">
+		<run-playwright-js-test database.type="sqlserver" />
+	</target>
+
+	<target name="playwright-js-upgrade-tomcat101-sqlserver2025">
 		<run-playwright-js-test database.type="sqlserver" />
 	</target>
 
