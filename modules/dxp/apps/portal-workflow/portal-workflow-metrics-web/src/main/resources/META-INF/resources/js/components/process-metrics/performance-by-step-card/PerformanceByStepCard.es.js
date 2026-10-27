@@ -13,30 +13,12 @@ import {useFetch} from '../../../shared/hooks/useFetch.es';
 import {useFilter} from '../../../shared/hooks/useFilter.es';
 import ProcessVersionFilter from '../../filter/ProcessVersionFilter.es';
 import TimeRangeFilter from '../../filter/TimeRangeFilter.es';
-import {getTimeRangeParams} from '../../filter/util/timeRangeUtil.es';
+import {
+	getDefaultEndDate,
+	getDefaultStartDate,
+	getTimeRangeParams,
+} from '../../filter/util/timeRangeUtil.es';
 import {Body, Footer} from './PerformanceByStepCardBody.es';
-
-const getDefaultStartDate = () => {
-	const date = new Date();
-
-	date.setDate(date.getDate() - 30);
-
-	let newDate = date.toISOString();
-
-	newDate = newDate.split('.')[0] + 'Z';
-
-	return newDate;
-};
-
-const getDefaultEndDate = () => {
-	const date = new Date();
-
-	let newDate = date.toISOString();
-
-	newDate = newDate.split('.')[0] + 'Z';
-
-	return newDate;
-};
 
 function Header({disableFilters, prefixKey, processId}) {
 	return (

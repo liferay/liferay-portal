@@ -7,30 +7,12 @@ import React from 'react';
 
 import {useFilter} from '../../../shared/hooks/useFilter.es';
 import TimeRangeFilter from '../../filter/TimeRangeFilter.es';
-import {getTimeRangeParams} from '../../filter/util/timeRangeUtil.es';
+import {
+	getDefaultEndDate,
+	getDefaultStartDate,
+	getTimeRangeParams,
+} from '../../filter/util/timeRangeUtil.es';
 import ProcessItemsCard from './ProcessItemsCard.es';
-
-const getDefaultStartDate = () => {
-	const date = new Date();
-
-	date.setDate(date.getDate() - 30);
-
-	let newDate = date.toISOString();
-
-	newDate = newDate.split('.')[0] + 'Z';
-
-	return newDate;
-};
-
-const getDefaultEndDate = () => {
-	const date = new Date();
-
-	let newDate = date.toISOString();
-
-	newDate = newDate.split('.')[0] + 'Z';
-
-	return newDate;
-};
 
 const CompletedItemsCard = ({routeParams}) => {
 	const filterKeys = ['timeRange'];

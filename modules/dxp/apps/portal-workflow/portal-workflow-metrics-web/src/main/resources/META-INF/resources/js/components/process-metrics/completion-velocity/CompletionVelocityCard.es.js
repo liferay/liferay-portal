@@ -13,32 +13,13 @@ import {useFetch} from '../../../shared/hooks/useFetch.es';
 import {useFilter} from '../../../shared/hooks/useFilter.es';
 import TimeRangeFilter from '../../filter/TimeRangeFilter.es';
 import VelocityUnitFilter from '../../filter/VelocityUnitFilter.es';
-import {getTimeRangeParams} from '../../filter/util/timeRangeUtil.es';
+import {
+	getDefaultEndDate,
+	getDefaultStartDate,
+	getTimeRangeParams,
+} from '../../filter/util/timeRangeUtil.es';
 import {getVelocityUnits} from '../../filter/util/velocityUnitUtil.es';
 import Body from './CompletionVelocityCardBody.es';
-
-const getDefaultStartDate = () => {
-	const date = new Date();
-
-	date.setDate(date.getDate() - 29);
-	date.setHours(0, 0, 0, 0);
-
-	let newDate = date.toISOString();
-
-	newDate = newDate.split('.')[0] + 'Z';
-
-	return newDate;
-};
-
-const getDefaultEndDate = () => {
-	const date = new Date();
-
-	let newDate = date.toISOString();
-
-	newDate = newDate.split('.')[0] + 'Z';
-
-	return newDate;
-};
 
 function CompletionVelocityCard({routeParams}) {
 	const {processId} = routeParams;

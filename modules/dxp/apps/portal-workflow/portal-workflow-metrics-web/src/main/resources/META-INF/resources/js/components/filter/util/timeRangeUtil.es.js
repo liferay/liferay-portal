@@ -100,6 +100,29 @@ const getCustomTimeRange = (dateEnd, dateStart) => {
 	return customTimeRange;
 };
 
+const getDefaultEndDate = () => {
+	const date = new Date();
+
+	let newDate = date.toISOString();
+
+	newDate = newDate.split('.')[0] + 'Z';
+
+	return newDate;
+};
+
+const getDefaultStartDate = () => {
+	const date = new Date();
+
+	date.setDate(date.getDate() - 29);
+	date.setHours(0, 0, 0, 0);
+
+	let newDate = date.toISOString();
+
+	newDate = newDate.split('.')[0] + 'Z';
+
+	return newDate;
+};
+
 const getTimeRangeParams = (dateStartEncoded = '', dateEndEncoded = '') => {
 	let params = {};
 
@@ -142,6 +165,8 @@ export {
 	formatDescriptionDate,
 	formatTimeRange,
 	getCustomTimeRange,
+	getDefaultEndDate,
+	getDefaultStartDate,
 	getTimeRangeParams,
 	isValidDate,
 	parseDateMoment,
