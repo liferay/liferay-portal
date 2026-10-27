@@ -25,13 +25,15 @@ When iterating on a site built from a site initializer, theme changes apply **li
 
 A `themeCSS` CET injects custom CSS that overrides Clay Design System variables. This replaces the legacy Liferay theme WAR.
 
+**Prefer it for a site's look.** Ship the brand, its colors, typography, and site wide CSS, in a `themeCSS` CET bound in the master page's `settings`, rather than only in style book values, fragment CSS, or edits on the running site. The CET is reviewable, versioned, and survives reprovision, and it keeps the brand in one place. Bind a style book alongside it for the values editors should be able to tune (see Layer 2).
+
 > **Two constraints to settle before writing any CSS.**
 >
 > 1. **It needs its own project.** `themeCSS` is classified `frontend`; a `siteInitializer` is `batch`, and the workspace plugin forbids that combination. The theme is always a sibling project — see `rules/client-extension-types.md` → "Which Types May Share a Project".
 >
-> 1. **It is applied from the initializer tree through the master page, not `metadata.json`.** `layout-set/*/metadata.json` has no key for a client extension, but the master page's `page-definition.json` carries a top level `settings.themeCSSClientExtension` block whose `externalReferenceCode` is `"LXC:" + <config-erc>` (the same `settings` block also binds a style book and `globalCSSClientExtensions`). The render-time resolver walks layout → master layout → layout-set, so one bind on the master cascades to every page using it and **survives reprovision**. See `rules/site-initializer-format.md` → "Binding design to the master via `settings`". Creating or changing the binding is a master composition change (applied on the next initializer re-fire — clean redeploy); redeploying the CET updates the served CSS live once bound. Deploy-order matters: if the CET is not yet registered when the initializer imports the master, the bind is silently skipped (`No CET found for LXC:...`) — retrigger the initializer after the CET is up.
+> 1. **It is applied from the initializer tree through the master page, not `metadata.json`.** `layout-set/*/metadata.json` has no key for a client extension, but the master page's `page-definition.json` carries a top level `settings.themeCSSClientExtension` block whose `externalReferenceCode` is `"LXC:" + <config-erc>` (the same `settings` block also binds a style book and `globalCSSClientExtensions`). The render-time resolver walks layout → master layout → layout-set, so one bind on the master cascades to every page using it and **survives reprovision**. See `rules/site-initializer-format.md` → "Binding design to the master via `settings`". Once the master binds the CET, switch Classic's own header and footer off in the same `settings`, as `themeSettings` beside `"themeName": "Classic"`: the layout set's `show-header` and `show-footer` no longer apply to its pages. Creating or changing the binding is a master composition change (applied on the next initializer re-fire — clean redeploy); redeploying the CET updates the served CSS live once bound. Deploy-order matters: if the CET is not yet registered when the initializer imports the master, the bind is silently skipped (`No CET found for LXC:...`) — retrigger the initializer after the CET is up.
 >
-> So decide up front where each part of the look lives: style book tokens first, the master-bound themeCSS CET for Clay level overrides that have no style book token (Classic exposes no `headings*` tokens), master page fragment CSS for the rest.
+> So decide up front where each part of the look lives: the master-bound themeCSS CET first, for the brand and every Clay level override, including those with no style book token (Classic exposes no `headings*` tokens); a style book bound alongside it for the values editors tune; fragment CSS only for one fragment's own look.
 
 #### Scaffold
 
@@ -139,7 +141,7 @@ The portable path is the master page binding: set `settings.themeCSSClientExtens
 
 A style book maps Clay token names to site specific values. Unlike a themeCSS CET's compiled output, a style book **can** be applied from the initializer tree, which makes it the reproducible half of the theme layer.
 
-> **A stock-built themeCSS CET bypasses the style book — unless it compiles Clay against the custom-properties variables.** By default the SCSS build emits **literal values**, not `var(--token)` references, so style book tokens never reach any rule the CET's compiled CSS sets — a token edit "succeeds" (and a reprovision succeeds) with zero visible change. The `src/css/_clay_variables.scss` import above ("The Stock Theme Build Compiles Clay STATIC") removes the bypass: with it, the compiled Clay consumes `var(--token)` throughout and the style book drives typography and Clay colors as designed. Either way, put brand values that should be marketer-tunable in the **style book**, and keep the themeCSS CET for what tokens can't express. To make a style book drive tokens on a themeCSS-bound site, the CET must also ship its own `frontend-token-definition.json` declaring the tokens **and** the style book must be bound alongside the CET (same master `settings` block, style book by key, CET by full `LXC:` ERC). Two related facts: a themeCSS CET selected as the site theme **without** a token definition makes the page editor NPE, and the CET's `getThemeId()` is its **ERC** — so a `style-book.json` targeting a themeCSS-themed site sets `themeId` to that ERC, not `classic_WAR_classictheme`. Also note a style book's `themeId` is **write-once**: it is set only when the book is created, and the initializer upsert (`updateStyleBookEntry`) takes no `themeId`, so a book first created against the wrong theme keeps it on every redeploy. Re-bind it by deleting the book, then re-firing the initializer — plan the theme before first provision.
+> **A stock-built themeCSS CET bypasses the style book — unless it compiles Clay against the custom-properties variables.** By default the SCSS build emits **literal values**, not `var(--token)` references, so style book tokens never reach any rule the CET's compiled CSS sets — a token edit "succeeds" (and a reprovision succeeds) with zero visible change. The `src/css/_clay_variables.scss` import above ("The Stock Theme Build Compiles Clay STATIC") removes the bypass: with it, the compiled Clay consumes `var(--token)` throughout and the style book drives typography and Clay colors as designed. Either way, the brand ships in the themeCSS CET; put only the values that should be marketer-tunable in a **style book** bound alongside it. To make a style book drive tokens on a themeCSS-bound site, the CET must also ship its own `frontend-token-definition.json` declaring the tokens **and** the style book must be bound alongside the CET (same master `settings` block, style book by key, CET by full `LXC:` ERC). Two related facts: a themeCSS CET selected as the site theme **without** a token definition makes the page editor NPE, and the CET's `getThemeId()` is its **ERC** — so a `style-book.json` targeting a themeCSS-themed site sets `themeId` to that ERC, not `classic_WAR_classictheme`. Also note a style book's `themeId` is **write-once**: it is set only when the book is created, and the initializer upsert (`updateStyleBookEntry`) takes no `themeId`, so a book first created against the wrong theme keeps it on every redeploy. Re-bind it by deleting the book, then re-firing the initializer — plan the theme before first provision.
 
 #### Author It in the Tree
 
@@ -240,9 +242,9 @@ With both, 31 injected Clay components matched the old site in radius, height, p
 
 **Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Only the *sizes* are tokenized (`h1FontSize`…`h6FontSize`); heading **family** and **weight** have no token.
 
-##### Site Wide CSS With No Token — Put It in a Master Page Fragment
+##### Site Wide CSS With No Token — Prefer the themeCSS CET
 
-This is the gap for values that have no style book token and do not belong in the Clay variable layer of the themeCSS CET. A reproducible answer is the **master page's header fragment**.
+Put a site wide rule that no style book token expresses in the themeCSS CET's `src/css/_custom.scss`, which every page bound to the master loads. Only when the site ships no themeCSS CET is the **master page's header fragment** the reproducible fallback, as described below.
 
 A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place site wide CSS can live and still survive delete and redeploy:
 
@@ -309,9 +311,9 @@ Weigh it against the alternatives before reaching for it:
 
 | Need | Put it in |
 | --- | --- |
-| Value has a style book token | Style book — always first choice |
-| Site wide, no token, plain CSS | Master page fragment CSS (above) |
-| Site wide Clay variable overrides, no token | `themeCSS` CET bound in the master's `settings.themeCSSClientExtension` (survives reprovision) |
+| Site wide brand, Clay variable overrides, no token | `themeCSS` CET bound in the master's `settings.themeCSSClientExtension` — preferred (survives reprovision) |
+| Site wide, no token, plain CSS | The `themeCSS` CET's `src/css/_custom.scss`; master page fragment CSS (above) only when the site has no themeCSS CET |
+| Value has a style book token, and editors should tune it | Style book bound alongside the `themeCSS` CET (Layer 2) |
 | Truly instance wide, every site | `globalCSS` CET (no per site scoping available) |
 | One section's look | That fragment's own scoped CSS |
 
