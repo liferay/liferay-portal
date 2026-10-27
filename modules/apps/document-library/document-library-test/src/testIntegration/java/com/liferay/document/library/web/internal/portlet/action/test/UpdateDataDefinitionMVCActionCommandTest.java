@@ -59,10 +59,9 @@ public class UpdateDataDefinitionMVCActionCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_group = GroupTestUtil.addGroup();
-
 		_dataDefinitionJSON = new String(
 			FileUtil.getBytes(getClass(), "dependencies/data_definition.json"));
+		_group = GroupTestUtil.addGroup();
 
 		_dataDefinition = DataDefinitionTestUtil.addDataDefinition(
 			"document-library", _dataDefinitionResourceFactory,

@@ -73,14 +73,14 @@ public class EditFileEntryTypeMVCActionCommand
 			if (cmd.equals(Constants.ADD)) {
 				_addFileEntryType(actionRequest);
 			}
-			else if (cmd.equals(Constants.UPDATE)) {
-				_updateFileEntryType(actionRequest);
-			}
 			else if (cmd.equals(Constants.DELETE)) {
 				_deleteFileEntryType(actionRequest);
 			}
 			else if (cmd.equals(Constants.SUBSCRIBE)) {
 				_subscribeFileEntryType(actionRequest);
+			}
+			else if (cmd.equals(Constants.UPDATE)) {
+				_updateFileEntryType(actionRequest);
 			}
 			else if (cmd.equals(Constants.UNSUBSCRIBE)) {
 				_unsubscribeFileEntryType(actionRequest);
