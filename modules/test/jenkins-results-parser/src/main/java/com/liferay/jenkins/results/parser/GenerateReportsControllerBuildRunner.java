@@ -119,8 +119,8 @@ public class GenerateReportsControllerBuildRunner
 		return buildJSONObjectsMap;
 	}
 
-	private Map<String, Long> _getLatestReportUpdateTimes() {
-		Map<String, Long> latestReportUpdateTimes = new HashMap<>();
+	private Map<String, Long> _getLatestReportInvocationTimes() {
+		Map<String, Long> latestReportInvocationTimes = new HashMap<>();
 
 		Map<String, JSONObject> buildJSONObjectsMap = _getBuildJSONObjectsMap();
 
@@ -133,20 +133,26 @@ public class GenerateReportsControllerBuildRunner
 
 			String reportName = report.toString();
 
-			for (Map.Entry<String, JSONObject> entry :
-					buildJSONObjectsMap.entrySet()) {
-
-				JSONObject buildJSONObject = entry.getValue();
-
+			for (JSONObject buildJSONObject : buildJSONObjectsMap.values()) {
 				String buildDescription = buildJSONObject.optString(
 					"description", "");
 
-				if (buildDescription.contains(reportName)) {
-					latestReportUpdateTimes.put(
-						reportName, buildJSONObject.getLong("timestamp"));
-
-					break;
+				if (!buildDescription.contains(reportName)) {
+					continue;
 				}
+
+				long timestamp = buildJSONObject.getLong("timestamp");
+
+				Long latestReportInvocationTime =
+					latestReportInvocationTimes.get(reportName);
+
+				if ((latestReportInvocationTime != null) &&
+					(latestReportInvocationTime >= timestamp)) {
+
+					continue;
+				}
+
+				latestReportInvocationTimes.put(reportName, timestamp);
 			}
 		}
 
@@ -158,10 +164,11 @@ public class GenerateReportsControllerBuildRunner
 			long defaultStartTime =
 				buildData.getStartTime() - _getReportStaleDuration(reportName);
 
-			latestReportUpdateTimes.putIfAbsent(reportName, defaultStartTime);
+			latestReportInvocationTimes.putIfAbsent(
+				reportName, defaultStartTime);
 		}
 
-		return latestReportUpdateTimes;
+		return latestReportInvocationTimes;
 	}
 
 	private long _getReportStaleDuration(String reportName) {
@@ -192,15 +199,15 @@ public class GenerateReportsControllerBuildRunner
 
 		_selectedReportNames = new ArrayList<>();
 
-		Map<String, Long> latestReportUpdateTimes =
-			_getLatestReportUpdateTimes();
+		Map<String, Long> latestReportInvocationTimes =
+			_getLatestReportInvocationTimes();
 
 		BuildData buildData = getBuildData();
 
 		long startTime = buildData.getStartTime();
 
 		for (Map.Entry<String, Long> entry :
-				latestReportUpdateTimes.entrySet()) {
+				latestReportInvocationTimes.entrySet()) {
 
 			String reportName = entry.getKey();
 
