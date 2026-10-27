@@ -99,8 +99,8 @@ public class DefaultAuditRouterTest {
 		_testRoute(null, null, "ADD", "instance.unknown.add", "unknown");
 
 		AuditMessage auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
-			"ASSIGN");
+			RandomTestUtil.randomString(), null, "ASSIGN",
+			RandomTestUtil.randomLong());
 
 		auditMessage.setResourceType("organization");
 
@@ -111,8 +111,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals("organization", auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), User.class.getName(), "AI_HUB",
-			RandomTestUtil.randomString());
+			User.class.getName(), "AI_HUB", RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong());
 
 		auditMessage.setAction("submit");
 
@@ -123,8 +123,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals("user", auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
-			"AI_HUB", RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), "AI_HUB",
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		auditMessage.setAction("submit");
 		auditMessage.setResourceType("prompt");
@@ -136,8 +136,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals("prompt", auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		auditMessage.setResourceAction("ai_hub.prompt.submit");
 
@@ -148,8 +148,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertNull(auditMessage.getResourceType());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomLong());
 
 		String resourceType = RandomTestUtil.randomString();
 
@@ -190,8 +190,8 @@ public class DefaultAuditRouterTest {
 			_userGroup.getUserGroupId(), _user.getUserId());
 
 		auditMessage = _getAuditMessage(
-			_user.getUserId(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			_user.getUserId());
 
 		_auditRouter.route(auditMessage);
 
@@ -205,8 +205,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertTrue(roleNames.contains(_siteRole.getName()));
 
 		auditMessage = _getAuditMessage(
-			_user.getUserId(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			_user.getUserId());
 
 		String roles = RandomTestUtil.randomString();
 
@@ -217,8 +217,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertEquals(roles, auditMessage.getRoles());
 
 		auditMessage = _getAuditMessage(
-			_userLocalService.getGuestUserId(TestPropsValues.getCompanyId()),
-			RandomTestUtil.randomString(), null, RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			_userLocalService.getGuestUserId(TestPropsValues.getCompanyId()));
 
 		_auditRouter.route(auditMessage);
 
@@ -228,16 +228,16 @@ public class DefaultAuditRouterTest {
 		Assert.assertTrue(roleNames.contains(RoleConstants.GUEST));
 
 		auditMessage = _getAuditMessage(
-			0, RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			0);
 
 		_auditRouter.route(auditMessage);
 
 		Assert.assertNull(auditMessage.getRoles());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong());
 
 		_auditRouter.route(auditMessage);
 
@@ -261,8 +261,8 @@ public class DefaultAuditRouterTest {
 		Assert.assertNull(auditMessage.getRoles());
 
 		auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), RandomTestUtil.randomString(), null,
-			RandomTestUtil.randomString());
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			RandomTestUtil.randomLong());
 
 		String resourceAction = RandomTestUtil.randomString();
 
@@ -288,7 +288,7 @@ public class DefaultAuditRouterTest {
 	}
 
 	private AuditMessage _getAuditMessage(
-			long userId, String className, String contextName, String eventType)
+			String className, String contextName, String eventType, long userId)
 		throws Exception {
 
 		return new AuditMessage(
@@ -304,7 +304,7 @@ public class DefaultAuditRouterTest {
 		throws Exception {
 
 		AuditMessage auditMessage = _getAuditMessage(
-			RandomTestUtil.randomLong(), className, contextName, eventType);
+			className, contextName, eventType, RandomTestUtil.randomLong());
 
 		_auditRouter.route(auditMessage);
 
@@ -320,8 +320,8 @@ public class DefaultAuditRouterTest {
 					false, "LPD-6417")) {
 
 			AuditMessage auditMessage = _getAuditMessage(
-				_user.getUserId(), RandomTestUtil.randomString(), null,
-				RandomTestUtil.randomString());
+				RandomTestUtil.randomString(), null,
+				RandomTestUtil.randomString(), _user.getUserId());
 
 			auditMessage.setAction(RandomTestUtil.randomString());
 			auditMessage.setResourceAction(RandomTestUtil.randomString());
