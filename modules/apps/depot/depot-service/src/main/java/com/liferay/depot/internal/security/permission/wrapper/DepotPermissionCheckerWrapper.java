@@ -108,7 +108,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 	public boolean hasPermission(
 		long groupId, String name, long primKey, String actionId) {
 
-		if (_isDepotGroupOwner(_groupLocalService.fetchGroup(groupId))) {
+		if (_isDepotGroupOwner(groupId)) {
 			return true;
 		}
 
@@ -127,7 +127,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 	public boolean hasPermission(
 		long groupId, String name, String primKey, String actionId) {
 
-		if (_isDepotGroupOwner(_groupLocalService.fetchGroup(groupId))) {
+		if (_isDepotGroupOwner(groupId)) {
 			return true;
 		}
 
@@ -531,6 +531,14 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 		}
 
 		return false;
+	}
+
+	private boolean _isDepotGroupOwner(long groupId) {
+		if (groupId <= 0) {
+			return false;
+		}
+
+		return _isDepotGroupOwner(_groupLocalService.fetchGroup(groupId));
 	}
 
 	private boolean _isGroupAdmin(Group group) throws PortalException {
