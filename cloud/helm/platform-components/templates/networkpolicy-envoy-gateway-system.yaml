@@ -1,0 +1,97 @@
+{{- $envoyGateway := .Values.operatorApplications.envoyGateway -}}
+{{- if $envoyGateway.enabled -}}
+{{- include "liferay-platform.requireAPIServerSources" (dict "apiServerSources" .Values.networkPolicy.apiServerSources "operatorApplication" "envoyGateway") -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: default-deny-ingress
+    namespace: {{ $envoyGateway.namespace }}
+spec:
+    podSelector: {}
+    policyTypes:
+        -   Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: envoy-gateway-ingress
+    namespace: {{ $envoyGateway.namespace }}
+spec:
+    ingress:
+        -   from:
+                {{- toYaml .Values.networkPolicy.apiServerSources | nindent 16 }}
+            ports:
+                -   port: webhook
+                    protocol: TCP
+        -   from:
+                -   podSelector:
+                        matchLabels:
+                            app.kubernetes.io/managed-by: envoy-gateway
+                            app.kubernetes.io/name: envoy
+            ports:
+                -   port: grpc
+                    protocol: TCP
+                -   port: ratelimit
+                    protocol: TCP
+                -   port: wasm
+                    protocol: TCP
+    podSelector:
+        matchLabels:
+            app.kubernetes.io/instance: {{ $envoyGateway.name }}
+            app.kubernetes.io/name: gateway-helm
+            control-plane: envoy-gateway
+    policyTypes:
+        -   Ingress
+{{- if .Values.observability.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: envoy-gateway-metrics-ingress
+    namespace: {{ $envoyGateway.namespace }}
+spec:
+    ingress:
+        -   from:
+                -   namespaceSelector:
+                        matchLabels:
+                            kubernetes.io/metadata.name: {{ .Values.observability.namespace }}
+                {{- with .Values.networkPolicy.metricsSources }}
+                {{- toYaml . | nindent 16 }}
+                {{- end }}
+            ports:
+                -   port: metrics
+                    protocol: TCP
+    podSelector: {}
+    policyTypes:
+        -   Ingress
+{{- end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "liferay-platform.labels" $ | nindent 8 }}
+    name: envoy-proxy-ingress
+    namespace: {{ $envoyGateway.namespace }}
+spec:
+    ingress:
+        -   ports:
+                -   port: 10080
+                    protocol: TCP
+                -   port: 10443
+                    protocol: TCP
+                -   port: 10443
+                    protocol: UDP
+    podSelector:
+        matchLabels:
+            app.kubernetes.io/managed-by: envoy-gateway
+            app.kubernetes.io/name: envoy
+    policyTypes:
+        -   Ingress
+{{- end -}}

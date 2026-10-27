@@ -107,6 +107,7 @@ liferay:
     valuesPrefix: liferay-default.
 networkPolicy:
     apiServerSources: []
+    metricsSources: []
 observability:
     enabled: false
     namespace: observability

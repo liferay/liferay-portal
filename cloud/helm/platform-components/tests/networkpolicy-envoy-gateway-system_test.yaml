@@ -1,0 +1,77 @@
+release:
+    name: my-release
+    namespace: argocd-system
+set:
+    networkPolicy.apiServerSources:
+        -   ipBlock:
+                cidr: 10.0.0.0/16
+suite: Envoy Gateway System NetworkPolicies
+templates:
+    -   templates/networkpolicy-envoy-gateway-system.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[0].from
+                    value:
+                        -   ipBlock:
+                                cidr: 10.0.0.0/16
+        documentSelector:
+            path: metadata.name
+            value: envoy-gateway-ingress
+        it: Admits the API server sources to the webhook
+    -   asserts:
+            -   equal:
+                    path: spec.ingress[0].from
+                    value:
+                        -   namespaceSelector:
+                                matchLabels:
+                                    kubernetes.io/metadata.name: monitoring
+                        -   namespaceSelector:
+                                matchLabels:
+                                    kubernetes.io/metadata.name: gmp-system
+        documentSelector:
+            path: metadata.name
+            value: envoy-gateway-metrics-ingress
+        it: Admits the observability namespace and the metrics sources to the metrics port when observability is enabled
+        set:
+            networkPolicy.metricsSources:
+                -   namespaceSelector:
+                        matchLabels:
+                            kubernetes.io/metadata.name: gmp-system
+            observability.enabled: true
+            observability.namespace: monitoring
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: The value "networkPolicy.apiServerSources" must not be empty when "operatorApplications.envoyGateway.enabled" is true
+        it: Fails without API server sources rather than admitting everyone
+        set:
+            networkPolicy.apiServerSources: []
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: default-deny-ingress
+                equal:
+                    path: metadata.namespace
+                    value: gateways
+            -   documentSelector:
+                    path: metadata.name
+                    value: envoy-gateway-ingress
+                equal:
+                    path: spec.podSelector.matchLabels["app.kubernetes.io/instance"]
+                    value: gateway-operator
+        it: Follows the Envoy Gateway application's name and namespace
+        set:
+            operatorApplications.envoyGateway.name: gateway-operator
+            operatorApplications.envoyGateway.namespace: gateways
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Omits every NetworkPolicy when Envoy Gateway is disabled
+        set:
+            networkPolicy.apiServerSources: []
+            operatorApplications.envoyGateway.enabled: false
+    -   asserts:
+            -   notEqual:
+                    path: metadata.name
+                    value: envoy-gateway-metrics-ingress
+        it: Omits the metrics policy when observability is disabled
