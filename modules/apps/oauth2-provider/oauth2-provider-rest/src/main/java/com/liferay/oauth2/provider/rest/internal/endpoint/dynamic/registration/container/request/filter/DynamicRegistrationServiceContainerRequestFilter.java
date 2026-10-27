@@ -271,15 +271,11 @@ public class DynamicRegistrationServiceContainerRequestFilter
 
 		clientId = _getClientId(uriInfo);
 
-		if (Validator.isNotNull(clientId) &&
-			!StringUtil.equalsIgnoreCase(
-				clientId, oAuth2Application.getClientId())) {
-
-			throw ExceptionUtils.toNotAuthorizedException(null, null);
-		}
-
-		if (!dynamicRegistrator &&
-			!StringUtil.startsWith(accessTokenContent, "reg-")) {
+		if ((Validator.isNotNull(clientId) &&
+			 !StringUtil.equalsIgnoreCase(
+				 clientId, oAuth2Application.getClientId())) ||
+			(!dynamicRegistrator &&
+			 !StringUtil.startsWith(accessTokenContent, "reg-"))) {
 
 			throw ExceptionUtils.toNotAuthorizedException(null, null);
 		}
