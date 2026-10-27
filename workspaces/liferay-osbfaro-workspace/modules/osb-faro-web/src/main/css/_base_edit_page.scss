@@ -26,8 +26,13 @@
 }
 
 .base-edit-page-sidebar {
+	align-self: flex-start;
 	flex: 0 0 $criteriaSidebarWidth;
+	height: calc(100vh - #{$toolbarHeight});
 	min-width: 0;
+	overflow-y: auto;
+	position: sticky;
+	top: $toolbarHeight;
 }
 
 .base-edit-page-sidebar-left {

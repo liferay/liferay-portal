@@ -1,10 +1,6 @@
 .stage-metrics-track {
 	scroll-snap-type: x mandatory;
 	scrollbar-width: none;
-
-	&::-webkit-scrollbar {
-		display: none;
-	}
 }
 
 .stage-metrics {

@@ -101,7 +101,8 @@ const OverlaySidebar: React.FC<ISidebarProps> = ({
  * content and pushes it; below that it collapses into an icon button, with an
  * "Open <label>" tooltip, that opens it as an overlay. Render the sidebar's own
  * heading inside it, next to the overlay's close button, and avoid sticky
- * positioning in it, since the overlay scrolls on its own.
+ * positioning in it, since both the overlay and the side column, which stays
+ * under the toolbar, scroll on their own.
  */
 const Sidebar: React.FC<ISidebarProps> = (props) => {
 	const isMobile = useIsMobile();

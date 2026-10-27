@@ -303,7 +303,7 @@ const BaseEventAnalysisPage: React.FC<IBaseEventAnalysisPageProps> = ({
 	return (
 		<BaseEditPage documentTitle={Liferay.Language.get('event-analysis')}>
 			<div
-				className="event-analysis-page"
+				className="d-flex flex-column"
 				id={ReportContainer.EventAnalysisPage}
 			>
 				<Form

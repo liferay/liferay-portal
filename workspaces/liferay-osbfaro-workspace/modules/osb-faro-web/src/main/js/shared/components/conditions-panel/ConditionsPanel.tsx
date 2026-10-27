@@ -66,10 +66,7 @@ const ConditionsPanel: React.FC<IConditionsPanelProps> = ({
 }) => (
 	<DndProvider backend={HTML5Backend}>
 		<ConditionsDropArea dragTypes={dragTypes}>
-			<div
-				className="conditions-panel-content d-flex flex-column"
-				data-report-expand
-			>
+			<div className="d-flex flex-column h-100" data-report-expand>
 				<div className="flex-shrink-0 px-4 py-3">
 					<Heading fontSize={6} level={2} weight="semi-bold">
 						{title}
