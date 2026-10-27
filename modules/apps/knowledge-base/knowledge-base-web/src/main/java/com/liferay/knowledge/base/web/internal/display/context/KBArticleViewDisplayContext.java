@@ -122,6 +122,8 @@ public class KBArticleViewDisplayContext {
 			return false;
 		}
 
+		Date date = DateUtil.newDate();
+
 		Instant instant = expirationDate.toInstant();
 
 		ThemeDisplay themeDisplay =
@@ -138,8 +140,6 @@ public class KBArticleViewDisplayContext {
 		zonedDateTime = zonedDateTime.minusWeeks(
 			kbServiceConfigurationProvider.
 				getExpirationDateNotificationDateWeeks());
-
-		Date date = DateUtil.newDate();
 
 		return date.after(Date.from(zonedDateTime.toInstant()));
 	}
