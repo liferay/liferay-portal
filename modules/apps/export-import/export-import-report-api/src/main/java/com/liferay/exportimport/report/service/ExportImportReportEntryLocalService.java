@@ -280,6 +280,11 @@ public interface ExportImportReportEntryLocalService
 			long classNameId)
 		throws PortalException;
 
+	public void resolveMissingReferenceExportImportReportEntries(
+			long groupId, long companyId, String classExternalReferenceCode,
+			long classNameId)
+		throws PortalException;
+
 	/**
 	 * Updates the export import report entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -295,4 +300,4 @@ public interface ExportImportReportEntryLocalService
 		ExportImportReportEntry exportImportReportEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-761183844
+// LIFERAY-SERVICE-BUILDER-HASH:418713589

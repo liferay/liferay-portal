@@ -385,6 +385,17 @@ public class ExportImportReportEntryLocalServiceWrapper
 				groupId, companyId, classExternalReferenceCode, classNameId);
 	}
 
+	@Override
+	public void resolveMissingReferenceExportImportReportEntries(
+			long groupId, long companyId, String classExternalReferenceCode,
+			long classNameId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_exportImportReportEntryLocalService.
+			resolveMissingReferenceExportImportReportEntries(
+				groupId, companyId, classExternalReferenceCode, classNameId);
+	}
+
 	/**
 	 * Updates the export import report entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -428,4 +439,4 @@ public class ExportImportReportEntryLocalServiceWrapper
 		_exportImportReportEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1963424591
+// LIFERAY-SERVICE-BUILDER-HASH:-71450682
