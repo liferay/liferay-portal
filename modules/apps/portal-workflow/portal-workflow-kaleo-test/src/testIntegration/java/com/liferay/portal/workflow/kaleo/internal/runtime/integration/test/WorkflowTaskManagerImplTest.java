@@ -1066,6 +1066,28 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 	}
 
 	@Test
+	public void testLiberalGetNextWorkflowTransitions() throws Exception {
+		_activateSingleApproverWorkflow(BlogsEntry.class.getName(), 0, 0);
+
+		_addBlogsEntry();
+
+		WorkflowTask workflowTask = _getWorkflowTask();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_siteMemberUser)) {
+
+			Assert.assertEquals(
+				Arrays.asList(Constants.APPROVE, Constants.REJECT),
+				TransformUtil.transform(
+					_workflowTaskManager.liberalGetNextWorkflowTransitions(
+						workflowTask.getWorkflowTaskId()),
+					WorkflowTransition::getName));
+		}
+
+		_deactivateWorkflow(BlogsEntry.class.getName(), 0, 0);
+	}
+
+	@Test
 	public void testMovetoTrashAndRestoreFromTrashPendingDLFileEntryInDLFolderWithWorkflow()
 		throws Exception {
 
