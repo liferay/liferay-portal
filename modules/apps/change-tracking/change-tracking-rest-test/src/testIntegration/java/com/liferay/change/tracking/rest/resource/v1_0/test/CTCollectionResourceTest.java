@@ -14,6 +14,7 @@ import com.liferay.change.tracking.rest.client.http.HttpInvoker;
 import com.liferay.change.tracking.rest.client.pagination.Page;
 import com.liferay.change.tracking.rest.client.pagination.Pagination;
 import com.liferay.change.tracking.rest.client.resource.v1_0.CTCollectionResource;
+import com.liferay.change.tracking.scheduler.PublishScheduler;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.service.persistence.CTCollectionPersistence;
@@ -39,6 +40,7 @@ import com.liferay.portal.kernel.transaction.TransactionConfig;
 import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -394,6 +396,8 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_SCHEDULED, (int)status.getCode());
+
+		_testPostCTCollectionSchedulePublishReschedule();
 	}
 
 	@Override
@@ -633,6 +637,41 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 		}
 	}
 
+	private void _testPostCTCollectionSchedulePublishReschedule()
+		throws Exception {
+
+		CTCollection ctCollection =
+			testPostCTCollectionSchedulePublish_addCTCollection();
+
+		try {
+			long time =
+				(System.currentTimeMillis() / Time.SECOND) * Time.SECOND;
+
+			ctCollectionResource.postCTCollectionSchedulePublish(
+				ctCollection.getId(), new Date(time + Time.DAY));
+
+			Date publishDate = new Date(time + (2 * Time.DAY));
+
+			ctCollectionResource.postCTCollectionSchedulePublish(
+				ctCollection.getId(), publishDate);
+
+			ctCollection = ctCollectionResource.getCTCollection(
+				ctCollection.getId());
+
+			Status status = ctCollection.getStatus();
+
+			Assert.assertEquals(
+				WorkflowConstants.STATUS_SCHEDULED, (int)status.getCode());
+
+			Assert.assertEquals(publishDate, ctCollection.getDateScheduled());
+		}
+		finally {
+			_publishScheduler.unschedulePublish(ctCollection.getId());
+
+			ctCollectionResource.deleteCTCollection(ctCollection.getId());
+		}
+	}
+
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
 
@@ -650,6 +689,9 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@Inject
+	private PublishScheduler _publishScheduler;
 
 	@Inject
 	private ResourceLocalService _resourceLocalService;
