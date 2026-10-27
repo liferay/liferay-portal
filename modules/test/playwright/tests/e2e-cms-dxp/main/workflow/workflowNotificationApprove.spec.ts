@@ -14,37 +14,63 @@ import {
 } from '../../../../utils/cmsWorkflow';
 import getRandomString from '../../../../utils/getRandomString';
 import {NotificationsPage} from '../../../notifications-web/main/pages/NotificationsPage';
+import {structureBuilderPagesTest} from '../../../site-cms-site-initializer/structure-builder/fixtures/structureBuilderPagesTest';
 
-const test = mergeTests(dataApiHelpersTest, loginTest(), workflowPagesTest);
-
-const APPLICATION_NAME = 'cms/basic-web-contents';
+const test = mergeTests(
+	dataApiHelpersTest,
+	loginTest(),
+	structureBuilderPagesTest,
+	workflowPagesTest
+);
 
 test(
 	'A reviewer can reach a pending task from its workflow notification and approve the content',
 	{tag: ['@LPD-95526', '@LPD-95526/TC-3.e']},
-	async ({apiHelpers, configurationTabPage, page, workflowTasksPage}) => {
+	async ({
+		apiHelpers,
+		configurationTabPage,
+		page,
+		structureBuilderPage,
+		workflowTasksPage,
+	}) => {
 		test.setTimeout(300000);
 
 		const notificationsPage = new NotificationsPage(page);
 
 		const contentTitle = `Title ${getRandomString()}`;
+		const structureLabel = `Structure ${getRandomString()}`;
 
 		const space = await apiHelpers.headlessAssetLibrary.createSpace();
+
+		const objectDefinitionId =
+			await structureBuilderPage.createStructureFromData({
+				label: structureLabel,
+				page: structureBuilderPage,
+				spaces: [space.name],
+			});
+
+		const objectDefinition = await apiHelpers.get(
+			`${apiHelpers.baseUrl}object-admin/v1.0/object-definitions/${objectDefinitionId}`
+		);
+
+		const applicationName = objectDefinition.restContextPath.replace(
+			'/o/',
+			''
+		);
 
 		await assignWorkflowToStructure(
 			configurationTabPage,
 			'Single Approver',
-			'Basic Web Content'
+			structureLabel
 		);
 
 		try {
 			const entry = await apiHelpers.objectEntry.postObjectEntry(
 				{
-					content: `<p>${getRandomString()}</p>`,
+					[objectDefinition.titleObjectFieldName]: contentTitle,
 					objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
-					title: contentTitle,
 				},
-				APPLICATION_NAME,
+				applicationName,
 				space.name
 			);
 
@@ -53,14 +79,12 @@ test(
 					await notificationsPage.goto();
 
 					await expect(
-						notificationsPage.workflowReviewMessage(
-							'Basic Web Content'
-						)
+						notificationsPage.workflowReviewMessage(structureLabel)
 					).toBeVisible({timeout: 5000});
 				}).toPass({timeout: 120000});
 
 				await notificationsPage
-					.workflowReviewMessage('Basic Web Content')
+					.workflowReviewMessage(structureLabel)
 					.click();
 			});
 
@@ -71,7 +95,7 @@ test(
 
 				const updatedEntry =
 					await apiHelpers.objectEntry.getObjectEntryById(
-						APPLICATION_NAME,
+						applicationName,
 						String(entry.id)
 					);
 
@@ -83,7 +107,7 @@ test(
 		finally {
 			await unassignWorkflowFromStructure(
 				configurationTabPage,
-				'Basic Web Content'
+				structureLabel
 			);
 		}
 	}
