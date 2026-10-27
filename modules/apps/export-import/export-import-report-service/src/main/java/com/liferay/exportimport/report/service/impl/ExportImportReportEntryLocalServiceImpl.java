@@ -123,6 +123,62 @@ public class ExportImportReportEntryLocalServiceImpl
 			long classNameId)
 		throws PortalException {
 
+		_resolveExportImportReportEntries(
+			groupId, companyId, classExternalReferenceCode, classNameId,
+			ExportImportReportEntryConstants.TYPE_EMPTY);
+	}
+
+	@Override
+	public void resolveMissingReferenceExportImportReportEntries(
+			long groupId, long companyId, String classExternalReferenceCode,
+			long classNameId)
+		throws PortalException {
+
+		_resolveExportImportReportEntries(
+			groupId, companyId, classExternalReferenceCode, classNameId,
+			ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE);
+	}
+
+	private String _getMessage(
+		String classExternalReferenceCode, long groupId, String message,
+		String modelNameLanguageKey, int type) {
+
+		if (Validator.isNotNull(message)) {
+			return message;
+		}
+
+		if (type == ExportImportReportEntryConstants.TYPE_EMPTY) {
+			return _language.format(
+				LocaleUtil.US,
+				"the-x-with-external-reference-code-x-was-not-found-an-empty-" +
+					"shell-was-created",
+				new String[] {
+					modelNameLanguageKey, classExternalReferenceCode
+				});
+		}
+
+		if (type == ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE) {
+			return _language.format(
+				LocaleUtil.US,
+				"missing-reference-entity-x-with-external-reference-code-x-" +
+					"in-scope-x-was-not-found-please-ensure-the-referenced-" +
+						"entity-is-imported",
+				new String[] {
+					GetterUtil.getString(modelNameLanguageKey, "<unknown>"),
+					GetterUtil.getString(
+						classExternalReferenceCode, "<unknown>"),
+					String.valueOf(groupId)
+				});
+		}
+
+		return message;
+	}
+
+	private void _resolveExportImportReportEntries(
+			long groupId, long companyId, String classExternalReferenceCode,
+			long classNameId, int type)
+		throws PortalException {
+
 		ActionableDynamicQuery actionableDynamicQuery =
 			getActionableDynamicQuery();
 
@@ -142,9 +198,7 @@ public class ExportImportReportEntryLocalServiceImpl
 
 				Property typeProperty = PropertyFactoryUtil.forName("type");
 
-				dynamicQuery.add(
-					typeProperty.eq(
-						ExportImportReportEntryConstants.TYPE_EMPTY));
+				dynamicQuery.add(typeProperty.eq(type));
 
 				Property statusProperty = PropertyFactoryUtil.forName("status");
 
@@ -204,41 +258,6 @@ public class ExportImportReportEntryLocalServiceImpl
 			});
 
 		actionableDynamicQuery.performActions();
-	}
-
-	private String _getMessage(
-		String classExternalReferenceCode, long groupId, String message,
-		String modelNameLanguageKey, int type) {
-
-		if (Validator.isNotNull(message)) {
-			return message;
-		}
-
-		if (type == ExportImportReportEntryConstants.TYPE_EMPTY) {
-			return _language.format(
-				LocaleUtil.US,
-				"the-x-with-external-reference-code-x-was-not-found-an-empty-" +
-					"shell-was-created",
-				new String[] {
-					modelNameLanguageKey, classExternalReferenceCode
-				});
-		}
-
-		if (type == ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE) {
-			return _language.format(
-				LocaleUtil.US,
-				"missing-reference-entity-x-with-external-reference-code-x-" +
-					"in-scope-x-was-not-found-please-ensure-the-referenced-" +
-						"entity-is-imported",
-				new String[] {
-					GetterUtil.getString(modelNameLanguageKey, "<unknown>"),
-					GetterUtil.getString(
-						classExternalReferenceCode, "<unknown>"),
-					String.valueOf(groupId)
-				});
-		}
-
-		return message;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
