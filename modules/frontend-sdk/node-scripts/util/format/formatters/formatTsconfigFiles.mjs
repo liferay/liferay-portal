@@ -53,7 +53,7 @@ export default async function formatTsconfigFiles(check) {
 				print.error('ERROR:'),
 				'Outdated file',
 				print.underline(relFilePath),
-				'found\n'
+				'was found\n'
 			);
 
 			checksPassed = false;
