@@ -10,17 +10,21 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.function.UnsafeTriFunction;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
+import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingRulesUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
@@ -31,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.service.component.annotations.Component;
@@ -53,7 +59,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	@Override
 	public List<PIMConnectorChannelField> getPIMConnectorChannelFields() {
 		return ListUtil.fromArray(
-			_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_ID,
+			_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE,
 			_PIM_CONNECTOR_CHANNEL_FIELD_DEPTH,
 			_PIM_CONNECTOR_CHANNEL_FIELD_DESCRIPTION,
 			_PIM_CONNECTOR_CHANNEL_FIELD_HEIGHT,
@@ -90,12 +96,115 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap)
 		throws Exception {
 
-		return String.valueOf(
-			JSONUtil.toJSONArray(
-				pimProductObjectEntriesMap.entrySet(),
-				entry -> _createProductJSONObject(
+		String url = MapUtil.getString(pimConnectorConfigurationValues, "url");
+
+		if (!_isValidURL(url)) {
+			throw new PIMConnectorException(
+				"the-url-must-be-an-absolute-http-or-https-url-without-a-" +
+					"trailing-slash");
+		}
+
+		Set<String> catalogExternalReferenceCodes = new TreeSet<>();
+		Map<String, JSONObject> optionJSONObjects = new TreeMap<>();
+
+		JSONArray jsonArray = JSONUtil.toJSONArray(
+			pimProductObjectEntriesMap.entrySet(),
+			entry -> {
+				JSONObject jsonObject = _createProductJSONObject(
 					entry.getKey(), pimFieldMappingObjectEntriesMap,
-					pimFieldMappingRuleObjectEntriesMap, entry.getValue())));
+					pimFieldMappingRuleObjectEntriesMap, entry.getValue());
+
+				String catalogExternalReferenceCode = jsonObject.getString(
+					"catalogExternalReferenceCode");
+
+				if (Validator.isNull(catalogExternalReferenceCode)) {
+					throw new PIMConnectorException(
+						"a-product-is-not-mapped-to-a-catalog");
+				}
+
+				catalogExternalReferenceCodes.add(catalogExternalReferenceCode);
+
+				JSONArray productOptionsJSONArray = jsonObject.getJSONArray(
+					"productOptions");
+
+				if (productOptionsJSONArray == null) {
+					return jsonObject;
+				}
+
+				for (int i = 0; i < productOptionsJSONArray.length(); i++) {
+					JSONObject productOptionJSONObject =
+						productOptionsJSONArray.getJSONObject(i);
+
+					optionJSONObjects.putIfAbsent(
+						productOptionJSONObject.getString(
+							"optionExternalReferenceCode"),
+						JSONUtil.put(
+							"fieldType", "select"
+						).put(
+							"key", productOptionJSONObject.getString("key")
+						).put(
+							"name",
+							productOptionJSONObject.getJSONObject("name")
+						).put(
+							"skuContributor", true
+						));
+				}
+
+				return jsonObject;
+			});
+
+		LiferayCommerceRESTClient liferayCommerceRESTClient =
+			new LiferayCommerceRESTClient(
+				MapUtil.getString(pimConnectorConfigurationValues, "clientId"),
+				MapUtil.getString(
+					pimConnectorConfigurationValues, "clientSecret"),
+				_http, _jsonFactory, url);
+
+		try {
+			liferayCommerceRESTClient.authenticate();
+
+			for (String catalogExternalReferenceCode :
+					catalogExternalReferenceCodes) {
+
+				liferayCommerceRESTClient.checkCatalog(
+					catalogExternalReferenceCode);
+			}
+
+			for (Map.Entry<String, JSONObject> entry :
+					optionJSONObjects.entrySet()) {
+
+				liferayCommerceRESTClient.putOption(
+					entry.getKey(), entry.getValue());
+			}
+
+			JSONObject jsonObject = liferayCommerceRESTClient.postImportTask(
+				StringBundler.concat(
+					pimConnectorObjectEntry.getExternalReferenceCode(),
+					StringPool.UNDERLINE, System.currentTimeMillis()),
+				jsonArray);
+
+			return JSONUtil.put(
+				"batchId", jsonObject.getString("externalReferenceCode")
+			).put(
+				"log", liferayCommerceRESTClient.getLogJSONArray()
+			).put(
+				"status", jsonObject.getString("executeStatus")
+			).toString(
+				2
+			);
+		}
+		catch (PIMConnectorException pimConnectorException) {
+			throw new PIMConnectorException(
+				pimConnectorException.getMessage(),
+				_toString(liferayCommerceRESTClient.getLogJSONArray()),
+				pimConnectorException);
+		}
+		catch (Exception exception) {
+			throw new PIMConnectorException(
+				"an-unexpected-error-occurred",
+				_toString(liferayCommerceRESTClient.getLogJSONArray()),
+				exception);
+		}
 	}
 
 	private JSONObject _createLocalizedJSONObject(
@@ -138,9 +247,10 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		return JSONUtil.put(
 			"active", true
 		).put(
-			"catalogId",
+			"catalogExternalReferenceCode",
 			() -> PIMConnectorFieldMappingsUtil.getChannelFieldValue(
-				objectDefinition, _PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_ID,
+				objectDefinition,
+				_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE,
 				pimFieldMappingObjectEntriesMap,
 				pimFieldMappingRuleObjectEntriesMap, values)
 		).put(
@@ -444,6 +554,22 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		);
 	}
 
+	private boolean _isValidURL(String url) {
+		if (Validator.isNull(url) || url.endsWith(StringPool.SLASH) ||
+			!Validator.isUrl(url)) {
+
+			return false;
+		}
+
+		if (url.startsWith(Http.HTTP_WITH_SLASH) ||
+			url.startsWith(Http.HTTPS_WITH_SLASH)) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	private JSONArray _toJSONArray(
 			ObjectDefinition objectDefinition, List<ObjectEntry> objectEntries,
 			UnsafeTriFunction
@@ -489,10 +615,24 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		return jsonArray;
 	}
 
+	private String _toString(JSONArray jsonArray) throws Exception {
+		if (jsonArray.length() == 0) {
+			return null;
+		}
+
+		return JSONUtil.put(
+			"log", jsonArray
+		).toString(
+			2
+		);
+	}
+
 	private static final PIMConnectorChannelField
-		_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_ID = new PIMConnectorChannelField(
-			"catalog-id", false, "catalogId", true,
-			ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER);
+		_PIM_CONNECTOR_CHANNEL_FIELD_CATALOG_EXTERNAL_REFERENCE_CODE =
+			new PIMConnectorChannelField(
+				"catalog-external-reference-code", false,
+				"catalogExternalReferenceCode", true,
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
 	private static final PIMConnectorChannelField
 		_PIM_CONNECTOR_CHANNEL_FIELD_DEPTH = new PIMConnectorChannelField(
@@ -572,5 +712,11 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 
 	@Reference
 	private FriendlyURLNormalizer _friendlyURLNormalizer;
+
+	@Reference
+	private Http _http;
+
+	@Reference
+	private JSONFactory _jsonFactory;
 
 }

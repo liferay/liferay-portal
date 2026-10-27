@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
@@ -86,6 +87,11 @@ public class PIMConnectorDispatchTaskExecutor extends BaseDispatchTaskExecutor {
 				pimConnector.execute(objectEntry));
 		}
 		catch (PIMConnectorException pimConnectorException) {
+			if (Validator.isNotNull(pimConnectorException.getOutput())) {
+				dispatchTaskExecutorOutput.setOutput(
+					pimConnectorException.getOutput());
+			}
+
 			dispatchTaskExecutorOutput.setError(
 				_language.get(
 					user.getLocale(), pimConnectorException.getMessage()));

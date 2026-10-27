@@ -19,6 +19,14 @@ public class PIMConnectorException extends PortalException {
 		super(msg);
 	}
 
+	public PIMConnectorException(
+		String msg, String output, Throwable throwable) {
+
+		super(msg, throwable);
+
+		_output = output;
+	}
+
 	public PIMConnectorException(String msg, Throwable throwable) {
 		super(msg, throwable);
 	}
@@ -26,5 +34,11 @@ public class PIMConnectorException extends PortalException {
 	public PIMConnectorException(Throwable throwable) {
 		super(throwable);
 	}
+
+	public String getOutput() {
+		return _output;
+	}
+
+	private String _output;
 
 }
