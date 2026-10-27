@@ -984,6 +984,12 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 		_testUpdateClientRegistrationWithUnauthorizedToken(
 			oAuth2Application, getToken(oAuth2Application));
+
+		JSONObject jsonObject = _register();
+
+		_testUpdateClientRegistrationWithUnauthorizedToken(
+			oAuth2Application,
+			jsonObject.getString("registration_access_token"));
 	}
 
 	protected static WebTarget getRegisterWebTarget() {
