@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.vulcan.pagination.Pagination;
 
+import jakarta.ws.rs.BadRequestException;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -229,11 +231,11 @@ public class AccountResourceTest extends BaseAccountResourceTestCase {
 
 			Assert.fail();
 		}
-		catch (IllegalArgumentException illegalArgumentException) {
+		catch (BadRequestException badRequestException) {
 			Assert.assertEquals(
 				"No account lifecycle stage was found with the name " +
 					"\"PIPELINE\"",
-				illegalArgumentException.getMessage());
+				badRequestException.getMessage());
 		}
 	}
 

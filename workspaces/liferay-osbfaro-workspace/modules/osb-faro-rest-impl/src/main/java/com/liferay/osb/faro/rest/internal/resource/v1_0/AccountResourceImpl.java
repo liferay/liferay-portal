@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.exception.NoSuchEntryException;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.Results;
@@ -23,6 +24,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.pagination.Page;
 import com.liferay.portal.vulcan.pagination.Pagination;
+
+import jakarta.ws.rs.BadRequestException;
 
 import java.util.List;
 
@@ -43,13 +46,20 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 	public Account getWorkspaceGroupAccount(Long groupId, String accountId)
 		throws Exception {
 
+		com.liferay.osb.faro.engine.client.model.Account account =
+			_contactsEngineClient.getAccount(
+				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				accountId, null);
+
+		if ((account == null) || Validator.isNull(account.getId())) {
+			throw new NoSuchEntryException();
+		}
+
 		return _accountDTOConverter.toDTO(
 			new FaroDTOConverterContext(
 				contextAcceptLanguage.isAcceptAllLanguages(), accountId,
 				contextAcceptLanguage.getPreferredLocale()),
-			_contactsEngineClient.getAccount(
-				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				accountId, null));
+			account);
 	}
 
 	@Override
@@ -101,7 +111,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 		List<AccountLifecycle> accountLifecycles = results.getItems();
 
 		if (ListUtil.isEmpty(accountLifecycles)) {
-			throw new IllegalArgumentException(
+			throw new BadRequestException(
 				"No default account lifecycle is configured for the channel");
 		}
 
@@ -129,7 +139,7 @@ public class AccountResourceImpl extends BaseAccountResourceImpl {
 				accountLifecycleStage.getExternalReferenceCode(), "'))");
 		}
 
-		throw new IllegalArgumentException(
+		throw new BadRequestException(
 			StringBundler.concat(
 				"No account lifecycle stage was found with the name \"",
 				lifecycleStage, "\""));

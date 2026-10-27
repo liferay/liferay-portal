@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.resource.v1_0;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.exception.NoSuchEntryException;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.rest.dto.v1_0.Individual;
 import com.liferay.osb.faro.rest.internal.dto.v1_0.converter.FaroDTOConverterContext;
@@ -71,13 +72,20 @@ public class IndividualResourceImpl extends BaseIndividualResourceImpl {
 			Long groupId, String individualId, String channelId)
 		throws Exception {
 
+		com.liferay.osb.faro.engine.client.model.Individual individual =
+			_contactsEngineClient.getIndividual(
+				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				individualId, channelId);
+
+		if ((individual == null) || Validator.isNull(individual.getId())) {
+			throw new NoSuchEntryException();
+		}
+
 		return _individualDTOConverter.toDTO(
 			new FaroDTOConverterContext(
 				contextAcceptLanguage.isAcceptAllLanguages(), individualId,
 				contextAcceptLanguage.getPreferredLocale()),
-			_contactsEngineClient.getIndividual(
-				_faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				individualId, channelId));
+			individual);
 	}
 
 	private List<String> _getIndividualTypes(String profileType) {
