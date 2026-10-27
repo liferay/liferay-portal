@@ -33,5 +33,13 @@
 		&[data-prefers-contrast='more'] .cadmin {
 			@include clay-css($cadmin-c-high-contrast);
 		}
+
+		@media (forced-colors: active) {
+			forced-color-adjust: none;
+
+			.cadmin {
+				@include clay-css($cadmin-c-high-contrast);
+			}
+		}
 	}
 }

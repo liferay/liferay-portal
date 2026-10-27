@@ -18,6 +18,12 @@ html:root {
 	&[data-prefers-contrast='more'] {
 		@include clay-css($c-high-contrast);
 	}
+
+	@media (forced-colors: active) {
+		forced-color-adjust: none;
+
+		@include clay-css($c-high-contrast);
+	}
 }
 
 html[data-color-scheme='dark']:root {
