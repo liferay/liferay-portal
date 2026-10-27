@@ -320,10 +320,18 @@ public class GroupImpl extends GroupBaseImpl {
 					 0)) ||
 				_hasPublishedLayout(privateLayout)) {
 
+				LayoutSet layoutSet = themeDisplay.getLayoutSet();
+
+				if ((layoutSet == null) ||
+					(layoutSet.getGroupId() != getGroupId()) ||
+					(layoutSet.isPrivateLayout() != privateLayout)) {
+
+					layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+						getGroupId(), privateLayout);
+				}
+
 				String groupFriendlyURL = PortalUtil.getGroupFriendlyURL(
-					LayoutSetLocalServiceUtil.getLayoutSet(
-						getGroupId(), privateLayout),
-					themeDisplay, false, controlPanel);
+					layoutSet, themeDisplay, false, controlPanel);
 
 				if (isUser()) {
 					return PortalUtil.addPreservedParameters(
