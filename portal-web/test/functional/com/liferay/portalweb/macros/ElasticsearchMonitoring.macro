@@ -23,9 +23,11 @@ definition {
 
 		SetWindowSize(value1 = "500,500");
 
-		Click(
-			ariaLabel = "Closes this modal window",
-			locator1 = "Button#ANY_WITH_ARIA_LABEL");
+		if ((IsElementPresent(ariaLabel = "Closes this modal window", locator1 = "Button#ANY_WITH_ARIA_LABEL")) && (IsVisible(ariaLabel = "Closes this modal window", locator1 = "Button#ANY_WITH_ARIA_LABEL"))) {
+			Click(
+				ariaLabel = "Closes this modal window",
+				locator1 = "Button#ANY_WITH_ARIA_LABEL");
+		}
 
 		SetWindowSize(value1 = "800,800");
 
