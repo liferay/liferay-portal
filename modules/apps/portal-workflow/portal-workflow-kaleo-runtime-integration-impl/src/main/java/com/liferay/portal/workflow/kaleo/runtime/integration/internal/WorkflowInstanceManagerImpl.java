@@ -389,7 +389,6 @@ public class WorkflowInstanceManagerImpl implements WorkflowInstanceManager {
 		throws WorkflowException {
 
 		String className = WorkflowDefinition.class.getName();
-
 		String key = WorkflowLockUtil.encodeKey(
 			workflowDefinitionName, workflowDefinitionVersion);
 
