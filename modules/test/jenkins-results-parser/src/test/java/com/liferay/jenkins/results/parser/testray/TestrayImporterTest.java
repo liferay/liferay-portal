@@ -461,7 +461,7 @@ public class TestrayImporterTest
 			return throwable.getMessage();
 		}
 
-		throw new AssertionError("Expected the record to fail");
+		throw new AssertionError();
 	}
 
 	private void _testGetTestcaseElementName(int nameLength, int expectedLength)
