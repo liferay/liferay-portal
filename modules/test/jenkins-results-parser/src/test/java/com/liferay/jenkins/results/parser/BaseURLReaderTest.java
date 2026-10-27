@@ -269,6 +269,39 @@ public class BaseURLReaderTest extends com.liferay.jenkins.results.parser.Test {
 		_testToStringRetries(Collections.emptyList(), 0, 0);
 	}
 
+	@Test
+	public void testToStringWithEncodedURL() throws Exception {
+		mockURLReaders();
+
+		String url = JenkinsResultsParserUtil.combine(
+			"http://", RandomTestUtil.randomString(),
+			"?A=a%2Bb&PORTAL%20BUILD%20NOTES=x#fragment");
+
+		setURLReaderOutput(_STANDARD_OUT, url);
+
+		JenkinsResultsParserUtil.toString(url, false, _MAX_RETRIES, 0, 0);
+
+		verifyURLReaderAttemptsCount(1, url);
+	}
+
+	@Test
+	public void testToStringWithIllegalURL() throws Exception {
+		mockURLReaders();
+
+		String host = RandomTestUtil.randomString();
+
+		String normalizedURL = JenkinsResultsParserUtil.combine(
+			"http://", host, "/a%20b");
+
+		setURLReaderOutput(_STANDARD_OUT, normalizedURL);
+
+		JenkinsResultsParserUtil.toString(
+			JenkinsResultsParserUtil.combine("http://", host, "/a b"), false,
+			_MAX_RETRIES, 0, 0);
+
+		verifyURLReaderAttemptsCount(1, normalizedURL);
+	}
+
 	private void _testToString(String standardOut) throws Exception {
 		mockURLReaders();
 

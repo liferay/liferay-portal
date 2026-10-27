@@ -349,7 +349,7 @@ public class JenkinsMasterTest extends com.liferay.jenkins.results.parser.Test {
 			).put(
 				"id", 7800
 			).toString(),
-			JenkinsResultsParserUtil.fixURL(
+			JenkinsResultsParserUtil.normalizeURL(
 				JenkinsResultsParserUtil.combine(
 					"http://test-9-1/queue/item/7800/api/json?tree=",
 					"actions[parameters[name,value]],cancelled,",

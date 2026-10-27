@@ -348,8 +348,8 @@ public class ControllerResultMonitorTest
 						1001, "SUCCESS")
 				)
 			).toString(),
-			_JOB_API_URL + "?tree=builds%5Bdescription%2Cnumber%2Cresult%2C" +
-				"timestamp%5D%7B0%2C30%7D");
+			_JOB_API_URL + "?tree=builds%5Bdescription,number,result," +
+				"timestamp%5D%7B0,30%7D");
 
 		MonitorResult monitorResult = _execute(_newMonitorProperties());
 
