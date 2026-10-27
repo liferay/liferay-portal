@@ -31,9 +31,10 @@ public class IsolatedAttributesHttpServletRequestTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	@TestInfo("LPD-103742")
+	@TestInfo({"LPD-103742", "LPD-112108"})
 	public void testGetAttribute() {
 		_testGetAttribute();
+		_testGetAttributeWithReplacedRequest();
 		_testGetAttributeWithRequestDispatcherAttribute();
 	}
 
@@ -101,6 +102,50 @@ public class IsolatedAttributesHttpServletRequestTest {
 			value2, isolatedAttributesHttpServletRequest.getAttribute(name));
 
 		Assert.assertEquals(value1, httpServletRequest.getAttribute(name));
+	}
+
+	private void _testGetAttributeWithReplacedRequest() {
+		HttpServletRequest httpServletRequest1 = new MockHttpServletRequest();
+
+		IsolatedAttributesHttpServletRequest
+			isolatedAttributesHttpServletRequest =
+				new IsolatedAttributesHttpServletRequest(httpServletRequest1);
+
+		String value1 = RandomTestUtil.randomString();
+
+		isolatedAttributesHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH, value1);
+
+		HttpServletRequest httpServletRequest2 = new MockHttpServletRequest();
+
+		String value2 = RandomTestUtil.randomString();
+
+		httpServletRequest2.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH, value2);
+
+		isolatedAttributesHttpServletRequest.setRequest(httpServletRequest2);
+
+		Assert.assertEquals(
+			value2,
+			isolatedAttributesHttpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
+
+		isolatedAttributesHttpServletRequest.setRequest(httpServletRequest1);
+
+		Assert.assertEquals(
+			value1,
+			isolatedAttributesHttpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
+
+		isolatedAttributesHttpServletRequest.removeAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
+
+		isolatedAttributesHttpServletRequest.setRequest(httpServletRequest2);
+
+		Assert.assertEquals(
+			value2,
+			isolatedAttributesHttpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
 	}
 
 	private void _testGetAttributeWithRequestDispatcherAttribute() {
