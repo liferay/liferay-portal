@@ -25,8 +25,11 @@ public class SourceFormatterReleaseUtilTest
 	@Override
 	public void setUp() throws Exception {
 		_artifactPropertiesFile = new File(
-			temporaryFolder.getRoot(), _PATH_ARTIFACT_PROPERTIES);
-		_ivyXMLFile = new File(temporaryFolder.getRoot(), _PATH_IVY_XML);
+			temporaryFolder.getRoot(),
+			"modules/.releng/util/source-formatter/artifact.properties");
+		_ivyXMLFile = new File(
+			temporaryFolder.getRoot(),
+			"tools/sdk/dependencies/com.liferay.source.formatter/ivy.xml");
 
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
@@ -440,14 +443,8 @@ public class SourceFormatterReleaseUtilTest
 
 	private static final String _ARTIFACT_GIT_ID = RandomTestUtil.randomSHA();
 
-	private static final String _PATH_ARTIFACT_PROPERTIES =
-		"modules/.releng/util/source-formatter/artifact.properties";
-
 	private static final String _PATH_BND =
 		"modules/util/source-formatter/bnd.bnd";
-
-	private static final String _PATH_IVY_XML =
-		"tools/sdk/dependencies/com.liferay.source.formatter/ivy.xml";
 
 	private static final String _PATH_PLUGIN =
 		"modules/util/source-formatter/src/main/resources/META-INF/maven" +
