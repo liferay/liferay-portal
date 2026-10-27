@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Properties;
 
 import org.dom4j.Element;
@@ -78,10 +77,6 @@ public class PullRequestPortalTopLevelBuild
 
 		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalUpstreamBranchName)) {
 			return portalUpstreamBranchName;
-		}
-
-		if (Objects.equals(getBranchName(), "master-private")) {
-			return "master";
 		}
 
 		return null;

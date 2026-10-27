@@ -43,7 +43,7 @@ public class PullRequestPortalTopLevelBuildTest
 
 	@Test
 	public void testGetPortalUpstreamBranchName() {
-		_testGetPortalUpstreamBranchName("master-private", "master", null);
+		_testGetPortalUpstreamBranchName("master-private", null, null);
 
 		String portalUpstreamBranchName = RandomTestUtil.randomString();
 
@@ -62,7 +62,7 @@ public class PullRequestPortalTopLevelBuildTest
 	public void testGetStableJob() {
 		String branchName = RandomTestUtil.randomString();
 
-		_testGetStableJob("master-private", true, "master");
+		_testGetStableJob("master-private", true, "master-private");
 		_testGetStableJob(branchName, false, branchName);
 		_testGetStableJob(branchName, true, branchName);
 	}
