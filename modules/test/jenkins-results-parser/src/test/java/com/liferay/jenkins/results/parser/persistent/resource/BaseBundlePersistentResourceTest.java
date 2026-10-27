@@ -1248,26 +1248,10 @@ public class BaseBundlePersistentResourceTest
 
 	@Test
 	public void testUpdateSubclasses() {
-		for (Class<?> clazz :
-				new Class<?>[] {
-					AsahBundlePersistentResource.class,
-					FaroBundlePersistentResource.class,
-					PortalBundlePersistentResource.class,
-					WorkspaceBundlePersistentResource.class
-				}) {
-
-			Assert.assertSame(
-				BaseBundlePersistentResource.class, clazz.getSuperclass());
-
-			for (Method method : clazz.getDeclaredMethods()) {
-				String methodName = method.getName();
-
-				Assert.assertFalse(
-					methodName.equals("isBuildDiscarded") ||
-					methodName.equals("isMissing") ||
-					methodName.equals("update"));
-			}
-		}
+		_testUpdateSubclass(AsahBundlePersistentResource.class);
+		_testUpdateSubclass(FaroBundlePersistentResource.class);
+		_testUpdateSubclass(PortalBundlePersistentResource.class);
+		_testUpdateSubclass(WorkspaceBundlePersistentResource.class);
 	}
 
 	@Test
@@ -1354,10 +1338,11 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	private BaseBundlePersistentResource _getBaseBundlePersistentResource(
+		Class<? extends BaseBundlePersistentResource> clazz,
 		JenkinsMaster jenkinsMaster, long queueId) {
 
 		BaseBundlePersistentResource baseBundlePersistentResource =
-			Mockito.mock(BaseBundlePersistentResource.class);
+			Mockito.mock(clazz);
 
 		Mockito.doCallRealMethod(
 		).when(
@@ -1477,6 +1462,13 @@ public class BaseBundlePersistentResourceTest
 		return baseBundlePersistentResource;
 	}
 
+	private BaseBundlePersistentResource _getBaseBundlePersistentResource(
+		JenkinsMaster jenkinsMaster, long queueId) {
+
+		return _getBaseBundlePersistentResource(
+			BaseBundlePersistentResource.class, jenkinsMaster, queueId);
+	}
+
 	private String _getBuildURL() {
 		return JenkinsResultsParserUtil.combine(
 			"https://", RandomTestUtil.randomString(), "/job/",
@@ -1499,10 +1491,12 @@ public class BaseBundlePersistentResourceTest
 	}
 
 	private BaseBundlePersistentResource
-		_getFollowerBaseBundlePersistentResource(JSONObject dataJSONObject) {
+		_getFollowerBaseBundlePersistentResource(
+			Class<? extends BaseBundlePersistentResource> clazz,
+			JSONObject dataJSONObject) {
 
 		BaseBundlePersistentResource baseBundlePersistentResource =
-			_getBaseBundlePersistentResource(_getJenkinsMaster(), 0);
+			_getBaseBundlePersistentResource(clazz, _getJenkinsMaster(), 0);
 
 		Mockito.doCallRealMethod(
 		).when(
@@ -1520,6 +1514,13 @@ public class BaseBundlePersistentResourceTest
 			dataJSONObject.getString("controller_build_url"));
 
 		return baseBundlePersistentResource;
+	}
+
+	private BaseBundlePersistentResource
+		_getFollowerBaseBundlePersistentResource(JSONObject dataJSONObject) {
+
+		return _getFollowerBaseBundlePersistentResource(
+			BaseBundlePersistentResource.class, dataJSONObject);
 	}
 
 	private JenkinsMaster _getJenkinsMaster() {
@@ -1940,6 +1941,50 @@ public class BaseBundlePersistentResourceTest
 		Assert.assertEquals(
 			dataJSONObject.getString("controller_build_url"),
 			redispatchHistoryJSONObject.getString("controller_build_url"));
+	}
+
+	private void _testUpdateSubclass(
+		Class<? extends BaseBundlePersistentResource> clazz) {
+
+		JSONObject dataJSONObject = _getDataJSONObject(
+			0, PersistentResource.Status.SUCCESS);
+
+		String producerBuildURL = _getBuildURL();
+
+		dataJSONObject.put("producer_build_url", producerBuildURL);
+
+		BaseBundlePersistentResource baseBundlePersistentResource =
+			_getFollowerBaseBundlePersistentResource(clazz, dataJSONObject);
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isArtifactsAvailable();
+
+		Mockito.doReturn(
+			true
+		).when(
+			baseBundlePersistentResource
+		).isBuildDiscarded(
+			producerBuildURL
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBundlePersistentResource, "_topLevelBuild",
+			Mockito.mock(TopLevelBuild.class));
+
+		try (MockedStatic<BuildFactory> buildFactoryMockedStatic =
+				Mockito.mockStatic(BuildFactory.class)) {
+
+			baseBundlePersistentResource.update();
+
+			buildFactoryMockedStatic.verifyNoInteractions();
+		}
+
+		Assert.assertEquals(
+			PersistentResource.Status.SUCCESS,
+			baseBundlePersistentResource.getStatus());
 	}
 
 	private void _update(
