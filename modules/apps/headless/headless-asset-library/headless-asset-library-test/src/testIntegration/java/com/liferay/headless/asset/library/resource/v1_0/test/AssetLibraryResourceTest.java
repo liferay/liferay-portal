@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.randomizerbumpers.SiteFriendlyURLKeywordRandomizerBumper;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -168,6 +169,15 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 			Assert.assertTrue(items.contains(assetLibrary));
 		}
+	}
+
+	@FeatureFlag("LPD-11388")
+	@Override
+	@Test
+	public void testGetAssetLibrary() throws Exception {
+		super.testGetAssetLibrary();
+
+		_testGetAssetLibraryWithoutUpdatePermission();
 	}
 
 	@FeatureFlag("LPD-11388")
@@ -567,6 +577,47 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			(Locale locale) -> _language.getLanguageId(locale), String.class);
 	}
 
+	private AssetLibraryResource _getUserAssetLibraryResource(
+			AssetLibrary assetLibrary)
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
+			assetLibrary.getId());
+
+		String password = RandomTestUtil.randomString();
+
+		_user = UserTestUtil.addUser(
+			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
+			password, RandomTestUtil.randomString() + "@liferay.com",
+			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new long[] {depotEntry.getGroupId()},
+			ServiceContextTestUtil.getServiceContext());
+
+		_user.setEmailAddressVerified(true);
+
+		_user = _userLocalService.updateUser(_user);
+
+		Role userRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.USER);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			depotEntry.getCompanyId(), DepotEntry.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(depotEntry.getPrimaryKeyObj()), userRole.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		return AssetLibraryResource.builder(
+		).authentication(
+			_user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private AssetLibrary _postAssetLibraryWithSettings(
 			boolean autoTaggingEnabled, String[] availableLanguageIds,
 			String defaultLanguageId, String googleMapsAPIKey, String logoColor,
@@ -624,6 +675,28 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	private String _randomFriendlyURL() {
 		return StringUtil.toLowerCase("/" + RandomTestUtil.randomString());
+	}
+
+	private void _testGetAssetLibraryWithoutUpdatePermission()
+		throws Exception {
+
+		String googleMapsAPIKey = RandomTestUtil.randomString();
+
+		AssetLibrary assetLibrary = _postAssetLibraryWithSettings(
+			true, _getAvailableLanguageIds(LocaleUtil.US),
+			_language.getLanguageId(LocaleUtil.US), googleMapsAPIKey,
+			RandomTestUtil.randomString(), Settings.MapProviderKey.GOOGLE_MAPS,
+			new MimeTypeLimit[0], true, true, RandomTestUtil.randomInt(), true);
+
+		AssetLibraryResource userAssetLibraryResource =
+			_getUserAssetLibraryResource(assetLibrary);
+
+		assetLibrary = userAssetLibraryResource.getAssetLibrary(
+			assetLibrary.getExternalReferenceCode());
+
+		Settings settings = assetLibrary.getSettings();
+
+		Assert.assertNull(settings.getGoogleMapsAPIKey());
 	}
 
 	private void _testPatchAssetLibraryExternalReferenceCodeAndFriendlyURL()
@@ -883,19 +956,6 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			Settings.MapProviderKey.GOOGLE_MAPS, new MimeTypeLimit[0], true,
 			true, RandomTestUtil.randomInt(), true);
 
-		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
-			assetLibrary.getId());
-
-		String password = RandomTestUtil.randomString();
-
-		_user = UserTestUtil.addUser(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			password, RandomTestUtil.randomString() + "@liferay.com",
-			RandomTestUtil.randomString(), LocaleUtil.getDefault(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			new long[] {depotEntry.getGroupId()},
-			ServiceContextTestUtil.getServiceContext());
-
 		Settings settings = new Settings();
 
 		settings.setMimeTypeLimits(
@@ -913,15 +973,7 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 		patchAssetLibrary.setSettings(settings);
 
 		AssetLibraryResource userAssetLibraryResource =
-			AssetLibraryResource.builder(
-			).authentication(
-				_user.getEmailAddress(), password
-			).endpoint(
-				testCompany.getVirtualHostname(),
-				PortalUtil.getPortalServerPort(false), "http"
-			).locale(
-				LocaleUtil.getDefault()
-			).build();
+			_getUserAssetLibraryResource(assetLibrary);
 
 		try {
 			userAssetLibraryResource.patchAssetLibrary(
@@ -1163,5 +1215,8 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 	@DeleteAfterTestRun
 	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
