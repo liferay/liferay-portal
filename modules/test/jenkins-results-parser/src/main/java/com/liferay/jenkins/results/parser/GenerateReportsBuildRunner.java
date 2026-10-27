@@ -629,10 +629,12 @@ public class GenerateReportsBuildRunner extends BaseBuildRunner<BuildData> {
 					_generateUtilizationReport(reportName);
 				}
 			}
-			catch (IOException ioException) {
+			catch (Exception exception) {
 				System.out.println(
 					"Unable to write " + reportName + " to " +
 						_getReportFilePath(reportName));
+
+				exception.printStackTrace();
 
 				BuildData buildData = getBuildData();
 
