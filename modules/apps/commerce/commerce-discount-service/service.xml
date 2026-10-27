@@ -327,6 +327,7 @@
 		<exception>CommerceDiscountLimitationType</exception>
 		<exception>CommerceDiscountMaxPriceValue</exception>
 		<exception>CommerceDiscountMinPriceValue</exception>
+		<exception>CommerceDiscountRelUnitOfMeasureKey</exception>
 		<exception>CommerceDiscountRuleType</exception>
 		<exception>CommerceDiscountRuleTypeSettings</exception>
 		<exception>CommerceDiscountTarget</exception>

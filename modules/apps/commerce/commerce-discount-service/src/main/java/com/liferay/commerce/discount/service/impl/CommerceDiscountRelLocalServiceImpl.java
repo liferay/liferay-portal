@@ -7,6 +7,7 @@ package com.liferay.commerce.discount.service.impl;
 
 import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetCategoryTable;
+import com.liferay.commerce.discount.exception.CommerceDiscountRelUnitOfMeasureKeyException;
 import com.liferay.commerce.discount.model.CommerceDiscount;
 import com.liferay.commerce.discount.model.CommerceDiscountRel;
 import com.liferay.commerce.discount.model.CommerceDiscountRelTable;
@@ -20,6 +21,9 @@ import com.liferay.commerce.product.model.CPDefinitionLocalizationTable;
 import com.liferay.commerce.product.model.CPDefinitionTable;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceTable;
+import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
+import com.liferay.commerce.product.service.CPInstanceLocalService;
+import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -33,6 +37,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
@@ -45,9 +50,11 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -74,6 +81,9 @@ public class CommerceDiscountRelLocalServiceImpl
 		// Commerce discount rel
 
 		User user = _userLocalService.getUser(serviceContext.getUserId());
+
+		_validateUnitOfMeasureKey(
+			className, classPK, typeSettingsUnicodeProperties);
 
 		long commerceDiscountRelId = counterLocalService.increment();
 
@@ -435,6 +445,10 @@ public class CommerceDiscountRelLocalServiceImpl
 			commerceDiscountRelPersistence.findByPrimaryKey(
 				commerceDiscountRelId);
 
+		_validateUnitOfMeasureKey(
+			commerceDiscountRel.getClassName(),
+			commerceDiscountRel.getClassPK(), typeSettingsUnicodeProperties);
+
 		commerceDiscountRel.setTypeSettingsUnicodeProperties(
 			typeSettingsUnicodeProperties);
 
@@ -526,11 +540,71 @@ public class CommerceDiscountRelLocalServiceImpl
 		_reindexCommerceDiscount(commerceDiscount);
 	}
 
+	private void _validateUnitOfMeasureKey(
+			String className, long classPK,
+			UnicodeProperties typeSettingsUnicodeProperties)
+		throws PortalException {
+
+		if (!Objects.equals(className, CPInstance.class.getName())) {
+			return;
+		}
+
+		CPInstance cpInstance = _cpInstanceLocalService.getCPInstance(classPK);
+
+		if (LazyReferencingThreadLocal.isEnabled() &&
+			(cpInstance.getStatus() == WorkflowConstants.STATUS_EMPTY)) {
+
+			return;
+		}
+
+		String unitOfMeasureKey = null;
+
+		if (typeSettingsUnicodeProperties != null) {
+			unitOfMeasureKey = typeSettingsUnicodeProperties.getProperty(
+				"unitOfMeasureKey");
+		}
+
+		if (Validator.isBlank(unitOfMeasureKey)) {
+			int cpInstanceUnitOfMeasuresCount =
+				_cpInstanceUnitOfMeasureLocalService.
+					getCPInstanceUnitOfMeasuresCount(classPK);
+
+			if (cpInstanceUnitOfMeasuresCount > 1) {
+				throw new CommerceDiscountRelUnitOfMeasureKeyException(
+					StringBundler.concat(
+						"Unable to relate commerce product instance ", classPK,
+						" to a commerce discount without a unit of measure ",
+						"key"));
+			}
+
+			return;
+		}
+
+		CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
+			_cpInstanceUnitOfMeasureLocalService.fetchCPInstanceUnitOfMeasure(
+				classPK, unitOfMeasureKey);
+
+		if (cpInstanceUnitOfMeasure == null) {
+			throw new CommerceDiscountRelUnitOfMeasureKeyException(
+				StringBundler.concat(
+					"Unable to relate commerce product instance ", classPK,
+					" to a commerce discount with unit of measure key ",
+					unitOfMeasureKey));
+		}
+	}
+
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private CommerceDiscountPersistence _commerceDiscountPersistence;
+
+	@Reference
+	private CPInstanceLocalService _cpInstanceLocalService;
+
+	@Reference
+	private CPInstanceUnitOfMeasureLocalService
+		_cpInstanceUnitOfMeasureLocalService;
 
 	@Reference
 	private CustomSQL _customSQL;
