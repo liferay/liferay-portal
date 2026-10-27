@@ -209,19 +209,17 @@ const BaseLifecycle = () => {
 
 	const authorized = currentUser.isAdmin();
 
-	const loading = dataSourcesLoading || lifecycleLoading;
-
 	const title = lifecycle?.name ?? '';
 
 	const hasContent =
-		!loading &&
+		!dataSourcesLoading &&
 		!noDataSources &&
 		!processing &&
 		!accountMetricsLoading &&
 		!!totalAccounts;
 
 	const renderBody = () => {
-		if (loading) {
+		if (dataSourcesLoading) {
 			return <Loading />;
 		}
 
@@ -275,7 +273,11 @@ const BaseLifecycle = () => {
 		);
 	};
 
-	if (!lifecycleLoading && (lifecycleError || !lifecycle)) {
+	if (lifecycleLoading) {
+		return <Loading />;
+	}
+
+	if (lifecycleError || !lifecycle) {
 		return (
 			<ErrorPage
 				href={toRoute(Routes.LIFECYCLE, {channelId, groupId})}

@@ -373,6 +373,24 @@ describe('BaseLifecycle', () => {
 		});
 	});
 
+	it('renders only a loading state, without the header, until the lifecycle arrives', () => {
+		const dashboardRequest = useRequestImpl();
+
+		mockedUseRequest.mockImplementation(
+			(options: {dataSourceFn?: unknown}) =>
+				options.dataSourceFn === API.lifecycle.fetchLifecycle
+					? {data: undefined, error: false, loading: true}
+					: dashboardRequest(options)
+		);
+
+		const {container} = renderPage();
+
+		expect(container.querySelector('.breadcrumb')).toBeNull();
+		expect(
+			screen.queryByRole('button', {name: /switch.dashboard/i})
+		).toBeNull();
+	});
+
 	it('renders neither an empty state nor content while loading', () => {
 		mockedUseDataSources.mockReturnValue({empty: false, loading: true});
 
