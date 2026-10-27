@@ -124,6 +124,13 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 		}
 	}
 
+	@Override
+	public void setSubscription(String subscription) {
+		super.setSubscription(subscription);
+
+		_subscriptionJSONObject = null;
+	}
+
 	private JSONObject _getSubscriptionJSONObject() throws Exception {
 		if (_subscriptionJSONObject == null) {
 			_subscriptionJSONObject = JSONFactoryUtil.createJSONObject(
