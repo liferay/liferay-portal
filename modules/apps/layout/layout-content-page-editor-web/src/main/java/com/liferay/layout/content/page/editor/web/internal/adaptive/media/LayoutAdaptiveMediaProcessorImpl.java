@@ -6,31 +6,20 @@
 package com.liferay.layout.content.page.editor.web.internal.adaptive.media;
 
 import com.liferay.adaptive.media.content.transformer.ContentTransformerHandler;
-import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
-import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
-import com.liferay.adaptive.media.image.html.constants.AMImageHTMLConstants;
 import com.liferay.adaptive.media.image.media.query.Condition;
 import com.liferay.adaptive.media.image.media.query.MediaQuery;
 import com.liferay.adaptive.media.image.media.query.MediaQueryProvider;
-import com.liferay.adaptive.media.image.url.AMImageURLFactory;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.layout.adaptive.media.LayoutAdaptiveMediaProcessor;
-import com.liferay.layout.responsive.ViewportSize;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.net.URI;
-
-import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,64 +42,13 @@ public class LayoutAdaptiveMediaProcessorImpl
 	public String processAdaptiveMediaContent(String content) {
 		String processedContent = _contentTransformerHandler.transform(content);
 
-		if (!_needParsing(processedContent)) {
+		if (!processedContent.contains("--background-image-file-entry-id:")) {
 			return processedContent;
 		}
 
 		Document document = Jsoup.parse(processedContent);
 
 		try {
-			for (Map.Entry<ViewportSize, String> entry :
-					_viewportSizeEnumMap.entrySet()) {
-
-				Elements elements = document.getElementsByAttribute(
-					entry.getValue());
-
-				for (Element element : elements) {
-					if (!StringUtil.equalsIgnoreCase(
-							element.tagName(), "img")) {
-
-						continue;
-					}
-
-					Element parentElement = element.parent();
-
-					if (StringUtil.equalsIgnoreCase(
-							parentElement.tagName(), "picture")) {
-
-						continue;
-					}
-
-					String configuration = element.attr(entry.getValue());
-
-					long fileEntryId = GetterUtil.getLong(
-						element.attr(
-							AMImageHTMLConstants.ATTRIBUTE_NAME_FILE_ENTRY_ID));
-
-					if (fileEntryId <= 0) {
-						continue;
-					}
-
-					FileEntry fileEntry = _dlAppService.getFileEntry(
-						fileEntryId);
-
-					AMImageConfigurationEntry amImageConfigurationEntry =
-						_amImageConfigurationHelper.
-							getAMImageConfigurationEntry(
-								fileEntry.getCompanyId(), configuration);
-
-					if (amImageConfigurationEntry == null) {
-						continue;
-					}
-
-					URI uri = _amImageURLFactory.createFileEntryURL(
-						fileEntry.getFileVersion(), amImageConfigurationEntry);
-
-					_appendSourceElement(
-						document, element, uri, entry.getKey());
-				}
-			}
-
 			_replaceCSSProperties(document);
 		}
 		catch (Exception exception) {
@@ -123,45 +61,6 @@ public class LayoutAdaptiveMediaProcessorImpl
 		Element bodyElement = document.body();
 
 		return bodyElement.html();
-	}
-
-	private static EnumMap<ViewportSize, String> _getViewportSizeMap() {
-		EnumMap<ViewportSize, String> viewportSizeMap = new EnumMap<>(
-			ViewportSize.class);
-
-		for (ViewportSize viewportSize : ViewportSize.values()) {
-			viewportSizeMap.put(
-				viewportSize,
-				"data-" + viewportSize.getViewportSizeId() + "-configuration");
-		}
-
-		return viewportSizeMap;
-	}
-
-	private void _appendSourceElement(
-		Document document, Element element, URI uri,
-		ViewportSize viewportSize) {
-
-		Element sourceElement = document.createElement("source");
-
-		Element parentElement = element.parent();
-
-		StringBundler sb = new StringBundler(6);
-
-		sb.append("(min-width:");
-		sb.append(viewportSize.getMinWidth());
-		sb.append("px)");
-
-		if (viewportSize != ViewportSize.DESKTOP) {
-			sb.append(" and (max-width:");
-			sb.append(viewportSize.getMaxWidth());
-			sb.append("px)");
-		}
-
-		sourceElement.attr("media", sb.toString());
-		sourceElement.attr("srcset", uri.toString());
-
-		parentElement.prependChild(sourceElement);
 	}
 
 	private String _getCSSClass(long fileEntryId, Element styledElement) {
@@ -214,16 +113,6 @@ public class LayoutAdaptiveMediaProcessorImpl
 		return sb.toString();
 	}
 
-	private boolean _needParsing(String html) {
-		for (String viewportSizeConfiguration : _viewportSizeEnumMap.values()) {
-			if (html.contains(viewportSizeConfiguration)) {
-				return true;
-			}
-		}
-
-		return html.contains("--background-image-file-entry-id:");
-	}
-
 	private void _replaceCSSProperties(Document document)
 		throws PortalException {
 
@@ -268,14 +157,6 @@ public class LayoutAdaptiveMediaProcessorImpl
 
 	private static final Pattern _cssPropertyPattern = Pattern.compile(
 		"--background-image-file-entry-id:\\s*(\\d+);");
-	private static final EnumMap<ViewportSize, String> _viewportSizeEnumMap =
-		_getViewportSizeMap();
-
-	@Reference
-	private AMImageConfigurationHelper _amImageConfigurationHelper;
-
-	@Reference
-	private AMImageURLFactory _amImageURLFactory;
 
 	@Reference
 	private ContentTransformerHandler _contentTransformerHandler;
