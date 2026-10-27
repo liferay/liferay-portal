@@ -111,7 +111,6 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -7186,7 +7185,11 @@ public class JenkinsResultsParserUtil {
 		}
 
 		for (int i = index + 1; i <= (index + 2); i++) {
-			if (!CharUtils.isHex(value.charAt(i))) {
+			char c = value.charAt(i);
+
+			if (((c < '0') || (c > '9')) && ((c < 'A') || (c > 'F')) &&
+				((c < 'a') || (c > 'f'))) {
+
 				return false;
 			}
 		}
