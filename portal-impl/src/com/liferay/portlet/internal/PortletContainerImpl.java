@@ -386,14 +386,16 @@ public class PortletContainerImpl implements PortletContainer {
 		}
 		finally {
 			if (themeDisplay != null) {
-				if (GroupLocalServiceUtil.fetchGroup(previousScopeGroupId) !=
-						null) {
+				if ((themeDisplay.getScopeGroupId() != previousScopeGroupId) &&
+					(GroupLocalServiceUtil.fetchGroup(previousScopeGroupId) !=
+						null)) {
 
 					themeDisplay.setScopeGroupId(previousScopeGroupId);
 				}
 
-				if (GroupLocalServiceUtil.fetchGroup(previousSiteGroupId) !=
-						null) {
+				if ((themeDisplay.getSiteGroupId() != previousSiteGroupId) &&
+					(GroupLocalServiceUtil.fetchGroup(previousSiteGroupId) !=
+						null)) {
 
 					themeDisplay.setSiteGroupId(previousSiteGroupId);
 				}
