@@ -213,7 +213,6 @@ public class StagingServiceTest {
 				_user)) {
 
 			long stagingRequestId = _addStagingRequest(file);
-
 			ExportImportConfiguration exportImportConfiguration =
 				_addExportImportConfiguration(_targetGroup);
 
@@ -294,7 +293,6 @@ public class StagingServiceTest {
 				_user)) {
 
 			long stagingRequestId = _addStagingRequest(file);
-
 			ExportImportConfiguration exportImportConfiguration =
 				_addPortletExportImportConfiguration(_targetLayout.getPlid());
 

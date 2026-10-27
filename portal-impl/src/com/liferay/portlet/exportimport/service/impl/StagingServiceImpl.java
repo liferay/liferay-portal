@@ -52,7 +52,7 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		ExportImportThreadLocal.setStagingInProcessOnRemoteLive(true);
 
 		try {
-			_checkPermission(stagingRequestId, null);
+			_checkPermission(null, stagingRequestId);
 
 			stagingLocalService.cleanUpStagingRequest(stagingRequestId);
 		}
@@ -229,7 +229,7 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		ExportImportThreadLocal.setStagingInProcessOnRemoteLive(true);
 
 		try {
-			_checkPermission(stagingRequestId, exportImportConfiguration);
+			_checkPermission(exportImportConfiguration, stagingRequestId);
 
 			return stagingLocalService.publishStagingRequest(
 				getUserId(), stagingRequestId, exportImportConfiguration);
@@ -262,7 +262,7 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		ExportImportThreadLocal.setStagingInProcessOnRemoteLive(true);
 
 		try {
-			_checkPermission(stagingRequestId, null);
+			_checkPermission(null, stagingRequestId);
 
 			stagingLocalService.updateStagingRequest(
 				getUserId(), stagingRequestId, fileName, bytes);
@@ -286,8 +286,8 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 	}
 
 	private void _checkPermission(
-			long stagingRequestId,
-			ExportImportConfiguration exportImportConfiguration)
+			ExportImportConfiguration exportImportConfiguration,
+			long stagingRequestId)
 		throws PortalException {
 
 		Folder folder = PortletFileRepositoryUtil.getPortletFolder(
