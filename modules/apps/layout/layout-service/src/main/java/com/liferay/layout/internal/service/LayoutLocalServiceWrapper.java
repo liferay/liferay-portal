@@ -968,9 +968,10 @@ public class LayoutLocalServiceWrapper
 		Layout sourceLayout, FragmentEntryLink sourceLayoutFragmentEntryLink,
 		Layout targetLayout) {
 
-		if ((sourceLayout.getClassPK() == targetLayout.getClassPK()) &&
-			(sourceLayout.getLaunchSetId() > 0) &&
-			(targetLayout.getLaunchSetId() == 0)) {
+		if ((targetLayout.getLaunchSetId() == 0) &&
+			((sourceLayout.getPlid() == targetLayout.getClassPK()) ||
+			 ((sourceLayout.getClassPK() == targetLayout.getClassPK()) &&
+			  (sourceLayout.getLaunchSetId() > 0)))) {
 
 			String originalFragmentEntryLinkERC =
 				sourceLayoutFragmentEntryLink.getOriginalFragmentEntryLinkERC();
