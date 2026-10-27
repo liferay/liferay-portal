@@ -16,8 +16,11 @@ import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 /**
  * @author Shinn Lok
@@ -103,10 +106,16 @@ public class FaroAdminManagementToolbarDisplayContext
 	}
 
 	@Override
-	protected String[] getOrderByKeys() {
-		return new String[] {
-			"createDate", "individualsUsage", "name", "pageViewsUsage"
-		};
+	protected Map<String, String> getOrderByEntriesMap() {
+		return LinkedHashMapBuilder.put(
+			"create-date", "createDate"
+		).put(
+			"individuals-usage", "individualsUsage"
+		).put(
+			"name", "name"
+		).put(
+			"page-views-usage", "pageViewsUsage"
+		).build();
 	}
 
 }
