@@ -47,86 +47,26 @@ const PROPS = {
 	workflows: {},
 };
 
-function getDeletedIds(postFormDataSpy: jest.SpyInstance) {
-	return postFormDataSpy.mock.calls.map(([formData]) =>
-		Number(formData.get('objectDefinitionId'))
-	);
-}
-
 describe('StructureService.createStructure', () => {
-	let postFormDataSpy: jest.SpyInstance;
-
-	beforeEach(() => {
-		postFormDataSpy = jest
-			.spyOn(ApiHelper, 'postFormData')
-			.mockResolvedValue({data: {}, error: null});
-	});
-
 	afterEach(() => {
 		jest.restoreAllMocks();
 	});
 
-	it('deletes the repeatable groups it created when a later group is rejected', async () => {
-		jest.spyOn(ApiHelper, 'put')
-			.mockResolvedValueOnce({data: {id: 1}, error: null})
-			.mockResolvedValueOnce({
-				data: null,
-				error: 'error',
-				type: 'ObjectDefinitionNameException.MustNotBeDuplicate',
-			});
+	it('creates the structure in a single request', async () => {
+		const postFormDataSpy = jest
+			.spyOn(ApiHelper, 'postFormData')
+			.mockResolvedValue({data: {id: 1}, error: null});
 
 		const result = await StructureService.createStructure(PROPS);
 
-		expect(result).toEqual({data: null, error: 'name-in-use'});
-		expect(getDeletedIds(postFormDataSpy)).toEqual([1]);
-	});
+		expect(result).toEqual({data: {id: 1}, error: null});
+		expect(postFormDataSpy).toHaveBeenCalledTimes(1);
 
-	it('deletes the repeatable groups it created when the structure is rejected', async () => {
-		jest.spyOn(ApiHelper, 'put')
-			.mockResolvedValueOnce({data: {id: 1}, error: null})
-			.mockResolvedValueOnce({data: {id: 2}, error: null});
-		jest.spyOn(ApiHelper, 'post').mockResolvedValue({
-			data: null,
-			error: 'error',
-			type: 'ObjectDefinitionFriendlyURLSeparatorException',
-		});
+		const [formData, url] = postFormDataSpy.mock.calls[0];
 
-		const result = await StructureService.createStructure(PROPS);
-
-		expect(result.error).toBe('slug-in-use');
-		expect(getDeletedIds(postFormDataSpy)).toEqual([1, 2]);
-	});
-
-	it('deletes the structure and its repeatable groups when a relationship is rejected', async () => {
-		jest.spyOn(ApiHelper, 'put')
-			.mockResolvedValueOnce({data: {id: 1}, error: null})
-			.mockResolvedValueOnce({data: {id: 2}, error: null});
-		jest.spyOn(ApiHelper, 'post')
-			.mockResolvedValueOnce({data: {id: 3}, error: null})
-			.mockResolvedValueOnce({
-				data: null,
-				error: 'error',
-				type: 'ObjectRelationshipNameException',
-			});
-
-		const result = await StructureService.createStructure(PROPS);
-
-		expect(result).toEqual({data: null, error: 'unexpected'});
-		expect(getDeletedIds(postFormDataSpy)).toEqual([3, 1, 2]);
-	});
-
-	it('deletes nothing when the structure is created', async () => {
-		jest.spyOn(ApiHelper, 'put')
-			.mockResolvedValueOnce({data: {id: 1}, error: null})
-			.mockResolvedValueOnce({data: {id: 2}, error: null});
-		jest.spyOn(ApiHelper, 'post')
-			.mockResolvedValueOnce({data: {id: 3}, error: null})
-			.mockResolvedValueOnce({data: {}, error: null});
-
-		const result = await StructureService.createStructure(PROPS);
-
-		expect(result).toEqual({data: {id: 3}, error: null});
-		expect(postFormDataSpy).not.toHaveBeenCalled();
+		expect(formData.get('deletedGroupERCs')).toBe('');
+		expect(formData.get('deletedObjectRelationships')).toBe('[]');
+		expect(url).toMatch(/\/cms\/update-structure$/);
 	});
 });
 
@@ -148,6 +88,7 @@ describe('StructureService.updateStructure', () => {
 			'DuplicateObjectDefinitionExternalReferenceCodeException',
 			'erc-in-use',
 		],
+		['ObjectDefinitionFriendlyURLSeparatorException', 'slug-in-use'],
 		['ObjectDefinitionNameException.MustNotBeDuplicate', 'name-in-use'],
 		[
 			'ObjectDefinitionNameException.MustBeLessThan41Characters',
