@@ -9,11 +9,9 @@ import com.liferay.petra.concurrent.DefaultNoticeableFuture;
 import com.liferay.petra.concurrent.NoticeableThreadPoolExecutor;
 import com.liferay.petra.concurrent.ThreadPoolHandlerAdapter;
 import com.liferay.petra.executor.PortalExecutorManager;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.SwappableSecurityManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
@@ -46,7 +44,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -98,35 +95,23 @@ public class AutoBatchPreparedStatementUtilTest {
 	}
 
 	@Test
-	public void testCINITFailure() throws ClassNotFoundException {
-		PropsUtil.set(PropsKeys.HIBERNATE_JDBC_BATCH_SIZE, "0");
-
-		final NoSuchMethodException noSuchMethodException =
-			new NoSuchMethodException();
-		final AtomicInteger counter = new AtomicInteger();
-
-		try (SwappableSecurityManager swappableSecurityManager =
-				new SwappableSecurityManager() {
-
-					@Override
-					public void checkPackageAccess(String pkg) {
-						if (pkg.equals("java.sql") &&
-							(counter.getAndIncrement() == 1)) {
-
-							ReflectionUtil.throwException(
-								noSuchMethodException);
-						}
-					}
-
-				}) {
-
-			swappableSecurityManager.install();
-
-			Class.forName(AutoBatchPreparedStatementUtil.class.getName());
-		}
-		catch (ExceptionInInitializerError eiie) {
-			Assert.assertSame(noSuchMethodException, eiie.getCause());
-		}
+	public void testClassInitialization() throws Exception {
+		Assert.assertEquals(
+			PreparedStatement.class.getMethod("addBatch"),
+			ReflectionTestUtil.getFieldValue(
+				AutoBatchPreparedStatementUtil.class, "_addBatchMethod"));
+		Assert.assertEquals(
+			PreparedStatement.class.getMethod("close"),
+			ReflectionTestUtil.getFieldValue(
+				AutoBatchPreparedStatementUtil.class, "_closeMethod"));
+		Assert.assertEquals(
+			PreparedStatement.class.getMethod("executeBatch"),
+			ReflectionTestUtil.getFieldValue(
+				AutoBatchPreparedStatementUtil.class, "_executeBatchMethod"));
+		Assert.assertEquals(
+			PreparedStatement.class.getMethod("getConnection"),
+			ReflectionTestUtil.getFieldValue(
+				AutoBatchPreparedStatementUtil.class, "_getConnectionMethod"));
 	}
 
 	@Test

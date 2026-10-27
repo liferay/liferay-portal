@@ -9,6 +9,7 @@ import com.liferay.petra.concurrent.NoticeableExecutorService;
 import com.liferay.petra.concurrent.NoticeableFuture;
 import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PrimitiveIntList;
@@ -90,27 +91,17 @@ public class AutoBatchPreparedStatementUtil {
 		PreparedStatement.class
 	};
 
-	private static final Method _addBatchMethod;
-	private static final Method _closeMethod;
-	private static final Method _executeBatchMethod;
-	private static final Method _getConnectionMethod;
+	private static final Method _addBatchMethod = ReflectionUtil.fetchMethod(
+		PreparedStatement.class, "addBatch");
+	private static final Method _closeMethod = ReflectionUtil.fetchMethod(
+		PreparedStatement.class, "close");
+	private static final Method _executeBatchMethod =
+		ReflectionUtil.fetchMethod(PreparedStatement.class, "executeBatch");
+	private static final Method _getConnectionMethod =
+		ReflectionUtil.fetchMethod(PreparedStatement.class, "getConnection");
 	private static final Snapshot<PortalExecutorManager>
 		_portalExecutorManagerSnapshot = new Snapshot<>(
 			AutoBatchPreparedStatementUtil.class, PortalExecutorManager.class);
-
-	static {
-		try {
-			_addBatchMethod = PreparedStatement.class.getMethod("addBatch");
-			_closeMethod = PreparedStatement.class.getMethod("close");
-			_executeBatchMethod = PreparedStatement.class.getMethod(
-				"executeBatch");
-			_getConnectionMethod = PreparedStatement.class.getMethod(
-				"getConnection");
-		}
-		catch (NoSuchMethodException noSuchMethodException) {
-			throw new ExceptionInInitializerError(noSuchMethodException);
-		}
-	}
 
 	private static class BatchInvocationHandler
 		extends NoBatchInvocationHandler {
