@@ -978,6 +978,20 @@ public class DiscountResourceTest extends BaseDiscountResourceTestCase {
 		discountResource.putDiscountByExternalReferenceCode(
 			discount.getExternalReferenceCode(), discount);
 
+		discountSku.setUnitOfMeasureKey((String)null);
+
+		try {
+			discountResource.putDiscountByExternalReferenceCode(
+				discount.getExternalReferenceCode(), discount);
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
+		}
+
 		CommerceDiscount commerceDiscount =
 			_commerceDiscountLocalService.
 				fetchCommerceDiscountByExternalReferenceCode(
