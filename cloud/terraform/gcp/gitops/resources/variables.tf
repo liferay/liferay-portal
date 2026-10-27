@@ -198,7 +198,7 @@ variable "liferay_helm_chart_name" {
 				"liferay-default",
 				"liferay-gcp",
 			],
-		var.liferay_helm_chart_name)
+			var.liferay_helm_chart_name)
 		error_message="The 'liferay_helm_chart_name' value must be 'liferay-default' or 'liferay-gcp'."
 	}
 }

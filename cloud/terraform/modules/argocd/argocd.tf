@@ -26,12 +26,8 @@ resource "helm_release" "argocd" {
 						cm={
 							"admin.enabled"=var.argocd_admin_login_enabled
 							"kustomize.buildOptions"="--enable-helm"
-							"resource.customizations.health.liferay.com_LiferayInfrastructure"=file("${path.module}/health-LiferayInfrastructure.lua")
 							"resource.customizations.health.argoproj.io_Application"=file("${path.module}/health-argoproj.io_Application.lua")
-							"resource.customizations.ignoreDifferences.liferay.com_LiferayInfrastructure"=yamlencode(
-								{
-									managedFieldsManagers=["liferay-backup-restore"]
-								})
+							"resource.customizations.health.liferay.com_LiferayInfrastructure"=file("${path.module}/health-LiferayInfrastructure.lua")
 							"resource.customizations.ignoreDifferences.all"=yamlencode(
 								{
 									managedFieldsManagers=[
@@ -40,6 +36,10 @@ resource "helm_release" "argocd" {
 										"crossplane",
 										"kube-controller-manager",
 									]
+								})
+							"resource.customizations.ignoreDifferences.liferay.com_LiferayInfrastructure"=yamlencode(
+								{
+									managedFieldsManagers=["liferay-backup-restore"]
 								})
 							"resource.exclusions"=yamlencode(
 								[

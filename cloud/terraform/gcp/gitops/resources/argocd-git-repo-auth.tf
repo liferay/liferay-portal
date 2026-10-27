@@ -67,7 +67,7 @@ resource "kubernetes_manifest" "git_repo_credentials_external_secret" {
 							secretKey="ssh_private_key"
 						},
 					] : [],
-			])
+				])
 			refreshInterval="1h0m0s"
 			secretStoreRef={
 				kind="ClusterSecretStore"
@@ -102,7 +102,7 @@ resource "kubernetes_manifest" "git_repo_credentials_external_secret" {
 							{
 								"app.kubernetes.io/name"=each.value.internal_secret_name
 								"argocd.argoproj.io/secret-type"="repository"
-						})
+							})
 					}
 					type="Opaque"
 				}

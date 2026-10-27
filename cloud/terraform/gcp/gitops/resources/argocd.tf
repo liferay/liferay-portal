@@ -376,6 +376,19 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 						namespace="liferay-${var.liferay_git_repo_config.target.namespaceSuffix}"
 						server="https://kubernetes.default.svc"
 					}
+					ignoreDifferences=[
+						{
+							group=""
+							jsonPointers=["/data"]
+							kind="Secret"
+							name="liferay-default"
+						},
+						{
+							group="apps"
+							kind="StatefulSet"
+							managedFieldsManagers=["liferay-dxp-operator"]
+						},
+					]
 					project=local.liferay_appproject_name
 					sources=[
 						merge(
@@ -437,19 +450,6 @@ resource "kubernetes_manifest" "liferay_applicationset" {
 							ref="values"
 							repoURL=var.liferay_git_repo_url
 							targetRevision=var.liferay_git_repo_config.revision
-						},
-					]
-					ignoreDifferences=[
-						{
-							group=""
-							jsonPointers=["/data"]
-							kind="Secret"
-							name="liferay-default"
-						},
-						{
-							group="apps"
-							kind="StatefulSet"
-							managedFieldsManagers=["liferay-dxp-operator"]
 						},
 					]
 					syncPolicy={
@@ -732,7 +732,7 @@ resource "kubernetes_manifest" "resources_applicationset" {
 							selfHeal=true
 						}
 						managedNamespaceMetadata={
-							labels = {
+							labels={
 								"pod-security.kubernetes.io/enforce"="restricted"
 							}
 						}

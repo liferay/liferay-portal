@@ -124,8 +124,8 @@ resource "google_container_node_pool" "general_purpose" {
 }
 resource "google_gke_hub_membership" "membership" {
 	authority {
-    	issuer = "https://container.googleapis.com/v1/${google_container_cluster.primary.id}"
-  	}
+		issuer="https://container.googleapis.com/v1/${google_container_cluster.primary.id}"
+	}
 	depends_on=[
 		google_container_cluster.primary,
 		google_container_node_pool.general_purpose,

@@ -1,9 +1,9 @@
 output "ci_uploader_access_key_id" {
-  value=aws_iam_access_key.ci_uploader.id
+	value=aws_iam_access_key.ci_uploader.id
 }
 output "ci_uploader_access_key_secret" {
-  sensitive=true
-  value=aws_iam_access_key.ci_uploader.secret
+	sensitive=true
+	value=aws_iam_access_key.ci_uploader.secret
 }
 output "cluster_name" {
 	value=var.cluster_name

@@ -202,13 +202,13 @@ resource "aws_kms_key" "eks_secrets" {
 		})
 }
 resource "kubernetes_storage_class_v1" "gp3_storage_class" {
+	allow_volume_expansion=true
 	allowed_topologies {
 		match_label_expressions {
 			key="eks.amazonaws.com/compute-type"
 			values=["auto"]
 		}
 	}
-	allow_volume_expansion=true
 	depends_on=[time_sleep.cluster_addons_ready_time_buffer]
 	metadata {
 		annotations={

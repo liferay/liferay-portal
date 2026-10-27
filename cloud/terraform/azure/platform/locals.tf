@@ -36,7 +36,7 @@ locals {
 				)
 			)
 		EOT
-		, "\t", " "))
+			, "\t", " "))
 	])
 	default_azure_key_vault_enabled=var.cluster_secret_store.key_vault != null
 	deployment_context={

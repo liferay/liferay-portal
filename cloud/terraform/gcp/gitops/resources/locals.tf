@@ -100,14 +100,14 @@ locals {
 				var.infrastructure_git_repo_config.auth,
 				{
 					url=local.infrastructure_git_repo_url
-			})
+				})
 		} : {},
 		{
 			"liferay"=merge(
 				var.liferay_git_repo_config.auth,
 				{
 					url=var.liferay_git_repo_url
-			})
+				})
 		}
 	)
 	git_repo_infrastructure_separate_from_liferay=local.infrastructure_git_repo_url != var.liferay_git_repo_url

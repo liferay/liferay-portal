@@ -9,46 +9,46 @@ locals {
 	vpc_config=data.aws_eks_cluster.cluster.vpc_config[0]
 }
 module "postgres_blue" {
-	count=local.is_active_data_blue || var.is_restoring ? 1 : 0
 	arn_partition=var.arn_partition
+	count=local.is_active_data_blue || var.is_restoring ? 1 : 0
 	db_subnet_group_name=aws_db_subnet_group.rds.name
 	identifier="${var.deployment_name}-postgres-db-blue"
 	password=random_password.postgres_password.result
 	snapshot_identifier=var.is_restoring && local.is_active_data_green ? var.db_restore_snapshot_identifier : null
+	source="../modules/db-instance"
 	tags={
 		"Active"=tostring(local.is_active_data_blue)
 	}
-	source="../modules/db-instance"
 	username=random_string.postgres_username.result
 	vpc_security_group_ids=[aws_security_group.rds.id]
 }
 module "postgres_green" {
-	count=local.is_active_data_green || var.is_restoring ? 1 : 0
 	arn_partition=var.arn_partition
+	count=local.is_active_data_green || var.is_restoring ? 1 : 0
 	db_subnet_group_name=aws_db_subnet_group.rds.name
 	identifier="${var.deployment_name}-postgres-db-green"
 	password=random_password.postgres_password.result
 	snapshot_identifier=var.is_restoring && local.is_active_data_blue ? var.db_restore_snapshot_identifier : null
+	source="../modules/db-instance"
 	tags={
 		"Active"=tostring(local.is_active_data_green)
 	}
-	source="../modules/db-instance"
 	username=random_string.postgres_username.result
 	vpc_security_group_ids=[aws_security_group.rds.id]
 }
 module "s3_bucket_blue" {
 	deployment_name=var.deployment_name
+	source="../modules/s3-bucket"
 	tags={
 		"Active"=tostring(local.is_active_data_blue)
 	}
-	source="../modules/s3-bucket"
 }
 module "s3_bucket_green" {
 	deployment_name=var.deployment_name
+	source="../modules/s3-bucket"
 	tags={
 		"Active"=tostring(local.is_active_data_green)
 	}
-	source="../modules/s3-bucket"
 }
 module "s3_bucket_liferay_overlay" {
 	block_public_acls=true
@@ -155,7 +155,7 @@ resource "aws_iam_policy" "ci_upload_only" {
 					Sid="DenyDelete",
 				}
 			]
-			Version = "2012-10-17",
+			Version="2012-10-17",
 		}
 	)
 }
@@ -402,7 +402,6 @@ resource "null_resource" "opensearch_service_role" {
 				|| true
 		EOT
 	}
-
 	triggers={
 		service_name="opensearchservice.amazonaws.com"
 	}
