@@ -92,8 +92,8 @@ export class SamlAdminPage {
 		commonName = 'test',
 		encryption = false,
 		keyAlgorithm = 'RSA',
-		keyLength = '2048',
-		keyPassword = 'test'
+		keyPassword = 'test',
+		keySize = '2048'
 	) {
 		const locator = await this.page.getByRole('group', {
 			exact: true,
@@ -134,9 +134,7 @@ export class SamlAdminPage {
 				.selectOption(keyAlgorithm);
 		}
 
-		await frameLocator
-			.getByLabel('Key Length (Bits)')
-			.selectOption(keyLength);
+		await frameLocator.getByLabel('Key Size (Bits)').selectOption(keySize);
 		await frameLocator.getByLabel('Key Password').fill(keyPassword);
 
 		await frameLocator.getByRole('button', {name: 'Save'}).click();
