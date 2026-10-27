@@ -267,7 +267,7 @@ test(
 
 			await systemSettingsPage.page.waitForTimeout(1000);
 
-			const enabledButton = page.getByLabel('Enabled');
+			const enabledButton = page.getByLabel('Enabled', {exact: true});
 			const isChecked = await enabledButton.isChecked();
 
 			if (!isChecked) {
@@ -335,7 +335,7 @@ test(
 
 			await systemSettingsPage.page.waitForTimeout(1000);
 
-			const enabledButton = page.getByLabel('Enabled');
+			const enabledButton = page.getByLabel('Enabled', {exact: true});
 			const isChecked = await enabledButton.isChecked();
 
 			if (!isChecked) {
