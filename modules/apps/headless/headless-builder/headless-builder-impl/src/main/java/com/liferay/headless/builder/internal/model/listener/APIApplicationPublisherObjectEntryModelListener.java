@@ -8,7 +8,6 @@ package com.liferay.headless.builder.internal.model.listener;
 import com.liferay.headless.builder.application.publisher.APIApplicationPublisher;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
@@ -48,9 +47,7 @@ public class APIApplicationPublisherObjectEntryModelListener
 			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
 		throws ModelListenerException {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		if (StringUtil.equals(
 				objectDefinition.getExternalReferenceCode(),
@@ -78,8 +75,7 @@ public class APIApplicationPublisherObjectEntryModelListener
 
 		try {
 			ObjectDefinition objectDefinition =
-				_objectDefinitionLocalService.fetchObjectDefinition(
-					objectEntry.getObjectDefinitionId());
+				objectEntry.getObjectDefinition();
 
 			if (StringUtil.equals(
 					objectDefinition.getExternalReferenceCode(),
@@ -102,9 +98,7 @@ public class APIApplicationPublisherObjectEntryModelListener
 	}
 
 	private long _getAPIApplicationId(ObjectEntry objectEntry) {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		String externalReferenceCode =
 			objectDefinition.getExternalReferenceCode();
@@ -245,9 +239,6 @@ public class APIApplicationPublisherObjectEntryModelListener
 
 	@Reference
 	private APIApplicationPublisher _apiApplicationPublisher;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
