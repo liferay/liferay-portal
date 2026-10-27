@@ -168,11 +168,10 @@ public class PortalWorkspaceGitRepositoryTest
 
 		String sha = RandomTestUtil.randomSHA();
 
-		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			_newPortalWorkspaceGitRepository(sha, "master-private");
-
 		PortalWorkspaceGitRepository basePortalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
+		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
+			_newPortalWorkspaceGitRepository(sha, "master-private");
 
 		portalWorkspaceGitRepository.setBasePortalWorkspaceGitRepository(
 			basePortalWorkspaceGitRepository);
