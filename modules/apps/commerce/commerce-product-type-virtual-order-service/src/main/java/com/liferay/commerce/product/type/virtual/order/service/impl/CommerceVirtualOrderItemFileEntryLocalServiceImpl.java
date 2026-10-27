@@ -136,7 +136,7 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceImpl
 		_validate(fileEntryId, url);
 
 		CommerceVirtualOrderItemFileEntry commerceVirtualOrderItemFileEntry =
-			commerceVirtualOrderItemFileEntryPersistence.fetchByPrimaryKey(
+			commerceVirtualOrderItemFileEntryPersistence.findByPrimaryKey(
 				commerceVirtualOrderItemFileEntryId);
 
 		if (Validator.isNotNull(url) &&
