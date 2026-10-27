@@ -79,21 +79,19 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 	@Override
 	public boolean isDataPlatform() {
 		try {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				getSubscription());
-
-			String name = jsonObject.getString("name");
+			String subscriptionName = getSubscriptionName();
 
 			if (StringUtil.equals(
-					name,
+					subscriptionName,
 					ProductConstants.
 						PRODUCT_ENTRY_NAME_DATA_PLATFORM_ENTERPRISE) ||
 				StringUtil.equals(
-					name,
+					subscriptionName,
 					ProductConstants.
 						PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA) ||
 				StringUtil.equals(
-					name, ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM)) {
+					subscriptionName,
+					ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM)) {
 
 				return true;
 			}
@@ -110,11 +108,8 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 	@Override
 	public boolean isTrial() {
 		try {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				getSubscription());
-
 			return StringUtil.equals(
-				jsonObject.getString("name"),
+				getSubscriptionName(),
 				ProductConstants.PRODUCT_ENTRY_NAME_BASIC);
 		}
 		catch (Exception exception) {
