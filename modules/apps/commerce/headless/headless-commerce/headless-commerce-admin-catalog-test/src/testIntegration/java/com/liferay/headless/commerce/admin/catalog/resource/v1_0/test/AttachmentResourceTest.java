@@ -37,6 +37,9 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -861,16 +864,18 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 			_cpAttachmentFileEntryLocalService.getCPAttachmentFileEntry(
 				postAttachment.getId());
 
-		Assert.assertEquals(
-			String.valueOf(
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"key", cpDefinitionOptionRel.getKey()
-					).put(
-						"value",
-						JSONUtil.put(cpDefinitionOptionValueRel.getKey())
-					))),
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
 			cpAttachmentFileEntry.getJson());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			cpDefinitionOptionRel.getKey(), jsonObject.getString("key"));
+		Assert.assertEquals(
+			JSONUtil.put(
+				cpDefinitionOptionValueRel.getKey()
+			).toString(),
+			jsonObject.getString("value"));
 	}
 
 	private void _testPostProductIdAttachmentByUrlWithLocalNetworkURL()

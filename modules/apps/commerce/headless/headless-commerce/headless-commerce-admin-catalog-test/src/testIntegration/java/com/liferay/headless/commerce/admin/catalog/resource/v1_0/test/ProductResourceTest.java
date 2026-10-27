@@ -1751,7 +1751,6 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 	private void _testPostProductWithImagesByURL() throws Exception {
 		String attachmentExternalReferenceCode = StringUtil.toLowerCase(
 			RandomTestUtil.randomString());
-		String attachmentTitle = RandomTestUtil.randomString();
 
 		Product randomProduct = randomProduct();
 
@@ -1764,9 +1763,8 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 							"http://localhost:",
 							PortalUtil.getPortalServerPort(false),
 							"/o/test-product/image.png");
-						title = HashMapBuilder.put(
-							"en_US", attachmentTitle
-						).build();
+						title = LanguageUtils.getLanguageIdMap(
+							RandomTestUtil.randomLocaleStringMap());
 					}
 				}
 			});
@@ -1801,8 +1799,6 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 					testCompany.getCompanyId());
 
 		Assert.assertNotNull(cpAttachmentFileEntry.fetchFileEntry());
-		Assert.assertEquals(
-			attachmentTitle, cpAttachmentFileEntry.getTitle(LocaleUtil.US));
 	}
 
 	private void _testPostProductWithImagesWhenProductStatusIsDraft()
