@@ -18,6 +18,9 @@ import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.DateUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.trash.TrashHelper;
 
@@ -26,12 +29,11 @@ import jakarta.portlet.RenderResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 /**
  * @author Alicia García
@@ -122,20 +124,24 @@ public class KBArticleViewDisplayContext {
 
 		Instant instant = expirationDate.toInstant();
 
-		ZonedDateTime zonedDateTime = instant.atZone(ZoneId.systemDefault());
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)_httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-		LocalDateTime expirationDateLocalDateTime =
-			zonedDateTime.toLocalDateTime();
+		TimeZone timeZone = themeDisplay.getTimeZone();
 
-		LocalDateTime nowLocalDateTime = LocalDateTime.now();
+		ZonedDateTime zonedDateTime = instant.atZone(timeZone.toZoneId());
 
 		KBServiceConfigurationProvider kbServiceConfigurationProvider =
 			_kbServiceConfigurationProviderSnapshot.get();
 
-		return nowLocalDateTime.isAfter(
-			expirationDateLocalDateTime.minusWeeks(
-				kbServiceConfigurationProvider.
-					getExpirationDateNotificationDateWeeks()));
+		zonedDateTime = zonedDateTime.minusWeeks(
+			kbServiceConfigurationProvider.
+				getExpirationDateNotificationDateWeeks());
+
+		Date date = DateUtil.newDate();
+
+		return date.after(Date.from(zonedDateTime.toInstant()));
 	}
 
 	private static final Snapshot<KBServiceConfigurationProvider>
