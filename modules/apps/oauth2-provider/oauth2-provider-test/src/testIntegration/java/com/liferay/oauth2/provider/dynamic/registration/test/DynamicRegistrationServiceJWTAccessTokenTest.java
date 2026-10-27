@@ -67,9 +67,8 @@ public class DynamicRegistrationServiceJWTAccessTokenTest
 
 		Assert.assertEquals(201, response.getStatus());
 
-		JSONObject jsonObject = parseJSONObject(response);
-
 		String clientName = RandomTestUtil.randomString();
+		JSONObject jsonObject = parseJSONObject(response);
 
 		response = _updateClientRegistration(
 			jsonObject.getString(OAuthConstants.CLIENT_ID), clientName,
