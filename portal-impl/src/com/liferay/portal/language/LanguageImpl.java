@@ -1037,9 +1037,9 @@ public class LanguageImpl implements Language, Serializable {
 		}
 
 		try {
-			if (isInheritLocales(groupId)) {
-				Group group = GroupLocalServiceUtil.getGroup(groupId);
+			Group group = GroupLocalServiceUtil.getGroup(groupId);
 
+			if (_isInheritLocales(group)) {
 				CompanyLocalesBag companyLocalesBag = _getCompanyLocalesBag(
 					group.getCompanyId());
 
@@ -1558,9 +1558,9 @@ public class LanguageImpl implements Language, Serializable {
 		}
 
 		try {
-			if (isInheritLocales(groupId)) {
-				Group group = GroupLocalServiceUtil.getGroup(groupId);
+			Group group = GroupLocalServiceUtil.getGroup(groupId);
 
+			if (_isInheritLocales(group)) {
 				CompanyLocalesBag companyLocalesBag = _getCompanyLocalesBag(
 					group.getCompanyId());
 
