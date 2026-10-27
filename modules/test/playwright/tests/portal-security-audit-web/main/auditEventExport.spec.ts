@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 import {readFileSync, statSync} from 'fs';
 
 import {globalMenuPagesTest} from '../../../fixtures/globalMenuPagesTest';
@@ -43,6 +43,18 @@ const fields = [
 	'serverPort',
 	'userId',
 ];
+
+async function openAdvancedSearch(page: Page) {
+	await expect(async () => {
+		await page
+			.locator('#toggle_id_audit_event_searchtoggleAdvanced')
+			.click({timeout: 1000});
+
+		await expect(
+			page.locator('#toggle_id_audit_event_searchadvancedSearch')
+		).toHaveValue('true', {timeout: 1000});
+	}).toPass();
+}
 
 function parseCSV(content: string) {
 	const rows: string[][] = [];
@@ -154,7 +166,7 @@ test('LPD-40224: Check if the export audit events .csv is being filtered by the 
 
 	await globalMenuPage.goToControlPanel('Audit');
 
-	await page.locator('#toggle_id_audit_event_searchtoggleAdvanced').click();
+	await openAdvancedSearch(page);
 
 	// Filter the events by the first element, use the information to make assertions in the .csv
 
@@ -233,19 +245,18 @@ test('LPD-40224: Check if the export audit events .csv is being filtered by the 
 
 	await download.saveAs(filePath);
 
-	const content = readFileSync(filePath, 'utf8');
-
-	expect(content).toContain(resourceId);
-
-	const regex = new RegExp(resourceAction, 'g');
-
-	const matches = await content.match(regex);
+	const [columns, ...rows] = parseCSV(readFileSync(filePath, 'utf8'));
 
 	const eventCount = await page
 		.locator('table.table > tbody tr:not(.d-none)')
 		.count();
 
-	expect(matches).toHaveLength(eventCount);
+	expect(rows.length).toBeGreaterThanOrEqual(eventCount);
+
+	for (const row of rows) {
+		expect(row[columns.indexOf('classPK')]).toBe(resourceId);
+		expect(row[columns.indexOf('eventType')]).toBe(resourceAction);
+	}
 });
 
 test('LPD-40224: Check if the audit events filtered by date are being exported', async ({
@@ -256,7 +267,7 @@ test('LPD-40224: Check if the audit events filtered by date are being exported',
 
 	await globalMenuPage.goToControlPanel('Audit');
 
-	await page.locator('#toggle_id_audit_event_searchtoggleAdvanced').click();
+	await openAdvancedSearch(page);
 
 	await page.locator('#startDate').fill('01/01/2001');
 
@@ -296,7 +307,7 @@ test("LPS-192555: Assert that the page's URL with advanced search doesn't get ov
 }) => {
 	await globalMenuPage.goToControlPanel('Audit');
 
-	await page.locator('#toggle_id_audit_event_searchtoggleAdvanced').click();
+	await openAdvancedSearch(page);
 
 	await page
 		.locator(`#${AUDIT_PORTLET_NAMESPACE}userName:visible`)
