@@ -6,9 +6,7 @@
 package com.liferay.osb.faro.web.internal.search;
 
 import com.liferay.osb.faro.model.FaroProject;
-import com.liferay.osb.faro.provisioning.client.model.display.main.FaroSubscriptionDisplay;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
-import com.liferay.osb.faro.web.internal.util.JSONUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
 import com.liferay.portal.kernel.log.Log;
@@ -32,7 +30,6 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 
-import java.util.Date;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -156,33 +153,18 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 			"corpProjectName", faroProject.getCorpProjectName());
 		document.addKeyword(
 			"corpProjectUuid", faroProject.getCorpProjectUuid());
-		document.addDate("createDate", new Date(faroProject.getCreateTime()));
-
-		FaroSubscriptionDisplay faroSubscriptionDisplay = JSONUtil.readValue(
-			faroProject.getSubscription(), FaroSubscriptionDisplay.class);
-
+		document.addDate("createDate", faroProject.getCreateDate());
 		document.addNumber(
-			"individualsUsage",
-			_getUsage(
-				faroSubscriptionDisplay.
-					getIndividualsCountSinceLastAnniversary(),
-				faroSubscriptionDisplay.getIndividualsLimit()));
-		document.addDate(
-			"lastAccessDate", new Date(faroProject.getLastAccessTime()));
+			"individualsUsage", faroProject.getIndividualsUsage());
+		document.addDate("lastAccessDate", faroProject.getLastAccessDate());
 
 		if (faroProject.isOffline()) {
 			document.addKeyword("offline", StringPool.TRUE);
 		}
 
-		document.addNumber(
-			"pageViewsUsage",
-			_getUsage(
-				faroSubscriptionDisplay.getPageViewsCountSinceLastAnniversary(),
-				faroSubscriptionDisplay.getPageViewsLimit()));
+		document.addNumber("pageViewsUsage", faroProject.getPageViewsUsage());
 		document.addKeyword(
-			"subscriptionName",
-			StringUtil.removeSubstring(
-				faroSubscriptionDisplay.getName(), "Liferay Analytics Cloud "));
+			"subscriptionName", faroProject.getShortSubscriptionName());
 
 		if (Validator.isNull(faroProject.getWeDeployKey())) {
 			if (_log.isInfoEnabled()) {
@@ -236,16 +218,6 @@ public class FaroProjectIndexer extends BaseIndexer<FaroProject> {
 		getIndexableActionableDynamicQuery() {
 
 		return _faroProjectLocalService.getIndexableActionableDynamicQuery();
-	}
-
-	private double _getUsage(long count, long limit) {
-		if ((count == 0) || (limit == 0)) {
-			return 0.0;
-		}
-
-		double usage = 100.0 * count / limit;
-
-		return Math.round(usage * 100) / 100.0;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
