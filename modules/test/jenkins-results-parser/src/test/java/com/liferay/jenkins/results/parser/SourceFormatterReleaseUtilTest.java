@@ -24,23 +24,15 @@ public class SourceFormatterReleaseUtilTest
 	@Before
 	@Override
 	public void setUp() throws Exception {
-		_artifactGitId = RandomTestUtil.randomSHA();
 		_artifactPropertiesFile = new File(
-			temporaryFolder.getRoot(),
-			"modules/.releng/util/source-formatter/artifact.properties");
-		_ivyXMLFile = new File(
-			temporaryFolder.getRoot(),
-			"tools/sdk/dependencies/com.liferay.source.formatter/ivy.xml");
-
-		_version =
-			"1.0." +
-				String.valueOf(Math.abs(RandomTestUtil.randomLong() % 10000));
+			temporaryFolder.getRoot(), _PATH_ARTIFACT_PROPERTIES);
+		_ivyXMLFile = new File(temporaryFolder.getRoot(), _PATH_IVY_XML);
 
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
 			JenkinsResultsParserUtil.combine(
-				"artifact.git.id=", _artifactGitId, "\nartifact.url=",
-				_getArtifactURL(_version)));
+				"artifact.git.id=", _ARTIFACT_GIT_ID, "\nartifact.url=",
+				_getArtifactURL(_VERSION)));
 
 		JenkinsResultsParserUtil.write(
 			_ivyXMLFile,
@@ -48,13 +40,13 @@ public class SourceFormatterReleaseUtilTest
 				"<dependency name=\"com.liferay.portal.kernel\" rev=\"" +
 					RandomTestUtil.randomString() + "\" />",
 				"<dependency name=\"com.liferay.source.formatter\" rev=\"" +
-					_version + "\" />"));
+					_VERSION + "\" />"));
 	}
 
 	@Test
 	public void testGetIvyVersion() throws Exception {
 		Assert.assertEquals(
-			_version,
+			_VERSION,
 			SourceFormatterReleaseUtil.getIvyVersion(
 				temporaryFolder.getRoot()));
 	}
@@ -91,7 +83,7 @@ public class SourceFormatterReleaseUtilTest
 			_ivyXMLFile,
 			_getIvyXML(
 				"<dependency name=\"com.liferay.portal.kernel\" rev=\"" +
-					_version + "\" />"));
+					_VERSION + "\" />"));
 
 		Assert.assertNull(
 			SourceFormatterReleaseUtil.getIvyVersion(
@@ -182,16 +174,16 @@ public class SourceFormatterReleaseUtilTest
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
 			JenkinsResultsParserUtil.combine(
-				"artifact.git.id=", _artifactGitId, "\nartifact.url=",
+				"artifact.git.id=", _ARTIFACT_GIT_ID, "\nartifact.url=",
 				"https://repository-cdn.liferay.com/nexus/content",
 				"/repositories/liferay-public-releases/com/liferay",
-				"/com.liferay.source.formatter/", _version,
-				"/com.liferay.source.formatter-", _version, ".zip"));
+				"/com.liferay.source.formatter/", _VERSION,
+				"/com.liferay.source.formatter-", _VERSION, ".zip"));
 
 		_assertNotReleasedSourceMatch();
 
 		JenkinsResultsParserUtil.write(
-			_artifactPropertiesFile, "artifact.git.id=" + _artifactGitId);
+			_artifactPropertiesFile, "artifact.git.id=" + _ARTIFACT_GIT_ID);
 
 		_assertNotReleasedSourceMatch();
 	}
@@ -219,13 +211,13 @@ public class SourceFormatterReleaseUtilTest
 
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
-			"artifact.url=" + _getArtifactURL(_version));
+			"artifact.url=" + _getArtifactURL(_VERSION));
 
 		_assertNotReleasedSourceMatch();
 
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
-			"artifact.git.id=\nartifact.url=" + _getArtifactURL(_version));
+			"artifact.git.id=\nartifact.url=" + _getArtifactURL(_VERSION));
 
 		_assertNotReleasedSourceMatch();
 	}
@@ -281,7 +273,7 @@ public class SourceFormatterReleaseUtilTest
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
 			JenkinsResultsParserUtil.combine(
-				"artifact.git.id=", _artifactGitId, "\nartifact.url=",
+				"artifact.git.id=", _ARTIFACT_GIT_ID, "\nartifact.url=",
 				_getArtifactURL(version)));
 
 		JenkinsResultsParserUtil.write(
@@ -430,7 +422,7 @@ public class SourceFormatterReleaseUtilTest
 				Mockito.eq(
 					JenkinsResultsParserUtil.combine(
 						"git diff --dst-prefix=b/ --no-color --src-prefix=a/ ",
-						"--unified=0 ", _artifactGitId, " ", ref,
+						"--unified=0 ", _ARTIFACT_GIT_ID, " ", ref,
 						" -- modules/util/source-formatter")))
 		).thenReturn(
 			new GitUtil.ExecutionResult(exitValue, "", standardOut)
@@ -446,8 +438,16 @@ public class SourceFormatterReleaseUtilTest
 			gitWorkingDirectory, ref);
 	}
 
+	private static final String _ARTIFACT_GIT_ID = RandomTestUtil.randomSHA();
+
+	private static final String _PATH_ARTIFACT_PROPERTIES =
+		"modules/.releng/util/source-formatter/artifact.properties";
+
 	private static final String _PATH_BND =
 		"modules/util/source-formatter/bnd.bnd";
+
+	private static final String _PATH_IVY_XML =
+		"tools/sdk/dependencies/com.liferay.source.formatter/ivy.xml";
 
 	private static final String _PATH_PLUGIN =
 		"modules/util/source-formatter/src/main/resources/META-INF/maven" +
@@ -460,9 +460,10 @@ public class SourceFormatterReleaseUtilTest
 	private static final String _PATH_POM =
 		"modules/util/source-formatter/samples/pom.xml";
 
-	private String _artifactGitId;
+	private static final String _VERSION =
+		"1.0." + String.valueOf(Math.abs(RandomTestUtil.randomLong() % 10000));
+
 	private File _artifactPropertiesFile;
 	private File _ivyXMLFile;
-	private String _version;
 
 }
