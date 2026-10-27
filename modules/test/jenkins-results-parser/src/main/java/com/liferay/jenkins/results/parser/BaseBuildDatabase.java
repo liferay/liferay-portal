@@ -691,7 +691,7 @@ public abstract class BaseBuildDatabase implements BuildDatabase {
 		if (JenkinsResultsParserUtil.isNullOrEmpty(s3BucketDistPath)) {
 			System.out.println(
 				"WARNING: Skipping the build database upload because " +
-					"S3_BUCKET_DIST_PATH is not set");
+					"\"S3_BUCKET_DIST_PATH\" is not set");
 
 			return;
 		}
