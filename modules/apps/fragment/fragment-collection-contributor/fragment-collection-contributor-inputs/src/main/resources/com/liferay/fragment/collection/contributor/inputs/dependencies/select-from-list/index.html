@@ -23,7 +23,7 @@
 					</div>
 
 					<span class="input-group-append input-group-item input-group-item-shrink">
-						<button aria-controls="${fragmentElementId}-listbox" [#if input.showHelpText && input.helpText?has_content]aria-describedby="${fragmentElementId}-help-text"[/#if] aria-expanded="false" aria-label='${languageUtil.get(locale, "open-options-menu")}' class="btn btn-secondary" [#if disabled]disabled[/#if] type="button">
+						<button aria-controls="${fragmentElementId}-listbox" [#if input.showHelpText && input.helpText?has_content]aria-describedby="${fragmentElementId}-help-text"[/#if] aria-expanded="false" aria-label="${htmlUtil.escape(languageUtil.get(locale, "open-options-menu"))}" class="btn btn-secondary" [#if disabled]disabled[/#if] type="button">
 							[@clay["icon"] symbol="caret-double" /]
 						</button>
 					</span>
