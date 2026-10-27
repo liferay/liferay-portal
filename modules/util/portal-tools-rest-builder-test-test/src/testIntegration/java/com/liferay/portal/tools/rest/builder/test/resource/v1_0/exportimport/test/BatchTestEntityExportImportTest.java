@@ -848,19 +848,22 @@ public class BatchTestEntityExportImportTest {
 
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
-			RandomTestUtil.randomString(), _CLASS_NAME_TEST_ENTITY,
+			RandomTestUtil.randomString(),
+			"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity",
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
 			StringPool.BLANK);
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
-			testEntities[0].getExternalReferenceCode(), _CLASS_NAME_TEST_ENTITY,
+			testEntities[0].getExternalReferenceCode(),
+			"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity",
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
 			StringPool.BLANK);
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
-			testEntities[2].getExternalReferenceCode(), _CLASS_NAME_TEST_ENTITY,
+			testEntities[2].getExternalReferenceCode(),
+			"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity",
 			RandomTestUtil.nextLong(), PortalUUIDUtil.generate(),
 			StringPool.BLANK, SystemEventConstants.TYPE_DELETE,
 			StringPool.BLANK);
@@ -1126,9 +1129,6 @@ public class BatchTestEntityExportImportTest {
 	private static final String _CLASS_NAME =
 		"com_liferay_portal_tools_rest_builder_test_portlet_" +
 			"BatchTestEntityPortlet";
-
-	private static final String _CLASS_NAME_TEST_ENTITY =
-		"com.liferay.portal.tools.rest.builder.test.dto.v1_0.TestEntity";
 
 	private BatchTestEntityResource _batchTestEntityResource;
 	private Group _companyGroup;
