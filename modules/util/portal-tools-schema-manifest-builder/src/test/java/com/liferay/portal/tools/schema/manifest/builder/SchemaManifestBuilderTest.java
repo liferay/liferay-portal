@@ -147,11 +147,11 @@ public class SchemaManifestBuilderTest {
 	}
 
 	private void _writeBndFile(String bundleSymbolicName) throws Exception {
-		File bndFile = new File(_baseDir, "bnd.bnd");
-
 		String content = StringBundler.concat(
 			"Bundle-Name: ", RandomTestUtil.randomString(),
 			"\nBundle-SymbolicName: ", bundleSymbolicName, "\n");
+
+		File bndFile = new File(_baseDir, "bnd.bnd");
 
 		Files.write(bndFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
 	}
