@@ -7990,7 +7990,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/aspectj-rt.jar</file-name>
-				<version>1.9.22.1</version>
+				<version>1.9.26</version>
 				<project-name>AspectJ</project-name>
 				<project-url>http://www.eclipse.org/aspectj</project-url>
 				<licenses>
@@ -8002,7 +8002,7 @@
 			</library>
 			<library>
 				<file-name>lib/development/aspectj-weaver.jar</file-name>
-				<version>1.9.22.1</version>
+				<version>1.9.26</version>
 				<project-name>AspectJ</project-name>
 				<project-url>http://www.eclipse.org/aspectj</project-url>
 				<licenses>
