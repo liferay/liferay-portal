@@ -133,6 +133,7 @@ public class PIMConnectorDispatchTaskExecutorTest {
 		_testDoExecute();
 		_testDoExecuteWithInactiveConnector();
 		_testDoExecuteWithPIMConnectorException();
+		_testDoExecuteWithPIMConnectorExceptionOutput();
 		_testDoExecuteWithoutPIMConnector();
 	}
 
@@ -241,6 +242,44 @@ public class PIMConnectorDispatchTaskExecutorTest {
 		Assert.assertEquals(
 			"Localized a-required-channel-field-is-not-mapped",
 			dispatchTaskExecutorOutput.getError());
+		Assert.assertNull(dispatchTaskExecutorOutput.getOutput());
+	}
+
+	private void _testDoExecuteWithPIMConnectorExceptionOutput()
+		throws Exception {
+
+		_mockObjectEntryValues(true);
+
+		Mockito.doThrow(
+			new PIMConnectorException(
+				"unable-to-connect-to-the-remote-instance", "{\"log\": []}",
+				null)
+		).when(
+			_pimConnector
+		).execute(
+			_objectEntry
+		);
+
+		DispatchTaskExecutorOutput dispatchTaskExecutorOutput =
+			new DispatchTaskExecutorOutput();
+
+		try {
+			_pimConnectorDispatchTaskExecutor.doExecute(
+				_dispatchTrigger, dispatchTaskExecutorOutput);
+
+			Assert.fail();
+		}
+		catch (PIMConnectorException pimConnectorException) {
+			Assert.assertEquals(
+				"unable-to-connect-to-the-remote-instance",
+				pimConnectorException.getMessage());
+		}
+
+		Assert.assertEquals(
+			"Localized unable-to-connect-to-the-remote-instance",
+			dispatchTaskExecutorOutput.getError());
+		Assert.assertEquals(
+			"{\"log\": []}", dispatchTaskExecutorOutput.getOutput());
 	}
 
 	private void _testDoExecuteWithoutPIMConnector() throws Exception {
