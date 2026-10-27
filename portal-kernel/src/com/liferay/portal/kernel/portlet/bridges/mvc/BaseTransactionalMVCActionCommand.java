@@ -21,7 +21,15 @@ public abstract class BaseTransactionalMVCActionCommand
 	extends BaseMVCActionCommand {
 
 	@Override
-	protected void doProcessAction(
+	public final boolean processAction(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws PortletException {
+
+		return super.processAction(actionRequest, actionResponse);
+	}
+
+	@Override
+	protected final void doProcessAction(
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws PortletException {
 
