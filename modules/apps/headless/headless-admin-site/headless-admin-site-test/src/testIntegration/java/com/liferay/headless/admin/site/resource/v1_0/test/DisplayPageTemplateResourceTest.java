@@ -240,11 +240,12 @@ public class DisplayPageTemplateResourceTest
 
 	@Override
 	@Test
-	@TestInfo({"LPD-105724", "LPD-106070", "LPD-107020"})
+	@TestInfo({"LPD-105724", "LPD-106070", "LPD-107020", "LPD-112210"})
 	public void testGetDesignLibraryDisplayPageTemplate() throws Exception {
 		super.testGetDesignLibraryDisplayPageTemplate();
 
 		_testGetDesignLibraryDisplayPageTemplateActions();
+		_testGetDesignLibraryDisplayPageTemplateWithNestedFields();
 		_testGetDesignLibraryDisplayPageTemplateWithoutPermissions();
 	}
 
@@ -1197,7 +1198,8 @@ public class DisplayPageTemplateResourceTest
 			replaceHref, replaceHref.contains("/design-libraries/"));
 	}
 
-	private void _assertNestedFields(DisplayPageTemplate displayPageTemplate)
+	private void _assertNestedFields(
+			DisplayPageTemplate displayPageTemplate, long groupId)
 		throws Exception {
 
 		FriendlyUrlHistory friendlyUrlHistory =
@@ -1209,8 +1211,7 @@ public class DisplayPageTemplateResourceTest
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_layoutPageTemplateEntryLocalService.
 				getLayoutPageTemplateEntryByExternalReferenceCode(
-					displayPageTemplate.getExternalReferenceCode(),
-					testGroup.getGroupId());
+					displayPageTemplate.getExternalReferenceCode(), groupId);
 
 		Map<Locale, String> friendlyURLMap = new HashMap<>();
 
@@ -1972,6 +1973,25 @@ public class DisplayPageTemplateResourceTest
 		Assert.assertTrue(actions.containsKey("permissions"));
 	}
 
+	private void _testGetDesignLibraryDisplayPageTemplateWithNestedFields()
+		throws Exception {
+
+		String externalReferenceCode = _getDesignLibraryExternalReferenceCode();
+
+		DisplayPageTemplate displayPageTemplate =
+			_addDesignLibraryDisplayPageTemplate(externalReferenceCode);
+
+		DisplayPageTemplateResource displayPageTemplateResource =
+			_getDisplayPageTemplateResource(
+				"friendlyUrlHistory,pageSpecifications");
+
+		_assertNestedFields(
+			displayPageTemplateResource.getDesignLibraryDisplayPageTemplate(
+				externalReferenceCode,
+				displayPageTemplate.getExternalReferenceCode()),
+			_designLibraryGroup.getGroupId());
+	}
+
 	private void _testGetDesignLibraryDisplayPageTemplateWithoutPermissions()
 		throws Exception {
 
@@ -2069,7 +2089,8 @@ public class DisplayPageTemplateResourceTest
 		_assertNestedFields(
 			displayPageTemplateResource.getSiteDisplayPageTemplate(
 				testGroup.getExternalReferenceCode(),
-				displayPageTemplate.getExternalReferenceCode()));
+				displayPageTemplate.getExternalReferenceCode()),
+			testGroup.getGroupId());
 	}
 
 	private void _testGetSiteDisplayPageTemplateWithPageElementsWithTemplateEntries()
@@ -2147,7 +2168,8 @@ public class DisplayPageTemplateResourceTest
 		_assertNestedFields(
 			_getDisplayPageTemplate(
 				(List<DisplayPageTemplate>)page.getItems(),
-				displayPageTemplate.getExternalReferenceCode()));
+				displayPageTemplate.getExternalReferenceCode()),
+			testGroup.getGroupId());
 
 		ContentLayoutTestUtil.publishLayout(layout.fetchDraftLayout(), layout);
 
@@ -2161,7 +2183,8 @@ public class DisplayPageTemplateResourceTest
 		_assertNestedFields(
 			_getDisplayPageTemplate(
 				(List<DisplayPageTemplate>)page.getItems(),
-				displayPageTemplate.getExternalReferenceCode()));
+				displayPageTemplate.getExternalReferenceCode()),
+			testGroup.getGroupId());
 	}
 
 	private void _testGetSiteDisplayPageTemplatesPageWithThumbnailAsNestedField()
