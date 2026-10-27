@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.model.DLFileVersion;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.processor.RawMetadataProcessorUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.text.DLFileEntryTextProvider;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
@@ -83,10 +84,9 @@ public class DLFileEntryModelDocumentContributorTest {
 
 		TextExtractor originalTextExtractor =
 			ReflectionTestUtil.getAndSetFieldValue(
-				_dlFileEntryModelDocumentContributor, "_textExtractor",
-				testTextExtractor);
+				_dlFileEntryTextProvider, "_textExtractor", testTextExtractor);
 
-		Class<?> clazz = _dlFileEntryModelDocumentContributor.getClass();
+		Class<?> clazz = _dlFileEntryTextProvider.getClass();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				clazz.getName(), LoggerTestUtil.WARN)) {
@@ -107,7 +107,7 @@ public class DLFileEntryModelDocumentContributorTest {
 		}
 		finally {
 			ReflectionTestUtil.setFieldValue(
-				_dlFileEntryModelDocumentContributor, "_textExtractor",
+				_dlFileEntryTextProvider, "_textExtractor",
 				originalTextExtractor);
 		}
 
@@ -188,6 +188,9 @@ public class DLFileEntryModelDocumentContributorTest {
 	)
 	private ModelDocumentContributor<DLFileEntry>
 		_dlFileEntryModelDocumentContributor;
+
+	@Inject
+	private DLFileEntryTextProvider _dlFileEntryTextProvider;
 
 	@Inject
 	private File _file;
