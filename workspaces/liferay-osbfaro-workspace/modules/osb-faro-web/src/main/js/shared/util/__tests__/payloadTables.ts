@@ -77,6 +77,63 @@ describe('formatPayloadTables', () => {
 		]);
 	});
 
+	it('lays the campaign out in a table between the attributes and the utm parameters', () => {
+		expect(
+			formatPayloadTables({
+				acquisitionProperties: {utm_medium: 'email'},
+				campaign: {campaignName: 'Spring Compactor Promo 2026'},
+				eventId: 'pageViewed',
+			}).map(({title}) => title)
+		).toEqual(['Event Attributes', 'Campaign', 'UTM Parameters']);
+	});
+
+	it('omits the campaign table when the payload carries no campaign', () => {
+		expect(
+			formatPayloadTables({eventId: 'pageViewed'}).map(({title}) => title)
+		).toEqual(['Event Attributes']);
+	});
+
+	it('links the campaign name to the campaign url', () => {
+		const [, {rows}] = formatPayloadTables(
+			{
+				campaign: {campaignName: 'Spring Compactor Promo 2026'},
+				eventId: 'pageViewed',
+			},
+			{campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'}
+		);
+
+		expect(rows).toEqual([
+			{
+				href: '/workspace/23/456/campaigns/7013a000002QwErtAAG',
+				property: 'campaignName',
+				value: 'Spring Compactor Promo 2026',
+			},
+		]);
+	});
+
+	it('does not link a campaign that resolved to no name', () => {
+		const [, {rows}] = formatPayloadTables(
+			{
+				campaign: {campaignName: null},
+				eventId: 'pageViewed',
+			},
+			{campaignUrl: '/workspace/23/456/campaigns/7013a000002XyZbAAK'}
+		);
+
+		expect(rows).toEqual([{property: 'campaignName', value: '-'}]);
+	});
+
+	it('links no row outside the campaign table', () => {
+		const [{rows}] = formatPayloadTables(
+			{properties: {campaignName: 'Spring Compactor Promo 2026'}},
+			{campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'}
+		);
+
+		expect(rows).toEqual([
+			{property: 'campaignName', value: 'Spring Compactor Promo 2026'},
+		]);
+	});
+
 	it('omits the utm table when the payload carries no utm properties', () => {
 		expect(formatPayloadTables({eventId: 'pageViewed'})).toHaveLength(1);
 	});

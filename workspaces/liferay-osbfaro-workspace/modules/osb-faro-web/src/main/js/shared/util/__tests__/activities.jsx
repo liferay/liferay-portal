@@ -71,10 +71,10 @@ describe('activities', () => {
 			const [withCampaign, withoutCampaign] = formatEvents([
 				{
 					applicationId: 'CustomEvent',
-					createDate: '2026-07-16T10:00:00.000Z',
-					name: 'eventName',
 					campaignId: '7013a000002QwErtAAG',
-					campaignName: 'Spring Compactor Promo 2026'
+					campaignName: 'Spring Compactor Promo 2026',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'eventName'
 				},
 				{
 					applicationId: 'CustomEvent',
@@ -88,6 +88,65 @@ describe('activities', () => {
 				campaignName: 'Spring Compactor Promo 2026'
 			});
 			expect(withoutCampaign.campaign).toBeUndefined();
+		});
+
+		it('adds the campaign to the attributes as a group of its own only when the event carries one', () => {
+			const [withCampaign, withoutCampaign] = formatEvents([
+				{
+					applicationId: 'CustomEvent',
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026',
+					createDate: '2026-07-16T10:00:00.000Z',
+					name: 'eventName'
+				},
+				{
+					applicationId: 'CustomEvent',
+					createDate: '2026-07-16T10:01:00.000Z',
+					name: 'eventName'
+				}
+			]);
+
+			expect(withCampaign.attributes.campaign).toEqual({
+				campaignName: 'Spring Compactor Promo 2026'
+			});
+			expect(withoutCampaign.attributes).not.toHaveProperty('campaign');
+		});
+
+		it('links the campaign to its page when there is a channel and a group', () => {
+			const event = {
+				applicationId: 'CustomEvent',
+				campaignId: '7013a000002QwErtAAG',
+				campaignName: 'Spring Compactor Promo 2026',
+				createDate: '2026-07-16T10:00:00.000Z',
+				name: 'eventName'
+			};
+
+			const [linked] = formatEvents([event], undefined, {
+				channelId: '456',
+				groupId: '23'
+			});
+			const [unlinked] = formatEvents([event]);
+
+			expect(linked.campaignUrl).toBe(
+				'/workspace/23/456/campaigns/7013a000002QwErtAAG'
+			);
+			expect(unlinked.campaignUrl).toBeUndefined();
+		});
+
+		it('links no campaign for an event that carries none', () => {
+			const [event] = formatEvents(
+				[
+					{
+						applicationId: 'CustomEvent',
+						createDate: '2026-07-16T10:00:00.000Z',
+						name: 'eventName'
+					}
+				],
+				undefined,
+				{channelId: '456', groupId: '23'}
+			);
+
+			expect(event.campaignUrl).toBeUndefined();
 		});
 
 		it('includes the raw experience id and name in attributes when the event carries one', () => {
@@ -296,12 +355,12 @@ describe('activities', () => {
 			const result = groupEventsByPage([
 				{
 					applicationId: 'Page',
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026',
 					canonicalUrl: 'https://liferay.com/home',
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
-					pageGroupId: 'https://liferay.com/home',
-					campaignId: '7013a000002QwErtAAG',
-					campaignName: 'Spring Compactor Promo 2026'
+					pageGroupId: 'https://liferay.com/home'
 				}
 			]);
 
@@ -315,12 +374,12 @@ describe('activities', () => {
 			const result = groupEventsByPage([
 				{
 					applicationId: 'Page',
+					campaignId: '7013a000002XyZbAAK',
+					campaignName: null,
 					canonicalUrl: 'https://liferay.com/home',
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
-					pageGroupId: 'https://liferay.com/home',
-					campaignId: '7013a000002XyZbAAK',
-					campaignName: null
+					pageGroupId: 'https://liferay.com/home'
 				}
 			]);
 
@@ -348,16 +407,43 @@ describe('activities', () => {
 			const result = groupEventsByPage([
 				{
 					applicationId: 'Page',
+					campaignId: '7013a000002QwErtAAG',
+					campaignName: 'Spring Compactor Promo 2026',
 					canonicalUrl: 'https://liferay.com/home',
 					createDate: '2026-07-16T10:00:00.000Z',
 					name: 'pageViewed',
-					pageGroupId: 'https://liferay.com/home',
-					campaignId: '7013a000002QwErtAAG',
-					campaignName: 'Spring Compactor Promo 2026'
+					pageGroupId: 'https://liferay.com/home'
 				}
 			]);
 
 			expect(result[0].nestedItems[0].campaign).toBeUndefined();
+		});
+
+		it('keeps the campaign in the details of the group\'s nested events', () => {
+			const result = groupEventsByPage(
+				[
+					{
+						applicationId: 'Page',
+						campaignId: '7013a000002QwErtAAG',
+						campaignName: 'Spring Compactor Promo 2026',
+						canonicalUrl: 'https://liferay.com/home',
+						createDate: '2026-07-16T10:00:00.000Z',
+						name: 'pageViewed',
+						pageGroupId: 'https://liferay.com/home'
+					}
+				],
+				undefined,
+				{channelId: '456', groupId: '23'}
+			);
+
+			const [nestedEvent] = result[0].nestedItems;
+
+			expect(nestedEvent.attributes.campaign).toEqual({
+				campaignName: 'Spring Compactor Promo 2026'
+			});
+			expect(nestedEvent.campaignUrl).toBe(
+				'/workspace/23/456/campaigns/7013a000002QwErtAAG'
+			);
 		});
 
 		it('adds the experience a page view was served by onto the group', () => {
@@ -752,9 +838,9 @@ describe('activities', () => {
 			];
 
 			const campaigns = {
+				'2026-07-01': campaignDay,
 				'2026-07-13': campaignDay,
-				'2026-07-20': campaignDay,
-				'2026-07-01': campaignDay
+				'2026-07-20': campaignDay
 			};
 
 			const days = mergeCampaignDays(middlePage, campaigns, {
@@ -804,8 +890,8 @@ describe('activities', () => {
 
 	describe('buildCampaignUrls', () => {
 		const campaignDays = {
-			'2026-07-16': {campaigns: [{campaignId: 'c1'}, {campaignId: 'c2'}]},
-			'2026-07-15': {campaigns: [{campaignId: 'c1'}]}
+			'2026-07-15': {campaigns: [{campaignId: 'c1'}]},
+			'2026-07-16': {campaigns: [{campaignId: 'c1'}, {campaignId: 'c2'}]}
 		};
 
 		it('links every campaign to its page, once per campaign', () => {

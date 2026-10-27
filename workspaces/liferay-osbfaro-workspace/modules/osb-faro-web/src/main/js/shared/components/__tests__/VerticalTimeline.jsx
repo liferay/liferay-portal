@@ -556,6 +556,79 @@ describe('VerticalTimeline', () => {
 			).toHaveTextContent('email');
 		});
 
+		describe('campaign', () => {
+			const CAMPAIGN_URL =
+				'/workspace/23/456/campaigns/7013a000002QwErtAAG';
+
+			const expandCampaignEvent = () => {
+				const {container} = renderTimeline({
+					items: [
+						{
+							...EVENT_ITEM,
+							attributes: {
+								...EVENT_ITEM.attributes,
+								acquisitionProperties: {utm_medium: 'email'},
+								campaign: {
+									campaignName: 'Spring Compactor Promo 2026'
+								}
+							},
+							campaignUrl: CAMPAIGN_URL
+						}
+					]
+				});
+
+				fireEvent.click(
+					container.querySelector('.event-row .payload-button')
+				);
+
+				return container;
+			};
+
+			it('shows the campaign in a table between the attributes and the utm parameters', () => {
+				const container = expandCampaignEvent();
+
+				expect(
+					Array.from(
+						container.querySelectorAll('.payload-table-title'),
+						(title) => title.textContent
+					)
+				).toEqual(['Event Attributes', 'Campaign', 'UTM Parameters']);
+			});
+
+			it('links the campaign name to the campaign page', () => {
+				expandCampaignEvent();
+
+				expect(
+					screen.getByRole('link', {
+						name: 'Spring Compactor Promo 2026'
+					})
+				).toHaveAttribute('href', CAMPAIGN_URL);
+			});
+
+			it('shows no campaign table for an event without a campaign', () => {
+				const container = expandFirstEvent();
+
+				expect(
+					Array.from(
+						container.querySelectorAll('.payload-table-title'),
+						(title) => title.textContent
+					)
+				).toEqual(['Event Attributes']);
+			});
+
+			it('shows the campaign as its own key in the code view', () => {
+				const container = expandCampaignEvent();
+
+				fireEvent.click(screen.getByText('Code'));
+
+				expect(
+					JSON.parse(
+						container.querySelector('.payload-code').textContent
+					).campaign
+				).toEqual({campaignName: 'Spring Compactor Promo 2026'});
+			});
+		});
+
 		const expandFirstEvent = () => {
 			const {container} = renderTimeline({items: [EVENT_ITEM]});
 
