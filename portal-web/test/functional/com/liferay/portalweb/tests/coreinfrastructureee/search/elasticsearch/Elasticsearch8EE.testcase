@@ -219,95 +219,12 @@ definition {
 		ElasticsearchMonitoring.viewPG();
 	}
 
-	@ignore = "true"
-	@priority = 5
-	test XPackPkiAuthenticationWithJDK11 {
-		property elastic.pki.authentication.enabled = "true";
-		property elastic.xpack.enabled = "true";
-		property elasticsearch.jdk11.enabled = "true";
-		property environment.acceptance = "openjdk11";
-		property portal.release = "openjdk11";
-		property portal.suite.search.engine = "openjdk11";
-		property portal.upstream = "openjdk11";
-		property remote.elasticsearch.enabled = "true";
-		property search.environment.suite.exclude = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Elasticsearch Monitoring Page");
-
-		JSONLayout.updateLayoutTemplateOfPublicLayout(
-			groupName = "Guest",
-			layoutName = "Elasticsearch Monitoring Page",
-			layoutTemplate = "1 Column");
-
-		SearchPage.addWidgets(
-			layoutName = "Elasticsearch Monitoring Page",
-			searchPortletList = "Elasticsearch Monitoring");
-
-		Navigator.gotoPage(pageName = "Elasticsearch Monitoring Page");
-
-		ElasticsearchMonitoring.viewPG();
-	}
-
 	@priority = 5
 	test XPackSmokeTest {
 		property elastic.xpack.enabled = "true";
 		property portal.acceptance = "quarantine";
 		property remote.elasticsearch.enabled = "true";
 		property search.environment.suite.exclude = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONWebcontent.addWebContent(
-			content = "WC Content",
-			groupName = "Guest",
-			title = "WC Title");
-
-		SearchPage.searchEmbedded(searchTerm = "WC Title");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "WC Title",
-			searchAssetType = "Web Content Article");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Elasticsearch Monitoring Page");
-
-		JSONLayout.updateLayoutTemplateOfPublicLayout(
-			groupName = "Guest",
-			layoutName = "Elasticsearch Monitoring Page",
-			layoutTemplate = "1 Column");
-
-		SearchPage.addWidgets(
-			layoutName = "Elasticsearch Monitoring Page",
-			searchPortletList = "Elasticsearch Monitoring");
-
-		Navigator.gotoPage(pageName = "Elasticsearch Monitoring Page");
-
-		ElasticsearchMonitoring.viewPG();
-
-		User.logoutPG();
-
-		Navigator.gotoPage(pageName = "Elasticsearch Monitoring Page");
-
-		ElasticsearchMonitoring.viewAsGuestPG();
-	}
-
-	@ignore = "true"
-	@priority = 5
-	test XPackWithJDK11 {
-		property elastic.xpack.enabled = "true";
-		property elasticsearch.jdk11.enabled = "true";
-		property environment.acceptance = "openjdk11";
-		property portal.release = "openjdk11";
-		property portal.suite.search.engine = "openjdk11";
-		property portal.upstream = "openjdk11";
-		property remote.elasticsearch.enabled = "true";
-		property search.environment.suite.exclude = "true";
-		property test.assert.warning.exceptions = "true";
 		property test.liferay.virtual.instance = "false";
 		property test.run.type = "single";
 
