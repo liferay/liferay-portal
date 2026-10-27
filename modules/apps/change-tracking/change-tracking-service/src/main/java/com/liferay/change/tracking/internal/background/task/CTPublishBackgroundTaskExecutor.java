@@ -100,6 +100,82 @@ public class CTPublishBackgroundTaskExecutor
 	public BackgroundTaskResult execute(BackgroundTask backgroundTask)
 		throws Exception {
 
+		return _execute(backgroundTask);
+	}
+
+	@Override
+	public Class<?>[] getAopInterfaces() {
+		return new Class<?>[] {BackgroundTaskExecutor.class};
+	}
+
+	@Override
+	public BackgroundTaskDisplay getBackgroundTaskDisplay(
+		BackgroundTask backgroundTask) {
+
+		return new CTPublishBackgroundTaskDisplay(backgroundTask);
+	}
+
+	@Override
+	public String handleException(
+		BackgroundTask backgroundTask, Exception exception) {
+
+		boolean showConflicts = false;
+
+		if (exception instanceof CTPublishConflictException) {
+			showConflicts = true;
+		}
+
+		long ctCollectionId = MapUtil.getLong(
+			backgroundTask.getTaskContextMap(), "ctCollectionId");
+
+		try {
+			CTCollection ctCollection =
+				_ctCollectionLocalService.getCTCollection(ctCollectionId);
+
+			_ctUserNotificationSender.sendUserNotificationEvents(
+				ctCollection,
+				JSONUtil.put(
+					"backgroundTaskId", backgroundTask.getBackgroundTaskId()
+				).put(
+					"ctCollectionId", ctCollectionId
+				).put(
+					"ctCollectionName", HtmlUtil.escape(ctCollection.getName())
+				).put(
+					"notificationType",
+					UserNotificationDefinition.NOTIFICATION_TYPE_REVIEW_ENTRY
+				).put(
+					"showConflicts", showConflicts
+				),
+				_getPublicationRolesUserIds(ctCollection, showConflicts));
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return super.handleException(backgroundTask, exception);
+	}
+
+	@Override
+	public void setAopProxy(Object aopProxy) {
+		_backgroundTaskExecutor = (BackgroundTaskExecutor)aopProxy;
+	}
+
+	@Activate
+	@Modified
+	protected void activate(Map<String, Object> properties) {
+		CTEntityCacheConfiguration ctEntityCacheConfiguration =
+			ConfigurableUtil.createConfigurable(
+				CTEntityCacheConfiguration.class, properties);
+
+		_entityCacheThreshold =
+			ctEntityCacheConfiguration.entityCacheThreshold();
+	}
+
+	private BackgroundTaskResult _execute(BackgroundTask backgroundTask)
+		throws Exception {
+
 		Map<String, Serializable> taskContextMap =
 			backgroundTask.getTaskContextMap();
 
@@ -258,76 +334,6 @@ public class CTPublishBackgroundTaskExecutor
 		_ctServiceRegistry.onAfterPublish(ctCollectionId);
 
 		return BackgroundTaskResult.SUCCESS;
-	}
-
-	@Override
-	public Class<?>[] getAopInterfaces() {
-		return new Class<?>[] {BackgroundTaskExecutor.class};
-	}
-
-	@Override
-	public BackgroundTaskDisplay getBackgroundTaskDisplay(
-		BackgroundTask backgroundTask) {
-
-		return new CTPublishBackgroundTaskDisplay(backgroundTask);
-	}
-
-	@Override
-	public String handleException(
-		BackgroundTask backgroundTask, Exception exception) {
-
-		boolean showConflicts = false;
-
-		if (exception instanceof CTPublishConflictException) {
-			showConflicts = true;
-		}
-
-		long ctCollectionId = MapUtil.getLong(
-			backgroundTask.getTaskContextMap(), "ctCollectionId");
-
-		try {
-			CTCollection ctCollection =
-				_ctCollectionLocalService.getCTCollection(ctCollectionId);
-
-			_ctUserNotificationSender.sendUserNotificationEvents(
-				ctCollection,
-				JSONUtil.put(
-					"backgroundTaskId", backgroundTask.getBackgroundTaskId()
-				).put(
-					"ctCollectionId", ctCollectionId
-				).put(
-					"ctCollectionName", HtmlUtil.escape(ctCollection.getName())
-				).put(
-					"notificationType",
-					UserNotificationDefinition.NOTIFICATION_TYPE_REVIEW_ENTRY
-				).put(
-					"showConflicts", showConflicts
-				),
-				_getPublicationRolesUserIds(ctCollection, showConflicts));
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-		}
-
-		return super.handleException(backgroundTask, exception);
-	}
-
-	@Override
-	public void setAopProxy(Object aopProxy) {
-		_backgroundTaskExecutor = (BackgroundTaskExecutor)aopProxy;
-	}
-
-	@Activate
-	@Modified
-	protected void activate(Map<String, Object> properties) {
-		CTEntityCacheConfiguration ctEntityCacheConfiguration =
-			ConfigurableUtil.createConfigurable(
-				CTEntityCacheConfiguration.class, properties);
-
-		_entityCacheThreshold =
-			ctEntityCacheConfiguration.entityCacheThreshold();
 	}
 
 	private long[] _getPublicationRolesUserIds(
