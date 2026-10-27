@@ -893,7 +893,7 @@ public class BatchTestEntityExportImportTest {
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
-			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+			Assert.assertTrue(logEntries.isEmpty());
 		}
 
 		testEntitiesPage = _testEntityResource.getTestEntitiesPage(null);
@@ -907,12 +907,12 @@ public class BatchTestEntityExportImportTest {
 		Assert.assertFalse(
 			externalReferenceCodes.contains(
 				testEntities[0].getExternalReferenceCode()));
-		Assert.assertFalse(
-			externalReferenceCodes.contains(
-				testEntities[2].getExternalReferenceCode()));
 		Assert.assertTrue(
 			externalReferenceCodes.contains(
 				testEntities[1].getExternalReferenceCode()));
+		Assert.assertFalse(
+			externalReferenceCodes.contains(
+				testEntities[2].getExternalReferenceCode()));
 		Assert.assertTrue(
 			externalReferenceCodes.contains(
 				testEntities[3].getExternalReferenceCode()));
