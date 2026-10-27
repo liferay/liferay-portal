@@ -1912,9 +1912,25 @@
 		</check>
 	</source-processor>
 	<source-processor name="TFSourceProcessor">
+		<check name="EmbeddedJSONCheck">
+			<category name="Styling" />
+			<description name="Ensures consistent formatting for embedded JSON." />
+		</check>
 		<check name="TFBlockOrderCheck">
 			<category name="Styling" />
-			<description name="Checks the order of blocks in `.tf` file." />
+			<description name="Checks the order of blocks and attributes in `.tf` files." />
+		</check>
+		<check name="TFEmptyLinesCheck">
+			<category name="Styling" />
+			<description name="Finds unnecessary empty lines." />
+		</check>
+		<check name="TFIndentationCheck">
+			<category name="Styling" />
+			<description name="Finds incorrect indentation in `.tf` files." />
+		</check>
+		<check name="TFStylingCheck">
+			<category name="Styling" />
+			<description name="Applies rules to enforce consistency in code style." />
 		</check>
 	</source-processor>
 	<source-processor name="TLDSourceProcessor">

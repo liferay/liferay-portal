@@ -5,10 +5,13 @@
 
 package com.liferay.source.formatter.check;
 
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.source.formatter.check.util.JSONSourceUtil;
+import com.liferay.source.formatter.check.util.TFSourceUtil;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +27,10 @@ public class EmbeddedJSONCheck extends BaseFileCheck {
 
 		if (fileName.endsWith(".md")) {
 			return _formatJSONInFencedCodeBlock(content);
+		}
+
+		if (fileName.endsWith(".tf")) {
+			return _formatJSONInHeredoc(content);
 		}
 
 		if (fileName.endsWith(".xml")) {
@@ -124,6 +131,67 @@ public class EmbeddedJSONCheck extends BaseFileCheck {
 
 			return StringUtil.replaceFirst(
 				content, jsonString, newJsonString, matcher.start());
+		}
+
+		return content;
+	}
+
+	private String _formatJSONInHeredoc(String content) {
+		String[] lines = content.split("\n", -1);
+
+		for (int i = 0; i < lines.length; i++) {
+			String heredocMarker = TFSourceUtil.getHeredocMarker(lines[i]);
+
+			if (heredocMarker == null) {
+				continue;
+			}
+
+			int heredocEndLineIndex = TFSourceUtil.getHeredocEndLineIndex(
+				lines, i, heredocMarker);
+
+			if (heredocEndLineIndex == -1) {
+				return content;
+			}
+
+			if ((heredocEndLineIndex == (i + 1)) ||
+				!StringUtil.equals(
+					StringUtil.trim(lines[i + 1]),
+					StringPool.OPEN_CURLY_BRACE)) {
+
+				i = heredocEndLineIndex;
+
+				continue;
+			}
+
+			StringBundler sb = new StringBundler();
+
+			for (int j = i + 1; j < heredocEndLineIndex; j++) {
+				sb.append(lines[j]);
+				sb.append("\n");
+			}
+
+			String json = sb.toString();
+
+			JSONObject jsonObject = JSONSourceUtil.getJSONObject(json);
+
+			if (jsonObject == null) {
+				i = heredocEndLineIndex;
+
+				continue;
+			}
+
+			String line = lines[i + 1];
+
+			String newJSON = JSONSourceUtil.fixIndentation(
+				jsonObject,
+				line.substring(0, line.indexOf(CharPool.OPEN_CURLY_BRACE)));
+
+			if (!json.equals(newJSON)) {
+				return StringUtil.replaceFirst(
+					content, json, newJSON, content.indexOf(lines[i] + "\n"));
+			}
+
+			i = heredocEndLineIndex;
 		}
 
 		return content;
