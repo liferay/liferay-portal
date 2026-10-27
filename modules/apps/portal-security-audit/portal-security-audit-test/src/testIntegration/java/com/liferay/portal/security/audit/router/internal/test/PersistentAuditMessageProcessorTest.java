@@ -184,8 +184,8 @@ public class PersistentAuditMessageProcessorTest {
 		_userLocalService.addRoleUser(role2.getRoleId(), _user.getUserId());
 
 		String eventType = _createEventType();
+		String role1Name = role1.getName();
 		Role role3 = _addRole();
-		String roleName = role1.getName();
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
 				new ConfigurationTemporarySwapper(
@@ -237,7 +237,7 @@ public class PersistentAuditMessageProcessorTest {
 
 			Assert.assertTrue(roleNames.contains(role2.getName()));
 			Assert.assertFalse(roleNames.contains(role3.getName()));
-			Assert.assertTrue(roleNames.contains(roleName));
+			Assert.assertTrue(roleNames.contains(role1Name));
 		}
 	}
 
