@@ -200,6 +200,7 @@ public class AccountFaroController extends BaseFaroController {
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public FaroFDSResultsDisplay<Account> search(
 			@PathParam("groupId") long groupId,
+			@QueryParam("accountLifecycleId") String accountLifecycleId,
 			@QueryParam("channelId") String channelId,
 			@QueryParam("filter") String filterString,
 			@QueryParam("includeAnonymousUsers") boolean includeAnonymousUsers,
@@ -215,10 +216,10 @@ public class AccountFaroController extends BaseFaroController {
 
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getAccounts(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId), null,
-				channelId, filterString, includeAnonymousUsers, search,
-				rangeEnd, rangeKey, rangeStart, segmentId, page, pageSize,
-				sortString),
+				faroProjectLocalService.getFaroProjectByGroupId(groupId),
+				accountLifecycleId, channelId, filterString,
+				includeAnonymousUsers, search, rangeEnd, rangeKey, rangeStart,
+				segmentId, page, pageSize, sortString),
 			AccountDisplay::new, page, pageSize);
 	}
 

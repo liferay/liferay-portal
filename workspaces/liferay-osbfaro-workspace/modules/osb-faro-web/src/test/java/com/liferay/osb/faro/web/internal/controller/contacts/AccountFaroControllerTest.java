@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.web.internal.controller.contacts;
 
 import com.liferay.osb.faro.engine.client.ContactsEngineClient;
+import com.liferay.osb.faro.engine.client.model.Account;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycle;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStage;
 import com.liferay.osb.faro.engine.client.model.Individual;
@@ -111,6 +112,50 @@ public class AccountFaroControllerTest {
 		).getAccountIndividuals(
 			_faroProject, id, channelId, search, rangeEnd, rangeKey, rangeStart,
 			page, pageSize, sortString
+		);
+	}
+
+	@Test
+	public void testSearch() throws Exception {
+		String accountLifecycleId = RandomTestUtil.randomString();
+		String channelId = RandomTestUtil.randomString();
+		String filterString = RandomTestUtil.randomString();
+		boolean includeAnonymousUsers = RandomTestUtil.randomBoolean();
+		int page = RandomTestUtil.randomInt();
+		int pageSize = RandomTestUtil.randomInt();
+		String rangeEnd = RandomTestUtil.randomString();
+		Integer rangeKey = RandomTestUtil.randomInt();
+		String rangeStart = RandomTestUtil.randomString();
+		String search = RandomTestUtil.randomString();
+		String segmentId = RandomTestUtil.randomString();
+		String sortString = RandomTestUtil.randomString();
+		int total = RandomTestUtil.randomInt();
+
+		Mockito.when(
+			_contactsEngineClient.getAccounts(
+				_faroProject, accountLifecycleId, channelId, filterString,
+				includeAnonymousUsers, search, rangeEnd, rangeKey, rangeStart,
+				segmentId, page, pageSize, sortString)
+		).thenReturn(
+			new Results<>(Collections.emptyList(), total)
+		);
+
+		long groupId = RandomTestUtil.randomLong();
+
+		FaroFDSResultsDisplay<Account> faroFDSResultsDisplay =
+			_accountFaroController.search(
+				groupId, accountLifecycleId, channelId, filterString,
+				includeAnonymousUsers, rangeEnd, rangeKey, rangeStart, search,
+				segmentId, page, pageSize, sortString);
+
+		Assert.assertEquals(total, faroFDSResultsDisplay.getTotalCount());
+
+		Mockito.verify(
+			_contactsEngineClient
+		).getAccounts(
+			_faroProject, accountLifecycleId, channelId, filterString,
+			includeAnonymousUsers, search, rangeEnd, rangeKey, rangeStart,
+			segmentId, page, pageSize, sortString
 		);
 	}
 
