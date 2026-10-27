@@ -135,19 +135,3 @@
 		}
 	}
 }
-
-.searchable-table {
-	.navbar {
-		border-color: $mainLighten74;
-		border-top-left-radius: 6px;
-		border-top-right-radius: 6px;
-		border-width: 0.0625rem 0.0625rem 0;
-	}
-
-	.table {
-		.table-head-title {
-			border-top-left-radius: 0 !important;
-			border-top-right-radius: 0 !important;
-		}
-	}
-}

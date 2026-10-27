@@ -19,19 +19,9 @@
 	}
 
 	.form-root {
-		.extra-instruction {
-			font-size: $fontSizeSmall;
-			margin-top: 4px;
-		}
-
 		.input-group > .input-group-append .form-control {
 			border-bottom-left-radius: 0;
 			border-top-left-radius: 0;
-		}
-
-		.instructions {
-			color: $secondary;
-			display: block;
 		}
 
 		p {

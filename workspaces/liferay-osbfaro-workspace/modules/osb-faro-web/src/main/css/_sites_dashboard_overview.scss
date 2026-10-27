@@ -1,46 +1,9 @@
-$visitorsPreviousPeriod: var(--cadmin-gray-800);
-
 .sites-dashboard-overview-root {
-	.acquisitions-card-root,
-	.interests-card-root,
-	.search-terms-card-root {
-		.table-root {
-			.composition-metric-bar-root {
-				padding: 8px 12px;
-			}
-		}
-	}
-
 	.interests-card-root,
 	.search-terms-card-root,
 	.top-pages-card-root {
 		.table-responsive {
 			margin-bottom: 0;
-		}
-	}
-
-	.site-metrics {
-		.card-header {
-			padding-bottom: 8px;
-		}
-
-		.chart-root {
-			&.visitorsMetric {
-				.bb-circles .bb-circle._expanded_ {
-					fill: $visitorsPreviousPeriod !important;
-					stroke: $visitorsPreviousPeriod !important;
-				}
-			}
-
-			&:not(.visitorsMetric) {
-				.bb-xgrid-focus > line {
-					stroke: $chartSeaGreen !important;
-				}
-			}
-
-			.bb-circles .bb-circle._expanded_ {
-				fill: $chartSeaGreen !important;
-			}
 		}
 	}
 

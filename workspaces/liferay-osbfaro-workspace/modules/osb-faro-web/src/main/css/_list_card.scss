@@ -1,5 +1,4 @@
 $c-assets: '.analytics-assets-list';
-$c-list: '.analytics-list';
 $c-touchpoints: '.analytics-touchpoints-list';
 
 #{$c-assets},
@@ -15,13 +14,5 @@ $c-touchpoints: '.analytics-touchpoints-list';
 		color: $secondary;
 		padding-top: 16px;
 		text-align: center;
-	}
-}
-
-#{$c-list}-card {
-	.empty-list {
-		h1 {
-			font-size: $fontSizeMedium;
-		}
 	}
 }

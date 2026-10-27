@@ -16,25 +16,6 @@ $circleSize: 8px;
 	line-height: 1.125rem;
 	list-style: none;
 	margin-left: 1.5rem;
-
-	.legend-icon {
-		fill: none;
-		margin-right: 0.5rem;
-
-		&.circle {
-			height: 8px;
-			width: 8px;
-		}
-
-		&.line {
-			height: 2px;
-			width: 26px;
-
-			&.line-dashed {
-				background-size: 26px 2px;
-			}
-		}
-	}
 }
 
 .legend-template {
@@ -72,25 +53,8 @@ $circleSize: 8px;
 		}
 	}
 
-	&.enable-interaction {
-		li {
-			&[class*='focused'] {
-				opacity: 1;
-			}
-
-			&:not([class*='focused']) {
-				opacity: 0.3;
-			}
-		}
-	}
-
 	li {
 		padding-bottom: 0.5rem;
-
-		&.two-columns {
-			display: grid;
-			grid-template-columns: 60% 40%;
-		}
 
 		&.three-columns {
 			display: grid;

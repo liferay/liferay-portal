@@ -1,17 +1,3 @@
-.dropdown-root .base-select-menu.dropdown-menu {
-	max-width: 240px;
-
-	.dropdown-header {
-		color: $mainLighten28;
-		font-size: $fontSizeExtraSmall;
-		font-weight: $fontWeightSemiBold;
-		margin-bottom: 8px;
-		padding-bottom: 0;
-		padding-top: 0;
-		text-transform: uppercase;
-	}
-}
-
 .base-select-input-root {
 	&.inset {
 		.input-group-inset-item,

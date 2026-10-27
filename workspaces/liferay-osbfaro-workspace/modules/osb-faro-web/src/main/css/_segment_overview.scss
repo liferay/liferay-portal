@@ -15,12 +15,6 @@
 				padding: 0;
 				width: 70%;
 
-				.legend-color {
-					height: 8px;
-					margin: 7px 7px 0 0;
-					width: 8px;
-				}
-
 				.legend-template-column {
 					font-size: $fontSizeSmall;
 				}
@@ -37,9 +31,5 @@
 	.overview-column-side {
 		display: flex;
 		flex-direction: column;
-
-		.segment-composition-card {
-			flex-shrink: 0;
-		}
 	}
 }

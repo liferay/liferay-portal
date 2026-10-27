@@ -11,22 +11,6 @@ $tooltip-arrow-size: 6px;
 		border-width: 0;
 	}
 
-	&.popover-background-dark {
-		background-color: $main;
-
-		.arrow::after {
-			border-top-color: $main;
-		}
-
-		.text-secondary {
-			color: $white !important;
-		}
-	}
-
-	&.popover-normal .popover-header {
-		font-weight: $fontWeightRegular;
-	}
-
 	&.popover-large {
 		max-width: 30rem;
 	}

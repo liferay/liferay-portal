@@ -15,32 +15,6 @@
 		justify-content: space-between;
 	}
 
-	.fade-out-cover {
-		background: linear-gradient(
-			180deg,
-			rgb(from var(--cadmin-white) r g b / 0) 0%,
-			var(--cadmin-white) 60%
-		);
-		bottom: 0;
-		display: flex;
-		height: 140px;
-		justify-content: center;
-		left: 0;
-		padding: 20px;
-		position: absolute;
-		right: 0;
-
-		.view-all-button-container {
-			display: flex;
-			flex-direction: column-reverse;
-
-			.button-root {
-				color: $secondary;
-				font-weight: $fontWeightSemiBold;
-			}
-		}
-	}
-
 	.criteria-view-root {
 		font-size: $fontSizeSmall;
 
@@ -91,11 +65,6 @@
 			}
 
 			> span,
-			.time-period {
-				margin-left: 4px;
-				text-transform: lowercase;
-			}
-
 			.sentence-start {
 				margin: 0;
 				text-transform: capitalize;

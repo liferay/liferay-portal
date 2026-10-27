@@ -39,25 +39,7 @@
 		}
 	}
 
-	.context-select {
-		font-size: $fontSizeSmall;
-	}
-
 	.searchable-table-root .management-bar .navbar-form {
 		padding: 0;
-	}
-
-	.selected-value-summary {
-		color: $mainLighten28;
-
-		.summary-stat {
-			font-size: $fontSizeSmall;
-			margin-right: 12px;
-		}
-	}
-
-	.stat-value {
-		color: $main;
-		font-weight: $fontWeightSemiBold;
 	}
 }

@@ -412,10 +412,6 @@
 	border-radius: 4px;
 	margin: $baseline * 2;
 	overflow: hidden;
-	.activity-section-empty-state {
-		gap: $baseline;
-		padding: ($baseline * 6) ($baseline * 2);
-	}
 
 	.activity-section-header {
 		background-color: $lightBackground;
