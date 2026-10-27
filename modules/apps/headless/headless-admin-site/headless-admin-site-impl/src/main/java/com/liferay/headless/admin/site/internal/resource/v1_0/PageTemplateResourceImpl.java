@@ -140,6 +140,22 @@ public class PageTemplateResourceImpl
 			}
 
 			@Override
+			public Function<LayoutPageTemplateEntry, String>
+				getJSONTypeInfoPropertyValueFunction() {
+
+				return layoutPageTemplateEntry -> {
+					if (layoutPageTemplateEntry.getType() ==
+							LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE) {
+
+						return PageTemplate.Type.WIDGET_PAGE_TEMPLATE.
+							getValue();
+					}
+
+					return PageTemplate.Type.CONTENT_PAGE_TEMPLATE.getValue();
+				};
+			}
+
+			@Override
 			public String getKey() {
 				return LayoutPageTemplateEntry.class.getName() + "-" +
 					LayoutPageTemplateEntryTypeConstants.BASIC;
