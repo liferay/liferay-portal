@@ -11,6 +11,6 @@
 	</info>
 
 	<dependencies defaultconf="default">
-		<dependency name="com.liferay.whip" org="com.liferay" rev="1.0.5" />
+		<dependency name="com.liferay.whip" org="com.liferay" rev="1.0.6" />
 	</dependencies>
 </ivy-module>

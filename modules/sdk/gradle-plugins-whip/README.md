@@ -95,7 +95,7 @@ configuration:
 
 ```gradle
 dependencies {
-	whip group: "com.liferay", name: "com.liferay.whip", version: "1.0.5"
+	whip group: "com.liferay", name: "com.liferay.whip", version: "1.0.6"
 }
 ```
 
