@@ -45,20 +45,12 @@ export default function ({currentLanguageId, namespace}) {
 				}
 			);
 
-			if (
-				!isRenderedInLanguage({
-					dataEngineReactComponentRef,
-					languageId: currentLanguageId,
-					namespace,
-				})
-			) {
-				switchLanguage({
-					dataEngineReactComponentRef,
-					languageId: currentLanguageId,
-					namespace,
-					preserveValue: true,
-				});
-			}
+			switchLanguage({
+				dataEngineReactComponentRef,
+				languageId: currentLanguageId,
+				namespace,
+				preserveValue: true,
+			});
 		}
 	);
 
@@ -73,29 +65,6 @@ export default function ({currentLanguageId, namespace}) {
 			}
 		},
 	};
-}
-
-function isRenderedInLanguage({
-	dataEngineReactComponentRef,
-	languageId,
-	namespace,
-}) {
-	const form = dataEngineReactComponentRef?.current;
-
-	if (!form) {
-		return false;
-	}
-
-	const defaultLanguageIdInput = document.getElementById(
-		`${namespace}defaultLanguageId`
-	);
-
-	return (
-		form.get('defaultLanguageId') === defaultLanguageIdInput.value &&
-		form.get('editingLanguageId') === languageId &&
-		languageId === defaultLanguageIdInput.value &&
-		languageId === Liferay.ThemeDisplay.getDefaultLanguageId()
-	);
 }
 
 function switchLanguage({
