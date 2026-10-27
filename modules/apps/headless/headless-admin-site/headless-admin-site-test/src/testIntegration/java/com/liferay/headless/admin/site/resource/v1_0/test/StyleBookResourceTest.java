@@ -6,16 +6,14 @@
 package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.admin.site.client.dto.v1_0.StyleBook;
 import com.liferay.headless.admin.site.client.pagination.Page;
 import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.StyleBookResource;
 import com.liferay.headless.admin.site.client.scope.Scope;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -30,7 +28,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -45,7 +42,6 @@ import com.liferay.style.book.service.StyleBookEntryLocalService;
 import com.liferay.style.book.util.StyleBookUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -280,28 +276,13 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	}
 
 	private Group _addConnectedDesignLibraryGroup() throws Exception {
-		Group group = _addDesignLibraryGroup();
+		Group group = DesignLibraryTestUtil.addDesignLibraryGroup(
+			testGroup.getGroupId());
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			group.getClassPK(), testGroup.getGroupId());
 
 		return group;
-	}
-
-	private Group _addDesignLibraryGroup() throws Exception {
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), true, "LPD-57283");
-
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			DepotConstants.TYPE_DESIGN_LIBRARY,
-			ServiceContextTestUtil.getServiceContext(
-				testGroup.getGroupId(), TestPropsValues.getUserId()));
-
-		return depotEntry.getGroup();
 	}
 
 	private StyleBookEntry _addStyleBookEntry(
@@ -317,7 +298,8 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 	private String _getDesignLibraryExternalReferenceCode() throws Exception {
 		if (_designLibraryGroup == null) {
-			_designLibraryGroup = _addDesignLibraryGroup();
+			_designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+				testGroup.getGroupId());
 		}
 
 		return _designLibraryGroup.getExternalReferenceCode();
@@ -327,7 +309,9 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		throws Exception {
 
 		if (_irrelevantDesignLibraryGroup == null) {
-			_irrelevantDesignLibraryGroup = _addDesignLibraryGroup();
+			_irrelevantDesignLibraryGroup =
+				DesignLibraryTestUtil.addDesignLibraryGroup(
+					testGroup.getGroupId());
 		}
 
 		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
@@ -809,9 +793,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 	@Inject
 	private DepotEntryGroupRelLocalService _depotEntryGroupRelLocalService;
-
-	@Inject
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _designLibraryGroup;
 	private Group _irrelevantDesignLibraryGroup;

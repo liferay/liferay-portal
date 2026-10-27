@@ -7,9 +7,6 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.model.AssetCategory;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.exportimport.kernel.service.StagingLocalService;
@@ -34,6 +31,7 @@ import com.liferay.headless.admin.site.client.pagination.Pagination;
 import com.liferay.headless.admin.site.client.permission.Permission;
 import com.liferay.headless.admin.site.client.problem.Problem;
 import com.liferay.headless.admin.site.client.resource.v1_0.DisplayPageTemplateResource;
+import com.liferay.headless.admin.site.resource.v1_0.test.util.DesignLibraryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.FileEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.FragmentEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
@@ -98,7 +96,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -132,7 +129,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -265,7 +261,8 @@ public class DisplayPageTemplateResourceTest
 					displayPageTemplate.getExternalReferenceCode(),
 					RoleConstants.GUEST);
 
-		_assertDesignLibraryPermissionActionHrefs(page.getActions());
+		DesignLibraryTestUtil.assertDesignLibraryPermissionActionHrefs(
+			page.getActions());
 	}
 
 	@Override
@@ -907,7 +904,8 @@ public class DisplayPageTemplateResourceTest
 						}
 					});
 
-		_assertDesignLibraryPermissionActionHrefs(page.getActions());
+		DesignLibraryTestUtil.assertDesignLibraryPermissionActionHrefs(
+			page.getActions());
 	}
 
 	@Override
@@ -1146,22 +1144,6 @@ public class DisplayPageTemplateResourceTest
 			layoutPageTemplateEntry.getExternalReferenceCode());
 	}
 
-	private Group _addDesignLibraryGroup() throws Exception {
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			TestPropsValues.getCompanyId(), true, "LPD-57283");
-
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			Collections.singletonMap(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
-			DepotConstants.TYPE_DESIGN_LIBRARY,
-			ServiceContextTestUtil.getServiceContext(
-				testGroup.getGroupId(), TestPropsValues.getUserId()));
-
-		return depotEntry.getGroup();
-	}
-
 	private void _addViewPermission(
 			String designLibraryExternalReferenceCode,
 			String displayPageTemplateExternalReferenceCode, Role role)
@@ -1179,23 +1161,6 @@ public class DisplayPageTemplateResourceTest
 						}
 					}
 				});
-	}
-
-	private void _assertDesignLibraryPermissionActionHrefs(
-		Map<String, Map<String, String>> actions) {
-
-		Map<String, String> getAction = actions.get("get");
-
-		String getHref = getAction.get("href");
-
-		Assert.assertTrue(getHref, getHref.contains("/design-libraries/"));
-
-		Map<String, String> replaceAction = actions.get("replace");
-
-		String replaceHref = replaceAction.get("href");
-
-		Assert.assertTrue(
-			replaceHref, replaceHref.contains("/design-libraries/"));
 	}
 
 	private void _assertNestedFields(
@@ -1493,7 +1458,8 @@ public class DisplayPageTemplateResourceTest
 
 	private String _getDesignLibraryExternalReferenceCode() throws Exception {
 		if (_designLibraryGroup == null) {
-			_designLibraryGroup = _addDesignLibraryGroup();
+			_designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
+				testGroup.getGroupId());
 		}
 
 		return _designLibraryGroup.getExternalReferenceCode();
@@ -1582,7 +1548,9 @@ public class DisplayPageTemplateResourceTest
 		throws Exception {
 
 		if (_irrelevantDesignLibraryGroup == null) {
-			_irrelevantDesignLibraryGroup = _addDesignLibraryGroup();
+			_irrelevantDesignLibraryGroup =
+				DesignLibraryTestUtil.addDesignLibraryGroup(
+					testGroup.getGroupId());
 		}
 
 		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
@@ -3486,9 +3454,6 @@ public class DisplayPageTemplateResourceTest
 	private static byte[] _thumbnail2Bytes;
 	private static String _thumbnail2URL;
 	private static ThumbnailHttpServer _thumbnailHttpServer;
-
-	@Inject
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	private Group _designLibraryGroup;
 
