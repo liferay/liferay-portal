@@ -1058,13 +1058,23 @@ public class ResourcePermissionLocalServiceImpl
 		// one SQL call may actually slow things down since most of the calls
 		// will pull from the cache after the first request.
 
+		ResourceAction resourceAction = null;
+
 		for (int i = size - 1; i >= 0; i--) {
 			Resource resource = resources.get(i);
 
-			if (hasResourcePermission(
+			if ((resourceAction == null) ||
+				!StringUtil.equals(
+					resource.getName(), resourceAction.getName())) {
+
+				resourceAction = _resourceActionLocalService.getResourceAction(
+					resource.getName(), actionId);
+			}
+
+			if (_hasResourcePermission(
 					resource.getCompanyId(), resource.getName(),
 					resource.getScope(), resource.getPrimKey(), roleIds,
-					actionId)) {
+					resourceAction)) {
 
 				return true;
 			}
