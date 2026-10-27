@@ -141,17 +141,10 @@ public class FragmentEntryProcessorHelperImpl
 			ClassPKInfoItemIdentifier classPKInfoItemIdentifier =
 				(ClassPKInfoItemIdentifier)infoItemIdentifier;
 
-			try {
-				if (trashHandler.isInTrash(
-						classPKInfoItemIdentifier.getClassPK())) {
+			if (trashHandler.isInTrash(
+					classPKInfoItemIdentifier.getClassPK())) {
 
-					return null;
-				}
-			}
-			catch (PortalException portalException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(portalException);
-				}
+				return null;
 			}
 		}
 
