@@ -68,7 +68,6 @@ public class LayoutRevisionServiceTest {
 		_group = GroupTestUtil.addGroup();
 
 		_layout = LayoutTestUtil.addTypePortletLayout(_group);
-
 		_layoutSetBranch = _addLayoutSetBranch(_group);
 	}
 
