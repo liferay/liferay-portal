@@ -1452,11 +1452,11 @@ public class FriendlyURLServletTest {
 		mockHttpServletRequest.setAttribute(WebKeys.USER, user);
 		mockHttpServletRequest.setPathInfo(path);
 
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
-
 		MockHttpServletResponse mockHttpServletResponse =
 			new MockHttpServletResponse();
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
 
 		try (GroupConfigurationTemporarySwapper
 				groupConfigurationTemporarySwapper =
@@ -1482,7 +1482,6 @@ public class FriendlyURLServletTest {
 		Object expectedRedirect = _redirectConstructor1.newInstance(
 			_portal.getLayoutActualURL(layout, Portal.PATH_MAIN));
 		String friendlyURLPath = getPath(_group, layout);
-
 		User guestUser = _userLocalService.getGuestUser(_group.getCompanyId());
 
 		_testGetRedirectForUser(
