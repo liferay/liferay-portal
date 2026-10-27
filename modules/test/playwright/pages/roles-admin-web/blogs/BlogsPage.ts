@@ -18,8 +18,8 @@ export class BlogsPage {
 			'#portlet_com_liferay_blogs_web_portlet_BlogsPortlet'
 		);
 		this.blogTitle = (title: string) => page.getByText(title);
-		this.noEntriesMessage = page.getByRole('heading', {
-			name: 'No entries were found.',
+		this.noEntriesMessage = page.getByText('No entries were found.', {
+			exact: true,
 		});
 		this.page = page;
 	}

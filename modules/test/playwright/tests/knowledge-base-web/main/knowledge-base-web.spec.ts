@@ -253,7 +253,7 @@ test('can delete all articles (recycle bin enabled)', async ({
 		)
 	).toBeVisible();
 	await expect(
-		page.getByRole('heading', {name: 'Knowledge base is empty.'})
+		page.getByText('Knowledge base is empty.', {exact: true})
 	).toBeVisible();
 });
 
