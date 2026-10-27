@@ -103,6 +103,9 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 
 	@Test
 	public void testReceive() throws Exception {
+
+		// Launch set that is not scheduled
+
 		String title = RandomTestUtil.randomString();
 
 		_updateLaunchDraft(
@@ -111,8 +114,6 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 				_journalArticle.getResourcePrimKey(),
 				String.valueOf(_journalArticle.getVersion())),
 			title);
-
-		// Launch set that is not scheduled
 
 		_receive(_launchSetObjectEntry.getObjectEntryId());
 
@@ -249,6 +250,10 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 	}
 
 	private void _receive(long launchSetId, long userId) throws Exception {
+
+		// The scheduler delivers the message on a thread with no company,
+		// user, permission checker, or service context
+
 		Message message = new Message();
 
 		message.put("companyId", TestPropsValues.getCompanyId());
@@ -256,9 +261,6 @@ public class LaunchSetScheduledPublishMessageListenerTest {
 		message.put("userId", userId);
 
 		AtomicReference<Throwable> throwableReference = new AtomicReference<>();
-
-		// The scheduler delivers the message on a thread with no company,
-		// user, permission checker, or service context
 
 		Thread thread = new Thread(
 			() -> {
