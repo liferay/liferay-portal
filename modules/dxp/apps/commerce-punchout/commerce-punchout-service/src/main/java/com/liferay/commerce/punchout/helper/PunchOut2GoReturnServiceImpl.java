@@ -17,6 +17,7 @@ import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
 import com.liferay.commerce.punchout.service.PunchOutReturnService;
 import com.liferay.commerce.service.CommerceAddressLocalService;
+import com.liferay.commerce.util.CommerceURLValidatorUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -58,6 +59,14 @@ public class PunchOut2GoReturnServiceImpl implements PunchOutReturnService {
 		throws Exception {
 
 		try {
+			if (!CommerceURLValidatorUtil.isValidURL(
+					commerceOrder.getCompanyId(), url)) {
+
+				_log.error("Punch out return URL " + url + " is not allowed");
+
+				return null;
+			}
+
 			JSONObject cartJSONObject = _jsonFactory.createJSONObject();
 
 			cartJSONObject.put(
@@ -202,6 +211,7 @@ public class PunchOut2GoReturnServiceImpl implements PunchOutReturnService {
 				(HttpURLConnection)urlObj.openConnection();
 
 			httpURLConnection.setDoOutput(true);
+			httpURLConnection.setInstanceFollowRedirects(false);
 			httpURLConnection.setRequestMethod("POST");
 			httpURLConnection.setRequestProperty(
 				"Content-type", "application/json");
