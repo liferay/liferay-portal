@@ -712,15 +712,21 @@ ${line.separator}CATALINA_OPTS="${CATALINA_OPTS} -Djavax.net.ssl.trustStore=${el
 
 	<macrodef name="set-x-pack-user-passwords">
 		<sequential>
-			<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash" osfamily="unix" outputproperty="elastic.xpack.user.passwords">
-				<arg value="-c" />
-				<arg value="./elasticsearch-setup-passwords auto --batch --url https://localhost:9200" />
-			</exec>
+			<retry retrycount="10" retrydelay="10000">
+				<sequential>
+					<var name="elastic.xpack.user.passwords" unset="true" />
 
-			<exec dir="${elasticsearch.dir}/bin" executable="cmd" osfamily="windows" outputproperty="elastic.xpack.user.passwords">
-				<arg value="/c" />
-				<arg value="elasticsearch-setup-passwords auto --batch --url https://localhost:9200" />
-			</exec>
+					<exec dir="${elasticsearch.dir}/bin" executable="/bin/bash" failonerror="true" osfamily="unix" outputproperty="elastic.xpack.user.passwords">
+						<arg value="-c" />
+						<arg value="./elasticsearch-setup-passwords auto --batch --url https://localhost:9200" />
+					</exec>
+
+					<exec dir="${elasticsearch.dir}/bin" executable="cmd" failonerror="true" osfamily="windows" outputproperty="elastic.xpack.user.passwords">
+						<arg value="/c" />
+						<arg value="elasticsearch-setup-passwords auto --batch --url https://localhost:9200" />
+					</exec>
+				</sequential>
+			</retry>
 
 			<propertyregex
 				input="${elastic.xpack.user.passwords}"
