@@ -264,7 +264,15 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 
 	@Override
 	public Theme getTheme() {
-		return ThemeLocalServiceUtil.getTheme(getCompanyId(), getThemeId());
+		String themeId = getThemeId();
+
+		if ((_theme != null) && themeId.equals(_theme.getThemeId())) {
+			return _theme;
+		}
+
+		_theme = ThemeLocalServiceUtil.getTheme(getCompanyId(), themeId);
+
+		return _theme;
 	}
 
 	@Override
@@ -449,6 +457,7 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 
 	private String _faviconURL;
 	private UnicodeProperties _settingsUnicodeProperties;
+	private Theme _theme;
 
 	@CacheField(propagateToInterface = true)
 	private NavigableMap<String, String> _virtualHostnames;
