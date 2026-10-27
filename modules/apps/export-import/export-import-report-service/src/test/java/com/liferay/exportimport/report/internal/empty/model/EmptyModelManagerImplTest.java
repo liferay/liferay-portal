@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.staging.StagingGroupHelper;
-import com.liferay.staging.StagingGroupHelperUtil;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -64,9 +63,6 @@ public class EmptyModelManagerImplTest {
 		ReflectionTestUtil.setFieldValue(_emptyModelManager, "_log", _log);
 		ReflectionTestUtil.setFieldValue(
 			_emptyModelManager, "_stagingGroupHelper", _stagingGroupHelper);
-
-		_stagingGroupHelperUtilMockedStatic = Mockito.mockStatic(
-			StagingGroupHelperUtil.class);
 	}
 
 	@After
@@ -74,8 +70,6 @@ public class EmptyModelManagerImplTest {
 		Mockito.verifyNoMoreInteractions(
 			_classNameLocalService, _exportImportReportEntryLocalService,
 			_group, _groupLocalService, _log, _stagingGroupHelper, _user);
-
-		_stagingGroupHelperUtilMockedStatic.close();
 	}
 
 	@Test
@@ -531,21 +525,6 @@ public class EmptyModelManagerImplTest {
 	@Test
 	public void testGetOrAddEmptyModelGroupScopedWithEnabledLazyReferencingOutsideAnImportProcess()
 		throws Exception {
-
-		StagingGroupHelper stagingGroupHelper = Mockito.mock(
-			StagingGroupHelper.class);
-
-		Mockito.when(
-			stagingGroupHelper.isCompanyGroup(_group)
-		).thenReturn(
-			false
-		);
-
-		_stagingGroupHelperUtilMockedStatic.when(
-			StagingGroupHelperUtil::getStagingGroupHelper
-		).thenReturn(
-			stagingGroupHelper
-		);
 
 		try (MockedStatic<ExportImportThreadLocal>
 				exportImportThreadLocalMockedStatic = Mockito.mockStatic(
@@ -1167,8 +1146,6 @@ public class EmptyModelManagerImplTest {
 		GroupLocalService.class);
 	private final StagingGroupHelper _stagingGroupHelper = Mockito.mock(
 		StagingGroupHelper.class);
-	private MockedStatic<StagingGroupHelperUtil>
-		_stagingGroupHelperUtilMockedStatic;
 	private final User _user = Mockito.mock(User.class);
 
 }
