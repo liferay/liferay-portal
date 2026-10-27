@@ -34,7 +34,7 @@ public class ColorDDMFormFieldTemplateContextContributorTest {
 	@TestInfo("LPD-111743")
 	public void testGetParameters() {
 		DDMFormField ddmFormField = new DDMFormField(
-			RandomTestUtil.randomString(), "color");
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		LocalizedValue predefinedValue = new LocalizedValue(LocaleUtil.US);
 
