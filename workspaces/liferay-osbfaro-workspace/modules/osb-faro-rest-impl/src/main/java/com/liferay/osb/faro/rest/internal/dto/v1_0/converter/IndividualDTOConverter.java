@@ -8,6 +8,7 @@ package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
 import com.liferay.osb.faro.engine.client.model.Field;
 import com.liferay.osb.faro.rest.dto.v1_0.Individual;
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualDemographicField;
+import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroEnumUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -71,7 +72,8 @@ public class IndividualDTOConverter
 				setLastSessionCountry(individual::getLastSessionCountry);
 				setName(() -> _getName(individual));
 				setProfileType(
-					() -> ProfileType.create(
+					() -> FaroEnumUtil.create(
+						ProfileType::create,
 						StringUtil.toUpperCase(individual.getProfileType())));
 				setSessionsCount(individual::getSessionsCount);
 			}

@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
 
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegmentMembership;
+import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroEnumUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -47,7 +48,8 @@ public class IndividualSegmentMembershipDTOConverter
 				setIndividualSegmentId(
 					individualSegmentMembership::getIndividualSegmentId);
 				setStatus(
-					() -> Status.create(
+					() -> FaroEnumUtil.create(
+						Status::create,
 						StringUtil.toUpperCase(
 							individualSegmentMembership.getStatus())));
 			}

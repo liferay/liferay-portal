@@ -6,6 +6,7 @@
 package com.liferay.osb.faro.rest.internal.dto.v1_0.converter;
 
 import com.liferay.osb.faro.rest.dto.v1_0.IndividualSegment;
+import com.liferay.osb.faro.rest.internal.dto.v1_0.util.FaroEnumUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterContext;
@@ -58,11 +59,16 @@ public class IndividualSegmentDTOConverter
 				setLastActivityDate(individualSegment::getLastActivityDate);
 				setName(individualSegment::getName);
 				setSegmentType(
-					() -> SegmentType.create(
+					() -> FaroEnumUtil.create(
+						SegmentType::create,
 						StringUtil.toUpperCase(
 							individualSegment.getSegmentType())));
-				setState(() -> State.create(individualSegment.getState()));
-				setStatus(() -> Status.create(individualSegment.getStatus()));
+				setState(
+					() -> FaroEnumUtil.create(
+						State::create, individualSegment.getState()));
+				setStatus(
+					() -> FaroEnumUtil.create(
+						Status::create, individualSegment.getStatus()));
 			}
 		};
 	}
