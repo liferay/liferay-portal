@@ -9,8 +9,6 @@ import com.liferay.osb.faro.model.FaroProject;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.json.JSONFactory;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -43,8 +41,6 @@ public class FaroProjectFilterTest {
 			_faroProjectLocalService);
 		ReflectionTestUtils.setField(
 			_faroProjectFilter, "_groupLocalService", _groupLocalService);
-		ReflectionTestUtils.setField(
-			_faroProjectFilter, "_jsonFactory", _jsonFactory);
 		ReflectionTestUtils.setField(_faroProjectFilter, "_portal", _portal);
 
 		Mockito.when(
@@ -61,9 +57,21 @@ public class FaroProjectFilterTest {
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
-			faroProject.getSubscription()
+			faroProject.getSubscriptionName()
 		).thenReturn(
-			"{}"
+			ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA
+		);
+
+		Mockito.when(
+			faroProject.getIndividualsCountSinceLastAnniversary()
+		).thenReturn(
+			1500L
+		);
+
+		Mockito.when(
+			faroProject.getIndividualsLimit()
+		).thenReturn(
+			1000L
 		);
 
 		Mockito.when(
@@ -91,32 +99,6 @@ public class FaroProjectFilterTest {
 			_httpServletRequest.getRequestURI()
 		).thenReturn(
 			"/workspace/123"
-		);
-
-		JSONObject jsonObject = Mockito.mock(JSONObject.class);
-
-		Mockito.when(
-			jsonObject.getLong("individualsCountSinceLastAnniversary")
-		).thenReturn(
-			1500L
-		);
-
-		Mockito.when(
-			jsonObject.getLong("individualsLimit")
-		).thenReturn(
-			1000L
-		);
-
-		Mockito.when(
-			jsonObject.getString("name")
-		).thenReturn(
-			ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA
-		);
-
-		Mockito.when(
-			_jsonFactory.createJSONObject(Mockito.anyString())
-		).thenReturn(
-			jsonObject
 		);
 
 		_faroProjectFilter.processFilter(
@@ -136,9 +118,33 @@ public class FaroProjectFilterTest {
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
-			faroProject.getSubscription()
+			faroProject.getSubscriptionName()
 		).thenReturn(
-			"{}"
+			ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA
+		);
+
+		Mockito.when(
+			faroProject.getIndividualsCountSinceLastAnniversary()
+		).thenReturn(
+			500L
+		);
+
+		Mockito.when(
+			faroProject.getIndividualsLimit()
+		).thenReturn(
+			1000L
+		);
+
+		Mockito.when(
+			faroProject.getPageViewsCountSinceLastAnniversary()
+		).thenReturn(
+			5000L
+		);
+
+		Mockito.when(
+			faroProject.getPageViewsLimit()
+		).thenReturn(
+			10000L
 		);
 
 		Mockito.when(
@@ -166,44 +172,6 @@ public class FaroProjectFilterTest {
 			_httpServletRequest.getRequestURI()
 		).thenReturn(
 			"/workspace/123"
-		);
-
-		JSONObject jsonObject = Mockito.mock(JSONObject.class);
-
-		Mockito.when(
-			jsonObject.getLong("individualsCountSinceLastAnniversary")
-		).thenReturn(
-			500L
-		);
-
-		Mockito.when(
-			jsonObject.getLong("individualsLimit")
-		).thenReturn(
-			1000L
-		);
-
-		Mockito.when(
-			jsonObject.getString("name")
-		).thenReturn(
-			ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA
-		);
-
-		Mockito.when(
-			jsonObject.getLong("pageViewsCountSinceLastAnniversary")
-		).thenReturn(
-			5000L
-		);
-
-		Mockito.when(
-			jsonObject.getLong("pageViewsLimit")
-		).thenReturn(
-			10000L
-		);
-
-		Mockito.when(
-			_jsonFactory.createJSONObject(Mockito.anyString())
-		).thenReturn(
-			jsonObject
 		);
 
 		_faroProjectFilter.processFilter(
@@ -254,9 +222,33 @@ public class FaroProjectFilterTest {
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
-			faroProject.getSubscription()
+			faroProject.getSubscriptionName()
 		).thenReturn(
-			"{}"
+			ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA
+		);
+
+		Mockito.when(
+			faroProject.getIndividualsCountSinceLastAnniversary()
+		).thenReturn(
+			500L
+		);
+
+		Mockito.when(
+			faroProject.getIndividualsLimit()
+		).thenReturn(
+			1000L
+		);
+
+		Mockito.when(
+			faroProject.getPageViewsCountSinceLastAnniversary()
+		).thenReturn(
+			15000L
+		);
+
+		Mockito.when(
+			faroProject.getPageViewsLimit()
+		).thenReturn(
+			10000L
 		);
 
 		Mockito.when(
@@ -284,44 +276,6 @@ public class FaroProjectFilterTest {
 			_httpServletRequest.getRequestURI()
 		).thenReturn(
 			"/workspace/123"
-		);
-
-		JSONObject jsonObject = Mockito.mock(JSONObject.class);
-
-		Mockito.when(
-			jsonObject.getLong("individualsCountSinceLastAnniversary")
-		).thenReturn(
-			500L
-		);
-
-		Mockito.when(
-			jsonObject.getLong("individualsLimit")
-		).thenReturn(
-			1000L
-		);
-
-		Mockito.when(
-			jsonObject.getString("name")
-		).thenReturn(
-			ProductConstants.PRODUCT_ENTRY_NAME_DATA_PLATFORM_PRIVATE_BETA
-		);
-
-		Mockito.when(
-			jsonObject.getLong("pageViewsCountSinceLastAnniversary")
-		).thenReturn(
-			15000L
-		);
-
-		Mockito.when(
-			jsonObject.getLong("pageViewsLimit")
-		).thenReturn(
-			10000L
-		);
-
-		Mockito.when(
-			_jsonFactory.createJSONObject(Mockito.anyString())
-		).thenReturn(
-			jsonObject
 		);
 
 		_faroProjectFilter.processFilter(
@@ -378,9 +332,9 @@ public class FaroProjectFilterTest {
 		FaroProject faroProject = Mockito.mock(FaroProject.class);
 
 		Mockito.when(
-			faroProject.getSubscription()
+			faroProject.getSubscriptionName()
 		).thenReturn(
-			"{}"
+			ProductConstants.PRODUCT_ENTRY_NAME_ENTERPRISE_CONTACTS
 		);
 
 		Mockito.when(
@@ -410,20 +364,6 @@ public class FaroProjectFilterTest {
 			"/workspace/123"
 		);
 
-		JSONObject jsonObject = Mockito.mock(JSONObject.class);
-
-		Mockito.when(
-			jsonObject.getString("name")
-		).thenReturn(
-			ProductConstants.PRODUCT_ENTRY_NAME_ENTERPRISE_CONTACTS
-		);
-
-		Mockito.when(
-			_jsonFactory.createJSONObject(Mockito.anyString())
-		).thenReturn(
-			jsonObject
-		);
-
 		_faroProjectFilter.processFilter(
 			_httpServletRequest, _httpServletResponse, _filterChain);
 
@@ -451,9 +391,6 @@ public class FaroProjectFilterTest {
 
 	@Mock
 	private HttpServletResponse _httpServletResponse;
-
-	@Mock
-	private JSONFactory _jsonFactory;
 
 	@Mock
 	private Portal _portal;
