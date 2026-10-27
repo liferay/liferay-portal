@@ -218,6 +218,13 @@ public class GenerateReportsControllerBuildRunner
 		for (GenerateReportsBuildRunner.Report report :
 				GenerateReportsBuildRunner.Report.values()) {
 
+			if ((report ==
+					GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON) &&
+				JenkinsResultsParserUtil.isCloudCINode()) {
+
+				continue;
+			}
+
 			String reportName = report.toString();
 
 			Long latestReportInvocationTime = latestReportInvocationTimes.get(
