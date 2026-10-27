@@ -585,7 +585,10 @@ workspaces/liferay-adyen-workspace/    @liferay-commerce
 workspaces/liferay-commerceaichatbot-workspace/    @liferay-commerce
 workspaces/liferay-commerceminium4-workspace/    @liferay-commerce
 workspaces/liferay-customer-workspace/    @liferay-one
+workspaces/liferay-dev-workspace/    @liferay-web
+workspaces/liferay-dotcom-workspace/    @liferay-web
 workspaces/liferay-hcaptcha-workspace/    @liferay-appsec
+workspaces/liferay-learn-workspace/    @liferay-web
 workspaces/liferay-marketplace-workspace/    @liferay-one
 workspaces/liferay-one-workspace/    @liferay-one
 workspaces/liferay-paypal-workspace/    @liferay-commerce
