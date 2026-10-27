@@ -1231,9 +1231,6 @@ public interface LayoutLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public boolean hasLayouts(Group group) throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public boolean hasLayouts(Group group, boolean privateLayout)
 		throws PortalException;
 
@@ -1709,4 +1706,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1298559801
+// LIFERAY-SERVICE-BUILDER-HASH:-449959367

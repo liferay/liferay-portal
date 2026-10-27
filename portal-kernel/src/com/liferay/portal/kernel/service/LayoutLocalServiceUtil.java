@@ -1481,13 +1481,6 @@ public class LayoutLocalServiceUtil {
 	}
 
 	public static boolean hasLayouts(
-			com.liferay.portal.kernel.model.Group group)
-		throws PortalException {
-
-		return getService().hasLayouts(group);
-	}
-
-	public static boolean hasLayouts(
 			com.liferay.portal.kernel.model.Group group, boolean privateLayout)
 		throws PortalException {
 
@@ -2113,4 +2106,4 @@ public class LayoutLocalServiceUtil {
 	private static volatile LayoutLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1378641521
+// LIFERAY-SERVICE-BUILDER-HASH:-291377457
