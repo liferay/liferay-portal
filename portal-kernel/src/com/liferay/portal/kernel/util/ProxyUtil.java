@@ -322,20 +322,12 @@ public class ProxyUtil {
 			return null;
 		}
 
-		private static final Method _equalsMethod;
-		private static final Method _hashCodeMethod;
-		private static final Method _toStringMethod;
-
-		static {
-			try {
-				_equalsMethod = Object.class.getMethod("equals", Object.class);
-				_hashCodeMethod = Object.class.getMethod("hashCode");
-				_toStringMethod = Object.class.getMethod("toString");
-			}
-			catch (NoSuchMethodException noSuchMethodException) {
-				throw new ExceptionInInitializerError(noSuchMethodException);
-			}
-		}
+		private static final Method _equalsMethod = ReflectionUtil.fetchMethod(
+			Object.class, "equals", Object.class);
+		private static final Method _hashCodeMethod =
+			ReflectionUtil.fetchMethod(Object.class, "hashCode");
+		private static final Method _toStringMethod =
+			ReflectionUtil.fetchMethod(Object.class, "toString");
 
 		private final Object _defaultObject;
 		private final Map<Method, Method> _delegateMethods;
