@@ -122,7 +122,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 					"Unable to determine the last upstream testsuite run for ",
 					"branch ", _branch));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 		}
 		else {
 			_checkInvocation(
@@ -149,7 +149,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 					"Unable to determine the last build timestamp for ",
 					"controller job ", _controllerJobName));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}
@@ -193,7 +193,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 					"Unable to determine the commit the upstream testsuite ",
 					"for branch ", _branch, " last ran against"));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}
@@ -215,7 +215,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 					"Unable to read the head of branch ", _branch, " from ",
 					_portalUsername, "/", _portalRepositoryName));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.CRITICAL);
 
 			return;
 		}
@@ -237,7 +237,7 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 					"Unable to determine when branch ", _branch,
 					" was last merged"));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}

@@ -54,14 +54,14 @@ public class ExternalStatusMonitor extends BaseMonitor {
 		catch (Exception exception) {
 			return new MonitorResult(
 				"Unable to read status page " + _statusPageURL, null,
-				MonitorResult.Status.UNKNOWN, currentTimeMillis);
+				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
 		if (componentStatuses == null) {
 			return new MonitorResult(
 				"Unable to determine the component statuses from status page " +
 					_statusPageURL,
-				null, MonitorResult.Status.UNKNOWN, currentTimeMillis);
+				null, MonitorResult.Status.WARN, currentTimeMillis);
 		}
 
 		List<String> componentMessages = new ArrayList<>();
@@ -191,7 +191,7 @@ public class ExternalStatusMonitor extends BaseMonitor {
 			return MonitorResult.Status.OK;
 		}
 
-		return MonitorResult.Status.UNKNOWN;
+		return MonitorResult.Status.WARN;
 	}
 
 	private static final int _RETRIES_SIZE_MAX = 1;

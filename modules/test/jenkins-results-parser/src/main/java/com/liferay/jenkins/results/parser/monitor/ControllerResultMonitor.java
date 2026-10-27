@@ -123,7 +123,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 					JenkinsResultsParserUtil.getNounForm(
 						buildsJSONArray.length(), "builds", "build")));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 		}
 
 		return _newMonitorResult(
@@ -155,7 +155,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 					"Unable to determine the downstream build of job ",
 					_getRemoteBuildURL(number)));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}
@@ -179,7 +179,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 					"Job ", _getRemoteBuildURL(number), " invoked ", buildURL,
 					", which could not be read"));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.CRITICAL);
 
 			return;
 		}
@@ -311,7 +311,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 					"Unable to determine the last build timestamp for job ",
 					_jobName));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}
@@ -327,13 +327,24 @@ public class ControllerResultMonitor extends BaseMonitor {
 		try {
 			cronSchedule = getCronSchedule(_jobName, _jenkinsMaster.getName());
 		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			messages.add(
+				JenkinsResultsParserUtil.combine(
+					"Job ", _jobName, " has an invalid schedule: ",
+					JenkinsResultsParserUtil.getMessage(
+						illegalArgumentException)));
+
+			statuses.add(MonitorResult.Status.WARN);
+
+			return;
+		}
 		catch (Exception exception) {
 			messages.add(
 				JenkinsResultsParserUtil.combine(
 					"Unable to read the schedule for job ", _jobName, ": ",
 					JenkinsResultsParserUtil.getMessage(exception)));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.CRITICAL);
 
 			return;
 		}
@@ -344,7 +355,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 					"Job ", _jobName, " has no schedule, so it is not ",
 					"checked for being on time"));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}
@@ -361,7 +372,7 @@ public class ControllerResultMonitor extends BaseMonitor {
 					"Job ", _jobName, " has an invalid schedule: ",
 					cronSchedule.getSpec()));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return;
 		}

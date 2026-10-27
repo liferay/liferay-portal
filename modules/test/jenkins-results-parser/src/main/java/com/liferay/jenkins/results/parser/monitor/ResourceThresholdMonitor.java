@@ -99,7 +99,7 @@ public class ResourceThresholdMonitor extends BaseMonitor {
 
 		if (value == null) {
 			return new MonitorResult(
-				_getIndeterminateMessage(), null, MonitorResult.Status.UNKNOWN,
+				_getIndeterminateMessage(), null, MonitorResult.Status.WARN,
 				currentTimeMillis);
 		}
 

@@ -163,7 +163,7 @@ public class SMTPEndpointMonitor extends BaseMonitor {
 	private MonitorResult _newInvalidURLMonitorResult(long currentTimeMillis) {
 		return new MonitorResult(
 			getInvalidValueMessage("parameter", "url", _endpointURL), null,
-			MonitorResult.Status.UNKNOWN, currentTimeMillis);
+			MonitorResult.Status.CRITICAL, currentTimeMillis);
 	}
 
 	private MonitorResult _newReplyCodeMonitorResult(

@@ -139,7 +139,7 @@ public class JobHealthMonitor extends BaseMonitor {
 					"Unable to determine the last build timestamp for job ",
 					_jobName));
 
-			statuses.add(MonitorResult.Status.UNKNOWN);
+			statuses.add(MonitorResult.Status.WARN);
 
 			return _newMonitorResult(
 				currentTimeMillis, messages, metrics, statuses);
@@ -176,14 +176,23 @@ public class JobHealthMonitor extends BaseMonitor {
 					if (overdueDeadlineTimestamp <= 0) {
 						messages.add(_getInvalidScheduleMessage(cronSchedule));
 
-						statuses.add(MonitorResult.Status.UNKNOWN);
+						statuses.add(MonitorResult.Status.WARN);
 					}
 				}
 				else {
 					messages.add(_getMissingScheduleMessage());
 
-					statuses.add(MonitorResult.Status.UNKNOWN);
+					statuses.add(MonitorResult.Status.WARN);
 				}
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+				messages.add(
+					JenkinsResultsParserUtil.combine(
+						"Job ", _jobName, " has an invalid schedule: ",
+						JenkinsResultsParserUtil.getMessage(
+							illegalArgumentException)));
+
+				statuses.add(MonitorResult.Status.WARN);
 			}
 			catch (Exception exception) {
 				messages.add(
@@ -191,7 +200,7 @@ public class JobHealthMonitor extends BaseMonitor {
 						"Unable to read the schedule for job ", _jobName, ": ",
 						JenkinsResultsParserUtil.getMessage(exception)));
 
-				statuses.add(MonitorResult.Status.UNKNOWN);
+				statuses.add(MonitorResult.Status.CRITICAL);
 			}
 		}
 

@@ -46,7 +46,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 		if (jenkinsMasters.isEmpty()) {
 			return new MonitorResult(
 				"Unable to find a master in cohort " + _cohortName, null,
-				MonitorResult.Status.UNKNOWN, currentTimeMillis);
+				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
 		Map<String, String> exceptionMessages = new ConcurrentHashMap<>();
@@ -71,7 +71,7 @@ public class RunningBuildDurationMonitor extends BaseMonitor {
 						jenkinsMaster.getRemoteURL(), ": ",
 						exceptionMessages.get(jenkinsMaster.getName())));
 
-				statuses.add(MonitorResult.Status.UNKNOWN);
+				statuses.add(MonitorResult.Status.CRITICAL);
 
 				continue;
 			}

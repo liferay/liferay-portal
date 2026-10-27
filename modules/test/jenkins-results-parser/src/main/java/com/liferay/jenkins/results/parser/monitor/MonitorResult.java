@@ -82,11 +82,11 @@ public class MonitorResult {
 
 	public enum Status {
 
-		CRITICAL(3), OK(0), UNKNOWN(1), WARN(2);
+		CRITICAL(3), OK(0), WARN(2);
 
 		public static Status getMostSevere(Collection<Status> statuses) {
 			if (statuses.isEmpty()) {
-				return UNKNOWN;
+				return CRITICAL;
 			}
 
 			Status mostSevereStatus = OK;
