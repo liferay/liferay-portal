@@ -719,12 +719,6 @@ public class SearchBarPortletDisplayContextFactoryTest {
 		);
 
 		Mockito.when(
-			_group.isUser()
-		).thenReturn(
-			true
-		);
-
-		Mockito.when(
 			_group.getExternalReferenceCode()
 		).thenReturn(
 			RandomTestUtil.randomString()
@@ -734,6 +728,12 @@ public class SearchBarPortletDisplayContextFactoryTest {
 			_group.getGroupId()
 		).thenReturn(
 			RandomTestUtil.randomLong()
+		);
+
+		Mockito.when(
+			_group.isUser()
+		).thenReturn(
+			true
 		);
 
 		Mockito.when(
