@@ -95,6 +95,10 @@ public class PortalWorkspaceGitRepository extends BaseWorkspaceGitRepository {
 		return _appServerProperties;
 	}
 
+	public PortalWorkspaceGitRepository getBasePortalWorkspaceGitRepository() {
+		return _basePortalWorkspaceGitRepository;
+	}
+
 	public String getLiferayFacesAlloyURL() {
 		return _getLiferayFacesURL(
 			"liferay-faces-alloy", "liferay.faces.alloy.branch");

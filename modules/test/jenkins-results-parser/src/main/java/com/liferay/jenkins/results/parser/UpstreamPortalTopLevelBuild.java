@@ -33,16 +33,6 @@ public class UpstreamPortalTopLevelBuild
 		return super.getBranchName();
 	}
 
-	public String getPortalUpstreamBranchName() {
-		String branchName = getBranchName();
-
-		if (branchName.endsWith("-private")) {
-			return branchName.substring(0, branchName.lastIndexOf("-private"));
-		}
-
-		return branchName;
-	}
-
 	@Override
 	public PortalWorkspace getPortalWorkspace() {
 		Workspace workspace = getWorkspace();
@@ -66,14 +56,7 @@ public class UpstreamPortalTopLevelBuild
 			portalWorkspace.setOSBAsahGitHubURL(_getOSBAsahGitHubURL());
 			portalWorkspace.setOSBFaroGitHubURL(_getOSBFaroGitHubURL());
 
-			String portalUpstreamBranchName = getPortalUpstreamBranchName();
-
-			if (!portalUpstreamBranchName.equals(getBranchName())) {
-				portalWorkspace.setPortalUpstreamBranchName(
-					portalUpstreamBranchName);
-
-				_configurePortalBaseWorkspaceGitRepository(portalWorkspace);
-			}
+			_configurePortalBaseWorkspaceGitRepository(portalWorkspace);
 		}
 
 		WorkspaceGitRepository workspaceGitRepository =
@@ -97,24 +80,26 @@ public class UpstreamPortalTopLevelBuild
 	private void _configurePortalBaseWorkspaceGitRepository(
 		PortalWorkspace portalWorkspace) {
 
-		String portalBaseGitCommit = _getPortalBaseGitCommit();
-		String portalBaseGitHubURL = _getPortalBaseGitHubURL();
-
-		if (!JenkinsResultsParserUtil.isSHA(portalBaseGitCommit) &&
-			JenkinsResultsParserUtil.isNullOrEmpty(portalBaseGitHubURL)) {
-
-			return;
-		}
-
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			portalWorkspace.getPortalWorkspaceGitRepository();
 
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalBaseGitHubURL)) {
-			portalWorkspaceGitRepository.setGitHubURL(portalBaseGitHubURL);
+		PortalWorkspaceGitRepository basePortalWorkspaceGitRepository =
+			portalWorkspaceGitRepository.getBasePortalWorkspaceGitRepository();
+
+		if (basePortalWorkspaceGitRepository == null) {
+			return;
 		}
 
+		String portalBaseGitHubURL = _getPortalBaseGitHubURL();
+
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(portalBaseGitHubURL)) {
+			basePortalWorkspaceGitRepository.setGitHubURL(portalBaseGitHubURL);
+		}
+
+		String portalBaseGitCommit = _getPortalBaseGitCommit();
+
 		if (JenkinsResultsParserUtil.isSHA(portalBaseGitCommit)) {
-			portalWorkspaceGitRepository.setSenderBranchSHA(
+			basePortalWorkspaceGitRepository.setSenderBranchSHA(
 				portalBaseGitCommit);
 		}
 	}
