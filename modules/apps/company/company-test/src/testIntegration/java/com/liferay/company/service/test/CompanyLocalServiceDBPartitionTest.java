@@ -1053,6 +1053,61 @@ public class CompanyLocalServiceDBPartitionTest
 	}
 
 	@Test
+	public void testCopyDBPartitionCompanyWhenCompanyIdExists()
+		throws Exception {
+
+		Company toCompany = CompanyTestUtil.addCompany();
+
+		Company fromCompany = CompanyTestUtil.addCompany();
+
+		PortalInstancePool.remove(toCompany.getCompanyId());
+
+		try {
+			String partitionName = CompanyLocalServiceTestUtil.getPartitionName(
+				toCompany.getCompanyId());
+
+			int resourcePermissionsCount = _getResourcePermissionsCount(
+				partitionName, toCompany.getCompanyId());
+
+			Assert.assertTrue(resourcePermissionsCount > 0);
+
+			long[] companyIds =
+				CompanyLocalServiceTestUtil.getCompanyIdsBySQL();
+
+			try {
+				companyLocalService.copyDBPartitionCompany(
+					fromCompany.getCompanyId(), toCompany.getCompanyId(),
+					RandomTestUtil.randomString(),
+					StringUtil.toLowerCase(RandomTestUtil.randomString()),
+					RandomTestUtil.randomString());
+
+				Assert.fail();
+			}
+			catch (IllegalArgumentException illegalArgumentException) {
+				Assert.assertEquals(
+					"Company ID " + toCompany.getCompanyId() +
+						" already exists",
+					illegalArgumentException.getMessage());
+			}
+
+			Assert.assertArrayEquals(
+				companyIds, CompanyLocalServiceTestUtil.getCompanyIdsBySQL());
+			Assert.assertTrue(
+				dbPartitionDB.existsPartition(connection, partitionName));
+			Assert.assertEquals(
+				resourcePermissionsCount,
+				_getResourcePermissionsCount(
+					partitionName, toCompany.getCompanyId()));
+		}
+		finally {
+			PortalInstancePool.add(toCompany);
+
+			companyLocalService.deleteCompany(fromCompany);
+			companyLocalService.deleteCompany(toCompany);
+		}
+	}
+
+	@Test
 	public void testCopyDBPartitionCompanyWhenCompanyLocalServiceFails()
 		throws Exception {
 

@@ -393,6 +393,41 @@ public class DBPartitionUtilTest extends BaseDBPartitionTestCase {
 	}
 
 	@Test
+	@TestInfo("LPD-110022")
+	public void testCopyDBPartitionWhenDBPartitionExists() throws Exception {
+		dropSchemas();
+		addDBPartitions();
+
+		try {
+			String partitionName = getPartitionName(COMPANY_IDS[1]);
+
+			int tablesCount = _getTablesCount(partitionName);
+
+			try {
+				DBPartitionUtil.copyDBPartition(COMPANY_IDS[0], COMPANY_IDS[1]);
+
+				Assert.fail();
+			}
+			catch (PortalException portalException) {
+				Throwable throwable = portalException.getCause();
+
+				Assert.assertTrue(
+					throwable instanceof IllegalArgumentException);
+				Assert.assertEquals(
+					"Database partition " + partitionName + " already exists",
+					throwable.getMessage());
+			}
+
+			Assert.assertTrue(
+				dbPartitionDB.existsPartition(connection, partitionName));
+			Assert.assertEquals(tablesCount, _getTablesCount(partitionName));
+		}
+		finally {
+			removeDBPartitions();
+		}
+	}
+
+	@Test
 	@TestInfo("LPD-93376")
 	public void testExistsExportedPartition() throws Exception {
 		long companyId = RandomTestUtil.randomLong();
