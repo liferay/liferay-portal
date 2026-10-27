@@ -17,6 +17,12 @@ public class FaroEngineClientException extends RuntimeException {
 		super(msg);
 	}
 
+	public FaroEngineClientException(String msg, int status) {
+		super(msg);
+
+		_status = status;
+	}
+
 	public FaroEngineClientException(String msg, Throwable throwable) {
 		super(msg, throwable);
 	}
@@ -24,5 +30,11 @@ public class FaroEngineClientException extends RuntimeException {
 	public FaroEngineClientException(Throwable throwable) {
 		super(throwable);
 	}
+
+	public int getStatus() {
+		return _status;
+	}
+
+	private int _status;
 
 }

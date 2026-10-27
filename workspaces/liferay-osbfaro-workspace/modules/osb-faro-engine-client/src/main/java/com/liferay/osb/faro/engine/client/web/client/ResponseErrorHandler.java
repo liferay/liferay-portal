@@ -77,7 +77,7 @@ public class ResponseErrorHandler extends DefaultResponseErrorHandler {
 			throw headlessRequestRejectedException;
 		}
 
-		throw new FaroEngineClientException(response);
+		throw new FaroEngineClientException(response, statusCode);
 	}
 
 	private HeadlessRequestRejectedException
