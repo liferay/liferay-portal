@@ -467,12 +467,16 @@ public class FriendlyURLServletTest {
 
 	@Test
 	@TestInfo("LPD-110209")
-	public void testGetRedirectOnLinkToLayoutLayoutWithoutViewPermission()
+	public void testGetRedirectOnLinkLayoutWithoutViewPermission()
 		throws Throwable {
 
 		_testGetRedirectOnLinkLayoutWithoutViewPermission(
 			LayoutTestUtil.addTypeLinkToLayoutLayout(
 				_group.getGroupId(), _layout.getLayoutId()));
+		_testGetRedirectOnLinkLayoutWithoutViewPermission(
+			LayoutTestUtil.addTypeLinkToURLLayout(
+				_group.getGroupId(),
+				"https://" + RandomTestUtil.randomString() + ".com"));
 	}
 
 	@Test
@@ -499,17 +503,6 @@ public class FriendlyURLServletTest {
 		mockHttpServletRequest.setParameter("doAsUserId", encryptedDoAsUserId);
 
 		testGetRedirect(mockHttpServletRequest, path, expectedRedirect);
-	}
-
-	@Test
-	@TestInfo("LPD-110209")
-	public void testGetRedirectOnLinkToURLLayoutWithoutViewPermission()
-		throws Throwable {
-
-		_testGetRedirectOnLinkLayoutWithoutViewPermission(
-			LayoutTestUtil.addTypeLinkToURLLayout(
-				_group.getGroupId(),
-				"https://" + RandomTestUtil.randomString() + ".com"));
 	}
 
 	@Test
