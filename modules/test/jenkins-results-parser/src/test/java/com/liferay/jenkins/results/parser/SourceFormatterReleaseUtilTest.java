@@ -234,17 +234,18 @@ public class SourceFormatterReleaseUtilTest
 
 	@Test
 	public void testIsReleasedSourceMatchWithReorderedLines() throws Exception {
+		String firstLine = RandomTestUtil.randomString();
+		String secondLine = RandomTestUtil.randomString();
+
 		Assert.assertFalse(
 			_isReleasedSourceMatch(
 				0,
 				JenkinsResultsParserUtil.combine(
 					"diff --git a/", _PATH_BND, " b/", _PATH_BND, "\n",
 					"index 1111111..2222222 100644\n", "--- a/", _PATH_BND,
-					"\n", "+++ b/", _PATH_BND, "\n", "@@ -1,2 +1,2 @@\n",
-					"-Bundle-Name: Liferay Source Formatter\n",
-					"-Bundle-SymbolicName: com.liferay.source.formatter\n",
-					"+Bundle-SymbolicName: com.liferay.source.formatter\n",
-					"+Bundle-Name: Liferay Source Formatter\n")));
+					"\n", "+++ b/", _PATH_BND, "\n", "@@ -1,2 +1,2 @@\n", "-",
+					firstLine, "\n", "-", secondLine, "\n", "+", secondLine,
+					"\n", "+", firstLine, "\n")));
 	}
 
 	@Test
