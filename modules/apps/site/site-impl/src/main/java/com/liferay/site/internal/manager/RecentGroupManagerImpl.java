@@ -80,13 +80,17 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 			return;
 		}
 
-		long liveGroupId = _getLiveGroupId(groupId);
+		Group group = _groupLocalService.fetchGroup(groupId);
 
-		if (liveGroupId <= 0) {
+		if (group == null) {
 			return;
 		}
 
-		Group liveGroup = _groupLocalService.fetchGroup(liveGroupId);
+		Group liveGroup = group;
+
+		if (!group.isStagedRemotely() && group.isStagingGroup()) {
+			liveGroup = _groupLocalService.fetchGroup(group.getLiveGroupId());
+		}
 
 		if (liveGroup.isCMS() || liveGroup.isControlPanel() ||
 			liveGroup.isLayoutPrototype() || liveGroup.isLayoutSetPrototype() ||
@@ -104,6 +108,8 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 
 		List<Long> groupIds = ListUtil.fromArray(
 			ArrayUtil.toLongArray(StringUtil.split(value, 0L)));
+
+		long liveGroupId = liveGroup.getGroupId();
 
 		if (!groupIds.isEmpty() && (groupIds.get(0) == liveGroupId)) {
 			return;
@@ -251,20 +257,6 @@ public class RecentGroupManagerImpl implements RecentGroupManager {
 		}
 
 		return groups;
-	}
-
-	private long _getLiveGroupId(long groupId) {
-		Group group = _groupLocalService.fetchGroup(groupId);
-
-		if (group == null) {
-			return 0;
-		}
-
-		if (!group.isStagedRemotely() && group.isStagingGroup()) {
-			return group.getLiveGroupId();
-		}
-
-		return groupId;
 	}
 
 	private String _getRecentGroupsValue(
