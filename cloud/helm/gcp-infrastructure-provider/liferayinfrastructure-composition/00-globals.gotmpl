@@ -4,7 +4,7 @@
 {{- $xr := .observed.composite.resource -}}
 
 {{- if eq $xr.spec.search.engine "opensearch" -}}
-{{- fail "GCP has no managed OpenSearch, so search.engine must be elasticsearch" -}}
+{{- fail "GCP has no managed OpenSearch, so \"search.engine\" must be \"elasticsearch\"" -}}
 {{- end -}}
 
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}
