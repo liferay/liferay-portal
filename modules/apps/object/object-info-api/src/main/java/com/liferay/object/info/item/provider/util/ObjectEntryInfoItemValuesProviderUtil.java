@@ -148,17 +148,18 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 				value = values.get(objectField.getI18nObjectFieldName());
 			}
 
-			_addInfoFieldValue(
-				defaultLanguageId, dlAppLocalService, dlURLHelper,
-				infoFieldValues, listTypeEntryLocalService, objectDefinition,
-				objectEntryLocalService, objectEntryService, objectField,
-				objectFieldInfoFieldConverter,
-				ObjectField.class.getSimpleName(),
-				objectRelationshipLocalService, serviceBuilderObjectEntry,
-				themeDisplay, value);
-
 			if (!objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
+
+				_addInfoFieldValue(
+					defaultLanguageId, dlAppLocalService, dlURLHelper,
+					infoFieldValues, listTypeEntryLocalService,
+					objectDefinition, objectEntryLocalService,
+					objectEntryService, objectField,
+					objectFieldInfoFieldConverter,
+					ObjectField.class.getSimpleName(),
+					objectRelationshipLocalService, serviceBuilderObjectEntry,
+					themeDisplay, value);
 
 				continue;
 			}
@@ -167,6 +168,11 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 				objectRelationshipLocalService.
 					fetchObjectRelationshipByObjectFieldId2(
 						objectField.getObjectFieldId());
+
+			_addRelationshipInfoFieldValue(
+				infoFieldValues, objectEntryLocalService, objectField,
+				objectFieldInfoFieldConverter,
+				ObjectField.class.getSimpleName(), objectRelationship, value);
 
 			ObjectDefinition relatedSystemObjectDefinition = null;
 			com.liferay.object.model.ObjectEntry
@@ -686,6 +692,45 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 				GetterUtil.getObject(infoFieldValue, StringPool.BLANK)));
 	}
 
+	private static void _addRelationshipInfoFieldValue(
+			List<InfoFieldValue<Object>> infoFieldValues,
+			ObjectEntryLocalService objectEntryLocalService,
+			ObjectField objectField,
+			ObjectFieldInfoFieldConverter objectFieldInfoFieldConverter,
+			String objectFieldNamespace, ObjectRelationship objectRelationship,
+			Object value)
+		throws Exception {
+
+		if (value == null) {
+			infoFieldValues.add(
+				new InfoFieldValue<>(
+					objectFieldInfoFieldConverter.getInfoField(
+						false, objectFieldNamespace, objectField),
+					StringPool.BLANK));
+
+			return;
+		}
+
+		UnsafeSupplierValue<Object, RuntimeException> unsafeSupplierValue =
+			new UnsafeSupplierValue<>(
+				() -> {
+					if (GetterUtil.getLong(value) == 0) {
+						return StringPool.BLANK;
+					}
+
+					return GetterUtil.getObject(
+						_getKeyValuePair(
+							objectEntryLocalService, objectRelationship, value),
+						StringPool.BLANK);
+				});
+
+		infoFieldValues.add(
+			new InfoFieldValue<>(
+				objectFieldInfoFieldConverter.getInfoField(
+					false, objectFieldNamespace, objectField),
+				unsafeSupplierValue::getValue));
+	}
+
 	private static String _getAttachmentDownloadURL(
 			DLURLHelper dlURLHelper, FileEntry fileEntry,
 			ObjectDefinition objectDefinition,
@@ -765,6 +810,28 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 			).values(
 				listTypeEntry.getNameMap()
 			).build());
+	}
+
+	private static Object _getKeyValuePair(
+		ObjectEntryLocalService objectEntryLocalService,
+		ObjectRelationship objectRelationship, Object value) {
+
+		try {
+			return new KeyValuePair(
+				String.valueOf(value),
+				objectEntryLocalService.getTitleValue(
+					objectRelationship.getObjectDefinitionId1(),
+					GetterUtil.getLong(value)));
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+
+				return null;
+			}
+		}
+
+		return value;
 	}
 
 	private static ObjectDefinition _getParentObjectDefinition(
@@ -949,9 +1016,7 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 		else if (objectField.compareBusinessType(
 					ObjectFieldConstants.BUSINESS_TYPE_RELATIONSHIP)) {
 
-			long primaryKey = GetterUtil.getLong(value);
-
-			if (primaryKey == 0) {
+			if (GetterUtil.getLong(value) == 0) {
 				return null;
 			}
 
@@ -960,20 +1025,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					fetchObjectRelationshipByObjectFieldId2(
 						objectField.getObjectFieldId());
 
-			try {
-				return new KeyValuePair(
-					String.valueOf(value),
-					objectEntryLocalService.getTitleValue(
-						objectRelationship.getObjectDefinitionId1(),
-						primaryKey));
-			}
-			catch (Exception exception) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(exception);
-
-					return null;
-				}
-			}
+			return _getKeyValuePair(
+				objectEntryLocalService, objectRelationship, value);
 		}
 
 		return value;
