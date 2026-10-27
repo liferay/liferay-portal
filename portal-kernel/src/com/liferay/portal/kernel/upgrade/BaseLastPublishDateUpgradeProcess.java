@@ -34,31 +34,36 @@ public abstract class BaseLastPublishDateUpgradeProcess extends UpgradeProcess {
 
 	protected Date getLayoutSetLastPublishDate(long groupId) throws Exception {
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				"select settings_ from LayoutSet where groupId = ?")) {
+				"select settings_ from LayoutSet where groupId = ? and " +
+					"privateLayout = ?")) {
 
 			preparedStatement.setLong(1, groupId);
 
-			try (ResultSet resultSet = preparedStatement.executeQuery()) {
-				while (resultSet.next()) {
-					UnicodeProperties settingsUnicodeProperties =
-						UnicodePropertiesBuilder.create(
-							true
-						).load(
-							resultSet.getString("settings_")
-						).build();
+			for (boolean privateLayout : new boolean[] {false, true}) {
+				preparedStatement.setBoolean(2, privateLayout);
 
-					String lastPublishDateString =
-						settingsUnicodeProperties.getProperty(
-							"last-publish-date");
+				try (ResultSet resultSet = preparedStatement.executeQuery()) {
+					while (resultSet.next()) {
+						UnicodeProperties settingsUnicodeProperties =
+							UnicodePropertiesBuilder.create(
+								true
+							).load(
+								resultSet.getString("settings_")
+							).build();
 
-					if (Validator.isNotNull(lastPublishDateString)) {
-						return new Date(
-							GetterUtil.getLong(lastPublishDateString));
+						String lastPublishDateString =
+							settingsUnicodeProperties.getProperty(
+								"last-publish-date");
+
+						if (Validator.isNotNull(lastPublishDateString)) {
+							return new Date(
+								GetterUtil.getLong(lastPublishDateString));
+						}
 					}
 				}
-
-				return null;
 			}
+
+			return null;
 		}
 	}
 
