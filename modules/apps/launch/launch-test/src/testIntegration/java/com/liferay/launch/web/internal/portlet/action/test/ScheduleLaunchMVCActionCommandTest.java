@@ -37,6 +37,9 @@ import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -46,6 +49,7 @@ import jakarta.portlet.PortletException;
 import java.io.Serializable;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
@@ -147,10 +151,26 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		// External redirect
 
-		jsonObject = _processAction(
-			System.currentTimeMillis() + Time.DAY,
-			"http://" + RandomTestUtil.randomString() + ".com",
-			TestPropsValues.getUser());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.util.PortalImpl", LoggerTestUtil.WARN)) {
+
+			String redirect =
+				"http://" + RandomTestUtil.randomString() + ".com";
+
+			jsonObject = _processAction(
+				System.currentTimeMillis() + Time.DAY, redirect,
+				TestPropsValues.getUser());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Assert.assertEquals(
+				"Redirect URL " + redirect + " is not allowed",
+				logEntry.getMessage());
+		}
 
 		Assert.assertTrue(Validator.isNull(jsonObject.getString("redirect")));
 
@@ -170,8 +190,28 @@ public class ScheduleLaunchMVCActionCommandTest {
 
 		// Already scheduled
 
-		jsonObject = _processAction(
-			System.currentTimeMillis() + Time.DAY, TestPropsValues.getUser());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.launch.web.internal.portlet.action." +
+					"ScheduleLaunchMVCActionCommand",
+				LoggerTestUtil.WARN)) {
+
+			jsonObject = _processAction(
+				System.currentTimeMillis() + Time.DAY,
+				TestPropsValues.getUser());
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
+
+			LogEntry logEntry = logEntries.get(0);
+
+			Throwable throwable = logEntry.getThrowable();
+
+			Assert.assertEquals(
+				"Launch set " + _launchSetObjectEntry.getObjectEntryId() +
+					" must be open to be scheduled",
+				throwable.getMessage());
+		}
 
 		Assert.assertEquals(
 			_language.get(LocaleUtil.US, "an-unexpected-error-occurred"),
