@@ -585,7 +585,7 @@ public class WorkflowTaskResourceImpl extends BaseWorkflowTaskResourceImpl {
 		}
 
 		for (WorkflowTransition workflowTransition :
-				_workflowTaskManager.getNextWorkflowTransitions(
+				_workflowTaskManager.liberalGetNextWorkflowTransitions(
 					workflowTask.getWorkflowTaskId())) {
 
 			actions.put(

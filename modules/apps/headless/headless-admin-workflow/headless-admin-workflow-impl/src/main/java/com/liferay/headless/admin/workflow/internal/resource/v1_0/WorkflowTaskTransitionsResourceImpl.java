@@ -57,7 +57,7 @@ public class WorkflowTaskTransitionsResourceImpl
 									_workflowTaskManager.getWorkflowTask(
 										workflowTaskId),
 									_workflowTaskManager.
-										getNextWorkflowTransitions(
+										liberalGetNextWorkflowTransitions(
 											workflowTaskId)));
 						}
 

@@ -1170,7 +1170,7 @@ public class GetEntryRenderDataMVCResourceCommand
 
 		if (assignedToUserId) {
 			for (WorkflowTransition workflowTransition :
-					WorkflowTaskManagerUtil.getWorkflowTaskWorkflowTransitions(
+					WorkflowTaskManagerUtil.liberalGetNextWorkflowTransitions(
 						workflowTask.getWorkflowTaskId())) {
 
 				jsonArray = jsonArray.put(

@@ -312,6 +312,17 @@ public class WorkflowTaskManagerUtil {
 		return workflowTaskManager.isNotifiableUser(userId, workflowTaskId);
 	}
 
+	public static List<WorkflowTransition> liberalGetNextWorkflowTransitions(
+			long workflowTaskId)
+		throws WorkflowException {
+
+		WorkflowTaskManager workflowTaskManager =
+			_workflowTaskManagerSnapshot.get();
+
+		return workflowTaskManager.liberalGetNextWorkflowTransitions(
+			workflowTaskId);
+	}
+
 	public static List<WorkflowTask> search(
 			long companyId, long userId, String assetTitle, String[] taskNames,
 			String[] assetTypes, Long[] assetPrimaryKeys,

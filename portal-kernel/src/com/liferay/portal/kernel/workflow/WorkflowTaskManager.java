@@ -159,6 +159,13 @@ public interface WorkflowTaskManager {
 		throw new UnsupportedOperationException();
 	}
 
+	public default List<WorkflowTransition> liberalGetNextWorkflowTransitions(
+			long workflowTaskId)
+		throws WorkflowException {
+
+		throw new UnsupportedOperationException();
+	}
+
 	public default List<WorkflowTask> search(
 			long companyId, long userId, String assetTitle, String[] taskNames,
 			String[] assetTypes, Long[] assetPrimaryKeys,

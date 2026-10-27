@@ -746,14 +746,6 @@ public class WorkflowTaskDisplayContext {
 			_workflowTaskRequestHelper.getRequest(), "nobody");
 	}
 
-	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
-			WorkflowTask workflowTask)
-		throws PortalException {
-
-		return WorkflowTaskManagerUtil.getWorkflowTaskWorkflowTransitions(
-			workflowTask.getWorkflowTaskId());
-	}
-
 	public boolean hasAssignableUsers(WorkflowTask workflowTask)
 		throws PortalException {
 
@@ -985,7 +977,8 @@ public class WorkflowTaskDisplayContext {
 		}
 
 		for (WorkflowTransition workflowTransition :
-				getWorkflowTaskWorkflowTransitions(workflowTask)) {
+				WorkflowTaskManagerUtil.liberalGetNextWorkflowTransitions(
+					workflowTask.getWorkflowTaskId())) {
 
 			String label = workflowTransition.getLabel(getTaskContentLocale());
 
