@@ -4684,7 +4684,8 @@ public class JenkinsResultsParserUtil {
 
 	public static String normalizeURL(String url) {
 		if (isNullOrEmpty(url) ||
-			(_isLegalURI(url) && !_hasRawSquareBracket(url))) {
+			(_isLegalURI(url) && !_hasNonASCIICharacter(url) &&
+			 !_hasRawSquareBracket(url))) {
 
 			return url;
 		}
@@ -7132,6 +7133,16 @@ public class JenkinsResultsParserUtil {
 		}
 
 		return hostName + ":" + filePath;
+	}
+
+	private static boolean _hasNonASCIICharacter(String url) {
+		for (int i = 0; i < url.length(); i++) {
+			if (url.charAt(i) > 127) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static boolean _hasRawSquareBracket(String url) {
