@@ -36,8 +36,8 @@ public class PIMConnectorDispatchTriggerUtil {
 
 		DispatchTrigger dispatchTrigger =
 			DispatchTriggerLocalServiceUtil.addDispatchTrigger(
-				_getExternalReferenceCode(
-					objectEntry.getExternalReferenceCode()),
+				_EXTERNAL_REFERENCE_CODE_PREFIX +
+					objectEntry.getExternalReferenceCode(),
 				objectEntry.getUserId(), PIMConnectorDispatchTaskExecutor.KEY,
 				UnicodePropertiesBuilder.put(
 					"pimConnectorObjectEntryId", objectEntry.getObjectEntryId()
@@ -67,8 +67,8 @@ public class PIMConnectorDispatchTriggerUtil {
 		DispatchTrigger dispatchTrigger =
 			DispatchTriggerLocalServiceUtil.
 				fetchDispatchTriggerByExternalReferenceCode(
-					_getExternalReferenceCode(
-						objectEntry.getExternalReferenceCode()),
+					_EXTERNAL_REFERENCE_CODE_PREFIX +
+						objectEntry.getExternalReferenceCode(),
 					objectEntry.getCompanyId());
 
 		if (dispatchTrigger != null) {
@@ -82,7 +82,8 @@ public class PIMConnectorDispatchTriggerUtil {
 
 		return DispatchTriggerLocalServiceUtil.
 			fetchDispatchTriggerByExternalReferenceCode(
-				_getExternalReferenceCode(objectEntryExternalReferenceCode),
+				_EXTERNAL_REFERENCE_CODE_PREFIX +
+					objectEntryExternalReferenceCode,
 				companyId);
 	}
 
@@ -127,8 +128,8 @@ public class PIMConnectorDispatchTriggerUtil {
 
 		return DispatchTriggerLocalServiceUtil.
 			getDispatchTriggerByExternalReferenceCode(
-				_getExternalReferenceCode(
-					objectEntry.getExternalReferenceCode()),
+				_EXTERNAL_REFERENCE_CODE_PREFIX +
+					objectEntry.getExternalReferenceCode(),
 				objectEntry.getCompanyId());
 	}
 
@@ -188,16 +189,13 @@ public class PIMConnectorDispatchTriggerUtil {
 		return calendar;
 	}
 
-	private static String _getExternalReferenceCode(
-		String objectEntryExternalReferenceCode) {
-
-		return "L_PIM_CONNECTOR_" + objectEntryExternalReferenceCode;
-	}
-
 	private static String _getName(ObjectEntry objectEntry) {
 		return StringBundler.concat(
 			MapUtil.getString(objectEntry.getValues(), "name"), " (",
 			objectEntry.getObjectEntryId(), ")");
 	}
+
+	private static final String _EXTERNAL_REFERENCE_CODE_PREFIX =
+		"L_PIM_CONNECTOR_";
 
 }

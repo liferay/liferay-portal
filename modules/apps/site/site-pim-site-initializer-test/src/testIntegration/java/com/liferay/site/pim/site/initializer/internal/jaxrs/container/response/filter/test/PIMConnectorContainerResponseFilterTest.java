@@ -86,7 +86,7 @@ public class PIMConnectorContainerResponseFilterTest {
 
 		_restContextPath = restContextPath.substring(1);
 
-		_endpoint = StringBundler.concat(
+		_objectEntryPath = StringBundler.concat(
 			_restContextPath, "/", _objectEntry.getObjectEntryId());
 	}
 
@@ -97,11 +97,12 @@ public class PIMConnectorContainerResponseFilterTest {
 
 	@Test
 	public void testFilter() throws Exception {
-		JSONObject jsonObject = _getJSONObject(_endpoint);
+		JSONObject jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectEntryPath, Http.Method.GET);
 
+		Assert.assertFalse(jsonObject.has("lastExecutionDate"));
 		Assert.assertEquals(
 			"never-executed", jsonObject.getString("lastExecutionStatus"));
-		Assert.assertFalse(jsonObject.has("lastExecutionDate"));
 		Assert.assertEquals(
 			"incomplete", jsonObject.getString("mappingStatus"));
 
@@ -117,40 +118,47 @@ public class PIMConnectorContainerResponseFilterTest {
 			null, null, null, new Date(System.currentTimeMillis() - 1000),
 			DispatchTaskStatus.SUCCESSFUL);
 
-		jsonObject = _getJSONObject(_endpoint);
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectEntryPath, Http.Method.GET);
 
+		Assert.assertTrue(jsonObject.has("lastExecutionDate"));
 		Assert.assertEquals(
 			"success", jsonObject.getString("lastExecutionStatus"));
-		Assert.assertTrue(jsonObject.has("lastExecutionDate"));
 
 		_dispatchLogLocalService.addDispatchLog(
 			TestPropsValues.getUserId(), dispatchTrigger.getDispatchTriggerId(),
 			null, null, null, new Date(), DispatchTaskStatus.FAILED);
 
-		jsonObject = _getJSONObject(_endpoint);
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectEntryPath, Http.Method.GET);
 
 		Assert.assertEquals(
 			"failed", jsonObject.getString("lastExecutionStatus"));
 
-		for (String channelFieldName : _REQUIRED_CHANNEL_FIELD_NAMES) {
-			_addPIMConnectorFieldMappingObjectEntry(channelFieldName);
-		}
+		_addPIMConnectorFieldMappingObjectEntry("catalogId");
+		_addPIMConnectorFieldMappingObjectEntry("name");
+		_addPIMConnectorFieldMappingObjectEntry("productType");
+		_addPIMConnectorFieldMappingObjectEntry("skus[].sku");
 
-		jsonObject = _getJSONObject(_endpoint);
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectEntryPath, Http.Method.GET);
 
 		Assert.assertEquals("complete", jsonObject.getString("mappingStatus"));
 
-		jsonObject = _getJSONObject(_endpoint + "?fields=id,name");
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectEntryPath + "?fields=id,name", Http.Method.GET);
 
 		Assert.assertFalse(jsonObject.has("lastExecutionStatus"));
 		Assert.assertFalse(jsonObject.has("mappingStatus"));
 
-		jsonObject = _getJSONObject(
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null,
 			StringBundler.concat(
 				_restContextPath, "?filter=",
 				URLCodec.encodeURL(
 					StringBundler.concat(
-						"id eq '", _objectEntry.getObjectEntryId(), "'"))));
+						"id eq '", _objectEntry.getObjectEntryId(), "'"))),
+			Http.Method.GET);
 
 		JSONArray jsonArray = jsonObject.getJSONArray("items");
 
@@ -162,8 +170,9 @@ public class PIMConnectorContainerResponseFilterTest {
 			"failed", jsonObject.getString("lastExecutionStatus"));
 		Assert.assertEquals("complete", jsonObject.getString("mappingStatus"));
 
-		jsonObject = _getJSONObject(
-			_endpoint + "/pimConnectorToPIMConnectorFieldMappings");
+		jsonObject = HTTPTestUtil.invokeToJSONObject(
+			null, _objectEntryPath + "/pimConnectorToPIMConnectorFieldMappings",
+			Http.Method.GET);
 
 		jsonArray = jsonObject.getJSONArray("items");
 
@@ -212,21 +221,12 @@ public class PIMConnectorContainerResponseFilterTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	private JSONObject _getJSONObject(String endpoint) throws Exception {
-		return HTTPTestUtil.invokeToJSONObject(null, endpoint, Http.Method.GET);
-	}
-
-	private static final String[] _REQUIRED_CHANNEL_FIELD_NAMES = {
-		"catalogId", "name", "productType", "skus[].sku"
-	};
-
 	@Inject
 	private DispatchLogLocalService _dispatchLogLocalService;
 
 	@Inject
 	private DispatchTriggerLocalService _dispatchTriggerLocalService;
 
-	private String _endpoint;
 	private ObjectDefinition _objectDefinition;
 
 	@Inject
@@ -236,6 +236,8 @@ public class PIMConnectorContainerResponseFilterTest {
 
 	@Inject
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	private String _objectEntryPath;
 
 	@Inject
 	private ObjectFieldLocalService _objectFieldLocalService;

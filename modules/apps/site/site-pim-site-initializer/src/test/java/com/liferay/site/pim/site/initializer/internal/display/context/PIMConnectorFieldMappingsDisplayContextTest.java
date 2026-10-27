@@ -316,7 +316,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals("play", jsonObject.getString("symbolLeft"));
 		Assert.assertEquals("asyncPost", jsonObject.getString("target"));
 
-		_testGetBreadcrumbPropsWhenMappingIsIncomplete();
+		_testGetBreadcrumbPropsWithIncompleteMapping();
 	}
 
 	@Test
@@ -399,7 +399,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 		return objectDefinition;
 	}
 
-	private void _testGetBreadcrumbPropsWhenMappingIsIncomplete()
+	private void _testGetBreadcrumbPropsWithIncompleteMapping()
 		throws Exception {
 
 		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
