@@ -65,8 +65,12 @@ public class LayoutSetBranchServiceTest {
 	@Test
 	public void testMergeLayoutSetBranch() throws Exception {
 		LayoutSetBranch layoutSetBranch = _addLayoutSetBranch(_group);
-		LayoutSetBranch mergeLayoutSetBranch = _addLayoutSetBranch(
-			GroupTestUtil.addGroup());
+
+		Group group = GroupTestUtil.addGroup();
+
+		_groups.add(group);
+
+		LayoutSetBranch mergeLayoutSetBranch = _addLayoutSetBranch(group);
 
 		_assertMustHaveViewPermission(
 			mergeLayoutSetBranch,
@@ -77,8 +81,6 @@ public class LayoutSetBranchServiceTest {
 	}
 
 	private LayoutSetBranch _addLayoutSetBranch(Group group) throws Exception {
-		_groups.add(group);
-
 		return _layoutSetBranchLocalService.addLayoutSetBranch(
 			TestPropsValues.getUserId(), group.getGroupId(), false,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), true,
@@ -124,8 +126,11 @@ public class LayoutSetBranchServiceTest {
 	private void _testAddLayoutSetBranchWithCopyLayoutSetBranchFromAnotherGroup()
 		throws Exception {
 
-		LayoutSetBranch layoutSetBranch = _addLayoutSetBranch(
-			GroupTestUtil.addGroup());
+		Group group = GroupTestUtil.addGroup();
+
+		_groups.add(group);
+
+		LayoutSetBranch layoutSetBranch = _addLayoutSetBranch(group);
 
 		_assertMustHaveViewPermission(
 			layoutSetBranch,
