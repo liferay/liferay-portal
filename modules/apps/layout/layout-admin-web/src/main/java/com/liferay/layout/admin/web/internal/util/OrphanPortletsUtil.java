@@ -119,14 +119,14 @@ public class OrphanPortletsUtil {
 			return Collections.emptyList();
 		}
 
+		List<String> portletIds = new ArrayList<>();
+
 		long[] segmentsExperienceIds = TransformUtil.transformToLongArray(
 			LayoutPageTemplateStructureRelLocalServiceUtil.
 				getLayoutPageTemplateStructureRels(
 					layoutPageTemplateStructure.
 						getLayoutPageTemplateStructureId()),
 			LayoutPageTemplateStructureRelModel::getSegmentsExperienceId);
-
-		List<String> portletIds = new ArrayList<>();
 
 		for (FragmentEntryLink fragmentEntryLink :
 				FragmentEntryLinkLocalServiceUtil.
