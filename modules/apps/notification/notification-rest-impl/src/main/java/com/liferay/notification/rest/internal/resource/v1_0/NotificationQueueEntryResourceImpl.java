@@ -142,7 +142,7 @@ public class NotificationQueueEntryResourceImpl
 				notificationContext, notificationQueueEntry.getSubject()));
 
 		notificationContext.setNotificationRecipient(
-			NotificationUtil.toNotificationRecipient(0L, contextUser));
+			NotificationUtil.toNotificationRecipient(0, contextUser));
 
 		for (Object recipient : notificationQueueEntry.getRecipients()) {
 			Map<String, Object> recipientMap = (Map<String, Object>)recipient;
@@ -156,7 +156,7 @@ public class NotificationQueueEntryResourceImpl
 		notificationContext.setNotificationRecipientSettings(
 			_notificationRecipientSettingLocalService.
 				createNotificationRecipientSettings(
-					0L, null, notificationQueueEntry.getRecipients(),
+					0, null, notificationQueueEntry.getRecipients(),
 					contextUser));
 
 		notificationContext.setType(NotificationConstants.TYPE_EMAIL);

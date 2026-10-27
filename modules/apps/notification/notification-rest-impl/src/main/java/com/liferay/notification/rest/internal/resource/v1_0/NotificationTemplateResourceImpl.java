@@ -276,7 +276,7 @@ public class NotificationTemplateResourceImpl
 		com.liferay.notification.model.NotificationTemplate
 			serviceBuilderNotificationTemplate =
 				NotificationUtil.toNotificationTemplate(
-					notificationTemplate, 0L, _objectDefinitionLocalService,
+					notificationTemplate, 0, _objectDefinitionLocalService,
 					contextUser);
 
 		NotificationContext notificationContext =
@@ -286,10 +286,10 @@ public class NotificationTemplateResourceImpl
 
 		notificationContext.setCompanyId(contextCompany.getCompanyId());
 		notificationContext.setModelPermissions(
-			_toModelPermissions(notificationTemplate, 0L));
+			_toModelPermissions(notificationTemplate, 0));
 
 		NotificationRecipient notificationRecipient =
-			NotificationUtil.toNotificationRecipient(0L, contextUser);
+			NotificationUtil.toNotificationRecipient(0, contextUser);
 
 		notificationContext.setNotificationRecipient(notificationRecipient);
 		notificationContext.setNotificationRecipientSettings(
