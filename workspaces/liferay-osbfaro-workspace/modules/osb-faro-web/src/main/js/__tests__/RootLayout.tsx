@@ -17,8 +17,6 @@ jest.mock('react-redux', () => ({
 
 jest.mock('shared/components/AlertFeed', () => () => null);
 
-jest.mock('shared/components/ModalRenderer', () => () => null);
-
 jest.mock('shared/hooks/useCurrentUser', () => ({
 	useFetchCurrentUser: () => ({data: undefined, loading: false}),
 }));

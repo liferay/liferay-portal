@@ -1,9 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Modal Footer should render 1`] = `
-<div>
-  <div
-    class="modal-footer"
-  />
-</div>
-`;

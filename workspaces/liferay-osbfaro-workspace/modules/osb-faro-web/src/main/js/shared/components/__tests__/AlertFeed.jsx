@@ -27,12 +27,6 @@ describe('AlertFeed', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('should render with modal open', () => {
-		const {container} = render(<AlertFeed {...defaultProps} modalActive />);
-
-		expect(container).toMatchSnapshot();
-	});
-
 	it('should render with a message comprised of language keys with jsx substitutions', () => {
 		const props = {
 			alertsIMap: fromJS({
