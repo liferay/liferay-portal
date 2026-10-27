@@ -24,7 +24,12 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -232,6 +237,18 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 				LayoutPageTemplateConstants.
 					PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
 				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT);
+		LayoutPageTemplateEntry widgetLayoutPageTemplateEntry1 =
+			_addLayoutPageTemplateEntry(
+				0, _group.getGroupId(),
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
+		LayoutPageTemplateEntry widgetLayoutPageTemplateEntry2 =
+			_addLayoutPageTemplateEntry(
+				0, _group.getGroupId(),
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE);
 
 		_importLayouts(
 			false, _importedGroup.getGroupId(),
@@ -249,6 +266,10 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry1);
 		_assertExists(
 			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), widgetLayoutPageTemplateEntry1);
+		_assertExists(
+			_importedGroup.getGroupId(), widgetLayoutPageTemplateEntry2);
 
 		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
 			basicLayoutPageTemplateEntry2);
@@ -256,6 +277,13 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 			displayPageLayoutPageTemplateEntry2);
 		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
 			masterLayoutPageTemplateEntry2);
+		_layoutPageTemplateEntryLocalService.deleteLayoutPageTemplateEntry(
+			widgetLayoutPageTemplateEntry2);
+
+		_assertJSONTypeInfoPropertyValue(
+			"ContentPageTemplate", basicLayoutPageTemplateEntry2);
+		_assertJSONTypeInfoPropertyValue(
+			"WidgetPageTemplate", widgetLayoutPageTemplateEntry2);
 
 		_importLayouts(
 			true, _importedGroup.getGroupId(),
@@ -273,6 +301,10 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry1);
 		_assertDoesNotExist(
 			_importedGroup.getGroupId(), masterLayoutPageTemplateEntry2);
+		_assertExists(
+			_importedGroup.getGroupId(), widgetLayoutPageTemplateEntry1);
+		_assertDoesNotExist(
+			_importedGroup.getGroupId(), widgetLayoutPageTemplateEntry2);
 	}
 
 	private Group _addDesignLibraryGroup() throws Exception {
@@ -358,6 +390,25 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 					groupId));
 	}
 
+	private void _assertJSONTypeInfoPropertyValue(
+			String jsonTypeInfoPropertyValue,
+			LayoutPageTemplateEntry layoutPageTemplateEntry)
+		throws Exception {
+
+		SystemEvent systemEvent = _systemEventLocalService.fetchSystemEvent(
+			layoutPageTemplateEntry.getGroupId(),
+			_portal.getClassNameId(LayoutPageTemplateEntry.class),
+			layoutPageTemplateEntry.getLayoutPageTemplateEntryId(),
+			SystemEventConstants.TYPE_DELETE);
+
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			systemEvent.getExtraData());
+
+		Assert.assertEquals(
+			jsonTypeInfoPropertyValue,
+			jsonObject.getString("jsonTypeInfoPropertyValue"));
+	}
+
 	private File _exportLayouts(boolean deletions, long groupId)
 		throws Exception {
 
@@ -428,6 +479,9 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 	private Group _importedGroup;
 
 	@Inject
+	private JSONFactory _jsonFactory;
+
+	@Inject
 	private LayoutPageTemplateCollectionLocalService
 		_layoutPageTemplateCollectionLocalService;
 
@@ -437,5 +491,8 @@ public class LayoutPageTemplatePortletDataHandlerTest {
 
 	@Inject
 	private Portal _portal;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 }
