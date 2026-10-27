@@ -211,6 +211,7 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		super.testGetDesignLibraryMasterPage();
 
 		_testGetDesignLibraryMasterPageActions();
+		_testGetDesignLibraryMasterPageWithNestedFields();
 	}
 
 	@Override
@@ -1388,6 +1389,34 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		Assert.assertFalse(actions.containsKey("markAsDefault"));
 		Assert.assertTrue(actions.containsKey("permissions"));
 		Assert.assertFalse(actions.containsKey("unmarkAsDefault"));
+	}
+
+	private void _testGetDesignLibraryMasterPageWithNestedFields()
+		throws Exception {
+
+		String designLibraryExternalReferenceCode =
+			_getDesignLibraryExternalReferenceCode();
+
+		MasterPage masterPage = _addDesignLibraryMasterPage(
+			designLibraryExternalReferenceCode,
+			WorkflowConstants.STATUS_APPROVED);
+
+		MasterPageResource masterPageResource = _getMasterPageResource();
+
+		MasterPage getMasterPage =
+			masterPageResource.getDesignLibraryMasterPage(
+				designLibraryExternalReferenceCode,
+				masterPage.getExternalReferenceCode());
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					masterPage.getExternalReferenceCode(),
+					_designLibraryGroup.getGroupId());
+
+		PageSpecificationsTestUtil.assertPageSpecifications(
+			_layoutLocalService.getLayout(layoutPageTemplateEntry.getPlid()),
+			getMasterPage.getPageSpecifications());
 	}
 
 	private void _testGetSiteMasterPage(MasterPage masterPage)
