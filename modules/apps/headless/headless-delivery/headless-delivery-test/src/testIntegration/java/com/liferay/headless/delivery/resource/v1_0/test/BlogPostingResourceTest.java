@@ -12,6 +12,7 @@ import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.headless.delivery.client.dto.v1_0.BlogPosting;
+import com.liferay.headless.delivery.client.dto.v1_0.Rating;
 import com.liferay.headless.delivery.client.dto.v1_0.TaxonomyCategoryBrief;
 import com.liferay.headless.delivery.client.dto.v1_0.TaxonomyCategoryReference;
 import com.liferay.headless.delivery.client.pagination.Page;
@@ -32,9 +33,11 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Objects;
 
 import org.hamcrest.CoreMatchers;
@@ -93,6 +96,15 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 			404,
 			blogPostingResource.deleteBlogPostingMyRatingHttpResponse(
 				irrelevantBlogPosting.getId()));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-104395")
+	public void testGetBlogPostingMyRating() throws Exception {
+		super.testGetBlogPostingMyRating();
+
+		_testGetBlogPostingMyRatingActions();
 	}
 
 	@Override
@@ -287,6 +299,22 @@ public class BlogPostingResourceTest extends BaseBlogPostingResourceTestCase {
 		}
 
 		return contains;
+	}
+
+	private void _testGetBlogPostingMyRatingActions() throws Exception {
+		BlogPosting blogPosting = testGetBlogPosting_addBlogPosting();
+
+		testGetBlogPostingMyRating_addRating(
+			blogPosting.getId(), randomRating());
+
+		Rating rating = blogPostingResource.getBlogPostingMyRating(
+			blogPosting.getId());
+
+		Map<String, Map<String, String>> actions = rating.getActions();
+
+		Assert.assertEquals(
+			SetUtil.fromArray("create", "delete", "get", "replace"),
+			actions.keySet());
 	}
 
 	private BlogPosting _testGetSiteBlogPostingsPage_addBlogPosting(
