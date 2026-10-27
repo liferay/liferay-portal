@@ -166,10 +166,11 @@ public class PortalWorkspaceGitRepositoryTest
 
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
-		String sha = RandomTestUtil.randomSHA();
-
 		PortalWorkspaceGitRepository basePortalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
+
+		String sha = RandomTestUtil.randomSHA();
+
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_newPortalWorkspaceGitRepository(sha, "master-private");
 
