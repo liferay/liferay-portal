@@ -47,7 +47,8 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 
 		_checkPermissions(layoutSetBranchId, plid);
 
-		_checkPortletPreferencesPlid(plid, portletPreferencesPlid);
+		_checkLayoutRevision(
+			parentLayoutRevisionId, plid, portletPreferencesPlid);
 
 		return layoutRevisionLocalService.addLayoutRevision(
 			getUserId(), layoutSetBranchId, layoutBranchId,
@@ -55,6 +56,37 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 			privateLayout, name, title, description, keywords, robots,
 			typeSettings, iconImage, iconImageId, themeId, colorSchemeId, css,
 			serviceContext);
+	}
+
+	private void _checkLayoutRevision(long layoutRevisionId, long plid)
+		throws NoSuchLayoutRevisionException {
+
+		LayoutRevision layoutRevision =
+			layoutRevisionPersistence.fetchByPrimaryKey(layoutRevisionId);
+
+		if ((layoutRevision == null) || (layoutRevision.getPlid() != plid)) {
+			throw new NoSuchLayoutRevisionException(
+				StringBundler.concat(
+					"No layout revision exists with the primary key ",
+					layoutRevisionId, " for layout ", plid));
+		}
+	}
+
+	private void _checkLayoutRevision(
+			long parentLayoutRevisionId, long plid, long portletPreferencesPlid)
+		throws PortalException {
+
+		if (parentLayoutRevisionId > 0) {
+			_checkLayoutRevision(parentLayoutRevisionId, plid);
+		}
+
+		if ((portletPreferencesPlid == LayoutConstants.DEFAULT_PLID) ||
+			(portletPreferencesPlid == plid)) {
+
+			return;
+		}
+
+		_checkLayoutRevision(portletPreferencesPlid, plid);
 	}
 
 	private void _checkPermissions(long layoutSetBranchId, long plid)
@@ -79,27 +111,6 @@ public class LayoutRevisionServiceImpl extends LayoutRevisionServiceBaseImpl {
 
 		LayoutPermissionUtil.check(
 			getPermissionChecker(), layout, ActionKeys.UPDATE);
-	}
-
-	private void _checkPortletPreferencesPlid(
-			long plid, long portletPreferencesPlid)
-		throws PortalException {
-
-		if ((portletPreferencesPlid == LayoutConstants.DEFAULT_PLID) ||
-			(portletPreferencesPlid == plid)) {
-
-			return;
-		}
-
-		LayoutRevision layoutRevision =
-			layoutRevisionPersistence.fetchByPrimaryKey(portletPreferencesPlid);
-
-		if ((layoutRevision == null) || (layoutRevision.getPlid() != plid)) {
-			throw new NoSuchLayoutRevisionException(
-				StringBundler.concat(
-					"No layout revision exists with the primary key ",
-					portletPreferencesPlid, " for layout ", plid));
-		}
 	}
 
 	@BeanReference(type = LayoutPersistence.class)
