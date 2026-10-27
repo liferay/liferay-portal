@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.model.impl;
 
+import com.liferay.osb.faro.constants.FaroProjectConstants;
 import com.liferay.osb.faro.provisioning.client.constants.ProductConstants;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -25,6 +26,37 @@ import java.util.Date;
 public class FaroProjectImpl extends FaroProjectBaseImpl {
 
 	@Override
+	public Date getCreateDate() {
+		return new Date(getCreateTime());
+	}
+
+	@Override
+	public long getIndividualsCountSinceLastAnniversary() throws Exception {
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
+
+		return subscriptionJSONObject.getLong(
+			"individualsCountSinceLastAnniversary");
+	}
+
+	@Override
+	public long getIndividualsLimit() throws Exception {
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
+
+		return subscriptionJSONObject.getLong("individualsLimit");
+	}
+
+	@Override
+	public double getIndividualsUsage() throws Exception {
+		return _getUsage(
+			getIndividualsCountSinceLastAnniversary(), getIndividualsLimit());
+	}
+
+	@Override
+	public Date getLastAccessDate() {
+		return new Date(getLastAccessTime());
+	}
+
+	@Override
 	public Date getLastAnniversaryDate() throws Exception {
 		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
 
@@ -32,8 +64,35 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 	}
 
 	@Override
+	public long getPageViewsCountSinceLastAnniversary() throws Exception {
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
+
+		return subscriptionJSONObject.getLong(
+			"pageViewsCountSinceLastAnniversary");
+	}
+
+	@Override
+	public long getPageViewsLimit() throws Exception {
+		JSONObject subscriptionJSONObject = _getSubscriptionJSONObject();
+
+		return subscriptionJSONObject.getLong("pageViewsLimit");
+	}
+
+	@Override
+	public double getPageViewsUsage() throws Exception {
+		return _getUsage(
+			getPageViewsCountSinceLastAnniversary(), getPageViewsLimit());
+	}
+
+	@Override
 	public String getProjectId() {
 		return StringUtil.removeSubstring(getWeDeployKey(), ".lfr.cloud");
+	}
+
+	@Override
+	public String getShortSubscriptionName() throws Exception {
+		return StringUtil.removeSubstring(
+			getSubscriptionName(), "Liferay Analytics Cloud ");
 	}
 
 	@Override
@@ -106,6 +165,11 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 	}
 
 	@Override
+	public boolean isOffline() {
+		return !StringUtil.equals(getState(), FaroProjectConstants.STATE_READY);
+	}
+
+	@Override
 	public boolean isTrial() {
 		try {
 			return StringUtil.equals(
@@ -133,6 +197,16 @@ public class FaroProjectImpl extends FaroProjectBaseImpl {
 		}
 
 		return _subscriptionJSONObject;
+	}
+
+	private double _getUsage(long count, long limit) {
+		if ((count == 0) || (limit == 0)) {
+			return 0.0;
+		}
+
+		double usage = 100.0 * count / limit;
+
+		return Math.round(usage * 100) / 100.0;
 	}
 
 	private boolean _matches(String ipAddress1, String ipAddress2)
