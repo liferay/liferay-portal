@@ -78,13 +78,15 @@ public class JobFactoryTest extends com.liferay.jenkins.results.parser.Test {
 		UpstreamPortalTopLevelBuild upstreamPortalTopLevelBuild = Mockito.mock(
 			UpstreamPortalTopLevelBuild.class);
 
+		String branchName = RandomTestUtil.randomString() + "-private";
+
 		Mockito.doReturn(
-			portalUpstreamBranchName
+			branchName
 		).when(
 			upstreamPortalTopLevelBuild
-		).getPortalUpstreamBranchName();
+		).getBranchName();
 
-		_testNewJob(job, portalUpstreamBranchName, upstreamPortalTopLevelBuild);
+		_testNewJob(job, branchName, upstreamPortalTopLevelBuild);
 	}
 
 	@Test
