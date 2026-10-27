@@ -2,7 +2,7 @@ components:
     schemas:
         Account:
             description:
-                "An account synced to Analytics Cloud. Accounts aggregate individuals (or contacts) employed by or associated with a single organization."
+                "An account synced to LDP. Accounts aggregate individuals (or contacts) employed by or associated with a single organization."
             properties:
                 accountName:
                     description:
@@ -33,7 +33,7 @@ components:
                     type: string
                 dateModified:
                     description:
-                        "Last time the account record was modified within Analytics Cloud."
+                        "Last time the account record was modified within LDP."
                     format: date-time
                     readOnly: true
                     type: string
@@ -314,7 +314,7 @@ components:
             type: object
         Individual:
             description:
-                "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only)."
+                "A single individual synced to LDP. Individuals are aggregated from data sources configured to sync to LDP, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only)."
             properties:
                 accountName:
                     description:
@@ -329,7 +329,7 @@ components:
                     type: integer
                 activityStatus:
                     description:
-                        "Engagement classification computed by Analytics Cloud from the individual's recent activity. The set of values is defined by the analytics engine."
+                        "Engagement classification computed by LDP from the individual's recent activity: ACTIVE or INACTIVE."
                     readOnly: true
                     type: string
                 averageSessionDuration:
@@ -340,7 +340,7 @@ components:
                     type: integer
                 dateCreated:
                     description:
-                        "First time this Individual was observed by Analytics Cloud."
+                        "First time this Individual was observed by LDP."
                     format: date-time
                     readOnly: true
                     type: string
@@ -356,7 +356,7 @@ components:
                             $ref: "#/components/schemas/IndividualDemographicField"
                         type: array
                     description:
-                        "Per-category demographic attributes attached to this Individual. The map key is the demographic category (e.g. 'profile', 'address', 'employment'), and each value is a list of attribute records. Use `IndividualDemographicField.fieldType` to interpret each `value`."
+                        "Demographic attributes attached to this Individual, keyed by field name (e.g. 'givenName', 'jobTitle', 'birthDate'). Each value lists the records for that field, one per data source that supplies it. Use `IndividualDemographicField.fieldType` to interpret each `value`."
                     readOnly: true
                     type: object
                 emailAddress:
@@ -412,7 +412,7 @@ components:
             type: object
         IndividualDemographicField:
             description:
-                "A single demographic attribute attached to an individual (e.g. job title, age, country). Sourced from connected data sources. Multiple attributes can share a category in `Individual.demographics`."
+                "A single demographic attribute attached to an individual (e.g. job title, age, country). Sourced from connected data sources. Records of the same field from different data sources share one key in `Individual.demographics`."
             properties:
                 fieldType:
                     description:
@@ -633,7 +633,7 @@ components:
                     type: number
                 trendClassification:
                     description:
-                        "Direction of the change from the previous range (e.g. POSITIVE, NEGATIVE, NEUTRAL). The set of values is defined by the analytics engine."
+                        "Direction of the change from the previous range: POSITIVE, NEGATIVE or NEUTRAL."
                     readOnly: true
                     type: string
                 trendPercentage:
@@ -793,11 +793,11 @@ components:
             type: object
         Workspace:
             description:
-                "An Analytics Cloud workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`."
+                "An LDP workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`."
             properties:
                 groupId:
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
+                        "ID of the Liferay site that owns the LDP workspace. Use this with other endpoints to scope requests to this workspace."
                     format: int64
                     readOnly: true
                     type: integer
@@ -809,11 +809,11 @@ components:
             type: object
 info:
     description:
-        "Read-only headless REST API for Liferay Analytics Cloud. Exposes accounts, asset-summary metrics, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned Analytics Cloud workspace. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'."
+        "Read only headless REST API for LDP (Liferay Data Platform). Exposes accounts, asset summary metrics, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned LDP workspace. Every tool accepts a `fields` input: request only the fields you need, especially on lists, and leave out the heavy fields `demographics`, `events` and `attributes` unless the question needs them. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'."
     license:
         name: Apache 2.0
         url: http://www.apache.org/licenses/LICENSE-2.0.html
-    title: Liferay Analytics Cloud Headless REST API
+    title: LDP Headless REST API
     version: v1.0
     x-class-name: FaroRest
 openapi: 3.0.1
@@ -821,12 +821,12 @@ paths:
     "/workspace/{groupId}/account-lifecycles/{accountLifecycleId}/stage-transitions":
         get:
             description:
-                "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are stage names (e.g. 'Pipeline' or 'at risk'), matched ignoring case and surrounding spaces. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are stage names (e.g. 'Pipeline' or 'at risk'), matched ignoring case and surrounding spaces. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 90 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupAccountLifecycleStageTransitionsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -872,13 +872,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_90_DAYS). Defaults to LAST_90_DAYS. When both rangeStart and rangeEnd are set, they take precedence over rangeKey."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_90_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_90_DAYS
                     name: rangeKey
                     schema:
@@ -886,7 +886,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -928,12 +928,12 @@ paths:
     "/workspace/{groupId}/accounts/{accountId}":
         get:
             description:
-                "Fetch a single account by ID from an Analytics Cloud Workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
+                "Fetch a single account by ID from an LDP workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
             operationId: getWorkspaceGroupAccount
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -959,12 +959,12 @@ paths:
     "/workspace/{groupId}/channels":
         get:
             description:
-                "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
+                "List channels configured within an LDP workspace. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
             operationId: getWorkspaceGroupChannelsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -987,12 +987,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}":
         get:
             description:
-                "Fetch a single channel (also known as property) from an Analytics Cloud workspace. To list available channels in the workspace use `getWorkspaceGroupChannelsPage`."
+                "Fetch a single channel (also known as property) from an LDP workspace. To list available channels in the workspace use `getWorkspaceGroupChannelsPage`."
             operationId: getWorkspaceGroupChannel
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1018,12 +1018,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/accounts":
         get:
             description:
-                "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing the name of a stage; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the channel's default account lifecycle when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List or search accounts synced to an LDP workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing the name of a stage; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the channel's default account lifecycle when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getWorkspaceGroupAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelAccountsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1031,7 +1031,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose search terms should be listed."
+                        "ID of the channel whose accounts should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1063,13 +1063,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1077,13 +1077,13 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Free-text keyword search across account name and related fields. Empty or null returns all matching assets."
+                        "Free text keyword search across account name and related fields. Empty or null returns all accounts."
                     name: search
                     schema:
                         type: string
@@ -1111,12 +1111,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/event-metrics":
         get:
             description:
-                "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelAccountEventMetric
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1124,7 +1124,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose events should be counted should be returned."
+                        "ID of the channel whose events should be counted."
                     name: channelId
                     required: true
                     schema:
@@ -1146,13 +1146,13 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1160,7 +1160,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1183,12 +1183,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/user-sessions":
         get:
             description:
-                "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelAccountUserSessionsPage
             parameters:
                 -   in: path
                     description:
-                        "Identifier of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1196,7 +1196,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "Identifier of the channel whose sessions should be listed should be returned."
+                        "ID of the channel whose sessions should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1222,13 +1222,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1236,7 +1236,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1263,12 +1263,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/asset-summaries":
         get:
             description:
-                "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period over period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelAssetSummariesPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1276,7 +1276,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose search terms should be listed."
+                        "ID of the channel whose asset summaries should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1307,13 +1307,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1321,7 +1321,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as datetime (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1361,12 +1361,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/events":
         get:
             description:
-                "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelEventsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1411,13 +1411,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1425,7 +1425,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1458,12 +1458,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individual-segments":
         get:
             description:
-                "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+                "List individual segments within an LDP workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
             operationId: getWorkspaceGroupChannelIndividualSegmentsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1471,7 +1471,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose search terms should be listed."
+                        "ID of the channel whose individual segments should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1524,12 +1524,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individuals":
         get:
             description:
-                "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List individuals for an LDP workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, individuals are not filtered by activity date. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelIndividualsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1537,7 +1537,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose search terms should be listed."
+                        "ID of the channel whose individuals should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1589,13 +1589,13 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. When no range is given, individuals are not filtered by activity date. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1603,7 +1603,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1637,12 +1637,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/event-metrics":
         get:
             description:
-                "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelIndividualEventMetric
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1650,7 +1650,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose events should be counted should be returned."
+                        "ID of the channel whose events should be counted."
                     name: channelId
                     required: true
                     schema:
@@ -1672,13 +1672,13 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1686,7 +1686,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1709,12 +1709,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/user-sessions":
         get:
             description:
-                "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelIndividualUserSessionsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1722,7 +1722,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose sessions should be listed should be returned."
+                        "ID of the channel whose sessions should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1748,13 +1748,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1762,7 +1762,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1789,12 +1789,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/pages":
         get:
             description:
-                "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List analytics metrics for tracked pages on the workspace, ranked by visitors or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'top pages' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelPagesPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1802,7 +1802,7 @@ paths:
                         type: integer
                 -   in: path
                     description:
-                        "ID of the channel whose search terms should be listed."
+                        "ID of the channel whose pages should be listed."
                     name: channelId
                     required: true
                     schema:
@@ -1839,13 +1839,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1853,7 +1853,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as datetime (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1871,7 +1871,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Sort expression `column:asc|desc`. Defaults to `viewsMetric:desc`. Common columns: viewsMetric, visitorsMetric, bounceMetric, avgTimeOnPageMetric."
+                        "Sort expression `column:asc|desc`. Defaults to `visitorsMetric:desc` when omitted. Common columns: visitorsMetric, viewsMetric, bounceMetric, avgTimeOnPageMetric."
                     example: viewsMetric:desc
                     name: sort
                     schema:
@@ -1893,12 +1893,12 @@ paths:
     "/workspace/{groupId}/channels/{channelId}/search-terms":
         get:
             description:
-                "List search terms used on pages tracked by the Analytics Cloud workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'most searched words' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+                "List search terms used on pages tracked by the LDP workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'most searched words' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
             operationId: getWorkspaceGroupChannelSearchTermsPage
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1925,13 +1925,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values. Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -1939,7 +1939,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -1960,12 +1960,12 @@ paths:
     "/workspace/{groupId}/individual-segments/{individualSegmentId}":
         get:
             description:
-                "Fetch a single individual segment by ID from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+                "Fetch a single individual segment by ID from an LDP workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
             operationId: getWorkspaceGroupIndividualSegment
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -1996,7 +1996,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -2036,7 +2036,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -2063,13 +2063,13 @@ paths:
                         type: integer
                 -   in: query
                     description:
-                        "Custom range end as date (e.g. 2026-01-01). Must be set together with rangeStart, as a rangeKey alternative."
+                        "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`."
                     name: rangeEnd
                     schema:
                         type: string
                 -   in: query
                     description:
-                        "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates."
+                        "Date range preset. Use one of the listed enum values. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`."
                     example: LAST_30_DAYS
                     name: rangeKey
                     schema:
@@ -2077,7 +2077,7 @@ paths:
                         type: string
                 -   in: query
                     description:
-                        "Custom range start as date (e.g. 2026-01-01). Must be set together with rangeEnd, as a rangeKey alternative."
+                        "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`."
                     name: rangeStart
                     schema:
                         type: string
@@ -2116,7 +2116,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -2165,12 +2165,12 @@ paths:
     "/workspace/{groupId}/individuals/{individualId}":
         get:
             description:
-                "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
+                "Fetch a single Individual from an LDP workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
             operationId: getWorkspaceGroupIndividual
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -2207,7 +2207,7 @@ paths:
             parameters:
                 -   in: path
                     description:
-                        "ID of the Liferay site that owns the Analytics Cloud workspace."
+                        "ID of the Liferay site that owns the LDP workspace."
                     name: groupId
                     required: true
                     schema:
@@ -2268,7 +2268,7 @@ paths:
     "/workspaces":
         get:
             description:
-                "List Analytics Cloud workspaces accessible to the current user. Use the resulting `groupId` values with other endpoints (e.g. `getWorkspaceGroupChannelAccountsPage`, `getWorkspaceGroupChannelsPage`) to scope requests to a specific workspace."
+                "List LDP workspaces accessible to the current user. Use the resulting `groupId` values with other endpoints (e.g. `getWorkspaceGroupChannelAccountsPage`, `getWorkspaceGroupChannelsPage`) to scope requests to a specific workspace."
             operationId: getWorkspacesPage
             responses:
                 200:
