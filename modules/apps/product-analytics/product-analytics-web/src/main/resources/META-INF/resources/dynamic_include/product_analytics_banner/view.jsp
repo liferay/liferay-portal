@@ -14,11 +14,30 @@ ProductAnalyticsConfigurationDisplayContext productAnalyticsConfigurationDisplay
 <aui:script src="https://storage.googleapis.com/liferaycloud-cdn-product-experience-manager-assets-prd/self-hosted-script/product-analytics-script.umd.min.js" type="text/javascript"></aui:script>
 
 <aui:script type="module">
+	const lastModified =
+		'<%= productAnalyticsConfigurationDisplayContext.getLastModified() %>';
+
+	if (
+		Liferay.Util.Cookie.get(
+			'PRODUCT_ANALYTICS_CONFIGURED_DATE',
+			Liferay.Util.Cookie.TYPES.NECESSARY
+		) !== lastModified
+	) {
+		[
+			'PRODUCT_ANALYTICS_CONFIGURED',
+			'PRODUCT_ANALYTICS_CONFIGURED_DATE',
+			'PRODUCT_ANALYTICS_CONSENT_TYPE_FUNCTIONAL',
+			'PRODUCT_ANALYTICS_CONSENT_TYPE_NECESSARY',
+			'PRODUCT_ANALYTICS_CONSENT_TYPE_PERFORMANCE',
+			'PRODUCT_ANALYTICS_CONSENT_TYPE_PERSONALIZATION',
+			'PRODUCT_ANALYTICS_CONSENT_TYPE_PRODUCT_ANALYTICS',
+		].forEach((cookieName) => Liferay.Util.Cookie.remove(cookieName));
+	}
+
 	window.productAnalyticsScript = new window.productAnalyticsScript({
 		consentRenewalPeriod:
 			'<%= productAnalyticsConfigurationDisplayContext.getConsentRenewalPeriod() %>',
-		lastModified:
-			'<%= productAnalyticsConfigurationDisplayContext.getLastModified() %>',
+		lastModified,
 	});
 
 	window.productAnalyticsScript.startTrackingJourney();
