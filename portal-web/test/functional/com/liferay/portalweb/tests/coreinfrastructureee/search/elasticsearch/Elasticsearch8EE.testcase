@@ -195,7 +195,6 @@ definition {
 	test XPackPkiAuthenticationSmokeTest {
 		property elastic.pki.authentication.enabled = "true";
 		property elastic.xpack.enabled = "true";
-		property portal.acceptance = "quarantine";
 		property remote.elasticsearch.enabled = "true";
 		property search.environment.suite.exclude = "true";
 		property test.liferay.virtual.instance = "false";
@@ -222,7 +221,6 @@ definition {
 	@priority = 5
 	test XPackSmokeTest {
 		property elastic.xpack.enabled = "true";
-		property portal.acceptance = "quarantine";
 		property remote.elasticsearch.enabled = "true";
 		property search.environment.suite.exclude = "true";
 		property test.liferay.virtual.instance = "false";
@@ -264,7 +262,6 @@ definition {
 	}
 
 	@description = "This is a use case for LPS-151205."
-	@ignore = "true"
 	@priority = 5
 	test XPackWithRestrictedCipherSuitesAndTLSVersions {
 		property elastic.xpack.configure.tls.cipher.suites = "true";
