@@ -14,7 +14,6 @@ import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
-import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
@@ -29,9 +28,6 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Date;
@@ -109,15 +105,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
-			TransactionInvokerUtil.invoke(
-				_transactionConfig,
-				() -> _schedulePublish(ctCollectionId, userId, startDate));
-		}
-		catch (PortalException portalException) {
-			throw portalException;
-		}
-		catch (Throwable throwable) {
-			ReflectionUtil.throwException(throwable);
+			_schedulePublish(ctCollectionId, userId, startDate);
 		}
 	}
 
@@ -170,7 +158,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 			ctCollection.getCompanyId());
 	}
 
-	private Void _schedulePublish(
+	private void _schedulePublish(
 			long ctCollectionId, long userId, Date startDate)
 		throws PortalException {
 
@@ -184,7 +172,7 @@ public class PublishSchedulerImpl implements PublishScheduler {
 				StorageType.PERSISTED);
 
 		if (schedulerResponse != null) {
-			return null;
+			return;
 		}
 
 		_ctCollectionModelResourcePermission.check(
@@ -213,19 +201,6 @@ public class PublishSchedulerImpl implements PublishScheduler {
 				null, 0, null),
 			StorageType.PERSISTED, String.valueOf(ctCollectionId),
 			CTDestinationNames.CT_COLLECTION_SCHEDULED_PUBLISH, message);
-
-		return null;
-	}
-
-	private static final TransactionConfig _transactionConfig;
-
-	static {
-		TransactionConfig.Builder builder = new TransactionConfig.Builder();
-
-		builder.setPropagation(Propagation.REQUIRES_NEW);
-		builder.setRollbackForClasses(Exception.class);
-
-		_transactionConfig = builder.build();
 	}
 
 	@Reference
