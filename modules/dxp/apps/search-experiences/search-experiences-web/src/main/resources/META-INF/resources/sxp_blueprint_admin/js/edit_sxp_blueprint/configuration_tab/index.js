@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import ClayForm, {
 	ClayRadio,
 	ClayRadioGroup,
@@ -34,6 +35,9 @@ const CONFIGURATION_SCHEMAS = {
 	sortConfig: sortConfigurationSchema,
 };
 
+const OBJECT_DEFINITION_CLASS_NAME_PREFIX =
+	'com.liferay.object.model.ObjectDefinition#';
+
 function ConfigurationTab({
 	advancedConfig,
 	aggregationConfig,
@@ -43,6 +47,7 @@ function ConfigurationTab({
 	indexConfig,
 	parameterConfig,
 	searchIndexes,
+	searchableTypes,
 	setFieldTouched,
 	setFieldValue,
 	sortConfig,
@@ -121,6 +126,29 @@ function ConfigurationTab({
 			external: _getExternalValue(event.target.value),
 			indexName: event.target.value,
 		});
+	};
+
+	const _isCollectionProviderUnavailable = () => {
+		const searchableAssetTypes = frameworkConfig.searchableAssetTypes || [];
+
+		if (
+			!frameworkConfig.collectionProvider ||
+			frameworkConfig.legacyAssetCollectionProvider ||
+			!searchableAssetTypes.length ||
+			!searchableTypes
+		) {
+			return false;
+		}
+
+		const classNames = searchableAssetTypes.map(
+			(searchableAssetType) => searchableAssetType.split('&&')[0]
+		);
+
+		return (
+			classNames.every((className) => className === classNames[0]) &&
+			classNames[0].startsWith(OBJECT_DEFINITION_CLASS_NAME_PREFIX) &&
+			searchableTypes.every(({className}) => className !== classNames[0])
+		);
 	};
 
 	/**
@@ -215,6 +243,17 @@ function ConfigurationTab({
 							<LearnMessage resourceKey="collections-with-search-blueprints" />
 						</span>
 					</div>
+
+					{_isCollectionProviderUnavailable() && (
+						<ClayAlert
+							displayType="warning"
+							title={Liferay.Language.get('warning') + ':'}
+						>
+							{Liferay.Language.get(
+								'missing-type-reference-collection-provider-warning'
+							)}
+						</ClayAlert>
+					)}
 
 					{isDefined(
 						frameworkConfig.legacyAssetCollectionProvider
