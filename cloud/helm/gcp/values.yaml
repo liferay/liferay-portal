@@ -40,7 +40,7 @@ liferay-default:
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_DRIVER_UPPERCASEC_LASS_UPPERCASEN_AME
                 value: org.postgresql.Driver
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_URL
-                value: jdbc:postgresql://localhost:${env.DATABASE_PORT}/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
+                value: jdbc:postgresql://localhost:5432/lportal?useUnicode=true&characterEncoding=UTF-8&useFastDateParsing=false
             -   name: LIFERAY_JDBC_PERIOD_DEFAULT_PERIOD_USERNAME
                 value: ${env.DATABASE_USERNAME}
             -   name: LIFERAY_WEB_PERIOD_SERVER_PERIOD_FORWARDED_PERIOD_PORT_PERIOD_ENABLED
@@ -49,16 +49,18 @@ liferay-default:
                 value: "true"
     customEnvFrom:
         x-liferay-gcp:
+            -   configMapRef:
+                    name: database-server-details
+            -   secretRef:
+                    name: document-library-connection-details
             -   secretRef:
                     name: search-connection-details
-            -   secretRef:
-                    name: managed-service-details
     customInitContainers:
         x-cloud-sql-auth-proxy-enabled:
             -   args:
                     -   "$(DATABASE_INSTANCE_NAME)"
                     -   "--auto-iam-authn"
-                    -   "--port=$(DATABASE_PORT)"
+                    -   "--port=5432"
                     -   "--private-ip"
                     -   "--structured-logs"
                 env:
@@ -69,8 +71,8 @@ liferay-default:
                     -   name: CSQL_PROXY_HTTP_PORT
                         value: "9801"
                 envFrom:
-                    -   secretRef:
-                            name: managed-service-details
+                    -   configMapRef:
+                            name: database-server-details
                 image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.25.4
                 name: cloud-sql-proxy
                 restartPolicy: Always
