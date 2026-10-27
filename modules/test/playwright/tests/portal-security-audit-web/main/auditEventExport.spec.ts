@@ -44,6 +44,57 @@ const fields = [
 	'userId',
 ];
 
+function parseCSV(content: string) {
+	const rows: string[][] = [];
+
+	let quoted = false;
+	let row: string[] = [];
+	let value = '';
+
+	for (let index = 0; index < content.length; index++) {
+		const character = content[index];
+
+		if (quoted) {
+			if (character !== '"') {
+				value += character;
+			}
+			else if (content[index + 1] === '"') {
+				value += character;
+
+				index++;
+			}
+			else {
+				quoted = false;
+			}
+		}
+		else if (character === '"') {
+			quoted = true;
+		}
+		else if (character === ',') {
+			row.push(value);
+
+			value = '';
+		}
+		else if (character === '\n') {
+			row.push(value);
+			rows.push(row);
+
+			row = [];
+			value = '';
+		}
+		else {
+			value += character;
+		}
+	}
+
+	if (row.length || value) {
+		row.push(value);
+		rows.push(row);
+	}
+
+	return rows;
+}
+
 test('LPD-55895: Check if the additional information field is exported correctly in the .csv', async ({
 	globalMenuPage,
 	page,
@@ -82,14 +133,17 @@ test('LPD-55895: Check if the additional information field is exported correctly
 
 	await download.saveAs(filePath);
 
-	const content = await readFileSync(filePath, 'utf8');
+	const [columns, ...rows] = parseCSV(readFileSync(filePath, 'utf8'));
 
-	const jsonString = content.substring(
-		content.indexOf('{'),
-		content.indexOf('}"') + 1
-	);
+	const additionalInfos = rows
+		.map((row) => row[columns.indexOf('additionalInfo')])
+		.filter(Boolean);
 
-	expect(() => JSON.parse(jsonString.replace(/""/g, '"'))).not.toThrow();
+	expect(additionalInfos).not.toHaveLength(0);
+
+	for (const additionalInfo of additionalInfos) {
+		expect(() => JSON.parse(additionalInfo)).not.toThrow();
+	}
 });
 
 test('LPD-40224: Check if the export audit events .csv is being filtered by the search fields', async ({
@@ -179,7 +233,7 @@ test('LPD-40224: Check if the export audit events .csv is being filtered by the 
 
 	await download.saveAs(filePath);
 
-	const content = await readFileSync(filePath, 'utf8');
+	const content = readFileSync(filePath, 'utf8');
 
 	expect(content).toContain(resourceId);
 
