@@ -82,35 +82,36 @@ public class MCPToolIndexReaderTest {
 	}
 
 	@Test
-	public void testGetEntityName() {
+	public void testGetEntityPhrase() {
 		Assert.assertEquals(
-			"blog posting", _getEntityName("create a blog posting in a site"));
+			"blog posting",
+			_getEntityPhrase("create a blog posting in a site"));
 	}
 
 	@Test
-	public void testGetEntityNameWhenBoundaryWordFollowsOfPhrase() {
+	public void testGetEntityPhraseWhenBoundaryWordFollowsOfPhrase() {
 		Assert.assertEquals(
-			"site", _getEntityName("list entries of a site in a folder"));
+			"site", _getEntityPhrase("list entries of a site in a folder"));
 	}
 
 	@Test
-	public void testGetEntityNameWhenOfPhraseEndsWithArticle() {
+	public void testGetEntityPhraseWhenOfPhraseEndsWithArticle() {
 		Assert.assertEquals(
-			"blog postings", _getEntityName("list the blog postings of the"));
+			"blog postings", _getEntityPhrase("list the blog postings of the"));
 	}
 
 	@Test
-	public void testGetEntityNameWhenOfPhraseNamesEntity() {
+	public void testGetEntityPhraseWhenOfPhraseNamesEntity() {
 		Assert.assertEquals(
-			"site", _getEntityName("list the blog entries of a site"));
+			"site", _getEntityPhrase("list the blog entries of a site"));
 	}
 
 	@Test
-	public void testGetEntityNameWhenOnlyIgnoredWordsFollowVerb() {
-		Assert.assertNull(_getEntityName("create an entity"));
-		Assert.assertNull(_getEntityName("delete an object"));
-		Assert.assertNull(_getEntityName("get the entry"));
-		Assert.assertNull(_getEntityName("list the entities"));
+	public void testGetEntityPhraseWhenOnlyIgnoredWordsFollowVerb() {
+		Assert.assertNull(_getEntityPhrase("create an entity"));
+		Assert.assertNull(_getEntityPhrase("delete an object"));
+		Assert.assertNull(_getEntityPhrase("get the entry"));
+		Assert.assertNull(_getEntityPhrase("list the entities"));
 	}
 
 	@Test
@@ -337,11 +338,11 @@ public class MCPToolIndexReaderTest {
 			FunctionScoreQuery.FilterQueryScoreFunctionHolder::getFilterQuery);
 	}
 
-	private String _getEntityName(String search) {
+	private String _getEntityPhrase(String search) {
 		String[] words = WordUtil.toWords(search);
 
 		return ReflectionTestUtil.invoke(
-			_mcpToolIndexReader, "_getEntityName",
+			_mcpToolIndexReader, "_getEntityPhrase",
 			new Class<?>[] {boolean.class, String[].class},
 			_hasAssociationWords(search), words);
 	}

@@ -145,7 +145,7 @@ public class MCPToolIndexReader {
 	}
 
 	private Query _getBaseQuery(
-		boolean batch, String entityName, String search) {
+		boolean batch, String entityPhrase, String search) {
 
 		BooleanQuery booleanQuery = QueriesUtil.booleanQuery();
 
@@ -164,12 +164,12 @@ public class MCPToolIndexReader {
 			booleanQuery.addShouldQueryClauses(termQuery);
 		}
 
-		if (entityName == null) {
+		if (entityPhrase == null) {
 			return booleanQuery;
 		}
 
 		MatchQuery matchQuery = QueriesUtil.match(
-			MCPToolFields.ENTITY_NAME + ".split", entityName);
+			MCPToolFields.ENTITY_NAME + ".split", entityPhrase);
 
 		matchQuery.setBoost(2.0F);
 
@@ -271,12 +271,12 @@ public class MCPToolIndexReader {
 		return description + StringPool.SPACE + operationHint;
 	}
 
-	private String _getEntityName(boolean association, String[] words) {
+	private String _getEntityPhrase(boolean association, String[] words) {
 		if (association) {
 			return null;
 		}
 
-		String entityName = null;
+		String entityPhrase = null;
 
 		List<String> entityWords = new ArrayList<>();
 
@@ -286,7 +286,7 @@ public class MCPToolIndexReader {
 			}
 
 			if (word.equals("of") && !entityWords.isEmpty()) {
-				entityName = StringUtil.merge(entityWords, StringPool.SPACE);
+				entityPhrase = StringUtil.merge(entityWords, StringPool.SPACE);
 
 				entityWords.clear();
 			}
@@ -298,10 +298,10 @@ public class MCPToolIndexReader {
 		}
 
 		if (!entityWords.isEmpty()) {
-			entityName = StringUtil.merge(entityWords, StringPool.SPACE);
+			entityPhrase = StringUtil.merge(entityWords, StringPool.SPACE);
 		}
 
-		return entityName;
+		return entityPhrase;
 	}
 
 	private MultiMatchQuery _getMultiMatchQuery(String search) {
@@ -450,7 +450,7 @@ public class MCPToolIndexReader {
 
 		FunctionScoreQuery functionScoreQuery = QueriesUtil.functionScore(
 			_getBaseQuery(
-				batch, _getEntityName(association, words),
+				batch, _getEntityPhrase(association, words),
 				_replaceEntityWords(intents, search)));
 
 		functionScoreQuery.setCombineFunction(CombineFunction.MULTIPLY);
