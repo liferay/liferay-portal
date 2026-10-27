@@ -52,7 +52,7 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		ExportImportThreadLocal.setStagingInProcessOnRemoteLive(true);
 
 		try {
-			checkPermission(stagingRequestId);
+			_checkPermission(stagingRequestId, null);
 
 			stagingLocalService.cleanUpStagingRequest(stagingRequestId);
 		}
@@ -229,9 +229,7 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		ExportImportThreadLocal.setStagingInProcessOnRemoteLive(true);
 
 		try {
-			checkPermission(stagingRequestId);
-
-			_checkTarget(stagingRequestId, exportImportConfiguration);
+			_checkPermission(stagingRequestId, exportImportConfiguration);
 
 			return stagingLocalService.publishStagingRequest(
 				getUserId(), stagingRequestId, exportImportConfiguration);
@@ -264,7 +262,7 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		ExportImportThreadLocal.setStagingInProcessOnRemoteLive(true);
 
 		try {
-			checkPermission(stagingRequestId);
+			_checkPermission(stagingRequestId, null);
 
 			stagingLocalService.updateStagingRequest(
 				getUserId(), stagingRequestId, fileName, bytes);
@@ -287,7 +285,9 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 		}
 	}
 
-	protected void checkPermission(long stagingRequestId)
+	private void _checkPermission(
+			long stagingRequestId,
+			ExportImportConfiguration exportImportConfiguration)
 		throws PortalException {
 
 		Folder folder = PortletFileRepositoryUtil.getPortletFolder(
@@ -307,20 +307,15 @@ public class StagingServiceImpl extends StagingServiceBaseImpl {
 			throw new PrincipalException(
 				"Folder " + stagingRequestId + " is not a staging request");
 		}
-	}
 
-	private void _checkTarget(
-			long stagingRequestId,
-			ExportImportConfiguration exportImportConfiguration)
-		throws PortalException {
+		if (exportImportConfiguration == null) {
+			return;
+		}
 
 		Map<String, Serializable> settingsMap =
 			exportImportConfiguration.getSettingsMap();
 
 		long targetGroupId = MapUtil.getLong(settingsMap, "targetGroupId");
-
-		Folder folder = PortletFileRepositoryUtil.getPortletFolder(
-			stagingRequestId);
 
 		if (targetGroupId != folder.getGroupId()) {
 			throw new PrincipalException(
