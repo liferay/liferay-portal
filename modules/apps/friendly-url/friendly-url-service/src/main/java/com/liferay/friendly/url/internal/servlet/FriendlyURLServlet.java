@@ -186,10 +186,6 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		Locale locale = portal.getLocale(httpServletRequest, null, false);
 
-		SiteFriendlyURL alternativeSiteFriendlyURL =
-			_getAlternativeSiteFriendlyURL(
-				groupFriendlyURL, companyId, group, locale);
-
 		String layoutFriendlyURL = null;
 		Redirect redirectProviderRedirect = null;
 
@@ -447,6 +443,10 @@ public class FriendlyURLServlet extends HttpServlet {
 
 						localeUnavailable = true;
 					}
+
+					SiteFriendlyURL alternativeSiteFriendlyURL =
+						_getAlternativeSiteFriendlyURL(
+							groupFriendlyURL, companyId, group, locale);
 
 					if (localeUnavailable ||
 						(alternativeSiteFriendlyURL != null) ||
