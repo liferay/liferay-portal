@@ -92,4 +92,102 @@ describe('Configuration', () => {
 
 		getByText('enable-as-a-collection-provider-with-return-type-asset');
 	});
+
+	describe('missing type reference warning', () => {
+		const className = 'com.liferay.object.model.ObjectDefinition#A1B2';
+
+		function renderWarning({
+			collectionProvider = true,
+			legacyAssetCollectionProvider = false,
+			searchableAssetTypes = [className],
+			searchableTypes,
+		}) {
+			return renderBuilder({
+				frameworkConfig: {
+					clauseContributorsExcludes: [],
+					clauseContributorsIncludes: ['*'],
+					collectionProvider,
+					collectionProviderType: className,
+					legacyAssetCollectionProvider,
+					searchableAssetTypes,
+				},
+				searchableTypes,
+			});
+		}
+
+		it('renders when the object definition type is missing', () => {
+			const {getByText} = renderWarning({searchableTypes: []});
+
+			getByText('missing-type-reference-collection-provider-warning');
+		});
+
+		it('does not render when the object definition type exists', () => {
+			const {queryByText} = renderWarning({
+				searchableTypes: [{className, displayName: 'Object'}],
+			});
+
+			expect(
+				queryByText(
+					'missing-type-reference-collection-provider-warning'
+				)
+			).not.toBeInTheDocument();
+		});
+
+		it('does not render when the collection provider is disabled', () => {
+			const {queryByText} = renderWarning({
+				collectionProvider: false,
+				searchableTypes: [],
+			});
+
+			expect(
+				queryByText(
+					'missing-type-reference-collection-provider-warning'
+				)
+			).not.toBeInTheDocument();
+		});
+
+		it('does not render when the legacy asset collection provider is enabled', () => {
+			const {queryByText} = renderWarning({
+				legacyAssetCollectionProvider: true,
+				searchableTypes: [],
+			});
+
+			expect(
+				queryByText(
+					'missing-type-reference-collection-provider-warning'
+				)
+			).not.toBeInTheDocument();
+		});
+
+		it('does not render when the missing type is not an object definition', () => {
+			const {queryByText} = renderWarning({
+				searchableAssetTypes: [
+					'com.liferay.journal.model.JournalArticle',
+				],
+				searchableTypes: [],
+			});
+
+			expect(
+				queryByText(
+					'missing-type-reference-collection-provider-warning'
+				)
+			).not.toBeInTheDocument();
+		});
+
+		it('does not render when the searchable types have different class names', () => {
+			const {queryByText} = renderWarning({
+				searchableAssetTypes: [
+					className,
+					'com.liferay.object.model.ObjectDefinition#C3D4',
+				],
+				searchableTypes: [],
+			});
+
+			expect(
+				queryByText(
+					'missing-type-reference-collection-provider-warning'
+				)
+			).not.toBeInTheDocument();
+		});
+	});
 });
