@@ -1343,18 +1343,10 @@ public class PortalImpl implements Portal {
 			}
 		}
 
-		List<LayoutFriendlyURL> layoutFriendlyURLs = null;
+		if (replaceFriendlyURL &&
+			(layout instanceof VirtualLayout virtualLayout)) {
 
-		if (replaceFriendlyURL) {
-			layoutFriendlyURLs =
-				LayoutFriendlyURLLocalServiceUtil.getLayoutFriendlyURLs(
-					layout.getPlid());
-
-			if (layout instanceof VirtualLayout) {
-				VirtualLayout virtualLayout = (VirtualLayout)layout;
-
-				layout = virtualLayout.getSourceLayout();
-			}
+			layout = virtualLayout.getSourceLayout();
 		}
 
 		String canonicalURLPrefix = canonicalURL.substring(0, pos);
@@ -1376,6 +1368,8 @@ public class PortalImpl implements Portal {
 			groupFriendlyURL = canonicalURLSuffix.substring(
 				0, groupFriendlyURLIndex[1]);
 		}
+
+		List<LayoutFriendlyURL> layoutFriendlyURLs = null;
 
 		for (Locale locale : availableLocales) {
 			String alternateURL = canonicalURL;
@@ -1432,6 +1426,12 @@ public class PortalImpl implements Portal {
 
 				if (Validator.isNull(alternateURLSuffix)) {
 					alternateURLSuffix = canonicalURLSuffix;
+
+					if (layoutFriendlyURLs == null) {
+						layoutFriendlyURLs =
+							LayoutFriendlyURLLocalServiceUtil.
+								getLayoutFriendlyURLs(layout.getPlid());
+					}
 
 					String friendlyURL = null;
 
