@@ -361,6 +361,16 @@ export async function getUserAgentApplication(externalReferenceCode: string) {
 		`${Liferay.ThemeDisplay.getPathContext()}/o/oauth2/application?externalReferenceCode=${externalReferenceCode}`
 	);
 
+	if (res.status === 400) {
+		return null;
+	}
+
+	if (!res.ok) {
+		throw new Error(
+			`Unable to get the application ${externalReferenceCode} because the request failed with status ${res.status}`
+		);
+	}
+
 	const data = await res.json();
 
 	return {
