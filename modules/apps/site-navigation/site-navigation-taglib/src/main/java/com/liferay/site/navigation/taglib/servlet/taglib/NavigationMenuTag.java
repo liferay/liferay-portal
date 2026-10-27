@@ -93,11 +93,14 @@ public class NavigationMenuTag extends IncludeTag {
 				_navigationMenuMode, _preview, _rootItemId, _rootItemLevel,
 				_rootItemType, _siteNavigationMenuId);
 
+		PortletDisplayTemplate portletDisplayTemplate =
+			ServletContextUtil.getPortletDisplayTemplate();
+
 		jspWriter.write(
-			PortletDisplayTemplateUtil.renderDDMTemplate(
+			portletDisplayTemplate.renderDDMTemplate(
 				httpServletRequest,
 				(HttpServletResponse)pageContext.getResponse(),
-				portletDisplayDDMTemplate.getTemplateId(),
+				portletDisplayDDMTemplate,
 				(List<NavItem>)navigationMenuContext.get("navItems"),
 				navigationMenuContext));
 
