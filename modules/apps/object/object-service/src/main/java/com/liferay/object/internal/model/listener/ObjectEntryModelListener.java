@@ -600,9 +600,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		UnsafeConsumer<RelevantObjectEntryModelListener, ModelListenerException>
 			unsafeConsumer) {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectEntry.getObjectDefinitionId());
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
 		for (RelevantObjectEntryModelListener relevantObjectEntryModelListener :
 				_relevantObjectEntryModelListeners) {
