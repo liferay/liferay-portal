@@ -672,14 +672,15 @@ public abstract class BaseMockContactsEngineClientImpl
 
 	@Override
 	public Results<Account> getCampaignAccounts(
-			FaroProject faroProject, long channelId, String filterString,
-			String id, String query, String rangeEnd, Integer rangeKey,
-			String rangeStart, String sortString, int cur, int delta)
+			FaroProject faroProject, String accountLifecycleId, long channelId,
+			String filterString, String id, String query, String rangeEnd,
+			Integer rangeKey, String rangeStart, String sortString, int cur,
+			int delta)
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getCampaignAccounts(
-			faroProject, channelId, filterString, id, query, rangeEnd, rangeKey,
-			rangeStart, sortString, cur, delta);
+			faroProject, accountLifecycleId, channelId, filterString, id, query,
+			rangeEnd, rangeKey, rangeStart, sortString, cur, delta);
 	}
 
 	@Override

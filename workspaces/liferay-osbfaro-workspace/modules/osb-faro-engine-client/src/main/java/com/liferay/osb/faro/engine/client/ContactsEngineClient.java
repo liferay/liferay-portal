@@ -352,9 +352,10 @@ public interface ContactsEngineClient {
 		throws FaroEngineClientException;
 
 	public Results<Account> getCampaignAccounts(
-			FaroProject faroProject, long channelId, String filterString,
-			String id, String query, String rangeEnd, Integer rangeKey,
-			String rangeStart, String sortString, int cur, int delta)
+			FaroProject faroProject, String accountLifecycleId, long channelId,
+			String filterString, String id, String query, String rangeEnd,
+			Integer rangeKey, String rangeStart, String sortString, int cur,
+			int delta)
 		throws FaroEngineClientException;
 
 	public Results<Individual> getCampaignIndividuals(

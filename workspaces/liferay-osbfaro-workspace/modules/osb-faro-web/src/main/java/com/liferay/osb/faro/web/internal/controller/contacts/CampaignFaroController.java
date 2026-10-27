@@ -44,6 +44,7 @@ public class CampaignFaroController extends BaseFaroController {
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public FaroFDSResultsDisplay<Account> getAccountsFaroFDSResultsDisplay(
 			@PathParam("groupId") long groupId, @PathParam("id") String id,
+			@QueryParam("accountLifecycleId") String accountLifecycleId,
 			@QueryParam("channelId") long channelId,
 			@QueryParam("filter") String filterString,
 			@QueryParam("page") int page,
@@ -59,8 +60,8 @@ public class CampaignFaroController extends BaseFaroController {
 		return new FaroFDSResultsDisplay<>(
 			contactsEngineClient.getCampaignAccounts(
 				faroProjectLocalService.getFaroProjectByGroupId(groupId),
-				channelId, filterString, id, search, rangeEnd, rangeKey,
-				rangeStart, sortString, page, pageSize),
+				accountLifecycleId, channelId, filterString, id, search,
+				rangeEnd, rangeKey, rangeStart, sortString, page, pageSize),
 			AccountDisplay::new, page, pageSize);
 	}
 
