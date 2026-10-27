@@ -797,7 +797,7 @@ public class BatchTestEntityExportImportTest {
 		Page<TestEntity> testEntitiesPage =
 			_testEntityResource.getTestEntitiesPage(null);
 
-		long testEntitiesCount = testEntitiesPage.getTotalCount();
+		long totalCount = testEntitiesPage.getTotalCount();
 
 		TestEntity[] testEntities = {
 			_testEntityResource.postTestEntity(
@@ -844,8 +844,7 @@ public class BatchTestEntityExportImportTest {
 
 		testEntitiesPage = _testEntityResource.getTestEntitiesPage(null);
 
-		Assert.assertEquals(
-			testEntitiesCount + 4, testEntitiesPage.getTotalCount());
+		Assert.assertEquals(totalCount + 4, testEntitiesPage.getTotalCount());
 
 		_systemEventLocalService.addSystemEvent(
 			TestPropsValues.getUserId(), _companyGroup.getGroupId(),
@@ -898,8 +897,7 @@ public class BatchTestEntityExportImportTest {
 
 		testEntitiesPage = _testEntityResource.getTestEntitiesPage(null);
 
-		Assert.assertEquals(
-			testEntitiesCount + 2, testEntitiesPage.getTotalCount());
+		Assert.assertEquals(totalCount + 2, testEntitiesPage.getTotalCount());
 
 		List<String> externalReferenceCodes = TransformUtil.transform(
 			testEntitiesPage.getItems(), TestEntity::getExternalReferenceCode);
