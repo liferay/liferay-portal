@@ -121,6 +121,14 @@ test(
 		expect(documentDownloaded.channelId).toBe(channel.id);
 		expect(documentDownloaded.dataSourceId).toBeTruthy();
 
+		// Close the Info Panel so it does not cover the document link
+
+		await page.getByRole('button', {name: 'Toggle Info Panel'}).click();
+
+		await expect(
+			page.getByRole('tabpanel', {name: 'Info Panel'})
+		).toBeHidden();
+
 		// Open the document to fire documentPreviewed (the file entry view fires the event on load).
 
 		await page
