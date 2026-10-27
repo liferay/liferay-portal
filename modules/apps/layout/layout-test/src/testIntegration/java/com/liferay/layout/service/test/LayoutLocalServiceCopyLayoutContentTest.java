@@ -569,7 +569,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 	}
 
 	@Test
-	@TestInfo("LPD-110721")
+	@TestInfo({"LPD-110721", "LPD-112200"})
 	public void testCopyLayoutContentPreservesLineage() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
 
@@ -584,6 +584,8 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 				mainDraftFragmentEntryLink1.getExternalReferenceCode()
 			},
 			mainDraftLayout, layout);
+		_testCopyLayoutContentPreservesLineage(
+			mainDraftFragmentEntryLink1, layout, mainDraftLayout);
 
 		mainDraftLayout = _addFragmentEntryLinkAndGetLayout(
 			RandomTestUtil.randomString(), layout.fetchDraftLayout());
@@ -2394,6 +2396,21 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			targetLayout);
 		_assertSegmentsExperience(
 			StringPool.BLANK, segmentsExperience2, targetLayout);
+	}
+
+	private void _testCopyLayoutContentPreservesLineage(
+			FragmentEntryLink expectedFragmentEntryLink, Layout sourceLayout,
+			Layout targetLayout)
+		throws Exception {
+
+		_testCopyLayoutContentPreservesLineage(
+			new String[] {
+				expectedFragmentEntryLink.getOriginalFragmentEntryLinkERC()
+			},
+			sourceLayout, targetLayout);
+
+		Assert.assertEquals(
+			expectedFragmentEntryLink, _getFragmentEntryLink(targetLayout));
 	}
 
 	private void _testCopyLayoutContentPreservesLineage(
