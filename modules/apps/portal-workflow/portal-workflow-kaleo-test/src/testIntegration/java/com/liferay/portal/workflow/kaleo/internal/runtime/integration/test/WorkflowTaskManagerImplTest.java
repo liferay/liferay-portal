@@ -125,6 +125,7 @@ import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowInstance;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
+import com.liferay.portal.kernel.workflow.WorkflowTransition;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
 import com.liferay.portal.search.test.rule.SearchTestRule;
 import com.liferay.portal.security.permission.SimplePermissionChecker;
@@ -844,6 +845,28 @@ public class WorkflowTaskManagerImplTest extends BaseWorkflowManagerTestCase {
 
 		_assertMustHavePermission(
 			() -> _workflowTaskManager.getAssignableUsers(
+				workflowTask.getWorkflowTaskId()));
+
+		_deactivateWorkflow(BlogsEntry.class.getName(), 0, 0);
+	}
+
+	@Test
+	public void testGetNextWorkflowTransitions() throws Exception {
+		_activateSingleApproverWorkflow(BlogsEntry.class.getName(), 0, 0);
+
+		_addBlogsEntry();
+
+		WorkflowTask workflowTask = _getWorkflowTask();
+
+		Assert.assertEquals(
+			Arrays.asList(Constants.APPROVE, Constants.REJECT),
+			TransformUtil.transform(
+				_workflowTaskManager.getNextWorkflowTransitions(
+					workflowTask.getWorkflowTaskId()),
+				WorkflowTransition::getName));
+
+		_assertMustHavePermission(
+			() -> _workflowTaskManager.getNextWorkflowTransitions(
 				workflowTask.getWorkflowTaskId()));
 
 		_deactivateWorkflow(BlogsEntry.class.getName(), 0, 0);
