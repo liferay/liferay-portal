@@ -5,6 +5,7 @@
 
 package com.liferay.digital.sales.room.util;
 
+import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.service.GroupServiceUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Objects;
@@ -144,7 +146,12 @@ public class DSRRoomUtil {
 	}
 
 	private static ObjectEntry _fetchObjectEntry(Group group) {
-		if (group == null) {
+		if ((group == null) ||
+			!StringUtil.startsWith(
+				group.getClassName(),
+				ObjectDefinitionConstants.
+					CLASS_NAME_PREFIX_CUSTOM_OBJECT_DEFINITION)) {
+
 			return null;
 		}
 
