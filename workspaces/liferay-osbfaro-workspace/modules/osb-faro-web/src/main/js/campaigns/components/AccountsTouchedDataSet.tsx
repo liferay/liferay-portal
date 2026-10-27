@@ -1,3 +1,4 @@
+import Loading from 'shared/components/Loading';
 import React from 'react';
 import {
 	columns,
@@ -13,11 +14,14 @@ import {RangeKeyTimeRanges} from 'shared/util/constants';
 import {Routes, setUriQueryValues} from 'shared/util/router';
 import {toThousands} from 'shared/util/numbers';
 import {useQueryRangeSelectors} from 'shared/hooks/useQueryRangeSelectors';
+import {ILifecycleDetail} from 'shared/api/lifecycle';
 
 interface IAccountsTouchedDataSetProps {
 	campaignId: string;
 	channelId: string;
 	groupId: string;
+	lifecycles: ILifecycleDetail[] | null;
+	loading: boolean;
 }
 
 const views = [
@@ -63,6 +67,8 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 	campaignId,
 	channelId,
 	groupId,
+	lifecycles,
+	loading,
 }) => {
 	const rangeQueryValues = pickBy(useQueryRangeSelectors());
 
@@ -71,10 +77,18 @@ const AccountsTouchedDataSet: React.FC<IAccountsTouchedDataSetProps> = ({
 			? omit(rangeQueryValues, 'rangeKey')
 			: rangeQueryValues;
 
+	if (loading) {
+		return <Loading spacer />;
+	}
+
 	return (
 		<FrontendDataSet
 			apiURL={setUriQueryValues(
-				{channelId, ...apiRangeQueryValues},
+				pickBy({
+					accountLifecycleId: lifecycles?.[0]?.id,
+					channelId,
+					...apiRangeQueryValues,
+				}),
 				`/o/faro/contacts/${groupId}/campaigns/${campaignId}/accounts`
 			)}
 			customDataRenderers={{

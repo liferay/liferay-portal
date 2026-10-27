@@ -19,13 +19,16 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 
 const getFields = () => lastFDSProps.views[0].schema.fields;
 
-const renderDataSet = (initialEntry = '/') =>
+const renderDataSet = (initialEntry = '/', props = {}) =>
 	render(
 		<MemoryRouter initialEntries={[initialEntry]}>
 			<AccountsTouchedDataSet
 				campaignId="7"
 				channelId="123"
 				groupId="23"
+				lifecycles={[{externalReferenceCode: 'lifecycle-55', id: '55'}]}
+				loading={false}
+				{...props}
 			/>
 		</MemoryRouter>
 	);
@@ -52,8 +55,23 @@ describe('AccountsTouchedDataSet', () => {
 		renderDataSet();
 
 		expect(lastFDSProps.apiURL).toBe(
+			'/o/faro/contacts/23/campaigns/7/accounts?accountLifecycleId=55&channelId=123&rangeKey=30'
+		);
+	});
+
+	it('should leave out the lifecycle when there is none', () => {
+		renderDataSet('/', {lifecycles: []});
+
+		expect(lastFDSProps.apiURL).toBe(
 			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123&rangeKey=30'
 		);
+	});
+
+	it('should hold the table back while the lifecycle loads', () => {
+		renderDataSet('/', {lifecycles: undefined, loading: true});
+
+		expect(screen.queryByTestId('fds-component')).not.toBeInTheDocument();
+		expect(lastFDSProps).toBeUndefined();
 	});
 
 	it('should ask the endpoint for a custom range by its bounds alone', () => {
@@ -62,7 +80,7 @@ describe('AccountsTouchedDataSet', () => {
 		);
 
 		expect(lastFDSProps.apiURL).toBe(
-			'/o/faro/contacts/23/campaigns/7/accounts?channelId=123&rangeEnd=2026-10-20&rangeStart=2026-10-01'
+			'/o/faro/contacts/23/campaigns/7/accounts?accountLifecycleId=55&channelId=123&rangeEnd=2026-10-20&rangeStart=2026-10-01'
 		);
 	});
 

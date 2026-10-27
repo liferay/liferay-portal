@@ -3,6 +3,7 @@ import Card from 'shared/components/Card';
 import ClayTabs from '@clayui/tabs';
 import IndividualsTouchedDataSet from './IndividualsTouchedDataSet';
 import React, {useState} from 'react';
+import {useLifecycleDetails} from 'lifecycle/hooks/useLifecycleDetails';
 
 interface IMembershipsCardProps {
 	campaignId: string;
@@ -28,6 +29,11 @@ const MembershipsCard: React.FC<IMembershipsCardProps> = ({
 }) => {
 	const [activeIndex, setActiveIndex] = useState(0);
 
+	const {lifecycles, loading: lifecyclesLoading} = useLifecycleDetails({
+		channelId,
+		groupId,
+	});
+
 	return (
 		<Card minHeight={300}>
 			<Card.Header>
@@ -40,25 +46,34 @@ const MembershipsCard: React.FC<IMembershipsCardProps> = ({
 				onActiveChange={(index) => setActiveIndex(Number(index))}
 			>
 				{TABS.map(({tabId, title}) => (
-					<ClayTabs.Item key={tabId}>{title}</ClayTabs.Item>
+					<ClayTabs.Item
+						innerProps={{'aria-controls': `${tabId}-tabpanel`}}
+						key={tabId}
+					>
+						{title}
+					</ClayTabs.Item>
 				))}
 			</ClayTabs>
 
-			{TABS[activeIndex].tabId === 'accounts-touched' && (
-				<AccountsTouchedDataSet
-					campaignId={campaignId}
-					channelId={channelId}
-					groupId={groupId}
-				/>
-			)}
+			<ClayTabs.Content activeIndex={activeIndex}>
+				<ClayTabs.TabPane id="accounts-touched-tabpanel">
+					<AccountsTouchedDataSet
+						campaignId={campaignId}
+						channelId={channelId}
+						groupId={groupId}
+						lifecycles={lifecycles}
+						loading={lifecyclesLoading}
+					/>
+				</ClayTabs.TabPane>
 
-			{TABS[activeIndex].tabId === 'individuals-touched' && (
-				<IndividualsTouchedDataSet
-					campaignId={campaignId}
-					channelId={channelId}
-					groupId={groupId}
-				/>
-			)}
+				<ClayTabs.TabPane id="individuals-touched-tabpanel">
+					<IndividualsTouchedDataSet
+						campaignId={campaignId}
+						channelId={channelId}
+						groupId={groupId}
+					/>
+				</ClayTabs.TabPane>
+			</ClayTabs.Content>
 		</Card>
 	);
 };
