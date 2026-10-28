@@ -118,7 +118,6 @@ public class IsolatedAttributesHttpServletRequestTest {
 			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH, value1);
 
 		HttpServletRequest httpServletRequest2 = new MockHttpServletRequest();
-
 		String value2 = RandomTestUtil.randomString();
 
 		httpServletRequest2.setAttribute(
@@ -195,11 +194,9 @@ public class IsolatedAttributesHttpServletRequestTest {
 
 		isolatedAttributesHttpServletRequest1.setRequest(
 			new MockHttpServletRequest());
-
 		isolatedAttributesHttpServletRequest1.setAttribute(
 			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH,
 			RandomTestUtil.randomString());
-
 		isolatedAttributesHttpServletRequest1.setRequest(httpServletRequest);
 
 		IsolatedAttributesHttpServletRequest
