@@ -26,8 +26,8 @@ Report **NOT VERIFIED** when `${EXCLUDES_REGEX}` is empty, naming the unreadable
 For every changed path of the workspace that does not match `(^|/)(${EXCLUDES_REGEX})(/|$)`, read the mode and blob that `${SOURCE_SHA}` records for the branch's copy and for the sample workspace's:
 
 ```bash
-COPY=$(git -C "${BUILD_ROOT}" ls-tree "${SOURCE_SHA}" -- "<path>" | cut -f1)
-SAMPLE=$(git -C "${BUILD_ROOT}" ls-tree "${SOURCE_SHA}" -- "../liferay-sample-workspace/<path>" | cut -f1)
+COPY=$(git -C "${BUILD_ROOT}" ls-tree "${SOURCE_SHA}" -- "<path>" | cut --fields=1)
+SAMPLE=$(git -C "${BUILD_ROOT}" ls-tree "${SOURCE_SHA}" -- "../liferay-sample-workspace/<path>" | cut --fields=1)
 ```
 
 Compare what git records rather than the bytes of the two files. For a symlink, git stores the path the link points to, while reading the path on disk follows the link to its target's contents, so a byte comparison never matches a symlink, although the refresh copies it as a link and leaves it unchanged. The mode also tells a symlink from a regular file that holds the same text.
