@@ -1,5 +1,4 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -13,9 +12,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-api")
 	compileOnly project(":apps:asset:asset-categories-admin-web-api")
 	compileOnly project(":apps:asset:asset-tags-api")
-	compileOnly project(":apps:batch-engine:batch-engine-api")
 	compileOnly project(":apps:bulk:bulk-selection-api")
-	compileOnly project(":apps:change-tracking:change-tracking-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:design-library:design-library-api")
 	compileOnly project(":apps:diff:diff-api")
@@ -26,7 +23,6 @@ dependencies {
 	compileOnly project(":apps:friendly-url:friendly-url-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-taglib")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
 	compileOnly project(":apps:headless:headless-admin-list-type:headless-admin-list-type-api")
@@ -45,7 +41,6 @@ dependencies {
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-rest-api")
 	compileOnly project(":apps:portal-search:portal-search-spi")
-	compileOnly project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-api")

@@ -27,7 +27,6 @@ dependencies {
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
 	compileOnly project(":apps:headless:headless-asset-library:headless-asset-library-api")
-	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:knowledge-base:knowledge-base-api")
 	compileOnly project(":apps:layout:layout-admin-api")
