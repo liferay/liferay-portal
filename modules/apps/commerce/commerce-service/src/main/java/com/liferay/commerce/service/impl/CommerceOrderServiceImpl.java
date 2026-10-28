@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -122,6 +123,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		else {
 			_commerceOrderModelResourcePermission.check(
 				getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
+
+			_checkManageCommerceOrderPaymentMethodsPermission(
+				commerceOrder, commercePaymentMethodKey);
 
 			_portletResourcePermission.check(
 				getPermissionChecker(), commerceOrder.getGroupId(),
@@ -719,6 +723,9 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		CommerceOrder originalCommerceOrder =
 			commerceOrder.cloneWithOriginalValues();
 
+		_checkManageCommerceOrderPaymentMethodsPermission(
+			originalCommerceOrder, commerceOrder.getCommercePaymentMethodKey());
+
 		if (commerceOrder.getPaymentStatus() !=
 				originalCommerceOrder.getPaymentStatus()) {
 
@@ -756,6 +763,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
 
+		_checkManageCommerceOrderPaymentMethodsPermission(
+			commerceOrder, commercePaymentMethodKey);
 		_checkManageCommerceOrderPricesPermission(
 			commerceOrder, shippingAmount,
 			commerceOrder.getShippingWithTaxAmount(), subtotal,
@@ -790,6 +799,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
 
+		_checkManageCommerceOrderPaymentMethodsPermission(
+			commerceOrder, commercePaymentMethodKey);
 		_checkManageCommerceOrderPricesPermission(
 			commerceOrder, shippingAmount, shippingWithTaxAmount, subtotal,
 			subtotalWithTaxAmount, taxAmount, total, totalDiscountAmount,
@@ -939,9 +950,15 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			long commerceOrderId, String commercePaymentMethodKey)
 		throws PortalException {
 
+		CommerceOrder commerceOrder =
+			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+
 		_commerceOrderModelResourcePermission.check(
-			getPermissionChecker(), commerceOrderId,
+			getPermissionChecker(), commerceOrder,
 			CommerceOrderActionKeys.CHECKOUT_COMMERCE_ORDER);
+
+		_checkManageCommerceOrderPaymentMethodsPermission(
+			commerceOrder, commercePaymentMethodKey);
 
 		return commerceOrderLocalService.updateCommercePaymentMethodKey(
 			commerceOrderId, commercePaymentMethodKey);
@@ -1116,6 +1133,23 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 				getPermissionChecker(), accountEntry.getAccountEntryGroup(),
 				action);
 		}
+	}
+
+	private void _checkManageCommerceOrderPaymentMethodsPermission(
+			CommerceOrder commerceOrder, String commercePaymentMethodKey)
+		throws PortalException {
+
+		if (commerceOrder.isOpen() ||
+			Objects.equals(
+				commerceOrder.getCommercePaymentMethodKey(),
+				commercePaymentMethodKey)) {
+
+			return;
+		}
+
+		_portletResourcePermission.check(
+			getPermissionChecker(), commerceOrder.getGroupId(),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
 	}
 
 	private void _checkManageCommerceOrderPricesPermission(
