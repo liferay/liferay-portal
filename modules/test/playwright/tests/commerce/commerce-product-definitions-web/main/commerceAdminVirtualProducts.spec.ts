@@ -59,8 +59,10 @@ test('LPD-21637 Virtual item details section visible for product and sku', async
 		commerceAdminProductPage.productVirtualFileEntrySaveAndPropagateButton
 	).toBeVisible();
 
+	const productSkuVirtualFileEntryURL =
+		'https://8.8.8.8/test-virtual-product-sku-details-section';
 	const productVirtualFileEntryURL =
-		'http://test-virtual-product-details-section.com';
+		'https://8.8.8.8/test-virtual-product-details-section';
 
 	await commerceAdminProductPage.productVirtualFileEntryURLInput.fill(
 		productVirtualFileEntryURL
@@ -77,7 +79,7 @@ test('LPD-21637 Virtual item details section visible for product and sku', async
 	await commerceAdminProductPage.productSkuVirtualOverrideToggle.check();
 	await commerceAdminProductPage.addVirtualSkuFileEntryButton.click();
 	await commerceAdminProductPage.productSkuVirtualFileEntryURLInput.fill(
-		'http://test-virtual-product-sku-details-section.com'
+		productSkuVirtualFileEntryURL
 	);
 	await commerceAdminProductPage.productSkuVirtualFileEntrySaveButton.click();
 
@@ -86,8 +88,6 @@ test('LPD-21637 Virtual item details section visible for product and sku', async
 	await commerceAdminProductPage.productSkuVirtualFileEntryCancelButton.click();
 
 	await expect(
-		page
-			.frameLocator('iframe')
-			.getByText('http://test-virtual-product-sku-details-section.com')
+		page.frameLocator('iframe').getByText(productSkuVirtualFileEntryURL)
 	).toBeVisible();
 });
