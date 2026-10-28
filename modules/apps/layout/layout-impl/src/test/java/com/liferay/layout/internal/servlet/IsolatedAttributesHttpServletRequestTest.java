@@ -67,9 +67,10 @@ public class IsolatedAttributesHttpServletRequestTest {
 	}
 
 	@Test
-	@TestInfo("LPD-103742")
+	@TestInfo({"LPD-103742", "LPD-112108"})
 	public void testRemoveAttribute() {
 		_testRemoveAttribute();
+		_testRemoveAttributeWithReplacedRequest();
 		_testRemoveAttributeWithRequestDispatcherAttribute();
 	}
 
@@ -134,16 +135,6 @@ public class IsolatedAttributesHttpServletRequestTest {
 
 		Assert.assertEquals(
 			value1,
-			isolatedAttributesHttpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
-
-		isolatedAttributesHttpServletRequest.removeAttribute(
-			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
-
-		isolatedAttributesHttpServletRequest.setRequest(httpServletRequest2);
-
-		Assert.assertEquals(
-			value2,
 			isolatedAttributesHttpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
 	}
@@ -231,6 +222,37 @@ public class IsolatedAttributesHttpServletRequestTest {
 			isolatedAttributesHttpServletRequest.getAttribute(name));
 
 		Assert.assertEquals(value, httpServletRequest.getAttribute(name));
+	}
+
+	private void _testRemoveAttributeWithReplacedRequest() {
+		IsolatedAttributesHttpServletRequest
+			isolatedAttributesHttpServletRequest =
+				new IsolatedAttributesHttpServletRequest(
+					new MockHttpServletRequest());
+
+		isolatedAttributesHttpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH,
+			RandomTestUtil.randomString());
+
+		isolatedAttributesHttpServletRequest.removeAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
+
+		Assert.assertNull(
+			isolatedAttributesHttpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
+
+		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		String value = RandomTestUtil.randomString();
+
+		httpServletRequest.setAttribute(
+			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH, value);
+
+		isolatedAttributesHttpServletRequest.setRequest(httpServletRequest);
+
+		Assert.assertEquals(
+			value,
+			isolatedAttributesHttpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH));
 	}
 
 	private void _testRemoveAttributeWithRequestDispatcherAttribute() {
