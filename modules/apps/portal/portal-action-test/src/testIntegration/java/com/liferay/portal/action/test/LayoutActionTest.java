@@ -141,6 +141,7 @@ public class LayoutActionTest {
 
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
+
 		mockHttpServletRequest.setParameter(
 			"p_l_id", String.valueOf(_layout.getPlid()));
 
