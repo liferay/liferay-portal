@@ -61,11 +61,11 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if and \\$[A-Za-z]+ \\(not \\(and \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\(eq \\$restorePhase \"provisioning\"\\)\\)\\) \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: User"
+                    pattern: "\\{\\{- if not \\(and \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\(eq \\$restorePhase \"provisioning\"\\)\\) \\}\\}\\s+\\{\\{- if \\$[A-Za-z]+ \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: User"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if and \\$[A-Za-z]+ \\(not \\(and \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$dataPlane \\$targetActiveDataPlane\\)\\)\\) \\}\\}[\\s\\S]+?composition-resource-name: liferay-db-grant-job-"
+                    pattern: "kind: User(?:[^{]|\\{[^{]|\\{\\{[^-])+\\{\\{- end \\}\\}\\s+\\{\\{- \\$isDatabaseInstanceReady := false \\}\\}[\\s\\S]+?\\{\\{- if \\$isDatabaseInstanceReady \\}\\}[\\s\\S]+?composition-resource-name: liferay-db-grant-job-"
         it: Holds the database user and its grants back from the restore target while it is provisioning
     -   asserts:
             -   hasDocuments:

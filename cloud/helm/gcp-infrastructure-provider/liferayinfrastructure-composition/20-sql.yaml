@@ -126,7 +126,8 @@ spec:
                 {{- merge (dict "active" (eq $dataPlane $activeDataPlane | toString)) $backupTargetLabels | toYaml | nindent 16 }}
     managementPolicies: {{ $xr.spec.backup.enabled | ternary ((list "*") | toJson) $managementPolicies }}
 {{- end }}
-{{- if and $gsaEmail (not (and (eq $dataPlane $targetActiveDataPlane) (eq $restorePhase "provisioning"))) }}
+{{- if not (and (eq $dataPlane $targetActiveDataPlane) (eq $restorePhase "provisioning")) }}
+{{- if $gsaEmail }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: User
@@ -156,7 +157,7 @@ spec:
         {{- $isDatabaseInstanceReady = true }}
     {{- end }}
 {{- end }}
-{{- if and $isDatabaseInstanceReady (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
+{{- if $isDatabaseInstanceReady }}
 {{- $databasePort := "5432" }}
 {{- $jobName := printf "%s-db-grant-%s" $xr.metadata.name $dataPlane }}
 ---
@@ -296,6 +297,7 @@ spec:
     readiness:
         celQuery: object.status.succeeded == 1
         policy: DeriveFromCelQuery
+{{- end }}
 {{- end }}
 {{- end }}
 {{- range $dataPlane := list "blue" "green" }}

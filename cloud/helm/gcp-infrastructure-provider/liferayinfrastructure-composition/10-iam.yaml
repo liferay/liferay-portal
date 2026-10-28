@@ -47,8 +47,6 @@ spec:
         member: {{ $gsaMember }}
         project: {{ $env.projectId }}
         role: roles/cloudsql.client
-{{- end }}
-{{- if $gsaEmail }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
