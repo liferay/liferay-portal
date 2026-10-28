@@ -117,7 +117,7 @@ public class KBArticleServiceTest {
 	@FeatureFlag("LPD-11003")
 	@Test
 	public void testForceLockKBArticle() throws Exception {
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 		User otherUser = UserTestUtil.addUser(_group1.getGroupId());
 
 		try {
@@ -156,11 +156,11 @@ public class KBArticleServiceTest {
 
 		serviceContext.setAddGuestPermissions(false);
 
-		KBArticle kbArticle1 = _addKbArticle(new Date(), serviceContext);
+		KBArticle kbArticle1 = _addKBArticle(new Date(), serviceContext);
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-		KBArticle kbArticle2 = _addKbArticle(new Date(), serviceContext);
+		KBArticle kbArticle2 = _addKBArticle(new Date(), serviceContext);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_siteMemberUser)) {
@@ -193,10 +193,10 @@ public class KBArticleServiceTest {
 	public void testGetKBArticlesByStatus() throws PortalException {
 		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
-		_addKbArticle(new Date());
-		_addKbArticle(new Date(System.currentTimeMillis() + (2 * Time.DAY)));
+		_addKBArticle(new Date());
+		_addKBArticle(new Date(System.currentTimeMillis() + (2 * Time.DAY)));
 
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
 		List<KBArticle> kbArticles = _kbArticleService.getKBArticles(
 			_group1.getGroupId(), KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
@@ -257,7 +257,7 @@ public class KBArticleServiceTest {
 	private FileEntry _addAttachment(ServiceContext serviceContext)
 		throws Exception {
 
-		return _addAttachment(_addKbArticle(new Date(), serviceContext));
+		return _addAttachment(_addKBArticle(new Date(), serviceContext));
 	}
 
 	private FileEntry _addFileEntry(long folderId) throws Exception {
@@ -276,11 +276,11 @@ public class KBArticleServiceTest {
 			RandomTestUtil.randomString(), _serviceContext);
 	}
 
-	private KBArticle _addKbArticle(Date displayDate) throws PortalException {
-		return _addKbArticle(displayDate, _serviceContext);
+	private KBArticle _addKBArticle(Date displayDate) throws PortalException {
+		return _addKBArticle(displayDate, _serviceContext);
 	}
 
-	private KBArticle _addKbArticle(
+	private KBArticle _addKBArticle(
 			Date displayDate, ServiceContext serviceContext)
 		throws PortalException {
 
@@ -292,8 +292,8 @@ public class KBArticleServiceTest {
 			displayDate, null, null, null, serviceContext);
 	}
 
-	private KBArticle _addKbArticle(Group group) throws Exception {
-		return _addKbArticle(
+	private KBArticle _addKBArticle(Group group) throws Exception {
+		return _addKBArticle(
 			new Date(),
 			ServiceContextTestUtil.getServiceContext(
 				group, TestPropsValues.getUserId()));
@@ -349,7 +349,7 @@ public class KBArticleServiceTest {
 	}
 
 	private void _testDeleteKBArticles() throws Exception {
-		KBArticle kbArticle = _addKbArticle(_group1);
+		KBArticle kbArticle = _addKBArticle(_group1);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_siteMemberUser)) {
@@ -367,7 +367,7 @@ public class KBArticleServiceTest {
 	private void _testDeleteKBArticlesWithKBArticleFromDifferentGroup()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(_group2);
+		KBArticle kbArticle = _addKBArticle(_group2);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_siteMemberUser)) {
@@ -387,7 +387,7 @@ public class KBArticleServiceTest {
 	private void _testDeleteKBArticlesWithKBArticleFromDifferentGroupAndDeletePermission()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(_group2);
+		KBArticle kbArticle = _addKBArticle(_group2);
 
 		_regularRole = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
 
@@ -416,8 +416,8 @@ public class KBArticleServiceTest {
 	private void _testDeleteKBArticlesWithKBArticlesFromDifferentGroups()
 		throws Exception {
 
-		KBArticle kbArticle1 = _addKbArticle(_group1);
-		KBArticle kbArticle2 = _addKbArticle(_group2);
+		KBArticle kbArticle1 = _addKBArticle(_group1);
+		KBArticle kbArticle2 = _addKBArticle(_group2);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_siteMemberUser)) {
@@ -501,7 +501,7 @@ public class KBArticleServiceTest {
 	private void _testGetKBArticleAttachmentWithFileEntryInDifferentRepository()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
 		Folder folder = _addFolder(
 			String.valueOf(kbArticle.getResourcePrimKey()));
@@ -540,7 +540,7 @@ public class KBArticleServiceTest {
 	}
 
 	private void _testUpdateKBArticle() throws Exception {
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
 		FileEntry fileEntry = _addAttachment(kbArticle);
 
@@ -553,9 +553,9 @@ public class KBArticleServiceTest {
 	private void _testUpdateKBArticleWithFileEntryInDifferentKBArticle()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
-		FileEntry fileEntry = _addAttachment(_addKbArticle(new Date()));
+		FileEntry fileEntry = _addAttachment(_addKBArticle(new Date()));
 
 		Assert.assertThrows(
 			NoSuchFileEntryException.class,
@@ -569,7 +569,7 @@ public class KBArticleServiceTest {
 	private void _testUpdateKBArticleWithFileEntryInDifferentRepository()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
 		Folder folder = _addFolder(
 			String.valueOf(kbArticle.getResourcePrimKey()));
@@ -588,7 +588,7 @@ public class KBArticleServiceTest {
 	private void _testUpdateKBArticleWithFileEntryInRootFolder()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
 		FileEntry fileEntry = _addFileEntry(
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
@@ -605,7 +605,7 @@ public class KBArticleServiceTest {
 	private void _testUpdateKBArticleWithNonexistentFileEntry()
 		throws Exception {
 
-		KBArticle kbArticle = _addKbArticle(new Date());
+		KBArticle kbArticle = _addKBArticle(new Date());
 
 		FileEntry fileEntry1 = _addAttachment(kbArticle);
 		FileEntry fileEntry2 = _addAttachment(kbArticle);
