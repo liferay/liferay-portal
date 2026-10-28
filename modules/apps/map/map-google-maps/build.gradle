@@ -10,7 +10,5 @@ dependencies {
 	compileOnly project(":apps:map:map-api")
 	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

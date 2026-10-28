@@ -1,9 +1,7 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation project(":apps:marketplace:marketplace-api")
-	testIntegrationImplementation project(":apps:marketplace:marketplace-service")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":apps:static:portal-lpkg-deployer:portal-lpkg-deployer-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
