@@ -36,7 +36,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-utility-page-api")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
-	testIntegrationImplementation project(":apps:list-type:list-type-service")
 	testIntegrationImplementation project(":apps:notification:notification-api")
 	testIntegrationImplementation project(":apps:notification:notification-test-util")
 	testIntegrationImplementation project(":apps:object:object-api")
@@ -60,7 +59,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:trash:trash-api")
 	testIntegrationImplementation project(":apps:trash:trash-test-util")
 	testIntegrationImplementation project(":apps:users-admin:users-admin-test-util")
-	testIntegrationImplementation project(":apps:xstream:xstream-configurator-api")
 	testIntegrationImplementation project(":core:osgi-service-tracker-collections")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

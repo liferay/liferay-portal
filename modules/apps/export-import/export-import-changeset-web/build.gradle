@@ -11,6 +11,5 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-changeset-api")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
