@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ProxyUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.junit.After;
@@ -79,7 +82,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 		}
 
 		for (ServiceRegistration<BackgroundTaskExecutor> serviceRegistration :
-				_serviceRegistrations) {
+				_serviceRegistrations.values()) {
 
 			serviceRegistration.unregister();
 		}
@@ -136,6 +139,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 	public void testExecuteBackgroundTasks() throws Exception {
 		_testExecuteBackgroundTasks(BackgroundTaskResult.COMPLETED_WITH_ERRORS);
 		_testExecuteBackgroundTasks(BackgroundTaskResult.SUCCESS);
+		_testExecuteBackgroundTasksWithUnregisteredBackgroundTaskExecutor();
 	}
 
 	@Test
@@ -253,7 +257,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
-		_serviceRegistrations.add(
+		_serviceRegistrations.put(
+			taskExecutorClassName,
 			bundleContext.registerService(
 				BackgroundTaskExecutor.class, backgroundTaskExecutor,
 				HashMapDictionaryBuilder.<String, Object>put(
@@ -291,11 +296,60 @@ public class BackgroundTaskStatusMessageListenerTest {
 			backgroundTaskResult.getStatus(), _getStatus(backgroundTaskId2));
 	}
 
+	private void _testExecuteBackgroundTasksWithUnregisteredBackgroundTaskExecutor()
+		throws Exception {
+
+		String taskExecutorClassName = _registerBackgroundTaskExecutor(
+			BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY,
+			BackgroundTaskResult.SUCCESS, true);
+
+		String lockKey =
+			taskExecutorClassName + StringPool.POUND + _user.getCompanyId();
+
+		_lock(lockKey);
+
+		long backgroundTaskId = _addQueuedBackgroundTask(
+			BackgroundTaskConstants.GROUP_ID_DEFAULT, taskExecutorClassName);
+
+		_unregisterBackgroundTaskExecutor(taskExecutorClassName);
+
+		_unlock(lockKey);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.background.task.internal.messaging." +
+					"BackgroundTaskMessageListener",
+				LoggerTestUtil.ERROR)) {
+
+			_backgroundTaskManager.resumeBackgroundTask(backgroundTaskId);
+		}
+
+		Assert.assertEquals(
+			BackgroundTaskConstants.STATUS_FAILED,
+			_getStatus(backgroundTaskId));
+
+		List<UserNotificationEvent> userNotificationEvents =
+			_userNotificationEventLocalService.getUserNotificationEvents(
+				_user.getUserId());
+
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
+	}
+
 	private void _unlock(String lockKey) {
 		_lockManager.unlock(
 			BackgroundTaskExecutor.class.getName(), lockKey, _lockOwner);
 
 		_lockKeys.remove(lockKey);
+	}
+
+	private void _unregisterBackgroundTaskExecutor(
+		String taskExecutorClassName) {
+
+		ServiceRegistration<BackgroundTaskExecutor> serviceRegistration =
+			_serviceRegistrations.remove(taskExecutorClassName);
+
+		serviceRegistration.unregister();
 	}
 
 	private final List<Long> _backgroundTaskIds = new ArrayList<>();
@@ -318,8 +372,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 	@Inject
 	private MessageBus _messageBus;
 
-	private final List<ServiceRegistration<BackgroundTaskExecutor>>
-		_serviceRegistrations = new ArrayList<>();
+	private final Map<String, ServiceRegistration<BackgroundTaskExecutor>>
+		_serviceRegistrations = new HashMap<>();
 
 	@DeleteAfterTestRun
 	private User _user;
