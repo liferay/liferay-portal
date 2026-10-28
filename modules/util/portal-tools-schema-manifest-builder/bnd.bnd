@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Portal Tools Schema Manifest Builder
 Bundle-SymbolicName: com.liferay.portal.tools.schema.manifest.builder
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.1
 Main-Class: com.liferay.portal.tools.schema.manifest.builder.SchemaManifestBuilder
 -includeresource:\
 	@com.liferay.petra.concurrent-*.jar!/com/liferay/petra/concurrent/DCLSingleton.class,\
