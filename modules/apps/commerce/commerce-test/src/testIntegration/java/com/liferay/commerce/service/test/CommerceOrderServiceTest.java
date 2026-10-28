@@ -217,6 +217,7 @@ public class CommerceOrderServiceTest {
 		_testAddOrUpdateCommerceOrderWithAccountRole(
 			AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER);
 		_testAddOrUpdateCommerceOrderWithGuestUser();
+		_testAddOrUpdateCommerceOrderWithManageCommerceOrderPaymentMethodsPermission();
 		_testAddOrUpdateCommerceOrderWithRegularRole();
 		_testAddOrUpdateCommerceOrderWithSupplierRole();
 	}
@@ -273,58 +274,49 @@ public class CommerceOrderServiceTest {
 	public void testUpdateCommerceOrder() throws Exception {
 		_testUpdateCommerceOrderWithAccountBuyerRole();
 		_testUpdateCommerceOrderWithInvalidCommercePaymentMethodKey();
+		_testUpdateCommerceOrderWithManageCommerceOrderPaymentMethodsPermission();
 		_testUpdateCommerceOrderWithRegularRole();
 	}
 
 	@Test
 	public void testUpdateCommercePaymentMethodKey() throws Exception {
+		_testUpdateCommercePaymentMethodKeyWithInvalidCommercePaymentMethodKey();
+		_testUpdateCommercePaymentMethodKeyWithManageCommerceOrderPaymentMethodsPermission();
+	}
+
+	private CommerceOrder _addCommerceOrder(
+			String commercePaymentMethodKey, int orderStatus)
+		throws Exception {
+
+		AccountEntry accountEntry =
+			CommerceAccountTestUtil.addBusinessAccountEntry(
+				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+				null,
+				ServiceContextTestUtil.getServiceContext(
+					TestPropsValues.getGroupId()));
+
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.addCommerceOrder(
 				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
-				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
-				_commerceCurrency.getCode(), 0);
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
 
-		long commerceOrderId = commerceOrder.getCommerceOrderId();
+		commerceOrder.setCommercePaymentMethodKey(commercePaymentMethodKey);
+		commerceOrder.setOrderStatus(orderStatus);
 
-		String commercePaymentMethodKey = RandomTestUtil.randomString();
+		return _commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+	}
 
-		AssertUtils.assertFailure(
-			CommerceOrderPaymentMethodException.class,
-			"Invalid payment method key " + commercePaymentMethodKey,
-			() -> _commerceOrderService.updateCommercePaymentMethodKey(
-				commerceOrderId, commercePaymentMethodKey));
+	private CommercePaymentMethodGroupRel _addCommercePaymentMethodGroupRel()
+		throws Exception {
 
-		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			_commercePaymentMethodGroupRelLocalService.
-				addCommercePaymentMethodGroupRel(
-					TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
-					RandomTestUtil.randomLocaleStringMap(),
-					RandomTestUtil.randomLocaleStringMap(), true, null,
-					commercePaymentMethodKey, RandomTestUtil.randomDouble(),
-					null);
-
-		commerceOrder = _commerceOrderService.updateCommercePaymentMethodKey(
-			commerceOrderId, commercePaymentMethodKey);
-
-		Assert.assertEquals(
-			commercePaymentMethodKey,
-			commerceOrder.getCommercePaymentMethodKey());
-
-		_commercePaymentMethodGroupRelLocalService.setActive(
-			commercePaymentMethodGroupRel.getCommercePaymentMethodGroupRelId(),
-			false);
-
-		commerceOrder = _commerceOrderService.updateCommercePaymentMethodKey(
-			commerceOrderId, StringPool.BLANK);
-
-		Assert.assertEquals(
-			StringPool.BLANK, commerceOrder.getCommercePaymentMethodKey());
-
-		AssertUtils.assertFailure(
-			CommerceOrderPaymentMethodException.class,
-			"Invalid payment method key " + commercePaymentMethodKey,
-			() -> _commerceOrderService.updateCommercePaymentMethodKey(
-				commerceOrderId, commercePaymentMethodKey));
+		return _commercePaymentMethodGroupRelLocalService.
+			addCommercePaymentMethodGroupRel(
+				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+				RandomTestUtil.randomLocaleStringMap(),
+				RandomTestUtil.randomLocaleStringMap(), true, null,
+				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				null);
 	}
 
 	private CommerceOrder _addOrUpdateCommerceOrder(
@@ -497,6 +489,53 @@ public class CommerceOrderServiceTest {
 		_assertAddOrUpdateCommerceOrderNotAllowed(
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES,
 			_commerceOrder, RandomTestUtil.randomString(), user);
+	}
+
+	private void _testAddOrUpdateCommerceOrderWithManageCommerceOrderPaymentMethodsPermission()
+		throws Exception {
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			_addCommercePaymentMethodGroupRel();
+
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			commercePaymentMethodGroupRel.getPaymentIntegrationKey(),
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		User user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		_assertAddOrUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+			commerceOrder, commerceOrder.getExternalReferenceCode(), user);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+
+		_assertAddOrUpdateCommerceOrder(
+			commerceOrder, commerceOrder.getExternalReferenceCode(), user);
 	}
 
 	private void _testAddOrUpdateCommerceOrderWithRegularRole()
@@ -724,6 +763,90 @@ public class CommerceOrderServiceTest {
 		}
 	}
 
+	private void _testUpdateCommerceOrderWithManageCommerceOrderPaymentMethodsPermission()
+		throws Exception {
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel1 =
+			_addCommercePaymentMethodGroupRel();
+
+		CommerceOrder commerceOrder = _addCommerceOrder(
+			commercePaymentMethodGroupRel1.getPaymentIntegrationKey(),
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel2 =
+			_addCommercePaymentMethodGroupRel();
+
+		commerceOrder.setCommercePaymentMethodKey(
+			commercePaymentMethodGroupRel2.getPaymentIntegrationKey());
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		User user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+			commerceOrder, user);
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+			commerceOrder, commerceOrder.getSubtotal(),
+			commerceOrder.getTotal(), user);
+		_assertUpdateCommerceOrderWithPricesNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+			commerceOrder, commerceOrder.getTotal(), user);
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		Assert.assertEquals(
+			commercePaymentMethodGroupRel1.getPaymentIntegrationKey(),
+			commerceOrder.getCommercePaymentMethodKey());
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+
+		commerceOrder.setCommercePaymentMethodKey(
+			commercePaymentMethodGroupRel2.getPaymentIntegrationKey());
+
+		commerceOrder = _updateCommerceOrder(commerceOrder, user);
+
+		Assert.assertEquals(
+			commercePaymentMethodGroupRel2.getPaymentIntegrationKey(),
+			commerceOrder.getCommercePaymentMethodKey());
+
+		commerceOrder.setCommercePaymentMethodKey(
+			commercePaymentMethodGroupRel1.getPaymentIntegrationKey());
+
+		commerceOrder = _updateCommerceOrder(
+			commerceOrder, commerceOrder.getSubtotal(),
+			commerceOrder.getTotal(), user);
+
+		Assert.assertEquals(
+			commercePaymentMethodGroupRel1.getPaymentIntegrationKey(),
+			commerceOrder.getCommercePaymentMethodKey());
+
+		commerceOrder.setCommercePaymentMethodKey(
+			commercePaymentMethodGroupRel2.getPaymentIntegrationKey());
+
+		commerceOrder = _updateCommerceOrderWithPrices(
+			commerceOrder, commerceOrder.getTotal(), user);
+
+		Assert.assertEquals(
+			commercePaymentMethodGroupRel2.getPaymentIntegrationKey(),
+			commerceOrder.getCommercePaymentMethodKey());
+	}
+
 	private void _testUpdateCommerceOrderWithRegularRole() throws Exception {
 		Role role = RoleTestUtil.addRole(
 			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
@@ -821,6 +944,131 @@ public class CommerceOrderServiceTest {
 
 		Assert.assertTrue(
 			BigDecimalUtil.eq(BigDecimal.valueOf(5), commerceOrder.getTotal()));
+	}
+
+	private void _testUpdateCommercePaymentMethodKeyWithInvalidCommercePaymentMethodKey()
+		throws Exception {
+
+		String commercePaymentMethodKey = RandomTestUtil.randomString();
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+				AccountConstants.ACCOUNT_ENTRY_ID_GUEST,
+				_commerceCurrency.getCode(), 0);
+
+		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		AssertUtils.assertFailure(
+			CommerceOrderPaymentMethodException.class,
+			"Invalid payment method key " + commercePaymentMethodKey,
+			() -> _commerceOrderService.updateCommercePaymentMethodKey(
+				commerceOrderId, commercePaymentMethodKey));
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					commercePaymentMethodKey, RandomTestUtil.randomDouble(),
+					null);
+
+		commerceOrder = _commerceOrderService.updateCommercePaymentMethodKey(
+			commerceOrderId, commercePaymentMethodKey);
+
+		Assert.assertEquals(
+			commercePaymentMethodKey,
+			commerceOrder.getCommercePaymentMethodKey());
+
+		commerceOrder = _commerceOrderService.updateCommercePaymentMethodKey(
+			commerceOrderId, StringPool.BLANK);
+
+		Assert.assertEquals(
+			StringPool.BLANK, commerceOrder.getCommercePaymentMethodKey());
+
+		_commercePaymentMethodGroupRelLocalService.setActive(
+			commercePaymentMethodGroupRel.getCommercePaymentMethodGroupRelId(),
+			false);
+
+		AssertUtils.assertFailure(
+			CommerceOrderPaymentMethodException.class,
+			"Invalid payment method key " + commercePaymentMethodKey,
+			() -> _commerceOrderService.updateCommercePaymentMethodKey(
+				commerceOrderId, commercePaymentMethodKey));
+	}
+
+	private void _testUpdateCommercePaymentMethodKeyWithManageCommerceOrderPaymentMethodsPermission()
+		throws Exception {
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel1 =
+			_addCommercePaymentMethodGroupRel();
+
+		CommerceOrder commerceOrder1 = _addCommerceOrder(
+			commercePaymentMethodGroupRel1.getPaymentIntegrationKey(),
+			CommerceOrderConstants.ORDER_STATUS_OPEN);
+		CommerceOrder commerceOrder2 = _addCommerceOrder(
+			commercePaymentMethodGroupRel1.getPaymentIntegrationKey(),
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		Role role = RoleTestUtil.addRole(
+			RandomTestUtil.randomString(), RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+
+		User user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role);
+
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel2 =
+			_addCommercePaymentMethodGroupRel();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			commerceOrder1 =
+				_commerceOrderService.updateCommercePaymentMethodKey(
+					commerceOrder1.getCommerceOrderId(),
+					commercePaymentMethodGroupRel2.getPaymentIntegrationKey());
+
+			Assert.assertEquals(
+				commercePaymentMethodGroupRel2.getPaymentIntegrationKey(),
+				commerceOrder1.getCommercePaymentMethodKey());
+
+			_commerceOrderService.updateCommercePaymentMethodKey(
+				commerceOrder2.getCommerceOrderId(),
+				commercePaymentMethodGroupRel2.getPaymentIntegrationKey());
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			_assertMessage(
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+				exception.getMessage(), user.getUserId());
+		}
+
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			commerceOrder2 =
+				_commerceOrderService.updateCommercePaymentMethodKey(
+					commerceOrder2.getCommerceOrderId(),
+					commercePaymentMethodGroupRel2.getPaymentIntegrationKey());
+
+			Assert.assertEquals(
+				commercePaymentMethodGroupRel2.getPaymentIntegrationKey(),
+				commerceOrder2.getCommercePaymentMethodKey());
+		}
 	}
 
 	private CommerceOrder _updateCommerceOrder(
