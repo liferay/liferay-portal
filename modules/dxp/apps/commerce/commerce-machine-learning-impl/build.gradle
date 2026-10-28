@@ -1,37 +1,20 @@
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
-	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
-	compileOnly group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.13"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:account:account-api")
-	compileOnly project(":apps:asset:asset-api")
-	compileOnly project(":apps:batch-engine:batch-engine-api")
 	compileOnly project(":apps:commerce:commerce-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
-	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
-	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-order-api")
-	compileOnly project(":apps:dispatch:dispatch-api")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-engine-adapter-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
-	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:commerce:commerce-machine-learning-api")
-	compileOnly project(":dxp:apps:commerce:headless:headless-commerce-machine-learning-api")
 }

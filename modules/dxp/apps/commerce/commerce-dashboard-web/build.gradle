@@ -8,7 +8,6 @@ dependencies {
 	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:asset:asset-taglib")
 	compileOnly project(":apps:commerce:commerce-api")
-	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
@@ -17,6 +16,5 @@ dependencies {
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }
