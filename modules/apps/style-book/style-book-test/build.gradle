@@ -2,11 +2,9 @@ dependencies {
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
-	testIntegrationImplementation project(":apps:client-extension:client-extension-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-report-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
-	testIntegrationImplementation project(":apps:frontend-css:frontend-css-variables-api")
 	testIntegrationImplementation project(":apps:frontend-token:frontend-token-definition-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")

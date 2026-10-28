@@ -14,7 +14,6 @@ dependencies {
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:portal:portal-aop-api")
-	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:portlet-display-template:portlet-display-template-api")
 	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":apps:static:osgi:osgi-util")
