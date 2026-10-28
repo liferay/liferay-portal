@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.io.Serializable;
@@ -149,6 +150,7 @@ public class UserAccountResourceTest extends BaseUserAccountResourceTestCase {
 		_testPatchRoomUserAccountWithoutRoleKey();
 	}
 
+	@FeatureFlag("LPD-82960")
 	@Override
 	@Test
 	public void testPostRoomUserAccount() throws Exception {
