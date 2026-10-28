@@ -127,9 +127,6 @@ public interface Rels {
 	public static final String DATA_SOURCE_DISCONNECT_ALL =
 		"data-source-disconnect-all";
 
-	public static final String DATA_SOURCE_DXP_USERS_FIELDS =
-		"data-source-dxp-users-fields";
-
 	public static final String DATA_SOURCE_FIELDS = "data-source-fields";
 
 	public static final String DATA_SOURCE_METRICS_ACCOUNTS_COUNT =
@@ -147,12 +144,6 @@ public interface Rels {
 	public static final String DATA_SOURCE_PROGRESS = "data-source-progress";
 
 	public static final String DATA_SOURCE_RECONNECT = "data-source-reconnect";
-
-	public static final String DATA_SOURCE_SALESFORCE_ACCOUNTS_FIELDS =
-		"data-source-salesforce-accounts-fields";
-
-	public static final String DATA_SOURCE_SALESFORCE_USERS_FIELDS =
-		"data-source-salesforce-users-fields";
 
 	public static final String DATA_SOURCE_USAGE_METRICS =
 		"data-source-usage-metrics";

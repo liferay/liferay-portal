@@ -47,7 +47,6 @@ import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DataSource;
-import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.DataSourceUsageMetric;
@@ -77,7 +76,6 @@ import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.SegmentActivation;
 import com.liferay.osb.faro.engine.client.model.StringPagedModel;
 import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
-import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 import com.liferay.osb.faro.engine.client.util.FilterBuilder;
 import com.liferay.osb.faro.engine.client.util.FilterUtil;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
@@ -2147,40 +2145,6 @@ public class ContactsEngineClientImpl
 			uriVariables);
 
 		return pagedModel.getResults();
-	}
-
-	@Override
-	public List<DataSourceField> getDataSourceFields(
-		FaroProject faroProject, String id, String context, int count) {
-
-		String type = null;
-
-		DataSource dataSource = getDataSource(faroProject, id);
-
-		Provider provider = dataSource.getProvider();
-
-		if (StringUtil.equals(provider.getType(), SalesforceProvider.TYPE)) {
-			if (context.equals(FieldMappingConstants.CONTEXT_DEMOGRAPHICS)) {
-				type = Rels.DATA_SOURCE_SALESFORCE_USERS_FIELDS;
-			}
-			else {
-				type = Rels.DATA_SOURCE_SALESFORCE_ACCOUNTS_FIELDS;
-			}
-		}
-		else {
-			type = Rels.DATA_SOURCE_DXP_USERS_FIELDS;
-		}
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, 0, count);
-
-		uriVariables.put("id", id);
-
-		return get(
-			faroProject, type,
-			new ParameterizedTypeReference<List<DataSourceField>>() {
-			},
-			uriVariables);
 	}
 
 	@Override

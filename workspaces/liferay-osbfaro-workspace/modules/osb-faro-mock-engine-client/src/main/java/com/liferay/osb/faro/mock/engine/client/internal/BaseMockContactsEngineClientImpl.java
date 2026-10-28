@@ -38,7 +38,6 @@ import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DataSource;
-import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.Distribution;
@@ -788,14 +787,6 @@ public abstract class BaseMockContactsEngineClientImpl
 		return contactsEngineClient.getDataSourceFieldCatalogEntries(
 			faroProject, entityType, filterString, id, search, cur, delta,
 			sortString);
-	}
-
-	@Override
-	public List<DataSourceField> getDataSourceFields(
-		FaroProject faroProject, String id, String context, int count) {
-
-		return contactsEngineClient.getDataSourceFields(
-			faroProject, id, context, count);
 	}
 
 	@Override

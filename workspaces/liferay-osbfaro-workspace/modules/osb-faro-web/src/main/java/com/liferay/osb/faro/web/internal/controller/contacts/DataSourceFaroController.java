@@ -15,7 +15,6 @@ import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.ChannelsConfiguration;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DataSource;
-import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.Event;
@@ -614,8 +613,7 @@ public class DataSourceFaroController extends BaseFaroController {
 			new ArrayList<>();
 
 		List<FieldValuesDisplay> fieldValuesDisplays = getFieldValuesDisplays(
-			groupId, FieldMappingConstants.CONTEXT_DEMOGRAPHICS, 1, null,
-			fileVersionId, id);
+			groupId, 1, null, fileVersionId, id);
 
 		FaroProject faroProject =
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
@@ -744,7 +742,7 @@ public class DataSourceFaroController extends BaseFaroController {
 		Map<String, FieldValuesDisplay> fieldValuesDisplayMap = new HashMap<>();
 
 		List<FieldValuesDisplay> fieldValuesDisplays = getFieldValuesDisplays(
-			groupId, context, 1, null, 0, id);
+			groupId, 1, null, 0, id);
 
 		for (FieldValuesDisplay fieldValuesDisplay : fieldValuesDisplays) {
 			fieldValuesDisplayMap.put(
@@ -935,24 +933,15 @@ public class DataSourceFaroController extends BaseFaroController {
 	@Path("/field_values")
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
 	public List<FieldValuesDisplay> getFieldValuesDisplays(
-			@PathParam("groupId") long groupId,
-			@DefaultValue(FieldMappingConstants.CONTEXT_DEMOGRAPHICS)
-			@QueryParam("context")
-			String context,
-			@QueryParam("count") int count,
+			@PathParam("groupId") long groupId, @QueryParam("count") int count,
 			@QueryParam("fieldName") String fieldName,
 			@QueryParam("fileVersionId") long fileVersionId,
 			@QueryParam("id") String id)
 		throws Exception {
 
-		List<DataSourceField> dataSourceFields = null;
-
-		FaroProject faroProject =
-			faroProjectLocalService.getFaroProjectByGroupId(groupId);
-
 		if (Validator.isNotNull(id)) {
 			DataSource dataSource = contactsEngineClient.getDataSource(
-				faroProject, id);
+				faroProjectLocalService.getFaroProjectByGroupId(groupId), id);
 
 			Provider provider = dataSource.getProvider();
 
@@ -975,17 +964,13 @@ public class DataSourceFaroController extends BaseFaroController {
 			}
 		}
 
-		if (fileVersionId > 0) {
-			dataSourceFields = _contactsCSVHelper.getDataSourceFields(
-				fileVersionId, fieldName, count, true);
-		}
-		else {
-			dataSourceFields = contactsEngineClient.getDataSourceFields(
-				faroProject, id, context, count);
+		if (fileVersionId <= 0) {
+			return Collections.emptyList();
 		}
 
 		return TransformUtil.transform(
-			dataSourceFields,
+			_contactsCSVHelper.getDataSourceFields(
+				fileVersionId, fieldName, count, true),
 			dataSourceField -> {
 				if (Validator.isNotNull(fieldName) &&
 					!StringUtil.equals(dataSourceField.getName(), fieldName)) {

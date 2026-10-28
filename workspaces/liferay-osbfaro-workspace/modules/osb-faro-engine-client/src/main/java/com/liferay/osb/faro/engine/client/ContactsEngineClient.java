@@ -37,7 +37,6 @@ import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DataSource;
-import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
 import com.liferay.osb.faro.engine.client.model.DataSourceProgress;
 import com.liferay.osb.faro.engine.client.model.DataSourceUsageMetric;
@@ -409,9 +408,6 @@ public interface ContactsEngineClient {
 				FaroProject faroProject, String entityType, String filterString,
 				String id, String search, int cur, int delta, String sortString)
 		throws FaroEngineClientException;
-
-	public List<DataSourceField> getDataSourceFields(
-		FaroProject faroProject, String id, String context, int count);
 
 	public long getDataSourceMetricsAccountsCount(
 		FaroProject faroProject, String dataSourceId);
