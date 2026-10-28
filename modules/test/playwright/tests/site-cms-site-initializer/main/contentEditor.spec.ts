@@ -3,6 +3,10 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {
+	ObjectDefinitionAPI,
+	ObjectValidationRuleAPI,
+} from '@liferay/object-admin-rest-client-js/v1_0';
 import {Locator, Page, expect, mergeTests} from '@playwright/test';
 import path from 'path';
 
@@ -1780,6 +1784,217 @@ test(
 		await expect(secondText).toHaveValue('Second Text');
 		await expect(firstLongText).toHaveValue('First Long Text');
 		await expect(secondLongText).toHaveValue('Second Long Text');
+
+		// Delete content
+
+		await contentsPage.goto();
+
+		const card = page
+			.locator('tr', {hasText: title})
+			.or(page.locator('.card-row', {hasText: title}));
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Delete'}),
+			trigger: card.locator('button'),
+		});
+
+		await waitForAlert(page, `Success:${title} was moved`, {
+			autoClose: false,
+		});
+	}
+);
+
+test(
+	'Repeatable group entries are kept and the validation error is shown on the invalid entry',
+	{
+		tag: '@LPD-109365',
+	},
+	async ({apiHelpers, contentsPage, page, structureBuilderPage}) => {
+
+		// Create structure with a repeatable group
+
+		const structureLabel = `StructureName${getRandomInt()}`;
+
+		await structureBuilderPage.createStructureFromData({
+			label: structureLabel,
+			name: `StructureName${getRandomInt()}`,
+			page: structureBuilderPage,
+			publish: false,
+		});
+
+		await structureBuilderPage.addField('Text');
+
+		const repeatableGroupLabel = getRandomString();
+
+		await structureBuilderPage.createRepeatableGroup({
+			fields: [{label: 'Text'}],
+			label: repeatableGroupLabel,
+		});
+
+		await structureBuilderPage.publishStructure();
+
+		// Add a URL validation to the repeatable group
+
+		const objectDefinitionAPIClient =
+			await apiHelpers.buildRestClient(ObjectDefinitionAPI);
+
+		const {body: objectDefinitionsPage} =
+			await objectDefinitionAPIClient.getObjectDefinitionsPage(
+				undefined,
+				undefined,
+				1,
+				20,
+				repeatableGroupLabel
+			);
+
+		const objectDefinition = objectDefinitionsPage.items.find(
+			(item) => item.label['en_US'] === repeatableGroupLabel
+		);
+
+		const objectField = objectDefinition.objectFields.find(
+			(item) => item.label['en_US'] === 'Text'
+		);
+
+		const objectValidationRuleAPIClient = await apiHelpers.buildRestClient(
+			ObjectValidationRuleAPI
+		);
+
+		const errorLabel = 'Enter a valid URL.';
+
+		await objectValidationRuleAPIClient.postObjectDefinitionObjectValidationRule(
+			objectDefinition.id,
+			{
+				active: true,
+				engine: 'ddm',
+				errorLabel: {
+					en_US: errorLabel,
+				},
+				name: {
+					en_US: getRandomString(),
+				},
+				objectValidationRuleSettings: [
+					{
+						name: 'outputObjectFieldExternalReferenceCode',
+						value: objectField.externalReferenceCode as any,
+					},
+				],
+				outputType: 'partialValidation',
+				script: `isURL(${objectField.name})`,
+				system: false,
+			}
+		);
+
+		// Add content with an invalid third entry
+
+		await contentsPage.goto();
+
+		await contentsPage.createContent(structureLabel);
+
+		const title = getRandomString();
+
+		await page.getByPlaceholder(`New ${structureLabel}`).fill(title);
+
+		const addNewButton = page.getByRole('button', {name: 'Add New'});
+		const rows = page.locator(
+			'[data-form-relationship-structure-item-content-id]'
+		);
+		const textFields = rows.getByRole('textbox');
+
+		await expect(textFields).toHaveCount(1);
+
+		await addNewButton.click();
+
+		await expect(textFields).toHaveCount(2);
+
+		await addNewButton.click();
+
+		await expect(textFields).toHaveCount(3);
+
+		await addNewButton.click();
+
+		await expect(textFields).toHaveCount(4);
+
+		await textFields.nth(0).fill('https://www.liferay.com');
+		await textFields.nth(1).fill('https://liferay.dev');
+		await textFields.nth(2).fill('not a url');
+		await textFields.nth(3).fill('https://learn.liferay.com');
+
+		await contentsPage.publishButton.click();
+
+		await expect(rows.nth(2)).toContainText(errorLabel);
+
+		await expect(textFields).toHaveCount(4);
+
+		await expect(textFields.nth(0)).toHaveValue('https://www.liferay.com');
+		await expect(textFields.nth(1)).toHaveValue('https://liferay.dev');
+		await expect(textFields.nth(2)).toHaveValue('not a url');
+		await expect(textFields.nth(3)).toHaveValue(
+			'https://learn.liferay.com'
+		);
+
+		// Fix the third entry and publish
+
+		await textFields.nth(2).fill('https://liferay.design');
+
+		await contentsPage.saveContent();
+
+		// Add an invalid fifth entry to the existing content
+
+		await contentsPage.editContent(title);
+
+		await expect(textFields).toHaveCount(4);
+
+		await addNewButton.click();
+
+		await expect(textFields).toHaveCount(5);
+
+		await textFields.nth(4).fill('invalid link');
+
+		await contentsPage.publishButton.click();
+
+		await expect(rows.nth(4)).toContainText(errorLabel);
+
+		await expect(textFields).toHaveCount(5);
+
+		await expect(textFields.nth(0)).toHaveValue('https://www.liferay.com');
+		await expect(textFields.nth(1)).toHaveValue('https://liferay.dev');
+		await expect(textFields.nth(2)).toHaveValue('https://liferay.design');
+		await expect(textFields.nth(3)).toHaveValue(
+			'https://learn.liferay.com'
+		);
+		await expect(textFields.nth(4)).toHaveValue('invalid link');
+
+		// Fix the fifth entry and publish
+
+		await textFields.nth(4).fill('https://liferay.com/blog');
+
+		await contentsPage.saveContent();
+
+		// Remove the second entry and update the third one with invalid data
+
+		await contentsPage.editContent(title);
+
+		await expect(textFields).toHaveCount(5);
+
+		await rows.nth(1).getByTitle('Remove').click();
+
+		await expect(textFields).toHaveCount(4);
+
+		await textFields.nth(1).fill('invalid link');
+
+		await contentsPage.publishButton.click();
+
+		await expect(rows.nth(1)).toContainText(errorLabel);
+
+		await expect(textFields).toHaveCount(4);
+
+		await expect(textFields.nth(0)).toHaveValue('https://www.liferay.com');
+		await expect(textFields.nth(1)).toHaveValue('invalid link');
+		await expect(textFields.nth(2)).toHaveValue(
+			'https://learn.liferay.com'
+		);
+		await expect(textFields.nth(3)).toHaveValue('https://liferay.com/blog');
 
 		// Delete content
 
