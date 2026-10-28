@@ -431,7 +431,6 @@ modules/core/portal-app-license-api/    @liferay-core-infra
 modules/core/portal-app-license-resolver-hook/    @liferay-core-infra
 modules/core/portal-app-license-test/    @liferay-core-infra
 modules/core/portal-bootstrap/    @liferay-core-infra
-modules/core/portal-bootstrap-test/    @liferay-core-infra
 modules/core/portal-hibernate-dependencies/    @liferay-core-infra
 modules/core/portal-jsp-engine/    @liferay-core-infra
 modules/core/portal-web/    @liferay-core-infra
