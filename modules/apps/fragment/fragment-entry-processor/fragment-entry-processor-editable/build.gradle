@@ -6,8 +6,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
-	compileOnly project(":apps:asset:asset-api")
-	compileOnly project(":apps:asset:asset-info-display-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
