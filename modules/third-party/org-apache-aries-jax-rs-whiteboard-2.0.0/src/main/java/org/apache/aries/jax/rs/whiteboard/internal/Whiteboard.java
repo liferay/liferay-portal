@@ -50,6 +50,7 @@ import javax.ws.rs.ext.MessageBodyWriter;
 import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
+import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -379,6 +380,84 @@ public class Whiteboard {
                     serviceTuple.getCachingServiceReference(),
                     serviceTuple.getService()
             ));
+        }
+    }
+
+    private static ResourceProvider getPrototypeResourceProvider(
+        Bundle originalBundle, CachingServiceReference<?> serviceReference) {
+
+        String scope = getString(serviceReference.getProperty("service.scope"));
+
+        boolean applicationScoped =
+            Boolean.parseBoolean(
+                getString(
+                    serviceReference.getProperty(
+                        "org.apache.aries.jax.rs.whiteboard.application.scoped")));
+
+        Bundle bundle = serviceReference.getServiceReference().getBundle();
+
+        if (!Objects.equals(scope, "prototype") || applicationScoped ||
+            (bundle == null)) {
+
+            return null;
+        }
+
+        Class<?> resourceClass = loadResourceClass(
+            bundle, serviceReference, "implementation.class.name");
+
+        if (resourceClass == null) {
+            resourceClass = loadResourceClass(
+                bundle, serviceReference, "component.name");
+        }
+
+        if (resourceClass == null) {
+            return null;
+        }
+
+        ServiceObjects<?> serviceObjects =
+            originalBundle.getBundleContext().getServiceObjects(
+                serviceReference.getServiceReference());
+
+        if (serviceObjects == null) {
+            return null;
+        }
+
+        return new PrototypeServiceReferenceResourceProvider(
+            serviceReference, resourceClass, serviceObjects);
+    }
+
+    private static Class<?> loadResourceClass(
+        Bundle bundle, CachingServiceReference<?> serviceReference,
+        String key) {
+
+        Object className = serviceReference.getProperty(key);
+
+        if (!(className instanceof String)) {
+            return null;
+        }
+
+        try {
+            Class<?> resourceClass = bundle.loadClass((String)className);
+
+            if (Modifier.isAbstract(resourceClass.getModifiers())) {
+                return null;
+            }
+
+            for (String objectClass :
+                    (String[])serviceReference.getProperty(
+                        Constants.OBJECTCLASS)) {
+
+                if (!bundle.loadClass(objectClass).isAssignableFrom(
+                        resourceClass)) {
+
+                    return null;
+                }
+            }
+
+            return resourceClass;
+        }
+        catch (Exception | LinkageError e) {
+            return null;
         }
     }
 
@@ -838,6 +917,12 @@ public class Whiteboard {
             Long.class.cast(properties.get("service.bundleid")).longValue());
 
         return
+            just(
+                () -> getPrototypeResourceProvider(
+                    originalBundle, serviceReference)
+            ).flatMap(prototypeResourceProvider ->
+                prototypeResourceProvider != null ?
+                just(prototypeResourceProvider) :
             changeContext(
                 originalBundle.getBundleContext(),
                 onlyGettables(
@@ -864,7 +949,7 @@ public class Whiteboard {
                 then(nothing())
             ).flatMap(
                 Whiteboard::getResourceProvider
-            ).effects(
+            )).effects(
                 rp -> _runtime.addApplicationEndpoint(
                     properties::get, serviceReference,
                     registrator.getBus(), rp.getResourceClass()),
@@ -1533,3 +1618,4 @@ public class Whiteboard {
     }
 
 }
+/* @generated */
