@@ -24,7 +24,7 @@ definition {
 		SetWindowSize(value1 = "500,500");
 
 		if ((IsElementPresent(ariaLabel = "Closes this modal window", locator1 = "Button#ANY_WITH_ARIA_LABEL")) && (IsVisible(ariaLabel = "Closes this modal window", locator1 = "Button#ANY_WITH_ARIA_LABEL"))) {
-			Click(
+			Click.clickNoMouseOver(
 				ariaLabel = "Closes this modal window",
 				locator1 = "Button#ANY_WITH_ARIA_LABEL");
 		}
