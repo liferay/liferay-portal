@@ -307,6 +307,16 @@ public class DefaultSearchResultPermissionFilterTest {
 		Mockito.verifyNoInteractions(_searchFunction);
 	}
 
+	@Test
+	public void testSearchWithUnboundedStart() {
+		_groupAdmin = false;
+		_permissionFilteredSearchResultAccurateCountThreshold = 0;
+
+		_assertPagination(
+			_getSearchContext(QueryUtil.ALL_POS, 4),
+			_getDefaultSearchResultPermissionFilter(), 4, 10);
+	}
+
 	private void _assertPagination(
 		SearchContext searchContext,
 		DefaultSearchResultPermissionFilter defaultSearchResultPermissionFilter,
