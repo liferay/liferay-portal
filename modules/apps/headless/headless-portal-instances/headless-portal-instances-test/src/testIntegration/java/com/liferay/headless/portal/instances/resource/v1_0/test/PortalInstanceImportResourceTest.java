@@ -190,7 +190,11 @@ public class PortalInstanceImportResourceTest
 			sql = sql + " cascade";
 		}
 
-		try (Connection connection = DataAccess.getConnection();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId());
+
+			Connection connection = DataAccess.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				sql)) {

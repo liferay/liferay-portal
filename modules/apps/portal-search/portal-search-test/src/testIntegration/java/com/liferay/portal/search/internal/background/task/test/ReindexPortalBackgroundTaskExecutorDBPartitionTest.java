@@ -6,11 +6,14 @@
 package com.liferay.portal.search.internal.background.task.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.db.partition.test.util.BaseDBPartitionTestCase;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
+import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.search.SearchEngineHelper;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.search.engine.adapter.SearchEngineAdapter;
@@ -79,7 +82,10 @@ public class ReindexPortalBackgroundTaskExecutorDBPartitionTest
 	private String[] _getIndexNames(long companyId, String partitionName)
 		throws Exception {
 
-		try (PreparedStatement preparedStatement = connection.prepareStatement(
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId());
+			PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
 					"select indexNameCurrent, indexNameNext from ",
 					partitionName, ".CompanyInfo where companyId = ?"))) {

@@ -179,7 +179,11 @@ public class PortalInstanceExportResourceTest
 			sql = sql + " cascade";
 		}
 
-		try (Connection connection = DataAccess.getConnection();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId());
+
+			Connection connection = DataAccess.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				sql)) {
@@ -193,7 +197,11 @@ public class PortalInstanceExportResourceTest
 
 		List<String> configurationIds = new ArrayList<>();
 
-		try (Connection connection = DataAccess.getConnection();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					PortalInstancePool.getDefaultCompanyId());
+
+			Connection connection = DataAccess.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
 				StringBundler.concat(
