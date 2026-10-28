@@ -465,8 +465,17 @@ jobs:
             chart_name: liferay-azure-infrastructure-provider
             working_directory: ./cloud/helm/azure-infrastructure-provider
     push-rc-bootstrap-aws:
-        if: ${{needs.check-bootstrap-aws.outputs.should_release == 'true'}}
-        needs: check-bootstrap-aws
+        if: ${{!cancelled() && !failure() && needs.check-bootstrap-aws.outputs.should_release == 'true'}}
+        needs:
+            -   check-bootstrap-aws
+            -   push-rc-aws
+            -   push-rc-aws-infrastructure-provider
+            -   push-rc-dxp-operator
+            -   push-rc-image-dxp-operator
+            -   push-rc-infrastructure
+            -   push-rc-observability
+            -   push-rc-platform
+            -   push-rc-platform-components
         uses: ./.github/workflows/ci-reusable-push-bootstrap-tarball.yaml
         with:
             provider: aws
