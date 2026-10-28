@@ -123,11 +123,8 @@ public class TalendProcessTest {
 		List<String> processConfigArguments = processConfig.getArguments();
 
 		Assert.assertEquals(
-			processConfigArguments.toString(), 4,
+			processConfigArguments.toString(), 3,
 			processConfigArguments.size());
-
-		Assert.assertTrue(
-			processConfigArguments.contains("-Djava.security.manager=allow"));
 
 		Assert.assertTrue(processConfigArguments.contains("-Xint"));
 		Assert.assertTrue(processConfigArguments.contains("-Xms2G"));

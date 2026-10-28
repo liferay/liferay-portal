@@ -14,14 +14,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import java.security.Permission;
-
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Igor Beslic
@@ -58,48 +56,23 @@ public class TalendProcessCallable
 				new TalendProcessOutputStream(outTalendProcessOutputWriter),
 				outPrintStream));
 
-		AtomicInteger exitStatusAtomicInteger = new AtomicInteger();
-		RuntimeException runtimeException = new RuntimeException();
-
-		System.setSecurityManager(
-			new SecurityManager() {
-
-				@Override
-				public void checkExit(int status) {
-					exitStatusAtomicInteger.set(status);
-
-					throw runtimeException;
-				}
-
-				@Override
-				public void checkPermission(Permission perm) {
-				}
-
-			});
-
 		ClassLoader classLoader = TalendProcessCallable.class.getClassLoader();
 
 		try {
 			Class<?> talendJobClass = classLoader.loadClass(_jobMainClassFQN);
 
-			Method mainMethod = talendJobClass.getMethod(
-				"main", String[].class);
+			Constructor<?> constructor = talendJobClass.getConstructor();
+			Method runJobInTOSMethod = talendJobClass.getMethod(
+				"runJobInTOS", String[].class);
 
-			mainMethod.setAccessible(true);
-
-			mainMethod.invoke(null, new Object[] {_mainMethodArgs});
+			return new TalendProcessOutput(
+				(Integer)runJobInTOSMethod.invoke(
+					constructor.newInstance(), new Object[] {_mainMethodArgs}),
+				outTalendProcessOutputWriter.getOutput(),
+				errTalendProcessOutputWriter.getOutput());
 		}
 		catch (InvocationTargetException invocationTargetException) {
-			Throwable causeThrowable = invocationTargetException.getCause();
-
-			if (causeThrowable == runtimeException) {
-				return new TalendProcessOutput(
-					exitStatusAtomicInteger.get(),
-					outTalendProcessOutputWriter.getOutput(),
-					errTalendProcessOutputWriter.getOutput());
-			}
-
-			throw new ProcessException(causeThrowable);
+			throw new ProcessException(invocationTargetException.getCause());
 		}
 		catch (Throwable throwable) {
 			throw new ProcessException(throwable);
@@ -108,8 +81,6 @@ public class TalendProcessCallable
 			System.setErr(errPrintStream);
 			System.setOut(outPrintStream);
 		}
-
-		throw new ProcessException("Talend process did not trigger JVM exit");
 	}
 
 	private static final long serialVersionUID = 1L;

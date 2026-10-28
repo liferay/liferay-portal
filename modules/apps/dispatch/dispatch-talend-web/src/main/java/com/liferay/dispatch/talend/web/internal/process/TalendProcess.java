@@ -108,8 +108,6 @@ public class TalendProcess {
 				arguments.addAll(_jvmOptions);
 			}
 
-			arguments.add("-Djava.security.manager=allow");
-
 			ProcessConfig portalProcessConfig =
 				PortalClassPathUtil.getPortalProcessConfig();
 
