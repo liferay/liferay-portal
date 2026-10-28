@@ -12,8 +12,6 @@ public interface Rels {
 
 	public static final String ACCOUNT = "account";
 
-	public static final String ACCOUNT_DETAILS = "account-details";
-
 	public static final String ACCOUNT_INDIVIDUALS = "account-individuals";
 
 	public static final String ACCOUNT_LIFECYCLE = "account-lifecycle";
@@ -63,12 +61,7 @@ public interface Rels {
 
 	public static final String ACTIVITY_ASSETS = "activity-assets";
 
-	public static final String ACTIVITY_GROUP = "activity-group";
-
 	public static final String ACTIVITY_GROUPS = "activity-groups";
-
-	public static final String ACTIVITY_TRANSFORMATIONS =
-		"activity-transformations";
 
 	public static final String ADMIN_DATA = "admin-data";
 
@@ -233,12 +226,6 @@ public interface Rels {
 
 	public static final String INDIVIDUAL_SEGMENTS = "individual-segments";
 
-	public static final String INDIVIDUAL_TRANSFORMATION =
-		"individual-transformation";
-
-	public static final String INDIVIDUAL_TRANSFORMATIONS =
-		"individual-transformations";
-
 	public static final String INDIVIDUALS = "individuals";
 
 	public static final String INDIVIDUALS_COUNT = "individuals-count";
@@ -255,37 +242,13 @@ public interface Rels {
 	public static final String INDIVIDUALS_ENRICHED_PROFILES_COUNT =
 		"individuals-enriched-profiles-count";
 
-	public static final String INTEREST = "interest";
-
 	public static final String INTEREST_KEYWORDS = "interest-keywords";
 
-	public static final String INTEREST_TRANSFORMATION =
-		"interest-transformation";
-
-	public static final String INTEREST_TRANSFORMATIONS =
-		"interest-transformations";
-
 	public static final String INTERESTS = "interests";
-
-	public static final String MEMBERSHIP = "membership";
-
-	public static final String MEMBERSHIP_CHANGE = "membership-change";
-
-	public static final String MEMBERSHIP_CHANGES = "membership-changes";
-
-	public static final String MEMBERSHIP_CHANGES_TRANSFORMATION =
-		"membership-changes-transformation";
-
-	public static final String MEMBERSHIP_CHANGES_TRANSFORMATIONS =
-		"membership-changes-transformations";
-
-	public static final String MEMBERSHIPS = "memberships";
 
 	public static final String ORGANIZATIONS = "organizations";
 
 	public static final String PAGE_EXPERIENCES = "page-experiences";
-
-	public static final String PAGE_VISIT = "page-visited";
 
 	public static final String PAGE_VISITED = "page-visited";
 
@@ -301,9 +264,6 @@ public interface Rels {
 
 	public static final String PROJECTS_METRICS = "projects-metrics";
 
-	public static final String REPORTS_EXPORT_CSV_COUNT =
-		"reports-export-csv-count";
-
 	public static final String SEGMENT_NEW_MEMBERS_COUNT =
 		"segment-new-members-count";
 
@@ -311,8 +271,6 @@ public interface Rels {
 		"session-acquisition-properties";
 
 	public static final String SESSION_VALUES = "session-values";
-
-	public static final String WORKSPACE = "workspace";
 
 	public interface Interests {
 

@@ -11,10 +11,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -24,7 +20,7 @@ import org.springframework.http.client.ClientHttpResponse;
  * @author Shinn Lok
  */
 public class FaroClientHttpResponse
-	implements ClientHttpResponse, Cloneable, Serializable {
+	implements ClientHttpResponse, Serializable {
 
 	public FaroClientHttpResponse(
 		byte[] bytes, HttpHeaders httpHeaders, HttpStatusCode httpStatusCode) {
@@ -53,18 +49,6 @@ public class FaroClientHttpResponse
 			FileUtil.getBytes(clientHttpResponse.getBody()),
 			clientHttpResponse.getHeaders(),
 			clientHttpResponse.getStatusCode());
-	}
-
-	@Override
-	public FaroClientHttpResponse clone() throws CloneNotSupportedException {
-		HttpHeaders httpHeaders = (HttpHeaders)super.clone();
-
-		for (Map.Entry<String, List<String>> entry : _httpHeaders.headerSet()) {
-			httpHeaders.put(entry.getKey(), new LinkedList<>(entry.getValue()));
-		}
-
-		return new FaroClientHttpResponse(
-			_bytes.clone(), httpHeaders, _httpStatusCode);
 	}
 
 	@Override
