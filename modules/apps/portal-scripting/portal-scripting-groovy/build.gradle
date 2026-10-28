@@ -2,6 +2,5 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.codehaus.groovy", name: "groovy-all", version: "2.4.21"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly project(":apps:portal-scripting:portal-scripting-api")
 	testImplementation project(":core:petra:petra-io")
 }
