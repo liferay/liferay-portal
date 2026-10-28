@@ -33,7 +33,17 @@ if (layout != null) {
 	if (layout.isTypeAssetDisplay() || layout.isTypeContent()) {
 		List<com.liferay.portal.kernel.model.PortletPreferences> portletPreferencesList = PortletPreferencesLocalServiceUtil.getPortletPreferences(PortletKeys.PREFS_OWNER_ID_DEFAULT, PortletKeys.PREFS_OWNER_TYPE_LAYOUT, layout.getPlid());
 
+		Set<String> portletIds = new HashSet<>();
+
+		for (Portlet portlet : portletTreeSet) {
+			portletIds.add(portlet.getPortletId());
+		}
+
 		for (com.liferay.portal.kernel.model.PortletPreferences portletPreferences : portletPreferencesList) {
+			if (portletIds.contains(portletPreferences.getPortletId())) {
+				continue;
+			}
+
 			Portlet portlet = PortletLocalServiceUtil.getPortletById(company.getCompanyId(), portletPreferences.getPortletId());
 
 			if ((portlet == null) || !portlet.isActive() || portlet.isUndeployedPortlet()) {
@@ -162,7 +172,8 @@ for (Portlet portlet : portletTreeSet) {
 
 		portlet.data = portlet.data || {};
 
-		portlet.data.pageRenderState = <%= RenderStateUtil.generateJSON(request, themeDisplay) %>;
+		portlet.data.pageRenderState =
+			<%= RenderStateUtil.generateJSON(request, themeDisplay) %>;
 	</aui:script>
 </c:if>
 
