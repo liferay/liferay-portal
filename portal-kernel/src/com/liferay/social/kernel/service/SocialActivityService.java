@@ -570,4 +570,4 @@ public interface SocialActivityService extends BaseService {
 	public int getUserOrganizationsActivitiesCount(long userId);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1327054584
+// LIFERAY-SERVICE-BUILDER-HASH:1597414683
