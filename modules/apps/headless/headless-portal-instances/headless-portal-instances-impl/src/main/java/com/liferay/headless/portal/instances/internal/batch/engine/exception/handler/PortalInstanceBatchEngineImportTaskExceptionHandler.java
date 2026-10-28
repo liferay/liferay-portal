@@ -58,10 +58,12 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 			return;
 		}
 
+		PortalInstanceNotificationUtil.removePortalInstance(
+			batchEngineImportTask.getBatchEngineImportTaskId(), item);
+
 		String portalInstanceId = _getPortalInstanceId(item);
 
 		PortalInstanceNotificationUtil.sendUserNotificationEvent(
-			batchEngineImportTask.getUserId(),
 			JSONUtil.put(
 				"errorMessage", message
 			).put(
@@ -77,7 +79,8 @@ public class PortalInstanceBatchEngineImportTaskExceptionHandler
 				"sourcePortalInstanceId", _getSourcePortalInstanceId(item)
 			).put(
 				"status", PortalInstancesNotificationConstants.STATUS_FAILED
-			));
+			),
+			batchEngineImportTask.getUserId());
 	}
 
 	private String _getCopyErrorMessageKey(Exception exception) {

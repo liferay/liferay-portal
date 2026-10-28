@@ -52,9 +52,16 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 
 		_companyService.deleteCompany(company.getCompanyId());
 
-		_sendUserNotificationEvent(
-			PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE,
-			portalInstanceId);
+		PortalInstanceNotificationUtil.sendUserNotificationEvent(
+			JSONUtil.put(
+				"operationType",
+				PortalInstancesNotificationConstants.OPERATION_TYPE_DELETE
+			).put(
+				"portalInstanceId", portalInstanceId
+			).put(
+				"status", PortalInstancesNotificationConstants.STATUS_SUCCESS
+			),
+			contextUser.getUserId());
 	}
 
 	@Override
@@ -117,13 +124,7 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 
 		PortalInstancePermissionUtil.check();
 
-		PortalInstance addedPortalInstance = _addPortalInstance(portalInstance);
-
-		_sendUserNotificationEvent(
-			PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
-			portalInstance.getPortalInstanceId());
-
-		return addedPortalInstance;
+		return _addPortalInstance(portalInstance);
 	}
 
 	@Override
@@ -193,20 +194,6 @@ public class PortalInstanceResourceImpl extends BasePortalInstanceResourceImpl {
 					finalCompanyId, portalInstance.getPortalInstanceId(),
 					portalInstance.getVirtualHost(), portalInstance.getDomain(),
 					maxUsers, active)));
-	}
-
-	private void _sendUserNotificationEvent(
-		String operationType, String portalInstanceId) {
-
-		PortalInstanceNotificationUtil.sendUserNotificationEvent(
-			contextUser.getUserId(),
-			JSONUtil.put(
-				"operationType", operationType
-			).put(
-				"portalInstanceId", portalInstanceId
-			).put(
-				"status", PortalInstancesNotificationConstants.STATUS_SUCCESS
-			));
 	}
 
 	private void _validateAdmin(Admin admin) throws Exception {

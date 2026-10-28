@@ -98,7 +98,6 @@ public class PortalInstanceCopyResourceImpl
 		String portalInstanceId, String sourcePortalInstanceId) {
 
 		PortalInstanceNotificationUtil.sendUserNotificationEvent(
-			contextUser.getUserId(),
 			JSONUtil.put(
 				"operationType",
 				PortalInstancesNotificationConstants.OPERATION_TYPE_COPY
@@ -108,7 +107,8 @@ public class PortalInstanceCopyResourceImpl
 				"sourcePortalInstanceId", sourcePortalInstanceId
 			).put(
 				"status", PortalInstancesNotificationConstants.STATUS_SUCCESS
-			));
+			),
+			contextUser.getUserId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

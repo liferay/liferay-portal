@@ -83,7 +83,6 @@ public class PortalInstanceExportResourceImpl
 		String portalInstanceId, String schemaName) {
 
 		PortalInstanceNotificationUtil.sendUserNotificationEvent(
-			contextUser.getUserId(),
 			JSONUtil.put(
 				"operationType",
 				PortalInstancesNotificationConstants.OPERATION_TYPE_EXPORT
@@ -93,7 +92,8 @@ public class PortalInstanceExportResourceImpl
 				"schemaName", schemaName
 			).put(
 				"status", PortalInstancesNotificationConstants.STATUS_SUCCESS
-			));
+			),
+			contextUser.getUserId());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
