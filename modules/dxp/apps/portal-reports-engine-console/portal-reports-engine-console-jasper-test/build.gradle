@@ -7,7 +7,6 @@ FileTree jasperZipTree = zipTree(jasperFile)
 
 dependencies {
 	testIntegrationImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
-	testIntegrationImplementation group: "org.apache.pdfbox", name: "fontbox", version: "3.0.7"
 	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox", version: "3.0.7"
 	testIntegrationImplementation group: "org.apache.pdfbox", name: "pdfbox-io", version: "3.0.7"
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")

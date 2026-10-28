@@ -1,5 +1,4 @@
 dependencies {
 	testIntegrationImplementation project(":apps:portal-rules-engine:portal-rules-engine-api")
-	testIntegrationImplementation project(":dxp:apps:portal-rules-engine-drools:portal-rules-engine-drools")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
