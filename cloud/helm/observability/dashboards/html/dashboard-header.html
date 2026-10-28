@@ -1,5 +1,8 @@
 <style>
 	.dh-bar { padding: 16px 24px; background-color: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; font-family: 'Inter', system-ui, sans-serif; display: flex; flex-wrap: wrap; gap: 24px; align-items: center; width: 100%; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); }
+	.dh-breadcrumb { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #6b7280; font-size: 13px; }
+	.dh-breadcrumb-current { color: #111827; font-weight: 600; }
+	.dh-breadcrumb-link { color: #3274d9; font-weight: 600; text-decoration: none; }
 	.dh-env { display: flex; align-items: center; gap: 8px; margin-left: auto; }
 	.dh-env-label { color: #6b7280; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 	.dh-env-value { color: #111827; font-size: 14px; font-weight: 700; background: #e2e8f0; padding: 4px 10px; border-radius: 6px; }
@@ -29,6 +32,13 @@
 	{{- end }}
 
 	<div class="dh-title-block">
+		<nav aria-label="Dashboard Breadcrumb" class="dh-breadcrumb">
+			<a class="dh-breadcrumb-link" href="/d/central-hub/central-hub">Central Hub</a>
+
+			<span>›</span>
+			<span class="dh-breadcrumb-current">{{ .title }}</span>
+		</nav>
+
 		<h2 class="dh-title">{{ .title }}</h2>
 
 		<p class="dh-sub">{{ .subtitle }}</p>
