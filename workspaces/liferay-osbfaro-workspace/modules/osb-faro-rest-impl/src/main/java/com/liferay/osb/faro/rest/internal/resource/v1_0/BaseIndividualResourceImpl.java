@@ -54,7 +54,7 @@ public abstract class BaseIndividualResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead."
+		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -687,4 +687,4 @@ public abstract class BaseIndividualResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1526630616
+// LIFERAY-REST-BUILDER-HASH:1504025197

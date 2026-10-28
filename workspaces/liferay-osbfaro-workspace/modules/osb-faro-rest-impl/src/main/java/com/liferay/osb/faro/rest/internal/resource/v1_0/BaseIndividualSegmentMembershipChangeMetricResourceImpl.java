@@ -48,7 +48,7 @@ public abstract class BaseIndividualSegmentMembershipChangeMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}/membership-change-metrics'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "How an individual segment's membership changed over a date range: its size at the end of the range and how much it grew and shrank, each with the preceding range's figure, a trend percentage, and a daily time series. Use this to answer 'is this segment growing or shrinking' style questions. Growth and shrinkage are net per day and cannot report individuals joining and leaving on the same day; see the `IndividualSegmentMembershipChangeMetric` schema. Buckets are always daily and the range always ends today, so pass `rangeKey` as one of LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. LAST_30_DAYS is used when omitted."
+		description = "How an individual segment's membership changed over a date range: its size at the end of the range and how much it grew and shrank, each with the preceding range's figure, a trend percentage, and a daily time series. Use this to answer 'is this segment growing or shrinking' style questions. Growth and shrinkage are net per day and cannot report individuals joining and leaving on the same day; see the `IndividualSegmentMembershipChangeMetric` schema. Buckets are always daily and the range always ends today, so pass `rangeKey` as one of LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. LAST_30_DAYS is used when omitted. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -547,4 +547,4 @@ public abstract class BaseIndividualSegmentMembershipChangeMetricResourceImpl
 			BaseIndividualSegmentMembershipChangeMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1689372730
+// LIFERAY-REST-BUILDER-HASH:-1955254077

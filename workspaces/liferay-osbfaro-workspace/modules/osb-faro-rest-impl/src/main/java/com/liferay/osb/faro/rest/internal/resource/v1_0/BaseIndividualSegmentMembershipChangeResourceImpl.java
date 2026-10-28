@@ -56,7 +56,7 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceImpl
 	@Deprecated
 	@io.swagger.v3.oas.annotations.Operation(
 		deprecated = true,
-		description = "Deprecated: always returns an empty page. The analytics engine does not record which individuals entered or left a segment, so do not use this to find who joined or exited a segment. `rangeStart` and `rangeEnd` must be given together; a request with only one of them fails. For how a segment grew or shrank over a date range, use `getWorkspaceGroupIndividualSegmentMembershipChangeMetric`. For the current members, use `getWorkspaceGroupChannelIndividualsPage` with `individualSegmentId`."
+		description = "Deprecated: always returns an empty page. The analytics engine does not record which individuals entered or left a segment, so do not use this to find who joined or exited a segment. `rangeStart` and `rangeEnd` must be given together; a request with only one of them fails. For how a segment grew or shrank over a date range, use `getWorkspaceGroupIndividualSegmentMembershipChangeMetric`. For the current members, use `getWorkspaceGroupChannelIndividualsPage` with `individualSegmentId`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -605,4 +605,4 @@ public abstract class BaseIndividualSegmentMembershipChangeResourceImpl
 			BaseIndividualSegmentMembershipChangeResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1681078099
+// LIFERAY-REST-BUILDER-HASH:1973365926

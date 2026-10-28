@@ -54,7 +54,7 @@ public abstract class BasePageMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/pages'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries."
+		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -627,4 +627,4 @@ public abstract class BasePageMetricResourceImpl
 		LogFactoryUtil.getLog(BasePageMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1677910099
+// LIFERAY-REST-BUILDER-HASH:-1469377890

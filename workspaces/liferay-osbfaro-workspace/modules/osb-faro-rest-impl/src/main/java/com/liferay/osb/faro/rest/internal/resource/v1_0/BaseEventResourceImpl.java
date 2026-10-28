@@ -50,7 +50,7 @@ public abstract class BaseEventResourceImpl implements EventResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/events'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`."
+		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -608,4 +608,4 @@ public abstract class BaseEventResourceImpl implements EventResource {
 		LogFactoryUtil.getLog(BaseEventResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1436036831
+// LIFERAY-REST-BUILDER-HASH:1505128338

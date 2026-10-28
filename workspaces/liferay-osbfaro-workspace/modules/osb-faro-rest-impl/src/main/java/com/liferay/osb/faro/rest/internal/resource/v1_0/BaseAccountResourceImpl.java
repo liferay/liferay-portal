@@ -97,7 +97,7 @@ public abstract class BaseAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the first account lifecycle of the channel when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`."
+		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the first account lifecycle of the channel when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -655,4 +655,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:723915150
+// LIFERAY-REST-BUILDER-HASH:-509821851
