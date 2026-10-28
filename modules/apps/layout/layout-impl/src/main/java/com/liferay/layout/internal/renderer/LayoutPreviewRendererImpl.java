@@ -133,17 +133,17 @@ public class LayoutPreviewRendererImpl implements LayoutPreviewRenderer {
 			themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
 			themeDisplay.setLocale(locale);
 
-			if (layout.getGroupId() != originalThemeDisplay.getSiteGroupId()) {
-				themeDisplay.setSiteDefaultLocale(
-					_portal.getSiteDefaultLocale(layout.getGroupId()));
-			}
-
 			Theme theme = layout.getTheme();
 
 			themeDisplay.setLookAndFeel(theme, layout.getColorScheme());
 
 			themeDisplay.setShowSignInIcon(true);
 			themeDisplay.setSignedIn(false);
+
+			if (layout.getGroupId() != originalThemeDisplay.getSiteGroupId()) {
+				themeDisplay.setSiteDefaultLocale(
+					_portal.getSiteDefaultLocale(layout.getGroupId()));
+			}
 
 			User guestUser = _userLocalService.getGuestUser(
 				themeDisplay.getCompanyId());
