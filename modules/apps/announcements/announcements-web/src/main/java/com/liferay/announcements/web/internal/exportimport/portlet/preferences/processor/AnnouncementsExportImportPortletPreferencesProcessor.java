@@ -12,11 +12,11 @@ import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessorHelper;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.PortletPreferences;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -115,17 +115,12 @@ public class AnnouncementsExportImportPortletPreferencesProcessor
 				AnnouncementsUtil.toStringList(
 					selectedScopeGroupExternalReferenceCodes);
 
-			List<String> newExternalReferenceCodes = new ArrayList<>(
-				externalReferenceCodes.size());
-
-			for (String externalReferenceCode : externalReferenceCodes) {
-				newExternalReferenceCodes.add(
-					externalReferenceCodeFunction.apply(externalReferenceCode));
-			}
-
 			portletPreferences.setValue(
 				"selectedScopeGroupExternalReferenceCodes",
-				AnnouncementsUtil.toJSON(newExternalReferenceCodes));
+				AnnouncementsUtil.toJSON(
+					TransformUtil.transform(
+						externalReferenceCodes,
+						externalReferenceCodeFunction::apply)));
 		}
 		catch (Exception exception) {
 			throw new PortletDataException(
