@@ -11,8 +11,11 @@ import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.service.OAuthClientEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.Base64;
@@ -218,6 +221,58 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 				"allow_upstream_token_forwarding"));
 	}
 
+	@Test
+	public void testPortalInstanceRegistered() throws Exception {
+		String clientId = RandomTestUtil.randomString();
+		String issuerURL = "http://" + RandomTestUtil.randomString();
+		String tokenEndpoint = "http://" + RandomTestUtil.randomString();
+
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
+		_portalInstanceLifecycleListener.portalInstanceUnregistered(company);
+
+		try {
+			_pid1 = ConfigurationTestUtil.createFactoryConfiguration(
+				"com.liferay.portal.security.sso.openid.connect.internal." +
+					"configuration.OpenIdConnectProviderConfiguration",
+				HashMapDictionaryBuilder.<String, Object>put(
+					"authorizationEndpoint",
+					"http://" + RandomTestUtil.randomString()
+				).put(
+					"companyId", TestPropsValues.getCompanyId()
+				).put(
+					"issuerURL", issuerURL
+				).put(
+					"jwksURI", "http://" + RandomTestUtil.randomString()
+				).put(
+					"openIdConnectClientId", clientId
+				).put(
+					"subjectTypes", new String[] {"public"}
+				).put(
+					"tokenEndpoint", tokenEndpoint
+				).put(
+					"userInfoEndpoint",
+					"http://" + RandomTestUtil.randomString()
+				).build());
+
+			Assert.assertNull(
+				_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+					TestPropsValues.getCompanyId(),
+					_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
+					clientId));
+		}
+		finally {
+			_portalInstanceLifecycleListener.portalInstanceRegistered(company);
+		}
+
+		Assert.assertNotNull(
+			_oAuthClientEntryLocalService.fetchOAuthClientEntry(
+				TestPropsValues.getCompanyId(),
+				_generateLocalWellKnownURI(issuerURL, tokenEndpoint),
+				clientId));
+	}
+
 	private String _generateLocalWellKnownURI(
 			String issuerURL, String tokenEndpoint)
 		throws Exception {
@@ -233,9 +288,17 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListenerTest {
 	}
 
 	@Inject
+	private CompanyLocalService _companyLocalService;
+
+	@Inject
 	private OAuthClientEntryLocalService _oAuthClientEntryLocalService;
 
 	private String _pid1;
 	private String _pid2;
+
+	@Inject(
+		filter = "component.name=com.liferay.portal.security.sso.openid.connect.internal.configuration.instance.lifecycle.OpenIdConnectProviderPortalInstanceLifecycleListener"
+	)
+	private PortalInstanceLifecycleListener _portalInstanceLifecycleListener;
 
 }
