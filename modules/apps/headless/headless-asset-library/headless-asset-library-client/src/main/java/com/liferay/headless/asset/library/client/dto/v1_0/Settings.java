@@ -131,25 +131,16 @@ public class Settings implements Cloneable, Serializable {
 
 	protected String logoColor;
 
-	public MapProviderKey getMapProviderKey() {
+	public String getMapProviderKey() {
 		return mapProviderKey;
 	}
 
-	public String getMapProviderKeyAsString() {
-		if (mapProviderKey == null) {
-			return null;
-		}
-
-		return mapProviderKey.toString();
-	}
-
-	public void setMapProviderKey(MapProviderKey mapProviderKey) {
+	public void setMapProviderKey(String mapProviderKey) {
 		this.mapProviderKey = mapProviderKey;
 	}
 
 	public void setMapProviderKey(
-		UnsafeSupplier<MapProviderKey, Exception>
-			mapProviderKeyUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> mapProviderKeyUnsafeSupplier) {
 
 		try {
 			mapProviderKey = mapProviderKeyUnsafeSupplier.get();
@@ -159,7 +150,7 @@ public class Settings implements Cloneable, Serializable {
 		}
 	}
 
-	protected MapProviderKey mapProviderKey;
+	protected String mapProviderKey;
 
 	public MimeTypeLimit[] getMimeTypeLimits() {
 		return mimeTypeLimits;
@@ -298,38 +289,5 @@ public class Settings implements Cloneable, Serializable {
 		return SettingsSerDes.toJSON(this);
 	}
 
-	public static enum MapProviderKey {
-
-		GOOGLE_MAPS("GoogleMaps"), OPEN_STREET_MAP("OpenStreetMap");
-
-		public static MapProviderKey create(String value) {
-			for (MapProviderKey mapProviderKey : values()) {
-				if (Objects.equals(mapProviderKey.getValue(), value) ||
-					Objects.equals(mapProviderKey.name(), value)) {
-
-					return mapProviderKey;
-				}
-			}
-
-			return null;
-		}
-
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private MapProviderKey(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
-
 }
-// LIFERAY-REST-BUILDER-HASH:-528503783
+// LIFERAY-REST-BUILDER-HASH:-1206616639

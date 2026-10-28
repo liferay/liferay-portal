@@ -128,7 +128,9 @@ public class SettingsSerDes {
 			sb.append("\"mapProviderKey\": ");
 
 			sb.append("\"");
-			sb.append(settings.getMapProviderKey());
+
+			sb.append(_escape(settings.getMapProviderKey()));
+
 			sb.append("\"");
 		}
 
@@ -398,9 +400,7 @@ public class SettingsSerDes {
 			}
 			else if (Objects.equals(jsonParserFieldName, "mapProviderKey")) {
 				if (jsonParserFieldValue != null) {
-					settings.setMapProviderKey(
-						Settings.MapProviderKey.create(
-							(String)jsonParserFieldValue));
+					settings.setMapProviderKey((String)jsonParserFieldValue);
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "mimeTypeLimits")) {
@@ -532,4 +532,4 @@ public class SettingsSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-735387560
+// LIFERAY-REST-BUILDER-HASH:-964833662

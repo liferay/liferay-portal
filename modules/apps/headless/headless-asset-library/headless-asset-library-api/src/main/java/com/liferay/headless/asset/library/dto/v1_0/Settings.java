@@ -5,12 +5,9 @@
 
 package com.liferay.headless.asset.library.dto.v1_0;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFilter;
-import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
@@ -267,11 +264,9 @@ public class Settings implements Serializable {
 	private Supplier<String> _logoColorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Sets the maps API provider to use when displaying geolocalized assets."
+		description = "Sets the maps API provider to use when displaying geolocalized assets, either GoogleMaps or OpenStreetMap. An empty value clears it so the instance's provider is used."
 	)
-	@JsonGetter("mapProviderKey")
-	@Valid
-	public MapProviderKey getMapProviderKey() {
+	public String getMapProviderKey() {
 		if (_mapProviderKeySupplier != null) {
 			mapProviderKey = _mapProviderKeySupplier.get();
 
@@ -281,18 +276,7 @@ public class Settings implements Serializable {
 		return mapProviderKey;
 	}
 
-	@JsonIgnore
-	public String getMapProviderKeyAsString() {
-		MapProviderKey mapProviderKey = getMapProviderKey();
-
-		if (mapProviderKey == null) {
-			return null;
-		}
-
-		return mapProviderKey.toString();
-	}
-
-	public void setMapProviderKey(MapProviderKey mapProviderKey) {
+	public void setMapProviderKey(String mapProviderKey) {
 		this.mapProviderKey = mapProviderKey;
 
 		_mapProviderKeySupplier = null;
@@ -300,8 +284,7 @@ public class Settings implements Serializable {
 
 	@JsonIgnore
 	public void setMapProviderKey(
-		UnsafeSupplier<MapProviderKey, Exception>
-			mapProviderKeyUnsafeSupplier) {
+		UnsafeSupplier<String, Exception> mapProviderKeyUnsafeSupplier) {
 
 		_mapProviderKeySupplier = () -> {
 			try {
@@ -317,13 +300,13 @@ public class Settings implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Sets the maps API provider to use when displaying geolocalized assets."
+		description = "Sets the maps API provider to use when displaying geolocalized assets, either GoogleMaps or OpenStreetMap. An empty value clears it so the instance's provider is used."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
-	protected MapProviderKey mapProviderKey;
+	protected String mapProviderKey;
 
 	@JsonIgnore
-	private Supplier<MapProviderKey> _mapProviderKeySupplier;
+	private Supplier<String> _mapProviderKeySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema
 	@Valid
@@ -645,7 +628,7 @@ public class Settings implements Serializable {
 			sb.append("\"");
 		}
 
-		MapProviderKey mapProviderKey = getMapProviderKey();
+		String mapProviderKey = getMapProviderKey();
 
 		if (mapProviderKey != null) {
 			if (sb.length() > 1) {
@@ -655,7 +638,9 @@ public class Settings implements Serializable {
 			sb.append("\"mapProviderKey\": ");
 
 			sb.append("\"");
-			sb.append(mapProviderKey);
+
+			sb.append(_escape(mapProviderKey));
+
 			sb.append("\"");
 		}
 
@@ -740,44 +725,6 @@ public class Settings implements Serializable {
 		name = "x-class-name"
 	)
 	public String xClassName;
-
-	@GraphQLName("MapProviderKey")
-	public static enum MapProviderKey {
-
-		GOOGLE_MAPS("GoogleMaps"), OPEN_STREET_MAP("OpenStreetMap");
-
-		@JsonCreator
-		public static MapProviderKey create(String value) {
-			if ((value == null) || value.equals("")) {
-				return null;
-			}
-
-			for (MapProviderKey mapProviderKey : values()) {
-				if (Objects.equals(mapProviderKey.getValue(), value)) {
-					return mapProviderKey;
-				}
-			}
-
-			throw new IllegalArgumentException("Invalid enum value: " + value);
-		}
-
-		@JsonValue
-		public String getValue() {
-			return _value;
-		}
-
-		@Override
-		public String toString() {
-			return _value;
-		}
-
-		private MapProviderKey(String value) {
-			_value = value;
-		}
-
-		private final String _value;
-
-	}
 
 	private static String _escape(Object object) {
 		return StringUtil.replace(
@@ -889,4 +836,4 @@ public class Settings implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1662262419
+// LIFERAY-REST-BUILDER-HASH:-204578001
