@@ -1038,15 +1038,20 @@ public class GetEntryRenderDataMVCResourceCommand
 		String host = matcher.group(1);
 
 		if (((host != null) && !_portal.isValidPortalDomain(companyId, host)) ||
-			!Objects.equals(matcher.group(2), _portal.getPathContext()) ||
-			Validator.isNotNull(
-				HttpComponentsUtil.getParameter(
-					StringUtil.replace(
-						url, StringPool.AMPERSAND_ENCODED,
-						StringPool.AMPERSAND),
-					"previewCTCollectionId", false))) {
+			!Objects.equals(matcher.group(2), _portal.getPathContext())) {
 
 			return url;
+		}
+
+		String decodedURL = StringUtil.replace(
+			url, StringPool.AMPERSAND_ENCODED, StringPool.AMPERSAND);
+
+		if (Validator.isNotNull(
+				HttpComponentsUtil.getParameter(
+					decodedURL, "previewCTCollectionId", false))) {
+
+			url = HttpComponentsUtil.removeParameter(
+				decodedURL, "previewCTCollectionId");
 		}
 
 		url = HttpComponentsUtil.addParameter(
