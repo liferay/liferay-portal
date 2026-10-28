@@ -21,6 +21,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Strings;
@@ -96,6 +97,12 @@ public class EngineServiceURLUtil {
 	}
 
 	private static String _getExternalURL(String url) {
+		String externalURL = _externalURLs.get(url);
+
+		if (externalURL != null) {
+			return externalURL;
+		}
+
 		try {
 			ObjectMapper objectMapper = new ObjectMapper();
 
@@ -107,7 +114,13 @@ public class EngineServiceURLUtil {
 			Map<String, Object> environment = (Map<String, Object>)map.get(
 				"environment");
 
-			return (String)environment.getOrDefault("EXTERNAL_URL", url);
+			externalURL = (String)environment.getOrDefault("EXTERNAL_URL", url);
+
+			if (externalURL != null) {
+				_externalURLs.put(url, externalURL);
+			}
+
+			return externalURL;
 		}
 		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
@@ -136,5 +149,8 @@ public class EngineServiceURLUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		EngineServiceURLUtil.class);
+
+	private static final Map<String, String> _externalURLs =
+		new ConcurrentHashMap<>();
 
 }
