@@ -81,6 +81,22 @@
 			"reverse": false,
 			"system": true,
 			"type": "oneToMany"
+		},
+		{
+			"deletionType": "cascade",
+			"externalReferenceCode": "L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPING_RULES",
+			"label": {
+				"en_US": "PIM Connector to PIM Connector Field Mapping Rules"
+			},
+			"name": "pimConnectorToPIMFieldMappingRules",
+			"objectDefinitionExternalReferenceCode1": "L_PIM_CONNECTOR",
+			"objectDefinitionExternalReferenceCode2": "L_PIM_CONNECTOR_FIELD_MAPPING_RULE",
+			"objectDefinitionName2": "PIMConnectorFieldMappingRule",
+			"parameterObjectFieldId": 0,
+			"parameterObjectFieldName": "",
+			"reverse": false,
+			"system": true,
+			"type": "oneToMany"
 		}
 	],
 	"panelCategoryKey": "",

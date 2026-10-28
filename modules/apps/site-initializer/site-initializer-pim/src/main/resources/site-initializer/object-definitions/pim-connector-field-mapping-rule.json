@@ -1,0 +1,139 @@
+{
+	"className": "com.liferay.object.model.ObjectDefinition#M4R1",
+	"enableCategorization": false,
+	"enableComments": false,
+	"enableFriendlyURLCustomization": false,
+	"enableIndexSearch": true,
+	"enableLocalization": false,
+	"enableObjectEntryDraft": false,
+	"enableObjectEntryHistory": false,
+	"enableObjectEntrySchedule": false,
+	"enableObjectEntrySubscription": false,
+	"externalReferenceCode": "L_PIM_CONNECTOR_FIELD_MAPPING_RULE",
+	"friendlyURLSeparator": "l",
+	"label": {
+		"en_US": "PIM Connector Field Mapping Rule"
+	},
+	"modifiable": true,
+	"name": "PIMConnectorFieldMappingRule",
+	"objectActions": [
+	],
+	"objectDefinitionSettings": [
+	],
+	"objectFields": [
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "CHANNEL_FIELD_NAME",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Channel Field Name"
+			},
+			"name": "channelFieldName",
+			"required": true,
+			"system": true
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "STRIP_HTML_TAGS",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Strip HTML Tags"
+			},
+			"name": "stripHTMLTags",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "TEXT_CASE",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Text Case"
+			},
+			"name": "textCase",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "TRIM_WHITESPACE",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Trim Whitespace"
+			},
+			"name": "trimWhitespace",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Integer",
+			"businessType": "Integer",
+			"defaultValue": 0,
+			"externalReferenceCode": "TRUNCATE_LENGTH",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Truncate Length"
+			},
+			"name": "truncateLength",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "URL_ENCODE",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "URL Encode"
+			},
+			"name": "urlEncode",
+			"required": false,
+			"system": true
+		},
+		{
+			"DBType": "Boolean",
+			"businessType": "Boolean",
+			"defaultValue": false,
+			"externalReferenceCode": "USE_FIRST_NONEMPTY_SOURCE",
+			"indexed": true,
+			"indexedAsKeyword": false,
+			"indexedLanguageId": "",
+			"label": {
+				"en_US": "Use First Nonempty Source"
+			},
+			"name": "useFirstNonemptySource",
+			"required": false,
+			"system": true
+		}
+	],
+	"objectFolderExternalReferenceCode": "L_PIM_DEFINITIONS",
+	"objectRelationships": [
+	],
+	"panelCategoryKey": "",
+	"pluralLabel": {
+		"en_US": "PIM Connector Field Mapping Rules"
+	},
+	"scope": "company",
+	"system": true,
+	"titleObjectFieldName": "channelFieldName",
+	"updateStrategy": "UPDATE"
+}

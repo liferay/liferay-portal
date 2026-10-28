@@ -278,6 +278,8 @@ public class ObjectDefinitionUtil {
 		).put(
 			"PIMConnectorFieldMapping", "/pim/connector-field-mappings"
 		).put(
+			"PIMConnectorFieldMappingRule", "/pim/connector-field-mapping-rules"
+		).put(
 			"PIMLink", "/pim/links"
 		).build();
 
