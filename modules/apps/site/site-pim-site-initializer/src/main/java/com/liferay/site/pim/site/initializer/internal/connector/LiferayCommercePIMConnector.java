@@ -201,13 +201,21 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		catch (PIMConnectorException pimConnectorException) {
 			throw new PIMConnectorException(
 				pimConnectorException.getMessage(),
-				_toString(liferayCommerceRESTClient.getLogJSONArray()),
+				JSONUtil.put(
+					"log", liferayCommerceRESTClient.getLogJSONArray()
+				).toString(
+					2
+				),
 				pimConnectorException);
 		}
 		catch (Exception exception) {
 			throw new PIMConnectorException(
 				"an-unexpected-error-occurred",
-				_toString(liferayCommerceRESTClient.getLogJSONArray()),
+				JSONUtil.put(
+					"log", liferayCommerceRESTClient.getLogJSONArray()
+				).toString(
+					2
+				),
 				exception);
 		}
 	}
@@ -604,18 +612,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		}
 
 		return jsonArray;
-	}
-
-	private String _toString(JSONArray jsonArray) throws Exception {
-		if (jsonArray.length() == 0) {
-			return null;
-		}
-
-		return JSONUtil.put(
-			"log", jsonArray
-		).toString(
-			2
-		);
 	}
 
 	private static final PIMConnectorChannelField
