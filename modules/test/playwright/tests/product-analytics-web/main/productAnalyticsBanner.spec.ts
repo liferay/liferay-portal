@@ -13,6 +13,7 @@ import {siteSettingsPagesTest} from '../../../fixtures/siteSettingsPagesTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import {updateConsentManagerConfiguration} from '../../cookies-banner-web/main/utils/consentManagerConfigurationHelper';
 
 export const test = mergeTests(
 	featureFlagsTest({
@@ -258,37 +259,12 @@ test(
 test(
 	'AC1: After opting-in in Product Analytics Banner, cookies banner shows up when cookie config is enabled',
 	{tag: '@LPD-60005'},
-	async ({page, productAnalyticsBannerPage, systemSettingsPage}) => {
+	async ({page, productAnalyticsBannerPage}) => {
 		await test.step('Enable Preference Handling Cookies', async () => {
-			await systemSettingsPage.goToSystemSetting(
-				'Privacy',
-				'Consent Manager'
-			);
-
-			await systemSettingsPage.page.waitForTimeout(1000);
-
-			const enabledButton = page.getByLabel('Enabled', {exact: true});
-			const isChecked = await enabledButton.isChecked();
-
-			if (!isChecked) {
-				await enabledButton.click();
-			}
-
-			if (await page.getByRole('button', {name: 'Save'}).isVisible()) {
-				await page
-					.getByRole('button', {name: 'Save'})
-					.dispatchEvent('click');
-			}
-			else {
-				await page
-					.getByRole('button', {name: 'Update'})
-					.dispatchEvent('click');
-			}
-
-			await page.waitForTimeout(1000);
-			await page.reload();
-
-			await expect(enabledButton).toBeChecked();
+			await updateConsentManagerConfiguration(page, {
+				enabled: true,
+				forceReload: true,
+			});
 		});
 
 		await page.goto('/');
@@ -315,9 +291,7 @@ test(
 
 		await test.step('Verify Cookies Banner shows up', async () => {
 			await expect(
-				page.locator(
-					'#p_p_id_com_liferay_cookies_banner_web_portlet_CookiesBannerPortlet_'
-				)
+				page.locator('div[role="region"].cookies-banner')
 			).toBeVisible();
 		});
 	}
@@ -326,40 +300,12 @@ test(
 test(
 	'AC2: After opting-out in Product Analytics Banner, cookies banner shows up when cookie config is enabled',
 	{tag: '@LPD-60005'},
-	async ({page, productAnalyticsBannerPage, systemSettingsPage}) => {
+	async ({page, productAnalyticsBannerPage}) => {
 		await test.step('Enable Preference Handling Cookies', async () => {
-			await systemSettingsPage.goToSystemSetting(
-				'Privacy',
-				'Consent Manager'
-			);
-
-			await systemSettingsPage.page.waitForTimeout(1000);
-
-			const enabledButton = page.getByLabel('Enabled', {exact: true});
-			const isChecked = await enabledButton.isChecked();
-
-			if (!isChecked) {
-				await enabledButton.click();
-			}
-
-			const updateButton = page.getByRole('button', {
-				name: 'Update',
+			await updateConsentManagerConfiguration(page, {
+				enabled: true,
+				forceReload: true,
 			});
-
-			const saveButton = page.getByRole('button', {
-				name: 'Save',
-			});
-
-			if (await saveButton.isVisible()) {
-				await saveButton.dispatchEvent('click');
-			}
-			else if (await updateButton.isVisible()) {
-				await updateButton.dispatchEvent('click');
-			}
-
-			await waitForAlert(page);
-
-			await expect(enabledButton).toBeChecked();
 		});
 
 		await page.goto('/');
@@ -384,9 +330,7 @@ test(
 
 		await test.step('Verify Cookies Banner shows up', async () => {
 			await expect(
-				page.locator(
-					'#p_p_id_com_liferay_cookies_banner_web_portlet_CookiesBannerPortlet_'
-				)
+				page.locator('div[role="region"].cookies-banner')
 			).toBeVisible();
 		});
 	}
