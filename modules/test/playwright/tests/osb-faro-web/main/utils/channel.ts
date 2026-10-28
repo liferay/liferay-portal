@@ -39,11 +39,14 @@ export async function switchChannel({
 	channelName: string;
 	page: Page;
 }) {
+	const searchInput = page.getByPlaceholder('Search');
+
 	await clickAndExpectToBeVisible({
-		autoClick: true,
-		target: page
-			.locator('.channels-menu-dropdown-body')
-			.getByRole('link', {name: channelName}),
-		trigger: page.locator('.channels-menu.button-root'),
+		target: searchInput,
+		trigger: page.getByRole('combobox', {name: 'Property'}),
 	});
+
+	await searchInput.fill(channelName);
+
+	await page.getByRole('option').click();
 }
