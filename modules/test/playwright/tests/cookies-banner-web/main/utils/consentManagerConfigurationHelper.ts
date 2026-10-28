@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page} from '@playwright/test';
+import {Page, expect} from '@playwright/test';
 
 import {ApiHelpers} from '../../../../helpers/ApiHelpers';
 import {ConsentManagerConfigurationPage} from '../../../../pages/cookies-banner-web/ConsentManagerConfigurationPage';
@@ -29,6 +29,21 @@ export async function clearConsentCookies(page) {
 
 	await page.context().clearCookies({name: /^CONSENT_TYPE_/});
 	await page.context().clearCookies({name: /^USER_CONSENT_CONFIGURED/});
+}
+
+export async function expectCookieValue(
+	cookieKey: string,
+	page: Page,
+	value: string
+) {
+	await expect
+		.poll(
+			async () =>
+				(await page.context().cookies()).find(
+					(cookie) => cookie.name === cookieKey
+				)?.value
+		)
+		.toEqual(value);
 }
 
 export async function resetAllConsentManagerConfigurations(systemSettingsPage) {

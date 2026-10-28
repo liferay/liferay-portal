@@ -19,6 +19,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
 import {
 	clearConsentCookies,
+	expectCookieValue,
 	resetAllConsentManagerConfigurations,
 	saveOrUpdateConfiguration,
 	updateConsentManagerConfiguration,
@@ -968,17 +969,6 @@ async function expectCookieConsentPanelButtons(locator: Locator) {
 	await expect(buttons[0]).toContainText('Use Necessary Cookies Only');
 	await expect(buttons[1]).toContainText('Accept Selected');
 	await expect(buttons[2]).toContainText('Accept All');
-}
-
-async function expectCookieValue(cookieKey: string, page: Page, value: string) {
-	await expect
-		.poll(
-			async () =>
-				(await page.context().cookies()).find(
-					(cookie) => cookie.name === cookieKey
-				)?.value
-		)
-		.toEqual(value);
 }
 
 async function hideConsentCookieTypesFromEndUser(
