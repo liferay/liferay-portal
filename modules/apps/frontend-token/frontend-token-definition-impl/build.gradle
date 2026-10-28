@@ -12,7 +12,6 @@ dependencies {
 	compileOnly project(":apps:frontend-css:frontend-css-variables-api")
 	compileOnly project(":apps:frontend-token:frontend-token-definition-api")
 	compileOnly project(":apps:portal:portal-json-validator")
-	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-function")
