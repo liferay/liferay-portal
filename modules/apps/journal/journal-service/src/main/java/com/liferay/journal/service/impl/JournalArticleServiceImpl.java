@@ -10,6 +10,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
+import com.liferay.journal.internal.util.JournalArticleViewableStatusUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderService;
@@ -716,12 +717,16 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		OrderByComparator<JournalArticle> orderByComparator) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return journalArticlePersistence.filterFindByG_A(
+			return getArticlesByArticleId(
 				groupId, articleId, start, end, orderByComparator);
 		}
 
-		return journalArticlePersistence.filterFindByG_A_ST(
-			groupId, articleId, status, start, end, orderByComparator);
+		return JournalArticleViewableStatusUtil.getViewableArticles(
+			(viewableStart, viewableEnd) ->
+				journalArticlePersistence.filterFindByG_A_ST(
+					groupId, articleId, status, viewableStart, viewableEnd,
+					orderByComparator),
+			start, end, _getViewerUserId(groupId));
 	}
 
 	/**
@@ -754,8 +759,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		long groupId, String articleId, int start, int end,
 		OrderByComparator<JournalArticle> orderByComparator) {
 
-		return journalArticlePersistence.filterFindByG_A(
-			groupId, articleId, start, end, orderByComparator);
+		return JournalArticleViewableStatusUtil.getViewableArticles(
+			(viewableStart, viewableEnd) ->
+				journalArticlePersistence.filterFindByG_A(
+					groupId, articleId, viewableStart, viewableEnd,
+					orderByComparator),
+			start, end, _getViewerUserId(groupId));
 	}
 
 	/**
@@ -770,7 +779,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	public List<JournalArticle> getArticlesByLayoutUuid(
 		long groupId, String layoutUuid) {
 
-		return journalArticlePersistence.filterFindByG_L(groupId, layoutUuid);
+		return JournalArticleViewableStatusUtil.getViewableArticles(
+			journalArticlePersistence.filterFindByG_L(groupId, layoutUuid),
+			_getViewerUserId(groupId));
 	}
 
 	/**
@@ -800,8 +811,11 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	public List<JournalArticle> getArticlesByLayoutUuid(
 		long groupId, String layoutUuid, int start, int end) {
 
-		return journalArticlePersistence.filterFindByG_L(
-			groupId, layoutUuid, start, end);
+		return JournalArticleViewableStatusUtil.getViewableArticles(
+			(viewableStart, viewableEnd) ->
+				journalArticlePersistence.filterFindByG_L(
+					groupId, layoutUuid, viewableStart, viewableEnd),
+			start, end, _getViewerUserId(groupId));
 	}
 
 	/**
@@ -815,7 +829,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 */
 	@Override
 	public int getArticlesByLayoutUuidCount(long groupId, String layoutUuid) {
-		return journalArticlePersistence.filterCountByG_L(groupId, layoutUuid);
+		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
+			() -> journalArticlePersistence.filterCountByG_L(
+				groupId, layoutUuid),
+			() -> journalArticlePersistence.filterFindByG_L(
+				groupId, layoutUuid),
+			_getViewerUserId(groupId));
 	}
 
 	/**
@@ -1101,7 +1120,11 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 */
 	@Override
 	public int getArticlesCountByArticleId(long groupId, String articleId) {
-		return journalArticlePersistence.filterCountByG_A(groupId, articleId);
+		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
+			() -> journalArticlePersistence.filterCountByG_A(
+				groupId, articleId),
+			() -> journalArticlePersistence.filterFindByG_A(groupId, articleId),
+			_getViewerUserId(groupId));
 	}
 
 	@Override
@@ -1109,12 +1132,15 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		long groupId, String articleId, int status) {
 
 		if (status == WorkflowConstants.STATUS_ANY) {
-			return journalArticlePersistence.filterCountByG_A(
-				groupId, articleId);
+			return getArticlesCountByArticleId(groupId, articleId);
 		}
 
-		return journalArticlePersistence.filterCountByG_A_ST(
-			groupId, articleId, status);
+		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
+			() -> journalArticlePersistence.filterCountByG_A_ST(
+				groupId, articleId, status),
+			() -> journalArticlePersistence.filterFindByG_A_ST(
+				groupId, articleId, status),
+			_getViewerUserId(groupId));
 	}
 
 	/**
@@ -1232,8 +1258,15 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			return 0;
 		}
 
-		return journalArticlePersistence.filterCountByG_F(
-			groupId, ArrayUtil.toArray(folderIds.toArray(new Long[0])));
+		long[] folderIdsArray = ArrayUtil.toArray(
+			folderIds.toArray(new Long[0]));
+
+		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
+			() -> journalArticlePersistence.filterCountByG_F(
+				groupId, folderIdsArray),
+			() -> journalArticlePersistence.filterFindByG_F(
+				groupId, folderIdsArray),
+			_getViewerUserId(groupId));
 	}
 
 	/**
@@ -1624,8 +1657,10 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	public List<JournalArticle> getLayoutArticles(
 		long groupId, long classNameId) {
 
-		return journalArticlePersistence.filterFindByG_C_NotL(
-			groupId, classNameId, new String[] {null, StringPool.BLANK});
+		return JournalArticleViewableStatusUtil.getViewableArticles(
+			journalArticlePersistence.filterFindByG_C_NotL(
+				groupId, classNameId, new String[] {null, StringPool.BLANK}),
+			_getViewerUserId(groupId));
 	}
 
 	/**
@@ -1653,9 +1688,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	public List<JournalArticle> getLayoutArticles(
 		long groupId, long classNameId, int start, int end) {
 
-		return journalArticlePersistence.filterFindByG_C_NotL(
-			groupId, classNameId, new String[] {null, StringPool.BLANK}, start,
-			end);
+		return JournalArticleViewableStatusUtil.getViewableArticles(
+			(viewableStart, viewableEnd) ->
+				journalArticlePersistence.filterFindByG_C_NotL(
+					groupId, classNameId, new String[] {null, StringPool.BLANK},
+					viewableStart, viewableEnd),
+			start, end, _getViewerUserId(groupId));
 	}
 
 	/**
@@ -1667,8 +1705,12 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 */
 	@Override
 	public int getLayoutArticlesCount(long groupId, long classNameId) {
-		return journalArticlePersistence.filterCountByG_C_NotL(
-			groupId, classNameId, new String[] {null, StringPool.BLANK});
+		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
+			() -> journalArticlePersistence.filterCountByG_C_NotL(
+				groupId, classNameId, new String[] {null, StringPool.BLANK}),
+			() -> journalArticlePersistence.filterFindByG_C_NotL(
+				groupId, classNameId, new String[] {null, StringPool.BLANK}),
+			_getViewerUserId(groupId));
 	}
 
 	/**
@@ -2382,6 +2424,18 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			}
 
 			return permissionChecker.getUserId();
+		}
+		catch (PrincipalException principalException) {
+			_log.error(principalException);
+		}
+
+		return 0;
+	}
+
+	private long _getViewerUserId(long groupId) {
+		try {
+			return JournalArticleViewableStatusUtil.getViewerUserId(
+				groupId, getPermissionChecker());
 		}
 		catch (PrincipalException principalException) {
 			_log.error(principalException);

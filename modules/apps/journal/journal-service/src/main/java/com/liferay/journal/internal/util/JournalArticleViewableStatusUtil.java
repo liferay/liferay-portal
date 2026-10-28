@@ -8,16 +8,63 @@ package com.liferay.journal.internal.util;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+
+import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 /**
  * @author Jürgen Kappler
  */
 public class JournalArticleViewableStatusUtil {
+
+	public static List<JournalArticle> getViewableArticles(
+		BiFunction<Integer, Integer, List<JournalArticle>> biFunction,
+		int start, int end, long viewerUserId) {
+
+		if (viewerUserId == 0) {
+			return biFunction.apply(start, end);
+		}
+
+		return ListUtil.subList(
+			getViewableArticles(
+				biFunction.apply(QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				viewerUserId),
+			start, end);
+	}
+
+	public static List<JournalArticle> getViewableArticles(
+		List<JournalArticle> journalArticles, long viewerUserId) {
+
+		if (viewerUserId == 0) {
+			return journalArticles;
+		}
+
+		return ListUtil.filter(
+			journalArticles,
+			journalArticle -> isViewable(journalArticle, viewerUserId));
+	}
+
+	public static int getViewableArticlesCount(
+		Supplier<Integer> countSupplier,
+		Supplier<List<JournalArticle>> listSupplier, long viewerUserId) {
+
+		if (viewerUserId == 0) {
+			return countSupplier.get();
+		}
+
+		List<JournalArticle> journalArticles = getViewableArticles(
+			listSupplier.get(), viewerUserId);
+
+		return journalArticles.size();
+	}
 
 	public static long getViewerUserId(
 		long groupId, PermissionChecker permissionChecker) {
