@@ -8,7 +8,6 @@ dependencies {
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-security-sso:portal-security-sso-opensso-api")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
 

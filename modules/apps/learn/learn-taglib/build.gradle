@@ -5,5 +5,4 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly project(":apps:learn:learn-api")
-	compileOnly project(":core:petra:petra-io")
 }

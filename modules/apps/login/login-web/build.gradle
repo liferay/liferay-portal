@@ -14,7 +14,6 @@ dependencies {
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
-	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-utility-page-api")
 	compileOnly project(":apps:login:login-web-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
@@ -26,8 +25,6 @@ dependencies {
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
 
