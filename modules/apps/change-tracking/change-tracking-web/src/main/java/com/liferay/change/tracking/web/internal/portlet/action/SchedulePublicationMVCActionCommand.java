@@ -7,6 +7,7 @@ package com.liferay.change.tracking.web.internal.portlet.action;
 
 import com.liferay.change.tracking.constants.CTPortletKeys;
 import com.liferay.change.tracking.scheduler.PublishScheduler;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -82,9 +83,9 @@ public class SchedulePublicationMVCActionCommand
 			_publishScheduler.schedulePublish(
 				ctCollectionId, themeDisplay.getUserId(), publishDate);
 		}
-		catch (Exception exception) {
+		catch (PortalException portalException) {
 			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
+				_log.warn(portalException);
 			}
 
 			hideDefaultErrorMessage(actionRequest);
@@ -97,7 +98,7 @@ public class SchedulePublicationMVCActionCommand
 						_portal.getHttpServletRequest(actionRequest),
 						"an-unexpected-error-occurred")));
 
-			throw exception;
+			throw portalException;
 		}
 
 		JSONPortletResponseUtil.writeJSON(
