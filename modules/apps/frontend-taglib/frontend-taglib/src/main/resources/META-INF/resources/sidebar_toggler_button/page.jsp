@@ -8,6 +8,7 @@
 <%@ include file="/sidebar_toggler_button/init.jsp" %>
 
 <clay:link
+	aria-label='<%= LanguageUtil.get(request, Validator.isNotNull(label) ? label : "toggle-info-panel") %>'
 	cssClass="<%= cssClass %>"
 	href='<%= "#" + sidenavId %>'
 	icon="<%= icon %>"
