@@ -14,6 +14,7 @@ import com.liferay.osb.faro.provisioning.client.internal.ProvisioningClientImpl;
 import com.liferay.osb.faro.provisioning.client.model.OSBAccountEntry;
 import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
+import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
 import com.liferay.portal.cache.BasePortalCache;
 import com.liferay.portal.kernel.model.Group;
@@ -21,6 +22,7 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import jakarta.ws.rs.core.Response;
@@ -31,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -52,6 +55,12 @@ public class ProjectFaroControllerTest {
 		ReflectionTestUtils.setField(
 			_projectFaroController, "_provisioningClient",
 			new ProvisioningClientImpl());
+	}
+
+	@After
+	public void tearDown() {
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", false);
 	}
 
 	@Test
@@ -106,19 +115,42 @@ public class ProjectFaroControllerTest {
 		OSBAccountEntry osbAccountEntry =
 			_projectFaroController.createOSBAccountEntry(false);
 
-		List<OSBOfferingEntry> offeringEntries =
+		List<OSBOfferingEntry> osbOfferingEntries =
 			osbAccountEntry.getOfferingEntries();
 
 		Assert.assertEquals(
-			offeringEntries.toString(), 1, offeringEntries.size());
+			osbOfferingEntries.toString(), 1, osbOfferingEntries.size());
 
-		OSBOfferingEntry osbOfferingEntry = offeringEntries.get(0);
+		OSBOfferingEntry osbOfferingEntry = osbOfferingEntries.get(0);
 
 		Assert.assertEquals(
 			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE,
 			osbOfferingEntry.getProductEntryId());
 		Assert.assertEquals(1, osbOfferingEntry.getQuantity());
 		Assert.assertNotNull(osbOfferingEntry.getStartDate());
+	}
+
+	@Test
+	public void testCreateOSBAccountEntry1WithSubscriptionPushEnabled()
+		throws Exception {
+
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
+
+		OSBAccountEntry osbAccountEntry =
+			_projectFaroController.createOSBAccountEntry(true);
+
+		List<OSBOfferingEntry> osbOfferingEntries =
+			osbAccountEntry.getOfferingEntries();
+
+		Assert.assertEquals(
+			osbOfferingEntries.toString(), 1, osbOfferingEntries.size());
+
+		OSBOfferingEntry osbOfferingEntry = osbOfferingEntries.get(0);
+
+		Assert.assertEquals(
+			ProductConstants.SALESFORCE_PRODUCT_ID_DATA_PLATFORM_PRIVATE_BETA,
+			osbOfferingEntry.getProductEntryId());
 	}
 
 	@Test
@@ -272,13 +304,13 @@ public class ProjectFaroControllerTest {
 		OSBAccountEntry osbAccountEntry =
 			_projectFaroController.getOSBAccountEntry(corpProjectUuid);
 
-		List<OSBOfferingEntry> offeringEntries =
+		List<OSBOfferingEntry> osbOfferingEntries =
 			osbAccountEntry.getOfferingEntries();
 
 		Assert.assertEquals(
-			offeringEntries.toString(), 1, offeringEntries.size());
+			osbOfferingEntries.toString(), 1, osbOfferingEntries.size());
 
-		OSBOfferingEntry osbOfferingEntry = offeringEntries.get(0);
+		OSBOfferingEntry osbOfferingEntry = osbOfferingEntries.get(0);
 
 		Assert.assertEquals(
 			productEntryId, osbOfferingEntry.getProductEntryId());

@@ -294,7 +294,8 @@ public class UpdateFaroProjectSubscriptionsMessageListener
 			}
 		}
 
-		return ProductConstants.PRODUCT_ENTRY_ID_BASIC;
+		return ProductConstants.getProductEntryId(
+			ProductConstants.PRODUCT_ENTRY_NAME_BASIC);
 	}
 
 	private FaroProject _updateSalesforceAccountId(
