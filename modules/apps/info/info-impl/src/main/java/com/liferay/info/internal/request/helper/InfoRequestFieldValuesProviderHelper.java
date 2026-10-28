@@ -70,7 +70,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -311,7 +312,7 @@ public class InfoRequestFieldValuesProviderHelper {
 	private Collection<InputName> _getInputNames(
 		InfoField<?> infoField, Map<String, List<InputName>> inputNamesMap) {
 
-		Map<String, InputName> inputNames = new HashMap<>();
+		Map<String, InputName> inputNames = new LinkedHashMap<>();
 
 		for (InputName inputName :
 				inputNamesMap.getOrDefault(
@@ -333,7 +334,7 @@ public class InfoRequestFieldValuesProviderHelper {
 
 		Map<String, List<InputName>> inputNamesMap = new HashMap<>();
 
-		Set<String> parameterNames = new HashSet<>(
+		Set<String> parameterNames = new LinkedHashSet<>(
 			multipartParameterMap.keySet());
 
 		parameterNames.addAll(regularParameterMap.keySet());
@@ -541,7 +542,7 @@ public class InfoRequestFieldValuesProviderHelper {
 
 		if (infoFieldValue == null) {
 			infoFieldValue = new InfoFieldValue<>(
-				infoField, new RelatedInfoFieldValue<>(new HashMap<>()));
+				infoField, new RelatedInfoFieldValue<>(new LinkedHashMap<>()));
 		}
 
 		RelatedInfoFieldValue relatedInfoFieldValue =
