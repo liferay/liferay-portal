@@ -1237,24 +1237,29 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"secretresolver/portal-impl/src/com/liferay/portal" +
 					"/configuration/SecretResolverConfiguration.testjava"
 			).addExpectedMessage(
-				"Resolve \"password()\" through \"SecretResolver\" before " +
-					"using the value, see LPD-107260",
+				"Resolve \"password()\" through \"SecretResolver\" or " +
+					"\"SecretResolverUtil\" before using the value, see " +
+						"LPD-107260",
 				27
 			).addExpectedMessage(
-				"Resolve \"password()\" through \"SecretResolver\" before " +
-					"using the value, see LPD-107260",
+				"Resolve \"password()\" through \"SecretResolver\" or " +
+					"\"SecretResolverUtil\" before using the value, see " +
+						"LPD-107260",
 				49
 			).addExpectedMessage(
-				"Resolve \"password()\" through \"SecretResolver\" before " +
-					"using the value, see LPD-107260",
+				"Resolve \"password()\" through \"SecretResolver\" or " +
+					"\"SecretResolverUtil\" before using the value, see " +
+						"LPD-107260",
 				65
 			).addExpectedMessage(
-				"Resolve \"password()\" through \"SecretResolver\" before " +
-					"using the value, see LPD-107260",
+				"Resolve \"password()\" through \"SecretResolver\" or " +
+					"\"SecretResolverUtil\" before using the value, see " +
+						"LPD-107260",
 				69
 			).addExpectedMessage(
-				"Resolve \"password()\" through \"SecretResolver\" before " +
-					"using the value, see LPD-107260",
+				"Resolve \"password()\" through \"SecretResolver\" or " +
+					"\"SecretResolverUtil\" before using the value, see " +
+						"LPD-107260",
 				90
 			));
 	}
