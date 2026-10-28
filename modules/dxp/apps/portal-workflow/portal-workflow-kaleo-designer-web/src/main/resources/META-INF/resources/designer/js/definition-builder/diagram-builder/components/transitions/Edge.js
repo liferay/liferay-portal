@@ -135,7 +135,6 @@ function Edge(props) {
 			/>
 
 			<EdgeText
-				className="react-flow__edge-text"
 				label={edgeLabel?.toUpperCase()}
 				labelBgBorderRadius="13px"
 				labelBgPadding={[8, 4]}
