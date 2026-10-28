@@ -291,7 +291,8 @@ public class ControllerResultMonitorTest
 			MonitorResult.Status.WARN,
 			new JSONObject(
 			).put(
-				"description", _newResultDescription(
+				"description",
+				_newResultDescription(
 					"green", RandomTestUtil.randomInt(), "SUCCESS")
 			).put(
 				"number", RandomTestUtil.randomInt()
