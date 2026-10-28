@@ -8,6 +8,7 @@ package com.liferay.launch.internal.entry.manager;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.item.selector.ItemSelectorCriterion;
 import com.liferay.launch.entry.manager.LaunchEntryManager;
+import com.liferay.layout.admin.kernel.model.LayoutTypePortletConstants;
 import com.liferay.layout.constants.LayoutTypeSettingsConstants;
 import com.liferay.layout.item.selector.LayoutItemSelectorCriterion;
 import com.liferay.layout.item.selector.LayoutItemSelectorReturnType;
@@ -383,6 +384,9 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 	private Layout _publishLayout(Layout draftLayout, Layout layout)
 		throws PortalException {
 
+		UnicodeProperties originalTypeSettingsUnicodeProperties =
+			layout.getTypeSettingsProperties();
+
 		boolean indexReadOnly = IndexStatusManagerThreadLocal.isIndexReadOnly();
 
 		IndexStatusManagerThreadLocal.setIndexReadOnly(true);
@@ -414,6 +418,34 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 		draftLayout.setStatus(WorkflowConstants.STATUS_APPROVED);
 
 		_layoutLocalService.updateLayout(draftLayout);
+
+		UnicodeProperties updatedTypeSettingsUnicodeProperties =
+			layout.getTypeSettingsProperties();
+
+		String sitemapChangefreq = originalTypeSettingsUnicodeProperties.get(
+			LayoutTypePortletConstants.SITEMAP_CHANGEFREQ);
+
+		if (sitemapChangefreq != null) {
+			updatedTypeSettingsUnicodeProperties.put(
+				LayoutTypePortletConstants.SITEMAP_CHANGEFREQ,
+				sitemapChangefreq);
+		}
+
+		String sitemapInclude = originalTypeSettingsUnicodeProperties.get(
+			LayoutTypePortletConstants.SITEMAP_INCLUDE);
+
+		if (sitemapInclude != null) {
+			updatedTypeSettingsUnicodeProperties.put(
+				LayoutTypePortletConstants.SITEMAP_INCLUDE, sitemapInclude);
+		}
+
+		String sitemapPriority = originalTypeSettingsUnicodeProperties.get(
+			LayoutTypePortletConstants.SITEMAP_PRIORITY);
+
+		if (sitemapPriority != null) {
+			updatedTypeSettingsUnicodeProperties.put(
+				LayoutTypePortletConstants.SITEMAP_PRIORITY, sitemapPriority);
+		}
 
 		layout.setStatus(WorkflowConstants.STATUS_APPROVED);
 
