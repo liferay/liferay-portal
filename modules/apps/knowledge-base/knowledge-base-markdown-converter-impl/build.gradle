@@ -16,5 +16,4 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:knowledge-base:knowledge-base-markdown-converter-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation project(":core:petra:petra-lang")
 }
