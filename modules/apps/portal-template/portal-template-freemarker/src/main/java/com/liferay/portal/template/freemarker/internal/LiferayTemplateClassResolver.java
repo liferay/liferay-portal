@@ -67,19 +67,6 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 				environment);
 		}
 
-		String[] restrictedClassNames = GetterUtil.getStringValues(
-			_freeMarkerEngineConfiguration.restrictedClasses());
-
-		for (String restrictedClassName : restrictedClassNames) {
-			if (match(restrictedClassName, className)) {
-				throw new TemplateException(
-					StringBundler.concat(
-						"Instantiating ", className, " is not allowed in the ",
-						"template for security reasons"),
-					environment);
-			}
-		}
-
 		boolean allowed = false;
 
 		String[] allowedInstantiableClassNames = GetterUtil.getStringValues(
