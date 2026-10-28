@@ -22,9 +22,9 @@ export class KnowledgeBaseViewArticlePage {
 		this.articleBody = page.locator('.kb-entity-body');
 		this.articleTitle = page.locator('.kb-article-title');
 		this.infoPanel = page.locator('.info-panel-content');
-		this.infoPanelButton = page.locator(
-			'a[href="#_com_liferay_knowledge_base_web_portlet_AdminPortlet_infoPanelId"]'
-		);
+		this.infoPanelButton = page.getByRole('link', {
+			name: 'Toggle Info Panel',
+		});
 		this.showActionsButton = page.getByLabel('Show Actions');
 		this.knowledgeBasePage = new KnowledgeBasePage(page);
 		this.page = page;

@@ -143,7 +143,7 @@ test(
 
 test(
 	'Article view shows the toolbar actions and lists submitted suggestions',
-	{tag: ['@LPD-110921', '@LPS-160369', '@LPS-170293']},
+	{tag: ['@LPD-110921', '@LPD-112411', '@LPS-160369', '@LPS-170293']},
 	async ({apiHelpers, knowledgeBaseViewArticlePage, page, site}) => {
 		const title = getRandomString();
 
