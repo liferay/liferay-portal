@@ -124,13 +124,18 @@ public class BackgroundTaskStatusMessageListenerTest {
 		Assert.assertEquals(
 			BackgroundTaskConstants.STATUS_QUEUED,
 			_getStatus(backgroundTaskId1));
+		Assert.assertEquals(
+			BackgroundTaskConstants.STATUS_SUCCESSFUL,
+			_getStatus(backgroundTaskId2));
+		Assert.assertEquals(
+			BackgroundTaskConstants.STATUS_SUCCESSFUL,
+			_getStatus(backgroundTaskId3));
 	}
 
 	@Test
 	public void testExecuteBackgroundTasks() throws Exception {
 		_testExecuteBackgroundTasks(BackgroundTaskResult.COMPLETED_WITH_ERRORS);
 		_testExecuteBackgroundTasks(BackgroundTaskResult.SUCCESS);
-		_testExecuteBackgroundTasksWithLockedOlderQueuedBackgroundTask();
 	}
 
 	@Test
@@ -322,41 +327,6 @@ public class BackgroundTaskStatusMessageListenerTest {
 			backgroundTaskResult.getStatus(), _getStatus(backgroundTaskId1));
 		Assert.assertEquals(
 			backgroundTaskResult.getStatus(), _getStatus(backgroundTaskId2));
-	}
-
-	private void _testExecuteBackgroundTasksWithLockedOlderQueuedBackgroundTask()
-		throws Exception {
-
-		String taskExecutorClassName = _registerBackgroundTaskExecutor(
-			BackgroundTaskConstants.ISOLATION_LEVEL_GROUP,
-			BackgroundTaskResult.SUCCESS);
-
-		long groupId1 = RandomTestUtil.randomLong();
-		long groupId2 = RandomTestUtil.randomLong();
-
-		_lock(taskExecutorClassName + StringPool.POUND + groupId1);
-		_lock(taskExecutorClassName + StringPool.POUND + groupId2);
-
-		long backgroundTaskId1 = _addQueuedBackgroundTask(
-			groupId1, taskExecutorClassName);
-		long backgroundTaskId2 = _addQueuedBackgroundTask(
-			groupId2, taskExecutorClassName);
-		long backgroundTaskId3 = _addQueuedBackgroundTask(
-			groupId2, taskExecutorClassName);
-
-		_unlock(taskExecutorClassName + StringPool.POUND + groupId2);
-
-		_backgroundTaskManager.resumeBackgroundTask(backgroundTaskId2);
-
-		Assert.assertEquals(
-			BackgroundTaskConstants.STATUS_QUEUED,
-			_getStatus(backgroundTaskId1));
-		Assert.assertEquals(
-			BackgroundTaskConstants.STATUS_SUCCESSFUL,
-			_getStatus(backgroundTaskId2));
-		Assert.assertEquals(
-			BackgroundTaskConstants.STATUS_SUCCESSFUL,
-			_getStatus(backgroundTaskId3));
 	}
 
 	private void _unlock(String lockKey) {
