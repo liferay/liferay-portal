@@ -28,6 +28,8 @@ Object definitions, fields, relationships, and validations need no flag. On a si
 
 ## Workflow
 
+> **Ship the objects in a client extension.** Object definitions, fields, picklists, relationships, validations, and seed entries belong in the site initializer tree (`object-definitions/`, `object-fields/`, `list-type-definitions/`, `object-relationships/`, `object-entries/`; see `rules/site-initializer-format.md` → "Objects and Picklists"), or in a `batch` CET when there is no site. The REST calls in this skill show each payload's shape and serve one-off changes to a running instance; do not build the deliverable with them. See `liferay-rules.md` → "Deliver Through Client Extensions".
+
 ### Collect Object Definition Inputs
 
 Gather from the user or infer from context:

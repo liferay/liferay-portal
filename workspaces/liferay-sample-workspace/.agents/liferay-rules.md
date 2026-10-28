@@ -94,9 +94,28 @@ Most real tasks match two or more rows — load all of them. Skipping one is not
 
 If a skill turns out to be wrong or to omit the answer, fix the skill as part of the task rather than working around it locally.
 
+## Deliver Through Client Extensions
+
+What you build is delivered as the workspace's client extension projects, not as changes to the running portal. Anything that belongs to the site or the instance you hand over goes into a client extension:
+
+- **The `siteInitializer` tree** for the site and what it holds: pages, master pages, style books, fragments, navigation menus, objects and their fields, picklists, relationships and seed entries, notification templates, workflow definitions, roles, and permissions (`rules/site-initializer-format.md`).
+- **A `batch` CET** for company level data with no site of its own, and for object actions.
+- **A `frontend` CET** for the theme, favicon, and global CSS or JS, bound from the master page's `settings`.
+- **A `microservice` CET** for logic that runs outside the portal.
+
+Deploy the client extension and confirm the result on the running portal. A change made over REST, through an MCP write, or in the UI exists only in that one database: the next reprovision or a fresh environment loses it, and nobody can review it.
+
+Use REST, MCP writes, and the UI on the live instance only for:
+
+- reading state and verifying what a deploy did;
+- test or scratch data that is not part of the deliverable;
+- the settings no client extension can carry. Each skill names them where they come up, for example `skills/theme-and-design/SKILL.md` → "Mark It as the Site Default".
+
+When a live change is unavoidable, script it next to the client extension, run it after each deploy, and tell the user it is a post-deploy step. A REST example in a skill shows an API's shape; when the skill also shows a client extension route, take that route. Fix a defect in the client extension and redeploy, never on the live instance alone.
+
 ## MCP Server
 
-Liferay provides an MCP server for AI agent integration, gated by a feature flag and available in specific DXP versions. When present and enabled, prefer MCP over raw `curl` for content, page, and object operations. See `skills/mcp-server/SKILL.md` for setup, transport details, version requirements, and quirks.
+Liferay provides an MCP server for AI agent integration, gated by a feature flag and available in specific DXP versions. When present and enabled, prefer MCP over raw `curl` for reading and verifying content, pages, and objects, and for the live operations "Deliver Through Client Extensions" allows. See `skills/mcp-server/SKILL.md` for setup, transport details, version requirements, and quirks.
 
 ## Skill Router
 

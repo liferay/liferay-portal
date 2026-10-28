@@ -23,6 +23,8 @@ None for roles and grants. The object collaborators API (sharing an entry with o
 
 ## Workflow
 
+> **Ship roles and grants in the site initializer tree.** Roles go in `roles.json`, permission grants in `resource-permissions.json`, users and accounts in `user-accounts.json` and `accounts.json` (see `rules/site-initializer-format.md`). The REST calls below show each payload's shape and serve one-off changes to a running instance. See `liferay-rules.md` → "Deliver Through Client Extensions".
+
 ### Create a Role
 
 ```bash

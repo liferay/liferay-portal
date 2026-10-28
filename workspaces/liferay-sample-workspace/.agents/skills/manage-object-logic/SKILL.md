@@ -23,6 +23,8 @@ Object definition must already exist and be published (see `manage-objects`). Cl
 
 ## Workflow
 
+> **Ship the logic in a client extension.** Deliver object actions as a `batch` CET ("Deliver the Object Action as a Client Extension" below), and notification templates and workflow definitions in the site initializer tree (`notification-templates/`, `workflow-definitions/`; see `rules/site-initializer-format.md`). The REST calls in this skill show each payload's shape and serve one-off changes to a running instance, plus the gaps the tree cannot cover, which "Approval Workflow" → "In a Site Initializer" names. See `liferay-rules.md` → "Deliver Through Client Extensions".
+
 ### Choose the Trigger
 
 | Trigger | When It Fires |

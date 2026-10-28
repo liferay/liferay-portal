@@ -327,6 +327,8 @@ Consult learn.liferay.com for the full style book token reference (search `style
 
 Master pages define the persistent header and footer that surround all Content Pages assigned to that master.
 
+Author the master in the site initializer tree, under `layout-page-templates/master-pages/<name>/` (see `rules/site-initializer-format.md` → "Master Pages"), and bind the theme, favicon, and style book from its `settings`. The API call below is for a one-off change to a running instance. See `liferay-rules.md` → "Deliver Through Client Extensions".
+
 #### Create via API
 
 ```bash
@@ -372,7 +374,7 @@ The `DropZone` element must carry a `definition.fragmentSettings` block — a **
 
 `settings.masterPage.key` in each `page-definition.json` applies the master to the pages in the tree. Pages created later, in the UI or over REST, get the site's **default** master instead, so mark yours as the default, or new pages render without the header and footer.
 
-The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. Mark it over REST after each provision by sending the master page back with `markedAsDefault` set:
+The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. This is one of the settings no client extension can carry, so it stays a post-deploy step: script it next to the initializer and run it after each provision. Mark it over REST by sending the master page back with `markedAsDefault` set:
 
 ```bash
 SITE="http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>"
