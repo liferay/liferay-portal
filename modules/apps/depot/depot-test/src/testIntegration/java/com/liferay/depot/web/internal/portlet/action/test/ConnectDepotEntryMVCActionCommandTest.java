@@ -58,7 +58,6 @@ public class ConnectDepotEntryMVCActionCommandTest {
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
-
 		_group = GroupTestUtil.addGroup();
 	}
 
