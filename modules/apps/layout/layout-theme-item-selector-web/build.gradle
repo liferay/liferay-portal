@@ -12,6 +12,5 @@ dependencies {
 	compileOnly project(":apps:layout:layout-theme-item-selector-api")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
 }

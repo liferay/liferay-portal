@@ -15,7 +15,6 @@ dependencies {
 	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }
