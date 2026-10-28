@@ -94,9 +94,15 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 		sb.append("\">");
 		sb.append(HtmlUtil.escape(headerTitle));
 
+		boolean showDraftMarker = false;
+
 		if (_hasDraftLayout(httpServletRequest) &&
 			_hasEditPermission(httpServletRequest)) {
 
+			showDraftMarker = true;
+		}
+
+		if (showDraftMarker) {
 			sb.append("<span class=\"sr-only\">");
 			sb.append(_language.get(httpServletRequest, "draft"));
 			sb.append("</span>");
@@ -118,9 +124,7 @@ public class LayoutHeaderProductNavigationControlMenuEntry
 
 		sb.append("</h1>");
 
-		if (_hasDraftLayout(httpServletRequest) &&
-			_hasEditPermission(httpServletRequest)) {
-
+		if (showDraftMarker) {
 			sb.append("<sup aria-hidden=\"true\" ");
 			sb.append("class=\"flex-shrink-0 small\">*</sup>");
 		}
