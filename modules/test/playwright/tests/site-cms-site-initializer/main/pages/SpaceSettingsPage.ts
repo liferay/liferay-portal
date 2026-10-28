@@ -25,7 +25,7 @@ export class SpaceSettingsPage {
 		this.googleMapsAPIKeyField = page.getByRole('textbox', {
 			name: 'API Key Required',
 		});
-		this.googleMapsRadio = page.getByRole('radio', {name: 'Google Maps'});
+		this.googleMapsRadio = page.getByRole('radio', {name: /^Google Maps/});
 		this.page = page;
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.trashEntriesMaxAgeField = page.getByRole('spinbutton', {
