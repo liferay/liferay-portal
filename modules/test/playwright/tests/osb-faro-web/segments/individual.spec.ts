@@ -792,15 +792,23 @@ test(
 			projectID: project.groupId,
 		});
 
-		// The Overview tab lists the individual summary cards
+		// The Activities tab shows the Individual Events card
 
-		for (const cardTitle of [
-			'Individual Events',
-			'Current Interests',
-			'Associated Segments',
-		]) {
-			await expect(page.getByText(cardTitle).first()).toBeVisible();
-		}
+		await expect(page.getByText('Individual Events').first()).toBeVisible();
+
+		// The Interests tab shows the interests list
+
+		await page.getByRole('link', {exact: true, name: 'Interests'}).click();
+
+		await expect(page.getByText('No interests were found.')).toBeVisible();
+
+		// The Segments tab shows the Associated Segments card
+
+		await page.getByRole('link', {exact: true, name: 'Segments'}).click();
+
+		await expect(
+			page.getByText('Associated Segments').first()
+		).toBeVisible();
 	}
 );
 
