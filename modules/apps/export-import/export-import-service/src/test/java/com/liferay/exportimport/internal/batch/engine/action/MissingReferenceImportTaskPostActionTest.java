@@ -48,9 +48,6 @@ public class MissingReferenceImportTaskPostActionTest {
 		ReflectionTestUtil.setFieldValue(
 			_missingReferenceImportTaskPostAction, "_stagingGroupHelper",
 			_stagingGroupHelper);
-
-		_exportImportThreadLocalMockedStatic = Mockito.mockStatic(
-			ExportImportThreadLocal.class);
 	}
 
 	@After
@@ -201,7 +198,8 @@ public class MissingReferenceImportTaskPostActionTest {
 	private final EmptyModelManager _emptyModelManager = Mockito.mock(
 		EmptyModelManager.class);
 	private MockedStatic<ExportImportThreadLocal>
-		_exportImportThreadLocalMockedStatic;
+		_exportImportThreadLocalMockedStatic = Mockito.mockStatic(
+			ExportImportThreadLocal.class);
 	private final MissingReferenceImportTaskPostAction
 		_missingReferenceImportTaskPostAction =
 			new MissingReferenceImportTaskPostAction();

@@ -593,7 +593,6 @@ public class ExportImportReportEntryLocalServiceTest {
 		long classNameId = RandomTestUtil.randomLong();
 		long companyId = TestPropsValues.getCompanyId();
 		long exportImportConfigurationId1 = RandomTestUtil.randomLong();
-		long exportImportConfigurationId2 = RandomTestUtil.randomLong();
 		long groupId = TestPropsValues.getGroupId();
 
 		ExportImportReportEntry exportImportReportEntry1 =
@@ -603,6 +602,9 @@ public class ExportImportReportEntryLocalServiceTest {
 					0, exportImportConfigurationId1,
 					ExportImportReportEntryConstants.TYPE_MISSING_REFERENCE,
 					null, null, RandomTestUtil.randomString());
+
+		long exportImportConfigurationId2 = RandomTestUtil.randomLong();
+
 		ExportImportReportEntry exportImportReportEntry2 =
 			_exportImportReportEntryLocalService.
 				getOrAddExportImportReportEntry(

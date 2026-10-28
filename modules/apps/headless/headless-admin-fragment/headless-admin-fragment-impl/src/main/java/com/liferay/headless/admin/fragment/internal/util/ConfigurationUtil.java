@@ -486,7 +486,6 @@ public class ConfigurationUtil {
 		}
 
 		long companyId = CompanyThreadLocal.getCompanyId();
-
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 

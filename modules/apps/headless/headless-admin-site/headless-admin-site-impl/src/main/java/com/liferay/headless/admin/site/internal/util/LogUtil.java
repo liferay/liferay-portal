@@ -105,7 +105,6 @@ public class LogUtil {
 		String className, String externalReferenceCode, long groupId) {
 
 		long companyId = CompanyThreadLocal.getCompanyId();
-
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
