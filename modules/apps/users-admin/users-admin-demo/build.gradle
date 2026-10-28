@@ -4,8 +4,5 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
-	compileOnly project(":apps:roles:roles-admin-demo-data-creator-api")
-	compileOnly project(":apps:site:site-demo-data-creator-api")
-	compileOnly project(":apps:users-admin:users-admin-demo-data-creator-api")
 	compileOnly project(":core:petra:petra-string")
 }

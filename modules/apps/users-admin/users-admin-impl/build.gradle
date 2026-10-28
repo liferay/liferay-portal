@@ -4,7 +4,6 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:data-engine:data-engine-api")
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
@@ -15,7 +14,6 @@ dependencies {
 	compileOnly project(":apps:users-admin:users-admin-api")
 	compileOnly project(":apps:xstream:xstream-configurator-api")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

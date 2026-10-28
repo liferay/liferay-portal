@@ -3,7 +3,6 @@ dependencies {
 	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
 	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
-	testIntegrationImplementation project(":apps:change-tracking:change-tracking-spi")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:expando:expando-test-util")

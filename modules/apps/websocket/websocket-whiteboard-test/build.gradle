@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "jakarta.websocket", name: "jakarta.websocket-api", version: "2.1.1"
 	testIntegrationImplementation group: "jakarta.websocket", name: "jakarta.websocket-client-api", version: "2.1.1"
 	testIntegrationImplementation group: "jakarta.xml.bind", name: "jakarta.xml.bind-api", version: "4.0.2"
 	testIntegrationImplementation group: "junit", name: "junit", version: "4.13.1"
