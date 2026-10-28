@@ -215,6 +215,12 @@ definition {
 			CookiePreferenceHandlingAdmin.enablePreferenceHandlingWithCookieConsent();
 
 			CookieBannerAdmin.setCustomTextForAllFields(text = "INSTANCE_LEVEL");
+
+			HeadlessSite.addSite(siteName = "Site Name");
+
+			JSONLayout.addPublicLayout(
+				groupName = "Site Name",
+				layoutName = "Instance Level Page");
 		}
 
 		task ("When: End User first visits the site") {
@@ -252,6 +258,10 @@ definition {
 				password = PropsUtil.get("default.admin.password"),
 				specificURL = "http://localhost:8080",
 				userEmailAddress = "test@liferay.com");
+
+			Navigator.gotoSitePage(
+				pageName = "Instance Level Page",
+				siteName = "Site Name");
 
 			CookieBanner.verifyCookieBannerIsPresent();
 
