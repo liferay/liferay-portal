@@ -9,7 +9,6 @@ dependencies {
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	compileOnly group: "com.google.protobuf", name: "protobuf-java", version: "3.25.5"
-	compileOnly group: "com.google.protobuf", name: "protobuf-java-util", version: "3.25.5"
 	compileOnly group: "io.opencensus", name: "opencensus-api", version: "0.31.1"
 	compileOnly group: "io.opencensus", name: "opencensus-contrib-http-util", version: "0.31.1"
 	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"

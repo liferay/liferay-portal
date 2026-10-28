@@ -12,5 +12,4 @@ dependencies {
 	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
 	compileInclude group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 	compileInclude group: "org.tukaani", name: "xz", version: "1.9"
-	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 }
