@@ -43,9 +43,6 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.transaction.Isolation;
-import com.liferay.portal.kernel.transaction.Propagation;
-import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -947,10 +944,6 @@ public class PatcherBuildUtil {
 		}
 	}
 
-	@Transactional(
-		isolation = Isolation.PORTAL, propagation = Propagation.REQUIRES_NEW,
-		rollbackFor = Exception.class
-	)
 	public static void processOSBPatcherBuildCompileJenkinsStatus(
 			User user, long patcherBuildId, String jenkinsStatusJSON)
 		throws Exception {
@@ -997,10 +990,6 @@ public class PatcherBuildUtil {
 		sendTestJenkinsRequest(user, patcherBuild);
 	}
 
-	@Transactional(
-		isolation = Isolation.PORTAL, propagation = Propagation.REQUIRES_NEW,
-		rollbackFor = Exception.class
-	)
 	public static void processOSBPatcherBuildMergeJenkinsStatus(
 			User user, long patcherFixId, String jenkinsStatusJSON)
 		throws Exception {
@@ -1051,10 +1040,6 @@ public class PatcherBuildUtil {
 		}
 	}
 
-	@Transactional(
-		isolation = Isolation.PORTAL, propagation = Propagation.REQUIRES_NEW,
-		rollbackFor = Exception.class
-	)
 	public static void processOSBPatcherBuildTestJenkinsStatus(
 			User user, long patcherBuildId, String jenkinsStatusJSON)
 		throws Exception {
