@@ -1,7 +1,6 @@
 dependencies {
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -12,7 +11,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:asset:asset-api")
 	compileOnly project(":apps:asset:asset-display-page-api")
@@ -20,13 +18,11 @@ dependencies {
 	compileOnly project(":apps:asset:asset-taglib")
 	compileOnly project(":apps:bulk:bulk-selection-api")
 	compileOnly project(":apps:change-tracking:change-tracking-api")
-	compileOnly project(":apps:comment:comment-taglib")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
-	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-taglib")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
 	compileOnly project(":apps:friendly-url:friendly-url-taglib")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
@@ -36,14 +32,12 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
 	compileOnly project(":apps:headless:headless-admin-list-type:headless-admin-list-type-api")
 	compileOnly project(":apps:headless:headless-delivery:headless-delivery-api")
-	compileOnly project(":apps:headless:headless-object:headless-object-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:info:info-taglib")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
-	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:learn:learn-api")
 	compileOnly project(":apps:list-type:list-type-api")
 	compileOnly project(":apps:map:map-api")
@@ -62,13 +56,11 @@ dependencies {
 	compileOnly project(":apps:template:template-api")
 	compileOnly project(":apps:translation:translation-api")
 	compileOnly project(":apps:upload:upload-api")
-	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
-	compileOnly project(":core:petra:petra-sql-dsl-spi")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 	testImplementation project(":apps:trash:trash-api")
