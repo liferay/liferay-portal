@@ -23,11 +23,25 @@ import java.util.Locale;
 public class InfoFormValidationException extends InfoFormException {
 
 	public InfoFormValidationException() {
+		_externalReferenceCode = null;
 		_infoFieldUniqueId = StringPool.BLANK;
 	}
 
 	public InfoFormValidationException(String infoFieldUniqueId) {
 		_infoFieldUniqueId = infoFieldUniqueId;
+
+		_externalReferenceCode = null;
+	}
+
+	public InfoFormValidationException(
+		String externalReferenceCode, String infoFieldUniqueId) {
+
+		_externalReferenceCode = externalReferenceCode;
+		_infoFieldUniqueId = infoFieldUniqueId;
+	}
+
+	public String getExternalReferenceCode() {
+		return _externalReferenceCode;
 	}
 
 	public String getInfoFieldUniqueId() {
@@ -93,6 +107,15 @@ public class InfoFormValidationException extends InfoFormException {
 
 		public CustomValidation(String infoFieldUniqueId, String message) {
 			super(infoFieldUniqueId);
+
+			_message = message;
+		}
+
+		public CustomValidation(
+			String externalReferenceCode, String infoFieldUniqueId,
+			String message) {
+
+			super(externalReferenceCode, infoFieldUniqueId);
 
 			_message = message;
 		}
@@ -486,6 +509,15 @@ public class InfoFormValidationException extends InfoFormException {
 				new CustomValidation(infoFieldUniqueId, message));
 		}
 
+		public void addCustomValidation(
+			String externalReferenceCode, String infoFieldUniqueId,
+			String message) {
+
+			_customValidations.add(
+				new CustomValidation(
+					externalReferenceCode, infoFieldUniqueId, message));
+		}
+
 		public List<CustomValidation> getCustomValidations() {
 			return _customValidations;
 		}
@@ -530,6 +562,7 @@ public class InfoFormValidationException extends InfoFormException {
 
 	}
 
+	private final String _externalReferenceCode;
 	private final String _infoFieldUniqueId;
 
 }
