@@ -137,11 +137,14 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 		newAssetListEntryAssetEntryRel.setModifiedDate(
 			RandomTestUtil.nextDate());
 
+		newAssetListEntryAssetEntryRel.setAssetEntryId(
+			RandomTestUtil.nextLong());
+
 		newAssetListEntryAssetEntryRel.setAssetListEntryId(
 			RandomTestUtil.nextLong());
 
-		newAssetListEntryAssetEntryRel.setAssetEntryId(
-			RandomTestUtil.nextLong());
+		newAssetListEntryAssetEntryRel.setAudienceEntryERC(
+			RandomTestUtil.randomString());
 
 		newAssetListEntryAssetEntryRel.setSegmentsEntryId(
 			RandomTestUtil.nextLong());
@@ -196,11 +199,14 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 			Time.getShortTimestamp(
 				newAssetListEntryAssetEntryRel.getModifiedDate()));
 		Assert.assertEquals(
+			existingAssetListEntryAssetEntryRel.getAssetEntryId(),
+			newAssetListEntryAssetEntryRel.getAssetEntryId());
+		Assert.assertEquals(
 			existingAssetListEntryAssetEntryRel.getAssetListEntryId(),
 			newAssetListEntryAssetEntryRel.getAssetListEntryId());
 		Assert.assertEquals(
-			existingAssetListEntryAssetEntryRel.getAssetEntryId(),
-			newAssetListEntryAssetEntryRel.getAssetEntryId());
+			existingAssetListEntryAssetEntryRel.getAudienceEntryERC(),
+			newAssetListEntryAssetEntryRel.getAudienceEntryERC());
 		Assert.assertEquals(
 			existingAssetListEntryAssetEntryRel.getSegmentsEntryId(),
 			newAssetListEntryAssetEntryRel.getSegmentsEntryId());
@@ -242,13 +248,6 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 	}
 
 	@Test
-	public void testCountByAssetListEntryId() throws Exception {
-		_persistence.countByAssetListEntryId(RandomTestUtil.nextLong());
-
-		_persistence.countByAssetListEntryId(0L);
-	}
-
-	@Test
 	public void testCountByAssetEntryId() throws Exception {
 		_persistence.countByAssetEntryId(RandomTestUtil.nextLong());
 
@@ -256,36 +255,49 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 	}
 
 	@Test
-	public void testCountByA_S() throws Exception {
-		_persistence.countByA_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+	public void testCountByAssetListEntryId() throws Exception {
+		_persistence.countByAssetListEntryId(RandomTestUtil.nextLong());
 
-		_persistence.countByA_S(0L, 0L);
+		_persistence.countByAssetListEntryId(0L);
 	}
 
 	@Test
-	public void testCountByA_SArrayable() throws Exception {
-		_persistence.countByA_S(
-			RandomTestUtil.nextLong(),
+	public void testCountByA_AEERC_S() throws Exception {
+		_persistence.countByA_AEERC_S(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextLong());
+
+		_persistence.countByA_AEERC_S(0L, "null", 0L);
+
+		_persistence.countByA_AEERC_S(0L, (String)null, 0L);
+	}
+
+	@Test
+	public void testCountByA_AEERC_SArrayable() throws Exception {
+		_persistence.countByA_AEERC_S(
+			RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
 			new long[] {RandomTestUtil.nextLong(), 0L});
 	}
 
 	@Test
-	public void testCountByA_S_P() throws Exception {
-		_persistence.countByA_S_P(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+	public void testCountByA_AEERC_S_P() throws Exception {
+		_persistence.countByA_AEERC_S_P(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextLong(),
 			RandomTestUtil.nextInt());
 
-		_persistence.countByA_S_P(0L, 0L, 0);
+		_persistence.countByA_AEERC_S_P(0L, "null", 0L, 0);
+
+		_persistence.countByA_AEERC_S_P(0L, (String)null, 0L, 0);
 	}
 
 	@Test
-	public void testCountByA_S_GtP() throws Exception {
-		_persistence.countByA_S_GtP(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
+	public void testCountByA_AEERC_S_GtP() throws Exception {
+		_persistence.countByA_AEERC_S_GtP(
+			RandomTestUtil.nextLong(), "", RandomTestUtil.nextLong(),
 			RandomTestUtil.nextInt());
 
-		_persistence.countByA_S_GtP(0L, 0L, 0);
+		_persistence.countByA_AEERC_S_GtP(0L, "null", 0L, 0);
+
+		_persistence.countByA_AEERC_S_GtP(0L, (String)null, 0L, 0);
 	}
 
 	@Test
@@ -323,9 +335,9 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 			"ctCollectionId", true, "uuid", true,
 			"assetListEntryAssetEntryRelId", true, "groupId", true, "companyId",
 			true, "userId", true, "userName", true, "createDate", true,
-			"modifiedDate", true, "assetListEntryId", true, "assetEntryId",
-			true, "segmentsEntryId", true, "position", true, "lastPublishDate",
-			true);
+			"modifiedDate", true, "assetEntryId", true, "assetListEntryId",
+			true, "audienceEntryERC", true, "segmentsEntryId", true, "position",
+			true, "lastPublishDate", true);
 	}
 
 	@Test
@@ -650,6 +662,11 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 				assetListEntryAssetEntryRel, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "assetListEntryId"));
 		Assert.assertEquals(
+			assetListEntryAssetEntryRel.getAudienceEntryERC(),
+			ReflectionTestUtil.invoke(
+				assetListEntryAssetEntryRel, "getColumnOriginalValue",
+				new Class<?>[] {String.class}, "audienceEntryERC"));
+		Assert.assertEquals(
 			Long.valueOf(assetListEntryAssetEntryRel.getSegmentsEntryId()),
 			ReflectionTestUtil.<Long>invoke(
 				assetListEntryAssetEntryRel, "getColumnOriginalValue",
@@ -686,10 +703,13 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 
 		assetListEntryAssetEntryRel.setModifiedDate(RandomTestUtil.nextDate());
 
+		assetListEntryAssetEntryRel.setAssetEntryId(RandomTestUtil.nextLong());
+
 		assetListEntryAssetEntryRel.setAssetListEntryId(
 			RandomTestUtil.nextLong());
 
-		assetListEntryAssetEntryRel.setAssetEntryId(RandomTestUtil.nextLong());
+		assetListEntryAssetEntryRel.setAudienceEntryERC(
+			RandomTestUtil.randomString());
 
 		assetListEntryAssetEntryRel.setSegmentsEntryId(
 			RandomTestUtil.nextLong());
@@ -711,4 +731,4 @@ public class AssetListEntryAssetEntryRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1500205872
+// LIFERAY-SERVICE-BUILDER-HASH:469602020

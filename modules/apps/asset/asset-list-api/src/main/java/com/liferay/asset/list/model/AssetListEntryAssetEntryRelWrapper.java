@@ -51,8 +51,9 @@ public class AssetListEntryAssetEntryRelWrapper
 		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
-		attributes.put("assetListEntryId", getAssetListEntryId());
 		attributes.put("assetEntryId", getAssetEntryId());
+		attributes.put("assetListEntryId", getAssetListEntryId());
+		attributes.put("audienceEntryERC", getAudienceEntryERC());
 		attributes.put("segmentsEntryId", getSegmentsEntryId());
 		attributes.put("position", getPosition());
 		attributes.put("lastPublishDate", getLastPublishDate());
@@ -123,16 +124,22 @@ public class AssetListEntryAssetEntryRelWrapper
 			setModifiedDate(modifiedDate);
 		}
 
+		Long assetEntryId = (Long)attributes.get("assetEntryId");
+
+		if (assetEntryId != null) {
+			setAssetEntryId(assetEntryId);
+		}
+
 		Long assetListEntryId = (Long)attributes.get("assetListEntryId");
 
 		if (assetListEntryId != null) {
 			setAssetListEntryId(assetListEntryId);
 		}
 
-		Long assetEntryId = (Long)attributes.get("assetEntryId");
+		String audienceEntryERC = (String)attributes.get("audienceEntryERC");
 
-		if (assetEntryId != null) {
-			setAssetEntryId(assetEntryId);
+		if (audienceEntryERC != null) {
+			setAudienceEntryERC(audienceEntryERC);
 		}
 
 		Long segmentsEntryId = (Long)attributes.get("segmentsEntryId");
@@ -192,6 +199,16 @@ public class AssetListEntryAssetEntryRelWrapper
 	@Override
 	public long getAssetListEntryId() {
 		return model.getAssetListEntryId();
+	}
+
+	/**
+	 * Returns the audience entry erc of this asset list entry asset entry rel.
+	 *
+	 * @return the audience entry erc of this asset list entry asset entry rel
+	 */
+	@Override
+	public String getAudienceEntryERC() {
+		return model.getAudienceEntryERC();
 	}
 
 	/**
@@ -377,6 +394,16 @@ public class AssetListEntryAssetEntryRelWrapper
 	}
 
 	/**
+	 * Sets the audience entry erc of this asset list entry asset entry rel.
+	 *
+	 * @param audienceEntryERC the audience entry erc of this asset list entry asset entry rel
+	 */
+	@Override
+	public void setAudienceEntryERC(String audienceEntryERC) {
+		model.setAudienceEntryERC(audienceEntryERC);
+	}
+
+	/**
 	 * Sets the company ID of this asset list entry asset entry rel.
 	 *
 	 * @param companyId the company ID of this asset list entry asset entry rel
@@ -549,4 +576,4 @@ public class AssetListEntryAssetEntryRelWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1598852390
+// LIFERAY-SERVICE-BUILDER-HASH:252342028

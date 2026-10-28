@@ -35,10 +35,28 @@
 		<field name="userName" type="String" />
 		<field name="createDate" type="Date" />
 		<field name="modifiedDate" type="Date" />
-		<field name="assetListEntryId" type="long" />
 		<field name="assetEntryId" type="long" />
+		<field name="assetListEntryId" type="long" />
+		<field name="audienceEntryERC" type="String" />
 		<field name="segmentsEntryId" type="long" />
 		<field name="position" type="int" />
+		<field name="lastPublishDate" type="Date" />
+	</model>
+	<model name="com.liferay.asset.list.model.AssetListEntryAudienceEntryRel">
+		<field name="mvccVersion" type="long" />
+		<field name="ctCollectionId" type="long" />
+		<field name="uuid" type="String" />
+		<field name="assetListEntryAudienceEntryRelId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="assetListEntryId" type="long" />
+		<field name="audienceEntryERC" type="String" />
+		<field name="priority" type="int" />
+		<field name="typeSettings" type="String" />
 		<field name="lastPublishDate" type="Date" />
 	</model>
 	<model name="com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel">

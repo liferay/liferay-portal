@@ -73,7 +73,7 @@ public class AssetListEntryAssetEntryRelCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(31);
+		StringBundler sb = new StringBundler(33);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -95,10 +95,12 @@ public class AssetListEntryAssetEntryRelCacheModel
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
 		sb.append(modifiedDate);
-		sb.append(", assetListEntryId=");
-		sb.append(assetListEntryId);
 		sb.append(", assetEntryId=");
 		sb.append(assetEntryId);
+		sb.append(", assetListEntryId=");
+		sb.append(assetListEntryId);
+		sb.append(", audienceEntryERC=");
+		sb.append(audienceEntryERC);
 		sb.append(", segmentsEntryId=");
 		sb.append(segmentsEntryId);
 		sb.append(", position=");
@@ -153,8 +155,17 @@ public class AssetListEntryAssetEntryRelCacheModel
 				new Date(modifiedDate));
 		}
 
-		assetListEntryAssetEntryRelImpl.setAssetListEntryId(assetListEntryId);
 		assetListEntryAssetEntryRelImpl.setAssetEntryId(assetEntryId);
+		assetListEntryAssetEntryRelImpl.setAssetListEntryId(assetListEntryId);
+
+		if (audienceEntryERC == null) {
+			assetListEntryAssetEntryRelImpl.setAudienceEntryERC("");
+		}
+		else {
+			assetListEntryAssetEntryRelImpl.setAudienceEntryERC(
+				audienceEntryERC);
+		}
+
 		assetListEntryAssetEntryRelImpl.setSegmentsEntryId(segmentsEntryId);
 		assetListEntryAssetEntryRelImpl.setPosition(position);
 
@@ -189,9 +200,10 @@ public class AssetListEntryAssetEntryRelCacheModel
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
-		assetListEntryId = objectInput.readLong();
-
 		assetEntryId = objectInput.readLong();
+
+		assetListEntryId = objectInput.readLong();
+		audienceEntryERC = objectInput.readUTF();
 
 		segmentsEntryId = objectInput.readLong();
 
@@ -230,9 +242,16 @@ public class AssetListEntryAssetEntryRelCacheModel
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
+		objectOutput.writeLong(assetEntryId);
+
 		objectOutput.writeLong(assetListEntryId);
 
-		objectOutput.writeLong(assetEntryId);
+		if (audienceEntryERC == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(audienceEntryERC);
+		}
 
 		objectOutput.writeLong(segmentsEntryId);
 
@@ -250,11 +269,12 @@ public class AssetListEntryAssetEntryRelCacheModel
 	public String userName;
 	public long createDate;
 	public long modifiedDate;
-	public long assetListEntryId;
 	public long assetEntryId;
+	public long assetListEntryId;
+	public String audienceEntryERC;
 	public long segmentsEntryId;
 	public int position;
 	public long lastPublishDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-486717449
+// LIFERAY-SERVICE-BUILDER-HASH:-878485345

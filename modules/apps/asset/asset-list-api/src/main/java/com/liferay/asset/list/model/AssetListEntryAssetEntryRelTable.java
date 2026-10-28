@@ -53,12 +53,16 @@ public class AssetListEntryAssetEntryRelTable
 	public final Column<AssetListEntryAssetEntryRelTable, Date> modifiedDate =
 		createColumn(
 			"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
-	public final Column<AssetListEntryAssetEntryRelTable, Long>
-		assetListEntryId = createColumn(
-			"assetListEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<AssetListEntryAssetEntryRelTable, Long> assetEntryId =
 		createColumn(
 			"assetEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<AssetListEntryAssetEntryRelTable, Long>
+		assetListEntryId = createColumn(
+			"assetListEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
+	public final Column<AssetListEntryAssetEntryRelTable, String>
+		audienceEntryERC = createColumn(
+			"audienceEntryERC", String.class, Types.VARCHAR,
+			Column.FLAG_DEFAULT);
 	public final Column<AssetListEntryAssetEntryRelTable, Long>
 		segmentsEntryId = createColumn(
 			"segmentsEntryId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
@@ -77,4 +81,4 @@ public class AssetListEntryAssetEntryRelTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-74332390
+// LIFERAY-SERVICE-BUILDER-HASH:-291244279

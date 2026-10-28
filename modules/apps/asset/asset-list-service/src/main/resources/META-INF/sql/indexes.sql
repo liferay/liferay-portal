@@ -7,8 +7,12 @@ create unique index IX_5A6C7872 on AssetListEntry (groupId, uuid_[$COLUMN_LENGTH
 create index IX_5B11862A on AssetListEntry (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_622F04CA on AssetListEntryAssetEntryRel (assetEntryId);
-create unique index IX_FAAE938C on AssetListEntryAssetEntryRel (assetListEntryId, segmentsEntryId, position, ctCollectionId);
+create unique index IX_4EDB5470 on AssetListEntryAssetEntryRel (assetListEntryId, audienceEntryERC[$COLUMN_LENGTH:75$], segmentsEntryId, position, ctCollectionId);
 create unique index IX_1FDDE58D on AssetListEntryAssetEntryRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
+
+create unique index IX_B9304B22 on AssetListEntryAudienceEntryRel (assetListEntryId, audienceEntryERC[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_94BE4797 on AssetListEntryAudienceEntryRel (audienceEntryERC[$COLUMN_LENGTH:75$], companyId);
+create unique index IX_26116269 on AssetListEntryAudienceEntryRel (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create unique index IX_56302677 on AssetListEntrySegmentsEntryRel (assetListEntryId, segmentsEntryId, ctCollectionId);
 create index IX_1C9A6A4C on AssetListEntrySegmentsEntryRel (segmentsEntryId);

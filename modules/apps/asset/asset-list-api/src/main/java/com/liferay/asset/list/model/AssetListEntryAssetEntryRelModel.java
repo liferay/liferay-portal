@@ -233,6 +233,20 @@ public interface AssetListEntryAssetEntryRelModel
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
+	 * Returns the asset entry ID of this asset list entry asset entry rel.
+	 *
+	 * @return the asset entry ID of this asset list entry asset entry rel
+	 */
+	public long getAssetEntryId();
+
+	/**
+	 * Sets the asset entry ID of this asset list entry asset entry rel.
+	 *
+	 * @param assetEntryId the asset entry ID of this asset list entry asset entry rel
+	 */
+	public void setAssetEntryId(long assetEntryId);
+
+	/**
 	 * Returns the asset list entry ID of this asset list entry asset entry rel.
 	 *
 	 * @return the asset list entry ID of this asset list entry asset entry rel
@@ -247,18 +261,19 @@ public interface AssetListEntryAssetEntryRelModel
 	public void setAssetListEntryId(long assetListEntryId);
 
 	/**
-	 * Returns the asset entry ID of this asset list entry asset entry rel.
+	 * Returns the audience entry erc of this asset list entry asset entry rel.
 	 *
-	 * @return the asset entry ID of this asset list entry asset entry rel
+	 * @return the audience entry erc of this asset list entry asset entry rel
 	 */
-	public long getAssetEntryId();
+	@AutoEscape
+	public String getAudienceEntryERC();
 
 	/**
-	 * Sets the asset entry ID of this asset list entry asset entry rel.
+	 * Sets the audience entry erc of this asset list entry asset entry rel.
 	 *
-	 * @param assetEntryId the asset entry ID of this asset list entry asset entry rel
+	 * @param audienceEntryERC the audience entry erc of this asset list entry asset entry rel
 	 */
-	public void setAssetEntryId(long assetEntryId);
+	public void setAudienceEntryERC(String audienceEntryERC);
 
 	/**
 	 * Returns the segments entry ID of this asset list entry asset entry rel.
@@ -312,4 +327,4 @@ public interface AssetListEntryAssetEntryRelModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:580329075
+// LIFERAY-SERVICE-BUILDER-HASH:-346294035

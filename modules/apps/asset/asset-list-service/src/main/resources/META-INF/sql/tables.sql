@@ -30,12 +30,32 @@ create table AssetListEntryAssetEntryRel (
 	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
-	assetListEntryId LONG,
 	assetEntryId LONG,
+	assetListEntryId LONG,
+	audienceEntryERC VARCHAR(75) null,
 	segmentsEntryId LONG,
 	position INTEGER,
 	lastPublishDate DATE null,
 	primary key (assetListEntryAssetEntryRelId, ctCollectionId)
+);
+
+create table AssetListEntryAudienceEntryRel (
+	mvccVersion LONG default 0 not null,
+	ctCollectionId LONG default 0 not null,
+	uuid_ VARCHAR(75) null,
+	alEntryAudienceEntryRelId LONG not null,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	userName VARCHAR(75) null,
+	createDate DATE null,
+	modifiedDate DATE null,
+	assetListEntryId LONG,
+	audienceEntryERC VARCHAR(75) null,
+	priority INTEGER,
+	typeSettings VARCHAR(75) null,
+	lastPublishDate DATE null,
+	primary key (alEntryAudienceEntryRelId, ctCollectionId)
 );
 
 create table AssetListEntrySegmentsEntryRel (
