@@ -676,7 +676,7 @@ test(
 		await page.keyboard.press('Enter');
 
 		await expect(
-			page.getByText('There are no results found.')
+			page.getByText('No results were found.')
 		).toBeVisible();
 	}
 );

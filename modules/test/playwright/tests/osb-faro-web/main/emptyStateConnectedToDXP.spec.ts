@@ -63,9 +63,7 @@ test(
 				projectID: project.groupId,
 			});
 
-			await expect(
-				page.getByText('There are no assets found.')
-			).toBeVisible();
+			await expect(page.getByText('No assets were found.')).toBeVisible();
 			await expect(
 				page.getByText(
 					'Check back later to verify if data has been received from your data sources, or you can try a different date range.'
@@ -95,7 +93,7 @@ test(
 			});
 
 			await expect(
-				page.getByText('There are no analysis found.')
+				page.getByText('No analyses were found.')
 			).toBeVisible();
 			await expect(
 				page.getByText('Create an analysis to get started.')
@@ -126,7 +124,7 @@ test(
 			});
 
 			await expect(
-				page.getByText('There are no segments found.')
+				page.getByText('No segments were found.')
 			).toBeVisible();
 			await expect(
 				page.getByText('Create a segment to get started.')
@@ -189,7 +187,7 @@ test(
 
 		await test.step('Check Interests card empty state messages', async () => {
 			await expect(
-				page.getByText('There are no interests found.')
+				page.getByText('No interests were found.')
 			).toBeVisible();
 			await expect(
 				page
@@ -225,7 +223,7 @@ test(
 
 		await test.step('Individual Overview distribution empty state message', async () => {
 			await expect(
-				page.getByText('There are no results found.')
+				page.getByText('No results were found.')
 			).toBeVisible();
 			await expect(
 				page.getByText('Try choosing a different breakdown.')
@@ -254,7 +252,7 @@ test(
 			});
 
 			await expect(
-				page.getByText('There are no interests found.')
+				page.getByText('No interests were found.')
 			).toBeVisible();
 			await expect(
 				page.getByText(
@@ -285,7 +283,7 @@ test(
 			});
 
 			await expect(
-				page.getByText('There are no results found.')
+				page.getByText('No results were found.')
 			).toBeVisible();
 			await expect(
 				page.getByText('Try choosing a different breakdown.')
@@ -315,9 +313,7 @@ test(
 				projectID: project.groupId,
 			});
 
-			await expect(
-				page.getByText('There are no tests found.')
-			).toBeVisible();
+			await expect(page.getByText('No tests were found.')).toBeVisible();
 			await expect(
 				page.getByText(
 					'Create a new test from Liferay DXP by clicking on the icon in the toolbar when viewing a page in DXP.'

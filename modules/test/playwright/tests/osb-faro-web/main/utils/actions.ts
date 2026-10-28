@@ -8,7 +8,7 @@ import {Page, expect} from '@playwright/test';
 import {liferayConfig} from '../../../../liferay.config';
 
 export async function checkEmptyStateOnACSide(page: Page) {
-	await expect(page.getByText('There are no tests found.')).toBeVisible();
+	await expect(page.getByText('No tests were found.')).toBeVisible();
 }
 
 export async function clickOnLink({
