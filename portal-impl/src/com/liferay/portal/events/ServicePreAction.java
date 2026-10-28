@@ -1878,41 +1878,11 @@ public class ServicePreAction extends Action {
 
 		long layoutGroupId = layout.getGroupId();
 
-		Group guestGroup = GroupLocalServiceUtil.getGroup(
-			user.getCompanyId(), GroupConstants.GUEST);
+		Group layoutGroup = GroupLocalServiceUtil.getGroup(layoutGroupId);
 
-		if (layoutGroupId != guestGroup.getGroupId()) {
-			Group layoutGroup = GroupLocalServiceUtil.getGroup(layoutGroupId);
+		if (layoutGroup.isGuest() &&
+			(layoutGroup.getCompanyId() == user.getCompanyId())) {
 
-			UnicodeProperties typeSettingsUnicodeProperties =
-				layoutGroup.getTypeSettingsProperties();
-
-			boolean mergeGuestPublicPages = GetterUtil.getBoolean(
-				typeSettingsUnicodeProperties.getProperty(
-					"mergeGuestPublicPages"));
-
-			if (!mergeGuestPublicPages) {
-				return layouts;
-			}
-
-			List<Layout> guestLayouts = LayoutLocalServiceUtil.getLayouts(
-				guestGroup.getGroupId(), false,
-				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
-
-			LayoutComposite viewableLayoutComposite =
-				_getViewableLayoutComposite(
-					httpServletRequest, false, layout, guestLayouts,
-					permissionChecker, false, user);
-
-			guestLayouts = viewableLayoutComposite.getLayouts();
-
-			if (layouts == null) {
-				return guestLayouts;
-			}
-
-			layouts.addAll(0, guestLayouts);
-		}
-		else {
 			HttpSession httpSession = httpServletRequest.getSession();
 
 			Long previousGroupId = (Long)httpSession.getAttribute(
@@ -1962,6 +1932,38 @@ public class ServicePreAction extends Action {
 					layouts.addAll(previousLayouts);
 				}
 			}
+		}
+		else {
+			UnicodeProperties typeSettingsUnicodeProperties =
+				layoutGroup.getTypeSettingsProperties();
+
+			boolean mergeGuestPublicPages = GetterUtil.getBoolean(
+				typeSettingsUnicodeProperties.getProperty(
+					"mergeGuestPublicPages"));
+
+			if (!mergeGuestPublicPages) {
+				return layouts;
+			}
+
+			Group guestGroup = GroupLocalServiceUtil.getGroup(
+				user.getCompanyId(), GroupConstants.GUEST);
+
+			List<Layout> guestLayouts = LayoutLocalServiceUtil.getLayouts(
+				guestGroup.getGroupId(), false,
+				LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
+
+			LayoutComposite viewableLayoutComposite =
+				_getViewableLayoutComposite(
+					httpServletRequest, false, layout, guestLayouts,
+					permissionChecker, false, user);
+
+			guestLayouts = viewableLayoutComposite.getLayouts();
+
+			if (layouts == null) {
+				return guestLayouts;
+			}
+
+			layouts.addAll(0, guestLayouts);
 		}
 
 		return layouts;
