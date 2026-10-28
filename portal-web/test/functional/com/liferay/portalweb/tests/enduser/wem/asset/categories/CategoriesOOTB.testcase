@@ -134,41 +134,6 @@ definition {
 		}
 	}
 
-	@description = "When the site administrator (not Global) accesses to the Categories administration application, the existing Global vocabularies appear as locked and it's not possible to edit them"
-	@priority = 5
-	@uitest
-	test CannotEditGlobalCategoryInNormalSite {
-		property portal.acceptance = "true";
-
-		task ("Add a global category") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Category Name",
-				vocabularyName = "Topic");
-		}
-
-		task ("Cannot edit the global category in normal site") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Category.viewCP(
-				categoryName = "Category Name",
-				vocabularyName = "Topic");
-
-			AssertElementNotPresent(locator1 = "Categories#ADD_CATEGORY_BUTTON");
-
-			AssertVisible(
-				key_vocabularyName = "Topic",
-				locator1 = "Categories#LOCKED_VOCABULARY");
-		}
-
-		task ("Delete the global category") {
-			JSONCategory.deleteCategory(
-				categoryName = "Category Name",
-				groupName = "Global",
-				vocabularyName = "Topic");
-		}
-	}
-
 	@description = "When Edit the Audience or Stage, default values are For internal use only ON , Allow user to select multiple categories ON, will be associated with web content, won't be required"
 	@priority = 5
 	test CheckAudienceStageDefaultSettings {
@@ -816,6 +781,7 @@ definition {
 
 	@description = "When a change in Global Vocabularies is made, the Global vocabularies section in a site's Categories administration application updates accordingly"
 	@priority = 5
+	@uitest
 	test ViewGlobalCategoryInSite {
 		property portal.acceptance = "true";
 
@@ -832,6 +798,14 @@ definition {
 			Category.viewCP(
 				categoryName = "Category Name",
 				vocabularyName = "Topic");
+		}
+
+		task ("Cannot edit the global category in normal site") {
+			AssertElementNotPresent(locator1 = "Categories#ADD_CATEGORY_BUTTON");
+
+			AssertVisible(
+				key_vocabularyName = "Topic",
+				locator1 = "Categories#LOCKED_VOCABULARY");
 		}
 
 		task ("Edit the global category") {
