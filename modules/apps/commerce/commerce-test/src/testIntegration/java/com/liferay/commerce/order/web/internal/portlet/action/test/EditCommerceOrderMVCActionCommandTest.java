@@ -9,12 +9,15 @@ import com.liferay.account.constants.AccountConstants;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.order.engine.CommerceOrderEngine;
+import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -29,17 +32,29 @@ import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Region;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.service.AddressLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.servlet.SessionErrors;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
+import com.liferay.portal.kernel.test.portlet.MockPortletSession;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.Constants;
@@ -49,6 +64,9 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.math.BigDecimal;
+
+import java.util.Collections;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -96,7 +114,173 @@ public class EditCommerceOrderMVCActionCommandTest {
 	}
 
 	@Test
+	@TestInfo("LPD-111712")
 	public void testProcessAction() throws Exception {
+		_testProcessActionWithManageCommerceOrderPaymentPermissions();
+		_testProcessActionWithRecalculateOrderSummary();
+	}
+
+	private MockLiferayPortletActionRequest _processAction(
+			String cmd, long commerceOrderId, Map<String, String> parameters)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setParameter(Constants.CMD, cmd);
+		mockLiferayPortletActionRequest.setParameter(
+			"commerceOrderId", String.valueOf(commerceOrderId));
+
+		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+			mockLiferayPortletActionRequest.setParameter(
+				entry.getKey(), entry.getValue());
+		}
+
+		mockLiferayPortletActionRequest.setPortletSession(
+			new MockPortletSession());
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		return mockLiferayPortletActionRequest;
+	}
+
+	private void _recalculateOrderSummary(
+			long commerceOrderId, BigDecimal discountAmount1,
+			BigDecimal discountAmount2, BigDecimal price1, BigDecimal price2)
+		throws Exception {
+
+		_processAction(
+			"recalculateOrderSummary", commerceOrderId,
+			Collections.emptyMap());
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+
+		BigDecimal expectedSubtotal = price1.add(price2);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(expectedSubtotal, commerceOrder.getSubtotal()));
+
+		BigDecimal expectedSubtotalDiscountAmount = discountAmount1.add(
+			discountAmount2);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(
+				expectedSubtotalDiscountAmount,
+				commerceOrder.getSubtotalDiscountAmount()));
+
+		BigDecimal expectedTotal = expectedSubtotal.subtract(
+			expectedSubtotalDiscountAmount);
+
+		Assert.assertTrue(
+			BigDecimalUtil.eq(expectedTotal, commerceOrder.getTotal()));
+	}
+
+	private void _testProcessActionWithManageCommerceOrderPaymentPermissions()
+		throws Exception {
+
+		CommerceOrder commerceOrder1 = CommerceTestUtil.addB2BCommerceOrder(
+			_group.getGroupId(), _user.getUserId(),
+			_accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCommerceCurrencyId());
+
+		CommerceTestUtil.addCommercePaymentMethodGroupRel(
+			_user.getUserId(), commerceOrder1.getGroupId());
+
+		Role role = _roleLocalService.addRole(
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
+			RandomTestUtil.randomString(), null, null,
+			RoleConstants.TYPE_REGULAR, null, _serviceContext);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commerceOrder1.getCompanyId(),
+			CommerceOrderConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_accountEntry.getAccountEntryGroupId()),
+			role.getRoleId(),
+			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
+
+		User user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(user.getUserId(), role.getRoleId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertTrue(
+				SessionErrors.contains(
+					_processAction(
+						"paymentMethod", commerceOrder1.getCommerceOrderId(),
+						Collections.singletonMap(
+							"paymentMethodKey", TestCommercePaymentMethod.KEY)),
+					PrincipalException.MustHavePermission.class));
+			Assert.assertTrue(
+				SessionErrors.contains(
+					_processAction(
+						"paymentStatus", commerceOrder1.getCommerceOrderId(),
+						Collections.singletonMap(
+							"paymentStatus",
+							String.valueOf(
+								CommerceOrderPaymentConstants.
+									STATUS_COMPLETED))),
+					PrincipalException.MustHavePermission.class));
+		}
+
+		CommerceOrder commerceOrder2 =
+			_commerceOrderLocalService.getCommerceOrder(
+				commerceOrder1.getCommerceOrderId());
+
+		Assert.assertEquals(
+			commerceOrder1.getCommercePaymentMethodKey(),
+			commerceOrder2.getCommercePaymentMethodKey());
+		Assert.assertEquals(
+			commerceOrder1.getPaymentStatus(),
+			commerceOrder2.getPaymentStatus());
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			commerceOrder1.getCompanyId(),
+			CommerceOrderConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			String.valueOf(commerceOrder1.getGroupId()), role.getRoleId(),
+			new String[] {
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES
+			});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertTrue(
+				SessionErrors.isEmpty(
+					_processAction(
+						"paymentMethod", commerceOrder1.getCommerceOrderId(),
+						Collections.singletonMap(
+							"paymentMethodKey", TestCommercePaymentMethod.KEY))));
+			Assert.assertTrue(
+				SessionErrors.isEmpty(
+					_processAction(
+						"paymentStatus", commerceOrder1.getCommerceOrderId(),
+						Collections.singletonMap(
+							"paymentStatus",
+							String.valueOf(
+								CommerceOrderPaymentConstants.
+									STATUS_COMPLETED)))));
+		}
+
+		commerceOrder2 = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder1.getCommerceOrderId());
+
+		Assert.assertEquals(
+			TestCommercePaymentMethod.KEY,
+			commerceOrder2.getCommercePaymentMethodKey());
+		Assert.assertEquals(
+			CommerceOrderPaymentConstants.STATUS_COMPLETED,
+			commerceOrder2.getPaymentStatus());
+	}
+
+	private void _testProcessActionWithRecalculateOrderSummary()
+		throws Exception {
+
 		CommerceCatalog commerceCatalog =
 			_commerceCatalogLocalService.addCommerceCatalog(
 				null, RandomTestUtil.randomString(),
@@ -219,46 +403,6 @@ public class EditCommerceOrderMVCActionCommandTest {
 			BigDecimal.ZERO, price1, BigDecimal.ZERO);
 	}
 
-	private void _recalculateOrderSummary(
-			long commerceOrderId, BigDecimal discountAmount1,
-			BigDecimal discountAmount2, BigDecimal price1, BigDecimal price2)
-		throws Exception {
-
-		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
-			new MockLiferayPortletActionRequest();
-
-		mockLiferayPortletActionRequest.setParameter(
-			Constants.CMD, "recalculateOrderSummary");
-		mockLiferayPortletActionRequest.setParameter(
-			"commerceOrderId", String.valueOf(commerceOrderId));
-
-		_mvcActionCommand.processAction(
-			mockLiferayPortletActionRequest,
-			new MockLiferayPortletActionResponse());
-
-		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.getCommerceOrder(commerceOrderId);
-
-		BigDecimal expectedSubtotal = price1.add(price2);
-
-		Assert.assertTrue(
-			BigDecimalUtil.eq(expectedSubtotal, commerceOrder.getSubtotal()));
-
-		BigDecimal expectedSubtotalDiscountAmount = discountAmount1.add(
-			discountAmount2);
-
-		Assert.assertTrue(
-			BigDecimalUtil.eq(
-				expectedSubtotalDiscountAmount,
-				commerceOrder.getSubtotalDiscountAmount()));
-
-		BigDecimal expectedTotal = expectedSubtotal.subtract(
-			expectedSubtotalDiscountAmount);
-
-		Assert.assertTrue(
-			BigDecimalUtil.eq(expectedTotal, commerceOrder.getTotal()));
-	}
-
 	private AccountEntry _accountEntry;
 
 	@Inject
@@ -285,6 +429,12 @@ public class EditCommerceOrderMVCActionCommandTest {
 		type = MVCActionCommand.class
 	)
 	private MVCActionCommand _mvcActionCommand;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	private ServiceContext _serviceContext;
 	private User _user;
