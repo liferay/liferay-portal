@@ -638,12 +638,21 @@ public class WorkflowTaskDisplayContext {
 		AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
 			className, classPK);
 
-		if (assetEntry == null) {
-			assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
+		if (assetEntry != null) {
+			return assetEntry;
+		}
+
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
+
+		if (assetRendererFactory != null) {
+			return assetRendererFactory.getAssetEntry(
 				className, fallbackClassPK);
 		}
 
-		return assetEntry;
+		return AssetEntryLocalServiceUtil.fetchEntry(
+			className, fallbackClassPK);
 	}
 
 	public long getWorkflowContextEntryClassPK(
