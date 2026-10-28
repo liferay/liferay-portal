@@ -16,6 +16,7 @@ import com.liferay.osb.faro.provisioning.client.model.OSBOfferingEntry;
 import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.util.FaroPropsValues;
 import com.liferay.osb.faro.web.internal.exception.FaroException;
+import com.liferay.osb.faro.web.internal.exception.FaroValidationException;
 import com.liferay.portal.cache.BasePortalCache;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -298,6 +299,30 @@ public class ProjectFaroControllerTest {
 		);
 	}
 
+	@Test
+	public void testValidateOfferingEntries() {
+		_validateOfferingEntries(ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
+
+		_assertValidateOfferingEntriesFails(
+			ProductConstants.SALESFORCE_PRODUCT_ID_ENTERPRISE);
+	}
+
+	@Test
+	public void testValidateOfferingEntriesWithSubscriptionPushEnabled() {
+		ReflectionTestUtil.setFieldValue(
+			FaroPropsValues.class, "OSB_FARO_SUBSCRIPTION_PUSH_ENABLED", true);
+
+		_validateOfferingEntries(
+			ProductConstants.PRODUCT_ENTRY_ID_DATA_PLATFORM_ENTERPRISE);
+		_validateOfferingEntries(
+			ProductConstants.SALESFORCE_PRODUCT_ID_ENTERPRISE);
+
+		_assertValidateOfferingEntriesFails(
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
+		_assertValidateOfferingEntriesFails(
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_CONTACTS);
+	}
+
 	private void _assert(String corpProjectUuid, String productEntryId)
 		throws Exception {
 
@@ -339,6 +364,21 @@ public class ProjectFaroControllerTest {
 		).setSalesforceAccountId(
 			salesforceAccountId
 		);
+	}
+
+	private void _assertValidateOfferingEntriesFails(String productEntryId) {
+		try {
+			_validateOfferingEntries(productEntryId);
+
+			Assert.fail();
+		}
+		catch (FaroValidationException faroValidationException) {
+			Response response = faroValidationException.getResponse();
+
+			Assert.assertEquals(
+				Response.Status.BAD_REQUEST.getStatusCode(),
+				response.getStatus());
+		}
 	}
 
 	private FaroProject _createFaroProject(
@@ -416,6 +456,17 @@ public class ProjectFaroControllerTest {
 		);
 
 		return faroProject;
+	}
+
+	private void _validateOfferingEntries(String productEntryId) {
+		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
+
+		osbOfferingEntry.setProductEntryId(productEntryId);
+		osbOfferingEntry.setQuantity(1);
+
+		ReflectionTestUtils.invokeMethod(
+			_projectFaroController, "_validateOfferingEntries",
+			Collections.singletonList(osbOfferingEntry));
 	}
 
 	private final FaroProjectLocalService _faroProjectLocalService =
