@@ -992,10 +992,10 @@ public class PageTemplateSetResourceTest
 		throws Exception {
 
 		_postSitePageTemplateSetWithInvalidName(
-			null, "A name is required for each template folder or set");
-		_postSitePageTemplateSetWithInvalidName(
 			RandomTestUtil.randomString(300),
 			"The name for the template folder or set is too long");
+		_postSitePageTemplateSetWithInvalidName(
+			null, "A name is required for each template folder or set");
 	}
 
 	private void _testPostSitePageTemplateSetWithValidKey() throws Exception {
