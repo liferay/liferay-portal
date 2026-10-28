@@ -63,6 +63,7 @@ import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -1047,6 +1048,9 @@ public class GetEntryRenderDataMVCResourceCommand
 
 			return url;
 		}
+
+		url = HttpComponentsUtil.addParameter(
+			url, "p_l_mode", Constants.PREVIEW);
 
 		return HttpComponentsUtil.addParameter(
 			url, "previewCTCollectionId", ctCollectionId);

@@ -73,12 +73,13 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 
 		Assert.assertEquals(
 			StringBundler.concat(
-				"<p><img src=\"/documents/d/guest/image?previewCTCollectionId=",
-				_CT_COLLECTION_ID, "\" /></p>"),
+				"<p><img src=\"/documents/d/guest/image?p_l_mode=preview",
+				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\" /></p>"),
 			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 		Assert.assertEquals(
 			StringBundler.concat(
-				"<p><img src=\"/documents/d/guest/image?previewCTCollectionId=",
+				"<p><img src=\"/documents/d/guest/image?p_l_mode=preview",
+				"&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" /></p>"),
 			_addPreviewCTCollectionId(
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
@@ -90,12 +91,13 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<a href=\"http://localhost:8080/documents/20/0/image/uuid?t=1",
-				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\">image</a>"),
+				"&p_l_mode=preview&previewCTCollectionId=", _CT_COLLECTION_ID,
+				"\">image</a>"),
 			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<a href=\"http://localhost:8080/documents/20/0/image/uuid?t=1",
-				"&previewCTCollectionId=",
+				"&p_l_mode=preview&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\">image</a>"),
 			_addPreviewCTCollectionId(
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
@@ -106,12 +108,13 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<img src=\"/documents/portlet_file_entry/20/image.png/uuid",
-				"?previewCTCollectionId=", _CT_COLLECTION_ID, "\" />"),
+				"?p_l_mode=preview&previewCTCollectionId=", _CT_COLLECTION_ID,
+				"\" />"),
 			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<img src=\"/documents/portlet_file_entry/20/image.png/uuid",
-				"?previewCTCollectionId=",
+				"?p_l_mode=preview&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" />"),
 			_addPreviewCTCollectionId(
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
@@ -128,19 +131,19 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 			StringBundler.concat(
 				"<picture><source media=\"(max-width:1000px)\" srcset=\"/o",
 				"/adaptive-media/image/20/Preview-1000x0/image.png?t=1",
-				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\" />",
-				"<img src=\"/documents/20/0/image.png/uuid",
-				"?previewCTCollectionId=", _CT_COLLECTION_ID,
+				"&p_l_mode=preview&previewCTCollectionId=", _CT_COLLECTION_ID,
+				"\" /><img src=\"/documents/20/0/image.png/uuid",
+				"?p_l_mode=preview&previewCTCollectionId=", _CT_COLLECTION_ID,
 				"\" /></picture>"),
 			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<picture><source media=\"(max-width:1000px)\" srcset=\"/o",
 				"/adaptive-media/image/20/Preview-1000x0/image.png?t=1",
-				"&previewCTCollectionId=",
+				"&p_l_mode=preview&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" />",
 				"<img src=\"/documents/20/0/image.png/uuid",
-				"?previewCTCollectionId=",
+				"?p_l_mode=preview&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" /></picture>"),
 			_addPreviewCTCollectionId(
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
@@ -218,17 +221,19 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<source srcset=\"/o/adaptive-media/image/20/Preview-1000x0",
-				"/image.png?previewCTCollectionId=", _CT_COLLECTION_ID,
+				"/image.png?p_l_mode=preview&previewCTCollectionId=",
+				_CT_COLLECTION_ID,
 				", /o/adaptive-media/image/20/Preview-1000x0-2x/image.png",
-				"?previewCTCollectionId=", _CT_COLLECTION_ID, " 2x\" />"),
+				"?p_l_mode=preview&previewCTCollectionId=", _CT_COLLECTION_ID,
+				" 2x\" />"),
 			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 		Assert.assertEquals(
 			StringBundler.concat(
 				"<source srcset=\"/o/adaptive-media/image/20/Preview-1000x0",
-				"/image.png?previewCTCollectionId=",
+				"/image.png?p_l_mode=preview&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION,
 				", /o/adaptive-media/image/20/Preview-1000x0-2x/image.png",
-				"?previewCTCollectionId=",
+				"?p_l_mode=preview&previewCTCollectionId=",
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, " 2x\" />"),
 			_addPreviewCTCollectionId(
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
