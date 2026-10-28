@@ -148,7 +148,7 @@ definition {
 
 		AssertTextEquals(
 			locator1 = "CookieBannerAdmin#PRIVACY_POLICY_LINK",
-			value1 = ${text});
+			value1 = "/${text}");
 
 		AssertTextEquals(
 			locator1 = "CookieBannerAdmin#LINK_DISPLAY_TEXT",
