@@ -50,7 +50,8 @@ public class SecretResolverCheck extends BaseCheck {
 
 		if (!parameterExprDetailASTs.isEmpty() ||
 			_hasAcceptedEnclosingCall(detailAST) ||
-			_isComparedWithNull(detailAST)) {
+			_isComparedWithNull(detailAST) ||
+			_isResolvedThroughVariable(detailAST)) {
 
 			return;
 		}
@@ -85,9 +86,7 @@ public class SecretResolverCheck extends BaseCheck {
 
 		String methodName = getMethodName(detailAST);
 
-		if (_isPasswordAccessor(javaClass, methodName) &&
-			!_isResolvedThroughVariable(detailAST)) {
-
+		if (_isPasswordAccessor(javaClass, methodName)) {
 			log(detailAST, _MSG_REQUIRED_RESOLVE, methodName + "()");
 		}
 	}
