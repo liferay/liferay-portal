@@ -85,7 +85,7 @@ definition {
 
 		Type(
 			locator1 = "CookieBannerAdmin#PRIVACY_POLICY_LINK",
-			value1 = "${text}_2");
+			value1 = "/web/guest/${text}_2");
 
 		Type(
 			locator1 = "CookieBannerAdmin#LINK_DISPLAY_TEXT",
@@ -121,7 +121,7 @@ definition {
 
 		Type(
 			locator1 = "CookieBannerAdmin#PRIVACY_POLICY_LINK",
-			value1 = "${text}_2");
+			value1 = "/web/guest/${text}_2");
 
 		Type(
 			locator1 = "CookieBannerAdmin#LINK_DISPLAY_TEXT",

@@ -81,7 +81,7 @@ definition {
 
 		Type(
 			locator1 = "CookieConsentAdmin#COOKIE_POLICY_LINK",
-			value1 = "${text}_3");
+			value1 = "/web/guest/${text}_3");
 
 		Type(
 			locator1 = "CookieConsentAdmin#LINK_DISPLAY_TEXT",
