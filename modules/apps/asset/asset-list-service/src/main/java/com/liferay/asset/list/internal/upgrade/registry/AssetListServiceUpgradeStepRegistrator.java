@@ -8,6 +8,7 @@ package com.liferay.asset.list.internal.upgrade.registry;
 import com.liferay.asset.list.internal.upgrade.v1_3_0.AssetListEntryUpgradeProcess;
 import com.liferay.asset.list.internal.upgrade.v1_4_0.AssetListEntryUsageUpgradeProcess;
 import com.liferay.asset.list.internal.upgrade.v1_5_0.AssetListEntrySegmentsEntryRelUpgradeProcess;
+import com.liferay.asset.list.internal.upgrade.v3_2_0.util.AssetListEntryAudienceEntryRelTable;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
@@ -116,6 +117,13 @@ public class AssetListServiceUpgradeStepRegistrator
 			"3.0.0", "3.1.0",
 			new com.liferay.asset.list.internal.upgrade.v3_1_0.
 				AssetListEntrySegmentsEntryRelTypeSettingsUpgradeProcess());
+
+		registry.register(
+			"3.1.0", "3.2.0",
+			UpgradeProcessFactory.addColumns(
+				"AssetListEntryAssetEntryRel",
+				"audienceEntryERC VARCHAR(75) null"),
+			AssetListEntryAudienceEntryRelTable.create());
 	}
 
 	@Reference
