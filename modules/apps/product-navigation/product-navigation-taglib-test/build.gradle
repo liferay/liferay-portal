@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-control-menu-api")
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-taglib")
