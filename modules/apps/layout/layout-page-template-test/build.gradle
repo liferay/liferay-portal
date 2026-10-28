@@ -9,7 +9,6 @@ dependencies {
 	testIntegrationImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
-	testIntegrationImplementation project(":apps:asset:asset-link-api")
 	testIntegrationImplementation project(":apps:asset:asset-list-api")
 	testIntegrationImplementation project(":apps:audiences:audiences-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")

@@ -4,7 +4,6 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:asset:asset-api")
-	testIntegrationImplementation project(":apps:asset:asset-link-api")
 	testIntegrationImplementation project(":apps:asset:asset-list-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
