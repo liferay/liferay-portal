@@ -10,7 +10,9 @@ type AssetDisplayPageEntry = {
 
 type AssetListEntry = {
 	assetListEntryId: string;
+	externalReferenceCode: string;
 	groupId: string;
+	title: string;
 };
 
 type CollectionConfig = {

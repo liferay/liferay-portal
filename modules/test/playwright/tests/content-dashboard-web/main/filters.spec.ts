@@ -14,6 +14,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {ApiHelpers} from '../../../helpers/ApiHelpers';
 import {BLOGS_WORKFLOW_ACTION} from '../../../helpers/json-web-services/JSONWebServicesBlogsApiHelper';
 import {DLFILE_STATUS} from '../../../helpers/json-web-services/JSONWebServicesDocumentLibraryApiHelper';
+import addGlobalCategories from '../../../utils/addGlobalCategories';
 import {getRandomInt} from '../../../utils/getRandomInt';
 import getRandomString from '../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../utils/performLogin';
@@ -24,7 +25,6 @@ import addScheduledStructuredContent from '../../../utils/structured-content/add
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import getDataStructureDefinition from '../../journal-web/main/utils/getDataStructureDefinition';
 import {contentDashboardPagesTest} from './fixtures/contentDashboardPagesTest';
-import addGlobalCategories from './utils/addGlobalCategories';
 import addSingleApproverWorkflow from './utils/addSingleApproverWorkflow';
 import addSiteUser from './utils/addSiteUser';
 import getDocumentFile from './utils/getDocumentFile';

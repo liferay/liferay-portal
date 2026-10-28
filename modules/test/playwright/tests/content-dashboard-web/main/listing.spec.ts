@@ -8,12 +8,12 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import addGlobalCategories from '../../../utils/addGlobalCategories';
 import getGlobalSiteId from '../../../utils/getGlobalSiteId';
 import getRandomString from '../../../utils/getRandomString';
 import addApprovedStructuredContent from '../../../utils/structured-content/addApprovedStructuredContent';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {contentDashboardPagesTest} from './fixtures/contentDashboardPagesTest';
-import addGlobalCategories from './utils/addGlobalCategories';
 import getDocumentFile from './utils/getDocumentFile';
 
 export const test = mergeTests(

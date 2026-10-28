@@ -654,3 +654,86 @@ test(
 		});
 	}
 );
+
+test(
+	'The visibility of a vocabulary cannot be changed and its categories can only be moved to vocabularies with the same visibility',
+	{tag: ['@LPD-112477', '@LPS-134875']},
+	async ({
+		apiHelpers,
+		assetCategoriesAdminPage,
+		page,
+		site,
+		vocabulariesEditPage,
+	}) => {
+		const addVocabulary = async (vocabularyVisibility: boolean) => {
+			const name = getRandomString();
+
+			const [category] = await createCategories({
+				apiHelpers,
+				categoryNames: [{name: getRandomString()}],
+				siteId: site.id,
+				vocabularyName: name,
+				vocabularyVisibility,
+			});
+
+			return {categoryName: category.name, name};
+		};
+
+		const [
+			publicVocabulary,
+			otherPublicVocabulary,
+			internalVocabulary,
+			otherInternalVocabulary,
+		] = await Promise.all([
+			addVocabulary(false),
+			addVocabulary(false),
+			addVocabulary(true),
+			addVocabulary(true),
+		]);
+
+		await test.step('The visibility of the vocabulary is disabled', async () => {
+			await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+			await vocabulariesEditPage.goto(publicVocabulary.name);
+
+			const publicRadio = page.getByLabel('Public', {exact: true});
+
+			await expect(publicRadio).toBeChecked();
+			await expect(publicRadio).toBeDisabled();
+			await expect(
+				page.getByLabel('Internal', {exact: true})
+			).toBeDisabled();
+		});
+
+		for (const [
+			vocabulary,
+			sameVisibilityVocabulary,
+			otherVisibilityVocabulary,
+		] of [
+			[publicVocabulary, otherPublicVocabulary, internalVocabulary],
+			[internalVocabulary, otherInternalVocabulary, publicVocabulary],
+		]) {
+			await test.step(`Move a category of ${vocabulary.name}`, async () => {
+				await assetCategoriesAdminPage.goto(site.friendlyUrlPath);
+
+				await assetCategoriesAdminPage.gotoVocabulary(vocabulary.name);
+
+				await assetCategoriesAdminPage.gotoAction(
+					'Move',
+					vocabulary.categoryName
+				);
+
+				const moveIframe = page.frameLocator(
+					`iframe[title="Move ${vocabulary.categoryName}"]`
+				);
+
+				await expect(
+					moveIframe.getByText(sameVisibilityVocabulary.name)
+				).toBeVisible();
+				await expect(
+					moveIframe.getByText(otherVisibilityVocabulary.name)
+				).toHaveCount(0);
+			});
+		}
+	}
+);
