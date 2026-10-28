@@ -106,36 +106,9 @@ definition {
 		}
 	}
 
-	@description = "When the user clicks on Save and Add a new one, the category is saved"
-	@priority = 5
-	@uitest
-	test AddCategoryViaSaveAndAddButton {
-		property portal.acceptance = "true";
-
-		task ("Add a global category via Save And Add button") {
-			Category.openCategoriesAdmin(siteURLKey = "global");
-
-			Category.addCategoryWithSaveAndAddButton(
-				categoryName = "Category Name",
-				vocabularyName = "Topic");
-		}
-
-		task ("View the global category is created successfully") {
-			Category.viewCP(
-				categoryName = "Category Name",
-				vocabularyName = "Topic");
-		}
-
-		task ("Delete the global category") {
-			JSONCategory.deleteCategory(
-				categoryName = "Category Name",
-				groupName = "Global",
-				vocabularyName = "Topic");
-		}
-	}
-
 	@description = "When Edit the Audience or Stage, default values are For internal use only ON , Allow user to select multiple categories ON, will be associated with web content, won't be required"
 	@priority = 5
+	@uitest
 	test ViewGlobalVocabulariesAndAddCategory {
 		property portal.acceptance = "true";
 
@@ -171,6 +144,27 @@ definition {
 			Vocabulary.viewVocabularyAssociatedAssetTypesRequirement(
 				label = "Required",
 				vocabularyName = "Stage");
+		}
+
+		task ("Add a global category via Save And Add button") {
+			Category.openCategoriesAdmin(siteURLKey = "global");
+
+			Category.addCategoryWithSaveAndAddButton(
+				categoryName = "Category Name",
+				vocabularyName = "Topic");
+		}
+
+		task ("View the global category is created successfully") {
+			Category.viewCP(
+				categoryName = "Category Name",
+				vocabularyName = "Topic");
+		}
+
+		task ("Delete the global category") {
+			JSONCategory.deleteCategory(
+				categoryName = "Category Name",
+				groupName = "Global",
+				vocabularyName = "Topic");
 		}
 	}
 
