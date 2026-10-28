@@ -322,7 +322,7 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 			PortletDataContext portletDataContext, T stagedModel)
 		throws PortletDataException {
 
-		if (!isEnabled(stagedModel.getCompanyId())) {
+		if (!isEnabled(_getCompanyId(portletDataContext))) {
 			return;
 		}
 
