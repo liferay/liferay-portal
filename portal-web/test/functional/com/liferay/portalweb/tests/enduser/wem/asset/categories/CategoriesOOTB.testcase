@@ -429,7 +429,7 @@ definition {
 
 	@description = ""
 	@priority = 4
-	test CheckBlogFilterByCategoryAtCollectionWithFragment {
+	test FilterBlogByCategoryInCollection {
 		property portal.acceptance = "true";
 
 		task ("Add a global category") {
