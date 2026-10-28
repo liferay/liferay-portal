@@ -29,7 +29,13 @@ public class PortletIdComparator implements Comparator<String> {
 		String portletTitle1 = PortalUtil.getPortletTitle(portletId1, _locale);
 		String portletTitle2 = PortalUtil.getPortletTitle(portletId2, _locale);
 
-		return _collator.compare(portletTitle1, portletTitle2);
+		int value = _collator.compare(portletTitle1, portletTitle2);
+
+		if (value != 0) {
+			return value;
+		}
+
+		return _collator.compare(portletId1, portletId2);
 	}
 
 	private final Collator _collator;
