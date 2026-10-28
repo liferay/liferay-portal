@@ -9208,6 +9208,9 @@ public class DataFactory {
 				else if (name.equals("MasterLPTEERC")) {
 					name = "MasterLayoutPageTemplateEntryERC";
 				}
+				else if (name.equals("MasterLPTESERC")) {
+					name = "MasterLayoutPageTemplateEntryScopeERC";
+				}
 				else if (name.equals("PaymentCTermEntryDescription")) {
 					name = "PaymentCommerceTermEntryDescription";
 				}
