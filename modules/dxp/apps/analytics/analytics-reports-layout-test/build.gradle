@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":dxp:apps:analytics:analytics-reports-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
