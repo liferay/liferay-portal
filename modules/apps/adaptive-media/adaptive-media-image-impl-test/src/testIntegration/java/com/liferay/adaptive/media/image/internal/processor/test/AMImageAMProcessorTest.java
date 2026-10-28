@@ -7,6 +7,7 @@ package com.liferay.adaptive.media.image.internal.processor.test;
 
 import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
 import com.liferay.adaptive.media.image.configuration.AMImageConfigurationHelper;
+import com.liferay.adaptive.media.image.model.AMImageEntry;
 import com.liferay.adaptive.media.image.scaler.AMImageScaledImage;
 import com.liferay.adaptive.media.image.scaler.AMImageScaler;
 import com.liferay.adaptive.media.image.scaler.AMImageScalerRegistry;
@@ -35,6 +36,8 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.io.InputStream;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -88,6 +91,7 @@ public class AMImageAMProcessorTest {
 	public void testProcess() throws Exception {
 		_testProcessWhenFileVersionIsDeleted();
 		_testProcessWhenFileVersionIsDeletedWhileScaling();
+		_testProcessWhenScaledMimeTypeDiffers();
 	}
 
 	private FileVersion _addPreviousFileVersion() throws Exception {
@@ -204,6 +208,64 @@ public class AMImageAMProcessorTest {
 			_amImageEntryLocalService.fetchAMImageEntry(
 				_amImageConfigurationEntry.getUUID(),
 				fileVersion.getFileVersionId()));
+	}
+
+	private void _testProcessWhenScaledMimeTypeDiffers() throws Exception {
+		FileVersion fileVersion = _addPreviousFileVersion();
+
+		AMImageScaler amImageScaler = _amImageScalerRegistry.getAMImageScaler(
+			ContentTypes.IMAGE_JPEG);
+
+		ServiceRegistration<AMImageScaler> serviceRegistration =
+			_registerAMImageScaler(
+				(scaledFileVersion, amImageConfigurationEntry) -> {
+					AMImageScaledImage amImageScaledImage =
+						amImageScaler.scaleImage(
+							scaledFileVersion, amImageConfigurationEntry);
+
+					return new AMImageScaledImage() {
+
+						@Override
+						public int getHeight() {
+							return amImageScaledImage.getHeight();
+						}
+
+						@Override
+						public InputStream getInputStream() {
+							return amImageScaledImage.getInputStream();
+						}
+
+						@Override
+						public String getMimeType() {
+							return ContentTypes.IMAGE_PNG;
+						}
+
+						@Override
+						public long getSize() {
+							return amImageScaledImage.getSize();
+						}
+
+						@Override
+						public int getWidth() {
+							return amImageScaledImage.getWidth();
+						}
+
+					};
+				});
+
+		try {
+			_amProcessor.process(
+				fileVersion, _amImageConfigurationEntry.getUUID());
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		AMImageEntry amImageEntry = _amImageEntryLocalService.fetchAMImageEntry(
+			_amImageConfigurationEntry.getUUID(),
+			fileVersion.getFileVersionId());
+
+		Assert.assertEquals(ContentTypes.IMAGE_PNG, amImageEntry.getMimeType());
 	}
 
 	private AMImageConfigurationEntry _amImageConfigurationEntry;
