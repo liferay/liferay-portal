@@ -596,9 +596,9 @@ public class LayoutImplTest {
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 			depotEntry.getDepotEntryId(), stagingGroup.getGroupId());
 
+		Group depotGroup = depotEntry.getGroup();
 		LayoutPageTemplateEntry masterLayoutPageTemplateEntry =
 			_addMasterLayoutPageTemplateEntry(depotEntry.getGroupId());
-		Group depotGroup = depotEntry.getGroup();
 
 		Layout layout = LayoutTestUtil.updateMasterLayoutPageTemplateEntryERC(
 			LayoutTestUtil.addTypePortletLayout(stagingGroup),

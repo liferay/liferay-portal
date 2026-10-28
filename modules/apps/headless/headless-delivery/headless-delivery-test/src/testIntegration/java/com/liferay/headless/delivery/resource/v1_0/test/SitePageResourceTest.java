@@ -1021,10 +1021,10 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
 				depotEntry.getDepotEntryId(), testGroup.getGroupId());
 
+		Group group = depotEntry.getGroup();
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_addMasterLayoutPageTemplateEntry(depotEntry.getGroupId());
-		Group group = depotEntry.getGroup();
 
 		LayoutTestUtil.updateMasterLayoutPageTemplateEntryERC(
 			layout, layoutPageTemplateEntry.getExternalReferenceCode(),
