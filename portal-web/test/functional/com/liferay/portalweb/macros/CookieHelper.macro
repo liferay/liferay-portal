@@ -252,7 +252,9 @@ definition {
 	macro verifyPolicyPageIsVisible(policyLink = null) {
 		Variables.assertDefined(parameterList = ${policyLink});
 
-		SelectWindow(value1 = "PolicyPage - Liferay DXP");
+		SelectWindow.selectPopUp(value1 = "null");
+
+		AssertLocation.assertPartialLocation(value1 = ${policyLink});
 
 		AssertElementPresent(locator1 = "//h2[contains(.,'Type Facet')]");
 	}

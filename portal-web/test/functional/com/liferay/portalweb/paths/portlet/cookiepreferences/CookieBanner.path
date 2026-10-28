@@ -47,7 +47,7 @@
 </tr>
 <tr>
 	<td>VISIT_OUR_PRIVACY_POLICY</td>
-	<td>//a[contains(@href,'${key_text}') and contains(.,'Visit our Privacy Policy')]</td>
+	<td>//a[contains(@href,'${key_text}') and contains(.,'Visit our privacy policy')]</td>
 	<td></td>
 </tr>
 </tbody>
