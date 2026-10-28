@@ -16,6 +16,7 @@ dependencies {
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation project(":core:petra:petra-function")
 }
 
 liferayOSGi {

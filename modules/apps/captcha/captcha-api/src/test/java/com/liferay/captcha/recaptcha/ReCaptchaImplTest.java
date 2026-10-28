@@ -8,6 +8,8 @@ package com.liferay.captcha.recaptcha;
 import com.liferay.captcha.configuration.CaptchaConfiguration;
 import com.liferay.captcha.provider.CaptchaProvider;
 import com.liferay.portal.json.JSONFactoryImpl;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -18,6 +20,7 @@ import com.liferay.portal.security.key.secret.SecretResolver;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,9 +40,22 @@ public class ReCaptchaImplTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@BeforeClass
+	public static void setUpClass() {
+		JSONFactoryUtil jsonFactoryUtil = new JSONFactoryUtil();
+
+		jsonFactoryUtil.setJSONFactory(new JSONFactoryImpl());
+	}
+
 	@Test
 	public void testValidateChallenge() throws Exception {
 		ReCaptchaImpl reCaptchaImpl = new ReCaptchaImpl();
+
+		ReflectionTestUtil.setFieldValue(
+			reCaptchaImpl, "_jsonFactory", new JSONFactoryImpl());
+		ReflectionTestUtil.setFieldValue(
+			reCaptchaImpl, "_secretResolver",
+			Mockito.mock(SecretResolver.class));
 
 		CaptchaProvider captchaProvider = Mockito.mock(CaptchaProvider.class);
 
@@ -49,11 +65,6 @@ public class ReCaptchaImplTest {
 			Mockito.mock(CaptchaConfiguration.class)
 		);
 
-		ReflectionTestUtil.setFieldValue(
-			reCaptchaImpl, "_jsonFactory", new JSONFactoryImpl());
-		ReflectionTestUtil.setFieldValue(
-			reCaptchaImpl, "_secretResolver",
-			Mockito.mock(SecretResolver.class));
 		ReflectionTestUtil.setFieldValue(
 			reCaptchaImpl, "captchaProvider", captchaProvider);
 
@@ -72,7 +83,9 @@ public class ReCaptchaImplTest {
 
 					Assert.assertFalse(options.isFollowRedirects());
 
-					return "{\"success\": true}";
+					return JSONUtil.put(
+						"success", true
+					).toString();
 				}
 			);
 
