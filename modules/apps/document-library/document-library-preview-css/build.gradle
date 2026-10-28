@@ -1,3 +1,0 @@
-dependencies {
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-}
