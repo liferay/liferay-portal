@@ -6,7 +6,6 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation project(":apps:cookies:cookies-rest-api")
 	testIntegrationImplementation project(":apps:cookies:cookies-rest-client")
-	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
