@@ -1,11 +1,8 @@
 dependencies {
-	testIntegrationImplementation project(":apps:batch-engine:batch-engine-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:dispatch:dispatch-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:frontend-data-set:frontend-data-set-api")
-	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-rest-api")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
