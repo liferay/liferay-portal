@@ -492,6 +492,19 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 		return _updateNestedResources(order, commerceOrder, serviceContext);
 	}
 
+	private void _checkPortletResourcePermission(
+			CommerceOrder commerceOrder, String actionId)
+		throws Exception {
+
+		PortletResourcePermission portletResourcePermission =
+			_commerceOrderModelResourcePermission.
+				getPortletResourcePermission();
+
+		portletResourcePermission.check(
+			PermissionThreadLocal.getPermissionChecker(),
+			commerceOrder.getGroupId(), actionId);
+	}
+
 	private Map<String, Map<String, String>> _getActions(
 			CommerceOrder commerceOrder)
 		throws Exception {
@@ -804,6 +817,16 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 			_commerceAddressService.getCommerceAddress(shippingAddressId);
 		}
 
+		if ((order.getPaymentMethod() != null) &&
+			!Objects.equals(
+				order.getPaymentMethod(),
+				commerceOrder.getCommercePaymentMethodKey())) {
+
+			_checkPortletResourcePermission(
+				commerceOrder,
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+		}
+
 		commerceOrder = _commerceOrderEngine.updateCommerceOrder(
 			GetterUtil.getString(
 				order.getExternalReferenceCode(),
@@ -999,6 +1022,10 @@ public class OrderResourceImpl extends BaseOrderResourceImpl {
 
 		if ((order.getPaymentStatus() != null) &&
 			(order.getPaymentStatus() != commerceOrder.getPaymentStatus())) {
+
+			_checkPortletResourcePermission(
+				commerceOrder,
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
 
 			commerceOrder = _commercePaymentEngine.updateOrderPaymentStatus(
 				commerceOrder.getCommerceOrderId(),
