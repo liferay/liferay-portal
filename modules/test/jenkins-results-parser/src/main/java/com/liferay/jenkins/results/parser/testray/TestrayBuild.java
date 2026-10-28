@@ -29,6 +29,8 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -338,15 +340,15 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 		_testrayRuns = new ArrayList<>();
 
-		StringBuilder sb = new StringBuilder();
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			JenkinsResultsParserUtil.combine(
+				"/o/c/builds/", String.valueOf(getId()), "/buildToRuns"));
 
-		sb.append("/o/c/builds/");
-		sb.append(getId());
-		sb.append("/buildToRuns?pageSize=100");
+		uriBuilder.addParameter("pageSize", "100");
 
 		try {
 			JSONObject responseJSONObject = new JSONObject(
-				_testrayServer.requestGet(sb.toString()));
+				_testrayServer.requestGet(uriBuilder.toString()));
 
 			JSONArray itemsJSONArray = responseJSONObject.getJSONArray("items");
 

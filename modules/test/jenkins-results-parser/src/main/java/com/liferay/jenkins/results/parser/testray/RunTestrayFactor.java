@@ -10,7 +10,7 @@ import com.liferay.jenkins.results.parser.Retryable;
 
 import java.io.IOException;
 
-import java.net.URLEncoder;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,10 +79,13 @@ public class RunTestrayFactor extends BaseTestrayFactor {
 				TestrayServer testrayServer = _testrayBuild.getTestrayServer();
 
 				try {
+					URIBuilder uriBuilder =
+						JenkinsResultsParserUtil.newURIBuilder("/o/c/factors");
+
+					uriBuilder.addParameter("filter", filterString);
+
 					JSONObject existingJSONObject = new JSONObject(
-						testrayServer.requestGet(
-							"/o/c/factors?filter=" +
-								URLEncoder.encode(filterString, "UTF-8")));
+						testrayServer.requestGet(uriBuilder.toString()));
 
 					JSONArray existingItemsJSONArray =
 						existingJSONObject.optJSONArray("items");

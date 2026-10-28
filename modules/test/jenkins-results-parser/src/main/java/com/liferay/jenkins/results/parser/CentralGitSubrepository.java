@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import java.util.Properties;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -195,14 +197,15 @@ public class CentralGitSubrepository {
 		String path = JenkinsResultsParserUtil.combine(
 			"commits/", getGitSubrepositoryUpstreamCommit(), "/statuses");
 
-		String url = JenkinsResultsParserUtil.getGitHubAPIURL(
-			_gitSubrepositoryName, _gitSubrepositoryUsername, path);
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			JenkinsResultsParserUtil.getGitHubAPIURL(
+				_gitSubrepositoryName, _gitSubrepositoryUsername, path));
 
 		for (int i = 0; i < 15; i++) {
+			uriBuilder.setParameter("page", String.valueOf(i + 1));
+
 			JSONArray statusesJSONArray = JenkinsResultsParserUtil.toJSONArray(
-				JenkinsResultsParserUtil.combine(
-					url, "?page=", String.valueOf(i + 1)),
-				true);
+				uriBuilder.toString(), true);
 
 			if ((statusesJSONArray == null) ||
 				(statusesJSONArray.length() == 0)) {

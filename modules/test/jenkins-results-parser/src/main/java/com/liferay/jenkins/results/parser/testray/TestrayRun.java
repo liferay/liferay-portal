@@ -11,8 +11,6 @@ import com.liferay.jenkins.results.parser.Retryable;
 
 import java.io.IOException;
 
-import java.net.URLEncoder;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +19,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.Element;
 
@@ -191,10 +191,13 @@ public class TestrayRun {
 				TestrayServer testrayServer = getTestrayServer();
 
 				try {
+					URIBuilder uriBuilder =
+						JenkinsResultsParserUtil.newURIBuilder("/o/c/runs");
+
+					uriBuilder.addParameter("filter", filterString);
+
 					JSONObject existingJSONObject = new JSONObject(
-						testrayServer.requestGet(
-							"/o/c/runs?filter=" +
-								URLEncoder.encode(filterString, "UTF-8")));
+						testrayServer.requestGet(uriBuilder.toString()));
 
 					JSONArray existingItemsJSONArray =
 						existingJSONObject.optJSONArray("items");
@@ -419,10 +422,13 @@ public class TestrayRun {
 		try {
 			TestrayServer testrayServer = getTestrayServer();
 
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				"/o/c/runs");
+
+			uriBuilder.addParameter("filter", filterString);
+
 			JSONObject jsonObject = new JSONObject(
-				testrayServer.requestGet(
-					"/o/c/runs?filter=" +
-						URLEncoder.encode(filterString, "UTF-8")));
+				testrayServer.requestGet(uriBuilder.toString()));
 
 			return jsonObject.optInt("totalCount") + 1;
 		}
@@ -477,12 +483,14 @@ public class TestrayRun {
 		try {
 			TestrayServer testrayServer = _testrayBuild.getTestrayServer();
 
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				"/o/c/factors");
+
+			uriBuilder.addParameter("filter", filterString);
+			uriBuilder.addParameter("pageSize", "100");
+
 			JSONObject responseJSONObject = new JSONObject(
-				testrayServer.requestGet(
-					JenkinsResultsParserUtil.combine(
-						"/o/c/factors?filter=",
-						URLEncoder.encode(filterString, "UTF-8"),
-						"&pageSize=100")));
+				testrayServer.requestGet(uriBuilder.toString()));
 
 			JSONArray itemsJSONArray = responseJSONObject.optJSONArray("items");
 

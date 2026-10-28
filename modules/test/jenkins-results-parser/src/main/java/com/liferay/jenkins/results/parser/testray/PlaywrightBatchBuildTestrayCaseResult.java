@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.utils.URIBuilder;
+
 /**
  * @author Kenji Heigel
  */
@@ -291,8 +293,12 @@ public class PlaywrightBatchBuildTestrayCaseResult
 		}
 
 		try {
-			URL url = new URL(
-				"https://playwright.liferay.com/?trace=" + traceZipURLPath);
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				"https://playwright.liferay.com/");
+
+			uriBuilder.addParameter("trace", traceZipURLPath);
+
+			URL url = new URL(uriBuilder.toString());
 
 			return new DefaultTestrayAttachment(
 				this, "Trace Viewer", traceZipURLPath, url);

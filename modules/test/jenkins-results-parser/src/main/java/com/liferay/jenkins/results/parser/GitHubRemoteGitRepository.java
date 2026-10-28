@@ -19,6 +19,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -126,20 +128,24 @@ public class GitHubRemoteGitRepository extends BaseRemoteGitRepository {
 
 		Set<Label> labels = new HashSet<>();
 
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			labelRequestURL);
+
+		uriBuilder.addParameter(
+			"per_page",
+			String.valueOf(
+				JenkinsResultsParserUtil.PER_PAGE_GITHUB_API_PAGES_SIZE_MAX));
+
 		for (int pageNumber = 1;
 			 pageNumber <=
 				 JenkinsResultsParserUtil.PAGES_GITHUB_API_PAGES_SIZE_MAX;
 			 pageNumber++) {
 
+			uriBuilder.setParameter("page", String.valueOf(pageNumber));
+
 			try {
 				labelsJSONArray = JenkinsResultsParserUtil.toJSONArray(
-					JenkinsResultsParserUtil.combine(
-						labelRequestURL, "?per_page=",
-						String.valueOf(
-							JenkinsResultsParserUtil.
-								PER_PAGE_GITHUB_API_PAGES_SIZE_MAX),
-						"&page=", String.valueOf(pageNumber)),
-					false);
+					uriBuilder.toString(), false);
 			}
 			catch (IOException ioException) {
 				throw new RuntimeException(

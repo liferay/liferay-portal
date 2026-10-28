@@ -42,6 +42,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.utils.URIBuilder;
+
 /**
  * @author Michael Hashimoto
  */
@@ -319,8 +321,12 @@ public abstract class BaseTestrayContext implements TestrayContext {
 			"jenkins-report.html.gz");
 
 		if (testrayAttachmentURL != null) {
-			sb.append(testrayAttachmentURL);
-			sb.append("?authuser=0");
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				String.valueOf(testrayAttachmentURL));
+
+			uriBuilder.addParameter("authuser", "0");
+
+			sb.append(uriBuilder.toString());
 		}
 		else {
 			sb.append(_getJenkinsReportURL());

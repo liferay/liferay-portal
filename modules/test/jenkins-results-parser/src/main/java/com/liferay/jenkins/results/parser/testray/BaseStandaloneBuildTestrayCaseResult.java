@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -245,12 +246,18 @@ public abstract class BaseStandaloneBuildTestrayCaseResult
 					Element attachmentFileElement =
 						attachmentsElement.addElement("file");
 
+					URIBuilder uriBuilder =
+						JenkinsResultsParserUtil.newURIBuilder(
+							String.valueOf(testrayAttachment.getURL()));
+
+					uriBuilder.addParameter("authuser", "0");
+
 					attachmentFileElement.addAttribute(
 						"name", testrayAttachment.getName());
 					attachmentFileElement.addAttribute(
-						"url", testrayAttachment.getURL() + "?authuser=0");
+						"url", uriBuilder.toString());
 					attachmentFileElement.addAttribute(
-						"value", testrayAttachment.getKey() + "?authuser=0");
+						"value", testrayAttachment.getKey());
 				}
 
 				String errors = testrayCaseResult.getErrors();
