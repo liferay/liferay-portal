@@ -7,6 +7,7 @@ package com.liferay.notification.service.impl;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
+import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
 import com.liferay.notification.constants.NotificationRecipientConstants;
 import com.liferay.notification.constants.NotificationRecipientSettingConstants;
@@ -477,24 +478,39 @@ public class NotificationRecipientSettingLocalServiceImpl
 			return;
 		}
 
-		_exportImportReportEntryLocalService.getOrAddExportImportReportEntry(
-			0, user.getCompanyId(),
-			notificationTemplate.getExternalReferenceCode(),
-			_portal.getClassNameId(NotificationTemplate.class.getName()),
-			notificationTemplate.getNotificationTemplateId(),
-			GetterUtil.getLong(
-				ExportImportThreadLocal.getExportImportConfigurationId()),
-			ExportImportReportEntryConstants.TYPE_WARNING,
-			_language.format(
-				LocaleUtil.getDefault(),
-				"the-following-users-do-not-exist-and-were-removed-from-the-" +
-					"recipients-of-notification-template-x-x",
-				new Object[] {
-					StringUtil.merge(
-						missingUserScreenNames, StringPool.COMMA_AND_SPACE),
-					notificationTemplate.getName(LocaleUtil.getDefault())
-				}),
-			null, "notification-template");
+		String message = _language.format(
+			LocaleUtil.getDefault(),
+			"the-following-users-do-not-exist-and-were-removed-from-the-" +
+				"recipients-of-notification-template-x-x",
+			new Object[] {
+				StringUtil.merge(
+					missingUserScreenNames, StringPool.COMMA_AND_SPACE),
+				notificationTemplate.getName(LocaleUtil.getDefault())
+			});
+
+		ExportImportReportEntry exportImportReportEntry =
+			_exportImportReportEntryLocalService.
+				getOrAddExportImportReportEntry(
+					0, user.getCompanyId(),
+					notificationTemplate.getExternalReferenceCode(),
+					_portal.getClassNameId(
+						NotificationTemplate.class.getName()),
+					notificationTemplate.getNotificationTemplateId(),
+					GetterUtil.getLong(
+						ExportImportThreadLocal.
+							getExportImportConfigurationId()),
+					ExportImportReportEntryConstants.TYPE_WARNING, message,
+					null, "notification-template");
+
+		String errorMessage = exportImportReportEntry.getErrorMessage();
+
+		if (!errorMessage.contains(message)) {
+			exportImportReportEntry.setErrorMessage(
+				errorMessage + StringPool.SPACE + message);
+
+			_exportImportReportEntryLocalService.updateExportImportReportEntry(
+				exportImportReportEntry);
+		}
 	}
 
 	private void _setValue(
