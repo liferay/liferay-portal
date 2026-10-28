@@ -12,7 +12,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-search:portal-search-web")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-web-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
-	testIntegrationImplementation project(":apps:portlet-display-template:portlet-display-template-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

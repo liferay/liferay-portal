@@ -6,7 +6,6 @@ dependencies {
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
@@ -29,7 +28,6 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
-	compileOnly project(":apps:view-count:view-count-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-executor")
@@ -38,12 +36,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
-	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testImplementation project(":apps:blogs:blogs-api")
 	testImplementation project(":apps:portal-vulcan:portal-vulcan-api")
-	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
-	testImplementation project(":core:petra:petra-memory")
-	testImplementation project(":core:petra:petra-process")
 }
