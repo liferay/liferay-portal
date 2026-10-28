@@ -25,6 +25,23 @@ tests:
             autoscaling.enabled: true
             autoscaling.type: keda
     -   asserts:
+            -   lengthEqual:
+                    count: 6
+                    path: spec.triggers
+        it: Merges custom triggers into the default triggers
+        set:
+            autoscaling.enabled: true
+            autoscaling.keda.customTriggers:
+                custom-cron:
+                    metadata:
+                        desiredReplicas: "2"
+                    type: cron
+                custom-kafka:
+                    metadata:
+                        lagThreshold: "10"
+                    type: kafka
+            autoscaling.type: keda
+    -   asserts:
             -   notExists:
                     path: spec.triggers[0].metadata.awsRegion
             -   notExists:
@@ -53,23 +70,6 @@ tests:
                         threshold: "1"
             autoscaling.keda.prometheusTriggerMetadata.awsRegion: us-east-1
             autoscaling.keda.prometheusTriggerMetadata.serverAddress: http://prometheus.example.com
-            autoscaling.type: keda
-    -   asserts:
-            -   lengthEqual:
-                    count: 6
-                    path: spec.triggers
-        it: Merges custom triggers into the default triggers
-        set:
-            autoscaling.enabled: true
-            autoscaling.keda.customTriggers:
-                custom-cron:
-                    metadata:
-                        desiredReplicas: "2"
-                    type: cron
-                custom-kafka:
-                    metadata:
-                        lagThreshold: "10"
-                    type: kafka
             autoscaling.type: keda
     -   asserts:
             -   equal:
