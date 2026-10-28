@@ -101,7 +101,7 @@ public class AgentPortalK8sConfigMapModifier
 		throws Exception {
 
 		if (_log.isInfoEnabled()) {
-			_log.info("Initializing K8s agent with " + properties);
+			_log.info("Initializing K8s agent");
 		}
 
 		_clusterExecutor = clusterExecutor;
