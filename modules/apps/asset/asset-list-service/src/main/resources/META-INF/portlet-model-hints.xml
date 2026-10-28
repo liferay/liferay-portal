@@ -56,7 +56,9 @@
 		<field name="assetListEntryId" type="long" />
 		<field name="audienceEntryERC" type="String" />
 		<field name="priority" type="int" />
-		<field name="typeSettings" type="String" />
+		<field name="typeSettings" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="lastPublishDate" type="Date" />
 	</model>
 	<model name="com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel">
