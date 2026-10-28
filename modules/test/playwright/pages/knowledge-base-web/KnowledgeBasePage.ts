@@ -23,8 +23,8 @@ export class KnowledgeBasePage {
 		this.basicArticleMenuItem = page.getByRole('menuitem', {
 			name: 'Basic Article',
 		});
-		this.emptyStateTitle = page.getByRole('heading', {
-			name: 'Knowledge base is empty.',
+		this.emptyStateTitle = page.getByText('Knowledge base is empty.', {
+			exact: true,
 		});
 		this.foldersAndArticlesButton = page.getByLabel('Folders and Articles');
 		this.foldersAndArticlesPanel = page.getByRole('tabpanel', {

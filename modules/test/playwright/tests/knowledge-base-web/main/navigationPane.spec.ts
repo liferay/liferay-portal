@@ -245,8 +245,8 @@ test(
 			await expect(knowledgeBasePage.getTreeItem(title)).toHaveCount(0);
 
 			await clickAndExpectToBeVisible({
-				target: page.getByRole('heading', {
-					name: 'This folder is empty.',
+				target: page.getByText('This folder is empty.', {
+					exact: true,
 				}),
 				trigger: page.getByRole('link', {
 					exact: true,
