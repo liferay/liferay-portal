@@ -112,7 +112,9 @@ export const ChannelsMenu: React.FC<IChannelsMenuProps> = ({
 			>
 				{(item) => (
 					<Option key={item.id} textValue={item.name}>
-						{truncateText(item.name, MAX_LABEL_LENGTH, null)}
+						<span>
+							{truncateText(item.name, MAX_LABEL_LENGTH, null)}
+						</span>
 					</Option>
 				)}
 			</Picker>
