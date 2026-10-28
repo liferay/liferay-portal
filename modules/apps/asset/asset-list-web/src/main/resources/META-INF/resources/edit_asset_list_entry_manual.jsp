@@ -108,14 +108,18 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 							</span>
 						</clay:content-col>
 
-						<c:if test="<%= !editAssetListDisplayContext.isLiveGroup() %>">
+						<%
+						JSONArray assetEntryTypesJSONArray = editAssetListDisplayContext.getAssetEntryTypesJSONArray();
+						%>
+
+						<c:if test="<%= !editAssetListDisplayContext.isLiveGroup() && (assetEntryTypesJSONArray.length() > 0) %>">
 							<clay:content-col
 								containerElement="span"
 							>
 								<clay:button
 									additionalProps='<%=
 										HashMapBuilder.<String, Object>put(
-											"assetEntryTypes", editAssetListDisplayContext.getAssetEntryTypesJSONArray()
+											"assetEntryTypes", assetEntryTypesJSONArray
 										).put(
 											"groupIds", editAssetListDisplayContext.getConnectedGroupIdsString()
 										).build()
