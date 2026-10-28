@@ -1,11 +1,9 @@
 dependencies {
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.23.2"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-image-api")
@@ -18,7 +16,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
-	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
@@ -40,7 +37,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:mentions:mentions-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
-	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
