@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.PortletRequestModel;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionUtil;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -714,12 +715,17 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 				groupId, articleId, start, end, orderByComparator);
 		}
 
+		if (_getViewerUserId(groupId) == 0) {
+			return journalArticlePersistence.filterFindByG_A_ST(
+				groupId, articleId, status, start, end, orderByComparator);
+		}
+
 		return JournalArticleViewableStatusUtil.getViewableArticles(
 			(viewableStart, viewableEnd) ->
 				journalArticlePersistence.filterFindByG_A_ST(
 					groupId, articleId, status, viewableStart, viewableEnd,
 					orderByComparator),
-			start, end, _getViewerUserId(groupId));
+			this::_isViewable, start, end);
 	}
 
 	/**
@@ -752,12 +758,17 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		long groupId, String articleId, int start, int end,
 		OrderByComparator<JournalArticle> orderByComparator) {
 
+		if (_getViewerUserId(groupId) == 0) {
+			return journalArticlePersistence.filterFindByG_A(
+				groupId, articleId, start, end, orderByComparator);
+		}
+
 		return JournalArticleViewableStatusUtil.getViewableArticles(
 			(viewableStart, viewableEnd) ->
 				journalArticlePersistence.filterFindByG_A(
 					groupId, articleId, viewableStart, viewableEnd,
 					orderByComparator),
-			start, end, _getViewerUserId(groupId));
+			this::_isViewable, start, end);
 	}
 
 	/**
@@ -1111,11 +1122,14 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 	 */
 	@Override
 	public int getArticlesCountByArticleId(long groupId, String articleId) {
-		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
-			() -> journalArticlePersistence.filterCountByG_A(
-				groupId, articleId),
-			() -> journalArticlePersistence.filterFindByG_A(groupId, articleId),
-			_getViewerUserId(groupId));
+		if (_getViewerUserId(groupId) == 0) {
+			return journalArticlePersistence.filterCountByG_A(
+				groupId, articleId);
+		}
+
+		return ListUtil.count(
+			journalArticlePersistence.filterFindByG_A(groupId, articleId),
+			this::_isViewable);
 	}
 
 	@Override
@@ -1126,12 +1140,15 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			return getArticlesCountByArticleId(groupId, articleId);
 		}
 
-		return JournalArticleViewableStatusUtil.getViewableArticlesCount(
-			() -> journalArticlePersistence.filterCountByG_A_ST(
+		if (_getViewerUserId(groupId) == 0) {
+			return journalArticlePersistence.filterCountByG_A_ST(
+				groupId, articleId, status);
+		}
+
+		return ListUtil.count(
+			journalArticlePersistence.filterFindByG_A_ST(
 				groupId, articleId, status),
-			() -> journalArticlePersistence.filterFindByG_A_ST(
-				groupId, articleId, status),
-			_getViewerUserId(groupId));
+			this::_isViewable);
 	}
 
 	/**
@@ -2402,6 +2419,28 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 		}
 
 		return 0;
+	}
+
+	private boolean _isViewable(JournalArticle journalArticle) {
+		if (!journalArticle.isDraft() && !journalArticle.isScheduled()) {
+			return true;
+		}
+
+		try {
+			PermissionChecker permissionChecker = getPermissionChecker();
+
+			if ((journalArticle.getUserId() == permissionChecker.getUserId()) ||
+				_journalArticleModelResourcePermission.contains(
+					permissionChecker, journalArticle, ActionKeys.UPDATE)) {
+
+				return true;
+			}
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

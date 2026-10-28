@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 /**
@@ -33,10 +34,20 @@ public class JournalArticleViewableStatusUtil {
 			return biFunction.apply(start, end);
 		}
 
+		return getViewableArticles(
+			biFunction,
+			journalArticle -> _isViewable(journalArticle, viewerUserId), start,
+			end);
+	}
+
+	public static List<JournalArticle> getViewableArticles(
+		BiFunction<Integer, Integer, List<JournalArticle>> biFunction,
+		Predicate<JournalArticle> predicate, int start, int end) {
+
 		return ListUtil.subList(
-			getViewableArticles(
+			ListUtil.filter(
 				biFunction.apply(QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-				viewerUserId),
+				predicate),
 			start, end);
 	}
 
@@ -120,13 +131,9 @@ public class JournalArticleViewableStatusUtil {
 	private static boolean _isViewable(
 		JournalArticle journalArticle, long viewerUserId) {
 
-		if ((viewerUserId == 0) ||
-			(!journalArticle.isDraft() && !journalArticle.isScheduled())) {
+		if ((!journalArticle.isDraft() && !journalArticle.isScheduled()) ||
+			(journalArticle.getUserId() == viewerUserId)) {
 
-			return true;
-		}
-
-		if (journalArticle.getUserId() == viewerUserId) {
 			return true;
 		}
 
