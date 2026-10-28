@@ -23,20 +23,30 @@ public class PageTemplateSetNameExceptionProblemMapper
 		LayoutPageTemplateCollectionNameException
 			layoutPageTemplateCollectionNameException) {
 
-		String message = "A name is required for each template folder or set";
+		return ProblemUtil.getProblem(
+			_getMessage(layoutPageTemplateCollectionNameException),
+			Problem.Status.BAD_REQUEST,
+			layoutPageTemplateCollectionNameException);
+	}
 
-		String exceptionMessage =
-			layoutPageTemplateCollectionNameException.getMessage();
+	private String _getMessage(
+		LayoutPageTemplateCollectionNameException
+			layoutPageTemplateCollectionNameException) {
 
-		if ((exceptionMessage != null) &&
-			exceptionMessage.startsWith("Maximum length")) {
+		if (layoutPageTemplateCollectionNameException instanceof
+				LayoutPageTemplateCollectionNameException.MustNotBeNull) {
 
-			message = "The name for the template folder or set is too long";
+			return "A name is required for each template folder or set";
 		}
 
-		return ProblemUtil.getProblem(
-			message, Problem.Status.BAD_REQUEST,
-			layoutPageTemplateCollectionNameException);
+		if (layoutPageTemplateCollectionNameException instanceof
+				LayoutPageTemplateCollectionNameException.
+					MustNotExceedMaximumSize) {
+
+			return "The name for the template folder or set is too long";
+		}
+
+		return "The name for the template folder or set is invalid";
 	}
 
 }

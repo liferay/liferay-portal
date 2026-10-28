@@ -525,16 +525,15 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 		throws PortalException {
 
 		if (Validator.isNull(name)) {
-			throw new LayoutPageTemplateCollectionNameException(
-				"Name must not be null");
+			throw new LayoutPageTemplateCollectionNameException.MustNotBeNull();
 		}
 
 		int nameMaxLength = ModelHintsUtil.getMaxLength(
 			LayoutPageTemplateEntry.class.getName(), "name");
 
 		if (name.length() > nameMaxLength) {
-			throw new LayoutPageTemplateCollectionNameException(
-				"Maximum length of name exceeded " + nameMaxLength);
+			throw new LayoutPageTemplateCollectionNameException.
+				MustNotExceedMaximumSize(nameMaxLength);
 		}
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
