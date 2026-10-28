@@ -163,9 +163,9 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 				InfoFormValidationException infoFormValidationException =
 					(InfoFormValidationException)infoFormException;
 
-				if (Objects.equals(
-						infoField.getUniqueId(),
-						infoFormValidationException.getInfoFieldUniqueId())) {
+				if (_isShowErrorMessage(
+						httpServletRequest, infoField,
+						infoFormValidationException)) {
 
 					errorMessage =
 						infoFormValidationException.getLocalizedMessage(locale);
@@ -1308,6 +1308,37 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		}
 
 		return false;
+	}
+
+	private boolean _isShowErrorMessage(
+		HttpServletRequest httpServletRequest, InfoField<?> infoField,
+		InfoFormValidationException infoFormValidationException) {
+
+		if (!Objects.equals(
+				infoField.getUniqueId(),
+				infoFormValidationException.getInfoFieldUniqueId())) {
+
+			return false;
+		}
+
+		String externalReferenceCode =
+			infoFormValidationException.getExternalReferenceCode();
+
+		if (Validator.isNull(externalReferenceCode)) {
+			return true;
+		}
+
+		String layoutRelatedItemExternalReferenceCode =
+			(String)httpServletRequest.getAttribute(
+				LayoutStructureRendererConstants.
+					LAYOUT_RELATED_ITEM_EXTERNAL_REFERENCE_CODE);
+
+		if (Validator.isNull(layoutRelatedItemExternalReferenceCode)) {
+			return true;
+		}
+
+		return Objects.equals(
+			externalReferenceCode, layoutRelatedItemExternalReferenceCode);
 	}
 
 	private Map<Locale, String> _parseLocalizedValues(
