@@ -265,11 +265,6 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String channelId, String filterString,
 		String query, int cur, int delta, String sortString);
 
-	public Results<Distribution> getAccountsDistribution(
-		FaroProject faroProject, String channelId, String fieldMappingFieldName,
-		String filterString, String individualSegmentId, int count,
-		int numberOfBins, List<OrderByField> orderByFields);
-
 	public List<AcquisitionParameter> getAcquisitionParameters(
 		FaroProject faroProject, String channelId);
 

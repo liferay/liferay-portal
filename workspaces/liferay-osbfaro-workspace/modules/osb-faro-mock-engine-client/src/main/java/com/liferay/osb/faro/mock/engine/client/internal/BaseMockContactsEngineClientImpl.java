@@ -486,17 +486,6 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<Distribution> getAccountsDistribution(
-		FaroProject faroProject, String channelId, String fieldMappingFieldName,
-		String filterString, String individualSegmentId, int count,
-		int numberOfBins, List<OrderByField> orderByFields) {
-
-		return contactsEngineClient.getAccountsDistribution(
-			faroProject, channelId, fieldMappingFieldName, filterString,
-			individualSegmentId, count, numberOfBins, orderByFields);
-	}
-
-	@Override
 	public List<AcquisitionParameter> getAcquisitionParameters(
 		FaroProject faroProject, String channelId) {
 

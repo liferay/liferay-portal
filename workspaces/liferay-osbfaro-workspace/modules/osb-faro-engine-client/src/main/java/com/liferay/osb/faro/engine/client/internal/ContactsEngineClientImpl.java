@@ -1119,31 +1119,6 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<Distribution> getAccountsDistribution(
-		FaroProject faroProject, String channelId, String fieldMappingFieldName,
-		String filterString, String individualSegmentId, int count,
-		int numberOfBins, List<OrderByField> orderByFields) {
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, 0, count, orderByFields);
-
-		uriVariables.put("channelId", channelId);
-		uriVariables.put("fieldMappingFieldName", fieldMappingFieldName);
-		uriVariables.put("filter", filterString);
-		uriVariables.put("individualSegmentId", individualSegmentId);
-		uriVariables.put("numberOfBins", numberOfBins);
-
-		PagedModel<?, Distribution> pagedModel = get(
-			faroProject, Rels.ACCOUNTS_DISTRIBUTION,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<Distribution>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
-	}
-
-	@Override
 	public List<AcquisitionParameter> getAcquisitionParameters(
 		FaroProject faroProject, String channelId) {
 

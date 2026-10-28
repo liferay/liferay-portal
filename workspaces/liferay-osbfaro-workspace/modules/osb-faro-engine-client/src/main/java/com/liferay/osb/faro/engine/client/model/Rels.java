@@ -48,8 +48,6 @@ public interface Rels {
 
 	public static final String ACCOUNTS = "accounts";
 
-	public static final String ACCOUNTS_DISTRIBUTION = "accounts-distribution";
-
 	public static final String ACCOUNTS_METRICS = "accounts-metrics";
 
 	public static final String ACTIVITIES = "activities";

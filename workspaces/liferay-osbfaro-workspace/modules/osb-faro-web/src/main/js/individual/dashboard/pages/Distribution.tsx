@@ -1,8 +1,6 @@
 import * as API from 'shared/api';
 import ClayLink from '@clayui/link';
-import DistributionBase, {
-	CONTEXT_OPTIONS,
-} from 'contacts/components/Distribution';
+import DistributionBase from 'contacts/components/Distribution';
 const Distribution = DistributionBase as React.ComponentType<any>;
 import NoResultsDisplay from 'shared/components/NoResultsDisplay';
 import React from 'react';
@@ -89,7 +87,6 @@ export const IndividualsDistribution: React.FC<
 					<div className="row">
 						<div className="col-xl-12">
 							<Distribution
-								contextOptions={[CONTEXT_OPTIONS[0]]}
 								distributionsKey={
 									INDIVIDUALS_DASHBOARD_DISTRUBTIONS_KEY
 								}

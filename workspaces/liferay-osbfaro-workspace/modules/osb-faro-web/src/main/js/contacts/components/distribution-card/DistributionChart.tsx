@@ -115,13 +115,12 @@ class DistributionChart extends React.Component<
 			fetchDistribution,
 			groupId,
 			id,
-			selectedTab: {context, numberOfBins, propertyId},
+			selectedTab: {numberOfBins, propertyId},
 		} = this.props;
 
 		return fetchDistribution(
 			pickBy({
 				channelId,
-				context,
 				count: MAX_BARS,
 				fieldMappingFieldName: propertyId,
 				groupId,
