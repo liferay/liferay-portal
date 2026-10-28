@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.PortletProvider;
@@ -126,10 +127,7 @@ public class ConfigurationTemplatesPortletConfigurationIcon
 			themeDisplay.getPermissionChecker();
 
 		try {
-			if (!GroupPermissionUtil.contains(
-					permissionChecker, themeDisplay.getScopeGroupId(),
-					ActionKeys.MANAGE_ARCHIVED_SETUPS)) {
-
+			if (!_hasPermission(permissionChecker, themeDisplay)) {
 				return false;
 			}
 		}
@@ -171,6 +169,25 @@ public class ConfigurationTemplatesPortletConfigurationIcon
 	@Override
 	public boolean isUseDialog() {
 		return true;
+	}
+
+	private boolean _hasPermission(
+			PermissionChecker permissionChecker, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Group scopeGroup = themeDisplay.getScopeGroup();
+
+		if ((scopeGroup != null) &&
+			(scopeGroup.getGroupId() == themeDisplay.getScopeGroupId())) {
+
+			return GroupPermissionUtil.contains(
+				permissionChecker, scopeGroup,
+				ActionKeys.MANAGE_ARCHIVED_SETUPS);
+		}
+
+		return GroupPermissionUtil.contains(
+			permissionChecker, themeDisplay.getScopeGroupId(),
+			ActionKeys.MANAGE_ARCHIVED_SETUPS);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
