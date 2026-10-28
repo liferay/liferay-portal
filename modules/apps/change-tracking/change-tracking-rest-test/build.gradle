@@ -15,7 +15,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-api")
 	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-test-util")
-	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
