@@ -5,12 +5,13 @@
 
 package com.liferay.petra.reflect;
 
-import com.liferay.portal.kernel.test.SwappableSecurityManager;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -18,12 +19,8 @@ import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import java.security.Permission;
-
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
@@ -43,45 +40,26 @@ public class ReflectionUtilTest {
 			CodeCoverageAssertor.INSTANCE, LiferayUnitTestRule.INSTANCE);
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testClassInitializationFailure() throws Exception {
-		SecurityException securityException = new SecurityException();
-
-		try (SwappableSecurityManager swappableSecurityManager =
-				new SwappableSecurityManager() {
-
-					@Override
-					public void checkPermission(Permission permission) {
-						if (Objects.equals(
-								permission.getName(),
-								"accessDeclaredMembers")) {
-
-							throw securityException;
-						}
-					}
-
-				}) {
-
-			swappableSecurityManager.install();
-
-			Class.forName(ReflectionUtil.class.getName());
+		try {
+			_initializeReflectionUtil(MethodHandles.publicLookup());
 
 			Assert.fail();
 		}
 		catch (ExceptionInInitializerError eiie) {
-			Assert.assertSame(securityException, eiie.getCause());
+			Throwable throwable = eiie.getCause();
+
+			Assert.assertSame(
+				IllegalAccessException.class, throwable.getClass());
 		}
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testClassInitializationFallback() throws Exception {
 		_runInFallbackMode(
 			() -> {
-				Class.forName(ReflectionUtil.class.getName());
-
 				Field field = ReflectionUtil.class.getDeclaredField(
 					"_fetchDeclaredFieldMethodHandle");
 
@@ -207,7 +185,6 @@ public class ReflectionUtilTest {
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testFetchDeclaredFieldFallback() throws Exception {
 		_runInFallbackMode(
@@ -265,7 +242,6 @@ public class ReflectionUtilTest {
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testFetchDeclaredMethodFallback() throws Exception {
 		_runInFallbackMode(
@@ -321,7 +297,6 @@ public class ReflectionUtilTest {
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testFetchFieldFallback() throws Exception {
 		_runInFallbackMode(
@@ -384,7 +359,6 @@ public class ReflectionUtilTest {
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testFetchMethodFallback() throws Exception {
 		_runInFallbackMode(
@@ -532,32 +506,29 @@ public class ReflectionUtilTest {
 		}
 	}
 
-	private void _runInFallbackMode(Callable<Void> callable) throws Exception {
-		Thread currentThread = Thread.currentThread();
+	private void _initializeReflectionUtil(MethodHandles.Lookup lookup)
+		throws Exception {
 
-		AtomicInteger counter = new AtomicInteger();
+		String className = ReflectionUtil.class.getName();
 
-		try (SwappableSecurityManager swappableSecurityManager =
-				new SwappableSecurityManager() {
+		MethodHandles.Lookup implLookup =
+			ReflectionTestUtil.getAndSetFieldValue(
+				MethodHandles.Lookup.class, "IMPL_LOOKUP", lookup);
 
-					@Override
-					public void checkPermission(Permission permission) {
-						if ((currentThread == Thread.currentThread()) &&
-							Objects.equals(
-								permission.getName(),
-								"accessDeclaredMembers") &&
-							(counter.incrementAndGet() == 2)) {
-
-							throw new SecurityException();
-						}
-					}
-
-				}) {
-
-			swappableSecurityManager.install();
-
-			callable.call();
+		try {
+			Class.forName(className);
 		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				MethodHandles.Lookup.class, "IMPL_LOOKUP", implLookup);
+		}
+	}
+
+	private void _runInFallbackMode(Callable<Void> callable) throws Exception {
+		_initializeReflectionUtil(
+			MethodHandles.privateLookupIn(Class.class, MethodHandles.lookup()));
+
+		callable.call();
 	}
 
 	private static class TestClass implements TestInterface {
