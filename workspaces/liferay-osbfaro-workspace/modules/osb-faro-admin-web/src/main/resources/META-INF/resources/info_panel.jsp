@@ -9,7 +9,6 @@
 
 <%
 FaroProject faroProject = (FaroProject)request.getAttribute(FaroProject.class.getName());
-long[] rowIds = ParamUtil.getLongValues(request, "rowIds");
 %>
 
 <c:choose>
@@ -76,6 +75,11 @@ long[] rowIds = ParamUtil.getLongValues(request, "rowIds");
 	</c:when>
 	<c:otherwise>
 		<div class="sidebar-header">
+
+			<%
+			long[] rowIds = ParamUtil.getLongValues(request, "rowIds");
+			%>
+
 			<div class="h4"><liferay-ui:message arguments="<%= rowIds.length %>" key="x-items-are-selected" /></div>
 		</div>
 	</c:otherwise>
