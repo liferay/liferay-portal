@@ -396,6 +396,7 @@ $alert-notifications-fixed: map-deep-merge(
 	(
 		bottom: $alert-notifications-fixed-bottom,
 		left: $alert-notifications-fixed-left,
+		pointer-events: none,
 		position: fixed,
 		right: $alert-notifications-fixed-right,
 		top: $alert-notifications-fixed-top,

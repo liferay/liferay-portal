@@ -213,6 +213,10 @@
 			opacity: 0.1;
 		}
 	}
+
+	> * {
+		pointer-events: auto;
+	}
 }
 
 // Alert List

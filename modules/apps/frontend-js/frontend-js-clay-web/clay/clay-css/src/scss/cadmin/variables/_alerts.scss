@@ -392,6 +392,7 @@ $cadmin-alert-notifications-fixed: map-deep-merge(
 	(
 		bottom: $cadmin-alert-notifications-fixed-bottom,
 		left: $cadmin-alert-notifications-fixed-left,
+		pointer-events: none,
 		position: fixed,
 		right: $cadmin-alert-notifications-fixed-right,
 		top: $cadmin-alert-notifications-fixed-top,
