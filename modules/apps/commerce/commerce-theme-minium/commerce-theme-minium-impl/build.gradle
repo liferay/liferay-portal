@@ -1,28 +1,10 @@
 dependencies {
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:commerce:commerce-api")
-	compileOnly project(":apps:commerce:commerce-cart-taglib")
-	compileOnly project(":apps:commerce:commerce-currency-api")
-	compileOnly project(":apps:commerce:commerce-frontend-api")
-	compileOnly project(":apps:commerce:commerce-frontend-taglib")
-	compileOnly project(":apps:commerce:commerce-inventory-api")
-	compileOnly project(":apps:commerce:commerce-price-list-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
-	compileOnly project(":apps:commerce:commerce-product-content-api")
-	compileOnly project(":apps:commerce:commerce-product-taglib")
-	compileOnly project(":apps:commerce:commerce-product-type-grouped-api")
-	compileOnly project(":apps:commerce:commerce-product-type-virtual-api")
-	compileOnly project(":apps:commerce:commerce-taglib")
-	compileOnly project(":apps:commerce:commerce-wish-list-api")
-	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
