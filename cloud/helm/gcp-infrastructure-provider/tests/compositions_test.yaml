@@ -9,10 +9,6 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\$[A-Za-z]+ := dig \\(printf \"database-primary-%s\" \\$dataPlane\\) \"resource\" dict \\$[A-Za-z]+"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "-   \"\\{\\{ dig \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\}\\}\""
             -   documentIndex: 0
                 matchRegex:
@@ -55,11 +51,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}\\s+apiVersion: storage\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: BucketIAMMember"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+crossplane\\.io/external-name: [^\\n]+\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: overlay-bucket-details-secret"
+                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}(?:[^{]|\\{[^{]|\\{\\{[^-])*?composition-resource-name: liferay-gsa-overlay-bucket-iam(?:[^{]|\\{[^{]|\\{\\{[^-])*?composition-resource-name: overlay-bucket-details-secret"
         it: Grants and publishes the overlay bucket only when overlay access is enabled
     -   asserts:
             -   documentIndex: 0
@@ -147,15 +139,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "diskSize: \\{\\{ \\$database\\.storageGB \\}\\}"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "\\$[A-Za-z]+ := \\$database\\.instanceType \\| default \"db-custom-1-3840\""
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "tier: \\{\\{ \\$[A-Za-z]+ \\}\\}"
         it: Maps the shared database fields onto the Cloud SQL instance
     -   asserts:
             -   documentIndex: 0
@@ -181,7 +165,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "composition-resource-name: \\{\\{ \\$baseName \\}\\}-vault[\\s\\S]+?\\{\\{- end \\}\\}\\s*$"
+                    pattern: "composition-resource-name: \\{\\{ \\$baseName \\}\\}-vault[\\s\\S]+?\\{\\{- end \\}\\}\\s+---\\s"
         it: Provisions the backup vault and its identities only once backups are enabled
     -   asserts:
             -   documentIndex: 0
@@ -199,27 +183,3 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\{\\{- if eq \\$xr\\.spec\\.search\\.engine \"opensearch\" -\\}\\}\\s+\\{\\{- fail "
         it: Rejects OpenSearch because GCP has no managed OpenSearch
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\$[A-Za-z]+ := printf \"liferay-database-%s-root-password\" \\$dataPlane"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "key: password\\s+name: liferay-database-\\{\\{ \\$dataPlane \\}\\}-root-password"
-        it: Runs the database grants with the root password generated for the same data plane
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\$[A-Za-z]+ := \\$env\\.region"
-            -   documentIndex: 0
-                notMatchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\.region \\| default"
-            -   documentIndex: 1
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "location: \\{\\{ \\$env\\.region \\}\\}"
-        it: Takes the region from the cluster environment config

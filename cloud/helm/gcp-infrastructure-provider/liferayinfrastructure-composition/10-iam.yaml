@@ -41,3 +41,20 @@ spec:
         member: serviceAccount:{{ $gsaEmail }}
         project: {{ $env.projectId }}
         role: roles/cloudsql.client
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: liferay-ksa
+    name: {{ $xr.metadata.name }}-ksa
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+                annotations:
+                    iam.gke.io/gcp-service-account: {{ $gsaEmail }}
+                name: liferay-default
+                namespace: {{ $namespace }}
