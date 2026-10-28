@@ -47,5 +47,6 @@ patch {
 	}
 
 	fileNames "org/apache/aries/jax/rs/whiteboard/activator/CxfJaxrsBundleActivator.java"
+	fileNames "org/apache/aries/jax/rs/whiteboard/internal/Whiteboard.java"
 	originalLibModuleName = "org.apache.aries.jax.rs.whiteboard"
 }
