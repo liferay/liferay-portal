@@ -8,8 +8,6 @@ package com.liferay.portal.template.freemarker.internal;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.AggregateClassLoader;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -263,22 +261,10 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 			if (classLoader != null) {
 				return classLoader;
 			}
-
-			if (_log.isWarnEnabled()) {
-				Bundle bundle = bundleContext.getBundle();
-
-				_log.warn(
-					StringBundler.concat(
-						"Bundle ", bundle.getSymbolicName(),
-						" does not export ", allowedClassName));
-			}
 		}
 
 		return null;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		LiferayTemplateClassResolver.class);
 
 	private final Set<Bundle> _bundles = Collections.newSetFromMap(
 		new ConcurrentHashMap<>());
