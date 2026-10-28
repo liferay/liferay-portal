@@ -1229,6 +1229,37 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testSecretResolver() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"secretresolver/SecretResolverReads.testjava"
+			).addDependentFileName(
+				"secretresolver/portal-impl/src/com/liferay/portal" +
+					"/configuration/SecretResolverConfiguration.testjava"
+			).addExpectedMessage(
+				"Resolve \"password()\" through \"SecretResolver\" before " +
+					"using the value, see LPD-107260",
+				27
+			).addExpectedMessage(
+				"Resolve \"password()\" through \"SecretResolver\" before " +
+					"using the value, see LPD-107260",
+				49
+			).addExpectedMessage(
+				"Resolve \"password()\" through \"SecretResolver\" before " +
+					"using the value, see LPD-107260",
+				65
+			).addExpectedMessage(
+				"Resolve \"password()\" through \"SecretResolver\" before " +
+					"using the value, see LPD-107260",
+				69
+			).addExpectedMessage(
+				"Resolve \"password()\" through \"SecretResolver\" before " +
+					"using the value, see LPD-107260",
+				90
+			));
+	}
+
+	@Test
 	public void testSecureRandomNumberGeneration() throws Exception {
 		test(
 			"SecureRandomNumberGeneration.testjava",
