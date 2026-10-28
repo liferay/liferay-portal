@@ -3,5 +3,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:message-boards:message-boards-api")
 	testIntegrationImplementation project(":apps:portal-template:portal-template-engine-api")
+	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
