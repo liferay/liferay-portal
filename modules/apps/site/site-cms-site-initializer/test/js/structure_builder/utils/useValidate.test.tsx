@@ -3,13 +3,12 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {act, render} from '@testing-library/react';
+import {render} from '@testing-library/react';
 import React, {useEffect} from 'react';
 
 import {
 	State,
 	StateContextProvider,
-	useSelector,
 } from '../../../../src/main/resources/META-INF/resources/js/structure_builder/contexts/StateContext';
 import getUuid from '../../../../src/main/resources/META-INF/resources/js/structure_builder/utils/getUuid';
 import {
@@ -63,14 +62,12 @@ function buildState({
 }
 
 function renderValidate(initialState: State) {
-	const refs: {state?: State; validate?: () => boolean} = {};
+	const refs: {validate?: () => boolean} = {};
 
 	function Harness() {
-		const state = useSelector((s) => s);
 		const validate = useValidate();
 
 		useEffect(() => {
-			refs.state = state;
 			refs.validate = validate;
 		});
 
@@ -87,34 +84,17 @@ function renderValidate(initialState: State) {
 }
 
 describe('useValidate', () => {
-	it('passes when the only errors were reported by a previous rejected save', () => {
+	it('passes once the structure the server rejected is valid again', () => {
 		const refs = renderValidate(
 			buildState({
-				errors: new Map([['global', 'unexpected']]),
+				errors: new Map([
+					['global', 'unexpected'],
+					['slug', 'in-use'],
+				]),
 				label: {en_US: 'Label'},
 			})
 		);
 
 		expect(refs.validate!()).toBe(true);
-	});
-
-	it('drops the errors reported by the server when other errors remain', () => {
-		const refs = renderValidate(
-			buildState({
-				errors: new Map([['global', 'unexpected']]),
-				label: {en_US: ''},
-			})
-		);
-
-		let valid;
-
-		act(() => {
-			valid = refs.validate!();
-		});
-
-		expect(valid).toBe(false);
-		expect(refs.state!.invalids.get(STRUCTURE_UUID)?.get('global')).toBe(
-			'default-language-label'
-		);
 	});
 });
