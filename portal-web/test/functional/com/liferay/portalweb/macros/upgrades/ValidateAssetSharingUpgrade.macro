@@ -1,10 +1,14 @@
 definition {
 
 	@summary = "Default summary"
-	macro revokeAndUpdateSharedEntry(blogsEntryTitleUpdate = null, blogsEntryTitleView = null, dmDocumentTitleUpdate = null, dmDocumentTitleView = null) {
+	macro revokeAndUpdateSharedEntry(blogsEntryTitleUpdate = null, blogsEntryTitleView = null, dmDocumentTitleUpdate = null, dmDocumentTitleView = null, siteURLKey = null) {
+		if (!(isSet(siteURLKey))) {
+			var siteURLKey = "guest";
+		}
+
 		Asset.openTosharedContent(
 			navTab = "Shared by Me",
-			siteURLKey = "guest");
+			siteURLKey = ${siteURLKey});
 
 		Asset.gotoManageCollaboratorsViaSharedByMe(contentTitle = ${dmDocumentTitleView});
 
@@ -14,7 +18,7 @@ definition {
 
 		Asset.openTosharedContent(
 			navTab = "Shared by Me",
-			siteURLKey = "guest");
+			siteURLKey = ${siteURLKey});
 
 		if (isSet(blogsEntryTitleView)) {
 			Asset.gotoManageCollaboratorsViaSharedByMe(contentTitle = ${blogsEntryTitleView});
@@ -42,7 +46,8 @@ definition {
 
 		DMDocumentSharing.editViaSharedwithMe(
 			dmDocumentTitle = ${dmDocumentTitleUpdate},
-			entryTitleEdit = "${dmDocumentTitleUpdate} Edit");
+			entryTitleEdit = "${dmDocumentTitleUpdate} Edit",
+			siteURLKey = ${siteURLKey});
 
 		User.logoutPG();
 
@@ -106,12 +111,16 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewSharedDocument(dmDocumentTitle = null) {
+	macro viewSharedDocument(dmDocumentTitle = null, siteURLKey = null) {
 		User.logoutPG();
 
 		User.loginUserPG(
 			password = PropsUtil.get("default.admin.password"),
 			userEmailAddress = "user1@liferay.com");
+
+		if (isSet(siteURLKey)) {
+			Navigator.openSiteURL(siteName = ${siteURLKey});
+		}
 
 		Notifications.gotoNotifications();
 

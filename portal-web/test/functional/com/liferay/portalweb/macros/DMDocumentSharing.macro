@@ -48,10 +48,14 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro editViaSharedwithMe(dmDocumentTitle = null, entryTitleEdit = null, entryTitle = null) {
+	macro editViaSharedwithMe(dmDocumentTitle = null, entryTitleEdit = null, entryTitle = null, siteURLKey = null) {
+		if (!(isSet(siteURLKey))) {
+			var siteURLKey = "guest";
+		}
+
 		Asset.openTosharedContent(
 			navTab = "Shared with Me",
-			siteURLKey = "guest");
+			siteURLKey = ${siteURLKey});
 
 		if (isSet(dmDocumentTitle)) {
 			DMDocument.editCP(

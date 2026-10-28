@@ -43,11 +43,14 @@ definition {
 		property data.archive.type = "data-archive-depot";
 		property portal.version = "7.3.10.1";
 
-		ValidateAssetSharingUpgrade.viewSharedDocument(dmDocumentTitle = "DM Document Title Sharing");
+		ValidateAssetSharingUpgrade.viewSharedDocument(
+			dmDocumentTitle = "DM Document Title Sharing",
+			siteURLKey = "site-name");
 
 		ValidateAssetSharingUpgrade.revokeAndUpdateSharedEntry(
 			dmDocumentTitleUpdate = "DM Document Title Can Update",
-			dmDocumentTitleView = "DM Document Title Sharing");
+			dmDocumentTitleView = "DM Document Title Sharing",
+			siteURLKey = "site-name");
 	}
 
 }
