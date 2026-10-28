@@ -44,6 +44,41 @@ public class AssetCategoriesDisplayContextTest {
 	}
 
 	@Test
+	public void testIsExternalReferenceCodeInputDisabled() {
+		Assert.assertFalse(
+			_assetCategoriesDisplayContext.isExternalReferenceCodeInputDisabled(
+				null));
+
+		AssetVocabulary vocabulary = Mockito.mock(AssetVocabulary.class);
+
+		Assert.assertFalse(
+			_assetCategoriesDisplayContext.isExternalReferenceCodeInputDisabled(
+				vocabulary));
+
+		Mockito.when(
+			vocabulary.getExternalReferenceCode()
+		).thenReturn(
+			AssetVocabularyConstants.EXTERNAL_REFERENCE_CODE_TOPIC
+		);
+
+		Assert.assertTrue(
+			_assetCategoriesDisplayContext.isExternalReferenceCodeInputDisabled(
+				vocabulary));
+
+		AssetVocabulary systemVocabulary = Mockito.mock(AssetVocabulary.class);
+
+		Mockito.when(
+			systemVocabulary.isSystem()
+		).thenReturn(
+			true
+		);
+
+		Assert.assertTrue(
+			_assetCategoriesDisplayContext.isExternalReferenceCodeInputDisabled(
+				systemVocabulary));
+	}
+
+	@Test
 	public void testIsSystemVocabulary() {
 		Assert.assertFalse(
 			_assetCategoriesDisplayContext.isSystemVocabulary(null));
