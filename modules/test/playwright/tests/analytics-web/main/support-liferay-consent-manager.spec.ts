@@ -51,7 +51,9 @@ async function changeCookiePreference({
 }) {
 	await systemSettingsPage.goToSystemSetting('Privacy', 'Consent Manager');
 
-	const cookieBannerCheckbox = await page.getByLabel('Enabled');
+	const cookieBannerCheckbox = await page.getByLabel('Enabled', {
+		exact: true,
+	});
 
 	if (enableCookieBanner) {
 		await cookieBannerCheckbox.check();
@@ -118,6 +120,8 @@ async function connectACToDXP({
 	await goNextStep(page);
 
 	await syncAllContacts(page);
+
+	await goNextStep(page);
 
 	await goNextStep(page);
 
