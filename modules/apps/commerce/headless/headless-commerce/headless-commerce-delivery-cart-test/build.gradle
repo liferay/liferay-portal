@@ -4,11 +4,8 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
-	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
-	testIntegrationImplementation group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
 	testIntegrationImplementation group: "junit", name: "junit", version: "4.13.1"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
@@ -19,11 +16,9 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-media-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-order-rule-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-payment-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-payment-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-price-list-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-test-util")
-	testIntegrationImplementation project(":apps:commerce:commerce-product-type-simple")
 	testIntegrationImplementation project(":apps:commerce:commerce-shipping-engine-fixed-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-term-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
@@ -33,7 +28,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-scope-api")
-	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
