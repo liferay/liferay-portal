@@ -4,11 +4,9 @@ dependencies {
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-demo-data-creator-api")
 	compileOnly project(":apps:portal-background-task:portal-background-task-api")
-	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-demo-data-creator-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:users-admin:users-admin-demo-data-creator-api")
-	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:portal-workflow:portal-workflow-metrics-api")
 	compileOnly project(":dxp:apps:portal-workflow:portal-workflow-metrics-demo-data-creator-api")
 }
