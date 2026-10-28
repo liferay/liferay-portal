@@ -397,7 +397,7 @@ public class JavaSourceUtil extends SourceUtil {
 
 			File file = new File(sb.toString());
 
-			if (file.exists()) {
+			if (file.isFile()) {
 				return file;
 			}
 		}
@@ -429,7 +429,7 @@ public class JavaSourceUtil extends SourceUtil {
 
 			File file = new File(sb.toString());
 
-			if (file.exists()) {
+			if (file.isFile()) {
 				return file;
 			}
 
@@ -442,7 +442,7 @@ public class JavaSourceUtil extends SourceUtil {
 
 			file = new File(sb.toString());
 
-			if (file.exists()) {
+			if (file.isFile()) {
 				return file;
 			}
 		}
