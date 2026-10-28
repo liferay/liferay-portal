@@ -1,7 +1,6 @@
 dependencies {
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:info:info-field-item-selector-api")
-	testIntegrationImplementation project(":apps:info:info-test-util")
 	testIntegrationImplementation project(":apps:item-selector:item-selector-api")
 	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")

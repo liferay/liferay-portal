@@ -1,18 +1,12 @@
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
-	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:layout:layout-test-util")
-	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-string")
 }
 
 liferay {
