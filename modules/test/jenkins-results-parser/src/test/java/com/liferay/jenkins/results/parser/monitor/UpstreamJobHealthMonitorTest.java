@@ -218,6 +218,17 @@ public class UpstreamJobHealthMonitorTest
 			monitorResult.getMessage());
 		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
 
+		setURLReaderException(new IOException(), _JOB_API_URL);
+
+		monitorResult = _execute(_newMonitorProperties());
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				"Unable to read ", _CONTROLLER_JOB_URL, ": ",
+				IOException.class.getName()),
+			monitorResult.getMessage());
+		testEquals(MonitorResult.Status.CRITICAL, monitorResult.getStatus());
+
 		setURLReaderOutput("{}", _JOB_API_URL);
 
 		monitorResult = _execute(_newMonitorProperties());
