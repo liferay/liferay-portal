@@ -87,11 +87,11 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 
 		Assert.assertNotEquals(draft1.getDraftId(), draft2.getDraftId());
 
-		T value1 = randomValue();
+		T value1 = createValue();
 
 		updateDraft(draft1, value1);
 
-		T value2 = randomValue();
+		T value2 = createValue();
 
 		updateDraft(draft2, value2);
 
@@ -100,7 +100,7 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 
 		Assert.assertEquals(entryValue, getEntryValue(classPK));
 
-		T value3 = randomValue();
+		T value3 = createValue();
 
 		updateLiveEntry(classPK, value3);
 
@@ -153,7 +153,7 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 	public void testFetchDraft() throws Exception {
 		long classPK = addEntry();
 
-		T value = randomValue();
+		T value = createValue();
 
 		LaunchEntryManager.Draft draft = addDraft(classPK);
 
@@ -263,13 +263,13 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 
 		T entryValue = getEntryValue(classPK);
 
-		T value1 = randomValue();
+		T value1 = createValue();
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
 		updateDraft(draft1, value1);
 
-		T value2 = randomValue();
+		T value2 = createValue();
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
@@ -318,8 +318,8 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 			versionKeys.toString(),
 			versionKeys.contains(String.valueOf(draft.getDraftId())));
 
-		updateDraft(draft, randomValue());
-		updateDraft(draft, randomValue());
+		updateDraft(draft, createValue());
+		updateDraft(draft, createValue());
 
 		Assert.assertEquals(
 			versionKeys,
@@ -344,13 +344,13 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 	public void testPublishDraft() throws Exception {
 		long classPK = addEntry();
 
-		T value1 = randomValue();
+		T value1 = createValue();
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
 		updateDraft(draft1, value1);
 
-		T value2 = randomValue();
+		T value2 = createValue();
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
@@ -456,7 +456,7 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 		return version;
 	}
 
-	protected abstract T randomValue();
+	protected abstract T createValue();
 
 	protected SafeCloseable setPreviewIdWithSafeCloseable(
 		long classPK,

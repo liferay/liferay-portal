@@ -131,7 +131,7 @@ public class JournalArticleLaunchEntryManagerTest
 	}
 
 	@Override
-	protected String randomValue() {
+	protected String createValue() {
 		return RandomTestUtil.randomString();
 	}
 
@@ -177,7 +177,7 @@ public class JournalArticleLaunchEntryManagerTest
 
 		LaunchEntryManager.Version version = getPublishedVersion(classPK);
 
-		updateLiveEntry(classPK, randomValue());
+		updateLiveEntry(classPK, createValue());
 
 		Assert.assertNotEquals(entryValue, getEntryValue(classPK));
 
@@ -196,13 +196,13 @@ public class JournalArticleLaunchEntryManagerTest
 
 		long classPK = addEntry();
 
-		String value1 = randomValue();
+		String value1 = createValue();
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
 		updateDraft(draft1, value1);
 
-		String value2 = randomValue();
+		String value2 = createValue();
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
@@ -234,11 +234,11 @@ public class JournalArticleLaunchEntryManagerTest
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
-		updateDraft(draft1, randomValue());
+		updateDraft(draft1, createValue());
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
-		updateDraft(draft2, randomValue());
+		updateDraft(draft2, createValue());
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 

@@ -136,7 +136,7 @@ public class LayoutLaunchEntryManagerTest
 	}
 
 	@Override
-	protected Values randomValue() {
+	protected Values createValue() {
 		return new Values(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 	}
@@ -218,7 +218,7 @@ public class LayoutLaunchEntryManagerTest
 			group, RandomTestUtil.randomString(),
 			WorkflowConstants.STATUS_APPROVED);
 
-		Values publishedLayoutValue = randomValue();
+		Values publishedLayoutValue = createValue();
 
 		_updateLayout(layout.getPlid(), publishedLayoutValue);
 
@@ -239,7 +239,7 @@ public class LayoutLaunchEntryManagerTest
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		Values mainDraftLayoutValue = randomValue();
+		Values mainDraftLayoutValue = createValue();
 
 		_updateLayout(draftLayout.getPlid(), mainDraftLayoutValue);
 
@@ -284,7 +284,7 @@ public class LayoutLaunchEntryManagerTest
 
 		Assert.assertEquals(entryValue, getDraftValue(draft1));
 
-		Values value = randomValue();
+		Values value = createValue();
 
 		updateDraft(draft1, value);
 
@@ -334,13 +334,13 @@ public class LayoutLaunchEntryManagerTest
 
 		long classPK = addEntry();
 
-		Values value1 = randomValue();
+		Values value1 = createValue();
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
 		updateDraft(draft1, value1);
 
-		Values value2 = randomValue();
+		Values value2 = createValue();
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
@@ -368,11 +368,11 @@ public class LayoutLaunchEntryManagerTest
 
 		long classPK = addEntry();
 
-		Layout publishedLayout = _layoutLocalService.getLayout(classPK);
-
 		LaunchEntryManager.Draft draft = addDraft(classPK);
 
 		Layout previewBaseModel = (Layout)draft.getPreviewBaseModel();
+
+		Layout publishedLayout = _layoutLocalService.getLayout(classPK);
 
 		Assert.assertEquals(draft.getDraftId(), previewBaseModel.getPlid());
 		Assert.assertEquals(
@@ -391,7 +391,7 @@ public class LayoutLaunchEntryManagerTest
 
 		Layout mainDraft = _layoutLocalService.fetchDraftLayout(classPK);
 
-		_updateLayout(mainDraft.getPlid(), randomValue());
+		_updateLayout(mainDraft.getPlid(), createValue());
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
@@ -410,11 +410,11 @@ public class LayoutLaunchEntryManagerTest
 
 		LaunchEntryManager.Draft draft1 = addDraft(classPK);
 
-		updateDraft(draft1, randomValue());
+		updateDraft(draft1, createValue());
 
 		LaunchEntryManager.Draft draft2 = addDraft(classPK);
 
-		updateDraft(draft2, randomValue());
+		updateDraft(draft2, createValue());
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
@@ -432,7 +432,7 @@ public class LayoutLaunchEntryManagerTest
 	private void _testPublishDraftWithExistingMainDraft() throws Exception {
 		long classPK = addEntry();
 
-		Values value = randomValue();
+		Values value = createValue();
 
 		LaunchEntryManager.Draft draft = addDraft(classPK);
 
@@ -440,7 +440,7 @@ public class LayoutLaunchEntryManagerTest
 
 		Layout mainDraft = _layoutLocalService.fetchDraftLayout(classPK);
 
-		_updateLayout(mainDraft.getPlid(), randomValue());
+		_updateLayout(mainDraft.getPlid(), createValue());
 
 		LaunchEntryManager launchEntryManager = getLaunchEntryManager();
 
