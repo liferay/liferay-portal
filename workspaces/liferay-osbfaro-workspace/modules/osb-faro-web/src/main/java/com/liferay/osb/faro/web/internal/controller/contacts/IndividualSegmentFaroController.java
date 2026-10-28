@@ -432,12 +432,6 @@ public class IndividualSegmentFaroController extends BaseFaroController {
 				segmentTypes, state, IndividualSegment.Status.ACTIVE.name(),
 				cur, delta, orderByFields);
 		}
-		else if (contactsEntityType == FaroConstants.TYPE_ACCOUNT) {
-			results = contactsEngineClient.getAccountIndividualSegments(
-				faroProject, contactsEntityId, channelId, query,
-				IndividualSegment.Status.ACTIVE.name(), cur, delta,
-				orderByFields);
-		}
 		else if (contactsEntityType == FaroConstants.TYPE_INDIVIDUAL) {
 			results = contactsEngineClient.getIndividualIndividualSegments(
 				faroProject, channelId, contactsEntityId, query,

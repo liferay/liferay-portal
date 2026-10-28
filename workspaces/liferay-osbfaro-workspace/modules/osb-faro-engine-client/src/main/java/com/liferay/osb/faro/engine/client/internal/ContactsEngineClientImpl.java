@@ -713,42 +713,6 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<IndividualSegment> getAccountIndividualSegments(
-		FaroProject faroProject, String accountId, String channelId,
-		String query, String status, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, cur, delta, orderByFields,
-			FilterConstants.FIELD_NAME_CONTEXT_INDIVIDUAL_SEGMENT);
-
-		uriVariables.put("expand", "active-membership");
-
-		FilterBuilder filterBuilder = new FilterBuilder();
-
-		filterBuilder.addFilter(
-			"channelId", FilterConstants.COMPARISON_OPERATOR_EQUALS,
-			Long.valueOf(channelId));
-		filterBuilder.addFilter(
-			"name", FilterConstants.STRING_FUNCTION_CONTAINS, query);
-		filterBuilder.addFilter(
-			"status", FilterConstants.COMPARISON_OPERATOR_EQUALS, status);
-
-		uriVariables.put("filter", filterBuilder.build());
-
-		uriVariables.put("id", accountId);
-
-		PagedModel<?, IndividualSegment> pagedModel = get(
-			faroProject, Rels.ACCOUNTS_INDIVIDUAL_SEGMENTS,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<IndividualSegment>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
-	}
-
-	@Override
 	public Results<Individual> getAccountIndividuals(
 		FaroProject faroProject, String accountId, String channelId,
 		String query, String rangeEnd, Integer rangeKey, String rangeStart,

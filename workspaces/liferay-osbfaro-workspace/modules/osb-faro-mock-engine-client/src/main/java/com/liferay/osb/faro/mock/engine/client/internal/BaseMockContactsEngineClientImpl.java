@@ -363,17 +363,6 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
-	public Results<IndividualSegment> getAccountIndividualSegments(
-		FaroProject faroProject, String accountId, String channelId,
-		String query, String status, int cur, int delta,
-		List<OrderByField> orderByFields) {
-
-		return contactsEngineClient.getAccountIndividualSegments(
-			faroProject, accountId, channelId, query, status, cur, delta,
-			orderByFields);
-	}
-
-	@Override
 	public AccountLifecycle getAccountLifecycle(
 			FaroProject faroProject, String id)
 		throws FaroEngineClientException {

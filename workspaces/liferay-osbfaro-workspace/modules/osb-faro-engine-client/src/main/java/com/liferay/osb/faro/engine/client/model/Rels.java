@@ -50,9 +50,6 @@ public interface Rels {
 
 	public static final String ACCOUNTS_DISTRIBUTION = "accounts-distribution";
 
-	public static final String ACCOUNTS_INDIVIDUAL_SEGMENTS =
-		"accounts-individual-segments";
-
 	public static final String ACCOUNTS_METRICS = "accounts-metrics";
 
 	public static final String ACTIVITIES = "activities";
