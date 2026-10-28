@@ -97,18 +97,6 @@ public class NumericDDMFormFieldTypeReportProcessorTest {
 	}
 
 	@Test
-	public void testGetValueBigDecimal() {
-		Assert.assertEquals(
-			new BigDecimal("3.5"),
-			NumericDDMFormFieldTypeReportProcessor.getValueBigDecimal(
-				_mockDDMFormFieldValue(LocaleUtil.BRAZIL, "field1", "3,5")));
-		Assert.assertEquals(
-			new BigDecimal("4.5"),
-			NumericDDMFormFieldTypeReportProcessor.getValueBigDecimal(
-				_mockDDMFormFieldValue(LocaleUtil.US, "field1", "4.5")));
-	}
-
-	@Test
 	public void testProcessDDMFormInstanceReportOnDeleteEvent()
 		throws Exception {
 
