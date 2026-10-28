@@ -1,5 +1,4 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -10,9 +9,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
-	compileOnly project(":apps:asset:asset-display-page-api")
-	compileOnly project(":apps:asset:asset-info-display-api")
-	compileOnly project(":apps:asset:asset-taglib")
 	compileOnly project(":apps:change-tracking:change-tracking-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:depot:depot-api")
@@ -20,10 +16,7 @@ dependencies {
 	compileOnly project(":apps:flags:flags-taglib")
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
-	compileOnly project(":apps:fragment:fragment-service")
 	compileOnly project(":apps:frontend-js:frontend-js-importmaps-extender-api")
-	compileOnly project(":apps:frontend-js:frontend-js-loader-modules-extender-api")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
 	compileOnly project(":apps:frontend-token:frontend-token-definition-api")
@@ -36,20 +29,14 @@ dependencies {
 	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
-	compileOnly project(":apps:portal-template:portal-template-react-renderer-api")
 	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
-	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:ratings:ratings-taglib")
 	compileOnly project(":apps:saved-content:saved-content-taglib")
-	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":apps:site-navigation:site-navigation-taglib")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:translation:translation-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }

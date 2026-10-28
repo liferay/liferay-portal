@@ -7,20 +7,13 @@ dependencies {
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly project(":apps:asset:asset-info-display-api")
-	compileOnly project(":apps:asset:asset-list-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")
-	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:fragment:fragment-api")
-	compileOnly project(":apps:fragment:fragment-collection-filter-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-api")
@@ -31,26 +24,16 @@ dependencies {
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
 	compileOnly project(":apps:portal:portal-json-validator")
-	compileOnly project(":apps:portlet-display-template:portlet-display-template-api")
 	compileOnly project(":apps:segments:segments-api")
-	compileOnly project(":apps:site-navigation:site-navigation-api")
 	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":apps:static:portal-file-install:portal-file-install-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
-	compileOnly project(":apps:template:template-api")
 	compileOnly project(":apps:xstream:xstream-configurator-api")
-	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-sql-dsl-spi")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation classifier: "classic", group: "org.joda", name: "joda-convert", version: "2.2.1"
-	testImplementation group: "com.damnhandy", name: "handy-uri-templates", version: "2.1.7"
 	testImplementation group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
-	testImplementation group: "com.google.re2j", name: "re2j", version: "1.2"
-	testImplementation group: "joda-time", name: "joda-time", version: "2.12.1"
-	testImplementation group: "org.json", name: "json", version: "20231013"
 }
