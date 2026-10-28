@@ -152,9 +152,9 @@ public class EditInfoItemStrutsAction implements StrutsAction {
 			return null;
 		}
 
+		Map<String, InfoFieldValue<Object>> infoFieldValues = null;
 		InfoForm infoForm = _infoRequestFieldValuesProviderHelper.getInfoForm(
 			httpServletRequest);
-		Map<String, InfoFieldValue<Object>> infoFieldValues = null;
 
 		try {
 			infoFieldValues =
