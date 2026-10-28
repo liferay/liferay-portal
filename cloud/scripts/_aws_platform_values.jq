@@ -78,7 +78,22 @@ $configuration[0] as $configuration
 						name: "\($values_prefix)networkPolicy.cluster.kubernetesEndpointCidrs",
 						value: ($kubernetes_endpoint_cidrs | join(","))
 					}
-				],
+				]
+				+ (
+					if $prometheus_workspace_id == "" then
+						[]
+					else
+						[
+							{
+								name: "\($values_prefix)autoscaling.keda.prometheusTriggerMetadata.awsRegion",
+								value: $deployment_context.region
+							},
+							{
+								name: "\($values_prefix)autoscaling.keda.prometheusTriggerMetadata.serverAddress",
+								value: ($outputs.prometheus_workspace_endpoint.value | rtrimstr("/"))
+							}
+						]
+					end),
 				valuesPrefix: $values_prefix
 			},
 			networkPolicy: {

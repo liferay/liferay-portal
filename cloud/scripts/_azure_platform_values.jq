@@ -30,7 +30,7 @@ $configuration[0] as $configuration
 					{
 						parameters: [
 							{
-								name: "global.azure.prometheusWorkspaceEndpoint",
+								name: "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress",
 								value: $prometheus_workspace_endpoint
 							}
 						]

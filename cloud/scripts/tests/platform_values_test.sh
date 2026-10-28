@@ -16,6 +16,7 @@ function main {
 	_run_test _test_aws_enables_ack_prometheus_service_with_role
 	_run_test _test_aws_enables_keda_with_role
 	_run_test _test_aws_enables_observability_with_workspace
+	_run_test _test_aws_passes_keda_prometheus_parameters_with_workspace
 	_run_test _test_aws_selects_liferay_chart_from_marketplace
 	_run_test _test_azure_enables_keda_with_identity
 	_run_test _test_azure_enables_observability_with_workspace
@@ -120,7 +121,12 @@ function _test_aws_enables_keda_with_role {
 
 function _test_aws_enables_observability_with_workspace {
 	_assert "$(_render "aws" "$(_get_aws_outputs)")" '.observability | has("enabled") | not' &&
-	_assert "$(_render "aws" "$(_get_aws_outputs '{"prometheus_workspace_id": {"value": "workspace-id"}}')")" '.observability.enabled'
+	_assert "$(_render "aws" "$(_get_aws_outputs '{"prometheus_workspace_endpoint": {"value": "workspace-endpoint"}, "prometheus_workspace_id": {"value": "workspace-id"}}')")" '.observability.enabled'
+}
+
+function _test_aws_passes_keda_prometheus_parameters_with_workspace {
+	_assert "$(_render "aws" "$(_get_aws_outputs)")" 'all(.liferay.parameters[]; .name | contains("autoscaling.keda") | not)' &&
+	_assert "$(_render "aws" "$(_get_aws_outputs '{"prometheus_workspace_endpoint": {"value": "https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-1/"}, "prometheus_workspace_id": {"value": "ws-1"}}')" '{"marketplace": true}')" '[.liferay.parameters[] | select(.name | contains("autoscaling.keda"))] == [{name: "liferay-aws.liferay-default.autoscaling.keda.prometheusTriggerMetadata.awsRegion", value: "us-east-1"}, {name: "liferay-aws.liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress", value: "https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-1"}]'
 }
 
 function _test_aws_selects_liferay_chart_from_marketplace {
@@ -135,7 +141,7 @@ function _test_azure_enables_keda_with_identity {
 
 function _test_azure_enables_observability_with_workspace {
 	_assert "$(_render "azure" "$(_get_azure_outputs)")" '(.observability | has("enabled") | not) and (.liferay | has("parameters") | not)' &&
-	_assert "$(_render "azure" "$(_get_azure_outputs '{"prometheus_workspace_endpoint": {"value": "workspace-endpoint"}, "prometheus_workspace_id": {"value": "workspace-id"}}')")" '.observability.enabled and any(.liferay.parameters[]; .name == "global.azure.prometheusWorkspaceEndpoint")'
+	_assert "$(_render "azure" "$(_get_azure_outputs '{"prometheus_workspace_endpoint": {"value": "workspace-endpoint"}, "prometheus_workspace_id": {"value": "workspace-id"}}')")" '.observability.enabled and any(.liferay.parameters[]; .name == "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress" and .value == "workspace-endpoint")'
 }
 
 function _test_customer_values_override_platform_values {

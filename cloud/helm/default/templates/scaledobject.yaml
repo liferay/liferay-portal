@@ -16,7 +16,7 @@ spec:
         name: {{ include "liferay.name" . }}
     {{- $hasTriggerAuthentication := .Values.autoscaling.keda.triggerAuthentication.spec }}
     {{- $merged := mergeOverwrite (deepCopy (.Values.autoscaling.keda.triggers | default dict)) (.Values.autoscaling.keda.customTriggers | default dict) }}
-    {{- $resolvedServerAddress := include "liferay.keda.prometheusServerAddress" . }}
+    {{- $prometheusTriggerMetadata := .Values.autoscaling.keda.prometheusTriggerMetadata | default dict }}
     {{- $triggerAuthenticationName := include "liferay.name" . }}
     {{- $triggers := list }}
     {{- range $k, $v := $merged }}
@@ -31,9 +31,7 @@ spec:
                 {{- $_ := set $trigger "type" "prometheus" }}
             {{- end }}
             {{- if eq $trigger.type "prometheus" }}
-                {{- if not (hasKey $trigger.metadata "serverAddress") }}
-                    {{- $_ := set $trigger.metadata "serverAddress" $resolvedServerAddress }}
-                {{- end }}
+                {{- $_ := merge $trigger.metadata (deepCopy $prometheusTriggerMetadata) }}
             {{- end }}
             {{- if and $hasTriggerAuthentication (not (hasKey $trigger "authenticationRef")) }}
                 {{- $_ := set $trigger "authenticationRef" (dict "name" $triggerAuthenticationName) }}

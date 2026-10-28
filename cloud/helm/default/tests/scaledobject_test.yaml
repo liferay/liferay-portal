@@ -25,13 +25,34 @@ tests:
             autoscaling.enabled: true
             autoscaling.type: keda
     -   asserts:
+            -   notExists:
+                    path: spec.triggers[0].metadata.awsRegion
+            -   notExists:
+                    path: spec.triggers[0].metadata.serverAddress
             -   equal:
-                    path: spec.triggers[1].metadata.serverAddress
+                    path: spec.triggers[1].metadata
+                    value:
+                        awsRegion: eu-west-1
+                        query: vector(1)
+                        serverAddress: http://prometheus.example.com
+                        threshold: "1"
+            -   equal:
+                    path: spec.triggers[2].metadata.awsRegion
+                    value: us-east-1
+            -   equal:
+                    path: spec.triggers[2].metadata.serverAddress
                     value: http://prometheus.example.com
-        it: Injects the resolved Prometheus server address into prometheus triggers
+        it: Merges the Prometheus trigger metadata into prometheus triggers without overriding their own
         set:
             autoscaling.enabled: true
-            autoscaling.keda.prometheusServerAddress: http://prometheus.example.com
+            autoscaling.keda.customTriggers:
+                custom-prometheus:
+                    metadata:
+                        awsRegion: eu-west-1
+                        query: vector(1)
+                        threshold: "1"
+            autoscaling.keda.prometheusTriggerMetadata.awsRegion: us-east-1
+            autoscaling.keda.prometheusTriggerMetadata.serverAddress: http://prometheus.example.com
             autoscaling.type: keda
     -   asserts:
             -   lengthEqual:

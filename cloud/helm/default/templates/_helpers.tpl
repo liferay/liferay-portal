@@ -114,10 +114,6 @@ postgresql:
 {{- end -}}
 {{- end }}
 
-{{- define "liferay.keda.prometheusServerAddress" -}}
-{{- tpl (.Values.autoscaling.keda.prometheusServerAddress | default "") . -}}
-{{- end }}
-
 {{- define "liferay.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
