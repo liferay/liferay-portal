@@ -1,18 +1,11 @@
 dependencies {
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:commerce:commerce-api")
-	compileOnly project(":apps:commerce:commerce-currency-api")
-	compileOnly project(":apps:commerce:commerce-frontend-api")
-	compileOnly project(":apps:commerce:commerce-frontend-taglib")
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:commerce:commerce-tax-api")
-	compileOnly project(":apps:commerce:commerce-tax-engine-fixed-api")
 	compileOnly project(":apps:dispatch:dispatch-api")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":dxp:apps:commerce-avalara:commerce-avalara-connector-api")
 }
