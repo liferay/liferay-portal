@@ -61,8 +61,6 @@ public interface Rels {
 
 	public static final String ACTIVITY_ASSETS = "activity-assets";
 
-	public static final String ACTIVITY_GROUPS = "activity-groups";
-
 	public static final String ADMIN_DATA = "admin-data";
 
 	public static final String ADMIN_NANITE = "admin-nanite";

@@ -19,7 +19,6 @@ import com.liferay.osb.faro.engine.client.model.AcquisitionParameter;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
-import com.liferay.osb.faro.engine.client.model.ActivityGroup;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.AssetSummary;
@@ -304,11 +303,6 @@ public interface ContactsEngineClient {
 	public Results<ActivityAsset> getActivityAssets(
 		FaroProject faroProject, String query, String applicationId,
 		String channelId, String eventId, String objectDefinitionName, int cur,
-		int delta, List<OrderByField> orderByFields);
-
-	public Results<ActivityGroup> getActivityGroups(
-		FaroProject faroProject, String channelId, String ownerId,
-		String ownerType, String query, Date startDate, Date endDate, int cur,
 		int delta, List<OrderByField> orderByFields);
 
 	public Results<ApiUsageMetric> getApiUsageMetrics(

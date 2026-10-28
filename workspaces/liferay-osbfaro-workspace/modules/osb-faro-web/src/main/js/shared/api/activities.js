@@ -34,39 +34,6 @@ export function fetchHistory({
 	});
 }
 
-export function fetchGroup({
-	channelId = '',
-	contactsEntityId,
-	contactsEntityType,
-	cur,
-	delta,
-	endDate,
-	groupId,
-	orderIOMap,
-	query,
-	startDate,
-}) {
-	const orderParams = orderIOMap.first();
-
-	const orderByFields = buildOrderByFields(orderParams);
-
-	return sendRequest({
-		data: {
-			channelId,
-			contactsEntityId,
-			contactsEntityType,
-			cur,
-			delta,
-			endDate,
-			orderByFields,
-			query,
-			startDate,
-		},
-		method: 'GET',
-		path: `contacts/${groupId}/activity_group`,
-	});
-}
-
 export function searchAssets({
 	applicationId,
 	channelId = '',

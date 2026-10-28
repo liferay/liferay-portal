@@ -28,7 +28,6 @@ import com.liferay.osb.faro.engine.client.model.AcquisitionParameter;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
-import com.liferay.osb.faro.engine.client.model.ActivityGroup;
 import com.liferay.osb.faro.engine.client.model.ApiUsageMetric;
 import com.liferay.osb.faro.engine.client.model.AsahProject;
 import com.liferay.osb.faro.engine.client.model.Asset;
@@ -1356,53 +1355,6 @@ public class ContactsEngineClientImpl
 			faroProject, Rels.ACTIVITY_ASSETS,
 			new ParameterizedTypeReference
 				<EntityModelPagedModel<ActivityAsset>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
-	}
-
-	@Override
-	public Results<ActivityGroup> getActivityGroups(
-		FaroProject faroProject, String channelId, String ownerId,
-		String ownerType, String query, Date startDate, Date endDate, int cur,
-		int delta, List<OrderByField> orderByFields) {
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, cur, delta, orderByFields);
-
-		uriVariables.put("expand", "activities,activities-count");
-
-		FilterBuilder expandFilterBuilder = new FilterBuilder();
-
-		addActionFilter(
-			expandFilterBuilder,
-			ActivityConstants.getActionKeys(ActivityConstants.ACTION_ANY));
-
-		expandFilterBuilder.addSearchFilter(query, "object/name");
-
-		uriVariables.put("expandFilter", expandFilterBuilder.build());
-
-		FilterBuilder filterBuilder = new FilterBuilder();
-
-		filterBuilder.addFilter(
-			"channelId", FilterConstants.COMPARISON_OPERATOR_EQUALS,
-			Long.valueOf(channelId));
-		filterBuilder.addFilter(
-			"day", FilterConstants.COMPARISON_OPERATOR_GREATER_THAN_OR_EQUAL,
-			getDate(startDate, false));
-		filterBuilder.addFilter(
-			"day", FilterConstants.COMPARISON_OPERATOR_LESS_THAN,
-			getDate(endDate, true));
-
-		addOwnerIdFilter(filterBuilder, ownerId, ownerType);
-
-		uriVariables.put("filter", filterBuilder.build());
-
-		PagedModel<?, ActivityGroup> pagedModel = get(
-			faroProject, Rels.ACTIVITY_GROUPS,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<ActivityGroup>>() {
 			},
 			uriVariables);
 

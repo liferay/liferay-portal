@@ -21,7 +21,6 @@ import com.liferay.osb.faro.engine.client.model.AcquisitionParameter;
 import com.liferay.osb.faro.engine.client.model.Activity;
 import com.liferay.osb.faro.engine.client.model.ActivityAggregation;
 import com.liferay.osb.faro.engine.client.model.ActivityAsset;
-import com.liferay.osb.faro.engine.client.model.ActivityGroup;
 import com.liferay.osb.faro.engine.client.model.Asset;
 import com.liferay.osb.faro.engine.client.model.AssetSummary;
 import com.liferay.osb.faro.engine.client.model.AssetSummaryCMPProject;
@@ -568,17 +567,6 @@ public abstract class BaseMockContactsEngineClientImpl
 		return contactsEngineClient.getActivityAssets(
 			faroProject, query, applicationId, channelId, eventId,
 			objectDefinitionName, cur, delta, orderByFields);
-	}
-
-	@Override
-	public Results<ActivityGroup> getActivityGroups(
-		FaroProject faroProject, String channelId, String ownerId,
-		String ownerType, String query, Date startDate, Date endDate, int cur,
-		int delta, List<OrderByField> orderByFields) {
-
-		return contactsEngineClient.getActivityGroups(
-			faroProject, channelId, ownerId, ownerType, query, startDate,
-			endDate, cur, delta, orderByFields);
 	}
 
 	@Override
