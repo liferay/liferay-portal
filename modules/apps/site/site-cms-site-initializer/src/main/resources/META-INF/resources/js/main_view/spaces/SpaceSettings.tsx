@@ -20,7 +20,6 @@ import SpaceLanguageSettings from './SpaceLanguageSettings';
 interface SpaceSettingsProps {
 	backURL: string;
 	companyAvailableLanguages: LabelValueObject[];
-	companyGoogleMapsAPIKey?: string;
 	companyMapProviderKey?: MapProviderKey;
 	externalReferenceCode: string;
 	groupId: string;
@@ -29,7 +28,6 @@ interface SpaceSettingsProps {
 export default function SpaceSettings({
 	backURL,
 	companyAvailableLanguages,
-	companyGoogleMapsAPIKey,
 	companyMapProviderKey,
 	externalReferenceCode,
 	groupId,
@@ -51,7 +49,6 @@ export default function SpaceSettings({
 			component: (
 				<SpaceGeneralSettings
 					backURL={backURL}
-					companyGoogleMapsAPIKey={companyGoogleMapsAPIKey}
 					companyMapProviderKey={companyMapProviderKey}
 					groupId={groupId}
 					setSpace={setSpace}

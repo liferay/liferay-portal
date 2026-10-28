@@ -12,7 +12,7 @@ import ClayForm, {
 } from '@clayui/form';
 import {setNestedObjectValues, useFormik} from 'formik';
 import {openModal, openToast, useId} from 'frontend-js-components-web';
-import {navigate} from 'frontend-js-web';
+import {navigate, sub} from 'frontend-js-web';
 import React, {useState} from 'react';
 
 import {FieldText} from '../../common/components/forms';
@@ -39,14 +39,12 @@ const MINUTES_PER_DAY = 1440;
 
 export default function SpaceGeneralSettings({
 	backURL,
-	companyGoogleMapsAPIKey,
 	companyMapProviderKey,
 	groupId,
 	setSpace,
 	space,
 }: {
 	backURL?: string;
-	companyGoogleMapsAPIKey?: string;
 	companyMapProviderKey?: MapProviderKey;
 	groupId: string;
 	setSpace?: React.Dispatch<React.SetStateAction<any>>;
@@ -76,15 +74,9 @@ export default function SpaceGeneralSettings({
 			description: space.description,
 			erc: initialERC,
 			friendlyURL: initialFriendlyURL,
-			googleMapsAPIKey:
-				space.settings?.googleMapsAPIKey ||
-				companyGoogleMapsAPIKey ||
-				'',
+			googleMapsAPIKey: space.settings?.googleMapsAPIKey ?? '',
 			logoColor: space.settings?.logoColor as LogoColor,
-			mapProviderKey:
-				space.settings?.mapProviderKey ??
-				companyMapProviderKey ??
-				'OpenStreetMap',
+			mapProviderKey: space.settings?.mapProviderKey ?? '',
 			name: space.name,
 			sharingEnabled: space.settings?.sharingEnabled ?? false,
 			trashEnabled: space.settings?.trashEnabled ?? true,
@@ -166,9 +158,7 @@ export default function SpaceGeneralSettings({
 				setFieldValue('friendlyURL', updatedSpace.friendlyURL ?? '');
 				setFieldValue(
 					'googleMapsAPIKey',
-					updatedSpace.settings?.googleMapsAPIKey ||
-						companyGoogleMapsAPIKey ||
-						''
+					updatedSpace.settings?.googleMapsAPIKey ?? ''
 				);
 				setShowGoogleMapsAPIKey(false);
 
@@ -436,6 +426,42 @@ export default function SpaceGeneralSettings({
 								role="radiogroup"
 								value={values.mapProviderKey}
 							>
+								<ClayRadio
+									label={Liferay.Language.get(
+										'use-instance-default'
+									)}
+									value=""
+								>
+									<div className="font-weight-normal form-text mb-1 mt-0">
+										{Liferay.Language.get(
+											'this-option-uses-the-provider-set-in-instance-settings'
+										)}
+
+										<span className="ml-1">
+											{sub(
+												Liferay.Language.get(
+													'currently-x'
+												),
+												[
+													<strong
+														className="text-body"
+														key="companyMapProviderKey"
+													>
+														{companyMapProviderKey ===
+														'GoogleMaps'
+															? Liferay.Language.get(
+																	'google-maps'
+																)
+															: Liferay.Language.get(
+																	'openstreetmap'
+																)}
+													</strong>,
+												]
+											)}
+										</span>
+									</div>
+								</ClayRadio>
+
 								<ClayRadio
 									label={Liferay.Language.get(
 										'openstreetmap'
