@@ -20,17 +20,6 @@ import java.net.URLConnection;
  */
 public class FrontendResourceUtil {
 
-	/**
-	 * Get a key that identifies the content of a resource URL so that it can
-	 * be cached in the server.
-	 *
-	 * Hashed files are identified by their URL because the hash changes
-	 * whenever the content does. Other files are identified by their URL and
-	 * last modified time.
-	 *
-	 * @return the cache key or null if the last modified time is unknown
-	 * @review
-	 */
 	public static String getCacheKey(URL url) {
 		if (HashedFilesUtil.containsHash(url.getFile())) {
 			return url.toString();
