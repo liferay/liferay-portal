@@ -211,10 +211,10 @@ public class LayoutsAdminDisplayContextTest {
 		long depotGroupId = RandomTestUtil.randomLong();
 
 		_testHasRequiredVocabularies(
-			_mockAssetVocabulary(classNameId, true, depotGroupId), true,
+			_mockAssetVocabulary(classNameId, false, depotGroupId), false,
 			new long[] {scopeGroupId, depotGroupId});
 		_testHasRequiredVocabularies(
-			_mockAssetVocabulary(classNameId, false, depotGroupId), false,
+			_mockAssetVocabulary(classNameId, true, depotGroupId), true,
 			new long[] {scopeGroupId, depotGroupId});
 	}
 
@@ -232,8 +232,8 @@ public class LayoutsAdminDisplayContextTest {
 		AssetVocabulary assetVocabulary = _mockAssetVocabulary(
 			classNameId, true, RandomTestUtil.randomLong());
 
-		_testIsShowCategorization(assetVocabulary, 1, true);
 		_testIsShowCategorization(assetVocabulary, 0, false);
+		_testIsShowCategorization(assetVocabulary, 1, true);
 
 		_testIsShowCategorization(
 			_mockAssetVocabulary(
