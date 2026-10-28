@@ -44,7 +44,6 @@ dependencies {
 	compileOnly group: "io.grpc", name: "grpc-alts", version: "1.75.0"
 	compileOnly group: "io.grpc", name: "grpc-api", version: "1.75.0"
 	compileOnly group: "io.grpc", name: "grpc-auth", version: "1.75.0"
-	compileOnly group: "io.grpc", name: "grpc-context", version: "1.75.0"
 	compileOnly group: "io.grpc", name: "grpc-core", version: "1.75.0"
 	compileOnly group: "io.grpc", name: "grpc-googleapis", version: "1.75.0"
 	compileOnly group: "io.grpc", name: "grpc-grpclb", version: "1.75.0"
