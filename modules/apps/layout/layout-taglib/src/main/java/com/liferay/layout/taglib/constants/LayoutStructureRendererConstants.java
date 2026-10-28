@@ -10,6 +10,9 @@ package com.liferay.layout.taglib.constants;
  */
 public class LayoutStructureRendererConstants {
 
+	public static final String LAYOUT_INFO_ITEM_ENTRY =
+		"LAYOUT_INFO_ITEM_ENTRY";
+
 	public static final String LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE =
 		"LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE";
 

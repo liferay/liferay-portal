@@ -26,6 +26,7 @@ import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.field.type.MultiselectInfoFieldType;
 import com.liferay.info.form.InfoForm;
 import com.liferay.info.item.InfoItemDetails;
+import com.liferay.info.item.InfoItemEntry;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemDetailsProvider;
@@ -1035,6 +1036,9 @@ public class LayoutStructureRenderer {
 						LayoutStructureRendererConstants.
 							LAYOUT_RELATED_ITEM_DISPLAY_PAGE_OBJECT_PROVIDER);
 
+		InfoItemEntry currentInfoItemEntry =
+			(InfoItemEntry)_httpServletRequest.getAttribute(
+				LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY);
 		String currentParentItemExternalReferenceCode =
 			(String)_httpServletRequest.getAttribute(
 				LayoutStructureRendererConstants.
@@ -1071,62 +1075,119 @@ public class LayoutStructureRenderer {
 			String formRelationshipStyledLayoutStructureItemContentId =
 				PortalUtil.getUniqueElementId();
 
-			if (layoutDisplayPageObjectProvider == null) {
+			List<? extends LayoutDisplayPageObjectProvider<?>>
+				relatedLayoutDisplayPageObjectProviders = null;
+
+			if (currentRelatedLayoutDisplayPageObjectProvider != null) {
+				relatedLayoutDisplayPageObjectProviders =
+					currentRelatedLayoutDisplayPageObjectProvider.
+						getRelatedLayoutDisplayPageObjectProviders(
+							formRelationshipStyledLayoutStructureItem.
+								getContentType());
+			}
+			else if (layoutDisplayPageObjectProvider != null) {
+				relatedLayoutDisplayPageObjectProviders =
+					layoutDisplayPageObjectProvider.
+						getRelatedLayoutDisplayPageObjectProviders(
+							formRelationshipStyledLayoutStructureItem.
+								getContentType());
+			}
+
+			if (currentInfoItemEntry != null) {
+				Map<String, LayoutDisplayPageObjectProvider<?>>
+					relatedLayoutDisplayPageObjectProvidersMap =
+						new HashMap<>();
+
+				if (relatedLayoutDisplayPageObjectProviders != null) {
+					for (LayoutDisplayPageObjectProvider<?>
+							relatedLayoutDisplayPageObjectProvider :
+								relatedLayoutDisplayPageObjectProviders) {
+
+						relatedLayoutDisplayPageObjectProvidersMap.put(
+							relatedLayoutDisplayPageObjectProvider.
+								getExternalReferenceCode(),
+							relatedLayoutDisplayPageObjectProvider);
+					}
+				}
+
+				List<InfoItemEntry> infoItemEntries =
+					currentInfoItemEntry.getInfoItemEntries(
+						formRelationshipStyledLayoutStructureItem.
+							getContentType());
+
+				if (infoItemEntries.isEmpty()) {
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY,
+						new InfoItemEntry(
+							relatedItemExternalReferenceCode,
+							parentItemExternalReferenceCode));
+
+					_renderFormRelationshipStyledLayoutStructureItemContent(
+						formRelationshipStyledLayoutStructureItem,
+						formRelationshipStyledLayoutStructureItemContentId,
+						infoForm, null);
+				}
+
+				for (InfoItemEntry infoItemEntry : infoItemEntries) {
+					LayoutDisplayPageObjectProvider<?>
+						relatedLayoutDisplayPageObjectProvider =
+							relatedLayoutDisplayPageObjectProvidersMap.get(
+								infoItemEntry.getExternalReferenceCode());
+
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY,
+						infoItemEntry);
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.
+							LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE,
+						infoItemEntry.getParentExternalReferenceCode());
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.
+							LAYOUT_RELATED_ITEM_DISPLAY_PAGE_OBJECT_PROVIDER,
+						relatedLayoutDisplayPageObjectProvider);
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.
+							LAYOUT_RELATED_ITEM_EXTERNAL_REFERENCE_CODE,
+						infoItemEntry.getExternalReferenceCode());
+
+					_renderFormRelationshipStyledLayoutStructureItemContent(
+						formRelationshipStyledLayoutStructureItem,
+						formRelationshipStyledLayoutStructureItemContentId,
+						infoForm, relatedLayoutDisplayPageObjectProvider);
+				}
+			}
+			else if (ListUtil.isEmpty(
+						relatedLayoutDisplayPageObjectProviders)) {
+
 				_renderFormRelationshipStyledLayoutStructureItemContent(
 					formRelationshipStyledLayoutStructureItem,
 					formRelationshipStyledLayoutStructureItemContentId,
 					infoForm, null);
 			}
 			else {
-				List<? extends LayoutDisplayPageObjectProvider<?>>
-					relatedLayoutDisplayPageObjectProviders = null;
+				for (LayoutDisplayPageObjectProvider<?>
+						relatedLayoutDisplayPageObjectProvider :
+							relatedLayoutDisplayPageObjectProviders) {
 
-				if (currentRelatedLayoutDisplayPageObjectProvider != null) {
-					relatedLayoutDisplayPageObjectProviders =
-						currentRelatedLayoutDisplayPageObjectProvider.
-							getRelatedLayoutDisplayPageObjectProviders(
-								formRelationshipStyledLayoutStructureItem.
-									getContentType());
-				}
-				else {
-					relatedLayoutDisplayPageObjectProviders =
-						layoutDisplayPageObjectProvider.
-							getRelatedLayoutDisplayPageObjectProviders(
-								formRelationshipStyledLayoutStructureItem.
-									getContentType());
-				}
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.
+							LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE,
+						relatedLayoutDisplayPageObjectProvider.
+							getParentExternalReferenceCode());
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.
+							LAYOUT_RELATED_ITEM_DISPLAY_PAGE_OBJECT_PROVIDER,
+						relatedLayoutDisplayPageObjectProvider);
+					_httpServletRequest.setAttribute(
+						LayoutStructureRendererConstants.
+							LAYOUT_RELATED_ITEM_EXTERNAL_REFERENCE_CODE,
+						relatedLayoutDisplayPageObjectProvider.
+							getExternalReferenceCode());
 
-				if (ListUtil.isEmpty(relatedLayoutDisplayPageObjectProviders)) {
 					_renderFormRelationshipStyledLayoutStructureItemContent(
 						formRelationshipStyledLayoutStructureItem,
 						formRelationshipStyledLayoutStructureItemContentId,
-						infoForm, null);
-				}
-				else {
-					for (LayoutDisplayPageObjectProvider<?>
-							relatedLayoutDisplayPageObjectProvider :
-								relatedLayoutDisplayPageObjectProviders) {
-
-						_httpServletRequest.setAttribute(
-							LayoutStructureRendererConstants.
-								LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE,
-							relatedLayoutDisplayPageObjectProvider.
-								getParentExternalReferenceCode());
-						_httpServletRequest.setAttribute(
-							LayoutStructureRendererConstants.
-								LAYOUT_RELATED_ITEM_DISPLAY_PAGE_OBJECT_PROVIDER,
-							relatedLayoutDisplayPageObjectProvider);
-						_httpServletRequest.setAttribute(
-							LayoutStructureRendererConstants.
-								LAYOUT_RELATED_ITEM_EXTERNAL_REFERENCE_CODE,
-							relatedLayoutDisplayPageObjectProvider.
-								getExternalReferenceCode());
-
-						_renderFormRelationshipStyledLayoutStructureItemContent(
-							formRelationshipStyledLayoutStructureItem,
-							formRelationshipStyledLayoutStructureItemContentId,
-							infoForm, relatedLayoutDisplayPageObjectProvider);
-					}
+						infoForm, relatedLayoutDisplayPageObjectProvider);
 				}
 			}
 
@@ -1179,6 +1240,9 @@ public class LayoutStructureRenderer {
 			}
 		}
 		finally {
+			_httpServletRequest.setAttribute(
+				LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY,
+				currentInfoItemEntry);
 			_httpServletRequest.setAttribute(
 				LayoutStructureRendererConstants.
 					LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE,
@@ -1563,6 +1627,18 @@ public class LayoutStructureRenderer {
 			_httpServletRequest,
 			"infoFormParameterMap" + formStyledLayoutStructureItem.getItemId());
 
+		InfoItemEntry infoItemEntry = (InfoItemEntry)SessionMessages.get(
+			_httpServletRequest,
+			"infoItemEntry" + formStyledLayoutStructureItem.getItemId());
+
+		SessionMessages.remove(
+			_httpServletRequest,
+			"infoItemEntry" + formStyledLayoutStructureItem.getItemId());
+
+		_httpServletRequest.setAttribute(
+			LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY,
+			infoItemEntry);
+
 		if (readOnly) {
 			jspWriter.write("<fieldset disabled=\"disabled\">");
 		}
@@ -1571,6 +1647,9 @@ public class LayoutStructureRenderer {
 			formStyledLayoutStructureItem.getChildrenItemIds(), infoForm);
 
 		SessionMessages.remove(_httpServletRequest, "infoFormParameterMap");
+
+		_httpServletRequest.removeAttribute(
+			LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY);
 
 		if (readOnly) {
 			jspWriter.write("</fieldset>");
