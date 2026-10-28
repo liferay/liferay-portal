@@ -22,6 +22,7 @@ import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.DuplicateObjectRelationshipException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectEntryGroupIdException;
+import com.liferay.object.exception.ObjectFieldNameException;
 import com.liferay.object.exception.ObjectRelationshipDeletionTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
 import com.liferay.object.exception.ObjectRelationshipNameException;
@@ -201,6 +202,7 @@ public class ObjectRelationshipLocalServiceTest {
 			_objectDefinition1, _objectDefinition2, false);
 		_testAddObjectRelationshipOneToMany(
 			_objectDefinition1, _objectDefinition2, true);
+		_testAddObjectRelationshipWithObjectFieldName();
 		_testCreateManyToManyObjectRelationshipTable(_objectDefinition1, false);
 		_testCreateManyToManyObjectRelationshipTable(_objectDefinition1, true);
 
@@ -1840,6 +1842,80 @@ public class ObjectRelationshipLocalServiceTest {
 			expectedObjectField.isRequired(), actualObjectField.isRequired());
 		Assert.assertEquals(
 			expectedObjectField.isSystem(), actualObjectField.isSystem());
+
+		_objectRelationshipLocalService.deleteObjectRelationship(
+			objectRelationship);
+	}
+
+	private void _testAddObjectRelationshipWithObjectFieldName()
+		throws Exception {
+
+		String objectRelationshipName = "a" + RandomTestUtil.randomString();
+
+		ObjectRelationship objectRelationship =
+			_objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				objectRelationshipName, false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY, null);
+
+		AssertUtils.assertFailure(
+			ObjectFieldNameException.MustNotBeEqualToObjectRelationshipName.
+				class,
+			StringBundler.concat(
+				"There is already an object relationship with this name in ",
+				"the object definition \"", _objectDefinition1.getShortName(),
+				".\" Object fields and object relationships cannot have the ",
+				"same name."),
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition3.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				"a" + RandomTestUtil.randomString(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+				new ObjectFieldBuilder(
+				).externalReferenceCode(
+					RandomTestUtil.randomString()
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					objectRelationshipName
+				).readOnly(
+					ObjectFieldConstants.READ_ONLY_FALSE
+				).build()));
+
+		String name = "a" + RandomTestUtil.randomString();
+
+		AssertUtils.assertFailure(
+			ObjectFieldNameException.MustNotBeEqualToObjectRelationshipName.
+				class,
+			StringBundler.concat(
+				"There is already an object relationship with this name in ",
+				"the object definition \"", _objectDefinition3.getShortName(),
+				".\" Object fields and object relationships cannot have the ",
+				"same name."),
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition3.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString()),
+				name, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+				new ObjectFieldBuilder(
+				).externalReferenceCode(
+					RandomTestUtil.randomString()
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					name
+				).readOnly(
+					ObjectFieldConstants.READ_ONLY_FALSE
+				).build()));
 
 		_objectRelationshipLocalService.deleteObjectRelationship(
 			objectRelationship);
