@@ -7,6 +7,7 @@ package com.liferay.commerce.order.web.internal.portlet.action;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.commerce.constants.CommerceAddressConstants;
+import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.constants.CommercePortletKeys;
 import com.liferay.commerce.constants.CommerceWebKeys;
@@ -34,6 +35,11 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.servlet.SessionErrors;
@@ -244,6 +250,19 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 		_commerceOrderService.updateShippingAddress(
 			commerceOrder.getCommerceOrderId(),
 			commerceAddress.getCommerceAddressId());
+	}
+
+	private void _checkPermission(CommerceOrder commerceOrder, String actionId)
+		throws PortalException {
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		_commerceOrderModelResourcePermission.check(
+			permissionChecker, commerceOrder, ActionKeys.UPDATE);
+
+		_commerceOrderPortletResourcePermission.check(
+			permissionChecker, commerceOrder.getGroupId(), actionId);
 	}
 
 	private void _deleteCommerceOrders(ActionRequest actionRequest)
@@ -581,6 +600,10 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 		long commerceOrderId = ParamUtil.getLong(
 			actionRequest, "commerceOrderId");
 
+		_checkPermission(
+			_commerceOrderService.getCommerceOrder(commerceOrderId),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+
 		String paymentMethodKey = ParamUtil.getString(
 			actionRequest, "paymentMethodKey");
 
@@ -594,11 +617,15 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 		long commerceOrderId = ParamUtil.getLong(
 			actionRequest, "commerceOrderId");
 
-		int paymentStatus = ParamUtil.getInteger(
-			actionRequest, "paymentStatus");
-
 		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
 			commerceOrderId);
+
+		_checkPermission(
+			commerceOrder,
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+
+		int paymentStatus = ParamUtil.getInteger(
+			actionRequest, "paymentStatus");
 
 		_commercePaymentEngine.updateOrderPaymentStatus(
 			commerceOrderId, paymentStatus, commerceOrder.getTransactionId(),
@@ -758,6 +785,17 @@ public class EditCommerceOrderMVCActionCommand extends BaseMVCActionCommand {
 
 	@Reference
 	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.commerce.model.CommerceOrder)"
+	)
+	private ModelResourcePermission<CommerceOrder>
+		_commerceOrderModelResourcePermission;
+
+	@Reference(
+		target = "(resource.name=" + CommerceOrderConstants.RESOURCE_NAME + ")"
+	)
+	private PortletResourcePermission _commerceOrderPortletResourcePermission;
 
 	@Reference
 	private CommerceOrderService _commerceOrderService;
