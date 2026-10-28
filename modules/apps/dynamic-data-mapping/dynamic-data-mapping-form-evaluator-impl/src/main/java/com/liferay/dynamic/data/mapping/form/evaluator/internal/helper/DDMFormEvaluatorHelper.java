@@ -480,6 +480,10 @@ public class DDMFormEvaluatorHelper {
 	private Map<String, Object> _getFieldValues() {
 		Map<String, Object> fieldValues = new HashMap<>();
 
+		if (!_ddmFormEvaluatorEvaluateRequest.isViewMode()) {
+			return fieldValues;
+		}
+
 		for (Map.Entry<DDMFormEvaluatorFieldContextKey, Map<String, Object>>
 				entry : _ddmFormFieldsPropertyChanges.entrySet()) {
 
