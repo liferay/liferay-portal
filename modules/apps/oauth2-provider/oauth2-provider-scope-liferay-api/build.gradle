@@ -2,7 +2,4 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly project(":apps:oauth2-provider:oauth2-provider-scope-api")
-	compileOnly project(":apps:oauth2-provider:oauth2-provider-scope-spi")
-	compileOnly project(":core:osgi-service-tracker-collections")
 }
