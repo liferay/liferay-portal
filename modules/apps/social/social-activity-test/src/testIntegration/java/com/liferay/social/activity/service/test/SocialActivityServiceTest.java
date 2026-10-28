@@ -12,24 +12,29 @@ import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.documentlibrary.constants.DLConstants;
 import com.liferay.portlet.social.util.SocialActivityHierarchyEntryThreadLocal;
@@ -83,8 +88,8 @@ public class SocialActivityServiceTest {
 
 	@Test
 	public void testFilterActivities() throws Exception {
-		FileEntry fileEntry = addFileEntry(
-			RandomTestUtil.randomString() + ".txt",
+		FileEntry fileEntry = _addFileEntry(
+			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
 			RandomTestUtil.randomString());
 
 		deleteGuestPermission(fileEntry);
@@ -104,13 +109,104 @@ public class SocialActivityServiceTest {
 	}
 
 	@Test
+	public void testGetActivitiesCount() throws Exception {
+		FileEntry fileEntry1 = _addFileEntry(
+			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		FileEntry fileEntry2 = _addFileEntry(
+			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		deleteGuestPermission(fileEntry2);
+
+		UserTestUtil.setUser(_user);
+
+		long classNameId = PortalUtil.getClassNameId(DLFileEntry.class);
+
+		Assert.assertEquals(
+			1,
+			SocialActivityServiceUtil.getActivitiesCount(
+				0, classNameId, fileEntry1.getFileEntryId()));
+		Assert.assertEquals(
+			0,
+			SocialActivityServiceUtil.getActivitiesCount(
+				0, classNameId, fileEntry2.getFileEntryId()));
+	}
+
+	@Test
+	public void testGetGroupActivitiesCount() throws Exception {
+		_group.setType(GroupConstants.TYPE_SITE_PRIVATE);
+
+		_group = GroupLocalServiceUtil.updateGroup(_group);
+
+		_addFileEntry(
+			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			1,
+			SocialActivityServiceUtil.getGroupActivitiesCount(
+				_group.getGroupId()));
+
+		UserTestUtil.setUser(_user);
+
+		Assert.assertEquals(
+			0,
+			SocialActivityServiceUtil.getGroupActivitiesCount(
+				_group.getGroupId()));
+	}
+
+	@Test
+	public void testGetOrganizationActivitiesCount() throws Exception {
+		_organization = OrganizationTestUtil.addOrganization(true);
+
+		_addFileEntry(
+			RandomTestUtil.randomString() + ".txt", _organization.getGroupId(),
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			1,
+			SocialActivityServiceUtil.getOrganizationActivitiesCount(
+				_organization.getOrganizationId()));
+
+		UserTestUtil.setUser(_user);
+
+		Assert.assertEquals(
+			0,
+			SocialActivityServiceUtil.getOrganizationActivitiesCount(
+				_organization.getOrganizationId()));
+	}
+
+	@Test
+	public void testGetUserActivitiesCount() throws Exception {
+		_addFileEntry(
+			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
+			RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			SocialActivityLocalServiceUtil.getUserActivitiesCount(
+				TestPropsValues.getUserId()),
+			SocialActivityServiceUtil.getUserActivitiesCount(
+				TestPropsValues.getUserId()));
+
+		UserTestUtil.setUser(_user);
+
+		Assert.assertEquals(
+			0,
+			SocialActivityServiceUtil.getUserActivitiesCount(
+				TestPropsValues.getUserId()));
+	}
+
+	@Test
 	public void testPagingFilterActivities() throws Exception {
 		for (int i = 0; i < 4; i++) {
-			addFileEntry(
-				RandomTestUtil.randomString() + ".txt", String.valueOf(i));
+			_addFileEntry(
+				RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
+				String.valueOf(i));
 
-			FileEntry fileEntry = addFileEntry(
-				RandomTestUtil.randomString() + ".txt",
+			FileEntry fileEntry = _addFileEntry(
+				RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
 				RandomTestUtil.randomString());
 
 			deleteGuestPermission(fileEntry);
@@ -153,19 +249,6 @@ public class SocialActivityServiceTest {
 		}
 	}
 
-	protected FileEntry addFileEntry(String fileName, String title)
-		throws Exception {
-
-		return DLAppLocalServiceUtil.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
-			ContentTypes.TEXT_PLAIN, title, StringPool.BLANK, StringPool.BLANK,
-			StringPool.BLANK, TestDataConstants.TEST_BYTE_ARRAY, null, null,
-			null,
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
-	}
-
 	protected void deleteGuestPermission(FileEntry fileEntry) throws Exception {
 		Role role = RoleLocalServiceUtil.getRole(
 			_group.getCompanyId(), RoleConstants.GUEST);
@@ -177,8 +260,24 @@ public class SocialActivityServiceTest {
 			new String[0]);
 	}
 
+	private FileEntry _addFileEntry(String fileName, long groupId, String title)
+		throws Exception {
+
+		return DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), groupId,
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
+			ContentTypes.TEXT_PLAIN, title, StringPool.BLANK, StringPool.BLANK,
+			StringPool.BLANK, TestDataConstants.TEST_BYTE_ARRAY, null, null,
+			null,
+			ServiceContextTestUtil.getServiceContext(
+				groupId, TestPropsValues.getUserId()));
+	}
+
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@DeleteAfterTestRun
+	private Organization _organization;
 
 	@DeleteAfterTestRun
 	private User _user;
