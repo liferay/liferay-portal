@@ -6,5 +6,4 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }

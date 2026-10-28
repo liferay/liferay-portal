@@ -1,5 +1,4 @@
 dependencies {
 	testIntegrationImplementation project(":apps:frontend-js:frontend-js-importmaps-extender-api")
-	testIntegrationImplementation project(":core:osgi-service-tracker-collections")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
