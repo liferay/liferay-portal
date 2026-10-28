@@ -21,8 +21,10 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -109,6 +111,7 @@ public class SocialActivityServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112317")
 	public void testGetActivitiesCount() throws Exception {
 		FileEntry fileEntry1 = _addFileEntry(
 			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
@@ -135,6 +138,7 @@ public class SocialActivityServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112317")
 	public void testGetGroupActivitiesCount() throws Exception {
 		_group.setType(GroupConstants.TYPE_SITE_PRIVATE);
 
@@ -158,27 +162,31 @@ public class SocialActivityServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112317")
 	public void testGetOrganizationActivitiesCount() throws Exception {
-		_organization = OrganizationTestUtil.addOrganization(true);
+		Organization organization = OrganizationTestUtil.addOrganization(true);
 
 		_addFileEntry(
-			RandomTestUtil.randomString() + ".txt", _organization.getGroupId(),
+			RandomTestUtil.randomString() + ".txt", organization.getGroupId(),
 			RandomTestUtil.randomString());
 
 		Assert.assertEquals(
 			1,
 			SocialActivityServiceUtil.getOrganizationActivitiesCount(
-				_organization.getOrganizationId()));
+				organization.getOrganizationId()));
 
 		UserTestUtil.setUser(_user);
 
 		Assert.assertEquals(
 			0,
 			SocialActivityServiceUtil.getOrganizationActivitiesCount(
-				_organization.getOrganizationId()));
+				organization.getOrganizationId()));
+
+		OrganizationLocalServiceUtil.deleteOrganization(organization);
 	}
 
 	@Test
+	@TestInfo("LPD-112317")
 	public void testGetUserActivitiesCount() throws Exception {
 		_addFileEntry(
 			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
@@ -275,9 +283,6 @@ public class SocialActivityServiceTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
-
-	@DeleteAfterTestRun
-	private Organization _organization;
 
 	@DeleteAfterTestRun
 	private User _user;
