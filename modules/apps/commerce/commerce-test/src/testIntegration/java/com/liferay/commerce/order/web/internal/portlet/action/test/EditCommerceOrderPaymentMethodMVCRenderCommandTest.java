@@ -72,12 +72,12 @@ public class EditCommerceOrderPaymentMethodMVCRenderCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_user = UserTestUtil.addUser();
-
 		_group = GroupTestUtil.addGroup();
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group.getGroupId());
+
+		_user = UserTestUtil.addUser();
 
 		_accountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
