@@ -1,19 +1,12 @@
 dependencies {
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.metatype", version: "1.3.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
-	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "org.aspectj", name: "aspectjweaver", version: "1.9.26"
 	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
-	testImplementation project(":core:petra:petra-concurrent")
-	testImplementation project(":core:petra:petra-lang")
-	testImplementation project(":core:petra:petra-memory")
-	testImplementation project(":core:petra:petra-process")
 }

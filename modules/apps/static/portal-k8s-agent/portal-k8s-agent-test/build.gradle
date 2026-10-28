@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "com.squareup.okhttp3", name: "mockwebserver", version: "4.12.0"
 	testIntegrationImplementation group: "io.fabric8", name: "kubernetes-server-mock", version: "5.12.2"
 	testIntegrationImplementation group: "io.fabric8", name: "mockwebserver", version: "0.2.2"

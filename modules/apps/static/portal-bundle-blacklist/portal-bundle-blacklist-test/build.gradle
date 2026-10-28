@@ -3,7 +3,6 @@ dependencies {
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation project(":apps:static:portal-lpkg-deployer:portal-lpkg-deployer-test-util")
 	testImplementation project(":core:petra:petra-io")
-	testImplementation project(":core:petra:petra-lang")
 	testImplementation project(":core:petra:petra-string")
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
