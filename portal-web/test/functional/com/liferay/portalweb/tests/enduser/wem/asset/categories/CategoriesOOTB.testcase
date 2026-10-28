@@ -373,61 +373,6 @@ definition {
 	}
 
 	@description = ""
-	@priority = 3
-	test CheckBlogFilterByCategoryAtCollection {
-		property portal.acceptance = "false";
-
-		task ("Add a global category") {
-			var categoryId1 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 1",
-				vocabularyName = "Audience");
-			var categoryId2 = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 1",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create a blog") {
-			HeadlessBlog.addBlogEntry(
-				assetCategoryIds = "${categoryId1},${categoryId2}",
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Create a Dynamic Collection") {
-			JSONAssetlist.addDynamicAssetListEntryWithItemType(
-				groupName = "Test Site Name",
-				itemSubtype = "All Subtypes",
-				itemType = "Blogs Entry",
-				title = "Dynamic Collection Test");
-		}
-
-		task ("Create a first variation for the collection and filter web contents by category") {
-			AssetListsAdmin.openAssetListsAdmin(siteURLKey = "test-site-name");
-
-			AssetListsAdmin.editAssetList(assetListTitle = "Dynamic Collection Test");
-
-			AssetListsAdmin.addCategoriesFilter(
-				categoryNameList = "Audience 1,Stage 1",
-				queryAndOperator = "All",
-				queryContains = "Contains");
-		}
-
-		task ("Go to Content Dashboard and check the asset is being counted at graph") {
-			LexiconEntry.gotoVerticalEllipsisMenuItemNoError(menuItem = "View Items");
-
-			SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-			AssertTextEquals(
-				key_tableEntry = "Blogs Entry Title",
-				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
-				value1 = "Blogs Entry Title");
-		}
-	}
-
-	@description = ""
 	@priority = 4
 	test FilterBlogByCategoryInCollection {
 		property portal.acceptance = "true";
@@ -468,6 +413,19 @@ definition {
 				categoryNameList = "Audience 1,Stage 1",
 				queryAndOperator = "All",
 				queryContains = "Contains");
+		}
+
+		task ("View the blogs entry in the items of the collection") {
+			LexiconEntry.gotoVerticalEllipsisMenuItemNoError(menuItem = "View Items");
+
+			SelectFrame(locator1 = "IFrame#MODAL_BODY");
+
+			AssertTextEquals(
+				key_tableEntry = "Blogs Entry Title",
+				locator1 = "LexiconTable#TABLE_ENTRY_TITLE",
+				value1 = "Blogs Entry Title");
+
+			SelectFrameTop();
 		}
 
 		task ("Add a Collection Display to page") {
