@@ -60,11 +60,6 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 			scaledImageFile = _scaleAndConvertToPNG(
 				amImageConfigurationEntry, imageFile);
 
-			if (!scaledImageFile.exists()) {
-				throw new AMRuntimeException.IOException(
-					"Unable to scale image using ImageMagick");
-			}
-
 			ImageBag imageBag = ImageToolUtil.read(scaledImageFile);
 
 			RenderedImage renderedImage = imageBag.getRenderedImage();
@@ -108,11 +103,17 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 		Map<String, String> properties =
 			amImageConfigurationEntry.getProperties();
 
-		return _file.createTempFile(
-			_imageMagick.scale(
-				_file.getBytes(imageFile), ImageConstants.TYPE_PNG,
-				GetterUtil.getInteger(properties.get("max-width")),
-				GetterUtil.getInteger(properties.get("max-height"))));
+		byte[] bytes = _imageMagick.scale(
+			_file.getBytes(imageFile), ImageConstants.TYPE_PNG,
+			GetterUtil.getInteger(properties.get("max-width")),
+			GetterUtil.getInteger(properties.get("max-height")));
+
+		if (bytes == null) {
+			throw new AMRuntimeException.IOException(
+				"Unable to scale image using ImageMagick");
+		}
+
+		return _file.createTempFile(bytes);
 	}
 
 	@Reference
