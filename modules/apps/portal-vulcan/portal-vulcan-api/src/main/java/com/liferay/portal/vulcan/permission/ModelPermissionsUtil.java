@@ -49,7 +49,7 @@ public class ModelPermissionsUtil {
 				continue;
 			}
 
-			Role role = _getRole(companyId, permission, roleLocalService);
+			Role role = _getOrAddRole(companyId, permission, roleLocalService);
 
 			for (ResourceAction resourceAction : resourceActions) {
 				resourcePermissionLocalService.removeResourcePermission(
@@ -75,7 +75,7 @@ public class ModelPermissionsUtil {
 			new String[0], new String[0], resourceName);
 
 		for (Permission permission : permissions) {
-			_getRole(companyId, permission, roleLocalService);
+			_getOrAddRole(companyId, permission, roleLocalService);
 
 			String[] actionIds = permission.getActionIds();
 
@@ -90,7 +90,7 @@ public class ModelPermissionsUtil {
 		return modelPermissions;
 	}
 
-	private static Role _getRole(
+	private static Role _getOrAddRole(
 			long companyId, Permission permission,
 			RoleLocalService roleLocalService)
 		throws PortalException {
