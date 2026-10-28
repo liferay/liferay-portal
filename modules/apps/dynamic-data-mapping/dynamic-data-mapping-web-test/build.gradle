@@ -1,17 +1,13 @@
 dependencies {
-	testImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	testImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	testImplementation group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.1"
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-web")
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	testIntegrationImplementation project(":apps:data-engine:data-engine-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
-	testIntegrationImplementation project(":apps:export-import:export-import-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")

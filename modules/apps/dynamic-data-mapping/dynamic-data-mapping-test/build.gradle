@@ -4,13 +4,11 @@ dependencies {
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	testImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	testImplementation group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.1"
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testImplementation project(":apps:depot:depot-api")
 	testImplementation project(":apps:document-library:document-library-api")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
-	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-expression")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-service")
@@ -26,10 +24,8 @@ dependencies {
 	testImplementation project(":apps:portal-search:portal-search-test-util")
 	testImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testImplementation project(":apps:portal:portal-aop-api")
-	testImplementation project(":apps:static:osgi:osgi-util")
 	testImplementation project(":apps:view-count:view-count-api")
 	testImplementation project(":core:osgi-service-tracker-collections")
-	testImplementation project(":core:petra:petra-concurrent")
 	testImplementation project(":core:petra:petra-function")
 	testImplementation project(":core:petra:petra-lang")
 	testImplementation project(":core:petra:petra-memory")
@@ -50,7 +46,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-item-selector-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
-	testIntegrationImplementation project(":apps:fragment:fragment-service")
 	testIntegrationImplementation project(":apps:item-selector:item-selector-api")
 	testIntegrationImplementation project(":apps:journal:journal-article-dynamic-data-mapping-form-field-type-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
