@@ -120,7 +120,7 @@ public class StyleBookEntryZipProcessorImpl
 		}
 
 		StyleBookEntry styleBookEntry =
-			_styleBookEntryEntryLocalService.fetchStyleBookEntry(
+			_styleBookEntryLocalService.fetchStyleBookEntry(
 				groupId, styleBookEntryKey);
 
 		if ((styleBookEntry != null) && !overwrite) {
@@ -129,7 +129,7 @@ public class StyleBookEntryZipProcessorImpl
 
 		try {
 			if (styleBookEntry == null) {
-				styleBookEntry = _styleBookEntryEntryService.addStyleBookEntry(
+				styleBookEntry = _styleBookEntryService.addStyleBookEntry(
 					null, groupId, false, frontendTokenDefinition,
 					frontendTokensValues, name, styleBookEntryKey, themeId,
 					ServiceContextThreadLocal.getServiceContext());
@@ -140,7 +140,7 @@ public class StyleBookEntryZipProcessorImpl
 					StyleBookActionKeys.MANAGE_STYLE_BOOK_ENTRIES);
 
 				styleBookEntry =
-					_styleBookEntryEntryLocalService.updateStyleBookEntry(
+					_styleBookEntryLocalService.updateStyleBookEntry(
 						styleBookEntry.getUserId(),
 						styleBookEntry.getStyleBookEntryId(),
 						styleBookEntry.isDefaultStyleBookEntry(),
@@ -219,7 +219,7 @@ public class StyleBookEntryZipProcessorImpl
 				StringUtil.read(
 					zipFile.getInputStream(zipFile.getEntry(fileName))));
 
-			key = _styleBookEntryEntryLocalService.generateStyleBookEntryKey(
+			key = _styleBookEntryLocalService.generateStyleBookEntryKey(
 				groupId, styleBookJSONObject.getString("name"));
 		}
 
@@ -249,7 +249,7 @@ public class StyleBookEntryZipProcessorImpl
 		if (repository == null) {
 			if (groupId == GroupConstants.DEFAULT_PARENT_GROUP_ID) {
 				StyleBookEntry styleBookEntry =
-					_styleBookEntryEntryLocalService.getStyleBookEntry(classPK);
+					_styleBookEntryLocalService.getStyleBookEntry(classPK);
 
 				Company company = _companyLocalService.getCompany(
 					styleBookEntry.getCompanyId());
@@ -352,7 +352,7 @@ public class StyleBookEntryZipProcessorImpl
 		}
 
 		if (defaultStyleBookEntry) {
-			_styleBookEntryEntryService.updateDefaultStyleBookEntry(
+			_styleBookEntryService.updateDefaultStyleBookEntry(
 				styleBookEntry.getStyleBookEntryId(), true);
 		}
 
@@ -368,7 +368,7 @@ public class StyleBookEntryZipProcessorImpl
 			String thumbnailPath = jsonObject.getString("thumbnailPath");
 
 			if (Validator.isNotNull(thumbnailPath)) {
-				_styleBookEntryEntryService.updatePreviewFileEntryId(
+				_styleBookEntryService.updatePreviewFileEntryId(
 					styleBookEntry.getStyleBookEntryId(),
 					_getPreviewFileEntryId(
 						userId, groupId, zipFile,
@@ -399,10 +399,10 @@ public class StyleBookEntryZipProcessorImpl
 	private PortletResourcePermission _portletResourcePermission;
 
 	@Reference
-	private StyleBookEntryLocalService _styleBookEntryEntryLocalService;
+	private StyleBookEntryLocalService _styleBookEntryLocalService;
 
 	@Reference
-	private StyleBookEntryService _styleBookEntryEntryService;
+	private StyleBookEntryService _styleBookEntryService;
 
 	@Reference
 	private ZipWriterFactory _zipWriterFactory;
