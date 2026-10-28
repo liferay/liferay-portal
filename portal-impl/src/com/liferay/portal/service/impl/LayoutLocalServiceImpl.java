@@ -412,6 +412,12 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		layout.setStatusDate(serviceContext.getCreateDate(date));
 		layout.setExpandoBridgeAttributes(serviceContext);
 
+		long launchSetId = ParamUtil.getLong(serviceContext, "launchSetId");
+
+		if (launchSetId > 0) {
+			layout.setLaunchSetId(launchSetId);
+		}
+
 		layout = layoutLocalService.updateLayout(layout);
 
 		// Layout friendly URLs

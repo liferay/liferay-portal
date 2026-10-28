@@ -264,21 +264,26 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
 
-		Layout launchDraftLayout = _layoutLocalService.addLayout(
-			StringBundler.concat(
-				layout.getExternalReferenceCode(), "-launch-", launchSetId),
-			serviceContext.getUserId(), layout.getGroupId(),
-			layout.isPrivateLayout(), layout.getParentLayoutId(),
-			_portal.getClassNameId(Layout.class), layout.getPlid(),
-			baseLayout.getNameMap(), baseLayout.getTitleMap(),
-			baseLayout.getDescriptionMap(), baseLayout.getKeywordsMap(),
-			baseLayout.getRobotsMap(), layout.getType(),
-			baseLayout.getTypeSettings(), true, true, Collections.emptyMap(),
-			baseLayout.getMasterLayoutPageTemplateEntryERC(), serviceContext);
+		serviceContext.setAttribute("launchSetId", launchSetId);
 
-		launchDraftLayout.setLaunchSetId(launchSetId);
-
-		return _layoutLocalService.updateLayout(launchDraftLayout);
+		try {
+			return _layoutLocalService.addLayout(
+				StringBundler.concat(
+					layout.getExternalReferenceCode(), "-launch-", launchSetId),
+				serviceContext.getUserId(), layout.getGroupId(),
+				layout.isPrivateLayout(), layout.getParentLayoutId(),
+				_portal.getClassNameId(Layout.class), layout.getPlid(),
+				baseLayout.getNameMap(), baseLayout.getTitleMap(),
+				baseLayout.getDescriptionMap(), baseLayout.getKeywordsMap(),
+				baseLayout.getRobotsMap(), layout.getType(),
+				baseLayout.getTypeSettings(), true, true,
+				Collections.emptyMap(),
+				baseLayout.getMasterLayoutPageTemplateEntryERC(),
+				serviceContext);
+		}
+		finally {
+			serviceContext.removeAttribute("launchSetId");
+		}
 	}
 
 	private Layout _copyLayoutContent(Layout sourceLayout, Layout targetLayout)
