@@ -20,6 +20,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.instance.lifecycle.BasePortalInstanceLifecycleListener;
 import com.liferay.portal.instance.lifecycle.PortalInstanceLifecycleListener;
+import com.liferay.portal.kernel.dao.db.DBInspector;
 import com.liferay.portal.kernel.dao.jdbc.CurrentConnection;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -175,7 +176,13 @@ public class CompanyObjectDefinitionPortalInstanceLifecycleListener
 			Connection connection, String newData, String oldData)
 		throws Exception {
 
+		DBInspector dbInspector = new DBInspector(connection);
+
 		for (Map.Entry<String, String> entry : columnNamesMap.entrySet()) {
+			if (!dbInspector.hasTable(entry.getKey())) {
+				continue;
+			}
+
 			String[] columnNames = StringUtil.split(entry.getValue());
 
 			try (PreparedStatement preparedStatement =
