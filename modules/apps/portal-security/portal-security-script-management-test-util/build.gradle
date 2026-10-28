@@ -4,7 +4,6 @@ dependencies {
 	compileOnly project(":apps:portal-configuration:portal-configuration-test-util")
 	compileOnly project(":apps:portal-security:portal-security-script-management-api")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-string")
 }
 
 liferay {

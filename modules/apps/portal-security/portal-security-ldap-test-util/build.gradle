@@ -1,11 +1,7 @@
 dependencies {
 	compileInclude project(":core:petra:petra-string")
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
-	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-security:portal-security-ldap-api")
-	compileOnly project(":apps:static:osgi:osgi-util")
 }
 
 liferay {
