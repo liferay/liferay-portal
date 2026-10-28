@@ -290,7 +290,7 @@ public class LocaleUtilTest {
 	}
 
 	@Test
-	public void testToJSONString() {
+	public void testToJSON() {
 		Locale defaultDisplayLocale = Locale.getDefault(
 			Locale.Category.DISPLAY);
 
@@ -310,7 +310,7 @@ public class LocaleUtilTest {
 					"\"script\": \"\", \"unicodeLocaleAttributes\":[], ",
 					"\"unicodeLocaleKeys\":[], \"variant\": \"\"}"),
 				json);
-			Assert.assertSame(json, LocaleUtil.toJSONString(Locale.US));
+			Assert.assertSame(json, LocaleUtil.toJSON(Locale.US));
 		}
 		finally {
 			Locale.setDefault(Locale.Category.DISPLAY, defaultDisplayLocale);
