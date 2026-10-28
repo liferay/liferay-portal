@@ -115,10 +115,6 @@ public interface WorkflowTaskManager {
 			Boolean completed)
 		throws WorkflowException;
 
-	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
-			long workflowTaskId)
-		throws WorkflowException;
-
 	public List<WorkflowTask> getWorkflowTasks(
 			long companyId, Boolean completed, int start, int end,
 			OrderByComparator<WorkflowTask> orderByComparator)

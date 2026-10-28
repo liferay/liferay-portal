@@ -471,14 +471,6 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 	}
 
 	@Override
-	public List<WorkflowTransition> getWorkflowTaskWorkflowTransitions(
-			long workflowTaskId)
-		throws WorkflowException {
-
-		return liberalGetNextWorkflowTransitions(workflowTaskId);
-	}
-
-	@Override
 	public List<WorkflowTask> getWorkflowTasks(
 			long companyId, Boolean completed, int start, int end,
 			OrderByComparator<WorkflowTask> orderByComparator)
