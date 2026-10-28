@@ -11,7 +11,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-product-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-type-virtual-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-type-virtual-order-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-product-type-virtual-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

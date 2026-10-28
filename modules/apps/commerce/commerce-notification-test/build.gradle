@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
@@ -8,7 +7,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-inventory-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-notification-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-notification-test-util")
-	testIntegrationImplementation project(":apps:commerce:commerce-payment-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":apps:notification:notification-api")

@@ -6,12 +6,10 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly group: "org.apache.commons", name: "commons-csv", version: "1.9.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:asset:asset-display-page-api")
-	compileOnly project(":apps:asset:asset-info-api")
 	compileOnly project(":apps:commerce:commerce-api")
 	compileOnly project(":apps:commerce:commerce-currency-api")
 	compileOnly project(":apps:commerce:commerce-frontend-api")
@@ -20,11 +18,9 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-pricing-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:commerce:commerce-report-api")
-	compileOnly project(":apps:commerce:commerce-shipping-engine-fixed-api")
 	compileOnly project(":apps:commerce:commerce-taglib")
 	compileOnly project(":apps:commerce:commerce-term-api")
 	compileOnly project(":apps:commerce:commerce-wish-list-api")
-	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-delivery-cart-api")
 	compileOnly project(":apps:digital-signature:digital-signature-api")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
@@ -42,7 +38,6 @@ dependencies {
 	compileOnly project(":apps:info:info-taglib")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
-	compileOnly project(":apps:item-selector:item-selector-taglib")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
@@ -59,7 +54,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
