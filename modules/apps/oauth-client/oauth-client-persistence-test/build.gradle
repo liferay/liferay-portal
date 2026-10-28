@@ -1,6 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testIntegrationImplementation group: "com.nimbusds", name: "oauth2-oidc-sdk", version: "11.13"
 	testIntegrationImplementation group: "net.minidev", name: "json-smart", version: "2.4.10"
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")

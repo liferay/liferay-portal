@@ -1,6 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-api")
 	testIntegrationImplementation project(":apps:oauth2-provider:oauth2-provider-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

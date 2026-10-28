@@ -5,7 +5,6 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation project(":apps:headless:headless-batch-engine:headless-batch-engine-client")
-	testIntegrationImplementation project(":apps:oauth-client:oauth-client-api")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-rest-api")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-rest-client")
