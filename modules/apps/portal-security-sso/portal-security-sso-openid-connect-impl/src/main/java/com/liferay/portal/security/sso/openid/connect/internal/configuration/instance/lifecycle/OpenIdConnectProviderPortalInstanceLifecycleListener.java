@@ -35,6 +35,7 @@ import com.liferay.portal.security.sso.openid.connect.internal.util.OpenIdConnec
 
 import java.util.Dictionary;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
@@ -63,19 +64,29 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 
 	@Override
 	public void portalInstanceRegistered(Company company) throws Exception {
+		_registeredCompanyIds.add(company.getCompanyId());
+
 		if (!_clusterMasterExecutor.isMaster()) {
 			return;
 		}
 
 		_properties.forEach(
 			(pid, properties) -> {
-				if (GetterUtil.getLong(properties.get("companyId")) ==
-						CompanyConstants.SYSTEM) {
+				long companyId = GetterUtil.getLong(
+					properties.get("companyId"));
+
+				if ((companyId == CompanyConstants.SYSTEM) ||
+					(companyId == company.getCompanyId())) {
 
 					_updateOAuthClientEntry(
 						company.getCompanyId(), null, properties);
 				}
 			});
+	}
+
+	@Override
+	public void portalInstanceUnregistered(Company company) throws Exception {
+		_registeredCompanyIds.remove(company.getCompanyId());
 	}
 
 	@Activate
@@ -516,6 +527,8 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 
 	private final Map<String, Dictionary<String, ?>> _properties =
 		new ConcurrentHashMap<>();
+	private final Set<Long> _registeredCompanyIds =
+		ConcurrentHashMap.newKeySet();
 
 	@Reference(
 		target = "(&(release.bundle.symbolic.name=com.liferay.oauth.client.persistence.service)(&(release.schema.version>=1.6.1)))"
@@ -557,8 +570,12 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 			if (companyId == CompanyConstants.SYSTEM) {
 				try {
 					_companyLocalService.forEachCompanyId(
-						curCompanyId -> _updateOAuthClientEntry(
-							curCompanyId, oldDictionary, dictionary));
+						curCompanyId -> {
+							if (_registeredCompanyIds.contains(curCompanyId)) {
+								_updateOAuthClientEntry(
+									curCompanyId, oldDictionary, dictionary);
+							}
+						});
 				}
 				catch (Exception exception) {
 					if (_log.isDebugEnabled()) {
@@ -569,7 +586,9 @@ public class OpenIdConnectProviderPortalInstanceLifecycleListener
 				return;
 			}
 
-			_updateOAuthClientEntry(companyId, oldDictionary, dictionary);
+			if (_registeredCompanyIds.contains(companyId)) {
+				_updateOAuthClientEntry(companyId, oldDictionary, dictionary);
+			}
 		}
 
 	}
