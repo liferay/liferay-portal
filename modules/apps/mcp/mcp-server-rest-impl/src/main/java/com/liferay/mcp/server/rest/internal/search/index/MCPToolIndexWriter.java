@@ -68,7 +68,7 @@ public class MCPToolIndexWriter {
 		synchronized (mcpToolIndexState) {
 			_mcpToolIndexCreator.deleteIfExists(companyId);
 
-			mcpToolIndexState.reset();
+			_mcpToolIndexStates.remove(companyId, mcpToolIndexState);
 		}
 	}
 
@@ -665,12 +665,6 @@ public class MCPToolIndexWriter {
 			_failedToolSetRetryTimes.remove(toolSetName);
 
 			_staleToolSetTokens.put(toolSetName, new Object());
-		}
-
-		public void reset() {
-			_indexedToolSetHashes.clear();
-
-			markAllToolSetsStale();
 		}
 
 		public void setIndexedToolSetHashes(Map<String, String> toolSetHashes) {
