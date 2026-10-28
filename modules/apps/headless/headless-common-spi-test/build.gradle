@@ -2,6 +2,5 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation project(":apps:headless:headless-common-spi")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
-	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

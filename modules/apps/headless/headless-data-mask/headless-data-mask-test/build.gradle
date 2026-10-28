@@ -9,7 +9,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:headless:headless-data-mask:headless-data-mask-api")
 	testIntegrationImplementation project(":apps:headless:headless-data-mask:headless-data-mask-client")
 	testIntegrationImplementation project(":apps:object:object-api")
-	testIntegrationImplementation project(":apps:object:object-test-util")
 	testIntegrationImplementation project(":apps:portal-odata:portal-odata-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

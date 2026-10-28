@@ -17,7 +17,6 @@ dependencies {
 	compileOnly project(":apps:journal:journal-article-dynamic-data-mapping-form-field-type-api")
 	compileOnly project(":apps:layout:layout-dynamic-data-mapping-form-field-type-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
-	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")

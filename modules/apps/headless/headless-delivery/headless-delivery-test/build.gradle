@@ -3,7 +3,6 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
-	testIntegrationImplementation group: "commons-lang", name: "commons-lang", version: "2.6"
 	testIntegrationImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
@@ -29,7 +28,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:knowledge-base:knowledge-base-api")
-	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
@@ -42,7 +40,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:segments:segments-test-util")
 	testIntegrationImplementation project(":apps:site-navigation:site-navigation-api")
-	testIntegrationImplementation project(":apps:site-navigation:site-navigation-menu-item-api")
 	testIntegrationImplementation project(":apps:wiki:wiki-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

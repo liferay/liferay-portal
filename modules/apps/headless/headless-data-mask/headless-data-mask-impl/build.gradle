@@ -9,7 +9,6 @@ dependencies {
 	compileOnly group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:batch-engine:batch-engine-api")
 	compileOnly project(":apps:headless:headless-data-mask:headless-data-mask-api")
 	compileOnly project(":apps:object:object-api")
