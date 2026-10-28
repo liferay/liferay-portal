@@ -1,7 +1,6 @@
 dependencies {
 	compileInclude group: "oauth.signpost", name: "signpost-commonshttp4", version: "1.2.1.2"
 	compileInclude group: "oauth.signpost", name: "signpost-core", version: "1.2.1.2"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -12,5 +11,6 @@ dependencies {
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore-nio", version: "4.4.14"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 	testImplementation project(":core:petra:petra-lang")
 }
