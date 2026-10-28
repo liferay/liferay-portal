@@ -27,11 +27,11 @@ dependencies {
 	compileOnly project(":apps:archived:portal-search-solr8-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-search:portal-search-engine-adapter-api")
-	compileOnly project(":apps:portal-search:portal-search-spi")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:portal-search:portal-search")
+	testImplementation project(":apps:portal-search:portal-search-spi")
 	testImplementation project(":apps:portal-search:portal-search-test-util")
 }
 

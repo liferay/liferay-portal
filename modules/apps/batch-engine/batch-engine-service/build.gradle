@@ -17,7 +17,6 @@ dependencies {
 	compileOnly group: "org.apache.poi", name: "poi", version: "5.4.1"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
-	compileOnly group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
@@ -41,5 +40,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 }
