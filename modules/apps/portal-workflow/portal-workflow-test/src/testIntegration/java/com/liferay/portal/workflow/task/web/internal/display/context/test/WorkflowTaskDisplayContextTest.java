@@ -12,12 +12,14 @@ import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagLocalServiceUtil;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
-import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLVersionNumberIncrease;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.test.util.DLAppTestUtil;
+import com.liferay.knowledge.base.constants.KBFolderConstants;
+import com.liferay.knowledge.base.model.KBArticle;
+import com.liferay.knowledge.base.service.KBArticleLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -36,6 +38,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -146,44 +149,7 @@ public class WorkflowTaskDisplayContextTest {
 			fileEntry.getDisplayDate(), fileEntry.getExpirationDate(),
 			fileEntry.getReviewDate(), serviceContext);
 
-		List<WorkflowTask> workflowTasks =
-			WorkflowTaskManagerUtil.getWorkflowTasksBySubmittingUser(
-				_group.getCompanyId(), user.getUserId(), false, -1, -1, null);
-
-		WorkflowTask workflowTask = workflowTasks.get(0);
-
-		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
-			_getMockLiferayPortletRenderRequest(_group);
-
-		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
-
-		mvcPortlet.render(
-			mockLiferayPortletRenderRequest,
-			new MockLiferayPortletRenderResponse());
-
-		Object workflowTaskDisplayContext =
-			mockLiferayPortletRenderRequest.getAttribute(
-				"PORTLET_DISPLAY_CONTEXT");
-
-		AssetRenderer<DLFileEntry> assetRenderer = ReflectionTestUtil.invoke(
-			workflowTaskDisplayContext, "getAssetRenderer",
-			new Class<?>[] {WorkflowTask.class}, workflowTask);
-
-		WorkflowHandler<DLFileEntry> workflowHandler =
-			ReflectionTestUtil.invoke(
-				workflowTaskDisplayContext, "getWorkflowHandler",
-				new Class<?>[] {WorkflowTask.class}, workflowTask);
-
-		Long classPK = ReflectionTestUtil.invoke(
-			workflowTaskDisplayContext, "getWorkflowContextEntryClassPK",
-			new Class<?>[] {WorkflowHandler.class, WorkflowTask.class},
-			workflowHandler, workflowTask);
-
-		AssetEntry assetEntry = ReflectionTestUtil.invoke(
-			workflowTaskDisplayContext, "getWorkflowAssetEntry",
-			new Class<?>[] {String.class, long.class, long.class},
-			workflowHandler.getClassName(), classPK,
-			assetRenderer.getClassPK());
+		AssetEntry assetEntry = _getWorkflowAssetEntry(user);
 
 		List<AssetTag> assetTags =
 			AssetTagLocalServiceUtil.getAssetEntryAssetTags(
@@ -194,6 +160,39 @@ public class WorkflowTaskDisplayContextTest {
 		AssetTag assetTag = assetTags.get(0);
 
 		Assert.assertEquals(assetTags.toString(), newTag, assetTag.getName());
+	}
+
+	@Test
+	@TestInfo("LPD-107903")
+	public void testGetWorkflowAssetEntryWithFirstKBArticleVersion()
+		throws Exception {
+
+		User user = UserTestUtil.addUser(_group.getGroupId());
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(user));
+
+		PrincipalThreadLocal.setName(user.getUserId());
+
+		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
+			null, TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
+			_group.getGroupId(), KBArticle.class.getName(), 0, 0,
+			"Single Approver", 1);
+
+		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
+			null, user.getUserId(),
+			PortalUtil.getClassNameId(KBFolderConstants.getClassName()),
+			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(), null, null,
+			new Date(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), user.getUserId()));
+
+		AssetEntry assetEntry = _getWorkflowAssetEntry(user);
+
+		Assert.assertEquals(
+			kbArticle.getKbArticleId(), assetEntry.getClassPK());
 	}
 
 	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(
@@ -280,6 +279,46 @@ public class WorkflowTaskDisplayContextTest {
 			new Class<?>[] {WorkflowTask.class}, workflowTask);
 	}
 
+	private AssetEntry _getWorkflowAssetEntry(User user) throws Exception {
+		List<WorkflowTask> workflowTasks =
+			WorkflowTaskManagerUtil.getWorkflowTasksBySubmittingUser(
+				_group.getCompanyId(), user.getUserId(), false, -1, -1, null);
+
+		WorkflowTask workflowTask = workflowTasks.get(0);
+
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_getMockLiferayPortletRenderRequest(_group);
+
+		MVCPortlet mvcPortlet = (MVCPortlet)_portlet;
+
+		mvcPortlet.render(
+			mockLiferayPortletRenderRequest,
+			new MockLiferayPortletRenderResponse());
+
+		Object workflowTaskDisplayContext =
+			mockLiferayPortletRenderRequest.getAttribute(
+				"PORTLET_DISPLAY_CONTEXT");
+
+		AssetRenderer<?> assetRenderer = ReflectionTestUtil.invoke(
+			workflowTaskDisplayContext, "getAssetRenderer",
+			new Class<?>[] {WorkflowTask.class}, workflowTask);
+
+		WorkflowHandler<?> workflowHandler = ReflectionTestUtil.invoke(
+			workflowTaskDisplayContext, "getWorkflowHandler",
+			new Class<?>[] {WorkflowTask.class}, workflowTask);
+
+		Long classPK = ReflectionTestUtil.invoke(
+			workflowTaskDisplayContext, "getWorkflowContextEntryClassPK",
+			new Class<?>[] {WorkflowHandler.class, WorkflowTask.class},
+			workflowHandler, workflowTask);
+
+		return ReflectionTestUtil.invoke(
+			workflowTaskDisplayContext, "getWorkflowAssetEntry",
+			new Class<?>[] {String.class, long.class, long.class},
+			workflowHandler.getClassName(), classPK,
+			assetRenderer.getClassPK());
+	}
+
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;
 
@@ -297,6 +336,9 @@ public class WorkflowTaskDisplayContextTest {
 
 	@Inject
 	private GroupLocalService _groupLocalService;
+
+	@Inject
+	private KBArticleLocalService _kbArticleLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.portal.workflow.task.web.internal.portlet.MyWorkflowTaskPortlet"
