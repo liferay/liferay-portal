@@ -358,6 +358,7 @@ test(
 			await addSegmentField({
 				criterionName: customFieldName,
 				criterionType: 'Organization',
+				customField: true,
 				page,
 			});
 
@@ -366,11 +367,16 @@ test(
 				page,
 			});
 
+			// Close the value suggestions so the rest of the page is exposed to the
+			// accessibility tree
+
+			await page.keyboard.press('Escape');
+
 			// Preview the segment and verify the user matches the organization
 			// criterion
 
 			await clickAndExpectToBeVisible({
-				target: page.getByText('Known Segment Members'),
+				target: page.getByText('Segment Membership'),
 				trigger: page.getByRole('button', {name: 'View Members'}),
 			});
 

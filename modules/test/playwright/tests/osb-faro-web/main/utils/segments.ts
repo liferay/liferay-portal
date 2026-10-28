@@ -34,10 +34,12 @@ export async function addNestedSegmentField({
 export async function addSegmentField({
 	criterionName,
 	criterionType,
+	customField = false,
 	page,
 }: {
 	criterionName: string;
 	criterionType: string;
+	customField?: boolean;
 	page: Page;
 }) {
 	await clickAndExpectToBeVisible({
@@ -45,6 +47,10 @@ export async function addSegmentField({
 		target: page.getByRole('option', {name: criterionType}),
 		trigger: page.getByRole('combobox'),
 	});
+
+	if (customField) {
+		await page.getByRole('tab', {name: 'Custom'}).click();
+	}
 
 	await dragAndDropCriteriaItem({
 		page,
