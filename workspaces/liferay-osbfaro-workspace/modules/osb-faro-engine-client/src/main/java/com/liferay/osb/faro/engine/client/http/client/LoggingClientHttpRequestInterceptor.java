@@ -5,6 +5,7 @@
 
 package com.liferay.osb.faro.engine.client.http.client;
 
+import com.liferay.osb.faro.engine.client.FaroClientHttpResponse;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -45,26 +46,41 @@ public class LoggingClientHttpRequestInterceptor
 		ClientHttpResponse clientHttpResponse =
 			clientHttpRequestExecution.execute(httpRequest, bytes);
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				String.format(
-					"Response status code: %s",
-					clientHttpResponse.getStatusCode()));
-			_log.debug(
-				String.format(
-					"Response status text: %s",
-					clientHttpResponse.getStatusText()));
-			_log.debug(
-				String.format(
-					"Response headers: %s", clientHttpResponse.getHeaders()));
-			_log.debug(
-				String.format(
-					"Response body: %s",
-					StreamUtils.copyToString(
-						clientHttpResponse.getBody(), StandardCharsets.UTF_8)));
+		if (!_log.isDebugEnabled()) {
+			return clientHttpResponse;
 		}
 
-		return clientHttpResponse;
+		FaroClientHttpResponse faroClientHttpResponse = null;
+
+		try {
+			faroClientHttpResponse = new FaroClientHttpResponse(
+				clientHttpResponse);
+		}
+		catch (Exception exception) {
+			throw new IOException(exception);
+		}
+		finally {
+			clientHttpResponse.close();
+		}
+
+		_log.debug(
+			String.format(
+				"Response status code: %s",
+				faroClientHttpResponse.getStatusCode()));
+		_log.debug(
+			String.format(
+				"Response status text: %s",
+				faroClientHttpResponse.getStatusText()));
+		_log.debug(
+			String.format(
+				"Response headers: %s", faroClientHttpResponse.getHeaders()));
+		_log.debug(
+			String.format(
+				"Response body: %s",
+				StreamUtils.copyToString(
+					faroClientHttpResponse.getBody(), StandardCharsets.UTF_8)));
+
+		return faroClientHttpResponse;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
