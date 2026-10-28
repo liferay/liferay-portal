@@ -296,8 +296,7 @@ components:
                     type: string
                 mapProviderKey:
                     description:
-                        Sets the maps API provider to use when displaying geolocalized assets.
-                    enum: [GoogleMaps, OpenStreetMap]
+                        Sets the maps API provider to use when displaying geolocalized assets, either GoogleMaps or OpenStreetMap. An empty value clears it so the instance's provider is used.
                     type: string
                 mimeTypeLimits:
                     items:
