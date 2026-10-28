@@ -53,7 +53,7 @@ create table AssetListEntryAudienceEntryRel (
 	assetListEntryId LONG,
 	audienceEntryERC VARCHAR(75) null,
 	priority INTEGER,
-	typeSettings VARCHAR(75) null,
+	typeSettings TEXT null,
 	lastPublishDate DATE null,
 	primary key (alEntryAudienceEntryRelId, ctCollectionId)
 );

@@ -188,7 +188,9 @@ public class AssetListEntryAudienceEntryRelCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -209,7 +211,7 @@ public class AssetListEntryAudienceEntryRelCacheModel
 		audienceEntryERC = objectInput.readUTF();
 
 		priority = objectInput.readInt();
-		typeSettings = objectInput.readUTF();
+		typeSettings = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -256,10 +258,10 @@ public class AssetListEntryAudienceEntryRelCacheModel
 		objectOutput.writeInt(priority);
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -282,4 +284,4 @@ public class AssetListEntryAudienceEntryRelCacheModel
 	public long lastPublishDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-191016378
+// LIFERAY-SERVICE-BUILDER-HASH:-1382772633

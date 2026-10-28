@@ -8,6 +8,7 @@ package com.liferay.asset.list.model;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.base.BaseTable;
 
+import java.sql.Clob;
 import java.sql.Types;
 
 import java.util.Date;
@@ -63,9 +64,9 @@ public class AssetListEntryAudienceEntryRelTable
 	public final Column<AssetListEntryAudienceEntryRelTable, Integer> priority =
 		createColumn(
 			"priority", Integer.class, Types.INTEGER, Column.FLAG_DEFAULT);
-	public final Column<AssetListEntryAudienceEntryRelTable, String>
+	public final Column<AssetListEntryAudienceEntryRelTable, Clob>
 		typeSettings = createColumn(
-			"typeSettings", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+			"typeSettings", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<AssetListEntryAudienceEntryRelTable, Date>
 		lastPublishDate = createColumn(
 			"lastPublishDate", Date.class, Types.TIMESTAMP,
@@ -78,4 +79,4 @@ public class AssetListEntryAudienceEntryRelTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1415842525
+// LIFERAY-SERVICE-BUILDER-HASH:1530587752

@@ -324,8 +324,8 @@ public class AssetListEntryAudienceEntryRelPersistenceTest {
 			"assetListEntryAudienceEntryRelId", true, "groupId", true,
 			"companyId", true, "userId", true, "userName", true, "createDate",
 			true, "modifiedDate", true, "assetListEntryId", true,
-			"audienceEntryERC", true, "priority", true, "typeSettings", true,
-			"lastPublishDate", true);
+			"audienceEntryERC", true, "priority", true, "lastPublishDate",
+			true);
 	}
 
 	@Test
@@ -712,4 +712,4 @@ public class AssetListEntryAudienceEntryRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-202990597
+// LIFERAY-SERVICE-BUILDER-HASH:1431954237

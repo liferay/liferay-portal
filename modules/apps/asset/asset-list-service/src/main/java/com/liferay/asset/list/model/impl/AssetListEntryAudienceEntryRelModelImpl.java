@@ -69,7 +69,7 @@ public class AssetListEntryAudienceEntryRelModelImpl
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"assetListEntryId", Types.BIGINT}, {"audienceEntryERC", Types.VARCHAR},
-		{"priority", Types.INTEGER}, {"typeSettings", Types.VARCHAR},
+		{"priority", Types.INTEGER}, {"typeSettings", Types.CLOB},
 		{"lastPublishDate", Types.TIMESTAMP}
 	};
 
@@ -90,12 +90,12 @@ public class AssetListEntryAudienceEntryRelModelImpl
 		TABLE_COLUMNS_MAP.put("assetListEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("audienceEntryERC", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("priority", Types.INTEGER);
-		TABLE_COLUMNS_MAP.put("typeSettings", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("typeSettings", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table AssetListEntryAudienceEntryRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,alEntryAudienceEntryRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,assetListEntryId LONG,audienceEntryERC VARCHAR(75) null,priority INTEGER,typeSettings VARCHAR(75) null,lastPublishDate DATE null,primary key (alEntryAudienceEntryRelId, ctCollectionId))";
+		"create table AssetListEntryAudienceEntryRel (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,alEntryAudienceEntryRelId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,assetListEntryId LONG,audienceEntryERC VARCHAR(75) null,priority INTEGER,typeSettings TEXT null,lastPublishDate DATE null,primary key (alEntryAudienceEntryRelId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table AssetListEntryAudienceEntryRel";
@@ -1179,4 +1179,4 @@ public class AssetListEntryAudienceEntryRelModelImpl
 	private AssetListEntryAudienceEntryRel _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:557321246
+// LIFERAY-SERVICE-BUILDER-HASH:665841897
