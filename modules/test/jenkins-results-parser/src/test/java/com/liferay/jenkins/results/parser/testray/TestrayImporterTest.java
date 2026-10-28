@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
@@ -20,6 +21,8 @@ import com.liferay.jenkins.results.parser.test.clazz.group.JSUnitModulesBatchTes
 import com.liferay.jenkins.results.parser.test.clazz.group.PlaywrightAxisTestClassGroup;
 
 import java.io.File;
+
+import java.net.URL;
 
 import java.util.Collections;
 import java.util.Objects;
@@ -44,6 +47,58 @@ import org.mockito.Mockito;
  */
 public class TestrayImporterTest
 	extends com.liferay.jenkins.results.parser.Test {
+
+	@Test
+	public void testGetTestcaseElementAttachment() throws Exception {
+		TestrayCaseResult testrayCaseResult = Mockito.mock(
+			TestrayCaseResult.class);
+		TestrayAttachment testrayAttachment = Mockito.mock(
+			TestrayAttachment.class);
+
+		String key = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			key
+		).when(
+			testrayAttachment
+		).getKey();
+
+		String url = JenkinsResultsParserUtil.combine(
+			"https://", RandomTestUtil.randomString(), "/", key);
+
+		Mockito.doReturn(
+			new URL(url)
+		).when(
+			testrayAttachment
+		).getURL();
+
+		Mockito.doReturn(
+			RandomTestUtil.randomString()
+		).when(
+			testrayCaseResult
+		).getName();
+
+		Mockito.doReturn(
+			TestrayCaseResult.Status.PASSED
+		).when(
+			testrayCaseResult
+		).getStatus();
+
+		Mockito.doReturn(
+			Collections.singletonList(testrayAttachment)
+		).when(
+			testrayCaseResult
+		).getTestrayAttachments();
+
+		Element testcaseElement = _getTestcaseElement(testrayCaseResult);
+
+		Element attachmentsElement = testcaseElement.element("attachments");
+
+		Element fileElement = attachmentsElement.element("file");
+
+		testEquals(url + "?authuser=0", fileElement.attributeValue("url"));
+		testEquals(key, fileElement.attributeValue("value"));
+	}
 
 	@Test
 	public void testGetTestcaseElementName() throws Exception {
@@ -211,6 +266,17 @@ public class TestrayImporterTest
 			_getBatchTestClassGroup(), jsonObject);
 	}
 
+	private Element _getTestcaseElement(TestrayCaseResult testrayCaseResult)
+		throws Exception {
+
+		return ReflectionTestUtil.invoke(
+			Mockito.mock(TestrayImporter.class), "_getTestcaseElement",
+			new Class<?>[] {
+				TestrayCaseResult.class, String.class, String[].class
+			},
+			testrayCaseResult, RandomTestUtil.randomString(), null);
+	}
+
 	private String _getTestcaseName(String name) throws Exception {
 		TestrayCaseResult testrayCaseResult = Mockito.mock(
 			TestrayCaseResult.class);
@@ -227,12 +293,7 @@ public class TestrayImporterTest
 			testrayCaseResult
 		).getStatus();
 
-		Element testcaseElement = ReflectionTestUtil.invoke(
-			Mockito.mock(TestrayImporter.class), "_getTestcaseElement",
-			new Class<?>[] {
-				TestrayCaseResult.class, String.class, String[].class
-			},
-			testrayCaseResult, RandomTestUtil.randomString(), null);
+		Element testcaseElement = _getTestcaseElement(testrayCaseResult);
 
 		Element propertiesElement = testcaseElement.element("properties");
 

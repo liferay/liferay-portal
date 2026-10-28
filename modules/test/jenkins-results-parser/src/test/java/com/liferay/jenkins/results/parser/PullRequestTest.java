@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.junit.Assert;
@@ -99,6 +100,55 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 		Assert.assertTrue(pullRequest.hasRequiredPassingTestSuites());
 		Assert.assertFalse(pullRequest.hasRequiredPassingTestSuites(true));
+	}
+
+	@Test
+	public void testRemoveLabel() throws Exception {
+		int number = RandomTestUtil.randomInt();
+
+		PullRequest pullRequest = _newPullRequest(
+			number, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"github.pull.request.update.enabled", "true");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		mockURLReaders();
+
+		String labelNamePrefix = RandomTestUtil.randomString();
+		String labelNameSuffix = RandomTestUtil.randomString();
+
+		String labelName = JenkinsResultsParserUtil.combine(
+			labelNamePrefix, "/%20", labelNameSuffix);
+
+		setURLReaderOutput(
+			String.valueOf(
+				new JSONObject(
+				).put(
+					"labels",
+					new JSONArray(
+					).put(
+						new JSONObject(
+						).put(
+							"name", labelName
+						)
+					)
+				)),
+			"/pulls/" + number);
+
+		String labelURLPath = JenkinsResultsParserUtil.combine(
+			"/issues/", String.valueOf(number), "/labels/", labelNamePrefix,
+			"%2F%2520", labelNameSuffix);
+
+		setURLReaderOutput("", labelURLPath);
+
+		pullRequest.removeLabel(labelName);
+
+		verifyURLReaderAttemptsCount(1, labelURLPath);
 	}
 
 	private PullRequest _newPullRequest() {
