@@ -297,7 +297,7 @@ public class LocaleUtilTest {
 		Locale.setDefault(Locale.Category.DISPLAY, Locale.US);
 
 		try {
-			String json = LocaleUtil.toJSON(Locale.US);
+			String json = LocaleUtil.toJSONString(Locale.US);
 
 			Assert.assertEquals(
 				StringBundler.concat(

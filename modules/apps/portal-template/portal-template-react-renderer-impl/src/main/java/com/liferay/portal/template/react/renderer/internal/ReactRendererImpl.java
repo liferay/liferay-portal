@@ -84,7 +84,7 @@ public class ReactRendererImpl implements ReactRenderer {
 
 			modifiedProps.put(
 				"locale",
-				LocaleUtil.toJSON(LocaleUtil.getMostRelevantLocale()));
+				LocaleUtil.toJSONString(LocaleUtil.getMostRelevantLocale()));
 		}
 
 		String portletId = (String)props.get("portletId");
