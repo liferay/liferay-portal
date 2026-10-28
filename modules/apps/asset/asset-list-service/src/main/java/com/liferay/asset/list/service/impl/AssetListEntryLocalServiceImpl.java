@@ -22,6 +22,7 @@ import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService
 import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.asset.list.service.base.AssetListEntryLocalServiceBaseImpl;
 import com.liferay.asset.list.service.persistence.AssetListEntryAssetEntryRelPersistence;
+import com.liferay.asset.list.service.persistence.AssetListEntryAudienceEntryRelPersistence;
 import com.liferay.asset.list.service.persistence.AssetListEntrySegmentsEntryRelPersistence;
 import com.liferay.asset.util.AssetRendererFactoryWrapper;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
@@ -323,6 +324,9 @@ public class AssetListEntryLocalServiceImpl
 			assetListEntry.getAssetListEntryId());
 
 		// Asset list segments entry rels
+
+		_assetListEntryAudienceEntryRelPersistence.removeByAssetListEntryId(
+			assetListEntry.getAssetListEntryId());
 
 		_assetListEntrySegmentsEntryRelPersistence.removeByAssetListEntryId(
 			assetListEntry.getAssetListEntryId());
@@ -971,6 +975,10 @@ public class AssetListEntryLocalServiceImpl
 	@Reference
 	private AssetListEntryAssetEntryRelPersistence
 		_assetListEntryAssetEntryRelPersistence;
+
+	@Reference
+	private AssetListEntryAudienceEntryRelPersistence
+		_assetListEntryAudienceEntryRelPersistence;
 
 	@Reference
 	private AssetListEntrySegmentsEntryRelLocalService

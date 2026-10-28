@@ -5,9 +5,11 @@
 
 package com.liferay.asset.list.service.impl;
 
+import com.liferay.asset.list.exception.AssetListEntryAssetEntryRelAudienceEntryERCAndSegmentsEntryIdException;
 import com.liferay.asset.list.exception.AssetListEntryAssetEntryRelPostionException;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.service.base.AssetListEntryAssetEntryRelLocalServiceBaseImpl;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.mass.delete.MassDeleteCacheThreadLocal;
@@ -17,6 +19,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
 import java.util.List;
@@ -41,9 +44,33 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 			int position, ServiceContext serviceContext)
 		throws PortalException {
 
+		return addAssetListEntryAssetEntryRel(
+			assetListEntryId, assetEntryId, StringPool.BLANK, segmentsEntryId,
+			position, serviceContext);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
+			long assetListEntryId, long assetEntryId, long segmentsEntryId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return addAssetListEntryAssetEntryRel(
+			assetListEntryId, assetEntryId, StringPool.BLANK, segmentsEntryId,
+			serviceContext);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
+			long assetListEntryId, long assetEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position, ServiceContext serviceContext)
+		throws PortalException {
+
+		_validate(audienceEntryERC, segmentsEntryId);
+
 		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
-			assetListEntryAssetEntryRelPersistence.fetchByA_S_P(
-				assetListEntryId, segmentsEntryId, position);
+			assetListEntryAssetEntryRelPersistence.fetchByA_AEERC_S_P(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position);
 
 		if (assetListEntryAssetEntryRel != null) {
 			throw new AssetListEntryAssetEntryRelPostionException();
@@ -67,8 +94,9 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 			serviceContext.getCreateDate(new Date()));
 		assetListEntryAssetEntryRel.setModifiedDate(
 			serviceContext.getModifiedDate(new Date()));
-		assetListEntryAssetEntryRel.setAssetListEntryId(assetListEntryId);
 		assetListEntryAssetEntryRel.setAssetEntryId(assetEntryId);
+		assetListEntryAssetEntryRel.setAssetListEntryId(assetListEntryId);
+		assetListEntryAssetEntryRel.setAudienceEntryERC(audienceEntryERC);
 		assetListEntryAssetEntryRel.setSegmentsEntryId(segmentsEntryId);
 		assetListEntryAssetEntryRel.setPosition(position);
 
@@ -78,24 +106,24 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 
 	@Override
 	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
-			long assetListEntryId, long assetEntryId, long segmentsEntryId,
-			ServiceContext serviceContext)
+			long assetListEntryId, long assetEntryId, String audienceEntryERC,
+			long segmentsEntryId, ServiceContext serviceContext)
 		throws PortalException {
 
 		int position = getAssetListEntryAssetEntryRelsCount(
-			assetListEntryId, segmentsEntryId);
+			assetListEntryId, audienceEntryERC, segmentsEntryId);
 
 		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
-			assetListEntryAssetEntryRelPersistence.fetchByA_S_P(
-				assetListEntryId, segmentsEntryId, position);
+			assetListEntryAssetEntryRelPersistence.fetchByA_AEERC_S_P(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position);
 
 		if (assetListEntryAssetEntryRel != null) {
 			throw new AssetListEntryAssetEntryRelPostionException();
 		}
 
 		return addAssetListEntryAssetEntryRel(
-			assetListEntryId, assetEntryId, segmentsEntryId, position,
-			serviceContext);
+			assetListEntryId, assetEntryId, audienceEntryERC, segmentsEntryId,
+			position, serviceContext);
 	}
 
 	@Override
@@ -109,8 +137,9 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 				assetListEntryAssetEntryRel);
 
 		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
-			assetListEntryAssetEntryRelPersistence.findByA_S_GtP(
+			assetListEntryAssetEntryRelPersistence.findByA_AEERC_S_GtP(
 				assetListEntryAssetEntryRel.getAssetListEntryId(),
+				assetListEntryAssetEntryRel.getAudienceEntryERC(),
 				assetListEntryAssetEntryRel.getSegmentsEntryId(),
 				assetListEntryAssetEntryRel.getPosition());
 
@@ -134,8 +163,19 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 		throws PortalException {
 
 		return deleteAssetListEntryAssetEntryRel(
-			assetListEntryAssetEntryRelPersistence.findByA_S_P(
-				assetListEntryId, segmentsEntryId, position));
+			assetListEntryId, StringPool.BLANK, segmentsEntryId, position);
+	}
+
+	@Override
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public AssetListEntryAssetEntryRel deleteAssetListEntryAssetEntryRel(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position)
+		throws PortalException {
+
+		return deleteAssetListEntryAssetEntryRel(
+			assetListEntryAssetEntryRelPersistence.findByA_AEERC_S_P(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position));
 	}
 
 	@Override
@@ -206,16 +246,25 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 	public List<AssetListEntryAssetEntryRel> getAssetListEntryAssetEntryRels(
 		long assetListEntryId, long segmentsEntryId, int start, int end) {
 
-		return assetListEntryAssetEntryRelPersistence.findByA_S(
-			assetListEntryId, segmentsEntryId, start, end);
+		return getAssetListEntryAssetEntryRels(
+			assetListEntryId, StringPool.BLANK, segmentsEntryId, start, end);
 	}
 
 	@Override
 	public List<AssetListEntryAssetEntryRel> getAssetListEntryAssetEntryRels(
 		long assetListEntryId, long[] segmentsEntryIds, int start, int end) {
 
-		return assetListEntryAssetEntryRelPersistence.findByA_S(
-			assetListEntryId, segmentsEntryIds, start, end);
+		return assetListEntryAssetEntryRelPersistence.findByA_AEERC_S(
+			assetListEntryId, StringPool.BLANK, segmentsEntryIds, start, end);
+	}
+
+	@Override
+	public List<AssetListEntryAssetEntryRel> getAssetListEntryAssetEntryRels(
+		long assetListEntryId, String audienceEntryERC, long segmentsEntryId,
+		int start, int end) {
+
+		return assetListEntryAssetEntryRelPersistence.findByA_AEERC_S(
+			assetListEntryId, audienceEntryERC, segmentsEntryId, start, end);
 	}
 
 	@Override
@@ -228,16 +277,24 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 	public int getAssetListEntryAssetEntryRelsCount(
 		long assetListEntryId, long segmentsEntryId) {
 
-		return assetListEntryAssetEntryRelPersistence.countByA_S(
-			assetListEntryId, segmentsEntryId);
+		return getAssetListEntryAssetEntryRelsCount(
+			assetListEntryId, StringPool.BLANK, segmentsEntryId);
 	}
 
 	@Override
 	public int getAssetListEntryAssetEntryRelsCount(
 		long assetListEntryId, long[] segmentsEntryIds) {
 
-		return assetListEntryAssetEntryRelPersistence.countByA_S(
-			assetListEntryId, segmentsEntryIds);
+		return assetListEntryAssetEntryRelPersistence.countByA_AEERC_S(
+			assetListEntryId, StringPool.BLANK, segmentsEntryIds);
+	}
+
+	@Override
+	public int getAssetListEntryAssetEntryRelsCount(
+		long assetListEntryId, String audienceEntryERC, long segmentsEntryId) {
+
+		return assetListEntryAssetEntryRelPersistence.countByA_AEERC_S(
+			assetListEntryId, audienceEntryERC, segmentsEntryId);
 	}
 
 	@Override
@@ -246,9 +303,20 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 			int newPosition)
 		throws PortalException {
 
+		return moveAssetListEntryAssetEntryRel(
+			assetListEntryId, StringPool.BLANK, segmentsEntryId, position,
+			newPosition);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel moveAssetListEntryAssetEntryRel(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position, int newPosition)
+		throws PortalException {
+
 		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
-			assetListEntryAssetEntryRelPersistence.findByA_S_P(
-				assetListEntryId, segmentsEntryId, position);
+			assetListEntryAssetEntryRelPersistence.findByA_AEERC_S_P(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position);
 
 		int count =
 			assetListEntryAssetEntryRelPersistence.countByAssetListEntryId(
@@ -259,8 +327,9 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 		}
 
 		AssetListEntryAssetEntryRel swapAssetListEntryAssetEntryRel =
-			assetListEntryAssetEntryRelPersistence.fetchByA_S_P(
-				assetListEntryId, segmentsEntryId, newPosition);
+			assetListEntryAssetEntryRelPersistence.fetchByA_AEERC_S_P(
+				assetListEntryId, audienceEntryERC, segmentsEntryId,
+				newPosition);
 
 		if (swapAssetListEntryAssetEntryRel == null) {
 			assetListEntryAssetEntryRel.setPosition(newPosition);
@@ -296,17 +365,40 @@ public class AssetListEntryAssetEntryRelLocalServiceImpl
 			long assetEntryId, long segmentsEntryId, int position)
 		throws PortalException {
 
+		return updateAssetListEntryAssetEntryRel(
+			assetListEntryAssetEntryRelId, assetListEntryId, assetEntryId,
+			StringPool.BLANK, segmentsEntryId, position);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel updateAssetListEntryAssetEntryRel(
+			long assetListEntryAssetEntryRelId, long assetListEntryId,
+			long assetEntryId, String audienceEntryERC, long segmentsEntryId,
+			int position)
+		throws PortalException {
+
+		_validate(audienceEntryERC, segmentsEntryId);
+
 		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
 			assetListEntryAssetEntryRelPersistence.findByPrimaryKey(
 				assetListEntryAssetEntryRelId);
 
-		assetListEntryAssetEntryRel.setAssetListEntryId(assetListEntryId);
 		assetListEntryAssetEntryRel.setAssetEntryId(assetEntryId);
+		assetListEntryAssetEntryRel.setAssetListEntryId(assetListEntryId);
+		assetListEntryAssetEntryRel.setAudienceEntryERC(audienceEntryERC);
 		assetListEntryAssetEntryRel.setSegmentsEntryId(segmentsEntryId);
 		assetListEntryAssetEntryRel.setPosition(position);
 
 		return assetListEntryAssetEntryRelPersistence.update(
 			assetListEntryAssetEntryRel);
+	}
+
+	private void _validate(String audienceEntryERC, long segmentsEntryId)
+		throws PortalException {
+
+		if (Validator.isNotNull(audienceEntryERC) && (segmentsEntryId > 0)) {
+			throw new AssetListEntryAssetEntryRelAudienceEntryERCAndSegmentsEntryIdException();
+		}
 	}
 
 	@Reference
