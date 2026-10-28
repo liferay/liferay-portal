@@ -1,9 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
-	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
-	testIntegrationImplementation group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
-	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "commons-io", name: "commons-io", version: "2.19.0"
@@ -21,7 +16,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
 	testIntegrationImplementation project(":apps:friendly-url:friendly-url-api")
 	testIntegrationImplementation project(":apps:friendly-url:friendly-url-test-util")
-	testIntegrationImplementation project(":apps:headless:headless-delivery:headless-delivery-api")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:info:info-list-provider-item-selector-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")
@@ -36,11 +30,8 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
-	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
-	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
-	testIntegrationImplementation project(":apps:portal:portal-json-validator")
 	testIntegrationImplementation project(":apps:portal:portal-props-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-verify-test-util")
