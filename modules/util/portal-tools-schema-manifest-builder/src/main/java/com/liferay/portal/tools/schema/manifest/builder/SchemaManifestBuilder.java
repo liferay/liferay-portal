@@ -47,7 +47,11 @@ public class SchemaManifestBuilder {
 		String module = arguments.get("schema.manifest.module");
 
 		try {
-			new SchemaManifestBuilder(baseDirName, manifestFileName, module);
+			SchemaManifestBuilder schemaManifestBuilder =
+				new SchemaManifestBuilder(
+					baseDirName, manifestFileName, module);
+
+			schemaManifestBuilder.build();
 		}
 		catch (Exception exception) {
 			ArgumentsUtil.processMainException(arguments, exception);
@@ -55,33 +59,26 @@ public class SchemaManifestBuilder {
 	}
 
 	public SchemaManifestBuilder(
-			String baseDirName, String manifestFileName, String module)
-		throws IOException {
+		String baseDirName, String manifestFileName, String module) {
 
-		File baseDir = new File(baseDirName);
+		_module = module;
 
-		if (Validator.isNull(module)) {
-			module = _getBundleSymbolicName(new File(baseDir, "bnd.bnd"));
-		}
+		_baseDir = new File(baseDirName);
 
-		JSONObject manifestJSONObject = new JSONObjectImpl();
-
-		manifestJSONObject.put(
-			"description",
-			StringBundler.concat(
-				"Database changes manifest of one Liferay module, generated ",
-				"by Liferay Schema Manifest Builder. Do not edit it by hand. ",
-				"Top level keys: 'module' is the module's ",
-				"Bundle-SymbolicName, or 'portal' for portal core; ",
-				"'timestamp' is when the content last changed.")
-		).put(
-			"module", module
-		);
-
-		_write(new File(baseDir, manifestFileName), manifestJSONObject);
+		_manifestFile = new File(_baseDir, manifestFileName);
 	}
 
-	private String _getBundleSymbolicName(File bndFile) throws IOException {
+	public void build() throws IOException {
+		String module = _module;
+
+		if (Validator.isNull(module)) {
+			module = getBundleSymbolicName(new File(_baseDir, "bnd.bnd"));
+		}
+
+		write(_manifestFile, getManifestJSONObject(module));
+	}
+
+	protected String getBundleSymbolicName(File bndFile) throws IOException {
 		if (!bndFile.exists()) {
 			throw new IllegalArgumentException(
 				"Unable to find " + bndFile.getAbsolutePath());
@@ -105,7 +102,33 @@ public class SchemaManifestBuilder {
 		return bundleSymbolicName;
 	}
 
-	private void _write(File manifestFile, JSONObject manifestJSONObject)
+	protected JSONObject getManifestJSONObject(String module) {
+		JSONObject manifestJSONObject = new JSONObjectImpl();
+
+		return manifestJSONObject.put(
+			"description",
+			StringBundler.concat(
+				"Database changes manifest of one Liferay module, generated ",
+				"by Liferay Schema Manifest Builder. Do not edit it by hand. ",
+				"Top level keys: 'module' is the module's ",
+				"Bundle-SymbolicName, or 'portal' for portal core; ",
+				"'timestamp' is when the content last changed.")
+		).put(
+			"module", module
+		);
+	}
+
+	protected String getTimestamp(String content) {
+		Matcher matcher = _timestampPattern.matcher(content);
+
+		if (matcher.find()) {
+			return matcher.group(1);
+		}
+
+		return null;
+	}
+
+	protected void write(File manifestFile, JSONObject manifestJSONObject)
 		throws IOException {
 
 		Path manifestPath = manifestFile.toPath();
@@ -116,10 +139,10 @@ public class SchemaManifestBuilder {
 					Files.readAllBytes(manifestPath), StandardCharsets.UTF_8),
 				StringPool.RETURN_NEW_LINE, StringPool.NEW_LINE);
 
-			Matcher matcher = _timestampPattern.matcher(content);
+			String timestamp = getTimestamp(content);
 
-			if (matcher.find()) {
-				manifestJSONObject.put("timestamp", matcher.group(1));
+			if (timestamp != null) {
+				manifestJSONObject.put("timestamp", timestamp);
 
 				if (content.equals(JSONUtil.toString(manifestJSONObject))) {
 					return;
@@ -144,5 +167,9 @@ public class SchemaManifestBuilder {
 
 	private static final Pattern _timestampPattern = Pattern.compile(
 		"^\t\"timestamp\": \"([^\"]*)\"", Pattern.MULTILINE);
+
+	private final File _baseDir;
+	private final File _manifestFile;
+	private final String _module;
 
 }
