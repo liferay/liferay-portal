@@ -85,6 +85,30 @@ describe('ChannelsMenu', () => {
 
 		expect(screen.getByText('Link 2')).toBeTruthy();
 	});
+
+	it('should find a channel with a truncated label by its full name', () => {
+		const channelName = 'A property name longer than the label length';
+
+		render(
+			<Provider store={mockStore()}>
+				<BrowserRouter>
+					<ChannelsMenu
+						channels={[...mockMenuItems(), {id: '3', name: channelName}]}
+						defaultChannelId='1'
+						groupId='123456'
+					/>
+				</BrowserRouter>
+			</Provider>
+		);
+
+		fireEvent.click(screen.getByRole('combobox', {name: 'Property'}));
+
+		fireEvent.change(screen.getByPlaceholderText('Search'), {
+			target: {value: channelName}
+		});
+
+		expect(screen.getAllByRole('option')).toHaveLength(1);
+	});
 });
 
 describe('isValidChannel', () => {
