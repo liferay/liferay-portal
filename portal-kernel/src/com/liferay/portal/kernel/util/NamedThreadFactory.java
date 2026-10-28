@@ -20,16 +20,9 @@ public class NamedThreadFactory implements ThreadFactory {
 	public NamedThreadFactory(
 		String name, int priority, ClassLoader contextClassLoader) {
 
-		SecurityManager securityManager = System.getSecurityManager();
+		Thread currentThread = Thread.currentThread();
 
-		if (securityManager != null) {
-			_group = securityManager.getThreadGroup();
-		}
-		else {
-			Thread currentThread = Thread.currentThread();
-
-			_group = currentThread.getThreadGroup();
-		}
+		_group = currentThread.getThreadGroup();
 
 		_name = name;
 		_priority = priority;
