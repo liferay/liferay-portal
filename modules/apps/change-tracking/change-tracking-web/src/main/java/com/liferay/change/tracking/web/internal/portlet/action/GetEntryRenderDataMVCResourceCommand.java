@@ -221,6 +221,35 @@ public class GetEntryRenderDataMVCResourceCommand
 			});
 	}
 
+	private String _addUnifiedPreviewCTCollectionId(
+		long companyId, String html, long leftCtCollectionId,
+		long rightCtCollectionId) {
+
+		StringBundler sb = new StringBundler();
+
+		Matcher matcher = _removedImagePattern.matcher(html);
+
+		int index = 0;
+
+		while (matcher.find()) {
+			sb.append(
+				_addPreviewCTCollectionId(
+					companyId, rightCtCollectionId,
+					html.substring(index, matcher.start())));
+			sb.append(
+				_addPreviewCTCollectionId(
+					companyId, leftCtCollectionId, matcher.group()));
+
+			index = matcher.end();
+		}
+
+		sb.append(
+			_addPreviewCTCollectionId(
+				companyId, rightCtCollectionId, html.substring(index)));
+
+		return sb.toString();
+	}
+
 	private Function<String, ServiceContext> _createServiceContextFunction() {
 		return className -> {
 			ServiceContext serviceContext = new ServiceContext();
@@ -744,11 +773,12 @@ public class GetEntryRenderDataMVCResourceCommand
 
 			jsonObject.put(
 				"unifiedPreview",
-				_addPreviewCTCollectionId(
-					themeDisplay.getCompanyId(), rightCtCollectionId,
+				_addUnifiedPreviewCTCollectionId(
+					themeDisplay.getCompanyId(),
 					_diffHtml.diff(
 						new UnsyncStringReader(leftPreview),
-						new UnsyncStringReader(rightPreview))));
+						new UnsyncStringReader(rightPreview)),
+					leftCtCollectionId, rightCtCollectionId));
 		}
 
 		if (_ctDisplayRendererRegistry.isWorkflowEnabled(ctEntry, rightModel) &&
@@ -793,11 +823,12 @@ public class GetEntryRenderDataMVCResourceCommand
 
 				unifiedLocalizedPreviewJSONObject.put(
 					languageId,
-					_addPreviewCTCollectionId(
-						themeDisplay.getCompanyId(), rightCtCollectionId,
+					_addUnifiedPreviewCTCollectionId(
+						themeDisplay.getCompanyId(),
 						_diffHtml.diff(
 							new UnsyncStringReader(leftLocalizedPreview),
-							new UnsyncStringReader(rightLocalizedPreview))));
+							new UnsyncStringReader(rightLocalizedPreview)),
+						leftCtCollectionId, rightCtCollectionId));
 			}
 
 			jsonObject.put(
@@ -1772,6 +1803,8 @@ public class GetEntryRenderDataMVCResourceCommand
 		"(?:https?://([^/:\"]+)(?::\\d+)?)?(.*?)/(?:documents/" +
 			"(?:\\d+|d|portlet_file_entry)(?=[/?#]|$)|" +
 				"o/adaptive-media/image/\\d+/)");
+	private static final Pattern _removedImagePattern = Pattern.compile(
+		"<img\\b[^>]*\\bchangeType=\"diff-removed-image\"[^>]*>");
 	private static final Pattern _urlAttributePattern = Pattern.compile(
 		"(href|src|srcset)=\"([^\"]*)\"");
 

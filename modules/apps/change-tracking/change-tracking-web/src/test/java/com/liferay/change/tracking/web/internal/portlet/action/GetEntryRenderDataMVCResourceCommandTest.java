@@ -296,6 +296,38 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 		Assert.assertNull(_addPreviewCTCollectionId(_CT_COLLECTION_ID, null));
 	}
 
+	@Test
+	public void testAddUnifiedPreviewCTCollectionId() {
+		String html = StringBundler.concat(
+			"<p><span class=\"diff-html-removed\"><img ",
+			"src=\"/documents/d/guest/x\" changeType=\"diff-removed-image\" />",
+			"</span><span class=\"diff-html-added\"><img ",
+			"src=\"/documents/d/guest/y\" changeType=\"diff-added-image\" />",
+			"</span><img src=\"/documents/d/guest/z\" /></p>");
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<p><span class=\"diff-html-removed\"><img ",
+				"src=\"/documents/d/guest/x?p_l_mode=preview",
+				"&previewCTCollectionId=",
+				CTConstants.CT_COLLECTION_ID_PRODUCTION,
+				"\" changeType=\"diff-removed-image\" /></span><span ",
+				"class=\"diff-html-added\"><img ",
+				"src=\"/documents/d/guest/y?p_l_mode=preview",
+				"&previewCTCollectionId=", _CT_COLLECTION_ID,
+				"\" changeType=\"diff-added-image\" /></span><img ",
+				"src=\"/documents/d/guest/z?p_l_mode=preview",
+				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\" /></p>"),
+			ReflectionTestUtil.invoke(
+				_getEntryRenderDataMVCResourceCommand,
+				"_addUnifiedPreviewCTCollectionId",
+				new Class<?>[] {
+					long.class, String.class, long.class, long.class
+				},
+				_COMPANY_ID, html, CTConstants.CT_COLLECTION_ID_PRODUCTION,
+				_CT_COLLECTION_ID));
+	}
+
 	private String _addPreviewCTCollectionId(long ctCollectionId, String html) {
 		return ReflectionTestUtil.invoke(
 			_getEntryRenderDataMVCResourceCommand, "_addPreviewCTCollectionId",
