@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 
 import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -30,6 +30,26 @@ export const test = mergeTests(
 	loginAnalyticsCloudTest(),
 	loginTest()
 );
+
+async function expectSyncedSites({
+	itemsSynced,
+	page,
+	status,
+}: {
+	itemsSynced: number;
+	page: Page;
+	status: 'Connected' | 'Disconnected';
+}) {
+	const sitesCard = page
+		.getByRole('listitem')
+		.filter({hasText: 'Represents the sites synced'});
+
+	await expect(
+		sitesCard.getByText(`${itemsSynced} Items Synced`)
+	).toBeVisible();
+
+	await expect(sitesCard.getByText(status, {exact: true})).toBeVisible();
+}
 
 test(
 	'Modify the sites synchronized in the property review sidebar',
@@ -116,7 +136,11 @@ test(
 
 		await gotoLatestLiferayDXPDataSource(page, project);
 
-		await expect(page.getByText('Synced SitesConfigured')).toBeVisible();
+		await expectSyncedSites({
+			itemsSynced: 2,
+			page,
+			status: 'Connected',
+		});
 
 		await goToSettingsStep({
 			page,
@@ -132,7 +156,11 @@ test(
 
 		await gotoLatestLiferayDXPDataSource(page, project);
 
-		await expect(page.getByText('Synced SitesConfigured')).toBeVisible();
+		await expectSyncedSites({
+			itemsSynced: 1,
+			page,
+			status: 'Connected',
+		});
 
 		await goToSettingsStep({
 			page,
@@ -148,6 +176,10 @@ test(
 
 		await gotoLatestLiferayDXPDataSource(page, project);
 
-		await expect(page.getByText('Synced SitesUnconfigured')).toBeVisible();
+		await expectSyncedSites({
+			itemsSynced: 0,
+			page,
+			status: 'Disconnected',
+		});
 	}
 );
