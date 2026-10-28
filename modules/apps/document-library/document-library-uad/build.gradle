@@ -6,6 +6,5 @@ dependencies {
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:user-associated-data:user-associated-data-api")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }
