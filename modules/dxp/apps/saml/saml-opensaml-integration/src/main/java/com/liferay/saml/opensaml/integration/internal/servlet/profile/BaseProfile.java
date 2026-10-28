@@ -60,6 +60,7 @@ import org.opensaml.core.xml.XMLObject;
 import org.opensaml.core.xml.io.MarshallingException;
 import org.opensaml.messaging.context.InOutOperationContext;
 import org.opensaml.messaging.context.MessageContext;
+import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.messaging.decoder.servlet.HttpServletRequestMessageDecoder;
 import org.opensaml.messaging.encoder.servlet.HttpServletResponseMessageEncoder;
 import org.opensaml.messaging.handler.MessageHandler;
@@ -126,6 +127,8 @@ public abstract class BaseProfile {
 			HttpServletResponse httpServletResponse, SamlBinding samlBinding,
 			boolean requireSignature)
 		throws Exception {
+
+		_validateMessageSize(httpServletRequest);
 
 		MessageContext<SAMLObject> messageContext = getMessageContext(
 			httpServletRequest, httpServletResponse);
@@ -964,6 +967,37 @@ public abstract class BaseProfile {
 			samlProviderConfigurationHelper.getSamlProviderConfiguration();
 
 		return samlProviderConfiguration.sslRequired();
+	}
+
+	private void _validateMessageSize(HttpServletRequest httpServletRequest)
+		throws Exception {
+
+		SamlProviderConfiguration samlProviderConfiguration =
+			samlProviderConfigurationHelper.getSamlProviderConfiguration();
+
+		int maximumMessageSize = samlProviderConfiguration.maximumMessageSize();
+
+		if (maximumMessageSize <= 0) {
+			return;
+		}
+
+		for (String parameterName :
+				new String[] {"SAMLRequest", "SAMLResponse"}) {
+
+			String parameterValue = httpServletRequest.getParameter(
+				parameterName);
+
+			if ((parameterValue != null) &&
+				(parameterValue.length() > maximumMessageSize)) {
+
+				throw new MessageDecodingException(
+					StringBundler.concat(
+						"Rejecting SAML message of size ",
+						parameterValue.length(),
+						" because it exceeds the maximum allowed size ",
+						maximumMessageSize));
+			}
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(BaseProfile.class);

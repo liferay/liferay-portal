@@ -111,6 +111,13 @@ public interface SamlProviderConfiguration {
 	public boolean ldapImportEnabled();
 
 	@Meta.AD(
+		deflt = "200000", description = "saml-maximum-message-size-description",
+		id = "saml.maximum.message.size", name = "saml-maximum-message-size",
+		required = false
+	)
+	public int maximumMessageSize();
+
+	@Meta.AD(
 		deflt = SamlProviderConfigurationKeys.SAML_ROLE_SP, id = "saml.role",
 		name = "saml-role",
 		optionLabels = {
