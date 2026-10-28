@@ -148,8 +148,7 @@ public class DBCopyTablesProcessTest {
 		Assert.assertEquals(
 			expectedPostgreSQLColumnType,
 			ReflectionTestUtil.invoke(
-				new DBCopyTablesProcess(false, null, null),
-				"_getPostgreSQLColumnType",
+				new DBCopyTablesProcess(null, null), "_getPostgreSQLColumnType",
 				new Class<?>[] {int.class, int.class, int.class}, columnSize,
 				dataType, decimalDigits));
 	}
@@ -158,7 +157,7 @@ public class DBCopyTablesProcessTest {
 		List<String> sourceColumnNames, List<String> targetColumnNamess) {
 
 		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
-			false, null, null);
+			null, null);
 
 		Map<String, List<String>> sourceColumnNamesMap =
 			ReflectionTestUtil.getFieldValue(

@@ -28,14 +28,13 @@ import org.junit.rules.TemporaryFolder;
 public class DBMigrationImportTest {
 
 	@Test
-	@TestInfo({"LPD-109433", "LPD-110097"})
+	@TestInfo("LPD-109433")
 	public void testHelp() throws Exception {
 		_testHelp(
 			Collections.singletonList("--help"), StringPool.BLANK, 0,
 			Collections.singletonList("-Dlauncher=launcher.sh"),
 			"Usage: launcher.sh <parameters>",
-			"Liferay Portal Tools Database Migration Importer",
-			"--include-custom-schema");
+			"Liferay Portal Tools Database Migration Importer");
 	}
 
 	@Test

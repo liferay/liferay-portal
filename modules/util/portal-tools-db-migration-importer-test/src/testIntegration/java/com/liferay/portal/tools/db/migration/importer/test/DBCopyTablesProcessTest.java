@@ -205,15 +205,7 @@ public class DBCopyTablesProcessTest {
 
 	@Test
 	@TestInfo("LPD-110097")
-	public void testRunWithIncludeCustomSchema() throws Exception {
-		_testRunWithIncludeCustomSchema();
-	}
-
-	@Test
-	@TestInfo("LPD-110097")
-	public void testRunWithIncludeCustomSchemaFailsWhenTargetColumnIsNotText()
-		throws Exception {
-
+	public void testRunFailsWhenTargetColumnIsNotText() throws Exception {
 		_createTable(
 			"create table TestTable (id INTEGER, testColumn CHAR(10))",
 			"create table TestTable (id INTEGER, testColumn INTEGER)");
@@ -222,7 +214,7 @@ public class DBCopyTablesProcessTest {
 
 		try {
 			new DBCopyTablesProcess(
-				true, InfrastructureUtil.getDataSource(), _targetDataSource
+				InfrastructureUtil.getDataSource(), _targetDataSource
 			).run();
 
 			Assert.fail();
@@ -234,7 +226,13 @@ public class DBCopyTablesProcessTest {
 
 	@Test
 	@TestInfo("LPD-110097")
-	public void testRunWithIncludeCustomSchemaInPartition() throws Exception {
+	public void testRunWithCustomColumns() throws Exception {
+		_testRunWithCustomColumns();
+	}
+
+	@Test
+	@TestInfo("LPD-110097")
+	public void testRunWithCustomColumnsInPartition() throws Exception {
 		String partitionName = "test" + RandomTestUtil.randomInt();
 
 		try (Connection connection = _targetDataSource.getConnection()) {
@@ -252,7 +250,7 @@ public class DBCopyTablesProcessTest {
 			StringPool.BLANK);
 
 		try {
-			_testRunWithIncludeCustomSchema();
+			_testRunWithCustomColumns();
 		}
 		finally {
 			DataSourceFactoryUtil.destroyDataSource(_targetDataSource);
@@ -370,7 +368,7 @@ public class DBCopyTablesProcessTest {
 
 	private void _copyTable() {
 		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
-			false, InfrastructureUtil.getDataSource(), _targetDataSource);
+			InfrastructureUtil.getDataSource(), _targetDataSource);
 
 		ReflectionTestUtil.invoke(
 			dbCopyTablesProcess, "_loadColumnsMetadata", new Class<?>[0]);
@@ -464,7 +462,7 @@ public class DBCopyTablesProcessTest {
 		_assertValues("testColumn", expectedFunction, values, getFunction);
 	}
 
-	private void _testRunWithIncludeCustomSchema() throws Exception {
+	private void _testRunWithCustomColumns() throws Exception {
 		_createTable(
 			"create table TestTable (id INTEGER, charColumn CHAR(10), " +
 				"longColumn LONG, testColumn VARCHAR(75))",
@@ -481,7 +479,7 @@ public class DBCopyTablesProcessTest {
 				"', longColumn = ", longColumnValue));
 
 		new DBCopyTablesProcess(
-			true, InfrastructureUtil.getDataSource(), _targetDataSource
+			InfrastructureUtil.getDataSource(), _targetDataSource
 		).run();
 
 		_assertValues(
