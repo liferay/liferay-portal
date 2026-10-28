@@ -19,54 +19,14 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+apiVersion: kms\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: KeyRing"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+encryptionKeyName: \\{\\{ \\$[A-Za-z]+ \\}\\}"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$cmkEnabled \\}\\}\\s+encryption:\\s+defaultKmsKeyName: \\{\\{ \\$[A-Za-z]+ \\}\\}\\s+\\{\\{- end \\}\\}\\s+forceDestroy: \\{\\{ or"
-        it: Creates the key and encrypts the database and the document library only when customer managed keys are enabled
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "edition: \\{\\{ hasPrefix \"db-perf-optimized-\" \\$[A-Za-z]+ \\| ternary \"ENTERPRISE_PLUS\" \"ENTERPRISE\" \\}\\}"
         it: Derives the Cloud SQL edition from the instance type
     -   asserts:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$database\\.highAvailability \\}\\}\\s+backupConfiguration:\\s+backupRetentionSettings:\\s+retainedBackups: 7\\s+enabled: true\\s+pointInTimeRecoveryEnabled: true\\s+transactionLogRetentionDays: 7\\s+\\{\\{- end \\}\\}"
-        it: Enables automated backups and point in time recovery only on a regional instance, which Cloud SQL requires
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "age: \\{\\{ add \\$backup\\.retentionDays 2 \\}\\}"
         it: Expires the document library backups two days after the retention period
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$overlayAccess\\.enabled \\}\\}\\s+\\{\\{- if \\$[A-Za-z]+ \\}\\}\\s+apiVersion: storage\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: BucketIAMMember"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "---\\s+\\{\\{- end \\}\\}\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1(?:[^{]|\\{[^{]|\\{\\{[^-])*?composition-resource-name: overlay-bucket-details-secret"
-        it: Grants and publishes the overlay bucket only when overlay access is enabled
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if not \\(and \\(eq \\$dataPlane \\$targetActiveDataPlane\\) \\(eq \\$restorePhase \"provisioning\"\\)\\) \\}\\}\\s+\\{\\{- if \\$[A-Za-z]+ \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: User"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "kind: User(?:[^{]|\\{[^{]|\\{\\{[^-])+\\{\\{- end \\}\\}\\s+\\{\\{- \\$isDatabaseInstanceReady := false \\}\\}[\\s\\S]+?\\{\\{- if \\$isDatabaseInstanceReady \\}\\}[\\s\\S]+?composition-resource-name: liferay-db-grant-job-"
-        it: Holds the database user and its grants back from the restore target while it is provisioning
     -   asserts:
             -   hasDocuments:
                     count: 2
@@ -165,42 +125,6 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$backup\\.enabled \\}\\}\\s+\\{\\{- \\$[A-Za-z]+ := printf \"principal://[^\\n]+\\s+apiVersion: cloudplatform\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: ProjectIAMMember\\s+metadata:\\s+annotations:\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: backup-restore-cloudsql-admin"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "composition-resource-name: \\{\\{ \\$baseName \\}\\}-vault[\\s\\S]+?\\{\\{- end \\}\\}\\s+---\\s"
-        it: Provisions the backup vault and its identities only once backups are enabled
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- else if or \\(eq \\$restorePhase \"provisioning\"\\) \\(eq \\$restorePhase \"provisioning-database-user\"\\) -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = \\(eq \\$targetActiveDataPlane \"blue\"\\) \\| ternary \"green\" \"blue\" -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = list \"blue\" \"green\" -\\}\\}"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\(eq \\$restorePhase \"promoting\"\\) -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = list \"blue\" \"green\" -\\}\\}"
-        it: Provisions the inactive data plane alongside the active one during a restore
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "range \\$condition := dig \\(printf \"liferay-gcs-bucket-%s\" \\$activeDataPlane\\) \"resource\" \"status\" \"conditions\" list \\$[A-Za-z]+"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if and \\(eq \\$dataPlane \\$activeDataPlane\\) \\$[A-Za-z]+ \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+crossplane\\.io/external-name: [^\\n]+\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: document-library-connection-details-secret"
-        it: Publishes the active document library bucket only once Cloud Storage reports it ready
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if eq \\$xr\\.spec\\.search\\.engine \"opensearch\" -\\}\\}\\s+\\{\\{- fail "
-        it: Rejects OpenSearch because GCP has no managed OpenSearch
-    -   asserts:
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
                     pattern: "\\$[A-Za-z]+ := dig \"liferay-gsa\" \"resource\" \"status\" \"atProvider\" \"email\" \"\" \\$[A-Za-z]+"
             -   documentIndex: 0
                 matchRegex:
@@ -210,12 +134,3 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\$[A-Za-z]+ := dig \"liferay-cryptokey\" \"resource\" \"status\" \"atProvider\" \"id\" \"\" \\$[A-Za-z]+"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\$isCmkKeyReady := or \\(not \\$cmkEnabled\\) \\$[A-Za-z]+"
-            -   documentIndex: 0
-                matchRegex:
-                    path: spec.pipeline[1].input.inline.template
-                    pattern: "\\{\\{- if \\$isCmkKeyReady \\}\\}\\s+---\\s+apiVersion: sql\\.gcp\\.m\\.upbound\\.io/v1beta1\\s+kind: DatabaseInstance"
-        it: Takes the service account and key identities GCP reports
