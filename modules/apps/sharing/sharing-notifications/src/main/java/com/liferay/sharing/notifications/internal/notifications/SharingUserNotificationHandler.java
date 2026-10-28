@@ -6,8 +6,10 @@
 package com.liferay.sharing.notifications.internal.notifications;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
@@ -125,8 +127,19 @@ public class SharingUserNotificationHandler
 		AssetRenderer<?> assetRenderer = getAssetRenderer(
 			sharingEntry.getClassName(), sharingEntry.getClassPK());
 
-		if ((assetRenderer == null) ||
-			_isInTrash(
+		if (assetRenderer == null) {
+			AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
+				sharingEntry.getClassName(), sharingEntry.getClassPK());
+
+			if (assetEntry == null) {
+				_userNotificationEventLocalService.deleteUserNotificationEvent(
+					userNotificationEvent.getUserNotificationEventId());
+			}
+
+			return null;
+		}
+
+		if (_isInTrash(
 				sharingEntry.getClassName(), sharingEntry.getClassPK())) {
 
 			_userNotificationEventLocalService.deleteUserNotificationEvent(
@@ -157,6 +170,9 @@ public class SharingUserNotificationHandler
 
 		return trashHandler.isInTrash(classPK);
 	}
+
+	@Reference
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Reference
 	private JSONFactory _jsonFactory;
