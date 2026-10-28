@@ -282,26 +282,16 @@ public class ASMDelegateProxyFactory implements DelegateProxyFactory {
 	private static final Map<ClassLoader, Map<String, Class<?>>>
 		_classReferencesMap = new ConcurrentReferenceKeyHashMap<>(
 			FinalizeManager.WEAK_REFERENCE_FACTORY);
-	private static final Method _defineClassMethod;
-	private static final Method _equalsMethod;
-	private static final Method _hashCodeMethod;
-	private static final Method _toStringMethod;
-
-	static {
-		try {
-			_defineClassMethod = ReflectionUtil.getDeclaredMethod(
-				ClassLoader.class, "defineClass", String.class, byte[].class,
-				int.class, int.class);
-			_equalsMethod = ReflectionUtil.getDeclaredMethod(
-				Object.class, "equals", Object.class);
-			_hashCodeMethod = ReflectionUtil.getDeclaredMethod(
-				Object.class, "hashCode");
-			_toStringMethod = ReflectionUtil.getDeclaredMethod(
-				Object.class, "toString");
-		}
-		catch (Throwable throwable) {
-			throw new ExceptionInInitializerError(throwable);
-		}
-	}
+	private static final Method _defineClassMethod =
+		ReflectionUtil.fetchDeclaredMethod(
+			ClassLoader.class, "defineClass", String.class, byte[].class,
+			int.class, int.class);
+	private static final Method _equalsMethod =
+		ReflectionUtil.fetchDeclaredMethod(
+			Object.class, "equals", Object.class);
+	private static final Method _hashCodeMethod =
+		ReflectionUtil.fetchDeclaredMethod(Object.class, "hashCode");
+	private static final Method _toStringMethod =
+		ReflectionUtil.fetchDeclaredMethod(Object.class, "toString");
 
 }

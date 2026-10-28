@@ -7,16 +7,13 @@ package com.liferay.portal.proxy.internal;
 
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.SwappableSecurityManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ReflectionUtilTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.DelegateProxyFactory;
 import com.liferay.portal.kernel.util.ProxyUtil;
-import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import java.lang.reflect.Method;
@@ -66,31 +63,26 @@ public class ASMDelegateProxyFactoryTest {
 		Assert.assertEquals(randomInt, method.invoke(asmWrapper, randomInt));
 	}
 
-	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
-	public void testClassInitializationFailure() throws Exception {
-		Class.forName(
-			SystemProperties.class.getName(), true,
-			SystemProperties.class.getClassLoader());
-
-		SecurityException securityException = new SecurityException();
-
-		try (SwappableSecurityManager swappableSecurityManager =
-				ReflectionUtilTestUtil.throwForSuppressAccessChecks(
-					securityException)) {
-
-			DelegateProxyFactory delegateProxyFactory =
-				new ASMDelegateProxyFactory();
-
-			delegateProxyFactory.newDelegateProxyInstance(
-				TestInterface.class.getClassLoader(), TestInterface.class,
-				new TestDelegate(), new TestDefault());
-
-			Assert.fail();
-		}
-		catch (ExceptionInInitializerError eiie) {
-			Assert.assertSame(securityException, eiie.getCause());
-		}
+	public void testClassInitialization() throws Exception {
+		Assert.assertEquals(
+			ClassLoader.class.getDeclaredMethod(
+				"defineClass", String.class, byte[].class, int.class,
+				int.class),
+			ReflectionTestUtil.getFieldValue(
+				ASMDelegateProxyFactory.class, "_defineClassMethod"));
+		Assert.assertEquals(
+			Object.class.getDeclaredMethod("equals", Object.class),
+			ReflectionTestUtil.getFieldValue(
+				ASMDelegateProxyFactory.class, "_equalsMethod"));
+		Assert.assertEquals(
+			Object.class.getDeclaredMethod("hashCode"),
+			ReflectionTestUtil.getFieldValue(
+				ASMDelegateProxyFactory.class, "_hashCodeMethod"));
+		Assert.assertEquals(
+			Object.class.getDeclaredMethod("toString"),
+			ReflectionTestUtil.getFieldValue(
+				ASMDelegateProxyFactory.class, "_toStringMethod"));
 	}
 
 	@NewEnv(type = NewEnv.Type.CLASSLOADER)
@@ -207,18 +199,22 @@ public class ASMDelegateProxyFactoryTest {
 				illegalArgumentException.getMessage());
 		}
 
-		SecurityException securityException = new SecurityException();
+		delegateProxyFactory.newDelegateProxyInstance(
+			TestInterface.class.getClassLoader(), TestInterface.class,
+			new TestDelegate(), new TestDefault());
 
-		try (SwappableSecurityManager swappableSecurityManager =
-				ReflectionUtilTestUtil.throwForSuppressAccessChecks(
-					securityException)) {
-
+		try {
 			delegateProxyFactory.newDelegateProxyInstance(
 				TestInterface.class.getClassLoader(), TestInterface.class,
-				new TestDelegate(), new TestDefault());
+				new TestDefault(), new TestDefault());
+
+			Assert.fail();
 		}
 		catch (RuntimeException runtimeException) {
-			Assert.assertSame(securityException, runtimeException.getCause());
+			Throwable throwable = runtimeException.getCause();
+
+			Assert.assertSame(
+				NoSuchMethodException.class, throwable.getClass());
 		}
 	}
 
