@@ -150,6 +150,37 @@ public class ToolSetUtil {
 			toolName);
 	}
 
+	public static String getToolSetName(
+		long companyId, String restContextPath) {
+
+		if (Validator.isNull(restContextPath)) {
+			return null;
+		}
+
+		Map<String, HeadlessApplicationProvider.OpenAPIDocument>
+			openAPIDocuments = getLatestOpenAPIDocuments(companyId);
+
+		for (Map.Entry<String, HeadlessApplicationProvider.OpenAPIDocument>
+				entry : openAPIDocuments.entrySet()) {
+
+			HeadlessApplicationProvider.OpenAPIDocument value =
+				entry.getValue();
+
+			HeadlessApplicationProvider.Application application =
+				value.getApplication();
+
+			String basePath = application.getBasePath();
+
+			if (restContextPath.equals(basePath) ||
+				restContextPath.startsWith(basePath + StringPool.SLASH)) {
+
+				return entry.getKey();
+			}
+		}
+
+		return null;
+	}
+
 	public static Page<ToolSet> getToolSetsPage(long companyId) {
 		Map<String, HeadlessApplicationProvider.OpenAPIDocument>
 			openAPIDocuments = _getOpenAPIDocuments(companyId);

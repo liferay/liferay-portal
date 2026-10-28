@@ -45,6 +45,7 @@ public class ToolSetUtilTest {
 		List<HeadlessApplicationProvider.Application> applications =
 			Arrays.asList(
 				_mockApplication("/headless-admin-user", "v1.0"),
+				_mockApplication("/headless-admin-user-workflow", "v1.0"),
 				_mockApplication(
 					"/headless-commerce-admin-pricing", "v1.0", "v2.0",
 					"v10.0"));
@@ -74,9 +75,27 @@ public class ToolSetUtilTest {
 
 		Assert.assertEquals(
 			Arrays.asList(
-				"headless-admin-user-v1.0",
+				"headless-admin-user-v1.0", "headless-admin-user-workflow-v1.0",
 				"headless-commerce-admin-pricing-v10.0"),
 			new ArrayList<>(openAPIDocuments.keySet()));
+	}
+
+	@Test
+	public void testGetToolSetName() {
+		Assert.assertNull(
+			ToolSetUtil.getToolSetName(_COMPANY_ID, "/headless-admin"));
+		Assert.assertEquals(
+			"headless-admin-user-v1.0",
+			ToolSetUtil.getToolSetName(_COMPANY_ID, "/headless-admin-user"));
+		Assert.assertEquals(
+			"headless-admin-user-workflow-v1.0",
+			ToolSetUtil.getToolSetName(
+				_COMPANY_ID, "/headless-admin-user-workflow/v1.0/tasks"));
+		Assert.assertEquals(
+			"headless-admin-user-v1.0",
+			ToolSetUtil.getToolSetName(
+				_COMPANY_ID, "/headless-admin-user/v1.0/user-accounts"));
+		Assert.assertNull(ToolSetUtil.getToolSetName(_COMPANY_ID, null));
 	}
 
 	private HeadlessApplicationProvider.Application _mockApplication(
