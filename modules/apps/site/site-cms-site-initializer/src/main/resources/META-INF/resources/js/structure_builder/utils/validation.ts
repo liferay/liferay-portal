@@ -20,7 +20,6 @@ import {
 } from '../types/Structure';
 import {Field, SelectFromListField} from './field';
 import getOwnFields from './getOwnFields';
-import removeServerErrors from './state/removeServerErrors';
 
 const NAME_MAX_LENGTH = 41;
 const ERC_MAX_LENGTH = 75;
@@ -562,15 +561,15 @@ export function useValidate() {
 
 		let errors: ErrorMap = new Map();
 
-		const invalids = removeServerErrors({
-			invalids: state.invalids,
-			uuid: structure.uuid,
-		});
+		const invalids = new Map(state.invalids);
 
 		errors = validateStructure({data: structure, isGlobalValidation: true});
 
 		if (errors.size) {
 			invalids.set(structure.uuid, errors);
+		}
+		else {
+			invalids.delete(structure.uuid);
 		}
 
 		// Validate children
