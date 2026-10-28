@@ -328,12 +328,6 @@ public class LocaleUtil {
 	}
 
 	public static String toJSONString(Locale locale) {
-		String json = _jsons.get(locale);
-
-		if (json != null) {
-			return json;
-		}
-
 		Set<Character> extensionKeys = locale.getExtensionKeys();
 		Set<String> unicodeLocaleAttributes =
 			locale.getUnicodeLocaleAttributes();
@@ -381,11 +375,7 @@ public class LocaleUtil {
 
 		sb.append("\"}");
 
-		json = sb.toString();
-
-		_jsons.put(locale, json);
-
-		return json;
+		return sb.toString();
 	}
 
 	public static String toLanguageId(Locale locale) {
@@ -635,7 +625,6 @@ public class LocaleUtil {
 
 	private static final Log _log = LogFactoryUtil.getLog(LocaleUtil.class);
 
-	private static final Map<Locale, String> _jsons = new ConcurrentHashMap<>();
 	private static final Map<Locale, String> _languageIds =
 		new ConcurrentHashMap<>();
 	private static Locale _locale = new Locale("en", "US");
