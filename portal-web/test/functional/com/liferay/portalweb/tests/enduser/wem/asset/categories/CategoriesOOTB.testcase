@@ -777,22 +777,6 @@ definition {
 		}
 	}
 
-	@description = "When the user clicks on the link to documentation, the documentation link is opened"
-	@priority = 3
-	test OpenLiferayLearnCategoriesVocabulariesPage {
-		task ("Click on the Documentation link") {
-			Category.openCategoriesAdmin(siteURLKey = "global");
-
-			Click(locator1 = "Categories#VOCABULARY_LINK_DOCUMENTATION");
-		}
-
-		task ("Assert user is taken to the the Liferay Learn page") {
-			SelectWindow.selectPopUp(value1 = "null");
-
-			AssertLocation.assertPartialLocation(value1 = "tags-and-categories/defining-categories-and-vocabularies-for-content");
-		}
-	}
-
 	@description = "LPS-117015 When 'Categorization' in web content editor, vocabularies management application or content dashboard when empty graph, the message Learn how with a link to the documentation"
 	@priority = 3
 	test OpenLiferayLearnCategoriesVocabulariesPageFromContentDashboard {
@@ -820,6 +804,14 @@ definition {
 		}
 
 		task ("Click on Learn How and Assert if user is taken to the the Liferay Learn page") {
+			Category.assertLearnHowLink();
+
+			Navigator.closeWindow();
+		}
+
+		task ("Click on the Documentation link in the global vocabularies and Assert if user is taken to the the Liferay Learn page") {
+			Category.openCategoriesAdmin(siteURLKey = "global");
+
 			Category.assertLearnHowLink();
 		}
 	}
