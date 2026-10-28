@@ -3,11 +3,9 @@ dependencies {
 	compileInclude group: "com.github.everit-org.json-schema", name: "org.everit.json.schema", version: "1.11.1"
 	compileInclude group: "com.google.re2j", name: "re2j", version: "1.2"
 	compileInclude group: "org.json", name: "json", version: "20231013"
-	compileOnly classifier: "classic", group: "org.joda", name: "joda-convert", version: "2.2.1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "joda-time", name: "joda-time", version: "2.12.1"
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 }
