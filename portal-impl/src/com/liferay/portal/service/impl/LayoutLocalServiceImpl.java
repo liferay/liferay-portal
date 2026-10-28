@@ -4520,7 +4520,9 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		throws PortalException {
 
 		if (MergeLayoutPrototypesThreadLocal.isInProgress() ||
-			StartupHelperUtil.isUpgrading()) {
+			StartupHelperUtil.isUpgrading() ||
+			Validator.isNull(layout.getPortletLayoutPageTemplateEntryERC()) ||
+			Validator.isNotNull(layout.getLayoutSetPrototypeLayoutERC())) {
 
 			return false;
 		}
@@ -4533,12 +4535,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		if (MergeLayoutPrototypesThreadLocal.isMergeComplete(
 				"getLayout", arguments) &&
 			!group.isUser()) {
-
-			return false;
-		}
-
-		if (Validator.isNull(layout.getPortletLayoutPageTemplateEntryERC()) ||
-			Validator.isNotNull(layout.getLayoutSetPrototypeLayoutERC())) {
 
 			return false;
 		}
