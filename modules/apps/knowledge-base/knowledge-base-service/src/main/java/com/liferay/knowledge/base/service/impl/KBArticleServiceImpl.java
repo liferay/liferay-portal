@@ -92,9 +92,7 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		_checkPortletResourcePermission(
-			KBActionKeys.ADD_KB_ARTICLE, serviceContext.getScopeGroupId(),
-			portletId);
+		_checkKBArticlePermissions(portletId, serviceContext);
 
 		return kbArticleLocalService.addKBArticle(
 			externalReferenceCode, getUserId(), parentResourceClassNameId,
@@ -853,8 +851,14 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	public void subscribeGroupKBArticles(long groupId, String portletId)
 		throws PortalException {
 
-		_checkPortletResourcePermission(
-			KBActionKeys.SUBSCRIBE, groupId, portletId);
+		if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_ADMIN)) {
+			_adminPortletResourcePermission.check(
+				getPermissionChecker(), groupId, KBActionKeys.SUBSCRIBE);
+		}
+		else if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
+			_displayPortletResourcePermission.check(
+				getPermissionChecker(), groupId, KBActionKeys.SUBSCRIBE);
+		}
 
 		kbArticleLocalService.subscribeGroupKBArticles(getUserId(), groupId);
 	}
@@ -882,8 +886,14 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 	public void unsubscribeGroupKBArticles(long groupId, String portletId)
 		throws PortalException {
 
-		_checkPortletResourcePermission(
-			KBActionKeys.SUBSCRIBE, groupId, portletId);
+		if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_ADMIN)) {
+			_adminPortletResourcePermission.check(
+				getPermissionChecker(), groupId, KBActionKeys.SUBSCRIBE);
+		}
+		else if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
+			_displayPortletResourcePermission.check(
+				getPermissionChecker(), groupId, KBActionKeys.SUBSCRIBE);
+		}
 
 		kbArticleLocalService.unsubscribeGroupKBArticles(getUserId(), groupId);
 	}
@@ -1018,20 +1028,19 @@ public class KBArticleServiceImpl extends KBArticleServiceBaseImpl {
 		return kbFolder.getGroupId();
 	}
 
-	private void _checkPortletResourcePermission(
-			String actionId, long groupId, String portletId)
+	private void _checkKBArticlePermissions(
+			String portletId, ServiceContext serviceContext)
 		throws PortalException {
 
 		if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_ADMIN)) {
 			_adminPortletResourcePermission.check(
-				getPermissionChecker(), groupId, actionId);
+				getPermissionChecker(), serviceContext.getScopeGroupId(),
+				KBActionKeys.ADD_KB_ARTICLE);
 		}
 		else if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
 			_displayPortletResourcePermission.check(
-				getPermissionChecker(), groupId, actionId);
-		}
-		else {
-			throw new PrincipalException("Invalid portlet ID " + portletId);
+				getPermissionChecker(), serviceContext.getScopeGroupId(),
+				KBActionKeys.ADD_KB_ARTICLE);
 		}
 	}
 
