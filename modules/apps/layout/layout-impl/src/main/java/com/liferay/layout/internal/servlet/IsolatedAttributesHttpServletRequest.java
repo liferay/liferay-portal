@@ -33,7 +33,12 @@ public class IsolatedAttributesHttpServletRequest
 
 	@Override
 	public Object getAttribute(String name) {
-		Map<String, Object> attributes = _getAttributes(name);
+		Map<String, Object> attributes = _attributes;
+
+		if (RequestDispatcherAttributeNames.contains(name)) {
+			attributes = _requestDispatcherAttributes.getOrDefault(
+				getRequest(), Collections.emptyMap());
+		}
 
 		Object value = attributes.get(name);
 
