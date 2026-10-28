@@ -107,8 +107,8 @@ public class IsolatedAttributesHttpServletRequestTest {
 		List<String> names = Collections.list(
 			isolatedAttributesHttpServletRequest.getAttributeNames());
 
-		Assert.assertEquals(names.toString(), 1, names.size());
 		Assert.assertEquals(name2, names.get(0));
+		Assert.assertEquals(names.toString(), 1, names.size());
 	}
 
 	private void _testGetAttributeNamesWithRequestDispatcherAttribute() {
@@ -117,13 +117,14 @@ public class IsolatedAttributesHttpServletRequestTest {
 		IsolatedAttributesHttpServletRequest
 			isolatedAttributesHttpServletRequest1 =
 				new IsolatedAttributesHttpServletRequest(httpServletRequest);
-		IsolatedAttributesHttpServletRequest
-			isolatedAttributesHttpServletRequest2 =
-				new IsolatedAttributesHttpServletRequest(httpServletRequest);
 
 		isolatedAttributesHttpServletRequest1.setAttribute(
 			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH,
 			RandomTestUtil.randomString());
+
+		IsolatedAttributesHttpServletRequest
+			isolatedAttributesHttpServletRequest2 =
+				new IsolatedAttributesHttpServletRequest(httpServletRequest);
 
 		isolatedAttributesHttpServletRequest2.removeAttribute(
 			JavaConstants.JAKARTA_SERVLET_INCLUDE_SERVLET_PATH);
