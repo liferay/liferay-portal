@@ -6,9 +6,12 @@
 package com.liferay.layout.renderer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.layout.renderer.LayoutPreviewRenderer;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
+import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.model.Group;
@@ -16,6 +19,8 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -23,6 +28,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.test.rule.Inject;
@@ -30,6 +36,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -109,6 +116,48 @@ public class LayoutPreviewRendererTest {
 			siblingHTML,
 			CoreMatchers.not(
 				CoreMatchers.containsString(fragmentEntryLink.getHtml())));
+	}
+
+	@Test
+	public void testRenderLayoutOfOtherSite() throws Exception {
+		GroupTestUtil.updateDisplaySettings(
+			_group.getGroupId(), Arrays.asList(LocaleUtil.SPAIN, LocaleUtil.US),
+			LocaleUtil.SPAIN);
+
+		Layout layout = _addLayout(
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN, RandomTestUtil.randomString()
+			).put(
+				LocaleUtil.US, RandomTestUtil.randomString()
+			).build());
+
+		Layout draftLayout = layout.fetchDraftLayout();
+
+		ContentLayoutTestUtil.addFragmentEntryLinkToLayout(
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, null, null,
+			"<div class=\"site-default-locale\">" +
+				"${themeDisplay.getSiteDefaultLocale()}</div>",
+			StringPool.BLANK, draftLayout, null,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				draftLayout.getPlid()),
+			FragmentConstants.TYPE_COMPONENT);
+
+		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+
+		try (AutoCloseable autoCloseable =
+				_layoutServiceContextHelper.getServiceContextAutoCloseable(
+					LayoutTestUtil.addTypeContentLayout(
+						GroupTestUtil.addGroup()))) {
+
+			Assert.assertThat(
+				_render(
+					layout, LocaleUtil.SPAIN,
+					ServiceContextThreadLocal.getServiceContext()),
+				CoreMatchers.containsString(
+					"<div class=\"site-default-locale\">es_ES</div>"));
+			Assert.assertEquals(
+				LocaleUtil.US, LocaleThreadLocal.getSiteDefaultLocale());
+		}
 	}
 
 	@Test(expected = NoSuchLayoutException.class)
@@ -208,6 +257,19 @@ public class LayoutPreviewRendererTest {
 				layout.getPlid()));
 	}
 
+	private String _render(
+			Layout layout, Locale locale, ServiceContext serviceContext)
+		throws Exception {
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		return _layoutPreviewRenderer.render(
+			layout, locale,
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				layout.getPlid()),
+			serviceContext);
+	}
+
 	private Group _group;
 
 	@Inject
@@ -215,6 +277,9 @@ public class LayoutPreviewRendererTest {
 
 	@Inject
 	private LayoutPreviewRenderer _layoutPreviewRenderer;
+
+	@Inject
+	private LayoutServiceContextHelper _layoutServiceContextHelper;
 
 	@Inject
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
