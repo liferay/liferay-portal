@@ -1,14 +1,8 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
-	testIntegrationImplementation project(":apps:journal:journal-api")
-	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:login:login-web-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
-	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
-	testIntegrationImplementation project(":apps:portal-search:portal-search-engine-adapter-api")
-	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-spi")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

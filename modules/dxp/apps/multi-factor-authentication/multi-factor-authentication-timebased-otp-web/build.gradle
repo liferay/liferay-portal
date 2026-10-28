@@ -9,18 +9,15 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	compileOnly project(":apps:portal-url-builder:portal-url-builder-api")
-	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
 	compileOnly project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-spi")
 	compileOnly project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-timebased-otp-api")
-	compileOnly project(":dxp:apps:multi-factor-authentication:multi-factor-authentication-web")
 	testImplementation project(":core:petra:petra-lang")
 }
