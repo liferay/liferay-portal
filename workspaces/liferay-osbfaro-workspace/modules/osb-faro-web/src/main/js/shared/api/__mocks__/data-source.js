@@ -71,17 +71,6 @@ export const fetchProgress = jest.fn(() =>
 	Promise.resolve(data.mockProgress())
 );
 
-export const fetchUserGroups = jest.fn(() =>
-	Promise.resolve([
-		{
-			id: 0,
-			name: 'Test User Group',
-		},
-	])
-);
-
-export const fetchUserGroupsById = jest.fn(() => Promise.resolve([]));
-
 export const fetchOAuthUrl = jest.fn(() =>
 	Promise.resolve({
 		oAuthAuthorizationURL: 'https://foobar.biz',

@@ -46,8 +46,6 @@ import com.liferay.osb.faro.engine.client.model.CatalogField;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
-import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
@@ -91,7 +89,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.search.SearchPaginationUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -2147,49 +2144,6 @@ public class ContactsEngineClientImpl
 			faroProject, Rels.DATA_SOURCE_DXP_USERS_TOTAL,
 			contactsConfiguration, Long.class,
 			getUriVariables(faroProject, id));
-	}
-
-	@Override
-	public List<DXPUserGroup> getDataSourceDXPUserGroups(
-		FaroProject faroProject, String id, List<Long> userGroupIds) {
-
-		if (ListUtil.isEmpty(userGroupIds)) {
-			return Collections.emptyList();
-		}
-
-		PagedModel<?, DXPUserGroup> pagedModel = post(
-			faroProject, Rels.DATA_SOURCE_DXP_USER_GROUPS, userGroupIds,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<DXPUserGroup>>() {
-			},
-			getUriVariables(faroProject, id));
-
-		Results<DXPUserGroup> results = pagedModel.getResults();
-
-		return results.getItems();
-	}
-
-	@Override
-	public Results<DXPUserGroup> getDataSourceDXPUserGroups(
-		FaroProject faroProject, String id, String name, int cur, int delta) {
-
-		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
-			cur, delta);
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, startAndEnd[0], startAndEnd[1]);
-
-		uriVariables.put("id", id);
-		uriVariables.put("name", getName(name));
-
-		PagedModel<?, DXPUserGroup> pagedModel = get(
-			faroProject, Rels.DATA_SOURCE_DXP_USER_GROUPS,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<DXPUserGroup>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
 	}
 
 	@Override

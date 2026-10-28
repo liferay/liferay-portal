@@ -127,26 +127,6 @@ export const fetchToken = (groupId, dataSourceId) =>
 		}token`,
 	});
 
-export function fetchUserGroups({cur, delta, groupId, id, name}) {
-	return sendRequest({
-		data: {
-			cur,
-			delta,
-			name,
-		},
-		method: 'GET',
-		path: `contacts/${groupId}/data_source/${id ? `${id}/` : ''}user_groups`,
-	});
-}
-
-export function fetchUserGroupsById({groupId, id, userGroupIds}) {
-	return sendRequest({
-		data: {userGroupIds},
-		method: 'POST',
-		path: `contacts/${groupId}/data_source/${id}/user_groups_by_ids`,
-	});
-}
-
 export function fetchLiferaySyncCounts({contactsConfiguration, groupId, id}) {
 	return sendRequest({
 		data: {contactsConfiguration},

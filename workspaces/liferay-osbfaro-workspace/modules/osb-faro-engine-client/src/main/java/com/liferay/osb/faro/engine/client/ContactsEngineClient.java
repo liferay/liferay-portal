@@ -36,8 +36,6 @@ import com.liferay.osb.faro.engine.client.model.CatalogField;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
-import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
@@ -413,12 +411,6 @@ public interface ContactsEngineClient {
 	public long getDataSourceDXPTotal(
 		FaroProject faroProject, String id,
 		LiferayProvider.ContactsConfiguration contactsConfiguration);
-
-	public List<DXPUserGroup> getDataSourceDXPUserGroups(
-		FaroProject faroProject, String id, List<Long> userGroupIds);
-
-	public Results<DXPUserGroup> getDataSourceDXPUserGroups(
-		FaroProject faroProject, String id, String name, int cur, int delta);
 
 	public Map<String, List<DataSourceFieldCatalogEntry>>
 		getDataSourceFieldCatalogEntries(

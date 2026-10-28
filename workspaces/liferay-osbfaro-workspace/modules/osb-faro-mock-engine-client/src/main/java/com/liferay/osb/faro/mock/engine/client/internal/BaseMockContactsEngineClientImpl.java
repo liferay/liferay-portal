@@ -37,8 +37,6 @@ import com.liferay.osb.faro.engine.client.model.CatalogField;
 import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
-import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
@@ -795,22 +793,6 @@ public abstract class BaseMockContactsEngineClientImpl
 
 		return contactsEngineClient.getDataSourceDXPTotal(
 			faroProject, id, contactsConfiguration);
-	}
-
-	@Override
-	public List<DXPUserGroup> getDataSourceDXPUserGroups(
-		FaroProject faroProject, String id, List<Long> userGroupIds) {
-
-		return contactsEngineClient.getDataSourceDXPUserGroups(
-			faroProject, id, userGroupIds);
-	}
-
-	@Override
-	public Results<DXPUserGroup> getDataSourceDXPUserGroups(
-		FaroProject faroProject, String id, String name, int cur, int delta) {
-
-		return contactsEngineClient.getDataSourceDXPUserGroups(
-			faroProject, id, name, cur, delta);
 	}
 
 	@Override

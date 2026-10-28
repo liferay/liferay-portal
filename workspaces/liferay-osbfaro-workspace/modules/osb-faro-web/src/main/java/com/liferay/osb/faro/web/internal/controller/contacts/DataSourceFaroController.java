@@ -14,8 +14,6 @@ import com.liferay.osb.faro.engine.client.exception.InvalidFilterException;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.ChannelsConfiguration;
 import com.liferay.osb.faro.engine.client.model.Credentials;
-import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
 import com.liferay.osb.faro.engine.client.model.DataSourceFieldCatalogEntry;
@@ -53,8 +51,6 @@ import com.liferay.osb.faro.web.internal.helper.ContactsCSVHelper;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ChannelDataSourceDisplay;
-import com.liferay.osb.faro.web.internal.model.display.contacts.DXPGroupDisplay;
-import com.liferay.osb.faro.web.internal.model.display.contacts.DXPUserGroupDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMappingDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMetricsDisplay;
@@ -530,22 +526,6 @@ public class DataSourceFaroController extends BaseFaroController {
 				channelDataSource);
 
 		return new FaroResultsDisplay(results, function);
-	}
-
-	@Path("/{id}/user_groups_by_ids")
-	@POST
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public List<DXPUserGroupDisplay> getDXPUserGroupDisplays(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@DefaultValue(StringPool.BLANK) @FormParam("userGroupIds") FaroParam
-				<List<Long>> userGroupIdsFaroParam)
-		throws Exception {
-
-		return TransformUtil.transform(
-			contactsEngineClient.getDataSourceDXPUserGroups(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-				userGroupIdsFaroParam.getValue()),
-			DXPUserGroupDisplay::new);
 	}
 
 	@GET
@@ -1090,26 +1070,6 @@ public class DataSourceFaroController extends BaseFaroController {
 			faroProjectLocalService.getFaroProjectByGroupId(groupId);
 
 		return getToken(uriInfo, id, faroProject.getFaroProjectId());
-	}
-
-	@GET
-	@Path("/{id}/user_groups")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public FaroResultsDisplay getUserGroupsFaroResultsDisplay(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@QueryParam("name") String name, @QueryParam("cur") int cur,
-			@QueryParam("delta") int delta)
-		throws Exception {
-
-		Results<DXPUserGroup> results =
-			contactsEngineClient.getDataSourceDXPUserGroups(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-				name, cur, delta);
-
-		Function<DXPUserGroup, DXPUserGroupDisplay> function =
-			DXPUserGroupDisplay::new;
-
-		return new FaroResultsDisplay(results, function);
 	}
 
 	@PATCH
