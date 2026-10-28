@@ -582,14 +582,30 @@ test(
 	{tag: '@LRAC-10011'},
 	async ({analyticsChannel: channel, apiHelpers, page, project}) => {
 		const attributes = [
-			{dataType: 'STRING', name: 'category', value: 'wetsuit'},
-			{dataType: 'NUMBER', name: 'price', value: '259.95'},
+			{
+				dataType: 'STRING',
+				dataTypeLabel: 'String',
+				name: 'category',
+				value: 'wetsuit',
+			},
+			{
+				dataType: 'NUMBER',
+				dataTypeLabel: 'Number',
+				name: 'price',
+				value: '259.95',
+			},
 			{
 				dataType: 'DATE',
+				dataTypeLabel: 'Date',
 				name: 'birthdate',
 				value: '2021-11-25T14:36:30.685Z',
 			},
-			{dataType: 'BOOLEAN', name: 'like', value: 'true'},
+			{
+				dataType: 'BOOLEAN',
+				dataTypeLabel: 'Boolean',
+				name: 'like',
+				value: 'true',
+			},
 		];
 
 		await createCustomEvent({
@@ -621,12 +637,14 @@ test(
 
 		// Each attribute shows its ingested sample value and its data type
 
-		for (const {dataType, name, value} of attributes) {
+		for (const {dataTypeLabel, name, value} of attributes) {
 			await openAttribute(name);
 
 			await expect(page.getByText(value, {exact: true})).toBeVisible();
 
-			await expect(page.getByText(dataType, {exact: true})).toBeVisible();
+			await expect(
+				page.getByText(dataTypeLabel, {exact: true})
+			).toBeVisible();
 		}
 
 		// A display name longer than 255 characters is rejected
@@ -675,9 +693,7 @@ test(
 
 		await page.keyboard.press('Enter');
 
-		await expect(
-			page.getByText('No results were found.')
-		).toBeVisible();
+		await expect(page.getByText('No results were found.')).toBeVisible();
 	}
 );
 
