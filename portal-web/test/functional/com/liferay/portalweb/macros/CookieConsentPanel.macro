@@ -64,32 +64,56 @@ definition {
 	@summary = "Default summary"
 	macro editCookieConsentConsent() {
 		if (isSet(performanceCookies)) {
+			WaitForEditable(locator1 = "CookieConsentPanel#PERFORMANCE_COOKIES_TOGGLE");
+
 			Check.checkToggleSwitch(
 				key_toggleSwitchLabel = "Performance Cookies",
 				locator1 = "CookieConsentPanel#PERFORMANCE_COOKIES_TOGGLE");
+
+			AssertChecked.assertCheckedNotVisible(locator1 = "CookieConsentPanel#PERFORMANCE_COOKIES_TOGGLE");
 		}
 
 		if (isSet(functionalCookies)) {
+			WaitForEditable(locator1 = "CookieConsentPanel#FUNCTIONAL_COOKIES_TOGGLE");
+
 			Check.checkToggleSwitch(
 				key_toggleSwitchLabel = "Functional Cookies",
 				locator1 = "CookieConsentPanel#FUNCTIONAL_COOKIES_TOGGLE");
+
+			AssertChecked.assertCheckedNotVisible(locator1 = "CookieConsentPanel#FUNCTIONAL_COOKIES_TOGGLE");
 		}
 
 		if (isSet(personalizationCookies)) {
+			WaitForEditable(locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
+
 			Check.checkToggleSwitch(
 				key_toggleSwitchLabel = "Personalization Cookies",
 				locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
+
+			AssertChecked.assertCheckedNotVisible(locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
 		}
 	}
 
 	@description = "Select all cookie categories on the Cookie Consent panel"
 	@summary = "Default summary"
 	macro selectAllCookiesOnConsentPanel() {
+		WaitForEditable(locator1 = "CookieConsentPanel#PERFORMANCE_COOKIES_TOGGLE");
+
 		Check.checkToggleSwitch(locator1 = "CookieConsentPanel#PERFORMANCE_COOKIES_TOGGLE");
+
+		AssertChecked.assertCheckedNotVisible(locator1 = "CookieConsentPanel#PERFORMANCE_COOKIES_TOGGLE");
+
+		WaitForEditable(locator1 = "CookieConsentPanel#FUNCTIONAL_COOKIES_TOGGLE");
 
 		Check.checkToggleSwitch(locator1 = "CookieConsentPanel#FUNCTIONAL_COOKIES_TOGGLE");
 
+		AssertChecked.assertCheckedNotVisible(locator1 = "CookieConsentPanel#FUNCTIONAL_COOKIES_TOGGLE");
+
+		WaitForEditable(locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
+
 		Check.checkToggleSwitch(locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
+
+		AssertChecked.assertCheckedNotVisible(locator1 = "CookieConsentPanel#PERSONALIZATION_COOKIES_TOGGLE");
 
 		AssertClick(
 			locator1 = "CookieConsentPanel#ACCEPT_SELECTED_BUTTON",
