@@ -1,5 +1,4 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -14,9 +13,7 @@ dependencies {
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:batch-engine:batch-engine-api")
-	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")
-	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
@@ -24,21 +21,16 @@ dependencies {
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-react")
-	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
-	compileOnly project(":apps:list-type:list-type-api")
 	compileOnly project(":apps:login:login-web-api")
 	compileOnly project(":apps:object:object-api")
-	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
-	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:site:site-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
-	compileOnly project(":apps:translation:translation-api")
 	compileOnly project(":apps:user:user-taglib")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
