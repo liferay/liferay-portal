@@ -229,7 +229,6 @@ definition {
 
 		var siteNameURL = StringUtil.lowerCase(${siteNameURL});
 		var baseURL = ${baseURL};
-		var actualLink = selenium.getAttribute("CookieConsentPanel#COOKIES_CONSENT_PANEL_POLICY_LINK_VALUE_IN_VIRTUAL_HOST");
 
 		if (!(isSet(baseURL))) {
 			var baseURL = JSONCompany.getPortalURL();
@@ -239,6 +238,8 @@ definition {
 			baseURL = ${baseURL},
 			pageName = ${pageName},
 			siteName = ${siteName});
+
+		var actualLink = selenium.getAttribute("CookieConsentPanel#COOKIES_CONSENT_PANEL_POLICY_LINK_VALUE_IN_VIRTUAL_HOST");
 
 		TestUtils.assertEquals(
 			actual = ${actualLink},

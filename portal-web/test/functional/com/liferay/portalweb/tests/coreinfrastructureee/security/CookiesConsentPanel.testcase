@@ -223,7 +223,7 @@ definition {
 				password = PropsUtil.get("default.admin.password"),
 				userEmailAddress = "test@liferay.com");
 
-			CookieHelper.checkAllCookieAreDeclinedAndSaved();
+			CookieConsentPanel.verifyCookiesForCookieCategoriesAreNotPresent();
 		}
 	}
 

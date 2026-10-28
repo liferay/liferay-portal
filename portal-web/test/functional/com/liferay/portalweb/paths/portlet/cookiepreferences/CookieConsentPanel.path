@@ -47,7 +47,7 @@
 </tr>
 <tr>
 	<td>COOKIES_CONSENT_PANEL_POLICY_LINK_VALUE_IN_VIRTUAL_HOST</td>
-	<td>//*[contains(@id,'p_p_id_com_liferay_cookies_banner_web_portlet_CookiesBannerConfigurationPortlet_INSTANCE_')]//a@href</td>
+	<td>//*[contains(@id,'p_p_id_com_liferay_cookies_banner_web_portlet_CookiesBannerConfigurationPortlet_INSTANCE_')]//a[@target='_blank']@href</td>
 	<td></td>
 </tr>
 <tr>
