@@ -10,6 +10,7 @@ import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.exportimport.kernel.background.task.BackgroundTaskExecutorNames;
 import com.liferay.exportimport.kernel.lar.ExportImportGroup;
 import com.liferay.exportimport.kernel.lar.ExportImportHelper;
+import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.rest.client.dto.v1_0.AssetLibrary;
 import com.liferay.exportimport.rest.client.dto.v1_0.DateRangeDateFilter;
 import com.liferay.exportimport.rest.client.dto.v1_0.ExportPreview;
@@ -53,12 +54,14 @@ import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistryUtil;
 import com.liferay.portal.kernel.backgroundtask.constants.BackgroundTaskConstants;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -341,6 +344,11 @@ public class ExportProcessResourceTest
 				exportProcessResource.postExportProcessHttpResponse(
 					null,
 					_toInstanceExportProcessRequest(exportProcessRequest)));
+		_testPostExportProcessWithInvalidName(
+			exportProcessRequest ->
+				exportProcessResource.postExportProcessHttpResponse(
+					null,
+					_toInstanceExportProcessRequest(exportProcessRequest)));
 
 		ObjectDefinition objectDefinition = _publishObjectDefinition(
 			ObjectDefinitionConstants.SCOPE_COMPANY);
@@ -454,6 +462,10 @@ public class ExportProcessResourceTest
 				}));
 
 		_testPostExportProcessWithInvalidDateRange(
+			exportProcessRequest ->
+				exportProcessResource.postSiteExportProcessHttpResponse(
+					externalReferenceCode, null, null, exportProcessRequest));
+		_testPostExportProcessWithInvalidName(
 			exportProcessRequest ->
 				exportProcessResource.postSiteExportProcessHttpResponse(
 					externalReferenceCode, null, null, exportProcessRequest));
@@ -1045,6 +1057,39 @@ public class ExportProcessResourceTest
 			assertHttpResponseStatusCode(
 				400, unsafeFunction.apply(exportProcessRequest));
 		}
+	}
+
+	private void _testPostExportProcessWithInvalidName(
+			UnsafeFunction
+				<ExportProcessRequest, HttpInvoker.HttpResponse, Exception>
+					unsafeFunction)
+		throws Exception {
+
+		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
+
+		int nameMaxLength = ModelHintsUtil.getMaxLength(
+			ExportImportConfiguration.class.getName(), "name");
+
+		exportProcessRequest.setName(
+			RandomTestUtil.randomString(nameMaxLength + 1));
+
+		HttpInvoker.HttpResponse httpResponse = unsafeFunction.apply(
+			exportProcessRequest);
+
+		assertHttpResponseStatusCode(400, httpResponse);
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			httpResponse.getContent());
+
+		Assert.assertEquals(
+			"Process name cannot exceed " + nameMaxLength + " characters.",
+			jsonObject.getString("title"));
+
+		exportProcessRequest.setName(
+			RandomTestUtil.randomString(nameMaxLength));
+
+		assertHttpResponseStatusCode(
+			200, unsafeFunction.apply(exportProcessRequest));
 	}
 
 	private void _testPostExportProcessWithLayoutSet(
