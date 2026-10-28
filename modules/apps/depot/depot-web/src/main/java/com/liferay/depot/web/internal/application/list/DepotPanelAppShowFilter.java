@@ -7,7 +7,6 @@ package com.liferay.depot.web.internal.application.list;
 
 import com.liferay.application.list.PanelApp;
 import com.liferay.application.list.PanelAppShowFilter;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
@@ -22,16 +21,14 @@ public class DepotPanelAppShowFilter implements PanelAppShowFilter {
 
 	@Override
 	public boolean isShow(
-			PanelApp panelApp, PermissionChecker permissionChecker, Group group)
-		throws PortalException {
+		PanelApp panelApp, PermissionChecker permissionChecker, Group group) {
 
-		if (group.isDepot() &&
-			!_depotPanelAppController.isShow(panelApp, group.getGroupId())) {
-
-			return false;
+		if (group.isDepot()) {
+			return _depotPanelAppController.isShow(
+				panelApp, group.getGroupId());
 		}
 
-		return panelApp.isShow(permissionChecker, group);
+		return true;
 	}
 
 	@Reference

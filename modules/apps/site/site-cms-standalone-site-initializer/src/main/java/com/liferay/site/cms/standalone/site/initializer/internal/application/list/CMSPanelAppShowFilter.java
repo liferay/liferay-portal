@@ -33,7 +33,6 @@ import com.liferay.marketplace.constants.MarketplaceStorePortletKeys;
 import com.liferay.message.boards.constants.MBPortletKeys;
 import com.liferay.notification.constants.NotificationPortletKeys;
 import com.liferay.on.demand.admin.constants.OnDemandAdminPortletKeys;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.util.SetUtil;
@@ -62,14 +61,9 @@ public class CMSPanelAppShowFilter implements PanelAppShowFilter {
 
 	@Override
 	public boolean isShow(
-			PanelApp panelApp, PermissionChecker permissionChecker, Group group)
-		throws PortalException {
+		PanelApp panelApp, PermissionChecker permissionChecker, Group group) {
 
-		if (_hiddenPortletIds.contains(panelApp.getPortletId())) {
-			return false;
-		}
-
-		return panelApp.isShow(permissionChecker, group);
+		return !_hiddenPortletIds.contains(panelApp.getPortletId());
 	}
 
 	private static final Set<String> _hiddenPortletIds = SetUtil.fromArray(

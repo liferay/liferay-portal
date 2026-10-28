@@ -33,21 +33,15 @@ public class CTPanelAppShowFilter implements PanelAppShowFilter {
 		throws PortalException {
 
 		if (CTCollectionThreadLocal.isProductionMode()) {
-			return panelApp.isShow(permissionChecker, group);
+			return true;
 		}
 
 		CTConfiguration ctConfiguration =
 			_configurationProvider.getCompanyConfiguration(
 				CTConfiguration.class, group.getCompanyId());
 
-		if (ArrayUtil.contains(
-				ctConfiguration.hiddenApplications(),
-				panelApp.getPortletId())) {
-
-			return false;
-		}
-
-		return panelApp.isShow(permissionChecker, group);
+		return !ArrayUtil.contains(
+			ctConfiguration.hiddenApplications(), panelApp.getPortletId());
 	}
 
 	@Reference
