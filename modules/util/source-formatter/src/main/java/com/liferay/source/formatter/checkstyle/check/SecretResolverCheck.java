@@ -208,35 +208,30 @@ public class SecretResolverCheck extends BaseCheck {
 			return false;
 		}
 
-		for (DetailAST methodCallDetailAST :
-				getAllChildTokens(
-					methodDefDetailAST, true, TokenTypes.METHOD_CALL)) {
+		for (DetailAST identDetailAST :
+				getAllChildTokens(methodDefDetailAST, true, TokenTypes.IDENT)) {
 
-			if (!_isResolveCall(methodCallDetailAST)) {
+			if (!Objects.equals(
+					identDetailAST.getText(), assignedVariableName)) {
+
 				continue;
 			}
 
-			for (DetailAST parameterExprDetailAST :
-					getParameterExprDetailASTs(methodCallDetailAST)) {
+			DetailAST parentDetailAST = identDetailAST.getParent();
 
-				for (DetailAST identDetailAST :
-						getAllChildTokens(
-							parameterExprDetailAST, true, TokenTypes.IDENT)) {
+			if ((parentDetailAST.getType() == TokenTypes.DOT) &&
+				(parentDetailAST.getLastChild() == identDetailAST)) {
 
-					DetailAST parentDetailAST = identDetailAST.getParent();
+				continue;
+			}
 
-					if ((parentDetailAST.getType() == TokenTypes.DOT) &&
-						(parentDetailAST.getLastChild() == identDetailAST)) {
+			DetailAST methodCallDetailAST = getParentWithTokenType(
+				identDetailAST, TokenTypes.METHOD_CALL);
 
-						continue;
-					}
+			if ((methodCallDetailAST != null) &&
+				_isResolveCall(methodCallDetailAST)) {
 
-					if (Objects.equals(
-							identDetailAST.getText(), assignedVariableName)) {
-
-						return true;
-					}
-				}
+				return true;
 			}
 		}
 
