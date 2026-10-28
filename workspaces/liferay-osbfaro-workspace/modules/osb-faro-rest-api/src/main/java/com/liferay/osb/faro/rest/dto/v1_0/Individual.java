@@ -46,11 +46,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only).",
+	description = "A single individual synced to LDP. Individuals are aggregated from data sources configured to sync to LDP, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only).",
 	value = "Individual"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "A single individual synced to Analytics Cloud. Individuals are aggregated from data sources configured to sync to Analytics Cloud, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only)."
+	description = "A single individual synced to LDP. Individuals are aggregated from data sources configured to sync to LDP, and may be either 'known' (identified by email) or 'anonymous' (browser tracked only)."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Individual")
@@ -155,7 +155,7 @@ public class Individual implements Serializable {
 	private Supplier<Long> _activitiesCountSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Engagement classification computed by Analytics Cloud from the individual's recent activity. The set of values is defined by the analytics engine."
+		description = "Engagement classification computed by LDP from the individual's recent activity: ACTIVE or INACTIVE."
 	)
 	public String getActivityStatus() {
 		if (_activityStatusSupplier != null) {
@@ -191,7 +191,7 @@ public class Individual implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Engagement classification computed by Analytics Cloud from the individual's recent activity. The set of values is defined by the analytics engine."
+		description = "Engagement classification computed by LDP from the individual's recent activity: ACTIVE or INACTIVE."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String activityStatus;
@@ -245,7 +245,7 @@ public class Individual implements Serializable {
 	private Supplier<Long> _averageSessionDurationSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "First time this Individual was observed by Analytics Cloud."
+		description = "First time this Individual was observed by LDP."
 	)
 	public Date getDateCreated() {
 		if (_dateCreatedSupplier != null) {
@@ -281,7 +281,7 @@ public class Individual implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "First time this Individual was observed by Analytics Cloud."
+		description = "First time this Individual was observed by LDP."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date dateCreated;
@@ -335,7 +335,7 @@ public class Individual implements Serializable {
 	private Supplier<Date> _dateModifiedSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Per-category demographic attributes attached to this Individual. The map key is the demographic category (e.g. 'profile', 'address', 'employment'), and each value is a list of attribute records. Use `IndividualDemographicField.fieldType` to interpret each `value`."
+		description = "Demographic attributes attached to this Individual, keyed by field name (e.g. 'givenName', 'jobTitle', 'birthDate'). Each value lists the records for that field, one per data source that supplies it. Use `IndividualDemographicField.fieldType` to interpret each `value`."
 	)
 	@Valid
 	public Object getDemographics() {
@@ -372,7 +372,7 @@ public class Individual implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Per-category demographic attributes attached to this Individual. The map key is the demographic category (e.g. 'profile', 'address', 'employment'), and each value is a list of attribute records. Use `IndividualDemographicField.fieldType` to interpret each `value`."
+		description = "Demographic attributes attached to this Individual, keyed by field name (e.g. 'givenName', 'jobTitle', 'birthDate'). Each value lists the records for that field, one per data source that supplies it. Use `IndividualDemographicField.fieldType` to interpret each `value`."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Object demographics;
@@ -1222,4 +1222,4 @@ public class Individual implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-324686737
+// LIFERAY-REST-BUILDER-HASH:-1655516693

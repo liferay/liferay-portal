@@ -54,17 +54,17 @@ public abstract class BaseIndividualResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List individuals for an LDP workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, individuals are not filtered by activity date. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the channel whose search terms should be listed.",
+				description = "ID of the channel whose individuals should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId", required = true
 			),
@@ -94,7 +94,7 @@ public abstract class BaseIndividualResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size.",
+				description = "Page size, from 1 to 500. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -105,18 +105,18 @@ public abstract class BaseIndividualResourceImpl
 				name = "profileType"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
+				description = "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
+				description = "Date range preset. Use one of the listed enum values. When no range is given, individuals are not filtered by activity date. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`.",
 				example = "LAST_30_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
+				description = "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeStart"
 			),
@@ -126,7 +126,7 @@ public abstract class BaseIndividualResourceImpl
 				name = "search"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Sort expression `column:asc|desc`. Sortable columns: accountName, activitiesCount, averageSessionDuration, emailAddress, firstActivityDate, knownSinceDate, lastActivityDate, lastSessionCountry, sessionsCount. Only one column is sorted on.",
+				description = "Sort expression `column:asc|desc`; separate several expressions with commas. Sortable columns: accountName, activitiesCount, activityStatus, country, createDate, emailAddress, firstActivityDate, firstName, id, jobTitle, knownSinceDate, lastActivityDate, lastName, lastSessionCountry, middleName, modifiedDate, name, profileType, sessionsCount.",
 				example = "lastActivityDate:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -190,12 +190,12 @@ public abstract class BaseIndividualResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individuals/{individualId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
+		description = "Fetch a single Individual from an LDP workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
@@ -687,4 +687,4 @@ public abstract class BaseIndividualResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1504025197
+// LIFERAY-REST-BUILDER-HASH:-2076213747

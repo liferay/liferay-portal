@@ -150,7 +150,7 @@ public class Metric implements Serializable {
 	private Supplier<Double> _previousValueSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Direction of the change from the previous range (e.g. POSITIVE, NEGATIVE, NEUTRAL). The set of values is defined by the analytics engine."
+		description = "Direction of the change from the previous range: POSITIVE, NEGATIVE or NEUTRAL."
 	)
 	public String getTrendClassification() {
 		if (_trendClassificationSupplier != null) {
@@ -186,7 +186,7 @@ public class Metric implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Direction of the change from the previous range (e.g. POSITIVE, NEGATIVE, NEUTRAL). The set of values is defined by the analytics engine."
+		description = "Direction of the change from the previous range: POSITIVE, NEGATIVE or NEUTRAL."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected String trendClassification;
@@ -505,4 +505,4 @@ public class Metric implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:383137004
+// LIFERAY-REST-BUILDER-HASH:-575800180

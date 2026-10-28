@@ -48,17 +48,17 @@ public abstract class BaseEventMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts/{accountId}/event-metrics'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Identifier of the channel whose events should be counted should be returned.",
+				description = "ID of the channel whose events should be counted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId", required = true
 			),
@@ -74,18 +74,18 @@ public abstract class BaseEventMetricResourceImpl
 				name = "interval"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
+				description = "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
+				description = "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`.",
 				example = "LAST_30_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
+				description = "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeStart"
 			),
@@ -144,17 +144,17 @@ public abstract class BaseEventMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individuals/{individualId}/event-metrics'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the channel whose events should be counted should be returned.",
+				description = "ID of the channel whose events should be counted.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId", required = true
 			),
@@ -170,18 +170,18 @@ public abstract class BaseEventMetricResourceImpl
 				name = "interval"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
+				description = "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
+				description = "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`.",
 				example = "LAST_30_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range start as date (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
+				description = "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeStart"
 			),
@@ -679,4 +679,4 @@ public abstract class BaseEventMetricResourceImpl
 		LogFactoryUtil.getLog(BaseEventMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1871333820
+// LIFERAY-REST-BUILDER-HASH:-85361762

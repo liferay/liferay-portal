@@ -41,11 +41,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An account synced to Analytics Cloud. Accounts aggregate individuals (or contacts) employed by or associated with a single organization.",
+	description = "An account synced to LDP. Accounts aggregate individuals (or contacts) employed by or associated with a single organization.",
 	value = "Account"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "An account synced to Analytics Cloud. Accounts aggregate individuals (or contacts) employed by or associated with a single organization."
+	description = "An account synced to LDP. Accounts aggregate individuals (or contacts) employed by or associated with a single organization."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Account")
@@ -281,7 +281,7 @@ public class Account implements Serializable {
 	private Supplier<String> _countrySupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Last time the account record was modified within Analytics Cloud."
+		description = "Last time the account record was modified within LDP."
 	)
 	public Date getDateModified() {
 		if (_dateModifiedSupplier != null) {
@@ -317,7 +317,7 @@ public class Account implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Last time the account record was modified within Analytics Cloud."
+		description = "Last time the account record was modified within LDP."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Date dateModified;
@@ -982,4 +982,4 @@ public class Account implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:851743370
+// LIFERAY-REST-BUILDER-HASH:1684215780

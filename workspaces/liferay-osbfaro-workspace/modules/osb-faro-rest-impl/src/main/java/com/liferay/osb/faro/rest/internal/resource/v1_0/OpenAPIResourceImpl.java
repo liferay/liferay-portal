@@ -42,7 +42,7 @@ import org.osgi.service.component.annotations.Reference;
 )
 @Generated("")
 @OpenAPIDefinition(
-	info = @Info(description = "Read-only headless REST API for Liferay Analytics Cloud. Exposes accounts, asset-summary metrics, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned Analytics Cloud workspace. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "Liferay Analytics Cloud Headless REST API", version = "v1.0")
+	info = @Info(description = "Read only headless REST API for LDP (Liferay Data Platform). Exposes accounts, asset summary metrics, events, individuals, individual segments, page metrics, properties, and search terms for use as MCP tools and external integrations. All endpoints are scoped to a provisioned LDP workspace. Every tool accepts a `fields` input: request only the fields you need, especially on lists, and leave out the heavy fields `demographics`, `events` and `attributes` unless the question needs them. A Java client JAR is available for use with the group ID 'com.liferay', artifact ID 'com.liferay.osb.faro.rest.client', and version '1.0.0'.", license = @License(name = "Apache 2.0", url = "http://www.apache.org/licenses/LICENSE-2.0.html"), title = "LDP Headless REST API", version = "v1.0")
 )
 @Path("/v1.0")
 public class OpenAPIResourceImpl {
@@ -120,4 +120,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:1174181246
+// LIFERAY-REST-BUILDER-HASH:1866428610

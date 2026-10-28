@@ -49,12 +49,12 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetch a single channel (also known as property) from an Analytics Cloud workspace. To list available channels in the workspace use `getWorkspaceGroupChannelsPage`."
+		description = "Fetch a single channel (also known as property) from an LDP workspace. To list available channels in the workspace use `getWorkspaceGroupChannelsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
@@ -92,12 +92,12 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
+		description = "List channels configured within an LDP workspace. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			)
@@ -565,4 +565,4 @@ public abstract class BaseChannelResourceImpl implements ChannelResource {
 		LogFactoryUtil.getLog(BaseChannelResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-816640554
+// LIFERAY-REST-BUILDER-HASH:1228179783

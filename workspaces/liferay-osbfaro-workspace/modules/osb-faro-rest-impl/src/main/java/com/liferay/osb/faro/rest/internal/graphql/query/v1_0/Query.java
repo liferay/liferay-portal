@@ -197,7 +197,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupAccount(accountId: ___, groupId: ___){accountName, accountType, activitiesCount, annualRevenue, country, dateModified, firstActivityDate, id, industry, lastActivityDate, lifecycleStage, numberOfEmployees, website}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single account by ID from an Analytics Cloud Workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
+		description = "Fetch a single account by ID from an LDP workspace. Use this when you already have an account ID. To search accounts by name or filter, use `getWorkspaceGroupChannelAccountsPage`."
 	)
 	public Account workspaceGroupAccount(
 			@GraphQLName("groupId") Long groupId,
@@ -217,7 +217,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccounts(accountLifecycleId: ___, channelId: ___, groupId: ___, lifecycleStage: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing the name of a stage; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the channel's default account lifecycle when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List or search accounts synced to an LDP workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing the name of a stage; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the channel's default account lifecycle when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getWorkspaceGroupAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public AccountPage workspaceGroupChannelAccounts(
 			@GraphQLName("groupId") Long groupId,
@@ -250,7 +250,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupAccountLifecycleStageTransitions(accountLifecycleId: ___, country: ___, fromLifecycleStage: ___, groupId: ___, industry: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, segmentId: ___, sorts: ___, toLifecycleStage: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are stage names (e.g. 'Pipeline' or 'at risk'), matched ignoring case and surrounding spaces. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR; it defaults to LAST_90_DAYS, roughly the last quarter. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List the accounts that moved from one account lifecycle stage to another within a date range, one entry per move and most recent first. Each entry names the account, the stage it left, the stage it entered, and when the move happened. Filter by origin stage (`fromLifecycleStage`), destination stage (`toLifecycleStage`), account country or industry, or segment membership. Lifecycle stage values are stage names (e.g. 'Pipeline' or 'at risk'), matched ignoring case and surrounding spaces. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 90 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public AccountLifecycleStageTransitionPage
 			workspaceGroupAccountLifecycleStageTransitions(
@@ -291,7 +291,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAssetSummaries(accountId: ___, channelId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, segmentId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period over period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public AssetSummaryMetricPage workspaceGroupChannelAssetSummaries(
 			@GraphQLName("groupId") Long groupId,
@@ -327,7 +327,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannel(channelId: ___, groupId: ___){id, name}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single channel (also known as property) from an Analytics Cloud workspace. To list available channels in the workspace use `getWorkspaceGroupChannelsPage`."
+		description = "Fetch a single channel (also known as property) from an LDP workspace. To list available channels in the workspace use `getWorkspaceGroupChannelsPage`."
 	)
 	public Channel workspaceGroupChannel(
 			@GraphQLName("groupId") Long groupId,
@@ -347,7 +347,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannels(groupId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List channels configured within an Analytics Cloud workspaces. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
+		description = "List channels configured within an LDP workspace. To fetch a single channel by ID, use `getWorkspaceGroupChannel`."
 	)
 	public ChannelPage workspaceGroupChannels(
 			@GraphQLName("groupId") Long groupId)
@@ -366,7 +366,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelEvents(accountId: ___, channelId: ___, groupId: ___, includeAnonymousUsers: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, segmentId: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List tracked analytics events for a specific channel (also known as property), optionally narrowed to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to list only the events from the individuals in that account, from that individual, or from the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. For aggregated metrics across events, prefer `getWorkspaceGroupChannelAssetSummariesPage` or `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public EventPage workspaceGroupChannelEvents(
 			@GraphQLName("groupId") Long groupId,
@@ -399,7 +399,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccountEventMetric(accountId: ___, channelId: ___, groupId: ___, interval: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){totalEvents, totalSessions}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "Event and session totals for all individuals associated with an account over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public EventMetric workspaceGroupChannelAccountEventMetric(
 			@GraphQLName("groupId") Long groupId,
@@ -427,7 +427,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualEventMetric(channelId: ___, groupId: ___, individualId: ___, interval: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){totalEvents, totalSessions}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "Event and session totals for a single individual over a date range, each with the previous period's total, a trend percentage, and a time series bucketed by `interval`. Use this to answer 'has engagement dropped compared to last month' style questions: compare `value` to `previousValue`, or read the `histogram` with `interval=MONTH`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public EventMetric workspaceGroupChannelIndividualEventMetric(
 			@GraphQLName("groupId") Long groupId,
@@ -456,7 +456,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividuals(accountId: ___, activityStatus: ___, channelId: ___, groupId: ___, individualSegmentId: ___, interestName: ___, page: ___, pageSize: ___, profileType: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List individuals for an Analytics Cloud workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List individuals for an LDP workspace. Optionally narrowed to an associated account, segment, interest, activity status, profile type, or date range, and searchable by name or email with `search`. Both KNOWN and ANONYMOUS individuals are returned unless `profileType` is set; pass KNOWN to list only identified people. Use this for queries to find a person. To fetch a single individual by ID, use `getWorkspaceGroupIndividual` instead. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, individuals are not filtered by activity date. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public IndividualPage workspaceGroupChannelIndividuals(
 			@GraphQLName("groupId") Long groupId,
@@ -492,7 +492,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividual(channelId: ___, groupId: ___, individualId: ___){accountName, activitiesCount, activityStatus, averageSessionDuration, dateCreated, dateModified, demographics, emailAddress, firstActivityDate, id, knownSinceDate, lastActivityDate, lastSessionCountry, name, profileType, sessionsCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single Individual from an Analytics Cloud workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
+		description = "Fetch a single Individual from an LDP workspace. Optionally narrowed to a channel (also known as property). Use this to fetch a contact's full profile once you have an ID. To search individuals by name, email, or other attributes, use `getWorkspaceGroupChannelIndividualsPage`."
 	)
 	public Individual workspaceGroupIndividual(
 			@GraphQLName("groupId") Long groupId,
@@ -514,7 +514,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualSegments(channelId: ___, groupId: ___, name: ___, page: ___, pageSize: ___, search: ___, status: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "List individual segments within an LDP workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	public IndividualSegmentPage workspaceGroupChannelIndividualSegments(
 			@GraphQLName("groupId") Long groupId,
@@ -570,7 +570,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupIndividualSegment(groupId: ___, individualSegmentId: ___){activeIndividualCount, anonymousIndividualCount, channelId, dateCreated, dateModified, filter, id, includeAnonymousUsers, individualCount, knownIndividualCount, lastActivityDate, name, segmentType, state, status}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "Fetch a single individual segment by ID from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "Fetch a single individual segment by ID from an LDP workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	public IndividualSegment workspaceGroupIndividualSegment(
 			@GraphQLName("groupId") Long groupId,
@@ -681,7 +681,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelPages(accountId: ___, channelId: ___, dataSourceId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___, segmentId: ___, sorts: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List analytics metrics for tracked pages on the workspace, ranked by views or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access-path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'top pages' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List analytics metrics for tracked pages on the workspace, ranked by visitors or another metric, optionally narrowed to a single channel (also known as property) or data source. Returns flattened view, visitor, bounce, exit, and access path metrics for each page. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'top pages' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public PageMetricPage workspaceGroupChannelPages(
 			@GraphQLName("groupId") Long groupId,
@@ -716,7 +716,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelSearchTerms(channelId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List search terms used on pages tracked by the Analytics Cloud workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this for 'most searched words' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List search terms used on pages tracked by the LDP workspace for a date range in a single channel (also known as property). Results are ordered in descending order of number of times terms have been searched. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this for 'most searched words' style queries. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public SearchTermPage workspaceGroupChannelSearchTerms(
 			@GraphQLName("groupId") Long groupId,
@@ -743,7 +743,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelAccountUserSessions(accountId: ___, channelId: ___, groupId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List the browsing sessions of the individuals associated with an account over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public UserSessionPage workspaceGroupChannelAccountUserSessions(
 			@GraphQLName("groupId") Long groupId,
@@ -773,7 +773,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaceGroupChannelIndividualUserSessions(channelId: ___, groupId: ___, individualId: ___, page: ___, pageSize: ___, rangeEnd: ___, rangeKey: ___, rangeStart: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List the browsing sessions of a single individual over a date range, most recent first, each with the events recorded during it. Use this to see what a specific account or person actually did recently. Pagination counts page groups, not sessions: a page group is all the events of a session on the same page URL, and every other event is a group of its own. Each page returns up to `pageSize` page groups merged into their sessions, so a page can hold fewer than `pageSize` sessions and a long session can continue on the next page. `totalCount` and `lastPage` are expressed in page groups; keep requesting pages until `page` reaches `lastPage`. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	public UserSessionPage workspaceGroupChannelIndividualUserSessions(
 			@GraphQLName("groupId") Long groupId,
@@ -803,7 +803,7 @@ public class Query {
 	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {workspaces{items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
 	 */
 	@GraphQLField(
-		description = "List Analytics Cloud workspaces accessible to the current user. Use the resulting `groupId` values with other endpoints (e.g. `getWorkspaceGroupChannelAccountsPage`, `getWorkspaceGroupChannelsPage`) to scope requests to a specific workspace."
+		description = "List LDP workspaces accessible to the current user. Use the resulting `groupId` values with other endpoints (e.g. `getWorkspaceGroupChannelAccountsPage`, `getWorkspaceGroupChannelsPage`) to scope requests to a specific workspace."
 	)
 	public WorkspacePage workspaces() throws Exception {
 		return _applyComponentServiceObjects(
@@ -1683,4 +1683,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1390436781
+// LIFERAY-REST-BUILDER-HASH:1829930811

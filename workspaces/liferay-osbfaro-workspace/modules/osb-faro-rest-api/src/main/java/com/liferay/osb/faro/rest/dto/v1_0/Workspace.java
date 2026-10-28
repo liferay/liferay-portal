@@ -37,11 +37,11 @@ import java.util.function.Supplier;
  */
 @Generated("")
 @GraphQLName(
-	description = "An Analytics Cloud workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`.",
+	description = "An LDP workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`.",
 	value = "Workspace"
 )
 @io.swagger.v3.oas.annotations.media.Schema(
-	description = "An Analytics Cloud workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`."
+	description = "An LDP workspace synced from a Liferay site. Each workspace owns its own channels, individuals, accounts, segments, and asset analytics. Workspaces are scoped to the Liferay group identified by `groupId`."
 )
 @JsonFilter("Liferay.Vulcan")
 @XmlRootElement(name = "Workspace")
@@ -56,7 +56,7 @@ public class Workspace implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "ID of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
+		description = "ID of the Liferay site that owns the LDP workspace. Use this with other endpoints to scope requests to this workspace."
 	)
 	public Long getGroupId() {
 		if (_groupIdSupplier != null) {
@@ -92,7 +92,7 @@ public class Workspace implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "ID of the Liferay site that owns the Analytics Cloud workspace. Use this with other endpoints to scope requests to this workspace."
+		description = "ID of the Liferay site that owns the LDP workspace. Use this with other endpoints to scope requests to this workspace."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	protected Long groupId;
@@ -318,4 +318,4 @@ public class Workspace implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1082798827
+// LIFERAY-REST-BUILDER-HASH:-269593647

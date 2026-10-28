@@ -51,17 +51,17 @@ public abstract class BaseIndividualSegmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/individual-segments'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List individual segments within an Analytics Cloud workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "List individual segments within an LDP workspace. Optionally narrowed to a channel (also known as a property). To fetch a single segment by ID, use `getWorkspaceGroupIndividualSegment`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the channel whose search terms should be listed.",
+				description = "ID of the channel whose individual segments should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId", required = true
 			),
@@ -76,7 +76,7 @@ public abstract class BaseIndividualSegmentResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size.",
+				description = "Page size, from 1 to 500. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -139,7 +139,7 @@ public abstract class BaseIndividualSegmentResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
@@ -159,7 +159,7 @@ public abstract class BaseIndividualSegmentResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size.",
+				description = "Page size, from 1 to 500. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
@@ -217,12 +217,12 @@ public abstract class BaseIndividualSegmentResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/individual-segments/{individualSegmentId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "Fetch a single individual segment by ID from an Analytics Cloud workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
+		description = "Fetch a single individual segment by ID from an LDP workspace. To list segments, use `getWorkspaceGroupChannelIndividualSegmentsPage`. To list members of a segment, use `getWorkspaceGroupIndividualSegmentMembershipsPage`."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
@@ -703,4 +703,4 @@ public abstract class BaseIndividualSegmentResourceImpl
 		LogFactoryUtil.getLog(BaseIndividualSegmentResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-730101209
+// LIFERAY-REST-BUILDER-HASH:-2099757852

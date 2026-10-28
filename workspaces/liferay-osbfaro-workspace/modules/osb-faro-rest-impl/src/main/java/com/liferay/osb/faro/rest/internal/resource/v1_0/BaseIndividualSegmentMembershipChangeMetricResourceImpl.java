@@ -53,7 +53,7 @@ public abstract class BaseIndividualSegmentMembershipChangeMetricResourceImpl
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
@@ -547,4 +547,4 @@ public abstract class BaseIndividualSegmentMembershipChangeMetricResourceImpl
 			BaseIndividualSegmentMembershipChangeMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1955254077
+// LIFERAY-REST-BUILDER-HASH:827965286

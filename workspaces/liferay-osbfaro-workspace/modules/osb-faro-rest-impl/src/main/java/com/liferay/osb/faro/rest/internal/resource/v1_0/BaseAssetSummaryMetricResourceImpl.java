@@ -54,17 +54,17 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/asset-summaries'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period-over-period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR. Alternatively, pass `rangeStart` and `rangeEnd` as dates for a custom window. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List analytics asset summaries for pages, blogs, documents, forms, journal articles, and object entries. Rank summaries by the requested sort metric. Each summary includes download, impression, read, and view counts along with their period over period trend percentages. Optionally narrow results to a single channel (also known as property) or to a date range. Optionally narrow results further with `accountId`, `individualId`, or `segmentId` to report only on the activity of the individuals in that account, that individual, or the individuals in that segment. For date range filtering pass `rangeKey` as one of LAST_24_HOURS, YESTERDAY, LAST_7_DAYS, LAST_28_DAYS, LAST_30_DAYS, LAST_90_DAYS, LAST_180_DAYS, LAST_YEAR, or pass both `rangeStart` and `rangeEnd` as `yyyy-MM-dd` dates for a custom window; a custom window takes precedence over `rangeKey`. Without either, the last 30 days are used. Use this to answer 'what content is performing best' and to pick assets for deeper drill-down via `getWorkspaceGroupChannelPagesPage`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the Liferay site that owns the Analytics Cloud workspace.",
+				description = "ID of the Liferay site that owns the LDP workspace.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "groupId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the channel whose search terms should be listed.",
+				description = "ID of the channel whose asset summaries should be listed.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
 				name = "channelId", required = true
 			),
@@ -84,23 +84,23 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Page size.",
+				description = "Page size, from 1 to 500. Larger values are rejected.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "pageSize"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range end as date (e.g. 2026-01-01). Use with rangeStart as a rangeKey alternative.",
+				description = "Custom range end as a `yyyy-MM-dd` date (e.g. 2026-01-31). Set together with `rangeStart`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeEnd"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Date range preset. Use one of the listed enum values (e.g. LAST_30_DAYS). Mutually exclusive with rangeStart/rangeEnd. If rangeKey is set, rangeStart and rangeEnd are ignored. For custom windows, omit rangeKey and provide rangeStart and rangeEnd as dates.",
+				description = "Date range preset. Use one of the listed enum values. Defaults to LAST_30_DAYS. When both `rangeStart` and `rangeEnd` are set, they take precedence over `rangeKey`.",
 				example = "LAST_30_DAYS",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeKey"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Custom range start as datetime (e.g. 2026-01-01). Use with rangeEnd as a rangeKey alternative.",
+				description = "Custom range start as a `yyyy-MM-dd` date (e.g. 2026-01-01). Set together with `rangeEnd`; together they take precedence over `rangeKey`.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "rangeStart"
 			),
@@ -115,7 +115,7 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 				name = "segmentId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Sort expression `column:asc|desc`. Defaults to `viewsMetric:desc` when omitted. Common columns: viewsMetric, downloadsMetric, impressionMadeMetric, readsMetric.",
+				description = "Sort expression `column:asc|desc`. Defaults to `viewsMetric:desc` when omitted. Sortable columns: downloadsMetric, impressionsMetric, readsMetric, viewsMetric. Only one column is accepted.",
 				example = "viewsMetric:desc",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "sort"
@@ -623,4 +623,4 @@ public abstract class BaseAssetSummaryMetricResourceImpl
 		LogFactoryUtil.getLog(BaseAssetSummaryMetricResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:1530199999
+// LIFERAY-REST-BUILDER-HASH:545315780

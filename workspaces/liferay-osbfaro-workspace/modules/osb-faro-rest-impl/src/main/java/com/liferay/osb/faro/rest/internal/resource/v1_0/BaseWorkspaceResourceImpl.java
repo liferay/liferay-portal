@@ -49,7 +49,7 @@ public abstract class BaseWorkspaceResourceImpl implements WorkspaceResource {
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspaces'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List Analytics Cloud workspaces accessible to the current user. Use the resulting `groupId` values with other endpoints (e.g. `getWorkspaceGroupChannelAccountsPage`, `getWorkspaceGroupChannelsPage`) to scope requests to a specific workspace."
+		description = "List LDP workspaces accessible to the current user. Use the resulting `groupId` values with other endpoints (e.g. `getWorkspaceGroupChannelAccountsPage`, `getWorkspaceGroupChannelsPage`) to scope requests to a specific workspace."
 	)
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Workspace")}
@@ -507,4 +507,4 @@ public abstract class BaseWorkspaceResourceImpl implements WorkspaceResource {
 		LogFactoryUtil.getLog(BaseWorkspaceResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1835891518
+// LIFERAY-REST-BUILDER-HASH:1943104767
