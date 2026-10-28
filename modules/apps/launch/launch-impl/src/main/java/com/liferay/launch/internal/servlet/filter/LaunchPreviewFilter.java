@@ -241,11 +241,11 @@ public class LaunchPreviewFilter extends BasePortalFilter {
 				continue;
 			}
 
-			Map<Serializable, Object> primaryKeys =
+			Map<Serializable, Object> previewValues =
 				previewableMap.computeIfAbsent(
 					launchEntryManager.getModelClass(), key -> new HashMap<>());
 
-			primaryKeys.put(
+			previewValues.put(
 				item.getPrimaryKey(),
 				new UnsafeSupplierValue<>(unsafeSupplier));
 		}
