@@ -8,18 +8,15 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.event", version: "1.3.1"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.19"
 	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.19"
 	compileOnly group: "org.springframework", name: "spring-web", version: "6.2.19"
-	compileOnly project(":apps:static:osgi:osgi-util")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-osgi-web:portal-osgi-web-http-servlet-api")
 	compileOnly project(":apps:static:portal-osgi-web:portal-osgi-web-servlet-api")
 	compileOnly project(":apps:static:portal-osgi-web:portal-osgi-web-servlet-context-helper-api")
 	compileOnly project(":apps:static:portal:portal-profile-api")
-	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")

@@ -2,7 +2,6 @@ dependencies {
 	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bnd", version: "6.4.0"
 	compileOnly group: "com.liferay", name: "com.liferay.ant.bnd", version: "3.2.19"
 	compileOnly group: "com.liferay", name: "com.liferay.whip", version: "1.0.6"
-	compileOnly group: "com.liferay", name: "org.springframework.beans", version: "6.2.19.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
@@ -10,10 +9,6 @@ dependencies {
 	compileOnly group: "org.apache.ant", name: "ant", version: "1.10.14"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.19"
-	compileOnly group: "org.springframework", name: "spring-core", version: "6.2.19"
-	compileOnly group: "org.springframework", name: "spring-web", version: "6.2.19"
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":apps:static:portal-file-install:portal-file-install-api")
 	compileOnly project(":apps:static:portal-osgi-web:portal-osgi-web-wab-generator-api")
 	compileOnly project(":core:petra:petra-function")
