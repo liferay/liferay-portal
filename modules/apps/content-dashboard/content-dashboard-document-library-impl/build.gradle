@@ -18,7 +18,6 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
-	compileOnly project(":apps:portal-search:portal-search-spi")
 	compileOnly project(":apps:sharing:sharing-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
@@ -27,5 +26,4 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
-	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }

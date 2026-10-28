@@ -1,25 +1,18 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
-	compileOnly group: "com.zaxxer", name: "SparseBitSet", version: "1.2"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
-	compileOnly group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
 	compileOnly group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 	compileOnly group: "org.apache.poi", name: "poi", version: "5.4.1"
-	compileOnly group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
 	compileOnly group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
-	compileOnly group: "org.apache.xmlbeans", name: "xmlbeans", version: "5.3.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:analytics:analytics-settings-api")
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
 	compileOnly project(":apps:application-list:application-list-api")
-	compileOnly project(":apps:asset:asset-categories-api")
-	compileOnly project(":apps:asset:asset-display-page-api")
 	compileOnly project(":apps:asset:asset-tags-item-selector-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:content-dashboard:content-dashboard-api")
@@ -32,7 +25,6 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:journal:journal-api")
-	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:learn:learn-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-template:portal-template-react-renderer-api")
@@ -45,7 +37,6 @@ dependencies {
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")

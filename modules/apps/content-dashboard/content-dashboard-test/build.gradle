@@ -1,8 +1,6 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
-	testIntegrationImplementation group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi", version: "5.4.1"
-	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
 	testIntegrationImplementation project(":apps:application-list:application-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-entry-rel-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
@@ -12,7 +10,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 	testIntegrationImplementation project(":apps:info:info-api")
-	testIntegrationImplementation project(":apps:item-selector:item-selector-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
