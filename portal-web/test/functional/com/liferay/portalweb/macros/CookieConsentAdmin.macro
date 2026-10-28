@@ -13,6 +13,8 @@ definition {
 			locator1 = "Button#SAVE",
 			value1 = "Save");
 
+		CookiePreferenceHandlingAdmin.confirmConfiguration();
+
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#SUCCESS",
 			value1 = "Your request completed successfully.");
@@ -54,6 +56,8 @@ definition {
 		AssertClick.assertTextClickNoMouseOver(
 			locator1 = "Button#SAVE",
 			value1 = "Save");
+
+		CookiePreferenceHandlingAdmin.confirmConfiguration();
 
 		AssertTextEquals.assertPartialText(
 			locator1 = "Message#SUCCESS",

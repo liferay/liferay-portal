@@ -1,5 +1,25 @@
 definition {
 
+	@description = "Activate the Consent Manager so the Cookie Banner is shown to site visitors"
+	@summary = "Default summary"
+	macro activatePreferenceHandling() {
+		if (IsElementPresent(locator1 = "CookiePreferenceHandlingAdmin#ACTIVATE_BUTTON")) {
+			Click(locator1 = "CookiePreferenceHandlingAdmin#ACTIVATE_BUTTON");
+		}
+
+		AssertElementPresent(locator1 = "CookiePreferenceHandlingAdmin#DEACTIVATE_BUTTON");
+	}
+
+	@description = "Confirm the configuration changes when the active Consent Manager warns that they take effect immediately"
+	@summary = "Default summary"
+	macro confirmConfiguration() {
+		WaitForElementPresent(locator1 = "CookiePreferenceHandlingAdmin#CONFIRM_CONFIGURATION_OK_BUTTON_OR_SUCCESS_MESSAGE");
+
+		if (IsElementPresent(locator1 = "CookiePreferenceHandlingAdmin#CONFIRM_CONFIGURATION_OK_BUTTON")) {
+			Click(locator1 = "CookiePreferenceHandlingAdmin#CONFIRM_CONFIGURATION_OK_BUTTON");
+		}
+	}
+
 	@description = "Disable Cookie Preference handling on instance level"
 	@summary = "Default summary"
 	macro disablePreferenceHandling() {
@@ -33,6 +53,8 @@ definition {
 		FormFields.enableCheckbox(fieldName = "Enabled");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@description = "Enable Cookie Preference handling on instance level"
@@ -45,6 +67,8 @@ definition {
 		FormFields.enableCheckbox(fieldName = "Enabled");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@description = "Enable Cookie Preference handling with Explicit cookie setting Enabled"
@@ -59,6 +83,8 @@ definition {
 		FormFields.enableCheckbox(fieldName = "Explicit Cookie Consent Mode");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@description = "Enable Cookie Preference handling with Explicit cookie setting Enabled on site level"
@@ -76,6 +102,8 @@ definition {
 		FormFields.enableCheckbox(fieldName = "Explicit Cookie Consent Mode");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@description = "Disable Cookie Preference handling with Explicit cookie setting Disabled"
@@ -90,6 +118,8 @@ definition {
 		FormFields.disableCheckbox(fieldName = "Explicit Cookie Consent Mode");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@description = "Enable Cookie Preference handling with Explicit cookie setting disabled on instance level"
@@ -104,6 +134,8 @@ definition {
 		FormFields.disableCheckbox(fieldName = "Explicit Cookie Consent Mode");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@description = "Enable Cookie Preference handling with Explicit cookie setting Disabled on site level"
@@ -121,6 +153,8 @@ definition {
 		FormFields.disableCheckbox(fieldName = "Explicit Cookie Consent Mode");
 
 		CookiePreferenceHandlingAdmin.saveConfiguration(assertConfirmation = ${assertConfirmation});
+
+		CookiePreferenceHandlingAdmin.activatePreferenceHandling();
 	}
 
 	@summary = "Default summary"
@@ -140,9 +174,9 @@ definition {
 			AssertConfirm.assertConfirmationNoError(value1 = "You are about to change the consent renewal period. By applying this change, every user will have to give their consent again. Are you sure you want to continue?");
 		}
 
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#SUCCESS",
-			value1 = "Your request completed successfully.");
+		CookiePreferenceHandlingAdmin.confirmConfiguration();
+
+		AssertElementPresent(locator1 = "CookiePreferenceHandlingAdmin#SUCCESS_MESSAGE");
 	}
 
 }

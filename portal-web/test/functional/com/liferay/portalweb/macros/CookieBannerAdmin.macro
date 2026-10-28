@@ -16,6 +16,8 @@ definition {
 			value1 = "Include \\"Decline All\\" Button");
 
 		Button.clickSave();
+
+		CookiePreferenceHandlingAdmin.confirmConfiguration();
 	}
 
 	@summary = "Default summary"
@@ -30,6 +32,8 @@ definition {
 				locator1 = "Button#SAVE",
 				value1 = "Save");
 		}
+
+		CookiePreferenceHandlingAdmin.confirmConfiguration();
 	}
 
 	@description = "Save Cookie Banner settings"

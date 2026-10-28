@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>CookiePreferenceHandlingAdmin</title>
+</head>
+
+<body>
+<table border="1" cellpadding="1" cellspacing="1">
+<thead>
+<tr><td rowspan="1" colspan="3">CookiePreferenceHandlingAdmin</td></tr>
+</thead>
+
+<tbody>
+<tr>
+	<td>ACTIVATE_BUTTON</td>
+	<td>//button[contains(@id,'toggleActiveButton')][normalize-space()='Activate']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONFIRM_CONFIGURATION_OK_BUTTON</td>
+	<td>//div[contains(@class,'modal-content')][contains(.,'These changes will take effect immediately.')]//div[contains(@class,'modal-footer')]//button[normalize-space()='OK']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>CONFIRM_CONFIGURATION_OK_BUTTON_OR_SUCCESS_MESSAGE</td>
+	<td>//div[contains(@class,'modal-content')][contains(.,'These changes will take effect immediately.')]//div[contains(@class,'modal-footer')]//button[normalize-space()='OK'] | //div[contains(@class,'alert-success')][contains(.,'Your request completed successfully.')]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>DEACTIVATE_BUTTON</td>
+	<td>//button[contains(@id,'toggleActiveButton')][normalize-space()='Deactivate']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>SUCCESS_MESSAGE</td>
+	<td>//div[contains(@class,'alert-success')][contains(.,'Your request completed successfully.')]</td>
+	<td></td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>
