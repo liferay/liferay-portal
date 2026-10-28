@@ -3,10 +3,7 @@ dependencies {
 	testImplementation project(":apps:dynamic-data-lists:dynamic-data-lists-api")
 	testImplementation project(":apps:dynamic-data-lists:dynamic-data-lists-service")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
-	testImplementation project(":apps:export-import:export-import-api")
-	testImplementation project(":apps:export-import:export-import-service")
 	testImplementation project(":apps:portal:portal-aop-api")
-	testImplementation project(":core:petra:petra-lang")
 	testImplementation project(":core:petra:petra-sql-dsl-api")
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -17,6 +14,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:ratings:ratings-test-util")
-	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
