@@ -1,6 +1,5 @@
 dependencies {
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
-	testIntegrationImplementation project(":apps:document-library-opener:document-library-opener-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
