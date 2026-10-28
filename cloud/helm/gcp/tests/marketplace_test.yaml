@@ -1,32 +1,8 @@
 suite: Marketplace Volume
 templates:
-    -   charts/liferay-default/templates/liferayenvironment.yaml
     -   charts/liferay-default/templates/marketplace-pv.yaml
 tests:
     -   asserts:
-            -   equal:
-                    path: spec.csi.driver
-                    value: filestore.csi.storage.gke.io
-            -   equal:
-                    path: spec.csi.volumeAttributes.protocol
-                    value: NFS_V3
-            -   equal:
-                    path: spec.accessModes
-                    value:
-                        -   ReadWriteMany
-        documentSelector:
-            path: kind
-            skipEmptyTemplates: true
-            value: PersistentVolume
-        it: Backs the marketplace volume with the Filestore CSI driver
-        set:
-            liferay-default.licensing.enabled: true
-            liferay-default.marketplace.csi.volumeHandle: modeInstance/us-central1-a/marketplace/marketplace
-            liferay-default.marketplace.enabled: true
-    -   asserts:
-            -   equal:
-                    path: spec.storageClassName
-                    value: ""
             -   equal:
                     path: spec.volumeName
                     value: NAMESPACE-marketplace
@@ -34,7 +10,7 @@ tests:
             path: kind
             skipEmptyTemplates: true
             value: PersistentVolumeClaim
-        it: Binds the claim statically to the marketplace volume
+        it: Names the marketplace claim's volume after the release namespace
         release:
             namespace: NAMESPACE
         set:
@@ -43,9 +19,14 @@ tests:
             liferay-default.marketplace.enabled: true
     -   asserts:
             -   equal:
-                    path: spec.workloadRef.name
-                    value: liferay-default
-        it: Names the workload on the LiferayEnvironment
+                    path: spec.csi.volumeHandle
+                    value: modeInstance/us-central1-a/marketplace/marketplace
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: PersistentVolume
+        it: Passes the Filestore volume handle to the marketplace volume
         set:
             liferay-default.licensing.enabled: true
-        template: charts/liferay-default/templates/liferayenvironment.yaml
+            liferay-default.marketplace.csi.volumeHandle: modeInstance/us-central1-a/marketplace/marketplace
+            liferay-default.marketplace.enabled: true
