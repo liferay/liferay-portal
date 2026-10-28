@@ -89,7 +89,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 	public void testDoReceive() throws Exception {
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
 			BackgroundTaskConstants.ISOLATION_LEVEL_GROUP,
-			BackgroundTaskResult.SUCCESS);
+			BackgroundTaskResult.SUCCESS, true);
 
 		long groupId1 = RandomTestUtil.randomLong();
 		long groupId2 = RandomTestUtil.randomLong();
@@ -140,82 +140,43 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 	@Test
 	public void testSendUserNotifications() throws Exception {
-		BackgroundTaskExecutor backgroundTaskExecutor =
-			(BackgroundTaskExecutor)ProxyUtil.newProxyInstance(
-				BackgroundTaskExecutor.class.getClassLoader(),
-				new Class<?>[] {BackgroundTaskExecutor.class},
-				(proxy, method, argus) -> {
-					if (Objects.equals(method.getName(), "clone")) {
-						return proxy;
-					}
-					else if (Objects.equals(method.getName(), "execute")) {
-						return new BackgroundTaskResult(
-							BackgroundTaskConstants.STATUS_FAILED);
-					}
-					else if (Objects.equals(
-								method.getName(), "getIsolationLevel")) {
+		String taskExecutorClassName = _registerBackgroundTaskExecutor(
+			BackgroundTaskConstants.ISOLATION_LEVEL_NOT_ISOLATED,
+			new BackgroundTaskResult(BackgroundTaskConstants.STATUS_FAILED),
+			false);
 
-						return BackgroundTaskConstants.
-							ISOLATION_LEVEL_NOT_ISOLATED;
-					}
-					else if (Objects.equals(method.getName(), "isSerial")) {
-						return false;
-					}
-
-					return null;
-				});
-
-		Class<?> backgroundTaskExecutorClass =
-			backgroundTaskExecutor.getClass();
-
-		Bundle bundle = FrameworkUtil.getBundle(
-			BackgroundTaskStatusMessageListenerTest.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		ServiceRegistration<BackgroundTaskExecutor> serviceRegistration =
-			bundleContext.registerService(
-				BackgroundTaskExecutor.class, backgroundTaskExecutor,
-				HashMapDictionaryBuilder.<String, Object>put(
-					"background.task.executor.class.name",
-					backgroundTaskExecutorClass.getName()
-				).build());
-
-		try {
+		BackgroundTask backgroundTask =
 			_backgroundTaskManager.addBackgroundTask(
 				_user.getUserId(), BackgroundTaskConstants.GROUP_ID_DEFAULT,
 				BackgroundTaskStatusMessageListenerTest.class.getName(),
-				backgroundTaskExecutorClass.getName(), new HashMap<>(),
-				new ServiceContext());
+				taskExecutorClassName, new HashMap<>(), new ServiceContext());
 
-			List<UserNotificationEvent> userNotificationEvents =
-				_userNotificationEventLocalService.getUserNotificationEvents(
-					_user.getUserId());
+		_backgroundTaskIds.add(backgroundTask.getBackgroundTaskId());
 
-			Assert.assertEquals(
-				userNotificationEvents.toString(), 1,
-				userNotificationEvents.size());
+		List<UserNotificationEvent> userNotificationEvents =
+			_userNotificationEventLocalService.getUserNotificationEvents(
+				_user.getUserId());
 
-			UserNotificationEvent userNotificationEvent =
-				userNotificationEvents.get(0);
+		Assert.assertEquals(
+			userNotificationEvents.toString(), 1,
+			userNotificationEvents.size());
 
-			Assert.assertEquals(
-				BackgroundTaskPortletKeys.BACKGROUND_TASK,
-				userNotificationEvent.getType());
+		UserNotificationEvent userNotificationEvent =
+			userNotificationEvents.get(0);
 
-			JSONObject jsonObject = _jsonFactory.createJSONObject(
-				userNotificationEvent.getPayload());
+		Assert.assertEquals(
+			BackgroundTaskPortletKeys.BACKGROUND_TASK,
+			userNotificationEvent.getType());
 
-			Assert.assertEquals(
-				BackgroundTaskStatusMessageListenerTest.class.getName(),
-				jsonObject.getString("name"));
-			Assert.assertEquals(
-				backgroundTaskExecutorClass.getName(),
-				jsonObject.getString("taskExecutorClassName"));
-		}
-		finally {
-			serviceRegistration.unregister();
-		}
+		JSONObject jsonObject = _jsonFactory.createJSONObject(
+			userNotificationEvent.getPayload());
+
+		Assert.assertEquals(
+			BackgroundTaskStatusMessageListenerTest.class.getName(),
+			jsonObject.getString("name"));
+		Assert.assertEquals(
+			taskExecutorClassName,
+			jsonObject.getString("taskExecutorClassName"));
 	}
 
 	private long _addQueuedBackgroundTask(
@@ -253,7 +214,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 	}
 
 	private String _registerBackgroundTaskExecutor(
-		int isolationLevel, BackgroundTaskResult backgroundTaskResult) {
+		int isolationLevel, BackgroundTaskResult backgroundTaskResult,
+		boolean serial) {
 
 		BackgroundTaskExecutor backgroundTaskExecutor =
 			(BackgroundTaskExecutor)ProxyUtil.newProxyInstance(
@@ -278,7 +240,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 						return isolationLevel;
 					}
 					else if (Objects.equals(methodName, "isSerial")) {
-						return true;
+						return serial;
 					}
 
 					return null;
@@ -307,7 +269,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
 			BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY,
-			backgroundTaskResult);
+			backgroundTaskResult, true);
 
 		String lockKey =
 			taskExecutorClassName + StringPool.POUND + _user.getCompanyId();
