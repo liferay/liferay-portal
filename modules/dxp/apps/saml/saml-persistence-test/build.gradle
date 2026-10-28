@@ -1,7 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testIntegrationImplementation project(":dxp:apps:saml:saml-persistence-api")
-	testIntegrationImplementation project(":dxp:apps:saml:saml-persistence-service")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

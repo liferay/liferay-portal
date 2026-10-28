@@ -9,7 +9,6 @@ dependencies {
 	compileInclude group: "org.bouncycastle", name: "bcutil-fips", version: "2.1.8"
 	compileInclude group: "org.codehaus.woodstox", name: "stax2-api", version: "3.1.4"
 	compileInclude group: "xml-resolver", name: "xml-resolver", version: "1.2"
-	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
 	compileOnly group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.opensaml.impl", version: "3.3.0.JAKARTA-LIFERAY-PATCHED-1"
@@ -22,13 +21,10 @@ dependencies {
 	compileOnly group: "commons-collections", name: "commons-collections", version: "3.2.2"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "javax.xml.stream", name: "stax-api", version: "1.0-2"
 	compileOnly group: "joda-time", name: "joda-time", version: "2.12.1"
 	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
-	compileOnly group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.13"
 	compileOnly group: "org.apache.santuario", name: "xmlsec", version: "3.0.3"
-	compileOnly group: "org.joda", name: "joda-convert", version: "2.2.1"
 	compileOnly group: "org.opensaml", name: "opensaml-core", version: "3.3.0"
 	compileOnly group: "org.opensaml", name: "opensaml-profile-api", version: "3.3.0"
 	compileOnly group: "org.opensaml", name: "opensaml-saml-api", version: "3.3.0"
@@ -41,7 +37,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "xerces", name: "xercesImpl", version: "2.12.2"
 	compileOnly group: "xml-apis", name: "xml-apis", version: "1.4.01"
 	compileOnly project(":apps:portal-security:portal-security-export-import-api")
 	compileOnly project(":apps:portal-security:portal-security-key-api")
@@ -58,10 +53,7 @@ dependencies {
 	compileOnly project(":dxp:apps:saml:saml-api")
 	compileOnly project(":dxp:apps:saml:saml-persistence-api")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testImplementation project(":apps:portal-cache:portal-cache-api")
-	testImplementation project(":apps:portal-cache:portal-cache-test-util")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
-	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 	testImplementation project(":dxp:apps:saml:saml-persistence-service")
 }
 
