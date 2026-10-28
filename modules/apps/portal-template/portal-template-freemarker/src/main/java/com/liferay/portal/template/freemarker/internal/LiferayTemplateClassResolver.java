@@ -82,11 +82,13 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 
 		boolean allowed = false;
 
-		String[] allowedClasseNames = GetterUtil.getStringValues(
-			_freeMarkerEngineConfiguration.allowedClasses());
+		String[] allowedInstantiableClassNames = GetterUtil.getStringValues(
+			_freeMarkerEngineConfiguration.allowedInstantiableClasses());
 
-		for (String allowedClassName : allowedClasseNames) {
-			if (match(allowedClassName, className)) {
+		for (String allowedInstantiableClassName :
+				allowedInstantiableClassNames) {
+
+			if (match(allowedInstantiableClassName, className)) {
 				allowed = true;
 
 				break;
@@ -180,7 +182,7 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 
 		for (Bundle bundle : _bundles) {
 			ClassLoader classLoader = _findClassLoader(
-				_freeMarkerEngineConfiguration.allowedClasses(),
+				_freeMarkerEngineConfiguration.allowedInstantiableClasses(),
 				bundle.getBundleContext());
 
 			if (classLoader == null) {
@@ -307,7 +309,7 @@ public class LiferayTemplateClassResolver implements TemplateClassResolver {
 			Bundle bundle, BundleEvent bundleEvent) {
 
 			ClassLoader classLoader = _findClassLoader(
-				_freeMarkerEngineConfiguration.allowedClasses(),
+				_freeMarkerEngineConfiguration.allowedInstantiableClasses(),
 				bundle.getBundleContext());
 
 			if (classLoader != null) {
