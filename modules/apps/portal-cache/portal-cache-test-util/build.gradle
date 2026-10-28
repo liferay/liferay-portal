@@ -1,14 +1,9 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
 	compileOnly project(":apps:portal-cache:portal-cache-api")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testImplementation project(":core:petra:petra-concurrent")
-	testImplementation project(":core:petra:petra-memory")
-	testImplementation project(":core:petra:petra-process")
 	testImplementation project(":core:petra:petra-reflect")
 }
 

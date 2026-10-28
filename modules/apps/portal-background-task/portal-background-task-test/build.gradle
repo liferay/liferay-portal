@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation project(":apps:portal-background-task:portal-background-task-api")
 	testIntegrationImplementation project(":apps:portal-background-task:portal-background-task-service")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")

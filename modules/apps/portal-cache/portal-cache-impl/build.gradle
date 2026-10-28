@@ -9,6 +9,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":core:petra:petra-io")
-	testImplementation project(":core:petra:petra-memory")
 	testImplementation project(":core:petra:petra-sql-dsl-api")
 }

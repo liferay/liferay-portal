@@ -2,19 +2,14 @@ dependencies {
 	compileInclude classifier: "jakarta", group: "org.ehcache", name: "ehcache", version: "3.10.8"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "jakarta.xml.bind", name: "jakarta.xml.bind-api", version: "4.0.2"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:portal-cache:portal-cache-api")
-	compileOnly project(":apps:static:osgi:osgi-util")
-	compileOnly project(":apps:static:portal:portal-profile-api")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:portal-cache:portal-cache-test-util")
-	testImplementation project(":core:petra:petra-lang")
 }
