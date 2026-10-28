@@ -147,28 +147,8 @@ public class SecurityTest extends BaseClientTestCase {
 	/**
 	 * OAUTH2-96
 	 */
-	@Ignore
 	@Test
-	public void testPreventCSRFUsingMandatoryStateParam() {
-		Assert.assertEquals(
-			"invalid_request",
-			parseErrorParameter(
-				getCodeResponse(
-					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-					null,
-					getCodeFunction(
-						webTarget -> webTarget.queryParam(
-							"client_id", _CLIENT_ID_CODE
-						).queryParam(
-							"response_type", "code"
-						)))));
-	}
-
-	/**
-	 * OAUTH2-96
-	 */
-	@Test
-	public void testPreventCSRFUsingPKCE() {
+	public void testPreventCSRF() {
 		String authorizationCode = parseAuthorizationCodeString(
 			getCodeResponse(
 				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
@@ -191,29 +171,43 @@ public class SecurityTest extends BaseClientTestCase {
 				getExchangeAuthorizationCodePKCEBiFunction(
 					authorizationCode, "wrongCodeVerifier", null),
 				this::parseError));
+
+		String state = "csrf_token";
+
+		Assert.assertEquals(
+			state,
+			parseStateString(
+				getCodeResponse(
+					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+					null,
+					getCodeFunction(
+						webTarget -> webTarget.queryParam(
+							"client_id", _CLIENT_ID_CODE
+						).queryParam(
+							"response_type", "code"
+						).queryParam(
+							"state", state
+						)))));
 	}
 
 	/**
 	 * OAUTH2-96
 	 */
+	@Ignore
 	@Test
-	public void testPreventCSRFUsingStateParam() {
-		String state = "csrf_token";
-
-		String responseState = parseStateString(
-			getCodeResponse(
-				_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
-				null,
-				getCodeFunction(
-					webTarget -> webTarget.queryParam(
-						"client_id", _CLIENT_ID_CODE
-					).queryParam(
-						"response_type", "code"
-					).queryParam(
-						"state", state
-					))));
-
-		Assert.assertEquals(state, responseState);
+	public void testPreventCSRFUsingMandatoryStateParam() {
+		Assert.assertEquals(
+			"invalid_request",
+			parseErrorParameter(
+				getCodeResponse(
+					_user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD,
+					null,
+					getCodeFunction(
+						webTarget -> webTarget.queryParam(
+							"client_id", _CLIENT_ID_CODE
+						).queryParam(
+							"response_type", "code"
+						)))));
 	}
 
 	/**
