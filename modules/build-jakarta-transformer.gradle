@@ -56,7 +56,7 @@ jar {
 				try {
 					Class<?> jakartaTransformerCLIClass = urlClassLoader.loadClass("org.eclipse.transformer.cli.JakartaTransformerCLI")
 
-					Object jakartaTransformerCLI = jakartaTransformerCLIClass.newInstance(System.out, System.out, new String[] {"--quiet", configurations.compileOnly.singleFile, jar.archivePath})
+					Object jakartaTransformerCLI = jakartaTransformerCLIClass.newInstance(System.out, System.out, new String[] {"--overwrite", "--quiet", configurations.compileOnly.singleFile, jar.archivePath})
 
 					Map<String, String> optionDefaults = jakartaTransformerCLI.getOptionDefaults()
 
