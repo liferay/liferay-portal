@@ -112,7 +112,7 @@ describe('activities', () => {
 			expect(withoutCampaign.attributes).not.toHaveProperty('campaign');
 		});
 
-		it('links the campaign to its page when there is a channel and a group', () => {
+		it('adds the campaign\'s page to the campaign group when there is a channel and a group', () => {
 			const event = {
 				applicationId: 'CustomEvent',
 				campaignId: '7013a000002QwErtAAG',
@@ -127,26 +127,13 @@ describe('activities', () => {
 			});
 			const [unlinked] = formatEvents([event]);
 
-			expect(linked.campaignUrl).toBe(
-				'/workspace/23/456/campaigns/7013a000002QwErtAAG'
+			expect(linked.attributes.campaign).toEqual({
+				campaignName: 'Spring Compactor Promo 2026',
+				campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'
+			});
+			expect(unlinked.attributes.campaign).not.toHaveProperty(
+				'campaignUrl'
 			);
-			expect(unlinked.campaignUrl).toBeUndefined();
-		});
-
-		it('links no campaign for an event that carries none', () => {
-			const [event] = formatEvents(
-				[
-					{
-						applicationId: 'CustomEvent',
-						createDate: '2026-07-16T10:00:00.000Z',
-						name: 'eventName'
-					}
-				],
-				undefined,
-				{channelId: '456', groupId: '23'}
-			);
-
-			expect(event.campaignUrl).toBeUndefined();
 		});
 
 		it('includes the raw experience id and name in attributes when the event carries one', () => {
@@ -439,11 +426,9 @@ describe('activities', () => {
 			const [nestedEvent] = result[0].nestedItems;
 
 			expect(nestedEvent.attributes.campaign).toEqual({
-				campaignName: 'Spring Compactor Promo 2026'
+				campaignName: 'Spring Compactor Promo 2026',
+				campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'
 			});
-			expect(nestedEvent.campaignUrl).toBe(
-				'/workspace/23/456/campaigns/7013a000002QwErtAAG'
-			);
 		});
 
 		it('adds the experience a page view was served by onto the group', () => {

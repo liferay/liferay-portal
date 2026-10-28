@@ -569,10 +569,10 @@ describe('VerticalTimeline', () => {
 								...EVENT_ITEM.attributes,
 								acquisitionProperties: {utm_medium: 'email'},
 								campaign: {
-									campaignName: 'Spring Compactor Promo 2026'
+									campaignName: 'Spring Compactor Promo 2026',
+									campaignUrl: CAMPAIGN_URL
 								}
-							},
-							campaignUrl: CAMPAIGN_URL
+							}
 						}
 					]
 				});
@@ -625,7 +625,10 @@ describe('VerticalTimeline', () => {
 					JSON.parse(
 						container.querySelector('.payload-code').textContent
 					).campaign
-				).toEqual({campaignName: 'Spring Compactor Promo 2026'});
+				).toEqual({
+					campaignName: 'Spring Compactor Promo 2026',
+					campaignUrl: CAMPAIGN_URL
+				});
 			});
 		});
 

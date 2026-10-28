@@ -39,7 +39,6 @@ export type TimelineCampaign = {
 export type SessionEvent = {
 	attributes: Record<string, unknown>;
 	campaign?: TimelineCampaign;
-	campaignUrl?: string;
 	description: string;
 	descriptionUrl?: string;
 	subtitle: string | undefined;
@@ -262,22 +261,25 @@ export const formatEvents = (
 
 				// The campaign is its own group rather than an event attribute,
 				// and only an event that carried one has it, so the details of
-				// an event without a campaign show no campaign at all.
+				// an event without a campaign show no campaign at all. The
+				// group carries the campaign's page too, which the details
+				// link the name to.
 
 				...(campaign && {
-					campaign: {campaignName: campaign.campaignName},
+					campaign: {
+						campaignName: campaign.campaignName,
+						...(channelId &&
+							groupId && {
+								campaignUrl: toRoute(Routes.CAMPAIGNS_DETAIL, {
+									channelId,
+									groupId,
+									id: campaign.campaignId,
+								}),
+							}),
+					},
 				}),
 			},
 			...(campaign && {campaign}),
-			...(campaign &&
-				channelId &&
-				groupId && {
-					campaignUrl: toRoute(Routes.CAMPAIGNS_DETAIL, {
-						channelId,
-						groupId,
-						id: campaign.campaignId,
-					}),
-				}),
 			description: assetTitle || pageTitle,
 			descriptionUrl: getEventDashboardUrl(event, {
 				...context,

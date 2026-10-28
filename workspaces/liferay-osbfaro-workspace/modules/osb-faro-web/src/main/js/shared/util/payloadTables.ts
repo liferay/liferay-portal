@@ -29,6 +29,12 @@ const NESTED_KEYS = {
  */
 const CAMPAIGN_NAME_KEY = 'campaignName';
 
+/**
+ * The campaign group's property that holds the campaign's page. It is where the
+ * name links to rather than an attribute, so it never becomes a row of its own.
+ */
+const CAMPAIGN_URL_KEY = 'campaignUrl';
+
 export type PayloadTableRow = {
 	href?: string;
 	property: string;
@@ -57,8 +63,7 @@ const isNestedGroup = (value: unknown): value is Record<string, unknown> =>
  * not resolve to a name has nothing to link, so only a named one is a link.
  */
 export const formatPayloadTables = (
-	payload: Record<string, unknown>,
-	{campaignUrl}: {campaignUrl?: string} = {}
+	payload: Record<string, unknown>
 ): PayloadTable[] => {
 	const rowsByGroup: Record<string, PayloadTableRow[]> = {
 		attributes: [],
@@ -68,14 +73,18 @@ export const formatPayloadTables = (
 
 	let title = Liferay.Language.get('event-attributes');
 
-	const addRow = (group: string, property: string, value: unknown) => {
+	const addRow = (
+		group: string,
+		property: string,
+		value: unknown,
+		href?: unknown
+	) => {
 		const formattedValue = formatValue(value);
 
 		rowsByGroup[group].push({
-			...(campaignUrl &&
-				group === 'campaign' &&
-				property === CAMPAIGN_NAME_KEY &&
-				formattedValue !== EMPTY_VALUE && {href: campaignUrl}),
+			...(typeof href === 'string' &&
+				href &&
+				formattedValue !== EMPTY_VALUE && {href}),
 			property,
 			value: formattedValue,
 		});
@@ -89,9 +98,22 @@ export const formatPayloadTables = (
 			const group = NESTED_KEYS[key as keyof typeof NESTED_KEYS];
 
 			if (isNestedGroup(value)) {
-				Object.entries(value).forEach(([nestedKey, nestedValue]) =>
-					addRow(group, nestedKey, nestedValue)
-				);
+				const isCampaign = group === 'campaign';
+
+				Object.entries(value).forEach(([nestedKey, nestedValue]) => {
+					if (isCampaign && nestedKey === CAMPAIGN_URL_KEY) {
+						return;
+					}
+
+					addRow(
+						group,
+						nestedKey,
+						nestedValue,
+						isCampaign && nestedKey === CAMPAIGN_NAME_KEY
+							? value[CAMPAIGN_URL_KEY]
+							: undefined
+					);
+				});
 			}
 		}
 		else {

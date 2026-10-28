@@ -93,14 +93,14 @@ describe('formatPayloadTables', () => {
 		).toEqual(['Event Attributes']);
 	});
 
-	it('links the campaign name to the campaign url', () => {
-		const [, {rows}] = formatPayloadTables(
-			{
-				campaign: {campaignName: 'Spring Compactor Promo 2026'},
-				eventId: 'pageViewed',
+	it('links the campaign name to the campaign url instead of listing the url', () => {
+		const [, {rows}] = formatPayloadTables({
+			campaign: {
+				campaignName: 'Spring Compactor Promo 2026',
+				campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG',
 			},
-			{campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'}
-		);
+			eventId: 'pageViewed',
+		});
 
 		expect(rows).toEqual([
 			{
@@ -111,26 +111,40 @@ describe('formatPayloadTables', () => {
 		]);
 	});
 
+	it('leaves the campaign name unlinked when the campaign carries no url', () => {
+		const [, {rows}] = formatPayloadTables({
+			campaign: {campaignName: 'Spring Compactor Promo 2026'},
+			eventId: 'pageViewed',
+		});
+
+		expect(rows).toEqual([
+			{property: 'campaignName', value: 'Spring Compactor Promo 2026'},
+		]);
+	});
+
 	it('does not link a campaign that resolved to no name', () => {
-		const [, {rows}] = formatPayloadTables(
-			{
-				campaign: {campaignName: null},
-				eventId: 'pageViewed',
+		const [, {rows}] = formatPayloadTables({
+			campaign: {
+				campaignName: null,
+				campaignUrl: '/workspace/23/456/campaigns/7013a000002XyZbAAK',
 			},
-			{campaignUrl: '/workspace/23/456/campaigns/7013a000002XyZbAAK'}
-		);
+			eventId: 'pageViewed',
+		});
 
 		expect(rows).toEqual([{property: 'campaignName', value: '-'}]);
 	});
 
-	it('links no row outside the campaign table', () => {
-		const [{rows}] = formatPayloadTables(
-			{properties: {campaignName: 'Spring Compactor Promo 2026'}},
-			{campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'}
-		);
+	it('lists a url outside the campaign table as an attribute', () => {
+		const [{rows}] = formatPayloadTables({
+			properties: {
+				campaignName: 'Spring Compactor Promo 2026',
+				campaignUrl: 'https://liferay.com',
+			},
+		});
 
 		expect(rows).toEqual([
 			{property: 'campaignName', value: 'Spring Compactor Promo 2026'},
+			{property: 'campaignUrl', value: 'https://liferay.com'},
 		]);
 	});
 

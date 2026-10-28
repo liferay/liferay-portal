@@ -293,10 +293,7 @@ const PayloadViewSelector: FC<{
  * component, which the timeline instantiates once per row, so switching one
  * row to the raw payload leaves every other row on the tables.
  */
-const RowAttributes: FC<{
-	campaignUrl?: string;
-	payload: Record<string, unknown>;
-}> = ({campaignUrl, payload}) => {
+const RowAttributes: FC<{payload: Record<string, unknown>}> = ({payload}) => {
 	const [view, setView] = useState<PayloadView>('table');
 
 	return (
@@ -310,7 +307,7 @@ const RowAttributes: FC<{
 			</div>
 
 			{view === 'table' ? (
-				formatPayloadTables(payload, {campaignUrl}).map((table) => (
+				formatPayloadTables(payload).map((table) => (
 					<PayloadTable key={table.title} table={table} />
 				))
 			) : (
@@ -591,7 +588,6 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 	item: {
 		attributes,
 		campaign,
-		campaignUrl,
 		description,
 		descriptionUrl,
 		subtitle,
@@ -668,9 +664,7 @@ const EventRow: FC<IRowProps<SessionEvent>> = ({
 				</div>
 			</RowMain>
 
-			{expanded && (
-				<RowAttributes campaignUrl={campaignUrl} payload={attributes} />
-			)}
+			{expanded && <RowAttributes payload={attributes} />}
 		</li>
 	);
 };
