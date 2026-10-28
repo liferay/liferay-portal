@@ -145,7 +145,9 @@ public class LiferayTemplateClassResolverTest {
 		}
 	}
 
-	private void _updateProperties(String allowedClasses) throws Exception {
+	private void _updateProperties(String allowedInstantiableClasses)
+		throws Exception {
+
 		Object freeMarkerEngineConfiguration = ProxyUtil.newProxyInstance(
 			LiferayTemplateClassResolverTest.class.getClassLoader(),
 			new Class<?>[] {FreeMarkerEngineConfiguration.class},
@@ -157,9 +159,9 @@ public class LiferayTemplateClassResolverTest {
 
 					String methodName = method.getName();
 
-					if (methodName.equals("allowedClasses")) {
-						if (allowedClasses != null) {
-							return new String[] {allowedClasses};
+					if (methodName.equals("allowedInstantiableClasses")) {
+						if (allowedInstantiableClasses != null) {
+							return new String[] {allowedInstantiableClasses};
 						}
 
 						return null;
