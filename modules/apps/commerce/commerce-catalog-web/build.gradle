@@ -6,7 +6,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:account:account-api")
 	compileOnly project(":apps:application-list:application-list-api")
-	compileOnly project(":apps:commerce:commerce-api")
 	compileOnly project(":apps:commerce:commerce-application-list")
 	compileOnly project(":apps:commerce:commerce-currency-api")
 	compileOnly project(":apps:commerce:commerce-frontend-api")
@@ -16,7 +15,6 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-price-list-api")
 	compileOnly project(":apps:commerce:commerce-pricing-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
-	compileOnly project(":apps:commerce:commerce-taglib")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
@@ -29,7 +27,6 @@ dependencies {
 	compileOnly project(":apps:upload:upload-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
