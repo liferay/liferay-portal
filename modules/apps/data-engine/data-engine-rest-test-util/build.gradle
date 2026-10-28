@@ -1,7 +1,6 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly project(":apps:data-engine:data-engine-rest-api")
-	compileOnly project(":core:petra:petra-function")
 }
 
 liferay {

@@ -1,23 +1,18 @@
 dependencies {
 	compileInclude group: "com.jayway.jsonpath", name: "json-path", version: "2.9.0"
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "io.swagger.core.v3", name: "swagger-annotations-jakarta", version: "2.2.28"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
 	compileOnly group: "jakarta.validation", name: "jakarta.validation-api", version: "3.1.0"
-	compileOnly group: "net.minidev", name: "accessors-smart", version: "2.4.9"
 	compileOnly group: "net.minidev", name: "json-smart", version: "2.4.10"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly project(":apps:captcha:captcha-taglib")
 	compileOnly project(":apps:data-engine:data-engine-api")
 	compileOnly project(":apps:data-engine:data-engine-rest-api")
 	compileOnly project(":apps:dynamic-data-lists:dynamic-data-lists-api")
@@ -25,8 +20,6 @@ dependencies {
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-form-field-type-api")
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-spi")
 	compileOnly project(":apps:frontend-js:frontend-js-loader-modules-extender-api")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
@@ -34,7 +27,6 @@ dependencies {
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
