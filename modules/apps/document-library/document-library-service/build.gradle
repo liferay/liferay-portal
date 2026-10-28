@@ -9,11 +9,9 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.springframework", name: "spring-context", version: "6.2.19"
 	compileOnly project(":apps:asset:asset-api")
 	compileOnly project(":apps:asset:asset-auto-tagger-api")
 	compileOnly project(":apps:asset:asset-display-page-api")
@@ -21,9 +19,7 @@ dependencies {
 	compileOnly project(":apps:change-tracking:change-tracking-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:change-tracking:change-tracking-store-api")
-	compileOnly project(":apps:changeset:changeset-api")
 	compileOnly project(":apps:comment:comment-api")
-	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:data-engine:data-engine-api")
 	compileOnly project(":apps:depot:depot-api")
 	compileOnly project(":apps:document-library:document-library-api")

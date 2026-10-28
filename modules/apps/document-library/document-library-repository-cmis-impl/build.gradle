@@ -16,7 +16,6 @@ dependencies {
 	compileInclude group: "org.apache.chemistry.opencmis", name: "chemistry-opencmis-client-impl", version: "0.14.0"
 	compileInclude group: "org.apache.neethi", name: "neethi", version: "3.2.4"
 	compileOnly group: "com.fasterxml.woodstox", name: "woodstox-core", version: "6.4.0"
-	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
@@ -28,10 +27,8 @@ dependencies {
 	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
-	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-memory")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

@@ -1,5 +1,4 @@
 dependencies {
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 }

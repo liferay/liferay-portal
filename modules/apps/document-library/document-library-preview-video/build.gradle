@@ -4,7 +4,6 @@ dependencies {
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:document-library:document-library-preview-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
