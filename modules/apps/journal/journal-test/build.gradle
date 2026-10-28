@@ -1,7 +1,6 @@
 dependencies {
 	testImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
@@ -55,7 +54,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-validation:portal-validation-api")
 	testIntegrationImplementation project(":apps:portal-vulcan:portal-vulcan-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-api")
-	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	testIntegrationImplementation project(":apps:portal:portal-local-service-tree-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-notifications-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
@@ -67,7 +65,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:site:site-api")
 	testIntegrationImplementation project(":apps:social:social-activity-test-util")
-	testIntegrationImplementation project(":apps:staging:staging-api")
 	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:subscription:subscription-api")
