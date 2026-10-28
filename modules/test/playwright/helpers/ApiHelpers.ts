@@ -68,6 +68,7 @@ import {JSONWebServicesCalendarApiHelper} from './json-web-services/JSONWebServi
 import {JSONWebServicesCalendarResourceApiHelper} from './json-web-services/JSONWebServicesCalendarResourceApiHelper';
 import {JSONWebServicesClassNameApiHelper} from './json-web-services/JSONWebServicesClassNameApiHelper';
 import {JSONWebServicesClientExtensionApiHelper} from './json-web-services/JSONWebServicesClientExtensionApiHelper';
+import {JSONWebServicesCommercePaymentMethodGroupRelApiHelper} from './json-web-services/JSONWebServicesCommercePaymentMethodGroupRelApiHelper';
 import {JSONWebServicesCompanyApiHelper} from './json-web-services/JSONWebServicesCompanyApiHelper';
 import {JSONWebServicesDDMApiHelper} from './json-web-services/JSONWebServicesDDMApiHelper';
 import {JSONWebServicesDepotApiHelper} from './json-web-services/JSONWebServicesDepotApiHelper';
@@ -158,6 +159,7 @@ export class ApiHelpers {
 	readonly jsonWebServicesCalendarResource: JSONWebServicesCalendarResourceApiHelper;
 	readonly jsonWebServicesClassName: JSONWebServicesClassNameApiHelper;
 	readonly jsonWebServicesClientExtension: JSONWebServicesClientExtensionApiHelper;
+	readonly jsonWebServicesCommercePaymentMethodGroupRel: JSONWebServicesCommercePaymentMethodGroupRelApiHelper;
 	readonly jsonWebServicesCompany: JSONWebServicesCompanyApiHelper;
 	readonly jsonWebServicesDDM: JSONWebServicesDDMApiHelper;
 	readonly jsonWebServicesDepot: JSONWebServicesDepotApiHelper;
@@ -270,6 +272,8 @@ export class ApiHelpers {
 		);
 		this.jsonWebServicesClientExtension =
 			new JSONWebServicesClientExtensionApiHelper(this);
+		this.jsonWebServicesCommercePaymentMethodGroupRel =
+			new JSONWebServicesCommercePaymentMethodGroupRelApiHelper(this);
 		this.jsonWebServicesCompany = new JSONWebServicesCompanyApiHelper(this);
 		this.jsonWebServicesDDM = new JSONWebServicesDDMApiHelper(this);
 		this.jsonWebServicesDepot = new JSONWebServicesDepotApiHelper(this);

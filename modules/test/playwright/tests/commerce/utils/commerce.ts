@@ -53,6 +53,35 @@ type TUnitOfMeasure = {
 	promoPrice: number;
 };
 
+const CHANNEL_PAYMENT_METHOD_NAMES: {[paymentIntegrationKey: string]: string} =
+	{
+		'money-order': 'Money Order',
+		'paypal': 'PayPal Subscriptions',
+		'paypal-integration': 'PayPal',
+	};
+
+export async function activateChannelPaymentMethod(
+	apiHelpers: DataApiHelpers,
+	channelId: number,
+	paymentIntegrationKey: string
+) {
+	const company =
+		await apiHelpers.jsonWebServicesCompany.getCompanyByWebId(
+			'liferay.com'
+		);
+
+	const channelGroup = await apiHelpers.jsonWebServicesGroup.getGroupByKey(
+		company.companyId,
+		String(channelId)
+	);
+
+	return apiHelpers.jsonWebServicesCommercePaymentMethodGroupRel.addCommercePaymentMethodGroupRel(
+		Number(channelGroup.groupId),
+		CHANNEL_PAYMENT_METHOD_NAMES[paymentIntegrationKey],
+		paymentIntegrationKey
+	);
+}
+
 export async function classicCommerceSetUp(
 	apiHelpers: DataApiHelpers,
 	siteName?: string
