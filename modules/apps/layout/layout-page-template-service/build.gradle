@@ -4,7 +4,6 @@ buildService {
 }
 
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
@@ -40,4 +39,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-sql-dsl-spi")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 }
