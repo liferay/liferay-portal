@@ -78,6 +78,11 @@ public class JournalArticleLaunchEntryManagerTest
 	}
 
 	@Override
+	protected String createValue() {
+		return RandomTestUtil.randomString();
+	}
+
+	@Override
 	protected String getBackURLParameterName() {
 		return PortalUtil.getPortletNamespace(JournalPortletKeys.JOURNAL) +
 			"backURL";
@@ -128,11 +133,6 @@ public class JournalArticleLaunchEntryManagerTest
 		).put(
 			"classPK", String.valueOf(classPK)
 		).build();
-	}
-
-	@Override
-	protected String createValue() {
-		return RandomTestUtil.randomString();
 	}
 
 	@Override

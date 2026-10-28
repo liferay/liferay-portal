@@ -93,6 +93,12 @@ public class LayoutLaunchEntryManagerTest
 	}
 
 	@Override
+	protected Values createValue() {
+		return new Values(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+	}
+
+	@Override
 	protected String getBackURLParameterName() {
 		return "p_l_back_url";
 	}
@@ -133,12 +139,6 @@ public class LayoutLaunchEntryManagerTest
 		).put(
 			"plid", String.valueOf(classPK)
 		).build();
-	}
-
-	@Override
-	protected Values createValue() {
-		return new Values(
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 	}
 
 	@Override

@@ -389,6 +389,8 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 
 	protected abstract long addEntry() throws Exception;
 
+	protected abstract T createValue();
+
 	protected abstract String getBackURLParameterName();
 
 	protected LaunchEntryManager.Draft getDraft(long classPK, long draftId) {
@@ -455,8 +457,6 @@ public abstract class BaseLaunchEntryManagerTestCase<T> {
 
 		return version;
 	}
-
-	protected abstract T createValue();
 
 	protected SafeCloseable setPreviewIdWithSafeCloseable(
 		long classPK,
