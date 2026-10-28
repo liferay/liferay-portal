@@ -28,10 +28,11 @@ public class CachingStrategyTest {
 					cachingStrategy.getValue(),
 					CachingStrategy.USE_ONE_HASH_PER_FILE));
 		}
+
+		_testFromValueWhenValueIsInvalid();
 	}
 
-	@Test
-	public void testFromValueWhenValueIsInvalid() {
+	private void _testFromValueWhenValueIsInvalid() {
 		for (String value :
 				new String[] {
 					null, StringPool.BLANK, RandomTestUtil.randomString()
