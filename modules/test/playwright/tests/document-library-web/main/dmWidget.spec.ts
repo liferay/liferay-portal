@@ -226,17 +226,19 @@ test(
 
 			await expect(infoPanel.getByText(description)).toBeVisible();
 			await expect(infoPanel.getByText('Basic Document')).toBeVisible();
-			await expect(infoPanel.getByText('jpeg', {exact: true})).toBeVisible();
-			await expect(infoPanel.getByRole('img', {name: 'Thumbnail'})).toBeVisible();
+			await expect(
+				infoPanel.getByText('jpeg', {exact: true})
+			).toBeVisible();
+			await expect(
+				infoPanel.getByRole('img', {name: 'Thumbnail'})
+			).toBeVisible();
 		});
 
 		const documentTitle = getRandomString();
 
-		await apiHelpers.headlessDelivery.postDocument(
-			site.id,
-			getDocFile(),
-			{title: documentTitle}
-		);
+		await apiHelpers.headlessDelivery.postDocument(site.id, getDocFile(), {
+			title: documentTitle,
+		});
 
 		await test.step('CanAddCommentToDocument', async () => {
 			const comment = getRandomString();
@@ -406,7 +408,10 @@ test(
 		await test.step('CanDownloadDifferentVersions', async () => {
 			await openVersionActions(title, '1.0');
 
-			await assertVersionActions(['Download', 'View'], ['Delete', 'Revert']);
+			await assertVersionActions(
+				['Download', 'View'],
+				['Delete', 'Revert']
+			);
 
 			await apiHelpers.headlessDelivery.patchDocument({
 				document: {
@@ -419,7 +424,10 @@ test(
 
 			await openVersionActions(editedTitle, '1.1');
 
-			await assertVersionActions(['Delete', 'Download', 'View'], ['Revert']);
+			await assertVersionActions(
+				['Delete', 'Download', 'View'],
+				['Revert']
+			);
 
 			expect(await downloadVersion()).toBe('FileNameEdit.jpeg');
 

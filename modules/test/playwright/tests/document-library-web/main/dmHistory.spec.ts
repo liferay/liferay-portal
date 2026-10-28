@@ -299,9 +299,9 @@ test(
 				`${baseTitle} 1.3`
 			);
 
-			await expect(page.locator('td.lfr-version-column').first()).toHaveText(
-				'2.0'
-			);
+			await expect(
+				page.locator('td.lfr-version-column').first()
+			).toHaveText('2.0');
 			await expect(getVersionRow('2.0')).toContainText(
 				`${baseTitle} 1.3`
 			);
@@ -347,7 +347,9 @@ test(
 			{size: '259 B', version: '2.0'},
 		]) {
 			await clickAndExpectToBeVisible({
-				target: page.getByRole('menuitem', {name: `Download (${size})`}),
+				target: page.getByRole('menuitem', {
+					name: `Download (${size})`,
+				}),
 				trigger: documentLibraryViewFileEntryPage.infoPanel
 					.getByRole('listitem')
 					.filter({hasText: `Version ${version}`})
