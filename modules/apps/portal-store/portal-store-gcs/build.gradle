@@ -27,8 +27,6 @@ dependencies {
 	compileOnly group: "com.google.code.gson", name: "gson", version: "2.9.0"
 	compileOnly group: "com.google.guava", name: "guava", version: "32.0.1-jre"
 	compileOnly group: "com.google.http-client", name: "google-http-client", version: "1.45.3"
-	compileOnly group: "com.google.http-client", name: "google-http-client-appengine", version: "1.45.3"
-	compileOnly group: "com.google.http-client", name: "google-http-client-gson", version: "1.45.3"
 	compileOnly group: "com.google.http-client", name: "google-http-client-jackson2", version: "1.45.3"
 	compileOnly group: "com.google.protobuf", name: "protobuf-java", version: "3.25.5"
 	compileOnly group: "com.google.protobuf", name: "protobuf-java-util", version: "3.25.5"
@@ -45,4 +43,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "com.google.http-client", name: "google-http-client-appengine", version: "1.45.3"
+	testImplementation group: "com.google.http-client", name: "google-http-client-gson", version: "1.45.3"
 }

@@ -103,7 +103,6 @@ dependencies {
 	compileOnly group: "com.fasterxml.jackson.dataformat", name: "jackson-dataformat-cbor", version: "2.18.11"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "commons-codec", name: "commons-codec", version: "1.15"
 	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "joda-time", name: "joda-time", version: "2.12.1"
 	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
@@ -118,6 +117,7 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
+	testImplementation group: "commons-codec", name: "commons-codec", version: "1.15"
 	testImplementation group: "io.netty", name: "netty-codec-http2", version: "4.1.139.Final"
 	testImplementation group: "io.netty", name: "netty-transport", version: "4.1.139.Final"
 	testImplementation group: "org.littleshoot", name: "littleproxy", version: "1.1.1"
