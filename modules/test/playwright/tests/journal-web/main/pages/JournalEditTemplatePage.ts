@@ -64,12 +64,31 @@ export class JournalEditTemplatePage {
 	async editTemplate(title: string, script: string) {
 		await fillAndClickOutside(this.page, this.nameInput, title);
 
-		await this.page
-			.locator('.ddm_template_editor__CodeMirrorEditor')
-			.dblclick();
-		await this.page.keyboard.press('ControlOrMeta+A');
-		await this.page.keyboard.press('Backspace');
-		await this.page.keyboard.type(script);
+		const scriptEditor = this.page.locator(
+			'.ddm_template_editor__CodeMirrorEditor'
+		);
+
+		await expect(async () => {
+			await scriptEditor.dblclick({timeout: 2000});
+
+			await this.page.keyboard.press('ControlOrMeta+A');
+			await this.page.keyboard.press('Backspace');
+			await this.page.keyboard.type(script);
+
+			await expect
+				.poll(
+					async () =>
+						(
+							await scriptEditor
+								.locator('.CodeMirror')
+								.evaluate((element: any) =>
+									element.CodeMirror.getValue()
+								)
+						).replace(/\s/g, ''),
+					{timeout: 1000}
+				)
+				.toBe(script.replace(/\s/g, ''));
+		}).toPass({timeout: 15000});
 	}
 
 	async getDDMTemplateKey() {
