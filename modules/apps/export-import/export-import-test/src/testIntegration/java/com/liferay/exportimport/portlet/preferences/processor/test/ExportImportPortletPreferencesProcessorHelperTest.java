@@ -149,21 +149,22 @@ public class ExportImportPortletPreferencesProcessorHelperTest {
 	public void testUpdateGroupExportPortletPreferencesExternalReferenceCode()
 		throws Exception {
 
+		String externalReferenceCodePreferenceKey =
+			RandomTestUtil.randomString();
 		PortletPreferences portletPreferences =
 			PortletPreferencesFactoryUtil.fromDefaultXML(null);
 
-		String preferenceKey = RandomTestUtil.randomString();
-
 		portletPreferences.setValue(
-			preferenceKey, _companyGroup.getExternalReferenceCode());
+			externalReferenceCodePreferenceKey,
+			_companyGroup.getExternalReferenceCode());
 
 		ExportImportThreadLocal.setPortletStagingInProcess(true);
 
 		try {
 			_exportImportPortletPreferencesProcessorHelper.
 				updateGroupExportPortletPreferencesExternalReferenceCode(
-					TestPropsValues.getCompanyId(), preferenceKey,
-					portletPreferences);
+					TestPropsValues.getCompanyId(),
+					externalReferenceCodePreferenceKey, portletPreferences);
 		}
 		finally {
 			ExportImportThreadLocal.setPortletStagingInProcess(false);
@@ -171,7 +172,8 @@ public class ExportImportPortletPreferencesProcessorHelperTest {
 
 		Assert.assertEquals(
 			_companyGroup.getExternalReferenceCode(),
-			portletPreferences.getValue(preferenceKey, null));
+			portletPreferences.getValue(
+				externalReferenceCodePreferenceKey, null));
 	}
 
 	@Test
@@ -179,25 +181,27 @@ public class ExportImportPortletPreferencesProcessorHelperTest {
 	public void testUpdateGroupImportPortletPreferencesExternalReferenceCode()
 		throws Exception {
 
+		String externalReferenceCodePreferenceKey =
+			RandomTestUtil.randomString();
 		PortletPreferences portletPreferences =
 			PortletPreferencesFactoryUtil.fromDefaultXML(null);
-
-		String preferenceKey = RandomTestUtil.randomString();
 		String sourceCompanyGroupExternalReferenceCode =
 			RandomTestUtil.randomString();
 
 		portletPreferences.setValue(
-			preferenceKey, sourceCompanyGroupExternalReferenceCode);
+			externalReferenceCodePreferenceKey,
+			sourceCompanyGroupExternalReferenceCode);
 
 		_exportImportPortletPreferencesProcessorHelper.
 			updateGroupImportPortletPreferencesExternalReferenceCode(
 				_getImportPortletDataContext(
 					sourceCompanyGroupExternalReferenceCode),
-				preferenceKey, portletPreferences);
+				externalReferenceCodePreferenceKey, portletPreferences);
 
 		Assert.assertEquals(
 			_companyGroup.getExternalReferenceCode(),
-			portletPreferences.getValue(preferenceKey, null));
+			portletPreferences.getValue(
+				externalReferenceCodePreferenceKey, null));
 	}
 
 	private PortletDataContext _getImportPortletDataContext(

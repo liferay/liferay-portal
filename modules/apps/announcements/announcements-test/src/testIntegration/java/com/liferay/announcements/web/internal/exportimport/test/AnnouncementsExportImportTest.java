@@ -101,10 +101,10 @@ public class AnnouncementsExportImportTest {
 	public void testGetPortletConfigurationWithCompanyGroup() throws Exception {
 		_setUpLocalStaging();
 
-		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
-			_stagingGroup);
 		Group companyGroup = _groupLocalService.getCompanyGroup(
 			_stagingGroup.getCompanyId());
+		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
+			_stagingGroup);
 
 		String portletId = _addAnnouncementsPortletWithScopeGroups(
 			stagingLayout, companyGroup);
@@ -168,10 +168,10 @@ public class AnnouncementsExportImportTest {
 
 		_setUpLocalStaging();
 
-		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
-			_stagingGroup);
 		Group companyGroup = _groupLocalService.getCompanyGroup(
 			_stagingGroup.getCompanyId());
+		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
+			_stagingGroup);
 
 		String portletId = _addAnnouncementsPortletWithScopeGroups(
 			stagingLayout, companyGroup);
