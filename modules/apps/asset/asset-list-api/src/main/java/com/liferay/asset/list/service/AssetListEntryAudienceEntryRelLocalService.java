@@ -18,12 +18,15 @@ import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.PersistedModel;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -75,6 +78,18 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public AssetListEntryAudienceEntryRel addAssetListEntryAudienceEntryRel(
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel);
 
+	public AssetListEntryAudienceEntryRel addAssetListEntryAudienceEntryRel(
+			long userId, long groupId, long assetListEntryId,
+			String audienceEntryERC, int priority, String typeSettings,
+			ServiceContext serviceContext)
+		throws PortalException;
+
+	public AssetListEntryAudienceEntryRel addAssetListEntryAudienceEntryRel(
+			long userId, long groupId, long assetListEntryId,
+			String audienceEntryERC, String typeSettings,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Creates a new asset list entry audience entry rel with the primary key. Does not add the asset list entry audience entry rel to the database.
 	 *
@@ -102,6 +117,7 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	 * @return the asset list entry audience entry rel that was removed
 	 */
 	@Indexable(type = IndexableType.DELETE)
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public AssetListEntryAudienceEntryRel deleteAssetListEntryAudienceEntryRel(
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel);
 
@@ -120,6 +136,16 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public AssetListEntryAudienceEntryRel deleteAssetListEntryAudienceEntryRel(
 			long assetListEntryAudienceEntryRelId)
 		throws PortalException;
+
+	public void deleteAssetListEntryAudienceEntryRel(
+			long assetListEntryId, String audienceEntryERC)
+		throws PortalException;
+
+	public void deleteAssetListEntryAudienceEntryRelByAssetListEntryId(
+		long assetListEntryId);
+
+	public void deleteAssetListEntryAudienceEntryRelByAudienceEntryERC(
+		long companyId, String audienceEntryERC);
 
 	/**
 	 * @throws PortalException
@@ -204,6 +230,14 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public AssetListEntryAudienceEntryRel fetchAssetListEntryAudienceEntryRel(
 		long assetListEntryAudienceEntryRelId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public AssetListEntryAudienceEntryRel fetchAssetListEntryAudienceEntryRel(
+		long assetListEntryId, String audienceEntryERC);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public AssetListEntryAudienceEntryRel fetchAssetListEntryAudienceEntryRel(
+		long assetListEntryId, String[] audienceEntryERCs);
+
 	/**
 	 * Returns the asset list entry audience entry rel matching the UUID and group.
 	 *
@@ -260,6 +294,11 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public List<AssetListEntryAudienceEntryRel>
 		getAssetListEntryAudienceEntryRels(int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<AssetListEntryAudienceEntryRel>
+		getAssetListEntryAudienceEntryRels(
+			long assetListEntryId, int start, int end);
+
 	/**
 	 * Returns all the asset list entry audience entry rels matching the UUID and company.
 	 *
@@ -298,6 +337,9 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public int getAssetListEntryAudienceEntryRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAssetListEntryAudienceEntryRelsCount(long assetListEntryId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -333,6 +375,15 @@ public interface AssetListEntryAudienceEntryRelLocalService
 	public AssetListEntryAudienceEntryRel updateAssetListEntryAudienceEntryRel(
 		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel);
 
+	public AssetListEntryAudienceEntryRel
+			updateAssetListEntryAudienceEntryRelTypeSettings(
+				long assetListEntryId, String audienceEntryERC,
+				String typeSettings)
+		throws PortalException;
+
+	public void updatePriorities(long[] assetListEntryAudienceEntryRelIds)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<AssetListEntryAudienceEntryRel> getCTPersistence();
@@ -349,4 +400,4 @@ public interface AssetListEntryAudienceEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:113400484
+// LIFERAY-SERVICE-BUILDER-HASH:1908827231

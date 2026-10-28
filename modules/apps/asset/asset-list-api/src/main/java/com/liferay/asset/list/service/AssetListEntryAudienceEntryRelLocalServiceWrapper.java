@@ -52,6 +52,32 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 			addAssetListEntryAudienceEntryRel(assetListEntryAudienceEntryRel);
 	}
 
+	@Override
+	public AssetListEntryAudienceEntryRel addAssetListEntryAudienceEntryRel(
+			long userId, long groupId, long assetListEntryId,
+			String audienceEntryERC, int priority, String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				userId, groupId, assetListEntryId, audienceEntryERC, priority,
+				typeSettings, serviceContext);
+	}
+
+	@Override
+	public AssetListEntryAudienceEntryRel addAssetListEntryAudienceEntryRel(
+			long userId, long groupId, long assetListEntryId,
+			String audienceEntryERC, String typeSettings,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				userId, groupId, assetListEntryId, audienceEntryERC,
+				typeSettings, serviceContext);
+	}
+
 	/**
 	 * Creates a new asset list entry audience entry rel with the primary key. Does not add the asset list entry audience entry rel to the database.
 	 *
@@ -117,6 +143,34 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 		return _assetListEntryAudienceEntryRelLocalService.
 			deleteAssetListEntryAudienceEntryRel(
 				assetListEntryAudienceEntryRelId);
+	}
+
+	@Override
+	public void deleteAssetListEntryAudienceEntryRel(
+			long assetListEntryId, String audienceEntryERC)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_assetListEntryAudienceEntryRelLocalService.
+			deleteAssetListEntryAudienceEntryRel(
+				assetListEntryId, audienceEntryERC);
+	}
+
+	@Override
+	public void deleteAssetListEntryAudienceEntryRelByAssetListEntryId(
+		long assetListEntryId) {
+
+		_assetListEntryAudienceEntryRelLocalService.
+			deleteAssetListEntryAudienceEntryRelByAssetListEntryId(
+				assetListEntryId);
+	}
+
+	@Override
+	public void deleteAssetListEntryAudienceEntryRelByAudienceEntryERC(
+		long companyId, String audienceEntryERC) {
+
+		_assetListEntryAudienceEntryRelLocalService.
+			deleteAssetListEntryAudienceEntryRelByAudienceEntryERC(
+				companyId, audienceEntryERC);
 	}
 
 	/**
@@ -246,6 +300,24 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 				assetListEntryAudienceEntryRelId);
 	}
 
+	@Override
+	public AssetListEntryAudienceEntryRel fetchAssetListEntryAudienceEntryRel(
+		long assetListEntryId, String audienceEntryERC) {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			fetchAssetListEntryAudienceEntryRel(
+				assetListEntryId, audienceEntryERC);
+	}
+
+	@Override
+	public AssetListEntryAudienceEntryRel fetchAssetListEntryAudienceEntryRel(
+		long assetListEntryId, String[] audienceEntryERCs) {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			fetchAssetListEntryAudienceEntryRel(
+				assetListEntryId, audienceEntryERCs);
+	}
+
 	/**
 	 * Returns the asset list entry audience entry rel matching the UUID and group.
 	 *
@@ -323,6 +395,15 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 			getAssetListEntryAudienceEntryRels(start, end);
 	}
 
+	@Override
+	public java.util.List<AssetListEntryAudienceEntryRel>
+		getAssetListEntryAudienceEntryRels(
+			long assetListEntryId, int start, int end) {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			getAssetListEntryAudienceEntryRels(assetListEntryId, start, end);
+	}
+
 	/**
 	 * Returns all the asset list entry audience entry rels matching the UUID and company.
 	 *
@@ -371,6 +452,12 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 	public int getAssetListEntryAudienceEntryRelsCount() {
 		return _assetListEntryAudienceEntryRelLocalService.
 			getAssetListEntryAudienceEntryRelsCount();
+	}
+
+	@Override
+	public int getAssetListEntryAudienceEntryRelsCount(long assetListEntryId) {
+		return _assetListEntryAudienceEntryRelLocalService.
+			getAssetListEntryAudienceEntryRelsCount(assetListEntryId);
 	}
 
 	@Override
@@ -434,6 +521,26 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 	}
 
 	@Override
+	public AssetListEntryAudienceEntryRel
+			updateAssetListEntryAudienceEntryRelTypeSettings(
+				long assetListEntryId, String audienceEntryERC,
+				String typeSettings)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAudienceEntryRelLocalService.
+			updateAssetListEntryAudienceEntryRelTypeSettings(
+				assetListEntryId, audienceEntryERC, typeSettings);
+	}
+
+	@Override
+	public void updatePriorities(long[] assetListEntryAudienceEntryRelIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_assetListEntryAudienceEntryRelLocalService.updatePriorities(
+			assetListEntryAudienceEntryRelIds);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _assetListEntryAudienceEntryRelLocalService.getBasePersistence();
 	}
@@ -476,4 +583,4 @@ public class AssetListEntryAudienceEntryRelLocalServiceWrapper
 		_assetListEntryAudienceEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1567119665
+// LIFERAY-SERVICE-BUILDER-HASH:-1769050348

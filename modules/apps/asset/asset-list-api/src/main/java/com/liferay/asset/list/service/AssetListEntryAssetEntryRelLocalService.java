@@ -88,6 +88,16 @@ public interface AssetListEntryAssetEntryRelLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
+			long assetListEntryId, long assetEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position, ServiceContext serviceContext)
+		throws PortalException;
+
+	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
+			long assetListEntryId, long assetEntryId, String audienceEntryERC,
+			long segmentsEntryId, ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Creates a new asset list entry asset entry rel with the primary key. Does not add the asset list entry asset entry rel to the database.
 	 *
@@ -140,6 +150,12 @@ public interface AssetListEntryAssetEntryRelLocalService
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public AssetListEntryAssetEntryRel deleteAssetListEntryAssetEntryRel(
 			long assetListEntryId, long segmentsEntryId, int position)
+		throws PortalException;
+
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
+	public AssetListEntryAssetEntryRel deleteAssetListEntryAssetEntryRel(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position)
 		throws PortalException;
 
 	public void deleteAssetListEntryAssetEntryRelByAssetEntryId(
@@ -304,6 +320,11 @@ public interface AssetListEntryAssetEntryRelLocalService
 	public List<AssetListEntryAssetEntryRel> getAssetListEntryAssetEntryRels(
 		long assetListEntryId, long[] segmentsEntryIds, int start, int end);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<AssetListEntryAssetEntryRel> getAssetListEntryAssetEntryRels(
+		long assetListEntryId, String audienceEntryERC, long segmentsEntryId,
+		int start, int end);
+
 	/**
 	 * Returns all the asset list entry asset entry rels matching the UUID and company.
 	 *
@@ -352,6 +373,10 @@ public interface AssetListEntryAssetEntryRelLocalService
 		long assetListEntryId, long[] segmentsEntryIds);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getAssetListEntryAssetEntryRelsCount(
+		long assetListEntryId, String audienceEntryERC, long segmentsEntryId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -378,6 +403,11 @@ public interface AssetListEntryAssetEntryRelLocalService
 			int newPosition)
 		throws PortalException;
 
+	public AssetListEntryAssetEntryRel moveAssetListEntryAssetEntryRel(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position, int newPosition)
+		throws PortalException;
+
 	/**
 	 * Updates the asset list entry asset entry rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -397,6 +427,12 @@ public interface AssetListEntryAssetEntryRelLocalService
 			long assetEntryId, long segmentsEntryId, int position)
 		throws PortalException;
 
+	public AssetListEntryAssetEntryRel updateAssetListEntryAssetEntryRel(
+			long assetListEntryAssetEntryRelId, long assetListEntryId,
+			long assetEntryId, String audienceEntryERC, long segmentsEntryId,
+			int position)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<AssetListEntryAssetEntryRel> getCTPersistence();
@@ -413,4 +449,4 @@ public interface AssetListEntryAssetEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1535128256
+// LIFERAY-SERVICE-BUILDER-HASH:124879851

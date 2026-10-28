@@ -77,6 +77,32 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 				serviceContext);
 	}
 
+	@Override
+	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
+			long assetListEntryId, long assetEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			addAssetListEntryAssetEntryRel(
+				assetListEntryId, assetEntryId, audienceEntryERC,
+				segmentsEntryId, position, serviceContext);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel addAssetListEntryAssetEntryRel(
+			long assetListEntryId, long assetEntryId, String audienceEntryERC,
+			long segmentsEntryId,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			addAssetListEntryAssetEntryRel(
+				assetListEntryId, assetEntryId, audienceEntryERC,
+				segmentsEntryId, serviceContext);
+	}
+
 	/**
 	 * Creates a new asset list entry asset entry rel with the primary key. Does not add the asset list entry asset entry rel to the database.
 	 *
@@ -151,6 +177,17 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 		return _assetListEntryAssetEntryRelLocalService.
 			deleteAssetListEntryAssetEntryRel(
 				assetListEntryId, segmentsEntryId, position);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel deleteAssetListEntryAssetEntryRel(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			deleteAssetListEntryAssetEntryRel(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position);
 	}
 
 	@Override
@@ -411,6 +448,18 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 				assetListEntryId, segmentsEntryIds, start, end);
 	}
 
+	@Override
+	public java.util.List<AssetListEntryAssetEntryRel>
+		getAssetListEntryAssetEntryRels(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int start, int end) {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			getAssetListEntryAssetEntryRels(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, start,
+				end);
+	}
+
 	/**
 	 * Returns all the asset list entry asset entry rels matching the UUID and company.
 	 *
@@ -485,6 +534,15 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 	}
 
 	@Override
+	public int getAssetListEntryAssetEntryRelsCount(
+		long assetListEntryId, String audienceEntryERC, long segmentsEntryId) {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			getAssetListEntryAssetEntryRelsCount(
+				assetListEntryId, audienceEntryERC, segmentsEntryId);
+	}
+
+	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -536,6 +594,18 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 				assetListEntryId, segmentsEntryId, position, newPosition);
 	}
 
+	@Override
+	public AssetListEntryAssetEntryRel moveAssetListEntryAssetEntryRel(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position, int newPosition)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			moveAssetListEntryAssetEntryRel(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position,
+				newPosition);
+	}
+
 	/**
 	 * Updates the asset list entry asset entry rel in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -564,6 +634,19 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 			updateAssetListEntryAssetEntryRel(
 				assetListEntryAssetEntryRelId, assetListEntryId, assetEntryId,
 				segmentsEntryId, position);
+	}
+
+	@Override
+	public AssetListEntryAssetEntryRel updateAssetListEntryAssetEntryRel(
+			long assetListEntryAssetEntryRelId, long assetListEntryId,
+			long assetEntryId, String audienceEntryERC, long segmentsEntryId,
+			int position)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetListEntryAssetEntryRelLocalService.
+			updateAssetListEntryAssetEntryRel(
+				assetListEntryAssetEntryRelId, assetListEntryId, assetEntryId,
+				audienceEntryERC, segmentsEntryId, position);
 	}
 
 	@Override
@@ -609,4 +692,4 @@ public class AssetListEntryAssetEntryRelLocalServiceWrapper
 		_assetListEntryAssetEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1349328289
+// LIFERAY-SERVICE-BUILDER-HASH:1702860457
