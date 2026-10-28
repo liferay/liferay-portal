@@ -142,6 +142,22 @@ public class XMLSecurityTest extends BaseSamlTestCase {
 	}
 
 	@Test(expected = MessageDecodingException.class)
+	public void testMaximumMessageSizeExceeded() throws Exception {
+		String redirectURL = _getAuthnRequestRedirectURL();
+
+		String authnRequestXML = OpenSamlUtil.marshall(
+			getAuthnRequest(redirectURL));
+
+		Mockito.when(
+			samlProviderConfiguration.maximumMessageSize()
+		).thenReturn(
+			100
+		);
+
+		decodeAuthnRequest(authnRequestXML, redirectURL);
+	}
+
+	@Test(expected = MessageDecodingException.class)
 	public void testXMLBombBillionLaughs() throws Exception {
 		String redirectURL = _getAuthnRequestRedirectURL();
 
