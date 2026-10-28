@@ -93,23 +93,23 @@ public class SecretResolverCheck extends BaseCheck {
 	}
 
 	private String _getAssignedVariableName(DetailAST detailAST) {
-		DetailAST assignDetailAST = detailAST.getParent();
+		DetailAST parentDetailAST = detailAST.getParent();
 
-		while (assignDetailAST.getType() == TokenTypes.EXPR) {
-			assignDetailAST = assignDetailAST.getParent();
+		while (parentDetailAST.getType() == TokenTypes.EXPR) {
+			parentDetailAST = parentDetailAST.getParent();
 		}
 
-		if (assignDetailAST.getType() != TokenTypes.ASSIGN) {
+		if (parentDetailAST.getType() != TokenTypes.ASSIGN) {
 			return null;
 		}
 
-		DetailAST parentDetailAST = assignDetailAST.getParent();
+		DetailAST grandParentDetailAST = parentDetailAST.getParent();
 
-		if (parentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
-			return getName(parentDetailAST);
+		if (grandParentDetailAST.getType() == TokenTypes.VARIABLE_DEF) {
+			return getName(grandParentDetailAST);
 		}
 
-		return getName(assignDetailAST);
+		return getName(parentDetailAST);
 	}
 
 	private boolean _hasAcceptedEnclosingCall(DetailAST detailAST) {
