@@ -714,7 +714,7 @@ definition {
 
 	@description = "LPS-134875 Categories can only be moved to vocabularies with the same visibility"
 	@priority = 4
-	test MoveCategoryBetweenDifferentVisibility {
+	test CannotChangeVisibilityOfVocabularyOrCategory {
 		task ("Create categories in public and internal vocabularies") {
 			JSONCategory.addCategory(
 				groupName = "Global",
