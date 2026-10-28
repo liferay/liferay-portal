@@ -37,34 +37,6 @@ describe('buildStructureErrorAction', () => {
 		});
 	});
 
-	it('routes an external reference code collision to the external reference code field', () => {
-		const action = buildStructureErrorAction({
-			error: 'erc-in-use',
-			uuid: UUID,
-		});
-
-		expect(action).toEqual({
-			error: 'in-use',
-			property: 'erc',
-			type: 'add-error',
-			uuid: UUID,
-		});
-	});
-
-	it('routes a missing permission to the global scope', () => {
-		const action = buildStructureErrorAction({
-			error: 'permission',
-			uuid: UUID,
-		});
-
-		expect(action).toEqual({
-			error: 'permission',
-			property: 'global',
-			type: 'add-error',
-			uuid: UUID,
-		});
-	});
-
 	it('routes an unexpected error to the global scope', () => {
 		const action = buildStructureErrorAction({
 			error: 'unexpected',

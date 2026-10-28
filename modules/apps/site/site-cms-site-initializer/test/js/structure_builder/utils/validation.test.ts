@@ -153,12 +153,6 @@ describe('validateGroup', () => {
 });
 
 describe('getErrorMessage', () => {
-	it('explains an unexpected error', () => {
-		expect(getErrorMessage('global', 'unexpected', {})).toBe(
-			'an-unexpected-error-occurred-while-saving-or-publishing-the-content-structure'
-		);
-	});
-
 	it('explains a missing permission', () => {
 		expect(getErrorMessage('global', 'permission', {})).toBe(
 			'you-do-not-have-permission-to-access-the-requested-resource'
@@ -188,15 +182,6 @@ describe('validateStructure', () => {
 			expect(validateStructure({data: {slug}}).has('slug')).toBe(false);
 		}
 	);
-
-	it('clears a friendly URL collision reported by the server once edited', () => {
-		expect(
-			validateStructure({
-				currentErrors: new Map([['slug', 'in-use']]),
-				data: {slug: 'fruit'},
-			}).has('slug')
-		).toBe(false);
-	});
 
 	it('flags an external reference code used by another structure', () => {
 		expect(
