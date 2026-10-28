@@ -816,7 +816,7 @@ definition {
 
 	@description = "When a change in Global Vocabularies is made, the Global vocabularies section in a site's Categories administration application updates accordingly"
 	@priority = 5
-	test PropagateChangesOfGlobalCategoryToNormalSite {
+	test ViewGlobalCategoryInSite {
 		property portal.acceptance = "true";
 
 		task ("Add a global category") {
