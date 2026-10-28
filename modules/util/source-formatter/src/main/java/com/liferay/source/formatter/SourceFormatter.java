@@ -654,20 +654,34 @@ public class SourceFormatter {
 		}
 
 		if (_sourceFormatterArgs.isFormatCurrentBranch()) {
-			if (!buildPropertiesAdded) {
-				List<String> fileNames = GitUtil.getCurrentBranchFileNames(
-					_sourceFormatterArgs.getBaseDirName(),
-					_sourceFormatterArgs.getGitWorkingBranchName(), true);
+			List<String> fileNames = GitUtil.getCurrentBranchFileNames(
+				_sourceFormatterArgs.getBaseDirName(),
+				_sourceFormatterArgs.getGitWorkingBranchName(), true);
 
-				for (String fileName : fileNames) {
-					if (!buildPropertiesAdded &&
-						fileName.endsWith(".lfrbuild-portal")) {
+			boolean testCaseFilesAdded = false;
 
-						dependentFileNames = _addDependentFileName(
-							dependentFileNames, "build.properties");
+			for (String fileName : fileNames) {
+				if (!buildPropertiesAdded &&
+					fileName.endsWith(".lfrbuild-portal")) {
 
-						break;
-					}
+					dependentFileNames = _addDependentFileName(
+						dependentFileNames, "build.properties");
+
+					buildPropertiesAdded = true;
+				}
+
+				if (!testCaseFilesAdded && fileName.endsWith(".testcase")) {
+					dependentFileNames.addAll(
+						SourceFormatterUtil.filterFileNames(
+							_allFileNames, new String[0],
+							new String[] {"**/*.testcase"},
+							_sourceFormatterExcludes, false));
+
+					testCaseFilesAdded = true;
+				}
+
+				if (buildPropertiesAdded && testCaseFilesAdded) {
+					break;
 				}
 			}
 

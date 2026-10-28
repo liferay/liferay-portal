@@ -10,9 +10,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.tools.GitUtil;
-import com.liferay.source.formatter.SourceFormatterArgs;
-import com.liferay.source.formatter.processor.SourceProcessor;
 import com.liferay.source.formatter.util.FileUtil;
 import com.liferay.source.formatter.util.SourceFormatterUtil;
 
@@ -89,8 +86,7 @@ public class PoshiDependenciesFileLocationCheck extends BaseFileCheck {
 	}
 
 	private void _checkGlobalDependenciesFileReferences(
-			String absolutePath, String fileName)
-		throws Exception {
+		String absolutePath, String fileName) {
 
 		for (Map.Entry<String, Set<String>> entry :
 				_dependenciesGlobalFileReferencesMap.entrySet()) {
@@ -98,32 +94,7 @@ public class PoshiDependenciesFileLocationCheck extends BaseFileCheck {
 			List<String> referencesFileNames = ListUtil.fromCollection(
 				entry.getValue());
 
-			if (referencesFileNames.size() != 1) {
-				continue;
-			}
-
-			SourceProcessor sourceProcessor = getSourceProcessor();
-
-			SourceFormatterArgs sourceFormatterArgs =
-				sourceProcessor.getSourceFormatterArgs();
-
-			if (sourceFormatterArgs.isFormatCurrentBranch()) {
-				String currentBranchFileDiff = GitUtil.getCurrentBranchFileDiff(
-					sourceFormatterArgs.getBaseDirName(),
-					sourceFormatterArgs.getGitWorkingBranchName(),
-					absolutePath);
-
-				for (String line : currentBranchFileDiff.split("\n")) {
-					if (line.startsWith(StringPool.DASH) &&
-						_containsFileName(
-							line, _getShortFileName(entry.getKey()))) {
-
-						break;
-					}
-				}
-			}
-
-			if (!sourceFormatterArgs.isFormatCurrentBranch() &&
+			if ((referencesFileNames.size() != 1) ||
 				!StringUtil.equals(absolutePath, referencesFileNames.get(0))) {
 
 				continue;
