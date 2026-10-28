@@ -8,9 +8,6 @@ package com.liferay.jenkins.results.parser;
 import java.io.File;
 import java.io.StringReader;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Matcher;
@@ -26,14 +23,12 @@ public class SourceFormatterReleaseUtil {
 
 	public static String getIvyVersion(File portalDirectory) {
 		try {
-			File ivyXMLFile = new File(
-				portalDirectory,
-				JenkinsResultsParserUtil.combine(
-					"tools/sdk/dependencies/", _SOURCE_FORMATTER_PACKAGE_NAME,
-					"/ivy.xml"));
-
 			Document document = Dom4JUtil.parse(
-				JenkinsResultsParserUtil.read(ivyXMLFile));
+				JenkinsResultsParserUtil.read(
+					new File(
+						portalDirectory,
+						"tools/sdk/dependencies/com.liferay.source.formatter" +
+							"/ivy.xml")));
 
 			Element rootElement = document.getRootElement();
 
@@ -44,7 +39,7 @@ public class SourceFormatterReleaseUtil {
 
 				if (!Objects.equals(
 						dependencyElement.attributeValue("name"),
-						_SOURCE_FORMATTER_PACKAGE_NAME)) {
+						"com.liferay.source.formatter")) {
 
 					continue;
 				}
@@ -70,17 +65,14 @@ public class SourceFormatterReleaseUtil {
 			artifactProperties.load(
 				new StringReader(
 					JenkinsResultsParserUtil.read(
-						new File(
-							portalDirectory,
-							"modules/.releng/util/source-formatter" +
-								"/artifact.properties"))));
+						new File(portalDirectory, _PATH_ARTIFACT_PROPERTIES))));
 
-			String artifactGitId = artifactProperties.getProperty(
+			String artifactSHA = artifactProperties.getProperty(
 				"artifact.git.id");
 			Matcher matcher = _artifactURLPattern.matcher(
 				artifactProperties.getProperty("artifact.url", ""));
 
-			if (JenkinsResultsParserUtil.isNullOrEmpty(artifactGitId) ||
+			if (JenkinsResultsParserUtil.isNullOrEmpty(artifactSHA) ||
 				!matcher.find()) {
 
 				return false;
@@ -92,102 +84,64 @@ public class SourceFormatterReleaseUtil {
 				return false;
 			}
 
-			GitUtil.ExecutionResult executionResult =
+			GitUtil.ExecutionResult logExecutionResult =
 				gitWorkingDirectory.executeBashCommands(
 					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
 					GitUtil.MILLIS_TIMEOUT,
 					JenkinsResultsParserUtil.combine(
-						"git diff --dst-prefix=b/ --no-color --src-prefix=a/ ",
-						"--unified=0 ", artifactGitId, " ", ref, " -- ",
-						_SOURCE_FORMATTER_PATH));
+						"git log --format=%H --max-count=1 ", ref, " -- ",
+						_PATH_ARTIFACT_PROPERTIES));
 
-			if (executionResult.getExitValue() != 0) {
+			String artifactPropertiesSHA = logExecutionResult.getStandardOut();
+
+			if ((logExecutionResult.getExitValue() != 0) ||
+				artifactPropertiesSHA.isEmpty()) {
+
 				return false;
 			}
 
-			return _isVersionOnlyDiff(
-				executionResult.getStandardOut(), version);
+			GitUtil.ExecutionResult revListExecutionResult =
+				gitWorkingDirectory.executeBashCommands(
+					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+					GitUtil.MILLIS_TIMEOUT,
+					JenkinsResultsParserUtil.combine(
+						"git rev-list ", artifactSHA, "..",
+						artifactPropertiesSHA, " -- ", _PATH_SOURCE_FORMATTER));
+
+			if ((revListExecutionResult.getExitValue() != 0) ||
+				!Objects.equals(
+					revListExecutionResult.getStandardOut(),
+					artifactPropertiesSHA)) {
+
+				return false;
+			}
+
+			GitUtil.ExecutionResult diffExecutionResult =
+				gitWorkingDirectory.executeBashCommands(
+					GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+					GitUtil.MILLIS_TIMEOUT,
+					JenkinsResultsParserUtil.combine(
+						"git diff --name-only ", artifactPropertiesSHA, " ",
+						ref, " -- ", _PATH_SOURCE_FORMATTER));
+
+			if ((diffExecutionResult.getExitValue() != 0) ||
+				!JenkinsResultsParserUtil.isNullOrEmpty(
+					diffExecutionResult.getStandardOut())) {
+
+				return false;
+			}
+
+			return true;
 		}
 		catch (Exception exception) {
 			return false;
 		}
 	}
 
-	private static boolean _isVersionOnlyDiff(String gitDiff, String version) {
-		int index = version.lastIndexOf(".");
+	private static final String _PATH_ARTIFACT_PROPERTIES =
+		"modules/.releng/util/source-formatter/artifact.properties";
 
-		if (index == -1) {
-			return false;
-		}
-
-		boolean documentation = false;
-		boolean hunk = false;
-
-		Pattern versionPattern = Pattern.compile(
-			JenkinsResultsParserUtil.combine(
-				"(?<![\\d.])", Pattern.quote(version.substring(0, index + 1)),
-				"\\d+(?![\\d.])"));
-
-		List<String> addedLines = new ArrayList<>();
-		List<String> removedLines = new ArrayList<>();
-
-		for (String line : gitDiff.split("\n")) {
-			if (line.startsWith("diff --git ")) {
-				String filePath = line.substring(line.indexOf(" b/") + 3);
-
-				documentation =
-					filePath.equals(_SOURCE_FORMATTER_PATH + "/README.md") ||
-					filePath.startsWith(
-						_SOURCE_FORMATTER_PATH +
-							"/src/main/resources/documentation/");
-
-				List<String> versionFilePaths = Arrays.asList(
-					_SOURCE_FORMATTER_PATH + "/bnd.bnd",
-					_SOURCE_FORMATTER_PATH + "/samples/pom.xml",
-					JenkinsResultsParserUtil.combine(
-						_SOURCE_FORMATTER_PATH,
-						"/src/main/resources/META-INF/maven/com.liferay",
-						"/com.liferay.source.formatter/plugin-help.xml"),
-					JenkinsResultsParserUtil.combine(
-						_SOURCE_FORMATTER_PATH,
-						"/src/main/resources/META-INF/maven/", "plugin.xml"));
-
-				if (!documentation && !versionFilePaths.contains(filePath)) {
-					return false;
-				}
-
-				hunk = false;
-
-				continue;
-			}
-
-			if (line.startsWith("@@")) {
-				hunk = true;
-
-				continue;
-			}
-
-			if (documentation || !hunk) {
-				continue;
-			}
-
-			Matcher matcher = versionPattern.matcher(line.substring(1));
-
-			if (line.startsWith("+")) {
-				addedLines.add(matcher.replaceAll(""));
-			}
-			else if (line.startsWith("-")) {
-				removedLines.add(matcher.replaceAll(""));
-			}
-		}
-
-		return addedLines.equals(removedLines);
-	}
-
-	private static final String _SOURCE_FORMATTER_PACKAGE_NAME =
-		"com.liferay.source.formatter";
-
-	private static final String _SOURCE_FORMATTER_PATH =
+	private static final String _PATH_SOURCE_FORMATTER =
 		"modules/util/source-formatter";
 
 	private static final Pattern _artifactURLPattern = Pattern.compile(
