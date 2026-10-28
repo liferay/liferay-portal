@@ -1355,25 +1355,23 @@ test(
 
 		await waitForLoading(page);
 
-		await page.getByRole('link', {exact: true, name: 'Details'}).click();
+		await page.getByRole('link', {exact: true, name: 'Profile'}).click();
 
 		// The seeded attributes appear in the Details list
 
-		await expect(
-			page.getByRole('row').nth(1).getByRole('cell').nth(0)
-		).toContainText('birthDate');
-		await expect(
-			page.getByRole('row').nth(2).getByRole('cell').nth(0)
-		).toContainText('email');
-		await expect(
-			page.getByRole('row').nth(3).getByRole('cell').nth(0)
-		).toContainText('familyName');
-		await expect(
-			page.getByRole('row').nth(4).getByRole('cell').nth(0)
-		).toContainText('givenName');
-		await expect(
-			page.getByRole('row').nth(5).getByRole('cell').nth(0)
-		).toContainText('jobTitle');
+		for (const attributeName of [
+			'birthDate',
+			'email',
+			'familyName',
+			'givenName',
+			'jobTitle',
+		]) {
+			await expect(
+				page.getByRole('row').filter({
+					has: page.getByText(attributeName, {exact: true}),
+				})
+			).toBeVisible();
+		}
 	}
 );
 
