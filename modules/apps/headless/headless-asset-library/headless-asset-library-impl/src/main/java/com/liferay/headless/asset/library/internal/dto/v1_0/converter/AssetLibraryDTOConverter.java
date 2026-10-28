@@ -248,9 +248,8 @@ public class AssetLibraryDTOConverter
 							return null;
 						}
 
-						return Settings.MapProviderKey.create(
-							unicodeProperties.getProperty(
-								MapProviderWebKeys.MAP_PROVIDER_KEY));
+						return unicodeProperties.getProperty(
+							MapProviderWebKeys.MAP_PROVIDER_KEY);
 					});
 				setMimeTypeLimits(() -> _getMimeTypeLimits(group.getGroupId()));
 				setSharingEnabled(

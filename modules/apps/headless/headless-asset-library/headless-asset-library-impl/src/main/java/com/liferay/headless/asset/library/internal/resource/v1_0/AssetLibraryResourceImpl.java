@@ -60,6 +60,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 import com.liferay.portal.vulcan.util.SearchUtil;
 import com.liferay.sharing.constants.SharingConfigurationConstants;
 
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.core.MultivaluedMap;
 
 import java.util.ArrayList;
@@ -347,6 +348,18 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 			assetLibrary.setSettings(() -> new Settings());
 		}
 
+		Settings settings = assetLibrary.getSettings();
+
+		String mapProviderKey = settings.getMapProviderKey();
+
+		if (Validator.isNotNull(mapProviderKey) &&
+			!mapProviderKey.equals("GoogleMaps") &&
+			!mapProviderKey.equals("OpenStreetMap")) {
+
+			throw new BadRequestException(
+				"Invalid map provider key " + mapProviderKey);
+		}
+
 		Group group = null;
 
 		if (Validator.isNotNull(externalReferenceCode)) {
@@ -567,7 +580,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 				}
 
 				return GetterUtil.getString(
-					settings.getMapProviderKeyAsString(),
+					settings.getMapProviderKey(),
 					unicodeProperties.getProperty(
 						MapProviderWebKeys.MAP_PROVIDER_KEY));
 			}
@@ -652,7 +665,7 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 					return null;
 				}
 
-				return settings.getMapProviderKeyAsString();
+				return settings.getMapProviderKey();
 			}
 		).put(
 			"autoTaggingEnabled",
