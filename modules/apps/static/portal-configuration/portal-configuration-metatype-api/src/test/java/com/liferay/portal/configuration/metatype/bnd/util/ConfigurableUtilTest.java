@@ -9,11 +9,10 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.test.SwappableSecurityManager;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
-import com.liferay.portal.kernel.test.util.ReflectionUtilTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.test.rule.AdviseWith;
@@ -50,22 +49,19 @@ public class ConfigurableUtilTest {
 		_testBigString(65536);
 	}
 
-	@NewEnv(type = NewEnv.Type.CLASSLOADER)
 	@Test
-	public void testClassInitializationFailure() throws Exception {
-		SecurityException securityException = new SecurityException();
-
-		try (SwappableSecurityManager swappableSecurityManager =
-				ReflectionUtilTestUtil.throwForSuppressAccessChecks(
-					securityException)) {
-
-			Class.forName(ConfigurableUtil.class.getName());
-
-			Assert.fail();
-		}
-		catch (ExceptionInInitializerError eiie) {
-			Assert.assertSame(securityException, eiie.getCause());
-		}
+	public void testClassInitialization() throws Exception {
+		Assert.assertEquals(
+			ClassLoader.class.getDeclaredMethod(
+				"defineClass", String.class, byte[].class, int.class,
+				int.class),
+			ReflectionTestUtil.getFieldValue(
+				ConfigurableUtil.class, "_defineClassMethod"));
+		Assert.assertEquals(
+			ClassLoader.class.getDeclaredMethod(
+				"findLoadedClass", String.class),
+			ReflectionTestUtil.getFieldValue(
+				ConfigurableUtil.class, "_findLoadedClassMethod"));
 	}
 
 	@AdviseWith(adviceClasses = ConfigurableUtilAdvice.class)
