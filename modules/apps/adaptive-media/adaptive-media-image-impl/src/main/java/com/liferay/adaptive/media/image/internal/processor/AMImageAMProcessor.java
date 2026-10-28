@@ -97,7 +97,7 @@ public final class AMImageAMProcessor implements AMProcessor<FileVersion> {
 
 		String mimeType = amImageScaledImage.getMimeType();
 
-		if ((mimeType == null) || !mimeType.equals(fileVersion.getMimeType()) ||
+		if ((mimeType == null) || mimeType.equals(fileVersion.getMimeType()) ||
 			mimeType.equals(ContentTypes.APPLICATION_OCTET_STREAM)) {
 
 			return fileVersion;
