@@ -323,3 +323,153 @@ test(
 		});
 	}
 );
+
+test(
+	'Versions tab in the widget downloads, views and reverts older versions',
+	{tag: ['@LPS-39248', '@LPS-52101', '@LPS-175916']},
+	async ({apiHelpers, documentLibraryPage, page, site}) => {
+		const pageURL = await addDMWidgetPage({apiHelpers, site});
+
+		const description = getRandomString();
+		const title = getRandomString();
+
+		const document = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(IMAGE_PATH),
+			{description, fileName: 'FileName.jpeg', title}
+		);
+
+		let versionActionsTrigger = page.locator('');
+
+		const openVersionActions = async (
+			documentTitle: string,
+			version: string
+		) => {
+			await page.goto(pageURL);
+
+			await documentLibraryPage.changeView('List');
+
+			await page
+				.getByRole('link', {exact: true, name: documentTitle})
+				.click();
+
+			const infoPanel = await openInfoPanel(page);
+
+			await infoPanel.getByRole('tab', {name: 'Versions'}).click();
+
+			versionActionsTrigger = infoPanel
+				.getByRole('listitem')
+				.filter({hasText: `Version ${version}`})
+				.getByRole('button');
+		};
+
+		const clickVersionAction = async (actionName: string) => {
+			const menuItem = page.getByRole('menuitem', {name: actionName});
+
+			await expect(async () => {
+				if (!(await menuItem.isVisible())) {
+					await versionActionsTrigger.click({timeout: 1000});
+				}
+
+				await menuItem.click({timeout: 1000});
+			}).toPass();
+		};
+
+		const assertVersionActions = async (
+			actionNames: string[],
+			missingActionNames: string[]
+		) => {
+			for (const actionName of actionNames) {
+				await clickAndExpectToBeVisible({
+					target: page.getByRole('menuitem', {name: actionName}),
+					trigger: versionActionsTrigger,
+				});
+			}
+
+			for (const actionName of missingActionNames) {
+				await expect(
+					page.getByRole('menuitem', {name: actionName})
+				).toHaveCount(0);
+			}
+		};
+
+		const downloadVersion = async () => {
+			const downloadPromise = page.waitForEvent('download');
+
+			await clickVersionAction('Download');
+
+			return (await downloadPromise).suggestedFilename();
+		};
+
+		const editedTitle = getRandomString();
+
+		await test.step('CanDownloadDifferentVersions', async () => {
+			await openVersionActions(title, '1.0');
+
+			await assertVersionActions(['Download', 'View'], ['Delete', 'Revert']);
+
+			await apiHelpers.headlessDelivery.patchDocument({
+				document: {
+					description: getRandomString(),
+					fileName: 'FileNameEdit.jpeg',
+					title: editedTitle,
+				},
+				documentId: document.id,
+			});
+
+			await openVersionActions(editedTitle, '1.1');
+
+			await assertVersionActions(['Delete', 'Download', 'View'], ['Revert']);
+
+			expect(await downloadVersion()).toBe('FileNameEdit.jpeg');
+
+			await openVersionActions(editedTitle, '1.0');
+
+			await assertVersionActions(
+				['Delete', 'Download', 'Revert', 'View'],
+				[]
+			);
+
+			expect(await downloadVersion()).toBe('FileName.jpeg');
+		});
+
+		await test.step('CanViewOlderVersion', async () => {
+			await openVersionActions(editedTitle, '1.0');
+
+			await clickVersionAction('View');
+
+			await expect(
+				page.getByText(`${title} (Version 1.0)`, {exact: true})
+			).toBeVisible();
+
+			const infoPanel = await openInfoPanel(page);
+
+			await expect(infoPanel.getByText(description)).toBeVisible();
+
+			await page.getByRole('link', {name: 'Back'}).click();
+
+			await expect(
+				page.getByRole('heading', {exact: true, name: editedTitle})
+			).toBeVisible();
+		});
+
+		await test.step('CanRevertToOriginal', async () => {
+			await openVersionActions(editedTitle, '1.0');
+
+			await clickVersionAction('Revert');
+
+			await waitForAlert(page);
+
+			await page.goto(pageURL);
+
+			await page.getByRole('link', {exact: true, name: title}).click();
+
+			const infoPanel = await openInfoPanel(page);
+
+			await expect(
+				infoPanel.getByText('Version 2.0', {exact: true}).first()
+			).toBeVisible();
+			await expect(infoPanel.getByText(description)).toBeVisible();
+		});
+	}
+);

@@ -12,6 +12,7 @@ import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.f
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import getRandomString from '../../../utils/getRandomString';
 import {setItemsPerPage} from '../../../utils/pagination';
 import {waitForAlert} from '../../../utils/waitForAlert';
 
@@ -207,5 +208,153 @@ test(
 
 			await expect(getVersionRow('1.1')).toBeVisible();
 		});
+	}
+);
+
+test(
+	'Versions page downloads, views and reverts a specific version',
+	{tag: '@LPS-175922'},
+	async ({apiHelpers, documentLibraryPage, page, site}) => {
+		const baseTitle = getRandomString();
+
+		const fileEntry = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(path.join(__dirname, '/dependencies/image1.jpeg')),
+			{fileName: 'image1.jpeg', title: `${baseTitle} 1.0`}
+		);
+
+		const getVersionRow = (version: string) =>
+			page.getByRole('row').filter({
+				has: page.locator('td.lfr-version-column', {
+					hasText: new RegExp(
+						`^\\s*${version.replace('.', '\\.')}\\s*$`
+					),
+				}),
+			});
+
+		const openVersionActions = async (title: string, version: string) => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.goToViewHistoryFileEntry(title);
+
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {name: 'View'}),
+				trigger: getVersionRow(version).getByRole('button', {
+					name: 'Show Actions',
+				}),
+			});
+		};
+
+		await test.step('CanDownloadSpecifiedFileVersionFromVersionsPage', async () => {
+			await openVersionActions(`${baseTitle} 1.0`, '1.0');
+
+			await expect(
+				page.getByRole('menuitem', {name: 'Download'})
+			).toBeVisible();
+
+			for (const actionName of ['Delete', 'Revert']) {
+				await expect(
+					page.getByRole('menuitem', {name: actionName})
+				).toHaveCount(0);
+			}
+
+			const downloadPromise = page.waitForEvent('download');
+
+			await page.getByRole('menuitem', {name: 'Download'}).click();
+
+			expect((await downloadPromise).suggestedFilename()).toBe(
+				'image1.jpeg'
+			);
+		});
+
+		for (let i = 1; i < 10; i++) {
+			await apiHelpers.headlessDelivery.patchDocument({
+				document: {title: `${baseTitle} 1.${i}`},
+				documentId: fileEntry.id,
+			});
+		}
+
+		await test.step('CanPreviewSpecifiedFileVersionFromVersionPage', async () => {
+			await openVersionActions(`${baseTitle} 1.9`, '1.9');
+
+			await page.getByRole('menuitem', {name: 'View'}).click();
+
+			await expect(
+				page.getByText(`${baseTitle} 1.9 (Version 1.9)`, {exact: true})
+			).toBeVisible();
+
+			await expect(
+				page.locator('.preview-file-container img')
+			).toHaveAttribute('src', /image1\.jpeg/);
+		});
+
+		await test.step('CanRevertSpecifiedFileVersionFromVersionsPage', async () => {
+			await openVersionActions(`${baseTitle} 1.9`, '1.3');
+
+			await page.getByRole('menuitem', {name: 'Revert'}).click();
+
+			await waitForAlert(page);
+
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.goToViewHistoryFileEntry(
+				`${baseTitle} 1.3`
+			);
+
+			await expect(page.locator('td.lfr-version-column').first()).toHaveText(
+				'2.0'
+			);
+			await expect(getVersionRow('2.0')).toContainText(
+				`${baseTitle} 1.3`
+			);
+			await expect(getVersionRow('2.0')).toContainText('Approved');
+		});
+	}
+);
+
+test(
+	'Versions tab shows the size of each version',
+	{tag: '@LPS-101667'},
+	async ({
+		apiHelpers,
+		documentLibraryPage,
+		documentLibraryViewFileEntryPage,
+		page,
+		site,
+	}) => {
+		const fileEntry = await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(path.join(__dirname, '/dependencies/image1.jpeg')),
+			{fileName: 'image1.jpeg'}
+		);
+
+		await apiHelpers.headlessDelivery.patchDocument({
+			document: {fileName: 'Document_1.txt'},
+			documentId: fileEntry.id,
+			file: createReadStream(
+				path.join(__dirname, '/dependencies/Document_1.txt')
+			),
+		});
+
+		await documentLibraryPage.goto(site.friendlyUrlPath);
+		await documentLibraryPage.goToViewFileEntry(fileEntry.title);
+
+		await documentLibraryViewFileEntryPage.openInfoPanel(
+			fileEntry.title,
+			'Versions'
+		);
+
+		for (const {size, version} of [
+			{size: '946 B', version: '1.0'},
+			{size: '259 B', version: '2.0'},
+		]) {
+			await clickAndExpectToBeVisible({
+				target: page.getByRole('menuitem', {name: `Download (${size})`}),
+				trigger: documentLibraryViewFileEntryPage.infoPanel
+					.getByRole('listitem')
+					.filter({hasText: `Version ${version}`})
+					.getByRole('button'),
+			});
+
+			await page.keyboard.press('Escape');
+		}
 	}
 );

@@ -908,97 +908,6 @@ definition {
 		DMDocument.viewDefault();
 	}
 
-	@description = "This ensures that users can delete a version entry from the Version History page."
-	@priority = 5
-	test CanDeleteSpecifiedFileVersionFromVersionsPage {
-		var documentId = JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document Version 1.0",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		for (var num : list "1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9") {
-			var response = DocumentAPI.updateDocumentByDocumentId(
-				documentId = ${documentId},
-				fileName = "Document_1.jpg",
-				title = "Document Version ${num}");
-		}
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentVersionsPage(dmDocumentTitle = "Document Version 1.9");
-
-		LexiconEntry.openEntryMenu(rowEntry = "Document Version 1.5");
-
-		for (var menuItem : list "Download (13 KB),View,Revert,Delete") {
-			MenuItem.verifyVisible(menuItem = ${menuItem});
-		}
-
-		MenuItem.clickNoError(menuItem = "Delete");
-
-		AssertConfirm(value1 = "Are you sure you want to delete this? It will be deleted immediately.");
-
-		LexiconEntry.viewNoEntry(rowEntry = "Document Version 1.5");
-	}
-
-	@description = "This test ensures that users can download different document versions from the Versions tab in the info panel."
-	@priority = 4
-	test CanDownloadDifferentVersions {
-		property custom.properties = "dl.actions.visible=true";
-
-		var siteId = JSONGroupAPI._getGroupIdByNameNoSelenium(
-			groupName = "Guest",
-			site = "true");
-		var filePath = TestCase.getDependenciesDirPath(fileName = "Document_1.jpg");
-
-		var response = DocumentAPI.addDocumentWithFileInSite(
-			dmDocumentTitle = "DM Document Title",
-			fileName = "FileName.jpg",
-			filePath = ${filePath},
-			siteId = ${siteId});
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.downloadVersion(
-			dmDocumentSize = "13 KB",
-			dmDocumentVersionNumber = "1.0",
-			menuItem = "Download (13 KB),View");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "FileName.jpg");
-
-		var documentId = JSONPathUtil.getIdValue(response = ${response});
-
-		DocumentAPI.updateDocumentByDocumentId(
-			documentId = ${documentId},
-			fileName = "FileNameEdit.jpg",
-			title = "DM Document Title Edit");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewPG(dmDocumentTitle = "DM Document Title Edit");
-
-		DMDocument.downloadVersion(
-			dmDocumentSize = "13 KB",
-			dmDocumentVersionNumber = "1.1",
-			menuItem = "Delete,Download (13 KB),View");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "FileNameEdit.jpg");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewPG(dmDocumentTitle = "DM Document Title Edit");
-
-		DMDocument.downloadVersion(
-			dmDocumentSize = "13 KB",
-			dmDocumentVersionNumber = "1.0",
-			menuItem = "Delete,Download (13 KB),Revert,View");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "FileName (1).jpg");
-	}
-
 	@description = "This case covers LPS-110213. It ensures that a document file can be downloaded after moving it between folders."
 	@priority = 5
 	@refactordone
@@ -1068,37 +977,6 @@ definition {
 		AssertTextNotPresent(value1 = "The requested resource could not be found.");
 
 		DMDocument.assertFileNameFromTempFolder(fileName = "Site_1.zip");
-	}
-
-	@description = "This ensures that users can download a version entry from the Version History page."
-	@priority = 5
-	test CanDownloadSpecifiedFileVersionFromVersionsPage {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document Version 1.0",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentVersionsPage(
-			dmDocumentTitle = "Document Version 1.0",
-			navigateByViewHistory = "true");
-
-		LexiconEntry.openEntryMenu(rowEntry = "Document Version 1.0");
-
-		for (var menuItem : list "Download (13 KB),View") {
-			MenuItem.verifyVisible(menuItem = ${menuItem});
-		}
-
-		for (var menuItem : list "Revert,Delete") {
-			MenuItem.verifyNotPresent(menuItem = ${menuItem});
-		}
-
-		MenuItem.click(menuItem = "Download (13 KB)");
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "Document_1.jpg");
 	}
 
 	@description = "This ensures that the document file can be downloaded through the document file name."
@@ -2390,44 +2268,6 @@ definition {
 			value2 = ${latestVersionURL});
 	}
 
-	@description = "This ensures that users can preview a version entry from the Version History page."
-	@priority = 5
-	test CanPreviewSpecifiedFileVersionFromVersionPage {
-		var documentId = JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document Version 1.0",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		for (var num : list "1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9") {
-			var response = DocumentAPI.updateDocumentByDocumentId(
-				documentId = ${documentId},
-				fileName = "Document_1.jpg",
-				title = "Document Version ${num}");
-		}
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentVersionsPage(dmDocumentTitle = "Document Version 1.9");
-
-		LexiconEntry.openEntryMenu(rowEntry = "Document Version 1.9");
-
-		for (var menuItem : list "Download (13 KB),View,Delete") {
-			MenuItem.verifyVisible(menuItem = ${menuItem});
-		}
-
-		for (var menuItem : list "Revert") {
-			MenuItem.verifyNotPresent(menuItem = ${menuItem});
-		}
-
-		MenuItem.click(menuItem = "View");
-
-		DMDocument.viewCP(
-			dmDocumentTitle = "Document Version 1.9 (Version 1.9)",
-			previewImage = "Document_1.jpg");
-	}
-
 	@description = "This case covers LPS-97708. It ensures that a document can be restored from the Recycle Bin even if its original folder no longer exists."
 	@priority = 3
 	@refactordone
@@ -2505,92 +2345,6 @@ definition {
 				dmDocumentTitle = ${dmDocumentTitle},
 				validationError = "Please enter a file with a valid extension (.doc).");
 		}
-	}
-
-	@description = "This ensures that users can revert a version entry from the Version History page."
-	@priority = 4
-	test CanRevertSpecifiedFileVersionFromVersionsPage {
-		var documentId = JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document Version 1.0",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		for (var num : list "1.1,1.2,1.3,1.4,1.5,1.6,1.7,1.8,1.9") {
-			var response = DocumentAPI.updateDocumentByDocumentId(
-				documentId = ${documentId},
-				fileName = "Document_1.jpg",
-				title = "Document Version ${num}");
-		}
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentVersionsPage(dmDocumentTitle = "Document Version 1.9");
-
-		LexiconEntry.openEntryMenu(rowEntry = "Document Version 1.3");
-
-		MenuItem.click(menuItem = "Revert");
-
-		var fileVersionId = JSONDocument.getFileEntryVersionId(
-			dmDocumentTitle = "Document Version 1.3",
-			dmDocumentVersion = "2.0",
-			groupName = "Guest");
-
-		DMDocument.viewDocumentVersionInfoFromVersionsPage(
-			dmDocumentTitle = "Document Version 1.3",
-			dmDocumentVersionInfo = "${fileVersionId},Document Version 1.3,2.0,Approved,Seconds Ago,Test Test",
-			orderIndex = 1);
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		LexiconEntry.viewEntryName(rowEntry = "Document Version 1.3");
-	}
-
-	@priority = 4
-	@refactordone
-	test CanRevertToOriginal {
-		property custom.properties = "company.default.time.zone=America/Los_Angeles${line.separator}dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.editPG(
-			dmDocumentFileEdit = "Document_2.doc",
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentTitleEdit = "DM Document Title Version 2");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewAllPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title Version 2",
-			dmDocumentVersionNumber = "2.0");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "DM Document Title Version 2",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.revertPG(
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentVersionNumber = "1.0");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewAllPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentVersionNumber = "3.0");
 	}
 
 	@description = "This test ensures that the user can review a document when the date is changed."
@@ -3081,41 +2835,6 @@ definition {
 			dmDocumentTitle = "Document_2");
 	}
 
-	@priority = 4
-	@refactordone
-	test CanViewOlderVersion {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.editPG(
-			dmDocumentDescriptionEdit = "DM Document Description Edited",
-			dmDocumentTitle = "DM Document Title");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.selectDocuments(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewOlderVersionPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentVersionNumber = "1.0");
-
-		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
-
-		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
-	}
-
 	@description = "This test ensures that Users can view specify error when bulk copy less than ten wrong files."
 	@priority = 4
 	test CanViewSpecifyErrorWhenBulkCopyLessThanTenWrongFiles {
@@ -3528,41 +3247,6 @@ definition {
 		DMDocument.assertNoZipFileFromTempFolder(
 			appServer = "tomcat-10.1.61",
 			fileNamePattern = "*.zip");
-	}
-
-	@description = "This test covers LPS-101667. It makes sure that the file size can be displayed correctly in the different versions after editing the document file."
-	@priority = 3
-	@refactordone
-	test SizeIsDisplayedCorrectlyInDifferentVersions {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.editCP(
-			dmDocumentFileEdit = "Document_1.txt",
-			dmDocumentFileNameEdit = "Document_1.txt",
-			dmDocumentTitle = "Document_2",
-			dmDocumentTitleEdit = "Document_1");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "Document_1");
-
-		DMDocument.viewFileSizeByVersion(
-			dmDocumentSize = "30 KB",
-			dmDocumentVersionNumber = "1.0");
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Document_1",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		DMDocument.viewFileSizeByVersion(
-			dmDocumentSize = "259 B",
-			dmDocumentVersionNumber = "2.0");
 	}
 
 	@description = "This a ticket for LPS-154955. Verify tree image is available when Liferay is deployed. Skip the instance for performance improvement."
