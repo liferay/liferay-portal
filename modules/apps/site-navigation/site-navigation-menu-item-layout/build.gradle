@@ -6,11 +6,9 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib-util")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:layout:layout-item-selector-api")
-	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:site-navigation:site-navigation-admin-api")
 	compileOnly project(":apps:site-navigation:site-navigation-api")
 	compileOnly project(":apps:site-navigation:site-navigation-menu-item-api")
