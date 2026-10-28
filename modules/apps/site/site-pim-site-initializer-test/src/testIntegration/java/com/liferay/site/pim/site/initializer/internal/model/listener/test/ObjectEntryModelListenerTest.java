@@ -17,16 +17,22 @@ import com.liferay.object.rest.filter.factory.FilterFactory;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.ModelListenerException;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.HTTPTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -140,8 +146,85 @@ public class ObjectEntryModelListenerTest {
 	public void testOnBeforeCreate() throws Exception {
 		_testOnBeforeCreateMovesEntryToProductsFolder();
 		_testOnBeforeCreateRecreatesMissingProductsFolder();
+		_testOnBeforeCreateWithDuplicatePIMConnectorFieldMappingRule();
 		_testOnBeforeCreateWithDuplicatePIMLinkException();
 		_testOnBeforeCreateWithInvalidExternalReferenceCode();
+		_testOnBeforeCreateWithInvalidPIMConnectorFieldMappingRule();
+	}
+
+	@Test
+	public void testOnBeforeUpdate() throws Exception {
+		ObjectEntry pimConnectorObjectEntry1 = _addPIMConnectorObjectEntry();
+
+		ObjectEntry pimConnectorFieldMappingRuleObjectEntry =
+			_addPIMConnectorFieldMappingRuleObjectEntry(
+				"name", "useFirstNonemptySource",
+				RandomTestUtil.randomBoolean(), pimConnectorObjectEntry1);
+
+		_assertInvalidObjectField(
+			"\"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId\" is " +
+				"invalid",
+			() -> _objectEntryLocalService.partialUpdateObjectEntry(
+				TestPropsValues.getUserId(),
+				pimConnectorFieldMappingRuleObjectEntry.getObjectEntryId(), 0,
+				HashMapBuilder.<String, Serializable>put(
+					"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+					() -> {
+						ObjectEntry pimConnectorObjectEntry2 =
+							_addPIMConnectorObjectEntry();
+
+						return pimConnectorObjectEntry2.getObjectEntryId();
+					}
+				).build(),
+				ServiceContextTestUtil.getServiceContext()));
+
+		_objectEntryLocalService.deleteObjectEntry(
+			pimConnectorObjectEntry1.getObjectEntryId());
+	}
+
+	private ObjectEntry _addPIMConnectorFieldMappingRuleObjectEntry(
+			String channelFieldName, String objectFieldName,
+			Serializable objectFieldValue, ObjectEntry pimConnectorObjectEntry)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING_RULE,
+					TestPropsValues.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				objectFieldName, objectFieldValue
+			).put(
+				"channelFieldName", channelFieldName
+			).put(
+				"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+				pimConnectorObjectEntry.getObjectEntryId()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private ObjectEntry _addPIMConnectorObjectEntry() throws Exception {
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_CONNECTOR,
+					TestPropsValues.getCompanyId());
+
+		return _objectEntryLocalService.addObjectEntry(
+			0, TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), 0, null,
+			HashMapBuilder.<String, Serializable>put(
+				"key", "liferay-commerce"
+			).put(
+				"name", RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private void _addPIMLinkObjectEntry(
@@ -163,6 +246,16 @@ public class ObjectEntryModelListenerTest {
 				"type", "variant"
 			).build(),
 			ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
+	private void _assertInvalidObjectField(
+		String message, UnsafeRunnable<Exception> unsafeRunnable) {
+
+		AssertUtils.assertFailure(
+			ModelListenerException.class,
+			"com.liferay.object.exception.ObjectEntryValuesException$" +
+				"InvalidObjectField: " + message,
+			unsafeRunnable);
 	}
 
 	private ObjectDefinition _getPIMLinkObjectDefinition() throws Exception {
@@ -261,6 +354,54 @@ public class ObjectEntryModelListenerTest {
 			objectEntry.getObjectEntryFolderId());
 	}
 
+	private void _testOnBeforeCreateWithDuplicatePIMConnectorFieldMappingRule()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		ObjectEntry pimConnectorObjectEntry = _addPIMConnectorObjectEntry();
+
+		JSONObject jsonObject1 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"channelFieldName", "name"
+			).put(
+				"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+				pimConnectorObjectEntry.getObjectEntryId()
+			).toString(),
+			"pim/connector-field-mapping-rules/by-external-reference-code/" +
+				externalReferenceCode,
+			Http.Method.PUT);
+		JSONObject jsonObject2 = HTTPTestUtil.invokeToJSONObject(
+			JSONUtil.put(
+				"channelFieldName", "name"
+			).put(
+				"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+				pimConnectorObjectEntry.getObjectEntryId()
+			).put(
+				"useFirstNonemptySource", true
+			).toString(),
+			"pim/connector-field-mapping-rules/by-external-reference-code/" +
+				externalReferenceCode,
+			Http.Method.PUT);
+
+		Assert.assertEquals(
+			jsonObject1.getLong("id"), jsonObject2.getLong("id"));
+		Assert.assertTrue(jsonObject2.getBoolean("useFirstNonemptySource"));
+
+		_assertInvalidObjectField(
+			"\"channelFieldName\" is invalid",
+			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
+				"name", "useFirstNonemptySource",
+				RandomTestUtil.randomBoolean(), pimConnectorObjectEntry));
+
+		Assert.assertEquals(
+			204,
+			HTTPTestUtil.invokeToHttpCode(
+				null,
+				"pim/connector-field-mapping-rules/by-external-reference-" +
+					"code/" + externalReferenceCode,
+				Http.Method.DELETE));
+	}
+
 	private void _testOnBeforeCreateWithDuplicatePIMLinkException()
 		throws Exception {
 
@@ -298,6 +439,46 @@ public class ObjectEntryModelListenerTest {
 			() -> _addPIMLinkObjectEntry(
 				depotEntry.getGroupId(), objectDefinition.getClassName(),
 				RandomTestUtil.randomString()));
+	}
+
+	private void _testOnBeforeCreateWithInvalidPIMConnectorFieldMappingRule()
+		throws Exception {
+
+		ObjectEntry pimConnectorObjectEntry = _addPIMConnectorObjectEntry();
+
+		_assertInvalidObjectField(
+			"\"channelFieldName\" is invalid",
+			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
+				"catalogId", "useFirstNonemptySource",
+				RandomTestUtil.randomBoolean(), pimConnectorObjectEntry));
+		_assertInvalidObjectField(
+			"\"channelFieldName\" is invalid",
+			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
+				RandomTestUtil.randomString(), "useFirstNonemptySource",
+				RandomTestUtil.randomBoolean(), pimConnectorObjectEntry));
+		_assertInvalidObjectField(
+			"\"textCase\" is invalid",
+			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
+				"name", "textCase", RandomTestUtil.randomString(),
+				pimConnectorObjectEntry));
+		_assertInvalidObjectField(
+			"\"useFirstNonemptySource\" is invalid",
+			() -> _addPIMConnectorFieldMappingRuleObjectEntry(
+				"tags", "useFirstNonemptySource", true,
+				pimConnectorObjectEntry));
+
+		Assert.assertEquals(
+			400,
+			HTTPTestUtil.invokeToHttpCode(
+				JSONUtil.put(
+					"channelFieldName", "name"
+				).put(
+					"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+					pimConnectorObjectEntry.getObjectEntryId()
+				).put(
+					"truncateLength", 50
+				).toString(),
+				"pim/connector-field-mapping-rules", Http.Method.POST));
 	}
 
 	@Inject(
