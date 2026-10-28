@@ -106,65 +106,152 @@ definition {
 		}
 	}
 
-	@description = "When Edit the Audience or Stage, default values are For internal use only ON , Allow user to select multiple categories ON, will be associated with web content, won't be required"
+	@description = ""
 	@priority = 5
 	@uitest
-	test ViewGlobalVocabulariesAndAddCategory {
+	test AddGlobalCategoriesToBlogsInSeveralSites {
 		property portal.acceptance = "true";
 
-		task ("Go to Global Vocabularies") {
-			Category.openCategoriesAdmin(siteURLKey = "global");
+		task ("Add the second site") {
+			HeadlessSite.addSite(siteName = "Test Site Name 2");
 		}
 
-		task ("Assert if Vocabulary is for internal use only") {
-			AssertElementPresent(
-				key_vocabularyName = "Audience",
-				locator1 = "Categories#VOCABULARY_ICON_INTERNAL_USE");
-
-			AssertElementPresent(
-				key_vocabularyName = "Stage",
-				locator1 = "Categories#VOCABULARY_ICON_INTERNAL_USE");
-		}
-
-		task ("Assert if Vocabulary allow multiple categories") {
-			Vocabulary.viewVocabularyAllowMultipleCAtegories(
-				label = "Allow Multiple Categories",
-				vocabularyName = "Audience");
-
-			Vocabulary.viewVocabularyAllowMultipleCAtegories(
-				label = "Allow Multiple Categories",
-				vocabularyName = "Stage");
-		}
-
-		task ("Assert if Asset Type is not requried") {
-			Vocabulary.viewVocabularyAssociatedAssetTypesRequirement(
-				label = "Required",
-				vocabularyName = "Audience");
-
-			Vocabulary.viewVocabularyAssociatedAssetTypesRequirement(
-				label = "Required",
-				vocabularyName = "Stage");
-		}
-
-		task ("Add a global category via Save And Add button") {
-			Category.openCategoriesAdmin(siteURLKey = "global");
-
-			Category.addCategoryWithSaveAndAddButton(
-				categoryName = "Category Name",
-				vocabularyName = "Topic");
-		}
-
-		task ("View the global category is created successfully") {
-			Category.viewCP(
-				categoryName = "Category Name",
-				vocabularyName = "Topic");
-		}
-
-		task ("Delete the global category") {
-			JSONCategory.deleteCategory(
-				categoryName = "Category Name",
+		task ("Add a global category") {
+			JSONCategory.addCategory(
 				groupName = "Global",
+				title = "Audience 1",
+				vocabularyName = "Audience");
+
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Stage 1",
+				vocabularyName = "Stage");
+		}
+
+		task ("Create two blogs") {
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content 1",
+				groupName = "Test Site Name",
+				title = "Blogs Entry Title 1");
+
+			HeadlessBlog.addBlogEntry(
+				content = "Blogs Entry Content 2",
+				groupName = "Test Site Name 2",
+				title = "Blogs Entry Title 2");
+		}
+
+		task ("Go to Blogs Admin and click to edit the first blog") {
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
+
+			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title 1");
+		}
+
+		task ("Add categories from Audience and Stage Vocabularies") {
+			Blogs.expandPanel(panel = "Categorization");
+
+			AssertElementPresent(
+				key_categoryName = "Audience",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
+			AssertElementPresent(
+				key_categoryName = "Stage",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
+			Click(
+				key_fieldName = "Audience",
+				locator1 = "Button#SELECT_BUTTON");
+
+			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
+
+			Click(
+				key_fieldName = "Stage",
+				locator1 = "Button#SELECT_BUTTON");
+
+			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
+
+			AssertTextEquals(
+				key_categoryName = "Audience 1",
+				locator1 = "AssetCategorization#CATEGORY",
+				value1 = "Audience 1");
+
+			AssertTextEquals(
+				key_categoryName = "Stage 1",
+				locator1 = "AssetCategorization#CATEGORY",
+				value1 = "Stage 1");
+		}
+
+		task ("Go to Blogs Admin and click to edit the second blog") {
+			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name-2");
+
+			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title 2");
+		}
+
+		task ("Add categories from Audience and Stage Vocabularies") {
+			Blogs.expandPanel(panel = "Categorization");
+
+			Click(
+				key_fieldName = "Audience",
+				locator1 = "Button#SELECT_BUTTON");
+
+			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
+
+			Click(
+				key_fieldName = "Stage",
+				locator1 = "Button#SELECT_BUTTON");
+
+			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
+
+			AssertTextEquals(
+				key_categoryName = "Audience 1",
+				locator1 = "AssetCategorization#CATEGORY",
+				value1 = "Audience 1");
+
+			AssertTextEquals(
+				key_categoryName = "Stage 1",
+				locator1 = "AssetCategorization#CATEGORY",
+				value1 = "Stage 1");
+		}
+	}
+
+	@description = "LPS-134875 Visibility is not editable for vocabularies and categories can only be moved to vocabularies with the same visibility"
+	@priority = 4
+	test CannotChangeVisibilityOfVocabularyOrCategory {
+		task ("Add a vocabulary") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Vocabulary.addCP(vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Assert if vocabulary visibility can not be changed") {
+			Vocabulary.assertVocabularyVisibilityNonEditable(
+				visibilityType = "Public",
+				vocabularyName = "Vocabulary Name");
+		}
+
+		task ("Create categories in public and internal vocabularies") {
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Public Category",
 				vocabularyName = "Topic");
+
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Internal Category",
+				vocabularyName = "Audience");
+		}
+
+		task ("Try to move category between vocabularies with differente visibility") {
+			Category.openCategoriesAdmin(siteURLKey = "global");
+
+			Category.assertMoveDifferentVisibilityVocabulary(
+				categoryName = "Public Category",
+				vocabularyName = "Topic",
+				vocabularyName2 = "Audience");
+
+			Category.assertMoveDifferentVisibilityVocabulary(
+				categoryName = "Internal Category",
+				vocabularyName = "Audience",
+				vocabularyName2 = "Topic");
 		}
 	}
 
@@ -333,6 +420,111 @@ definition {
 
 	@description = ""
 	@priority = 4
+	test CheckDMVocabularyAssetSubtypeBasicDocument {
+		task ("Create a vocabulary with Associated Asset Type of Document > Basic Document") {
+			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
+
+			Vocabulary.addWithAssociatedAssetTypeCP(
+				assetSubtype = "Basic Document",
+				assetType = "Document",
+				vocabularyName = "Basic Document Vocabulary");
+		}
+
+		task ("Check avaliable vocabularies to Basic Document") {
+			DMNavigator.openToAddEntry(
+				groupName = "Test Site Name",
+				siteURLKey = "test-site-name");
+
+			Panel.expandPanel(panel = "Categorization");
+
+			for (var vocabulary : list "Basic Document Vocabulary,Topic,Audience,Stage") {
+				AssertVisible(
+					key_vocabularyName = ${vocabulary},
+					locator1 = "AssetCategorization#CATEGORIES_FIELD");
+			}
+		}
+
+		task ("Check avaliable vocabularies to External Video Shortcut") {
+			DMNavigator.openToAddEntry(
+				documentTypeName = "External Video Shortcut",
+				groupName = "Test Site Name",
+				siteURLKey = "test-site-name");
+
+			Panel.expandPanel(panel = "Categorization");
+
+			AssertElementNotPresent(
+				key_vocabularyName = "Basic Document Vocabulary",
+				locator1 = "AssetCategorization#CATEGORIES_FIELD");
+
+			for (var vocabulary : list "Topic,Audience,Stage") {
+				AssertVisible(
+					key_vocabularyName = ${vocabulary},
+					locator1 = "AssetCategorization#CATEGORIES_FIELD");
+			}
+		}
+
+		task ("Check avaliable vocabularies to Google Drive Shortcut") {
+			DMNavigator.openToAddEntry(
+				documentTypeName = "Google Drive Shortcut",
+				groupName = "Test Site Name",
+				siteURLKey = "test-site-name");
+
+			Panel.expandPanel(panel = "Categorization");
+
+			AssertElementNotPresent(
+				key_vocabularyName = "Basic Document Vocabulary",
+				locator1 = "AssetCategorization#CATEGORIES_FIELD");
+
+			for (var vocabulary : list "Topic,Audience,Stage") {
+				AssertVisible(
+					key_vocabularyName = ${vocabulary},
+					locator1 = "AssetCategorization#CATEGORIES_FIELD");
+			}
+		}
+	}
+
+	@description = "LPS-134682 If categories are marked as internal, won't show in Categories Navigation widget."
+	@priority = 3
+	test CheckInternalCategoriesWidgetAssetsCategorization {
+		task ("Add a global category to each Topic (public) and Audience (private)") {
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Topic Category",
+				vocabularyName = "Topic");
+
+			JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Audience Category",
+				vocabularyName = "Audience");
+		}
+
+		task ("Add a Categories Navigation to page") {
+			JSONLayout.addPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Asset Publisher Page");
+
+			JSONLayout.addWidgetToPublicLayout(
+				groupName = "Test Site Name",
+				layoutName = "Asset Publisher Page",
+				widgetName = "Category Filter");
+		}
+
+		task ("Check if only Topic Categories are shown") {
+			Navigator.gotoSitePage(
+				pageName = "Asset Publisher Page",
+				siteName = "Test Site Name");
+
+			CategoriesNavigationPortlet.selectCategoryPG(categoryName = "Topic Category");
+
+			AssertElementNotPresent(
+				key_nodeName = "Audience Category",
+				locator1 = "Treeview#NODE_UNSELECTED",
+				value1 = "Audience Category");
+		}
+	}
+
+	@description = ""
+	@priority = 4
 	test FilterBlogByCategoryInCollection {
 		property portal.acceptance = "true";
 
@@ -424,314 +616,6 @@ definition {
 		}
 	}
 
-	@description = ""
-	@priority = 5
-	@uitest
-	test AddGlobalCategoriesToBlogsInSeveralSites {
-		property portal.acceptance = "true";
-
-		task ("Add the second site") {
-			HeadlessSite.addSite(siteName = "Test Site Name 2");
-		}
-
-		task ("Add a global category") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 1",
-				vocabularyName = "Audience");
-
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 1",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create two blogs") {
-			HeadlessBlog.addBlogEntry(
-				content = "Blogs Entry Content 1",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title 1");
-
-			HeadlessBlog.addBlogEntry(
-				content = "Blogs Entry Content 2",
-				groupName = "Test Site Name 2",
-				title = "Blogs Entry Title 2");
-		}
-
-		task ("Go to Blogs Admin and click to edit the first blog") {
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
-
-			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title 1");
-		}
-
-		task ("Add categories from Audience and Stage Vocabularies") {
-			Blogs.expandPanel(panel = "Categorization");
-
-			AssertElementPresent(
-				key_categoryName = "Audience",
-				locator1 = "Categories#VOCABULARY_CATEGORY");
-
-			AssertElementPresent(
-				key_categoryName = "Stage",
-				locator1 = "Categories#VOCABULARY_CATEGORY");
-
-			Click(
-				key_fieldName = "Audience",
-				locator1 = "Button#SELECT_BUTTON");
-
-			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
-
-			Click(
-				key_fieldName = "Stage",
-				locator1 = "Button#SELECT_BUTTON");
-
-			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
-
-			AssertTextEquals(
-				key_categoryName = "Audience 1",
-				locator1 = "AssetCategorization#CATEGORY",
-				value1 = "Audience 1");
-
-			AssertTextEquals(
-				key_categoryName = "Stage 1",
-				locator1 = "AssetCategorization#CATEGORY",
-				value1 = "Stage 1");
-		}
-
-		task ("Go to Blogs Admin and click to edit the second blog") {
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name-2");
-
-			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title 2");
-		}
-
-		task ("Add categories from Audience and Stage Vocabularies") {
-			Blogs.expandPanel(panel = "Categorization");
-
-			Click(
-				key_fieldName = "Audience",
-				locator1 = "Button#SELECT_BUTTON");
-
-			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
-
-			Click(
-				key_fieldName = "Stage",
-				locator1 = "Button#SELECT_BUTTON");
-
-			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
-
-			AssertTextEquals(
-				key_categoryName = "Audience 1",
-				locator1 = "AssetCategorization#CATEGORY",
-				value1 = "Audience 1");
-
-			AssertTextEquals(
-				key_categoryName = "Stage 1",
-				locator1 = "AssetCategorization#CATEGORY",
-				value1 = "Stage 1");
-		}
-	}
-
-	@description = ""
-	@priority = 4
-	test CheckDMVocabularyAssetSubtypeBasicDocument {
-		task ("Create a vocabulary with Associated Asset Type of Document > Basic Document") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addWithAssociatedAssetTypeCP(
-				assetSubtype = "Basic Document",
-				assetType = "Document",
-				vocabularyName = "Basic Document Vocabulary");
-		}
-
-		task ("Check avaliable vocabularies to Basic Document") {
-			DMNavigator.openToAddEntry(
-				groupName = "Test Site Name",
-				siteURLKey = "test-site-name");
-
-			Panel.expandPanel(panel = "Categorization");
-
-			for (var vocabulary : list "Basic Document Vocabulary,Topic,Audience,Stage") {
-				AssertVisible(
-					key_vocabularyName = ${vocabulary},
-					locator1 = "AssetCategorization#CATEGORIES_FIELD");
-			}
-		}
-
-		task ("Check avaliable vocabularies to External Video Shortcut") {
-			DMNavigator.openToAddEntry(
-				documentTypeName = "External Video Shortcut",
-				groupName = "Test Site Name",
-				siteURLKey = "test-site-name");
-
-			Panel.expandPanel(panel = "Categorization");
-
-			AssertElementNotPresent(
-				key_vocabularyName = "Basic Document Vocabulary",
-				locator1 = "AssetCategorization#CATEGORIES_FIELD");
-
-			for (var vocabulary : list "Topic,Audience,Stage") {
-				AssertVisible(
-					key_vocabularyName = ${vocabulary},
-					locator1 = "AssetCategorization#CATEGORIES_FIELD");
-			}
-		}
-
-		task ("Check avaliable vocabularies to Google Drive Shortcut") {
-			DMNavigator.openToAddEntry(
-				documentTypeName = "Google Drive Shortcut",
-				groupName = "Test Site Name",
-				siteURLKey = "test-site-name");
-
-			Panel.expandPanel(panel = "Categorization");
-
-			AssertElementNotPresent(
-				key_vocabularyName = "Basic Document Vocabulary",
-				locator1 = "AssetCategorization#CATEGORIES_FIELD");
-
-			for (var vocabulary : list "Topic,Audience,Stage") {
-				AssertVisible(
-					key_vocabularyName = ${vocabulary},
-					locator1 = "AssetCategorization#CATEGORIES_FIELD");
-			}
-		}
-	}
-
-	@description = "LPS-134875 Internal categories are not shown in facets and result in a public context."
-	@priority = 5
-	test ViewInternalAndPublicCategoriesInSearch {
-		property portal.acceptance = "true";
-
-		task ("Create internal categories") {
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Internal Category",
-				vocabularyName = "Audience");
-		}
-
-		task ("Add WC with internal category") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "Web Content Content",
-				groupName = "Guest",
-				title = "Web Content Title");
-		}
-
-		task ("Search for Web Content and Assert") {
-			Navigator.openURL();
-
-			SearchPage.searchEmbedded(searchTerm = "Internal Category");
-
-			SearchResults.viewNoSearchResults(searchTerm = "Internal Category");
-		}
-
-		task ("Create public categories") {
-			var publicCategoryId = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Public Category",
-				vocabularyName = "Topic");
-		}
-
-		task ("Add WC with public category") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${publicCategoryId},
-				content = "Web Content Content With Category",
-				groupName = "Guest",
-				title = "Public Web Content Title");
-		}
-
-		task ("Search for Web Content with public category and Assert") {
-			Navigator.openURL();
-
-			SearchPage.searchEmbedded(searchTerm = "Internal Category");
-
-			SearchResults.viewSearchResults(
-				searchAssetTitle = "Public Web Content Title",
-				searchAssetType = "Web Content Article");
-		}
-	}
-
-	@description = "LPS-134682 If categories are marked as internal, won't show in Categories Navigation widget."
-	@priority = 3
-	test CheckInternalCategoriesWidgetAssetsCategorization {
-		task ("Add a global category to each Topic (public) and Audience (private)") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Topic Category",
-				vocabularyName = "Topic");
-
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience Category",
-				vocabularyName = "Audience");
-		}
-
-		task ("Add a Categories Navigation to page") {
-			JSONLayout.addPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Asset Publisher Page");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Test Site Name",
-				layoutName = "Asset Publisher Page",
-				widgetName = "Category Filter");
-		}
-
-		task ("Check if only Topic Categories are shown") {
-			Navigator.gotoSitePage(
-				pageName = "Asset Publisher Page",
-				siteName = "Test Site Name");
-
-			CategoriesNavigationPortlet.selectCategoryPG(categoryName = "Topic Category");
-
-			AssertElementNotPresent(
-				key_nodeName = "Audience Category",
-				locator1 = "Treeview#NODE_UNSELECTED",
-				value1 = "Audience Category");
-		}
-	}
-
-	@description = "LPS-134875 Visibility is not editable for vocabularies and categories can only be moved to vocabularies with the same visibility"
-	@priority = 4
-	test CannotChangeVisibilityOfVocabularyOrCategory {
-		task ("Add a vocabulary") {
-			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
-
-			Vocabulary.addCP(vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Assert if vocabulary visibility can not be changed") {
-			Vocabulary.assertVocabularyVisibilityNonEditable(
-				visibilityType = "Public",
-				vocabularyName = "Vocabulary Name");
-		}
-
-		task ("Create categories in public and internal vocabularies") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Public Category",
-				vocabularyName = "Topic");
-
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Internal Category",
-				vocabularyName = "Audience");
-		}
-
-		task ("Try to move category between vocabularies with differente visibility") {
-			Category.openCategoriesAdmin(siteURLKey = "global");
-
-			Category.assertMoveDifferentVisibilityVocabulary(
-				categoryName = "Public Category",
-				vocabularyName = "Topic",
-				vocabularyName2 = "Audience");
-
-			Category.assertMoveDifferentVisibilityVocabulary(
-				categoryName = "Internal Category",
-				vocabularyName = "Audience",
-				vocabularyName2 = "Topic");
-		}
-	}
-
 	@description = "LPS-117015 When 'Categorization' in web content editor, vocabularies management application or content dashboard when empty graph, the message Learn how with a link to the documentation"
 	@priority = 3
 	test OpenLiferayLearnLinks {
@@ -819,6 +703,122 @@ definition {
 				categoryName = "Category Name Edit",
 				groupName = "Global",
 				vocabularyName = "Topic");
+		}
+	}
+
+	@description = "When Edit the Audience or Stage, default values are For internal use only ON , Allow user to select multiple categories ON, will be associated with web content, won't be required"
+	@priority = 5
+	@uitest
+	test ViewGlobalVocabulariesAndAddCategory {
+		property portal.acceptance = "true";
+
+		task ("Go to Global Vocabularies") {
+			Category.openCategoriesAdmin(siteURLKey = "global");
+		}
+
+		task ("Assert if Vocabulary is for internal use only") {
+			AssertElementPresent(
+				key_vocabularyName = "Audience",
+				locator1 = "Categories#VOCABULARY_ICON_INTERNAL_USE");
+
+			AssertElementPresent(
+				key_vocabularyName = "Stage",
+				locator1 = "Categories#VOCABULARY_ICON_INTERNAL_USE");
+		}
+
+		task ("Assert if Vocabulary allow multiple categories") {
+			Vocabulary.viewVocabularyAllowMultipleCAtegories(
+				label = "Allow Multiple Categories",
+				vocabularyName = "Audience");
+
+			Vocabulary.viewVocabularyAllowMultipleCAtegories(
+				label = "Allow Multiple Categories",
+				vocabularyName = "Stage");
+		}
+
+		task ("Assert if Asset Type is not requried") {
+			Vocabulary.viewVocabularyAssociatedAssetTypesRequirement(
+				label = "Required",
+				vocabularyName = "Audience");
+
+			Vocabulary.viewVocabularyAssociatedAssetTypesRequirement(
+				label = "Required",
+				vocabularyName = "Stage");
+		}
+
+		task ("Add a global category via Save And Add button") {
+			Category.openCategoriesAdmin(siteURLKey = "global");
+
+			Category.addCategoryWithSaveAndAddButton(
+				categoryName = "Category Name",
+				vocabularyName = "Topic");
+		}
+
+		task ("View the global category is created successfully") {
+			Category.viewCP(
+				categoryName = "Category Name",
+				vocabularyName = "Topic");
+		}
+
+		task ("Delete the global category") {
+			JSONCategory.deleteCategory(
+				categoryName = "Category Name",
+				groupName = "Global",
+				vocabularyName = "Topic");
+		}
+	}
+
+	@description = "LPS-134875 Internal categories are not shown in facets and result in a public context."
+	@priority = 5
+	test ViewInternalAndPublicCategoriesInSearch {
+		property portal.acceptance = "true";
+
+		task ("Create internal categories") {
+			var categoryId = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Internal Category",
+				vocabularyName = "Audience");
+		}
+
+		task ("Add WC with internal category") {
+			JSONWebcontent.addWebContent(
+				assetCategoryIds = ${categoryId},
+				content = "Web Content Content",
+				groupName = "Guest",
+				title = "Web Content Title");
+		}
+
+		task ("Search for Web Content and Assert") {
+			Navigator.openURL();
+
+			SearchPage.searchEmbedded(searchTerm = "Internal Category");
+
+			SearchResults.viewNoSearchResults(searchTerm = "Internal Category");
+		}
+
+		task ("Create public categories") {
+			var publicCategoryId = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Public Category",
+				vocabularyName = "Topic");
+		}
+
+		task ("Add WC with public category") {
+			JSONWebcontent.addWebContent(
+				assetCategoryIds = ${publicCategoryId},
+				content = "Web Content Content With Category",
+				groupName = "Guest",
+				title = "Public Web Content Title");
+		}
+
+		task ("Search for Web Content with public category and Assert") {
+			Navigator.openURL();
+
+			SearchPage.searchEmbedded(searchTerm = "Internal Category");
+
+			SearchResults.viewSearchResults(
+				searchAssetTitle = "Public Web Content Title",
+				searchAssetType = "Web Content Article");
 		}
 	}
 
