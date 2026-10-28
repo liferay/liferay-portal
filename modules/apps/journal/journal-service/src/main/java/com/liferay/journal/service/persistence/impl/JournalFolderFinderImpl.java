@@ -5,6 +5,7 @@
 
 package com.liferay.journal.service.persistence.impl;
 
+import com.liferay.journal.internal.util.JournalArticleViewableStatusUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.model.impl.JournalArticleImpl;
@@ -407,6 +408,9 @@ public class JournalFolderFinderImpl
 
 		String sql = _customSQL.get(
 			getClass(), id, queryDefinition, JournalArticleImpl.TABLE_NAME);
+
+		sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+			groupId, inlineSQLHelper, sql);
 
 		if (inlineSQLHelper) {
 			sql = InlineSQLHelperUtil.replacePermissionCheck(

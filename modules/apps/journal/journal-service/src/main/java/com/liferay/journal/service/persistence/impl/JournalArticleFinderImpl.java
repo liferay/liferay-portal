@@ -5,6 +5,7 @@
 
 package com.liferay.journal.service.persistence.impl;
 
+import com.liferay.journal.internal.util.JournalArticleViewableStatusUtil;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.impl.JournalArticleImpl;
 import com.liferay.journal.service.persistence.JournalArticleFinder;
@@ -172,7 +173,8 @@ public class JournalArticleFinderImpl
 
 			sql = replaceStatusJoin(sql, groupId, queryDefinition);
 
-			sql = _replaceViewableStatus(queryDefinition, sql);
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
 
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
@@ -284,6 +286,9 @@ public class JournalArticleFinderImpl
 
 			sql = replaceStatusJoin(sql, groupId, queryDefinition);
 
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
+
 			if (folderIds.isEmpty()) {
 				sql = StringUtil.removeSubstring(sql, "([$FOLDER_ID$]) AND");
 			}
@@ -351,6 +356,9 @@ public class JournalArticleFinderImpl
 				"JournalArticle");
 
 			sql = replaceStatusJoin(sql, groupId, queryDefinition);
+
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
 
 			if (groupId <= 0) {
 				sql = StringUtil.removeSubstring(
@@ -490,7 +498,8 @@ public class JournalArticleFinderImpl
 
 			sql = replaceStatusJoin(sql, groupId, queryDefinition);
 
-			sql = _replaceViewableStatus(queryDefinition, sql);
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
 
 			OrderByComparator<JournalArticle> orderByComparator =
 				queryDefinition.getOrderByComparator();
@@ -556,6 +565,9 @@ public class JournalArticleFinderImpl
 				"JournalArticle");
 
 			sql = replaceStatusJoin(sql, groupId, queryDefinition);
+
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
 
 			OrderByComparator<JournalArticle> orderByComparator =
 				queryDefinition.getOrderByComparator();
@@ -644,6 +656,9 @@ public class JournalArticleFinderImpl
 				"JournalArticle");
 
 			sql = replaceStatusJoin(sql, groupId, queryDefinition);
+
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
 
 			OrderByComparator<JournalArticle> orderByComparator =
 				queryDefinition.getOrderByComparator();
@@ -782,13 +797,6 @@ public class JournalArticleFinderImpl
 		}
 	}
 
-	private String _getViewableStatusSQL(long ownerUserId, String tableName) {
-		return StringBundler.concat(
-			"((", tableName, ".status NOT IN (", WorkflowConstants.STATUS_DRAFT,
-			", ", WorkflowConstants.STATUS_SCHEDULED, ")) OR (", tableName,
-			".userId = ", ownerUserId, "))");
-	}
-
 	private boolean _isOrderByTitle(
 		OrderByComparator<JournalArticle> orderByComparator) {
 
@@ -807,29 +815,6 @@ public class JournalArticleFinderImpl
 		}
 
 		return false;
-	}
-
-	private String _replaceViewableStatus(
-		QueryDefinition<JournalArticle> queryDefinition, String sql) {
-
-		if (queryDefinition.getOwnerUserId() <= 0) {
-			return StringUtil.replace(
-				sql,
-				new String[] {
-					"[$VIEWABLE_STATUS$] AND", "[$VIEWABLE_STATUS_JOIN$] AND"
-				},
-				new String[] {StringPool.BLANK, StringPool.BLANK});
-		}
-
-		return StringUtil.replace(
-			sql,
-			new String[] {"[$VIEWABLE_STATUS$]", "[$VIEWABLE_STATUS_JOIN$]"},
-			new String[] {
-				_getViewableStatusSQL(
-					queryDefinition.getOwnerUserId(), "JournalArticle"),
-				_getViewableStatusSQL(
-					queryDefinition.getOwnerUserId(), "tempJournalArticle")
-			});
 	}
 
 	private static final String _TITLE_FIELD =

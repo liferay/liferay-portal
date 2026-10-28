@@ -48,6 +48,7 @@
 			LEFT JOIN
 				JournalArticle tempJournalArticle ON
 					[$STATUS_JOIN$] AND
+					[$VIEWABLE_STATUS_JOIN$] AND
 					(JournalArticle.groupId = tempJournalArticle.groupId) AND
 					(JournalArticle.articleId = tempJournalArticle.articleId) AND
 					(JournalArticle.version < tempJournalArticle.version)
@@ -56,6 +57,7 @@
 				(JournalArticle.classNameId = ?) AND
 				([$FOLDER_ID$]) AND
 				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$STATUS$]) AND
+				[$VIEWABLE_STATUS$] AND
 				(tempJournalArticle.id_ IS NULL)
 		]]>
 	</sql>
@@ -68,6 +70,7 @@
 			LEFT JOIN
 				JournalArticle tempJournalArticle ON
 					[$STATUS_JOIN$] AND
+					[$VIEWABLE_STATUS_JOIN$] AND
 					(JournalArticle.groupId = tempJournalArticle.groupId) AND
 					(JournalArticle.articleId = tempJournalArticle.articleId) AND
 					(JournalArticle.version < tempJournalArticle.version)
@@ -77,6 +80,7 @@
 				([$FOLDER_ID$]) AND
 				(JournalArticle.DDMStructureId = ?) AND
 				([$STATUS$]) AND
+				[$VIEWABLE_STATUS$] AND
 				(tempJournalArticle.id_ IS NULL)
 		]]>
 	</sql>
@@ -141,6 +145,7 @@
 			LEFT JOIN
 				JournalArticle tempJournalArticle ON
 					[$STATUS_JOIN$] AND
+					[$VIEWABLE_STATUS_JOIN$] AND
 					(JournalArticle.groupId = tempJournalArticle.groupId) AND
 					(JournalArticle.articleId = tempJournalArticle.articleId) AND
 					(JournalArticle.version < tempJournalArticle.version)
@@ -154,6 +159,7 @@
 				(JournalArticle.classNameId = ?) AND
 				([$FOLDER_ID$]) AND
 				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] [$STATUS$]) AND
+				[$VIEWABLE_STATUS$] AND
 				(tempJournalArticle.id_ IS NULL)
 			ORDER BY
 				JournalArticle.id_ ASC
@@ -168,6 +174,7 @@
 			LEFT JOIN
 				JournalArticle tempJournalArticle ON
 					[$STATUS_JOIN$] AND
+					[$VIEWABLE_STATUS_JOIN$] AND
 					(JournalArticle.groupId = tempJournalArticle.groupId) AND
 					(JournalArticle.articleId = tempJournalArticle.articleId) AND
 					(JournalArticle.version < tempJournalArticle.version)
@@ -182,6 +189,7 @@
 				([$FOLDER_ID$]) AND
 				(JournalArticle.DDMStructureId = ?) AND
 				([$STATUS$]) AND
+				[$VIEWABLE_STATUS$] AND
 				(tempJournalArticle.id_ IS NULL)
 			ORDER BY
 				JournalArticle.id_ ASC
@@ -196,6 +204,7 @@
 			WHERE
 				(JournalArticle.groupId = ?) AND
 				(JournalArticle.classNameId = 0) AND
+				[$VIEWABLE_STATUS$] AND
 				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] ([$STATUS$]))
 				[$ARTICLE_FOLDER_ID$]
 				[$DDM_STRUCTURE_ID$]
@@ -227,6 +236,7 @@
 					WHERE
 						(JournalArticle.groupId = ?) AND
 						(JournalArticle.classNameId = 0) AND
+						[$VIEWABLE_STATUS$] AND
 						([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] ([$STATUS$]))
 						[$ARTICLE_FOLDER_ID$]
 						[$DDM_STRUCTURE_ID$]
@@ -253,6 +263,7 @@
 					WHERE
 						(JournalArticle.groupId = ?) AND
 						(JournalArticle.classNameId = 0) AND
+						[$VIEWABLE_STATUS$] AND
 						([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] ([$STATUS$]))
 						[$ARTICLE_FOLDER_ID$]
 						[$DDM_STRUCTURE_ID$]
