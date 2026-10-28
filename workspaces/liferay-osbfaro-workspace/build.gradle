@@ -129,9 +129,3 @@ project(":modules:osb-faro-contacts-demo") {
 		enabled = (faroEnvironmentName == "local")
 	}
 }
-
-project(":modules:osb-faro-dependencies") {
-	tasks.all {
-		enabled = false
-	}
-}
