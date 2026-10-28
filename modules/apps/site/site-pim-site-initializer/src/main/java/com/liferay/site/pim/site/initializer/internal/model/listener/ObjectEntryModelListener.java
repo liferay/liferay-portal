@@ -7,7 +7,9 @@ package com.liferay.site.pim.site.initializer.internal.model.listener;
 
 import com.liferay.object.constants.ObjectDefinitionConstants;
 import com.liferay.object.constants.ObjectEntryFolderConstants;
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.entry.util.ObjectEntryThreadLocal;
+import com.liferay.object.exception.ObjectEntryValuesException;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
@@ -18,6 +20,8 @@ import com.liferay.object.service.ObjectEntryFolderLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.petra.sql.dsl.expression.Predicate;
+import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -27,9 +31,12 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.site.pim.site.initializer.connector.PIMConnector;
+import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
@@ -44,6 +51,7 @@ import com.liferay.site.pim.site.initializer.link.PIMLinkTypeRegistry;
 
 import java.io.Serializable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -185,6 +193,37 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
+	private PIMConnectorChannelField _fetchPIMConnectorChannelField(
+		String channelFieldName, long pimConnectorObjectEntryId) {
+
+		ObjectEntry pimConnectorObjectEntry =
+			_objectEntryLocalService.fetchObjectEntry(
+				pimConnectorObjectEntryId);
+
+		if (pimConnectorObjectEntry == null) {
+			return null;
+		}
+
+		PIMConnector pimConnector = _pimConnectorRegistry.getPIMConnector(
+			MapUtil.getString(pimConnectorObjectEntry.getValues(), "key"));
+
+		if (pimConnector == null) {
+			return null;
+		}
+
+		for (PIMConnectorChannelField pimConnectorChannelField :
+				pimConnector.getPIMConnectorChannelFields()) {
+
+			if (Objects.equals(
+					pimConnectorChannelField.getName(), channelFieldName)) {
+
+				return pimConnectorChannelField;
+			}
+		}
+
+		return null;
+	}
+
 	private ServiceContext _getServiceContext(long companyId, long groupId) {
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -193,6 +232,17 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		serviceContext.setUserId(PrincipalThreadLocal.getUserId());
 
 		return serviceContext;
+	}
+
+	private boolean _isPIMConnectorFieldMappingRuleObjectEntry(
+		ObjectEntry objectEntry) {
+
+		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
+
+		return Objects.equals(
+			objectDefinition.getExternalReferenceCode(),
+			PIMObjectDefinitionConstants.
+				EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING_RULE);
 	}
 
 	private boolean _isPIMConnectorObjectEntry(ObjectEntry objectEntry) {
@@ -320,8 +370,11 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 			return;
 		}
 
-		if (_isPIMLinkObjectEntry(objectEntry)) {
-			_validate(objectEntry);
+		if (_isPIMConnectorFieldMappingRuleObjectEntry(objectEntry)) {
+			_validatePIMConnectorFieldMappingRuleObjectEntry(null, objectEntry);
+		}
+		else if (_isPIMLinkObjectEntry(objectEntry)) {
+			_validatePIMLinkObjectEntry(objectEntry);
 		}
 		else if (_isPIMProductObjectEntry(objectEntry)) {
 			_setObjectEntryFolderId(objectEntry);
@@ -334,19 +387,17 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				objectEntry.getCompanyId(), "LPD-96666") ||
-			(objectEntry.getObjectDefinition() == null) ||
-			!_isPIMConnectorObjectEntry(objectEntry)) {
+			(objectEntry.getObjectDefinition() == null)) {
 
 			return;
 		}
 
-		if (!Objects.equals(
-				MapUtil.getString(originalObjectEntry.getValues(), "key"),
-				MapUtil.getString(objectEntry.getValues(), "key"))) {
-
-			throw new PIMConnectorException(
-				"the-connector-type-cannot-be-changed-after-the-connector-is-" +
-					"created");
+		if (_isPIMConnectorFieldMappingRuleObjectEntry(objectEntry)) {
+			_validatePIMConnectorFieldMappingRuleObjectEntry(
+				originalObjectEntry, objectEntry);
+		}
+		else if (_isPIMConnectorObjectEntry(objectEntry)) {
+			_validatePIMConnectorObjectEntry(originalObjectEntry, objectEntry);
 		}
 	}
 
@@ -430,7 +481,106 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
-	private void _validate(ObjectEntry objectEntry) throws PortalException {
+	private void _validatePIMConnectorFieldMappingRuleObjectEntry(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws PortalException {
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		long pimConnectorObjectEntryId = MapUtil.getLong(
+			values, "r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId");
+
+		if ((originalObjectEntry != null) &&
+			(pimConnectorObjectEntryId != MapUtil.getLong(
+				originalObjectEntry.getValues(),
+				"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId"))) {
+
+			throw new ObjectEntryValuesException.InvalidObjectField(
+				Collections.singletonList(
+					"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId"),
+				"\"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId\" " +
+					"is invalid",
+				"x-is-invalid");
+		}
+
+		String channelFieldName = MapUtil.getString(values, "channelFieldName");
+
+		PIMConnectorChannelField pimConnectorChannelField =
+			_fetchPIMConnectorChannelField(
+				channelFieldName, pimConnectorObjectEntryId);
+
+		if ((pimConnectorChannelField == null) ||
+			!Objects.equals(
+				pimConnectorChannelField.getType(),
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			throw new ObjectEntryValuesException.InvalidObjectField(
+				Collections.singletonList("channelFieldName"),
+				"\"channelFieldName\" is invalid", "x-is-invalid");
+		}
+
+		if (!ArrayUtil.contains(
+				new String[] {StringPool.BLANK, "lower", "upper"},
+				MapUtil.getString(values, "textCase"))) {
+
+			throw new ObjectEntryValuesException.InvalidObjectField(
+				Collections.singletonList("textCase"),
+				"\"textCase\" is invalid", "x-is-invalid");
+		}
+
+		if (!ArrayUtil.contains(
+				new int[] {0, 40, 80, 200, 1000},
+				MapUtil.getInteger(values, "truncateLength"))) {
+
+			throw new ObjectEntryValuesException.InvalidObjectField(
+				Collections.singletonList("truncateLength"),
+				"\"truncateLength\" is invalid", "x-is-invalid");
+		}
+
+		if (MapUtil.getBoolean(values, "useFirstNonemptySource") &&
+			pimConnectorChannelField.isMultiple()) {
+
+			throw new ObjectEntryValuesException.InvalidObjectField(
+				Collections.singletonList("useFirstNonemptySource"),
+				"\"useFirstNonemptySource\" is invalid", "x-is-invalid");
+		}
+
+		int count = _objectEntryLocalService.getValuesListCount(
+			new Long[] {objectEntry.getGroupId()}, objectEntry.getCompanyId(),
+			objectEntry.getUserId(), objectEntry.getObjectDefinitionId(),
+			_filterFactory.create(
+				StringBundler.concat(
+					"channelFieldName eq '", channelFieldName, "' and id ne '",
+					objectEntry.getObjectEntryId(),
+					"' and r_pimConnectorToPIMFieldMappingRules_",
+					"l_pimConnectorId eq '", pimConnectorObjectEntryId, "'"),
+				objectEntry.getObjectDefinition()),
+			false, null);
+
+		if (count > 0) {
+			throw new ObjectEntryValuesException.InvalidObjectField(
+				Collections.singletonList("channelFieldName"),
+				"\"channelFieldName\" is invalid", "x-is-invalid");
+		}
+	}
+
+	private void _validatePIMConnectorObjectEntry(
+			ObjectEntry originalObjectEntry, ObjectEntry objectEntry)
+		throws PortalException {
+
+		if (!Objects.equals(
+				MapUtil.getString(originalObjectEntry.getValues(), "key"),
+				MapUtil.getString(objectEntry.getValues(), "key"))) {
+
+			throw new PIMConnectorException(
+				"the-connector-type-cannot-be-changed-after-the-connector-is-" +
+					"created");
+		}
+	}
+
+	private void _validatePIMLinkObjectEntry(ObjectEntry objectEntry)
+		throws PortalException {
+
 		Map<String, Serializable> values = objectEntry.getValues();
 
 		if (Validator.isNull(

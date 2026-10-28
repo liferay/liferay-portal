@@ -19,6 +19,10 @@ public class PIMObjectDefinitionConstants {
 	public static final String EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING =
 		"L_PIM_CONNECTOR_FIELD_MAPPING";
 
+	public static final String
+		EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING_RULE =
+			"L_PIM_CONNECTOR_FIELD_MAPPING_RULE";
+
 	public static final String EXTERNAL_REFERENCE_CODE_LINK = "L_PIM_LINK";
 
 }
