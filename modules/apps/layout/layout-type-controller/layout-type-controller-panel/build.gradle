@@ -12,6 +12,5 @@ dependencies {
 	compileOnly project(":apps:layout:layout-type-controller:layout-type-controller-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

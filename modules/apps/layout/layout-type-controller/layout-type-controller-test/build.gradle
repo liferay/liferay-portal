@@ -2,13 +2,10 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
-	testIntegrationImplementation project(":apps:asset:asset-list-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
 	testIntegrationImplementation project(":apps:document-library:document-library-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
-	testIntegrationImplementation project(":apps:friendly-url:friendly-url-api")
-	testIntegrationImplementation project(":apps:friendly-url:friendly-url-test-util")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")
@@ -21,6 +18,5 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:product-navigation:product-navigation-control-menu-api")
 	testIntegrationImplementation project(":apps:segments:segments-api")
-	testIntegrationImplementation project(":apps:segments:segments-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
