@@ -2164,8 +2164,7 @@ public class AssetListAssetEntryProviderTest {
 		).put(
 			"filters",
 			String.valueOf(
-				AssetListTestUtil.getFiltersJSONArray(
-					filterJSONObjects))
+				AssetListTestUtil.getFiltersJSONArray(filterJSONObjects))
 		).put(
 			"groupIds", String.valueOf(_group.getGroupId())
 		).put(
