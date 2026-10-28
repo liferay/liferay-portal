@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.vulcan.fields.NestedField;
 import com.liferay.portal.vulcan.fields.NestedFieldId;
@@ -86,7 +87,7 @@ public class FriendlyUrlHistoryResourceImpl
 				sitePageExternalReferenceCode)
 		throws Exception {
 
-		Layout layout = _layoutLocalService.getLayoutByExternalReferenceCode(
+		Layout layout = _layoutService.getLayoutByExternalReferenceCode(
 			sitePageExternalReferenceCode,
 			GroupUtil.getGroupId(
 				true, contextCompany.getCompanyId(),
@@ -195,6 +196,9 @@ public class FriendlyUrlHistoryResourceImpl
 
 	@Reference
 	private LayoutPageTemplateEntryService _layoutPageTemplateEntryService;
+
+	@Reference
+	private LayoutService _layoutService;
 
 	@Reference
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
