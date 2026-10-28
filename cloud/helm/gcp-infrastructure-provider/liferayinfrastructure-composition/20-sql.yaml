@@ -1,6 +1,5 @@
 {{- $database := $xr.spec.database }}
 {{- $databaseInstanceNameFormat := printf "%s-db-instance-%%s" $xr.metadata.name }}
-{{- $databasePort := "5432" }}
 {{- $instanceType := $database.instanceType | default "db-custom-1-3840" }}
 
 {{- range $dataPlane := $dataPlanes }}
@@ -148,6 +147,7 @@ spec:
     {{- end }}
 {{- end }}
 {{- if and $isDatabaseInstanceReady (not (and (eq $restorePhase "provisioning") (eq $dataPlane $targetActiveDataPlane))) }}
+{{- $databasePort := "5432" }}
 {{- $jobName := printf "%s-db-grant-%s" $xr.metadata.name $dataPlane }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
@@ -332,4 +332,34 @@ spec:
         resourceRef:
             name: {{ $databaseInstanceName }}
 {{- end }}
+{{- end }}
+{{- $activeDatabaseConnectionName := dig (printf "database-primary-%s" $activeDataPlane) "resource" "status" "atProvider" "connectionName" "" $observedResources }}
+{{- $isDatabaseBootstrapped := false }}
+{{- range $condition := dig (printf "liferay-db-grant-job-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isDatabaseBootstrapped = true }}
+    {{- end }}
+{{- end }}
+{{- $isDatabaseReady := and (ne $activeDatabaseConnectionName "") $isDatabaseBootstrapped }}
+{{- if $isDatabaseReady }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $baseName }}-database-server-details-configmap
+        gotemplating.fn.crossplane.io/composition-resource-name: database-server-details-configmap
+    name: {{ $baseName }}-database-server-details-configmap
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                DATABASE_INSTANCE_NAME: {{ $activeDatabaseConnectionName | quote }}
+                DATABASE_USERNAME: {{ $databaseIamUser | quote }}
+            kind: ConfigMap
+            metadata:
+                name: database-server-details
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
 {{- end }}

@@ -13,7 +13,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "DATABASE_INSTANCE_NAME: \\{\\{ dig \\(printf \"database-primary-%s\" \\$[A-Za-z]+\\) \"resource\" \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+ \\| b64enc \\| quote \\}\\}"
+                    pattern: "\\$[A-Za-z]+ := dig \\(printf \"database-primary-%s\" \\$activeDataPlane\\) \"resource\" \"status\" \"atProvider\" \"connectionName\" \"\" \\$[A-Za-z]+"
         it: Connects to the database instance by the connection name Cloud SQL reports
     -   asserts:
             -   documentIndex: 0
@@ -177,6 +177,16 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\{\\{- if \\(eq \\$restorePhase \"promoting\"\\) -\\}\\}\\s+\\{\\{- \\$[A-Za-z]+ = list \"blue\" \"green\" -\\}\\}"
         it: Provisions the inactive data plane alongside the active one during a restore
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "range \\$condition := dig \\(printf \"liferay-gcs-bucket-%s\" \\$activeDataPlane\\) \"resource\" \"status\" \"conditions\" list \\$[A-Za-z]+"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "\\{\\{- if and \\(eq \\$dataPlane \\$activeDataPlane\\) \\$[A-Za-z]+ \\}\\}\\s+---\\s+apiVersion: kubernetes\\.m\\.crossplane\\.io/v1alpha1\\s+kind: Object\\s+metadata:\\s+annotations:\\s+crossplane\\.io/external-name: [^\\n]+\\s+gotemplating\\.fn\\.crossplane\\.io/composition-resource-name: document-library-connection-details-secret"
+        it: Publishes the active document library bucket only once Cloud Storage reports it ready
     -   asserts:
             -   documentIndex: 0
                 matchRegex:

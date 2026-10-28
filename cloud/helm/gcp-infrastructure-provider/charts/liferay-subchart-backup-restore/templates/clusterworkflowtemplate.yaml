@@ -456,7 +456,7 @@ spec:
                 -   args:
                         -   "{{ "{{" }}inputs.parameters.restore-instance-connection-name}}"
                         -   --auto-iam-authn
-                        -   --port=$(DATABASE_PORT)
+                        -   --port=5432
                         -   --private-ip
                         -   --structured-logs
                     env:
@@ -466,9 +466,6 @@ spec:
                             value: 0.0.0.0
                         -   name: CSQL_PROXY_HTTP_PORT
                             value: "9801"
-                    envFrom:
-                        -   secretRef:
-                                name: managed-service-details
                     image: "{{ .Values.images.cloudSQLProxy.repository }}:{{ .Values.images.cloudSQLProxy.tag }}"
                     name: cloud-sql-proxy
                     resources:
@@ -492,8 +489,8 @@ spec:
             script:
                 command: [sh]
                 envFrom:
-                    -   secretRef:
-                            name: managed-service-details
+                    -   configMapRef:
+                            name: database-server-details
                 image: "{{ .Values.images.postgres.repository }}:{{ .Values.images.postgres.tag }}"
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}

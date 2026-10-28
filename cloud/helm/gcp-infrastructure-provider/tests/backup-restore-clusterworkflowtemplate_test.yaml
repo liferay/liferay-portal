@@ -24,7 +24,7 @@ tests:
                     content: "{{inputs.parameters.restore-instance-connection-name}}"
                     path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
             -   contains:
-                    content: --port=$(DATABASE_PORT)
+                    content: --port=5432
                     path: spec.templates[?(@.name=="sanitize-database")].initContainers[0].args
             -   contains:
                     content: --auto-iam-authn
@@ -128,8 +128,8 @@ tests:
                     path: spec.templates[?(@.name=="sanitize-database")].script.image
                     value: postgres:18-alpine
             -   equal:
-                    path: spec.templates[?(@.name=="sanitize-database")].script.envFrom[0].secretRef.name
-                    value: managed-service-details
+                    path: spec.templates[?(@.name=="sanitize-database")].script.envFrom[0].configMapRef.name
+                    value: database-server-details
             -   matchRegex:
                     path: spec.templates[?(@.name=="sanitize-database")].script.source
                     pattern: --dbname lportal

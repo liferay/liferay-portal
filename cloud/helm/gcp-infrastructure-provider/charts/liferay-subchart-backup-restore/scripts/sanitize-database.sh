@@ -19,7 +19,7 @@ function main {
 			--dbname lportal \
 			--file "${sql_file}" \
 			--host 127.0.0.1 \
-			--port "${DATABASE_PORT}" \
+			--port 5432 \
 			--set ON_ERROR_STOP=1 \
 			--single-transaction \
 			--username "${DATABASE_USERNAME}"

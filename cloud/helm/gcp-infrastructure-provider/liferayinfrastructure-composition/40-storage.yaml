@@ -1,7 +1,14 @@
+{{- $isDoclibReady := false }}
+{{- range $condition := dig (printf "liferay-gcs-bucket-%s" $activeDataPlane) "resource" "status" "conditions" list $observedResources }}
+    {{- if and (eq $condition.type "Ready") (eq $condition.status "True") }}
+        {{- $isDoclibReady = true }}
+    {{- end }}
+{{- end }}
 {{- range $i, $dataPlane := $dataPlanes }}
 {{- if $i }}
 ---
 {{- end }}
+{{- $doclibBucketName := printf "%s-dl-%s" $baseName $dataPlane }}
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket
 metadata:
@@ -9,7 +16,7 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gcs-bucket-{{ $dataPlane }}
     labels:
         dataPlane: {{ $dataPlane }}
-    name: {{ $baseName }}-dl-{{ $dataPlane }}
+    name: {{ $doclibBucketName }}
 spec:
     forProvider:
         {{- if $cmkEnabled }}
@@ -41,4 +48,26 @@ spec:
         member: serviceAccount:{{ $gsaEmail }}
         role: roles/storage.admin
     managementPolicies: {{ $managementPolicies }}
+{{- if and (eq $dataPlane $activeDataPlane) $isDoclibReady }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        crossplane.io/external-name: {{ $baseName }}-document-library-connection-details-secret
+        gotemplating.fn.crossplane.io/composition-resource-name: document-library-connection-details-secret
+    name: {{ $baseName }}-document-library-connection-details-secret
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            data:
+                LIFERAY_GCS_BUCKET_NAME: {{ $doclibBucketName | b64enc | quote }}
+            kind: Secret
+            metadata:
+                name: document-library-connection-details
+                namespace: {{ $namespace }}
+            type: Opaque
+    managementPolicies: {{ $managementPolicies }}
+{{- end }}
 {{- end }}
