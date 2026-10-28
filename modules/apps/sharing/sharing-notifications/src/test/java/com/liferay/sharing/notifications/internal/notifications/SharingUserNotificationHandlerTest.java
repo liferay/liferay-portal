@@ -6,8 +6,10 @@
 package com.liferay.sharing.notifications.internal.notifications;
 
 import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
+import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
@@ -18,7 +20,9 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.UserNotificationEventWrapper;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -37,6 +41,7 @@ import org.junit.Test;
 
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.verification.VerificationMode;
 
 /**
  * @author Alicia García
@@ -68,6 +73,14 @@ public class SharingUserNotificationHandlerTest {
 		_testGetLink(false);
 		_testGetLink(true);
 		_testGetLinkWhenSharingEntryIsNull();
+	}
+
+	@Test
+	@TestInfo("LPD-108755")
+	public void testGetTitleWhenAssetRendererIsNull() throws Exception {
+		_testGetTitleWhenAssetRendererIsNull(
+			Mockito.mock(AssetEntry.class), Mockito.never());
+		_testGetTitleWhenAssetRendererIsNull(null, Mockito.times(1));
 	}
 
 	protected UserNotificationEvent mockUserNotificationEvent(long classPK) {
@@ -237,6 +250,66 @@ public class SharingUserNotificationHandlerTest {
 			_serviceContext);
 
 		Assert.assertEquals(StringPool.BLANK, link);
+	}
+
+	private void _testGetTitleWhenAssetRendererIsNull(
+			AssetEntry assetEntry, VerificationMode verificationMode)
+		throws Exception {
+
+		String className = RandomTestUtil.randomString();
+		long classPK = RandomTestUtil.randomLong();
+
+		Mockito.reset(_sharingEntry);
+
+		Mockito.when(
+			_sharingEntry.getClassName()
+		).thenReturn(
+			className
+		);
+
+		Mockito.when(
+			_sharingEntry.getClassPK()
+		).thenReturn(
+			classPK
+		);
+
+		_setUpAssetRendererFactoryRegistryUtil(className, null, classPK);
+		_setUpSharingEntryLocalService();
+
+		AssetEntryLocalService assetEntryLocalService = Mockito.mock(
+			AssetEntryLocalService.class);
+
+		Mockito.when(
+			assetEntryLocalService.fetchEntry(className, classPK)
+		).thenReturn(
+			assetEntry
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_sharingUserNotificationHandler, "_assetEntryLocalService",
+			assetEntryLocalService);
+
+		UserNotificationEventLocalService userNotificationEventLocalService =
+			Mockito.mock(UserNotificationEventLocalService.class);
+
+		ReflectionTestUtil.setFieldValue(
+			_sharingUserNotificationHandler,
+			"_userNotificationEventLocalService",
+			userNotificationEventLocalService);
+
+		Assert.assertNull(
+			ReflectionTestUtil.invoke(
+				_sharingUserNotificationHandler, "getTitle",
+				new Class<?>[] {
+					UserNotificationEvent.class, ServiceContext.class
+				},
+				mockUserNotificationEvent(classPK), _serviceContext));
+
+		Mockito.verify(
+			userNotificationEventLocalService, verificationMode
+		).deleteUserNotificationEvent(
+			Mockito.anyLong()
+		);
 	}
 
 	private static final Long _USER_ID = RandomTestUtil.randomLong();
