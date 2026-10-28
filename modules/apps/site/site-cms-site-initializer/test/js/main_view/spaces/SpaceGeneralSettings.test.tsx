@@ -332,4 +332,55 @@ describe('SpaceGeneralSettings', () => {
 			expect(SpaceService.updateSpace).not.toHaveBeenCalled();
 		});
 	});
+
+	describe('Location provider', () => {
+		beforeEach(() => {
+			Liferay.FeatureFlags['LPD-11388'] = true;
+		});
+
+		afterEach(() => {
+			delete Liferay.FeatureFlags['LPD-11388'];
+		});
+
+		it('saves the instance default with an empty API key', async () => {
+			renderComponent({
+				space: {
+					...SPACE,
+					settings: {
+						...SPACE.settings!,
+						googleMapsAPIKey: 'google-maps-api-key',
+						mapProviderKey: 'GoogleMaps',
+					},
+				} as Partial<Space>,
+			});
+
+			await userEvent.click(
+				screen.getByRole('radio', {name: /^use-instance-default/})
+			);
+
+			await userEvent.click(screen.getByRole('button', {name: 'save'}));
+
+			await waitFor(() => {
+				expect(SpaceService.updateSpace).toHaveBeenCalledWith(
+					expect.any(String),
+					expect.objectContaining({
+						settings: expect.objectContaining({
+							googleMapsAPIKey: '',
+							mapProviderKey: '',
+						}),
+					})
+				);
+			});
+
+			await closeToast();
+		});
+
+		it('selects the instance default when the space has no provider', () => {
+			renderComponent();
+
+			expect(
+				screen.getByRole('radio', {name: /^use-instance-default/})
+			).toBeChecked();
+		});
+	});
 });
