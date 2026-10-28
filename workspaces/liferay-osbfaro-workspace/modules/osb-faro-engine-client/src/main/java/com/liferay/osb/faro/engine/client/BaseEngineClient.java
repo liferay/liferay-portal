@@ -47,10 +47,10 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Deactivate;
@@ -731,7 +731,8 @@ public abstract class BaseEngineClient {
 	private static final Log _log = LogFactoryUtil.getLog(
 		BaseEngineClient.class);
 
-	private static final Map<String, String> _urlPaths = new HashMap<>();
+	private static final Map<String, String> _urlPaths =
+		new ConcurrentHashMap<>();
 
 	private String _engineURL;
 	private HttpComponentsClientHttpRequestFactory
