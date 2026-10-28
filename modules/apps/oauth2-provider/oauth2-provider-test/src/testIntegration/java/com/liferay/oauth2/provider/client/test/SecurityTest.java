@@ -130,9 +130,9 @@ public class SecurityTest extends BaseClientTestCase {
 			RandomTestUtil.randomString(), null);
 
 		Assert.assertEquals(400, getStatus(response1));
-		Assert.assertEquals(getStatus(response2), getStatus(response1));
 		Assert.assertEquals(
 			getBodyAsString(response2), getBodyAsString(response1));
+		Assert.assertEquals(getStatus(response2), getStatus(response1));
 	}
 
 	@Test
