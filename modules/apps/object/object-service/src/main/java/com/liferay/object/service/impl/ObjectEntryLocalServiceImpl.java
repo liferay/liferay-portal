@@ -483,11 +483,11 @@ public class ObjectEntryLocalServiceImpl
 
 		boolean dynamicObjectDefinitionStaticValues = _insertIntoTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				false, objectDefinition, _objectFieldLocalService),
+				false, objectDefinition, objectFieldBag.getObjectFields()),
 			insertedValues, objectEntryId, false, values);
 		boolean extensionDynamicObjectDefinitionStaticValues = _insertIntoTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				true, objectDefinition, _objectFieldLocalService),
+				true, objectDefinition, objectFieldBag.getObjectFields()),
 			insertedValues, objectEntryId, false, values);
 
 		ObjectEntry objectEntry = objectEntryPersistence.create(objectEntryId);
@@ -1902,19 +1902,19 @@ public class ObjectEntryLocalServiceImpl
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
 		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				false, objectDefinition, _objectFieldLocalService);
+				false, objectDefinition, objectFieldBag.getObjectFields());
 
 		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				true, objectDefinition, _objectFieldLocalService);
+				true, objectDefinition, objectFieldBag.getObjectFields());
 
 		Expression<?>[] selectExpressions = _getSelectExpressions(
 			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
 			objectEntry.getObjectEntryId());
-
-		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
 
 		Object[] row = _fetchDynamicObjectDefinitionTableRow(
 			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
@@ -1940,18 +1940,18 @@ public class ObjectEntryLocalServiceImpl
 
 		ObjectDefinition objectDefinition = objectEntry.getObjectDefinition();
 
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
 		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				false, objectDefinition, _objectFieldLocalService);
+				false, objectDefinition, objectFieldBag.getObjectFields());
 		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				true, objectDefinition, _objectFieldLocalService);
+				true, objectDefinition, objectFieldBag.getObjectFields());
 
 		Expression<?>[] selectExpressions = _getSelectExpressions(
 			dynamicObjectDefinitionTable, extensionDynamicObjectDefinitionTable,
 			objectEntry.getObjectEntryId());
-
-		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
 
 		Object[] row = null;
 
@@ -3848,6 +3848,18 @@ public class ObjectEntryLocalServiceImpl
 		}
 	}
 
+	private DynamicObjectDefinitionLocalizationTable
+		_createDynamicObjectDefinitionLocalizationTable(
+			ObjectDefinition objectDefinition) {
+
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
+		return DynamicObjectDefinitionLocalizationTableFactory.create(
+			objectDefinition,
+			ListUtil.filter(
+				objectFieldBag.getObjectFields(), ObjectField::isLocalized));
+	}
+
 	private Function<String, ServiceContext> _createServiceContextFunction() {
 		return className -> {
 			ServiceContext serviceContext = new ServiceContext();
@@ -3963,8 +3975,8 @@ public class ObjectEntryLocalServiceImpl
 
 		DynamicObjectDefinitionLocalizationTable
 			dynamicObjectDefinitionLocalizationTable =
-				DynamicObjectDefinitionLocalizationTableFactory.create(
-					objectDefinition, _objectFieldLocalService);
+				_createDynamicObjectDefinitionLocalizationTable(
+					objectDefinition);
 
 		if (dynamicObjectDefinitionLocalizationTable == null) {
 			return;
@@ -6177,8 +6189,7 @@ public class ObjectEntryLocalServiceImpl
 
 		_addLocalizedObjectFieldValues(
 			objectEntry.getDefaultLanguageId(),
-			DynamicObjectDefinitionLocalizationTableFactory.create(
-				objectDefinition, _objectFieldLocalService),
+			_createDynamicObjectDefinitionLocalizationTable(objectDefinition),
 			objectFieldBag, objectEntry.getObjectEntryId(), values);
 		_addObjectRelationshipERCFieldValue(
 			objectFieldBag.getObjectFields(), values);
@@ -6353,8 +6364,8 @@ public class ObjectEntryLocalServiceImpl
 
 		DynamicObjectDefinitionLocalizationTable
 			dynamicObjectDefinitionLocalizationTable =
-				DynamicObjectDefinitionLocalizationTableFactory.create(
-					objectDefinition, _objectFieldLocalService);
+				_createDynamicObjectDefinitionLocalizationTable(
+					objectDefinition);
 
 		if (dynamicObjectDefinitionLocalizationTable == null) {
 			return;
@@ -8073,11 +8084,11 @@ public class ObjectEntryLocalServiceImpl
 
 		boolean staticValues = _updateTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				false, objectDefinition, _objectFieldLocalService),
+				false, objectDefinition, objectFields),
 			insertedValues, objectEntryId, partialUpdate, values);
 		boolean extensionStaticValues = _updateTable(
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				true, objectDefinition, _objectFieldLocalService),
+				true, objectDefinition, objectFields),
 			insertedValues, objectEntryId, partialUpdate, values);
 
 		EntityCacheUtil.removeResult(
