@@ -810,7 +810,7 @@ definition {
 
 	@description = "LPS-117015 When 'Categorization' in web content editor, vocabularies management application or content dashboard when empty graph, the message Learn how with a link to the documentation"
 	@priority = 3
-	test OpenLiferayLearnCategoriesVocabulariesPageFromWCEditor {
+	test OpenLiferayLearnLinks {
 		task ("Go to web content editor") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
 
