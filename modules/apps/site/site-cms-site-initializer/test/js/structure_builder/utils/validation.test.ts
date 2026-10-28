@@ -174,15 +174,15 @@ describe('getErrorMessage', () => {
 
 describe('validateStructure', () => {
 	it.each([
-		['123', 'number'],
 		['-', 'invalid-character'],
-		['fruit/-/apple', 'invalid-character'],
+		['123', 'number'],
 		['a'.repeat(254), 'max-length'],
+		['fruit/-/apple', 'invalid-character'],
 	])('flags the friendly URL %s', (slug, error) => {
 		expect(validateStructure({data: {slug}}).get('slug')).toBe(error);
 	});
 
-	it.each(['fruit', 'fruit-2026', 'a', ''])(
+	it.each(['', 'a', 'fruit', 'fruit-2026'])(
 		'accepts the friendly URL "%s"',
 		(slug) => {
 			expect(validateStructure({data: {slug}}).has('slug')).toBe(false);

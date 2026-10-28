@@ -89,11 +89,11 @@ describe('StructureService.updateStructure', () => {
 			'erc-in-use',
 		],
 		['ObjectDefinitionFriendlyURLSeparatorException', 'slug-in-use'],
-		['ObjectDefinitionNameException.MustNotBeDuplicate', 'name-in-use'],
 		[
 			'ObjectDefinitionNameException.MustBeLessThan41Characters',
 			'unexpected',
 		],
+		['ObjectDefinitionNameException.MustNotBeDuplicate', 'name-in-use'],
 		['PrincipalException.MustHavePermission', 'permission'],
 	])('classifies %s as %s', async (type, error) => {
 		jest.spyOn(ApiHelper, 'postFormData').mockResolvedValue({
