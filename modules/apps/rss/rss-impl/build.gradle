@@ -1,12 +1,10 @@
 dependencies {
 	compileOnly group: "com.liferay", name: "org.jdom2", version: "2.0.6.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	compileOnly group: "com.rometools", name: "rome", version: "1.16.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:normalizer:normalizer-api")
 	compileOnly project(":apps:rss:rss-api")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }

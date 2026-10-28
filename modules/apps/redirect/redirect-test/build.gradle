@@ -1,13 +1,11 @@
 dependencies {
 	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-module-configuration-api")
-	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
 	testIntegrationImplementation project(":apps:portal-search:portal-search-test-util")
 	testIntegrationImplementation project(":apps:portal:portal-instance-lifecycle-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:redirect:redirect-api")
 	testIntegrationImplementation project(":apps:redirect:redirect-service")
-	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
