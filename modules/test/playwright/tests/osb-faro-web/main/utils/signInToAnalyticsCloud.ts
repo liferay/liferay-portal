@@ -5,7 +5,11 @@
 
 import {Page, expect} from '@playwright/test';
 
-import {getHeader} from '../../../../helpers/ApiHelpers';
+import {
+	clearAuthToken,
+	getHeader,
+	readAuthToken,
+} from '../../../../helpers/ApiHelpers';
 import {faroConfig} from '../faro.config';
 
 export async function signInToAnalyticsCloud(
@@ -17,6 +21,8 @@ export async function signInToAnalyticsCloud(
 	// Logout any existing session so the new login fully replaces it.
 
 	await page.goto(`${faroConfig.environment.baseUrl}/c/portal/logout`);
+
+	clearAuthToken(page);
 
 	const response = await page.request.post(
 		`${faroConfig.environment.baseUrl}/c/portal/login`,
@@ -38,4 +44,6 @@ export async function signInToAnalyticsCloud(
 	await expect(
 		page.getByRole('textbox', {name: 'Email Address'})
 	).toHaveCount(0);
+
+	await readAuthToken(page);
 }
