@@ -10,12 +10,10 @@ dependencies {
 	compileInclude group: "org.abego.treelayout", name: "org.abego.treelayout.core", version: "1.0.1"
 	compileInclude group: "org.antlr", name: "antlr4-runtime", version: "4.13.2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "org.antlr", name: "antlr4", version: "4.13.2"
 	compileOnly group: "org.antlr", name: "antlr4-annotations", version: "4.3"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation project(":core:petra:petra-lang")
 }
 
 generateGrammarSource {
