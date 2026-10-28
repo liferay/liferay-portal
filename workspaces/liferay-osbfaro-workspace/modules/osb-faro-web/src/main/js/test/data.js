@@ -996,16 +996,6 @@ export function mockRecommendationJob(seed = 0, data = {}) {
 	};
 }
 
-export function mockSite(seed = 0, data = {}) {
-	return {
-		friendlyURL: `/guest/${seed}`,
-		id: String(seed),
-		name: `Test - ${seed}`,
-		parentGroupId: '23',
-		...data,
-	};
-}
-
 export function mockUser(seed = 0, data = {}) {
 	return {
 		emailAddress: 'test@liferay.com',

@@ -534,22 +534,6 @@ public class DataSourceFaroController extends BaseFaroController {
 		return new FaroResultsDisplay(results, function);
 	}
 
-	@Path("/{id}/groups_by_ids")
-	@POST
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public List<DXPGroupDisplay> getDXPGroupDisplays(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@DefaultValue(StringPool.BLANK) @FormParam("groupIds") FaroParam
-				<List<Long>> groupIdsFaroParam)
-		throws Exception {
-
-		return TransformUtil.transform(
-			contactsEngineClient.getDataSourceDXPGroups(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-				groupIdsFaroParam.getValue()),
-			DXPGroupDisplay::new);
-	}
-
 	@Path("/{id}/user_groups_by_ids")
 	@POST
 	@RolesAllowed(RoleConstants.SITE_MEMBER)
@@ -1035,35 +1019,6 @@ public class DataSourceFaroController extends BaseFaroController {
 				return new FieldValuesDisplay(
 					dataSourceField.getName(), dataSourceField.getValues());
 			});
-	}
-
-	@GET
-	@Path("/{id}/groups")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public FaroResultsDisplay getGroupsFaroResultsDisplay(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@DefaultValue(StringPool.BLANK) @QueryParam("name") String name,
-			@DefaultValue("-1") @QueryParam("parentGroupId") long parentGroupId,
-			@DefaultValue("true") @QueryParam("site") boolean site,
-			@QueryParam("cur") int cur, @QueryParam("delta") int delta)
-		throws Exception {
-
-		FaroProject faroProject =
-			faroProjectLocalService.getFaroProjectByGroupId(groupId);
-
-		Results<DXPGroup> results = contactsEngineClient.getDataSourceDXPGroups(
-			faroProject, id, parentGroupId, site, name, cur, delta);
-
-		Function<DXPGroup, DXPGroupDisplay> function = DXPGroupDisplay::new;
-
-		if (results.getTotal() > 0) {
-			return new FaroResultsDisplay(results, function);
-		}
-
-		results = contactsEngineClient.getDataSourceDXPGroups(
-			faroProject, id, parentGroupId, site, null, cur, delta);
-
-		return new FaroResultsDisplay(results, function, true);
 	}
 
 	@Path("/{id}/liferay/sync_counts")

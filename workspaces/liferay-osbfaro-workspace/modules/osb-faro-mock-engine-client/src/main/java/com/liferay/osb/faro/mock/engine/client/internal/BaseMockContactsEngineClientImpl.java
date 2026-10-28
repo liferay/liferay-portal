@@ -785,23 +785,6 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
-	public List<DXPGroup> getDataSourceDXPGroups(
-		FaroProject faroProject, String id, List<Long> groupIds) {
-
-		return contactsEngineClient.getDataSourceDXPGroups(
-			faroProject, id, groupIds);
-	}
-
-	@Override
-	public Results<DXPGroup> getDataSourceDXPGroups(
-		FaroProject faroProject, String id, long parentGroupId, boolean site,
-		String name, int cur, int delta) {
-
-		return contactsEngineClient.getDataSourceDXPGroups(
-			faroProject, id, parentGroupId, site, name, cur, delta);
-	}
-
-	@Override
 	public List<DXPOrganization> getDataSourceDXPOrganizations(
 		FaroProject faroProject, String id, List<Long> organizationIds) {
 

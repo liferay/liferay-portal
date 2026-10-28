@@ -2134,54 +2134,6 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public List<DXPGroup> getDataSourceDXPGroups(
-		FaroProject faroProject, String id, List<Long> groupIds) {
-
-		if (ListUtil.isEmpty(groupIds)) {
-			return Collections.emptyList();
-		}
-
-		PagedModel<?, DXPGroup> pagedModel = post(
-			faroProject, Rels.DATA_SOURCE_DXP_GROUPS, groupIds,
-			new ParameterizedTypeReference<EntityModelPagedModel<DXPGroup>>() {
-			},
-			getUriVariables(faroProject, id));
-
-		Results<DXPGroup> results = pagedModel.getResults();
-
-		return results.getItems();
-	}
-
-	@Override
-	public Results<DXPGroup> getDataSourceDXPGroups(
-		FaroProject faroProject, String id, long parentGroupId, boolean site,
-		String name, int cur, int delta) {
-
-		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
-			cur, delta);
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, startAndEnd[0], startAndEnd[1]);
-
-		uriVariables.put("id", id);
-
-		if (name != null) {
-			uriVariables.put("name", getName(name));
-		}
-
-		uriVariables.put("parentGroupId", parentGroupId);
-		uriVariables.put("site", site);
-
-		PagedModel<?, DXPGroup> pagedModel = get(
-			faroProject, Rels.DATA_SOURCE_DXP_GROUPS,
-			new ParameterizedTypeReference<EntityModelPagedModel<DXPGroup>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
-	}
-
-	@Override
 	public List<DXPOrganization> getDataSourceDXPOrganizations(
 		FaroProject faroProject, String id, List<Long> organizationIds) {
 

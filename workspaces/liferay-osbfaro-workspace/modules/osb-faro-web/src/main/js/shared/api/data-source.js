@@ -140,26 +140,6 @@ export function fetchOrganizationsById({groupId, id, organizationIds}) {
 	});
 }
 
-export function fetchSites({cur, delta, groupId, id, name}) {
-	return sendRequest({
-		data: {
-			cur,
-			delta,
-			name,
-		},
-		method: 'GET',
-		path: `contacts/${groupId}/data_source/${id ? `${id}/` : ''}groups`,
-	});
-}
-
-export function fetchSitesById({groupId, id, siteIds}) {
-	return sendRequest({
-		data: {groupIds: siteIds},
-		method: 'POST',
-		path: `contacts/${groupId}/data_source/${id}/groups_by_ids`,
-	});
-}
-
 export const fetchToken = (groupId, dataSourceId) =>
 	sendRequest({
 		contentType: 'text/plain',

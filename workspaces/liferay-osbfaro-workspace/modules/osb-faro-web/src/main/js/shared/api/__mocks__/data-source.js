@@ -111,12 +111,6 @@ export const updateLiferay = jest.fn(() =>
 	Promise.resolve(data.mockLiferayDataSource())
 );
 
-export const fetchSites = jest.fn(() =>
-	Promise.resolve(data.mockSearch(data.mockSite))
-);
-
-export const fetchSitesById = jest.fn(() => Promise.resolve([]));
-
 export const fetchCompanies = jest.fn(() =>
 	Promise.resolve([data.mockCompany()])
 );

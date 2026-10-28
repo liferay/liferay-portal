@@ -409,13 +409,6 @@ public interface ContactsEngineClient {
 	public DataSource getDataSource(FaroProject faroProject, String id)
 		throws FaroEngineClientException;
 
-	public List<DXPGroup> getDataSourceDXPGroups(
-		FaroProject faroProject, String id, List<Long> groupIds);
-
-	public Results<DXPGroup> getDataSourceDXPGroups(
-		FaroProject faroProject, String id, long parentGroupId, boolean site,
-		String name, int cur, int delta);
-
 	public List<DXPOrganization> getDataSourceDXPOrganizations(
 		FaroProject faroProject, String id, List<Long> organizationIds);
 
