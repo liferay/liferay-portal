@@ -8,6 +8,7 @@ package com.liferay.headless.admin.site.resource.v1_0.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.headless.admin.site.client.dto.v1_0.FriendlyUrlHistory;
 import com.liferay.headless.admin.site.client.problem.Problem;
+import com.liferay.headless.admin.site.client.resource.v1_0.FriendlyUrlHistoryResource;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutPageTemplateEntryTestUtil;
 import com.liferay.headless.admin.site.resource.v1_0.test.util.LayoutUtilityPageEntryTestUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -19,14 +20,19 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -114,6 +120,7 @@ public class FriendlyUrlHistoryResourceTest
 
 	@Override
 	@Test
+	@TestInfo("LPD-112320")
 	public void testGetSiteSitePageFriendlyUrlHistory() throws Exception {
 		Layout layout = LayoutTestUtil.addTypePortletLayout(
 			testGroup.getGroupId());
@@ -127,6 +134,11 @@ public class FriendlyUrlHistoryResourceTest
 		_assertProblemException(
 			"This page type cannot be modified through this endpoint",
 			layout.fetchDraftLayout());
+
+		_assertProblemException(
+			"NOT_FOUND", null,
+			_getUserWithoutPermissionsFriendlyUrlHistoryResource(),
+			LayoutTestUtil.addTypePortletLayout(testGroup.getGroupId(), true));
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -213,19 +225,8 @@ public class FriendlyUrlHistoryResourceTest
 	private void _assertProblemException(String expectedTitle, Layout layout)
 		throws Exception {
 
-		try {
-			friendlyUrlHistoryResource.getSiteSitePageFriendlyUrlHistory(
-				testGroup.getExternalReferenceCode(),
-				layout.getExternalReferenceCode());
-
-			Assert.fail();
-		}
-		catch (Problem.ProblemException problemException) {
-			Problem problem = problemException.getProblem();
-
-			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
-			Assert.assertEquals(expectedTitle, problem.getTitle());
-		}
+		_assertProblemException(
+			"BAD_REQUEST", expectedTitle, friendlyUrlHistoryResource, layout);
 	}
 
 	private void _assertProblemException(
@@ -247,6 +248,46 @@ public class FriendlyUrlHistoryResourceTest
 			Assert.assertEquals("BAD_REQUEST", problem.getStatus());
 			Assert.assertEquals(expectedTitle, problem.getTitle());
 		}
+	}
+
+	private void _assertProblemException(
+			String expectedStatus, String expectedTitle,
+			FriendlyUrlHistoryResource friendlyUrlHistoryResource,
+			Layout layout)
+		throws Exception {
+
+		try {
+			friendlyUrlHistoryResource.getSiteSitePageFriendlyUrlHistory(
+				testGroup.getExternalReferenceCode(),
+				layout.getExternalReferenceCode());
+
+			Assert.fail();
+		}
+		catch (Problem.ProblemException problemException) {
+			Problem problem = problemException.getProblem();
+
+			Assert.assertEquals(expectedStatus, problem.getStatus());
+			Assert.assertEquals(expectedTitle, problem.getTitle());
+		}
+	}
+
+	private FriendlyUrlHistoryResource
+			_getUserWithoutPermissionsFriendlyUrlHistoryResource()
+		throws Exception {
+
+		String password = RandomTestUtil.randomString();
+
+		_user = UserTestUtil.addUser(testCompany, password);
+
+		return FriendlyUrlHistoryResource.builder(
+		).authentication(
+			_user.getEmailAddress(), password
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
 	}
 
 	private void _testGetSiteSitePageFriendlyUrlHistory(Layout layout)
@@ -320,5 +361,8 @@ public class FriendlyUrlHistoryResourceTest
 
 	@Inject
 	private LayoutLocalService _layoutLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
