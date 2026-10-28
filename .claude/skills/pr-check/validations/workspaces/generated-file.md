@@ -23,16 +23,18 @@ EXCLUDES_REGEX=$(
 
 Report **NOT VERIFIED** when `${EXCLUDES_REGEX}` is empty, naming the unreadable script, since an empty regex would mark every file as regenerated.
 
-For every changed path of the workspace that does not match `(^|/)(${EXCLUDES_REGEX})(/|$)`, compare the branch's copy against the sample workspace at the same commit:
+For every changed path of the workspace that does not match `(^|/)(${EXCLUDES_REGEX})(/|$)`, read the mode and blob that `${SOURCE_SHA}` records for the branch's copy and for the sample workspace's:
 
 ```bash
-git show "${SOURCE_SHA}:workspaces/liferay-sample-workspace/<path>" \
-	| diff - "${BUILD_ROOT}/<path>"
+COPY=$(git -C "${BUILD_ROOT}" ls-tree "${SOURCE_SHA}" -- "<path>" | cut -f1)
+SAMPLE=$(git -C "${BUILD_ROOT}" ls-tree "${SOURCE_SHA}" -- "../liferay-sample-workspace/<path>" | cut -f1)
 ```
+
+Compare what git records rather than the bytes of the two files. For a symlink, git stores the path the link points to, while reading the path on disk follows the link to its target's contents, so a byte comparison never matches a symlink, although the refresh copies it as a link and leaves it unchanged. The mode also tells a symlink from a regular file that holds the same text.
 
 Read the sample from `${SOURCE_SHA}` and never from a local branch. A local branch goes stale silently, and the comparison then reports a file as diverged because the sample moved on rather than because the branch changed anything.
 
-Report PASS for a path whose copies are identical, which is what a refresh produces. Report FAIL for a path whose copies differ, and for a path the sample does not contain, since the refresh deletes it. Name each path, and say that the next refresh reverts it and that the edit belongs in `liferay-sample-workspace`.
+Report PASS for a path whose `${SAMPLE}` is not empty and equals `${COPY}`, which is what a refresh produces. Report FAIL for a path whose two differ, and for a path with an empty `${SAMPLE}`, which the sample does not contain, since the refresh deletes it. Name each path, and say that the next refresh reverts it and that the edit belongs in `liferay-sample-workspace`.
 
 ## Time Estimate
 
