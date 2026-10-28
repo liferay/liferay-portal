@@ -4,10 +4,8 @@ dependencies {
 	testIntegrationImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	testIntegrationImplementation group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "org.apache.commons", name: "commons-collections4", version: "4.5.0"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi", version: "5.4.1"
 	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml", version: "5.4.1"
-	testIntegrationImplementation group: "org.apache.poi", name: "poi-ooxml-lite", version: "5.4.1"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
@@ -15,8 +13,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-report-api")
 	testIntegrationImplementation project(":apps:headless:headless-admin-user:headless-admin-user-client")
-	testIntegrationImplementation project(":apps:journal:journal-api")
-	testIntegrationImplementation project(":apps:layout:layout-test-util")
 	testIntegrationImplementation project(":apps:list-type:list-type-api")
 	testIntegrationImplementation project(":apps:object:object-api")
 	testIntegrationImplementation project(":apps:object:object-test-util")
@@ -25,7 +21,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-api")
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
-	testIntegrationImplementation project(":apps:staging:staging-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

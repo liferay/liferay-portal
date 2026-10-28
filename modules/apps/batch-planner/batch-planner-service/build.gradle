@@ -9,13 +9,11 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:batch-engine:batch-engine-api")
 	compileOnly project(":apps:batch-planner:batch-planner-api")
 	compileOnly project(":apps:headless:headless-batch-engine:headless-batch-engine-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":apps:portal:portal-aop-api")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")

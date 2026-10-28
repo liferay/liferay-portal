@@ -12,18 +12,15 @@ dependencies {
 	compileInclude group: "org.codehaus.woodstox", name: "stax2-api", version: "3.1.4"
 	compileInclude group: "org.codehaus.woodstox", name: "woodstox-core-asl", version: "4.4.1"
 	compileInclude group: "org.noggit", name: "noggit", version: "0.8"
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-io", name: "commons-io", version: "2.19.0"
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
-	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "org.apache.httpcomponents", name: "httpclient", version: "4.5.13"
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileOnly group: "org.apache.httpcomponents", name: "httpmime", version: "4.5.13"
 	compileOnly group: "org.apache.lucene", name: "lucene-misc", version: luceneVersion
 	compileOnly group: "org.apache.lucene", name: "lucene-sandbox", version: luceneVersion
-	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly group: "org.slf4j", name: "slf4j-api", version: "1.7.26"
@@ -32,14 +29,10 @@ dependencies {
 	compileOnly project(":apps:portal-search:portal-search-engine-adapter-api")
 	compileOnly project(":apps:portal-search:portal-search-spi")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
-	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":apps:portal-search:portal-search-test-util")
-	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
-	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }
 
 test {
