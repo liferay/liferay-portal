@@ -1,7 +1,6 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
-	compileOnly group: "junit", name: "junit", version: "4.13.1"
 	compileOnly project(":apps:segments:segments-api")
 	compileOnly project(":core:petra:petra-string")
 }

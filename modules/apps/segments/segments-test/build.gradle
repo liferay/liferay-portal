@@ -12,7 +12,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:export-import:export-import-api")
 	testIntegrationImplementation project(":apps:export-import:export-import-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
-	testIntegrationImplementation project(":apps:frontend-taglib:frontend-taglib-clay")
 	testIntegrationImplementation project(":apps:layout:layout-api")
 	testIntegrationImplementation project(":apps:layout:layout-content-page-editor-api")
 	testIntegrationImplementation project(":apps:layout:layout-page-template-api")
