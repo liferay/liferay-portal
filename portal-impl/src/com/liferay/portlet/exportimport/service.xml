@@ -57,6 +57,7 @@
 	<entity local-service="true" name="Staging" remote-service="true">
 	</entity>
 	<exceptions>
+		<exception>ExportImportConfigurationName</exception>
 		<exception>LARFile</exception>
 		<exception>LARFileName</exception>
 		<exception>LARFileSize</exception>
