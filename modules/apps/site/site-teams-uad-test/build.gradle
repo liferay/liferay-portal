@@ -1,6 +1,5 @@
 dependencies {
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	testIntegrationImplementation project(":apps:layout:layout-uad")
 	testIntegrationImplementation project(":apps:user-associated-data:user-associated-data-api")
 	testIntegrationImplementation project(":apps:user-associated-data:user-associated-data-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")

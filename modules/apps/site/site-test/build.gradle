@@ -1,6 +1,5 @@
 dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	testIntegrationImplementation project(":apps:account:account-api")
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
@@ -9,7 +8,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:commerce:commerce-product-test-util")
 	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
-	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:friendly-url:friendly-url-api")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")
@@ -29,9 +27,7 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal:portal-verify-test-util")
 	testIntegrationImplementation project(":apps:redirect:redirect-api")
 	testIntegrationImplementation project(":apps:site:site-api")
-	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":apps:translation:translation-api")
-	testIntegrationImplementation project(":apps:trash:trash-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
