@@ -148,13 +148,25 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 					Collections.singletonMap(LocaleUtil.US, shippingOptionName),
 					RandomTestUtil.nextDouble());
 
+		_commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					_user.getUserId(), _commerceChannel.getGroupId(),
+					Collections.singletonMap(
+						LocaleUtil.US, RandomTestUtil.randomString()),
+					Collections.singletonMap(
+						LocaleUtil.US, RandomTestUtil.randomString()),
+					true, null, RandomTestUtil.randomString(),
+					RandomTestUtil.nextDouble(), null);
+
 		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), _commerceChannel.getGroupId(),
 			_address.getAddressId(), _accountEntry.getAccountEntryId(),
 			_commerceCurrency.getCode(),
 			CommerceOrderConstants.TYPE_PK_FULFILLMENT,
 			_commerceShippingMethod.getCommerceShippingMethodId(),
-			_address.getAddressId(), "money-order",
+			_address.getAddressId(),
+			_commercePaymentMethodGroupRel.getPaymentIntegrationKey(),
 			RandomTestUtil.randomString(), 1, 1, 2022, 0, 0,
 			CommerceOrderConstants.ORDER_STATUS_OPEN,
 			CommercePaymentMethodConstants.TYPE_OFFLINE,
@@ -167,16 +179,6 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 
 		_commerceOrder = _commerceOrderLocalService.updateCommerceOrder(
 			_commerceOrder);
-
-		_commercePaymentMethodGroupRel =
-			_commercePaymentMethodGroupRelLocalService.
-				addCommercePaymentMethodGroupRel(
-					_user.getUserId(), _commerceChannel.getGroupId(),
-					Collections.singletonMap(
-						LocaleUtil.US, RandomTestUtil.randomString()),
-					Collections.singletonMap(
-						LocaleUtil.US, RandomTestUtil.randomString()),
-					true, null, "money-order", 1, null);
 	}
 
 	@Ignore

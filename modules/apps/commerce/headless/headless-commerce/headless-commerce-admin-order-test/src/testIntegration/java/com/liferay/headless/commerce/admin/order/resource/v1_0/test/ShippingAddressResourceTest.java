@@ -16,6 +16,8 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -136,12 +138,22 @@ public class ShippingAddressResourceTest
 				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 				commerceCurrency.getCode(), serviceContext);
 
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					_user.getUserId(), commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					RandomTestUtil.randomString(), RandomTestUtil.nextDouble(),
+					null);
+
 		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), commerceChannel.getGroupId(),
 			address.getAddressId(), accountEntry.getAccountEntryId(),
 			commerceCurrency.getCode(),
 			CommerceOrderConstants.TYPE_PK_FULFILLMENT, 0,
-			address.getAddressId(), RandomTestUtil.randomString(),
+			address.getAddressId(),
+			commercePaymentMethodGroupRel.getPaymentIntegrationKey(),
 			RandomTestUtil.randomString(), 1, 1, 2022, 0, 0,
 			CommerceOrderConstants.ORDER_STATUS_OPEN,
 			CommercePaymentMethodConstants.TYPE_OFFLINE,
@@ -375,6 +387,10 @@ public class ShippingAddressResourceTest
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Inject
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 	private Country _country;
 

@@ -145,21 +145,6 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 						LocaleUtil.US, RandomTestUtil.randomString()),
 					RandomTestUtil.nextDouble());
 
-		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
-			_user.getUserId(), _commerceChannel.getGroupId(),
-			_address.getAddressId(), _accountEntry.getAccountEntryId(),
-			_commerceCurrency.getCode(),
-			CommerceOrderConstants.TYPE_PK_FULFILLMENT,
-			_commerceShippingMethod.getCommerceShippingMethodId(),
-			_address.getAddressId(), "money-order",
-			RandomTestUtil.randomString(), 1, 1, 2022, 0, 0,
-			CommerceOrderConstants.ORDER_STATUS_OPEN,
-			CommercePaymentMethodConstants.TYPE_OFFLINE,
-			RandomTestUtil.randomString(), BigDecimal.ONE,
-			_commerceShippingFixedOption.getKey(), BigDecimal.ONE,
-			BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, BigDecimal.TEN,
-			BigDecimal.TEN, _serviceContext);
-
 		_commercePaymentMethodGroupRel =
 			_commercePaymentMethodGroupRelLocalService.
 				addCommercePaymentMethodGroupRel(
@@ -168,7 +153,24 @@ public class TermResourceTest extends BaseTermResourceTestCase {
 						LocaleUtil.US, RandomTestUtil.randomString()),
 					Collections.singletonMap(
 						LocaleUtil.US, RandomTestUtil.randomString()),
-					true, null, "money-order", 1, null);
+					true, null, RandomTestUtil.randomString(),
+					RandomTestUtil.nextDouble(), null);
+
+		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
+			_user.getUserId(), _commerceChannel.getGroupId(),
+			_address.getAddressId(), _accountEntry.getAccountEntryId(),
+			_commerceCurrency.getCode(),
+			CommerceOrderConstants.TYPE_PK_FULFILLMENT,
+			_commerceShippingMethod.getCommerceShippingMethodId(),
+			_address.getAddressId(),
+			_commercePaymentMethodGroupRel.getPaymentIntegrationKey(),
+			RandomTestUtil.randomString(), 1, 1, 2022, 0, 0,
+			CommerceOrderConstants.ORDER_STATUS_OPEN,
+			CommercePaymentMethodConstants.TYPE_OFFLINE,
+			RandomTestUtil.randomString(), BigDecimal.ONE,
+			_commerceShippingFixedOption.getKey(), BigDecimal.ONE,
+			BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE, BigDecimal.TEN,
+			BigDecimal.TEN, _serviceContext);
 	}
 
 	@Override

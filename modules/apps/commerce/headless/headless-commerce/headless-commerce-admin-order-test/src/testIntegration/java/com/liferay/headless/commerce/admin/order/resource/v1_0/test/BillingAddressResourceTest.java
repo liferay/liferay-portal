@@ -14,6 +14,8 @@ import com.liferay.commerce.constants.CommercePaymentMethodConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
+import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -90,12 +92,22 @@ public class BillingAddressResourceTest
 		CommerceChannel commerceChannel = CommerceTestUtil.addCommerceChannel(
 			testGroup.getGroupId(), commerceCurrency.getCode());
 
+		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
+			_commercePaymentMethodGroupRelLocalService.
+				addCommercePaymentMethodGroupRel(
+					_user.getUserId(), commerceChannel.getGroupId(),
+					RandomTestUtil.randomLocaleStringMap(),
+					RandomTestUtil.randomLocaleStringMap(), true, null,
+					RandomTestUtil.randomString(), RandomTestUtil.nextDouble(),
+					null);
+
 		_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
 			_user.getUserId(), commerceChannel.getGroupId(), 0,
 			_accountEntry.getAccountEntryId(), commerceCurrency.getCode(),
 			CommerceOrderConstants.TYPE_PK_FULFILLMENT, 0, 0,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), 1, 1,
-			2022, 0, 0, CommerceOrderConstants.ORDER_STATUS_OPEN,
+			commercePaymentMethodGroupRel.getPaymentIntegrationKey(),
+			RandomTestUtil.randomString(), 1, 1, 2022, 0, 0,
+			CommerceOrderConstants.ORDER_STATUS_OPEN,
 			CommercePaymentMethodConstants.TYPE_OFFLINE,
 			RandomTestUtil.randomString(), BigDecimal.ONE,
 			RandomTestUtil.randomString(), BigDecimal.ONE, BigDecimal.ONE,
@@ -335,6 +347,10 @@ public class BillingAddressResourceTest
 
 	@Inject
 	private CommerceOrderLocalService _commerceOrderLocalService;
+
+	@Inject
+	private CommercePaymentMethodGroupRelLocalService
+		_commercePaymentMethodGroupRelLocalService;
 
 	private Country _country;
 
