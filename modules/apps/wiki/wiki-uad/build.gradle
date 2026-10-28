@@ -5,6 +5,5 @@ dependencies {
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:user-associated-data:user-associated-data-api")
 	compileOnly project(":apps:wiki:wiki-api")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }

@@ -60,7 +60,6 @@ dependencies {
 	compileInclude group: "org.antlr", name: "antlr-runtime", version: "3.5.3"
 	compileInclude group: "org.antlr", name: "stringtemplate", version: "3.2.1"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
@@ -69,11 +68,9 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:wiki:wiki-api")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation project(":apps:static:portal-configuration:portal-configuration-persistence-api")
-	testImplementation project(":apps:static:portal-file-install:portal-file-install-api")
 }
 
 liferayOSGi {
