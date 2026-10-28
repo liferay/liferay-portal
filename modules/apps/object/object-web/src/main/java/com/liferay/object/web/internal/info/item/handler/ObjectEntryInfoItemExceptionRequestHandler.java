@@ -127,6 +127,8 @@ public class ObjectEntryInfoItemExceptionRequestHandler {
 
 					infoFormValidationExceptionRuleValidation.
 						addCustomValidation(
+							objectValidationRuleResult.
+								getObjectEntryExternalReferenceCode(),
 							_getInfoFieldUniqueId(
 								groupId, infoItemFormProvider,
 								objectDefinitionId,
