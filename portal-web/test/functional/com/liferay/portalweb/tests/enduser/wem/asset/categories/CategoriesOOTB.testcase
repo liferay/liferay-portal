@@ -136,7 +136,7 @@ definition {
 
 	@description = "When Edit the Audience or Stage, default values are For internal use only ON , Allow user to select multiple categories ON, will be associated with web content, won't be required"
 	@priority = 5
-	test CheckAudienceStageDefaultSettings {
+	test ViewGlobalVocabulariesAndAddCategory {
 		property portal.acceptance = "true";
 
 		task ("Go to Global Vocabularies") {
