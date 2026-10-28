@@ -2888,8 +2888,13 @@ public class DefaultObjectEntryManagerImpl
 			new LinkedHashMap<>();
 
 		Map<String, Object> properties = objectEntry.getProperties();
+		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
 
 		for (String key : properties.keySet()) {
+			if (objectFieldBag.getObjectField(key) != null) {
+				continue;
+			}
+
 			ObjectRelationship objectRelationship =
 				_objectRelationshipLocalService.
 					fetchObjectRelationshipByObjectDefinitionId(
