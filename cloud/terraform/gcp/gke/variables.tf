@@ -6,10 +6,6 @@ variable "control_plane_logging_config" {
 		}
 	)
 }
-variable "deletion_protection" {
-	default=true
-	type=bool
-}
 variable "deployment_name" {
 	type=string
 	validation {

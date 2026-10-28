@@ -17,7 +17,7 @@ resource "google_container_cluster" "primary" {
 		evaluation_mode="PROJECT_SINGLETON_POLICY_ENFORCE"
 	}
 	datapath_provider="ADVANCED_DATAPATH"
-	deletion_protection=var.deletion_protection
+	deletion_protection=false
 	depends_on=[google_compute_subnetwork.subnet]
 	dynamic "authenticator_groups_config" {
 		content {
