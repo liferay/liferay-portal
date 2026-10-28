@@ -25,6 +25,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
 /**
  * @author Calum Ragan
  */
@@ -41,6 +44,8 @@ public class UpstreamJobHealthMonitorTest
 		JenkinsMasterTestUtil.getJenkinsMaster(
 			_MASTER_NAME, "https://test-9-1.liferay.com/",
 			"http://" + _MASTER_NAME);
+
+		_currentTimeMillis = JenkinsResultsParserUtil.getCurrentTimeMillis();
 	}
 
 	@Test
@@ -275,6 +280,25 @@ public class UpstreamJobHealthMonitorTest
 	}
 
 	@Test
+	public void testExecuteTriggerLatency() throws Exception {
+		String sha = _newSHA();
+
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(0, sha),
+			_newBuildJSONObject(3600, _newInvocationDescription(sha)));
+
+		_testExecuteTriggerLatency(MonitorResult.Status.OK, 3600);
+		_testExecuteTriggerLatency(MonitorResult.Status.WARN, 3599);
+
+		_setURLReaderOutput(
+			_newHeadCommitJSONObject(3600, _newSHA()),
+			_newBuildJSONObject(0, _newInvocationDescription(_newSHA())));
+
+		_testExecuteTriggerLatency(MonitorResult.Status.OK, 3600);
+		_testExecuteTriggerLatency(MonitorResult.Status.WARN, 3599);
+	}
+
+	@Test
 	public void testGetLinkURLs() {
 		UpstreamJobHealthMonitor upstreamJobHealthMonitor =
 			_newUpstreamJobHealthMonitor(_newMonitorProperties());
@@ -301,29 +325,35 @@ public class UpstreamJobHealthMonitorTest
 		UpstreamJobHealthMonitor upstreamJobHealthMonitor =
 			_newUpstreamJobHealthMonitor(monitorProperties);
 
-		return upstreamJobHealthMonitor.execute();
+		try (MockedStatic<JenkinsResultsParserUtil>
+				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
+					JenkinsResultsParserUtil.class,
+					Mockito.CALLS_REAL_METHODS)) {
+
+			jenkinsResultsParserUtilMockedStatic.when(
+				JenkinsResultsParserUtil::getCurrentTimeMillis
+			).thenReturn(
+				_currentTimeMillis
+			);
+
+			return upstreamJobHealthMonitor.execute();
+		}
 	}
 
 	private JSONObject _newBuildJSONObject(
 		long ageSeconds, String description) {
 
-		long currentTimeMillis =
-			JenkinsResultsParserUtil.getCurrentTimeMillis();
-
 		return new JSONObject(
 		).put(
 			"description", description
 		).put(
-			"timestamp", currentTimeMillis - (ageSeconds * 1000)
+			"timestamp", _currentTimeMillis - (ageSeconds * 1000)
 		);
 	}
 
 	private JSONObject _newHeadCommitJSONObject(long ageSeconds, String sha) {
-		long currentTimeMillis =
-			JenkinsResultsParserUtil.getCurrentTimeMillis();
-
 		Instant instant = Instant.ofEpochMilli(
-			currentTimeMillis - (ageSeconds * 1000));
+			_currentTimeMillis - (ageSeconds * 1000));
 
 		return new JSONObject(
 		).put(
@@ -399,6 +429,20 @@ public class UpstreamJobHealthMonitorTest
 		}
 	}
 
+	private void _testExecuteTriggerLatency(
+		MonitorResult.Status expectedStatus, long triggerLatency) {
+
+		Properties monitorProperties = _newMonitorProperties();
+
+		monitorProperties.setProperty(
+			"monitor[a].threshold[trigger.latency]",
+			String.valueOf(triggerLatency));
+
+		MonitorResult monitorResult = _execute(monitorProperties);
+
+		testEquals(expectedStatus, monitorResult.getStatus());
+	}
+
 	private void _testUpstreamJobHealthMonitorInvalidProperty(
 		String name, String value) {
 
@@ -450,5 +494,7 @@ public class UpstreamJobHealthMonitorTest
 			"(master)/api/json";
 
 	private static final String _MASTER_NAME = "test-9-1";
+
+	private long _currentTimeMillis;
 
 }
