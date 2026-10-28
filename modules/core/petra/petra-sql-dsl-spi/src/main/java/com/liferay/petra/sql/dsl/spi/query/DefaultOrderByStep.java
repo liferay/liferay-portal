@@ -7,12 +7,17 @@ package com.liferay.petra.sql.dsl.spi.query;
 
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.Table;
+import com.liferay.petra.sql.dsl.expression.Expression;
 import com.liferay.petra.sql.dsl.query.LimitStep;
 import com.liferay.petra.sql.dsl.query.OrderByStep;
 import com.liferay.petra.sql.dsl.query.sort.OrderByExpression;
 import com.liferay.petra.sql.dsl.query.sort.OrderByInfo;
+import com.liferay.petra.sql.dsl.spi.expression.DSLFunction;
+import com.liferay.petra.sql.dsl.spi.expression.DSLFunctionType;
 import com.liferay.petra.sql.dsl.spi.expression.DefaultAlias;
 import com.liferay.petra.sql.dsl.spi.query.sort.DefaultOrderByExpression;
+
+import java.sql.Types;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +55,16 @@ public interface DefaultOrderByStep extends DefaultLimitStep, OrderByStep {
 			}
 
 			if (field.equals(column.getName())) {
+				Expression<?> expression = column;
+
+				if (column.getSQLType() == Types.CLOB) {
+					expression = new DSLFunction<>(
+						DSLFunctionType.CAST_CLOB_TEXT, column);
+				}
+
 				orderByExpressions.add(
 					new DefaultOrderByExpression(
-						column, orderByInfo.isAscending(field)));
+						expression, orderByInfo.isAscending(field)));
 			}
 			else {
 				orderByExpressions.add(
