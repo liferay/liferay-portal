@@ -32,39 +32,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-152844. AC-8. Verify that Cookie Consent panel could be enabled and customized on a Site page."
-	@priority = 5
-	test CookiesConsentPanelCouldBeEnabledAndCustomizedOnASitePage {
-		property portal.acceptance = "false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: a site configured to show the Banner") {
-			JSONLayout.addPublicLayout(
-				groupName = "Guest",
-				layoutName = "PolicyPage");
-
-			JSONLayout.addWidgetToPublicLayout(
-				groupName = "Guest",
-				layoutName = "PolicyPage",
-				widgetName = "Type Facet");
-		}
-
-		task ("When: the End User opens the 'Cookie Consent' panel and clicks on the 'Cookie Policy Link's Display Link Text' with the configured URL as a link on that after the Description") {
-			CookieNavigator.gotoInstanceSettings(portlet = "Consent Panel");
-
-			CookieConsentAdmin.setCookiePolicyLink(cookiePolicyLink = "/web/guest/policypage");
-
-			CookieBanner.openCookieConsentPanel();
-
-			CookieConsentPanel.clickOnPolicyLink(cookiePolicyLink = "/web/guest/policypage");
-		}
-
-		task ("Then: they go to the 'Cookie Policy Link' page.") {
-			CookieHelper.verifyPolicyPageIsVisible(policyLink = "/web/guest/policypage");
-		}
-	}
-
 	@description = "This is a use case for LPS-168413. TC-1: Verify that save cookie preference via Cookies Banner Configuration widget at site level."
 	@priority = 5
 	test CookiesConsentPanelCouldSaveCookieSettingsViaPortletAtSiteLevel {

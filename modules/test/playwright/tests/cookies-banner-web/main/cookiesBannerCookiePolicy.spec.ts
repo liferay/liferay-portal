@@ -6,8 +6,12 @@
 import {expect, mergeTests} from '@playwright/test';
 
 import {consentManagerConfigurationPageTest} from '../../../fixtures/consentManagerConfigurationPageTest';
+import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
+import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {systemSettingsPageTest} from '../../../fixtures/systemSettingsPageTest';
+import getRandomString from '../../../utils/getRandomString';
 import {
 	clearConsentCookies,
 	resetAllConsentManagerConfigurations,
@@ -23,6 +27,11 @@ const hideableCookieTypes = [
 
 export const test = mergeTests(
 	consentManagerConfigurationPageTest,
+	dataApiHelpersTest,
+	featureFlagsTest({
+		'LPS-178052': {enabled: true},
+	}),
+	isolatedSiteTest,
 	loginTest(),
 	systemSettingsPageTest
 );
@@ -290,3 +299,88 @@ async function expectCookiesBannerTypes(
 
 	await newPage.close();
 }
+
+test(
+	'Privacy and cookie policy links can point to a page of a site',
+	{tag: ['@LPS-148320', '@LPS-152844']},
+	async ({apiHelpers, page, site, systemSettingsPage}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const policyPagePath = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+
+		await test.step('Enable the Consent Manager', async () => {
+			await updateConsentManagerConfiguration(page, {
+				enabled: true,
+				forceReload: true,
+			});
+		});
+
+		await test.step('Point the Cookie Banner privacy policy link to the site page', async () => {
+			await systemSettingsPage.goToSystemSetting(
+				'Privacy',
+				'Cookie Banner'
+			);
+
+			await page.getByLabel('Privacy Policy Link').fill(policyPagePath);
+
+			await saveOrUpdateConfiguration(page);
+		});
+
+		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
+
+		await test.step('Follow the Cookie Banner privacy policy link', async () => {
+			await page.goto('/');
+
+			await cookiesBanner
+				.getByRole('link', {
+					name: 'Visit our privacy policy to learn more.',
+				})
+				.click();
+
+			await expect(page).toHaveURL(
+				(url) => url.pathname === policyPagePath
+			);
+		});
+
+		await test.step('Point the Cookie Panel cookie policy link to the site page', async () => {
+			await systemSettingsPage.goToSystemSetting(
+				'Privacy',
+				'Cookie Panel'
+			);
+
+			await page.getByLabel('Cookie Policy Link').fill(policyPagePath);
+
+			await saveOrUpdateConfiguration(page);
+		});
+
+		await test.step('Follow the Cookie Panel cookie policy link', async () => {
+			await page.goto('/');
+
+			await cookiesBanner
+				.getByRole('button', {name: 'Configuration'})
+				.click();
+
+			const policyPagePromise = page.context().waitForEvent('page');
+
+			await page
+				.frameLocator('#cookiesBannerConfiguration iframe')
+				.locator(`a[href="${policyPagePath}"]`)
+				.click();
+
+			const policyPage = await policyPagePromise;
+
+			await expect(policyPage).toHaveURL(
+				(url) => url.pathname === policyPagePath
+			);
+
+			await policyPage.close();
+
+			await page
+				.getByRole('button', {name: 'Use Necessary Cookies Only'})
+				.click();
+		});
+	}
+);
