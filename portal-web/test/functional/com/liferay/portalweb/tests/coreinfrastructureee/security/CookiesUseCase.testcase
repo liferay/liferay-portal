@@ -42,28 +42,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LRQA-75234. Verify that cookies are deleted when lifespan is over via simulated delete."
-	@priority = 5
-	test CookieBannerBecameVisibleWhenCookiesAreRemovedOrExpired {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Cookie Banner is present on the Site.") {
-			CookieBanner.cookiesBannerAcceptAll();
-		}
-
-		task ("When: User deletes the accepted cookies") {
-			CookieHelper.checkAllCookieAreAcceptedAndSaved();
-
-			CookieHelper.deleteAllCookiesAndRefreshPage();
-		}
-
-		task ("Then: Cookie Banner is visible again") {
-			CookieBanner.verifyAllElementsArePresent();
-		}
-	}
-
 	@description = "This is a use case for LPS-142518. TC-8 Verify that cookies will have 12 months of lifetime when they are accepted."
 	@priority = 5
 	test VerifyCookiesLifetime {

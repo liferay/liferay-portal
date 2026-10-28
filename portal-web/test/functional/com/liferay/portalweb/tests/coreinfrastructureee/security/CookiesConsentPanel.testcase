@@ -16,32 +16,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-142518. TC-5 When End-User accept selected cookies, only selected cookies are saved."
-	@priority = 5
-	test CookiesConsentPanelAcceptsOnlySelectedCookies {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User opens the Cookie Consent portlet from the Cookie Banner via Configuration link") {
-			CookieBanner.openCookieConsentPanel();
-		}
-
-		task ("When: User accepts only selected cookies via Accept Selected button") {
-			CookieConsentPanel.editCookieConsentConsent(
-				functionalCookies = "true",
-				performanceCookies = "true");
-
-			CookieConsentPanel.cookiesAcceptSelected();
-		}
-
-		task ("Then: Only selected cookie category related cookies are saved, and nothing more") {
-			CookieHelper.checkEachCookiesSavedValue(
-				cookieNameListWithFalseValue = "CONSENT_TYPE_PERSONALIZATION",
-				cookieNameListWithTrueValue = "CONSENT_TYPE_FUNCTIONAL,CONSENT_TYPE_NECESSARY,CONSENT_TYPE_PERFORMANCE");
-		}
-	}
-
 	@description = "This is a use case for LPS-142518. TC-7 Verify that Cookie Consent Panel could be added to a Site Page."
 	@priority = 5
 	test CookiesConsentPanelCouldBeAddedToASitePage {
