@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutSetPersistence;
 import com.liferay.portal.kernel.transaction.TransactionCallbackUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
@@ -38,6 +39,7 @@ import java.net.UnknownHostException;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -114,12 +116,20 @@ public class VirtualHostLocalServiceImpl
 		VirtualHost virtualHost = virtualHostPersistence.fetchByHostname(
 			virtualHostname);
 
-		if ((virtualHost == null) && virtualHostname.contains("xn--")) {
-			virtualHost = virtualHostPersistence.fetchByHostname(
-				IDN.toUnicode(virtualHostname));
+		if (virtualHost != null) {
+			return virtualHost;
 		}
 
-		return virtualHost;
+		for (String idnVirtualHostname : _getIDNHostnames(virtualHostname)) {
+			virtualHost = virtualHostPersistence.fetchByHostname(
+				idnVirtualHostname);
+
+			if (virtualHost != null) {
+				return virtualHost;
+			}
+		}
+
+		return null;
 	}
 
 	@Override
@@ -179,8 +189,15 @@ public class VirtualHostLocalServiceImpl
 	public long getVirtualHostsCount(
 		long excludedLayoutSetId, String[] virtualHostNames) {
 
+		Set<String> hostnames = new HashSet<>();
+
+		for (String virtualHostName : virtualHostNames) {
+			hostnames.add(virtualHostName);
+			hostnames.addAll(_getIDNHostnames(virtualHostName));
+		}
+
 		return virtualHostPersistence.countByNotL_H(
-			excludedLayoutSetId, virtualHostNames);
+			excludedLayoutSetId, ArrayUtil.toStringArray(hostnames));
 	}
 
 	@Override
@@ -294,6 +311,29 @@ public class VirtualHostLocalServiceImpl
 		}
 
 		return virtualHosts;
+	}
+
+	private Set<String> _getIDNHostnames(String hostname) {
+		Set<String> idnHostnames = new HashSet<>();
+
+		idnHostnames.add(IDN.toUnicode(hostname));
+
+		try {
+			String asciiHostname = IDN.toASCII(hostname);
+
+			if (hostname.equals(IDN.toUnicode(asciiHostname))) {
+				idnHostnames.add(asciiHostname);
+			}
+		}
+		catch (IllegalArgumentException illegalArgumentException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(illegalArgumentException);
+			}
+		}
+
+		idnHostnames.remove(hostname);
+
+		return idnHostnames;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

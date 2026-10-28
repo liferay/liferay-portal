@@ -1918,6 +1918,14 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 				virtualHostname);
 
 			if (virtualHost == null) {
+				long virtualHostsCount =
+					_virtualHostLocalService.getVirtualHostsCount(
+						0, new String[] {virtualHostname});
+
+				if (virtualHostsCount > 0) {
+					throw new CompanyVirtualHostException();
+				}
+
 				_virtualHostLocalService.updateVirtualHosts(
 					companyId, 0,
 					TreeMapBuilder.put(
