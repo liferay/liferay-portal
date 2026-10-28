@@ -22,6 +22,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	testImplementation project(":apps:portal-odata:portal-odata-api")
 }
