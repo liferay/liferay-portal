@@ -56,7 +56,6 @@ import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMappin
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMetricsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.FieldMappingValuesDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.FieldValuesDisplay;
-import com.liferay.osb.faro.web.internal.model.display.contacts.LiferaySyncCountsDisplay;
 import com.liferay.osb.faro.web.internal.param.FaroParam;
 import com.liferay.osb.faro.web.internal.search.FaroSearchContext;
 import com.liferay.osb.faro.web.internal.util.FieldMappingUtil;
@@ -997,21 +996,6 @@ public class DataSourceFaroController extends BaseFaroController {
 				return new FieldValuesDisplay(
 					dataSourceField.getName(), dataSourceField.getValues());
 			});
-	}
-
-	@Path("/{id}/liferay/sync_counts")
-	@POST
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public LiferaySyncCountsDisplay getLiferaySyncCountsDisplay(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@DefaultValue(StringPool.BLANK) @FormParam("contactsConfiguration")
-				FaroParam<LiferayProvider.ContactsConfiguration>
-					contactsConfigurationFaroParam)
-		throws Exception {
-
-		return new LiferaySyncCountsDisplay(
-			faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-			contactsConfigurationFaroParam.getValue(), contactsEngineClient);
 	}
 
 	@GET

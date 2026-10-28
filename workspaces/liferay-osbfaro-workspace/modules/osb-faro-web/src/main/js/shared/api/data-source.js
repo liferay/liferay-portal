@@ -127,14 +127,6 @@ export const fetchToken = (groupId, dataSourceId) =>
 		}token`,
 	});
 
-export function fetchLiferaySyncCounts({contactsConfiguration, groupId, id}) {
-	return sendRequest({
-		data: {contactsConfiguration},
-		method: 'POST',
-		path: `contacts/${groupId}/data_source/${id}/liferay/sync_counts`,
-	});
-}
-
 export function createCSV({fieldMappingMaps, fileVersionId, groupId, name}) {
 	const data = pickBy(
 		{

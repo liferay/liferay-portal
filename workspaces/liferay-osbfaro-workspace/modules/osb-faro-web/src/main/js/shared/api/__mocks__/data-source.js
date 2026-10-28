@@ -42,10 +42,6 @@ export const fetchFieldValues = jest.fn(() =>
 	])
 );
 
-export const fetchLiferaySyncCounts = jest.fn(() =>
-	Promise.resolve(data.mockLiferaySyncCounts())
-);
-
 export const fetchMappings = jest.fn(() =>
 	Promise.resolve([data.mockMapping()])
 );

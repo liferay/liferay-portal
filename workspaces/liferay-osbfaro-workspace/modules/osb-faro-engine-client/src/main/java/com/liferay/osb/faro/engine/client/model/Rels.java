@@ -133,9 +133,6 @@ public interface Rels {
 	public static final String DATA_SOURCE_DXP_USERS_FIELDS =
 		"data-source-dxp-users-fields";
 
-	public static final String DATA_SOURCE_DXP_USERS_TOTAL =
-		"data-source-dxp-users-total";
-
 	public static final String DATA_SOURCE_FIELDS = "data-source-fields";
 
 	public static final String DATA_SOURCE_METRICS_ACCOUNTS_COUNT =

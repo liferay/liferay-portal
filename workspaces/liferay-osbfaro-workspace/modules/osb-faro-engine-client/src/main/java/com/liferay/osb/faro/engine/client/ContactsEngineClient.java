@@ -62,7 +62,6 @@ import com.liferay.osb.faro.engine.client.model.ProjectUsageMetric;
 import com.liferay.osb.faro.engine.client.model.Provider;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.SegmentActivation;
-import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
 import com.liferay.osb.faro.engine.client.util.FilterBuilder;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.model.FaroProject;
@@ -405,12 +404,6 @@ public interface ContactsEngineClient {
 
 	public DataSource getDataSource(FaroProject faroProject, String id)
 		throws FaroEngineClientException;
-
-	public long getDataSourceDXPTotal(FaroProject faroProject, String id);
-
-	public long getDataSourceDXPTotal(
-		FaroProject faroProject, String id,
-		LiferayProvider.ContactsConfiguration contactsConfiguration);
 
 	public Map<String, List<DataSourceFieldCatalogEntry>>
 		getDataSourceFieldCatalogEntries(

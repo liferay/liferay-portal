@@ -2130,23 +2130,6 @@ public class ContactsEngineClientImpl
 	}
 
 	@Override
-	public long getDataSourceDXPTotal(FaroProject faroProject, String id) {
-		return get(
-			faroProject, Rels.DATA_SOURCE_DXP_USERS_TOTAL, id, Long.class);
-	}
-
-	@Override
-	public long getDataSourceDXPTotal(
-		FaroProject faroProject, String id,
-		LiferayProvider.ContactsConfiguration contactsConfiguration) {
-
-		return post(
-			faroProject, Rels.DATA_SOURCE_DXP_USERS_TOTAL,
-			contactsConfiguration, Long.class,
-			getUriVariables(faroProject, id));
-	}
-
-	@Override
 	public Map<String, List<DataSourceFieldCatalogEntry>>
 		getDataSourceFieldCatalogEntries(
 			FaroProject faroProject, String id, boolean refresh) {

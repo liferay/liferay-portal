@@ -599,17 +599,6 @@ export function mockInterestObject(seed = 0, data = {}) {
 	};
 }
 
-export function mockLiferaySyncCounts(data = {}) {
-	return {
-		allUsersCount: 1000,
-		currentUsersCount: 248,
-		organizationsUsersCount: 140,
-		totalUsersCount: 448,
-		userGroupsUsersCount: 260,
-		...data,
-	};
-}
-
 export function mockMembershipChange(seed = 0, data = {}) {
 	return {
 		dateChanged: getTimestamp(),

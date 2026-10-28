@@ -60,7 +60,6 @@ import com.liferay.osb.faro.engine.client.model.PageVisited;
 import com.liferay.osb.faro.engine.client.model.Provider;
 import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.SegmentActivation;
-import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
 import com.liferay.osb.faro.engine.client.util.FilterBuilder;
 import com.liferay.osb.faro.engine.client.util.OrderByField;
 import com.liferay.osb.faro.model.FaroProject;
@@ -779,20 +778,6 @@ public abstract class BaseMockContactsEngineClientImpl
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getDataSource(faroProject, id);
-	}
-
-	@Override
-	public long getDataSourceDXPTotal(FaroProject faroProject, String id) {
-		return contactsEngineClient.getDataSourceDXPTotal(faroProject, id);
-	}
-
-	@Override
-	public long getDataSourceDXPTotal(
-		FaroProject faroProject, String id,
-		LiferayProvider.ContactsConfiguration contactsConfiguration) {
-
-		return contactsEngineClient.getDataSourceDXPTotal(
-			faroProject, id, contactsConfiguration);
 	}
 
 	@Override
