@@ -446,7 +446,12 @@ public class GitUtil {
 			_exitValue = exitValue;
 			_standardError = standardError;
 
-			if (standardOut.endsWith("\nFinished executing Bash commands.")) {
+			if (standardOut.equals("Finished executing Bash commands.")) {
+				_standardOut = "";
+			}
+			else if (standardOut.endsWith(
+						"\nFinished executing Bash commands.")) {
+
 				_standardOut = standardOut.substring(
 					0,
 					standardOut.indexOf("\nFinished executing Bash commands."));
