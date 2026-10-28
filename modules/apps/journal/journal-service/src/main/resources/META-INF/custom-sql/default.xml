@@ -35,7 +35,8 @@
 					(JournalArticle.version < tempJournalArticle.version)
 			WHERE
 				(JournalArticle.groupId = ?) AND
-				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] JournalArticle.status = ?) AND
+				(JournalArticle.status = ?) AND
+				[$VIEWABLE_STATUS$] AND
 				(tempJournalArticle.id_ IS NULL)
 		]]>
 	</sql>
@@ -102,7 +103,8 @@
 					(JournalArticleLocalization.languageId = ?)
 			WHERE
 				(JournalArticle.groupId = ?) AND
-				([$OWNER_USER_ID$] [$OWNER_USER_ID_AND_OR_CONNECTOR$] JournalArticle.status = ?) AND
+				(JournalArticle.status = ?) AND
+				[$VIEWABLE_STATUS$] AND
 				(tempJournalArticle.id_ IS NULL)
 			ORDER BY
 				JournalArticle.id_ ASC

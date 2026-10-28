@@ -232,6 +232,9 @@ public class JournalArticleFinderImpl
 			String sql = _customSQL.get(
 				getClass(), COUNT_BY_G_ST, queryDefinition, "JournalArticle");
 
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
+
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, JournalArticle.class.getName(),
@@ -245,9 +248,6 @@ public class JournalArticleFinderImpl
 			QueryPos queryPos = QueryPos.getInstance(sqlQuery);
 
 			queryPos.add(groupId);
-
-			_addOwnerUserId(queryDefinition, queryPos);
-
 			queryPos.add(status);
 
 			Iterator<Long> iterator = sqlQuery.iterate();
@@ -445,6 +445,9 @@ public class JournalArticleFinderImpl
 
 			sql = _customSQL.replaceOrderBy(sql, orderByComparator);
 
+			sql = JournalArticleViewableStatusUtil.replaceViewableStatus(
+				groupId, inlineSQLHelper, sql);
+
 			if (inlineSQLHelper) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, JournalArticle.class.getName(),
@@ -466,9 +469,6 @@ public class JournalArticleFinderImpl
 			}
 
 			queryPos.add(groupId);
-
-			_addOwnerUserId(queryDefinition, queryPos);
-
 			queryPos.add(status);
 
 			return (List<JournalArticle>)QueryUtil.list(
