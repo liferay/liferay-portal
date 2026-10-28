@@ -86,6 +86,17 @@ import {config as designLibraryWebConfig} from './tests/design-library-web/main/
 import {config as digitalSalesRoomWebConfig} from './tests/digital-sales-room-web/main/config';
 import {config as dispatchWebConfig} from './tests/dispatch-web/main/config';
 import {config as documentLibraryWebConfig} from './tests/document-library-web/main/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia621015Config} from './tests/document-library-web/upgrade-documents-and-media-621015/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia621021Config} from './tests/document-library-web/upgrade-documents-and-media-621021/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia625Config} from './tests/document-library-web/upgrade-documents-and-media-625/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia701015Config} from './tests/document-library-web/upgrade-documents-and-media-701015/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia71105Config} from './tests/document-library-web/upgrade-documents-and-media-71105/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia72104Config} from './tests/document-library-web/upgrade-documents-and-media-72104/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMedia73101Config} from './tests/document-library-web/upgrade-documents-and-media-73101/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit701015Config} from './tests/document-library-web/upgrade-documents-and-media-file-size-limit-701015/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit71105Config} from './tests/document-library-web/upgrade-documents-and-media-file-size-limit-71105/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit72104Config} from './tests/document-library-web/upgrade-documents-and-media-file-size-limit-72104/config';
+import {config as documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit73101Config} from './tests/document-library-web/upgrade-documents-and-media-file-size-limit-73101/config';
 import {config as dynamicDataMappingFormWebConfig} from './tests/dynamic-data-mapping-form-web/main/config';
 import {config as e2eCmsDxpConfig} from './tests/e2e-cms-dxp/main/config';
 import {config as expandoWebConfig} from './tests/expando-web/main/config';
@@ -370,6 +381,17 @@ export default defineConfig({
 		digitalSalesRoomWebConfig,
 		dispatchWebConfig,
 		documentLibraryWebConfig,
+		documentLibraryWebUpgradeDocumentsAndMedia621015Config,
+		documentLibraryWebUpgradeDocumentsAndMedia621021Config,
+		documentLibraryWebUpgradeDocumentsAndMedia625Config,
+		documentLibraryWebUpgradeDocumentsAndMedia701015Config,
+		documentLibraryWebUpgradeDocumentsAndMedia71105Config,
+		documentLibraryWebUpgradeDocumentsAndMedia72104Config,
+		documentLibraryWebUpgradeDocumentsAndMedia73101Config,
+		documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit701015Config,
+		documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit71105Config,
+		documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit72104Config,
+		documentLibraryWebUpgradeDocumentsAndMediaFileSizeLimit73101Config,
 		dynamicDataMappingFormWebConfig,
 		e2eCmsDxpConfig,
 		expandoWebConfig,
