@@ -14,7 +14,6 @@ dependencies {
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:site-navigation:site-navigation-taglib")
-	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":apps:user-groups-admin:user-groups-admin-api")
 	compileOnly project(":apps:user:user-taglib")
 	compileOnly project(":apps:users-admin:users-admin-api")

@@ -6,7 +6,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-api")
 	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
-	testIntegrationImplementation project(":apps:portal-security:portal-security-ldap-api")
 	testIntegrationImplementation project(":apps:portal-security:portal-security-ldap-test-util")
 	testIntegrationImplementation project(":apps:ratings:ratings-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
