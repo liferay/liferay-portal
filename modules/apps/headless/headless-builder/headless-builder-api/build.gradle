@@ -1,4 +1,3 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 }
