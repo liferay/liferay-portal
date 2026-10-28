@@ -5,6 +5,7 @@
 
 package com.liferay.exportimport.kernel.exception;
 
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 
 /**
@@ -12,20 +13,38 @@ import com.liferay.portal.kernel.exception.PortalException;
  */
 public class ExportImportConfigurationNameException extends PortalException {
 
-	public ExportImportConfigurationNameException() {
+	public static class MustNotExceedMaximumLength
+		extends ExportImportConfigurationNameException {
+
+		public MustNotExceedMaximumLength(String name, int nameMaxLength) {
+			super(
+				StringBundler.concat(
+					"Name ", name, " must have fewer than ", nameMaxLength,
+					" characters"));
+
+			this.name = name;
+			this.nameMaxLength = nameMaxLength;
+		}
+
+		public final String name;
+		public final int nameMaxLength;
+
 	}
 
-	public ExportImportConfigurationNameException(String msg) {
+	private ExportImportConfigurationNameException() {
+	}
+
+	private ExportImportConfigurationNameException(String msg) {
 		super(msg);
 	}
 
-	public ExportImportConfigurationNameException(
+	private ExportImportConfigurationNameException(
 		String msg, Throwable throwable) {
 
 		super(msg, throwable);
 	}
 
-	public ExportImportConfigurationNameException(Throwable throwable) {
+	private ExportImportConfigurationNameException(Throwable throwable) {
 		super(throwable);
 	}
 
