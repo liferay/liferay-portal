@@ -33,8 +33,6 @@ if (portletTitleBasedNavigation) {
 }
 %>
 
-<liferay-ui:success key='<%= portletDisplay.getId() + "requestProcessed" %>' message="your-request-completed-successfully" />
-
 <div class="<%= portletTitleBasedNavigation ? "document-libray-preview-container" : "closed sidenav-container sidenav-right" %>" id="<%= liferayPortletResponse.getNamespace() + (portletTitleBasedNavigation ? "FileEntry" : ("infoPanelId_" + fileEntry.getFileEntryId())) %>">
 	<c:if test="<%= portletTitleBasedNavigation %>">
 		<liferay-util:include page="/document_library/file_entry_upper_tbar.jsp" servletContext="<%= application %>" />
