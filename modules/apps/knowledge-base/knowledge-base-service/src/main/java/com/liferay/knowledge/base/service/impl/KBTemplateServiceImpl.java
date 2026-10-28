@@ -15,6 +15,7 @@ import com.liferay.knowledge.base.service.base.KBTemplateServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -47,16 +48,9 @@ public class KBTemplateServiceImpl extends KBTemplateServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_ADMIN)) {
-			_adminPortletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				KBActionKeys.ADD_KB_TEMPLATE);
-		}
-		else if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
-			_displayPortletResourcePermission.check(
-				getPermissionChecker(), serviceContext.getScopeGroupId(),
-				KBActionKeys.ADD_KB_TEMPLATE);
-		}
+		_checkPortletResourcePermission(
+			KBActionKeys.ADD_KB_TEMPLATE, serviceContext.getScopeGroupId(),
+			portletId);
 
 		return kbTemplateLocalService.addKBTemplate(
 			getUserId(), title, content, serviceContext);
@@ -201,6 +195,23 @@ public class KBTemplateServiceImpl extends KBTemplateServiceBaseImpl {
 
 		return kbTemplateLocalService.updateKBTemplate(
 			kbTemplateId, title, content, serviceContext);
+	}
+
+	private void _checkPortletResourcePermission(
+			String actionId, long groupId, String portletId)
+		throws PortalException {
+
+		if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_ADMIN)) {
+			_adminPortletResourcePermission.check(
+				getPermissionChecker(), groupId, actionId);
+		}
+		else if (portletId.equals(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY)) {
+			_displayPortletResourcePermission.check(
+				getPermissionChecker(), groupId, actionId);
+		}
+		else {
+			throw new PrincipalException("Invalid portlet ID " + portletId);
+		}
 	}
 
 	private static final int _INTERVAL = 200;
