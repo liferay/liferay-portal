@@ -2,34 +2,22 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 
-function generate_remote_backend_overrides {
+function get_remote_backend {
 	local configuration_json_file="${1}"
 
 	local bucket_name
 
 	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
 
-	local deployment_name
-
-	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
-
-	local region
-
-	region=$(jq --raw-output '.region' "${configuration_json_file}")
-
-	local directory
-
-	for directory in gke platform
-	do
-		cat > "${ROOT_CLOUD_DIR}/terraform/gcp/${directory}/backend_override.tf" <<EOF
-terraform {
+	cat <<EOF
 	backend "gcs" {
 		bucket="${bucket_name}"
-		prefix="${deployment_name}/${region}/${directory}"
 	}
-}
 EOF
-	done
+}
+
+function get_tfstate_path_setting {
+	echo "prefix=${1}"
 }
 
 function log_in {

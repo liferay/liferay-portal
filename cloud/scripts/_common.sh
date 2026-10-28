@@ -62,6 +62,10 @@ function confirm_teardown {
 	fi
 }
 
+function get_tfstate_prefix {
+	jq --raw-output 'if .tfstate then "\(.deployment_name)/\(.region)/" else "" end' "${1}"
+}
+
 function has_remote_tfstate {
 	jq --exit-status '.tfstate | objects' "${1}" &> /dev/null
 }
@@ -83,12 +87,7 @@ function prepare_terraform_stacks {
 
 	_generate_tfvars "${cloud}" "${configuration_json_file}" "platform"
 
-	if has_remote_tfstate "${configuration_json_file}"
-	then
-		generate_remote_backend_overrides "${configuration_json_file}"
-	else
-		_generate_local_backend_overrides "${cloud}" "${cluster_terraform_stack}" "platform"
-	fi
+	_generate_backend_overrides "${cloud}" "${configuration_json_file}" "${cluster_terraform_stack}" "platform"
 }
 
 function resolve_config_json {
@@ -117,9 +116,15 @@ function set_up {
 
 	_export_terraform_options "${configuration_json_file}"
 
+	local tfstate_prefix
+
+	tfstate_prefix=$(get_tfstate_prefix "${configuration_json_file}")
+
 	echo "Setting up the Kubernetes cluster."
 
-	_init_and_run_terraform "${cloud}" "apply" "${cluster_terraform_stack}"
+	_init_terraform "${cloud}" "${cluster_terraform_stack}" "${tfstate_prefix}"
+
+	run_terraform "${cloud}" "${cluster_terraform_stack}" apply
 
 	echo "Kubernetes cluster setup complete."
 
@@ -131,7 +136,9 @@ function set_up {
 
 	echo "Setting up the Liferay platform."
 
-	_init_and_run_terraform "${cloud}" "apply" "platform"
+	_init_terraform "${cloud}" "platform" "${tfstate_prefix}"
+
+	run_terraform "${cloud}" "platform" apply
 
 	echo "Liferay platform setup complete."
 
@@ -145,7 +152,11 @@ function tear_down {
 
 	_export_terraform_options "${configuration_json_file}"
 
-	run_terraform "${cloud}" "${cluster_terraform_stack}" init
+	local tfstate_prefix
+
+	tfstate_prefix=$(get_tfstate_prefix "${configuration_json_file}")
+
+	_init_terraform "${cloud}" "${cluster_terraform_stack}" "${tfstate_prefix}"
 
 	local cluster_name
 
@@ -164,13 +175,15 @@ function tear_down {
 
 	echo "Destroying the Liferay platform."
 
-	_init_and_run_terraform "${cloud}" "destroy" "platform"
+	_init_terraform "${cloud}" "platform" "${tfstate_prefix}"
+
+	run_terraform "${cloud}" "platform" destroy
 
 	echo "Liferay platform teardown complete."
 
 	echo "Destroying the Kubernetes cluster."
 
-	_init_and_run_terraform "${cloud}" "destroy" "${cluster_terraform_stack}"
+	run_terraform "${cloud}" "${cluster_terraform_stack}" destroy
 
 	echo "Kubernetes cluster teardown complete."
 }
@@ -246,16 +259,24 @@ function _export_terraform_options {
 	export TF_CLI_ARGS_destroy="${terraform_args[*]}"
 }
 
-function _generate_local_backend_overrides {
+function _generate_backend_overrides {
 	local cloud="${1}"
+	local configuration_json_file="${2}"
+
+	local backend=$'\tbackend "local" {}'
+
+	if has_remote_tfstate "${configuration_json_file}"
+	then
+		backend=$(get_remote_backend "${configuration_json_file}")
+	fi
 
 	local terraform_stack
 
-	for terraform_stack in "${@:2}"
+	for terraform_stack in "${@:3}"
 	do
 		cat > "${ROOT_CLOUD_DIR}/terraform/${cloud}/${terraform_stack}/backend_override.tf" <<EOF
 terraform {
-	backend "local" {}
+${backend}
 }
 EOF
 	done
@@ -275,14 +296,19 @@ function _generate_tfvars {
 	echo "${tfvars_file} was generated successfully."
 }
 
-function _init_and_run_terraform {
+function _init_terraform {
 	local cloud="${1}"
-	local terraform_command="${2}"
-	local terraform_stack="${3}"
+	local terraform_stack="${2}"
+	local tfstate_prefix="${3}"
 
-	run_terraform "${cloud}" "${terraform_stack}" init
+	local init_args=()
 
-	run_terraform "${cloud}" "${terraform_stack}" "${terraform_command}"
+	if [[ -n ${tfstate_prefix} ]]
+	then
+		init_args+=("-backend-config=$(get_tfstate_path_setting "${tfstate_prefix}${terraform_stack}")")
+	fi
+
+	run_terraform "${cloud}" "${terraform_stack}" init "${init_args[@]}"
 }
 
 function _install_liferay_platform_chart {

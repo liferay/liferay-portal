@@ -82,10 +82,6 @@ function _delete_tfstate_bucket {
 
 	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
 
-	local deployment_name
-
-	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
-
 	local region
 
 	region=$(jq --raw-output '.region' "${configuration_json_file}")
@@ -106,9 +102,13 @@ function _delete_tfstate_bucket {
 			--query '[Versions, DeleteMarkers][].{Key: Key, VersionId: VersionId}' \
 			--region "${region}")
 
+	local tfstate_prefix
+
+	tfstate_prefix=$(get_tfstate_prefix "${configuration_json_file}")
+
 	local foreign_object_count
 
-	foreign_object_count=$(jq --arg prefix "${deployment_name}/${region}/" '[.[] | select(.Key | startswith($prefix) | not)] | length' <<< "${object_versions_json}")
+	foreign_object_count=$(jq --arg prefix "${tfstate_prefix}" '[.[] | select(.Key | startswith($prefix) | not)] | length' <<< "${object_versions_json}")
 
 	if [ ${foreign_object_count} -gt 0 ]
 	then

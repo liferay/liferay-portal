@@ -45,10 +45,6 @@ function _delete_tfstate_bucket {
 
 	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
 
-	local deployment_name
-
-	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
-
 	local project_id
 
 	project_id=$(jq --raw-output '.project_id' "${configuration_json_file}")
@@ -64,6 +60,10 @@ function _delete_tfstate_bucket {
 		return
 	fi
 
+	local tfstate_prefix
+
+	tfstate_prefix=$(get_tfstate_prefix "${configuration_json_file}")
+
 	local foreign_object_count
 
 	foreign_object_count=$( \
@@ -72,7 +72,7 @@ function _delete_tfstate_bucket {
 			--all-versions \
 			--project "${project_id}" \
 			--recursive | \
-		jq --arg prefix "gs://${bucket_name}/${deployment_name}/${region}/" --raw-input --slurp '[split("\n")[] | select(test("#[0-9]+$")) | select(startswith($prefix) | not)] | length')
+		jq --arg prefix "gs://${bucket_name}/${tfstate_prefix}" --raw-input --slurp '[split("\n")[] | select(test("#[0-9]+$")) | select(startswith($prefix) | not)] | length')
 
 	if [ ${foreign_object_count} -gt 0 ]
 	then

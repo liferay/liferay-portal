@@ -47,14 +47,6 @@ function _delete_tfstate_storage {
 
 	container_name=$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")
 
-	local deployment_name
-
-	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
-
-	local region
-
-	region=$(jq --raw-output '.region' "${configuration_json_file}")
-
 	local resource_group_name
 
 	resource_group_name=$(jq --raw-output '.tfstate.resource_group_name' "${configuration_json_file}")
@@ -79,6 +71,10 @@ function _delete_tfstate_storage {
 			--resource-group "${resource_group_name}" \
 			--storage-account "${storage_account_name}")
 
+	local tfstate_prefix
+
+	tfstate_prefix=$(get_tfstate_prefix "${configuration_json_file}")
+
 	local foreign_blob_count
 
 	foreign_blob_count=$( \
@@ -89,7 +85,7 @@ function _delete_tfstate_storage {
 			--include v \
 			--num-results "*" \
 			--output tsv \
-			--query "length([?!starts_with(name, '${deployment_name}/${region}/')])")
+			--query "length([?!starts_with(name, '${tfstate_prefix}')])")
 
 	if [ ${foreign_container_count} -gt 0 ] || [ ${foreign_blob_count} -gt 0 ]
 	then

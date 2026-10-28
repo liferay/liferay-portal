@@ -2,39 +2,6 @@
 
 source "$(dirname "${BASH_SOURCE[0]}")/_common.sh"
 
-function generate_remote_backend_overrides {
-	local configuration_json_file="${1}"
-
-	local bucket_name
-
-	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
-
-	local deployment_name
-
-	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
-
-	local region
-
-	region=$(jq --raw-output '.region' "${configuration_json_file}")
-
-	local directory
-
-	for directory in eks platform
-	do
-		cat > "${ROOT_CLOUD_DIR}/terraform/aws/${directory}/backend_override.tf" <<EOF
-terraform {
-	backend "s3" {
-		bucket="${bucket_name}"
-		encrypt=true
-		key="${deployment_name}/${region}/${directory}/terraform.tfstate"
-		region="${region}"
-		use_lockfile=true
-	}
-}
-EOF
-	done
-}
-
 function get_kms_key_id {
 	local alias_name="${1}"
 	local region="${2}"
@@ -43,6 +10,31 @@ function get_kms_key_id {
 		--output text \
 		--query "Aliases[?AliasName=='${alias_name}'].TargetKeyId" \
 		--region "${region}"
+}
+
+function get_remote_backend {
+	local configuration_json_file="${1}"
+
+	local bucket_name
+
+	bucket_name=$(jq --raw-output '.tfstate.bucket_name' "${configuration_json_file}")
+
+	local region
+
+	region=$(jq --raw-output '.region' "${configuration_json_file}")
+
+	cat <<EOF
+	backend "s3" {
+		bucket="${bucket_name}"
+		encrypt=true
+		region="${region}"
+		use_lockfile=true
+	}
+EOF
+}
+
+function get_tfstate_path_setting {
+	echo "key=${1}/terraform.tfstate"
 }
 
 function log_in {

@@ -10,20 +10,12 @@ function export_database_engine {
 	export TF_VAR_database_engine
 }
 
-function generate_remote_backend_overrides {
+function get_remote_backend {
 	local configuration_json_file="${1}"
 
 	local container_name
 
 	container_name=$(jq --raw-output '.tfstate.container_name' "${configuration_json_file}")
-
-	local deployment_name
-
-	deployment_name=$(jq --raw-output '.deployment_name' "${configuration_json_file}")
-
-	local region
-
-	region=$(jq --raw-output '.region' "${configuration_json_file}")
 
 	local resource_group_name
 
@@ -33,22 +25,18 @@ function generate_remote_backend_overrides {
 
 	storage_account_name=$(jq --raw-output '.tfstate.storage_account_name' "${configuration_json_file}")
 
-	local directory
-
-	for directory in aks platform
-	do
-		cat > "${ROOT_CLOUD_DIR}/terraform/azure/${directory}/backend_override.tf" <<EOF
-terraform {
+	cat <<EOF
 	backend "azurerm" {
 		container_name="${container_name}"
-		key="${deployment_name}/${region}/${directory}/terraform.tfstate"
 		resource_group_name="${resource_group_name}"
 		storage_account_name="${storage_account_name}"
 		use_azuread_auth=true
 	}
-}
 EOF
-	done
+}
+
+function get_tfstate_path_setting {
+	echo "key=${1}/terraform.tfstate"
 }
 
 function log_in {
