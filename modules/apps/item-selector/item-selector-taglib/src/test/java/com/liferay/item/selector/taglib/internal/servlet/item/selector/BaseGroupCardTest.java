@@ -58,8 +58,8 @@ public class BaseGroupCardTest {
 		TestGroupCard testGroupCard = new TestGroupCard(
 			group, mockHttpServletRequest);
 
-		Assert.assertEquals("Site Name", testGroupCard.getTitle());
 		Assert.assertEquals(StringPool.BLANK, testGroupCard.getImageAlt());
+		Assert.assertEquals("Site Name", testGroupCard.getTitle());
 	}
 
 	private static class TestGroupCard extends BaseGroupCard {
