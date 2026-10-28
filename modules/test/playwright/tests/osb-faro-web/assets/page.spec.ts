@@ -142,24 +142,20 @@ test(
 			}
 		});
 
-		await test.step('View the time filter of Visitors Behavior is Last 24 Hours', async () => {
+		await test.step('View the time filter is Last 24 Hours', async () => {
 			await expect(
-				page
-					.locator('[id="container\\.report\\.visitorsBehaviorCard"]')
-					.getByRole('button', {name: 'Last 24 hours'})
+				page.getByRole('button', {name: 'Last 24 hours'})
 			).toBeVisible();
 		});
 
-		await test.step('Switch to Overview tab and view the time filter of Visitors Behavior is Last 24 Hours', async () => {
+		await test.step('Switch to Overview tab and view the time filter is Last 24 Hours', async () => {
 			await navigateTo({
 				page,
 				pageName: 'Overview',
 			});
 
 			await expect(
-				page
-					.locator('[id="container\\.report\\.visitorsBehaviorCard"]')
-					.getByRole('button', {name: 'Last 24 hours'})
+				page.getByRole('button', {name: 'Last 24 hours'})
 			).toBeVisible();
 		});
 	}
