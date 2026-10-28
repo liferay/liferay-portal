@@ -1,14 +1,10 @@
 dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:analytics:analytics-settings-rest-api")
-	compileOnly project(":apps:asset:asset-api")
 	compileOnly project(":apps:blogs:blogs-api")
-	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation project(":apps:analytics:analytics-settings-api")
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 }
