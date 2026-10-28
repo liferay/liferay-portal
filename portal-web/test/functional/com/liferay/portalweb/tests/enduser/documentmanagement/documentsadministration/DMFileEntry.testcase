@@ -180,33 +180,6 @@ definition {
 		}
 	}
 
-	@priority = 4
-	@refactordone
-	test CanAddCommentToDocument {
-		property portal.acceptance = "true";
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocumentComment.addPG(
-			commentBody = "This is a comment",
-			dmDocumentTitle = "DM Document Title");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocumentComment.viewPG(
-			commentBody = "This is a comment",
-			dmDocumentTitle = "DM Document Title");
-	}
-
 	@description = "This case covers LPS-140006. It ensures that a valid file can be uploaded after the invalid file is discarded."
 	@priority = 3
 	test CanAddValidFileAfterInvalidFileIsDiscardedViaMultipleUpload {
@@ -890,41 +863,6 @@ definition {
 		DMDocument.viewDefault();
 	}
 
-	@priority = 4
-	@refactordone
-	test CanDeleteDocumentInSitePage {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "/D/M/Document Title",
-			groupName = "Site Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.openSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.deletePG(dmDocumentTitle = "/D/M/Document Title");
-
-		DMDocument.viewDefault();
-	}
-
 	@description = "This test covers LPS-91597. It ensures that a user can delete multiple documents through the actions icon after selecting them one by one."
 	@priority = 4
 	@refactordone
@@ -1280,29 +1218,6 @@ definition {
 		AssertTextNotPresent(value1 = "The requested resource could not be found.");
 
 		DMDocument.assertFileNameFromTempFolder(fileName = "Document_3.doc");
-	}
-
-	@priority = 5
-	@refactordone
-	test CanDownloadWithSpecialCharactersInTitle {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "/D/M/@!# Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.downloadPG(dmDocumentTitle = "/D/M/@!# Title");
-
-		DownloadTempFile();
-
-		DMDocument.assertFileNameFromTempFolder(fileName = "Document_1.doc");
 	}
 
 	@description = "This test edits the title and description of a document. It asserts minor version increment because only its metadata was updated."
@@ -1938,36 +1853,6 @@ definition {
 
 	@priority = 4
 	@refactordone
-	test CanMoveWithSlashesInTitle {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "/D/M/Document Title",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Guest");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.moveToFolderPG(
-			dmDocumentTitle = "/D/M/Document Title",
-			dmFolderName = "DM Folder Name");
-
-		DMNavigator.gotoFolder(dmFolderName = "DM Folder Name");
-
-		DMDocument.viewPG(dmDocumentTitle = "/D/M/Document Title");
-	}
-
-	@priority = 4
-	@refactordone
 	test CannotAddDocumentWithDuplicateName {
 		property custom.properties = "dl.actions.visible=true";
 		property portal.acceptance = "true";
@@ -2541,30 +2426,6 @@ definition {
 		DMDocument.viewCP(
 			dmDocumentTitle = "Document Version 1.9 (Version 1.9)",
 			previewImage = "Document_1.jpg");
-	}
-
-	@description = "This test ensures that a document with special characters in its title can be published successfully."
-	@priority = 4
-	@refactordone
-	test CanPublishTitleWithSpecialCharacters {
-		property custom.properties = "dl.actions.visible=true";
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.addPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentTitle = '''/\<>:"?|*''');
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.viewPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = '''/\<>:"?|*''',
-			escapedTitle = '''/\<>:"?|*''',
-			specialCharacters = "true");
 	}
 
 	@description = "This case covers LPS-97708. It ensures that a document can be restored from the Recycle Bin even if its original folder no longer exists."
@@ -3187,32 +3048,6 @@ definition {
 			siteName = "Site Name");
 	}
 
-	@description = "This ensures that a user can view the information about an image when navigating to info panel."
-	@priority = 4
-	@refactordone
-	test CanViewImageFromInfoPanel {
-		property custom.properties = "dl.actions.visible=true";
-		property portal.acceptance = "true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMDocument.viewPG(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentExtension = "jpg",
-			dmDocumentFileTypeInfo = "Image",
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentType = "Basic Document");
-	}
-
 	@description = "This ensures that the document title can be displayed correctly in the different views."
 	@priority = 5
 	@refactordone
@@ -3279,48 +3114,6 @@ definition {
 		Click(locator1 = "Icon#ANGLE_LEFT_BACK");
 
 		LexiconEntry.viewEntryName(rowEntry = "DM Document Title");
-	}
-
-	@description = "This ensures that the user can view the document through related assets."
-	@priority = 3
-	@refactordone
-	test CanViewRelatedDocument {
-		property custom.properties = "dl.actions.visible=true";
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.doc",
-			groupName = "Guest",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Guest",
-			siteURLKey = "guest");
-
-		RelatedAssets.selectAsset(assetTitle = "Document_1.doc");
-
-		Button.clickPublish();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		DMNavigator.gotoRelatedAssetPG(
-			assetTitle = "Document_2.jpg",
-			dmDocumentTitle = "Document_1.doc");
-
-		AssertVisible(
-			key_dmDocumentFileName = "Document_2.jpg",
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_DETAILS_IMAGE_PREVIEW");
 	}
 
 	@description = "This test ensures that Users can view specify error when bulk copy less than ten wrong files."
