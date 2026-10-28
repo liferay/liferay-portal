@@ -19,9 +19,12 @@ import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.service.BaseLocalService;
+import com.liferay.portal.kernel.service.ExceptionRetryAcceptor;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.change.tracking.CTService;
 import com.liferay.portal.kernel.service.persistence.change.tracking.CTPersistence;
+import com.liferay.portal.kernel.spring.aop.Property;
+import com.liferay.portal.kernel.spring.aop.Retry;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
@@ -289,6 +292,19 @@ public interface DDMFormInstanceReportLocalService
 			String ddmFormInstanceReportEvent)
 		throws PortalException;
 
+	@Retry(
+		acceptor = ExceptionRetryAcceptor.class,
+		properties = {
+			@Property(
+				name = ExceptionRetryAcceptor.EXCEPTION_NAME,
+				value = "org.hibernate.StaleStateException"
+			)
+		}
+	)
+	public DDMFormInstanceReport updateFormInstanceReportByFormInstanceId(
+			long formInstanceId)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<DDMFormInstanceReport> getCTPersistence();
@@ -305,4 +321,4 @@ public interface DDMFormInstanceReportLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1742002259
+// LIFERAY-SERVICE-BUILDER-HASH:-1883443936

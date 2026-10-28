@@ -331,6 +331,14 @@ public class DDMFormInstanceReportLocalServiceUtil {
 			ddmFormInstanceReportEvent);
 	}
 
+	public static DDMFormInstanceReport
+			updateFormInstanceReportByFormInstanceId(long formInstanceId)
+		throws PortalException {
+
+		return getService().updateFormInstanceReportByFormInstanceId(
+			formInstanceId);
+	}
+
 	public static DDMFormInstanceReportLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -341,4 +349,4 @@ public class DDMFormInstanceReportLocalServiceUtil {
 			DDMFormInstanceReportLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-77117135
+// LIFERAY-SERVICE-BUILDER-HASH:2137152086

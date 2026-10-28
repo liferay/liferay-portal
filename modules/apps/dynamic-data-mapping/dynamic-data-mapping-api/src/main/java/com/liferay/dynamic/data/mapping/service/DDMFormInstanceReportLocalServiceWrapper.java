@@ -378,6 +378,15 @@ public class DDMFormInstanceReportLocalServiceWrapper
 	}
 
 	@Override
+	public DDMFormInstanceReport updateFormInstanceReportByFormInstanceId(
+			long formInstanceId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _ddmFormInstanceReportLocalService.
+			updateFormInstanceReportByFormInstanceId(formInstanceId);
+	}
+
+	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _ddmFormInstanceReportLocalService.getBasePersistence();
 	}
@@ -418,4 +427,4 @@ public class DDMFormInstanceReportLocalServiceWrapper
 		_ddmFormInstanceReportLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-22836056
+// LIFERAY-SERVICE-BUILDER-HASH:180111363
