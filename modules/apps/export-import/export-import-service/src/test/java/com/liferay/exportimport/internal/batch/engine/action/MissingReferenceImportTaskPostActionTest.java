@@ -197,7 +197,7 @@ public class MissingReferenceImportTaskPostActionTest {
 		BeanProperties.class);
 	private final EmptyModelManager _emptyModelManager = Mockito.mock(
 		EmptyModelManager.class);
-	private MockedStatic<ExportImportThreadLocal>
+	private final MockedStatic<ExportImportThreadLocal>
 		_exportImportThreadLocalMockedStatic = Mockito.mockStatic(
 			ExportImportThreadLocal.class);
 	private final MissingReferenceImportTaskPostAction
