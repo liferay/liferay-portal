@@ -337,6 +337,8 @@ public class JournalFolderServiceTest {
 					Arrays.asList(journalFolder.getFolderId()),
 					WorkflowConstants.STATUS_ANY));
 		}
+
+		_userLocalService.deleteUser(user);
 	}
 
 	@Test
