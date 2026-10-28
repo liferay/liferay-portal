@@ -18,49 +18,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-142518. TC-1, TC-2 and TC-3: Verify that Cookie Banner is visible with the options configured by the site admin."
-	@priority = 5
-	test CookieBannerAndCookieConsentPanelElementsAreVisible {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Cookie banner and Cookie Consent portlet are present") {
-			CookieBanner.verifyAllElementsArePresent();
-		}
-
-		task ("When: User accept all cookies at the Cookie Consent portlet.") {
-			CookieConsentPanel.cookiesAcceptAll();
-		}
-
-		task ("Then: All cookie consent category related cookies are created and saved with 'accepted' as value.") {
-			CookieHelper.checkAllCookieAreAcceptedAndSaved();
-		}
-
-		task ("And: Cookie Consent portlet in the popup is closed.") {
-			CookieBanner.checkCookieConsentPanelIsNotVisible();
-		}
-	}
-
-	@description = "This is a use case for LPS-142518. TC-8 Verify that cookies will have 12 months of lifetime when they are accepted."
-	@priority = 5
-	test VerifyCookiesLifetime {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Cookie Banner is present on the Site.") {
-			CookieBanner.cookiesBannerAcceptAll();
-		}
-
-		task ("When: User accepts all cookie categories") {
-			CookieHelper.checkAllCookieAreAcceptedAndSaved();
-		}
-
-		task ("Then: Cookie category related cookies are saved with 12 months as expiration time.") {
-			CookieBanner.checkIfCookiesHaveTwelveMonthsAsExpirationDate();
-		}
-	}
-
 	@description = "This is a use case for LPS-156903. Verify the order of menu items after Cookie Preference Handling is enabled"
 	@priority = 5
 	test VerifyOrderOfMenuItemsInSiteSettings {

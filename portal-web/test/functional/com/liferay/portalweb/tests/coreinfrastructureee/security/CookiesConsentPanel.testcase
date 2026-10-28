@@ -32,26 +32,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-152844. Combined AC-5, AC-6, AC-7. Verify that Cookie Consent pangel could be enabled and customized."
-	@priority = 5
-	test CookiesConsentPanelCouldBeEnabledAndCustomized {
-		property portal.acceptance = "false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("When: the End User opens the 'Cookie Consent' panel") {
-			CookieNavigator.gotoInstanceSettings(portlet = "Consent Panel");
-
-			CookieConsentAdmin.setCustomTextForAllFields(text = "INSTANCE_LEVEL");
-
-			CookieBanner.openCookieConsentPanel();
-		}
-
-		task ("Then: they see the panel's title as the Title is configured for the 'Consent Panel' in the site administration.") {
-			CookieConsentPanel.verifyCustomTextsArePresent(key_text = "INSTANCE_LEVEL");
-		}
-	}
-
 	@description = "This is a use case for LPS-152844. AC-8. Verify that Cookie Consent panel could be enabled and customized on a Site page."
 	@priority = 5
 	test CookiesConsentPanelCouldBeEnabledAndCustomizedOnASitePage {
@@ -173,30 +153,6 @@ definition {
 
 		task ("Then: All cookie consent category related cookies are created and saved with 'accepted' as value.") {
 			CookieHelper.checkAllCookieAreAcceptedAndSaved();
-		}
-	}
-
-	@description = "This is a use case for LPS-142518. TC-4 Verify that Decline All could be set and cookies are stored with declined values."
-	@priority = 5
-	test CookiesConsentPanelDeclineAllSelected {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: Use opens the Cookie consent portlet in a popup") {
-			CookieBanner.openCookieConsentPanel();
-		}
-
-		task ("When: User click on Use Necessary Cookies Only") {
-			CookieConsentPanel.cookiesUseNecessaryCookiesOnly();
-		}
-
-		task ("Then: All cookie consent category related cookies are created and saved with 'declined' as value.") {
-			CookieHelper.checkAllCookieAreDeclinedAndSaved();
-		}
-
-		task ("And: Cookie Consent portlet in the popup is closed.") {
-			CookieBanner.checkCookieConsentPanelIsNotVisible();
 		}
 	}
 

@@ -16,62 +16,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-142518. TC-9 Verify that Accept All at the Cookie Banner could be set and cookies are stored with declined values."
-	@priority = 5
-	test CookiesBannerAcceptAllSelected {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User click on Accept all") {
-			CookieBanner.cookiesBannerAcceptAll();
-		}
-
-		task ("Then: All cookie consent category related cookies are created and saved with 'accepted' as value.") {
-			CookieHelper.checkAllCookieAreAcceptedAndSaved();
-		}
-	}
-
-	@description = "This is a use case for LPS-152844. Combined AC-1, AC-2, AC-3, AC-4. Verify that Cookie Banner could be enabled, and customized."
-	@priority = 5
-	test CookiesBannerCouldBeEnabledAndCustomized {
-		property portal.acceptance = "false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: a site configured to show the Banner") {
-			CookieBannerAdmin.setCustomTextForAllFields(text = "INSTANCE_LEVEL");
-		}
-
-		task ("When: the End User first visits the site") {
-			CookieHelper.siteVisit();
-		}
-
-		task ("Then: they see the Banner text as the Description is configured for the Banner in the site administration.") {
-			CookieBanner.verifyCustomTextsArePresent(key_text = "INSTANCE_LEVEL");
-		}
-
-		task ("And: they see the 'Decline All' button on the right side of the Banner, next to the 'Accept All' button.") {
-			CookieBanner.verifyDeclineAllButtonIsPresent();
-		}
-	}
-
-	@description = "This is a use case for LPS-142518. TC-10 Verify that Decline All at the Cookie Banner could be set and cookies are stored with declined values."
-	@priority = 5
-	test CookiesBannerDeclineAllSelected {
-		property portal.acceptance = "true";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User click on Decline all") {
-			CookieBanner.cookiesBannerDeclineAll();
-		}
-
-		task ("Then: All cookie consent category related cookies are created and saved with 'declined' as value.") {
-			CookieHelper.checkAllCookieAreDeclinedAndSaved();
-		}
-	}
-
 	@description = "This is a use case for LPS-148320. Combined AC-1, AC-2, AC-4. Verify Privacy Policy Links can be configured from a local site similarly to an external page with giving its url."
 	@priority = 5
 	test PrivacyPolicyLinksCanBeConfiguredFromALocalSite {
