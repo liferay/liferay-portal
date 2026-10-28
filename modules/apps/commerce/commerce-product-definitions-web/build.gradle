@@ -26,7 +26,6 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:commerce:commerce-product-item-selector-api")
 	compileOnly project(":apps:commerce:commerce-product-type-virtual-api")
-	compileOnly project(":apps:commerce:commerce-taglib")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-delivery-catalog-api")
 	compileOnly project(":apps:document-library:document-library-api")
@@ -54,7 +53,6 @@ dependencies {
 	compileOnly project(":apps:upload:upload-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

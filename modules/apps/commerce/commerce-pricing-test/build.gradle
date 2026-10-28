@@ -1,9 +1,7 @@
 dependencies {
 	testIntegrationImplementation group: "com.github.ignaciotcrespo", name: "frutilla", version: "0.7.1"
-	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
-	testIntegrationImplementation project(":apps:commerce:commerce-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-discount-api")
