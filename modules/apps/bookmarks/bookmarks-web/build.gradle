@@ -9,7 +9,6 @@ dependencies {
 	compileOnly project(":apps:application-list:application-list-api")
 	compileOnly project(":apps:asset:asset-taglib")
 	compileOnly project(":apps:bookmarks:bookmarks-api")
-	compileOnly project(":apps:bookmarks:bookmarks-service")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:expando:expando-taglib")
 	compileOnly project(":apps:export-import:export-import-changeset-api")
@@ -27,7 +26,6 @@ dependencies {
 	compileOnly project(":apps:trash:trash-taglib")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

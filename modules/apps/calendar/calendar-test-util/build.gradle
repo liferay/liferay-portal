@@ -5,7 +5,6 @@ dependencies {
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:calendar:calendar-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
-	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 }
 

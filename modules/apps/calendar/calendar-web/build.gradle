@@ -15,7 +15,6 @@ dependencies {
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:comment:comment-taglib")
 	compileOnly project(":apps:expando:expando-taglib")
-	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:friendly-url:friendly-url-api")
 	compileOnly project(":apps:frontend-editor:frontend-editor-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
@@ -25,7 +24,6 @@ dependencies {
 	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:layout:layout-taglib")
 	compileOnly project(":apps:layout:layout-type-controller:layout-type-controller-api")
-	compileOnly project(":apps:portal-workflow:portal-workflow-taglib")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 	compileOnly project(":apps:ratings:ratings-taglib")
@@ -35,7 +33,6 @@ dependencies {
 	compileOnly project(":apps:template:template-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
