@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.23.2"
 	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:layout:layout-test-util")
