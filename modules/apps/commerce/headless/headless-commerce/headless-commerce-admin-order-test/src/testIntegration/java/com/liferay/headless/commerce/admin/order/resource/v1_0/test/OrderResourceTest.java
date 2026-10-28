@@ -15,6 +15,7 @@ import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
+import com.liferay.commerce.constants.CommerceOrderPaymentConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
@@ -22,6 +23,7 @@ import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
 import com.liferay.commerce.model.CommerceOrderType;
+import com.liferay.commerce.payment.test.util.TestCommercePaymentMethod;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CPInstanceUnitOfMeasure;
@@ -150,6 +152,9 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 			RandomTestUtil.randomString(),
 			CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 			_commerceCurrency.getCode(), _serviceContext);
+
+		CommerceTestUtil.addCommercePaymentMethodGroupRel(
+			_user.getUserId(), _commerceChannel.getGroupId());
 
 		_country = _countryLocalService.addCountry(
 			null, "XY", "XYZ", true, true, RandomTestUtil.randomString(),
@@ -345,6 +350,7 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 		super.testPatchOrder();
 
 		_testPatchOrderWithInvalidCommerceAddressIds();
+		_testPatchOrderWithManageCommerceOrderPaymentPermissions();
 		_testPatchOrderWithMoreExternalReferenceCodes();
 	}
 
@@ -407,8 +413,7 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 				id = RandomTestUtil.randomLong();
 				modifiedDate = RandomTestUtil.nextDate();
 				name = RandomTestUtil.randomString();
-				paymentMethod = StringUtil.toLowerCase(
-					RandomTestUtil.randomString());
+				paymentMethod = TestCommercePaymentMethod.KEY;
 				printedNote = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				purchaseOrderNumber = RandomTestUtil.randomString();
@@ -1011,6 +1016,93 @@ public class OrderResourceTest extends BaseOrderResourceTestCase {
 
 		_assertOrderItemShippingAddressId(
 			postOrder.getId(), commerceAddress2.getCommerceAddressId());
+	}
+
+	private void _testPatchOrderWithManageCommerceOrderPaymentPermissions()
+		throws Exception {
+
+		Order postOrder = orderResource.postOrder(randomOrder());
+
+		_commerceOrderLocalService.updateCommercePaymentMethodKey(
+			postOrder.getId(), StringPool.BLANK);
+
+		OrderResource orderResource = _getOrderResource();
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(),
+			AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR);
+
+		try {
+			_resourcePermissionLocalService.removeResourcePermission(
+				testCompany.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(testCompany.getCompanyId()), role.getRoleId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+			_resourcePermissionLocalService.removeResourcePermission(
+				testCompany.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(testCompany.getCompanyId()), role.getRoleId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+
+			_assertProblemException(
+				"FORBIDDEN",
+				new Order() {
+					{
+						paymentMethod = TestCommercePaymentMethod.KEY;
+					}
+				},
+				patchOrder -> orderResource.patchOrder(
+					postOrder.getId(), patchOrder));
+			_assertProblemException(
+				"FORBIDDEN",
+				new Order() {
+					{
+						paymentStatus =
+							CommerceOrderPaymentConstants.STATUS_COMPLETED;
+					}
+				},
+				patchOrder -> orderResource.patchOrder(
+					postOrder.getId(), patchOrder));
+
+			CommerceOrder commerceOrder =
+				_commerceOrderLocalService.getCommerceOrder(postOrder.getId());
+
+			Assert.assertEquals(
+				StringPool.BLANK, commerceOrder.getCommercePaymentMethodKey());
+			Assert.assertEquals(
+				postOrder.getPaymentStatus(),
+				Integer.valueOf(commerceOrder.getPaymentStatus()));
+		}
+		finally {
+			_resourcePermissionLocalService.addResourcePermission(
+				testCompany.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(testCompany.getCompanyId()), role.getRoleId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS);
+			_resourcePermissionLocalService.addResourcePermission(
+				testCompany.getCompanyId(),
+				CommerceOrderConstants.RESOURCE_NAME,
+				ResourceConstants.SCOPE_COMPANY,
+				String.valueOf(testCompany.getCompanyId()), role.getRoleId(),
+				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
+		}
+
+		Order order = new Order() {
+			{
+				paymentMethod = TestCommercePaymentMethod.KEY;
+				paymentStatus = CommerceOrderPaymentConstants.STATUS_COMPLETED;
+			}
+		};
+
+		Order patchOrder = orderResource.patchOrder(postOrder.getId(), order);
+
+		Assert.assertEquals(
+			order.getPaymentMethod(), patchOrder.getPaymentMethod());
+		Assert.assertEquals(
+			order.getPaymentStatus(), patchOrder.getPaymentStatus());
 	}
 
 	private void _testPatchOrderWithMoreExternalReferenceCodes()
