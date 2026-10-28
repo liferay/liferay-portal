@@ -10,8 +10,6 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:account:account-api")
@@ -29,7 +27,6 @@ dependencies {
 	compileOnly project(":apps:commerce:commerce-pricing-api")
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:commerce:commerce-shipping-engine-fixed-api")
-	compileOnly project(":apps:commerce:commerce-tax-engine-fixed-api")
 	compileOnly project(":apps:commerce:commerce-term-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-catalog-api")
 	compileOnly project(":apps:commerce:headless:headless-commerce:headless-commerce-admin-order-api")
@@ -47,8 +44,6 @@ dependencies {
 	compileOnly project(":apps:portal-search:portal-search-spi")
 	compileOnly project(":apps:portal-security:portal-security-service-access-policy-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
-	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-api")
-	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-runtime-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")

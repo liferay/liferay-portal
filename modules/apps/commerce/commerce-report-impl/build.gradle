@@ -22,9 +22,6 @@ dependencies {
 	compileInclude group: "org.olap4j", name: "olap4j", version: "1.2.0"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.zaxxer", name: "SparseBitSet", version: "1.2"
-	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
-	compileOnly group: "org.apache.commons", name: "commons-math3", version: "3.6.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:commerce:commerce-report-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")

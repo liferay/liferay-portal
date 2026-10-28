@@ -1,13 +1,4 @@
 dependencies {
-	testIntegrationImplementation project(":apps:account:account-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
-	testIntegrationImplementation project(":apps:commerce:commerce-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")
-	testIntegrationImplementation project(":apps:commerce:commerce-discount-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-price-list-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-product-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-qualifier-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-test-util")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
