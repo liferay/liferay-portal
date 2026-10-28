@@ -2,8 +2,6 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-api")
 	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-image-api")
-	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-image-item-selector-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-test-util")
-	testIntegrationImplementation project(":apps:item-selector:item-selector-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

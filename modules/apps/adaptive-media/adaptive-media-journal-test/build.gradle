@@ -1,5 +1,4 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-api")
 	testIntegrationImplementation project(":apps:adaptive-media:adaptive-media-image-api")
 	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")

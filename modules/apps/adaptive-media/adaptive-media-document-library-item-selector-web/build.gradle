@@ -1,8 +1,5 @@
 dependencies {
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly project(":apps:adaptive-media:adaptive-media-api")
-	compileOnly project(":apps:adaptive-media:adaptive-media-image-api")
 	compileOnly project(":apps:adaptive-media:adaptive-media-image-item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")

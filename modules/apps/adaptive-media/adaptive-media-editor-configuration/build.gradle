@@ -12,6 +12,5 @@ dependencies {
 	compileOnly project(":apps:journal:journal-item-selector-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 }

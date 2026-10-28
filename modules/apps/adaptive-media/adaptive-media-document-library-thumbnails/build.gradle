@@ -13,5 +13,4 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 }
