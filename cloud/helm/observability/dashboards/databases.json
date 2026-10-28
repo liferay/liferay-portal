@@ -1102,7 +1102,7 @@
 													"kind": "ElementReference",
 													"name": "panel-2"
 												},
-												"height": 5,
+												"height": 4,
 												"width": 24,
 												"x": 0,
 												"y": 0
@@ -1118,7 +1118,7 @@
 												"height": 12,
 												"width": 12,
 												"x": 0,
-												"y": 5
+												"y": 4
 											}
 										},
 										{
@@ -1131,7 +1131,7 @@
 												"height": 12,
 												"width": 12,
 												"x": 12,
-												"y": 5
+												"y": 4
 											}
 										}
 									]
