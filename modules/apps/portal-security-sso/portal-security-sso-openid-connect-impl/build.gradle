@@ -12,12 +12,9 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "net.minidev", name: "accessors-smart", version: "2.4.9"
 	compileOnly group: "net.minidev", name: "json-smart", version: "2.4.10"
-	compileOnly group: "org.apache.commons", name: "commons-lang3", version: "3.18.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
-	compileOnly group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	compileOnly project(":apps:oauth-client:oauth-client-persistence-api")
 	compileOnly project(":apps:portal-cache:portal-cache-api")
 	compileOnly project(":apps:portal-cache:portal-cache-test-util")
@@ -31,9 +28,6 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "org.mock-server", name: "mockserver-client-java", version: "3.10.8"
-	testImplementation group: "org.mock-server", name: "mockserver-netty", version: "3.10.8"
 }
