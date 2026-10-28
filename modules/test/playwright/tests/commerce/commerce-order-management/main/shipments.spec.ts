@@ -18,7 +18,11 @@ import {
 	userData,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
-import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
+import {
+	activateChannelPaymentMethod,
+	createAccountWithBuyerUser,
+	miniumSetUp,
+} from '../../utils/commerce';
 import {
 	acceptOrderAndCreateShipment,
 	acceptOrderAndCreateShipmentWithItem,
@@ -47,6 +51,12 @@ test.beforeAll(async ({browser}) => {
 	const apiHelpers = new DataApiHelpers(page);
 
 	const miniumResult = await miniumSetUp(apiHelpers);
+
+	await activateChannelPaymentMethod(
+		apiHelpers,
+		miniumResult.channel.id,
+		'money-order'
+	);
 
 	miniumCatalog = miniumResult.catalog;
 	miniumChannel = miniumResult.channel;

@@ -20,7 +20,11 @@ import {
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
-import {commerceReturnSetUp, miniumSetUp} from '../../utils/commerce';
+import {
+	activateChannelPaymentMethod,
+	commerceReturnSetUp,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -428,6 +432,8 @@ test('LPD-41539 Buyer users are missing permissions to view refunds', async ({
 
 	const {channel, site} = await miniumSetUp(apiHelpers, siteName);
 
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
+
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
 		type: 'business',
@@ -606,6 +612,8 @@ test('LPD-41539 Returns Manager users are missing permissions to manage refunds'
 	const siteName = 'minium-' + getRandomInt();
 
 	const {channel, site} = await miniumSetUp(apiHelpers, siteName);
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
 
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: 'Account Business',

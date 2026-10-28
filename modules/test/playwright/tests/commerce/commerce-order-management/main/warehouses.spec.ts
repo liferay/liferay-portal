@@ -15,7 +15,7 @@ import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {performLoginViaApi} from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
-import {miniumSetUp} from '../../utils/commerce';
+import {activateChannelPaymentMethod, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -36,6 +36,12 @@ test.beforeAll(async ({browser}) => {
 	const apiHelpers = new DataApiHelpers(page);
 
 	const miniumResult = await miniumSetUp(apiHelpers);
+
+	await activateChannelPaymentMethod(
+		apiHelpers,
+		miniumResult.channel.id,
+		'paypal'
+	);
 
 	catalog = miniumResult.catalog;
 	channel = miniumResult.channel;

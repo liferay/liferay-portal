@@ -13,6 +13,7 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+import {activateChannelPaymentMethod} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -37,6 +38,12 @@ test(
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
 			});
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'money-order'
+		);
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();

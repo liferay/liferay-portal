@@ -17,7 +17,7 @@ import performLogin, {
 	performLogout,
 	userData,
 } from '../../../../utils/performLogin';
-import {miniumSetUp} from '../../utils/commerce';
+import {activateChannelPaymentMethod, miniumSetUp} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -39,6 +39,8 @@ test('LPD-44010 Check no delete dropdown in order admin page without delete perm
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		siteGroupId: site.id,
 	});
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
@@ -211,6 +213,8 @@ test('LPD-45268 Notes tab should not be visible if user does not have required p
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		siteGroupId: site.id,
 	});
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
@@ -437,6 +441,8 @@ test('LPD-47793 Notes should be visible using their respective permissions in th
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		siteGroupId: site.id,
 	});
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 

@@ -16,7 +16,11 @@ import {
 	performLoginViaApi,
 	performLogout,
 } from '../../../../utils/performLogin';
-import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
+import {
+	activateChannelPaymentMethod,
+	createAccountWithBuyerUser,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -40,6 +44,12 @@ test.beforeAll(async ({browser}) => {
 	const apiHelpers = new DataApiHelpers(page);
 
 	const miniumResult = await miniumSetUp(apiHelpers);
+
+	await activateChannelPaymentMethod(
+		apiHelpers,
+		miniumResult.channel.id,
+		'money-order'
+	);
 
 	channel = miniumResult.channel;
 	site = miniumResult.site;

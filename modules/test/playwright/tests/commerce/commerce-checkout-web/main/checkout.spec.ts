@@ -32,6 +32,7 @@ import getFragmentDefinition from '../../../layout-content-page-editor-web/main/
 import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {
+	activateChannelPaymentMethod,
 	createAccountWithBuyerUser,
 	miniumSetUp,
 	selectCurrentAccount,
@@ -1717,6 +1718,12 @@ test(
 				{
 					siteGroupId: site.id,
 				}
+			);
+
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'paypal'
 			);
 
 			const warehouse =

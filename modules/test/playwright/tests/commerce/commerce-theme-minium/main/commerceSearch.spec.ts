@@ -13,7 +13,11 @@ import {loginTest} from '../../../../fixtures/loginTest';
 import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {performLogout} from '../../../../utils/performLogin';
-import {enableGuestPageView, miniumSetUp} from '../../utils/commerce';
+import {
+	activateChannelPaymentMethod,
+	enableGuestPageView,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	apiHelpersTest,
@@ -95,6 +99,8 @@ test('LPD-30370 Search for all orders by typing user email in global search', as
 	globalMenuPage,
 }) => {
 	const {channel, site} = await miniumSetUp(apiHelpers);
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
 
 	const account = await apiHelpers.headlessAdminUser.postAccount({
 		name: getRandomString(),
@@ -383,6 +389,8 @@ test('COMMERCE-6321 As a buyer, I want to be able to search an Orders entry usin
 		await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
 
 	const {catalog, channel, site} = await miniumSetUp(apiHelpers);
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
 
 	await apiHelpers.headlessAdminUser.assignUserToSite(
 		siteRole.id,

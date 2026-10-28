@@ -35,6 +35,7 @@ import getPageDefinition from '../../../layout-content-page-editor-web/main/util
 import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {templatesPageTest} from '../../../template-web/main/fixtures/templatesPageTest';
 import {
+	activateChannelPaymentMethod,
 	createAccountWithBuyerUser,
 	createProductWithOptions,
 	findSkuByOptionValueKeys,
@@ -305,6 +306,12 @@ test(
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
 			});
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'paypal-integration'
+		);
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
@@ -954,6 +961,8 @@ test(
 				siteGroupId: site.id,
 			});
 
+		await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
+
 		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 			channel.name,
 			'B2B'
@@ -1135,6 +1144,8 @@ test(
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
 			});
+
+		await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
 
 		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 			channel.name,
@@ -1370,6 +1381,8 @@ test(
 				siteGroupId: site.id,
 			});
 
+		await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
+
 		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 			channel.name,
 			'B2B'
@@ -1514,6 +1527,12 @@ test(
 				await apiHelpers.headlessCommerceAdminChannel.postChannel({
 					siteGroupId: site.id,
 				});
+
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'paypal'
+			);
 
 			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 				channel.name,
@@ -1729,6 +1748,8 @@ test(
 
 		const {channel, site} = await miniumSetUp(apiHelpers);
 
+		await activateChannelPaymentMethod(apiHelpers, channel.id, 'paypal');
+
 		const siteRole =
 			await apiHelpers.headlessAdminUser.getRoleByName('Site Member');
 
@@ -1941,6 +1962,12 @@ test(
 				await apiHelpers.headlessCommerceAdminChannel.postChannel({
 					siteGroupId: site.id,
 				});
+
+			await activateChannelPaymentMethod(
+				apiHelpers,
+				channel.id,
+				'paypal'
+			);
 
 			const order = await apiHelpers.headlessCommerceAdminOrder.postOrder(
 				{

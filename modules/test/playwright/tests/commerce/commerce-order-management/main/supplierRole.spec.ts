@@ -23,6 +23,7 @@ import {
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {
+	activateChannelPaymentMethod,
 	createAccountWithBuyerUser,
 	createAccountWithSupplierUser,
 	miniumSetUp,
@@ -1532,6 +1533,12 @@ test(
 				siteGroupId: 0,
 			});
 
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			customerChannel.id,
+			'money-order'
+		);
+
 		const supplierProduct =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 				active: true,
@@ -1704,6 +1711,12 @@ test(
 				name: `Customer Channel ${randomSuffix}`,
 				siteGroupId: 0,
 			});
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			customerChannel.id,
+			'money-order'
+		);
 
 		let supplierProduct =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({

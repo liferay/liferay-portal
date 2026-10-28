@@ -19,6 +19,7 @@ import {
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {
+	activateChannelPaymentMethod,
 	createAccountWithBuyerUser,
 	createProductWithOptions,
 	findSkuByOptionValueKeys,
@@ -52,6 +53,12 @@ test(
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
 			});
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'money-order'
+		);
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
@@ -968,6 +975,8 @@ test('LPD-30856 Can update order status by deleting unshipped items', async ({
 		siteGroupId: site.id,
 	});
 
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
+
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
 	const product1 = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
@@ -1159,6 +1168,8 @@ test('COMMERCE-7982 Can Edit Order Measurement Unit', async ({
 		siteGroupId: site.id,
 	});
 
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
+
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
 	const product = await apiHelpers.headlessCommerceAdminCatalog.postProduct({
@@ -1279,6 +1290,12 @@ test(
 			await apiHelpers.headlessCommerceAdminChannel.postChannel({
 				siteGroupId: site.id,
 			});
+
+		await activateChannelPaymentMethod(
+			apiHelpers,
+			channel.id,
+			'money-order'
+		);
 
 		const catalog =
 			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();

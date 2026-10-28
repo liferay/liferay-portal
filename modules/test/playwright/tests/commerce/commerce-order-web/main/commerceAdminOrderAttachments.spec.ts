@@ -17,7 +17,10 @@ import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {ORDER_WORKFLOW_STATUS_CODE} from '../../../workspaces/liferay-workspace-marketplace/main/utils/constants';
-import {classicCommerceSetUp} from '../../utils/commerce';
+import {
+	activateChannelPaymentMethod,
+	classicCommerceSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -33,6 +36,8 @@ async function setUpOrder(apiHelpers, site) {
 	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
 		siteGroupId: site.id,
 	});
+
+	await activateChannelPaymentMethod(apiHelpers, channel.id, 'money-order');
 
 	const catalog = await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
 
