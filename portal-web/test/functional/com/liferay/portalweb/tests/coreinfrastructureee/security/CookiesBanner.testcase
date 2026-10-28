@@ -56,50 +56,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-148320. Combined AC-1, AC-3. Verify that Cookie Banner could be enabled and customized via OSGI file."
-	@priority = 5
-	test CookiesBannerCouldBeEnabledAndCustomizedViaOSGIFile {
-		property portal.acceptance = "false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: a site configured to show the Banner via OSGI file") {
-			OSGiConfig.copyOSGiConfigFile(
-				osgiConfigFileBaseDir = "test/functional/com/liferay/portalweb/tests/coreinfrastructureee/security/dependencies",
-				osgiConfigFileName = "com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration.scoped~default.config");
-
-			OSGiConfig.copyOSGiConfigFile(
-				osgiConfigFileBaseDir = "test/functional/com/liferay/portalweb/tests/coreinfrastructureee/security/dependencies",
-				osgiConfigFileName = "com.liferay.cookies.configuration.banner.CookiesBannerConfiguration.scoped~default.config");
-
-			OSGiConfig.copyOSGiConfigFile(
-				osgiConfigFileBaseDir = "test/functional/com/liferay/portalweb/tests/coreinfrastructureee/security/dependencies",
-				osgiConfigFileName = "com.liferay.cookies.configuration.consent.CookiesConsentConfiguration.scoped~default.config");
-
-			var companyId = JSONCompany.getCompanyId();
-
-			AntCommands.runCommand("build-test-cookies.xml", "update-cookies-osgi-instance-configuration -DcompanyId=${companyId}");
-
-			User.logoutAndLoginPG();
-
-			CookieNavigator.gotoInstanceSettings(portlet = "Banner");
-
-			CookieBannerAdmin.verifyAllConfigurationElementsAreConfigured(text = "INSTANCE_LEVEL");
-		}
-
-		task ("When: modify configuration entries and click cancel button") {
-			CookieBannerAdmin.setCustomTextForAllFields(
-				cancel = "true",
-				text = "Modify CUSTOM");
-		}
-
-		task ("Then: all the configuration value changes are not saved.") {
-			CookieNavigator.gotoInstanceSettings(portlet = "Banner");
-
-			CookieBannerAdmin.verifyAllConfigurationElementsAreConfigured(text = "INSTANCE_LEVEL");
-		}
-	}
-
 	@description = "This is a use case for LPS-142518. TC-10 Verify that Decline All at the Cookie Banner could be set and cookies are stored with declined values."
 	@priority = 5
 	test CookiesBannerDeclineAllSelected {

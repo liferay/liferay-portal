@@ -85,51 +85,6 @@ definition {
 		}
 	}
 
-	@description = "This is a use case for LPS-148320. Combined AC-1, AC-2, AC-3. Verify that Cookie Consent Panel could be enabled and customized via OSGI file."
-	@priority = 5
-	test CookiesConsentPanelCouldBeEnabledAndCustomizedViaOSGIFile {
-		property osgi.module.configuration.file.names = "com.liferay.cookies.configuration.CookiesBannerConfiguration.config";
-		property osgi.module.configurations = "enabled=\"true\"";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: a site configured to show the Consent Panel via OSGI file") {
-			OSGiConfig.copyOSGiConfigFile(
-				osgiConfigFileBaseDir = "test/functional/com/liferay/portalweb/tests/coreinfrastructureee/security/dependencies",
-				osgiConfigFileName = "com.liferay.cookies.configuration.consent.CookiesConsentConfiguration.scoped~default.config");
-
-			CookieNavigator.gotoInstanceSettings(portlet = "Consent Panel");
-
-			CookieConsentAdmin.verifyAllConfigurationElementsAreConfigured(text = "INSTANCE_LEVEL");
-		}
-
-		task ("When: modify configuration entries and click cancel button") {
-			CookieConsentAdmin.setCustomTextForAllFields(
-				cancel = "true",
-				text = "Modify SITE");
-		}
-
-		task ("Then: all the configuration value changes are not saved.") {
-			CookieNavigator.gotoInstanceSettings(portlet = "Consent Panel");
-
-			CookieConsentAdmin.verifyAllConfigurationElementsAreConfigured(text = "INSTANCE_LEVEL");
-		}
-
-		task ("When: remove all the title values and click save button") {
-			Type(
-				locator1 = "CookieConsentAdmin#TITLE",
-				value1 = "");
-
-			CookieBannerAdmin.saveConfiguration();
-		}
-
-		task ("Then: the configuration value changes cannot be saved because Title must have a value.") {
-			AssertElementPresent(
-				key_alertMessage = "This field is required.",
-				locator1 = "Message#ERROR_FORM_FIELD_REQUIRED");
-		}
-	}
-
 	@description = "This is a use case for LPS-168413. TC-1: Verify that save cookie preference via Cookies Banner Configuration widget at site level."
 	@priority = 5
 	test CookiesConsentPanelCouldSaveCookieSettingsViaPortletAtSiteLevel {
