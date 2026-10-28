@@ -639,7 +639,7 @@ definition {
 
 	@description = "LPS-134875 Internal categories are not shown in facets and result in a public context."
 	@priority = 5
-	test CheckInternalCategoriesInFacets {
+	test ViewInternalAndPublicCategoriesInSearch {
 		property portal.acceptance = "true";
 
 		task ("Create internal categories") {
