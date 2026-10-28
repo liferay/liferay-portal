@@ -9,7 +9,6 @@ dependencies {
 	compileOnly project(":apps:portal-workflow:portal-workflow-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	compileOnly project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
