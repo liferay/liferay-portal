@@ -98,10 +98,15 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 
 		String url = MapUtil.getString(pimConnectorConfigurationValues, "url");
 
-		if (!_isValidURL(url)) {
-			throw new PIMConnectorException(
-				"the-url-must-be-an-absolute-http-or-https-url-without-a-" +
-					"trailing-slash");
+		while (url.endsWith(StringPool.SLASH)) {
+			url = url.substring(0, url.length() - 1);
+		}
+
+		if (Validator.isNull(url) || !Validator.isUrl(url) ||
+			(!url.startsWith(Http.HTTP_WITH_SLASH) &&
+			 !url.startsWith(Http.HTTPS_WITH_SLASH))) {
+
+			throw new PIMConnectorException("enter-a-valid-url");
 		}
 
 		Set<String> catalogExternalReferenceCodes = new TreeSet<>();
@@ -554,22 +559,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		).put(
 			"value", value
 		);
-	}
-
-	private boolean _isValidURL(String url) {
-		if (Validator.isNull(url) || url.endsWith(StringPool.SLASH) ||
-			!Validator.isUrl(url)) {
-
-			return false;
-		}
-
-		if (url.startsWith(Http.HTTP_WITH_SLASH) ||
-			url.startsWith(Http.HTTPS_WITH_SLASH)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private JSONArray _toJSONArray(
