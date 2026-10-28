@@ -334,14 +334,8 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		Set<Locale> availableLocales = _language.getAvailableLocales(groupId);
 
-		Locale siteDefaultLocale = locale;
-
-		try {
-			siteDefaultLocale = _portal.getSiteDefaultLocale(groupId);
-		}
-		catch (PortalException portalException) {
-			_log.error(portalException);
-		}
+		Locale siteDefaultLocale = _getSiteDefaultLocale(
+			groupId, httpServletRequest, locale);
 
 		Locale currentLocale = _getCurrentLocale(
 			availableLocales, locale, siteDefaultLocale);
@@ -1160,6 +1154,30 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		}
 
 		return selectedOptions;
+	}
+
+	private Locale _getSiteDefaultLocale(
+		long groupId, HttpServletRequest httpServletRequest, Locale locale) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if ((themeDisplay != null) &&
+			(themeDisplay.getSiteDefaultLocale() != null) &&
+			(themeDisplay.getSiteGroupId() == groupId)) {
+
+			return themeDisplay.getSiteDefaultLocale();
+		}
+
+		try {
+			return _portal.getSiteDefaultLocale(groupId);
+		}
+		catch (PortalException portalException) {
+			_log.error(portalException);
+		}
+
+		return locale;
 	}
 
 	private String _getStep(Integer decimalPartMaxLength) {
