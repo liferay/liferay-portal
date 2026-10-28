@@ -696,10 +696,10 @@ definition {
 		}
 	}
 
-	@description = "LPS-134875 Visibility is not editable for vocabularies"
+	@description = "LPS-134875 Visibility is not editable for vocabularies and categories can only be moved to vocabularies with the same visibility"
 	@priority = 4
-	test CheckVocabularyVisibilityNotEditable {
-		task ("Add a vocabulary disallow multiple categories") {
+	test CannotChangeVisibilityOfVocabularyOrCategory {
+		task ("Add a vocabulary") {
 			Category.openCategoriesAdmin(siteURLKey = "test-site-name");
 
 			Vocabulary.addCP(vocabularyName = "Vocabulary Name");
@@ -710,11 +710,7 @@ definition {
 				visibilityType = "Public",
 				vocabularyName = "Vocabulary Name");
 		}
-	}
 
-	@description = "LPS-134875 Categories can only be moved to vocabularies with the same visibility"
-	@priority = 4
-	test CannotChangeVisibilityOfVocabularyOrCategory {
 		task ("Create categories in public and internal vocabularies") {
 			JSONCategory.addCategory(
 				groupName = "Global",
