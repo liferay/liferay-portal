@@ -82,12 +82,6 @@ export const fetchUserGroups = jest.fn(() =>
 
 export const fetchUserGroupsById = jest.fn(() => Promise.resolve([]));
 
-export const fetchOrganizations = jest.fn(() =>
-	Promise.resolve([data.mockOrganization()])
-);
-
-export const fetchOrganizationsById = jest.fn(() => Promise.resolve([]));
-
 export const fetchOAuthUrl = jest.fn(() =>
 	Promise.resolve({
 		oAuthAuthorizationURL: 'https://foobar.biz',

@@ -37,7 +37,6 @@ import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
@@ -408,13 +407,6 @@ public interface ContactsEngineClient {
 
 	public DataSource getDataSource(FaroProject faroProject, String id)
 		throws FaroEngineClientException;
-
-	public List<DXPOrganization> getDataSourceDXPOrganizations(
-		FaroProject faroProject, String id, List<Long> organizationIds);
-
-	public Results<DXPOrganization> getDataSourceDXPOrganizations(
-		FaroProject faroProject, String id, long parentOrganizationId,
-		String name, int cur, int delta);
 
 	public long getDataSourceDXPTotal(FaroProject faroProject, String id);
 

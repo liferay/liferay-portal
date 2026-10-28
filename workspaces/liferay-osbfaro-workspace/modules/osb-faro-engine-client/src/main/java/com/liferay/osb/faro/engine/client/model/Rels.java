@@ -130,9 +130,6 @@ public interface Rels {
 	public static final String DATA_SOURCE_DISCONNECT_ALL =
 		"data-source-disconnect-all";
 
-	public static final String DATA_SOURCE_DXP_ORGANIZATIONS =
-		"data-source-dxp-organizations";
-
 	public static final String DATA_SOURCE_DXP_USER_GROUPS =
 		"data-source-dxp-user-groups";
 

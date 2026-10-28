@@ -118,28 +118,6 @@ export function fetchProgress({groupId, id}) {
 	});
 }
 
-export function fetchOrganizations({cur, delta, groupId, id, name}) {
-	return sendRequest({
-		data: {
-			cur,
-			delta,
-			name,
-		},
-		method: 'GET',
-		path: `contacts/${groupId}/data_source/${
-			id ? `${id}/` : ''
-		}organizations`,
-	});
-}
-
-export function fetchOrganizationsById({groupId, id, organizationIds}) {
-	return sendRequest({
-		data: {organizationIds},
-		method: 'POST',
-		path: `contacts/${groupId}/data_source/${id}/organizations_by_ids`,
-	});
-}
-
 export const fetchToken = (groupId, dataSourceId) =>
 	sendRequest({
 		contentType: 'text/plain',

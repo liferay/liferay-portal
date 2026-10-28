@@ -15,7 +15,6 @@ import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.ChannelsConfiguration;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
@@ -55,7 +54,6 @@ import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.FaroResultsDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.ChannelDataSourceDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DXPGroupDisplay;
-import com.liferay.osb.faro.web.internal.model.display.contacts.DXPOrganizationDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DXPUserGroupDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceDisplay;
 import com.liferay.osb.faro.web.internal.model.display.contacts.DataSourceMappingDisplay;
@@ -1063,53 +1061,6 @@ public class DataSourceFaroController extends BaseFaroController {
 		}
 
 		return null;
-	}
-
-	@Path("/{id}/organizations_by_ids")
-	@POST
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public List<DXPOrganizationDisplay> getOrganizations(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@DefaultValue(StringPool.BLANK) @FormParam("organizationIds")
-				FaroParam<List<Long>> organizationIdsFaroParam)
-		throws Exception {
-
-		return TransformUtil.transform(
-			contactsEngineClient.getDataSourceDXPOrganizations(
-				faroProjectLocalService.getFaroProjectByGroupId(groupId), id,
-				organizationIdsFaroParam.getValue()),
-			DXPOrganizationDisplay::new);
-	}
-
-	@GET
-	@Path("/{id}/organizations")
-	@RolesAllowed(RoleConstants.SITE_MEMBER)
-	public FaroResultsDisplay getOrganizationsFaroResultsDisplay(
-			@PathParam("groupId") long groupId, @PathParam("id") String id,
-			@DefaultValue(StringPool.BLANK) @QueryParam("name") String name,
-			@DefaultValue("-1") @QueryParam("parentOrganizationId") long
-				parentOrganizationId,
-			@QueryParam("cur") int cur, @QueryParam("delta") int delta)
-		throws Exception {
-
-		FaroProject faroProject =
-			faroProjectLocalService.getFaroProjectByGroupId(groupId);
-
-		Results<DXPOrganization> results =
-			contactsEngineClient.getDataSourceDXPOrganizations(
-				faroProject, id, parentOrganizationId, name, cur, delta);
-
-		Function<DXPOrganization, DXPOrganizationDisplay> function =
-			DXPOrganizationDisplay::new;
-
-		if (results.getTotal() > 0) {
-			return new FaroResultsDisplay(results, function);
-		}
-
-		results = contactsEngineClient.getDataSourceDXPOrganizations(
-			faroProject, id, parentOrganizationId, null, cur, delta);
-
-		return new FaroResultsDisplay(results, function, true);
 	}
 
 	@GET

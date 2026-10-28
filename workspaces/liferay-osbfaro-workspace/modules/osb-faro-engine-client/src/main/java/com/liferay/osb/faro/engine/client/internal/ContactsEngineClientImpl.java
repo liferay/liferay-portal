@@ -47,7 +47,6 @@ import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
@@ -2131,55 +2130,6 @@ public class ContactsEngineClientImpl
 		throws FaroEngineClientException {
 
 		return get(faroProject, Rels.DATA_SOURCE, id, DataSource.class);
-	}
-
-	@Override
-	public List<DXPOrganization> getDataSourceDXPOrganizations(
-		FaroProject faroProject, String id, List<Long> organizationIds) {
-
-		if (ListUtil.isEmpty(organizationIds)) {
-			return Collections.emptyList();
-		}
-
-		PagedModel<?, DXPOrganization> pagedModel = post(
-			faroProject, Rels.DATA_SOURCE_DXP_ORGANIZATIONS, organizationIds,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<DXPOrganization>>() {
-			},
-			getUriVariables(faroProject, id));
-
-		Results<DXPOrganization> results = pagedModel.getResults();
-
-		return results.getItems();
-	}
-
-	@Override
-	public Results<DXPOrganization> getDataSourceDXPOrganizations(
-		FaroProject faroProject, String id, long parentOrganizationId,
-		String name, int cur, int delta) {
-
-		int[] startAndEnd = SearchPaginationUtil.calculateStartAndEnd(
-			cur, delta);
-
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, startAndEnd[0], startAndEnd[1]);
-
-		uriVariables.put("id", id);
-
-		if (name != null) {
-			uriVariables.put("name", getName(name));
-		}
-
-		uriVariables.put("parentOrganizationId", parentOrganizationId);
-
-		PagedModel<?, DXPOrganization> pagedModel = get(
-			faroProject, Rels.DATA_SOURCE_DXP_ORGANIZATIONS,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<DXPOrganization>>() {
-			},
-			uriVariables);
-
-		return pagedModel.getResults();
 	}
 
 	@Override

@@ -657,15 +657,6 @@ export function mockGraphqlOrganization(seed = 0, data = {}) {
 	};
 }
 
-export function mockOrganization(seed = 0, data = {}) {
-	return {
-		id: String(seed),
-		name: `Test Organization ${seed}`,
-		usersCount: seed,
-		...data,
-	};
-}
-
 export function mockPageVisited(seed = 0, data = {}) {
 	return {
 		day: 0,

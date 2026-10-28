@@ -38,7 +38,6 @@ import com.liferay.osb.faro.engine.client.model.Channel;
 import com.liferay.osb.faro.engine.client.model.ChannelDataSource;
 import com.liferay.osb.faro.engine.client.model.Credentials;
 import com.liferay.osb.faro.engine.client.model.DXPGroup;
-import com.liferay.osb.faro.engine.client.model.DXPOrganization;
 import com.liferay.osb.faro.engine.client.model.DXPUserGroup;
 import com.liferay.osb.faro.engine.client.model.DataSource;
 import com.liferay.osb.faro.engine.client.model.DataSourceField;
@@ -782,23 +781,6 @@ public abstract class BaseMockContactsEngineClientImpl
 		throws FaroEngineClientException {
 
 		return contactsEngineClient.getDataSource(faroProject, id);
-	}
-
-	@Override
-	public List<DXPOrganization> getDataSourceDXPOrganizations(
-		FaroProject faroProject, String id, List<Long> organizationIds) {
-
-		return contactsEngineClient.getDataSourceDXPOrganizations(
-			faroProject, id, organizationIds);
-	}
-
-	@Override
-	public Results<DXPOrganization> getDataSourceDXPOrganizations(
-		FaroProject faroProject, String id, long parentOrganizationId,
-		String name, int cur, int delta) {
-
-		return contactsEngineClient.getDataSourceDXPOrganizations(
-			faroProject, id, parentOrganizationId, name, cur, delta);
 	}
 
 	@Override
