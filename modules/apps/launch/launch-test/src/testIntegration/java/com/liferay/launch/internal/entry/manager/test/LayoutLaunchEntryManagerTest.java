@@ -142,17 +142,17 @@ public class LayoutLaunchEntryManagerTest
 	}
 
 	@Override
-	protected void updateDraft(LaunchEntryManager.Draft draft, Values value)
+	protected void updateDraft(LaunchEntryManager.Draft draft, Values values)
 		throws Exception {
 
-		_updateLayout(draft.getDraftId(), value);
+		_updateLayout(draft.getDraftId(), values);
 	}
 
 	@Override
-	protected void updateLiveEntry(long classPK, Values value)
+	protected void updateLiveEntry(long classPK, Values values)
 		throws Exception {
 
-		_updateLayout(classPK, value);
+		_updateLayout(classPK, values);
 	}
 
 	protected static final class Values {
@@ -284,11 +284,11 @@ public class LayoutLaunchEntryManagerTest
 
 		Assert.assertEquals(entryValue, getDraftValue(draft1));
 
-		Values value = createValue();
+		Values values = createValue();
 
-		updateDraft(draft1, value);
+		updateDraft(draft1, values);
 
-		Assert.assertEquals(value, getDraftValue(draft1));
+		Assert.assertEquals(values, getDraftValue(draft1));
 
 		LaunchEntryManager.Draft draft2 = launchEntryManager.addDraft(
 			classPK, launchSetId, String.valueOf(classPK));
@@ -432,11 +432,11 @@ public class LayoutLaunchEntryManagerTest
 	private void _testPublishDraftWithExistingMainDraft() throws Exception {
 		long classPK = addEntry();
 
-		Values value = createValue();
+		Values values = createValue();
 
 		LaunchEntryManager.Draft draft = addDraft(classPK);
 
-		updateDraft(draft, value);
+		updateDraft(draft, values);
 
 		Layout mainDraft = _layoutLocalService.fetchDraftLayout(classPK);
 
@@ -448,17 +448,17 @@ public class LayoutLaunchEntryManagerTest
 
 		mainDraft = _layoutLocalService.getLayout(mainDraft.getPlid());
 
-		Assert.assertEquals(value, _getValues(mainDraft));
+		Assert.assertEquals(values, _getValues(mainDraft));
 		Assert.assertEquals(
 			WorkflowConstants.STATUS_APPROVED, mainDraft.getStatus());
 	}
 
-	private void _updateLayout(long plid, Values value) throws Exception {
+	private void _updateLayout(long plid, Values values) throws Exception {
 		Layout layout = _layoutLocalService.getLayout(plid);
 
-		layout.setStyleBookEntryERC(value.getStyleBookEntryERC());
+		layout.setStyleBookEntryERC(values.getStyleBookEntryERC());
 		layout.setMasterLayoutPageTemplateEntryERC(
-			value.getMasterLayoutPageTemplateEntryERC());
+			values.getMasterLayoutPageTemplateEntryERC());
 
 		if (layout.isDraftLayout()) {
 			layout.setStatus(WorkflowConstants.STATUS_DRAFT);

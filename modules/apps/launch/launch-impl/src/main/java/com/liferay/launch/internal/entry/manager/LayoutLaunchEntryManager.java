@@ -583,6 +583,9 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 	}
 
 	@Reference
+	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
+
+	@Reference
 	private Language _language;
 
 	@Reference
@@ -598,8 +601,5 @@ public class LayoutLaunchEntryManager implements LaunchEntryManager {
 
 	@Reference
 	private Portal _portal;
-
-	@Reference
-	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 }
