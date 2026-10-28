@@ -99,7 +99,11 @@ jar {
 						)
 					}
 
-					jakartaTransformerCLIClass.runWith(jakartaTransformerCLI)
+					Object resultCode = jakartaTransformerCLIClass.runWith(jakartaTransformerCLI)
+
+					if (resultCode.name() != "SUCCESS_RC") {
+						throw new GradleException("Unable to transform ${configurations.compileOnly.singleFile}: ${resultCode}")
+					}
 
 					if (!jakartaFacesModule) {
 						JarTransformer.transform(jar.archivePath)
