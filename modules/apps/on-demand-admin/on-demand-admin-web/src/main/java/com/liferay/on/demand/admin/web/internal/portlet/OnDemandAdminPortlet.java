@@ -74,13 +74,14 @@ public class OnDemandAdminPortlet extends MVCPortlet {
 	private void _checkPermission(PortletRequest portletRequest)
 		throws PortletException {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		PermissionChecker permissionChecker =
-			themeDisplay.getPermissionChecker();
-
 		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)portletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			PermissionChecker permissionChecker =
+				themeDisplay.getPermissionChecker();
+
 			if (!PortletPermissionUtil.hasControlPanelAccessPermission(
 					permissionChecker, themeDisplay.getScopeGroupId(),
 					OnDemandAdminPortletKeys.ON_DEMAND_ADMIN)) {
