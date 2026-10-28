@@ -14,8 +14,14 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.service.permission.OrganizationPermissionUtil;
+import com.liferay.portal.kernel.service.permission.UserPermissionUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portlet.social.service.base.SocialActivityServiceBaseImpl;
 import com.liferay.social.kernel.model.SocialActivity;
@@ -189,6 +195,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	public int getActivitiesCount(
 		long mirrorActivityId, long classNameId, long classPK) {
 
+		if (!_hasAssetPermission(classNameId, classPK)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getActivitiesCount(
 			mirrorActivityId, classNameId, classPK);
 	}
@@ -305,6 +315,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getGroupActivitiesCount(long groupId) {
+		if (!_hasGroupPermission(groupId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getGroupActivitiesCount(groupId);
 	}
 
@@ -356,6 +370,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getGroupUsersActivitiesCount(long groupId) {
+		if (!_hasGroupPermission(groupId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getGroupUsersActivitiesCount(groupId);
 	}
 
@@ -424,6 +442,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getOrganizationActivitiesCount(long organizationId) {
+		if (!_hasOrganizationPermission(organizationId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getOrganizationActivitiesCount(
 			organizationId);
 	}
@@ -468,6 +490,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getOrganizationUsersActivitiesCount(long organizationId) {
+		if (!_hasOrganizationPermission(organizationId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getOrganizationUsersActivitiesCount(
 			organizationId);
 	}
@@ -545,6 +571,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getRelationActivitiesCount(long userId) {
+		if (!_hasUserPermission(userId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getRelationActivitiesCount(userId);
 	}
 
@@ -559,6 +589,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getRelationActivitiesCount(long userId, int type) {
+		if (!_hasUserPermission(userId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getRelationActivitiesCount(
 			userId, type);
 	}
@@ -601,6 +635,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getUserActivitiesCount(long userId) {
+		if (!_hasUserPermission(userId)) {
+			return 0;
+		}
+
 		return socialActivityPersistence.countByUserId(userId);
 	}
 
@@ -644,6 +682,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getUserGroupsActivitiesCount(long userId) {
+		if (!_hasUserPermission(userId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getUserGroupsActivitiesCount(userId);
 	}
 
@@ -687,6 +729,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getUserGroupsAndOrganizationsActivitiesCount(long userId) {
+		if (!_hasUserPermission(userId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.
 			getUserGroupsAndOrganizationsActivitiesCount(userId);
 	}
@@ -731,6 +777,10 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 	 */
 	@Override
 	public int getUserOrganizationsActivitiesCount(long userId) {
+		if (!_hasUserPermission(userId)) {
+			return 0;
+		}
+
 		return socialActivityLocalService.getUserOrganizationsActivitiesCount(
 			userId);
 	}
@@ -804,6 +854,70 @@ public class SocialActivityServiceImpl extends SocialActivityServiceBaseImpl {
 				if (_log.isDebugEnabled()) {
 					_log.debug(exception);
 				}
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasAssetPermission(long classNameId, long classPK) {
+		ModelResourcePermission<?> modelResourcePermission =
+			ModelResourcePermissionRegistryUtil.getModelResourcePermission(
+				PortalUtil.getClassName(classNameId));
+
+		if (modelResourcePermission == null) {
+			return false;
+		}
+
+		try {
+			return modelResourcePermission.contains(
+				getPermissionChecker(), classPK, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasGroupPermission(long groupId) {
+		try {
+			return GroupPermissionUtil.contains(
+				getPermissionChecker(), groupId, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasOrganizationPermission(long organizationId) {
+		try {
+			return OrganizationPermissionUtil.contains(
+				getPermissionChecker(), organizationId, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
+
+		return false;
+	}
+
+	private boolean _hasUserPermission(long userId) {
+		try {
+			return UserPermissionUtil.contains(
+				getPermissionChecker(), userId, ActionKeys.VIEW);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
 			}
 		}
 
