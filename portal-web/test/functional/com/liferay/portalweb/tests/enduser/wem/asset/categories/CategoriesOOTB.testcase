@@ -575,7 +575,7 @@ definition {
 	@description = ""
 	@priority = 4
 	@uitest
-	test CheckBlogsCategoriesMoreThanOneSite {
+	test AddGlobalCategoriesToBlogsInSeveralSites {
 		property portal.acceptance = "true";
 
 		task ("Add the second site") {
