@@ -8,7 +8,7 @@ package com.liferay.osb.faro.engine.client.model;
 /**
  * @author Caio Pinheiro
  */
-public class LifecycleTriggerResult {
+public class AccountLifecycleTriggerResult {
 
 	public String getAccountId() {
 		return _accountId;

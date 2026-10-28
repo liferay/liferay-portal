@@ -8,7 +8,7 @@ package com.liferay.osb.faro.web.internal.helper;
 /**
  * @author Caio Pinheiro
  */
-public enum LifecycleTriggerType {
+public enum AccountLifecycleTriggerType {
 
 	ACCOUNT_STAGE_CHANGES("accountStageChanges", "account-stage-changes", null),
 	NET_NEW_PIPELINE_ACCOUNTS(
@@ -26,20 +26,20 @@ public enum LifecycleTriggerType {
 		return _languageKey;
 	}
 
-	public String getToLifecycleStage() {
-		return _toLifecycleStage;
+	public String getToAccountLifecycleStageName() {
+		return _toAccountLifecycleStageName;
 	}
 
-	private LifecycleTriggerType(
-		String key, String languageKey, String toLifecycleStage) {
+	private AccountLifecycleTriggerType(
+		String key, String languageKey, String toAccountLifecycleStageName) {
 
 		_key = key;
 		_languageKey = languageKey;
-		_toLifecycleStage = toLifecycleStage;
+		_toAccountLifecycleStageName = toAccountLifecycleStageName;
 	}
 
 	private final String _key;
 	private final String _languageKey;
-	private final String _toLifecycleStage;
+	private final String _toAccountLifecycleStageName;
 
 }

@@ -10,12 +10,12 @@ import com.liferay.portal.kernel.util.GetterUtil;
 /**
  * @author Caio Pinheiro
  */
-public class LifecycleNotificationPreferences {
+public class AccountLifecycleNotificationPreferences {
 
-	public LifecycleNotificationPreferences() {
+	public AccountLifecycleNotificationPreferences() {
 	}
 
-	public LifecycleNotificationPreferences(
+	public AccountLifecycleNotificationPreferences(
 		Boolean accountStageChanges, String emailFrequency,
 		Boolean netNewPipelineAccounts, Boolean newAccounts,
 		Boolean newAtRiskAccounts, Boolean newStalledAccounts) {

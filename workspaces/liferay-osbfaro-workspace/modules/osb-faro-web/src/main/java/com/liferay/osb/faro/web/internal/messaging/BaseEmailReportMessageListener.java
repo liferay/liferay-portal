@@ -7,14 +7,15 @@ package com.liferay.osb.faro.web.internal.messaging;
 
 import com.liferay.osb.faro.model.FaroPreferences;
 import com.liferay.osb.faro.service.FaroPreferencesLocalService;
+import com.liferay.osb.faro.web.internal.helper.AccountLifecycleTriggerType;
 import com.liferay.osb.faro.web.internal.helper.EmailReportHelper;
-import com.liferay.osb.faro.web.internal.helper.LifecycleTriggerType;
 import com.liferay.osb.faro.web.internal.helper.NotificationHelper;
+import com.liferay.osb.faro.web.internal.model.preferences.AccountLifecycleNotificationPreferences;
 import com.liferay.osb.faro.web.internal.model.preferences.EmailReportPreferences;
-import com.liferay.osb.faro.web.internal.model.preferences.LifecycleNotificationPreferences;
 import com.liferay.osb.faro.web.internal.model.preferences.SegmentNotificationPreferences;
 import com.liferay.osb.faro.web.internal.model.preferences.WorkspacePreferences;
 import com.liferay.osb.faro.web.internal.util.JSONUtil;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.BaseMessageListener;
@@ -47,8 +48,8 @@ public abstract class BaseEmailReportMessageListener
 
 	@Override
 	protected void doReceive(Message message) throws Exception {
-		Map<Long, Map<String, Map<Long, List<LifecycleTriggerType>>>>
-			lifecycleTriggerTypesMap = new LinkedHashMap<>();
+		Map<Long, Map<String, Map<Long, List<AccountLifecycleTriggerType>>>>
+			accountLifecycleTriggerTypesMap = new LinkedHashMap<>();
 		Map<Long, Map<String, List<Long>>> segmentUserIdsMap =
 			new LinkedHashMap<>();
 
@@ -105,14 +106,14 @@ public abstract class BaseEmailReportMessageListener
 				}
 			}
 
-			_collectLifecycleNotifications(
-				faroPreferences, lifecycleTriggerTypesMap,
+			_collectAccountLifecycleNotifications(
+				accountLifecycleTriggerTypesMap, faroPreferences,
 				workspacePreferences);
 			_collectSegmentNotifications(
 				faroPreferences, segmentUserIdsMap, workspacePreferences);
 		}
 
-		_sendNotifications(lifecycleTriggerTypesMap, segmentUserIdsMap);
+		_sendNotifications(accountLifecycleTriggerTypesMap, segmentUserIdsMap);
 	}
 
 	protected abstract String getFrequency();
@@ -132,66 +133,68 @@ public abstract class BaseEmailReportMessageListener
 	@Reference
 	protected TriggerFactory triggerFactory;
 
-	private void _collectLifecycleNotifications(
+	private void _collectAccountLifecycleNotifications(
+		Map<Long, Map<String, Map<Long, List<AccountLifecycleTriggerType>>>>
+			accountLifecycleTriggerTypesMap,
 		FaroPreferences faroPreferences,
-		Map<Long, Map<String, Map<Long, List<LifecycleTriggerType>>>>
-			lifecycleTriggerTypesMap,
 		WorkspacePreferences workspacePreferences) {
 
 		if (_isGroupScope(faroPreferences)) {
 			return;
 		}
 
-		Map<String, LifecycleNotificationPreferences>
-			lifecycleNotificationPreferencesMap =
-				workspacePreferences.getLifecycleNotificationPreferences(null);
+		Map<String, AccountLifecycleNotificationPreferences>
+			accountLifecycleNotificationPreferencesMap =
+				workspacePreferences.getAccountLifecycleNotificationPreferences(
+					null);
 
-		for (Map.Entry<String, LifecycleNotificationPreferences> entry :
-				lifecycleNotificationPreferencesMap.entrySet()) {
+		for (Map.Entry<String, AccountLifecycleNotificationPreferences> entry :
+				accountLifecycleNotificationPreferencesMap.entrySet()) {
 
-			LifecycleNotificationPreferences lifecycleNotificationPreferences =
-				entry.getValue();
+			AccountLifecycleNotificationPreferences
+				accountLifecycleNotificationPreferences = entry.getValue();
 
 			if (!Objects.equals(
-					lifecycleNotificationPreferences.getEmailFrequency(),
+					accountLifecycleNotificationPreferences.getEmailFrequency(),
 					getFrequency())) {
 
 				continue;
 			}
 
-			List<LifecycleTriggerType> lifecycleTriggerTypes =
+			List<AccountLifecycleTriggerType> accountLifecycleTriggerTypes =
 				new ArrayList<>();
 
-			for (LifecycleTriggerType lifecycleTriggerType :
-					LifecycleTriggerType.values()) {
+			for (AccountLifecycleTriggerType accountLifecycleTriggerType :
+					AccountLifecycleTriggerType.values()) {
 
 				if (!_isEnabled(
-						lifecycleNotificationPreferences,
-						lifecycleTriggerType)) {
+						accountLifecycleNotificationPreferences,
+						accountLifecycleTriggerType)) {
 
 					continue;
 				}
 
-				lifecycleTriggerTypes.add(lifecycleTriggerType);
+				accountLifecycleTriggerTypes.add(accountLifecycleTriggerType);
 			}
 
-			if (lifecycleTriggerTypes.isEmpty()) {
+			if (accountLifecycleTriggerTypes.isEmpty()) {
 				continue;
 			}
 
-			Map<String, Map<Long, List<LifecycleTriggerType>>>
-				lifecycleTriggerTypesById =
-					lifecycleTriggerTypesMap.computeIfAbsent(
+			Map<String, Map<Long, List<AccountLifecycleTriggerType>>>
+				accountLifecycleTriggerTypesById =
+					accountLifecycleTriggerTypesMap.computeIfAbsent(
 						faroPreferences.getGroupId(),
 						groupId -> new LinkedHashMap<>());
 
-			Map<Long, List<LifecycleTriggerType>>
-				lifecycleTriggerTypesByUserId =
-					lifecycleTriggerTypesById.computeIfAbsent(
-						entry.getKey(), lifecycleId -> new LinkedHashMap<>());
+			Map<Long, List<AccountLifecycleTriggerType>>
+				accountLifecycleTriggerTypesByUserId =
+					accountLifecycleTriggerTypesById.computeIfAbsent(
+						entry.getKey(),
+						accountLifecycleId -> new LinkedHashMap<>());
 
-			lifecycleTriggerTypesByUserId.put(
-				faroPreferences.getUserId(), lifecycleTriggerTypes);
+			accountLifecycleTriggerTypesByUserId.put(
+				faroPreferences.getUserId(), accountLifecycleTriggerTypes);
 		}
 	}
 
@@ -236,36 +239,42 @@ public abstract class BaseEmailReportMessageListener
 	}
 
 	private boolean _isEnabled(
-		LifecycleNotificationPreferences lifecycleNotificationPreferences,
-		LifecycleTriggerType lifecycleTriggerType) {
+		AccountLifecycleNotificationPreferences
+			accountLifecycleNotificationPreferences,
+		AccountLifecycleTriggerType accountLifecycleTriggerType) {
 
-		if (lifecycleTriggerType ==
-				LifecycleTriggerType.ACCOUNT_STAGE_CHANGES) {
+		if (accountLifecycleTriggerType ==
+				AccountLifecycleTriggerType.ACCOUNT_STAGE_CHANGES) {
 
 			return GetterUtil.getBoolean(
-				lifecycleNotificationPreferences.getAccountStageChanges());
+				accountLifecycleNotificationPreferences.
+					getAccountStageChanges());
 		}
-		else if (lifecycleTriggerType ==
-					LifecycleTriggerType.NET_NEW_PIPELINE_ACCOUNTS) {
+		else if (accountLifecycleTriggerType ==
+					AccountLifecycleTriggerType.NET_NEW_PIPELINE_ACCOUNTS) {
 
 			return GetterUtil.getBoolean(
-				lifecycleNotificationPreferences.getNetNewPipelineAccounts());
+				accountLifecycleNotificationPreferences.
+					getNetNewPipelineAccounts());
 		}
-		else if (lifecycleTriggerType == LifecycleTriggerType.NEW_ACCOUNTS) {
-			return GetterUtil.getBoolean(
-				lifecycleNotificationPreferences.getNewAccounts());
-		}
-		else if (lifecycleTriggerType ==
-					LifecycleTriggerType.NEW_AT_RISK_ACCOUNTS) {
+		else if (accountLifecycleTriggerType ==
+					AccountLifecycleTriggerType.NEW_ACCOUNTS) {
 
 			return GetterUtil.getBoolean(
-				lifecycleNotificationPreferences.getNewAtRiskAccounts());
+				accountLifecycleNotificationPreferences.getNewAccounts());
 		}
-		else if (lifecycleTriggerType ==
-					LifecycleTriggerType.NEW_STALLED_ACCOUNTS) {
+		else if (accountLifecycleTriggerType ==
+					AccountLifecycleTriggerType.NEW_AT_RISK_ACCOUNTS) {
 
 			return GetterUtil.getBoolean(
-				lifecycleNotificationPreferences.getNewStalledAccounts());
+				accountLifecycleNotificationPreferences.getNewAtRiskAccounts());
+		}
+		else if (accountLifecycleTriggerType ==
+					AccountLifecycleTriggerType.NEW_STALLED_ACCOUNTS) {
+
+			return GetterUtil.getBoolean(
+				accountLifecycleNotificationPreferences.
+					getNewStalledAccounts());
 		}
 
 		return false;
@@ -279,36 +288,37 @@ public abstract class BaseEmailReportMessageListener
 		return false;
 	}
 
-	private void _sendLifecycleNotifications(
-		Map<String, Map<Long, List<LifecycleTriggerType>>>
-			lifecycleTriggerTypesById,
+	private void _sendAccountLifecycleNotifications(
+		Map<String, Map<Long, List<AccountLifecycleTriggerType>>>
+			accountLifecycleTriggerTypesById,
 		NotificationHelper.NotificationContext notificationContext) {
 
-		for (Map.Entry<String, Map<Long, List<LifecycleTriggerType>>>
-				lifecycleEntry : lifecycleTriggerTypesById.entrySet()) {
+		for (Map.Entry<String, Map<Long, List<AccountLifecycleTriggerType>>>
+				entry : accountLifecycleTriggerTypesById.entrySet()) {
 
 			try {
-				notificationHelper.sendLifecycleNotifications(
-					getFrequency(), lifecycleEntry.getKey(),
-					lifecycleEntry.getValue(), notificationContext);
+				notificationHelper.sendAccountLifecycleNotifications(
+					entry.getKey(), entry.getValue(), getFrequency(),
+					notificationContext);
 			}
 			catch (Exception exception) {
 				_log.error(
-					"Unable to send " + getFrequency() +
-						" notifications for lifecycle " +
-							lifecycleEntry.getKey(),
+					StringBundler.concat(
+						"Unable to send ", getFrequency(),
+						" notifications for account lifecycle ",
+						entry.getKey()),
 					exception);
 			}
 		}
 	}
 
 	private void _sendNotifications(
-		Map<Long, Map<String, Map<Long, List<LifecycleTriggerType>>>>
-			lifecycleTriggerTypesMap,
+		Map<Long, Map<String, Map<Long, List<AccountLifecycleTriggerType>>>>
+			accountLifecycleTriggerTypesMap,
 		Map<Long, Map<String, List<Long>>> segmentUserIdsMap) {
 
 		Set<Long> groupIds = new LinkedHashSet<>(
-			lifecycleTriggerTypesMap.keySet());
+			accountLifecycleTriggerTypesMap.keySet());
 
 		groupIds.addAll(segmentUserIdsMap.keySet());
 
@@ -320,8 +330,8 @@ public abstract class BaseEmailReportMessageListener
 				continue;
 			}
 
-			_sendLifecycleNotifications(
-				lifecycleTriggerTypesMap.getOrDefault(
+			_sendAccountLifecycleNotifications(
+				accountLifecycleTriggerTypesMap.getOrDefault(
 					groupId, Collections.emptyMap()),
 				notificationContext);
 			_sendSegmentNotifications(

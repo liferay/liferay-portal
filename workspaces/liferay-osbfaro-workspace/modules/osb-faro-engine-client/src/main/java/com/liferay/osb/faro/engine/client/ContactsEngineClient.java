@@ -13,6 +13,7 @@ import com.liferay.osb.faro.engine.client.model.AccountLifecycleMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageMetric;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStageTransition;
 import com.liferay.osb.faro.engine.client.model.AccountLifecycleStatus;
+import com.liferay.osb.faro.engine.client.model.AccountLifecycleTriggerResult;
 import com.liferay.osb.faro.engine.client.model.AccountMetric;
 import com.liferay.osb.faro.engine.client.model.AccountName;
 import com.liferay.osb.faro.engine.client.model.AcquisitionParameter;
@@ -52,7 +53,6 @@ import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChang
 import com.liferay.osb.faro.engine.client.model.IndividualSegmentMembershipChangeAggregation;
 import com.liferay.osb.faro.engine.client.model.IndividualTransformation;
 import com.liferay.osb.faro.engine.client.model.Interest;
-import com.liferay.osb.faro.engine.client.model.LifecycleTriggerResult;
 import com.liferay.osb.faro.engine.client.model.Metric;
 import com.liferay.osb.faro.engine.client.model.PageExperience;
 import com.liferay.osb.faro.engine.client.model.PageVisited;
@@ -586,8 +586,9 @@ public interface ContactsEngineClient {
 
 	public Date getLastSeenDate(FaroProject faroProject);
 
-	public LifecycleTriggerResult getNewAccountsLifecycleTriggerResult(
-			FaroProject faroProject, String id, int rangeKey)
+	public AccountLifecycleTriggerResult
+			getNewAccountsAccountLifecycleTriggerResult(
+				FaroProject faroProject, String id, int rangeKey)
 		throws Exception;
 
 	public List<PageExperience> getPageExperiences(
@@ -617,8 +618,9 @@ public interface ContactsEngineClient {
 		FaroProject faroProject, String channelId, String fieldName,
 		String filterString, String query, int cur, int delta);
 
-	public LifecycleTriggerResult getStalledAccountsLifecycleTriggerResult(
-			FaroProject faroProject, String id, int rangeKey)
+	public AccountLifecycleTriggerResult
+			getStalledAccountsAccountLifecycleTriggerResult(
+				FaroProject faroProject, String id, int rangeKey)
 		throws Exception;
 
 	public long getSyncedIndividualsCount(FaroProject faroProject);
