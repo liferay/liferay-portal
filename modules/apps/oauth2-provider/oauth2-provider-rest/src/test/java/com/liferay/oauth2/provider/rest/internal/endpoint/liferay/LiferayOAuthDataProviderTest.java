@@ -79,6 +79,7 @@ public class LiferayOAuthDataProviderTest {
 
 		OAuth2ApplicationLocalService oAuth2ApplicationLocalService =
 			Mockito.mock(OAuth2ApplicationLocalService.class);
+
 		OAuth2Application oAuth2Application = Mockito.mock(
 			OAuth2Application.class);
 

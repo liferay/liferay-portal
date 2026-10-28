@@ -52,10 +52,6 @@ public class JWTAssertionUtil {
 	}
 
 	private static String _getJWT(JWTClaimsSet jwtClaimsSet) throws Exception {
-		JWKSet jwkSet = JWKSet.parse(JWKS);
-
-		RSAKey rsaKey = (RSAKey)jwkSet.getKeyByKeyId(_KEY_ID);
-
 		JWSHeader jwsHeader = new JWSHeader.Builder(
 			JWSAlgorithm.RS256
 		).keyID(
@@ -65,6 +61,10 @@ public class JWTAssertionUtil {
 		).build();
 
 		SignedJWT signedJWT = new SignedJWT(jwsHeader, jwtClaimsSet);
+
+		JWKSet jwkSet = JWKSet.parse(JWKS);
+
+		RSAKey rsaKey = (RSAKey)jwkSet.getKeyByKeyId(_KEY_ID);
 
 		signedJWT.sign(new RSASSASigner(rsaKey));
 
