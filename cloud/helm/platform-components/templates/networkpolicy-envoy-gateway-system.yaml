@@ -35,8 +35,6 @@ spec:
             ports:
                 -   port: grpc
                     protocol: TCP
-                -   port: ratelimit
-                    protocol: TCP
                 -   port: wasm
                     protocol: TCP
     podSelector:
