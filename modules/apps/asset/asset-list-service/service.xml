@@ -88,8 +88,9 @@
 
 		<!-- Other fields -->
 
-		<column name="assetListEntryId" type="long" />
 		<column name="assetEntryId" type="long" />
+		<column name="assetListEntryId" type="long" />
+		<column name="audienceEntryERC" type="String" />
 		<column name="segmentsEntryId" type="long" />
 		<column name="position" type="int" />
 		<column name="lastPublishDate" type="Date" />
@@ -102,25 +103,72 @@
 
 		<!-- Finder methods -->
 
-		<finder name="AssetListEntryId" return-type="Collection">
-			<finder-column name="assetListEntryId" />
-		</finder>
 		<finder name="AssetEntryId" return-type="Collection">
 			<finder-column name="assetEntryId" />
 		</finder>
-		<finder name="A_S" return-type="Collection">
+		<finder name="AssetListEntryId" return-type="Collection">
 			<finder-column name="assetListEntryId" />
+		</finder>
+		<finder name="A_AEERC_S" return-type="Collection">
+			<finder-column name="assetListEntryId" />
+			<finder-column name="audienceEntryERC" />
 			<finder-column arrayable-operator="OR" name="segmentsEntryId" />
 		</finder>
-		<finder name="A_S_P" return-type="AssetListEntryAssetEntryRel" unique="true">
+		<finder name="A_AEERC_S_P" return-type="AssetListEntryAssetEntryRel" unique="true">
 			<finder-column name="assetListEntryId" />
+			<finder-column name="audienceEntryERC" />
 			<finder-column name="segmentsEntryId" />
 			<finder-column name="position" />
 		</finder>
-		<finder name="A_S_GtP" return-type="Collection">
+		<finder name="A_AEERC_S_GtP" return-type="Collection">
 			<finder-column name="assetListEntryId" />
+			<finder-column name="audienceEntryERC" />
 			<finder-column name="segmentsEntryId" />
 			<finder-column comparator="&gt;" name="position" />
+		</finder>
+	</entity>
+	<entity local-service="true" name="AssetListEntryAudienceEntryRel" remote-service="false" uuid="true">
+
+		<!-- PK fields -->
+
+		<column db-name="alEntryAudienceEntryRelId" name="assetListEntryAudienceEntryRelId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="assetListEntryId" type="long" />
+		<column name="audienceEntryERC" type="String" />
+		<column name="priority" type="int" />
+		<column name="typeSettings" type="String" />
+		<column name="lastPublishDate" type="Date" />
+
+		<!-- Finder methods -->
+
+		<finder name="AssetListEntryId" return-type="Collection">
+			<finder-column name="assetListEntryId" />
+		</finder>
+		<finder name="C_AEERC" return-type="Collection">
+			<finder-column name="companyId" />
+			<finder-column name="audienceEntryERC" />
+		</finder>
+		<finder name="A_AEERC" return-type="AssetListEntryAudienceEntryRel" unique="true">
+			<finder-column name="assetListEntryId" />
+			<finder-column name="audienceEntryERC" />
+		</finder>
+		<finder name="A_AEERC_C" return-type="Collection">
+			<finder-column name="assetListEntryId" />
+			<finder-column arrayable-operator="OR" name="audienceEntryERC" />
 		</finder>
 	</entity>
 	<entity local-service="true" name="AssetListEntrySegmentsEntryRel" remote-service="false" uuid="true">
@@ -234,6 +282,7 @@
 		</finder>
 	</entity>
 	<exceptions>
+		<exception>AssetListEntryAssetEntryRelAudienceEntryERCAndSegmentsEntryId</exception>
 		<exception>AssetListEntryAssetEntryRelPostion</exception>
 		<exception>AssetListEntryTitle</exception>
 		<exception>DuplicateAssetListEntryTitle</exception>
