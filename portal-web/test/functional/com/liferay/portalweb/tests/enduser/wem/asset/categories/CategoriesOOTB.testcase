@@ -779,21 +779,6 @@ definition {
 
 	@description = "LPS-117015 When 'Categorization' in web content editor, vocabularies management application or content dashboard when empty graph, the message Learn how with a link to the documentation"
 	@priority = 3
-	test OpenLiferayLearnCategoriesVocabulariesPageFromContentDashboard {
-		task ("Go to content dashboard") {
-			ApplicationsMenu.gotoPortlet(
-				category = "In Maintenance",
-				panel = "Applications",
-				portlet = "Content Dashboard");
-		}
-
-		task ("Click on Learn How and Assert if user is taken to the the Liferay Learn page") {
-			Category.assertLearnHowLink();
-		}
-	}
-
-	@description = "LPS-117015 When 'Categorization' in web content editor, vocabularies management application or content dashboard when empty graph, the message Learn how with a link to the documentation"
-	@priority = 3
 	test OpenLiferayLearnLinks {
 		task ("Go to web content editor") {
 			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
@@ -812,6 +797,19 @@ definition {
 		task ("Click on the Documentation link in the global vocabularies and Assert if user is taken to the the Liferay Learn page") {
 			Category.openCategoriesAdmin(siteURLKey = "global");
 
+			Category.assertLearnHowLink();
+
+			Navigator.closeWindow();
+		}
+
+		task ("Go to content dashboard") {
+			ApplicationsMenu.gotoPortlet(
+				category = "In Maintenance",
+				panel = "Applications",
+				portlet = "Content Dashboard");
+		}
+
+		task ("Click on Learn How in the content dashboard and Assert if user is taken to the the Liferay Learn page") {
 			Category.assertLearnHowLink();
 		}
 	}
