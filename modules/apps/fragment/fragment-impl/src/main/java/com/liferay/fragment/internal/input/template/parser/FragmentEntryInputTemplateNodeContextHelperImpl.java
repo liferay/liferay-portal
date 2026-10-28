@@ -39,6 +39,7 @@ import com.liferay.info.field.type.RelationshipInfoFieldType;
 import com.liferay.info.field.type.SelectInfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.form.InfoForm;
+import com.liferay.info.item.InfoItemEntry;
 import com.liferay.info.item.InfoItemFieldValues;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
@@ -102,7 +103,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -1011,70 +1011,29 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 		Object infoParameterMapValue = infoFormParameterMap.get(
 			infoField.getUniqueId());
 
-		if (!(infoParameterMapValue instanceof RelatedInfoFieldValue<?>)) {
-			if (infoParameterMapValue == null) {
-				return StringPool.BLANK;
-			}
+		InfoItemEntry infoItemEntry =
+			(InfoItemEntry)httpServletRequest.getAttribute(
+				LayoutStructureRendererConstants.LAYOUT_INFO_ITEM_ENTRY);
 
-			if (infoParameterMapValue instanceof Map) {
-				return _parseLocalizedValues(
-					infoField, (Map<Locale, ?>)infoParameterMapValue);
-			}
+		if ((infoItemEntry != null) &&
+			Validator.isNotNull(infoItemEntry.getExternalReferenceCode())) {
 
-			return infoParameterMapValue;
+			infoParameterMapValue = infoItemEntry.getValue(
+				infoField.getUniqueId());
 		}
 
-		RelatedInfoFieldValue<?> relatedInfoFieldValue =
-			(RelatedInfoFieldValue<?>)infoParameterMapValue;
+		if ((infoParameterMapValue == null) ||
+			(infoParameterMapValue instanceof RelatedInfoFieldValue<?>)) {
 
-		String parentExternalReferenceCode =
-			(String)httpServletRequest.getAttribute(
-				LayoutStructureRendererConstants.
-					LAYOUT_PARENT_ITEM_EXTERNAL_REFERENCE_CODE);
-		String relatedItemExternalReferenceCode =
-			(String)httpServletRequest.getAttribute(
-				LayoutStructureRendererConstants.
-					LAYOUT_RELATED_ITEM_EXTERNAL_REFERENCE_CODE);
-
-		InfoFieldValue<?> infoFieldValue =
-			relatedInfoFieldValue.getInfoFieldValue(
-				relatedItemExternalReferenceCode, parentExternalReferenceCode);
-
-		if (infoFieldValue == null) {
 			return StringPool.BLANK;
 		}
 
-		if (infoField.getInfoFieldType() == DateInfoFieldType.INSTANCE) {
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd");
-
-			try {
-				return simpleDateFormat.format(infoFieldValue.getValue());
-			}
-			catch (IllegalArgumentException illegalArgumentException) {
-				if (_log.isDebugEnabled()) {
-					_log.debug(illegalArgumentException);
-				}
-
-				return null;
-			}
-		}
-
-		Object value = infoFieldValue.getValue();
-
-		if (value instanceof List) {
-			return ListUtil.toString((List<?>)value, StringPool.BLANK);
-		}
-
-		if (value instanceof InfoLocalizedValue) {
-			InfoLocalizedValue<?> infoLocalizedValue =
-				(InfoLocalizedValue<?>)value;
-
+		if (infoParameterMapValue instanceof Map) {
 			return _parseLocalizedValues(
-				infoField, infoLocalizedValue.getValues());
+				infoField, (Map<Locale, ?>)infoParameterMapValue);
 		}
 
-		return String.valueOf(value);
+		return infoParameterMapValue;
 	}
 
 	private String _getInputLabel(
