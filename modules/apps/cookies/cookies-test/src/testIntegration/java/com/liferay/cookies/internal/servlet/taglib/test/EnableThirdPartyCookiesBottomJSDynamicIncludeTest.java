@@ -47,6 +47,8 @@ public class EnableThirdPartyCookiesBottomJSDynamicIncludeTest {
 						TestPropsValues.getCompanyId(),
 						CookiesPreferenceHandlingConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
+							"active", true
+						).put(
 							"enabled", true
 						).put(
 							"globalPrivacyControlEnabled", true
@@ -73,6 +75,8 @@ public class EnableThirdPartyCookiesBottomJSDynamicIncludeTest {
 						TestPropsValues.getCompanyId(),
 						CookiesPreferenceHandlingConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
+							"active", true
+						).put(
 							"enabled", true
 						).put(
 							"globalPrivacyControlEnabled", false
@@ -92,6 +96,8 @@ public class EnableThirdPartyCookiesBottomJSDynamicIncludeTest {
 						TestPropsValues.getCompanyId(),
 						CookiesPreferenceHandlingConfiguration.class.getName(),
 						HashMapDictionaryBuilder.<String, Object>put(
+							"active", true
+						).put(
 							"enabled", false
 						).put(
 							"globalPrivacyControlEnabled", true
@@ -121,6 +127,7 @@ public class EnableThirdPartyCookiesBottomJSDynamicIncludeTest {
 
 		themeDisplay.setCompany(
 			_companyLocalService.fetchCompany(TestPropsValues.getCompanyId()));
+		themeDisplay.setScopeGroupId(TestPropsValues.getGroupId());
 		themeDisplay.setServerName(StringPool.BLANK);
 
 		mockHttpServletRequest.setAttribute(
