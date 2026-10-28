@@ -152,8 +152,7 @@ public class EditCommerceOrderMVCActionCommandTest {
 		throws Exception {
 
 		_processAction(
-			"recalculateOrderSummary", commerceOrderId,
-			Collections.emptyMap());
+			"recalculateOrderSummary", commerceOrderId, Collections.emptyMap());
 
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.getCommerceOrder(commerceOrderId);
@@ -195,8 +194,8 @@ public class EditCommerceOrderMVCActionCommandTest {
 			RoleConstants.TYPE_REGULAR, null, _serviceContext);
 
 		_resourcePermissionLocalService.setResourcePermissions(
-			commerceOrder1.getCompanyId(),
-			CommerceOrderConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			commerceOrder1.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
 			String.valueOf(_accountEntry.getAccountEntryGroupId()),
 			role.getRoleId(),
 			new String[] {CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS});
@@ -239,8 +238,8 @@ public class EditCommerceOrderMVCActionCommandTest {
 			commerceOrder2.getPaymentStatus());
 
 		_resourcePermissionLocalService.setResourcePermissions(
-			commerceOrder1.getCompanyId(),
-			CommerceOrderConstants.RESOURCE_NAME, ResourceConstants.SCOPE_GROUP,
+			commerceOrder1.getCompanyId(), CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP,
 			String.valueOf(commerceOrder1.getGroupId()), role.getRoleId(),
 			new String[] {
 				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
@@ -255,7 +254,8 @@ public class EditCommerceOrderMVCActionCommandTest {
 					_processAction(
 						"paymentMethod", commerceOrder1.getCommerceOrderId(),
 						Collections.singletonMap(
-							"paymentMethodKey", TestCommercePaymentMethod.KEY))));
+							"paymentMethodKey",
+							TestCommercePaymentMethod.KEY))));
 			Assert.assertTrue(
 				SessionErrors.isEmpty(
 					_processAction(
