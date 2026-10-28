@@ -12,7 +12,6 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.knowledge.base.constants.KBActionKeys;
 import com.liferay.knowledge.base.constants.KBConstants;
 import com.liferay.knowledge.base.constants.KBFolderConstants;
-import com.liferay.knowledge.base.constants.KBPortletKeys;
 import com.liferay.knowledge.base.model.KBArticle;
 import com.liferay.knowledge.base.service.KBArticleLocalService;
 import com.liferay.knowledge.base.service.KBArticleService;
@@ -22,7 +21,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.Subscription;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -31,10 +29,8 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.SubscriptionLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -90,6 +86,7 @@ public class KBArticleServiceTest {
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
 			_group1, TestPropsValues.getUserId());
 		_siteMemberUser = UserTestUtil.addUser(_group1.getGroupId());
+		_testPortletId = "TEST_PORTLET_" + RandomTestUtil.randomString();
 		_user = UserTestUtil.addUser();
 
 		RoleTestUtil.addResourcePermission(
@@ -100,23 +97,6 @@ public class KBArticleServiceTest {
 		_userGroupRoleLocalService.addUserGroupRoles(
 			_siteMemberUser.getUserId(), _group1.getGroupId(),
 			new long[] {_role.getRoleId()});
-	}
-
-	@Test
-	@TestInfo("LPD-111631")
-	public void testAddKBArticle() throws Exception {
-		_testAddKBArticleWithoutAddKBArticlePermission(
-			KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
-			KBConstants.RESOURCE_NAME_ADMIN);
-		_testAddKBArticleWithoutAddKBArticlePermission(
-			KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
-			KBConstants.RESOURCE_NAME_DISPLAY);
-
-		_addPortletResourcePermissions(KBActionKeys.ADD_KB_ARTICLE);
-
-		_testAddKBArticle(KBPortletKeys.KNOWLEDGE_BASE_ADMIN);
-		_testAddKBArticle(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY);
-		_testAddKBArticleWithInvalidPortletId();
 	}
 
 	@Test
@@ -244,26 +224,6 @@ public class KBArticleServiceTest {
 	}
 
 	@Test
-	@TestInfo("LPD-111631")
-	public void testSubscribeGroupKBArticles() throws Exception {
-		_addPortletResourcePermissions(KBActionKeys.SUBSCRIBE);
-
-		_testSubscribeGroupKBArticles(KBPortletKeys.KNOWLEDGE_BASE_ADMIN);
-		_testSubscribeGroupKBArticles(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY);
-		_testSubscribeGroupKBArticlesWithInvalidPortletId();
-	}
-
-	@Test
-	@TestInfo("LPD-111631")
-	public void testUnsubscribeGroupKBArticles() throws Exception {
-		_addPortletResourcePermissions(KBActionKeys.SUBSCRIBE);
-
-		_testUnsubscribeGroupKBArticles(KBPortletKeys.KNOWLEDGE_BASE_ADMIN);
-		_testUnsubscribeGroupKBArticles(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY);
-		_testUnsubscribeGroupKBArticlesWithInvalidPortletId();
-	}
-
-	@Test
 	public void testUpdateKBArticle() throws Exception {
 		_testUpdateKBArticle();
 		_testUpdateKBArticleWithFileEntryInDifferentKBArticle();
@@ -324,16 +284,8 @@ public class KBArticleServiceTest {
 			Date displayDate, ServiceContext serviceContext)
 		throws PortalException {
 
-		return _addKBArticle(
-			displayDate, KBPortletKeys.KNOWLEDGE_BASE_ADMIN, serviceContext);
-	}
-
-	private KBArticle _addKBArticle(
-			Date displayDate, String portletId, ServiceContext serviceContext)
-		throws PortalException {
-
 		return _kbArticleService.addKBArticle(
-			null, portletId, _kbFolderClassNameId,
+			null, _testPortletId, _kbFolderClassNameId,
 			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			StringUtil.randomString(), StringUtil.randomString(),
 			StringUtil.randomString(), StringUtil.randomString(), null, null,
@@ -347,82 +299,11 @@ public class KBArticleServiceTest {
 				group, TestPropsValues.getUserId()));
 	}
 
-	private void _addPortletResourcePermissions(String actionId)
-		throws Exception {
-
-		RoleTestUtil.addResourcePermission(
-			_role, KBConstants.RESOURCE_NAME_ADMIN,
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group1.getGroupId()),
-			actionId);
-		RoleTestUtil.addResourcePermission(
-			_role, KBConstants.RESOURCE_NAME_DISPLAY,
-			ResourceConstants.SCOPE_GROUP, String.valueOf(_group1.getGroupId()),
-			actionId);
-	}
-
 	private void _assertNoSuchFileEntry(FileEntry fileEntry) {
 		Assert.assertThrows(
 			NoSuchFileEntryException.class,
 			() -> _kbArticleService.getKBArticleAttachment(
 				fileEntry.getFileEntryId()));
-	}
-
-	private Subscription _fetchGroupSubscription() throws Exception {
-		return _subscriptionLocalService.fetchSubscription(
-			TestPropsValues.getCompanyId(), _siteMemberUser.getUserId(),
-			KBArticle.class.getName(), _group1.getGroupId());
-	}
-
-	private void _testAddKBArticle(String portletId) throws Exception {
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			Assert.assertNotNull(
-				_addKBArticle(new Date(), portletId, _serviceContext));
-		}
-	}
-
-	private void _testAddKBArticleWithInvalidPortletId() throws Exception {
-		int groupKBArticlesCount =
-			_kbArticleLocalService.getGroupKBArticlesCount(
-				_group1.getGroupId(), WorkflowConstants.STATUS_ANY);
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> _addKBArticle(
-					new Date(), RandomTestUtil.randomString(),
-					_serviceContext));
-		}
-
-		Assert.assertEquals(
-			groupKBArticlesCount,
-			_kbArticleLocalService.getGroupKBArticlesCount(
-				_group1.getGroupId(), WorkflowConstants.STATUS_ANY));
-	}
-
-	private void _testAddKBArticleWithoutAddKBArticlePermission(
-			String portletId, String resourceName)
-		throws Exception {
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			PrincipalException.MustHavePermission mustHavePermission =
-				Assert.assertThrows(
-					PrincipalException.MustHavePermission.class,
-					() -> _addKBArticle(
-						new Date(), portletId, _serviceContext));
-
-			Assert.assertArrayEquals(
-				new String[] {KBActionKeys.ADD_KB_ARTICLE},
-				mustHavePermission.actionId);
-			Assert.assertEquals(
-				_group1.getGroupId(), mustHavePermission.resourceId);
-			Assert.assertEquals(resourceName, mustHavePermission.resourceName);
-		}
 	}
 
 	private void _testDeleteKBArticleAttachment() throws Exception {
@@ -658,74 +539,6 @@ public class KBArticleServiceTest {
 		}
 	}
 
-	private void _testSubscribeGroupKBArticles(String portletId)
-		throws Exception {
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			_kbArticleService.subscribeGroupKBArticles(
-				_group1.getGroupId(), portletId);
-		}
-
-		Assert.assertNotNull(_fetchGroupSubscription());
-
-		_kbArticleLocalService.unsubscribeGroupKBArticles(
-			_siteMemberUser.getUserId(), _group1.getGroupId());
-	}
-
-	private void _testSubscribeGroupKBArticlesWithInvalidPortletId()
-		throws Exception {
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> _kbArticleService.subscribeGroupKBArticles(
-					_group1.getGroupId(), RandomTestUtil.randomString()));
-		}
-
-		Assert.assertNull(_fetchGroupSubscription());
-	}
-
-	private void _testUnsubscribeGroupKBArticles(String portletId)
-		throws Exception {
-
-		_kbArticleLocalService.subscribeGroupKBArticles(
-			_siteMemberUser.getUserId(), _group1.getGroupId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			_kbArticleService.unsubscribeGroupKBArticles(
-				_group1.getGroupId(), portletId);
-		}
-
-		Assert.assertNull(_fetchGroupSubscription());
-	}
-
-	private void _testUnsubscribeGroupKBArticlesWithInvalidPortletId()
-		throws Exception {
-
-		_kbArticleLocalService.subscribeGroupKBArticles(
-			_siteMemberUser.getUserId(), _group1.getGroupId());
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				_siteMemberUser)) {
-
-			Assert.assertThrows(
-				PrincipalException.class,
-				() -> _kbArticleService.unsubscribeGroupKBArticles(
-					_group1.getGroupId(), RandomTestUtil.randomString()));
-		}
-
-		Assert.assertNotNull(_fetchGroupSubscription());
-
-		_kbArticleLocalService.unsubscribeGroupKBArticles(
-			_siteMemberUser.getUserId(), _group1.getGroupId());
-	}
-
 	private void _testUpdateKBArticle() throws Exception {
 		KBArticle kbArticle = _addKBArticle(new Date());
 
@@ -851,8 +664,7 @@ public class KBArticleServiceTest {
 	@DeleteAfterTestRun
 	private User _siteMemberUser;
 
-	@Inject
-	private SubscriptionLocalService _subscriptionLocalService;
+	private String _testPortletId;
 
 	@DeleteAfterTestRun
 	private User _user;
