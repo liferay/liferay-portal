@@ -227,9 +227,6 @@ public class ElasticsearchAggregationVisitor
 			}
 		}
 
-		dateHistogramAggregationBuilder.field(
-			dateHistogramAggregation.getField());
-
 		if ((dateHistogramAggregation.getMaxBound() != null) &&
 			(dateHistogramAggregation.getMinBound() != null)) {
 
@@ -248,6 +245,9 @@ public class ElasticsearchAggregationVisitor
 									dateHistogramAggregation.getMinBound()))
 						)));
 		}
+
+		dateHistogramAggregationBuilder.field(
+			dateHistogramAggregation.getField());
 
 		if (dateHistogramAggregation.getMinDocCount() != null) {
 			dateHistogramAggregationBuilder.minDocCount(
