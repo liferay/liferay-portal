@@ -669,8 +669,9 @@ public class SourceFormatter {
 
 					buildPropertiesAdded = true;
 				}
+				else if (!testCaseFilesAdded &&
+						 fileName.endsWith(".testcase")) {
 
-				if (!testCaseFilesAdded && fileName.endsWith(".testcase")) {
 					dependentFileNames.addAll(
 						SourceFormatterUtil.filterFileNames(
 							_allFileNames, new String[0],
