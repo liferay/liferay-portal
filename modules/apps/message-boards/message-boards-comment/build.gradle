@@ -1,22 +1,16 @@
 dependencies {
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:comment:comment-api")
 	compileOnly project(":apps:depot:depot-api")
-	compileOnly project(":apps:export-import:export-import-api")
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
-	compileOnly project(":apps:message-boards:message-boards-service")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:subscription:subscription-api")
-	compileOnly project(":apps:xstream:xstream-configurator-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testImplementation project(":apps:portal-search:portal-search")
 	testImplementation project(":apps:portal-search:portal-search-test-util")
-	testImplementation project(":core:petra:petra-lang")
 }

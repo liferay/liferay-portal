@@ -7,14 +7,11 @@ dependencies {
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.util.java", version: "default"
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "jakarta.mail", name: "jakarta.mail-api", version: "2.1.3"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "net.htmlparser.jericho", name: "jericho-html", version: "3.4"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
-	compileOnly group: "org.osgi", name: "org.osgi.service.metatype", version: "1.3.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-api")
 	compileOnly project(":apps:asset:asset-link-api")
@@ -22,8 +19,6 @@ dependencies {
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:comment:comment-api")
 	compileOnly project(":apps:export-import:export-import-api")
-	compileOnly project(":apps:friendly-url:friendly-url-api")
-	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:portal-configuration:portal-configuration-module-configuration-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
@@ -33,7 +28,6 @@ dependencies {
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
 	compileOnly project(":apps:rss:rss-api")
 	compileOnly project(":apps:staging:staging-api")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":apps:subscription:subscription-api")
 	compileOnly project(":apps:trash:trash-api")
@@ -42,7 +36,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
