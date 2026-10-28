@@ -456,7 +456,8 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 	}
 
 	private String _getProductName(String productEntryId) {
-		String productName = ProductConstants.getProductName(productEntryId);
+		String productName = ProductConstants.getKoroneikiProductName(
+			productEntryId);
 
 		if (productName != null) {
 			if (!productName.startsWith("Liferay SaaS")) {
@@ -474,7 +475,7 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		ProductPurchase baseProductPurchase = null;
 
 		List<String> baseProductEntryIds =
-			ProductConstants.getBaseProductEntryIds();
+			ProductConstants.getKoroneikiBaseProductEntryIds();
 
 		for (ProductPurchase productPurchase : account.getProductPurchases()) {
 			if (!baseProductEntryIds.contains(

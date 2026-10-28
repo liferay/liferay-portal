@@ -1872,7 +1872,8 @@ public class ProjectFaroController extends BaseFaroController {
 
 		List<OSBAccountEntry> osbAccountEntries =
 			_provisioningClient.getOSBAccountEntries(
-				user.getUserUuid(), ProductConstants.getProductEntryIds());
+				user.getUserUuid(),
+				ProductConstants.getKoroneikiProductEntryIds());
 
 		for (OSBAccountEntry osbAccountEntry : osbAccountEntries) {
 			if (StringUtil.equals(
