@@ -3,12 +3,10 @@ dependencies {
 	compileOnly ext: "zip", group: "com.liferay.etl", name: "etl-salesforce-order-connector", version: "0.7"
 	compileOnly ext: "zip", group: "com.liferay.etl", name: "etl-salesforce-price-list-connector", version: "0.7"
 	compileOnly ext: "zip", group: "com.liferay.etl", name: "etl-salesforce-product-connector", version: "0.4"
-	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:dispatch:dispatch-api")
 	compileOnly project(":apps:dispatch:dispatch-talend-api")
-	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:portal:portal-instance-lifecycle-api")
 }
