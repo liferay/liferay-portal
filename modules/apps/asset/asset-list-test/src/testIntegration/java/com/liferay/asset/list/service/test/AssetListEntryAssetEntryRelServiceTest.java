@@ -130,16 +130,16 @@ public class AssetListEntryAssetEntryRelServiceTest {
 	public void testAddAssetListEntryAssetEntryRelWithAudienceEntryERC()
 		throws Exception {
 
+		AssetEntry assetEntry1 = AssetTestUtil.addAssetEntry(
+			_group.getGroupId(), null,
+			TestAssetRendererFactory.class.getName());
+
 		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
 			_group.getGroupId());
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), TestPropsValues.getUserId());
-
-		AssetEntry assetEntry1 = AssetTestUtil.addAssetEntry(
-			_group.getGroupId(), null,
-			TestAssetRendererFactory.class.getName());
 
 		_assetListEntryAssetEntryRelLocalService.addAssetListEntryAssetEntryRel(
 			assetListEntry.getAssetListEntryId(), assetEntry1.getEntryId(), 0,
@@ -202,10 +202,9 @@ public class AssetListEntryAssetEntryRelServiceTest {
 	public void testAddAssetListEntryAssetEntryRelWithAudienceEntryERCAndSegmentsEntryId()
 		throws Exception {
 
-		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
-			_group.getGroupId());
-
 		AssetEntry assetEntry = AssetTestUtil.addAssetEntry(
+			_group.getGroupId());
+		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
 			_group.getGroupId());
 
 		_assetListEntryAssetEntryRelLocalService.addAssetListEntryAssetEntryRel(
@@ -540,12 +539,11 @@ public class AssetListEntryAssetEntryRelServiceTest {
 	public void testUpdateAssetListEntryAssetEntryRelWithAudienceEntryERCAndSegmentsEntryId()
 		throws Exception {
 
-		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
-			_group.getGroupId());
-
 		AssetEntry assetEntry = AssetTestUtil.addAssetEntry(
 			_group.getGroupId(), null,
 			TestAssetRendererFactory.class.getName());
+		AssetListEntry assetListEntry = AssetListTestUtil.addAssetListEntry(
+			_group.getGroupId());
 
 		AssetListEntryAssetEntryRel assetListEntryAssetEntryRel =
 			AssetListTestUtil.addAssetListEntryAssetEntryRel(

@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 
-import java.util.Date;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -185,7 +184,6 @@ public class AssetListEntryAudienceEntryRelLocalServiceImpl
 			assetListEntryAudienceEntryRelPersistence.findByA_AEERC(
 				assetListEntryId, audienceEntryERC);
 
-		assetListEntryAudienceEntryRel.setModifiedDate(new Date());
 		assetListEntryAudienceEntryRel.setTypeSettings(typeSettings);
 
 		return assetListEntryAudienceEntryRelPersistence.update(

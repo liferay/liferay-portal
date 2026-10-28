@@ -103,7 +103,6 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 			_assetListEntryAudienceEntryRelLocalService.
 				fetchAssetListEntryAudienceEntryRel(
 					_assetListEntry.getAssetListEntryId(), audienceEntryERC));
-
 		Assert.assertEquals(
 			1,
 			_assetListEntryAssetEntryRelLocalService.
