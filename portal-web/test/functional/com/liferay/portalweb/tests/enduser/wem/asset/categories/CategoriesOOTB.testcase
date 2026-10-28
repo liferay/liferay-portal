@@ -36,71 +36,6 @@ definition {
 	}
 
 	@description = ""
-	@priority = 5
-	test AddCategoriesToBlogs {
-		property portal.acceptance = "true";
-
-		task ("Add a global category") {
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Audience 1",
-				vocabularyName = "Audience");
-
-			JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Stage 1",
-				vocabularyName = "Stage");
-		}
-
-		task ("Create a blog") {
-			HeadlessBlog.addBlogEntry(
-				content = "Blogs Entry Content",
-				groupName = "Test Site Name",
-				title = "Blogs Entry Title");
-		}
-
-		task ("Go to Blogs Admin and click to edit") {
-			BlogsNavigator.openBlogsAdmin(siteURLKey = "test-site-name");
-
-			BlogsNavigator.gotoEditCP(entryTitle = "Blogs Entry Title");
-		}
-
-		task ("Add categories from Audience and Stage Vocabularies") {
-			Blogs.expandPanel(panel = "Categorization");
-
-			AssertElementPresent(
-				key_categoryName = "Audience",
-				locator1 = "Categories#VOCABULARY_CATEGORY");
-
-			AssertElementPresent(
-				key_categoryName = "Stage",
-				locator1 = "Categories#VOCABULARY_CATEGORY");
-
-			Click(
-				key_fieldName = "Audience",
-				locator1 = "Button#SELECT_BUTTON");
-
-			AssetCategorization.selectCategories(categoryNameList = "Audience 1");
-
-			Click(
-				key_fieldName = "Stage",
-				locator1 = "Button#SELECT_BUTTON");
-
-			AssetCategorization.selectCategories(categoryNameList = "Stage 1");
-
-			AssertTextEquals(
-				key_categoryName = "Audience 1",
-				locator1 = "AssetCategorization#CATEGORY",
-				value1 = "Audience 1");
-
-			AssertTextEquals(
-				key_categoryName = "Stage 1",
-				locator1 = "AssetCategorization#CATEGORY",
-				value1 = "Stage 1");
-		}
-	}
-
-	@description = ""
 	@priority = 4
 	test AddCategoryFromDMWithoutPermission {
 		task ("Create new user") {
@@ -573,7 +508,7 @@ definition {
 	}
 
 	@description = ""
-	@priority = 4
+	@priority = 5
 	@uitest
 	test AddGlobalCategoriesToBlogsInSeveralSites {
 		property portal.acceptance = "true";
@@ -614,6 +549,14 @@ definition {
 
 		task ("Add categories from Audience and Stage Vocabularies") {
 			Blogs.expandPanel(panel = "Categorization");
+
+			AssertElementPresent(
+				key_categoryName = "Audience",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
+
+			AssertElementPresent(
+				key_categoryName = "Stage",
+				locator1 = "Categories#VOCABULARY_CATEGORY");
 
 			Click(
 				key_fieldName = "Audience",
