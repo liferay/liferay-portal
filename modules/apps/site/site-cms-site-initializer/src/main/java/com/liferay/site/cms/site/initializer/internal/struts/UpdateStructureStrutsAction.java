@@ -111,9 +111,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 			jsonObject.put(
 				"type", ExceptionMapperUtil.getType(clazz.getName()));
 
-			if (_log.isWarnEnabled()) {
-				_log.warn(exception);
-			}
+			_log.error(exception);
 		}
 
 		httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
@@ -164,9 +162,7 @@ public class UpdateStructureStrutsAction implements StrutsAction {
 					serviceBuilderObjectDefinition.getObjectDefinitionId());
 			}
 			catch (Exception exception) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(exception);
-				}
+				_log.error(exception);
 			}
 		}
 	}
