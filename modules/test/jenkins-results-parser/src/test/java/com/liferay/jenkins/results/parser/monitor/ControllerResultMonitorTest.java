@@ -287,6 +287,20 @@ public class ControllerResultMonitorTest
 	@Test
 	public void testExecuteMissingTimestamp() throws Exception {
 		_testExecute(
+			"Unable to determine the last build timestamp for job " + _JOB_NAME,
+			MonitorResult.Status.WARN,
+			new JSONObject(
+			).put(
+				"description", _newResultDescription(
+					"green", RandomTestUtil.randomInt(), "SUCCESS")
+			).put(
+				"number", RandomTestUtil.randomInt()
+			).put(
+				"result", "SUCCESS"
+			).put(
+				"timestamp", 0
+			));
+		_testExecute(
 			JenkinsResultsParserUtil.combine(
 				"Unable to determine the last build timestamp for job ",
 				_JOB_NAME, ". Job ", _JOB_URL, "/1001 reported FAILURE ",
@@ -297,19 +311,6 @@ public class ControllerResultMonitorTest
 				"description", _newResultDescription("", 2001, "FAILURE")
 			).put(
 				"number", 1001
-			).put(
-				"result", "SUCCESS"
-			).put(
-				"timestamp", 0
-			));
-		_testExecute(
-			"Unable to determine the last build timestamp for job " + _JOB_NAME,
-			MonitorResult.Status.WARN,
-			new JSONObject(
-			).put(
-				"description", _newResultDescription("green", 2002, "SUCCESS")
-			).put(
-				"number", 1002
 			).put(
 				"result", "SUCCESS"
 			).put(
