@@ -731,10 +731,6 @@ gradle.beforeProject {
 
 				jvmArgs "-Djava.locale.providers=CLDR"
 
-				if (project.properties["junit.java.security.manager"]) {
-					systemProperty "java.security.manager", project.properties["junit.java.security.manager"]
-				}
-
 				systemProperty "net.bytebuddy.experimental", "true"
 			}
 

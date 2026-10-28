@@ -1365,13 +1365,6 @@ information.
 				</then>
 			</if>
 
-			<if>
-				<equals arg1="${junit.jvm.override.version}" arg2="21" />
-				<then>
-					<property name="java.security.manager" value="allow" />
-				</then>
-			</if>
-
 			<local name="junit.jvm.bin" />
 
 			<condition else="${junit.jvm}" property="junit.jvm.bin" value="${junit.jvm.override}">
@@ -1382,7 +1375,6 @@ information.
 				<sysproperty if:true="${aspectj.weaver.enabled}" key="aspectj.agent" value="${aspectj.agent}" />
 				<sysproperty key="catalina.base" value="." />
 				<sysproperty file="woven-classes" key="junit.aspectj.dump" />
-				<sysproperty if:set="java.security.manager" key="java.security.manager" value="${java.security.manager}" />
 				<sysproperty key="junit.code.coverage" value="${junit.code.coverage}" />
 				<sysproperty if:true="${jvm.debug}" key="jvm.debug" value="true" />
 				<sysproperty key="liferay.temp.dir" value="${app.server.tomcat.temp.dir}" />
@@ -2196,13 +2188,6 @@ rerun your task.
 				</then>
 			</if>
 
-			<if>
-				<equals arg1="${junit.jvm.override.version}" arg2="21" />
-				<then>
-					<property name="junit.java.security.manager" value="allow" />
-				</then>
-			</if>
-
 			<echoproperties destfile="${gradle.properties.file}">
 				<propertyset>
 					<propertyref name="app.server.type" />
@@ -2221,7 +2206,6 @@ rerun your task.
 					<propertyref name="jsp.precompile.pooling.enabled.modules" />
 					<propertyref name="junit.code.coverage" />
 					<propertyref if:set="junit.java.add.opens" name="junit.java.add.opens" />
-					<propertyref if:set="junit.java.security.manager" name="junit.java.security.manager" />
 					<propertyref name="junit.java.unit.gc" />
 					<propertyref name="junit.jvm.override.version" />
 					<propertyref name="liferay.home" />
