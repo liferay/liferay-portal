@@ -1380,13 +1380,19 @@ public class LayoutStructureRenderer {
 	}
 
 	private void _renderFormStyledLayoutStructureItem(
-			InfoForm infoForm,
 			FormStyledLayoutStructureItem formStyledLayoutStructureItem)
 		throws Exception {
 
 		String className = formStyledLayoutStructureItem.getClassName();
 
-		if (Validator.isNull(className) || (infoForm == null)) {
+		if (Validator.isNull(className)) {
+			return;
+		}
+
+		InfoForm infoForm = _renderLayoutStructureDisplayContext.getInfoForm(
+			className, formStyledLayoutStructureItem);
+
+		if (infoForm == null) {
 			return;
 		}
 
@@ -1417,8 +1423,7 @@ public class LayoutStructureRenderer {
 		if (Objects.equals(layoutMode, Constants.READ) ||
 			((layoutDisplayPageObjectProvider != null) &&
 			 Objects.equals(
-				 layoutDisplayPageObjectProvider.getClassName(),
-				 formStyledLayoutStructureItem.getClassName()) &&
+				 layoutDisplayPageObjectProvider.getClassName(), className) &&
 			 !_hasPermission(
 				 ActionKeys.UPDATE, layoutDisplayPageObjectProvider))) {
 
@@ -1824,6 +1829,7 @@ public class LayoutStructureRenderer {
 			_renderLayoutStructure(
 				layoutStructureItem.getChildrenItemIds(),
 				_renderLayoutStructureDisplayContext.getInfoForm(
+					formStyledLayoutStructureItem.getClassName(),
 					formStyledLayoutStructureItem));
 		}
 		else {
@@ -1923,8 +1929,6 @@ public class LayoutStructureRenderer {
 				}
 				else {
 					_renderFormStyledLayoutStructureItem(
-						_renderLayoutStructureDisplayContext.getInfoForm(
-							formStyledLayoutStructureItem),
 						formStyledLayoutStructureItem);
 				}
 			}

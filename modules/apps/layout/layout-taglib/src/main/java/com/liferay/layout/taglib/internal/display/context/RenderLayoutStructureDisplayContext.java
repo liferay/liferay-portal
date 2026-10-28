@@ -411,15 +411,8 @@ public class RenderLayoutStructureDisplayContext {
 	}
 
 	public InfoForm getInfoForm(
+		String className,
 		FormStyledLayoutStructureItem formStyledLayoutStructureItem) {
-
-		long classNameId = formStyledLayoutStructureItem.getClassNameId();
-
-		if (classNameId <= 0) {
-			return null;
-		}
-
-		String className = formStyledLayoutStructureItem.getClassName();
 
 		if (Validator.isNull(className)) {
 			return null;
