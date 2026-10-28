@@ -1442,10 +1442,13 @@ public class LayoutStructureRenderer {
 			formStyledLayoutStructureItem.getItemId());
 		editInfoItemActionURL = HttpComponentsUtil.addParameter(
 			editInfoItemActionURL, "p_l_id", _themeDisplay.getPlid());
+
+		long segmentsExperienceId =
+			SegmentsExperienceUtil.getSegmentsExperienceId(_httpServletRequest);
+
 		editInfoItemActionURL = HttpComponentsUtil.addParameter(
 			editInfoItemActionURL, "segmentsExperienceId",
-			SegmentsExperienceUtil.getSegmentsExperienceId(
-				_httpServletRequest));
+			segmentsExperienceId);
 
 		jspWriter.write(editInfoItemActionURL);
 
@@ -1599,10 +1602,7 @@ public class LayoutStructureRenderer {
 		jspWriter.write(String.valueOf(_themeDisplay.getPlid()));
 		jspWriter.write(
 			"\"><input name=\"segmentsExperienceId\" type=\"hidden\" value=\"");
-		jspWriter.write(
-			String.valueOf(
-				SegmentsExperienceUtil.getSegmentsExperienceId(
-					_httpServletRequest)));
+		jspWriter.write(String.valueOf(segmentsExperienceId));
 		jspWriter.write("\">");
 
 		if (SessionErrors.contains(
