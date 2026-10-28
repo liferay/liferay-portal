@@ -342,11 +342,13 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
+	@TestInfo("LPD-103862")
 	public void testGetSiteSitePageSitePagesPage() throws Exception {
 		super.testGetSiteSitePageSitePagesPage();
 
 		_testGetSiteSitePageSitePagesPageWithContentPage();
 		_testGetSiteSitePageSitePagesPageWithFlatten();
+		_testGetSiteSitePageSitePagesPageWithPageSpecificationVersionsNestedField();
 		_testGetSiteSitePageSitePagesPageWithPermissions();
 		_testGetSiteSitePageSitePagesPageWithUnknownSitePageExternalReferenceCode();
 		_testGetSiteSitePageSitePagesPageWithUnsupportedType();
@@ -355,7 +357,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo("LPD-103773")
+	@TestInfo({"LPD-103773", "LPD-103862"})
 	public void testGetSiteSitePagesPage() throws Exception {
 		super.testGetSiteSitePagesPage();
 
@@ -1160,10 +1162,6 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 
 			PageSpecification pageSpecification =
 				pageSpecificationVersion.getPageSpecification();
-
-			if (pageSpecification == null) {
-				continue;
-			}
 
 			Assert.assertEquals(
 				draftLayout.getExternalReferenceCode(),
@@ -2568,6 +2566,37 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		Assert.assertEquals(0, page.getTotalCount());
 	}
 
+	private void _testGetSiteSitePageSitePagesPageWithPageSpecificationVersionsNestedField()
+		throws Exception {
+
+		Layout parentLayout = LayoutTestUtil.addTypePortletLayout(testGroup);
+
+		Layout childLayout = LayoutTestUtil.addTypeContentLayout(
+			testGroup, parentLayout.getPlid());
+
+		ContentLayoutTestUtil.publishLayout(
+			childLayout.fetchDraftLayout(), childLayout);
+
+		SitePageResource sitePageResource = _getSitePageResource(
+			"pageSpecificationVersions.pageSpecification");
+
+		Page<SitePage> page = sitePageResource.getSiteSitePageSitePagesPage(
+			testGroup.getExternalReferenceCode(),
+			parentLayout.getExternalReferenceCode(), null,
+			Pagination.of(1, 10));
+
+		List<SitePage> sitePages = new ArrayList<>(page.getItems());
+
+		Assert.assertEquals(sitePages.toString(), 1, sitePages.size());
+
+		SitePage sitePage = sitePages.get(0);
+
+		_assertPageSpecificationVersions(
+			_layoutLocalService.getLayoutByExternalReferenceCode(
+				sitePage.getExternalReferenceCode(), testGroup.getGroupId()),
+			sitePage.getPageSpecificationVersions());
+	}
+
 	private void _testGetSiteSitePageSitePagesPageWithPermissions()
 		throws Exception {
 
@@ -2860,7 +2889,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 		LayoutTestUtil.addTypePortletLayout(testGroup);
 
 		SitePageResource sitePageResource = _getSitePageResource(
-			"pageSpecificationVersions");
+			"pageSpecificationVersions.pageSpecification");
 
 		Page<SitePage> sitePagesPage = sitePageResource.getSiteSitePagesPage(
 			testGroup.getExternalReferenceCode(), null, false, null, null, null,
