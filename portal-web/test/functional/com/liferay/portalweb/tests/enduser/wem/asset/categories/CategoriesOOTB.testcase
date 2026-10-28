@@ -664,6 +664,31 @@ definition {
 
 			SearchResults.viewNoSearchResults(searchTerm = "Internal Category");
 		}
+
+		task ("Create public categories") {
+			var publicCategoryId = JSONCategory.addCategory(
+				groupName = "Global",
+				title = "Public Category",
+				vocabularyName = "Topic");
+		}
+
+		task ("Add WC with public category") {
+			JSONWebcontent.addWebContent(
+				assetCategoryIds = ${publicCategoryId},
+				content = "Web Content Content With Category",
+				groupName = "Guest",
+				title = "Public Web Content Title");
+		}
+
+		task ("Search for Web Content with public category and Assert") {
+			Navigator.openURL();
+
+			SearchPage.searchEmbedded(searchTerm = "Internal Category");
+
+			SearchResults.viewSearchResults(
+				searchAssetTitle = "Public Web Content Title",
+				searchAssetType = "Web Content Article");
+		}
 	}
 
 	@description = "LPS-134682 If categories are marked as internal, won't show in Categories Navigation widget."
@@ -703,37 +728,6 @@ definition {
 				key_nodeName = "Audience Category",
 				locator1 = "Treeview#NODE_UNSELECTED",
 				value1 = "Audience Category");
-		}
-	}
-
-	@description = "LPS-134875 Public categories are shown in facets and result in a public context."
-	@priority = 4
-	test CheckPublicCategoriesInFacets {
-		property portal.acceptance = "true";
-
-		task ("Create public categories") {
-			var categoryId = JSONCategory.addCategory(
-				groupName = "Global",
-				title = "Public Category",
-				vocabularyName = "Topic");
-		}
-
-		task ("Add WC with public category") {
-			JSONWebcontent.addWebContent(
-				assetCategoryIds = ${categoryId},
-				content = "Web Content Content With Category",
-				groupName = "Guest",
-				title = "Web Content Title");
-		}
-
-		task ("Search for Web Content and Assert") {
-			Navigator.openURL();
-
-			SearchPage.searchEmbedded(searchTerm = "Internal Category");
-
-			SearchResults.viewSearchResults(
-				searchAssetTitle = "Web Content Title",
-				searchAssetType = "Web Content Article");
 		}
 	}
 
