@@ -70,6 +70,10 @@ resource "kubernetes_manifest" "infrastructure_applicationset" {
 											value=local.gateway_name
 										},
 										{
+											name="overlayBucket.enabled"
+											value="false"
+										},
+										{
 											name="projectId"
 											value=var.infrastructure_git_repo_config.target.slugProjectId
 										},

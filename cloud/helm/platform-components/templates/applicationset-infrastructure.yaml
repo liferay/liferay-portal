@@ -45,6 +45,8 @@ spec:
                                 value: liferay-gateway-class
                             -   name: gateway.name
                                 value: {{ printf "%s-%s-gateway" $layout.projectId $layout.environmentId | quote }}
+                            -   name: overlayBucket.enabled
+                                value: "false"
                             -   name: projectId
                                 value: {{ $layout.projectId | quote }}
                             {{- with .Values.infrastructure.parameters }}
