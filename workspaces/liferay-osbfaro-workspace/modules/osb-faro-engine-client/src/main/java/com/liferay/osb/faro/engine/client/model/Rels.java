@@ -151,9 +151,6 @@ public interface Rels {
 
 	public static final String DATA_SOURCE_RECONNECT = "data-source-reconnect";
 
-	public static final String DATA_SOURCE_REFRESH_LIFERAY =
-		"data-source-refresh-liferay";
-
 	public static final String DATA_SOURCE_SALESFORCE_ACCOUNTS_FIELDS =
 		"data-source-salesforce-accounts-fields";
 

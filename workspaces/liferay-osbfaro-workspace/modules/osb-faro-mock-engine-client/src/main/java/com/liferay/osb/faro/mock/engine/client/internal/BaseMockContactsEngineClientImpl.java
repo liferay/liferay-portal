@@ -1359,11 +1359,6 @@ public abstract class BaseMockContactsEngineClientImpl
 	}
 
 	@Override
-	public List<Map<String, Object>> refreshLiferay(FaroProject faroProject) {
-		return contactsEngineClient.refreshLiferay(faroProject);
-	}
-
-	@Override
 	public void setEngineURL(String engineURL) {
 		super.setEngineURL(engineURL);
 

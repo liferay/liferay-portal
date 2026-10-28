@@ -77,7 +77,6 @@ import com.liferay.osb.faro.engine.client.model.Results;
 import com.liferay.osb.faro.engine.client.model.SegmentActivation;
 import com.liferay.osb.faro.engine.client.model.StringPagedModel;
 import com.liferay.osb.faro.engine.client.model.credentials.TokenCredentials;
-import com.liferay.osb.faro.engine.client.model.provider.LiferayProvider;
 import com.liferay.osb.faro.engine.client.model.provider.SalesforceProvider;
 import com.liferay.osb.faro.engine.client.util.FilterBuilder;
 import com.liferay.osb.faro.engine.client.util.FilterUtil;
@@ -3833,43 +3832,6 @@ public class ContactsEngineClientImpl
 		return _patchDataSource(
 			faroProject, id, credentials, event, name, provider, status,
 			Rels.DATA_SOURCE_RECONNECT, url, userId);
-	}
-
-	@Override
-	public List<Map<String, Object>> refreshLiferay(FaroProject faroProject) {
-		Map<String, Object> uriVariables = getUriVariables(
-			faroProject, 1, 10000, null);
-
-		FilterBuilder filterBuilder = new FilterBuilder();
-
-		filterBuilder.addFilter(
-			"provider/type", FilterConstants.COMPARISON_OPERATOR_EQUALS,
-			LiferayProvider.TYPE);
-		filterBuilder.addNullFilter(
-			"workspaceURL", FilterConstants.COMPARISON_OPERATOR_EQUALS);
-
-		uriVariables.put("filter", filterBuilder.build());
-
-		PagedModel<?, DataSource> pagedModel = get(
-			faroProject, Rels.DATA_SOURCES,
-			new ParameterizedTypeReference
-				<EntityModelPagedModel<DataSource>>() {
-			},
-			uriVariables);
-
-		Results<DataSource> results = pagedModel.getResults();
-
-		for (DataSource dataSource : results.getItems()) {
-			dataSource.setWorkspaceURL(
-				getWorkspaceURL(faroProject.getGroupId()));
-
-			put(
-				faroProject, Rels.DATA_SOURCE, dataSource, DataSource.class,
-				getUriVariables(faroProject, dataSource.getId()));
-		}
-
-		return post(
-			faroProject, Rels.DATA_SOURCE_REFRESH_LIFERAY, null, List.class);
 	}
 
 	@Override

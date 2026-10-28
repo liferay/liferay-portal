@@ -683,8 +683,6 @@ public interface ContactsEngineClient {
 		Event event, String name, Provider provider, String status, String url,
 		long userId);
 
-	public List<Map<String, Object>> refreshLiferay(FaroProject faroProject);
-
 	public void setEngineURL(String engineURL);
 
 	public AccountLifecycle updateAccountLifecycle(
