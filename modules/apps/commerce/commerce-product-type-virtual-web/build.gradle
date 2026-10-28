@@ -5,14 +5,11 @@ dependencies {
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:commerce:commerce-api")
-	compileOnly project(":apps:commerce:commerce-cart-taglib")
 	compileOnly project(":apps:commerce:commerce-frontend-taglib")
 	compileOnly project(":apps:commerce:commerce-product-api")
 	compileOnly project(":apps:commerce:commerce-product-content-api")
-	compileOnly project(":apps:commerce:commerce-product-definitions-web")
 	compileOnly project(":apps:commerce:commerce-product-type-virtual-api")
 	compileOnly project(":apps:commerce:commerce-product-type-virtual-order-api")
-	compileOnly project(":apps:commerce:commerce-taglib")
 	compileOnly project(":apps:document-library:document-library-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-api")
 	compileOnly project(":apps:frontend-data-set:frontend-data-set-taglib")
@@ -26,6 +23,5 @@ dependencies {
 	compileOnly project(":apps:upload:upload-api")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-string")
 }

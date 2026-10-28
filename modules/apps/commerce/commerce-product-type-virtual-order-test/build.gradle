@@ -1,7 +1,6 @@
 dependencies {
 	testIntegrationImplementation group: "com.github.ignaciotcrespo", name: "frutilla", version: "0.7.1"
 	testIntegrationImplementation project(":apps:account:account-api")
-	testIntegrationImplementation project(":apps:commerce:commerce-account-test-util")
 	testIntegrationImplementation project(":apps:commerce:commerce-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-api")
 	testIntegrationImplementation project(":apps:commerce:commerce-currency-test-util")
