@@ -1,14 +1,8 @@
 dependencies {
 	compileOnly group: "com.google.auth", name: "google-auth-library-credentials", version: "1.31.0"
 	compileOnly group: "com.google.auth", name: "google-auth-library-oauth2-http", version: "1.31.0"
-	compileOnly group: "com.google.http-client", name: "google-http-client", version: "1.45.3"
-	compileOnly group: "com.google.http-client", name: "google-http-client-gson", version: "1.45.3"
 	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
-	compileOnly group: "io.grpc", name: "grpc-api", version: "1.75.0"
-	compileOnly group: "io.opencensus", name: "opencensus-api", version: "0.31.1"
-	compileOnly group: "io.opencensus", name: "opencensus-contrib-http-util", version: "0.31.1"
-	compileOnly group: "jakarta.annotation", name: "jakarta.annotation-api", version: "2.1.1"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly project(":apps:portal-security:portal-security-key-api")
 	compileOnly project(":apps:push-notifications:push-notifications-api")
