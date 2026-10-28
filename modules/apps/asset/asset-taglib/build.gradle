@@ -5,16 +5,13 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.util.taglib", version: "default"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	compileOnly group: "jakarta.servlet.jsp", name: "jakarta.servlet.jsp-api", version: "3.1.1"
-	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-api")
-	compileOnly project(":apps:asset:asset-categories-api")
 	compileOnly project(":apps:asset:asset-display-page-api")
 	compileOnly project(":apps:asset:asset-display-page-item-selector-api")
 	compileOnly project(":apps:asset:asset-link-api")
 	compileOnly project(":apps:asset:asset-tags-item-selector-api")
 	compileOnly project(":apps:depot:depot-api")
-	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:frontend-js:frontend-js-loader-modules-extender-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib-clay")
@@ -22,7 +19,6 @@ dependencies {
 	compileOnly project(":apps:info:info-api")
 	compileOnly project(":apps:item-selector:item-selector-api")
 	compileOnly project(":apps:item-selector:item-selector-criteria-api")
-	compileOnly project(":apps:layout:layout-content-page-editor-api")
 	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:layout:layout-item-selector-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
@@ -31,7 +27,6 @@ dependencies {
 	compileOnly project(":apps:user:user-taglib")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
