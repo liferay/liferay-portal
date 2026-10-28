@@ -7,7 +7,6 @@ dependencies {
 	compileOnly group: "com.liferay", name: "org.apache.commons.configuration", version: "1.10.LIFERAY-PATCHED-3"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-io", name: "commons-io", version: "2.19.0"
-	compileOnly group: "net.minidev", name: "accessors-smart", version: "2.4.9"
 	compileOnly group: "net.minidev", name: "json-smart", version: "2.4.10"
 	compileOnly group: "org.apache.httpcomponents", name: "httpcore", version: "4.4.14"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
@@ -19,5 +18,6 @@ dependencies {
 	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
+	testImplementation group: "net.minidev", name: "accessors-smart", version: "2.4.9"
 	testImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-test-util")
 }
