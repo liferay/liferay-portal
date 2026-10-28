@@ -190,11 +190,11 @@ observability:
                 environmentId: true
                 projectCustomer: true
             secrets:
-                sme-created-at: true
-                sme-managed: true
-                sme-updated-at: true
-                sme-user-create: true
-                sme-user-update: true
+                esm-created-at: true
+                esm-managed: true
+                esm-updated-at: true
+                esm-user-create: true
+                esm-user-update: true
     prometheus-node-exporter:
         enabled: false
     smtp:
