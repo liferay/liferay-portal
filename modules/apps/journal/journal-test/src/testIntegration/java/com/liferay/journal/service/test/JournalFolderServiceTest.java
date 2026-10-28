@@ -283,7 +283,22 @@ public class JournalFolderServiceTest {
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
 		_addDraftJournalArticle(journalFolder, TestPropsValues.getUserId());
-		_addScheduledJournalArticle(journalFolder);
+		JournalTestUtil.addArticle(
+			_group.getGroupId(), journalFolder.getFolderId(),
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
+			true,
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			null, LocaleUtil.getSiteDefault(),
+			new Date(System.currentTimeMillis() + Time.DAY), null, true, true,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
 		User user = UserTestUtil.addUser();
 
@@ -1187,28 +1202,6 @@ public class JournalFolderServiceTest {
 			false,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), userId));
-	}
-
-	private JournalArticle _addScheduledJournalArticle(
-			JournalFolder journalFolder)
-		throws Exception {
-
-		return JournalTestUtil.addArticle(
-			_group.getGroupId(), journalFolder.getFolderId(),
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
-			true,
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
-			).build(),
-			null, LocaleUtil.getSiteDefault(),
-			new Date(System.currentTimeMillis() + Time.DAY), null, true, true,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private void _assertMustHavePermission(

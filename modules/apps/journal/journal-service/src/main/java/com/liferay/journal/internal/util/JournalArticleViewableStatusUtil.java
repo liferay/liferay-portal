@@ -49,7 +49,7 @@ public class JournalArticleViewableStatusUtil {
 
 		return ListUtil.filter(
 			journalArticles,
-			journalArticle -> isViewable(journalArticle, viewerUserId));
+			journalArticle -> _isViewable(journalArticle, viewerUserId));
 	}
 
 	public static int getViewableArticlesCount(
@@ -78,22 +78,6 @@ public class JournalArticleViewableStatusUtil {
 		}
 
 		return permissionChecker.getUserId();
-	}
-
-	public static boolean isViewable(
-		JournalArticle journalArticle, long viewerUserId) {
-
-		if ((viewerUserId == 0) ||
-			(!journalArticle.isDraft() && !journalArticle.isScheduled())) {
-
-			return true;
-		}
-
-		if (journalArticle.getUserId() == viewerUserId) {
-			return true;
-		}
-
-		return false;
 	}
 
 	public static String replaceViewableStatus(
@@ -131,6 +115,22 @@ public class JournalArticleViewableStatusUtil {
 			"((", tableName, ".status NOT IN (", WorkflowConstants.STATUS_DRAFT,
 			", ", WorkflowConstants.STATUS_SCHEDULED, ")) OR (", tableName,
 			".userId = ", viewerUserId, "))");
+	}
+
+	private static boolean _isViewable(
+		JournalArticle journalArticle, long viewerUserId) {
+
+		if ((viewerUserId == 0) ||
+			(!journalArticle.isDraft() && !journalArticle.isScheduled())) {
+
+			return true;
+		}
+
+		if (journalArticle.getUserId() == viewerUserId) {
+			return true;
+		}
+
+		return false;
 	}
 
 }
