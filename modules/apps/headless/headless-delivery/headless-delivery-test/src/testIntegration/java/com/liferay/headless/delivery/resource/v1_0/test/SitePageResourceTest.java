@@ -1022,6 +1022,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				depotEntry.getDepotEntryId(), testGroup.getGroupId());
 
 		Group group = depotEntry.getGroup();
+
 		Layout layout = LayoutTestUtil.addTypeContentLayout(testGroup);
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			_addMasterLayoutPageTemplateEntry(depotEntry.getGroupId());
