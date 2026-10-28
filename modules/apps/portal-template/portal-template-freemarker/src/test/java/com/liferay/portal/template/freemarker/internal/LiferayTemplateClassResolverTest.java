@@ -39,12 +39,12 @@ public class LiferayTemplateClassResolverTest {
 	public void setUp() throws Exception {
 		_liferayTemplateClassResolver = new LiferayTemplateClassResolver();
 
-		_updateProperties(null, null);
+		_updateProperties(null);
 	}
 
 	@Test
 	public void testResolveAllowedClassByClassName() throws Exception {
-		_updateProperties("freemarker.template.utility.ClassUtil", "");
+		_updateProperties("freemarker.template.utility.ClassUtil");
 
 		_liferayTemplateClassResolver.resolve(
 			"freemarker.template.utility.ClassUtil", null, null);
@@ -52,7 +52,7 @@ public class LiferayTemplateClassResolverTest {
 
 	@Test
 	public void testResolveAllowedClassByStar() throws Exception {
-		_updateProperties("freemarker.template.utility.*", "");
+		_updateProperties("freemarker.template.utility.*");
 
 		_liferayTemplateClassResolver.resolve(
 			"freemarker.template.utility.ClassUtil", null, null);
@@ -60,14 +60,14 @@ public class LiferayTemplateClassResolverTest {
 
 	@Test
 	public void testResolveAllowedExecuteClass() throws Exception {
-		_updateProperties("freemarker.template.utility.*", "");
+		_updateProperties("freemarker.template.utility.*");
 
 		_testResolveNotAllowedClass("freemarker.template.utility.Execute");
 	}
 
 	@Test
 	public void testResolveAllowedInvalidClass() throws Exception {
-		_updateProperties("invalidClass", "");
+		_updateProperties("invalidClass");
 
 		try {
 			_liferayTemplateClassResolver.resolve("invalidClass", null, null);
@@ -85,7 +85,7 @@ public class LiferayTemplateClassResolverTest {
 
 	@Test
 	public void testResolveAllowedObjectConstructorClass() throws Exception {
-		_updateProperties("freemarker.template.utility.*", "");
+		_updateProperties("freemarker.template.utility.*");
 
 		_testResolveNotAllowedClass(
 			"freemarker.template.utility.ObjectConstructor");
@@ -93,21 +93,10 @@ public class LiferayTemplateClassResolverTest {
 
 	@Test
 	public void testResolveAllowedPortalClass() throws Exception {
-		_updateProperties("com.liferay.portal.kernel.model.User", null);
+		_updateProperties("com.liferay.portal.kernel.model.User");
 
 		_liferayTemplateClassResolver.resolve(
 			"com.liferay.portal.kernel.model.User", null, null);
-	}
-
-	@Test
-	public void testResolveAllowedPortalClassExplicitlyRestricted()
-		throws Exception {
-
-		_updateProperties(
-			"com.liferay.portal.kernel.model.User",
-			"com.liferay.portal.kernel.model.*");
-
-		_testResolveNotAllowedClass("com.liferay.portal.kernel.model.User");
 	}
 
 	@Test
@@ -156,10 +145,7 @@ public class LiferayTemplateClassResolverTest {
 		}
 	}
 
-	private void _updateProperties(
-			String allowedClasses, String restrictedClasses)
-		throws Exception {
-
+	private void _updateProperties(String allowedClasses) throws Exception {
 		Object freeMarkerEngineConfiguration = ProxyUtil.newProxyInstance(
 			LiferayTemplateClassResolverTest.class.getClassLoader(),
 			new Class<?>[] {FreeMarkerEngineConfiguration.class},
@@ -177,16 +163,6 @@ public class LiferayTemplateClassResolverTest {
 						}
 
 						return null;
-					}
-					else if (methodName.equals("restrictedClasses")) {
-						if (restrictedClasses != null) {
-							return new String[] {restrictedClasses};
-						}
-
-						return new String[] {
-							"java.lang.Class", "java.lang.ClassLoader",
-							"java.lang.Thread"
-						};
 					}
 
 					return null;
