@@ -7,11 +7,11 @@ package com.liferay.item.selector.taglib.internal.servlet.item.selector;
 
 import com.liferay.frontend.taglib.clay.servlet.taglib.BaseClayCard;
 import com.liferay.item.selector.taglib.internal.display.context.GroupSelectorDisplayContext;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +43,7 @@ public abstract class BaseGroupCard implements BaseClayCard {
 	}
 
 	public String getImageAlt() {
-		return HtmlUtil.escapeAttribute(getTitle());
+		return StringPool.BLANK;
 	}
 
 	public String getImageSrc() {
