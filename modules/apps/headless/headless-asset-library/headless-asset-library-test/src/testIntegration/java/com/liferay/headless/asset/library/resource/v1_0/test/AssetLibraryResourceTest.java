@@ -583,7 +583,6 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		DepotEntry depotEntry = _depotEntryLocalService.getDepotEntry(
 			assetLibrary.getId());
-
 		String password = RandomTestUtil.randomString();
 
 		_user = UserTestUtil.addUser(
