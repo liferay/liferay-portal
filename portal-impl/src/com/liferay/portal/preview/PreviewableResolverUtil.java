@@ -164,7 +164,7 @@ public class PreviewableResolverUtil {
 			Object previewValue = pkMap.get(fromBaseModel.getPrimaryKeyObj());
 
 			if ((previewValue == null) ||
-				(previewValue instanceof UnsafeSupplierValue)) {
+				(previewValue instanceof UnsafeSupplierValue<?, ?>)) {
 
 				continue;
 			}
