@@ -653,76 +653,79 @@ public class SourceFormatter {
 			}
 		}
 
-		if (_sourceFormatterArgs.isFormatCurrentBranch()) {
-			List<String> fileNames = GitUtil.getCurrentBranchFileNames(
+		if (!_sourceFormatterArgs.isFormatCurrentBranch()) {
+			_sourceFormatterArgs.addRecentChangesFileNames(
+				dependentFileNames, null);
+
+			return;
+		}
+
+		List<String> fileNames = GitUtil.getCurrentBranchFileNames(
+			_sourceFormatterArgs.getBaseDirName(),
+			_sourceFormatterArgs.getGitWorkingBranchName(), true);
+
+		boolean testCaseFilesAdded = false;
+
+		for (String fileName : fileNames) {
+			if (!buildPropertiesAdded &&
+				fileName.endsWith(".lfrbuild-portal")) {
+
+				dependentFileNames = _addDependentFileName(
+					dependentFileNames, "build.properties");
+
+				buildPropertiesAdded = true;
+			}
+			else if (!testCaseFilesAdded && fileName.endsWith(".testcase")) {
+				dependentFileNames.addAll(
+					SourceFormatterUtil.filterFileNames(
+						_allFileNames, new String[0],
+						new String[] {"**/*.testcase"},
+						_sourceFormatterExcludes, false));
+
+				testCaseFilesAdded = true;
+			}
+
+			if (buildPropertiesAdded && testCaseFilesAdded) {
+				break;
+			}
+		}
+
+		List<String> deletedFileNames =
+			GitUtil.getCurrentBranchDeletedFileNames(
 				_sourceFormatterArgs.getBaseDirName(),
-				_sourceFormatterArgs.getGitWorkingBranchName(), true);
+				_sourceFormatterArgs.getGitWorkingBranchName());
 
-			boolean testCaseFilesAdded = false;
-
-			for (String fileName : fileNames) {
-				if (!buildPropertiesAdded &&
-					fileName.endsWith(".lfrbuild-portal")) {
-
-					dependentFileNames = _addDependentFileName(
-						dependentFileNames, "build.properties");
-
-					buildPropertiesAdded = true;
-				}
-				else if (!testCaseFilesAdded &&
-						 fileName.endsWith(".testcase")) {
-
+		if (!deletedFileNames.isEmpty()) {
+			for (String deletedFileName : deletedFileNames) {
+				if (deletedFileName.endsWith("/test.properties")) {
 					dependentFileNames.addAll(
 						SourceFormatterUtil.filterFileNames(
 							_allFileNames, new String[0],
-							new String[] {"**/*.testcase"},
+							new String[] {"**/test.properties"},
 							_sourceFormatterExcludes, false));
 
-					testCaseFilesAdded = true;
-				}
-
-				if (buildPropertiesAdded && testCaseFilesAdded) {
 					break;
 				}
 			}
 
-			List<String> deletedFileNames =
-				GitUtil.getCurrentBranchDeletedFileNames(
-					_sourceFormatterArgs.getBaseDirName(),
-					_sourceFormatterArgs.getGitWorkingBranchName());
+			dependentFileNames.addAll(
+				SourceFormatterUtil.filterFileNames(
+					_allFileNames, new String[0],
+					new String[] {
+						"**/source-formatter.properties",
+						"**/source-formatter-suppressions.xml"
+					},
+					_sourceFormatterExcludes, false));
+		}
 
-			if (!deletedFileNames.isEmpty()) {
-				for (String deletedFileName : deletedFileNames) {
-					if (deletedFileName.endsWith("/test.properties")) {
-						dependentFileNames.addAll(
-							SourceFormatterUtil.filterFileNames(
-								_allFileNames, new String[0],
-								new String[] {"**/test.properties"},
-								_sourceFormatterExcludes, false));
+		if (_isFeatureFlagChanges()) {
+			File portalDir = SourceFormatterUtil.getPortalDir(
+				_sourceFormatterArgs.getBaseDirName(),
+				_sourceFormatterArgs.getMaxDirLevel());
 
-						break;
-					}
-				}
-
-				dependentFileNames.addAll(
-					SourceFormatterUtil.filterFileNames(
-						_allFileNames, new String[0],
-						new String[] {
-							"**/source-formatter.properties",
-							"**/source-formatter-suppressions.xml"
-						},
-						_sourceFormatterExcludes, false));
-			}
-
-			if (_isFeatureFlagChanges()) {
-				File portalDir = SourceFormatterUtil.getPortalDir(
-					_sourceFormatterArgs.getBaseDirName(),
-					_sourceFormatterArgs.getMaxDirLevel());
-
-				if (portalDir != null) {
-					dependentFileNames.add(
-						portalDir + "/portal-impl/src/portal.properties");
-				}
+			if (portalDir != null) {
+				dependentFileNames.add(
+					portalDir + "/portal-impl/src/portal.properties");
 			}
 		}
 
