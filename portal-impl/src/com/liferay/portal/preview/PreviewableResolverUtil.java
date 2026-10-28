@@ -90,7 +90,8 @@ public class PreviewableResolverUtil {
 
 		Class<?> modelClass = baseModel.getModelClass();
 
-		Map<Serializable, Object> previewValueMap = previewableMap.get(modelClass);
+		Map<Serializable, Object> previewValueMap = previewableMap.get(
+			modelClass);
 
 		if (MapUtil.isEmpty(previewValueMap)) {
 			return baseModel;
@@ -148,7 +149,8 @@ public class PreviewableResolverUtil {
 
 		Class<?> modelClass = baseModel.getModelClass();
 
-		Map<Serializable, Object> previewValueMap = previewableMap.get(modelClass);
+		Map<Serializable, Object> previewValueMap = previewableMap.get(
+			modelClass);
 
 		if (MapUtil.isEmpty(previewValueMap)) {
 			return fromBaseModels;
@@ -161,7 +163,8 @@ public class PreviewableResolverUtil {
 		Set<Serializable> toPKs = new TreeSet<>();
 
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
-			Object previewValue = previewValueMap.get(fromBaseModel.getPrimaryKeyObj());
+			Object previewValue = previewValueMap.get(
+				fromBaseModel.getPrimaryKeyObj());
 
 			if ((previewValue == null) ||
 				(previewValue instanceof UnsafeSupplierValue<?, ?>)) {
@@ -178,7 +181,8 @@ public class PreviewableResolverUtil {
 		Throwable throwable1 = null;
 
 		for (BaseModel<?> fromBaseModel : fromBaseModels) {
-			Object previewValue = previewValueMap.get(fromBaseModel.getPrimaryKeyObj());
+			Object previewValue = previewValueMap.get(
+				fromBaseModel.getPrimaryKeyObj());
 
 			if (previewValue == null) {
 				toBaseModels.add(fromBaseModel);
