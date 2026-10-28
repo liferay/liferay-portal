@@ -508,17 +508,17 @@ public class CommerceOrderServiceTest {
 			role, CommerceOrderConstants.RESOURCE_NAME,
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()),
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
+		RoleTestUtil.addResourcePermission(
+			role, CommerceOrderConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(TestPropsValues.getCompanyId()),
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_STATUSES);
 		RoleTestUtil.addResourcePermission(
 			role, CommerceOrderConstants.RESOURCE_NAME,
 			ResourceConstants.SCOPE_COMPANY,
 			String.valueOf(TestPropsValues.getCompanyId()),
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PRICES);
-		RoleTestUtil.addResourcePermission(
-			role, CommerceOrderConstants.RESOURCE_NAME,
-			ResourceConstants.SCOPE_COMPANY,
-			String.valueOf(TestPropsValues.getCompanyId()),
-			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
 
 		User user = UserTestUtil.addUser();
 
@@ -794,11 +794,11 @@ public class CommerceOrderServiceTest {
 
 		_assertUpdateCommerceOrderNotAllowed(
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
-			commerceOrder, user);
-		_assertUpdateCommerceOrderNotAllowed(
-			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
 			commerceOrder, commerceOrder.getSubtotal(),
 			commerceOrder.getTotal(), user);
+		_assertUpdateCommerceOrderNotAllowed(
+			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
+			commerceOrder, user);
 		_assertUpdateCommerceOrderWithPricesNotAllowed(
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_PAYMENT_METHODS,
 			commerceOrder, commerceOrder.getTotal(), user);
@@ -949,8 +949,6 @@ public class CommerceOrderServiceTest {
 	private void _testUpdateCommercePaymentMethodKeyWithInvalidCommercePaymentMethodKey()
 		throws Exception {
 
-		String commercePaymentMethodKey = RandomTestUtil.randomString();
-
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.addCommerceOrder(
 				TestPropsValues.getUserId(), _commerceChannel.getGroupId(),
@@ -958,6 +956,8 @@ public class CommerceOrderServiceTest {
 				_commerceCurrency.getCode(), 0);
 
 		long commerceOrderId = commerceOrder.getCommerceOrderId();
+
+		String commercePaymentMethodKey = RandomTestUtil.randomString();
 
 		AssertUtils.assertFailure(
 			CommerceOrderPaymentMethodException.class,

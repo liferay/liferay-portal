@@ -90,7 +90,7 @@ public class EditCommerceOrderPaymentMethodMVCRenderCommandTest {
 
 		CommerceChannelLocalServiceUtil.addCommerceChannel(
 			null, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-			_group.getGroupId(), "Test Channel",
+			_group.getGroupId(), RandomTestUtil.randomString(),
 			CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 			_commerceCurrency.getCode(), _serviceContext);
 	}
