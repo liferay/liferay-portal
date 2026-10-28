@@ -187,3 +187,23 @@ baseTest(
 		await expect(iframe.getByRole('button', {name: 'Add'})).toBeHidden();
 	}
 );
+
+baseTest(
+	'Site card in the group selector is named once',
+	{
+		tag: '@LPD-112186',
+	},
+	async ({journalEditArticlePage, page, site}) => {
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		await page.getByLabel('Image', {exact: true}).click();
+
+		const iframe = page.frameLocator('iframe[title="Select Item"]');
+
+		await iframe.locator('.breadcrumb-link').first().click();
+
+		await expect(
+			iframe.getByRole('link', {exact: true, name: 'Liferay DXP Site'})
+		).toBeVisible();
+	}
+);

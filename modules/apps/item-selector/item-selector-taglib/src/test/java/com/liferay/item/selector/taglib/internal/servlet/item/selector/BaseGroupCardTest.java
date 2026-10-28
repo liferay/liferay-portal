@@ -5,6 +5,7 @@
 
 package com.liferay.item.selector.taglib.internal.servlet.item.selector;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -34,14 +35,14 @@ public class BaseGroupCardTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
-	@TestInfo("LPD-109452")
+	@TestInfo({"LPD-109452", "LPD-112186"})
 	public void testGetImageAlt() throws Exception {
 		Group group = Mockito.mock(Group.class);
 
 		Mockito.when(
 			group.getDescriptiveName(LocaleUtil.US)
 		).thenReturn(
-			"Q\" data-xss=\"1"
+			"Site Name"
 		);
 
 		MockHttpServletRequest mockHttpServletRequest =
@@ -57,8 +58,8 @@ public class BaseGroupCardTest {
 		TestGroupCard testGroupCard = new TestGroupCard(
 			group, mockHttpServletRequest);
 
-		Assert.assertEquals(
-			"Q&quot; data-xss=&quot;1", testGroupCard.getImageAlt());
+		Assert.assertEquals("Site Name", testGroupCard.getTitle());
+		Assert.assertEquals(StringPool.BLANK, testGroupCard.getImageAlt());
 	}
 
 	private static class TestGroupCard extends BaseGroupCard {
