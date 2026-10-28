@@ -205,11 +205,11 @@ spec:
 
                                                 timeout=$(($(date +%s) + 600))
 
-                                                until PGCONNECT_TIMEOUT=10 PGPASSWORD=iam psql --dbname {{ $databaseName }} --command "SELECT 1" --host 127.0.0.1 --port {{ $databasePort }} --username "{{ $databaseIamUser }}" >/dev/null 2>&1
+                                                until PGCONNECT_TIMEOUT=10 PGPASSWORD=iam psql --command "SELECT 1" --dbname {{ $databaseName }} --host 127.0.0.1 --port {{ $databasePort }} --username "{{ $databaseIamUser }}" >/dev/null 2>&1
                                                 do
                                                     if [ $(date +%s) -ge $timeout ]
                                                     then
-                                                        echo "{{ $databaseIamUser }} could not be authenticated." >&2
+                                                        echo "{{ $databaseIamUser }} could not be authenticated" >&2
 
                                                         exit 1
                                                     fi
