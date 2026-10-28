@@ -1,5 +1,4 @@
 dependencies {
-	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-annotations", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	compileOnly group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	compileOnly group: "com.liferay", name: "jakarta.ws.rs", version: "3.1.0.LIFERAY-PATCHED-1"
@@ -26,7 +25,5 @@ dependencies {
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

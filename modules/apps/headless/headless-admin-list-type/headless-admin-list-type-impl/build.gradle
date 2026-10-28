@@ -17,7 +17,5 @@ dependencies {
 	compileOnly project(":apps:object:object-rest-api")
 	compileOnly project(":apps:portal-odata:portal-odata-api")
 	compileOnly project(":apps:portal-vulcan:portal-vulcan-api")
-	compileOnly project(":apps:roles:roles-admin-api")
 	compileOnly project(":core:petra:petra-function")
-	compileOnly project(":core:petra:petra-string")
 }
