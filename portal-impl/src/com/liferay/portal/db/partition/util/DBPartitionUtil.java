@@ -309,14 +309,15 @@ public class DBPartitionUtil {
 
 		List<String> pids = new ArrayList<>();
 
-		try (Connection connection = ConnectionUtil.getConnection(
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(companyId);
+
+			Connection connection = ConnectionUtil.getConnection(
 				InfrastructureUtil.getDataSource());
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select configurationId from ", getPartitionName(companyId),
-					".Configuration_ where dictionary like ",
-					"'%org.apache.felix.configadmin.revision%'"));
+				"select configurationId from Configuration_ where dictionary " +
+					"like '%org.apache.felix.configadmin.revision%'");
 
 			ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -331,14 +332,14 @@ public class DBPartitionUtil {
 	public static Map<String, String> getConfigurations(long companyId)
 		throws SQLException {
 
-		DataSource dataSource = InfrastructureUtil.getDataSource();
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setRawCompanyIdWithSafeCloseable(companyId);
 
-		try (Connection connection = ConnectionUtil.getConnection(dataSource);
+			Connection connection = ConnectionUtil.getConnection(
+				InfrastructureUtil.getDataSource());
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
-					"select configurationId, dictionary from ",
-					getPartitionName(companyId), ".Configuration_"));
+				"select configurationId, dictionary from Configuration_");
 
 			ResultSet resultSet = preparedStatement.executeQuery()) {
 
