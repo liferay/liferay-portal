@@ -56,17 +56,11 @@ public class IsolatedAttributesHttpServletRequest
 	@Override
 	public Enumeration<String> getAttributeNames() {
 		Enumeration<String> enumeration = super.getAttributeNames();
-
-		Map<String, Object> attributes = new HashMap<>(_attributes);
-
 		Map<String, Object> requestDispatcherAttributes =
-			_requestDispatcherAttributes.get(getRequest());
+			_requestDispatcherAttributes.getOrDefault(
+				getRequest(), Collections.emptyMap());
 
-		if (requestDispatcherAttributes != null) {
-			attributes.putAll(requestDispatcherAttributes);
-		}
-
-		if (attributes.isEmpty()) {
+		if (_attributes.isEmpty() && requestDispatcherAttributes.isEmpty()) {
 			return enumeration;
 		}
 
@@ -76,17 +70,8 @@ public class IsolatedAttributesHttpServletRequest
 			names.add(enumeration.nextElement());
 		}
 
-		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
-			String key = entry.getKey();
-			Object value = entry.getValue();
-
-			if (value == _nullValue) {
-				names.remove(key);
-			}
-			else {
-				names.add(key);
-			}
-		}
+		_updateAttributeNames(_attributes, names);
+		_updateAttributeNames(requestDispatcherAttributes, names);
 
 		return Collections.enumeration(names);
 	}
@@ -124,6 +109,22 @@ public class IsolatedAttributesHttpServletRequest
 
 		return _requestDispatcherAttributes.computeIfAbsent(
 			getRequest(), servletRequest -> new HashMap<>());
+	}
+
+	private void _updateAttributeNames(
+		Map<String, Object> attributes, Set<String> names) {
+
+		for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+			String key = entry.getKey();
+			Object value = entry.getValue();
+
+			if (value == _nullValue) {
+				names.remove(key);
+			}
+			else {
+				names.add(key);
+			}
+		}
 	}
 
 	private static final Object _nullValue = new Object();
