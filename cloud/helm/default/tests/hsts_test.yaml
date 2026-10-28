@@ -12,11 +12,10 @@ tests:
             path: metadata.name
             skipEmptyTemplates: true
             value: liferay-default-httproute
-        it: Omits the Strict-Transport-Security header when disabled
+        it: Omits the Strict-Transport-Security header by default
         set:
             network.enabled: true
             network.gatewayName: test-gateway
-            network.hsts.enabled: false
     -   asserts:
             -   equal:
                     path: spec.rules[0].filters[0].responseHeaderModifier.set[0].value
@@ -29,24 +28,8 @@ tests:
         set:
             network.enabled: true
             network.gatewayName: test-gateway
+            network.hsts.enabled: true
             network.hsts.value: max-age=63072000
-    -   asserts:
-            -   equal:
-                    path: spec.rules[0].filters
-                    value:
-                        -   responseHeaderModifier:
-                                set:
-                                    -   name: Strict-Transport-Security
-                                        value: max-age=31536000
-                            type: ResponseHeaderModifier
-        documentSelector:
-            path: metadata.name
-            skipEmptyTemplates: true
-            value: liferay-default-httproute
-        it: Sets the Strict-Transport-Security header by default
-        set:
-            network.enabled: true
-            network.gatewayName: test-gateway
     -   asserts:
             -   equal:
                     path: spec.rules[0].filters[0].responseHeaderModifier.set[0].name
@@ -62,4 +45,23 @@ tests:
             network.hostnames:
                 -   a.example.com
                 -   b.example.com
+            network.hsts.enabled: true
             network.perHostnameRoutes: true
+    -   asserts:
+            -   equal:
+                    path: spec.rules[0].filters
+                    value:
+                        -   responseHeaderModifier:
+                                set:
+                                    -   name: Strict-Transport-Security
+                                        value: max-age=31536000
+                            type: ResponseHeaderModifier
+        documentSelector:
+            path: metadata.name
+            skipEmptyTemplates: true
+            value: liferay-default-httproute
+        it: Sets the Strict-Transport-Security header when enabled
+        set:
+            network.enabled: true
+            network.gatewayName: test-gateway
+            network.hsts.enabled: true

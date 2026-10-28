@@ -445,7 +445,7 @@ network:
     gatewayName: ""
     hostnames: []
     hsts:
-        enabled: true
+        enabled: false
         value: max-age=31536000
     perHostnameRoutes: false
     securityPolicyAuthorizationSpec: {}
