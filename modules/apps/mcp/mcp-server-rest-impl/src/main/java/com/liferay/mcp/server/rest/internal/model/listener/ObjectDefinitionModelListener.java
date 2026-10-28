@@ -5,7 +5,6 @@
 
 package com.liferay.mcp.server.rest.internal.model.listener;
 
-import com.liferay.mcp.server.rest.internal.cache.MCPServerCacheManager;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
@@ -22,12 +21,12 @@ public class ObjectDefinitionModelListener
 
 	@Override
 	public void onAfterCreate(ObjectDefinition objectDefinition) {
-		_clearOpenAPIJSONObjectCache(objectDefinition);
+		_objectDefinitionToolSetInvalidator.invalidate(objectDefinition);
 	}
 
 	@Override
 	public void onAfterRemove(ObjectDefinition objectDefinition) {
-		_clearOpenAPIJSONObjectCache(objectDefinition);
+		_objectDefinitionToolSetInvalidator.invalidate(objectDefinition);
 	}
 
 	@Override
@@ -35,21 +34,11 @@ public class ObjectDefinitionModelListener
 		ObjectDefinition originalObjectDefinition,
 		ObjectDefinition objectDefinition) {
 
-		_clearOpenAPIJSONObjectCache(objectDefinition);
-	}
-
-	private void _clearOpenAPIJSONObjectCache(
-		ObjectDefinition objectDefinition) {
-
-		if (!objectDefinition.isApproved()) {
-			return;
-		}
-
-		_mcpServerCacheManager.clearOpenAPIJSONObjectCache(
-			objectDefinition.getCompanyId());
+		_objectDefinitionToolSetInvalidator.invalidate(objectDefinition);
 	}
 
 	@Reference
-	private MCPServerCacheManager _mcpServerCacheManager;
+	private ObjectDefinitionToolSetInvalidator
+		_objectDefinitionToolSetInvalidator;
 
 }

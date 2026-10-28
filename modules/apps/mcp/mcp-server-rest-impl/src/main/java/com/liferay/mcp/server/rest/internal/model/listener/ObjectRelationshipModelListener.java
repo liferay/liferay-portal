@@ -5,12 +5,12 @@
 
 package com.liferay.mcp.server.rest.internal.model.listener;
 
-import com.liferay.mcp.server.rest.internal.util.ToolSetUtil;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Nathaly Gomes
@@ -21,14 +21,12 @@ public class ObjectRelationshipModelListener
 
 	@Override
 	public void onAfterCreate(ObjectRelationship objectRelationship) {
-		ToolSetUtil.clearOpenAPIJSONObjectCache(
-			objectRelationship.getCompanyId());
+		_invalidate(objectRelationship);
 	}
 
 	@Override
 	public void onAfterRemove(ObjectRelationship objectRelationship) {
-		ToolSetUtil.clearOpenAPIJSONObjectCache(
-			objectRelationship.getCompanyId());
+		_invalidate(objectRelationship);
 	}
 
 	@Override
@@ -36,8 +34,18 @@ public class ObjectRelationshipModelListener
 		ObjectRelationship originalObjectRelationship,
 		ObjectRelationship objectRelationship) {
 
-		ToolSetUtil.clearOpenAPIJSONObjectCache(
-			objectRelationship.getCompanyId());
+		_invalidate(objectRelationship);
 	}
+
+	private void _invalidate(ObjectRelationship objectRelationship) {
+		_objectDefinitionToolSetInvalidator.invalidate(
+			objectRelationship.getObjectDefinitionId1());
+		_objectDefinitionToolSetInvalidator.invalidate(
+			objectRelationship.getObjectDefinitionId2());
+	}
+
+	@Reference
+	private ObjectDefinitionToolSetInvalidator
+		_objectDefinitionToolSetInvalidator;
 
 }

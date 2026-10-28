@@ -5,10 +5,7 @@
 
 package com.liferay.mcp.server.rest.internal.model.listener;
 
-import com.liferay.mcp.server.rest.internal.cache.MCPServerCacheManager;
-import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
-import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 
@@ -23,38 +20,26 @@ public class ObjectFieldModelListener extends BaseModelListener<ObjectField> {
 
 	@Override
 	public void onAfterCreate(ObjectField objectField) {
-		_clearOpenAPIJSONObjectCache(objectField);
+		_objectDefinitionToolSetInvalidator.invalidate(
+			objectField.getObjectDefinitionId());
 	}
 
 	@Override
 	public void onAfterRemove(ObjectField objectField) {
-		_clearOpenAPIJSONObjectCache(objectField);
+		_objectDefinitionToolSetInvalidator.invalidate(
+			objectField.getObjectDefinitionId());
 	}
 
 	@Override
 	public void onAfterUpdate(
 		ObjectField originalObjectField, ObjectField objectField) {
 
-		_clearOpenAPIJSONObjectCache(objectField);
-	}
-
-	private void _clearOpenAPIJSONObjectCache(ObjectField objectField) {
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.fetchObjectDefinition(
-				objectField.getObjectDefinitionId());
-
-		if ((objectDefinition == null) || !objectDefinition.isApproved()) {
-			return;
-		}
-
-		_mcpServerCacheManager.clearOpenAPIJSONObjectCache(
-			objectField.getCompanyId());
+		_objectDefinitionToolSetInvalidator.invalidate(
+			objectField.getObjectDefinitionId());
 	}
 
 	@Reference
-	private MCPServerCacheManager _mcpServerCacheManager;
-
-	@Reference
-	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+	private ObjectDefinitionToolSetInvalidator
+		_objectDefinitionToolSetInvalidator;
 
 }
