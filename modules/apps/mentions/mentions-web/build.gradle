@@ -9,7 +9,6 @@ dependencies {
 	compileOnly project(":apps:blogs:blogs-api")
 	compileOnly project(":apps:configuration-admin:configuration-admin-api")
 	compileOnly project(":apps:frontend-taglib:frontend-taglib")
-	compileOnly project(":apps:frontend-taglib:frontend-taglib-form-navigator")
 	compileOnly project(":apps:layout:layout-content-page-editor-api")
 	compileOnly project(":apps:mentions:mentions-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
@@ -19,7 +18,5 @@ dependencies {
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-io")
-	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }
