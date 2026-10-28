@@ -7,7 +7,6 @@ package com.liferay.petra.string;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.ReloadURLClassLoader;
-import com.liferay.portal.kernel.test.SwappableSecurityManager;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.CodeCoverageAssertor;
 import com.liferay.portal.kernel.test.rule.NewEnv;
@@ -20,10 +19,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 
-import java.security.Permission;
-
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.lang.invoke.MethodHandles;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -745,48 +741,37 @@ public class StringBundlerTest {
 	}
 
 	@NewEnv(type = NewEnv.Type.JVM)
-	@NewEnv.JVMArgsLine("-Djava.security.manager=allow")
 	@Test
 	public void testStringBuilderFallbackOnUnsupportedJDK() throws Exception {
 		ReloadURLClassLoader reloadURLClassLoader = new ReloadURLClassLoader(
 			StringBundler.class);
 
-		AtomicInteger counter = new AtomicInteger();
+		Class<?> clazz = reloadURLClassLoader.loadClass(
+			StringBundler.class.getName());
 
-		try (SwappableSecurityManager swappableSecurityManager =
-				new SwappableSecurityManager() {
+		MethodHandles.Lookup implLookup =
+			ReflectionTestUtil.getAndSetFieldValue(
+				MethodHandles.Lookup.class, "IMPL_LOOKUP",
+				MethodHandles.lookup());
 
-					@Override
-					public void checkPermission(Permission permission) {
-						if (Objects.equals(
-								permission.getName(),
-								"accessDeclaredMembers") &&
-							(counter.incrementAndGet() == 1)) {
-
-							StringBundlerTest.this.
-								<RuntimeException>_throwException(
-									new NoSuchFieldException());
-						}
-					}
-
-				}) {
-
-			swappableSecurityManager.install();
-
-			Class<?> clazz = reloadURLClassLoader.loadClass(
-				StringBundler.class.getName());
-
-			Object sbObject = clazz.newInstance();
-
-			ReflectionTestUtil.invoke(
-				sbObject, "append", new Class<?>[] {String.class}, "test1");
-			ReflectionTestUtil.invoke(
-				sbObject, "append", new Class<?>[] {String.class}, "test2");
-			ReflectionTestUtil.invoke(
-				sbObject, "append", new Class<?>[] {String.class}, "test3");
-
-			Assert.assertEquals("test1test2test3", sbObject.toString());
+		try {
+			Class.forName(clazz.getName(), true, reloadURLClassLoader);
 		}
+		finally {
+			ReflectionTestUtil.setFieldValue(
+				MethodHandles.Lookup.class, "IMPL_LOOKUP", implLookup);
+		}
+
+		Object sbObject = clazz.newInstance();
+
+		ReflectionTestUtil.invoke(
+			sbObject, "append", new Class<?>[] {String.class}, "test1");
+		ReflectionTestUtil.invoke(
+			sbObject, "append", new Class<?>[] {String.class}, "test2");
+		ReflectionTestUtil.invoke(
+			sbObject, "append", new Class<?>[] {String.class}, "test3");
+
+		Assert.assertEquals("test1test2test3", sbObject.toString());
 
 		StringBundler sb = new StringBundler();
 
@@ -855,13 +840,6 @@ public class StringBundlerTest {
 		for (int i = prefix.length; i < strings.length; i++) {
 			Assert.assertNull(strings[i]);
 		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private <E extends Throwable> void _throwException(Throwable throwable)
-		throws E {
-
-		throw (E)throwable;
 	}
 
 }
