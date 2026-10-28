@@ -77,7 +77,6 @@ public class DBMigrationImport {
 
 			DBMigrationImportProcess dbMigrationImportProcess =
 				new DBMigrationImportProcess(
-					commandLine.hasOption("include-custom-schema"),
 					commandLine.getOptionValue("path"),
 					commandLine.getOptionValue("source-jdbc-url"),
 					commandLine.getOptionValue("source-password"),
@@ -121,10 +120,6 @@ public class DBMigrationImport {
 		Options options = new Options();
 
 		options.addOption(null, "help", false, "Print help message.");
-		options.addOption(
-			null, "include-custom-schema", false,
-			"Create the custom columns of the source tables on the target " +
-				"tables before copying the rows.");
 		options.addOption(
 			null, "jdbc-batch-size", true,
 			"Set the JDBC batch size. The default value is 2500.");

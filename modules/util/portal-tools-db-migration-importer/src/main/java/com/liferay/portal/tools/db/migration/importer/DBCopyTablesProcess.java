@@ -61,17 +61,15 @@ import javax.sql.DataSource;
 public class DBCopyTablesProcess {
 
 	public DBCopyTablesProcess(
-		boolean includeCustomSchema, DataSource sourceDataSource,
-		DataSource targetDataSource) {
+		DataSource sourceDataSource, DataSource targetDataSource) {
 
-		this(includeCustomSchema, null, sourceDataSource, targetDataSource);
+		this(null, sourceDataSource, targetDataSource);
 	}
 
 	public DBCopyTablesProcess(
-		boolean includeCustomSchema, String partitionName,
-		DataSource sourceDataSource, DataSource targetDataSource) {
+		String partitionName, DataSource sourceDataSource,
+		DataSource targetDataSource) {
 
-		_includeCustomSchema = includeCustomSchema;
 		_sourceDataSource = sourceDataSource;
 		_targetDataSource = targetDataSource;
 
@@ -86,9 +84,7 @@ public class DBCopyTablesProcess {
 	public void run() throws Exception {
 		_loadColumnsMetadata();
 
-		if (_includeCustomSchema) {
-			_addCustomColumns();
-		}
+		_addCustomColumns();
 
 		_copyTables();
 	}
@@ -515,9 +511,8 @@ public class DBCopyTablesProcess {
 
 			valueString = String.valueOf(value);
 		}
-		else if (_includeCustomSchema &&
-				 ((targetType == Types.LONGVARCHAR) ||
-				  (targetType == Types.VARCHAR))) {
+		else if ((targetType == Types.LONGVARCHAR) ||
+				 (targetType == Types.VARCHAR)) {
 
 			String value = resultSet.getString(columnName);
 
@@ -754,7 +749,6 @@ public class DBCopyTablesProcess {
 
 	private static final int _SQL_TYPE_ORACLE_BINARY_DOUBLE = 101;
 
-	private final boolean _includeCustomSchema;
 	private final String _partitionMessage;
 	private final Map<String, List<String>> _sourceColumnNamesMap =
 		new TreeMap<>(String.CASE_INSENSITIVE_ORDER);

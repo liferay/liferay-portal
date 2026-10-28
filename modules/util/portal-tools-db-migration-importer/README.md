@@ -25,7 +25,6 @@ db_migration_importer.bat <parameters>
 
 Import parameters:
 
-- `--include-custom-schema` Create the custom columns of the source tables on the target tables before copying the rows.
 - `--jdbc-batch-size <arg>` Set the JDBC batch size. The default value is 2500.
 - `--jdbc-fetch-size <arg>` Set the JDBC result set fetch size. The default value is 2500.
 - `--path <arg>` Set the path of the source SQL files.
