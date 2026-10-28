@@ -2,10 +2,8 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.test", version: "default"
 	compileOnly group: "junit", name: "junit", version: "4.13.1"
-	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:friendly-url:friendly-url-api")
-	compileOnly project(":apps:static:osgi:osgi-util")
 
 	liferay {
 		deployDir = file("${liferayHome}/osgi/test")
