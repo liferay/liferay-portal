@@ -115,6 +115,20 @@ public class PortalInstancesUserNotificationHandlerTest {
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
 		Assert.assertEquals(
 			_toBodyHTML(
+				"the-instance-was-created-but-its-initialization-failed-" +
+					"check-the-server-logs",
+				_toTranslation(
+					"the-instance-x-was-created-with-errors",
+					portalInstanceId)),
+			_getBody(
+				_toPayloadJSONObject(
+					"the-instance-was-created-but-its-initialization-failed-" +
+						"check-the-server-logs",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toBodyHTML(
 				_toTranslation(
 					"the-instance-x-is-ready-to-use", portalInstanceId),
 				_toTranslation("the-instance-x-was-created", portalInstanceId)),
@@ -393,6 +407,16 @@ public class PortalInstancesUserNotificationHandlerTest {
 			_getTitle(
 				_toPayloadJSONObject(
 					"please-enter-a-valid-web-id",
+					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
+					portalInstanceId, null,
+					PortalInstancesNotificationConstants.STATUS_FAILED)));
+		Assert.assertEquals(
+			_toTranslation(
+				"the-instance-x-was-created-with-errors", portalInstanceId),
+			_getTitle(
+				_toPayloadJSONObject(
+					"the-instance-was-created-but-its-initialization-failed-" +
+						"check-the-server-logs",
 					PortalInstancesNotificationConstants.OPERATION_TYPE_ADD,
 					portalInstanceId, null,
 					PortalInstancesNotificationConstants.STATUS_FAILED)));
