@@ -118,6 +118,22 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, "\" />"),
 			_addPreviewCTCollectionId(
 				CTConstants.CT_COLLECTION_ID_PRODUCTION, html));
+
+		html = "<img src=\"/documents/20/uuid\" />";
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<img src=\"/documents/20/uuid?p_l_mode=preview",
+				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\" />"),
+			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+
+		html = "<a href=\"/documents/30?download=true\">image</a>";
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"<a href=\"/documents/30?download=true&p_l_mode=preview",
+				"&previewCTCollectionId=", _CT_COLLECTION_ID, "\">image</a>"),
+			_addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 	}
 
 	@Test
@@ -168,7 +184,17 @@ public class GetEntryRenderDataMVCResourceCommandTest {
 		Assert.assertEquals(
 			html, _addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
 
-		html = "<a href=\"/documents/2024/reports\">reports</a>";
+		html = "<a href=\"/documents/reports\">reports</a>";
+
+		Assert.assertEquals(
+			html, _addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+
+		html = "<a href=\"/documents/dreports\">reports</a>";
+
+		Assert.assertEquals(
+			html, _addPreviewCTCollectionId(_CT_COLLECTION_ID, html));
+
+		html = "<a href=\"/documents/2024reports\">reports</a>";
 
 		Assert.assertEquals(
 			html, _addPreviewCTCollectionId(_CT_COLLECTION_ID, html));

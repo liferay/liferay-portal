@@ -1765,7 +1765,7 @@ public class GetEntryRenderDataMVCResourceCommand
 
 	private static final Pattern _previewURLPattern = Pattern.compile(
 		"(?:https?://([^/:\"]+)(?::\\d+)?)?(.*?)/(?:documents/" +
-			"(?:\\d+/\\d+/|d/|portlet_file_entry/\\d+/)|" +
+			"(?:\\d+|d|portlet_file_entry)(?=[/?#]|$)|" +
 				"o/adaptive-media/image/\\d+/)");
 	private static final Pattern _urlAttributePattern = Pattern.compile(
 		"(href|src|srcset)=\"([^\"]*)\"");
