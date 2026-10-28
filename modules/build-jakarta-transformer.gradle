@@ -4,12 +4,9 @@ import java.net.URI
 
 import java.util.function.Function
 
-import org.eclipse.transformer.cli.JakartaTransformerCLI
-
 buildscript {
 	dependencies {
 		classpath group: "com.liferay", name: "com.liferay.portal.tools.jakarta.ee.transformer", version: "1.0.0"
-		classpath group: "org.eclipse.transformer", name: "org.eclipse.transformer.cli", version: "1.0.0"
 	}
 
 	repositories {
@@ -44,53 +41,72 @@ jar {
 		new Action<Jar>() {
 
 			public void execute(Jar jar) {
-				JakartaTransformerCLI jakartaTransformerCLI = new JakartaTransformerCLI(System.out, System.out, new String[] {configurations.compileOnly.singleFile, jar.archivePath})
+				Configuration configuration = buildscript.configurations.detachedConfiguration(buildscript.dependencies.create(group: "org.eclipse.transformer", name: "org.eclipse.transformer.cli", version: "1.0.0"))
 
-				Map<String, String> optionDefaults = jakartaTransformerCLI.getOptionDefaults()
+				URLClassLoader urlClassLoader = new URLClassLoader(
+					configuration.collect {
+						File file ->
 
-				File file = new File(rootDir, "liferay-jakarta-renames.properties")
+						URI uri = file.toURI()
 
-				optionDefaults.put("renames", String.valueOf(file.toURI()))
+						return uri.toURL()
+					} as URL[],
+					ClassLoader.platformClassLoader)
 
-				file = new File(rootDir, "liferay-jakarta-versions.properties")
+				try {
+					Class<?> jakartaTransformerCLIClass = urlClassLoader.loadClass("org.eclipse.transformer.cli.JakartaTransformerCLI")
 
-				optionDefaults.put("versions", String.valueOf(file.toURI()))
+					Object jakartaTransformerCLI = jakartaTransformerCLIClass.newInstance(System.out, System.out, new String[] {"--quiet", configurations.compileOnly.singleFile, jar.archivePath})
 
-				boolean jakartaFacesModule = project.hasProperty("jakartaFacesModule") && project.jakartaFacesModule
+					Map<String, String> optionDefaults = jakartaTransformerCLI.getOptionDefaults()
 
-				if (jakartaFacesModule) {
-					System.out.println("Configuring extra transform properties for Jakarta Faces.")
+					File file = new File(rootDir, "liferay-jakarta-renames.properties")
 
-					file = new File(rootDir, "liferay-jakarta-direct.properties")
+					optionDefaults.put("renames", String.valueOf(file.toURI()))
 
-					optionDefaults.put("direct", String.valueOf(file.toURI()))
+					file = new File(rootDir, "liferay-jakarta-versions.properties")
 
-					file = new File(rootDir, "liferay-jakarta-text-master.properties")
+					optionDefaults.put("versions", String.valueOf(file.toURI()))
 
-					optionDefaults.put("text", String.valueOf(file.toURI()))
+					boolean jakartaFacesModule = project.hasProperty("jakartaFacesModule") && project.jakartaFacesModule
 
-					Function<String, URL> function = jakartaTransformerCLI.getRuleLoader();
+					if (jakartaFacesModule) {
+						System.out.println("Configuring extra transform properties for Jakarta Faces")
 
-					jakartaTransformerCLI.setOptionDefaults(
-						fileName -> {
-							if (fileName.startsWith("liferay")) {
-								File resolvedFile = new File(rootDir, fileName);
+						file = new File(rootDir, "liferay-jakarta-direct.properties")
 
-								URI uri = resolvedFile.toURI();
+						optionDefaults.put("direct", String.valueOf(file.toURI()))
 
-								return uri.toURL()
-							}
+						file = new File(rootDir, "liferay-jakarta-text-master.properties")
 
-							return function.apply(fileName)
-						},
-						optionDefaults
-					)
+						optionDefaults.put("text", String.valueOf(file.toURI()))
+
+						Function<String, URL> function = jakartaTransformerCLI.getRuleLoader();
+
+						jakartaTransformerCLI.setOptionDefaults(
+							fileName -> {
+								if (fileName.startsWith("liferay")) {
+									File resolvedFile = new File(rootDir, fileName);
+
+									URI uri = resolvedFile.toURI();
+
+									return uri.toURL()
+								}
+
+								return function.apply(fileName)
+							},
+							optionDefaults
+						)
+					}
+
+					jakartaTransformerCLIClass.runWith(jakartaTransformerCLI)
+
+					if (!jakartaFacesModule) {
+						JarTransformer.transform(jar.archivePath)
+					}
 				}
-
-				JakartaTransformerCLI.runWith(jakartaTransformerCLI)
-
-				if (!jakartaFacesModule) {
-					JarTransformer.transform(jar.archivePath)
+				finally {
+					urlClassLoader.close()
 				}
 			}
 
