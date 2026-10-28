@@ -7,17 +7,24 @@ package com.liferay.cookies.internal.manager.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
+import com.liferay.portal.configuration.test.util.GroupConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.cookies.constants.CookiesConstants;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
@@ -301,6 +308,94 @@ public class CookiesManagerImplTest {
 	}
 
 	@Test
+	public void testAddCookieWithGroupConfiguration() throws Exception {
+		_group1 = GroupTestUtil.addGroup();
+
+		Layout layout1 = LayoutTestUtil.addTypePortletLayout(_group1);
+
+		_mockHttpServletRequest.setAttribute(WebKeys.LAYOUT, layout1);
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group1.getGroupId(),
+						CookiesPreferenceHandlingConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"explicitConsentMode", true
+						).build())) {
+
+			_assertAddCookie(false);
+		}
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group1.getGroupId(),
+						CookiesPreferenceHandlingConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"explicitConsentMode", false
+						).build())) {
+
+			_assertAddCookie(true);
+		}
+
+		ConfigurationTestUtil.saveConfiguration(
+			CookiesPreferenceHandlingConfiguration.class.getName(),
+			HashMapDictionaryBuilder.<String, Object>put(
+				"enabled", true
+			).put(
+				"explicitConsentMode", true
+			).build());
+
+		_group2 = GroupTestUtil.addGroup();
+
+		Layout layout2 = LayoutTestUtil.addTypePortletLayout(_group2);
+
+		_mockHttpServletRequest.setAttribute(WebKeys.LAYOUT, layout2);
+
+		_assertAddCookie(false);
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group2.getGroupId(),
+						CookiesPreferenceHandlingConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", true
+						).put(
+							"explicitConsentMode", false
+						).build())) {
+
+			_assertAddCookie(true);
+		}
+
+		_mockHttpServletRequest.setAttribute(WebKeys.LAYOUT, layout1);
+
+		_addConsentCookie(true, CookiesConstants.CONSENT_TYPE_PERFORMANCE);
+
+		try (GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group1.getGroupId(),
+						CookiesPreferenceHandlingConfiguration.class.getName(),
+						HashMapDictionaryBuilder.<String, Object>put(
+							"enabled", false
+						).build())) {
+
+			_assertAddCookie(true);
+
+			Assert.assertNull(
+				CookiesManagerUtil.getCookieValue(
+					CookiesConstants.NAME_CONSENT_TYPE_PERFORMANCE,
+					_mockHttpServletRequest));
+		}
+	}
+
+	@Test
 	public void testAddCookieWithPreferenceHandlingDisabled1()
 		throws Exception {
 
@@ -512,6 +607,21 @@ public class CookiesManagerImplTest {
 				consentCookie.getName(), _mockHttpServletRequest));
 	}
 
+	private void _assertAddCookie(boolean added) {
+		Cookie cookie = new Cookie(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		CookiesManagerUtil.addCookie(
+			CookiesConstants.CONSENT_TYPE_FUNCTIONAL, cookie,
+			_mockHttpServletRequest, _mockHttpServletResponse);
+
+		Assert.assertEquals(
+			added,
+			Validator.isNotNull(
+				CookiesManagerUtil.getCookieValue(
+					cookie.getName(), _mockHttpServletRequest)));
+	}
+
 	private void _testAddCookieWhenAddingInternalCookieWithoutConsentType(
 		int consentType, String name) {
 
@@ -577,6 +687,12 @@ public class CookiesManagerImplTest {
 
 	private static final String _CLASS_NAME =
 		"com.liferay.cookies.internal.manager.CookiesManagerImpl";
+
+	@DeleteAfterTestRun
+	private Group _group1;
+
+	@DeleteAfterTestRun
+	private Group _group2;
 
 	private final MockHttpServletRequest _mockHttpServletRequest =
 		new MockHttpServletRequest();
