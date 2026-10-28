@@ -11,6 +11,8 @@ import com.liferay.portal.background.task.internal.BackgroundTaskImpl;
 import com.liferay.portal.background.task.internal.lock.helper.BackgroundTaskLockHelper;
 import com.liferay.portal.background.task.model.BackgroundTask;
 import com.liferay.portal.background.task.service.BackgroundTaskLocalService;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutor;
+import com.liferay.portal.kernel.backgroundtask.BackgroundTaskExecutorRegistryUtil;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusMessageTranslator;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatusRegistry;
@@ -182,6 +184,14 @@ public class BackgroundTaskStatusMessageListener extends BaseMessageListener {
 					BackgroundTaskConstants.MESSAGE_KEY_BACKGROUND_TASK_ID));
 
 		if (backgroundTask == null) {
+			return null;
+		}
+
+		BackgroundTaskExecutor backgroundTaskExecutor =
+			BackgroundTaskExecutorRegistryUtil.getBackgroundTaskExecutor(
+				backgroundTask.getTaskExecutorClassName());
+
+		if (backgroundTaskExecutor == null) {
 			return null;
 		}
 
