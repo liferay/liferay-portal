@@ -2887,8 +2887,9 @@ public class DefaultObjectEntryManagerImpl
 		Map<String, ObjectRelationship> objectRelationships =
 			new LinkedHashMap<>();
 
-		Map<String, Object> properties = objectEntry.getProperties();
 		ObjectFieldBag objectFieldBag = objectDefinition.getObjectFieldBag();
+
+		Map<String, Object> properties = objectEntry.getProperties();
 
 		for (String key : properties.keySet()) {
 			if (objectFieldBag.getObjectField(key) != null) {
