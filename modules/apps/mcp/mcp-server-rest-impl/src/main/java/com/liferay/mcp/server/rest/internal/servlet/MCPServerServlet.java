@@ -196,7 +196,6 @@ public class MCPServerServlet extends HttpServlet {
 
 		Set<String> allowedToolKeys = _getAllowedToolKeys(
 			mcpServerProfileToolObjectEntries);
-
 		Map<String, String> restrictFieldsMap = _getRestrictFieldsMap(
 			mcpServerProfileToolObjectEntries);
 
