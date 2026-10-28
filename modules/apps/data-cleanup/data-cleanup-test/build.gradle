@@ -3,7 +3,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:blogs:blogs-api")
 	testIntegrationImplementation project(":apps:change-tracking:change-tracking-api")
 	testIntegrationImplementation project(":apps:data-cleanup:data-cleanup-api")
-	testIntegrationImplementation project(":apps:data-cleanup:data-cleanup-impl")
 	testIntegrationImplementation project(":apps:expando:expando-test-util")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-entry-processor:fragment-entry-processor-api")
@@ -19,8 +18,6 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-search:portal-search-api")
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
-	testIntegrationImplementation project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	testIntegrationImplementation project(":apps:static:portal-lpkg-deployer:portal-lpkg-deployer-api")
-	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

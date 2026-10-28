@@ -1,6 +1,4 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
-	compileOnly group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
@@ -11,18 +9,14 @@ dependencies {
 	compileOnly project(":apps:fragment:fragment-api")
 	compileOnly project(":apps:journal:journal-api")
 	compileOnly project(":apps:layout:layout-api")
-	compileOnly project(":apps:layout:layout-display-page-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:message-boards:message-boards-api")
 	compileOnly project(":apps:object:object-api")
 	compileOnly project(":apps:portal-search:portal-search-api")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
-	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":apps:subscription:subscription-api")
 	compileOnly project(":core:petra:petra-concurrent")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
-	compileOnly project(":core:petra:petra-reflect")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 }

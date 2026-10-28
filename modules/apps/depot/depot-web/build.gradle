@@ -1,5 +1,4 @@
 dependencies {
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
@@ -47,8 +46,6 @@ dependencies {
 	compileOnly project(":apps:site:site-taglib")
 	compileOnly project(":apps:staging:staging-api")
 	compileOnly project(":apps:staging:staging-taglib")
-	compileOnly project(":apps:static:osgi:osgi-util")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
 	compileOnly project(":apps:trash:trash-api")
 	compileOnly project(":apps:users-admin:users-admin-api")

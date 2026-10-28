@@ -13,7 +13,6 @@ buildscript {
 apply plugin: "me.champeau.jmh"
 
 dependencies {
-	compileOnly project(":core:petra:petra-lang")
 	jmh project(":core:petra:petra-lang")
 	testImplementation group: "org.openjdk.jol", name: "jol-core", version: "0.17"
 }
