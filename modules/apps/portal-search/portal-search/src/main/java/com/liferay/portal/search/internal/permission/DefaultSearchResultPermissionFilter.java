@@ -129,6 +129,10 @@ public class DefaultSearchResultPermissionFilter
 			return hits;
 		}
 
+		if (start == QueryUtil.ALL_POS) {
+			start = 0;
+		}
+
 		if ((start < 0) || (start > end) ||
 			(start >= PropsValues.INDEX_SEARCH_LIMIT)) {
 
