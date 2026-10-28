@@ -18,7 +18,7 @@ import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalSer
 import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.exportimport.report.constants.ExportImportReportEntryConstants;
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
-import com.liferay.exportimport.report.service.ExportImportReportEntryLocalService;
+import com.liferay.exportimport.report.service.ExportImportReportEntryLocalServiceUtil;
 import com.liferay.exportimport.test.util.LazyReferencingTestUtil;
 import com.liferay.exportimport.test.util.lar.BasePortletDataHandlerTestCase;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
@@ -367,12 +367,9 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			WorkflowConstants.STATUS_EMPTY,
 			getStatus(externalReferenceCode, _getGroupId()));
 
-		ExportImportReportEntry exportImportReportEntry =
-			_getEmptyExportImportReportEntry(externalReferenceCode);
-
-		Assert.assertEquals(
-			ExportImportReportEntryConstants.STATUS_UNRESOLVED,
-			exportImportReportEntry.getStatus());
+		_assertEmptyExportImportReportEntryStatus(
+			externalReferenceCode,
+			ExportImportReportEntryConstants.STATUS_UNRESOLVED);
 
 		updateEntry(externalReferenceCode, _getGroupId());
 
@@ -380,12 +377,9 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			WorkflowConstants.STATUS_APPROVED,
 			getStatus(externalReferenceCode, _getGroupId()));
 
-		exportImportReportEntry = _getEmptyExportImportReportEntry(
-			externalReferenceCode);
-
-		Assert.assertEquals(
-			ExportImportReportEntryConstants.STATUS_RESOLVED,
-			exportImportReportEntry.getStatus());
+		_assertEmptyExportImportReportEntryStatus(
+			externalReferenceCode,
+			ExportImportReportEntryConstants.STATUS_RESOLVED);
 	}
 
 	@Rule
@@ -531,6 +525,32 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 		}
 	}
 
+	private void _assertEmptyExportImportReportEntryStatus(
+			String classExternalReferenceCode, int status)
+		throws Exception {
+
+		ExportImportReportEntry emptyExportImportReportEntry = null;
+
+		for (ExportImportReportEntry exportImportReportEntry :
+				ExportImportReportEntryLocalServiceUtil.
+					getExportImportReportEntries(
+						TestPropsValues.getCompanyId(), 0)) {
+
+			if (Objects.equals(
+					classExternalReferenceCode,
+					exportImportReportEntry.getClassExternalReferenceCode()) &&
+				(exportImportReportEntry.getType() ==
+					ExportImportReportEntryConstants.TYPE_EMPTY)) {
+
+				emptyExportImportReportEntry = exportImportReportEntry;
+
+				break;
+			}
+		}
+
+		Assert.assertEquals(status, emptyExportImportReportEntry.getStatus());
+	}
+
 	private void _exportImport(
 			Date endDate, Map<String, String[]> parameterMap, Date startDate)
 		throws Exception {
@@ -582,28 +602,6 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 			});
 	}
 
-	private ExportImportReportEntry _getEmptyExportImportReportEntry(
-			String classExternalReferenceCode)
-		throws Exception {
-
-		for (ExportImportReportEntry exportImportReportEntry :
-				_exportImportReportEntryLocalService.
-					getExportImportReportEntries(
-						TestPropsValues.getCompanyId(), 0)) {
-
-			if (Objects.equals(
-					classExternalReferenceCode,
-					exportImportReportEntry.getClassExternalReferenceCode()) &&
-				(exportImportReportEntry.getType() ==
-					ExportImportReportEntryConstants.TYPE_EMPTY)) {
-
-				return exportImportReportEntry;
-			}
-		}
-
-		return null;
-	}
-
 	private long _getGroupId() {
 		Group group = getGroup();
 
@@ -637,10 +635,6 @@ public abstract class BaseBatchEnginePortletDataHandlerTestCase
 		_exportImportConfigurationLocalService;
 
 	private ExportImportDescriptor<?> _exportImportDescriptor;
-
-	@Inject
-	private ExportImportReportEntryLocalService
-		_exportImportReportEntryLocalService;
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
