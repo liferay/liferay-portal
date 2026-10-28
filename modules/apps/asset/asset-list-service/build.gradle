@@ -10,12 +10,9 @@ dependencies {
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:asset:asset-api")
-	compileOnly project(":apps:asset:asset-display-page-api")
-	compileOnly project(":apps:asset:asset-entry-rel-api")
 	compileOnly project(":apps:asset:asset-list-api")
 	compileOnly project(":apps:audiences:audiences-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
@@ -27,7 +24,6 @@ dependencies {
 	compileOnly project(":apps:layout:layout-api")
 	compileOnly project(":apps:layout:layout-page-template-api")
 	compileOnly project(":apps:object:object-api")
-	compileOnly project(":apps:object:object-service")
 	compileOnly project(":apps:portal-search:portal-search-api")
 	compileOnly project(":apps:portal:portal-aop-api")
 	compileOnly project(":apps:portal:portal-dao-orm-custom-sql-api")
@@ -37,7 +33,6 @@ dependencies {
 	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":apps:xstream:xstream-configurator-api")
-	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-function")
 	compileOnly project(":core:petra:petra-lang")
 	compileOnly project(":core:petra:petra-sql-dsl-api")
