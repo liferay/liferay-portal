@@ -1,21 +1,17 @@
 dependencies {
 	compileInclude group: "org.jgrapht", name: "jgrapht-core", version: "0.9.1"
-	compileOnly group: "com.liferay", name: "biz.aQute.bnd.annotation", version: "4.2.0.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-2"
 	compileOnly group: "com.liferay", name: "org.apache.felix.gogo.runtime", version: "1.1.2.LIFERAY-PATCHED-1"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
 	compileOnly group: "commons-io", name: "commons-io", version: "2.19.0"
-	compileOnly group: "commons-lang", name: "commons-lang", version: "2.6"
 	compileOnly group: "org.apache.logging.log4j", name: "log4j-api", version: "2.26.1"
 	compileOnly group: "org.apache.logging.log4j", name: "log4j-core", version: "2.26.1"
-	compileOnly group: "org.osgi", name: "org.osgi.annotation.versioning", version: "1.1.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	compileOnly group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	compileOnly project(":apps:gogo-shell:gogo-shell-logging")
 	compileOnly project(":apps:static:osgi:osgi-util")
-	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:osgi-service-tracker-collections")
 	compileOnly project(":core:petra:petra-concurrent")

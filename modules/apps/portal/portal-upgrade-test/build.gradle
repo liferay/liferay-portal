@@ -3,7 +3,6 @@ dependencies {
 	testIntegrationImplementation group: "com.liferay.jakarta.portlet", name: "com.liferay.jakarta.portlet-api", version: "4.0.0"
 	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation group: "org.apache.logging.log4j", name: "log4j-core", version: "2.26.1"
-	testIntegrationImplementation group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
 	testIntegrationImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 	testIntegrationImplementation group: "org.ow2.asm", name: "asm", version: "9.11.1"
 	testIntegrationImplementation project(":apps:asset:asset-test-util")
@@ -33,12 +32,10 @@ dependencies {
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-definition-api")
 	testIntegrationImplementation project(":apps:portal-workflow:portal-workflow-kaleo-runtime-api")
-	testIntegrationImplementation project(":apps:portal:portal-instance-lifecycle-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:segments:segments-api")
 	testIntegrationImplementation project(":apps:static:osgi:osgi-util")
 	testIntegrationImplementation project(":apps:static:portal-lpkg-deployer:portal-lpkg-deployer-api")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
-	testIntegrationImplementation project(":apps:style-book:style-book-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }

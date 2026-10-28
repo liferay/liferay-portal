@@ -13,5 +13,4 @@ dependencies {
 	compileOnly project(":apps:static:portal:portal-upgrade-api")
 	compileOnly project(":core:petra:petra-memory")
 	compileOnly project(":core:petra:petra-string")
-	testImplementation group: "org.osgi", name: "osgi.core", version: "6.0.0"
 }

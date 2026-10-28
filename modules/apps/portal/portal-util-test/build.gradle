@@ -4,7 +4,6 @@ dependencies {
 	testIntegrationImplementation group: "jakarta.mail", name: "jakarta.mail-api", version: "2.1.3"
 	testIntegrationImplementation group: "jakarta.servlet", name: "jakarta.servlet-api", version: "6.0.0"
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
-	testIntegrationImplementation project(":apps:dynamic-data-mapping:dynamic-data-mapping-api")
 	testIntegrationImplementation project(":apps:info:info-api")
 	testIntegrationImplementation project(":apps:journal:journal-api")
 	testIntegrationImplementation project(":apps:journal:journal-test-util")

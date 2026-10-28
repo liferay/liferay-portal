@@ -1,4 +1,3 @@
 dependencies {
-	testIntegrationImplementation group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
 }
