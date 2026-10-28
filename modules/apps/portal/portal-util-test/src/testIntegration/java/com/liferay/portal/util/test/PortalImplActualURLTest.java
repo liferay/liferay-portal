@@ -415,6 +415,9 @@ public class PortalImplActualURLTest {
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest(Method.GET, "/");
 
+		mockHttpServletRequest.setAttribute(
+			WebKeys.USER_ID, TestPropsValues.getUserId());
+
 		Assert.assertEquals(
 			expectedPlid,
 			MapUtil.getLong(
