@@ -26,6 +26,46 @@ test.afterEach(async ({apiHelpers}) => {
 });
 
 test.describe('Transition', () => {
+	test(
+		'can be selected',
+		{tag: '@LPD-106108'},
+		async ({
+			apiHelpers,
+			diagramViewPage,
+			processBuilderPage,
+			transitionInfoPage,
+		}) => {
+			await test.step('Post same-source-transitions workflow definition and navigate to it', async () => {
+				const workflowDefinitionName =
+					'Workflow Definition' + getRandomInt();
+
+				const workflowDefinition =
+					await apiHelpers.headlessAdminWorkflow.postWorkflowDefinitionSave(
+						workflowDefinitionName,
+						getWorkflowDefinition('same-source-transitions')
+					);
+
+				workflowDefinitionIds.push(workflowDefinition.id);
+
+				await processBuilderPage.goto();
+
+				await processBuilderPage.clickWorkflowDefinitionName(
+					workflowDefinitionName
+				);
+			});
+
+			await test.step('Assert that the transition can be selected', async () => {
+				await diagramViewPage.clickTransition(
+					'TRANSITION FROM PARENT TASK TO CHILD TASK 1'
+				);
+
+				await expect(
+					transitionInfoPage.transitionNameField
+				).toHaveValue('Different Name 1');
+			});
+		}
+	);
+
 	test('name cannot be changed if another transition with the same name and source node already exists', async ({
 		apiHelpers,
 		diagramViewPage,
