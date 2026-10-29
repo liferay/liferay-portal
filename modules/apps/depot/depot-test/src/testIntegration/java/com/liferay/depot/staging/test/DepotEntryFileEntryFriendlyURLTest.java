@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -238,6 +239,53 @@ public class DepotEntryFileEntryFriendlyURLTest {
 				fileEntry.getFileEntryId());
 
 		Assert.assertNotNull(friendlyURLEntry);
+		Assert.assertEquals("modifiedurltitle", friendlyURLEntry.getUrlTitle());
+	}
+
+	@Test
+	@TestInfo("LPD-112613")
+	public void testDisableStagingDepotEntryFileEntryFriendlyURLEntries()
+		throws Exception {
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _liveDepotEntry.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(), new byte[0],
+			null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_liveDepotEntry.getGroupId()));
+
+		DepotEntry stagingDepotEntry = DepotStagingTestUtil.enableLocalStaging(
+			_liveDepotEntry);
+
+		FileEntry stagingFileEntry =
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), stagingDepotEntry.getGroupId());
+
+		DLAppServiceUtil.updateFileEntry(
+			stagingFileEntry.getFileEntryId(), StringPool.BLANK,
+			ContentTypes.APPLICATION_OCTET_STREAM, stagingFileEntry.getTitle(),
+			"modifiedurltitle", StringPool.BLANK, StringPool.BLANK,
+			DLVersionNumberIncrease.MINOR, (byte[])null, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				stagingDepotEntry.getGroupId()));
+
+		DepotStagingTestUtil.publishLayouts(
+			stagingDepotEntry.getGroup(), _liveDepotEntry.getGroup());
+
+		DepotStagingTestUtil.disableStaging(_liveDepotEntry);
+
+		FileEntry liveFileEntry =
+			_dlAppLocalService.getFileEntryByUuidAndGroupId(
+				fileEntry.getUuid(), _liveDepotEntry.getGroupId());
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.getMainFriendlyURLEntry(
+				_portal.getClassNameId(FileEntry.class),
+				liveFileEntry.getFileEntryId());
+
 		Assert.assertEquals("modifiedurltitle", friendlyURLEntry.getUrlTitle());
 	}
 
