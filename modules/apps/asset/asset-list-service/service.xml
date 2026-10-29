@@ -127,7 +127,7 @@
 			<finder-column comparator="&gt;" name="position" />
 		</finder>
 	</entity>
-	<entity local-service="true" name="AssetListEntryAudienceEntryRel" remote-service="false" uuid="true">
+	<entity json-enabled="false" local-service="true" name="AssetListEntryAudienceEntryRel" remote-service="true" uuid="true">
 
 		<!-- PK fields -->
 
