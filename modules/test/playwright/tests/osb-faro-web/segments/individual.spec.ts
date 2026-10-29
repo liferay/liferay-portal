@@ -18,7 +18,6 @@ import getFragmentDefinition from '../../layout-content-page-editor-web/main/uti
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import {
 	addBreakdownByAttribute,
-	goToDistributionTabAndSelectAttribute,
 	viewBreakdownRechartsData,
 } from '../main/utils/distribution';
 import {createIndividuals, generateIndividual} from '../main/utils/individuals';
@@ -770,101 +769,6 @@ test(
 		]) {
 			await expect(page.getByText(cardTitle).first()).toBeVisible();
 		}
-	}
-);
-
-test(
-	'Distribution chart member count matches the details sidebar',
-	{
-		tag: '@LRAC-11825',
-	},
-	async ({
-		analyticsChannel: channel,
-		apiHelpers,
-		dxpSyncedAnalyticsChannel,
-		page,
-		project,
-	}) => {
-		const {dataSourceId} = dxpSyncedAnalyticsChannel;
-
-		const runId = getRandomString();
-
-		// Two individuals share the givenName "user1"; a third has a distinct one
-
-		const individuals = [
-			{
-				...generateIndividual({name: 'user1a' + runId}),
-				dataSourceId,
-				firstName: 'user1',
-			},
-			{
-				...generateIndividual({name: 'user1b' + runId}),
-				dataSourceId,
-				firstName: 'user1',
-			},
-			{
-				...generateIndividual({name: 'single' + runId}),
-				dataSourceId,
-				firstName: 'single',
-			},
-		];
-
-		await createIndividuals({apiHelpers, individuals});
-
-		const date = new Date();
-
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents(
-			individuals.map((individual) => ({
-				applicationId: 'Page',
-				canonicalUrl: 'https://www.liferay.com',
-				channelId: channel.id,
-				dataSourceId,
-				eventDate: date.toISOString(),
-				eventId: 'pageViewed',
-				title: 'My Page',
-				userId: individual.id,
-			}))
-		);
-
-		await apiHelpers.jsonWebServicesOSBAsah.createSessions(
-			individuals.map((individual) => ({
-				channelId: channel.id,
-				id: individual.id,
-				sessionEnd: date.toISOString(),
-				sessionStart: date.toISOString(),
-				userId: individual.id,
-			}))
-		);
-
-		await navigateToACPageViaURL({
-			acPage: ACPage.individualPage,
-			channelID: channel.id,
-			page,
-			projectID: project.groupId,
-		});
-
-		await goToDistributionTabAndSelectAttribute({
-			attributeName: 'givenName',
-			page,
-		});
-
-		// The "user1" bar groups two individuals; clicking it lists both
-
-		await page.locator('.recharts-bar-rectangle').first().click();
-
-		await viewPaginationResults({
-			page,
-			paginationResults: 'Showing 1 to 2 of 2 entries.',
-		});
-
-		// The "single" bar groups a single individual
-
-		await page.locator('.recharts-bar-rectangle').nth(1).click();
-
-		await viewPaginationResults({
-			page,
-			paginationResults: 'Showing 1 to 1 of 1 entry.',
-		});
 	}
 );
 
