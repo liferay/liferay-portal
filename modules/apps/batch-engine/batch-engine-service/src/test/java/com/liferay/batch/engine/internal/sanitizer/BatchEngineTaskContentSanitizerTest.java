@@ -385,7 +385,6 @@ public class BatchEngineTaskContentSanitizerTest {
 
 		String login = StringUtil.randomString();
 		String password = StringUtil.randomString();
-
 		UnsyncByteArrayOutputStream unsyncByteArrayOutputStream =
 			new UnsyncByteArrayOutputStream();
 
