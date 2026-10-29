@@ -45,6 +45,12 @@ public @interface Details {
 	)
 	public String logLevel();
 
+	@Meta.AD(
+		deflt = "262144", description = "max-request-length-help",
+		name = "max-request-length", required = false
+	)
+	public long maxRequestLength();
+
 	@Meta.AD(deflt = "60", name = "wait-timeout", required = false)
 	public int waitTimeout();
 
