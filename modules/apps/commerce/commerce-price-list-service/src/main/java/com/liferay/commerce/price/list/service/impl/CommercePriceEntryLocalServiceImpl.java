@@ -550,22 +550,9 @@ public class CommercePriceEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<CommercePriceEntry> getCommercePriceEntriesByCompanyId(
-		long companyId, int start, int end) {
-
-		return commercePriceEntryPersistence.findByCompanyId(
-			companyId, start, end);
-	}
-
-	@Override
 	public int getCommercePriceEntriesCount(long commercePriceListId) {
 		return commercePriceEntryPersistence.countByCommercePriceListId(
 			commercePriceListId);
-	}
-
-	@Override
-	public int getCommercePriceEntriesCountByCompanyId(long companyId) {
-		return commercePriceEntryPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
