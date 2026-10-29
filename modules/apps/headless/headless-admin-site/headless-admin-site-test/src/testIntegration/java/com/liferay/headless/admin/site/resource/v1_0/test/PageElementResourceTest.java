@@ -3830,6 +3830,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 		_testPutSitePageSpecificationPageExperiencePageElementWithCollectionFilterFragmentRendererConfiguration();
 		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfiguration();
+		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfigurationDependentEditableElements();
 		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithFragmentEditableElements();
 
 		_testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementAndMissingOptionalReference(
@@ -4453,6 +4454,90 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 							testGroup.getGroupId()),
 					externalReferenceCode));
 		}
+	}
+
+	private void _testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithConfigurationDependentEditableElements()
+		throws Exception {
+
+		String editableId1 = RandomTestUtil.randomString();
+		String editableId2 = RandomTestUtil.randomString();
+		String selectFieldName = RandomTestUtil.randomString();
+		String selectValue1 = RandomTestUtil.randomString();
+		String selectValue2 = RandomTestUtil.randomString();
+
+		FragmentEntry fragmentEntry = _addFragmentEntry(
+			JSONUtil.put(
+				"fieldSets",
+				JSONUtil.put(
+					JSONUtil.put(
+						"fields",
+						JSONUtil.put(
+							JSONUtil.put(
+								"dataType", "string"
+							).put(
+								"defaultValue", selectValue1
+							).put(
+								"name", selectFieldName
+							).put(
+								"type", "select"
+							).put(
+								"typeOptions",
+								JSONUtil.put(
+									"validValues",
+									JSONUtil.putAll(
+										JSONUtil.put("value", selectValue1),
+										JSONUtil.put("value", selectValue2)))
+							))))
+			).toString(),
+			testGroup.getGroupId(),
+			StringBundler.concat(
+				"[#if configuration[\"", selectFieldName, "\"] == \"",
+				selectValue1, "\"]<span data-lfr-editable-id=\"", editableId1,
+				"\" data-lfr-editable-type=\"text\">",
+				RandomTestUtil.randomString(), "</span>[#else]<span ",
+				"data-lfr-editable-id=\"", editableId2,
+				"\" data-lfr-editable-type=\"text\">",
+				RandomTestUtil.randomString(), "</span>[/#if]"),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		PageElement pageElement =
+			_testPutSitePageSpecificationPageExperiencePageElement(
+				_getFragmentInstancePageElement(
+					PageElementsTestUtil.
+						getBasicFragmentInstancePageElementDefinition(
+							null,
+							HashMapBuilder.<String, Object>put(
+								selectFieldName, selectValue2
+							).build(),
+							new FragmentEditableElement[0], fragmentEntry,
+							testGroup.getGroupId()),
+					RandomTestUtil.randomString()));
+
+		BasicFragmentInstancePageElementDefinition
+			basicFragmentInstancePageElementDefinition =
+				(BasicFragmentInstancePageElementDefinition)
+					pageElement.getPageElementDefinition();
+
+		FragmentInstance fragmentInstance =
+			basicFragmentInstancePageElementDefinition.getFragmentInstance();
+
+		FragmentEntryLink fragmentEntryLink =
+			_fragmentEntryLinkLocalService.
+				getFragmentEntryLinkByExternalReferenceCode(
+					fragmentInstance.getFragmentInstanceExternalReferenceCode(),
+					testGroup.getGroupId());
+
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLink.getEditableValuesJSONObject();
+
+		JSONObject editableJSONObject = editableValuesJSONObject.getJSONObject(
+			FragmentEntryProcessorConstants.
+				KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
+
+		Assert.assertFalse(
+			editableJSONObject.toString(), editableJSONObject.has(editableId1));
+		Assert.assertTrue(
+			editableJSONObject.toString(), editableJSONObject.has(editableId2));
 	}
 
 	private void _testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithFragmentEditableElements()
