@@ -173,25 +173,6 @@ public class DynamicObjectDefinitionTableUtil {
 		return _sqlTypes.get(dbType);
 	}
 
-	public static String getUpdateDefaultValueSQL(
-		String columnName, String dbType, Object defaultValue,
-		String tableName) {
-
-		String sql = StringPool.BLANK;
-
-		if (dbType.equals(ObjectFieldConstants.DB_TYPE_STRING)) {
-			sql = StringBundler.concat(
-				"update ", tableName, " set ", columnName, " = '", defaultValue,
-				"' where ", columnName, " is null");
-		}
-
-		if (_log.isDebugEnabled()) {
-			_log.debug("SQL: " + sql);
-		}
-
-		return sql;
-	}
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		DynamicObjectDefinitionTableUtil.class);
 

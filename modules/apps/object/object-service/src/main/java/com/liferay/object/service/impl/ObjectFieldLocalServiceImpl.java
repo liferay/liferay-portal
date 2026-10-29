@@ -115,6 +115,7 @@ import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import java.io.Serializable;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1101,9 +1102,7 @@ public class ObjectFieldLocalServiceImpl
 					ObjectFieldConstants.BUSINESS_TYPE_PICKLIST) &&
 				objectField.isState()) {
 
-				runSQL(
-					DynamicObjectDefinitionTableUtil.getUpdateDefaultValueSQL(
-						dbColumnName, dbType, defaultValue, dbTableName));
+				_updateDefaultValue(dbColumnName, dbTableName, defaultValue);
 			}
 
 			_objectEntryPersistence.clearCache();
@@ -1627,6 +1626,29 @@ public class ObjectFieldLocalServiceImpl
 			_handleException(
 				new ObjectFieldDBTypeException("Invalid DB type " + dbType),
 				"dbType", dbType);
+		}
+	}
+
+	private void _updateDefaultValue(
+		String dbColumnName, String dbTableName, Object defaultValue) {
+
+		try {
+			Connection connection = _currentConnection.getConnection(
+				objectFieldPersistence.getDataSource());
+
+			try (PreparedStatement preparedStatement =
+					connection.prepareStatement(
+						StringBundler.concat(
+							"update ", dbTableName, " set ", dbColumnName,
+							" = ? where ", dbColumnName, " is null"))) {
+
+				preparedStatement.setString(1, String.valueOf(defaultValue));
+
+				preparedStatement.executeUpdate();
+			}
+		}
+		catch (Exception exception) {
+			throw new SystemException(exception);
 		}
 	}
 
