@@ -384,27 +384,39 @@ public class FragmentEntryProcessorHelperTest {
 		try {
 			_pushServiceContext(_layout, _themeDisplay);
 
-			for (String timeZoneId :
-					new String[] {"America/New_York", "Asia/Tokyo"}) {
+			_themeDisplay.setTimeZone(TimeZone.getTimeZone("America/New_York"));
 
-				_themeDisplay.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+			Assert.assertEquals(
+				_formatDate(date, LocaleUtil.US),
+				_getFieldValue(
+					JSONUtil.put(
+						"className", objectDefinition.getClassName()
+					).put(
+						"classNameId",
+						_portal.getClassNameId(objectDefinition.getClassName())
+					).put(
+						"classPK", objectEntry.getObjectEntryId()
+					).put(
+						"fieldId", "myDate"
+					),
+					LocaleUtil.US));
 
-				Assert.assertEquals(
-					_formatDate(date, LocaleUtil.US, TimeZone.getDefault()),
-					_getFieldValue(
-						JSONUtil.put(
-							"className", objectDefinition.getClassName()
-						).put(
-							"classNameId",
-							_portal.getClassNameId(
-								objectDefinition.getClassName())
-						).put(
-							"classPK", objectEntry.getObjectEntryId()
-						).put(
-							"fieldId", "myDate"
-						),
-						LocaleUtil.US));
-			}
+			_themeDisplay.setTimeZone(TimeZone.getTimeZone("Asia/Tokyo"));
+
+			Assert.assertEquals(
+				_formatDate(date, LocaleUtil.US),
+				_getFieldValue(
+					JSONUtil.put(
+						"className", objectDefinition.getClassName()
+					).put(
+						"classNameId",
+						_portal.getClassNameId(objectDefinition.getClassName())
+					).put(
+						"classPK", objectEntry.getObjectEntryId()
+					).put(
+						"fieldId", "myDate"
+					),
+					LocaleUtil.US));
 		}
 		finally {
 			_themeDisplay.setTimeZone(originalTimeZone);
