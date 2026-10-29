@@ -927,10 +927,6 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 				_portal.getClassNameId(JournalArticle.class),
 				importedJournalArticle.getResourcePrimKey());
 
-		Assert.assertEquals(
-			layoutClassedModelUsages.toString(), 1,
-			layoutClassedModelUsages.size());
-
 		LayoutClassedModelUsage layoutClassedModelUsage =
 			layoutClassedModelUsages.get(0);
 
@@ -938,6 +934,10 @@ public class AssetPublisherExportImportTest extends BaseExportImportTestCase {
 			portletId, layoutClassedModelUsage.getContainerKey());
 		Assert.assertEquals(
 			importedLayout.getPlid(), layoutClassedModelUsage.getPlid());
+
+		Assert.assertEquals(
+			layoutClassedModelUsages.toString(), 1,
+			layoutClassedModelUsages.size());
 	}
 
 	@Ignore
