@@ -6,6 +6,7 @@
 package com.liferay.commerce.product.type.grouped.web.internal.display.context;
 
 import com.liferay.commerce.product.model.CPDefinition;
+import com.liferay.commerce.product.type.grouped.constants.GroupedCPTypeConstants;
 import com.liferay.frontend.taglib.clay.servlet.taglib.display.context.SearchContainerManagementToolbarDisplayContext;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
@@ -89,15 +90,18 @@ public class CPDefinitionGroupedManagementToolbarDisplayContext
 				dropdownItem -> {
 					dropdownItem.putData("action", "addDefinitionGroupedEntry");
 					dropdownItem.putData(
-						"addDefinitionGroupedEntryItemSelectorURL",
-						_cpDefinitionGroupedEntriesDisplayContext.
-							getItemSelectorUrl());
-					dropdownItem.putData(
 						"dialogTitle",
 						LanguageUtil.format(
 							httpServletRequest, "add-new-grouped-entry-to-x",
 							cpDefinition.getName(
 								themeDisplay.getLanguageId())));
+					dropdownItem.putData(
+						"excludedProductIds",
+						_cpDefinitionGroupedEntriesDisplayContext.
+							getExcludedCProductIds());
+					dropdownItem.putData(
+						"excludedProductTypes",
+						new String[] {GroupedCPTypeConstants.NAME});
 					dropdownItem.setLabel(
 						LanguageUtil.get(
 							httpServletRequest, "add-grouped-entry"));

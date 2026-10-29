@@ -6,37 +6,31 @@
 package com.liferay.commerce.product.type.grouped.web.internal.display.context;
 
 import com.liferay.commerce.product.display.context.BaseCPDefinitionsSearchContainerDisplayContext;
-import com.liferay.commerce.product.item.selector.CPDefinitionItemSelectorCriterion;
+import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.grouped.model.CPDefinitionGroupedEntry;
 import com.liferay.commerce.product.type.grouped.service.CPDefinitionGroupedEntryService;
 import com.liferay.commerce.product.type.grouped.web.internal.util.GroupedCPTypeUtil;
-import com.liferay.item.selector.ItemSelector;
-import com.liferay.item.selector.ItemSelectorReturnType;
-import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.search.SortFactoryUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -50,15 +44,13 @@ public class CPDefinitionGroupedEntriesDisplayContext
 
 	public CPDefinitionGroupedEntriesDisplayContext(
 		ActionHelper actionHelper, HttpServletRequest httpServletRequest,
-		CPDefinitionGroupedEntryService cpDefinitionGroupedEntryService,
-		ItemSelector itemSelector) {
+		CPDefinitionGroupedEntryService cpDefinitionGroupedEntryService) {
 
 		super(
 			actionHelper, httpServletRequest,
 			CPDefinitionGroupedEntry.class.getSimpleName());
 
 		_cpDefinitionGroupedEntryService = cpDefinitionGroupedEntryService;
-		_itemSelector = itemSelector;
 
 		setDefaultOrderByCol(Field.PRIORITY);
 		setDefaultOrderByType("asc");
@@ -101,41 +93,15 @@ public class CPDefinitionGroupedEntriesDisplayContext
 		return sort;
 	}
 
-	public String getItemSelectorUrl() throws PortalException {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				cpRequestHelper.getRenderRequest());
+	public long[] getExcludedCProductIds() throws PortalException {
+		CPDefinition cpDefinition = getCPDefinition();
 
-		CPDefinitionItemSelectorCriterion cpDefinitionItemSelectorCriterion =
-			new CPDefinitionItemSelectorCriterion();
-
-		cpDefinitionItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			Collections.<ItemSelectorReturnType>singletonList(
-				new UUIDItemSelectorReturnType()));
-
-		PortletURL itemSelectorURL = _itemSelector.getItemSelectorURL(
-			requestBackedPortletURLFactory, "productDefinitionsSelectItem",
-			cpDefinitionItemSelectorCriterion);
-
-		long cpDefinitionId = getCPDefinitionId();
-
-		if (cpDefinitionId > 0) {
-			itemSelectorURL.setParameter(
-				"cpDefinitionId", String.valueOf(cpDefinitionId));
-
-			String checkedCPDefinitionIds = StringUtil.merge(
-				_getCheckedCPDefinitionIds(cpDefinitionId));
-
-			String disabledCPDefinitionIds = StringUtil.merge(
-				_getDisabledCPDefinitionIds(cpDefinitionId));
-
-			itemSelectorURL.setParameter(
-				"checkedCPDefinitionIds", checkedCPDefinitionIds);
-			itemSelectorURL.setParameter(
-				"disabledCPDefinitionIds", disabledCPDefinitionIds);
-		}
-
-		return itemSelectorURL.toString();
+		return ArrayUtil.append(
+			TransformUtil.transformToLongArray(
+				_getCPDefinitionGroupedEntries(
+					cpDefinition.getCPDefinitionId()),
+				CPDefinitionGroupedEntry::getEntryCProductId),
+			cpDefinition.getCProductId());
 	}
 
 	public String getLabel(Locale locale, String key) {
@@ -220,24 +186,6 @@ public class CPDefinitionGroupedEntriesDisplayContext
 			cpDefinitionId, 0, total, null);
 	}
 
-	private long[] _getCheckedCPDefinitionIds(long cpDefinitionId)
-		throws PortalException {
-
-		return TransformUtil.transformToLongArray(
-			_getCPDefinitionGroupedEntries(cpDefinitionId),
-			cpDefinitionGroupedEntry ->
-				cpDefinitionGroupedEntry.getEntryCPDefinitionId());
-	}
-
-	private long[] _getDisabledCPDefinitionIds(long cpDefinitionId)
-		throws PortalException {
-
-		return TransformUtil.transformToLongArray(
-			_getCPDefinitionGroupedEntries(cpDefinitionId),
-			cpDefinitionGroupedEntry ->
-				cpDefinitionGroupedEntry.getCPDefinitionId());
-	}
-
 	private ResourceBundle _getResourceBundle(Locale locale) {
 		return ResourceBundleUtil.getBundle(
 			"content.Language", locale, getClass());
@@ -249,6 +197,5 @@ public class CPDefinitionGroupedEntriesDisplayContext
 	private CPDefinitionGroupedEntry _cpDefinitionGroupedEntry;
 	private final CPDefinitionGroupedEntryService
 		_cpDefinitionGroupedEntryService;
-	private final ItemSelector _itemSelector;
 
 }

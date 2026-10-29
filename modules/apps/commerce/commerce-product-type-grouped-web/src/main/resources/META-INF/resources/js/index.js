@@ -3,7 +3,9 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {openConfirmModal, openSelectionModal} from 'frontend-js-components-web';
+import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+import {getProductsItemSelectorProps} from 'commerce-frontend-js';
+import {openConfirmModal} from 'frontend-js-components-web';
 
 export function CPDefinitionGroupedManagementToolbarPropsTransformer({
 	portletNamespace,
@@ -36,34 +38,32 @@ export function CPDefinitionGroupedManagementToolbarPropsTransformer({
 		onCreateButtonClick: (event, {item}) => {
 			const data = item?.data;
 
-			openSelectionModal({
-				id: `${portletNamespace}addDefinitionGroupedEntry`,
-				multiple: true,
-				onSelect: (selectedItems) => {
-					if (selectedItems && selectedItems.length) {
-						const entryCPDefinitionIds = document.getElementById(
-							`${portletNamespace}entryCPDefinitionIds`
-						);
-
-						if (entryCPDefinitionIds) {
-							entryCPDefinitionIds.value = selectedItems.map(
-								(item) => item.value
-							);
-						}
-
-						const addCPDefinitionGroupedEntryFm =
-							document.getElementById(
-								`${portletNamespace}addCPDefinitionGroupedEntryFm`
-							);
-
-						if (addCPDefinitionGroupedEntryFm) {
-							submitForm(addCPDefinitionGroupedEntryFm);
-						}
+			openItemSelectorModal({
+				...getProductsItemSelectorProps({
+					excludedProductIds: data?.excludedProductIds,
+					excludedProductTypes: data?.excludedProductTypes,
+					portletNamespace,
+					title: data?.dialogTitle,
+				}),
+				items: [],
+				onItemsChange(selectedProducts) {
+					if (!selectedProducts || !selectedProducts.length) {
+						return;
 					}
+
+					Liferay.Util.postForm(
+						document[
+							`${portletNamespace}addCPDefinitionGroupedEntryFm`
+						],
+						{
+							data: {
+								entryCPDefinitionIds: selectedProducts.map(
+									(selectedProduct) => selectedProduct.id
+								),
+							},
+						}
+					);
 				},
-				selectEventName: `${portletNamespace}selectCPDefinition`,
-				title: data?.dialogTitle,
-				url: data?.addDefinitionGroupedEntryItemSelectorURL,
 			});
 		},
 	};

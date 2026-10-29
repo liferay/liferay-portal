@@ -9,7 +9,6 @@ import com.liferay.commerce.product.constants.CPPortletKeys;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.type.grouped.service.CPDefinitionGroupedEntryService;
 import com.liferay.commerce.product.type.grouped.web.internal.display.context.CPDefinitionGroupedEntriesDisplayContext;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.util.Portal;
@@ -59,7 +58,7 @@ public class EditCPDefinitionGroupedEntryMVCRenderCommand
 				cpDefinitionGroupedEntriesDisplayContext =
 					new CPDefinitionGroupedEntriesDisplayContext(
 						_actionHelper, httpServletRequest,
-						_cpDefinitionGroupedEntryService, _itemSelector);
+						_cpDefinitionGroupedEntryService);
 
 			renderRequest.setAttribute(
 				WebKeys.PORTLET_DISPLAY_CONTEXT,
@@ -79,9 +78,6 @@ public class EditCPDefinitionGroupedEntryMVCRenderCommand
 
 	@Reference
 	private CPDefinitionGroupedEntryService _cpDefinitionGroupedEntryService;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private Portal _portal;
