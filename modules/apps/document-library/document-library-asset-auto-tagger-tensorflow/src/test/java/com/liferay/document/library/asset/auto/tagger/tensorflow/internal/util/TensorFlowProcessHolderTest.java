@@ -91,14 +91,15 @@ public class TensorFlowProcessHolderTest {
 				_processConfig.getProcessLogConsumer();
 
 			processLogConsumer.accept(
-				_getProcessLog(new IOException(RandomTestUtil.randomString())));
+				_createProcessLog(
+					new IOException(RandomTestUtil.randomString())));
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
 			Assert.assertEquals(logEntries.toString(), 0, logEntries.size());
 
 			processLogConsumer.accept(
-				_getProcessLog(
+				_createProcessLog(
 					new RuntimeException(RandomTestUtil.randomString())));
 
 			Assert.assertEquals(logEntries.toString(), 1, logEntries.size());
@@ -116,7 +117,8 @@ public class TensorFlowProcessHolderTest {
 				_processConfig.getProcessLogConsumer();
 
 			processLogConsumer.accept(
-				_getProcessLog(new IOException(RandomTestUtil.randomString())));
+				_createProcessLog(
+					new IOException(RandomTestUtil.randomString())));
 
 			List<LogEntry> logEntries = logCapture.getLogEntries();
 
@@ -132,7 +134,7 @@ public class TensorFlowProcessHolderTest {
 	@Rule
 	public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-	private ProcessLog _getProcessLog(Throwable throwable) {
+	private ProcessLog _createProcessLog(Throwable throwable) {
 		ProcessLog processLog = Mockito.mock(ProcessLog.class);
 
 		Mockito.when(
