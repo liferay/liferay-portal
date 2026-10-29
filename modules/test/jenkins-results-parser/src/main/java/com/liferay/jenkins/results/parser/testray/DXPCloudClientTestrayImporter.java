@@ -256,6 +256,7 @@ public class DXPCloudClientTestrayImporter {
 		uriBuilder.addParameter("authuser", "0");
 
 		attachmentElement.addAttribute("url", uriBuilder.toString());
+
 		attachmentElement.addAttribute("value", key);
 
 		return attachmentElement;
@@ -407,6 +408,7 @@ public class DXPCloudClientTestrayImporter {
 			uriBuilder.addParameter("authuser", "0");
 
 			attachmentElement.addAttribute("url", uriBuilder.toString());
+
 			attachmentElement.addAttribute("value", key);
 		}
 

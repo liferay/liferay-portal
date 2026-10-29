@@ -604,6 +604,7 @@ public class TestrayImporter {
 			uriBuilder.addParameter("authuser", "0");
 
 			attachmentFileElement.addAttribute("url", uriBuilder.toString());
+
 			attachmentFileElement.addAttribute(
 				"value", testrayAttachment.getKey());
 		}
