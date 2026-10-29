@@ -32,6 +32,15 @@ public class AssetAutoTaggerEntryLocalServiceWrapper
 		_assetAutoTaggerEntryLocalService = assetAutoTaggerEntryLocalService;
 	}
 
+	@Override
+	public void addAssetAutoTaggerEntries(
+		com.liferay.asset.kernel.model.AssetEntry assetEntry,
+		java.util.List<String> assetTagNames) {
+
+		_assetAutoTaggerEntryLocalService.addAssetAutoTaggerEntries(
+			assetEntry, assetTagNames);
+	}
+
 	/**
 	 * Adds the asset auto tagger entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -93,6 +102,15 @@ public class AssetAutoTaggerEntryLocalServiceWrapper
 
 		return _assetAutoTaggerEntryLocalService.createPersistedModel(
 			primaryKeyObj);
+	}
+
+	@Override
+	public java.util.List<AssetAutoTaggerEntry> deleteAssetAutoTaggerEntries(
+			com.liferay.asset.kernel.model.AssetEntry assetEntry)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _assetAutoTaggerEntryLocalService.deleteAssetAutoTaggerEntries(
+			assetEntry);
 	}
 
 	/**
@@ -414,4 +432,4 @@ public class AssetAutoTaggerEntryLocalServiceWrapper
 	private AssetAutoTaggerEntryLocalService _assetAutoTaggerEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2085012425
+// LIFERAY-SERVICE-BUILDER-HASH:-1424626189

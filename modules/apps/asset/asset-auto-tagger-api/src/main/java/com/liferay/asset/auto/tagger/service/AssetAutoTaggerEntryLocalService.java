@@ -60,6 +60,8 @@ public interface AssetAutoTaggerEntryLocalService
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.asset.auto.tagger.service.impl.AssetAutoTaggerEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the asset auto tagger entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link AssetAutoTaggerEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
+	public void addAssetAutoTaggerEntries(
+		AssetEntry assetEntry, List<String> assetTagNames);
 
 	/**
 	 * Adds the asset auto tagger entry to the database. Also notifies the appropriate model listeners.
@@ -96,6 +98,10 @@ public interface AssetAutoTaggerEntryLocalService
 	 * @throws PortalException
 	 */
 	public PersistedModel createPersistedModel(Serializable primaryKeyObj)
+		throws PortalException;
+
+	public List<AssetAutoTaggerEntry> deleteAssetAutoTaggerEntries(
+			AssetEntry assetEntry)
 		throws PortalException;
 
 	/**
@@ -305,4 +311,4 @@ public interface AssetAutoTaggerEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1141338155
+// LIFERAY-SERVICE-BUILDER-HASH:1740023851

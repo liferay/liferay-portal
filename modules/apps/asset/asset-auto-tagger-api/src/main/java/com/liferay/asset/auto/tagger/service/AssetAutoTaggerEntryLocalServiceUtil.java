@@ -36,6 +36,12 @@ public class AssetAutoTaggerEntryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.asset.auto.tagger.service.impl.AssetAutoTaggerEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static void addAssetAutoTaggerEntries(
+		com.liferay.asset.kernel.model.AssetEntry assetEntry,
+		List<String> assetTagNames) {
+
+		getService().addAssetAutoTaggerEntries(assetEntry, assetTagNames);
+	}
 
 	/**
 	 * Adds the asset auto tagger entry to the database. Also notifies the appropriate model listeners.
@@ -88,6 +94,13 @@ public class AssetAutoTaggerEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().createPersistedModel(primaryKeyObj);
+	}
+
+	public static List<AssetAutoTaggerEntry> deleteAssetAutoTaggerEntries(
+			com.liferay.asset.kernel.model.AssetEntry assetEntry)
+		throws PortalException {
+
+		return getService().deleteAssetAutoTaggerEntries(assetEntry);
 	}
 
 	/**
@@ -334,4 +347,4 @@ public class AssetAutoTaggerEntryLocalServiceUtil {
 			AssetAutoTaggerEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-537021498
+// LIFERAY-SERVICE-BUILDER-HASH:-1097804700
