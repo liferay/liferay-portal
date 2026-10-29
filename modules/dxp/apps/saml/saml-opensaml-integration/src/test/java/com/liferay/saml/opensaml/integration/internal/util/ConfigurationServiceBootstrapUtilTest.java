@@ -17,6 +17,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 
@@ -83,7 +84,7 @@ public class ConfigurationServiceBootstrapUtilTest {
 
 		try {
 			List<Future<ParserPool>> futures = executorService.invokeAll(
-				callables);
+				callables, 1, TimeUnit.MINUTES);
 
 			ParserPool parserPool = ParserPoolUtil.getParserPool();
 
