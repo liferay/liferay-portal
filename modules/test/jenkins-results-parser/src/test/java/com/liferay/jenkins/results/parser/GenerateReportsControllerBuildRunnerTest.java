@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,9 +92,6 @@ public class GenerateReportsControllerBuildRunnerTest
 		Map<GenerateReportsBuildRunner.Report, Long> reportGeneratedTimes =
 			new HashMap<>();
 
-		reportGeneratedTimes.put(
-			GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON, 0L);
-
 		_testGetSelectedReportNames(
 			Collections.<JSONObject>emptyList(), false,
 			Arrays.asList(
@@ -111,13 +109,13 @@ public class GenerateReportsControllerBuildRunnerTest
 		for (GenerateReportsBuildRunner.Report report :
 				GenerateReportsBuildRunner.Report.values()) {
 
-			reportGeneratedTimes.put(report, 0L);
-
 			if (report ==
 					GenerateReportsBuildRunner.Report.AWS_BUILD_COMPARISON) {
 
 				continue;
 			}
+
+			reportGeneratedTimes.put(report, 0L);
 
 			reportNames.add(report.toString());
 		}
@@ -138,6 +136,27 @@ public class GenerateReportsControllerBuildRunnerTest
 
 		reportGeneratedTimes.put(
 			GenerateReportsBuildRunner.Report.BUILD_HISTORY, 0L);
+
+		_testGetSelectedReportNames(
+			Arrays.asList(
+				_newBuildJSONObject(
+					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
+					(_currentTimeMillis - _MILLISECONDS_PER_DAY) + 1,
+					RandomTestUtil.randomString())),
+			true, Collections.<String>emptyList(), reportGeneratedTimes);
+		_testGetSelectedReportNames(
+			Arrays.asList(
+				_newBuildJSONObject(
+					GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString(),
+					_currentTimeMillis - _MILLISECONDS_PER_DAY,
+					RandomTestUtil.randomString())),
+			true,
+			Arrays.asList(
+				GenerateReportsBuildRunner.Report.BUILD_HISTORY.toString()),
+			reportGeneratedTimes);
+
+		reportGeneratedTimes.put(
+			GenerateReportsBuildRunner.Report.BUILD_HISTORY, null);
 
 		_testGetSelectedReportNames(
 			Arrays.asList(
@@ -277,8 +296,12 @@ public class GenerateReportsControllerBuildRunnerTest
 				continue;
 			}
 
-			long reportGeneratedTime = reportGeneratedTimes.getOrDefault(
+			Long reportGeneratedTime = reportGeneratedTimes.getOrDefault(
 				report, _currentTimeMillis);
+
+			if (reportGeneratedTime == null) {
+				continue;
+			}
 
 			reportDataFileContents.put(
 				dataFile,
@@ -306,8 +329,15 @@ public class GenerateReportsControllerBuildRunnerTest
 			jenkinsResultsParserUtilMockedStatic.when(
 				() -> JenkinsResultsParserUtil.read(Mockito.any(File.class))
 			).thenAnswer(
-				invocation -> reportDataFileContents.get(
-					invocation.getArgument(0))
+				invocation -> {
+					File dataFile = invocation.getArgument(0);
+
+					if (!reportDataFileContents.containsKey(dataFile)) {
+						throw new IOException(RandomTestUtil.randomString());
+					}
+
+					return reportDataFileContents.get(dataFile);
+				}
 			);
 
 			testEquals(
