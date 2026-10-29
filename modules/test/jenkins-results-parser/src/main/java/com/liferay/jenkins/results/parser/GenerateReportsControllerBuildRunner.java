@@ -233,7 +233,7 @@ public class GenerateReportsControllerBuildRunner
 			long reportGeneratedTime = _getReportGeneratedTime(report);
 			long reportStaleDuration = _getReportStaleDuration(reportName);
 
-			if (!_isReportStale(
+			if (!_isReportGenerationDue(
 					startTime, latestReportInvocationTime, reportGeneratedTime,
 					reportStaleDuration)) {
 
@@ -305,7 +305,7 @@ public class GenerateReportsControllerBuildRunner
 		_invoke(invocationParameters);
 	}
 
-	private boolean _isReportStale(
+	private boolean _isReportGenerationDue(
 		long currentTime, Long latestReportInvocationTime,
 		long reportGeneratedTime, long reportStaleDuration) {
 
