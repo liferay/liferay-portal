@@ -30,7 +30,7 @@ public class BaseStagedModelDataHandlerTest {
 		long targetCompanyId = RandomTestUtil.randomLong();
 
 		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
-			_getBaseStagedModelDataHandler(targetCompanyId, sourceCompanyId);
+			_getBaseStagedModelDataHandler(sourceCompanyId, targetCompanyId);
 
 		PortletDataContext portletDataContext = _getPortletDataContext(
 			targetCompanyId);
@@ -54,7 +54,7 @@ public class BaseStagedModelDataHandlerTest {
 		long targetCompanyId = RandomTestUtil.randomLong();
 
 		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
-			_getBaseStagedModelDataHandler(sourceCompanyId, targetCompanyId);
+			_getBaseStagedModelDataHandler(targetCompanyId, sourceCompanyId);
 
 		PortletDataContext portletDataContext = _getPortletDataContext(
 			targetCompanyId);
@@ -78,7 +78,7 @@ public class BaseStagedModelDataHandlerTest {
 		long targetCompanyId = RandomTestUtil.randomLong();
 
 		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
-			_getBaseStagedModelDataHandler(targetCompanyId, sourceCompanyId);
+			_getBaseStagedModelDataHandler(sourceCompanyId, targetCompanyId);
 
 		Mockito.doNothing(
 		).when(
@@ -104,7 +104,7 @@ public class BaseStagedModelDataHandlerTest {
 
 	private BaseStagedModelDataHandler<StagedModel>
 		_getBaseStagedModelDataHandler(
-			long enabledCompanyId, long disabledCompanyId) {
+			long disabledCompanyId, long enabledCompanyId) {
 
 		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
 			Mockito.mock(
@@ -157,6 +157,14 @@ public class BaseStagedModelDataHandlerTest {
 
 		StagedModel stagedModel = Mockito.mock(StagedModel.class, mockSettings);
 
+		StagedModelType stagedModelType = Mockito.mock(StagedModelType.class);
+
+		Mockito.when(
+			stagedModelType.getClassName()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
 		Mockito.when(
 			stagedModel.getCompanyId()
 		).thenReturn(
@@ -167,14 +175,6 @@ public class BaseStagedModelDataHandlerTest {
 			stagedModel.getPrimaryKeyObj()
 		).thenReturn(
 			RandomTestUtil.randomLong()
-		);
-
-		StagedModelType stagedModelType = Mockito.mock(StagedModelType.class);
-
-		Mockito.when(
-			stagedModelType.getClassName()
-		).thenReturn(
-			RandomTestUtil.randomString()
 		);
 
 		Mockito.when(
