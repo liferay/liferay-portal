@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Date;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,17 +44,6 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
-
-	@Before
-	public void setUp() {
-		Bundle bundle = FrameworkUtil.getBundle(
-			ClientExtensionEntryLocalServiceRegistrationTest.class);
-
-		_bundleContext = bundle.getBundleContext();
-
-		_bundle = FrameworkUtil.getBundle(
-			_clientExtensionEntryLocalService.getClass());
-	}
 
 	@Test
 	public void testSetAopProxyNotInterrupted() throws Exception {
@@ -112,19 +100,24 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 	}
 
 	private void _assertLocalServiceRegistered() {
+		Bundle bundle = FrameworkUtil.getBundle(
+			ClientExtensionEntryLocalServiceRegistrationTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
 		Assert.assertNotNull(
-			_bundleContext.getServiceReference(
+			bundleContext.getServiceReference(
 				ClientExtensionEntryLocalService.class));
 	}
 
 	private void _restartBundle() throws Exception {
-		_bundle.stop();
+		Bundle bundle = FrameworkUtil.getBundle(
+			_clientExtensionEntryLocalService.getClass());
 
-		_bundle.start();
+		bundle.stop();
+
+		bundle.start();
 	}
-
-	private Bundle _bundle;
-	private BundleContext _bundleContext;
 
 	@Inject
 	private ClientExtensionEntryLocalService _clientExtensionEntryLocalService;
