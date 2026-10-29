@@ -34,10 +34,13 @@ resource "google_container_cluster" "primary" {
 	}
 	location=var.regional_cluster ? var.region : local.first_zone
 	logging_config {
-		enable_components=[
+		enable_components=var.control_plane_logging_config.enabled ? [
 			"APISERVER",
 			"CONTROLLER_MANAGER",
 			"SCHEDULER",
+			"SYSTEM_COMPONENTS",
+			"WORKLOADS",
+		] : [
 			"SYSTEM_COMPONENTS",
 			"WORKLOADS",
 		]

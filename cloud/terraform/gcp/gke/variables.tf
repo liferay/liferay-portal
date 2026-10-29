@@ -1,3 +1,11 @@
+variable "control_plane_logging_config" {
+	default={}
+	type=object(
+		{
+			enabled=optional(bool, true)
+		}
+	)
+}
 variable "deletion_protection" {
 	default=true
 	type=bool
