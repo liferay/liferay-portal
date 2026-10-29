@@ -6,13 +6,14 @@
 package com.liferay.exportimport.kernel.lar;
 
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
 import org.junit.Test;
 
-import org.mockito.Answers;
 import org.mockito.ArgumentMatchers;
+import org.mockito.MockSettings;
 import org.mockito.Mockito;
 
 /**
@@ -29,15 +30,92 @@ public class BaseStagedModelDataHandlerTest {
 		long targetCompanyId = RandomTestUtil.randomLong();
 
 		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
+			_getBaseStagedModelDataHandler(targetCompanyId, sourceCompanyId);
+
+		PortletDataContext portletDataContext = _getPortletDataContext(
+			targetCompanyId);
+
+		baseStagedModelDataHandler.importStagedModel(
+			portletDataContext, _getStagedModel(sourceCompanyId, false));
+
+		Mockito.verify(
+			portletDataContext
+		).isPathProcessed(
+			ArgumentMatchers.anyString()
+		);
+	}
+
+	@Test
+	@TestInfo("LPD-108159")
+	public void testImportStagedModelWithTargetCompanyDisabled()
+		throws Exception {
+
+		long sourceCompanyId = RandomTestUtil.randomLong();
+		long targetCompanyId = RandomTestUtil.randomLong();
+
+		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
+			_getBaseStagedModelDataHandler(sourceCompanyId, targetCompanyId);
+
+		PortletDataContext portletDataContext = _getPortletDataContext(
+			targetCompanyId);
+
+		baseStagedModelDataHandler.importStagedModel(
+			portletDataContext, _getStagedModel(sourceCompanyId, false));
+
+		Mockito.verify(
+			portletDataContext, Mockito.never()
+		).isPathProcessed(
+			ArgumentMatchers.anyString()
+		);
+	}
+
+	@Test
+	@TestInfo("LPD-108159")
+	public void testRestoreStagedModelWithStagedModelFromAnotherCompany()
+		throws Exception {
+
+		long sourceCompanyId = RandomTestUtil.randomLong();
+		long targetCompanyId = RandomTestUtil.randomLong();
+
+		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
+			_getBaseStagedModelDataHandler(targetCompanyId, sourceCompanyId);
+
+		Mockito.doNothing(
+		).when(
+			baseStagedModelDataHandler
+		).doRestoreStagedModel(
+			ArgumentMatchers.any(), ArgumentMatchers.any()
+		);
+
+		PortletDataContext portletDataContext = _getPortletDataContext(
+			targetCompanyId);
+
+		StagedModel stagedModel = _getStagedModel(sourceCompanyId, true);
+
+		baseStagedModelDataHandler.restoreStagedModel(
+			portletDataContext, stagedModel);
+
+		Mockito.verify(
+			baseStagedModelDataHandler
+		).doRestoreStagedModel(
+			portletDataContext, stagedModel
+		);
+	}
+
+	private BaseStagedModelDataHandler<StagedModel>
+		_getBaseStagedModelDataHandler(
+			long enabledCompanyId, long disabledCompanyId) {
+
+		BaseStagedModelDataHandler<StagedModel> baseStagedModelDataHandler =
 			Mockito.mock(
-				BaseStagedModelDataHandler.class, Answers.CALLS_REAL_METHODS);
+				BaseStagedModelDataHandler.class, Mockito.CALLS_REAL_METHODS);
 
 		Mockito.doReturn(
 			false
 		).when(
 			baseStagedModelDataHandler
 		).isEnabled(
-			sourceCompanyId
+			disabledCompanyId
 		);
 
 		Mockito.doReturn(
@@ -45,16 +123,20 @@ public class BaseStagedModelDataHandlerTest {
 		).when(
 			baseStagedModelDataHandler
 		).isEnabled(
-			targetCompanyId
+			enabledCompanyId
 		);
 
+		return baseStagedModelDataHandler;
+	}
+
+	private PortletDataContext _getPortletDataContext(long companyId) {
 		PortletDataContext portletDataContext = Mockito.mock(
 			PortletDataContext.class);
 
 		Mockito.when(
 			portletDataContext.getCompanyId()
 		).thenReturn(
-			targetCompanyId
+			companyId
 		);
 
 		Mockito.when(
@@ -63,7 +145,29 @@ public class BaseStagedModelDataHandlerTest {
 			true
 		);
 
-		StagedModel stagedModel = Mockito.mock(StagedModel.class);
+		return portletDataContext;
+	}
+
+	private StagedModel _getStagedModel(long companyId, boolean trashed) {
+		MockSettings mockSettings = Mockito.withSettings();
+
+		if (trashed) {
+			mockSettings.extraInterfaces(TrashedModel.class);
+		}
+
+		StagedModel stagedModel = Mockito.mock(StagedModel.class, mockSettings);
+
+		Mockito.when(
+			stagedModel.getCompanyId()
+		).thenReturn(
+			companyId
+		);
+
+		Mockito.when(
+			stagedModel.getPrimaryKeyObj()
+		).thenReturn(
+			RandomTestUtil.randomLong()
+		);
 
 		StagedModelType stagedModelType = Mockito.mock(StagedModelType.class);
 
@@ -79,26 +183,7 @@ public class BaseStagedModelDataHandlerTest {
 			stagedModelType
 		);
 
-		Mockito.when(
-			stagedModel.getCompanyId()
-		).thenReturn(
-			sourceCompanyId
-		);
-
-		Mockito.when(
-			stagedModel.getPrimaryKeyObj()
-		).thenReturn(
-			RandomTestUtil.randomLong()
-		);
-
-		baseStagedModelDataHandler.importStagedModel(
-			portletDataContext, stagedModel);
-
-		Mockito.verify(
-			portletDataContext
-		).isPathProcessed(
-			ArgumentMatchers.anyString()
-		);
+		return stagedModel;
 	}
 
 }
