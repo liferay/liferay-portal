@@ -219,16 +219,6 @@ public class PIMConnectorFieldMappingsUtil {
 			TYPE_FIXED_VALUE);
 	}
 
-	public static boolean isMapped(ObjectEntry objectEntry) {
-		if (isFixedValue(objectEntry)) {
-			return Validator.isNotNull(
-				MapUtil.getString(objectEntry.getValues(), "value"));
-		}
-
-		return Validator.isNotNull(
-			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
-	}
-
 	public static boolean isMappingComplete(
 		List<ObjectEntry> objectEntries, PIMConnector pimConnector) {
 
@@ -239,7 +229,7 @@ public class PIMConnectorFieldMappingsUtil {
 		Set<String> mappedChannelFieldNames = new HashSet<>();
 
 		for (ObjectEntry objectEntry : objectEntries) {
-			if (!isMapped(objectEntry)) {
+			if (!_isMapped(objectEntry)) {
 				continue;
 			}
 
@@ -277,6 +267,16 @@ public class PIMConnectorFieldMappingsUtil {
 		}
 
 		return isMappingComplete(getObjectEntries(objectEntry), pimConnector);
+	}
+
+	private static boolean _isMapped(ObjectEntry objectEntry) {
+		if (isFixedValue(objectEntry)) {
+			return Validator.isNotNull(
+				MapUtil.getString(objectEntry.getValues(), "value"));
+		}
+
+		return Validator.isNotNull(
+			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
 	}
 
 	private static Object _toObject(

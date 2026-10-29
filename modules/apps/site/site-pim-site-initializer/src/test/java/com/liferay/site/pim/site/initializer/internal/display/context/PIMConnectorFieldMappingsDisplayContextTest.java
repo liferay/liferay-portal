@@ -428,7 +428,7 @@ public class PIMConnectorFieldMappingsDisplayContextTest {
 						HashMapBuilder.<String, Serializable>put(
 							"active", true
 						).put(
-							"key", "liferay-commerce"
+							"key", RandomTestUtil.randomString()
 						).put(
 							"name", RandomTestUtil.randomString()
 						).build());
