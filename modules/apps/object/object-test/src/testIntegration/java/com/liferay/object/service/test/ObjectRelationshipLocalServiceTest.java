@@ -22,6 +22,7 @@ import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.exception.DuplicateObjectRelationshipException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectEntryGroupIdException;
+import com.liferay.object.exception.ObjectFieldDBColumnNameException;
 import com.liferay.object.exception.ObjectFieldNameException;
 import com.liferay.object.exception.ObjectRelationshipDeletionTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
@@ -202,7 +203,7 @@ public class ObjectRelationshipLocalServiceTest {
 			_objectDefinition1, _objectDefinition2, false);
 		_testAddObjectRelationshipOneToMany(
 			_objectDefinition1, _objectDefinition2, true);
-		_testAddObjectRelationshipWithObjectFieldName();
+		_testAddObjectRelationshipWithObjectField();
 		_testCreateManyToManyObjectRelationshipTable(_objectDefinition1, false);
 		_testCreateManyToManyObjectRelationshipTable(_objectDefinition1, true);
 
@@ -1847,8 +1848,28 @@ public class ObjectRelationshipLocalServiceTest {
 			objectRelationship);
 	}
 
-	private void _testAddObjectRelationshipWithObjectFieldName()
-		throws Exception {
+	private void _testAddObjectRelationshipWithObjectField() throws Exception {
+		AssertUtils.assertFailure(
+			ObjectFieldDBColumnNameException.class,
+			"DB column name must only contain letters, digits, and underscores",
+			() -> _objectRelationshipLocalService.addObjectRelationship(
+				null, TestPropsValues.getUserId(),
+				_objectDefinition1.getObjectDefinitionId(),
+				_objectDefinition2.getObjectDefinitionId(), 0,
+				ObjectRelationshipConstants.DELETION_TYPE_CASCADE, null, false,
+				RandomTestUtil.randomLocaleStringMap(),
+				"a" + RandomTestUtil.randomString(), false,
+				ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
+				new ObjectFieldBuilder(
+				).externalReferenceCode(
+					RandomTestUtil.randomString()
+				).labelMap(
+					RandomTestUtil.randomLocaleStringMap()
+				).name(
+					"abl e"
+				).readOnly(
+					ObjectFieldConstants.READ_ONLY_FALSE
+				).build()));
 
 		String objectRelationshipName = "a" + RandomTestUtil.randomString();
 
