@@ -17,6 +17,10 @@ export {CategorySelector} from './CategorySelector';
 // @ts-ignore
 
 export {default as OptionSelector} from './OptionSelector';
+
+// @ts-ignore
+
+export {default as ProductEntriesPropsTransformer} from './ProductEntriesPropsTransformer';
 export {Rule} from './Rule';
 
 // @ts-ignore

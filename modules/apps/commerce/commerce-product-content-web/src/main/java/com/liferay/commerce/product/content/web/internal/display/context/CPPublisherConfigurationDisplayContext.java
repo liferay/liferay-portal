@@ -24,13 +24,10 @@ import com.liferay.commerce.product.data.source.CPDataSource;
 import com.liferay.commerce.product.data.source.CPDataSourceRegistry;
 import com.liferay.commerce.product.helper.CPDefinitionHelper;
 import com.liferay.commerce.product.helper.CPInstanceHelper;
-import com.liferay.commerce.product.item.selector.CPDefinitionItemSelectorCriterion;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.commerce.util.CommerceUtil;
 import com.liferay.item.selector.ItemSelector;
-import com.liferay.item.selector.ItemSelectorReturnType;
 import com.liferay.item.selector.criteria.InfoItemItemSelectorReturnType;
-import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.item.selector.criteria.info.item.criterion.InfoItemItemSelectorCriterion;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -42,7 +39,6 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -61,7 +57,6 @@ import jakarta.portlet.PortletPreferences;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -274,24 +269,6 @@ public class CPPublisherConfigurationDisplayContext
 				(CommerceContext)httpServletRequest.getAttribute(
 					CommerceWebKeys.COMMERCE_CONTEXT)),
 			cpCatalogEntry.getCPDefinitionId());
-	}
-
-	public String getItemSelectorUrl() {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				cpContentRequestHelper.getRenderRequest());
-
-		CPDefinitionItemSelectorCriterion cpDefinitionItemSelectorCriterion =
-			new CPDefinitionItemSelectorCriterion();
-
-		cpDefinitionItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			Collections.<ItemSelectorReturnType>singletonList(
-				new UUIDItemSelectorReturnType()));
-
-		return String.valueOf(
-			_itemSelector.getItemSelectorURL(
-				requestBackedPortletURLFactory, "productDefinitionsSelectItem",
-				cpDefinitionItemSelectorCriterion));
 	}
 
 	public String getOrderByColumn1() {

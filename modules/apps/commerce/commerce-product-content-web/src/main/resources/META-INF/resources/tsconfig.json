@@ -1,5 +1,5 @@
 {
-	"@generated": "daec664172d97493f51e7b8d36ff5cafb8116ef0",
+	"@generated": "05183a717d7cb7dc1da5137bb882a7977a1d08ce",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,9 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"@liferay/frontend-js-item-selector-web": [
+				"../../../../../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
+			],
 			"asset-taglib": [
 				"../../../../../../../asset/asset-taglib/src/main/resources/META-INF/resources/js/index.js"
 			],
@@ -43,6 +46,9 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
+		{
+			"path": "../../../../../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
 		{
 			"path": "../../../../../../../asset/asset-taglib/src/main/resources/META-INF/resources/tsconfig.json"
 		},

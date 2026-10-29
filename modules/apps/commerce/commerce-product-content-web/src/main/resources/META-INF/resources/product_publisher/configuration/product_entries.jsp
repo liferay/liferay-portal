@@ -83,12 +83,15 @@ List<CPCatalogEntry> catalogEntries = cpPublisherConfigurationDisplayContext.get
 	/>
 </liferay-ui:search-container>
 
-<liferay-ui:icon
-	id="addCommerceProductDefinition"
-	label="<%= true %>"
-	linkCssClass="btn btn-secondary"
-	message="select"
-	url="javascript:void(0);"
+<clay:button
+	additionalProps='<%=
+		HashMapBuilder.<String, Object>put(
+			"currentURL", currentURL
+		).build()
+	%>'
+	displayType="secondary"
+	label="select"
+	propsTransformer="{ProductEntriesPropsTransformer} from commerce-product-content-web"
 />
 
 <aui:script>
@@ -114,46 +117,5 @@ List<CPCatalogEntry> catalogEntries = cpPublisherConfigurationDisplayContext.get
 		form['<portlet:namespace />productEntryOrder'].value = productEntryOrder;
 
 		submitForm(form);
-	}
-</aui:script>
-
-<aui:script sandbox="<%= true %>">
-	const addCommerceProductDefinitionButton = document.getElementById(
-		'<portlet:namespace />addCommerceProductDefinition'
-	);
-
-	if (addCommerceProductDefinitionButton) {
-		addCommerceProductDefinitionButton.addEventListener('click', (event) => {
-			event.preventDefault();
-
-			const openerWindow = Liferay.Util.getOpener();
-
-			openerWindow.Liferay.Util.openSelectionModal({
-				multiple: true,
-				onSelect: (selectedItems) => {
-					if (!selectedItems || !selectedItems.length) {
-						return;
-					}
-
-					const form = document.getElementById('<portlet:namespace />fm');
-
-					if (!form) {
-						return;
-					}
-
-					const values = selectedItems.map((item) => item.value);
-
-					form.<portlet:namespace />cpDefinitionIds.value = values;
-
-					form.<portlet:namespace /><%= Constants.CMD %>.value =
-						'add-selection';
-					form.<portlet:namespace />redirect.value = '<%= currentURL %>';
-
-					submitForm(form);
-				},
-				title: 'add-new-product-to-x',
-				url: '<%= cpPublisherConfigurationDisplayContext.getItemSelectorUrl() %>',
-			});
-		});
 	}
 </aui:script>
