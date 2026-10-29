@@ -122,24 +122,28 @@ public class KaleoDefinitionServiceImplTest {
 	@Test
 	public void testActivateKaleoDefinition() throws Exception {
 		_testActivateKaleoDefinition();
+		_testActivateKaleoDefinitionFromAnotherCompany();
 		_testActivateKaleoDefinitionWithGroupId();
 	}
 
 	@Test
 	public void testAddKaleoDefinition() throws Exception {
 		_testAddKaleoDefinition();
+		_testAddKaleoDefinitionFromAnotherCompany();
 		_testAddKaleoDefinitionWithGroupId();
 	}
 
 	@Test
 	public void testDeactivateKaleoDefinition() throws Exception {
 		_testDeactivateKaleoDefinition();
+		_testDeactivateKaleoDefinitionFromAnotherCompany();
 		_testDeactivateKaleoDefinitionWithGroupId();
 	}
 
 	@Test
 	public void testDeleteKaleoDefinition() throws Exception {
 		_testDeleteKaleoDefinition();
+		_testDeleteKaleoDefinitionFromAnotherCompany();
 		_testDeleteKaleoDefinitionWithGroupId();
 	}
 
@@ -191,6 +195,7 @@ public class KaleoDefinitionServiceImplTest {
 	@Test
 	public void testUpdateKaleoDefinition() throws Exception {
 		_testUpdateKaleoDefinition();
+		_testUpdateKaleoDefinitionFromAnotherCompany();
 		_testUpdateKaleoDefinitionWithDifferentGroupId();
 		_testUpdateKaleoDefinitionWithGroupId();
 	}
@@ -218,7 +223,7 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private KaleoDefinition _addKaleoDefinition(
-			String scope, ServiceContext serviceContext)
+		String scope, ServiceContext serviceContext)
 		throws Exception {
 
 		return _kaleoDefinitionService.addKaleoDefinition(
@@ -246,6 +251,16 @@ public class KaleoDefinitionServiceImplTest {
 		PrincipalThreadLocal.setName(user.getUserId());
 
 		return user;
+	}
+
+	private void _setCompanyAdministratorCanPublish(boolean canPublish)
+		throws Exception {
+
+		ConfigurationTestUtil.saveConfiguration(
+			_configuration,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"company.administrator.can.publish", canPublish
+			).build());
 	}
 
 	private String _read() throws Exception {
@@ -306,6 +321,25 @@ public class KaleoDefinitionServiceImplTest {
 				_serviceContext);
 
 		Assert.assertTrue(activeKaleoDefinition.isActive());
+	}
+
+	private void _testActivateKaleoDefinitionFromAnotherCompany()
+		throws Exception {
+
+		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(TestPropsValues.getUser());
+
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		_setUpPermissionThreadLocal(_company2AdminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			"User is not an omniadmin and does not belong to the company",
+			() -> _kaleoDefinitionService.activateKaleoDefinition(
+				kaleoDefinition.getName(), kaleoDefinition.getVersion(),
+				_serviceContext));
 	}
 
 	private void _testActivateKaleoDefinitionWithGroupId() throws Exception {
@@ -398,6 +432,17 @@ public class KaleoDefinitionServiceImplTest {
 		Assert.assertNotNull(_addKaleoDefinition());
 	}
 
+	private void _testAddKaleoDefinitionFromAnotherCompany() throws Exception {
+		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(_company2AdminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			"User is not an omniadmin and does not belong to the company",
+			this::_addKaleoDefinition);
+	}
+
 	private void _testAddKaleoDefinitionWithGroupId() throws Exception {
 		AccountEntry accountEntry = _addAccountEntry();
 
@@ -476,6 +521,28 @@ public class KaleoDefinitionServiceImplTest {
 				_serviceContext);
 
 		Assert.assertFalse(inactiveKaleoDefinition.isActive());
+	}
+
+	private void _testDeactivateKaleoDefinitionFromAnotherCompany()
+		throws Exception {
+
+		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(TestPropsValues.getUser());
+
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		_kaleoDefinitionLocalService.activateKaleoDefinition(
+			kaleoDefinition.getKaleoDefinitionId(), _serviceContext);
+
+		_setUpPermissionThreadLocal(_company2AdminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			"User is not an omniadmin and does not belong to the company",
+			() -> _kaleoDefinitionService.deactivateKaleoDefinition(
+				kaleoDefinition.getName(), kaleoDefinition.getVersion(),
+				_serviceContext));
 	}
 
 	private void _testDeactivateKaleoDefinitionWithGroupId() throws Exception {
@@ -564,6 +631,24 @@ public class KaleoDefinitionServiceImplTest {
 
 		Assert.assertNull(
 			_kaleoDefinitionLocalService.fetchKaleoDefinition(
+				kaleoDefinition.getName(), _serviceContext));
+	}
+
+	private void _testDeleteKaleoDefinitionFromAnotherCompany()
+		throws Exception {
+
+		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(TestPropsValues.getUser());
+
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		_setUpPermissionThreadLocal(_company2AdminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			"User is not an omniadmin and does not belong to the company",
+			() -> _kaleoDefinitionService.deleteKaleoDefinition(
 				kaleoDefinition.getName(), _serviceContext));
 	}
 
@@ -719,6 +804,27 @@ public class KaleoDefinitionServiceImplTest {
 
 		Assert.assertNotNull(
 			_kaleoDefinitionService.updateKaleoDefinition(
+				kaleoDefinition.getExternalReferenceCode(),
+				kaleoDefinition.getKaleoDefinitionId(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				kaleoDefinition.getContent(), false, _serviceContext));
+	}
+
+	private void _testUpdateKaleoDefinitionFromAnotherCompany()
+		throws Exception {
+
+		_setCompanyAdministratorCanPublish(true);
+
+		_setUpPermissionThreadLocal(TestPropsValues.getUser());
+
+		KaleoDefinition kaleoDefinition = _addKaleoDefinition();
+
+		_setUpPermissionThreadLocal(_company2AdminUser);
+
+		AssertUtils.assertFailure(
+			PrincipalException.class,
+			"User is not an omniadmin and does not belong to the company",
+			() -> _kaleoDefinitionService.updateKaleoDefinition(
 				kaleoDefinition.getExternalReferenceCode(),
 				kaleoDefinition.getKaleoDefinitionId(),
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
