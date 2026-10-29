@@ -8,7 +8,6 @@ package com.liferay.client.extension.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
-import com.liferay.client.extension.service.ClientExtensionEntryLocalServiceUtil;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
@@ -81,7 +80,7 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 			_assertLocalServiceRegistered();
 
 			clientExtensionEntry =
-				ClientExtensionEntryLocalServiceUtil.createClientExtensionEntry(
+				_clientExtensionEntryLocalService.createClientExtensionEntry(
 					_counterLocalService.increment());
 
 			User user = TestPropsValues.getUser();
@@ -104,7 +103,7 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 			clientExtensionEntry.setStatusDate(new Date());
 
 			clientExtensionEntry =
-				ClientExtensionEntryLocalServiceUtil.addClientExtensionEntry(
+				_clientExtensionEntryLocalService.addClientExtensionEntry(
 					clientExtensionEntry);
 
 			_restartBundle();
@@ -113,7 +112,7 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 		}
 		finally {
 			if (clientExtensionEntry != null) {
-				ClientExtensionEntryLocalServiceUtil.deleteClientExtensionEntry(
+				_clientExtensionEntryLocalService.deleteClientExtensionEntry(
 					clientExtensionEntry.getClientExtensionEntryId());
 			}
 
@@ -137,6 +136,9 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 
 	private Bundle _bundle;
 	private BundleContext _bundleContext;
+
+	@Inject
+	private ClientExtensionEntryLocalService _clientExtensionEntryLocalService;
 
 	@Inject
 	private CounterLocalService _counterLocalService;
