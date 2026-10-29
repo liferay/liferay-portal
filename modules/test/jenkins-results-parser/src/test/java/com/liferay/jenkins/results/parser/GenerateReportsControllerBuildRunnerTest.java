@@ -178,53 +178,53 @@ public class GenerateReportsControllerBuildRunnerTest
 	}
 
 	@Test
-	public void testIsReportStale() {
+	public void testIsReportGenerationDue() {
 		long reportGeneratedTime = Math.abs(RandomTestUtil.randomInt());
 
 		long reportStaleTime = reportGeneratedTime + _MILLISECONDS_PER_DAY;
 
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			reportStaleTime + 1, true, null, reportGeneratedTime,
 			_MILLISECONDS_PER_DAY);
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			reportStaleTime + 1, true, reportStaleTime - 1, reportGeneratedTime,
 			_MILLISECONDS_PER_DAY);
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			reportStaleTime - 1, false, null, reportGeneratedTime,
 			_MILLISECONDS_PER_DAY);
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			reportStaleTime - 1, false, reportGeneratedTime + 1,
 			reportGeneratedTime, _MILLISECONDS_PER_DAY);
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			reportStaleTime, true, null, reportGeneratedTime,
 			_MILLISECONDS_PER_DAY);
 
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			_currentTimeMillis, true, null, 0, _MILLISECONDS_PER_DAY);
 	}
 
 	@Test
-	public void testIsReportStaleRetry() {
+	public void testIsReportGenerationDueRetry() {
 		long reportGeneratedTime = Math.abs(RandomTestUtil.randomInt());
 
 		long reportStaleTime = reportGeneratedTime + _MILLISECONDS_PER_DAY;
 
-		_testIsReportStaleRetry(
+		_testIsReportGenerationDueRetry(
 			reportStaleTime + (32 * _MILLISECONDS_PER_HOUR),
 			reportGeneratedTime, _MILLISECONDS_PER_DAY, _MILLISECONDS_PER_DAY);
-		_testIsReportStaleRetry(
+		_testIsReportGenerationDueRetry(
 			reportStaleTime + (4 * _MILLISECONDS_PER_HOUR), reportGeneratedTime,
 			4 * _MILLISECONDS_PER_HOUR, _MILLISECONDS_PER_DAY);
-		_testIsReportStaleRetry(
+		_testIsReportGenerationDueRetry(
 			reportStaleTime + _MILLISECONDS_PER_HOUR, reportGeneratedTime,
 			2 * _MILLISECONDS_PER_HOUR, _MILLISECONDS_PER_DAY);
-		_testIsReportStaleRetry(
+		_testIsReportGenerationDueRetry(
 			reportStaleTime, reportGeneratedTime, 2 * _MILLISECONDS_PER_HOUR,
 			_MILLISECONDS_PER_DAY);
 
 		long millisecondsPerMinute = 60 * 1000;
 
-		_testIsReportStaleRetry(
+		_testIsReportGenerationDueRetry(
 			reportGeneratedTime + (11 * millisecondsPerMinute),
 			reportGeneratedTime, 10 * millisecondsPerMinute,
 			10 * millisecondsPerMinute);
@@ -348,7 +348,7 @@ public class GenerateReportsControllerBuildRunnerTest
 		}
 	}
 
-	private void _testIsReportStale(
+	private void _testIsReportGenerationDue(
 		long currentTime, boolean expected, Long latestReportInvocationTime,
 		long reportGeneratedTime, long reportStaleDuration) {
 
@@ -356,21 +356,21 @@ public class GenerateReportsControllerBuildRunnerTest
 			expected,
 			ReflectionTestUtil.invoke(
 				Mockito.mock(GenerateReportsControllerBuildRunner.class),
-				"_isReportStale",
+				"_isReportGenerationDue",
 				new Class<?>[] {long.class, Long.class, long.class, long.class},
 				currentTime, latestReportInvocationTime, reportGeneratedTime,
 				reportStaleDuration));
 	}
 
-	private void _testIsReportStaleRetry(
+	private void _testIsReportGenerationDueRetry(
 		long latestReportInvocationTime, long reportGeneratedTime,
 		long reportRetryDuration, long reportStaleDuration) {
 
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			(latestReportInvocationTime + reportRetryDuration) - 1, false,
 			latestReportInvocationTime, reportGeneratedTime,
 			reportStaleDuration);
-		_testIsReportStale(
+		_testIsReportGenerationDue(
 			latestReportInvocationTime + reportRetryDuration, true,
 			latestReportInvocationTime, reportGeneratedTime,
 			reportStaleDuration);
