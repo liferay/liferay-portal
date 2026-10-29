@@ -1023,11 +1023,9 @@ public class PullRequest {
 
 		uriBuilder.setPathSegments(pathSegments);
 
-		String gitHubAPIURL = uriBuilder.toString();
-
 		try {
 			JenkinsResultsParserUtil.toString(
-				gitHubAPIURL, false, HttpRequestMethod.DELETE);
+				uriBuilder.toString(), false, HttpRequestMethod.DELETE);
 
 			_labels = null;
 		}
