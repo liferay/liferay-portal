@@ -34,7 +34,7 @@ const AIAssistantSidebar: React.FC<AIAssistantSidebarProps> = ({
 	pushContainer = '#wrapper',
 	triggerRef,
 }) => {
-	const containerRef = useMemo<React.RefObject<HTMLElement>>(
+	const containerRef = useMemo<React.MutableRefObject<HTMLElement | null>>(
 		() => ({
 			current:
 				behavior === 'push'
@@ -45,18 +45,39 @@ const AIAssistantSidebar: React.FC<AIAssistantSidebarProps> = ({
 	);
 
 	useEffect(() => {
-		const container = containerRef.current;
-
-		if (!container || !open) {
+		if (!containerRef.current || !open) {
 			return;
 		}
 
-		container.classList.add('ai-assistant-sidebar-push');
+		containerRef.current.classList.add('ai-assistant-sidebar-push');
+
+		const observer = new MutationObserver(() => {
+			const previousContainer = containerRef.current;
+
+			if (!previousContainer || previousContainer.isConnected) {
+				return;
+			}
+
+			const container =
+				document.querySelector<HTMLElement>(pushContainer);
+
+			if (!container) {
+				return;
+			}
+
+			container.classList.add(...previousContainer.classList);
+
+			containerRef.current = container;
+		});
+
+		observer.observe(document.body, {childList: true, subtree: true});
 
 		return () => {
-			container.classList.remove('ai-assistant-sidebar-push');
+			observer.disconnect();
+
+			containerRef.current?.classList.remove('ai-assistant-sidebar-push');
 		};
-	}, [containerRef, open]);
+	}, [containerRef, open, pushContainer]);
 
 	const mountBodyNode = useCallback(
 		(node: HTMLDivElement | null) => {
