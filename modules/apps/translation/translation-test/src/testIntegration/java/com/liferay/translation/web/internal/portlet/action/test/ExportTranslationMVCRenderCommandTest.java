@@ -14,7 +14,6 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -74,16 +73,6 @@ public class ExportTranslationMVCRenderCommandTest {
 
 	@Before
 	public void setUp() throws Exception {
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-
-		String symbolicName = "com.liferay.translation.web";
-
-		_bundle = BundleUtil.getBundle(bundle.getBundleContext(), symbolicName);
-
-		Assert.assertNotNull(
-			"Unable to find bundle with symbolic name: " + symbolicName,
-			_bundle);
-
 		_group = GroupTestUtil.addGroup();
 	}
 
@@ -102,7 +91,9 @@ public class ExportTranslationMVCRenderCommandTest {
 			approvedJournalArticle, expiredJournalArticle,
 			scheduledJournalArticle);
 
-		Class<?> clazz = _bundle.loadClass(
+		Bundle bundle = FrameworkUtil.getBundle(_mvcRenderCommand.getClass());
+
+		Class<?> clazz = bundle.loadClass(
 			"com.liferay.translation.web.internal.helper." +
 				"TranslationRequestHelper");
 
@@ -192,8 +183,6 @@ public class ExportTranslationMVCRenderCommandTest {
 			mockHttpServletRequest, _infoItemServiceRegistry,
 			_segmentsExperienceLocalService);
 	}
-
-	private Bundle _bundle;
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
