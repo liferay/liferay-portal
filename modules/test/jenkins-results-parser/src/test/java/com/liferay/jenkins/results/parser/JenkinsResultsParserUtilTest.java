@@ -16,6 +16,7 @@ import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URL;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -272,6 +273,19 @@ public class JenkinsResultsParserUtilTest
 		);
 
 		testEquals("test-1", JenkinsResultsParserUtil.getCohortName());
+	}
+
+	@Test
+	public void testGetGitHubApiSearchUrl() throws Exception {
+		URL url = new URL(
+			JenkinsResultsParserUtil.getGitHubApiSearchUrl(
+				Arrays.asList("head:a&b#c", "is:pr")));
+
+		Map<String, String> parameters =
+			JenkinsResultsParserUtil.getQueryParameters(url.getQuery());
+
+		testEquals("head:a&b#c is:pr", parameters.get("q"));
+		testEquals(1, parameters.size());
 	}
 
 	@Test
