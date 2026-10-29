@@ -303,6 +303,20 @@ definition {
 	}
 
 	@summary = "Default summary"
+	macro enableCKEditor4() {
+		ApplicationsMenu.gotoRootPortlet(
+			panel = "Control Panel",
+			portlet = "Instance Settings");
+
+		SystemSettings.gotoConfiguration(
+			configurationCategory = "Feature Flags",
+			configurationName = "Deprecation",
+			configurationScope = "Virtual Instance Scope");
+
+		FeatureFlag.enableFeatureFlag(featureFlag = "LPD-11235");
+	}
+
+	@summary = "Default summary"
 	macro typeContentInEitherEditor(content = null, fieldLabel = null, iframeIndex = null) {
 		WaitForVisible(locator1 = "CKEditor#BODY_FIELD_EITHER_EDITOR");
 
