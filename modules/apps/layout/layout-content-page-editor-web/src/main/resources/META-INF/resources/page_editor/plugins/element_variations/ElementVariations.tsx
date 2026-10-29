@@ -642,7 +642,13 @@ function NoAudiencesState({createAudienceURL}: {createAudienceURL: string}) {
 			description={Liferay.Language.get(
 				'you-need-at-least-one-audience-to-build-element-variations'
 			)}
-			imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-empty-state"
+					illustration
+					symbol="empty-state"
+				/>
+			}
 			small
 			title={Liferay.Language.get('no-element-variations')}
 		>
@@ -668,7 +674,13 @@ function NoResultsState({onClearFilters}: {onClearFilters: () => void}) {
 			description={Liferay.Language.get(
 				'review-your-filters-and-try-again'
 			)}
-			imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-search-state"
+					illustration
+					symbol="search-state"
+				/>
+			}
 			small
 			title={Liferay.Language.get('no-results-found')}
 		>
@@ -690,7 +702,13 @@ function NoVariationsState({onCreate}: {onCreate: () => void}) {
 			description={Liferay.Language.get(
 				'you-can-create-page-elements-variations-based-on-audiences'
 			)}
-			imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+			image={
+				<ClayIcon
+					className="c-empty-state-icon c-empty-state-icon-empty-state"
+					illustration
+					symbol="empty-state"
+				/>
+			}
 			small
 			title={Liferay.Language.get('no-element-variations')}
 		>

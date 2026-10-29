@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import {InternalDispatch} from '@clayui/shared';
 import classNames from 'classnames';
 import React, {
@@ -165,7 +166,13 @@ export default function ColorPalette({
 					description={Liferay.Language.get(
 						'try-again-with-a-different-search'
 					)}
-					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+					image={
+						<ClayIcon
+							className="c-empty-state-icon c-empty-state-icon-search-state"
+							illustration
+							symbol="search-state"
+						/>
+					}
 					small
 					title={Liferay.Language.get('no-results-found')}
 				/>

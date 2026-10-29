@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import React from 'react';
 
 import {useRulesModal} from '../../../app/contexts/RulesModalContext';
@@ -20,7 +21,13 @@ export default function RulesEmptyState({isSearching}: {isSearching: boolean}) {
 						description={Liferay.Language.get(
 							'try-again-with-a-different-search'
 						)}
-						imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+						image={
+							<ClayIcon
+								className="c-empty-state-icon c-empty-state-icon-search-state"
+								illustration
+								symbol="search-state"
+							/>
+						}
 						small
 						title={Liferay.Language.get('no-results-found')}
 					/>
@@ -31,7 +38,13 @@ export default function RulesEmptyState({isSearching}: {isSearching: boolean}) {
 							description={Liferay.Language.get(
 								'fortunately-it-is-very-easy-to-add-new-ones'
 							)}
-							imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+							image={
+								<ClayIcon
+									className="c-empty-state-icon c-empty-state-icon-empty-state"
+									illustration
+									symbol="empty-state"
+								/>
+							}
 							small
 							title={Liferay.Language.get('no-rules-yet')}
 						/>

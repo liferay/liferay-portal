@@ -64,7 +64,13 @@ export default function VersionList({
 					description={Liferay.Language.get(
 						'try-again-with-a-different-search'
 					)}
-					imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+					image={
+						<ClayIcon
+							className="c-empty-state-icon c-empty-state-icon-search-state"
+							illustration
+							symbol="search-state"
+						/>
+					}
 					small
 					title={Liferay.Language.get('no-results-found')}
 				/>
