@@ -64,7 +64,8 @@ public class TensorFlowProcessHolderTest {
 
 		ReflectionTestUtil.setFieldValue(
 			PortalClassPathUtil.class, "_portalProcessConfig",
-			new ProcessConfig.Builder().build());
+			new ProcessConfig.Builder(
+			).build());
 
 		TensorFlowProcessHolder.resetCounter();
 
