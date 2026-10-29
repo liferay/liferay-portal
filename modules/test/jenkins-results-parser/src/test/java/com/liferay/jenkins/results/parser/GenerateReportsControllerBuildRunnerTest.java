@@ -285,8 +285,6 @@ public class GenerateReportsControllerBuildRunnerTest
 			generateReportsControllerBuildRunner
 		).getBuildData();
 
-		Map<File, String> reportDataFileContents = new HashMap<>();
-
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
@@ -298,6 +296,8 @@ public class GenerateReportsControllerBuildRunnerTest
 			).thenReturn(
 				new Properties()
 			);
+
+			Map<File, String> reportDataFileContents = new HashMap<>();
 
 			for (GenerateReportsBuildRunner.Report report :
 					GenerateReportsBuildRunner.Report.values()) {
