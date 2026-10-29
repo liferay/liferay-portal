@@ -134,3 +134,4 @@ tests:
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\$[A-Za-z]+ := dig \"liferay-cryptokey\" \"resource\" \"status\" \"atProvider\" \"id\" \"\" \\$[A-Za-z]+"
+        it: Reads the service account and key identities that GCP reports
