@@ -479,7 +479,7 @@
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.FIPSTLSVerificationCheck">
 			<property name="category" value="Security" />
-			<property name="description" value="Finds outbound TLS verification bypasses that are not guarded by `PropsValues.FIPS_ENABLED`, see LPD-93649." />
+			<property name="description" value="Finds outbound TLS verification bypasses that are not guarded by `PropsValues.FIPS_ENABLED`." />
 			<property name="enabled" value="false" />
 			<message key="guard.class.required" value="Missing check &quot;PropsValues.FIPS_ENABLED&quot; in if-statement condition in the same class as a trust manager, see LPD-93649" />
 			<message key="guard.method.required" value="Missing check &quot;PropsValues.FIPS_ENABLED&quot; in if-statement condition in the same method as &quot;{0}&quot;, see LPD-93649" />
@@ -895,7 +895,7 @@
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SecretResolverCheck">
 			<property name="category" value="Security" />
-			<property name="description" value="Finds configuration credentials read without resolving them through `SecretResolver` or `SecretResolverUtil`, see LPD-107260." />
+			<property name="description" value="Finds configuration credentials read without resolving them through `SecretResolver` or `SecretResolverUtil`." />
 			<message key="resolve.required" value="Resolve &quot;{0}&quot; through &quot;SecretResolver&quot; or &quot;SecretResolverUtil&quot; before using the value, see LPD-107260" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.SelfReferenceCheck">
