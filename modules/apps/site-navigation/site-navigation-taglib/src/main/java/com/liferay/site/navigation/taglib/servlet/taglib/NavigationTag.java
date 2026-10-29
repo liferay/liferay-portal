@@ -79,6 +79,9 @@ public class NavigationTag extends IncludeTag {
 
 		JspWriter jspWriter = pageContext.getOut();
 
+		PortletDisplayTemplate portletDisplayTemplate =
+			ServletContextUtil.getPortletDisplayTemplate();
+
 		HttpServletRequest httpServletRequest = getRequest();
 
 		Map<String, Object> navigationMenuContext =
@@ -86,9 +89,6 @@ public class NavigationTag extends IncludeTag {
 				_displayDepth, _includedLayouts, httpServletRequest,
 				NavigationMenuMode.DEFAULT, _preview, _rootLayoutUuid,
 				_rootLayoutLevel, _rootLayoutType, 0);
-
-		PortletDisplayTemplate portletDisplayTemplate =
-			ServletContextUtil.getPortletDisplayTemplate();
 
 		jspWriter.write(
 			portletDisplayTemplate.renderDDMTemplate(
