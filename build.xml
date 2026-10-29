@@ -362,6 +362,15 @@ testray.build.type=EE Development (@{to.branch.name})</echo>
 		</gradle-execute>
 	</target>
 
+	<target name="build-cbom">
+		<if>
+			<available file="${project.dir}/modules/dxp/apps/portal-security/portal-security-fips-cbom-builder" type="dir" />
+			<then>
+				<gradle-execute dir="${project.dir}/modules" task=":dxp:apps:portal-security:portal-security-fips-cbom-builder:buildCBOM" />
+			</then>
+		</if>
+	</target>
+
 	<target name="clean">
 		<exec executable="git" outputproperty="master.private.ref">
 			<arg value="for-each-ref" />
