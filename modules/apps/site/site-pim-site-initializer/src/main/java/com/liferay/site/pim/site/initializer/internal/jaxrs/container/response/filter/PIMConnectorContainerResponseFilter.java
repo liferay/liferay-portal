@@ -76,9 +76,9 @@ public class PIMConnectorContainerResponseFilter
 			return;
 		}
 
-		Object entity = containerResponseContext.getEntity();
-
 		try {
+			Object entity = containerResponseContext.getEntity();
+
 			if (entity instanceof ObjectEntry objectEntry) {
 				_addProperties(objectDefinition, objectEntry);
 			}
