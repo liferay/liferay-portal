@@ -50,10 +50,10 @@ definition {
 	@priority = 5
 	test CheckMbeanFailedUpgrade {
 		property custom.mysql.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
+		property custom.postgresql.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
 		property custom.properties = "upgrade.report.enabled=true";
 		property custom.startup.log.message = "Upgrade report generated";
 		property data.archive.type = "data-archive-portal";
-		property database.types = "mysql";
 		property portal.version = "7.4.13";
 		property skip.upgrade-legacy-database = "true";
 
@@ -180,10 +180,10 @@ definition {
 	@priority = 5
 	test CheckMbeanWhenUpgradeHaveWarnAndError {
 		property custom.mysql.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
+		property custom.postgresql.sql.statement = "ALTER TABLE FragmentComposition DROP description;";
 		property custom.properties = "upgrade.report.enabled=true";
 		property custom.startup.log.message = "Upgrade report generated";
 		property data.archive.type = "data-archive-portal";
-		property database.types = "mysql";
 		property portal.version = "7.4.13";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";

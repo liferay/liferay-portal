@@ -35,8 +35,8 @@ definition {
 	@priority = 2
 	test CheckUpgradeClientFailedGogoShellReturnsError {
 		property custom.mysql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
+		property custom.postgresql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
 		property custom.upgrade.properties = "module.framework.properties.osgi.console=80";
-		property database.types = "mysql";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";
 		property timeout.explicit.wait = "600";
@@ -62,7 +62,7 @@ definition {
 	@priority = 4
 	test CheckUpgradeClientGogoShellFailedUpgrade {
 		property custom.mysql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
-		property database.types = "mysql";
+		property custom.postgresql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";
 		property timeout.explicit.wait = "600";
@@ -111,8 +111,8 @@ definition {
 	@priority = 4
 	test CheckUpgradeClientUpgradeReportFailedUpgrade {
 		property custom.mysql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
+		property custom.postgresql.sql.statement = "ALTER TABLE JournalArticle DROP resourcePrimKey;";
 		property custom.properties = "upgrade.report.enabled=true";
-		property database.types = "mysql";
 		property skip.get.testcase.database.properties = "true";
 		property skip.upgrade-legacy-database = "true";
 		property timeout.explicit.wait = "600";
