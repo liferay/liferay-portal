@@ -11,6 +11,7 @@ import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -31,9 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Drew Brokke
@@ -99,24 +98,16 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 	}
 
 	private void _assertLocalServiceRegistered() {
-		Bundle bundle = FrameworkUtil.getBundle(
-			ClientExtensionEntryLocalServiceRegistrationTest.class);
+		SystemBundleUtil.callService(
+			ClientExtensionEntryLocalService.class,
+			clientExtensionEntryLocalService -> {
+				Assert.assertNotNull(clientExtensionEntryLocalService);
+				Assert.assertNotSame(
+					_clientExtensionEntryLocalService,
+					clientExtensionEntryLocalService);
 
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		ServiceReference<ClientExtensionEntryLocalService> serviceReference =
-			bundleContext.getServiceReference(
-				ClientExtensionEntryLocalService.class);
-
-		ClientExtensionEntryLocalService clientExtensionEntryLocalService =
-			bundleContext.getService(serviceReference);
-
-		Assert.assertNotNull(clientExtensionEntryLocalService);
-		Assert.assertNotSame(
-			_clientExtensionEntryLocalService,
-			clientExtensionEntryLocalService);
-
-		bundleContext.ungetService(serviceReference);
+				return null;
+			});
 	}
 
 	private void _restartBundle() throws Exception {
