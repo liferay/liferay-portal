@@ -11,15 +11,16 @@ const CONTENT_CHANGED_DELAY = 2000;
 
 const SERVER_EVENT_NAMES = ['Content Created', 'Content Updated'];
 
-export function fireContentChanged() {
+export function fireContentChanged(data?: string) {
 	setTimeout(() => {
-		Liferay.fire(CONTENT_CHANGED_EVENT);
+		Liferay.fire(CONTENT_CHANGED_EVENT, {data});
 	}, CONTENT_CHANGED_DELAY);
 }
 
 export function subscribeToServerEvents(eventSource: EventSource): () => void {
 	const unsubscribes = SERVER_EVENT_NAMES.map((serverEventName) => {
-		const listener = () => fireContentChanged();
+		const listener = (event: MessageEvent) =>
+			fireContentChanged(event.data);
 
 		eventSource.addEventListener(serverEventName, listener);
 
