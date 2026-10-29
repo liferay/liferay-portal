@@ -166,11 +166,20 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 		matcher = _blockHeaderPattern.matcher(trimmedLine);
 
-		if (matcher.matches()) {
-			return StringUtil.removeChars(matcher.group(1), CharPool.QUOTE);
+		if (!matcher.matches()) {
+			return null;
 		}
 
-		return null;
+		String blockHeader = StringUtil.removeChars(
+			matcher.group(1), CharPool.QUOTE);
+
+		for (String blockType : _ORDERED_BLOCK_TYPES) {
+			if (blockHeader.startsWith(blockType + StringPool.SPACE)) {
+				return blockType;
+			}
+		}
+
+		return blockHeader;
 	}
 
 	private boolean _isCommentLine(String line) {
@@ -298,6 +307,10 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 		_sort(lines, entries);
 	}
+
+	private static final String[] _ORDERED_BLOCK_TYPES = {
+		"post-processor", "provisioner", "run"
+	};
 
 	private static final Pattern _blockHeaderPattern = Pattern.compile(
 		"([\\w-]+(\\s+\"[^\"]*\")*)\\s*\\{(\\})?");

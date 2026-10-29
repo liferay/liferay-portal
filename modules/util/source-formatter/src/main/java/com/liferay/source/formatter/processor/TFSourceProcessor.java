@@ -24,9 +24,7 @@ public class TFSourceProcessor extends BaseSourceProcessor {
 		return _INCLUDES;
 	}
 
-	private static final String[] _EXCLUDES = {
-		"**/*.pkr.hcl", "**/.terraform.lock.hcl"
-	};
+	private static final String[] _EXCLUDES = {"**/.terraform.lock.hcl"};
 
 	private static final String[] _INCLUDES = {"**/*.hcl", "**/*.tf"};
 
