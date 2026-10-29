@@ -344,8 +344,9 @@ public class SimpleCaptchaImpl implements Captcha {
 
 		HttpSession httpSession = _getHttpSession(httpServletRequest);
 
-		String httpSessionKey = _getHttpSessionKey(
-			WebKeys.CAPTCHA_TEXT, httpServletRequest);
+		String httpSessionKey =
+			ParamUtil.getString(httpServletRequest, "captchaId") +
+				WebKeys.CAPTCHA_TEXT;
 
 		String captchaText = (String)httpSession.getAttribute(httpSessionKey);
 
@@ -394,10 +395,10 @@ public class SimpleCaptchaImpl implements Captcha {
 	private String _getHttpSessionKey(
 		String key, HttpServletRequest httpServletRequest) {
 
-		String captchaId = ParamUtil.getString(httpServletRequest, "captchaId");
+		String portletId = portal.getPortletId(httpServletRequest);
 
-		if (Validator.isNotNull(captchaId)) {
-			return captchaId + key;
+		if (Validator.isNotNull(portletId)) {
+			return portal.getPortletNamespace(portletId) + key;
 		}
 
 		return key;
