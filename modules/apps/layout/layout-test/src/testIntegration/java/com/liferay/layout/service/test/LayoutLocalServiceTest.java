@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.exception.LayoutJavaScriptException;
 import com.liferay.portal.kernel.exception.LayoutTypeException;
 import com.liferay.portal.kernel.exception.MasterLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.launch.LaunchPreviewThreadLocal;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -934,6 +935,38 @@ public class LayoutLocalServiceTest {
 		_assertSearch(keyword, name, false, 1);
 		_assertSearch(name, name, true, 1);
 		_assertSearch(name, name, false, 1);
+	}
+
+	@Test
+	@TestInfo("LPD-112154")
+	public void testSearchCountWithLaunchPreviewThreadLocal() throws Exception {
+		String keyword = RandomTestUtil.randomString();
+
+		Layout layout = LayoutTestUtil.addTypeContentLayout(
+			_group, keyword + RandomTestUtil.randomString());
+
+		long launchSetId = RandomTestUtil.randomLong();
+
+		_addLaunchDraftLayout(launchSetId, layout);
+
+		Assert.assertEquals(
+			0,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {WorkflowConstants.STATUS_APPROVED}));
+
+		try (SafeCloseable safeCloseable =
+				LaunchPreviewThreadLocal.setLaunchSetIdWithSafeCloseable(
+					launchSetId)) {
+
+			Assert.assertEquals(
+				1,
+				_layoutLocalService.searchCount(
+					_group, false, keyword, true,
+					new String[] {LayoutConstants.TYPE_CONTENT},
+					new int[] {WorkflowConstants.STATUS_APPROVED}));
+		}
 	}
 
 	@Test
