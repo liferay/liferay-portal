@@ -246,14 +246,15 @@ public abstract class BaseStandaloneBuildTestrayCaseResult
 					Element attachmentFileElement =
 						attachmentsElement.addElement("file");
 
+					attachmentFileElement.addAttribute(
+						"name", testrayAttachment.getName());
+
 					URIBuilder uriBuilder =
 						JenkinsResultsParserUtil.newURIBuilder(
 							String.valueOf(testrayAttachment.getURL()));
 
 					uriBuilder.addParameter("authuser", "0");
 
-					attachmentFileElement.addAttribute(
-						"name", testrayAttachment.getName());
 					attachmentFileElement.addAttribute(
 						"url", uriBuilder.toString());
 					attachmentFileElement.addAttribute(
