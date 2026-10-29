@@ -129,11 +129,12 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 							LAYOUT_PAGE_TEMPLATES,
 						0, 0, PortletRequest.RENDER_PHASE)
 				).setMVCRenderCommandName(
-					"/layout_page_template_admin/edit_display_page"
+					"/layout_page_template_admin" +
+						"/edit_layout_page_template_entry"
 				).setRedirect(
 					backURL
 				).setParameter(
-					"displayPageTemplateExternalReferenceCode",
+					"layoutPageTemplateEntryExternalReferenceCode",
 					"{embedded.externalReferenceCode}"
 				).buildString(),
 				"pencil", "edit", LanguageUtil.get(httpServletRequest, "edit"),
@@ -173,9 +174,10 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributor
 							LAYOUT_PAGE_TEMPLATES,
 						0, 0, PortletRequest.RENDER_PHASE)
 				).setMVCRenderCommandName(
-					"/layout_page_template_admin/view_display_page_permissions"
+					"/layout_page_template_admin" +
+						"/view_layout_page_template_entry_permissions"
 				).setParameter(
-					"displayPageTemplateExternalReferenceCode",
+					"layoutPageTemplateEntryExternalReferenceCode",
 					"{embedded.externalReferenceCode}"
 				).buildString(),
 				"password-policies", "permissions",

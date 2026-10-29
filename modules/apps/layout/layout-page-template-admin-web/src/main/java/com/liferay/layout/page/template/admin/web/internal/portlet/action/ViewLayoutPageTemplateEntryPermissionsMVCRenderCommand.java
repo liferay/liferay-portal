@@ -35,11 +35,11 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
-		"mvc.command.name=/layout_page_template_admin/view_display_page_permissions"
+		"mvc.command.name=/layout_page_template_admin/view_layout_page_template_entry_permissions"
 	},
 	service = MVCRenderCommand.class
 )
-public class ViewDisplayPagePermissionsMVCRenderCommand
+public class ViewLayoutPageTemplateEntryPermissionsMVCRenderCommand
 	implements MVCRenderCommand {
 
 	@Override
@@ -82,7 +82,7 @@ public class ViewDisplayPagePermissionsMVCRenderCommand
 		throws PortalException {
 
 		String externalReferenceCode = ParamUtil.getString(
-			renderRequest, "displayPageTemplateExternalReferenceCode");
+			renderRequest, "layoutPageTemplateEntryExternalReferenceCode");
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return null;

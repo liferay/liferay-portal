@@ -9,11 +9,11 @@ import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminP
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.service.LayoutLocalService;
-import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
@@ -39,21 +39,22 @@ import org.osgi.service.component.annotations.Reference;
 @Component(
 	property = {
 		"jakarta.portlet.name=" + LayoutPageTemplateAdminPortletKeys.LAYOUT_PAGE_TEMPLATES,
-		"mvc.command.name=/layout_page_template_admin/edit_display_page"
+		"mvc.command.name=/layout_page_template_admin/edit_layout_page_template_entry"
 	},
 	service = MVCRenderCommand.class
 )
-public class EditDisplayPageMVCRenderCommand implements MVCRenderCommand {
+public class EditLayoutPageTemplateEntryMVCRenderCommand
+	implements MVCRenderCommand {
 
 	@Override
 	public String render(
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		try {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)renderRequest.getAttribute(WebKeys.THEME_DISPLAY);
+
 			Layout draftLayout = _getDraftLayout(renderRequest, themeDisplay);
 
 			if (draftLayout == null) {
@@ -62,16 +63,15 @@ public class EditDisplayPageMVCRenderCommand implements MVCRenderCommand {
 
 			HttpServletResponse httpServletResponse =
 				_portal.getHttpServletResponse(renderResponse);
-
-			PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+			Group scopeGroup = themeDisplay.getScopeGroup();
 
 			httpServletResponse.sendRedirect(
 				HttpComponentsUtil.addParameters(
 					_portal.getLayoutFullURL(draftLayout, themeDisplay),
 					"p_l_back_url", _getBackURL(renderRequest, themeDisplay),
 					"p_l_back_url_title",
-					portletDisplay.getPortletDisplayName(), "p_l_mode",
-					Constants.EDIT));
+					scopeGroup.getDescriptiveName(themeDisplay.getLocale()),
+					"p_l_mode", Constants.EDIT));
 
 			return MVCRenderConstants.MVC_PATH_VALUE_SKIP_DISPATCH;
 		}
@@ -98,7 +98,7 @@ public class EditDisplayPageMVCRenderCommand implements MVCRenderCommand {
 		throws PortalException {
 
 		String externalReferenceCode = ParamUtil.getString(
-			renderRequest, "displayPageTemplateExternalReferenceCode");
+			renderRequest, "layoutPageTemplateEntryExternalReferenceCode");
 
 		if (Validator.isNull(externalReferenceCode)) {
 			return null;
