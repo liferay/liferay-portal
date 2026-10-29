@@ -5,10 +5,12 @@
 
 package com.liferay.dispatch.scheduler;
 
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.scheduler.SchedulerException;
 import com.liferay.portal.kernel.scheduler.StorageType;
 import com.liferay.portal.kernel.scheduler.TriggerState;
 import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 
 import java.util.Date;
 import java.util.List;
@@ -22,9 +24,10 @@ public interface SchedulerResponseManager {
 			String jobName, String groupName, StorageType storageType)
 		throws SchedulerException;
 
-	public List<SchedulerResponse> getSchedulerResponses(int start, int end);
+	public List<SchedulerResponse> getSchedulerResponses(
+		PermissionChecker permissionChecker, int start, int end);
 
-	public int getSchedulerResponsesCount();
+	public int getSchedulerResponsesCount(PermissionChecker permissionChecker);
 
 	public String getSimpleJobName(String jobName);
 
@@ -32,16 +35,19 @@ public interface SchedulerResponseManager {
 			String jobName, String groupName, StorageType storageType)
 		throws SchedulerException;
 
-	public void pause(String jobName, String groupName, StorageType storageType)
-		throws SchedulerException;
+	public void pause(
+			PermissionChecker permissionChecker, String jobName,
+			String groupName, StorageType storageType)
+		throws PortalException;
 
 	public void resume(
-			String jobName, String groupName, StorageType storageType)
-		throws SchedulerException;
+			PermissionChecker permissionChecker, String jobName,
+			String groupName, StorageType storageType)
+		throws PortalException;
 
 	public void run(
-			long companyId, String jobName, String groupName,
-			StorageType storageType)
-		throws SchedulerException;
+			PermissionChecker permissionChecker, String jobName,
+			String groupName, StorageType storageType)
+		throws PortalException;
 
 }
