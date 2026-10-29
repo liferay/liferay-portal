@@ -46,27 +46,6 @@ public class AccountLifecycleStage implements Cloneable, Serializable {
 
 	protected String description;
 
-	public Integer getDisplayOrder() {
-		return displayOrder;
-	}
-
-	public void setDisplayOrder(Integer displayOrder) {
-		this.displayOrder = displayOrder;
-	}
-
-	public void setDisplayOrder(
-		UnsafeSupplier<Integer, Exception> displayOrderUnsafeSupplier) {
-
-		try {
-			displayOrder = displayOrderUnsafeSupplier.get();
-		}
-		catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
-	protected Integer displayOrder;
-
 	public String getId() {
 		return id;
 	}
@@ -107,26 +86,45 @@ public class AccountLifecycleStage implements Cloneable, Serializable {
 
 	protected Integer maxDuration;
 
-	public String getStageType() {
-		return stageType;
+	public String getName() {
+		return name;
 	}
 
-	public void setStageType(String stageType) {
-		this.stageType = stageType;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setStageType(
-		UnsafeSupplier<String, Exception> stageTypeUnsafeSupplier) {
-
+	public void setName(UnsafeSupplier<String, Exception> nameUnsafeSupplier) {
 		try {
-			stageType = stageTypeUnsafeSupplier.get();
+			name = nameUnsafeSupplier.get();
 		}
 		catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	protected String stageType;
+	protected String name;
+
+	public Integer getPosition() {
+		return position;
+	}
+
+	public void setPosition(Integer position) {
+		this.position = position;
+	}
+
+	public void setPosition(
+		UnsafeSupplier<Integer, Exception> positionUnsafeSupplier) {
+
+		try {
+			position = positionUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Integer position;
 
 	@Override
 	public AccountLifecycleStage clone() throws CloneNotSupportedException {
@@ -161,4 +159,4 @@ public class AccountLifecycleStage implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1029542467
+// LIFERAY-REST-BUILDER-HASH:2077671289

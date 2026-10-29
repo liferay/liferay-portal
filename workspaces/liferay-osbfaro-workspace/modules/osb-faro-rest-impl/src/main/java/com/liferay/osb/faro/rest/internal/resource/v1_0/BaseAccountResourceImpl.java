@@ -97,7 +97,7 @@ public abstract class BaseAccountResourceImpl
 	 * curl -X 'GET' 'http://localhost:8080/o/faro-rest/v1.0/workspace/{groupId}/channels/{channelId}/accounts'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
-		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing one of AT_RISK, AWARE, ENGAGED, ESTABLISHED, ONBOARDING, PIPELINE; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the first account lifecycle of the channel when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
+		description = "List or search accounts synced to an Analytics Cloud workspace. Optionally narrow results to a single channel (also known as property). Optionally narrow results to a single lifecycle stage with `lifecycleStage`, passing the name of a stage; the stage is looked up in the account lifecycle given by `accountLifecycleId`, or in the channel's default account lifecycle when it is omitted. Use this to browse or search accounts by name. To fetch a single account by ID, use `getAccount`. Wide date ranges can take a while. If the response says the query is still running, wait the stated number of seconds and repeat the identical call."
 	)
 	@io.swagger.v3.oas.annotations.Parameters(
 		value = {
@@ -112,13 +112,13 @@ public abstract class BaseAccountResourceImpl
 				name = "channelId", required = true
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "ID of the account lifecycle that `lifecycleStage` is looked up in and that sorting by `lifecycleStage` uses. It does not narrow the results. When omitted, `lifecycleStage` is looked up in the first account lifecycle of the channel and sorting by `lifecycleStage` has no effect.",
+				description = "ID of the account lifecycle that `lifecycleStage` is looked up in and that sorting by `lifecycleStage` uses. It does not narrow the results. When omitted, `lifecycleStage` is looked up in the channel's default account lifecycle and sorting by `lifecycleStage` has no effect.",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "accountLifecycleId"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
-				description = "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the account lifecycle given by `accountLifecycleId`, or of the first account lifecycle of the channel when it is omitted. The name is resolved to the stage ID that backs the filter, so pass the name, not the ID.",
-				example = "AT_RISK",
+				description = "Lifecycle stage name. When set, narrow the results to the accounts currently in that stage of the account lifecycle given by `accountLifecycleId`, or of the channel's default account lifecycle when it is omitted. The name is matched ignoring case and surrounding spaces and resolved to the stage ID that backs the filter, so pass the name, not the ID.",
+				example = "At Risk",
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "lifecycleStage"
 			),
@@ -655,4 +655,4 @@ public abstract class BaseAccountResourceImpl
 		LogFactoryUtil.getLog(BaseAccountResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-509821851
+// LIFERAY-REST-BUILDER-HASH:-757983801
