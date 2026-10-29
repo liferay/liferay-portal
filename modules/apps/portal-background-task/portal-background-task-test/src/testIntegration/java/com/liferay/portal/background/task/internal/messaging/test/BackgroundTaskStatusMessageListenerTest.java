@@ -90,14 +90,15 @@ public class BackgroundTaskStatusMessageListenerTest {
 
 	@Test
 	public void testDoReceive() throws Exception {
+		long groupId1 = RandomTestUtil.randomLong();
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
 			BackgroundTaskResult.SUCCESS,
 			BackgroundTaskConstants.ISOLATION_LEVEL_GROUP, true);
 
-		long groupId1 = RandomTestUtil.randomLong();
+		_lock(taskExecutorClassName + StringPool.POUND + groupId1);
+
 		long groupId2 = RandomTestUtil.randomLong();
 
-		_lock(taskExecutorClassName + StringPool.POUND + groupId1);
 		_lock(taskExecutorClassName + StringPool.POUND + groupId2);
 
 		long backgroundTaskId1 = _addQueuedBackgroundTask(
@@ -122,9 +123,6 @@ public class BackgroundTaskStatusMessageListenerTest {
 			DestinationNames.BACKGROUND_TASK_STATUS, message);
 
 		Assert.assertEquals(
-			Arrays.asList(backgroundTaskId3, backgroundTaskId2),
-			_executedBackgroundTaskIds);
-		Assert.assertEquals(
 			BackgroundTaskConstants.STATUS_QUEUED,
 			_getStatus(backgroundTaskId1));
 		Assert.assertEquals(
@@ -133,6 +131,9 @@ public class BackgroundTaskStatusMessageListenerTest {
 		Assert.assertEquals(
 			BackgroundTaskConstants.STATUS_SUCCESSFUL,
 			_getStatus(backgroundTaskId3));
+		Assert.assertEquals(
+			Arrays.asList(backgroundTaskId3, backgroundTaskId2),
+			_executedBackgroundTaskIds);
 	}
 
 	@Test
