@@ -151,6 +151,38 @@ public abstract class BaseObjectDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/object-admin/v1.0/object-definitions/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "ObjectDefinition")
+		}
+	)
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
+		"/object-definitions/by-external-reference-code/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteObjectDefinitionByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/object-admin/v1.0/object-definitions/{objectDefinitionId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -848,9 +880,32 @@ public abstract class BaseObjectDefinitionResourceImpl
 
 		UnsafeFunction<ObjectDefinition, ObjectDefinition, Exception>
 			objectDefinitionUnsafeFunction = objectDefinition -> {
-				deleteObjectDefinition(objectDefinition.getId());
+				if (objectDefinition.getId() != null) {
+					try {
+						deleteObjectDefinition(objectDefinition.getId());
 
-				return objectDefinition;
+						return objectDefinition;
+					}
+					catch (Exception exception) {
+						if (objectDefinition.getExternalReferenceCode() !=
+								null) {
+
+							deleteObjectDefinitionByExternalReferenceCode(
+								objectDefinition.getExternalReferenceCode());
+
+							return objectDefinition;
+						}
+					}
+				}
+				else if (objectDefinition.getExternalReferenceCode() != null) {
+					deleteObjectDefinitionByExternalReferenceCode(
+						objectDefinition.getExternalReferenceCode());
+
+					return objectDefinition;
+				}
+
+				throw new UnsupportedOperationException(
+					"Unable to delete by external reference code or ID");
 			};
 
 		if (contextBatchUnsafeBiConsumer != null) {
@@ -1553,4 +1608,4 @@ public abstract class BaseObjectDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseObjectDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:496520993
+// LIFERAY-REST-BUILDER-HASH:1571617332

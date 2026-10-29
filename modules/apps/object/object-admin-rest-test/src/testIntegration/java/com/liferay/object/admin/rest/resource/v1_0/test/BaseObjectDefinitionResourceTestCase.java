@@ -379,12 +379,50 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 			testDeleteObjectDefinitionBatch_addObjectDefinition();
 
 		testDeleteObjectDefinitionBatch_deleteObjectDefinition(
+			202, objectDefinition1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition1.getId()));
+
+		objectDefinition1 =
+			testDeleteObjectDefinitionBatch_addObjectDefinition();
+
+		testDeleteObjectDefinitionBatch_deleteObjectDefinition(
 			202, null, objectDefinition1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			objectDefinitionResource.getObjectDefinitionHttpResponse(
 				objectDefinition1.getId()));
+
+		objectDefinition1 =
+			testDeleteObjectDefinitionBatch_addObjectDefinition();
+		ObjectDefinition objectDefinition2 =
+			testDeleteObjectDefinitionBatch_addObjectDefinition();
+
+		testDeleteObjectDefinitionBatch_deleteObjectDefinition(
+			202, objectDefinition2.getExternalReferenceCode(),
+			objectDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition2.getId()));
+
+		testDeleteObjectDefinitionBatch_deleteObjectDefinition(
+			202, objectDefinition2.getExternalReferenceCode(),
+			objectDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition2.getId()));
 	}
 
 	protected ObjectDefinition
@@ -413,6 +451,138 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testDeleteObjectDefinitionByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ObjectDefinition objectDefinition =
+			testDeleteObjectDefinitionByExternalReferenceCode_addObjectDefinition();
+
+		assertHttpResponseStatusCode(
+			204,
+			objectDefinitionResource.
+				deleteObjectDefinitionByExternalReferenceCodeHttpResponse(
+					objectDefinition.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.
+				getObjectDefinitionByExternalReferenceCodeHttpResponse(
+					objectDefinition.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.
+				getObjectDefinitionByExternalReferenceCodeHttpResponse("-"));
+	}
+
+	protected ObjectDefinition
+			testDeleteObjectDefinitionByExternalReferenceCode_addObjectDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteObjectDefinitionByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ObjectDefinition objectDefinition1 =
+			testGraphQLDeleteObjectDefinitionByExternalReferenceCode_addObjectDefinition();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteObjectDefinitionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										objectDefinition1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteObjectDefinitionByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"objectDefinitionByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									objectDefinition1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace objectAdmin_v1_0
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ObjectDefinition objectDefinition2 =
+			testGraphQLDeleteObjectDefinitionByExternalReferenceCode_addObjectDefinition();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"objectAdmin_v1_0",
+						new GraphQLField(
+							"deleteObjectDefinitionByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											objectDefinition2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/objectAdmin_v1_0",
+				"Object/deleteObjectDefinitionByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"objectAdmin_v1_0",
+					new GraphQLField(
+						"objectDefinitionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										objectDefinition2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected ObjectDefinition
+			testGraphQLDeleteObjectDefinitionByExternalReferenceCode_addObjectDefinition()
+		throws Exception {
+
+		return testGraphQLObjectDefinition_addObjectDefinition();
 	}
 
 	@Test
@@ -1528,12 +1698,50 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 			testBatchEngineDeleteImportTask_addObjectDefinition();
 
 		testBatchEngineDeleteImportTask_deleteObjectDefinition(
+			200, objectDefinition1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition1.getId()));
+
+		objectDefinition1 =
+			testBatchEngineDeleteImportTask_addObjectDefinition();
+
+		testBatchEngineDeleteImportTask_deleteObjectDefinition(
 			200, null, objectDefinition1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			objectDefinitionResource.getObjectDefinitionHttpResponse(
 				objectDefinition1.getId()));
+
+		objectDefinition1 =
+			testBatchEngineDeleteImportTask_addObjectDefinition();
+		ObjectDefinition objectDefinition2 =
+			testBatchEngineDeleteImportTask_addObjectDefinition();
+
+		testBatchEngineDeleteImportTask_deleteObjectDefinition(
+			200, objectDefinition2.getExternalReferenceCode(),
+			objectDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteObjectDefinition(
+			200, objectDefinition2.getExternalReferenceCode(),
+			objectDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			objectDefinitionResource.getObjectDefinitionHttpResponse(
+				objectDefinition2.getId()));
 	}
 
 	protected ObjectDefinition
@@ -4297,4 +4505,4 @@ public abstract class BaseObjectDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-896263020
+// LIFERAY-REST-BUILDER-HASH:391015130

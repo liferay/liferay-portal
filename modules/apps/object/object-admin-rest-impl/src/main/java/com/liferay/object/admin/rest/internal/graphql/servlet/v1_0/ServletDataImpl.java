@@ -172,6 +172,11 @@ public class ServletDataImpl implements ServletData {
 							ObjectDefinitionResourceImpl.class,
 							"deleteObjectDefinitionBatch"));
 					put(
+						"mutation#deleteObjectDefinitionByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ObjectDefinitionResourceImpl.class,
+							"deleteObjectDefinitionByExternalReferenceCode"));
+					put(
 						"mutation#patchObjectDefinition",
 						new ObjectValuePair<>(
 							ObjectDefinitionResourceImpl.class,
@@ -677,4 +682,4 @@ public class ServletDataImpl implements ServletData {
 		_objectViewResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1469292567
+// LIFERAY-REST-BUILDER-HASH:-1067673327

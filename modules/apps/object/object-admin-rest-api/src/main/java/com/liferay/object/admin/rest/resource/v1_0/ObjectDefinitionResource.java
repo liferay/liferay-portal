@@ -53,6 +53,10 @@ public interface ObjectDefinitionResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public void deleteObjectDefinitionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public ObjectDefinition getObjectDefinition(Long objectDefinitionId)
 		throws Exception;
 
@@ -196,4 +200,4 @@ public interface ObjectDefinitionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1869428927
+// LIFERAY-REST-BUILDER-HASH:895407525
