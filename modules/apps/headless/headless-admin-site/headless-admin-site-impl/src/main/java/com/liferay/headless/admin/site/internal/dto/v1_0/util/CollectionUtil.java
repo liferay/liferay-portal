@@ -362,12 +362,12 @@ public class CollectionUtil {
 			return JSONFactoryUtil.createJSONObject();
 		}
 
-		ItemExternalReference subTypeExternalReferenceCode =
+		ItemExternalReference subTypeItemExternalReference =
 			repeatableFieldsCollectionProviderReference.
 				getSubTypeExternalReference();
 
-		if ((subTypeExternalReferenceCode == null) ||
-			(subTypeExternalReferenceCode.getExternalReferenceCode() == null)) {
+		if ((subTypeItemExternalReference == null) ||
+			(subTypeItemExternalReference.getExternalReferenceCode() == null)) {
 
 			return JSONFactoryUtil.createJSONObject();
 		}
@@ -378,7 +378,7 @@ public class CollectionUtil {
 		).put(
 			"itemSubtypeKey",
 			SubtypeUtil.getClassTypeKey(
-				className, scopeGroupId, subTypeExternalReferenceCode)
+				className, scopeGroupId, subTypeItemExternalReference)
 		).put(
 			"itemType", className
 		).put(
@@ -388,7 +388,7 @@ public class CollectionUtil {
 			_getTitle(
 				className, companyId,
 				repeatableFieldsCollectionProviderReference.getFieldName(),
-				subTypeExternalReferenceCode, scopeGroupId)
+				subTypeItemExternalReference, scopeGroupId)
 		).put(
 			"type", InfoListProviderItemSelectorReturnType.class.getName()
 		);

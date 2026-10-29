@@ -1953,26 +1953,26 @@ public class ConfigurationUtil {
 			return null;
 		}
 
-		ItemExternalReference subTypeExternalReference =
+		ItemExternalReference subTypeItemExternalReference =
 			repeatableFieldsCollectionProviderReference.
 				getSubTypeExternalReference();
 
-		if ((subTypeExternalReference == null) ||
-			(subTypeExternalReference.getExternalReferenceCode() == null)) {
+		if ((subTypeItemExternalReference == null) ||
+			(subTypeItemExternalReference.getExternalReferenceCode() == null)) {
 
 			return null;
 		}
 
 		InfoItemFormVariation infoItemFormVariation = _getInfoItemFormVariation(
 			className, groupId, infoItemServiceRegistry,
-			subTypeExternalReference);
+			subTypeItemExternalReference);
 
 		return JSONUtil.put(
 			"fieldName",
 			repeatableFieldsCollectionProviderReference.getFieldName()
 		).put(
 			"itemSubtypeKey",
-			subTypeExternalReference.getExternalReferenceCode()
+			subTypeItemExternalReference.getExternalReferenceCode()
 		).put(
 			"itemType", className
 		).put(
@@ -1983,7 +1983,7 @@ public class ConfigurationUtil {
 				className,
 				repeatableFieldsCollectionProviderReference.getFieldName(),
 				infoItemFormVariation, infoItemServiceRegistry,
-				subTypeExternalReference)
+				subTypeItemExternalReference)
 		).put(
 			"type", InfoListProviderItemSelectorReturnType.class.getName()
 		);
