@@ -202,32 +202,22 @@ function _connect_to_cluster {
 function _delete_persistent_volumes {
 	echo "Deleting the persistent volume claims."
 
-	if ! kubectl \
+	kubectl \
 		delete \
 		persistentvolumeclaims \
 		--all \
 		--all-namespaces \
 		--timeout 10m0s \
 		--wait
-	then
-		echo "The persistent volume claims were not deleted after 10 minutes." >&2
-
-		exit 1
-	fi
 
 	echo "Waiting for the persistent volumes to be deleted."
 
-	if ! kubectl \
+	kubectl \
 		wait \
 		persistentvolumes \
 		--all \
 		--for delete \
 		--timeout 10m0s
-	then
-		echo "The persistent volumes were not deleted after 10 minutes." >&2
-
-		exit 1
-	fi
 }
 
 function _export_terraform_options {
@@ -342,16 +332,11 @@ function _install_liferay_platform_chart {
 function _uninstall_liferay_platform_chart {
 	echo "Uninstalling the Liferay platform root application."
 
-	if ! helm \
+	helm \
 		uninstall \
 		liferay-platform \
 		--ignore-not-found \
 		--namespace argocd-system \
 		--timeout 30m0s \
 		--wait
-	then
-		echo "The liferay-platform Helm release was not uninstalled after 30 minutes." >&2
-
-		exit 1
-	fi
 }
