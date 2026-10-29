@@ -158,6 +158,45 @@ test(
 );
 
 test(
+	'A product saved as draft in a catalog with a workflow stays in draft',
+	{tag: ['@COMMERCE-9191', '@LPD-112673']},
+	async ({
+		apiHelpers,
+		commerceAdminProductDetailsPage,
+		commerceAdminProductPage,
+		page,
+	}) => {
+		const catalog = await postSingleApproverCatalog(apiHelpers);
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				productStatus: 2,
+			});
+
+		await commerceAdminProductPage.gotoProduct(product.name['en_US']);
+
+		await commerceAdminProductDetailsPage.saveAsDraft();
+
+		await page.reload();
+
+		await expect(
+			commerceAdminProductDetailsPage.workflowStatusLabel('Draft')
+		).toBeVisible();
+		await expect(
+			commerceAdminProductDetailsPage.saveAsDraftLink
+		).toBeVisible();
+
+		expect(
+			await apiHelpers.headlessAdminWorkflow.getWorkflowTaskByAsset(
+				CP_DEFINITION_CLASS_NAME,
+				String(product.id)
+			)
+		).toBeNull();
+	}
+);
+
+test(
 	'A product submitted for workflow is pending review until the review task is approved',
 	{tag: ['@COMMERCE-9253', '@COMMERCE-9292', '@LPD-110302']},
 	async ({
