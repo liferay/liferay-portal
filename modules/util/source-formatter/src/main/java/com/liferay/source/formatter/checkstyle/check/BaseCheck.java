@@ -1825,7 +1825,7 @@ public abstract class BaseCheck extends AbstractCheck {
 	private final Map<String, List<String>> _attributeValuesMap =
 		new ConcurrentHashMap<>();
 	private JSONObject _attributesJSONObject = new JSONObjectImpl();
-	private volatile Map<String, String> _bundleSymbolicNamesMap;
+	private Map<String, String> _bundleSymbolicNamesMap;
 	private JSONObject _excludesJSONObject = new JSONObjectImpl();
 	private final Map<String, List<String>> _excludesValuesMap =
 		new ConcurrentHashMap<>();
@@ -1833,7 +1833,7 @@ public abstract class BaseCheck extends AbstractCheck {
 		new ConcurrentHashMap<>();
 	private final Map<String, List<String>> _jspImportNamesMap =
 		new HashMap<>();
-	private volatile String _rootDirName;
+	private String _rootDirName;
 
 	private class Variable {
 
