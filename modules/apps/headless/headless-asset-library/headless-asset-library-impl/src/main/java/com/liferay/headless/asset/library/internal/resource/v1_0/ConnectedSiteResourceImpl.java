@@ -134,6 +134,12 @@ public class ConnectedSiteResourceImpl extends BaseConnectedSiteResourceImpl {
 			_depotEntryGroupRelService.addDepotEntryGroupRel(
 				depotEntry.getDepotEntryId(), connectedSiteGroup.getGroupId());
 
+		if (connectedSite.getDdmStructuresAvailable() != null) {
+			_depotEntryGroupRelService.updateDDMStructuresAvailable(
+				depotEntryGroupRel.getDepotEntryGroupRelId(),
+				connectedSite.getDdmStructuresAvailable());
+		}
+
 		if (connectedSite.getSearchable() != null) {
 			_depotEntryGroupRelService.updateSearchable(
 				depotEntryGroupRel.getDepotEntryGroupRelId(),

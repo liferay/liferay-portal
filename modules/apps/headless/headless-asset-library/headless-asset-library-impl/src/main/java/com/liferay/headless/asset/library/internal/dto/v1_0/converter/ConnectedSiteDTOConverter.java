@@ -60,6 +60,8 @@ public class ConnectedSiteDTOConverter
 
 		return new ConnectedSite() {
 			{
+				setDdmStructuresAvailable(
+					depotEntryGroupRel::isDdmStructuresAvailable);
 				setDescriptiveName(
 					() -> group.getDescriptiveName(
 						dtoConverterContext.getLocale()));
