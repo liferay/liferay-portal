@@ -63,10 +63,20 @@ renderResponse.setTitle(assetListDisplayContext.getAssetListEntryTitle());
 			<div>
 				<span aria-hidden="true" class="loading-animation loading-animation-sm mt-4"></span>
 
-				<react:component
-					module="{VariationsNav} from asset-list-web"
-					props="<%= editAssetListDisplayContext.getData() %>"
-				/>
+				<c:choose>
+					<c:when test='<%= FeatureFlagManagerUtil.isEnabled(company.getCompanyId(), "LPD-109242") %>'>
+						<react:component
+							module="{AudienceVariationsNav} from asset-list-web"
+							props="<%= editAssetListDisplayContext.getAudienceVariationsData() %>"
+						/>
+					</c:when>
+					<c:otherwise>
+						<react:component
+							module="{VariationsNav} from asset-list-web"
+							props="<%= editAssetListDisplayContext.getData() %>"
+						/>
+					</c:otherwise>
+				</c:choose>
 			</div>
 		</clay:col>
 

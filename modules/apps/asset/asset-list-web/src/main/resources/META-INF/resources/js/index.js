@@ -14,6 +14,7 @@ export {default as ScopeDefaultPropsTransformer} from './ScopeDefaultPropsTransf
 export {default as SelectStructureField} from './SelectStructureField';
 export {default as Source} from './Source';
 export {default as TopLinkEventHandler} from './TopLinkEventHandler';
+export {default as AudienceVariationsNav} from './components/AudienceVariationsNav/index';
 export {default as CollectionFilterBuilder} from './components/CollectionFilterBuilder/index';
 export {default as CollectionOrdering} from './components/CollectionOrdering/index';
 export {default as VariationsNav} from './components/VariationsNav/index';
