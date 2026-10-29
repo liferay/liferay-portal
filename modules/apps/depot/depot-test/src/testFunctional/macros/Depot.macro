@@ -439,16 +439,11 @@ definition {
 
 			SelectFrame(value1 = "relative=top");
 
-			if (isSet(connectStagedSite)) {
-				Alert.viewErrorMessage(errorMessage = "An unstaged asset library cannot be connected to a staged site.");
-			}
-			else {
-				Alert.viewSuccessMessage();
+			Alert.viewSuccessMessage();
 
-				AssertElementPresent.pauseAssertVisible(
-					key_tableEntry = ${siteName},
-					locator1 = "LexiconTable#TABLE_ENTRY");
-			}
+			AssertElementPresent.pauseAssertVisible(
+				key_tableEntry = ${siteName},
+				locator1 = "LexiconTable#TABLE_ENTRY");
 		}
 	}
 

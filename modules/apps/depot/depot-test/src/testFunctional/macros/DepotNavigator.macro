@@ -346,13 +346,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openDepotSettingsStaging(depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}-staging/~/control_panel/manage?p_p_id=com_liferay_depot_web_portlet_DepotSettingsPortlet&_com_liferay_depot_web_portlet_DepotSettingsPortlet_screenNavigationEntryKey=sites");
-	}
-
-	@summary = "Default summary"
 	macro openDepotSiteSettings(depotName = null) {
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
 
