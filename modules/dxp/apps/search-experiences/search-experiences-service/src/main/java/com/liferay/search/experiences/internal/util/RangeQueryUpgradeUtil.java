@@ -13,6 +13,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author Rodrigo Guedes de Souza
@@ -63,16 +64,39 @@ public class RangeQueryUpgradeUtil {
 		return upgraded;
 	}
 
+	public static String upgradeRangeQueries(String json) {
+		String upgradedJSON = _upgradeJSON(json);
+
+		if (upgradedJSON == null) {
+			return json;
+		}
+
+		return upgradedJSON;
+	}
+
 	private static String _upgradeJSON(String json) {
-		if (!StringUtil.startsWith(json.trim(), CharPool.OPEN_CURLY_BRACE)) {
+		if (Validator.isNull(json)) {
 			return null;
 		}
 
 		try {
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
+			String trimmedJSON = json.trim();
 
-			if (upgradeRangeQueries(jsonObject)) {
-				return jsonObject.toString();
+			if (StringUtil.startsWith(trimmedJSON, CharPool.OPEN_BRACKET)) {
+				JSONArray jsonArray = JSONFactoryUtil.createJSONArray(json);
+
+				if (upgradeRangeQueries(jsonArray)) {
+					return jsonArray.toString();
+				}
+			}
+			else if (StringUtil.startsWith(
+						trimmedJSON, CharPool.OPEN_CURLY_BRACE)) {
+
+				JSONObject jsonObject = JSONFactoryUtil.createJSONObject(json);
+
+				if (upgradeRangeQueries(jsonObject)) {
+					return jsonObject.toString();
+				}
 			}
 		}
 		catch (JSONException jsonException) {
