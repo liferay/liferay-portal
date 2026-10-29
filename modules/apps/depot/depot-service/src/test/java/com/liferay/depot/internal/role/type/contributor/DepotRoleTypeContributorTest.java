@@ -183,6 +183,21 @@ public class DepotRoleTypeContributorTest {
 	}
 
 	@Test
+	public void testIsAutomaticallyAssignedWithAssetLibraryAdministrator() {
+		Assert.assertFalse(
+			_depotRoleTypeContributor.isAutomaticallyAssigned(
+				_mockRole(DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR)));
+	}
+
+	@Test
+	public void testIsAutomaticallyAssignedWithAssetLibraryConnectedSiteMember() {
+		Assert.assertTrue(
+			_depotRoleTypeContributor.isAutomaticallyAssigned(
+				_mockRole(
+					DepotRolesConstants.ASSET_LIBRARY_CONNECTED_SITE_MEMBER)));
+	}
+
+	@Test
 	public void testIsAutomaticallyAssignedWithDesignLibraryMember() {
 		Assert.assertTrue(
 			_depotRoleTypeContributor.isAutomaticallyAssigned(

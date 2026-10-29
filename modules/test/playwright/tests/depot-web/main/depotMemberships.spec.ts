@@ -323,3 +323,81 @@ test(
 		}
 	}
 );
+
+test(
+	'A depot member can be assigned a depot role and filtered by it',
+	{tag: '@LPD-109574'},
+	async ({apiHelpers, page}) => {
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		const memberUserAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+		const ownerUserAccount =
+			await apiHelpers.headlessAdminUser.postUserAccount();
+
+		await apiHelpers.jsonWebServicesUser.addGroupUsers(
+			String(assetLibrary.siteId),
+			[String(memberUserAccount.id), String(ownerUserAccount.id)]
+		);
+
+		const siteMembershipsPage = new SiteMembershipsPage(page);
+
+		await siteMembershipsPage.goto(`/asset-library-${assetLibrary.id}`);
+
+		await page
+			.locator(
+				`[id="${SITE_MEMBERSHIPS_NAMESPACE}users_${ownerUserAccount.alternateName}"]`
+			)
+			.getByLabel('More actions')
+			.click();
+
+		await page
+			.getByRole('menuitem', {exact: true, name: 'Assign Roles'})
+			.click();
+
+		const assignRolesFrame = page.frameLocator(
+			'iframe[title="Assign Roles"]'
+		);
+
+		for (const roleName of [
+			'Space Administrator',
+			'Space Content Reviewer',
+			'Space Owner',
+		]) {
+			await expect(
+				assignRolesFrame.getByText(roleName, {exact: true})
+			).toBeVisible();
+		}
+
+		await assignRolesFrame
+			.locator('.card')
+			.filter({hasText: 'Space Owner'})
+			.getByRole('checkbox')
+			.check();
+
+		await page.getByRole('button', {name: 'Done'}).click();
+
+		await waitForAlert(page);
+
+		await page.getByRole('button', {name: 'Filter'}).click();
+
+		await page.getByRole('menuitem', {name: 'Roles'}).click();
+
+		await page
+			.frameLocator('iframe[title="Select Role"]')
+			.getByText('Space Owner', {exact: true})
+			.click();
+
+		await expect(
+			page.locator(
+				`[id="${SITE_MEMBERSHIPS_NAMESPACE}users_${ownerUserAccount.alternateName}"]`
+			)
+		).toBeVisible();
+		await expect(
+			page.locator(
+				`[id="${SITE_MEMBERSHIPS_NAMESPACE}users_${memberUserAccount.alternateName}"]`
+			)
+		).toHaveCount(0);
+	}
+);

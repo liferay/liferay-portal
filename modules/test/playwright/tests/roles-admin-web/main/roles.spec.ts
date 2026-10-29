@@ -469,6 +469,88 @@ test(
 );
 
 test(
+	'Space role can be edited and deleted',
+	{tag: ['@LPD-109574']},
+	async ({
+		apiHelpers,
+		page,
+		roleDefinePermissionsPage,
+		rolePage,
+		rolesPage,
+	}) => {
+		page.on('dialog', (dialog) => dialog.accept());
+
+		const role = await apiHelpers.headlessAdminUser.postRole({
+			name: getRandomString(),
+			roleType: 'depot',
+		});
+
+		await rolesPage.goto();
+
+		await rolesPage.rolesLink('Space').click();
+
+		await expect(rolesPage.rolesLink('Space')).toHaveAttribute(
+			'aria-current',
+			'page'
+		);
+
+		await rolesPage.rolesTable.search(role.name);
+
+		await expect(async () => {
+			await (
+				await rolesPage.rolesTable.cellLink(role.name)
+			).click({timeout: 1000});
+		}).toPass();
+
+		const title = getRandomString();
+
+		await rolePage.titleInput.fill(title);
+		await rolePage.saveButton.click();
+
+		await waitForAlert(page);
+
+		await rolePage.definePermissionsLink.click();
+
+		await roleDefinePermissionsPage.changePermission(
+			'Documents and Media',
+			'Add Repository',
+			true
+		);
+
+		await expect(
+			roleDefinePermissionsPage.summaryPermissionCell('Add Repository')
+		).toBeVisible();
+
+		await rolesPage.goto();
+
+		await rolesPage.rolesLink('Space').click();
+
+		await expect(rolesPage.rolesLink('Space')).toHaveAttribute(
+			'aria-current',
+			'page'
+		);
+
+		await rolesPage.rolesTable.search(title);
+
+		await expect(async () => {
+			await (await rolesPage.rolesTable.rowActions(title)).click();
+
+			await expect(rolesPage.deleteButton).toBeVisible({timeout: 100});
+		}).toPass();
+
+		await rolesPage.deleteButton.click();
+
+		await expect(rolesPage.rolesTable.cell(title)).toHaveCount(0);
+
+		await page.reload();
+
+		await rolesPage.rolesTable.search(title);
+
+		await expect(rolesPage.rolesTable.cell(title)).toHaveCount(0);
+	}
+);
+
+test(
 	'User can be assigned to a regular role',
 	{tag: ['@LPD-50065', '@LPS-109572']},
 	async ({apiHelpers, roleAssigneesPage, rolePage, rolesPage}) => {
