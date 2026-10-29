@@ -12,9 +12,15 @@ import com.liferay.frontend.data.set.model.FDSSortItemListBuilder;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenuBuilder;
 import com.liferay.mcp.server.web.internal.constants.MCPServerFDSNames;
+import com.liferay.mcp.server.web.internal.util.MCPServerPermissionUtil;
+import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -26,11 +32,21 @@ import java.util.List;
 public class ViewPromptsDisplayContext {
 
 	public ViewPromptsDisplayContext(
-		HttpServletRequest httpServletRequest,
-		LiferayPortletResponse liferayPortletResponse) {
+			HttpServletRequest httpServletRequest,
+			LiferayPortletResponse liferayPortletResponse)
+		throws PortalException {
 
 		_httpServletRequest = httpServletRequest;
 		_liferayPortletResponse = liferayPortletResponse;
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		_objectDefinition =
+			ObjectDefinitionLocalServiceUtil.
+				getObjectDefinitionByExternalReferenceCode(
+					"L_MCP_SERVER_PROMPT", themeDisplay.getCompanyId());
 	}
 
 	public String getAPIURL() {
@@ -71,7 +87,9 @@ public class ViewPromptsDisplayContext {
 			new FDSActionDropdownItem(
 				"#", "trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "get", null,
-				null));
+				null),
+			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
+				_httpServletRequest, _objectDefinition));
 	}
 
 	public String getFDSName() {
@@ -108,5 +126,6 @@ public class ViewPromptsDisplayContext {
 
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
+	private final ObjectDefinition _objectDefinition;
 
 }
