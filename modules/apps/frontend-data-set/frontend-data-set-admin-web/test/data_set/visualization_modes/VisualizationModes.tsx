@@ -152,6 +152,37 @@ describe('VisualizationModes', () => {
 		).toContainEqual({enabled: true, name: 'LXC:timeline'});
 	});
 
+	it('keeps the configuration and the visualization modes of client extensions that are not deployed', async () => {
+		const configuration = {columns: 3};
+
+		renderVisualizationModes({
+			dataSet: {
+				...DATA_SET,
+				visualizationModes: JSON.stringify([
+					{configuration, enabled: true, name: 'LXC:timeline'},
+					{configuration, enabled: true, name: 'LXC:undeployed'},
+				]),
+			},
+		});
+
+		await userEvent.click(within(getRow('cards')).getByRole('switch'));
+
+		const visualizationModes = JSON.parse(
+			patchRequestBodies[0].visualizationModes
+		);
+
+		expect(visualizationModes).toContainEqual({
+			configuration,
+			enabled: true,
+			name: 'LXC:timeline',
+		});
+		expect(visualizationModes).toContainEqual({
+			configuration,
+			enabled: true,
+			name: 'LXC:undeployed',
+		});
+	});
+
 	it('keeps at least one visualization mode enabled', async () => {
 		renderVisualizationModes({
 			dataSet: {

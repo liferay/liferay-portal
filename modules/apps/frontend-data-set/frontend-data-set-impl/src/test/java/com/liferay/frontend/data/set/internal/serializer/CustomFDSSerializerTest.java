@@ -1388,6 +1388,9 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		_mockSerializeViewsCardsOrList(
 			FDS_NAMES[0], sectionsMap, "dataSetToDataSetListSections");
 
+		JSONObject configurationJSONObject = JSONUtil.put(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
 		Mockito.when(
 			_customFDSSerializer.getDataSetObjectEntryProperties(
 				FDS_NAMES[0], httpServletRequest)
@@ -1403,6 +1406,8 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 						"name", "table"
 					),
 					JSONUtil.put(
+						"configuration", configurationJSONObject
+					).put(
 						"enabled", true
 					).put(
 						"name", cetExternalReferenceCode
@@ -1464,6 +1469,8 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
+				"configuration", configurationJSONObject
+			).put(
 				"contentRenderer", "clientExtension"
 			).put(
 				"contentRendererClientExtension", true

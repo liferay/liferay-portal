@@ -11,8 +11,10 @@ import {
 } from './types';
 
 interface IPersistedVisualizationMode {
+	configuration?: {[key: string]: unknown};
 	enabled: boolean;
 	name: string;
+	[key: string]: unknown;
 }
 
 const VISUALIZATION_MODE_RELATIONSHIPS: {[name: string]: string} = {
@@ -121,10 +123,35 @@ export function isVisualizationModeDisplayed({
 	);
 }
 
-export function serializeVisualizationModes(
-	visualizationModes: IDataSetVisualizationMode[]
-) {
-	return JSON.stringify(
-		visualizationModes.map(({enabled, name}) => ({enabled, name}))
+/**
+ * Serializes the visualization modes over the ones the data set persists, so
+ * their configuration and the visualization modes of client extensions that
+ * are not deployed now are kept.
+ */
+export function serializeVisualizationModes({
+	dataSet,
+	visualizationModes,
+}: {
+	dataSet: IDataSet;
+	visualizationModes: IDataSetVisualizationMode[];
+}) {
+	const persistedVisualizationModes = parseVisualizationModes(
+		dataSet.visualizationModes
 	);
+
+	const names = visualizationModes.map(({name}) => name);
+
+	return JSON.stringify([
+		...visualizationModes.map(({enabled, name}) => ({
+			...persistedVisualizationModes.find(
+				(persistedVisualizationMode) =>
+					persistedVisualizationMode.name === name
+			),
+			enabled,
+			name,
+		})),
+		...persistedVisualizationModes.filter(
+			({name}) => !names.includes(name)
+		),
+	]);
 }

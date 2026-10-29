@@ -961,8 +961,10 @@ public class CustomFDSSerializer
 				defaultViewJSONObject.getString("name"), defaultViewJSONObject);
 		}
 
-		for (String name :
-				_getEnabledVisualizationModeNames(visualizationModes)) {
+		for (JSONObject visualizationModeJSONObject :
+				_getEnabledVisualizationModeJSONObjects(visualizationModes)) {
+
+			String name = visualizationModeJSONObject.getString("name");
 
 			if (_defaultVisualizationModeNames.contains(name)) {
 				jsonArray.put(() -> defaultViewJSONObjects.get(name));
@@ -970,17 +972,19 @@ public class CustomFDSSerializer
 			else {
 				jsonArray.put(
 					() -> _serializeClientExtensionView(
-						defaultVisualizationMode, httpServletRequest, name));
+						defaultVisualizationMode, httpServletRequest,
+						visualizationModeJSONObject));
 			}
 		}
 
 		return jsonArray;
 	}
 
-	private List<String> _getEnabledVisualizationModeNames(
+	private List<JSONObject> _getEnabledVisualizationModeJSONObjects(
 		String visualizationModes) {
 
-		List<String> enabledVisualizationModeNames = new ArrayList<>();
+		List<JSONObject> enabledVisualizationModeJSONObjects =
+			new ArrayList<>();
 
 		List<String> visualizationModeNames = new ArrayList<>();
 
@@ -1004,7 +1008,7 @@ public class CustomFDSSerializer
 						continue;
 					}
 
-					enabledVisualizationModeNames.add(name);
+					enabledVisualizationModeJSONObjects.add(jsonObject);
 				}
 			}
 			catch (Exception exception) {
@@ -1024,10 +1028,10 @@ public class CustomFDSSerializer
 				continue;
 			}
 
-			enabledVisualizationModeNames.add(name);
+			enabledVisualizationModeJSONObjects.add(JSONUtil.put("name", name));
 		}
 
-		return enabledVisualizationModeNames;
+		return enabledVisualizationModeJSONObjects;
 	}
 
 	private Object _getListTypeEntryKey(
@@ -1169,7 +1173,10 @@ public class CustomFDSSerializer
 
 	private JSONObject _serializeClientExtensionView(
 		String defaultVisualizationMode, HttpServletRequest httpServletRequest,
-		String externalReferenceCode) {
+		JSONObject visualizationModeJSONObject) {
+
+		String externalReferenceCode = visualizationModeJSONObject.getString(
+			"name");
 
 		CET cet = cetManager.getCET(
 			PortalUtil.getCompanyId(httpServletRequest), externalReferenceCode);
@@ -1188,6 +1195,9 @@ public class CustomFDSSerializer
 			(FDSVisualizationModeCET)cet;
 
 		return JSONUtil.put(
+			"configuration",
+			visualizationModeJSONObject.getJSONObject("configuration")
+		).put(
 			"contentRenderer", "clientExtension"
 		).put(
 			"contentRendererClientExtension", true

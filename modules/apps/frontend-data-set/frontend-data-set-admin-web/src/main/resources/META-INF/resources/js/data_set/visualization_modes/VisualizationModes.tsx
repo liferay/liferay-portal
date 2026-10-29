@@ -227,9 +227,10 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 			}),
 			{
 				body: JSON.stringify({
-					visualizationModes: serializeVisualizationModes(
-						updatedVisualizationModes
-					),
+					visualizationModes: serializeVisualizationModes({
+						dataSet,
+						visualizationModes: updatedVisualizationModes,
+					}),
 				}),
 				headers: DEFAULT_FETCH_HEADERS,
 				method: 'PATCH',
