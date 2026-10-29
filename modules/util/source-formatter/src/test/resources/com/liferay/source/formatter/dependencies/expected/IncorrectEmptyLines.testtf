@@ -1,5 +1,6 @@
 locals {
 	a=1
+
 	b=2
 	c=(
 		var.enabled ?
@@ -7,6 +8,7 @@ locals {
 		null
 	)
 }
+
 resource "terraform_data" "script" {
 	provisioner "local-exec" {
 		command=<<-EOT

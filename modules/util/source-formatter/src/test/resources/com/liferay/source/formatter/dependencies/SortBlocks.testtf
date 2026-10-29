@@ -5,28 +5,23 @@ terraform {
     prefix      = "terraform/engineering/translate"
   }
 }
-
 resource "google_service_account" "translate_account" {
   account_id   = var.account
   display_name = var.account
 }
-
 provider "google" {
   credentials = file("~/terraform.json")
   project     = var.project
   region      = var.region
   zone        = var.zone
 }
-
 resource "google_project_iam_binding" "project" {
   project = var.project
   role    = "roles/cloudtranslate.user"
-
   members = [
     "serviceAccount:${google_service_account.translate_account.email}",
   ]
 }
-
 module "project" {
   folder           = "599834336962"
   name             = var.name
