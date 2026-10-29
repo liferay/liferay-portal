@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.util.PortalClassPathUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -68,6 +69,8 @@ public class TensorFlowProcessHolder {
 	}
 
 	public void destroy() {
+		_destroyed = true;
+
 		_stop();
 
 		FileUtil.deltree(_tensorFlowWorkDir);
@@ -186,6 +189,14 @@ public class TensorFlowProcessHolder {
 							processLog.getMessage(), processLog.getThrowable());
 					}
 				}
+				else if (_destroyed &&
+						 (processLog.getThrowable() instanceof IOException)) {
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(
+							processLog.getMessage(), processLog.getThrowable());
+					}
+				}
 				else {
 					_log.error(
 						processLog.getMessage(), processLog.getThrowable());
@@ -260,6 +271,7 @@ public class TensorFlowProcessHolder {
 	private static volatile int _relanuchCounter;
 
 	private final Bundle _bundle;
+	private volatile boolean _destroyed;
 	private final DCLSingleton<ProcessChannel<String>>
 		_processChannelDCLSingleton = new DCLSingleton<>();
 	private ProcessConfig _processConfig;
