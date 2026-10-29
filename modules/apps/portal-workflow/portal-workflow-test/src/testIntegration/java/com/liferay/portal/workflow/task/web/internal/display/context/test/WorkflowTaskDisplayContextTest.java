@@ -52,7 +52,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowHandler;
@@ -143,7 +142,7 @@ public class WorkflowTaskDisplayContextTest {
 		_dlAppService.updateFileEntry(
 			fileEntry.getFileEntryId(), fileEntry.getFileName(),
 			fileEntry.getMimeType(), RandomTestUtil.randomString(),
-			StringUtil.randomString(), fileEntry.getDescription(),
+			RandomTestUtil.randomString(), fileEntry.getDescription(),
 			RandomTestUtil.randomString(), DLVersionNumberIncrease.MAJOR,
 			fileEntry.getContentStream(), fileEntry.getSize(),
 			fileEntry.getDisplayDate(), fileEntry.getExpirationDate(),
@@ -164,9 +163,7 @@ public class WorkflowTaskDisplayContextTest {
 
 	@Test
 	@TestInfo("LPD-107903")
-	public void testGetWorkflowAssetEntryWithFirstKBArticleVersion()
-		throws Exception {
-
+	public void testGetWorkflowAssetEntryWithKBArticle() throws Exception {
 		User user = UserTestUtil.addUser(_group.getGroupId());
 
 		PermissionThreadLocal.setPermissionChecker(
@@ -183,9 +180,9 @@ public class WorkflowTaskDisplayContextTest {
 			null, user.getUserId(),
 			PortalUtil.getClassNameId(KBFolderConstants.getClassName()),
 			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(), null, null,
-			new Date(), null, null, null,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
+			null, new Date(), null, null, null,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), user.getUserId()));
 
@@ -262,8 +259,8 @@ public class WorkflowTaskDisplayContextTest {
 			"Single Approver", 1);
 
 		_blogsEntryLocalService.addEntry(
-			TestPropsValues.getUserId(), StringUtil.randomString(),
-			StringUtil.randomString(),
+			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
 			new Date(System.currentTimeMillis() - Time.SECOND),
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
