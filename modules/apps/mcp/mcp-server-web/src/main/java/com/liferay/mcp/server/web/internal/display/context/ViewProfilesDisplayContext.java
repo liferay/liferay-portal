@@ -54,6 +54,12 @@ public class ViewProfilesDisplayContext {
 	}
 
 	public CreationMenu getCreationMenu() {
+		if (!MCPServerPermissionUtil.hasAddObjectEntryPermission(
+				_httpServletRequest, _objectDefinition)) {
+
+			return null;
+		}
+
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(

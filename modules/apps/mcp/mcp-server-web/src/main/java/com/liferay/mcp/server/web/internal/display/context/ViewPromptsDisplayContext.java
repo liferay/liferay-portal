@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,6 +48,10 @@ public class ViewPromptsDisplayContext {
 			ObjectDefinitionLocalServiceUtil.
 				getObjectDefinitionByExternalReferenceCode(
 					"L_MCP_SERVER_PROMPT", themeDisplay.getCompanyId());
+
+		_addObjectEntryPermission =
+			MCPServerPermissionUtil.hasAddObjectEntryPermission(
+				httpServletRequest, _objectDefinition);
 	}
 
 	public String getAPIURL() {
@@ -54,6 +59,10 @@ public class ViewPromptsDisplayContext {
 	}
 
 	public CreationMenu getCreationMenu() {
+		if (!_addObjectEntryPermission) {
+			return null;
+		}
+
 		return CreationMenuBuilder.addPrimaryDropdownItem(
 			dropdownItem -> {
 				dropdownItem.setHref(
@@ -69,7 +78,9 @@ public class ViewPromptsDisplayContext {
 	}
 
 	public List<FDSActionDropdownItem> getFDSActionDropdownItems() {
-		return List.of(
+		List<FDSActionDropdownItem> fdsActionDropdownItems = new ArrayList<>();
+
+		fdsActionDropdownItems.add(
 			new FDSActionDropdownItem(
 				PortletURLBuilder.createRenderURL(
 					_liferayPortletResponse
@@ -79,17 +90,26 @@ public class ViewPromptsDisplayContext {
 					"promptId", "{id}"
 				).buildString(),
 				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
-				"get", "update", null),
-			new FDSActionDropdownItem(
-				"#", "copy", "duplicate",
-				LanguageUtil.get(_httpServletRequest, "duplicate"), "get", null,
-				null),
+				"get", "update", null));
+
+		if (_addObjectEntryPermission) {
+			fdsActionDropdownItems.add(
+				new FDSActionDropdownItem(
+					"#", "copy", "duplicate",
+					LanguageUtil.get(_httpServletRequest, "duplicate"), "get",
+					null, null));
+		}
+
+		fdsActionDropdownItems.add(
 			new FDSActionDropdownItem(
 				"#", "trash", "delete",
 				LanguageUtil.get(_httpServletRequest, "delete"), "get",
-				"delete", null),
+				"delete", null));
+		fdsActionDropdownItems.add(
 			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
 				_httpServletRequest, _objectDefinition));
+
+		return fdsActionDropdownItems;
 	}
 
 	public String getFDSName() {
@@ -124,6 +144,7 @@ public class ViewPromptsDisplayContext {
 		).build();
 	}
 
+	private final boolean _addObjectEntryPermission;
 	private final HttpServletRequest _httpServletRequest;
 	private final LiferayPortletResponse _liferayPortletResponse;
 	private final ObjectDefinition _objectDefinition;
