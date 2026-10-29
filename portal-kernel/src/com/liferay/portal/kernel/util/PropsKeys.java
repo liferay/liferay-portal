@@ -284,9 +284,6 @@ public interface PropsKeys {
 	public static final String BASIC_AUTH_PASSWORD_REQUIRED =
 		"basic.auth.password.required";
 
-	public static final String BATCH_ENGINE_ENCRYPTION_KEY =
-		"batch.engine.encryption.key";
-
 	public static final String BLOGS_DISPLAY_TEMPLATES_CONFIG =
 		"blogs.display.templates.config";
 
