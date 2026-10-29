@@ -177,7 +177,7 @@ describe('OverviewSection', () => {
 		[RangeKeyTimeRanges.Last7Days, 'vs. Last 7 Days'],
 		[RangeKeyTimeRanges.Last90Days, 'vs. Last 90 Days'],
 		[RangeKeyTimeRanges.LastYear, 'vs. Last 365 Days'],
-		[RangeKeyTimeRanges.Last24Hours, 'vs. Last 1 Days'],
+		[RangeKeyTimeRanges.Last24Hours, 'vs. Last 24 Hours'],
 		[RangeKeyTimeRanges.Yesterday, 'vs. Last 1 Days'],
 	])('should name the window of range key %s', (rangeKey, trendLabel) => {
 		const {container} = render(
