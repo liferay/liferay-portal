@@ -53,6 +53,10 @@ public interface ListTypeDefinitionResource {
 			String callbackURL, Object object)
 		throws Exception;
 
+	public void deleteListTypeDefinitionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception;
+
 	public ListTypeDefinition getListTypeDefinition(Long listTypeDefinitionId)
 		throws Exception;
 
@@ -195,4 +199,4 @@ public interface ListTypeDefinitionResource {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1223870588
+// LIFERAY-REST-BUILDER-HASH:1073701175

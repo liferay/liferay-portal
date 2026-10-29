@@ -357,12 +357,50 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 			testDeleteListTypeDefinitionBatch_addListTypeDefinition();
 
 		testDeleteListTypeDefinitionBatch_deleteListTypeDefinition(
+			202, listTypeDefinition1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition1.getId()));
+
+		listTypeDefinition1 =
+			testDeleteListTypeDefinitionBatch_addListTypeDefinition();
+
+		testDeleteListTypeDefinitionBatch_deleteListTypeDefinition(
 			202, null, listTypeDefinition1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
 				listTypeDefinition1.getId()));
+
+		listTypeDefinition1 =
+			testDeleteListTypeDefinitionBatch_addListTypeDefinition();
+		ListTypeDefinition listTypeDefinition2 =
+			testDeleteListTypeDefinitionBatch_addListTypeDefinition();
+
+		testDeleteListTypeDefinitionBatch_deleteListTypeDefinition(
+			202, listTypeDefinition2.getExternalReferenceCode(),
+			listTypeDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition2.getId()));
+
+		testDeleteListTypeDefinitionBatch_deleteListTypeDefinition(
+			202, listTypeDefinition2.getExternalReferenceCode(),
+			listTypeDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition2.getId()));
 	}
 
 	protected ListTypeDefinition
@@ -392,6 +430,138 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 		waitForFinish(
 			"COMPLETED",
 			JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+	}
+
+	@Test
+	public void testDeleteListTypeDefinitionByExternalReferenceCode()
+		throws Exception {
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ListTypeDefinition listTypeDefinition =
+			testDeleteListTypeDefinitionByExternalReferenceCode_addListTypeDefinition();
+
+		assertHttpResponseStatusCode(
+			204,
+			listTypeDefinitionResource.
+				deleteListTypeDefinitionByExternalReferenceCodeHttpResponse(
+					listTypeDefinition.getExternalReferenceCode()));
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.
+				getListTypeDefinitionByExternalReferenceCodeHttpResponse(
+					listTypeDefinition.getExternalReferenceCode()));
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.
+				getListTypeDefinitionByExternalReferenceCodeHttpResponse("-"));
+	}
+
+	protected ListTypeDefinition
+			testDeleteListTypeDefinitionByExternalReferenceCode_addListTypeDefinition()
+		throws Exception {
+
+		throw new UnsupportedOperationException(
+			"This method needs to be implemented");
+	}
+
+	@Test
+	public void testGraphQLDeleteListTypeDefinitionByExternalReferenceCode()
+		throws Exception {
+
+		// No namespace
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ListTypeDefinition listTypeDefinition1 =
+			testGraphQLDeleteListTypeDefinitionByExternalReferenceCode_addListTypeDefinition();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"deleteListTypeDefinitionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										listTypeDefinition1.
+											getExternalReferenceCode() + "\"");
+							}
+						})),
+				"JSONObject/data",
+				"Object/deleteListTypeDefinitionByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray1 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"listTypeDefinitionByExternalReferenceCode",
+					new HashMap<String, Object>() {
+						{
+							put(
+								"externalReferenceCode",
+								"\"" +
+									listTypeDefinition1.
+										getExternalReferenceCode() + "\"");
+						}
+					},
+					getGraphQLFields())),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray1.length() > 0);
+
+		// Using the namespace headlessAdminListType_v1_0
+
+		@SuppressWarnings("PMD.UnusedLocalVariable")
+		ListTypeDefinition listTypeDefinition2 =
+			testGraphQLDeleteListTypeDefinitionByExternalReferenceCode_addListTypeDefinition();
+
+		Assert.assertTrue(
+			JSONUtil.getValueAsBoolean(
+				invokeGraphQLMutation(
+					new GraphQLField(
+						"headlessAdminListType_v1_0",
+						new GraphQLField(
+							"deleteListTypeDefinitionByExternalReferenceCode",
+							new HashMap<String, Object>() {
+								{
+									put(
+										"externalReferenceCode",
+										"\"" +
+											listTypeDefinition2.
+												getExternalReferenceCode() +
+													"\"");
+								}
+							}))),
+				"JSONObject/data", "JSONObject/headlessAdminListType_v1_0",
+				"Object/deleteListTypeDefinitionByExternalReferenceCode"));
+
+		JSONArray errorsJSONArray2 = JSONUtil.getValueAsJSONArray(
+			invokeGraphQLQuery(
+				new GraphQLField(
+					"headlessAdminListType_v1_0",
+					new GraphQLField(
+						"listTypeDefinitionByExternalReferenceCode",
+						new HashMap<String, Object>() {
+							{
+								put(
+									"externalReferenceCode",
+									"\"" +
+										listTypeDefinition2.
+											getExternalReferenceCode() + "\"");
+							}
+						},
+						getGraphQLFields()))),
+			"JSONArray/errors");
+
+		Assert.assertTrue(errorsJSONArray2.length() > 0);
+	}
+
+	protected ListTypeDefinition
+			testGraphQLDeleteListTypeDefinitionByExternalReferenceCode_addListTypeDefinition()
+		throws Exception {
+
+		return testGraphQLListTypeDefinition_addListTypeDefinition();
 	}
 
 	@Test
@@ -1518,12 +1688,50 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 			testBatchEngineDeleteImportTask_addListTypeDefinition();
 
 		testBatchEngineDeleteImportTask_deleteListTypeDefinition(
+			200, listTypeDefinition1.getExternalReferenceCode(), null);
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition1.getId()));
+
+		listTypeDefinition1 =
+			testBatchEngineDeleteImportTask_addListTypeDefinition();
+
+		testBatchEngineDeleteImportTask_deleteListTypeDefinition(
 			200, null, listTypeDefinition1.getId());
 
 		assertHttpResponseStatusCode(
 			404,
 			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
 				listTypeDefinition1.getId()));
+
+		listTypeDefinition1 =
+			testBatchEngineDeleteImportTask_addListTypeDefinition();
+		ListTypeDefinition listTypeDefinition2 =
+			testBatchEngineDeleteImportTask_addListTypeDefinition();
+
+		testBatchEngineDeleteImportTask_deleteListTypeDefinition(
+			200, listTypeDefinition2.getExternalReferenceCode(),
+			listTypeDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition1.getId()));
+		assertHttpResponseStatusCode(
+			200,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition2.getId()));
+
+		testBatchEngineDeleteImportTask_deleteListTypeDefinition(
+			200, listTypeDefinition2.getExternalReferenceCode(),
+			listTypeDefinition1.getId());
+
+		assertHttpResponseStatusCode(
+			404,
+			listTypeDefinitionResource.getListTypeDefinitionHttpResponse(
+				listTypeDefinition2.getId()));
 	}
 
 	protected ListTypeDefinition
@@ -2828,4 +3036,4 @@ public abstract class BaseListTypeDefinitionResourceTestCase {
 		_vulcanCRUDItemDelegateBuilderRegistry;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-2003600457
+// LIFERAY-REST-BUILDER-HASH:-1116329297

@@ -92,6 +92,11 @@ public class ServletDataImpl implements ServletData {
 							ListTypeDefinitionResourceImpl.class,
 							"deleteListTypeDefinitionBatch"));
 					put(
+						"mutation#deleteListTypeDefinitionByExternalReferenceCode",
+						new ObjectValuePair<>(
+							ListTypeDefinitionResourceImpl.class,
+							"deleteListTypeDefinitionByExternalReferenceCode"));
+					put(
 						"mutation#patchListTypeDefinition",
 						new ObjectValuePair<>(
 							ListTypeDefinitionResourceImpl.class,
@@ -215,4 +220,4 @@ public class ServletDataImpl implements ServletData {
 		_listTypeEntryResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1087123639
+// LIFERAY-REST-BUILDER-HASH:-994815170

@@ -151,6 +151,38 @@ public abstract class BaseListTypeDefinitionResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
+	 * curl -X 'DELETE' 'http://localhost:8080/o/headless-admin-list-type/v1.0/list-type-definitions/by-external-reference-code/{externalReferenceCode}'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Parameters(
+		value = {
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.PATH,
+				name = "externalReferenceCode", required = true
+			)
+		}
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {
+			@io.swagger.v3.oas.annotations.tags.Tag(name = "ListTypeDefinition")
+		}
+	)
+	@jakarta.ws.rs.DELETE
+	@jakarta.ws.rs.Path(
+		"/list-type-definitions/by-external-reference-code/{externalReferenceCode}"
+	)
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public void deleteListTypeDefinitionByExternalReferenceCode(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.validation.constraints.NotNull
+			@jakarta.ws.rs.PathParam("externalReferenceCode")
+			String externalReferenceCode)
+		throws Exception {
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
 	 * curl -X 'GET' 'http://localhost:8080/o/headless-admin-list-type/v1.0/list-type-definitions/{listTypeDefinitionId}'  -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -695,9 +727,34 @@ public abstract class BaseListTypeDefinitionResourceImpl
 
 		UnsafeFunction<ListTypeDefinition, ListTypeDefinition, Exception>
 			listTypeDefinitionUnsafeFunction = listTypeDefinition -> {
-				deleteListTypeDefinition(listTypeDefinition.getId());
+				if (listTypeDefinition.getId() != null) {
+					try {
+						deleteListTypeDefinition(listTypeDefinition.getId());
 
-				return listTypeDefinition;
+						return listTypeDefinition;
+					}
+					catch (Exception exception) {
+						if (listTypeDefinition.getExternalReferenceCode() !=
+								null) {
+
+							deleteListTypeDefinitionByExternalReferenceCode(
+								listTypeDefinition.getExternalReferenceCode());
+
+							return listTypeDefinition;
+						}
+					}
+				}
+				else if (listTypeDefinition.getExternalReferenceCode() !=
+							null) {
+
+					deleteListTypeDefinitionByExternalReferenceCode(
+						listTypeDefinition.getExternalReferenceCode());
+
+					return listTypeDefinition;
+				}
+
+				throw new UnsupportedOperationException(
+					"Unable to delete by external reference code or ID");
 			};
 
 		if (contextBatchUnsafeBiConsumer != null) {
@@ -1400,4 +1457,4 @@ public abstract class BaseListTypeDefinitionResourceImpl
 		LogFactoryUtil.getLog(BaseListTypeDefinitionResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1174982361
+// LIFERAY-REST-BUILDER-HASH:1171980813

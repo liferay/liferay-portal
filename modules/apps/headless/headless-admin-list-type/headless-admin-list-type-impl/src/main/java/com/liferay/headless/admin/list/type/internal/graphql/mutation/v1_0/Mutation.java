@@ -84,6 +84,22 @@ public class Mutation {
 	}
 
 	@GraphQLField
+	public boolean deleteListTypeDefinitionByExternalReferenceCode(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode)
+		throws Exception {
+
+		_applyVoidComponentServiceObjects(
+			_listTypeDefinitionResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			listTypeDefinitionResource ->
+				listTypeDefinitionResource.
+					deleteListTypeDefinitionByExternalReferenceCode(
+						externalReferenceCode));
+
+		return true;
+	}
+
+	@GraphQLField
 	public ListTypeDefinition patchListTypeDefinition(
 			@GraphQLName("listTypeDefinitionId") Long listTypeDefinitionId,
 			@GraphQLName("listTypeDefinition") ListTypeDefinition
@@ -426,4 +442,4 @@ public class Mutation {
 		_vulcanBatchEngineImportTaskResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-208769959
+// LIFERAY-REST-BUILDER-HASH:-1010482975
