@@ -103,7 +103,7 @@ export default function ContentTypeModal({
 	const formRef = useRef<HTMLFormElement>(null);
 
 	const handleSubmit = useCallback(
-		(event: any) => {
+		(event: React.SyntheticEvent) => {
 			event.preventDefault();
 
 			const form = formRef.current;

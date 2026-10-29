@@ -125,7 +125,7 @@ function MappingTypeSelector({
 	});
 
 	const onChange = useCallback(
-		(event: any) => {
+		(event: React.ChangeEvent<HTMLSelectElement>) => {
 			setError({...error, classNameId: '', classTypeId: ''});
 
 			const select = event.target;
