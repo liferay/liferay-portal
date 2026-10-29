@@ -41,13 +41,16 @@ public class ConfigurationServiceBootstrapUtil {
 		return ConfigurationService.get(configurationClass);
 	}
 
-	public static synchronized <T> void register(
+	public static <T> void register(
 		Class<T> configurationClass, T configuration) {
 
-		_configurations.put(configurationClass, configuration);
+		synchronized (_configurations) {
+			_configurations.put(configurationClass, configuration);
 
-		if (_initialized) {
-			ConfigurationService.register(configurationClass, configuration);
+			if (_initialized) {
+				ConfigurationService.register(
+					configurationClass, configuration);
+			}
 		}
 	}
 
@@ -87,12 +90,16 @@ public class ConfigurationServiceBootstrapUtil {
 			ReflectionUtil.throwException(exception);
 		}
 
-		for (Map.Entry<Class<?>, Object> entry : _configurations.entrySet()) {
-			ConfigurationService.register(
-				(Class<Object>)entry.getKey(), entry.getValue());
-		}
+		synchronized (_configurations) {
+			for (Map.Entry<Class<?>, Object> entry :
+					_configurations.entrySet()) {
 
-		_initialized = true;
+				ConfigurationService.register(
+					(Class<Object>)entry.getKey(), entry.getValue());
+			}
+
+			_initialized = true;
+		}
 	}
 
 	private static void _initializeParserPool() throws InitializationException {
