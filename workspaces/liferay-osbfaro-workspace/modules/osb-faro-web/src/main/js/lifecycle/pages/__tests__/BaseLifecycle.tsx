@@ -376,7 +376,7 @@ describe('BaseLifecycle', () => {
 			expect(screen.queryByRole('heading', {level: 1})).toBeNull();
 		});
 
-		it('keeps the breadcrumb up to the lifecycles', () => {
+		it('ends the breadcrumb at the lifecycles', () => {
 			const {container} = renderPage();
 
 			const breadcrumb = container.querySelector(
@@ -387,11 +387,8 @@ describe('BaseLifecycle', () => {
 				breadcrumb.querySelectorAll('.breadcrumb-item')
 			).toHaveLength(2);
 			expect(
-				within(breadcrumb).getByRole('link', {name: /^lifecycles$/i})
-			).toHaveAttribute(
-				'href',
-				toRoute(Routes.LIFECYCLE, {channelId: '123', groupId: '23'})
-			);
+				breadcrumb.querySelector('.breadcrumb-item.active')
+			).toHaveTextContent(/^lifecycles$/i);
 		});
 
 		it('links back to the lifecycles', () => {
@@ -416,12 +413,13 @@ describe('BaseLifecycle', () => {
 					: dashboardRequest(options)
 		);
 
-		const {container} = renderPage();
+		renderPage();
 
-		expect(container.querySelector('.breadcrumb')).toBeNull();
+		expect(screen.queryByRole('heading', {level: 1})).toBeNull();
 		expect(
 			screen.queryByRole('button', {name: /switch.dashboard/i})
 		).toBeNull();
+		expect(screen.queryByTestId('overview-section')).toBeNull();
 	});
 
 	it('renders neither an empty state nor content while loading', () => {
@@ -1095,7 +1093,7 @@ describe('BaseLifecycle', () => {
 				screen.getByRole('button', {name: /switch dashboard/i})
 			).toHaveAttribute('aria-expanded', 'true');
 			expect(screen.getByTestId('location')).toHaveTextContent(
-				'/workspace/23/123/lifecycle/1'
+				'/workspace/23/123/lifecycle/erc-1'
 			);
 		});
 
@@ -1144,7 +1142,7 @@ describe('BaseLifecycle', () => {
 				screen.getByRole('button', {name: /switch dashboard/i})
 			).toHaveAttribute('aria-expanded', 'true');
 			expect(screen.getByTestId('location')).toHaveTextContent(
-				'/workspace/23/123/lifecycle/1'
+				'/workspace/23/123/lifecycle/erc-1'
 			);
 
 			openActionsMenu();
