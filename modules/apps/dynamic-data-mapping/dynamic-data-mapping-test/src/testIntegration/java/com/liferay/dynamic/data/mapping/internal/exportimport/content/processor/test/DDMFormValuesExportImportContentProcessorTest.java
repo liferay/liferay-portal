@@ -56,6 +56,7 @@ import com.liferay.portal.kernel.repository.capabilities.ThumbnailCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -560,6 +561,58 @@ public class DDMFormValuesExportImportContentProcessorTest {
 		Assert.assertEquals(
 			PortletDataContext.REFERENCE_TYPE_LAZY,
 			missingReferenceElement.attributeValue("type"));
+	}
+
+	@Test
+	@TestInfo("LPD-108748")
+	public void testReplaceLayoutExportContentReferencesWithLegacyValue()
+		throws Exception {
+
+		_journalArticle = JournalTestUtil.addArticle(
+			TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		Layout stagingLayout = LayoutTestUtil.addTypePortletLayout(
+			_stagingGroup);
+
+		_createDDMFormWithJournalField(
+			_stagingGroup, _journalArticle, stagingLayout);
+
+		List<DDMFormFieldValue> ddmFormFieldValues =
+			_journalDDMFormValues.getDDMFormFieldValues();
+
+		DDMFormFieldValue ddmFormFieldValue = ddmFormFieldValues.get(1);
+
+		Value value = ddmFormFieldValue.getValue();
+
+		value.addString(
+			LocaleUtil.US,
+			JSONUtil.put(
+				"groupId", stagingLayout.getGroupId()
+			).put(
+				"layoutId", String.valueOf(stagingLayout.getLayoutId())
+			).put(
+				"privateLayout", stagingLayout.isPrivateLayout()
+			).toString());
+
+		DDMFormValues exportDDMFormValues =
+			_exportImportContentProcessor.replaceExportContentReferences(
+				_portletDataContextExport, _journalArticle,
+				_journalDDMFormValues, true, true);
+
+		ddmFormFieldValues = exportDDMFormValues.getDDMFormFieldValues();
+
+		ddmFormFieldValue = ddmFormFieldValues.get(1);
+
+		value = ddmFormFieldValue.getValue();
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			value.getString(LocaleUtil.US));
+
+		Assert.assertEquals(
+			stagingLayout.getUuid(), jsonObject.getString("id"));
+		Assert.assertEquals(
+			stagingLayout.getLayoutId(), jsonObject.getLong("layoutId"));
 	}
 
 	@Test
