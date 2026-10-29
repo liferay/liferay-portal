@@ -2,9 +2,9 @@
 
 Check | File Extensions | Description
 ----- | --------------- | -----------
-FIPSTLSVerificationCheck | .java | Finds outbound TLS verification bypasses that are not guarded by `PropsValues.FIPS_ENABLED`, see LPD-93649. |
+FIPSTLSVerificationCheck | .java | Finds outbound TLS verification bypasses that are not guarded by `PropsValues.FIPS_ENABLED`. |
 JSPXSSVulnerabilitiesCheck | .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds xss vulnerabilities. |
 JavaDeserializationSecurityCheck | .java | Finds Java serialization vulnerabilities. |
 JavaXMLSecurityCheck | .java | Finds possible XXE or Quadratic Blowup security vulnerabilities. |
 SecretComparisonCheck | .java | Finds secrets compared with a method that returns at the first differing byte. |
-SecretResolverCheck | .java | Finds configuration credentials read without resolving them through `SecretResolver` or `SecretResolverUtil`, see LPD-107260. |
+SecretResolverCheck | .java | Finds configuration credentials read without resolving them through `SecretResolver` or `SecretResolverUtil`. |
