@@ -34,6 +34,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.vulcan.feature.flag.FeatureFlag;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLName;
 import com.liferay.portal.vulcan.graphql.annotation.GraphQLTypeExtension;
+import com.liferay.portal.vulcan.graphql.contributor.GraphQLContributor;
 import com.liferay.portal.vulcan.graphql.servlet.ServletData;
 import com.liferay.portal.vulcan.internal.test.util.FeatureFlagManagerTestUtil;
 import com.liferay.portal.vulcan.internal.test.util.PaginationConfigurationTestUtil;
@@ -97,6 +98,40 @@ public class GraphQLServletTest {
 	@After
 	public void tearDown() {
 		_serviceRegistration.unregister();
+	}
+
+	@Test
+	public void testGraphQLContributor() throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"notprivacysafe.graphql.GraphQL", LoggerTestUtil.ERROR)) {
+
+			Assert.assertNull(_getContributedTestDTO1JSONObject());
+		}
+
+		Bundle bundle = FrameworkUtil.getBundle(GraphQLServletTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<GraphQLContributor> serviceRegistration =
+			bundleContext.registerService(
+				GraphQLContributor.class, new TestGraphQLContributor(), null);
+
+		try {
+			JSONObject jsonObject = _getContributedTestDTO1JSONObject();
+
+			Assert.assertEquals(
+				_testDTO1.getString(),
+				jsonObject.getString("contributedString"));
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"notprivacysafe.graphql.GraphQL", LoggerTestUtil.ERROR)) {
+
+			Assert.assertNull(_getContributedTestDTO1JSONObject());
+		}
 	}
 
 	@Test
@@ -721,6 +756,48 @@ public class GraphQLServletTest {
 
 	}
 
+	public static class TestGraphQLContributor implements GraphQLContributor {
+
+		@Override
+		public String getPath() {
+			return _path;
+		}
+
+		@Override
+		public TestContributorQuery getQuery() {
+			return new TestContributorQuery();
+		}
+
+		@Override
+		public boolean isJaxRsResourceInvocation() {
+			return false;
+		}
+
+		public static class TestContributorQuery {
+
+			@GraphQLTypeExtension(TestDTO1.class)
+			public class TestContributorGraphQLTypeExtension {
+
+				public TestContributorGraphQLTypeExtension(TestDTO1 testDTO1) {
+					_testDTO1 = testDTO1;
+				}
+
+				@com.liferay.portal.vulcan.graphql.annotation.GraphQLField
+				public String contributedString() {
+					return _testDTO1.getString();
+				}
+
+				private final TestDTO1 _testDTO1;
+
+			}
+
+		}
+
+		private final String _path =
+			"/" + RandomTestUtil.randomString() + "-graphql/v1_0";
+
+	}
+
 	public static class TestMutation {
 
 		@com.liferay.portal.vulcan.graphql.annotation.GraphQLField
@@ -1017,6 +1094,15 @@ public class GraphQLServletTest {
 			).toString(),
 			String.valueOf(_getJSONObject(fieldsJSONArray, operationName)),
 			JSONCompareMode.LENIENT);
+	}
+
+	private JSONObject _getContributedTestDTO1JSONObject() throws Exception {
+		return JSONUtil.getValueAsJSONObject(
+			_invoke(
+				new GraphQLField(
+					"testDTO1", new GraphQLField("contributedString")),
+				"query"),
+			"JSONObject/data", "JSONObject/testDTO1");
 	}
 
 	private String _getDeprecationReason(
