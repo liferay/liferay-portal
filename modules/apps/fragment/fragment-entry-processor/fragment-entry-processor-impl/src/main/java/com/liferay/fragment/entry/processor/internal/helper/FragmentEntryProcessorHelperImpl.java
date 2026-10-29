@@ -591,27 +591,30 @@ public class FragmentEntryProcessorHelperImpl
 		if (value instanceof Date) {
 			Date date = (Date)value;
 
-			TimeZone timeZone = null;
-
-			if (!GetterUtil.getBoolean(
+			if (GetterUtil.getBoolean(
 					infoField.getAttribute(
 						DateInfoFieldType.TIME_ZONE_INDEPENDENT))) {
 
-				HttpServletRequest httpServletRequest =
-					fragmentEntryProcessorContext.getHttpServletRequest();
-
-				ThemeDisplay themeDisplay =
-					(ThemeDisplay)httpServletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY);
-
-				timeZone = themeDisplay.getTimeZone();
+				return _getDateValue(
+					editableValueJSONObject, date,
+					_getDefaultPattern(
+						fragmentEntryProcessorContext.getLocale()),
+					fragmentEntryProcessorContext.getLocale(), null);
 			}
+
+			HttpServletRequest httpServletRequest =
+				fragmentEntryProcessorContext.getHttpServletRequest();
+
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
 
 			return _getDateValue(
 				editableValueJSONObject, date,
 				_getShortTimeStylePattern(
 					fragmentEntryProcessorContext.getLocale()),
-				fragmentEntryProcessorContext.getLocale(), timeZone);
+				fragmentEntryProcessorContext.getLocale(),
+				themeDisplay.getTimeZone());
 		}
 		else if (value instanceof KeyLocalizedLabelPair) {
 			KeyLocalizedLabelPair keyLocalizedLabelPair =
