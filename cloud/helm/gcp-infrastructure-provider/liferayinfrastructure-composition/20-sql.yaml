@@ -157,7 +157,7 @@ spec:
         {{- $isDatabaseInstanceReady = true }}
     {{- end }}
 {{- end }}
-{{- if $isDatabaseInstanceReady }}
+{{- if and $isDatabaseInstanceReady $gsaEmail }}
 {{- $databasePort := "5432" }}
 {{- $jobName := printf "%s-db-grant-%s" $xr.metadata.name $dataPlane }}
 ---
