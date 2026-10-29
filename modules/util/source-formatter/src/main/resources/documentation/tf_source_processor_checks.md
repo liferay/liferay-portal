@@ -4,6 +4,6 @@ Check | Category | Description
 ----- | -------- | -----------
 EmbeddedJSONCheck | [Styling](styling_checks.md#styling-checks) | Ensures consistent formatting for embedded JSON. |
 TFBlockOrderCheck | [Styling](styling_checks.md#styling-checks) | Checks the order of blocks and attributes in `.hcl` and `.tf` files. |
-TFEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | Finds unnecessary empty lines. |
+TFEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | Finds missing and unnecessary empty lines. |
 TFIndentationCheck | [Styling](styling_checks.md#styling-checks) | Finds incorrect indentation in `.hcl` and `.tf` files. |
 TFStylingCheck | [Styling](styling_checks.md#styling-checks) | Applies rules to enforce consistency in code style. |

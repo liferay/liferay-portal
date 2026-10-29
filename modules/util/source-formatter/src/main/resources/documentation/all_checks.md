@@ -538,7 +538,7 @@ StringIndexOfCallCheck | [Styling](styling_checks.md#styling-checks) | .java | F
 SubstringCheck | [Performance](performance_checks.md#performance-checks) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds cases like `s.substring(1, s.length())` (use `s.substring(1)` instead). |
 SystemEventCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds missing or redundant usage of @SystemEvent for delete events. |
 TFBlockOrderCheck | [Styling](styling_checks.md#styling-checks) | .hcl or .tf | Checks the order of blocks and attributes in `.hcl` and `.tf` files. |
-TFEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | .hcl or .tf | Finds unnecessary empty lines. |
+TFEmptyLinesCheck | [Styling](styling_checks.md#styling-checks) | .hcl or .tf | Finds missing and unnecessary empty lines. |
 TFIndentationCheck | [Styling](styling_checks.md#styling-checks) | .hcl or .tf | Finds incorrect indentation in `.hcl` and `.tf` files. |
 TFStylingCheck | [Styling](styling_checks.md#styling-checks) | .hcl or .tf | Applies rules to enforce consistency in code style. |
 TLDElementOrderCheck | [Styling](styling_checks.md#styling-checks) | .tld | Checks the order of attributes in `.tld` file. |
