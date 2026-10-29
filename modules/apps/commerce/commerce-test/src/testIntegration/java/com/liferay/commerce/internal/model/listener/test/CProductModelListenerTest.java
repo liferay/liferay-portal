@@ -6,10 +6,15 @@
 package com.liferay.commerce.internal.model.listener.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.currency.model.CommerceCurrency;
+import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CProduct;
+import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.service.CProductLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
+import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -51,12 +56,19 @@ public class CProductModelListenerTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+
+		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
+			_group.getCompanyId());
+
+		_commerceCatalog = CommerceTestUtil.addCommerceCatalog(
+			_group.getCompanyId(), _group.getGroupId(),
+			_commerceCurrency.getUserId(), _commerceCurrency.getCode());
 	}
 
 	@Test
 	public void testOnAfterUpdate() throws Exception {
 		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
-			_group.getGroupId());
+			_commerceCatalog.getGroupId());
 
 		CProduct cProduct = cpDefinition.getCProduct();
 
@@ -111,6 +123,24 @@ public class CProductModelListenerTest {
 		Assert.assertEquals(
 			unicodeProperties.getProperty("externalReferenceCode"),
 			cProduct.getExternalReferenceCode());
+
+		_cpDefinitionLocalService.cloneCPDefinition(
+			TestPropsValues.getUserId(), cpDefinition.getCPDefinitionId(),
+			_commerceCatalog.getGroupId(),
+			ServiceContextTestUtil.getServiceContext(
+				_commerceCatalog.getGroupId()));
+
+		siteNavigationMenuItem =
+			_siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
+				siteNavigationMenuItem.getSiteNavigationMenuItemId());
+
+		unicodeProperties = UnicodePropertiesBuilder.fastLoad(
+			siteNavigationMenuItem.getTypeSettings()
+		).build();
+
+		Assert.assertEquals(
+			unicodeProperties.getProperty("externalReferenceCode"),
+			cProduct.getExternalReferenceCode());
 	}
 
 	@Inject
@@ -118,6 +148,15 @@ public class CProductModelListenerTest {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@DeleteAfterTestRun
+	private CommerceCatalog _commerceCatalog;
+
+	@DeleteAfterTestRun
+	private CommerceCurrency _commerceCurrency;
+
+	@Inject
+	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
