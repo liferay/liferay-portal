@@ -13,6 +13,7 @@ const test = mergeTests(loginTest());
 
 const VISIBLE_CATEGORY_NAMES = new Set([
 	'AI Creator',
+	'AI Hub',
 	'Accessibility',
 	'Batch Engine',
 	'Comments',
@@ -23,6 +24,7 @@ const VISIBLE_CATEGORY_NAMES = new Set([
 	'Feature Flags',
 	'Instance Configuration',
 	'LDAP',
+	'Liferay Data Platform',
 	'Localization',
 	'Login',
 	'Marketplace',
@@ -74,3 +76,17 @@ for (const [label, url] of Object.entries(SETTINGS_URLS)) {
 		}
 	);
 }
+
+test(
+	'shows the Liferay Data Platform category in instance settings',
+	{tag: '@LPD-112750'},
+	async ({page}) => {
+		await page.goto(SETTINGS_URLS['instance settings']);
+
+		await expect(
+			page.locator('.list-group-card-item-text', {
+				hasText: 'Liferay Data Platform',
+			})
+		).toBeVisible();
+	}
+);
