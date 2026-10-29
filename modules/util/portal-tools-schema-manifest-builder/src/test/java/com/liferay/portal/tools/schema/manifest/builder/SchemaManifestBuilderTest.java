@@ -15,6 +15,7 @@ import java.io.File;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import java.time.Instant;
 
@@ -137,14 +138,12 @@ public class SchemaManifestBuilderTest {
 		throws Exception {
 
 		File bndFile = new File(_baseDir, "bnd.bnd");
+		String bundleNameString = StringBundler.concat(
+			"Bundle-Name: ", RandomTestUtil.randomString(), "\n");
 
 		Files.write(
 			bndFile.toPath(),
-			StringBundler.concat(
-				"Bundle-Name: ", RandomTestUtil.randomString(), "\n"
-			).getBytes(
-				StandardCharsets.UTF_8
-			));
+			bundleNameString.getBytes(StandardCharsets.UTF_8));
 
 		_schemaManifestBuilder.getBundleSymbolicName(bndFile);
 	}
@@ -216,9 +215,9 @@ public class SchemaManifestBuilderTest {
 
 		manifestJSONObject.put("timestamp", timestamp);
 
-		Files.createDirectories(
-			_manifestFile.toPath(
-			).getParent());
+		Path manifestFilePath = _manifestFile.toPath();
+
+		Files.createDirectories(manifestFilePath.getParent());
 
 		_writeManifest(JSONUtil.toString(manifestJSONObject));
 
