@@ -231,6 +231,17 @@ public class LaunchSetPublisherTest {
 	public void testSchedulePublish() throws Exception {
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
 
+		ObjectEntry launchEntryObjectEntry = _addLaunchEntryObjectEntry(
+			launchSetId, RandomTestUtil.randomString(),
+			RandomTestUtil.randomInt(), RandomTestUtil.randomString());
+
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.schedulePublish(
+				new Date(System.currentTimeMillis() + Time.DAY),
+				launchEntryObjectEntry.getObjectEntryId(),
+				TestPropsValues.getUserId()));
+
 		Assert.assertThrows(
 			PortalException.class,
 			() -> _launchSetPublisher.schedulePublish(
@@ -259,6 +270,15 @@ public class LaunchSetPublisherTest {
 	@Test
 	public void testUnschedulePublish() throws Exception {
 		long launchSetId = _launchSetObjectEntry.getObjectEntryId();
+
+		ObjectEntry launchEntryObjectEntry = _addLaunchEntryObjectEntry(
+			launchSetId, RandomTestUtil.randomString(),
+			RandomTestUtil.randomInt(), RandomTestUtil.randomString());
+
+		Assert.assertThrows(
+			PortalException.class,
+			() -> _launchSetPublisher.unschedulePublish(
+				launchEntryObjectEntry.getObjectEntryId()));
 
 		_launchSetPublisher.unschedulePublish(launchSetId);
 
