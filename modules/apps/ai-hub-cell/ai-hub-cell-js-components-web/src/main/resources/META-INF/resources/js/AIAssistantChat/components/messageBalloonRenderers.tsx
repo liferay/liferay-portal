@@ -126,6 +126,13 @@ const MESSAGE_BALLOON_RENDERERS: MessageBalloonRenderers = {
 			/>
 		);
 	},
+	'fragment-code': (context, {fragmentCode}) => (
+		<AIAssistantMessageBalloon
+			error={false}
+			message={fragmentCode.summary}
+			{...getFeedbackProps(context)}
+		/>
+	),
 	'images': ({chat}, {images}) => {
 		const chatContext = {
 			...chat.contextRef.current,

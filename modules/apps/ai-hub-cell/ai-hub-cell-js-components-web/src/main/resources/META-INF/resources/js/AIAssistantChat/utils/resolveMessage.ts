@@ -6,7 +6,11 @@
 import {CategorizeEventPayload} from '../../Categorization/events';
 import {Result} from '../../TranslateContent/types';
 import {ContentType} from '../components/ContentTypeSelectorMessageBalloon';
-import {GENERATE_FIELD_VALUE_AGENT_EXTERNAL_REFERENCE_CODE} from '../events';
+import {
+	ApplyFragmentCodePayload,
+	EDIT_FRAGMENT_AGENT_EXTERNAL_REFERENCE_CODE,
+	GENERATE_FIELD_VALUE_AGENT_EXTERNAL_REFERENCE_CODE,
+} from '../events';
 import {Space} from '../services/getSpaces';
 import {AgentComponent, Message} from '../types';
 import getGeneratedFieldValues from './getGeneratedFieldValues';
@@ -26,6 +30,7 @@ export type ResolvedMessage =
 	| {contentTypes: ContentType[]; type: 'content-types'}
 	| {contentTypes: ContentType[]; spaces: Space[]; type: 'space-selector'}
 	| {fieldValues: Record<string, string>; type: 'field-values'}
+	| {fragmentCode: ApplyFragmentCodePayload; type: 'fragment-code'}
 	| {images: string[]; type: 'images'}
 	| {translate: TranslateMessage; type: 'translate'}
 	| {type: 'assistant'}
@@ -43,6 +48,36 @@ function getFieldValues(item: Message): Record<string, string> {
 	}
 
 	return getGeneratedFieldValues(item.text);
+}
+
+export function getFragmentCode(
+	item: Message
+): ApplyFragmentCodePayload | null {
+	if (
+		item.error ||
+		!item.agentDefinitionExternalReferenceCodes?.includes(
+			EDIT_FRAGMENT_AGENT_EXTERNAL_REFERENCE_CODE
+		)
+	) {
+		return null;
+	}
+
+	try {
+		const json = JSON.parse(
+			item.text
+				.trim()
+				.replace(/^```(?:json)?/i, '')
+				.replace(/```$/, '')
+				.trim()
+		);
+
+		if (typeof json?.html === 'string') {
+			return json;
+		}
+	}
+	catch {}
+
+	return null;
 }
 
 function parseTranslateMessage(text: string): TranslateMessage | null {
@@ -111,6 +146,12 @@ export default function resolveMessage(item: Message): ResolvedMessage {
 
 	if (Object.keys(fieldValues).length) {
 		return {fieldValues, type: 'field-values'};
+	}
+
+	const fragmentCode = getFragmentCode(item);
+
+	if (fragmentCode) {
+		return {fragmentCode, type: 'fragment-code'};
 	}
 
 	return {type: 'assistant'};

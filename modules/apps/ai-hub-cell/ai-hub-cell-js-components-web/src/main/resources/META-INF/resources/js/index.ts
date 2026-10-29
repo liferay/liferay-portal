@@ -13,6 +13,8 @@ export type {
 	AIAssistantActionOutcome,
 	ChatContext,
 } from './AIAssistantChat/api';
+export {APPLY_FRAGMENT_CODE_EVENT} from './AIAssistantChat/events';
+export type {ApplyFragmentCodePayload} from './AIAssistantChat/events';
 export {CONTENT_CHANGED_EVENT} from './AIAssistantChat/serverEvents';
 export {getObjectFields} from './AIAssistantChat/services/getObjectFields';
 export type {ObjectField} from './AIAssistantChat/services/getObjectFields';
