@@ -15,12 +15,17 @@ import com.liferay.jenkins.results.parser.failure.message.generator.RelevantRule
 import com.liferay.jenkins.results.parser.failure.message.generator.SourceFormatFailureMessageGenerator;
 
 import java.io.File;
+import java.io.IOException;
 
 import java.util.Objects;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.dom4j.Element;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Cesar Polanco
@@ -185,11 +190,12 @@ public class SourceFormatBuild
 		WorkspaceGitRepository workspaceGitRepository =
 			workspace.getPrimaryWorkspaceGitRepository();
 
-		workspaceGitRepository.setBaseBranchUsername(
-			pullRequest.getOwnerUsername());
-		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
-
 		String senderBranchSHA = getParameterValue("GITHUB_SENDER_BRANCH_SHA");
+
+		workspaceGitRepository.setBaseBranchUsername(
+			_getBaseBranchUsername(pullRequest, senderBranchSHA));
+
+		workspaceGitRepository.setGitHubURL(pullRequest.getHtmlURL());
 
 		if (JenkinsResultsParserUtil.isSHA(senderBranchSHA)) {
 			workspaceGitRepository.setSenderBranchSHA(senderBranchSHA);
@@ -300,6 +306,91 @@ public class SourceFormatBuild
 		return sourceFormatterVersionElement;
 	}
 
+	private int _getAheadBy(
+		PullRequest pullRequest, String senderBranchSHA, String username) {
+
+		try {
+			JSONObject compareJSONObject =
+				JenkinsResultsParserUtil.toJSONObject(
+					JenkinsResultsParserUtil.getGitHubAPIURL(
+						pullRequest.getGitRepositoryName(),
+						pullRequest.getOwnerUsername(),
+						JenkinsResultsParserUtil.combine(
+							"compare/", username, ":",
+							pullRequest.getUpstreamRemoteGitBranchName(), "...",
+							senderBranchSHA)));
+
+			return compareJSONObject.getInt("ahead_by");
+		}
+		catch (IOException | JSONException exception) {
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Unable to compare ", senderBranchSHA, " with ", username,
+					": ", exception.getMessage()));
+
+			return -1;
+		}
+	}
+
+	private String _getBaseBranchUsername(
+		PullRequest pullRequest, String senderBranchSHA) {
+
+		String ownerUsername = pullRequest.getOwnerUsername();
+
+		String upstreamUsername = JenkinsResultsParserUtil.getUpstreamUserName(
+			pullRequest.getGitRepositoryName(),
+			pullRequest.getUpstreamRemoteGitBranchName());
+
+		if (ownerUsername.equals(upstreamUsername)) {
+			return ownerUsername;
+		}
+
+		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
+
+		if (buildDatabase.hasProperties(_BASE_BRANCH_PROPERTIES_KEY)) {
+			Properties properties = buildDatabase.getProperties(
+				_BASE_BRANCH_PROPERTIES_KEY);
+
+			return properties.getProperty("base.branch.username");
+		}
+
+		if (!JenkinsResultsParserUtil.isSHA(senderBranchSHA)) {
+			senderBranchSHA = pullRequest.getSenderSHA();
+		}
+
+		int ownerAheadBy = _getAheadBy(
+			pullRequest, senderBranchSHA, ownerUsername);
+		int upstreamAheadBy = _getAheadBy(
+			pullRequest, senderBranchSHA, upstreamUsername);
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				senderBranchSHA, " is ", String.valueOf(ownerAheadBy),
+				" commits ahead of ", ownerUsername, " and ",
+				String.valueOf(upstreamAheadBy), " commits ahead of ",
+				upstreamUsername));
+
+		String baseBranchUsername = ownerUsername;
+
+		if ((ownerAheadBy < 0) || (upstreamAheadBy < 0) ||
+			(ownerAheadBy >= upstreamAheadBy)) {
+
+			baseBranchUsername = upstreamUsername;
+		}
+
+		System.out.println(
+			JenkinsResultsParserUtil.combine(
+				"Using ", baseBranchUsername, " as the source format base"));
+
+		Properties properties = new Properties();
+
+		properties.setProperty("base.branch.username", baseBranchUsername);
+
+		buildDatabase.putProperties(_BASE_BRANCH_PROPERTIES_KEY, properties);
+
+		return baseBranchUsername;
+	}
+
 	private PortalWorkspaceGitRepository _getPortalWorkspaceGitRepository() {
 		Workspace workspace = getWorkspace();
 
@@ -402,6 +493,9 @@ public class SourceFormatBuild
 
 		return false;
 	}
+
+	private static final String _BASE_BRANCH_PROPERTIES_KEY =
+		"source.format.base.branch.properties";
 
 	private static final String _GITHUB_BRANCH_NAME = "master";
 
