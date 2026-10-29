@@ -12,6 +12,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,12 +29,8 @@ import org.osgi.framework.ServiceReference;
  */
 public class DynamicIncludeUtil {
 
-	public static List<DynamicInclude> getDynamicIncludes(String key) {
-		return _dynamicIncludes.getService(key);
-	}
-
 	public static boolean hasDynamicInclude(String key) {
-		return ListUtil.isNotEmpty(getDynamicIncludes(key));
+		return _dynamicIncludes.containsKey(key);
 	}
 
 	public static void include(
@@ -41,7 +38,7 @@ public class DynamicIncludeUtil {
 		HttpServletResponse httpServletResponse, String key,
 		boolean ascendingPriority) {
 
-		List<DynamicInclude> dynamicIncludes = getDynamicIncludes(key);
+		List<DynamicInclude> dynamicIncludes = _dynamicIncludes.getService(key);
 
 		if (ListUtil.isEmpty(dynamicIncludes)) {
 			return;
@@ -87,6 +84,19 @@ public class DynamicIncludeUtil {
 				public void map(
 					ServiceReference<DynamicInclude> serviceReference,
 					final Emitter<String> emitter) {
+
+					Object dynamicIncludeKey = serviceReference.getProperty(
+						"dynamic.include.key");
+
+					if (dynamicIncludeKey != null) {
+						for (String key :
+								StringUtil.asList(dynamicIncludeKey)) {
+
+							emitter.emit(key);
+						}
+
+						return;
+					}
 
 					DynamicInclude dynamicInclude = _bundleContext.getService(
 						serviceReference);

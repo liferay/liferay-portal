@@ -20,7 +20,9 @@ public interface DynamicInclude {
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException;
 
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry);
+	public default void register(
+		DynamicIncludeRegistry dynamicIncludeRegistry) {
+	}
 
 	public interface DynamicIncludeRegistry {
 

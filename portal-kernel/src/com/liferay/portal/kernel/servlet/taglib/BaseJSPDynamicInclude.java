@@ -45,11 +45,6 @@ public abstract class BaseJSPDynamicInclude extends BaseDynamicInclude {
 		}
 	}
 
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-	}
-
 	protected abstract String getJspPath();
 
 	protected abstract Log getLog();
