@@ -5,6 +5,7 @@
 
 package com.liferay.portal.template.freemarker.internal;
 
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.concurrent.NoticeableExecutorService;
 import com.liferay.petra.concurrent.NoticeableFuture;
 import com.liferay.petra.concurrent.ThreadPoolHandlerAdapter;
@@ -223,14 +224,9 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		// Legacy
 
 		FreeMarkerBundleClassloader freeMarkerBundleClassloader =
-			_freeMarkerBundleClassloader;
-
-		if (freeMarkerBundleClassloader == null) {
-			freeMarkerBundleClassloader = new FreeMarkerBundleClassloader(
-				_taglibMappings.keySet());
-
-			_freeMarkerBundleClassloader = freeMarkerBundleClassloader;
-		}
+			_freeMarkerBundleClassloaderDCLSingleton.getSingleton(
+				() -> new FreeMarkerBundleClassloader(
+					_taglibMappings.keySet()));
 
 		TaglibFactoryWrapper taglibFactoryWrapper = new TaglibFactoryWrapper(
 			freeMarkerBundleClassloader, objectWrapper, servletContext);
@@ -633,7 +629,8 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		<FreeMarkerBundleClassloader, Map<String, TemplateModel>>
 			_contributedTemplateModelsEntry;
 	private volatile BeansWrapper _defaultBeansWrapper;
-	private volatile FreeMarkerBundleClassloader _freeMarkerBundleClassloader;
+	private final DCLSingleton<FreeMarkerBundleClassloader>
+		_freeMarkerBundleClassloaderDCLSingleton = new DCLSingleton<>();
 	private volatile FreeMarkerEngineConfiguration
 		_freeMarkerEngineConfiguration;
 	private FreeMarkerTemplateResourceCache _freeMarkerTemplateResourceCache;
@@ -902,7 +899,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 				_taglibMappings.put(bundleWiring.getClassLoader(), map);
 
-				_freeMarkerBundleClassloader = null;
+				_freeMarkerBundleClassloaderDCLSingleton.destroy(null);
 
 				return bundleWiring.getClassLoader();
 			}
@@ -926,7 +923,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 			_templateModels.clear();
 
-			_freeMarkerBundleClassloader = null;
+			_freeMarkerBundleClassloaderDCLSingleton.destroy(null);
 		}
 
 	}
