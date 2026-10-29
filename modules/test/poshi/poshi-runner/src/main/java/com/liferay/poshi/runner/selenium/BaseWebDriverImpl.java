@@ -3524,7 +3524,7 @@ public abstract class BaseWebDriverImpl implements LiferaySelenium, WebDriver {
 		sb.append(eventType);
 		sb.append("');event.initEvent('");
 		sb.append(event);
-		sb.append("', true, false);element.dispatchEvent(event);");
+		sb.append("', true, true);element.dispatchEvent(event);");
 
 		javascriptExecutor.executeScript(sb.toString(), webElement);
 	}
