@@ -7,6 +7,8 @@ package com.liferay.search.experiences.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -42,6 +44,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * @author Wade Cao
@@ -85,8 +89,8 @@ public class SXPBlueprintLocalServiceTest {
 		User user = UserTestUtil.getAdminUser(company.getCompanyId());
 
 		SXPBlueprint differentCompanySXPBlueprint = _addSXPBlueprint(
-			sxpBlueprint.getExternalReferenceCode(), user.getUserId(),
-			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+			sxpBlueprint.getExternalReferenceCode(), user.getUserId(), "{}",
+			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK), null,
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			ServiceContextTestUtil.getServiceContext());
@@ -126,8 +130,8 @@ public class SXPBlueprintLocalServiceTest {
 		try {
 			_addSXPBlueprint(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
-				Collections.emptyMap(), serviceContext);
+				"{}", Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+				null, Collections.emptyMap(), serviceContext);
 		}
 		catch (SXPBlueprintTitleException sxpBlueprintTitleException) {
 			Assert.assertNotNull(sxpBlueprintTitleException);
@@ -144,8 +148,8 @@ public class SXPBlueprintLocalServiceTest {
 		try {
 			_addSXPBlueprint(
 				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
-				Collections.emptyMap(), serviceContext);
+				"{}", Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+				null, Collections.emptyMap(), serviceContext);
 		}
 		catch (SXPBlueprintTitleException sxpBlueprintTitleException) {
 			Assert.assertNotNull(sxpBlueprintTitleException);
@@ -154,8 +158,8 @@ public class SXPBlueprintLocalServiceTest {
 		serviceContext.setAttribute(attributeName, Boolean.FALSE);
 
 		sxpBlueprint = _addSXPBlueprint(
-			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+			RandomTestUtil.randomString(), TestPropsValues.getUserId(), "{}",
+			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK), null,
 			Collections.emptyMap(), serviceContext);
 
 		Assert.assertEquals(Collections.emptyMap(), sxpBlueprint.getTitleMap());
@@ -212,6 +216,68 @@ public class SXPBlueprintLocalServiceTest {
 		Assert.assertEquals("1.1", sxpBlueprint.getVersion());
 	}
 
+	@Test
+	public void testUpdateSXPBlueprintWithLegacyRangeQuery() throws Exception {
+		String configurationJSON = _getConfigurationJSON(
+			JSONUtil.put(
+				"from", 1
+			).put(
+				"to", 2
+			));
+		String elementInstancesJSON = _getElementInstancesJSON(
+			JSONUtil.put(
+				"from", 1
+			).put(
+				"include_upper", false
+			).put(
+				"to", 2
+			),
+			JSONUtil.put("to", 3), JSONUtil.put("from", 4));
+
+		SXPBlueprint sxpBlueprint = _addSXPBlueprint(
+			null, TestPropsValues.getUserId(), configurationJSON,
+			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+			elementInstancesJSON,
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			ServiceContextTestUtil.getServiceContext());
+
+		String expectedConfigurationJSON = _getConfigurationJSON(
+			JSONUtil.put(
+				"gte", 1
+			).put(
+				"lte", 2
+			));
+		String expectedElementInstancesJSON = _getElementInstancesJSON(
+			JSONUtil.put(
+				"gte", 1
+			).put(
+				"lt", 2
+			),
+			JSONUtil.put("lte", 3), JSONUtil.put("gte", 4));
+
+		JSONAssert.assertEquals(
+			expectedConfigurationJSON, sxpBlueprint.getConfigurationJSON(),
+			true);
+		JSONAssert.assertEquals(
+			expectedElementInstancesJSON,
+			sxpBlueprint.getElementInstancesJSON(), true);
+
+		sxpBlueprint = _sxpBlueprintLocalService.updateSXPBlueprint(
+			sxpBlueprint.getExternalReferenceCode(), sxpBlueprint.getUserId(),
+			sxpBlueprint.getSXPBlueprintId(), configurationJSON,
+			sxpBlueprint.getDescriptionMap(), elementInstancesJSON,
+			sxpBlueprint.getSchemaVersion(), sxpBlueprint.getTitleMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		JSONAssert.assertEquals(
+			expectedConfigurationJSON, sxpBlueprint.getConfigurationJSON(),
+			true);
+		JSONAssert.assertEquals(
+			expectedElementInstancesJSON,
+			sxpBlueprint.getElementInstancesJSON(), true);
+	}
+
 	@Test(expected = DuplicateSXPBlueprintExternalReferenceCodeException.class)
 	public void testUpdateSXPBlueprintWithSameExternalReferenceCode()
 		throws Exception {
@@ -231,26 +297,97 @@ public class SXPBlueprintLocalServiceTest {
 		throws Exception {
 
 		return _addSXPBlueprint(
-			externalReferenceCode, TestPropsValues.getUserId(),
-			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+			externalReferenceCode, TestPropsValues.getUserId(), "{}",
+			Collections.singletonMap(LocaleUtil.US, StringPool.BLANK), null,
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			ServiceContextTestUtil.getServiceContext());
 	}
 
 	private SXPBlueprint _addSXPBlueprint(
-			String externalReferenceCode, long userId,
-			Map<Locale, String> descriptionMap, Map<Locale, String> titleMap,
-			ServiceContext serviceContext)
+			String externalReferenceCode, long userId, String configurationJSON,
+			Map<Locale, String> descriptionMap, String elementInstancesJSON,
+			Map<Locale, String> titleMap, ServiceContext serviceContext)
 		throws Exception {
 
 		SXPBlueprint sxpBlueprint = _sxpBlueprintLocalService.addSXPBlueprint(
-			externalReferenceCode, userId, "{}", descriptionMap, null,
-			StringPool.BLANK, titleMap, serviceContext);
+			externalReferenceCode, userId, configurationJSON, descriptionMap,
+			elementInstancesJSON, StringPool.BLANK, titleMap, serviceContext);
 
 		_sxpBlueprints.add(sxpBlueprint);
 
 		return sxpBlueprint;
+	}
+
+	private JSONObject _createRangeQueryJSONObject(
+		String fieldName, JSONObject fieldJSONObject) {
+
+		return JSONUtil.put("range", JSONUtil.put(fieldName, fieldJSONObject));
+	}
+
+	private String _getConfigurationJSON(JSONObject fieldJSONObject) {
+		return JSONUtil.put(
+			"aggregationConfiguration",
+			JSONUtil.put(
+				"aggs",
+				JSONUtil.put(
+					"price_ranges",
+					JSONUtil.put(
+						"range",
+						JSONUtil.put(
+							"field", "price"
+						).put(
+							"ranges",
+							JSONUtil.putAll(
+								JSONUtil.put(
+									"from", 0
+								).put(
+									"to", 100
+								))
+						))))
+		).put(
+			"queryConfiguration",
+			JSONUtil.put(
+				"queryEntries",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"clauses",
+						JSONUtil.putAll(
+							JSONUtil.put(
+								"query",
+								_createRangeQueryJSONObject(
+									"createDate", fieldJSONObject))))))
+		).toString();
+	}
+
+	private String _getElementInstancesJSON(
+		JSONObject createDateJSONObject, JSONObject displayDateJSONObject,
+		JSONObject modifiedJSONObject) {
+
+		return JSONUtil.putAll(
+			JSONUtil.put(
+				"configurationEntry",
+				JSONUtil.put(
+					"query",
+					_createRangeQueryJSONObject(
+						"createDate", createDateJSONObject))
+			).put(
+				"sxpElement",
+				JSONUtil.put(
+					"elementDefinition",
+					JSONUtil.put(
+						"query",
+						_createRangeQueryJSONObject(
+							"displayDate", displayDateJSONObject)))
+			).put(
+				"uiConfigurationValues",
+				JSONUtil.put(
+					"query",
+					_createRangeQueryJSONObject(
+						"modified", modifiedJSONObject
+					).toString())
+			)
+		).toString();
 	}
 
 	private static String _originalName;
