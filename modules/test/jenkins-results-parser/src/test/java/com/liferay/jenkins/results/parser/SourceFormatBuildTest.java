@@ -87,21 +87,21 @@ public class SourceFormatBuildTest
 
 	@Test
 	public void testGetWorkspace() throws Exception {
-		_testGetWorkspace(false, _newCompareOutput(1), false, true, "{}");
+		_testGetWorkspace(false, _newCompareJSON(1), false, true, "{}");
 		_testGetWorkspace(
-			false, _newCompareOutput(1), false, true, _newCompareOutput(0));
-		_testGetWorkspace(false, _newCompareOutput(1), false, true, null);
+			false, _newCompareJSON(1), false, true, _newCompareJSON(0));
+		_testGetWorkspace(false, _newCompareJSON(1), false, true, null);
 		_testGetWorkspace(
-			false, _newCompareOutput(3), false, false, _newCompareOutput(3));
+			false, _newCompareJSON(3), false, false, _newCompareJSON(3));
 		_testGetWorkspace(
-			false, _newCompareOutput(5), false, true, _newCompareOutput(1));
-		_testGetWorkspace(false, null, false, true, _newCompareOutput(5));
+			false, _newCompareJSON(5), false, true, _newCompareJSON(1));
+		_testGetWorkspace(false, null, false, true, _newCompareJSON(5));
 		_testGetWorkspace(
-			true, _newCompareOutput(0), false, true, _newCompareOutput(5));
+			true, _newCompareJSON(0), false, true, _newCompareJSON(5));
 		_testGetWorkspace(
-			true, _newCompareOutput(1), false, false, _newCompareOutput(5));
+			true, _newCompareJSON(1), false, false, _newCompareJSON(5));
 		_testGetWorkspace(
-			true, _newCompareOutput(2), false, true, _newCompareOutput(3));
+			true, _newCompareJSON(2), false, true, _newCompareJSON(3));
 		_testGetWorkspace(true, null, true, false, null);
 	}
 
@@ -154,7 +154,7 @@ public class SourceFormatBuildTest
 		return _getSourceFormatterVersion(sourceFormatBuild);
 	}
 
-	private String _newCompareOutput(int aheadBy) {
+	private String _newCompareJSON(int aheadBy) {
 		JSONObject compareJSONObject = new JSONObject();
 
 		compareJSONObject.put("ahead_by", aheadBy);
@@ -162,39 +162,35 @@ public class SourceFormatBuildTest
 		return compareJSONObject.toString();
 	}
 
-	private void _setCompareOutput(String compareOutput, String url)
+	private void _setCompareJSON(String compareJSON, String url)
 		throws Exception {
 
-		if (compareOutput == null) {
+		if (compareJSON == null) {
 			setURLReaderException(
 				new IOException(RandomTestUtil.randomString()), url);
 
 			return;
 		}
 
-		setURLReaderOutput(compareOutput, url);
+		setURLReaderOutput(compareJSON, url);
 	}
 
 	private void _testGetWorkspace(
-			boolean expectedOwnerBase, String ownerCompareOutput,
+			boolean expectedOwnerBase, String ownerCompareJSON,
 			boolean ownerUpstream, boolean senderBranchSHAParameter,
-			String upstreamCompareOutput)
+			String upstreamCompareJSON)
 		throws Exception {
 
 		mockURLReaders();
 
-		String gitHubURL = RandomTestUtil.randomString();
-		String gitRepositoryName = JenkinsResultsParserUtil.combine(
-			"liferay-portal-", RandomTestUtil.randomString());
-		String pullRequestSenderSHA = RandomTestUtil.randomSHA();
-		String upstreamRemoteGitBranchName = RandomTestUtil.randomString();
-
-		String upstreamUsername = RandomTestUtil.randomString();
 		String ownerUsername = RandomTestUtil.randomString();
+		String upstreamUsername = RandomTestUtil.randomString();
 
 		if (ownerUpstream) {
 			upstreamUsername = ownerUsername;
 		}
+
+		String upstreamRemoteGitBranchName = RandomTestUtil.randomString();
 
 		Properties buildProperties = new Properties();
 
@@ -216,11 +212,16 @@ public class SourceFormatBuildTest
 			senderBranchSHA = RandomTestUtil.randomSHA();
 		}
 
+		String pullRequestSenderSHA = RandomTestUtil.randomSHA();
+
 		String compareSHA = pullRequestSenderSHA;
 
 		if (senderBranchSHAParameter) {
 			compareSHA = senderBranchSHA;
 		}
+
+		String gitRepositoryName = JenkinsResultsParserUtil.combine(
+			"liferay-portal-", RandomTestUtil.randomString());
 
 		String ownerCompareURL = JenkinsResultsParserUtil.combine(
 			"https://api.github.com/repos/", ownerUsername, "/",
@@ -232,9 +233,11 @@ public class SourceFormatBuildTest
 			upstreamRemoteGitBranchName, "...", compareSHA);
 
 		if (!ownerUpstream) {
-			_setCompareOutput(ownerCompareOutput, ownerCompareURL);
-			_setCompareOutput(upstreamCompareOutput, upstreamCompareURL);
+			_setCompareJSON(ownerCompareJSON, ownerCompareURL);
+			_setCompareJSON(upstreamCompareJSON, upstreamCompareURL);
 		}
+
+		String gitHubURL = RandomTestUtil.randomString();
 
 		PullRequest pullRequest = Mockito.mock(PullRequest.class);
 
@@ -321,11 +324,11 @@ public class SourceFormatBuildTest
 			sourceFormatBuild.getWorkspace();
 
 			if (ownerUpstream) {
-				verifyURLReaderAttemptsCount(0, "/compare/");
+				verifyURLReaderAttemptsCount(0, "/compare");
 			}
 			else {
-				_setCompareOutput(ownerCompareOutput, upstreamCompareURL);
-				_setCompareOutput(upstreamCompareOutput, ownerCompareURL);
+				_setCompareJSON(ownerCompareJSON, upstreamCompareURL);
+				_setCompareJSON(upstreamCompareJSON, ownerCompareURL);
 			}
 
 			JenkinsResultsParserUtil.clearCache();
