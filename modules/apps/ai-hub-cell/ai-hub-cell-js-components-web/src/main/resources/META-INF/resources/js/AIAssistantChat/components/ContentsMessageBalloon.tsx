@@ -51,7 +51,7 @@ const ContentsMessageBalloon: React.FC<ContentsMessageBalloonProps> = ({
 							<span className="ai-assistant-chat__content-generation-balloon-icon">
 								<ClayIcon
 									spritemap={Liferay.Icons.spritemap}
-									symbol="blogs"
+									symbol={draft.symbol}
 								/>
 							</span>
 						</ClayList.ItemField>

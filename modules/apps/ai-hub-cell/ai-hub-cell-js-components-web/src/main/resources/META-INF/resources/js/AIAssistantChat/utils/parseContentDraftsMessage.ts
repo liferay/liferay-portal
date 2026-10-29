@@ -5,11 +5,23 @@
 
 export interface ContentDraft {
 	editURL: string;
+	symbol: string;
 	title: string;
 }
 
-function isContentEditURL(url: string) {
-	return url.includes('/cms/edit_content_item');
+const EDIT_URL_SYMBOLS = {
+	'/cms/edit_content_item': 'blogs',
+	'edit_fragment_entry': 'code',
+};
+
+function getEditURLSymbol(url: string) {
+	for (const [urlPart, symbol] of Object.entries(EDIT_URL_SYMBOLS)) {
+		if (url.includes(urlPart)) {
+			return symbol;
+		}
+	}
+
+	return null;
 }
 
 export function parseContentDraftsMessage(markdown: string): {
@@ -19,14 +31,20 @@ export function parseContentDraftsMessage(markdown: string): {
 	const drafts: ContentDraft[] = [];
 
 	const text = markdown
-		.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, title, url) => {
-			const editURL = url.trim().split(/\s+/)[0];
+		.replace(/\[([^\]]+)\]\s*\(([^)]+)\)/g, (match, title, url) => {
+			const editURL = url
+				.trim()
+				.split(/\s+["']/)[0]
+				.replace(/\s+/g, '')
+				.replace(/\\(.)/g, '$1');
 
-			if (!isContentEditURL(editURL)) {
+			const symbol = getEditURLSymbol(editURL);
+
+			if (!symbol) {
 				return match;
 			}
 
-			drafts.push({editURL, title});
+			drafts.push({editURL, symbol, title});
 
 			return '';
 		})
