@@ -132,7 +132,7 @@ const SalesforceEntities: React.FC<ISalesforceEntitiesProps> = ({
 
 					<ClayList.ItemText>
 						{Liferay.Language.get(
-							'represents-fields-from-the-campaign-object-within-salesforce'
+							'represents-fields-from-the-campaign-and-campaign-members-objects-within-salesforce'
 						)}
 					</ClayList.ItemText>
 
