@@ -223,13 +223,17 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 		// Legacy
 
+		Map.Entry<FreeMarkerBundleClassloader, Map<String, TemplateModel>>
+			templateModelsEntry = _templateModelsEntryDCLSingleton.getSingleton(
+				() -> Map.entry(
+					new FreeMarkerBundleClassloader(_taglibMappings.keySet()),
+					new ConcurrentHashMap<>()));
+
 		FreeMarkerBundleClassloader freeMarkerBundleClassloader =
-			_freeMarkerBundleClassloaderDCLSingleton.getSingleton(
-				() -> new FreeMarkerBundleClassloader(
-					_taglibMappings.keySet()));
+			templateModelsEntry.getKey();
 
 		TaglibFactoryWrapper taglibFactoryWrapper = new TaglibFactoryWrapper(
-			freeMarkerBundleClassloader, objectWrapper, servletContext);
+			templateModelsEntry, objectWrapper, servletContext);
 
 		contextObjects.put("PortalJspTagLibs", taglibFactoryWrapper);
 		contextObjects.put("PortletJspTagLibs", taglibFactoryWrapper);
@@ -445,7 +449,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 		_templateContextHelper.removeAllHelperUtilities();
 
-		_templateModels.clear();
+		_templateModelsEntryDCLSingleton.destroy(null);
 
 		_contributedTemplateModelsEntry = null;
 
@@ -629,8 +633,6 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		<FreeMarkerBundleClassloader, Map<String, TemplateModel>>
 			_contributedTemplateModelsEntry;
 	private volatile BeansWrapper _defaultBeansWrapper;
-	private final DCLSingleton<FreeMarkerBundleClassloader>
-		_freeMarkerBundleClassloaderDCLSingleton = new DCLSingleton<>();
 	private volatile FreeMarkerEngineConfiguration
 		_freeMarkerEngineConfiguration;
 	private FreeMarkerTemplateResourceCache _freeMarkerTemplateResourceCache;
@@ -655,8 +657,9 @@ public class FreeMarkerManager extends BaseTemplateManager {
 	)
 	private TemplateContextHelper _templateContextHelper;
 
-	private final Map<String, TemplateModel> _templateModels =
-		new ConcurrentHashMap<>();
+	private final DCLSingleton
+		<Map.Entry<FreeMarkerBundleClassloader, Map<String, TemplateModel>>>
+			_templateModelsEntryDCLSingleton = new DCLSingleton<>();
 	private ServiceRegistration<TemplateResourceLoader>
 		_templateResourceLoaderServiceRegistration;
 	private volatile Map<String, AtomicInteger> _timeoutTemplateCounters;
@@ -899,7 +902,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 				_taglibMappings.put(bundleWiring.getClassLoader(), map);
 
-				_freeMarkerBundleClassloaderDCLSingleton.destroy(null);
+				_templateModelsEntryDCLSingleton.destroy(null);
 
 				return bundleWiring.getClassLoader();
 			}
@@ -921,9 +924,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 
 			_taglibMappings.remove(classLoader);
 
-			_templateModels.clear();
-
-			_freeMarkerBundleClassloaderDCLSingleton.destroy(null);
+			_templateModelsEntryDCLSingleton.destroy(null);
 		}
 
 	}
@@ -931,12 +932,15 @@ public class FreeMarkerManager extends BaseTemplateManager {
 	private class TaglibFactoryWrapper implements TemplateHashModel {
 
 		public TaglibFactoryWrapper(
-			FreeMarkerBundleClassloader freeMarkerBundleClassloader,
+			Map.Entry<FreeMarkerBundleClassloader, Map<String, TemplateModel>>
+				templateModelsEntry,
 			ObjectWrapper objectWrapper, ServletContext servletContext) {
 
-			_freeMarkerBundleClassloader = freeMarkerBundleClassloader;
 			_objectWrapper = objectWrapper;
 			_servletContext = servletContext;
+
+			_freeMarkerBundleClassloader = templateModelsEntry.getKey();
+			_templateModels = templateModelsEntry.getValue();
 		}
 
 		@Override
@@ -981,6 +985,7 @@ public class FreeMarkerManager extends BaseTemplateManager {
 		private final ObjectWrapper _objectWrapper;
 		private final ServletContext _servletContext;
 		private TaglibFactory _taglibFactory;
+		private final Map<String, TemplateModel> _templateModels;
 
 	}
 
