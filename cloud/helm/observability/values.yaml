@@ -653,7 +653,7 @@ grafana:
         server:
             enable_gzip: true
             read_timeout: 0
-            root_url: "{{ with .Values.route.main.hostnames }}https://{{ first . }}{{ else }}%(protocol)s://%(domain)s:%(http_port)s/{{ end }}"
+            root_url: "{{ with .Values.route.main.hostnames }}https://{{ first . }}{{ else }}%(protocol)s://%(domain)s:%(http_port)s{{ end }}"
         unified_alerting.state_history.annotations:
             max_age: 10d
             max_annotations_to_keep: 3000

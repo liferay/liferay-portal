@@ -30,7 +30,7 @@ tests:
     -   asserts:
             -   matchRegex:
                     path: data["grafana.ini"]
-                    pattern: root_url = %[(]protocol[)]s://%[(]domain[)]s:%[(]http_port[)]s/
+                    pattern: root_url = %[(]protocol[)]s://%[(]domain[)]s:%[(]http_port[)]s
         it: Keeps the Grafana default root URL when the main route has no hostname
     -   asserts:
             -   matchRegex:

@@ -382,4 +382,4 @@ tests:
         documentSelector:
             path: metadata.name
             value: RELEASE-NAME-observability-dashboard-central-hub
-        it: Splits the built-in monitoring tiles three to two when centralHub.monitoringTiles is empty
+        it: Splits the built in monitoring tiles three to two when centralHub.monitoringTiles is empty

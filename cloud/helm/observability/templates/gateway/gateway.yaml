@@ -1,6 +1,5 @@
 {{- if .Values.gateway.enabled -}}
 {{- $gatewayName := include "observability.gateway.name" . -}}
-{{- $grafanaFullname := include "observability.grafana.fullname" . -}}
 {{- $hostname := "" -}}
 {{- with .Values.grafana.route.main.hostnames -}}
 {{- $hostname = first . -}}
@@ -28,6 +27,7 @@
 {{- with $tls.clusterIssuer -}}
 {{- $_ := set $annotations "cert-manager.io/cluster-issuer" . -}}
 {{- end -}}
+{{- $grafanaFullname := include "observability.grafana.fullname" . -}}
 {{- with $tls.externalSecretKey }}
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
