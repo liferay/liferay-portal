@@ -7,7 +7,7 @@ package com.liferay.headless.admin.site.internal.vulcan.problem;
 
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
+import com.liferay.style.book.exception.StyleBookEntryNameException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,14 +15,14 @@ import org.osgi.service.component.annotations.Component;
  * @author Thiago Buarque
  */
 @Component(service = ProblemMapper.class)
-public class StyleBookEntryThemeIdExceptionProblemMapper
-	implements ProblemMapper<StyleBookEntryThemeIdException> {
+public class StyleBookNameExceptionProblemMapper
+	implements ProblemMapper<StyleBookEntryNameException> {
 
 	@Override
 	public Problem getProblem(
-		StyleBookEntryThemeIdException styleBookEntryThemeIdException) {
+		StyleBookEntryNameException styleBookEntryNameException) {
 
-		return ProblemUtil.getProblem(styleBookEntryThemeIdException);
+		return ProblemUtil.getProblem(styleBookEntryNameException);
 	}
 
 }

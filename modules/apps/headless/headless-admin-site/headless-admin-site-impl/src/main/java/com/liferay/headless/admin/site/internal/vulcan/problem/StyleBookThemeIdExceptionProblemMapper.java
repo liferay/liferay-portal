@@ -7,7 +7,7 @@ package com.liferay.headless.admin.site.internal.vulcan.problem;
 
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
-import com.liferay.style.book.exception.DuplicateStyleBookEntryKeyException;
+import com.liferay.style.book.exception.StyleBookEntryThemeIdException;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -15,17 +15,14 @@ import org.osgi.service.component.annotations.Component;
  * @author Thiago Buarque
  */
 @Component(service = ProblemMapper.class)
-public class DuplicateStyleBookEntryKeyExceptionProblemMapper
-	implements ProblemMapper<DuplicateStyleBookEntryKeyException> {
+public class StyleBookThemeIdExceptionProblemMapper
+	implements ProblemMapper<StyleBookEntryThemeIdException> {
 
 	@Override
 	public Problem getProblem(
-		DuplicateStyleBookEntryKeyException
-			duplicateStyleBookEntryKeyException) {
+		StyleBookEntryThemeIdException styleBookEntryThemeIdException) {
 
-		return ProblemUtil.getProblem(
-			"A style book with the same key already exists",
-			Problem.Status.CONFLICT, duplicateStyleBookEntryKeyException);
+		return ProblemUtil.getProblem(styleBookEntryThemeIdException);
 	}
 
 }
