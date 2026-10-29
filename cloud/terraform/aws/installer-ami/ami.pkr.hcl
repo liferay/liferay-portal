@@ -16,10 +16,12 @@ build {
             "sudo chown --recursive ec2-user:ec2-user /opt/liferay",
         ]
     }
+
     provisioner "file" {
         destination="/opt/liferay/terraform"
         source="../"
     }
+
     provisioner "shell" {
         environment_vars=[
             "DXP_AWS_CHART_VERSION=${var.dxp_aws_chart_version}",
@@ -27,14 +29,17 @@ build {
         ]
         script="install_tools.sh"
     }
+
     provisioner "file" {
         destination="/opt/liferay/bin/run_on_boot.sh"
         source="run_on_boot.sh"
     }
+
     provisioner "file" {
         destination="/tmp/cloud_config.yaml"
         source="cloud_config.yaml"
     }
+
     provisioner "shell" {
         inline=[
             "sudo mv /tmp/cloud_config.yaml /etc/cloud/cloud.cfg.d/99-cloud-config.cfg",
