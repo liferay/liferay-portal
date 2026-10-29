@@ -47,6 +47,49 @@ public class SimpleCaptchaImplTest {
 	}
 
 	@Test
+	public void testCheck() throws Exception {
+		MockHttpServletRequest mockHttpServletRequest1 =
+			new MockHttpServletRequest();
+
+		MockHttpSession mockHttpSession = new MockHttpSession(
+			new MockServletContext(), RandomTestUtil.randomString());
+
+		mockHttpServletRequest1.setSession(mockHttpSession);
+
+		Mockito.when(
+			_portal.getOriginalServletRequest(Mockito.any())
+		).thenReturn(
+			mockHttpServletRequest1
+		);
+
+		Mockito.when(
+			_captchaConfiguration.maxChallenges()
+		).thenReturn(
+			1
+		);
+
+		_simpleCaptchaImpl.enforceCaptcha(mockHttpServletRequest1);
+
+		String captchaId = RandomTestUtil.randomString();
+		String captchaText = RandomTestUtil.randomString();
+
+		mockHttpSession.setAttribute(
+			captchaId + WebKeys.CAPTCHA_TEXT, captchaText);
+
+		MockHttpServletRequest mockHttpServletRequest2 =
+			_getMockHttpServletRequest(captchaId, mockHttpSession);
+
+		mockHttpServletRequest2.setParameter("captchaText", captchaText);
+		mockHttpServletRequest2.setRemoteUser(RandomTestUtil.randomString());
+
+		_simpleCaptchaImpl.check(mockHttpServletRequest2);
+
+		Assert.assertThrows(
+			CaptchaTextException.class,
+			() -> _simpleCaptchaImpl.check(mockHttpServletRequest2));
+	}
+
+	@Test
 	public void testGetNoiseProducer() {
 		NoiseProducer noiseProducer = _simpleCaptchaImpl.getNoiseProducer(
 			_captchaConfiguration);
