@@ -8,15 +8,13 @@ package com.liferay.client.extension.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.client.extension.model.ClientExtensionEntry;
 import com.liferay.client.extension.service.ClientExtensionEntryLocalService;
-import com.liferay.client.extension.service.persistence.ClientExtensionEntryPersistence;
+import com.liferay.client.extension.service.ClientExtensionEntryLocalServiceUtil;
 import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
-import com.liferay.portal.kernel.transaction.TransactionConfig;
-import com.liferay.portal.kernel.transaction.TransactionInvokerUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.log.LogCapture;
@@ -27,7 +25,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -73,11 +70,8 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 	}
 
 	@Test
-	public void testSetAopProxyNotInterrupted() throws Throwable {
-		TransactionConfig.Builder builder = new TransactionConfig.Builder();
+	public void testSetAopProxyNotInterrupted() throws Exception {
 		ClientExtensionEntry clientExtensionEntry = null;
-
-		TransactionConfig transactionConfig = builder.build();
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
 				"com.liferay.client.extension.service.impl." +
@@ -86,8 +80,9 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 
 			_assertLocalServiceRegistered();
 
-			clientExtensionEntry = _clientExtensionEntryPersistence.create(
-				_counterLocalService.increment());
+			clientExtensionEntry =
+				ClientExtensionEntryLocalServiceUtil.createClientExtensionEntry(
+					_counterLocalService.increment());
 
 			User user = TestPropsValues.getUser();
 
@@ -107,16 +102,10 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 			clientExtensionEntry.setStatus(WorkflowConstants.STATUS_APPROVED);
 			clientExtensionEntry.setStatusByUserId(user.getUserId());
 			clientExtensionEntry.setStatusDate(new Date());
-			clientExtensionEntry.setNew(true);
 
-			AtomicReference<ClientExtensionEntry>
-				clientExtensionEntryAtomicReference = new AtomicReference<>(
+			clientExtensionEntry =
+				ClientExtensionEntryLocalServiceUtil.addClientExtensionEntry(
 					clientExtensionEntry);
-
-			clientExtensionEntry = TransactionInvokerUtil.invoke(
-				transactionConfig,
-				() -> _clientExtensionEntryPersistence.update(
-					clientExtensionEntryAtomicReference.get()));
 
 			_restartBundle();
 
@@ -124,13 +113,8 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 		}
 		finally {
 			if (clientExtensionEntry != null) {
-				long clientExtensionEntryId =
-					clientExtensionEntry.getClientExtensionEntryId();
-
-				TransactionInvokerUtil.invoke(
-					transactionConfig,
-					() -> _clientExtensionEntryPersistence.remove(
-						clientExtensionEntryId));
+				ClientExtensionEntryLocalServiceUtil.deleteClientExtensionEntry(
+					clientExtensionEntry.getClientExtensionEntryId());
 			}
 
 			_restartBundle();
@@ -153,9 +137,6 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 
 	private Bundle _bundle;
 	private BundleContext _bundleContext;
-
-	@Inject
-	private ClientExtensionEntryPersistence _clientExtensionEntryPersistence;
 
 	@Inject
 	private CounterLocalService _counterLocalService;
