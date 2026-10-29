@@ -105,4 +105,4 @@ public interface AssetDisplayPageEntryService extends BaseService {
 		throws Exception;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1874269807
+// LIFERAY-SERVICE-BUILDER-HASH:1663140293
