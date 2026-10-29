@@ -19,12 +19,12 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.Callable;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,7 +43,10 @@ public class AutoBatchPreparedStatementUtil {
 	}
 
 	public static void start() throws Exception {
-		_executorService = Executors.newFixedThreadPool(10);
+		_executorService = new ThreadPoolExecutor(
+			_THREAD_POOL_SIZE, _THREAD_POOL_SIZE, 0, TimeUnit.SECONDS,
+			new ArrayBlockingQueue<>(_THREAD_POOL_SIZE),
+			new ThreadPoolExecutor.CallerRunsPolicy());
 	}
 
 	public static void stop() throws Exception {
@@ -51,6 +54,8 @@ public class AutoBatchPreparedStatementUtil {
 
 		_executorService.awaitTermination(10, TimeUnit.SECONDS);
 	}
+
+	private static final int _THREAD_POOL_SIZE = 10;
 
 	private static ExecutorService _executorService;
 
@@ -107,7 +112,7 @@ public class AutoBatchPreparedStatementUtil {
 			if (++_count >= ConnectionConfigUtil.getBatchSize()) {
 				_count = 0;
 
-				_executeAsync(preparedStatement::executeBatch);
+				_executeAsync(preparedStatement);
 			}
 		}
 
@@ -144,8 +149,17 @@ public class AutoBatchPreparedStatementUtil {
 			throwableCollector.rethrow();
 		}
 
-		private void _executeAsync(Callable<?> callable) {
-			_futures.add(_executorService.submit(callable));
+		private void _executeAsync(PreparedStatement preparedStatement) {
+			_futures.add(
+				_executorService.submit(
+					() -> {
+						try {
+							return preparedStatement.executeBatch();
+						}
+						finally {
+							_cleanUp(preparedStatement);
+						}
+					}));
 
 			_preparedStatement = null;
 		}
@@ -154,9 +168,7 @@ public class AutoBatchPreparedStatementUtil {
 			if (_count > 0) {
 				_count = 0;
 
-				PreparedStatement preparedStatement = getPreparedStatement();
-
-				_executeAsync(preparedStatement::executeBatch);
+				_executeAsync(getPreparedStatement());
 			}
 
 			return new int[0];
