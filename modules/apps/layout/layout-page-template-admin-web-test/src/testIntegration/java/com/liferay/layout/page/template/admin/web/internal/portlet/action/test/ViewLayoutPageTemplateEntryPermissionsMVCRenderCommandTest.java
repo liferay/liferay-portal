@@ -9,8 +9,10 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
@@ -34,6 +36,7 @@ import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -78,7 +81,7 @@ public class ViewLayoutPageTemplateEntryPermissionsMVCRenderCommandTest {
 	}
 
 	@Test
-	@TestInfo("LPD-106071")
+	@TestInfo({"LPD-106071", "LPD-108813"})
 	public void testRender() throws Exception {
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
@@ -90,6 +93,11 @@ public class ViewLayoutPageTemplateEntryPermissionsMVCRenderCommandTest {
 		_testRenderRedirectsToPermissionsModal(
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
 				depotEntry.getGroupId()));
+		_testRenderRedirectsToPermissionsModal(
+			LayoutPageTemplateTestUtil.addLayoutPageTemplateEntry(
+				depotEntry.getGroupId(),
+				LayoutPageTemplateEntryTypeConstants.MASTER_LAYOUT,
+				WorkflowConstants.STATUS_DRAFT));
 		_testRenderWithUnknownExternalReferenceCode(depotEntry.getGroupId());
 		_testRenderWithoutExternalReferenceCode(depotEntry.getGroupId());
 	}
