@@ -31,13 +31,14 @@ import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.change.tracking.CTRequiredModelException;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -56,6 +57,7 @@ import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -328,6 +330,8 @@ public class LayoutCTTest {
 	@Test
 	public void testGetLayoutsWithDeletedLayoutInProduction() throws Exception {
 		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
+		Layout otherLayout = LayoutTestUtil.addTypeContentLayout(_group);
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
 
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
@@ -365,22 +369,41 @@ public class LayoutCTTest {
 					_group.getGroupId(), layout.isPrivateLayout(),
 					LayoutConstants.DEFAULT_PARENT_LAYOUT_ID);
 
+				Assert.assertTrue(layouts.contains(layout));
+
+				Assert.assertFalse(
+					_layoutPermission.contains(
+						PermissionCheckerFactoryUtil.create(
+							UserLocalServiceUtil.getGuestUser(
+								_group.getCompanyId())),
+						layout, ActionKeys.VIEW));
+				Assert.assertFalse(
+					_layoutPermission.contains(
+						PermissionCheckerFactoryUtil.create(_user), layout,
+						ActionKeys.VIEW));
+
 				PermissionChecker permissionChecker =
 					PermissionCheckerFactoryUtil.create(
 						UserLocalServiceUtil.getUser(
 							TestPropsValues.getUserId()));
 
-				for (Layout curLayout : layouts) {
-					_layoutPermission.check(
-						permissionChecker, curLayout, ActionKeys.VIEW);
-				}
-			}
-			catch (Exception exception) {
-				Throwable throwable = exception.getCause();
+				Assert.assertFalse(
+					_layoutPermission.contains(
+						permissionChecker, layout, ActionKeys.VIEW));
+				Assert.assertTrue(
+					_layoutPermission.contains(
+						permissionChecker, otherLayout, ActionKeys.VIEW));
 
-				Assert.assertSame(
-					NoSuchResourcePermissionException.class,
-					throwable.getClass());
+				try {
+					_layoutPermission.check(
+						PermissionCheckerFactoryUtil.create(_user), layout,
+						ActionKeys.VIEW);
+
+					Assert.fail();
+				}
+				catch (PrincipalException.MustHavePermission
+							principalException) {
+				}
 			}
 		}
 	}
@@ -1510,5 +1533,8 @@ public class LayoutCTTest {
 
 	@Inject
 	private LayoutPermission _layoutPermission;
+
+	@DeleteAfterTestRun
+	private User _user;
 
 }
