@@ -133,6 +133,11 @@ components:
             description:
                 Represents a connected site.
             properties:
+                ddmStructuresAvailable:
+                    default: false
+                    description:
+                        Whether the connected site can use the structures of the asset library.
+                    type: boolean
                 descriptiveName:
                     description:
                         The connected site's descriptive name.
