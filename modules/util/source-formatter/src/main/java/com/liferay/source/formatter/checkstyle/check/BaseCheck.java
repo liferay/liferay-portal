@@ -957,10 +957,8 @@ public abstract class BaseCheck extends AbstractCheck {
 			DetailAST literalTryDetailAST = getParentWithTokenType(
 				parentDetailAST, TokenTypes.LITERAL_TRY);
 
-			DetailAST slistChildDetailAST = literalTryDetailAST.findFirstToken(
+			rangeDetailAST = literalTryDetailAST.findFirstToken(
 				TokenTypes.SLIST);
-
-			rangeDetailAST = slistChildDetailAST;
 		}
 		else if (parentDetailAST.getType() == TokenTypes.SLIST) {
 			rangeDetailAST = parentDetailAST;
