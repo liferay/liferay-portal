@@ -104,12 +104,6 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
 	public void testRemoveLabel() throws Exception {
-		int number = RandomTestUtil.randomInt();
-
-		PullRequest pullRequest = _newPullRequest(
-			number, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString());
-
 		Properties buildProperties = new Properties();
 
 		buildProperties.setProperty(
@@ -124,6 +118,8 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 
 		String labelName = JenkinsResultsParserUtil.combine(
 			labelNamePrefix, "/%20", labelNameSuffix);
+
+		int number = RandomTestUtil.randomInt();
 
 		setURLReaderOutput(
 			String.valueOf(
@@ -145,6 +141,10 @@ public class PullRequestTest extends com.liferay.jenkins.results.parser.Test {
 			"%2F%2520", labelNameSuffix);
 
 		setURLReaderOutput("", labelURLPath);
+
+		PullRequest pullRequest = _newPullRequest(
+			number, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
 
 		pullRequest.removeLabel(labelName);
 
