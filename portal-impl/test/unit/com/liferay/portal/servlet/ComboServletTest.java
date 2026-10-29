@@ -526,12 +526,13 @@ public class ComboServletTest {
 		BufferCacheServletResponse bufferCacheServletResponse =
 			new BufferCacheServletResponse(httpServletResponse);
 
+		bufferCacheServletResponse.setContentType(contentType);
+
 		if (cacheControl != null) {
 			bufferCacheServletResponse.setHeader(
 				HttpHeaders.CACHE_CONTROL, cacheControl);
 		}
 
-		bufferCacheServletResponse.setContentType(contentType);
 		bufferCacheServletResponse.setString(content);
 		bufferCacheServletResponse.setStatus(HttpServletResponse.SC_OK);
 
