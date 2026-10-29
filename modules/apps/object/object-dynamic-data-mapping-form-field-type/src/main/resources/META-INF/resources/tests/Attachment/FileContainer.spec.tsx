@@ -10,6 +10,14 @@ import React from 'react';
 import FileContainer from '../../js/Attachment/FileContainer';
 
 describe('The FileContainer component', () => {
+	beforeEach(() => {
+		Liferay.FeatureFlags['LPD-100522'] = true;
+	});
+
+	afterEach(() => {
+		Liferay.FeatureFlags['LPD-100522'] = false;
+	});
+
 	it('shows the file size', () => {
 		render(
 			<FileContainer
