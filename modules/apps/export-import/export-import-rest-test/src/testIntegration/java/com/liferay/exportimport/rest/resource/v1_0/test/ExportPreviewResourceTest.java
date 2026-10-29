@@ -270,8 +270,7 @@ public class ExportPreviewResourceTest
 			(startDate, endDate) -> exportPreviewResource.getSiteExportPreview(
 				externalReferenceCode, _toDateFilterType(startDate, endDate),
 				endDate, null, null, null, startDate));
-		_testGetSiteExportPreviewWithFromLastPublishDateFilter(
-			externalReferenceCode);
+		_testGetSiteExportPreviewWithInvalidDateFilter(externalReferenceCode);
 		_testGetSiteExportPreviewWithLayoutPageTemplateEntries();
 
 		Layout layout = _addLayoutWithPortlet(testGroup, portletId);
@@ -652,23 +651,6 @@ public class ExportPreviewResourceTest
 				portletDataHandlers[0].getPortletDataHandlerControls()));
 	}
 
-	private void _testGetSiteExportPreviewWithFromLastPublishDateFilter(
-			String externalReferenceCode)
-		throws Exception {
-
-		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
-					"WebApplicationExceptionMapper",
-				LoggerTestUtil.WARN)) {
-
-			assertHttpResponseStatusCode(
-				400,
-				exportPreviewResource.getSiteExportPreviewHttpResponse(
-					externalReferenceCode, "FromLastPublishDate", null, null,
-					null, null, null));
-		}
-	}
-
 	@TestInfo("LPD-105790")
 	private void _testGetSiteExportPreviewWithGroupPermissions(
 			String externalReferenceCode, String portletId,
@@ -717,6 +699,32 @@ public class ExportPreviewResourceTest
 			200,
 			_exportPreviewResource.getSiteExportPreviewHttpResponse(
 				externalReferenceCode, null, null, null, null, null, null));
+	}
+
+	private void _testGetSiteExportPreviewWithInvalidDateFilter(
+			String externalReferenceCode)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			long time = System.currentTimeMillis();
+
+			assertHttpResponseStatusCode(
+				400,
+				exportPreviewResource.getSiteExportPreviewHttpResponse(
+					externalReferenceCode, "DateRange",
+					new Date(time + Time.HOUR), null, null, null,
+					new Date(time - Time.HOUR)));
+
+			assertHttpResponseStatusCode(
+				400,
+				exportPreviewResource.getSiteExportPreviewHttpResponse(
+					externalReferenceCode, "FromLastPublishDate", null, null,
+					null, null, null));
+		}
 	}
 
 	@TestInfo({"LPD-67433", "LPD-90359"})

@@ -15,10 +15,13 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.staging.StagingGroupHelper;
+
+import java.util.Date;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -62,6 +65,16 @@ public class PublishPreviewResourceTest
 			finally {
 				GroupTestUtil.deleteGroup(group);
 			}
+
+			long time = System.currentTimeMillis();
+
+			assertHttpResponseStatusCode(
+				400,
+				publishPreviewResource.getSitePublishPreviewHttpResponse(
+					testGroup.getExternalReferenceCode(),
+					String.valueOf(DateFilter.Type.DATE_RANGE),
+					new Date(time + (2 * Time.HOUR)), null,
+					new Date(time + Time.HOUR)));
 		}
 
 		LayoutTestUtil.addTypePortletLayout(

@@ -327,6 +327,22 @@ public class PublishProcessResourceTest
 						{
 							dateFilter = new DateRangeDateFilter() {
 								{
+									endDate = new Date(time + Time.HOUR);
+									startDate = new Date(time - Time.HOUR);
+									type = Type.DATE_RANGE;
+								}
+							};
+							name = RandomTestUtil.randomString();
+						}
+					}));
+			assertHttpResponseStatusCode(
+				400,
+				publishProcessResource.postSitePublishProcessHttpResponse(
+					testGroup.getExternalReferenceCode(),
+					new PublishProcessRequest() {
+						{
+							dateFilter = new DateRangeDateFilter() {
+								{
 									endDate = new Date(time - Time.HOUR);
 									startDate = new Date(time);
 									type = Type.DATE_RANGE;

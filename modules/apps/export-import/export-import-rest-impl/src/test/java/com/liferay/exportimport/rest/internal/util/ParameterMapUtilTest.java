@@ -55,6 +55,27 @@ public class ParameterMapUtilTest {
 		LiferayUnitTestRule.INSTANCE;
 
 	@Test
+	public void testPutDateRangeParametersWhenDateFilterIsInvalid() {
+		long time = (System.currentTimeMillis() / Time.SECOND) * Time.SECOND;
+
+		_assertBadRequest(
+			new Date(time + (2 * Time.HOUR)),
+			"The start date must not be in the future",
+			new Date(time + Time.HOUR));
+		_assertBadRequest(
+			new Date(time + Time.HOUR),
+			"The end date must not be in the future",
+			new Date(time - Time.HOUR));
+		_assertBadRequest(
+			new Date(time - Time.HOUR + 300),
+			"The start date must be before the end date",
+			new Date(time - Time.HOUR + 100));
+		_assertBadRequest(
+			null, "The start date must not be in the future",
+			new Date(time + Time.HOUR));
+	}
+
+	@Test
 	public void testPutGroupExternalReferenceCodes() {
 		_testPutGroupExternalReferenceCodes(
 			new String[] {_GROUP_EXTERNAL_REFERENCE_CODE_1},
@@ -439,6 +460,21 @@ public class ParameterMapUtilTest {
 		Assert.assertEquals(Integer.valueOf(2), lastHoursDateFilter.getHours());
 		Assert.assertEquals(
 			DateFilter.Type.LAST_HOURS, lastHoursDateFilter.getType());
+	}
+
+	private void _assertBadRequest(
+		Date endDate, String message, Date startDate) {
+
+		DateRangeDateFilter dateRangeDateFilter = new DateRangeDateFilter();
+
+		dateRangeDateFilter.setEndDate(endDate);
+		dateRangeDateFilter.setStartDate(startDate);
+		dateRangeDateFilter.setType(DateFilter.Type.DATE_RANGE);
+
+		AssertUtils.assertFailure(
+			BadRequestException.class, message,
+			() -> ParameterMapUtil.putDateRangeParameters(
+				dateRangeDateFilter, new HashMap<>(), null));
 	}
 
 	private void _assertBadRequest(

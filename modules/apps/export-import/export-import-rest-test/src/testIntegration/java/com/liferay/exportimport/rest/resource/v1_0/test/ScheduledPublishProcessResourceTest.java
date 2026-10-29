@@ -176,6 +176,7 @@ public class ScheduledPublishProcessResourceTest
 
 		_testPostSiteScheduledPublishProcessWithDateFilter();
 		_testPostSiteScheduledPublishProcessWithInvalidCronExpression();
+		_testPostSiteScheduledPublishProcessWithInvalidDateRange();
 		_testPostSiteScheduledPublishProcessWithInvalidTimeZoneId();
 		_testPostSiteScheduledPublishProcessWithOneTimeCronExpression();
 		_testPostSiteScheduledPublishProcessWithTreeSelection();
@@ -433,6 +434,40 @@ public class ScheduledPublishProcessResourceTest
 								}
 							}));
 			}
+		}
+	}
+
+	private void _testPostSiteScheduledPublishProcessWithInvalidDateRange()
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN)) {
+
+			long time = System.currentTimeMillis();
+
+			assertHttpResponseStatusCode(
+				400,
+				scheduledPublishProcessResource.
+					postSiteScheduledPublishProcessHttpResponse(
+						testGroup.getExternalReferenceCode(),
+						new ScheduledPublishProcessRequest() {
+							{
+								cronExpression = _CRON_EXPRESSION;
+								publishProcessRequest =
+									new PublishProcessRequest() {
+										{
+											dateFilter = _toDateRangeDateFilter(
+												new Date(time - Time.HOUR),
+												new Date(time + Time.HOUR));
+											name =
+												RandomTestUtil.randomString();
+										}
+									};
+								timeZoneId = "UTC";
+							}
+						}));
 		}
 	}
 

@@ -1048,6 +1048,13 @@ public class ExportProcessResourceTest
 				400, unsafeFunction.apply(exportProcessRequest));
 
 			exportProcessRequest.setDateFilter(
+				_toDateRangeDateFilter(
+					new Date(time - Time.HOUR), new Date(time + Time.HOUR)));
+
+			assertHttpResponseStatusCode(
+				400, unsafeFunction.apply(exportProcessRequest));
+
+			exportProcessRequest.setDateFilter(
 				new FromLastPublishDateFilter() {
 					{
 						type = Type.FROM_LAST_PUBLISH_DATE;
