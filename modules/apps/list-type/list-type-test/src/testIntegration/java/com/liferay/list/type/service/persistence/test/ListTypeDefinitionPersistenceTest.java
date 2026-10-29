@@ -224,6 +224,13 @@ public class ListTypeDefinitionPersistenceTest {
 	}
 
 	@Test
+	public void testCountByCompanyId() throws Exception {
+		_persistence.countByCompanyId(RandomTestUtil.nextLong());
+
+		_persistence.countByCompanyId(0L);
+	}
+
+	@Test
 	public void testCountByC_U() throws Exception {
 		_persistence.countByC_U(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -598,4 +605,4 @@ public class ListTypeDefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1283888217
+// LIFERAY-SERVICE-BUILDER-HASH:488090131
