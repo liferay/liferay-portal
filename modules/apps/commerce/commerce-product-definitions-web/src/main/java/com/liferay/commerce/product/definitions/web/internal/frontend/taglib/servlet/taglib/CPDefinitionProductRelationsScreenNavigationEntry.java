@@ -15,7 +15,6 @@ import com.liferay.commerce.product.type.CPType;
 import com.liferay.commerce.product.type.CPTypeRegistry;
 import com.liferay.frontend.taglib.servlet.taglib.ScreenNavigationEntry;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -88,7 +87,7 @@ public class CPDefinitionProductRelationsScreenNavigationEntry
 		CPDefinitionLinkDisplayContext cpDefinitionLinkDisplayContext =
 			new CPDefinitionLinkDisplayContext(
 				_actionHelper, httpServletRequest, _cpDefinitionLinkService,
-				_cpDefinitionLinkTypeRegistry, _itemSelector,
+				_cpDefinitionLinkTypeRegistry,
 				_workflowDefinitionLinkLocalService);
 
 		httpServletRequest.setAttribute(
@@ -118,9 +117,6 @@ public class CPDefinitionProductRelationsScreenNavigationEntry
 
 	@Reference
 	private CPTypeRegistry _cpTypeRegistry;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private JSPRenderer _jspRenderer;

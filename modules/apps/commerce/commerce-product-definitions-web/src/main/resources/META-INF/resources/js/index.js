@@ -19,6 +19,7 @@ export {default as CPDefinitionSpecificationOptionValueAutocomplete} from './cpD
 export {default as CPDefinitionSpecificationOptionValueGroupOption} from './cpDefinitionSpecificationOptionValueGroupOption';
 export {default as debounceDetails} from './debounceDetails';
 export {default as debounceEditCpDefinitionOptionValue} from './debounceEditCpDefinitionOptionValue';
+export {default as definitionLinks} from './definitionLinks';
 export {default as definitionOptionRels} from './definitionOptionRels';
 export {default as detailsItemFinder} from './detailsItemFinder';
 export {default as duplicateCpDefinitionAutocomplete} from './duplicateCpDefinitionAutocomplete';

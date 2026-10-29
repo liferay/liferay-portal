@@ -52,66 +52,14 @@ long cpDefinitionId = cpDefinitionLinkDisplayContext.getCPDefinitionId();
 		</aui:form>
 	</div>
 
-	<aui:script sandbox="<%= true %>">
-		const eventHandlers = [];
-		let eventHandler;
-
-		<%
-		for (String type : cpDefinitionLinkDisplayContext.getCPDefinitionLinkTypes()) {
-		%>
-
-			eventHandler = Liferay.on(
-				'<portlet:namespace />addCommerceProductDefinitionLink<%= HtmlUtil.escapeJS(type) %>',
-				() => {
-					Liferay.Util.openSelectionModal({
-						multiple: true,
-						onSelect: (selectedItems) => {
-							if (!selectedItems || !selectedItems.length) {
-								return;
-							}
-
-							const cpDefinitionIdsInput = document.getElementById(
-								'<portlet:namespace />cpDefinitionIds'
-							);
-
-							if (cpDefinitionIdsInput) {
-								const values = selectedItems.map((item) => item.value);
-
-								cpDefinitionIdsInput.value = values.join(',');
-							}
-
-							const typeInput = document.getElementById(
-								'<portlet:namespace />type'
-							);
-
-							if (typeInput) {
-								typeInput.value = '<%= HtmlUtil.escapeJS(type) %>';
-							}
-
-							const form = document.getElementById(
-								'<portlet:namespace />addCPDefinitionLinkFm'
-							);
-
-							if (form) {
-								submitForm(form);
-							}
-						},
-						title: '<liferay-ui:message arguments="<%= cpDefinition.getName(languageId) %>" key="add-new-product-to-x" />',
-						url: '<%= cpDefinitionLinkDisplayContext.getItemSelectorUrl(type) %>',
-					});
-				}
-			);
-
-			eventHandlers.push(eventHandler);
-
-		<%
-		}
-		%>
-
-		Liferay.on('destroyPortlet', () => {
-			eventHandlers.forEach((eventHandler) => {
-				eventHandler.detach();
-			});
-		});
-	</aui:script>
+	<liferay-frontend:component
+		context='<%=
+			HashMapBuilder.<String, Object>put(
+				"excludedProductIdsMap", cpDefinitionLinkDisplayContext.getExcludedCProductIdsMap()
+			).put(
+				"title", LanguageUtil.format(request, "add-new-product-to-x", cpDefinition.getName(languageId), false)
+			).build()
+		%>'
+		module="{definitionLinks} from commerce-product-definitions-web"
+	/>
 </c:if>

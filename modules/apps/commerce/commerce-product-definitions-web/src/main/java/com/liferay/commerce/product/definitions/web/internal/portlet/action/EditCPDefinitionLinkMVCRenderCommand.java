@@ -10,7 +10,6 @@ import com.liferay.commerce.product.definitions.web.internal.display.context.CPD
 import com.liferay.commerce.product.links.CPDefinitionLinkTypeRegistry;
 import com.liferay.commerce.product.portlet.action.ActionHelper;
 import com.liferay.commerce.product.service.CPDefinitionLinkService;
-import com.liferay.item.selector.ItemSelector;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.util.Portal;
@@ -44,7 +43,7 @@ public class EditCPDefinitionLinkMVCRenderCommand implements MVCRenderCommand {
 			new CPDefinitionLinkDisplayContext(
 				_actionHelper, _portal.getHttpServletRequest(renderRequest),
 				_cpDefinitionLinkService, _cpDefinitionLinkTypeRegistry,
-				_itemSelector, _workflowDefinitionLinkLocalService);
+				_workflowDefinitionLinkLocalService);
 
 		renderRequest.setAttribute(
 			WebKeys.PORTLET_DISPLAY_CONTEXT, cpDefinitionLinkDisplayContext);
@@ -60,9 +59,6 @@ public class EditCPDefinitionLinkMVCRenderCommand implements MVCRenderCommand {
 
 	@Reference
 	private CPDefinitionLinkTypeRegistry _cpDefinitionLinkTypeRegistry;
-
-	@Reference
-	private ItemSelector _itemSelector;
 
 	@Reference
 	private Portal _portal;
