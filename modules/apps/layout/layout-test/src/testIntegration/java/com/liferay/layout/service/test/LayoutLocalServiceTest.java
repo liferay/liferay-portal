@@ -58,6 +58,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -77,6 +78,7 @@ import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.sites.kernel.util.Sites;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -565,6 +567,47 @@ public class LayoutLocalServiceTest {
 		Assert.assertNull(
 			_layoutLocalService.fetchDraftLayout(
 				layout.getPlid(), RandomTestUtil.randomLong()));
+	}
+
+	@Test
+	@TestInfo("LPD-112154")
+	public void testGetClassPKsByLaunchSetId() throws Exception {
+		Layout layout1 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+		Layout layout2 = LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		long launchSetId = RandomTestUtil.randomLong();
+
+		long[] classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId);
+
+		Assert.assertEquals(Arrays.toString(classPKs), 0, classPKs.length);
+
+		_addLaunchDraftLayout(launchSetId, layout1);
+
+		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId);
+
+		Assert.assertEquals(layout1.getPlid(), classPKs[0]);
+		Assert.assertEquals(Arrays.toString(classPKs), 1, classPKs.length);
+
+		_addLaunchDraftLayout(launchSetId, layout2);
+
+		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), launchSetId);
+
+		Assert.assertTrue(
+			ArrayUtil.containsAll(
+				classPKs, new long[] {layout1.getPlid(), layout2.getPlid()}));
+		Assert.assertEquals(Arrays.toString(classPKs), 2, classPKs.length);
+
+		classPKs = _layoutLocalService.getClassPKsByLaunchSetId(
+			_group.getGroupId(), RandomTestUtil.randomLong());
+
+		Assert.assertEquals(Arrays.toString(classPKs), 0, classPKs.length);
 	}
 
 	@Test
