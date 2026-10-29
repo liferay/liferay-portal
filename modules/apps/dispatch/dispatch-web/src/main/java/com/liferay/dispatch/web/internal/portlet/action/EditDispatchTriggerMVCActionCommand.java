@@ -23,7 +23,9 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBus;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -104,9 +106,16 @@ public class EditDispatchTriggerMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		DispatchTriggerPermission.contains(
-			themeDisplay.getPermissionChecker(), dispatchTriggerId,
-			ActionKeys.UPDATE);
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		if (!DispatchTriggerPermission.contains(
+				permissionChecker, dispatchTriggerId, ActionKeys.UPDATE)) {
+
+			throw new PrincipalException.MustHavePermission(
+				permissionChecker, DispatchTrigger.class.getName(),
+				dispatchTriggerId, ActionKeys.UPDATE);
+		}
 	}
 
 	private void _deleteDispatchTrigger(ActionRequest actionRequest)
