@@ -1,6 +1,7 @@
 dependencies {
 	testIntegrationImplementation group: "org.jsoup", name: "jsoup", version: "1.23.2"
 	testIntegrationImplementation project(":apps:asset:asset-display-page-api")
+	testIntegrationImplementation project(":apps:configuration-admin:configuration-admin-api")
 	testIntegrationImplementation project(":apps:depot:depot-api")
 	testIntegrationImplementation project(":apps:document-library:document-library-api")
 	testIntegrationImplementation project(":apps:fragment:fragment-api")
