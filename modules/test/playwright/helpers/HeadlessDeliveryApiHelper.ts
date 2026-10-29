@@ -18,11 +18,13 @@ interface createSitePageProps {
 
 type TDocument = {
 	contentUrl?: string;
+	customFields?: {customValue: {data: string}; name: string}[];
 	description?: string;
 	documentFolderId?: number;
 	documentType?: {name: string};
 	externalReferenceCode?: string;
 	fileName?: string;
+	friendlyUrlPath?: string;
 	id?: number;
 	keywords?: string[];
 	taxonomyCategoryIds?: number[];
@@ -517,7 +519,8 @@ export class HeadlessDeliveryApiHelper {
 		contentFields?: {
 			contentFieldValue:
 				| {data: string}
-				| {geo: {latitude: number; longitude: number}};
+				| {geo: {latitude: number; longitude: number}}
+				| {image: {id: number}};
 			contentFieldValue_i18n?: {[key: string]: {data: string}};
 			name: string;
 		}[];
@@ -795,6 +798,7 @@ export class HeadlessDeliveryApiHelper {
 		blog?: {
 			articleBody?: string;
 			headline?: string;
+			image?: {imageId: number};
 		}
 	): Promise<any> {
 		blog = {
