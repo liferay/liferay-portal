@@ -58,7 +58,9 @@ resource "null_resource" "script" {
 	}
 }
 resource "terraform_data" "comment" {
+
 	# see <<EOF
+
 	input=var.name
 }
 resource "terraform_data" "sorted" {

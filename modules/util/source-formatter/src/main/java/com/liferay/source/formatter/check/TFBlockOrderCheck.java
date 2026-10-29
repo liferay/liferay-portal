@@ -113,13 +113,17 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		for (int i = openLineIndex + 1; i < blockEndLineIndex; i++) {
 			String trimmedLine = StringUtil.trim(lines[i]);
 
-			if (Validator.isBlank(trimmedLine)) {
-				return null;
-			}
+			if (Validator.isBlank(trimmedLine) ||
+				TFSourceUtil.isCommentLine(lines[i])) {
 
-			if (_isCommentLine(lines[i])) {
 				if (commentStartLineIndex == -1) {
 					commentStartLineIndex = i;
+				}
+
+				i = TFSourceUtil.getCommentEndLineIndex(lines, i);
+
+				if (i == -1) {
+					return null;
 				}
 
 				continue;
@@ -180,18 +184,6 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		}
 
 		return blockHeader;
-	}
-
-	private boolean _isCommentLine(String line) {
-		String trimmedLine = StringUtil.trim(line);
-
-		if (trimmedLine.startsWith(StringPool.DOUBLE_SLASH) ||
-			trimmedLine.startsWith(StringPool.POUND)) {
-
-			return true;
-		}
-
-		return false;
 	}
 
 	private void _sort(String[] lines, List<Entry> entries) {
@@ -261,17 +253,30 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 	private void _sortTopLevelBlocks(String[] lines) {
 		List<Entry> entries = new ArrayList<>();
-		int previousEndLineIndex = -1;
+
+		int commentStartLineIndex = -1;
 
 		for (int i = 0; i < lines.length; i++) {
 			Matcher matcher = _topLevelBlockPattern.matcher(lines[i]);
 
 			if (!matcher.matches()) {
-				if (_isCommentLine(lines[i])) {
-					continue;
+				if (!Validator.isBlank(StringUtil.trim(lines[i])) &&
+					!TFSourceUtil.isCommentLine(lines[i])) {
+
+					return;
 				}
 
-				return;
+				if (commentStartLineIndex == -1) {
+					commentStartLineIndex = i;
+				}
+
+				i = TFSourceUtil.getCommentEndLineIndex(lines, i);
+
+				if (i == -1) {
+					return;
+				}
+
+				continue;
 			}
 
 			String sortKey = _getSortKey(lines[i]);
@@ -288,10 +293,8 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 			int startLineIndex = i;
 
-			while (((startLineIndex - 1) > previousEndLineIndex) &&
-				   _isCommentLine(lines[startLineIndex - 1])) {
-
-				startLineIndex--;
+			if (commentStartLineIndex != -1) {
+				startLineIndex = commentStartLineIndex;
 			}
 
 			Entry entry = new Entry(endLineIndex, lines, startLineIndex);
@@ -300,9 +303,9 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 			entries.add(entry);
 
-			i = endLineIndex;
+			commentStartLineIndex = -1;
 
-			previousEndLineIndex = endLineIndex;
+			i = endLineIndex;
 		}
 
 		_sort(lines, entries);

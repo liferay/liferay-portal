@@ -7,6 +7,7 @@ package com.liferay.source.formatter.check.util;
 
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.regex.Matcher;
@@ -73,6 +74,24 @@ public class TFSourceUtil {
 		return false;
 	}
 
+	public static int getCommentEndLineIndex(String[] lines, int lineIndex) {
+		String trimmedLine = StringUtil.trim(lines[lineIndex]);
+
+		if (!trimmedLine.startsWith("/*") ||
+			(trimmedLine.indexOf("*/", 2) != -1)) {
+
+			return lineIndex;
+		}
+
+		for (int i = lineIndex + 1; i < lines.length; i++) {
+			if (lines[i].contains("*/")) {
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
 	public static int getHeredocEndLineIndex(
 		String[] lines, int lineIndex, String heredocMarker) {
 
@@ -128,6 +147,19 @@ public class TFSourceUtil {
 		}
 
 		return Math.min(index, line.length());
+	}
+
+	public static boolean isCommentLine(String line) {
+		String trimmedLine = StringUtil.trim(line);
+
+		if (trimmedLine.startsWith(StringPool.DOUBLE_SLASH) ||
+			trimmedLine.startsWith(StringPool.POUND) ||
+			trimmedLine.startsWith("/*")) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public static String removeComment(String line) {

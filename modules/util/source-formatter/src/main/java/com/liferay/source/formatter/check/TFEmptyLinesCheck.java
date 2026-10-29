@@ -22,35 +22,47 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 
 		String[] lines = content.split("\n", -1);
 
-		StringBundler sb = new StringBundler(lines.length * 2);
+		StringBundler sb = new StringBundler(lines.length * 3);
+
+		boolean previousComment = false;
 
 		for (int i = 0; i < lines.length; i++) {
-			String heredocMarker = TFSourceUtil.getHeredocMarker(lines[i]);
-
-			if (heredocMarker != null) {
-				int heredocEndLineIndex = TFSourceUtil.getHeredocEndLineIndex(
-					lines, i, heredocMarker);
-
-				if (heredocEndLineIndex == -1) {
-					return content;
-				}
-
-				for (int j = i; j <= heredocEndLineIndex; j++) {
-					sb.append(lines[j]);
-					sb.append(CharPool.NEW_LINE);
-				}
-
-				i = heredocEndLineIndex;
-
-				continue;
-			}
-
 			if (Validator.isBlank(StringUtil.trim(lines[i]))) {
 				continue;
 			}
 
-			sb.append(lines[i]);
-			sb.append(CharPool.NEW_LINE);
+			boolean comment = TFSourceUtil.isCommentLine(lines[i]);
+
+			int endLineIndex = i;
+
+			if (comment) {
+				endLineIndex = TFSourceUtil.getCommentEndLineIndex(lines, i);
+			}
+			else {
+				String heredocMarker = TFSourceUtil.getHeredocMarker(lines[i]);
+
+				if (heredocMarker != null) {
+					endLineIndex = TFSourceUtil.getHeredocEndLineIndex(
+						lines, i, heredocMarker);
+				}
+			}
+
+			if (endLineIndex == -1) {
+				return content;
+			}
+
+			if ((sb.index() > 0) && (comment != previousComment)) {
+				sb.append(CharPool.NEW_LINE);
+			}
+
+			for (int j = i; j <= endLineIndex; j++) {
+				sb.append(lines[j]);
+				sb.append(CharPool.NEW_LINE);
+			}
+
+			i = endLineIndex;
+
+			previousComment = comment;
 		}
 
 		if (sb.index() > 0) {

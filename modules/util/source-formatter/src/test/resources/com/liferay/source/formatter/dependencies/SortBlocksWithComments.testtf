@@ -7,6 +7,16 @@ resource "aws_s3_bucket" "logs" {
 resource "aws_s3_bucket" "backups" {
 	bucket="backups"
 }
+// Bucket for media
+resource "aws_s3_bucket" "media" {
+	bucket="media"
+}
+/*
+ * Bucket for config
+ */
+resource "aws_s3_bucket" "config" {
+	bucket="config"
+}
 # Bucket for assets
 	# Shared with the CDN
 resource "aws_s3_bucket" "assets" {

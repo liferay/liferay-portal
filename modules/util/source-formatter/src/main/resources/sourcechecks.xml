@@ -1922,7 +1922,7 @@
 		</check>
 		<check name="TFEmptyLinesCheck">
 			<category name="Styling" />
-			<description name="Finds unnecessary empty lines." />
+			<description name="Finds missing and unnecessary empty lines." />
 		</check>
 		<check name="TFIndentationCheck">
 			<category name="Styling" />

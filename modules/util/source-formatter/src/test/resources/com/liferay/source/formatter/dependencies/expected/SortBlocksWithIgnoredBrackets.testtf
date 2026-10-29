@@ -3,8 +3,10 @@ resource "aws_s3_bucket" "assets" {
 }
 resource "aws_s3_bucket" "logs" {
 	bucket="${var.enabled ? "}" : "{"}" # }
+
 	/* {
 	} */
+
 	policy=<<POLICY
 {
 	"Statement": "\"}"

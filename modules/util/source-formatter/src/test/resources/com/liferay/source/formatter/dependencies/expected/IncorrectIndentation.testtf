@@ -34,9 +34,11 @@ resource "terraform_data" "script" {
 	}
 }
 resource "terraform_data" "triggers" {
+
 	/* {
 	[ comment */
 	# see <<EOF
+
 	triggers_replace={
 		escaped=concat(["$${"], [var.name])
 		name=var.name
@@ -55,18 +57,22 @@ resource "terraform_data" "values" {
 {
 EOT
 	)
+
 	// see <<EOF
+
 	marker="<<EOF"
 	name=var.name
 	nested="${var.enabled ? "}" : "#"}"
 }
 resource "terraform_data" "workspace" {
+
 	/*
 	resource "a" "b" {
 	    x=1
 	}
 	x
 	*/
+
 	input=var.name
 }
 resource "terraform_data" "zone" {
