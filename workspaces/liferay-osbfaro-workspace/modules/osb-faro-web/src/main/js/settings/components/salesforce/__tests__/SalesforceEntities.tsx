@@ -18,7 +18,7 @@ describe('SalesforceEntities', () => {
 		expect(getByText('Campaigns')).toBeTruthy();
 		expect(
 			getByText(
-				'Represents fields from the Campaign object within Salesforce.'
+				'Represents fields from the Campaign and Campaign Members objects within Salesforce.'
 			)
 		).toBeTruthy();
 

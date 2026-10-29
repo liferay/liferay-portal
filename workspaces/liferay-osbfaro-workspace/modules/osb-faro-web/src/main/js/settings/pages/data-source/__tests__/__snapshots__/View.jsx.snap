@@ -2111,7 +2111,7 @@ exports[`View should render a Salesforce data-source page 1`] = `
                           <p
                             class="list-group-text"
                           >
-                            Represents fields from the Campaign object within Salesforce.
+                            Represents fields from the Campaign and Campaign Members objects within Salesforce.
                           </p>
                         </div>
                       </li>
