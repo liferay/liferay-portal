@@ -1,5 +1,5 @@
 /**
- * SPDX-FileCopyrightText: (c) 2000 Liferay, Inc. https://liferay.com
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
@@ -110,8 +110,8 @@ public class AssetDisplayPageEntryServiceTest {
 		Assert.assertEquals(
 			Collections.emptyList(),
 			_assetDisplayPageEntryService.getAssetDisplayPageEntries(
-				_classNameId, 0, 0, false, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null));
+				_classNameId, 0, 0, false, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null));
 		Assert.assertEquals(
 			0,
 			_assetDisplayPageEntryService.getAssetDisplayPageEntriesCount(
@@ -176,7 +176,8 @@ public class AssetDisplayPageEntryServiceTest {
 		serviceContext.setAddGuestPermissions(addGuestPermissions);
 
 		return JournalTestUtil.addArticle(
-			_group.getGroupId(), JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 			JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), LocaleUtil.getSiteDefault(), false,
