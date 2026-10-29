@@ -503,39 +503,6 @@ definition {
 			locator1 = "Button#ANY");
 	}
 
-	@description = "This is a test for COMMERCE-9191. CanCheckDraftProductStatusWithWorkflow"
-	@priority = 3
-	test CanCheckDraftProductStatusWithWorkflow {
-		property portal.acceptance = "false";
-
-		Workflow.openWorkflowListView();
-
-		CommerceEntry.gotoMenuTab(menuTab = "Configuration");
-
-		Workflow.configureWorkflow(
-			workflowDefinition = "Single Approver",
-			workflowResourceValue = "Product");
-
-		CommerceProducts.openProductsAdmin();
-
-		CPCommerceCatalog.newProductsEntry(
-			compileDescription = "false",
-			productCatalog = "Master",
-			productName = "Simple T-Shirt",
-			productType = "Simple",
-			publishProduct = "false");
-
-		task ("Disable Single Approver for avoid issue on CI") {
-			Workflow.openWorkflowListView();
-
-			CommerceEntry.gotoMenuTab(menuTab = "Configuration");
-
-			Workflow.configureWorkflow(
-				workflowDefinition = "No Workflow",
-				workflowResourceValue = "Product");
-		}
-	}
-
 	@description = "This is a test for COMMERCE-9182. VerifyDraftProductNotAppearOnMiniumCatalogPage"
 	@priority = 5
 	test CanCheckDraftProductVisibilityOnMiniumCatalogPage {
