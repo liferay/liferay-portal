@@ -62,7 +62,7 @@ public class ClientState {
 
 			if (!_dumped) {
 				BndBundleUtil.createBundle(
-					filteredMethodNamesMap, "127.0.0.1", 0, 0, true);
+					true, filteredMethodNamesMap, "127.0.0.1", 0, 0);
 
 				_dumped = true;
 			}
@@ -245,9 +245,9 @@ public class ClientState {
 		throws Throwable {
 
 		byte[] bytes = BndBundleUtil.createBundle(
+			Boolean.valueOf(System.getProperty("liferay.arquillian.copy.jar")),
 			filteredMethodNamesMap, inetAddress.getHostAddress(), port,
-			passCode,
-			Boolean.valueOf(System.getProperty("liferay.arquillian.copy.jar")));
+			passCode);
 
 		return _frameworkState.installBundle(
 			String.valueOf(System.currentTimeMillis()), bytes);

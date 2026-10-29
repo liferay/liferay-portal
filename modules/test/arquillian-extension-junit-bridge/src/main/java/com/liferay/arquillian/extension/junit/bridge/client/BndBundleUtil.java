@@ -49,8 +49,8 @@ import org.osgi.framework.Constants;
 public class BndBundleUtil {
 
 	public static byte[] createBundle(
-			Map<String, List<String>> filteredMethodNamesMap,
-			String hostAddress, int port, long passCode, boolean dump)
+			boolean dump, Map<String, List<String>> filteredMethodNamesMap,
+			String hostAddress, int port, long passCode)
 		throws Exception {
 
 		File buildDir = new File(System.getProperty("user.dir"));
