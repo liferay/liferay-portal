@@ -15,7 +15,6 @@ import com.liferay.frontend.data.set.url.FDSAPIURLResolverRegistry;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
-import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.GetterUtil;
 
@@ -26,7 +25,6 @@ import jakarta.portlet.RenderResponse;
 
 import java.io.IOException;
 
-import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Activate;
@@ -87,8 +85,6 @@ public class FDSAdminPortlet extends MVCPortlet {
 
 	@Activate
 	protected void activate(BundleContext bundleContext) {
-		_bundle = BundleUtil.getBundle(
-			bundleContext, "com.liferay.frontend.data.set.admin.web");
 		_serviceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, null, "(openapi.resource=true)",
 			new CompanyScopedRESTApplicationServiceTrackerCustomizer(
@@ -114,8 +110,6 @@ public class FDSAdminPortlet extends MVCPortlet {
 
 		super.doDispatch(renderRequest, renderResponse);
 	}
-
-	private Bundle _bundle;
 
 	@Reference
 	private CETManager _cetManager;
