@@ -1630,6 +1630,10 @@ definition {
 	@description = "This is a test for LPS-134566. View doAsUserId parameter not shown in URL field after add page link to text."
 	@priority = 4
 	test ViewDoAsUserIdNotShownInURLFieldAfterAddPageLinkToText {
+		task ("Enable CKEditor 4") {
+			CKEditor.enableCKEditor4();
+		}
+
 		task ("Add new user") {
 			JSONUser.addUser(
 				userEmailAddress = "userea1@liferay.com",
@@ -1793,6 +1797,10 @@ definition {
 	@description = "This is a use case for LPS-140253. View no private page in web content."
 	@priority = 4
 	test ViewNoPrivatePageInWebContent {
+		task ("Enable CKEditor 4") {
+			CKEditor.enableCKEditor4();
+		}
+
 		task ("Add a content page and add Asset Publisher in it") {
 			JSONLayout.addPublicLayout(
 				groupName = "Test Site Name",
