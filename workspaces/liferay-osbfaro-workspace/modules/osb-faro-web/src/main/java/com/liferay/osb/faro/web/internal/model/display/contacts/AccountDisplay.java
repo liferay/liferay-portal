@@ -50,6 +50,8 @@ public class AccountDisplay {
 			_lifecycleStage = lifecycleStage.getName();
 		}
 
+		_lifecycleStages = lifecycleStages;
+
 		_modifiedDate = account.getModifiedDate();
 		_numberOfEmployees = account.getNumberOfEmployees();
 		_website = account.getWebsite();
@@ -124,6 +126,7 @@ public class AccountDisplay {
 	private Date _lastActivityDate;
 
 	private String _lifecycleStage;
+	private List<Account.LifecycleStage> _lifecycleStages;
 
 	@JsonProperty("lastEnriched")
 	private Date _modifiedDate;
