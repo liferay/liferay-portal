@@ -448,7 +448,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			return;
 		}
 
-		String fileName = _getFileName(fileSourceType, value);
+		String fileName = _getFileName(_fetchFileEntry(value), fileSourceType);
 
 		if (fileName != null) {
 			inputTemplateNode.addAttribute("fileName", fileName);
@@ -458,7 +458,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		for (Map.Entry<Locale, String> entry : valueI18n.entrySet()) {
 			String localizedFileName = _getFileName(
-				fileSourceType, entry.getValue());
+				_fetchFileEntry(entry.getValue()), fileSourceType);
 
 			if (localizedFileName == null) {
 				continue;
@@ -480,7 +480,8 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		inputTemplateNode.addAttribute("isCMS", _isCMSGroup(group));
 
-		String previewURL = _getPreviewURL(httpServletRequest, value);
+		String previewURL = _getPreviewURL(
+			_fetchFileEntry(value), httpServletRequest);
 
 		if (previewURL != null) {
 			inputTemplateNode.addAttribute("previewURL", previewURL);
@@ -490,7 +491,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		for (Map.Entry<Locale, String> entry : valueI18n.entrySet()) {
 			String localizedPreviewURL = _getPreviewURL(
-				httpServletRequest, entry.getValue());
+				_fetchFileEntry(entry.getValue()), httpServletRequest);
 
 			if (localizedPreviewURL == null) {
 				continue;
@@ -820,7 +821,13 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			"maxLength", infoField.getAttribute(TextInfoFieldType.MAX_LENGTH));
 	}
 
-	private FileEntry _fetchFileEntry(long fileEntryId) {
+	private FileEntry _fetchFileEntry(String value) {
+		if (Validator.isNull(value)) {
+			return null;
+		}
+
+		long fileEntryId = GetterUtil.getLong(value);
+
 		try {
 			return _dlAppLocalService.fetchFileEntry(fileEntryId);
 		}
@@ -934,28 +941,21 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 	}
 
 	private String _getFileName(
-		FileInfoFieldType.FileSourceType fileSourceType, Object value) {
+		FileEntry fileEntry, FileInfoFieldType.FileSourceType fileSourceType) {
 
-		if (Validator.isNull(value)) {
+		if (fileEntry == null) {
 			return null;
 		}
-
-		FileEntry fileEntry = _fetchFileEntry(GetterUtil.getLong(value));
 
 		if (fileSourceType ==
 				FileInfoFieldType.FileSourceType.DOCUMENTS_AND_MEDIA) {
 
-			if (fileEntry != null) {
-				return fileEntry.getFileName();
-			}
+			return fileEntry.getFileName();
 		}
-		else if (fileSourceType ==
-					FileInfoFieldType.FileSourceType.USER_COMPUTER) {
 
-			if (fileEntry != null) {
-				return TempFileEntryUtil.getOriginalTempFileName(
-					fileEntry.getFileName());
-			}
+		if (fileSourceType == FileInfoFieldType.FileSourceType.USER_COMPUTER) {
+			return TempFileEntryUtil.getOriginalTempFileName(
+				fileEntry.getFileName());
 		}
 
 		return null;
@@ -1098,13 +1098,7 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 	}
 
 	private String _getPreviewURL(
-		HttpServletRequest httpServletRequest, Object value) {
-
-		if (Validator.isNull(value)) {
-			return null;
-		}
-
-		FileEntry fileEntry = _fetchFileEntry(GetterUtil.getLong(value));
+		FileEntry fileEntry, HttpServletRequest httpServletRequest) {
 
 		if (fileEntry == null) {
 			return null;
