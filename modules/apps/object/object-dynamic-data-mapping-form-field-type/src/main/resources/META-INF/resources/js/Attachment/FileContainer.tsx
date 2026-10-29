@@ -39,14 +39,20 @@ export default function FileContainer({
 							}
 						}}
 					>
-						<span className="font-weight-semi-bold small">
-							{attachment.title}
-						</span>
+						{Liferay.FeatureFlags['LPD-100522'] ? (
+							<>
+								<span className="font-weight-semi-bold small">
+									{attachment.title}
+								</span>
 
-						{attachment.size && (
-							<span className="d-block small text-secondary">
-								{attachment.size}
-							</span>
+								{attachment.size && (
+									<span className="d-block small text-secondary">
+										{attachment.size}
+									</span>
+								)}
+							</>
+						) : (
+							attachment.title
 						)}
 					</ClayButton>
 
