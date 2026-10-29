@@ -104,7 +104,7 @@ public class JournalArticleAssetRendererTest {
 	@Test
 	public void testGetURLViewInContext() throws Exception {
 		_testGetURLViewInContext();
-		_testGetURLViewInContextWhenArticleIsFromAnotherSite();
+		_testGetURLViewInContextWhenArticleIsFromAnotherGroup();
 		_testGetURLViewInContextWhenArticleIsPending();
 	}
 
