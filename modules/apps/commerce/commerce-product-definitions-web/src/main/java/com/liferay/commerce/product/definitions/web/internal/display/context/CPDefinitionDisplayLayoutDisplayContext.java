@@ -8,9 +8,7 @@ package com.liferay.commerce.product.definitions.web.internal.display.context;
 import com.liferay.asset.display.page.item.selector.AssetDisplayPageItemSelectorCriterion;
 import com.liferay.commerce.product.configuration.CPDisplayLayoutConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
-import com.liferay.commerce.product.constants.CPField;
 import com.liferay.commerce.product.display.context.BaseCPDefinitionsDisplayContext;
-import com.liferay.commerce.product.item.selector.CPDefinitionItemSelectorCriterion;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDisplayLayout;
 import com.liferay.commerce.product.model.CommerceChannel;
@@ -260,36 +258,6 @@ public class CPDefinitionDisplayLayoutDisplayContext
 		}
 
 		return StringPool.BLANK;
-	}
-
-	public String getProductItemSelectorUrl() {
-		RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-			RequestBackedPortletURLFactoryUtil.create(
-				cpRequestHelper.getRenderRequest());
-
-		CPDefinitionItemSelectorCriterion cpDefinitionItemSelectorCriterion =
-			new CPDefinitionItemSelectorCriterion();
-
-		cpDefinitionItemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-			Collections.<ItemSelectorReturnType>singletonList(
-				new UUIDItemSelectorReturnType()));
-
-		return PortletURLBuilder.create(
-			_itemSelector.getItemSelectorURL(
-				requestBackedPortletURLFactory, "productDefinitionsSelectItem",
-				cpDefinitionItemSelectorCriterion)
-		).setParameter(
-			CPField.COMMERCE_CHANNEL_GROUP_ID,
-			() -> {
-				CommerceChannel commerceChannel = getCommerceChannel();
-
-				return commerceChannel.getGroupId();
-			}
-		).setParameter(
-			"ignoreCommerceAccountGroup", Boolean.TRUE
-		).setParameter(
-			"singleSelection", Boolean.TRUE
-		).buildString();
 	}
 
 	private final CommerceChannelLocalService _commerceChannelLocalService;

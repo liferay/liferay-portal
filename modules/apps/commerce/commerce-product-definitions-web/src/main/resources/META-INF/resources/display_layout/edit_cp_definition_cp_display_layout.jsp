@@ -104,13 +104,13 @@ String searchContainerId = "CPDefinitionsSearchContainer";
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
+			"commerceChannelId", cpDefinitionDisplayLayoutDisplayContext.getCommerceChannelId()
+		).put(
 			"layoutItemSelectorUrl", cpDefinitionDisplayLayoutDisplayContext.getLayoutItemSelectorUrl()
 		).put(
 			"layoutPageTemplateEntryItemSelectorUrl", cpDefinitionDisplayLayoutDisplayContext.getLayoutPageTemplateEntryItemSelectorURL()
 		).put(
 			"portletNamespace", liferayPortletResponse.getNamespace()
-		).put(
-			"productItemSelectorUrl", cpDefinitionDisplayLayoutDisplayContext.getProductItemSelectorUrl()
 		).put(
 			"removeIcon", removeCPDefinitionIcon
 		).put(
