@@ -276,6 +276,7 @@ public class SharingUserNotificationHandlerTest {
 		);
 
 		_setUpAssetRendererFactoryRegistryUtil(className, null, classPK);
+
 		_setUpSharingEntryLocalService();
 
 		AssetEntryLocalService assetEntryLocalService = Mockito.mock(
