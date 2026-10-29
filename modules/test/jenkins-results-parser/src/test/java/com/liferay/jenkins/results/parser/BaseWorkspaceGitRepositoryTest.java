@@ -111,6 +111,12 @@ public class BaseWorkspaceGitRepositoryTest
 	}
 
 	@Test
+	public void testInitializeGitWorkingDirectory() throws Exception {
+		_testInitializeGitWorkingDirectory(false);
+		_testInitializeGitWorkingDirectory(true);
+	}
+
+	@Test
 	public void testIsFullDotGitDirArchiveRequired() throws Exception {
 		Assert.assertFalse(_isFullDotGitDirArchiveRequired("liferay-portal"));
 		Assert.assertFalse(
@@ -1138,6 +1144,42 @@ public class BaseWorkspaceGitRepositoryTest
 			gitUtilMockedStatic.verify(
 				() -> GitUtil.getRemoteGitRef(expectedURL));
 		}
+	}
+
+	private void _testInitializeGitWorkingDirectory(
+			boolean usePullRequestBaseRepository)
+		throws Exception {
+
+		DefaultWorkspaceGitRepository defaultWorkspaceGitRepository =
+			_newDefaultWorkspaceGitRepository();
+
+		ReflectionTestUtil.invoke(
+			defaultWorkspaceGitRepository, "_setUsePullRequestBaseRepository",
+			new Class<?>[] {boolean.class}, usePullRequestBaseRepository);
+
+		GitWorkingDirectory gitWorkingDirectory = Mockito.mock(
+			GitWorkingDirectory.class);
+
+		Mockito.doReturn(
+			gitWorkingDirectory
+		).when(
+			defaultWorkspaceGitRepository
+		).getGitWorkingDirectory();
+
+		Mockito.doReturn(
+			Mockito.mock(LocalGitBranch.class)
+		).when(
+			defaultWorkspaceGitRepository
+		).getLocalGitBranch();
+
+		defaultWorkspaceGitRepository.initializeGitWorkingDirectory();
+
+		Mockito.verify(
+			gitWorkingDirectory,
+			getVerificationMode(usePullRequestBaseRepository)
+		).deleteRemoteTrackingGitBranches(
+			defaultWorkspaceGitRepository.getUpstreamBranchName()
+		);
 	}
 
 	private void _testPartitionLocalGitCommits(
