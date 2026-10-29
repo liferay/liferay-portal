@@ -38,7 +38,6 @@ public class SchemaManifestBuilderTest {
 		_baseDir = temporaryFolder.getRoot();
 
 		_manifestFile = new File(_baseDir, _MANIFEST_FILE_NAME);
-
 		_schemaManifestBuilder = new SchemaManifestBuilder(
 			_baseDir.getAbsolutePath(), _MANIFEST_FILE_NAME, null);
 	}
@@ -258,11 +257,10 @@ public class SchemaManifestBuilderTest {
 	}
 
 	private void _writeBndFile(String bundleSymbolicName) throws Exception {
+		File bndFile = new File(_baseDir, "bnd.bnd");
 		String content = StringBundler.concat(
 			"Bundle-Name: ", RandomTestUtil.randomString(),
 			"\nBundle-SymbolicName: ", bundleSymbolicName, "\n");
-
-		File bndFile = new File(_baseDir, "bnd.bnd");
 
 		Files.write(bndFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
 	}
