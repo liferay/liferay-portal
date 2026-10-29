@@ -336,7 +336,6 @@ public class SourceFormatBuild
 		PullRequest pullRequest, String senderBranchSHA) {
 
 		String ownerUsername = pullRequest.getOwnerUsername();
-
 		String upstreamUsername = JenkinsResultsParserUtil.getUpstreamUserName(
 			pullRequest.getGitRepositoryName(),
 			pullRequest.getUpstreamRemoteGitBranchName());
