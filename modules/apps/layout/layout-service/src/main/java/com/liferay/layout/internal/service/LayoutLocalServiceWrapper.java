@@ -318,9 +318,24 @@ public class LayoutLocalServiceWrapper
 			_portal.getClassNameId(FragmentEntryLink.class.getName()),
 			_portal.getClassNameId(LayoutPageTemplateStructure.class.getName())
 		};
+
+		Set<String> orphanedPortletIds = _getOrphanedPortletIds(
+			sourceLayout, sourceSegmentsExperiencesIds);
 		List<LayoutClassedModelUsage> sourceLayoutLayoutClassedModelUsages =
-			_getLayoutClassedModelUsages(
-				sourceLayout, sourceSegmentsExperiencesIds);
+			_layoutClassedModelUsageLocalService.
+				getLayoutClassedModelUsagesByPlid(sourceLayout.getPlid());
+
+		if (!orphanedPortletIds.isEmpty()) {
+			long portletClassNameId = _portal.getClassNameId(Portlet.class);
+
+			sourceLayoutLayoutClassedModelUsages = ListUtil.filter(
+				sourceLayoutLayoutClassedModelUsages,
+				layoutClassedModelUsage ->
+					(layoutClassedModelUsage.getContainerType() !=
+						portletClassNameId) ||
+					!orphanedPortletIds.contains(
+						layoutClassedModelUsage.getContainerKey()));
+		}
 
 		_deleteLayoutClassedModelUsages(
 			classNameIds, sourceLayoutLayoutClassedModelUsages, targetLayout);
@@ -994,54 +1009,6 @@ public class LayoutLocalServiceWrapper
 		return fragmentEntryLinksMap;
 	}
 
-	private List<LayoutClassedModelUsage> _getLayoutClassedModelUsages(
-		Layout layout, long[] segmentsExperiencesIds) {
-
-		Set<String> deletedPortletIds = new HashSet<>();
-
-		for (FragmentEntryLink fragmentEntryLink :
-				_fragmentEntryLinkLocalService.
-					getFragmentEntryLinksBySegmentsExperienceId(
-						layout.getGroupId(), segmentsExperiencesIds,
-						layout.getPlid(), true)) {
-
-			deletedPortletIds.addAll(
-				_portletRegistry.getFragmentEntryLinkPortletIds(
-					fragmentEntryLink));
-		}
-
-		List<LayoutClassedModelUsage> layoutClassedModelUsages =
-			_layoutClassedModelUsageLocalService.
-				getLayoutClassedModelUsagesByPlid(layout.getPlid());
-
-		if (deletedPortletIds.isEmpty()) {
-			return layoutClassedModelUsages;
-		}
-
-		for (FragmentEntryLink fragmentEntryLink :
-				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
-					layout.getGroupId(), layout.getPlid())) {
-
-			if (fragmentEntryLink.isDeleted()) {
-				continue;
-			}
-
-			deletedPortletIds.removeAll(
-				_portletRegistry.getFragmentEntryLinkPortletIds(
-					fragmentEntryLink));
-		}
-
-		long portletClassNameId = _portal.getClassNameId(Portlet.class);
-
-		return ListUtil.filter(
-			layoutClassedModelUsages,
-			layoutClassedModelUsage ->
-				(layoutClassedModelUsage.getContainerType() !=
-					portletClassNameId) ||
-				!deletedPortletIds.contains(
-					layoutClassedModelUsage.getContainerKey()));
-	}
-
 	private List<String> _getLayoutPortletIds(
 		Layout layout, long[] segmentsExperiencesIds) {
 
@@ -1059,6 +1026,42 @@ public class LayoutLocalServiceWrapper
 		}
 
 		return layoutPortletIds;
+	}
+
+	private Set<String> _getOrphanedPortletIds(
+		Layout layout, long[] segmentsExperiencesIds) {
+
+		Set<String> orphanedPortletIds = new HashSet<>();
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_fragmentEntryLinkLocalService.
+					getFragmentEntryLinksBySegmentsExperienceId(
+						layout.getGroupId(), segmentsExperiencesIds,
+						layout.getPlid(), true)) {
+
+			orphanedPortletIds.addAll(
+				_portletRegistry.getFragmentEntryLinkPortletIds(
+					fragmentEntryLink));
+		}
+
+		if (orphanedPortletIds.isEmpty()) {
+			return orphanedPortletIds;
+		}
+
+		for (FragmentEntryLink fragmentEntryLink :
+				_fragmentEntryLinkLocalService.getFragmentEntryLinksByPlid(
+					layout.getGroupId(), layout.getPlid())) {
+
+			if (fragmentEntryLink.isDeleted()) {
+				continue;
+			}
+
+			orphanedPortletIds.removeAll(
+				_portletRegistry.getFragmentEntryLinkPortletIds(
+					fragmentEntryLink));
+		}
+
+		return orphanedPortletIds;
 	}
 
 	private String _getScopeExternalReferenceCode(
