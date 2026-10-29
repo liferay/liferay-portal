@@ -5,6 +5,7 @@
 
 package com.liferay.layout.page.template.admin.web.internal.util;
 
+import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -13,13 +14,18 @@ import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollec
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateCollectionNameComparator;
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateEntryCreateDateComparator;
 import com.liferay.layout.page.template.util.comparator.LayoutPageTemplateEntryNameComparator;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import jakarta.portlet.ActionRequest;
 import jakarta.portlet.RenderResponse;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -83,6 +89,22 @@ public class LayoutPageTemplatePortletUtil {
 
 		return HttpComponentsUtil.removeParameter(
 			backURL, renderResponse.getNamespace() + "redirect");
+	}
+
+	public static String getDesignLibraryRedirectURL(
+			ActionRequest actionRequest, Layout layout,
+			ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		Group scopeGroup = themeDisplay.getScopeGroup();
+
+		return HttpComponentsUtil.addParameters(
+			PortalUtil.getLayoutFullURL(layout, themeDisplay), "p_l_back_url",
+			DesignLibraryUtil.getDesignLibraryResourcesURL(
+				scopeGroup, PortalUtil.getHttpServletRequest(actionRequest)),
+			"p_l_back_url_title",
+			scopeGroup.getDescriptiveName(themeDisplay.getLocale()), "p_l_mode",
+			Constants.EDIT);
 	}
 
 	public static OrderByComparator<LayoutPageTemplateCollection>

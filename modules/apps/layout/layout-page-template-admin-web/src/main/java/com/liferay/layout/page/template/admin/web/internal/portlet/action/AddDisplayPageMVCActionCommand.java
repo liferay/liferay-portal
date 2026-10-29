@@ -9,6 +9,7 @@ import com.liferay.asset.kernel.NoSuchClassTypeException;
 import com.liferay.design.library.util.DesignLibraryUtil;
 import com.liferay.layout.page.template.admin.constants.LayoutPageTemplateAdminPortletKeys;
 import com.liferay.layout.page.template.admin.web.internal.handler.LayoutPageTemplateEntryExceptionRequestHandlerUtil;
+import com.liferay.layout.page.template.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryService;
@@ -19,7 +20,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
@@ -91,17 +91,11 @@ public class AddDisplayPageMVCActionCommand extends BaseMVCActionCommand {
 		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
 			WebKeys.THEME_DISPLAY);
 
-		Group scopeGroup = themeDisplay.getScopeGroup();
+		if (DesignLibraryUtil.isDesignLibraryScope(
+				themeDisplay.getScopeGroup())) {
 
-		if (DesignLibraryUtil.isDesignLibraryScope(scopeGroup)) {
-			return HttpComponentsUtil.addParameters(
-				_portal.getLayoutFullURL(draftLayout, themeDisplay),
-				"p_l_back_url",
-				DesignLibraryUtil.getDesignLibraryResourcesURL(
-					scopeGroup, _portal.getHttpServletRequest(actionRequest)),
-				"p_l_back_url_title",
-				scopeGroup.getDescriptiveName(themeDisplay.getLocale()),
-				"p_l_mode", Constants.EDIT);
+			return LayoutPageTemplatePortletUtil.getDesignLibraryRedirectURL(
+				actionRequest, draftLayout, themeDisplay);
 		}
 
 		return HttpComponentsUtil.addParameters(
