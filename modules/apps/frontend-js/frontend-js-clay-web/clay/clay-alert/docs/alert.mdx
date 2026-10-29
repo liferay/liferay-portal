@@ -273,7 +273,7 @@ Alerts stay until they are dismissed when a `Provider` sets `persistentAlerts` o
 
 A custom component that closes on its own can follow the same setting with `usePrefersPersistentAlerts`. It returns `true` when a `Provider` sets `persistentAlerts` or `document.body` has the `c-prefers-persistent-alerts` class, and it updates when either one changes. While it returns `true`, do not start the auto close timer.
 
-### Auto Focus
+### Autofocus
 
 Set `autoFocus` to move focus to an alert when it is shown. The alert focuses itself, so callers do not need to look it up after rendering it.
 
@@ -327,7 +327,7 @@ export default function App() {
 
 ### Stacking
 
-When many toasts are open, the toast container stacks them to save space. The newest toast is always at the bottom and fully visible. Stacking is pure CSS, so it also works with a plain `ToastContainer` or plain markup.
+When many toasts are open, the toast container stacks them to save space. The newest toast is always at the bottom and fully visible. Stacking is pure CSS, so it also works with a plain `ToastContainer` or plain markup:
 
 -   More than 6: the older toasts get narrower, like a pyramid, and sit closer together.
 -   More than 12: the older toasts overlap, and only a thin strip of each one shows.
