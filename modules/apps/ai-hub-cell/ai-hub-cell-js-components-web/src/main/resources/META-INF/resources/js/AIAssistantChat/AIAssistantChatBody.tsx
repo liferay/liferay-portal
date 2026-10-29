@@ -22,6 +22,7 @@ type AIState = 'focused' | 'result' | 'result-readonly' | 'working';
 interface AIAssistantChatBodyProps {
 	aiState?: AIState;
 	chat: AIChat;
+	greeting?: string;
 	quickActions?: string[];
 	showGreeting: boolean;
 }
@@ -29,6 +30,7 @@ interface AIAssistantChatBodyProps {
 const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 	aiState: controlledAIState,
 	chat,
+	greeting,
 	quickActions,
 	showGreeting,
 }) => {
@@ -76,9 +78,12 @@ const AIAssistantChatBody: React.FC<AIAssistantChatBodyProps> = ({
 				{showGreeting && (
 					<AIAssistantMessageBalloon
 						error={false}
-						message={Liferay.Language.get(
-							'hi-i-can-help-you-generate-content-titles-tags-or-translate-your-work'
-						)}
+						message={
+							greeting ??
+							Liferay.Language.get(
+								'hi-i-can-help-you-generate-content-titles-tags-or-translate-your-work'
+							)
+						}
 					/>
 				)}
 

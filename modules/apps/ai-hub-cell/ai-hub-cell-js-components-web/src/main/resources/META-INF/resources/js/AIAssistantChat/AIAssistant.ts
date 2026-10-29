@@ -16,6 +16,7 @@ export interface AIAssistantOpenCommand {
 	context?: ChatContext;
 	enableFreeFormCategorization?: boolean;
 	getContext?: () => ChatContext;
+	greeting?: string;
 	initialMessage?: string;
 	instructionDefinitionScope: string;
 	newSession?: boolean;

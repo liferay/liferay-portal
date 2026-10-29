@@ -157,6 +157,7 @@ const AIAssistantHost: React.FC = () => {
 	const chatBody = (
 		<AIAssistantChatBody
 			chat={chat}
+			greeting={startCommand?.greeting}
 			quickActions={activeCommand?.quickActions}
 			showGreeting={!startCommand?.initialMessage}
 		/>
