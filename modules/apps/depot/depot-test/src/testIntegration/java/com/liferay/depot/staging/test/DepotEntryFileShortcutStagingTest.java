@@ -107,15 +107,15 @@ public class DepotEntryFileShortcutStagingTest {
 					DepotStagingTestUtil.publishLayouts(
 						stagingGroup, _liveGroup);
 
-					FileEntry liveFileEntry =
-						_dlAppLocalService.getFileEntryByUuidAndGroupId(
-							stagingFileEntry.getUuid(),
-							_liveDepotEntry.getGroupId());
 					DLFileShortcut liveDLFileShortcut =
 						_dlFileShortcutLocalService.
 							getDLFileShortcutByUuidAndGroupId(
 								stagingFileShortcut.getUuid(),
 								_liveGroup.getGroupId());
+					FileEntry liveFileEntry =
+						_dlAppLocalService.getFileEntryByUuidAndGroupId(
+							stagingFileEntry.getUuid(),
+							_liveDepotEntry.getGroupId());
 
 					Assert.assertEquals(
 						liveFileEntry.getFileEntryId(),
