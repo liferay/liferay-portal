@@ -102,16 +102,16 @@ public class JenkinsAPIUtil {
 	public static JSONObject getLastCompletedBuildJSONObject(
 		String jobURL, String tree) {
 
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				JenkinsResultsParserUtil.getLocalURL(jobURL),
-				"/lastCompletedBuild/api/json"));
-
-		if (tree != null) {
-			uriBuilder.addParameter("tree", tree);
-		}
-
 		try {
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				JenkinsResultsParserUtil.combine(
+					JenkinsResultsParserUtil.getLocalURL(jobURL),
+					"/lastCompletedBuild/api/json"));
+
+			if (tree != null) {
+				uriBuilder.addParameter("tree", tree);
+			}
+
 			return JenkinsResultsParserUtil.toJSONObject(
 				uriBuilder.toString(), false);
 		}

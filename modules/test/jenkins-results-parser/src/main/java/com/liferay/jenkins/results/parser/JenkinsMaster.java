@@ -228,18 +228,18 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	public QueueItem fetchQueueItem(long queueId) throws IOException {
 		String response;
 
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				getURL(), "/queue/item/", String.valueOf(queueId),
-				"/api/json"));
-
-		uriBuilder.addParameter(
-			"tree",
-			JenkinsResultsParserUtil.combine(
-				"actions[parameters[name,value]],cancelled,executable[url],",
-				"id,inQueueSince,task[name,url],url,why"));
-
 		try {
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				JenkinsResultsParserUtil.combine(
+					getURL(), "/queue/item/", String.valueOf(queueId),
+					"/api/json"));
+
+			uriBuilder.addParameter(
+				"tree",
+				JenkinsResultsParserUtil.combine(
+					"actions[parameters[name,value]],cancelled,",
+					"executable[url],id,inQueueSince,task[name,url],url,why"));
+
 			response = JenkinsResultsParserUtil.toString(
 				uriBuilder.toString(), false, 0, 0, 5000);
 		}
@@ -1773,20 +1773,22 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 			@Override
 			public JSONArray execute() {
-				URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-					JenkinsResultsParserUtil.getLocalURL(
-						JenkinsResultsParserUtil.combine(
-							String.valueOf(getURL()), "/job/", jobName,
-							"/api/json")));
-
-				uriBuilder.addParameter(
-					"tree",
-					JenkinsResultsParserUtil.combine(
-						"allBuilds[actions[parameters[name,value]],queueId,",
-						"timestamp,url]{", String.valueOf(page * 100), ",",
-						String.valueOf((page + 1) * 100), "}"));
-
 				try {
+					URIBuilder uriBuilder =
+						JenkinsResultsParserUtil.newURIBuilder(
+							JenkinsResultsParserUtil.getLocalURL(
+								JenkinsResultsParserUtil.combine(
+									String.valueOf(getURL()), "/job/", jobName,
+									"/api/json")));
+
+					uriBuilder.addParameter(
+						"tree",
+						JenkinsResultsParserUtil.combine(
+							"allBuilds[actions[parameters[name,value]],",
+							"queueId,timestamp,url]{",
+							String.valueOf(page * 100), ",",
+							String.valueOf((page + 1) * 100), "}"));
+
 					JSONObject jsonObject =
 						JenkinsResultsParserUtil.toJSONObject(
 							uriBuilder.toString(), false, 5000);

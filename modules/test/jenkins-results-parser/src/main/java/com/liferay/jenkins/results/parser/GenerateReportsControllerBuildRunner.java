@@ -95,16 +95,17 @@ public class GenerateReportsControllerBuildRunner
 	private Map<String, JSONObject> _getBuildJSONObjectsMap() {
 		Map<String, JSONObject> buildJSONObjectsMap = new HashMap<>();
 
-		BuildData buildData = getBuildData();
-
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				JenkinsResultsParserUtil.getLocalURL(buildData.getJobURL()),
-				"/api/json"));
-
-		uriBuilder.addParameter("tree", "builds[description,timestamp,url]");
-
 		try {
+			BuildData buildData = getBuildData();
+
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				JenkinsResultsParserUtil.combine(
+					JenkinsResultsParserUtil.getLocalURL(buildData.getJobURL()),
+					"/api/json"));
+
+			uriBuilder.addParameter(
+				"tree", "builds[description,timestamp,url]");
+
 			JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
 				uriBuilder.toString(), false);
 

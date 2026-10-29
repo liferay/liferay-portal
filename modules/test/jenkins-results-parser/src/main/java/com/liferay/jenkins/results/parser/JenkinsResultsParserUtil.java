@@ -1403,12 +1403,13 @@ public class JenkinsResultsParserUtil {
 		}
 
 		if (jsonObject == null) {
-			URIBuilder uriBuilder = newURIBuilder(
-				getLocalURL(buildURL + "api/json"));
-
-			uriBuilder.addParameter("tree", "actions[parameters[name,value]]");
-
 			try {
+				URIBuilder uriBuilder = newURIBuilder(
+					getLocalURL(buildURL + "api/json"));
+
+				uriBuilder.addParameter(
+					"tree", "actions[parameters[name,value]]");
+
 				jsonObject = toJSONObject(uriBuilder.toString());
 			}
 			catch (IOException ioException) {
@@ -4399,13 +4400,13 @@ public class JenkinsResultsParserUtil {
 			public Set<String> execute() {
 				JSONObject topLevelBuildsJSONObject;
 
-				URIBuilder uriBuilder = newURIBuilder(
-					jenkinsMaster.getRemoteURL() +
-						"/view/Top%20Level/api/json");
-
-				uriBuilder.addParameter("tree", "jobs[name]");
-
 				try {
+					URIBuilder uriBuilder = newURIBuilder(
+						jenkinsMaster.getRemoteURL() +
+							"/view/Top%20Level/api/json");
+
+					uriBuilder.addParameter("tree", "jobs[name]");
+
 					topLevelBuildsJSONObject = toJSONObject(
 						uriBuilder.toString());
 				}

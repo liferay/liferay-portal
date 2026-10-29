@@ -1478,18 +1478,19 @@ public abstract class BaseJob implements Job {
 			return null;
 		}
 
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				JenkinsResultsParserUtil.getLocalURL(getJobURL(jenkinsMaster)),
-				"/api/json"));
-
-		uriBuilder.addParameter("pretty", null);
-
-		if (tree != null) {
-			uriBuilder.addParameter("tree", tree);
-		}
-
 		try {
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				JenkinsResultsParserUtil.combine(
+					JenkinsResultsParserUtil.getLocalURL(
+						getJobURL(jenkinsMaster)),
+					"/api/json"));
+
+			uriBuilder.addParameter("pretty", null);
+
+			if (tree != null) {
+				uriBuilder.addParameter("tree", tree);
+			}
+
 			return JenkinsResultsParserUtil.toJSONObject(
 				uriBuilder.toString(), false);
 		}
