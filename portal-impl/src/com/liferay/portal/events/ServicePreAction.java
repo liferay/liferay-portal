@@ -702,7 +702,6 @@ public class ServicePreAction extends Action {
 		}
 
 		List<Layout> accessibleLayouts = new ArrayList<>();
-
 		long plid = layout.getPlid();
 
 		for (Layout curLayout : layouts) {
