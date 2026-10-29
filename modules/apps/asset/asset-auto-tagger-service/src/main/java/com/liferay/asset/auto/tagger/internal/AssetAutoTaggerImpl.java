@@ -12,20 +12,13 @@ import com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfigurationF
 import com.liferay.asset.auto.tagger.internal.util.AssetAutoTaggerUtil;
 import com.liferay.asset.auto.tagger.model.AssetAutoTaggerEntry;
 import com.liferay.asset.auto.tagger.service.AssetAutoTaggerEntryLocalService;
-import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
-import com.liferay.asset.kernel.service.AssetTagLocalService;
-import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.service.GroupLocalService;
-import com.liferay.portal.kernel.transaction.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,13 +34,11 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.asset.auto.tagger.configuration.AssetAutoTaggerConfiguration",
-	service = AopService.class
+	service = AssetAutoTagger.class
 )
-@CTAware
-public class AssetAutoTaggerImpl implements AopService, AssetAutoTagger {
+public class AssetAutoTaggerImpl implements AssetAutoTagger {
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public void tag(AssetEntry assetEntry) throws PortalException {
 		AssetAutoTaggerConfiguration assetAutoTaggerConfiguration =
 			_getAssetAutoTaggerConfiguration(assetEntry);
@@ -66,50 +57,20 @@ public class AssetAutoTaggerImpl implements AopService, AssetAutoTagger {
 			return;
 		}
 
-		for (String assetTagName : assetTagNames) {
-			try {
-				_assetAutoTaggerEntryLocalService.addAssetAutoTaggerEntry(
-					assetEntry, assetTagName);
-			}
-			catch (AssetTagException assetTagException) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						String.format(
-							"Unable to add auto tag: %s", assetTagName),
-						assetTagException);
-				}
-			}
-			catch (PortalException portalException) {
-				_log.error(
-					String.format("Unable to add auto tag: %s", assetTagName),
-					portalException);
-			}
-		}
+		_assetAutoTaggerEntryLocalService.addAssetAutoTaggerEntries(
+			assetEntry, assetTagNames);
 
 		_reindex(assetEntry);
 	}
 
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public void untag(AssetEntry assetEntry) throws PortalException {
 		List<AssetAutoTaggerEntry> assetAutoTaggerEntries =
-			_assetAutoTaggerEntryLocalService.getAssetAutoTaggerEntries(
+			_assetAutoTaggerEntryLocalService.deleteAssetAutoTaggerEntries(
 				assetEntry);
 
 		if (assetAutoTaggerEntries.isEmpty()) {
 			return;
-		}
-
-		for (AssetAutoTaggerEntry assetAutoTaggerEntry :
-				assetAutoTaggerEntries) {
-
-			_assetTagLocalService.deleteAssetEntryAssetTag(
-				assetAutoTaggerEntry.getAssetEntryId(),
-				assetAutoTaggerEntry.getAssetTagId());
-
-			_assetTagLocalService.decrementAssetCount(
-				assetAutoTaggerEntry.getAssetTagId(),
-				assetEntry.getClassNameId());
 		}
 
 		_reindex(assetEntry);
@@ -194,18 +155,12 @@ public class AssetAutoTaggerImpl implements AopService, AssetAutoTagger {
 		indexer.reindex(assetEntry.getClassName(), assetEntry.getClassPK());
 	}
 
-	private static final Log _log = LogFactoryUtil.getLog(
-		AssetAutoTaggerImpl.class);
-
 	@Reference
 	private AssetAutoTaggerConfigurationFactory
 		_assetAutoTaggerConfigurationFactory;
 
 	@Reference
 	private AssetAutoTaggerEntryLocalService _assetAutoTaggerEntryLocalService;
-
-	@Reference
-	private AssetTagLocalService _assetTagLocalService;
 
 	@Reference
 	private GroupLocalService _groupLocalService;
