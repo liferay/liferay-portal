@@ -123,6 +123,15 @@ public class SegmentsEntryStagedModelDataHandlerTest
 	}
 
 	@Test
+	@TestInfo("LPD-112773")
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldContains()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"contains(customField/%s, '%s')");
+	}
+
+	@Test
 	public void testExportImportSegmentsEntryWithEntityFieldID()
 		throws Exception {
 
