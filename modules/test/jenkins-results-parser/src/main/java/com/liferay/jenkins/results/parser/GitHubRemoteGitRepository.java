@@ -220,8 +220,17 @@ public class GitHubRemoteGitRepository extends BaseRemoteGitRepository {
 			}
 		}
 
-		String labelRequestURL = JenkinsResultsParserUtil.combine(
-			getLabelRequestURL(), "/", oldLabel.getName());
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			getLabelRequestURL());
+
+		List<String> pathSegments = new ArrayList<>(
+			uriBuilder.getPathSegments());
+
+		pathSegments.add(oldLabel.getName());
+
+		uriBuilder.setPathSegments(pathSegments);
+
+		String labelRequestURL = uriBuilder.toString();
 
 		try {
 			if (jsonObject == null) {
