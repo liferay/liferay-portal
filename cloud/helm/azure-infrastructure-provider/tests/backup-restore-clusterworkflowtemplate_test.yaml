@@ -375,7 +375,7 @@ tests:
                     value: 600
             -   equal:
                     path: spec.templates[19].activeDeadlineSeconds
-                    value: 3600
+                    value: 10800
         it: Sets every step timeout well above the measured restore duration
     -   asserts:
             -   equal:
