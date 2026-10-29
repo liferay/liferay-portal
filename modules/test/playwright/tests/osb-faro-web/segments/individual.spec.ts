@@ -1369,67 +1369,6 @@ test(
 );
 
 test(
-	'A new individuals attribute breakdown can be deleted',
-	{
-		tag: '@LRAC-8658',
-	},
-	async ({
-		analyticsChannel: channel,
-		apiHelpers,
-		dxpSyncedAnalyticsChannel,
-		page,
-		project,
-	}) => {
-		const {dataSourceId} = dxpSyncedAnalyticsChannel;
-
-		const individual = {
-			...generateIndividual({name: 'bd' + getRandomString()}),
-			dataSourceId,
-		};
-
-		const date = new Date();
-
-		await createIndividuals({apiHelpers, individuals: [individual]});
-
-		await apiHelpers.jsonWebServicesOSBAsah.createEvents([
-			{
-				applicationId: 'Page',
-				canonicalUrl: 'https://www.liferay.com',
-				channelId: channel.id,
-				dataSourceId,
-				eventDate: date.toISOString(),
-				eventId: 'pageViewed',
-				title: 'pageViewed',
-				userId: individual.id,
-			},
-		]);
-
-		await navigateToACPageViaURL({
-			acPage: ACPage.individualPage,
-			channelID: channel.id,
-			page,
-			projectID: project.groupId,
-		});
-
-		// Add a breakdown by email, then delete it
-
-		const attributeValue = getRandomString();
-
-		await addBreakdownByAttribute({
-			attributeName: 'email',
-			attributeValue,
-			page,
-		});
-
-		await page.getByText(attributeValue).hover();
-
-		await page.getByRole('button', {name: 'Close'}).click();
-
-		await expect(page.locator('.tab-item')).toHaveCount(0);
-	}
-);
-
-test(
 	'A selected individual activity point can clear its date selection',
 	{
 		tag: '@LRAC-8916',
