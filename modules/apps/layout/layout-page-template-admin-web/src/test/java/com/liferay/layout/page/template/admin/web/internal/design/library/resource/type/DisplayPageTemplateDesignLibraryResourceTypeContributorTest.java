@@ -339,14 +339,14 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 		Mockito.verify(
 			_editLiferayPortletURL
 		).setParameter(
-			"displayPageTemplateExternalReferenceCode",
+			"layoutPageTemplateEntryExternalReferenceCode",
 			"{embedded.externalReferenceCode}"
 		);
 
 		Mockito.verify(
 			_permissionsLiferayPortletURL
 		).setParameter(
-			"displayPageTemplateExternalReferenceCode",
+			"layoutPageTemplateEntryExternalReferenceCode",
 			"{embedded.externalReferenceCode}"
 		);
 
@@ -361,14 +361,15 @@ public class DisplayPageTemplateDesignLibraryResourceTypeContributorTest {
 			_editLiferayPortletURL
 		).setParameter(
 			"mvcRenderCommandName",
-			"/layout_page_template_admin/edit_display_page"
+			"/layout_page_template_admin/edit_layout_page_template_entry"
 		);
 
 		Mockito.verify(
 			_permissionsLiferayPortletURL
 		).setParameter(
 			"mvcRenderCommandName",
-			"/layout_page_template_admin/view_display_page_permissions"
+			"/layout_page_template_admin" +
+				"/view_layout_page_template_entry_permissions"
 		);
 
 		Mockito.verify(
