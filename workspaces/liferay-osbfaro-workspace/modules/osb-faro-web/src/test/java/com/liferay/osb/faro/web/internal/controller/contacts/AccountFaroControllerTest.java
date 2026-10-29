@@ -17,6 +17,7 @@ import com.liferay.osb.faro.service.FaroProjectLocalService;
 import com.liferay.osb.faro.web.internal.model.display.FaroFDSResultsDisplay;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -211,6 +212,82 @@ public class AccountFaroControllerTest {
 			externalReferenceCode, stageMap.get("externalReferenceCode"));
 		Assert.assertEquals(id, stageMap.get("id"));
 		Assert.assertEquals(name, stageMap.get("name"));
+	}
+
+	@Test
+	public void testSearchFDSFieldValuesWithLifecycleStatusAndNoAccountLifecycleId()
+		throws Exception {
+
+		List<AccountLifecycle> accountLifecycles = Arrays.asList(
+			_getAccountLifecycle(), _getAccountLifecycle());
+		long channelId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_contactsEngineClient.getAccountLifecycles(
+				_faroProject, channelId, null, null, null, 1, 10000, null)
+		).thenReturn(
+			new Results<>(accountLifecycles, accountLifecycles.size())
+		);
+
+		FaroFDSResultsDisplay<Object> faroFDSResultsDisplay =
+			_accountFaroController.searchFDSFieldValues(
+				RandomTestUtil.randomLong(), null, channelId, "lifecycleStatus",
+				RandomTestUtil.randomString(), RandomTestUtil.randomInt(),
+				RandomTestUtil.randomInt());
+
+		List<?> items = faroFDSResultsDisplay.getItems();
+
+		Assert.assertEquals(
+			items.toString(), accountLifecycles.size(), items.size());
+
+		_assertItem(
+			accountLifecycles.get(0), (Map<String, String>)items.get(0));
+		_assertItem(
+			accountLifecycles.get(1), (Map<String, String>)items.get(1));
+	}
+
+	private void _assertItem(
+		AccountLifecycle accountLifecycle, Map<String, String> stageMap) {
+
+		List<AccountLifecycleStage> accountLifecycleStages =
+			accountLifecycle.getAccountLifecycleStages();
+
+		AccountLifecycleStage accountLifecycleStage =
+			accountLifecycleStages.get(0);
+
+		Assert.assertEquals(
+			accountLifecycleStage.getExternalReferenceCode(),
+			stageMap.get("externalReferenceCode"));
+		Assert.assertEquals(accountLifecycleStage.getId(), stageMap.get("id"));
+
+		Assert.assertEquals(
+			accountLifecycle.getExternalReferenceCode(),
+			stageMap.get("lifecycleExternalReferenceCode"));
+		Assert.assertEquals(
+			accountLifecycle.getName(), stageMap.get("lifecycleName"));
+		Assert.assertEquals(
+			accountLifecycleStage.getName(), stageMap.get("name"));
+	}
+
+	private AccountLifecycle _getAccountLifecycle() {
+		AccountLifecycle accountLifecycle = new AccountLifecycle();
+
+		AccountLifecycleStage accountLifecycleStage =
+			new AccountLifecycleStage();
+
+		accountLifecycleStage.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+		accountLifecycleStage.setId(RandomTestUtil.randomString());
+		accountLifecycleStage.setName(RandomTestUtil.randomString());
+
+		accountLifecycle.setAccountLifecycleStages(
+			Collections.singletonList(accountLifecycleStage));
+
+		accountLifecycle.setExternalReferenceCode(
+			RandomTestUtil.randomString());
+		accountLifecycle.setName(RandomTestUtil.randomString());
+
+		return accountLifecycle;
 	}
 
 	private final AccountFaroController _accountFaroController =
