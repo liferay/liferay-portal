@@ -275,11 +275,7 @@ test(
 			).toBeVisible();
 		});
 
-		const acceptAll = page.getByRole('button', {name: 'Accept All'});
-
-		await acceptAll.waitFor({state: 'visible'});
-
-		await acceptAll.click();
+		await productAnalyticsBannerPage.acceptAllButton.click();
 
 		await test.step('Verify Product Analytics Banner is no longer present', async () => {
 			await page.reload();
@@ -316,11 +312,7 @@ test(
 			).toBeVisible();
 		});
 
-		const acceptAll = page.getByRole('button', {name: 'Decline All'});
-
-		await acceptAll.waitFor({state: 'visible'});
-
-		await acceptAll.click();
+		await productAnalyticsBannerPage.declineAllButton.click();
 
 		await test.step('Verify Product Analytics Banner is no longer present', async () => {
 			await expect(
