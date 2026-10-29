@@ -304,7 +304,7 @@ public class JournalArticleAssetRendererTest {
 		_assertURL(article, false, themeDisplay);
 	}
 
-	private void _testGetURLViewInContextWhenArticleIsFromAnotherSite()
+	private void _testGetURLViewInContextWhenArticleIsFromAnotherGroup()
 		throws Exception {
 
 		JournalArticle article = JournalTestUtil.addArticleWithWorkflow(
