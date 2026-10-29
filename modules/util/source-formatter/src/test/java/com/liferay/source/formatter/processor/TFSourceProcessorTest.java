@@ -38,6 +38,11 @@ public class TFSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testSortBlocksWithEmptyLines() throws Exception {
+		test("SortBlocksWithEmptyLines.testtf");
+	}
+
+	@Test
 	public void testSortBlocksWithIgnoredBrackets() throws Exception {
 		test("SortBlocksWithIgnoredBrackets.testtf");
 	}
@@ -45,11 +50,6 @@ public class TFSourceProcessorTest extends BaseSourceProcessorTestCase {
 	@Test
 	public void testSortBlocksWithIncorrectIndentation() throws Exception {
 		test("SortBlocksWithIncorrectIndentation.testtf");
-	}
-
-	@Test
-	public void testSortBlocksWithOrderedBlockTypes() throws Exception {
-		test("SortBlocksWithOrderedBlockTypes.testtf");
 	}
 
 	@Test

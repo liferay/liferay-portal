@@ -1,14 +1,19 @@
-# Bucket for assets
-# Shared with the CDN
+# Bucket for logs
 
-resource "aws_s3_bucket" "assets" {
-	bucket="assets"
+resource "aws_s3_bucket" "logs" {
+	bucket="logs"
 }
 
 # Bucket for backups
 
 resource "aws_s3_bucket" "backups" {
 	bucket="backups"
+}
+
+// Bucket for media
+
+resource "aws_s3_bucket" "media" {
+	bucket="media"
 }
 
 /*
@@ -19,14 +24,9 @@ resource "aws_s3_bucket" "config" {
 	bucket="config"
 }
 
-# Bucket for logs
+# Bucket for assets
+# Shared with the CDN
 
-resource "aws_s3_bucket" "logs" {
-	bucket="logs"
-}
-
-// Bucket for media
-
-resource "aws_s3_bucket" "media" {
-	bucket="media"
+resource "aws_s3_bucket" "assets" {
+	bucket="assets"
 }

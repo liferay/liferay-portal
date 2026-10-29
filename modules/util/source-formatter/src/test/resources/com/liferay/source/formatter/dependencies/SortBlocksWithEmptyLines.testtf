@@ -1,10 +1,15 @@
 run "verify" {
 	command=plan
 }
+
+run "setup" {
+	command=apply
+}
 resource "terraform_data" "setup" {
 	provisioner "remote-exec" {
 		inline=["echo b"]
 	}
+
 	provisioner "file" {
 		destination="/tmp/a"
 		source="a"
@@ -16,11 +21,9 @@ build {
 		post-processor "shell-local" {
 			inline=["echo b"]
 		}
+
 		post-processor "manifest" {
 			output="manifest.json"
 		}
 	}
-}
-run "setup" {
-	command=apply
 }

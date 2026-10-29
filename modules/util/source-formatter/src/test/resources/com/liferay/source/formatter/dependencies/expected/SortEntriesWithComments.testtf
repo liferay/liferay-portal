@@ -14,16 +14,6 @@ resource "aws_s3_bucket" "backups" {
 
 }
 resource "aws_s3_bucket" "logs" {
-	acl="private"
-	bucket="logs" # main bucket
-
-	# Required by the CDN.
-	# Do not remove.
-
-	cors_rule={
-		allowed_origins="*"
-	}
-	force_destroy=true
 
 	# Keep logs for one year
 
@@ -31,8 +21,18 @@ resource "aws_s3_bucket" "logs" {
 		expiration=365
 	}
 
+	# Required by the CDN.
+	# Do not remove.
+
+	acl="private"
+	bucket="logs" # main bucket
+	cors_rule={
+		allowed_origins="*"
+	}
+
 	# Tags
 
+	force_destroy=true
 	tags={
 		Name="logs"
 	}
