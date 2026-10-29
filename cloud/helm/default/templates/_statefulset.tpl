@@ -551,6 +551,15 @@ spec:
                     protocol: TCP
                 -   port: session
                     protocol: TCP
+        {{- if .statefulset.networkPolicy.allowMetricsIngress }}
+        -   from:
+                -   namespaceSelector:
+                        matchLabels:
+                            kubernetes.io/metadata.name: {{ .statefulset.networkPolicy.metricsNamespace | quote }}
+            ports:
+                -   port: {{ .statefulset.networkPolicy.metricsPort }}
+                    protocol: TCP
+        {{- end }}
         {{- with .statefulset.networkPolicy.extraIngress }}
         {{- toYaml . | nindent 8 }}
         {{- end }}

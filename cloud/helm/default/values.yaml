@@ -457,6 +457,7 @@ network:
     timeouts: {}
 networkPolicy:
     allowGatewayIngress: true
+    allowMetricsIngress: true
     annotations: {}
     cluster:
         kubernetesEndpointCidrs: ""
@@ -465,6 +466,8 @@ networkPolicy:
     extraIngress: []
     gatewayNamespace: envoy-gateway-system
     gatewayPodLabel: envoy
+    metricsNamespace: observability
+    metricsPort: 12345
 nodeSelector: {}
 overlay:
     copy: []

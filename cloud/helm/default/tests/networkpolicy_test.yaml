@@ -6,6 +6,26 @@ templates:
     -   templates/workloads.yaml
 tests:
     -   asserts:
+            -   contains:
+                    content:
+                        from:
+                            -   namespaceSelector:
+                                    matchLabels:
+                                        kubernetes.io/metadata.name: monitoring
+                        ports:
+                            -   port: 9999
+                                protocol: TCP
+                    path: spec.ingress
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Admits the metrics scraper namespace on the metrics port
+        set:
+            networkPolicy.enabled: true
+            networkPolicy.metricsNamespace: monitoring
+            networkPolicy.metricsPort: 9999
+    -   asserts:
             -   lengthEqual:
                     count: 3
                     path: spec.egress
@@ -41,6 +61,18 @@ tests:
             value: NetworkPolicy
         it: Omits the NetworkPolicy by default
     -   asserts:
+            -   lengthEqual:
+                    count: 1
+                    path: spec.ingress
+        documentSelector:
+            path: kind
+            skipEmptyTemplates: true
+            value: NetworkPolicy
+        it: Omits the scraper rule when metrics ingress is disabled
+        set:
+            networkPolicy.allowMetricsIngress: false
+            networkPolicy.enabled: true
+    -   asserts:
             -   contains:
                     content:
                         port: cluster
@@ -70,7 +102,7 @@ tests:
             networkPolicy.enabled: true
     -   asserts:
             -   lengthEqual:
-                    count: 2
+                    count: 3
                     path: spec.ingress
             -   equal:
                     path: spec.ingress[0].ports[0].port
