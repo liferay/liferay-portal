@@ -2,7 +2,7 @@ create index IX_31653559 on CPricingClassCPDefinitionRel (CPDefinitionId);
 create unique index IX_DA09B6F3 on CPricingClassCPDefinitionRel (commercePricingClassId, CPDefinitionId, ctCollectionId);
 
 create index IX_176CA5EC on CommercePriceModifier (commercePriceListId);
-create unique index IX_8C8A963E on CommercePriceModifier (companyId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
+create unique index IX_2BDB0CF4 on CommercePriceModifier (externalReferenceCode[$COLUMN_LENGTH:75$], companyId, ctCollectionId);
 create index IX_6A13CEF on CommercePriceModifier (status, displayDate);
 create index IX_921ADDA2 on CommercePriceModifier (status, expirationDate);
 create unique index IX_FAB45A5F on CommercePriceModifier (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
