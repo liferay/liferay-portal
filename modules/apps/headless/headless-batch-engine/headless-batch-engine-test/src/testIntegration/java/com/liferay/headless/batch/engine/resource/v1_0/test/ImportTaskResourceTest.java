@@ -170,13 +170,6 @@ public class ImportTaskResourceTest {
 	@Test
 	public void testPostImportTaskWithContentTypeParameters() throws Exception {
 		_testPostImportTaskWithContentTypeParameters(
-			JSONUtil.put(
-				"intValue", RandomTestUtil.randomInt()
-			).put(
-				"textValue", RandomTestUtil.randomString()
-			).toString(),
-			"application/x-ndjson; charset=utf-8");
-		_testPostImportTaskWithContentTypeParameters(
 			JSONUtil.putAll(
 				JSONUtil.put(
 					"intValue", RandomTestUtil.randomInt()
@@ -185,6 +178,13 @@ public class ImportTaskResourceTest {
 				)
 			).toString(),
 			"application/json; charset=utf-8");
+		_testPostImportTaskWithContentTypeParameters(
+			JSONUtil.put(
+				"intValue", RandomTestUtil.randomInt()
+			).put(
+				"textValue", RandomTestUtil.randomString()
+			).toString(),
+			"application/x-ndjson; charset=utf-8");
 		_testPostImportTaskWithContentTypeParameters(
 			StringBundler.concat(
 				"intValue,textValue\n", RandomTestUtil.randomInt(), ",",
