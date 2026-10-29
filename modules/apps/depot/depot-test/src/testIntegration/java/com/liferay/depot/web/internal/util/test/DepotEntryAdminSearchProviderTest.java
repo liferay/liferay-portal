@@ -11,11 +11,17 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.depot.test.util.DepotTestUtil;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
@@ -102,6 +108,51 @@ public class DepotEntryAdminSearchProviderTest {
 				mockLiferayPortletActionRequest,
 				new MockLiferayPortletRenderResponse(),
 				new MockLiferayPortletURL()));
+	}
+
+	@Test
+	public void testGetDepotEntrySearchWithViewPermission() throws Exception {
+		DepotEntry depotEntry = _initialDepotEntries.get(0);
+
+		DepotTestUtil.withRegularUser(
+			(user, role) -> {
+				_resourcePermissionLocalService.setResourcePermissions(
+					TestPropsValues.getCompanyId(), DepotEntry.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(depotEntry.getDepotEntryId()),
+					role.getRoleId(), new String[] {ActionKeys.VIEW});
+
+				PermissionThreadLocal.setPermissionChecker(
+					PermissionCheckerFactoryUtil.create(user));
+
+				GroupItemSelectorCriterion groupItemSelectorCriterion =
+					new GroupItemSelectorCriterion();
+
+				groupItemSelectorCriterion.setIncludeAllVisibleGroups(false);
+
+				MockLiferayPortletActionRequest
+					mockLiferayPortletActionRequest =
+						new MockLiferayPortletActionRequest();
+
+				mockLiferayPortletActionRequest.setAttribute(
+					WebKeys.THEME_DISPLAY, _getThemeDisplay());
+				mockLiferayPortletActionRequest.setParameter(
+					"keywords", _keywords);
+
+				_assertDepotEntries(
+					1,
+					ReflectionTestUtil.invoke(
+						_depotEntryAdminSearchProvider, "getDepotEntrySearch",
+						new Class<?>[] {
+							GroupItemSelectorCriterion.class,
+							PortletRequest.class, PortletResponse.class,
+							PortletURL.class
+						},
+						groupItemSelectorCriterion,
+						mockLiferayPortletActionRequest,
+						new MockLiferayPortletRenderResponse(),
+						new MockLiferayPortletURL()));
+			});
 	}
 
 	@Test
@@ -296,5 +347,8 @@ public class DepotEntryAdminSearchProviderTest {
 		filter = "component.name=com.liferay.depot.web.internal.portlet.action.ViewMVCRenderCommand"
 	)
 	private MVCRenderCommand _mvcRenderCommand;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 }

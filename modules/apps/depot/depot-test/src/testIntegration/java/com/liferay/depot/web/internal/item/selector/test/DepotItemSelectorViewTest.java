@@ -6,9 +6,11 @@
 package com.liferay.depot.web.internal.item.selector.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.item.selector.ItemSelectorView;
 import com.liferay.item.selector.criteria.group.criterion.GroupItemSelectorCriterion;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -55,31 +57,30 @@ public class DepotItemSelectorViewTest {
 
 	@Test
 	public void testIsVisibleForASupportedApplication() {
-		GroupItemSelectorCriterion groupItemSelectorCriterion =
-			new GroupItemSelectorCriterion();
-
-		groupItemSelectorCriterion.setPortletId(
-			DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
-
-		Assert.assertTrue(
-			_assetLibraryDepotItemSelectorView.isVisible(
-				groupItemSelectorCriterion, null));
-		Assert.assertTrue(
-			_spacesDepotItemSelectorView.isVisible(
-				groupItemSelectorCriterion, _themeDisplay));
+		_assertIsVisible(AssetListPortletKeys.ASSET_LIST, true);
+		_assertIsVisible(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN, true);
+		_assertIsVisible(JournalPortletKeys.JOURNAL, true);
 	}
 
 	@Test
 	public void testIsVisibleForAnUnsupportedApplication() {
+		_assertIsVisible(
+			"com_liferay_blogs_web_portlet_BlogsAdminPortlet", false);
+		_assertIsVisible(RandomTestUtil.randomString(), false);
+	}
+
+	private void _assertIsVisible(String portletId, boolean visible) {
 		GroupItemSelectorCriterion groupItemSelectorCriterion =
 			new GroupItemSelectorCriterion();
 
-		groupItemSelectorCriterion.setPortletId(RandomTestUtil.randomString());
+		groupItemSelectorCriterion.setPortletId(portletId);
 
-		Assert.assertFalse(
+		Assert.assertEquals(
+			visible,
 			_assetLibraryDepotItemSelectorView.isVisible(
 				groupItemSelectorCriterion, null));
-		Assert.assertFalse(
+		Assert.assertEquals(
+			visible,
 			_spacesDepotItemSelectorView.isVisible(
 				groupItemSelectorCriterion, _themeDisplay));
 	}
