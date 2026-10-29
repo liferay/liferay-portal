@@ -445,6 +445,14 @@ public class ListTypeDefinitionResourceTest
 
 	@Override
 	protected ListTypeDefinition
+			testDeleteListTypeDefinitionByExternalReferenceCode_addListTypeDefinition()
+		throws Exception {
+
+		return _addListTypeDefinition(randomListTypeDefinition());
+	}
+
+	@Override
+	protected ListTypeDefinition
 			testGetListTypeDefinition_addListTypeDefinition()
 		throws Exception {
 
