@@ -34,4 +34,19 @@ describe('TableData', () => {
 		expect(container.querySelector('.text-secondary')).toBeTruthy();
 		expect(getByText('Empty Message')).toBeTruthy();
 	});
+
+	it('should render when the body lacks the dxp class', () => {
+		const {className} = document.body;
+
+		document.body.className = '';
+
+		try {
+			const {getAllByText} = render(<TableData title='My Title' />);
+
+			expect(getAllByText('My Title')).toBeTruthy();
+		}
+		finally {
+			document.body.className = className;
+		}
+	});
 });
