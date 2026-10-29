@@ -46,7 +46,7 @@ describe('subscribeToServerEvents', () => {
 		jest.useRealTimers();
 	});
 
-	it('fires the content-changed event a few seconds after a content server event arrives, whatever its payload', () => {
+	it('fires the content-changed event with the server event payload a few seconds after it arrives', () => {
 		const eventSource = createFakeEventSource();
 
 		subscribeToServerEvents(eventSource as unknown as EventSource);
@@ -58,7 +58,8 @@ describe('subscribeToServerEvents', () => {
 		jest.runAllTimers();
 
 		expect(Liferay.fire).toHaveBeenCalledWith(
-			'cms:aiAssistant:contentChanged'
+			'cms:aiAssistant:contentChanged',
+			{data: 'any payload'}
 		);
 	});
 

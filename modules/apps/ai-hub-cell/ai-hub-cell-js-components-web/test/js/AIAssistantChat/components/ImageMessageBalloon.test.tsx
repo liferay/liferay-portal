@@ -335,7 +335,8 @@ describe('ImageMessageBalloon', () => {
 			});
 
 			expect(Liferay.fire).not.toHaveBeenCalledWith(
-				'cms:aiAssistant:contentChanged'
+				'cms:aiAssistant:contentChanged',
+				{data: undefined}
 			);
 
 			act(() => {
@@ -343,7 +344,8 @@ describe('ImageMessageBalloon', () => {
 			});
 
 			expect(Liferay.fire).toHaveBeenCalledWith(
-				'cms:aiAssistant:contentChanged'
+				'cms:aiAssistant:contentChanged',
+				{data: undefined}
 			);
 		}
 		finally {
@@ -380,7 +382,8 @@ describe('ImageMessageBalloon', () => {
 			});
 
 			expect(Liferay.fire).not.toHaveBeenCalledWith(
-				'cms:aiAssistant:contentChanged'
+				'cms:aiAssistant:contentChanged',
+				{data: undefined}
 			);
 		}
 		finally {

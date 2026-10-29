@@ -16,11 +16,63 @@ describe('parseContentDraftsMessage', () => {
 		expect(drafts).toEqual([
 			{
 				editURL: '/cms/edit_content_item/12345',
+				symbol: 'blogs',
 				title: 'Travelling around Japan',
 			},
-			{editURL: '/cms/edit_content_item/67890', title: 'North Japan'},
+			{
+				editURL: '/cms/edit_content_item/67890',
+				symbol: 'blogs',
+				title: 'North Japan',
+			},
 		]);
 		expect(text).toBe('I created these contents for you:');
+	});
+
+	it('extracts edit links broken across lines', () => {
+		const {drafts} = parseContentDraftsMessage(
+			'[Hero Banner]\n(/group/guest/~/control_panel/manage?_mvcRenderCommandName=%2Ffragment%2Fedit_fragment_entry\n&_externalReferenceCode=123)'
+		);
+
+		expect(drafts).toEqual([
+			{
+				editURL:
+					'/group/guest/~/control_panel/manage?_mvcRenderCommandName=%2Ffragment%2Fedit_fragment_entry&_externalReferenceCode=123',
+				symbol: 'code',
+				title: 'Hero Banner',
+			},
+		]);
+	});
+
+	it('extracts edit links with markdown escapes', () => {
+		const {drafts} = parseContentDraftsMessage(
+			'[Hero Banner](/manage?\\_mvcRenderCommandName=%2Ffragment%2Fedit\\_fragment\\_entry)'
+		);
+
+		expect(drafts).toEqual([
+			{
+				editURL:
+					'/manage?_mvcRenderCommandName=%2Ffragment%2Fedit_fragment_entry',
+				symbol: 'code',
+				title: 'Hero Banner',
+			},
+		]);
+	});
+
+	it('extracts fragment edit links', () => {
+		const {drafts, text} = parseContentDraftsMessage(
+			'I created the fragment as a draft:\n\n' +
+				'- [Hero Banner](/group/guest/~/control_panel/manage?_com_liferay_fragment_web_portlet_FragmentPortlet_mvcRenderCommandName=%2Ffragment%2Fedit_fragment_entry)'
+		);
+
+		expect(drafts).toEqual([
+			{
+				editURL:
+					'/group/guest/~/control_panel/manage?_com_liferay_fragment_web_portlet_FragmentPortlet_mvcRenderCommandName=%2Ffragment%2Fedit_fragment_entry',
+				symbol: 'code',
+				title: 'Hero Banner',
+			},
+		]);
+		expect(text).toBe('I created the fragment as a draft:');
 	});
 
 	it('ignores links that do not point to a content edit page', () => {
@@ -40,7 +92,11 @@ describe('parseContentDraftsMessage', () => {
 		);
 
 		expect(drafts).toEqual([
-			{editURL: '/cms/edit_content_item/1', title: 'Draft A'},
+			{
+				editURL: '/cms/edit_content_item/1',
+				symbol: 'blogs',
+				title: 'Draft A',
+			},
 		]);
 	});
 });
