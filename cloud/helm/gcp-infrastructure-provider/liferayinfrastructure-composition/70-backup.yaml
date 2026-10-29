@@ -146,7 +146,7 @@ spec:
                 namespace: {{ $namespace }}
             type: kubernetes.io/service-account-token
     managementPolicies: {{ $xr.spec.orphanOnDelete | ternary (list "Create" "Observe") (list "Create" "Delete" "Observe") | toJson }}
-{{- if $isCmkKeyReady }}
+{{- if $isCMKKeyReady }}
 ---
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket

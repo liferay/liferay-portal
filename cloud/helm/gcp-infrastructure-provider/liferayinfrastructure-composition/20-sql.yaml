@@ -75,7 +75,7 @@ spec:
                 component: database-instance
                 dataPlane: {{ $dataPlane }}
     managementPolicies: ["Create", "Observe", "Update"]
-{{- if $isCmkKeyReady }}
+{{- if $isCMKKeyReady }}
 ---
 apiVersion: sql.gcp.m.upbound.io/v1beta1
 kind: DatabaseInstance

@@ -6,7 +6,7 @@
 {{- end }}
 {{- range $dataPlane := $dataPlanes }}
 {{- $doclibBucketName := printf "%s-dl-%s" $baseName $dataPlane }}
-{{- if $isCmkKeyReady }}
+{{- if $isCMKKeyReady }}
 ---
 apiVersion: storage.gcp.m.upbound.io/v1beta1
 kind: Bucket

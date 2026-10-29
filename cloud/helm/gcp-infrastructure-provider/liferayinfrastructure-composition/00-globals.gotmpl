@@ -24,7 +24,7 @@
 {{- $activeDataPlane := $targetActiveDataPlane -}}
 {{- $databaseIamUser := trimSuffix ".gserviceaccount.com" $gsaEmail -}}
 {{- $dataPlanes := list $targetActiveDataPlane -}}
-{{- $isCmkKeyReady := or (not $cmkEnabled) $cmkKeyId -}}
+{{- $isCMKKeyReady := or (not $cmkEnabled) $cmkKeyId -}}
 {{- $labels := merge (dict "app" "liferay" "deployment-name" $env.deploymentName "environment-id" $environmentId "project-id" $projectId) $xr.spec.commonTags -}}
 {{- $overlayBucketName := printf "%s-overlay-%s" $env.deploymentName (printf "%.18s-%s" $projectId (printf "%s-%s-%s" $env.projectId $env.deploymentName $projectId | sha256sum | trunc 6)) -}}
 {{- $projectIdFull := printf "%s-%s" $projectId $environmentId -}}
