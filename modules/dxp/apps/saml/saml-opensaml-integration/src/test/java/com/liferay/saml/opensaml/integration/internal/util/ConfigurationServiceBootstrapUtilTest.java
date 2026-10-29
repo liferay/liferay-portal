@@ -60,11 +60,11 @@ public class ConfigurationServiceBootstrapUtilTest {
 
 	@Test
 	public void testGet() throws Exception {
+		List<Callable<ParserPool>> callables = new ArrayList<>();
+
 		int count = 10;
 
 		CyclicBarrier cyclicBarrier = new CyclicBarrier(count);
-
-		List<Callable<ParserPool>> callables = new ArrayList<>();
 
 		for (int i = 0; i < count; i++) {
 			callables.add(
