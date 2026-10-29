@@ -80,8 +80,12 @@ public class PIMConnectorDispatchTriggerUtil {
 	public static DispatchLog fetchLatestDispatchLog(
 		long companyId, String objectEntryExternalReferenceCode) {
 
-		DispatchTrigger dispatchTrigger = _fetchDispatchTrigger(
-			companyId, objectEntryExternalReferenceCode);
+		DispatchTrigger dispatchTrigger =
+			DispatchTriggerLocalServiceUtil.
+				fetchDispatchTriggerByExternalReferenceCode(
+					_EXTERNAL_REFERENCE_CODE_PREFIX +
+						objectEntryExternalReferenceCode,
+					companyId);
 
 		if (dispatchTrigger == null) {
 			return null;
@@ -167,16 +171,6 @@ public class PIMConnectorDispatchTriggerUtil {
 			startDateCalendar.get(Calendar.HOUR_OF_DAY),
 			startDateCalendar.get(Calendar.MINUTE),
 			dispatchTrigger.getTimeZoneId());
-	}
-
-	private static DispatchTrigger _fetchDispatchTrigger(
-		long companyId, String objectEntryExternalReferenceCode) {
-
-		return DispatchTriggerLocalServiceUtil.
-			fetchDispatchTriggerByExternalReferenceCode(
-				_EXTERNAL_REFERENCE_CODE_PREFIX +
-					objectEntryExternalReferenceCode,
-				companyId);
 	}
 
 	private static Calendar _getCalendar(Date date) {

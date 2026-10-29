@@ -188,13 +188,6 @@ public class PIMConnectorContainerResponseFilterTest {
 			String channelFieldName)
 		throws Exception {
 
-		ObjectDefinition objectDefinition =
-			_objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					PIMObjectDefinitionConstants.
-						EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
-					TestPropsValues.getCompanyId());
-
 		ObjectRelationship objectRelationship =
 			_objectRelationshipLocalService.
 				fetchObjectRelationshipByExternalReferenceCode(
@@ -203,6 +196,13 @@ public class PIMConnectorContainerResponseFilterTest {
 
 		ObjectField objectField = _objectFieldLocalService.getObjectField(
 			objectRelationship.getObjectFieldId2());
+
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.
+				fetchObjectDefinitionByExternalReferenceCode(
+					PIMObjectDefinitionConstants.
+						EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
+					TestPropsValues.getCompanyId());
 
 		return _objectEntryLocalService.addObjectEntry(
 			0, TestPropsValues.getUserId(),

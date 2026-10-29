@@ -287,7 +287,10 @@ public class PIMConnectorServletTest {
 			pimConnector.getPIMConnectorChannelFields()
 		).thenReturn(
 			Collections.singletonList(
-				new PIMConnectorChannelField("sku", false, "sku", true, "Text"))
+				new PIMConnectorChannelField(
+					RandomTestUtil.randomString(), false,
+					RandomTestUtil.randomString(), true,
+					RandomTestUtil.randomString()))
 		);
 
 		Mockito.when(
