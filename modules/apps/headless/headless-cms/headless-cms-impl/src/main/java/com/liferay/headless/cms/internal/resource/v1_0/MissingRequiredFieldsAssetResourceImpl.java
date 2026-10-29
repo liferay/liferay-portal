@@ -73,7 +73,7 @@ public class MissingRequiredFieldsAssetResourceImpl
 		Long[] selectedSpaceGroupIds = CMSGroupUtil.getSelectedSpaceGroupIds(
 			assetLibraryId, contextCompany.getCompanyId(),
 			_depotEntryLocalService, groupLocalService,
-			CMSGroupUtil.getSpaceGroupIds(
+			CMSGroupUtil.getAdministeredSpaceGroupIds(
 				contextCompany.getCompanyId(), _depotEntryService,
 				contextUser.getUserId()));
 
