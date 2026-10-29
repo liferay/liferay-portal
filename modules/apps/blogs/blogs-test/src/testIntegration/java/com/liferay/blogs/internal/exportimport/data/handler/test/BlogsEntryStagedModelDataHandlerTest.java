@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -214,6 +215,84 @@ public class BlogsEntryStagedModelDataHandlerTest
 
 			Assert.assertEquals(
 				assetCategory.getName(), importedAssetCategory.getName());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-107693")
+	public void testImportedFriendlyURLEntriesAfterDelete() throws Exception {
+		initExport();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId(), TestPropsValues.getUserId());
+
+		BlogsEntry entry = _addBlogsEntry(
+			null, new ImageSelector(StringUtil.randomString()), serviceContext);
+
+		FriendlyURLEntry oldFriendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+				_portal.getClassNameId(BlogsEntry.class.getName()),
+				entry.getEntryId());
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.addFriendlyURLEntry(
+				stagingGroup.getGroupId(),
+				_portal.getClassNameId(BlogsEntry.class.getName()),
+				entry.getEntryId(),
+				StringUtil.toLowerCase(RandomTestUtil.randomString()),
+				serviceContext);
+
+		entry.setUrlTitle(friendlyURLEntry.getUrlTitle());
+
+		entry = BlogsEntryLocalServiceUtil.updateBlogsEntry(entry);
+
+		StagedModelDataHandlerUtil.exportStagedModel(portletDataContext, entry);
+
+		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
+			BlogsEntry exportedEntry = (BlogsEntry)readExportedStagedModel(
+				entry);
+
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, exportedEntry);
+		}
+
+		_friendlyURLEntryLocalService.deleteFriendlyURLLocalizationEntry(
+			oldFriendlyURLEntry.getFriendlyURLEntryId(),
+			oldFriendlyURLEntry.getDefaultLanguageId());
+
+		initExport();
+
+		StagedModelDataHandlerUtil.exportStagedModel(portletDataContext, entry);
+
+		try (SafeCloseable safeCloseable = initImportWithSafeCloseable()) {
+			BlogsEntry exportedEntry = (BlogsEntry)readExportedStagedModel(
+				entry);
+
+			StagedModelDataHandlerUtil.importStagedModel(
+				portletDataContext, exportedEntry);
+
+			BlogsEntry importedEntry = (BlogsEntry)getStagedModel(
+				entry.getUuid(), liveGroup);
+
+			List<FriendlyURLEntry> friendlyURLEntries =
+				_friendlyURLEntryLocalService.getFriendlyURLEntries(
+					liveGroup.getGroupId(),
+					_portal.getClassNameId(BlogsEntry.class.getName()),
+					importedEntry.getEntryId());
+
+			Assert.assertEquals(
+				friendlyURLEntries.toString(), 1, friendlyURLEntries.size());
+
+			FriendlyURLEntry importedFriendlyURLEntry = friendlyURLEntries.get(
+				0);
+
+			Assert.assertEquals(
+				friendlyURLEntry.getUuid(), importedFriendlyURLEntry.getUuid());
+
+			Assert.assertNull(
+				BlogsEntryLocalServiceUtil.fetchEntry(
+					liveGroup.getGroupId(), oldFriendlyURLEntry.getUrlTitle()));
 		}
 	}
 
