@@ -18,7 +18,10 @@ import MarketplaceSearchResults from '../../../../../../src/main/resources/META-
 
 global.Liferay = {
 	Language: {get: (key) => key},
-	ThemeDisplay: {getPathThemeImages: jest.fn()},
+	ThemeDisplay: {
+		getPathThemeEmptyStatesSpritemap: jest.fn(),
+		getPathThemeImages: jest.fn(),
+	},
 };
 
 jest.mock('@liferay/marketplace-js-components-web', () => {
