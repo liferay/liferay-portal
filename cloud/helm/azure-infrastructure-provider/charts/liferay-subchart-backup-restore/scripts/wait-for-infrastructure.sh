@@ -2,6 +2,7 @@
 
 set -o errexit
 set -o nounset
+set -o pipefail
 
 function main {
 	local expected_generation
@@ -10,7 +11,7 @@ function main {
 
 	local timeout
 
-	timeout=$(($(date +%s) + {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}))
+	timeout=$(($(date +%s) + {{ "{{" }}inputs.parameters.timeout-seconds}}))
 
 	while [[ "$(date +%s)" -lt "${timeout}" ]]
 	do

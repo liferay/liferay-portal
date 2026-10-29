@@ -367,16 +367,18 @@ tests:
             -   equal:
                     path: spec.templates[5].activeDeadlineSeconds
                     value: 7200
+            -   contains:
+                    content:
+                        name: timeout-seconds
+                        value: "14400"
+                    path: spec.templates[9].dag.tasks[12].arguments.parameters
             -   equal:
                     path: spec.templates[14].activeDeadlineSeconds
                     value: 7200
             -   equal:
                     path: spec.templates[18].activeDeadlineSeconds
                     value: 600
-            -   equal:
-                    path: spec.templates[19].activeDeadlineSeconds
-                    value: 10800
-        it: Sets every step timeout well above the measured restore duration
+        it: Sets every restore step timeout well above its measured duration
     -   asserts:
             -   equal:
                     path: spec.templates[9].dag.tasks[10].name
@@ -424,6 +426,27 @@ tests:
                     path: spec.templates[18].script.source
                     pattern: backup-instance delete
         it: Suspends backups on the demoted plane only once Liferay has restarted and waits for the promoted one
+    -   asserts:
+            -   notContains:
+                    any: true
+                    content:
+                        name: timeout-seconds
+                    path: spec.templates[1].steps[1][0].arguments.parameters
+            -   equal:
+                    path: spec.templates[4].activeDeadlineSeconds
+                    value: 3600
+            -   equal:
+                    path: spec.templates[19].activeDeadlineSeconds
+                    value: "{{inputs.parameters.timeout-seconds}}"
+            -   contains:
+                    content:
+                        default: "3600"
+                        name: timeout-seconds
+                    path: spec.templates[19].inputs.parameters
+            -   matchRegex:
+                    path: spec.templates[19].script.source
+                    pattern: timeout=[$][(][(][$][(]date [+]%s[)] [+] [{][{]inputs[.]parameters[.]timeout-seconds[}][}][)][)]
+        it: Waits at most an hour for the infrastructure outside the database restore
     -   asserts:
             -   equal:
                     path: spec.templates[4].name

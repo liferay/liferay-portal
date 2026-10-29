@@ -386,6 +386,8 @@ spec:
                             parameters:
                                 -   name: expected-generation
                                     value: "{{ "{{" }}tasks.provision-inactive-data-plane.outputs.parameters.generation}}"
+                                -   name: timeout-seconds
+                                    value: "{{ .Values.liferayInfrastructure.databaseWaitTimeoutSeconds }}"
                         depends: provision-inactive-data-plane
                         name: wait-for-database
                         template: wait-for-infrastructure
@@ -577,10 +579,12 @@ spec:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
                 source: |-
                     {{- tpl (.Files.Get "scripts/suspend-demoted-backups.sh") . | nindent 20 }}
-        -   activeDeadlineSeconds: {{ .Values.liferayInfrastructure.waitTimeoutSeconds }}
+        -   activeDeadlineSeconds: "{{ "{{" }}inputs.parameters.timeout-seconds}}"
             inputs:
                 parameters:
                     -   name: expected-generation
+                    -   default: "{{ .Values.liferayInfrastructure.waitTimeoutSeconds }}"
+                        name: timeout-seconds
             name: wait-for-infrastructure
             script:
                 command: [sh]

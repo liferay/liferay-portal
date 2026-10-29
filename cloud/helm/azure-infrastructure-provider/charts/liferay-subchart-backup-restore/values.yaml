@@ -18,7 +18,8 @@ images:
         repository: dtzar/helm-kubectl
         tag: 4.1.1
 liferayInfrastructure:
-    waitTimeoutSeconds: 10800
+    databaseWaitTimeoutSeconds: 14400
+    waitTimeoutSeconds: 3600
 liferayWorkload:
     rolloutTimeout: 15m
 resources:
