@@ -171,16 +171,17 @@ public class SharingUserNotificationHandlerTest {
 	}
 
 	private void _testGetLink(boolean hasUpdatePermission) throws Exception {
-		long classPK = RandomTestUtil.randomLong();
-		String className = RandomTestUtil.randomString();
-
 		Mockito.reset(_sharingEntry);
+
+		String className = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_sharingEntry.getClassName()
 		).thenReturn(
 			className
 		);
+
+		long classPK = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			_sharingEntry.getClassPK()
@@ -256,16 +257,17 @@ public class SharingUserNotificationHandlerTest {
 			AssetEntry assetEntry, VerificationMode verificationMode)
 		throws Exception {
 
-		String className = RandomTestUtil.randomString();
-		long classPK = RandomTestUtil.randomLong();
-
 		Mockito.reset(_sharingEntry);
+
+		String className = RandomTestUtil.randomString();
 
 		Mockito.when(
 			_sharingEntry.getClassName()
 		).thenReturn(
 			className
 		);
+
+		long classPK = RandomTestUtil.randomLong();
 
 		Mockito.when(
 			_sharingEntry.getClassPK()
