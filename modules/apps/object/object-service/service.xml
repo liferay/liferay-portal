@@ -1287,6 +1287,7 @@
 		<exception>ObjectEntryScope</exception>
 		<exception>ObjectEntryValues</exception>
 		<exception>ObjectFieldBusinessType</exception>
+		<exception>ObjectFieldDBColumnName</exception>
 		<exception>ObjectFieldDBType</exception>
 		<exception>ObjectFieldLabel</exception>
 		<exception>ObjectFieldListTypeDefinitionId</exception>
