@@ -235,13 +235,6 @@ public class CPOptionValuePersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByCPOptionId() throws Exception {
 		_persistence.countByCPOptionId(RandomTestUtil.nextLong());
 
@@ -630,4 +623,4 @@ public class CPOptionValuePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-763445050
+// LIFERAY-SERVICE-BUILDER-HASH:704672602

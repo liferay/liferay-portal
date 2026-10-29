@@ -443,99 +443,6 @@ public class CommerceChannelAccountEntryRelPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<CommerceChannelAccountEntryRel, NoSuchChannelAccountEntryRelException>
-			_collectionPersistenceFinderByC_T;
-
-	/**
-	 * Returns an ordered range of all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CommerceChannelAccountEntryRelModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param start the lower bound of the range of commerce channel account entry rels
-	 * @param end the upper bound of the range of commerce channel account entry rels (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce channel account entry rels
-	 */
-	@Override
-	public List<CommerceChannelAccountEntryRel> findByC_T(
-		long commerceChannelId, int type, int start, int end,
-		OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_T.find(
-			finderCache, new Object[] {commerceChannelId, type}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce channel account entry rel in the ordered set where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce channel account entry rel
-	 * @throws NoSuchChannelAccountEntryRelException if a matching commerce channel account entry rel could not be found
-	 */
-	@Override
-	public CommerceChannelAccountEntryRel findByC_T_First(
-			long commerceChannelId, int type,
-			OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator)
-		throws NoSuchChannelAccountEntryRelException {
-
-		return _collectionPersistenceFinderByC_T.findFirst(
-			finderCache, new Object[] {commerceChannelId, type},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce channel account entry rel in the ordered set where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce channel account entry rel, or <code>null</code> if a matching commerce channel account entry rel could not be found
-	 */
-	@Override
-	public CommerceChannelAccountEntryRel fetchByC_T_First(
-		long commerceChannelId, int type,
-		OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_T.fetchFirst(
-			finderCache, new Object[] {commerceChannelId, type},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63; from the database.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 */
-	@Override
-	public void removeByC_T(long commerceChannelId, int type) {
-		_collectionPersistenceFinderByC_T.remove(
-			finderCache, new Object[] {commerceChannelId, type});
-	}
-
-	/**
-	 * Returns the number of commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @return the number of matching commerce channel account entry rels
-	 */
-	@Override
-	public int countByC_T(long commerceChannelId, int type) {
-		return _collectionPersistenceFinderByC_T.count(
-			finderCache, new Object[] {commerceChannelId, type});
-	}
-
-	private CollectionPersistenceFinder
-		<CommerceChannelAccountEntryRel, NoSuchChannelAccountEntryRelException>
 			_collectionPersistenceFinderByA_C_T;
 
 	/**
@@ -1297,37 +1204,6 @@ public class CommerceChannelAccountEntryRelPersistenceImpl
 				FinderColumn.Type.LONG, "=", true, true,
 				CommerceChannelAccountEntryRel::getClassPK));
 
-		_collectionPersistenceFinderByC_T = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_T",
-				new String[] {
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"commerceChannelId", "type_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_T",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"commerceChannelId", "type_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_T",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"commerceChannelId", "type_"}, false),
-			_SQL_SELECT_COMMERCECHANNELACCOUNTENTRYREL_WHERE,
-			_SQL_COUNT_COMMERCECHANNELACCOUNTENTRYREL_WHERE,
-			CommerceChannelAccountEntryRelModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"commerceChannelAccountEntryRel.", "commerceChannelId",
-				FinderColumn.Type.LONG, "=", true, true,
-				CommerceChannelAccountEntryRel::getCommerceChannelId),
-			new FinderColumn<>(
-				"commerceChannelAccountEntryRel.", "type", "type_",
-				FinderColumn.Type.INTEGER, "=", true, true,
-				CommerceChannelAccountEntryRel::getType));
-
 		_collectionPersistenceFinderByA_C_T = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1537,4 +1413,4 @@ public class CommerceChannelAccountEntryRelPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1207272088
+// LIFERAY-SERVICE-BUILDER-HASH:-2068476012

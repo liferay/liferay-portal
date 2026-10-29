@@ -701,136 +701,6 @@ public class CPDefinitionPersistenceImpl
 
 	private FilterCollectionPersistenceFinder
 		<CPDefinition, NoSuchCPDefinitionException>
-			_collectionPersistenceFinderByG_SE;
-
-	/**
-	 * Returns an ordered range of all the cp definitions where groupId = &#63; and subscriptionEnabled = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPDefinitionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 * @param start the lower bound of the range of cp definitions
-	 * @param end the upper bound of the range of cp definitions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching cp definitions
-	 */
-	@Override
-	public List<CPDefinition> findByG_SE(
-		long groupId, boolean subscriptionEnabled, int start, int end,
-		OrderByComparator<CPDefinition> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_SE.find(
-			finderCache, new Object[] {groupId, subscriptionEnabled}, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first cp definition in the ordered set where groupId = &#63; and subscriptionEnabled = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition
-	 * @throws NoSuchCPDefinitionException if a matching cp definition could not be found
-	 */
-	@Override
-	public CPDefinition findByG_SE_First(
-			long groupId, boolean subscriptionEnabled,
-			OrderByComparator<CPDefinition> orderByComparator)
-		throws NoSuchCPDefinitionException {
-
-		return _collectionPersistenceFinderByG_SE.findFirst(
-			finderCache, new Object[] {groupId, subscriptionEnabled},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first cp definition in the ordered set where groupId = &#63; and subscriptionEnabled = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching cp definition, or <code>null</code> if a matching cp definition could not be found
-	 */
-	@Override
-	public CPDefinition fetchByG_SE_First(
-		long groupId, boolean subscriptionEnabled,
-		OrderByComparator<CPDefinition> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_SE.fetchFirst(
-			finderCache, new Object[] {groupId, subscriptionEnabled},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns an ordered range of all the cp definitions that the user has permissions to view where groupId = &#63; and subscriptionEnabled = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>CPDefinitionModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 * @param start the lower bound of the range of cp definitions
-	 * @param end the upper bound of the range of cp definitions (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching cp definitions that the user has permission to view
-	 */
-	@Override
-	public List<CPDefinition> filterFindByG_SE(
-		long groupId, boolean subscriptionEnabled, int start, int end,
-		OrderByComparator<CPDefinition> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_SE.filterFind(
-			finderCache, new Object[] {groupId, subscriptionEnabled}, start,
-			end, orderByComparator, groupId);
-	}
-
-	/**
-	 * Removes all the cp definitions where groupId = &#63; and subscriptionEnabled = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 */
-	@Override
-	public void removeByG_SE(long groupId, boolean subscriptionEnabled) {
-		_collectionPersistenceFinderByG_SE.remove(
-			finderCache, new Object[] {groupId, subscriptionEnabled});
-	}
-
-	/**
-	 * Returns the number of cp definitions where groupId = &#63; and subscriptionEnabled = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 * @return the number of matching cp definitions
-	 */
-	@Override
-	public int countByG_SE(long groupId, boolean subscriptionEnabled) {
-		return _collectionPersistenceFinderByG_SE.count(
-			finderCache, new Object[] {groupId, subscriptionEnabled});
-	}
-
-	/**
-	 * Returns the number of cp definitions that the user has permission to view where groupId = &#63; and subscriptionEnabled = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param subscriptionEnabled the subscription enabled
-	 * @return the number of matching cp definitions that the user has permission to view
-	 */
-	@Override
-	public int filterCountByG_SE(long groupId, boolean subscriptionEnabled) {
-		return _collectionPersistenceFinderByG_SE.filterCount(
-			finderCache, new Object[] {groupId, subscriptionEnabled}, groupId);
-	}
-
-	private FilterCollectionPersistenceFinder
-		<CPDefinition, NoSuchCPDefinitionException>
 			_collectionPersistenceFinderByG_S;
 
 	/**
@@ -1775,41 +1645,6 @@ public class CPDefinitionPersistenceImpl
 					"cpDefinition.", "CPTaxCategoryId", FinderColumn.Type.LONG,
 					"=", true, true, CPDefinition::getCPTaxCategoryId));
 
-		_collectionPersistenceFinderByG_SE =
-			new FilterCollectionPersistenceFinder<>(
-				this, CPDefinition::getCPDefinitionId,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_SE",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "subscriptionEnabled"}, false),
-				"", CPDefinitionModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_SE",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"groupId", "subscriptionEnabled"}, true),
-				_SQL_COUNT_CPDEFINITION_WHERE, _SQL_SELECT_CPDEFINITION_WHERE,
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_SE",
-					new String[] {
-						Long.class.getName(), Boolean.class.getName()
-					},
-					new String[] {"groupId", "subscriptionEnabled"}, true),
-				"",
-				new FinderColumn<>(
-					"cpDefinition.", "groupId", FinderColumn.Type.LONG, "=",
-					true, true, CPDefinition::getGroupId),
-				new FinderColumn<>(
-					"cpDefinition.", "subscriptionEnabled",
-					FinderColumn.Type.BOOLEAN, "=", true, true,
-					CPDefinition::isSubscriptionEnabled));
-
 		_collectionPersistenceFinderByG_S =
 			new FilterCollectionPersistenceFinder<>(
 				this, CPDefinition::getCPDefinitionId,
@@ -1982,4 +1817,4 @@ public class CPDefinitionPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-322751061
+// LIFERAY-SERVICE-BUILDER-HASH:1937175628

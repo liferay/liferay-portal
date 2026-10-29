@@ -314,22 +314,6 @@ public class CPConfigurationListPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_S() throws Exception {
-		_persistence.countByG_C_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByG_C_S(0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByG_C_SArrayable() throws Exception {
-		_persistence.countByG_C_S(
-			new long[] {RandomTestUtil.nextLong(), 0L},
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-	}
-
-	@Test
 	public void testCountByERC_C() throws Exception {
 		_persistence.countByERC_C("", RandomTestUtil.nextLong());
 
@@ -737,4 +721,4 @@ public class CPConfigurationListPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:218404078
+// LIFERAY-SERVICE-BUILDER-HASH:793835053

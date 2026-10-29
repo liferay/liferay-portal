@@ -447,87 +447,6 @@ public class CommerceChannelAccountEntryRelUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CommerceChannelAccountEntryRelModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param start the lower bound of the range of commerce channel account entry rels
-	 * @param end the upper bound of the range of commerce channel account entry rels (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching commerce channel account entry rels
-	 */
-	public static List<CommerceChannelAccountEntryRel> findByC_T(
-		long commerceChannelId, int type, int start, int end,
-		OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByC_T(
-			commerceChannelId, type, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first commerce channel account entry rel in the ordered set where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce channel account entry rel
-	 * @throws NoSuchChannelAccountEntryRelException if a matching commerce channel account entry rel could not be found
-	 */
-	public static CommerceChannelAccountEntryRel findByC_T_First(
-			long commerceChannelId, int type,
-			OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator)
-		throws com.liferay.commerce.product.exception.
-			NoSuchChannelAccountEntryRelException {
-
-		return getPersistence().findByC_T_First(
-			commerceChannelId, type, orderByComparator);
-	}
-
-	/**
-	 * Returns the first commerce channel account entry rel in the ordered set where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching commerce channel account entry rel, or <code>null</code> if a matching commerce channel account entry rel could not be found
-	 */
-	public static CommerceChannelAccountEntryRel fetchByC_T_First(
-		long commerceChannelId, int type,
-		OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator) {
-
-		return getPersistence().fetchByC_T_First(
-			commerceChannelId, type, orderByComparator);
-	}
-
-	/**
-	 * Removes all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63; from the database.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 */
-	public static void removeByC_T(long commerceChannelId, int type) {
-		getPersistence().removeByC_T(commerceChannelId, type);
-	}
-
-	/**
-	 * Returns the number of commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @return the number of matching commerce channel account entry rels
-	 */
-	public static int countByC_T(long commerceChannelId, int type) {
-		return getPersistence().countByC_T(commerceChannelId, type);
-	}
-
-	/**
 	 * Returns an ordered range of all the commerce channel account entry rels where accountEntryId = &#63; and commerceChannelId = &#63; and type = &#63;.
 	 *
 	 * <p>
@@ -1089,60 +1008,6 @@ public class CommerceChannelAccountEntryRelUtil {
 	}
 
 	/**
-	 * Returns all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @return the matching commerce channel account entry rels
-	 */
-	public static List<CommerceChannelAccountEntryRel> findByC_T(
-		long commerceChannelId, int type) {
-
-		return getPersistence().findByC_T(commerceChannelId, type);
-	}
-
-	/**
-	 * Returns a range of all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CommerceChannelAccountEntryRelModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param start the lower bound of the range of commerce channel account entry rels
-	 * @param end the upper bound of the range of commerce channel account entry rels (not inclusive)
-	 * @return the range of matching commerce channel account entry rels
-	 */
-	public static List<CommerceChannelAccountEntryRel> findByC_T(
-		long commerceChannelId, int type, int start, int end) {
-
-		return getPersistence().findByC_T(commerceChannelId, type, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the commerce channel account entry rels where commerceChannelId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.commerce.product.model.impl.CommerceChannelAccountEntryRelModelImpl</code>.
-	 * </p>
-	 *
-	 * @param commerceChannelId the commerce channel ID
-	 * @param type the type
-	 * @param start the lower bound of the range of commerce channel account entry rels
-	 * @param end the upper bound of the range of commerce channel account entry rels (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching commerce channel account entry rels
-	 */
-	public static List<CommerceChannelAccountEntryRel> findByC_T(
-		long commerceChannelId, int type, int start, int end,
-		OrderByComparator<CommerceChannelAccountEntryRel> orderByComparator) {
-
-		return getPersistence().findByC_T(
-			commerceChannelId, type, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the commerce channel account entry rels where accountEntryId = &#63; and commerceChannelId = &#63; and type = &#63;.
 	 *
 	 * @param accountEntryId the account entry ID
@@ -1283,4 +1148,4 @@ public class CommerceChannelAccountEntryRelUtil {
 		_persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1099679792
+// LIFERAY-SERVICE-BUILDER-HASH:1439890960

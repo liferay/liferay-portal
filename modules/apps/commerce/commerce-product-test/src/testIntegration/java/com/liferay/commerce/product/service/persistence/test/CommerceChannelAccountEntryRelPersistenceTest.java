@@ -248,14 +248,6 @@ public class CommerceChannelAccountEntryRelPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_T() throws Exception {
-		_persistence.countByC_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_T(0L, 0);
-	}
-
-	@Test
 	public void testCountByA_C_T() throws Exception {
 		_persistence.countByA_C_T(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -710,4 +702,4 @@ public class CommerceChannelAccountEntryRelPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-573370556
+// LIFERAY-SERVICE-BUILDER-HASH:-1735003298
