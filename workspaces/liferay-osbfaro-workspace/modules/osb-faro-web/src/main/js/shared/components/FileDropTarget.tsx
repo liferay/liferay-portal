@@ -150,6 +150,8 @@ export class FileDropTarget extends React.Component<IFileDropTargetProps> {
 		file: null,
 	};
 
+	private _uploader: any;
+
 	constructor(props: IFileDropTargetProps) {
 		super(props);
 		this.handleCancel = this.handleCancel.bind(this);
@@ -170,8 +172,6 @@ export class FileDropTarget extends React.Component<IFileDropTargetProps> {
 			useJaxRS,
 		}).render();
 	}
-
-	private _uploader: any;
 
 	handleCancel() {
 		const {onChange} = this.props;

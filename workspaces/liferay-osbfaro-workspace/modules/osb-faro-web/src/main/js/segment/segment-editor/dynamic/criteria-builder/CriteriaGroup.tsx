@@ -99,6 +99,10 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 		root: false,
 	};
 
+	declare context: React.ContextType<typeof KeyboardMovementContext>;
+
+	private NestedCriteriaGroupWithDrag: React.ComponentType<any>;
+
 	constructor(props: ICriteriaGroupProps) {
 		super(props);
 
@@ -110,10 +114,6 @@ class CriteriaGroup extends React.Component<ICriteriaGroupProps> {
 		this.handleCriterionAdd = this.handleCriterionAdd.bind(this);
 		this.handleCriterionDelete = this.handleCriterionDelete.bind(this);
 	}
-
-	declare context: React.ContextType<typeof KeyboardMovementContext>;
-
-	private NestedCriteriaGroupWithDrag: React.ComponentType<any>;
 
 	handleConjunctionClick(event: React.MouseEvent) {
 		event.preventDefault();
