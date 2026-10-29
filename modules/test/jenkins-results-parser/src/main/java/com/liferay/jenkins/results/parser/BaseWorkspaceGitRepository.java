@@ -740,6 +740,11 @@ public abstract class BaseWorkspaceGitRepository
 			gitWorkingDirectory.createLocalGitBranch(
 				getUpstreamBranchName(), true, getBaseBranchSHA());
 
+		if (_isUsePullRequestBaseRepository()) {
+			gitWorkingDirectory.deleteRemoteTrackingGitBranches(
+				getUpstreamBranchName());
+		}
+
 		if (_isRebase()) {
 			gitWorkingDirectory.rebase(
 				true, baseLocalGitBranch, localGitBranch);

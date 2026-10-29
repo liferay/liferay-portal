@@ -679,6 +679,50 @@ public class GitWorkingDirectory {
 		}
 	}
 
+	public void deleteRemoteTrackingGitBranches(String branchName) {
+		GitUtil.ExecutionResult executionResult = executeBashCommands(
+			GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+			GitUtil.MILLIS_TIMEOUT,
+			JenkinsResultsParserUtil.combine(
+				"git for-each-ref --format='%(objectname) %(refname)' ",
+				"'refs/remotes/*/", branchName, "'"));
+
+		if (executionResult.getExitValue() != 0) {
+			throw new GitWorkingDirectoryRuntimeException(
+				this,
+				JenkinsResultsParserUtil.combine(
+					"Unable to list remote tracking branches for ", branchName,
+					"\n", executionResult.getStandardError()));
+		}
+
+		String standardOut = executionResult.getStandardOut();
+
+		for (String line : standardOut.split("\n")) {
+			String[] parts = line.split(" ");
+
+			if (parts.length != 2) {
+				continue;
+			}
+
+			executionResult = executeBashCommands(
+				GitUtil.RETRIES_SIZE_MAX, GitUtil.MILLIS_RETRY_DELAY,
+				GitUtil.MILLIS_TIMEOUT, "git update-ref -d " + parts[1]);
+
+			if (executionResult.getExitValue() != 0) {
+				throw new GitWorkingDirectoryRuntimeException(
+					this,
+					JenkinsResultsParserUtil.combine(
+						"Unable to delete remote tracking branch ", parts[1],
+						"\n", executionResult.getStandardError()));
+			}
+
+			System.out.println(
+				JenkinsResultsParserUtil.combine(
+					"Deleted remote tracking branch ", parts[1], " at ",
+					parts[0]));
+		}
+	}
+
 	public void displayLog() {
 		displayLog(1);
 	}
