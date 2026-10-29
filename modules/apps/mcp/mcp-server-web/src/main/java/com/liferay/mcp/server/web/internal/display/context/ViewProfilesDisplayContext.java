@@ -79,11 +79,11 @@ public class ViewProfilesDisplayContext {
 					"profileERC", "{externalReferenceCode}"
 				).buildString(),
 				"pencil", "edit", LanguageUtil.get(_httpServletRequest, "edit"),
-				"get", null, null),
+				"get", "update", null),
 			new FDSActionDropdownItem(
 				"#", "trash", "delete",
-				LanguageUtil.get(_httpServletRequest, "delete"), "get", null,
-				null),
+				LanguageUtil.get(_httpServletRequest, "delete"), "get",
+				"delete", null),
 			MCPServerPermissionUtil.getPermissionsFDSActionDropdownItem(
 				_httpServletRequest, _objectDefinition));
 	}
