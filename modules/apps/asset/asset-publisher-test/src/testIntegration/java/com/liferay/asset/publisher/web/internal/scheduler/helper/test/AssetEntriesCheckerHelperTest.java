@@ -29,7 +29,6 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -352,16 +351,9 @@ public class AssetEntriesCheckerHelperTest {
 
 	private void _setUpAssetEntriesCheckerHelper() throws Exception {
 		Bundle bundle = FrameworkUtil.getBundle(
-			AssetEntriesCheckerHelperTest.class);
+			_assetPublisherHelper.getClass());
 
-		Bundle assetPublisherWebBundle = BundleUtil.getBundle(
-			bundle.getBundleContext(), "com.liferay.asset.publisher.web");
-
-		Assert.assertNotNull(
-			"Unable to find asset-publisher-web bundle",
-			assetPublisherWebBundle);
-
-		Class<?> clazz = assetPublisherWebBundle.loadClass(
+		Class<?> clazz = bundle.loadClass(
 			"com.liferay.asset.publisher.web.internal.scheduler.helper." +
 				"AssetEntriesCheckerHelper");
 
