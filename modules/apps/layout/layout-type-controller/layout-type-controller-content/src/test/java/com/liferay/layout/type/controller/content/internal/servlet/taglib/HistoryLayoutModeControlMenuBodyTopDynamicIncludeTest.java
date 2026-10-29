@@ -6,7 +6,6 @@
 package com.liferay.layout.type.controller.content.internal.servlet.taglib;
 
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -179,26 +178,6 @@ public class HistoryLayoutModeControlMenuBodyTopDynamicIncludeTest {
 				productNavigationControlMenuTags.toString(), 1,
 				productNavigationControlMenuTags.size());
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-103339")
-	public void testRegister() {
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry =
-			Mockito.mock(DynamicInclude.DynamicIncludeRegistry.class);
-
-		HistoryLayoutModeControlMenuBodyTopDynamicInclude
-			historyLayoutModeControlMenuBodyTopDynamicInclude =
-				new HistoryLayoutModeControlMenuBodyTopDynamicInclude();
-
-		historyLayoutModeControlMenuBodyTopDynamicInclude.register(
-			dynamicIncludeRegistry);
-
-		Mockito.verify(
-			dynamicIncludeRegistry
-		).register(
-			"/html/common/themes/body_top.jsp#post"
-		);
 	}
 
 	private MockedStatic<PageContextFactoryUtil>

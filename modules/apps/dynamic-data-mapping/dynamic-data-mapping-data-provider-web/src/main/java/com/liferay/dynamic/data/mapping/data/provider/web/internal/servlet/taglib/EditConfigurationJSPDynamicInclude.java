@@ -5,7 +5,6 @@
 
 package com.liferay.dynamic.data.mapping.data.provider.web.internal.servlet.taglib;
 
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseJSPDynamicInclude;
@@ -19,21 +18,15 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Carolina Barbosa
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.dynamic.data.mapping.data.provider.configuration.DDMDataProviderConfiguration#pre",
+	service = DynamicInclude.class
+)
 public class EditConfigurationJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			StringBundler.concat(
-				"com.liferay.configuration.admin.web#/edit_configuration.jsp#",
-				"com.liferay.dynamic.data.mapping.data.provider.configuration.",
-				"DDMDataProviderConfiguration#pre"));
 	}
 
 	@Override

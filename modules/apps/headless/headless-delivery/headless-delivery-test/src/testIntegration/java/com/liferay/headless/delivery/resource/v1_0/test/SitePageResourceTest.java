@@ -120,6 +120,7 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PrefsPropsUtil;
@@ -364,21 +365,17 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				}
 			}
 
-			@Override
-			public void register(
-				DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-				dynamicIncludeRegistry.register(
-					"/html/common/themes/bottom.jsp#pre");
-				dynamicIncludeRegistry.register(
-					"/html/common/themes/top_head.jsp#post");
-			}
-
 		};
 
 		ServiceRegistration<DynamicInclude> serviceRegistration =
 			bundleContext.registerService(
-				DynamicInclude.class, dynamicInclude, null);
+				DynamicInclude.class, dynamicInclude,
+				MapUtil.singletonDictionary(
+					"dynamic.include.key",
+					new String[] {
+						"/html/common/themes/bottom.jsp#pre",
+						"/html/common/themes/top_head.jsp#post"
+					}));
 
 		try {
 			String friendlyURL = layout.getFriendlyURL();

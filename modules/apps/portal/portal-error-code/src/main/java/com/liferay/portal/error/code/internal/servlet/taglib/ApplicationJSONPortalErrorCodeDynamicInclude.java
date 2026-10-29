@@ -17,7 +17,11 @@ import org.osgi.service.component.annotations.Component;
  * @author Carlos Sierra Andrés
  */
 @Component(
-	property = "mime.type=application/json", service = DynamicInclude.class
+	property = {
+		"dynamic.include.key=/errors/code.jsp#application/json",
+		"mime.type=application/json"
+	},
+	service = DynamicInclude.class
 )
 public class ApplicationJSONPortalErrorCodeDynamicInclude
 	extends BasePortalErrorCodeDynamicInclude {

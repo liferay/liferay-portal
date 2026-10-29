@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.web.internal.configuration.CustomDialogsSettingsConfiguration",
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
 	service = DynamicInclude.class
 )
 public class CustomDialogsBottomJSPDynamicInclude implements DynamicInclude {
@@ -68,13 +69,6 @@ public class CustomDialogsBottomJSPDynamicInclude implements DynamicInclude {
 		catch (Exception exception) {
 			_log.error(exception);
 		}
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

@@ -24,13 +24,21 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import java.util.Objects;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Mika Koivisto
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=com.liferay.saml.web#/admin/edit_identity_provider_connection.jsp#post",
+		"dynamic.include.key=com.liferay.saml.web#/admin/edit_service_provider_connection.jsp#post"
+	},
+	service = DynamicInclude.class
+)
 public class KeepAliveSamlWebDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -41,7 +49,11 @@ public class KeepAliveSamlWebDynamicInclude extends BaseDynamicInclude {
 
 		String keepAliveURL = null;
 
-		if (_KEY_IDENTITY_PROVIDER.equals(key)) {
+		if (Objects.equals(
+				key,
+				"com.liferay.saml.web#/admin" +
+					"/edit_identity_provider_connection.jsp#post")) {
+
 			keepAliveURL = _getSpIdpKeepAliveUrl(httpServletRequest);
 		}
 		else {
@@ -54,12 +66,6 @@ public class KeepAliveSamlWebDynamicInclude extends BaseDynamicInclude {
 		_includeJSP(
 			httpServletRequest, httpServletResponse,
 			"/com.liferay.saml.web/keep_alive.jsp");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(_KEY_IDENTITY_PROVIDER);
-		dynamicIncludeRegistry.register(_KEY_SERVICE_PROVIDER);
 	}
 
 	private String _getIdpSpKeepAliveUrl(
@@ -125,13 +131,6 @@ public class KeepAliveSamlWebDynamicInclude extends BaseDynamicInclude {
 				"Unable to include JSP " + jspPath, servletException);
 		}
 	}
-
-	private static final String _KEY_IDENTITY_PROVIDER =
-		"com.liferay.saml.web#/admin/edit_identity_provider_connection.jsp#" +
-			"post";
-
-	private static final String _KEY_SERVICE_PROVIDER =
-		"com.liferay.saml.web#/admin/edit_service_provider_connection.jsp#post";
 
 	@Reference(
 		target = "(osgi.web.symbolicname=com.liferay.saml.addon.keep.alive.web)"

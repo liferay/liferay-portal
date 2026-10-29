@@ -38,7 +38,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Cristina González
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.layout,taglib#/render_fragment_layout/page.jsp#post",
+	service = DynamicInclude.class
+)
 public class AnalyticsRenderFragmentLayoutPostDynamicInclude
 	extends BaseDynamicInclude {
 
@@ -91,12 +94,6 @@ public class AnalyticsRenderFragmentLayoutPostDynamicInclude
 
 			printWriter.print("</div>");
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.layout,taglib#/render_fragment_layout/page.jsp#post");
 	}
 
 	private void _processScriptTagBody(

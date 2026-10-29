@@ -28,7 +28,10 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Lourdes Fernández Besada
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/body_top.jsp#post",
+	service = DynamicInclude.class
+)
 public class HistoryLayoutModeControlMenuBodyTopDynamicInclude
 	extends BaseDynamicInclude {
 
@@ -77,12 +80,6 @@ public class HistoryLayoutModeControlMenuBodyTopDynamicInclude
 				"Unable to include the control menu in the history layout mode",
 				exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/body_top.jsp#post");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

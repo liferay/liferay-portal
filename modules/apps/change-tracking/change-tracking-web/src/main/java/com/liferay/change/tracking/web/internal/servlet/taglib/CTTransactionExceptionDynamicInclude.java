@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Samuel Trong Tran
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class CTTransactionExceptionDynamicInclude
 	extends BaseCTExceptionDynamicInclude {
 

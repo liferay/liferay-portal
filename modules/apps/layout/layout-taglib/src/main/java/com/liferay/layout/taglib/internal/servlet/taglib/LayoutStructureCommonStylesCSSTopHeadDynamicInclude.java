@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Víctor Galán
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class LayoutStructureCommonStylesCSSTopHeadDynamicInclude
 	extends BaseDynamicInclude {
 
@@ -101,12 +104,6 @@ public class LayoutStructureCommonStylesCSSTopHeadDynamicInclude
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
 		printWriter.print(" rel=\"stylesheet\" type=\"text/css\">");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	private void _addModifiedDate(PrintWriter printWriter, Layout layout) {

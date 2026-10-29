@@ -9,7 +9,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -55,23 +54,6 @@ public class AUITopHeadJSDynamicIncludeTest {
 		_assertScripts(_include(true, false, true), true);
 		_assertScripts(_include(true, true, false), true);
 		_assertScripts(_include(true, true, true), true);
-	}
-
-	@Test
-	public void testRegister() {
-		AUITopHeadJSDynamicInclude auiTopHeadJSDynamicInclude =
-			new AUITopHeadJSDynamicInclude();
-
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry =
-			Mockito.mock(DynamicInclude.DynamicIncludeRegistry.class);
-
-		auiTopHeadJSDynamicInclude.register(dynamicIncludeRegistry);
-
-		Mockito.verify(
-			dynamicIncludeRegistry
-		).register(
-			"/html/common/themes/top_js.jspf#resources"
-		);
 	}
 
 	private static String _getScript(String url) {

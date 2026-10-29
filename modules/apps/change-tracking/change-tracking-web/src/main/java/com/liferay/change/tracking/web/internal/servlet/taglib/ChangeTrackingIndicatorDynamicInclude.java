@@ -94,6 +94,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.change.tracking.web.internal.configuration.CTConfiguration",
+	property = "dynamic.include.key=/html/common/themes/body_top.jsp#post",
 	service = DynamicInclude.class
 )
 public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
@@ -222,12 +223,6 @@ public class ChangeTrackingIndicatorDynamicInclude extends BaseDynamicInclude {
 		catch (JspException | PortalException exception) {
 			ReflectionUtil.throwException(exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/body_top.jsp#post");
 	}
 
 	@Activate

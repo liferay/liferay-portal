@@ -30,7 +30,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Cristina González
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.users.admin.web#/user/memberships.jsp#post",
+	service = DynamicInclude.class
+)
 public class UserMembershipsPostJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -65,14 +68,6 @@ public class UserMembershipsPostJSPDynamicInclude
 		catch (PortalException portalException) {
 			_log.error(portalException);
 		}
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register(
-			"com.liferay.users.admin.web#/user/memberships.jsp#post");
 	}
 
 	@Override

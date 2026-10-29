@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+	service = DynamicInclude.class
+)
 public class ContentSecurityPolicyTopHeadDynamicInclude
 	implements DynamicInclude {
 
@@ -65,12 +68,6 @@ public class ContentSecurityPolicyTopHeadDynamicInclude
 		}
 
 		printWriter.println("'};</script>");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	@Reference

@@ -29,7 +29,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Iván Zaera Avellón
  */
 @Component(
-	property = "service.ranking:Integer=" + (Integer.MAX_VALUE - 1),
+	property = {
+		"dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+		"service.ranking:Integer=" + (Integer.MAX_VALUE - 1)
+	},
 	service = DynamicInclude.class
 )
 public class PortalURLBuilderImplDynamicInclude extends BaseDynamicInclude {
@@ -72,12 +75,6 @@ public class PortalURLBuilderImplDynamicInclude extends BaseDynamicInclude {
 		printWriter.print(webContextScriptAbsolutePortalURLBuilder.build());
 
 		printWriter.print("\" type=\"text/javascript\"></script>");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

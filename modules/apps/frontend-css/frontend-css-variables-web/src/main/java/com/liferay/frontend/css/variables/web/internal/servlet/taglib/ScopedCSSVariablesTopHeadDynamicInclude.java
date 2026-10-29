@@ -35,7 +35,10 @@ import org.osgi.service.component.annotations.Deactivate;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class ScopedCSSVariablesTopHeadDynamicInclude
 	extends BaseDynamicInclude {
 
@@ -63,12 +66,6 @@ public class ScopedCSSVariablesTopHeadDynamicInclude
 		}
 
 		printWriter.print("</style>\n");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	@Activate

@@ -18,18 +18,15 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Marco Leo
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.commerce.product.content.web#/add_to_cart#",
+	service = DynamicInclude.class
+)
 public class AddToCartButtonJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.commerce.product.content.web#/add_to_cart#");
 	}
 
 	@Override

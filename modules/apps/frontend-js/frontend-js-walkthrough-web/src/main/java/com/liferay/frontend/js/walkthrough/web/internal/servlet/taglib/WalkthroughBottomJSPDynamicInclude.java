@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.walkthrough.web.internal.configuration.WalkthroughConfiguration",
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
 	service = DynamicInclude.class
 )
 public class WalkthroughBottomJSPDynamicInclude implements DynamicInclude {
@@ -97,13 +98,6 @@ public class WalkthroughBottomJSPDynamicInclude implements DynamicInclude {
 						"{main} from frontend-js-walkthrough-web"))));
 
 		scriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

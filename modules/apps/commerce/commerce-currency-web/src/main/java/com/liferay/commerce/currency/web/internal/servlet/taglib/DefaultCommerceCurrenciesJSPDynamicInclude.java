@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.commerce.account.web#/account_entry/channel_defaults.jsp#currencies",
+	service = DynamicInclude.class
+)
 public class DefaultCommerceCurrenciesJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -68,13 +71,6 @@ public class DefaultCommerceCurrenciesJSPDynamicInclude
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.commerce.account.web#/account_entry" +
-				"/channel_defaults.jsp#currencies");
 	}
 
 	@Override

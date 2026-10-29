@@ -9,9 +9,6 @@ import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.cookies.banner.web.internal.constants.CookiesBannerWebKeys;
 import com.liferay.cookies.banner.web.internal.display.context.CookiesPreferenceHandlingConfigurationDisplayContext;
 import com.liferay.cookies.configuration.CookiesConfigurationProvider;
-import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
-import com.liferay.cookies.configuration.banner.CookiesBannerConfiguration;
-import com.liferay.cookies.configuration.consent.CookiesConsentConfiguration;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -33,7 +30,14 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alvaro Saugar
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.cookies.configuration.banner.CookiesBannerConfiguration#post",
+		"dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.cookies.configuration.consent.CookiesConsentConfiguration#post",
+		"dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration#post"
+	},
+	service = DynamicInclude.class
+)
 public class CookiesConfigurationConfirmJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -83,20 +87,6 @@ public class CookiesConfigurationConfirmJSPDynamicInclude
 				_cookiesConfigurationProvider, scope, scopePK));
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
-				CookiesBannerConfiguration.class.getName() + "#post");
-		dynamicIncludeRegistry.register(
-			"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
-				CookiesConsentConfiguration.class.getName() + "#post");
-		dynamicIncludeRegistry.register(
-			"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
-				CookiesPreferenceHandlingConfiguration.class.getName() +
-					"#post");
 	}
 
 	@Override

@@ -48,11 +48,6 @@ public abstract class BaseCTExceptionDynamicInclude extends BaseDynamicInclude {
 		}
 	}
 
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
-	}
-
 	protected abstract String getMessage(Locale locale);
 
 	protected abstract String getTitle(Locale locale);

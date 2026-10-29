@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eduardo García
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#pre",
+	service = DynamicInclude.class
+)
 public class AnalyticsTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -41,11 +44,6 @@ public class AnalyticsTopHeadDynamicInclude extends BaseDynamicInclude {
 			_assetHelper.getAssetKeywords(
 				Layout.class.getName(), themeDisplay.getPlid()),
 			httpServletRequest);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
 
 	@Reference

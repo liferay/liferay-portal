@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Evan Thibodeau
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/body_top.jsp#post",
+	service = DynamicInclude.class
+)
 public class AccessibilityMenuBodyTopJSPDynamicInclude
 	extends BaseDynamicInclude {
 
@@ -64,12 +67,6 @@ public class AccessibilityMenuBodyTopJSPDynamicInclude
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/body_top.jsp#post");
 	}
 
 	@Reference

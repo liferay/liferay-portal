@@ -42,7 +42,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Chema Balsas
  */
 @Component(
-	property = "service.ranking:Integer=" + Integer.MIN_VALUE,
+	property = {
+		"dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+		"service.ranking:Integer=" + Integer.MIN_VALUE
+	},
 	service = DynamicInclude.class
 )
 public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
@@ -74,12 +77,6 @@ public class JSBundleConfigTopHeadDynamicInclude extends BaseDynamicInclude {
 			JSBundleConfigRegistryUtil.getLastModified(), bundleConfig);
 
 		_writeResponse(httpServletResponse, bundleConfig);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	private String _getBundleConfig(String nonce) {

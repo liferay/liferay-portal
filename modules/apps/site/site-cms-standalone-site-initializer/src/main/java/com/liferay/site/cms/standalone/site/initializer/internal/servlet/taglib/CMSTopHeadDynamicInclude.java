@@ -20,7 +20,10 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Adolfo Pérez
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class CMSTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -40,12 +43,6 @@ public class CMSTopHeadDynamicInclude extends BaseDynamicInclude {
 		printWriter.print(
 			_VIEW_SPACE_SITES_SUMMARY_JSP_SECTION_FRAGMENT_RENDERER_ITEM_ID);
 		printWriter.print("{display: none;}</style>");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	private static final String

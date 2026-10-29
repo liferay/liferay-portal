@@ -30,7 +30,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Chema Balsas
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.product.navigation.taglib#/page.jsp#post",
+	service = DynamicInclude.class
+)
 public class CustomizationSettingsControlMenuJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -92,12 +95,6 @@ public class CustomizationSettingsControlMenuJSPDynamicInclude
 		httpServletRequest.setAttribute(_SHOW, show);
 
 		return show;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.product.navigation.taglib#/page.jsp#post");
 	}
 
 	@Override

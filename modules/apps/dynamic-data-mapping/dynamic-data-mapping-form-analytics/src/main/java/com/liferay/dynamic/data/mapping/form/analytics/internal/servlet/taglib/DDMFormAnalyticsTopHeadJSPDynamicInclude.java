@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Leonardo Barros
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class DDMFormAnalyticsTopHeadJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -45,12 +48,6 @@ public class DDMFormAnalyticsTopHeadJSPDynamicInclude
 			null, _TMPL_CONTENT, null, ScriptData.ModulesType.AUI);
 
 		scriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	@Override

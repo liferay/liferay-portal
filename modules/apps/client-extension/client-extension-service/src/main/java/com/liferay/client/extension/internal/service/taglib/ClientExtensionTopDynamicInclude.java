@@ -12,14 +12,11 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Eudaldo Alonso
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+	service = DynamicInclude.class
+)
 public class ClientExtensionTopDynamicInclude extends BaseDynamicInclude {
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
-	}
 
 	@Override
 	protected String getScriptLocation() {

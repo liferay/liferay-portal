@@ -55,11 +55,6 @@ public abstract class BasePortalErrorCodeDynamicInclude
 		}
 	}
 
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(_key);
-	}
-
 	@Activate
 	protected void activate(Map<String, Object> properties) {
 		String mimeType = MapUtil.getString(properties, "mime.type", null);
@@ -69,7 +64,6 @@ public abstract class BasePortalErrorCodeDynamicInclude
 		}
 
 		_contentType = mimeType.concat(_CHARSET);
-		_key = "/errors/code.jsp#".concat(mimeType);
 	}
 
 	protected abstract void write(
@@ -85,6 +79,5 @@ public abstract class BasePortalErrorCodeDynamicInclude
 		BasePortalErrorCodeDynamicInclude.class);
 
 	private String _contentType;
-	private String _key;
 
 }

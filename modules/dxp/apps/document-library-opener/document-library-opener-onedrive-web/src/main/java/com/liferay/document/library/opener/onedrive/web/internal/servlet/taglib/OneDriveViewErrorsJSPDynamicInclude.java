@@ -18,19 +18,15 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alicia García García
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.document.library.web#/document_library/view.jsp#errors",
+	service = DynamicInclude.class
+)
 public class OneDriveViewErrorsJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.document.library.web#/document_library" +
-				"/view.jsp#errors");
 	}
 
 	@Override

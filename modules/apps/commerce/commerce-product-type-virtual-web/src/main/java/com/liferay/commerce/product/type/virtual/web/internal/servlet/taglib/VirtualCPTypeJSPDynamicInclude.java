@@ -24,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.commerce.product.type.virtual.web#/virtual_product_type.jsp#",
+	service = DynamicInclude.class
+)
 public class VirtualCPTypeJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
@@ -42,13 +45,6 @@ public class VirtualCPTypeJSPDynamicInclude extends BaseJSPDynamicInclude {
 			VirtualCPTypeWebKeys.VIRTUAL_CP_TYPE_HELPER, _virtualCPTypeHelper);
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.commerce.product.type.virtual.web#" +
-				"/virtual_product_type.jsp#");
 	}
 
 	@Override

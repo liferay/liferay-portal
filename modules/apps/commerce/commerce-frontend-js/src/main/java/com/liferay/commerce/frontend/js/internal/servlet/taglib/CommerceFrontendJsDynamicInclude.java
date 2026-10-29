@@ -43,7 +43,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Gianmarco Brunialti Masera
  */
 @Component(
-	property = "service.ranking:Integer=" + Integer.MAX_VALUE,
+	property = {
+		"dynamic.include.key=/html/common/themes/top_head.jsp#post",
+		"service.ranking:Integer=" + Integer.MAX_VALUE
+	},
 	service = DynamicInclude.class
 )
 public class CommerceFrontendJsDynamicInclude extends BaseDynamicInclude {
@@ -71,12 +74,6 @@ public class CommerceFrontendJsDynamicInclude extends BaseDynamicInclude {
 		catch (PortalException portalException) {
 			_log.error(portalException);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	private String _getContent(

@@ -72,6 +72,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.layout.seo.web.internal.configuration.LayoutSEODynamicRenderingConfiguration",
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#pre",
 	service = DynamicInclude.class
 )
 public class OpenGraphTopHeadDynamicInclude extends BaseDynamicInclude {
@@ -314,11 +315,6 @@ public class OpenGraphTopHeadDynamicInclude extends BaseDynamicInclude {
 		catch (Exception exception) {
 			throw new IOException(exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
 
 	@Activate

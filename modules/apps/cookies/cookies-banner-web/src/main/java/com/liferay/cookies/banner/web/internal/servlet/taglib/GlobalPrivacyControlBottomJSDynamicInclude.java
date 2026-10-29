@@ -26,7 +26,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Christian Moura
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class GlobalPrivacyControlBottomJSDynamicInclude
 	implements DynamicInclude {
 
@@ -58,13 +61,6 @@ public class GlobalPrivacyControlBottomJSDynamicInclude
 							"cookies-banner-web/index.js"))));
 
 		scriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	@Reference

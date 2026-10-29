@@ -36,7 +36,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Christopher Kian
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class ProductAnalyticsBottomJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -94,11 +97,6 @@ public class ProductAnalyticsBottomJSPDynamicInclude
 				httpServletRequest, _layoutUtilityPageEntryLayoutProvider));
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	@Override

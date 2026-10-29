@@ -31,7 +31,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Andrea Sbarra
  * @author Crescenzo Rega
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.commerce.account.web#/account_entry/channel_defaults.jsp#payment_methods",
+	service = DynamicInclude.class
+)
 public class DefaultCommercePaymentMethodsJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -64,13 +67,6 @@ public class DefaultCommercePaymentMethodsJSPDynamicInclude
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.commerce.account.web#/account_entry" +
-				"/channel_defaults.jsp#payment_methods");
 	}
 
 	@Override

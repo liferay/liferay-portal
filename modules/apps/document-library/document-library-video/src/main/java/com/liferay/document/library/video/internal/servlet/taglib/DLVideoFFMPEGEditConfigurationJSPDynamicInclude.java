@@ -7,7 +7,6 @@ package com.liferay.document.library.video.internal.servlet.taglib;
 
 import com.liferay.document.library.kernel.util.VideoConverter;
 import com.liferay.document.library.video.internal.converter.DLVideoFFMPEGVideoConverter;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseJSPDynamicInclude;
@@ -25,7 +24,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alejandro Tardín
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.document.library.video.internal.configuration.DLVideoFFMPEGVideoConverterConfiguration#pre",
+	service = DynamicInclude.class
+)
 public class DLVideoFFMPEGEditConfigurationJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -45,15 +47,6 @@ public class DLVideoFFMPEGEditConfigurationJSPDynamicInclude
 			_dlVideoFFMPEGVideoConverter);
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			StringBundler.concat(
-				"com.liferay.configuration.admin.web#/edit_configuration.jsp#",
-				"com.liferay.document.library.video.internal.configuration.",
-				"DLVideoFFMPEGVideoConverterConfiguration#pre"));
 	}
 
 	@Override

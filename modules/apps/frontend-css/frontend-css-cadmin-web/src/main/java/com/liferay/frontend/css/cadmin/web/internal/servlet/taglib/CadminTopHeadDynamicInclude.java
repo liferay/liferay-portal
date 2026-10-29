@@ -25,7 +25,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Patrick Yeo
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#pre",
+	service = DynamicInclude.class
+)
 public class CadminTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -56,11 +59,6 @@ public class CadminTopHeadDynamicInclude extends BaseDynamicInclude {
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
 		printWriter.println(" rel=\"stylesheet\" type=\"text/css\" />");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
 
 	private boolean _isSignedIn() {

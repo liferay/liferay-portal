@@ -42,7 +42,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.loader.modules.extender.internal.configuration.Details",
-	property = "service.ranking:Integer=" + (Integer.MAX_VALUE - 3),
+	property = {
+		"dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+		"service.ranking:Integer=" + (Integer.MAX_VALUE - 3)
+	},
 	service = DynamicInclude.class
 )
 public class JSLoaderTopHeadDynamicInclude extends BaseDynamicInclude {
@@ -110,12 +113,6 @@ public class JSLoaderTopHeadDynamicInclude extends BaseDynamicInclude {
 		printWriter.write("\" type=\"");
 		printWriter.write(ContentTypes.TEXT_JAVASCRIPT);
 		printWriter.write("\"></script>");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	@Activate

@@ -45,7 +45,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Tomas Polesovsky
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class KeepAliveSPPortalDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -89,11 +92,6 @@ public class KeepAliveSPPortalDynamicInclude extends BaseDynamicInclude {
 			throw new IOException(
 				"Unable to include keep alive URL", ioException);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	private String _getConfiguredKeepAliveURL(

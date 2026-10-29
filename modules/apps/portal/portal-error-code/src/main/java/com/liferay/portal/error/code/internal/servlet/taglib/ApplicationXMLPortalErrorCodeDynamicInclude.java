@@ -21,7 +21,11 @@ import org.osgi.service.component.annotations.Reference;
  * @author Carlos Sierra Andrés
  */
 @Component(
-	property = "mime.type=application/xml", service = DynamicInclude.class
+	property = {
+		"dynamic.include.key=/errors/code.jsp#application/xml",
+		"mime.type=application/xml"
+	},
+	service = DynamicInclude.class
 )
 public class ApplicationXMLPortalErrorCodeDynamicInclude
 	extends BasePortalErrorCodeDynamicInclude {

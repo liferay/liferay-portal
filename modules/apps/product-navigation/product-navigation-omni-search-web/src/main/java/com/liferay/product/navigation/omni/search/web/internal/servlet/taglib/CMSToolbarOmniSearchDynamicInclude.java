@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Thiago Buarque
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class CMSToolbarOmniSearchDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -64,13 +67,6 @@ public class CMSToolbarOmniSearchDynamicInclude extends BaseDynamicInclude {
 		catch (ServletException servletException) {
 			throw new IOException(servletException);
 		}
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	@Reference

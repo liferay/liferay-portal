@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.lodash.web.internal.configuration.JSLodashConfiguration",
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#pre",
 	service = DynamicInclude.class
 )
 public class LodashTopHeadDynamicInclude extends BaseDynamicInclude {
@@ -67,11 +68,6 @@ public class LodashTopHeadDynamicInclude extends BaseDynamicInclude {
 
 			printWriter.println("\" type=\"text/javascript\"></script>");
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
 
 	@Activate

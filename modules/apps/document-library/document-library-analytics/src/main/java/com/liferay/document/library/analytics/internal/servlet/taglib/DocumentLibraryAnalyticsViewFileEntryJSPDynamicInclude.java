@@ -18,23 +18,19 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alejandro Tardín
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=com.liferay.document.library.web#/document_library/view_file_entry.jsp#post",
+		"dynamic.include.key=com.liferay.document.library.web#/document_library/view_file_entry_simple_view.jsp#post"
+	},
+	service = DynamicInclude.class
+)
 public class DocumentLibraryAnalyticsViewFileEntryJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
 	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.document.library.web#/document_library" +
-				"/view_file_entry.jsp#post");
-		dynamicIncludeRegistry.register(
-			"com.liferay.document.library.web#/document_library" +
-				"/view_file_entry_simple_view.jsp#post");
 	}
 
 	@Override

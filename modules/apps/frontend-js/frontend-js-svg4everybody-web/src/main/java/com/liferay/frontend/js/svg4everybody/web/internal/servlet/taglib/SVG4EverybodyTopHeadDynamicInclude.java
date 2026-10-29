@@ -44,7 +44,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Bryce Osterhaus
  */
 @Component(
-	property = "service.ranking:Integer=" + Integer.MAX_VALUE,
+	property = {
+		"dynamic.include.key=/html/common/themes/top_head.jsp#pre",
+		"service.ranking:Integer=" + Integer.MAX_VALUE
+	},
 	service = DynamicInclude.class
 )
 public class SVG4EverybodyTopHeadDynamicInclude extends BaseDynamicInclude {
@@ -122,11 +125,6 @@ public class SVG4EverybodyTopHeadDynamicInclude extends BaseDynamicInclude {
 
 			printWriter.println("\" type=\"text/javascript\"></script>");
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
 
 	@Activate

@@ -32,7 +32,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eduardo García
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/body_top.jsp#post",
+	service = DynamicInclude.class
+)
 public class CookiesBannerBodyTopJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -107,12 +110,6 @@ public class CookiesBannerBodyTopJSPDynamicInclude
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/body_top.jsp#post");
 	}
 
 	@Override

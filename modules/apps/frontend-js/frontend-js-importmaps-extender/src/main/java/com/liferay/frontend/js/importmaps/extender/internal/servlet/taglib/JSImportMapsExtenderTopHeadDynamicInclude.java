@@ -31,7 +31,10 @@ import org.osgi.util.tracker.ServiceTracker;
  * @author Iván Zaera Avellón
  */
 @Component(
-	property = "service.ranking:Integer=" + Integer.MAX_VALUE,
+	property = {
+		"dynamic.include.key=/html/common/themes/top_head.jsp#pre",
+		"service.ranking:Integer=" + Integer.MAX_VALUE
+	},
 	service = DynamicInclude.class
 )
 public class JSImportMapsExtenderTopHeadDynamicInclude
@@ -54,11 +57,6 @@ public class JSImportMapsExtenderTopHeadDynamicInclude
 		_jsImportMapsCache.writeImportMaps(httpServletRequest, printWriter);
 
 		printWriter.print("</script>");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/top_head.jsp#pre");
 	}
 
 	@Activate

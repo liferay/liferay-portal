@@ -36,7 +36,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eudaldo Alonso
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class ClientExtensionTopHeadDynamicInclude implements DynamicInclude {
 
 	@Override
@@ -96,12 +99,6 @@ public class ClientExtensionTopHeadDynamicInclude implements DynamicInclude {
 					themeDisplay.getCompanyId(),
 				exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	private void _writeStyleSheet(

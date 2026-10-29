@@ -40,7 +40,10 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * @author Carlos Sierra Andrés
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class ThemeContributorTopHeadDynamicInclude implements DynamicInclude {
 
 	@Override
@@ -97,12 +100,6 @@ public class ThemeContributorTopHeadDynamicInclude implements DynamicInclude {
 				themeLastModified, httpServletRequest, portalCDNURL,
 				httpServletResponse.getWriter(), jsResourceURLs);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	@Activate

@@ -10,7 +10,6 @@ import com.liferay.frontend.css.variables.ScopedCSSVariablesProvider;
 import com.liferay.petra.io.StreamUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.BufferCacheServletResponse;
-import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
@@ -276,25 +275,6 @@ public class ScopedCSSVariablesTopHeadDynamicIncludeTest {
 		Assert.assertEquals(
 			_read("liferay_css_variables_2.html", true),
 			bufferCacheServletResponse.getString());
-	}
-
-	@Test
-	public void testRegister() {
-		ScopedCSSVariablesTopHeadDynamicInclude
-			scopedCSSVariablesTopHeadDynamicInclude =
-				new ScopedCSSVariablesTopHeadDynamicInclude();
-
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry =
-			Mockito.mock(DynamicInclude.DynamicIncludeRegistry.class);
-
-		scopedCSSVariablesTopHeadDynamicInclude.register(
-			dynamicIncludeRegistry);
-
-		Mockito.verify(
-			dynamicIncludeRegistry
-		).register(
-			"/html/common/themes/top_head.jsp#post"
-		);
 	}
 
 	private final String _read(String fileName, boolean addNewLine) {

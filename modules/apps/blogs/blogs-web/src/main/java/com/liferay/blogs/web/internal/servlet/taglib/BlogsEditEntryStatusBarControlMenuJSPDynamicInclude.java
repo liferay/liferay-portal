@@ -27,7 +27,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Jorge González
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.product.navigation.taglib#/page.jsp#post",
+	service = DynamicInclude.class
+)
 public class BlogsEditEntryStatusBarControlMenuJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -58,12 +61,6 @@ public class BlogsEditEntryStatusBarControlMenuJSPDynamicInclude
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.product.navigation.taglib#/page.jsp#post");
 	}
 
 	@Override

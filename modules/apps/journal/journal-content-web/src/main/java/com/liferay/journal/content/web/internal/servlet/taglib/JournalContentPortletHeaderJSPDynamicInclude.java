@@ -28,7 +28,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eudaldo Alonso
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=portlet_header_" + JournalContentPortletKeys.JOURNAL_CONTENT,
+	service = DynamicInclude.class
+)
 public class JournalContentPortletHeaderJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -70,12 +73,6 @@ public class JournalContentPortletHeaderJSPDynamicInclude
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"portlet_header_" + JournalContentPortletKeys.JOURNAL_CONTENT);
 	}
 
 	@Override

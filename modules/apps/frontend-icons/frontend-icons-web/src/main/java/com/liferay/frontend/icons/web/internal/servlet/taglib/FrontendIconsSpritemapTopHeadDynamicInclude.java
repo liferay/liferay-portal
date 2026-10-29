@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Bryce Osterhaus
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+	service = DynamicInclude.class
+)
 public class FrontendIconsSpritemapTopHeadDynamicInclude
 	extends BaseDynamicInclude {
 
@@ -55,12 +58,6 @@ public class FrontendIconsSpritemapTopHeadDynamicInclude
 		sb.append("';</script>\n");
 
 		printWriter.write(sb.toString());
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 }

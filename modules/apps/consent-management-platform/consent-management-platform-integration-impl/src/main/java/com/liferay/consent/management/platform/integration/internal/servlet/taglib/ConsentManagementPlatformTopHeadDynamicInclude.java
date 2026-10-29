@@ -32,7 +32,11 @@ import org.osgi.service.component.annotations.Component;
  * @author Christian Moura
  */
 @Component(
-	property = "service.ranking:Integer=1000", service = DynamicInclude.class
+	property = {
+		"dynamic.include.key=/html/common/themes/top_head.jsp#consent_management_platform",
+		"service.ranking:Integer=1000"
+	},
+	service = DynamicInclude.class
 )
 public class ConsentManagementPlatformTopHeadDynamicInclude
 	extends BaseDynamicInclude {
@@ -87,12 +91,6 @@ public class ConsentManagementPlatformTopHeadDynamicInclude
 			printWriter.println(
 				_addNonceAttribute(consentMappingScript, nonceAttribute));
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#consent_management_platform");
 	}
 
 	private String _addNonceAttribute(String html, String nonceAttribute) {

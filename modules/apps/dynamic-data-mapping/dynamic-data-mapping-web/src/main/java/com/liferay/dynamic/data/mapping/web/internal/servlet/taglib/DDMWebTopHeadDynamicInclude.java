@@ -5,7 +5,6 @@
 
 package com.liferay.dynamic.data.mapping.web.internal.servlet.taglib;
 
-import com.liferay.dynamic.data.mapping.web.internal.portlet.DDMPortlet;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.content.security.policy.ContentSecurityPolicyNonceProviderUtil;
@@ -29,7 +28,13 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Harlan Santos
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=com.liferay.dynamic.data.mapping.taglib#/html/start.jsp#pre",
+		"dynamic.include.key=com.liferay.dynamic.data.mapping.web.internal.portlet.DDMPortlet#formRendered"
+	},
+	service = DynamicInclude.class
+)
 public class DDMWebTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -55,14 +60,6 @@ public class DDMWebTopHeadDynamicInclude extends BaseDynamicInclude {
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
 		printWriter.println(" rel=\"stylesheet\" type = \"text/css\" />");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			DDMPortlet.class.getName() + "#formRendered");
-		dynamicIncludeRegistry.register(
-			"com.liferay.dynamic.data.mapping.taglib#/html/start.jsp#pre");
 	}
 
 	@Activate

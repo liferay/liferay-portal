@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Pei-Jung Lan
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class CTRequiredModelExceptionDynamicInclude
 	extends BaseCTExceptionDynamicInclude {
 

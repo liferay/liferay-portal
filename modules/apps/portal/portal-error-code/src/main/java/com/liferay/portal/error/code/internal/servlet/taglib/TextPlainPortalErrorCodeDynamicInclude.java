@@ -14,7 +14,13 @@ import org.osgi.service.component.annotations.Component;
 /**
  * @author Carlos Sierra Andrés
  */
-@Component(property = "mime.type=text/plain", service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=/errors/code.jsp#text/plain",
+		"mime.type=text/plain"
+	},
+	service = DynamicInclude.class
+)
 public class TextPlainPortalErrorCodeDynamicInclude
 	extends BasePortalErrorCodeDynamicInclude {
 

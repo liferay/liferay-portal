@@ -51,7 +51,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author David Truong
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/body_top.jsp#post",
+	service = DynamicInclude.class
+)
 public class CTPreviewIndicatorDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -156,12 +159,6 @@ public class CTPreviewIndicatorDynamicInclude extends BaseDynamicInclude {
 		catch (JspException | PortalException exception) {
 			ReflectionUtil.throwException(exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/body_top.jsp#post");
 	}
 
 	private Map<String, Object> _getReactData(

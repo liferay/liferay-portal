@@ -36,7 +36,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Víctor Galán
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class ElementVariationsPreviewTopHeadDynamicInclude
 	implements DynamicInclude {
 
@@ -98,12 +101,6 @@ public class ElementVariationsPreviewTopHeadDynamicInclude
 					ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 						httpServletRequest)
 				).build()));
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	private static final String _TMPL_CONTENT = StringUtil.read(

@@ -35,7 +35,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Chema Balsas
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.product.navigation.taglib#/page.jsp#post",
+	service = DynamicInclude.class
+)
 public class LayoutEditorToolbarControlMenuJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -97,12 +100,6 @@ public class LayoutEditorToolbarControlMenuJSPDynamicInclude
 		}
 
 		return true;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.product.navigation.taglib#/page.jsp#post");
 	}
 
 	@Override

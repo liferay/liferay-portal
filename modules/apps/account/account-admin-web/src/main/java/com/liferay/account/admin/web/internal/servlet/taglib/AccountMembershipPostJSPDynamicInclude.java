@@ -18,21 +18,16 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Albert Lee
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.users.admin.web#/user/memberships.jsp#post",
+	service = DynamicInclude.class
+)
 public class AccountMembershipPostJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
 	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register(
-			"com.liferay.users.admin.web#/user/memberships.jsp#post");
 	}
 
 	@Override

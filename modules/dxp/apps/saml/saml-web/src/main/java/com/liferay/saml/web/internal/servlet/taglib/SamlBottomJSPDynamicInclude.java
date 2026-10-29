@@ -37,7 +37,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Stian Sigvartsen
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#pre",
+	service = DynamicInclude.class
+)
 public class SamlBottomJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
@@ -96,13 +99,6 @@ public class SamlBottomJSPDynamicInclude extends BaseJSPDynamicInclude {
 			SamlWebKeys.SAML_SUBJECT_NAME_ID, samlSubjectNameId);
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#pre");
 	}
 
 	@Override

@@ -45,7 +45,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Chema Balsas
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/body_top.jsp#post",
+	service = DynamicInclude.class
+)
 public class ProductMenuBodyTopDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -117,12 +120,6 @@ public class ProductMenuBodyTopDynamicInclude extends BaseDynamicInclude {
 		catch (Exception exception) {
 			ReflectionUtil.throwException(exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/body_top.jsp#post");
 	}
 
 	@Activate

@@ -35,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.tooltip.support.web.internal.configuration.JSTooltipSupportConfiguration",
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
 	service = DynamicInclude.class
 )
 public class ClayTooltipBottomDynamicInclude implements DynamicInclude {
@@ -85,13 +86,6 @@ public class ClayTooltipBottomDynamicInclude implements DynamicInclude {
 						"{main} from frontend-js-tooltip-support-web"))));
 
 		scriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

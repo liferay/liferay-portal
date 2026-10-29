@@ -28,7 +28,14 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Rafael Praxedes
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=com.liferay.data.engine.taglib#/data_layout_builder/start.jsp#pre",
+		"dynamic.include.key=com.liferay.dynamic.data.mapping.form.web#EditElementSetMVCRenderCommand#render",
+		"dynamic.include.key=com.liferay.dynamic.data.mapping.form.web#EditFormInstanceMVCRenderCommand#render"
+	},
+	service = DynamicInclude.class
+)
 public class DDMFormBuilderTopHeadDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -60,19 +67,6 @@ public class DDMFormBuilderTopHeadDynamicInclude extends BaseDynamicInclude {
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
 				httpServletRequest));
 		printWriter.println(" rel=\"stylesheet\" type = \"text/css\" />");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.data.engine.taglib#/data_layout_builder/start.jsp" +
-				"#pre");
-		dynamicIncludeRegistry.register(
-			"com.liferay.dynamic.data.mapping.form.web#" +
-				"EditElementSetMVCRenderCommand#render");
-		dynamicIncludeRegistry.register(
-			"com.liferay.dynamic.data.mapping.form.web#" +
-				"EditFormInstanceMVCRenderCommand#render");
 	}
 
 	@Activate

@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Raymond Augé
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+	service = DynamicInclude.class
+)
 public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 
 	@Override
@@ -102,12 +105,6 @@ public class OAuth2ProviderTopJSPDynamicInclude implements DynamicInclude {
 			"_userAgentApplications: ", jsonObject, "}</script>");
 
 		printWriter.write(string);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	@Reference

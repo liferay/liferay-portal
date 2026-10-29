@@ -7,7 +7,6 @@ package com.liferay.product.navigation.omni.search.web.internal.servlet.taglib;
 
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -111,24 +110,6 @@ public class CMSToolbarOmniSearchDynamicIncludeTest {
 		_include(_getMockHttpServletRequest(true, false), false);
 
 		_assertNotIncluded();
-	}
-
-	@Test
-	public void testRegister() {
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry =
-			Mockito.mock(DynamicInclude.DynamicIncludeRegistry.class);
-
-		_getCMSToolbarOmniSearchDynamicInclude(
-			false
-		).register(
-			dynamicIncludeRegistry
-		);
-
-		Mockito.verify(
-			dynamicIncludeRegistry, Mockito.times(1)
-		).register(
-			"/html/common/themes/bottom.jsp#post"
-		);
 	}
 
 	private void _assertNotIncluded() throws Exception {

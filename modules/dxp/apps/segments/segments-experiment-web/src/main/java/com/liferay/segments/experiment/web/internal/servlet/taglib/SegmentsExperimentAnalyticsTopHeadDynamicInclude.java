@@ -35,7 +35,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Eduardo García
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/dynamic_include/top_head.jsp#analytics",
+	service = DynamicInclude.class
+)
 public class SegmentsExperimentAnalyticsTopHeadDynamicInclude
 	implements DynamicInclude {
 
@@ -77,12 +80,6 @@ public class SegmentsExperimentAnalyticsTopHeadDynamicInclude
 				segmentsExperiment));
 
 		sb.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/dynamic_include/top_head.jsp#analytics");
 	}
 
 	private Map<String, String> _getValues(

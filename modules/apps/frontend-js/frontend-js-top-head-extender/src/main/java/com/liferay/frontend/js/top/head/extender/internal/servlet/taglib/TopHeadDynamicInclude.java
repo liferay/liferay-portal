@@ -47,7 +47,10 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * @author Iván Zaera Avellón
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+	service = DynamicInclude.class
+)
 public class TopHeadDynamicInclude implements DynamicInclude {
 
 	@Override
@@ -86,12 +89,6 @@ public class TopHeadDynamicInclude implements DynamicInclude {
 					resourceURLsHolder._allJsResourceURLs);
 			}
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	@Activate

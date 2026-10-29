@@ -39,7 +39,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Danny Situ
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class SignDigitalSignatureBottomJSDynamicInclude
 	implements DynamicInclude {
 
@@ -110,13 +113,6 @@ public class SignDigitalSignatureBottomJSDynamicInclude
 						"{openSigningModal} from digital-signature-web"))));
 
 		scriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	private String _getTitle(

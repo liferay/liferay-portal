@@ -40,7 +40,13 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alejandro Tardín
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=/html/common/themes/body_top.jsp#post",
+		"dynamic.include.key=/html/common/themes/top_head.jsp#post"
+	},
+	service = DynamicInclude.class
+)
 public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 
 	@Override
@@ -61,7 +67,7 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 
 		JspWriter jspWriter = pageContext.getOut();
 
-		if (Objects.equals(key, _KEY_TOP_HEAD)) {
+		if (Objects.equals(key, "/html/common/themes/top_head.jsp#post")) {
 			_writeCSSLink(httpServletRequest, jspWriter);
 
 			return;
@@ -90,12 +96,6 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 		catch (Exception exception) {
 			_log.error("Unable to render the launch preview topbar", exception);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(_KEY_BODY_TOP);
-		dynamicIncludeRegistry.register(_KEY_TOP_HEAD);
 	}
 
 	private ThemeDisplay _getLaunchPreviewThemeDisplay(
@@ -143,12 +143,6 @@ public class LaunchPreviewTopbarDynamicInclude extends BaseDynamicInclude {
 						"/css/LaunchPreviewTopbar.css"),
 				"\" rel=\"stylesheet\" type=\"text/css\" />"));
 	}
-
-	private static final String _KEY_BODY_TOP =
-		"/html/common/themes/body_top.jsp#post";
-
-	private static final String _KEY_TOP_HEAD =
-		"/html/common/themes/top_head.jsp#post";
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		LaunchPreviewTopbarDynamicInclude.class);

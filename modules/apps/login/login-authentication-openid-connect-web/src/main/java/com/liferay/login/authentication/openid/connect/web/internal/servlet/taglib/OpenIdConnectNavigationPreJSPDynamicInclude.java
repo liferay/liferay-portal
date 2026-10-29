@@ -36,7 +36,10 @@ import org.osgi.service.component.annotations.Reference;
  *
  * @author Michael C. Han
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.login.web#/navigation.jsp#pre",
+	service = DynamicInclude.class
+)
 public class OpenIdConnectNavigationPreJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
@@ -76,14 +79,6 @@ public class OpenIdConnectNavigationPreJSPDynamicInclude
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register(
-			"com.liferay.login.web#/navigation.jsp#pre");
 	}
 
 	@Override

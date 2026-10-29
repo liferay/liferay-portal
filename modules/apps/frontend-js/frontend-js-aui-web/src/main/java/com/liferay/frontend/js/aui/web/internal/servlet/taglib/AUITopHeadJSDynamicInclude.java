@@ -42,7 +42,10 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Component(
 	configurationPid = "com.liferay.frontend.js.aui.web.internal.configuration.AUIConfiguration",
-	property = "service.ranking:Integer=" + (Integer.MAX_VALUE - 1),
+	property = {
+		"dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+		"service.ranking:Integer=" + (Integer.MAX_VALUE - 1)
+	},
 	service = DynamicInclude.class
 )
 public class AUITopHeadJSDynamicInclude extends BaseDynamicInclude {
@@ -67,12 +70,6 @@ public class AUITopHeadJSDynamicInclude extends BaseDynamicInclude {
 			_renderBundleURLs(
 				httpServletRequest, httpServletResponse, jsResourcePaths);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	@Activate

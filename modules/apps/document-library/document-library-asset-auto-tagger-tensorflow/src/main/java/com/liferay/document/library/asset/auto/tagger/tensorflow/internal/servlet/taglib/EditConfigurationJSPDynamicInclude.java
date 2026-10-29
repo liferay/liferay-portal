@@ -8,7 +8,6 @@ package com.liferay.document.library.asset.auto.tagger.tensorflow.internal.servl
 import com.liferay.document.library.asset.auto.tagger.tensorflow.internal.configuration.TensorFlowImageAssetAutoTagProviderCompanyConfiguration;
 import com.liferay.document.library.asset.auto.tagger.tensorflow.internal.display.context.EditConfigurationDisplayContext;
 import com.liferay.document.library.asset.auto.tagger.tensorflow.internal.util.TensorFlowDownloadHelper;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -29,7 +28,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alejandro Tardín
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.document.library.asset.auto.tagger.tensorflow.internal.configuration.TensorFlowImageAssetAutoTagProviderCompanyConfiguration#pre",
+	service = DynamicInclude.class
+)
 public class EditConfigurationJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
@@ -62,16 +64,6 @@ public class EditConfigurationJSPDynamicInclude extends BaseJSPDynamicInclude {
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			StringBundler.concat(
-				"com.liferay.configuration.admin.web#/edit_configuration.jsp#",
-				"com.liferay.document.library.asset.auto.tagger.tensorflow.",
-				"internal.configuration.TensorFlowImageAssetAutoTagProvider",
-				"CompanyConfiguration#pre"));
 	}
 
 	@Override

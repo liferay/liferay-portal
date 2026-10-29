@@ -81,7 +81,10 @@ import org.osgi.service.component.annotations.Reference;
  * @author Iván Zaera Avellón
  */
 @Component(
-	property = "service.ranking:Integer=" + Integer.MAX_VALUE,
+	property = {
+		"dynamic.include.key=/html/common/themes/top_js.jspf#resources",
+		"service.ranking:Integer=" + Integer.MAX_VALUE
+	},
 	service = DynamicInclude.class
 )
 public class LiferayGlobalObjectPreAUIDynamicInclude
@@ -144,12 +147,6 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 				new Object[] {sb, requestURL.startsWith("http://localhost")}));
 
 		printWriter.println("</script>");
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_js.jspf#resources");
 	}
 
 	private static String _read(String name) {

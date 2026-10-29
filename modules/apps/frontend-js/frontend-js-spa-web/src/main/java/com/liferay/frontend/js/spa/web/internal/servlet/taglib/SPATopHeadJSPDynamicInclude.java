@@ -71,7 +71,10 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 /**
  * @author Bruno Basto
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	service = DynamicInclude.class
+)
 public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
@@ -161,12 +164,6 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 						"{init} from frontend-js-spa-web"))));
 
 		initScriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"/html/common/themes/top_head.jsp#post");
 	}
 
 	@Activate

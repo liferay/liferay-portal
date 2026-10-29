@@ -37,7 +37,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Bryce Osterhaus
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class EnableThirdPartyCookiesBottomJSDynamicInclude
 	implements DynamicInclude {
 
@@ -131,13 +134,6 @@ public class EnableThirdPartyCookiesBottomJSDynamicInclude
 		}
 
 		scriptData.writeTo(httpServletResponse.getWriter());
-	}
-
-	@Override
-	public void register(
-		DynamicInclude.DynamicIncludeRegistry dynamicIncludeRegistry) {
-
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

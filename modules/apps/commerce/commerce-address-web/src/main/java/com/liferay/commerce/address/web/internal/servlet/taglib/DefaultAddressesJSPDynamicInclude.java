@@ -34,7 +34,10 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 /**
  * @author Alessio Antonio Rendina
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=com.liferay.commerce.account.web#/account_entry/channel_defaults.jsp#commerce_addresses",
+	service = DynamicInclude.class
+)
 public class DefaultAddressesJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
@@ -66,13 +69,6 @@ public class DefaultAddressesJSPDynamicInclude extends BaseJSPDynamicInclude {
 		}
 
 		super.include(httpServletRequest, httpServletResponse, key);
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.commerce.account.web#/account_entry" +
-				"/channel_defaults.jsp#commerce_addresses");
 	}
 
 	@Override

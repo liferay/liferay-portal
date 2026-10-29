@@ -5,9 +5,6 @@
 
 package com.liferay.cookies.banner.web.internal.servlet.taglib;
 
-import com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration;
-import com.liferay.cookies.configuration.banner.CookiesBannerConfiguration;
-import com.liferay.cookies.configuration.consent.CookiesConsentConfiguration;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseJSPDynamicInclude;
@@ -21,27 +18,20 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Alvaro Saugar
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = {
+		"dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.cookies.configuration.banner.CookiesBannerConfiguration#pre",
+		"dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.cookies.configuration.consent.CookiesConsentConfiguration#pre",
+		"dynamic.include.key=com.liferay.configuration.admin.web#/edit_configuration.jsp#com.liferay.cookies.configuration.CookiesPreferenceHandlingConfiguration#pre"
+	},
+	service = DynamicInclude.class
+)
 public class CookiesConfigurationActivationWarnJSPDynamicInclude
 	extends BaseJSPDynamicInclude {
 
 	@Override
 	public ServletContext getServletContext() {
 		return _servletContext;
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register(
-			"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
-				CookiesBannerConfiguration.class.getName() + "#pre");
-		dynamicIncludeRegistry.register(
-			"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
-				CookiesConsentConfiguration.class.getName() + "#pre");
-		dynamicIncludeRegistry.register(
-			"com.liferay.configuration.admin.web#/edit_configuration.jsp#" +
-				CookiesPreferenceHandlingConfiguration.class.getName() +
-					"#pre");
 	}
 
 	@Override

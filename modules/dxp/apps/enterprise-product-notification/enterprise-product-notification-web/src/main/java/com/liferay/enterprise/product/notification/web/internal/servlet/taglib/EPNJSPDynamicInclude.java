@@ -26,7 +26,10 @@ import org.osgi.service.component.annotations.Reference;
 /**
  * @author Drew Brokke
  */
-@Component(service = DynamicInclude.class)
+@Component(
+	property = "dynamic.include.key=/html/common/themes/bottom.jsp#post",
+	service = DynamicInclude.class
+)
 public class EPNJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 	@Override
@@ -50,11 +53,6 @@ public class EPNJSPDynamicInclude extends BaseJSPDynamicInclude {
 
 			super.include(httpServletRequest, httpServletResponse, key);
 		}
-	}
-
-	@Override
-	public void register(DynamicIncludeRegistry dynamicIncludeRegistry) {
-		dynamicIncludeRegistry.register("/html/common/themes/bottom.jsp#post");
 	}
 
 	@Override
