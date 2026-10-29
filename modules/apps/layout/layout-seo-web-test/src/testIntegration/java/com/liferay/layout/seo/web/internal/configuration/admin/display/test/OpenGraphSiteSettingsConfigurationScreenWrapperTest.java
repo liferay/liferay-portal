@@ -13,6 +13,7 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLTrashLocalService;
 import com.liferay.layout.seo.model.LayoutSEOSite;
 import com.liferay.layout.seo.service.LayoutSEOSiteLocalService;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -203,6 +204,38 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 	}
 
 	@Test
+	public void testExportPropertiesWithMissingFileEntry() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		FileEntry fileEntry = _addFileEntry(
+			RandomTestUtil.randomString(), group.getGroupId());
+
+		_updateLayoutSEOSite(
+			group.getGroupId(), false, RandomTestUtil.randomLocaleStringMap(),
+			fileEntry.getFileEntryId());
+
+		_dlTrashLocalService.moveFileEntryToTrash(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			fileEntry.getFileEntryId());
+
+		ConfigurationScreen configurationScreen = _serviceTrackerMap.getService(
+			"site-configuration-open-graph");
+
+		Dictionary<String, Object> properties =
+			configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals(properties.toString(), 1, properties.size());
+		Assert.assertEquals(Boolean.FALSE, properties.get("openGraphEnabled"));
+
+		_dlAppLocalService.deleteFileEntry(fileEntry.getFileEntryId());
+
+		properties = configurationScreen.exportProperties(group.getGroupId());
+
+		Assert.assertEquals(properties.toString(), 1, properties.size());
+		Assert.assertEquals(Boolean.FALSE, properties.get("openGraphEnabled"));
+	}
+
+	@Test
 	public void testImportProperties() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
@@ -303,6 +336,35 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 				noSuchFileEntryException.getMessage());
 		}
 
+		FileEntry trashedFileEntry = _addFileEntry(
+			RandomTestUtil.randomString(), group.getGroupId());
+
+		_dlTrashLocalService.moveFileEntryToTrash(
+			TestPropsValues.getUserId(), group.getGroupId(),
+			trashedFileEntry.getFileEntryId());
+
+		try {
+			configurationScreen.importProperties(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"openGraphEnabled", false
+				).put(
+					"openGraphImageFileEntryERC",
+					trashedFileEntry.getExternalReferenceCode()
+				).build(),
+				group.getGroupId());
+
+			Assert.fail();
+		}
+		catch (NoSuchFileEntryException noSuchFileEntryException) {
+			Assert.assertEquals(
+				StringBundler.concat(
+					"No file entry exists with external reference code ",
+					trashedFileEntry.getExternalReferenceCode(),
+					" in the site or asset library with external reference ",
+					"code ", group.getExternalReferenceCode()),
+				noSuchFileEntryException.getMessage());
+		}
+
 		LayoutSEOSite layoutSEOSite =
 			_layoutSEOSiteLocalService.fetchLayoutSEOSiteByGroupId(
 				group.getGroupId());
@@ -343,6 +405,9 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapperTest {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private DLTrashLocalService _dlTrashLocalService;
 
 	@Inject
 	private LayoutSEOSiteLocalService _layoutSEOSiteLocalService;
