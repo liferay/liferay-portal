@@ -43,23 +43,23 @@ public class FreeMarkerEngineConfigurationUpgradeProcess
 
 		Configuration configuration = configurations[0];
 
-		Dictionary<String, Object> dictionary = configuration.getProperties();
+		Dictionary<String, Object> properties = configuration.getProperties();
 
-		if ((dictionary == null) ||
-			(dictionary.get("allowedInstantiableClasses") != null)) {
+		if ((properties == null) ||
+			(properties.get("allowedInstantiableClasses") != null)) {
 
 			return;
 		}
 
-		Object allowedClasses = dictionary.get("allowedClasses");
+		Object allowedClasses = properties.get("allowedClasses");
 
 		if (allowedClasses == null) {
 			return;
 		}
 
-		dictionary.put("allowedInstantiableClasses", allowedClasses);
+		properties.put("allowedInstantiableClasses", allowedClasses);
 
-		configuration.updateIfDifferent(dictionary);
+		configuration.updateIfDifferent(properties);
 	}
 
 	private final ConfigurationAdmin _configurationAdmin;
