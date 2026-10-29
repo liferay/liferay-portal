@@ -82,6 +82,7 @@ public class ConnectedSiteResourceTest
 		_testPutAssetLibraryConnectedSiteReturnsTypeDesignLibrary();
 		_testPutAssetLibraryConnectedSiteReturnsTypeSite();
 		_testPutAssetLibraryConnectedSiteReturnsTypeSiteTemplate();
+		_testPutAssetLibraryConnectedSiteWithDDMStructuresAvailable();
 		_testPutAssetLibraryConnectedSiteWithUnacceptedDepotEntryType();
 	}
 
@@ -323,6 +324,35 @@ public class ConnectedSiteResourceTest
 
 		Assert.assertEquals(
 			ConnectedSite.Type.SITE_TEMPLATE, connectedSite.getType());
+	}
+
+	private void _testPutAssetLibraryConnectedSiteWithDDMStructuresAvailable()
+		throws Exception {
+
+		Group group = testDepotEntry.getGroup();
+
+		ConnectedSite connectedSite =
+			connectedSiteResource.putAssetLibraryConnectedSite(
+				group.getExternalReferenceCode(),
+				_testConnectedSite.getExternalReferenceCode(),
+				new ConnectedSite() {
+					{
+						ddmStructuresAvailable = true;
+					}
+				});
+
+		Assert.assertTrue(connectedSite.getDdmStructuresAvailable());
+
+		connectedSite = connectedSiteResource.putAssetLibraryConnectedSite(
+			group.getExternalReferenceCode(),
+			_testConnectedSite.getExternalReferenceCode(),
+			new ConnectedSite() {
+				{
+					ddmStructuresAvailable = false;
+				}
+			});
+
+		Assert.assertFalse(connectedSite.getDdmStructuresAvailable());
 	}
 
 	private void _testPutAssetLibraryConnectedSiteWithUnacceptedDepotEntryType()
