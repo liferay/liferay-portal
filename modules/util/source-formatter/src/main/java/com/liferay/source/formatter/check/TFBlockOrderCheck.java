@@ -31,14 +31,14 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 		String[] lines = content.split("\n", -1);
 
-		_sortNestedEntries(lines);
+		_sortNestedEntries(fileName, lines);
 
 		List<List<Entry>> entryGroups = _getEntryGroups(
 			lines, 0, lines.length, true);
 
 		if (entryGroups != null) {
 			for (List<Entry> entries : entryGroups) {
-				_sort(lines, entries);
+				_sort(fileName, lines, entries);
 			}
 		}
 
@@ -114,6 +114,8 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 		List<Entry> entries = new ArrayList<>();
 
+		boolean afterComment = false;
+
 		for (int i = startLineIndex; i < endLineIndex; i++) {
 			String trimmedLine = StringUtil.trim(lines[i]);
 
@@ -124,6 +126,10 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 					entryGroups.add(entries);
 
 					entries = new ArrayList<>();
+				}
+
+				if (TFSourceUtil.isCommentLine(lines[i])) {
+					afterComment = true;
 				}
 
 				i = TFSourceUtil.getCommentEndLineIndex(lines, i);
@@ -159,9 +165,12 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 			Entry entry = new Entry(entryEndLineIndex, lines, i);
 
+			entry.setAfterComment(afterComment);
 			entry.setSortKey(sortKey);
 
 			entries.add(entry);
+
+			afterComment = false;
 
 			i = entryEndLineIndex;
 		}
@@ -189,7 +198,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		return null;
 	}
 
-	private void _sort(String[] lines, List<Entry> entries) {
+	private void _sort(String fileName, String[] lines, List<Entry> entries) {
 		List<Entry> sortedEntries = new ArrayList<>(entries);
 
 		Collections.sort(sortedEntries, new EntryComparator());
@@ -199,6 +208,19 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		}
 
 		Entry firstEntry = entries.get(0);
+		Entry sortedFirstEntry = sortedEntries.get(0);
+
+		if (firstEntry.isAfterComment() && (firstEntry != sortedFirstEntry)) {
+			addMessage(
+				fileName,
+				StringBundler.concat(
+					"Incorrect order \"", firstEntry.getSortKey(), "\": \"",
+					sortedFirstEntry.getSortKey(), "\" should come before \"",
+					firstEntry.getSortKey(), "\""),
+				firstEntry.getStartLineIndex() + 1);
+
+			return;
+		}
 
 		int index = firstEntry.getStartLineIndex();
 
@@ -209,7 +231,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		}
 	}
 
-	private void _sortNestedEntries(String[] lines) {
+	private void _sortNestedEntries(String fileName, String[] lines) {
 		boolean blockComment = false;
 
 		for (int i = 0; i < lines.length; i++) {
@@ -258,7 +280,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 			}
 
 			for (List<Entry> entries : entryGroups) {
-				_sort(lines, entries);
+				_sort(fileName, lines, entries);
 			}
 		}
 	}
@@ -292,10 +314,19 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 			return _startLineIndex;
 		}
 
+		public boolean isAfterComment() {
+			return _afterComment;
+		}
+
+		public void setAfterComment(boolean afterComment) {
+			_afterComment = afterComment;
+		}
+
 		public void setSortKey(String sortKey) {
 			_sortKey = sortKey;
 		}
 
+		private boolean _afterComment;
 		private final List<String> _lines = new ArrayList<>();
 		private String _sortKey;
 		private final int _startLineIndex;

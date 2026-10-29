@@ -30,12 +30,13 @@ resource "aws_s3_bucket" "logs" {
 		allowed_origins="*"
 	}
 
-	# Tags
+	# Settings
 
 	force_destroy=true
 	tags={
 		Name="logs"
 	}
+	versioning=true
 
 	# TODO: add encryption
 

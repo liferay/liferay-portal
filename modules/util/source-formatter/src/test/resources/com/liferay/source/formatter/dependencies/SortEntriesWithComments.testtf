@@ -5,17 +5,18 @@ resource "aws_s3_bucket" "logs" {
 	}
 	# Required by the CDN.
 	# Do not remove.
+	acl="private"
 	cors_rule={
 		allowed_origins="*"
 	}
 	bucket="logs" # main bucket
-	acl="private"
 
-	# Tags
+	# Settings
+	force_destroy=true
+	versioning=true
 	tags={
 		Name="logs"
 	}
-	force_destroy=true
 	# TODO: add encryption
 }
 resource "aws_s3_bucket" "backups" {
