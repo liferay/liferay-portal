@@ -81,6 +81,19 @@ public class ListTypeDefinitionResourceImpl
 	}
 
 	@Override
+	public void deleteListTypeDefinitionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		com.liferay.list.type.model.ListTypeDefinition listTypeDefinition =
+			_listTypeDefinitionService.
+				getListTypeDefinitionByExternalReferenceCode(
+					externalReferenceCode, contextCompany.getCompanyId());
+
+		deleteListTypeDefinition(listTypeDefinition.getListTypeDefinitionId());
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
