@@ -1406,6 +1406,8 @@ test(
 
 		const date = new Date();
 
+		date.setDate(date.getDate() - 1);
+
 		await createIndividuals({apiHelpers, individuals});
 
 		await apiHelpers.jsonWebServicesOSBAsah.createEvents(
@@ -1421,6 +1423,19 @@ test(
 			}))
 		);
 
+		await apiHelpers.jsonWebServicesOSBAsah.createIdentityActivitiesSummary(
+			individuals.map((individual) => ({
+				activitiesCount: 1,
+				channelId: channel.id,
+				dataSourceId,
+				eventId: 'pageViewed',
+				firstActivityDate: date.toISOString(),
+				identityId: individual.id,
+				individualId: individual.id,
+				lastActivityDate: date.toISOString(),
+			}))
+		);
+
 		await navigateToACPageViaURL({
 			acPage: ACPage.individualPage,
 			channelID: channel.id,
@@ -1428,12 +1443,12 @@ test(
 			projectID: project.groupId,
 		});
 
-		await page.getByRole('link', {name: 'Known Individuals'}).click();
-
 		// Both synced contacts surface in the Known Individuals list
 
 		for (const individual of individuals) {
 			await expect(async () => {
+				await page.reload();
+
 				await page
 					.getByPlaceholder('Search')
 					.first()
@@ -1468,6 +1483,8 @@ test(
 
 		const date = new Date();
 
+		date.setDate(date.getDate() - 1);
+
 		await createIndividuals({apiHelpers, individuals: [individual]});
 
 		await apiHelpers.jsonWebServicesOSBAsah.createEvents([
@@ -1483,6 +1500,21 @@ test(
 			},
 		]);
 
+		await apiHelpers.jsonWebServicesOSBAsah.createIdentityActivitiesSummary(
+			[
+				{
+					activitiesCount: 1,
+					channelId: channel.id,
+					dataSourceId,
+					eventId: 'pageViewed',
+					firstActivityDate: date.toISOString(),
+					identityId: individual.id,
+					individualId: individual.id,
+					lastActivityDate: date.toISOString(),
+				},
+			]
+		);
+
 		await navigateToACPageViaURL({
 			acPage: ACPage.individualPage,
 			channelID: channel.id,
@@ -1490,9 +1522,9 @@ test(
 			projectID: project.groupId,
 		});
 
-		await page.getByRole('link', {name: 'Known Individuals'}).click();
-
 		await expect(async () => {
+			await page.reload();
+
 			await page.getByPlaceholder('Search').first().fill(individual.name);
 
 			await expect(
@@ -1523,6 +1555,8 @@ test(
 
 		const date = new Date();
 
+		date.setDate(date.getDate() - 1);
+
 		await createIndividuals({apiHelpers, individuals: [individual]});
 
 		await apiHelpers.jsonWebServicesOSBAsah.createEvents([
@@ -1538,6 +1572,21 @@ test(
 			},
 		]);
 
+		await apiHelpers.jsonWebServicesOSBAsah.createIdentityActivitiesSummary(
+			[
+				{
+					activitiesCount: 1,
+					channelId: channel.id,
+					dataSourceId,
+					eventId: 'pageViewed',
+					firstActivityDate: date.toISOString(),
+					identityId: individual.id,
+					individualId: individual.id,
+					lastActivityDate: date.toISOString(),
+				},
+			]
+		);
+
 		await navigateToACPageViaURL({
 			acPage: ACPage.individualPage,
 			channelID: channel.id,
@@ -1545,9 +1594,9 @@ test(
 			projectID: project.groupId,
 		});
 
-		await page.getByRole('link', {name: 'Known Individuals'}).click();
-
 		await expect(async () => {
+			await page.reload();
+
 			await page.getByPlaceholder('Search').first().fill(individual.name);
 
 			await expect(
