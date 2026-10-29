@@ -122,14 +122,13 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapper
 				return new HashMapDictionary<>();
 			}
 
-			if (layoutSEOSite.getOpenGraphImageFileEntryId() == 0) {
+			FileEntry fileEntry = _getOpenGraphImageFileEntry(layoutSEOSite);
+
+			if (fileEntry == null) {
 				return HashMapDictionaryBuilder.<String, Object>put(
 					"openGraphEnabled", layoutSEOSite.isOpenGraphEnabled()
 				).build();
 			}
-
-			FileEntry fileEntry = _dlAppLocalService.getFileEntry(
-				layoutSEOSite.getOpenGraphImageFileEntryId());
 
 			return HashMapDictionaryBuilder.<String, Object>put(
 				"openGraphEnabled", layoutSEOSite.isOpenGraphEnabled()
@@ -311,7 +310,7 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapper
 					_dlAppLocalService.fetchFileEntryByExternalReferenceCode(
 						groupId, externalReferenceCode);
 
-				if (fileEntry != null) {
+				if ((fileEntry != null) && !fileEntry.isInTrash()) {
 					return fileEntry;
 				}
 			}
@@ -322,6 +321,24 @@ public class OpenGraphSiteSettingsConfigurationScreenWrapper
 					externalReferenceCode,
 					" in the site or asset library with external reference ",
 					"code ", scopeExternalReferenceCode));
+		}
+
+		private FileEntry _getOpenGraphImageFileEntry(
+				LayoutSEOSite layoutSEOSite)
+			throws Exception {
+
+			if (layoutSEOSite.getOpenGraphImageFileEntryId() <= 0) {
+				return null;
+			}
+
+			FileEntry fileEntry = _dlAppLocalService.fetchFileEntry(
+				layoutSEOSite.getOpenGraphImageFileEntryId());
+
+			if ((fileEntry == null) || fileEntry.isInTrash()) {
+				return null;
+			}
+
+			return fileEntry;
 		}
 
 		private ResourceBundle _getResourceBundle(Locale locale) {
