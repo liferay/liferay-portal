@@ -48,6 +48,11 @@ public class TFSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testSortBlocksWithOrderedBlockTypes() throws Exception {
+		test("SortBlocksWithOrderedBlockTypes.testtf");
+	}
+
+	@Test
 	public void testSortBlocksWithUnbalancedBrackets() throws Exception {
 		test("SortBlocksWithUnbalancedBrackets.testtf");
 	}
