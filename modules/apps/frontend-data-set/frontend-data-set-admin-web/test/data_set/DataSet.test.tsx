@@ -4,11 +4,11 @@
  */
 
 import {render, screen} from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetch from 'jest-fetch-mock';
 import React from 'react';
 
 import '@testing-library/jest-dom';
-import userEvent from '@testing-library/user-event';
 
 import DataSet from '../../src/main/resources/META-INF/resources/js/data_set/DataSet';
 import {OBJECT_RELATIONSHIP} from '../../src/main/resources/META-INF/resources/js/utils/constants';
@@ -59,8 +59,6 @@ describe('DataSet', () => {
 	let resolveOpenAPIRequest: () => void;
 
 	beforeEach(() => {
-		jest.clearAllMocks();
-
 		const openAPIResponse = new Promise<string>((resolve) => {
 			resolveOpenAPIRequest = () => resolve(JSON.stringify(OPEN_API));
 		});

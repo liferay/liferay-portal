@@ -66,8 +66,6 @@ describe('VisualizationModes', () => {
 	let patchRequestBodies: Array<{visualizationModes: string}>;
 
 	beforeEach(() => {
-		jest.clearAllMocks();
-
 		patchRequestBodies = [];
 
 		fetch.mockResponse(async (request) => {
