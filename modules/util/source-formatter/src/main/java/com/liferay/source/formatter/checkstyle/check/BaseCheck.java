@@ -1750,12 +1750,8 @@ public abstract class BaseCheck extends AbstractCheck {
 			}
 		}
 
-		while (true) {
-			if (!TokenUtil.isOfType(
+		while (TokenUtil.isOfType(
 					parentDetailAST, TokenTypes.DOT, TokenTypes.EXPR)) {
-
-				break;
-			}
 
 			parentDetailAST = parentDetailAST.getParent();
 		}
