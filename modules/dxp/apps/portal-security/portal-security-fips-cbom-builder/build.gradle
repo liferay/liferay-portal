@@ -1,0 +1,14 @@
+dependencies {
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.impl", version: "default"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-string")
+	implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
+	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
+	implementation group: "org.cyclonedx", name: "cyclonedx-core-java", version: "13.2.0"
+	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
+}
+
+deploy {
+	enabled = false
+}
