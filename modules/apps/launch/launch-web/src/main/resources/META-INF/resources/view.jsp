@@ -20,4 +20,5 @@ ViewLaunchesDisplayContext viewLaunchesDisplayContext = new ViewLaunchesDisplayC
 	id="<%= viewLaunchesDisplayContext.getFDSName() %>"
 	propsTransformer="{LaunchesFDSPropsTransformer} from launch-web"
 	style="fluid"
+	uniformActionsDisplay="<%= true %>"
 />

@@ -41,6 +41,8 @@ public class ViewLaunchesDisplayContext {
 
 	public Map<String, Object> getAdditionalProps() {
 		return HashMapBuilder.<String, Object>put(
+			"unscheduleLaunchURL", _getUnscheduleLaunchURL()
+		).put(
 			"viewLaunchURL", _getViewLaunchURL()
 		).build();
 	}
@@ -57,7 +59,11 @@ public class ViewLaunchesDisplayContext {
 			new FDSActionDropdownItem(
 				_getViewLaunchURL(), "view", "view",
 				LanguageUtil.get(_httpServletRequest, "view"), "get", null,
-				null));
+				null),
+			new FDSActionDropdownItem(
+				"#", "date-time", "unschedule",
+				LanguageUtil.get(_httpServletRequest, "unschedule"), "get",
+				"update", null));
 	}
 
 	public String getFDSName() {
@@ -82,6 +88,16 @@ public class ViewLaunchesDisplayContext {
 				LanguageUtil.get(_httpServletRequest, "last-modified")
 			).build()
 		).build();
+	}
+
+	private String _getUnscheduleLaunchURL() {
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/launch/unschedule_launch"
+		).setParameter(
+			"launchSetId", "{id}"
+		).buildString();
 	}
 
 	private String _getViewLaunchURL() {
