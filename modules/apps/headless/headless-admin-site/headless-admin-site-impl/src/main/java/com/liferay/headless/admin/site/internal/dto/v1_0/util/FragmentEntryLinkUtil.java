@@ -6,11 +6,14 @@
 package com.liferay.headless.admin.site.internal.dto.v1_0.util;
 
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
+import com.liferay.fragment.entry.processor.constants.FragmentEntryProcessorConstants;
 import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.layout.util.LayoutServiceContextHelperUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -60,10 +63,20 @@ public class FragmentEntryLinkUtil {
 				return fragmentEntryLink.getHtml();
 			}
 
+			JSONObject editableValuesJSONObject =
+				JSONFactoryUtil.safeCreateJSONObject(
+					fragmentEntryLink.getEditableValues());
+
 			try {
 				return fragmentEntryProcessorRegistry.
 					processFragmentEntryLinkHTML(
-						JSONFactoryUtil.createJSONObject(), fragmentEntryLink,
+						JSONUtil.put(
+							FragmentEntryProcessorConstants.
+								KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR,
+							editableValuesJSONObject.getJSONObject(
+								FragmentEntryProcessorConstants.
+									KEY_FREEMARKER_FRAGMENT_ENTRY_PROCESSOR)),
+						fragmentEntryLink,
 						new DefaultFragmentEntryProcessorContext(
 							fragmentEntryLink.getCompanyId(),
 							httpServletRequest, httpServletResponse,
