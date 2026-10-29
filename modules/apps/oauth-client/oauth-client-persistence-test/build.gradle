@@ -1,10 +1,13 @@
 dependencies {
 	testIntegrationImplementation group: "com.nimbusds", name: "oauth2-oidc-sdk", version: "11.13"
 	testIntegrationImplementation group: "net.minidev", name: "json-smart", version: "2.4.10"
+	testIntegrationImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-api")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-persistence-service")
 	testIntegrationImplementation project(":apps:oauth-client:oauth-client-test-util")
 	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-api")
+	testIntegrationImplementation project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
 	testIntegrationImplementation project(":apps:portal:portal-upgrade-test-util")
 	testIntegrationImplementation project(":apps:static:portal:portal-upgrade-api")
 	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
