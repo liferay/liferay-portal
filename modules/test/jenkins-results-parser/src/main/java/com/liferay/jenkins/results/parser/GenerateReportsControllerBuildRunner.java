@@ -170,7 +170,7 @@ public class GenerateReportsControllerBuildRunner
 		}
 
 		try {
-			return JenkinsResultsParserUtil.getGeneratedTimestamp(
+			return JenkinsResultsParserUtil.getGeneratedTime(
 				JenkinsResultsParserUtil.read(dataFile));
 		}
 		catch (IOException ioException) {

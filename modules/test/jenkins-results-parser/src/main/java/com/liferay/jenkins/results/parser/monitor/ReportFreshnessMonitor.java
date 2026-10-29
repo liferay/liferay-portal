@@ -52,8 +52,8 @@ public class ReportFreshnessMonitor extends BaseMonitor {
 				MonitorResult.Status.CRITICAL, currentTimeMillis);
 		}
 
-		long generatedTimestamp =
-			JenkinsResultsParserUtil.getGeneratedTimestamp(reportData);
+		long generatedTimestamp = JenkinsResultsParserUtil.getGeneratedTime(
+			reportData);
 
 		if (generatedTimestamp <= 0) {
 			return new MonitorResult(
