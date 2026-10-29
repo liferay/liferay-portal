@@ -50,7 +50,7 @@ public class BndBundleUtil {
 
 	public static byte[] createBundle(
 			Map<String, List<String>> filteredMethodNamesMap,
-			String hostAddress, int port, long passCode)
+			String hostAddress, int port, long passCode, boolean dump)
 		throws Exception {
 
 		File buildDir = new File(System.getProperty("user.dir"));
@@ -76,9 +76,7 @@ public class BndBundleUtil {
 							attributes.getValue("Import-Package"))),
 					","));
 
-			if (Boolean.valueOf(
-					System.getProperty("liferay.arquillian.copy.jar"))) {
-
+			if (dump) {
 				String symbolicName = attributes.getValue(
 					Constants.BUNDLE_SYMBOLICNAME);
 
