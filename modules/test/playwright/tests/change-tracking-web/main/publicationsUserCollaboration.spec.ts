@@ -75,7 +75,11 @@ test('LPD-30098 Invite user as admin', async ({
 
 		await page.waitForLoadState('load');
 
-		await page.getByRole('button', {name: 'Actions'}).click();
+		await page
+			.locator('.fds tbody tr')
+			.filter({has: page.getByText(ctCollection.body.name)})
+			.getByRole('button', {name: 'Actions'})
+			.click();
 
 		await page.getByRole('menuitem', {name: 'Edit'}).click();
 
@@ -85,7 +89,11 @@ test('LPD-30098 Invite user as admin', async ({
 
 		await waitForAlert(page, 'Success:Successfully updated');
 
-		await page.getByRole('button', {name: 'Actions'}).click();
+		await page
+			.locator('.fds tbody tr')
+			.filter({has: page.getByText(title)})
+			.getByRole('button', {name: 'Actions'})
+			.click();
 
 		await expect(
 			page.getByRole('menuitem', {name: 'Delete'})
