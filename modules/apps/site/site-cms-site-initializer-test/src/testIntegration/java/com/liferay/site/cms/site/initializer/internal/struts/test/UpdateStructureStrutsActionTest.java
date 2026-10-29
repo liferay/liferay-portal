@@ -583,7 +583,9 @@ public class UpdateStructureStrutsActionTest {
 
 	@Test
 	@TestInfo("LPD-106947")
-	public void testExecuteSkipsMissingDeletedItems() throws Exception {
+	public void testExecuteSkipsMissingObjectDefinitionsOrObjectRelationships()
+		throws Exception {
+
 		_serviceBuilderObjectDefinition1 =
 			ObjectDefinitionTestUtil.publishObjectDefinition();
 
