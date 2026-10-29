@@ -5902,7 +5902,8 @@ public class ObjectEntryLocalServiceTest {
 				getExtensionDynamicObjectDefinitionTableValues(
 					objectDefinition, user.getUserId());
 
-		Assert.assertNull(extensionValues.get("localizedTextField"));
+		Assert.assertEquals(
+			StringPool.BLANK, extensionValues.get("localizedTextField"));
 		Assert.assertEquals(0L, extensionValues.get("longField"));
 		Assert.assertEquals(StringPool.BLANK, extensionValues.get("textField"));
 
@@ -7582,6 +7583,35 @@ public class ObjectEntryLocalServiceTest {
 				objectDefinition1);
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition2);
+		}
+	}
+
+	@Test
+	public void testGetValuesWithoutLocalizedValues() throws Exception {
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
+			"localizedText");
+
+		objectField.setLocalized(true);
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+
+		try {
+			ObjectEntry objectEntry = _addObjectEntry(
+				objectDefinition, new HashMap<>(),
+				ServiceContextTestUtil.getServiceContext());
+
+			_assertBlankLocalizedValues(
+				_objectEntryLocalService.getValues(objectEntry));
+			_assertBlankLocalizedValues(objectEntry.getValues());
+			_assertLoadValues(objectDefinition, objectEntry);
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
 		}
 	}
 
@@ -10060,6 +10090,47 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateObjectEntryWithoutLocalizedValues() throws Exception {
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
+			"localizedText");
+
+		objectField.setLocalized(true);
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField));
+
+		try {
+			ObjectEntry objectEntry = _addObjectEntry(
+				objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					"localizedText_i18n",
+					(Serializable)HashMapBuilder.<String, Serializable>put(
+						LocaleUtil.toLanguageId(LocaleUtil.US),
+						RandomTestUtil.randomString()
+					).build()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			objectEntry = _objectEntryLocalService.updateObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntry.getObjectEntryFolderId(), new HashMap<>(),
+				ServiceContextTestUtil.getServiceContext());
+
+			_assertBlankLocalizedValues(
+				_objectEntryLocalService.getValues(objectEntry));
+			_assertBlankLocalizedValues(objectEntry.getValues());
+			_assertLoadValues(objectDefinition, objectEntry);
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
+	}
+
+	@Test
 	public void testUpdateObjectEntryWithoutReloading() throws Exception {
 		ObjectDefinition objectDefinition = _publishCustomObjectDefinition(
 			Collections.singletonList(
@@ -11390,6 +11461,12 @@ public class ObjectEntryLocalServiceTest {
 		Assert.assertEquals(expectedEventType, auditMessage.getEventType());
 
 		auditMessages.clear();
+	}
+
+	private void _assertBlankLocalizedValues(Map<String, Serializable> values) {
+		Assert.assertEquals(StringPool.BLANK, values.get("localizedText"));
+		Assert.assertEquals(
+			Collections.emptyMap(), values.get("localizedText_i18n"));
 	}
 
 	private void _assertCommentsCount(
