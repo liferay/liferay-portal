@@ -259,21 +259,6 @@ public class CommercePriceModifierLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommercePriceModifiers(long companyId)
-		throws PortalException {
-
-		List<CommercePriceModifier> commercePriceModifiers =
-			commercePriceModifierPersistence.findByCompanyId(companyId);
-
-		for (CommercePriceModifier commercePriceModifier :
-				commercePriceModifiers) {
-
-			commercePriceModifierLocalService.deleteCommercePriceModifier(
-				commercePriceModifier);
-		}
-	}
-
-	@Override
 	public void deleteCommercePriceModifiersByCommercePriceListId(
 			long commercePriceListId)
 		throws PortalException {
