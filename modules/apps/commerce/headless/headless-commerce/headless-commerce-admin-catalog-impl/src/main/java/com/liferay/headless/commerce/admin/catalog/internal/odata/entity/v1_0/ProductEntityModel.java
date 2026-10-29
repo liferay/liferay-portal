@@ -10,6 +10,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalServiceUtil;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.odata.entity.BooleanEntityField;
 import com.liferay.portal.odata.entity.CollectionEntityField;
 import com.liferay.portal.odata.entity.ComplexEntityField;
 import com.liferay.portal.odata.entity.DateTimeEntityField;
@@ -28,6 +29,9 @@ public class ProductEntityModel implements EntityModel {
 
 	public ProductEntityModel(List<EntityField> entityFields) {
 		_entityFieldsMap = EntityModel.toEntityFieldsMap(
+			new BooleanEntityField(
+				"productChannelFilter",
+				locale -> CPField.CHANNEL_FILTER_ENABLED),
 			new CollectionEntityField(
 				new EntityField(
 					"channelId", EntityField.Type.INTEGER,
