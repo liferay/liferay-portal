@@ -354,6 +354,8 @@ public class FragmentEntryProcessorHelperTest {
 	public void testGetFieldValueFromObjectDateValueWithTimeZone()
 		throws Exception {
 
+		Date date = DateUtil.parseDate(
+			"yyyy-MM-dd", "2026-10-20", LocaleUtil.US);
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
 				Collections.singletonList(
@@ -362,9 +364,6 @@ public class FragmentEntryProcessorHelperTest {
 						ObjectFieldConstants.DB_TYPE_DATE,
 						RandomTestUtil.randomString(), "myDate", false)),
 				ObjectDefinitionConstants.SCOPE_SITE);
-
-		Date date = DateUtil.parseDate(
-			"yyyy-MM-dd", "2026-10-20", LocaleUtil.US);
 
 		ObjectEntry objectEntry = _objectEntryLocalService.addObjectEntry(
 			TestPropsValues.getGroupId(), objectDefinition.getUserId(),
