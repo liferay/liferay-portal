@@ -448,14 +448,6 @@ public class CommercePriceEntryLocalServiceWrapper
 			cpInstanceUuid, quantity, unitOfMeasureKey);
 	}
 
-	@Override
-	public java.util.List<CommercePriceEntry>
-		getCommercePriceEntriesByCompanyId(long companyId, int start, int end) {
-
-		return _commercePriceEntryLocalService.
-			getCommercePriceEntriesByCompanyId(companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce price entries.
 	 *
@@ -470,12 +462,6 @@ public class CommercePriceEntryLocalServiceWrapper
 	public int getCommercePriceEntriesCount(long commercePriceListId) {
 		return _commercePriceEntryLocalService.getCommercePriceEntriesCount(
 			commercePriceListId);
-	}
-
-	@Override
-	public int getCommercePriceEntriesCountByCompanyId(long companyId) {
-		return _commercePriceEntryLocalService.
-			getCommercePriceEntriesCountByCompanyId(companyId);
 	}
 
 	/**
@@ -749,4 +735,4 @@ public class CommercePriceEntryLocalServiceWrapper
 	private CommercePriceEntryLocalService _commercePriceEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-424964244
+// LIFERAY-SERVICE-BUILDER-HASH:-571766993

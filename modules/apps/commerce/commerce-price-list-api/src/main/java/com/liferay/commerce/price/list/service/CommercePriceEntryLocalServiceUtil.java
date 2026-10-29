@@ -399,13 +399,6 @@ public class CommercePriceEntryLocalServiceUtil {
 			cpInstanceUuid, quantity, unitOfMeasureKey);
 	}
 
-	public static List<CommercePriceEntry> getCommercePriceEntriesByCompanyId(
-		long companyId, int start, int end) {
-
-		return getService().getCommercePriceEntriesByCompanyId(
-			companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of commerce price entries.
 	 *
@@ -417,10 +410,6 @@ public class CommercePriceEntryLocalServiceUtil {
 
 	public static int getCommercePriceEntriesCount(long commercePriceListId) {
 		return getService().getCommercePriceEntriesCount(commercePriceListId);
-	}
-
-	public static int getCommercePriceEntriesCountByCompanyId(long companyId) {
-		return getService().getCommercePriceEntriesCountByCompanyId(companyId);
 	}
 
 	/**
@@ -640,4 +629,4 @@ public class CommercePriceEntryLocalServiceUtil {
 			CommercePriceEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1584391167
+// LIFERAY-SERVICE-BUILDER-HASH:1797748234
