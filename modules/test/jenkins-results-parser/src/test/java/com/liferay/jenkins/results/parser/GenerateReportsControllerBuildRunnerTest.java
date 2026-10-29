@@ -287,38 +287,39 @@ public class GenerateReportsControllerBuildRunnerTest
 
 		Map<File, String> reportDataFileContents = new HashMap<>();
 
-		for (GenerateReportsBuildRunner.Report report :
-				GenerateReportsBuildRunner.Report.values()) {
-
-			File dataFile = report.getDataFile();
-
-			if (dataFile == null) {
-				continue;
-			}
-
-			Long reportGeneratedTime = reportGeneratedTimes.getOrDefault(
-				report, _currentTimeMillis);
-
-			if (reportGeneratedTime == null) {
-				continue;
-			}
-
-			reportDataFileContents.put(
-				dataFile,
-				"var dataGeneratedDate = new Date(" + reportGeneratedTime +
-					");");
-		}
-
 		try (MockedStatic<JenkinsResultsParserUtil>
 				jenkinsResultsParserUtilMockedStatic = Mockito.mockStatic(
 					JenkinsResultsParserUtil.class,
 					Mockito.CALLS_REAL_METHODS)) {
 
 			jenkinsResultsParserUtilMockedStatic.when(
-				JenkinsResultsParserUtil::getBuildProperties
+				() -> JenkinsResultsParserUtil.getBuildProperties(
+					Mockito.anyBoolean())
 			).thenReturn(
 				new Properties()
 			);
+
+			for (GenerateReportsBuildRunner.Report report :
+					GenerateReportsBuildRunner.Report.values()) {
+
+				File dataFile = report.getDataFile();
+
+				if (dataFile == null) {
+					continue;
+				}
+
+				Long reportGeneratedTime = reportGeneratedTimes.getOrDefault(
+					report, _currentTimeMillis);
+
+				if (reportGeneratedTime == null) {
+					continue;
+				}
+
+				reportDataFileContents.put(
+					dataFile,
+					"var dataGeneratedDate = new Date(" + reportGeneratedTime +
+						");");
+			}
 
 			jenkinsResultsParserUtilMockedStatic.when(
 				JenkinsResultsParserUtil::isCloudCINode

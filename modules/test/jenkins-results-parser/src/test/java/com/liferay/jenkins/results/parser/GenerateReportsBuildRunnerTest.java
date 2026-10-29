@@ -43,7 +43,8 @@ public class GenerateReportsBuildRunnerTest
 					Mockito.CALLS_REAL_METHODS)) {
 
 			jenkinsResultsParserUtilMockedStatic.when(
-				JenkinsResultsParserUtil::getBuildProperties
+				() -> JenkinsResultsParserUtil.getBuildProperties(
+					Mockito.anyBoolean())
 			).thenReturn(
 				new Properties()
 			);
