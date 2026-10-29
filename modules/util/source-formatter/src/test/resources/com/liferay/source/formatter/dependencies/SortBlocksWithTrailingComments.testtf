@@ -1,0 +1,11 @@
+resource "aws_s3_bucket" "logs" { # Logs
+	bucket="logs"
+	acl="private"
+	versioning { # Keep old versions
+		enabled=true
+		mfa_delete=false
+	}
+}
+resource "aws_s3_bucket" "assets" { /* Assets */
+	bucket="assets"
+}

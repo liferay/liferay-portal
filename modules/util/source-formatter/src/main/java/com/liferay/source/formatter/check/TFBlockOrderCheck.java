@@ -183,15 +183,18 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 				continue;
 			}
 
+			String line = StringUtil.trimTrailing(
+				TFSourceUtil.removeComment(lines[i]));
+
 			if (topLevel) {
-				Matcher matcher = _topLevelBlockPattern.matcher(lines[i]);
+				Matcher matcher = _topLevelBlockPattern.matcher(line);
 
 				if (!matcher.matches()) {
 					return;
 				}
 			}
 
-			String sortKey = _getSortKey(trimmedLine);
+			String sortKey = _getSortKey(StringUtil.trim(line));
 
 			if (sortKey == null) {
 				return;
