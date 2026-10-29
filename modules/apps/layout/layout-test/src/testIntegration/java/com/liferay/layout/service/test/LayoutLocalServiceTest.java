@@ -970,6 +970,40 @@ public class LayoutLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112154")
+	public void testSearchCountWithStatuses() throws Exception {
+		String keyword = RandomTestUtil.randomString();
+
+		LayoutTestUtil.addTypeContentLayout(
+			_group, keyword + RandomTestUtil.randomString());
+		LayoutTestUtil.addTypeContentPublishedLayout(
+			_group, keyword + RandomTestUtil.randomString(),
+			WorkflowConstants.STATUS_APPROVED);
+
+		Assert.assertEquals(
+			1,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {WorkflowConstants.STATUS_APPROVED}));
+		Assert.assertEquals(
+			1,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {WorkflowConstants.STATUS_DRAFT}));
+		Assert.assertEquals(
+			2,
+			_layoutLocalService.searchCount(
+				_group, false, keyword, true,
+				new String[] {LayoutConstants.TYPE_CONTENT},
+				new int[] {
+					WorkflowConstants.STATUS_APPROVED,
+					WorkflowConstants.STATUS_DRAFT
+				}));
+	}
+
+	@Test
 	public void testUpdateDraftLayoutAfterOriginalLayoutUpdatesWithNewFriendlyURL()
 		throws Exception {
 
