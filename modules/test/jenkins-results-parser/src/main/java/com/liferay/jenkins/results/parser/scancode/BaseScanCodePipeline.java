@@ -111,16 +111,18 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 	public void checkComplianceAlerts(ComplianceAlertType complianceAlertType)
 		throws IOException, TimeoutException {
 
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("curl ");
+
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			_projectAPIURL + "compliance/");
 
 		uriBuilder.addParameter(
 			"fail_level", String.valueOf(complianceAlertType));
 
-		StringBuilder sb = new StringBuilder();
-
-		sb.append("curl ");
 		sb.append(uriBuilder.toString());
+
 		sb.append(" --header ");
 		sb.append(_CONTENT_TYPE);
 		sb.append(" --header ");
@@ -180,11 +182,6 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 		for (Map.Entry<String, String> resultTypeEntry :
 				_resultTypeExtensionsMap.entrySet()) {
 
-			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-				_projectAPIURL + "results_download/");
-
-			uriBuilder.addParameter("output_format", resultTypeEntry.getKey());
-
 			StringBuilder sb = new StringBuilder();
 
 			sb.append("curl ");
@@ -194,7 +191,14 @@ public abstract class BaseScanCodePipeline implements ScanCodePipeline {
 			sb.append(".");
 			sb.append(resultTypeEntry.getValue());
 			sb.append(" \"");
+
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				_projectAPIURL + "results_download/");
+
+			uriBuilder.addParameter("output_format", resultTypeEntry.getKey());
+
 			sb.append(uriBuilder.toString());
+
 			sb.append("\" --header \"Authorization:Token ");
 			sb.append(_API_KEY);
 			sb.append("\" --request GET ");

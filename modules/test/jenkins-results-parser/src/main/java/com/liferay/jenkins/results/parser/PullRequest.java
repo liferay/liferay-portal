@@ -1373,12 +1373,12 @@ public class PullRequest {
 	private void _initCommits() {
 		_gitHubRemoteGitCommits = new ArrayList<>();
 
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			_jsonObject.getString("commits_url"));
-
-		uriBuilder.addParameter("per_page", "100");
-
 		try {
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				_jsonObject.getString("commits_url"));
+
+			uriBuilder.addParameter("per_page", "100");
+
 			for (int pageNumber = 1;
 				 pageNumber <=
 					 JenkinsResultsParserUtil.PAGES_GITHUB_API_PAGES_SIZE_MAX;

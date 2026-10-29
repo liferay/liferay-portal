@@ -340,13 +340,13 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 		_testrayRuns = new ArrayList<>();
 
-		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				"/o/c/builds/", String.valueOf(getId()), "/buildToRuns"));
-
-		uriBuilder.addParameter("pageSize", "100");
-
 		try {
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				JenkinsResultsParserUtil.combine(
+					"/o/c/builds/", String.valueOf(getId()), "/buildToRuns"));
+
+			uriBuilder.addParameter("pageSize", "100");
+
 			JSONObject responseJSONObject = new JSONObject(
 				_testrayServer.requestGet(uriBuilder.toString()));
 

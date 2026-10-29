@@ -289,12 +289,12 @@ public class MergeCentralGitSubrepositoryUtil {
 		if (_pullsJSONArray == null) {
 			_pullsJSONArray = new JSONArray();
 
+			int page = 1;
+
 			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 				JenkinsResultsParserUtil.getGitHubAPIURL(
 					centralGitWorkingDirectory.getGitRepositoryName(),
 					receiverUserName, "pulls"));
-
-			int page = 1;
 
 			while (page < 10) {
 				uriBuilder.setParameter("page", String.valueOf(page));
