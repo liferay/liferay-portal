@@ -7,6 +7,8 @@ package com.liferay.search.experiences.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
@@ -42,6 +44,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.skyscreamer.jsonassert.JSONAssert;
 
 /**
  * @author Wade Cao
@@ -125,7 +129,8 @@ public class SXPElementLocalServiceTest {
 		SXPElement fallbackFieldsSXPElement = _addSXPElement(
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
-			RandomTestUtil.randomString(), fallbackDescription, fallbackTitle,
+			"{}", RandomTestUtil.randomString(), fallbackDescription,
+			fallbackTitle,
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			TestPropsValues.getUserId(),
@@ -141,7 +146,7 @@ public class SXPElementLocalServiceTest {
 		String title = RandomTestUtil.randomString();
 
 		SXPElement noFallbackFieldsSXPElement = _addSXPElement(
-			Collections.singletonMap(LocaleUtil.US, description),
+			Collections.singletonMap(LocaleUtil.US, description), "{}",
 			RandomTestUtil.randomString(), null, null,
 			Collections.singletonMap(LocaleUtil.US, title),
 			TestPropsValues.getUserId(),
@@ -159,7 +164,7 @@ public class SXPElementLocalServiceTest {
 
 		try {
 			_addSXPElement(
-				Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+				Collections.singletonMap(LocaleUtil.US, StringPool.BLANK), "{}",
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), Collections.emptyMap(),
 				TestPropsValues.getUserId(), serviceContext);
@@ -178,7 +183,7 @@ public class SXPElementLocalServiceTest {
 
 		try {
 			_addSXPElement(
-				Collections.singletonMap(LocaleUtil.US, StringPool.BLANK),
+				Collections.singletonMap(LocaleUtil.US, StringPool.BLANK), "{}",
 				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(), Collections.emptyMap(),
 				TestPropsValues.getUserId(), serviceContext);
@@ -190,7 +195,7 @@ public class SXPElementLocalServiceTest {
 		serviceContext.setAttribute(attributeName, Boolean.FALSE);
 
 		sxpElement = _addSXPElement(
-			Collections.emptyMap(), RandomTestUtil.randomString(),
+			Collections.emptyMap(), "{}", RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			Collections.emptyMap(), TestPropsValues.getUserId(),
 			serviceContext);
@@ -246,6 +251,49 @@ public class SXPElementLocalServiceTest {
 		Assert.assertEquals("1.1", sxpElement.getVersion());
 	}
 
+	@Test
+	public void testUpdateSXPElementWithLegacyRangeQuery() throws Exception {
+		String elementDefinitionJSON = _getElementDefinitionJSON(
+			JSONUtil.put(
+				"from", 1
+			).put(
+				"include_lower", false
+			).put(
+				"to", 2
+			));
+
+		SXPElement sxpElement = _addSXPElement(
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			elementDefinitionJSON, null, null, null,
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString()),
+			TestPropsValues.getUserId(),
+			ServiceContextTestUtil.getServiceContext());
+
+		String expectedElementDefinitionJSON = _getElementDefinitionJSON(
+			JSONUtil.put(
+				"gt", 1
+			).put(
+				"lte", 2
+			));
+
+		JSONAssert.assertEquals(
+			expectedElementDefinitionJSON,
+			sxpElement.getElementDefinitionJSON(), true);
+
+		sxpElement = _sxpElementLocalService.updateSXPElement(
+			sxpElement.getExternalReferenceCode(), sxpElement.getUserId(),
+			sxpElement.getSXPElementId(), sxpElement.getDescriptionMap(),
+			elementDefinitionJSON, sxpElement.isHidden(),
+			sxpElement.getSchemaVersion(), sxpElement.getTitleMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		JSONAssert.assertEquals(
+			expectedElementDefinitionJSON,
+			sxpElement.getElementDefinitionJSON(), true);
+	}
+
 	@Test(expected = DuplicateSXPElementExternalReferenceCodeException.class)
 	public void testUpdateSXPElementWithSameExternalReferenceCode()
 		throws Exception {
@@ -262,15 +310,15 @@ public class SXPElementLocalServiceTest {
 	}
 
 	private SXPElement _addSXPElement(
-			Map<Locale, String> descriptionMap, String externalReferenceCode,
-			String fallbackDescription, String fallbackTitle,
-			Map<Locale, String> titleMap, long userId,
+			Map<Locale, String> descriptionMap, String elementDefinitionJSON,
+			String externalReferenceCode, String fallbackDescription,
+			String fallbackTitle, Map<Locale, String> titleMap, long userId,
 			ServiceContext serviceContext)
 		throws Exception {
 
 		SXPElement sxpElement = _sxpElementLocalService.addSXPElement(
-			externalReferenceCode, userId, descriptionMap, "{}",
-			fallbackDescription, fallbackTitle, false,
+			externalReferenceCode, userId, descriptionMap,
+			elementDefinitionJSON, fallbackDescription, fallbackTitle, false,
 			RandomTestUtil.randomString(), titleMap, 0, serviceContext);
 
 		_sxpElements.add(sxpElement);
@@ -284,11 +332,18 @@ public class SXPElementLocalServiceTest {
 		return _addSXPElement(
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
-			externalReferenceCode, RandomTestUtil.randomString(),
+			"{}", externalReferenceCode, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString()),
 			userId, ServiceContextTestUtil.getServiceContext());
+	}
+
+	private String _getElementDefinitionJSON(JSONObject fieldJSONObject) {
+		return JSONUtil.put(
+			"query",
+			JSONUtil.put("range", JSONUtil.put("createDate", fieldJSONObject))
+		).toString();
 	}
 
 	private static String _originalName;
