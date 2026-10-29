@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.oauth2.provider.scope.ScopeChecker;
-import com.liferay.osgi.service.tracker.collections.EagerServiceTrackerCustomizer;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.osgi.service.tracker.collections.map.ServiceTrackerMap;
@@ -558,7 +557,7 @@ public class GraphQLServletExtender {
 
 		_graphQLContributorServiceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, GraphQLContributor.class, null,
-			new GraphQLContributorServiceTrackerCustomizer());
+			new ServletsClearingServiceTrackerCustomizer<>());
 
 		_graphQLDTOContributorDataFetchingProcessor =
 			new GraphQLDTOContributorDataFetchingProcessor(
@@ -627,34 +626,7 @@ public class GraphQLServletExtender {
 
 		_servletDataServiceTrackerList = ServiceTrackerListFactory.open(
 			bundleContext, ServletData.class, null,
-			new ServiceTrackerCustomizer<ServletData, ServletData>() {
-
-				@Override
-				public ServletData addingService(
-					ServiceReference<ServletData> serviceReference) {
-
-					_servlets.clear();
-
-					return bundleContext.getService(serviceReference);
-				}
-
-				@Override
-				public void modifiedService(
-					ServiceReference<ServletData> serviceReference,
-					ServletData servletData) {
-				}
-
-				@Override
-				public void removedService(
-					ServiceReference<ServletData> serviceReference,
-					ServletData servletData) {
-
-					bundleContext.ungetService(serviceReference);
-
-					_servlets.clear();
-				}
-
-			});
+			new ServletsClearingServiceTrackerCustomizer<>());
 
 		_servletServiceRegistration = _bundleContext.registerService(
 			Servlet.class,
@@ -1037,7 +1009,7 @@ public class GraphQLServletExtender {
 
 			List<ServletData> servletDatas = new ArrayList<>();
 
-			for (ServletData servletData : _servletDataServiceTrackerList) {
+			for (ServletData servletData : _getServletDatas()) {
 				if (_isGraphQLEnabled(servletData)) {
 					servletDatas.add(servletData);
 				}
@@ -1320,6 +1292,19 @@ public class GraphQLServletExtender {
 		catch (Exception exception) {
 			throw new RuntimeException(exception);
 		}
+	}
+
+	private List<ServletData> _getServletDatas() {
+		List<ServletData> servletDatas =
+			_servletDataServiceTrackerList.toList();
+
+		for (GraphQLContributor graphQLContributor :
+				_graphQLContributorServiceTrackerList) {
+
+			servletDatas.add(ServletDataAdapter.of(graphQLContributor));
+		}
+
+		return servletDatas;
 	}
 
 	private Integer _getVersion(Method method) {
@@ -2744,54 +2729,6 @@ public class GraphQLServletExtender {
 
 	}
 
-	private class GraphQLContributorServiceTrackerCustomizer
-		implements EagerServiceTrackerCustomizer
-			<GraphQLContributor, GraphQLContributor> {
-
-		@Override
-		public GraphQLContributor addingService(
-			ServiceReference<GraphQLContributor> serviceReference) {
-
-			GraphQLContributor graphQLContributor = _bundleContext.getService(
-				serviceReference);
-
-			ServiceRegistration<ServletData> servletDataServiceRegistration =
-				_bundleContext.registerService(
-					ServletData.class,
-					ServletDataAdapter.of(graphQLContributor), null);
-
-			_servletDataServiceRegistrations.put(
-				graphQLContributor, servletDataServiceRegistration);
-
-			return graphQLContributor;
-		}
-
-		@Override
-		public void modifiedService(
-			ServiceReference<GraphQLContributor> serviceReference,
-			GraphQLContributor graphQLContributor) {
-		}
-
-		@Override
-		public void removedService(
-			ServiceReference<GraphQLContributor> serviceReference,
-			GraphQLContributor graphQLContributor) {
-
-			ServiceRegistration<ServletData> serviceRegistration =
-				_servletDataServiceRegistrations.remove(graphQLContributor);
-
-			if (serviceRegistration != null) {
-				serviceRegistration.unregister();
-			}
-
-			_bundleContext.ungetService(serviceReference);
-		}
-
-		private final Map<GraphQLContributor, ServiceRegistration<ServletData>>
-			_servletDataServiceRegistrations = new ConcurrentHashMap<>();
-
-	}
-
 	private class LiferayGraphQLFieldRetriever extends GraphQLFieldRetriever {
 
 		public GraphQLFieldDefinition getField(
@@ -2965,6 +2902,32 @@ public class GraphQLServletExtender {
 		}
 
 		private final GraphQLInterfaceType _graphQLInterfaceType;
+
+	}
+
+	private class ServletsClearingServiceTrackerCustomizer<S>
+		implements ServiceTrackerCustomizer<S, S> {
+
+		@Override
+		public S addingService(ServiceReference<S> serviceReference) {
+			_servlets.clear();
+
+			return _bundleContext.getService(serviceReference);
+		}
+
+		@Override
+		public void modifiedService(
+			ServiceReference<S> serviceReference, S service) {
+		}
+
+		@Override
+		public void removedService(
+			ServiceReference<S> serviceReference, S service) {
+
+			_bundleContext.ungetService(serviceReference);
+
+			_servlets.clear();
+		}
 
 	}
 
