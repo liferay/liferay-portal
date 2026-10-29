@@ -36,7 +36,7 @@ SchedulerResponseDisplayContext schedulerResponseDisplayContext = (SchedulerResp
 
 				<liferay-ui:search-container-column-text
 					name="system"
-					value='<%= LanguageUtil.get(request, "yes") %>'
+					value='<%= LanguageUtil.get(request, schedulerResponseDisplayContext.isSystem(schedulerResponse) ? "yes" : "no") %>'
 				/>
 
 				<liferay-ui:search-container-column-text

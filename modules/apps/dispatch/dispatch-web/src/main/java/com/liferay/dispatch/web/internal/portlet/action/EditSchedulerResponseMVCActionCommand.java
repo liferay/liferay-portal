@@ -10,9 +10,11 @@ import com.liferay.dispatch.scheduler.SchedulerResponseManager;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.scheduler.StorageType;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -41,42 +43,28 @@ public class EditSchedulerResponseMVCActionCommand
 		throws Exception {
 
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
-
-		if (Objects.equals(cmd, "runScheduledJob")) {
-			_runScheduledJob(actionRequest);
-		}
-		else if (Objects.equals(cmd, "pause") ||
-				 Objects.equals(cmd, "resume")) {
-
-			_updateScheduledJob(actionRequest, cmd);
-		}
-	}
-
-	private void _runScheduledJob(ActionRequest actionRequest)
-		throws Exception {
-
-		String jobName = ParamUtil.getString(actionRequest, "jobName");
 		String groupName = ParamUtil.getString(actionRequest, "groupName");
+		String jobName = ParamUtil.getString(actionRequest, "jobName");
 		StorageType storageType = StorageType.valueOf(
 			ParamUtil.getString(actionRequest, "storageType"));
 
-		_schedulerResponseManager.run(
-			CompanyThreadLocal.getCompanyId(), jobName, groupName, storageType);
-	}
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
-	private void _updateScheduledJob(ActionRequest actionRequest, String cmd)
-		throws Exception {
-
-		String jobName = ParamUtil.getString(actionRequest, "jobName");
-		String groupName = ParamUtil.getString(actionRequest, "groupName");
-		StorageType storageType = StorageType.valueOf(
-			ParamUtil.getString(actionRequest, "storageType"));
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
 
 		if (Objects.equals(cmd, "pause")) {
-			_schedulerResponseManager.pause(jobName, groupName, storageType);
+			_schedulerResponseManager.pause(
+				permissionChecker, jobName, groupName, storageType);
 		}
-		else {
-			_schedulerResponseManager.resume(jobName, groupName, storageType);
+		else if (Objects.equals(cmd, "resume")) {
+			_schedulerResponseManager.resume(
+				permissionChecker, jobName, groupName, storageType);
+		}
+		else if (Objects.equals(cmd, "runScheduledJob")) {
+			_schedulerResponseManager.run(
+				permissionChecker, jobName, groupName, storageType);
 		}
 	}
 
