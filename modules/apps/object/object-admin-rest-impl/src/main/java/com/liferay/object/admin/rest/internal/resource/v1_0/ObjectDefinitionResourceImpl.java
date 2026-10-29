@@ -178,6 +178,18 @@ public class ObjectDefinitionResourceImpl
 	}
 
 	@Override
+	public void deleteObjectDefinitionByExternalReferenceCode(
+			String externalReferenceCode)
+		throws Exception {
+
+		com.liferay.object.model.ObjectDefinition objectDefinition =
+			_objectDefinitionService.getObjectDefinitionByExternalReferenceCode(
+				externalReferenceCode, contextCompany.getCompanyId());
+
+		deleteObjectDefinition(objectDefinition.getObjectDefinitionId());
+	}
+
+	@Override
 	public EntityModel getEntityModel(MultivaluedMap multivaluedMap) {
 		return _entityModel;
 	}
