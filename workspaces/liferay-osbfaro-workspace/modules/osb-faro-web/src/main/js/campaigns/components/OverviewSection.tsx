@@ -18,7 +18,8 @@ interface IOverviewSectionProps {
 
 // The trend compares the selected range against the window of the same length
 // before it, so the label names that length in days. All Time has no window
-// before it, and a single day stands in for Last 24 Hours and Yesterday.
+// before it, Last 24 Hours names its own window, and a single day stands in
+// for Yesterday.
 
 const getRangeDays = ({rangeEnd, rangeKey, rangeStart}: RangeSelectors) => {
 	if (rangeKey === RangeKeyTimeRanges.AllTime) {
@@ -75,14 +76,23 @@ const OverviewSection: React.FC<IOverviewSectionProps> = ({
 }) => {
 	const rangeDays = getRangeDays(rangeSelectors);
 
-	const renderTrendLabel = (percentageNode: React.ReactNode) =>
-		rangeDays
+	const renderTrendLabel = (percentageNode: React.ReactNode) => {
+		if (rangeSelectors.rangeKey === RangeKeyTimeRanges.Last24Hours) {
+			return sub(
+				Liferay.Language.get('x-vs-last-24-hours'),
+				[percentageNode],
+				false
+			);
+		}
+
+		return rangeDays
 			? sub(
 					Liferay.Language.get('x-vs-last-x-days'),
 					[percentageNode, rangeDays],
 					false
 				)
 			: percentageNode;
+	};
 
 	return (
 		<>
