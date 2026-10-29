@@ -63,6 +63,7 @@ import jakarta.ws.rs.core.Response;
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -438,7 +439,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				_getDateFilter(exportProcessRequest),
+				_getDateFilter(exportProcessRequest), new Date(),
 				ParameterMapUtil.toParameterMap(
 					exportProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(
@@ -505,7 +506,7 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				_getDateFilter(exportProcessRequest),
+				_getDateFilter(exportProcessRequest), new Date(),
 				ParameterMapUtil.toParameterMap(
 					exportProcessRequest,
 					PortletDataHandlerUtil.getExportPortletDataHandlers(

@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.ws.rs.BadRequestException;
@@ -68,34 +69,36 @@ public class ParameterMapUtil {
 	}
 
 	public static Map<String, String[]> putDateRangeParameters(
-		DateFilter dateFilter, Map<String, String[]> parameterMap, User user) {
+		DateFilter dateFilter, Date now, Map<String, String[]> parameterMap,
+		User user) {
 
 		if (dateFilter instanceof DateRangeDateFilter dateRangeDateFilter) {
 			return putDateRangeParameters(
 				DateFilter.Type.DATE_RANGE.getValue(),
 				dateRangeDateFilter.getStartDate(),
-				dateRangeDateFilter.getEndDate(), null, parameterMap, user);
+				dateRangeDateFilter.getEndDate(), null, now, parameterMap,
+				user);
 		}
 
 		if (dateFilter instanceof FromLastPublishDateFilter) {
 			return putDateRangeParameters(
 				DateFilter.Type.FROM_LAST_PUBLISH_DATE.getValue(), null, null,
-				null, parameterMap, user);
+				null, now, parameterMap, user);
 		}
 
 		if (dateFilter instanceof LastHoursDateFilter lastHoursDateFilter) {
 			return putDateRangeParameters(
 				DateFilter.Type.LAST_HOURS.getValue(), null, null,
-				lastHoursDateFilter.getHours(), parameterMap, user);
+				lastHoursDateFilter.getHours(), now, parameterMap, user);
 		}
 
 		return putDateRangeParameters(
-			null, null, null, null, parameterMap, user);
+			null, null, null, null, now, parameterMap, user);
 	}
 
 	public static Map<String, String[]> putDateRangeParameters(
 		String dateFilterType, Date startDate, Date endDate, Integer hours,
-		Map<String, String[]> parameterMap, User user) {
+		Date now, Map<String, String[]> parameterMap, User user) {
 
 		if (dateFilterType == null) {
 			parameterMap.put(
@@ -144,8 +147,20 @@ public class ParameterMapUtil {
 				"A \"DateRange\" date filter needs a start or end date");
 		}
 
+		if ((startDate != null) &&
+			(_truncateToSecond(startDate) > now.getTime())) {
+
+			throw new BadRequestException(
+				"The start date must not be in the future");
+		}
+
+		if ((endDate != null) && (_truncateToSecond(endDate) > now.getTime())) {
+			throw new BadRequestException(
+				"The end date must not be in the future");
+		}
+
 		if ((endDate != null) && (startDate != null) &&
-			!startDate.before(endDate)) {
+			(_truncateToSecond(startDate) >= _truncateToSecond(endDate))) {
 
 			throw new BadRequestException(
 				"The start date must be before the end date");
@@ -830,6 +845,10 @@ public class ParameterMapUtil {
 				return availablePortletDataHandler;
 			},
 			PortletDataHandler.class);
+	}
+
+	private static long _truncateToSecond(Date date) {
+		return Math.floorDiv(date.getTime(), Time.SECOND) * Time.SECOND;
 	}
 
 	private static final String _TREE_SELECTION_SUFFIX_ALL = "_all";

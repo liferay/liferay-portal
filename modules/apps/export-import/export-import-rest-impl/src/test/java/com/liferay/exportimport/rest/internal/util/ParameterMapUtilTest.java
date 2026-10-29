@@ -67,12 +67,32 @@ public class ParameterMapUtilTest {
 			"The end date must not be in the future",
 			new Date(time - Time.HOUR));
 		_assertBadRequest(
+			new Date(time + Time.SECOND),
+			"The end date must not be in the future", new Date(time),
+			new Date(time));
+		_assertBadRequest(
 			new Date(time - Time.HOUR + 300),
 			"The start date must be before the end date",
 			new Date(time - Time.HOUR + 100));
 		_assertBadRequest(
+			new Date(time), "The start date must not be in the future",
+			new Date(time), new Date(time + Time.SECOND));
+		_assertBadRequest(
 			null, "The start date must not be in the future",
 			new Date(time + Time.HOUR));
+	}
+
+	@Test
+	public void testPutDateRangeParametersWhenDateFilterIsValid() {
+		long time = (System.currentTimeMillis() / Time.SECOND) * Time.SECOND;
+
+		_assertDateRange(
+			new Date(time + 999), new Date(time), new Date(time - Time.SECOND));
+		_assertDateRange(
+			new Date(time + Time.SECOND), new Date(time + Time.SECOND),
+			new Date(time + 999));
+		_assertDateRange(
+			new Date(time), new Date(time), new Date(time - Time.SECOND + 999));
 	}
 
 	@Test
@@ -300,8 +320,8 @@ public class ParameterMapUtilTest {
 
 		long time = System.currentTimeMillis() / Time.SECOND * Time.SECOND;
 
-		dateRangeDateFilter.setEndDate(new Date(time + Time.DAY));
-		dateRangeDateFilter.setStartDate(new Date(time));
+		dateRangeDateFilter.setEndDate(new Date(time));
+		dateRangeDateFilter.setStartDate(new Date(time - Time.DAY));
 
 		dateRangeDateFilter.setType(DateFilter.Type.DATE_RANGE);
 
@@ -329,28 +349,14 @@ public class ParameterMapUtilTest {
 		PortletDataHandler[] availablePortletDataHandlers =
 			_getAvailablePortletDataHandlers();
 
-		User user = Mockito.mock(User.class);
-
-		Mockito.when(
-			user.getLocale()
-		).thenReturn(
-			LocaleUtil.US
-		);
-
-		Mockito.when(
-			user.getTimeZone()
-		).thenReturn(
-			TimeZoneUtil.GMT
-		);
-
 		PublishProcessRequest reversedPublishProcessRequest =
 			ParameterMapUtil.toPublishProcessRequest(
 				availablePortletDataHandlers, LocaleUtil.US,
 				ParameterMapUtil.putDateRangeParameters(
-					dateRangeDateFilter,
+					dateRangeDateFilter, new Date(),
 					ParameterMapUtil.toParameterMap(
 						publishProcessRequest, availablePortletDataHandlers),
-					user),
+					_toUser()),
 				TimeZoneUtil.GMT);
 
 		Assert.assertEquals(
@@ -465,16 +471,17 @@ public class ParameterMapUtilTest {
 	private void _assertBadRequest(
 		Date endDate, String message, Date startDate) {
 
-		DateRangeDateFilter dateRangeDateFilter = new DateRangeDateFilter();
+		_assertBadRequest(endDate, message, new Date(), startDate);
+	}
 
-		dateRangeDateFilter.setEndDate(endDate);
-		dateRangeDateFilter.setStartDate(startDate);
-		dateRangeDateFilter.setType(DateFilter.Type.DATE_RANGE);
+	private void _assertBadRequest(
+		Date endDate, String message, Date now, Date startDate) {
 
 		AssertUtils.assertFailure(
 			BadRequestException.class, message,
 			() -> ParameterMapUtil.putDateRangeParameters(
-				dateRangeDateFilter, new HashMap<>(), null));
+				_toDateRangeDateFilter(endDate, startDate), now,
+				new HashMap<>(), null));
 	}
 
 	private void _assertBadRequest(
@@ -485,6 +492,17 @@ public class ParameterMapUtilTest {
 			() -> ParameterMapUtil.toParameterMap(
 				_toExportProcessRequest(portletDataHandler),
 				_getAvailablePortletDataHandlers(), false));
+	}
+
+	private void _assertDateRange(Date endDate, Date now, Date startDate) {
+		Map<String, String[]> parameterMap =
+			ParameterMapUtil.putDateRangeParameters(
+				_toDateRangeDateFilter(endDate, startDate), now,
+				new HashMap<>(), _toUser());
+
+		Assert.assertArrayEquals(
+			new String[] {ExportImportDateUtil.RANGE_DATE_RANGE},
+			parameterMap.get(ExportImportDateUtil.RANGE));
 	}
 
 	private PortletDataHandler[] _getAvailablePortletDataHandlers() {
@@ -553,6 +571,18 @@ public class ParameterMapUtilTest {
 		choice.setName(name);
 
 		return choice;
+	}
+
+	private DateRangeDateFilter _toDateRangeDateFilter(
+		Date endDate, Date startDate) {
+
+		DateRangeDateFilter dateRangeDateFilter = new DateRangeDateFilter();
+
+		dateRangeDateFilter.setEndDate(endDate);
+		dateRangeDateFilter.setStartDate(startDate);
+		dateRangeDateFilter.setType(DateFilter.Type.DATE_RANGE);
+
+		return dateRangeDateFilter;
 	}
 
 	private ExportProcessRequest _toExportProcessRequest(
@@ -637,6 +667,24 @@ public class ParameterMapUtilTest {
 			PortletDataHandlerControl.Type.TREE_SELECTION);
 
 		return portletDataHandlerTreeSelection;
+	}
+
+	private User _toUser() {
+		User user = Mockito.mock(User.class);
+
+		Mockito.when(
+			user.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		Mockito.when(
+			user.getTimeZone()
+		).thenReturn(
+			TimeZoneUtil.GMT
+		);
+
+		return user;
 	}
 
 	private static final String _CONTROL_NAME_BOOLEAN =

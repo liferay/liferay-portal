@@ -246,7 +246,7 @@ public class ScheduledPublishProcessResourceImpl
 
 		Map<String, String[]> parameterMap =
 			ParameterMapUtil.putDateRangeParameters(
-				publishProcessRequest.getDateFilter(),
+				publishProcessRequest.getDateFilter(), date,
 				ParameterMapUtil.toParameterMap(
 					publishProcessRequest, exportPortletDataHandlers),
 				contextUser);
