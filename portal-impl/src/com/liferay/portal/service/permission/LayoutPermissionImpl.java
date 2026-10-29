@@ -7,6 +7,7 @@ package com.liferay.portal.service.permission;
 
 import com.liferay.exportimport.kernel.staging.permission.StagingPermissionUtil;
 import com.liferay.petra.lang.HashUtil;
+import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -559,6 +560,24 @@ public class LayoutPermissionImpl implements LayoutPermission {
 
 		if (layout.isTypeControlPanel()) {
 			return false;
+		}
+
+		if (!CTCollectionThreadLocal.isProductionMode()) {
+			long primKey = layout.getPlid();
+
+			if (layout.isDraftLayout()) {
+				primKey = layout.getClassPK();
+			}
+
+			int resourcePermissionsCount =
+				ResourcePermissionLocalServiceUtil.getResourcePermissionsCount(
+					layout.getCompanyId(), Layout.class.getName(),
+					ResourceConstants.SCOPE_INDIVIDUAL,
+					String.valueOf(primKey));
+
+			if (resourcePermissionsCount == 0) {
+				return false;
+			}
 		}
 
 		if (checkLayoutUpdateable && !actionId.equals(ActionKeys.CUSTOMIZE) &&
