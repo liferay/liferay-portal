@@ -185,7 +185,7 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 			PortletDataContext portletDataContext, T stagedModel)
 		throws PortletDataException {
 
-		if (!isEnabled(_getCompanyId(stagedModel))) {
+		if (!isEnabled(_getCompanyId(portletDataContext))) {
 			return;
 		}
 
@@ -211,6 +211,14 @@ public abstract class BaseStagedModelDataHandler<T extends StagedModel>
 
 	protected StagedModelRepository<T> getStagedModelRepository() {
 		return null;
+	}
+
+	private long _getCompanyId(PortletDataContext portletDataContext) {
+		if (portletDataContext != null) {
+			return portletDataContext.getCompanyId();
+		}
+
+		return CompanyThreadLocal.getCompanyId();
 	}
 
 	private long _getCompanyId(T stagedModel) {
