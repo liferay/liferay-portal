@@ -1,6 +1,7 @@
+import * as API from 'shared/api';
 import * as data from 'test/data';
 import React from 'react';
-import {cleanup, render} from '@testing-library/react';
+import {cleanup, render, waitFor} from '@testing-library/react';
 import {Distribution} from '../Distribution';
 import {List} from 'immutable';
 import {User} from 'shared/util/records';
@@ -27,6 +28,29 @@ describe('SegmentDistribution', () => {
 		expect(
 			getByText(Liferay.Language.get('distribution-by-attribute'))
 		).toBeInTheDocument();
+	});
+
+	it('should fetch the distribution of the default field mapping', async () => {
+		API.fieldMappings.fetchDefault.mockReturnValueOnce(
+			Promise.resolve(data.mockFieldMapping(0, {id: 'jobTitle'}))
+		);
+
+		const fetchDistribution = jest.fn();
+
+		render(
+			<Distribution
+				{...defaultProps}
+				fetchDistribution={fetchDistribution}
+				fieldMappingFieldName={undefined}
+				history={{replace: jest.fn()}}
+			/>
+		);
+
+		await waitFor(() =>
+			expect(fetchDistribution).toHaveBeenCalledWith(
+				expect.objectContaining({fieldMappingFieldName: 'jobTitle'})
+			)
+		);
 	});
 
 	xit('should render a Chart component if loading is false', () => {
