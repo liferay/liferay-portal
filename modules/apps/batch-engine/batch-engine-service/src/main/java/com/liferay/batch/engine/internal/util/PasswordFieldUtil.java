@@ -12,7 +12,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import com.liferay.petra.function.UnsafeFunction;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -69,36 +68,12 @@ public class PasswordFieldUtil {
 		return passwordFieldNames;
 	}
 
-	public static <E extends Exception> void replacePasswordField(
-			ObjectNode objectNode, String name,
-			UnsafeFunction<String, String, E> unsafeFunction)
-		throws E {
-
-		JsonNode jsonNode = objectNode.get(name);
-
-		if ((jsonNode == null) || jsonNode.isNull()) {
-			return;
-		}
-
-		String value = unsafeFunction.apply(jsonNode.asText());
-
-		if (value == null) {
-			objectNode.remove(name);
-		}
-		else {
-			objectNode.put(name, value);
-		}
-	}
-
-	public static <E extends Exception> void replacePasswordFields(
-			JsonNode jsonNode, Set<String> passwordFieldNames,
-			UnsafeFunction<String, String, E> unsafeFunction)
-		throws E {
+	public static void removePasswordFields(
+		JsonNode jsonNode, Set<String> passwordFieldNames) {
 
 		if (jsonNode.isArray()) {
 			for (JsonNode elementJsonNode : jsonNode) {
-				replacePasswordFields(
-					elementJsonNode, passwordFieldNames, unsafeFunction);
+				removePasswordFields(elementJsonNode, passwordFieldNames);
 			}
 
 			return;
@@ -114,8 +89,7 @@ public class PasswordFieldUtil {
 			int index = passwordFieldName.indexOf(CharPool.PERIOD);
 
 			if (index == -1) {
-				replacePasswordField(
-					objectNode, passwordFieldName, unsafeFunction);
+				objectNode.remove(passwordFieldName);
 
 				continue;
 			}
@@ -127,9 +101,8 @@ public class PasswordFieldUtil {
 				continue;
 			}
 
-			replacePasswordFields(
-				childJsonNode, Set.of(passwordFieldName.substring(index + 1)),
-				unsafeFunction);
+			removePasswordFields(
+				childJsonNode, Set.of(passwordFieldName.substring(index + 1)));
 		}
 	}
 
@@ -149,7 +122,7 @@ public class PasswordFieldUtil {
 
 			JsonNode jsonNode = objectMapper.readTree(string);
 
-			replacePasswordFields(jsonNode, passwordFieldNames, value -> null);
+			removePasswordFields(jsonNode, passwordFieldNames);
 
 			return objectMapper.writeValueAsString(jsonNode);
 		}
