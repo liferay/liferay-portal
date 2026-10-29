@@ -128,7 +128,8 @@ public abstract class BaseProfile {
 			boolean requireSignature)
 		throws Exception {
 
-		_validateMessageSize(httpServletRequest);
+		_validateMessageSize(httpServletRequest.getParameter("SAMLRequest"));
+		_validateMessageSize(httpServletRequest.getParameter("SAMLResponse"));
 
 		MessageContext<SAMLObject> messageContext = getMessageContext(
 			httpServletRequest, httpServletResponse);
@@ -969,34 +970,24 @@ public abstract class BaseProfile {
 		return samlProviderConfiguration.sslRequired();
 	}
 
-	private void _validateMessageSize(HttpServletRequest httpServletRequest)
-		throws Exception {
+	private void _validateMessageSize(String message) throws Exception {
+		if (message == null) {
+			return;
+		}
 
 		SamlProviderConfiguration samlProviderConfiguration =
 			samlProviderConfigurationHelper.getSamlProviderConfiguration();
 
 		int maximumMessageSize = samlProviderConfiguration.maximumMessageSize();
 
-		if (maximumMessageSize <= 0) {
-			return;
-		}
+		if ((maximumMessageSize > 0) &&
+			(message.length() > maximumMessageSize)) {
 
-		for (String parameterName :
-				new String[] {"SAMLRequest", "SAMLResponse"}) {
-
-			String parameterValue = httpServletRequest.getParameter(
-				parameterName);
-
-			if ((parameterValue != null) &&
-				(parameterValue.length() > maximumMessageSize)) {
-
-				throw new MessageDecodingException(
-					StringBundler.concat(
-						"Rejecting SAML message of size ",
-						parameterValue.length(),
-						" because it exceeds the maximum allowed size ",
-						maximumMessageSize));
-			}
+			throw new MessageDecodingException(
+				StringBundler.concat(
+					"Rejecting SAML message of size ", message.length(),
+					" because it exceeds the maximum allowed size ",
+					maximumMessageSize));
 		}
 	}
 
