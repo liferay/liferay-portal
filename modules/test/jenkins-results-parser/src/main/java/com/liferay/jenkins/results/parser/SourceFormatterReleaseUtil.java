@@ -58,9 +58,9 @@ public class SourceFormatterReleaseUtil {
 		GitWorkingDirectory gitWorkingDirectory, String ref) {
 
 		try {
-			File portalDirectory = gitWorkingDirectory.getWorkingDirectory();
-
 			Properties artifactProperties = new Properties();
+
+			File portalDirectory = gitWorkingDirectory.getWorkingDirectory();
 
 			artifactProperties.load(
 				new StringReader(

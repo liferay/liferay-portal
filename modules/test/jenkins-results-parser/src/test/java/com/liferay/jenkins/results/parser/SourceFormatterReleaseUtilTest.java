@@ -26,13 +26,14 @@ public class SourceFormatterReleaseUtilTest
 	public void setUp() throws Exception {
 		_artifactPropertiesFile = new File(
 			temporaryFolder.getRoot(), _PATH_ARTIFACT_PROPERTIES);
-		_ivyXMLFile = new File(temporaryFolder.getRoot(), _PATH_IVY_XML);
 
 		JenkinsResultsParserUtil.write(
 			_artifactPropertiesFile,
 			JenkinsResultsParserUtil.combine(
 				"artifact.git.id=", _ARTIFACT_SHA, "\nartifact.url=",
 				_getArtifactURL()));
+
+		_ivyXMLFile = new File(temporaryFolder.getRoot(), _PATH_IVY_XML);
 
 		JenkinsResultsParserUtil.write(
 			_ivyXMLFile,
@@ -92,8 +93,6 @@ public class SourceFormatterReleaseUtilTest
 
 	@Test
 	public void testIsReleasedSourceMatch() throws Exception {
-		GitUtil.ExecutionResult emptyExecutionResult = _getExecutionResult(
-			0, "");
 		GitUtil.ExecutionResult shaExecutionResult = _getExecutionResult(
 			0, _ARTIFACT_PROPERTIES_SHA);
 
@@ -106,6 +105,10 @@ public class SourceFormatterReleaseUtilTest
 		_testIsReleasedSourceMatch(
 			_getExecutionResult(1, ""), false, shaExecutionResult,
 			shaExecutionResult);
+
+		GitUtil.ExecutionResult emptyExecutionResult = _getExecutionResult(
+			0, "");
+
 		_testIsReleasedSourceMatch(
 			emptyExecutionResult, false,
 			_getExecutionResult(1, _ARTIFACT_PROPERTIES_SHA),
