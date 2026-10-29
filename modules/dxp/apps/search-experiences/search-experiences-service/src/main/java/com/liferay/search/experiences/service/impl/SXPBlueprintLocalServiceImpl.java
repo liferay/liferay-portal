@@ -35,6 +35,7 @@ import com.liferay.portal.search.asset.AssetSubtypeIdentifier;
 import com.liferay.portal.search.asset.AssetSubtypeIdentifierBuilder;
 import com.liferay.search.experiences.constants.SXPBlueprintConstants;
 import com.liferay.search.experiences.exception.SXPBlueprintTitleException;
+import com.liferay.search.experiences.internal.util.RangeQueryUpgradeUtil;
 import com.liferay.search.experiences.model.SXPBlueprint;
 import com.liferay.search.experiences.rest.dto.v1_0.Configuration;
 import com.liferay.search.experiences.rest.dto.v1_0.GeneralConfiguration;
@@ -87,9 +88,11 @@ public class SXPBlueprintLocalServiceImpl
 		sxpBlueprint.setUserName(user.getFullName());
 
 		sxpBlueprint.setConfigurationJSON(
-			_enhanceConfiguration(configurationJSON));
+			_enhanceConfiguration(
+				RangeQueryUpgradeUtil.upgradeRangeQueries(configurationJSON)));
 		sxpBlueprint.setDescriptionMap(descriptionMap);
-		sxpBlueprint.setElementInstancesJSON(elementInstancesJSON);
+		sxpBlueprint.setElementInstancesJSON(
+			RangeQueryUpgradeUtil.upgradeRangeQueries(elementInstancesJSON));
 		sxpBlueprint.setSchemaVersion(schemaVersion);
 		sxpBlueprint.setTitleMap(titleMap);
 		sxpBlueprint.setVersion(
@@ -173,9 +176,11 @@ public class SXPBlueprintLocalServiceImpl
 
 		sxpBlueprint.setExternalReferenceCode(externalReferenceCode);
 		sxpBlueprint.setConfigurationJSON(
-			_enhanceConfiguration(configurationJSON));
+			_enhanceConfiguration(
+				RangeQueryUpgradeUtil.upgradeRangeQueries(configurationJSON)));
 		sxpBlueprint.setDescriptionMap(descriptionMap);
-		sxpBlueprint.setElementInstancesJSON(elementInstancesJSON);
+		sxpBlueprint.setElementInstancesJSON(
+			RangeQueryUpgradeUtil.upgradeRangeQueries(elementInstancesJSON));
 		sxpBlueprint.setTitleMap(titleMap);
 		sxpBlueprint.setVersion(
 			String.format(
