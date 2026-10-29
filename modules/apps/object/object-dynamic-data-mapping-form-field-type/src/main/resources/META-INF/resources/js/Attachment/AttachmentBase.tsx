@@ -11,7 +11,7 @@ import {
 	useConfig,
 } from 'data-engine-js-components-web';
 import {openSelectionModal} from 'frontend-js-components-web';
-import {fetch, formatStorage, getFileAsBase64} from 'frontend-js-web';
+import {fetch, getFileAsBase64} from 'frontend-js-web';
 import React, {ChangeEventHandler, useEffect, useRef, useState} from 'react';
 
 import FileContainer from './FileContainer';
@@ -67,25 +67,6 @@ type FolderEntry = {
 type FolderRef =
 	| {objectEntryFolderExternalReferenceCode: string}
 	| {objectEntryFolderId: number};
-
-/**
- * Formats a raw byte count (40255) the way the server formats attachment
- * sizes (39 KB), with the user's decimal separator and translated suffixes.
- */
-function formatFileSize(bytes: number) {
-	const decimalSeparator =
-		new Intl.NumberFormat(Liferay.ThemeDisplay.getBCP47LanguageId())
-			.formatToParts(1.5)
-			.find((part) => part.type === 'decimal')?.value ?? '.';
-
-	return formatStorage(bytes, {
-		addSpaceBeforeSuffix: true,
-		decimalSeparator,
-		suffixGB: Liferay.Language.get('storage.size.suffix.gb'),
-		suffixKB: Liferay.Language.get('storage.size.suffix.kb'),
-		suffixMB: Liferay.Language.get('storage.size.suffix.mb'),
-	});
-}
 
 export interface AttachmentBaseProps<TValue> {
 	acceptedFileExtensions: string;
@@ -196,7 +177,7 @@ export default function AttachmentBase({
 				{
 					contentURL: selectedItemValue.url,
 					fileEntryId: selectedItemValue.fileEntryId,
-					size: formatFileSize(Number(selectedItemValue.size)),
+					size: selectedItemValue.formattedSize,
 					title: selectedItemValue.title,
 				},
 				selectedItemValue.fileEntryId
