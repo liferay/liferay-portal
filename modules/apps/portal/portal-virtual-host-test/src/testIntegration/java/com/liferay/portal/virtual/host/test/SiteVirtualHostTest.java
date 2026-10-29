@@ -10,24 +10,30 @@ import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
+import com.liferay.portal.kernel.exception.LayoutSetVirtualHostException;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TreeMapBuilder;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.net.IDN;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -219,6 +225,61 @@ public class SiteVirtualHostTest extends BaseVirtualHostTestCase {
 		_assertURLtoString(true, _guestGroup, childGroup3VirtualHostName);
 	}
 
+	@Test
+	public void testUpdateVirtualHosts() throws Exception {
+		_virtualHostGroup1 = GroupTestUtil.addGroupToCompany(
+			_company.getCompanyId());
+		_virtualHostGroup2 = GroupTestUtil.addGroupToCompany(
+			_company.getCompanyId());
+
+		String unicodeHostname1 = _getRandomUnicodeHostname();
+
+		String asciiHostname1 = IDN.toASCII(unicodeHostname1);
+
+		_updateVirtualHosts(_virtualHostGroup2, asciiHostname1);
+
+		_updateVirtualHosts(_virtualHostGroup2, null);
+		_updateVirtualHosts(_virtualHostGroup1, unicodeHostname1);
+
+		Assert.assertThrows(
+			LayoutSetVirtualHostException.class,
+			() -> _updateVirtualHosts(_virtualHostGroup2, asciiHostname1));
+
+		String unicodeHostname2 = _getRandomUnicodeHostname();
+
+		String asciiHostname2 = IDN.toASCII(unicodeHostname2);
+
+		_updateVirtualHosts(_virtualHostGroup2, unicodeHostname2);
+
+		_updateVirtualHosts(_virtualHostGroup2, null);
+		_updateVirtualHosts(_virtualHostGroup1, asciiHostname2);
+
+		Assert.assertThrows(
+			LayoutSetVirtualHostException.class,
+			() -> _updateVirtualHosts(_virtualHostGroup2, unicodeHostname2));
+
+		_updateVirtualHosts(
+			_virtualHostGroup2,
+			StringUtil.toLowerCase(RandomTestUtil.randomString(64)) + ".com");
+		_updateVirtualHosts(_virtualHostGroup2, generateVirtualHostName());
+
+		String unicodeHostname3 = _getRandomUnicodeHostname();
+
+		String asciiHostname3 = IDN.toASCII(unicodeHostname3);
+
+		_updateVirtualHosts(_virtualHostGroup2, asciiHostname3);
+
+		_updateVirtualHosts(_virtualHostGroup2, null);
+
+		_company = _companyLocalService.updateCompany(
+			_company.getCompanyId(), unicodeHostname3, _company.getMx(),
+			_company.getMaxUsers(), _company.isActive());
+
+		Assert.assertThrows(
+			LayoutSetVirtualHostException.class,
+			() -> _updateVirtualHosts(_virtualHostGroup2, asciiHostname3));
+	}
+
 	private Group _addGroup(
 			Company company, Group parentGroup, String virtualHostName)
 		throws Exception {
@@ -277,6 +338,11 @@ public class SiteVirtualHostTest extends BaseVirtualHostTestCase {
 				group.getFriendlyURL()));
 	}
 
+	private String _getRandomUnicodeHostname() {
+		return "b\u00fccher" +
+			StringUtil.toLowerCase(RandomTestUtil.randomString()) + ".com";
+	}
+
 	private void _setStrictMode(boolean allowDefaultInstanceURLBypass)
 		throws Exception {
 
@@ -293,6 +359,16 @@ public class SiteVirtualHostTest extends BaseVirtualHostTestCase {
 				).build());
 	}
 
+	private void _updateVirtualHosts(Group group, String virtualHostName)
+		throws Exception {
+
+		_layoutSetLocalService.updateVirtualHosts(
+			group.getGroupId(), false,
+			TreeMapBuilder.put(
+				() -> virtualHostName, StringPool.BLANK
+			).build());
+	}
+
 	private Group _childGroup1;
 	private Group _childGroup2;
 	private Group _childGroup3;
@@ -302,6 +378,10 @@ public class SiteVirtualHostTest extends BaseVirtualHostTestCase {
 
 	private CompanyConfigurationTemporarySwapper
 		_companyConfigurationTemporarySwapper;
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
+
 	private Group _group1;
 	private Group _group2;
 	private Group _group3;
@@ -317,5 +397,11 @@ public class SiteVirtualHostTest extends BaseVirtualHostTestCase {
 
 	@Inject
 	private LayoutSetLocalService _layoutSetLocalService;
+
+	@DeleteAfterTestRun
+	private Group _virtualHostGroup1;
+
+	@DeleteAfterTestRun
+	private Group _virtualHostGroup2;
 
 }
