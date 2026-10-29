@@ -23,7 +23,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -140,7 +139,8 @@ public class MCPProfileToolUpgradeProcessTest {
 
 		_assertUpgrade(mcpServerProfileToolObjectEntry, objectDefinition);
 
-		_processBatchEngineUnits(_getMCPServerRestImplBundle());
+		_processBatchEngineUnits(
+			FrameworkUtil.getBundle(_upgradeStepRegistrator.getClass()));
 
 		_assertUpgrade(mcpServerProfileToolObjectEntry, objectDefinition);
 	}
@@ -243,14 +243,6 @@ public class MCPProfileToolUpgradeProcessTest {
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
 		}
-	}
-
-	private Bundle _getMCPServerRestImplBundle() {
-		Bundle bundle = FrameworkUtil.getBundle(
-			MCPProfileToolUpgradeProcessTest.class);
-
-		return BundleUtil.getBundle(
-			bundle.getBundleContext(), "com.liferay.mcp.server.rest.impl");
 	}
 
 	private UpgradeStep _getVersionedUpgradeStep() {
