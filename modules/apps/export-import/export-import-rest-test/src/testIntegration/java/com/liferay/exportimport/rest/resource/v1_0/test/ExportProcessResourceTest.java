@@ -72,7 +72,6 @@ import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
@@ -1120,11 +1119,15 @@ public class ExportProcessResourceTest
 
 		User companyAdminUser = UserTestUtil.addCompanyAdminUser(testCompany);
 
+		String password = RandomTestUtil.randomString();
+
+		_userLocalService.updatePassword(
+			companyAdminUser.getUserId(), password, password, false, true);
+
 		ExportPreviewResource exportPreviewResource =
 			ExportPreviewResource.builder(
 			).authentication(
-				companyAdminUser.getEmailAddress(),
-				PropsValues.DEFAULT_ADMIN_PASSWORD
+				companyAdminUser.getEmailAddress(), password
 			).endpoint(
 				testCompany.getVirtualHostname(),
 				PortalUtil.getPortalServerPort(false), "http"
