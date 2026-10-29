@@ -12,13 +12,19 @@ import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.info.item.InfoItemReference;
 import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
@@ -96,9 +102,17 @@ public class AssetDisplayPageEntryServiceImpl
 		boolean defaultTemplate, int start, int end,
 		OrderByComparator<AssetDisplayPageEntry> orderByComparator) {
 
-		return assetDisplayPageEntryLocalService.getAssetDisplayPageEntries(
-			classNameId, classTypeId, layoutPageTemplateEntryId,
-			defaultTemplate, start, end, orderByComparator);
+		if (!_hasLayoutPageTemplateEntryViewPermission(
+				layoutPageTemplateEntryId)) {
+
+			return Collections.emptyList();
+		}
+
+		return ListUtil.filter(
+			assetDisplayPageEntryLocalService.getAssetDisplayPageEntries(
+				classNameId, classTypeId, layoutPageTemplateEntryId,
+				defaultTemplate, start, end, orderByComparator),
+			this::_hasAssetViewPermission);
 	}
 
 	@Override
@@ -106,9 +120,17 @@ public class AssetDisplayPageEntryServiceImpl
 		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
 			long layoutPageTemplateEntryId) {
 
-		return assetDisplayPageEntryLocalService.
-			getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-				layoutPageTemplateEntryId);
+		if (!_hasLayoutPageTemplateEntryViewPermission(
+				layoutPageTemplateEntryId)) {
+
+			return Collections.emptyList();
+		}
+
+		return ListUtil.filter(
+			assetDisplayPageEntryLocalService.
+				getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
+					layoutPageTemplateEntryId),
+			this::_hasAssetViewPermission);
 	}
 
 	@Override
@@ -117,15 +139,29 @@ public class AssetDisplayPageEntryServiceImpl
 			long layoutPageTemplateEntryId, int start, int end,
 			OrderByComparator<AssetDisplayPageEntry> orderByComparator) {
 
-		return assetDisplayPageEntryLocalService.
-			getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-				layoutPageTemplateEntryId, start, end, orderByComparator);
+		if (!_hasLayoutPageTemplateEntryViewPermission(
+				layoutPageTemplateEntryId)) {
+
+			return Collections.emptyList();
+		}
+
+		return ListUtil.filter(
+			assetDisplayPageEntryLocalService.
+				getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
+					layoutPageTemplateEntryId, start, end, orderByComparator),
+			this::_hasAssetViewPermission);
 	}
 
 	@Override
 	public int getAssetDisplayPageEntriesCount(
 		long classNameId, long classTypeId, long layoutPageTemplateEntryId,
 		boolean defaultTemplate) {
+
+		if (!_hasLayoutPageTemplateEntryViewPermission(
+				layoutPageTemplateEntryId)) {
+
+			return 0;
+		}
 
 		return assetDisplayPageEntryLocalService.
 			getAssetDisplayPageEntriesCount(
@@ -136,6 +172,12 @@ public class AssetDisplayPageEntryServiceImpl
 	@Override
 	public int getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
 		long layoutPageTemplateEntryId) {
+
+		if (!_hasLayoutPageTemplateEntryViewPermission(
+				layoutPageTemplateEntryId)) {
+
+			return 0;
+		}
 
 		return assetDisplayPageEntryLocalService.
 			getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
@@ -164,33 +206,78 @@ public class AssetDisplayPageEntryServiceImpl
 			String className, long classPK, String actionId)
 		throws Exception {
 
+		if (!_hasPermission(className, classPK, actionId)) {
+			throw new PrincipalException();
+		}
+	}
+
+	private boolean _hasAssetViewPermission(
+		AssetDisplayPageEntry assetDisplayPageEntry) {
+
+		try {
+			return _hasPermission(
+				assetDisplayPageEntry.getClassName(),
+				assetDisplayPageEntry.getClassPK(), ActionKeys.VIEW);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return false;
+		}
+	}
+
+	private boolean _hasLayoutPageTemplateEntryViewPermission(
+		long layoutPageTemplateEntryId) {
+
+		try {
+			return _layoutPageTemplateEntryModelResourcePermission.contains(
+				getPermissionChecker(), layoutPageTemplateEntryId,
+				ActionKeys.VIEW);
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			return false;
+		}
+	}
+
+	private boolean _hasPermission(
+			String className, long classPK, String actionId)
+		throws Exception {
+
 		InfoItemPermissionProvider infoItemPermissionProvider =
 			_infoItemServiceRegistry.getFirstInfoItemService(
 				InfoItemPermissionProvider.class, className);
 
 		if (infoItemPermissionProvider != null) {
-			if (!infoItemPermissionProvider.hasPermission(
-					getPermissionChecker(),
-					new InfoItemReference(className, classPK), actionId)) {
-
-				throw new PrincipalException();
-			}
+			return infoItemPermissionProvider.hasPermission(
+				getPermissionChecker(),
+				new InfoItemReference(className, classPK), actionId);
 		}
-		else {
-			AssetRendererFactory<?> assetRendererFactory =
-				AssetRendererFactoryRegistryUtil.
-					getAssetRendererFactoryByClassName(className);
 
-			if (!assetRendererFactory.hasPermission(
-					getPermissionChecker(), classPK, actionId)) {
+		AssetRendererFactory<?> assetRendererFactory =
+			AssetRendererFactoryRegistryUtil.getAssetRendererFactoryByClassName(
+				className);
 
-				throw new PrincipalException();
-			}
-		}
+		return assetRendererFactory.hasPermission(
+			getPermissionChecker(), classPK, actionId);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetDisplayPageEntryServiceImpl.class);
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
+
+	@Reference(
+		target = "(model.class.name=com.liferay.layout.page.template.model.LayoutPageTemplateEntry)"
+	)
+	private ModelResourcePermission<LayoutPageTemplateEntry>
+		_layoutPageTemplateEntryModelResourcePermission;
 
 	@Reference
 	private Portal _portal;
