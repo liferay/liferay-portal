@@ -300,11 +300,11 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 	}
 
 	private static final Pattern _blockHeaderPattern = Pattern.compile(
-		"([\\w-]+(\\s+\"[^\"]*\")*)\\s*\\{");
+		"([\\w-]+(\\s+\"[^\"]*\")*)\\s*\\{(\\})?");
 	private static final Pattern _keyPattern = Pattern.compile(
 		"^(\"[^\"]+\"|[\\w.-]+)\\s*[:=](?!=)");
 	private static final Pattern _topLevelBlockPattern = Pattern.compile(
-		"\\w.*\\{");
+		"\\w.*\\{(\\})?");
 
 	private class Entry {
 

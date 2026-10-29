@@ -29,7 +29,7 @@ public class EmbeddedJSONCheck extends BaseFileCheck {
 			return _formatJSONInFencedCodeBlock(content);
 		}
 
-		if (fileName.endsWith(".tf")) {
+		if (fileName.endsWith(".hcl") || fileName.endsWith(".tf")) {
 			return _formatJSONInHeredoc(content);
 		}
 
