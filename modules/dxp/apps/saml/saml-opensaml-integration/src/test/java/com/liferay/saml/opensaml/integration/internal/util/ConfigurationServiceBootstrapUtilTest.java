@@ -12,6 +12,7 @@ import com.liferay.saml.opensaml.integration.internal.bootstrap.ParserPoolUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutorService;
@@ -20,12 +21,14 @@ import java.util.concurrent.Future;
 
 import net.shibboleth.utilities.java.support.xml.ParserPool;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
 
 /**
@@ -42,6 +45,16 @@ public class ConfigurationServiceBootstrapUtilTest {
 	public void setUp() {
 		ReflectionTestUtil.setFieldValue(
 			ConfigurationServiceBootstrapUtil.class, "_initialized", false);
+	}
+
+	@After
+	public void tearDown() {
+		Map<Class<?>, Object> configurations = ReflectionTestUtil.getFieldValue(
+			ConfigurationServiceBootstrapUtil.class, "_configurations");
+
+		configurations.remove(String.class);
+
+		ConfigurationService.deregister(String.class);
 	}
 
 	@Test
