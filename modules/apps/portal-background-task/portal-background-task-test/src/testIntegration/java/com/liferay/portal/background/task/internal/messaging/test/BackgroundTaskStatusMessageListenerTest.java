@@ -91,8 +91,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 	@Test
 	public void testDoReceive() throws Exception {
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
-			BackgroundTaskConstants.ISOLATION_LEVEL_GROUP,
-			BackgroundTaskResult.SUCCESS, true);
+			BackgroundTaskResult.SUCCESS,
+			BackgroundTaskConstants.ISOLATION_LEVEL_GROUP, true);
 
 		long groupId1 = RandomTestUtil.randomLong();
 		long groupId2 = RandomTestUtil.randomLong();
@@ -145,9 +145,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 	@Test
 	public void testSendUserNotifications() throws Exception {
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
-			BackgroundTaskConstants.ISOLATION_LEVEL_NOT_ISOLATED,
 			new BackgroundTaskResult(BackgroundTaskConstants.STATUS_FAILED),
-			false);
+			BackgroundTaskConstants.ISOLATION_LEVEL_NOT_ISOLATED, false);
 
 		BackgroundTask backgroundTask =
 			_backgroundTaskManager.addBackgroundTask(
@@ -218,7 +217,7 @@ public class BackgroundTaskStatusMessageListenerTest {
 	}
 
 	private String _registerBackgroundTaskExecutor(
-		int isolationLevel, BackgroundTaskResult backgroundTaskResult,
+		BackgroundTaskResult backgroundTaskResult, int isolationLevel,
 		boolean serial) {
 
 		BackgroundTaskExecutor backgroundTaskExecutor =
@@ -273,8 +272,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 		throws Exception {
 
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
-			BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY,
-			backgroundTaskResult, true);
+			backgroundTaskResult,
+			BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY, true);
 
 		String lockKey =
 			taskExecutorClassName + StringPool.POUND + _user.getCompanyId();
@@ -300,8 +299,8 @@ public class BackgroundTaskStatusMessageListenerTest {
 		throws Exception {
 
 		String taskExecutorClassName = _registerBackgroundTaskExecutor(
-			BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY,
-			BackgroundTaskResult.SUCCESS, true);
+			BackgroundTaskResult.SUCCESS,
+			BackgroundTaskConstants.ISOLATION_LEVEL_COMPANY, true);
 
 		String lockKey =
 			taskExecutorClassName + StringPool.POUND + _user.getCompanyId();
