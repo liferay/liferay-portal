@@ -5203,11 +5203,11 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 				SitePage.Type type)
 		throws Exception {
 
+		String externalReferenceCode = RandomTestUtil.randomString();
+
 		SitePage parentSitePage = sitePageResource.postSiteSitePage(
 			testGroup.getExternalReferenceCode(), false,
 			_getRandomSitePage(SitePage.Type.PAGE_SET_PAGE));
-
-		String externalReferenceCode = RandomTestUtil.randomString();
 
 		SitePage sitePage = _getRandomSitePage(
 			externalReferenceCode, parentSitePage.getExternalReferenceCode(),
