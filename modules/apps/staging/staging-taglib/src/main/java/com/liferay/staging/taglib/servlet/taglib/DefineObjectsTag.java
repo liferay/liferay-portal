@@ -34,9 +34,9 @@ public class DefineObjectsTag extends IncludeTag {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
-
 		Group group = null;
+
+		long groupId = ParamUtil.getLong(httpServletRequest, "groupId");
 
 		if (groupId > 0) {
 			group = GroupLocalServiceUtil.fetchGroup(groupId);
