@@ -7,7 +7,7 @@ expect "Please enter your Liferay home" {
 }
 
 expect "Please enter your database" {
-	send "mysql\r"
+	send "[database.type]\r"
 }
 
 expect "Please enter your database JDBC driver class name" {

@@ -27,7 +27,7 @@ expect "Please enter your portal directory in application server directory" {
 }
 
 expect "Please enter your database" {
-	send "mysql\r"
+	send "[database.type]\r"
 }
 
 expect "Please enter your database JDBC driver class name" {

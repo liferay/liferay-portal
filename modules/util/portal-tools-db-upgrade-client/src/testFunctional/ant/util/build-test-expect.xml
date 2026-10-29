@@ -46,6 +46,13 @@
 				replace="${database.port}"
 			/>
 
+			<replaceregexp
+				file="temp.expect"
+				flags="gi"
+				match="\[database.type\]"
+				replace="${database.type}"
+			/>
+
 			<get-database-property property.name="database.username" />
 
 			<replaceregexp
