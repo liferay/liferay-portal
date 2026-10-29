@@ -18,6 +18,7 @@ import com.liferay.object.exception.DuplicateObjectRelationshipExternalReference
 import com.liferay.object.exception.NoSuchObjectRelationshipException;
 import com.liferay.object.exception.ObjectDefinitionScopeException;
 import com.liferay.object.exception.ObjectEntryGroupIdException;
+import com.liferay.object.exception.ObjectFieldDBColumnNameException;
 import com.liferay.object.exception.ObjectFieldNameException;
 import com.liferay.object.exception.ObjectRelationshipDeletionTypeException;
 import com.liferay.object.exception.ObjectRelationshipEdgeException;
@@ -66,6 +67,7 @@ import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -1225,6 +1227,7 @@ public class ObjectRelationshipLocalServiceImpl
 					objectDefinition1, name);
 		}
 		else {
+			_validateObjectFieldDBColumnName(dbColumnName);
 			_validateObjectFieldName(
 				objectDefinition1, objectDefinition2, dbColumnName, name);
 		}
@@ -2122,6 +2125,21 @@ public class ObjectRelationshipLocalServiceImpl
 		}
 		else {
 			_objectEntryPersistence.findByPrimaryKey(primaryKey);
+		}
+	}
+
+	private void _validateObjectFieldDBColumnName(
+			String objectFieldDBColumnName)
+		throws PortalException {
+
+		for (char c : objectFieldDBColumnName.toCharArray()) {
+			if (!Validator.isChar(c) && !Validator.isDigit(c) &&
+				(c != CharPool.UNDERLINE)) {
+
+				throw new ObjectFieldDBColumnNameException(
+					"DB column name must only contain letters, digits, and " +
+						"underscores");
+			}
 		}
 	}
 
