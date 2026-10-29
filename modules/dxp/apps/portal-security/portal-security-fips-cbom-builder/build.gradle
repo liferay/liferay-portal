@@ -6,6 +6,9 @@ dependencies {
 	implementation group: "com.fasterxml.jackson.core", name: "jackson-core", version: "2.18.11"
 	implementation group: "com.fasterxml.jackson.core", name: "jackson-databind", version: "2.18.11"
 	implementation group: "org.cyclonedx", name: "cyclonedx-core-java", version: "13.2.0"
+	implementation group: "org.ow2.asm", name: "asm", version: "9.11.1"
+	implementation group: "org.ow2.asm", name: "asm-analysis", version: "9.11.1"
+	implementation group: "org.ow2.asm", name: "asm-tree", version: "9.11.1"
 	testImplementation group: "org.skyscreamer", name: "jsonassert", version: "1.2.3"
 }
 
