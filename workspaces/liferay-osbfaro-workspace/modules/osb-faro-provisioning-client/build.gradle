@@ -7,4 +7,5 @@ dependencies {
 	testImplementation group: "com.liferay.portal", name: "com.liferay.portal.test", version: "32.6.2"
 	testImplementation group: "com.liferay.portal", name: "release.dxp.api", version: "2026.q3.2"
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation project(":modules:osb-faro-api")
 }
