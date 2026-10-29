@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Whip
 Bundle-SymbolicName: com.liferay.whip
-Bundle-Version: 1.0.6
+Bundle-Version: 1.0.7
 Can-Redefine-Classes: true
 Can-Retransform-Classes: true
 Premain-Class: com.liferay.whip.agent.InstrumentationAgent
