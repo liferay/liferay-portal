@@ -32,14 +32,10 @@ function main {
 
 	tear_down "gcp" "gke" "${configuration_json_file}"
 
-	if has_remote_tfstate "${configuration_json_file}"
+	if ! has_remote_tfstate "${configuration_json_file}"
 	then
-		_delete_tfstate_bucket "${configuration_json_file}"
+		return
 	fi
-}
-
-function _delete_tfstate_bucket {
-	local configuration_json_file="${1}"
 
 	local bucket_name
 
@@ -49,32 +45,11 @@ function _delete_tfstate_bucket {
 
 	project_id=$(jq --raw-output '.project_id' "${configuration_json_file}")
 
-	local region
-
-	region=$(jq --raw-output '.region' "${configuration_json_file}")
-
-	if ! gcloud storage buckets describe "gs://${bucket_name}" --project "${project_id}" &> /dev/null
-	then
-		echo "Bucket ${bucket_name} does not exist. Skipping the deletion process."
-
-		return
-	fi
-
 	local tfstate_prefix
 
 	tfstate_prefix=$(get_tfstate_prefix "${configuration_json_file}")
 
-	local foreign_object_count
-
-	foreign_object_count=$( \
-		gcloud storage ls \
-			"gs://${bucket_name}" \
-			--all-versions \
-			--project "${project_id}" \
-			--recursive | \
-		jq --arg prefix "gs://${bucket_name}/${tfstate_prefix}" --raw-input --slurp '[split("\n")[] | select(test("#[0-9]+$")) | select(startswith($prefix) | not)] | length')
-
-	if [ ${foreign_object_count} -gt 0 ]
+	if _has_other_deployment_tfstate "${bucket_name}" "${project_id}" "${tfstate_prefix}"
 	then
 		echo "Bucket ${bucket_name} was kept because it still holds the Terraform state of other deployments."
 
@@ -83,10 +58,17 @@ function _delete_tfstate_bucket {
 
 	if ! is_confirmed "delete the Terraform state bucket ${bucket_name}"
 	then
-		echo "Bucket ${bucket_name} was kept."
-
 		return
 	fi
+
+	_delete_tfstate_bucket "${bucket_name}" "${project_id}"
+
+	_destroy_tfstate_kms_key_versions "${bucket_name}" "${configuration_json_file}" "${project_id}"
+}
+
+function _delete_tfstate_bucket {
+	local bucket_name="${1}"
+	local project_id="${2}"
 
 	echo "Deleting bucket ${bucket_name}."
 
@@ -101,16 +83,18 @@ function _delete_tfstate_bucket {
 		--recursive
 
 	echo "Bucket ${bucket_name} was deleted successfully."
-
-	_destroy_tfstate_kms_key_versions "${bucket_name}" "${project_id}" "${region}"
 }
 
 function _destroy_tfstate_kms_key_versions {
 	local bucket_name="${1}"
-	local project_id="${2}"
-	local region="${3}"
+	local configuration_json_file="${2}"
+	local project_id="${3}"
 
 	local key_name="tfstate-${bucket_name}"
+
+	local region
+
+	region=$(jq --raw-output '.region' "${configuration_json_file}")
 
 	if ! gcloud kms keys describe \
 		"${key_name}" \
@@ -124,9 +108,20 @@ function _destroy_tfstate_kms_key_versions {
 		return
 	fi
 
+	local key_versions
+
+	key_versions=$( \
+		gcloud kms keys versions list \
+			--filter "state:(DISABLED OR ENABLED)" \
+			--format "value(name.basename())" \
+			--key "${key_name}" \
+			--keyring "${key_name}" \
+			--location "${region}" \
+			--project "${project_id}")
+
 	local key_version
 
-	while IFS= read -r key_version
+	for key_version in ${key_versions}
 	do
 		gcloud kms keys versions destroy \
 			"${key_version}" \
@@ -136,16 +131,28 @@ function _destroy_tfstate_kms_key_versions {
 			--project "${project_id}" \
 			--quiet \
 			> /dev/null
-	done < <( \
-		gcloud kms keys versions list \
-			--filter "state:(DISABLED OR ENABLED)" \
-			--format "value(name.basename())" \
-			--key "${key_name}" \
-			--keyring "${key_name}" \
-			--location "${region}" \
-			--project "${project_id}")
+	done
 
-	echo "The versions of KMS key ${key_name} were scheduled for destruction. Google Cloud does not delete KMS key rings or keys, so the key ring and key ${key_name} remain in the project ${project_id}."
+	echo "The versions of KMS key ${key_name} were scheduled for destruction. The key ring and key ${key_name} remain in the project ${project_id}."
+}
+
+function _has_other_deployment_tfstate {
+	local bucket_name="${1}"
+	local project_id="${2}"
+	local tfstate_prefix="${3}"
+
+	local object_urls
+
+	object_urls=$( \
+		gcloud storage ls \
+			--all-versions \
+			--project "${project_id}" \
+			"gs://${bucket_name}/**") || exit 1
+
+	grep \
+		--invert-match \
+		--quiet \
+		"^gs://${bucket_name}/${tfstate_prefix}" <<< "${object_urls}"
 }
 
 main "${@}"
