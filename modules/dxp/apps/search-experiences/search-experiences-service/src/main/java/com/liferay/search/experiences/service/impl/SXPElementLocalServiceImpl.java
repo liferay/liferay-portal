@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.search.experiences.exception.SXPElementTitleException;
+import com.liferay.search.experiences.internal.util.RangeQueryUpgradeUtil;
 import com.liferay.search.experiences.model.SXPElement;
 import com.liferay.search.experiences.service.base.SXPElementLocalServiceBaseImpl;
 import com.liferay.search.experiences.validator.SXPElementValidator;
@@ -74,7 +75,8 @@ public class SXPElementLocalServiceImpl extends SXPElementLocalServiceBaseImpl {
 		sxpElement.setUserName(user.getFullName());
 
 		sxpElement.setDescriptionMap(descriptionMap);
-		sxpElement.setElementDefinitionJSON(elementDefinitionJSON);
+		sxpElement.setElementDefinitionJSON(
+			RangeQueryUpgradeUtil.upgradeRangeQueries(elementDefinitionJSON));
 		sxpElement.setFallbackDescription(fallbackDescription);
 		sxpElement.setFallbackTitle(fallbackTitle);
 		sxpElement.setHidden(false);
@@ -151,7 +153,8 @@ public class SXPElementLocalServiceImpl extends SXPElementLocalServiceBaseImpl {
 
 		sxpElement.setExternalReferenceCode(externalReferenceCode);
 		sxpElement.setDescriptionMap(descriptionMap);
-		sxpElement.setElementDefinitionJSON(elementDefinitionJSON);
+		sxpElement.setElementDefinitionJSON(
+			RangeQueryUpgradeUtil.upgradeRangeQueries(elementDefinitionJSON));
 		sxpElement.setHidden(hidden);
 		sxpElement.setSchemaVersion(schemaVersion);
 		sxpElement.setTitleMap(titleMap);
