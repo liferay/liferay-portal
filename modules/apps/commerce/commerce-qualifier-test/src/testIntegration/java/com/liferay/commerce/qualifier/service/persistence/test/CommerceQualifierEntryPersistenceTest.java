@@ -216,24 +216,6 @@ public class CommerceQualifierEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByS_S_T() throws Exception {
-		_persistence.countByS_S_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByS_S_T(0L, 0L, 0L);
-	}
-
-	@Test
-	public void testCountByS_T_T() throws Exception {
-		_persistence.countByS_T_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByS_T_T(0L, 0L, 0L);
-	}
-
-	@Test
 	public void testCountByS_S_T_T() throws Exception {
 		_persistence.countByS_S_T_T(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -637,4 +619,4 @@ public class CommerceQualifierEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-676577356
+// LIFERAY-SERVICE-BUILDER-HASH:-1933955187
