@@ -1987,6 +1987,14 @@ public class ObjectDefinitionResourceTest
 	}
 
 	@Override
+	protected ObjectDefinition
+			testDeleteObjectDefinitionByExternalReferenceCode_addObjectDefinition()
+		throws Exception {
+
+		return _addObjectDefinition(randomObjectDefinition());
+	}
+
+	@Override
 	protected ObjectDefinition testGetObjectDefinition_addObjectDefinition()
 		throws Exception {
 
