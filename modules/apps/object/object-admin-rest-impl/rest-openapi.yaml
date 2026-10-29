@@ -899,6 +899,20 @@ paths:
                                 $ref: "#/components/schemas/ObjectDefinition"
             tags: ["ObjectDefinition"]
     "/object-definitions/by-external-reference-code/{externalReferenceCode}":
+        delete:
+            operationId: deleteObjectDefinitionByExternalReferenceCode
+            parameters:
+                -   in: path
+                    name: externalReferenceCode
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                204:
+                    content:
+                        application/json: {}
+                        application/xml: {}
+            tags: ["ObjectDefinition"]
         get:
             operationId: getObjectDefinitionByExternalReferenceCode
             parameters:
