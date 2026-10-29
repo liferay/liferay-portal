@@ -177,7 +177,9 @@ test(
 				await connectorsPage.goto();
 
 				await expect(
-					connectorsPage.getConnectorLastExecutionStatus(connectorName)
+					connectorsPage.getConnectorLastExecutionStatus(
+						connectorName
+					)
 				).toHaveText('Success');
 				await expect(
 					connectorsPage.getConnectorLastExecutionDate(connectorName)
