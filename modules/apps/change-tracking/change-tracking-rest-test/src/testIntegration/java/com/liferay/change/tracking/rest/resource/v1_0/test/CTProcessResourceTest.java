@@ -16,8 +16,10 @@ import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.service.CTProcessLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -26,6 +28,7 @@ import com.liferay.portal.test.rule.Inject;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,6 +39,21 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class CTProcessResourceTest extends BaseCTProcessResourceTestCase {
 
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_ctCollectionIds = TransformUtil.transform(
+			_ctCollectionLocalService.getCTCollections(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			CTCollection::getCtCollectionId);
+		_ctProcessIds = TransformUtil.transform(
+			_ctProcessLocalService.getCTProcesses(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			com.liferay.change.tracking.model.CTProcess::getCtProcessId);
+	}
+
 	@After
 	@Override
 	public void tearDown() throws Exception {
@@ -45,6 +63,28 @@ public class CTProcessResourceTest extends BaseCTProcessResourceTestCase {
 
 		if (ctPreferences != null) {
 			_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
+		}
+
+		for (com.liferay.change.tracking.model.CTProcess ctProcess :
+				_ctProcessLocalService.getCTProcesses(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			if (_ctProcessIds.contains(ctProcess.getCtProcessId())) {
+				continue;
+			}
+
+			_ctProcessLocalService.deleteCTProcess(ctProcess);
+		}
+
+		for (CTCollection ctCollection :
+				_ctCollectionLocalService.getCTCollections(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			if (_ctCollectionIds.contains(ctCollection.getCtCollectionId())) {
+				continue;
+			}
+
+			_ctCollectionLocalService.deleteCTCollection(ctCollection);
 		}
 
 		super.tearDown();
@@ -172,11 +212,15 @@ public class CTProcessResourceTest extends BaseCTProcessResourceTestCase {
 			serviceBuilderCTProcess.getCtProcessId());
 	}
 
+	private List<Long> _ctCollectionIds;
+
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
 
 	@Inject
 	private CTPreferencesLocalService _ctPreferencesLocalService;
+
+	private List<Long> _ctProcessIds;
 
 	@Inject
 	private CTProcessLocalService _ctProcessLocalService;

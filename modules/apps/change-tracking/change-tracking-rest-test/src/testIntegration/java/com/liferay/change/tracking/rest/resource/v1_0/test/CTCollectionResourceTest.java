@@ -20,10 +20,12 @@ import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.change.tracking.service.persistence.CTCollectionPersistence;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -79,6 +81,11 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
+		_ctCollectionIds = TransformUtil.transform(
+			_ctCollectionLocalService.getCTCollections(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			com.liferay.change.tracking.model.CTCollection::getCtCollectionId);
+
 		String password = RandomTestUtil.randomString();
 
 		User user = UserTestUtil.addUser(testCompany, password);
@@ -103,6 +110,17 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 
 		if (ctPreferences != null) {
 			_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
+		}
+
+		for (com.liferay.change.tracking.model.CTCollection ctCollection :
+				_ctCollectionLocalService.getCTCollections(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			if (_ctCollectionIds.contains(ctCollection.getCtCollectionId())) {
+				continue;
+			}
+
+			_ctCollectionLocalService.deleteCTCollection(ctCollection);
 		}
 
 		super.tearDown();
@@ -674,6 +692,8 @@ public class CTCollectionResourceTest extends BaseCTCollectionResourceTestCase {
 
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	private List<Long> _ctCollectionIds;
 
 	@Inject
 	private CTCollectionLocalService _ctCollectionLocalService;
