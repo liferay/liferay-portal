@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.db.migration.importer.DBCopyTablesProcess;
 import com.liferay.portal.tools.db.migration.importer.jdbc.AutoBatchPreparedStatementUtil;
 
+import java.sql.BatchUpdateException;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -153,6 +154,29 @@ public class DBCopyTablesProcessTest {
 		_testColumnTypeOf(
 			Function.identity(), Function.identity(), "BOOLEAN",
 			RandomTestUtil::randomBoolean);
+	}
+
+	@Test
+	@TestInfo("LPD-110960")
+	public void testCopyTableWithTargetCheckConstraint() throws Exception {
+		_createTable(
+			"create table TestTable (id INTEGER, testColumn VARCHAR(75))",
+			StringBundler.concat(
+				"create table TestTable (id INTEGER, testColumn VARCHAR(75), ",
+				"check (id <> ", RandomTestUtil.randomInt(1, _TABLE_SIZE),
+				"))"));
+
+		_insertValues(RandomTestUtil.randomStrings(_TABLE_SIZE));
+
+		try {
+			_copyTable();
+
+			Assert.fail();
+		}
+		catch (RuntimeException runtimeException) {
+			Assert.assertTrue(
+				runtimeException.getCause() instanceof BatchUpdateException);
+		}
 	}
 
 	@Test
