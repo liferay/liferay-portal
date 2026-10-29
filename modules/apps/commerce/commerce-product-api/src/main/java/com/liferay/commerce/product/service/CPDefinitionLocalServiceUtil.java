@@ -549,12 +549,6 @@ public class CPDefinitionLocalServiceUtil {
 	}
 
 	public static List<CPDefinition> getCPDefinitions(
-		long groupId, boolean subscriptionEnabled) {
-
-		return getService().getCPDefinitions(groupId, subscriptionEnabled);
-	}
-
-	public static List<CPDefinition> getCPDefinitions(
 		long groupId, int status, int start, int end) {
 
 		return getService().getCPDefinitions(groupId, status, start, end);
@@ -616,12 +610,6 @@ public class CPDefinitionLocalServiceUtil {
 	 */
 	public static int getCPDefinitionsCount() {
 		return getService().getCPDefinitionsCount();
-	}
-
-	public static int getCPDefinitionsCount(
-		long groupId, boolean subscriptionEnabled) {
-
-		return getService().getCPDefinitionsCount(groupId, subscriptionEnabled);
 	}
 
 	public static int getCPDefinitionsCount(long groupId, int status) {
@@ -1013,4 +1001,4 @@ public class CPDefinitionLocalServiceUtil {
 			CPDefinitionLocalServiceUtil.class, CPDefinitionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-157006335
+// LIFERAY-SERVICE-BUILDER-HASH:2144188950
