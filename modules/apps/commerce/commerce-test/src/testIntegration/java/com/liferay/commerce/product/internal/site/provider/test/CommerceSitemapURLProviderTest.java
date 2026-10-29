@@ -133,6 +133,8 @@ public class CommerceSitemapURLProviderTest {
 		CommerceTestUtil.addCommerceChannel(
 			_group.getGroupId(), _commerceCurrency.getCode());
 
+		_httpServletRequest = new MockHttpServletRequest();
+
 		_themeDisplay = ThemeDisplayFactory.create();
 
 		_themeDisplay.setCompany(_company);
@@ -140,11 +142,7 @@ public class CommerceSitemapURLProviderTest {
 			PermissionCheckerFactoryUtil.create(_user));
 		_themeDisplay.setPortalDomain(_company.getVirtualHostname());
 		_themeDisplay.setPortalURL(_company.getPortalURL(_group.getGroupId()));
-
-		_httpServletRequest = new MockHttpServletRequest();
-
 		_themeDisplay.setRequest(_httpServletRequest);
-
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
 		_themeDisplay.setServerPort(PortalUtil.getPortalServerPort(false));
 		_themeDisplay.setSignedIn(true);
