@@ -22,11 +22,13 @@ import {
 	postChatByExternalReferenceCodeMessage,
 } from './api';
 import {ContentType} from './components/ContentTypeSelectorMessageBalloon';
+import {APPLY_FRAGMENT_CODE_EVENT} from './events';
 import {subscribeToServerEvents} from './serverEvents';
 import {getSpaces} from './services/getSpaces';
 import {ChatMessageSentData, Message} from './types';
 import buildAssistantMessage from './utils/buildAssistantMessage';
 import buildContentTypeMessage from './utils/buildContentTypeMessage';
+import {getFragmentCode} from './utils/resolveMessage';
 
 export interface AIChatReportContext {
 	agentDefinitionExternalReferenceCodes: string[];
@@ -428,6 +430,15 @@ export default function useAIChat({
 
 						const assistantMessage =
 							buildAssistantMessage(dataJSON);
+
+						const fragmentCode = getFragmentCode(assistantMessage);
+
+						if (fragmentCode) {
+							Liferay.fire(
+								APPLY_FRAGMENT_CODE_EVENT,
+								fragmentCode
+							);
+						}
 
 						setMessages((previousMessages) => {
 							const lastMessage = previousMessages.at(-1);
