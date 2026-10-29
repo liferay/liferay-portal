@@ -748,6 +748,12 @@ public class DDMFormValuesExportImportContentProcessor
 					continue;
 				}
 
+				if (!jsonObject.has("id")) {
+					jsonObject.put("id", layout.getUuid());
+
+					value.addString(locale, jsonObject.toString());
+				}
+
 				Element entityElement =
 					_portletDataContext.getExportDataElement(_stagedModel);
 
