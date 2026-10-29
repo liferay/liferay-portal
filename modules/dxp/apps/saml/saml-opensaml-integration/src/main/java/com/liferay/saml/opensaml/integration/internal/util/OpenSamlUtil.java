@@ -85,7 +85,6 @@ import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.security.credential.UsageType;
 import org.opensaml.xmlsec.EncryptionConfiguration;
-import org.opensaml.xmlsec.SecurityConfigurationSupport;
 import org.opensaml.xmlsec.SignatureSigningConfiguration;
 import org.opensaml.xmlsec.SignatureSigningParameters;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
@@ -911,26 +910,18 @@ public class OpenSamlUtil {
 			samlMetadataSignatureSigningParametersResolver =
 				new SAMLMetadataSignatureSigningParametersResolver();
 
-		SignatureSigningConfiguration globalSignatureSigningConfiguration =
-			SecurityConfigurationSupport.
-				getGlobalSignatureSigningConfiguration();
+		BasicSignatureSigningConfiguration basicSignatureSigningConfiguration =
+			new BasicSignatureSigningConfiguration();
 
-		if (globalSignatureSigningConfiguration instanceof
-				BasicSignatureSigningConfiguration) {
-
-			BasicSignatureSigningConfiguration
-				basicSignatureSigningConfiguration =
-					(BasicSignatureSigningConfiguration)
-						globalSignatureSigningConfiguration;
-
-			basicSignatureSigningConfiguration.setSigningCredentials(
-				Collections.singletonList(credential));
-		}
+		basicSignatureSigningConfiguration.setSigningCredentials(
+			Collections.singletonList(credential));
 
 		SignatureSigningConfigurationCriterion
 			signatureSigningConfigurationCriterion =
 				new SignatureSigningConfigurationCriterion(
-					globalSignatureSigningConfiguration);
+					ConfigurationServiceBootstrapUtil.get(
+						SignatureSigningConfiguration.class),
+					basicSignatureSigningConfiguration);
 
 		CriteriaSet criteriaSet = new CriteriaSet(
 			signatureSigningConfigurationCriterion);
