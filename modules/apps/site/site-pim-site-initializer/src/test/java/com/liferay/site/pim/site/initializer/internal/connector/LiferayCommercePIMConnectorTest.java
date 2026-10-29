@@ -155,6 +155,7 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecuteWithInvalidStructureFieldMapping();
 		_testExecuteWithInvalidURL();
 		_testExecuteWithJoinedValues();
+		_testExecuteWithPicklistProductOptions();
 		_testExecuteWithPicklistProductSpecification();
 		_testExecuteWithProductOptions();
 		_testExecuteWithProductSpecifications();
@@ -1023,6 +1024,95 @@ public class LiferayCommercePIMConnectorTest {
 		JSONObject nameJSONObject = jsonObject.getJSONObject("name");
 
 		Assert.assertEquals("SKU-1", nameJSONObject.getString("en_US"));
+	}
+
+	private void _testExecuteWithPicklistProductOptions() throws Exception {
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		Mockito.when(
+			objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)
+		).thenReturn(
+			true
+		);
+
+		Mockito.when(
+			objectField.getListTypeDefinitionId()
+		).thenReturn(
+			_LIST_TYPE_DEFINITION_ID
+		);
+
+		_objectFieldLocalServiceUtilMockedStatic.when(
+			() -> ObjectFieldLocalServiceUtil.fetchObjectField(
+				_OBJECT_DEFINITION_ID, "size")
+		).thenReturn(
+			objectField
+		);
+
+		ListTypeEntry listTypeEntry = Mockito.mock(ListTypeEntry.class);
+
+		Mockito.when(
+			listTypeEntry.getKey()
+		).thenReturn(
+			"extraLarge"
+		);
+
+		Mockito.when(
+			listTypeEntry.getName(LocaleUtil.US)
+		).thenReturn(
+			"Extra Large"
+		);
+
+		_listTypeEntryLocalServiceUtilMockedStatic.when(
+			() -> ListTypeEntryLocalServiceUtil.fetchListTypeEntry(
+				_LIST_TYPE_DEFINITION_ID, "extraLarge")
+		).thenReturn(
+			listTypeEntry
+		);
+
+		JSONObject jsonObject = _getProductJSONObject(
+			"SKU-1",
+			_getRequiredObjectEntries(
+				_mockPIMFieldMappingObjectEntry(
+					"productOptions", StringPool.BLANK, "size", "dynamicValue",
+					StringPool.BLANK)),
+			Collections.<String, ObjectEntry>emptyMap(),
+			_mockPIMProductObjectEntry(
+				"SKU-1",
+				HashMapBuilder.<String, Serializable>put(
+					"size", "extraLarge"
+				).build()));
+
+		JSONArray jsonArray = jsonObject.getJSONArray("productOptions");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject productOptionJSONObject = jsonArray.getJSONObject(0);
+
+		jsonArray = productOptionJSONObject.getJSONArray("productOptionValues");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject productOptionValueJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"extraLarge", productOptionValueJSONObject.getString("key"));
+
+		JSONObject nameJSONObject = productOptionValueJSONObject.getJSONObject(
+			"name");
+
+		Assert.assertEquals("Extra Large", nameJSONObject.getString("en_US"));
+
+		JSONObject skuJSONObject = _getSkuJSONObject(0, jsonObject);
+
+		jsonArray = skuJSONObject.getJSONArray("skuOptions");
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject skuOptionJSONObject = jsonArray.getJSONObject(0);
+
+		Assert.assertEquals(
+			"extraLarge", skuOptionJSONObject.getString("value"));
 	}
 
 	private void _testExecuteWithPicklistProductSpecification()

@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.connector;
 
+import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -369,7 +370,9 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					return null;
 				}
 
-				String valueKey = _friendlyURLNormalizer.normalize(value);
+				String valueKey = _getValueKey(
+					objectDefinition, pimFieldMappingObjectEntry, value,
+					values);
 
 				if (!valueKeys.add(valueKey)) {
 					return null;
@@ -552,11 +555,10 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		ObjectEntry pimFieldMappingRuleObjectEntry, String sourceFieldName,
 		Map<String, Serializable> values) {
 
-		String value = _friendlyURLNormalizer.normalize(
-			PIMConnectorFieldMappingRulesUtil.applyRules(
-				pimFieldMappingRuleObjectEntry,
-				PIMConnectorFieldMappingsUtil.getValue(
-					objectDefinition, pimFieldMappingObjectEntry, values)));
+		String value = PIMConnectorFieldMappingRulesUtil.applyRules(
+			pimFieldMappingRuleObjectEntry,
+			PIMConnectorFieldMappingsUtil.getValue(
+				objectDefinition, pimFieldMappingObjectEntry, values));
 
 		if (Validator.isNull(value)) {
 			return null;
@@ -565,8 +567,25 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 		return JSONUtil.put(
 			"key", sourceFieldName
 		).put(
-			"value", value
+			"value",
+			_getValueKey(
+				objectDefinition, pimFieldMappingObjectEntry, value, values)
 		);
+	}
+
+	private String _getValueKey(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+		String value, Map<String, Serializable> values) {
+
+		ListTypeEntry listTypeEntry =
+			PIMConnectorFieldMappingsUtil.fetchListTypeEntry(
+				objectDefinition, objectEntry, values);
+
+		if (listTypeEntry != null) {
+			return listTypeEntry.getKey();
+		}
+
+		return _friendlyURLNormalizer.normalize(value);
 	}
 
 	private JSONArray _toJSONArray(

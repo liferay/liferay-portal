@@ -50,6 +50,37 @@ public class PIMConnectorFieldMappingsUtil {
 
 	public static final String TYPE_FIXED_VALUE = "fixedValue";
 
+	public static ListTypeEntry fetchListTypeEntry(
+		ObjectDefinition objectDefinition, ObjectEntry objectEntry,
+		Map<String, Serializable> values) {
+
+		if (isFixedValue(objectEntry)) {
+			return null;
+		}
+
+		String sourceFieldName = MapUtil.getString(
+			objectEntry.getValues(), "sourceFieldName");
+
+		String value = MapUtil.getString(values, sourceFieldName);
+
+		if (Validator.isNull(value)) {
+			return null;
+		}
+
+		ObjectField objectField = ObjectFieldLocalServiceUtil.fetchObjectField(
+			objectDefinition.getObjectDefinitionId(), sourceFieldName);
+
+		if ((objectField == null) ||
+			!objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
+
+			return null;
+		}
+
+		return ListTypeEntryLocalServiceUtil.fetchListTypeEntry(
+			objectField.getListTypeDefinitionId(), value);
+	}
+
 	public static List<ObjectEntry> filterObjectEntries(
 		ObjectDefinition objectDefinition,
 		List<ObjectEntry> pimFieldMappingObjectEntries) {
@@ -206,34 +237,16 @@ public class PIMConnectorFieldMappingsUtil {
 			return MapUtil.getString(objectEntry.getValues(), "value");
 		}
 
-		String sourceFieldName = MapUtil.getString(
-			objectEntry.getValues(), "sourceFieldName");
+		ListTypeEntry listTypeEntry = fetchListTypeEntry(
+			objectDefinition, objectEntry, values);
 
-		String value = MapUtil.getString(values, sourceFieldName);
-
-		if (Validator.isNull(value)) {
-			return value;
+		if (listTypeEntry != null) {
+			return listTypeEntry.getName(LocaleUtil.US);
 		}
 
-		ObjectField objectField = ObjectFieldLocalServiceUtil.fetchObjectField(
-			objectDefinition.getObjectDefinitionId(), sourceFieldName);
-
-		if ((objectField == null) ||
-			!objectField.compareBusinessType(
-				ObjectFieldConstants.BUSINESS_TYPE_PICKLIST)) {
-
-			return value;
-		}
-
-		ListTypeEntry listTypeEntry =
-			ListTypeEntryLocalServiceUtil.fetchListTypeEntry(
-				objectField.getListTypeDefinitionId(), value);
-
-		if (listTypeEntry == null) {
-			return value;
-		}
-
-		return listTypeEntry.getName(LocaleUtil.US);
+		return MapUtil.getString(
+			values,
+			MapUtil.getString(objectEntry.getValues(), "sourceFieldName"));
 	}
 
 	public static boolean isFixedValue(ObjectEntry objectEntry) {
