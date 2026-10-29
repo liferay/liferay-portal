@@ -43,16 +43,6 @@
 			<finder-column name="targetClassNameId" />
 			<finder-column name="targetClassPK" />
 		</finder>
-		<finder name="S_S_T" return-type="Collection">
-			<finder-column name="sourceClassNameId" />
-			<finder-column name="sourceClassPK" />
-			<finder-column name="targetClassNameId" />
-		</finder>
-		<finder name="S_T_T" return-type="Collection">
-			<finder-column name="sourceClassNameId" />
-			<finder-column name="targetClassNameId" />
-			<finder-column name="targetClassPK" />
-		</finder>
 		<finder name="S_S_T_T" return-type="CommerceQualifierEntry" unique="true">
 			<finder-column name="sourceClassNameId" />
 			<finder-column name="sourceClassPK" />
