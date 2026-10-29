@@ -413,6 +413,9 @@ public class ComboServletTest {
 
 		mockHttpServletRequest.setQueryString(path);
 
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
+
 		PortalCache<String, byte[][]> bytesArrayPortalCache =
 			ReflectionTestUtil.getFieldValue(
 				_comboServlet, "_bytesArrayPortalCache");
@@ -423,9 +426,6 @@ public class ComboServletTest {
 
 		String responseContent = RandomTestUtil.randomString();
 
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
 		try (SafeCloseable safeCloseable = _setUpHttpServletResponse(
 				HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE, responseContent,
 				ContentTypes.TEXT_CSS, mockHttpServletResponse)) {
@@ -433,14 +433,14 @@ public class ComboServletTest {
 			_comboServlet.service(
 				mockHttpServletRequest, mockHttpServletResponse);
 
-			Assert.assertEquals(
-				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+			Assert.assertNull(bytesArrayPortalCache.get(key));
 
 			String content = mockHttpServletResponse.getContentAsString();
 
 			Assert.assertTrue(content.contains(responseContent));
 
-			Assert.assertNull(bytesArrayPortalCache.get(key));
+			Assert.assertEquals(
+				HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 		}
 	}
 
