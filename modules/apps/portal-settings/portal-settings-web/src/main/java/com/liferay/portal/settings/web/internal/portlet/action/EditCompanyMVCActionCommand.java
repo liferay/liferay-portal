@@ -284,13 +284,12 @@ public class EditCompanyMVCActionCommand extends BaseFormMVCActionCommand {
 
 		String[] discardLegacyKeys = ParamUtil.getStringValues(
 			actionRequest, "discardLegacyKey");
+		List<String> legacyKeys = new ArrayList<>();
 
 		PortletPreferences portletPreferences = _prefsProps.getPreferences(
 			companyId);
 
 		Enumeration<String> enumeration = portletPreferences.getNames();
-
-		List<String> legacyKeys = new ArrayList<>();
 
 		while (enumeration.hasMoreElements()) {
 			String curName = enumeration.nextElement();
