@@ -22,6 +22,10 @@ import com.liferay.item.selector.ItemSelectorReturnType;
  * <code>fileEntryId</code>: The ID of the selected file entry
  * </li>
  * <li>
+ * <code>formattedSize</code>: The size of the selected file entry, formatted
+ * for the user's locale
+ * </li>
+ * <li>
  * <code>groupId</code>: The group ID of the selected file entry
  * </li>
  * <li>

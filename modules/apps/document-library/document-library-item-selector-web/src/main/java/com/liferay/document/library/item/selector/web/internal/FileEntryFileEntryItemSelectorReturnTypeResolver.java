@@ -11,6 +11,7 @@ import com.liferay.item.selector.ItemSelectorReturnTypeResolver;
 import com.liferay.item.selector.criteria.FileEntryItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepository;
@@ -65,6 +66,10 @@ public class FileEntryFileEntryItemSelectorReturnTypeResolver
 			"externalReferenceCode", fileEntry.getExternalReferenceCode()
 		).put(
 			"fileEntryId", String.valueOf(fileEntry.getFileEntryId())
+		).put(
+			"formattedSize",
+			_language.formatStorageSize(
+				fileEntry.getSize(), themeDisplay.getLocale())
 		).put(
 			"groupExternalReferenceCode", group.getExternalReferenceCode()
 		).put(
@@ -127,6 +132,9 @@ public class FileEntryFileEntryItemSelectorReturnTypeResolver
 
 	@Reference
 	private GroupLocalService _groupLocalService;
+
+	@Reference
+	private Language _language;
 
 	@Reference
 	private Portal _portal;
