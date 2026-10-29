@@ -8,44 +8,7 @@ import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 import {CommerceDNDTablePage} from '../commerceDNDTablePage';
 import {CommerceAdminProductDetailsPage} from './commerceAdminProductDetailsPage';
 
-const searchTableRowByValue = async function (
-	tableLocator: Locator,
-	colPosition: number,
-	value: string,
-	strictEqual: boolean = false
-) {
-	await tableLocator.elementHandle();
-
-	const rows = await tableLocator.locator('tr').all();
-
-	for await (const row of rows) {
-		const column = row.locator('td').nth(colPosition).first();
-
-		const colValue = (await column.allInnerTexts()).join('');
-
-		if (
-			(strictEqual && colValue === value) ||
-			(!strictEqual &&
-				colValue.toLowerCase().indexOf(value.toLowerCase()) >= 0)
-		) {
-			return {column, row};
-		}
-	}
-
-	throw new Error(`Cannot locate table row with value ${value}`);
-};
-
 export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDNDTablePage {
-	readonly addNewProductFrame: FrameLocator;
-	readonly addNewProductFrameTable: Locator;
-	readonly addNewProductFrameTableRow: (
-		colPosition: number,
-		value: number | string,
-		strictEqual?: boolean
-	) => Promise<{column: Locator; row: Locator}>;
-	readonly addNewProductFrameTableRowModifiedDateField: (
-		rowValue: string
-	) => Promise<Locator>;
 	readonly addProductRelationHeading: (
 		productName: string
 	) => Promise<Locator>;
@@ -55,6 +18,8 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 	readonly creationMenuNewButton: Locator;
 	readonly deleteBulkMenuItem: Locator;
 	readonly editSidePanelFrame: FrameLocator;
+	readonly itemSelectorModal: Locator;
+	readonly itemSelectorSelectButton: Locator;
 	readonly modalProductCheckbox: (productName: string) => Locator;
 	readonly modalSearchInput: Locator;
 	readonly page: Page;
@@ -87,35 +52,6 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 			'#_com_liferay_commerce_product_definitions_web_internal_portlet_CPDefinitionsPortlet_fm .fds table'
 		);
 
-		this.addNewProductFrame = page.frameLocator('iframe[id="modalIframe"]');
-		this.addNewProductFrameTable = this.addNewProductFrame.locator(
-			'#_com_liferay_item_selector_web_portlet_ItemSelectorPortlet_cpDefinitionsSearchContainer'
-		);
-		this.addNewProductFrameTableRow = async (
-			colPosition: number,
-			value: number | string,
-			strictEqual: boolean = false
-		) => {
-			return await searchTableRowByValue(
-				this.addNewProductFrameTable,
-				colPosition,
-				String(value),
-				strictEqual
-			);
-		};
-		this.addNewProductFrameTableRowModifiedDateField = async (rowValue) => {
-			const tableRow = await this.addNewProductFrameTableRow(
-				2,
-				rowValue,
-				true
-			);
-
-			if (tableRow && tableRow.row) {
-				return tableRow.row.locator('.lfr-modified-date-column');
-			}
-
-			throw new Error(`Cannot locate row with rowValue: ${rowValue}`);
-		};
 		this.addProductRelationHeading = async (productName: string) => {
 			return page.getByRole('heading', {
 				name: 'Add New Product to ' + productName,
@@ -160,12 +96,18 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 			.getByRole('tabpanel')
 			.locator('iframe')
 			.contentFrame();
+		this.itemSelectorModal = page.getByRole('dialog');
+		this.itemSelectorSelectButton = this.itemSelectorModal.getByRole(
+			'button',
+			{exact: true, name: 'Select'}
+		);
 		this.modalProductCheckbox = (productName: string) =>
-			this.addNewProductFrame
-				.getByRole('row', {name: productName})
-				.getByTitle('Select');
-		this.modalSearchInput = this.addNewProductFrame.getByRole('searchbox', {
-			name: 'Search for:',
+			this.itemSelectorModal
+				.getByRole('row')
+				.filter({hasText: productName})
+				.getByRole('checkbox');
+		this.modalSearchInput = this.itemSelectorModal.getByRole('searchbox', {
+			name: 'Search',
 		});
 		this.priorityInput = this.editSidePanelFrame.getByRole('textbox', {
 			name: 'Priority',
@@ -233,9 +175,9 @@ export class CommerceAdminProductDetailsProductRelationsPage extends CommerceDND
 		await this.modalSearchInput.fill(productName);
 		await this.modalSearchInput.press('Enter');
 		await this.modalProductCheckbox(productName).check();
-		await this.page.getByRole('button', {exact: true, name: 'Add'}).click();
+		await this.itemSelectorSelectButton.click();
 
-		await expect(this.addNewProductFrameTable).toBeHidden();
+		await expect(this.itemSelectorModal).toBeHidden();
 
 		await expect(
 			this.productRelationRow(productName, relationType)

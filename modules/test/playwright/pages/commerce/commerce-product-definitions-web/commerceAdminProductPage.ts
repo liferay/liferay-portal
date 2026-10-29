@@ -51,7 +51,6 @@ export class CommerceAdminProductPage extends CommerceDNDTablePage {
 	) => Locator;
 	readonly spareProductMenuButton: Locator;
 	readonly specificProductMenuLink: (productName: string) => Promise<Locator>;
-	readonly validProductCheckbox: (productName: string) => Promise<Locator>;
 	readonly virtualSettingsOverrideLink: Locator;
 
 	constructor(page: Page) {
@@ -173,13 +172,6 @@ export class CommerceAdminProductPage extends CommerceDNDTablePage {
 		});
 		this.specificProductMenuLink = async (productName: string) => {
 			return page.getByRole('link', {name: productName});
-		};
-		this.validProductCheckbox = async (productName: string) => {
-			return page
-				.frameLocator('#modalIframe')
-				.getByTestId('row')
-				.filter({hasText: productName})
-				.getByRole('checkbox', {disabled: false});
 		};
 		this.virtualSettingsOverrideLink = page
 			.frameLocator('iframe')

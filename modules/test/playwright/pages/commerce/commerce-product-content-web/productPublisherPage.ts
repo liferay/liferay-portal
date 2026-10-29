@@ -5,6 +5,7 @@
 
 import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {expandSection} from '../../../utils/expandSection';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {CommerceLayoutsPage} from '../commerce-order-content-web/commerceLayoutsPage';
@@ -34,6 +35,8 @@ export class ProductPublisherPage {
 		productPrice: string
 	) => Locator;
 	readonly productEntriesButton: Locator;
+	readonly productEntriesModal: Locator;
+	readonly productEntriesSelectButton: Locator;
 	readonly productLink: (productName: string) => Promise<Locator>;
 	readonly productSelectionRadio: (productSelection: string) => Locator;
 	readonly productSku: (productSku: string) => Promise<Locator>;
@@ -112,6 +115,14 @@ export class ProductPublisherPage {
 		this.productEntriesButton = this.configurationFrame.getByRole(
 			'button',
 			{name: 'Product Entries'}
+		);
+		this.productEntriesModal = this.configurationFrame.getByRole('dialog', {
+			exact: true,
+			name: 'Select Product',
+		});
+		this.productEntriesSelectButton = this.configurationFrame.getByRole(
+			'button',
+			{exact: true, name: 'Select'}
 		);
 		this.productLink = async (productName: string) => {
 			return page.getByRole('link', {exact: true, name: productName});
@@ -214,6 +225,29 @@ export class ProductPublisherPage {
 		}
 
 		await this.closeButton.click();
+	}
+
+	async addProductEntry(productName: string) {
+		await expandSection(this.productEntriesButton);
+
+		await clickAndExpectToBeVisible({
+			target: this.productEntriesModal,
+			trigger: this.productEntriesSelectButton,
+		});
+
+		await this.productEntriesModal
+			.getByRole('row')
+			.filter({hasText: productName})
+			.getByRole('checkbox')
+			.check();
+		await this.productEntriesModal
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await waitForAlert(
+			this.configurationFrame,
+			'Success:You have successfully updated the setup.'
+		);
 	}
 
 	async addProductPublisherWidget() {

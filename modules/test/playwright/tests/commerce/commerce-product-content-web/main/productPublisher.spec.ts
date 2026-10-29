@@ -230,3 +230,44 @@ test(
 		await expect(productPublisherPage.productEntriesButton).toBeVisible();
 	}
 );
+
+test(
+	'The Product Publisher configuration adds a product picked from the item selector',
+	{tag: '@LPD-110417'},
+	async ({apiHelpers, page, productPublisherPage, site, widgetPagePage}) => {
+		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
+			groupId: site.id,
+			title: getRandomString(),
+		});
+
+		await apiHelpers.headlessCommerceAdminChannel.postChannel({
+			siteGroupId: site.id,
+		});
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog();
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+			});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
+
+		await widgetPagePage.addPortlet('Product Publisher');
+
+		await productPublisherPage.goToProductSelection();
+
+		await productPublisherPage.productSelectionRadio('Manual').click();
+
+		await productPublisherPage.addProductEntry(product.name['en_US']);
+
+		await expect(
+			productPublisherPage.configurationFrame.getByRole('cell', {
+				exact: true,
+				name: product.name['en_US'],
+			})
+		).toBeVisible();
+	}
+);

@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 
@@ -19,8 +19,7 @@ export class CommerceAdminChannelDetailsProductDisplayPagesPage {
 	readonly selectProductButton: Locator;
 	readonly selectProductDisplayPageFrame: FrameLocator;
 	readonly selectProductDisplayPageIframe: Locator;
-	readonly selectProductFrame: FrameLocator;
-	readonly selectProductIframe: Locator;
+	readonly selectProductModal: Locator;
 	readonly successMessage: Locator;
 	readonly tableRow: (productName: string) => Locator;
 
@@ -55,10 +54,13 @@ export class CommerceAdminChannelDetailsProductDisplayPagesPage {
 			);
 		this.selectProductDisplayPageFrame =
 			this.selectProductDisplayPageIframe.contentFrame();
-		this.selectProductIframe = this.addDisplayLayoutFrame.locator(
-			'iframe[title="Select Product"]'
+		this.selectProductModal = this.addDisplayLayoutFrame.getByRole(
+			'dialog',
+			{
+				exact: true,
+				name: 'Select Product',
+			}
 		);
-		this.selectProductFrame = this.selectProductIframe.contentFrame();
 		this.successMessage = this.addDisplayLayoutFrame.getByText(
 			'Success:Your request completed successfully.'
 		);
@@ -123,14 +125,19 @@ export class CommerceAdminChannelDetailsProductDisplayPagesPage {
 
 	async selectProduct(productName: string) {
 		await clickAndExpectToBeVisible({
-			target: this.selectProductIframe,
+			target: this.selectProductModal,
 			trigger: this.selectProductButton,
 		});
 
-		await this.selectProductFrame
+		await this.selectProductModal
 			.getByRole('row')
 			.filter({hasText: productName})
-			.getByRole('button', {name: 'Choose'})
+			.getByRole('radio')
+			.check();
+		await this.selectProductModal
+			.getByRole('button', {exact: true, name: 'Select'})
 			.click();
+
+		await expect(this.selectProductModal).toBeHidden();
 	}
 }

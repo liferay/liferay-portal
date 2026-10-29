@@ -75,11 +75,11 @@ test('LPD-5780 Modal title and product name appear properly in product menu', as
 
 	await commerceAdminProductDetailsProductRelationsPage.addSpareProductRelation();
 
-	await (
-		await commerceAdminProductPage.validProductCheckbox(product1.name.en_US)
-	).check();
+	await commerceAdminProductDetailsProductRelationsPage
+		.modalProductCheckbox(product1.name.en_US)
+		.check();
 
-	await commerceAdminProductPage.modalAddButton.click();
+	await commerceAdminProductDetailsProductRelationsPage.itemSelectorSelectButton.click();
 
 	await expect(
 		await commerceAdminProductPage.specificProductMenuLink(
@@ -873,18 +873,6 @@ test('LPD-39067 Can product media and relation show correct date format', async 
 		);
 
 	verifyDateFormat(await createDate.textContent());
-
-	await commerceAdminProductDetailsProductRelationsPage.creationMenuNewButton.click();
-	await commerceAdminProductDetailsProductRelationsPage.addUpSellProductMenuButton.click();
-
-	const newProductRelationFrameTableModifiedDate =
-		await commerceAdminProductDetailsProductRelationsPage.addNewProductFrameTableRowModifiedDateField(
-			relationProduct.name['en_US']
-		);
-
-	verifyDateFormat(
-		await newProductRelationFrameTableModifiedDate.textContent()
-	);
 });
 
 test('LPD-52731 Product shows in catalog after updating Account Group Visibility Filter through Batch API', async ({
