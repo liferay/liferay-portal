@@ -17,6 +17,7 @@ import com.liferay.exportimport.kernel.lar.StagedModelDataHandler;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.exportimport.kernel.lar.StagedModelModifiedDateComparator;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.model.FriendlyURLEntryLocalization;
 import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -40,8 +41,10 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Element;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -392,6 +395,43 @@ public class BlogsEntryStagedModelDataHandler
 		};
 	}
 
+	private void _deleteFriendlyURLEntries(
+			BlogsEntry importedEntry, Set<Long> importedFriendlyURLEntryIds)
+		throws PortalException {
+
+		for (FriendlyURLEntry friendlyURLEntry :
+				_friendlyURLEntryLocalService.getFriendlyURLEntries(
+					importedEntry.getGroupId(),
+					_portal.getClassNameId(BlogsEntry.class),
+					importedEntry.getEntryId())) {
+
+			if (importedFriendlyURLEntryIds.contains(
+					friendlyURLEntry.getFriendlyURLEntryId())) {
+
+				continue;
+			}
+
+			List<FriendlyURLEntryLocalization> friendlyURLEntryLocalizations =
+				_friendlyURLEntryLocalService.getFriendlyURLEntryLocalizations(
+					friendlyURLEntry.getFriendlyURLEntryId());
+
+			if (friendlyURLEntryLocalizations.isEmpty()) {
+				_friendlyURLEntryLocalService.deleteFriendlyURLEntry(
+					friendlyURLEntry);
+
+				continue;
+			}
+
+			for (FriendlyURLEntryLocalization friendlyURLEntryLocalization :
+					friendlyURLEntryLocalizations) {
+
+				_friendlyURLEntryLocalService.
+					deleteFriendlyURLLocalizationEntry(
+						friendlyURLEntryLocalization);
+			}
+		}
+	}
+
 	private void _exportAssetDisplayPage(
 			PortletDataContext portletDataContext, BlogsEntry entry)
 		throws Exception {
@@ -512,6 +552,8 @@ public class BlogsEntryStagedModelDataHandler
 		articleNewPrimaryKeys.put(
 			entry.getEntryId(), importedEntry.getEntryId());
 
+		Set<Long> importedFriendlyURLEntryIds = new HashSet<>();
+
 		for (Element friendlyURLEntryElement : friendlyURLEntryElements) {
 			String path = friendlyURLEntryElement.attributeValue("path");
 
@@ -539,9 +581,39 @@ public class BlogsEntryStagedModelDataHandler
 
 			existingFriendlyURLEntry.setClassPK(importedEntry.getEntryId());
 
-			_friendlyURLEntryLocalService.updateFriendlyURLEntry(
-				existingFriendlyURLEntry);
+			existingFriendlyURLEntry =
+				_friendlyURLEntryLocalService.updateFriendlyURLEntry(
+					existingFriendlyURLEntry);
+
+			importedFriendlyURLEntryIds.add(
+				existingFriendlyURLEntry.getFriendlyURLEntryId());
 		}
+
+		if (!importedFriendlyURLEntryIds.isEmpty() &&
+			(importedFriendlyURLEntryIds.size() ==
+				friendlyURLEntryElements.size())) {
+
+			_deleteFriendlyURLEntries(
+				importedEntry, importedFriendlyURLEntryIds);
+		}
+
+		FriendlyURLEntry mainFriendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchMainFriendlyURLEntry(
+				_portal.getClassNameId(BlogsEntry.class),
+				importedEntry.getEntryId());
+
+		if ((mainFriendlyURLEntry == null) ||
+			Validator.isNull(mainFriendlyURLEntry.getUrlTitle()) ||
+			StringUtil.equals(
+				mainFriendlyURLEntry.getUrlTitle(),
+				importedEntry.getUrlTitle())) {
+
+			return;
+		}
+
+		importedEntry.setUrlTitle(mainFriendlyURLEntry.getUrlTitle());
+
+		_blogsEntryLocalService.updateBlogsEntry(importedEntry);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
