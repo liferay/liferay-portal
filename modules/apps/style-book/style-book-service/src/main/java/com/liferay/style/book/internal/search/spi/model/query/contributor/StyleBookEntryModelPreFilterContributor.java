@@ -31,16 +31,16 @@ public class StyleBookEntryModelPreFilterContributor
 		BooleanFilter booleanFilter, ModelSearchSettings modelSearchSettings,
 		SearchContext searchContext) {
 
+		booleanFilter.addTerm(
+			Field.STATUS, String.valueOf(WorkflowConstants.STATUS_EMPTY),
+			BooleanClauseOccur.MUST_NOT);
+
 		boolean head = GetterUtil.getBoolean(
 			searchContext.getAttribute("head"), Boolean.TRUE);
 
 		if (head) {
 			booleanFilter.addRequiredTerm("head", Boolean.TRUE);
 		}
-
-		booleanFilter.addTerm(
-			Field.STATUS, String.valueOf(WorkflowConstants.STATUS_EMPTY),
-			BooleanClauseOccur.MUST_NOT);
 	}
 
 }
