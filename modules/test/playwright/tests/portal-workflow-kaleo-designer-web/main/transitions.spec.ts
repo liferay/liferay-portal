@@ -56,7 +56,7 @@ test.describe('Transition', () => {
 
 			await test.step('Assert that the transition can be selected', async () => {
 				await diagramViewPage.clickTransition(
-					'TRANSITION FROM PARENT TASK TO CHILD TASK 1'
+					'Transition From Parent Task to Child Task 1'
 				);
 
 				await expect(
@@ -94,13 +94,13 @@ test.describe('Transition', () => {
 
 		await test.step('Assert that transitions with different source nodes can have the same name', async () => {
 			await diagramViewPage.clickTransition(
-				'TRANSITION FROM CHILD TASK 1 TO END'
+				'Transition From Child Task 1 to End'
 			);
 
 			await transitionInfoPage.transitionNameField.fill('Same Name');
 
 			await diagramViewPage.clickTransition(
-				'TRANSITION FROM CHILD TASK 2 TO END'
+				'Transition From Child Task 2 to End'
 			);
 
 			await transitionInfoPage.transitionNameField.fill('Same Name');
@@ -114,7 +114,7 @@ test.describe('Transition', () => {
 
 		await test.step('Assert that transitions with the same source node cannot have the same name', async () => {
 			await diagramViewPage.clickTransition(
-				'TRANSITION FROM PARENT TASK TO CHILD TASK 2'
+				'Transition From Parent Task to Child Task 2'
 			);
 
 			await transitionInfoPage.transitionNameField.fill(
@@ -130,11 +130,11 @@ test.describe('Transition', () => {
 
 		await test.step('Assert that a repeated name is reverted to a previously valid name after navigating back', async () => {
 			await diagramViewPage.clickTransition(
-				'TRANSITION FROM PARENT TASK TO CHILD TASK 1'
+				'Transition From Parent Task to Child Task 1'
 			);
 
 			await diagramViewPage.clickTransition(
-				'TRANSITION FROM PARENT TASK TO CHILD TASK 2'
+				'Transition From Parent Task to Child Task 2'
 			);
 
 			expect(page.getByLabel('Transition Name*')).toHaveValue(
