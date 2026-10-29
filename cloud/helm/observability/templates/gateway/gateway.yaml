@@ -1,0 +1,89 @@
+{{- if .Values.gateway.enabled -}}
+{{- $gatewayName := include "observability.gateway.name" . -}}
+{{- $grafanaFullname := include "observability.grafana.fullname" . -}}
+{{- $hostname := "" -}}
+{{- with .Values.grafana.route.main.hostnames -}}
+{{- $hostname = first . -}}
+{{- end -}}
+{{- if not $hostname -}}
+{{- fail "\"grafana.route.main.hostnames\" must be set when \"gateway.enabled\" is \"true\"" -}}
+{{- end -}}
+{{- range $routeName, $route := .Values.grafana.route -}}
+{{- if $route.enabled -}}
+{{- range $route.parentRefs -}}
+{{- if ne .name $gatewayName -}}
+{{- fail (printf "\"grafana.route.%s.parentRefs\" must reference the %q gateway" $routeName $gatewayName) -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+{{- $tls := .Values.gateway.tls -}}
+{{- if and $tls.clusterIssuer $tls.externalSecretKey -}}
+{{- fail "Only one of \"gateway.tls.clusterIssuer\" and \"gateway.tls.externalSecretKey\" may be set" -}}
+{{- end -}}
+{{- if not (or $tls.clusterIssuer $tls.externalSecretKey) -}}
+{{- fail "\"gateway.tls.clusterIssuer\" or \"gateway.tls.externalSecretKey\" must be set when \"gateway.enabled\" is \"true\"" -}}
+{{- end -}}
+{{- $annotations := deepCopy .Values.gateway.annotations -}}
+{{- with $tls.clusterIssuer -}}
+{{- $_ := set $annotations "cert-manager.io/cluster-issuer" . -}}
+{{- end -}}
+{{- with $tls.externalSecretKey }}
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+    labels:
+        {{- include "observability.labels" $ | nindent 8 }}
+    name: {{ printf "%s-tls" $grafanaFullname | quote }}
+    namespace: {{ include "observability.namespace" $ | quote }}
+spec:
+    dataFrom:
+        -   extract:
+                decodingStrategy: Auto
+                key: {{ . | quote }}
+    refreshInterval: 1h0m0s
+    secretStoreRef:
+        kind: ClusterSecretStore
+        name: {{ include "observability.clusterSecretStoreName" (dict "context" $ "reason" "\"gateway.tls.externalSecretKey\" is set") | quote }}
+    target:
+        name: {{ printf "%s-tls" $grafanaFullname | quote }}
+        template:
+            type: kubernetes.io/tls
+---
+{{- end }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+    {{- with $annotations }}
+    annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ $gatewayName | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    gatewayClassName: {{ include "observability.gateway.className" . | quote }}
+    listeners:
+        -   allowedRoutes:
+                kinds:
+                    -   group: gateway.networking.k8s.io
+                        kind: HTTPRoute
+            hostname: {{ $hostname | quote }}
+            name: http
+            port: 80
+            protocol: HTTP
+        -   allowedRoutes:
+                kinds:
+                    -   group: gateway.networking.k8s.io
+                        kind: HTTPRoute
+            hostname: {{ $hostname | quote }}
+            name: https
+            port: 443
+            protocol: HTTPS
+            tls:
+                certificateRefs:
+                    -   group: ""
+                        kind: Secret
+                        name: {{ printf "%s-tls" $grafanaFullname | quote }}
+{{- end -}}

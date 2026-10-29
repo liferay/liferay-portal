@@ -18,6 +18,10 @@ azure-monitor
 {{- end -}}
 {{- end -}}
 
+{{- define "observability.clusterSecretStoreName" -}}
+{{- required (printf "\"clusterSecretStore.name\" must be set when %s" .reason) (default .context.Values.clusterSecretStore.name .override) -}}
+{{- end -}}
+
 {{- define "observability.customLabels" -}}
 {{- with .Values.customLabels }}
 {{ toYaml . }}
@@ -40,6 +44,27 @@ azure-monitor
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{- define "observability.gateway.className" -}}
+{{- $provider := .Values.gateway.provider -}}
+{{- if eq $provider.name "envoy" -}}
+{{- default (printf "%s-class" (include "observability.gateway.name" .)) $provider.envoy.className -}}
+{{- else if eq $provider.name "gke" -}}
+{{- required "\"gateway.provider.gke.className\" must be set when \"gateway.provider.name\" is \"gke\"" $provider.gke.className -}}
+{{- else -}}
+{{- fail (printf "\"gateway.provider.name\" must be \"envoy\" or \"gke\", not %q" $provider.name) -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "observability.gateway.envoySelectorLabels" -}}
+app.kubernetes.io/name: envoy
+gateway.envoyproxy.io/owning-gateway-name: {{ include "observability.gateway.name" . | quote }}
+gateway.envoyproxy.io/owning-gateway-namespace: {{ include "observability.namespace" . | quote }}
+{{- end -}}
+
+{{- define "observability.gateway.name" -}}
+{{- required "\"gateway.name\" must be set when \"gateway.enabled\" is \"true\"" .Values.gateway.name -}}
+{{- end -}}
 
 {{- define "observability.grafana.fullname" -}}
 {{- $grafanaCtx := index .Subcharts "grafana" -}}

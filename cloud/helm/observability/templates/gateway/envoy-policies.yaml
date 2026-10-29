@@ -1,0 +1,149 @@
+{{- if and .Values.gateway.enabled (eq .Values.gateway.provider.name "envoy") -}}
+{{- $envoy := .Values.gateway.provider.envoy -}}
+{{- $accessControl := $envoy.accessControl -}}
+{{- if and $accessControl.enabled (not $accessControl.allowedCIDRs) -}}
+{{- fail "\"gateway.provider.envoy.accessControl.allowedCIDRs\" must not be empty when \"gateway.provider.envoy.accessControl.enabled\" is \"true\"" -}}
+{{- end -}}
+{{- $gatewayName := include "observability.gateway.name" . -}}
+{{- $grafanaFullname := include "observability.grafana.fullname" . -}}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-ingress" $gatewayName | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    ingress:
+        -   {}
+    podSelector:
+        matchLabels:
+            {{- include "observability.gateway.envoySelectorLabels" . | nindent 12 }}
+    policyTypes:
+        -   Ingress
+{{- if .Values.grafana.networkPolicy.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-allow-envoy" $grafanaFullname | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    ingress:
+        -   from:
+                -   podSelector:
+                        matchLabels:
+                            {{- include "observability.gateway.envoySelectorLabels" . | nindent 28 }}
+                -   namespaceSelector:
+                        matchLabels:
+                            kubernetes.io/metadata.name: {{ $envoy.proxyNamespace | quote }}
+                    podSelector:
+                        matchLabels:
+                            {{- include "observability.gateway.envoySelectorLabels" . | nindent 28 }}
+    podSelector:
+        matchLabels:
+            {{- include "grafana.selectorLabels" (index .Subcharts "grafana") | nindent 12 }}
+    policyTypes:
+        -   Ingress
+{{- end }}
+{{- with $envoy.backendTrafficPolicySpec }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: BackendTrafficPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" $ | nindent 8 }}
+    name: {{ $grafanaFullname | quote }}
+    namespace: {{ include "observability.namespace" $ | quote }}
+spec:
+    {{- toYaml . | nindent 4 }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: HTTPRoute
+            name: {{ $grafanaFullname | quote }}
+{{- end }}
+{{- with $envoy.clientTrafficPolicySpec }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: ClientTrafficPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" $ | nindent 8 }}
+    name: {{ $grafanaFullname | quote }}
+    namespace: {{ include "observability.namespace" $ | quote }}
+spec:
+    {{- toYaml . | nindent 4 }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: Gateway
+            name: {{ $gatewayName | quote }}
+{{- end }}
+{{- if not $envoy.className }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: EnvoyProxy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-proxy-config" $gatewayName | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ $envoy.proxyNamespace | quote }}
+spec:
+    provider:
+        kubernetes:
+            envoyDeployment:
+                {{- with $envoy.envoyProxy.podAnnotations }}
+                pod:
+                    annotations:
+                        {{- toYaml . | nindent 24 }}
+                {{- end }}
+                replicas: {{ $envoy.envoyProxy.replicas }}
+            envoyService:
+                {{- with $envoy.envoyProxy.serviceAnnotations }}
+                annotations:
+                    {{- toYaml . | nindent 20 }}
+                {{- end }}
+                externalTrafficPolicy: Local
+        type: Kubernetes
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ include "observability.gateway.className" . | quote }}
+spec:
+    controllerName: gateway.envoyproxy.io/gatewayclass-controller
+    parametersRef:
+        group: gateway.envoyproxy.io
+        kind: EnvoyProxy
+        name: {{ printf "%s-proxy-config" $gatewayName | trunc 63 | trimSuffix "-" | quote }}
+        namespace: {{ $envoy.proxyNamespace | quote }}
+{{- end }}
+{{- if $accessControl.enabled }}
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: SecurityPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ $gatewayName | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    authorization:
+        defaultAction: Deny
+        rules:
+            -   action: Allow
+                name: allowed-cidrs
+                principal:
+                    clientCIDRs:
+                        {{- range $accessControl.allowedCIDRs }}
+                        -   {{ . | quote }}
+                        {{- end }}
+    targetRefs:
+        -   group: gateway.networking.k8s.io
+            kind: Gateway
+            name: {{ $gatewayName | quote }}
+{{- end }}
+{{- end -}}

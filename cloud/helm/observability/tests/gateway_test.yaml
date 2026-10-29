@@ -1,0 +1,227 @@
+set:
+    gateway.enabled: true
+    gateway.tls.clusterIssuer: letsencrypt-prod
+    grafana.route.main.enabled: true
+    grafana.route.main.hostnames:
+        -   grafana.example.com
+    grafana.route.redirect.enabled: true
+    grafana.route.redirect.hostnames:
+        -   grafana.example.com
+suite: Gateway
+templates:
+    -   templates/gateway/envoy-policies.yaml
+    -   templates/gateway/gateway.yaml
+    -   templates/gateway/gke-policies.yaml
+tests:
+    -   asserts:
+            -   equal:
+                    path: metadata.annotations["cert-manager.io/cluster-issuer"]
+                    value: letsencrypt-prod
+                template: templates/gateway/gateway.yaml
+        it: Annotates the gateway for cert-manager when gateway.tls.clusterIssuer is set
+    -   asserts:
+            -   equal:
+                    path: spec.gatewayClassName
+                    value: grafana-gateway-class
+                template: templates/gateway/gateway.yaml
+            -   hasDocuments:
+                    count: 3
+                template: templates/gateway/envoy-policies.yaml
+            -   documentSelector:
+                    path: kind
+                    value: GatewayClass
+                equal:
+                    path: spec.parametersRef
+                    value:
+                        group: gateway.envoyproxy.io
+                        kind: EnvoyProxy
+                        name: grafana-gateway-proxy-config
+                        namespace: envoy-gateway-system
+                template: templates/gateway/envoy-policies.yaml
+        it: Creates the Envoy gateway class when gateway.provider.envoy.className is empty
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "\"grafana.route.main.parentRefs\" must reference the \"other\" gateway"
+                template: templates/gateway/gateway.yaml
+        it: Fails when a Grafana route references another gateway
+        set:
+            gateway.name: other
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "\"gateway.provider.envoy.accessControl.allowedCIDRs\" must not be empty when \"gateway.provider.envoy.accessControl.enabled\" is \"true\""
+                template: templates/gateway/envoy-policies.yaml
+        it: Fails when access control allows no CIDRs
+        set:
+            gateway.provider.envoy.accessControl.enabled: true
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "Only one of \"gateway.tls.clusterIssuer\" and \"gateway.tls.externalSecretKey\" may be set"
+                template: templates/gateway/gateway.yaml
+        it: Fails when both TLS sources are set
+        set:
+            gateway.tls.externalSecretKey: certificates-grafana
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "\"clusterSecretStore.name\" must be set when \"gateway.tls.externalSecretKey\" is set"
+                template: templates/gateway/gateway.yaml
+        it: Fails when gateway.tls.externalSecretKey is set without a cluster secret store
+        set:
+            gateway.tls.clusterIssuer: ""
+            gateway.tls.externalSecretKey: certificates-grafana
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "\"gateway.tls.clusterIssuer\" or \"gateway.tls.externalSecretKey\" must be set when \"gateway.enabled\" is \"true\""
+                template: templates/gateway/gateway.yaml
+        it: Fails when no TLS source is set
+        set:
+            gateway.tls.clusterIssuer: ""
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "\"grafana.route.main.hostnames\" must be set when \"gateway.enabled\" is \"true\""
+                template: templates/gateway/gateway.yaml
+        it: Fails when the Grafana route has no hostname
+        set:
+            grafana.route.main.hostnames: []
+    -   asserts:
+            -   failedTemplate:
+                    errorMessage: "\"gateway.provider.name\" must be \"envoy\" or \"gke\", not \"other\""
+                template: templates/gateway/gateway.yaml
+        it: Fails when the provider is neither envoy nor gke
+        set:
+            gateway.provider.name: other
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-grafana-allow-envoy
+                equal:
+                    path: spec.ingress[0].from
+                    value:
+                        -   podSelector:
+                                matchLabels:
+                                    app.kubernetes.io/name: envoy
+                                    gateway.envoyproxy.io/owning-gateway-name: grafana-gateway
+                                    gateway.envoyproxy.io/owning-gateway-namespace: NAMESPACE
+                        -   namespaceSelector:
+                                matchLabels:
+                                    kubernetes.io/metadata.name: custom-envoy-system
+                            podSelector:
+                                matchLabels:
+                                    app.kubernetes.io/name: envoy
+                                    gateway.envoyproxy.io/owning-gateway-name: grafana-gateway
+                                    gateway.envoyproxy.io/owning-gateway-namespace: NAMESPACE
+                template: templates/gateway/envoy-policies.yaml
+        it: Lets only the Envoy proxies of the gateway in the release or proxy namespace reach Grafana
+        set:
+            gateway.provider.envoy.proxyNamespace: custom-envoy-system
+            grafana.networkPolicy.enabled: true
+    -   asserts:
+            -   documentSelector:
+                    path: metadata.name
+                    value: RELEASE-NAME-grafana-allow-gke-load-balancer
+                equal:
+                    path: spec.ingress[0].from
+                    value:
+                        -   ipBlock:
+                                cidr: 35.191.0.0/16
+                        -   ipBlock:
+                                cidr: 130.211.0.0/22
+                template: templates/gateway/gke-policies.yaml
+        it: Lets only the GKE load balancer ranges reach Grafana when the provider is gke
+        set:
+            gateway.provider.name: gke
+            grafana.networkPolicy.enabled: true
+    -   asserts:
+            -   hasDocuments:
+                    count: 0
+        it: Renders no gateway objects when the gateway is disabled
+        set:
+            gateway.enabled: false
+    -   asserts:
+            -   equal:
+                    path: spec.gatewayClassName
+                    value: gke-l7-global-external-managed
+                template: templates/gateway/gateway.yaml
+            -   hasDocuments:
+                    count: 0
+                template: templates/gateway/envoy-policies.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/gateway/gke-policies.yaml
+            -   equal:
+                    path: kind
+                    value: GCPBackendPolicy
+                template: templates/gateway/gke-policies.yaml
+        it: Renders only the GKE policies that are set when the provider is gke
+        set:
+            gateway.provider.gke.backendPolicy.timeoutSec: 180
+            gateway.provider.name: gke
+    -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: BackendTrafficPolicy
+                equal:
+                    path: spec.targetRefs[0].name
+                    value: RELEASE-NAME-grafana
+                template: templates/gateway/envoy-policies.yaml
+            -   documentSelector:
+                    path: kind
+                    value: ClientTrafficPolicy
+                equal:
+                    path: spec.targetRefs[0].name
+                    value: grafana-gateway
+                template: templates/gateway/envoy-policies.yaml
+        it: Renders the Envoy traffic policies that are set
+        set:
+            gateway.provider.envoy.backendTrafficPolicySpec.timeout.http.requestTimeout: 180s
+            gateway.provider.envoy.clientTrafficPolicySpec.tls.minVersion: "1.2"
+    -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: SecurityPolicy
+                equal:
+                    path: spec.authorization.rules[0].principal.clientCIDRs
+                    value:
+                        -   203.0.113.0/24
+                template: templates/gateway/envoy-policies.yaml
+        it: Restricts the gateway to the allowed CIDRs
+        set:
+            gateway.provider.envoy.accessControl.allowedCIDRs:
+                -   203.0.113.0/24
+            gateway.provider.envoy.accessControl.enabled: true
+    -   asserts:
+            -   documentSelector:
+                    path: kind
+                    value: ExternalSecret
+                equal:
+                    path: spec.dataFrom[0].extract.key
+                    value: certificates-grafana
+                template: templates/gateway/gateway.yaml
+            -   documentSelector:
+                    path: kind
+                    value: ExternalSecret
+                equal:
+                    path: spec.target.name
+                    value: RELEASE-NAME-grafana-tls
+                template: templates/gateway/gateway.yaml
+            -   documentSelector:
+                    path: kind
+                    value: Gateway
+                notExists:
+                    path: metadata.annotations
+                template: templates/gateway/gateway.yaml
+        it: Syncs the TLS certificate from the secret store when gateway.tls.externalSecretKey is set
+        set:
+            clusterSecretStore.name: example-secret-store
+            gateway.tls.clusterIssuer: ""
+            gateway.tls.externalSecretKey: certificates-grafana
+    -   asserts:
+            -   equal:
+                    path: spec.gatewayClassName
+                    value: envoy-gateway-l4
+                template: templates/gateway/gateway.yaml
+            -   hasDocuments:
+                    count: 1
+                template: templates/gateway/envoy-policies.yaml
+        it: Uses gateway.provider.envoy.className without creating a gateway class
+        set:
+            gateway.provider.envoy.className: envoy-gateway-l4

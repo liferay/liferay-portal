@@ -1,0 +1,76 @@
+{{- if and .Values.gateway.enabled (eq .Values.gateway.provider.name "gke") -}}
+{{- $gke := .Values.gateway.provider.gke -}}
+{{- $grafanaFullname := include "observability.grafana.fullname" . -}}
+{{- if and .Values.grafana.networkPolicy.enabled $gke.loadBalancerIPBlocks }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" . | nindent 8 }}
+    name: {{ printf "%s-allow-gke-load-balancer" $grafanaFullname | trunc 63 | trimSuffix "-" | quote }}
+    namespace: {{ include "observability.namespace" . | quote }}
+spec:
+    ingress:
+        -   from:
+                {{- range $gke.loadBalancerIPBlocks }}
+                -   ipBlock:
+                        cidr: {{ . | quote }}
+                {{- end }}
+    podSelector:
+        matchLabels:
+            {{- include "grafana.selectorLabels" (index .Subcharts "grafana") | nindent 12 }}
+    policyTypes:
+        -   Ingress
+---
+{{- end }}
+{{- with $gke.backendPolicy }}
+apiVersion: networking.gke.io/v1
+kind: GCPBackendPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" $ | nindent 8 }}
+    name: {{ $grafanaFullname | quote }}
+    namespace: {{ include "observability.namespace" $ | quote }}
+spec:
+    default:
+        {{- toYaml . | nindent 8 }}
+    targetRef:
+        group: ""
+        kind: Service
+        name: {{ $grafanaFullname | quote }}
+---
+{{- end }}
+{{- with $gke.gatewayPolicy }}
+apiVersion: networking.gke.io/v1
+kind: GCPGatewayPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" $ | nindent 8 }}
+    name: {{ $grafanaFullname | quote }}
+    namespace: {{ include "observability.namespace" $ | quote }}
+spec:
+    default:
+        {{- toYaml . | nindent 8 }}
+    targetRef:
+        group: gateway.networking.k8s.io
+        kind: Gateway
+        name: {{ include "observability.gateway.name" $ | quote }}
+---
+{{- end }}
+{{- with $gke.healthCheck }}
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+    labels:
+        {{- include "observability.labels" $ | nindent 8 }}
+    name: {{ $grafanaFullname | quote }}
+    namespace: {{ include "observability.namespace" $ | quote }}
+spec:
+    default:
+        {{- toYaml . | nindent 8 }}
+    targetRef:
+        group: ""
+        kind: Service
+        name: {{ $grafanaFullname | quote }}
+{{- end }}
+{{- end -}}

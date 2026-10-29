@@ -541,6 +541,8 @@ centralHub:
     gitURL: ""
     monitoringTiles: []
 cloudProvider: ""
+clusterSecretStore:
+    name: ""
 customLabels: {}
 dashboards:
     folder: Liferay
@@ -572,6 +574,35 @@ frontend:
             cpu: 10m
             memory: 32Mi
 fullnameOverride: ""
+gateway:
+    annotations: {}
+    enabled: false
+    name: grafana-gateway
+    provider:
+        envoy:
+            accessControl:
+                allowedCIDRs: []
+                enabled: false
+            backendTrafficPolicySpec: {}
+            className: ""
+            clientTrafficPolicySpec: {}
+            envoyProxy:
+                podAnnotations: {}
+                replicas: 2
+                serviceAnnotations: {}
+            proxyNamespace: envoy-gateway-system
+        gke:
+            backendPolicy: {}
+            className: gke-l7-global-external-managed
+            gatewayPolicy: {}
+            healthCheck: {}
+            loadBalancerIPBlocks:
+                -   35.191.0.0/16
+                -   130.211.0.0/22
+        name: envoy
+    tls:
+        clusterIssuer: ""
+        externalSecretKey: ""
 gcp:
     clusterName: ""
     projectId: ""
@@ -579,6 +610,11 @@ grafana:
     admin:
         existingSecret: grafana-admin-credentials
     datasources: {}
+    envFromSecrets:
+        -   name: grafana-smtp-credentials
+            optional: true
+        -   name: grafana-sso-credentials
+            optional: true
     grafana.ini:
         analytics:
             check_for_plugin_updates: true
@@ -617,6 +653,7 @@ grafana:
         server:
             enable_gzip: true
             read_timeout: 0
+            root_url: "{{ with .Values.route.main.hostnames }}https://{{ first . }}{{ else }}%(protocol)s://%(domain)s:%(http_port)s/{{ end }}"
         unified_alerting.state_history.annotations:
             max_age: 10d
             max_annotations_to_keep: 3000
@@ -639,6 +676,23 @@ grafana:
         requests:
             cpu: 100m
             memory: 256Mi
+    route:
+        main:
+            hostnames: []
+            parentRefs:
+                -   group: gateway.networking.k8s.io
+                    kind: Gateway
+                    name: grafana-gateway
+                    sectionName: https
+        redirect:
+            enabled: false
+            hostnames: []
+            httpsRedirect: true
+            parentRefs:
+                -   group: gateway.networking.k8s.io
+                    kind: Gateway
+                    name: grafana-gateway
+                    sectionName: http
     serviceAccount:
         annotations:
             azure.workload.identity/client-id: ""
@@ -883,3 +937,12 @@ rdsExporter:
         requests:
             cpu: 25m
             memory: 64Mi
+smtp:
+    credentialsSecretKey: ""
+    enabled: false
+    secretStoreName: ""
+sso:
+    credentialsSecretKey: ""
+    enabled: false
+    provider: generic_oauth
+    secretStoreName: ""
