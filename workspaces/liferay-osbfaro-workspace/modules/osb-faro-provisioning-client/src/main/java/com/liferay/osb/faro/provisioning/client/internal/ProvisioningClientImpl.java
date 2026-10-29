@@ -50,6 +50,12 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 	public void addCorpProjectUsers(String corpProjectUuid, String[] userUuids)
 		throws Exception {
 
+		if (corpProjectUuid.equals(FaroPropsValues.FARO_PROJECT_ID) ||
+			corpProjectUuid.equals(FaroPropsValues.MOCK_PROJECT_ID)) {
+
+			return;
+		}
+
 		ContactRole contactRole = KoroneikiHttpUtil.fetchContactRole(
 			KoroneikiConstants.CONTACT_ROLE_NAME_MEMBER,
 			ContactRole.Type.ACCOUNT_CUSTOMER);
@@ -115,6 +121,12 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			String corpProjectUuid, String[] userUuids, String roleName)
 		throws Exception {
 
+		if (corpProjectUuid.equals(FaroPropsValues.FARO_PROJECT_ID) ||
+			corpProjectUuid.equals(FaroPropsValues.MOCK_PROJECT_ID)) {
+
+			return;
+		}
+
 		ContactRole contactRole = KoroneikiHttpUtil.fetchContactRole(
 			roleName, ContactRole.Type.ACCOUNT_CUSTOMER);
 
@@ -164,6 +176,10 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			String userUuid, String[] productEntryIds)
 		throws Exception {
 
+		if (Validator.isNotNull(FaroPropsValues.FARO_MOCK_OSB_ACCOUNT_ENTRY)) {
+			return Collections.singletonList(_mockOSBAccountEntry);
+		}
+
 		StringBundler sb = new StringBundler(5);
 
 		sb.append("contactUuids/any(s:s eq '");
@@ -171,7 +187,9 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		User user = _userLocalService.fetchUserByUuidAndCompanyId(
 			userUuid, _portal.getDefaultCompanyId());
 
-		if (user == null) {
+		if ((user == null) ||
+			StringUtil.equals(user.getEmailAddress(), "test@liferay.com")) {
+
 			return Collections.emptyList();
 		}
 
@@ -225,6 +243,14 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 	@Override
 	public OSBAccountEntry getOSBAccountEntry(String corpProjectUuid)
 		throws Exception {
+
+		if (corpProjectUuid.equals(FaroPropsValues.MOCK_PROJECT_ID)) {
+			return _mockOSBAccountEntry;
+		}
+
+		if (corpProjectUuid.equals(FaroPropsValues.FARO_PROJECT_ID)) {
+			return _osbAccountEntry;
+		}
 
 		if (!corpProjectUuid.contains("Test")) {
 			return new OSBAccountEntry(_getCorpProjectAccount(corpProjectUuid));
@@ -508,6 +534,85 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			productPurchase.getProductKey(),
 			ProductConstants.PRODUCT_ENTRY_ID_DIGITAL_SALES_ROOM);
 	}
+
+	private static final OSBAccountEntry _mockOSBAccountEntry =
+		new OSBAccountEntry() {
+			{
+				List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
+
+				OSBOfferingEntry enterpriseOSBOfferingEntry =
+					new OSBOfferingEntry();
+
+				enterpriseOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_BUSINESS);
+				enterpriseOSBOfferingEntry.setQuantity(1);
+				enterpriseOSBOfferingEntry.setStartDate(
+					new Date(1546329600000L));
+				enterpriseOSBOfferingEntry.setStatus(
+					ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
+				enterpriseOSBOfferingEntry.setSupportEndDate(
+					new Date(2000000000000L));
+
+				osbOfferingEntries.add(enterpriseOSBOfferingEntry);
+
+				setCorpEntryName("Mock Project");
+				setCorpProjectUuid(FaroPropsValues.MOCK_PROJECT_ID);
+				setName("Mock Project");
+				setOfferingEntries(osbOfferingEntries);
+			}
+		};
+
+	private static final OSBAccountEntry _osbAccountEntry =
+		new OSBAccountEntry() {
+			{
+				List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
+
+				OSBOfferingEntry enterpriseOSBOfferingEntry =
+					new OSBOfferingEntry();
+
+				String productEntryId =
+					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE;
+
+				if (FaroPropsValues.FARO_DEMO_DATA_PLATFORM_ENABLED) {
+					productEntryId =
+						ProductConstants.
+							PRODUCT_ENTRY_ID_DATA_PLATFORM_ENTERPRISE;
+				}
+
+				enterpriseOSBOfferingEntry.setProductEntryId(productEntryId);
+
+				enterpriseOSBOfferingEntry.setQuantity(1);
+				enterpriseOSBOfferingEntry.setStartDate(
+					new Date(1546329600000L));
+				enterpriseOSBOfferingEntry.setSupportEndDate(
+					new Date(2000000000000L));
+
+				osbOfferingEntries.add(enterpriseOSBOfferingEntry);
+
+				OSBOfferingEntry enterpriseContactsOSBOfferingEntry =
+					new OSBOfferingEntry();
+
+				enterpriseContactsOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_CONTACTS);
+				enterpriseContactsOSBOfferingEntry.setQuantity(2);
+
+				osbOfferingEntries.add(enterpriseContactsOSBOfferingEntry);
+
+				OSBOfferingEntry enterpriseTrackedPagesOSBOfferingEntry =
+					new OSBOfferingEntry();
+
+				enterpriseTrackedPagesOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_TRACKED_PAGES);
+				enterpriseTrackedPagesOSBOfferingEntry.setQuantity(3);
+
+				osbOfferingEntries.add(enterpriseTrackedPagesOSBOfferingEntry);
+
+				setCorpEntryName("Liferay Demo");
+				setCorpProjectUuid(FaroPropsValues.FARO_PROJECT_ID);
+				setName("Liferay Demo");
+				setOfferingEntries(osbOfferingEntries);
+			}
+		};
 
 	@Reference
 	private Portal _portal;
