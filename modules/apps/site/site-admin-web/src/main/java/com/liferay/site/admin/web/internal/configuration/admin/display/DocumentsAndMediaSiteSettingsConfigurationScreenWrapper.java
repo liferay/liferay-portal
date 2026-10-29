@@ -9,11 +9,18 @@ import com.liferay.configuration.admin.display.ConfigurationScreen;
 import com.liferay.configuration.admin.display.ConfigurationScreenWrapper;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenContributor;
 import com.liferay.site.settings.configuration.admin.display.SiteSettingsConfigurationScreenFactory;
 
 import jakarta.servlet.ServletContext;
 
+import java.io.Serializable;
+
+import java.util.Dictionary;
 import java.util.Locale;
 
 import org.osgi.service.component.annotations.Component;
@@ -33,6 +40,9 @@ public class DocumentsAndMediaSiteSettingsConfigurationScreenWrapper
 	}
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private Language _language;
 
 	@Reference(target = "(osgi.web.symbolicname=com.liferay.site.admin.web)")
@@ -44,6 +54,21 @@ public class DocumentsAndMediaSiteSettingsConfigurationScreenWrapper
 
 	private class DocumentsAndMediaSiteSettingsConfigurationScreenContributor
 		implements SiteSettingsConfigurationScreenContributor {
+
+		@Override
+		public Dictionary<String, Object> exportProperties(
+			Serializable scopePK) {
+
+			return HashMapDictionaryBuilder.<String, Object>put(
+				"directoryIndexingEnabled",
+				() -> {
+					Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+					return group.getTypeSettingsProperty(
+						"directoryIndexingEnabled");
+				}
+			).build();
+		}
 
 		@Override
 		public String getCategoryKey() {
@@ -71,8 +96,46 @@ public class DocumentsAndMediaSiteSettingsConfigurationScreenWrapper
 		}
 
 		@Override
+		public void importProperties(
+				Dictionary<String, Object> properties, Serializable scopePK)
+			throws Exception {
+
+			Object directoryIndexingEnabled = properties.get(
+				"directoryIndexingEnabled");
+
+			if (directoryIndexingEnabled == null) {
+				return;
+			}
+
+			Group group = _groupLocalService.fetchGroup((long)scopePK);
+
+			if (group.hasStagingGroup()) {
+				_updateDirectoryIndexingEnabled(
+					directoryIndexingEnabled, group.getStagingGroup());
+			}
+
+			_updateDirectoryIndexingEnabled(directoryIndexingEnabled, group);
+		}
+
+		@Override
 		public boolean isVisible(Group group) {
 			return !group.isCompany();
+		}
+
+		private void _updateDirectoryIndexingEnabled(
+				Object directoryIndexingEnabled, Group group)
+			throws Exception {
+
+			UnicodeProperties typeSettingsUnicodeProperties =
+				group.getTypeSettingsProperties();
+
+			typeSettingsUnicodeProperties.put(
+				"directoryIndexingEnabled",
+				String.valueOf(
+					GetterUtil.getBoolean(directoryIndexingEnabled)));
+
+			_groupLocalService.updateGroup(
+				group.getGroupId(), typeSettingsUnicodeProperties.toString());
 		}
 
 	}
