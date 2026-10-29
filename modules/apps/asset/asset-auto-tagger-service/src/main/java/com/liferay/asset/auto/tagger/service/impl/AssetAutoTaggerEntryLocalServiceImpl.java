@@ -7,11 +7,14 @@ package com.liferay.asset.auto.tagger.service.impl;
 
 import com.liferay.asset.auto.tagger.model.AssetAutoTaggerEntry;
 import com.liferay.asset.auto.tagger.service.base.AssetAutoTaggerEntryLocalServiceBaseImpl;
+import com.liferay.asset.kernel.exception.AssetTagException;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.List;
@@ -28,6 +31,30 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AssetAutoTaggerEntryLocalServiceImpl
 	extends AssetAutoTaggerEntryLocalServiceBaseImpl {
+
+	@Override
+	public void addAssetAutoTaggerEntries(
+		AssetEntry assetEntry, List<String> assetTagNames) {
+
+		for (String assetTagName : assetTagNames) {
+			try {
+				addAssetAutoTaggerEntry(assetEntry, assetTagName);
+			}
+			catch (AssetTagException assetTagException) {
+				if (_log.isWarnEnabled()) {
+					_log.warn(
+						String.format(
+							"Unable to add auto tag: %s", assetTagName),
+						assetTagException);
+				}
+			}
+			catch (PortalException portalException) {
+				_log.error(
+					String.format("Unable to add auto tag: %s", assetTagName),
+					portalException);
+			}
+		}
+	}
 
 	@Override
 	public AssetAutoTaggerEntry addAssetAutoTaggerEntry(
@@ -78,6 +105,30 @@ public class AssetAutoTaggerEntryLocalServiceImpl
 	}
 
 	@Override
+	public List<AssetAutoTaggerEntry> deleteAssetAutoTaggerEntries(
+			AssetEntry assetEntry)
+		throws PortalException {
+
+		List<AssetAutoTaggerEntry> assetAutoTaggerEntries =
+			assetAutoTaggerEntryPersistence.findByAssetEntryId(
+				assetEntry.getEntryId());
+
+		for (AssetAutoTaggerEntry assetAutoTaggerEntry :
+				assetAutoTaggerEntries) {
+
+			_assetTagLocalService.deleteAssetEntryAssetTag(
+				assetAutoTaggerEntry.getAssetEntryId(),
+				assetAutoTaggerEntry.getAssetTagId());
+
+			_assetTagLocalService.decrementAssetCount(
+				assetAutoTaggerEntry.getAssetTagId(),
+				assetEntry.getClassNameId());
+		}
+
+		return assetAutoTaggerEntries;
+	}
+
+	@Override
 	public AssetAutoTaggerEntry fetchAssetAutoTaggerEntry(
 		long assetEntryId, long assetTagId) {
 
@@ -92,6 +143,9 @@ public class AssetAutoTaggerEntryLocalServiceImpl
 		return assetAutoTaggerEntryPersistence.findByAssetEntryId(
 			assetEntry.getEntryId());
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		AssetAutoTaggerEntryLocalServiceImpl.class);
 
 	@Reference
 	private AssetTagLocalService _assetTagLocalService;
