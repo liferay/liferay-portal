@@ -18,6 +18,7 @@ import com.liferay.exportimport.rest.dto.v1_0.PortletDataHandler;
 import com.liferay.exportimport.rest.dto.v1_0.PublishProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcess;
 import com.liferay.exportimport.rest.dto.v1_0.ScheduledPublishProcessRequest;
+import com.liferay.exportimport.rest.internal.resource.exception.PublishProcessScheduleException;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.LayoutUtil;
 import com.liferay.exportimport.rest.internal.util.ParameterMapUtil;
@@ -27,6 +28,8 @@ import com.liferay.exportimport.rest.resource.v1_0.ScheduledPublishProcessResour
 import com.liferay.headless.delivery.dto.v1_0.util.CreatorUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.Group;
@@ -409,8 +412,9 @@ public class ScheduledPublishProcessResourceImpl
 	}
 
 	private Trigger _getTrigger(
-		String cronExpression, String groupName, Date scheduleEndDate,
-		Date scheduleStartDate, String timeZoneId) {
+			String cronExpression, String groupName, Date scheduleEndDate,
+			Date scheduleStartDate, String timeZoneId)
+		throws Exception {
 
 		Trigger trigger = null;
 
@@ -423,13 +427,15 @@ public class ScheduledPublishProcessResourceImpl
 				TimeZone.getTimeZone(timeZoneId));
 		}
 		catch (Exception exception) {
-			throw new BadRequestException(
-				"The publication schedule is invalid", exception);
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+
+			throw new PublishProcessScheduleException.MustBeValid();
 		}
 
 		if (trigger.getFireDateAfter(new Date(0)) == null) {
-			throw new BadRequestException(
-				"The publication schedule never runs");
+			throw new PublishProcessScheduleException.MustRunAtLeastOnce();
 		}
 
 		return trigger;
@@ -531,6 +537,9 @@ public class ScheduledPublishProcessResourceImpl
 			}
 		};
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		ScheduledPublishProcessResourceImpl.class);
 
 	@Reference
 	private ExportImportConfigurationLocalService

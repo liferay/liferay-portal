@@ -6,12 +6,13 @@
 import {fetch} from 'frontend-js-web';
 
 export type RequestResult<T> =
-	| {data: null; error: string; status?: string | null}
+	| {data: null; error: string; status?: string | null; type?: string}
 	| {data: T; error: null; status?: string | null};
 
 interface ApiErrorResponse {
 	message?: string;
 	title?: string;
+	type?: string;
 }
 
 const UNEXPECTED_ERROR_MESSAGE = Liferay.Language.get(
@@ -153,10 +154,13 @@ async function post<T>(url: string, body: unknown): Promise<RequestResult<T>> {
 			return {data: responseData as T, error: null};
 		}
 
+		const errorResponse = responseData as ApiErrorResponse;
+
 		return {
 			data: null,
-			error: getErrorMessage(responseData as ApiErrorResponse),
+			error: getErrorMessage(errorResponse),
 			status: response.status.toString(),
+			type: errorResponse.type,
 		};
 	}
 	catch (error) {

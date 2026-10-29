@@ -38,12 +38,22 @@ import {
 	fromCronExpression,
 	toCronExpression,
 } from './components/scheduler/cron';
-import {ScheduleValues, TimeZoneOption} from './components/scheduler/types';
+import {
+	IntervalUnit,
+	ScheduleValues,
+	TimeZoneOption,
+} from './components/scheduler/types';
 import {
 	getInitialScheduleValues,
 	getScheduleValuesErrors,
 	hasEndDate,
 } from './components/scheduler/utils';
+
+const PUBLISH_PROCESS_ERROR_MESSAGES: Record<string, string> = {
+	'PublishProcessScheduleException.MustRunAtLeastOnce': Liferay.Language.get(
+		'the-scheduled-process-will-never-run'
+	),
+};
 
 type PublishFormValues = {
 	contentSelection: ContentSelection | null | undefined;
@@ -262,7 +272,11 @@ export function NewPublish({
 
 				if (result.error) {
 					Liferay.Util.openToast({
-						message: result.error,
+						message:
+							getPublishProcessErrorMessage(
+								scheduleValues,
+								result.type
+							) || result.error,
 						type: 'danger',
 					});
 
@@ -396,4 +410,22 @@ export function NewPublish({
 			}}
 		</Formik>
 	);
+}
+
+function getPublishProcessErrorMessage(
+	scheduleValues: ScheduleValues,
+	type?: string
+) {
+	if (!type) {
+		return undefined;
+	}
+
+	if (
+		type === 'PublishProcessScheduleException.MustBeValid' &&
+		scheduleValues.unit === IntervalUnit.Custom
+	) {
+		return Liferay.Language.get('please-enter-a-valid-cron-expression');
+	}
+
+	return PUBLISH_PROCESS_ERROR_MESSAGES[type];
 }
