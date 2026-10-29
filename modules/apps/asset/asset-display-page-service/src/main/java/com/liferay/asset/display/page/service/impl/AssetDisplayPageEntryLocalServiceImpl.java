@@ -360,8 +360,10 @@ public class AssetDisplayPageEntryLocalServiceImpl
 		long classNameId, long classTypeId, long layoutPageTemplateEntryId,
 		boolean defaultTemplate) {
 
-		return AssetDisplayPageEntryTable.INSTANCE.classNameId.eq(
-			classNameId
+		return AssetDisplayPageEntryTable.INSTANCE.companyId.eq(
+			CompanyThreadLocal.getCompanyId()
+		).and(
+			AssetDisplayPageEntryTable.INSTANCE.classNameId.eq(classNameId)
 		).and(
 			() -> {
 				String className = _portal.fetchClassName(classNameId);
