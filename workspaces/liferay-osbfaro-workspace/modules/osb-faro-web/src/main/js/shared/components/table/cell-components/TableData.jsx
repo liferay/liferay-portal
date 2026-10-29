@@ -119,7 +119,7 @@ class TableData extends React.Component {
 						title={title}
 						visible={showPopover}
 					/>,
-					document.querySelector('body.dxp')
+					document.querySelector('body.dxp') || document.body
 				)}
 			</td>
 		);

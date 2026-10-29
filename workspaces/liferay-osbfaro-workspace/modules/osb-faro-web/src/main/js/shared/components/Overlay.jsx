@@ -360,7 +360,7 @@ export default class Overlay extends React.Component {
 						>
 							{children[1]}
 						</OverlayContent>,
-						document.querySelector('body.dxp')
+						document.querySelector('body.dxp') || document.body
 					)}
 
 				{!usePortal && active && (
