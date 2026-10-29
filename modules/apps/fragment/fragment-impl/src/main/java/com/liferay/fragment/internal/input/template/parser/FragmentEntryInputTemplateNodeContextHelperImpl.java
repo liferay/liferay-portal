@@ -448,24 +448,37 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 			return;
 		}
 
-		String fileName = _getFileName(_fetchFileEntry(value), fileSourceType);
+		FileEntry fileEntry = _fetchFileEntry(value);
+
+		String fileName = _getFileName(fileEntry, fileSourceType);
 
 		if (fileName != null) {
 			inputTemplateNode.addAttribute("fileName", fileName);
 		}
 
 		Map<String, String> fileNameI18n = new HashMap<>();
+		Map<String, String> previewURLI18n = new HashMap<>();
 
 		for (Map.Entry<Locale, String> entry : valueI18n.entrySet()) {
-			String localizedFileName = _getFileName(
-				_fetchFileEntry(entry.getValue()), fileSourceType);
+			FileEntry localizedFileEntry = _fetchFileEntry(entry.getValue());
 
-			if (localizedFileName == null) {
+			String localizedFileName = _getFileName(
+				localizedFileEntry, fileSourceType);
+
+			if (localizedFileName != null) {
+				fileNameI18n.put(
+					_language.getLanguageId(entry.getKey()), localizedFileName);
+			}
+
+			String localizedPreviewURL = _getPreviewURL(
+				localizedFileEntry, httpServletRequest);
+
+			if (localizedPreviewURL == null) {
 				continue;
 			}
 
-			fileNameI18n.put(
-				_language.getLanguageId(entry.getKey()), localizedFileName);
+			previewURLI18n.put(
+				_language.getLanguageId(entry.getKey()), localizedPreviewURL);
 		}
 
 		inputTemplateNode.addAttribute("fileNameI18n", fileNameI18n);
@@ -480,25 +493,10 @@ public class FragmentEntryInputTemplateNodeContextHelperImpl
 
 		inputTemplateNode.addAttribute("isCMS", _isCMSGroup(group));
 
-		String previewURL = _getPreviewURL(
-			_fetchFileEntry(value), httpServletRequest);
+		String previewURL = _getPreviewURL(fileEntry, httpServletRequest);
 
 		if (previewURL != null) {
 			inputTemplateNode.addAttribute("previewURL", previewURL);
-		}
-
-		Map<String, String> previewURLI18n = new HashMap<>();
-
-		for (Map.Entry<Locale, String> entry : valueI18n.entrySet()) {
-			String localizedPreviewURL = _getPreviewURL(
-				_fetchFileEntry(entry.getValue()), httpServletRequest);
-
-			if (localizedPreviewURL == null) {
-				continue;
-			}
-
-			previewURLI18n.put(
-				_language.getLanguageId(entry.getKey()), localizedPreviewURL);
 		}
 
 		inputTemplateNode.addAttribute("previewURLI18n", previewURLI18n);
