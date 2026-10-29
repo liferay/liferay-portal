@@ -8,6 +8,7 @@ package com.liferay.knowledge.base.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.knowledge.base.constants.KBActionKeys;
 import com.liferay.knowledge.base.constants.KBConstants;
+import com.liferay.knowledge.base.constants.KBPortletKeys;
 import com.liferay.knowledge.base.model.KBTemplate;
 import com.liferay.knowledge.base.service.KBTemplateLocalService;
 import com.liferay.knowledge.base.service.KBTemplateService;
@@ -20,6 +21,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -73,6 +75,23 @@ public class KBTemplateServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-111631")
+	public void testAddKBTemplate() throws Exception {
+		_testAddKBTemplateWithoutAddKBTemplatePermission(
+			KBPortletKeys.KNOWLEDGE_BASE_ADMIN,
+			KBConstants.RESOURCE_NAME_ADMIN);
+		_testAddKBTemplateWithoutAddKBTemplatePermission(
+			KBPortletKeys.KNOWLEDGE_BASE_DISPLAY,
+			KBConstants.RESOURCE_NAME_DISPLAY);
+
+		_addPortletResourcePermissions(KBActionKeys.ADD_KB_TEMPLATE);
+
+		_testAddKBTemplate(KBPortletKeys.KNOWLEDGE_BASE_ADMIN);
+		_testAddKBTemplate(KBPortletKeys.KNOWLEDGE_BASE_DISPLAY);
+		_testAddKBTemplateWithInvalidPortletId();
+	}
+
+	@Test
 	public void testDeleteKBTemplates() throws Exception {
 		_testDeleteKBTemplates();
 		_testDeleteKBTemplatesWithKBTemplateFromDifferentGroup();
@@ -86,6 +105,80 @@ public class KBTemplateServiceTest {
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				group, TestPropsValues.getUserId()));
+	}
+
+	private KBTemplate _addKBTemplate(String portletId) throws Exception {
+		return _kbTemplateService.addKBTemplate(
+			portletId, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(
+				_group1, _user.getUserId()));
+	}
+
+	private void _addPortletResourcePermissions(String actionId)
+		throws Exception {
+
+		RoleTestUtil.addResourcePermission(
+			_role, KBConstants.RESOURCE_NAME_ADMIN,
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group1.getGroupId()),
+			actionId);
+		RoleTestUtil.addResourcePermission(
+			_role, KBConstants.RESOURCE_NAME_DISPLAY,
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group1.getGroupId()),
+			actionId);
+	}
+
+	private void _testAddKBTemplate(String portletId) throws Exception {
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			Assert.assertNotNull(_addKBTemplate(portletId));
+		}
+	}
+
+	private void _testAddKBTemplateWithInvalidPortletId() throws Exception {
+		int groupKBTemplatesCount =
+			_kbTemplateLocalService.getGroupKBTemplatesCount(
+				_group1.getGroupId());
+
+		String portletId = RandomTestUtil.randomString();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			PrincipalException principalException = Assert.assertThrows(
+				PrincipalException.class, () -> _addKBTemplate(portletId));
+
+			Assert.assertEquals(
+				"Invalid portlet ID " + portletId,
+				principalException.getMessage());
+		}
+
+		Assert.assertEquals(
+			groupKBTemplatesCount,
+			_kbTemplateLocalService.getGroupKBTemplatesCount(
+				_group1.getGroupId()));
+	}
+
+	private void _testAddKBTemplateWithoutAddKBTemplatePermission(
+			String portletId, String resourceName)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			PrincipalException.MustHavePermission mustHavePermission =
+				Assert.assertThrows(
+					PrincipalException.MustHavePermission.class,
+					() -> _addKBTemplate(portletId));
+
+			Assert.assertArrayEquals(
+				new String[] {KBActionKeys.ADD_KB_TEMPLATE},
+				mustHavePermission.actionId);
+			Assert.assertEquals(
+				_group1.getGroupId(), mustHavePermission.resourceId);
+			Assert.assertEquals(resourceName, mustHavePermission.resourceName);
+		}
 	}
 
 	private void _testDeleteKBTemplates() throws Exception {
