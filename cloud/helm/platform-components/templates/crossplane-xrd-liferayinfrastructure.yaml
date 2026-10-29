@@ -77,6 +77,9 @@ spec:
                                         enabled:
                                             default: false
                                             type: boolean
+                                            x-kubernetes-validations:
+                                                -   message: cmk.enabled cannot be changed after the environment is created
+                                                    rule: self == oldSelf
                                     type: object
                                 commonTags:
                                     additionalProperties:
