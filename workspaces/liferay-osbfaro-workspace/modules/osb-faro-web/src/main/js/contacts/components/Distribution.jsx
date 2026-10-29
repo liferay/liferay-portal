@@ -240,19 +240,15 @@ export class Distribution extends React.Component {
 	@autoCancel
 	handleFetchDistributionData() {
 		const {
-			channelId,
-			fetchDistribution,
-			fieldMappingFieldName,
-			groupId,
-			id,
-			numberOfBins
-		} = this.props;
+			props: {channelId, fetchDistribution, groupId, id, numberOfBins},
+			state: {fieldMappingSelected}
+		} = this;
 
 		return fetchDistribution(
 			pickBy({
 				channelId,
 				count: MAX_ROWS,
-				fieldMappingFieldName,
+				fieldMappingFieldName: fieldMappingSelected.id,
 				groupId,
 				id,
 				individualSegmentId: id,
