@@ -35,6 +35,9 @@ const AIAssistantHost: React.FC = () => {
 	const [lastCommand, setLastCommand] =
 		useState<AIAssistantOpenCommand | null>(null);
 
+	const [sessionCommand, setSessionCommand] =
+		useState<AIAssistantOpenCommand | null>(null);
+
 	const [openedByEvent, setOpenedByEvent] = useState<boolean>(false);
 
 	const [expanded, setExpanded] = useState<boolean>(false);
@@ -73,6 +76,9 @@ const AIAssistantHost: React.FC = () => {
 			if (command.newSession && sessionActiveRef.current) {
 				setSessionKey((previousSessionKey) => previousSessionKey + 1);
 			}
+			if (command.newSession || !sessionActiveRef.current) {
+				setSessionCommand(command);
+			}
 			sessionActiveRef.current = true;
 			setLastCommand(command);
 			setExpanded(false);
@@ -82,6 +88,7 @@ const AIAssistantHost: React.FC = () => {
 
 	const activeCommand = command ?? lastCommand;
 	const anchorId = activeCommand?.anchorId;
+	const startCommand = sessionCommand ?? command;
 	const triggerId = activeCommand?.triggerId;
 
 	const isOpen = command !== null || openedByEvent;
@@ -137,7 +144,7 @@ const AIAssistantHost: React.FC = () => {
 		enableFreeFormCategorization:
 			activeCommand?.enableFreeFormCategorization,
 		getContext: activeCommand?.getContext,
-		initialMessage: activeCommand?.initialMessage,
+		initialMessage: startCommand?.initialMessage,
 		instructionDefinitionScope:
 			activeCommand?.instructionDefinitionScope ?? '',
 		onAction: activeCommand?.onAction,
@@ -151,7 +158,7 @@ const AIAssistantHost: React.FC = () => {
 		<AIAssistantChatBody
 			chat={chat}
 			quickActions={activeCommand?.quickActions}
-			showGreeting={!activeCommand?.initialMessage}
+			showGreeting={!startCommand?.initialMessage}
 		/>
 	);
 
