@@ -2791,9 +2791,12 @@ definition {
 	@description = "This is a test for LPS-145630. It checks that the DOCs linked in web articles content can be updated."
 	@priority = 4
 	test DocumentLinkedInWCCanBeUpdated {
+		CKEditor.enableCKEditor4();
+
 		JSONDocument.addFileWithUploadedFile(
 			dmDocumentTitle = "Document_1.doc",
 			groupName = "Guest",
+			guestPermissions = "false",
 			mimeType = "application/msword",
 			sourceFileName = "Document_1.doc");
 
