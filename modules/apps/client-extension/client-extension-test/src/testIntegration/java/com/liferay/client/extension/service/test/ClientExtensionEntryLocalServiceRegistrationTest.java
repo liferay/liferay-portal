@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 /**
  * @author Drew Brokke
@@ -53,8 +54,6 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 				"com.liferay.client.extension.service.impl." +
 					"ClientExtensionEntryLocalServiceImpl",
 				LoggerTestUtil.ERROR)) {
-
-			_assertLocalServiceRegistered();
 
 			clientExtensionEntry =
 				_clientExtensionEntryLocalService.createClientExtensionEntry(
@@ -105,9 +104,19 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 
 		BundleContext bundleContext = bundle.getBundleContext();
 
-		Assert.assertNotNull(
+		ServiceReference<ClientExtensionEntryLocalService> serviceReference =
 			bundleContext.getServiceReference(
-				ClientExtensionEntryLocalService.class));
+				ClientExtensionEntryLocalService.class);
+
+		ClientExtensionEntryLocalService clientExtensionEntryLocalService =
+			bundleContext.getService(serviceReference);
+
+		Assert.assertNotNull(clientExtensionEntryLocalService);
+		Assert.assertNotSame(
+			_clientExtensionEntryLocalService,
+			clientExtensionEntryLocalService);
+
+		bundleContext.ungetService(serviceReference);
 	}
 
 	private void _restartBundle() throws Exception {
