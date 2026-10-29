@@ -2530,11 +2530,28 @@ public class ContactsEngineClientImpl
 			uriVariablesList.add(uriVariables);
 		}
 
-		return bulk(
+		List<List<String>> fieldNamesList = bulk(
 			faroProject, Rels.FIELD_NAMES, HttpMethod.GET,
 			new TypeReference<List<String>>() {
 			},
 			uriVariablesList);
+
+		Map<String, String> liferayFieldNames =
+			FieldMappingConstants.getLiferayFieldNames();
+
+		for (int i = 0; i < fieldNamesList.size(); i++) {
+			List<String> fieldNames = fieldNamesList.get(i);
+
+			String fieldName = liferayFieldNames.get(labels.get(i));
+
+			if ((fieldName == null) || fieldNames.contains(fieldName)) {
+				continue;
+			}
+
+			fieldNames.add(0, fieldName);
+		}
+
+		return fieldNamesList;
 	}
 
 	@Override
