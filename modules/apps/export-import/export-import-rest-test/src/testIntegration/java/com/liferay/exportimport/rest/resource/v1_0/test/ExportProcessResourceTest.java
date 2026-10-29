@@ -1118,7 +1118,6 @@ public class ExportProcessResourceTest
 		LayoutTestUtil.addTypeContentLayout(testGroup, false, false);
 
 		User companyAdminUser = UserTestUtil.addCompanyAdminUser(testCompany);
-
 		String password = RandomTestUtil.randomString();
 
 		_userLocalService.updatePassword(
