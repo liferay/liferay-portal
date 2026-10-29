@@ -17,8 +17,7 @@ export function useSideNavigationStuck(
 	const [stuck, setStuck] = useState(false);
 
 	useEffect(() => {
-		const scroller =
-			ref.current?.querySelector<HTMLElement>(SCROLLER_SELECTOR);
+		const scroller = ref.current?.closest<HTMLElement>(SCROLLER_SELECTOR);
 
 		if (!scroller) {
 			return;

@@ -1,0 +1,92 @@
+.sidebar {
+	background-color: var(--light-l1, #f7f8f9);
+	border-right: 1px solid var(--secondary-l2, #cdced9);
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+
+	.nav-link {
+		align-items: center;
+		display: flex;
+	}
+}
+
+.sidebar-body {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-height: 0;
+	padding-bottom: 0.5rem;
+	scrollbar-color: var(--secondary-l2, #cdced9) transparent;
+	scrollbar-width: thin;
+}
+
+.sidebar-clipped-bottom .sidebar-body {
+	box-shadow: 0 -4px 24px hsl(from var(--black) h s l / 0.08);
+}
+
+.sidebar-clipped-top .sidebar-search {
+	box-shadow: 0 4px 24px hsl(from var(--black) h s l / 0.08);
+}
+
+.sidebar-empty {
+	font-size: 0.875rem;
+	margin: 0.5rem 0;
+}
+
+.sidebar-header {
+	align-items: center;
+	display: flex;
+	min-height: 3.5rem;
+	padding: 0.75rem 1rem;
+}
+
+.sidebar-search {
+	flex-shrink: 0;
+	position: relative;
+	transition: box-shadow 150ms ease;
+	z-index: 1;
+}
+
+.sidebar-search-field {
+	margin: 0 0.75rem 1rem;
+	position: relative;
+
+	.form-control {
+		padding-left: 2.5rem;
+	}
+
+	input::-webkit-search-cancel-button {
+		display: none;
+	}
+}
+
+// Clay's lexicon-icon offsets icons vertically for inline text, so the search
+// icon is centered with auto margins instead.
+
+.sidebar-search-icon.lexicon-icon {
+	bottom: 0;
+	color: var(--secondary, #6b6c7e);
+	height: 1rem;
+	left: 0.9375rem;
+	margin: auto 0;
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	width: 1rem;
+}
+
+.sidebar-section-label {
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+
+.sidebar-title {
+	font-size: 1rem;
+	font-weight: 600;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
