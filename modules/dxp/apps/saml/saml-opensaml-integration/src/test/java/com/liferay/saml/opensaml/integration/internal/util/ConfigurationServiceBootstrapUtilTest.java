@@ -6,7 +6,6 @@
 package com.liferay.saml.opensaml.integration.internal.util;
 
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.saml.opensaml.integration.internal.bootstrap.ParserPoolUtil;
 
@@ -28,8 +27,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
+import org.opensaml.xmlsec.SignatureSigningConfiguration;
+import org.opensaml.xmlsec.impl.BasicSignatureSigningConfiguration;
 
 /**
  * @author Jorge García Jiménez
@@ -52,9 +52,10 @@ public class ConfigurationServiceBootstrapUtilTest {
 		Map<Class<?>, Object> configurations = ReflectionTestUtil.getFieldValue(
 			ConfigurationServiceBootstrapUtil.class, "_configurations");
 
-		configurations.remove(String.class);
+		configurations.remove(SignatureSigningConfiguration.class);
 
-		ConfigurationService.deregister(String.class);
+		ReflectionTestUtil.setFieldValue(
+			ConfigurationServiceBootstrapUtil.class, "_initialized", false);
 	}
 
 	@Test
@@ -97,19 +98,27 @@ public class ConfigurationServiceBootstrapUtilTest {
 
 	@Test
 	public void testRegister() {
-		String configuration = RandomTestUtil.randomString();
+		SignatureSigningConfiguration signatureSigningConfiguration =
+			new BasicSignatureSigningConfiguration();
 
-		ConfigurationServiceBootstrapUtil.register(String.class, configuration);
+		ConfigurationServiceBootstrapUtil.register(
+			SignatureSigningConfiguration.class, signatureSigningConfiguration);
 
-		Assert.assertEquals(
-			configuration, ConfigurationServiceBootstrapUtil.get(String.class));
+		Assert.assertSame(
+			signatureSigningConfiguration,
+			ConfigurationServiceBootstrapUtil.get(
+				SignatureSigningConfiguration.class));
 
-		configuration = RandomTestUtil.randomString();
+		signatureSigningConfiguration =
+			new BasicSignatureSigningConfiguration();
 
-		ConfigurationServiceBootstrapUtil.register(String.class, configuration);
+		ConfigurationServiceBootstrapUtil.register(
+			SignatureSigningConfiguration.class, signatureSigningConfiguration);
 
-		Assert.assertEquals(
-			configuration, ConfigurationServiceBootstrapUtil.get(String.class));
+		Assert.assertSame(
+			signatureSigningConfiguration,
+			ConfigurationServiceBootstrapUtil.get(
+				SignatureSigningConfiguration.class));
 	}
 
 }
