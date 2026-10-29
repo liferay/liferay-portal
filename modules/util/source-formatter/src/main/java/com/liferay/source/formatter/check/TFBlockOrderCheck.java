@@ -33,14 +33,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 		_sortNestedEntries(fileName, lines);
 
-		List<List<Entry>> entryGroups = _getEntryGroups(
-			lines, 0, lines.length, true);
-
-		if (entryGroups != null) {
-			for (List<Entry> entries : entryGroups) {
-				_sort(fileName, lines, entries);
-			}
-		}
+		_sortEntryGroups(fileName, lines, 0, lines.length, true);
 
 		StringBundler sb = new StringBundler(lines.length * 2);
 
@@ -106,82 +99,6 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		return -1;
 	}
 
-	private List<List<Entry>> _getEntryGroups(
-		String[] lines, int startLineIndex, int endLineIndex,
-		boolean topLevel) {
-
-		List<List<Entry>> entryGroups = new ArrayList<>();
-
-		List<Entry> entries = new ArrayList<>();
-
-		boolean afterComment = false;
-
-		for (int i = startLineIndex; i < endLineIndex; i++) {
-			String trimmedLine = StringUtil.trim(lines[i]);
-
-			if (Validator.isBlank(trimmedLine) ||
-				TFSourceUtil.isCommentLine(lines[i])) {
-
-				if (!entries.isEmpty()) {
-					entryGroups.add(entries);
-
-					entries = new ArrayList<>();
-				}
-
-				if (TFSourceUtil.isCommentLine(lines[i])) {
-					afterComment = true;
-				}
-
-				i = TFSourceUtil.getCommentEndLineIndex(lines, i);
-
-				if (i == -1) {
-					return null;
-				}
-
-				continue;
-			}
-
-			if (topLevel) {
-				Matcher matcher = _topLevelBlockPattern.matcher(lines[i]);
-
-				if (!matcher.matches()) {
-					return null;
-				}
-			}
-
-			String sortKey = _getSortKey(trimmedLine);
-
-			if (sortKey == null) {
-				return null;
-			}
-
-			int entryEndLineIndex = _getBlockEndLineIndex(lines, i, 0);
-
-			if ((entryEndLineIndex == -1) ||
-				(entryEndLineIndex >= endLineIndex)) {
-
-				return null;
-			}
-
-			Entry entry = new Entry(entryEndLineIndex, lines, i);
-
-			entry.setAfterComment(afterComment);
-			entry.setSortKey(sortKey);
-
-			entries.add(entry);
-
-			afterComment = false;
-
-			i = entryEndLineIndex;
-		}
-
-		if (!entries.isEmpty()) {
-			entryGroups.add(entries);
-		}
-
-		return entryGroups;
-	}
-
 	private String _getSortKey(String trimmedLine) {
 		Matcher matcher = _keyPattern.matcher(trimmedLine);
 
@@ -231,6 +148,84 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		}
 	}
 
+	private void _sortEntryGroups(
+		String fileName, String[] lines, int startLineIndex, int endLineIndex,
+		boolean topLevel) {
+
+		List<List<Entry>> entryGroups = new ArrayList<>();
+
+		List<Entry> entries = new ArrayList<>();
+
+		boolean afterComment = false;
+
+		for (int i = startLineIndex; i < endLineIndex; i++) {
+			String trimmedLine = StringUtil.trim(lines[i]);
+
+			if (Validator.isBlank(trimmedLine) ||
+				TFSourceUtil.isCommentLine(lines[i])) {
+
+				if (!entries.isEmpty()) {
+					entryGroups.add(entries);
+
+					entries = new ArrayList<>();
+				}
+
+				if (TFSourceUtil.isCommentLine(lines[i])) {
+					afterComment = true;
+				}
+
+				i = TFSourceUtil.getCommentEndLineIndex(lines, i);
+
+				if (i == -1) {
+					return;
+				}
+
+				continue;
+			}
+
+			if (topLevel) {
+				Matcher matcher = _topLevelBlockPattern.matcher(lines[i]);
+
+				if (!matcher.matches()) {
+					return;
+				}
+			}
+
+			String sortKey = _getSortKey(trimmedLine);
+
+			if (sortKey == null) {
+				return;
+			}
+
+			int entryEndLineIndex = _getBlockEndLineIndex(lines, i, 0);
+
+			if ((entryEndLineIndex == -1) ||
+				(entryEndLineIndex >= endLineIndex)) {
+
+				return;
+			}
+
+			Entry entry = new Entry(entryEndLineIndex, lines, i);
+
+			entry.setAfterComment(afterComment);
+			entry.setSortKey(sortKey);
+
+			entries.add(entry);
+
+			afterComment = false;
+
+			i = entryEndLineIndex;
+		}
+
+		if (!entries.isEmpty()) {
+			entryGroups.add(entries);
+		}
+
+		for (List<Entry> entryGroup : entryGroups) {
+			_sort(fileName, lines, entryGroup);
+		}
+	}
+
 	private void _sortNestedEntries(String fileName, String[] lines) {
 		boolean blockComment = false;
 
@@ -272,16 +267,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 				continue;
 			}
 
-			List<List<Entry>> entryGroups = _getEntryGroups(
-				lines, i + 1, blockEndLineIndex, false);
-
-			if (entryGroups == null) {
-				continue;
-			}
-
-			for (List<Entry> entries : entryGroups) {
-				_sort(fileName, lines, entries);
-			}
+			_sortEntryGroups(fileName, lines, i + 1, blockEndLineIndex, false);
 		}
 	}
 
