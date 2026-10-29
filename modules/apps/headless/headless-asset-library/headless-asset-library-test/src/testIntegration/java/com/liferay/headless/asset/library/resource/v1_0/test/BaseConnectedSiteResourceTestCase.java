@@ -676,6 +676,16 @@ public abstract class BaseConnectedSiteResourceTestCase {
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
 
+			if (Objects.equals(
+					"ddmStructuresAvailable", additionalAssertFieldName)) {
+
+				if (connectedSite.getDdmStructuresAvailable() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
 				if (connectedSite.getDescriptiveName() == null) {
 					valid = false;
@@ -874,6 +884,19 @@ public abstract class BaseConnectedSiteResourceTestCase {
 
 		for (String additionalAssertFieldName :
 				getAdditionalAssertFieldNames()) {
+
+			if (Objects.equals(
+					"ddmStructuresAvailable", additionalAssertFieldName)) {
+
+				if (!Objects.deepEquals(
+						connectedSite1.getDdmStructuresAvailable(),
+						connectedSite2.getDdmStructuresAvailable())) {
+
+					return false;
+				}
+
+				continue;
+			}
 
 			if (Objects.equals("descriptiveName", additionalAssertFieldName)) {
 				if (!Objects.deepEquals(
@@ -1091,6 +1114,11 @@ public abstract class BaseConnectedSiteResourceTestCase {
 		sb.append(" ");
 		sb.append(operator);
 		sb.append(" ");
+
+		if (entityFieldName.equals("ddmStructuresAvailable")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
 
 		if (entityFieldName.equals("descriptiveName")) {
 			Object object = connectedSite.getDescriptiveName();
@@ -1353,6 +1381,7 @@ public abstract class BaseConnectedSiteResourceTestCase {
 	protected ConnectedSite randomConnectedSite() throws Exception {
 		return new ConnectedSite() {
 			{
+				ddmStructuresAvailable = RandomTestUtil.randomBoolean();
 				descriptiveName = StringUtil.toLowerCase(
 					RandomTestUtil.randomString());
 				externalReferenceCode = StringUtil.toLowerCase(
@@ -1613,4 +1642,4 @@ public abstract class BaseConnectedSiteResourceTestCase {
 			_connectedSiteResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1432969686
+// LIFERAY-REST-BUILDER-HASH:-704166221

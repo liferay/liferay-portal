@@ -283,7 +283,7 @@ public abstract class BaseConnectedSiteResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/headless-asset-library/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/connected-sites/{connectedSiteExternalReferenceCode}' -d $'{"searchable": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/headless-asset-library/v1.0/asset-libraries/{assetLibraryExternalReferenceCode}/connected-sites/{connectedSiteExternalReferenceCode}' -d $'{"ddmStructuresAvailable": ___, "searchable": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@io.swagger.v3.oas.annotations.Operation(
 		description = "Connects the site with the given external reference code to the asset library."
@@ -1072,4 +1072,4 @@ public abstract class BaseConnectedSiteResourceImpl
 		LogFactoryUtil.getLog(BaseConnectedSiteResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:819045782
+// LIFERAY-REST-BUILDER-HASH:-1046212097

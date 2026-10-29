@@ -26,6 +26,28 @@ public class ConnectedSite implements Cloneable, Serializable {
 		return ConnectedSiteSerDes.toDTO(json);
 	}
 
+	public Boolean getDdmStructuresAvailable() {
+		return ddmStructuresAvailable;
+	}
+
+	public void setDdmStructuresAvailable(Boolean ddmStructuresAvailable) {
+		this.ddmStructuresAvailable = ddmStructuresAvailable;
+	}
+
+	public void setDdmStructuresAvailable(
+		UnsafeSupplier<Boolean, Exception>
+			ddmStructuresAvailableUnsafeSupplier) {
+
+		try {
+			ddmStructuresAvailable = ddmStructuresAvailableUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean ddmStructuresAvailable;
+
 	public String getDescriptiveName() {
 		return descriptiveName;
 	}
@@ -347,4 +369,4 @@ public class ConnectedSite implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1035538388
+// LIFERAY-REST-BUILDER-HASH:1884613967

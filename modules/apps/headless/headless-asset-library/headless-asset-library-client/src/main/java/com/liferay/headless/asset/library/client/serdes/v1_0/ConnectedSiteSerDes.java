@@ -47,6 +47,16 @@ public class ConnectedSiteSerDes {
 
 		sb.append("{");
 
+		if (connectedSite.getDdmStructuresAvailable() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"ddmStructuresAvailable\": ");
+
+			sb.append(connectedSite.getDdmStructuresAvailable());
+		}
+
 		if (connectedSite.getDescriptiveName() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -186,6 +196,15 @@ public class ConnectedSiteSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (connectedSite.getDdmStructuresAvailable() == null) {
+			map.put("ddmStructuresAvailable", null);
+		}
+		else {
+			map.put(
+				"ddmStructuresAvailable",
+				String.valueOf(connectedSite.getDdmStructuresAvailable()));
+		}
+
 		if (connectedSite.getDescriptiveName() == null) {
 			map.put("descriptiveName", null);
 		}
@@ -282,7 +301,10 @@ public class ConnectedSiteSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
+			if (Objects.equals(jsonParserFieldName, "ddmStructuresAvailable")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -325,7 +347,13 @@ public class ConnectedSiteSerDes {
 			ConnectedSite connectedSite, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
+			if (Objects.equals(jsonParserFieldName, "ddmStructuresAvailable")) {
+				if (jsonParserFieldValue != null) {
+					connectedSite.setDdmStructuresAvailable(
+						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "descriptiveName")) {
 				if (jsonParserFieldValue != null) {
 					connectedSite.setDescriptiveName(
 						(String)jsonParserFieldValue);
@@ -475,4 +503,4 @@ public class ConnectedSiteSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:736785366
+// LIFERAY-REST-BUILDER-HASH:952351689

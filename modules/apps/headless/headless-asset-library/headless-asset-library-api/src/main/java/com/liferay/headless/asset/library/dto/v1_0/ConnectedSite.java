@@ -60,6 +60,52 @@ public class ConnectedSite implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Whether the connected site can use the structures of the asset library."
+	)
+	public Boolean getDdmStructuresAvailable() {
+		if (_ddmStructuresAvailableSupplier != null) {
+			ddmStructuresAvailable = _ddmStructuresAvailableSupplier.get();
+
+			_ddmStructuresAvailableSupplier = null;
+		}
+
+		return ddmStructuresAvailable;
+	}
+
+	public void setDdmStructuresAvailable(Boolean ddmStructuresAvailable) {
+		this.ddmStructuresAvailable = ddmStructuresAvailable;
+
+		_ddmStructuresAvailableSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setDdmStructuresAvailable(
+		UnsafeSupplier<Boolean, Exception>
+			ddmStructuresAvailableUnsafeSupplier) {
+
+		_ddmStructuresAvailableSupplier = () -> {
+			try {
+				return ddmStructuresAvailableUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Whether the connected site can use the structures of the asset library."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean ddmStructuresAvailable;
+
+	@JsonIgnore
+	private Supplier<Boolean> _ddmStructuresAvailableSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The connected site's descriptive name."
 	)
 	public String getDescriptiveName() {
@@ -532,6 +578,18 @@ public class ConnectedSite implements Serializable {
 
 		sb.append("{");
 
+		Boolean ddmStructuresAvailable = getDdmStructuresAvailable();
+
+		if (ddmStructuresAvailable != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"ddmStructuresAvailable\": ");
+
+			sb.append(ddmStructuresAvailable);
+		}
+
 		String descriptiveName = getDescriptiveName();
 
 		if (descriptiveName != null) {
@@ -871,4 +929,4 @@ public class ConnectedSite implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:949923407
+// LIFERAY-REST-BUILDER-HASH:-697735391
