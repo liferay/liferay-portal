@@ -162,12 +162,6 @@ public class CommercePriceModifierLocalServiceUtil {
 			commercePriceModifierId);
 	}
 
-	public static void deleteCommercePriceModifiers(long companyId)
-		throws PortalException {
-
-		getService().deleteCommercePriceModifiers(companyId);
-	}
-
 	public static void deleteCommercePriceModifiersByCommercePriceListId(
 			long commercePriceListId)
 		throws PortalException {
@@ -522,4 +516,4 @@ public class CommercePriceModifierLocalServiceUtil {
 			CommercePriceModifierLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1418700268
+// LIFERAY-SERVICE-BUILDER-HASH:-2054215823

@@ -172,14 +172,6 @@ public class CommercePriceModifierLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCommercePriceModifiers(long companyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_commercePriceModifierLocalService.deleteCommercePriceModifiers(
-			companyId);
-	}
-
-	@Override
 	public void deleteCommercePriceModifiersByCommercePriceListId(
 			long commercePriceListId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -625,4 +617,4 @@ public class CommercePriceModifierLocalServiceWrapper
 		_commercePriceModifierLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1628144873
+// LIFERAY-SERVICE-BUILDER-HASH:-656068919
