@@ -265,9 +265,9 @@ public class SegmentsEntryExportImportContentProcessor
 	}
 
 	private static final Pattern _exportCustomFieldPattern = Pattern.compile(
-		"customField\\\\/_(\\d+)_[^ ]+");
+		"customField\\\\/_(\\d+)_[^ ,)]+");
 	private static final Pattern _importCustomFieldPattern = Pattern.compile(
-		"customField\\\\/_([\\w\\.]+)#([\\w]+)#([^ ]+)");
+		"customField\\\\/_([\\w\\.]+)#([\\w]+)#([^ ,)]+)");
 
 	@Reference
 	private ExpandoColumnLocalService _expandoColumnLocalService;
