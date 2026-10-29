@@ -16,15 +16,14 @@ public class TFSourceProcessor extends BaseSourceProcessor {
 
 	@Override
 	protected List<String> doGetFileNames() throws IOException {
-		return getFileNames(_EXCLUDES, getIncludes());
+		return getFileNames(
+			new String[] {"**/.terraform.lock.hcl"}, getIncludes());
 	}
 
 	@Override
 	protected String[] doGetIncludes() {
 		return _INCLUDES;
 	}
-
-	private static final String[] _EXCLUDES = {"**/.terraform.lock.hcl"};
 
 	private static final String[] _INCLUDES = {"**/*.hcl", "**/*.tf"};
 
