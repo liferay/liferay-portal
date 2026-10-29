@@ -5,7 +5,7 @@ metadata:
         gotemplating.fn.crossplane.io/composition-resource-name: liferay-gsa
     labels:
         app: liferay
-        component: liferay-service-account
+        component: service-account
     name: {{ $baseName }}-sa
 spec:
     forProvider:
@@ -23,7 +23,7 @@ spec:
         serviceAccountIdSelector:
             matchLabels:
                 app: liferay
-                component: liferay-service-account
+                component: service-account
 {{- if $gsaMember }}
 ---
 apiVersion: cloudplatform.gcp.m.upbound.io/v1beta1
