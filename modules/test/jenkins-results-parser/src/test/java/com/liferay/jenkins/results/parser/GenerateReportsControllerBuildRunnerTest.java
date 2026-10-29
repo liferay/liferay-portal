@@ -165,6 +165,12 @@ public class GenerateReportsControllerBuildRunnerTest
 		long reportStaleTime = reportGeneratedTime + _MILLISECONDS_PER_DAY;
 
 		_testIsReportStale(
+			reportStaleTime + 1, true, null, reportGeneratedTime,
+			_MILLISECONDS_PER_DAY);
+		_testIsReportStale(
+			reportStaleTime + 1, true, reportStaleTime - 1, reportGeneratedTime,
+			_MILLISECONDS_PER_DAY);
+		_testIsReportStale(
 			reportStaleTime - 1, false, null, reportGeneratedTime,
 			_MILLISECONDS_PER_DAY);
 		_testIsReportStale(
@@ -172,12 +178,6 @@ public class GenerateReportsControllerBuildRunnerTest
 			reportGeneratedTime, _MILLISECONDS_PER_DAY);
 		_testIsReportStale(
 			reportStaleTime, true, null, reportGeneratedTime,
-			_MILLISECONDS_PER_DAY);
-		_testIsReportStale(
-			reportStaleTime + 1, true, null, reportGeneratedTime,
-			_MILLISECONDS_PER_DAY);
-		_testIsReportStale(
-			reportStaleTime + 1, true, reportStaleTime - 1, reportGeneratedTime,
 			_MILLISECONDS_PER_DAY);
 
 		_testIsReportStale(
@@ -191,17 +191,17 @@ public class GenerateReportsControllerBuildRunnerTest
 		long reportStaleTime = reportGeneratedTime + _MILLISECONDS_PER_DAY;
 
 		_testIsReportStaleRetry(
-			reportStaleTime, reportGeneratedTime, 2 * _MILLISECONDS_PER_HOUR,
-			_MILLISECONDS_PER_DAY);
-		_testIsReportStaleRetry(
-			reportStaleTime + _MILLISECONDS_PER_HOUR, reportGeneratedTime,
-			2 * _MILLISECONDS_PER_HOUR, _MILLISECONDS_PER_DAY);
+			reportStaleTime + (32 * _MILLISECONDS_PER_HOUR),
+			reportGeneratedTime, _MILLISECONDS_PER_DAY, _MILLISECONDS_PER_DAY);
 		_testIsReportStaleRetry(
 			reportStaleTime + (4 * _MILLISECONDS_PER_HOUR), reportGeneratedTime,
 			4 * _MILLISECONDS_PER_HOUR, _MILLISECONDS_PER_DAY);
 		_testIsReportStaleRetry(
-			reportStaleTime + (32 * _MILLISECONDS_PER_HOUR),
-			reportGeneratedTime, _MILLISECONDS_PER_DAY, _MILLISECONDS_PER_DAY);
+			reportStaleTime + _MILLISECONDS_PER_HOUR, reportGeneratedTime,
+			2 * _MILLISECONDS_PER_HOUR, _MILLISECONDS_PER_DAY);
+		_testIsReportStaleRetry(
+			reportStaleTime, reportGeneratedTime, 2 * _MILLISECONDS_PER_HOUR,
+			_MILLISECONDS_PER_DAY);
 
 		long millisecondsPerMinute = 60 * 1000;
 
@@ -242,6 +242,10 @@ public class GenerateReportsControllerBuildRunnerTest
 				)),
 			jobURL);
 
+		GenerateReportsControllerBuildRunner
+			generateReportsControllerBuildRunner = Mockito.mock(
+				GenerateReportsControllerBuildRunner.class);
+
 		BuildData buildData = Mockito.mock(BuildData.class);
 
 		Mockito.doReturn(
@@ -255,10 +259,6 @@ public class GenerateReportsControllerBuildRunnerTest
 		).when(
 			buildData
 		).getStartTime();
-
-		GenerateReportsControllerBuildRunner
-			generateReportsControllerBuildRunner = Mockito.mock(
-				GenerateReportsControllerBuildRunner.class);
 
 		Mockito.doReturn(
 			buildData

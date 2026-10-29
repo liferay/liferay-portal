@@ -53,7 +53,7 @@ public class GenerateReportsControllerBuildRunner
 		List<String> reportNames = _getSelectedReportNames();
 
 		if (reportNames.isEmpty()) {
-			System.out.println("There are no reports to create at this time.");
+			System.out.println("There are no reports to create at this time");
 
 			keepJenkinsBuild(false);
 
@@ -231,7 +231,6 @@ public class GenerateReportsControllerBuildRunner
 				reportName);
 
 			long reportGeneratedTime = _getReportGeneratedTime(report);
-
 			long reportStaleDuration = _getReportStaleDuration(reportName);
 
 			if (!_isReportStale(
