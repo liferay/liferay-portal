@@ -1384,6 +1384,42 @@ describe('AIAssistantHost', () => {
 			expect(mockPostChat).toHaveBeenCalledTimes(1);
 		});
 
+		it('keeps the greeting of the first command when a later command omits newSession', async () => {
+			const fakeEventSource = createFakeEventSource();
+
+			mockCreateEventSource.mockResolvedValue(fakeEventSource as never);
+
+			await act(async () => {
+				renderHost();
+			});
+
+			await act(async () => {
+				open({
+					instructionDefinitionScope: 'test-scope',
+					triggerId: 'trigger-1',
+				});
+			});
+
+			await act(async () => {
+				fakeEventSource.emit('Subscribe', 'ref-1');
+			});
+
+			await act(async () => {
+				open({
+					initialMessage: 'second message',
+					instructionDefinitionScope: 'test-scope',
+					triggerId: 'trigger-2',
+				});
+			});
+
+			expect(
+				screen.getByText(
+					'hi-i-can-help-you-generate-content-titles-tags-or-translate-your-work'
+				)
+			).toBeInTheDocument();
+			expect(mockPostChat).not.toHaveBeenCalled();
+		});
+
 		it('resets the conversation when a later command sets newSession', async () => {
 			const fakeEventSource1 = createFakeEventSource();
 			const fakeEventSource2 = createFakeEventSource();
