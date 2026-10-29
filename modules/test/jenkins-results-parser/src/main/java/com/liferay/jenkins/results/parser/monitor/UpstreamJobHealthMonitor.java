@@ -19,6 +19,8 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -263,13 +265,19 @@ public class UpstreamJobHealthMonitor extends BaseMonitor {
 	}
 
 	private JSONArray _getBuildsJSONArray() throws IOException {
-		JSONObject jobJSONObject = JenkinsResultsParserUtil.toJSONObject(
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			_controllerJobURL + "/api/json");
+
+		uriBuilder.addParameter(
+			"tree",
 			JenkinsResultsParserUtil.combine(
-				_controllerJobURL, "/api/json?tree=",
 				"builds[description,timestamp]{0,",
-				String.valueOf(_buildsMaximum), "}"),
-			false, _RETRIES_SIZE_MAX, null, null, _SECONDS_RETRY_PERIOD,
-			getAttemptTimeoutMillis(_RETRIES_SIZE_MAX), null);
+				String.valueOf(_buildsMaximum), "}"));
+
+		JSONObject jobJSONObject = JenkinsResultsParserUtil.toJSONObject(
+			uriBuilder.toString(), false, _RETRIES_SIZE_MAX, null, null,
+			_SECONDS_RETRY_PERIOD, getAttemptTimeoutMillis(_RETRIES_SIZE_MAX),
+			null);
 
 		if (jobJSONObject == null) {
 			return null;

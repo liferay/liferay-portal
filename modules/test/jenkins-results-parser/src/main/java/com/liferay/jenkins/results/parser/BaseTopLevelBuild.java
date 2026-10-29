@@ -58,6 +58,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -725,8 +726,13 @@ public abstract class BaseTopLevelBuild
 		}
 
 		try {
+			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+				buildURL + "/api/json");
+
+			uriBuilder.addParameter("tree", "result");
+
 			JSONObject buildJSONObject = JenkinsResultsParserUtil.toJSONObject(
-				buildURL + "/api/json?tree=result");
+				uriBuilder.toString());
 
 			if (!JenkinsResultsParserUtil.isNullOrEmpty(
 					buildJSONObject.optString("result", null))) {

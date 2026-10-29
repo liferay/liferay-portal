@@ -18,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 /**
  * @author Kenji Heigel
@@ -240,15 +241,12 @@ public class PoshiReleasePortalTopLevelBuildRunner
 	private String _getBuildInvocationURL(
 		String jobName, Map.Entry<GitWorkingDirectory, PullRequest> entry) {
 
-		StringBuilder sb = new StringBuilder();
-
 		BuildData buildData = getBuildData();
 
-		sb.append(getBaseInvocationURL(buildData.getCohortName(), jobName));
-
-		sb.append("/job/");
-		sb.append(jobName);
-		sb.append("/buildWithParameters?");
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			JenkinsResultsParserUtil.combine(
+				getBaseInvocationURL(buildData.getCohortName(), jobName),
+				"/job/", jobName, "/buildWithParameters"));
 
 		try {
 			Map<String, String> invocationParameters = new HashMap<>();
@@ -319,25 +317,15 @@ public class PoshiReleasePortalTopLevelBuildRunner
 					continue;
 				}
 
-				sb.append(
-					JenkinsResultsParserUtil.encodeURLParameterPart(
-						invocationParameter.getKey()));
-				sb.append("=");
-				sb.append(
-					JenkinsResultsParserUtil.encodeURLParameterPart(
-						invocationParameterValue));
-				sb.append("&");
+				uriBuilder.addParameter(
+					invocationParameter.getKey(), invocationParameterValue);
 			}
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
 		}
 
-		if (sb.charAt(sb.length() - 1) == '&') {
-			sb.deleteCharAt(sb.length() - 1);
-		}
-
-		return sb.toString();
+		return uriBuilder.toString();
 	}
 
 	private File _getBuildTestGradleFile(

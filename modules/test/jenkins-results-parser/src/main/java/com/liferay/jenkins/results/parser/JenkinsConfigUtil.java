@@ -10,6 +10,8 @@ import java.io.IOException;
 
 import java.util.List;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -446,8 +448,13 @@ public class JenkinsConfigUtil {
 				"Unable to find API tokens for " + jenkinsUserName);
 		}
 
-		String nodeNameURL = JenkinsResultsParserUtil.getLocalURL(
-			jenkinsMaster.getURL() + "/api/json?tree=nodeName");
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			JenkinsResultsParserUtil.getLocalURL(
+				jenkinsMaster.getURL() + "/api/json"));
+
+		uriBuilder.addParameter("tree", "nodeName");
+
+		String nodeNameURL = uriBuilder.toString();
 
 		for (JenkinsUser.APIToken apiToken : apiTokens) {
 			try {

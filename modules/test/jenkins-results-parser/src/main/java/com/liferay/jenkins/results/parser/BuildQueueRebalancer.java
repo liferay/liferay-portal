@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.json.JSONObject;
 
 /**
@@ -464,11 +466,15 @@ public class BuildQueueRebalancer {
 
 		private boolean _isBuildInProgress(String buildURL) {
 			try {
-				JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
+				URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 					JenkinsResultsParserUtil.combine(
 						JenkinsResultsParserUtil.getLocalURL(buildURL),
-						"/api/json?tree=result"),
-					false, 5000);
+						"/api/json"));
+
+				uriBuilder.addParameter("tree", "result");
+
+				JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
+					uriBuilder.toString(), false, 5000);
 
 				String result = jsonObject.optString("result");
 

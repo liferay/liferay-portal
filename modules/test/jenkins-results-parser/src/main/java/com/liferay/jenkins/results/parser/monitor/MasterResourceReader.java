@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.http.client.utils.URIBuilder;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 
@@ -128,13 +130,19 @@ public class MasterResourceReader {
 
 		Map<String, JSONObject> jobJSONObjects = new HashMap<>();
 
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			_getURL("/api/json"));
+
+		uriBuilder.addParameter(
+			"tree",
+			JenkinsResultsParserUtil.combine(
+				"jobs[buildable,disabled,",
+				"lastBuild[building,number,timestamp],",
+				"lastCompletedBuild[number,result,timestamp],name]"));
+
 		JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
-			_getURL(
-				JenkinsResultsParserUtil.combine(
-					"/api/json?tree=jobs[buildable,disabled,",
-					"lastBuild[building,number,timestamp],",
-					"lastCompletedBuild[number,result,timestamp],name]")),
-			false, RETRIES_SIZE_MAX, _SECONDS_RETRY_PERIOD, timeoutMillis);
+			uriBuilder.toString(), false, RETRIES_SIZE_MAX,
+			_SECONDS_RETRY_PERIOD, timeoutMillis);
 
 		JSONArray jobsJSONArray = jsonObject.optJSONArray("jobs");
 

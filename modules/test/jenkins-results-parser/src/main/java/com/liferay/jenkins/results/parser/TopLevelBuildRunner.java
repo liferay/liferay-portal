@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.Element;
 
@@ -320,31 +321,13 @@ public abstract class TopLevelBuildRunner<T extends TopLevelBuildData>
 		invocationParameters.put(
 			"PARENT_BUILD_URL", _topLevelBuild.getBuildURL());
 
-		StringBuilder sb = new StringBuilder();
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			JenkinsResultsParserUtil.combine(
+				getBaseInvocationURL(cohortName, jobName), "/job/", jobName,
+				"/buildWithParameters"),
+			invocationParameters);
 
-		sb.append(getBaseInvocationURL(cohortName, jobName));
-		sb.append("/job/");
-		sb.append(jobName);
-		sb.append("/buildWithParameters?");
-
-		for (Map.Entry<String, String> invocationParameter :
-				invocationParameters.entrySet()) {
-
-			sb.append(
-				JenkinsResultsParserUtil.encodeURLParameterPart(
-					invocationParameter.getKey()));
-			sb.append("=");
-			sb.append(
-				JenkinsResultsParserUtil.encodeURLParameterPart(
-					invocationParameter.getValue()));
-			sb.append("&");
-		}
-
-		if (sb.charAt(sb.length() - 1) == '&') {
-			sb.deleteCharAt(sb.length() - 1);
-		}
-
-		_topLevelBuild.addDownstreamBuilds(sb.toString());
+		_topLevelBuild.addDownstreamBuilds(uriBuilder.toString());
 	}
 
 	private void _invokeDownstreamBuild(BuildData buildData) {

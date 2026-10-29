@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 /**
  * @author Peter Yoo
@@ -206,12 +207,16 @@ public class JenkinsConsoleTextLoader {
 		long cacheFileSize = JenkinsResultsParserUtil.getCacheFileSize(
 			consoleLogFileKey);
 
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			buildURL + "/logText/progressiveHtml");
+
 		while (hasMoreData &&
 			   (bypassConsoleLogSizeLimit ||
 				(cacheFileSize < _BYTES_MAX_SIZE_CONSOLE_LOG))) {
 
-			String url =
-				buildURL + "/logText/progressiveHtml?start=" + serverLogSize;
+			uriBuilder.setParameter("start", String.valueOf(serverLogSize));
+
+			String url = uriBuilder.toString();
 
 			try {
 				if (JenkinsResultsParserUtil.isCINode()) {

@@ -14,6 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.json.JSONObject;
 
@@ -67,7 +68,12 @@ public class JenkinsStopBuildUtil {
 		String normalizedURL = JenkinsResultsParserUtil.fixURL(
 			JenkinsResultsParserUtil.getLocalURL(jenkinsMaster.getURL()));
 
-		_post(normalizedURL + "/queue/cancelItem?id=" + queueId);
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			normalizedURL + "/queue/cancelItem");
+
+		uriBuilder.addParameter("id", String.valueOf(queueId));
+
+		_post(uriBuilder.toString());
 	}
 
 	public static void stopBuild(String buildURL) throws Exception {
@@ -144,8 +150,13 @@ public class JenkinsStopBuildUtil {
 	private static boolean _isBuilding(String normalizedBuildURL)
 		throws Exception {
 
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			normalizedBuildURL + "/api/json");
+
+		uriBuilder.addParameter("tree", "result");
+
 		JSONObject jsonObject = JenkinsResultsParserUtil.toJSONObject(
-			normalizedBuildURL + "/api/json?tree=result", false);
+			uriBuilder.toString(), false);
 
 		if (!jsonObject.has("result")) {
 			throw new RuntimeException(
