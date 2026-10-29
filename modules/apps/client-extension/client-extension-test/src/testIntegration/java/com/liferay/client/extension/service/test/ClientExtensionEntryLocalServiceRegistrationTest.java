@@ -23,7 +23,6 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.Objects;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -54,18 +53,8 @@ public class ClientExtensionEntryLocalServiceRegistrationTest {
 
 		_bundleContext = bundle.getBundleContext();
 
-		for (Bundle curBundle : _bundleContext.getBundles()) {
-			if (Objects.equals(
-					curBundle.getSymbolicName(),
-					"com.liferay.client.extension.service")) {
-
-				_bundle = curBundle;
-
-				break;
-			}
-		}
-
-		Assert.assertNotNull(_bundle);
+		_bundle = FrameworkUtil.getBundle(
+			_clientExtensionEntryLocalService.getClass());
 	}
 
 	@Test
