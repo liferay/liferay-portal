@@ -21,7 +21,10 @@ type TDocument = {
 	customFields?: {customValue: {data: string}; name: string}[];
 	description?: string;
 	documentFolderId?: number;
-	documentType?: {name: string};
+	documentType?: {
+		contentFields?: {contentFieldValue: {data: string}; name: string}[];
+		name: string;
+	};
 	externalReferenceCode?: string;
 	fileName?: string;
 	friendlyUrlPath?: string;
@@ -742,6 +745,52 @@ export class HeadlessDeliveryApiHelper {
 				headers: {
 					...(await this.apiHelpers.getCSRFTokenHeader()),
 				},
+			}
+		);
+	}
+
+	async postExternalVideoShortcut(
+		scopePath: string,
+		document?: TDocument,
+		youTubeVideoId = 'HOdbzGCI5ME'
+	) {
+		const title = document?.title ?? getRandomString();
+
+		return this._postDocument(
+			scopePath,
+			{
+				buffer: Buffer.from(''),
+				mimeType:
+					'application/vnd+liferay.video.external.shortcut+html',
+				name: title,
+			},
+			{
+				documentType: {
+					contentFields: [
+						{
+							contentFieldValue: {
+								data: `<iframe allow="autoplay; encrypted-media" allowfullscreen height="315" frameborder="0" src="https://www.youtube.com/embed/${youTubeVideoId}?rel=0" width="560"></iframe>`,
+							},
+							name: 'HTML',
+						},
+						{
+							contentFieldValue: {
+								data: `https://i.ytimg.com/vi/${youTubeVideoId}/hqdefault.jpg`,
+							},
+							name: 'THUMBNAIL_URL',
+						},
+						{
+							contentFieldValue: {
+								data: `https://www.youtube.com/watch?v=${youTubeVideoId}`,
+							},
+							name: 'URL',
+						},
+					],
+					name: 'External Video Shortcut',
+				},
+				fileName: title,
+				...(document || {}),
+				title,
 			}
 		);
 	}
