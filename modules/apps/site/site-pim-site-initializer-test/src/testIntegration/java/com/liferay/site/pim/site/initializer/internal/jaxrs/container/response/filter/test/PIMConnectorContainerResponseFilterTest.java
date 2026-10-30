@@ -34,6 +34,7 @@ import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
+import com.liferay.site.pim.site.initializer.test.util.PIMTestUtil;
 
 import java.io.Serializable;
 
@@ -63,6 +64,8 @@ public class PIMConnectorContainerResponseFilterTest {
 
 	@Before
 	public void setUp() throws Exception {
+		PIMTestUtil.getOrAddGroup();
+
 		_objectDefinition =
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
