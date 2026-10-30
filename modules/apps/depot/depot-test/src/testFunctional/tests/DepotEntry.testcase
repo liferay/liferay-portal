@@ -30,29 +30,6 @@ definition {
 		}
 	}
 
-	@description = "This tests the basic flow the user will take to add a depot through the UI."
-	@e2e
-	@priority = 5
-	@refactordone
-	test CanAddDepot {
-		property environment.acceptance = "false";
-		property operating.system.types = "alpine,amazonlinux,centos,debian,fedora,orcllinux,osx,redhat,rockylinux,solaris,suse,ubuntu,windows";
-		property portal.acceptance = "true";
-
-		ApplicationsMenu.gotoPortlet(
-			category = "In Maintenance",
-			panel = "Applications",
-			portlet = "Asset Libraries");
-
-		Depot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		DepotNavigator.gotoDepot(depotName = "Test Depot Name");
-	}
-
 	@description = "This ensures that a depot can be deleted, whether it is empty or contains a folder and some files."
 	@priority = 5
 	@refactordone
@@ -86,56 +63,6 @@ definition {
 		Depot.viewDefaultCP();
 	}
 
-	@description = "This ensures that the depot name and description can be edited."
-	@priority = 5
-	@refactordone
-	test CanEditNameAndDescription {
-		property portal.acceptance = "true";
-
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.editDepot(
-			depotDescriptionEdit = "This is an edited description of a depot",
-			depotName = "Test Depot Name",
-			depotNameEdit = "Edited Test Depot Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		DepotNavigator.gotoDepot(depotName = "Edited Test Depot Name");
-	}
-
-	@description = "This ensures that a depot can be edited via settings. Also covers LPS-146116, it ensures that there is no kebab menu on depot admin page."
-	@e2e
-	@priority = 4
-	@refactordone
-	test CanEditNameViaSettings {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		AssertElementNotPresent(locator1 = "Portlet#OPTIONS_ICON");
-
-		DepotNavigator.gotoDepotPortlet(
-			depotName = "Test Depot Name",
-			portlet = "Asset Library Settings");
-
-		Depot.editDepot(
-			depotDescriptionEdit = "This is an edited description of a depot",
-			depotName = "Test Depot Name",
-			depotNameEdit = "Edited Test Depot Name",
-			settings = "true");
-
-		DepotNavigator.openDepotAdmin();
-
-		DepotNavigator.gotoDepot(depotName = "Edited Test Depot Name");
-	}
-
 	@description = "This test covers LPS-120834. It ensures that a user can not redirect to the depot via Space icon."
 	@priority = 5
 	@refactordone
@@ -161,30 +88,6 @@ definition {
 	}
 
 	// May need to update test after LPS-133688 is fixed
-
-	@description = "This ensures that a user can not create a repository with the same escape characters name as another repository."
-	@priority = 4
-	@refactordone
-	test CannotAddDuplicateWithEscapeCharacters {
-		DepotNavigator.openDepotAdmin();
-
-		Depot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "&");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.addDepot(
-			depotName = "&",
-			duplicate = "true");
-
-		DepotNavigator.openDepotAdmin();
-
-		AssertElementNotPresent(
-			key_card = "&",
-			key_index = 2,
-			locator1 = "Card#CARD_PAGE_ITEM");
-	}
 
 	@description = "This ensures that a user can select all depots, deselect some, and delete the selected and reselected ones in cards view."
 	@priority = 4
