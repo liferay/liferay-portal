@@ -10,6 +10,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {PORTLET_URLS} from '../../../utils/portletUrls';
+import {openProductMenu} from '../../../utils/productMenu';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {DepotAdminPage} from './pages/DepotAdminPage';
 
@@ -284,5 +285,28 @@ test(
 		await gotoDepotAdmin(page, assetLibrary.name);
 
 		await expect(card.getByText('1 Connected Site')).toBeVisible();
+	}
+);
+
+test(
+	'Asset libraries are not offered in the site selector',
+	{tag: ['@LPD-109885', '@LPS-120834']},
+	async ({apiHelpers, page}) => {
+		await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		await page.goto('/');
+
+		await openProductMenu(page);
+
+		await page.getByRole('button', {name: 'Go to Other Site'}).click();
+
+		const siteSelector = page.frameLocator('iframe[title="Select Site"]');
+
+		await expect(
+			siteSelector.getByRole('link', {exact: true, name: 'All Sites'})
+		).toBeVisible();
+		await expect(
+			siteSelector.getByRole('link', {name: 'Asset Libraries'})
+		).toHaveCount(0);
 	}
 );
