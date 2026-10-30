@@ -77,9 +77,9 @@ public class OAuthClientEntryCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		_oAuthClientEntryLocalService.addOAuthClientEntry(
-			externalReferenceCode, TestPropsValues.getUserId(), _getRandomJSON(),
-			_openIdConnectProviderHttpServer.getURL(), _getRandomJSON(),
-			_getInfoJSON(), "email", 0,
+			externalReferenceCode, TestPropsValues.getUserId(),
+			_getRandomJSON(), _openIdConnectProviderHttpServer.getURL(),
+			_getRandomJSON(), _getInfoJSON(), "email", 0,
 			OAuthClientEntryConstants.OIDC_USER_INFO_MAPPER_JSON, 0,
 			_getRandomJSON());
 	}

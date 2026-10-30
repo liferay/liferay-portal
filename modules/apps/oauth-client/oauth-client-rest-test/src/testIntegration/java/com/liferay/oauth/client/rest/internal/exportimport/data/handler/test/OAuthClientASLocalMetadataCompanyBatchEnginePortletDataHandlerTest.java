@@ -147,8 +147,8 @@ public class OAuthClientASLocalMetadataCompanyBatchEnginePortletDataHandlerTest
 				_getRandomURL(),
 				oAuthClientASLocalMetadata.isLocalWellKnownEnabled(),
 				_getRandomURL(), new String[] {"authorization_code"},
-				new String[] {"openid"}, new String[] {"public"}, _getRandomURL(),
-				_getRandomURL());
+				new String[] {"openid"}, new String[] {"public"},
+				_getRandomURL(), _getRandomURL());
 	}
 
 	@Override
