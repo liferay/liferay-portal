@@ -21,6 +21,7 @@ import {
 	ReferenceLine,
 	ResponsiveContainer,
 	Tooltip,
+	TooltipProps,
 	XAxis,
 	YAxis,
 } from 'recharts';
@@ -129,11 +130,6 @@ interface ISegmentGrowthChartProps {
 	onSelectedPointChange?: (selectedPoint: number) => void;
 }
 
-interface ITooltipProps {
-	active: boolean;
-	payload: CHANGES_AGGREGATION_SHAPE[];
-}
-
 export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 	data,
 	hasSelectedPoint,
@@ -154,7 +150,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 	const tooltipRef = useRef(null);
 
-	const renderTooltip: React.FC<ITooltipProps> = ({active, payload}) => {
+	const renderTooltip = ({active, payload}: TooltipProps<number, string>) => {
 		if ((active && payload && !!payload.length) || hasSelectedPoint) {
 			const {
 				added,
