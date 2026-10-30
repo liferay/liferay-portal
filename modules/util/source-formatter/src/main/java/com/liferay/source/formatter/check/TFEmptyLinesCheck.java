@@ -37,7 +37,6 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 			}
 
 			boolean comment = TFSourceUtil.isCommentLine(lines[i]);
-
 			int endLineIndex = i;
 
 			if (comment) {
@@ -58,8 +57,8 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 
 			if ((previousLine != null) &&
 				((comment != previousComment) ||
-				 (precededByEmptyLine && !_isBlockStart(previousLine) &&
-				  !_isBlockEnd(lines[i])))) {
+				 (precededByEmptyLine && !_isBlockEnd(lines[i]) &&
+				  !_isBlockStart(previousLine)))) {
 
 				sb.append(CharPool.NEW_LINE);
 			}
@@ -69,8 +68,8 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 				sb.append(CharPool.NEW_LINE);
 			}
 
-			precededByEmptyLine = false;
 			i = endLineIndex;
+			precededByEmptyLine = false;
 			previousComment = comment;
 			previousLine = lines[endLineIndex];
 		}

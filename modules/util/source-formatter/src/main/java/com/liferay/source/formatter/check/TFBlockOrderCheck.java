@@ -152,17 +152,15 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		String fileName, String[] lines, int startLineIndex, int endLineIndex,
 		boolean topLevel) {
 
-		List<List<Entry>> entryGroups = new ArrayList<>();
-
 		List<Entry> entries = new ArrayList<>();
-
+		List<List<Entry>> entryGroups = new ArrayList<>();
 		boolean precededByComment = false;
 
 		for (int i = startLineIndex; i < endLineIndex; i++) {
 			String trimmedLine = StringUtil.trim(lines[i]);
 
-			if (Validator.isBlank(trimmedLine) ||
-				TFSourceUtil.isCommentLine(lines[i])) {
+			if (TFSourceUtil.isCommentLine(lines[i]) ||
+				Validator.isBlank(trimmedLine)) {
 
 				if (!entries.isEmpty()) {
 					entryGroups.add(entries);
@@ -215,9 +213,8 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 			entries.add(entry);
 
-			precededByComment = false;
-
 			i = entryEndLineIndex;
+			precededByComment = false;
 		}
 
 		if (!entries.isEmpty()) {
