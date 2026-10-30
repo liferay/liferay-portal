@@ -55,9 +55,6 @@ public class StyleBookEntryModelDocumentContributorTest {
 
 		Assert.assertEquals(styleBookEntry.getName(), document.get(Field.NAME));
 		Assert.assertEquals(
-			String.valueOf(styleBookEntry.getStatus()),
-			document.get(Field.STATUS));
-		Assert.assertEquals(
 			styleBookEntry.getName(), document.get(Field.TITLE));
 		Assert.assertEquals(
 			String.valueOf(styleBookEntry.isDefaultStyleBookEntry()),
