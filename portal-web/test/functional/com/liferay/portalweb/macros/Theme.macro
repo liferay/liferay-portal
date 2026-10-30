@@ -101,16 +101,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewClassicThemeBackgroundColor() {
-		AssertCssValue(
-			locator1 = "//body",
-			locator2 = "background-color",
-			value1 = "rgba(255, 255, 255, 1)");
-
-		takeScreenshot();
-	}
-
-	@summary = "Default summary"
 	macro viewMaxPortletOption() {
 		AssertTextEquals(
 			key_menuItem = "Maximize",

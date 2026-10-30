@@ -504,6 +504,11 @@ public class StagingImplTest {
 	}
 
 	@Test
+	public void testLocalStagingLayoutTheme() throws Exception {
+		_testLocalStagingLayoutTheme(false);
+	}
+
+	@Test
 	public void testLocalStagingUpdateLastPublishDate() throws Exception {
 		enableLocalStagingWithContent(true, false);
 
@@ -622,6 +627,13 @@ public class StagingImplTest {
 		Assert.assertNull(
 			typeSettingsUnicodeProperties.getProperty(
 				"last-import-layout-set-branch-name"));
+	}
+
+	@Test
+	public void testLocalStagingWithLayoutVersioningLayoutTheme()
+		throws Exception {
+
+		_testLocalStagingLayoutTheme(true);
 	}
 
 	@Test
@@ -1199,6 +1211,17 @@ public class StagingImplTest {
 			layout.getExternalReferenceCode(), stagingGroup.getGroupId());
 	}
 
+	private ServiceContext _getStagingServiceContext() throws Exception {
+		Group stagingGroup = _group.getStagingGroup();
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(stagingGroup.getGroupId());
+
+		serviceContext.setSignedIn(true);
+
+		return serviceContext;
+	}
+
 	private void _publishLayouts(
 			LayoutSetBranch layoutSetBranch, Map<String, String[]> parameterMap)
 		throws Exception {
@@ -1238,6 +1261,52 @@ public class StagingImplTest {
 			"staged", Boolean.TRUE.toString());
 		typeSettingsUnicodeProperties.setProperty(
 			"stagedRemotely", Boolean.TRUE.toString());
+	}
+
+	private void _testLocalStagingLayoutTheme(boolean branching)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		enableLocalStaging(branching);
+
+		ServiceContextThreadLocal.pushServiceContext(
+			_getStagingServiceContext());
+
+		Layout stagingLayout = _getStagingLayout(layout);
+
+		_layoutLocalService.updateLookAndFeel(
+			stagingLayout.getGroupId(), stagingLayout.isPrivateLayout(),
+			stagingLayout.getLayoutId(), "cms_WAR_cmstheme", StringPool.BLANK,
+			StringPool.BLANK);
+
+		ServiceContextThreadLocal.popServiceContext();
+
+		LayoutSetBranch layoutSetBranch = null;
+
+		if (branching) {
+			layoutSetBranch = _getMasterLayoutSetBranch();
+
+			LayoutRevision layoutRevision =
+				_layoutRevisionLocalService.fetchLastLayoutRevision(
+					stagingLayout.getPlid(), true);
+
+			Assert.assertEquals(
+				"cms_WAR_cmstheme", layoutRevision.getThemeId());
+		}
+
+		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		Assert.assertNotEquals("cms_WAR_cmstheme", liveLayout.getThemeId());
+
+		_publishLayouts(
+			layoutSetBranch,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap());
+
+		liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		Assert.assertEquals("cms_WAR_cmstheme", liveLayout.getThemeId());
 	}
 
 	private void _testLocalStagingWithLayoutVersioningLastImportSettings(

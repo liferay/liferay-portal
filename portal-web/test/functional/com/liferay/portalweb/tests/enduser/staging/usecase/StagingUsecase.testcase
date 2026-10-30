@@ -1021,53 +1021,6 @@ definition {
 		}
 	}
 
-	@priority = 3
-	test PublishThemeFromStagedToLive {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		task ("Given: User deploy test theme on the portal and enables local staging") {
-			FileInstall.deployFileOnServer(jarFile = "test-theme.war");
-
-			WaitForConsoleTextPresent(value1 = "STARTED test-theme");
-
-			JSONStaging.enableLocalStaging(
-				branchingPrivate = "true",
-				branchingPublic = "true",
-				groupName = "Guest");
-		}
-
-		task ("When: User change the theme of the staging site then publish it to the home page") {
-			Navigator.openStagingSiteURL(defaultSite = "true");
-
-			Page.changeSinglePageTheme(themeName = "test-theme-7-4");
-
-			Navigator.gotoBack();
-
-			Button.clickPublish();
-		}
-
-		task ("Then: The theme will be changed to the new one on staging") {
-			Theme.viewTestThemeBackgroundColor();
-
-			Navigator.openURL();
-
-			Theme.viewClassicThemeBackgroundColor();
-		}
-
-		task ("And: The new theme will be shown on the live site too after publishing the staging site change") {
-			Navigator.openStagingSiteURL(defaultSite = "true");
-
-			Staging.gotoPublishToLive();
-
-			Staging.publishToLive();
-
-			Navigator.openURL();
-
-			Theme.viewTestThemeBackgroundColor();
-		}
-	}
-
 	@description = "This is a use case for LPS-127207."
 	@priority = 3
 	test PublishWebContentFolderWithChildFolders {
