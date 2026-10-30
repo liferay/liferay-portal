@@ -618,7 +618,9 @@ test(
 			.optionSelector('Color')
 			.selectOption({label: 'Black'});
 
-		await expect(await productDetailsPage.uomTable('Unit')).toBeVisible();
+		await expect(
+			await productDetailsPage.uomTable('Package')
+		).toBeVisible();
 		await expect(
 			await productDetailsPage.priceField('$ 50.00 / Box')
 		).toBeVisible();
