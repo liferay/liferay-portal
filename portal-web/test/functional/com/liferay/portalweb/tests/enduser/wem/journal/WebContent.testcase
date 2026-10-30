@@ -1837,13 +1837,9 @@ definition {
 		}
 
 		task ("Assert no public pages displayed in ckeditor link > Broswer Server") {
-			SelectFrame.selectFrameNoLoading(locator1 = "CKEditor#BODY_FIELD_IFRAME_2");
-
-			Type.sendKeys(
-				locator1 = "CKEditor#BODY",
-				value1 = "keys=CONTROL,k");
-
-			SelectFrameTop();
+			Click(
+				key_fieldLabel = "Content",
+				locator1 = "CKEditor#TOOLBAR_LINK_BUTTON");
 
 			Click(
 				key_text = "Browse Server",
