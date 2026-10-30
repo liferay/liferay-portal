@@ -210,11 +210,11 @@ public class NotificationTemplateResourceTest
 		super.testPostNotificationTemplate();
 
 		_testPostNotificationTemplateWithCreator();
-		_testPostNotificationTemplateWithRecipientsAndEmailType();
 		_testPostNotificationTemplateWithNameWithoutDefaultLanguage();
 		_testPostNotificationTemplateWithObjectDefinition();
 		_testPostNotificationTemplateWithPermissions();
 		_testPostNotificationTemplateWithPermissionsAndFeatureFlagDisabled();
+		_testPostNotificationTemplateWithRecipientsAndEmailType();
 		_testPostNotificationTemplateWithRecipientsAndFeatureFlagDisabled();
 		_testPostNotificationTemplateWithRecipientsAndUserNotificationType();
 	}
