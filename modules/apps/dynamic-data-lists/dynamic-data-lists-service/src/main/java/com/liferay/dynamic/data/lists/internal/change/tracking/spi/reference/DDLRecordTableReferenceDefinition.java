@@ -58,32 +58,24 @@ public class DDLRecordTableReferenceDefinition
 				DDMFieldTable.INSTANCE
 			).innerJoinON(
 				DDLRecordTable.INSTANCE,
-				DDLRecordTable.INSTANCE.companyId.eq(
-					DDMFieldTable.INSTANCE.companyId)
+				DDLRecordTable.INSTANCE.DDMStorageId.eq(
+					DDMFieldTable.INSTANCE.storageId)
 			).innerJoinON(
 				DDLRecordVersionTable.INSTANCE,
 				DDLRecordVersionTable.INSTANCE.recordId.eq(
-					DDLRecordTable.INSTANCE.recordId
-				).and(
-					DDLRecordTable.INSTANCE.DDMStorageId.eq(
-						DDMFieldTable.INSTANCE.storageId)
-				)
+					DDLRecordTable.INSTANCE.recordId)
 			)
 		).referenceInnerJoin(
 			fromStep -> fromStep.from(
 				DDMStorageLinkTable.INSTANCE
 			).innerJoinON(
 				DDLRecordTable.INSTANCE,
-				DDLRecordTable.INSTANCE.companyId.eq(
-					DDMStorageLinkTable.INSTANCE.companyId)
+				DDLRecordTable.INSTANCE.DDMStorageId.eq(
+					DDMStorageLinkTable.INSTANCE.classPK)
 			).innerJoinON(
 				DDLRecordVersionTable.INSTANCE,
 				DDLRecordVersionTable.INSTANCE.recordId.eq(
-					DDLRecordTable.INSTANCE.recordId
-				).and(
-					DDLRecordTable.INSTANCE.DDMStorageId.eq(
-						DDMStorageLinkTable.INSTANCE.classPK)
-				)
+					DDLRecordTable.INSTANCE.recordId)
 			)
 		).singleColumnReference(
 			DDLRecordTable.INSTANCE.recordId,
