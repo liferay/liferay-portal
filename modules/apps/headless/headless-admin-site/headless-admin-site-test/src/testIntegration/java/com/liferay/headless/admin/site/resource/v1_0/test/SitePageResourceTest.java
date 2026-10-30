@@ -129,12 +129,14 @@ import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CustomizedPages;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortletConstants;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -160,6 +162,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.HashMapDictionary;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -198,6 +201,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
@@ -207,6 +211,11 @@ import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceRegistration;
 
 import org.springframework.mock.web.MockHttpServletRequest;
 
@@ -3739,6 +3748,7 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			PageSpecification.Status.DRAFT, PageSpecification.Status.APPROVED);
 		_testPostSiteSitePageWithPageSpecifications(
 			PageSpecification.Status.DRAFT, PageSpecification.Status.DRAFT);
+		_testPostSiteSitePageWithPageSpecificationsWithApprovedStatus();
 		_testPostSiteSitePageWithPageSpecificationsWithCustomFields();
 		_testPostSitePageWithPageSpecificationsWithSettings(
 			SitePage.Type.CONTENT_PAGE);
@@ -3808,6 +3818,44 @@ public class SitePageResourceTest extends BaseSitePageResourceTestCase {
 			draftContentPageSpecification, publishedContentPageSpecification,
 			sitePageResource.postSiteSitePage(
 				testGroup.getExternalReferenceCode(), false, sitePage));
+	}
+
+	private void _testPostSiteSitePageWithPageSpecificationsWithApprovedStatus()
+		throws Exception {
+
+		List<Integer> statuses = new CopyOnWriteArrayList<>();
+
+		Bundle bundle = FrameworkUtil.getBundle(SitePageResourceTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		ServiceRegistration<?> serviceRegistration =
+			bundleContext.registerService(
+				ModelListener.class,
+				new BaseModelListener<Layout>() {
+
+					@Override
+					public void onBeforeUpdate(
+						Layout originalLayout, Layout layout) {
+
+						if (layout.getGroupId() == testGroup.getGroupId()) {
+							statuses.add(layout.getStatus());
+						}
+					}
+
+				},
+				new HashMapDictionary<>());
+
+		try {
+			_testPostSiteSitePageWithPageSpecifications(
+				PageSpecification.Status.APPROVED,
+				PageSpecification.Status.APPROVED);
+		}
+		finally {
+			serviceRegistration.unregister();
+		}
+
+		Assert.assertFalse(statuses.contains(WorkflowConstants.STATUS_DRAFT));
 	}
 
 	private void _testPostSiteSitePageWithPageSpecificationsWithCustomFields()
