@@ -10,9 +10,11 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.exception.AssetListEntryTitleException;
 import com.liferay.asset.list.exception.DuplicateAssetListEntryTitleException;
+import com.liferay.asset.list.exception.NoSuchEntryAudienceEntryRelException;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.list.util.comparator.AssetListEntryCreateDateComparator;
@@ -20,6 +22,7 @@ import com.liferay.asset.list.util.comparator.AssetListEntryTitleComparator;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -73,6 +76,87 @@ public class AssetListEntryServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
+	}
+
+	@Test
+	public void testAddAssetEntrySelectionsWithAudienceEntryERC()
+		throws PortalException {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC, serviceContext);
+
+		AssetEntry assetEntry1 = _addAssetEntry();
+		AssetEntry assetEntry2 = _addAssetEntry();
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {
+				assetEntry1.getEntryId(), assetEntry2.getEntryId(),
+				assetEntry1.getEntryId()
+			},
+			audienceEntryERC, serviceContext);
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry1.getEntryId()},
+			SegmentsEntryConstants.ID_DEFAULT, serviceContext);
+
+		_assertAssetEntryIds(
+			assetListEntry, StringPool.BLANK, assetEntry1.getEntryId());
+		_assertAssetEntryIds(
+			assetListEntry, audienceEntryERC, assetEntry1.getEntryId(),
+			assetEntry2.getEntryId());
+	}
+
+	@Test(expected = NoSuchEntryAudienceEntryRelException.class)
+	public void testAddAssetEntrySelectionsWithoutAssetListEntryAudienceEntryRel()
+		throws PortalException {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, serviceContext);
+
+		AssetEntry assetEntry = _addAssetEntry();
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry.getEntryId()}, RandomTestUtil.randomString(),
+			serviceContext);
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testAddAssetEntrySelectionsWithoutPermission()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC, serviceContext);
+
+		AssetEntry assetEntry = _addAssetEntry();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryService.addAssetEntrySelections(
+				assetListEntry.getAssetListEntryId(),
+				new long[] {assetEntry.getEntryId()}, audienceEntryERC,
+				serviceContext);
+		}
 	}
 
 	@Test
@@ -277,6 +361,67 @@ public class AssetListEntryServiceTest {
 
 		Assert.assertEquals(
 			"asset-list-title", assetListEntry.getAssetListEntryKey());
+	}
+
+	@Test
+	public void testDeleteAssetEntrySelectionWithAudienceEntryERC()
+		throws PortalException {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC, serviceContext);
+
+		AssetEntry assetEntry1 = _addAssetEntry();
+		AssetEntry assetEntry2 = _addAssetEntry();
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry1.getEntryId(), assetEntry2.getEntryId()},
+			audienceEntryERC, serviceContext);
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry1.getEntryId()},
+			SegmentsEntryConstants.ID_DEFAULT, serviceContext);
+
+		_assetListEntryService.deleteAssetEntrySelection(
+			assetListEntry.getAssetListEntryId(), audienceEntryERC, 0);
+
+		_assertAssetEntryIds(
+			assetListEntry, StringPool.BLANK, assetEntry1.getEntryId());
+		_assertAssetEntryIds(
+			assetListEntry, audienceEntryERC, assetEntry2.getEntryId());
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testDeleteAssetEntrySelectionWithoutPermission()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC, serviceContext);
+
+		AssetEntry assetEntry = _addAssetEntry();
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry.getEntryId()}, audienceEntryERC,
+			serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryService.deleteAssetEntrySelection(
+				assetListEntry.getAssetListEntryId(), audienceEntryERC, 0);
+		}
 	}
 
 	@Test
@@ -614,6 +759,62 @@ public class AssetListEntryServiceTest {
 	}
 
 	@Test
+	public void testMoveAssetEntrySelectionWithAudienceEntryERC()
+		throws PortalException {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC, serviceContext);
+
+		AssetEntry assetEntry1 = _addAssetEntry();
+		AssetEntry assetEntry2 = _addAssetEntry();
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry1.getEntryId(), assetEntry2.getEntryId()},
+			audienceEntryERC, serviceContext);
+
+		_assetListEntryService.moveAssetEntrySelection(
+			assetListEntry.getAssetListEntryId(), audienceEntryERC, 0, 1);
+
+		_assertAssetEntryIds(
+			assetListEntry, audienceEntryERC, assetEntry2.getEntryId(),
+			assetEntry1.getEntryId());
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testMoveAssetEntrySelectionWithoutPermission()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC, serviceContext);
+
+		AssetEntry assetEntry1 = _addAssetEntry();
+		AssetEntry assetEntry2 = _addAssetEntry();
+
+		_assetListEntryService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry1.getEntryId(), assetEntry2.getEntryId()},
+			audienceEntryERC, serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryService.moveAssetEntrySelection(
+				assetListEntry.getAssetListEntryId(), audienceEntryERC, 0, 1);
+		}
+	}
+
+	@Test
 	public void testUpdateAssetListEntry() throws PortalException {
 		AssetListEntry assetListEntry = _addAssetListEntry("Asset List Title");
 
@@ -621,6 +822,65 @@ public class AssetListEntryServiceTest {
 			assetListEntry.getAssetListEntryId(), "New Asset List Title");
 
 		Assert.assertEquals("New Asset List Title", assetListEntry.getTitle());
+	}
+
+	@Test
+	public void testUpdateAssetListEntryTypeSettingsWithAudienceEntryERC()
+		throws PortalException {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+		String typeSettings = RandomTestUtil.randomString();
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addDynamicAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(), typeSettings, serviceContext);
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		_addAssetListEntryAudienceEntryRel(
+			assetListEntry, audienceEntryERC, typeSettings, serviceContext);
+
+		String audienceTypeSettings = RandomTestUtil.randomString();
+
+		_assetListEntryService.updateAssetListEntryTypeSettings(
+			assetListEntry.getAssetListEntryId(), audienceEntryERC,
+			audienceTypeSettings);
+
+		Assert.assertEquals(
+			typeSettings,
+			assetListEntry.getTypeSettings(SegmentsEntryConstants.ID_DEFAULT));
+		Assert.assertEquals(
+			audienceTypeSettings,
+			assetListEntry.getTypeSettings(audienceEntryERC));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdateAssetListEntryTypeSettingsWithoutPermission()
+		throws Exception {
+
+		String audienceEntryERC = RandomTestUtil.randomString();
+
+		AssetListEntry assetListEntry = _addManualAssetListEntry(
+			audienceEntryERC,
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId()));
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryService.updateAssetListEntryTypeSettings(
+				assetListEntry.getAssetListEntryId(), audienceEntryERC,
+				RandomTestUtil.randomString());
+		}
+	}
+
+	private AssetEntry _addAssetEntry() {
+		return AssetTestUtil.addAssetEntry(
+			_group.getGroupId(), null,
+			TestAssetRendererFactory.class.getName());
 	}
 
 	private AssetListEntry _addAssetListEntry(String title)
@@ -632,9 +892,57 @@ public class AssetListEntryServiceTest {
 				_group.getGroupId(), TestPropsValues.getUserId()));
 	}
 
+	private void _addAssetListEntryAudienceEntryRel(
+			AssetListEntry assetListEntry, String audienceEntryERC,
+			String typeSettings, ServiceContext serviceContext)
+		throws PortalException {
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC,
+				typeSettings, serviceContext);
+	}
+
+	private AssetListEntry _addManualAssetListEntry(
+			String audienceEntryERC, ServiceContext serviceContext)
+		throws PortalException {
+
+		AssetListEntry assetListEntry =
+			_assetListEntryService.addAssetListEntry(
+				RandomTestUtil.randomString(), _group.getGroupId(),
+				RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, serviceContext);
+
+		_addAssetListEntryAudienceEntryRel(
+			assetListEntry, audienceEntryERC, RandomTestUtil.randomString(),
+			serviceContext);
+
+		return assetListEntry;
+	}
+
+	private void _assertAssetEntryIds(
+		AssetListEntry assetListEntry, String audienceEntryERC,
+		long... expectedAssetEntryIds) {
+
+		Assert.assertArrayEquals(
+			expectedAssetEntryIds,
+			TransformUtil.transformToLongArray(
+				_assetListEntryAssetEntryRelLocalService.
+					getAssetListEntryAssetEntryRels(
+						assetListEntry.getAssetListEntryId(), audienceEntryERC,
+						SegmentsEntryConstants.ID_DEFAULT, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS),
+				AssetListEntryAssetEntryRel::getAssetEntryId));
+	}
+
 	@Inject
 	private AssetListEntryAssetEntryRelLocalService
 		_assetListEntryAssetEntryRelLocalService;
+
+	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Inject
 	private AssetListEntryService _assetListEntryService;
