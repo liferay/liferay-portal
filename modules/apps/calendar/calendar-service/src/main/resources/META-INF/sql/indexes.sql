@@ -13,9 +13,7 @@ create unique index IX_1554DFF5 on CalendarBooking (uuid_[$COLUMN_LENGTH:75$], g
 create index IX_7727A482 on CalendarNotificationTemplate (calendarId, notificationType[$COLUMN_LENGTH:75$], notificationTemplateType[$COLUMN_LENGTH:75$]);
 create unique index IX_10D0E1DD on CalendarNotificationTemplate (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_74AD9DDD on CalendarResource (active_, code_[$COLUMN_LENGTH:75$], companyId);
+create index IX_76DDD0F7 on CalendarResource (active_);
 create unique index IX_CD46CB85 on CalendarResource (classNameId, classPK, ctCollectionId);
-create index IX_40678371 on CalendarResource (groupId, active_);
 create index IX_55C2F8AA on CalendarResource (groupId, code_[$COLUMN_LENGTH:75$]);
-create unique index IX_FD05567A on CalendarResource (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_150E2F22 on CalendarResource (uuid_[$COLUMN_LENGTH:75$]);
+create unique index IX_53277226 on CalendarResource (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
