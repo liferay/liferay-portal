@@ -1713,53 +1713,6 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<MBMessage> getUserDiscussionMessages(
-		long userId, long classNameId, long classPK, int status, int start,
-		int end, OrderByComparator<MBMessage> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.findByU_C_C(
-				userId, classNameId, classPK, start, end, orderByComparator);
-		}
-
-		return mbMessagePersistence.findByU_C_C_S(
-			userId, classNameId, classPK, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<MBMessage> getUserDiscussionMessages(
-		long userId, String className, long classPK, int status, int start,
-		int end, OrderByComparator<MBMessage> orderByComparator) {
-
-		return getUserDiscussionMessages(
-			userId, _classNameLocalService.getClassNameId(className), classPK,
-			status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getUserDiscussionMessagesCount(
-		long userId, long classNameId, long classPK, int status) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbMessagePersistence.countByU_C_C(
-				userId, classNameId, classPK);
-		}
-
-		return mbMessagePersistence.countByU_C_C_S(
-			userId, classNameId, classPK, status);
-	}
-
-	@Override
-	public int getUserDiscussionMessagesCount(
-		long userId, String className, long classPK, int status) {
-
-		return getUserDiscussionMessagesCount(
-			userId, _classNameLocalService.getClassNameId(className), classPK,
-			status);
-	}
-
-	@Override
 	public long moveMessageAttachmentToTrash(
 			long userId, long messageId, String fileName)
 		throws PortalException {
