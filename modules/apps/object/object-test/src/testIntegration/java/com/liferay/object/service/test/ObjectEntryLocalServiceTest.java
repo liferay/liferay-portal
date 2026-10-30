@@ -6075,6 +6075,47 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetIndexedValuesWithLocalizedObjectFields()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Arrays.asList(
+					new TextObjectFieldBuilder(
+					).indexed(
+						true
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"indexedLocalizedText"
+					).build(),
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"localizedText"
+					).build()));
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Map<String, Serializable> indexedValues =
+			_objectEntryLocalService.getIndexedValues(objectEntry);
+
+		Assert.assertEquals(
+			StringPool.BLANK, indexedValues.get("indexedLocalizedText"));
+		Assert.assertFalse(indexedValues.containsKey("localizedText"));
+		Assert.assertFalse(indexedValues.containsKey("localizedText_i18n"));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testGetObjectEntries() throws Exception {
 		List<ObjectEntry> objectEntries =
 			_objectEntryLocalService.getObjectEntries(
@@ -7587,32 +7628,129 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetValuesWithoutLocalizedValues() throws Exception {
-		ObjectField objectField = ObjectFieldUtil.createObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
-			"localizedText");
-
-		objectField.setLocalized(true);
+	public void testGetValuesWithLocalizedBooleanDateAndIntegerObjectFields()
+		throws Exception {
 
 		ObjectDefinition objectDefinition =
 			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(objectField));
+				Arrays.asList(
+					new BooleanObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"booleanField"
+					).build(),
+					new DateObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"dateField"
+					).build(),
+					new IntegerObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"integerField"
+					).build(),
+					new BooleanObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"localizedBooleanField"
+					).build(),
+					new DateObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"localizedDateField"
+					).build(),
+					new IntegerObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"localizedIntegerField"
+					).build()));
 
-		try {
-			ObjectEntry objectEntry = _addObjectEntry(
-				objectDefinition, new HashMap<>(),
-				ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
 
-			_assertBlankLocalizedValues(
-				_objectEntryLocalService.getValues(objectEntry));
-			_assertBlankLocalizedValues(objectEntry.getValues());
-			_assertLoadValues(objectDefinition, objectEntry);
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(
+			values.get("booleanField"), values.get("localizedBooleanField"));
+		Assert.assertEquals(
+			values.get("dateField"), values.get("localizedDateField"));
+		Assert.assertEquals(
+			values.get("integerField"), values.get("localizedIntegerField"));
+
+		values = _objectEntryLocalService.getValues(objectEntry);
+
+		Assert.assertEquals(
+			values.get("booleanField"), values.get("localizedBooleanField"));
+		Assert.assertEquals(
+			values.get("dateField"), values.get("localizedDateField"));
+		Assert.assertEquals(
+			values.get("integerField"), values.get("localizedIntegerField"));
+
+		_assertLoadValues(objectDefinition, objectEntry);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@FeatureFlag("LPD-11388")
+	@Test
+	public void testGetValuesWithLocalizedLocationObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Arrays.asList(
+					new LocationObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"localizedLocation"
+					).build(),
+					new LocationObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).name(
+						"location"
+					).build()));
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Map<String, Serializable> values = _objectEntryLocalService.getValues(
+			objectEntry);
+
+		Assert.assertEquals(
+			values.get("location"), values.get("localizedLocation"));
+		Assert.assertEquals(
+			Collections.emptyMap(), values.get("localizedLocation_i18n"));
+
+		Map<String, Serializable> objectEntryValues = objectEntry.getValues();
+
+		Assert.assertEquals(
+			values.get("localizedLocation"),
+			objectEntryValues.get("localizedLocation"));
+		Assert.assertEquals(
+			values.get("localizedLocation_i18n"),
+			objectEntryValues.get("localizedLocation_i18n"));
+
+		_assertLoadValues(objectDefinition, objectEntry);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
@@ -9963,6 +10101,42 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateObjectEntryWithLocalizedTextObjectField()
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(
+					new TextObjectFieldBuilder(
+					).labelMap(
+						RandomTestUtil.randomLocaleStringMap()
+					).localized(
+						true
+					).name(
+						"localizedText"
+					).build()));
+
+		ObjectEntry objectEntry = _addObjectEntry(
+			objectDefinition, Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		objectEntry = _objectEntryLocalService.updateObjectEntry(
+			TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+			objectEntry.getObjectEntryFolderId(), Collections.emptyMap(),
+			ServiceContextTestUtil.getServiceContext());
+
+		Map<String, Serializable> values = objectEntry.getValues();
+
+		Assert.assertEquals(StringPool.BLANK, values.get("localizedText"));
+		Assert.assertEquals(
+			Collections.emptyMap(), values.get("localizedText_i18n"));
+
+		_assertLoadValues(objectDefinition, objectEntry);
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
+	}
+
+	@Test
 	public void testUpdateObjectEntryWithPhoneNumberObjectField()
 		throws Exception {
 
@@ -10087,47 +10261,6 @@ public class ObjectEntryLocalServiceTest {
 		_assertFriendlyURLEntries(2, objectDefinition, objectEntry);
 
 		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
-	}
-
-	@Test
-	public void testUpdateObjectEntryWithoutLocalizedValues() throws Exception {
-		ObjectField objectField = ObjectFieldUtil.createObjectField(
-			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
-			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
-			"localizedText");
-
-		objectField.setLocalized(true);
-
-		ObjectDefinition objectDefinition =
-			ObjectDefinitionTestUtil.publishObjectDefinition(
-				Collections.singletonList(objectField));
-
-		try {
-			ObjectEntry objectEntry = _addObjectEntry(
-				objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					"localizedText_i18n",
-					(Serializable)HashMapBuilder.<String, Serializable>put(
-						LocaleUtil.toLanguageId(LocaleUtil.US),
-						RandomTestUtil.randomString()
-					).build()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
-
-			objectEntry = _objectEntryLocalService.updateObjectEntry(
-				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
-				objectEntry.getObjectEntryFolderId(), new HashMap<>(),
-				ServiceContextTestUtil.getServiceContext());
-
-			_assertBlankLocalizedValues(
-				_objectEntryLocalService.getValues(objectEntry));
-			_assertBlankLocalizedValues(objectEntry.getValues());
-			_assertLoadValues(objectDefinition, objectEntry);
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
 	}
 
 	@Test
@@ -11461,12 +11594,6 @@ public class ObjectEntryLocalServiceTest {
 		Assert.assertEquals(expectedEventType, auditMessage.getEventType());
 
 		auditMessages.clear();
-	}
-
-	private void _assertBlankLocalizedValues(Map<String, Serializable> values) {
-		Assert.assertEquals(StringPool.BLANK, values.get("localizedText"));
-		Assert.assertEquals(
-			Collections.emptyMap(), values.get("localizedText_i18n"));
 	}
 
 	private void _assertCommentsCount(

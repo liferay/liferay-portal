@@ -1978,9 +1978,11 @@ public class DefaultObjectEntryManagerImplTest
 
 		Map<String, Object> properties = objectEntry.getProperties();
 
-		Assert.assertNull(
+		Assert.assertEquals(
+			Collections.emptyMap(),
 			properties.get("localizedBooleanObjectFieldName_i18n"));
-		Assert.assertNull(
+		Assert.assertEquals(
+			Collections.emptyMap(),
 			properties.get("localizedPicklistObjectFieldName_i18n"));
 
 		Map<String, Object> localizedObjectFieldI18nValues =
