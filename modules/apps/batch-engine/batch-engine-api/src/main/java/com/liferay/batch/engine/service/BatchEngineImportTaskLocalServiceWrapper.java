@@ -377,26 +377,6 @@ public class BatchEngineImportTaskLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.batch.engine.model.BatchEngineImportTask>
-		getBatchEngineImportTasks(long companyId, int start, int end) {
-
-		return _batchEngineImportTaskLocalService.getBatchEngineImportTasks(
-			companyId, start, end);
-	}
-
-	@Override
-	public java.util.List<com.liferay.batch.engine.model.BatchEngineImportTask>
-		getBatchEngineImportTasks(
-			long companyId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.batch.engine.model.BatchEngineImportTask>
-					orderByComparator) {
-
-		return _batchEngineImportTaskLocalService.getBatchEngineImportTasks(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List<com.liferay.batch.engine.model.BatchEngineImportTask>
 		getBatchEngineImportTasks(String executeStatus) {
 
 		return _batchEngineImportTaskLocalService.getBatchEngineImportTasks(
@@ -412,12 +392,6 @@ public class BatchEngineImportTaskLocalServiceWrapper
 	public int getBatchEngineImportTasksCount() {
 		return _batchEngineImportTaskLocalService.
 			getBatchEngineImportTasksCount();
-	}
-
-	@Override
-	public int getBatchEngineImportTasksCount(long companyId) {
-		return _batchEngineImportTaskLocalService.
-			getBatchEngineImportTasksCount(companyId);
 	}
 
 	@Override
@@ -517,4 +491,4 @@ public class BatchEngineImportTaskLocalServiceWrapper
 		_batchEngineImportTaskLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1024113296
+// LIFERAY-SERVICE-BUILDER-HASH:-1314011566

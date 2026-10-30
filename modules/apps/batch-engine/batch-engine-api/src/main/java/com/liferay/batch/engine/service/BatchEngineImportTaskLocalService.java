@@ -290,15 +290,6 @@ public interface BatchEngineImportTaskLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<BatchEngineImportTask> getBatchEngineImportTasks(
-		long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BatchEngineImportTask> getBatchEngineImportTasks(
-		long companyId, int start, int end,
-		OrderByComparator<BatchEngineImportTask> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<BatchEngineImportTask> getBatchEngineImportTasks(
 		String executeStatus);
 
 	/**
@@ -308,9 +299,6 @@ public interface BatchEngineImportTaskLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getBatchEngineImportTasksCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getBatchEngineImportTasksCount(long companyId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public BatchEngineImportTaskContentBlobModel getContentBlobModel(
@@ -357,4 +345,4 @@ public interface BatchEngineImportTaskLocalService
 		BatchEngineImportTask batchEngineImportTask);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:106078152
+// LIFERAY-SERVICE-BUILDER-HASH:-36789696
