@@ -104,13 +104,9 @@ const renderComponent = (state: MockState) => {
 
 describe('StructureBuilderToolbar', () => {
 	beforeAll(() => {
-		StructureService.createStructure = jest
+		StructureService.saveStructure = jest
 			.fn()
-			.mockResolvedValue({error: null});
-
-		StructureService.updateStructure = jest
-			.fn()
-			.mockResolvedValue({error: null});
+			.mockResolvedValue({data: {id: 1}, error: null});
 
 		SpaceService.getSpaceContents = jest
 			.fn()
@@ -142,75 +138,33 @@ describe('StructureBuilderToolbar', () => {
 		expect(screen.queryByText('save')).not.toBeInTheDocument();
 	});
 
-	it('Save button calls correct endpoint when status is new', async () => {
-		renderComponent({structure: {status: 'new'}});
+	it.each(['draft', 'new'] as const)(
+		'Save button saves the structure when status is %s',
+		async (status) => {
+			renderComponent({structure: {status}});
 
-		const saveButton = screen.getByText('save');
+			await userEvent.click(screen.getByText('save'));
 
-		await userEvent.click(saveButton);
+			await waitFor(() => {
+				expect(StructureService.saveStructure).toHaveBeenCalled();
+			});
+		}
+	);
 
-		await waitFor(() => {
-			expect(StructureService.createStructure).toHaveBeenCalled();
-		});
+	it.each(['draft', 'new', 'published'] as const)(
+		'Publish button saves the structure when status is %s',
+		async (status) => {
+			renderComponent({structure: {status}});
 
-		expect(StructureService.updateStructure).not.toHaveBeenCalled();
-	});
+			await userEvent.click(
+				screen.getByRole('button', {name: 'publish'})
+			);
 
-	it('Save button calls correct endpoint when status is draft', async () => {
-		renderComponent({structure: {status: 'draft'}});
-
-		const saveButton = screen.getByText('save');
-
-		await userEvent.click(saveButton);
-
-		await waitFor(() => {
-			expect(StructureService.updateStructure).toHaveBeenCalled();
-		});
-
-		expect(StructureService.createStructure).not.toHaveBeenCalled();
-	});
-
-	it('Publish button calls correct endpoint when status is new', async () => {
-		renderComponent({structure: {status: 'new'}});
-
-		const publishButton = screen.getByRole('button', {name: 'publish'});
-
-		await userEvent.click(publishButton);
-
-		await waitFor(() => {
-			expect(StructureService.createStructure).toHaveBeenCalled();
-		});
-
-		expect(StructureService.updateStructure).not.toHaveBeenCalled();
-	});
-
-	it('Publish button calls correct endpoint when status is draft', async () => {
-		renderComponent({structure: {status: 'draft'}});
-
-		const publishButton = screen.getByText('publish');
-
-		await userEvent.click(publishButton);
-
-		await waitFor(() => {
-			expect(StructureService.updateStructure).toHaveBeenCalled();
-		});
-
-		expect(StructureService.createStructure).not.toHaveBeenCalled();
-	});
-
-	it('Publish button calls correct endpoint when status is published', async () => {
-		renderComponent({structure: {status: 'published'}});
-
-		const publishButton = screen.getByText('publish');
-
-		await userEvent.click(publishButton);
-
-		await waitFor(() => {
-			expect(StructureService.updateStructure).toHaveBeenCalled();
-		});
-
-		expect(StructureService.createStructure).not.toHaveBeenCalled();
-	});
+			await waitFor(() => {
+				expect(StructureService.saveStructure).toHaveBeenCalled();
+			});
+		}
+	);
 
 	it('Shows warning modal when a published field has been deleted', async () => {
 		renderComponent({
@@ -238,8 +192,7 @@ describe('StructureBuilderToolbar', () => {
 			);
 		});
 
-		expect(StructureService.createStructure).not.toHaveBeenCalled();
-		expect(StructureService.updateStructure).not.toHaveBeenCalled();
+		expect(StructureService.saveStructure).not.toHaveBeenCalled();
 	});
 
 	it('Shows modal to publish when trying to customize editor and the structure is not published', async () => {
@@ -375,7 +328,7 @@ describe('StructureBuilderToolbar', () => {
 		});
 
 		await waitFor(() => {
-			expect(StructureService.updateStructure).toHaveBeenCalledWith(
+			expect(StructureService.saveStructure).toHaveBeenCalledWith(
 				expect.objectContaining({
 					spaces: [
 						MOCK_SPACE_1.externalReferenceCode,

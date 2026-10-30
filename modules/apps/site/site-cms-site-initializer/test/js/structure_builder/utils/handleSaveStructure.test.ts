@@ -16,7 +16,7 @@ jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/common/services/StructureService',
 	() => ({
 		__esModule: true,
-		default: {updateStructure: jest.fn()},
+		default: {saveStructure: jest.fn()},
 	})
 );
 
@@ -44,7 +44,7 @@ function buildDraftState() {
 }
 
 it('ends the operation when the save fails so the Save button stops loading', async () => {
-	(StructureService.updateStructure as jest.Mock).mockResolvedValue({
+	(StructureService.saveStructure as jest.Mock).mockResolvedValue({
 		error: 'in-use',
 	});
 
@@ -60,7 +60,7 @@ it('ends the operation when the save fails so the Save button stops loading', as
 });
 
 it('resets the structure status to draft after a successful update save so the Save button becomes interactable again', async () => {
-	(StructureService.updateStructure as jest.Mock).mockResolvedValue({
+	(StructureService.saveStructure as jest.Mock).mockResolvedValue({
 		error: null,
 	});
 

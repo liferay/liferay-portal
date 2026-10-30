@@ -499,27 +499,16 @@ test(
 	'Shows an inline slug error when the backend reports a friendly URL separator conflict',
 	{tag: '@LPD-86255'},
 	async ({page, structureBuilderPage}) => {
-		await page.route(
-			'**/o/object-admin/v1.0/object-definitions',
-			async (route) => {
-				if (route.request().method() !== 'POST') {
-					await route.fallback();
-
-					return;
-				}
-
-				await route.fulfill({
-					body: JSON.stringify({
-						detail: '[{"fieldName":"friendlyURLSeparator","message":"Other asset types may use this prefix."}]',
-						status: 'BAD_REQUEST',
-						title: 'Other asset types may use this prefix.',
-						type: 'ObjectDefinitionFriendlyURLSeparatorException',
-					}),
-					headers: {'Content-Type': 'application/json'},
-					status: 400,
-				});
-			}
-		);
+		await page.route('**/cms/update-structure', async (route) => {
+			await route.fulfill({
+				body: JSON.stringify({
+					error: 'Other asset types may use this prefix.',
+					type: 'ObjectDefinitionFriendlyURLSeparatorException',
+				}),
+				headers: {'Content-Type': 'application/json'},
+				status: 200,
+			});
+		});
 
 		await structureBuilderPage.goToCreateStructure();
 

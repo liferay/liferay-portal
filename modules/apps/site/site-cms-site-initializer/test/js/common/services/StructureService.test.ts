@@ -36,6 +36,13 @@ jest.mock(
 const PROPS = {
 	children: new Map(),
 	erc: 'structure',
+	history: {
+		deletedChildren: [],
+		deletedGroupERCs: [],
+		deletedRelationships: [],
+		modifiedNames: new Set<any>(),
+		modifiedSlugs: new Set<any>(),
+	},
 	label: {en_US: 'Structure'},
 	name: 'Structure',
 	publishedChildren: new Set<any>(),
@@ -47,17 +54,17 @@ const PROPS = {
 	workflows: {},
 };
 
-describe('StructureService.createStructure', () => {
+describe('StructureService.saveStructure', () => {
 	afterEach(() => {
 		jest.restoreAllMocks();
 	});
 
-	it('creates the structure in a single request', async () => {
+	it('saves the structure in a single request', async () => {
 		const postFormDataSpy = jest
 			.spyOn(ApiHelper, 'postFormData')
-			.mockResolvedValue({data: {id: 1}, error: null});
+			.mockResolvedValue({data: {id: '1'}, error: null});
 
-		const result = await StructureService.createStructure(PROPS);
+		const result = await StructureService.saveStructure(PROPS);
 
 		expect(result).toEqual({data: {id: 1}, error: null});
 		expect(postFormDataSpy).toHaveBeenCalledTimes(1);
@@ -67,20 +74,6 @@ describe('StructureService.createStructure', () => {
 		expect(formData.get('deletedGroupERCs')).toBe('');
 		expect(formData.get('deletedObjectRelationships')).toBe('[]');
 		expect(url).toMatch(/\/cms\/update-structure$/);
-	});
-});
-
-describe('StructureService.updateStructure', () => {
-	const history = {
-		deletedChildren: [],
-		deletedGroupERCs: [],
-		deletedRelationships: [],
-		modifiedNames: new Set<any>(),
-		modifiedSlugs: new Set<any>(),
-	};
-
-	afterEach(() => {
-		jest.restoreAllMocks();
 	});
 
 	it.each([
@@ -102,11 +95,7 @@ describe('StructureService.updateStructure', () => {
 			type,
 		});
 
-		const result = await StructureService.updateStructure({
-			...PROPS,
-			history,
-			id: 1,
-		});
+		const result = await StructureService.saveStructure({...PROPS, id: 1});
 
 		expect(result.error).toBe(error);
 	});
