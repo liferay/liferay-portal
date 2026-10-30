@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {PropTypes} from 'prop-types';
 import React, {PureComponent} from 'react';
@@ -273,7 +274,13 @@ class List extends PureComponent {
 										description={Liferay.Language.get(
 											'sorry,-no-results-were-found'
 										)}
-										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/search_state.svg`}
+										image={
+											<ClayIcon
+												className="c-empty-state-icon c-empty-state-icon-search-state"
+												illustration
+												symbol="search-state"
+											/>
+										}
 										title={Liferay.Language.get(
 											'no-results-found'
 										)}
@@ -285,7 +292,13 @@ class List extends PureComponent {
 										description={Liferay.Language.get(
 											'an-error-has-occurred-and-we-were-unable-to-load-the-results'
 										)}
-										imgSrc={`${Liferay.ThemeDisplay.getPathThemeImages()}/states/empty_state.svg`}
+										image={
+											<ClayIcon
+												className="c-empty-state-icon c-empty-state-icon-empty-state"
+												illustration
+												symbol="empty-state"
+											/>
+										}
 										title={Liferay.Language.get(
 											'unable-to-load-content'
 										)}
