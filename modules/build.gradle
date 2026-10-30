@@ -276,6 +276,14 @@ gradle.beforeProject {
 					packageRunBuild {
 						inputs.file nodeScriptsConfigFile
 						inputs.file project.rootProject.file("node-scripts.config.js")
+
+						inputs.files {
+							if (project.fileTree(dir: "src/main/resources", include: "**/*.scss").empty) {
+								return []
+							}
+
+							project.rootProject.fileTree("apps/frontend-js/frontend-js-clay-web/clay/clay-css/src/scss")
+						}.withPathSensitivity(PathSensitivity.RELATIVE).withPropertyName("claySCSSFiles")
 					}
 				}
 
