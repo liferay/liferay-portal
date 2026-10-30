@@ -7,6 +7,7 @@ package com.liferay.exportimport.report.service;
 
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
+import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery;
@@ -275,11 +276,13 @@ public interface ExportImportReportEntryLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
+	@CTAware(onProduction = true)
 	public void resolveEmptyExportImportReportEntries(
 			long groupId, long companyId, String classExternalReferenceCode,
 			long classNameId)
 		throws PortalException;
 
+	@CTAware(onProduction = true)
 	public void resolveMissingReferenceExportImportReportEntries(
 			long groupId, long companyId, String classExternalReferenceCode,
 			long classNameId)
@@ -300,4 +303,4 @@ public interface ExportImportReportEntryLocalService
 		ExportImportReportEntry exportImportReportEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:418713589
+// LIFERAY-SERVICE-BUILDER-HASH:-1329911961
