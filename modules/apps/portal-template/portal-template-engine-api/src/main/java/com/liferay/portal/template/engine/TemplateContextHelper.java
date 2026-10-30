@@ -225,119 +225,11 @@ public class TemplateContextHelper {
 
 			};
 
-		// Content security policy nonce
-
-		lazyContextFunctions.put(
-			"nonceAttribute",
-			ContentSecurityPolicyNonceProviderUtil::getNonceAttribute);
-
-		// Request
-
-		lazyContextFunctions.put(
-			"request", curHttpServletRequest -> curHttpServletRequest);
-
-		// Portlet config
-
-		lazyContextFunctions.put(
-			"portletConfig",
-			curHttpServletRequest ->
-				(PortletConfig)curHttpServletRequest.getAttribute(
-					JavaConstants.JAKARTA_PORTLET_CONFIG));
-
-		// Render request
-
-		lazyContextFunctions.put(
-			"renderRequest", TemplateContextHelper::_getRenderRequest);
-
-		// Render response
-
-		lazyContextFunctions.put(
-			"renderResponse", TemplateContextHelper::_getRenderResponse);
-
-		// XML request
-
-		lazyContextFunctions.put(
-			"portletRequestModelFactory",
-			TemplateContextHelper::_getPortletRequestModelFactory);
-
-		// Deprecated
-
-		lazyContextFunctions.put(
-			"xmlRequest", TemplateContextHelper::_getXMLRequest);
-
-		// Theme display
-
-		lazyContextFunctions.put(
-			"bodyCssClass", TemplateContextHelper::_getBodyCssClass);
-
-		lazyContextFunctions.put(
-			"colorScheme",
-			_getThemeDisplayFunction(ThemeDisplay::getColorScheme));
-		lazyContextFunctions.put(
-			"company", _getThemeDisplayFunction(ThemeDisplay::getCompany));
-		lazyContextFunctions.put(
-			"layout", _getThemeDisplayFunction(ThemeDisplay::getLayout));
-		lazyContextFunctions.put(
-			"layouts", _getThemeDisplayFunction(ThemeDisplay::getLayouts));
-		lazyContextFunctions.put(
-			"layoutTypePortlet",
-			_getThemeDisplayFunction(ThemeDisplay::getLayoutTypePortlet));
-		lazyContextFunctions.put(
-			"locale", _getThemeDisplayFunction(ThemeDisplay::getLocale));
-		lazyContextFunctions.put(
-			"permissionChecker",
-			_getThemeDisplayFunction(ThemeDisplay::getPermissionChecker));
-		lazyContextFunctions.put(
-			"plid",
-			_getThemeDisplayFunction(
-				curThemeDisplay -> String.valueOf(curThemeDisplay.getPlid())));
-		lazyContextFunctions.put(
-			"portletDisplay",
-			_getThemeDisplayFunction(ThemeDisplay::getPortletDisplay));
-		lazyContextFunctions.put(
-			"realUser", _getThemeDisplayFunction(ThemeDisplay::getRealUser));
-		lazyContextFunctions.put(
-			"scopeGroupId",
-			_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
-		lazyContextFunctions.put(
-			"siteSpritemap",
-			_getThemeDisplayFunction(ThemeDisplay::getPathThemeSpritemap));
-		lazyContextFunctions.put(
-			"themeDisplay",
-			curHttpServletRequest ->
-				(ThemeDisplay)curHttpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY));
-		lazyContextFunctions.put(
-			"timeZone", _getThemeDisplayFunction(ThemeDisplay::getTimeZone));
-
-		lazyContextFunctions.put(
-			"user", _getThemeDisplayFunction(TemplateContextHelper::_getUser));
-
-		// Deprecated
-
-		lazyContextFunctions.put(
-			"portletGroupId",
-			_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
-
-		// Theme
-
-		lazyContextFunctions.put("theme", TemplateContextHelper::_getTheme);
-
 		// Tiles attributes
 
 		prepareTiles(contextObjects, httpServletRequest);
 
-		// Page title and subtitle
-
-		lazyContextFunctions.put(
-			"pageTitle",
-			curHttpServletRequest -> _mergeToString(
-				curHttpServletRequest, WebKeys.PAGE_TITLE));
-
-		lazyContextFunctions.put(
-			"pageSubtitle",
-			curHttpServletRequest -> _mergeToString(
-				curHttpServletRequest, WebKeys.PAGE_SUBTITLE));
+		populateLazyContextFunctions(lazyContextFunctions);
 	}
 
 	public void removeAllHelperUtilities() {
@@ -738,6 +630,85 @@ public class TemplateContextHelper {
 
 	protected void populateExtraHelperUtilities(
 		Map<String, Object> variables, boolean restricted) {
+	}
+
+	protected void populateLazyContextFunctions(
+		Map<String, Function<HttpServletRequest, Object>>
+			lazyContextFunctions) {
+
+		lazyContextFunctions.put(
+			"bodyCssClass", TemplateContextHelper::_getBodyCssClass);
+		lazyContextFunctions.put(
+			"colorScheme",
+			_getThemeDisplayFunction(ThemeDisplay::getColorScheme));
+		lazyContextFunctions.put(
+			"company", _getThemeDisplayFunction(ThemeDisplay::getCompany));
+		lazyContextFunctions.put(
+			"layout", _getThemeDisplayFunction(ThemeDisplay::getLayout));
+		lazyContextFunctions.put(
+			"layouts", _getThemeDisplayFunction(ThemeDisplay::getLayouts));
+		lazyContextFunctions.put(
+			"layoutTypePortlet",
+			_getThemeDisplayFunction(ThemeDisplay::getLayoutTypePortlet));
+		lazyContextFunctions.put(
+			"locale", _getThemeDisplayFunction(ThemeDisplay::getLocale));
+		lazyContextFunctions.put(
+			"nonceAttribute",
+			ContentSecurityPolicyNonceProviderUtil::getNonceAttribute);
+		lazyContextFunctions.put(
+			"pageSubtitle",
+			httpServletRequest -> _mergeToString(
+				httpServletRequest, WebKeys.PAGE_SUBTITLE));
+		lazyContextFunctions.put(
+			"pageTitle",
+			httpServletRequest -> _mergeToString(
+				httpServletRequest, WebKeys.PAGE_TITLE));
+		lazyContextFunctions.put(
+			"permissionChecker",
+			_getThemeDisplayFunction(ThemeDisplay::getPermissionChecker));
+		lazyContextFunctions.put(
+			"plid",
+			_getThemeDisplayFunction(
+				themeDisplay -> String.valueOf(themeDisplay.getPlid())));
+		lazyContextFunctions.put(
+			"portletConfig",
+			httpServletRequest ->
+				(PortletConfig)httpServletRequest.getAttribute(
+					JavaConstants.JAKARTA_PORTLET_CONFIG));
+		lazyContextFunctions.put(
+			"portletDisplay",
+			_getThemeDisplayFunction(ThemeDisplay::getPortletDisplay));
+		lazyContextFunctions.put(
+			"portletGroupId",
+			_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
+		lazyContextFunctions.put(
+			"portletRequestModelFactory",
+			TemplateContextHelper::_getPortletRequestModelFactory);
+		lazyContextFunctions.put(
+			"realUser", _getThemeDisplayFunction(ThemeDisplay::getRealUser));
+		lazyContextFunctions.put(
+			"renderRequest", TemplateContextHelper::_getRenderRequest);
+		lazyContextFunctions.put(
+			"renderResponse", TemplateContextHelper::_getRenderResponse);
+		lazyContextFunctions.put(
+			"request", httpServletRequest -> httpServletRequest);
+		lazyContextFunctions.put(
+			"scopeGroupId",
+			_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
+		lazyContextFunctions.put(
+			"siteSpritemap",
+			_getThemeDisplayFunction(ThemeDisplay::getPathThemeSpritemap));
+		lazyContextFunctions.put("theme", TemplateContextHelper::_getTheme);
+		lazyContextFunctions.put(
+			"themeDisplay",
+			httpServletRequest -> (ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY));
+		lazyContextFunctions.put(
+			"timeZone", _getThemeDisplayFunction(ThemeDisplay::getTimeZone));
+		lazyContextFunctions.put(
+			"user", _getThemeDisplayFunction(TemplateContextHelper::_getUser));
+		lazyContextFunctions.put(
+			"xmlRequest", TemplateContextHelper::_getXMLRequest);
 	}
 
 	protected void prepareTiles(

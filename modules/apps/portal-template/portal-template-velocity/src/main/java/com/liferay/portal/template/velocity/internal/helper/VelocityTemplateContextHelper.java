@@ -23,8 +23,6 @@ import com.liferay.portal.template.velocity.configuration.VelocityEngineConfigur
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -67,57 +65,11 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 
 		super.prepare(contextObjects, httpServletRequest);
 
-		Map<String, Function<HttpServletRequest, Object>> lazyContextFunctions =
-			new AbstractMap<>() {
-
-				@Override
-				public Set<Entry<String, Function<HttpServletRequest, Object>>>
-					entrySet() {
-
-					return Collections.emptySet();
-				}
-
-				@Override
-				public Function<HttpServletRequest, Object> put(
-					String key, Function<HttpServletRequest, Object> function) {
-
-					Object value = function.apply(httpServletRequest);
-
-					if (value != null) {
-						contextObjects.put(key, value);
-					}
-
-					return null;
-				}
-
-			};
-
-		// Theme display
+		// Insert custom vm variables
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
-
-		// Full css and templates path
-
-		lazyContextFunctions.put(
-			"fullCssPath",
-			curHttpServletRequest -> _getThemePath(
-				curHttpServletRequest, Theme::getCssPath));
-		lazyContextFunctions.put(
-			"fullTemplatesPath",
-			curHttpServletRequest -> _getThemePath(
-				curHttpServletRequest, Theme::getTemplatesPath));
-
-		// Init
-
-		lazyContextFunctions.put("init", this::_getInit);
-
-		// Navigation items
-
-		lazyContextFunctions.put("navItems", this::_getNavItems);
-
-		// Insert custom vm variables
 
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 
@@ -213,6 +165,25 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 		catch (SecurityException securityException) {
 			_log.error(securityException);
 		}
+	}
+
+	@Override
+	protected void populateLazyContextFunctions(
+		Map<String, Function<HttpServletRequest, Object>>
+			lazyContextFunctions) {
+
+		super.populateLazyContextFunctions(lazyContextFunctions);
+
+		lazyContextFunctions.put(
+			"fullCssPath",
+			httpServletRequest -> _getThemePath(
+				httpServletRequest, Theme::getCssPath));
+		lazyContextFunctions.put(
+			"fullTemplatesPath",
+			httpServletRequest -> _getThemePath(
+				httpServletRequest, Theme::getTemplatesPath));
+		lazyContextFunctions.put("init", this::_getInit);
+		lazyContextFunctions.put("navItems", this::_getNavItems);
 	}
 
 	private Object _getInit(HttpServletRequest httpServletRequest) {

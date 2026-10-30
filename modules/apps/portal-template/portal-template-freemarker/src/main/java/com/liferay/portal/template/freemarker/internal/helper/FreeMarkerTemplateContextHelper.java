@@ -26,8 +26,6 @@ import freemarker.ext.beans.BeansWrapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.AbstractMap;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -59,50 +57,6 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 		HttpServletRequest httpServletRequest) {
 
 		super.prepare(contextObjects, httpServletRequest);
-
-		Map<String, Function<HttpServletRequest, Object>> lazyContextFunctions =
-			new AbstractMap<>() {
-
-				@Override
-				public Set<Entry<String, Function<HttpServletRequest, Object>>>
-					entrySet() {
-
-					return Collections.emptySet();
-				}
-
-				@Override
-				public Function<HttpServletRequest, Object> put(
-					String key, Function<HttpServletRequest, Object> function) {
-
-					Object value = function.apply(httpServletRequest);
-
-					if (value != null) {
-						contextObjects.put(key, value);
-					}
-
-					return null;
-				}
-
-			};
-
-		// Full css and templates path
-
-		lazyContextFunctions.put(
-			"fullCssPath",
-			curHttpServletRequest -> _getThemePath(
-				curHttpServletRequest, Theme::getCssPath));
-		lazyContextFunctions.put(
-			"fullTemplatesPath",
-			curHttpServletRequest -> _getThemePath(
-				curHttpServletRequest, Theme::getTemplatesPath));
-
-		// Init
-
-		lazyContextFunctions.put("init", this::_getInit);
-
-		// Navigation items
-
-		lazyContextFunctions.put("navItems", this::_getNavItems);
 
 		// Insert custom ftl variables
 
@@ -190,6 +144,25 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 		// Static class util
 
 		helperUtilities.put("staticUtil", beansWrapper.getStaticModels());
+	}
+
+	@Override
+	protected void populateLazyContextFunctions(
+		Map<String, Function<HttpServletRequest, Object>>
+			lazyContextFunctions) {
+
+		super.populateLazyContextFunctions(lazyContextFunctions);
+
+		lazyContextFunctions.put(
+			"fullCssPath",
+			httpServletRequest -> _getThemePath(
+				httpServletRequest, Theme::getCssPath));
+		lazyContextFunctions.put(
+			"fullTemplatesPath",
+			httpServletRequest -> _getThemePath(
+				httpServletRequest, Theme::getTemplatesPath));
+		lazyContextFunctions.put("init", this::_getInit);
+		lazyContextFunctions.put("navItems", this::_getNavItems);
 	}
 
 	private Object _getInit(HttpServletRequest httpServletRequest) {
