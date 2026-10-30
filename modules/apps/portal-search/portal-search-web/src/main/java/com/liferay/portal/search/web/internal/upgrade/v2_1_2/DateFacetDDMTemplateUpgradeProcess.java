@@ -19,9 +19,12 @@ public class DateFacetDDMTemplateUpgradeProcess extends UpgradeProcess {
 		String ddmTemplateIdsSQL =
 			"select templateId from DDMTemplate where " + _WHERE_CLAUSE;
 
-		runSQL(
-			"delete from DDMTemplateVersion where templateId in (" +
-				ddmTemplateIdsSQL + ")");
+		if (hasTable("DDMTemplateVersion")) {
+			runSQL(
+				"delete from DDMTemplateVersion where templateId in (" +
+					ddmTemplateIdsSQL + ")");
+		}
+
 		runSQL(
 			StringBundler.concat(
 				"delete from ResourcePermission where name = '",
