@@ -26,11 +26,11 @@ export class EditAccountContactInformationPage {
 		this.facebookInput = page.getByLabel('Facebook');
 		this.jabberInput = page.getByLabel('Jabber');
 		this.page = page;
-		this.phoneExtensionHeader = page.getByRole('cell', {
+		this.phoneExtensionHeader = page.getByRole('columnheader', {
 			exact: true,
 			name: 'Phone Extension',
 		});
-		this.phoneNumberHeader = page.getByRole('cell', {
+		this.phoneNumberHeader = page.getByRole('columnheader', {
 			exact: true,
 			name: 'Phone Number',
 		});

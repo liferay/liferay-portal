@@ -24,27 +24,30 @@ export class LicenseManagerPage {
 		this.frame = page.frameLocator(
 			'[id="_com_liferay_license_manager_web_portlet_LicenseManagerPortlet_iframe"]'
 		);
-		this.frameHostNameCell = this.frame.getByRole('cell', {
+		this.frameHostNameCell = this.frame.getByRole('columnheader', {
 			exact: true,
 			name: 'Host Name',
 		});
-		this.frameIPAddressCell = this.frame.getByRole('cell', {
+		this.frameIPAddressCell = this.frame.getByRole('columnheader', {
 			exact: true,
 			name: 'IP Addresses',
 		});
-		this.frameLicensesRegisteredCell = this.frame.getByRole('cell', {
-			exact: true,
-			name: 'Licenses Registered',
-		});
-		this.frameOwnerCell = this.frame.getByRole('cell', {
+		this.frameLicensesRegisteredCell = this.frame.getByRole(
+			'columnheader',
+			{
+				exact: true,
+				name: 'Licenses Registered',
+			}
+		);
+		this.frameOwnerCell = this.frame.getByRole('columnheader', {
 			exact: true,
 			name: 'Owner',
 		});
-		this.frameServerInfoCell = this.frame.getByRole('cell', {
+		this.frameServerInfoCell = this.frame.getByRole('columnheader', {
 			exact: true,
 			name: 'Server Info',
 		});
-		this.frameStartDateCell = this.frame.getByRole('cell', {
+		this.frameStartDateCell = this.frame.getByRole('columnheader', {
 			exact: true,
 			name: 'Start Date',
 		});
