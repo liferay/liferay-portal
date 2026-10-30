@@ -29,9 +29,9 @@ const ASSET_PUBLISHER_WIDGET =
 	'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet';
 
 export async function disableStaging(page: Page, groupFriendlyURL: string) {
-	await page.goto(
-		`/group${groupFriendlyURL}/~/control_panel/manage?p_p_id=com_liferay_staging_configuration_web_portlet_StagingConfigurationPortlet`
-	);
+	const stagingConfigurationURL = `/group${groupFriendlyURL}/~/control_panel/manage?p_p_id=com_liferay_staging_configuration_web_portlet_StagingConfigurationPortlet`;
+
+	await page.goto(stagingConfigurationURL);
 
 	const noneRadio = page.getByLabel('None');
 
@@ -43,7 +43,20 @@ export async function disableStaging(page: Page, groupFriendlyURL: string) {
 
 	page.once('dialog', (dialog) => dialog.accept());
 
-	await page.getByRole('button', {name: 'Save'}).click();
+	await Promise.all([
+		page.waitForResponse(
+			(response) =>
+				response.request().method() === 'POST' &&
+				response
+					.url()
+					.includes(
+						'com_liferay_staging_configuration_web_portlet_StagingConfigurationPortlet'
+					)
+		),
+		page.getByRole('button', {name: 'Save'}).click(),
+	]);
+
+	await page.goto(stagingConfigurationURL);
 
 	await expect(page.getByLabel('None')).toBeChecked();
 }
