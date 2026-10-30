@@ -22,10 +22,11 @@ import performLogin, {
 	performLogout,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
-import getFragmentDefinition from '../../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
-import getPageDefinition from '../../../layout-content-page-editor-web/main/utils/getPageDefinition';
-import getWidgetDefinition from '../../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
-import {createAccountWithBuyerUser, miniumSetUp} from '../../utils/commerce';
+import {
+	createAccountWithBuyerUser,
+	miniCartCheckoutSetUp,
+	miniumSetUp,
+} from '../../utils/commerce';
 
 export const test = mergeTests(
 	commercePagesTest,
@@ -1113,51 +1114,12 @@ test(
 	}) => {
 		test.setTimeout(120000);
 
-		const catalog =
-			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-				name: getRandomString(),
-			});
-
-		for (const widgetName of [
-			'com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet',
-			'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet',
-		]) {
-			await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([
-					getWidgetDefinition({id: getRandomString(), widgetName}),
-				]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-		}
-
-		await apiHelpers.headlessDelivery.createSitePage({
-			pageDefinition: getPageDefinition([
-				getWidgetDefinition({
-					id: getRandomString(),
-					widgetName:
-						'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
-				}),
-				getFragmentDefinition({
-					id: getRandomString(),
-					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
-				}),
-			]),
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		const channel =
-			await apiHelpers.headlessCommerceAdminChannel.postChannel({
-				siteGroupId: site.id,
-			});
-
-		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
-			channel.name,
-			'B2B'
+		await miniCartCheckoutSetUp(
+			apiHelpers,
+			commerceAdminChannelsPage,
+			page,
+			site
 		);
-
-		await waitForAlert(page);
 
 		const bundleProductName = getRandomString();
 		const linkedProductName = getRandomString();
@@ -1167,6 +1129,11 @@ test(
 		let linkedProduct;
 
 		await test.step('Create a bundle product that adds two units of a linked product', async () => {
+			const catalog =
+				await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+					name: getRandomString(),
+				});
+
 			linkedProduct =
 				await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 					catalogId: catalog.id,
@@ -1305,54 +1272,12 @@ test(
 		await commerceInstanceSettingsPage.toggleShowUnselectableOptions(true);
 
 		try {
-			const catalog =
-				await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
-					name: getRandomString(),
-				});
-
-			for (const widgetName of [
-				'com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet',
-				'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet',
-			]) {
-				await apiHelpers.headlessDelivery.createSitePage({
-					pageDefinition: getPageDefinition([
-						getWidgetDefinition({
-							id: getRandomString(),
-							widgetName,
-						}),
-					]),
-					siteId: site.id,
-					title: getRandomString(),
-				});
-			}
-
-			await apiHelpers.headlessDelivery.createSitePage({
-				pageDefinition: getPageDefinition([
-					getWidgetDefinition({
-						id: getRandomString(),
-						widgetName:
-							'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
-					}),
-					getFragmentDefinition({
-						id: getRandomString(),
-						key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
-					}),
-				]),
-				siteId: site.id,
-				title: getRandomString(),
-			});
-
-			const channel =
-				await apiHelpers.headlessCommerceAdminChannel.postChannel({
-					siteGroupId: site.id,
-				});
-
-			await commerceAdminChannelsPage.changeCommerceChannelSiteType(
-				channel.name,
-				'B2B'
+			await miniCartCheckoutSetUp(
+				apiHelpers,
+				commerceAdminChannelsPage,
+				page,
+				site
 			);
-
-			await waitForAlert(page);
 
 			const bundleProductName = getRandomString();
 
@@ -1360,6 +1285,11 @@ test(
 			let product2;
 
 			await test.step('Create a bundle product whose default option values add two linked products', async () => {
+				const catalog =
+					await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+						name: getRandomString(),
+					});
+
 				product1 =
 					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 						catalogId: catalog.id,

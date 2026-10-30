@@ -22,6 +22,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {performLogout, userData} from '../../../utils/performLogin';
 import {openProductMenu} from '../../../utils/productMenu';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {ORDER_WORKFLOW_STATUS_CODE} from '../../workspaces/liferay-workspace-marketplace/main/utils/constants';
@@ -976,6 +977,53 @@ export async function deployProductFragmentsOnDefaultDPT(
 	await displayPageTemplatesPage.publishTemplate();
 
 	return displayPageTemplateName;
+}
+
+export async function miniCartCheckoutSetUp(
+	apiHelpers: DataApiHelpers,
+	commerceAdminChannelsPage: CommerceAdminChannelsPage,
+	page: Page,
+	site: Site
+) {
+	for (const widgetName of [
+		'com_liferay_commerce_checkout_web_internal_portlet_CommerceCheckoutPortlet',
+		'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet',
+	]) {
+		await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({id: getRandomString(), widgetName}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+	}
+
+	await apiHelpers.headlessDelivery.createSitePage({
+		pageDefinition: getPageDefinition([
+			getWidgetDefinition({
+				id: getRandomString(),
+				widgetName:
+					'com_liferay_commerce_product_content_web_internal_portlet_CPContentPortlet',
+			}),
+			getFragmentDefinition({
+				id: getRandomString(),
+				key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+			}),
+		]),
+		siteId: site.id,
+		title: getRandomString(),
+	});
+
+	const channel = await apiHelpers.headlessCommerceAdminChannel.postChannel({
+		siteGroupId: site.id,
+	});
+
+	await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+		channel.name,
+		'B2B'
+	);
+
+	await waitForAlert(page);
 }
 
 export async function miniumSetUp(
