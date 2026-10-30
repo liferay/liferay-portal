@@ -9,6 +9,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.CompanyConstants;
+import com.liferay.portal.kernel.test.util.FeatureFlagTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.DateFormatFactoryUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
@@ -43,25 +44,10 @@ public class AuditMessageTest {
 	@Test
 	public void testConstructor() throws Exception {
 		_testConstructor();
+		_testConstructorWhenFeatureFlagIsDisabled();
 		_testConstructorWithClonedContext();
 		_testConstructorWithSharedContext();
 		_testConstructorWithSystemCompany();
-	}
-
-	@Test
-	public void testConstructorDoesNotSetRequestIdWhenFeatureFlagIsDisabled()
-		throws Exception {
-
-		AuditRequestContext auditRequestContext =
-			AuditRequestContextThreadLocal.getAuditRequestContext();
-
-		Assert.assertNotNull(auditRequestContext.getRequestId());
-
-		AuditMessage auditMessage = _createAuditMessage(
-			RandomTestUtil.randomLong());
-
-		Assert.assertNull(auditMessage.getRequestId());
-		Assert.assertFalse(auditMessage.isRequestIdGenerated());
 	}
 
 	@Test
@@ -121,18 +107,28 @@ public class AuditMessageTest {
 
 		auditRequestContext.setCorrelationId(correlationId);
 
+		String httpMethod = RandomTestUtil.randomString();
+
+		auditRequestContext.setHttpMethod(httpMethod);
+
 		String requestId = RandomTestUtil.randomString();
 
 		auditRequestContext.setRequestId(requestId);
 
 		auditRequestContext.setRequestIdGenerated(true);
 
+		String userAgent = RandomTestUtil.randomString();
+
+		auditRequestContext.setUserAgent(userAgent);
+
 		AuditMessage auditMessage = _createAuditMessage(
 			RandomTestUtil.randomLong());
 
 		Assert.assertEquals(correlationId, auditMessage.getCorrelationId());
+		Assert.assertEquals(httpMethod, auditMessage.getHttpMethod());
 		Assert.assertEquals(requestId, auditMessage.getRequestId());
 		Assert.assertTrue(auditMessage.isRequestIdGenerated());
+		Assert.assertEquals(userAgent, auditMessage.getUserAgent());
 
 		String action = RandomTestUtil.randomString();
 		String resourceType = RandomTestUtil.randomString();
@@ -148,6 +144,31 @@ public class AuditMessageTest {
 		Assert.assertEquals(resourceType, auditMessage.getResourceType());
 
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
+	}
+
+	private void _testConstructorWhenFeatureFlagIsDisabled() {
+		try (SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, "LPD-6417")) {
+
+			AuditRequestContext auditRequestContext =
+				AuditRequestContextThreadLocal.getAuditRequestContext();
+
+			Assert.assertNotNull(auditRequestContext.getRequestId());
+
+			auditRequestContext.setHttpMethod(RandomTestUtil.randomString());
+			auditRequestContext.setUserAgent(RandomTestUtil.randomString());
+
+			AuditMessage auditMessage = _createAuditMessage(
+				RandomTestUtil.randomLong());
+
+			Assert.assertNull(auditMessage.getHttpMethod());
+			Assert.assertNull(auditMessage.getRequestId());
+			Assert.assertFalse(auditMessage.isRequestIdGenerated());
+			Assert.assertNull(auditMessage.getUserAgent());
+
+			AuditRequestContextThreadLocal.removeAuditRequestContext();
+		}
 	}
 
 	private void _testConstructorWithClonedContext() {
@@ -209,11 +230,19 @@ public class AuditMessageTest {
 	}
 
 	private void _testConstructorWithSystemCompany() {
+		AuditRequestContext auditRequestContext =
+			AuditRequestContextThreadLocal.getAuditRequestContext();
+
+		auditRequestContext.setHttpMethod(RandomTestUtil.randomString());
+		auditRequestContext.setUserAgent(RandomTestUtil.randomString());
+
 		AuditMessage auditMessage = _createAuditMessage(
 			CompanyConstants.SYSTEM);
 
+		Assert.assertNull(auditMessage.getHttpMethod());
 		Assert.assertNull(auditMessage.getRequestId());
 		Assert.assertFalse(auditMessage.isRequestIdGenerated());
+		Assert.assertNull(auditMessage.getUserAgent());
 
 		AuditRequestContextThreadLocal.removeAuditRequestContext();
 	}

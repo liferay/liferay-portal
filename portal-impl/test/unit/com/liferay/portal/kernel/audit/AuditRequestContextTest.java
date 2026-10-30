@@ -30,6 +30,7 @@ public class AuditRequestContextTest {
 		auditRequestContext.setClientHost(RandomTestUtil.randomString());
 		auditRequestContext.setClientIP(RandomTestUtil.randomString());
 		auditRequestContext.setCorrelationId(RandomTestUtil.randomString());
+		auditRequestContext.setHttpMethod(RandomTestUtil.randomString());
 		auditRequestContext.setQueryString(RandomTestUtil.randomString());
 		auditRequestContext.setRealUserEmailAddress(
 			RandomTestUtil.randomString() + "@liferay.com");
@@ -42,6 +43,7 @@ public class AuditRequestContextTest {
 		auditRequestContext.setServerName(RandomTestUtil.randomString());
 		auditRequestContext.setServerPort(RandomTestUtil.randomInt());
 		auditRequestContext.setSessionID(RandomTestUtil.randomString());
+		auditRequestContext.setUserAgent(RandomTestUtil.randomString());
 
 		AuditRequestContext clonedAuditRequestContext =
 			auditRequestContext.clone();
@@ -71,6 +73,9 @@ public class AuditRequestContextTest {
 			expectedAuditRequestContext.getCorrelationId(),
 			actualAuditRequestContext.getCorrelationId());
 		Assert.assertEquals(
+			expectedAuditRequestContext.getHttpMethod(),
+			actualAuditRequestContext.getHttpMethod());
+		Assert.assertEquals(
 			expectedAuditRequestContext.getQueryString(),
 			actualAuditRequestContext.getQueryString());
 		Assert.assertEquals(
@@ -97,6 +102,9 @@ public class AuditRequestContextTest {
 		Assert.assertEquals(
 			expectedAuditRequestContext.getSessionID(),
 			actualAuditRequestContext.getSessionID());
+		Assert.assertEquals(
+			expectedAuditRequestContext.getUserAgent(),
+			actualAuditRequestContext.getUserAgent());
 		Assert.assertEquals(
 			expectedAuditRequestContext.isRequestIdGenerated(),
 			actualAuditRequestContext.isRequestIdGenerated());

@@ -114,90 +114,11 @@ public class AuditMessageTest {
 					_userLocalService.getGuestUserId(_user.getCompanyId()))));
 		_assertNoImpersonatedUser(_getAuditMessage(null));
 
+		_testConstructorOnMessageBusThread();
 		_testConstructorWhenFeatureFlagIsDisabled();
 		_testConstructorWithHeadlessRequest();
 		_testConstructorWithHeadlessRequestWithoutCSRFToken();
 		_testConstructorWithPortalRequest();
-	}
-
-	@Test
-	public void testConstructorOnMessageBusThread() throws Exception {
-		Bundle bundle = FrameworkUtil.getBundle(AuditMessageTest.class);
-
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		String destinationName = RandomTestUtil.randomString();
-
-		ServiceRegistration<Destination> serviceRegistration1 =
-			bundleContext.registerService(
-				Destination.class,
-				_destinationFactory.createDestination(
-					DestinationConfiguration.
-						createSerialDestinationConfiguration(destinationName)),
-				HashMapDictionaryBuilder.<String, Object>put(
-					"destination.name", destinationName
-				).build());
-
-		List<AuditMessage> auditMessages = new ArrayList<>();
-		long companyId = TestPropsValues.getCompanyId();
-		CountDownLatch countDownLatch = new CountDownLatch(2);
-		String sessionID = RandomTestUtil.randomString();
-		long userId = TestPropsValues.getUserId();
-
-		ServiceRegistration<MessageListener> serviceRegistration2 =
-			bundleContext.registerService(
-				MessageListener.class,
-				message -> {
-					if (auditMessages.isEmpty()) {
-						AuditRequestContext auditRequestContext =
-							AuditRequestContextThreadLocal.
-								getAuditRequestContext();
-
-						auditRequestContext.setSessionID(sessionID);
-					}
-
-					auditMessages.add(
-						new AuditMessage(
-							RandomTestUtil.randomLong(), companyId, userId,
-							RandomTestUtil.randomString(),
-							RandomTestUtil.nextDate(),
-							JSONFactoryUtil.createJSONObject(),
-							RandomTestUtil.randomString(),
-							RandomTestUtil.randomString(),
-							RandomTestUtil.randomString(),
-							RandomTestUtil.randomString()));
-
-					countDownLatch.countDown();
-				},
-				HashMapDictionaryBuilder.<String, Object>put(
-					"destination.name", destinationName
-				).build());
-
-		try {
-			_messageBus.sendMessage(destinationName, new Message());
-			_messageBus.sendMessage(destinationName, new Message());
-
-			Assert.assertTrue(countDownLatch.await(10, TimeUnit.SECONDS));
-		}
-		finally {
-			serviceRegistration1.unregister();
-			serviceRegistration2.unregister();
-		}
-
-		AuditMessage auditMessage1 = auditMessages.get(0);
-
-		Assert.assertNotNull(auditMessage1.getRequestId());
-		Assert.assertTrue(auditMessage1.isRequestIdGenerated());
-		Assert.assertEquals(sessionID, auditMessage1.getSessionID());
-
-		AuditMessage auditMessage2 = auditMessages.get(1);
-
-		Assert.assertNotNull(auditMessage2.getRequestId());
-		Assert.assertTrue(auditMessage2.isRequestIdGenerated());
-		Assert.assertNull(auditMessage2.getSessionID());
-
-		Assert.assertNotEquals(
-			auditMessage1.getRequestId(), auditMessage2.getRequestId());
 	}
 
 	private void _assertImpersonatedUser(AuditMessage auditMessage) {
@@ -323,6 +244,93 @@ public class AuditMessageTest {
 		httpSession.setAttribute(WebKeys.USER_ID, _user.getUserId());
 
 		return mockHttpServletRequest;
+	}
+
+	private void _testConstructorOnMessageBusThread() throws Exception {
+		Bundle bundle = FrameworkUtil.getBundle(AuditMessageTest.class);
+
+		BundleContext bundleContext = bundle.getBundleContext();
+
+		String destinationName = RandomTestUtil.randomString();
+
+		ServiceRegistration<Destination> serviceRegistration1 =
+			bundleContext.registerService(
+				Destination.class,
+				_destinationFactory.createDestination(
+					DestinationConfiguration.
+						createSerialDestinationConfiguration(destinationName)),
+				HashMapDictionaryBuilder.<String, Object>put(
+					"destination.name", destinationName
+				).build());
+
+		List<AuditMessage> auditMessages = new ArrayList<>();
+		long companyId = TestPropsValues.getCompanyId();
+		CountDownLatch countDownLatch = new CountDownLatch(2);
+		String httpMethod = RandomTestUtil.randomString();
+		String sessionID = RandomTestUtil.randomString();
+		String userAgent = RandomTestUtil.randomString();
+		long userId = TestPropsValues.getUserId();
+
+		ServiceRegistration<MessageListener> serviceRegistration2 =
+			bundleContext.registerService(
+				MessageListener.class,
+				message -> {
+					if (auditMessages.isEmpty()) {
+						AuditRequestContext auditRequestContext =
+							AuditRequestContextThreadLocal.
+								getAuditRequestContext();
+
+						auditRequestContext.setHttpMethod(httpMethod);
+						auditRequestContext.setSessionID(sessionID);
+						auditRequestContext.setUserAgent(userAgent);
+					}
+
+					auditMessages.add(
+						new AuditMessage(
+							RandomTestUtil.randomLong(), companyId, userId,
+							RandomTestUtil.randomString(),
+							RandomTestUtil.nextDate(),
+							JSONFactoryUtil.createJSONObject(),
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString(),
+							RandomTestUtil.randomString()));
+
+					countDownLatch.countDown();
+				},
+				HashMapDictionaryBuilder.<String, Object>put(
+					"destination.name", destinationName
+				).build());
+
+		try {
+			_messageBus.sendMessage(destinationName, new Message());
+			_messageBus.sendMessage(destinationName, new Message());
+
+			Assert.assertTrue(countDownLatch.await(10, TimeUnit.SECONDS));
+		}
+		finally {
+			serviceRegistration1.unregister();
+			serviceRegistration2.unregister();
+		}
+
+		AuditMessage auditMessage1 = auditMessages.get(0);
+
+		Assert.assertEquals(httpMethod, auditMessage1.getHttpMethod());
+		Assert.assertNotNull(auditMessage1.getRequestId());
+		Assert.assertTrue(auditMessage1.isRequestIdGenerated());
+		Assert.assertEquals(sessionID, auditMessage1.getSessionID());
+		Assert.assertEquals(userAgent, auditMessage1.getUserAgent());
+
+		AuditMessage auditMessage2 = auditMessages.get(1);
+
+		Assert.assertNull(auditMessage2.getHttpMethod());
+		Assert.assertNotNull(auditMessage2.getRequestId());
+		Assert.assertTrue(auditMessage2.isRequestIdGenerated());
+		Assert.assertNull(auditMessage2.getSessionID());
+		Assert.assertNull(auditMessage2.getUserAgent());
+
+		Assert.assertNotEquals(
+			auditMessage1.getRequestId(), auditMessage2.getRequestId());
 	}
 
 	private void _testConstructorWhenFeatureFlagIsDisabled() {

@@ -57,6 +57,7 @@ public class BulkSelectionBackgroundTaskExecutorTest {
 		auditRequestContext.setClientHost(RandomTestUtil.randomString());
 		auditRequestContext.setClientIP(RandomTestUtil.randomString());
 		auditRequestContext.setCorrelationId(RandomTestUtil.randomString());
+		auditRequestContext.setHttpMethod(RandomTestUtil.randomString());
 		auditRequestContext.setRealUserEmailAddress(
 			RandomTestUtil.randomString());
 		auditRequestContext.setRealUserId(user.getUserId());
@@ -65,6 +66,7 @@ public class BulkSelectionBackgroundTaskExecutorTest {
 		auditRequestContext.setServerName(RandomTestUtil.randomString());
 		auditRequestContext.setServerPort(RandomTestUtil.randomInt());
 		auditRequestContext.setSessionID(RandomTestUtil.randomString());
+		auditRequestContext.setUserAgent(RandomTestUtil.randomString());
 
 		AtomicReference<AuditRequestContext> atomicReference =
 			new AtomicReference<>();
@@ -112,6 +114,9 @@ public class BulkSelectionBackgroundTaskExecutorTest {
 			auditRequestContext.getCorrelationId(),
 			executeAuditRequestContext.getCorrelationId());
 		Assert.assertEquals(
+			auditRequestContext.getHttpMethod(),
+			executeAuditRequestContext.getHttpMethod());
+		Assert.assertEquals(
 			auditRequestContext.getRealUserEmailAddress(),
 			executeAuditRequestContext.getRealUserEmailAddress());
 		Assert.assertEquals(
@@ -132,6 +137,9 @@ public class BulkSelectionBackgroundTaskExecutorTest {
 		Assert.assertEquals(
 			auditRequestContext.getSessionID(),
 			executeAuditRequestContext.getSessionID());
+		Assert.assertEquals(
+			auditRequestContext.getUserAgent(),
+			executeAuditRequestContext.getUserAgent());
 
 		AuditRequestContext currentAuditRequestContext =
 			AuditRequestContextThreadLocal.getAuditRequestContext();

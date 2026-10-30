@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
+import com.liferay.portal.kernel.servlet.filters.invoker.InvokerFilterChain;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -36,6 +38,8 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import jakarta.servlet.Filter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +48,9 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 
 /**
  * @author Christian Moura
@@ -59,8 +66,36 @@ public class PersistentAuditMessageProcessorTest {
 	@FeatureFlag("LPD-6417")
 	@Test
 	public void testProcess() throws Exception {
-		_testProcessCorrelationIdPersistsAfterClear();
+		_testProcessHttpRequestContext();
+		_testProcessRequestContextPersistsAfterClear();
 		_testProcessRolesPersistAfterRoleChanges();
+	}
+
+	private AuditEvent _addAuditEvent(
+			MockHttpServletRequest mockHttpServletRequest)
+		throws Exception {
+
+		try (SafeCloseable safeCloseable =
+				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
+					TestPropsValues.getCompanyId())) {
+
+			InvokerFilterChain invokerFilterChain = new InvokerFilterChain(
+				(servletRequest, servletResponse) -> {
+				});
+
+			invokerFilterChain.addFilter(_auditFilter);
+
+			invokerFilterChain.doFilter(
+				mockHttpServletRequest, new MockHttpServletResponse());
+		}
+
+		String eventType = _createEventType();
+
+		_route(TestPropsValues.getCompanyId(), eventType);
+
+		AuditRequestContextThreadLocal.removeAuditRequestContext();
+
+		return _getAuditEvent(TestPropsValues.getCompanyId(), eventType);
 	}
 
 	private Role _addRole() throws Exception {
@@ -115,7 +150,38 @@ public class PersistentAuditMessageProcessorTest {
 		_route(companyId, RandomTestUtil.randomLong(), eventType);
 	}
 
-	private void _testProcessCorrelationIdPersistsAfterClear()
+	private void _testProcessHttpRequestContext() throws Exception {
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					PersistentAuditMessageProcessorConfiguration.class.
+						getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"bufferSize", 1
+					).build())) {
+
+			String httpMethod = RandomTestUtil.randomString();
+
+			MockHttpServletRequest mockHttpServletRequest =
+				new MockHttpServletRequest(
+					httpMethod, RandomTestUtil.randomString());
+
+			String remoteHost = RandomTestUtil.randomString();
+
+			mockHttpServletRequest.setRemoteHost(remoteHost);
+
+			String userAgent = RandomTestUtil.randomString();
+
+			mockHttpServletRequest.addHeader(HttpHeaders.USER_AGENT, userAgent);
+
+			AuditEvent auditEvent = _addAuditEvent(mockHttpServletRequest);
+
+			Assert.assertEquals(remoteHost, auditEvent.getClientHost());
+			Assert.assertEquals(httpMethod, auditEvent.getHttpMethod());
+			Assert.assertEquals(userAgent, auditEvent.getUserAgent());
+		}
+	}
+
+	private void _testProcessRequestContextPersistsAfterClear()
 		throws Exception {
 
 		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
@@ -139,18 +205,28 @@ public class PersistentAuditMessageProcessorTest {
 						"flushInterval", _FLUSH_INTERVAL
 					).build())) {
 
-			String correlationId = RandomTestUtil.randomString();
-
 			AuditRequestContext auditRequestContext =
 				AuditRequestContextThreadLocal.getAuditRequestContext();
 
+			String correlationId = RandomTestUtil.randomString();
+
 			auditRequestContext.setCorrelationId(correlationId);
+
+			String httpMethod = RandomTestUtil.randomString();
+
+			auditRequestContext.setHttpMethod(httpMethod);
+
+			String userAgent = RandomTestUtil.randomString();
+
+			auditRequestContext.setUserAgent(userAgent);
 
 			String eventType1 = _createEventType();
 
 			_route(TestPropsValues.getCompanyId(), eventType1);
 
 			auditRequestContext.setCorrelationId(null);
+			auditRequestContext.setHttpMethod(null);
+			auditRequestContext.setUserAgent(null);
 
 			Assert.assertEquals(
 				0,
@@ -163,12 +239,18 @@ public class PersistentAuditMessageProcessorTest {
 
 			AuditEvent auditEvent1 = _getAuditEvent(
 				TestPropsValues.getCompanyId(), eventType1);
+
+			Assert.assertEquals(correlationId, auditEvent1.getCorrelationId());
+			Assert.assertEquals(httpMethod, auditEvent1.getHttpMethod());
+			Assert.assertEquals(userAgent, auditEvent1.getUserAgent());
+
 			AuditEvent auditEvent2 = _getAuditEvent(
 				TestPropsValues.getCompanyId(), eventType2);
 
-			Assert.assertEquals(correlationId, auditEvent1.getCorrelationId());
 			Assert.assertEquals(
 				StringPool.BLANK, auditEvent2.getCorrelationId());
+			Assert.assertEquals(StringPool.BLANK, auditEvent2.getHttpMethod());
+			Assert.assertEquals(StringPool.BLANK, auditEvent2.getUserAgent());
 
 			AuditRequestContextThreadLocal.removeAuditRequestContext();
 		}
@@ -245,6 +327,9 @@ public class PersistentAuditMessageProcessorTest {
 
 	@Inject
 	private AuditEventLocalService _auditEventLocalService;
+
+	@Inject(filter = "servlet-filter-name=Audit Filter")
+	private Filter _auditFilter;
 
 	@Inject
 	private AuditRouter _auditRouter;
