@@ -379,7 +379,7 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-83090", "LPD-85565"})
+	@TestInfo({"LPD-83090", "LPD-85565", "LPD-112749"})
 	public void testPutSitePageSpecificationPageExperiencePageElement()
 		throws Exception {
 
