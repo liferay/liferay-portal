@@ -422,6 +422,7 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		}
 
 		enterpriseOSBOfferingEntry.setProductEntryId(productEntryId);
+
 		enterpriseOSBOfferingEntry.setQuantity(1);
 		enterpriseOSBOfferingEntry.setStartDate(new Date(1546329600000L));
 		enterpriseOSBOfferingEntry.setSupportEndDate(new Date(2000000000000L));
