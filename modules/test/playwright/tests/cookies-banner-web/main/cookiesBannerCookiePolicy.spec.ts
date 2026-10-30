@@ -262,61 +262,23 @@ test(
 	}
 );
 
-async function expectCookiesBannerTypes(
-	browser,
-	cookieTypes: string[] = hideableCookieTypes,
-	hidden: boolean = true
-) {
-	const newPage = await browser.newPage();
-
-	await newPage.goto('/');
-
-	await newPage.getByRole('button', {name: 'Configuration'}).waitFor();
-
-	await newPage.getByRole('button', {name: 'Configuration'}).click();
-
-	const cookieConfigurationIFrame = await newPage.frameLocator(
-		'iframe[title="Cookie Configuration"]'
-	);
-
-	await cookieConfigurationIFrame
-		.getByRole('heading', {name: 'Strictly Necessary Cookies'})
-		.waitFor();
-
-	for (const cookieType of cookieTypes) {
-		const cookieTypeHeading = cookieConfigurationIFrame.getByRole(
-			'heading',
-			{name: cookieType}
-		);
-
-		if (hidden) {
-			await expect(await cookieTypeHeading).not.toBeVisible();
-		}
-		else {
-			await expect(await cookieTypeHeading).toBeVisible();
-		}
-	}
-
-	await newPage.close();
-}
-
 test(
 	'Privacy and cookie policy links can point to a page of a site',
 	{tag: ['@LPS-148320', '@LPS-152844']},
 	async ({apiHelpers, page, site, systemSettingsPage}) => {
-		const layout = await apiHelpers.headlessDelivery.createSitePage({
-			siteId: site.id,
-			title: getRandomString(),
-		});
-
-		const policyPagePath = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
-
 		await test.step('Enable the Consent Manager', async () => {
 			await updateConsentManagerConfiguration(page, {
 				enabled: true,
 				forceReload: true,
 			});
 		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const policyPagePath = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
 
 		await test.step('Point the Cookie Banner privacy policy link to the site page', async () => {
 			await systemSettingsPage.goToSystemSetting(
@@ -384,3 +346,41 @@ test(
 		});
 	}
 );
+
+async function expectCookiesBannerTypes(
+	browser,
+	cookieTypes: string[] = hideableCookieTypes,
+	hidden: boolean = true
+) {
+	const newPage = await browser.newPage();
+
+	await newPage.goto('/');
+
+	await newPage.getByRole('button', {name: 'Configuration'}).waitFor();
+
+	await newPage.getByRole('button', {name: 'Configuration'}).click();
+
+	const cookieConfigurationIFrame = await newPage.frameLocator(
+		'iframe[title="Cookie Configuration"]'
+	);
+
+	await cookieConfigurationIFrame
+		.getByRole('heading', {name: 'Strictly Necessary Cookies'})
+		.waitFor();
+
+	for (const cookieType of cookieTypes) {
+		const cookieTypeHeading = cookieConfigurationIFrame.getByRole(
+			'heading',
+			{name: cookieType}
+		);
+
+		if (hidden) {
+			await expect(await cookieTypeHeading).not.toBeVisible();
+		}
+		else {
+			await expect(await cookieTypeHeading).toBeVisible();
+		}
+	}
+
+	await newPage.close();
+}

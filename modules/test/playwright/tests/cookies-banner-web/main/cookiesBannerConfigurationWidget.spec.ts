@@ -65,9 +65,9 @@ test(
 	async ({apiHelpers, page, site}) => {
 		await goToCookiesBannerConfigurationWidgetPage(apiHelpers, page, site);
 
-		const widget = getCookiesBannerConfigurationWidget(page);
-
 		await test.step('Verify the widget elements', async () => {
+			const widget = getCookiesBannerConfigurationWidget(page);
+
 			for (const cookieKey of cookieKeys) {
 				await expect(
 					widget.locator(`[data-cookie-key="${cookieKey}"]`)
@@ -117,9 +117,9 @@ test(
 
 		await goToCookiesBannerConfigurationWidgetPage(apiHelpers, page, site);
 
-		const widget = getCookiesBannerConfigurationWidget(page);
-
 		await test.step('Verify the widget shows the site-level texts', async () => {
+			const widget = getCookiesBannerConfigurationWidget(page);
+
 			await expect(widget.getByText(description)).toBeVisible();
 			await expect(
 				widget.getByRole('link', {name: linkDisplayText})

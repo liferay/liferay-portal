@@ -384,13 +384,11 @@ test(
 			const cookies = await page.context().cookies();
 
 			for (const cookieKey of cookieKeys) {
-				const cookie = cookies.find(
-					(cookie) => cookie.name === cookieKey
-				);
-
 				expect(
 					Math.abs(
-						cookie.expires - expectedExpiration.getTime() / 1000
+						cookies.find((cookie) => cookie.name === cookieKey)
+							.expires -
+							expectedExpiration.getTime() / 1000
 					)
 				).toBeLessThan(2 * 24 * 60 * 60);
 			}
@@ -453,24 +451,19 @@ test(
 			await expect(cookiesBanner).toBeVisible();
 			await expect(cookiesBanner).toContainText(bannerContent);
 
-			const privacyPolicyLink = cookiesBanner.getByRole('link', {
-				name: bannerLinkDisplayText,
-			});
-
-			await expect(privacyPolicyLink).toHaveAttribute(
-				'href',
-				bannerPrivacyPolicyLink
-			);
+			await expect(
+				cookiesBanner.getByRole('link', {name: bannerLinkDisplayText})
+			).toHaveAttribute('href', bannerPrivacyPolicyLink);
 
 			await expect(
 				cookiesBanner.getByRole('button', {name: 'Decline All'})
 			).toBeVisible();
 		});
 
+		const panelDescription = getRandomString();
 		const panelDescriptions = cookieHeadingNames.map(() =>
 			getRandomString()
 		);
-		const panelDescription = getRandomString();
 		const panelLinkDisplayText = getRandomString();
 		const panelStrictlyNecessaryCookiesDescription = getRandomString();
 		const panelTitle = getRandomString();
@@ -573,9 +566,6 @@ test(
 	{tag: '@LPS-142518'},
 	async ({page}) => {
 		const cookiesBanner = page.locator('div[role="region"].cookies-banner');
-		const cookieConfigurationDialog = page.getByRole('dialog', {
-			name: 'Cookie Configuration',
-		});
 
 		await test.step('Verify the Cookie Banner elements', async () => {
 			await page.goto('/');
@@ -596,6 +586,10 @@ test(
 					cookiesBanner.getByRole('button', {name})
 				).toBeVisible();
 			}
+		});
+
+		const cookieConfigurationDialog = page.getByRole('dialog', {
+			name: 'Cookie Configuration',
 		});
 
 		await test.step('Accept all cookies from the Cookie Panel', async () => {

@@ -375,14 +375,12 @@ test(
 			site.friendlyUrlPath
 		);
 
-		const menuItemTexts = await page
-			.locator('#main-content')
-			.getByRole('menuitem')
-			.allInnerTexts();
-
-		const menuItemNames = menuItemTexts.map((menuItemText) =>
-			menuItemText.trim()
-		);
+		const menuItemNames = (
+			await page
+				.locator('#main-content')
+				.getByRole('menuitem')
+				.allInnerTexts()
+		).map((menuItemText) => menuItemText.trim());
 
 		const consentManagerIndex = menuItemNames.indexOf('Consent Manager');
 
