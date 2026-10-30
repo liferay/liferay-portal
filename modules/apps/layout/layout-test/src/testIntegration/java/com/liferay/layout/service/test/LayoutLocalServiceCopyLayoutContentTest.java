@@ -1300,8 +1300,9 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		_assertPortletPreferences(1, portletId1);
 
-		String portletId2 = _addPortletToLayout(
-			draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
+		String portletId2 = _getAddedPortletId(
+			ContentLayoutTestUtil.addPortletToLayout(
+				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET));
 
 		_assertPortletPreferences(1, portletId2);
 
@@ -1768,13 +1769,6 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		portletPreferences.store();
 
 		_assertPortletPreferences(value, name, portletId, layout);
-	}
-
-	private String _addPortletToLayout(Layout layout, String portletId)
-		throws Exception {
-
-		return _getAddedPortletId(
-			ContentLayoutTestUtil.addPortletToLayout(layout, portletId));
 	}
 
 	private void _assertFragmentEntryLink(
