@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-function addOpenSelectionModalEvent({namespace, url}) {
+import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+
+import getCountriesItemSelectorProps from '../item_selector/getCountriesItemSelectorProps';
+
+function addOpenSelectionModalEvent({excludedCountryIds, namespace}) {
 	Liferay.on(namespace + 'addCommerceChannelCountry', () => {
 		openSelectionModal({
+			excludedCountryIds,
 			namespace,
-			url,
 		});
 	});
 
@@ -16,46 +20,33 @@ function addOpenSelectionModalEvent({namespace, url}) {
 	});
 }
 
-function openSelectionModal({namespace, url}) {
-	const openerWindow = Liferay.Util.getOpener();
-
+function openSelectionModal({excludedCountryIds, namespace}) {
 	const addCommerceChannelCountryFm = document.getElementById(
 		namespace + 'addCommerceChannelCountryFm'
 	);
 	const countryIds = document.getElementById(namespace + 'countryIds');
 
-	openerWindow.Liferay.Util.openSelectionModal({
-		multiple: true,
-		onSelect: (selectedItems) => {
-			selectedItems = selectedItems.value || [];
-
-			if (!selectedItems || !selectedItems.length) {
+	openItemSelectorModal({
+		...getCountriesItemSelectorProps({
+			excludedCountryIds,
+			portletNamespace: namespace,
+		}),
+		items: [],
+		onItemsChange: (countries) => {
+			if (!countries.length) {
 				return;
 			}
 
-			if (!Array.isArray(selectedItems)) {
-				selectedItems = [selectedItems];
-			}
+			if (countryIds) {
+				const ids = countries.map((country) => country.id);
 
-			const countries = [];
-
-			for (let selectedItem of selectedItems) {
-				selectedItem = JSON.parse(selectedItem);
-
-				countries.push(selectedItem.classPK);
-			}
-
-			if (countries.length && countryIds) {
-				countryIds.value = countries.join(',');
+				countryIds.value = ids.join(',');
 			}
 
 			if (addCommerceChannelCountryFm) {
 				submitForm(addCommerceChannelCountryFm);
 			}
 		},
-		selectEventName: 'countrySelectItem',
-		title: Liferay.Language.get('add-country'),
-		url,
 	});
 }
 

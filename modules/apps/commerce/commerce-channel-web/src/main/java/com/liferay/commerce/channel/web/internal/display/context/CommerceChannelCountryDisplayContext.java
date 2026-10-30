@@ -5,30 +5,22 @@
 
 package com.liferay.commerce.channel.web.internal.display.context;
 
-import com.liferay.commerce.channel.web.internal.item.selector.CountryItemSelectorCriterion;
 import com.liferay.commerce.product.display.context.helper.CPRequestHelper;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelRelModel;
 import com.liferay.commerce.product.service.CommerceChannelRelService;
 import com.liferay.commerce.product.service.CommerceChannelService;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.CreationMenu;
-import com.liferay.item.selector.ItemSelector;
-import com.liferay.item.selector.ItemSelectorCriterion;
-import com.liferay.item.selector.criteria.UUIDItemSelectorReturnType;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
-import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
-import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -44,13 +36,12 @@ public class CommerceChannelCountryDisplayContext {
 			commerceChannelModelResourcePermission,
 		CommerceChannelRelService commerceChannelRelService,
 		CommerceChannelService commerceChannelService,
-		HttpServletRequest httpServletRequest, ItemSelector itemSelector) {
+		HttpServletRequest httpServletRequest) {
 
 		_commerceChannelModelResourcePermission =
 			commerceChannelModelResourcePermission;
 		_commerceChannelRelService = commerceChannelRelService;
 		_commerceChannelService = commerceChannelService;
-		_itemSelector = itemSelector;
 
 		_cpRequestHelper = new CPRequestHelper(httpServletRequest);
 	}
@@ -106,31 +97,7 @@ public class CommerceChannelCountryDisplayContext {
 
 	public HashMap<String, Object> getJSContext() {
 		return HashMapBuilder.<String, Object>put(
-			"url",
-			() -> {
-				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
-					RequestBackedPortletURLFactoryUtil.create(
-						_cpRequestHelper.getRenderRequest());
-
-				ItemSelectorCriterion itemSelectorCriterion =
-					new CountryItemSelectorCriterion();
-
-				itemSelectorCriterion.setDesiredItemSelectorReturnTypes(
-					new UUIDItemSelectorReturnType());
-
-				long commerceChannelId = getCommerceChannelId();
-
-				return PortletURLBuilder.create(
-					_itemSelector.getItemSelectorURL(
-						requestBackedPortletURLFactory, "countrySelectItem",
-						itemSelectorCriterion)
-				).setParameter(
-					"checkedCountryIds",
-					StringUtil.merge(_getCheckedCountryIds(commerceChannelId))
-				).setParameter(
-					"commerceChannelId", commerceChannelId
-				).buildString();
-			}
+			"excludedCountryIds", () -> _getCountryIds(getCommerceChannelId())
 		).build();
 	}
 
@@ -142,7 +109,7 @@ public class CommerceChannelCountryDisplayContext {
 			actionId);
 	}
 
-	private long[] _getCheckedCountryIds(long commerceChannelId)
+	private long[] _getCountryIds(long commerceChannelId)
 		throws PortalException {
 
 		return TransformUtil.transformToLongArray(
@@ -158,6 +125,5 @@ public class CommerceChannelCountryDisplayContext {
 	private final CommerceChannelRelService _commerceChannelRelService;
 	private final CommerceChannelService _commerceChannelService;
 	private final CPRequestHelper _cpRequestHelper;
-	private final ItemSelector _itemSelector;
 
 }
