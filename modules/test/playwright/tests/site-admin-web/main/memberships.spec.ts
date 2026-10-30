@@ -343,6 +343,8 @@ test(
 
 		await page.getByRole('button', {name: 'Save'}).click();
 
+		await waitForAlert(page, 'Success');
+
 		await performLogout(page);
 
 		await performLogin(page, 'test');
@@ -432,6 +434,8 @@ test(
 		await page.locator('textarea[id$=comments]').fill('Test');
 
 		await page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(page, 'Success');
 
 		await performLogout(page);
 
@@ -664,6 +668,8 @@ test(
 			.fill(`<html><script>alert('test');</script></html>`);
 
 		await page.getByRole('button', {name: 'Save'}).click();
+
+		await waitForAlert(page, 'Success');
 
 		await performLogout(page);
 
