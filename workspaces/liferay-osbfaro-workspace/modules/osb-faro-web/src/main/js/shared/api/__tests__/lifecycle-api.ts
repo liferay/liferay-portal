@@ -7,6 +7,7 @@ jest.mock('shared/util/feature-flags', () => ({
 import sendRequest from 'shared/util/request';
 import {
 	fetchAccountLifecycles,
+	fetchChannelLifecycles,
 	fetchLifecycles,
 	fetchLifecyclesPage,
 	setDefaultLifecycle,
@@ -85,6 +86,31 @@ describe.each([
 
 		expect(sendRequest).toHaveBeenCalledWith({
 			data: {page: 1, pageSize: 1, sort: 'name:asc'},
+			method: 'GET',
+			path: 'contacts/23/account-lifecycle',
+		});
+	});
+});
+
+describe('fetchChannelLifecycles', () => {
+	beforeEach(() => {
+		(sendRequest as jest.Mock).mockReset();
+		(sendRequest as jest.Mock).mockResolvedValue({
+			items: [{id: '1'}, {id: '2'}],
+			lastPage: 1,
+			page: 1,
+			pageSize: 200,
+			totalCount: 2,
+		});
+	});
+
+	it('requests every lifecycle of the channel and returns the items', async () => {
+		expect(
+			await fetchChannelLifecycles({channelId: '123', groupId: '23'})
+		).toEqual([{id: '1'}, {id: '2'}]);
+
+		expect(sendRequest).toHaveBeenCalledWith({
+			data: {channelId: '123', page: 1, pageSize: 200, sort: 'name:asc'},
 			method: 'GET',
 			path: 'contacts/23/account-lifecycle',
 		});
