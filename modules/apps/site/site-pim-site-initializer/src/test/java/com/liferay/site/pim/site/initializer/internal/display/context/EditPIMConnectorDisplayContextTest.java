@@ -5,6 +5,7 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -12,7 +13,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
-import com.liferay.object.service.ObjectFieldLocalServiceUtil;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
@@ -186,7 +187,10 @@ public class EditPIMConnectorDisplayContextTest {
 
 		EditPIMConnectorDisplayContext editPIMConnectorDisplayContext =
 			new EditPIMConnectorDisplayContext(
-				httpServletRequest, objectDefinition, objectEntryLocalService,
+				httpServletRequest,
+				Mockito.mock(ListTypeEntryLocalService.class), objectDefinition,
+				objectEntryLocalService,
+				Mockito.mock(ObjectFieldLocalService.class),
 				ListUtil.fromArray(
 					_mockPIMConnector("liferay-commerce", "Liferay Commerce")));
 
@@ -241,7 +245,9 @@ public class EditPIMConnectorDisplayContextTest {
 		);
 
 		editPIMConnectorDisplayContext = new EditPIMConnectorDisplayContext(
-			httpServletRequest, objectDefinition, objectEntryLocalService,
+			httpServletRequest, Mockito.mock(ListTypeEntryLocalService.class),
+			objectDefinition, objectEntryLocalService,
+			Mockito.mock(ObjectFieldLocalService.class),
 			ListUtil.fromArray(
 				_mockPIMConnector("liferay-commerce", "Liferay Commerce")));
 
@@ -284,6 +290,12 @@ public class EditPIMConnectorDisplayContextTest {
 		ThemeDisplay themeDisplay = _mockThemeDisplay();
 
 		Mockito.when(
+			themeDisplay.getCompanyId()
+		).thenReturn(
+			_COMPANY_ID
+		);
+
+		Mockito.when(
 			httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
 		).thenReturn(
 			themeDisplay
@@ -297,6 +309,7 @@ public class EditPIMConnectorDisplayContextTest {
 
 		ObjectEntryLocalService objectEntryLocalService = Mockito.mock(
 			ObjectEntryLocalService.class);
+
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
 		Mockito.when(
@@ -384,10 +397,7 @@ public class EditPIMConnectorDisplayContextTest {
 					Mockito.mockStatic(ObjectDefinitionLocalServiceUtil.class);
 			MockedStatic<ObjectEntryLocalServiceUtil>
 				objectEntryLocalServiceUtilMockedStatic = Mockito.mockStatic(
-					ObjectEntryLocalServiceUtil.class);
-			MockedStatic<ObjectFieldLocalServiceUtil>
-				objectFieldLocalServiceUtilMockedStatic = Mockito.mockStatic(
-					ObjectFieldLocalServiceUtil.class)) {
+					ObjectEntryLocalServiceUtil.class)) {
 
 			objectDefinitionLocalServiceUtilMockedStatic.when(
 				() ->
@@ -417,23 +427,23 @@ public class EditPIMConnectorDisplayContextTest {
 					ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 					RandomTestUtil.randomString(), false, "url", true));
 
-			objectFieldLocalServiceUtilMockedStatic.when(
-				() -> ObjectFieldLocalServiceUtil.getObjectFields(
+			ObjectFieldLocalService objectFieldLocalService = Mockito.mock(
+				ObjectFieldLocalService.class);
+
+			Mockito.when(
+				objectFieldLocalService.getObjectFields(
 					_CONFIGURATION_OBJECT_DEFINITION_ID)
 			).thenReturn(
 				objectFields
 			);
 
-			Mockito.when(
-				themeDisplay.getCompanyId()
-			).thenReturn(
-				_COMPANY_ID
-			);
-
 			EditPIMConnectorDisplayContext editPIMConnectorDisplayContext =
 				new EditPIMConnectorDisplayContext(
-					httpServletRequest, Mockito.mock(ObjectDefinition.class),
-					objectEntryLocalService, ListUtil.fromArray(pimConnector));
+					httpServletRequest,
+					Mockito.mock(ListTypeEntryLocalService.class),
+					Mockito.mock(ObjectDefinition.class),
+					objectEntryLocalService, objectFieldLocalService,
+					ListUtil.fromArray(pimConnector));
 
 			Map<String, Object> reactData =
 				editPIMConnectorDisplayContext.getReactData();

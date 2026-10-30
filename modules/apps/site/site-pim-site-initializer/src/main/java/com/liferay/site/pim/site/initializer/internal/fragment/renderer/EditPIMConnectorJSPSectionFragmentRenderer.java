@@ -6,8 +6,10 @@
 package com.liferay.site.pim.site.initializer.internal.fragment.renderer;
 
 import com.liferay.fragment.renderer.FragmentRenderer;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
@@ -40,22 +42,28 @@ public class EditPIMConnectorJSPSectionFragmentRenderer
 				WebKeys.THEME_DISPLAY);
 
 		return new EditPIMConnectorDisplayContext(
-			httpServletRequest,
+			httpServletRequest, _listTypeEntryLocalService,
 			_objectDefinitionLocalService.
 				fetchObjectDefinitionByExternalReferenceCode(
 					PIMObjectDefinitionConstants.
 						EXTERNAL_REFERENCE_CODE_CONNECTOR,
 					themeDisplay.getCompanyId()),
-			_objectEntryLocalService,
+			_objectEntryLocalService, _objectFieldLocalService,
 			_pimConnectorRegistry.getPIMConnectors(
 				themeDisplay.getCompanyId()));
 	}
+
+	@Reference
+	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
 
 	@Reference
 	private ObjectEntryLocalService _objectEntryLocalService;
+
+	@Reference
+	private ObjectFieldLocalService _objectFieldLocalService;
 
 	@Reference
 	private PIMConnectorRegistry _pimConnectorRegistry;

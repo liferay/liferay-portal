@@ -204,6 +204,7 @@ public class BasePIMConnectorTest {
 
 		Assert.assertEquals(
 			"executed", _pimConnector.execute(_pimConnectorObjectEntry));
+		Assert.assertEquals(configuration, _pimConnector._configuration);
 		Assert.assertEquals(
 			HashMapBuilder.put(
 				"name", Collections.singletonList(nameObjectEntry)
@@ -211,7 +212,6 @@ public class BasePIMConnectorTest {
 			_pimConnector._pimFieldMappingObjectEntriesMap);
 		Assert.assertEquals(
 			Collections.emptyMap(), _pimConnector._pimProductObjectEntriesMap);
-		Assert.assertEquals(configuration, _pimConnector._configuration);
 	}
 
 	@Test
@@ -701,9 +701,9 @@ public class BasePIMConnectorTest {
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap) {
 
+			_configuration = configuration;
 			_pimFieldMappingObjectEntriesMap = pimFieldMappingObjectEntriesMap;
 			_pimProductObjectEntriesMap = pimProductObjectEntriesMap;
-			_configuration = configuration;
 
 			return "executed";
 		}

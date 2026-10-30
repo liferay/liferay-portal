@@ -5,13 +5,13 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
-import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
+import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.object.service.ObjectFieldLocalServiceUtil;
+import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -49,13 +49,17 @@ public class EditPIMConnectorDisplayContext {
 
 	public EditPIMConnectorDisplayContext(
 		HttpServletRequest httpServletRequest,
+		ListTypeEntryLocalService listTypeEntryLocalService,
 		ObjectDefinition objectDefinition,
 		ObjectEntryLocalService objectEntryLocalService,
+		ObjectFieldLocalService objectFieldLocalService,
 		List<PIMConnector> pimConnectors) {
 
 		_httpServletRequest = httpServletRequest;
+		_listTypeEntryLocalService = listTypeEntryLocalService;
 		_objectDefinition = objectDefinition;
 		_objectEntryLocalService = objectEntryLocalService;
+		_objectFieldLocalService = objectFieldLocalService;
 		_pimConnectors = pimConnectors;
 
 		_objectEntryId = ParamUtil.getLong(httpServletRequest, "objectEntryId");
@@ -127,7 +131,7 @@ public class EditPIMConnectorDisplayContext {
 			"fields",
 			JSONUtil.toJSONArray(
 				ListUtil.filter(
-					ObjectFieldLocalServiceUtil.getObjectFields(
+					_objectFieldLocalService.getObjectFields(
 						objectDefinition.getObjectDefinitionId()),
 					objectField -> !objectField.isMetadata()),
 				objectField -> JSONUtil.put(
@@ -215,7 +219,7 @@ public class EditPIMConnectorDisplayContext {
 		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
 
 		for (ObjectField objectField :
-				ObjectFieldLocalServiceUtil.getObjectFields(
+				_objectFieldLocalService.getObjectFields(
 					configurationObjectEntry.getObjectDefinitionId())) {
 
 			if (objectField.isMetadata()) {
@@ -251,7 +255,7 @@ public class EditPIMConnectorDisplayContext {
 		}
 
 		return JSONUtil.toJSONArray(
-			ListTypeEntryLocalServiceUtil.getListTypeEntries(
+			_listTypeEntryLocalService.getListTypeEntries(
 				objectField.getListTypeDefinitionId()),
 			listTypeEntry -> JSONUtil.put(
 				"label", listTypeEntry.getName(_themeDisplay.getLocale())
@@ -306,9 +310,11 @@ public class EditPIMConnectorDisplayContext {
 	}
 
 	private final HttpServletRequest _httpServletRequest;
+	private final ListTypeEntryLocalService _listTypeEntryLocalService;
 	private final ObjectDefinition _objectDefinition;
 	private final long _objectEntryId;
 	private final ObjectEntryLocalService _objectEntryLocalService;
+	private final ObjectFieldLocalService _objectFieldLocalService;
 	private final List<PIMConnector> _pimConnectors;
 	private final ThemeDisplay _themeDisplay;
 
