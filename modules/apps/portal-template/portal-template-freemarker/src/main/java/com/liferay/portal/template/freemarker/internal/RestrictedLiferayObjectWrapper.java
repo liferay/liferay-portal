@@ -167,11 +167,11 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				_allowedClasses, clazz, _allowedMatchResults,
 				_allowedPackageNames)) {
 
-			Set<String> methodNames =
+			Set<String> restrictedMethodNames =
 				TemplateRestrictedUtil.getRestrictedMethodNames(
 					clazz, _restrictedMethodNames.get(className));
 
-			if ((methodNames == null) ||
+			if ((restrictedMethodNames == null) ||
 				_isMatch(
 					_restrictedClasses, clazz, _restrictedMatchResults,
 					_restrictedPackageNames)) {
@@ -179,13 +179,13 @@ public class RestrictedLiferayObjectWrapper extends LiferayObjectWrapper {
 				return _RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
 			}
 
-			if (!methodNames.isEmpty()) {
+			if (!restrictedMethodNames.isEmpty()) {
 				LiferayFreeMarkerStringModel liferayFreeMarkerStringModel =
 					(LiferayFreeMarkerStringModel)
 						_RESTRICTED_STRING_MODEL_FACTORY.create(object, this);
 
 				liferayFreeMarkerStringModel.setRestrictedMethodNames(
-					methodNames);
+					restrictedMethodNames);
 
 				return liferayFreeMarkerStringModel;
 			}

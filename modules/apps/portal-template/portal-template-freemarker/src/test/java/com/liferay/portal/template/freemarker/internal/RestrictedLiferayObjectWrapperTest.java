@@ -447,6 +447,7 @@ public class RestrictedLiferayObjectWrapperTest
 			return 0;
 		}
 
+		@Override
 		public Map<String, Function<TestBaseModel, Object>>
 			getAttributeGetterFunctions() {
 

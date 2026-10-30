@@ -148,7 +148,7 @@ public class LiferaySecureUberspector extends SecureUberspector {
 						return new ClassRestrictionInformation(
 							StringBundler.concat(
 								"Denied resolving class ", className,
-								" by @TemplateRestricted"));
+								" by \"@TemplateRestricted\""));
 					}
 
 					for (Class<?> restrictedClass : _restrictedClasses) {
@@ -197,12 +197,13 @@ public class LiferaySecureUberspector extends SecureUberspector {
 	private void _checkMethodIsRestricted(Class<?> clazz, String methodName) {
 		String className = clazz.getName();
 
-		Set<String> methodNames =
+		Set<String> restrictedMethodNames =
 			TemplateRestrictedUtil.getRestrictedMethodNames(
 				clazz, _restrictedMethodNames.get(className));
 
-		if ((methodNames != null) &&
-			methodNames.contains(StringUtil.toLowerCase(methodName))) {
+		if ((restrictedMethodNames != null) &&
+			restrictedMethodNames.contains(
+				StringUtil.toLowerCase(methodName))) {
 
 			throw new IllegalArgumentException(
 				StringBundler.concat(
