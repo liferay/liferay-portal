@@ -153,7 +153,6 @@ public class CMSSpaceAdministratorRoleContributorTest {
 		throws Exception {
 
 		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
-		User user = UserTestUtil.addUser();
 		UserGroup userGroup = UserGroupTestUtil.addUserGroup();
 
 		_groupLocalService.addUserGroupGroup(
@@ -167,6 +166,8 @@ public class CMSSpaceAdministratorRoleContributorTest {
 			userGroup.getUserGroupId(), depotEntry.getGroupId(),
 			new long[] {role.getRoleId()});
 
+		User user = UserTestUtil.addUser();
+
 		Assert.assertFalse(_hasView("/dashboard", user));
 
 		_userLocalService.addUserGroupUser(
@@ -177,7 +178,6 @@ public class CMSSpaceAdministratorRoleContributorTest {
 		_userLocalService.deleteUser(user);
 
 		_userGroupLocalService.deleteUserGroup(userGroup);
-
 		_depotEntryLocalService.deleteDepotEntry(depotEntry);
 	}
 
