@@ -47,7 +47,7 @@ my-react-app:
     useESM: true
 ```
 
-**Vite library mode does not replace `process.env.NODE_ENV`.** With `build.lib` and `formats: ['es']` and no `define`, the literal expression survives into the bundle, and React, ReactDOM, and Clay ship their development builds. The symptom is dev-only console warnings with no functional breakage, such as `ClayIcon requires a spritemap`. Add `define: {'process.env.NODE_ENV': JSON.stringify('production')}` to the Vite config. One `jsImportMapsEntry` bundle dropped from 1,177 KB to 632 KB. To check a build, `grep -c "process\.env\.NODE_ENV"` on the output should return `0`. An app-mode (non-library) Vite build is not affected.
+**Vite library mode does not replace `process.env.NODE_ENV`.** With `build.lib` and `formats: ['es']` and no `define`, the literal expression survives into the bundle, and React, ReactDOM, and Clay ship their development builds. The symptom is dev-only console warnings with no functional breakage, such as `ClayIcon requires a spritemap`. Add `define: {'process.env.NODE_ENV': JSON.stringify('production')}` to the Vite config. One `jsImportMapsEntry` bundle dropped from 1,177 KB to 632 KB. To check a build, `grep --count "process\.env\.NODE_ENV"` on the output should return `0`. An app-mode (non-library) Vite build is not affected.
 
 **Home Page URL**: for associated OAuth2 applications, `homePageURL` must include the full protocol (e.g., `http://localhost:${PORT}`) to prevent interpolation errors.
 

@@ -107,7 +107,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Confirm the exact request bodies against the OpenAPI spec (`get-openapi` MCP tool, or fetch `GET /o/object-admin/v1.0/openapi.json` with curl). For source controlled migration, prefer the site initializer's `object-definitions/` and `list-type-definitions/` directories (see `rules/site-initializer-format.md`), or a separate `type: batch` CET for bulk data (see `manage-objects` → the batch CET section). A `batch/` directory **inside** a site initializer is packaged and then never read — no initializer handler looks for it.
+Confirm the exact request bodies against the OpenAPI spec (`get-openapi` MCP tool, or fetch `GET /o/object-admin/v1.0/openapi.json` with curl). For source controlled migration, prefer the site initializer's `object-definitions` and `list-type-definitions` directories (see `rules/site-initializer-format.md`), or a separate `type: batch` CET for bulk data (see `manage-objects` → the batch CET section). A `batch` directory **inside** a site initializer is packaged and then never read — no initializer handler looks for it.
 
 ### Export Object Data (Batch)
 

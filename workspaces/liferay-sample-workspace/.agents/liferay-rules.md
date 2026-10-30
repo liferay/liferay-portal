@@ -53,7 +53,7 @@ Use Blade as the primary CLI. Prefer `blade gw <task>` over invoking Gradle dire
 
 Stopping a running Liferay server interrupts the user: sessions end, open editors lose work, and the MCP connection drops without reconnecting. So the **user** decides how restarts are handled, once per session.
 
-**Covered:** any stop, restart, or kill of a running Tomcat or Liferay container — `shutdown.sh`/`startup.sh`, `blade server stop`, `docker compose down`/`restart`. It also covers anything that requires one, such as clearing `bundles/osgi/state/`. **Not covered:** starting a server that is not running, when the user asked for it or a setup skill calls for it.
+**Covered:** any stop, restart, or kill of a running Tomcat or Liferay container — `shutdown.sh`/`startup.sh`, `blade server stop`, `docker compose down`/`restart`. It also covers anything that requires one, such as clearing `bundles/osgi/state`. **Not covered:** starting a server that is not running, when the user asked for it or a setup skill calls for it.
 
 **The first time a restart is needed in a session**, stop and ask which behavior the user wants for the rest of the session:
 
@@ -67,7 +67,7 @@ Whatever the choice:
 
 - **Check that a restart is really needed first.** Many changes take effect live (a flag toggled in the Feature Flags UI, OSGi `.config` files, CET redeploys). A change that did not work is more often the wrong endpoint or a stale zip than a missing restart. A Deprecation flag that a new database stored as off is not changed by a restart either (`rules/feature-flags-catalog.md`).
 - **Never stop a process this session did not start** — another workspace holding port 8080, for example — without asking, even under permission 2.
-- **Non-local environments always need confirmation** (dev, UAT, prod, Liferay Cloud), whatever was chosen; see `production-standards`.
+- **Every environment except local always needs confirmation** (dev, UAT, prod, Liferay Cloud), whatever was chosen; see `production-standards`.
 - **After any restart,** wait for the server to answer, then prompt the user to reconnect MCP if it is in use (`skills/mcp-server/SKILL.md`).
 
 Skills that restart the server (`feature-flags`, `deploy-and-verify`, `build-site`, `workspace-init`, `manage-environments`) apply this policy instead of restarting on their own.
@@ -111,7 +111,7 @@ Use REST, MCP writes, and the UI on the live instance only for:
 - test or scratch data that is not part of the deliverable;
 - the settings no client extension can carry. Each skill names them where they come up, for example `skills/theme-and-design/SKILL.md` → "Mark It as the Site Default".
 
-When a live change is unavoidable, script it next to the client extension, run it after each deploy, and tell the user it is a post-deploy step. A REST example in a skill shows an API's shape; when the skill also shows a client extension route, take that route. Fix a defect in the client extension and redeploy, never on the live instance alone.
+When a live change is unavoidable, script it next to the client extension, run it after each deploy, and tell the user it is a step that follows deployment. A REST example in a skill shows an API's shape; when the skill also shows a client extension route, take that route. Fix a defect in the client extension and redeploy, never on the live instance alone.
 
 ## MCP Server
 
@@ -145,7 +145,7 @@ Every skill lives under `skills/` and owns one workflow. Match the user's intent
 | Manage Commerce catalogs, products, SKUs, or B2B accounts | `commerce-catalogs` |
 | Build a form that creates or edits an object entry, or fix one that renders nothing | `manage-form-containers` |
 | Show object entries as a table, list, or cards with filters, sort, and row actions | `manage-data-sets` |
-| Connect DXP to Analytics Cloud / LDP, track a custom event, read real-time segments, or verify an event in an Event Analysis | `manage-analytics` |
+| Connect DXP to Analytics Cloud / LDP, track a custom event, read real time segments, or verify an event in an Event Analysis | `manage-analytics` |
 | Deploy and operate a Liferay Cloud (LXC) project via `lcp` | `manage-cloud-project` |
 | Build an entire site experience from one prompt (orchestrator; calls the others) | `build-site` |
 | Author a new workspace skill from source code or a spec doc | `author-skill` |

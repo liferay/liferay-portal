@@ -107,8 +107,8 @@ Verified on 2026.Q1:
 
 ```javascript
 if (!document.head.querySelector('[data-<name>-assets]')) {
-	const script = Object.assign(document.createElement('script'), {src: '/o/<friendlyURLMapping-or-key>/<url>', type: 'module'});
 	const link = Object.assign(document.createElement('link'), {href: '/o/<friendlyURLMapping-or-key>/<css-url>', rel: 'stylesheet'});
+	const script = Object.assign(document.createElement('script'), {src: '/o/<friendlyURLMapping-or-key>/<url>', type: 'module'});
 	script.setAttribute('data-<name>-assets', '');
 	document.head.append(script, link);
 }
@@ -153,7 +153,7 @@ assemble:
   url: "main.js"
 ```
 
-**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna re-executes it on every client-side navigation with `document.readyState` already `complete`. A `DOMContentLoaded`-gated init then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
+**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna executes it again on every client-side navigation with `document.readyState` already `complete`. A `DOMContentLoaded`-gated init then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
 
 #### `objectAction` (Spring Boot example)
 
@@ -176,8 +176,8 @@ assemble:
 ```
 client-extensions/<name>/
   client-extension.yaml
-  Dockerfile        # required, see below
-  LCP.json          # required, see below
+  Dockerfile        # Required, see below
+  LCP.json          # Required, see below
   src/main/java/<package>/
     Application.java
     ObjectActionRestController.java
@@ -366,7 +366,7 @@ Call this through `Liferay.Util.fetch` so the CSRF token is attached automatical
 - **The callback receives the payload itself**, with no `.detail` envelope.
 - **The namespace is page-wide.** Give each event a specific name (`<project>:<widget>:<event>`).
 - **Nothing is replayed or buffered.** An event fired before `Liferay.on()` is lost, as designed, so the subscriber renders a coherent initial state without waiting for a message.
-- **The subscriber updates its own element's attributes** rather than re-implementing the emitter's logic, and the emitter does not re-fire a state that has not changed.
+- **The subscriber updates its own element's attributes** rather than implementing the emitter's logic again, and the emitter does not fire again for a state that has not changed.
 
 ### Never Use `roleBriefs` for Access Control
 

@@ -1,6 +1,6 @@
 ---
 
-description: Connect DXP to Liferay Analytics Cloud / Liferay Data Platform (LDP) and track custom events from fragments and client extensions with the Analytics SDK — `Analytics.track`, real-time segments, and checking that an event reaches LDP. Use when the user asks to connect DXP to Analytics Cloud or LDP, track a custom event from a fragment or a client extension, read the visitor's real-time segments, verify that an event arrives in LDP, or build an Event Analysis. Deciding when an event should fire belongs to other skills.
+description: Connect DXP to Liferay Analytics Cloud / Liferay Data Platform (LDP) and track custom events from fragments and client extensions with the Analytics SDK — `Analytics.track`, real time segments, and checking that an event reaches LDP. Use when the user asks to connect DXP to Analytics Cloud or LDP, track a custom event from a fragment or a client extension, read the visitor's real time segments, verify that an event arrives in LDP, or build an Event Analysis. Deciding when an event should fire belongs to other skills.
 name: manage-analytics
 
 ---
@@ -9,13 +9,13 @@ name: manage-analytics
 
 Liferay Analytics Cloud, now Liferay Data Platform (LDP), receives events from the Analytics SDK that DXP loads on the pages of every site it tracks. This skill covers the DXP side: connecting the instance, calling the SDK safely from browser code, and proving that an event arrived.
 
-The SDK behavior below was verified on 2026.Q3, and the connection procedure is the GUI path on 2026.Q3. **LDP is a separately licensed product:** without an LDP workspace there is nothing to connect. On 2026.Q1, analytics attributes on object entries need flag `LPD-39437` (release, off by default), and the real-time segment call below does not exist.
+The SDK behavior below was verified on 2026.Q3, and the connection procedure is the GUI path on 2026.Q3. **LDP is a separately licensed product:** without an LDP workspace there is nothing to connect. On 2026.Q1, analytics attributes on object entries need flag `LPD-39437` (release, off by default), and the real time segment call below does not exist.
 
 ## When to Invoke
 
 - "Connect DXP to Analytics Cloud / LDP", "track this site"
 - "Track a custom event" from a fragment or a client extension
-- "Show content by the visitor's real-time segment"
+- "Show content by the visitor's real time segment"
 - "Is my event arriving?", "build an Event Analysis"
 
 This skill says **how** to track. When to fire belongs elsewhere: whether a Form Container was really submitted is `manage-form-containers` (the `innerText` watcher).
@@ -40,7 +40,7 @@ Until `Analytics.create()` has run during the site's bootstrap, `window.Analytic
 
 ```javascript
 if (typeof window.Analytics?.track === 'function') {
-	// safe to call
+	window.Analytics.track('<eventName>', {});
 }
 ```
 
@@ -56,7 +56,7 @@ function trackSafely(eventName, properties) {
 		return;
 	}
 
-	const clean = {};
+	const cleanProperties = {};
 
 	for (const [key, value] of Object.entries(properties || {})) {
 		if (value === null || value === undefined) {
@@ -69,11 +69,11 @@ function trackSafely(eventName, properties) {
 			text = JSON.stringify(text);
 		}
 
-		clean[key] = typeof text === 'string' ? text.slice(0, 1024) : text;
+		cleanProperties[key] = typeof text === 'string' ? text.slice(0, 1024) : text;
 	}
 
 	try {
-		window.Analytics.track(eventName, clean);
+		window.Analytics.track(eventName, cleanProperties);
 	}
 	catch (error) {
 		console.warn('Analytics.track failed', error);
@@ -89,13 +89,13 @@ function trackSafely(eventName, properties) {
 
 In a shared LDP workspace or instance, suffix every custom event with an identifier of its author (`whitePaperDownloaded_jdoe`). Otherwise the reports mix everyone's events. Name saved analyses the same way.
 
-### 4. Real-Time Segments
+### 4. Real Time Segments
 
 ```javascript
 const ercs = await window.Analytics.segment.getRealTimeSegmentExternalReferenceCodes();
 ```
 
-The Promise resolves to an array of the ERCs of the visitor's real-time segments. The call exists from 2026.Q2; 2026.Q1 has no equivalent. **Confirmed live on 2026.Q3.2 but absent from the official documentation**, so detect `window.Analytics?.segment` before calling it, and say so to the user.
+The Promise resolves to an array of the ERCs of the visitor's real time segments. The call exists from 2026.Q2; 2026.Q1 has no equivalent. **Confirmed live on 2026.Q3.2 but absent from the official documentation**, so detect `window.Analytics?.segment` before calling it, and say so to the user.
 
 In LDP, a segment's ERC is editable on its detail screen and accepts only lowercase letters and dashes. Set a readable one (`white-paper-readers`) before writing code against it, rather than keeping the generated value.
 
@@ -104,7 +104,7 @@ In LDP, a segment's ERC is editable on its detail screen and accepts only lowerc
 DXP tags object entries for Analytics by itself, so most asset tracking needs no `track` call. Verified on 2026.Q2.7 from source and with a Guest in headless Chrome:
 
 - **In View mode, with the instance connected and no feature flag** (LPD-39437 is gone; the code is unconditional), every fragment editable mapped to an object entry gets `data-analytics-asset-type="object-entry"`, `-asset-id`, `-asset-title`, `-object-definition-name` (the stored name: `CMSBasicDocument`, or `C_<Name>` for a custom object), `-external-reference-code`, `-asset-field`, and tags and categories as JSON (`AnalyticsAttributesUtil`). The attributes go on the editable element itself; no wrapper is added.
-- **`asset-action` is `view` for an HTML or long text field and `impression` for every other**, so the SDK (`analytics-client-js` `plugins/object-entry.ts`, `applicationId` `ObjectEntry`) sends `objectEntryViewed` or `objectEntryImpressionMade` once the element enters the viewport. Its payload is `externalReferenceCode`, `objectDefinitionName`, `title` and the tags, categories and MIME type: no numeric id.
+- **`asset-action` is `view` for an HTML or long text field and `impression` for every other**, so the SDK (`analytics-client-js` `plugins/object-entry.ts`, `applicationId` `ObjectEntry`) sends `objectEntryViewed` or `objectEntryImpressionMade` once the element enters the viewport. Its payload is `externalReferenceCode`, `objectDefinitionName`, `title` and the tags, categories and MIME type: no numeric ID.
 - **A type with neither field type (a CMS Basic Document: title and file) gets impressions only.** An information template mapped into an HTML editable adds the view: a `TemplateEntry` field is an `HTMLInfoFieldType` (`TemplateInfoItemFieldSetProviderImpl`), so `ddmTemplate_<id>` is tagged `view`.
 - **Nothing out of the box emits `objectEntryDownloaded`.** `download` is set only for the legacy `FileEntry_downloadURL` mapping, typed as a FileEntry. The SDK's click listener on `document` sends it when the **clicked element itself** has `asset-action="download"`, `asset-type="object-entry"`, the definition name and the ERC, with no `closest()`, so put them on the `<a>` (an information template or fragment JS can) and give any icon inside it `pointer-events: none`, or clicks on the icon send nothing.
 - **A plain link to a file sends no asset event**, and opening `/documents/…` loads no page. For a visit to count, link to the entry's display page.

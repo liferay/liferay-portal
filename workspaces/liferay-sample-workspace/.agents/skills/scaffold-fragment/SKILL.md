@@ -148,8 +148,8 @@ Access the value in `index.html` with `[configuration.buttonStyle]` or in `index
 **Initial build — with the site:**
 The fragment lives in the `siteInitializer` tree and is created when the site is provisioned. Trigger the initializer (see `build-site` Phase 9 and `rules/site-initializer-format.md`); no separate fragment deploy is needed.
 
-**Iterating on a fragment — re-fire the initializer from the tree:**
-Edit the source files in the site initializer tree and re-fire the initializer (clean redeploy — the re-fire upserts the FragmentEntry and re-snapshots placed fragments; see `rules/site-initializer-format.md` → "Re-firing the initializer UPSERTS" for the deploy-order rule and the delete+redeploy fallback). Object data is company scoped and survives either path.
+**Iterating on a fragment — fire the initializer again from the tree:**
+Edit the source files in the site initializer tree and fire the initializer again (clean redeploy — that run upserts the FragmentEntry and snapshots placed fragments again; see `rules/site-initializer-format.md` → "Firing the initializer again UPSERTS" for the deploy-order rule and the delete+redeploy fallback). Object data is company scoped and survives either path.
 
 **A live fragment API does exist — it just will not save you the reprovision.** `headless-admin-fragment` is real and fully functional (see "The Live Fragment API" below). The reason you still reprovision is **propagation**, not a missing endpoint: Liferay copies a fragment's HTML, CSS and JS into each page's fragment *instance* when it is placed, so updating the library fragment leaves every page already using it untouched.
 
@@ -216,10 +216,10 @@ FragmentEntryConfigurationException: Fragment configuration is invalid.
 
 Inside a site initializer that exception is an `InitializationException` — it **rolls back the entire site creation transaction**, so the symptom is "no site was created", not "one fragment is wrong". Source: `configuration-json-schema.json` in `modules/apps/fragment/fragment-service`.
 
-#### Per-Type Configuration Quirks
+#### Configuration Quirks by Type
 
 - `select` options go in `typeOptions.validValues` (`[{"value": "x", "label": "X"}]`) — a legacy `options` key or a bare array fails validation with `expected type: JSONObject, found: JSONArray`.
-- A `url` field's `defaultValue` must be a non-empty absolute value (use `"#"` when there is no sensible default) — null/empty throws an NPE during configuration parsing.
+- A `url` field's `defaultValue` must be an absolute value that is not empty (use `"#"` when there is no sensible default) — null/empty throws an NPE during configuration parsing.
 - `videoSelector` hands JS a **JSON string, not a URL**: `JSON.parse(configuration.<field>)` and inject its `html` property (the provider's embed markup) into the DOM.
 - `itemSelector` requires `typeOptions.itemType` set to the fully qualified class of the selectable entity (e.g. `com.liferay.journal.model.JournalArticle`).
 - `colorPalette` takes `typeOptions.colors` — a flat array of hex strings, not `validValues`.
@@ -250,7 +250,7 @@ Without this prefix, styles leak across fragments and produce unpredictable casc
 
 ### A Navigation Menu Macro Is Configured Outside the Fragment
 
-`[@liferay.navigation_menu /]` in a fragment renders the site's **non-instanced** navigation portlet, which keeps its settings (which menu, which template) in one site-wide preference row that the theme's own header also uses and creates first. Nothing in a site initializer tree reaches that row, so on a new site the fragment lists every page. To show a named menu, use the Menu Display renderer with `fragmentConfig.source` (`skills/manage-pages/SKILL.md`), or write the row after the import (`rules/site-initializer-format.md` → "A fragment's `[@liferay.navigation_menu /]`"; verified on 2026.Q3.5).
+`[@liferay.navigation_menu /]` in a fragment renders the site's navigation portlet **without an instance ID**, so it keeps its settings (which menu, which template) in one preference row at the site level, which the theme's own header also uses and creates first. Nothing in a site initializer tree reaches that row, so on a new site the fragment lists every page. To show a named menu, use the Menu Display renderer with `fragmentConfig.source` (`skills/manage-pages/SKILL.md`), or write the row after the import (`rules/site-initializer-format.md` → "A fragment's `[@liferay.navigation_menu /]`"; verified on 2026.Q3.5).
 
 ### Drop Zones
 
@@ -343,9 +343,9 @@ Parenthesizing the default is the form verified here; bind it to the variable ra
 
 This is the same rollback trap as an invalid `dataType`: inside a site initializer it aborts the whole site creation, so a fragment that reads a checkbox is worth rendering once before shipping the tree.
 
-#### Fragment FreeMarker Is SQUARE-BRACKET Syntax — Angle-Bracket Directives Are Emitted as Text
+#### Fragment FreeMarker Uses Square Brackets — Directives in Angle Brackets Are Emitted as Text
 
-Fragment `index.html` is processed with FreeMarker's **square-bracket tag syntax**: `[#if]…[/#if]`, `[#assign]`, `[#list]`, and macro calls like `[@clay["icon"] symbol="times" /]` all evaluate (production-verified — server-side Clay icons and conditional markup in fragments work through this syntax). The familiar **angle-bracket** form does NOT run: it is HTML escaped and emitted into the page as visible text. Verified on a self hosted 2026.Q2 bundle, where
+Fragment `index.html` is processed with FreeMarker's **tag syntax that uses square brackets**: `[#if]…[/#if]`, `[#assign]`, `[#list]`, and macro calls like `[@clay["icon"] symbol="times" /]` all evaluate (production-verified — server-side Clay icons and conditional markup in fragments work through this syntax). The familiar form with **angle brackets** does NOT run: it is HTML escaped and emitted into the page as visible text. Verified on a self hosted 2026.Q2 bundle, where
 
 ```html
 <#if (configuration.showCta!true)>
@@ -355,7 +355,7 @@ Fragment `index.html` is processed with FreeMarker's **square-bracket tag syntax
 
 rendered the literal string `<#if (configuration.showCta!true)>` on the live page, directly above a fully rendered `hero__actions`.
 
-Two things fail at once with the angle-bracket form, and only the first is visible:
+Two things fail at once with the form in angle brackets, and only the first is visible:
 
 - The opening tag appears as page text. The closing `</#if>` is swallowed, so there is no matching junk further down to grep for.
 - **The wrapped content renders unconditionally**, so the toggle silently does nothing — `showCta: false` still shows the button. This half survives any amount of visual checking, because a fragment authored with the toggle *on* looks correct either way.
@@ -363,9 +363,9 @@ Two things fail at once with the angle-bracket form, and only the first is visib
 The syntax rule extends to comments and assignments:
 
 - `<#-- ... -->` is NOT a comment — it renders **visibly on the page**, and a `${...}` inside it is still evaluated (a broken one throws). Use `[#-- ... --]`.
-- `<#assign x = ...>` silently does nothing (it's literal text), so the later `${x}` fails "null or missing". Use `[#assign ...]` — or better, skip assignment and chain inline `${...}` interpolations directly in the attribute (`action="${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getSiteGroup().getFriendlyURL()}/search"`), letting JS read the value back off the attribute.
+- `<#assign x = ...>` silently does nothing (it is literal text), so the later `${x}` fails "null or missing". Use `[#assign ...]` — or better, skip assignment and chain inline `${...}` interpolations directly in the attribute (`action="${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getSiteGroup().getFriendlyURL()}/search"`), letting JS read the value back off the attribute.
 
-Square-bracket directives that DO run bring their own failure modes — each aborts the fragment import or the whole display-page/site import, usually silently:
+Directives in square brackets that DO run bring their own failure modes — each aborts the fragment import or the whole display-page/site import, usually silently:
 
 - **A bare `>` or `>=` inside `[#if …]` is an FTL syntax error** that silently aborts the entire template import (`WARN LayoutsImporterImpl` and a display page with no master, no fragments, no default). Parenthesize the comparison — `[#if (a >= b)]` — or use the `gt`/`gte` operators.
 - **`${slug?url}` throws at RENDER time** ("url_escaping_charset must be set") — the fragment context sets no escaping charset, and because the failure is runtime + branch-gated, an offline parse check passes it. Always write `?url('UTF-8')`.
@@ -407,7 +407,7 @@ Prefer the data attribute plus CSS form regardless of the directive limitation: 
 
 **`<script type="module">` embedded in `index.html` does not get `fragmentElement` injected** — Liferay injects it only into `index.js`. A module script referencing it throws `ReferenceError: fragmentElement is not defined`; get the root with `document.querySelector('.<wrapper-class>')` instead (assumes one instance per page).
 
-To pass localized or configured strings to JS, put them on the wrapper as data attributes in `index.html` (`data-msg-save="${languageUtil.get(locale, 'save')}"`) and read them with a tiny helper (`const MSG = k => root.getAttribute('data-msg-' + k) || ''`) — never `${}` in the JS itself.
+To pass localized or configured strings to JS, put them on the wrapper as data attributes in `index.html` (`data-msg-save="${languageUtil.get(locale, 'save')}"`) and read them with a tiny helper (`const MSG = messageKey => root.getAttribute('data-msg-' + messageKey) || ''`) — never `${}` in the JS itself.
 
 ### Common Errors and Fixes
 
@@ -416,11 +416,11 @@ To pass localized or configured strings to JS, put them on the wrapper as data a
 - **FreeMarker Null Pointer**: always provide defaults in HTML — `${configuration.myVar!'Default'}`, or `?has_content` when an unconfigured `""` must fall back too (see "FreeMarker Defaults").
 - **"boolean is not a valid enum value"**: a `configuration.json` field declares `"dataType": "boolean"` — checkbox fields take no `dataType`.
 - **"Can't convert boolean to string automatically"**: a checkbox value is printed without `?c` — use `${(configuration.myFlag!true)?c}`.
-- **A literal `<#if …>` appears as text on the page**: angle-bracket directives are not evaluated in fragment HTML — fragment FreeMarker is square-bracket syntax (`[#if]…[/#if]`). Either convert to square brackets or emit the markup unconditionally and hide it via a data attribute plus CSS. Until then, assume the toggle is also doing nothing.
+- **A literal `<#if …>` appears as text on the page**: directives in angle brackets are not evaluated in fragment HTML — fragment FreeMarker uses square brackets (`[#if]…[/#if]`). Either convert to square brackets or emit the markup unconditionally and hide it via a data attribute plus CSS. Until then, assume the toggle is also doing nothing.
 - **Fragment JS breaks with "Illegal return statement"**: `javaScriptModuleEnabled` defaults to true, so `index.js` is emitted as an **unwrapped `<script type="module">`** — a top-level `return` is a syntax error that kills the whole file. Wrap fragment JS in an IIFE.
-- **A download link renders binary garbage inline**: SennaJS SPA-hijacks any `<a>` without `data-senna-off` or `target="_blank"` — a `?download=true` link gets XHR-fetched and rendered as text. The attribute must be on the anchor itself (ancestors don't count); when the anchor comes from a built-in fragment that takes no attributes, set it in fragment JS: `anchor.setAttribute('data-senna-off', '')`.
-- **A fragment edit "won't deploy" after an earlier FTL error**: the errored fragment is stuck in Draft, which the initializer upsert never overwrites — clear/publish the Draft in the Fragments editor, then re-fire. See `rules/site-initializer-format.md` → "Applying a Fragment Change".
-- **A new fragment imports as a Draft with no published version, and later edits never land**: check for an editable id that appears twice in `index.html`, for example the same `data-lfr-editable-id` in both branches of an `[#if]…[#else]…[/#if]`. The import validates the raw HTML, branches included, and the duplicate silently leaves the fragment a Draft (`fragmententry.status` 2, `head` false, no published row), with nothing in the log. Pages placed in that first run still render its first markup, so it looks deployed, but every later re-fire keeps that stale copy. Keep one element per editable id and vary its attributes in FreeMarker instead (`aria-level="[#if …]2[#else]3[/#if]"`). Once the HTML was valid, the next re-fire replaced the Draft with a published version (verified on 2026.Q2.7).
+- **A download link renders binary garbage inline**: SennaJS intercepts every `<a>` without `data-senna-off` or `target="_blank"`, so a `?download=true` link is fetched over XHR and rendered as text. The attribute must be on the anchor itself (an ancestor does not count); when the anchor comes from a bundled fragment that takes no attributes, set it in fragment JS: `anchor.setAttribute('data-senna-off', '')`.
+- **A fragment edit "will not deploy" after an earlier FTL error**: the errored fragment is stuck in Draft, which the initializer upsert never overwrites — clear/publish the Draft in the Fragments editor, then fire the initializer again. See `rules/site-initializer-format.md` → "Applying a Fragment Change".
+- **A new fragment imports as a Draft with no published version, and later edits never land**: check for an editable id that appears twice in `index.html`, for example the same `data-lfr-editable-id` in both branches of an `[#if]…[#else]…[/#if]`. The import validates the raw HTML, branches included, and the duplicate silently leaves the fragment a Draft (`fragmententry.status` 2, `head` false, no published row), with nothing in the log. Pages placed in that first run still render its first markup, so it looks deployed, but every later run keeps that stale copy. Keep one element per editable id and vary its attributes in FreeMarker instead (`aria-level="[#if …]2[#else]3[/#if]"`). Once the HTML was valid, the next run replaced the Draft with a published version (verified on 2026.Q2.7).
 
 ### Sharing Code Between Fragments: an Import-Map Module
 

@@ -14,7 +14,7 @@ Everything below was verified live on 2026.Q3.2, mostly against shapes the Page 
 ## When to Invoke
 
 - "Add a form that saves to <object>", "a contact / lead / registration form"
-- "An edit form on the display page", "a two-step form", "redirect after submit"
+- "An edit form on the display page", "a form with two steps", "redirect after submit"
 - A form that renders nothing, or submits and stores empty values
 
 `manage-pages` owns the page and the whole-page write; `manage-roles-permissions` owns the grants; `scaffold-form-fragment` owns custom input fragments.
@@ -108,7 +108,7 @@ An Attachment field whose `fileSource` is `CMSBasicDocument` renders the same `I
 **An upload source with `showFilesInLibrary` off works on a company-scoped object.** `userComputerToCMSBasicDocument` (and `userComputerToDocumentsAndMedia`) renders a plain file input. The uploaded file is stored hidden in the object's own repository (`…ObjectDefinitionsPortlet_<code>`) **in the form page's site**, owned by the entry, and deleted with it. Its `link.href` downloads for the owner and for a holder of `DOWNLOAD_<FIELD>`, answers `401` to another signed-in user and `404` to Guest. A `/documents/…` URL ignores Basic auth (every caller, administrator included, got `404`), so test downloads in a signed-in browser session. Verified on 2026.Q3.5.
 
 - **Which selector opens.** The input opens DXP's CMS file selector (`openCMSFileSelectorModal`) only when the page's own scope group is the CMS group or a Space (`input.attributes.isCMS`, `FragmentEntryInputTemplateNodeContextHelperImpl._isCMSGroup`). On a site page it opens the Documents and Media selector, which cannot browse a Space's files.
-- **What it posts.** The input posts the picked file's **DLFileEntry id** under `ObjectField_<field>`, and an edit form pre-fills it with that id. Posting a CMS file's DLFileEntry id saves through a Form Container. A non-existent id fails with the generic error.
+- **What it posts.** The input posts the picked file's **DLFileEntry ID** under `ObjectField_<field>`, and an edit form fills it in with that ID. Posting a CMS file's DLFileEntry ID saves through a Form Container. An ID that does not exist fails with the generic error.
 
 Generating the form in the Page Editor also adds an `INPUTS-text-input` bound to `ObjectEntry_externalReferenceCode`; drop it unless visitors should set the ERC. A full submission of every type round-tripped correctly, the file included. Picklists and relationships render an autocomplete text box plus two hidden inputs, `ObjectField_<field>` (the key or related id) and `ObjectField_<field>-label`. A rich text field is a hidden `ObjectField_<field>` fed by CKEditor, so do not read or set it as a plain `<input>`.
 
@@ -156,7 +156,7 @@ Generating the form in the Page Editor also adds an `INPUTS-text-input` bound to
 
 ### Laying Out Fields — Rows, Columns, Spacers
 
-Do not stack every field full width. A `FormContainer`'s children may mix `FormFragment` fields with a `Grid` of `Module` columns and plain `BasicFragment` elements (headings, spacers), at any depth, and a `Module` may hold several fields. Field discovery (`data-field-name="ObjectField_<field>"`) and submission are unaffected, so scripts reading the form keep working. Verified on 2026.Q3.2: a Page-Editor-built form read back over the API, and the tree shape below imported and rendered anonymously.
+Do not stack every field full width. A `FormContainer`'s children may mix `FormFragment` fields with a `Grid` of `Module` columns and plain `BasicFragment` elements (headings, spacers), at any depth, and a `Module` may hold several fields. Field discovery (`data-field-name="ObjectField_<field>"`) and submission are unaffected, so scripts reading the form keep working. Verified on 2026.Q3.2: a form built in the Page Editor read back over the API, and the tree shape below imported and rendered anonymously.
 
 A row, inside the `FormContainer`'s `pageElements` (give every element its `externalReferenceCode`, `parentExternalReferenceCode`, and `position`, as for any page element):
 
@@ -251,7 +251,7 @@ Layout rules, native elements only and no custom CSS:
 
 ### Multistep Forms
 
-`formContainerType: "Multistep"` with `numberOfSteps: <N>`. The first child is an `INPUTS-stepper` fragment (`fragmentConfigurationFieldValues.numberOfSteps: {"type": "Text", "value": "<N>"}`), then a `FormStepContainer` holding one `FormStep` per step. Each `FormStep` holds a `Container` with that step's fields and its `INPUTS-submit-button`s typed `next`, `previous`, and on the last step `submit`. A two-step submission stored all values.
+`formContainerType: "Multistep"` with `numberOfSteps: <N>`. The first child is an `INPUTS-stepper` fragment (`fragmentConfigurationFieldValues.numberOfSteps: {"type": "Text", "value": "<N>"}`), then a `FormStepContainer` holding one `FormStep` per step. Each `FormStep` holds a `Container` with that step's fields and its `INPUTS-submit-button`s typed `next`, `previous`, and on the last step `submit`. A submission to a form with two steps stored all values.
 
 ### After Submission — `successFormContainerSubmissionResult`
 
@@ -259,7 +259,7 @@ Layout rules, native elements only and no custom CSS:
 | --- | --- | --- |
 | `EmbeddedMessage` | `message.value_i18n` | Stays on the page and shows the message. The default the platform reads back when none is set |
 | `StayInPage` | — | Reloads the page with an empty form and **no message** |
-| `Url` | `url.value_i18n` | Redirects. **A URL outside the portal's allowed redirect domains stores the entry, then fails with a hidden `500`** (`WARN [PortalImpl] Redirect URL … is not allowed`); the visitor sees the page reload with no feedback. Same-domain URLs work |
+| `Url` | `url.value_i18n` | Redirects. **A URL outside the portal's allowed redirect domains stores the entry, then fails with a hidden `500`** (`WARN [PortalImpl] Redirect URL … is not allowed`); the visitor sees the page reload with no feedback. URLs on the portal's own domain work |
 | `SitePage` | `itemExternalReference: {"className": "com.liferay.portal.kernel.model.Layout", "externalReferenceCode": "<page-erc>"}` | Redirects to that page |
 | `DisplayPage` | `itemExternalReference: {"className": "com.liferay.layout.page.template.model.LayoutPageTemplateEntry", "externalReferenceCode": "<dpt-erc>"}` | Redirects to that DPT, showing the entry just created (`/web/<site>/e/<dpt-url>/<classNameId>/<entryId>`) |
 
@@ -271,14 +271,14 @@ The tree uses a different vocabulary: a `Form` element with `formConfig.formRefe
 
 | Shape | Effect |
 | --- | --- |
-| `{"messageType": "Embedded", "message": {"value_i18n": {"en_US": "…"}}}` | The embedded message |
+| `{"message": {"value_i18n": {"en_US": "…"}}, "messageType": "Embedded"}` | The embedded message |
 | `{"itemReference": {"className": "com.liferay.portal.kernel.model.Layout", "fields": [{"fieldName": "friendlyURL", …}, {"fieldName": "privatePage", …}, {"fieldName": "siteKey", "fieldValue": "[$GROUP_KEY$]"}]}}` | A page |
-| `{"defaultDisplayPage": true}` | The new entry on the **default** DPT, by its id-free URL |
+| `{"defaultDisplayPage": true}` | The new entry on the **default** DPT, by a URL that has no entry ID |
 | `{"defaultDisplayPage": false, "mapping": {"itemReference": {"fields": [{"fieldName": "externalReferenceCode", "fieldValue": "<dpt erc>"}]}}}` | The new entry on **that** DPT, `/e/<dpt-url>/<classNameId>/<id>`. The ERC is looked up in the page's group. An unknown one is stored as the default DPT, with no warning |
 
 A tree-made DPT's ERC is generated per database (`rules/page-types.md`), so the last shape works only after that database's ERC has been written into the tree.
 
-**A multistep form in the tree** (verified on 2026.Q3.5 with real two-step submissions; the same shape as the platform's own import-export fixture, `layout-page-template-admin-web-test`, `form/steps`):
+**A multistep form in the tree** (verified on 2026.Q3.5 with real submissions to a form with two steps; the same shape as the platform's own import-export fixture, `layout-page-template-admin-web-test`, `form/steps`):
 
 ```text
 Form  {"formConfig": {"formReference": {...}, "formType": "multistep", "numberOfSteps": 2}}
@@ -362,7 +362,7 @@ Rows and spacers in the tree are `Row` → `Column` → `Fragment`, inside the `
 
 ## Custom Input Fragments as Fields
 
-A custom `"type": "input"` fragment (`scaffold-form-fragment`) placed through the live API is a `FormFragment` with `"fragmentReferenceType": "FragmentItemExternalReference"` and the fragment's ERC. **Send its real `html`, `css`, and `js` on `fragmentInstance`.** With an empty `html`, the field wrapper renders but its content is empty, and the field submits nothing — no error anywhere. Only `DefaultFragmentReference` (the built-in `INPUTS-*`) is backfilled from an empty `html`. To change such a field's code later, re-add it under a **new** element ERC (`manage-pages`).
+A custom `"type": "input"` fragment (`scaffold-form-fragment`) placed through the live API is a `FormFragment` with `"fragmentReferenceType": "FragmentItemExternalReference"` and the fragment's ERC. **Send its real `html`, `css`, and `js` on `fragmentInstance`.** With an empty `html`, the field wrapper renders but its content is empty, and the field submits nothing — no error anywhere. Only `DefaultFragmentReference` (the built-in `INPUTS-*`) is backfilled from an empty `html`. To change such a field's code later, add it again under a **new** element ERC (`manage-pages`).
 
 ## On a Display Page Template
 
@@ -391,7 +391,7 @@ Submitting from entry A's display page stored a B entry whose FK is A's id, and 
 | `infoItem.price`, `.getInfoFieldValue("price")`, `.getMap(locale)` | "evaluated to null or missing" |
 | `infoItem.createDate?string` | Error — dates need `?datetime` |
 
-So a form, or any fragment on a DPT, can pre-fill or display another object's values without a client-side fetch.
+So a form, or any fragment on a DPT, can fill in or display another object's values without a client-side fetch.
 
 The same works inside a `"type": "input"` fragment, so a hidden field can carry a value **computed** from the displayed entry, such as a source tag derived from one of its fields (verified on 2026.Q3.2):
 
@@ -411,9 +411,9 @@ Declare it with `typeOptions.fieldTypes` matching the target field (`["text"]` f
 
 ### Edit Forms
 
-**A Form Container bound to the same object as its DPT is an edit form.** Binding by `formReference.className` or by `contextSource: "DisplayPageItem"` gives the same result: the fields are pre-filled from the displayed entry, and submission updates it without creating an entry.
+**A Form Container bound to the same object as its DPT is an edit form.** Binding by `formReference.className` or by `contextSource: "DisplayPageItem"` gives the same result: the fields are filled in from the displayed entry, and submission updates it without creating an entry.
 
-**An update re-validates every stored relationship, posted or not.** A user holding `UPDATE` on the entry whose form omits a relationship field (a script disabled that section, or the field is not on the form) still fails when the entry points at a related entry the user cannot `VIEW`: the page reloads with "An error occurred while sending the form information.", a REST `PATCH` of any other field answers `403`, and the entry's `actions` still list `update`. Verified on 2026.Q3.5 with a child of two `AccountEntry` relationships: the agent could update the entry only while its coach account was one she could view. Grant `VIEW` on the related object (or the related entries) to the editing role, or expect the edit form to fail for that role.
+**An update validates every stored relationship again, posted or not.** A user holding `UPDATE` on the entry whose form omits a relationship field (a script disabled that section, or the field is not on the form) still fails when the entry points at a related entry the user cannot `VIEW`: the page reloads with "An error occurred while sending the form information.", a REST `PATCH` of any other field answers `403`, and the entry's `actions` still list `update`. Verified on 2026.Q3.5 with a child of two `AccountEntry` relationships: the agent could update the entry only while its coach account was one she could view. Grant `VIEW` on the related object (or the related entries) to the editing role, or expect the edit form to fail for that role.
 
 **Scripting a submission** (probes, not production): post `multipart/form-data` (the form's `enctype`; urlencoded is ignored and stores an empty entry), include the hidden inputs and a `Referer` header. On an error `EditInfoItemStrutsAction` redirects to the `Referer`, so a request without one answers `500` (`url is null`) instead of showing the message. Picklist and relationship inputs post the key or id plus their `-label` twin; a checkbox posts its name with `checkboxNames`; the rich-text input is added by CKEditor, so post `ObjectField_<field>` yourself.
 
@@ -423,8 +423,8 @@ There is no submission event to hook. Liferay swaps the form's markup for the su
 
 ```javascript
 (function () {
-	var MARKER = 'Your information was successfully received';
 	var fired = false;
+	var MARKER = 'Your information was successfully received';
 
 	function check() {
 		if (fired || document.body.innerText.indexOf(MARKER) === -1) {
@@ -433,7 +433,7 @@ There is no submission event to hook. Liferay swaps the form's markup for the su
 
 		fired = true;
 
-		// track, reveal content, or redirect here
+		// Track, reveal content, or redirect here
 	}
 
 	check();
@@ -450,7 +450,7 @@ Use a native `successFormContainerSubmissionResult` whenever one fits. To track 
 
 1. **Two DPTs for the content type**, both with `"contentType": {"className": "[$OBJECT_DEFINITION_CLASS_NAME:<Content>$]"}` in `display-page-template.json`: the gated one `"defaultTemplate": true` (listing links with `displayPageURL` land on it), the full one `false`.
 
-1. **The gated DPT** holds one wrapper fragment (teaser editables mapped with `contextSource: "DisplayPageItem"`, plus `<lfr-drop-zone id="<zone>">` in its HTML). In the tree the drop zone's content must be explicit:
+1. **The gated DPT** holds one wrapper fragment (teaser editables mapped with `contextSource: "DisplayPageItem"`, plus `<lfr-drop-zone data-lfr-drop-zone-id="<zone>">` in its HTML). In the tree the drop zone's content must be explicit:
 
 	```text
 	Fragment (wrapper)
@@ -463,7 +463,7 @@ Use a native `successFormContainerSubmissionResult` whenever one fits. To track 
 
 	Leave `formSuccessSubmissionResult` out: the default embedded message is the marker the watcher waits for.
 
-1. **The wrapper's `index.js` is the watcher** ("Reacting to Success in the Browser"). It reads the entry id (`INFO_ITEM.objectEntryId`, written as a data attribute), the site path (`${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getScopeGroup().getFriendlyURL()}`) and the environment-specific `classNameId` and DPT URL (`fragmentConfig`, `manage-pages` → "Links, Forms, and Menus in the Tree"), then opens `<site>/e/<dpt-url>/<classNameId>/<entryId>`. To let the next page tell a gated arrival from a direct one, set a `sessionStorage` flag keyed by the entry id before redirecting.
+1. **The wrapper's `index.js` is the watcher** ("Reacting to Success in the Browser"). It reads the entry ID (`INFO_ITEM.objectEntryId`, written as a data attribute), the site path (`${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getScopeGroup().getFriendlyURL()}`) and the environment-specific `classNameId` and DPT URL (`fragmentConfig`, `manage-pages` → "Links, Forms, and Menus in the Tree"), then opens `<site>/e/<dpt-url>/<classNameId>/<entryId>`. To let the next page tell a gated arrival from a direct one, set a `sessionStorage` flag keyed by the entry ID before redirecting.
 
 1. **The full DPT** maps the remaining fields. Any tracking runs in its own fragment JS on load (`manage-analytics`).
 
@@ -499,7 +499,7 @@ The embedded success message shows inside the modal. `onClose` fires when the us
 
 ## Page Editor Pitfalls
 
-- **Duplicating a Form Container in the Page Editor drops every field's `fieldKey`.** The copy keeps the object binding and the success settings, and its fields then store empty values. Re-map each field on the copy.
+- **Duplicating a Form Container in the Page Editor drops every field's `fieldKey`.** The copy keeps the object binding and the success settings, and its fields then store empty values. Map each field again on the copy.
 - **LongText can end up as a plain text input.** One LongText field sat on an `INPUTS-text-input` in a multistep form; it is unclear whether that was a manual choice. Check the generated keys before copying a form's JSON.
 
 ## Not Verified

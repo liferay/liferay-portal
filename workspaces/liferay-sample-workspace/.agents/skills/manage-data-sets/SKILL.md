@@ -57,7 +57,7 @@ curl \
   - `showSearch` (adds `&search=`) ;
   - `hideManagementBarInEmptyState` ;
   - `defaultVisualizationMode` (`table` | `list` | `cards`, lowercase) ;
-  - `snapshotsEnabled` (user-saved views, stored separately in `/o/data-set-admin/snapshots`) ;
+  - `snapshotsEnabled` (views saved by the user, stored separately in `/o/data-set-admin/snapshots`) ;
   - **`active: false` hides the whole fragment**, with no request and no message.
 - **`POST /data-sets/validate` takes `{"values": {…}}`.** `{}` returns a `500` NPE, and it does not catch a map-valued `label`.
 
@@ -79,7 +79,7 @@ The child types are `TableSections`, `ListSections`, `CardsSections`, `Sorts`, `
 - **A nested `PUT` returns `404`.** `…/disassociate` fails because the relationship is required. Change a child with `PATCH`, or remove it with `DELETE`.
 - **Children can also go inline in the create body**, as arrays named `dataSetToDataSet<Child>`: one call builds the whole Data Set.
 - **Ordering.** The `*Order` fields on the Data Set (`tableSectionsOrder`, `sortsOrder`, …) are empty when built from the UI, but **`tableSectionsOrder` is writable and sets column order**: a comma-separated list of child ERCs. Unknown ERCs are ignored, and unlisted columns come last.
-- **`PUT /data-sets/by-external-reference-code/<DS-ERC>` with the child arrays inline is an idempotent upsert** (verified on 2026.Q3.5): it creates the set when the ERC is new, and otherwise keeps the set's id and **upserts each child by its ERC in place** (same child ids; a PATCHed label and order come back to the body's values). So one `PUT` per Data Set, re-runnable, is the scripted way to create or restore a definition. A `POST` of an existing ERC answers `400 "This external reference code is already in use"` and changes nothing.
+- **`PUT /data-sets/by-external-reference-code/<DS-ERC>` with the child arrays inline is an idempotent upsert** (verified on 2026.Q3.5): it creates the set when the ERC is new, and otherwise keeps the set's ID and **upserts each child by its ERC in place** (same child IDs; a PATCHed label and order come back to the body's values). So one `PUT` per Data Set, safe to run again, is the scripted way to create or restore a definition. A `POST` of an existing ERC answers `400 "This external reference code is already in use"` and changes nothing.
 
 ### Columns (`dataSetToDataSetTableSections`)
 
@@ -97,11 +97,11 @@ The child types are `TableSections`, `ListSections`, `CardsSections`, `Sorts`, `
 ```
 
 - **`type` is required but neither validated nor rendered.** The UI writes `string`, `number`, `integer`, or `boolean`; a Date field becomes `string`. The renderer decides the display.
-- **Built-in `renderer` keys:** `default` (raw value; a picklist prints as JSON, a date as ISO), `label` (pill), `date`, `dateTime` (local time), `boolean` (Yes/No), `status` (workflow badge), `link`, `image`, `actionLink`, and `quantitySelector`. An unknown or missing key falls back to `default`. `rendererType` is `""` on UI-generated columns and `"internal"` once edited, and both render the same.
+- **The `renderer` keys that ship with the product:** `default` (raw value; a picklist prints as JSON, a date as ISO), `label` (pill), `date`, `dateTime` (local time), `boolean` (Yes/No), `status` (workflow badge), `link`, `image`, `actionLink`, and `quantitySelector`. An unknown or missing key falls back to `default`. `rendererType` is `""` on UI-generated columns and `"internal"` once edited, and both render the same.
 - **Dot notation:**
   - `genre.name` / `genre.key` read a picklist;
   - `<relationshipName>.<field>` (e.g. `authorToBooks.authorName`) reads the related entry, and the fragment adds `nestedFields` itself;
-  - the raw FK field shows the numeric id.
+  - the raw FK field shows the numeric ID.
 - **Header sort** sends `sort=<field>:asc|desc` and works on direct fields. On a dotted field, the source answers `400 "Unable to sort by property: …"`, and the table silently keeps its order. So set `sortable: false` there, as the UI does. On a system object module (e.g. `/accounts`), only a fixed set of built-in properties sorts; source the Data Set from a child custom object instead, and show the parent through the reverse relationship's dot notation.
 - **Never define two columns on the same `fieldName`.** The table renders one cell per distinct field, and every following column shifts under the wrong header.
 - **A column's `active: false` is ignored at render.** Delete the column instead.
@@ -160,19 +160,19 @@ It emits `filter=(genre in ('…'))`, and `multiple: false` gives radio buttons 
 	"restApplication": "/c/<parent-plural>",
 	"restEndpoint": "/",
 	"restSchema": "<ParentName>",
-	"source": "/o/c/<parent-plural>/",
+	"source": "/o/c/<parent-plural>",
 	"sourceType": "API_REST_APPLICATION"
 }
 ```
 
-This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalReferenceCode"`. The numeric FK with `itemKey: "id"` also works, since the id is sent quoted.
+This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalReferenceCode"`. The numeric FK with `itemKey: "id"` also works, since the ID is sent quoted.
 
 - **`include: false` is not honored.** Visitors have a runtime Exclude toggle instead.
 - **`preselectedValues`** had no clear effect in testing; one form made the Filter button disappear.
 
 **Static parameters.** `additionalAPIURLParameters` (e.g. `filter=genre eq 'sf'`) is AND-merged with the visitor's own filters. On 2026.Q3.2 it was static: no native dynamic token mapping, so the known workaround was a `globalJS` CET that rewrites `fetch` for URLs carrying `liferaydds=true` (verified on 2026.Q2.11). **On 2026.Q3.5 the parameters take tokens, with `LPD-38564` off** (verified live): `FDSAPIURLBuilder._interpolateTokens` replaces, in order, the fragment's `apiURLTokenMappings` (behind `LPD-38564`: release, off by default, on 2026.Q3; hidden dev on 2026.Q1 and 2026.Q2, so only `feature.flag.LPD-38564=true` enables it there), then whatever an `FDSAPIURLResolver` registered for `restApplication + "/" + restSchema` returns, then the defaults `{scopeKey}`, `{siteId}`, `{userExternalReferenceCode}` and `{userId}`. An unresolved `{token}` is still sent literally and matches nothing.
 
-- **A per-user filter on a custom object needs a resolver**, since no default token names the user's account or anything beyond the user. An OSGi component does it: `@Component(property = "fds.rest.application.key=/c/<plural>/<ObjectName>", service = FDSAPIURLResolver.class)`, `getSchema()` returning the object name, and `resolve(String baseURL, HttpServletRequest)` returning `StringUtil.replace(baseURL, "{myToken}", value)` (commerce's `AccountEntryFDSAPIURLResolver` is the pattern). Verified with `filter=r_<rel>_accountEntryERC eq '{agentAccountERC}'` filled with the signed-in user's person account ERC: each user's page fetched only their own rows.
+- **A filter on a custom object that depends on the current user needs a resolver**, since no default token names the user's account or anything beyond the user. An OSGi component does it: `@Component(property = "fds.rest.application.key=/c/<plural>/<ObjectName>", service = FDSAPIURLResolver.class)`, `getSchema()` returning the object name, and `resolve(String baseURL, HttpServletRequest)` returning `StringUtil.replace(baseURL, "{myToken}", value)` (commerce's `AccountEntryFDSAPIURLResolver` is the pattern). Verified with `filter=r_<rel>_accountEntryERC eq '{agentAccountERC}'` filled with the signed-in user's person account ERC: each user's page fetched only their own rows.
 - **Read the result off the rendered page:** the fragment's props carry `"apiURL"` (the endpoint plus `nestedFields`) and, as a separate key present only when non-empty, `"additionalAPIURLParameters"` with the tokens already replaced; the browser fetches `apiURL + "&" + additionalAPIURLParameters`. `curl` the page as the user and read both keys; the rows themselves are fetched client-side.
 
 ### Default Sort (`dataSetToDataSetSorts`)
@@ -207,7 +207,7 @@ This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalRefe
 - **`type`:** `item` (per row; a lone row action shows as a button) or `creation` (a primary button in the management bar).
 - **`target`:** `link`, `modal` (an iframe modal), `sidePanel`, and the untested `async` and `headless`.
 - **`url` substitutes top-level row fields:** `{id}`, `{friendlyUrlPath}`, `{externalReferenceCode}`, `{title}`.
-- **Link to an entry's default Display Page Template with `/web/<site>/c_<objectname>/{friendlyUrlPath}`.** `<objectname>` is the object `name`, lowercased and singular, which is the default `friendlyURLSeparator`. It needs no environment-specific id. The alternative `/web/<site>/e/<dpt-url>/<classNameId>/{id}` also works, but `classNameId` differs per environment. There is no ERC-based DPT URL on 2026.Q3.2.
+- **Link to an entry's default Display Page Template with `/web/<site>/c_<objectname>/{friendlyUrlPath}`.** `<objectname>` is the object `name`, lowercased and singular, which is the default `friendlyURLSeparator`. It needs no ID that is specific to an environment. The alternative `/web/<site>/e/<dpt-url>/<classNameId>/{id}` also works, but `classNameId` differs per environment. There is no ERC-based DPT URL on 2026.Q3.2.
 - **`permissionKey`** (e.g. `"UPDATE"`) hides the action from users lacking that permission on the entry (verified with a VIEW-only user).
 - **`confirmationMessage_i18n`** shows a native `window.confirm`.
 - **Order fields.** `itemActionsOrder` / `creationActionsOrder` stay empty.
@@ -247,11 +247,11 @@ In the tree (`layouts/<page>/page-definition.json`):
 
 - **On 2026.Q1 the renderer is still `FDSAdminFragmentRenderer`** (below), and the key above does not exist. Place the Data Set with the Page Editor there; this was not verified on 2026.Q1.
 - **The key is the renderer class, with no `siteKey`.** `className` is the **`L_DATA_SET`** definition's class name (`DataSet` is its `name`), never the backing object's.
-- **A 2025.Q3 export names the old renderer, `com.liferay.frontend.data.set.admin.web.internal.fragment.renderer.FDSAdminFragmentRenderer`, with an `itemSelector` carrying `classNameId`, `classPK`, `itemType` and `title`.** That renderer does not exist on 2026.Q3.5, and a fragment element whose renderer is missing is dropped with its children and no log line. Rewrite it to the key above with the two-key `itemSelector`; the token resolves to the instance's own `#XXXX` suffix in `editablevalues`. The Data Set is looked up by ERC on every render, so it may be created after the page is imported, and renaming its ERC takes the fragment off the page with no re-import.
+- **A 2025.Q3 export names the old renderer, `com.liferay.frontend.data.set.admin.web.internal.fragment.renderer.FDSAdminFragmentRenderer`, with an `itemSelector` carrying `classNameId`, `classPK`, `itemType` and `title`.** That renderer does not exist on 2026.Q3.5, and a fragment element whose renderer is missing is dropped with its children and no log line. Rewrite it to the key above with the two-key `itemSelector`; the token resolves to the instance's own `#XXXX` suffix in `editablevalues`. The Data Set is looked up by ERC on every render, so it may be created after the page is imported, and renaming its ERC takes the fragment off the page without a new import.
 - **Over the live whole-page PUT,** the same reference goes under `fragmentConfigurationFieldValues.itemSelector = {"type": "Item", "value": {"itemExternalReference": {"className": …, "externalReferenceCode": …}}}`, with `defaultFragmentKey` = the renderer class.
 - **Verify on the rendered page**, not by a GET.
 
-**Order of operations:** the definition applies live, so edits show on reload with no redeploy. Placement is page composition: a redeploy of the initializer re-applies the page, and live edits made on that page are overwritten. The Data Set only has to exist at render time: the fragment renders nothing until it exists and has at least one view.
+**Order of operations:** the definition applies live, so edits show on reload with no redeploy. Placement is page composition: a redeploy of the initializer applies the page again, and live edits made on that page are overwritten. The Data Set only has to exist at render time: the fragment renders nothing until it exists and has at least one view.
 
 ## Visibility
 
@@ -261,16 +261,16 @@ In the tree (`layouts/<page>/page-definition.json`):
 
 `POST /data-sets/export-batch` exports the definition **without its children**. Instead:
 
-1. `GET /o/data-set-admin/data-sets/by-external-reference-code/<DS-ERC>?nestedFields=dataSetToDataSetTableSections,dataSetToDataSetActions,dataSetToDataSetCardsSections,dataSetToDataSetClientExtensionFilters,dataSetToDataSetDateFilters,dataSetToDataSetListSections,dataSetToDataSetSelectionFilters,dataSetToDataSetSorts`.
+1. `GET /o/data-set-admin/data-sets/by-external-reference-code/<DS-ERC>?nestedFields=dataSetToDataSetActions,dataSetToDataSetCardsSections,dataSetToDataSetClientExtensionFilters,dataSetToDataSetDateFilters,dataSetToDataSetListSections,dataSetToDataSetSelectionFilters,dataSetToDataSetSorts,dataSetToDataSetTableSections`.
 
 1. Strip what is this instance's, not the definition's: `id`, `dateCreated`, `dateModified`, `creator`, the HATEOAS `actions`, `friendlyUrlPath` and `friendlyUrlPath_i18n`, `objectEntryFolderId` and `objectEntryFolderExternalReferenceCode`, `keywords`, `taxonomyCategoryBriefs`, `status`, `scopeId`, and on each child the `r_…_l_dataSetERC` / `r_…_l_dataSetId` back-references and the `dataSetToDataSet<Child>ERC` parent field. Keep every `externalReferenceCode` (and `label_i18n`, `defaultLanguageId`). All of these are in a 2025.Q3.2 GET body (verified against the database's `L_<companyId>_DataSet*` tables).
-   - **An older instance's `tableSectionsOrder` holds numeric child ids**, not ERCs: a UI-built set on 2025.Q3.2 stored `47861,47857,…` (the `TableSections` entry ids). Map each id to its child's ERC before posting; the target takes ERCs there (§2, "Ordering").
+   - **An older instance's `tableSectionsOrder` holds numeric child IDs**, not ERCs: a set built in the UI on 2025.Q3.2 stored `47861,47857,…` (the `TableSections` entry IDs). Map each ID to its child's ERC before posting; the target takes ERCs there (§2, "Ordering").
 
 1. `POST` it to `/data-sets` (or `/data-sets/batch`) as one nested item.
 
-**Child ERCs are unique per instance.** Re-importing on the same instance with unchanged child ERCs fails as a whole (`No ObjectEntry exists with the key {r_dataSetToDataSet…_l_dataSetId=…}`), so rename them for a copy.
+**Child ERCs are unique per instance.** Importing again on the same instance with unchanged child ERCs fails as a whole (`No ObjectEntry exists with the key {r_dataSetToDataSet…_l_dataSetId=…}`), so rename them for a copy.
 
-**Deleting a Data Set is permanent and cascades to its children** (no recycle bin). The same ERC can be re-created afterwards.
+**Deleting a Data Set is permanent and cascades to its children** (no recycle bin). The same ERC can be created again afterwards.
 
 ## Not Verified
 

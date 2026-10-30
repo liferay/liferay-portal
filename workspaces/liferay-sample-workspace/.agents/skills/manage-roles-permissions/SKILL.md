@@ -79,7 +79,7 @@ Object level permissions control which roles can create, view, update, or delete
 
 > **There is no `/permissions` endpoint for an object definition.** `object-admin` declares none (from source), so `PUT /o/object-admin/v1.0/object-definitions/<id>/permissions` cannot work. The definition DTO's `permissions` property sets permissions on the definition itself, not on its entries. Grant object level permissions in the initializer tree with `resource-permissions.json` (the next section and `rules/site-initializer-format.md`), or in Control Panel → Objects → [Object] → Permissions.
 
-> **A role-level grant works over `headless-admin-user` instead:** `PATCH /o/headless-admin-user/v1.0/roles/{roleId}` with only `{"rolePermissions": [{"actionIds": ["ADD_OBJECT_ENTRY"], "primaryKey": "<companyId>", "resourceName": "com.liferay.object#<definitionId>", "scope": 1}]}`. `RoleResourceImpl.patchRole` calls `ResourcePermissionService.addResourcePermission` for each listed action, so it **only adds**: other grants stay, and the role's name, titles and description are kept (omitted fields fall back to the stored ones). Entries with `scope` `4` (individual) are skipped. Read the role first, `GET /roles/{roleId}`, whose `rolePermissions` lists every grant the role holds (`resourceName`, `scope`, `actionIds`), to compare before writing; on the Guest role that is tens of thousands of rows. It cannot revoke: there is no remove path in this method. Verified on 2026.Q2: Guest got company-scope `ADD_OBJECT_ENTRY` on a new object, and an anonymous `GET /o/c/<plural>` still answered `totalCount: 0`.
+> **A grant on the role itself works over `headless-admin-user` instead:** `PATCH /o/headless-admin-user/v1.0/roles/{roleId}` with only `{"rolePermissions": [{"actionIds": ["ADD_OBJECT_ENTRY"], "primaryKey": "<companyId>", "resourceName": "com.liferay.object#<definitionId>", "scope": 1}]}`. `RoleResourceImpl.patchRole` calls `ResourcePermissionService.addResourcePermission` for each listed action, so it **only adds**: other grants stay, and the role's name, titles and description are kept (omitted fields fall back to the stored ones). Entries with `scope` `4` (individual) are skipped. Read the role first, `GET /roles/{roleId}`, whose `rolePermissions` lists every grant the role holds (`resourceName`, `scope`, `actionIds`), to compare before writing; on the Guest role that is tens of thousands of rows. It cannot revoke: there is no remove path in this method. Verified on 2026.Q2: Guest got company-scope `ADD_OBJECT_ENTRY` on a new object, and an anonymous `GET /o/c/<plural>` still answered `totalCount: 0`.
 
 Common `actionIds` for object definitions:
 
@@ -124,7 +124,7 @@ Per entry role grants are the entry's `/permissions` endpoint. To open one entry
 
 The entry `/permissions` PUT, like every Vulcan `/permissions` PUT, takes a **bare JSON array** of Vulcan `Permission` items: `actionIds`, `roleExternalReferenceCode`, `roleName`, `roleType`. The DTO has **no `roleId`** field (from source), and a `{"permissions": [...]}` wrapper returns `400 "Unable to map JSON path"`. Copy the field values from a `GET` on the same endpoint.
 
-The PUT is a **full replace**: read the current grants first and re-send every role that should keep access — Owner and administrator roles included — or they are silently dropped.
+The PUT is a **full replace**: read the current grants first and send again every role that should keep access — Owner and administrator roles included — or they are silently dropped.
 
 ```bash
 curl \

@@ -58,7 +58,7 @@ Proceed only after the user confirms or corrects the scope list.
 
 #### Settle the Reprovision Surface Before Provisioning Once
 
-**This is the single largest time sink in a site build.** A whole class of change costs an initializer re-fire each time it is discovered. "Reprovision" below means re-firing the initializer with a **clean redeploy** — the re-fire upserts pages, composition, and fragments onto the existing site (see `rules/site-initializer-format.md` → "Re-firing the initializer UPSERTS"); delete + redeploy is only needed to *remove* things or recover from a doubtful upsert. Each cycle still costs a full build-deploy-import wait, and the *number* of cycles is decided here, before Phase 4, not later.
+**This is the single largest time sink in a site build.** A whole class of change costs another run of the initializer each time it is discovered. "Reprovision" below means firing the initializer again with a **clean redeploy** — that run upserts pages, composition, and fragments onto the existing site (see `rules/site-initializer-format.md` → "Firing the initializer again UPSERTS"); delete + redeploy is only needed to *remove* things or recover from a doubtful upsert. Each cycle still costs a full build-deploy-import wait, and the *number* of cycles is decided here, before Phase 4, not later.
 
 | Change | Cost after the first provision |
 | --- | --- |
