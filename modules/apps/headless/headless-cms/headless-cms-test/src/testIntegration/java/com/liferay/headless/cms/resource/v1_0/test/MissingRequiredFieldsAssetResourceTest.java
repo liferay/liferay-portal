@@ -7,6 +7,7 @@ package com.liferay.headless.cms.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
+import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.headless.cms.client.dto.v1_0.AssetStatistics;
@@ -35,8 +36,11 @@ import com.liferay.object.service.ObjectFieldLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -145,27 +149,10 @@ public class MissingRequiredFieldsAssetResourceTest
 
 		Assert.assertNotNull(actions.get("update"));
 
-		MissingRequiredFieldsAssetResource
-			spaceMemberMissingRequiredFieldsAssetResource =
-				_getSpaceMemberMissingRequiredFieldsAssetResource(depotEntry);
-
-		missingRequiredFieldsAssetsPage =
-			spaceMemberMissingRequiredFieldsAssetResource.
-				getMissingRequiredFieldsAssetsPage(
-					depotEntry.getDepotEntryId(), null, null, null);
-
-		missingRequiredFieldsAssets =
-			(List<MissingRequiredFieldsAsset>)
-				missingRequiredFieldsAssetsPage.getItems();
-
-		missingRequiredFieldsAsset = missingRequiredFieldsAssets.get(0);
-
-		actions = missingRequiredFieldsAsset.getActions();
-
-		Assert.assertNull(actions.get("update"));
-
 		_assertMissingRequiredFieldsAssetsCount(_addSpaceDepotEntry(), 0);
 
+		_testGetMissingRequiredFieldsAssetsPageBySpaceAdministrator();
+		_testGetMissingRequiredFieldsAssetsPageBySpaceMember();
 		_testGetMissingRequiredFieldsAssetsPageWithFiles();
 		_testGetMissingRequiredFieldsAssetsPageWithFreeTier();
 		_testGetMissingRequiredFieldsAssetsPageWithSearch();
@@ -296,6 +283,21 @@ public class MissingRequiredFieldsAssetResourceTest
 			objectField.getObjectFieldId());
 	}
 
+	private void _addGroupUserWithRole(
+			DepotEntry depotEntry, String roleName, User user)
+		throws Exception {
+
+		_userLocalService.addGroupUser(
+			depotEntry.getGroupId(), user.getUserId());
+
+		Role role = _roleLocalService.getRole(
+			testCompany.getCompanyId(), roleName);
+
+		_userGroupRoleLocalService.addUserGroupRoles(
+			user.getUserId(), depotEntry.getGroupId(),
+			new long[] {role.getRoleId()});
+	}
+
 	private ObjectEntry _addObjectEntry(
 			DepotEntry depotEntry, ObjectDefinition objectDefinition,
 			String title)
@@ -357,6 +359,15 @@ public class MissingRequiredFieldsAssetResourceTest
 		return depotEntry;
 	}
 
+	private User _addUser() throws Exception {
+		User user = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		_users.add(user);
+
+		return user;
+	}
+
 	private void _assertMissingRequiredFieldsAssetsCount(
 			DepotEntry depotEntry, long expectedTotalCount)
 		throws Exception {
@@ -402,6 +413,37 @@ public class MissingRequiredFieldsAssetResourceTest
 			expectedSecondTitle, secondMissingRequiredFieldsAsset.getTitle());
 	}
 
+	private void _assertTotalCount(
+			Long assetLibraryId,
+			MissingRequiredFieldsAssetResource
+				missingRequiredFieldsAssetResource,
+			long expectedTotalCount)
+		throws Exception {
+
+		Page<MissingRequiredFieldsAsset> missingRequiredFieldsAssetsPage =
+			missingRequiredFieldsAssetResource.
+				getMissingRequiredFieldsAssetsPage(
+					assetLibraryId, null, null, null);
+
+		Assert.assertEquals(
+			expectedTotalCount,
+			missingRequiredFieldsAssetsPage.getTotalCount());
+	}
+
+	private MissingRequiredFieldsAssetResource
+		_getMissingRequiredFieldsAssetResource(User user) {
+
+		return MissingRequiredFieldsAssetResource.builder(
+		).authentication(
+			user.getEmailAddress(), user.getPasswordUnencrypted()
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private ServiceContext _getServiceContext(int workflowAction)
 		throws Exception {
 
@@ -413,29 +455,111 @@ public class MissingRequiredFieldsAssetResourceTest
 		return serviceContext;
 	}
 
-	private MissingRequiredFieldsAssetResource
-			_getSpaceMemberMissingRequiredFieldsAssetResource(
-				DepotEntry depotEntry)
+	private void _testGetMissingRequiredFieldsAssetsPageBySpaceAdministrator()
 		throws Exception {
 
-		String password = RandomTestUtil.randomString();
+		DepotEntry administeredDepotEntry = _addSpaceDepotEntry();
+		DepotEntry reviewedDepotEntry = _addSpaceDepotEntry();
 
-		User spaceMemberUser = UserTestUtil.addUser(testCompany, password);
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
 
-		_users.add(spaceMemberUser);
+		ObjectEntry administeredObjectEntry = _addObjectEntry(
+			administeredDepotEntry, objectDefinition,
+			RandomTestUtil.randomString());
 
-		_userLocalService.addGroupUsers(
-			depotEntry.getGroupId(), new long[] {spaceMemberUser.getUserId()});
+		_addObjectEntry(
+			reviewedDepotEntry, objectDefinition,
+			RandomTestUtil.randomString());
 
-		return MissingRequiredFieldsAssetResource.builder(
-		).authentication(
-			spaceMemberUser.getEmailAddress(), password
-		).endpoint(
-			testCompany.getVirtualHostname(),
-			PortalUtil.getPortalServerPort(false), "http"
-		).locale(
-			LocaleUtil.getDefault()
-		).build();
+		_addRequiredObjectField(objectDefinition);
+
+		_assertMissingRequiredFieldsAssetsCount(reviewedDepotEntry, 1);
+
+		User user = _addUser();
+
+		_addGroupUserWithRole(
+			administeredDepotEntry,
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user);
+		_addGroupUserWithRole(
+			reviewedDepotEntry,
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER, user);
+
+		MissingRequiredFieldsAssetResource
+			spaceAdministratorMissingRequiredFieldsAssetResource =
+				_getMissingRequiredFieldsAssetResource(user);
+
+		Page<MissingRequiredFieldsAsset> missingRequiredFieldsAssetsPage =
+			spaceAdministratorMissingRequiredFieldsAssetResource.
+				getMissingRequiredFieldsAssetsPage(null, null, null, null);
+
+		Assert.assertEquals(1, missingRequiredFieldsAssetsPage.getTotalCount());
+
+		List<MissingRequiredFieldsAsset> missingRequiredFieldsAssets =
+			(List<MissingRequiredFieldsAsset>)
+				missingRequiredFieldsAssetsPage.getItems();
+
+		MissingRequiredFieldsAsset missingRequiredFieldsAsset =
+			missingRequiredFieldsAssets.get(0);
+
+		Assert.assertEquals(
+			Long.valueOf(administeredObjectEntry.getObjectEntryId()),
+			missingRequiredFieldsAsset.getId());
+
+		Map<String, Map<String, String>> actions =
+			missingRequiredFieldsAsset.getActions();
+
+		Assert.assertNotNull(actions.get("update"));
+
+		_assertTotalCount(
+			reviewedDepotEntry.getDepotEntryId(),
+			spaceAdministratorMissingRequiredFieldsAssetResource, 0);
+	}
+
+	private void _testGetMissingRequiredFieldsAssetsPageBySpaceMember()
+		throws Exception {
+
+		DepotEntry depotEntry = _addSpaceDepotEntry();
+
+		ObjectDefinition objectDefinition = _addCMSObjectDefinition(
+			ObjectFolderConstants.EXTERNAL_REFERENCE_CODE_CONTENT_STRUCTURES);
+
+		_addObjectEntry(
+			depotEntry, objectDefinition, RandomTestUtil.randomString());
+
+		_addRequiredObjectField(objectDefinition);
+
+		_assertMissingRequiredFieldsAssetsCount(depotEntry, 1);
+
+		User contentReviewerUser = _addUser();
+
+		_addGroupUserWithRole(
+			depotEntry, DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER,
+			contentReviewerUser);
+
+		MissingRequiredFieldsAssetResource
+			contentReviewerMissingRequiredFieldsAssetResource =
+				_getMissingRequiredFieldsAssetResource(contentReviewerUser);
+
+		_assertTotalCount(
+			depotEntry.getDepotEntryId(),
+			contentReviewerMissingRequiredFieldsAssetResource, 0);
+		_assertTotalCount(
+			null, contentReviewerMissingRequiredFieldsAssetResource, 0);
+
+		User memberUser = _addUser();
+
+		_addGroupUserWithRole(
+			depotEntry, DepotRolesConstants.ASSET_LIBRARY_MEMBER, memberUser);
+
+		MissingRequiredFieldsAssetResource
+			memberMissingRequiredFieldsAssetResource =
+				_getMissingRequiredFieldsAssetResource(memberUser);
+
+		_assertTotalCount(
+			depotEntry.getDepotEntryId(),
+			memberMissingRequiredFieldsAssetResource, 0);
+		_assertTotalCount(null, memberMissingRequiredFieldsAssetResource, 0);
 	}
 
 	private void _testGetMissingRequiredFieldsAssetsPageWithFiles()
@@ -634,6 +758,12 @@ public class MissingRequiredFieldsAssetResourceTest
 
 	@Inject
 	private ObjectFolderLocalService _objectFolderLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private UserGroupRoleLocalService _userGroupRoleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
