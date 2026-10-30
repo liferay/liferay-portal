@@ -52,6 +52,17 @@ public class AssetListEntryLocalServiceWrapper
 			assetListEntryId, assetEntryIds, segmentsEntryId, serviceContext);
 	}
 
+	@Override
+	public void addAssetEntrySelections(
+			long assetListEntryId, long[] assetEntryIds,
+			String audienceEntryERC,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntryId, assetEntryIds, audienceEntryERC, serviceContext);
+	}
+
 	/**
 	 * Adds the asset list entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -145,6 +156,15 @@ public class AssetListEntryLocalServiceWrapper
 
 		_assetListEntryLocalService.deleteAssetEntrySelection(
 			assetListEntryId, segmentsEntryId, position);
+	}
+
+	@Override
+	public void deleteAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_assetListEntryLocalService.deleteAssetEntrySelection(
+			assetListEntryId, audienceEntryERC, position);
 	}
 
 	/**
@@ -520,6 +540,16 @@ public class AssetListEntryLocalServiceWrapper
 			assetListEntryId, segmentsEntryId, position, newPosition);
 	}
 
+	@Override
+	public void moveAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position,
+			int newPosition)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		_assetListEntryLocalService.moveAssetEntrySelection(
+			assetListEntryId, audienceEntryERC, position, newPosition);
+	}
+
 	/**
 	 * Updates the asset list entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -622,4 +652,4 @@ public class AssetListEntryLocalServiceWrapper
 	private AssetListEntryLocalService _assetListEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2024163512
+// LIFERAY-SERVICE-BUILDER-HASH:1408755000

@@ -73,6 +73,11 @@ public interface AssetListEntryLocalService
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	public void addAssetEntrySelections(
+			long assetListEntryId, long[] assetEntryIds,
+			String audienceEntryERC, ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * Adds the asset list entry to the database. Also notifies the appropriate model listeners.
 	 *
@@ -124,6 +129,10 @@ public interface AssetListEntryLocalService
 
 	public void deleteAssetEntrySelection(
 			long assetListEntryId, long segmentsEntryId, int position)
+		throws PortalException;
+
+	public void deleteAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position)
 		throws PortalException;
 
 	/**
@@ -377,6 +386,11 @@ public interface AssetListEntryLocalService
 			int newPosition)
 		throws PortalException;
 
+	public void moveAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position,
+			int newPosition)
+		throws PortalException;
+
 	/**
 	 * Updates the asset list entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -427,4 +441,4 @@ public interface AssetListEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1944637580
+// LIFERAY-SERVICE-BUILDER-HASH:1167093261

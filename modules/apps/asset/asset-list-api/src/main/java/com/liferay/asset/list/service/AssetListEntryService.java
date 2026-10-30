@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
+import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
 import com.liferay.portal.kernel.security.access.control.AccessControlled;
 import com.liferay.portal.kernel.service.BaseService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -56,6 +57,12 @@ public interface AssetListEntryService extends BaseService {
 			ServiceContext serviceContext)
 		throws PortalException;
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	public void addAssetEntrySelections(
+			long assetListEntryId, long[] assetEntryIds,
+			String audienceEntryERC, ServiceContext serviceContext)
+		throws PortalException;
+
 	public AssetListEntry addAssetListEntry(
 			String externalReferenceCode, long groupId, String title, int type,
 			ServiceContext serviceContext)
@@ -73,6 +80,11 @@ public interface AssetListEntryService extends BaseService {
 
 	public void deleteAssetEntrySelection(
 			long assetListEntryId, long segmentsEntryId, int position)
+		throws PortalException;
+
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	public void deleteAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position)
 		throws PortalException;
 
 	public void deleteAssetListEntries(long[] assetListEntriesIds)
@@ -196,6 +208,12 @@ public interface AssetListEntryService extends BaseService {
 			int newPosition)
 		throws PortalException;
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	public void moveAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position,
+			int newPosition)
+		throws PortalException;
+
 	public void updateAssetListEntry(
 			long assetListEntryId, long segmentsEntryId, String typeSettings,
 			ServiceContext serviceContext)
@@ -210,4 +228,4 @@ public interface AssetListEntryService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-680882728
+// LIFERAY-SERVICE-BUILDER-HASH:1565244650
