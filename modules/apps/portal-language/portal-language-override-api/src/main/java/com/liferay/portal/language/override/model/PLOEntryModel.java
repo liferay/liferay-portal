@@ -6,6 +6,7 @@
 package com.liferay.portal.language.override.model;
 
 import com.liferay.portal.kernel.bean.AutoEscape;
+import com.liferay.portal.kernel.model.AuditedModel;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
 import com.liferay.portal.kernel.model.MVCCModel;
@@ -28,8 +29,8 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface PLOEntryModel
-	extends BaseModel<PLOEntry>, ExternalReferenceCodeModel, MVCCModel,
-			ShardedModel {
+	extends AuditedModel, BaseModel<PLOEntry>, ExternalReferenceCodeModel,
+			MVCCModel, ShardedModel {
 
 	/*
 	 * NOTE FOR DEVELOPERS:
@@ -119,6 +120,7 @@ public interface PLOEntryModel
 	 *
 	 * @return the user ID of this plo entry
 	 */
+	@Override
 	public long getUserId();
 
 	/**
@@ -126,6 +128,7 @@ public interface PLOEntryModel
 	 *
 	 * @param userId the user ID of this plo entry
 	 */
+	@Override
 	public void setUserId(long userId);
 
 	/**
@@ -133,6 +136,7 @@ public interface PLOEntryModel
 	 *
 	 * @return the user uuid of this plo entry
 	 */
+	@Override
 	public String getUserUuid();
 
 	/**
@@ -140,13 +144,32 @@ public interface PLOEntryModel
 	 *
 	 * @param userUuid the user uuid of this plo entry
 	 */
+	@Override
 	public void setUserUuid(String userUuid);
+
+	/**
+	 * Returns the user name of this plo entry.
+	 *
+	 * @return the user name of this plo entry
+	 */
+	@AutoEscape
+	@Override
+	public String getUserName();
+
+	/**
+	 * Sets the user name of this plo entry.
+	 *
+	 * @param userName the user name of this plo entry
+	 */
+	@Override
+	public void setUserName(String userName);
 
 	/**
 	 * Returns the create date of this plo entry.
 	 *
 	 * @return the create date of this plo entry
 	 */
+	@Override
 	public Date getCreateDate();
 
 	/**
@@ -154,6 +177,7 @@ public interface PLOEntryModel
 	 *
 	 * @param createDate the create date of this plo entry
 	 */
+	@Override
 	public void setCreateDate(Date createDate);
 
 	/**
@@ -161,6 +185,7 @@ public interface PLOEntryModel
 	 *
 	 * @return the modified date of this plo entry
 	 */
+	@Override
 	public Date getModifiedDate();
 
 	/**
@@ -168,6 +193,7 @@ public interface PLOEntryModel
 	 *
 	 * @param modifiedDate the modified date of this plo entry
 	 */
+	@Override
 	public void setModifiedDate(Date modifiedDate);
 
 	/**
@@ -223,4 +249,4 @@ public interface PLOEntryModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:563496299
+// LIFERAY-SERVICE-BUILDER-HASH:-840156104

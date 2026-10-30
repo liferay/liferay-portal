@@ -38,6 +38,7 @@ public class PLOEntryWrapper
 		attributes.put("ploEntryId", getPloEntryId());
 		attributes.put("companyId", getCompanyId());
 		attributes.put("userId", getUserId());
+		attributes.put("userName", getUserName());
 		attributes.put("createDate", getCreateDate());
 		attributes.put("modifiedDate", getModifiedDate());
 		attributes.put("key", getKey());
@@ -78,6 +79,12 @@ public class PLOEntryWrapper
 
 		if (userId != null) {
 			setUserId(userId);
+		}
+
+		String userName = (String)attributes.get("userName");
+
+		if (userName != null) {
+			setUserName(userName);
 		}
 
 		Date createDate = (Date)attributes.get("createDate");
@@ -217,6 +224,16 @@ public class PLOEntryWrapper
 	}
 
 	/**
+	 * Returns the user name of this plo entry.
+	 *
+	 * @return the user name of this plo entry
+	 */
+	@Override
+	public String getUserName() {
+		return model.getUserName();
+	}
+
+	/**
 	 * Returns the user uuid of this plo entry.
 	 *
 	 * @return the user uuid of this plo entry
@@ -342,6 +359,16 @@ public class PLOEntryWrapper
 	}
 
 	/**
+	 * Sets the user name of this plo entry.
+	 *
+	 * @param userName the user name of this plo entry
+	 */
+	@Override
+	public void setUserName(String userName) {
+		model.setUserName(userName);
+	}
+
+	/**
 	 * Sets the user uuid of this plo entry.
 	 *
 	 * @param userUuid the user uuid of this plo entry
@@ -372,4 +399,4 @@ public class PLOEntryWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:376864435
+// LIFERAY-SERVICE-BUILDER-HASH:-1801824569

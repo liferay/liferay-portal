@@ -67,7 +67,7 @@ public class PLOEntryCacheModel
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(21);
+		StringBundler sb = new StringBundler(23);
 
 		sb.append("{mvccVersion=");
 		sb.append(mvccVersion);
@@ -79,6 +79,8 @@ public class PLOEntryCacheModel
 		sb.append(companyId);
 		sb.append(", userId=");
 		sb.append(userId);
+		sb.append(", userName=");
+		sb.append(userName);
 		sb.append(", createDate=");
 		sb.append(createDate);
 		sb.append(", modifiedDate=");
@@ -110,6 +112,13 @@ public class PLOEntryCacheModel
 		ploEntryImpl.setPloEntryId(ploEntryId);
 		ploEntryImpl.setCompanyId(companyId);
 		ploEntryImpl.setUserId(userId);
+
+		if (userName == null) {
+			ploEntryImpl.setUserName("");
+		}
+		else {
+			ploEntryImpl.setUserName(userName);
+		}
 
 		if (createDate == Long.MIN_VALUE) {
 			ploEntryImpl.setCreateDate(null);
@@ -163,6 +172,7 @@ public class PLOEntryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
+		userName = objectInput.readUTF();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		key = objectInput.readUTF();
@@ -186,6 +196,14 @@ public class PLOEntryCacheModel
 		objectOutput.writeLong(companyId);
 
 		objectOutput.writeLong(userId);
+
+		if (userName == null) {
+			objectOutput.writeUTF("");
+		}
+		else {
+			objectOutput.writeUTF(userName);
+		}
+
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
@@ -216,6 +234,7 @@ public class PLOEntryCacheModel
 	public long ploEntryId;
 	public long companyId;
 	public long userId;
+	public String userName;
 	public long createDate;
 	public long modifiedDate;
 	public String key;
@@ -223,4 +242,4 @@ public class PLOEntryCacheModel
 	public String value;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1286015563
+// LIFERAY-SERVICE-BUILDER-HASH:-1871136377

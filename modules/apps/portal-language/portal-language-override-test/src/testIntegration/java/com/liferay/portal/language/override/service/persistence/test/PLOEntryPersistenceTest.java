@@ -121,6 +121,8 @@ public class PLOEntryPersistenceTest {
 
 		newPLOEntry.setUserId(RandomTestUtil.nextLong());
 
+		newPLOEntry.setUserName(RandomTestUtil.randomString());
+
 		newPLOEntry.setCreateDate(RandomTestUtil.nextDate());
 
 		newPLOEntry.setModifiedDate(RandomTestUtil.nextDate());
@@ -149,6 +151,8 @@ public class PLOEntryPersistenceTest {
 			existingPLOEntry.getCompanyId(), newPLOEntry.getCompanyId());
 		Assert.assertEquals(
 			existingPLOEntry.getUserId(), newPLOEntry.getUserId());
+		Assert.assertEquals(
+			existingPLOEntry.getUserName(), newPLOEntry.getUserName());
 		Assert.assertEquals(
 			Time.getShortTimestamp(existingPLOEntry.getCreateDate()),
 			Time.getShortTimestamp(newPLOEntry.getCreateDate()));
@@ -242,8 +246,9 @@ public class PLOEntryPersistenceTest {
 	protected OrderByComparator<PLOEntry> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create(
 			"PLOEntry", "mvccVersion", true, "externalReferenceCode", true,
-			"ploEntryId", true, "companyId", true, "userId", true, "createDate",
-			true, "modifiedDate", true, "key", true, "languageId", true);
+			"ploEntryId", true, "companyId", true, "userId", true, "userName",
+			true, "createDate", true, "modifiedDate", true, "key", true,
+			"languageId", true);
 	}
 
 	@Test
@@ -542,6 +547,8 @@ public class PLOEntryPersistenceTest {
 
 		ploEntry.setUserId(RandomTestUtil.nextLong());
 
+		ploEntry.setUserName(RandomTestUtil.randomString());
+
 		ploEntry.setCreateDate(RandomTestUtil.nextDate());
 
 		ploEntry.setModifiedDate(RandomTestUtil.nextDate());
@@ -562,4 +569,4 @@ public class PLOEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1656666920
+// LIFERAY-SERVICE-BUILDER-HASH:777660939

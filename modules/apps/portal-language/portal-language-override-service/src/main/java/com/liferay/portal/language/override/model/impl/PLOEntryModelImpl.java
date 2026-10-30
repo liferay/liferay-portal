@@ -64,9 +64,10 @@ public class PLOEntryModelImpl
 	public static final Object[][] TABLE_COLUMNS = {
 		{"mvccVersion", Types.BIGINT}, {"externalReferenceCode", Types.VARCHAR},
 		{"ploEntryId", Types.BIGINT}, {"companyId", Types.BIGINT},
-		{"userId", Types.BIGINT}, {"createDate", Types.TIMESTAMP},
-		{"modifiedDate", Types.TIMESTAMP}, {"key_", Types.VARCHAR},
-		{"languageId", Types.VARCHAR}, {"value", Types.CLOB}
+		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
+		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
+		{"key_", Types.VARCHAR}, {"languageId", Types.VARCHAR},
+		{"value", Types.CLOB}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -78,6 +79,7 @@ public class PLOEntryModelImpl
 		TABLE_COLUMNS_MAP.put("ploEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("companyId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("userId", Types.BIGINT);
+		TABLE_COLUMNS_MAP.put("userName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("key_", Types.VARCHAR);
@@ -86,7 +88,7 @@ public class PLOEntryModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table PLOEntry (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,ploEntryId LONG not null primary key,companyId LONG,userId LONG,createDate DATE null,modifiedDate DATE null,key_ VARCHAR(1000) null,languageId VARCHAR(75) null,value TEXT null)";
+		"create table PLOEntry (mvccVersion LONG default 0 not null,externalReferenceCode VARCHAR(75) null,ploEntryId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,key_ VARCHAR(1000) null,languageId VARCHAR(75) null,value TEXT null)";
 
 	public static final String TABLE_SQL_DROP = "drop table PLOEntry";
 
@@ -240,6 +242,7 @@ public class PLOEntryModelImpl
 			attributeGetterFunctions.put("ploEntryId", PLOEntry::getPloEntryId);
 			attributeGetterFunctions.put("companyId", PLOEntry::getCompanyId);
 			attributeGetterFunctions.put("userId", PLOEntry::getUserId);
+			attributeGetterFunctions.put("userName", PLOEntry::getUserName);
 			attributeGetterFunctions.put("createDate", PLOEntry::getCreateDate);
 			attributeGetterFunctions.put(
 				"modifiedDate", PLOEntry::getModifiedDate);
@@ -277,6 +280,9 @@ public class PLOEntryModelImpl
 				(BiConsumer<PLOEntry, Long>)PLOEntry::setCompanyId);
 			attributeSetterBiConsumers.put(
 				"userId", (BiConsumer<PLOEntry, Long>)PLOEntry::setUserId);
+			attributeSetterBiConsumers.put(
+				"userName",
+				(BiConsumer<PLOEntry, String>)PLOEntry::setUserName);
 			attributeSetterBiConsumers.put(
 				"createDate",
 				(BiConsumer<PLOEntry, Date>)PLOEntry::setCreateDate);
@@ -410,6 +416,26 @@ public class PLOEntryModelImpl
 
 	@Override
 	public void setUserUuid(String userUuid) {
+	}
+
+	@JSON
+	@Override
+	public String getUserName() {
+		if (_userName == null) {
+			return "";
+		}
+		else {
+			return _userName;
+		}
+	}
+
+	@Override
+	public void setUserName(String userName) {
+		if (_columnOriginalValues == Collections.EMPTY_MAP) {
+			_setColumnOriginalValues();
+		}
+
+		_userName = userName;
 	}
 
 	@JSON
@@ -587,6 +613,7 @@ public class PLOEntryModelImpl
 		ploEntryImpl.setPloEntryId(getPloEntryId());
 		ploEntryImpl.setCompanyId(getCompanyId());
 		ploEntryImpl.setUserId(getUserId());
+		ploEntryImpl.setUserName(getUserName());
 		ploEntryImpl.setCreateDate(getCreateDate());
 		ploEntryImpl.setModifiedDate(getModifiedDate());
 		ploEntryImpl.setKey(getKey());
@@ -611,6 +638,8 @@ public class PLOEntryModelImpl
 		ploEntryImpl.setCompanyId(
 			this.<Long>getColumnOriginalValue("companyId"));
 		ploEntryImpl.setUserId(this.<Long>getColumnOriginalValue("userId"));
+		ploEntryImpl.setUserName(
+			this.<String>getColumnOriginalValue("userName"));
 		ploEntryImpl.setCreateDate(
 			this.<Date>getColumnOriginalValue("createDate"));
 		ploEntryImpl.setModifiedDate(
@@ -711,6 +740,14 @@ public class PLOEntryModelImpl
 		ploEntryCacheModel.companyId = getCompanyId();
 
 		ploEntryCacheModel.userId = getUserId();
+
+		ploEntryCacheModel.userName = getUserName();
+
+		String userName = ploEntryCacheModel.userName;
+
+		if ((userName != null) && (userName.length() == 0)) {
+			ploEntryCacheModel.userName = null;
+		}
 
 		Date createDate = getCreateDate();
 
@@ -820,6 +857,7 @@ public class PLOEntryModelImpl
 	private long _ploEntryId;
 	private long _companyId;
 	private long _userId;
+	private String _userName;
 	private Date _createDate;
 	private Date _modifiedDate;
 	private boolean _setModifiedDate;
@@ -863,6 +901,7 @@ public class PLOEntryModelImpl
 		_columnOriginalValues.put("ploEntryId", _ploEntryId);
 		_columnOriginalValues.put("companyId", _companyId);
 		_columnOriginalValues.put("userId", _userId);
+		_columnOriginalValues.put("userName", _userName);
 		_columnOriginalValues.put("createDate", _createDate);
 		_columnOriginalValues.put("modifiedDate", _modifiedDate);
 		_columnOriginalValues.put("key_", _key);
@@ -901,15 +940,17 @@ public class PLOEntryModelImpl
 
 		columnBitmasks.put("userId", 16L);
 
-		columnBitmasks.put("createDate", 32L);
+		columnBitmasks.put("userName", 32L);
 
-		columnBitmasks.put("modifiedDate", 64L);
+		columnBitmasks.put("createDate", 64L);
 
-		columnBitmasks.put("key_", 128L);
+		columnBitmasks.put("modifiedDate", 128L);
 
-		columnBitmasks.put("languageId", 256L);
+		columnBitmasks.put("key_", 256L);
 
-		columnBitmasks.put("value", 512L);
+		columnBitmasks.put("languageId", 512L);
+
+		columnBitmasks.put("value", 1024L);
 
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
@@ -918,4 +959,4 @@ public class PLOEntryModelImpl
 	private PLOEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1109188638
+// LIFERAY-SERVICE-BUILDER-HASH:725315816

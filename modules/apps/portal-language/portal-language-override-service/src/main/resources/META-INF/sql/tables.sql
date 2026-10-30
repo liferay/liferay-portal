@@ -4,6 +4,7 @@ create table PLOEntry (
 	ploEntryId LONG not null primary key,
 	companyId LONG,
 	userId LONG,
+	userName VARCHAR(75) null,
 	createDate DATE null,
 	modifiedDate DATE null,
 	key_ VARCHAR(1000) null,

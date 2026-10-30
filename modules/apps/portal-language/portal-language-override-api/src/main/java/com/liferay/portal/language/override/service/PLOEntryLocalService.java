@@ -315,4 +315,4 @@ public interface PLOEntryLocalService
 	public PLOEntry updatePLOEntry(PLOEntry ploEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-285005993
+// LIFERAY-SERVICE-BUILDER-HASH:-338083993
