@@ -37,61 +37,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that a depot video shortcut associated with a tag can be searched from the connected site, and cannot once searching is disabled for that site."
-	@priority = 4
-	@refactordone
-	test CanSearchVideoShortcutByTagUntilSearchingIsDisabled {
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Page Name",
-			widgetName = "Search Bar");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Page Name",
-			widgetName = "Search Results");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		VideoShortcut.addCP(
-			tagNameList = "depot",
-			videoShortcutTitle = "Test YouTube Video",
-			videoURL = "https://www.youtube.com/watch?v=HOdbzGCI5ME");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "depot");
-
-		SearchResults.viewSearchResults(
-			searchAssetTitle = "Test YouTube Video",
-			searchAssetType = "Document");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.configureSearch(
-			depotName = "Test Depot Name",
-			item = "Make Unsearchable",
-			siteList = "Site Name",
-			tableEntryText = "No");
-
-		Navigator.openSitePage(
-			pageName = "Page Name",
-			siteName = "Site Name");
-
-		Search.searchCP(searchTerm = "depot");
-
-		SearchResults.viewNoSearchResults(searchTerm = "depot");
-	}
-
 	@description = "This ensures that a depot external video embedded in the Blogs and WC content fields can be rendered correctly on a connected site when publication is enabled."
 	@priority = 4
 	test CanViewEmbeddedVideoInBlogsAndWCWithPublication {

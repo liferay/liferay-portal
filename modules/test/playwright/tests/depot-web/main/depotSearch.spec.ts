@@ -58,6 +58,13 @@ async function addDepotContent({
 		}
 	);
 
+	const videoTitle = getRandomString();
+
+	await apiHelpers.headlessDelivery.postExternalVideoShortcut(
+		`asset-libraries/${assetLibrary.id}`,
+		{keywords: [tagName], title: videoTitle}
+	);
+
 	const webContentTitle = getRandomString();
 
 	await apiHelpers.jsonWebServicesJournal.addWebContent({
@@ -88,6 +95,7 @@ async function addDepotContent({
 		documentTitle,
 		searchPageURL: `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`,
 		tagName,
+		videoTitle,
 		webContentTitle,
 	};
 }
@@ -169,13 +177,14 @@ async function viewResultDetails(searchPage: SearchPage, title: string) {
 
 test(
 	'Depot content can be searched from a connected site by title, tag and user',
-	{tag: '@LPD-109097'},
+	{tag: ['@LPD-109097', '@LPD-112510']},
 	async ({apiHelpers, page, searchPage, site}) => {
 		const {
 			assetLibrary,
 			documentTitle,
 			searchPageURL,
 			tagName,
+			videoTitle,
 			webContentTitle,
 		} = await addDepotContent({apiHelpers, site});
 
@@ -247,6 +256,9 @@ test(
 				verify: async () => {
 					await expect(
 						getSearchResult(searchPage, documentTitle, 'Document')
+					).toBeVisible({timeout: 2000});
+					await expect(
+						getSearchResult(searchPage, videoTitle, 'Document')
 					).toBeVisible({timeout: 2000});
 				},
 			});
