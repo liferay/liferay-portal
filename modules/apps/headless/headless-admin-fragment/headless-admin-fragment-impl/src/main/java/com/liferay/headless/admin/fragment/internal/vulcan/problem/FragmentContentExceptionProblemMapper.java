@@ -6,6 +6,7 @@
 package com.liferay.headless.admin.fragment.internal.vulcan.problem;
 
 import com.liferay.fragment.exception.FragmentEntryContentException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.vulcan.problem.Problem;
 import com.liferay.portal.vulcan.problem.ProblemMapper;
 
@@ -23,8 +24,9 @@ public class FragmentContentExceptionProblemMapper
 		FragmentEntryContentException fragmentEntryContentException) {
 
 		return ProblemUtil.getProblem(
+			locale -> fragmentEntryContentException.getLocalizedMessage(),
 			Problem.Status.BAD_REQUEST, fragmentEntryContentException,
-			"fragment-html-is-invalid");
+			locale -> LanguageUtil.get(locale, "fragment-html-is-invalid"));
 	}
 
 }
