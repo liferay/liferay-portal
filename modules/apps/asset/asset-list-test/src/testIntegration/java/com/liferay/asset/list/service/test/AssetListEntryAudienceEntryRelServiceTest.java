@@ -11,18 +11,23 @@ import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.test.util.asset.renderer.factory.TestAssetRendererFactory;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -157,6 +162,24 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 				fetchAssetListEntryAudienceEntryRel(
 					assetListEntryAudienceEntryRel3.
 						getAssetListEntryAudienceEntryRelId()));
+	}
+
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testDeleteAssetListEntryAudienceEntryRelWithoutPermission()
+		throws Exception {
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_addAssetListEntryAudienceEntryRel(
+				_assetListEntry, RandomTestUtil.randomString());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryAudienceEntryRelService.
+				deleteAssetListEntryAudienceEntryRel(
+					_assetListEntry.getAssetListEntryId(),
+					assetListEntryAudienceEntryRel.getAudienceEntryERC());
+		}
 	}
 
 	@Test
@@ -305,6 +328,23 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 					}));
 	}
 
+	@Test(expected = PrincipalException.MustHavePermission.class)
+	public void testUpdatePrioritiesWithoutPermission() throws Exception {
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_addAssetListEntryAudienceEntryRel(
+				_assetListEntry, RandomTestUtil.randomString());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER))) {
+
+			_assetListEntryAudienceEntryRelService.updatePriorities(
+				new long[] {
+					assetListEntryAudienceEntryRel.
+						getAssetListEntryAudienceEntryRelId()
+				});
+		}
+	}
+
 	private void _addAssetListEntryAssetEntryRel(String audienceEntryERC)
 		throws Exception {
 
@@ -337,6 +377,10 @@ public class AssetListEntryAudienceEntryRelServiceTest {
 	@Inject
 	private AssetListEntryAudienceEntryRelLocalService
 		_assetListEntryAudienceEntryRelLocalService;
+
+	@Inject
+	private AssetListEntryAudienceEntryRelService
+		_assetListEntryAudienceEntryRelService;
 
 	private Group _group;
 	private ServiceContext _serviceContext;
