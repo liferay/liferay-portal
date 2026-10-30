@@ -239,3 +239,50 @@ test(
 		});
 	}
 );
+
+test(
+	'Asset library cards show how many sites are connected',
+	{tag: '@LPD-109885'},
+	async ({apiHelpers, page}) => {
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		const sites = [];
+
+		for (let i = 0; i < 3; i++) {
+			sites.push(
+				await apiHelpers.headlessAdminSite.postSite({
+					name: getRandomString(),
+				})
+			);
+		}
+
+		const card = getCard(page, assetLibrary.name);
+
+		await gotoDepotAdmin(page, assetLibrary.name);
+
+		await expect(card.getByText('0 Connected Sites')).toBeVisible();
+
+		for (const site of sites) {
+			await apiHelpers.headlessAssetLibrary.connectSite(
+				assetLibrary.externalReferenceCode,
+				site.externalReferenceCode
+			);
+		}
+
+		await gotoDepotAdmin(page, assetLibrary.name);
+
+		await expect(card.getByText('3 Connected Sites')).toBeVisible();
+
+		for (const site of sites.slice(1)) {
+			await apiHelpers.headlessAssetLibrary.disconnectSite(
+				assetLibrary.externalReferenceCode,
+				site.externalReferenceCode
+			);
+		}
+
+		await gotoDepotAdmin(page, assetLibrary.name);
+
+		await expect(card.getByText('1 Connected Site')).toBeVisible();
+	}
+);
