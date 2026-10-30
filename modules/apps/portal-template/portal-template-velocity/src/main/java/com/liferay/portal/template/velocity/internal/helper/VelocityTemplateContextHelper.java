@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.apache.velocity.tools.generic.DateTool;
 import org.apache.velocity.tools.generic.EscapeTool;
@@ -71,27 +72,19 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 				WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay != null) {
-			Theme theme = themeDisplay.getTheme();
 
 			// Full css and templates path
 
-			String servletContextName = GetterUtil.getString(
-				theme.getServletContextName());
-
 			contextObjects.put(
 				"fullCssPath",
-				servletContextName + theme.getVelocityResourceListener() +
-					theme.getCssPath());
-
-			String fullTemplatesPath =
-				servletContextName + theme.getVelocityResourceListener() +
-					theme.getTemplatesPath();
-
-			contextObjects.put("fullTemplatesPath", fullTemplatesPath);
+				_getThemePath(httpServletRequest, Theme::getCssPath));
+			contextObjects.put(
+				"fullTemplatesPath",
+				_getThemePath(httpServletRequest, Theme::getTemplatesPath));
 
 			// Init
 
-			contextObjects.put("init", fullTemplatesPath + "/init.vm");
+			contextObjects.put("init", _getInit(httpServletRequest));
 
 			// Navigation items
 
@@ -203,6 +196,35 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 		catch (SecurityException securityException) {
 			_log.error(securityException);
 		}
+	}
+
+	private Object _getInit(HttpServletRequest httpServletRequest) {
+		String fullTemplatesPath = _getThemePath(
+			httpServletRequest, Theme::getTemplatesPath);
+
+		if (fullTemplatesPath == null) {
+			return null;
+		}
+
+		return fullTemplatesPath + "/init.vm";
+	}
+
+	private String _getThemePath(
+		HttpServletRequest httpServletRequest,
+		Function<Theme, String> function) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay == null) {
+			return null;
+		}
+
+		Theme theme = themeDisplay.getTheme();
+
+		return GetterUtil.getString(theme.getServletContextName()) +
+			theme.getVelocityResourceListener() + function.apply(theme);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

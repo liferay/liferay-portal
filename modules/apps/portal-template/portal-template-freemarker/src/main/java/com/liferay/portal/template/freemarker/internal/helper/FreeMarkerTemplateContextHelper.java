@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -64,28 +65,19 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 				WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay != null) {
-			Theme theme = themeDisplay.getTheme();
 
 			// Full css and templates path
 
-			String servletContextName = GetterUtil.getString(
-				theme.getServletContextName());
-
 			contextObjects.put(
 				"fullCssPath",
-				StringBundler.concat(
-					StringPool.SLASH, servletContextName,
-					theme.getFreeMarkerTemplateLoader(), theme.getCssPath()));
-
-			String fullTemplatesPath = StringBundler.concat(
-				StringPool.SLASH, servletContextName,
-				theme.getFreeMarkerTemplateLoader(), theme.getTemplatesPath());
-
-			contextObjects.put("fullTemplatesPath", fullTemplatesPath);
+				_getThemePath(httpServletRequest, Theme::getCssPath));
+			contextObjects.put(
+				"fullTemplatesPath",
+				_getThemePath(httpServletRequest, Theme::getTemplatesPath));
 
 			// Init
 
-			contextObjects.put("init", fullTemplatesPath + "/init.ftl");
+			contextObjects.put("init", _getInit(httpServletRequest));
 
 			// Navigation items
 
@@ -187,6 +179,37 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 		// Static class util
 
 		helperUtilities.put("staticUtil", beansWrapper.getStaticModels());
+	}
+
+	private Object _getInit(HttpServletRequest httpServletRequest) {
+		String fullTemplatesPath = _getThemePath(
+			httpServletRequest, Theme::getTemplatesPath);
+
+		if (fullTemplatesPath == null) {
+			return null;
+		}
+
+		return fullTemplatesPath + "/init.ftl";
+	}
+
+	private String _getThemePath(
+		HttpServletRequest httpServletRequest,
+		Function<Theme, String> function) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay == null) {
+			return null;
+		}
+
+		Theme theme = themeDisplay.getTheme();
+
+		return StringBundler.concat(
+			StringPool.SLASH,
+			GetterUtil.getString(theme.getServletContextName()),
+			theme.getFreeMarkerTemplateLoader(), function.apply(theme));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

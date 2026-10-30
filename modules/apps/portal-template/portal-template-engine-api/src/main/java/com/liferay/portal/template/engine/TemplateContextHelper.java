@@ -17,7 +17,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletModeFactory_IW;
@@ -217,31 +216,36 @@ public class TemplateContextHelper {
 				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (portletConfig != null) {
-			contextObjects.put("portletConfig", portletConfig);
+			contextObjects.put(
+				"portletConfig",
+				(PortletConfig)httpServletRequest.getAttribute(
+					JavaConstants.JAKARTA_PORTLET_CONFIG));
 		}
 
 		// Render request
 
-		final PortletRequest portletRequest =
+		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_REQUEST);
 
 		if ((portletRequest != null) &&
 			(portletRequest instanceof RenderRequest)) {
 
-			contextObjects.put("renderRequest", portletRequest);
+			contextObjects.put(
+				"renderRequest", _getRenderRequest(httpServletRequest));
 		}
 
 		// Render response
 
-		final PortletResponse portletResponse =
+		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
 		if ((portletResponse != null) &&
 			(portletResponse instanceof RenderResponse)) {
 
-			contextObjects.put("renderResponse", portletResponse);
+			contextObjects.put(
+				"renderResponse", _getRenderResponse(httpServletRequest));
 		}
 
 		// XML request
@@ -249,25 +253,12 @@ public class TemplateContextHelper {
 		if ((portletRequest != null) && (portletResponse != null)) {
 			contextObjects.put(
 				"portletRequestModelFactory",
-				new PortletRequestModelFactory(
-					portletRequest, portletResponse));
+				_getPortletRequestModelFactory(httpServletRequest));
 
 			// Deprecated
 
 			contextObjects.put(
-				"xmlRequest",
-				new Object() {
-
-					@Override
-					public String toString() {
-						PortletRequestModel portletRequestModel =
-							new PortletRequestModel(
-								portletRequest, portletResponse);
-
-						return portletRequestModel.toXML();
-					}
-
-				});
+				"xmlRequest", _getXMLRequest(httpServletRequest));
 		}
 
 		// Theme display
@@ -277,22 +268,12 @@ public class TemplateContextHelper {
 				WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay != null) {
-			Layout layout = themeDisplay.getLayout();
-
-			HttpServletRequest originalHttpServletRequest =
-				PortalUtil.getOriginalServletRequest(httpServletRequest);
-
-			String namespace = PortalUtil.getPortletNamespace(
-				ParamUtil.getString(httpServletRequest, "p_p_id"));
-
-			String bodyCssClass = ParamUtil.getString(
-				originalHttpServletRequest, namespace + "bodyCssClass");
-
-			contextObjects.put("bodyCssClass", bodyCssClass);
+			contextObjects.put(
+				"bodyCssClass", _getBodyCssClass(httpServletRequest));
 
 			contextObjects.put("colorScheme", themeDisplay.getColorScheme());
 			contextObjects.put("company", themeDisplay.getCompany());
-			contextObjects.put("layout", layout);
+			contextObjects.put("layout", themeDisplay.getLayout());
 			contextObjects.put("layouts", themeDisplay.getLayouts());
 			contextObjects.put(
 				"layoutTypePortlet", themeDisplay.getLayoutTypePortlet());
@@ -307,22 +288,13 @@ public class TemplateContextHelper {
 				"scopeGroupId", Long.valueOf(themeDisplay.getScopeGroupId()));
 			contextObjects.put(
 				"siteSpritemap", themeDisplay.getPathThemeSpritemap());
-			contextObjects.put("themeDisplay", themeDisplay);
+			contextObjects.put(
+				"themeDisplay",
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY));
 			contextObjects.put("timeZone", themeDisplay.getTimeZone());
 
-			User user = themeDisplay.getUser();
-
-			long userId = PrincipalThreadLocal.getUserId();
-
-			if ((user == null) || (user.getUserId() != userId)) {
-				User principalUser = UserLocalServiceUtil.fetchUser(userId);
-
-				if (principalUser != null) {
-					user = principalUser;
-				}
-			}
-
-			contextObjects.put("user", user);
+			contextObjects.put("user", _getUser(themeDisplay));
 
 			// Deprecated
 
@@ -339,7 +311,7 @@ public class TemplateContextHelper {
 		}
 
 		if (theme != null) {
-			contextObjects.put("theme", theme);
+			contextObjects.put("theme", _getTheme(httpServletRequest));
 		}
 
 		// Tiles attributes
@@ -353,10 +325,9 @@ public class TemplateContextHelper {
 				WebKeys.PAGE_TITLE);
 
 		if (pageTitleListMergeable != null) {
-			String pageTitle = pageTitleListMergeable.mergeToString(
-				StringPool.SPACE);
-
-			contextObjects.put("pageTitle", pageTitle);
+			contextObjects.put(
+				"pageTitle",
+				_mergeToString(httpServletRequest, WebKeys.PAGE_TITLE));
 		}
 
 		ListMergeable<String> pageSubtitleListMergeable =
@@ -364,10 +335,9 @@ public class TemplateContextHelper {
 				WebKeys.PAGE_SUBTITLE);
 
 		if (pageSubtitleListMergeable != null) {
-			String pageSubtitle = pageSubtitleListMergeable.mergeToString(
-				StringPool.SPACE);
-
-			contextObjects.put("pageSubtitle", pageSubtitle);
+			contextObjects.put(
+				"pageSubtitle",
+				_mergeToString(httpServletRequest, WebKeys.PAGE_SUBTITLE));
 		}
 	}
 
@@ -808,6 +778,134 @@ public class TemplateContextHelper {
 		themeDisplay.setTilesSelectable(tilesSelectable);
 
 		contextObjects.put("tilesSelectable", tilesSelectable);
+	}
+
+	private Object _getBodyCssClass(HttpServletRequest httpServletRequest) {
+		if (httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY) == null) {
+			return null;
+		}
+
+		HttpServletRequest originalHttpServletRequest =
+			PortalUtil.getOriginalServletRequest(httpServletRequest);
+
+		String namespace = PortalUtil.getPortletNamespace(
+			ParamUtil.getString(httpServletRequest, "p_p_id"));
+
+		return ParamUtil.getString(
+			originalHttpServletRequest, namespace + "bodyCssClass");
+	}
+
+	private Object _getPortletRequestModelFactory(
+		HttpServletRequest httpServletRequest) {
+
+		PortletRequest portletRequest =
+			(PortletRequest)httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
+		PortletResponse portletResponse =
+			(PortletResponse)httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
+
+		if ((portletRequest == null) || (portletResponse == null)) {
+			return null;
+		}
+
+		return new PortletRequestModelFactory(portletRequest, portletResponse);
+	}
+
+	private Object _getRenderRequest(HttpServletRequest httpServletRequest) {
+		PortletRequest portletRequest =
+			(PortletRequest)httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
+
+		if ((portletRequest != null) &&
+			(portletRequest instanceof RenderRequest)) {
+
+			return portletRequest;
+		}
+
+		return null;
+	}
+
+	private Object _getRenderResponse(HttpServletRequest httpServletRequest) {
+		PortletResponse portletResponse =
+			(PortletResponse)httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
+
+		if ((portletResponse != null) &&
+			(portletResponse instanceof RenderResponse)) {
+
+			return portletResponse;
+		}
+
+		return null;
+	}
+
+	private Object _getTheme(HttpServletRequest httpServletRequest) {
+		Theme theme = (Theme)httpServletRequest.getAttribute(WebKeys.THEME);
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if ((theme == null) && (themeDisplay != null)) {
+			theme = themeDisplay.getTheme();
+		}
+
+		return theme;
+	}
+
+	private Object _getUser(ThemeDisplay themeDisplay) {
+		User user = themeDisplay.getUser();
+
+		long userId = PrincipalThreadLocal.getUserId();
+
+		if ((user == null) || (user.getUserId() != userId)) {
+			User principalUser = UserLocalServiceUtil.fetchUser(userId);
+
+			if (principalUser != null) {
+				user = principalUser;
+			}
+		}
+
+		return user;
+	}
+
+	private Object _getXMLRequest(HttpServletRequest httpServletRequest) {
+		PortletRequest portletRequest =
+			(PortletRequest)httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_REQUEST);
+		PortletResponse portletResponse =
+			(PortletResponse)httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_RESPONSE);
+
+		if ((portletRequest == null) || (portletResponse == null)) {
+			return null;
+		}
+
+		return new Object() {
+
+			@Override
+			public String toString() {
+				PortletRequestModel portletRequestModel =
+					new PortletRequestModel(portletRequest, portletResponse);
+
+				return portletRequestModel.toXML();
+			}
+
+		};
+	}
+
+	private Object _mergeToString(
+		HttpServletRequest httpServletRequest, String name) {
+
+		ListMergeable<String> listMergeable =
+			(ListMergeable<String>)httpServletRequest.getAttribute(name);
+
+		if (listMergeable == null) {
+			return null;
+		}
+
+		return listMergeable.mergeToString(StringPool.SPACE);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
