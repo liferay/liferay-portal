@@ -1662,7 +1662,12 @@ public class ObjectEntryLocalServiceImpl
 		DSLQuery dslQuery = _getObjectEntriesGroupByStep(
 			groupIds,
 			DSLQueryFactoryUtil.select(ObjectEntryTable.INSTANCE.objectEntryId),
-			objectDefinition, predicate, preferApproved, search
+			objectDefinition,
+			SetUtil.fromArray(
+				objectDefinition.getDBTableName(),
+				objectDefinition.getExtensionDBTableName(),
+				objectDefinition.getLocalizationDBTableName()),
+			predicate, preferApproved, search
 		).limit(
 			start, end
 		);
@@ -2030,7 +2035,7 @@ public class ObjectEntryLocalServiceImpl
 				groupIds, DSLQueryFactoryUtil.count(),
 				_objectDefinitionPersistence.findByPrimaryKey(
 					objectDefinitionId),
-				predicate, preferApproved, search));
+				Collections.emptySet(), predicate, preferApproved, search));
 	}
 
 	@Override
@@ -5338,8 +5343,8 @@ public class ObjectEntryLocalServiceImpl
 
 	private GroupByStep _getObjectEntriesGroupByStep(
 			Long[] groupIds, FromStep fromStep,
-			ObjectDefinition objectDefinition, Predicate predicate,
-			boolean preferApproved, String search)
+			ObjectDefinition objectDefinition, Set<String> orderByTableNames,
+			Predicate predicate, boolean preferApproved, String search)
 		throws PortalException {
 
 		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
@@ -5367,6 +5372,10 @@ public class ObjectEntryLocalServiceImpl
 					dynamicObjectDefinitionTable, groupIds)
 			);
 
+		Set<String> tableNames = _getTableNames(wherePredicate);
+
+		tableNames.addAll(orderByTableNames);
+
 		DynamicObjectDefinitionLocalizationTable
 			dynamicObjectDefinitionLocalizationTable =
 				DynamicObjectDefinitionLocalizationTableFactory.create(
@@ -5388,9 +5397,18 @@ public class ObjectEntryLocalServiceImpl
 				dynamicObjectDefinitionTable.getPrimaryKeyColumn())
 		).leftJoinOn(
 			dynamicObjectDefinitionLocalizationTable,
-			ObjectEntrySearchUtil.getLeftJoinLocalizationTablePredicate(
-				dynamicObjectDefinitionLocalizationTable,
-				dynamicObjectDefinitionTable, null)
+			() -> {
+				if (!tableNames.contains(
+						objectDefinition.getLocalizationDBTableName())) {
+
+					return null;
+				}
+
+				return ObjectEntrySearchUtil.
+					getLeftJoinLocalizationTablePredicate(
+						dynamicObjectDefinitionLocalizationTable,
+						dynamicObjectDefinitionTable, null);
+			}
 		).where(
 			wherePredicate
 		);
@@ -6144,6 +6162,23 @@ public class ObjectEntryLocalServiceImpl
 			objectEntryVersion -> new ObjectValuePair<>(
 				objectEntryVersion.getObjectEntryVersionId(),
 				_getStatus(objectEntryVersion.getStatus())));
+	}
+
+	private Set<String> _getTableNames(Predicate predicate) {
+		Set<String> tableNames = new HashSet<>();
+
+		predicate.toSQL(
+			string -> {
+			},
+			astNode -> {
+				if (astNode instanceof Column<?, ?> column) {
+					Table<?> table = column.getTable();
+
+					tableNames.add(table.getTableName());
+				}
+			});
+
+		return tableNames;
 	}
 
 	private String _getUrlTitle(
