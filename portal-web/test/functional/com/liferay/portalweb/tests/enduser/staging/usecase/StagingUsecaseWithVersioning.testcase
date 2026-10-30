@@ -829,55 +829,6 @@ definition {
 	}
 
 	@priority = 3
-	test StagingSiteLogo {
-		Page.viewDefaultLogoPG();
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		Navigator.gotoStagedView();
-
-		Site.changeSiteLogo(
-			logoFile = "Document_2.png",
-			pageName = "Public Pages");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Page.viewCustomLogoPG(assertLayoutLogoPresent = "true");
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		Navigator.gotoStagedView();
-
-		Staging.gotoPublishToLive();
-
-		Staging.configurePublishToLive(uncheckLogo = "true");
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Page.viewDefaultLogoPG();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Page.viewCustomLogoPG();
-	}
-
-	@priority = 3
 	test StagingSiteVariationIncompletePage {
 		Staging.addSitePagesVariationPG(sitePagesVariationName = "Site Pages Variation Name");
 

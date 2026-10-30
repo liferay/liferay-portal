@@ -451,30 +451,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro changeSiteLogo(logoFile = null, pageName = null) {
-		ProductMenu.gotoPortlet(
-			category = "Site Builder",
-			portlet = "Pages");
-
-		WaitForPageLoad();
-
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
-
-		if (IsElementPresent(key_menuItem = "Configuration", locator1 = "MenuItem#DROPDOWN_MENU_ITEM")) {
-			DropdownMenuItem.click(menuItem = "Configuration");
-		}
-		else {
-			PagesAdmin.togglePrivacy(privacy = ${pageName});
-
-			Click(
-				key_pageName = ${pageName},
-				locator1 = "Icon#COG_PAGE");
-		}
-
-		PagesAdmin.uploadLogo(logoFile = ${logoFile});
-	}
-
-	@summary = "Default summary"
 	macro configureCurrentLanguagesCP(currentSiteLanguages = null, localizedSaveButton = null, category = null) {
 		if (isSet(category)) {
 			Click(

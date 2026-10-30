@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutBranch;
 import com.liferay.portal.kernel.model.LayoutRevision;
+import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
 import com.liferay.portal.kernel.model.User;
@@ -513,6 +514,11 @@ public class StagingImplTest {
 	}
 
 	@Test
+	public void testLocalStagingLayoutSetLogo() throws Exception {
+		_testLocalStagingLayoutSetLogo(false);
+	}
+
+	@Test
 	public void testLocalStagingLayoutTheme() throws Exception {
 		_testLocalStagingLayoutTheme(false);
 	}
@@ -643,6 +649,13 @@ public class StagingImplTest {
 		throws Exception {
 
 		_testLocalStagingLayoutIconImage(true);
+	}
+
+	@Test
+	public void testLocalStagingWithLayoutVersioningLayoutSetLogo()
+		throws Exception {
+
+		_testLocalStagingLayoutSetLogo(true);
 	}
 
 	@Test
@@ -1339,6 +1352,64 @@ public class StagingImplTest {
 		Assert.assertTrue(liveLayout.isIconImage());
 		Assert.assertNotNull(
 			_imageLocalService.fetchImage(liveLayout.getIconImageId()));
+	}
+
+	private void _testLocalStagingLayoutSetLogo(boolean branching)
+		throws Exception {
+
+		LayoutTestUtil.addTypePortletLayout(_group);
+
+		enableLocalStaging(branching);
+
+		ServiceContextThreadLocal.pushServiceContext(
+			_getStagingServiceContext());
+
+		Group stagingGroup = _group.getStagingGroup();
+
+		_layoutSetLocalService.updateLogo(
+			stagingGroup.getGroupId(), false, true, _getImageBytes());
+
+		ServiceContextThreadLocal.popServiceContext();
+
+		LayoutSetBranch layoutSetBranch = null;
+
+		if (branching) {
+			layoutSetBranch = _getMasterLayoutSetBranch();
+
+			Assert.assertTrue(layoutSetBranch.isLogo());
+		}
+
+		LayoutSet liveLayoutSet = _layoutSetLocalService.getLayoutSet(
+			_group.getGroupId(), false);
+
+		Assert.assertFalse(liveLayoutSet.isLogo());
+
+		Map<String, String[]> parameterMap =
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap();
+
+		parameterMap.put(
+			PortletDataHandlerKeys.LOGO,
+			new String[] {Boolean.FALSE.toString()});
+
+		_publishLayouts(layoutSetBranch, parameterMap);
+
+		liveLayoutSet = _layoutSetLocalService.getLayoutSet(
+			_group.getGroupId(), false);
+
+		Assert.assertFalse(liveLayoutSet.isLogo());
+
+		_publishLayouts(
+			layoutSetBranch,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap());
+
+		liveLayoutSet = _layoutSetLocalService.getLayoutSet(
+			_group.getGroupId(), false);
+
+		Assert.assertTrue(liveLayoutSet.isLogo());
+		Assert.assertNotNull(
+			_imageLocalService.fetchImage(liveLayoutSet.getLogoId()));
 	}
 
 	private void _testLocalStagingLayoutTheme(boolean branching)
