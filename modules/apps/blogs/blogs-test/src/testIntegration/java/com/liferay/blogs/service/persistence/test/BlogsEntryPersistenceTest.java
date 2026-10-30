@@ -325,27 +325,12 @@ public class BlogsEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByG_UT() throws Exception {
 		_persistence.countByG_UT(RandomTestUtil.nextLong(), "");
 
 		_persistence.countByG_UT(0L, "null");
 
 		_persistence.countByG_UT(0L, (String)null);
-	}
-
-	@Test
-	public void testCountByG_LtD() throws Exception {
-		_persistence.countByG_LtD(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextDate());
-
-		_persistence.countByG_LtD(0L, RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -370,22 +355,6 @@ public class BlogsEntryPersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextDate());
 
 		_persistence.countByC_LtD(0L, RandomTestUtil.nextDate());
-	}
-
-	@Test
-	public void testCountByC_S() throws Exception {
-		_persistence.countByC_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_S(0L, 0);
-	}
-
-	@Test
-	public void testCountByC_NotS() throws Exception {
-		_persistence.countByC_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_NotS(0L, 0);
 	}
 
 	@Test
@@ -467,24 +436,6 @@ public class BlogsEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_U_S() throws Exception {
-		_persistence.countByC_U_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByC_U_S(0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByC_U_NotS() throws Exception {
-		_persistence.countByC_U_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByC_U_NotS(0L, 0L, 0);
-	}
-
-	@Test
 	public void testCountByC_LtD_S() throws Exception {
 		_persistence.countByC_LtD_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextDate(),
@@ -500,24 +451,6 @@ public class BlogsEntryPersistenceTest {
 			RandomTestUtil.nextInt());
 
 		_persistence.countByC_LtD_NotS(0L, RandomTestUtil.nextDate(), 0);
-	}
-
-	@Test
-	public void testCountByG_U_LtD_S() throws Exception {
-		_persistence.countByG_U_LtD_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextDate(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_U_LtD_S(0L, 0L, RandomTestUtil.nextDate(), 0);
-	}
-
-	@Test
-	public void testCountByG_U_LtD_NotS() throws Exception {
-		_persistence.countByG_U_LtD_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextDate(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_U_LtD_NotS(0L, 0L, RandomTestUtil.nextDate(), 0);
 	}
 
 	@Test
@@ -954,4 +887,4 @@ public class BlogsEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1586179189
+// LIFERAY-SERVICE-BUILDER-HASH:-2087994996

@@ -1,12 +1,10 @@
 create index IX_430D791F on BlogsEntry (companyId, displayDate);
-create index IX_621E19D on BlogsEntry (groupId, displayDate);
 create unique index IX_816E1938 on BlogsEntry (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_31865B77 on BlogsEntry (groupId, status, displayDate);
+create index IX_E395EE23 on BlogsEntry (groupId, status, userId);
 create unique index IX_38CAA07E on BlogsEntry (groupId, urlTitle[$COLUMN_LENGTH:255$], ctCollectionId);
 create index IX_FBDE0AA3 on BlogsEntry (groupId, userId, displayDate);
 create unique index IX_69B961AF on BlogsEntry (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_7B596F05 on BlogsEntry (status, companyId, displayDate);
-create index IX_D1CC59D5 on BlogsEntry (status, companyId, userId);
 create index IX_67121F73 on BlogsEntry (status, displayDate);
-create index IX_EC9E1903 on BlogsEntry (status, groupId, displayDate);
-create index IX_6D777C09 on BlogsEntry (status, groupId, userId, displayDate);
 create index IX_69157A4D on BlogsEntry (uuid_[$COLUMN_LENGTH:75$]);
