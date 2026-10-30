@@ -5342,13 +5342,35 @@ public class ObjectEntryLocalServiceImpl
 			boolean preferApproved, String search)
 		throws PortalException {
 
+		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
+			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
+				false, objectDefinition, _objectFieldLocalService);
+
+		Predicate wherePredicate =
+			ObjectEntrySearchUtil.getObjectEntryIndexPredicate(
+				groupIds, objectDefinition,
+				Predicate.withParentheses(
+					_fillPredicate(objectDefinition, predicate, search))
+			).and(
+				ObjectEntryTable.INSTANCE.rootObjectEntryId.eq(
+					ObjectEntryTable.INSTANCE.objectEntryId
+				).or(
+					ObjectEntryTable.INSTANCE.rootObjectEntryId.eq(0L)
+				).withParentheses()
+			).and(
+				ObjectEntryTable.INSTANCE.status.neq(
+					WorkflowConstants.STATUS_IN_TRASH)
+			).and(
+				_getHeadObjectEntryPredicate(preferApproved)
+			).and(
+				_getPermissionWherePredicate(
+					dynamicObjectDefinitionTable, groupIds)
+			);
+
 		DynamicObjectDefinitionLocalizationTable
 			dynamicObjectDefinitionLocalizationTable =
 				DynamicObjectDefinitionLocalizationTableFactory.create(
 					objectDefinition, _objectFieldLocalService);
-		DynamicObjectDefinitionTable dynamicObjectDefinitionTable =
-			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
-				false, objectDefinition, _objectFieldLocalService);
 		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				true, objectDefinition, _objectFieldLocalService);
@@ -5370,25 +5392,7 @@ public class ObjectEntryLocalServiceImpl
 				dynamicObjectDefinitionLocalizationTable,
 				dynamicObjectDefinitionTable, null)
 		).where(
-			ObjectEntrySearchUtil.getObjectEntryIndexPredicate(
-				groupIds, objectDefinition,
-				Predicate.withParentheses(
-					_fillPredicate(objectDefinition, predicate, search))
-			).and(
-				ObjectEntryTable.INSTANCE.rootObjectEntryId.eq(
-					ObjectEntryTable.INSTANCE.objectEntryId
-				).or(
-					ObjectEntryTable.INSTANCE.rootObjectEntryId.eq(0L)
-				).withParentheses()
-			).and(
-				ObjectEntryTable.INSTANCE.status.neq(
-					WorkflowConstants.STATUS_IN_TRASH)
-			).and(
-				_getHeadObjectEntryPredicate(preferApproved)
-			).and(
-				_getPermissionWherePredicate(
-					dynamicObjectDefinitionTable, groupIds)
-			)
+			wherePredicate
 		);
 	}
 
