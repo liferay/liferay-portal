@@ -5388,9 +5388,17 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionTable
 		).leftJoinOn(
 			extensionDynamicObjectDefinitionTable,
-			_getExtensionLeftJoinPredicate(
-				dynamicObjectDefinitionTable,
-				extensionDynamicObjectDefinitionTable)
+			() -> {
+				if (!tableNames.contains(
+						objectDefinition.getExtensionDBTableName())) {
+
+					return null;
+				}
+
+				return _getExtensionLeftJoinPredicate(
+					dynamicObjectDefinitionTable,
+					extensionDynamicObjectDefinitionTable);
+			}
 		).innerJoinON(
 			ObjectEntryTable.INSTANCE,
 			ObjectEntryTable.INSTANCE.objectEntryId.eq(
