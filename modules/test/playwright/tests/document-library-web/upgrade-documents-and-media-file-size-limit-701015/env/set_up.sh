@@ -12,7 +12,17 @@ PORTAL_VERSION="7.0.10.15"
 function main {
 	set -ex
 
-	upgrade_legacy_database_set_up "${DATA_ARCHIVE_TYPE}" "${PORTAL_VERSION}"
+	rebuild_legacy_database "${DATA_ARCHIVE_TYPE}" "${PORTAL_VERSION}"
+
+	mkdir -p "${LIFERAY_HOME}/data/document_library/20115"
+
+	ant -f build-test.xml \
+		-Dportal.version="${PORTAL_VERSION}" \
+		upgrade-legacy-database
+
+	assert_clean_upgrade_log
+
+	default_set_up
 }
 
 main "${@}"
