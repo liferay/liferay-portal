@@ -1361,16 +1361,16 @@ test(
 
 			const bundleProductName = getRandomString();
 
-			let linkedProduct1;
-			let linkedProduct2;
+			let product1;
+			let product2;
 
 			await test.step('Create a bundle product whose default option values add two linked products', async () => {
-				linkedProduct1 =
+				product1 =
 					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 						catalogId: catalog.id,
 						productConfiguration: {allowBackOrder: true},
 					});
-				linkedProduct2 =
+				product2 =
 					await apiHelpers.headlessCommerceAdminCatalog.postProduct({
 						catalogId: catalog.id,
 						productConfiguration: {allowBackOrder: true},
@@ -1411,7 +1411,7 @@ test(
 									preselected: true,
 									priority: 1,
 									quantity: 1,
-									skuId: linkedProduct1.skus[0].id,
+									skuId: product1.skus[0].id,
 								},
 								{
 									deltaPrice: 0.0,
@@ -1438,7 +1438,7 @@ test(
 									preselected: true,
 									priority: 1,
 									quantity: 1,
-									skuId: linkedProduct2.skus[0].id,
+									skuId: product2.skus[0].id,
 								},
 								{
 									deltaPrice: 0.0,
@@ -1468,8 +1468,8 @@ test(
 					type: 'products-limit',
 					typeSettings:
 						'products-limit-field-product-external-reference-codes=' +
-						`${linkedProduct1.externalReferenceCode},` +
-						`${linkedProduct2.externalReferenceCode}\n` +
+						`${product1.externalReferenceCode},` +
+						`${product2.externalReferenceCode}\n` +
 						'products-limit-field-product-quantity=1\n',
 				});
 			});
