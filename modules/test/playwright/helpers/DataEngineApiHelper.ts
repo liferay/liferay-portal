@@ -32,6 +32,16 @@ export class DataEngineApiHelper {
 		);
 	}
 
+	async createDocumentMetadataSet(
+		siteId: number | string,
+		dataDefinition: DataDefinition
+	): Promise<DataDefinition> {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/sites/${siteId}/data-definitions/by-content-type/document-library`,
+			{data: dataDefinition}
+		);
+	}
+
 	async getStructure(id: string): Promise<DataDefinition> {
 		return this.apiHelpers.get(
 			`${this.apiHelpers.baseUrl}${this.basePath}/data-definitions/${id}`
