@@ -1873,14 +1873,14 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 				getLayoutClassedModelUsagesByPlid(layout.getPlid());
 
 		Assert.assertEquals(
-			layoutClassedModelUsages.toString(), containerKeys.length,
-			layoutClassedModelUsages.size());
-		Assert.assertEquals(
 			SetUtil.fromArray(containerKeys),
 			SetUtil.fromCollection(
 				TransformUtil.transform(
 					layoutClassedModelUsages,
 					LayoutClassedModelUsage::getContainerKey)));
+		Assert.assertEquals(
+			layoutClassedModelUsages.toString(), containerKeys.length,
+			layoutClassedModelUsages.size());
 	}
 
 	private void _assertLayoutContent(
