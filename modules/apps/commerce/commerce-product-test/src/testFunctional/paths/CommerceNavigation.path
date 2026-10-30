@@ -101,8 +101,8 @@
 	<td></td>
 </tr>
 <tr>
-	<td>CHOOSE_SITE_BUTTON</td>
-	<td>//tr/td[contains(.,'${key_siteName}')]//..//button[contains(.,'Choose')]</td>
+	<td>SELECT_SITE_RADIO</td>
+	<td>//div[contains(@class,'modal-content')]//tr[.//td[contains(@class,'cell-name')][normalize-space()='${key_siteName}']]//td[contains(@class,'cell-select-item')]//label</td>
 	<td></td>
 </tr>
 <tr>

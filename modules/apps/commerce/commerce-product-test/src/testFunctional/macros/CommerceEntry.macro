@@ -150,13 +150,13 @@ definition {
 				locator1 = "Button#SELECT",
 				value1 = "Select Site");
 
-			SelectFrame(locator1 = "IFrame#MODAL_IFRAME");
-
 			Click(
 				key_siteName = ${siteName},
-				locator1 = "CommerceNavigation#CHOOSE_SITE_BUTTON");
+				locator1 = "CommerceNavigation#SELECT_SITE_RADIO");
 
-			SelectFrameTop(value1 = "relative=top");
+			Click(locator1 = "Modal#SELECT_BUTTON");
+
+			WaitForElementNotPresent(locator1 = "Modal#SELECT_BUTTON");
 
 			Button.clickSave();
 		}
