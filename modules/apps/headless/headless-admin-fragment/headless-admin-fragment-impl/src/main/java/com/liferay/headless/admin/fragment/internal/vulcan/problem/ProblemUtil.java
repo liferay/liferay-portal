@@ -52,17 +52,7 @@ public class ProblemUtil {
 		Problem.Status status, Throwable throwable,
 		Function<Locale, String> titleFunction) {
 
-		return getProblem(
-			locale -> {
-				String localizedMessage = throwable.getLocalizedMessage();
-
-				if (localizedMessage == null) {
-					return titleFunction.apply(locale);
-				}
-
-				return localizedMessage;
-			},
-			status, throwable, titleFunction);
+		return getProblem(titleFunction, status, throwable, titleFunction);
 	}
 
 	public static Problem getProblem(
