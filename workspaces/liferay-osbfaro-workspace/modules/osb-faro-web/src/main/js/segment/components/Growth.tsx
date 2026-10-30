@@ -431,7 +431,9 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 						)}
 						tickLine={false}
 						tickMargin={12}
-						ticks={intervals}
+						ticks={intervals.filter(
+							(interval): interval is number => interval !== null
+						)}
 						type="number"
 					/>
 
