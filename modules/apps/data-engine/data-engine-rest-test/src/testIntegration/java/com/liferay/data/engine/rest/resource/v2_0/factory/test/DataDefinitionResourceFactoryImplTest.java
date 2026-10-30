@@ -9,12 +9,20 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldType;
 import com.liferay.dynamic.data.mapping.form.field.type.DDMFormFieldTypeServicesRegistry;
+import com.liferay.layout.test.util.ContentLayoutTestUtil;
+import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.AggregateResourceBundle;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -54,6 +62,8 @@ public class DataDefinitionResourceFactoryImplTest {
 
 	@Test
 	public void testHttpServletRequestLocale() throws Exception {
+		ThemeDisplay themeDisplay = _getThemeDisplay();
+
 		DataDefinitionResource.Builder dataDefinitionResourceBuilder =
 			_dataDefinitionResourceFactory.create();
 
@@ -68,8 +78,18 @@ public class DataDefinitionResourceFactoryImplTest {
 								PortalUtil.getPortalServerPort(false) +
 									"/currentURL";
 						}
+						else if (StringUtil.equals(
+									name, WebKeys.I18N_LANGUAGE_ID)) {
+
+							return LocaleUtil.toLanguageId(LocaleUtil.BRAZIL);
+						}
 						else if (StringUtil.equals(name, WebKeys.LOCALE)) {
 							return LocaleUtil.BRAZIL;
+						}
+						else if (StringUtil.equals(
+									name, WebKeys.THEME_DISPLAY)) {
+
+							return themeDisplay;
 						}
 
 						return super.getAttribute(name);
@@ -80,11 +100,25 @@ public class DataDefinitionResourceFactoryImplTest {
 				UserTestUtil.addUser()
 			).build();
 
-		_assertTranslations(
-			_jsonFactory.createJSONArray(
-				dataDefinitionResource.
-					getDataDefinitionDataDefinitionFieldFieldTypes()),
-			LocaleUtil.BRAZIL);
+		JSONArray jsonArray = _jsonFactory.createJSONArray(
+			dataDefinitionResource.
+				getDataDefinitionDataDefinitionFieldFieldTypes());
+
+		_assertTranslations(jsonArray, LocaleUtil.BRAZIL);
+
+		Map<String, JSONObject> fieldTypeJSONObjects = JSONUtil.toJSONObjectMap(
+			jsonArray, "name");
+
+		JSONArray fieldsJSONArray = JSONUtil.getValueAsJSONArray(
+			fieldTypeJSONObjects.get("text"), "JSONObject/settingsContext",
+			"JSONArray/pages", "JSONObject/0", "JSONArray/rows", "JSONObject/0",
+			"JSONArray/columns", "JSONObject/0", "JSONArray/fields");
+
+		for (int i = 0; i < fieldsJSONArray.length(); i++) {
+			JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(i);
+
+			Assert.assertFalse(fieldJSONObject.isNull("value"));
+		}
 	}
 
 	@Test
@@ -155,6 +189,28 @@ public class DataDefinitionResourceFactoryImplTest {
 			_portal.getResourceBundle(locale));
 	}
 
+	private ThemeDisplay _getThemeDisplay() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(group.getGroupId());
+
+		ThemeDisplay themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
+			_companyLocalService.getCompany(group.getCompanyId()), group,
+			layout);
+
+		themeDisplay.setLocale(LocaleUtil.BRAZIL);
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		themeDisplay.setRequest(mockHttpServletRequest);
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
+
+		return themeDisplay;
+	}
+
 	private String _translate(String key, ResourceBundle resourceBundle) {
 		if (Validator.isNull(key)) {
 			return StringPool.BLANK;
@@ -163,6 +219,9 @@ public class DataDefinitionResourceFactoryImplTest {
 		return GetterUtil.getString(
 			ResourceBundleUtil.getString(resourceBundle, key), key);
 	}
+
+	@Inject
+	private CompanyLocalService _companyLocalService;
 
 	@Inject
 	private DataDefinitionResource.Factory _dataDefinitionResourceFactory;
