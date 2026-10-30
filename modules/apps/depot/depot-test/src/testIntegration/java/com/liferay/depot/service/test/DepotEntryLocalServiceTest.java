@@ -146,16 +146,16 @@ public class DepotEntryLocalServiceTest {
 			).build(),
 			group.getDescriptionMap(), Collections.emptyMap(), null,
 			UnicodePropertiesBuilder.put(
-				"inheritLocales", Boolean.FALSE.toString()
-			).put(
-				"languageId", LocaleUtil.toLanguageId(LocaleUtil.SPAIN)
-			).put(
 				PropsKeys.LOCALES,
 				StringUtil.merge(
 					new String[] {
 						LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
 						LocaleUtil.toLanguageId(LocaleUtil.SPAIN)
 					})
+			).put(
+				"inheritLocales", Boolean.FALSE.toString()
+			).put(
+				"languageId", LocaleUtil.toLanguageId(LocaleUtil.SPAIN)
 			).build(),
 			ServiceContextTestUtil.getServiceContext());
 
@@ -322,6 +322,7 @@ public class DepotEntryLocalServiceTest {
 
 		Assert.assertNull(
 			_groupLocalService.fetchGroup(depotEntry.getGroupId()));
+
 		Assert.assertNull(
 			_dlFileEntryLocalService.fetchDLFileEntry(
 				fileEntry.getFileEntryId()));
