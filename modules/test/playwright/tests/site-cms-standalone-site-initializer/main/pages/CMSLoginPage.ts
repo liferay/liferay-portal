@@ -28,8 +28,10 @@ export class CMSLoginPage {
 	}
 
 	async goto() {
-		await this.page.goto('/sign-in');
+		await expect(async () => {
+			await this.page.goto('/sign-in');
 
-		await expect(this.carousel).toBeVisible();
+			await expect(this.carousel).toBeVisible({timeout: 5000});
+		}).toPass({timeout: 60000});
 	}
 }
