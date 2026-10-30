@@ -34,6 +34,14 @@ The exit status is the verdict. `0` with a nonempty `reviewed_files` list is a c
 
 Apply the fixes. For each violation, read the rule file `${REVIEWER_HOME}/rules/<rule>-*.md` and the code around the line, then make the change the `fix` describes. A `fix` that starts with `Verify:` is one the reviewer was not sure about, so confirm it against the rule and the surrounding code first, and leave the code alone when the rule does not apply. Skip a `fix` that SourceFormatter would revert; the reviewer marks those with `SourceFormatter is authoritative`. Never edit a file that carries an `@generated` marker.
 
+When a fix changed a file under `workspaces/liferay-sample-workspace`, regenerate the other workspaces from it:
+
+```bash
+"${REPO_ROOT}/workspaces/refresh_other_workspaces.sh"
+```
+
+The reviewer leaves out the copies the refresh writes, so it never flags them, and without the refresh each copy keeps the text the fix replaced and fails [Generated Workspace File](../workspaces/generated-file.md). Skip the refresh when the script does not exist, as in `liferay-portal-ee`.
+
 When at least one fix was applied, commit as the **Autocommit** section says, then review once more:
 
 ```bash
@@ -77,7 +85,7 @@ Whenever you dismissed a violation, return the dismissed violations as the note 
 
 ## Autocommit
 
-When `git status --porcelain` is nonempty after the fixes, stage the tracked modifications with `git add --update` and create a commit titled `<TICKET> Apply pr-reviewer rules`.
+When `git status --porcelain` is nonempty after the fixes and the refresh, stage the tracked modifications with `git add --update` and create a commit titled `<TICKET> Apply pr-reviewer rules`. `--update` stages each regenerated copy with the fix it carries, and leaves out the ignored build output the refresh also copies.
 
 ## Notes
 
