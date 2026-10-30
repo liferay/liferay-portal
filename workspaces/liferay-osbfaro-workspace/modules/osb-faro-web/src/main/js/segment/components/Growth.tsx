@@ -17,6 +17,7 @@ import {
 	AreaChart,
 	CartesianGrid,
 	Legend,
+	LegendType,
 	ReferenceDot,
 	ReferenceLine,
 	ResponsiveContainer,
@@ -309,7 +310,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 	interface ICommonAreaChartStyles {
 		isAnimationActive: boolean;
-		legendType: string;
+		legendType: LegendType;
 		stackId: string;
 	}
 
