@@ -1,19 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro gotoDefineCustomLanguages(depotName = null) {
-		DepotNavigator.openDepotLanguages(depotName = ${depotName});
-
-		WaitForElementPresent(
-			key_languagesOption = "Define a custom default language and additional active languages for this asset library.",
-			locator1 = "Radio#DEPOT_LANGUAGES_OPTION");
-
-		Click.clickNoMouseOverNoWaitForVisible(
-			key_languagesOption = "Define a custom default language and additional active languages for this asset library.",
-			locator1 = "Radio#DEPOT_LANGUAGES_OPTION");
-	}
-
-	@summary = "Default summary"
 	macro gotoDepot(depotName = null) {
 		if (isSet(listView)) {
 			var key_listEntry = ${depotName};
@@ -304,15 +291,6 @@ definition {
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
 
 		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_document_library_web_portlet_DLAdminPortlet&_com_liferay_document_library_web_portlet_DLAdminPortlet_navigation=file_entry_types");
-	}
-
-	@summary = "Default summary"
-	macro openDepotLanguages(defaultLocale = null, depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(
-			defaultLocale = ${defaultLocale},
-			depotName = ${depotName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_depot_web_portlet_DepotSettingsPortlet&_com_liferay_depot_web_portlet_DepotSettingsPortlet_screenNavigationEntryKey=languages");
 	}
 
 	@summary = "Default summary"

@@ -1206,30 +1206,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewCannotAdd(siteNameInvalid = null, siteName = null) {
-		LexiconEntry.gotoAdd();
-
-		WaitForElementPresent.waitForLastScript();
-
-		LexiconEntry.gotoEntry(rowEntry = "Blank Site");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		PortletEntry.inputName(name = ${siteName});
-
-		Button.click(button = "Add");
-
-		if (${siteNameInvalid} == "Duplicate") {
-			Alert.viewErrorMessage(errorMessage = "Please enter a unique name.");
-		}
-		else {
-			Alert.viewErrorMessage(errorMessage = "The Site Name cannot be blank, numeric or a reserved word such as null. The Site Name cannot contain the following invalid characters: *.");
-		}
-
-		SelectFrameTop();
-	}
-
-	@summary = "Default summary"
 	macro viewCP(siteMember = null, siteName = null, siteType = null) {
 		AssertElementPresent(
 			key_siteName = ${siteName},

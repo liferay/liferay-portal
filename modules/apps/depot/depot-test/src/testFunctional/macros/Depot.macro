@@ -313,24 +313,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureDefaultLanguage(defaultDepotLanguage = null, locale = null) {
-		Click(
-			key_language = ${defaultDepotLanguage},
-			locator1 = "Icon#DEPOT_LANGUAGES_ELLIPSIS");
-
-		Click.clickNoMouseOverNoWaitForVisible(
-			key_language = ${locale},
-			locator1 = "Button#MAKE_DEFAULT");
-
-		Button.click(button = "Save");
-
-		AssertTextEquals.assertPartialText(
-			key_language = ${defaultDepotLanguage},
-			locator1 = "LanguageConfiguration#DEPOT_DEFAULT_LANGUAGE",
-			value1 = ${defaultDepotLanguage});
-	}
-
-	@summary = "Default summary"
 	macro configureDirectoryIndexing(directoryIndexing = null) {
 		if (${directoryIndexing} == "Enabled") {
 			Check.checkToggleSwitch(
@@ -856,47 +838,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewConnectedSiteNumber(depotName = null, connectedSiteNumber = null) {
-		if (isSet(tableView)) {
-			LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-			LexiconTable.viewTableEntryText(
-				tableEntry = ${depotName},
-				tableEntryText = ${connectedSiteNumber});
-		}
-		else if (isSet(cardView)) {
-			LexiconEntry.changeDisplayStyle(displayStyle = "cards");
-
-			if (${connectedSiteNumber} == 1) {
-				LexiconCard.viewCardSubtitle(
-					card = ${depotName},
-					cardSubtitle = "1 Connected Site");
-			}
-			else {
-				LexiconCard.viewCardSubtitle(
-					card = ${depotName},
-					cardSubtitle = "${connectedSiteNumber} Connected Sites");
-			}
-		}
-		else {
-			LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-			if (${connectedSiteNumber} == 1) {
-				LexiconList.viewListEntrySubtitle(
-					listEntry = ${depotName},
-					listEntrySubtitle = "${connectedSiteNumber} Connected Site");
-			}
-			else {
-				LexiconList.viewListEntrySubtitle(
-					listEntry = ${depotName},
-					listEntrySubtitle = "${connectedSiteNumber} Connected Sites");
-			}
-
-			LexiconEntry.changeDisplayStyle(displayStyle = "cards");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewCurrentLanguages(currentLanguages = null) {
 		for (var currentLanguage : list ${currentLanguages}) {
 			AssertTextEquals.assertPartialText(
@@ -914,13 +855,6 @@ definition {
 		}
 
 		Click(locator1 = "Icon#TIMES");
-	}
-
-	@summary = "Default summary"
-	macro viewDefaultCP() {
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#EMPTY_INFO",
-			value1 = "No asset libraries were found.");
 	}
 
 	@summary = "Default summary"
@@ -1146,38 +1080,6 @@ definition {
 		AssertElementNotPresent(
 			key_panel = ${panelName},
 			locator1 = "Panel#PANEL");
-	}
-
-	@summary = "Default summary"
-	macro viewSearchResult(resultCount = null, includedResults = null, excludedResults = null) {
-		var searchTerm = '''"${searchTerm}"''';
-
-		if (${resultCount} != 1) {
-			AssertTextEquals.assertPartialText(
-				locator1 = "ManagementBar#SEARCH_RESULT_SUMMARY",
-				value1 = "${resultCount} Results Found for ${searchTerm}");
-		}
-		else {
-			AssertTextEquals.assertPartialText(
-				locator1 = "ManagementBar#SEARCH_RESULT_SUMMARY",
-				value1 = "1 Result Found for ${searchTerm}");
-		}
-
-		for (var depotName : list ${includedResults}) {
-			var key_card = ${depotName};
-
-			AssertTextEquals(
-				locator1 = "Card#CARD_TITLE",
-				value1 = ${depotName});
-		}
-
-		if (isSet(excludedResults)) {
-			for (var depotName : list ${excludedResults}) {
-				var key_card = ${depotName};
-
-				AssertElementNotPresent(locator1 = "Card#CARD_TITLE");
-			}
-		}
 	}
 
 }
