@@ -4534,10 +4534,8 @@ public class PageElementResourceTest extends BasePageElementResourceTestCase {
 			FragmentEntryProcessorConstants.
 				KEY_EDITABLE_FRAGMENT_ENTRY_PROCESSOR);
 
-		Assert.assertFalse(
-			editableJSONObject.toString(), editableJSONObject.has(editableId1));
-		Assert.assertTrue(
-			editableJSONObject.toString(), editableJSONObject.has(editableId2));
+		Assert.assertFalse(editableJSONObject.has(editableId1));
+		Assert.assertTrue(editableJSONObject.has(editableId2));
 	}
 
 	private void _testPutSitePageSpecificationPageExperiencePageElementWithFragmentPageElementWithFragmentEditableElements()
