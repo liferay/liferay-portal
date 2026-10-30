@@ -152,6 +152,44 @@ export class DocumentLibraryPage {
 		await expect(currentViewLabel).toBeVisible();
 	}
 
+	async copyTo({
+		entryTitle,
+		folderName,
+		isFolder = false,
+	}: {
+		entryTitle: string;
+		folderName: string;
+		isFolder?: boolean;
+	}) {
+		if (isFolder) {
+			await this.goToFolderAction('Copy To', entryTitle);
+		}
+		else {
+			await this.goToFileEntryAction('Copy To', entryTitle);
+		}
+
+		const copyButton = this.page.getByRole('button', {
+			exact: true,
+			name: 'Copy',
+		});
+
+		await expect(copyButton).toBeDisabled();
+
+		await this.page
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await this.page
+			.frameLocator('iframe[title*="Select"]')
+			.getByRole('row', {name: folderName})
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await expect(copyButton).toBeEnabled();
+
+		await copyButton.click();
+	}
+
 	async deleteAllFileEntries() {
 		await this.goto();
 		for (const checkbox of await this.page
@@ -339,6 +377,22 @@ export class DocumentLibraryPage {
 		await expect(
 			this.page.getByRole('menuitem', {exact: true, name: action})
 		).toBeHidden();
+	}
+
+	async moveTo(entryTitle: string, folderName: string) {
+		await this.goToFileEntryAction('Move', entryTitle);
+
+		const selectDestinationFolderIframe = this.page.locator(
+			'iframe[title^="Select Destination Folder"]'
+		);
+
+		await selectDestinationFolderIframe
+			.contentFrame()
+			.getByRole('row', {name: folderName})
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await expect(selectDestinationFolderIframe).toBeHidden();
 	}
 
 	async moveFolderToRecycleBin(folderName: string) {
