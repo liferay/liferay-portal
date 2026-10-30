@@ -129,12 +129,8 @@ export class AccountsPage {
 		}
 	}
 
-	async goto(forceReload = true) {
-		if (forceReload) {
-			await this.globalMenuPage.goToHome();
-		}
-
-		await this.globalMenuPage.goToControlPanel('Accounts');
+	async goto() {
+		await this.gotoAccountAdmin();
 	}
 
 	async gotoAccountAdmin(doAsUserId?: string) {

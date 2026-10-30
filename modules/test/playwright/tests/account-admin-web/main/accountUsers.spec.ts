@@ -1654,7 +1654,7 @@ test(
 		let newPage: Page;
 
 		try {
-			await accountsPage.goto(false);
+			await accountsPage.goto();
 
 			await expect(async () => {
 				await accountsPage.accountsTable.newButton.click();
@@ -1724,7 +1724,7 @@ test(
 				screenName: 'test',
 			});
 
-			await accountsPage.goto(false);
+			await accountsPage.goto();
 
 			await expect(async () => {
 				await accountsPage.accountsTable.newButton.click();
