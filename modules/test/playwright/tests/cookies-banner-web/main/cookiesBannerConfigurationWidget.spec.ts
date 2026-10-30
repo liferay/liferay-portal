@@ -138,9 +138,6 @@ async function acceptAllCookieTypes(page: Page) {
 	for (const cookieKey of cookieKeys) {
 		const toggle = widget.locator(`[data-cookie-key="${cookieKey}"]`);
 
-		// The widget enables a toggle only once it has restored its state from
-		// the stored consent cookies
-
 		await expect(toggle).toBeEnabled();
 
 		await widget
