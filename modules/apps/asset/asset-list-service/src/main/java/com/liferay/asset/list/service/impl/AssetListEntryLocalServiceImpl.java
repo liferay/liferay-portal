@@ -127,6 +127,13 @@ public class AssetListEntryLocalServiceImpl
 							assetListEntryId
 						).and(
 							AssetListEntryAssetEntryRelTable.INSTANCE.
+								audienceEntryERC.isNull(
+								).or(
+									AssetListEntryAssetEntryRelTable.INSTANCE.
+										audienceEntryERC.eq(StringPool.BLANK)
+								).withParentheses()
+						).and(
+							AssetListEntryAssetEntryRelTable.INSTANCE.
 								segmentsEntryId.eq(
 									assetListEntrySegmentsEntryRel.
 										getSegmentsEntryId())
