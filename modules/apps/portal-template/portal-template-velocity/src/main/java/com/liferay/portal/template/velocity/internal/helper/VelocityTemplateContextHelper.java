@@ -138,19 +138,23 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(
 		Map<String, Object> properties, BundleContext bundleContext) {
 
 		init(bundleContext);
 
-		_velocityEngineConfiguration = ConfigurableUtil.createConfigurable(
-			VelocityEngineConfiguration.class, properties);
+		modified(properties);
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		destory();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_velocityEngineConfiguration = ConfigurableUtil.createConfigurable(
+			VelocityEngineConfiguration.class, properties);
 	}
 
 	@Override

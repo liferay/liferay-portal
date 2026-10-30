@@ -138,22 +138,26 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 	}
 
 	@Activate
-	@Modified
 	protected void activate(
 		Map<String, Object> properties, BundleContext bundleContext) {
 
 		init(bundleContext);
 
-		_freeMarkerEngineConfiguration = ConfigurableUtil.createConfigurable(
-			FreeMarkerEngineConfiguration.class, properties);
-
-		_restrictedVariables = SetUtil.fromArray(
-			_freeMarkerEngineConfiguration.restrictedVariables());
+		modified(properties);
 	}
 
 	@Deactivate
 	protected void deactivate() {
 		destory();
+	}
+
+	@Modified
+	protected void modified(Map<String, Object> properties) {
+		_freeMarkerEngineConfiguration = ConfigurableUtil.createConfigurable(
+			FreeMarkerEngineConfiguration.class, properties);
+
+		_restrictedVariables = SetUtil.fromArray(
+			_freeMarkerEngineConfiguration.restrictedVariables());
 	}
 
 	@Override
