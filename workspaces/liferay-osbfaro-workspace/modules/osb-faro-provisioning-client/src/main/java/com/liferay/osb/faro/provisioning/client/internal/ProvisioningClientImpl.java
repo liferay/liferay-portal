@@ -256,82 +256,7 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			return new OSBAccountEntry(_getCorpProjectAccount(corpProjectUuid));
 		}
 
-		return new OSBAccountEntry() {
-			{
-				List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
-
-				OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
-
-				if (corpProjectUuid.endsWith("BusinessLXCTest")) {
-					osbOfferingEntry.setProductEntryId(
-						ProductConstants.PRODUCT_ENTRY_ID_LXC_BUSINESS);
-				}
-				else if (corpProjectUuid.endsWith("BusinessTest")) {
-					osbOfferingEntry.setProductEntryId(
-						ProductConstants.PRODUCT_ENTRY_ID_BUSINESS);
-				}
-				else if (corpProjectUuid.endsWith("EnterpriseLXCTest")) {
-					osbOfferingEntry.setProductEntryId(
-						ProductConstants.PRODUCT_ENTRY_ID_LXC_ENTERPRISE);
-				}
-				else if (corpProjectUuid.endsWith("EnterpriseTest")) {
-					osbOfferingEntry.setProductEntryId(
-						ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
-				}
-				else if (corpProjectUuid.endsWith("ProLXCTest")) {
-					osbOfferingEntry.setProductEntryId(
-						ProductConstants.PRODUCT_ENTRY_ID_LXC_PRO);
-				}
-
-				osbOfferingEntry.setQuantity(1);
-				osbOfferingEntry.setStatus(
-					ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
-
-				osbOfferingEntries.add(osbOfferingEntry);
-
-				if (corpProjectUuid.contains("AddOn")) {
-					OSBOfferingEntry contactsOSBOfferingEntry =
-						new OSBOfferingEntry();
-					OSBOfferingEntry trackedPagesOSBOfferingEntry =
-						new OSBOfferingEntry();
-
-					if (corpProjectUuid.endsWith("BusinessLXCTest") ||
-						corpProjectUuid.endsWith("BusinessTest")) {
-
-						contactsOSBOfferingEntry.setProductEntryId(
-							ProductConstants.
-								PRODUCT_ENTRY_ID_BUSINESS_CONTACTS);
-						trackedPagesOSBOfferingEntry.setProductEntryId(
-							ProductConstants.
-								PRODUCT_ENTRY_ID_BUSINESS_TRACKED_PAGES);
-					}
-					else if (corpProjectUuid.endsWith("EnterpriseLXCTest") ||
-							 corpProjectUuid.endsWith("EnterpriseTest")) {
-
-						contactsOSBOfferingEntry.setProductEntryId(
-							ProductConstants.
-								PRODUCT_ENTRY_ID_ENTERPRISE_CONTACTS);
-						trackedPagesOSBOfferingEntry.setProductEntryId(
-							ProductConstants.
-								PRODUCT_ENTRY_ID_ENTERPRISE_TRACKED_PAGES);
-					}
-
-					contactsOSBOfferingEntry.setQuantity(1);
-					contactsOSBOfferingEntry.setStatus(
-						ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
-
-					osbOfferingEntries.add(contactsOSBOfferingEntry);
-
-					trackedPagesOSBOfferingEntry.setQuantity(1);
-					trackedPagesOSBOfferingEntry.setStatus(
-						ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
-
-					osbOfferingEntries.add(trackedPagesOSBOfferingEntry);
-				}
-
-				setOfferingEntries(osbOfferingEntries);
-			}
-		};
+		return _getTestOSBAccountEntry(corpProjectUuid);
 	}
 
 	@Override
@@ -574,6 +499,80 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		}
 
 		return baseProductPurchase;
+	}
+
+	private OSBAccountEntry _getTestOSBAccountEntry(String corpProjectUuid) {
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
+		List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
+
+		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
+
+		if (corpProjectUuid.endsWith("BusinessLXCTest")) {
+			osbOfferingEntry.setProductEntryId(
+				ProductConstants.PRODUCT_ENTRY_ID_LXC_BUSINESS);
+		}
+		else if (corpProjectUuid.endsWith("BusinessTest")) {
+			osbOfferingEntry.setProductEntryId(
+				ProductConstants.PRODUCT_ENTRY_ID_BUSINESS);
+		}
+		else if (corpProjectUuid.endsWith("EnterpriseLXCTest")) {
+			osbOfferingEntry.setProductEntryId(
+				ProductConstants.PRODUCT_ENTRY_ID_LXC_ENTERPRISE);
+		}
+		else if (corpProjectUuid.endsWith("EnterpriseTest")) {
+			osbOfferingEntry.setProductEntryId(
+				ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE);
+		}
+		else if (corpProjectUuid.endsWith("ProLXCTest")) {
+			osbOfferingEntry.setProductEntryId(
+				ProductConstants.PRODUCT_ENTRY_ID_LXC_PRO);
+		}
+
+		osbOfferingEntry.setQuantity(1);
+		osbOfferingEntry.setStatus(
+			ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
+
+		osbOfferingEntries.add(osbOfferingEntry);
+
+		if (corpProjectUuid.contains("AddOn")) {
+			OSBOfferingEntry contactsOSBOfferingEntry = new OSBOfferingEntry();
+			OSBOfferingEntry trackedPagesOSBOfferingEntry =
+				new OSBOfferingEntry();
+
+			if (corpProjectUuid.endsWith("BusinessLXCTest") ||
+				corpProjectUuid.endsWith("BusinessTest")) {
+
+				contactsOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_BUSINESS_CONTACTS);
+				trackedPagesOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_BUSINESS_TRACKED_PAGES);
+			}
+			else if (corpProjectUuid.endsWith("EnterpriseLXCTest") ||
+					 corpProjectUuid.endsWith("EnterpriseTest")) {
+
+				contactsOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_CONTACTS);
+				trackedPagesOSBOfferingEntry.setProductEntryId(
+					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_TRACKED_PAGES);
+			}
+
+			contactsOSBOfferingEntry.setQuantity(1);
+			contactsOSBOfferingEntry.setStatus(
+				ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
+
+			osbOfferingEntries.add(contactsOSBOfferingEntry);
+
+			trackedPagesOSBOfferingEntry.setQuantity(1);
+			trackedPagesOSBOfferingEntry.setStatus(
+				ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
+
+			osbOfferingEntries.add(trackedPagesOSBOfferingEntry);
+		}
+
+		osbAccountEntry.setOfferingEntries(osbOfferingEntries);
+
+		return osbAccountEntry;
 	}
 
 	private boolean _isAfter(
