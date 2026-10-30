@@ -17,13 +17,17 @@ import com.liferay.headless.admin.fragment.client.pagination.Page;
 import com.liferay.headless.admin.fragment.client.pagination.Pagination;
 import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderResource;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -49,6 +53,8 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -56,6 +62,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.InputStream;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +181,7 @@ public class ResourceFolderResourceTest
 
 		_testPostSiteResourceFolder();
 		_testPostSiteResourceFolderBatch();
+		_testPostSiteResourceFolderBatchFailedItems();
 		_testPostSiteResourceFolderBatchLazyReferencingParentResourceFolder();
 		_testPostSiteResourceFolderDuplicateExternalReferenceCodeProblemException();
 		_testPostSiteResourceFolderFragmentSetAndFragmentSetExternalReferenceCode();
@@ -1196,6 +1204,82 @@ public class ResourceFolderResourceTest
 				fetchFragmentCollectionByExternalReferenceCode(
 					fragmentCollection.getExternalReferenceCode(),
 					irrelevantGroup.getGroupId()));
+	}
+
+	private void _testPostSiteResourceFolderBatchFailedItems()
+		throws Exception {
+
+		FileEntry fileEntry = _addFileEntry(
+			_getFragmentSetExternalReferenceCode());
+		ResourceFolder postResourceFolder = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFolder resourceFolder1 = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder1.setExternalReferenceCode(
+			postResourceFolder.getExternalReferenceCode());
+
+		ResourceFolder resourceFolder2 = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder2.setName(postResourceFolder.getName());
+
+		ResourceFolder resourceFolder3 = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder3.setName(fileEntry.getTitle());
+
+		ResourceFolder resourceFolder4 = _randomResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFolder4.setName(StringPool.DOUBLE_PERIOD);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			JSONObject jsonObject = waitForFinish(
+				"COMPLETED",
+				HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.putAll(
+						JSONFactoryUtil.createJSONObject(
+							resourceFolder1.toString()),
+						JSONFactoryUtil.createJSONObject(
+							resourceFolder2.toString()),
+						JSONFactoryUtil.createJSONObject(
+							resourceFolder3.toString()),
+						JSONFactoryUtil.createJSONObject(
+							resourceFolder4.toString())
+					).toString(),
+					StringBundler.concat(
+						"headless-admin-fragment/v1.0/sites/",
+						testGroup.getExternalReferenceCode(),
+						"/resource-folders/batch",
+						"?importStrategy=ON_ERROR_CONTINUE"),
+					Http.Method.POST));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			Assert.assertEquals(
+				Arrays.asList(
+					_language.get(
+						LocaleUtil.getDefault(),
+						"this-external-reference-code-is-already-in-use"),
+					_language.get(
+						LocaleUtil.getDefault(),
+						"a-resource-folder-with-that-name-already-exists"),
+					_language.get(
+						LocaleUtil.getDefault(),
+						"a-resource-file-with-that-name-already-exists"),
+					_language.get(
+						LocaleUtil.getDefault(),
+						"resource-folder-name-is-invalid")),
+				TransformUtil.transformToList(
+					importTask.getFailedItems(), FailedItem::getMessage));
+		}
 	}
 
 	private void _testPostSiteResourceFolderBatchLazyReferencingParentResourceFolder()
