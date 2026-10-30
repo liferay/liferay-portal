@@ -51,7 +51,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 				serviceContext.getCompanyId(), name, version);
 
 		_checkPermissions(
-			ActionKeys.ADD_DEFINITION,
+			ActionKeys.ADD_DEFINITION, kaleoDefinition.getCompanyId(),
 			_getGroupId(
 				kaleoDefinition.getGroupId(), kaleoDefinition.getScope()));
 
@@ -67,7 +67,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 		throws PortalException {
 
 		_checkPermissions(
-			ActionKeys.ADD_DEFINITION,
+			ActionKeys.ADD_DEFINITION, serviceContext.getCompanyId(),
 			_getGroupId(serviceContext.getScopeGroupId(), scope));
 
 		return _kaleoDefinitionLocalService.addKaleoDefinition(
@@ -85,7 +85,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 				serviceContext.getCompanyId(), name, version);
 
 		_checkPermissions(
-			ActionKeys.ADD_DEFINITION,
+			ActionKeys.ADD_DEFINITION, kaleoDefinition.getCompanyId(),
 			_getGroupId(
 				kaleoDefinition.getGroupId(), kaleoDefinition.getScope()));
 
@@ -102,7 +102,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 			serviceContext.getCompanyId(), name);
 
 		_checkPermissions(
-			ActionKeys.DELETE,
+			ActionKeys.DELETE, kaleoDefinition.getCompanyId(),
 			_getGroupId(
 				kaleoDefinition.getGroupId(), kaleoDefinition.getScope()));
 
@@ -197,7 +197,7 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 			kaleoDefinitionPersistence.findByPrimaryKey(kaleoDefinitionId);
 
 		_checkPermissions(
-			ActionKeys.ADD_DEFINITION,
+			ActionKeys.ADD_DEFINITION, kaleoDefinition.getCompanyId(),
 			_getGroupId(
 				kaleoDefinition.getGroupId(), kaleoDefinition.getScope()));
 
