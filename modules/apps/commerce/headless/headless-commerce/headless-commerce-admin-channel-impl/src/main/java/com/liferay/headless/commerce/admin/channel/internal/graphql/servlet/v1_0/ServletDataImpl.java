@@ -12,6 +12,7 @@ import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.Accoun
 import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.CategoryDisplayPageResourceImpl;
 import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.ChannelAccountResourceImpl;
 import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.ChannelResourceImpl;
+import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.ChannelSiteResourceImpl;
 import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.DefaultCategoryDisplayPageResourceImpl;
 import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.DefaultProductDisplayPageResourceImpl;
 import com.liferay.headless.commerce.admin.channel.internal.resource.v1_0.OrderTypeResourceImpl;
@@ -28,6 +29,7 @@ import com.liferay.headless.commerce.admin.channel.resource.v1_0.AccountResource
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.CategoryDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelAccountResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelResource;
+import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelSiteResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.DefaultCategoryDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.DefaultProductDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.OrderTypeResource;
@@ -102,6 +104,8 @@ public class ServletDataImpl implements ServletData {
 			_channelResourceComponentServiceObjects);
 		Query.setChannelAccountResourceComponentServiceObjects(
 			_channelAccountResourceComponentServiceObjects);
+		Query.setChannelSiteResourceComponentServiceObjects(
+			_channelSiteResourceComponentServiceObjects);
 		Query.setDefaultCategoryDisplayPageResourceComponentServiceObjects(
 			_defaultCategoryDisplayPageResourceComponentServiceObjects);
 		Query.setDefaultProductDisplayPageResourceComponentServiceObjects(
@@ -486,6 +490,16 @@ public class ServletDataImpl implements ServletData {
 							ChannelAccountResourceImpl.class,
 							"getChannelIdChannelAccountsPage"));
 					put(
+						"query#channelAvailableSites",
+						new ObjectValuePair<>(
+							ChannelSiteResourceImpl.class,
+							"getChannelAvailableSitesPage"));
+					put(
+						"query#channelByExternalReferenceCodeAvailableSites",
+						new ObjectValuePair<>(
+							ChannelSiteResourceImpl.class,
+							"getChannelByExternalReferenceCodeAvailableSitesPage"));
+					put(
 						"query#channelByExternalReferenceCodeDefaultCategoryDisplayPage",
 						new ObjectValuePair<>(
 							DefaultCategoryDisplayPageResourceImpl.class,
@@ -590,6 +604,11 @@ public class ServletDataImpl implements ServletData {
 							ChannelResourceImpl.class,
 							"getChannelByExternalReferenceCode"));
 					put(
+						"query#Channel.availableSites",
+						new ObjectValuePair<>(
+							ChannelSiteResourceImpl.class,
+							"getChannelAvailableSitesPage"));
+					put(
 						"query#Channel.shippingMethods",
 						new ObjectValuePair<>(
 							ShippingMethodResourceImpl.class,
@@ -614,6 +633,11 @@ public class ServletDataImpl implements ServletData {
 						new ObjectValuePair<>(
 							ChannelAccountResourceImpl.class,
 							"getChannelByExternalReferenceCodeChannelAccountsPage"));
+					put(
+						"query#Channel.byExternalReferenceCodeAvailableSites",
+						new ObjectValuePair<>(
+							ChannelSiteResourceImpl.class,
+							"getChannelByExternalReferenceCodeAvailableSitesPage"));
 					put(
 						"query#Channel.byExternalReferenceCodeDefaultCategoryDisplayPage",
 						new ObjectValuePair<>(
@@ -689,6 +713,10 @@ public class ServletDataImpl implements ServletData {
 		_accountResourceComponentServiceObjects;
 
 	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
+	private ComponentServiceObjects<ChannelSiteResource>
+		_channelSiteResourceComponentServiceObjects;
+
+	@Reference(scope = ReferenceScope.PROTOTYPE_REQUIRED)
 	private ComponentServiceObjects<OrderTypeResource>
 		_orderTypeResourceComponentServiceObjects;
 
@@ -697,4 +725,4 @@ public class ServletDataImpl implements ServletData {
 		_termResourceComponentServiceObjects;
 
 }
-// LIFERAY-REST-BUILDER-HASH:915084321
+// LIFERAY-REST-BUILDER-HASH:-1406460515

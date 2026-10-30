@@ -95,6 +95,8 @@ public class OpenAPIResourceImpl {
 
 			add(ChannelAccountResourceImpl.class);
 
+			add(ChannelSiteResourceImpl.class);
+
 			add(DefaultCategoryDisplayPageResourceImpl.class);
 
 			add(DefaultProductDisplayPageResourceImpl.class);
@@ -122,4 +124,4 @@ public class OpenAPIResourceImpl {
 	};
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1264967324
+// LIFERAY-REST-BUILDER-HASH:848994848

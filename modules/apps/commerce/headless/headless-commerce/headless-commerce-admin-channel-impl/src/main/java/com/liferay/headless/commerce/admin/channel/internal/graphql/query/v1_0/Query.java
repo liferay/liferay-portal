@@ -10,6 +10,7 @@ import com.liferay.headless.commerce.admin.channel.dto.v1_0.AccountAddressChanne
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.CategoryDisplayPage;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.Channel;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.ChannelAccount;
+import com.liferay.headless.commerce.admin.channel.dto.v1_0.ChannelSite;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.DefaultCategoryDisplayPage;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.DefaultProductDisplayPage;
 import com.liferay.headless.commerce.admin.channel.dto.v1_0.OrderType;
@@ -26,6 +27,7 @@ import com.liferay.headless.commerce.admin.channel.resource.v1_0.AccountResource
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.CategoryDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelAccountResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelResource;
+import com.liferay.headless.commerce.admin.channel.resource.v1_0.ChannelSiteResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.DefaultCategoryDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.DefaultProductDisplayPageResource;
 import com.liferay.headless.commerce.admin.channel.resource.v1_0.OrderTypeResource;
@@ -107,6 +109,14 @@ public class Query {
 
 		_channelAccountResourceComponentServiceObjects =
 			channelAccountResourceComponentServiceObjects;
+	}
+
+	public static void setChannelSiteResourceComponentServiceObjects(
+		ComponentServiceObjects<ChannelSiteResource>
+			channelSiteResourceComponentServiceObjects) {
+
+		_channelSiteResourceComponentServiceObjects =
+			channelSiteResourceComponentServiceObjects;
 	}
 
 	public static void
@@ -493,6 +503,54 @@ public class Query {
 					Pagination.of(page, pageSize),
 					_sortsBiFunction.apply(
 						channelAccountResource, sortsString))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelAvailableSites(channelId: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the sites that can be linked to the Channel, addressed by internal ID. Includes active regular and organization sites and the Channel's own site; excludes the global site and the sites linked to another channel."
+	)
+	public ChannelSitePage channelAvailableSites(
+			@GraphQLName("channelId") Long channelId,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_channelSiteResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			channelSiteResource -> new ChannelSitePage(
+				channelSiteResource.getChannelAvailableSitesPage(
+					channelId, search, Pagination.of(page, pageSize))));
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -H 'Content-Type: text/plain; charset=utf-8' -X 'POST' 'http://localhost:8080/o/graphql' -d $'{"query": "query {channelByExternalReferenceCodeAvailableSites(externalReferenceCode: ___, page: ___, pageSize: ___, search: ___){items {__}, page, pageSize, totalCount}}"}' -u 'test@liferay.com:test'
+	 */
+	@GraphQLField(
+		description = "Lists the sites that can be linked to the Channel, addressed by external reference code (ERC). Includes active regular and organization sites and the Channel's own site; excludes the global site and the sites linked to another channel."
+	)
+	public ChannelSitePage channelByExternalReferenceCodeAvailableSites(
+			@GraphQLName("externalReferenceCode") String externalReferenceCode,
+			@GraphQLName("search") String search,
+			@GraphQLName("pageSize") int pageSize,
+			@GraphQLName("page") int page)
+		throws Exception {
+
+		return _applyComponentServiceObjects(
+			_channelSiteResourceComponentServiceObjects,
+			this::_populateResourceContext,
+			channelSiteResource -> new ChannelSitePage(
+				channelSiteResource.
+					getChannelByExternalReferenceCodeAvailableSitesPage(
+						externalReferenceCode, search,
+						Pagination.of(page, pageSize))));
 	}
 
 	/**
@@ -1009,6 +1067,35 @@ public class Query {
 	}
 
 	@GraphQLTypeExtension(Channel.class)
+	public class GetChannelAvailableSitesPageTypeExtension {
+
+		public GetChannelAvailableSitesPageTypeExtension(Channel channel) {
+			_channel = channel;
+		}
+
+		@GraphQLField(
+			description = "Lists the sites that can be linked to the Channel, addressed by internal ID. Includes active regular and organization sites and the Channel's own site; excludes the global site and the sites linked to another channel."
+		)
+		public ChannelSitePage availableSites(
+				@GraphQLName("search") String search,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_channelSiteResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				channelSiteResource -> new ChannelSitePage(
+					channelSiteResource.getChannelAvailableSitesPage(
+						_channel.getId(), search,
+						Pagination.of(page, pageSize))));
+		}
+
+		private Channel _channel;
+
+	}
+
+	@GraphQLTypeExtension(Channel.class)
 	public class GetChannelShippingMethodsPageTypeExtension {
 
 		public GetChannelShippingMethodsPageTypeExtension(Channel channel) {
@@ -1160,6 +1247,39 @@ public class Query {
 					channelAccountResource.
 						getChannelByExternalReferenceCodeChannelAccountsPage(
 							_channel.getExternalReferenceCode(),
+							Pagination.of(page, pageSize))));
+		}
+
+		private Channel _channel;
+
+	}
+
+	@GraphQLTypeExtension(Channel.class)
+	public class
+		GetChannelByExternalReferenceCodeAvailableSitesPageTypeExtension {
+
+		public GetChannelByExternalReferenceCodeAvailableSitesPageTypeExtension(
+			Channel channel) {
+
+			_channel = channel;
+		}
+
+		@GraphQLField(
+			description = "Lists the sites that can be linked to the Channel, addressed by external reference code (ERC). Includes active regular and organization sites and the Channel's own site; excludes the global site and the sites linked to another channel."
+		)
+		public ChannelSitePage byExternalReferenceCodeAvailableSites(
+				@GraphQLName("search") String search,
+				@GraphQLName("pageSize") int pageSize,
+				@GraphQLName("page") int page)
+			throws Exception {
+
+			return _applyComponentServiceObjects(
+				_channelSiteResourceComponentServiceObjects,
+				Query.this::_populateResourceContext,
+				channelSiteResource -> new ChannelSitePage(
+					channelSiteResource.
+						getChannelByExternalReferenceCodeAvailableSitesPage(
+							_channel.getExternalReferenceCode(), search,
 							Pagination.of(page, pageSize))));
 		}
 
@@ -1417,6 +1537,39 @@ public class Query {
 
 		@GraphQLField
 		protected java.util.Collection<ChannelAccount> items;
+
+		@GraphQLField
+		protected long lastPage;
+
+		@GraphQLField
+		protected long page;
+
+		@GraphQLField
+		protected long pageSize;
+
+		@GraphQLField
+		protected long totalCount;
+
+	}
+
+	@GraphQLName("ChannelSitePage")
+	public class ChannelSitePage {
+
+		public ChannelSitePage(Page channelSitePage) {
+			actions = channelSitePage.getActions();
+
+			items = channelSitePage.getItems();
+			lastPage = channelSitePage.getLastPage();
+			page = channelSitePage.getPage();
+			pageSize = channelSitePage.getPageSize();
+			totalCount = channelSitePage.getTotalCount();
+		}
+
+		@GraphQLField
+		protected Map<String, Map<String, String>> actions;
+
+		@GraphQLField
+		protected java.util.Collection<ChannelSite> items;
 
 		@GraphQLField
 		protected long lastPage;
@@ -1919,6 +2072,24 @@ public class Query {
 	}
 
 	private void _populateResourceContext(
+			ChannelSiteResource channelSiteResource)
+		throws Exception {
+
+		channelSiteResource.setContextAcceptLanguage(_acceptLanguage);
+		channelSiteResource.setContextCompany(_company);
+		channelSiteResource.setContextHttpServletRequest(_httpServletRequest);
+		channelSiteResource.setContextHttpServletResponse(_httpServletResponse);
+		channelSiteResource.setContextUriInfo(_uriInfo);
+		channelSiteResource.setContextUser(_user);
+		channelSiteResource.setGroupLocalService(_groupLocalService);
+		channelSiteResource.setResourceActionLocalService(
+			_resourceActionLocalService);
+		channelSiteResource.setResourcePermissionLocalService(
+			_resourcePermissionLocalService);
+		channelSiteResource.setRoleLocalService(_roleLocalService);
+	}
+
+	private void _populateResourceContext(
 			DefaultCategoryDisplayPageResource
 				defaultCategoryDisplayPageResource)
 		throws Exception {
@@ -2159,6 +2330,8 @@ public class Query {
 		_channelResourceComponentServiceObjects;
 	private static ComponentServiceObjects<ChannelAccountResource>
 		_channelAccountResourceComponentServiceObjects;
+	private static ComponentServiceObjects<ChannelSiteResource>
+		_channelSiteResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DefaultCategoryDisplayPageResource>
 		_defaultCategoryDisplayPageResourceComponentServiceObjects;
 	private static ComponentServiceObjects<DefaultProductDisplayPageResource>
@@ -2200,4 +2373,4 @@ public class Query {
 	private com.liferay.portal.kernel.model.User _user;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-762371169
+// LIFERAY-REST-BUILDER-HASH:1020760556
