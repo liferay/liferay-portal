@@ -5137,6 +5137,14 @@
 					"title": "Delete temporary LAR during a successful staging publish process.",
 					"type": "boolean"
 				},
+				"stagingRemoteHostsAllowed": {
+					"description": "List the host names and IP addresses of the remote live servers that remote staging may connect to. A host must match an entry exactly. Leave the list blank for any host.",
+					"items": {
+						"type": "string"
+					},
+					"title": "Remote Hosts Allowed",
+					"type": "array"
+				},
 				"stagingUseVirtualHostForRemoteSite": {
 					"default": false,
 					"description": "The remote environment's virtual host is used when accessing the remote live site from the staged site.",
