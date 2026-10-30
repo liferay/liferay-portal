@@ -11,6 +11,10 @@ import com.liferay.depot.constants.DepotRolesConstants;
 import com.liferay.depot.exception.DepotEntryNameException;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLAppLocalService;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
+import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.DuplicateGroupException;
@@ -23,6 +27,8 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.OrganizationLocalService;
@@ -42,6 +48,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -287,6 +294,39 @@ public class DepotEntryLocalServiceTest {
 		_depotEntries.remove(depotEntry);
 
 		_groupLocalService.getGroup(depotEntry.getGroupId());
+	}
+
+	@Test
+	@TestInfo("LPD-109885")
+	public void testDeleteDepotEntryWithDocuments() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), depotEntry.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), depotEntry.getGroupId(),
+			folder.getFolderId(), StringUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM, StringUtil.randomString(),
+			StringUtil.randomString(), StringUtil.randomString(),
+			StringUtil.randomString(), new byte[0], null, null, null,
+			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
+
+		_depotEntryLocalService.deleteDepotEntry(depotEntry.getDepotEntryId());
+
+		_depotEntries.remove(depotEntry);
+
+		Assert.assertNull(
+			_groupLocalService.fetchGroup(depotEntry.getGroupId()));
+		Assert.assertNull(
+			_dlFileEntryLocalService.fetchDLFileEntry(
+				fileEntry.getFileEntryId()));
+		Assert.assertNull(
+			_dlFolderLocalService.fetchDLFolder(folder.getFolderId()));
 	}
 
 	@Test
@@ -723,6 +763,15 @@ public class DepotEntryLocalServiceTest {
 
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
+
+	@Inject
+	private DLAppLocalService _dlAppLocalService;
+
+	@Inject
+	private DLFileEntryLocalService _dlFileEntryLocalService;
+
+	@Inject
+	private DLFolderLocalService _dlFolderLocalService;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
