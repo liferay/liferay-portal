@@ -130,9 +130,9 @@ public class ParameterContainerRequestFilter implements ContainerRequestFilter {
 				queryParameters.getFirst(entry.getKey()));
 		}
 
-		_validateInteger(500, "pageSize", queryParameters.getFirst("pageSize"));
 		_validateInteger(
 			Integer.MAX_VALUE, "page", queryParameters.getFirst("page"));
+		_validateInteger(500, "pageSize", queryParameters.getFirst("pageSize"));
 		_validateRange(
 			queryParameters.getFirst("rangeEnd"),
 			queryParameters.getFirst("rangeStart"));
