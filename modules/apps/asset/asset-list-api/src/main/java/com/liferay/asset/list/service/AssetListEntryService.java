@@ -227,5 +227,10 @@ public interface AssetListEntryService extends BaseService {
 			long assetListEntryId, long segmentsEntryId, String typeSettings)
 		throws PortalException;
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	public void updateAssetListEntryTypeSettings(
+			long assetListEntryId, String audienceEntryERC, String typeSettings)
+		throws PortalException;
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1565244650
+// LIFERAY-SERVICE-BUILDER-HASH:-167781752

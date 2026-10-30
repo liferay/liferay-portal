@@ -425,6 +425,10 @@ public interface AssetListEntryLocalService
 			long assetListEntryId, long segmentsEntryId, String typeSettings)
 		throws PortalException;
 
+	public void updateAssetListEntryTypeSettings(
+			long assetListEntryId, String audienceEntryERC, String typeSettings)
+		throws PortalException;
+
 	@Override
 	@Transactional(enabled = false)
 	public CTPersistence<AssetListEntry> getCTPersistence();
@@ -441,4 +445,4 @@ public interface AssetListEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1167093261
+// LIFERAY-SERVICE-BUILDER-HASH:170487603

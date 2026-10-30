@@ -1486,6 +1486,44 @@ public class AssetListEntryServiceHttp {
 		}
 	}
 
+	public static void updateAssetListEntryTypeSettings(
+			HttpPrincipal httpPrincipal, long assetListEntryId,
+			String audienceEntryERC, String typeSettings)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		try {
+			MethodKey methodKey = new MethodKey(
+				AssetListEntryServiceUtil.class,
+				"updateAssetListEntryTypeSettings",
+				_updateAssetListEntryTypeSettingsParameterTypes38);
+
+			MethodHandler methodHandler = new MethodHandler(
+				methodKey, assetListEntryId, audienceEntryERC, typeSettings);
+
+			try {
+				TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception exception) {
+				if (exception instanceof
+						com.liferay.portal.kernel.exception.PortalException) {
+
+					throw (com.liferay.portal.kernel.exception.PortalException)
+						exception;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(
+					exception);
+			}
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException
+					systemException) {
+
+			_log.error(systemException, systemException);
+
+			throw systemException;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(
 		AssetListEntryServiceHttp.class);
 
@@ -1616,6 +1654,10 @@ public class AssetListEntryServiceHttp {
 		_updateAssetListEntryTypeSettingsParameterTypes37 = new Class[] {
 			long.class, long.class, String.class
 		};
+	private static final Class<?>[]
+		_updateAssetListEntryTypeSettingsParameterTypes38 = new Class[] {
+			long.class, String.class, String.class
+		};
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-306727612
+// LIFERAY-SERVICE-BUILDER-HASH:1784394937

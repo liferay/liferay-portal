@@ -546,6 +546,14 @@ public class AssetListEntryLocalServiceUtil {
 			assetListEntryId, segmentsEntryId, typeSettings);
 	}
 
+	public static void updateAssetListEntryTypeSettings(
+			long assetListEntryId, String audienceEntryERC, String typeSettings)
+		throws PortalException {
+
+		getService().updateAssetListEntryTypeSettings(
+			assetListEntryId, audienceEntryERC, typeSettings);
+	}
+
 	public static AssetListEntryLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -556,4 +564,4 @@ public class AssetListEntryLocalServiceUtil {
 			AssetListEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1313650127
+// LIFERAY-SERVICE-BUILDER-HASH:1935017074

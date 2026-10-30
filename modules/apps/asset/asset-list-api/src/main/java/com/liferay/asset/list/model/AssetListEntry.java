@@ -51,8 +51,10 @@ public interface AssetListEntry extends AssetListEntryModel, PersistedModel {
 
 	public String getTypeSettings(long segmentsEntryId);
 
+	public String getTypeSettings(String audienceEntryERC);
+
 	public String getUnambiguousTitle(java.util.Locale locale)
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2085592298
+// LIFERAY-SERVICE-BUILDER-HASH:107645966
