@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.role.RoleConstants;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.service.UserGroupLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -354,6 +357,8 @@ public class GroupLocalServiceTest {
 	public void testDeleteGroup() throws Exception {
 		Group group1 = GroupTestUtil.addGroup();
 
+		GroupTestUtil.enableLocalStaging(group1);
+
 		AssetVocabularySettingsHelper assetVocabularySettingsHelper =
 			new AssetVocabularySettingsHelper();
 
@@ -409,7 +414,7 @@ public class GroupLocalServiceTest {
 			String.valueOf(group1.getGroupId()), role.getRoleId(),
 			new String[] {ActionKeys.VIEW});
 
-		Organization organization = OrganizationTestUtil.addOrganization();
+		Organization organization = OrganizationTestUtil.addOrganization(true);
 
 		_groupLocalService.addOrganizationGroup(
 			organization.getOrganizationId(), group1.getGroupId());
@@ -433,6 +438,8 @@ public class GroupLocalServiceTest {
 
 		_assertSearchUser(
 			true, "inheritUsersGroups", group1.getGroupId(), user2);
+
+		Group stagingGroup = group1.getStagingGroup();
 
 		_groupLocalService.deleteGroup(group1);
 
@@ -459,6 +466,35 @@ public class GroupLocalServiceTest {
 				group1.getCompanyId(), Layout.class.getName(),
 				ResourceConstants.SCOPE_INDIVIDUAL,
 				String.valueOf(group1.getGroupId())));
+
+		List<SystemEvent> systemEvents =
+			_systemEventLocalService.getSystemEvents(
+				0, _classNameLocalService.getClassNameId(Group.class),
+				group1.getGroupId(), SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
+
+		SystemEvent systemEvent = systemEvents.get(0);
+
+		Assert.assertEquals(
+			group1.getExternalReferenceCode(),
+			systemEvent.getClassExternalReferenceCode());
+
+		systemEvents = _systemEventLocalService.getSystemEvents(
+			0, _classNameLocalService.getClassNameId(Group.class),
+			stagingGroup.getGroupId(), SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 0, systemEvents.size());
+
+		Group organizationGroup = organization.getGroup();
+
+		_groupLocalService.deleteGroup(organizationGroup);
+
+		systemEvents = _systemEventLocalService.getSystemEvents(
+			0, _classNameLocalService.getClassNameId(Group.class),
+			organizationGroup.getGroupId(), SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 0, systemEvents.size());
 	}
 
 	@Test
@@ -847,6 +883,9 @@ public class GroupLocalServiceTest {
 
 	@Inject
 	private Searcher _searcher;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 	@Inject
 	private UserGroupLocalService _userGroupLocalService;
