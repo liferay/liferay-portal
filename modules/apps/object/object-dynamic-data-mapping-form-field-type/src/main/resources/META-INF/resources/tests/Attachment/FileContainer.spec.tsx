@@ -24,7 +24,7 @@ describe('The FileContainer component', () => {
 				attachment={{
 					contentURL: '/documents/report.pdf',
 					fileEntryId: '1',
-					size: '94 KB',
+					formattedSize: '94 KB',
 					title: 'report.pdf',
 				}}
 				onDelete={() => {}}
