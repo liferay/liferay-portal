@@ -1,4 +1,3 @@
-create index IX_6A6C1C85 on DDLRecord (companyId);
 create index IX_AAC564D3 on DDLRecord (recordSetId, userId);
 create unique index IX_7E71D397 on DDLRecord (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
@@ -10,4 +9,3 @@ create unique index IX_577F80E3 on DDLRecordSetVersion (recordSetId, version[$CO
 
 create index IX_762ADC7 on DDLRecordVersion (recordId, status);
 create unique index IX_8EDB4BA5 on DDLRecordVersion (recordId, version[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_A1B81B16 on DDLRecordVersion (recordSetId, recordSetVersion[$COLUMN_LENGTH:75$], status, userId);

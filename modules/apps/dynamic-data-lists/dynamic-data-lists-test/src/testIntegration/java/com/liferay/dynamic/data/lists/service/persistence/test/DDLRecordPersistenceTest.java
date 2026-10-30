@@ -236,13 +236,6 @@ public class DDLRecordPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByRecordSetId() throws Exception {
 		_persistence.countByRecordSetId(RandomTestUtil.nextLong());
 
@@ -608,4 +601,4 @@ public class DDLRecordPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:190012250
+// LIFERAY-SERVICE-BUILDER-HASH:24647790
