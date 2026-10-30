@@ -184,9 +184,7 @@ test(
 
 			await productsPage.undoButton.click();
 
-			await waitForAlert(page, `Success:${productTitle} was restored`, {
-				autoClose: false,
-			});
+			await waitForAlert(page, `Success:${productTitle} was restored`);
 
 			await expect(productsPage.getProduct(productTitle)).toBeVisible();
 		});
