@@ -264,7 +264,7 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			boolean forceDisable = GetterUtil.getBoolean(
 				serviceContext.getAttribute("forceDisable"));
 
-			disableRemoteStaging(
+			_disableRemoteStaging(
 				typeSettingsUnicodeProperties, remoteGroupId, forceDisable);
 		}
 
@@ -452,7 +452,7 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			if (!remoteURL.equals(oldRemoteURL) ||
 				(remoteGroupId != oldRemoteGroupId)) {
 
-				disableRemoteStaging(
+				_disableRemoteStaging(
 					typeSettingsUnicodeProperties, oldRemoteGroupId, false);
 
 				stagedRemotely = false;
@@ -810,115 +810,6 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 
 		_layoutSetBranchLocalService.deleteLayoutSetBranches(
 			groupId, privateLayout, true);
-	}
-
-	protected void disableRemoteStaging(
-			UnicodeProperties typeSettingsUnicodeProperties, long remoteGroupId,
-			boolean forceDisable)
-		throws PortalException {
-
-		String remoteURL = null;
-
-		try {
-			remoteURL = _buildRemoteURL(typeSettingsUnicodeProperties);
-		}
-		catch (RemoteOptionsException remoteOptionsException) {
-			if (!forceDisable) {
-				throw remoteOptionsException;
-			}
-
-			if (_log.isWarnEnabled()) {
-				_log.warn("Forcibly disable remote staging");
-			}
-
-			return;
-		}
-
-		PermissionChecker permissionChecker =
-			PermissionThreadLocal.getPermissionChecker();
-
-		User user = permissionChecker.getUser();
-
-		HttpPrincipal httpPrincipal = new HttpPrincipal(
-			remoteURL, user.getLogin(), user.getPassword(),
-			user.isPasswordEncrypted());
-
-		try {
-			GroupServiceHttp.disableStaging(httpPrincipal, remoteGroupId);
-		}
-		catch (RemoteAuthException remoteAuthException) {
-
-			// LPS-52675
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(remoteAuthException);
-			}
-
-			remoteAuthException.setURL(remoteURL);
-
-			throw remoteAuthException;
-		}
-		catch (SystemException systemException) {
-
-			// LPS-52675
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(systemException);
-			}
-
-			if (!forceDisable) {
-				RemoteExportException remoteExportException =
-					new RemoteExportException(
-						RemoteExportException.BAD_CONNECTION);
-
-				remoteExportException.setURL(remoteURL);
-
-				throw remoteExportException;
-			}
-
-			if (_log.isWarnEnabled()) {
-				_log.warn("Forcibly disable remote staging");
-			}
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
-			}
-
-			String message = portalException.getMessage();
-
-			if (message.contains(
-					NoSuchGroupException.class.getCanonicalName())) {
-
-				if (!forceDisable) {
-					RemoteExportException remoteExportException =
-						new RemoteExportException(
-							RemoteExportException.NO_GROUP);
-
-					remoteExportException.setGroupId(remoteGroupId);
-
-					throw remoteExportException;
-				}
-			}
-			else if (message.contains(
-						PrincipalException.class.getCanonicalName())) {
-
-				RemoteExportException remoteExportException =
-					new RemoteExportException(
-						RemoteExportException.NO_PERMISSIONS);
-
-				remoteExportException.setGroupId(remoteGroupId);
-
-				throw remoteExportException;
-			}
-			else {
-				throw portalException;
-			}
-
-			if (_log.isWarnEnabled()) {
-				_log.warn("Forcibly disable remote staging");
-			}
-		}
 	}
 
 	protected void enableRemoteStaging(
@@ -1327,6 +1218,115 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			}
 
 			throw systemException;
+		}
+	}
+
+	private void _disableRemoteStaging(
+			UnicodeProperties typeSettingsUnicodeProperties, long remoteGroupId,
+			boolean forceDisable)
+		throws PortalException {
+
+		String remoteURL = null;
+
+		try {
+			remoteURL = _buildRemoteURL(typeSettingsUnicodeProperties);
+		}
+		catch (RemoteOptionsException remoteOptionsException) {
+			if (!forceDisable) {
+				throw remoteOptionsException;
+			}
+
+			if (_log.isWarnEnabled()) {
+				_log.warn("Forcibly disable remote staging");
+			}
+
+			return;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		User user = permissionChecker.getUser();
+
+		HttpPrincipal httpPrincipal = new HttpPrincipal(
+			remoteURL, user.getLogin(), user.getPassword(),
+			user.isPasswordEncrypted());
+
+		try {
+			GroupServiceHttp.disableStaging(httpPrincipal, remoteGroupId);
+		}
+		catch (RemoteAuthException remoteAuthException) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(remoteAuthException);
+			}
+
+			remoteAuthException.setURL(remoteURL);
+
+			throw remoteAuthException;
+		}
+		catch (SystemException systemException) {
+
+			// LPS-52675
+
+			if (_log.isDebugEnabled()) {
+				_log.debug(systemException);
+			}
+
+			if (!forceDisable) {
+				RemoteExportException remoteExportException =
+					new RemoteExportException(
+						RemoteExportException.BAD_CONNECTION);
+
+				remoteExportException.setURL(remoteURL);
+
+				throw remoteExportException;
+			}
+
+			if (_log.isWarnEnabled()) {
+				_log.warn("Forcibly disable remote staging");
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			String message = portalException.getMessage();
+
+			if (message.contains(
+					NoSuchGroupException.class.getCanonicalName())) {
+
+				if (!forceDisable) {
+					RemoteExportException remoteExportException =
+						new RemoteExportException(
+							RemoteExportException.NO_GROUP);
+
+					remoteExportException.setGroupId(remoteGroupId);
+
+					throw remoteExportException;
+				}
+			}
+			else if (message.contains(
+						PrincipalException.class.getCanonicalName())) {
+
+				RemoteExportException remoteExportException =
+					new RemoteExportException(
+						RemoteExportException.NO_PERMISSIONS);
+
+				remoteExportException.setGroupId(remoteGroupId);
+
+				throw remoteExportException;
+			}
+			else {
+				throw portalException;
+			}
+
+			if (_log.isWarnEnabled()) {
+				_log.warn("Forcibly disable remote staging");
+			}
 		}
 	}
 
