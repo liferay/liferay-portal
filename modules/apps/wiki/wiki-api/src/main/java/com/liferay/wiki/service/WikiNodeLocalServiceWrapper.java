@@ -344,31 +344,6 @@ public class WikiNodeLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<WikiNode> getCompanyNodes(
-		long companyId, int start, int end) {
-
-		return _wikiNodeLocalService.getCompanyNodes(companyId, start, end);
-	}
-
-	@Override
-	public java.util.List<WikiNode> getCompanyNodes(
-		long companyId, int status, int start, int end) {
-
-		return _wikiNodeLocalService.getCompanyNodes(
-			companyId, status, start, end);
-	}
-
-	@Override
-	public int getCompanyNodesCount(long companyId) {
-		return _wikiNodeLocalService.getCompanyNodesCount(companyId);
-	}
-
-	@Override
-	public int getCompanyNodesCount(long companyId, int status) {
-		return _wikiNodeLocalService.getCompanyNodesCount(companyId, status);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -675,4 +650,4 @@ public class WikiNodeLocalServiceWrapper
 	private WikiNodeLocalService _wikiNodeLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1044527331
+// LIFERAY-SERVICE-BUILDER-HASH:-491314651

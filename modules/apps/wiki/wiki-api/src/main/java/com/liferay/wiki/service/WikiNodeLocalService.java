@@ -270,19 +270,6 @@ public interface WikiNodeLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiNode> getCompanyNodes(long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<WikiNode> getCompanyNodes(
-		long companyId, int status, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyNodesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyNodesCount(long companyId, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -464,4 +451,4 @@ public interface WikiNodeLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1267846443
+// LIFERAY-SERVICE-BUILDER-HASH:-1315847947
