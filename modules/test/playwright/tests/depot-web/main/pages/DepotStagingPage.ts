@@ -82,6 +82,19 @@ export class DepotStagingPage {
 		);
 	}
 
+	async expandPanel(name: string, target: Locator) {
+		if (await target.isVisible()) {
+			return;
+		}
+
+		await clickAndExpectToBeVisible({
+			target,
+			trigger: this.configurationFrame
+				.getByRole('group', {name})
+				.getByRole('button', {exact: true, name}),
+		});
+	}
+
 	async getStagedFileEntryId(
 		depotFriendlyURL: string,
 		title: string,
@@ -175,6 +188,12 @@ export class DepotStagingPage {
 			'Success:You have successfully updated the setup.'
 		);
 
+		const selectCollectionButton = this.configurationFrame.locator(
+			'button[aria-label="Select Collection"]'
+		);
+
+		await this.expandPanel('Select Collection', selectCollectionButton);
+
 		const selectCollectionFrame = this.configurationFrame.frameLocator(
 			'iframe[title="Select Collection"]'
 		);
@@ -183,9 +202,7 @@ export class DepotStagingPage {
 			target: selectCollectionFrame.getByRole('link', {
 				name: 'Sites and Libraries',
 			}),
-			trigger: this.configurationFrame.locator(
-				'button[aria-label="Select Collection"]'
-			),
+			trigger: selectCollectionButton,
 		});
 
 		await selectCollectionFrame
@@ -223,6 +240,13 @@ export class DepotStagingPage {
 			'Success:You have successfully updated the setup.'
 		);
 
+		await this.expandPanel(
+			'Scope',
+			this.configurationFrame
+				.getByRole('group', {name: 'Scope'})
+				.getByRole('button', {name: 'Select'})
+		);
+
 		await this.configurationFrame
 			.getByRole('group', {name: 'Scope'})
 			.getByRole('button', {name: 'Select'})
@@ -234,7 +258,14 @@ export class DepotStagingPage {
 		const scopeFrame =
 			this.configurationFrame.frameLocator('.modal iframe');
 
-		await scopeFrame.getByText('Asset Libraries', {exact: true}).click();
+		await clickAndExpectToBeVisible({
+			target: scopeFrame.getByRole('link', {
+				exact: true,
+				name: assetLibraryName,
+			}),
+			trigger: scopeFrame.getByText('Asset Libraries', {exact: true}),
+		});
+
 		await scopeFrame.getByPlaceholder('Search for').fill(assetLibraryName);
 		await scopeFrame.getByPlaceholder('Search for').press('Enter');
 		await scopeFrame
@@ -244,6 +275,13 @@ export class DepotStagingPage {
 		await waitForAlert(
 			this.configurationFrame,
 			'Success:You have successfully updated the setup.'
+		);
+
+		await this.expandPanel(
+			'Asset Entries',
+			this.configurationFrame.getByRole('button', {
+				name: `Select in ${assetLibraryName}`,
+			})
 		);
 
 		await this.configurationFrame

@@ -8,6 +8,7 @@ import {createReadStream} from 'fs';
 import path from 'path';
 
 import {documentLibraryPagesTest} from '../../../fixtures/documentLibraryPages.fixtures';
+import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {pagesAdminPagesTest} from '../../../fixtures/pagesAdminPagesTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
@@ -23,6 +24,9 @@ import {stagedDepotSiteTest} from './fixtures/stagedDepotSiteTest';
 const test = mergeTests(
 	blogsPagesTest,
 	documentLibraryPagesTest,
+	featureFlagsTest({
+		'LPD-39304': {enabled: true},
+	}),
 	loginTest(),
 	pagesAdminPagesTest,
 	pagesPagesTest,
