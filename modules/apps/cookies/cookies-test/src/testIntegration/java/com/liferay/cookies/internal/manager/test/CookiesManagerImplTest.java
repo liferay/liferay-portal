@@ -607,7 +607,7 @@ public class CookiesManagerImplTest {
 				consentCookie.getName(), _mockHttpServletRequest));
 	}
 
-	private void _assertAddCookie(boolean added) {
+	private void _assertAddCookie(boolean expected) {
 		Cookie cookie = new Cookie(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString());
 
@@ -616,7 +616,7 @@ public class CookiesManagerImplTest {
 			_mockHttpServletRequest, _mockHttpServletResponse);
 
 		Assert.assertEquals(
-			added,
+			expected,
 			Validator.isNotNull(
 				CookiesManagerUtil.getCookieValue(
 					cookie.getName(), _mockHttpServletRequest)));
