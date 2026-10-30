@@ -218,18 +218,9 @@
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column name="code" />
 		</finder>
-		<finder name="G_A" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="active" />
-		</finder>
 		<finder name="C_C" return-type="CalendarResource" unique="true">
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
-		</finder>
-		<finder name="C_LikeC_A" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column comparator="LIKE" name="code" />
-			<finder-column name="active" />
 		</finder>
 	</entity>
 	<exceptions>
