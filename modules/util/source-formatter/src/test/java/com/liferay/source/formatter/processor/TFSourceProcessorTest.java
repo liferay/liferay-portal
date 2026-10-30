@@ -38,9 +38,8 @@ public class TFSourceProcessorTest extends BaseSourceProcessorTestCase {
 			SourceProcessorTestParameters.create(
 				"SortBlocksWithComments.testtf"
 			).addExpectedMessage(
-				"Incorrect order \"resource aws_s3_bucket logs\": \"resource " +
-					"aws_s3_bucket backups\" should come before \"resource " +
-						"aws_s3_bucket logs\"",
+				"Incorrect order: \"resource aws_s3_bucket backups\" should " +
+					"come before \"resource aws_s3_bucket logs\"",
 				3
 			));
 	}

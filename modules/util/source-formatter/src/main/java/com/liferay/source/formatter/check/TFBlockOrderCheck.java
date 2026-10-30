@@ -132,9 +132,8 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 			addMessage(
 				fileName,
 				StringBundler.concat(
-					"Incorrect order \"", firstEntry.getSortKey(), "\": \"",
-					sortedFirstEntry.getSortKey(), "\" should come before \"",
-					firstEntry.getSortKey(), "\""),
+					"Incorrect order: \"", sortedFirstEntry.getSortKey(),
+					"\" should come before \"", firstEntry.getSortKey(), "\""),
 				firstEntry.getStartLineIndex() + 1);
 
 			return;
