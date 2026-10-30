@@ -265,13 +265,6 @@ public interface JournalFolderLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<JournalFolder> getCompanyFolders(
-		long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyFoldersCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DDMStructure> getDDMStructures(
 			long[] groupIds, long folderId, int restrictionType)
 		throws PortalException;
@@ -540,4 +533,4 @@ public interface JournalFolderLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2128457890
+// LIFERAY-SERVICE-BUILDER-HASH:91856135

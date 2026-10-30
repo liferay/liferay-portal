@@ -903,21 +903,6 @@ public class JournalArticleLocalServiceUtil {
 			groupId, urlTitle, status);
 	}
 
-	/**
-	 * Returns the latest indexable web content article matching the resource
-	 * primary key.
-	 *
-	 * @param resourcePrimKey the primary key of the resource instance
-	 * @return the latest indexable web content article matching the resource
-	 primary key, or <code>null</code> if no matching web content
-	 article could be found
-	 */
-	public static JournalArticle fetchLatestIndexableArticle(
-		long resourcePrimKey) {
-
-		return getService().fetchLatestIndexableArticle(resourcePrimKey);
-	}
-
 	public static PersistedModel fetchPersistedModel(
 		Serializable primaryKeyObj) {
 
@@ -1568,19 +1553,6 @@ public class JournalArticleLocalServiceUtil {
 			companyId, previousCheckDate, reviewDate);
 	}
 
-	/**
-	 * Returns all the web content articles matching the small image ID.
-	 *
-	 * @param smallImageId the primary key of the web content article's small
-	 image
-	 * @return the web content articles matching the small image ID
-	 */
-	public static List<JournalArticle> getArticlesBySmallImageId(
-		long smallImageId) {
-
-		return getService().getArticlesBySmallImageId(smallImageId);
-	}
-
 	public static List<JournalArticle> getArticlesByStructureId(
 		long groupId, long ddmStructureId, int status, int start, int end,
 		OrderByComparator<JournalArticle> orderByComparator) {
@@ -1666,111 +1638,6 @@ public class JournalArticleLocalServiceUtil {
 		long companyId, long articlePK) {
 
 		return getService().getArticleTitleMap(companyId, articlePK);
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * company, version, and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param version the web content article's version
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @param start the lower bound of the range of web content articles to
-	 return
-	 * @param end the upper bound of the range of web content articles to
-	 return (not inclusive)
-	 * @return the range of matching web content articles ordered by article ID
-	 */
-	public static List<JournalArticle> getCompanyArticles(
-		long companyId, double version, int status, int start, int end) {
-
-		return getService().getCompanyArticles(
-			companyId, version, status, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * company and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @param start the lower bound of the range of web content articles to
-	 return
-	 * @param end the upper bound of the range of web content articles to
-	 return (not inclusive)
-	 * @return the range of matching web content articles ordered by article ID
-	 */
-	public static List<JournalArticle> getCompanyArticles(
-		long companyId, int status, int start, int end) {
-
-		return getService().getCompanyArticles(companyId, status, start, end);
-	}
-
-	/**
-	 * Returns the number of web content articles matching the company, version,
-	 * and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param version the web content article's version
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @param start the lower bound of the range of web content articles to
-	 return
-	 * @param end the upper bound of the range of web content articles to
-	 return (not inclusive)
-	 * @return the number of matching web content articles
-	 */
-	public static int getCompanyArticlesCount(
-		long companyId, double version, int status, int start, int end) {
-
-		return getService().getCompanyArticlesCount(
-			companyId, version, status, start, end);
-	}
-
-	/**
-	 * Returns the number of web content articles matching the company and
-	 * workflow status.
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @return the number of matching web content articles
-	 */
-	public static int getCompanyArticlesCount(long companyId, int status) {
-		return getService().getCompanyArticlesCount(companyId, status);
 	}
 
 	/**
@@ -3002,4 +2869,4 @@ public class JournalArticleLocalServiceUtil {
 			JournalArticleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1280626842
+// LIFERAY-SERVICE-BUILDER-HASH:520747764

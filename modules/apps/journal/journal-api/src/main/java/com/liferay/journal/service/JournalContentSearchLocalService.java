@@ -247,14 +247,6 @@ public interface JournalContentSearchLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getJournalContentSearchsCount();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Long> getLayoutIds(
-		long groupId, boolean privateLayout, String articleId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getLayoutIdsCount(
-		long groupId, boolean privateLayout, String articleId);
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -300,4 +292,4 @@ public interface JournalContentSearchLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1643900153
+// LIFERAY-SERVICE-BUILDER-HASH:938282759

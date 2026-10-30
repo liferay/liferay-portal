@@ -968,21 +968,6 @@ public class JournalArticleLocalServiceWrapper
 			groupId, urlTitle, status);
 	}
 
-	/**
-	 * Returns the latest indexable web content article matching the resource
-	 * primary key.
-	 *
-	 * @param resourcePrimKey the primary key of the resource instance
-	 * @return the latest indexable web content article matching the resource
-	 primary key, or <code>null</code> if no matching web content
-	 article could be found
-	 */
-	@Override
-	public JournalArticle fetchLatestIndexableArticle(long resourcePrimKey) {
-		return _journalArticleLocalService.fetchLatestIndexableArticle(
-			resourcePrimKey);
-	}
-
 	@Override
 	public com.liferay.portal.kernel.model.PersistedModel fetchPersistedModel(
 		java.io.Serializable primaryKeyObj) {
@@ -1670,21 +1655,6 @@ public class JournalArticleLocalServiceWrapper
 			companyId, previousCheckDate, reviewDate);
 	}
 
-	/**
-	 * Returns all the web content articles matching the small image ID.
-	 *
-	 * @param smallImageId the primary key of the web content article's small
-	 image
-	 * @return the web content articles matching the small image ID
-	 */
-	@Override
-	public java.util.List<JournalArticle> getArticlesBySmallImageId(
-		long smallImageId) {
-
-		return _journalArticleLocalService.getArticlesBySmallImageId(
-			smallImageId);
-	}
-
 	@Override
 	public java.util.List<JournalArticle> getArticlesByStructureId(
 		long groupId, long ddmStructureId, int status, int start, int end,
@@ -1786,117 +1756,6 @@ public class JournalArticleLocalServiceWrapper
 
 		return _journalArticleLocalService.getArticleTitleMap(
 			companyId, articlePK);
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * company, version, and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param version the web content article's version
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @param start the lower bound of the range of web content articles to
-	 return
-	 * @param end the upper bound of the range of web content articles to
-	 return (not inclusive)
-	 * @return the range of matching web content articles ordered by article ID
-	 */
-	@Override
-	public java.util.List<JournalArticle> getCompanyArticles(
-		long companyId, double version, int status, int start, int end) {
-
-		return _journalArticleLocalService.getCompanyArticles(
-			companyId, version, status, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * company and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @param start the lower bound of the range of web content articles to
-	 return
-	 * @param end the upper bound of the range of web content articles to
-	 return (not inclusive)
-	 * @return the range of matching web content articles ordered by article ID
-	 */
-	@Override
-	public java.util.List<JournalArticle> getCompanyArticles(
-		long companyId, int status, int start, int end) {
-
-		return _journalArticleLocalService.getCompanyArticles(
-			companyId, status, start, end);
-	}
-
-	/**
-	 * Returns the number of web content articles matching the company, version,
-	 * and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param version the web content article's version
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @param start the lower bound of the range of web content articles to
-	 return
-	 * @param end the upper bound of the range of web content articles to
-	 return (not inclusive)
-	 * @return the number of matching web content articles
-	 */
-	@Override
-	public int getCompanyArticlesCount(
-		long companyId, double version, int status, int start, int end) {
-
-		return _journalArticleLocalService.getCompanyArticlesCount(
-			companyId, version, status, start, end);
-	}
-
-	/**
-	 * Returns the number of web content articles matching the company and
-	 * workflow status.
-	 *
-	 * @param companyId the primary key of the web content article's company
-	 * @param status the web content article's workflow status. For more
-	 information see {@link WorkflowConstants} for constants starting
-	 with the "STATUS_" prefix.
-	 * @return the number of matching web content articles
-	 */
-	@Override
-	public int getCompanyArticlesCount(long companyId, int status) {
-		return _journalArticleLocalService.getCompanyArticlesCount(
-			companyId, status);
 	}
 
 	/**
@@ -3238,4 +3097,4 @@ public class JournalArticleLocalServiceWrapper
 	private JournalArticleLocalService _journalArticleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:730744852
+// LIFERAY-SERVICE-BUILDER-HASH:1108184168

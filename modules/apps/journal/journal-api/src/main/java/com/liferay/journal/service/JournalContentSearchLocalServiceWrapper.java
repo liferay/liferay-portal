@@ -311,22 +311,6 @@ public class JournalContentSearchLocalServiceWrapper
 			getJournalContentSearchsCount();
 	}
 
-	@Override
-	public java.util.List<Long> getLayoutIds(
-		long groupId, boolean privateLayout, String articleId) {
-
-		return _journalContentSearchLocalService.getLayoutIds(
-			groupId, privateLayout, articleId);
-	}
-
-	@Override
-	public int getLayoutIdsCount(
-		long groupId, boolean privateLayout, String articleId) {
-
-		return _journalContentSearchLocalService.getLayoutIdsCount(
-			groupId, privateLayout, articleId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -407,4 +391,4 @@ public class JournalContentSearchLocalServiceWrapper
 	private JournalContentSearchLocalService _journalContentSearchLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1832070044
+// LIFERAY-SERVICE-BUILDER-HASH:-1249804967

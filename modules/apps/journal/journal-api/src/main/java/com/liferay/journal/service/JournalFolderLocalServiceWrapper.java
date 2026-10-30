@@ -322,19 +322,6 @@ public class JournalFolderLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<JournalFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return _journalFolderLocalService.getCompanyFolders(
-			companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyFoldersCount(long companyId) {
-		return _journalFolderLocalService.getCompanyFoldersCount(companyId);
-	}
-
-	@Override
 	public java.util.List<com.liferay.dynamic.data.mapping.model.DDMStructure>
 			getDDMStructures(
 				long[] groupIds, long folderId, int restrictionType)
@@ -823,4 +810,4 @@ public class JournalFolderLocalServiceWrapper
 	private JournalFolderLocalService _journalFolderLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1618042301
+// LIFERAY-SERVICE-BUILDER-HASH:-1791476286

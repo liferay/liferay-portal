@@ -283,16 +283,6 @@ public class JournalFolderLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static List<JournalFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyFolders(companyId, start, end);
-	}
-
-	public static int getCompanyFoldersCount(long companyId) {
-		return getService().getCompanyFoldersCount(companyId);
-	}
-
 	public static List<com.liferay.dynamic.data.mapping.model.DDMStructure>
 			getDDMStructures(
 				long[] groupIds, long folderId, int restrictionType)
@@ -694,4 +684,4 @@ public class JournalFolderLocalServiceUtil {
 			JournalFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:318397648
+// LIFERAY-SERVICE-BUILDER-HASH:-155323935
