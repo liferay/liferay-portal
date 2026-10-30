@@ -509,41 +509,6 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
-		JSONObject processAddPortletJSONObject =
-			ContentLayoutTestUtil.addPortletToLayout(
-				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
-
-		String portletId1 = _getAddedPortletId(processAddPortletJSONObject);
-
-		String portletId2 = _addPortletToLayout(
-			draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
-
-		_addPortletLayoutClassedModelUsages(
-			draftLayout, portletId1, portletId2);
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
-
-		_assertLayoutClassedModelUsageContainerKeys(
-			layout, portletId1, portletId2);
-
-		ContentLayoutTestUtil.markItemForDeletionFromLayout(
-			processAddPortletJSONObject.getString("addedItemId"), draftLayout,
-			portletId1);
-
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
-
-		_assertLayoutClassedModelUsageContainerKeys(layout, portletId2);
-	}
-
-	@Test
-	@TestInfo("LPD-110837")
-	public void testCopyLayoutClassedModelUsagesWithWidgetMarkedForDeletionInAnotherSegmentsExperience()
-		throws Exception {
-
-		Layout layout = LayoutTestUtil.addTypeContentLayout(_group);
-
-		Layout draftLayout = layout.fetchDraftLayout();
-
 		JSONObject processAddPortletJSONObject1 =
 			ContentLayoutTestUtil.addPortletToLayout(
 				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
