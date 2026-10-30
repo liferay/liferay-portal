@@ -301,30 +301,6 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<WikiNode> getCompanyNodes(long companyId, int start, int end) {
-		return wikiNodePersistence.findByC_S(
-			companyId, WorkflowConstants.STATUS_APPROVED, start, end);
-	}
-
-	@Override
-	public List<WikiNode> getCompanyNodes(
-		long companyId, int status, int start, int end) {
-
-		return wikiNodePersistence.findByC_S(companyId, status, start, end);
-	}
-
-	@Override
-	public int getCompanyNodesCount(long companyId) {
-		return wikiNodePersistence.countByC_S(
-			companyId, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
-	public int getCompanyNodesCount(long companyId, int status) {
-		return wikiNodePersistence.countByC_S(companyId, status);
-	}
-
-	@Override
 	public WikiNode getNode(long nodeId) throws PortalException {
 		return wikiNodePersistence.findByPrimaryKey(nodeId);
 	}
