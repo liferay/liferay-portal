@@ -6,13 +6,10 @@
 package com.liferay.document.library.web.internal.portlet.action;
 
 import com.liferay.document.library.constants.DLPortletKeys;
-import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.web.internal.display.context.DLViewEntryHistoryDisplayContext;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
-import com.liferay.portal.kernel.servlet.SessionErrors;
-import com.liferay.portal.kernel.util.ParamUtil;
 
 import jakarta.portlet.PortletException;
 import jakarta.portlet.RenderRequest;
@@ -39,12 +36,6 @@ public class ViewFileEntryHistoryMVCRenderCommand
 			RenderRequest renderRequest, RenderResponse renderResponse)
 		throws PortletException {
 
-		if (ParamUtil.getLong(renderRequest, "fileEntryId") <= 0) {
-			SessionErrors.add(renderRequest, NoSuchFileEntryException.class);
-
-			return "/document_library/error.jsp";
-		}
-
 		renderRequest.setAttribute(
 			DLViewEntryHistoryDisplayContext.class.getName(),
 			new DLViewEntryHistoryDisplayContext(
@@ -56,6 +47,11 @@ public class ViewFileEntryHistoryMVCRenderCommand
 	@Override
 	protected String getPath() {
 		return "/document_library/view_file_entry_history.jsp";
+	}
+
+	@Override
+	protected boolean isFileEntryRequired() {
+		return true;
 	}
 
 	@Override

@@ -39,6 +39,10 @@ public abstract class BaseFileEntryMVCRenderCommand
 		try {
 			FileEntry fileEntry = ActionUtil.getFileEntry(renderRequest);
 
+			if ((fileEntry == null) && isFileEntryRequired()) {
+				throw new NoSuchFileEntryException();
+			}
+
 			if (fileEntry != null) {
 				ThemeDisplay themeDisplay =
 					(ThemeDisplay)renderRequest.getAttribute(
@@ -85,6 +89,10 @@ public abstract class BaseFileEntryMVCRenderCommand
 	}
 
 	protected abstract String getPath();
+
+	protected boolean isFileEntryRequired() {
+		return false;
+	}
 
 	protected void setAttributes(
 			RenderRequest renderRequest, RenderResponse renderResponse)

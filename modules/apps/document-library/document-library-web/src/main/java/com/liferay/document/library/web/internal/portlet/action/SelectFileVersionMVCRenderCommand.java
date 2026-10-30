@@ -30,4 +30,9 @@ public class SelectFileVersionMVCRenderCommand
 		return "/document_library/select_file_version.jsp";
 	}
 
+	@Override
+	protected boolean isFileEntryRequired() {
+		return true;
+	}
+
 }
