@@ -77,11 +77,11 @@ public class OAuthClientEntryCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		_oAuthClientEntryLocalService.addOAuthClientEntry(
-			externalReferenceCode, TestPropsValues.getUserId(), _randomJSON(),
-			_openIdConnectProviderHttpServer.getURL(), _randomJSON(),
+			externalReferenceCode, TestPropsValues.getUserId(), _getRandomJSON(),
+			_openIdConnectProviderHttpServer.getURL(), _getRandomJSON(),
 			_getInfoJSON(), "email", 0,
 			OAuthClientEntryConstants.OIDC_USER_INFO_MAPPER_JSON, 0,
-			_randomJSON());
+			_getRandomJSON());
 	}
 
 	@Override
@@ -213,7 +213,7 @@ public class OAuthClientEntryCompanyBatchEnginePortletDataHandlerTest
 		return JSONUtil.put(
 			"client_id", RandomTestUtil.randomString()
 		).put(
-			"client_name", "example_client"
+			"client_name", RandomTestUtil.randomString()
 		).put(
 			"client_secret", RandomTestUtil.randomString()
 		).put(
@@ -234,7 +234,7 @@ public class OAuthClientEntryCompanyBatchEnginePortletDataHandlerTest
 				externalReferenceCode, group.getCompanyId());
 	}
 
-	private String _randomJSON() {
+	private String _getRandomJSON() {
 		return JSONUtil.put(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString()
 		).toString();

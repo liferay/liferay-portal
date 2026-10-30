@@ -43,10 +43,10 @@ public class OAuthClientASLocalMetadataCompanyBatchEnginePortletDataHandlerTest
 		throws Exception {
 
 		_oAuthClientASLocalMetadataLocalService.addOAuthClientASLocalMetadata(
-			externalReferenceCode, TestPropsValues.getUserId(), _randomURL(),
-			_randomURL(), _randomURL(), false, _randomURL(),
+			externalReferenceCode, TestPropsValues.getUserId(), _getRandomURL(),
+			_getRandomURL(), _getRandomURL(), false, _getRandomURL(),
 			new String[] {"authorization_code"}, new String[] {"openid"},
-			new String[] {"public"}, _randomURL(), _randomURL());
+			new String[] {"public"}, _getRandomURL(), _getRandomURL());
 	}
 
 	@Override
@@ -143,12 +143,12 @@ public class OAuthClientASLocalMetadataCompanyBatchEnginePortletDataHandlerTest
 		_oAuthClientASLocalMetadataLocalService.
 			updateOAuthClientASLocalMetadata(
 				oAuthClientASLocalMetadata.getOAuthClientASLocalMetadataId(),
-				_randomURL(), oAuthClientASLocalMetadata.getIssuer(),
-				_randomURL(),
+				_getRandomURL(), oAuthClientASLocalMetadata.getIssuer(),
+				_getRandomURL(),
 				oAuthClientASLocalMetadata.isLocalWellKnownEnabled(),
-				_randomURL(), new String[] {"authorization_code"},
-				new String[] {"openid"}, new String[] {"public"}, _randomURL(),
-				_randomURL());
+				_getRandomURL(), new String[] {"authorization_code"},
+				new String[] {"openid"}, new String[] {"public"}, _getRandomURL(),
+				_getRandomURL());
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class OAuthClientASLocalMetadataCompanyBatchEnginePortletDataHandlerTest
 				externalReferenceCode, group.getCompanyId());
 	}
 
-	private String _randomURL() {
+	private String _getRandomURL() {
 		return "http://localhost/" + RandomTestUtil.randomString();
 	}
 
