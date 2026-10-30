@@ -115,7 +115,16 @@ public class SegmentsEntryStagedModelDataHandlerTest
 	}
 
 	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomField()
+	@TestInfo("LPD-112773")
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldContains()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"contains(customField/%s, '%s')");
+	}
+
+	@Test
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldEquals()
 		throws Exception {
 
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
@@ -123,12 +132,51 @@ public class SegmentsEntryStagedModelDataHandlerTest
 	}
 
 	@Test
-	@TestInfo("LPD-112773")
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldContains()
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldGreaterThan()
 		throws Exception {
 
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
-			"contains(customField/%s, '%s')");
+			"(customField/%s gt '%s')");
+	}
+
+	@Test
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldGreaterThanOrEquals()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"(customField/%s ge '%s')");
+	}
+
+	@Test
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldLessThan()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"(customField/%s lt '%s')");
+	}
+
+	@Test
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldLessThanOrEquals()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"(customField/%s le '%s')");
+	}
+
+	@Test
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldNotContains()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"(not (contains(customField/%s, '%s')))");
+	}
+
+	@Test
+	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldNotEquals()
+		throws Exception {
+
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"(not (customField/%s eq '%s'))");
 	}
 
 	@Test
