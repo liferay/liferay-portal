@@ -368,7 +368,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 	const yAxisWidth = getYAxisWidth(data, 'value');
 
-	const handleClick = (data) => {
+	const handleClick = (data: {activeTooltipIndex?: number}) => {
 		if (data?.activeTooltipIndex === undefined) {
 			return;
 		}
@@ -632,7 +632,7 @@ const SegmentGrowthWithList: React.FC<ISegmentGrowthWithList> = ({
 }) => {
 	const [showMembershipList, setShowMembershipList] = useState(true);
 
-	const fetchMembers = (params) => {
+	const fetchMembers = (params: Data) => {
 		const fetchMembersFn = hasSelectedPoint
 			? getMemberChanges
 			: getAllMembers;
