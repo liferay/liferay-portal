@@ -218,8 +218,6 @@ public class SitePageResourceImpl
 				).put(
 					"privateLayout",
 					String.valueOf(portletDataContext.isPrivateLayout())
-				).put(
-					"sort", "pageSettings/priority:asc"
 				).build();
 			}
 
@@ -347,6 +345,14 @@ public class SitePageResourceImpl
 			Filter filter, Pagination pagination, Sort[] sorts,
 			Map<String, Serializable> parameters, String search)
 		throws Exception {
+
+		if (ArrayUtil.isEmpty(sorts)) {
+			sorts = new Sort[] {
+				new Sort(
+					"parentLayoutId_Number_sortable", Sort.LONG_TYPE, false),
+				new Sort(Field.PRIORITY, Sort.LONG_TYPE, false)
+			};
+		}
 
 		return super.read(filter, pagination, sorts, parameters, search);
 	}
