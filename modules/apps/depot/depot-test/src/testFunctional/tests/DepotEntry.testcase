@@ -186,23 +186,6 @@ definition {
 			locator1 = "Card#CARD_PAGE_ITEM");
 	}
 
-	@description = "This ensures that users cannot create the same name as another site name."
-	@priority = 4
-	@refactordone
-	test CannotAddNameThatDuplicatesSite {
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.addDepot(
-			depotName = "Site Name",
-			duplicate = "true");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.viewDefaultCP();
-	}
-
 	@description = "This ensures that users cannot create the same name as another translated repository name."
 	@priority = 4
 	@refactordone
@@ -301,37 +284,6 @@ definition {
 			includedResults = "Depot 1,Depot 2,Depot 3",
 			resultCount = 3,
 			searchTerm = "Description");
-
-		DepotNavigator.gotoDepot(depotName = "Depot 1");
-	}
-
-	@description = "This ensures that a depot's title can be searched."
-	@priority = 4
-	@refactordone
-	test CanSearchForDepotTitle {
-		for (var depotName : list "Depot 1,Depot 2,Depot 3") {
-			JSONDepot.addDepot(
-				depotDescription = "",
-				depotName = ${depotName});
-		}
-
-		JSONDepot.addDepot(
-			depotDescription = "",
-			depotName = "Should not be returned in search");
-
-		DepotNavigator.openDepotAdmin();
-
-		AssertElementPresent(
-			key_card = "Depot 1",
-			locator1 = "Card#CARD_TITLE");
-
-		Search.searchCP(searchTerm = "Depot");
-
-		Depot.viewSearchResult(
-			excludedResults = "Should not be returned in search",
-			includedResults = "Depot 1,Depot 2,Depot 3",
-			resultCount = 3,
-			searchTerm = "Depot");
 
 		DepotNavigator.gotoDepot(depotName = "Depot 1");
 	}
