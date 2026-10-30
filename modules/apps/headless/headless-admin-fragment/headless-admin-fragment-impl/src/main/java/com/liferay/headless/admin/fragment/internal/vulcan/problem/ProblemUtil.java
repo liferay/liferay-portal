@@ -17,20 +17,14 @@ import java.util.function.Function;
 public class ProblemUtil {
 
 	public static Problem getProblem(
-		Problem.Status status, Throwable throwable,
-		Function<Locale, String> titleFunction) {
+		Function<Locale, String> detailFunction, Problem.Status status,
+		Throwable throwable, Function<Locale, String> titleFunction) {
 
 		return new Problem() {
 
 			@Override
 			public String getDetail(Locale locale) {
-				String localizedMessage = throwable.getLocalizedMessage();
-
-				if (localizedMessage == null) {
-					return titleFunction.apply(locale);
-				}
-
-				return localizedMessage;
+				return detailFunction.apply(locale);
 			}
 
 			@Override
@@ -52,6 +46,23 @@ public class ProblemUtil {
 			}
 
 		};
+	}
+
+	public static Problem getProblem(
+		Problem.Status status, Throwable throwable,
+		Function<Locale, String> titleFunction) {
+
+		return getProblem(
+			locale -> {
+				String localizedMessage = throwable.getLocalizedMessage();
+
+				if (localizedMessage == null) {
+					return titleFunction.apply(locale);
+				}
+
+				return localizedMessage;
+			},
+			status, throwable, titleFunction);
 	}
 
 	public static Problem getProblem(
