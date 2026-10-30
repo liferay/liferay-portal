@@ -39,6 +39,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -166,30 +167,29 @@ public class WorkflowTaskDisplayContextTest {
 	public void testGetWorkflowAssetEntryWithKBArticle() throws Exception {
 		User user = UserTestUtil.addUser(_group.getGroupId());
 
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(user));
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
 
-		PrincipalThreadLocal.setName(user.getUserId());
+			_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
+				null, TestPropsValues.getUserId(),
+				TestPropsValues.getCompanyId(), _group.getGroupId(),
+				KBArticle.class.getName(), 0, 0, "Single Approver", 1);
 
-		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
-			null, TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
-			_group.getGroupId(), KBArticle.class.getName(), 0, 0,
-			"Single Approver", 1);
+			KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
+				null, user.getUserId(),
+				PortalUtil.getClassNameId(KBFolderConstants.getClassName()),
+				KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				null, null, new Date(), null, null, null,
+				ServiceContextTestUtil.getServiceContext(
+					_group.getGroupId(), user.getUserId()));
 
-		KBArticle kbArticle = _kbArticleLocalService.addKBArticle(
-			null, user.getUserId(),
-			PortalUtil.getClassNameId(KBFolderConstants.getClassName()),
-			KBFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(), null,
-			null, new Date(), null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), user.getUserId()));
+			AssetEntry assetEntry = _getWorkflowAssetEntry(user);
 
-		AssetEntry assetEntry = _getWorkflowAssetEntry(user);
-
-		Assert.assertEquals(
-			kbArticle.getKbArticleId(), assetEntry.getClassPK());
+			Assert.assertEquals(
+				kbArticle.getKbArticleId(), assetEntry.getClassPK());
+		}
 	}
 
 	private MockLiferayPortletRenderRequest _getMockLiferayPortletRenderRequest(
