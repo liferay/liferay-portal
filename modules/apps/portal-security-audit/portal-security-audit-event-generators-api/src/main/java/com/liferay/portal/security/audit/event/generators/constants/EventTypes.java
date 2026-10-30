@@ -20,6 +20,8 @@ public interface EventTypes {
 
 	public static final String ASSIGN = "ASSIGN";
 
+	public static final String AUDIT_CONFIG_CHANGE = "AUDIT_CONFIG_CHANGE";
+
 	public static final String DELETE = "DELETE";
 
 	public static final String IMPERSONATE = "IMPERSONATE";
