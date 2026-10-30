@@ -777,13 +777,6 @@ public class DDMTemplateLocalServiceWrapper
 			groupId, classNameId, templateKey, includeAncestorTemplates);
 	}
 
-	@Override
-	public DDMTemplate getTemplateBySmallImageId(long smallImageId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _ddmTemplateLocalService.getTemplateBySmallImageId(smallImageId);
-	}
-
 	/**
 	 * Returns all the templates with the class PK.
 	 *
@@ -1561,4 +1554,4 @@ public class DDMTemplateLocalServiceWrapper
 	private DDMTemplateLocalService _ddmTemplateLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1846459509
+// LIFERAY-SERVICE-BUILDER-HASH:-2003921138

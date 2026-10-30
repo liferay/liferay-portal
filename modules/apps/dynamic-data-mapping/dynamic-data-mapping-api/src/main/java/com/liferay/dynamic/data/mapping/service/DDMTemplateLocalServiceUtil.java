@@ -714,12 +714,6 @@ public class DDMTemplateLocalServiceUtil {
 			groupId, classNameId, templateKey, includeAncestorTemplates);
 	}
 
-	public static DDMTemplate getTemplateBySmallImageId(long smallImageId)
-		throws PortalException {
-
-		return getService().getTemplateBySmallImageId(smallImageId);
-	}
-
 	/**
 	 * Returns all the templates with the class PK.
 	 *
@@ -1422,4 +1416,4 @@ public class DDMTemplateLocalServiceUtil {
 			DDMTemplateLocalServiceUtil.class, DDMTemplateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1017814388
+// LIFERAY-SERVICE-BUILDER-HASH:1837165258

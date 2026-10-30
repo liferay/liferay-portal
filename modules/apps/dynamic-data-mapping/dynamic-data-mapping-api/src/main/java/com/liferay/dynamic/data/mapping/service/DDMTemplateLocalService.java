@@ -618,10 +618,6 @@ public interface DDMTemplateLocalService
 			boolean includeAncestorTemplates)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMTemplate getTemplateBySmallImageId(long smallImageId)
-		throws PortalException;
-
 	/**
 	 * Returns all the templates with the class PK.
 	 *
@@ -1238,4 +1234,4 @@ public interface DDMTemplateLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-357812603
+// LIFERAY-SERVICE-BUILDER-HASH:1281899076
