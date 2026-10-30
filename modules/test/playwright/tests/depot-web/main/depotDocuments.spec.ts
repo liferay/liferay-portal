@@ -565,3 +565,76 @@ test(
 		});
 	}
 );
+
+test(
+	'Asset library shortcut to a site document opens that document',
+	{tag: '@LPD-112510'},
+	async ({apiHelpers, page}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		const documentTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
+			{fileName: `${documentTitle}.jpg`, title: documentTitle}
+		);
+
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		const depotURL = `/asset-library-${assetLibrary.id}`;
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+
+		await test.step('Add a shortcut to the site document', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {
+					exact: true,
+					name: 'Shortcut',
+				}),
+				trigger: page.getByRole('button', {exact: true, name: 'New'}),
+			});
+
+			await page
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			const itemSelector = page.frameLocator('iframe[title*="Select"]');
+
+			await itemSelector
+				.getByRole('link', {exact: true, name: 'Sites and Libraries'})
+				.click();
+			await itemSelector.getByText(site.name, {exact: true}).click();
+			await itemSelector.getByText(documentTitle, {exact: true}).click();
+
+			await page.getByRole('button', {exact: true, name: 'Save'}).click();
+
+			await waitForAlert(page);
+		});
+
+		await test.step('The shortcut opens the site document', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			await documentLibraryPage.goToViewFileEntry(documentTitle);
+
+			const latestVersionURL = page.getByRole('textbox', {
+				name: 'Latest Version URL',
+			});
+
+			await clickAndExpectToBeVisible({
+				target: latestVersionURL,
+				trigger: page.locator('[data-qa-id="infoButton"]'),
+			});
+
+			await expect(latestVersionURL).toHaveValue(
+				new RegExp(`/documents/d${site.friendlyUrlPath}/`)
+			);
+		});
+	}
+);
