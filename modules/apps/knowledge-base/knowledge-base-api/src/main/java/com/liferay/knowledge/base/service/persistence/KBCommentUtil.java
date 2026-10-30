@@ -397,86 +397,6 @@ public class KBCommentUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the kb comments where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.knowledge.base.model.impl.KBCommentModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of kb comments
-	 * @param end the upper bound of the range of kb comments (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching kb comments
-	 */
-	public static List<KBComment> findByG_C(
-		long groupId, long classNameId, int start, int end,
-		OrderByComparator<KBComment> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByG_C(
-			groupId, classNameId, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first kb comment in the ordered set where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kb comment
-	 * @throws NoSuchCommentException if a matching kb comment could not be found
-	 */
-	public static KBComment findByG_C_First(
-			long groupId, long classNameId,
-			OrderByComparator<KBComment> orderByComparator)
-		throws com.liferay.knowledge.base.exception.NoSuchCommentException {
-
-		return getPersistence().findByG_C_First(
-			groupId, classNameId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first kb comment in the ordered set where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching kb comment, or <code>null</code> if a matching kb comment could not be found
-	 */
-	public static KBComment fetchByG_C_First(
-		long groupId, long classNameId,
-		OrderByComparator<KBComment> orderByComparator) {
-
-		return getPersistence().fetchByG_C_First(
-			groupId, classNameId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the kb comments where groupId = &#63; and classNameId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 */
-	public static void removeByG_C(long groupId, long classNameId) {
-		getPersistence().removeByG_C(groupId, classNameId);
-	}
-
-	/**
-	 * Returns the number of kb comments where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @return the number of matching kb comments
-	 */
-	public static int countByG_C(long groupId, long classNameId) {
-		return getPersistence().countByG_C(groupId, classNameId);
-	}
-
-	/**
 	 * Returns an ordered range of all the kb comments where groupId = &#63; and status = &#63;.
 	 *
 	 * <p>
@@ -1060,58 +980,6 @@ public class KBCommentUtil {
 	}
 
 	/**
-	 * Returns all the kb comments where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @return the matching kb comments
-	 */
-	public static List<KBComment> findByG_C(long groupId, long classNameId) {
-		return getPersistence().findByG_C(groupId, classNameId);
-	}
-
-	/**
-	 * Returns a range of all the kb comments where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.knowledge.base.model.impl.KBCommentModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of kb comments
-	 * @param end the upper bound of the range of kb comments (not inclusive)
-	 * @return the range of matching kb comments
-	 */
-	public static List<KBComment> findByG_C(
-		long groupId, long classNameId, int start, int end) {
-
-		return getPersistence().findByG_C(groupId, classNameId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the kb comments where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.knowledge.base.model.impl.KBCommentModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of kb comments
-	 * @param end the upper bound of the range of kb comments (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching kb comments
-	 */
-	public static List<KBComment> findByG_C(
-		long groupId, long classNameId, int start, int end,
-		OrderByComparator<KBComment> orderByComparator) {
-
-		return getPersistence().findByG_C(
-			groupId, classNameId, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the kb comments where groupId = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -1400,4 +1268,4 @@ public class KBCommentUtil {
 	private static volatile KBCommentPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2043147709
+// LIFERAY-SERVICE-BUILDER-HASH:-859110411

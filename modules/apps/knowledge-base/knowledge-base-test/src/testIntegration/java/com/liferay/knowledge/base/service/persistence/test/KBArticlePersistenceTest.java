@@ -451,14 +451,6 @@ public class KBArticlePersistenceTest {
 	}
 
 	@Test
-	public void testCountByLtD_S() throws Exception {
-		_persistence.countByLtD_S(
-			RandomTestUtil.nextDate(), RandomTestUtil.nextInt());
-
-		_persistence.countByLtD_S(RandomTestUtil.nextDate(), 0);
-	}
-
-	@Test
 	public void testCountByR_G_V() throws Exception {
 		_persistence.countByR_G_V(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -682,24 +674,6 @@ public class KBArticlePersistenceTest {
 			RandomTestUtil.nextInt());
 
 		_persistence.countByG_M_NotS(0L, RandomTestUtil.randomBoolean(), 0);
-	}
-
-	@Test
-	public void testCountByC_L_NotS() throws Exception {
-		_persistence.countByC_L_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByC_L_NotS(0L, RandomTestUtil.randomBoolean(), 0);
-	}
-
-	@Test
-	public void testCountByC_M_NotS() throws Exception {
-		_persistence.countByC_M_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByC_M_NotS(0L, RandomTestUtil.randomBoolean(), 0);
 	}
 
 	@Test
@@ -1348,4 +1322,4 @@ public class KBArticlePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-724575787
+// LIFERAY-SERVICE-BUILDER-HASH:-586934749
