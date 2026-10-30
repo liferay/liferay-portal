@@ -45,6 +45,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.util.LayoutServiceContextHelperUtil;
 import com.liferay.layout.util.UpdateLayoutModifiedDateThreadLocal;
+import com.liferay.layout.util.UpdateLayoutStatusThreadLocal;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -535,9 +536,15 @@ public class LayoutUtil {
 		if (pageSpecification instanceof
 				ContentPageSpecification contentPageSpecification) {
 
-			_updatePageExperiences(
-				fragmentEntryProcessorRegistry, infoItemServiceRegistry, layout,
-				contentPageSpecification.getPageExperiences(), serviceContext);
+			try (SafeCloseable safeCloseable =
+					UpdateLayoutStatusThreadLocal.
+						setUpdateLayoutStatusWithSafeCloseable(false)) {
+
+				_updatePageExperiences(
+					fragmentEntryProcessorRegistry, infoItemServiceRegistry,
+					layout, contentPageSpecification.getPageExperiences(),
+					serviceContext);
+			}
 		}
 
 		if (status == layout.getStatus()) {
