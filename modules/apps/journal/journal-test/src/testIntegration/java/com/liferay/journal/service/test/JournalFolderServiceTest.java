@@ -278,27 +278,11 @@ public class JournalFolderServiceTest {
 		JournalFolder journalFolder = _journalFolderFixture.addFolder(
 			_group.getGroupId(), RandomTestUtil.randomString());
 
-		JournalArticle approvedJournalArticle = JournalTestUtil.addArticle(
-			_group.getGroupId(), journalFolder.getFolderId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		JournalArticle approvedJournalArticle = _addApprovedJournalArticle(
+			journalFolder, RandomTestUtil.randomString());
 
 		_addDraftJournalArticle(journalFolder, TestPropsValues.getUserId());
-		JournalTestUtil.addArticle(
-			_group.getGroupId(), journalFolder.getFolderId(),
-			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
-			true,
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
-			).build(),
-			null, LocaleUtil.getSiteDefault(),
-			new Date(System.currentTimeMillis() + Time.DAY), null, true, true,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+		_addScheduledJournalArticle(journalFolder);
 
 		User user = UserTestUtil.addUser();
 
@@ -1192,6 +1176,15 @@ public class JournalFolderServiceTest {
 				_group, TestPropsValues.getUserId()));
 	}
 
+	private JournalArticle _addApprovedJournalArticle(
+			JournalFolder journalFolder, String title)
+		throws Exception {
+
+		return JournalTestUtil.addArticle(
+			_group.getGroupId(), journalFolder.getFolderId(), title,
+			RandomTestUtil.randomString());
+	}
+
 	private JournalArticle _addDraftJournalArticle(
 			JournalFolder journalFolder, long userId)
 		throws Exception {
@@ -1204,6 +1197,28 @@ public class JournalFolderServiceTest {
 			false,
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), userId));
+	}
+
+	private JournalArticle _addScheduledJournalArticle(
+			JournalFolder journalFolder)
+		throws Exception {
+
+		return JournalTestUtil.addArticle(
+			_group.getGroupId(), journalFolder.getFolderId(),
+			JournalArticleConstants.CLASS_NAME_ID_DEFAULT, StringPool.BLANK,
+			true,
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getSiteDefault(), RandomTestUtil.randomString()
+			).build(),
+			null, LocaleUtil.getSiteDefault(),
+			new Date(System.currentTimeMillis() + Time.DAY), null, true, true,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private void _assertMustHavePermission(
