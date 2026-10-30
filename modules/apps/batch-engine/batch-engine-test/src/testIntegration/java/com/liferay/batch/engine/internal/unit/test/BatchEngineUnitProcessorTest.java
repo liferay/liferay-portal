@@ -8,6 +8,10 @@ package com.liferay.batch.engine.internal.unit.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.batch.engine.unit.BatchEngineUnitProcessor;
 import com.liferay.batch.engine.unit.BatchEngineUnitReader;
+import com.liferay.change.tracking.model.CTCollection;
+import com.liferay.change.tracking.model.CTPreferences;
+import com.liferay.change.tracking.service.CTCollectionLocalService;
+import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.list.type.model.ListTypeDefinition;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.petra.lang.SafeCloseable;
@@ -15,8 +19,11 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.instance.PortalInstancePool;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.ZipFileTestUtil;
 import com.liferay.portal.kernel.zip.ZipWriterFactory;
 import com.liferay.portal.test.log.LogCapture;
@@ -170,6 +177,85 @@ public class BatchEngineUnitProcessorTest {
 		}
 	}
 
+	@Test
+	public void testProcessBatchEngineUnitsWhenAdministratorWorksInPublication()
+		throws Exception {
+
+		long companyId = TestPropsValues.getCompanyId();
+		long userId = TestPropsValues.getUserId();
+
+		CTPreferences ctPreferences =
+			_ctPreferencesLocalService.fetchCTPreferences(companyId, userId);
+
+		boolean addedCTPreferences = false;
+
+		if (ctPreferences == null) {
+			addedCTPreferences = true;
+
+			ctPreferences = _ctPreferencesLocalService.getCTPreferences(
+				companyId, userId);
+		}
+
+		CTCollection ctCollection = _ctCollectionLocalService.addCTCollection(
+			null, companyId, userId, 0, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		ListTypeDefinition listTypeDefinition1 = null;
+		ListTypeDefinition listTypeDefinition2 = null;
+
+		String name = PrincipalThreadLocal.getName();
+
+		try {
+			ctPreferences.setCtCollectionId(ctCollection.getCtCollectionId());
+
+			ctPreferences = _ctPreferencesLocalService.updateCTPreferences(
+				ctPreferences);
+
+			PrincipalThreadLocal.setName(
+				_userLocalService.getGuestUserId(companyId));
+
+			_processBatchEngineUnits("control");
+
+			listTypeDefinition1 =
+				_listTypeDefinitionLocalService.
+					fetchListTypeDefinitionByExternalReferenceCode(
+						"TEST_CONTROL_VALID_1", companyId);
+
+			Assert.assertNotNull(listTypeDefinition1);
+
+			listTypeDefinition2 =
+				_listTypeDefinitionLocalService.
+					fetchListTypeDefinitionByExternalReferenceCode(
+						"TEST_CONTROL_VALID_2", companyId);
+
+			Assert.assertNotNull(listTypeDefinition2);
+		}
+		finally {
+			if (listTypeDefinition1 != null) {
+				_listTypeDefinitionLocalService.deleteListTypeDefinition(
+					listTypeDefinition1);
+			}
+
+			if (listTypeDefinition2 != null) {
+				_listTypeDefinitionLocalService.deleteListTypeDefinition(
+					listTypeDefinition2);
+			}
+
+			if (addedCTPreferences) {
+				_ctPreferencesLocalService.deleteCTPreferences(ctPreferences);
+			}
+			else {
+				ctPreferences.setCtCollectionId(0);
+
+				_ctPreferencesLocalService.updateCTPreferences(ctPreferences);
+			}
+
+			PrincipalThreadLocal.setName(name);
+
+			_ctCollectionLocalService.deleteCTCollection(ctCollection);
+		}
+	}
+
 	private void _processBatchEngineUnits(String dirName) throws Exception {
 		Bundle bundle = _bundleContext.installBundle(
 			RandomTestUtil.randomString(), _toInputStream(dirName));
@@ -207,7 +293,16 @@ public class BatchEngineUnitProcessorTest {
 	private BundleContext _bundleContext;
 
 	@Inject
+	private CTCollectionLocalService _ctCollectionLocalService;
+
+	@Inject
+	private CTPreferencesLocalService _ctPreferencesLocalService;
+
+	@Inject
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 	@Inject
 	private ZipWriterFactory _zipWriterFactory;
