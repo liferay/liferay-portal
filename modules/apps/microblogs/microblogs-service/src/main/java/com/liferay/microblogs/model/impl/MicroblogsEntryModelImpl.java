@@ -124,43 +124,26 @@ public class MicroblogsEntryModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATEDATE_COLUMN_BITMASK = 2L;
+	public static final long PARENTMICROBLOGSENTRYID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATORCLASSNAMEID_COLUMN_BITMASK = 4L;
+	public static final long TYPE_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long CREATORCLASSPK_COLUMN_BITMASK = 8L;
+	public static final long USERID_COLUMN_BITMASK = 8L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PARENTMICROBLOGSENTRYID_COLUMN_BITMASK = 16L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long SOCIALRELATIONTYPE_COLUMN_BITMASK = 32L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long TYPE_COLUMN_BITMASK = 64L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long USERID_COLUMN_BITMASK = 128L;
+	public static final long CREATEDATE_COLUMN_BITMASK = 16L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -480,15 +463,6 @@ public class MicroblogsEntryModelImpl
 		_createDate = createDate;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public Date getOriginalCreateDate() {
-		return getColumnOriginalValue("createDate");
-	}
-
 	@JSON
 	@Override
 	public Date getModifiedDate() {
@@ -525,16 +499,6 @@ public class MicroblogsEntryModelImpl
 		_creatorClassNameId = creatorClassNameId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalCreatorClassNameId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("creatorClassNameId"));
-	}
-
 	@JSON
 	@Override
 	public long getCreatorClassPK() {
@@ -548,16 +512,6 @@ public class MicroblogsEntryModelImpl
 		}
 
 		_creatorClassPK = creatorClassPK;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalCreatorClassPK() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("creatorClassPK"));
 	}
 
 	@JSON
@@ -643,16 +597,6 @@ public class MicroblogsEntryModelImpl
 		}
 
 		_socialRelationType = socialRelationType;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public int getOriginalSocialRelationType() {
-		return GetterUtil.getInteger(
-			this.<Integer>getColumnOriginalValue("socialRelationType"));
 	}
 
 	public long getColumnBitmask() {
@@ -1060,4 +1004,4 @@ public class MicroblogsEntryModelImpl
 	private MicroblogsEntry _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1219096589
+// LIFERAY-SERVICE-BUILDER-HASH:-1142169365
