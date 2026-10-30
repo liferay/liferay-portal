@@ -38,8 +38,6 @@ long parentFolderId = (parentFolder == null) ? DLFolderConstants.DEFAULT_PARENT_
 			viewFolderURL.setParameter("mvcRenderCommandName", "/document_library/view_folder");
 			viewFolderURL.setParameter("folderId", String.valueOf(parentFolderId));
 		}
-
-		viewFolderURL.setParameter("redirect", currentURL);
 		%>
 
 		<clay:link

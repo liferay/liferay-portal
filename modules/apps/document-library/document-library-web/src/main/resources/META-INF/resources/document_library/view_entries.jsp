@@ -454,8 +454,6 @@ DLViewEntriesDisplayContext dlViewEntriesDisplayContext = new DLViewEntriesDispl
 								liferayPortletResponse
 							).setMVCRenderCommandName(
 								"/document_library/view_folder"
-							).setRedirect(
-								currentURL
 							).setParameter(
 								"folderId", curFolder.getFolderId()
 							).buildString();
@@ -501,8 +499,6 @@ DLViewEntriesDisplayContext dlViewEntriesDisplayContext = new DLViewEntriesDispl
 																	liferayPortletResponse
 																).setMVCRenderCommandName(
 																	"/document_library/view_folder"
-																).setRedirect(
-																	currentURL
 																).setParameter(
 																	"folderId", curFolder.getFolderId()
 																).buildString()

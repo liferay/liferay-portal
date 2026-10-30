@@ -489,8 +489,6 @@ entriesChecker.setRememberCheckBoxStateURLRegex("^(?!.*" + liferayPortletRespons
 									liferayPortletResponse
 								).setMVCRenderCommandName(
 									"/document_library/view_folder"
-								).setRedirect(
-									currentURL
 								).setParameter(
 									"folderId", curFolder.getFolderId()
 								).buildString();
@@ -536,8 +534,6 @@ entriesChecker.setRememberCheckBoxStateURLRegex("^(?!.*" + liferayPortletRespons
 																		liferayPortletResponse
 																	).setMVCRenderCommandName(
 																		"/document_library/view_folder"
-																	).setRedirect(
-																		currentURL
 																	).setParameter(
 																		"folderId", curFolder.getFolderId()
 																	).buildString()

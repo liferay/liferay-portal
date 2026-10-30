@@ -26,8 +26,6 @@ Date modifiedDate = folder.getModifiedDate();
 				liferayPortletResponse
 			).setMVCRenderCommandName(
 				"/document_library/view_folder"
-			).setRedirect(
-				currentURL
 			).setParameter(
 				"folderId", folder.getFolderId()
 			).buildString()
