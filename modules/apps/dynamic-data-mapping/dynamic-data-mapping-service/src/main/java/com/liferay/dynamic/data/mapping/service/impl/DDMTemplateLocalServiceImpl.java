@@ -714,13 +714,6 @@ public class DDMTemplateLocalServiceImpl
 				" in the ancestor groups");
 	}
 
-	@Override
-	public DDMTemplate getTemplateBySmallImageId(long smallImageId)
-		throws PortalException {
-
-		return ddmTemplatePersistence.findBySmallImageId(smallImageId);
-	}
-
 	/**
 	 * Returns all the templates with the class PK.
 	 *
