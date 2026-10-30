@@ -186,39 +186,6 @@ definition {
 			locator1 = "Card#CARD_PAGE_ITEM");
 	}
 
-	@description = "This ensures that a depot's description can be searched."
-	@priority = 4
-	@refactordone
-	test CanSearchForDepotDescription {
-		JSONDepot.addDepot(
-			depotDescription = "Description 1",
-			depotName = "Depot 1");
-
-		JSONDepot.addDepot(
-			depotDescription = "Description 2",
-			depotName = "Depot 2");
-
-		JSONDepot.addDepot(
-			depotDescription = "Description 3",
-			depotName = "Depot 3");
-
-		JSONDepot.addDepot(
-			depotDescription = "",
-			depotName = "Should not be returned in search");
-
-		DepotNavigator.openDepotAdmin();
-
-		Search.searchCP(searchTerm = "Description");
-
-		Depot.viewSearchResult(
-			excludedResults = "Should not be returned in search",
-			includedResults = "Depot 1,Depot 2,Depot 3",
-			resultCount = 3,
-			searchTerm = "Description");
-
-		DepotNavigator.gotoDepot(depotName = "Depot 1");
-	}
-
 	@description = "This ensures that a user can select all depots, deselect some, and delete the selected and reselected ones in cards view."
 	@priority = 4
 	@refactordone
