@@ -554,6 +554,37 @@ components:
                 -   accountId
                 -   channelId
             type: object
+        ChannelSite:
+            description:
+                Site that can be linked to a channel, as a read only summary returned by the available sites endpoints of the channel; full site management lives in the Headless Admin Site API.
+            properties:
+                externalReferenceCode:
+                    description:
+                        External reference code of the site, unique per site within the company; read only.
+                    example: AB-34098-789-N
+                    readOnly: true
+                    type: string
+                friendlyUrlPath:
+                    description:
+                        Friendly URL path of the site, relative to the portal and starting with a slash; read only.
+                    example: /guest
+                    readOnly: true
+                    type: string
+                id:
+                    description:
+                        Internal identifier of the site; send it as the `siteGroupId` of the channel to link the site to the channel; read only.
+                    example: 30130
+                    format: int64
+                    minimum: 0
+                    readOnly: true
+                    type: integer
+                name:
+                    description:
+                        Name of the site in the request locale; matched by the search query parameter; read only.
+                    example: Guest
+                    readOnly: true
+                    type: string
+            type: object
         DefaultCategoryDisplayPage:
             description:
                 Channel-level setting that names the fallback Liferay site page used to render any product category that has no explicit CategoryDisplayPage mapping. Backed by the channel's group settings under the `assetCategoryLayoutUuid` key; written through POST.
@@ -2611,6 +2642,73 @@ paths:
             summary: Updates a Channel.
             tags:
                 -   Channel
+    /channels/by-externalReferenceCode/{externalReferenceCode}/available-sites:
+        get:
+            description:
+                Lists the sites that can be linked to the Channel, addressed by external reference code (ERC). Includes active regular and organization sites and the Channel's own site; excludes the global site and the sites linked to another channel.
+            parameters:
+                -   $ref: "#/components/parameters/externalReferenceCodePathParam"
+                -   $ref: "#/components/parameters/searchQueryParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ChannelSite"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ChannelSite"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this resource.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of the sites that can be linked to the channel.
+            tags:
+                -   ChannelSite
     /channels/by-externalReferenceCode/{externalReferenceCode}/category-display-pages:
         get:
             description:
@@ -3630,6 +3728,73 @@ paths:
             summary: Updates a Channel.
             tags:
                 -   Channel
+    /channels/{channelId}/available-sites:
+        get:
+            description:
+                Lists the sites that can be linked to the Channel, addressed by internal ID. Includes active regular and organization sites and the Channel's own site; excludes the global site and the sites linked to another channel.
+            parameters:
+                -   $ref: "#/components/parameters/channelIdPathParam"
+                -   $ref: "#/components/parameters/searchQueryParam"
+                -   $ref: "#/components/parameters/pageQueryParam"
+                -   $ref: "#/components/parameters/pageSizeQueryParam"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ChannelSite"
+                                type: array
+                        application/xml:
+                            schema:
+                                items:
+                                    $ref: "#/components/schemas/ChannelSite"
+                                type: array
+                    description:
+                        Successful operation
+                401:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Authentication information is missing or invalid
+                403:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The authenticated user lacks permission for the requested action on this resource.
+                404:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        The specified resource was not found
+                500:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+                    description:
+                        Unexpected error
+            summary: Gets a list of the sites that can be linked to the channel.
+            tags:
+                -   ChannelSite
     /channels/{channelId}/shipping-methods:
         get:
             description:
@@ -6163,6 +6328,9 @@ tags:
     -   description:
             Links between accounts and channels controlling which accounts can purchase or browse a given storefront.
         name: ChannelAccount
+    -   description:
+            Read only references to the sites that can be linked to a channel; full site management lives in the Headless Admin Site API.
+        name: ChannelSite
     -   description:
             Channel-level default display page used for categories when no explicit CategoryDisplayPage mapping exists.
         name: DefaultCategoryDisplayPage
