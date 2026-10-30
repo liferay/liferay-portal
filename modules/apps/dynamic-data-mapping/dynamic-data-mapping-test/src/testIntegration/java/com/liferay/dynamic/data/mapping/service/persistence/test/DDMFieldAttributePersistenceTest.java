@@ -203,15 +203,6 @@ public class DDMFieldAttributePersistenceTest {
 	}
 
 	@Test
-	public void testCountByAN_SAV() throws Exception {
-		_persistence.countByAN_SAV("", "");
-
-		_persistence.countByAN_SAV("null", "null");
-
-		_persistence.countByAN_SAV((String)null, (String)null);
-	}
-
-	@Test
 	public void testCountByF_AN_L() throws Exception {
 		_persistence.countByF_AN_L(RandomTestUtil.nextLong(), "", "");
 
@@ -545,4 +536,4 @@ public class DDMFieldAttributePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-7519291
+// LIFERAY-SERVICE-BUILDER-HASH:1174954459

@@ -393,101 +393,6 @@ public class DDMFieldAttributePersistenceImpl
 			new Object[] {storageId, ArrayUtil.sortedUnique(languageIds)});
 	}
 
-	private CollectionPersistenceFinder
-		<DDMFieldAttribute, NoSuchFieldAttributeException>
-			_collectionPersistenceFinderByAN_SAV;
-
-	/**
-	 * Returns an ordered range of all the ddm field attributes where attributeName = &#63; and smallAttributeValue = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMFieldAttributeModelImpl</code>.
-	 * </p>
-	 *
-	 * @param attributeName the attribute name
-	 * @param smallAttributeValue the small attribute value
-	 * @param start the lower bound of the range of ddm field attributes
-	 * @param end the upper bound of the range of ddm field attributes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ddm field attributes
-	 */
-	@Override
-	public List<DDMFieldAttribute> findByAN_SAV(
-		String attributeName, String smallAttributeValue, int start, int end,
-		OrderByComparator<DDMFieldAttribute> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByAN_SAV.find(
-			finderCache, new Object[] {attributeName, smallAttributeValue},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ddm field attribute in the ordered set where attributeName = &#63; and smallAttributeValue = &#63;.
-	 *
-	 * @param attributeName the attribute name
-	 * @param smallAttributeValue the small attribute value
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddm field attribute
-	 * @throws NoSuchFieldAttributeException if a matching ddm field attribute could not be found
-	 */
-	@Override
-	public DDMFieldAttribute findByAN_SAV_First(
-			String attributeName, String smallAttributeValue,
-			OrderByComparator<DDMFieldAttribute> orderByComparator)
-		throws NoSuchFieldAttributeException {
-
-		return _collectionPersistenceFinderByAN_SAV.findFirst(
-			finderCache, new Object[] {attributeName, smallAttributeValue},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first ddm field attribute in the ordered set where attributeName = &#63; and smallAttributeValue = &#63;.
-	 *
-	 * @param attributeName the attribute name
-	 * @param smallAttributeValue the small attribute value
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddm field attribute, or <code>null</code> if a matching ddm field attribute could not be found
-	 */
-	@Override
-	public DDMFieldAttribute fetchByAN_SAV_First(
-		String attributeName, String smallAttributeValue,
-		OrderByComparator<DDMFieldAttribute> orderByComparator) {
-
-		return _collectionPersistenceFinderByAN_SAV.fetchFirst(
-			finderCache, new Object[] {attributeName, smallAttributeValue},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the ddm field attributes where attributeName = &#63; and smallAttributeValue = &#63; from the database.
-	 *
-	 * @param attributeName the attribute name
-	 * @param smallAttributeValue the small attribute value
-	 */
-	@Override
-	public void removeByAN_SAV(
-		String attributeName, String smallAttributeValue) {
-
-		_collectionPersistenceFinderByAN_SAV.remove(
-			finderCache, new Object[] {attributeName, smallAttributeValue});
-	}
-
-	/**
-	 * Returns the number of ddm field attributes where attributeName = &#63; and smallAttributeValue = &#63;.
-	 *
-	 * @param attributeName the attribute name
-	 * @param smallAttributeValue the small attribute value
-	 * @return the number of matching ddm field attributes
-	 */
-	@Override
-	public int countByAN_SAV(String attributeName, String smallAttributeValue) {
-		return _collectionPersistenceFinderByAN_SAV.count(
-			finderCache, new Object[] {attributeName, smallAttributeValue});
-	}
-
 	private UniquePersistenceFinder
 		<DDMFieldAttribute, NoSuchFieldAttributeException>
 			_uniquePersistenceFinderByF_AN_L;
@@ -900,45 +805,6 @@ public class DDMFieldAttributePersistenceImpl
 				"ddmFieldAttribute.", "languageId", FinderColumn.Type.STRING,
 				"=", false, true, true, DDMFieldAttribute::getLanguageId));
 
-		_collectionPersistenceFinderByAN_SAV =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByAN_SAV",
-					new String[] {
-						String.class.getName(), String.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"attributeName", "smallAttributeValue"},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByAN_SAV",
-					new String[] {
-						String.class.getName(), String.class.getName()
-					},
-					new String[] {"attributeName", "smallAttributeValue"}, 0, 3,
-					true, null),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByAN_SAV",
-					new String[] {
-						String.class.getName(), String.class.getName()
-					},
-					new String[] {"attributeName", "smallAttributeValue"}, 0, 3,
-					false, null),
-				_SQL_SELECT_DDMFIELDATTRIBUTE_WHERE,
-				_SQL_COUNT_DDMFIELDATTRIBUTE_WHERE,
-				DDMFieldAttributeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
-				new FinderColumn<>(
-					"ddmFieldAttribute.", "attributeName",
-					FinderColumn.Type.STRING, "=", true, true,
-					DDMFieldAttribute::getAttributeName),
-				new FinderColumn<>(
-					"ddmFieldAttribute.", "smallAttributeValue",
-					FinderColumn.Type.STRING, "=", true, true,
-					DDMFieldAttribute::getSmallAttributeValue));
-
 		_uniquePersistenceFinderByF_AN_L = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1025,4 +891,4 @@ public class DDMFieldAttributePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1320172272
+// LIFERAY-SERVICE-BUILDER-HASH:-1300364771

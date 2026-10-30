@@ -105,44 +105,26 @@ public class DDMFieldModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long COMPANYID_COLUMN_BITMASK = 1L;
+	public static final long FIELDNAME_COLUMN_BITMASK = 1L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long FIELDNAME_COLUMN_BITMASK = 2L;
+	public static final long INSTANCEID_COLUMN_BITMASK = 2L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long FIELDTYPE_COLUMN_BITMASK = 4L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long INSTANCEID_COLUMN_BITMASK = 8L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long STORAGEID_COLUMN_BITMASK = 16L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long STRUCTUREVERSIONID_COLUMN_BITMASK = 32L;
+	public static final long STORAGEID_COLUMN_BITMASK = 4L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
 	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 64L;
+	public static final long PRIORITY_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -382,16 +364,6 @@ public class DDMFieldModelImpl
 		_companyId = companyId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalCompanyId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("companyId"));
-	}
-
 	@Override
 	public long getParentFieldId() {
 		return _parentFieldId;
@@ -444,16 +416,6 @@ public class DDMFieldModelImpl
 		_structureVersionId = structureVersionId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalStructureVersionId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("structureVersionId"));
-	}
-
 	@Override
 	public String getFieldName() {
 		if (_fieldName == null) {
@@ -499,15 +461,6 @@ public class DDMFieldModelImpl
 		}
 
 		_fieldType = fieldType;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public String getOriginalFieldType() {
-		return getColumnOriginalValue("fieldType");
 	}
 
 	@Override
@@ -953,4 +906,4 @@ public class DDMFieldModelImpl
 	private DDMField _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-132131083
+// LIFERAY-SERVICE-BUILDER-HASH:-1154644727

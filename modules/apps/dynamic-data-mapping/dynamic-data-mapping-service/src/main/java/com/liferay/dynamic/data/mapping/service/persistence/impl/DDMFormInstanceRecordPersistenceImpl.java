@@ -330,92 +330,6 @@ public class DDMFormInstanceRecordPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<DDMFormInstanceRecord, NoSuchFormInstanceRecordException>
-			_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the ddm form instance records where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMFormInstanceRecordModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of ddm form instance records
-	 * @param end the upper bound of the range of ddm form instance records (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ddm form instance records
-	 */
-	@Override
-	public List<DDMFormInstanceRecord> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<DDMFormInstanceRecord> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ddm form instance record in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddm form instance record
-	 * @throws NoSuchFormInstanceRecordException if a matching ddm form instance record could not be found
-	 */
-	@Override
-	public DDMFormInstanceRecord findByCompanyId_First(
-			long companyId,
-			OrderByComparator<DDMFormInstanceRecord> orderByComparator)
-		throws NoSuchFormInstanceRecordException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first ddm form instance record in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddm form instance record, or <code>null</code> if a matching ddm form instance record could not be found
-	 */
-	@Override
-	public DDMFormInstanceRecord fetchByCompanyId_First(
-		long companyId,
-		OrderByComparator<DDMFormInstanceRecord> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the ddm form instance records where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of ddm form instance records where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching ddm form instance records
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
-	private CollectionPersistenceFinder
-		<DDMFormInstanceRecord, NoSuchFormInstanceRecordException>
 			_collectionPersistenceFinderByFormInstanceId;
 
 	/**
@@ -591,99 +505,6 @@ public class DDMFormInstanceRecordPersistenceImpl
 	public int countByU_F(long userId, long formInstanceId) {
 		return _collectionPersistenceFinderByU_F.count(
 			finderCache, new Object[] {userId, formInstanceId});
-	}
-
-	private CollectionPersistenceFinder
-		<DDMFormInstanceRecord, NoSuchFormInstanceRecordException>
-			_collectionPersistenceFinderByF_F;
-
-	/**
-	 * Returns an ordered range of all the ddm form instance records where formInstanceId = &#63; and formInstanceVersion = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>DDMFormInstanceRecordModelImpl</code>.
-	 * </p>
-	 *
-	 * @param formInstanceId the form instance ID
-	 * @param formInstanceVersion the form instance version
-	 * @param start the lower bound of the range of ddm form instance records
-	 * @param end the upper bound of the range of ddm form instance records (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching ddm form instance records
-	 */
-	@Override
-	public List<DDMFormInstanceRecord> findByF_F(
-		long formInstanceId, String formInstanceVersion, int start, int end,
-		OrderByComparator<DDMFormInstanceRecord> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByF_F.find(
-			finderCache, new Object[] {formInstanceId, formInstanceVersion},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first ddm form instance record in the ordered set where formInstanceId = &#63; and formInstanceVersion = &#63;.
-	 *
-	 * @param formInstanceId the form instance ID
-	 * @param formInstanceVersion the form instance version
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddm form instance record
-	 * @throws NoSuchFormInstanceRecordException if a matching ddm form instance record could not be found
-	 */
-	@Override
-	public DDMFormInstanceRecord findByF_F_First(
-			long formInstanceId, String formInstanceVersion,
-			OrderByComparator<DDMFormInstanceRecord> orderByComparator)
-		throws NoSuchFormInstanceRecordException {
-
-		return _collectionPersistenceFinderByF_F.findFirst(
-			finderCache, new Object[] {formInstanceId, formInstanceVersion},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first ddm form instance record in the ordered set where formInstanceId = &#63; and formInstanceVersion = &#63;.
-	 *
-	 * @param formInstanceId the form instance ID
-	 * @param formInstanceVersion the form instance version
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching ddm form instance record, or <code>null</code> if a matching ddm form instance record could not be found
-	 */
-	@Override
-	public DDMFormInstanceRecord fetchByF_F_First(
-		long formInstanceId, String formInstanceVersion,
-		OrderByComparator<DDMFormInstanceRecord> orderByComparator) {
-
-		return _collectionPersistenceFinderByF_F.fetchFirst(
-			finderCache, new Object[] {formInstanceId, formInstanceVersion},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the ddm form instance records where formInstanceId = &#63; and formInstanceVersion = &#63; from the database.
-	 *
-	 * @param formInstanceId the form instance ID
-	 * @param formInstanceVersion the form instance version
-	 */
-	@Override
-	public void removeByF_F(long formInstanceId, String formInstanceVersion) {
-		_collectionPersistenceFinderByF_F.remove(
-			finderCache, new Object[] {formInstanceId, formInstanceVersion});
-	}
-
-	/**
-	 * Returns the number of ddm form instance records where formInstanceId = &#63; and formInstanceVersion = &#63;.
-	 *
-	 * @param formInstanceId the form instance ID
-	 * @param formInstanceVersion the form instance version
-	 * @return the number of matching ddm form instance records
-	 */
-	@Override
-	public int countByF_F(long formInstanceId, String formInstanceVersion) {
-		return _collectionPersistenceFinderByF_F.count(
-			finderCache, new Object[] {formInstanceId, formInstanceVersion});
 	}
 
 	private CollectionPersistenceFinder
@@ -1166,34 +987,6 @@ public class DDMFormInstanceRecordPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					DDMFormInstanceRecord::getCompanyId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_DDMFORMINSTANCERECORD_WHERE,
-				_SQL_COUNT_DDMFORMINSTANCERECORD_WHERE,
-				DDMFormInstanceRecordModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "", "", null,
-				new FinderColumn<>(
-					"ddmFormInstanceRecord.", "companyId",
-					FinderColumn.Type.LONG, "=", true, true,
-					DDMFormInstanceRecord::getCompanyId));
-
 		_collectionPersistenceFinderByFormInstanceId =
 			new CollectionPersistenceFinder<>(
 				this,
@@ -1253,39 +1046,6 @@ public class DDMFormInstanceRecordPersistenceImpl
 				"ddmFormInstanceRecord.", "formInstanceId",
 				FinderColumn.Type.LONG, "=", true, true,
 				DDMFormInstanceRecord::getFormInstanceId));
-
-		_collectionPersistenceFinderByF_F = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByF_F",
-				new String[] {
-					Long.class.getName(), String.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"formInstanceId", "formInstanceVersion"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByF_F",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"formInstanceId", "formInstanceVersion"}, 0, 2,
-				true, null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByF_F",
-				new String[] {Long.class.getName(), String.class.getName()},
-				new String[] {"formInstanceId", "formInstanceVersion"}, 0, 2,
-				false, null),
-			_SQL_SELECT_DDMFORMINSTANCERECORD_WHERE,
-			_SQL_COUNT_DDMFORMINSTANCERECORD_WHERE,
-			DDMFormInstanceRecordModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"ddmFormInstanceRecord.", "formInstanceId",
-				FinderColumn.Type.LONG, "=", true, true,
-				DDMFormInstanceRecord::getFormInstanceId),
-			new FinderColumn<>(
-				"ddmFormInstanceRecord.", "formInstanceVersion",
-				FinderColumn.Type.STRING, "=", true, true,
-				DDMFormInstanceRecord::getFormInstanceVersion));
 
 		_collectionPersistenceFinderByF_I = new CollectionPersistenceFinder<>(
 			this,
@@ -1384,4 +1144,4 @@ public class DDMFormInstanceRecordPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1269356771
+// LIFERAY-SERVICE-BUILDER-HASH:-1232611462

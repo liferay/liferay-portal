@@ -249,13 +249,6 @@ public class DDMFormInstanceRecordPersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByFormInstanceId() throws Exception {
 		_persistence.countByFormInstanceId(RandomTestUtil.nextLong());
 
@@ -268,15 +261,6 @@ public class DDMFormInstanceRecordPersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
 
 		_persistence.countByU_F(0L, 0L);
-	}
-
-	@Test
-	public void testCountByF_F() throws Exception {
-		_persistence.countByF_F(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByF_F(0L, "null");
-
-		_persistence.countByF_F(0L, (String)null);
 	}
 
 	@Test
@@ -681,4 +665,4 @@ public class DDMFormInstanceRecordPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-516505005
+// LIFERAY-SERVICE-BUILDER-HASH:888703992

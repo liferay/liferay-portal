@@ -7,13 +7,10 @@ create unique index IX_B7498537 on DDMDataProviderInstance (uuid_[$COLUMN_LENGTH
 create unique index IX_EC5795A0 on DDMDataProviderInstanceLink (dataProviderInstanceId, structureId, ctCollectionId);
 create index IX_CB823541 on DDMDataProviderInstanceLink (structureId);
 
-create index IX_DEA6624F on DDMField (companyId, fieldType[$COLUMN_LENGTH:255$]);
 create index IX_10FC3BA2 on DDMField (storageId, fieldName[$COLUMN_LENGTH:500$]);
 create unique index IX_1BB20E75 on DDMField (storageId, instanceId[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_DE90A287 on DDMField (structureVersionId);
 
 create unique index IX_83964B3A on DDMFieldAttribute (attributeName[$COLUMN_LENGTH:255$], languageId[$COLUMN_LENGTH:75$], fieldId, ctCollectionId);
-create index IX_167E6FEA on DDMFieldAttribute (attributeName[$COLUMN_LENGTH:255$], smallAttributeValue[$COLUMN_LENGTH:255$]);
 create index IX_D3B57A06 on DDMFieldAttribute (storageId, attributeName[$COLUMN_LENGTH:255$]);
 create index IX_FECE9ED8 on DDMFieldAttribute (storageId, languageId[$COLUMN_LENGTH:75$]);
 
@@ -21,16 +18,13 @@ create index IX_9E1C31FE on DDMFormInstance (groupId);
 create unique index IX_C0288850 on DDMFormInstance (structureId, ctCollectionId);
 create unique index IX_EAB7A400 on DDMFormInstance (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_5BC982B on DDMFormInstanceRecord (companyId);
-create index IX_242301EA on DDMFormInstanceRecord (formInstanceId, formInstanceVersion[$COLUMN_LENGTH:75$]);
 create index IX_2C10D58 on DDMFormInstanceRecord (formInstanceId, ipAddress[$COLUMN_LENGTH:75$]);
 create index IX_3C8DBDFF on DDMFormInstanceRecord (formInstanceId, userId);
 create unique index IX_90833BB1 on DDMFormInstanceRecord (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_EAAF6D80 on DDMFormInstanceRecordVersion (formInstanceId, formInstanceVersion[$COLUMN_LENGTH:75$]);
-create index IX_F0C9356C on DDMFormInstanceRecordVersion (formInstanceId, userId, formInstanceVersion[$COLUMN_LENGTH:75$], status);
 create index IX_B5A3FAC6 on DDMFormInstanceRecordVersion (formInstanceRecordId, status);
 create unique index IX_272BBC86 on DDMFormInstanceRecordVersion (formInstanceRecordId, version[$COLUMN_LENGTH:75$], ctCollectionId);
+create index IX_88BAEE60 on DDMFormInstanceRecordVersion (userId, formInstanceId, status, formInstanceVersion[$COLUMN_LENGTH:75$]);
 
 create index IX_953190E8 on DDMFormInstanceReport (formInstanceId);
 

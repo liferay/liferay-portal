@@ -242,15 +242,6 @@ public class DDMFormInstanceRecordVersionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByF_F() throws Exception {
-		_persistence.countByF_F(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByF_F(0L, "null");
-
-		_persistence.countByF_F(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByF_V() throws Exception {
 		_persistence.countByF_V(RandomTestUtil.nextLong(), "");
 
@@ -693,4 +684,4 @@ public class DDMFormInstanceRecordVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:338287885
+// LIFERAY-SERVICE-BUILDER-HASH:-1320345252

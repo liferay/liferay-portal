@@ -177,22 +177,6 @@ public class DDMFieldPersistenceTest {
 	}
 
 	@Test
-	public void testCountByStructureVersionId() throws Exception {
-		_persistence.countByStructureVersionId(RandomTestUtil.nextLong());
-
-		_persistence.countByStructureVersionId(0L);
-	}
-
-	@Test
-	public void testCountByC_F() throws Exception {
-		_persistence.countByC_F(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByC_F(0L, "null");
-
-		_persistence.countByC_F(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByS_F() throws Exception {
 		_persistence.countByS_F(RandomTestUtil.nextLong(), "");
 
@@ -539,4 +523,4 @@ public class DDMFieldPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1591994999
+// LIFERAY-SERVICE-BUILDER-HASH:1516473446
