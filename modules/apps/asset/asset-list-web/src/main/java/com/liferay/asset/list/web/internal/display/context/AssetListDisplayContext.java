@@ -21,6 +21,7 @@ import com.liferay.asset.list.util.AssetListPortletUtil;
 import com.liferay.asset.list.web.internal.security.permission.resource.AssetListEntryPermission;
 import com.liferay.asset.list.web.internal.security.permission.resource.AssetListPermission;
 import com.liferay.asset.list.web.internal.servlet.taglib.util.AssetListEntryActionDropdownItemsProvider;
+import com.liferay.asset.list.web.internal.util.AudienceVariationUtil;
 import com.liferay.asset.util.AssetRendererFactoryClassProvider;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItemListBuilder;
@@ -317,6 +318,17 @@ public class AssetListDisplayContext {
 			String.valueOf(assetListEntry.getAssetListEntryId()));
 	}
 
+	public String getAudienceEntryERC() {
+		if (_audienceEntryERC != null) {
+			return _audienceEntryERC;
+		}
+
+		_audienceEntryERC = AudienceVariationUtil.getAudienceEntryERC(
+			_liferayPortletRequest);
+
+		return _audienceEntryERC;
+	}
+
 	public String getClassName(AssetRendererFactory<?> assetRendererFactory) {
 		Class<? extends AssetRendererFactory<?>> clazz =
 			_assetRendererFactoryClassProvider.getClass(assetRendererFactory);
@@ -576,6 +588,7 @@ public class AssetListDisplayContext {
 	private Integer _assetListEntryType;
 	private final AssetRendererFactoryClassProvider
 		_assetRendererFactoryClassProvider;
+	private String _audienceEntryERC;
 	private String _displayStyle;
 	private final HttpServletRequest _httpServletRequest;
 	private String _keywords;

@@ -7,11 +7,13 @@ package com.liferay.asset.list.web.internal.portlet.action;
 
 import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.service.AssetListEntryService;
+import com.liferay.asset.list.web.internal.util.AudienceVariationUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -42,14 +44,25 @@ public class AddAssetEntrySelectionMVCActionCommand
 
 		long[] assetEntryIds = ParamUtil.getLongValues(
 			actionRequest, "assetEntryIds");
-		long segmentsEntryId = ParamUtil.getLong(
-			actionRequest, "segmentsEntryId");
+		String audienceEntryERC = AudienceVariationUtil.getAudienceEntryERC(
+			actionRequest);
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			actionRequest);
 
-		_assetListEntryService.addAssetEntrySelections(
-			assetListEntryId, assetEntryIds, segmentsEntryId, serviceContext);
+		if (Validator.isNotNull(audienceEntryERC)) {
+			_assetListEntryService.addAssetEntrySelections(
+				assetListEntryId, assetEntryIds, audienceEntryERC,
+				serviceContext);
+		}
+		else {
+			long segmentsEntryId = ParamUtil.getLong(
+				actionRequest, "segmentsEntryId");
+
+			_assetListEntryService.addAssetEntrySelections(
+				assetListEntryId, assetEntryIds, segmentsEntryId,
+				serviceContext);
+		}
 	}
 
 	@Reference

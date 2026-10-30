@@ -16,6 +16,7 @@ AssetListEntryAssetEntryRel assetListEntryAssetEntryRel = (AssetListEntryAssetEn
 <portlet:actionURL name="/asset_list/delete_asset_entry_selection" var="deleteAssetEntrySelectionURL">
 	<portlet:param name="redirect" value="<%= currentURL %>" />
 	<portlet:param name="assetListEntryId" value="<%= String.valueOf(assetListEntryAssetEntryRel.getAssetListEntryId()) %>" />
+	<portlet:param name="audienceEntryERC" value="<%= assetListEntryAssetEntryRel.getAudienceEntryERC() %>" />
 	<portlet:param name="segmentsEntryId" value="<%= String.valueOf(assetListEntryAssetEntryRel.getSegmentsEntryId()) %>" />
 	<portlet:param name="position" value="<%= String.valueOf(assetListEntryAssetEntryRel.getPosition()) %>" />
 </portlet:actionURL>

@@ -7,6 +7,7 @@ package com.liferay.asset.list.web.internal.portlet.action;
 
 import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelService;
+import com.liferay.asset.list.web.internal.util.AudienceVariationUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
@@ -46,7 +47,7 @@ public class DeleteAssetListEntryAudienceVariationMVCActionCommand
 		_assetListEntryAudienceEntryRelService.
 			deleteAssetListEntryAudienceEntryRel(
 				assetListEntryId,
-				ParamUtil.getString(actionRequest, "audienceEntryERC"));
+				AudienceVariationUtil.getAudienceEntryERC(actionRequest));
 
 		sendRedirect(
 			actionRequest, actionResponse,

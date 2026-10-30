@@ -28,6 +28,7 @@ import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService
 import com.liferay.asset.list.util.comparator.ClassNameModelResourceComparator;
 import com.liferay.asset.list.web.internal.constants.AssetListWebKeys;
 import com.liferay.asset.list.web.internal.util.AssetListTypePropertiesUtil;
+import com.liferay.asset.list.web.internal.util.AudienceVariationUtil;
 import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorCriterion;
 import com.liferay.asset.tags.item.selector.AssetTagsItemSelectorReturnType;
 import com.liferay.asset.util.AssetRendererFactoryClassProvider;
@@ -260,6 +261,17 @@ public class EditAssetListDisplayContext {
 		return _assetListEntryType;
 	}
 
+	public String getAudienceEntryERC() {
+		if (_audienceEntryERC != null) {
+			return _audienceEntryERC;
+		}
+
+		_audienceEntryERC = AudienceVariationUtil.getAudienceEntryERC(
+			_portletRequest);
+
+		return _audienceEntryERC;
+	}
+
 	public Map<String, Object> getAudienceVariationsData() {
 		List<AssetListEntryAudienceEntryRel> assetListEntryAudienceEntryRels =
 			_getAssetListEntryAudienceEntryRels();
@@ -275,26 +287,10 @@ public class EditAssetListDisplayContext {
 		).put(
 			"defaultVariation",
 			() -> JSONUtil.put(
-				"active", true
+				"active", Validator.isNull(getAudienceEntryERC())
 			).put(
 				"editAssetListEntryURL",
-				PortletURLBuilder.createRenderURL(
-					PortalUtil.getLiferayPortletResponse(_portletResponse)
-				).setMVCPath(
-					"/edit_asset_list_entry.jsp"
-				).setBackURL(
-					getBackURL()
-				).setParameter(
-					"assetListEntryId", getAssetListEntryId()
-				).setParameter(
-					"backURLTitle",
-					() -> {
-						PortletDisplay portletDisplay =
-							_themeDisplay.getPortletDisplay();
-
-						return portletDisplay.getPortletDisplayName();
-					}
-				).buildString()
+				_getEditAssetListEntryAudienceVariationURL(StringPool.BLANK)
 			).put(
 				"id", "default"
 			).put(
@@ -787,6 +783,8 @@ public class EditAssetListDisplayContext {
 		).setParameter(
 			"assetListEntryId", getAssetListEntryId()
 		).setParameter(
+			"audienceEntryERC", getAudienceEntryERC()
+		).setParameter(
 			"segmentsEntryId", getSegmentsEntryId()
 		).buildPortletURL();
 	}
@@ -837,11 +835,13 @@ public class EditAssetListDisplayContext {
 			() ->
 				AssetListEntryAssetEntryRelLocalServiceUtil.
 					getAssetListEntryAssetEntryRels(
-						getAssetListEntryId(), getSegmentsEntryId(),
-						searchContainer.getStart(), searchContainer.getEnd()),
+						getAssetListEntryId(), getAudienceEntryERC(),
+						getSegmentsEntryId(), searchContainer.getStart(),
+						searchContainer.getEnd()),
 			AssetListEntryAssetEntryRelLocalServiceUtil.
 				getAssetListEntryAssetEntryRelsCount(
-					getAssetListEntryId(), getSegmentsEntryId()));
+					getAssetListEntryId(), getAudienceEntryERC(),
+					getSegmentsEntryId()));
 
 		_searchContainer = searchContainer;
 
@@ -1025,6 +1025,16 @@ public class EditAssetListDisplayContext {
 
 	public UnicodeProperties getUnicodeProperties() {
 		return _unicodeProperties;
+	}
+
+	public String getVariationName(Locale locale) {
+		String audienceEntryERC = getAudienceEntryERC();
+
+		if (Validator.isNotNull(audienceEntryERC)) {
+			return _getAudiencesEntryName(audienceEntryERC);
+		}
+
+		return getSegmentsEntryName(getSegmentsEntryId(), locale);
 	}
 
 	public List<Long> getVocabularyIds() throws PortalException {
@@ -1229,9 +1239,18 @@ public class EditAssetListDisplayContext {
 		return JSONUtil.toJSONArray(
 			assetListEntryAudienceEntryRels,
 			assetListEntryAudienceEntryRel -> JSONUtil.put(
+				"active",
+				Objects.equals(
+					getAudienceEntryERC(),
+					assetListEntryAudienceEntryRel.getAudienceEntryERC())
+			).put(
 				"deleteAssetListEntryVariationURL",
 				_getDeleteAssetListEntryAudienceVariationURL(
 					liferayPortletResponse, assetListEntryAudienceEntryRel)
+			).put(
+				"editAssetListEntryURL",
+				_getEditAssetListEntryAudienceVariationURL(
+					assetListEntryAudienceEntryRel.getAudienceEntryERC())
 			).put(
 				"id",
 				assetListEntryAudienceEntryRel.
@@ -1442,6 +1461,30 @@ public class EditAssetListDisplayContext {
 		).buildString();
 	}
 
+	private String _getEditAssetListEntryAudienceVariationURL(
+		String audienceEntryERC) {
+
+		return PortletURLBuilder.createRenderURL(
+			PortalUtil.getLiferayPortletResponse(_portletResponse)
+		).setMVCPath(
+			"/edit_asset_list_entry.jsp"
+		).setBackURL(
+			getBackURL()
+		).setParameter(
+			"assetListEntryId", getAssetListEntryId()
+		).setParameter(
+			"audienceEntryERC", audienceEntryERC
+		).setParameter(
+			"backURLTitle",
+			() -> {
+				PortletDisplay portletDisplay =
+					_themeDisplay.getPortletDisplay();
+
+				return portletDisplay.getPortletDisplayName();
+			}
+		).buildString();
+	}
+
 	private JSONArray _getGroupIdsJSONArray(
 			long groupId, Map<Long, JSONArray> groupIdsJSONArrays,
 			String portletId)
@@ -1486,8 +1529,11 @@ public class EditAssetListDisplayContext {
 	private String _getTypeSettings() {
 		AssetListEntry assetListEntry = getAssetListEntry();
 
-		String typeSettings = assetListEntry.getTypeSettings(
-			getSegmentsEntryId());
+		String audienceEntryERC = getAudienceEntryERC();
+
+		String typeSettings = Validator.isNotNull(audienceEntryERC) ?
+			assetListEntry.getTypeSettings(audienceEntryERC) :
+				assetListEntry.getTypeSettings(getSegmentsEntryId());
 
 		if (Validator.isNull(typeSettings)) {
 			typeSettings = assetListEntry.getTypeSettings(
@@ -1572,6 +1618,7 @@ public class EditAssetListDisplayContext {
 	private Integer _assetListEntryType;
 	private final AssetRendererFactoryClassProvider
 		_assetRendererFactoryClassProvider;
+	private String _audienceEntryERC;
 	private List<Long> _availableClassNameIds;
 	private List<SegmentsEntry> _availableSegmentsEntries;
 	private String _backURL;

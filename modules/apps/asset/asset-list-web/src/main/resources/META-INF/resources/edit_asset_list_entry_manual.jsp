@@ -64,6 +64,7 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 			<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 			<aui:input name="backURL" type="hidden" value="<%= editAssetListDisplayContext.getBackURL() %>" />
 			<aui:input name="assetListEntryId" type="hidden" value="<%= assetListDisplayContext.getAssetListEntryId() %>" />
+			<aui:input name="audienceEntryERC" type="hidden" value="<%= assetListDisplayContext.getAudienceEntryERC() %>" />
 			<aui:input name="segmentsEntryId" type="hidden" value="<%= assetListDisplayContext.getSegmentsEntryId() %>" />
 			<aui:input name="assetEntryIds" type="hidden" />
 
@@ -73,7 +74,7 @@ AssetListEntry assetListEntry = assetListDisplayContext.getAssetListEntry();
 						verticalAlign="center"
 					>
 						<clay:content-col>
-							<%= HtmlUtil.escape(editAssetListDisplayContext.getSegmentsEntryName(editAssetListDisplayContext.getSegmentsEntryId(), locale)) %>
+							<%= HtmlUtil.escape(editAssetListDisplayContext.getVariationName(locale)) %>
 						</clay:content-col>
 
 						<clay:content-col

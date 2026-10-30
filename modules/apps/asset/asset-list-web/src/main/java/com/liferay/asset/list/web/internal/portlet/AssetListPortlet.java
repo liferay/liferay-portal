@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.segments.configuration.provider.SegmentsConfigurationProvider;
 
 import jakarta.portlet.Portlet;
@@ -144,6 +145,14 @@ public class AssetListPortlet extends MVCPortlet {
 
 		if (assetListEntry == null) {
 			return new UnicodeProperties();
+		}
+
+		String audienceEntryERC = assetListDisplayContext.getAudienceEntryERC();
+
+		if (Validator.isNotNull(audienceEntryERC)) {
+			return UnicodePropertiesBuilder.load(
+				assetListEntry.getTypeSettings(audienceEntryERC)
+			).build();
 		}
 
 		return UnicodePropertiesBuilder.load(

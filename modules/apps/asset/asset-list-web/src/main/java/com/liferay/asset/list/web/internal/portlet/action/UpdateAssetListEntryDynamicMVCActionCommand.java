@@ -8,11 +8,13 @@ package com.liferay.asset.list.web.internal.portlet.action;
 import com.liferay.asset.list.constants.AssetListPortletKeys;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryService;
+import com.liferay.asset.list.web.internal.util.AudienceVariationUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
@@ -48,19 +50,39 @@ public class UpdateAssetListEntryDynamicMVCActionCommand
 			return;
 		}
 
-		long segmentsEntryId = ParamUtil.getLong(
-			actionRequest, "segmentsEntryId");
+		String audienceEntryERC = AudienceVariationUtil.getAudienceEntryERC(
+			actionRequest);
 
-		_assetListEntryService.updateAssetListEntryTypeSettings(
-			assetListEntryId, segmentsEntryId,
-			UnicodePropertiesBuilder.create(
-				true
-			).fastLoad(
-				assetListEntry.getTypeSettings(segmentsEntryId)
-			).putAll(
-				PropertiesParamUtil.getProperties(
-					actionRequest, "TypeSettingsProperties--")
-			).buildString());
+		if (Validator.isNotNull(audienceEntryERC)) {
+			_assetListEntryService.updateAssetListEntryTypeSettings(
+				assetListEntryId, audienceEntryERC,
+				_getTypeSettings(
+					actionRequest,
+					assetListEntry.getTypeSettings(audienceEntryERC)));
+		}
+		else {
+			long segmentsEntryId = ParamUtil.getLong(
+				actionRequest, "segmentsEntryId");
+
+			_assetListEntryService.updateAssetListEntryTypeSettings(
+				assetListEntryId, segmentsEntryId,
+				_getTypeSettings(
+					actionRequest,
+					assetListEntry.getTypeSettings(segmentsEntryId)));
+		}
+	}
+
+	private String _getTypeSettings(
+		ActionRequest actionRequest, String typeSettings) {
+
+		return UnicodePropertiesBuilder.create(
+			true
+		).fastLoad(
+			typeSettings
+		).putAll(
+			PropertiesParamUtil.getProperties(
+				actionRequest, "TypeSettingsProperties--")
+		).buildString();
 	}
 
 	@Reference

@@ -15,6 +15,7 @@ import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.segments.constants.SegmentsEntryConstants;
 
@@ -43,6 +44,8 @@ public class AssetListEntryVariationActionDropdownItemsProvider {
 
 	public List<DropdownItem> getActionDropdownItems() {
 		return DropdownItemListBuilder.add(
+			() -> Validator.isNull(
+				_editAssetListDisplayContext.getAudienceEntryERC()),
 			dropdownItem -> {
 				dropdownItem.putData(
 					"action", "viewAssetListEntryVariationItems");
@@ -69,29 +72,52 @@ public class AssetListEntryVariationActionDropdownItemsProvider {
 			}
 		).add(
 			() ->
-				(_editAssetListDisplayContext.getSegmentsEntryId() !=
-					SegmentsEntryConstants.ID_DEFAULT) &&
+				(Validator.isNotNull(
+					_editAssetListDisplayContext.getAudienceEntryERC()) ||
+				 (_editAssetListDisplayContext.getSegmentsEntryId() !=
+					 SegmentsEntryConstants.ID_DEFAULT)) &&
 				!_editAssetListDisplayContext.isLiveGroup(),
 			dropdownItem -> {
 				dropdownItem.putData("action", "deleteAssetListEntryVariation");
 				dropdownItem.putData(
 					"deleteAssetListEntryVariationURL",
-					PortletURLBuilder.createActionURL(
-						_liferayPortletResponse
-					).setActionName(
-						"/asset_list/delete_asset_list_entry_variation"
-					).setParameter(
-						"assetListEntryId",
-						_editAssetListDisplayContext.getAssetListEntryId()
-					).setParameter(
-						"segmentsEntryId",
-						_editAssetListDisplayContext.getSegmentsEntryId()
-					).buildString());
+					_getDeleteAssetListEntryVariationURL());
 				dropdownItem.setIcon("trash");
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "delete"));
 			}
 		).build();
+	}
+
+	private String _getDeleteAssetListEntryVariationURL() {
+		String audienceEntryERC =
+			_editAssetListDisplayContext.getAudienceEntryERC();
+
+		if (Validator.isNotNull(audienceEntryERC)) {
+			return PortletURLBuilder.createActionURL(
+				_liferayPortletResponse
+			).setActionName(
+				"/asset_list/delete_asset_list_entry_audience_variation"
+			).setBackURL(
+				_editAssetListDisplayContext.getBackURL()
+			).setParameter(
+				"assetListEntryId",
+				_editAssetListDisplayContext.getAssetListEntryId()
+			).setParameter(
+				"audienceEntryERC", audienceEntryERC
+			).buildString();
+		}
+
+		return PortletURLBuilder.createActionURL(
+			_liferayPortletResponse
+		).setActionName(
+			"/asset_list/delete_asset_list_entry_variation"
+		).setParameter(
+			"assetListEntryId",
+			_editAssetListDisplayContext.getAssetListEntryId()
+		).setParameter(
+			"segmentsEntryId", _editAssetListDisplayContext.getSegmentsEntryId()
+		).buildString();
 	}
 
 	private final EditAssetListDisplayContext _editAssetListDisplayContext;
