@@ -94,7 +94,6 @@ import com.liferay.journal.service.persistence.JournalFolderPersistence;
 import com.liferay.journal.util.JournalConverter;
 import com.liferay.journal.util.JournalDefaultTemplateProvider;
 import com.liferay.journal.util.JournalHelper;
-import com.liferay.journal.util.comparator.ArticleIDComparator;
 import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.layout.display.page.LayoutDisplayPageProviderRegistry;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -1962,35 +1961,6 @@ public class JournalArticleLocalServiceImpl
 		return articles.get(0);
 	}
 
-	/**
-	 * Returns the latest indexable web content article matching the resource
-	 * primary key.
-	 *
-	 * @param  resourcePrimKey the primary key of the resource instance
-	 * @return the latest indexable web content article matching the resource
-	 *         primary key, or <code>null</code> if no matching web content
-	 *         article could be found
-	 */
-	@Override
-	public JournalArticle fetchLatestIndexableArticle(long resourcePrimKey) {
-		OrderByComparator<JournalArticle> orderByComparator =
-			ArticleVersionComparator.getInstance(false);
-
-		List<JournalArticle> articles = journalArticlePersistence.findByR_I_S(
-			resourcePrimKey, true,
-			new int[] {
-				WorkflowConstants.STATUS_APPROVED,
-				WorkflowConstants.STATUS_IN_TRASH
-			},
-			0, 1, orderByComparator);
-
-		if (articles.isEmpty()) {
-			return null;
-		}
-
-		return articles.get(0);
-	}
-
 	@Override
 	public PersistedModel fetchPersistedModel(Serializable primaryKeyObj) {
 		PersistedModel persistedModel =
@@ -2839,18 +2809,6 @@ public class JournalArticleLocalServiceImpl
 			));
 	}
 
-	/**
-	 * Returns all the web content articles matching the small image ID.
-	 *
-	 * @param  smallImageId the primary key of the web content article's small
-	 *         image
-	 * @return the web content articles matching the small image ID
-	 */
-	@Override
-	public List<JournalArticle> getArticlesBySmallImageId(long smallImageId) {
-		return journalArticlePersistence.findBySmallImageId(smallImageId);
-	}
-
 	@Override
 	public List<JournalArticle> getArticlesByStructureId(
 		long groupId, long ddmStructureId, int status, int start, int end,
@@ -3000,137 +2958,6 @@ public class JournalArticleLocalServiceImpl
 	public int getArticlesCountByResourcePrimKey(long resourcePrimKey) {
 		return journalArticlePersistence.countByResourcePrimKey(
 			resourcePrimKey);
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * company, version, and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the web content article's company
-	 * @param  version the web content article's version
-	 * @param  status the web content article's workflow status. For more
-	 *         information see {@link WorkflowConstants} for constants starting
-	 *         with the "STATUS_" prefix.
-	 * @param  start the lower bound of the range of web content articles to
-	 *         return
-	 * @param  end the upper bound of the range of web content articles to
-	 *         return (not inclusive)
-	 * @return the range of matching web content articles ordered by article ID
-	 */
-	@Override
-	public List<JournalArticle> getCompanyArticles(
-		long companyId, double version, int status, int start, int end) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return journalArticlePersistence.findByC_V(
-				companyId, version, start, end,
-				ArticleIDComparator.getInstance(true));
-		}
-
-		return journalArticlePersistence.findByC_V_ST(
-			companyId, version, status, start, end,
-			ArticleIDComparator.getInstance(true));
-	}
-
-	/**
-	 * Returns an ordered range of all the web content articles matching the
-	 * company and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the web content article's company
-	 * @param  status the web content article's workflow status. For more
-	 *         information see {@link WorkflowConstants} for constants starting
-	 *         with the "STATUS_" prefix.
-	 * @param  start the lower bound of the range of web content articles to
-	 *         return
-	 * @param  end the upper bound of the range of web content articles to
-	 *         return (not inclusive)
-	 * @return the range of matching web content articles ordered by article ID
-	 */
-	@Override
-	public List<JournalArticle> getCompanyArticles(
-		long companyId, int status, int start, int end) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return journalArticlePersistence.findByCompanyId(
-				companyId, start, end, ArticleIDComparator.getInstance(true));
-		}
-
-		return journalArticlePersistence.findByC_ST(
-			companyId, status, start, end,
-			ArticleIDComparator.getInstance(true));
-	}
-
-	/**
-	 * Returns the number of web content articles matching the company, version,
-	 * and workflow status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the web content article's company
-	 * @param  version the web content article's version
-	 * @param  status the web content article's workflow status. For more
-	 *         information see {@link WorkflowConstants} for constants starting
-	 *         with the "STATUS_" prefix.
-	 * @param  start the lower bound of the range of web content articles to
-	 *         return
-	 * @param  end the upper bound of the range of web content articles to
-	 *         return (not inclusive)
-	 * @return the number of matching web content articles
-	 */
-	@Override
-	public int getCompanyArticlesCount(
-		long companyId, double version, int status, int start, int end) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return journalArticlePersistence.countByC_V(companyId, version);
-		}
-
-		return journalArticlePersistence.countByC_V_ST(
-			companyId, version, status);
-	}
-
-	/**
-	 * Returns the number of web content articles matching the company and
-	 * workflow status.
-	 *
-	 * @param  companyId the primary key of the web content article's company
-	 * @param  status the web content article's workflow status. For more
-	 *         information see {@link WorkflowConstants} for constants starting
-	 *         with the "STATUS_" prefix.
-	 * @return the number of matching web content articles
-	 */
-	@Override
-	public int getCompanyArticlesCount(long companyId, int status) {
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return journalArticlePersistence.countByCompanyId(companyId);
-		}
-
-		return journalArticlePersistence.countByC_ST(companyId, status);
 	}
 
 	/**

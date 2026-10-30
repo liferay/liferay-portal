@@ -316,18 +316,6 @@ public class JournalFolderLocalServiceImpl
 	}
 
 	@Override
-	public List<JournalFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return journalFolderPersistence.findByCompanyId(companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyFoldersCount(long companyId) {
-		return journalFolderPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public List<DDMStructure> getDDMStructures(
 			long[] groupIds, long folderId, int restrictionType)
 		throws PortalException {

@@ -7,7 +7,6 @@ package com.liferay.journal.service.impl;
 
 import com.liferay.journal.model.JournalContentSearch;
 import com.liferay.journal.service.base.JournalContentSearchLocalServiceBaseImpl;
-import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 
 import java.util.List;
@@ -42,24 +41,6 @@ public class JournalContentSearchLocalServiceImpl
 	@Override
 	public List<JournalContentSearch> getArticleContentSearches() {
 		return journalContentSearchPersistence.findAll();
-	}
-
-	@Override
-	public List<Long> getLayoutIds(
-		long groupId, boolean privateLayout, String articleId) {
-
-		return TransformUtil.transform(
-			journalContentSearchPersistence.findByG_P_A(
-				groupId, privateLayout, articleId),
-			contentSearch -> contentSearch.getLayoutId());
-	}
-
-	@Override
-	public int getLayoutIdsCount(
-		long groupId, boolean privateLayout, String articleId) {
-
-		return journalContentSearchPersistence.countByG_P_A(
-			groupId, privateLayout, articleId);
 	}
 
 }
