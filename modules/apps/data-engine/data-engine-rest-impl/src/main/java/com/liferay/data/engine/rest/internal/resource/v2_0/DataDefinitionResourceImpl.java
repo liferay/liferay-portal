@@ -107,6 +107,7 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -703,23 +704,26 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 			DDMForm ddmForm = _getDDMForm();
 
+			Locale defaultLocale = _getDefaultLocale();
+
 			if (ddmForm != null) {
 				availableLocales = ddmForm.getAvailableLocales();
 			}
 			else {
-				Locale defaultLocal = LocaleThreadLocal.getSiteDefaultLocale();
+				Locale siteDefaultLocale =
+					LocaleThreadLocal.getSiteDefaultLocale();
 
-				if (defaultLocal == null) {
-					defaultLocal = LocaleThreadLocal.getDefaultLocale();
+				if (siteDefaultLocale == null) {
+					siteDefaultLocale = LocaleThreadLocal.getDefaultLocale();
 				}
 
-				availableLocales = Collections.singleton(defaultLocal);
+				availableLocales = SetUtil.fromArray(
+					defaultLocale, siteDefaultLocale);
 			}
 
 			ddmFormFieldTypeSettingsDDMForm.setAvailableLocales(
 				availableLocales);
-			ddmFormFieldTypeSettingsDDMForm.setDefaultLocale(
-				_getDefaultLocale());
+			ddmFormFieldTypeSettingsDDMForm.setDefaultLocale(defaultLocale);
 
 			DDMFormRenderingContext ddmFormRenderingContext =
 				new DDMFormRenderingContext();
@@ -735,7 +739,7 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 			ddmFormRenderingContext.setHttpServletRequest(
 				contextHttpServletRequest);
-			ddmFormRenderingContext.setLocale(_getDefaultLocale());
+			ddmFormRenderingContext.setLocale(defaultLocale);
 			ddmFormRenderingContext.setPortletNamespace(
 				_portal.getPortletNamespace(
 					_portal.getPortletId(contextHttpServletRequest)));
