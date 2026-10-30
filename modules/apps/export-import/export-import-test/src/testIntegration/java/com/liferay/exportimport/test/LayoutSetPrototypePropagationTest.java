@@ -592,6 +592,55 @@ public class LayoutSetPrototypePropagationTest
 	}
 
 	@Test
+	@TestInfo("LPD-112142")
+	public void testLayoutSetPrototypePropagationLinkToLayoutLayoutWithChildLayouts()
+		throws Exception {
+
+		LayoutSetPrototype layoutSetPrototype =
+			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
+
+		Group layoutSetPrototypeGroup = layoutSetPrototype.getGroup();
+
+		Layout homeLayout = LayoutTestUtil.addTypePortletLayout(
+			layoutSetPrototypeGroup, true);
+
+		Layout linkToLayoutLayout = LayoutTestUtil.addTypeLinkToLayoutLayout(
+			layoutSetPrototypeGroup.getGroupId(), true,
+			homeLayout.getLayoutId());
+
+		for (int i = 0; i < 3; i++) {
+			Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+				layoutSetPrototypeGroup, true);
+
+			_layoutLocalService.updateParentLayoutId(
+				childLayout.getPlid(), linkToLayoutLayout.getPlid());
+		}
+
+		Group targetGroup = GroupTestUtil.addGroup();
+
+		setLinkEnabled(
+			targetGroup, layoutSetPrototype.getLayoutSetPrototypeId(), 0, true,
+			true);
+
+		propagateChanges(true, layoutSetPrototype);
+
+		List<Layout> targetLayouts = _layoutLocalService.getLayouts(
+			targetGroup.getGroupId(), false);
+
+		for (Layout targetLayout : targetLayouts) {
+			Assert.assertNotEquals(
+				targetLayout.toString(), LayoutConstants.TYPE_EMPTY,
+				targetLayout.getType());
+		}
+
+		Assert.assertEquals(
+			targetLayouts.toString(),
+			_layoutLocalService.getLayoutsCount(
+				layoutSetPrototypeGroup.getGroupId(), true),
+			targetLayouts.size());
+	}
+
+	@Test
 	public void testLayoutSetPrototypePropagationOverridesLogo()
 		throws Exception {
 
