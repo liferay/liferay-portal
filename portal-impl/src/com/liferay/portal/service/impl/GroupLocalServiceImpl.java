@@ -5404,13 +5404,26 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			throw remoteOptionsException;
 		}
 
+		String remoteURL = null;
+
+		try {
+			remoteURL = StagingURLHelperUtil.buildRemoteURL(
+				remoteAddress, remotePort, remotePathContext, secureConnection);
+		}
+		catch (SystemException systemException) {
+			if (systemException.getCause() instanceof
+					RemoteOptionsException remoteOptionsException) {
+
+				throw remoteOptionsException;
+			}
+
+			throw systemException;
+		}
+
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
 
 		User user = permissionChecker.getUser();
-
-		String remoteURL = StagingURLHelperUtil.buildRemoteURL(
-			remoteAddress, remotePort, remotePathContext, secureConnection);
 
 		HttpPrincipal httpPrincipal = new HttpPrincipal(
 			remoteURL, user.getLogin(), user.getPassword(),

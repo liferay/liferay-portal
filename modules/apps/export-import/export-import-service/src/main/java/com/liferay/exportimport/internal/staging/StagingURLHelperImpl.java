@@ -9,17 +9,27 @@ import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
 import com.liferay.exportimport.kernel.staging.StagingURLHelper;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
+import com.liferay.portal.kernel.exception.RemoteOptionsException;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.module.configuration.ConfigurationException;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.staging.configuration.StagingConfiguration;
 
 import java.io.Serializable;
 
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Akos Thurzo
@@ -49,6 +59,18 @@ public class StagingURLHelperImpl implements StagingURLHelper {
 	public String buildRemoteURL(
 		String remoteAddress, int remotePort, String remotePathContext,
 		boolean secureConnection) {
+
+		if (!_isRemoteHostAllowed(remoteAddress)) {
+			RemoteOptionsException remoteOptionsException =
+				new RemoteOptionsException(
+					RemoteOptionsException.REMOTE_ADDRESS);
+
+			remoteOptionsException.setRemoteAddress(remoteAddress);
+
+			throw new SystemException(
+				"Remote host " + remoteAddress + " is not allowed",
+				remoteOptionsException);
+		}
 
 		StringBundler sb = new StringBundler(5);
 
@@ -89,5 +111,35 @@ public class StagingURLHelperImpl implements StagingURLHelper {
 		return buildRemoteURL(
 			remoteAddress, remotePort, remotePathContext, secureConnection);
 	}
+
+	private boolean _isRemoteHostAllowed(String remoteAddress) {
+		try {
+			StagingConfiguration stagingConfiguration =
+				_configurationProvider.getCompanyConfiguration(
+					StagingConfiguration.class,
+					CompanyThreadLocal.getCompanyId());
+
+			String[] stagingRemoteHostsAllowed =
+				stagingConfiguration.stagingRemoteHostsAllowed();
+
+			if (ArrayUtil.isEmpty(stagingRemoteHostsAllowed)) {
+				return true;
+			}
+
+			return ArrayUtil.contains(
+				stagingRemoteHostsAllowed, remoteAddress, true);
+		}
+		catch (ConfigurationException configurationException) {
+			_log.error(configurationException);
+		}
+
+		return false;
+	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		StagingURLHelperImpl.class);
+
+	@Reference
+	private ConfigurationProvider _configurationProvider;
 
 }

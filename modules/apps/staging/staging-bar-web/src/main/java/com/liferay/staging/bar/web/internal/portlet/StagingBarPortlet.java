@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.exception.LayoutBranchNameException;
 import com.liferay.portal.kernel.exception.LayoutSetBranchNameException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.RemoteOptionsException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -43,7 +44,6 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.staging.bar.web.internal.portlet.constants.StagingBarPortletKeys;
@@ -285,23 +285,11 @@ public class StagingBarPortlet extends MVCPortlet {
 						stagingGroup.getGroupId(), layout.isPrivateLayout());
 			}
 
-			UnicodeProperties typeSettingsUnicodeProperties =
-				group.getTypeSettingsProperties();
-
-			String remoteAddress = typeSettingsUnicodeProperties.getProperty(
-				"remoteAddress");
-			int remotePort = GetterUtil.getInteger(
-				typeSettingsUnicodeProperties.getProperty("remotePort"));
-			String remotePathContext =
-				typeSettingsUnicodeProperties.getProperty("remotePathContext");
-			boolean secureConnection = GetterUtil.getBoolean(
-				typeSettingsUnicodeProperties.getProperty("secureConnection"));
-
-			remoteURL = _stagingURLHelper.buildRemoteURL(
-				remoteAddress, remotePort, remotePathContext, secureConnection);
-
 			if ((liveGroup != null) && group.isStagedRemotely()) {
 				try {
+					remoteURL = _stagingURLHelper.buildRemoteURL(
+						group.getTypeSettingsProperties());
+
 					remoteSiteURL = _staging.getRemoteSiteURL(
 						group, layout.isPrivateLayout());
 				}
@@ -313,14 +301,20 @@ public class StagingBarPortlet extends MVCPortlet {
 				catch (SystemException systemException) {
 					Throwable throwable = systemException.getCause();
 
-					if (!(throwable instanceof ConnectException)) {
-						throw systemException;
+					if (throwable instanceof ConnectException) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"Unable to connect to remote live: " +
+									throwable.getMessage());
+						}
 					}
-
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Unable to connect to remote live: " +
-								throwable.getMessage());
+					else if (throwable instanceof RemoteOptionsException) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(systemException);
+						}
+					}
+					else {
+						throw systemException;
 					}
 
 					SessionErrors.add(

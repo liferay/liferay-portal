@@ -9,6 +9,8 @@ import aQute.bnd.annotation.metatype.Meta;
 
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 
+import org.osgi.annotation.versioning.ProviderType;
+
 /**
  * @author Tamas Molnar
  */
@@ -21,6 +23,7 @@ import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClass
 	id = "com.liferay.staging.configuration.StagingConfiguration",
 	localization = "content/Language", name = "staging-configuration-name"
 )
+@ProviderType
 public interface StagingConfiguration {
 
 	@Meta.AD(
@@ -34,6 +37,12 @@ public interface StagingConfiguration {
 		name = "staging-delete-temp-lar-on-success", required = false
 	)
 	public boolean stagingDeleteTempLAROnSuccess();
+
+	@Meta.AD(
+		description = "staging-remote-hosts-allowed-help",
+		name = "staging-remote-hosts-allowed", required = false
+	)
+	public String[] stagingRemoteHostsAllowed();
 
 	@Meta.AD(
 		deflt = "false",

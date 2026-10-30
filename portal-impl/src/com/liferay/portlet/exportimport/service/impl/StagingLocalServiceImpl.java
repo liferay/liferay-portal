@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.RemoteOptionsException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -258,15 +259,13 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 		}
 
 		if (stagedRemotely) {
-			String remoteURL = StagingURLHelperUtil.buildRemoteURL(
-				typeSettingsUnicodeProperties);
-
 			long remoteGroupId = GetterUtil.getLong(
 				typeSettingsUnicodeProperties.getProperty("remoteGroupId"));
 			boolean forceDisable = GetterUtil.getBoolean(
 				serviceContext.getAttribute("forceDisable"));
 
-			disableRemoteStaging(remoteURL, remoteGroupId, forceDisable);
+			disableRemoteStaging(
+				typeSettingsUnicodeProperties, remoteGroupId, forceDisable);
 		}
 
 		typeSettingsUnicodeProperties.remove("branchingPrivate");
@@ -447,13 +446,14 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			long oldRemoteGroupId = GetterUtil.getLong(
 				typeSettingsUnicodeProperties.getProperty("remoteGroupId"));
 
-			String oldRemoteURL = StagingURLHelperUtil.buildRemoteURL(
+			String oldRemoteURL = _buildRemoteURL(
 				typeSettingsUnicodeProperties);
 
 			if (!remoteURL.equals(oldRemoteURL) ||
 				(remoteGroupId != oldRemoteGroupId)) {
 
-				disableRemoteStaging(oldRemoteURL, oldRemoteGroupId, false);
+				disableRemoteStaging(
+					typeSettingsUnicodeProperties, oldRemoteGroupId, false);
 
 				stagedRemotely = false;
 			}
@@ -813,8 +813,26 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 	}
 
 	protected void disableRemoteStaging(
-			String remoteURL, long remoteGroupId, boolean forceDisable)
+			UnicodeProperties typeSettingsUnicodeProperties, long remoteGroupId,
+			boolean forceDisable)
 		throws PortalException {
+
+		String remoteURL = null;
+
+		try {
+			remoteURL = _buildRemoteURL(typeSettingsUnicodeProperties);
+		}
+		catch (RemoteOptionsException remoteOptionsException) {
+			if (!forceDisable) {
+				throw remoteOptionsException;
+			}
+
+			if (_log.isWarnEnabled()) {
+				_log.warn("Forcibly disable remote staging");
+			}
+
+			return;
+		}
 
 		PermissionChecker permissionChecker =
 			PermissionThreadLocal.getPermissionChecker();
@@ -1290,6 +1308,25 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			remoteExportException.setURL(remoteURL);
 
 			throw remoteExportException;
+		}
+	}
+
+	private String _buildRemoteURL(
+			UnicodeProperties typeSettingsUnicodeProperties)
+		throws RemoteOptionsException {
+
+		try {
+			return StagingURLHelperUtil.buildRemoteURL(
+				typeSettingsUnicodeProperties);
+		}
+		catch (SystemException systemException) {
+			if (systemException.getCause() instanceof
+					RemoteOptionsException remoteOptionsException) {
+
+				throw remoteOptionsException;
+			}
+
+			throw systemException;
 		}
 	}
 
