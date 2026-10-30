@@ -960,8 +960,17 @@ test(
 			page.getByLabel(paymentMethod2, {exact: true})
 		).toBeChecked();
 
-		await commerceLayoutsPage.saveButton.click();
-		await page.waitForLoadState('load');
+		await Promise.all([
+			commerceLayoutsPage.saveButton.click(),
+			page.waitForResponse(
+				(response) =>
+					response.status() === 200 &&
+					response.request().method() === 'PATCH' &&
+					response.url().includes(`/carts/${cart.id}`)
+			),
+		]);
+
+		await expect(commerceLayoutsPage.saveButton).toBeHidden();
 
 		await expect(
 			commerceLayoutsPage.infoBoxValue(paymentMethod2)
