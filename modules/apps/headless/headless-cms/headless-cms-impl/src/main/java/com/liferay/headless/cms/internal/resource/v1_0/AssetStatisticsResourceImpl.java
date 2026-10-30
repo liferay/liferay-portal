@@ -76,15 +76,12 @@ public class AssetStatisticsResourceImpl
 
 		LicenseManagerUtil.checkFreeTier();
 
-		Long[] administeredSpaceGroupIds =
-			CMSGroupUtil.getAdministeredSpaceGroupIds(
-				contextCompany.getCompanyId(), _depotEntryService,
-				contextUser.getUserId());
-
 		Long[] selectedSpaceGroupIds = CMSGroupUtil.getSelectedSpaceGroupIds(
 			assetLibraryId, contextCompany.getCompanyId(),
 			_depotEntryLocalService, groupLocalService,
-			administeredSpaceGroupIds);
+			CMSGroupUtil.getAdministeredSpaceGroupIds(
+				contextCompany.getCompanyId(), _depotEntryService,
+				contextUser.getUserId()));
 
 		if (ArrayUtil.isEmpty(selectedSpaceGroupIds)) {
 			return _toAssetStatistics();
@@ -110,6 +107,9 @@ public class AssetStatisticsResourceImpl
 		String[] classNames = transformToArray(
 			objectDefinitions, ObjectDefinition::getClassName, String.class);
 		Date date = new Date();
+		Long[] spaceGroupIds = CMSGroupUtil.getSpaceGroupIds(
+			contextCompany.getCompanyId(), _depotEntryService,
+			contextUser.getUserId());
 
 		return new AssetStatistics() {
 			{
@@ -120,8 +120,8 @@ public class AssetStatisticsResourceImpl
 							WorkflowConstants.STATUS_APPROVED)));
 				setBrokenLinksCount(
 					() -> _getBrokenLinksCount(
-						administeredSpaceGroupIds, objectDefinitionIds,
-						selectedSpaceGroupIds));
+						objectDefinitionIds, selectedSpaceGroupIds,
+						spaceGroupIds));
 				setExpiredCount(
 					() -> _getCount(
 						selectedSpaceGroupIds, objectDefinitionIds,
@@ -219,8 +219,8 @@ public class AssetStatisticsResourceImpl
 	}
 
 	private long _getBrokenLinksCount(
-		Long[] administeredSpaceGroupIds, Long[] objectDefinitionIds,
-		Long[] selectedSpaceGroupIds) {
+		Long[] objectDefinitionIds, Long[] selectedSpaceGroupIds,
+		Long[] spaceGroupIds) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-82226")) {
@@ -237,7 +237,7 @@ public class AssetStatisticsResourceImpl
 			Map<String, BrokenLinkTarget> brokenLinkTargetsMap =
 				brokenLinkAssetSearcher.getBrokenLinkTargetsMap(
 					contextCompany.getCompanyId(), objectDefinitionIds,
-					selectedSpaceGroupIds, administeredSpaceGroupIds);
+					selectedSpaceGroupIds, spaceGroupIds);
 
 			if (brokenLinkTargetsMap.isEmpty()) {
 				return 0;
