@@ -1,0 +1,14 @@
+dependencies {
+	compileOnly group: "com.liferay", name: "org.apache.felix.configadmin", version: "1.9.26.LIFERAY-PATCHED-2"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "default"
+	compileOnly group: "org.osgi", name: "org.osgi.framework", version: "1.9.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.6.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.4.0"
+	compileOnly project(":apps:configuration-admin:configuration-admin-api")
+	compileOnly project(":apps:portal-security-audit:portal-security-audit-event-generators-api")
+	compileOnly project(":apps:static:portal-configuration:portal-configuration-metatype-api")
+	compileOnly project(":apps:static:portal-configuration:portal-configuration-persistence-api")
+	compileOnly project(":apps:static:portal-file-install:portal-file-install-api")
+	compileOnly project(":core:petra:petra-function")
+	compileOnly project(":core:petra:petra-lang")
+}

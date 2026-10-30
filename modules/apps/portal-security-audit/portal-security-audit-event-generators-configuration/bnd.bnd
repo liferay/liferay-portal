@@ -1,0 +1,3 @@
+Bundle-Name: Liferay Portal Security Audit Event Generators Configuration
+Bundle-SymbolicName: com.liferay.portal.security.audit.event.generators.configuration
+Bundle-Version: 1.0.0
