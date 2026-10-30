@@ -31,7 +31,7 @@ type Space = {
 export type AttachmentFile = {
 	contentURL: string;
 	fileEntryId: string;
-	size?: string;
+	formattedSize?: string;
 	source?: 'dm' | 'cms';
 	storageDepotGroup?: string;
 	title: string;
@@ -40,8 +40,8 @@ export type AttachmentFile = {
 type DMUploadedFile = {
 	contentURL: string;
 	fileEntryId: string;
+	formattedSize?: string;
 	readOnly: boolean;
-	size?: string;
 	title: string;
 };
 
@@ -144,7 +144,7 @@ export default function AttachmentBase({
 			{
 				contentURL: selectedItem.embedded.file.fileURL,
 				fileEntryId: String(selectedItem.embedded.id),
-				size: selectedItem.embedded.file.size,
+				formattedSize: selectedItem.embedded.file.size,
 				title: selectedItem.title,
 			},
 			String(selectedItem.embedded.file.id)
@@ -177,7 +177,7 @@ export default function AttachmentBase({
 				{
 					contentURL: selectedItemValue.url,
 					fileEntryId: selectedItemValue.fileEntryId,
-					size: selectedItemValue.formattedSize,
+					formattedSize: selectedItemValue.formattedSize,
 					title: selectedItemValue.title,
 				},
 				selectedItemValue.fileEntryId
@@ -354,8 +354,8 @@ export default function AttachmentBase({
 		return {
 			contentURL: previewUrl.toString(),
 			fileEntryId: String(response.id),
+			formattedSize: response.file?.size,
 			id: String(response.file?.id),
-			size: response.file?.size,
 			source: 'cms',
 			title: response.title,
 		};

@@ -45,9 +45,9 @@ export default function FileContainer({
 									{attachment.title}
 								</span>
 
-								{attachment.size && (
+								{attachment.formattedSize && (
 									<span className="d-block small text-secondary">
-										{attachment.size}
+										{attachment.formattedSize}
 									</span>
 								)}
 							</>
