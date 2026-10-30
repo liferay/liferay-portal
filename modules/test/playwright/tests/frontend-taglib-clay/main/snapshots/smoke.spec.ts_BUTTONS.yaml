@@ -5,8 +5,8 @@
     -   table:
         -   rowgroup:
             -   row "TYPE USAGE":
-                -   cell "TYPE"
-                -   cell "USAGE"
+                -   columnheader "TYPE"
+                -   columnheader "USAGE"
         -   rowgroup:
             -   'row "Primary Workflow Primary Workflow Primary: The primary button is always use for the most important actions. There can''t be two primary actions together or near by."':
                 -   cell "Primary Workflow Primary Workflow":

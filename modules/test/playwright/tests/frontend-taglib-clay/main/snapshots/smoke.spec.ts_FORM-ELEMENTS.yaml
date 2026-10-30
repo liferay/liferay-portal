@@ -5,8 +5,8 @@
     -   table:
         -   rowgroup:
             -   row "STATE DEFINITION":
-                -   cell "STATE"
-                -   cell "DEFINITION"
+                -   columnheader "STATE"
+                -   columnheader "DEFINITION"
         -   rowgroup:
             -   row "On":
                 -   cell "On":
@@ -72,8 +72,8 @@
     -   table:
         -   rowgroup:
             -   row "STATE DEFINITION":
-                -   cell "STATE"
-                -   cell "DEFINITION"
+                -   columnheader "STATE"
+                -   columnheader "DEFINITION"
         -   rowgroup:
             -   row "My Input On":
                 -   cell "My Input":
