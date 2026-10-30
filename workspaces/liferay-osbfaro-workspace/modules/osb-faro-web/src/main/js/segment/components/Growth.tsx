@@ -148,6 +148,8 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 	const {anonymousCount, knownCount} = individualCounts;
 
+	const selectedData = isNil(selectedPoint) ? undefined : data[selectedPoint];
+
 	const tooltipRef = useRef(null);
 
 	const renderTooltip = ({active, payload}: TooltipProps<number, string>) => {
@@ -159,7 +161,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 				modifiedDate,
 				removed,
 				value,
-			} = get(payload, [0, 'payload'], data[selectedPoint]);
+			} = get(payload, [0, 'payload'], selectedData);
 
 			const change = [
 				{
@@ -508,11 +510,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 					<ReferenceLine
 						strokeWidth={1}
-						x={
-							showFixedTooltip
-								? data[selectedPoint].modifiedDate
-								: null
-						}
+						x={showFixedTooltip ? selectedData?.modifiedDate : null}
 					/>
 
 					<ReferenceDot
@@ -523,16 +521,8 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 						isFront
 						r={4}
 						stroke="none"
-						x={
-							hasSelectedPoint
-								? data[selectedPoint].modifiedDate
-								: null
-						}
-						y={
-							hasSelectedPoint
-								? data[selectedPoint].knownCount
-								: null
-						}
+						x={hasSelectedPoint ? selectedData?.modifiedDate : null}
+						y={hasSelectedPoint ? selectedData?.knownCount : null}
 					/>
 
 					{includeAnonymousUsers && (
@@ -546,13 +536,13 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 							stroke="none"
 							x={
 								hasSelectedPoint
-									? data[selectedPoint].modifiedDate
+									? selectedData?.modifiedDate
 									: null
 							}
 							y={
 								hasSelectedPoint
-									? data[selectedPoint].knownCount +
-										data[selectedPoint].anonymousCount
+									? selectedData?.knownCount +
+										selectedData?.anonymousCount
 									: null
 							}
 						/>
