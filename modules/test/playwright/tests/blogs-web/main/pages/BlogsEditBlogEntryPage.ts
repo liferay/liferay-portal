@@ -192,19 +192,27 @@ export class BlogsEditBlogEntryPage {
 	}
 
 	async openVideoItemSelector() {
-		await expect(async () => {
-			await this.contentEditor.click();
-
-			await this.page
-				.getByTitle('Add', {exact: true})
-				.click({timeout: 1000});
-
-			await this.page.getByTitle('Insert Video').click({timeout: 1000});
-		}).toPass();
-
-		const itemSelector = this.page.frameLocator(
+		const itemSelectorIframe = this.page.locator(
 			'iframe[title="Select Item"]'
 		);
+
+		await expect(async () => {
+			if (!(await itemSelectorIframe.isVisible())) {
+				await this.contentEditor.click();
+
+				await this.page
+					.getByTitle('Add', {exact: true})
+					.click({timeout: 1000});
+
+				await this.page
+					.getByTitle('Insert Video')
+					.click({timeout: 1000});
+			}
+
+			await expect(itemSelectorIframe).toBeVisible({timeout: 2000});
+		}).toPass();
+
+		const itemSelector = itemSelectorIframe.contentFrame();
 
 		await itemSelector
 			.getByRole('link', {exact: true, name: 'Documents and Media'})
