@@ -814,8 +814,7 @@ public class TemplateContextHelper {
 		TemplateContextHelper.class);
 
 	private Map<String, Object>[] _helperUtilitiesMapArray;
-	private volatile ServiceTrackerList<TemplateContextContributor>
-		_serviceTrackerList;
+	private ServiceTrackerList<TemplateContextContributor> _serviceTrackerList;
 
 	private static class HttpWrapper implements Http {
 
