@@ -442,90 +442,6 @@ public class BookmarksFolderPersistenceImpl
 			finderCache, new Object[] {groupId}, groupId);
 	}
 
-	private CollectionPersistenceFinder<BookmarksFolder, NoSuchFolderException>
-		_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the bookmarks folders where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>BookmarksFolderModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of bookmarks folders
-	 * @param end the upper bound of the range of bookmarks folders (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching bookmarks folders
-	 */
-	@Override
-	public List<BookmarksFolder> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<BookmarksFolder> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first bookmarks folder in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching bookmarks folder
-	 * @throws NoSuchFolderException if a matching bookmarks folder could not be found
-	 */
-	@Override
-	public BookmarksFolder findByCompanyId_First(
-			long companyId,
-			OrderByComparator<BookmarksFolder> orderByComparator)
-		throws NoSuchFolderException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first bookmarks folder in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching bookmarks folder, or <code>null</code> if a matching bookmarks folder could not be found
-	 */
-	@Override
-	public BookmarksFolder fetchByCompanyId_First(
-		long companyId, OrderByComparator<BookmarksFolder> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the bookmarks folders where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of bookmarks folders where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching bookmarks folders
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
 	private FilterCollectionPersistenceFinder
 		<BookmarksFolder, NoSuchFolderException>
 			_collectionPersistenceFinderByG_P;
@@ -654,152 +570,6 @@ public class BookmarksFolderPersistenceImpl
 	public int filterCountByG_P(long groupId, long parentFolderId) {
 		return _collectionPersistenceFinderByG_P.filterCount(
 			finderCache, new Object[] {groupId, parentFolderId}, groupId);
-	}
-
-	private CollectionPersistenceFinder<BookmarksFolder, NoSuchFolderException>
-		_collectionPersistenceFinderByC_NotS;
-
-	/**
-	 * Returns all the bookmarks folders where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the matching bookmarks folders
-	 */
-	@Override
-	public List<BookmarksFolder> findByC_NotS(long companyId, int status) {
-		return findByC_NotS(
-			companyId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-	}
-
-	/**
-	 * Returns a range of all the bookmarks folders where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>BookmarksFolderModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of bookmarks folders
-	 * @param end the upper bound of the range of bookmarks folders (not inclusive)
-	 * @return the range of matching bookmarks folders
-	 */
-	@Override
-	public List<BookmarksFolder> findByC_NotS(
-		long companyId, int status, int start, int end) {
-
-		return findByC_NotS(companyId, status, start, end, null);
-	}
-
-	/**
-	 * Returns an ordered range of all the bookmarks folders where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>BookmarksFolderModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of bookmarks folders
-	 * @param end the upper bound of the range of bookmarks folders (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching bookmarks folders
-	 */
-	@Override
-	public List<BookmarksFolder> findByC_NotS(
-		long companyId, int status, int start, int end,
-		OrderByComparator<BookmarksFolder> orderByComparator) {
-
-		return findByC_NotS(
-			companyId, status, start, end, orderByComparator, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the bookmarks folders where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>BookmarksFolderModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of bookmarks folders
-	 * @param end the upper bound of the range of bookmarks folders (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching bookmarks folders
-	 */
-	@Override
-	public List<BookmarksFolder> findByC_NotS(
-		long companyId, int status, int start, int end,
-		OrderByComparator<BookmarksFolder> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_NotS.find(
-			finderCache, new Object[] {companyId, status}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first bookmarks folder in the ordered set where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching bookmarks folder
-	 * @throws NoSuchFolderException if a matching bookmarks folder could not be found
-	 */
-	@Override
-	public BookmarksFolder findByC_NotS_First(
-			long companyId, int status,
-			OrderByComparator<BookmarksFolder> orderByComparator)
-		throws NoSuchFolderException {
-
-		return _collectionPersistenceFinderByC_NotS.findFirst(
-			finderCache, new Object[] {companyId, status}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first bookmarks folder in the ordered set where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching bookmarks folder, or <code>null</code> if a matching bookmarks folder could not be found
-	 */
-	@Override
-	public BookmarksFolder fetchByC_NotS_First(
-		long companyId, int status,
-		OrderByComparator<BookmarksFolder> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_NotS.fetchFirst(
-			finderCache, new Object[] {companyId, status}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the bookmarks folders where companyId = &#63; and status &ne; &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 */
-	@Override
-	public void removeByC_NotS(long companyId, int status) {
-		_collectionPersistenceFinderByC_NotS.remove(
-			finderCache, new Object[] {companyId, status});
-	}
-
-	/**
-	 * Returns the number of bookmarks folders where companyId = &#63; and status &ne; &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the number of matching bookmarks folders
-	 */
-	@Override
-	public int countByC_NotS(long companyId, int status) {
-		return _collectionPersistenceFinderByC_NotS.count(
-			finderCache, new Object[] {companyId, status});
 	}
 
 	private FilterCollectionPersistenceFinder
@@ -1770,33 +1540,6 @@ public class BookmarksFolderPersistenceImpl
 					"bookmarksFolder.", "groupId", FinderColumn.Type.LONG, "=",
 					true, true, BookmarksFolder::getGroupId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
-				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
-				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
-				new FinderColumn<>(
-					"bookmarksFolder.", "companyId", FinderColumn.Type.LONG,
-					"=", true, true, BookmarksFolder::getCompanyId));
-
 		_collectionPersistenceFinderByG_P =
 			new FilterCollectionPersistenceFinder<>(
 				this, BookmarksFolder::getFolderId,
@@ -1828,35 +1571,6 @@ public class BookmarksFolderPersistenceImpl
 					"bookmarksFolder.", "parentFolderId",
 					FinderColumn.Type.LONG, "=", true, true,
 					BookmarksFolder::getParentFolderId));
-
-		_collectionPersistenceFinderByC_NotS =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_NotS",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId", "status"}, true),
-				null,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "countByC_NotS",
-					new String[] {
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {"companyId", "status"}, false),
-				_SQL_SELECT_BOOKMARKSFOLDER_WHERE,
-				_SQL_COUNT_BOOKMARKSFOLDER_WHERE,
-				BookmarksFolderModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-				"", "", null,
-				new FinderColumn<>(
-					"bookmarksFolder.", "companyId", FinderColumn.Type.LONG,
-					"=", true, true, BookmarksFolder::getCompanyId),
-				new FinderColumn<>(
-					"bookmarksFolder.", "status", FinderColumn.Type.INTEGER,
-					"!=", true, true, BookmarksFolder::getStatus));
 
 		_collectionPersistenceFinderByG_P_S =
 			new FilterCollectionPersistenceFinder<>(
@@ -2048,4 +1762,4 @@ public class BookmarksFolderPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2095385820
+// LIFERAY-SERVICE-BUILDER-HASH:2023876632
