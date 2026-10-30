@@ -10,15 +10,19 @@ import com.liferay.dynamic.data.mapping.render.DDMFormFieldRenderingContext;
 import com.liferay.object.dynamic.data.mapping.form.field.type.constants.ObjectDDMFormFieldTypeConstants;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.portlet.MockResourceURL;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portlet.internal.PortalContextImpl;
 
 import jakarta.portlet.PortalContext;
 
 import jakarta.servlet.http.HttpServletRequest;
+
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -70,10 +74,15 @@ public class AssigneeDDMFormFieldTemplateContextContributorTest {
 
 	@Test
 	public void testGetParameters() throws Exception {
+		Portal portal = Mockito.mock(Portal.class);
+
+		ReflectionTestUtil.setFieldValue(
+			_assigneeDDMFormFieldTemplateContextContributor, "_portal", portal);
+
+		// With a rendering portlet
+
 		DDMFormField ddmFormField = new DDMFormField(
 			"assignee", ObjectDDMFormFieldTypeConstants.ASSIGNEE);
-
-		ddmFormField.setProperty("portletId", _PORTLET_ID);
 
 		DDMFormFieldRenderingContext ddmFormFieldRenderingContext =
 			new DDMFormFieldRenderingContext();
@@ -81,12 +90,38 @@ public class AssigneeDDMFormFieldTemplateContextContributorTest {
 		ddmFormFieldRenderingContext.setHttpServletRequest(
 			new MockHttpServletRequest());
 
+		Mockito.doReturn(
+			_PORTLET_ID
+		).when(
+			portal
+		).getPortletId(
+			ddmFormFieldRenderingContext.getHttpServletRequest()
+		);
+
 		Assert.assertEquals(
 			"http://localhost:8080/object_entries/autocomplete_assignee",
 			MapUtil.getString(
 				_assigneeDDMFormFieldTemplateContextContributor.getParameters(
 					ddmFormField, ddmFormFieldRenderingContext),
 				"searchURL"));
+
+		// Without a rendering portlet
+
+		ddmFormField = new DDMFormField(
+			"assignee", ObjectDDMFormFieldTypeConstants.ASSIGNEE);
+
+		ddmFormField.setProperty("portletId", _PORTLET_ID);
+
+		ddmFormFieldRenderingContext = new DDMFormFieldRenderingContext();
+
+		ddmFormFieldRenderingContext.setHttpServletRequest(
+			new MockHttpServletRequest());
+
+		Map<String, Object> parameters =
+			_assigneeDDMFormFieldTemplateContextContributor.getParameters(
+				ddmFormField, ddmFormFieldRenderingContext);
+
+		Assert.assertFalse(parameters.containsKey("searchURL"));
 	}
 
 	private static final String _PORTLET_ID = RandomTestUtil.randomString();
