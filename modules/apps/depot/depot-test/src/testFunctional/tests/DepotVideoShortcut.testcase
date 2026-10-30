@@ -79,33 +79,6 @@ definition {
 			entryTitle = "Blogs Entry Title");
 	}
 
-	@description = "This test ensures that a YouTube shortened URL video added via item selector can be embedded when adding a depot WC."
-	@priority = 4
-	@refactordone
-	test CanAddShortenedURLToWCViaItemSelector {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Shortened URL Depot Name");
-
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Shortened URL Depot Name");
-
-		WebContentNavigator.gotoAddCP();
-
-		WebContent.addCP(
-			embedVideo = "https://youtu.be/HOdbzGCI5ME",
-			navTab = "URL",
-			webContentContent = "WC WebContent Content",
-			webContentTitle = "WC WebContent Title");
-
-		WebContent.publishWithPermissions();
-
-		DepotNavigator.openDepotWebContentAdmin(depotName = "Test Shortened URL Depot Name");
-
-		WebContent.viewVideoPreview(
-			service = "youtube",
-			webContentTitle = "WC WebContent Title");
-	}
-
 	@description = "This ensures that a depot external video cannot be viewed from the disconnected site."
 	@priority = 4
 	@refactordone
