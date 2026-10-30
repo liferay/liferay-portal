@@ -32,6 +32,10 @@ public class AuditRequestContext implements Cloneable {
 		return _correlationId;
 	}
 
+	public String getHttpMethod() {
+		return _httpMethod;
+	}
+
 	public String getQueryString() {
 		return _queryString;
 	}
@@ -68,6 +72,10 @@ public class AuditRequestContext implements Cloneable {
 		return _sessionID;
 	}
 
+	public String getUserAgent() {
+		return _userAgent;
+	}
+
 	public boolean isRequestIdGenerated() {
 		return _requestIdGenerated;
 	}
@@ -82,6 +90,10 @@ public class AuditRequestContext implements Cloneable {
 
 	public void setCorrelationId(String correlationId) {
 		_correlationId = correlationId;
+	}
+
+	public void setHttpMethod(String httpMethod) {
+		_httpMethod = httpMethod;
 	}
 
 	public void setQueryString(String queryString) {
@@ -124,9 +136,14 @@ public class AuditRequestContext implements Cloneable {
 		_sessionID = sessionID;
 	}
 
+	public void setUserAgent(String userAgent) {
+		_userAgent = userAgent;
+	}
+
 	private String _clientHost;
 	private String _clientIP;
 	private String _correlationId;
+	private String _httpMethod;
 	private String _queryString;
 	private String _realUserEmailAddress;
 	private long _realUserId;
@@ -137,5 +154,6 @@ public class AuditRequestContext implements Cloneable {
 	private String _serverName;
 	private int _serverPort;
 	private String _sessionID;
+	private String _userAgent;
 
 }
