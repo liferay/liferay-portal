@@ -36,9 +36,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="RecordSetId" return-type="Collection">
 			<finder-column name="recordSetId" />
 		</finder>
@@ -167,10 +164,6 @@
 		<finder name="RecordId" return-type="Collection">
 			<finder-column name="recordId" />
 		</finder>
-		<finder name="R_R" return-type="Collection">
-			<finder-column name="recordSetId" />
-			<finder-column name="recordSetVersion" />
-		</finder>
 		<finder name="R_V" return-type="DDLRecordVersion" unique="true">
 			<finder-column name="recordId" />
 			<finder-column name="version" />
@@ -178,12 +171,6 @@
 		<finder name="R_S" return-type="Collection">
 			<finder-column name="recordId" />
 			<finder-column name="status" />
-		</finder>
-		<finder name="U_R_R_S" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="recordSetId" />
-			<finder-column name="recordSetVersion" />
-			<finder-column name="status" type="int" />
 		</finder>
 	</entity>
 	<exceptions>
