@@ -21,11 +21,16 @@ import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFileResource;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.ResourceFolderResource;
 import com.liferay.headless.admin.fragment.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.petra.function.UnsafeRunnable;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -72,6 +77,7 @@ import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.URL;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -254,6 +260,7 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 
 		_testPostSiteResourceFile();
 		_testPostSiteResourceFileBatch();
+		_testPostSiteResourceFileBatchFailedItems();
 		_testPostSiteResourceFileBatchFileURLReferenceURLFetchSecurity();
 		_testPostSiteResourceFileDuplicateExternalReferenceCodeProblemException();
 		_testPostSiteResourceFileFileURLReferenceFileBase64();
@@ -1571,6 +1578,72 @@ public class ResourceFileResourceTest extends BaseResourceFileResourceTestCase {
 		_assertContent(
 			bytes, postResourceFile.getExternalReferenceCode(),
 			irrelevantGroup.getGroupId());
+	}
+
+	private void _testPostSiteResourceFileBatchFailedItems() throws Exception {
+		ResourceFile postResourceFile =
+			resourceFileResource.postSiteResourceFile(
+				testGroup.getExternalReferenceCode(),
+				_randomResourceFile(_getFragmentSetExternalReferenceCode()));
+		ResourceFolder postResourceFolder = _postSiteResourceFolder(
+			_getFragmentSetExternalReferenceCode());
+
+		ResourceFile resourceFile1 = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFile1.setExternalReferenceCode(
+			postResourceFile.getExternalReferenceCode());
+
+		ResourceFile resourceFile2 = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFile2.setName(postResourceFile.getName());
+
+		ResourceFile resourceFile3 = _randomResourceFile(
+			_getFragmentSetExternalReferenceCode());
+
+		resourceFile3.setName(postResourceFolder.getName());
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			JSONObject jsonObject = waitForFinish(
+				"COMPLETED",
+				HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.putAll(
+						JSONFactoryUtil.createJSONObject(
+							resourceFile1.toString()),
+						JSONFactoryUtil.createJSONObject(
+							resourceFile2.toString()),
+						JSONFactoryUtil.createJSONObject(
+							resourceFile3.toString())
+					).toString(),
+					StringBundler.concat(
+						"headless-admin-fragment/v1.0/sites/",
+						testGroup.getExternalReferenceCode(),
+						"/resource-files/batch",
+						"?importStrategy=ON_ERROR_CONTINUE"),
+					Http.Method.POST));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			Assert.assertEquals(
+				Arrays.asList(
+					_language.get(
+						LocaleUtil.getDefault(),
+						"this-external-reference-code-is-already-in-use"),
+					_language.get(
+						LocaleUtil.getDefault(),
+						"a-resource-file-with-that-name-already-exists"),
+					_language.get(
+						LocaleUtil.getDefault(),
+						"a-resource-folder-with-that-name-already-exists")),
+				TransformUtil.transformToList(
+					importTask.getFailedItems(), FailedItem::getMessage));
+		}
 	}
 
 	private void _testPostSiteResourceFileBatchFileURLReferenceURLFetchSecurity()
