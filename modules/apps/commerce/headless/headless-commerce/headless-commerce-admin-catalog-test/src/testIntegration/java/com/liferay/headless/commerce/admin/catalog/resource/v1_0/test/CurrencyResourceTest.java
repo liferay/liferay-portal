@@ -65,6 +65,19 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 		assertContains(currency2, (List<Currency>)page.getItems());
 		assertValid(page, testGetCurrenciesPage_getExpectedActions());
 
+		page = currencyResource.getCurrenciesPage(
+			null, "id eq " + currency1.getId(), Pagination.of(1, -1), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+		assertContains(currency1, (List<Currency>)page.getItems());
+
+		page = currencyResource.getCurrenciesPage(
+			null, "not (id in (" + currency1.getId() + "))",
+			Pagination.of(1, -1), null);
+
+		Assert.assertEquals(totalCount + 1, page.getTotalCount());
+		assertContains(currency2, (List<Currency>)page.getItems());
+
 		currencyResource.deleteCurrency(currency1.getId());
 		currencyResource.deleteCurrency(currency2.getId());
 	}

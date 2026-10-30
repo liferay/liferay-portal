@@ -520,6 +520,20 @@ public class CountryResourceTest extends BaseCountryResourceTestCase {
 		Assert.assertEquals(1, page.getTotalCount());
 
 		assertContains(country2, (List<Country>)page.getItems());
+
+		page = countryResource.getCountriesPage(
+			null, keywords, "id eq " + country1.getId(), Pagination.of(1, 2),
+			null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+		assertContains(country1, (List<Country>)page.getItems());
+
+		page = countryResource.getCountriesPage(
+			null, keywords, "not (id in (" + country1.getId() + "))",
+			Pagination.of(1, 2), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+		assertContains(country2, (List<Country>)page.getItems());
 	}
 
 	private void _testGetCountriesPageWithRegions() throws Exception {
