@@ -44,6 +44,8 @@ import com.liferay.headless.admin.fragment.client.problem.Problem;
 import com.liferay.headless.admin.fragment.client.resource.v1_0.FragmentResource;
 import com.liferay.headless.admin.fragment.client.serdes.v1_0.ConfigurationSerDes;
 import com.liferay.headless.admin.fragment.resource.v1_0.test.util.URLFetchSecurityCompanyConfigurationUtil;
+import com.liferay.headless.batch.engine.client.dto.v1_0.FailedItem;
+import com.liferay.headless.batch.engine.client.dto.v1_0.ImportTask;
 import com.liferay.headless.batch.engine.client.http.HttpInvoker;
 import com.liferay.headless.batch.engine.client.resource.v1_0.ImportTaskResource;
 import com.liferay.info.collection.provider.InfoCollectionProvider;
@@ -219,13 +221,14 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 
 	@Override
 	@Test
-	@TestInfo({"LPD-88395", "LPD-95281", "LPD-107706"})
+	@TestInfo({"LPD-88395", "LPD-95281", "LPD-107706", "LPD-107754"})
 	public void testDeleteSiteFragment() throws Exception {
 		super.testDeleteSiteFragment();
 
 		_testDeleteSiteFragment(false, true);
 		_testDeleteSiteFragment(true, false);
 		_testDeleteSiteFragment(true, true);
+		_testDeleteSiteFragmentBatchFailedItems();
 		_testDeleteSiteFragmentInUseProblemException();
 		_testDeleteSiteFragmentNonexistent();
 		_testDeleteSiteFragmentWithFormFragment();
@@ -285,7 +288,8 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
 			"LPD-107087", "LPD-107088", "LPD-107149", "LPD-107185",
-			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189",
+			"LPD-107706", "LPD-107754"
 		}
 	)
 	public void testPostSiteFragment() throws Exception {
@@ -298,6 +302,7 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		_testPostSiteFragmentApprovedConfigurationInvalidProblemException();
 		_testPostSiteFragmentApprovedHTMLInvalidProblemException();
 		_testPostSiteFragmentBatch();
+		_testPostSiteFragmentBatchFailedItems();
 		_testPostSiteFragmentDraft();
 		_testPostSiteFragmentDraftConfiguration();
 		_testPostSiteFragmentDuplicateExternalReferenceCodeProblemException();
@@ -355,11 +360,13 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			"LPD-88395", "LPD-88489", "LPD-95281", "LPD-103947", "LPD-107082",
 			"LPD-107083", "LPD-107084", "LPD-107085", "LPD-107086",
 			"LPD-107087", "LPD-107088", "LPD-107149", "LPD-107185",
-			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189", "LPD-107706"
+			"LPD-107186", "LPD-107187", "LPD-107188", "LPD-107189",
+			"LPD-107706", "LPD-107754"
 		}
 	)
 	public void testPutSiteFragment() throws Exception {
 		_testPutSiteFragmentBatch();
+		_testPutSiteFragmentBatchFailedItems();
 		_testPutSiteFragmentCreateApproved();
 		_testPutSiteFragmentCreateApprovedAndDraft();
 		_testPutSiteFragmentCreateDraft();
@@ -558,6 +565,29 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			null, serviceContext.getUserId(), testGroup.getGroupId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			serviceContext);
+	}
+
+	private void _addFragmentEntryLink(Fragment fragment) throws Exception {
+		FragmentEntry fragmentEntry =
+			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
+				fragment.getExternalReferenceCode(), testGroup.getGroupId());
+
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, LayoutConstants.TYPE_CONTENT, false,
+			StringPool.BLANK,
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+
+		_fragmentEntryLinkLocalService.addFragmentEntryLink(
+			null, TestPropsValues.getUserId(), testGroup.getGroupId(), null,
+			fragmentEntry.getExternalReferenceCode(), null, 0, layout.getPlid(),
+			fragmentEntry.getCss(), fragmentEntry.getHtml(),
+			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
+			StringPool.BLANK, StringPool.BLANK, 0, StringPool.BLANK,
+			fragmentEntry.getType(),
+			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
 	}
 
 	private FileEntry _addPortletFileEntry(String fileName) throws Exception {
@@ -863,6 +893,38 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			zipInputStream.getNextEntry();
 
 			return StringUtil.read(zipInputStream);
+		}
+	}
+
+	private List<String> _getBatchFailedItemMessages(
+			String createStrategy, Fragment... fragments)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			JSONObject jsonObject = waitForFinish(
+				"COMPLETED",
+				HTTPTestUtil.invokeToJSONObject(
+					JSONUtil.toJSONArray(
+						fragments,
+						fragment -> JSONFactoryUtil.createJSONObject(
+							fragment.toString())
+					).toString(),
+					StringBundler.concat(
+						"headless-admin-fragment/v1.0/sites/",
+						testGroup.getExternalReferenceCode(),
+						"/fragments/batch?createStrategy=", createStrategy,
+						"&importStrategy=ON_ERROR_CONTINUE"),
+					Http.Method.POST));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			return TransformUtil.transformToList(
+				importTask.getFailedItems(), FailedItem::getMessage);
 		}
 	}
 
@@ -1643,33 +1705,66 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 		Assert.assertTrue(fragmentEntryVersions.isEmpty());
 	}
 
+	private void _testDeleteSiteFragmentBatchFailedItems() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		_addFragmentEntryLink(postFragment);
+
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		ImportTaskResource importTaskResource = ImportTaskResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).parameters(
+			"siteExternalReferenceCode", testGroup.getExternalReferenceCode()
+		).build();
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.internal." +
+					"BatchEngineImportTaskExecutorImpl",
+				LoggerTestUtil.ERROR)) {
+
+			HttpInvoker.HttpResponse httpResponse =
+				importTaskResource.deleteImportTaskHttpResponse(
+					"com.liferay.headless.admin.fragment.dto.v1_0.Fragment",
+					null, null, "ON_ERROR_CONTINUE", null,
+					JSONUtil.putAll(
+						JSONUtil.put(
+							"externalReferenceCode",
+							postFragment.getExternalReferenceCode()
+						).put(
+							"type", "BasicFragment"
+						)));
+
+			JSONObject jsonObject = waitForFinish(
+				"COMPLETED",
+				JSONFactoryUtil.createJSONObject(httpResponse.getContent()));
+
+			ImportTask importTask = importTaskResource.getImportTask(
+				jsonObject.getLong("id"));
+
+			Assert.assertEquals(
+				Arrays.asList(
+					_language.get(
+						LocaleUtil.getDefault(),
+						"the-fragment-cannot-be-deleted-because-it-is-" +
+							"required-by-one-or-more-pages-or-page-templates")),
+				TransformUtil.transformToList(
+					importTask.getFailedItems(), FailedItem::getMessage));
+		}
+	}
+
 	private void _testDeleteSiteFragmentInUseProblemException()
 		throws Exception {
 
 		Fragment postFragment = _postSiteFragmentSetFragment(
 			_randomFragment(true, false));
 
-		FragmentEntry fragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByExternalReferenceCode(
-				postFragment.getExternalReferenceCode(),
-				testGroup.getGroupId());
-
-		Layout layout = _layoutLocalService.addLayout(
-			null, TestPropsValues.getUserId(), testGroup.getGroupId(), false,
-			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			StringPool.BLANK, LayoutConstants.TYPE_CONTENT, false,
-			StringPool.BLANK,
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
-
-		_fragmentEntryLinkLocalService.addFragmentEntryLink(
-			null, TestPropsValues.getUserId(), testGroup.getGroupId(), null,
-			fragmentEntry.getExternalReferenceCode(), null, 0, layout.getPlid(),
-			fragmentEntry.getCss(), fragmentEntry.getHtml(),
-			fragmentEntry.getJs(), fragmentEntry.getConfiguration(),
-			StringPool.BLANK, StringPool.BLANK, 0, StringPool.BLANK,
-			fragmentEntry.getType(),
-			ServiceContextTestUtil.getServiceContext(testGroup.getGroupId()));
+		_addFragmentEntryLink(postFragment);
 
 		_assertProblemException(
 			"CONFLICT",
@@ -2347,6 +2442,66 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 	private void _testPostSiteFragmentBatch() throws Exception {
 		_testPostSiteFragmentBatchWithLazyReferencingDisabled();
 		_testPostSiteFragmentBatchWithLazyReferencingEnabled();
+	}
+
+	private void _testPostSiteFragmentBatchFailedItems() throws Exception {
+		Fragment postFragment = _postSiteFragmentSetFragment(
+			_randomFragment(true, false));
+
+		Fragment fragment1 = _randomFragment(true, false);
+
+		fragment1.setExternalReferenceCode(
+			postFragment.getExternalReferenceCode());
+
+		Fragment fragment2 = _randomFragment(true, false);
+
+		fragment2.setKey(postFragment.getKey());
+
+		Fragment fragment3 = _randomFragment(true, false);
+
+		fragment3.setName(RandomTestUtil.randomString() + StringPool.PERIOD);
+
+		Fragment fragment4 = _randomFragment(true, false);
+
+		ApprovedFragmentVersion approvedFragmentVersion4 =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment4, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion4.setHtml(_getHTMLWithDuplicateEditableIds());
+
+		Fragment fragment5 = _randomFragment(true, false);
+
+		ApprovedFragmentVersion approvedFragmentVersion5 =
+			(ApprovedFragmentVersion)_getFragmentVersion(
+				fragment5, FragmentVersion.Status.APPROVED);
+
+		approvedFragmentVersion5.setConfiguration(
+			ConfigurationSerDes.toDTO(
+				_readConfiguration("configuration_invalid_dto.json")));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				_language.get(
+					LocaleUtil.getDefault(),
+					"this-external-reference-code-is-already-in-use"),
+				_language.format(
+					LocaleUtil.getDefault(),
+					"a-fragment-entry-with-the-key-x-already-exists",
+					postFragment.getKey()),
+				_language.get(
+					LocaleUtil.getDefault(), "fragment-name-is-invalid"),
+				_language.get(
+					LocaleUtil.getDefault(),
+					"you-must-define-a-unique-id-for-each-editable-element"),
+				_language.get(
+					LocaleUtil.getDefault(),
+					"fragment-configuration-is-invalid"),
+				_language.get(
+					LocaleUtil.getDefault(),
+					"the-form-fragment-field-types-are-invalid")),
+			_getBatchFailedItemMessages(
+				"INSERT", fragment1, fragment2, fragment3, fragment4, fragment5,
+				_randomFormFragment(new FieldType[0])));
 	}
 
 	private void _testPostSiteFragmentBatchWithLazyReferencingDisabled()
@@ -3140,6 +3295,30 @@ public class FragmentResourceTest extends BaseFragmentResourceTestCase {
 			irrelevantGroup);
 		_assertFormFragmentEntry(
 			formFragment2.getFieldTypes(), formFragment2, irrelevantGroup);
+	}
+
+	private void _testPutSiteFragmentBatchFailedItems() throws Exception {
+		Fragment postFragment1 = _postSiteFragmentSetFragment(
+			_randomFragment(true, true));
+		Fragment postFragment2 = _postSiteFragmentSetFragment(
+			_randomFragment(true, true));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				_language.get(
+					LocaleUtil.getDefault(),
+					"unpublishing-a-fragment-entry-is-not-supported"),
+				_language.get(
+					LocaleUtil.getDefault(),
+					"at-least-one-fragment-entry-version-is-required")),
+			_getBatchFailedItemMessages(
+				"UPSERT",
+				_randomFragment(
+					false, true, postFragment1.getExternalReferenceCode(),
+					postFragment1.getKey()),
+				_randomFragment(
+					false, false, postFragment2.getExternalReferenceCode(),
+					postFragment2.getKey())));
 	}
 
 	private void _testPutSiteFragmentCreateApproved() throws Exception {
