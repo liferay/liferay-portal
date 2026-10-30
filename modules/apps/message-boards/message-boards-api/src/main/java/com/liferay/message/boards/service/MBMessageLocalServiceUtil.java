@@ -881,37 +881,6 @@ public class MBMessageLocalServiceUtil {
 		return getService().getThreadMessagesCount(threadId, status);
 	}
 
-	public static List<MBMessage> getUserDiscussionMessages(
-		long userId, long classNameId, long classPK, int status, int start,
-		int end, OrderByComparator<MBMessage> orderByComparator) {
-
-		return getService().getUserDiscussionMessages(
-			userId, classNameId, classPK, status, start, end,
-			orderByComparator);
-	}
-
-	public static List<MBMessage> getUserDiscussionMessages(
-		long userId, String className, long classPK, int status, int start,
-		int end, OrderByComparator<MBMessage> orderByComparator) {
-
-		return getService().getUserDiscussionMessages(
-			userId, className, classPK, status, start, end, orderByComparator);
-	}
-
-	public static int getUserDiscussionMessagesCount(
-		long userId, long classNameId, long classPK, int status) {
-
-		return getService().getUserDiscussionMessagesCount(
-			userId, classNameId, classPK, status);
-	}
-
-	public static int getUserDiscussionMessagesCount(
-		long userId, String className, long classPK, int status) {
-
-		return getService().getUserDiscussionMessagesCount(
-			userId, className, classPK, status);
-	}
-
 	public static long moveMessageAttachmentToTrash(
 			long userId, long messageId, String fileName)
 		throws PortalException {
@@ -1035,4 +1004,4 @@ public class MBMessageLocalServiceUtil {
 			MBMessageLocalServiceUtil.class, MBMessageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:500851615
+// LIFERAY-SERVICE-BUILDER-HASH:1766722829

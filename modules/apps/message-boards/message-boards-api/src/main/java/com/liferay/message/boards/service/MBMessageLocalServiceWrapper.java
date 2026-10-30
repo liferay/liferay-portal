@@ -1001,45 +1001,6 @@ public class MBMessageLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<MBMessage> getUserDiscussionMessages(
-		long userId, long classNameId, long classPK, int status, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator<MBMessage>
-			orderByComparator) {
-
-		return _mbMessageLocalService.getUserDiscussionMessages(
-			userId, classNameId, classPK, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public java.util.List<MBMessage> getUserDiscussionMessages(
-		long userId, String className, long classPK, int status, int start,
-		int end,
-		com.liferay.portal.kernel.util.OrderByComparator<MBMessage>
-			orderByComparator) {
-
-		return _mbMessageLocalService.getUserDiscussionMessages(
-			userId, className, classPK, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getUserDiscussionMessagesCount(
-		long userId, long classNameId, long classPK, int status) {
-
-		return _mbMessageLocalService.getUserDiscussionMessagesCount(
-			userId, classNameId, classPK, status);
-	}
-
-	@Override
-	public int getUserDiscussionMessagesCount(
-		long userId, String className, long classPK, int status) {
-
-		return _mbMessageLocalService.getUserDiscussionMessagesCount(
-			userId, className, classPK, status);
-	}
-
-	@Override
 	public long moveMessageAttachmentToTrash(
 			long userId, long messageId, String fileName)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -1203,4 +1164,4 @@ public class MBMessageLocalServiceWrapper
 	private MBMessageLocalService _mbMessageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1164699470
+// LIFERAY-SERVICE-BUILDER-HASH:1999226268

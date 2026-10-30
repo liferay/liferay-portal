@@ -644,24 +644,6 @@ public interface MBMessageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getThreadMessagesCount(long threadId, int status);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBMessage> getUserDiscussionMessages(
-		long userId, long classNameId, long classPK, int status, int start,
-		int end, OrderByComparator<MBMessage> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MBMessage> getUserDiscussionMessages(
-		long userId, String className, long classPK, int status, int start,
-		int end, OrderByComparator<MBMessage> orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserDiscussionMessagesCount(
-		long userId, long classNameId, long classPK, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserDiscussionMessagesCount(
-		long userId, String className, long classPK, int status);
-
 	public long moveMessageAttachmentToTrash(
 			long userId, long messageId, String fileName)
 		throws PortalException;
@@ -744,4 +726,4 @@ public interface MBMessageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-228462142
+// LIFERAY-SERVICE-BUILDER-HASH:1874684514
