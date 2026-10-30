@@ -1486,7 +1486,10 @@ test(
 
 				await expect(
 					productDetailsPage.optionSelector('Option1')
-				).toBeVisible();
+				).toHaveText('Value1');
+				await expect(
+					productDetailsPage.optionSelector('Option2')
+				).toHaveText('Value3');
 
 				await productDetailsPage.addToCartButton.click();
 
