@@ -9,6 +9,7 @@ import path from 'path';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {createCategories} from '../../../helpers/CreateCategories';
 import {DocumentLibraryPage} from '../../../pages/document-library-web/DocumentLibraryPage';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
@@ -295,6 +296,138 @@ test(
 					'There are no documents or media files in this folder.'
 				)
 			).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Asset library documents can be filtered by category, extension and tag',
+	{tag: '@LPD-112510'},
+	async ({apiHelpers, page}) => {
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		const depotURL = `/asset-library-${assetLibrary.id}`;
+
+		const vocabularyName = getRandomString();
+
+		const [category1, category2] = await createCategories({
+			apiHelpers,
+			categoryNames: [
+				{name: getRandomString()},
+				{name: getRandomString()},
+			],
+			siteId: String(assetLibrary.siteId),
+			vocabularyName,
+		});
+
+		const [tag1, tag2] = [getRandomString(), getRandomString()];
+
+		const imageTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocument(
+			assetLibrary.siteId,
+			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
+			{
+				fileName: `${imageTitle}.jpg`,
+				keywords: [tag1, tag2],
+				taxonomyCategoryIds: [category1.id, category2.id],
+				title: imageTitle,
+			}
+		);
+
+		const pdfTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocument(
+			assetLibrary.siteId,
+			createReadStream(path.join(__dirname, 'dependencies/Document.pdf')),
+			{
+				fileName: `${pdfTitle}.pdf`,
+				keywords: [tag2],
+				taxonomyCategoryIds: [category2.id],
+				title: pdfTitle,
+			}
+		);
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+
+		const imageLink = page.getByRole('link', {
+			exact: true,
+			name: imageTitle,
+		});
+		const pdfLink = page.getByRole('link', {exact: true, name: pdfTitle});
+
+		await test.step('Filter by a category of the asset library', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			await documentLibraryPage.openFilter('Categories');
+
+			const categoriesModal =
+				documentLibraryPage.filterByCategoriesFrameLocator;
+
+			await clickAndExpectToBeVisible({
+				target: categoriesModal.getByText(category1.name, {
+					exact: true,
+				}),
+				trigger: categoriesModal.getByText(vocabularyName, {
+					exact: false,
+				}),
+			});
+
+			await categoriesModal
+				.getByText(category1.name, {exact: true})
+				.click();
+
+			await page
+				.getByRole('dialog')
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			await expect(
+				page.getByText('1 Result Found With Filters')
+			).toBeVisible();
+
+			await expect(imageLink).toBeVisible();
+			await expect(pdfLink).toBeHidden();
+		});
+
+		await test.step('Filter by extension', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			await documentLibraryPage.openFilter('Extension');
+
+			await page
+				.frameLocator('iframe[title="Filter by Extension"]')
+				.getByRole('checkbox', {name: 'Vectorial (1 Item)'})
+				.check();
+
+			await page
+				.getByRole('dialog')
+				.getByRole('button', {exact: true, name: 'Apply'})
+				.click();
+
+			await expect(pdfLink).toBeVisible();
+			await expect(imageLink).toBeHidden();
+		});
+
+		await test.step('Filter by tag', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			await documentLibraryPage.openFilter('Tags');
+
+			await page
+				.frameLocator('iframe[title="Filter by Tags"]')
+				.getByRole('row', {name: tag1})
+				.getByRole('checkbox')
+				.check();
+
+			await page
+				.getByRole('dialog')
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			await expect(imageLink).toBeVisible();
+			await expect(pdfLink).toBeHidden();
 		});
 	}
 );
