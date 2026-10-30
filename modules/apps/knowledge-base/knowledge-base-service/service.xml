@@ -111,10 +111,6 @@
 			<finder-column arrayable-operator="OR" name="parentResourcePrimKey" />
 			<finder-column name="status" />
 		</finder>
-		<finder name="LtD_S" return-type="Collection">
-			<finder-column comparator="&lt;" name="displayDate" />
-			<finder-column name="status" />
-		</finder>
 		<finder name="R_G_V" return-type="KBArticle" unique="true">
 			<finder-column name="resourcePrimKey" />
 			<finder-column name="groupId" />
@@ -197,16 +193,6 @@
 		</finder>
 		<finder name="G_M_NotS" return-type="Collection">
 			<finder-column name="groupId" />
-			<finder-column name="main" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
-		<finder name="C_L_NotS" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="latest" />
-			<finder-column comparator="!=" name="status" />
-		</finder>
-		<finder name="C_M_NotS" return-type="Collection">
-			<finder-column name="companyId" />
 			<finder-column name="main" />
 			<finder-column comparator="!=" name="status" />
 		</finder>
@@ -318,10 +304,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="G_C" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
 		</finder>
 		<finder name="G_S" return-type="Collection">
 			<finder-column name="groupId" />
