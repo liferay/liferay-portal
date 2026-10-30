@@ -3403,11 +3403,7 @@ public class ObjectEntryLocalServiceImpl
 			int end, Sort[] sorts)
 		throws PortalException {
 
-		if (((end != QueryUtil.ALL_POS) || (start != QueryUtil.ALL_POS)) &&
-			(sorts == null)) {
-
-			sorts = new Sort[] {new Sort("id", Sort.LONG_TYPE, false)};
-		}
+		sorts = _getSorts(end, sorts, start);
 
 		if (sorts == null) {
 			return dslQuery;
@@ -6149,6 +6145,16 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		return selectExpressions.toArray(new Expression<?>[0]);
+	}
+
+	private Sort[] _getSorts(int end, Sort[] sorts, int start) {
+		if (((end != QueryUtil.ALL_POS) || (start != QueryUtil.ALL_POS)) &&
+			(sorts == null)) {
+
+			return new Sort[] {new Sort("id", Sort.LONG_TYPE, false)};
+		}
+
+		return sorts;
 	}
 
 	private int _getStatus(int status) {
