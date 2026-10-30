@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.configuration.web.internal.util.AuditConfigurationOverrideUtil;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 
 import jakarta.portlet.ActionRequest;
@@ -282,7 +283,7 @@ public class SaveAuditConfigurationMVCActionCommand
 					user.getFullName(), additionalInfoJSONObject,
 					AuditConfiguration.class.getName(),
 					String.valueOf(themeDisplay.getCompanyId()),
-					"AUDIT_CONFIG_CHANGE", null));
+					EventTypes.AUDIT_CONFIG_CHANGE, null));
 		}
 		catch (AuditException auditException) {
 			_log.error(auditException);

@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.router.configuration.FileSystemAuditMessageProcessorConfiguration;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.FeatureFlags;
@@ -568,7 +569,7 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 						String.valueOf(TestPropsValues.getCompanyId())) &&
 					Objects.equals(
 						curAuditMessage.getEventType(),
-						"AUDIT_CONFIG_CHANGE")) {
+						EventTypes.AUDIT_CONFIG_CHANGE)) {
 
 					auditMessage = curAuditMessage;
 
