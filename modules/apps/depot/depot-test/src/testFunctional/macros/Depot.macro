@@ -381,29 +381,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureSearch(depotName = null, item = null, tableEntryText = null, siteList = null) {
-		for (var siteName : list ${siteList}) {
-			DepotNavigator.gotoEdit(depotName = ${depotName});
-
-			DepotNavigator.gotoSites(depotName = ${depotName});
-
-			LexiconTable.clickEllipsisItem(
-				item = ${item},
-				tableEntry = ${siteName});
-
-			SelectFrame(value1 = "relative=top");
-
-			Alert.viewSuccessMessage();
-
-			AssertTextEquals(
-				key_tableEntry = ${siteName},
-				key_tableEntryText = ${tableEntryText},
-				locator1 = "LexiconTable#TABLE_ENTRY_TEXT",
-				value1 = ${tableEntryText});
-		}
-	}
-
-	@summary = "Default summary"
 	macro configureSharing(sharing = null) {
 		if (${sharing} == "Enabled") {
 			Check.checkToggleSwitch(
