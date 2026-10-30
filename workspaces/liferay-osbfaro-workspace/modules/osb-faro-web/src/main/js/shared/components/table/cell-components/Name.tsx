@@ -16,10 +16,33 @@ interface INameProps {
 	maxWidth?: number;
 	nameKey?: string;
 	renderIcon?: Function;
-	renderSecondaryInfo?: Function;
+	renderSecondaryInfo?: (data: INameProps['data']) => React.ReactNode;
 	routeFn?: Function;
 	tooltip?: boolean;
 }
+
+interface ISecondaryInfoProps {
+	data: INameProps['data'];
+	renderSecondaryInfo?: INameProps['renderSecondaryInfo'];
+}
+
+const SecondaryInfo: React.FC<ISecondaryInfoProps> = ({
+	data,
+	renderSecondaryInfo,
+}) => {
+	if (!renderSecondaryInfo) {
+		return null;
+	}
+
+	return (
+		<div className="secondary-info text-truncate">
+			<DataValue
+				format={(secondaryInfo) => secondaryInfo}
+				value={renderSecondaryInfo(data)}
+			/>
+		</div>
+	);
+};
 
 const Name: React.FC<INameProps> = ({
 	className,
@@ -32,21 +55,6 @@ const Name: React.FC<INameProps> = ({
 	routeFn = noop,
 	tooltip = false,
 }) => {
-	const getSecondaryInfo = () => {
-		if (!renderSecondaryInfo) {
-			return null;
-		}
-
-		return (
-			<div className="secondary-info text-truncate">
-				<DataValue
-					format={(secondaryInfo) => secondaryInfo}
-					value={renderSecondaryInfo(data)}
-				/>
-			</div>
-		);
-	};
-
 	const name = data[nameKey];
 
 	const url = routeFn({data});
@@ -81,7 +89,10 @@ const Name: React.FC<INameProps> = ({
 						)}
 					</div>
 
-					{getSecondaryInfo()}
+					<SecondaryInfo
+						data={data}
+						renderSecondaryInfo={renderSecondaryInfo}
+					/>
 				</div>
 			</div>
 		</td>
