@@ -1,5 +1,5 @@
 {
-	"@generated": "b4d3498dba0b521c35d8eeb91ed2a6861be72503",
+	"@generated": "8ac559be4f6dee407fc40822cbf74252b68a8a73",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,15 @@
 		"paths": {
 			"@liferay/frontend-js-audiences-web/custom-attributes": [
 				"./../src/main/resources/META-INF/resources/custom-attributes/index.ts"
+			],
+			"frontend-js-web": [
+				"../../frontend-js-web/src/main/resources/META-INF/resources/main/index.d.ts"
+			],
+			"frontend-js-web/auto_fields": [
+				"../../frontend-js-web/src/main/resources/META-INF/resources/auto_fields/index.js"
+			],
+			"frontend-js-web/legacy": [
+				"../../frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
 			]
 		},
 		"rootDir": "../../../..",
@@ -33,5 +42,8 @@
 		"../src/**/*.tsx"
 	],
 	"references": [
+		{
+			"path": "../../frontend-js-web/src/main/resources/META-INF/resources/tsconfig.json"
+		}
 	]
 }

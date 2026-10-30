@@ -1,5 +1,6 @@
 {
 	"dependencies": {
+		"frontend-js-web": "*",
 		"ua-parser-js": "2.0.9"
 	},
 	"main": "main/index.ts",

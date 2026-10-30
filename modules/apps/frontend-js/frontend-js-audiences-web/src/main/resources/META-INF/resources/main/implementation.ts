@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {COOKIE_TYPES, setCookie} from 'frontend-js-web';
+
 import {Cache} from './cache';
 import {Detection} from './detection';
 import {log} from './log';
@@ -15,6 +17,8 @@ import type {
 	Handler,
 	RunDetectionOptions,
 } from './index';
+
+const COOKIE_NAME = 'com.liferay.frontend.js.audiences';
 
 // Global state variables for Audiences module
 
@@ -95,6 +99,8 @@ export async function runDetection(
 		for (const match of matches) {
 			detectedAudiences.add(match);
 		}
+
+		saveDetectedAudiences();
 	}
 	catch (error: any) {
 		log(
@@ -162,6 +168,8 @@ export function set(audienceIds: AudienceId[]): void {
 		audienceIndexes.set(audienceId, index);
 		detectedAudiences.add(audienceId);
 	});
+
+	saveDetectedAudiences();
 }
 
 export function setLogEnabled(enabled: boolean) {
@@ -176,6 +184,14 @@ function createRunDetectionTimeoutAbortSignal(timeout?: number): AbortSignal {
 	}
 
 	return abortController.signal;
+}
+
+function saveDetectedAudiences(): void {
+	setCookie(
+		COOKIE_NAME,
+		encodeURIComponent(JSON.stringify([...detectedAudiences])),
+		COOKIE_TYPES.FUNCTIONAL
+	);
 }
 
 /**

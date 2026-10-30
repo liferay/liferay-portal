@@ -1,5 +1,5 @@
 {
-	"@generated": "af87afe48a2da8e377c31e18e85bc70ed7e350f8",
+	"@generated": "824d10fb4373bf91a46f2fc0adca7fd2f0417db0",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -13,6 +13,15 @@
 		"paths": {
 			"@liferay/frontend-js-audiences-web/custom-attributes": [
 				"./custom-attributes/index.ts"
+			],
+			"frontend-js-web": [
+				"../../../../../../frontend-js-web/src/main/resources/META-INF/resources/main/index.d.ts"
+			],
+			"frontend-js-web/auto_fields": [
+				"../../../../../../frontend-js-web/src/main/resources/META-INF/resources/auto_fields/index.js"
+			],
+			"frontend-js-web/legacy": [
+				"../../../../../../frontend-js-web/src/main/resources/META-INF/resources/legacy/index.ts"
 			]
 		},
 		"rootDir": "../../../../../../../..",
@@ -31,5 +40,8 @@
 		"../../../../../../../../global.d.ts"
 	],
 	"references": [
+		{
+			"path": "../../../../../../frontend-js-web/src/main/resources/META-INF/resources/tsconfig.json"
+		}
 	]
 }
