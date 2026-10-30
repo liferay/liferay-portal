@@ -111,6 +111,7 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 	public void testPutShipmentByExternalReferenceCode() throws Exception {
 		super.testPutShipmentByExternalReferenceCode();
 
+		_testPutShipmentByExternalReferenceCodeWithNonexistentOrderExternalReferenceCode();
 		_testPutShipmentByExternalReferenceCodeWithOrderExternalReferenceCode();
 	}
 
@@ -351,6 +352,21 @@ public class ShipmentResourceTest extends BaseShipmentResourceTestCase {
 		Assert.assertEquals(
 			randomShippingAddress.getExternalReferenceCode(),
 			getShippingAddress.getExternalReferenceCode());
+	}
+
+	private void _testPutShipmentByExternalReferenceCodeWithNonexistentOrderExternalReferenceCode()
+		throws Exception {
+
+		Shipment randomShipment = randomShipment();
+
+		randomShipment.setOrderExternalReferenceCode(
+			RandomTestUtil.randomString());
+		randomShipment.setOrderId(0L);
+
+		assertHttpResponseStatusCode(
+			404,
+			shipmentResource.putShipmentByExternalReferenceCodeHttpResponse(
+				RandomTestUtil.randomString(), randomShipment));
 	}
 
 	private void _testPutShipmentByExternalReferenceCodeWithOrderExternalReferenceCode()
