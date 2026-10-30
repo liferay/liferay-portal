@@ -3,17 +3,26 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {openSelectionModal} from 'frontend-js-components-web';
-import {delegate, sub} from 'frontend-js-web';
+import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+import {delegate} from 'frontend-js-web';
+
+import getSitesItemSelectorProps from './item_selector/getSitesItemSelectorProps';
 
 export default function ({
-	itemSelectorUrl,
+	commerceChannelId,
 	portletNamespace,
 	removeCommerceChannelSiteIcon,
 	searchContainerId,
+	site,
 }) {
+	let currentSite = site;
+
 	Liferay.componentReady(`${portletNamespace}${searchContainerId}`).then(
 		(searchContainer) => {
+			const searchContainerContentBox = searchContainer.get('contentBox');
+
+			const searchContainerNode = searchContainerContentBox.getDOMNode();
+
 			const selectSiteButton = document.getElementById(
 				`${portletNamespace}selectSite`
 			);
@@ -22,35 +31,36 @@ export default function ({
 				selectSiteButton.addEventListener('click', (event) => {
 					event.preventDefault();
 
-					openSelectionModal({
-						onSelect: (selectedItem) => {
-							if (!selectedItem) {
+					openItemSelectorModal({
+						...getSitesItemSelectorProps({
+							commerceChannelId,
+							portletNamespace,
+						}),
+						items: currentSite ? [currentSite] : [],
+						onItemsChange: ([selectedSite]) => {
+							if (!selectedSite) {
 								return;
 							}
 
-							const searchContainerData =
-								searchContainer.getData();
+							const links =
+								searchContainerNode.querySelectorAll(
+									'.modify-link'
+								);
 
-							const link = document.querySelector(
-								`a[data-rowid="${searchContainerData}"]`
-							);
-
-							if (link) {
-								const row = link.closest('tr');
-
-								if (row) {
-									searchContainer.deleteRow(
-										row,
-										link.dataset.rowid
-									);
-								}
-							}
+							links.forEach((link) => {
+								searchContainer.deleteRow(
+									link.closest('tr'),
+									link.dataset.rowid
+								);
+							});
 
 							const rowColumns = [];
 
-							rowColumns.push(selectedItem.name);
 							rowColumns.push(
-								`<a class="float-right modify-link" data-rowId="${selectedItem.id}" href="javascript:void(0);">${removeCommerceChannelSiteIcon}</a>`
+								Liferay.Util.escapeHTML(selectedSite.name)
+							);
+							rowColumns.push(
+								`<a class="float-right modify-link" data-rowId="${selectedSite.id}" href="javascript:void(0);">${removeCommerceChannelSiteIcon}</a>`
 							);
 
 							const siteGroupInput = document.getElementById(
@@ -58,45 +68,39 @@ export default function ({
 							);
 
 							if (siteGroupInput) {
-								siteGroupInput.value = selectedItem.id;
+								siteGroupInput.value = selectedSite.id;
 							}
 
-							searchContainer.addRow(rowColumns, selectedItem.id);
+							searchContainer.addRow(
+								rowColumns,
+								String(selectedSite.id)
+							);
 
 							searchContainer.updateDataStore();
+
+							currentSite = selectedSite;
 						},
-						selectEventName: 'sitesSelectItem',
-						title: sub(
-							Liferay.Language.get('select-x'),
-							Liferay.Language.get('site')
-						),
-						url: itemSelectorUrl,
 					});
 				});
 			}
 
-			const searchContainerContentBox = searchContainer.get('contentBox');
+			delegate(searchContainerNode, 'click', '.modify-link', (event) => {
+				const link = event.delegateTarget;
 
-			delegate(
-				searchContainerContentBox.getDOMNode(),
-				'click',
-				'.modify-link',
-				(event) => {
-					const link = event.delegateTarget;
+				const row = link.closest('tr');
 
-					const row = link.closest('tr');
+				searchContainer.deleteRow(row, link.dataset.rowid);
 
-					searchContainer.deleteRow(row, link.dataset.rowid);
+				const siteGroupInput = document.getElementById(
+					`${portletNamespace}siteGroupId`
+				);
 
-					const siteGroupInput = document.getElementById(
-						`${portletNamespace}siteGroupId`
-					);
-
-					if (siteGroupInput) {
-						siteGroupInput.value = 0;
-					}
+				if (siteGroupInput) {
+					siteGroupInput.value = 0;
 				}
-			);
+
+				currentSite = null;
+			});
 		}
 	);
 }

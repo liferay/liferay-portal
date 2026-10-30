@@ -14,8 +14,16 @@ SiteCommerceChannelTypeDisplayContext siteCommerceChannelTypeDisplayContext = (S
 
 Group channelSiteGroup = siteCommerceChannelTypeDisplayContext.getChannelSite();
 
+Map<String, Object> site = null;
+
 if (channelSiteGroup != null) {
 	groups = Arrays.asList(channelSiteGroup);
+
+	site = HashMapBuilder.<String, Object>put(
+		"id", channelSiteGroup.getGroupId()
+	).put(
+		"name", channelSiteGroup.getName(locale)
+	).build();
 }
 
 CommerceChannel commerceChannel = siteCommerceChannelTypeDisplayContext.getCommerceChannel();
@@ -102,13 +110,15 @@ if (commerceChannel != null) {
 <liferay-frontend:component
 	context='<%=
 		HashMapBuilder.<String, Object>put(
-			"itemSelectorUrl", siteCommerceChannelTypeDisplayContext.getItemSelectorUrl()
+			"commerceChannelId", commerceChannelId
 		).put(
 			"portletNamespace", liferayPortletResponse.getNamespace()
 		).put(
 			"removeCommerceChannelSiteIcon", removeCommerceChannelSiteIcon
 		).put(
 			"searchContainerId", searchContainerId
+		).put(
+			"site", site
 		).build()
 	%>'
 	module="{CommerceChannelSite} from commerce-channel-web"
