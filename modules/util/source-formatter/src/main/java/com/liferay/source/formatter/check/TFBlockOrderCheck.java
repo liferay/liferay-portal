@@ -127,7 +127,9 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 		Entry firstEntry = entries.get(0);
 		Entry sortedFirstEntry = sortedEntries.get(0);
 
-		if (firstEntry.isAfterComment() && (firstEntry != sortedFirstEntry)) {
+		if (firstEntry.isPrecededByComment() &&
+			(firstEntry != sortedFirstEntry)) {
+
 			addMessage(
 				fileName,
 				StringBundler.concat(
@@ -156,7 +158,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 		List<Entry> entries = new ArrayList<>();
 
-		boolean afterComment = false;
+		boolean precededByComment = false;
 
 		for (int i = startLineIndex; i < endLineIndex; i++) {
 			String trimmedLine = StringUtil.trim(lines[i]);
@@ -171,7 +173,7 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 				}
 
 				if (TFSourceUtil.isCommentLine(lines[i])) {
-					afterComment = true;
+					precededByComment = true;
 				}
 
 				i = TFSourceUtil.getCommentEndLineIndex(lines, i);
@@ -210,12 +212,12 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 
 			Entry entry = new Entry(entryEndLineIndex, lines, i);
 
-			entry.setAfterComment(afterComment);
+			entry.setPrecededByComment(precededByComment);
 			entry.setSortKey(sortKey);
 
 			entries.add(entry);
 
-			afterComment = false;
+			precededByComment = false;
 
 			i = entryEndLineIndex;
 		}
@@ -303,20 +305,20 @@ public class TFBlockOrderCheck extends BaseFileCheck {
 			return _startLineIndex;
 		}
 
-		public boolean isAfterComment() {
-			return _afterComment;
+		public boolean isPrecededByComment() {
+			return _precededByComment;
 		}
 
-		public void setAfterComment(boolean afterComment) {
-			_afterComment = afterComment;
+		public void setPrecededByComment(boolean precededByComment) {
+			_precededByComment = precededByComment;
 		}
 
 		public void setSortKey(String sortKey) {
 			_sortKey = sortKey;
 		}
 
-		private boolean _afterComment;
 		private final List<String> _lines = new ArrayList<>();
+		private boolean _precededByComment;
 		private String _sortKey;
 		private final int _startLineIndex;
 
