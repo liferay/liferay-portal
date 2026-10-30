@@ -28,7 +28,7 @@ test(
 			page.getByText('Viewable and Downloadable By')
 		).toBeVisible();
 		await expect(
-			page.getByRole('cell', {exact: true, name: 'Role'})
+			page.getByRole('columnheader', {exact: true, name: 'Role'})
 		).toBeVisible();
 	}
 );
