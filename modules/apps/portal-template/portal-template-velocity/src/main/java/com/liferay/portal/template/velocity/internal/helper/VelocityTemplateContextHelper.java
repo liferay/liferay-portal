@@ -98,27 +98,24 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		if (themeDisplay != null) {
+		// Full css and templates path
 
-			// Full css and templates path
+		lazyContextFunctions.put(
+			"fullCssPath",
+			curHttpServletRequest -> _getThemePath(
+				curHttpServletRequest, Theme::getCssPath));
+		lazyContextFunctions.put(
+			"fullTemplatesPath",
+			curHttpServletRequest -> _getThemePath(
+				curHttpServletRequest, Theme::getTemplatesPath));
 
-			lazyContextFunctions.put(
-				"fullCssPath",
-				curHttpServletRequest -> _getThemePath(
-					curHttpServletRequest, Theme::getCssPath));
-			lazyContextFunctions.put(
-				"fullTemplatesPath",
-				curHttpServletRequest -> _getThemePath(
-					curHttpServletRequest, Theme::getTemplatesPath));
+		// Init
 
-			// Init
+		lazyContextFunctions.put("init", this::_getInit);
 
-			lazyContextFunctions.put("init", this::_getInit);
+		// Navigation items
 
-			// Navigation items
-
-			lazyContextFunctions.put("navItems", this::_getNavItems);
-		}
+		lazyContextFunctions.put("navItems", this::_getNavItems);
 
 		// Insert custom vm variables
 

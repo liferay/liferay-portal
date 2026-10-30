@@ -238,132 +238,90 @@ public class TemplateContextHelper {
 
 		// Portlet config
 
-		PortletConfig portletConfig =
-			(PortletConfig)httpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_PORTLET_CONFIG);
-
-		if (portletConfig != null) {
-			lazyContextFunctions.put(
-				"portletConfig",
-				curHttpServletRequest ->
-					(PortletConfig)curHttpServletRequest.getAttribute(
-						JavaConstants.JAKARTA_PORTLET_CONFIG));
-		}
+		lazyContextFunctions.put(
+			"portletConfig",
+			curHttpServletRequest ->
+				(PortletConfig)curHttpServletRequest.getAttribute(
+					JavaConstants.JAKARTA_PORTLET_CONFIG));
 
 		// Render request
 
-		PortletRequest portletRequest =
-			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_PORTLET_REQUEST);
-
-		if ((portletRequest != null) &&
-			(portletRequest instanceof RenderRequest)) {
-
-			lazyContextFunctions.put(
-				"renderRequest", TemplateContextHelper::_getRenderRequest);
-		}
+		lazyContextFunctions.put(
+			"renderRequest", TemplateContextHelper::_getRenderRequest);
 
 		// Render response
 
-		PortletResponse portletResponse =
-			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_PORTLET_RESPONSE);
-
-		if ((portletResponse != null) &&
-			(portletResponse instanceof RenderResponse)) {
-
-			lazyContextFunctions.put(
-				"renderResponse", TemplateContextHelper::_getRenderResponse);
-		}
+		lazyContextFunctions.put(
+			"renderResponse", TemplateContextHelper::_getRenderResponse);
 
 		// XML request
 
-		if ((portletRequest != null) && (portletResponse != null)) {
-			lazyContextFunctions.put(
-				"portletRequestModelFactory",
-				TemplateContextHelper::_getPortletRequestModelFactory);
+		lazyContextFunctions.put(
+			"portletRequestModelFactory",
+			TemplateContextHelper::_getPortletRequestModelFactory);
 
-			// Deprecated
+		// Deprecated
 
-			lazyContextFunctions.put(
-				"xmlRequest", TemplateContextHelper::_getXMLRequest);
-		}
+		lazyContextFunctions.put(
+			"xmlRequest", TemplateContextHelper::_getXMLRequest);
 
 		// Theme display
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
+		lazyContextFunctions.put(
+			"bodyCssClass", TemplateContextHelper::_getBodyCssClass);
 
-		if (themeDisplay != null) {
-			lazyContextFunctions.put(
-				"bodyCssClass", TemplateContextHelper::_getBodyCssClass);
+		lazyContextFunctions.put(
+			"colorScheme",
+			_getThemeDisplayFunction(ThemeDisplay::getColorScheme));
+		lazyContextFunctions.put(
+			"company", _getThemeDisplayFunction(ThemeDisplay::getCompany));
+		lazyContextFunctions.put(
+			"layout", _getThemeDisplayFunction(ThemeDisplay::getLayout));
+		lazyContextFunctions.put(
+			"layouts", _getThemeDisplayFunction(ThemeDisplay::getLayouts));
+		lazyContextFunctions.put(
+			"layoutTypePortlet",
+			_getThemeDisplayFunction(ThemeDisplay::getLayoutTypePortlet));
+		lazyContextFunctions.put(
+			"locale", _getThemeDisplayFunction(ThemeDisplay::getLocale));
+		lazyContextFunctions.put(
+			"permissionChecker",
+			_getThemeDisplayFunction(ThemeDisplay::getPermissionChecker));
+		lazyContextFunctions.put(
+			"plid",
+			_getThemeDisplayFunction(
+				curThemeDisplay -> String.valueOf(curThemeDisplay.getPlid())));
+		lazyContextFunctions.put(
+			"portletDisplay",
+			_getThemeDisplayFunction(ThemeDisplay::getPortletDisplay));
+		lazyContextFunctions.put(
+			"realUser", _getThemeDisplayFunction(ThemeDisplay::getRealUser));
+		lazyContextFunctions.put(
+			"scopeGroupId",
+			_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
+		lazyContextFunctions.put(
+			"siteSpritemap",
+			_getThemeDisplayFunction(ThemeDisplay::getPathThemeSpritemap));
+		lazyContextFunctions.put(
+			"themeDisplay",
+			curHttpServletRequest ->
+				(ThemeDisplay)curHttpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY));
+		lazyContextFunctions.put(
+			"timeZone", _getThemeDisplayFunction(ThemeDisplay::getTimeZone));
 
-			lazyContextFunctions.put(
-				"colorScheme",
-				_getThemeDisplayFunction(ThemeDisplay::getColorScheme));
-			lazyContextFunctions.put(
-				"company", _getThemeDisplayFunction(ThemeDisplay::getCompany));
-			lazyContextFunctions.put(
-				"layout", _getThemeDisplayFunction(ThemeDisplay::getLayout));
-			lazyContextFunctions.put(
-				"layouts", _getThemeDisplayFunction(ThemeDisplay::getLayouts));
-			lazyContextFunctions.put(
-				"layoutTypePortlet",
-				_getThemeDisplayFunction(ThemeDisplay::getLayoutTypePortlet));
-			lazyContextFunctions.put(
-				"locale", _getThemeDisplayFunction(ThemeDisplay::getLocale));
-			lazyContextFunctions.put(
-				"permissionChecker",
-				_getThemeDisplayFunction(ThemeDisplay::getPermissionChecker));
-			lazyContextFunctions.put(
-				"plid",
-				_getThemeDisplayFunction(
-					curThemeDisplay -> String.valueOf(
-						curThemeDisplay.getPlid())));
-			lazyContextFunctions.put(
-				"portletDisplay",
-				_getThemeDisplayFunction(ThemeDisplay::getPortletDisplay));
-			lazyContextFunctions.put(
-				"realUser",
-				_getThemeDisplayFunction(ThemeDisplay::getRealUser));
-			lazyContextFunctions.put(
-				"scopeGroupId",
-				_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
-			lazyContextFunctions.put(
-				"siteSpritemap",
-				_getThemeDisplayFunction(ThemeDisplay::getPathThemeSpritemap));
-			lazyContextFunctions.put(
-				"themeDisplay",
-				curHttpServletRequest ->
-					(ThemeDisplay)curHttpServletRequest.getAttribute(
-						WebKeys.THEME_DISPLAY));
-			lazyContextFunctions.put(
-				"timeZone",
-				_getThemeDisplayFunction(ThemeDisplay::getTimeZone));
+		lazyContextFunctions.put(
+			"user", _getThemeDisplayFunction(TemplateContextHelper::_getUser));
 
-			lazyContextFunctions.put(
-				"user",
-				_getThemeDisplayFunction(TemplateContextHelper::_getUser));
+		// Deprecated
 
-			// Deprecated
-
-			lazyContextFunctions.put(
-				"portletGroupId",
-				_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
-		}
+		lazyContextFunctions.put(
+			"portletGroupId",
+			_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
 
 		// Theme
 
-		Theme theme = (Theme)httpServletRequest.getAttribute(WebKeys.THEME);
-
-		if ((theme == null) && (themeDisplay != null)) {
-			theme = themeDisplay.getTheme();
-		}
-
-		if (theme != null) {
-			lazyContextFunctions.put("theme", TemplateContextHelper::_getTheme);
-		}
+		lazyContextFunctions.put("theme", TemplateContextHelper::_getTheme);
 
 		// Tiles attributes
 
@@ -371,27 +329,15 @@ public class TemplateContextHelper {
 
 		// Page title and subtitle
 
-		ListMergeable<String> pageTitleListMergeable =
-			(ListMergeable<String>)httpServletRequest.getAttribute(
-				WebKeys.PAGE_TITLE);
+		lazyContextFunctions.put(
+			"pageTitle",
+			curHttpServletRequest -> _mergeToString(
+				curHttpServletRequest, WebKeys.PAGE_TITLE));
 
-		if (pageTitleListMergeable != null) {
-			lazyContextFunctions.put(
-				"pageTitle",
-				curHttpServletRequest -> _mergeToString(
-					curHttpServletRequest, WebKeys.PAGE_TITLE));
-		}
-
-		ListMergeable<String> pageSubtitleListMergeable =
-			(ListMergeable<String>)httpServletRequest.getAttribute(
-				WebKeys.PAGE_SUBTITLE);
-
-		if (pageSubtitleListMergeable != null) {
-			lazyContextFunctions.put(
-				"pageSubtitle",
-				curHttpServletRequest -> _mergeToString(
-					curHttpServletRequest, WebKeys.PAGE_SUBTITLE));
-		}
+		lazyContextFunctions.put(
+			"pageSubtitle",
+			curHttpServletRequest -> _mergeToString(
+				curHttpServletRequest, WebKeys.PAGE_SUBTITLE));
 	}
 
 	public void removeAllHelperUtilities() {

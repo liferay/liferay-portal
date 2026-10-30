@@ -85,33 +85,24 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 
 			};
 
-		// Theme display
+		// Full css and templates path
 
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
+		lazyContextFunctions.put(
+			"fullCssPath",
+			curHttpServletRequest -> _getThemePath(
+				curHttpServletRequest, Theme::getCssPath));
+		lazyContextFunctions.put(
+			"fullTemplatesPath",
+			curHttpServletRequest -> _getThemePath(
+				curHttpServletRequest, Theme::getTemplatesPath));
 
-		if (themeDisplay != null) {
+		// Init
 
-			// Full css and templates path
+		lazyContextFunctions.put("init", this::_getInit);
 
-			lazyContextFunctions.put(
-				"fullCssPath",
-				curHttpServletRequest -> _getThemePath(
-					curHttpServletRequest, Theme::getCssPath));
-			lazyContextFunctions.put(
-				"fullTemplatesPath",
-				curHttpServletRequest -> _getThemePath(
-					curHttpServletRequest, Theme::getTemplatesPath));
+		// Navigation items
 
-			// Init
-
-			lazyContextFunctions.put("init", this::_getInit);
-
-			// Navigation items
-
-			lazyContextFunctions.put("navItems", this::_getNavItems);
-		}
+		lazyContextFunctions.put("navItems", this::_getNavItems);
 
 		// Insert custom ftl variables
 
