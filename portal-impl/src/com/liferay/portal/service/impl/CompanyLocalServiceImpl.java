@@ -60,6 +60,7 @@ import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.GroupTable;
 import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.OrganizationConstants;
 import com.liferay.portal.kernel.model.PasswordPolicy;
@@ -377,6 +378,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 		String lowerCaseVirtualHostname = StringUtil.toLowerCase(
 			StringUtil.trim(virtualHostname));
 
+		_validateMaxLengths(name, lowerCaseVirtualHostname, webId);
+
 		if (Validator.isNotNull(webId)) {
 			validateWebId(webId);
 		}
@@ -632,6 +635,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 
 		String lowerCaseVirtualHostname = StringUtil.toLowerCase(
 			StringUtil.trim(virtualHostname));
+
+		_validateMaxLengths(name, lowerCaseVirtualHostname, webId);
 
 		validateVirtualHost(webId, lowerCaseVirtualHostname);
 
@@ -2633,6 +2638,37 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			PropsKeys.LOCALES, newLanguageIds);
 
 		_groupLocalService.updateGroup(group);
+	}
+
+	private void _validateMaxLengths(
+		String name, String virtualHostname, String webId) {
+
+		int maxLength = ModelHintsUtil.getMaxLength(
+			CompanyInfo.class.getName(), "name");
+
+		if (Validator.isNotNull(name) && (name.length() > maxLength)) {
+			throw new IllegalArgumentException(
+				"Name must not exceed " + maxLength + " characters");
+		}
+
+		maxLength = ModelHintsUtil.getMaxLength(
+			VirtualHost.class.getName(), "hostname");
+
+		if (Validator.isNotNull(virtualHostname) &&
+			(virtualHostname.length() > maxLength)) {
+
+			throw new IllegalArgumentException(
+				"Virtual hostname must not exceed " + maxLength +
+					" characters");
+		}
+
+		maxLength = ModelHintsUtil.getMaxLength(
+			Company.class.getName(), "webId");
+
+		if (Validator.isNotNull(webId) && (webId.length() > maxLength)) {
+			throw new IllegalArgumentException(
+				"Web ID must not exceed " + maxLength + " characters");
+		}
 	}
 
 	private static final String _DEFAULT_VIRTUAL_HOST = "localhost";
