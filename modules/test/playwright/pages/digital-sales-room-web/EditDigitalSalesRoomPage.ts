@@ -108,7 +108,7 @@ export class EditDigitalSalesRoomPage {
 		this.selectAccountInput = page.getByRole('combobox', {
 			name: 'Select Account',
 		});
-		this.selectFileButton = page.getByRole('button', {name: 'Select File'});
+		this.selectFileButton = page.getByTestId('selectFileButton');
 		this.selectImageFrame = page.frameLocator('iframe[title="Select"]');
 		this.selectImageAddButton = this.selectImageFrame.getByRole('button', {
 			name: 'Add',
