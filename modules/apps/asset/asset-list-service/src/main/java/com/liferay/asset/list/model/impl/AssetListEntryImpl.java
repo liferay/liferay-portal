@@ -6,7 +6,9 @@
 package com.liferay.asset.list.model.impl;
 
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalServiceUtil;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
@@ -34,6 +36,20 @@ public class AssetListEntryImpl extends AssetListEntryBaseImpl {
 
 		if (assetListEntrySegmentsEntryRel != null) {
 			return assetListEntrySegmentsEntryRel.getTypeSettings();
+		}
+
+		return null;
+	}
+
+	@Override
+	public String getTypeSettings(String audienceEntryERC) {
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			AssetListEntryAudienceEntryRelLocalServiceUtil.
+				fetchAssetListEntryAudienceEntryRel(
+					getAssetListEntryId(), audienceEntryERC);
+
+		if (assetListEntryAudienceEntryRel != null) {
+			return assetListEntryAudienceEntryRel.getTypeSettings();
 		}
 
 		return null;

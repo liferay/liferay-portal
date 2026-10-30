@@ -18,6 +18,7 @@ import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRelTable;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.service.base.AssetListEntryLocalServiceBaseImpl;
 import com.liferay.asset.list.service.persistence.AssetListEntryAssetEntryRelPersistence;
@@ -512,6 +513,37 @@ public class AssetListEntryLocalServiceImpl
 		_assetListEntrySegmentsEntryRelLocalService.
 			updateAssetListEntrySegmentsEntryRelTypeSettings(
 				assetListEntryId, segmentsEntryId, typeSettings);
+	}
+
+	@Override
+	public void updateAssetListEntryTypeSettings(
+			long assetListEntryId, String audienceEntryERC, String typeSettings)
+		throws PortalException {
+
+		// Asset list entry
+
+		AssetListEntry assetListEntry =
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
+
+		assetListEntry.setModifiedDate(new Date());
+
+		String assetEntryType = _getDynamicAssetEntryType(
+			assetListEntryId, audienceEntryERC,
+			SegmentsEntryConstants.ID_DEFAULT, typeSettings);
+
+		assetListEntry.setAssetEntrySubtype(
+			_getDynamicAssetEntrySubtype(
+				assetEntryType, assetListEntryId, audienceEntryERC,
+				SegmentsEntryConstants.ID_DEFAULT, typeSettings));
+		assetListEntry.setAssetEntryType(assetEntryType);
+
+		assetListEntryPersistence.update(assetListEntry);
+
+		// Asset list entry audience entry rel
+
+		_assetListEntryAudienceEntryRelLocalService.
+			updateAssetListEntryAudienceEntryRelTypeSettings(
+				assetListEntryId, audienceEntryERC, typeSettings);
 	}
 
 	private void _addAssetEntrySelections(
@@ -1082,6 +1114,10 @@ public class AssetListEntryLocalServiceImpl
 	@Reference
 	private AssetListEntryAssetEntryRelPersistence
 		_assetListEntryAssetEntryRelPersistence;
+
+	@Reference
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Reference
 	private AssetListEntryAudienceEntryRelPersistence

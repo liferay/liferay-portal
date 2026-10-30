@@ -521,6 +521,21 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			assetListEntryId, segmentsEntryId, typeSettings);
 	}
 
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public void updateAssetListEntryTypeSettings(
+			long assetListEntryId, String audienceEntryERC, String typeSettings)
+		throws PortalException {
+
+		_assetListEntryModelResourcePermission.check(
+			getPermissionChecker(),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
+			ActionKeys.UPDATE);
+
+		assetListEntryLocalService.updateAssetListEntryTypeSettings(
+			assetListEntryId, audienceEntryERC, typeSettings);
+	}
+
 	@Reference(
 		target = "(model.class.name=com.liferay.asset.list.model.AssetListEntry)"
 	)
