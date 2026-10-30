@@ -6,11 +6,7 @@
 package com.liferay.style.book.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.depot.constants.DepotConstants;
-import com.liferay.depot.model.DepotEntry;
-import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
@@ -18,7 +14,6 @@ import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.SystemEvent;
@@ -38,11 +33,8 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
-import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -99,8 +91,6 @@ public class StyleBookEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			Validator.isNotNull(styleBookEntry.getExternalReferenceCode()));
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, styleBookEntry.getStatus());
 
 		styleBookEntry = _styleBookEntryLocalService.addStyleBookEntry(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(),
@@ -285,17 +275,9 @@ public class StyleBookEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddEmptyStyleBookEntry() throws Exception {
-		_testGetOrAddEmptyStyleBookEntry();
-		_testGetOrAddEmptyStyleBookEntryWithInvalidName();
-		_testGetOrAddEmptyStyleBookEntryWithoutThemeId();
-	}
-
-	@Test
 	public void testPublishDraft() throws Throwable {
 		_testPublishDraftWithCheckedOutDefaultStyleBookEntryVersion();
 		_testPublishDraftWithDefaultDraftStyleBookEntry();
-		_testPublishDraftWithEmptyStyleBookEntry();
 		_testPublishDraftWithPublishedStyleBookEntry();
 	}
 
@@ -340,12 +322,9 @@ public class StyleBookEntryLocalServiceTest {
 		_testUpdateStyleBookEntryWithDraftStyleBookEntry();
 		_testUpdateStyleBookEntryWithDraftStyleBookEntryId();
 		_testUpdateStyleBookEntryWithDuplicateStyleBookEntryKey();
-		_testUpdateStyleBookEntryWithEmptyStyleBookEntry();
-		_testUpdateStyleBookEntryWithEmptyStyleBookEntryAndWithoutThemeId();
 		_testUpdateStyleBookEntryWithFrontendTokens();
 		_testUpdateStyleBookEntryWithFrontendTokensAndDraftStyleBookEntry();
 		_testUpdateStyleBookEntryWithFrontendTokensAndDraftStyleBookEntryId();
-		_testUpdateStyleBookEntryWithFrontendTokensAndEmptyStyleBookEntry();
 		_testUpdateStyleBookEntryWithFrontendTokensAndFrontendTokenDefinition();
 		_testUpdateStyleBookEntryWithUser();
 	}
@@ -404,103 +383,6 @@ public class StyleBookEntryLocalServiceTest {
 		return styleBookEntry.getStyleBookEntryId();
 	}
 
-	private StyleBookEntry _getOrAddEmptyStyleBookEntry(
-			String externalReferenceCode, long groupId, String themeId)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			return _styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
-				externalReferenceCode, TestPropsValues.getUserId(), groupId,
-				themeId);
-		}
-	}
-
-	private void _testGetOrAddEmptyStyleBookEntry() throws Exception {
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			externalReferenceCode, _group.getGroupId(), _THEME_ID);
-
-		Assert.assertEquals(
-			externalReferenceCode, styleBookEntry.getExternalReferenceCode());
-		Assert.assertEquals(_group.getGroupId(), styleBookEntry.getGroupId());
-		Assert.assertFalse(styleBookEntry.isDefaultStyleBookEntry());
-		Assert.assertEquals(_THEME_ID, styleBookEntry.getThemeId());
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_EMPTY, styleBookEntry.getStatus());
-
-		StyleBookEntry existingStyleBookEntry = _getOrAddEmptyStyleBookEntry(
-			externalReferenceCode, _group.getGroupId(), _THEME_ID);
-
-		Assert.assertEquals(
-			styleBookEntry.getStyleBookEntryId(),
-			existingStyleBookEntry.getStyleBookEntryId());
-
-		StyleBookEntry approvedStyleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null,
-				RandomTestUtil.randomString(), null, _THEME_ID,
-				_serviceContext);
-
-		existingStyleBookEntry = _getOrAddEmptyStyleBookEntry(
-			approvedStyleBookEntry.getExternalReferenceCode(),
-			_group.getGroupId(), RandomTestUtil.randomString());
-
-		Assert.assertEquals(
-			approvedStyleBookEntry.getStyleBookEntryId(),
-			existingStyleBookEntry.getStyleBookEntryId());
-		Assert.assertEquals(_THEME_ID, existingStyleBookEntry.getThemeId());
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED,
-			existingStyleBookEntry.getStatus());
-	}
-
-	private void _testGetOrAddEmptyStyleBookEntryWithInvalidName()
-		throws Exception {
-
-		String suffix = RandomTestUtil.randomString();
-
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			"a.b/c" + suffix, _group.getGroupId(), _THEME_ID);
-
-		String name = "abc" + suffix;
-
-		Assert.assertEquals(name, styleBookEntry.getName());
-
-		styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			"a/b.c" + suffix, _group.getGroupId(), _THEME_ID);
-
-		Assert.assertEquals(name + " (1)", styleBookEntry.getName());
-	}
-
-	private void _testGetOrAddEmptyStyleBookEntryWithoutThemeId()
-		throws Exception {
-
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			RandomTestUtil.randomString(), _group.getGroupId(), null);
-
-		Assert.assertEquals(
-			"classic_WAR_classictheme", styleBookEntry.getThemeId());
-
-		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			HashMapBuilder.put(
-				LocaleUtil.getDefault(), RandomTestUtil.randomString()
-			).build(),
-			DepotConstants.TYPE_DESIGN_LIBRARY, _serviceContext);
-
-		styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			RandomTestUtil.randomString(), depotEntry.getGroupId(), null);
-
-		Assert.assertEquals(
-			"classic_WAR_classictheme", styleBookEntry.getThemeId());
-	}
-
 	private void _testPublishDraftWithCheckedOutDefaultStyleBookEntryVersion()
 		throws Throwable {
 
@@ -554,28 +436,6 @@ public class StyleBookEntryLocalServiceTest {
 			styleBookEntry2.getStyleBookEntryId());
 
 		Assert.assertFalse(styleBookEntry2.isDefaultStyleBookEntry());
-	}
-
-	private void _testPublishDraftWithEmptyStyleBookEntry() throws Exception {
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			RandomTestUtil.randomString(), _group.getGroupId(), _THEME_ID);
-
-		StyleBookEntry draftStyleBookEntry =
-			_styleBookEntryLocalService.getDraft(styleBookEntry);
-
-		draftStyleBookEntry.setName(RandomTestUtil.randomString());
-
-		draftStyleBookEntry = _styleBookEntryLocalService.updateDraft(
-			draftStyleBookEntry);
-
-		draftStyleBookEntry = _styleBookEntryLocalService.getStyleBookEntry(
-			draftStyleBookEntry.getStyleBookEntryId());
-
-		styleBookEntry = _styleBookEntryLocalService.publishDraft(
-			draftStyleBookEntry);
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, styleBookEntry.getStatus());
 	}
 
 	private void _testPublishDraftWithPublishedStyleBookEntry()
@@ -886,70 +746,6 @@ public class StyleBookEntryLocalServiceTest {
 		}
 	}
 
-	private void _testUpdateStyleBookEntryWithEmptyStyleBookEntry()
-		throws Exception {
-
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			RandomTestUtil.randomString(), _group.getGroupId(), _THEME_ID);
-
-		_styleBookEntryLocalService.getDraft(styleBookEntry);
-
-		String frontendTokenName = RandomTestUtil.randomString();
-		String name = styleBookEntry.getName();
-		String styleBookEntryKey = styleBookEntry.getStyleBookEntryKey();
-		String themeId = RandomTestUtil.randomString();
-
-		styleBookEntry = _styleBookEntryLocalService.updateStyleBookEntry(
-			TestPropsValues.getUserId(), styleBookEntry.getStyleBookEntryId(),
-			false, styleBookEntry.getFrontendTokenDefinition(),
-			JSONUtil.put(
-				frontendTokenName,
-				JSONUtil.put("value", RandomTestUtil.randomString())
-			).toString(),
-			RandomTestUtil.randomString(), null,
-			styleBookEntry.getPreviewFileEntryId(), themeId, _serviceContext);
-
-		Assert.assertEquals(themeId, styleBookEntry.getThemeId());
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, styleBookEntry.getStatus());
-
-		JSONObject frontendTokensValuesJSONObject =
-			JSONFactoryUtil.createJSONObject(
-				styleBookEntry.getFrontendTokensValues());
-
-		Assert.assertTrue(
-			frontendTokensValuesJSONObject.has(
-				themeId + StringPool.COLON + frontendTokenName));
-
-		Assert.assertNull(
-			_styleBookEntryLocalService.fetchDraft(styleBookEntry));
-
-		StyleBookEntry newStyleBookEntry =
-			_styleBookEntryLocalService.addStyleBookEntry(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(), false, null, null, name, null, _THEME_ID,
-				_serviceContext);
-
-		Assert.assertEquals(
-			styleBookEntryKey, newStyleBookEntry.getStyleBookEntryKey());
-	}
-
-	private void _testUpdateStyleBookEntryWithEmptyStyleBookEntryAndWithoutThemeId()
-		throws Exception {
-
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			RandomTestUtil.randomString(), _group.getGroupId(), _THEME_ID);
-
-		try {
-			_updateStyleBookEntry(false, styleBookEntry, null);
-
-			Assert.fail();
-		}
-		catch (StyleBookEntryThemeIdException.MustNotBeNull
-					styleBookEntryThemeIdException) {
-		}
-	}
-
 	private void _testUpdateStyleBookEntryWithFrontendTokens()
 		throws Exception {
 
@@ -963,8 +759,6 @@ public class StyleBookEntryLocalServiceTest {
 			styleBookEntry.getStyleBookEntryId());
 
 		Assert.assertEquals(name, styleBookEntry.getName());
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, styleBookEntry.getStatus());
 
 		JSONObject frontendTokensValuesJSONObject =
 			JSONFactoryUtil.createJSONObject(
@@ -1038,24 +832,6 @@ public class StyleBookEntryLocalServiceTest {
 		Assert.assertNull(
 			_styleBookEntryLocalService.fetchStyleBookEntry(
 				draftStyleBookEntry.getStyleBookEntryId()));
-	}
-
-	private void _testUpdateStyleBookEntryWithFrontendTokensAndEmptyStyleBookEntry()
-		throws Exception {
-
-		StyleBookEntry styleBookEntry = _getOrAddEmptyStyleBookEntry(
-			RandomTestUtil.randomString(), _group.getGroupId(), _THEME_ID);
-
-		_styleBookEntryLocalService.getDraft(styleBookEntry);
-
-		styleBookEntry = _updateStyleBookEntry(
-			null, RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			styleBookEntry.getStyleBookEntryId());
-
-		Assert.assertEquals(
-			WorkflowConstants.STATUS_APPROVED, styleBookEntry.getStatus());
-		Assert.assertNull(
-			_styleBookEntryLocalService.fetchDraft(styleBookEntry));
 	}
 
 	private void _testUpdateStyleBookEntryWithFrontendTokensAndFrontendTokenDefinition()
@@ -1158,9 +934,6 @@ public class StyleBookEntryLocalServiceTest {
 	}
 
 	private static final String _THEME_ID = RandomTestUtil.randomString();
-
-	@Inject
-	private DepotEntryLocalService _depotEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

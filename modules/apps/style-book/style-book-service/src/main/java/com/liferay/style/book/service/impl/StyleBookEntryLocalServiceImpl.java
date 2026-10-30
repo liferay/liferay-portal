@@ -6,11 +6,8 @@
 package com.liferay.style.book.service.impl;
 
 import com.liferay.document.library.kernel.service.DLAppLocalService;
-import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.frontend.token.definition.FrontendToken;
-import com.liferay.frontend.token.definition.FrontendTokenDefinition;
-import com.liferay.frontend.token.definition.FrontendTokenDefinitionRegistry;
 import com.liferay.frontend.token.definition.util.FrontendTokenDefinitionUtil;
 import com.liferay.frontend.token.definition.validator.FrontendTokenDefinitionJSONValidator;
 import com.liferay.petra.string.CharPool;
@@ -31,8 +28,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -42,7 +37,6 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
-import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -51,7 +45,6 @@ import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UniqueUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.style.book.constants.StyleBookConstants;
 import com.liferay.style.book.constants.StyleBookPortletKeys;
 import com.liferay.style.book.exception.DuplicateStyleBookEntryFrontendTokenException;
@@ -158,13 +151,6 @@ public class StyleBookEntryLocalServiceImpl
 			_unsetDefaultStyleBookEntries(groupId, 0, themeId);
 
 			styleBookEntry.setDefaultStyleBookEntry(true);
-		}
-
-		if (_emptyModelManager.isEmptyModel()) {
-			styleBookEntry.setStatus(WorkflowConstants.STATUS_EMPTY);
-		}
-		else {
-			styleBookEntry.setStatus(WorkflowConstants.STATUS_APPROVED);
 		}
 
 		return publishDraft(styleBookEntry);
@@ -361,35 +347,12 @@ public class StyleBookEntryLocalServiceImpl
 				Property headProperty = PropertyFactoryUtil.forName("head");
 
 				dynamicQuery.add(headProperty.eq(true));
-
-				Property statusProperty = PropertyFactoryUtil.forName("status");
-
-				dynamicQuery.add(
-					statusProperty.ne(WorkflowConstants.STATUS_EMPTY));
 			});
 
 		exportActionableDynamicQuery.setGroupId(
 			portletDataContext.getScopeGroupId());
 
 		return exportActionableDynamicQuery;
-	}
-
-	@Override
-	public StyleBookEntry getOrAddEmptyStyleBookEntry(
-			String externalReferenceCode, long userId, long groupId,
-			String themeId)
-		throws Exception {
-
-		return _emptyModelManager.getOrAddEmptyModel(
-			StyleBookEntry.class.getName(), null,
-			() -> styleBookEntryLocalService.addStyleBookEntry(
-				externalReferenceCode, userId, groupId, false, null, null,
-				_getEmptyStyleBookEntryName(externalReferenceCode, groupId),
-				null, _getThemeId(groupId, themeId), null),
-			externalReferenceCode,
-			this::fetchStyleBookEntryByExternalReferenceCode,
-			this::getStyleBookEntryByExternalReferenceCode, groupId,
-			"style-book");
 	}
 
 	@Override
@@ -525,8 +488,6 @@ public class StyleBookEntryLocalServiceImpl
 		if (publishedStyleBookEntry != null) {
 			draftStyleBookEntry.setDefaultStyleBookEntry(
 				publishedStyleBookEntry.isDefaultStyleBookEntry());
-			draftStyleBookEntry.setStatus(
-				_solveEmptyStyleBookEntry(publishedStyleBookEntry));
 		}
 
 		return super.publishDraft(draftStyleBookEntry);
@@ -852,16 +813,6 @@ public class StyleBookEntryLocalServiceImpl
 
 		styleBookEntry.setDefaultStyleBookEntry(defaultStyleBookEntry);
 
-		if (styleBookEntry.getStatus() == WorkflowConstants.STATUS_EMPTY) {
-			String uuid = serviceContext.getUuid();
-
-			if (Validator.isNotNull(uuid)) {
-				styleBookEntry.setUuid(uuid);
-			}
-
-			styleBookEntry.setStatus(_solveEmptyStyleBookEntry(styleBookEntry));
-		}
-
 		StyleBookEntry draftStyleBookEntry = fetchDraft(styleBookEntry);
 
 		if (draftStyleBookEntry != null) {
@@ -933,15 +884,6 @@ public class StyleBookEntryLocalServiceImpl
 		return styleBookEntry;
 	}
 
-	private String _getEmptyStyleBookEntryName(
-		String externalReferenceCode, long groupId) {
-
-		String name = StringUtil.removeChars(
-			externalReferenceCode, CharPool.PERIOD, CharPool.SLASH);
-
-		return generateStyleBookEntryName(groupId, name);
-	}
-
 	private FrontendToken.Type _getFrontendTokenType(String frontendTokenType)
 		throws PortalException {
 
@@ -962,36 +904,6 @@ public class StyleBookEntryLocalServiceImpl
 		}
 
 		return StringPool.BLANK;
-	}
-
-	private String _getThemeId(long groupId, String themeId)
-		throws PortalException {
-
-		if (Validator.isNotNull(themeId)) {
-			return themeId;
-		}
-
-		Group group = _groupLocalService.getGroup(groupId);
-
-		LayoutSet layoutSet = group.getPublicLayoutSet();
-
-		FrontendTokenDefinition frontendTokenDefinition =
-			_frontendTokenDefinitionRegistry.getFrontendTokenDefinition(
-				layoutSet);
-
-		if (frontendTokenDefinition != null) {
-			return frontendTokenDefinition.getThemeId();
-		}
-
-		return layoutSet.getThemeId();
-	}
-
-	private int _solveEmptyStyleBookEntry(StyleBookEntry styleBookEntry) {
-		return _emptyModelManager.solveEmptyModel(
-			styleBookEntry.getExternalReferenceCode(),
-			StyleBookEntry.class.getName(), styleBookEntry.getCompanyId(),
-			styleBookEntry.getGroupId(), styleBookEntry.getStatus(),
-			() -> WorkflowConstants.STATUS_APPROVED);
 	}
 
 	private void _unsetDefaultStyleBookEntries(
@@ -1205,18 +1117,9 @@ public class StyleBookEntryLocalServiceImpl
 	@Reference
 	private DLAppLocalService _dlAppLocalService;
 
-	@Reference
-	private EmptyModelManager _emptyModelManager;
-
 	private final FrontendTokenDefinitionJSONValidator
 		_frontendTokenDefinitionJSONValidator =
 			new FrontendTokenDefinitionJSONValidator();
-
-	@Reference
-	private FrontendTokenDefinitionRegistry _frontendTokenDefinitionRegistry;
-
-	@Reference
-	private GroupLocalService _groupLocalService;
 
 	@Reference
 	private JSONFactory _jsonFactory;

@@ -19,7 +19,6 @@ import com.liferay.headless.admin.site.resource.v1_0.test.util.ProblemExceptionT
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -27,7 +26,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Theme;
@@ -85,7 +83,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 	public void testGetDesignLibraryStyleBooksPage() throws Exception {
 		super.testGetDesignLibraryStyleBooksPage();
 
-		_testGetDesignLibraryStyleBooksPageWithEmptyStyleBook();
 		_testGetDesignLibraryStyleBooksPageWithSiteExternalReferenceCode();
 		_testGetDesignLibraryStyleBooksPageWithSortName();
 	}
@@ -121,7 +118,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 
 		_testGetSiteStyleBooksPageWithDefaultSort();
 		_testGetSiteStyleBooksPageWithDesignLibraryExternalReferenceCode();
-		_testGetSiteStyleBooksPageWithEmptyStyleBook();
 		_testGetSiteStyleBooksPageWithSearch();
 		_testGetSiteStyleBooksPageWithSortName();
 		_testGetSiteStyleBooksPageWithStaleDocument();
@@ -420,19 +416,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 		return _irrelevantDesignLibraryGroup.getExternalReferenceCode();
 	}
 
-	private StyleBookEntry _getOrAddEmptyStyleBookEntry(long groupId)
-		throws Exception {
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			return _styleBookEntryLocalService.getOrAddEmptyStyleBookEntry(
-				StringUtil.toLowerCase(RandomTestUtil.randomString()),
-				TestPropsValues.getUserId(), groupId,
-				RandomTestUtil.randomString());
-		}
-	}
-
 	private Layout _getPageSpecificationLayout() throws Exception {
 		if (_pageSpecificationLayout == null) {
 			_pageSpecificationLayout = LayoutTestUtil.addTypeContentLayout(
@@ -477,37 +460,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			styleBookResource.getDesignLibraryStyleBook(
 				_getDesignLibraryExternalReferenceCode(),
 				styleBook.getExternalReferenceCode()));
-	}
-
-	private void _testGetDesignLibraryStyleBooksPageWithEmptyStyleBook()
-		throws Exception {
-
-		Group designLibraryGroup = DesignLibraryTestUtil.addDesignLibraryGroup(
-			testGroup.getGroupId());
-
-		StyleBookEntry emptyStyleBookEntry = _getOrAddEmptyStyleBookEntry(
-			designLibraryGroup.getGroupId());
-
-		_assertTotalCount(
-			emptyStyleBookEntry.getExternalReferenceCode(),
-			styleBookResource.getDesignLibraryStyleBooksPage(
-				designLibraryGroup.getExternalReferenceCode(), null, null,
-				"externalReferenceCode eq '" +
-					emptyStyleBookEntry.getExternalReferenceCode() + "'",
-				Pagination.of(1, 10), null),
-			0);
-
-		StyleBook styleBook = styleBookResource.postDesignLibraryStyleBook(
-			designLibraryGroup.getExternalReferenceCode(), randomStyleBook());
-
-		_assertTotalCount(
-			styleBook.getExternalReferenceCode(),
-			styleBookResource.getDesignLibraryStyleBooksPage(
-				designLibraryGroup.getExternalReferenceCode(), null, null,
-				"externalReferenceCode eq '" +
-					styleBook.getExternalReferenceCode() + "'",
-				Pagination.of(1, 10), null),
-			1);
 	}
 
 	private void _testGetDesignLibraryStyleBooksPageWithSiteExternalReferenceCode()
@@ -854,34 +806,6 @@ public class StyleBookResourceTest extends BaseStyleBookResourceTestCase {
 			() -> styleBookResource.getSiteStyleBooksPage(
 				_getDesignLibraryExternalReferenceCode(), null, null, null,
 				Pagination.of(1, 10), null));
-	}
-
-	private void _testGetSiteStyleBooksPageWithEmptyStyleBook()
-		throws Exception {
-
-		StyleBookEntry emptyStyleBookEntry = _getOrAddEmptyStyleBookEntry(
-			testGroup.getGroupId());
-
-		_assertTotalCount(
-			emptyStyleBookEntry.getExternalReferenceCode(),
-			styleBookResource.getSiteStyleBooksPage(
-				testGroup.getExternalReferenceCode(), null, null,
-				"externalReferenceCode eq '" +
-					emptyStyleBookEntry.getExternalReferenceCode() + "'",
-				Pagination.of(1, 10), null),
-			0);
-
-		StyleBook styleBook = testPostSiteStyleBook_addStyleBook(
-			randomStyleBook());
-
-		_assertTotalCount(
-			styleBook.getExternalReferenceCode(),
-			styleBookResource.getSiteStyleBooksPage(
-				testGroup.getExternalReferenceCode(), null, null,
-				"externalReferenceCode eq '" +
-					styleBook.getExternalReferenceCode() + "'",
-				Pagination.of(1, 10), null),
-			1);
 	}
 
 	private void _testGetSiteStyleBooksPageWithSearch() throws Exception {
