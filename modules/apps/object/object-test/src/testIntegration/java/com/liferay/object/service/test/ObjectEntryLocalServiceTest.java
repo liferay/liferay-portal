@@ -6417,6 +6417,87 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetPrimaryKeys() throws Exception {
+		ObjectField objectField = ObjectFieldUtil.createObjectField(
+			ObjectFieldConstants.BUSINESS_TYPE_TEXT,
+			ObjectFieldConstants.DB_TYPE_STRING, RandomTestUtil.randomString(),
+			"a" + RandomTestUtil.randomString());
+
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.publishObjectDefinition(
+				Collections.singletonList(objectField),
+				ObjectDefinitionConstants.SCOPE_COMPANY);
+
+		try {
+			ObjectField extensionObjectField = _addCustomObjectField(
+				new TextObjectFieldBuilder(
+				).labelMap(
+					LocalizedMapUtil.getLocalizedMap(
+						RandomTestUtil.randomString())
+				).name(
+					"a" + RandomTestUtil.randomString()
+				).objectDefinitionId(
+					objectDefinition.getObjectDefinitionId()
+				).build());
+
+			String extensionValue1 = "a" + RandomTestUtil.randomString();
+
+			ObjectEntry objectEntry1 = _addObjectEntry(
+				0, objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					extensionObjectField.getName(), extensionValue1
+				).put(
+					objectField.getName(), "a" + RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			String extensionValue2 = "b" + RandomTestUtil.randomString();
+
+			ObjectEntry objectEntry2 = _addObjectEntry(
+				0, objectDefinition,
+				HashMapBuilder.<String, Serializable>put(
+					extensionObjectField.getName(), extensionValue2
+				).put(
+					objectField.getName(), "b" + RandomTestUtil.randomString()
+				).build(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Column<?, String> extensionColumn =
+				(Column<?, String>)_objectFieldLocalService.getColumn(
+					objectDefinition.getObjectDefinitionId(),
+					extensionObjectField.getName());
+
+			Predicate predicate = extensionColumn.in(
+				new String[] {extensionValue1, extensionValue2});
+
+			Assert.assertEquals(
+				Arrays.asList(
+					objectEntry2.getObjectEntryId(),
+					objectEntry1.getObjectEntryId()),
+				_getPrimaryKeys(
+					objectDefinition, predicate,
+					new Sort[] {
+						new Sort(
+							extensionObjectField.getName(), Sort.STRING_TYPE,
+							true)
+					}));
+			Assert.assertEquals(
+				Arrays.asList(
+					objectEntry1.getObjectEntryId(),
+					objectEntry2.getObjectEntryId()),
+				_getPrimaryKeys(
+					objectDefinition, predicate,
+					new Sort[] {
+						new Sort(objectField.getName(), Sort.STRING_TYPE, false)
+					}));
+		}
+		finally {
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition);
+		}
+	}
+
+	@Test
 	public void testGetPrimaryKeysWithLocalizedObjectField() throws Exception {
 
 		// No value provided for the site default language
@@ -11648,6 +11729,18 @@ public class ObjectEntryLocalServiceTest {
 		}
 
 		return sb.toString();
+	}
+
+	private List<Long> _getPrimaryKeys(
+			ObjectDefinition objectDefinition, Predicate predicate,
+			Sort[] sorts)
+		throws Exception {
+
+		return _objectEntryLocalService.getPrimaryKeys(
+			new Long[] {0L}, TestPropsValues.getCompanyId(),
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), predicate, false, null, 0,
+			20, sorts);
 	}
 
 	private String _getRandomEmailAddress() {
