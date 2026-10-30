@@ -1137,7 +1137,7 @@ public class ObjectDefinitionDeployerImpl implements ObjectDefinitionDeployer {
 				).put(
 					"fileEntryId", fileEntry.getFileEntryId()
 				).put(
-					"size",
+					"formattedSize",
 					() -> {
 						ThemeDisplay themeDisplay =
 							(ThemeDisplay)uploadPortletRequest.getAttribute(
