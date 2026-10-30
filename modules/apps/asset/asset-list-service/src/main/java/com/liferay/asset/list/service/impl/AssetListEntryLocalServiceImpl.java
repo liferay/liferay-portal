@@ -124,6 +124,30 @@ public class AssetListEntryLocalServiceImpl
 	}
 
 	@Override
+	public void addAssetEntrySelections(
+			long assetListEntryId, long[] assetEntryIds,
+			String audienceEntryERC, ServiceContext serviceContext)
+		throws PortalException {
+
+		AssetListEntry assetListEntry =
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
+
+		if (Objects.equals(
+				assetListEntry.getType(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC)) {
+
+			throw new PortalException();
+		}
+
+		_assetListEntryAudienceEntryRelPersistence.findByA_AEERC(
+			assetListEntryId, audienceEntryERC);
+
+		_addAssetEntrySelections(
+			assetListEntry, assetEntryIds, audienceEntryERC,
+			SegmentsEntryConstants.ID_DEFAULT, serviceContext);
+	}
+
+	@Override
 	public AssetListEntry addAssetListEntry(
 			String externalReferenceCode, long userId, long groupId,
 			String title, int type, ServiceContext serviceContext)
@@ -237,6 +261,16 @@ public class AssetListEntryLocalServiceImpl
 	}
 
 	@Override
+	public void deleteAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position)
+		throws PortalException {
+
+		_deleteAssetEntrySelection(
+			assetListEntryId, audienceEntryERC,
+			SegmentsEntryConstants.ID_DEFAULT, position);
+	}
+
+	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public AssetListEntry deleteAssetListEntry(AssetListEntry assetListEntry)
 		throws PortalException {
@@ -334,6 +368,17 @@ public class AssetListEntryLocalServiceImpl
 		_moveAssetEntrySelection(
 			assetListEntryId, StringPool.BLANK, segmentsEntryId, position,
 			newPosition);
+	}
+
+	@Override
+	public void moveAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position,
+			int newPosition)
+		throws PortalException {
+
+		_moveAssetEntrySelection(
+			assetListEntryId, audienceEntryERC,
+			SegmentsEntryConstants.ID_DEFAULT, position, newPosition);
 	}
 
 	@Override

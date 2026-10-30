@@ -12,6 +12,8 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
+import com.liferay.portal.kernel.jsonwebservice.JSONWebServiceMode;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
@@ -65,6 +67,22 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		assetListEntryLocalService.addAssetEntrySelections(
 			assetListEntryId, assetEntryIds, segmentsEntryId, serviceContext);
+	}
+
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public void addAssetEntrySelections(
+			long assetListEntryId, long[] assetEntryIds,
+			String audienceEntryERC, ServiceContext serviceContext)
+		throws PortalException {
+
+		_assetListEntryModelResourcePermission.check(
+			getPermissionChecker(),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
+			ActionKeys.UPDATE);
+
+		assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntryId, assetEntryIds, audienceEntryERC, serviceContext);
 	}
 
 	@Override
@@ -124,6 +142,21 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		assetListEntryLocalService.deleteAssetEntrySelection(
 			assetListEntryId, segmentsEntryId, position);
+	}
+
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public void deleteAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position)
+		throws PortalException {
+
+		_assetListEntryModelResourcePermission.check(
+			getPermissionChecker(),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
+			ActionKeys.UPDATE);
+
+		assetListEntryLocalService.deleteAssetEntrySelection(
+			assetListEntryId, audienceEntryERC, position);
 	}
 
 	@Override
@@ -427,6 +460,22 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 
 		assetListEntryLocalService.moveAssetEntrySelection(
 			assetListEntryId, segmentsEntryId, position, newPosition);
+	}
+
+	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
+	@Override
+	public void moveAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC, int position,
+			int newPosition)
+		throws PortalException {
+
+		_assetListEntryModelResourcePermission.check(
+			getPermissionChecker(),
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId),
+			ActionKeys.UPDATE);
+
+		assetListEntryLocalService.moveAssetEntrySelection(
+			assetListEntryId, audienceEntryERC, position, newPosition);
 	}
 
 	@Override
