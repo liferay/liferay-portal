@@ -335,6 +335,7 @@ public class PublishProcessResourceTest
 							name = RandomTestUtil.randomString();
 						}
 					}));
+
 			assertHttpResponseStatusCode(
 				400,
 				publishProcessResource.postSitePublishProcessHttpResponse(
