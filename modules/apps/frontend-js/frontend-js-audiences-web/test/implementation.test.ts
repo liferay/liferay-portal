@@ -7,7 +7,26 @@ import * as audiences from '../src/main/resources/META-INF/resources/main/implem
 
 import type {AudiencesDefinition} from '../src/main/resources/META-INF/resources/main/index';
 
+const COOKIE_NAME = 'com.liferay.frontend.js.audiences';
+
 const DEFINITION_URL = 'https://example.com/audiences.json';
+
+function getCookieValue() {
+	return document.cookie
+		.split('; ')
+		.find((item) => item.startsWith(`${COOKIE_NAME}=`))
+		?.slice(COOKIE_NAME.length + 1);
+}
+
+function getCookieAudienceIds() {
+	const value = getCookieValue();
+
+	if (value === undefined) {
+		return undefined;
+	}
+
+	return JSON.parse(decodeURIComponent(value));
+}
 
 function mockAudiencesDefinition(audienceIds: string[]) {
 	const audiencesDefinition: AudiencesDefinition = {
@@ -190,6 +209,85 @@ describe('implementation', () => {
 
 			expect(handler).toHaveBeenCalledTimes(1);
 			expect(otherHandler).not.toHaveBeenCalled();
+		});
+	});
+
+	describe('cookie', () => {
+		afterEach(() => {
+			document.cookie = `${COOKIE_NAME}=; max-age=0; path=/`;
+			document.cookie = 'CONSENT_TYPE_FUNCTIONAL=; max-age=0; path=/';
+		});
+
+		it('is kept by clear', () => {
+			audiences.set(['a']);
+
+			audiences.clear();
+
+			expect(getCookieAudienceIds()).toEqual(['a']);
+		});
+
+		it('is not written without functional consent', () => {
+			document.cookie = 'CONSENT_TYPE_FUNCTIONAL=false; path=/';
+
+			audiences.set(['a']);
+
+			expect(getCookieAudienceIds()).toBeUndefined();
+		});
+
+		it('stores an empty list when no audience is detected', async () => {
+			audiences.set(['a']);
+
+			mockAudiencesDefinition([]);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect(getCookieAudienceIds()).toEqual([]);
+		});
+
+		it('stores the audiences detected by runDetection', async () => {
+			mockAudiencesDefinition(['a', 'b']);
+
+			await audiences.runDetection(DEFINITION_URL);
+
+			expect(getCookieAudienceIds()).toEqual(['a', 'b']);
+		});
+
+		it('stores the audiences given to set', () => {
+			audiences.set(['c', 'd']);
+
+			expect(getCookieAudienceIds()).toEqual(['c', 'd']);
+		});
+
+		it('stores audiences with any character in their ERCs', () => {
+			audiences.set(['a\nb', 'c;d', 'e,"f"', 'g\\h', 'ñ 😀']);
+
+			expect(getCookieAudienceIds()).toEqual([
+				'a\nb',
+				'c;d',
+				'e,"f"',
+				'g\\h',
+				'ñ 😀',
+			]);
+		});
+
+		it('stores audiences with ERCs escaped by the sanitizer', () => {
+			audiences.set(['%41', '&lt;b&gt;']);
+
+			expect(getCookieAudienceIds()).toEqual(['%41', '&lt;b&gt;']);
+		});
+
+		it('stores audiences with numeric ERCs as strings', () => {
+			audiences.set(['12345']);
+
+			expect(getCookieAudienceIds()).toEqual(['12345']);
+		});
+
+		it('stores only characters allowed in a cookie value', () => {
+			audiences.set(['a\nb', 'c;d', 'e,"f"', 'g\\h', 'ñ 😀']);
+
+			expect(getCookieValue()).toMatch(
+				/^[\x21\x23-\x2B\x2D-\x3A\x3C-\x5B\x5D-\x7E]*$/
+			);
 		});
 	});
 
