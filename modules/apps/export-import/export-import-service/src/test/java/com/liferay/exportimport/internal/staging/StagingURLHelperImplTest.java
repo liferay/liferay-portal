@@ -73,9 +73,9 @@ public class StagingURLHelperImplTest {
 		);
 
 		_assertRemoteHostNotAllowed(
+			"live.example.com",
 			() -> _stagingURLHelperImpl.buildRemoteURL(
-				"live.example.com", RandomTestUtil.randomInt(), null, false),
-			"live.example.com");
+				"live.example.com", RandomTestUtil.randomInt(), null, false));
 	}
 
 	@Test
@@ -97,26 +97,26 @@ public class StagingURLHelperImplTest {
 		_setStagingRemoteHostsAllowed("live.example.com");
 
 		_assertRemoteHostNotAllowed(
+			"127.0.0.1",
 			() -> _stagingURLHelperImpl.buildRemoteURL(
-				"127.0.0.1", RandomTestUtil.randomInt(), null, false),
-			"127.0.0.1");
+				"127.0.0.1", RandomTestUtil.randomInt(), null, false));
 		_assertRemoteHostNotAllowed(
+			"live.example.com.evil.com",
 			() -> _stagingURLHelperImpl.buildRemoteURL(
 				"live.example.com.evil.com", RandomTestUtil.randomInt(), null,
-				false),
-			"live.example.com.evil.com");
+				false));
 		_assertRemoteHostNotAllowed(
+			"10.0.0.1",
 			() -> _stagingURLHelperImpl.buildRemoteURL(
 				UnicodePropertiesBuilder.put(
 					"remoteAddress", "10.0.0.1"
 				).put(
 					"remotePort", String.valueOf(RandomTestUtil.randomInt())
-				).build()),
-			"10.0.0.1");
+				).build()));
 	}
 
 	private void _assertRemoteHostNotAllowed(
-		Runnable runnable, String remoteAddress) {
+		String remoteAddress, Runnable runnable) {
 
 		SystemException systemException = Assert.assertThrows(
 			SystemException.class, runnable::run);
