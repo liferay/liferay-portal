@@ -560,14 +560,13 @@ public class StagingImplTest {
 
 		enableLocalStaging(true);
 
-		Group stagingGroup = _group.getStagingGroup();
-
-		LayoutSetBranch layoutSetBranch =
-			_layoutSetBranchLocalService.getMasterLayoutSetBranch(
-				stagingGroup.getGroupId(), false);
+		LayoutSetBranch layoutSetBranch = _getMasterLayoutSetBranch();
 
 		_testLocalStagingWithLayoutVersioningLastImportSettings(
 			layout, layoutSetBranch);
+
+		Group stagingGroup = _group.getStagingGroup();
+
 		_testLocalStagingWithLayoutVersioningLastImportSettings(
 			layout,
 			_layoutSetBranchLocalService.addLayoutSetBranch(
@@ -586,32 +585,13 @@ public class StagingImplTest {
 
 		enableLocalStaging(true);
 
-		Group stagingGroup = _group.getStagingGroup();
-
-		LayoutSetBranch layoutSetBranch =
-			_layoutSetBranchLocalService.getMasterLayoutSetBranch(
-				stagingGroup.getGroupId(), false);
-
-		Map<String, String[]> parameterMap =
-			ExportImportConfigurationParameterMapFactoryUtil.
-				buildParameterMap();
-
-		parameterMap.put(
-			Constants.CMD, new String[] {Constants.PUBLISH_TO_LIVE});
-		parameterMap.put(
-			"layoutSetBranchId",
-			new String[] {
-				String.valueOf(layoutSetBranch.getLayoutSetBranchId())
-			});
-		parameterMap.put(
-			"layoutSetBranchName", new String[] {layoutSetBranch.getName()});
-
 		PropsUtil.set("feature.flag.LPD-105778", "false");
 
 		try {
-			_staging.publishLayouts(
-				TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-				_group.getGroupId(), false, parameterMap);
+			_publishLayouts(
+				_getMasterLayoutSetBranch(),
+				ExportImportConfigurationParameterMapFactoryUtil.
+					buildParameterMap());
 		}
 		finally {
 			PropsUtil.set("feature.flag.LPD-105778", "true");
@@ -1205,6 +1185,45 @@ public class StagingImplTest {
 		}
 	}
 
+	private LayoutSetBranch _getMasterLayoutSetBranch() throws Exception {
+		Group stagingGroup = _group.getStagingGroup();
+
+		return _layoutSetBranchLocalService.getMasterLayoutSetBranch(
+			stagingGroup.getGroupId(), false);
+	}
+
+	private Layout _getStagingLayout(Layout layout) throws Exception {
+		Group stagingGroup = _group.getStagingGroup();
+
+		return _layoutLocalService.getLayoutByExternalReferenceCode(
+			layout.getExternalReferenceCode(), stagingGroup.getGroupId());
+	}
+
+	private void _publishLayouts(
+			LayoutSetBranch layoutSetBranch, Map<String, String[]> parameterMap)
+		throws Exception {
+
+		parameterMap.put(
+			Constants.CMD, new String[] {Constants.PUBLISH_TO_LIVE});
+
+		if (layoutSetBranch != null) {
+			parameterMap.put(
+				"layoutSetBranchId",
+				new String[] {
+					String.valueOf(layoutSetBranch.getLayoutSetBranchId())
+				});
+			parameterMap.put(
+				"layoutSetBranchName",
+				new String[] {layoutSetBranch.getName()});
+		}
+
+		Group stagingGroup = _group.getStagingGroup();
+
+		_staging.publishLayouts(
+			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			_group.getGroupId(), false, parameterMap);
+	}
+
 	private void _setLiveGroupUnicodePropertiesIncorrectGroupId() {
 		UnicodeProperties typeSettingsUnicodeProperties =
 			_remoteLiveGroup.getTypeSettingsProperties();
@@ -1225,34 +1244,17 @@ public class StagingImplTest {
 			Layout layout, LayoutSetBranch layoutSetBranch)
 		throws Exception {
 
-		Group stagingGroup = _group.getStagingGroup();
-
-		Layout stagingLayout =
-			_layoutLocalService.fetchLayoutByExternalReferenceCode(
-				layout.getExternalReferenceCode(), stagingGroup.getGroupId());
+		Layout stagingLayout = _getStagingLayout(layout);
 
 		LayoutRevision layoutRevision =
 			_layoutRevisionLocalService.fetchLatestLayoutRevision(
 				layoutSetBranch.getLayoutSetBranchId(),
 				stagingLayout.getPlid());
 
-		Map<String, String[]> parameterMap =
+		_publishLayouts(
+			layoutSetBranch,
 			ExportImportConfigurationParameterMapFactoryUtil.
-				buildParameterMap();
-
-		parameterMap.put(
-			Constants.CMD, new String[] {Constants.PUBLISH_TO_LIVE});
-		parameterMap.put(
-			"layoutSetBranchId",
-			new String[] {
-				String.valueOf(layoutSetBranch.getLayoutSetBranchId())
-			});
-		parameterMap.put(
-			"layoutSetBranchName", new String[] {layoutSetBranch.getName()});
-
-		_staging.publishLayouts(
-			TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-			_group.getGroupId(), false, parameterMap);
+				buildParameterMap());
 
 		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
 
