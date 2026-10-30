@@ -349,16 +349,6 @@ public class BookmarksFolderLocalServiceUtil {
 		return getService().getBookmarksFoldersCount();
 	}
 
-	public static List<BookmarksFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyFolders(companyId, start, end);
-	}
-
-	public static int getCompanyFoldersCount(long companyId) {
-		return getService().getCompanyFoldersCount(companyId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -581,4 +571,4 @@ public class BookmarksFolderLocalServiceUtil {
 			BookmarksFolderLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1737965882
+// LIFERAY-SERVICE-BUILDER-HASH:1722610429
