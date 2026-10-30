@@ -3,6 +3,8 @@
 		"@clayui/button": "^3.166.0",
 		"@clayui/icon": "^3.166.0",
 		"@clayui/loading-indicator": "^3.166.0",
+		"@liferay/frontend-data-set-web": "*",
+		"@liferay/frontend-js-item-selector-web": "*",
 		"@liferay/marketplace-js-components-web": "*",
 		"commerce-frontend-js": "*",
 		"frontend-js-components-web": "*",
