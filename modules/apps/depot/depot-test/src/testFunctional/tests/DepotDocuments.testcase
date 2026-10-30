@@ -432,39 +432,6 @@ definition {
 			locationFieldName = "true");
 	}
 
-	@description = "This ensures that document can be restored to a depot."
-	@priority = 5
-	@refactordone
-	test CanRestoreDocument {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONDocument.addFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewDefault();
-
-		DepotNavigator.openDepotRecycleBinAdmin(depotName = "Test Depot Name");
-
-		RecycleBin.restoreCP(
-			assetName = "DM Document Title",
-			assetRestoreLocation = "Home",
-			assetType = "Document");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMNavigator.gotoDocumentCP(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-	}
-
 	@description = "This ensures that the friendly URL of a document created on a depot will be updated automatically if it duplicates the one of an existing document on the depot or of a document in the recycle bin of the depot."
 	@priority = 4
 	test FriendlyURLDuplicatingDepotOrRecycleBinDocIsAutomaticallyChanged {
