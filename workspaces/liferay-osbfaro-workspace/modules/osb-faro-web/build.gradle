@@ -88,7 +88,7 @@ osbYarnInstall {
 
 osbYarnTest {
 	args = [osbYarnInstall.scriptFile, "test"]
-	dependsOn osbYarnWebpack
+	dependsOn osbYarnInstall
 	executable = new File(osbYarnInstall.nodeDir, "bin/node")
 	workingDir = projectDir
 }
