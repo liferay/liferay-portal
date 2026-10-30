@@ -17,6 +17,7 @@ import {
 	AreaChart,
 	CartesianGrid,
 	Legend,
+	LegendProps,
 	LegendType,
 	ReferenceDot,
 	ReferenceLine,
@@ -81,6 +82,10 @@ interface CHANGES_AGGREGATION_SHAPE {
 	value: number;
 }
 
+type LegendItem = NonNullable<LegendProps['payload']>[number] & {
+	count: number;
+};
+
 const getAllMembers = (data: Data) => {
 	const {
 		channelId,
@@ -144,7 +149,9 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 	onSelectedPointChange,
 	selectedPoint,
 }) => {
-	const [legendHoverItem, setLegendHoverItem] = useState(null);
+	const [legendHoverItem, setLegendHoverItem] = useState<
+		LegendItem['dataKey'] | null
+	>(null);
 	const [mouseOutside, setMouseOutside] = useState(false);
 
 	const {anonymousCount, knownCount} = individualCounts;
@@ -320,6 +327,34 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 		stackId: 'count',
 	};
 
+	const legendItems: LegendItem[] = [
+		{
+			color: CHART_BLUE,
+			count: knownCount,
+			dataKey: 'knownCount',
+			type: 'circle',
+			value: Liferay.Language.get('known-members'),
+		},
+		...(includeAnonymousUsers
+			? [
+					{
+						color: CHART_ORANGE,
+						count: anonymousCount,
+						dataKey: 'anonymousCount',
+						type: 'circle' as const,
+						value: Liferay.Language.get('anonymous-members'),
+					},
+				]
+			: []),
+		{
+			color: CHART_BLACK,
+			count: anonymousCount + knownCount,
+			dataKey: 'individualCount',
+			type: 'circle',
+			value: Liferay.Language.get('total-members'),
+		},
+	];
+
 	const showFixedTooltip = hasSelectedPoint && mouseOutside;
 
 	const dateKeysIMap = createDateKeysIMap(INTERVAL, data, 'modifiedDate');
@@ -440,7 +475,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 
 					<Legend
 						align="right"
-						formatter={(value, {count}) => (
+						formatter={(value, _, index) => (
 							<span className="legend-text-color">
 								{`${value}:`}
 
@@ -448,7 +483,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 									<DataValue
 										processing={membershipProcessing}
 										type="number"
-										value={count}
+										value={legendItems[index].count}
 									/>
 								</b>
 							</span>
@@ -458,35 +493,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 							setLegendHoverItem(dataKey)
 						}
 						onMouseLeave={() => setLegendHoverItem(null)}
-						payload={[
-							{
-								color: CHART_BLUE,
-								count: knownCount,
-								dataKey: 'knownCount',
-								type: 'circle',
-								value: Liferay.Language.get('known-members'),
-							},
-							...(includeAnonymousUsers
-								? [
-										{
-											color: CHART_ORANGE,
-											count: anonymousCount,
-											dataKey: 'anonymousCount',
-											type: 'circle',
-											value: Liferay.Language.get(
-												'anonymous-members'
-											),
-										},
-									]
-								: []),
-							{
-								color: CHART_BLACK,
-								count: anonymousCount + knownCount,
-								dataKey: 'individualCount',
-								type: 'circle',
-								value: Liferay.Language.get('total-members'),
-							},
-						]}
+						payload={legendItems}
 						verticalAlign="bottom"
 						wrapperStyle={{
 							color: AXIS.textColor,
