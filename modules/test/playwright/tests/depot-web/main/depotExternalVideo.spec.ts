@@ -14,7 +14,6 @@ import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisibl
 import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {BlogsEditBlogEntryPage} from '../../blogs-web/main/pages/BlogsEditBlogEntryPage';
-import {BlogsPage} from '../../blogs-web/main/pages/BlogsPage';
 import {JournalEditArticlePage} from '../../journal-web/main/pages/JournalEditArticlePage';
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
@@ -33,26 +32,12 @@ const test = mergeTests(
 
 const YOUTUBE_EMBED_URL = 'https://www.youtube.com/embed/HOdbzGCI5ME';
 
-async function openInsertVideoItemSelector(page: Page, site: Site) {
+async function openVideoItemSelectorEverywhere(page: Page, site: Site) {
 	const blogsEditBlogEntryPage = new BlogsEditBlogEntryPage(page);
-	const blogsPage = new BlogsPage(page);
 
-	await blogsPage.goto(site.friendlyUrlPath);
-	await blogsPage.goToCreateBlogEntry();
+	await blogsEditBlogEntryPage.goto(site.friendlyUrlPath);
 
-	await expect(async () => {
-		await blogsEditBlogEntryPage.contentEditor.click();
-
-		await page.getByTitle('Add', {exact: true}).click({timeout: 1000});
-
-		await page.getByTitle('Insert Video').click({timeout: 1000});
-	}).toPass();
-
-	const itemSelector = page.frameLocator('iframe[title="Select Item"]');
-
-	await itemSelector
-		.getByRole('link', {exact: true, name: 'Documents and Media'})
-		.click();
+	const itemSelector = await blogsEditBlogEntryPage.openVideoItemSelector();
 
 	await clickAndExpectToBeVisible({
 		autoClick: true,
@@ -98,7 +83,7 @@ test(
 
 		await test.step('Embed the video from the asset library in a blog entry', async () => {
 			const {blogsEditBlogEntryPage, itemSelector} =
-				await openInsertVideoItemSelector(page, site);
+				await openVideoItemSelectorEverywhere(page, site);
 
 			await itemSelector.getByText(videoTitle, {exact: true}).click();
 
@@ -135,7 +120,7 @@ test(
 				site.externalReferenceCode
 			);
 
-			const {itemSelector} = await openInsertVideoItemSelector(
+			const {itemSelector} = await openVideoItemSelectorEverywhere(
 				page,
 				site
 			);

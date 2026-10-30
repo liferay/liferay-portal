@@ -191,6 +191,28 @@ export class BlogsEditBlogEntryPage {
 		}
 	}
 
+	async openVideoItemSelector() {
+		await expect(async () => {
+			await this.contentEditor.click();
+
+			await this.page
+				.getByTitle('Add', {exact: true})
+				.click({timeout: 1000});
+
+			await this.page.getByTitle('Insert Video').click({timeout: 1000});
+		}).toPass();
+
+		const itemSelector = this.page.frameLocator(
+			'iframe[title="Select Item"]'
+		);
+
+		await itemSelector
+			.getByRole('link', {exact: true, name: 'Documents and Media'})
+			.click();
+
+		return itemSelector;
+	}
+
 	async publishBlogEntry() {
 		await this.publishButton.click();
 		await waitForAlert(this.page, undefined, {timeout: 60_000});
