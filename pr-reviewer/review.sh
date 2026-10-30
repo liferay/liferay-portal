@@ -252,6 +252,28 @@ function _get_group_rule_files {
 	done
 }
 
+function _get_owned_workspace_paths_regex {
+	if [[ ! -f workspaces/refresh_other_workspaces.sh ]]
+	then
+		return
+	fi
+
+	local names
+
+	names=$( \
+		sed \
+			-e "s/^[[:space:]]*--exclude[[:space:]]\{1,\}\([^[:space:]\\\\]*\).*/\1/p" \
+			-n \
+			workspaces/refresh_other_workspaces.sh | \
+		sed -e "s/\./\\\\./g" -e "s/\*/[^\/]*/g" | \
+		paste -d "|" -s -)
+
+	if [[ -n ${names} ]]
+	then
+		echo "^workspaces/[^/]+-workspace/(.*/)?(${names})(/|$)"
+	fi
+}
+
 function _has_file_kind {
 	local reviewed_files=${1}
 
@@ -278,6 +300,18 @@ function _has_file_kind {
 	done
 
 	return 1
+}
+
+function _is_regenerated_workspace_file {
+	local owned_workspace_paths_regex=${1}
+	local reviewed_file=${2}
+
+	if [[ -z ${owned_workspace_paths_regex} ]] || [[ ${reviewed_file} == workspaces/liferay-sample-workspace/* ]]
+	then
+		return 1
+	fi
+
+	[[ ${reviewed_file} =~ ^workspaces/[^/]+-workspace/ ]] && [[ ! ${reviewed_file} =~ ${owned_workspace_paths_regex} ]]
 }
 
 function _print_help {
@@ -397,11 +431,15 @@ function _write_diff_file {
 	fi
 
 	local generated_files=""
+	local owned_workspace_paths_regex
 	local reviewed_file
+
+	owned_workspace_paths_regex=$(_get_owned_workspace_paths_regex)
 
 	for reviewed_file in $(git diff --name-only ${diff_args} -- .)
 	do
-		if git grep --ignore-case --quiet "@generated" ${grep_ref} -- ":(top)${reviewed_file}" 2> /dev/null
+		if _is_regenerated_workspace_file "${owned_workspace_paths_regex}" ${reviewed_file} ||
+		   git grep --ignore-case --quiet "@generated" ${grep_ref} -- ":(top)${reviewed_file}" 2> /dev/null
 		then
 			generated_files+="|${reviewed_file}"
 		fi
