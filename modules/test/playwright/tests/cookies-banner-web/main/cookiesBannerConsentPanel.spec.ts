@@ -433,14 +433,14 @@ test(
 				'Cookie Banner'
 			);
 
-			await page.getByLabel('Title', {exact: true}).fill(bannerTitle);
 			await page.getByLabel('Content', {exact: true}).fill(bannerContent);
-			await page
-				.getByLabel('Privacy Policy Link')
-				.fill(bannerPrivacyPolicyLink);
 			await page
 				.getByLabel('Link Display Text', {exact: true})
 				.fill(bannerLinkDisplayText);
+			await page
+				.getByLabel('Privacy Policy Link')
+				.fill(bannerPrivacyPolicyLink);
+			await page.getByLabel('Title', {exact: true}).fill(bannerTitle);
 
 			await saveOrUpdateConfiguration(page);
 		});
@@ -481,13 +481,12 @@ test(
 				'Cookie Panel'
 			);
 
-			await page.getByLabel('Title', {exact: true}).fill(panelTitle);
-			await page
-				.getByLabel('Description', {exact: true})
-				.fill(panelDescription);
 			await page
 				.getByLabel('Cookie Policy Link')
 				.fill(`/web/guest/${getRandomString()}`);
+			await page
+				.getByLabel('Description', {exact: true})
+				.fill(panelDescription);
 			await page
 				.getByLabel('Link Display Text', {exact: true})
 				.fill(panelLinkDisplayText);
@@ -496,6 +495,7 @@ test(
 					exact: true,
 				})
 				.fill(panelStrictlyNecessaryCookiesDescription);
+			await page.getByLabel('Title', {exact: true}).fill(panelTitle);
 
 			for (const [
 				index,
@@ -591,7 +591,7 @@ test(
 				})
 			).toBeVisible();
 
-			for (const name of ['Configuration', 'Accept All', 'Decline All']) {
+			for (const name of ['Accept All', 'Configuration', 'Decline All']) {
 				await expect(
 					cookiesBanner.getByRole('button', {name})
 				).toBeVisible();

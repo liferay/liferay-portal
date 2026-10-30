@@ -75,9 +75,9 @@ test(
 			}
 
 			for (const name of [
-				'Use Necessary Cookies Only',
-				'Accept Selected',
 				'Accept All',
+				'Accept Selected',
+				'Use Necessary Cookies Only',
 			]) {
 				await expect(widget.getByRole('button', {name})).toBeVisible();
 			}
@@ -104,10 +104,10 @@ test(
 				site.friendlyUrlPath
 			);
 
+			await page.getByLabel('Cookie Policy Link').fill(cookiePolicyLink);
 			await page
 				.getByLabel('Description', {exact: true})
 				.fill(description);
-			await page.getByLabel('Cookie Policy Link').fill(cookiePolicyLink);
 			await page
 				.getByLabel('Link Display Text', {exact: true})
 				.fill(linkDisplayText);
