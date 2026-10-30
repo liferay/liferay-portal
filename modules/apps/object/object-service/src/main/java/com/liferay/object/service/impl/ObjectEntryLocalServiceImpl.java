@@ -2027,9 +2027,7 @@ public class ObjectEntryLocalServiceImpl
 
 		return objectEntryPersistence.dslQueryCount(
 			_getObjectEntriesGroupByStep(
-				groupIds,
-				DSLQueryFactoryUtil.countDistinct(
-					ObjectEntryTable.INSTANCE.objectEntryId),
+				groupIds, DSLQueryFactoryUtil.count(),
 				_objectDefinitionPersistence.findByPrimaryKey(
 					objectDefinitionId),
 				predicate, preferApproved, search));
