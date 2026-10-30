@@ -68,7 +68,7 @@ const ACCOUNT_PROPERTIES = List(
 			type: PropertyTypes.AccountDate,
 		},
 		{
-			label: Liferay.Language.get('lifecycle-stage'),
+			label: Liferay.Language.get('lifecycle'),
 			name: 'lifecycleStatus',
 			type: PropertyTypes.AccountSelectText,
 		},

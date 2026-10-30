@@ -579,10 +579,14 @@ export const convertFieldMappingToAccountProperty = (
 		? fieldMapping.get('rawType')
 		: fieldMapping.rawType;
 
+	const accountProperty = ACCOUNT_PROPERTIES.find(
+		(property: Property | undefined) => property?.name === id
+	);
+
 	return new Property({
 		entityName: Liferay.Language.get('account'),
 		id,
-		label: displayName || name,
+		label: accountProperty?.label || displayName || name,
 		name: id,
 		propertyKey: FieldOwnerTypes.Account,
 		type: `account-${type.toLowerCase()}` as PropertyTypes,
