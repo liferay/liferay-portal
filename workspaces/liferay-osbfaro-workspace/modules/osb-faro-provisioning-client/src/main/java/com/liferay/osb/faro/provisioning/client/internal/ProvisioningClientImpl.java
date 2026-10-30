@@ -177,7 +177,7 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		throws Exception {
 
 		if (Validator.isNotNull(FaroPropsValues.FARO_MOCK_OSB_ACCOUNT_ENTRY)) {
-			return Collections.singletonList(_mockOSBAccountEntry);
+			return Collections.singletonList(_getMockOSBAccountEntry());
 		}
 
 		StringBundler sb = new StringBundler(5);
@@ -245,11 +245,11 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		throws Exception {
 
 		if (corpProjectUuid.equals(FaroPropsValues.MOCK_PROJECT_ID)) {
-			return _mockOSBAccountEntry;
+			return _getMockOSBAccountEntry();
 		}
 
 		if (corpProjectUuid.equals(FaroPropsValues.FARO_PROJECT_ID)) {
-			return _osbAccountEntry;
+			return _getOSBAccountEntry();
 		}
 
 		if (!corpProjectUuid.contains("Test")) {
@@ -457,6 +457,78 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 		return account;
 	}
 
+	private OSBAccountEntry _getMockOSBAccountEntry() {
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
+		List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
+
+		OSBOfferingEntry osbOfferingEntry = new OSBOfferingEntry();
+
+		osbOfferingEntry.setProductEntryId(
+			ProductConstants.PRODUCT_ENTRY_ID_BUSINESS);
+		osbOfferingEntry.setQuantity(1);
+		osbOfferingEntry.setStartDate(new Date(1546329600000L));
+		osbOfferingEntry.setStatus(
+			ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
+		osbOfferingEntry.setSupportEndDate(new Date(2000000000000L));
+
+		osbOfferingEntries.add(osbOfferingEntry);
+
+		osbAccountEntry.setCorpEntryName("Mock Project");
+		osbAccountEntry.setCorpProjectUuid(FaroPropsValues.MOCK_PROJECT_ID);
+		osbAccountEntry.setName("Mock Project");
+		osbAccountEntry.setOfferingEntries(osbOfferingEntries);
+
+		return osbAccountEntry;
+	}
+
+	private OSBAccountEntry _getOSBAccountEntry() {
+		OSBAccountEntry osbAccountEntry = new OSBAccountEntry();
+
+		List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
+
+		OSBOfferingEntry enterpriseOSBOfferingEntry = new OSBOfferingEntry();
+
+		String productEntryId = ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE;
+
+		if (FaroPropsValues.FARO_DEMO_DATA_PLATFORM_ENABLED) {
+			productEntryId =
+				ProductConstants.PRODUCT_ENTRY_ID_DATA_PLATFORM_ENTERPRISE;
+		}
+
+		enterpriseOSBOfferingEntry.setProductEntryId(productEntryId);
+		enterpriseOSBOfferingEntry.setQuantity(1);
+		enterpriseOSBOfferingEntry.setStartDate(new Date(1546329600000L));
+		enterpriseOSBOfferingEntry.setSupportEndDate(new Date(2000000000000L));
+
+		osbOfferingEntries.add(enterpriseOSBOfferingEntry);
+
+		OSBOfferingEntry enterpriseContactsOSBOfferingEntry =
+			new OSBOfferingEntry();
+
+		enterpriseContactsOSBOfferingEntry.setProductEntryId(
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_CONTACTS);
+		enterpriseContactsOSBOfferingEntry.setQuantity(2);
+
+		osbOfferingEntries.add(enterpriseContactsOSBOfferingEntry);
+
+		OSBOfferingEntry enterpriseTrackedPagesOSBOfferingEntry =
+			new OSBOfferingEntry();
+
+		enterpriseTrackedPagesOSBOfferingEntry.setProductEntryId(
+			ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_TRACKED_PAGES);
+		enterpriseTrackedPagesOSBOfferingEntry.setQuantity(3);
+
+		osbOfferingEntries.add(enterpriseTrackedPagesOSBOfferingEntry);
+
+		osbAccountEntry.setCorpEntryName("Liferay Demo");
+		osbAccountEntry.setCorpProjectUuid(FaroPropsValues.FARO_PROJECT_ID);
+		osbAccountEntry.setName("Liferay Demo");
+		osbAccountEntry.setOfferingEntries(osbOfferingEntries);
+
+		return osbAccountEntry;
+	}
+
 	private String _getProductName(String productEntryId) {
 		String productName = ProductConstants.getProductName(productEntryId);
 
@@ -534,85 +606,6 @@ public class ProvisioningClientImpl implements ProvisioningClient {
 			productPurchase.getProductKey(),
 			ProductConstants.PRODUCT_ENTRY_ID_DIGITAL_SALES_ROOM);
 	}
-
-	private static final OSBAccountEntry _mockOSBAccountEntry =
-		new OSBAccountEntry() {
-			{
-				List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
-
-				OSBOfferingEntry enterpriseOSBOfferingEntry =
-					new OSBOfferingEntry();
-
-				enterpriseOSBOfferingEntry.setProductEntryId(
-					ProductConstants.PRODUCT_ENTRY_ID_BUSINESS);
-				enterpriseOSBOfferingEntry.setQuantity(1);
-				enterpriseOSBOfferingEntry.setStartDate(
-					new Date(1546329600000L));
-				enterpriseOSBOfferingEntry.setStatus(
-					ProductConstants.OSB_OFFERING_ENTRY_STATUS_ACTIVE);
-				enterpriseOSBOfferingEntry.setSupportEndDate(
-					new Date(2000000000000L));
-
-				osbOfferingEntries.add(enterpriseOSBOfferingEntry);
-
-				setCorpEntryName("Mock Project");
-				setCorpProjectUuid(FaroPropsValues.MOCK_PROJECT_ID);
-				setName("Mock Project");
-				setOfferingEntries(osbOfferingEntries);
-			}
-		};
-
-	private static final OSBAccountEntry _osbAccountEntry =
-		new OSBAccountEntry() {
-			{
-				List<OSBOfferingEntry> osbOfferingEntries = new ArrayList<>();
-
-				OSBOfferingEntry enterpriseOSBOfferingEntry =
-					new OSBOfferingEntry();
-
-				String productEntryId =
-					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE;
-
-				if (FaroPropsValues.FARO_DEMO_DATA_PLATFORM_ENABLED) {
-					productEntryId =
-						ProductConstants.
-							PRODUCT_ENTRY_ID_DATA_PLATFORM_ENTERPRISE;
-				}
-
-				enterpriseOSBOfferingEntry.setProductEntryId(productEntryId);
-
-				enterpriseOSBOfferingEntry.setQuantity(1);
-				enterpriseOSBOfferingEntry.setStartDate(
-					new Date(1546329600000L));
-				enterpriseOSBOfferingEntry.setSupportEndDate(
-					new Date(2000000000000L));
-
-				osbOfferingEntries.add(enterpriseOSBOfferingEntry);
-
-				OSBOfferingEntry enterpriseContactsOSBOfferingEntry =
-					new OSBOfferingEntry();
-
-				enterpriseContactsOSBOfferingEntry.setProductEntryId(
-					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_CONTACTS);
-				enterpriseContactsOSBOfferingEntry.setQuantity(2);
-
-				osbOfferingEntries.add(enterpriseContactsOSBOfferingEntry);
-
-				OSBOfferingEntry enterpriseTrackedPagesOSBOfferingEntry =
-					new OSBOfferingEntry();
-
-				enterpriseTrackedPagesOSBOfferingEntry.setProductEntryId(
-					ProductConstants.PRODUCT_ENTRY_ID_ENTERPRISE_TRACKED_PAGES);
-				enterpriseTrackedPagesOSBOfferingEntry.setQuantity(3);
-
-				osbOfferingEntries.add(enterpriseTrackedPagesOSBOfferingEntry);
-
-				setCorpEntryName("Liferay Demo");
-				setCorpProjectUuid(FaroPropsValues.FARO_PROJECT_ID);
-				setName("Liferay Demo");
-				setOfferingEntries(osbOfferingEntries);
-			}
-		};
 
 	@Reference
 	private Portal _portal;
