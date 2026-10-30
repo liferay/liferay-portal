@@ -365,15 +365,6 @@ public class StyleBookEntryLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static StyleBookEntry getOrAddEmptyStyleBookEntry(
-			String externalReferenceCode, long userId, long groupId,
-			String themeId)
-		throws Exception {
-
-		return getService().getOrAddEmptyStyleBookEntry(
-			externalReferenceCode, userId, groupId, themeId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -666,4 +657,4 @@ public class StyleBookEntryLocalServiceUtil {
 			StyleBookEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1866913446
+// LIFERAY-SERVICE-BUILDER-HASH:-132945505

@@ -73,8 +73,7 @@ public class StyleBookEntryVersionModelImpl
 		{"frontendTokenDefinition", Types.CLOB},
 		{"frontendTokensValues", Types.CLOB}, {"name", Types.VARCHAR},
 		{"previewFileEntryId", Types.BIGINT},
-		{"styleBookEntryKey", Types.VARCHAR}, {"themeId", Types.VARCHAR},
-		{"status", Types.INTEGER}
+		{"styleBookEntryKey", Types.VARCHAR}, {"themeId", Types.VARCHAR}
 	};
 
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP =
@@ -101,11 +100,10 @@ public class StyleBookEntryVersionModelImpl
 		TABLE_COLUMNS_MAP.put("previewFileEntryId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("styleBookEntryKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("themeId", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("status", Types.INTEGER);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table StyleBookEntryVersion (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,styleBookEntryVersionId LONG not null,version INTEGER,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,styleBookEntryId LONG,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,defaultStyleBookEntry BOOLEAN,frontendTokenDefinition TEXT null,frontendTokensValues TEXT null,name VARCHAR(75) null,previewFileEntryId LONG,styleBookEntryKey VARCHAR(75) null,themeId VARCHAR(255) null,status INTEGER,primary key (styleBookEntryVersionId, ctCollectionId))";
+		"create table StyleBookEntryVersion (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,styleBookEntryVersionId LONG not null,version INTEGER,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,styleBookEntryId LONG,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,defaultStyleBookEntry BOOLEAN,frontendTokenDefinition TEXT null,frontendTokensValues TEXT null,name VARCHAR(75) null,previewFileEntryId LONG,styleBookEntryKey VARCHAR(75) null,themeId VARCHAR(255) null,primary key (styleBookEntryVersionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table StyleBookEntryVersion";
@@ -337,8 +335,6 @@ public class StyleBookEntryVersionModelImpl
 				StyleBookEntryVersion::getStyleBookEntryKey);
 			attributeGetterFunctions.put(
 				"themeId", StyleBookEntryVersion::getThemeId);
-			attributeGetterFunctions.put(
-				"status", StyleBookEntryVersion::getStatus);
 
 			_attributeGetterFunctions = Collections.unmodifiableMap(
 				attributeGetterFunctions);
@@ -438,10 +434,6 @@ public class StyleBookEntryVersionModelImpl
 				"themeId",
 				(BiConsumer<StyleBookEntryVersion, String>)
 					StyleBookEntryVersion::setThemeId);
-			attributeSetterBiConsumers.put(
-				"status",
-				(BiConsumer<StyleBookEntryVersion, Integer>)
-					StyleBookEntryVersion::setStatus);
 
 			_attributeSetterBiConsumers = Collections.unmodifiableMap(
 				(Map)attributeSetterBiConsumers);
@@ -472,7 +464,6 @@ public class StyleBookEntryVersionModelImpl
 		styleBookEntry.setPreviewFileEntryId(getPreviewFileEntryId());
 		styleBookEntry.setStyleBookEntryKey(getStyleBookEntryKey());
 		styleBookEntry.setThemeId(getThemeId());
-		styleBookEntry.setStatus(getStatus());
 	}
 
 	@Override
@@ -924,20 +915,6 @@ public class StyleBookEntryVersionModelImpl
 		return getColumnOriginalValue("themeId");
 	}
 
-	@Override
-	public int getStatus() {
-		return _status;
-	}
-
-	@Override
-	public void setStatus(int status) {
-		if (_columnOriginalValues == Collections.EMPTY_MAP) {
-			_setColumnOriginalValues();
-		}
-
-		_status = status;
-	}
-
 	public long getColumnBitmask() {
 		if (_columnBitmask > 0) {
 			return _columnBitmask;
@@ -1022,7 +999,6 @@ public class StyleBookEntryVersionModelImpl
 			getPreviewFileEntryId());
 		styleBookEntryVersionImpl.setStyleBookEntryKey(getStyleBookEntryKey());
 		styleBookEntryVersionImpl.setThemeId(getThemeId());
-		styleBookEntryVersionImpl.setStatus(getStatus());
 
 		styleBookEntryVersionImpl.resetOriginalValues();
 
@@ -1074,8 +1050,6 @@ public class StyleBookEntryVersionModelImpl
 			this.<String>getColumnOriginalValue("styleBookEntryKey"));
 		styleBookEntryVersionImpl.setThemeId(
 			this.<String>getColumnOriginalValue("themeId"));
-		styleBookEntryVersionImpl.setStatus(
-			this.<Integer>getColumnOriginalValue("status"));
 
 		return styleBookEntryVersionImpl;
 	}
@@ -1284,8 +1258,6 @@ public class StyleBookEntryVersionModelImpl
 			styleBookEntryVersionCacheModel.themeId = null;
 		}
 
-		styleBookEntryVersionCacheModel.status = getStatus();
-
 		return styleBookEntryVersionCacheModel;
 	}
 
@@ -1369,7 +1341,6 @@ public class StyleBookEntryVersionModelImpl
 	private long _previewFileEntryId;
 	private String _styleBookEntryKey;
 	private String _themeId;
-	private int _status;
 
 	public <T> T getColumnValue(String columnName) {
 		columnName = _attributeNames.getOrDefault(columnName, columnName);
@@ -1426,7 +1397,6 @@ public class StyleBookEntryVersionModelImpl
 		_columnOriginalValues.put("previewFileEntryId", _previewFileEntryId);
 		_columnOriginalValues.put("styleBookEntryKey", _styleBookEntryKey);
 		_columnOriginalValues.put("themeId", _themeId);
-		_columnOriginalValues.put("status", _status);
 	}
 
 	private static final Map<String, String> _attributeNames;
@@ -1490,8 +1460,6 @@ public class StyleBookEntryVersionModelImpl
 
 		columnBitmasks.put("themeId", 524288L);
 
-		columnBitmasks.put("status", 1048576L);
-
 		_columnBitmasks = Collections.unmodifiableMap(columnBitmasks);
 	}
 
@@ -1499,4 +1467,4 @@ public class StyleBookEntryVersionModelImpl
 	private StyleBookEntryVersion _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1239601346
+// LIFERAY-SERVICE-BUILDER-HASH:1152962602

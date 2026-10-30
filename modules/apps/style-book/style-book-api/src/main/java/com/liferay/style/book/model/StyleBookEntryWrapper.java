@@ -55,7 +55,6 @@ public class StyleBookEntryWrapper
 		attributes.put("previewFileEntryId", getPreviewFileEntryId());
 		attributes.put("styleBookEntryKey", getStyleBookEntryKey());
 		attributes.put("themeId", getThemeId());
-		attributes.put("status", getStatus());
 
 		return attributes;
 	}
@@ -178,12 +177,6 @@ public class StyleBookEntryWrapper
 
 		if (themeId != null) {
 			setThemeId(themeId);
-		}
-
-		Integer status = (Integer)attributes.get("status");
-
-		if (status != null) {
-			setStatus(status);
 		}
 	}
 
@@ -340,16 +333,6 @@ public class StyleBookEntryWrapper
 	}
 
 	/**
-	 * Returns the status of this style book entry.
-	 *
-	 * @return the status of this style book entry
-	 */
-	@Override
-	public int getStatus() {
-		return model.getStatus();
-	}
-
-	/**
 	 * Returns the style book entry ID of this style book entry.
 	 *
 	 * @return the style book entry ID of this style book entry
@@ -432,13 +415,6 @@ public class StyleBookEntryWrapper
 	@Override
 	public void persist() {
 		model.persist();
-	}
-
-	@Override
-	public void populateVersionModel(
-		StyleBookEntryVersion styleBookEntryVersion) {
-
-		model.populateVersionModel(styleBookEntryVersion);
 	}
 
 	@Override
@@ -590,16 +566,6 @@ public class StyleBookEntryWrapper
 	}
 
 	/**
-	 * Sets the status of this style book entry.
-	 *
-	 * @param status the status of this style book entry
-	 */
-	@Override
-	public void setStatus(int status) {
-		model.setStatus(status);
-	}
-
-	/**
 	 * Sets the style book entry ID of this style book entry.
 	 *
 	 * @param styleBookEntryId the style book entry ID of this style book entry
@@ -699,9 +665,16 @@ public class StyleBookEntryWrapper
 	}
 
 	@Override
+	public void populateVersionModel(
+		StyleBookEntryVersion styleBookEntryVersion) {
+
+		model.populateVersionModel(styleBookEntryVersion);
+	}
+
+	@Override
 	protected StyleBookEntryWrapper wrap(StyleBookEntry styleBookEntry) {
 		return new StyleBookEntryWrapper(styleBookEntry);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1125371228
+// LIFERAY-SERVICE-BUILDER-HASH:1388369981

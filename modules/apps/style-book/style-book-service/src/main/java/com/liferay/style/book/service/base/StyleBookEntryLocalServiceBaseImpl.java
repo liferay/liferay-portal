@@ -934,7 +934,6 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 		draftStyleBookEntry.setStyleBookEntryKey(
 			publishedStyleBookEntry.getStyleBookEntryKey());
 		draftStyleBookEntry.setThemeId(publishedStyleBookEntry.getThemeId());
-		draftStyleBookEntry.setStatus(publishedStyleBookEntry.getStatus());
 
 		draftStyleBookEntry.resetOriginalValues();
 
@@ -1027,4 +1026,4 @@ public abstract class StyleBookEntryLocalServiceBaseImpl
 		StyleBookEntryLocalServiceBaseImpl.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1860016940
+// LIFERAY-SERVICE-BUILDER-HASH:685897215

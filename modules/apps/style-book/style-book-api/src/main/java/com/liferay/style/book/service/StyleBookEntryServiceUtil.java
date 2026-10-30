@@ -114,14 +114,6 @@ public class StyleBookEntryServiceUtil {
 			externalReferenceCode, groupId);
 	}
 
-	public static StyleBookEntry getOrAddEmptyStyleBookEntry(
-			String externalReferenceCode, long groupId, String themeId)
-		throws Exception {
-
-		return getService().getOrAddEmptyStyleBookEntry(
-			externalReferenceCode, groupId, themeId);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -263,4 +255,4 @@ public class StyleBookEntryServiceUtil {
 			StyleBookEntryServiceUtil.class, StyleBookEntryService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2033060010
+// LIFERAY-SERVICE-BUILDER-HASH:-1760402165
