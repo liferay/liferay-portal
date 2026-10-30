@@ -513,15 +513,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			ContentLayoutTestUtil.addPortletToLayout(
 				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
 
-		JSONObject fragmentEntryLinkJSONObject =
-			processAddPortletJSONObject.getJSONObject("fragmentEntryLink");
-
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLinkJSONObject.getJSONObject("editableValues");
-
-		String portletId1 = PortletIdCodec.encode(
-			editableValuesJSONObject.getString("portletId"),
-			editableValuesJSONObject.getString("instanceId"));
+		String portletId1 = _getAddedPortletId(processAddPortletJSONObject);
 
 		_addPortletLayoutClassedModelUsage(draftLayout, portletId1);
 
@@ -567,15 +559,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 			ContentLayoutTestUtil.addPortletToLayout(
 				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
 
-		JSONObject fragmentEntryLinkJSONObject =
-			processAddPortletJSONObject.getJSONObject("fragmentEntryLink");
-
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLinkJSONObject.getJSONObject("editableValues");
-
-		String portletId = PortletIdCodec.encode(
-			editableValuesJSONObject.getString("portletId"),
-			editableValuesJSONObject.getString("instanceId"));
+		String portletId = _getAddedPortletId(processAddPortletJSONObject);
 
 		_addPortletLayoutClassedModelUsage(draftLayout, portletId);
 
@@ -1785,18 +1769,8 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 	private String _addPortletToLayout(Layout layout, String portletId)
 		throws Exception {
 
-		JSONObject processAddPortletJSONObject =
-			ContentLayoutTestUtil.addPortletToLayout(layout, portletId);
-
-		JSONObject fragmentEntryLinkJSONObject =
-			processAddPortletJSONObject.getJSONObject("fragmentEntryLink");
-
-		JSONObject editableValuesJSONObject =
-			fragmentEntryLinkJSONObject.getJSONObject("editableValues");
-
-		return PortletIdCodec.encode(
-			editableValuesJSONObject.getString("portletId"),
-			editableValuesJSONObject.getString("instanceId"));
+		return _getAddedPortletId(
+			ContentLayoutTestUtil.addPortletToLayout(layout, portletId));
 	}
 
 	private void _assertFragmentEntryLink(
@@ -2024,6 +1998,18 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 				targetSegmentsExperience.getPriority(),
 				sourceSegmentsExperience.getPriority());
 		}
+	}
+
+	private String _getAddedPortletId(JSONObject processAddPortletJSONObject) {
+		JSONObject fragmentEntryLinkJSONObject =
+			processAddPortletJSONObject.getJSONObject("fragmentEntryLink");
+
+		JSONObject editableValuesJSONObject =
+			fragmentEntryLinkJSONObject.getJSONObject("editableValues");
+
+		return PortletIdCodec.encode(
+			editableValuesJSONObject.getString("portletId"),
+			editableValuesJSONObject.getString("instanceId"));
 	}
 
 	private String _getCombinedERCGroupId(
