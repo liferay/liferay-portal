@@ -29,7 +29,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.style.book.model.StyleBookEntry;
 import com.liferay.style.book.service.StyleBookEntryLocalService;
@@ -45,7 +44,6 @@ import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Pavel Savinov
- * @author Thiago Buarque
  */
 @Component(service = StagedModelDataHandler.class)
 public class StylebookEntryStagedModelDataHandler
@@ -143,46 +141,8 @@ public class StylebookEntryStagedModelDataHandler
 			_stagedModelRepository.fetchStagedModelByUuidAndGroupId(
 				styleBookEntry.getUuid(), portletDataContext.getScopeGroupId());
 
-		StyleBookEntry ercStyleBookEntry = null;
-
-		String externalReferenceCode =
-			importedStyleBookEntry.getExternalReferenceCode();
-
-		if (Validator.isNotNull(externalReferenceCode)) {
-			ercStyleBookEntry =
-				_styleBookEntryLocalService.
-					fetchStyleBookEntryByExternalReferenceCode(
-						externalReferenceCode,
-						portletDataContext.getScopeGroupId());
-		}
-
-		if ((existingStyleBookEntry == null) && (ercStyleBookEntry != null) &&
-			(ercStyleBookEntry.getStatus() == WorkflowConstants.STATUS_EMPTY)) {
-
-			existingStyleBookEntry = ercStyleBookEntry;
-		}
-
-		boolean emptyStyleBookEntry = false;
-
-		if ((existingStyleBookEntry != null) &&
-			(existingStyleBookEntry.getStatus() ==
-				WorkflowConstants.STATUS_EMPTY)) {
-
-			emptyStyleBookEntry = true;
-		}
-
-		boolean addStyleBookEntry = false;
-
-		if (!emptyStyleBookEntry &&
-			((existingStyleBookEntry == null) ||
-			 !portletDataContext.isDataStrategyMirror())) {
-
-			addStyleBookEntry = true;
-		}
-
-		if (addStyleBookEntry ||
-			(emptyStyleBookEntry &&
-			 !Objects.equals(originalName, existingStyleBookEntry.getName()))) {
+		if ((existingStyleBookEntry == null) ||
+			!portletDataContext.isDataStrategyMirror()) {
 
 			String uniqueName =
 				_styleBookEntryLocalService.generateStyleBookEntryName(
@@ -192,25 +152,21 @@ public class StylebookEntryStagedModelDataHandler
 				importedStyleBookEntry.setName(uniqueName);
 				importedStyleBookEntry.setStyleBookEntryKey(StringPool.BLANK);
 			}
-		}
 
-		long previewFileEntryId = 0;
+			String externalReferenceCode =
+				importedStyleBookEntry.getExternalReferenceCode();
 
-		if (styleBookEntry.getPreviewFileEntryId() > 0) {
-			Map<Long, Long> fileEntryIds =
-				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
-					FileEntry.class);
+			if (Validator.isNotNull(externalReferenceCode)) {
+				StyleBookEntry ercStyleBookEntry =
+					_styleBookEntryLocalService.
+						fetchStyleBookEntryByExternalReferenceCode(
+							externalReferenceCode,
+							portletDataContext.getScopeGroupId());
 
-			previewFileEntryId = MapUtil.getLong(
-				fileEntryIds, styleBookEntry.getPreviewFileEntryId(), 0);
-		}
-
-		importedStyleBookEntry.setPreviewFileEntryId(previewFileEntryId);
-
-		if (addStyleBookEntry) {
-			if (ercStyleBookEntry != null) {
-				importedStyleBookEntry.setExternalReferenceCode(
-					StringPool.BLANK);
+				if (ercStyleBookEntry != null) {
+					importedStyleBookEntry.setExternalReferenceCode(
+						StringPool.BLANK);
+				}
 			}
 
 			importedStyleBookEntry = _stagedModelRepository.addStagedModel(
@@ -226,9 +182,15 @@ public class StylebookEntryStagedModelDataHandler
 				portletDataContext, importedStyleBookEntry);
 		}
 
-		if ((previewFileEntryId > 0) &&
-			(importedStyleBookEntry.getPreviewFileEntryId() !=
-				previewFileEntryId)) {
+		if (styleBookEntry.getPreviewFileEntryId() > 0) {
+			Map<Long, Long> fileEntryIds =
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
+					FileEntry.class);
+
+			long previewFileEntryId = MapUtil.getLong(
+				fileEntryIds, styleBookEntry.getPreviewFileEntryId(), 0);
+
+			importedStyleBookEntry.setPreviewFileEntryId(previewFileEntryId);
 
 			importedStyleBookEntry =
 				_styleBookEntryLocalService.updatePreviewFileEntryId(
