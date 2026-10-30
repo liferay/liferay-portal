@@ -555,21 +555,6 @@ public class FragmentEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByType() throws Exception {
-		_persistence.countByType(RandomTestUtil.nextInt());
-
-		_persistence.countByType(0);
-	}
-
-	@Test
-	public void testCountByType_Head() throws Exception {
-		_persistence.countByType_Head(
-			RandomTestUtil.nextInt(), RandomTestUtil.randomBoolean());
-
-		_persistence.countByType_Head(0, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
 	public void testCountByG_FCI() throws Exception {
 		_persistence.countByG_FCI(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -1155,4 +1140,4 @@ public class FragmentEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1642862295
+// LIFERAY-SERVICE-BUILDER-HASH:1636049288
