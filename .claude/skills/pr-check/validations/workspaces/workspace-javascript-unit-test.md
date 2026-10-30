@@ -2,7 +2,7 @@
 
 ## Match
 
-`\.(cjs|css|js|json|jsx|mjs|scss|ts|tsx)$`
+`\.(cjs|css|js|json|jsx|mjs|scss|snap|ts|tsx)$|(^|/)(\.babelrc|package-lock\.json|yarn\.lock)$`
 
 ## Command
 
@@ -22,7 +22,7 @@ cd "${BUILD_ROOT}"
 
 `packageRunTest` runs every JavaScript unit test in the workspace, with no integration test and no product bundle. Every suite runs rather than a selection by counterpart.
 
-The match leaves out only the paths that cannot change a JavaScript unit test, the Java sources. Any other path, such as a `build.gradle`, a `package.json`, or a resource, still runs the suite.
+The match selects the paths that can change a JavaScript unit test: a frontend source, a JSON file such as a `package.json` or one a component imports, a Jest snapshot, the `.babelrc` that `babel-jest` reads, and a lockfile, since a dependency pin can affect any code path. Any other path, such as a Java source or a `build.gradle` file, runs no JavaScript test.
 
 `--continue` keeps one failing module from hiding the rest.
 
