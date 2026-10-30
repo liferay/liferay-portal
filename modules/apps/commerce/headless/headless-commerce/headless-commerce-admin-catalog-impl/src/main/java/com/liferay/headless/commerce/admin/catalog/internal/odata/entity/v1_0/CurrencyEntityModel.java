@@ -11,6 +11,7 @@ import com.liferay.portal.odata.entity.DateTimeEntityField;
 import com.liferay.portal.odata.entity.DoubleEntityField;
 import com.liferay.portal.odata.entity.EntityField;
 import com.liferay.portal.odata.entity.EntityModel;
+import com.liferay.portal.odata.entity.IntegerEntityField;
 import com.liferay.portal.odata.entity.StringEntityField;
 
 import java.util.Map;
@@ -33,6 +34,7 @@ public class CurrencyEntityModel implements EntityModel {
 				locale -> Field.getSortableFieldName(Field.MODIFIED_DATE),
 				locale -> Field.MODIFIED_DATE),
 			new DoubleEntityField("priority", locale -> "priority"),
+			new IntegerEntityField("id", locale -> Field.ENTRY_CLASS_PK),
 			new StringEntityField("code", locale -> "code"),
 			new StringEntityField(
 				"externalReferenceCode",
