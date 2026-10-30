@@ -25,13 +25,13 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 
 		StringBundler sb = new StringBundler(lines.length * 3);
 
-		boolean emptyLine = false;
+		boolean precededByEmptyLine = false;
 		boolean previousComment = false;
 		String previousLine = null;
 
 		for (int i = 0; i < lines.length; i++) {
 			if (Validator.isBlank(StringUtil.trim(lines[i]))) {
-				emptyLine = true;
+				precededByEmptyLine = true;
 
 				continue;
 			}
@@ -58,7 +58,7 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 
 			if ((previousLine != null) &&
 				((comment != previousComment) ||
-				 (emptyLine && !_isBlockStart(previousLine) &&
+				 (precededByEmptyLine && !_isBlockStart(previousLine) &&
 				  !_isBlockEnd(lines[i])))) {
 
 				sb.append(CharPool.NEW_LINE);
@@ -69,7 +69,7 @@ public class TFEmptyLinesCheck extends BaseFileCheck {
 				sb.append(CharPool.NEW_LINE);
 			}
 
-			emptyLine = false;
+			precededByEmptyLine = false;
 			i = endLineIndex;
 			previousComment = comment;
 			previousLine = lines[endLineIndex];
