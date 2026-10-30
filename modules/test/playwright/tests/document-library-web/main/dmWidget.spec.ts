@@ -14,6 +14,7 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {CommentsPage} from '../../../pages/comment/CommentsPage';
+import {clickAndExpectToBeHidden} from '../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import {openFieldset} from '../../../utils/openFieldset';
@@ -153,12 +154,15 @@ test(
 					.getByRole('button', {name: 'Show Actions'}),
 			});
 
-			await page
-				.getByRole('dialog')
-				.frameLocator('iframe')
-				.getByRole('row', {name: folder.name})
-				.getByRole('button', {exact: true, name: 'Select'})
-				.click();
+			const selectFolderDialog = page.getByRole('dialog');
+
+			await clickAndExpectToBeHidden({
+				target: selectFolderDialog,
+				trigger: selectFolderDialog
+					.frameLocator('iframe')
+					.getByRole('row', {name: folder.name})
+					.getByRole('button', {exact: true, name: 'Select'}),
+			});
 
 			await waitForAlert(page);
 
