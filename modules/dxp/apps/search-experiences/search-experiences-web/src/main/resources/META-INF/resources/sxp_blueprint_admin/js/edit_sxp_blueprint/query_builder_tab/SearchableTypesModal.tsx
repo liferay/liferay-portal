@@ -6,6 +6,7 @@
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
 import {ClayCheckbox} from '@clayui/form';
+import ClayIcon from '@clayui/icon';
 import ClayModal, {useModal} from '@clayui/modal';
 import ClayTable from '@clayui/table';
 import {ManagementToolbar} from 'frontend-js-components-web';
@@ -197,7 +198,14 @@ function SearchableTypesModal({
 						description={Liferay.Language.get(
 							'an-error-has-occurred-and-we-were-unable-to-load-the-results'
 						)}
-						imgSrc="/o/admin-theme/images/states/empty_state.svg"
+						image={
+							<ClayIcon
+								className="c-empty-state-icon c-empty-state-icon-empty-state"
+								illustration
+								spritemap="/o/admin-theme/images/clay/empty_states.svg"
+								symbol="empty-state"
+							/>
+						}
 						title={Liferay.Language.get('no-items-were-found')}
 					>
 						<ClayButton

@@ -383,7 +383,14 @@ function CategorySelectorModal({
 						description={Liferay.Language.get(
 							'an-error-has-occurred-and-we-were-unable-to-load-the-results'
 						)}
-						imgSrc="/o/admin-theme/images/states/empty_state.svg"
+						image={
+							<ClayIcon
+								className="c-empty-state-icon c-empty-state-icon-empty-state"
+								illustration
+								spritemap="/o/admin-theme/images/clay/empty_states.svg"
+								symbol="empty-state"
+							/>
+						}
 						title={Liferay.Language.get('no-items-were-found')}
 					/>
 				)}

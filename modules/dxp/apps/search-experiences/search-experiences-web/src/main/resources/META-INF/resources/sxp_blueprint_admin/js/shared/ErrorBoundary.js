@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import {openToast} from 'frontend-js-components-web';
 import React, {Component} from 'react';
 
@@ -35,7 +36,14 @@ class ErrorBoundary extends Component {
 			? !this.props.toast && (
 					<ClayEmptyState
 						description={DEFAULT_ERROR}
-						imgSrc="/o/admin-theme/images/states/empty_state.svg"
+						image={
+							<ClayIcon
+								className="c-empty-state-icon c-empty-state-icon-empty-state"
+								illustration
+								spritemap="/o/admin-theme/images/clay/empty_states.svg"
+								symbol="empty-state"
+							/>
+						}
 						title={Liferay.Language.get('unable-to-load-content')}
 					/>
 				)

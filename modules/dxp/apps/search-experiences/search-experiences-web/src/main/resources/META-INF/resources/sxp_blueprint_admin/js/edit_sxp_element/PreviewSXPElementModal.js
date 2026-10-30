@@ -5,6 +5,7 @@
 
 import ClayButton from '@clayui/button';
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClayModal, {useModal} from '@clayui/modal';
 import {fetch} from 'frontend-js-web';
@@ -157,7 +158,14 @@ export default function PreviewSXPElementModal({
 								description={Liferay.Language.get(
 									'json-may-be-incorrect-and-we-were-unable-to-load-a-preview-of-the-configuration'
 								)}
-								imgSrc="/o/admin-theme/images/states/empty_state.svg"
+								image={
+									<ClayIcon
+										className="c-empty-state-icon c-empty-state-icon-empty-state"
+										illustration
+										spritemap="/o/admin-theme/images/clay/empty_states.svg"
+										symbol="empty-state"
+									/>
+								}
 								title={Liferay.Language.get(
 									'unable-to-load-preview'
 								)}
