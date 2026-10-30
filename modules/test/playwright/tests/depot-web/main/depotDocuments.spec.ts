@@ -211,3 +211,90 @@ test(
 		});
 	}
 );
+
+test(
+	'Multiple documents can be uploaded and deleted together in an asset library',
+	{tag: '@LPD-112510'},
+	async ({apiHelpers, page}) => {
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		const depotURL = `/asset-library-${assetLibrary.id}`;
+
+		const documentLibraryPage = new DocumentLibraryPage(page);
+
+		const fileNames = [
+			'Document.jpg',
+			'Document_Large.pdf',
+			'Document_Small.jpeg',
+		];
+
+		await test.step('Upload several files at once', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			const tempFileNamesResponse = page.waitForResponse(
+				(response) =>
+					response.url().includes('/api/jsonws/invoke') &&
+					!!response
+						.request()
+						.postData()
+						?.includes('/dlapp/get-temp-file-names')
+			);
+
+			await documentLibraryPage.goToCreateNewFileWithDifferentType(
+				'Multiple Files Upload'
+			);
+
+			await tempFileNamesResponse;
+
+			await page
+				.locator('input[type="file"]')
+				.setInputFiles(
+					fileNames.map((fileName) =>
+						path.join(__dirname, 'dependencies', fileName)
+					)
+				);
+
+			await expect(
+				page.getByText('All files ready to be saved.')
+			).toBeVisible();
+
+			for (const fileName of fileNames) {
+				await expect(
+					page.getByRole('checkbox', {exact: true, name: fileName})
+				).toBeChecked();
+			}
+
+			await page
+				.getByRole('button', {exact: true, name: 'Publish'})
+				.click();
+
+			for (const fileName of fileNames) {
+				await expect(
+					page.getByRole('link', {
+						exact: true,
+						name: fileName.replace(/\.[^.]+$/, ''),
+					})
+				).toBeVisible();
+			}
+		});
+
+		await test.step('Delete all of them together', async () => {
+			await documentLibraryPage.goto(depotURL);
+
+			await page.getByLabel('Select All Items on the Page').check();
+
+			await page
+				.getByRole('button', {exact: true, name: 'Delete'})
+				.click();
+
+			await waitForAlert(page, 'moved to the Recycle Bin');
+
+			await expect(
+				page.getByText(
+					'There are no documents or media files in this folder.'
+				)
+			).toBeVisible();
+		});
+	}
+);

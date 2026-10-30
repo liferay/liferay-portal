@@ -104,27 +104,6 @@ definition {
 			textContent = "Text");
 	}
 
-	@description = "This test makes sure that all files are deleted when user selects all in a depot."
-	@priority = 4
-	@refactordone
-	test CanDeleteMultipleImages {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		DepotNavigator.openDepotDocumentsAndMediaAdmin(depotName = "Test Depot Name");
-
-		DMDocument.addMultipleCP(dmDocumentFileList = "Document_1.doc,Document_2.jpg,Document_3.xls");
-
-		PortletEntry.selectAll();
-
-		Click(locator1 = "Icon#MOVE_TO_RECYCLE_BIN");
-
-		Alert.viewSuccessMessage();
-
-		DMDocument.viewDefault();
-	}
-
 	@description = "This test makes sure that the documents can be filtered by category, by extension and by tag."
 	@priority = 5
 	test CanFilterDocumentsByCategoryExtensionAndTag {
