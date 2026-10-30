@@ -120,6 +120,41 @@ public class DepotEntryLocalServiceTest {
 			RandomTestUtil.randomString());
 	}
 
+	@Test(expected = DuplicateGroupException.class)
+	@TestInfo("LPD-109885")
+	public void testAddDepotEntryDuplicateTranslatedName() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		Group group = _groupLocalService.getGroup(depotEntry.getGroupId());
+
+		String translatedName = RandomTestUtil.randomString();
+
+		_depotEntryLocalService.updateDepotEntry(
+			depotEntry.getDepotEntryId(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), group.getName(LocaleUtil.getDefault())
+			).put(
+				LocaleUtil.SPAIN, translatedName
+			).build(),
+			group.getDescriptionMap(), Collections.emptyMap(), null,
+			UnicodePropertiesBuilder.put(
+				"inheritLocales", Boolean.FALSE.toString()
+			).put(
+				"languageId", LocaleUtil.toLanguageId(LocaleUtil.SPAIN)
+			).put(
+				PropsKeys.LOCALES,
+				StringUtil.merge(
+					new String[] {
+						LocaleUtil.toLanguageId(LocaleUtil.getDefault()),
+						LocaleUtil.toLanguageId(LocaleUtil.SPAIN)
+					})
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
+
+		_addDepotEntry(translatedName, RandomTestUtil.randomString());
+	}
+
 	@Test
 	@TestInfo("LPD-108842")
 	public void testAddDepotEntryFriendlyURL() throws Exception {
@@ -199,6 +234,24 @@ public class DepotEntryLocalServiceTest {
 	@Test(expected = DepotEntryNameException.class)
 	public void testAddDepotEntryWithNullName() throws Exception {
 		_addDepotEntry((String)null, (String)null);
+	}
+
+	@Test(expected = DuplicateGroupException.class)
+	@TestInfo("LPD-109885")
+	public void testAddGroupDuplicateDepotName() throws Exception {
+		String name = RandomTestUtil.randomString();
+
+		_addDepotEntry(name, RandomTestUtil.randomString());
+
+		_groupLocalService.addGroup(
+			StringPool.BLANK, TestPropsValues.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID, null, 0, 0,
+			Collections.singletonMap(LocaleUtil.getDefault(), name),
+			Collections.singletonMap(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
+			GroupConstants.TYPE_SITE_OPEN, null, true,
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
+			true, ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test
@@ -404,6 +457,32 @@ public class DepotEntryLocalServiceTest {
 			group.getDescription(LocaleUtil.fromLanguageId("es_ES")));
 		Assert.assertEquals(
 			"nuevoNombre", group.getName(LocaleUtil.fromLanguageId("es_ES")));
+	}
+
+	@Test(expected = DuplicateGroupException.class)
+	@TestInfo("LPD-109885")
+	public void testUpdateDepotEntryDuplicateName() throws Exception {
+		String name = RandomTestUtil.randomString();
+
+		_addDepotEntry(name, RandomTestUtil.randomString());
+
+		DepotEntry depotEntry = _addDepotEntry(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString());
+
+		_depotEntryLocalService.updateDepotEntry(
+			depotEntry.getDepotEntryId(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), name
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			Collections.emptyMap(), null,
+			UnicodePropertiesBuilder.put(
+				PropsKeys.LOCALES,
+				LocaleUtil.toLanguageId(LocaleUtil.getDefault())
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 	}
 
 	@Test
