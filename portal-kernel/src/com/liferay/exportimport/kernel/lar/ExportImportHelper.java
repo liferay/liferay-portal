@@ -12,7 +12,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -166,11 +165,6 @@ public interface ExportImportHelper {
 
 	public String getSelectedLayoutsJSON(
 		long groupId, boolean privateLayout, String selectedNodes);
-
-	public List<Group> getSupportedGroups(
-			long companyId, String keywords,
-			OrderByComparator<Group> orderByComparator)
-		throws PortalException;
 
 	public FileEntry getTempFileEntry(
 			long groupId, long userId, String folderName)

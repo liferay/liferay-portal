@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.repository.model.FileEntry;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.zip.ZipWriter;
@@ -342,18 +341,6 @@ public class ExportImportHelperUtil {
 
 		return exportImportHelper.getSelectedLayoutsJSON(
 			groupId, privateLayout, selectedNodes);
-	}
-
-	public static List<Group> getSupportedGroups(
-			long companyId, String keywords,
-			OrderByComparator<Group> orderByComparator)
-		throws PortalException {
-
-		ExportImportHelper exportImportHelper =
-			_exportImportHelperSnapshot.get();
-
-		return exportImportHelper.getSupportedGroups(
-			companyId, keywords, orderByComparator);
 	}
 
 	public static FileEntry getTempFileEntry(

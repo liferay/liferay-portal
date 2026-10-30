@@ -5,29 +5,17 @@
 
 package com.liferay.exportimport.rest.internal.util;
 
-import com.liferay.exportimport.kernel.lar.ExportImportHelperUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.search.Sort;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
-import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.kernel.util.comparator.GroupDescriptiveNameComparator;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.function.Predicate;
 
 /**
  * @author Daniel Raposo
@@ -58,23 +46,6 @@ public class GroupUtil {
 		}
 
 		return group;
-	}
-
-	public static List<Group> getExportableGroups(
-			long companyId, Locale locale, Predicate<Group> predicate,
-			String search, Sort[] sorts)
-		throws PortalException {
-
-		Group companyGroup = getCompanyGroup(companyId);
-
-		PermissionUtil.checkExportPermission(
-			companyId, companyGroup.getGroupId(),
-			ActionKeys.EXPORT_IMPORT_LAYOUTS);
-
-		return ListUtil.filter(
-			ExportImportHelperUtil.getSupportedGroups(
-				companyId, search, _getOrderByComparator(locale, sorts)),
-			predicate);
 	}
 
 	public static Group getLiveGroup(Group stagingGroup) {
@@ -142,22 +113,6 @@ public class GroupUtil {
 		}
 
 		return stagingGroup;
-	}
-
-	private static OrderByComparator<Group> _getOrderByComparator(
-		Locale locale, Sort[] sorts) {
-
-		if (ArrayUtil.isEmpty(sorts)) {
-			return new GroupDescriptiveNameComparator(true, locale);
-		}
-
-		Sort sort = sorts[0];
-
-		if (!Objects.equals(sort.getFieldName(), "descriptiveName")) {
-			throw new UnsupportedOperationException();
-		}
-
-		return new GroupDescriptiveNameComparator(!sort.isReverse(), locale);
 	}
 
 }

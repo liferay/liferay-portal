@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
@@ -57,7 +56,6 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.GroupedModel;
@@ -86,12 +84,9 @@ import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.TempFileEntryUtil;
@@ -760,34 +755,6 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 	}
 
 	@Override
-	public List<Group> getSupportedGroups(
-			long companyId, String keywords,
-			OrderByComparator<Group> orderByComparator)
-		throws PortalException {
-
-		return ListUtil.filter(
-			_groupService.search(
-				companyId, _getSupportedExportImportGroupClassNameIds(),
-				keywords,
-				LinkedHashMapBuilder.<String, Object>put(
-					"active", Boolean.TRUE
-				).put(
-					"site",
-					() -> {
-						if (FeatureFlagManagerUtil.isEnabled(
-								companyId, "LPD-41307")) {
-
-							return null;
-						}
-
-						return Boolean.TRUE;
-					}
-				).build(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS, orderByComparator),
-			this::isGroupSupported);
-	}
-
-	@Override
 	public FileEntry getTempFileEntry(
 			long groupId, long userId, String folderName)
 		throws PortalException {
@@ -922,15 +889,12 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
-		if (ArrayUtil.contains(
-				_getSupportedExportImportGroupClassNameIds(),
-				group.getClassNameId()) &&
-			group.isActive() && !group.isCMS() &&
-			(group.isSite() ||
+		if (((group.isRegularSite() && group.isSite()) ||
 			 (group.isDepot() &&
 			  FeatureFlagManagerUtil.isEnabled(
 				  group.getCompanyId(), "LPD-41307"))) &&
-			!group.isStaged() && !group.isStagingGroup() &&
+			group.isActive() && !group.isCMS() && !group.isStaged() &&
+			!group.isStagingGroup() &&
 			!stagingGroupHelper.isCompanyGroup(group)) {
 
 			return true;
@@ -1662,14 +1626,6 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		return portlets;
 	}
 
-	private long[] _getSupportedExportImportGroupClassNameIds() {
-		return new long[] {
-			_portal.getClassNameId(Company.class.getName()),
-			_portal.getClassNameId(DepotEntry.class.getName()),
-			_portal.getClassNameId(Group.class.getName())
-		};
-	}
-
 	private String _getZipWriterFileName(String id) {
 		return StringBundler.concat(
 			id, StringPool.DASH, Time.getTimestamp(), ".lar");
@@ -1885,9 +1841,6 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 
 	@Reference
 	private LayoutService _layoutService;
-
-	@Reference
-	private Portal _portal;
 
 	@Reference
 	private PortletDataContextFactory _portletDataContextFactory;
