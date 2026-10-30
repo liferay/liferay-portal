@@ -2,7 +2,7 @@
 
 ## Match
 
-`. &! \.(cjs|css|js|jsx|mjs|scss|ts|tsx)$`
+`\.(bnd|gradle|java)$`
 
 ## Command
 
