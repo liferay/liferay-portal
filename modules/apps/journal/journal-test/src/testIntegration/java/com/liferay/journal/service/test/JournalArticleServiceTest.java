@@ -933,34 +933,16 @@ public class JournalArticleServiceTest {
 			ddmStructure.getStructureKey(), ddmTemplate.getTemplateKey(),
 			LocaleUtil.getSiteDefault(), serviceContext);
 
-		JournalArticle scheduledJournalArticle =
-			JournalTestUtil.addArticleWithXMLContent(
-				journalFolder.getFolderId(),
-				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
-				DDMStructureTestUtil.getSampleStructuredContent(),
-				ddmStructure.getStructureKey(), ddmTemplate.getTemplateKey(),
-				LocaleUtil.getSiteDefault(), serviceContext);
-
-		scheduledJournalArticle.setDisplayDate(
-			new Date(System.currentTimeMillis() + Time.DAY));
-
-		scheduledJournalArticle =
-			_journalArticleLocalService.updateJournalArticle(
-				scheduledJournalArticle);
-
-		scheduledJournalArticle = _journalArticleLocalService.updateStatus(
-			TestPropsValues.getUserId(), scheduledJournalArticle,
-			WorkflowConstants.STATUS_APPROVED, null, serviceContext,
-			new HashMap<>());
-
-		Assert.assertTrue(scheduledJournalArticle.isScheduled());
+		_addScheduledJournalArticle(ddmStructure, ddmTemplate, journalFolder);
 
 		User user = UserTestUtil.addUser();
 
-		serviceContext = ServiceContextTestUtil.getServiceContext(
-			_group.getGroupId(), user.getUserId());
+		ServiceContext userServiceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), user.getUserId());
 
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+		userServiceContext.setWorkflowAction(
+			WorkflowConstants.ACTION_SAVE_DRAFT);
 
 		JournalArticle userDraftJournalArticle =
 			JournalTestUtil.addArticleWithXMLContent(
@@ -968,7 +950,7 @@ public class JournalArticleServiceTest {
 				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
 				DDMStructureTestUtil.getSampleStructuredContent(),
 				ddmStructure.getStructureKey(), ddmTemplate.getTemplateKey(),
-				LocaleUtil.getSiteDefault(), serviceContext);
+				LocaleUtil.getSiteDefault(), userServiceContext);
 
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				user, _permissionCheckerFactory.create(user))) {
@@ -983,6 +965,14 @@ public class JournalArticleServiceTest {
 						ddmStructure.getStructureId(),
 						WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS, null)));
+			Assert.assertEquals(
+				Arrays.asList(userDraftJournalArticle),
+				_journalArticleService.getArticlesByStructureId(
+					_group.getGroupId(), journalFolder.getFolderId(),
+					JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+					ddmStructure.getStructureId(),
+					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null));
 			Assert.assertEquals(
 				2,
 				_journalArticleService.getArticlesCountByStructureId(
@@ -2431,6 +2421,36 @@ public class JournalArticleServiceTest {
 			TestPropsValues.getUserId(), _group.getGroupId(),
 			journalArticle.getArticleId(), journalArticle.getVersion(), null,
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+	}
+
+	private JournalArticle _addScheduledJournalArticle(
+			DDMStructure ddmStructure, DDMTemplate ddmTemplate,
+			JournalFolder journalFolder)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				journalFolder.getFolderId(),
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+				DDMStructureTestUtil.getSampleStructuredContent(),
+				ddmStructure.getStructureKey(), ddmTemplate.getTemplateKey(),
+				LocaleUtil.getSiteDefault(), serviceContext);
+
+		journalArticle.setDisplayDate(
+			new Date(System.currentTimeMillis() + Time.DAY));
+
+		journalArticle = _journalArticleLocalService.updateJournalArticle(
+			journalArticle);
+
+		return _journalArticleLocalService.updateStatus(
+			TestPropsValues.getUserId(), journalArticle,
+			WorkflowConstants.STATUS_APPROVED, null, serviceContext,
+			new HashMap<>());
 	}
 
 	private JournalArticle _addScheduledJournalArticle(
