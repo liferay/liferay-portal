@@ -297,7 +297,6 @@ public class EditPIMConnectorDisplayContextTest {
 
 		ObjectEntryLocalService objectEntryLocalService = Mockito.mock(
 			ObjectEntryLocalService.class);
-
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
 		Mockito.when(

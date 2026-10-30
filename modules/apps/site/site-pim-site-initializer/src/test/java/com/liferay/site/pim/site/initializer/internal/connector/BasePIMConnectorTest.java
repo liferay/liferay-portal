@@ -696,10 +696,10 @@ public class BasePIMConnectorTest {
 
 		@Override
 		protected String doExecute(
+			Map<String, Serializable> configuration,
 			ObjectEntry pimConnectorObjectEntry,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
-			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
-			Map<String, Serializable> configuration) {
+			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap) {
 
 			_pimFieldMappingObjectEntriesMap = pimFieldMappingObjectEntriesMap;
 			_pimProductObjectEntriesMap = pimProductObjectEntriesMap;

@@ -232,12 +232,12 @@ public class LiferayCommercePIMConnectorTest {
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
 			_liferayCommercePIMConnector.doExecute(
-				_pimConnectorObjectEntry, objectEntriesMap,
+				Collections.emptyMap(), _pimConnectorObjectEntry,
+				objectEntriesMap,
 				HashMapBuilder.put(
 					externalReferenceCode,
 					Arrays.asList(pimProductObjectEntries)
-				).build(),
-				Collections.emptyMap()));
+				).build()));
 
 		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
 

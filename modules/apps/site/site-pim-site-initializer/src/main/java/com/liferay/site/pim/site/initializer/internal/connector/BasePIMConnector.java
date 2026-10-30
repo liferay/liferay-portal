@@ -58,11 +58,10 @@ public abstract class BasePIMConnector implements PIMConnector {
 		throws Exception {
 
 		return doExecute(
-			pimConnectorObjectEntry,
+			_getConfiguration(pimConnectorObjectEntry), pimConnectorObjectEntry,
 			getPIMFieldMappingObjectEntriesMap(pimConnectorObjectEntry),
 			getPIMProductObjectEntriesMap(
-				pimConnectorObjectEntry.getCompanyId()),
-			_getConfiguration(pimConnectorObjectEntry));
+				pimConnectorObjectEntry.getCompanyId()));
 	}
 
 	@Override
@@ -71,10 +70,10 @@ public abstract class BasePIMConnector implements PIMConnector {
 	}
 
 	protected abstract String doExecute(
+			Map<String, Serializable> configuration,
 			ObjectEntry pimConnectorObjectEntry,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
-			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
-			Map<String, Serializable> configuration)
+			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap)
 		throws Exception;
 
 	protected Map<String, List<ObjectEntry>> getPIMFieldMappingObjectEntriesMap(
