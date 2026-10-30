@@ -310,10 +310,11 @@ public class DepotEntryLocalServiceTest {
 
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), depotEntry.getGroupId(),
-			folder.getFolderId(), StringUtil.randomString(),
-			ContentTypes.APPLICATION_OCTET_STREAM, StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), new byte[0], null, null, null,
+			folder.getFolderId(), RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			new byte[0], null, null, null,
 			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
 
 		_depotEntryLocalService.deleteDepotEntry(depotEntry.getDepotEntryId());
@@ -321,13 +322,12 @@ public class DepotEntryLocalServiceTest {
 		_depotEntries.remove(depotEntry);
 
 		Assert.assertNull(
-			_groupLocalService.fetchGroup(depotEntry.getGroupId()));
-
-		Assert.assertNull(
 			_dlFileEntryLocalService.fetchDLFileEntry(
 				fileEntry.getFileEntryId()));
 		Assert.assertNull(
 			_dlFolderLocalService.fetchDLFolder(folder.getFolderId()));
+		Assert.assertNull(
+			_groupLocalService.fetchGroup(depotEntry.getGroupId()));
 	}
 
 	@Test

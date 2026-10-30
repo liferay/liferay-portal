@@ -118,9 +118,8 @@ public class DepotEntryAdminSearchProviderTest {
 	public void testGetDepotEntrySearchWithDescriptionKeywords()
 		throws Exception {
 
-		String keywords = RandomTestUtil.randomString();
-
 		Set<Long> depotEntryIds = new HashSet<>();
+		String keywords = RandomTestUtil.randomString();
 
 		for (int i = 0; i < 2; i++) {
 			DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
