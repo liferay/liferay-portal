@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
+import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
@@ -83,16 +84,20 @@ public class BatchEngineImportTaskLocalServiceTest {
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
 			BatchEngineTaskExecuteStatus.FAILED);
+		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
+			BatchEngineTaskExecuteStatus.COMPLETED);
+		_testUpdateBatchEngineImportTaskWithoutPasswordFields(
+			BatchEngineTaskExecuteStatus.FAILED);
 	}
 
-	private BatchEngineImportTask _addBatchEngineImportTask(String json)
+	private BatchEngineImportTask _addBatchEngineImportTask(
+			String className, String json)
 		throws Exception {
 
 		BatchEngineImportTask batchEngineImportTask =
 			_batchEngineImportTaskLocalService.addBatchEngineImportTask(
 				null, TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), 10, null,
-				"com.liferay.headless.admin.user.dto.v1_0.UserAccount",
+				TestPropsValues.getUserId(), 10, null, className,
 				_getContent(json), "JSON",
 				BatchEngineTaskExecuteStatus.INITIAL.name(), null,
 				BatchEngineImportTaskConstants.IMPORT_STRATEGY_ON_ERROR_FAIL,
@@ -153,6 +158,7 @@ public class BatchEngineImportTaskLocalServiceTest {
 
 			BatchEngineImportTask batchEngineImportTask =
 				_addBatchEngineImportTask(
+					_CLASS_NAME_USER_ACCOUNT,
 					JSONUtil.putAll(
 						JSONUtil.put(
 							"emailAddress", emailAddress
@@ -239,6 +245,7 @@ public class BatchEngineImportTaskLocalServiceTest {
 		String password = RandomTestUtil.randomString();
 
 		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			_CLASS_NAME_USER_ACCOUNT,
 			JSONUtil.putAll(
 				JSONUtil.put(
 					"emailAddress", emailAddress
@@ -277,6 +284,7 @@ public class BatchEngineImportTaskLocalServiceTest {
 		String password = RandomTestUtil.randomString();
 
 		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			_CLASS_NAME_USER_ACCOUNT,
 			StringBundler.concat(
 				"[{\"emailAddress\": \"", RandomTestUtil.randomString(),
 				"@liferay.com\", \"password\": \"", password, "\""));
@@ -319,6 +327,34 @@ public class BatchEngineImportTaskLocalServiceTest {
 		}
 	}
 
+	private void _testUpdateBatchEngineImportTaskWithoutPasswordFields(
+			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
+		throws Exception {
+
+		String headline = RandomTestUtil.randomString();
+
+		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			"com.liferay.headless.delivery.dto.v1_0.BlogPosting",
+			JSONUtil.putAll(
+				JSONUtil.put("headline", headline)
+			).toString());
+
+		batchEngineImportTask =
+			_batchEngineImportTaskLocalService.getBatchEngineImportTask(
+				batchEngineImportTask.getBatchEngineImportTaskId());
+
+		_updateExecuteStatus(
+			batchEngineImportTask, batchEngineTaskExecuteStatus);
+
+		Assert.assertNull(
+			ReflectionTestUtil.getFieldValue(
+				batchEngineImportTask, "_contentBlobModel"));
+
+		String content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content, content.contains(headline));
+	}
+
 	private BatchEngineImportTask _updateExecuteStatus(
 		BatchEngineImportTask batchEngineImportTask,
 		BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus) {
@@ -329,6 +365,9 @@ public class BatchEngineImportTaskLocalServiceTest {
 		return _batchEngineImportTaskLocalService.updateBatchEngineImportTask(
 			batchEngineImportTask);
 	}
+
+	private static final String _CLASS_NAME_USER_ACCOUNT =
+		"com.liferay.headless.admin.user.dto.v1_0.UserAccount";
 
 	@Inject
 	private BatchEngineImportTaskLocalService
