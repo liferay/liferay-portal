@@ -3,11 +3,15 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-function addOpenSelectionModalEvent({namespace, url}) {
+import {openItemSelectorModal} from '@liferay/frontend-js-item-selector-web';
+
+import getCurrenciesItemSelectorProps from '../item_selector/getCurrenciesItemSelectorProps';
+
+function addOpenSelectionModalEvent({excludedCurrencyIds, namespace}) {
 	Liferay.on(namespace + 'addCommerceChannelCommerceCurrency', () => {
 		openSelectionModal({
+			excludedCurrencyIds,
 			namespace,
-			url,
 		});
 	});
 
@@ -16,46 +20,33 @@ function addOpenSelectionModalEvent({namespace, url}) {
 	});
 }
 
-function openSelectionModal({namespace, url}) {
-	const openerWindow = Liferay.Util.getOpener();
-
+function openSelectionModal({excludedCurrencyIds, namespace}) {
 	const addCommerceChannelCommerceCurrencyFm = document.getElementById(
 		namespace + 'addCommerceChannelCommerceCurrencyFm'
 	);
 	const currencyIds = document.getElementById(namespace + 'currencyIds');
 
-	openerWindow.Liferay.Util.openSelectionModal({
-		multiple: true,
-		onSelect: (selectedItems) => {
-			selectedItems = selectedItems.value || [];
-
-			if (!selectedItems || !selectedItems.length) {
+	openItemSelectorModal({
+		...getCurrenciesItemSelectorProps({
+			excludedCurrencyIds,
+			portletNamespace: namespace,
+		}),
+		items: [],
+		onItemsChange: (currencies) => {
+			if (!currencies.length) {
 				return;
 			}
 
-			if (!Array.isArray(selectedItems)) {
-				selectedItems = [selectedItems];
-			}
+			if (currencyIds) {
+				const ids = currencies.map((currency) => currency.id);
 
-			const currencies = [];
-
-			for (let selectedItem of selectedItems) {
-				selectedItem = JSON.parse(selectedItem);
-
-				currencies.push(selectedItem.classPK);
-			}
-
-			if (currencies.length && currencyIds) {
-				currencyIds.value = currencies.join(',');
+				currencyIds.value = ids.join(',');
 			}
 
 			if (addCommerceChannelCommerceCurrencyFm) {
 				submitForm(addCommerceChannelCommerceCurrencyFm);
 			}
 		},
-		selectEventName: 'currencySelectItem',
-		title: Liferay.Language.get('add-currency'),
-		url,
 	});
 }
 
