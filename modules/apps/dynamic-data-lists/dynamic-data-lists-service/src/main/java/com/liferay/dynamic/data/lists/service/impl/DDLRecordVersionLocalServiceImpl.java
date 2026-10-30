@@ -8,7 +8,6 @@ package com.liferay.dynamic.data.lists.service.impl;
 import com.liferay.dynamic.data.lists.exception.NoSuchRecordVersionException;
 import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
 import com.liferay.dynamic.data.lists.service.base.DDLRecordVersionLocalServiceBaseImpl;
-import com.liferay.dynamic.data.lists.util.comparator.DDLRecordVersionIdComparator;
 import com.liferay.dynamic.data.lists.util.comparator.DDLRecordVersionVersionComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,25 +31,6 @@ import org.osgi.service.component.annotations.Component;
 )
 public class DDLRecordVersionLocalServiceImpl
 	extends DDLRecordVersionLocalServiceBaseImpl {
-
-	/**
-	 * Returns the latest record version matching the user, the record set, the
-	 * record set version and workflow status.
-	 *
-	 * @param  userId the primary key of the user
-	 * @param  recordSetId the primary key of the record set
-	 * @param  recordSetVersion the version of the record set
-	 * @param  status the workflow status
-	 * @return the latest matching record version or <code>null</code>
-	 */
-	@Override
-	public DDLRecordVersion fetchLatestRecordVersion(
-		long userId, long recordSetId, String recordSetVersion, int status) {
-
-		return ddlRecordVersionPersistence.fetchByU_R_R_S_First(
-			userId, recordSetId, recordSetVersion, status,
-			DDLRecordVersionIdComparator.getInstance(false));
-	}
 
 	/**
 	 * Returns the record's latest record version.
