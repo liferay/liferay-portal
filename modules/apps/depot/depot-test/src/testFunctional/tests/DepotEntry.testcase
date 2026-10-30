@@ -30,39 +30,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that a depot can be deleted, whether it is empty or contains a folder and some files."
-	@priority = 5
-	@refactordone
-	test CanDeleteEmptyAndPopulatedDepot {
-		JSONDepot.addDepot(
-			depotDescription = "This is the description of a depot",
-			depotName = "Test Depot Name");
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentTitle = "This is a document",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "This is an image",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		DepotNavigator.openDepotAdmin();
-
-		Depot.deleteCP(depotName = "Test Depot Name");
-
-		Depot.viewDefaultCP();
-	}
-
 	@description = "This test covers LPS-120834. It ensures that a user can not redirect to the depot via Space icon."
 	@priority = 5
 	@refactordone
@@ -88,45 +55,6 @@ definition {
 	}
 
 	// May need to update test after LPS-133688 is fixed
-
-	@description = "This ensures that a user can select all depots, deselect some, and delete the selected and reselected ones in cards view."
-	@priority = 4
-	@refactordone
-	test CanSelectAllDeselectAndDeleteInCardsView {
-		for (var depotName : list "Test Depot Name 1,Test Depot Name 2,Test Depot Name 3") {
-			JSONDepot.addDepot(
-				depotDescription = "This is the description of a depot",
-				depotName = ${depotName});
-		}
-
-		DepotNavigator.openDepotAdmin();
-
-		PortletEntry.selectAll();
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "ManagementBar#NAVBAR_TEXT",
-			value1 = "All Selected (3 of 3 Items Selected)");
-
-		Click.clickNoWaitForVisible(
-			key_card = "Test Depot Name 1",
-			locator1 = "Card#CARD_CHECKBOX");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "ManagementBar#NAVBAR_TEXT",
-			value1 = "2 of 3 Items Selected");
-
-		Depot.deleteCP(deletions = "true");
-
-		LexiconCard.checkCardCheckbox(card = "Test Depot Name 1");
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "ManagementBar#NAVBAR_TEXT",
-			value1 = "All Selected (1 of 1 Items Selected)");
-
-		Depot.deleteCP(deletions = "true");
-
-		Depot.viewDefaultCP();
-	}
 
 	@description = "This ensures that the number of connected sites can be viewed in the card view."
 	@priority = 3

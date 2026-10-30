@@ -18,6 +18,18 @@ const test = mergeTests(dataApiHelpersTest, loginTest());
 const DEPOT_ADMIN_NAMESPACE =
 	'_com_liferay_depot_web_portlet_DepotAdminPortlet_';
 
+function acceptDeleteConfirmation(page: Page) {
+	return new Promise<string>((resolve) => {
+		page.once('dialog', async (dialog) => {
+			const message = dialog.message();
+
+			await dialog.accept();
+
+			resolve(message);
+		});
+	});
+}
+
 function getCard(page: Page, name: string) {
 	return page
 		.locator('.card')
@@ -129,6 +141,101 @@ test(
 
 			await expect(getCard(page, editedName)).toBeVisible();
 			await expect(getCard(page, name)).toHaveCount(0);
+		});
+	}
+);
+
+test(
+	'Asset libraries can be deleted one at a time or selected together',
+	{tag: '@LPD-109885'},
+	async ({apiHelpers, page}) => {
+		const prefix = getRandomString();
+
+		const names = [`${prefix} 1`, `${prefix} 2`, `${prefix} 3`];
+
+		for (const name of names) {
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary({name});
+		}
+
+		const [name1, name2, name3] = names;
+
+		await test.step('Delete one from its actions', async () => {
+			await gotoDepotAdmin(page, prefix);
+
+			const confirmationMessage = acceptDeleteConfirmation(page);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {
+					exact: true,
+					name: 'Delete',
+				}),
+				trigger: getCard(page, name1).getByRole('button', {
+					name: 'More actions',
+				}),
+			});
+
+			expect(await confirmationMessage).toContain(
+				'Removing an asset library can affect sites that use the contents stored in it.'
+			);
+
+			await waitForAlert(page);
+
+			await expect(getCard(page, name1)).toHaveCount(0);
+			await expect(getCard(page, name2)).toBeVisible();
+		});
+
+		await test.step('Select all, deselect one and delete the others', async () => {
+			await gotoDepotAdmin(page, prefix);
+
+			await page
+				.getByRole('checkbox', {name: 'Select All Items on the Page'})
+				.check();
+
+			await expect(
+				page.getByText('All Selected (2 of 2 Items Selected)')
+			).toBeVisible();
+
+			await getCard(page, name2).getByRole('checkbox').uncheck();
+
+			await expect(
+				page.getByText('1 of 2 Items Selected', {exact: true})
+			).toBeVisible();
+
+			const confirmed = acceptDeleteConfirmation(page);
+
+			await page
+				.getByRole('button', {exact: true, name: 'Delete'})
+				.click();
+
+			await confirmed;
+
+			await waitForAlert(page);
+
+			await expect(getCard(page, name3)).toHaveCount(0);
+			await expect(getCard(page, name2)).toBeVisible();
+		});
+
+		await test.step('Select the last one again and delete it', async () => {
+			await gotoDepotAdmin(page, prefix);
+
+			await getCard(page, name2).getByRole('checkbox').check();
+
+			await expect(
+				page.getByText('All Selected (1 of 1 Items Selected)')
+			).toBeVisible();
+
+			const confirmed = acceptDeleteConfirmation(page);
+
+			await page
+				.getByRole('button', {exact: true, name: 'Delete'})
+				.click();
+
+			await confirmed;
+
+			await waitForAlert(page);
+
+			await expect(getCard(page, name2)).toHaveCount(0);
 		});
 	}
 );
