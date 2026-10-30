@@ -115,10 +115,11 @@ describe('AddDisplayPageTemplateDesignLibraryModalContent', () => {
 
 		await userEvent.type(nameInput, ' 2');
 
-		await submitForm();
+		await userEvent.dblClick(screen.getByText('save'));
 
 		await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1));
 
+		expect(screen.getByText('save')).toBeDisabled();
 		expect(mockFetch).toHaveBeenCalledTimes(2);
 		expect(mockFetch).toHaveBeenLastCalledWith(
 			ADD_DISPLAY_PAGE_URL,
