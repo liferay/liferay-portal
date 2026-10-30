@@ -68,10 +68,6 @@ public class OpenSamlUtilTest extends BaseSamlTestCase {
 
 	@Test
 	public void testSignObject() throws Exception {
-		SignatureSigningConfiguration signatureSigningConfiguration =
-			ConfigurationServiceBootstrapUtil.get(
-				SignatureSigningConfiguration.class);
-
 		BasicSignatureSigningConfiguration basicSignatureSigningConfiguration =
 			DefaultSecurityConfigurationBootstrap.
 				buildDefaultSignatureSigningConfiguration();
@@ -80,6 +76,10 @@ public class OpenSamlUtilTest extends BaseSamlTestCase {
 			Arrays.asList(
 				SignatureConstants.ALGO_ID_DIGEST_SHA512,
 				SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA512));
+
+		SignatureSigningConfiguration signatureSigningConfiguration =
+			ConfigurationServiceBootstrapUtil.get(
+				SignatureSigningConfiguration.class);
 
 		ConfigurationServiceBootstrapUtil.register(
 			SignatureSigningConfiguration.class,
