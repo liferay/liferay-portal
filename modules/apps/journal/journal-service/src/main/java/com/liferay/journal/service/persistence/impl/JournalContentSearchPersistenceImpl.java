@@ -17,16 +17,13 @@ import com.liferay.portal.kernel.change.tracking.CTColumnResolutionType;
 import com.liferay.portal.kernel.configuration.Configuration;
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
-import com.liferay.portal.kernel.dao.orm.FinderPath;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.SessionFactory;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.persistence.change.tracking.helper.CTPersistenceHelper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
-import com.liferay.portal.kernel.service.persistence.impl.CollectionPersistenceFinder;
 import com.liferay.portal.kernel.service.persistence.impl.FinderColumn;
 import com.liferay.portal.kernel.service.persistence.impl.UniquePersistenceFinder;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 
 import java.io.Serializable;
@@ -77,108 +74,6 @@ public class JournalContentSearchPersistenceImpl
 
 	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
 		FINDER_CLASS_NAME_ENTITY + ".List2";
-
-	private CollectionPersistenceFinder
-		<JournalContentSearch, NoSuchContentSearchException>
-			_collectionPersistenceFinderByG_P_A;
-
-	/**
-	 * Returns an ordered range of all the journal content searches where groupId = &#63; and privateLayout = &#63; and articleId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>JournalContentSearchModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param privateLayout the private layout
-	 * @param articleId the article ID
-	 * @param start the lower bound of the range of journal content searches
-	 * @param end the upper bound of the range of journal content searches (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching journal content searches
-	 */
-	@Override
-	public List<JournalContentSearch> findByG_P_A(
-		long groupId, boolean privateLayout, String articleId, int start,
-		int end, OrderByComparator<JournalContentSearch> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_P_A.find(
-			finderCache, new Object[] {groupId, privateLayout, articleId},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first journal content search in the ordered set where groupId = &#63; and privateLayout = &#63; and articleId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param privateLayout the private layout
-	 * @param articleId the article ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching journal content search
-	 * @throws NoSuchContentSearchException if a matching journal content search could not be found
-	 */
-	@Override
-	public JournalContentSearch findByG_P_A_First(
-			long groupId, boolean privateLayout, String articleId,
-			OrderByComparator<JournalContentSearch> orderByComparator)
-		throws NoSuchContentSearchException {
-
-		return _collectionPersistenceFinderByG_P_A.findFirst(
-			finderCache, new Object[] {groupId, privateLayout, articleId},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first journal content search in the ordered set where groupId = &#63; and privateLayout = &#63; and articleId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param privateLayout the private layout
-	 * @param articleId the article ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching journal content search, or <code>null</code> if a matching journal content search could not be found
-	 */
-	@Override
-	public JournalContentSearch fetchByG_P_A_First(
-		long groupId, boolean privateLayout, String articleId,
-		OrderByComparator<JournalContentSearch> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_P_A.fetchFirst(
-			finderCache, new Object[] {groupId, privateLayout, articleId},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the journal content searches where groupId = &#63; and privateLayout = &#63; and articleId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param privateLayout the private layout
-	 * @param articleId the article ID
-	 */
-	@Override
-	public void removeByG_P_A(
-		long groupId, boolean privateLayout, String articleId) {
-
-		_collectionPersistenceFinderByG_P_A.remove(
-			finderCache, new Object[] {groupId, privateLayout, articleId});
-	}
-
-	/**
-	 * Returns the number of journal content searches where groupId = &#63; and privateLayout = &#63; and articleId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param privateLayout the private layout
-	 * @param articleId the article ID
-	 * @return the number of matching journal content searches
-	 */
-	@Override
-	public int countByG_P_A(
-		long groupId, boolean privateLayout, String articleId) {
-
-		return _collectionPersistenceFinderByG_P_A.count(
-			finderCache, new Object[] {groupId, privateLayout, articleId});
-	}
 
 	private UniquePersistenceFinder
 		<JournalContentSearch, NoSuchContentSearchException>
@@ -531,47 +426,6 @@ public class JournalContentSearchPersistenceImpl
 	 */
 	@Activate
 	public void activate() {
-		_collectionPersistenceFinderByG_P_A = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_P_A",
-				new String[] {
-					Long.class.getName(), Boolean.class.getName(),
-					String.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "privateLayout", "articleId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_P_A",
-				new String[] {
-					Long.class.getName(), Boolean.class.getName(),
-					String.class.getName()
-				},
-				new String[] {"groupId", "privateLayout", "articleId"}, 0, 4,
-				true, null),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_P_A",
-				new String[] {
-					Long.class.getName(), Boolean.class.getName(),
-					String.class.getName()
-				},
-				new String[] {"groupId", "privateLayout", "articleId"}, 0, 4,
-				false, null),
-			_SQL_SELECT_JOURNALCONTENTSEARCH_WHERE,
-			_SQL_COUNT_JOURNALCONTENTSEARCH_WHERE,
-			JournalContentSearchModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"journalContentSearch.", "groupId", FinderColumn.Type.LONG, "=",
-				true, true, JournalContentSearch::getGroupId),
-			new FinderColumn<>(
-				"journalContentSearch.", "privateLayout",
-				FinderColumn.Type.BOOLEAN, "=", true, true,
-				JournalContentSearch::isPrivateLayout),
-			new FinderColumn<>(
-				"journalContentSearch.", "articleId", FinderColumn.Type.STRING,
-				"=", true, true, JournalContentSearch::getArticleId));
-
 		_uniquePersistenceFinderByG_P_L_P_A = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -653,17 +507,11 @@ public class JournalContentSearchPersistenceImpl
 	@Reference
 	protected FinderCache finderCache;
 
-	private static final String _ENTITY_ALIAS_PREFIX =
-		JournalContentSearchModelImpl.ENTITY_ALIAS + ".";
-
 	private static final String _SQL_SELECT_JOURNALCONTENTSEARCH =
 		"SELECT journalContentSearch FROM JournalContentSearch journalContentSearch";
 
 	private static final String _SQL_SELECT_JOURNALCONTENTSEARCH_WHERE =
 		"SELECT journalContentSearch FROM JournalContentSearch journalContentSearch WHERE ";
-
-	private static final String _SQL_COUNT_JOURNALCONTENTSEARCH_WHERE =
-		"SELECT COUNT(journalContentSearch) FROM JournalContentSearch journalContentSearch WHERE ";
 
 	@Override
 	protected FinderCache getFinderCache() {
@@ -671,4 +519,4 @@ public class JournalContentSearchPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-720551466
+// LIFERAY-SERVICE-BUILDER-HASH:2129116862

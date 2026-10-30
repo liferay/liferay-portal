@@ -169,17 +169,6 @@ public class JournalContentSearchPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_P_A() throws Exception {
-		_persistence.countByG_P_A(
-			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(), "");
-
-		_persistence.countByG_P_A(0L, RandomTestUtil.randomBoolean(), "null");
-
-		_persistence.countByG_P_A(
-			0L, RandomTestUtil.randomBoolean(), (String)null);
-	}
-
-	@Test
 	public void testCountByG_P_L_P_A() throws Exception {
 		_persistence.countByG_P_L_P_A(
 			RandomTestUtil.nextLong(), RandomTestUtil.randomBoolean(),
@@ -571,4 +560,4 @@ public class JournalContentSearchPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1711755417
+// LIFERAY-SERVICE-BUILDER-HASH:-1778642241
