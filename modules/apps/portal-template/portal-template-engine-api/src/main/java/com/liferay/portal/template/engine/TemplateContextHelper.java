@@ -7,6 +7,7 @@ package com.liferay.portal.template.engine;
 
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
+import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.image.ImageToolUtil_IW;
@@ -17,7 +18,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletModeFactory_IW;
 import com.liferay.portal.kernel.portlet.PortletProvider;
@@ -83,7 +83,6 @@ import com.liferay.portal.struts.Definition;
 import com.liferay.portal.struts.TilesUtil;
 import com.liferay.portal.template.ServiceLocator;
 
-import jakarta.portlet.PortletConfig;
 import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletResponse;
 import jakarta.portlet.RenderRequest;
@@ -98,8 +97,12 @@ import java.io.InputStream;
 import java.net.URL;
 
 import java.util.AbstractMap;
+import java.util.AbstractSet;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
@@ -148,6 +151,24 @@ public class TemplateContextHelper {
 			portalServicesTemplateVariableGroup);
 
 		return templateVariableGroups;
+	}
+
+	public Map<String, Object> createLazyContext(
+		HttpServletRequest httpServletRequest, boolean restricted) {
+
+		if (restricted) {
+			return new LazyContext(
+				httpServletRequest,
+				_lazyContextFunctionsDCLSingleton.getSingleton(
+					this::_createLazyContextFunctions),
+				getRestrictedVariables());
+		}
+
+		return new LazyContext(
+			httpServletRequest,
+			_lazyContextFunctionsDCLSingleton.getSingleton(
+				this::_createLazyContextFunctions),
+			Collections.emptySet());
 	}
 
 	public void destory() {
@@ -200,36 +221,25 @@ public class TemplateContextHelper {
 		Map<String, Object> contextObjects,
 		HttpServletRequest httpServletRequest) {
 
-		Map<String, Function<HttpServletRequest, Object>> lazyContextFunctions =
-			new AbstractMap<>() {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
 
-				@Override
-				public Set<Entry<String, Function<HttpServletRequest, Object>>>
-					entrySet() {
+		Definition definition = (Definition)httpServletRequest.getAttribute(
+			TilesUtil.DEFINITION);
 
-					return Collections.emptySet();
-				}
+		if (definition == null) {
+			themeDisplay.setTilesSelectable(true);
 
-				@Override
-				public Function<HttpServletRequest, Object> put(
-					String key, Function<HttpServletRequest, Object> function) {
+			return;
+		}
 
-					Object value = function.apply(httpServletRequest);
+		Map<String, String> attributes = definition.getAttributes();
 
-					if (value != null) {
-						contextObjects.put(key, value);
-					}
-
-					return null;
-				}
-
-			};
-
-		// Tiles attributes
-
-		prepareTiles(contextObjects, httpServletRequest);
-
-		populateLazyContextFunctions(lazyContextFunctions);
+		themeDisplay.setTilesContent(attributes.get("content"));
+		themeDisplay.setTilesSelectable(
+			GetterUtil.getBoolean(attributes.get("selectable")));
+		themeDisplay.setTilesTitle(attributes.get("title"));
 	}
 
 	public void removeAllHelperUtilities() {
@@ -672,9 +682,8 @@ public class TemplateContextHelper {
 				themeDisplay -> String.valueOf(themeDisplay.getPlid())));
 		lazyContextFunctions.put(
 			"portletConfig",
-			httpServletRequest ->
-				(PortletConfig)httpServletRequest.getAttribute(
-					JavaConstants.JAKARTA_PORTLET_CONFIG));
+			httpServletRequest -> httpServletRequest.getAttribute(
+				JavaConstants.JAKARTA_PORTLET_CONFIG));
 		lazyContextFunctions.put(
 			"portletDisplay",
 			_getThemeDisplayFunction(ThemeDisplay::getPortletDisplay));
@@ -701,53 +710,21 @@ public class TemplateContextHelper {
 		lazyContextFunctions.put("theme", TemplateContextHelper::_getTheme);
 		lazyContextFunctions.put(
 			"themeDisplay",
-			httpServletRequest -> (ThemeDisplay)httpServletRequest.getAttribute(
+			httpServletRequest -> httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY));
+		lazyContextFunctions.put(
+			"tilesContent", _getTilesFunction(ThemeDisplay::getTilesContent));
+		lazyContextFunctions.put(
+			"tilesSelectable",
+			_getTilesFunction(ThemeDisplay::isTilesSelectable));
+		lazyContextFunctions.put(
+			"tilesTitle", _getTilesFunction(ThemeDisplay::getTilesTitle));
 		lazyContextFunctions.put(
 			"timeZone", _getThemeDisplayFunction(ThemeDisplay::getTimeZone));
 		lazyContextFunctions.put(
 			"user", _getThemeDisplayFunction(TemplateContextHelper::_getUser));
 		lazyContextFunctions.put(
 			"xmlRequest", TemplateContextHelper::_getXMLRequest);
-	}
-
-	protected void prepareTiles(
-		Map<String, Object> contextObjects,
-		HttpServletRequest httpServletRequest) {
-
-		ThemeDisplay themeDisplay =
-			(ThemeDisplay)httpServletRequest.getAttribute(
-				WebKeys.THEME_DISPLAY);
-
-		Definition definition = (Definition)httpServletRequest.getAttribute(
-			TilesUtil.DEFINITION);
-
-		if (definition == null) {
-			themeDisplay.setTilesSelectable(true);
-
-			return;
-		}
-
-		Map<String, String> attributes = definition.getAttributes();
-
-		String tilesTitle = attributes.get("title");
-
-		themeDisplay.setTilesTitle(tilesTitle);
-
-		contextObjects.put("tilesTitle", tilesTitle);
-
-		String tilesContent = attributes.get("content");
-
-		themeDisplay.setTilesContent(tilesContent);
-
-		contextObjects.put("tilesContent", tilesContent);
-
-		boolean tilesSelectable = GetterUtil.getBoolean(
-			attributes.get("selectable"));
-
-		themeDisplay.setTilesSelectable(tilesSelectable);
-
-		contextObjects.put("tilesSelectable", tilesSelectable);
 	}
 
 	private static Object _getBodyCssClass(
@@ -757,14 +734,12 @@ public class TemplateContextHelper {
 			return null;
 		}
 
-		HttpServletRequest originalHttpServletRequest =
-			PortalUtil.getOriginalServletRequest(httpServletRequest);
-
 		String namespace = PortalUtil.getPortletNamespace(
 			ParamUtil.getString(httpServletRequest, "p_p_id"));
 
 		return ParamUtil.getString(
-			originalHttpServletRequest, namespace + "bodyCssClass");
+			PortalUtil.getOriginalServletRequest(httpServletRequest),
+			namespace + "bodyCssClass");
 	}
 
 	private static Object _getPortletRequestModelFactory(
@@ -787,13 +762,10 @@ public class TemplateContextHelper {
 	private static Object _getRenderRequest(
 		HttpServletRequest httpServletRequest) {
 
-		PortletRequest portletRequest =
-			(PortletRequest)httpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_PORTLET_REQUEST);
+		Object portletRequest = httpServletRequest.getAttribute(
+			JavaConstants.JAKARTA_PORTLET_REQUEST);
 
-		if ((portletRequest != null) &&
-			(portletRequest instanceof RenderRequest)) {
-
+		if (portletRequest instanceof RenderRequest) {
 			return portletRequest;
 		}
 
@@ -803,13 +775,10 @@ public class TemplateContextHelper {
 	private static Object _getRenderResponse(
 		HttpServletRequest httpServletRequest) {
 
-		PortletResponse portletResponse =
-			(PortletResponse)httpServletRequest.getAttribute(
-				JavaConstants.JAKARTA_PORTLET_RESPONSE);
+		Object portletResponse = httpServletRequest.getAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE);
 
-		if ((portletResponse != null) &&
-			(portletResponse instanceof RenderResponse)) {
-
+		if (portletResponse instanceof RenderResponse) {
 			return portletResponse;
 		}
 
@@ -817,17 +786,21 @@ public class TemplateContextHelper {
 	}
 
 	private static Object _getTheme(HttpServletRequest httpServletRequest) {
-		Theme theme = (Theme)httpServletRequest.getAttribute(WebKeys.THEME);
+		Object theme = httpServletRequest.getAttribute(WebKeys.THEME);
+
+		if (theme != null) {
+			return theme;
+		}
 
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		if ((theme == null) && (themeDisplay != null)) {
-			theme = themeDisplay.getTheme();
+		if (themeDisplay == null) {
+			return null;
 		}
 
-		return theme;
+		return themeDisplay.getTheme();
 	}
 
 	private static Object _getUser(ThemeDisplay themeDisplay) {
@@ -835,15 +808,17 @@ public class TemplateContextHelper {
 
 		long userId = PrincipalThreadLocal.getUserId();
 
-		if ((user == null) || (user.getUserId() != userId)) {
-			User principalUser = UserLocalServiceUtil.fetchUser(userId);
-
-			if (principalUser != null) {
-				user = principalUser;
-			}
+		if ((user != null) && (user.getUserId() == userId)) {
+			return user;
 		}
 
-		return user;
+		User principalUser = UserLocalServiceUtil.fetchUser(userId);
+
+		if (principalUser == null) {
+			return user;
+		}
+
+		return principalUser;
 	}
 
 	private static Object _getXMLRequest(
@@ -873,6 +848,17 @@ public class TemplateContextHelper {
 		};
 	}
 
+	private Map<String, Function<HttpServletRequest, Object>>
+		_createLazyContextFunctions() {
+
+		Map<String, Function<HttpServletRequest, Object>> lazyContextFunctions =
+			new HashMap<>();
+
+		populateLazyContextFunctions(lazyContextFunctions);
+
+		return lazyContextFunctions;
+	}
+
 	private Function<HttpServletRequest, Object> _getThemeDisplayFunction(
 		Function<ThemeDisplay, Object> function) {
 
@@ -886,6 +872,20 @@ public class TemplateContextHelper {
 			}
 
 			return function.apply(themeDisplay);
+		};
+	}
+
+	private Function<HttpServletRequest, Object> _getTilesFunction(
+		Function<ThemeDisplay, Object> function) {
+
+		return httpServletRequest -> {
+			if (httpServletRequest.getAttribute(TilesUtil.DEFINITION) == null) {
+				return null;
+			}
+
+			return function.apply(
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY));
 		};
 	}
 
@@ -906,6 +906,9 @@ public class TemplateContextHelper {
 		TemplateContextHelper.class);
 
 	private Map<String, Object>[] _helperUtilitiesMapArray;
+	private final DCLSingleton
+		<Map<String, Function<HttpServletRequest, Object>>>
+			_lazyContextFunctionsDCLSingleton = new DCLSingleton<>();
 	private ServiceTrackerList<TemplateContextContributor> _serviceTrackerList;
 
 	private static class HttpWrapper implements Http {
@@ -1101,6 +1104,101 @@ public class TemplateContextHelper {
 
 		private final boolean _disableLocalNetworkAccess;
 		private final Http _http;
+
+	}
+
+	private static class LazyContext extends AbstractMap<String, Object> {
+
+		@Override
+		public boolean containsKey(Object key) {
+			if (get(key) == null) {
+				return false;
+			}
+
+			return true;
+		}
+
+		@Override
+		public Set<Entry<String, Object>> entrySet() {
+			return new AbstractSet<>() {
+
+				@Override
+				public Iterator<Entry<String, Object>> iterator() {
+					List<Entry<String, Object>> entries =
+						Collections.unmodifiableList(_getEntries());
+
+					return entries.iterator();
+				}
+
+				@Override
+				public int size() {
+					List<Entry<String, Object>> entries = _getEntries();
+
+					return entries.size();
+				}
+
+			};
+		}
+
+		@Override
+		public Object get(Object key) {
+			Function<HttpServletRequest, Object> function =
+				_lazyContextFunctions.get(key);
+
+			if ((function == null) || _restrictedVariables.contains(key)) {
+				return null;
+			}
+
+			Object value = _values.get(key);
+
+			if ((value != null) || _values.containsKey(key)) {
+				return value;
+			}
+
+			value = function.apply(_httpServletRequest);
+
+			_values.put((String)key, value);
+
+			return value;
+		}
+
+		@Override
+		public Object remove(Object key) {
+			throw new UnsupportedOperationException();
+		}
+
+		private LazyContext(
+			HttpServletRequest httpServletRequest,
+			Map<String, Function<HttpServletRequest, Object>>
+				lazyContextFunctions,
+			Set<String> restrictedVariables) {
+
+			_httpServletRequest = httpServletRequest;
+			_lazyContextFunctions = lazyContextFunctions;
+			_restrictedVariables = restrictedVariables;
+		}
+
+		private List<Entry<String, Object>> _getEntries() {
+			List<Entry<String, Object>> entries = new ArrayList<>();
+
+			for (String key : _lazyContextFunctions.keySet()) {
+				Object value = get(key);
+
+				if (value == null) {
+					continue;
+				}
+
+				entries.add(new SimpleImmutableEntry<>(key, value));
+			}
+
+			return entries;
+		}
+
+		private final HttpServletRequest _httpServletRequest;
+		private final Map<String, Function<HttpServletRequest, Object>>
+			_lazyContextFunctions;
+		private final Set<String> _restrictedVariables;
+		private final Map<String, Object> _values = new HashMap<>();
 
 	}
 

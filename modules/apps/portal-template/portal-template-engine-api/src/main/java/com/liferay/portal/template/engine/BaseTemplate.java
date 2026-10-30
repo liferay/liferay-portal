@@ -104,6 +104,12 @@ public abstract class BaseTemplate implements Template {
 
 	@Override
 	public void prepare(HttpServletRequest httpServletRequest) {
+		ChainedMap chainedMap = (ChainedMap)context;
+
+		chainedMap._setRequestContext(
+			_templateContextHelper.createLazyContext(
+				httpServletRequest, _restricted));
+
 		_templateContextHelper.prepare(this, httpServletRequest);
 	}
 
@@ -275,6 +281,7 @@ public abstract class BaseTemplate implements Template {
 			_map.clear();
 			_removedKeys.clear();
 
+			_requestContext = null;
 			_sharedContext = null;
 			_taglibContext = null;
 		}
@@ -379,7 +386,13 @@ public abstract class BaseTemplate implements Template {
 		}
 
 		private Object _getChainedValue(Object key) {
-			Object value = _getValue(_taglibContext, key);
+			Object value = _getValue(_requestContext, key);
+
+			if (value != null) {
+				return value;
+			}
+
+			value = _getValue(_taglibContext, key);
 
 			if (value != null) {
 				return value;
@@ -396,6 +409,7 @@ public abstract class BaseTemplate implements Template {
 
 			keys.addAll(_removedKeys);
 
+			_addEntries(_requestContext, entries, keys);
 			_addEntries(_taglibContext, entries, keys);
 			_addEntries(_sharedContext, entries, keys);
 
@@ -418,6 +432,12 @@ public abstract class BaseTemplate implements Template {
 			_removedKeys.removeIf(key -> chainedContext.get(key) != null);
 		}
 
+		private void _setRequestContext(Map<String, ?> requestContext) {
+			_removeKeys(requestContext);
+
+			_requestContext = requestContext;
+		}
+
 		private void _setTaglibContext(Map<String, ?> taglibContext) {
 			_removeKeys(taglibContext);
 
@@ -426,6 +446,7 @@ public abstract class BaseTemplate implements Template {
 
 		private final Map<String, Object> _map = new HashMap<>();
 		private final Set<String> _removedKeys = new HashSet<>();
+		private Map<String, ?> _requestContext;
 		private Map<String, ?> _sharedContext;
 		private Map<String, ?> _taglibContext;
 

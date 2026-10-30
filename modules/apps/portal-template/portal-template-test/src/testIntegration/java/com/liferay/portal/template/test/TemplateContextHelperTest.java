@@ -27,7 +27,6 @@ import java.io.InputStream;
 
 import java.net.URL;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -49,6 +48,29 @@ public class TemplateContextHelperTest {
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
 		new LiferayIntegrationTestRule();
+
+	@Test
+	public void testCreateLazyContext() {
+		TemplateContextHelper templateContextHelper =
+			new TemplateContextHelper();
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
+
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, new ThemeDisplay());
+		mockHttpServletRequest.setAttribute(
+			"com.liferay.portal.security.content.security.policy.internal." +
+				"ContentSecurityPolicyNonceManager#NONCE",
+			"TEST_NONCE");
+
+		Map<String, Object> lazyContext =
+			templateContextHelper.createLazyContext(
+				mockHttpServletRequest, false);
+
+		Assert.assertEquals(
+			" nonce=\"TEST_NONCE\"", lazyContext.get("nonceAttribute"));
+	}
 
 	@Test
 	public void testExpandoServicesAccessibleOnlyThroughServiceLocator() {
@@ -178,29 +200,6 @@ public class TemplateContextHelperTest {
 
 		Assert.assertEquals(
 			StringPool.BLANK, helperUtilities.get("nonceAttribute"));
-	}
-
-	@Test
-	public void testPrepare() {
-		TemplateContextHelper templateContextHelper =
-			new TemplateContextHelper();
-
-		Map<String, Object> contextObjects = new HashMap<>();
-
-		MockHttpServletRequest mockHttpServletRequest =
-			new MockHttpServletRequest();
-
-		mockHttpServletRequest.setAttribute(
-			WebKeys.THEME_DISPLAY, new ThemeDisplay());
-		mockHttpServletRequest.setAttribute(
-			"com.liferay.portal.security.content.security.policy.internal." +
-				"ContentSecurityPolicyNonceManager#NONCE",
-			"TEST_NONCE");
-
-		templateContextHelper.prepare(contextObjects, mockHttpServletRequest);
-
-		Assert.assertEquals(
-			" nonce=\"TEST_NONCE\"", contextObjects.get("nonceAttribute"));
 	}
 
 }
