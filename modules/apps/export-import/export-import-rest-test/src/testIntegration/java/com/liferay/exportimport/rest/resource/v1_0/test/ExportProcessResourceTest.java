@@ -1065,10 +1065,10 @@ public class ExportProcessResourceTest
 					unsafeFunction)
 		throws Exception {
 
-		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
-
 		int nameMaxLength = ModelHintsUtil.getMaxLength(
 			ExportImportConfiguration.class.getName(), "name");
+
+		ExportProcessRequest exportProcessRequest = new ExportProcessRequest();
 
 		exportProcessRequest.setName(
 			RandomTestUtil.randomString(nameMaxLength + 1));
