@@ -1159,11 +1159,6 @@ test(
 
 		await waitForAlert(page);
 
-		const {buyerUser} = await createAccountWithBuyerUser(
-			apiHelpers,
-			site.id
-		);
-
 		const bundleProductName = getRandomString();
 		const linkedProductName = getRandomString();
 		const optionName = 'Option1';
@@ -1250,6 +1245,11 @@ test(
 		});
 
 		await test.step('Add the bundle to the cart as the buyer and submit the order', async () => {
+			const {buyerUser} = await createAccountWithBuyerUser(
+				apiHelpers,
+				site.id
+			);
+
 			await performLogout(page);
 
 			await performLoginViaApi({
@@ -1353,11 +1353,6 @@ test(
 			);
 
 			await waitForAlert(page);
-
-			const {buyerUser} = await createAccountWithBuyerUser(
-				apiHelpers,
-				site.id
-			);
 
 			const bundleProductName = getRandomString();
 
@@ -1475,6 +1470,11 @@ test(
 			});
 
 			await test.step('Add the bundle to the cart as the buyer and submit the order', async () => {
+				const {buyerUser} = await createAccountWithBuyerUser(
+					apiHelpers,
+					site.id
+				);
+
 				await performLogout(page);
 
 				await performLoginViaApi({
