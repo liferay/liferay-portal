@@ -68,7 +68,6 @@ if (Validator.isNotNull(backURL)) {
 						for (CommerceInventoryWarehouse commerceInventoryWarehouse : commerceInventoryWarehouses) {
 							long commerceInventoryWarehouseItemId = 0;
 							BigDecimal quantity = BigDecimal.ZERO;
-							BigDecimal reservedQuantity = BigDecimal.ZERO;
 							long mvccVersion = 0;
 
 							CommerceInventoryWarehouseItem commerceInventoryWarehouseItem = null;
@@ -85,17 +84,11 @@ if (Validator.isNotNull(backURL)) {
 										quantity = commerceInventoryWarehouseItemQuantity;
 									}
 
-									BigDecimal commerceInventoryWarehouseItemReservedQuantity = commerceInventoryWarehouseItem.getReservedQuantity();
-
-									if (commerceInventoryWarehouseItemReservedQuantity != null) {
-										reservedQuantity = commerceInventoryWarehouseItemReservedQuantity;
-									}
-
 									mvccVersion = commerceInventoryWarehouseItem.getMvccVersion();
 								}
 						%>
 
-								<tr data-commerce-inventory-warehouse-id="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" data-commerce-inventory-warehouse-item-id="<%= commerceInventoryWarehouseItemId %>" data-commerce-inventory-warehouse-item-uom="<%= HtmlUtil.escapeAttribute(cpInstanceUnitOfMeasureKey) %>" data-index="<%= curIndex %>" data-mvcc-version="<%= mvccVersion %>" data-reserved-quantity="<%= reservedQuantity %>">
+								<tr data-commerce-inventory-warehouse-id="<%= commerceInventoryWarehouse.getCommerceInventoryWarehouseId() %>" data-commerce-inventory-warehouse-item-id="<%= commerceInventoryWarehouseItemId %>" data-commerce-inventory-warehouse-item-uom="<%= HtmlUtil.escapeAttribute(cpInstanceUnitOfMeasureKey) %>" data-index="<%= curIndex %>" data-mvcc-version="<%= mvccVersion %>" data-reserved-quantity="<%= commerceInventoryWarehouseItemsDisplayContext.getFormattedReservedQuantity(commerceInventoryWarehouseItem) %>">
 									<td>
 										<%= HtmlUtil.escape(commerceInventoryWarehouse.getName(locale)) %>
 									</td>

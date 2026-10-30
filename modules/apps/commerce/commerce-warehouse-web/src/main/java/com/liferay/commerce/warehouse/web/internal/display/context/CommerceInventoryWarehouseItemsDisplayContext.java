@@ -144,7 +144,26 @@ public class CommerceInventoryWarehouseItemsDisplayContext {
 			commerceInventoryWarehouseItem.getSku(),
 			commerceInventoryWarehouseItem.getUnitOfMeasureKey());
 
-		return formattedQuantity.toString();
+		return formattedQuantity.toPlainString();
+	}
+
+	public String getFormattedReservedQuantity(
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem) {
+
+		if ((commerceInventoryWarehouseItem == null) ||
+			(commerceInventoryWarehouseItem.getReservedQuantity() == null)) {
+
+			return StringPool.BLANK;
+		}
+
+		BigDecimal formattedReservedQuantity =
+			_commerceQuantityFormatter.format(
+				_cpRequestHelper.getCompanyId(),
+				commerceInventoryWarehouseItem.getReservedQuantity(),
+				commerceInventoryWarehouseItem.getSku(),
+				commerceInventoryWarehouseItem.getUnitOfMeasureKey());
+
+		return formattedReservedQuantity.toPlainString();
 	}
 
 	public String getUpdateCommerceInventoryWarehouseItemTaglibOnClick(
