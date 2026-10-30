@@ -27,6 +27,7 @@ import com.liferay.asset.list.service.persistence.AssetListEntryUsagePersistence
 import com.liferay.asset.util.AssetRendererFactoryWrapper;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
+import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -115,53 +116,10 @@ public class AssetListEntryLocalServiceImpl
 						segmentsEntryId, StringPool.BLANK, serviceContext);
 		}
 
-		List<Long> selectedAssetEntryIds = new ArrayList<>(
-			dslQuery(
-				DSLQueryFactoryUtil.selectDistinct(
-					AssetListEntryAssetEntryRelTable.INSTANCE.assetEntryId
-				).from(
-					AssetListEntryAssetEntryRelTable.INSTANCE
-				).where(
-					AssetListEntryAssetEntryRelTable.INSTANCE.assetListEntryId.
-						eq(
-							assetListEntryId
-						).and(
-							AssetListEntryAssetEntryRelTable.INSTANCE.
-								audienceEntryERC.isNull(
-								).or(
-									AssetListEntryAssetEntryRelTable.INSTANCE.
-										audienceEntryERC.eq(StringPool.BLANK)
-								).withParentheses()
-						).and(
-							AssetListEntryAssetEntryRelTable.INSTANCE.
-								segmentsEntryId.eq(
-									assetListEntrySegmentsEntryRel.
-										getSegmentsEntryId())
-						)
-				)));
-
-		for (long assetEntryId : ArrayUtil.unique(assetEntryIds)) {
-			if (selectedAssetEntryIds.contains(assetEntryId)) {
-				continue;
-			}
-
-			_assetListEntryAssetEntryRelLocalService.
-				addAssetListEntryAssetEntryRel(
-					assetListEntryId, assetEntryId, segmentsEntryId,
-					serviceContext);
-		}
-
-		// Asset list entry
-
-		if (Validator.isNull(assetListEntry.getAssetEntryType())) {
-			String assetEntryType = _getManualAssetEntryType(assetListEntryId);
-
-			assetListEntry.setAssetEntrySubtype(
-				_getManualAssetEntrySubtype(assetEntryType, assetListEntryId));
-			assetListEntry.setAssetEntryType(assetEntryType);
-		}
-
-		assetListEntryPersistence.update(assetListEntry);
+		_addAssetEntrySelections(
+			assetListEntry, assetEntryIds, StringPool.BLANK,
+			assetListEntrySegmentsEntryRel.getSegmentsEntryId(),
+			serviceContext);
 	}
 
 	@Override
@@ -273,37 +231,8 @@ public class AssetListEntryLocalServiceImpl
 			long assetListEntryId, long segmentsEntryId, int position)
 		throws PortalException {
 
-		// Asset list entry
-
-		AssetListEntry assetListEntry =
-			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
-
-		if (Objects.equals(
-				assetListEntry.getType(),
-				AssetListEntryTypeConstants.TYPE_DYNAMIC)) {
-
-			throw new PortalException();
-		}
-
-		// Asset list entry segments entry rel
-
-		_assetListEntryAssetEntryRelLocalService.
-			deleteAssetListEntryAssetEntryRel(
-				assetListEntryId, segmentsEntryId, position);
-
-		// Asset list entry
-
-		assetListEntry.setModifiedDate(new Date());
-
-		if (Validator.isNull(assetListEntry.getAssetEntryType())) {
-			String assetEntryType = _getManualAssetEntryType(assetListEntryId);
-
-			assetListEntry.setAssetEntrySubtype(
-				_getManualAssetEntrySubtype(assetEntryType, assetListEntryId));
-			assetListEntry.setAssetEntryType(assetEntryType);
-		}
-
-		assetListEntryPersistence.update(assetListEntry);
+		_deleteAssetEntrySelection(
+			assetListEntryId, StringPool.BLANK, segmentsEntryId, position);
 	}
 
 	@Override
@@ -401,27 +330,9 @@ public class AssetListEntryLocalServiceImpl
 			int newPosition)
 		throws PortalException {
 
-		// Asset list entry
-
-		AssetListEntry assetListEntry =
-			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
-
-		if (Objects.equals(
-				assetListEntry.getType(),
-				AssetListEntryTypeConstants.TYPE_DYNAMIC)) {
-
-			throw new PortalException();
-		}
-
-		assetListEntry.setModifiedDate(new Date());
-
-		assetListEntryPersistence.update(assetListEntry);
-
-		// Asset list entry asset entry rel
-
-		_assetListEntryAssetEntryRelLocalService.
-			moveAssetListEntryAssetEntryRel(
-				assetListEntryId, segmentsEntryId, position, newPosition);
+		_moveAssetEntrySelection(
+			assetListEntryId, StringPool.BLANK, segmentsEntryId, position,
+			newPosition);
 	}
 
 	@Override
@@ -556,6 +467,56 @@ public class AssetListEntryLocalServiceImpl
 				assetListEntryId, segmentsEntryId, typeSettings);
 	}
 
+	private void _addAssetEntrySelections(
+			AssetListEntry assetListEntry, long[] assetEntryIds,
+			String audienceEntryERC, long segmentsEntryId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		long assetListEntryId = assetListEntry.getAssetListEntryId();
+
+		List<Long> selectedAssetEntryIds = new ArrayList<>(
+			dslQuery(
+				DSLQueryFactoryUtil.selectDistinct(
+					AssetListEntryAssetEntryRelTable.INSTANCE.assetEntryId
+				).from(
+					AssetListEntryAssetEntryRelTable.INSTANCE
+				).where(
+					AssetListEntryAssetEntryRelTable.INSTANCE.assetListEntryId.
+						eq(
+							assetListEntryId
+						).and(
+							_getAudienceEntryERCPredicate(audienceEntryERC)
+						).and(
+							AssetListEntryAssetEntryRelTable.INSTANCE.
+								segmentsEntryId.eq(segmentsEntryId)
+						)
+				)));
+
+		for (long assetEntryId : ArrayUtil.unique(assetEntryIds)) {
+			if (selectedAssetEntryIds.contains(assetEntryId)) {
+				continue;
+			}
+
+			_assetListEntryAssetEntryRelLocalService.
+				addAssetListEntryAssetEntryRel(
+					assetListEntryId, assetEntryId, audienceEntryERC,
+					segmentsEntryId, serviceContext);
+		}
+
+		// Asset list entry
+
+		if (Validator.isNull(assetListEntry.getAssetEntryType())) {
+			String assetEntryType = _getManualAssetEntryType(assetListEntryId);
+
+			assetListEntry.setAssetEntrySubtype(
+				_getManualAssetEntrySubtype(assetEntryType, assetListEntryId));
+			assetListEntry.setAssetEntryType(assetEntryType);
+		}
+
+		assetListEntryPersistence.update(assetListEntry);
+	}
+
 	private void _checkCompanyAssetListEntryUsages(
 			AssetListEntry assetListEntry)
 		throws PortalException {
@@ -568,6 +529,44 @@ public class AssetListEntryLocalServiceImpl
 		if (count > 0) {
 			throw new RequiredAssetListEntryException();
 		}
+	}
+
+	private void _deleteAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position)
+		throws PortalException {
+
+		// Asset list entry
+
+		AssetListEntry assetListEntry =
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
+
+		if (Objects.equals(
+				assetListEntry.getType(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC)) {
+
+			throw new PortalException();
+		}
+
+		// Asset list entry asset entry rel
+
+		_assetListEntryAssetEntryRelLocalService.
+			deleteAssetListEntryAssetEntryRel(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position);
+
+		// Asset list entry
+
+		assetListEntry.setModifiedDate(new Date());
+
+		if (Validator.isNull(assetListEntry.getAssetEntryType())) {
+			String assetEntryType = _getManualAssetEntryType(assetListEntryId);
+
+			assetListEntry.setAssetEntrySubtype(
+				_getManualAssetEntrySubtype(assetEntryType, assetListEntryId));
+			assetListEntry.setAssetEntryType(assetEntryType);
+		}
+
+		assetListEntryPersistence.update(assetListEntry);
 	}
 
 	private String _generateAssetListEntryKey(long groupId, String title) {
@@ -691,6 +690,20 @@ public class AssetListEntryLocalServiceImpl
 		int pos = className.lastIndexOf(StringPool.PERIOD);
 
 		return className.substring(pos + 1);
+	}
+
+	private Predicate _getAudienceEntryERCPredicate(String audienceEntryERC) {
+		if (Validator.isNotNull(audienceEntryERC)) {
+			return AssetListEntryAssetEntryRelTable.INSTANCE.audienceEntryERC.
+				eq(audienceEntryERC);
+		}
+
+		return AssetListEntryAssetEntryRelTable.INSTANCE.audienceEntryERC.
+			isNull(
+			).or(
+				AssetListEntryAssetEntryRelTable.INSTANCE.audienceEntryERC.eq(
+					StringPool.BLANK)
+			).withParentheses();
 	}
 
 	private String _getClassNameIds(
@@ -844,6 +857,35 @@ public class AssetListEntryLocalServiceImpl
 		}
 
 		return false;
+	}
+
+	private void _moveAssetEntrySelection(
+			long assetListEntryId, String audienceEntryERC,
+			long segmentsEntryId, int position, int newPosition)
+		throws PortalException {
+
+		// Asset list entry
+
+		AssetListEntry assetListEntry =
+			assetListEntryPersistence.findByPrimaryKey(assetListEntryId);
+
+		if (Objects.equals(
+				assetListEntry.getType(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC)) {
+
+			throw new PortalException();
+		}
+
+		assetListEntry.setModifiedDate(new Date());
+
+		assetListEntryPersistence.update(assetListEntry);
+
+		// Asset list entry asset entry rel
+
+		_assetListEntryAssetEntryRelLocalService.
+			moveAssetListEntryAssetEntryRel(
+				assetListEntryId, audienceEntryERC, segmentsEntryId, position,
+				newPosition);
 	}
 
 	private void _updateAssetListEntryKey(
