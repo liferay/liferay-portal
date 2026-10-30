@@ -116,67 +116,25 @@ public class SegmentsEntryStagedModelDataHandlerTest
 
 	@Test
 	@TestInfo("LPD-112773")
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldContains()
-		throws Exception {
-
-		_testExportImportSegmentsEntryWithEntityFieldCustomField(
-			"contains(customField/%s, '%s')");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldEquals()
+	public void testExportImportSegmentsEntryWithEntityFieldCustomField()
 		throws Exception {
 
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
 			"(customField/%s eq '%s')");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldGreaterThan()
-		throws Exception {
-
-		_testExportImportSegmentsEntryWithEntityFieldCustomField(
-			"(customField/%s gt '%s')");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldGreaterThanOrEquals()
-		throws Exception {
-
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
 			"(customField/%s ge '%s')");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldLessThan()
-		throws Exception {
-
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
-			"(customField/%s lt '%s')");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldLessThanOrEquals()
-		throws Exception {
-
+			"(customField/%s gt '%s')");
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
 			"(customField/%s le '%s')");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldNotContains()
-		throws Exception {
-
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"(customField/%s lt '%s')");
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
 			"(not (contains(customField/%s, '%s')))");
-	}
-
-	@Test
-	public void testExportImportSegmentsEntryWithEntityFieldCustomFieldNotEquals()
-		throws Exception {
-
 		_testExportImportSegmentsEntryWithEntityFieldCustomField(
 			"(not (customField/%s eq '%s'))");
+		_testExportImportSegmentsEntryWithEntityFieldCustomField(
+			"contains(customField/%s, '%s')");
 	}
 
 	@Test
