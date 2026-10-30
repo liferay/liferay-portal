@@ -144,7 +144,7 @@
 		"sass": "^1.38.1",
 		"sass-loader": "^13.3.3",
 		"svgo-loader": "^5.0.0",
-		"ts-jest": "^29.1.0",
+		"ts-jest": "^29.3.0",
 		"ts-loader": "^8.0.11",
 		"typescript": "^5.4.0",
 		"webpack": "^5.89.0",
