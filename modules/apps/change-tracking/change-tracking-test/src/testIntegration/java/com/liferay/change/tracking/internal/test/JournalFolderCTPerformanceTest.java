@@ -20,6 +20,9 @@ import com.liferay.journal.service.JournalFolderService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -104,6 +107,12 @@ public class JournalFolderCTPerformanceTest {
 		}
 		finally {
 			IndexStatusManagerThreadLocal.setIndexReadOnly(indexReadOnly);
+		}
+
+		DB db = DBManagerUtil.getDB();
+
+		if (db.getDBType() == DBType.POSTGRESQL) {
+			db.runSQL("analyze JournalArticle");
 		}
 	}
 
