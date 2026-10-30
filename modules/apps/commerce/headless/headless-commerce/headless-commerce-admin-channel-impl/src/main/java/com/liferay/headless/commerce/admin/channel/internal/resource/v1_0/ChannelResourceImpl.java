@@ -287,6 +287,12 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 			String externalReferenceCode, Channel channel)
 		throws Exception {
 
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyUtil.getCommerceCurrency(
+				contextCompany.getCompanyId(), channel.getCurrencyCode(),
+				channel.getCurrencyExternalReferenceCode(),
+				GetterUtil.getLong(channel.getCurrencyId()));
+
 		CommerceChannel commerceChannel =
 			_commerceChannelService.fetchCommerceChannelByExternalReferenceCode(
 				externalReferenceCode, contextCompany.getCompanyId());
@@ -297,12 +303,6 @@ public class ChannelResourceImpl extends BaseChannelResourceImpl {
 			typeSettingsUnicodeProperties =
 				commerceChannel.getTypeSettingsUnicodeProperties();
 		}
-
-		CommerceCurrency commerceCurrency =
-			CommerceCurrencyUtil.getCommerceCurrency(
-				contextCompany.getCompanyId(), channel.getCurrencyCode(),
-				channel.getCurrencyExternalReferenceCode(),
-				GetterUtil.getLong(channel.getCurrencyId()));
 
 		return _toChannel(
 			_commerceChannelService.addOrUpdateCommerceChannel(
