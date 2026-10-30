@@ -1,5 +1,5 @@
 {
-	"@generated": "845b365916b95d9d9a639ef1f2ceb6755556e76f",
+	"@generated": "b93d596b8a32d7054f13f0b323bc184c5a99e558",
 	"@readonly": "** AUTO-GENERATED: DO NOT EDIT **",
 	"compilerOptions": {
 		"allowSyntheticDefaultImports": true,
@@ -11,6 +11,15 @@
 		"module": "es2022",
 		"moduleResolution": "node",
 		"paths": {
+			"@liferay/frontend-data-set-web": [
+				"../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/index.ts"
+			],
+			"@liferay/frontend-data-set-web/api": [
+				"../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/js/api/api.ts"
+			],
+			"@liferay/frontend-js-item-selector-web": [
+				"../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/index.ts"
+			],
 			"@liferay/marketplace-js-components-web": [
 				"../../../marketplace/marketplace-js-components-web/src/main/resources/META-INF/resources/js/index.ts"
 			],
@@ -48,6 +57,12 @@
 		"../src/**/*.tsx"
 	],
 	"references": [
+		{
+			"path": "../../../frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
+		{
+			"path": "../../../frontend-js/frontend-js-item-selector-web/src/main/resources/META-INF/resources/tsconfig.json"
+		},
 		{
 			"path": "../../../marketplace/marketplace-js-components-web/src/main/resources/META-INF/resources/tsconfig.json"
 		},
