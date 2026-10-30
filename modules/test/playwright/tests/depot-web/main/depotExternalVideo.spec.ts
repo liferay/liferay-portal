@@ -15,6 +15,7 @@ import getRandomString from '../../../utils/getRandomString';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {BlogsEditBlogEntryPage} from '../../blogs-web/main/pages/BlogsEditBlogEntryPage';
 import {BlogsPage} from '../../blogs-web/main/pages/BlogsPage';
+import {JournalEditArticlePage} from '../../journal-web/main/pages/JournalEditArticlePage';
 import getFragmentDefinition from '../../layout-content-page-editor-web/main/utils/getFragmentDefinition';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
@@ -203,6 +204,83 @@ test(
 
 		await expect(
 			page.locator(`.video-container iframe[src^="${YOUTUBE_EMBED_URL}"]`)
+		).toBeVisible();
+	}
+);
+
+test(
+	'Asset library external video can be a related asset of a connected site web content',
+	{tag: '@LPD-112510'},
+	async ({apiHelpers, page, site}) => {
+		const assetLibrary = await addConnectedDepot(apiHelpers, site);
+
+		const videoTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postExternalVideoShortcut(
+			`asset-libraries/${assetLibrary.id}`,
+			{title: videoTitle}
+		);
+
+		// Relate the video to a web content from the Related Assets selector
+
+		const journalEditArticlePage = new JournalEditArticlePage(page);
+
+		await journalEditArticlePage.goto({siteUrl: site.friendlyUrlPath});
+
+		const webContentTitle = getRandomString();
+
+		await journalEditArticlePage.fillTitle(webContentTitle);
+		await journalEditArticlePage.fillContent(getRandomString());
+
+		await journalEditArticlePage.openRelatedAsset();
+
+		const selectAssetDialog = page.getByRole('dialog', {
+			name: 'Select Asset',
+		});
+
+		await selectAssetDialog
+			.getByRole('row', {name: videoTitle})
+			.getByRole('checkbox')
+			.check();
+		await selectAssetDialog
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await journalEditArticlePage.publishArticle();
+
+		await waitForAlert(
+			page,
+			`Success:${webContentTitle} was created successfully.`
+		);
+
+		// The Asset Publisher lists the video as a related asset and opens it
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetConfig: {
+						displayStyle: 'full-content',
+						enableRelatedAssets: 'true',
+					},
+					widgetName:
+						'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await expect(
+			page.getByText(webContentTitle, {exact: true})
+		).toBeVisible();
+
+		await page.getByRole('link', {exact: true, name: videoTitle}).click();
+
+		await expect(
+			page.locator(`iframe[src^="${YOUTUBE_EMBED_URL}"]`)
 		).toBeVisible();
 	}
 );
