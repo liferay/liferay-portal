@@ -27,7 +27,8 @@ export default function DataMasksFDSPropsTransformer({
 			if (action?.data?.id === 'view') {
 				return {
 					...action,
-					isVisible: (item: DataMask) => isSystemMask(item),
+					isVisible: (item: DataMask) =>
+						isSystemMask(item) || !item.actions?.update,
 				};
 			}
 

@@ -65,7 +65,10 @@ interface EditDataMaskViewProps {
 }
 
 function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
-	const readOnly = isSystemMask(dataMask);
+	const systemMask = isSystemMask(dataMask);
+
+	const readOnly =
+		systemMask || (!!dataMask?.id && !dataMask.actions?.update);
 
 	const formRef = useRef<HTMLFormElement>(null);
 
@@ -115,7 +118,7 @@ function EditDataMaskView({backURL, dataMask}: EditDataMaskViewProps) {
 	return (
 		<FormikProvider value={formik}>
 			<Form className="data-mask-form" noValidate ref={formRef}>
-				{readOnly && (
+				{systemMask && (
 					<ClayAlert
 						displayType="info"
 						title={`${Liferay.Language.get('info')}:`}

@@ -11,6 +11,7 @@ export type DataMaskPicklistValue = {
 };
 
 export type DataMask = {
+	actions?: Record<string, unknown>;
 	dateModified?: string;
 	description?: string;
 	detectionRegex: string;
