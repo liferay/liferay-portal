@@ -109,6 +109,8 @@ public class BulkSelectionSelectionRunnerImpl implements BulkSelectionRunner {
 		).put(
 			"correlationId", auditRequestContext.getCorrelationId()
 		).put(
+			"httpMethod", auditRequestContext.getHttpMethod()
+		).put(
 			"realUserEmailAddress",
 			auditRequestContext.getRealUserEmailAddress()
 		).put(
@@ -123,6 +125,8 @@ public class BulkSelectionSelectionRunnerImpl implements BulkSelectionRunner {
 			"serverPort", auditRequestContext.getServerPort()
 		).put(
 			"sessionID", auditRequestContext.getSessionID()
+		).put(
+			"userAgent", auditRequestContext.getUserAgent()
 		).build();
 	}
 

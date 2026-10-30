@@ -155,6 +155,8 @@ public class BulkSelectionBackgroundTaskExecutor
 			(String)auditRequestContextMap.get("clientIP"));
 		auditRequestContext.setCorrelationId(
 			(String)auditRequestContextMap.get("correlationId"));
+		auditRequestContext.setHttpMethod(
+			(String)auditRequestContextMap.get("httpMethod"));
 		auditRequestContext.setRealUserEmailAddress(
 			(String)auditRequestContextMap.get("realUserEmailAddress"));
 		auditRequestContext.setRealUserId(
@@ -170,6 +172,8 @@ public class BulkSelectionBackgroundTaskExecutor
 			GetterUtil.getInteger(auditRequestContextMap.get("serverPort")));
 		auditRequestContext.setSessionID(
 			(String)auditRequestContextMap.get("sessionID"));
+		auditRequestContext.setUserAgent(
+			(String)auditRequestContextMap.get("userAgent"));
 
 		return auditRequestContext;
 	}
