@@ -84,6 +84,81 @@ async function openSelectFileEverywhere(
 }
 
 test(
+	'Asset Publisher on a staged site shows the latest version of an asset library image',
+	{tag: '@LPD-112054'},
+	async ({apiHelpers, depotStagingPage, stagedDepotSite}) => {
+		test.setTimeout(300000);
+
+		const {
+			assetLibrary,
+			depotFriendlyURL,
+			livePageURL,
+			stage,
+			stagedPageURL,
+		} = stagedDepotSite;
+
+		// Add an image to the asset library and stage both groups
+
+		const documentTitle = `${getRandomString()}.jpg`;
+
+		await apiHelpers.headlessDelivery.postAssetLibraryDocument(
+			assetLibrary.id,
+			getImage(),
+			{fileName: documentTitle, title: documentTitle}
+		);
+
+		await stage();
+
+		// Edit the staged image and publish the asset library
+
+		const description = getRandomString();
+
+		await apiHelpers.headlessDelivery.patchDocument({
+			document: {description},
+			documentId: await depotStagingPage.getStagedFileEntryId(
+				depotFriendlyURL,
+				documentTitle
+			),
+		});
+
+		await depotStagingPage.publishDepotToLive(depotFriendlyURL);
+
+		// Select the image from the asset library on the staged page
+
+		await depotStagingPage.page.goto(stagedPageURL);
+
+		await depotStagingPage.openAssetPublisherConfiguration();
+		await depotStagingPage.selectManualAsset(
+			assetLibrary.name,
+			documentTitle
+		);
+		await depotStagingPage.closeConfiguration();
+
+		// The staged page shows the latest version from the staged asset library
+
+		const {assetPublisher, page} = depotStagingPage;
+
+		await page.reload();
+
+		await expect(assetPublisher.getByText(description)).toBeVisible();
+
+		await assetPublisher.getByText(documentTitle).hover();
+
+		await expect(
+			assetPublisher.getByRole('link', {name: 'Edit'})
+		).toHaveAttribute('href', new RegExp(`${depotFriendlyURL}-staging/`));
+
+		// Publish the site and view the image on the live page
+
+		await depotStagingPage.publishSiteToLive(stagedPageURL);
+
+		await page.goto(livePageURL);
+
+		await expect(assetPublisher.getByText(description)).toBeVisible();
+	}
+);
+
+test(
 	'Asset Publisher on a staged site shows an asset library folder only after the site is published',
 	{tag: '@LPD-112613'},
 	async ({apiHelpers, depotStagingPage, stagedDepotSite}) => {
