@@ -4,6 +4,7 @@
  */
 
 import ClayEmptyState from '@clayui/empty-state';
+import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import {ClayPaginationBarWithBasicItems} from '@clayui/pagination-bar';
 import {sub} from 'frontend-js-web';
@@ -76,7 +77,14 @@ const ProductListView: React.FC<MarketplaceProductsProps> = ({children}) => {
 							)
 						: Liferay.Language.get('no-products-were-found')
 				}
-				imgSrc="/o/admin-theme/images/states/search_state.svg"
+				image={
+					<ClayIcon
+						className="c-empty-state-icon c-empty-state-icon-search-state"
+						illustration
+						spritemap="/o/admin-theme/images/clay/empty_states.svg"
+						symbol="search-state"
+					/>
+				}
 				title={Liferay.Language.get('no-results-were-found')}
 			/>
 		);
