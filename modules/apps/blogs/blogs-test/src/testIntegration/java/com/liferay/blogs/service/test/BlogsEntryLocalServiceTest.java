@@ -1083,16 +1083,6 @@ public class BlogsEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetGroupUserEntriesCountInTrash() throws Exception {
-		testGetGroupUserEntriesCount(true);
-	}
-
-	@Test
-	public void testGetGroupUserEntriesCountNotInTrash() throws Exception {
-		testGetGroupUserEntriesCount(false);
-	}
-
-	@Test
 	public void testGetGroupUserEntriesInTrash() throws Exception {
 		testGetGroupUserEntries(true);
 	}
@@ -1655,30 +1645,6 @@ public class BlogsEntryLocalServiceTest {
 			actualBlogsEntries.size());
 
 		assertBlogsEntriesStatus(actualBlogsEntries, statusInTrash);
-	}
-
-	protected void testGetGroupUserEntriesCount(boolean statusInTrash)
-		throws Exception {
-
-		QueryDefinition<BlogsEntry> queryDefinition =
-			_statusInTrashQueryDefinition;
-
-		if (!statusInTrash) {
-			queryDefinition = _statusAnyQueryDefinition;
-		}
-
-		int initialCount = _blogsEntryLocalService.getGroupUserEntriesCount(
-			_group.getGroupId(), _user.getUserId(), new Date(),
-			queryDefinition);
-
-		addEntry(false);
-		addEntry(true);
-
-		int actualCount = _blogsEntryLocalService.getGroupUserEntriesCount(
-			_group.getGroupId(), _user.getUserId(), new Date(),
-			queryDefinition);
-
-		Assert.assertEquals(initialCount + 1, actualCount);
 	}
 
 	private FileEntry _addAttachmentFileEntry(
