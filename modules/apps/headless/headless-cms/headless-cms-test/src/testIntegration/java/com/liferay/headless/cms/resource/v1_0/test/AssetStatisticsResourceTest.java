@@ -281,6 +281,7 @@ public class AssetStatisticsResourceTest
 		_depotEntryLocalService.deleteDepotEntry(depotEntry.getDepotEntryId());
 
 		_testGetAssetStatisticsBrokenLinksCount();
+		_testGetAssetStatisticsBrokenLinksCountBySpaceAdministrator();
 		_testGetAssetStatisticsByAssetLibrary();
 		_testGetAssetStatisticsBySpaceAdministrator();
 		_testGetAssetStatisticsMissingRequiredFieldsCount();
@@ -702,6 +703,56 @@ public class AssetStatisticsResourceTest
 			_depotEntryLocalService.deleteDepotEntry(
 				depotEntry.getDepotEntryId());
 		}
+	}
+
+	private void _testGetAssetStatisticsBrokenLinksCountBySpaceAdministrator()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext();
+
+		DepotEntry administeredDepotEntry = _addSpaceDepotEntry(serviceContext);
+		DepotEntry reviewedDepotEntry = _addSpaceDepotEntry(serviceContext);
+
+		ObjectDefinition objectDefinition =
+			_getCMSBasicWebContentObjectDefinition();
+
+		ObjectEntry reviewedObjectEntry = _addObjectEntry(
+			reviewedDepotEntry, objectDefinition);
+
+		_objectEntryLocalService.updateStatus(
+			TestPropsValues.getUserId(), reviewedObjectEntry.getObjectEntryId(),
+			WorkflowConstants.STATUS_EXPIRED, serviceContext);
+
+		_addObjectEntry(
+			CMSOutboundLinkTestUtil.getImageHTML(
+				reviewedObjectEntry.getExternalReferenceCode()),
+			administeredDepotEntry, objectDefinition);
+
+		User user = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		_addGroupUserWithRole(
+			administeredDepotEntry.getGroupId(),
+			DepotRolesConstants.ASSET_LIBRARY_ADMINISTRATOR, user);
+		_addGroupUserWithRole(
+			reviewedDepotEntry.getGroupId(),
+			DepotRolesConstants.ASSET_LIBRARY_CONTENT_REVIEWER, user);
+
+		AssetStatisticsResource assetStatisticsResource =
+			_buildAssetStatisticsResource(user);
+
+		AssetStatistics assetStatistics =
+			assetStatisticsResource.getAssetStatistics(
+				administeredDepotEntry.getDepotEntryId());
+
+		Assert.assertEquals(
+			1, GetterUtil.getLong(assetStatistics.getBrokenLinksCount()));
+
+		_depotEntryLocalService.deleteDepotEntry(
+			administeredDepotEntry.getDepotEntryId());
+		_depotEntryLocalService.deleteDepotEntry(
+			reviewedDepotEntry.getDepotEntryId());
 	}
 
 	private void _testGetAssetStatisticsByAssetLibrary() throws Exception {
