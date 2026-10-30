@@ -281,7 +281,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 								]
 						).map(({label, value}, i, array) => {
 							const className =
-								i < array.length - 1 ? 'pb-0' : null;
+								i < array.length - 1 ? 'pb-0' : undefined;
 
 							return {
 								columns: [
@@ -504,7 +504,7 @@ export const SegmentGrowthChart: React.FC<ISegmentGrowthChartProps> = ({
 								? {
 										visibility: 'visible',
 									}
-								: null
+								: undefined
 						}
 					/>
 
@@ -649,7 +649,7 @@ const SegmentGrowthWithList: React.FC<ISegmentGrowthWithList> = ({
 
 	const {modifiedDate} = get(data, selectedPoint, {modifiedDate: 0});
 
-	const paginationParams = useStatefulPagination(null, {
+	const paginationParams = useStatefulPagination(undefined, {
 		initialDelta: 20,
 		initialOrderIOMap: hasSelectedPoint
 			? OrderedMap({
