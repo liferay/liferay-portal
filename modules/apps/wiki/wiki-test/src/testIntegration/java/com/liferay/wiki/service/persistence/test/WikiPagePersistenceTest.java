@@ -270,13 +270,6 @@ public class WikiPagePersistenceTest {
 	}
 
 	@Test
-	public void testCountByCompanyId() throws Exception {
-		_persistence.countByCompanyId(RandomTestUtil.nextLong());
-
-		_persistence.countByCompanyId(0L);
-	}
-
-	@Test
 	public void testCountByNodeId() throws Exception {
 		_persistence.countByNodeId(RandomTestUtil.nextLong());
 
@@ -951,4 +944,4 @@ public class WikiPagePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-917485433
+// LIFERAY-SERVICE-BUILDER-HASH:-471114253

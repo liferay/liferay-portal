@@ -446,88 +446,6 @@ public class WikiNodePersistenceImpl
 			finderCache, new Object[] {groupId}, groupId);
 	}
 
-	private CollectionPersistenceFinder<WikiNode, NoSuchNodeException>
-		_collectionPersistenceFinderByCompanyId;
-
-	/**
-	 * Returns an ordered range of all the wiki nodes where companyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>WikiNodeModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param start the lower bound of the range of wiki nodes
-	 * @param end the upper bound of the range of wiki nodes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching wiki nodes
-	 */
-	@Override
-	public List<WikiNode> findByCompanyId(
-		long companyId, int start, int end,
-		OrderByComparator<WikiNode> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByCompanyId.find(
-			finderCache, new Object[] {companyId}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first wiki node in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching wiki node
-	 * @throws NoSuchNodeException if a matching wiki node could not be found
-	 */
-	@Override
-	public WikiNode findByCompanyId_First(
-			long companyId, OrderByComparator<WikiNode> orderByComparator)
-		throws NoSuchNodeException {
-
-		return _collectionPersistenceFinderByCompanyId.findFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first wiki node in the ordered set where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching wiki node, or <code>null</code> if a matching wiki node could not be found
-	 */
-	@Override
-	public WikiNode fetchByCompanyId_First(
-		long companyId, OrderByComparator<WikiNode> orderByComparator) {
-
-		return _collectionPersistenceFinderByCompanyId.fetchFirst(
-			finderCache, new Object[] {companyId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the wiki nodes where companyId = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 */
-	@Override
-	public void removeByCompanyId(long companyId) {
-		_collectionPersistenceFinderByCompanyId.remove(
-			finderCache, new Object[] {companyId});
-	}
-
-	/**
-	 * Returns the number of wiki nodes where companyId = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @return the number of matching wiki nodes
-	 */
-	@Override
-	public int countByCompanyId(long companyId) {
-		return _collectionPersistenceFinderByCompanyId.count(
-			finderCache, new Object[] {companyId});
-	}
-
 	private UniquePersistenceFinder<WikiNode, NoSuchNodeException>
 		_uniquePersistenceFinderByG_N;
 
@@ -716,95 +634,6 @@ public class WikiNodePersistenceImpl
 	public int filterCountByG_S(long groupId, int status) {
 		return _collectionPersistenceFinderByG_S.filterCount(
 			finderCache, new Object[] {groupId, status}, groupId);
-	}
-
-	private CollectionPersistenceFinder<WikiNode, NoSuchNodeException>
-		_collectionPersistenceFinderByC_S;
-
-	/**
-	 * Returns an ordered range of all the wiki nodes where companyId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>WikiNodeModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of wiki nodes
-	 * @param end the upper bound of the range of wiki nodes (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching wiki nodes
-	 */
-	@Override
-	public List<WikiNode> findByC_S(
-		long companyId, int status, int start, int end,
-		OrderByComparator<WikiNode> orderByComparator, boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByC_S.find(
-			finderCache, new Object[] {companyId, status}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first wiki node in the ordered set where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching wiki node
-	 * @throws NoSuchNodeException if a matching wiki node could not be found
-	 */
-	@Override
-	public WikiNode findByC_S_First(
-			long companyId, int status,
-			OrderByComparator<WikiNode> orderByComparator)
-		throws NoSuchNodeException {
-
-		return _collectionPersistenceFinderByC_S.findFirst(
-			finderCache, new Object[] {companyId, status}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first wiki node in the ordered set where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching wiki node, or <code>null</code> if a matching wiki node could not be found
-	 */
-	@Override
-	public WikiNode fetchByC_S_First(
-		long companyId, int status,
-		OrderByComparator<WikiNode> orderByComparator) {
-
-		return _collectionPersistenceFinderByC_S.fetchFirst(
-			finderCache, new Object[] {companyId, status}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the wiki nodes where companyId = &#63; and status = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 */
-	@Override
-	public void removeByC_S(long companyId, int status) {
-		_collectionPersistenceFinderByC_S.remove(
-			finderCache, new Object[] {companyId, status});
-	}
-
-	/**
-	 * Returns the number of wiki nodes where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the number of matching wiki nodes
-	 */
-	@Override
-	public int countByC_S(long companyId, int status) {
-		return _collectionPersistenceFinderByC_S.count(
-			finderCache, new Object[] {companyId, status});
 	}
 
 	private UniquePersistenceFinder<WikiNode, NoSuchNodeException>
@@ -1326,32 +1155,6 @@ public class WikiNodePersistenceImpl
 					"wikiNode.", "groupId", FinderColumn.Type.LONG, "=", true,
 					true, WikiNode::getGroupId));
 
-		_collectionPersistenceFinderByCompanyId =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByCompanyId",
-					new String[] {
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"findByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION,
-					"countByCompanyId", new String[] {Long.class.getName()},
-					new String[] {"companyId"}, false),
-				_SQL_SELECT_WIKINODE_WHERE, _SQL_COUNT_WIKINODE_WHERE,
-				WikiNodeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-				null,
-				new FinderColumn<>(
-					"wikiNode.", "companyId", FinderColumn.Type.LONG, "=", true,
-					true, WikiNode::getCompanyId));
-
 		_uniquePersistenceFinderByG_N = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1399,33 +1202,6 @@ public class WikiNodePersistenceImpl
 				new FinderColumn<>(
 					"wikiNode.", "status", FinderColumn.Type.INTEGER, "=", true,
 					true, WikiNode::getStatus));
-
-		_collectionPersistenceFinderByC_S = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByC_S",
-				new String[] {
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"companyId", "status"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByC_S",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"companyId", "status"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByC_S",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"companyId", "status"}, false),
-			_SQL_SELECT_WIKINODE_WHERE, _SQL_COUNT_WIKINODE_WHERE,
-			WikiNodeModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"wikiNode.", "companyId", FinderColumn.Type.LONG, "=", true,
-				true, WikiNode::getCompanyId),
-			new FinderColumn<>(
-				"wikiNode.", "status", FinderColumn.Type.INTEGER, "=", true,
-				true, WikiNode::getStatus));
 
 		_uniquePersistenceFinderByERC_G = new UniquePersistenceFinder<>(
 			this,
@@ -1509,4 +1285,4 @@ public class WikiNodePersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1932168380
+// LIFERAY-SERVICE-BUILDER-HASH:-1669544533
