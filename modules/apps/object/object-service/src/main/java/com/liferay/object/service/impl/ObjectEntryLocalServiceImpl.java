@@ -6715,9 +6715,13 @@ public class ObjectEntryLocalServiceImpl
 
 		if (locales.isEmpty()) {
 			for (ObjectField objectField : objectFields) {
-				_putLocalizedValues(
-					objectField.getDBColumnName(), defaultLanguageId,
-					new HashMap<>(), insertedValues);
+				for (String dbColumnName : objectField.getDBColumnNames()) {
+					_putLocalizedValues(
+						dbColumnName, defaultLanguageId,
+						DynamicObjectDefinitionTableUtil.getJavaClass(
+							objectField.getDBType()),
+						new HashMap<>(), insertedValues);
+				}
 			}
 
 			return;
@@ -6801,6 +6805,8 @@ public class ObjectEntryLocalServiceImpl
 
 					_putLocalizedValues(
 						objectField.getDBColumnName(), defaultLanguageId,
+						DynamicObjectDefinitionTableUtil.getJavaClass(
+							objectField.getDBType()),
 						localizedValues, insertedValues);
 				}
 
@@ -7206,9 +7212,7 @@ public class ObjectEntryLocalServiceImpl
 				_putLocalizedObjectFieldValues(
 					objectEntry.getDefaultLanguageId(),
 					dynamicObjectDefinitionLocalizationTable,
-					localizedRowsMap.getOrDefault(
-						objectEntry.getObjectEntryId(),
-						Collections.emptyList()),
+					localizedRowsMap.get(objectEntry.getObjectEntryId()),
 					values);
 			}
 
@@ -7360,6 +7364,27 @@ public class ObjectEntryLocalServiceImpl
 			dynamicObjectDefinitionLocalizationTable,
 		List<Object[]> rows, Map<String, Serializable> values) {
 
+		if (ListUtil.isEmpty(rows)) {
+			for (ObjectField objectField :
+					dynamicObjectDefinitionLocalizationTable.
+						getObjectFields()) {
+
+				if (!objectField.isLocalized()) {
+					continue;
+				}
+
+				for (String dbColumnName : objectField.getDBColumnNames()) {
+					_putLocalizedValues(
+						dbColumnName, defaultLanguageId,
+						DynamicObjectDefinitionTableUtil.getJavaClass(
+							objectField.getDBType()),
+						new HashMap<>(), values);
+				}
+			}
+
+			return;
+		}
+
 		List<Column<DynamicObjectDefinitionLocalizationTable, ?>>
 			objectFieldColumns =
 				dynamicObjectDefinitionLocalizationTable.
@@ -7387,13 +7412,13 @@ public class ObjectEntryLocalServiceImpl
 			}
 
 			_putLocalizedValues(
-				objectFieldColumn.getName(), defaultLanguageId, localizedValues,
-				values);
+				objectFieldColumn.getName(), defaultLanguageId,
+				objectFieldColumn.getJavaType(), localizedValues, values);
 		}
 	}
 
 	private void _putLocalizedValues(
-		String columnName, String defaultLanguageId,
+		String columnName, String defaultLanguageId, Class<?> javaTypeClass,
 		Map<String, Serializable> localizedValues,
 		Map<String, Serializable> values) {
 
@@ -7427,9 +7452,17 @@ public class ObjectEntryLocalServiceImpl
 		}
 
 		values.put(columnName + "i18n", (Serializable)localizedValues);
-		values.put(
-			StringUtil.removeLast(columnName, StringPool.UNDERLINE),
-			localizedValues.getOrDefault(defaultLanguageId, StringPool.BLANK));
+
+		String name = StringUtil.removeLast(columnName, StringPool.UNDERLINE);
+
+		Serializable localizedValue = localizedValues.get(defaultLanguageId);
+
+		if (localizedValue != null) {
+			values.put(name, localizedValue);
+		}
+		else {
+			_putValue(javaTypeClass, name, null, values);
+		}
 	}
 
 	private void _putObjectFilterParser(
