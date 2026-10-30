@@ -12,7 +12,7 @@ import ClayForm, {
 import {RequiredMark} from '@liferay/site-cms-site-initializer';
 import React from 'react';
 
-export interface IPIMConnectorSettingsField {
+export interface IPIMConnectorConfigurationField {
 	businessType: string;
 	label: string;
 	name: string;
@@ -20,12 +20,16 @@ export interface IPIMConnectorSettingsField {
 	required: boolean;
 }
 
-export type PIMConnectorSettingsValue = boolean | number | string | string[];
+export type PIMConnectorConfigurationValue =
+	| boolean
+	| number
+	| string
+	| string[];
 
 interface IProps {
-	field: IPIMConnectorSettingsField;
-	onChange: (value: PIMConnectorSettingsValue) => void;
-	value?: PIMConnectorSettingsValue | null;
+	field: IPIMConnectorConfigurationField;
+	onChange: (value: PIMConnectorConfigurationValue) => void;
+	value?: PIMConnectorConfigurationValue | null;
 }
 
 const INPUT_TYPES: {[key: string]: string} = {
@@ -39,12 +43,12 @@ const INPUT_TYPES: {[key: string]: string} = {
 	Text: 'text',
 };
 
-export default function PIMConnectorSettingsField({
+export default function PIMConnectorConfigurationField({
 	field,
 	onChange,
 	value,
 }: IProps) {
-	const id = `pimConnectorSettings_${field.name}`;
+	const id = `pimConnectorConfiguration_${field.name}`;
 
 	if (field.businessType === 'Boolean') {
 		return (

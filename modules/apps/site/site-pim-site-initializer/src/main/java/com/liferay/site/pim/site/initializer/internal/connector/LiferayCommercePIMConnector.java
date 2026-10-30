@@ -45,6 +45,11 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	public static final String KEY = "liferay-commerce";
 
 	@Override
+	public String getConfigurationObjectDefinitionExternalReferenceCode() {
+		return "L_PIM_CONNECTOR_LIFERAY_COMMERCE_CONFIGURATION";
+	}
+
+	@Override
 	public String getKey() {
 		return KEY;
 	}
@@ -69,11 +74,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 	}
 
 	@Override
-	public String getSettingsObjectDefinitionExternalReferenceCode() {
-		return "L_PIM_CONNECTOR_SETTINGS_LIFERAY_COMMERCE";
-	}
-
-	@Override
 	public boolean isActive(long companyId) {
 		return true;
 	}
@@ -83,7 +83,7 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			ObjectEntry pimConnectorObjectEntry,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
-			Map<String, Serializable> settings)
+			Map<String, Serializable> configuration)
 		throws Exception {
 
 		return String.valueOf(

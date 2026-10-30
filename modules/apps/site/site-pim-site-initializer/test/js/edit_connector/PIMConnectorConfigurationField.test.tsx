@@ -8,10 +8,10 @@ import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, {useState} from 'react';
 
-import PIMConnectorSettingsField, {
-	IPIMConnectorSettingsField,
-	PIMConnectorSettingsValue,
-} from '../../../src/main/resources/META-INF/resources/js/edit_connector/PIMConnectorSettingsField';
+import PIMConnectorConfigurationField, {
+	IPIMConnectorConfigurationField,
+	PIMConnectorConfigurationValue,
+} from '../../../src/main/resources/META-INF/resources/js/edit_connector/PIMConnectorConfigurationField';
 
 jest.mock('@liferay/site-cms-site-initializer', () => ({
 	RequiredMark: () => <span>required</span>,
@@ -22,19 +22,19 @@ const OPTIONS = [
 	{label: 'Red', value: 'red'},
 ];
 
-function PIMConnectorSettingsFieldWrapper({
+function PIMConnectorConfigurationFieldWrapper({
 	field,
 	initialValue = null,
 	onChange,
 }: {
-	field: IPIMConnectorSettingsField;
-	initialValue?: PIMConnectorSettingsValue | null;
-	onChange: (value: PIMConnectorSettingsValue) => void;
+	field: IPIMConnectorConfigurationField;
+	initialValue?: PIMConnectorConfigurationValue | null;
+	onChange: (value: PIMConnectorConfigurationValue) => void;
 }) {
 	const [value, setValue] = useState(initialValue);
 
 	return (
-		<PIMConnectorSettingsField
+		<PIMConnectorConfigurationField
 			field={field}
 			onChange={(newValue) => {
 				onChange(newValue);
@@ -45,12 +45,12 @@ function PIMConnectorSettingsFieldWrapper({
 	);
 }
 
-describe('PIMConnectorSettingsField', () => {
+describe('PIMConnectorConfigurationField', () => {
 	it('toggles a boolean field', async () => {
 		const onChange = jest.fn();
 
 		render(
-			<PIMConnectorSettingsFieldWrapper
+			<PIMConnectorConfigurationFieldWrapper
 				field={{
 					businessType: 'Boolean',
 					label: 'Active',
@@ -75,7 +75,7 @@ describe('PIMConnectorSettingsField', () => {
 		const onChange = jest.fn();
 
 		render(
-			<PIMConnectorSettingsFieldWrapper
+			<PIMConnectorConfigurationFieldWrapper
 				field={{
 					businessType: 'MultiselectPicklist',
 					label: 'Colors',
@@ -104,7 +104,7 @@ describe('PIMConnectorSettingsField', () => {
 		const onChange = jest.fn();
 
 		render(
-			<PIMConnectorSettingsFieldWrapper
+			<PIMConnectorConfigurationFieldWrapper
 				field={{
 					businessType: 'Picklist',
 					label: 'Color',
@@ -131,7 +131,7 @@ describe('PIMConnectorSettingsField', () => {
 		const onChange = jest.fn();
 
 		render(
-			<PIMConnectorSettingsFieldWrapper
+			<PIMConnectorConfigurationFieldWrapper
 				field={{
 					businessType: 'LongText',
 					label: 'Description',
@@ -154,7 +154,7 @@ describe('PIMConnectorSettingsField', () => {
 	it('renders an input of the type that matches the business type', () => {
 		render(
 			<>
-				<PIMConnectorSettingsField
+				<PIMConnectorConfigurationField
 					field={{
 						businessType: 'Encrypted',
 						label: 'Client Secret',
@@ -164,7 +164,7 @@ describe('PIMConnectorSettingsField', () => {
 					onChange={jest.fn()}
 				/>
 
-				<PIMConnectorSettingsField
+				<PIMConnectorConfigurationField
 					field={{
 						businessType: 'Integer',
 						label: 'Batch Size',

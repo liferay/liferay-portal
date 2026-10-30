@@ -55,7 +55,7 @@ public class EditPIMConnectorDisplayContextTest {
 	@Test
 	public void testGetReactData() throws Exception {
 		_testGetReactData();
-		_testGetReactDataWithSettings();
+		_testGetReactDataWithConfiguration();
 	}
 
 	private ObjectField _mockObjectField(
@@ -263,7 +263,7 @@ public class EditPIMConnectorDisplayContextTest {
 			pimConnectorJSONObject.getString("name"));
 	}
 
-	private void _testGetReactDataWithSettings() throws Exception {
+	private void _testGetReactDataWithConfiguration() throws Exception {
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		Language language = Mockito.mock(Language.class);
@@ -273,10 +273,10 @@ public class EditPIMConnectorDisplayContextTest {
 
 		Mockito.when(
 			language.format(
-				Mockito.eq(httpServletRequest), Mockito.eq("x-settings"),
+				Mockito.eq(httpServletRequest), Mockito.eq("x-configuration"),
 				Mockito.eq((Object)"Liferay Commerce"))
 		).thenReturn(
-			"Liferay Commerce Settings"
+			"Liferay Commerce Configuration"
 		);
 
 		languageUtil.setLanguage(language);
@@ -330,37 +330,37 @@ public class EditPIMConnectorDisplayContextTest {
 			objectEntry
 		);
 
-		ObjectDefinition settingsObjectDefinition = Mockito.mock(
+		ObjectDefinition configurationObjectDefinition = Mockito.mock(
 			ObjectDefinition.class);
 
 		Mockito.when(
-			settingsObjectDefinition.getObjectDefinitionId()
+			configurationObjectDefinition.getObjectDefinitionId()
 		).thenReturn(
-			_SETTINGS_OBJECT_DEFINITION_ID
+			_CONFIGURATION_OBJECT_DEFINITION_ID
 		);
 
 		Mockito.when(
-			settingsObjectDefinition.getRESTContextPath()
+			configurationObjectDefinition.getRESTContextPath()
 		).thenReturn(
-			"/pim/liferay-commerce-connector-settings"
+			"/pim/liferay-commerce-connector-configurations"
 		);
 
-		ObjectEntry settingsObjectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry configurationObjectEntry = Mockito.mock(ObjectEntry.class);
 
 		Mockito.when(
-			settingsObjectEntry.getExternalReferenceCode()
+			configurationObjectEntry.getExternalReferenceCode()
 		).thenReturn(
 			"PIM_CONNECTOR_ERC"
 		);
 
 		Mockito.when(
-			settingsObjectEntry.getObjectDefinitionId()
+			configurationObjectEntry.getObjectDefinitionId()
 		).thenReturn(
-			_SETTINGS_OBJECT_DEFINITION_ID
+			_CONFIGURATION_OBJECT_DEFINITION_ID
 		);
 
 		Mockito.when(
-			settingsObjectEntry.getValues()
+			configurationObjectEntry.getValues()
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
 				"clientSecret", RandomTestUtil.randomString()
@@ -375,9 +375,9 @@ public class EditPIMConnectorDisplayContextTest {
 			"liferay-commerce", "Liferay Commerce");
 
 		Mockito.when(
-			pimConnector.getSettingsObjectDefinitionExternalReferenceCode()
+			pimConnector.getConfigurationObjectDefinitionExternalReferenceCode()
 		).thenReturn(
-			_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE
+			_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE
 		);
 
 		try (MockedStatic<ObjectDefinitionLocalServiceUtil>
@@ -394,17 +394,17 @@ public class EditPIMConnectorDisplayContextTest {
 				() ->
 					ObjectDefinitionLocalServiceUtil.
 						fetchObjectDefinitionByExternalReferenceCode(
-							_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
+							_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
 							_COMPANY_ID)
 			).thenReturn(
-				settingsObjectDefinition
+				configurationObjectDefinition
 			);
 
 			objectEntryLocalServiceUtilMockedStatic.when(
 				() -> ObjectEntryLocalServiceUtil.fetchObjectEntry(
-					"PIM_CONNECTOR_ERC", 0, _SETTINGS_OBJECT_DEFINITION_ID)
+					"PIM_CONNECTOR_ERC", 0, _CONFIGURATION_OBJECT_DEFINITION_ID)
 			).thenReturn(
-				settingsObjectEntry
+				configurationObjectEntry
 			);
 
 			List<ObjectField> objectFields = ListUtil.fromArray(
@@ -420,7 +420,7 @@ public class EditPIMConnectorDisplayContextTest {
 
 			objectFieldLocalServiceUtilMockedStatic.when(
 				() -> ObjectFieldLocalServiceUtil.getObjectFields(
-					_SETTINGS_OBJECT_DEFINITION_ID)
+					_CONFIGURATION_OBJECT_DEFINITION_ID)
 			).thenReturn(
 				objectFields
 			);
@@ -451,17 +451,17 @@ public class EditPIMConnectorDisplayContextTest {
 
 			pimConnectorJSONObject = pimConnectorsJSONArray.getJSONObject(0);
 
-			JSONObject settingsJSONObject =
-				pimConnectorJSONObject.getJSONObject("settings");
+			JSONObject configurationJSONObject =
+				pimConnectorJSONObject.getJSONObject("configuration");
 
 			Assert.assertEquals(
-				"/o/pim/liferay-commerce-connector-settings",
-				settingsJSONObject.getString("apiURL"));
+				"/o/pim/liferay-commerce-connector-configurations",
+				configurationJSONObject.getString("apiURL"));
 			Assert.assertEquals(
-				"Liferay Commerce Settings",
-				settingsJSONObject.getString("title"));
+				"Liferay Commerce Configuration",
+				configurationJSONObject.getString("title"));
 
-			JSONArray fieldsJSONArray = settingsJSONObject.getJSONArray(
+			JSONArray fieldsJSONArray = configurationJSONObject.getJSONArray(
 				"fields");
 
 			Assert.assertEquals(
@@ -482,15 +482,16 @@ public class EditPIMConnectorDisplayContextTest {
 
 			Assert.assertEquals("url", fieldJSONObject.getString("name"));
 
-			JSONObject settingsValuesJSONObject = (JSONObject)reactData.get(
-				"settings");
+			JSONObject configurationValuesJSONObject =
+				(JSONObject)reactData.get("configuration");
 
 			Assert.assertEquals(
 				"PIM_CONNECTOR_ERC",
-				settingsValuesJSONObject.getString("externalReferenceCode"));
+				configurationValuesJSONObject.getString(
+					"externalReferenceCode"));
 
 			JSONObject valuesJSONObject =
-				settingsValuesJSONObject.getJSONObject("values");
+				configurationValuesJSONObject.getJSONObject("values");
 
 			Assert.assertEquals(
 				Portal.TEMP_OBFUSCATION_VALUE,
@@ -505,10 +506,10 @@ public class EditPIMConnectorDisplayContextTest {
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final String
-		_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
+		_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
 			RandomTestUtil.randomString();
 
-	private static final long _SETTINGS_OBJECT_DEFINITION_ID =
+	private static final long _CONFIGURATION_OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
 
 }

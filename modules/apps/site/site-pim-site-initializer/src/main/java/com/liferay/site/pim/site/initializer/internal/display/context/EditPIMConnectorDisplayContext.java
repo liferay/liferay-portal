@@ -29,7 +29,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.pim.site.initializer.connector.PIMConnector;
-import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorSettingsUtil;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorConfigurationUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMURLUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -73,6 +73,8 @@ public class EditPIMConnectorDisplayContext {
 			PIMURLUtil.getBackURL(
 				_themeDisplay.getURLCurrent(), _httpServletRequest)
 		).put(
+			"configuration", _getConfigurationValuesJSONObject(objectEntry)
+		).put(
 			"objectEntryId", _objectEntryId
 		).put(
 			"pimConnector", _getPIMConnectorJSONObject(objectEntry)
@@ -86,15 +88,14 @@ public class EditPIMConnectorDisplayContext {
 						pimConnector.getKey());
 
 					return JSONUtil.put(
+						"configuration",
+						_getConfigurationJSONObject(name, pimConnector)
+					).put(
 						"key", pimConnector.getKey()
 					).put(
 						"name", name
-					).put(
-						"settings", _getSettingsJSONObject(name, pimConnector)
 					);
 				})
-		).put(
-			"settings", _getSettingsValuesJSONObject(objectEntry)
 		).put(
 			"title", _getTitle(objectEntry)
 		).build();
@@ -106,6 +107,128 @@ public class EditPIMConnectorDisplayContext {
 		}
 
 		return "/o" + _objectDefinition.getRESTContextPath();
+	}
+
+	private JSONObject _getConfigurationJSONObject(
+			String name, PIMConnector pimConnector)
+		throws Exception {
+
+		ObjectDefinition objectDefinition =
+			PIMConnectorConfigurationUtil.fetchObjectDefinition(
+				_themeDisplay.getCompanyId(), pimConnector);
+
+		if (objectDefinition == null) {
+			return null;
+		}
+
+		return JSONUtil.put(
+			"apiURL", "/o" + objectDefinition.getRESTContextPath()
+		).put(
+			"fields",
+			JSONUtil.toJSONArray(
+				ListUtil.filter(
+					ObjectFieldLocalServiceUtil.getObjectFields(
+						objectDefinition.getObjectDefinitionId()),
+					objectField -> !objectField.isMetadata()),
+				objectField -> JSONUtil.put(
+					"businessType", objectField.getBusinessType()
+				).put(
+					"label", objectField.getLabel(_themeDisplay.getLocale())
+				).put(
+					"name", objectField.getName()
+				).put(
+					"options", _getOptionsJSONArray(objectField)
+				).put(
+					"required", objectField.isRequired()
+				))
+		).put(
+			"title",
+			LanguageUtil.format(_httpServletRequest, "x-configuration", name)
+		);
+	}
+
+	private Object _getConfigurationValue(
+		ObjectField objectField, Object value) {
+
+		if (value == null) {
+			return null;
+		}
+
+		if (objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED)) {
+
+			if (Validator.isNull(String.valueOf(value))) {
+				return StringPool.BLANK;
+			}
+
+			return Portal.TEMP_OBFUSCATION_VALUE;
+		}
+
+		if (value instanceof Date) {
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
+				"yyyy-MM-dd");
+
+			if (objectField.compareBusinessType(
+					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
+
+				simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+			}
+
+			return simpleDateFormat.format((Date)value);
+		}
+
+		if (objectField.compareBusinessType(
+				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
+
+			return JSONUtil.putAll(
+				(Object[])StringUtil.split(
+					String.valueOf(value), StringPool.COMMA_AND_SPACE));
+		}
+
+		if (value instanceof Boolean || value instanceof Number) {
+			return value;
+		}
+
+		return String.valueOf(value);
+	}
+
+	private JSONObject _getConfigurationValuesJSONObject(
+		ObjectEntry objectEntry) {
+
+		if (objectEntry == null) {
+			return null;
+		}
+
+		ObjectEntry configurationObjectEntry =
+			PIMConnectorConfigurationUtil.fetchObjectEntry(
+				_getPIMConnector(objectEntry), objectEntry);
+
+		if (configurationObjectEntry == null) {
+			return null;
+		}
+
+		JSONObject jsonObject = JSONUtil.put(
+			"externalReferenceCode",
+			configurationObjectEntry.getExternalReferenceCode());
+
+		Map<String, Serializable> values = configurationObjectEntry.getValues();
+		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
+
+		for (ObjectField objectField :
+				ObjectFieldLocalServiceUtil.getObjectFields(
+					configurationObjectEntry.getObjectDefinitionId())) {
+
+			if (objectField.isMetadata()) {
+				continue;
+			}
+
+			valuesJSONObject.put(
+				objectField.getName(),
+				_getConfigurationValue(
+					objectField, values.get(objectField.getName())));
+		}
+
+		return jsonObject.put("values", valuesJSONObject);
 	}
 
 	private ObjectEntry _getObjectEntry() {
@@ -165,124 +288,6 @@ public class EditPIMConnectorDisplayContext {
 		).put(
 			"name", MapUtil.getString(values, "name")
 		);
-	}
-
-	private JSONObject _getSettingsJSONObject(
-			String name, PIMConnector pimConnector)
-		throws Exception {
-
-		ObjectDefinition objectDefinition =
-			PIMConnectorSettingsUtil.fetchObjectDefinition(
-				_themeDisplay.getCompanyId(), pimConnector);
-
-		if (objectDefinition == null) {
-			return null;
-		}
-
-		return JSONUtil.put(
-			"apiURL", "/o" + objectDefinition.getRESTContextPath()
-		).put(
-			"fields",
-			JSONUtil.toJSONArray(
-				ListUtil.filter(
-					ObjectFieldLocalServiceUtil.getObjectFields(
-						objectDefinition.getObjectDefinitionId()),
-					objectField -> !objectField.isMetadata()),
-				objectField -> JSONUtil.put(
-					"businessType", objectField.getBusinessType()
-				).put(
-					"label", objectField.getLabel(_themeDisplay.getLocale())
-				).put(
-					"name", objectField.getName()
-				).put(
-					"options", _getOptionsJSONArray(objectField)
-				).put(
-					"required", objectField.isRequired()
-				))
-		).put(
-			"title",
-			LanguageUtil.format(_httpServletRequest, "x-settings", name)
-		);
-	}
-
-	private Object _getSettingsValue(ObjectField objectField, Object value) {
-		if (value == null) {
-			return null;
-		}
-
-		if (objectField.compareBusinessType(
-				ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED)) {
-
-			if (Validator.isNull(String.valueOf(value))) {
-				return StringPool.BLANK;
-			}
-
-			return Portal.TEMP_OBFUSCATION_VALUE;
-		}
-
-		if (value instanceof Date) {
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd");
-
-			if (objectField.compareBusinessType(
-					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME)) {
-
-				simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-			}
-
-			return simpleDateFormat.format((Date)value);
-		}
-
-		if (objectField.compareBusinessType(
-				ObjectFieldConstants.BUSINESS_TYPE_MULTISELECT_PICKLIST)) {
-
-			return JSONUtil.putAll(
-				(Object[])StringUtil.split(
-					String.valueOf(value), StringPool.COMMA_AND_SPACE));
-		}
-
-		if (value instanceof Boolean || value instanceof Number) {
-			return value;
-		}
-
-		return String.valueOf(value);
-	}
-
-	private JSONObject _getSettingsValuesJSONObject(ObjectEntry objectEntry) {
-		if (objectEntry == null) {
-			return null;
-		}
-
-		ObjectEntry settingsObjectEntry =
-			PIMConnectorSettingsUtil.fetchObjectEntry(
-				_getPIMConnector(objectEntry), objectEntry);
-
-		if (settingsObjectEntry == null) {
-			return null;
-		}
-
-		JSONObject jsonObject = JSONUtil.put(
-			"externalReferenceCode",
-			settingsObjectEntry.getExternalReferenceCode());
-
-		Map<String, Serializable> values = settingsObjectEntry.getValues();
-		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
-
-		for (ObjectField objectField :
-				ObjectFieldLocalServiceUtil.getObjectFields(
-					settingsObjectEntry.getObjectDefinitionId())) {
-
-			if (objectField.isMetadata()) {
-				continue;
-			}
-
-			valuesJSONObject.put(
-				objectField.getName(),
-				_getSettingsValue(
-					objectField, values.get(objectField.getName())));
-		}
-
-		return jsonObject.put("values", valuesJSONObject);
 	}
 
 	private String _getTitle(ObjectEntry objectEntry) {

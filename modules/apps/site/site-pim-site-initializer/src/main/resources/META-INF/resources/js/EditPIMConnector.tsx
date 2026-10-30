@@ -14,17 +14,28 @@ import {RequiredMark, Toolbar} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
-import PIMConnectorSettingsField, {
-	IPIMConnectorSettingsField,
-	PIMConnectorSettingsValue,
-} from './edit_connector/PIMConnectorSettingsField';
+import PIMConnectorConfigurationField, {
+	IPIMConnectorConfigurationField,
+	PIMConnectorConfigurationValue,
+} from './edit_connector/PIMConnectorConfigurationField';
 
 const TEMP_OBFUSCATION_VALUE = 'TEMP_OBFUSCATION_VALUE';
 
 interface IPIMConnector {
+	configuration?: IPIMConnectorConfiguration | null;
 	key: string;
 	name: string;
-	settings?: IPIMConnectorSettings | null;
+}
+
+interface IPIMConnectorConfiguration {
+	apiURL: string;
+	fields: IPIMConnectorConfigurationField[];
+	title: string;
+}
+
+interface IPIMConnectorConfigurationData {
+	externalReferenceCode: string;
+	values: {[name: string]: PIMConnectorConfigurationValue | null};
 }
 
 interface IPIMConnectorData {
@@ -34,28 +45,17 @@ interface IPIMConnectorData {
 	name: string;
 }
 
-interface IPIMConnectorSettings {
-	apiURL: string;
-	fields: IPIMConnectorSettingsField[];
-	title: string;
-}
-
-interface IPIMConnectorSettingsData {
-	externalReferenceCode: string;
-	values: {[name: string]: PIMConnectorSettingsValue | null};
-}
-
 interface IProps {
 	apiURL: string;
 	backURL: string;
+	configuration: IPIMConnectorConfigurationData | null;
 	objectEntryId: number;
 	pimConnector: IPIMConnectorData | null;
 	pimConnectors: IPIMConnector[];
-	settings: IPIMConnectorSettingsData | null;
 	title: string;
 }
 
-function isEmpty(value?: PIMConnectorSettingsValue | null) {
+function isEmpty(value?: PIMConnectorConfigurationValue | null) {
 	return (
 		value === undefined ||
 		value === null ||
@@ -65,8 +65,8 @@ function isEmpty(value?: PIMConnectorSettingsValue | null) {
 }
 
 function toRequestValue(
-	field: IPIMConnectorSettingsField,
-	value: PIMConnectorSettingsValue
+	field: IPIMConnectorConfigurationField,
+	value: PIMConnectorConfigurationValue
 ) {
 	if (
 		field.businessType === 'Decimal' ||
@@ -87,10 +87,10 @@ function toRequestValue(
 export default function EditPIMConnector({
 	apiURL,
 	backURL,
+	configuration,
 	objectEntryId,
 	pimConnector,
 	pimConnectors = [],
-	settings,
 	title,
 }: IProps) {
 	const isNew = Number(objectEntryId) === 0;
@@ -98,13 +98,13 @@ export default function EditPIMConnector({
 	const [active, setActive] = useState(Boolean(pimConnector?.active));
 	const [key, setKey] = useState(pimConnector?.key || '');
 	const [name, setName] = useState(pimConnector?.name || '');
-	const [settingsValues, setSettingsValues] = useState<{
-		[name: string]: PIMConnectorSettingsValue | null;
-	}>(settings?.values ?? {});
+	const [configurationValues, setConfigurationValues] = useState<{
+		[name: string]: PIMConnectorConfigurationValue | null;
+	}>(configuration?.values ?? {});
 
-	const pimConnectorSettings = pimConnectors.find(
+	const pimConnectorConfiguration = pimConnectors.find(
 		(curPIMConnector) => curPIMConnector.key === key
-	)?.settings;
+	)?.configuration;
 
 	useEffect(() => {
 		if (!isNew && !pimConnector) {
@@ -112,15 +112,15 @@ export default function EditPIMConnector({
 		}
 	}, [backURL, isNew, pimConnector]);
 
-	const saveSettings = async (externalReferenceCode: string) => {
-		if (!pimConnectorSettings) {
+	const saveConfiguration = async (externalReferenceCode: string) => {
+		if (!pimConnectorConfiguration) {
 			return;
 		}
 
 		const body: {[name: string]: unknown} = {};
 
-		for (const field of pimConnectorSettings.fields) {
-			const value = settingsValues[field.name];
+		for (const field of pimConnectorConfiguration.fields) {
+			const value = configurationValues[field.name];
 
 			if (
 				field.businessType === 'Encrypted' &&
@@ -131,17 +131,20 @@ export default function EditPIMConnector({
 
 			body[field.name] = isEmpty(value)
 				? null
-				: toRequestValue(field, value as PIMConnectorSettingsValue);
+				: toRequestValue(
+						field,
+						value as PIMConnectorConfigurationValue
+					);
 		}
 
 		const response = await fetch(
-			`${pimConnectorSettings.apiURL}/by-external-reference-code/${externalReferenceCode}`,
+			`${pimConnectorConfiguration.apiURL}/by-external-reference-code/${externalReferenceCode}`,
 			{
 				body: JSON.stringify(body),
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				method: settings ? 'PATCH' : 'PUT',
+				method: configuration ? 'PATCH' : 'PUT',
 			}
 		);
 
@@ -175,7 +178,7 @@ export default function EditPIMConnector({
 
 			const {externalReferenceCode} = await response.json();
 
-			await saveSettings(externalReferenceCode);
+			await saveConfiguration(externalReferenceCode);
 
 			Liferay.Util.openToast({
 				message: sub(
@@ -197,11 +200,13 @@ export default function EditPIMConnector({
 		}
 	};
 
-	const settingsComplete = (pimConnectorSettings?.fields ?? []).every(
+	const configurationComplete = (
+		pimConnectorConfiguration?.fields ?? []
+	).every(
 		(field) =>
 			!field.required ||
 			field.businessType === 'Boolean' ||
-			!isEmpty(settingsValues[field.name])
+			!isEmpty(configurationValues[field.name])
 	);
 
 	return (
@@ -218,7 +223,9 @@ export default function EditPIMConnector({
 
 					<ClayButton
 						className="inline-item-after"
-						disabled={!name.trim() || !key || !settingsComplete}
+						disabled={
+							!name.trim() || !key || !configurationComplete
+						}
 						displayType="primary"
 						form="pimConnectorForm"
 						size="sm"
@@ -278,7 +285,7 @@ export default function EditPIMConnector({
 									id="pimConnectorKey"
 									onChange={(event) => {
 										setKey(event.target.value);
-										setSettingsValues({});
+										setConfigurationValues({});
 									}}
 									options={[
 										{
@@ -320,10 +327,10 @@ export default function EditPIMConnector({
 						</div>
 					</ClayPanel>
 
-					{pimConnectorSettings &&
-						!!pimConnectorSettings.fields.length && (
+					{pimConnectorConfiguration &&
+						!!pimConnectorConfiguration.fields.length && (
 							<ClayPanel
-								aria-label={pimConnectorSettings.title}
+								aria-label={pimConnectorConfiguration.title}
 								className="mb-4"
 								collapsable={false}
 								displayType="secondary"
@@ -331,26 +338,28 @@ export default function EditPIMConnector({
 							>
 								<div className="c-gap-4 d-flex flex-column p-4">
 									<h2 className="mb-0 py-2 text-6 text-dark">
-										{pimConnectorSettings.title}
+										{pimConnectorConfiguration.title}
 									</h2>
 
-									{pimConnectorSettings.fields.map(
+									{pimConnectorConfiguration.fields.map(
 										(field) => (
-											<PIMConnectorSettingsField
+											<PIMConnectorConfigurationField
 												field={field}
 												key={field.name}
 												onChange={(value) =>
-													setSettingsValues(
+													setConfigurationValues(
 														(
-															previousSettingsValues
+															previousConfigurationValues
 														) => ({
-															...previousSettingsValues,
+															...previousConfigurationValues,
 															[field.name]: value,
 														})
 													)
 												}
 												value={
-													settingsValues[field.name]
+													configurationValues[
+														field.name
+													]
 												}
 											/>
 										)

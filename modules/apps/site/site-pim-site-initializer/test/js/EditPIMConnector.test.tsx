@@ -39,14 +39,13 @@ jest.mock('@liferay/site-cms-site-initializer', () => {
 const PROPS = {
 	apiURL: '/o/pim/connectors',
 	backURL: '/web/cms/connectors',
+	configuration: null,
 	objectEntryId: 0,
 	pimConnector: null,
 	pimConnectors: [
 		{
-			key: 'liferay-commerce',
-			name: 'Liferay Commerce',
-			settings: {
-				apiURL: '/o/pim/liferay-commerce-connector-settings',
+			configuration: {
+				apiURL: '/o/pim/liferay-commerce-connector-configurations',
 				fields: [
 					{
 						businessType: 'Encrypted',
@@ -61,29 +60,30 @@ const PROPS = {
 						required: true,
 					},
 				],
-				title: 'Liferay Commerce Settings',
+				title: 'Liferay Commerce Configuration',
 			},
+			key: 'liferay-commerce',
+			name: 'Liferay Commerce',
 		},
 	],
-	settings: null,
 	title: 'New Connector',
 };
 
 const EDIT_PROPS = {
 	...PROPS,
+	configuration: {
+		externalReferenceCode: 'CONNECTOR_ERC',
+		values: {
+			clientSecret: 'TEMP_OBFUSCATION_VALUE',
+			url: 'https://commerce.minium.com',
+		},
+	},
 	objectEntryId: 42,
 	pimConnector: {
 		active: true,
 		externalReferenceCode: 'CONNECTOR_ERC',
 		key: 'liferay-commerce',
 		name: 'Liferay',
-	},
-	settings: {
-		externalReferenceCode: 'CONNECTOR_ERC',
-		values: {
-			clientSecret: 'TEMP_OBFUSCATION_VALUE',
-			url: 'https://commerce.minium.com',
-		},
 	},
 	title: 'Edit Liferay',
 };
@@ -102,11 +102,11 @@ describe('EditPIMConnector', () => {
 		});
 	});
 
-	it('creates a connector and its settings', async () => {
+	it('creates a connector and its configuration', async () => {
 		render(<EditPIMConnector {...PROPS} />);
 
 		expect(
-			screen.queryByText('Liferay Commerce Settings')
+			screen.queryByText('Liferay Commerce Configuration')
 		).not.toBeInTheDocument();
 
 		await userEvent.type(screen.getByLabelText(/name/), 'Liferay');
@@ -116,7 +116,7 @@ describe('EditPIMConnector', () => {
 		);
 
 		expect(
-			screen.getByText('Liferay Commerce Settings')
+			screen.getByText('Liferay Commerce Configuration')
 		).toBeInTheDocument();
 		expect(screen.getByText('save')).toBeDisabled();
 
@@ -139,7 +139,7 @@ describe('EditPIMConnector', () => {
 		});
 
 		expect(mockFetch.mock.calls[1][0]).toBe(
-			'/o/pim/liferay-commerce-connector-settings/by-external-reference-code/CONNECTOR_ERC'
+			'/o/pim/liferay-commerce-connector-configurations/by-external-reference-code/CONNECTOR_ERC'
 		);
 		expect(mockFetch.mock.calls[1][1].method).toBe('PUT');
 		expect(getRequestBody(1)).toEqual({
@@ -184,7 +184,7 @@ describe('EditPIMConnector', () => {
 		expect(getRequestBody(1)).toEqual({url: 'https://minium.com'});
 	});
 
-	it('stays on the page when the settings request fails', async () => {
+	it('stays on the page when the configuration request fails', async () => {
 		mockFetch
 			.mockResolvedValueOnce({
 				json: async () => ({externalReferenceCode: 'CONNECTOR_ERC'}),

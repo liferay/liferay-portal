@@ -195,12 +195,12 @@ public class BasePIMConnectorTest {
 
 		_mockSearchResponse(Collections.emptyList());
 
-		Map<String, Serializable> settings =
+		Map<String, Serializable> configuration =
 			HashMapBuilder.<String, Serializable>put(
 				"url", RandomTestUtil.randomString()
 			).build();
 
-		_mockSettingsObjectEntry(settings);
+		_mockConfigurationObjectEntry(configuration);
 
 		Assert.assertEquals(
 			"executed", _pimConnector.execute(_pimConnectorObjectEntry));
@@ -211,7 +211,7 @@ public class BasePIMConnectorTest {
 			_pimConnector._pimFieldMappingObjectEntriesMap);
 		Assert.assertEquals(
 			Collections.emptyMap(), _pimConnector._pimProductObjectEntriesMap);
-		Assert.assertEquals(settings, _pimConnector._settings);
+		Assert.assertEquals(configuration, _pimConnector._configuration);
 	}
 
 	@Test
@@ -258,6 +258,45 @@ public class BasePIMConnectorTest {
 			TransformUtil.transform(
 				pimProductObjectEntriesMap.get(key),
 				ObjectEntry::getExternalReferenceCode));
+	}
+
+	private void _mockConfigurationObjectEntry(
+		Map<String, Serializable> values) {
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getObjectDefinitionId()
+		).thenReturn(
+			_CONFIGURATION_OBJECT_DEFINITION_ID
+		);
+
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByExternalReferenceCode(
+						_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
+						_COMPANY_ID)
+		).thenReturn(
+			objectDefinition
+		);
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.getValues()
+		).thenReturn(
+			values
+		);
+
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.fetchObjectEntry(
+				_EXTERNAL_REFERENCE_CODE, 0,
+				_CONFIGURATION_OBJECT_DEFINITION_ID)
+		).thenReturn(
+			objectEntry
+		);
 	}
 
 	private Document _mockDocument(long entryClassPK) {
@@ -351,42 +390,6 @@ public class BasePIMConnectorTest {
 			_searchResponse.getDocuments()
 		).thenReturn(
 			documents, Collections.<Document>emptyList()
-		);
-	}
-
-	private void _mockSettingsObjectEntry(Map<String, Serializable> values) {
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
-
-		Mockito.when(
-			objectDefinition.getObjectDefinitionId()
-		).thenReturn(
-			_SETTINGS_OBJECT_DEFINITION_ID
-		);
-
-		_objectDefinitionLocalServiceUtilMockedStatic.when(
-			() ->
-				ObjectDefinitionLocalServiceUtil.
-					fetchObjectDefinitionByExternalReferenceCode(
-						_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
-						_COMPANY_ID)
-		).thenReturn(
-			objectDefinition
-		);
-
-		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
-
-		Mockito.when(
-			objectEntry.getValues()
-		).thenReturn(
-			values
-		);
-
-		_objectEntryLocalServiceUtilMockedStatic.when(
-			() -> ObjectEntryLocalServiceUtil.fetchObjectEntry(
-				_EXTERNAL_REFERENCE_CODE, 0, _SETTINGS_OBJECT_DEFINITION_ID)
-		).thenReturn(
-			objectEntry
 		);
 	}
 
@@ -599,6 +602,13 @@ public class BasePIMConnectorTest {
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
+	private static final String
+		_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
+			RandomTestUtil.randomString();
+
+	private static final long _CONFIGURATION_OBJECT_DEFINITION_ID =
+		RandomTestUtil.randomLong();
+
 	private static final String _EXTERNAL_REFERENCE_CODE =
 		RandomTestUtil.randomString();
 
@@ -620,13 +630,6 @@ public class BasePIMConnectorTest {
 			ObjectFieldConstants.BUSINESS_TYPE_TEXT);
 
 	private static final int _SEARCH_SIZE = 1000;
-
-	private static final String
-		_SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
-			RandomTestUtil.randomString();
-
-	private static final long _SETTINGS_OBJECT_DEFINITION_ID =
-		RandomTestUtil.randomLong();
 
 	private final ComplexQueryPartBuilder _complexQueryPartBuilder =
 		Mockito.mock(ComplexQueryPartBuilder.class, Mockito.RETURNS_SELF);
@@ -670,6 +673,11 @@ public class BasePIMConnectorTest {
 	private class TestPIMConnector extends BasePIMConnector {
 
 		@Override
+		public String getConfigurationObjectDefinitionExternalReferenceCode() {
+			return _CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE;
+		}
+
+		@Override
 		public String getKey() {
 			return _KEY;
 		}
@@ -682,11 +690,6 @@ public class BasePIMConnectorTest {
 		}
 
 		@Override
-		public String getSettingsObjectDefinitionExternalReferenceCode() {
-			return _SETTINGS_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE;
-		}
-
-		@Override
 		public boolean isActive(long companyId) {
 			return true;
 		}
@@ -696,18 +699,18 @@ public class BasePIMConnectorTest {
 			ObjectEntry pimConnectorObjectEntry,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
-			Map<String, Serializable> settings) {
+			Map<String, Serializable> configuration) {
 
 			_pimFieldMappingObjectEntriesMap = pimFieldMappingObjectEntriesMap;
 			_pimProductObjectEntriesMap = pimProductObjectEntriesMap;
-			_settings = settings;
+			_configuration = configuration;
 
 			return "executed";
 		}
 
+		private Map<String, Serializable> _configuration;
 		private Map<String, List<ObjectEntry>> _pimFieldMappingObjectEntriesMap;
 		private Map<String, List<ObjectEntry>> _pimProductObjectEntriesMap;
-		private Map<String, Serializable> _settings;
 
 	}
 

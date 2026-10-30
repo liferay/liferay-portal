@@ -35,8 +35,8 @@ import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConsta
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.exception.DuplicatePIMLinkException;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorConfigurationUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorDispatchTriggerUtil;
-import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorSettingsUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMLinkUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMObjectEntryFolderUtil;
 import com.liferay.site.pim.site.initializer.link.PIMLinkType;
@@ -120,16 +120,17 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 		}
 	}
 
-	private void _deletePIMConnectorSettingsObjectEntry(ObjectEntry objectEntry)
+	private void _deletePIMConnectorConfigurationObjectEntry(
+			ObjectEntry objectEntry)
 		throws PortalException {
 
-		ObjectEntry pimConnectorSettingsObjectEntry =
-			PIMConnectorSettingsUtil.fetchObjectEntry(
+		ObjectEntry pimConnectorConfigurationObjectEntry =
+			PIMConnectorConfigurationUtil.fetchObjectEntry(
 				_pimConnectorRegistry.getPIMConnector(
 					MapUtil.getString(objectEntry.getValues(), "key")),
 				objectEntry);
 
-		if (pimConnectorSettingsObjectEntry == null) {
+		if (pimConnectorConfigurationObjectEntry == null) {
 			return;
 		}
 
@@ -140,7 +141,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 		try {
 			_objectEntryLocalService.deleteObjectEntry(
-				pimConnectorSettingsObjectEntry);
+				pimConnectorConfigurationObjectEntry);
 		}
 		finally {
 			ObjectEntryThreadLocal.setSkipObjectEntryResourcePermission(
@@ -268,7 +269,7 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 
 			PIMConnectorDispatchTriggerUtil.deleteDispatchTrigger(objectEntry);
 
-			_deletePIMConnectorSettingsObjectEntry(objectEntry);
+			_deletePIMConnectorConfigurationObjectEntry(objectEntry);
 		}
 		else if (_isPIMProductObjectEntry(objectEntry)) {
 			_deletePIMLinkObjectEntries(objectEntry);

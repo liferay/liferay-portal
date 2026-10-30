@@ -33,8 +33,8 @@ import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectDefinitionConstants;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
 import com.liferay.site.pim.site.initializer.internal.link.VariantPIMLinkType;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorConfigurationUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
-import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorSettingsUtil;
 
 import java.io.Serializable;
 
@@ -62,7 +62,7 @@ public abstract class BasePIMConnector implements PIMConnector {
 			getPIMFieldMappingObjectEntriesMap(pimConnectorObjectEntry),
 			getPIMProductObjectEntriesMap(
 				pimConnectorObjectEntry.getCompanyId()),
-			_getSettings(pimConnectorObjectEntry));
+			_getConfiguration(pimConnectorObjectEntry));
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public abstract class BasePIMConnector implements PIMConnector {
 			ObjectEntry pimConnectorObjectEntry,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap,
-			Map<String, Serializable> settings)
+			Map<String, Serializable> configuration)
 		throws Exception;
 
 	protected Map<String, List<ObjectEntry>> getPIMFieldMappingObjectEntriesMap(
@@ -179,6 +179,20 @@ public abstract class BasePIMConnector implements PIMConnector {
 	@Reference
 	protected Sorts sorts;
 
+	private Map<String, Serializable> _getConfiguration(
+		ObjectEntry pimConnectorObjectEntry) {
+
+		ObjectEntry configurationObjectEntry =
+			PIMConnectorConfigurationUtil.fetchObjectEntry(
+				this, pimConnectorObjectEntry);
+
+		if (configurationObjectEntry == null) {
+			return Collections.emptyMap();
+		}
+
+		return configurationObjectEntry.getValues();
+	}
+
 	private List<ObjectEntry> _getPIMProductObjectEntries(long companyId) {
 		List<ObjectEntry> objectEntries = new ArrayList<>();
 
@@ -209,20 +223,6 @@ public abstract class BasePIMConnector implements PIMConnector {
 		}
 
 		return objectEntries;
-	}
-
-	private Map<String, Serializable> _getSettings(
-		ObjectEntry pimConnectorObjectEntry) {
-
-		ObjectEntry settingsObjectEntry =
-			PIMConnectorSettingsUtil.fetchObjectEntry(
-				this, pimConnectorObjectEntry);
-
-		if (settingsObjectEntry == null) {
-			return Collections.emptyMap();
-		}
-
-		return settingsObjectEntry.getValues();
 	}
 
 	private Map<String, Map<String, Serializable>> _getVariantPIMLinkValuesMap(
