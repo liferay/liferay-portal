@@ -18,8 +18,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
-import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
-import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -121,9 +119,6 @@ public class DepotEntryAdminSearchProviderTest {
 					ResourceConstants.SCOPE_INDIVIDUAL,
 					String.valueOf(depotEntry.getDepotEntryId()),
 					role.getRoleId(), new String[] {ActionKeys.VIEW});
-
-				PermissionThreadLocal.setPermissionChecker(
-					PermissionCheckerFactoryUtil.create(user));
 
 				GroupItemSelectorCriterion groupItemSelectorCriterion =
 					new GroupItemSelectorCriterion();
