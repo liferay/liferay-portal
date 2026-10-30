@@ -809,40 +809,6 @@ public class KBArticleLocalServiceImpl extends KBArticleLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<KBArticle> getCompanyKBArticles(
-		long companyId, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.findByC_L_NotS(
-				companyId, true, WorkflowConstants.STATUS_IN_TRASH, start, end,
-				orderByComparator);
-		}
-		else if (status == WorkflowConstants.STATUS_APPROVED) {
-			return kbArticlePersistence.findByC_M_NotS(
-				companyId, true, WorkflowConstants.STATUS_IN_TRASH, start, end,
-				orderByComparator);
-		}
-
-		return kbArticlePersistence.findByC_S(
-			companyId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCompanyKBArticlesCount(long companyId, int status) {
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return kbArticlePersistence.countByC_L_NotS(
-				companyId, true, WorkflowConstants.STATUS_IN_TRASH);
-		}
-		else if (status == WorkflowConstants.STATUS_APPROVED) {
-			return kbArticlePersistence.countByC_M_NotS(
-				companyId, true, WorkflowConstants.STATUS_IN_TRASH);
-		}
-
-		return kbArticlePersistence.countByC_S(companyId, status);
-	}
-
-	@Override
 	public List<KBArticle> getGroupKBArticles(
 		long groupId, int status, int start, int end,
 		OrderByComparator<KBArticle> orderByComparator) {
