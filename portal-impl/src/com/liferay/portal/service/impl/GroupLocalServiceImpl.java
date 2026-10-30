@@ -82,6 +82,7 @@ import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.model.UserGroupRole;
@@ -1330,6 +1331,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			// System Events
 
 			_systemEventLocalService.deleteSystemEvents(group.getGroupId());
+
+			if (group.isRegularSite() && !group.isStagingGroup()) {
+				_systemEventLocalService.addSystemEvent(
+					group.getCompanyId(), group.getExternalReferenceCode(),
+					Group.class.getName(), group.getGroupId(), group.getUuid(),
+					null, SystemEventConstants.TYPE_DELETE, StringPool.BLANK);
+			}
 
 			return group;
 		}
