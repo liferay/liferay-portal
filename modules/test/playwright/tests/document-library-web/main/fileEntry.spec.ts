@@ -1605,3 +1605,59 @@ test(
 		});
 	}
 );
+
+test(
+	'Folder links do not nest the redirect parameter',
+	{tag: '@LPD-113087'},
+	async ({apiHelpers, page, site}) => {
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_document_library_web_portlet_DLPortlet',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const documentFolder =
+			await apiHelpers.headlessDelivery.postDocumentFolder(site.id);
+
+		const title = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocumentFolderDocument(
+			documentFolder.id,
+			createReadStream(path.join(__dirname, '/dependencies/image1.jpeg')),
+			{title}
+		);
+
+		await page.goto(`/web/${site.name}${layout.friendlyUrlPath}`);
+
+		await page
+			.getByRole('link', {exact: true, name: documentFolder.name})
+			.click();
+
+		const fileLink = page.getByRole('link', {exact: true, name: title});
+
+		expect(
+			decodeURIComponent(await fileLink.getAttribute('href')).match(
+				/redirect=/g
+			)
+		).toHaveLength(1);
+
+		await fileLink.click();
+
+		await expect(page.getByRole('heading', {name: title})).toBeVisible();
+
+		const locationLink = page.locator('.sidebar-dd').getByRole('link', {
+			includeHidden: true,
+			name: documentFolder.name,
+		});
+
+		expect(await locationLink.getAttribute('href')).not.toContain(
+			'redirect'
+		);
+	}
+);
