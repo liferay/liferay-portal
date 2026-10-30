@@ -132,6 +132,12 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 			else {
 				xRequestId = auditRequestContext.getRequestId();
 			}
+
+			auditRequestContext.setHttpMethod(
+				_truncate(75, httpServletRequest.getMethod()));
+			auditRequestContext.setUserAgent(
+				_truncate(
+					255, httpServletRequest.getHeader(HttpHeaders.USER_AGENT)));
 		}
 
 		if (!_auditLogContextConfiguration.enabled()) {
@@ -228,6 +234,14 @@ public class AuditFilter extends BaseFilter implements TryFilter {
 		}
 
 		return true;
+	}
+
+	private String _truncate(int length, String s) {
+		if ((s == null) || (s.length() <= length)) {
+			return s;
+		}
+
+		return s.substring(0, length);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(AuditFilter.class);
