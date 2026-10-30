@@ -199,20 +199,6 @@ public interface DDLRecordVersionLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public DDLRecordVersion fetchDDLRecordVersion(long recordVersionId);
 
-	/**
-	 * Returns the latest record version matching the user, the record set, the
-	 * record set version and workflow status.
-	 *
-	 * @param userId the primary key of the user
-	 * @param recordSetId the primary key of the record set
-	 * @param recordSetVersion the version of the record set
-	 * @param status the workflow status
-	 * @return the latest matching record version or <code>null</code>
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDLRecordVersion fetchLatestRecordVersion(
-		long userId, long recordSetId, String recordSetVersion, int status);
-
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
@@ -365,4 +351,4 @@ public interface DDLRecordVersionLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-698483024
+// LIFERAY-SERVICE-BUILDER-HASH:-18164136

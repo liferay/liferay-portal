@@ -207,23 +207,6 @@ public class DDLRecordVersionLocalServiceUtil {
 		return getService().fetchDDLRecordVersion(recordVersionId);
 	}
 
-	/**
-	 * Returns the latest record version matching the user, the record set, the
-	 * record set version and workflow status.
-	 *
-	 * @param userId the primary key of the user
-	 * @param recordSetId the primary key of the record set
-	 * @param recordSetVersion the version of the record set
-	 * @param status the workflow status
-	 * @return the latest matching record version or <code>null</code>
-	 */
-	public static DDLRecordVersion fetchLatestRecordVersion(
-		long userId, long recordSetId, String recordSetVersion, int status) {
-
-		return getService().fetchLatestRecordVersion(
-			userId, recordSetId, recordSetVersion, status);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -399,4 +382,4 @@ public class DDLRecordVersionLocalServiceUtil {
 			DDLRecordVersionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1222689227
+// LIFERAY-SERVICE-BUILDER-HASH:-1886103845
