@@ -42,6 +42,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
+import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -54,6 +55,7 @@ import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
+import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.LayoutService;
@@ -102,6 +104,8 @@ import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.test.util.WikiTestUtil;
 
 import jakarta.portlet.PortletPreferences;
+
+import java.awt.image.BufferedImage;
 
 import java.io.File;
 import java.io.Serializable;
@@ -504,6 +508,11 @@ public class StagingImplTest {
 	}
 
 	@Test
+	public void testLocalStagingLayoutIconImage() throws Exception {
+		_testLocalStagingLayoutIconImage(false);
+	}
+
+	@Test
 	public void testLocalStagingLayoutTheme() throws Exception {
 		_testLocalStagingLayoutTheme(false);
 	}
@@ -627,6 +636,13 @@ public class StagingImplTest {
 		Assert.assertNull(
 			typeSettingsUnicodeProperties.getProperty(
 				"last-import-layout-set-branch-name"));
+	}
+
+	@Test
+	public void testLocalStagingWithLayoutVersioningLayoutIconImage()
+		throws Exception {
+
+		_testLocalStagingLayoutIconImage(true);
 	}
 
 	@Test
@@ -1197,6 +1213,11 @@ public class StagingImplTest {
 		}
 	}
 
+	private byte[] _getImageBytes() throws Exception {
+		return ImageToolUtil.getBytes(
+			new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB), "png");
+	}
+
 	private LayoutSetBranch _getMasterLayoutSetBranch() throws Exception {
 		Group stagingGroup = _group.getStagingGroup();
 
@@ -1261,6 +1282,63 @@ public class StagingImplTest {
 			"staged", Boolean.TRUE.toString());
 		typeSettingsUnicodeProperties.setProperty(
 			"stagedRemotely", Boolean.TRUE.toString());
+	}
+
+	private void _testLocalStagingLayoutIconImage(boolean branching)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		enableLocalStaging(branching);
+
+		ServiceContext serviceContext = _getStagingServiceContext();
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		Layout stagingLayout = _getStagingLayout(layout);
+
+		_layoutLocalService.updateLayout(
+			stagingLayout.getGroupId(), stagingLayout.isPrivateLayout(),
+			stagingLayout.getLayoutId(), stagingLayout.getParentLayoutId(),
+			stagingLayout.getNameMap(), stagingLayout.getTitleMap(),
+			stagingLayout.getDescriptionMap(), stagingLayout.getKeywordsMap(),
+			stagingLayout.getRobotsMap(), stagingLayout.getType(),
+			stagingLayout.isHidden(), stagingLayout.getFriendlyURLMap(), true,
+			_getImageBytes(), stagingLayout.getStyleBookEntryERC(),
+			stagingLayout.getStyleBookEntryScopeERC(),
+			stagingLayout.getFaviconFileEntryERC(),
+			stagingLayout.getFaviconFileEntryScopeERC(),
+			stagingLayout.getMasterLayoutPageTemplateEntryERC(),
+			serviceContext);
+
+		ServiceContextThreadLocal.popServiceContext();
+
+		LayoutSetBranch layoutSetBranch = null;
+
+		if (branching) {
+			layoutSetBranch = _getMasterLayoutSetBranch();
+
+			LayoutRevision layoutRevision =
+				_layoutRevisionLocalService.fetchLastLayoutRevision(
+					stagingLayout.getPlid(), true);
+
+			Assert.assertTrue(layoutRevision.isIconImage());
+		}
+
+		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		Assert.assertFalse(liveLayout.isIconImage());
+
+		_publishLayouts(
+			layoutSetBranch,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap());
+
+		liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		Assert.assertTrue(liveLayout.isIconImage());
+		Assert.assertNotNull(
+			_imageLocalService.fetchImage(liveLayout.getIconImageId()));
 	}
 
 	private void _testLocalStagingLayoutTheme(boolean branching)
@@ -1392,6 +1470,9 @@ public class StagingImplTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private ImageLocalService _imageLocalService;
 
 	@Inject
 	private JournalArticleLocalService _journalArticleLocalService;

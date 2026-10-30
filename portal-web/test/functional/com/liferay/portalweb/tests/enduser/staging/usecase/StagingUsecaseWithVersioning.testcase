@@ -751,57 +751,6 @@ definition {
 	}
 
 	@priority = 3
-	test StagingPageLogo {
-		Page.viewDefaultLogoPG();
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		Navigator.gotoStagedView();
-
-		PagesAdmin.changeLogo(
-			logoFile = "Document_2.png",
-			pageName = "Staging Test Page");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Page.viewLayoutLogoPG(assertLayoutLogoPresent = "true");
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		Navigator.gotoStagedView();
-
-		Staging.gotoPublishToLive();
-
-		Staging.configurePublishToLive(contentDateRange = "All");
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Page.viewDefaultLogoPG();
-
-		Page.viewDefaultLogoPG();
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		Navigator.gotoSitePage(
-			pageName = "Staging Test Page",
-			siteName = "Site Name");
-
-		Page.viewLayoutLogoPG(assertLayoutLogoPresent = "true");
-	}
-
-	@priority = 3
 	test StagingPortletPublishContentCount {
 		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name-staging");
 
