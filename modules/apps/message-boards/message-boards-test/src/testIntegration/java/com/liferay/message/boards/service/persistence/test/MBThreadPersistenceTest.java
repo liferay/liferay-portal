@@ -260,13 +260,6 @@ public class MBThreadPersistenceTest {
 	}
 
 	@Test
-	public void testCountByRootMessageId() throws Exception {
-		_persistence.countByRootMessageId(RandomTestUtil.nextLong());
-
-		_persistence.countByRootMessageId(0L);
-	}
-
-	@Test
 	public void testCountByG_C() throws Exception {
 		_persistence.countByG_C(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
@@ -287,23 +280,6 @@ public class MBThreadPersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
 
 		_persistence.countByG_S(0L, 0);
-	}
-
-	@Test
-	public void testCountByL_P() throws Exception {
-		_persistence.countByL_P(
-			RandomTestUtil.nextDate(), RandomTestUtil.nextDouble());
-
-		_persistence.countByL_P(RandomTestUtil.nextDate(), 0D);
-	}
-
-	@Test
-	public void testCountByG_C_L() throws Exception {
-		_persistence.countByG_C_L(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextDate());
-
-		_persistence.countByG_C_L(0L, 0L, RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -660,12 +636,6 @@ public class MBThreadPersistenceTest {
 			ReflectionTestUtil.<Long>invoke(
 				mbThread, "getColumnOriginalValue",
 				new Class<?>[] {String.class}, "groupId"));
-
-		Assert.assertEquals(
-			Long.valueOf(mbThread.getRootMessageId()),
-			ReflectionTestUtil.<Long>invoke(
-				mbThread, "getColumnOriginalValue",
-				new Class<?>[] {String.class}, "rootMessageId"));
 	}
 
 	protected MBThread addMBThread() throws Exception {
@@ -725,4 +695,4 @@ public class MBThreadPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1610351370
+// LIFERAY-SERVICE-BUILDER-HASH:301947056

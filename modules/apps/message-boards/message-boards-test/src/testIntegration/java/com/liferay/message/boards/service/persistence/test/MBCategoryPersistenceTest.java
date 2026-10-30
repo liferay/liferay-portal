@@ -307,14 +307,6 @@ public class MBCategoryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByC_S() throws Exception {
-		_persistence.countByC_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_S(0L, 0);
-	}
-
-	@Test
 	public void testCountByNotC_G_P() throws Exception {
 		_persistence.countByNotC_G_P(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -798,4 +790,4 @@ public class MBCategoryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-713891364
+// LIFERAY-SERVICE-BUILDER-HASH:-1999247835

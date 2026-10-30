@@ -576,72 +576,6 @@ public interface MBCategoryPersistence
 	public int filterCountByG_S(long groupId, int status);
 
 	/**
-	 * Returns an ordered range of all the message boards categories where companyId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.message.boards.model.impl.MBCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of message boards categories
-	 * @param end the upper bound of the range of message boards categories (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching message boards categories
-	 */
-	public java.util.List<MBCategory> findByC_S(
-		long companyId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<MBCategory>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first message boards category in the ordered set where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching message boards category
-	 * @throws NoSuchCategoryException if a matching message boards category could not be found
-	 */
-	public MBCategory findByC_S_First(
-			long companyId, int status,
-			com.liferay.portal.kernel.util.OrderByComparator<MBCategory>
-				orderByComparator)
-		throws NoSuchCategoryException;
-
-	/**
-	 * Returns the first message boards category in the ordered set where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching message boards category, or <code>null</code> if a matching message boards category could not be found
-	 */
-	public MBCategory fetchByC_S_First(
-		long companyId, int status,
-		com.liferay.portal.kernel.util.OrderByComparator<MBCategory>
-			orderByComparator);
-
-	/**
-	 * Removes all the message boards categories where companyId = &#63; and status = &#63; from the database.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 */
-	public void removeByC_S(long companyId, int status);
-
-	/**
-	 * Returns the number of message boards categories where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the number of matching message boards categories
-	 */
-	public int countByC_S(long companyId, int status);
-
-	/**
 	 * Returns all the message boards categories where categoryId &ne; &#63; and groupId = &#63; and parentCategoryId = &#63;.
 	 *
 	 * @param categoryId the category ID
@@ -2402,64 +2336,6 @@ public interface MBCategoryPersistence
 	}
 
 	/**
-	 * Returns all the message boards categories where companyId = &#63; and status = &#63;.
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @return the matching message boards categories
-	 */
-	public default java.util.List<MBCategory> findByC_S(
-		long companyId, int status) {
-
-		return findByC_S(
-			companyId, status,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the message boards categories where companyId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.message.boards.model.impl.MBCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of message boards categories
-	 * @param end the upper bound of the range of message boards categories (not inclusive)
-	 * @return the range of matching message boards categories
-	 */
-	public default java.util.List<MBCategory> findByC_S(
-		long companyId, int status, int start, int end) {
-
-		return findByC_S(companyId, status, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the message boards categories where companyId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.message.boards.model.impl.MBCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param companyId the company ID
-	 * @param status the status
-	 * @param start the lower bound of the range of message boards categories
-	 * @param end the upper bound of the range of message boards categories (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching message boards categories
-	 */
-	public default java.util.List<MBCategory> findByC_S(
-		long companyId, int status, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<MBCategory>
-			orderByComparator) {
-
-		return findByC_S(
-			companyId, status, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the message boards categories where groupId = &#63; and parentCategoryId = &#63; and status = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -2664,4 +2540,4 @@ public interface MBCategoryPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2006562265
+// LIFERAY-SERVICE-BUILDER-HASH:157539629

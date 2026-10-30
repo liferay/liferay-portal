@@ -155,31 +155,27 @@ public class MBThreadModelImpl
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long LASTPOSTDATE_COLUMN_BITMASK = 8L;
+	public static final long STATUS_COLUMN_BITMASK = 8L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long PRIORITY_COLUMN_BITMASK = 16L;
+	public static final long UUID_COLUMN_BITMASK = 16L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long ROOTMESSAGEID_COLUMN_BITMASK = 32L;
+	public static final long PRIORITY_COLUMN_BITMASK = 32L;
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
+	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
+	 *		#getColumnBitmask(String)}
 	 */
 	@Deprecated
-	public static final long STATUS_COLUMN_BITMASK = 64L;
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link #getColumnBitmask(String)}
-	 */
-	@Deprecated
-	public static final long UUID_COLUMN_BITMASK = 128L;
+	public static final long LASTPOSTDATE_COLUMN_BITMASK = 64L;
 
 	/**
 	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
@@ -657,16 +653,6 @@ public class MBThreadModelImpl
 		_rootMessageId = rootMessageId;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public long getOriginalRootMessageId() {
-		return GetterUtil.getLong(
-			this.<Long>getColumnOriginalValue("rootMessageId"));
-	}
-
 	@JSON
 	@Override
 	public long getRootMessageUserId() {
@@ -765,15 +751,6 @@ public class MBThreadModelImpl
 		_lastPostDate = lastPostDate;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public Date getOriginalLastPostDate() {
-		return getColumnOriginalValue("lastPostDate");
-	}
-
 	@JSON
 	@Override
 	public double getPriority() {
@@ -787,16 +764,6 @@ public class MBThreadModelImpl
 		}
 
 		_priority = priority;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getColumnOriginalValue(String)}
-	 */
-	@Deprecated
-	public double getOriginalPriority() {
-		return GetterUtil.getDouble(
-			this.<Double>getColumnOriginalValue("priority"));
 	}
 
 	@JSON
@@ -1595,4 +1562,4 @@ public class MBThreadModelImpl
 	private MBThread _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-475794538
+// LIFERAY-SERVICE-BUILDER-HASH:134494247

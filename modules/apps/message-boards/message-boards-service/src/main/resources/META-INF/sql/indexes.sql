@@ -8,7 +8,6 @@ create index IX_72DC3FF5 on MBCategory (groupId, parentCategoryId, categoryId);
 create index IX_F69FCDDB on MBCategory (groupId, parentCategoryId, status, categoryId);
 create index IX_DA84A9F7 on MBCategory (groupId, status);
 create unique index IX_7B308E1 on MBCategory (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_AB585C29 on MBCategory (status, companyId);
 create index IX_C2626EDB on MBCategory (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_F4BC4496 on MBDiscussion (classNameId, classPK, ctCollectionId);
@@ -34,9 +33,8 @@ create index IX_936ECAB3 on MBMessage (status, classNameId, classPK);
 create index IX_E4D73A8A on MBMessage (status, companyId);
 create index IX_D6CD720A on MBMessage (status, parentMessageId);
 create index IX_6F212FD7 on MBMessage (status, threadId);
-create index IX_2E9F9D6D on MBMessage (status, userId, classNameId, classPK);
 create index IX_A7038CD7 on MBMessage (threadId, parentMessageId);
-create index IX_ABEB6D07 on MBMessage (userId, classNameId, classPK);
+create index IX_7A040C32 on MBMessage (userId);
 create index IX_C57B16BC on MBMessage (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_977DB0CB on MBSuspiciousActivity (messageId);
@@ -45,12 +43,9 @@ create index IX_39C9A751 on MBSuspiciousActivity (userId, messageId);
 create index IX_939A75FA on MBSuspiciousActivity (userId, threadId);
 create unique index IX_A3E15B5B on MBSuspiciousActivity (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
-create index IX_50F1904A on MBThread (groupId, categoryId, lastPostDate);
 create index IX_485F7E98 on MBThread (groupId, categoryId, status);
 create index IX_E1E7142B on MBThread (groupId, status);
 create unique index IX_4790702D on MBThread (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_15AE30B5 on MBThread (priority, lastPostDate);
-create index IX_CC993ECB on MBThread (rootMessageId);
 create index IX_7E264A0F on MBThread (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_8CB0A24A on MBThreadFlag (threadId);

@@ -187,10 +187,7 @@ public class MBThreadModelArgumentsResolver implements ArgumentsResolver {
 		_whereColumnBitmasks.put("G_S", whereColumnBitmask);
 
 		_whereBiPredicates.put("G_S", whereBiPredicate);
-		_whereColumnBitmasks.put("L_P", whereColumnBitmask);
-
-		_whereBiPredicates.put("L_P", whereBiPredicate);
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1105763923
+// LIFERAY-SERVICE-BUILDER-HASH:-1512153422

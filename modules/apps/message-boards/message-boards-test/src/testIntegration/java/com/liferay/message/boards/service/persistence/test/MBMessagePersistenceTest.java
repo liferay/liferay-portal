@@ -457,15 +457,6 @@ public class MBMessagePersistenceTest {
 	}
 
 	@Test
-	public void testCountByU_C_C() throws Exception {
-		_persistence.countByU_C_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong());
-
-		_persistence.countByU_C_C(0L, 0L, 0L);
-	}
-
-	@Test
 	public void testCountByC_C_S() throws Exception {
 		_persistence.countByC_C_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -490,15 +481,6 @@ public class MBMessagePersistenceTest {
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
 
 		_persistence.countByG_C_T_S(0L, 0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByU_C_C_S() throws Exception {
-		_persistence.countByU_C_C_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByU_C_C_S(0L, 0L, 0L, 0);
 	}
 
 	@Test
@@ -935,4 +917,4 @@ public class MBMessagePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:139613119
+// LIFERAY-SERVICE-BUILDER-HASH:-1411069289
