@@ -54,6 +54,7 @@ import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
+import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.ImageLocalService;
@@ -78,6 +79,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -99,6 +101,7 @@ import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.navigation.constants.SiteNavigationMenuPortletKeys;
 import com.liferay.staging.configuration.StagingConfiguration;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.model.WikiPage;
@@ -524,6 +527,11 @@ public class StagingImplTest {
 	}
 
 	@Test
+	public void testLocalStagingPortletTitle() throws Exception {
+		_testLocalStagingPortletTitle(false);
+	}
+
+	@Test
 	public void testLocalStagingUpdateLastPublishDate() throws Exception {
 		enableLocalStagingWithContent(true, false);
 
@@ -663,6 +671,13 @@ public class StagingImplTest {
 		throws Exception {
 
 		_testLocalStagingLayoutTheme(true);
+	}
+
+	@Test
+	public void testLocalStagingWithLayoutVersioningPortletTitle()
+		throws Exception {
+
+		_testLocalStagingPortletTitle(true);
 	}
 
 	@Test
@@ -1456,6 +1471,76 @@ public class StagingImplTest {
 		liveLayout = _layoutLocalService.getLayout(layout.getPlid());
 
 		Assert.assertEquals("cms_WAR_cmstheme", liveLayout.getThemeId());
+	}
+
+	private void _testLocalStagingPortletTitle(boolean branching)
+		throws Exception {
+
+		Layout layout = LayoutTestUtil.addTypePortletLayout(_group);
+
+		enableLocalStaging(branching);
+
+		ServiceContextThreadLocal.pushServiceContext(
+			_getStagingServiceContext());
+
+		Layout stagingLayout = _getStagingLayout(layout);
+
+		String portletId = LayoutTestUtil.addPortletToLayout(
+			stagingLayout, SiteNavigationMenuPortletKeys.SITE_NAVIGATION_MENU);
+
+		String languageId = LocaleUtil.toLanguageId(
+			LocaleUtil.getSiteDefault());
+		String title = RandomTestUtil.randomString();
+
+		LayoutTestUtil.updateLayoutPortletPreferences(
+			stagingLayout, portletId,
+			HashMapBuilder.put(
+				"portletSetupTitle_" + languageId, title
+			).put(
+				"portletSetupUseCustomTitle", Boolean.TRUE.toString()
+			).build());
+
+		ServiceContextThreadLocal.popServiceContext();
+
+		LayoutSetBranch layoutSetBranch = null;
+
+		if (branching) {
+			layoutSetBranch = _getMasterLayoutSetBranch();
+
+			LayoutRevision layoutRevision =
+				_layoutRevisionLocalService.fetchLastLayoutRevision(
+					stagingLayout.getPlid(), true);
+
+			String typeSettings = layoutRevision.getTypeSettings();
+
+			Assert.assertTrue(typeSettings.contains(portletId));
+		}
+
+		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		LayoutTypePortlet layoutTypePortlet =
+			(LayoutTypePortlet)liveLayout.getLayoutType();
+
+		Assert.assertFalse(layoutTypePortlet.hasPortletId(portletId));
+
+		_publishLayouts(
+			layoutSetBranch,
+			ExportImportConfigurationParameterMapFactoryUtil.
+				buildParameterMap());
+
+		liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+		layoutTypePortlet = (LayoutTypePortlet)liveLayout.getLayoutType();
+
+		Assert.assertTrue(layoutTypePortlet.hasPortletId(portletId));
+
+		PortletPreferences portletPreferences =
+			LayoutTestUtil.getPortletPreferences(liveLayout, portletId);
+
+		Assert.assertEquals(
+			title,
+			portletPreferences.getValue(
+				"portletSetupTitle_" + languageId, null));
 	}
 
 	private void _testLocalStagingWithLayoutVersioningLastImportSettings(
