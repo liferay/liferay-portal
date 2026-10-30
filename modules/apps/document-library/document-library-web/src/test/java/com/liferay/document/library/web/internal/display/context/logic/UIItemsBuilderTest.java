@@ -16,13 +16,16 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.PortletURLUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -36,6 +39,7 @@ import com.liferay.portal.util.PortalImpl;
 import com.liferay.staging.StagingGroupHelper;
 import com.liferay.staging.StagingGroupHelperUtil;
 
+import jakarta.portlet.PortletRequest;
 import jakarta.portlet.PortletURL;
 
 import java.net.URI;
@@ -203,6 +207,64 @@ public class UIItemsBuilderTest {
 	}
 
 	@Test
+	@TestInfo("LPD-113065")
+	public void testCreateHistoryDropdownItem() throws Exception {
+		PortalUtil portalUtil = new PortalUtil();
+
+		PortalImpl portalImpl = Mockito.spy(new PortalImpl());
+
+		Mockito.doReturn(
+			new MockLiferayPortletURL()
+		).when(
+			portalImpl
+		).getControlPanelPortletURL(
+			Mockito.any(PortletRequest.class), Mockito.nullable(Group.class),
+			Mockito.anyString(), Mockito.anyLong(), Mockito.anyLong(),
+			Mockito.anyString()
+		);
+
+		portalUtil.setPortal(portalImpl);
+
+		FileShortcut fileShortcut = Mockito.mock(FileShortcut.class);
+
+		long fileEntryId = RandomTestUtil.randomLong();
+
+		Mockito.when(
+			_fileEntry.getFileEntryId()
+		).thenReturn(
+			fileEntryId
+		);
+
+		Mockito.when(
+			_fileVersion.getFileEntry()
+		).thenReturn(
+			_fileEntry
+		);
+
+		Mockito.when(
+			fileShortcut.getFileVersion()
+		).thenReturn(
+			_fileVersion
+		);
+
+		ThemeDisplay themeDisplay = new ThemeDisplay();
+
+		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
+
+		portletDisplay.setId(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
+
+		UIItemsBuilder uiItemsBuilder = new UIItemsBuilder(
+			_getMockHttpServletRequest(themeDisplay), fileShortcut, null,
+			Mockito.mock(VersioningStrategy.class), _dlurlHelper);
+
+		DropdownItem dropdownItem = uiItemsBuilder.createHistoryDropdownItem();
+
+		String href = (String)dropdownItem.get("href");
+
+		Assert.assertTrue(href.contains("param_fileEntryId=" + fileEntryId));
+	}
+
+	@Test
 	public void testIsPublishActionAvailable() throws PortalException {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -243,7 +305,9 @@ public class UIItemsBuilderTest {
 			href.contains("param_folderId=" + _fileEntry.getFolderId()));
 	}
 
-	private UIItemsBuilder _getUIItemsBuilder(ThemeDisplay themeDisplay) {
+	private MockHttpServletRequest _getMockHttpServletRequest(
+		ThemeDisplay themeDisplay) {
+
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
 
@@ -272,6 +336,10 @@ public class UIItemsBuilderTest {
 		mockHttpServletRequest.setAttribute(
 			WebKeys.THEME_DISPLAY, themeDisplay);
 
+		return mockHttpServletRequest;
+	}
+
+	private UIItemsBuilder _getUIItemsBuilder(ThemeDisplay themeDisplay) {
 		VersioningStrategy versioningStrategy = Mockito.mock(
 			VersioningStrategy.class);
 
@@ -282,8 +350,8 @@ public class UIItemsBuilderTest {
 		);
 
 		return new UIItemsBuilder(
-			mockHttpServletRequest, _fileEntry, _fileVersion, null,
-			versioningStrategy, _dlurlHelper);
+			_getMockHttpServletRequest(themeDisplay), _fileEntry, _fileVersion,
+			null, versioningStrategy, _dlurlHelper);
 	}
 
 	private void _setUpGroupPermissionUtil() {
