@@ -8,7 +8,6 @@ import {Structure} from '../../structure_builder/types/Structure';
 import buildGroupObjectDefinitions from '../../structure_builder/utils/buildGroupObjectDefinitions';
 import buildObjectDefinition from '../../structure_builder/utils/buildObjectDefinition';
 import buildObjectRelationships from '../../structure_builder/utils/buildObjectRelationships';
-import getRandomId from '../../structure_builder/utils/getRandomId';
 import {ServerError} from '../../structure_builder/utils/validation';
 import {ObjectDefinition} from '../types/ObjectDefinition';
 import ApiHelper from './ApiHelper';
@@ -37,49 +36,7 @@ function classifyError(type?: string | null): ServerError {
 	return 'unexpected';
 }
 
-async function createStructure({
-	children,
-	erc = getRandomId(),
-	label,
-	name,
-	publishedChildren,
-	settings,
-	slug,
-	spaces,
-	status,
-	titleFieldName,
-	workflows,
-}: {
-	children: Structure['children'];
-	erc?: Structure['erc'];
-	label: Structure['label'];
-	name: Structure['name'];
-	publishedChildren: State['publishedChildren'];
-	settings: Structure['settings'];
-	slug: Structure['slug'];
-	spaces: Structure['spaces'];
-	status: Structure['status'];
-	titleFieldName: Structure['titleFieldName'];
-	workflows: Structure['workflows'];
-}) {
-	return saveStructure({
-		children,
-		deletedGroupERCs: [],
-		deletedRelationships: [],
-		erc,
-		label,
-		name,
-		publishedChildren,
-		settings,
-		slug,
-		spaces,
-		status,
-		titleFieldName,
-		workflows,
-	});
-}
-
-async function updateStructure({
+async function saveStructure({
 	children,
 	erc,
 	history,
@@ -97,55 +54,6 @@ async function updateStructure({
 	children: Structure['children'];
 	erc: Structure['erc'];
 	history: State['history'];
-	id: Structure['id'];
-	label: Structure['label'];
-	name: Structure['name'];
-	publishedChildren: State['publishedChildren'];
-	settings: Structure['settings'];
-	slug: Structure['slug'];
-	spaces: Structure['spaces'];
-	status: Structure['status'];
-	titleFieldName: Structure['titleFieldName'];
-	workflows: Structure['workflows'];
-}) {
-	return saveStructure({
-		children,
-		deletedGroupERCs: history.deletedGroupERCs,
-		deletedRelationships: history.deletedRelationships,
-		erc,
-		id,
-		label,
-		name,
-		publishedChildren,
-		settings,
-		slug,
-		spaces,
-		status,
-		titleFieldName,
-		workflows,
-	});
-}
-
-async function saveStructure({
-	children,
-	deletedGroupERCs,
-	deletedRelationships,
-	erc,
-	id,
-	label,
-	name,
-	publishedChildren,
-	settings,
-	slug,
-	spaces,
-	status,
-	titleFieldName,
-	workflows,
-}: {
-	children: Structure['children'];
-	deletedGroupERCs: State['history']['deletedGroupERCs'];
-	deletedRelationships: State['history']['deletedRelationships'];
-	erc: Structure['erc'];
 	id?: Structure['id'];
 	label: Structure['label'];
 	name: Structure['name'];
@@ -188,14 +96,14 @@ async function saveStructure({
 	formData.append(
 		'deletedObjectRelationships',
 		JSON.stringify(
-			deletedRelationships.map((relationship) => ({
+			history.deletedRelationships.map((relationship) => ({
 				objectDefinitionERC: relationship.structureERC,
 				objectRelationshipERC: relationship.relationshipERC,
 			}))
 		)
 	);
 
-	formData.append('deletedGroupERCs', deletedGroupERCs.join(','));
+	formData.append('deletedGroupERCs', history.deletedGroupERCs.join(','));
 
 	formData.append('objectDefinition', JSON.stringify(mainObjectDefinition));
 
@@ -256,9 +164,8 @@ async function getStructure(externalReferenceCode: string) {
 }
 
 export default {
-	createStructure,
 	deleteStructure,
 	getStructure,
-	updateStructure,
+	saveStructure,
 	updateStructureWorkflow,
 };

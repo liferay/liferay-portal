@@ -271,61 +271,37 @@ export default async function handlePublishStructure({
 
 	dispatch({operation: 'publishing', type: 'start-operation'});
 
-	if (status === 'new') {
-		const {data, error} = await StructureService.createStructure({
-			children,
-			erc,
-			label,
-			name,
-			publishedChildren,
-			settings,
-			slug,
-			spaces,
-			status: 'published',
-			titleFieldName,
-			workflows,
-		});
+	const {data, error} = await StructureService.saveStructure({
+		children,
+		erc,
+		history,
+		id,
+		label,
+		name,
+		publishedChildren,
+		settings,
+		slug,
+		spaces,
+		status: 'published',
+		titleFieldName,
+		workflows,
+	});
 
-		dispatch({type: 'end-operation'});
+	dispatch({type: 'end-operation'});
 
-		if (error) {
-			onError(error);
+	if (error) {
+		onError(error);
 
-			return;
-		}
-		else if (data) {
-			structureId = data.id;
-
-			dispatch({id: data.id, type: 'publish-structure'});
-		}
+		return;
 	}
-	else if (status === 'draft' || status === 'published') {
-		const {error} = await StructureService.updateStructure({
-			children,
-			erc,
-			history,
-			id,
-			label,
-			name,
-			publishedChildren,
-			settings,
-			slug,
-			spaces,
-			status: 'published',
-			titleFieldName,
-			workflows,
-		});
 
-		dispatch({type: 'end-operation'});
+	if (status === 'new') {
+		structureId = data.id;
 
-		if (error) {
-			onError(error);
-
-			return;
-		}
-		else {
-			dispatch({type: 'publish-structure'});
-		}
+		dispatch({id: data.id, type: 'publish-structure'});
+	}
+	else {
+		dispatch({type: 'publish-structure'});
 	}
 
 	if (status === 'published') {

@@ -64,60 +64,36 @@ export default async function handleSaveStructure({
 
 	dispatch({operation: 'saving', type: 'start-operation'});
 
+	const {data, error} = await StructureService.saveStructure({
+		children,
+		erc,
+		history,
+		id,
+		label,
+		name,
+		publishedChildren,
+		settings,
+		slug,
+		spaces,
+		status: 'draft',
+		titleFieldName,
+		workflows,
+	});
+
+	dispatch({type: 'end-operation'});
+
+	if (error) {
+		onError(error);
+
+		return;
+	}
+
 	if (status === 'new') {
-		const {data, error} = await StructureService.createStructure({
-			children,
-			erc,
-			label,
-			name,
-			publishedChildren,
-			settings,
-			slug,
-			spaces,
-			status: 'draft',
-			titleFieldName,
-			workflows,
-		});
-
-		dispatch({type: 'end-operation'});
-
-		if (error) {
-			onError(error);
-
-			return;
-		}
-		else if (data) {
-			dispatch({id: data.id, type: 'create-structure'});
-		}
+		dispatch({id: data.id, type: 'create-structure'});
 	}
 	else {
-		const {error} = await StructureService.updateStructure({
-			children,
-			erc,
-			history,
-			id,
-			label,
-			name,
-			publishedChildren,
-			settings,
-			slug,
-			spaces,
-			status: 'draft',
-			titleFieldName,
-			workflows,
-		});
-
-		dispatch({type: 'end-operation'});
-
-		if (error) {
-			onError(error);
-
-			return;
-		}
-		else {
-			dispatch({type: 'save-structure'});
-			dispatch({type: 'clear-errors'});
-		}
+		dispatch({type: 'save-structure'});
+		dispatch({type: 'clear-errors'});
 	}
 
 	openToast({
