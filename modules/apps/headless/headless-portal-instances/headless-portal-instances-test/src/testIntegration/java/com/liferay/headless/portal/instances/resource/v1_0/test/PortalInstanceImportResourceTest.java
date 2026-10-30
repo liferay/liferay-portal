@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
@@ -45,6 +46,10 @@ import com.liferay.portal.util.PortalInstances;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.junit.Assert;
 import org.junit.Assume;
@@ -107,6 +112,7 @@ public class PortalInstanceImportResourceTest
 		_testPostPortalInstanceImportBatch();
 		_testPostPortalInstanceImportExistingDBPartition();
 		_testPostPortalInstanceImportExportedValuesInUse();
+		_testPostPortalInstanceImportGroupNameInUse();
 		_testPostPortalInstanceImportInProgress();
 		_testPostPortalInstanceImportInvalidSchemaName();
 		_testPostPortalInstanceImportNonexistentDBPartition();
@@ -373,6 +379,84 @@ public class PortalInstanceImportResourceTest
 		_deleteCompany(portalInstance.getCompanyId());
 
 		_dropExportedSchema(companyId);
+	}
+
+	private void _testPostPortalInstanceImportGroupNameInUse()
+		throws Exception {
+
+		long companyId = _exportCompany();
+
+		PortalInstanceImport portalInstanceImport1 =
+			_randomPortalInstanceImport(companyId);
+
+		portalInstanceImport1.setName(GroupConstants.GUEST);
+
+		FutureTask<Problem> futureTask = new FutureTask<>(
+			() -> {
+				try {
+					portalInstanceImportResource.postPortalInstanceImport(
+						portalInstanceImport1);
+
+					return null;
+				}
+				catch (Problem.ProblemException problemException) {
+					return problemException.getProblem();
+				}
+			});
+
+		PortalInstanceImport portalInstanceImport2 =
+			_randomPortalInstanceImport(companyId);
+
+		try {
+			try (LogCapture logCapture1 = LoggerTestUtil.configureLog4JLogger(
+					_CLASS_NAME_PORTAL_INSTANCE_IMPORT_RESOURCE_IMPL,
+					LoggerTestUtil.OFF);
+				LogCapture logCapture2 = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.portal.vulcan.internal.jaxrs.exception." +
+						"mapper.ExceptionMapper",
+					LoggerTestUtil.OFF)) {
+
+				Thread thread = new Thread(futureTask);
+
+				thread.setDaemon(true);
+				thread.setName(
+					PortalInstanceImportResourceTest.class.getSimpleName() +
+						"-postPortalInstanceImport");
+
+				thread.start();
+
+				Problem problem = futureTask.get(10, TimeUnit.MINUTES);
+
+				Assert.assertEquals(
+					"INTERNAL_SERVER_ERROR", problem.getStatus());
+			}
+			catch (TimeoutException timeoutException) {
+				futureTask.cancel(true);
+
+				throw timeoutException;
+			}
+
+			Assert.assertFalse(PortalInstances.isCompanyInImportProcess());
+			Assert.assertNull(
+				_virtualHostLocalService.fetchVirtualHost(
+					portalInstanceImport1.getVirtualHost()));
+
+			PortalInstance portalInstance =
+				portalInstanceImportResource.postPortalInstanceImport(
+					portalInstanceImport2);
+
+			Assert.assertEquals(
+				Long.valueOf(companyId), portalInstance.getCompanyId());
+			Assert.assertEquals(
+				portalInstanceImport2.getWebId(),
+				portalInstance.getPortalInstanceId());
+		}
+		finally {
+			_deleteCompanyByVirtualHost(portalInstanceImport1.getVirtualHost());
+			_deleteCompanyByVirtualHost(portalInstanceImport2.getVirtualHost());
+
+			_dropExportedSchema(companyId);
+		}
 	}
 
 	private void _testPostPortalInstanceImportInProgress() throws Exception {
