@@ -4679,6 +4679,12 @@
 					"title": "LDAP Import Enabled",
 					"type": "boolean"
 				},
+				"maximumMessageSize": {
+					"default": 200000,
+					"description": "Set the maximum length, in characters, of an encoded SAML request or response. Larger messages are rejected before they are parsed. Set to 0 if there is no limit.",
+					"title": "Maximum SAML Message Size",
+					"type": "number"
+				},
 				"pid": {
 					"const": "com.liferay.saml.runtime.configuration.SamlProviderConfiguration",
 					"title": "SAML Provider Configuration"
