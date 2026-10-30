@@ -884,7 +884,7 @@ public class CPInstanceLocalServiceTest {
 						cpInstance.getCPInstanceId());
 
 			Assert.assertNotEquals(
-				"CP instance definition option value",
+				"Commerce product instance definition option value",
 				cpDefinitionOptionValueRel.getCPDefinitionOptionValueRelId(),
 				cpInstanceCPDefinitionOptionValueRel.
 					getCPDefinitionOptionValueRelId());

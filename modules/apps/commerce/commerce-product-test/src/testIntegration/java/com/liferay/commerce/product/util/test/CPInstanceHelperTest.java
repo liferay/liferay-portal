@@ -129,7 +129,8 @@ public class CPInstanceHelperTest {
 		throws Exception {
 
 		frutillaRule.scenario(
-			"Fetch CP instance with specified SKU contributor options"
+			"Fetch commerce product instance with specified SKU contributor " +
+				"options"
 		).given(
 			StringBundler.concat(
 				"I have a product definition with SKU contributor options ",
@@ -137,13 +138,13 @@ public class CPInstanceHelperTest {
 				"them so there are Option_1_Value_1, Option_1_Value_2, ",
 				"Option_2_Value_1, Option_2_Value_2.")
 		).when(
-			"There is only CP instance A that represents SKU value " +
-				"combination Option_1_Value_2, Option_2_Value_1"
+			"There is only commerce product instance A that represents SKU " +
+				"value combination Option_1_Value_2, Option_2_Value_1"
 		).and(
 			"serialized form field values contains combination " +
 				"Option_1_Value_2, Option_2_Value_1"
 		).then(
-			"CP instance A must be fetched"
+			"Commerce product instance A must be fetched"
 		).but(
 			StringBundler.concat(
 				"If serialized form field values contains combination other ",
@@ -204,10 +205,12 @@ public class CPInstanceHelperTest {
 			cpDefinition.getCPDefinitionId(),
 			_getSerializedFormFieldValues(cpInstanceA));
 
-		Assert.assertNotNull("Fetched CP instance exist", fetchCPInstance);
+		Assert.assertNotNull(
+			"Fetched commerce product instance exist", fetchCPInstance);
 
 		Assert.assertEquals(
-			"Fetched CP instance equals CP instance A",
+			"Fetched commerce product instance equals commerce product " +
+				"instance A",
 			cpInstanceA.getCPInstanceId(), fetchCPInstance.getCPInstanceId());
 
 		for (String deletedCPInstanceFormFieldSerializedValue :
@@ -225,13 +228,14 @@ public class CPInstanceHelperTest {
 		throws Exception {
 
 		frutillaRule.scenario(
-			"Fetch CP instance for product with no SKU contributor options"
+			"Fetch commerce product instance for product with no SKU " +
+				"contributor options"
 		).given(
 			"I have a product definition with no SKU contributor options"
 		).when(
 			"Preview of product is invoked"
 		).then(
-			"Product default ACTIVE CP instance must be returned"
+			"Product default ACTIVE commerce product instance must be returned"
 		);
 
 		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
@@ -263,7 +267,7 @@ public class CPInstanceHelperTest {
 			cpDefinition.getCPDefinitionId(), StringPool.BLANK);
 
 		Assert.assertEquals(
-			"Default CP instance cpInstanceId",
+			"Default commerce product instance cpInstanceId",
 			expectedCPInstance.getCPInstanceId(),
 			fetchCPInstance.getCPInstanceId());
 
@@ -282,7 +286,8 @@ public class CPInstanceHelperTest {
 			cpDefinition.getCPDefinitionId(), StringPool.BLANK);
 
 		Assert.assertNull(
-			"Fetched CP instance does not exist", fetchCPInstance);
+			"Fetched commerce product instance does not exist",
+			fetchCPInstance);
 	}
 
 	@Test
@@ -353,8 +358,8 @@ public class CPInstanceHelperTest {
 			cpDefinition.getCPDefinitionId());
 
 		Assert.assertEquals(
-			"Default CP instance ID value", cpInstance.getCPInstanceId(),
-			defaultCPInstance.getCPInstanceId());
+			"Default commerce product instance ID value",
+			cpInstance.getCPInstanceId(), defaultCPInstance.getCPInstanceId());
 	}
 
 	@Test
@@ -362,8 +367,8 @@ public class CPInstanceHelperTest {
 		throws Exception {
 
 		frutillaRule.scenario(
-			"Failure if default CP instance is seeked on product with SKU " +
-				"contributor options"
+			"Failure if default commerce product instance is seeked on " +
+				"product with SKU contributor options"
 		).given(
 			"I have a product definition with one SKU contributor option " +
 				"with three values assigned to it."

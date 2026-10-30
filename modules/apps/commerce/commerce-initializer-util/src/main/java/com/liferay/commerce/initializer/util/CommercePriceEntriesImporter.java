@@ -169,8 +169,8 @@ public class CommercePriceEntriesImporter {
 
 		if (cpInstance == null) {
 			throw new NoSuchCPInstanceException(
-				"No CP instance found with external reference code " +
-					externalReferenceCode);
+				"No commerce product instance was found with external " +
+					"reference code " + externalReferenceCode);
 		}
 
 		CommercePriceEntry commercePriceEntry =

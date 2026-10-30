@@ -671,8 +671,9 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 
 		throw new NoSuchCPDefinitionOptionValueRelException(
 			String.format(
-				"Unable to find option value with CP definition option ID %d " +
-					"assigned to CP instance ID %d",
+				"Unable to find option value with commerce product " +
+					"definition option ID %d assigned to commerce product " +
+						"instance ID %d",
 				cpDefinitionOptionRelId, cpInstanceId));
 	}
 

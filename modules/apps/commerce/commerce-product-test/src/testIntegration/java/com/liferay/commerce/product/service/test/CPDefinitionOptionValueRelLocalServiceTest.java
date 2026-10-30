@@ -1410,7 +1410,7 @@ public class CPDefinitionOptionValueRelLocalServiceTest {
 			quantity.add(BigDecimal.TEN));
 
 		Assert.assertEquals(
-			"New CP definition option value quantity",
+			"New commerce product definition option value quantity",
 			quantity.add(BigDecimal.TEN),
 			newCPDefinitionOptionValueRel.getQuantity());
 

@@ -1380,7 +1380,8 @@ public class CommerceOrderItemLocalServiceTest {
 		).given(
 			"An order with a product bundle (2 orderItems)"
 		).when(
-			"I add the same CPinstance that is linked to an option the bundle"
+			"I add the same commerce product instance that is linked to an " +
+				"option the bundle"
 		).then(
 			"Another order item shall be created with the correct quantity. " +
 				"Bundle related items are not modified, even after deletion " +
