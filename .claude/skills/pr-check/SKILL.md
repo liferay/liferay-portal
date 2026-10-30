@@ -224,7 +224,9 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [JavaScript Unit Tests](validations/portal/javascript-unit-test.md)
 
-1. [Workspace Unit Tests](validations/workspaces/workspace-unit-test.md)
+1. [Workspace Java Unit Tests](validations/workspaces/workspace-java-unit-test.md)
+
+1. [Workspace JavaScript Unit Tests](validations/workspaces/workspace-javascript-unit-test.md)
 
 1. [Helm Unit Test Order](validations/portal/helm-unit-test-order.md)
 
