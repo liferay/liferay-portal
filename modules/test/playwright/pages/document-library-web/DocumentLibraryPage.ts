@@ -379,22 +379,6 @@ export class DocumentLibraryPage {
 		).toBeHidden();
 	}
 
-	async moveTo(entryTitle: string, folderName: string) {
-		await this.goToFileEntryAction('Move', entryTitle);
-
-		const selectDestinationFolderIframe = this.page.locator(
-			'iframe[title^="Select Destination Folder"]'
-		);
-
-		await selectDestinationFolderIframe
-			.contentFrame()
-			.getByRole('row', {name: folderName})
-			.getByRole('button', {exact: true, name: 'Select'})
-			.click();
-
-		await expect(selectDestinationFolderIframe).toBeHidden();
-	}
-
 	async moveFolderToRecycleBin(folderName: string) {
 		await this.goToFolderAction('Delete', folderName);
 

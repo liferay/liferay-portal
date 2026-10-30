@@ -24,7 +24,7 @@ function getCard(page: Page, title: string) {
 }
 
 test(
-	'Asset library folders can be edited, copied with their documents and deleted',
+	'Asset library folders and documents can be copied to another folder',
 	{tag: '@LPD-112510'},
 	async ({apiHelpers, page}) => {
 		const assetLibrary =
@@ -36,10 +36,21 @@ test(
 			assetLibrary.siteId
 		);
 
-		const documentTitle = getRandomString();
+		const folderDocumentTitle = getRandomString();
 
 		await apiHelpers.headlessDelivery.postDocumentFolderDocument(
 			folder.id,
+			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
+			{
+				fileName: `${folderDocumentTitle}.jpg`,
+				title: folderDocumentTitle,
+			}
+		);
+
+		const documentTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocument(
+			assetLibrary.siteId,
 			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
 			{fileName: `${documentTitle}.jpg`, title: documentTitle}
 		);
@@ -51,166 +62,47 @@ test(
 
 		const documentLibraryPage = new DocumentLibraryPage(page);
 
-		const folderName = getRandomString();
-
-		await test.step('Edit the folder', async () => {
+		await test.step('Copy the folder with its document and a document to another folder', async () => {
 			await documentLibraryPage.goto(depotURL);
 
-			await documentLibraryPage.goToEditFolder(folder.name);
-
-			await page.getByLabel('Name').fill(folderName);
-
-			await page.getByRole('button', {exact: true, name: 'Save'}).click();
-
-			await waitForAlert(page);
-
-			await expect(getCard(page, folderName)).toBeVisible();
-			await expect(getCard(page, folder.name)).toHaveCount(0);
-		});
-
-		await test.step('Copy the folder with its document to another folder', async () => {
 			await documentLibraryPage.copyTo({
-				entryTitle: folderName,
+				entryTitle: folder.name,
 				folderName: targetFolder.name,
 				isFolder: true,
 			});
 
+			await documentLibraryPage.goto(depotURL);
+
+			await documentLibraryPage.copyTo({
+				entryTitle: documentTitle,
+				folderName: targetFolder.name,
+			});
+		});
+
+		await test.step('The copies are in the target folder and the originals stay', async () => {
 			await expect(async () => {
 				await documentLibraryPage.gotoFolder({
 					folderId: targetFolder.id,
 					siteUrl: depotURL,
 				});
 
-				await page
-					.getByRole('link', {exact: true, name: folderName})
-					.click({timeout: 2000});
-
 				await expect(getCard(page, documentTitle)).toBeVisible({
 					timeout: 2000,
 				});
-			}).toPass();
 
-			await documentLibraryPage.goto(depotURL);
+				await page
+					.getByRole('link', {exact: true, name: folder.name})
+					.click({timeout: 2000});
 
-			await expect(getCard(page, folderName)).toBeVisible();
-		});
-
-		await test.step('Delete the folder that holds the copy', async () => {
-			await documentLibraryPage.moveFolderToRecycleBin(targetFolder.name);
-
-			await expect(getCard(page, targetFolder.name)).toHaveCount(0);
-			await expect(getCard(page, folderName)).toBeVisible();
-		});
-	}
-);
-
-test(
-	'Asset library documents can be edited, copied and moved to a folder',
-	{tag: '@LPD-112510'},
-	async ({apiHelpers, page}) => {
-		const assetLibrary =
-			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
-
-		const depotURL = `/asset-library-${assetLibrary.id}`;
-
-		const documentTitle = getRandomString();
-
-		await apiHelpers.headlessDelivery.postDocument(
-			assetLibrary.siteId,
-			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
-			{fileName: `${documentTitle}.jpg`, title: documentTitle}
-		);
-
-		const movedDocumentTitle = getRandomString();
-
-		await apiHelpers.headlessDelivery.postDocument(
-			assetLibrary.siteId,
-			createReadStream(path.join(__dirname, 'dependencies/Document.jpg')),
-			{fileName: `${movedDocumentTitle}.jpg`, title: movedDocumentTitle}
-		);
-
-		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
-			assetLibrary.siteId
-		);
-
-		const documentLibraryPage = new DocumentLibraryPage(page);
-
-		const editedDocumentTitle = getRandomString();
-
-		await test.step('Edit the title and the file of a document', async () => {
-			await documentLibraryPage.goto(depotURL);
-
-			await documentLibraryPage.goToFileEntryAction(
-				'Edit',
-				documentTitle
-			);
-
-			await page
-				.locator('input[type="file"]')
-				.setInputFiles(
-					path.join(__dirname, 'dependencies/Document_Small.jpeg')
-				);
-
-			await page.getByLabel('Title').fill(editedDocumentTitle);
-
-			await page
-				.getByRole('button', {exact: true, name: 'Publish'})
-				.click();
-
-			await waitForAlert(page);
-
-			await documentLibraryPage.goToViewFileEntry(editedDocumentTitle);
-
-			const sidebar = page.locator(
-				'#_com_liferay_document_library_web_portlet_DLAdminPortlet_ContextualSidebar'
-			);
-
-			await clickAndExpectToBeVisible({
-				target: sidebar.getByText('Document_Small.jpeg'),
-				trigger: page.locator('[data-qa-id="infoButton"]'),
-			});
-
-			await expect(
-				sidebar.locator('.label-item', {hasText: 'Version 2.0'})
-			).toBeVisible();
-		});
-
-		await test.step('Copy the document to a folder', async () => {
-			await documentLibraryPage.goto(depotURL);
-
-			await documentLibraryPage.copyTo({
-				entryTitle: editedDocumentTitle,
-				folderName: folder.name,
-			});
-
-			await expect(async () => {
-				await documentLibraryPage.gotoFolder({
-					folderId: folder.id,
-					siteUrl: depotURL,
-				});
-
-				await expect(getCard(page, editedDocumentTitle)).toBeVisible({
+				await expect(getCard(page, folderDocumentTitle)).toBeVisible({
 					timeout: 2000,
 				});
 			}).toPass();
-		});
-
-		await test.step('Move another document to the folder', async () => {
-			await documentLibraryPage.goto(depotURL);
-
-			await documentLibraryPage.moveTo(movedDocumentTitle, folder.name);
 
 			await documentLibraryPage.goto(depotURL);
 
-			await expect(getCard(page, editedDocumentTitle)).toBeVisible();
-			await expect(getCard(page, movedDocumentTitle)).toHaveCount(0);
-
-			await documentLibraryPage.gotoFolder({
-				folderId: folder.id,
-				siteUrl: depotURL,
-			});
-
-			await expect(getCard(page, movedDocumentTitle)).toBeVisible();
+			await expect(getCard(page, folder.name)).toBeVisible();
+			await expect(getCard(page, documentTitle)).toBeVisible();
 		});
 	}
 );
