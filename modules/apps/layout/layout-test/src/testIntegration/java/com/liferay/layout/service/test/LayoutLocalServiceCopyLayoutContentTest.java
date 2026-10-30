@@ -532,6 +532,7 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_addPortletFragmentEntryLink(
 			instanceId, draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET,
 			segmentsExperience.getSegmentsExperienceId());
+
 		_addPortletFragmentEntryLink(
 			null, draftLayout,
 			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET,
