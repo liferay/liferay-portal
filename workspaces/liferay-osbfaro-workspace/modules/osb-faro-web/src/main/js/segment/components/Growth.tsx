@@ -1,5 +1,3 @@
-// @ts-nocheck - Fix it at this LRAC-13388
-
 import * as API from 'shared/api';
 import Card from 'shared/components/Card';
 import DataValue from 'shared/components/DataValue';
