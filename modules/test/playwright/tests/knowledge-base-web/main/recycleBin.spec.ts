@@ -174,8 +174,6 @@ test(
 
 			await undoButton.click();
 
-			await knowledgeBasePage.goto(site.friendlyUrlPath);
-
 			await expect(knowledgeBasePage.getRow(draftTitle)).toContainText(
 				'Draft'
 			);
