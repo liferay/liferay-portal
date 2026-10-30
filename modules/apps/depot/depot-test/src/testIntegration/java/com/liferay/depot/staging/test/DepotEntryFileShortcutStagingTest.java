@@ -19,9 +19,9 @@ import com.liferay.document.library.kernel.service.DLFileShortcutLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
-import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -35,7 +35,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.Collections;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -54,31 +53,27 @@ public class DepotEntryFileShortcutStagingTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
-		_liveDepotEntry = _depotEntryLocalService.addDepotEntry(
+	@Test
+	@TestInfo("LPD-112613")
+	public void testDepotEntryFileShortcutAfterPublishingConnectedSite()
+		throws Exception {
+
+		DepotEntry liveDepotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
-
-		_liveGroup = GroupTestUtil.addGroup();
-	}
-
-	@Test
-	@TestInfo("LPD-112613")
-	public void testDepotEntryFileShortcutAfterPublishingConnectedSite()
-		throws Exception {
+		Group liveGroup = GroupTestUtil.addGroup();
 
 		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
-			_liveDepotEntry.getDepotEntryId(), _liveGroup.getGroupId());
+			liveDepotEntry.getDepotEntryId(), liveGroup.getGroupId());
 
 		DepotTestUtil.withLocalStagingEnabled(
-			_liveDepotEntry,
+			liveDepotEntry,
 			stagingDepotEntry -> DepotTestUtil.withLocalStagingEnabled(
-				_liveGroup,
+				liveGroup,
 				stagingGroup -> {
 					FileEntry stagingFileEntry =
 						_dlAppLocalService.addFileEntry(
@@ -93,7 +88,7 @@ public class DepotEntryFileShortcutStagingTest {
 
 					DepotStagingTestUtil.publishLayouts(
 						stagingDepotEntry.getGroup(),
-						_liveDepotEntry.getGroup());
+						liveDepotEntry.getGroup());
 
 					FileShortcut stagingFileShortcut =
 						_dlAppLocalService.addFileShortcut(
@@ -105,22 +100,25 @@ public class DepotEntryFileShortcutStagingTest {
 								stagingGroup.getGroupId()));
 
 					DepotStagingTestUtil.publishLayouts(
-						stagingGroup, _liveGroup);
+						stagingGroup, liveGroup);
 
 					DLFileShortcut liveDLFileShortcut =
 						_dlFileShortcutLocalService.
 							getDLFileShortcutByUuidAndGroupId(
 								stagingFileShortcut.getUuid(),
-								_liveGroup.getGroupId());
+								liveGroup.getGroupId());
 					FileEntry liveFileEntry =
 						_dlAppLocalService.getFileEntryByUuidAndGroupId(
 							stagingFileEntry.getUuid(),
-							_liveDepotEntry.getGroupId());
+							liveDepotEntry.getGroupId());
 
 					Assert.assertEquals(
 						liveFileEntry.getFileEntryId(),
 						liveDLFileShortcut.getToFileEntryId());
 				}));
+
+		_depotEntryLocalService.deleteDepotEntry(liveDepotEntry);
+		_groupLocalService.deleteGroup(liveGroup);
 	}
 
 	@Inject
@@ -135,10 +133,7 @@ public class DepotEntryFileShortcutStagingTest {
 	@Inject
 	private DLFileShortcutLocalService _dlFileShortcutLocalService;
 
-	@DeleteAfterTestRun
-	private DepotEntry _liveDepotEntry;
-
-	@DeleteAfterTestRun
-	private Group _liveGroup;
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 }
