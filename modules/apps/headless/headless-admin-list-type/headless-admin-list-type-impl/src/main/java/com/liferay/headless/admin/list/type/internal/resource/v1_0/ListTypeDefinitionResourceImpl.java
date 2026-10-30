@@ -85,12 +85,14 @@ public class ListTypeDefinitionResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.list.type.model.ListTypeDefinition listTypeDefinition =
-			_listTypeDefinitionService.
-				getListTypeDefinitionByExternalReferenceCode(
-					externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.list.type.model.ListTypeDefinition
+			serviceBuilderListTypeDefinition =
+				_listTypeDefinitionService.
+					getListTypeDefinitionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
-		deleteListTypeDefinition(listTypeDefinition.getListTypeDefinitionId());
+		deleteListTypeDefinition(
+			serviceBuilderListTypeDefinition.getListTypeDefinitionId());
 	}
 
 	@Override

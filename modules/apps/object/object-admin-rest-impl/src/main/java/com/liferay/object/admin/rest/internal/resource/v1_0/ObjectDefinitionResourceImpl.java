@@ -182,11 +182,14 @@ public class ObjectDefinitionResourceImpl
 			String externalReferenceCode)
 		throws Exception {
 
-		com.liferay.object.model.ObjectDefinition objectDefinition =
-			_objectDefinitionService.getObjectDefinitionByExternalReferenceCode(
-				externalReferenceCode, contextCompany.getCompanyId());
+		com.liferay.object.model.ObjectDefinition
+			serviceBuilderObjectDefinition =
+				_objectDefinitionService.
+					getObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
 
-		deleteObjectDefinition(objectDefinition.getObjectDefinitionId());
+		deleteObjectDefinition(
+			serviceBuilderObjectDefinition.getObjectDefinitionId());
 	}
 
 	@Override
