@@ -17,6 +17,7 @@ import com.liferay.batch.engine.model.BatchEngineImportTask;
 import com.liferay.batch.engine.service.base.BatchEngineImportTaskLocalServiceBaseImpl;
 import com.liferay.batch.engine.service.persistence.BatchEngineImportTaskErrorPersistence;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.io.AutoDeleteFileInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
@@ -199,10 +200,13 @@ public class BatchEngineImportTaskLocalServiceImpl
 		Blob blob = null;
 
 		try {
-			Blob contentBlob = batchEngineImportTask.getContent();
-
 			blob = _getBatchEngineImportTaskSanitizedContentBlob(
-				batchEngineImportTask, contentBlob.getBinaryStream(),
+				batchEngineImportTask,
+				() -> {
+					Blob contentBlob = batchEngineImportTask.getContent();
+
+					return contentBlob.getBinaryStream();
+				},
 				value -> null);
 		}
 		catch (Exception exception) {
@@ -227,7 +231,7 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 	private Blob _getBatchEngineImportTaskSanitizedContentBlob(
 			BatchEngineImportTask batchEngineImportTask,
-			InputStream inputStream,
+			UnsafeSupplier<InputStream, Exception> inputStreamUnsafeSupplier,
 			UnsafeFunction<String, String, Exception>
 				passwordFieldValueUnsafeFunction)
 		throws Exception {
@@ -243,7 +247,9 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 		File file = FileUtil.createTempFile();
 
-		try (OutputStream outputStream = new FileOutputStream(file)) {
+		try (InputStream inputStream = inputStreamUnsafeSupplier.get();
+			OutputStream outputStream = new FileOutputStream(file)) {
+
 			BatchEngineTaskContentSanitizer batchEngineTaskContentSanitizer =
 				new BatchEngineTaskContentSanitizer(
 					batchEngineImportTask, _configurationProvider,
@@ -272,7 +278,8 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 		try {
 			Blob blob = _getBatchEngineImportTaskSanitizedContentBlob(
-				batchEngineImportTask, new UnsyncByteArrayInputStream(content),
+				batchEngineImportTask,
+				() -> new UnsyncByteArrayInputStream(content),
 				PasswordFieldUtil::encrypt);
 
 			if (blob == null) {
