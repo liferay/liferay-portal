@@ -435,18 +435,6 @@ public class KBArticleLocalServiceUtil {
 			resourcePrimKey, status, orderByComparator);
 	}
 
-	public static List<KBArticle> getCompanyKBArticles(
-		long companyId, int status, int start, int end,
-		OrderByComparator<KBArticle> orderByComparator) {
-
-		return getService().getCompanyKBArticles(
-			companyId, status, start, end, orderByComparator);
-	}
-
-	public static int getCompanyKBArticlesCount(long companyId, int status) {
-		return getService().getCompanyKBArticlesCount(companyId, status);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
 		getExportActionableDynamicQuery(
 			com.liferay.exportimport.kernel.lar.PortletDataContext
@@ -940,4 +928,4 @@ public class KBArticleLocalServiceUtil {
 			KBArticleLocalServiceUtil.class, KBArticleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1533647891
+// LIFERAY-SERVICE-BUILDER-HASH:832520171
