@@ -13,8 +13,8 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactory;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.ResourceURLBuilder;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.portlet.ResourceURL;
@@ -42,6 +42,13 @@ public class AssigneeDDMFormFieldTemplateContextContributor
 		return HashMapBuilder.<String, Object>put(
 			"searchURL",
 			() -> {
+				String portletId = _portal.getPortletId(
+					ddmFormFieldRenderingContext.getHttpServletRequest());
+
+				if (Validator.isNull(portletId)) {
+					return null;
+				}
+
 				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 					RequestBackedPortletURLFactoryUtil.create(
 						ddmFormFieldRenderingContext.getHttpServletRequest());
@@ -49,8 +56,7 @@ public class AssigneeDDMFormFieldTemplateContextContributor
 				return ResourceURLBuilder.createResourceURL(
 					(ResourceURL)
 						requestBackedPortletURLFactory.createResourceURL(
-							GetterUtil.getString(
-								ddmFormField.getProperty("portletId")))
+							portletId)
 				).setResourceID(
 					"/object_entries/autocomplete_assignee"
 				).buildString();
@@ -71,5 +77,8 @@ public class AssigneeDDMFormFieldTemplateContextContributor
 
 	@Reference
 	private JSONFactory _jsonFactory;
+
+	@Reference
+	private Portal _portal;
 
 }
