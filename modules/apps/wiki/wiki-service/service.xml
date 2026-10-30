@@ -43,19 +43,12 @@
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
 		</finder>
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="G_N" return-type="WikiNode" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="name" />
 		</finder>
 		<finder name="G_S" return-type="Collection">
 			<finder-column name="groupId" />
-			<finder-column name="status" />
-		</finder>
-		<finder name="C_S" return-type="Collection">
-			<finder-column name="companyId" />
 			<finder-column name="status" />
 		</finder>
 	</entity>
@@ -110,9 +103,6 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="NodeId" return-type="Collection">
 			<finder-column name="nodeId" />
 		</finder>
