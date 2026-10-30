@@ -75,7 +75,9 @@ public class DepotActionDropdownItemsProviderTest {
 		);
 
 		PortalUtil portalUtil = new PortalUtil();
+
 		Portal portal = Mockito.mock(Portal.class);
+
 		HttpServletRequest httpServletRequest = Mockito.mock(
 			HttpServletRequest.class);
 
