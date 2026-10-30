@@ -11,6 +11,7 @@ import com.liferay.exportimport.report.internal.util.ExportImportReportEntryUtil
 import com.liferay.exportimport.report.model.ExportImportReportEntry;
 import com.liferay.exportimport.report.service.base.ExportImportReportEntryLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
@@ -117,6 +118,7 @@ public class ExportImportReportEntryLocalServiceImpl
 			errorStacktrace, modelNameLanguageKey);
 	}
 
+	@CTAware(onProduction = true)
 	@Override
 	public void resolveEmptyExportImportReportEntries(
 			long groupId, long companyId, String classExternalReferenceCode,
@@ -128,6 +130,7 @@ public class ExportImportReportEntryLocalServiceImpl
 			ExportImportReportEntryConstants.TYPE_EMPTY);
 	}
 
+	@CTAware(onProduction = true)
 	@Override
 	public void resolveMissingReferenceExportImportReportEntries(
 			long groupId, long companyId, String classExternalReferenceCode,
