@@ -23,6 +23,8 @@ import com.liferay.portal.template.velocity.configuration.VelocityEngineConfigur
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.util.AbstractMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -65,6 +67,27 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 
 		super.prepare(contextObjects, httpServletRequest);
 
+		Map<String, Function<HttpServletRequest, Object>> lazyContextFunctions =
+			new AbstractMap<>() {
+
+				@Override
+				public Set<Entry<String, Function<HttpServletRequest, Object>>>
+					entrySet() {
+
+					return Collections.emptySet();
+				}
+
+				@Override
+				public Function<HttpServletRequest, Object> put(
+					String key, Function<HttpServletRequest, Object> function) {
+
+					contextObjects.put(key, function.apply(httpServletRequest));
+
+					return null;
+				}
+
+			};
+
 		// Theme display
 
 		ThemeDisplay themeDisplay =
@@ -75,16 +98,18 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 
 			// Full css and templates path
 
-			contextObjects.put(
+			lazyContextFunctions.put(
 				"fullCssPath",
-				_getThemePath(httpServletRequest, Theme::getCssPath));
-			contextObjects.put(
+				curHttpServletRequest -> _getThemePath(
+					curHttpServletRequest, Theme::getCssPath));
+			lazyContextFunctions.put(
 				"fullTemplatesPath",
-				_getThemePath(httpServletRequest, Theme::getTemplatesPath));
+				curHttpServletRequest -> _getThemePath(
+					curHttpServletRequest, Theme::getTemplatesPath));
 
 			// Init
 
-			contextObjects.put("init", _getInit(httpServletRequest));
+			lazyContextFunctions.put("init", this::_getInit);
 
 			// Navigation items
 

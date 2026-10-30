@@ -97,12 +97,14 @@ import java.io.InputStream;
 
 import java.net.URL;
 
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
 
 import org.osgi.framework.BundleContext;
 
@@ -198,16 +200,37 @@ public class TemplateContextHelper {
 		Map<String, Object> contextObjects,
 		HttpServletRequest httpServletRequest) {
 
+		Map<String, Function<HttpServletRequest, Object>> lazyContextFunctions =
+			new AbstractMap<>() {
+
+				@Override
+				public Set<Entry<String, Function<HttpServletRequest, Object>>>
+					entrySet() {
+
+					return Collections.emptySet();
+				}
+
+				@Override
+				public Function<HttpServletRequest, Object> put(
+					String key, Function<HttpServletRequest, Object> function) {
+
+					contextObjects.put(key, function.apply(httpServletRequest));
+
+					return null;
+				}
+
+			};
+
 		// Content security policy nonce
 
-		contextObjects.put(
+		lazyContextFunctions.put(
 			"nonceAttribute",
-			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(
-				httpServletRequest));
+			ContentSecurityPolicyNonceProviderUtil::getNonceAttribute);
 
 		// Request
 
-		contextObjects.put("request", httpServletRequest);
+		lazyContextFunctions.put(
+			"request", curHttpServletRequest -> curHttpServletRequest);
 
 		// Portlet config
 
@@ -216,10 +239,11 @@ public class TemplateContextHelper {
 				JavaConstants.JAKARTA_PORTLET_CONFIG);
 
 		if (portletConfig != null) {
-			contextObjects.put(
+			lazyContextFunctions.put(
 				"portletConfig",
-				(PortletConfig)httpServletRequest.getAttribute(
-					JavaConstants.JAKARTA_PORTLET_CONFIG));
+				curHttpServletRequest ->
+					(PortletConfig)curHttpServletRequest.getAttribute(
+						JavaConstants.JAKARTA_PORTLET_CONFIG));
 		}
 
 		// Render request
@@ -231,8 +255,8 @@ public class TemplateContextHelper {
 		if ((portletRequest != null) &&
 			(portletRequest instanceof RenderRequest)) {
 
-			contextObjects.put(
-				"renderRequest", _getRenderRequest(httpServletRequest));
+			lazyContextFunctions.put(
+				"renderRequest", TemplateContextHelper::_getRenderRequest);
 		}
 
 		// Render response
@@ -244,21 +268,21 @@ public class TemplateContextHelper {
 		if ((portletResponse != null) &&
 			(portletResponse instanceof RenderResponse)) {
 
-			contextObjects.put(
-				"renderResponse", _getRenderResponse(httpServletRequest));
+			lazyContextFunctions.put(
+				"renderResponse", TemplateContextHelper::_getRenderResponse);
 		}
 
 		// XML request
 
 		if ((portletRequest != null) && (portletResponse != null)) {
-			contextObjects.put(
+			lazyContextFunctions.put(
 				"portletRequestModelFactory",
-				_getPortletRequestModelFactory(httpServletRequest));
+				TemplateContextHelper::_getPortletRequestModelFactory);
 
 			// Deprecated
 
-			contextObjects.put(
-				"xmlRequest", _getXMLRequest(httpServletRequest));
+			lazyContextFunctions.put(
+				"xmlRequest", TemplateContextHelper::_getXMLRequest);
 		}
 
 		// Theme display
@@ -268,38 +292,61 @@ public class TemplateContextHelper {
 				WebKeys.THEME_DISPLAY);
 
 		if (themeDisplay != null) {
-			contextObjects.put(
-				"bodyCssClass", _getBodyCssClass(httpServletRequest));
+			lazyContextFunctions.put(
+				"bodyCssClass", TemplateContextHelper::_getBodyCssClass);
 
-			contextObjects.put("colorScheme", themeDisplay.getColorScheme());
-			contextObjects.put("company", themeDisplay.getCompany());
-			contextObjects.put("layout", themeDisplay.getLayout());
-			contextObjects.put("layouts", themeDisplay.getLayouts());
-			contextObjects.put(
-				"layoutTypePortlet", themeDisplay.getLayoutTypePortlet());
-			contextObjects.put("locale", themeDisplay.getLocale());
-			contextObjects.put(
-				"permissionChecker", themeDisplay.getPermissionChecker());
-			contextObjects.put("plid", String.valueOf(themeDisplay.getPlid()));
-			contextObjects.put(
-				"portletDisplay", themeDisplay.getPortletDisplay());
-			contextObjects.put("realUser", themeDisplay.getRealUser());
-			contextObjects.put(
-				"scopeGroupId", Long.valueOf(themeDisplay.getScopeGroupId()));
-			contextObjects.put(
-				"siteSpritemap", themeDisplay.getPathThemeSpritemap());
-			contextObjects.put(
+			lazyContextFunctions.put(
+				"colorScheme",
+				_getThemeDisplayFunction(ThemeDisplay::getColorScheme));
+			lazyContextFunctions.put(
+				"company", _getThemeDisplayFunction(ThemeDisplay::getCompany));
+			lazyContextFunctions.put(
+				"layout", _getThemeDisplayFunction(ThemeDisplay::getLayout));
+			lazyContextFunctions.put(
+				"layouts", _getThemeDisplayFunction(ThemeDisplay::getLayouts));
+			lazyContextFunctions.put(
+				"layoutTypePortlet",
+				_getThemeDisplayFunction(ThemeDisplay::getLayoutTypePortlet));
+			lazyContextFunctions.put(
+				"locale", _getThemeDisplayFunction(ThemeDisplay::getLocale));
+			lazyContextFunctions.put(
+				"permissionChecker",
+				_getThemeDisplayFunction(ThemeDisplay::getPermissionChecker));
+			lazyContextFunctions.put(
+				"plid",
+				_getThemeDisplayFunction(
+					curThemeDisplay -> String.valueOf(
+						curThemeDisplay.getPlid())));
+			lazyContextFunctions.put(
+				"portletDisplay",
+				_getThemeDisplayFunction(ThemeDisplay::getPortletDisplay));
+			lazyContextFunctions.put(
+				"realUser",
+				_getThemeDisplayFunction(ThemeDisplay::getRealUser));
+			lazyContextFunctions.put(
+				"scopeGroupId",
+				_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
+			lazyContextFunctions.put(
+				"siteSpritemap",
+				_getThemeDisplayFunction(ThemeDisplay::getPathThemeSpritemap));
+			lazyContextFunctions.put(
 				"themeDisplay",
-				(ThemeDisplay)httpServletRequest.getAttribute(
-					WebKeys.THEME_DISPLAY));
-			contextObjects.put("timeZone", themeDisplay.getTimeZone());
+				curHttpServletRequest ->
+					(ThemeDisplay)curHttpServletRequest.getAttribute(
+						WebKeys.THEME_DISPLAY));
+			lazyContextFunctions.put(
+				"timeZone",
+				_getThemeDisplayFunction(ThemeDisplay::getTimeZone));
 
-			contextObjects.put("user", _getUser(themeDisplay));
+			lazyContextFunctions.put(
+				"user",
+				_getThemeDisplayFunction(TemplateContextHelper::_getUser));
 
 			// Deprecated
 
-			contextObjects.put(
-				"portletGroupId", Long.valueOf(themeDisplay.getScopeGroupId()));
+			lazyContextFunctions.put(
+				"portletGroupId",
+				_getThemeDisplayFunction(ThemeDisplay::getScopeGroupId));
 		}
 
 		// Theme
@@ -311,7 +358,7 @@ public class TemplateContextHelper {
 		}
 
 		if (theme != null) {
-			contextObjects.put("theme", _getTheme(httpServletRequest));
+			lazyContextFunctions.put("theme", TemplateContextHelper::_getTheme);
 		}
 
 		// Tiles attributes
@@ -325,9 +372,10 @@ public class TemplateContextHelper {
 				WebKeys.PAGE_TITLE);
 
 		if (pageTitleListMergeable != null) {
-			contextObjects.put(
+			lazyContextFunctions.put(
 				"pageTitle",
-				_mergeToString(httpServletRequest, WebKeys.PAGE_TITLE));
+				curHttpServletRequest -> _mergeToString(
+					curHttpServletRequest, WebKeys.PAGE_TITLE));
 		}
 
 		ListMergeable<String> pageSubtitleListMergeable =
@@ -335,9 +383,10 @@ public class TemplateContextHelper {
 				WebKeys.PAGE_SUBTITLE);
 
 		if (pageSubtitleListMergeable != null) {
-			contextObjects.put(
+			lazyContextFunctions.put(
 				"pageSubtitle",
-				_mergeToString(httpServletRequest, WebKeys.PAGE_SUBTITLE));
+				curHttpServletRequest -> _mergeToString(
+					curHttpServletRequest, WebKeys.PAGE_SUBTITLE));
 		}
 	}
 
@@ -780,7 +829,9 @@ public class TemplateContextHelper {
 		contextObjects.put("tilesSelectable", tilesSelectable);
 	}
 
-	private Object _getBodyCssClass(HttpServletRequest httpServletRequest) {
+	private static Object _getBodyCssClass(
+		HttpServletRequest httpServletRequest) {
+
 		if (httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY) == null) {
 			return null;
 		}
@@ -795,7 +846,7 @@ public class TemplateContextHelper {
 			originalHttpServletRequest, namespace + "bodyCssClass");
 	}
 
-	private Object _getPortletRequestModelFactory(
+	private static Object _getPortletRequestModelFactory(
 		HttpServletRequest httpServletRequest) {
 
 		PortletRequest portletRequest =
@@ -812,7 +863,9 @@ public class TemplateContextHelper {
 		return new PortletRequestModelFactory(portletRequest, portletResponse);
 	}
 
-	private Object _getRenderRequest(HttpServletRequest httpServletRequest) {
+	private static Object _getRenderRequest(
+		HttpServletRequest httpServletRequest) {
+
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_REQUEST);
@@ -826,7 +879,9 @@ public class TemplateContextHelper {
 		return null;
 	}
 
-	private Object _getRenderResponse(HttpServletRequest httpServletRequest) {
+	private static Object _getRenderResponse(
+		HttpServletRequest httpServletRequest) {
+
 		PortletResponse portletResponse =
 			(PortletResponse)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_RESPONSE);
@@ -840,7 +895,7 @@ public class TemplateContextHelper {
 		return null;
 	}
 
-	private Object _getTheme(HttpServletRequest httpServletRequest) {
+	private static Object _getTheme(HttpServletRequest httpServletRequest) {
 		Theme theme = (Theme)httpServletRequest.getAttribute(WebKeys.THEME);
 
 		ThemeDisplay themeDisplay =
@@ -854,7 +909,7 @@ public class TemplateContextHelper {
 		return theme;
 	}
 
-	private Object _getUser(ThemeDisplay themeDisplay) {
+	private static Object _getUser(ThemeDisplay themeDisplay) {
 		User user = themeDisplay.getUser();
 
 		long userId = PrincipalThreadLocal.getUserId();
@@ -870,7 +925,9 @@ public class TemplateContextHelper {
 		return user;
 	}
 
-	private Object _getXMLRequest(HttpServletRequest httpServletRequest) {
+	private static Object _getXMLRequest(
+		HttpServletRequest httpServletRequest) {
+
 		PortletRequest portletRequest =
 			(PortletRequest)httpServletRequest.getAttribute(
 				JavaConstants.JAKARTA_PORTLET_REQUEST);
@@ -892,6 +949,22 @@ public class TemplateContextHelper {
 				return portletRequestModel.toXML();
 			}
 
+		};
+	}
+
+	private Function<HttpServletRequest, Object> _getThemeDisplayFunction(
+		Function<ThemeDisplay, Object> function) {
+
+		return httpServletRequest -> {
+			ThemeDisplay themeDisplay =
+				(ThemeDisplay)httpServletRequest.getAttribute(
+					WebKeys.THEME_DISPLAY);
+
+			if (themeDisplay == null) {
+				return null;
+			}
+
+			return function.apply(themeDisplay);
 		};
 	}
 
