@@ -122,13 +122,6 @@
 		<finder name="StorageId" return-type="Collection">
 			<finder-column name="storageId" />
 		</finder>
-		<finder name="StructureVersionId" return-type="Collection">
-			<finder-column name="structureVersionId" />
-		</finder>
-		<finder name="C_F" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="fieldType" />
-		</finder>
 		<finder name="S_F" return-type="Collection">
 			<finder-column name="storageId" />
 			<finder-column name="fieldName" />
@@ -169,10 +162,6 @@
 		<finder name="S_L" return-type="Collection">
 			<finder-column name="storageId" />
 			<finder-column arrayable-operator="OR" name="languageId" />
-		</finder>
-		<finder name="AN_SAV" return-type="Collection">
-			<finder-column name="attributeName" />
-			<finder-column name="smallAttributeValue" />
 		</finder>
 		<finder name="F_AN_L" return-type="DDMFieldAttribute" unique="true">
 			<finder-column name="fieldId" />
@@ -249,19 +238,12 @@
 
 		<!-- Finder methods -->
 
-		<finder name="CompanyId" return-type="Collection">
-			<finder-column name="companyId" />
-		</finder>
 		<finder name="FormInstanceId" return-type="Collection">
 			<finder-column name="formInstanceId" />
 		</finder>
 		<finder name="U_F" return-type="Collection">
 			<finder-column name="userId" />
 			<finder-column name="formInstanceId" />
-		</finder>
-		<finder name="F_F" return-type="Collection">
-			<finder-column name="formInstanceId" />
-			<finder-column name="formInstanceVersion" />
 		</finder>
 		<finder name="F_I" return-type="Collection">
 			<finder-column name="formInstanceId" />
@@ -305,10 +287,6 @@
 		<finder name="U_F" return-type="Collection">
 			<finder-column name="userId" />
 			<finder-column name="formInstanceId" />
-		</finder>
-		<finder name="F_F" return-type="Collection">
-			<finder-column name="formInstanceId" />
-			<finder-column name="formInstanceVersion" />
 		</finder>
 		<finder name="F_V" return-type="DDMFormInstanceRecordVersion" unique="true">
 			<finder-column name="formInstanceRecordId" />
