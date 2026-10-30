@@ -14,7 +14,11 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
+import com.liferay.portal.kernel.model.SystemEvent;
+import com.liferay.portal.kernel.model.SystemEventConstants;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -26,6 +30,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.language.LanguageResources;
@@ -78,6 +83,27 @@ public class PLOEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testDeletePLOEntries() throws Exception {
+		String key = RandomTestUtil.randomString();
+
+		PLOEntry ploEntry1 = _addOrUpdatePLOEntry(
+			key, "en_US", RandomTestUtil.randomString());
+		PLOEntry ploEntry2 = _addOrUpdatePLOEntry(
+			key, "pt_BR", RandomTestUtil.randomString());
+
+		_ploEntryLocalService.deletePLOEntries(
+			TestPropsValues.getCompanyId(), key);
+
+		Assert.assertNull(
+			_ploEntryLocalService.fetchPLOEntry(ploEntry1.getPloEntryId()));
+		Assert.assertNull(
+			_ploEntryLocalService.fetchPLOEntry(ploEntry2.getPloEntryId()));
+
+		_assertDeletionSystemEvent(ploEntry1);
+		_assertDeletionSystemEvent(ploEntry2);
+	}
+
+	@Test
 	public void testDeletePLOEntry() throws Throwable {
 		_testDeletePLOEntry();
 		_testDeletePLOEntryRollback();
@@ -100,6 +126,8 @@ public class PLOEntryLocalServiceTest {
 
 		Assert.assertNull(
 			_ploEntryLocalService.fetchPLOEntry(ploEntry.getPloEntryId()));
+
+		_assertDeletionSystemEvent(ploEntry);
 	}
 
 	@Test
@@ -165,6 +193,21 @@ public class PLOEntryLocalServiceTest {
 	private PLOEntry _addPLOEntry(String key, String value) throws Exception {
 		return _addOrUpdatePLOEntry(
 			key, LanguageUtil.getLanguageId(LocaleUtil.getDefault()), value);
+	}
+
+	private void _assertDeletionSystemEvent(PLOEntry ploEntry) {
+		List<SystemEvent> systemEvents =
+			_systemEventLocalService.getSystemEvents(
+				0, _portal.getClassNameId(PLOEntry.class),
+				ploEntry.getPloEntryId(), SystemEventConstants.TYPE_DELETE);
+
+		Assert.assertEquals(systemEvents.toString(), 1, systemEvents.size());
+
+		SystemEvent systemEvent = systemEvents.get(0);
+
+		Assert.assertEquals(
+			ploEntry.getExternalReferenceCode(),
+			systemEvent.getClassExternalReferenceCode());
 	}
 
 	private void _assertException(
@@ -261,6 +304,10 @@ public class PLOEntryLocalServiceTest {
 
 		PLOEntry ploEntry = _addOrUpdatePLOEntry(
 			newKey, languageId, RandomTestUtil.randomString());
+
+		User user = TestPropsValues.getUser();
+
+		Assert.assertEquals(user.getFullName(), ploEntry.getUserName());
 
 		_assertTranslationValue(newKey, ploEntry.getValue());
 
@@ -511,6 +558,8 @@ public class PLOEntryLocalServiceTest {
 		_ploEntryLocalService.deletePLOEntry(ploEntry.getPloEntryId());
 
 		Assert.assertEquals(key, _language.get(locale, key));
+
+		_assertDeletionSystemEvent(ploEntry);
 	}
 
 	private void _testDeletePLOEntryRollback() throws Throwable {
@@ -592,6 +641,8 @@ public class PLOEntryLocalServiceTest {
 		Assert.assertNull(
 			_ploEntryLocalService.fetchPLOEntry(
 				TestPropsValues.getCompanyId(), key, "pt_BR"));
+
+		_assertDeletionSystemEvent(ploEntry);
 	}
 
 	private void _testGetPLOEntriesIgnoresKeyCase() throws Exception {
@@ -754,5 +805,11 @@ public class PLOEntryLocalServiceTest {
 
 	@Inject
 	private PLOEntryLocalService _ploEntryLocalService;
+
+	@Inject
+	private Portal _portal;
+
+	@Inject
+	private SystemEventLocalService _systemEventLocalService;
 
 }
