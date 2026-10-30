@@ -474,11 +474,6 @@ public interface BlogsEntryLocalService
 		QueryDefinition<BlogsEntry> queryDefinition);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupUserEntriesCount(
-		long groupId, long userId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -639,4 +634,4 @@ public interface BlogsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:466869834
+// LIFERAY-SERVICE-BUILDER-HASH:338250845

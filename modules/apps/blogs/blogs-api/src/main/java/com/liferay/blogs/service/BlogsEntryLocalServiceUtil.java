@@ -643,15 +643,6 @@ public class BlogsEntryLocalServiceUtil {
 			groupId, userId, displayDate, queryDefinition);
 	}
 
-	public static int getGroupUserEntriesCount(
-		long groupId, long userId, java.util.Date displayDate,
-		com.liferay.portal.kernel.dao.orm.QueryDefinition<BlogsEntry>
-			queryDefinition) {
-
-		return getService().getGroupUserEntriesCount(
-			groupId, userId, displayDate, queryDefinition);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -892,4 +883,4 @@ public class BlogsEntryLocalServiceUtil {
 			BlogsEntryLocalServiceUtil.class, BlogsEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2033522172
+// LIFERAY-SERVICE-BUILDER-HASH:1791826934
