@@ -53,18 +53,14 @@ test('LPD-13490 Manage channel country visibility from channel page', async ({
 	const countryName1 = 'Afghanistan';
 	const countryName2 = 'Aland Islands';
 
-	await (
-		await commerceAdminChannelDetailsCountriesPage.countryFrameCountry(
-			countryName1
-		)
-	).check();
-	await (
-		await commerceAdminChannelDetailsCountriesPage.countryFrameCountry(
-			countryName2
-		)
-	).check();
+	await commerceAdminChannelDetailsCountriesPage
+		.addCountryModalCountry(countryName1)
+		.check();
+	await commerceAdminChannelDetailsCountriesPage
+		.addCountryModalCountry(countryName2)
+		.check();
 
-	await commerceAdminChannelDetailsCountriesPage.addCountryAddButton.click();
+	await commerceAdminChannelDetailsCountriesPage.addCountryModalSelectButton.click();
 
 	await expect(
 		(

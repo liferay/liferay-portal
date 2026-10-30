@@ -1227,19 +1227,7 @@ test(
 				commerceAdminChannelDetailsTypePage.selectSiteButton
 			).toBeVisible({visible: true});
 
-			await commerceAdminChannelDetailsTypePage.selectSiteButton.click();
-
-			await expect(
-				await commerceAdminChannelDetailsTypePage.typeTableRowAction(
-					site.name
-				)
-			).toBeVisible();
-
-			await (
-				await commerceAdminChannelDetailsTypePage.typeTableRowAction(
-					site.name
-				)
-			).click();
+			await commerceAdminChannelDetailsTypePage.selectSite(site.name);
 
 			await expect(
 				page.getByRole('cell', {exact: true, name: `${site.name}`})

@@ -3,14 +3,16 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {FrameLocator, Locator, Page, expect} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
+import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import {searchTableRowByValue} from '../commerceDNDTablePage';
 
 export class CommerceAdminChannelDetailsCurrenciesPage {
-	readonly addCurrencyAddButton: Locator;
 	readonly addCurrencyButton: Locator;
-	readonly addCurrencyFrame: FrameLocator;
+	readonly addCurrencyModal: Locator;
+	readonly addCurrencyModalCurrency: (currencyName: string) => Locator;
+	readonly addCurrencyModalSelectButton: Locator;
 	readonly currenciesTable: Locator;
 	readonly currenciesTableRow: (
 		colPosition: number,
@@ -22,19 +24,23 @@ export class CommerceAdminChannelDetailsCurrenciesPage {
 		currencyName: string,
 		action: string
 	) => Promise<Locator>;
-	readonly currencyFrameCurrency: (currencyName: string) => Promise<Locator>;
 	readonly page: Page;
 
 	constructor(page: Page) {
 		this.addCurrencyButton = page
 			.getByTestId('managementToolbar')
 			.locator('[data-testid="fdsCreationActionButton"]');
-		this.addCurrencyAddButton = page.getByRole('button', {
-			exact: true,
-			name: 'Add',
+		this.addCurrencyModal = page.getByRole('dialog', {
+			name: 'Add Currency',
 		});
-		this.addCurrencyFrame = page.frameLocator(
-			'iframe[title="Add Currency"]'
+		this.addCurrencyModalCurrency = (currencyName: string) =>
+			this.addCurrencyModal.getByRole('checkbox', {
+				exact: true,
+				name: `Select ${currencyName}`,
+			});
+		this.addCurrencyModalSelectButton = this.addCurrencyModal.getByRole(
+			'button',
+			{exact: true, name: 'Select'}
 		);
 		this.currenciesTable = page.locator(
 			'#_com_liferay_commerce_channel_web_internal_portlet_CommerceChannelsPortlet_editChannelContainer .fds table'
@@ -76,20 +82,20 @@ export class CommerceAdminChannelDetailsCurrenciesPage {
 				`Cannot locate currency row with name ${currencyName}`
 			);
 		};
-		this.currencyFrameCurrency = async (currencyName: string) => {
-			return this.addCurrencyFrame.getByLabel(currencyName);
-		};
 		this.page = page;
 	}
 
 	async addCurrencies(currencyNames: string[]) {
-		await this.addCurrencyButton.click();
+		await clickAndExpectToBeVisible({
+			target: this.addCurrencyModal,
+			trigger: this.addCurrencyButton,
+		});
 
 		for (const currencyName of currencyNames) {
-			await (await this.currencyFrameCurrency(currencyName)).check();
+			await this.addCurrencyModalCurrency(currencyName).check();
 		}
 
-		await this.addCurrencyAddButton.click();
+		await this.addCurrencyModalSelectButton.click();
 
 		for (const currencyName of currencyNames) {
 			await expect(
