@@ -12,6 +12,17 @@
 				"dynamic-import-node",
 				"import-graphql",
 				"transform-require-context"
+			],
+			"presets": [
+				[
+					"@babel/preset-env",
+					{
+						"loose": true,
+						"targets": {
+							"node": "current"
+						}
+					}
+				]
 			]
 		}
 	},
