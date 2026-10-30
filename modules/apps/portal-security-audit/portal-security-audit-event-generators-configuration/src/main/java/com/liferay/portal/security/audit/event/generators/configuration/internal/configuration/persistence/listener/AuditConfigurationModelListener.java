@@ -121,7 +121,7 @@ public class AuditConfigurationModelListener
 				dictionary.get(ConfigurationAdmin.SERVICE_FACTORYPID), pid));
 
 		if (rawPid.startsWith("com.liferay.portal.security.audit.")) {
-			eventType = "AUDIT_CONFIG_CHANGE";
+			eventType = EventTypes.AUDIT_CONFIG_CHANGE;
 		}
 
 		long groupId = GetterUtil.getLong(
@@ -142,7 +142,7 @@ public class AuditConfigurationModelListener
 
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
-		if (Objects.equals(eventType, "AUDIT_CONFIG_CHANGE")) {
+		if (Objects.equals(eventType, EventTypes.AUDIT_CONFIG_CHANGE)) {
 			additionalInfoJSONObject.put("action", action);
 		}
 
