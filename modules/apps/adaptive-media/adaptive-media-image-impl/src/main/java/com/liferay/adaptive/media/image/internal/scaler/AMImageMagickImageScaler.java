@@ -10,22 +10,23 @@ import com.liferay.adaptive.media.image.configuration.AMImageConfigurationEntry;
 import com.liferay.adaptive.media.image.scaler.AMImageScaledImage;
 import com.liferay.adaptive.media.image.scaler.AMImageScaler;
 import com.liferay.image.ImageMagick;
+import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.model.ImageConstants;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
-
-import java.awt.image.RenderedImage;
+import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.StringUtil;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import java.util.Arrays;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -57,17 +58,25 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 		try {
 			imageFile = _getFile(fileVersion);
 
-			scaledImageFile = _scaleAndConvertToPNG(
-				amImageConfigurationEntry, imageFile);
+			String mimeType = fileVersion.getMimeType();
 
-			ImageBag imageBag = ImageToolUtil.read(scaledImageFile);
+			String extension = _extensions.get(mimeType);
 
-			RenderedImage renderedImage = imageBag.getRenderedImage();
+			if (extension == null) {
+				extension = ImageConstants.TYPE_PNG;
+				mimeType = ContentTypes.IMAGE_PNG;
+			}
+
+			byte[] bytes = _scale(
+				amImageConfigurationEntry, extension, imageFile);
+
+			scaledImageFile = _file.createTempFile(bytes);
+
+			String[] dimensions = _getDimensions(scaledImageFile);
 
 			return new AMImageScaledImageImpl(
-				ImageToolUtil.getBytes(renderedImage, imageBag.getType()),
-				renderedImage.getHeight(), ContentTypes.IMAGE_PNG,
-				renderedImage.getWidth());
+				bytes, GetterUtil.getInteger(dimensions[1]), mimeType,
+				GetterUtil.getInteger(dimensions[0]));
 		}
 		catch (Exception exception) {
 			throw new AMRuntimeException.IOException(
@@ -88,6 +97,32 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 		}
 	}
 
+	private String[] _getDimensions(File file) throws Exception {
+		File dimensionsFile = _file.createTempFile("txt");
+
+		try {
+			Future<?> future = _imageMagick.convert(
+				Arrays.asList(
+					file.getAbsolutePath() + "[0]", "-format", "%w %h",
+					"info:" + dimensionsFile.getAbsolutePath()));
+
+			future.get();
+
+			String[] dimensions = StringUtil.split(
+				_file.read(dimensionsFile), CharPool.SPACE);
+
+			if (dimensions.length != 2) {
+				throw new AMRuntimeException.IOException(
+					"Unable to get image dimensions using ImageMagick");
+			}
+
+			return dimensions;
+		}
+		finally {
+			dimensionsFile.delete();
+		}
+	}
+
 	private File _getFile(FileVersion fileVersion)
 		throws IOException, PortalException {
 
@@ -96,15 +131,16 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 		}
 	}
 
-	private File _scaleAndConvertToPNG(
-			AMImageConfigurationEntry amImageConfigurationEntry, File imageFile)
+	private byte[] _scale(
+			AMImageConfigurationEntry amImageConfigurationEntry,
+			String extension, File imageFile)
 		throws Exception {
 
 		Map<String, String> properties =
 			amImageConfigurationEntry.getProperties();
 
 		byte[] bytes = _imageMagick.scale(
-			_file.getBytes(imageFile), ImageConstants.TYPE_PNG,
+			_file.getBytes(imageFile), extension,
 			GetterUtil.getInteger(properties.get("max-width")),
 			GetterUtil.getInteger(properties.get("max-height")));
 
@@ -113,8 +149,14 @@ public class AMImageMagickImageScaler implements AMImageScaler {
 				"Unable to scale image using ImageMagick");
 		}
 
-		return _file.createTempFile(bytes);
+		return bytes;
 	}
+
+	private static final Map<String, String> _extensions = HashMapBuilder.put(
+		"image/avif", "avif"
+	).put(
+		"image/webp", "webp"
+	).build();
 
 	@Reference
 	private com.liferay.portal.kernel.util.File _file;
