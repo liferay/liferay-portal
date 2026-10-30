@@ -728,7 +728,7 @@ const SegmentGrowthWithList: React.FC<ISegmentGrowthWithList> = ({
 							// to avoid render two empty states
 
 							setShowMembershipList(
-								!!individualCounts.knownCount ||
+								!!individualCounts?.knownCount ||
 									!!intervals.length
 							);
 
