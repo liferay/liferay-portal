@@ -32,7 +32,6 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.FileUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -154,32 +153,10 @@ public class BatchEngineImportTaskLocalServiceImpl
 
 	@Override
 	public List<BatchEngineImportTask> getBatchEngineImportTasks(
-		long companyId, int start, int end) {
-
-		return batchEngineImportTaskPersistence.findByCompanyId(
-			companyId, start, end);
-	}
-
-	@Override
-	public List<BatchEngineImportTask> getBatchEngineImportTasks(
-		long companyId, int start, int end,
-		OrderByComparator<BatchEngineImportTask> orderByComparator) {
-
-		return batchEngineImportTaskPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<BatchEngineImportTask> getBatchEngineImportTasks(
 		String executeStatus) {
 
 		return batchEngineImportTaskPersistence.findByExecuteStatus(
 			executeStatus);
-	}
-
-	@Override
-	public int getBatchEngineImportTasksCount(long companyId) {
-		return batchEngineImportTaskPersistence.countByCompanyId(companyId);
 	}
 
 	@Override

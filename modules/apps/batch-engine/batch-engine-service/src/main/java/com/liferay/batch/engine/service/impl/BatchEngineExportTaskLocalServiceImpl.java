@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.dao.jdbc.OutputBlob;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.io.Serializable;
 
@@ -80,32 +79,10 @@ public class BatchEngineExportTaskLocalServiceImpl
 
 	@Override
 	public List<BatchEngineExportTask> getBatchEngineExportTasks(
-		long companyId, int start, int end) {
-
-		return batchEngineExportTaskPersistence.findByCompanyId(
-			companyId, start, end);
-	}
-
-	@Override
-	public List<BatchEngineExportTask> getBatchEngineExportTasks(
-		long companyId, int start, int end,
-		OrderByComparator<BatchEngineExportTask> orderByComparator) {
-
-		return batchEngineExportTaskPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<BatchEngineExportTask> getBatchEngineExportTasks(
 		String executeStatus) {
 
 		return batchEngineExportTaskPersistence.findByExecuteStatus(
 			executeStatus);
-	}
-
-	@Override
-	public int getBatchEngineExportTasksCount(long companyId) {
-		return batchEngineExportTaskPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
