@@ -74,7 +74,11 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 				public Function<HttpServletRequest, Object> put(
 					String key, Function<HttpServletRequest, Object> function) {
 
-					contextObjects.put(key, function.apply(httpServletRequest));
+					Object value = function.apply(httpServletRequest);
+
+					if (value != null) {
+						contextObjects.put(key, value);
+					}
 
 					return null;
 				}
@@ -106,16 +110,7 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 
 			// Navigation items
 
-			if (_freeMarkerEngineConfiguration.includeNavItemsInTheContext() &&
-				(themeDisplay.getLayout() != null)) {
-
-				try {
-					contextObjects.put("navItems", themeDisplay.getNavItems());
-				}
-				catch (Exception exception) {
-					_log.error(exception);
-				}
-			}
+			lazyContextFunctions.put("navItems", this::_getNavItems);
 		}
 
 		// Insert custom ftl variables
@@ -215,6 +210,28 @@ public class FreeMarkerTemplateContextHelper extends TemplateContextHelper {
 		}
 
 		return fullTemplatesPath + "/init.ftl";
+	}
+
+	private Object _getNavItems(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if ((themeDisplay == null) ||
+			!_freeMarkerEngineConfiguration.includeNavItemsInTheContext() ||
+			(themeDisplay.getLayout() == null)) {
+
+			return null;
+		}
+
+		try {
+			return themeDisplay.getNavItems();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return null;
 	}
 
 	private String _getThemePath(

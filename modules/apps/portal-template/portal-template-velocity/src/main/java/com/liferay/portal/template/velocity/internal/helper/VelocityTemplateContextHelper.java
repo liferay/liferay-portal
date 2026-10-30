@@ -81,7 +81,11 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 				public Function<HttpServletRequest, Object> put(
 					String key, Function<HttpServletRequest, Object> function) {
 
-					contextObjects.put(key, function.apply(httpServletRequest));
+					Object value = function.apply(httpServletRequest);
+
+					if (value != null) {
+						contextObjects.put(key, value);
+					}
 
 					return null;
 				}
@@ -113,16 +117,7 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 
 			// Navigation items
 
-			if (_velocityEngineConfiguration.includeNavItemsInTheContext() &&
-				(themeDisplay.getLayout() != null)) {
-
-				try {
-					contextObjects.put("navItems", themeDisplay.getNavItems());
-				}
-				catch (Exception exception) {
-					_log.error(exception);
-				}
-			}
+			lazyContextFunctions.put("navItems", this::_getNavItems);
 		}
 
 		// Insert custom vm variables
@@ -232,6 +227,28 @@ public class VelocityTemplateContextHelper extends TemplateContextHelper {
 		}
 
 		return fullTemplatesPath + "/init.vm";
+	}
+
+	private Object _getNavItems(HttpServletRequest httpServletRequest) {
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if ((themeDisplay == null) ||
+			!_velocityEngineConfiguration.includeNavItemsInTheContext() ||
+			(themeDisplay.getLayout() == null)) {
+
+			return null;
+		}
+
+		try {
+			return themeDisplay.getNavItems();
+		}
+		catch (Exception exception) {
+			_log.error(exception);
+		}
+
+		return null;
 	}
 
 	private String _getThemePath(

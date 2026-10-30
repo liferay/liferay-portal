@@ -214,7 +214,11 @@ public class TemplateContextHelper {
 				public Function<HttpServletRequest, Object> put(
 					String key, Function<HttpServletRequest, Object> function) {
 
-					contextObjects.put(key, function.apply(httpServletRequest));
+					Object value = function.apply(httpServletRequest);
+
+					if (value != null) {
+						contextObjects.put(key, value);
+					}
 
 					return null;
 				}
