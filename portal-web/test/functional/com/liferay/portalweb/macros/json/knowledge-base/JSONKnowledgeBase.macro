@@ -153,7 +153,7 @@ definition {
 			${portalURL}/api/jsonws/kb.kbarticle/add-kb-article \
 				-u ${userLoginInfo} \
 				-d externalReferenceCode= \
-				-d portletId=0 \
+				-d portletId=com_liferay_knowledge_base_web_portlet_AdminPortlet \
 				-d parentResourceClassNameId=${parentResourceClassNameId} \
 				-d parentResourcePrimKey=${folderId} \
 				-d title=${kbArticleTitle} \
@@ -217,7 +217,7 @@ definition {
 			${portalURL}/api/jsonws/kb.kbarticle/add-kb-article \
 				-u ${userLoginInfo} \
 				-d externalReferenceCode= \
-				-d portletId=0 \
+				-d portletId=com_liferay_knowledge_base_web_portlet_AdminPortlet \
 				-d parentResourceClassNameId=${parentResourceClassNameId} \
 				-d parentResourcePrimKey=${parentResourcePrimKey} \
 				-d title=${kbChildArticleTitle} \
@@ -324,7 +324,7 @@ definition {
 			${portalURL}/api/jsonws/kb.kbarticle/add-kb-article \
 				-u ${userLoginInfo} \
 				-d externalReferenceCode= \
-				-d portletId=0 \
+				-d portletId=com_liferay_knowledge_base_web_portlet_AdminPortlet \
 				-d parentResourceClassNameId=${parentResourceClassNameId} \
 				-d parentResourcePrimKey=${parentResourcePrimKey} \
 				-d title=${kbGrandchildArticleTitle} \
@@ -356,7 +356,7 @@ definition {
 		var curl = '''
 			${portalURL}/api/jsonws/kb.kbtemplate/add-kb-template \
 				-u ${userLoginInfo} \
-				-d portletId=0 \
+				-d portletId=com_liferay_knowledge_base_web_portlet_AdminPortlet \
 				-d title=${kbTemplateTitle} \
 				-d content=${kbTemplateContent}
 		''';
