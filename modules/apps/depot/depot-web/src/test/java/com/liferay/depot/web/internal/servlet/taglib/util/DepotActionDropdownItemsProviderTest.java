@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -50,14 +50,15 @@ public class DepotActionDropdownItemsProviderTest {
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
 
+	@AfterClass
+	public static void tearDownClass() {
+		_depotEntryPermissionMockedStatic.close();
+		_depotEntryURLUtilMockedStatic.close();
+		_languageUtilMockedStatic.close();
+	}
+
 	@Before
 	public void setUp() {
-		_depotEntryPermissionMockedStatic = Mockito.mockStatic(
-			DepotEntryPermission.class);
-		_depotEntryURLUtilMockedStatic = Mockito.mockStatic(
-			DepotEntryURLUtil.class);
-		_languageUtilMockedStatic = Mockito.mockStatic(LanguageUtil.class);
-
 		_depotEntryURLUtilMockedStatic.when(
 			() -> DepotEntryURLUtil.getDeleteDepotEntryActionURL(
 				Mockito.anyLong(), Mockito.any(),
@@ -96,13 +97,6 @@ public class DepotActionDropdownItemsProviderTest {
 		);
 
 		portalUtil.setPortal(portal);
-	}
-
-	@After
-	public void tearDown() {
-		_depotEntryPermissionMockedStatic.close();
-		_depotEntryURLUtilMockedStatic.close();
-		_languageUtilMockedStatic.close();
 	}
 
 	@Test
@@ -149,11 +143,16 @@ public class DepotActionDropdownItemsProviderTest {
 		Assert.assertNull(_getActionDropdownItems());
 	}
 
+	private static final MockedStatic<DepotEntryPermission>
+		_depotEntryPermissionMockedStatic = Mockito.mockStatic(
+			DepotEntryPermission.class);
+	private static final MockedStatic<DepotEntryURLUtil>
+		_depotEntryURLUtilMockedStatic = Mockito.mockStatic(
+			DepotEntryURLUtil.class);
+	private static final MockedStatic<LanguageUtil> _languageUtilMockedStatic =
+		Mockito.mockStatic(LanguageUtil.class);
+
 	private final DepotEntry _depotEntry = Mockito.mock(DepotEntry.class);
-	private MockedStatic<DepotEntryPermission>
-		_depotEntryPermissionMockedStatic;
-	private MockedStatic<DepotEntryURLUtil> _depotEntryURLUtilMockedStatic;
-	private MockedStatic<LanguageUtil> _languageUtilMockedStatic;
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
 
