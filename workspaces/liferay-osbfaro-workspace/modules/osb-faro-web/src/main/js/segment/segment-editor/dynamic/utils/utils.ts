@@ -398,9 +398,11 @@ export const findPropertyByCriterion = (
 		)
 	) {
 		if (getPropertyContextFromRaw(propertyName) !== FieldContexts.Custom) {
+			const [accountPropertyName] = (propertyName ?? '').split('@');
+
 			return ACCOUNT_PROPERTIES.find(
 				(property: Property | undefined) =>
-					property?.name === propertyName
+					property?.name === accountPropertyName
 			);
 		}
 
