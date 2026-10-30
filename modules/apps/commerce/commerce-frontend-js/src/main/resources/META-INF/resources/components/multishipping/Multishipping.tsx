@@ -1020,9 +1020,12 @@ const Multishipping = ({
 					description={Liferay.Language.get(
 						'sorry,-no-results-were-found'
 					)}
-					imgSrc={
-						Liferay.ThemeDisplay.getPathThemeImages() +
-						'/states/search_state.svg'
+					image={
+						<ClayIcon
+							className="c-empty-state-icon c-empty-state-icon-search-state"
+							illustration
+							symbol="search-state"
+						/>
 					}
 					title={Liferay.Language.get('no-results-found')}
 				/>
