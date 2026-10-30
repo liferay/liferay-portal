@@ -25,7 +25,7 @@ const {
 	SessionsFilter,
 } = CustomFunctionOperators;
 const {And} = Conjunctions;
-const {EQ, GT} = RelationalOperators;
+const {EQ, GT, NE} = RelationalOperators;
 
 describe('utils', () => {
 	describe('createInterestProperty', () => {
@@ -423,6 +423,31 @@ describe('utils', () => {
 			const property = utils.findPropertyByCriterion(criterion);
 
 			expect(property.get('name')).toEqual(mockProperty.get('name'));
+		});
+
+		it('should return the lifecycle Property when provided with a lifecycle Criterion', () => {
+			const criterion = data.generateCriterion({
+				operatorName: AccountsFilter,
+				propertyName: 'lifecycleStatus@erc-lifecycle-100',
+				value: fromJS({
+					criterionGroup: {
+						conjunctionName: And,
+						criteriaGroupId: 'group_0',
+						items: [
+							{
+								operatorName: NE,
+								propertyName:
+									'lifecycleStatus@erc-lifecycle-100',
+								value: null,
+							},
+						],
+					},
+				}),
+			});
+
+			const property = utils.findPropertyByCriterion(criterion);
+
+			expect(property.get('name')).toEqual('lifecycleStatus');
 		});
 
 		it('should return the session url Property when provided with a session url Criterion', () => {
@@ -831,6 +856,19 @@ describe('utils', () => {
 			expect(result.label).toBe('accountName');
 			expect(result.propertyKey).toBe('account');
 			expect(result.type).toBe('account-text');
+		});
+
+		it('should take the label of the account property', () => {
+			const result = utils.convertFieldMappingToAccountProperty({
+				context: 'account',
+				displayName: 'Lifecycle Stage',
+				id: 'lifecycleStatus',
+				name: 'lifecycleStatus',
+				ownerType: 'account',
+				rawType: 'Select-Text',
+			});
+
+			expect(result.label).toBe('Lifecycle');
 		});
 	});
 

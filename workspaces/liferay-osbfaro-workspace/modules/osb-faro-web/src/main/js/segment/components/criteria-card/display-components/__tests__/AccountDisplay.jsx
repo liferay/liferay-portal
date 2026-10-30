@@ -3,12 +3,13 @@ import * as data from 'test/data';
 import AccountDisplay from '../AccountDisplay';
 import React from 'react';
 import {
+	Conjunctions,
 	CustomFunctionOperators,
 	NotOperators,
 	PropertyTypes,
 	RelationalOperators
 } from 'segment/segment-editor/dynamic/utils/constants';
-import {List, Map} from 'immutable';
+import {fromJS, List, Map} from 'immutable';
 import {Property} from 'shared/util/records';
 import {render, waitFor} from '@testing-library/react';
 import {StaticRouter} from 'react-router';
@@ -50,165 +51,178 @@ describe('AccountDisplay', () => {
 		expect(container).toMatchSnapshot();
 	});
 
-	it('renders the label of the lifecycle stage', async () => {
-		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
-			Promise.resolve([{id: '1'}])
+	describe('with a Lifecycle criterion', () => {
+		const lifecycleProperty = data.getImmutableMock(
+			Property,
+			data.mockProperty,
+			1,
+			{
+				entityName: 'Account',
+				label: 'Lifecycle',
+				name: 'lifecycleStatus',
+				propertykey: 'account',
+				type: PropertyTypes.AccountSelectText
+			}
 		);
 
-		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
-			Promise.resolve({
-				accountLifecycleStages: [
-					{
-						externalReferenceCode: 'erc-stage-1002',
-						id: '1002',
-						name: 'Engaged',
-						position: 1
-					}
-				]
-			})
-		);
-
-		const criterion = {
-			operatorName: CustomFunctionOperators.AccountsFilter,
-			propertyName: 'lifecycleStatus',
+		const getLifecycleCriterion = (
+			propertyName,
+			operatorName,
+			value,
+			criterionOperatorName = CustomFunctionOperators.AccountsFilter
+		) => ({
+			operatorName: criterionOperatorName,
+			propertyName,
 			value: Map({
-				criterionGroup: Map({
-					items: List([
-						Map({
-							operatorName: RelationalOperators.EQ,
-							propertyName: 'lifecycleStatus',
-							value: 'erc-stage-1002'
-						})
-					])
+				criterionGroup: fromJS({
+					items: Array.isArray(value)
+						? [
+								{
+									conjunctionName: Conjunctions.Or,
+									items: value.map(itemValue => ({
+										operatorName,
+										propertyName,
+										value: itemValue
+									}))
+								}
+						  ]
+						: [{operatorName, propertyName, value}]
 				})
 			})
-		};
-
-		const property = data.getImmutableMock(Property, data.mockProperty, 1, {
-			entityName: 'Account',
-			label: 'Lifecycle Stage',
-			name: 'lifecycleStatus',
-			propertykey: 'account',
-			type: PropertyTypes.AccountSelectText
 		});
 
-		const {container} = render(
-			<StaticRouter>
-				<AccountDisplay criterion={criterion} property={property} />
-			</StaticRouter>
-		);
+		const renderLifecycleCriterion = criterion =>
+			render(
+				<StaticRouter>
+					<AccountDisplay
+						criterion={criterion}
+						property={lifecycleProperty}
+					/>
+				</StaticRouter>
+			);
 
-		await waitFor(() => expect(container).toHaveTextContent("'Engaged'"));
-
-		expect(container).not.toHaveTextContent('1002');
-	});
-
-	it('renders the is not operator of a lifecycle stage criterion', async () => {
-		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
-			Promise.resolve([{id: '1'}])
-		);
-
-		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
-			Promise.resolve({
-				accountLifecycleStages: [
+		beforeEach(() => {
+			API.lifecycle.fetchChannelLifecycles.mockReturnValueOnce(
+				Promise.resolve([
 					{
-						externalReferenceCode: 'erc-stage-1002',
-						id: '1002',
-						name: 'Engaged',
-						position: 1
+						externalReferenceCode: 'erc-lifecycle-100',
+						id: '100',
+						name: 'Customer',
+						accountLifecycleStages: [
+							{
+								externalReferenceCode: 'erc-stage-1001',
+								id: '1001',
+								name: 'Aware',
+								position: 1
+							},
+							{
+								externalReferenceCode: 'erc-stage-1002',
+								id: '1002',
+								name: 'Engaged',
+								position: 2
+							}
+						]
 					}
-				]
-			})
-		);
-
-		const criterion = {
-			operatorName: NotOperators.NotAccountsFilter,
-			propertyName: 'lifecycleStatus',
-			value: Map({
-				criterionGroup: Map({
-					items: List([
-						Map({
-							operatorName: RelationalOperators.EQ,
-							propertyName: 'lifecycleStatus',
-							value: 'erc-stage-1002'
-						})
-					])
-				})
-			})
-		};
-
-		const property = data.getImmutableMock(Property, data.mockProperty, 1, {
-			entityName: 'Account',
-			label: 'Lifecycle Stage',
-			name: 'lifecycleStatus',
-			propertykey: 'account',
-			type: PropertyTypes.AccountSelectText
+				])
+			);
 		});
 
-		const {container} = render(
-			<StaticRouter>
-				<AccountDisplay criterion={criterion} property={property} />
-			</StaticRouter>
-		);
+		it('renders the name of the lifecycle', async () => {
+			const {container} = renderLifecycleCriterion(
+				getLifecycleCriterion(
+					'lifecycleStatus@erc-lifecycle-100',
+					RelationalOperators.NE,
+					null
+				)
+			);
 
-		await waitFor(() => expect(container).toHaveTextContent("'Engaged'"));
+			await waitFor(() =>
+				expect(container).toHaveTextContent("'Customer'")
+			);
 
-		expect(container).toHaveTextContent('is not');
-	});
-
-	it('renders the undefined label when the lifecycle stage is gone', async () => {
-		API.lifecycle.fetchAccountLifecycles.mockReturnValueOnce(
-			Promise.resolve([{id: '1'}])
-		);
-
-		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
-			Promise.resolve({
-				accountLifecycleStages: [
-					{
-						externalReferenceCode: 'erc-stage-1002',
-						id: '1002',
-						name: 'Engaged',
-						position: 1
-					}
-				]
-			})
-		);
-
-		const criterion = {
-			operatorName: CustomFunctionOperators.AccountsFilter,
-			propertyName: 'lifecycleStatus',
-			value: Map({
-				criterionGroup: Map({
-					items: List([
-						Map({
-							operatorName: RelationalOperators.EQ,
-							propertyName: 'lifecycleStatus',
-							value: 'deleted-stage'
-						})
-					])
-				})
-			})
-		};
-
-		const property = data.getImmutableMock(Property, data.mockProperty, 1, {
-			entityName: 'Account',
-			label: 'Lifecycle Stage',
-			name: 'lifecycleStatus',
-			propertykey: 'account',
-			type: PropertyTypes.AccountSelectText
+			expect(container).not.toHaveTextContent('is known');
 		});
 
-		const {container} = render(
-			<StaticRouter>
-				<AccountDisplay criterion={criterion} property={property} />
-			</StaticRouter>
-		);
+		it('renders the stages after the name of their lifecycle', async () => {
+			const {container} = renderLifecycleCriterion(
+				getLifecycleCriterion(
+					'lifecycleStatus@erc-lifecycle-100',
+					RelationalOperators.EQ,
+					['erc-stage-1001', 'erc-stage-1002']
+				)
+			);
 
-		await waitFor(() =>
-			expect(container.querySelector('.undefined-entity')).toBeTruthy()
-		);
+			await waitFor(() =>
+				expect(container).toHaveTextContent(
+					"'Customer: Aware', 'Customer: Engaged'"
+				)
+			);
+		});
 
-		expect(container).not.toHaveTextContent('deleted-stage');
+		it('renders the lifecycle of a stage saved without its lifecycle', async () => {
+			const {container} = renderLifecycleCriterion(
+				getLifecycleCriterion(
+					'lifecycleStatus',
+					RelationalOperators.EQ,
+					'erc-stage-1002'
+				)
+			);
+
+			await waitFor(() =>
+				expect(container).toHaveTextContent("'Customer: Engaged'")
+			);
+
+			expect(container).not.toHaveTextContent('1002');
+		});
+
+		it('renders the is not operator', async () => {
+			const {container} = renderLifecycleCriterion(
+				getLifecycleCriterion(
+					'lifecycleStatus@erc-lifecycle-100',
+					RelationalOperators.NE,
+					null,
+					NotOperators.NotAccountsFilter
+				)
+			);
+
+			await waitFor(() =>
+				expect(container).toHaveTextContent("'Customer'")
+			);
+
+			expect(container).toHaveTextContent('is not');
+		});
+
+		it('renders the undefined label when the lifecycle is gone', async () => {
+			const {container, findByText} = renderLifecycleCriterion(
+				getLifecycleCriterion(
+					'lifecycleStatus@deleted-lifecycle',
+					RelationalOperators.NE,
+					null
+				)
+			);
+
+			await findByText('Undefined Lifecycle');
+
+			expect(container).not.toHaveTextContent('deleted-lifecycle');
+		});
+
+		it('renders the undefined label of a stage that is gone', async () => {
+			const {container, findByText} = renderLifecycleCriterion(
+				getLifecycleCriterion(
+					'lifecycleStatus@erc-lifecycle-100',
+					RelationalOperators.EQ,
+					['erc-stage-1001', 'deleted-stage']
+				)
+			);
+
+			await findByText('Undefined Stage');
+
+			expect(container).toHaveTextContent(
+				"'Customer: Aware', Undefined Stage"
+			);
+
+			expect(container).not.toHaveTextContent('deleted-stage');
+		});
 	});
 
 	it('renders w/ a unknownType', () => {
