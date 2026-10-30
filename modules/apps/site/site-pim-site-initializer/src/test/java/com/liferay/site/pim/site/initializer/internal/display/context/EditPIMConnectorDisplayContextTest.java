@@ -54,6 +54,93 @@ public class EditPIMConnectorDisplayContextTest {
 
 	@Test
 	public void testGetReactData() throws Exception {
+		_testGetReactData();
+		_testGetReactDataWithSettings();
+	}
+
+	private ObjectField _mockObjectField(
+		String businessType, String label, boolean metadata, String name,
+		boolean required) {
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		Mockito.when(
+			objectField.compareBusinessType(Mockito.anyString())
+		).thenAnswer(
+			invocationOnMock -> businessType.equals(
+				invocationOnMock.getArgument(0))
+		);
+
+		Mockito.when(
+			objectField.getBusinessType()
+		).thenReturn(
+			businessType
+		);
+
+		Mockito.when(
+			objectField.getLabel(LocaleUtil.US)
+		).thenReturn(
+			label
+		);
+
+		Mockito.when(
+			objectField.getName()
+		).thenReturn(
+			name
+		);
+
+		Mockito.when(
+			objectField.isMetadata()
+		).thenReturn(
+			metadata
+		);
+
+		Mockito.when(
+			objectField.isRequired()
+		).thenReturn(
+			required
+		);
+
+		return objectField;
+	}
+
+	private PIMConnector _mockPIMConnector(String key, String name) {
+		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
+
+		Mockito.when(
+			pimConnector.getKey()
+		).thenReturn(
+			key
+		);
+
+		Mockito.when(
+			pimConnector.getName(LocaleUtil.US)
+		).thenReturn(
+			name
+		);
+
+		return pimConnector;
+	}
+
+	private ThemeDisplay _mockThemeDisplay() {
+		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
+
+		Mockito.when(
+			themeDisplay.getLocale()
+		).thenReturn(
+			LocaleUtil.US
+		);
+
+		Mockito.when(
+			themeDisplay.getURLCurrent()
+		).thenReturn(
+			"/web/cms/connectors"
+		);
+
+		return themeDisplay;
+	}
+
+	private void _testGetReactData() throws Exception {
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		Language language = Mockito.mock(Language.class);
@@ -176,8 +263,7 @@ public class EditPIMConnectorDisplayContextTest {
 			pimConnectorJSONObject.getString("name"));
 	}
 
-	@Test
-	public void testGetReactDataWithSettings() throws Exception {
+	private void _testGetReactDataWithSettings() throws Exception {
 		LanguageUtil languageUtil = new LanguageUtil();
 
 		Language language = Mockito.mock(Language.class);
@@ -414,88 +500,6 @@ public class EditPIMConnectorDisplayContextTest {
 				"https://commerce.minium.com",
 				valuesJSONObject.getString("url"));
 		}
-	}
-
-	private ObjectField _mockObjectField(
-		String businessType, String label, boolean metadata, String name,
-		boolean required) {
-
-		ObjectField objectField = Mockito.mock(ObjectField.class);
-
-		Mockito.when(
-			objectField.compareBusinessType(Mockito.anyString())
-		).thenAnswer(
-			invocationOnMock -> businessType.equals(
-				invocationOnMock.getArgument(0))
-		);
-
-		Mockito.when(
-			objectField.getBusinessType()
-		).thenReturn(
-			businessType
-		);
-
-		Mockito.when(
-			objectField.getLabel(LocaleUtil.US)
-		).thenReturn(
-			label
-		);
-
-		Mockito.when(
-			objectField.getName()
-		).thenReturn(
-			name
-		);
-
-		Mockito.when(
-			objectField.isMetadata()
-		).thenReturn(
-			metadata
-		);
-
-		Mockito.when(
-			objectField.isRequired()
-		).thenReturn(
-			required
-		);
-
-		return objectField;
-	}
-
-	private PIMConnector _mockPIMConnector(String key, String name) {
-		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
-
-		Mockito.when(
-			pimConnector.getKey()
-		).thenReturn(
-			key
-		);
-
-		Mockito.when(
-			pimConnector.getName(LocaleUtil.US)
-		).thenReturn(
-			name
-		);
-
-		return pimConnector;
-	}
-
-	private ThemeDisplay _mockThemeDisplay() {
-		ThemeDisplay themeDisplay = Mockito.mock(ThemeDisplay.class);
-
-		Mockito.when(
-			themeDisplay.getLocale()
-		).thenReturn(
-			LocaleUtil.US
-		);
-
-		Mockito.when(
-			themeDisplay.getURLCurrent()
-		).thenReturn(
-			"/web/cms/connectors"
-		);
-
-		return themeDisplay;
 	}
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
