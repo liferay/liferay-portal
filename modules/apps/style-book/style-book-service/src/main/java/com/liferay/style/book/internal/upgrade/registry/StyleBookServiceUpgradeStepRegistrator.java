@@ -125,6 +125,12 @@ public class StyleBookServiceUpgradeStepRegistrator
 					WorkflowConstants.STATUS_APPROVED,
 				"update StyleBookEntryVersion set status = " +
 					WorkflowConstants.STATUS_APPROVED));
+
+		registry.register(
+			"1.11.0", "2.0.0",
+			UpgradeProcessFactory.dropColumns("StyleBookEntry", "status"),
+			UpgradeProcessFactory.dropColumns(
+				"StyleBookEntryVersion", "status"));
 	}
 
 	@Reference
