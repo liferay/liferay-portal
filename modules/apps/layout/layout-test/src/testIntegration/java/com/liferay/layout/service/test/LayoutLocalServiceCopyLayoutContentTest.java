@@ -515,12 +515,11 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		String portletId1 = _getAddedPortletId(processAddPortletJSONObject);
 
-		_addPortletLayoutClassedModelUsage(draftLayout, portletId1);
-
 		String portletId2 = _addPortletToLayout(
 			draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
 
-		_addPortletLayoutClassedModelUsage(draftLayout, portletId2);
+		_addPortletLayoutClassedModelUsages(
+			draftLayout, portletId1, portletId2);
 
 		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 
@@ -545,6 +544,14 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 
 		Layout draftLayout = layout.fetchDraftLayout();
 
+		JSONObject processAddPortletJSONObject1 =
+			ContentLayoutTestUtil.addPortletToLayout(
+				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
+		JSONObject processAddPortletJSONObject2 =
+			ContentLayoutTestUtil.addPortletToLayout(
+				draftLayout,
+				LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET);
+
 		SegmentsExperience segmentsExperience =
 			SegmentsTestUtil.addSegmentsExperience(
 				_group.getGroupId(), draftLayout.getPlid());
@@ -555,33 +562,44 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 					_group.getGroupId(), draftLayout.getPlid()),
 			segmentsExperience);
 
-		JSONObject processAddPortletJSONObject =
-			ContentLayoutTestUtil.addPortletToLayout(
-				draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET);
+		String instanceId = RandomTestUtil.randomString();
 
-		String portletId = _getAddedPortletId(processAddPortletJSONObject);
+		_addPortletFragmentEntryLink(
+			instanceId, draftLayout, LayoutPortletKeys.LAYOUT_TEST_PORTLET,
+			segmentsExperience.getSegmentsExperienceId());
 
-		_addPortletLayoutClassedModelUsage(draftLayout, portletId);
+		_addPortletFragmentEntryLink(
+			null, draftLayout,
+			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET,
+			segmentsExperience.getSegmentsExperienceId());
 
-		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
+		String instanceablePortletId1 = _getAddedPortletId(
+			processAddPortletJSONObject1);
+		String instanceablePortletId2 = PortletIdCodec.encode(
+			LayoutPortletKeys.LAYOUT_TEST_PORTLET, instanceId);
 
-		_assertLayoutClassedModelUsageContainerKeys(layout, portletId);
+		_addPortletLayoutClassedModelUsages(
+			draftLayout, instanceablePortletId1, instanceablePortletId2,
+			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET);
+
+		_layoutLocalService.copyLayoutContent(draftLayout, layout);
+
+		_assertLayoutClassedModelUsageContainerKeys(
+			layout, instanceablePortletId1, instanceablePortletId2,
+			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET);
 
 		ContentLayoutTestUtil.markItemForDeletionFromLayout(
-			processAddPortletJSONObject.getString("addedItemId"), draftLayout,
-			portletId);
+			processAddPortletJSONObject1.getString("addedItemId"), draftLayout,
+			instanceablePortletId1);
+		ContentLayoutTestUtil.markItemForDeletionFromLayout(
+			processAddPortletJSONObject2.getString("addedItemId"), draftLayout,
+			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET);
 
-		SegmentsExperience targetSegmentsExperience =
-			_segmentsExperienceLocalService.fetchSegmentsExperience(
-				_group.getGroupId(),
-				segmentsExperience.getSegmentsExperienceKey(),
-				layout.getPlid());
+		_layoutLocalService.copyLayoutContent(draftLayout, layout);
 
-		_layoutLocalService.copyLayoutContent(
-			segmentsExperience.getSegmentsExperienceId(), draftLayout,
-			targetSegmentsExperience.getSegmentsExperienceId(), layout);
-
-		_assertLayoutClassedModelUsageContainerKeys(layout, portletId);
+		_assertLayoutClassedModelUsageContainerKeys(
+			layout, instanceablePortletId2,
+			LayoutPortletKeys.LAYOUT_NONINSTANCEABLE_TEST_PORTLET);
 	}
 
 	@Test
@@ -1741,15 +1759,36 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 					layout.getGroupId(), TestPropsValues.getUserId()));
 	}
 
-	private void _addPortletLayoutClassedModelUsage(
-		Layout layout, String portletId) {
+	private FragmentEntryLink _addPortletFragmentEntryLink(
+			String instanceId, Layout layout, String portletId,
+			long segmentsExperienceId)
+		throws Exception {
 
-		_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
-			layout.getGroupId(), StringPool.BLANK, RandomTestUtil.randomLong(),
-			RandomTestUtil.randomLong(), portletId,
-			_portal.getClassNameId(
-				com.liferay.portal.kernel.model.Portlet.class),
-			layout.getPlid(), _serviceContext);
+		return _fragmentEntryLinkLocalService.addFragmentEntryLink(
+			null, layout.getUserId(), layout.getGroupId(), null, null, null,
+			segmentsExperienceId, layout.getPlid(), StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
+			JSONUtil.put(
+				"instanceId", instanceId
+			).put(
+				"portletId", portletId
+			).toString(),
+			StringPool.BLANK, 0, null, FragmentConstants.TYPE_PORTLET,
+			_serviceContext);
+	}
+
+	private void _addPortletLayoutClassedModelUsages(
+		Layout layout, String... portletIds) {
+
+		for (String portletId : portletIds) {
+			_layoutClassedModelUsageLocalService.addLayoutClassedModelUsage(
+				layout.getGroupId(), StringPool.BLANK,
+				RandomTestUtil.randomLong(), RandomTestUtil.randomLong(),
+				portletId,
+				_portal.getClassNameId(
+					com.liferay.portal.kernel.model.Portlet.class),
+				layout.getPlid(), _serviceContext);
+		}
 	}
 
 	private void _addPortletPreferenceValue(
