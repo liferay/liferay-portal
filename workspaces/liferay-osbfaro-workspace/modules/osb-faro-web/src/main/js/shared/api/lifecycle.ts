@@ -180,6 +180,22 @@ export const fetchLifecyclesPage = async (
 		: page;
 };
 
+export const fetchChannelLifecycles = async ({
+	channelId,
+	groupId,
+}: {
+	channelId?: string;
+	groupId: string;
+}): Promise<ILifecycleDetail[]> =>
+	(
+		await fetchLifecyclesPage({
+			channelId,
+			groupId,
+			page: 1,
+			pageSize: 200,
+		})
+	).items;
+
 export const setDefaultLifecycle = ({
 	groupId,
 	lifecycleId,
