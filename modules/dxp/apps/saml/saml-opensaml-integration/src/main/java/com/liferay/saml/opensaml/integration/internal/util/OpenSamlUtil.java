@@ -906,10 +906,6 @@ public class OpenSamlUtil {
 			Credential credential, RoleDescriptor peerRoleDescriptor)
 		throws ResolverException {
 
-		SAMLMetadataSignatureSigningParametersResolver
-			samlMetadataSignatureSigningParametersResolver =
-				new SAMLMetadataSignatureSigningParametersResolver();
-
 		BasicSignatureSigningConfiguration basicSignatureSigningConfiguration =
 			new BasicSignatureSigningConfiguration();
 
@@ -929,6 +925,10 @@ public class OpenSamlUtil {
 		if (peerRoleDescriptor != null) {
 			criteriaSet.add(new RoleDescriptorCriterion(peerRoleDescriptor));
 		}
+
+		SAMLMetadataSignatureSigningParametersResolver
+			samlMetadataSignatureSigningParametersResolver =
+				new SAMLMetadataSignatureSigningParametersResolver();
 
 		return samlMetadataSignatureSigningParametersResolver.resolveSingle(
 			criteriaSet);
