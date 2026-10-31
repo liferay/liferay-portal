@@ -60,6 +60,14 @@ async function createUserWithPermissions(apiHelpers, rolePermissions) {
 async function grantPermissionsToUserRole(page, checked: boolean) {
 	const permissionIframe = page.frameLocator('iframe[title="Permissions"]');
 
+	const searchBar = permissionIframe.getByPlaceholder('Search for');
+
+	await searchBar.click();
+	await searchBar.fill('User');
+	await searchBar.press('Enter');
+
+	await expect(permissionIframe.getByText('Found for')).toBeVisible();
+
 	const permissionsCheckbox = permissionIframe.locator(
 		'#user_ACTION_PERMISSIONS'
 	);
