@@ -4685,7 +4685,7 @@ public class PortalImpl implements Portal {
 		User guestUser = UserLocalServiceUtil.getGuestUser(
 			group.getCompanyId());
 
-		if (LanguageUtil.isInheritLocales(liveGroup.getGroupId())) {
+		if (LanguageUtil.isInheritLocales(liveGroup)) {
 			return guestUser.getLocale();
 		}
 

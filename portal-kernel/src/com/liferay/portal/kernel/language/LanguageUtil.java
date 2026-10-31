@@ -6,6 +6,7 @@
 package com.liferay.portal.kernel.language;
 
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.resource.bundle.ResourceBundleLoader;
 
 import jakarta.portlet.PortletRequest;
@@ -325,6 +326,10 @@ public class LanguageUtil {
 
 	public static boolean isDuplicateLanguageCode(String languageCode) {
 		return _language.isDuplicateLanguageCode(languageCode);
+	}
+
+	public static boolean isInheritLocales(Group group) {
+		return _language.isInheritLocales(group);
 	}
 
 	public static boolean isInheritLocales(long groupId)
