@@ -245,99 +245,6 @@ public class ExportImportConfigurationPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<ExportImportConfiguration, NoSuchConfigurationException>
-			_collectionPersistenceFinderByG_T;
-
-	/**
-	 * Returns an ordered range of all the export import configurations where groupId = &#63; and type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>ExportImportConfigurationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param type the type
-	 * @param start the lower bound of the range of export import configurations
-	 * @param end the upper bound of the range of export import configurations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching export import configurations
-	 */
-	@Override
-	public List<ExportImportConfiguration> findByG_T(
-		long groupId, int type, int start, int end,
-		OrderByComparator<ExportImportConfiguration> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_T.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId, type},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first export import configuration in the ordered set where groupId = &#63; and type = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching export import configuration
-	 * @throws NoSuchConfigurationException if a matching export import configuration could not be found
-	 */
-	@Override
-	public ExportImportConfiguration findByG_T_First(
-			long groupId, int type,
-			OrderByComparator<ExportImportConfiguration> orderByComparator)
-		throws NoSuchConfigurationException {
-
-		return _collectionPersistenceFinderByG_T.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId, type},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first export import configuration in the ordered set where groupId = &#63; and type = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching export import configuration, or <code>null</code> if a matching export import configuration could not be found
-	 */
-	@Override
-	public ExportImportConfiguration fetchByG_T_First(
-		long groupId, int type,
-		OrderByComparator<ExportImportConfiguration> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_T.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId, type},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the export import configurations where groupId = &#63; and type = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param type the type
-	 */
-	@Override
-	public void removeByG_T(long groupId, int type) {
-		_collectionPersistenceFinderByG_T.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId, type});
-	}
-
-	/**
-	 * Returns the number of export import configurations where groupId = &#63; and type = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param type the type
-	 * @return the number of matching export import configurations
-	 */
-	@Override
-	public int countByG_T(long groupId, int type) {
-		return _collectionPersistenceFinderByG_T.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {groupId, type});
-	}
-
-	private CollectionPersistenceFinder
-		<ExportImportConfiguration, NoSuchConfigurationException>
 			_collectionPersistenceFinderByG_T_S;
 
 	/**
@@ -719,36 +626,6 @@ public class ExportImportConfigurationPersistenceImpl
 					FinderColumn.Type.LONG, "=", true, true,
 					ExportImportConfiguration::getCompanyId));
 
-		_collectionPersistenceFinderByG_T = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_T",
-				new String[] {
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "type_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_T",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"groupId", "type_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_T",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"groupId", "type_"}, false),
-			_SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE,
-			_SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE,
-			ExportImportConfigurationModelImpl.ORDER_BY_JPQL,
-			_ENTITY_ALIAS_PREFIX, "", "", null,
-			new FinderColumn<>(
-				"exportImportConfiguration.", "groupId", FinderColumn.Type.LONG,
-				"=", true, true, ExportImportConfiguration::getGroupId),
-			new FinderColumn<>(
-				"exportImportConfiguration.", "type", "type_",
-				FinderColumn.Type.INTEGER, "=", true, true,
-				ExportImportConfiguration::getType));
-
 		_collectionPersistenceFinderByG_T_S = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -820,4 +697,4 @@ public class ExportImportConfigurationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:899840864
+// LIFERAY-SERVICE-BUILDER-HASH:678675407
