@@ -190,7 +190,7 @@ public class ObjectEntryInfoItemUtil {
 				setLocale(
 					LocaleUtil.fromLanguageId(serviceContext.getLanguageId()));
 				setSiteGroupId(serviceContext.getScopeGroupId());
-				setUser(getUser());
+				setUser(ObjectEntryInfoItemUtil.getUser(serviceContext));
 			}
 		};
 	}
