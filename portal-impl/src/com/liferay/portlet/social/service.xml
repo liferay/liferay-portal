@@ -163,12 +163,6 @@
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
 		</finder>
-		<finder name="G_C_C_O" return-type="Collection" where="endPeriod = -1">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-			<finder-column name="ownerType" />
-		</finder>
 		<finder name="G_C_C_N_O_S" return-type="SocialActivityStatsEntry" unique="true">
 			<finder-column name="groupId" />
 			<finder-column name="classNameId" />
@@ -271,28 +265,6 @@
 		<finder name="UserId" return-type="Collection">
 			<finder-column name="userId" />
 		</finder>
-		<finder name="G_U_T" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
-			<finder-column name="type" />
-		</finder>
-		<finder name="C_C_T" return-type="Collection">
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-			<finder-column name="type" />
-		</finder>
-		<finder name="G_U_C_T" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="userId" />
-			<finder-column name="classNameId" />
-			<finder-column name="type" />
-		</finder>
-		<finder name="U_C_C_T" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="classNameId" />
-			<finder-column name="classPK" />
-			<finder-column name="type" />
-		</finder>
 	</entity>
 	<entity local-service="true" name="SocialActivitySetting" remote-service="true">
 
@@ -319,10 +291,6 @@
 
 		<finder name="GroupId" return-type="Collection">
 			<finder-column name="groupId" />
-		</finder>
-		<finder name="G_C" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
 		</finder>
 		<finder name="G_A" return-type="Collection">
 			<finder-column name="groupId" />
@@ -364,9 +332,6 @@
 		</finder>
 		<finder name="UserId2" return-type="Collection">
 			<finder-column name="userId2" />
-		</finder>
-		<finder name="Type" return-type="Collection">
-			<finder-column name="type" />
 		</finder>
 		<finder name="C_T" return-type="Collection">
 			<finder-column name="companyId" />
@@ -429,10 +394,6 @@
 		</finder>
 		<finder name="ReceiverUserId" return-type="Collection">
 			<finder-column name="receiverUserId" />
-		</finder>
-		<finder name="U_S" return-type="Collection">
-			<finder-column name="userId" />
-			<finder-column name="status" />
 		</finder>
 		<finder name="C_C" return-type="Collection">
 			<finder-column name="classNameId" />
