@@ -22,9 +22,6 @@ run "should_not_accept_an_unsupported_helm_chart_name" {
 	}
 }
 run "should_use_the_liferay_default_chart" {
-	variables {
-		liferay_helm_chart_name="liferay-default"
-	}
 	assert {
 		condition=local.liferay_helm_chart_config.chart_url == "oci://us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart/liferay-default"
 		error_message="The liferay-default chart must default to the liferay-default OCI chart URL"
@@ -34,6 +31,9 @@ run "should_use_the_liferay_default_chart" {
 		error_message="The liferay-default chart must not have scopes defined"
 	}
 	command=plan
+	variables {
+		liferay_helm_chart_name="liferay-default"
+	}
 }
 run "should_use_the_liferay_gcp_chart_by_default" {
 	assert {

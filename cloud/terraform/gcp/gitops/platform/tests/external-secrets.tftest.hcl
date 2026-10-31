@@ -98,7 +98,7 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="external-secrets-metrics-ingress must scope its allow to the metrics-named port"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-webhook-ingress"][0].spec.podSelector.matchLabels == {"app.kubernetes.io/instance" = "external-secrets", "app.kubernetes.io/name" = "external-secrets-webhook"}
+		condition=[for o in yamldecode(helm_release.external_secrets.values[0]).extraObjects : o if o.metadata.name == "external-secrets-webhook-ingress"][0].spec.podSelector.matchLabels == {"app.kubernetes.io/instance"="external-secrets", "app.kubernetes.io/name"="external-secrets-webhook"}
 		error_message="external-secrets-webhook-ingress must select only the webhook pod — it is the sole component the API server calls, so the controller and the cert-controller stay unreachable"
 	}
 	assert {

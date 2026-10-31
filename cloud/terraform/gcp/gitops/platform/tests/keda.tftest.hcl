@@ -87,7 +87,7 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="default-deny-ingress must declare zero ingress rules — any ingress key at all would allow something"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.podSelector.matchLabels == {"app" = "keda-admission-webhooks"}
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-admission-webhooks-ingress"][0].spec.podSelector.matchLabels == {"app"="keda-admission-webhooks"}
 		error_message="keda-admission-webhooks-ingress must select only the admission webhook pod"
 	}
 	assert {
@@ -103,11 +103,11 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="keda-admission-webhooks-ingress must name the konnectivity-agent pods as a literal, for the same reason the namespaceSelector above is asserted literally"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-ingress"][0].spec.podSelector.matchLabels == {"app" = "keda-operator"}
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-ingress"][0].spec.podSelector.matchLabels == {"app"="keda-operator"}
 		error_message="keda-operator-ingress must select only the operator, which is the server for this port"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-ingress"][0].spec.ingress[0].from[0].podSelector.matchLabels == {"app" = "keda-operator-metrics-apiserver"}
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-ingress"][0].spec.ingress[0].from[0].podSelector.matchLabels == {"app"="keda-operator-metrics-apiserver"}
 		error_message="keda-operator-ingress must allow only the metrics apiserver, which is started with --metrics-service-address pointing at keda-operator:9666; the peer carries no namespaceSelector so the allow stays inside keda-system, unlike the chart's own disabled policy which opens this port to every namespace"
 	}
 	assert {
@@ -115,7 +115,7 @@ run "should_scope_the_manual_network_policies_correctly" {
 		error_message="keda-operator-ingress must scope its allow to the metricsservice-named port, and the default-deny would otherwise break every external metric lookup"
 	}
 	assert {
-		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.podSelector.matchLabels == {"app" = "keda-operator-metrics-apiserver"}
+		condition=[for o in yamldecode(helm_release.keda[0].values[0]).extraObjects : o if o.metadata.name == "keda-operator-metrics-apiserver-ingress"][0].spec.podSelector.matchLabels == {"app"="keda-operator-metrics-apiserver"}
 		error_message="keda-operator-metrics-apiserver-ingress must select only the metrics apiserver by its app label, which is the key in the Deployment's own immutable spec.selector; the name label is absent on this workload and app.kubernetes.io/component is shared by all three"
 	}
 	assert {
