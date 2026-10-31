@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -248,6 +249,22 @@ public class ObjectEntryWorkflowHandlerTest {
 			WorkflowConstants.STATUS_DENIED, objectEntry.getStatus());
 	}
 
+	@Test
+	public void testIsVisible() {
+		WorkflowHandler<ObjectEntry> workflowHandler =
+			WorkflowHandlerRegistryUtil.getWorkflowHandler(
+				_objectDefinition.getClassName());
+
+		Assert.assertTrue(workflowHandler.isVisible(_group));
+
+		Group group = _groupLocalService.createGroup(RandomTestUtil.nextLong());
+
+		group.setCompanyId(RandomTestUtil.nextLong());
+		group.setSite(true);
+
+		Assert.assertFalse(workflowHandler.isVisible(group));
+	}
+
 	private ObjectDefinition _addObjectDefinition() throws Exception {
 		ObjectDefinition objectDefinition =
 			_objectDefinitionLocalService.addCustomObjectDefinition(
@@ -337,6 +354,9 @@ public class ObjectEntryWorkflowHandlerTest {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private GroupLocalService _groupLocalService;
 
 	@DeleteAfterTestRun
 	private ObjectDefinition _objectDefinition;
