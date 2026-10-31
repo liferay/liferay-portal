@@ -49,7 +49,9 @@ ${dataFactory.getExtensionDynamicObjectDefinitionTableCreateSQL(objectDefinition
 
 	<@insertAssetEntry _entry = objectEntryModel />
 
-	${dataFactory.generateDynamicSQL(objectDefinitionModel.getDBTableName(), dlFileEntryModel.getFileEntryId(), objectEntryModel.getObjectEntryId(), objectFieldModels, relatedTicketObjectEntryId, objectEntryModel.getUserId())}
+	<#list dataFactory.generateDynamicSQLs(objectDefinitionModel.getDBTableName(), dlFileEntryModel.getFileEntryId(), objectEntryModel.getObjectEntryId(), objectFieldModels, relatedTicketObjectEntryId, objectEntryModel.getUserId()) as dynamicSQL>
+		${dynamicSQL}
+	</#list>
 
 	<#assign relatedTicketObjectEntryId = objectEntryModel.getObjectEntryId() />
 

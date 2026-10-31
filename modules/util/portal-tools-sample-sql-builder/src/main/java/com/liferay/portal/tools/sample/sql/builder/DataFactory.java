@@ -501,7 +501,7 @@ public class DataFactory {
 		field.set(_friendlyURLNormalizer, (Normalizer)s -> s);
 	}
 
-	public String generateDynamicSQL(
+	public List<String> generateDynamicSQLs(
 		String dbTableName, long dlFileEntryId, long objectEntryId,
 		List<ObjectFieldModel> objectFieldModels,
 		long relatedTicketObjectEntryId, long relatedUserObjectEntryId) {
@@ -564,7 +564,11 @@ public class DataFactory {
 
 		sb.append(");");
 
-		return sb.toString();
+		return ListUtil.fromArray(
+			sb.toString(),
+			StringBundler.concat(
+				"insert into ", dbTableName, "_x values (", objectEntryId,
+				");"));
 	}
 
 	public RoleModel getAdministratorRoleModel() {
