@@ -224,7 +224,11 @@ definition {
 				changeType = "Added",
 				changeUser = "Test Test");
 
-			AssertElementNotPresent(locator1 = "Icon#SVG_ELLIPSIS");
+			AssertElementNotPresent(locator1 = "PublicationsChanges#ELLIPSIS_IN_PUBLICATION");
+
+			AssertElementNotPresent(
+				key_rowEntry = "WC WebContent Title",
+				locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
 		}
 	}
 
