@@ -122,11 +122,8 @@ public class CommerceTierPriceEntryServiceImpl
 		if ((commercePriceEntry == null) &&
 			Validator.isNotNull(priceEntryExternalReferenceCode)) {
 
-			commercePriceEntry =
-				_commercePriceEntryLocalService.
-					fetchCommercePriceEntryByExternalReferenceCode(
-						priceEntryExternalReferenceCode,
-						serviceContext.getCompanyId());
+			commercePriceEntry = _commercePriceEntryPersistence.fetchByERC_C(
+				priceEntryExternalReferenceCode, serviceContext.getCompanyId());
 		}
 
 		if (commercePriceEntry != null) {
@@ -164,11 +161,8 @@ public class CommerceTierPriceEntryServiceImpl
 		if ((commercePriceEntry == null) &&
 			Validator.isNotNull(priceEntryExternalReferenceCode)) {
 
-			commercePriceEntry =
-				_commercePriceEntryLocalService.
-					fetchCommercePriceEntryByExternalReferenceCode(
-						priceEntryExternalReferenceCode,
-						serviceContext.getCompanyId());
+			commercePriceEntry = _commercePriceEntryPersistence.fetchByERC_C(
+				priceEntryExternalReferenceCode, serviceContext.getCompanyId());
 		}
 
 		if (commercePriceEntry != null) {
@@ -236,9 +230,8 @@ public class CommerceTierPriceEntryServiceImpl
 		throws PortalException {
 
 		CommerceTierPriceEntry commerceTierPriceEntry =
-			commerceTierPriceEntryLocalService.
-				fetchCommerceTierPriceEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceTierPriceEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceTierPriceEntry != null) {
 			CommercePriceEntry commercePriceEntry =
@@ -299,8 +292,8 @@ public class CommerceTierPriceEntryServiceImpl
 			getPermissionChecker(), commercePriceEntry.getCommercePriceListId(),
 			ActionKeys.VIEW);
 
-		return commerceTierPriceEntryLocalService.
-			getCommerceTierPriceEntriesCount(commercePriceEntryId);
+		return commerceTierPriceEntryPersistence.countByCommercePriceEntryId(
+			commercePriceEntryId);
 	}
 
 	/**

@@ -69,8 +69,8 @@ public class CommercePriceListCommerceAccountGroupRelServiceImpl
 
 		CommercePriceListCommerceAccountGroupRel
 			commercePriceListCommerceAccountGroupRel =
-				commercePriceListCommerceAccountGroupRelLocalService.
-					getCommercePriceListCommerceAccountGroupRel(
+				commercePriceListCommerceAccountGroupRelPersistence.
+					findByPrimaryKey(
 						commercePriceListCommerceAccountGroupRelId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -92,9 +92,8 @@ public class CommercePriceListCommerceAccountGroupRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListCommerceAccountGroupRelLocalService.
-			fetchCommercePriceListCommerceAccountGroupRel(
-				commercePriceListId, commerceAccountGroupId);
+		return commercePriceListCommerceAccountGroupRelPersistence.
+			fetchByCAGI_CPI(commercePriceListId, commerceAccountGroupId);
 	}
 
 	@Override
@@ -105,8 +104,8 @@ public class CommercePriceListCommerceAccountGroupRelServiceImpl
 
 		CommercePriceListCommerceAccountGroupRel
 			commercePriceListCommerceAccountGroupRel =
-				commercePriceListCommerceAccountGroupRelLocalService.
-					getCommercePriceListCommerceAccountGroupRel(
+				commercePriceListCommerceAccountGroupRelPersistence.
+					findByPrimaryKey(
 						commercePriceListCommerceAccoungGroupRelId);
 
 		_commercePriceListModelResourcePermission.check(
@@ -126,8 +125,8 @@ public class CommercePriceListCommerceAccountGroupRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListCommerceAccountGroupRelLocalService.
-			getCommercePriceListCommerceAccountGroupRels(commercePriceListId);
+		return commercePriceListCommerceAccountGroupRelPersistence.
+			findByCommercePriceListId(commercePriceListId);
 	}
 
 	@Override
@@ -163,9 +162,8 @@ public class CommercePriceListCommerceAccountGroupRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListCommerceAccountGroupRelLocalService.
-			getCommercePriceListCommerceAccountGroupRelsCount(
-				commercePriceListId);
+		return commercePriceListCommerceAccountGroupRelPersistence.
+			countByCommercePriceListId(commercePriceListId);
 	}
 
 	@Override
@@ -185,8 +183,8 @@ public class CommercePriceListCommerceAccountGroupRelServiceImpl
 
 		CommercePriceListCommerceAccountGroupRel
 			commercePriceListCommerceAccountGroupRel =
-				commercePriceListCommerceAccountGroupRelLocalService.
-					getCommercePriceListCommerceAccountGroupRel(
+				commercePriceListCommerceAccountGroupRelPersistence.
+					findByPrimaryKey(
 						commercePriceListCommerceAccountGroupRelId);
 
 		_commercePriceListModelResourcePermission.check(

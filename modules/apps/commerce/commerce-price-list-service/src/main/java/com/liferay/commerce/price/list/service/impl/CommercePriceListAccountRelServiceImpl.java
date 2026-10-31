@@ -55,8 +55,8 @@ public class CommercePriceListAccountRelServiceImpl
 		throws PortalException {
 
 		CommercePriceListAccountRel commercePriceListAccountRel =
-			commercePriceListAccountRelLocalService.
-				getCommercePriceListAccountRel(commercePriceListAccountRelId);
+			commercePriceListAccountRelPersistence.findByPrimaryKey(
+				commercePriceListAccountRelId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -88,9 +88,8 @@ public class CommercePriceListAccountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListAccountRelLocalService.
-			fetchCommercePriceListAccountRel(
-				commerceAccountId, commercePriceListId);
+		return commercePriceListAccountRelPersistence.fetchByCAI_CPI(
+			commerceAccountId, commercePriceListId);
 	}
 
 	@Override
@@ -99,8 +98,8 @@ public class CommercePriceListAccountRelServiceImpl
 		throws PortalException {
 
 		CommercePriceListAccountRel commercePriceListAccountRel =
-			commercePriceListAccountRelLocalService.
-				getCommercePriceListAccountRel(commercePriceListAccountRelId);
+			commercePriceListAccountRelPersistence.findByPrimaryKey(
+				commercePriceListAccountRelId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -118,8 +117,8 @@ public class CommercePriceListAccountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListAccountRelLocalService.
-			getCommercePriceListAccountRels(commercePriceListId);
+		return commercePriceListAccountRelPersistence.findByCommercePriceListId(
+			commercePriceListId);
 	}
 
 	@Override
@@ -151,8 +150,8 @@ public class CommercePriceListAccountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListAccountRelLocalService.
-			getCommercePriceListAccountRelsCount(commercePriceListId);
+		return commercePriceListAccountRelPersistence.
+			countByCommercePriceListId(commercePriceListId);
 	}
 
 	@Override

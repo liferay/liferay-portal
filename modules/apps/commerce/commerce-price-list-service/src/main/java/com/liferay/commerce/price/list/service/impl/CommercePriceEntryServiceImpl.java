@@ -188,9 +188,8 @@ public class CommercePriceEntryServiceImpl
 		throws PortalException {
 
 		CommercePriceEntry commercePriceEntry =
-			commercePriceEntryLocalService.
-				fetchCommercePriceEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commercePriceEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commercePriceEntry != null) {
 			_commercePriceListModelResourcePermission.check(

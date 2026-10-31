@@ -55,8 +55,8 @@ public class CommercePriceListDiscountRelServiceImpl
 		throws PortalException {
 
 		CommercePriceListDiscountRel commercePriceListDiscountRel =
-			commercePriceListDiscountRelLocalService.
-				getCommercePriceListDiscountRel(commercePriceListDiscountRelId);
+			commercePriceListDiscountRelPersistence.findByPrimaryKey(
+				commercePriceListDiscountRelId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -75,9 +75,8 @@ public class CommercePriceListDiscountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListDiscountRelLocalService.
-			fetchCommercePriceListDiscountRel(
-				commercePriceListId, commerceDiscountId);
+		return commercePriceListDiscountRelPersistence.fetchByCDI_CPI(
+			commercePriceListId, commerceDiscountId);
 	}
 
 	@Override
@@ -86,8 +85,8 @@ public class CommercePriceListDiscountRelServiceImpl
 		throws PortalException {
 
 		CommercePriceListDiscountRel commercePriceListDiscountRel =
-			commercePriceListDiscountRelLocalService.
-				getCommercePriceListDiscountRel(commercePriceListDiscountRelId);
+			commercePriceListDiscountRelPersistence.findByPrimaryKey(
+				commercePriceListDiscountRelId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -105,8 +104,8 @@ public class CommercePriceListDiscountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListDiscountRelLocalService.
-			getCommercePriceListDiscountRels(commercePriceListId);
+		return commercePriceListDiscountRelPersistence.
+			findByCommercePriceListId(commercePriceListId);
 	}
 
 	@Override
@@ -118,8 +117,8 @@ public class CommercePriceListDiscountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListDiscountRelLocalService.
-			getCommercePriceListDiscountRels(
+		return commercePriceListDiscountRelPersistence.
+			findByCommercePriceListId(
 				commercePriceListId, start, end, orderByComparator);
 	}
 
@@ -130,8 +129,8 @@ public class CommercePriceListDiscountRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListDiscountRelLocalService.
-			getCommercePriceListDiscountRelsCount(commercePriceListId);
+		return commercePriceListDiscountRelPersistence.
+			countByCommercePriceListId(commercePriceListId);
 	}
 
 	@Reference(

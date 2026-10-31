@@ -156,8 +156,8 @@ public class CommercePriceListServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListLocalService.
-				fetchCatalogBaseCommercePriceListByType(groupId, type);
+			commercePriceListPersistence.fetchByG_CBPL_T_First(
+				groupId, true, type, null);
 
 		if (commercePriceList != null) {
 			_commercePriceListModelResourcePermission.check(
@@ -188,9 +188,8 @@ public class CommercePriceListServiceImpl
 		throws PortalException {
 
 		CommercePriceList commercePriceList =
-			commercePriceListLocalService.
-				fetchCommercePriceListByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commercePriceListPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commercePriceList != null) {
 			_commercePriceListModelResourcePermission.check(

@@ -55,8 +55,8 @@ public class CommercePriceListChannelRelServiceImpl
 		throws PortalException {
 
 		CommercePriceListChannelRel commercePriceListChannelRel =
-			commercePriceListChannelRelLocalService.
-				getCommercePriceListChannelRel(commercePriceListChannelRelId);
+			commercePriceListChannelRelPersistence.findByPrimaryKey(
+				commercePriceListChannelRelId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -87,9 +87,8 @@ public class CommercePriceListChannelRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListChannelRelLocalService.
-			fetchCommercePriceListChannelRel(
-				commerceChannelId, commercePriceListId);
+		return commercePriceListChannelRelPersistence.fetchByCCI_CPI(
+			commerceChannelId, commercePriceListId);
 	}
 
 	@Override
@@ -98,8 +97,8 @@ public class CommercePriceListChannelRelServiceImpl
 		throws PortalException {
 
 		CommercePriceListChannelRel commercePriceListChannelRel =
-			commercePriceListChannelRelLocalService.
-				getCommercePriceListChannelRel(commercePriceListChannelRelId);
+			commercePriceListChannelRelPersistence.findByPrimaryKey(
+				commercePriceListChannelRelId);
 
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(),
@@ -117,8 +116,8 @@ public class CommercePriceListChannelRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListChannelRelLocalService.
-			getCommercePriceListChannelRels(commercePriceListId);
+		return commercePriceListChannelRelPersistence.findByCommercePriceListId(
+			commercePriceListId);
 	}
 
 	@Override
@@ -150,8 +149,8 @@ public class CommercePriceListChannelRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListChannelRelLocalService.
-			getCommercePriceListChannelRelsCount(commercePriceListId);
+		return commercePriceListChannelRelPersistence.
+			countByCommercePriceListId(commercePriceListId);
 	}
 
 	@Override

@@ -75,9 +75,8 @@ public class CommercePriceListOrderTypeRelServiceImpl
 		_commercePriceListModelResourcePermission.check(
 			getPermissionChecker(), commercePriceListId, ActionKeys.VIEW);
 
-		return commercePriceListOrderTypeRelLocalService.
-			fetchCommercePriceListOrderTypeRel(
-				commercePriceListId, commerceOrderTypeId);
+		return commercePriceListOrderTypeRelPersistence.fetchByCPI_COTI(
+			commercePriceListId, commerceOrderTypeId);
 	}
 
 	@Override
