@@ -103,7 +103,7 @@ Verified on 2026.Q1:
 
 - **`<script src>` and `<link rel="stylesheet">` in a fragment's `html` are stored, then stripped at render.** The element's tag stays inert, with no error. Keep only the bare tag in `html` and inject the assets from the fragment's `js`, guarded by a `data-*` marker so a second placement does not load them twice. The paths are the yaml's `urls`/`cssURLs` (see "Asset URLs").
 - **A CET referenced as a fragment by its key** (`"fragment": {"key": "<cet-key>"}`) vanishes from the tree and the render, silently.
-- **`jsImportMapsEntry` variant**, when the configuration varies per placement or `htmlAttributes` does not reach the tag: the fragment's `js` runs `import('<bareSpecifier>')`, the module calls `customElements.define` with `observedAttributes`, and the fragment `html` sets those attributes from its configuration with `?has_content`, not `!`, because a never-configured value is `""`. A Vite library build also needs the `NODE_ENV` define (`react-custom-elements`).
+- **`jsImportMapsEntry` variant**, when the configuration varies per placement or `htmlAttributes` does not reach the tag: the fragment's `js` runs `import('<bareSpecifier>')`, the module calls `customElements.define` with `observedAttributes`, and the fragment `html` sets those attributes from its configuration with `?has_content`, not `!`, because a value that was never configured is `""`. A Vite library build also needs the `NODE_ENV` define (`react-custom-elements`).
 
 ```javascript
 if (!document.head.querySelector('[data-<name>-assets]')) {
@@ -153,7 +153,7 @@ assemble:
   url: "main.js"
 ```
 
-**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna executes it again on every client-side navigation with `document.readyState` already `complete`. A `DOMContentLoaded`-gated init then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
+**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna executes it again on every navigation in the browser with `document.readyState` already `complete`. A `DOMContentLoaded`-gated init then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
 
 #### `objectAction` (Spring Boot example)
 
@@ -284,13 +284,13 @@ ps -o pid=,ppid=,sid=,args= -p "$(pgrep -d , -f "[n]ode ${WORKSPACE}/client-exte
 
 Populate `site-initializer` per `rules/site-initializer-format.md`.
 
-`siteExternalReferenceCode` uniquely identifies the site so rerunning the initializer updates it rather than creating a duplicate. Derive it from the site name in kebab-case.
+`siteExternalReferenceCode` uniquely identifies the site so rerunning the initializer updates it rather than creating a duplicate. Derive it from the site name in kebab case.
 
 #### `batch`
 
-Copy [liferay-sample-batch](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-batch) from GitHub into `client-extensions/<name>`. Rename the top level keys and each `name` in `client-extension.yaml`, and replace the files in `batch/` with your own.
+Copy [liferay-sample-batch](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-batch) from GitHub into `client-extensions/<name>`. Rename the top level keys and each `name` in `client-extension.yaml`, and replace the files in `batch` with your own.
 
-**Keep the sample's `assemble` block.** Without it, the `batch/` directory is left out of the zip. The build succeeds, the bundle reaches `STARTED`, and nothing is imported. The signal is `assembleClientExtension NO-SOURCE` in the build output, or no `Started batch engine import task` line in the log after `STARTED`. Confirm the files made it in with `unzip -l dist/<name>.zip`. Verified on 2026.Q1.
+**Keep the sample's `assemble` block.** Without it, the `batch` directory is left out of the zip. The build succeeds, the bundle reaches `STARTED`, and nothing is imported. The signal is `assembleClientExtension NO-SOURCE` in the build output, or no `Started batch engine import task` line in the log after `STARTED`. Confirm the files made it in with `unzip -l dist/<name>.zip`. Verified on 2026.Q1.
 
 Files import in filename order, so number them so that dependencies come first. Each file is one envelope, in the shape of the sample's files. On a local bundle, the import runs inside the portal, and `Liferay.Headless.Batch.Engine.everything` alone was enough for `ObjectField` and `ObjectAction` items. Verified on 2026.Q1. Liferay Cloud was not tested.
 
@@ -314,7 +314,7 @@ Call `deploy-and-verify`. For microservice CETs, also start the microservice pro
 | Site initializer not in template list | CET not `ACTIVE`; redeploy and recheck log |
 | CET `STARTED` but its CSS/JS returns 404 | `assemble` missing or not copying the build output into `static` (see `react-custom-elements`) |
 | `createClientExtensionConfig FAILED — Required file "Dockerfile"` / `"LCP.json"` | Microservice CET without its own Dockerfile or LCP.json (see "Every Microservice Project Needs a `Dockerfile` and `LCP.json`") |
-| `type: batch` CET deploys, but `batch/` is absent from the zip | `assemble` missing, or nested under the CET's key, reports `NO-SOURCE` silently; make it a **top level** key (see `batch` above) |
+| `type: batch` CET deploys, but the `batch` directory is absent from the zip | `assemble` missing, or nested under the CET's key, reports `NO-SOURCE` silently; make it a **top level** key (see `batch` above) |
 
 ## CSS Architecture for Custom Elements
 
@@ -348,7 +348,7 @@ Native `fetch()` fails in two distinct ways:
 
 ### Resolve the Current User via `my-user-account`, Not `ThemeDisplay`
 
-Never use `Liferay.ThemeDisplay.getUserId()` in client side Custom Element code. It can return `0` or a stale ID when the page is partially cached.
+Never use `Liferay.ThemeDisplay.getUserId()` in Custom Element code that runs on the client. It can return `0` or a stale ID when the page is partially cached.
 
 Resolve the current user via the session fresh API instead:
 
@@ -364,7 +364,7 @@ Call this through `Liferay.Util.fetch` so the CSRF token is attached automatical
 
 - **Use them between two separately placed widgets** with no DOM relation. A widget reporting its own state change to its ancestors dispatches a `CustomEvent` with `{bubbles: true, composed: true}` instead.
 - **The callback receives the payload itself**, with no `.detail` envelope.
-- **The namespace is page-wide.** Give each event a specific name (`<project>:<widget>:<event>`).
+- **The namespace is shared across the page.** Give each event a specific name (`<project>:<widget>:<event>`).
 - **Nothing is replayed or buffered.** An event fired before `Liferay.on()` is lost, as designed, so the subscriber renders a coherent initial state without waiting for a message.
 - **The subscriber updates its own element's attributes** rather than implementing the emitter's logic again, and the emitter does not fire again for a state that has not changed.
 

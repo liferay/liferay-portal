@@ -17,7 +17,7 @@ Before answering, identify three things:
 
 1. **DXP version**: read `liferay.workspace.product` from `gradle.properties`. Quarterly releases (`-Qx`) and 7.4 lines use the modern path (Client Extensions, Objects, Fragments). Versions below 7.4 use legacy OSGi modules. **This pack is the same for every release**, so a 2026.Q1 workspace reads text verified on later quarters. Each skill states a release difference where it describes the feature ("on 2026.Q1 and 2026.Q2", or a heading prefixed `DXP 2026.Q3+:`); compare it with this version before acting. A `Verified on 2026.QN` note means unverified on any earlier quarter, and `Verified on 2026.Q2.7` means that patch only. "From source" means read from master source, not run.
 
-1. **Bundle state**: `bundles/` exists when `blade server init` has run. The Tomcat install lives at `bundles/tomcat*/`. The active HTTP port is the `port` attribute on the `<Connector protocol="HTTP/1.1">` element in `bundles/tomcat*/conf/server.xml`. Default is 8080.
+1. **Bundle state**: the `bundles` directory exists when `blade server init` has run. The Tomcat install lives at `bundles/tomcat*`. The active HTTP port is the `port` attribute on the `<Connector protocol="HTTP/1.1">` element in `bundles/tomcat*/conf/server.xml`. Default is 8080.
 
 ## Project Paths
 
@@ -119,7 +119,7 @@ Liferay provides an MCP server for AI agent integration, gated by a feature flag
 
 ## Skill Router
 
-Every skill lives under `skills/` and owns one workflow. Match the user's intent to a skill below and load it on demand — even in an empty workspace (see the Preflight Rule above).
+Every skill lives under `skills` and owns one workflow. Match the user's intent to a skill below and load it on demand — even in an empty workspace (see the Preflight Rule above).
 
 | User Intent | Skill |
 | --- | --- |
@@ -155,7 +155,7 @@ Site building is **site initializer first**: the `siteInitializer` CET tree is t
 
 ## Reference Cards
 
-Reference cards under `rules/` hold the data skills look up. Skills cite the card path explicitly. A card with `paths` frontmatter loads on its own once you read or edit a file it covers; until then, read it from `.claude/rules/<card>` when a skill cites it or the list below names the topic. A card states the **fact** and routes to the skill that holds the **procedure** — read the card, then load the skill it names.
+Reference cards under `rules` hold the data skills look up. Skills cite the card path explicitly. A card with `paths` frontmatter loads on its own once you read or edit a file it covers; until then, read it from `.claude/rules/<card>` when a skill cites it or the list below names the topic. A card states the **fact** and routes to the skill that holds the **procedure** — read the card, then load the skill it names.
 
 - `rules/client-extension-types.md` — client extension types, their yaml, and which types may share a project
 - `rules/guest-access.md` — what an anonymous visitor can and cannot read; read before building anything public

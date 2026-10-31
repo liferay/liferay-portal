@@ -69,7 +69,7 @@ These CETs inject UI artifacts into the browser.
 | `fdsFilter` | Custom filter component for FDS tables — referenced as `clientExtensionEntryERC: "LXC:<key>"`; without `LXC:` it is silently dropped | `name`, `url` | No |
 | `commerceCheckoutStep` | Custom step injected into the Commerce checkout flow | `label`, `name`, `order`, `url` | No |
 
-> **`globalJS`/`globalCSS` injection gotchas (verified on 2026.Q2):** (1) The resource is only injected instance-wide when the entry declares **`scope: company`** (the default is `layout`) — without it the file serves fine over HTTP and the CX registers, but no page ever loads it. Alternatively, bind it per site/master via the master page-definition's `settings.globalJSClientExtensions`/`globalCSSClientExtensions` (ERC `LXC:<key>`) — use that, not `scope: company`, when the JS/CSS belongs to one site. (2) **One project injects only ONE resource per type** — two `globalJS` (or two `globalCSS`) entries in one `client-extension.yaml` results in only the alphabetically-first ERC being injected; the other silently drops. Give each injected JS/CSS resource its own single-entry CX project.
+> **`globalJS`/`globalCSS` injection gotchas (verified on 2026.Q2):** (1) The resource is only injected across the instance when the entry declares **`scope: company`** (the default is `layout`) — without it the file serves fine over HTTP and the CX registers, but no page ever loads it. Alternatively, bind it per site/master via the `settings.globalJSClientExtensions`/`globalCSSClientExtensions` of the master's `page-definition.json` (ERC `LXC:<key>`) — use that, not `scope: company`, when the JS/CSS belongs to one site. (2) **One project injects only ONE resource per type** — two `globalJS` (or two `globalCSS`) entries in one `client-extension.yaml` results in only the ERC that sorts first alphabetically being injected; the other silently drops. Give each injected JS/CSS resource its own CX project with a single entry.
 
 ## Microservice
 
@@ -78,7 +78,7 @@ These CETs expose an HTTP endpoint that Liferay calls inbound. They require an `
 | Type | Purpose | Required YAML Fields | OAuth |
 | --- | --- | --- | --- |
 | `objectAction` | Handler called when an object action fires | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
-| `objectValidationRule` | Server side validation for object entries | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
+| `objectValidationRule` | Validation on the server for object entries | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `objectEntryManager` | Full storage backend for an object with `storageType` `function#<cet-erc>` (needs flag `LPS-135430`) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |
 | `workflowAction` | Handler called at a Kaleo workflow action node | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `Liferay.Headless.Admin.Workflow.everything` if it transitions the task, plus `c_<name>.everything` for each object it calls |
 | `notificationType` | Custom notification channel (e.g. SMS, push) | `oAuth2ApplicationExternalReferenceCode`, `resourcePath` | Yes — `c_<name>.everything` for each object it calls |

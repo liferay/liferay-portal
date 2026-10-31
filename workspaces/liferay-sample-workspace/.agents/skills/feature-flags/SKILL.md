@@ -61,7 +61,7 @@ The screen's endpoint, `POST /o/com-liferay-feature-flag-web/set-enabled` (form 
 
 Either way, verify by effect: reload a page and read `Liferay.FeatureFlags['<KEY>']`. Still record the flag in `portal-ext.properties` so a fresh environment matches.
 
-**Turning on a flag can start work in the background.** On a Hypersonic bundle (2026.Q3.8), enabling `LPS-164563` (Data Sets) started a batch engine import, and the portal stopped answering: every request waited on a language resource lock held by a thread blocked on a Hypersonic table lock. A restart cleared it, and the flag stayed on. This was seen on Hypersonic and not tried on another database.
+**Turning on a flag can start work in the background.** On a Hypersonic bundle (2026.Q3.8), enabling `LPS-164563` (Data Sets) started a batch engine import, and the portal stopped answering: every request waited on a language resource lock held by a thread blocked on a Hypersonic table lock. A restart ends the hang, and the flag stays on, but it can leave the import unfinished: in one run the import task stayed at `STARTED`, 7 of the 9 `L_DATA_SET_*` object definitions stayed inactive, and creating a Data Set answered `400 "Object definition … is inactive"`. On a new database, set `feature.flag.LPS-164563=true` in `portal-ext.properties` before the first start: every `L_DATA_SET_*` definition then came up active. This was seen on Hypersonic and not tried on another database.
 
 ### Gotcha: A Stored Toggle Overrides `portal-ext.properties`
 
@@ -122,7 +122,7 @@ For the full table see `rules/feature-flags-catalog.md`.
 | `LPD-17564` | off | CMS, including the object collaborators API, on 2026.Q1 and 2026.Q2 (needs `LPD-34594`). The flag is gone from 2026.Q3, where neither needs a flag |
 | `LPD-32867` | off | Content provider for dynamic content sets (headless-delivery) |
 | `LPD-35443` | off | Page Management API: `headless-admin-site` `site-pages` and `master-pages` (beta on 2026.Q2, release on 2026.Q3) |
-| `LPD-74328` | off | Page element / page-specification creation and update |
+| `LPD-74328` | off | Page element / page specification creation and update |
 
 ## Diagnosing an Unknown Flag Gate
 

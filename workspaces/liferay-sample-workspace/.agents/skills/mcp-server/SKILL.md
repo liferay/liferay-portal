@@ -67,7 +67,7 @@ Enable `LPD-63311` in the active configuration. Use `skills/feature-flags/SKILL.
 
 ### DXP 2026.Q3+: Enable the MCP Server Configuration
 
-On 2026.Q3, the flag is not enough. The server also reads `MCPServerConfiguration`, an instance scoped configuration whose `enabled` attribute defaults to `false`, and `/o/mcp` returns `404` until it is on. Nothing in the log says so. Verified on 2026.Q3 with `LPD-63311` already in effect: `404` before the file below, `200` within seconds after it.
+On 2026.Q3, the flag is not enough. The server also reads `MCPServerConfiguration`, a configuration scoped at the instance level whose `enabled` attribute defaults to `false`, and `/o/mcp` returns `404` until it is on. Nothing in the log says so. Verified on 2026.Q3 with `LPD-63311` already in effect: `404` before the file below, `200` within seconds after it.
 
 Write it as an OSGi configuration file. File install picks it up while the portal runs, so no restart is needed:
 
@@ -77,7 +77,7 @@ printf \
 	> bundles/osgi/configs/com.liferay.mcp.server.rest.internal.configuration.MCPServerConfiguration.config
 ```
 
-A file written only to `bundles/` is lost when the bundle is recreated. To keep it, put the same file in `configs/local/osgi/configs`. `blade server init` copies it into `bundles/osgi/configs`, verified on 2026.Q3. The workspace Docker image reads the same directory: the generated `build/docker/Dockerfile` sets `LIFERAY_WORKSPACE_ENVIRONMENT=local`, and its setup script copies `configs/local/*` into Liferay home. That was read from the files `blade gw createDockerfile` generates, not run in a container.
+A file written only to `bundles` is lost when the bundle is recreated. To keep it, put the same file in `configs/local/osgi/configs`. `blade server init` copies it into `bundles/osgi/configs`, verified on 2026.Q3. The workspace Docker image reads the same directory: the generated `build/docker/Dockerfile` sets `LIFERAY_WORKSPACE_ENVIRONMENT=local`, and its setup script copies `configs/local/*` into Liferay home. That was read from the files `blade gw createDockerfile` generates, not run in a container.
 
 The same switch is **Control Panel → Instance Settings → Platform → MCP Server → Enabled**, shown only while `LPD-63311` is on. Either route works; the file is the one an agent can apply.
 

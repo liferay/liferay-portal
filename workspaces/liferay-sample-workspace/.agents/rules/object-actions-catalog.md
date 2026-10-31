@@ -71,7 +71,7 @@ Required `parameters`:
 }
 ```
 
-> **`predefinedValues` cannot set a `DateTime` field.** The action's value parser only handles `DBType=Date`, so a DateTime string is silently dropped — the entry is created with the field empty and no error is logged. To timestamp entries created by an action, put a `currentDate` **expression-builder default value** on the DateTime field itself: the service layer stamps it (minute precision) on every create path, and only when the field is absent, so explicit values from imports still win. Inferred, not verified against source; verify against a running bundle.
+> **`predefinedValues` cannot set a `DateTime` field.** The action's value parser only handles `DBType=Date`, so a DateTime string is silently dropped — the entry is created with the field empty and no error is logged. To timestamp entries created by an action, put a `currentDate` **default value from the expression builder** on the DateTime field itself: the service layer stamps it (minute precision) on every create path, and only when the field is absent, so explicit values from imports still win. Inferred, not verified against source; verify against a running bundle.
 
 ### `update-object-entry`
 
@@ -107,7 +107,7 @@ Required `parameters`:
 
 Liferay signs each request with `HMAC-SHA256` using the secret. The `X-Liferay-Webhook-Signature` header carries the hex digest.
 
-**Payload shape:** field values are NOT at the payload root — they sit under `objectEntry.values.<fieldName>` (including relationship FKs like `r_<rel>_c_<parent>Id`), and the acting user's details are under a per-object key `objectEntryDTO<ObjectName>.creator` (`givenName`, `familyName`, `email`). A receiver that reads fields off the root parses nothing and fails silently.
+**Payload shape:** field values are NOT at the payload root — they sit under `objectEntry.values.<fieldName>` (including relationship FKs like `r_<rel>_c_<parent>Id`), and the acting user's details are under a key for each object, `objectEntryDTO<ObjectName>.creator` (`givenName`, `familyName`, `email`). A receiver that reads fields off the root parses nothing and fails silently.
 
 ### `groovy`
 
@@ -128,7 +128,7 @@ Required `parameters`:
 Groovy script based object actions are not allowed
 ```
 
-Verified on a self hosted 2026.Q2 bundle. Treat Groovy as unavailable until proven otherwise: probe by creating a throwaway action before designing a solution around one, because turning the flag on is a portal wide decision to permit arbitrary script execution — surface it to the user rather than enabling it silently. Prefer a scriptless alternative where one exists (an `Aggregation` field replaces a hand maintained counter — see `skills/manage-objects/SKILL.md`). Source: `ObjectActionLocalServiceImpl`.
+Verified on a self hosted 2026.Q2 bundle. Treat Groovy as unavailable until proven otherwise: probe by creating a throwaway action before designing a solution around one, because turning the flag on is a decision across the portal to permit arbitrary script execution — surface it to the user rather than enabling it silently. Prefer a scriptless alternative where one exists (an `Aggregation` field replaces a hand maintained counter — see `skills/manage-objects/SKILL.md`). Source: `ObjectActionLocalServiceImpl`.
 
 **Script bindings are the entry's fields as top level variables — there is no `objectEntry` object.** `GroovyObjectActionExecutorImpl` passes `ObjectEntryVariablesUtil.getVariables(...).get("baseModel")` as the binding, which spreads `objectEntry.values` directly. So a `Registration` field is referenced as bare `attendeeName`, and a relationship foreign key as bare `r_eventRegistrations_c_eventId`.
 

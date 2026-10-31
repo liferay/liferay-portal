@@ -1,6 +1,6 @@
 ---
 
-description: Build a Liferay Form Container — the native page element that creates or edits an Object entry from a Content Page or a Display Page Template — over the live page API or the site initializer tree. Covers field fragment keys, the submit button, multistep forms, success redirects, hidden context fields, edit forms on a DPT, the gated-content recipe (teaser and form, then the full entry), and the permission that makes a form render at all. Use when the user asks for a form that saves to an object, a lead or contact form, gated content behind a form, an edit form on a display page, or a form that renders nothing.
+description: Build a Liferay Form Container — the native page element that creates or edits an Object entry from a Content Page or a Display Page Template — over the live page API or the site initializer tree. Covers field fragment keys, the submit button, multistep forms, success redirects, hidden context fields, edit forms on a DPT, the gated content recipe (teaser and form, then the full entry), and the permission that makes a form render at all. Use when the user asks for a form that saves to an object, a lead or contact form, gated content behind a form, an edit form on a display page, or a form that renders nothing.
 name: manage-form-containers
 
 ---
@@ -17,17 +17,17 @@ Everything below was verified live on 2026.Q3.2, mostly against shapes the Page 
 - "An edit form on the display page", "a form with two steps", "redirect after submit"
 - A form that renders nothing, or submits and stores empty values
 
-`manage-pages` owns the page and the whole-page write; `manage-roles-permissions` owns the grants; `scaffold-form-fragment` owns custom input fragments.
+`manage-pages` owns the page and the write of the whole page; `manage-roles-permissions` owns the grants; `scaffold-form-fragment` owns custom input fragments.
 
 ## First: Grant `ADD_OBJECT_ENTRY`, or the Form Does Not Exist
 
-**A viewer without `ADD_OBJECT_ENTRY` on the bound object gets no form at all.** Nothing renders: no `<form>`, no fields, not even the element's layout wrapper. There is no error and no log line, so it reads exactly like a broken import. Grant it on `com.liferay.object#<definitionId>` at company scope (`scope` `"1"`), **without** `VIEW` for a public form (`rules/guest-access.md` → "Public Forms Are Write Only"). Then test as the real audience — an admin session always sees the form.
+**A viewer without `ADD_OBJECT_ENTRY` on the bound object gets no form at all.** Nothing renders: no `<form>`, no fields, not even the element's layout wrapper. There is no error and no log line, so it reads exactly like a broken import. Grant it on `com.liferay.object#<definitionId>` at the company level (`scope` `"1"`), **without** `VIEW` for a public form (`rules/guest-access.md` → "Public Forms Are Write Only"). Then test as the real audience — an admin session always sees the form.
 
-**On a company-scoped object, grant it to a regular role, never a site role.** The form's render check runs in the page's group, but the add itself is checked in group 0: `ObjectEntryInfoItemUtil.getScopeKey` gives a company object no scope, and `ObjectEntryServiceImpl` checks `ADD_OBJECT_ENTRY` there, where no site role is in the user's bag. So a company-scope grant to Site Member (or any site role) shows the form to the site's members, and then **every submission fails**: "An error occurred while sending the form information.", nothing stored, nothing logged, and a REST `POST` as the same user answers `403`. Verified on 2026.Q3.5 with Site Member on a Guest page; the same form saved once the grant named the regular roles the members hold.
+**On an object scoped at the company level, grant it to a regular role, never a site role.** The form's render check runs in the page's group, but the add itself is checked in group 0: `ObjectEntryInfoItemUtil.getScopeKey` gives a company object no scope, and `ObjectEntryServiceImpl` checks `ADD_OBJECT_ENTRY` there, where no site role is in the user's bag. So a grant at the company level to Site Member (or any site role) shows the form to the site's members, and then **every submission fails**: "An error occurred while sending the form information.", nothing stored, nothing logged, and a REST `POST` as the same user answers `403`. Verified on 2026.Q3.5 with Site Member on a Guest page; the same form saved once the grant named the regular roles the members hold.
 
 ## The Element, Over the Live API
 
-Place it with the whole-page PUT (`manage-pages` → "Page Specification Workflow"). This is what the Page Editor produces:
+Place it with a PUT of the whole page (`manage-pages` → "Page Specification Workflow"). This is what the Page Editor produces:
 
 ```json
 {
@@ -101,16 +101,16 @@ Each field is a `FormFragment`:
 | Boolean | `INPUTS-checkbox` | none |
 | Attachment | `INPUTS-file-upload` | `showSupportedFileInfo: {"type": "Checkbox", "value": true}` |
 
-An Attachment field whose `fileSource` is `CMSBasicDocument` renders the same `INPUTS-file-upload` as a **picker** (`selectFromDocumentLibrary: true`, a "Select File" button opening the item selector, no `<input type="file">`): `ObjectFieldInfoFieldConverter` maps both `CMSBasicDocument` and `documentsAndMedia` to the document-library source (verified on 2026.Q3.5).
+An Attachment field whose `fileSource` is `CMSBasicDocument` renders the same `INPUTS-file-upload` as a **picker** (`selectFromDocumentLibrary: true`, a "Select File" button opening the item selector, no `<input type="file">`): `ObjectFieldInfoFieldConverter` maps both `CMSBasicDocument` and `documentsAndMedia` to the document library source (verified on 2026.Q3.5).
 
-**A fragment's key is its `fragmentEntryKey`, not its directory in the inputs jar.** The multiselect lives in `multiple-select-from-list/` but is keyed `INPUTS-multiselect-list`. A tree element placed by the directory name is dropped at import with no log line, and the page imports one link short (verified on 2026.Q3.5). Count the links after an import.
+**A fragment's key is its `fragmentEntryKey`, not its directory in the inputs jar.** The multiselect lives in `multiple-select-from-list` but is keyed `INPUTS-multiselect-list`. A tree element placed by the directory name is dropped at import with no log line, and the page imports one link short (verified on 2026.Q3.5). Count the links after an import.
 
-**An upload source with `showFilesInLibrary` off works on a company-scoped object.** `userComputerToCMSBasicDocument` (and `userComputerToDocumentsAndMedia`) renders a plain file input. The uploaded file is stored hidden in the object's own repository (`…ObjectDefinitionsPortlet_<code>`) **in the form page's site**, owned by the entry, and deleted with it. Its `link.href` downloads for the owner and for a holder of `DOWNLOAD_<FIELD>`, answers `401` to another signed-in user and `404` to Guest. A `/documents/…` URL ignores Basic auth (every caller, administrator included, got `404`), so test downloads in a signed-in browser session. Verified on 2026.Q3.5.
+**An upload source with `showFilesInLibrary` off works on an object scoped at the company level.** `userComputerToCMSBasicDocument` (and `userComputerToDocumentsAndMedia`) renders a plain file input. The uploaded file is stored hidden in the object's own repository (`…ObjectDefinitionsPortlet_<code>`) **in the form page's site**, owned by the entry, and deleted with it. Its `link.href` downloads for the owner and for a holder of `DOWNLOAD_<FIELD>`, answers `401` to another signed in user and `404` to Guest. A `/documents/…` URL ignores Basic auth (every caller, administrator included, got `404`), so test downloads in a signed in browser session. Verified on 2026.Q3.5.
 
 - **Which selector opens.** The input opens DXP's CMS file selector (`openCMSFileSelectorModal`) only when the page's own scope group is the CMS group or a Space (`input.attributes.isCMS`, `FragmentEntryInputTemplateNodeContextHelperImpl._isCMSGroup`). On a site page it opens the Documents and Media selector, which cannot browse a Space's files.
 - **What it posts.** The input posts the picked file's **DLFileEntry ID** under `ObjectField_<field>`, and an edit form fills it in with that ID. Posting a CMS file's DLFileEntry ID saves through a Form Container. An ID that does not exist fails with the generic error.
 
-Generating the form in the Page Editor also adds an `INPUTS-text-input` bound to `ObjectEntry_externalReferenceCode`; drop it unless visitors should set the ERC. A full submission of every type round-tripped correctly, the file included. Picklists and relationships render an autocomplete text box plus two hidden inputs, `ObjectField_<field>` (the key or related id) and `ObjectField_<field>-label`. A rich text field is a hidden `ObjectField_<field>` fed by CKEditor, so do not read or set it as a plain `<input>`.
+Generating the form in the Page Editor also adds an `INPUTS-text-input` bound to `ObjectEntry_externalReferenceCode`; drop it unless visitors should set the ERC. A full submission of every type saved and read back correctly, the file included. Picklists and relationships render an autocomplete text box plus two hidden inputs, `ObjectField_<field>` (the key or related ID) and `ObjectField_<field>-label`. A rich text field is a hidden `ObjectField_<field>` fed by CKEditor, so do not read or set it as a plain `<input>`.
 
 ### The Submit Button
 
@@ -244,8 +244,8 @@ Layout rules, native elements only and no custom CSS:
 
 - **Sections:** group fields by meaning (what happened, who, how much, attachments) under an `h3` heading each.
 - **Side by side:** short fields — picklists, booleans, phone and email, city and postal code, numbers, file uploads — in rows of 2 to 4 columns summing to 12 (`6+6`, `4+4+4`, `3+3+3+3`). Pair fields read together.
-- **Full width:** long-text and rich-text fields, a free-text title or summary, a street address, and a field that opens a section on its own.
-- **Stacked in one column:** a field and the one depending on it (a checkbox and its follow-up), separated by a `py-1` spacer.
+- **Full width:** Long Text and Rich Text fields, a title or summary in free text, a street address, and a field that opens a section on its own.
+- **Stacked in one column:** a field and the one depending on it (a checkbox and the field it reveals), separated by a `py-1` spacer.
 - **Mobile:** every column `12` and every row one module per row on landscape and portrait mobile.
 - **Spacing:** `py-3` before each section heading, before the submit button, and before the form when it follows other content; `py-2` after each heading and between rows of a section; `py-1` between two fields stacked in one column. Never two spacers in a row.
 
@@ -276,9 +276,9 @@ The tree uses a different vocabulary: a `Form` element with `formConfig.formRefe
 | `{"defaultDisplayPage": true}` | The new entry on the **default** DPT, by a URL that has no entry ID |
 | `{"defaultDisplayPage": false, "mapping": {"itemReference": {"fields": [{"fieldName": "externalReferenceCode", "fieldValue": "<dpt erc>"}]}}}` | The new entry on **that** DPT, `/e/<dpt-url>/<classNameId>/<id>`. The ERC is looked up in the page's group. An unknown one is stored as the default DPT, with no warning |
 
-A tree-made DPT's ERC is generated per database (`rules/page-types.md`), so the last shape works only after that database's ERC has been written into the tree.
+The ERC of a DPT made in the tree is generated per database (`rules/page-types.md`), so the last shape works only after that database's ERC has been written into the tree.
 
-**A multistep form in the tree** (verified on 2026.Q3.5 with real submissions to a form with two steps; the same shape as the platform's own import-export fixture, `layout-page-template-admin-web-test`, `form/steps`):
+**A multistep form in the tree** (verified on 2026.Q3.5 with real submissions to a form with two steps; the same shape as the platform's own import and export fixture, `layout-page-template-admin-web-test`, `form/steps`):
 
 ```text
 Form  {"formConfig": {"formReference": {...}, "formType": "multistep", "numberOfSteps": 2}}
@@ -356,19 +356,19 @@ Rows and spacers in the tree are `Row` → `Column` → `Fragment`, inside the `
 }
 ```
 
-- The importer reads `rowViewports[].rowViewportDefinition` and `columnViewports[].columnViewportDefinition` with **lowerCamel** viewport ids (`landscapeMobile`, `portraitMobile`, `tablet`); the flat `modulesPerRow` and `size` are the Desktop values (`RowLayoutStructureItemImporter`, `ColumnLayoutStructureItemImporter`, from source).
+- The importer reads `rowViewports[].rowViewportDefinition` and `columnViewports[].columnViewportDefinition` with **lowerCamel** viewport IDs (`landscapeMobile`, `portraitMobile`, `tablet`); the flat `modulesPerRow` and `size` are the Desktop values (`RowLayoutStructureItemImporter`, `ColumnLayoutStructureItemImporter`, from source).
 - A spacer is `{"definition": {"fragment": {"key": "BASIC_COMPONENT-spacer"}, "fragmentConfig": {"height": "py-2"}}, "type": "Fragment"}`.
 - Read back over the live API, `Row` becomes `Grid` and `Column` becomes `Module`, and **the `Form` reads back as `formContainerType: "Multistep"` with `numberOfSteps: 0`** even when the tree says nothing about steps. It still renders and submits as one step — not a manual change when comparing a live page with its tree.
 
 ## Custom Input Fragments as Fields
 
-A custom `"type": "input"` fragment (`scaffold-form-fragment`) placed through the live API is a `FormFragment` with `"fragmentReferenceType": "FragmentItemExternalReference"` and the fragment's ERC. **Send its real `html`, `css`, and `js` on `fragmentInstance`.** With an empty `html`, the field wrapper renders but its content is empty, and the field submits nothing — no error anywhere. Only `DefaultFragmentReference` (the built-in `INPUTS-*`) is backfilled from an empty `html`. To change such a field's code later, add it again under a **new** element ERC (`manage-pages`).
+A custom `"type": "input"` fragment (`scaffold-form-fragment`) placed through the live API is a `FormFragment` with `"fragmentReferenceType": "FragmentItemExternalReference"` and the fragment's ERC. **Send its real `html`, `css`, and `js` on `fragmentInstance`.** With an empty `html`, the field wrapper renders but its content is empty, and the field submits nothing — no error anywhere. Only `DefaultFragmentReference` (the default `INPUTS-*` fragments) is backfilled from an empty `html`. To change such a field's code later, add it again under a **new** element ERC (`manage-pages`).
 
 ## On a Display Page Template
 
 ### Hidden Field From the Displayed Entry
 
-A form for object B placed on object A's DPT can carry A's id in a relationship field, through a custom hidden input fragment:
+A form for object B placed on object A's DPT can carry A's ID in a relationship field, through a custom hidden input fragment:
 
 ```html
 [#assign infoItem = (request.getAttribute("INFO_ITEM"))! /]
@@ -380,7 +380,7 @@ A form for object B placed on object A's DPT can carry A's id in a relationship 
 	[/#if] />
 ```
 
-Submitting from entry A's display page stored a B entry whose FK is A's id, and the same held for entry B.
+Submitting from entry A's display page stored a B entry whose FK is A's ID, and the same held for entry B.
 
 **`INFO_ITEM` also exposes the entry's custom fields, through `getValues()`:**
 
@@ -391,7 +391,7 @@ Submitting from entry A's display page stored a B entry whose FK is A's id, and 
 | `infoItem.price`, `.getInfoFieldValue("price")`, `.getMap(locale)` | "evaluated to null or missing" |
 | `infoItem.createDate?string` | Error — dates need `?datetime` |
 
-So a form, or any fragment on a DPT, can fill in or display another object's values without a client-side fetch.
+So a form, or any fragment on a DPT, can fill in or display another object's values without a fetch on the client.
 
 The same works inside a `"type": "input"` fragment, so a hidden field can carry a value **computed** from the displayed entry, such as a source tag derived from one of its fields (verified on 2026.Q3.2):
 
@@ -415,7 +415,7 @@ Declare it with `typeOptions.fieldTypes` matching the target field (`["text"]` f
 
 **An update validates every stored relationship again, posted or not.** A user holding `UPDATE` on the entry whose form omits a relationship field (a script disabled that section, or the field is not on the form) still fails when the entry points at a related entry the user cannot `VIEW`: the page reloads with "An error occurred while sending the form information.", a REST `PATCH` of any other field answers `403`, and the entry's `actions` still list `update`. Verified on 2026.Q3.5 with a child of two `AccountEntry` relationships: the agent could update the entry only while its coach account was one she could view. Grant `VIEW` on the related object (or the related entries) to the editing role, or expect the edit form to fail for that role.
 
-**Scripting a submission** (probes, not production): post `multipart/form-data` (the form's `enctype`; urlencoded is ignored and stores an empty entry), include the hidden inputs and a `Referer` header. On an error `EditInfoItemStrutsAction` redirects to the `Referer`, so a request without one answers `500` (`url is null`) instead of showing the message. Picklist and relationship inputs post the key or id plus their `-label` twin; a checkbox posts its name with `checkboxNames`; the rich-text input is added by CKEditor, so post `ObjectField_<field>` yourself.
+**Scripting a submission** (probes, not production): post `multipart/form-data` (the form's `enctype`; urlencoded is ignored and stores an empty entry), include the hidden inputs and a `Referer` header. On an error `EditInfoItemStrutsAction` redirects to the `Referer`, so a request without one answers `500` (`url is null`) instead of showing the message. Picklist and relationship inputs post the key or ID plus their `-label` twin; a checkbox posts its name with `checkboxNames`; the Rich Text input is added by CKEditor, so post `ObjectField_<field>` yourself.
 
 ## Reacting to Success in the Browser
 
@@ -433,7 +433,7 @@ There is no submission event to hook. Liferay swaps the form's markup for the su
 
 		fired = true;
 
-		// Track, reveal content, or redirect here
+		onSubmitted();
 	}
 
 	check();
@@ -441,6 +441,8 @@ There is no submission event to hook. Liferay swaps the form's markup for the su
 	new MutationObserver(check).observe(document.body, {childList: true, subtree: true});
 })();
 ```
+
+`onSubmitted` stands for what the page does once the form succeeds: track the submission, reveal content, or redirect. Define it before the watcher runs.
 
 Use a native `successFormContainerSubmissionResult` whenever one fits. To track the submission in Analytics Cloud, see `manage-analytics`.
 
@@ -463,7 +465,7 @@ Use a native `successFormContainerSubmissionResult` whenever one fits. To track 
 
 	Leave `formSuccessSubmissionResult` out: the default embedded message is the marker the watcher waits for.
 
-1. **The wrapper's `index.js` is the watcher** ("Reacting to Success in the Browser"). It reads the entry ID (`INFO_ITEM.objectEntryId`, written as a data attribute), the site path (`${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getScopeGroup().getFriendlyURL()}`) and the environment-specific `classNameId` and DPT URL (`fragmentConfig`, `manage-pages` → "Links, Forms, and Menus in the Tree"), then opens `<site>/e/<dpt-url>/<classNameId>/<entryId>`. To let the next page tell a gated arrival from a direct one, set a `sessionStorage` flag keyed by the entry ID before redirecting.
+1. **The wrapper's `index.js` is the watcher** ("Reacting to Success in the Browser"). It reads the entry ID (`INFO_ITEM.objectEntryId`, written as a data attribute), the site path (`${themeDisplay.getPathFriendlyURLPublic()}${themeDisplay.getScopeGroup().getFriendlyURL()}`) and the `classNameId` and DPT URL specific to the environment (`fragmentConfig`, `manage-pages` → "Links, Forms, and Menus in the Tree"), then opens `<site>/e/<dpt-url>/<classNameId>/<entryId>`. To let the next page tell a gated arrival from a direct one, set a `sessionStorage` flag keyed by the entry ID before redirecting.
 
 1. **The full DPT** maps the remaining fields. Any tracking runs in its own fragment JS on load (`manage-analytics`).
 
@@ -473,29 +475,29 @@ The full DPT stays reachable by URL without the form. Say so to the user: this i
 
 ## Testing a Submission Without a Browser
 
-A `curl` replay of the form is a quick check that the binding and the Guest grant work: GET the page with a cookie jar, read `action` and every `<input>` of the `<form>`, read `p_auth` from `authToken: '…'` in the page, and POST them multipart to `/c/portal/edit_info_item?…&p_auth=<token>`. **The replay answers `500` (`code_jsp` WARN) although the entry is stored**, so judge it only by reading the entry back as admin. Strip `\r` from values extracted on Windows, or they are stored with it. Delete the entries the test created. The redirect and anything else client-side still need a real browser (`rules/guest-access.md` → "Verify as the Visitor").
+A `curl` replay of the form is a quick check that the binding and the Guest grant work: GET the page with a cookie jar, read `action` and every `<input>` of the `<form>`, read `p_auth` from `authToken: '…'` in the page, and POST them multipart to `/c/portal/edit_info_item?…&p_auth=<token>`. **The replay answers `500` (`code_jsp` WARN) although the entry is stored**, so judge it only by reading the entry back as admin. Strip `\r` from values extracted on Windows, or they are stored with it. Delete the entries the test created. The redirect and anything else on the client still need a real browser (`rules/guest-access.md` → "Verify as the Visitor").
 
 Two replay traps, measured on 2026.Q2.7:
 
 - **Post multipart even when no field is a file.** Python `requests` with `data=` and no `files=` sends `application/x-www-form-urlencoded`. The servlet logs `WARN [UploadServletRequestImpl] Unable to parse upload request`, answers `302` back to the page, and stores nothing: it reads exactly like a missing grant. Send every field as a multipart part (`files=[(name, (None, value)), …]`).
 - **A file field's `<input type="file">` has no `name` in the served HTML.** `INPUTS-file-upload`'s script sets it to `ObjectField_<field>` when a file is chosen (and clears its hidden twin's name), so a replay posts the file under `ObjectField_<field>` in the same multipart body, as the browser does.
 
-**A Guest file upload works on 2026.Q2.7** with a company-scoped object, `fileSource` `userComputerToDocumentsAndMedia` and `showFilesInLibrary: false`, with Guest holding only `ADD_OBJECT_ENTRY`: the entry is stored, each file downloads byte-identical in an admin's signed-in session (from the entry's `<field>.link.href`), Guest still reads no entry, and deleting the entry deletes its files (the URL stops downloading). Measured with three upload fields on one form.
+**A Guest file upload works on 2026.Q2.7** with an object scoped at the company level, `fileSource` `userComputerToDocumentsAndMedia` and `showFilesInLibrary: false`, with Guest holding only `ADD_OBJECT_ENTRY`: the entry is stored, each file downloads identical byte for byte in an admin's signed in session (from the entry's `<field>.link.href`), Guest still reads no entry, and deleting the entry deletes its files (the URL stops downloading). Measured with three upload fields on one form.
 
 ## A Form in a Modal
 
 Opening a form page or an edit DPT in `Liferay.Util.openModal` works on 2026.Q3.5, with three conditions (verified in a browser, Add, Edit and Delete each landing in the database):
 
 - **Pass an absolute URL** (`location.origin + path`). A relative `url` throws `TypeError: Failed to construct 'URL': Invalid URL` in `frontend-js-components-web`, and no modal opens.
-- **Leave `size` out.** A modal with a `url` defaults to `full-screen` (`Modal.tsx:315`). `size: 'lg'` gives an iframe about 160 px tall on a desktop viewport: it cut off a two-field form's submit button, and a picker overlay opened inside the form was confined to a strip of that height (verified on 2026.Q3.5).
+- **Leave `size` out.** A modal with a `url` defaults to `full-screen` (`Modal.tsx:315`). `size: 'lg'` gives an iframe about 160 px tall on a desktop viewport: it cut off the submit button of a form with two fields, and a picker overlay opened inside the form was confined to a strip of that height (verified on 2026.Q3.5).
 - **Give the page a bare master.** In `p_p_state=pop_up` a content page or DPT still renders its master's header, menus and footer, inside the modal and over the form. Use a master with only a `DropZone` and the full master's `settings` (theme CSS client extension, style book, global CSS and JS), so the form keeps the site's styling.
 - **Pass context on the URL.** A URL parameter reaches a custom hidden input: `request.getParameter("<name>")` in its FreeMarker, read on the server.
 
 The embedded success message shows inside the modal. `onClose` fires when the user closes it, which is where the opener refreshes its list. An edit form's success reloads the DPT under the entry's new friendly URL, since that URL follows the title field.
 
-## Account-Restricted Objects
+## Objects With Account Restriction
 
-**A Form Container does not bypass `accountEntryRestricted`.** A Guest submission that sets the account relationship to an account the visitor does not belong to fails ("An error occurred while sending the form information."), stores nothing, and logs nothing, exactly as the REST `POST` returns `403`. For a signed-in user with `ADD_OBJECT_ENTRY` on the User role, the form did not render on a restricted object at all, and the cause was not established. **With regular roles holding a company-scope `ADD_OBJECT_ENTRY`, it renders** (2026.Q3.5): an add form and display-page edit forms rendered on restricted objects for both roles' members, and a coach's submission saved, its account relationship posted by a hidden input from a URL parameter (`manage-objects` → "Account Restriction").
+**A Form Container does not bypass `accountEntryRestricted`.** A Guest submission that sets the account relationship to an account the visitor does not belong to fails ("An error occurred while sending the form information."), stores nothing, and logs nothing, exactly as the REST `POST` returns `403`. For a signed in user with `ADD_OBJECT_ENTRY` on the User role, the form did not render on a restricted object at all, and the cause was not established. **With regular roles holding `ADD_OBJECT_ENTRY` at the company level, it renders** (2026.Q3.5): an add form and edit forms on display pages rendered on restricted objects for both roles' members, and a coach's submission saved, its account relationship posted by a hidden input from a URL parameter (`manage-objects` → "Account Restriction").
 
 ## Page Editor Pitfalls
 
@@ -505,8 +507,8 @@ The embedded success message shows inside the modal. `onClose` fires when the us
 ## Not Verified
 
 - `COMMERCE_CONTEXT` in a hidden field (no Commerce channel was available).
-- Master-detail patterns (a Data Set row loading an entry into a form).
-- The signed-in case on an account-restricted object.
+- Master and detail patterns (a Data Set row loading an entry into a form).
+- The signed in case on an object with account restriction.
 
 ## Success Signal
 

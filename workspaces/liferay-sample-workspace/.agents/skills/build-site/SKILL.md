@@ -24,9 +24,9 @@ These hold on every site build whether or not the user asks for them. Do not wai
 
 	Keep it to as few projects as the classification rules permit, but **a whole site cannot be one project**. `siteInitializer` is `batch`; `themeCSS` is `frontend`; handlers are `microservice`; those three can never share a `client-extension.yaml`. The initializer project carries the `siteInitializer` plus **exactly one** `oAuthApplicationHeadlessServer` and nothing else — a theme or an `objectAction` added to it fails at `createClientExtensionConfig`, *after* the assemble tasks have already printed success. See `rules/client-extension-types.md` → "Which Types May Share a Project".
 
-	So the reproducible unit is the workspace, not a single directory. Express the site's look through what the initializer tree can carry — style book, master page, fragment CSS, `layout-set` settings, and a `themeCSS` CET **bound in the master's `page-definition.json` `settings.themeCSSClientExtension`** (ERC `"LXC:" + <config-erc>`), which cascades to every page and survives reprovision (`rules/site-initializer-format.md` → "Binding design to the master via `settings`"). The theme is still a sibling project (type classification rule), but its application is tree expressible — no manual Design → Theme step.
+	So the reproducible unit is the workspace, not a single directory. Express the site's look through what the initializer tree can carry — style book, master page, fragment CSS, `layout-set` settings, and a `themeCSS` CET **bound in the master's `page-definition.json` `settings.themeCSSClientExtension`** (ERC `"LXC:" + <config-erc>`), which cascades to every page and survives reprovision (`rules/site-initializer-format.md` → "Binding Design to the Master via `settings`"). The theme is still a sibling project (type classification rule), but its application is tree expressible — no manual Design → Theme step.
 
-1. **Objects are the data layer.** Model entities as Liferay Object definitions. Do not reach for web content structures or a Service Builder module for structured application data, even when `modules/` exists in the workspace.
+1. **Objects are the data layer.** Model entities as Liferay Object definitions. Do not reach for web content structures or a Service Builder module for structured application data, even when the `modules` directory exists in the workspace.
 
 1. **Verify by rendering, not by status code.** A page returning 200 with an empty content area is the pack's most common silent failure. Fetch each page and confirm its fragments produced markup before reporting success.
 
@@ -58,7 +58,7 @@ Proceed only after the user confirms or corrects the scope list.
 
 #### Settle the Reprovision Surface Before Provisioning Once
 
-**This is the single largest time sink in a site build.** A whole class of change costs another run of the initializer each time it is discovered. "Reprovision" below means firing the initializer again with a **clean redeploy** — that run upserts pages, composition, and fragments onto the existing site (see `rules/site-initializer-format.md` → "Firing the initializer again UPSERTS"); delete + redeploy is only needed to *remove* things or recover from a doubtful upsert. Each cycle still costs a full build-deploy-import wait, and the *number* of cycles is decided here, before Phase 4, not later.
+**This is the single largest time sink in a site build.** A whole class of change costs another run of the initializer each time it is discovered. "Reprovision" below means firing the initializer again with a **clean redeploy** — that run upserts pages, composition, and fragments onto the existing site (see `rules/site-initializer-format.md` → "Firing the initializer again UPSERTS"); delete + redeploy is only needed to *remove* things or recover from a doubtful upsert. Each cycle still costs a full wait to build, deploy, and import, and the *number* of cycles is decided here, before Phase 4, not later.
 
 | Change | Cost after the first provision |
 | --- | --- |
@@ -88,7 +88,7 @@ Five silent failures account for most of the rework in this pack. Each one build
 | `fragment.json` `"type"` | Always `"component"`. `"section"` breaks the whole `headless-admin-fragment` listing with `400 Invalid enum value` | `scaffold-fragment` |
 | Literal text override | Replaces the editable's inner `<h1>`/`<h2>`, so tag only CSS selectors miss it | `manage-pages` |
 | `DateTime` in fragment JS | Use the **UTC** getters, or times shift into the visitor's timezone | `manage-pages` |
-| Site wide heading font | Content fragments must not declare `font-weight` on headings the master rule owns | `theme-and-design` |
+| Heading font across the site | Content fragments must not declare `font-weight` on headings the master rule owns | `theme-and-design` |
 | Reserved object field names | `status` is taken — use `<entity>Status`. Inside an initializer this rolls back the entire site | `manage-objects` |
 
 The canonical model is **site initializer first**: the `siteInitializer` CET tree is the single source of truth, and the site is created by triggering the initializer rather than by calling the live page API. After the initial build, iterate by editing the source tree and applying each change by the cheapest reliable path — see "Iterating on the Site" below and the spine in `rules/site-initializer-format.md`.
@@ -147,7 +147,7 @@ Call `scaffold-client-extension` with type `siteInitializer` to create the CET t
 
 For each unique layout section needed by the page list, call `scaffold-fragment`:
 
-1. Create the fragment source files **inside the initializer tree** at `site-initializer/fragments/group/<collection-key>/fragments/<fragment-name>/` (note the required `fragments/` nesting level under the collection). For the initial build, the content may be hardcoded (static text and images); later iterations bind it to objects.
+1. Create the fragment source files **inside the initializer tree** at `site-initializer/fragments/group/<collection-key>/fragments/<fragment-name>` (note the required `fragments` nesting level under the collection). For the initial build, the content may be hardcoded (static text and images); later iterations bind it to objects.
 
 1. Record each fragment's `key` (its `<fragment-name>` directory name) for Phase 6 — page definitions reference it as `fragment.key` with `siteKey: "[$GROUP_KEY$]"`.
 
@@ -159,7 +159,7 @@ For each page in the confirmed scope, call `manage-pages` to author it in the in
 
 1. Write `page-definition.json` composing the page with fragment elements (using keys from Phase 5).
 
-1. Add the navigation menu and SEO metadata via the initializer's `layout-set/` and page metadata.
+1. Add the navigation menu and SEO metadata via the initializer's `layout-set` directory and page metadata.
 
 The pages come into being when the initializer is triggered in Phase 9.
 
@@ -208,7 +208,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-> **Caution:** resolving a site-initializer template through `POST /sites` is unreliable (the current `Site` DTO uses `templateKey`, not `templateExternalReferenceCode`). The portable path is to let the `siteInitializer` CET autoprovision on deploy, and to reprovision by **delete then redeploy** — see `rules/site-initializer-format.md`.
+> **Caution:** resolving a site initializer template through `POST /sites` is unreliable (the current `Site` DTO uses `templateKey`, not `templateExternalReferenceCode`). The portable path is to let the `siteInitializer` CET autoprovision on deploy, and to reprovision by **delete then redeploy** — see `rules/site-initializer-format.md`.
 
 Save the site's `externalReferenceCode` as `<site-erc>` from the response.
 
@@ -262,12 +262,12 @@ After the initial build, the user improves the site through natural language pro
 | Prompt Intent | Source Edit | How to Apply | Reprovision? |
 | --- | --- | --- | --- |
 | "Give me a unified theme" | `themeCSS` CET (+ style book, master page) | `theme-and-design` → `blade gw deploy` | No |
-| "Replace the hardcoded list with an object" | object definition + `batch/` data | `manage-objects` → `object-admin` API / batch import | No |
+| "Replace the hardcoded list with an object" | object definition + data in the `batch` directory | `manage-objects` → `object-admin` API / batch import | No |
 | "Edit / restyle a fragment" | `fragments/group/<key>/...` | `scaffold-fragment` → reprovision (there is no portable live fragment import endpoint) | Yes |
 | "Add a new fragment" | new `fragments/group/<key>/...` | `scaffold-fragment` → reprovision | Yes |
 | "Add a page" / recompose a page | `layouts/<NN>/page*.json` | reprovision (delete + recreate from initializer) | Yes |
 
-Object definitions and entries are company scoped, so a reprovision for a page change preserves runtime data. See `rules/site-initializer-format.md` for the reprovision commands.
+Object definitions and entries are scoped at the company level, so a reprovision for a page change preserves runtime data. See `rules/site-initializer-format.md` for the reprovision commands.
 
 ## Example Prompt Interpretation
 
@@ -278,7 +278,7 @@ Object definitions and entries are company scoped, so a reprovision for a page c
 - Pages: Home (Content Page, lists Books via a fragment)
 - Roles: Reader (VIEW on Book object, VIEW on Home page)
 
-**Execution order**: Phase 1 (flags) → Phase 2 (MCP probe) → Phase 3 (Author, Book, relationship) → Phase 4 (scaffold initializer) → Phase 5 (book-list fragment in tree) → Phase 6 (home page in `layouts/`) → Phase 8 (Reader role + page permissions) → Phase 9 (deploy + trigger initializer) → Phase 10 (verify)
+**Execution order**: Phase 1 (flags) → Phase 2 (MCP probe) → Phase 3 (Author, Book, relationship) → Phase 4 (scaffold initializer) → Phase 5 (book list fragment in tree) → Phase 6 (home page in `layouts`) → Phase 8 (Reader role + page permissions) → Phase 9 (deploy + trigger initializer) → Phase 10 (verify)
 
 ## Handling Partial Failures
 

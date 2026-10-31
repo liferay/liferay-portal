@@ -27,16 +27,16 @@ When programmatically managing products, follow these strict architectural findi
 
 Verified on 2026.Q2 during a bulk migration of more than 500 products:
 
-- **`externalReferenceCode` and SKU are VARCHAR(75)** — longer values 500 on create. Cap at 75 (hash-suffix long ones).
-- **`POST /products` with a `defaultSku` string auto-creates the default SKU at price 0.** Set its price via `PATCH /skus/by-externalReferenceCode/{erc}` — do NOT POST a second SKU.
+- **`externalReferenceCode` and SKU are VARCHAR(75)** — longer values 500 on create. Cap at 75 (shorten longer ones with a hash suffix).
+- **`POST /products` with a `defaultSku` string creates the default SKU automatically, at price 0.** Set its price via `PATCH /skus/by-externalReferenceCode/{erc}` — do NOT POST a second SKU.
 - **Specification keys are lowercased on create** (`productLine` → `productline`); reference the lowercase key or the attach silently skips.
-- **Categories attach by numeric `id` only**: categories must pre-exist (in a site/asset-library vocabulary — you cannot create a vocabulary in the catalog group itself), then `PATCH /products/by-externalReferenceCode/{erc}/categories` with `[{"id": <categoryId>}]`. By-name → 500. Attaching a category from a vocabulary in another scope (site vocabulary → catalog product) works. The PATCH **replaces** the full category set.
+- **Categories attach by numeric `id` only**: categories must already exist (in a site/asset-library vocabulary — you cannot create a vocabulary in the catalog group itself), then `PATCH /products/by-externalReferenceCode/{erc}/categories` with `[{"id": <categoryId>}]`. By name → 500. Attaching a category from a vocabulary in another scope (site vocabulary → catalog product) works. The PATCH **replaces** the full category set.
 - **`relatedProducts` needs the numeric `productId`** of the related product — ERC alone fails "productId must not be null".
 - **`productOptions` POST expects an ARRAY** of ProductOption (a single object fails "Unable to map JSON path").
-- **Variant `skuOptions` want the option-REL ids, not the global option id**: `optionId` = the CPDefinitionOptionRel id (the `id` returned when the option was attached to the product) and `optionValueId` = the productOptionValue id — or use the key form `{"key": "<optionKey>", "value": "<valueKey>"}`. Passing the global CPOption id is **silently dropped** (200, no `CPInstanceOptionValueRel`) and reads as "variants do not persist over REST". POST a SINGLE Sku object, not an array.
-- **`/products` list caps `pageSize` at 500** (silently, even if you ask for more) — paginate for a complete ERC→id map.
-- **The product list returns both `id` and `productId` — correlate on `productId`.** `id` is the internal CPDefinition id; SKU, pricing, and attachment operations key on `productId`, and mixing them up produces wrong-target writes that look successful.
-- **Order updates are PATCH-only**: `PATCH /o/headless-commerce-admin-order/v1.0/orders/{id}` works; `PUT` returns 405.
+- **Variant `skuOptions` want the option-REL IDs, not the global option ID**: `optionId` = the CPDefinitionOptionRel ID (the `id` returned when the option was attached to the product) and `optionValueId` = the productOptionValue ID — or use the key form `{"key": "<optionKey>", "value": "<valueKey>"}`. Passing the global CPOption ID is **silently dropped** (200, no `CPInstanceOptionValueRel`) and reads as "variants do not persist over REST". POST a SINGLE Sku object, not an array.
+- **`/products` list caps `pageSize` at 500** (silently, even if you ask for more) — paginate for a complete ERC→ID map.
+- **The product list returns both `id` and `productId` — correlate on `productId`.** `id` is the internal CPDefinition ID; SKU, pricing, and attachment operations key on `productId`, and mixing them up produces writes to the wrong target that look successful.
+- **Order updates accept only `PATCH`**: `PATCH /o/headless-commerce-admin-order/v1.0/orders/{id}` works; `PUT` returns 405.
 - **Single catalog reads are the singular path**: `/catalog/{id}` or `/catalog/by-externalReferenceCode/{erc}`; `/catalogs/{id}` 404s.
 - **The batch engine works for bulk loads**: `POST /products/batch` (also `/products/skus/batch`, `/options/batch`, …) → 202 + async ImportTask; poll `/o/headless-batch-engine/v1.0/import-task/{id}` for `COMPLETED` (then check `failedItems` — COMPLETED alone is not success).
 
@@ -44,9 +44,9 @@ Verified on 2026.Q2 during a bulk migration of more than 500 products:
 
 Three verified boundaries that decide where things live:
 
-- **The storefront scopes by CHANNEL, not catalog.** A product with the Visibility → Channels filter OFF appears in **every** channel, whatever catalog it's in; the delivery search filters on `commerceChannelGroupId` only. The **admin** Products portlet scopes by catalog — which is why per-brand catalog segregation works for catalog managers but does not fence the storefront.
-- **Price lists are catalog-GROUP scoped.** Price resolution walks the SKU's catalog group, so a price list in catalog A is never found for a SKU in catalog B — you cannot move a product between catalogs without orphaning its tier prices (the SKU base price travels; tiers do not).
-- **The storefront "Catalog" facet is `aggregationTerms=groupId`** on the delivery `/products` endpoint (the catalog *group* id — `commerceCatalogId` returns empty facet values in the delivery index). The product payload also carries `catalogName` for labels.
+- **The storefront scopes by CHANNEL, not catalog.** A product with the Visibility → Channels filter OFF appears in **every** channel, whatever catalog it is in; the delivery search filters on `commerceChannelGroupId` only. The **admin** Products portlet scopes by catalog — which is why catalog segregation by brand works for catalog managers but does not fence the storefront.
+- **Price lists are scoped at the catalog group level.** Price resolution walks the SKU's catalog group, so a price list in catalog A is never found for a SKU in catalog B — you cannot move a product between catalogs without orphaning its tier prices (the SKU base price travels; tiers do not).
+- **The storefront "Catalog" facet is `aggregationTerms=groupId`** on the delivery `/products` endpoint (the catalog *group* ID — `commerceCatalogId` returns empty facet values in the delivery index). The product payload also carries `catalogName` for labels.
 
 ## A Site's Channel From a Site Initializer
 
@@ -54,12 +54,12 @@ A site initializer's tree can create the site's channel: `site-initializer/comme
 
 ## Storefront, Pricing Visibility, and Checkout
 
-- **Hide prices from guests = revoke Guest `VIEW_PRICE` on the `com.liferay.commerce.product` root resource (company scope).** It is a permission, not a channel or OSGi config, and survives site reprovision.
-- **A buyer persona needs the "Buyer" account role** (grants `CHECKOUT_OPEN` / `VIEW_OPEN_COMMERCE_ORDERS`) — "Account Administrator" alone is not enough, and portal admins bypass account-role checks entirely, so "works as admin" proves nothing about the buyer flow.
-- **An order-LEVEL validator failure (e.g. minimum-order-amount) 302s checkout back to the cart with NO message** — the mini-cart submit stays enabled because its `canSubmit` only inspects per-item errors. Diagnose via the `CommerceOrderValidatorRegistry` (Groovy). The min-order rule type is `minimum-order-amount` (not "order-limit"), one rule per currency.
-- **Checkout cannot be fully driven headlessly.** Payment methods, shipping methods, and shipping rate rows have no REST create (Control Panel or a `commercePaymentIntegration`/`commerceShippingEngine` CET). delivery-cart `POST /carts/{id}/checkout` is a light transition that **skips order-level validators** — for enforced placement use `CommerceOrderEngine` server-side. `PATCH /carts/{id}` silently no-ops `shippingOption`/`shippingMethod` (`paymentMethod` and inline addresses DO persist) — always verify with a re-GET. Cart create = `POST /channels/{channelId}/carts` with `accountId` in the body; add-item `options` is a JSON **string** (`[{"key": "finish", "value": ["black"]}]`), required for option products.
-- **Delivery-catalog `/products` 404s for an authenticated session with no account context** (guests get the anonymous fallback). Resolve the current account via `/channels/{id}/accounts` first and pass `accountId`. In storefront fragment JS the active account is also available client-side as `Liferay.CommerceContext.account.accountId` (guard for null when no account is selected).
-- **`headless-commerce-admin-order` account filtering can silently no-op** — a `filter=accountId eq ...` has been observed returning unfiltered results on some versions. When correctness matters, fetch with `pageSize=100` + pagination and filter on `order.accountId` client-side, or verify the filter against your version before trusting it.
+- **Hide prices from guests = revoke Guest `VIEW_PRICE` on the `com.liferay.commerce.product` root resource (at the company level).** It is a permission, not a channel or OSGi config, and survives site reprovision.
+- **A buyer persona needs the "Buyer" account role** (grants `CHECKOUT_OPEN` / `VIEW_OPEN_COMMERCE_ORDERS`) — "Account Administrator" alone is not enough, and portal admins bypass account role checks entirely, so "works as admin" proves nothing about the buyer flow.
+- **A failure of a validator at the order level (e.g. minimum-order-amount) 302s checkout back to the cart with NO message** — the Mini Cart submit stays enabled because its `canSubmit` only inspects the errors of individual items. Diagnose via the `CommerceOrderValidatorRegistry` (Groovy). The min-order rule type is `minimum-order-amount` (not `order-limit`), one rule per currency.
+- **Checkout cannot be fully driven headlessly.** Payment methods, shipping methods, and shipping rate rows have no REST create (Control Panel or a `commercePaymentIntegration`/`commerceShippingEngine` CET). delivery-cart `POST /carts/{id}/checkout` is a light transition that **skips validators at the order level** — for enforced placement use `CommerceOrderEngine` on the server. `PATCH /carts/{id}` silently does nothing with `shippingOption`/`shippingMethod` (`paymentMethod` and inline addresses DO persist) — always verify with another `GET`. Cart create = `POST /channels/{channelId}/carts` with `accountId` in the body; when adding an item, `options` is a JSON **string** (`[{"key": "finish", "value": ["black"]}]`), required for option products.
+- **Delivery-catalog `/products` 404s for an authenticated session with no account context** (guests get the anonymous fallback). Resolve the current account via `/channels/{id}/accounts` first and pass `accountId`. In storefront fragment JS the active account is also available on the client as `Liferay.CommerceContext.account.accountId` (guard for null when no account is selected).
+- **`headless-commerce-admin-order` account filtering can silently do nothing** — a `filter=accountId eq ...` has been observed returning unfiltered results on some versions. When correctness matters, fetch with `pageSize=100` + pagination and filter on `order.accountId` on the client, or verify the filter against your version before trusting it.
 
 ## Image Management
 
@@ -79,7 +79,7 @@ Creating variant SKUs (e.g., different pack sizes) is a multistep process:
 
 ## Price Lists — Use v2.0, Not v1.0
 
-The `headless-commerce-admin-pricing` **v1.0** price-list create endpoint is defective: it 403s **every** caller, including full admins (transposed group-id arguments route the permission check against group 0). Use **v2.0** instead, and prefer `PUT` by external reference code, which upserts idempotently. Two v2.0 quirks: numeric `id` fields are bean-validated even when addressing by ERC (send them anyway), and the catalog read is the **singular** `/catalog/{id}` path. Reading an account's price-list-relevant groups additionally requires the `VIEW_ACCOUNT_GROUPS` permission.
+The `headless-commerce-admin-pricing` **v1.0** endpoint that creates price lists is defective: it 403s **every** caller, including full admins (transposed group ID arguments route the permission check against group 0). Use **v2.0** instead, and prefer `PUT` by external reference code, which upserts idempotently. Two v2.0 quirks: numeric `id` fields are checked by Bean Validation even when addressing by ERC (send them anyway), and the catalog read is the **singular** `/catalog/{id}` path. Reading the account groups relevant to price lists additionally requires the `VIEW_ACCOUNT_GROUPS` permission.
 
 ## B2B Account Onboarding
 

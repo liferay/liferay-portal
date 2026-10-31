@@ -25,13 +25,13 @@ When iterating on a site built from a site initializer, theme changes apply **li
 
 A `themeCSS` CET injects custom CSS that overrides Clay Design System variables. This replaces the legacy Liferay theme WAR.
 
-**Prefer it for a site's look.** Ship the brand, its colors, typography, and site wide CSS, in a `themeCSS` CET bound in the master page's `settings`, rather than only in style book values, fragment CSS, or edits on the running site. The CET is reviewable, versioned, and survives reprovision, and it keeps the brand in one place. Bind a style book alongside it for the values editors should be able to tune (see Layer 2).
+**Prefer it for a site's look.** Ship the brand, its colors, typography, and CSS across the site, in a `themeCSS` CET bound in the master page's `settings`, rather than only in style book values, fragment CSS, or edits on the running site. The CET is reviewable, versioned, and survives reprovision, and it keeps the brand in one place. Bind a style book alongside it for the values editors should be able to tune (see Layer 2).
 
 > **Two constraints to settle before writing any CSS.**
 >
 > 1. **It needs its own project.** `themeCSS` is classified `frontend`; a `siteInitializer` is `batch`, and the workspace plugin forbids that combination. The theme is always a sibling project — see `rules/client-extension-types.md` → "Which Types May Share a Project".
 >
-> 1. **It is applied from the initializer tree through the master page, not `metadata.json`.** `layout-set/*/metadata.json` has no key for a client extension, but the master page's `page-definition.json` carries a top level `settings.themeCSSClientExtension` block whose `externalReferenceCode` is `"LXC:" + <config-erc>` (the same `settings` block also binds a style book and `globalCSSClientExtensions`). The render-time resolver walks layout → master layout → layout-set, so one bind on the master cascades to every page using it and **survives reprovision**. See `rules/site-initializer-format.md` → "Binding design to the master via `settings`". Once the master binds the CET, switch Classic's own header and footer off in the same `settings`, as `themeSettings` beside `"themeName": "Classic"`: the layout set's `show-header` and `show-footer` no longer apply to its pages. Creating or changing the binding is a master composition change (applied the next time the initializer fires, after a clean redeploy); redeploying the CET updates the served CSS live once bound. The order of deploys matters: if the CET is not yet registered when the initializer imports the master, the bind is silently skipped (`No CET found for LXC:...`) — retrigger the initializer after the CET is up.
+> 1. **It is applied from the initializer tree through the master page, not `metadata.json`.** `layout-set/*/metadata.json` has no key for a client extension, but the master page's `page-definition.json` carries a top level `settings.themeCSSClientExtension` block whose `externalReferenceCode` is `"LXC:" + <config-erc>` (the same `settings` block also binds a style book and `globalCSSClientExtensions`). The resolver at render time walks layout → master layout → layout set, so one bind on the master cascades to every page using it and **survives reprovision**. See `rules/site-initializer-format.md` → "Binding Design to the Master via `settings`". Once the master binds the CET, switch Classic's own header and footer off in the same `settings`, as `themeSettings` beside `"themeName": "Classic"`: the layout set's `show-header` and `show-footer` no longer apply to its pages. Creating or changing the binding is a master composition change (applied the next time the initializer fires, after a clean redeploy); redeploying the CET updates the served CSS live once bound. The order of deploys matters: if the CET is not yet registered when the initializer imports the master, the bind is silently skipped (`No CET found for LXC:...`) — retrigger the initializer after the CET is up.
 >
 > So decide up front where each part of the look lives: the themeCSS CET bound to the master first, for the brand and every Clay level override, including those with no style book token (Classic exposes no `headings*` tokens); a style book bound alongside it for the values editors tune; fragment CSS only for one fragment's own look.
 
@@ -71,7 +71,7 @@ client-extensions/<name>/
   type: themeCSS
 ```
 
-The keys are `mainURL` and `clayURL` — capital `URL`. All four paths are outputs of the theme build (`build/buildTheme/css/`), not files you author.
+The keys are `mainURL` and `clayURL` — capital `URL`. All four paths are outputs of the theme build (the `build/buildTheme/css` directory), not files you author.
 
 **`src/css/_custom.scss`** — Clay variable overrides:
 
@@ -109,7 +109,7 @@ Build the SCSS to CSS: `blade gw buildClientExtension` or configure the Sass bui
 
 #### The Stock Theme Build Compiles Clay STATIC — Style Book Tokens Apply to Nothing
 
-**The scaffold above produces a theme whose Style Book typography (and Clay-level color) tokens silently do nothing.** The `liferayDesignPack` build compiles Clay with plain Sass values: the resulting `clay.css`/`main.css` contain **zero `var(--…)` references** (verified on 2026.Q3.1 — `grep --count 'var(--' clay.css` → 0), so a style book token like `fontFamilyBase` sets a CSS variable that **no rule reads**. The failure is perfectly silent: the page's inline `:root` shows the token value (e.g. `--font-family-base: YourFont, …`), the style book editor looks right, and the rendered font never changes — it reads as a font-loading problem, not a compilation one. Classic does not have this problem because its Clay is compiled against the **custom-properties variable set** (`body { font-family: var(--body-font-family) }` → `:root` chain → `var(--font-family-base)`).
+**The scaffold above produces a theme whose Style Book typography (and color at the Clay level) tokens silently do nothing.** The `liferayDesignPack` build compiles Clay with plain Sass values: the resulting `clay.css`/`main.css` contain **zero `var(--…)` references** (verified on 2026.Q3.1 — `grep --count 'var(--' clay.css` → 0), so a style book token like `fontFamilyBase` sets a CSS variable that **no rule reads**. The failure is perfectly silent: the page's inline `:root` shows the token value (e.g. `--font-family-base: YourFont, …`), the style book editor looks right, and the rendered font never changes — it reads as a problem loading the font, not a compilation one. Classic does not have this problem because its Clay is compiled against the **variable set built on CSS custom properties** (`body { font-family: var(--body-font-family) }` → `:root` chain → `var(--font-family-base)`).
 
 The fix is one file, `src/css/_clay_variables.scss` — the hook `clay/base.scss` imports before Clay's own variables (this is the mechanism Classic's own `_clay_variables.scss` comment documents):
 
@@ -119,17 +119,17 @@ The fix is one file, `src/css/_clay_variables.scss` — the hook `clay/base.scss
 
 That variable set defines every Clay Sass variable as `var(--token, fallback)` (`$font-family-base: var(--font-family-base) !default;` in `clay/atlas-custom-properties/variables/_globals.scss`), so the whole compiled output consumes the style book's variables — verified: ~2,300 distinct `var(--…)` names after the switch, and `getComputedStyle(document.body).fontFamily` returns the token value. Diagnose with `grep --count 'var(--font-family-base' <served clay.css>`: `0` means static build, tokens dead.
 
-**Or start from Classic's own sources (verified on 2026.Q3.5).** Classic is itself `baseTheme: styled` plus its own `src/css` (`modules/apps/frontend-theme/frontend-theme-classic/src/css`, byte-identical to the `.scss` files inside the deployed `classic-theme.war`). Copy that directory into the CX's `src/css` and add your rules at the end of `_custom.scss`. The build then matches Classic: its `clay.css` and `main.css` had exactly Classic's 2,021 and 67 `var(--…)` references, and style book tokens apply. Leave out Classic's two `*-atlas-custom-properties.scss` entry files: Classic's pages load `clay.css` and `main.css`, not those variants, and against the workspace build's `styled` base their `@import 'clay/atlas-custom-properties'` fails with Dart Sass "It's not clear which file to import" (the base ships both the partial and the file). To add tokens of your own (values Classic has no token for), copy Classic's `frontend-token-definition.json` from the WAR, append a token set, declare the same custom properties with defaults in `:root` in `_custom.scss`, and point the style book's `themeId` at `LXC:<config-erc>`.
+**Or start from Classic's own sources (verified on 2026.Q3.5).** Classic is itself `baseTheme: styled` plus its own `src/css` (`modules/apps/frontend-theme/frontend-theme-classic/src/css`, identical byte for byte to the `.scss` files inside the deployed `classic-theme.war`). Copy that directory into the CX's `src/css` and add your rules at the end of `_custom.scss`. The build then matches Classic: its `clay.css` and `main.css` had exactly Classic's 2,021 and 67 `var(--…)` references, and style book tokens apply. Leave out Classic's two `*-atlas-custom-properties.scss` entry files: Classic's pages load `clay.css` and `main.css`, not those variants, and against the workspace build's `styled` base their `@import 'clay/atlas-custom-properties'` fails with Dart Sass "It's not clear which file to import" (the base ships both the partial and the file). To add tokens of your own (values Classic has no token for), copy Classic's `frontend-token-definition.json` from the WAR, append a token set, declare the same custom properties with defaults in `:root` in `_custom.scss`, and point the style book's `themeId` at `LXC:<config-erc>`.
 
 **On 2026.Q2.7 the copied sources compile Clay static, like stock Classic.** There, Classic's own `_clay_variables.scss` still imports `_deprecated_clay_variables` (fixed values), so Classic itself serves a `clay.css` with only 94 distinct `var(--…)` names and a copy of its `src/css` matches that (94 and 27 in `main.css`). Switch that one import to `@import 'clay/atlas-custom-properties/_variables';` (Classic's comment in the same file says so): the build then had 2,462 distinct names in `clay.css` and 90 in `main.css`, and a style book's `primaryColor` recolored Clay's buttons and links. That drops the deprecated file's few fixed overrides (sticker radii, flat label colors). The q2.7 source has no `*-atlas-custom-properties.scss` entry files to leave out. On both releases the plugin's RTL step fails on this Clay ("Unable to generate RTL version … cascadingStyleSheet is null") and the `*_rtl.css` files are plain copies; fine for a site that reads left to right. Verified with workspace plugin 17.1.5.
 
-Corollary: without this import, a `:root { --primary: … !important }` block only affects rules that *explicitly* write `var(--primary)` (your own custom SCSS, fragment CSS) — Clay buttons, alerts, and body text keep Clay's baked-in defaults regardless of what the style book or `:root` says.
+Corollary: without this import, a `:root { --primary: … !important }` block only affects rules that *explicitly* write `var(--primary)` (your own custom SCSS, fragment CSS) — Clay buttons, alerts, and body text keep the defaults compiled into Clay regardless of what the style book or `:root` says.
 
 #### Webfonts: Register in the themeCSS, Apply via the Style Book
 
-A brand webfont splits across the two layers: `@font-face` (registration) lives in the themeCSS CET — font binaries under `assets/fonts`, shipped by an `assemble` block `{from: assets, include: fonts/**, into: static}` (do **not** `hashify` them; the CSS references them by stable relative URL `../fonts/<file>` from `css/main.css`) — and the **family is applied only by the style book's `fontFamilyBase` token** (`YourFont, <fallbacks>`). No `font-family` rule in the CSS. Both halves are dead without the `_clay_variables.scss` import above. `@font-face` family-name matching is case-insensitive. Ship `woff2` + `woff`; skip `.eot`.
+A brand webfont splits across the two layers: `@font-face` (registration) lives in the themeCSS CET — font binaries under `assets/fonts`, shipped by an `assemble` block `{from: assets, include: fonts/**, into: static}` (do **not** `hashify` them; the CSS references them by stable relative URL `../fonts/<file>` from `css/main.css`) — and the **family is applied only by the style book's `fontFamilyBase` token** (`YourFont, <fallbacks>`). No `font-family` rule in the CSS. Both halves are dead without the `_clay_variables.scss` import above. `@font-face` matches family names regardless of case. Ship `woff2` + `woff`; skip `.eot`.
 
-**A `themeCSS` project serves any static file this way, not only fonts** (verified on 2026.Q2.7): with a top-level `assemble: [{from: assets, into: static}]`, `assets/<dir>/<file>` is served at `/o/<project directory>/<dir>/<file>` on every virtual host, typed by its extension, beside `css/main.css`. So one theme project can hold what every site's chrome needs (fonts, icons, logos), referenced from its CSS as `../<dir>/<file>` and from fragments by the root-relative path. Name a file by its real type: the static server types by extension, and a file fetched from another site under a `.png` name can hold WebP bytes. Webfonts hosted locally can come from the `@fontsource/<family>` npm packages (SIL OFL 1.1, `files/<family>-<subset>-<weight>-normal.woff2`, with each subset's `unicode-range` in its CSS files).
+**A `themeCSS` project serves any static file this way, not only fonts** (verified on 2026.Q2.7): with `assemble: [{from: assets, into: static}]` at the top level, `assets/<dir>/<file>` is served at `/o/<project directory>/<dir>/<file>` on every virtual host, typed by its extension, beside `css/main.css`. So one theme project can hold what every site's chrome needs (fonts, icons, logos), referenced from its CSS as `../<dir>/<file>` and from fragments by the path relative to the root. Name a file by its real type: the static server types by extension, and a file fetched from another site under a `.png` name can hold WebP bytes. Webfonts hosted locally can come from the `@fontsource/<family>` npm packages (SIL OFL 1.1, `files/<family>-<subset>-<weight>-normal.woff2`, with each subset's `unicode-range` in its CSS files).
 
 **Tokens of your own** (verified on 2026.Q2.7): a category appended to the CET's `frontend-token-definition.json` after Classic's own, tokens shaped like Classic's (`name`, `label`, `defaultValue`, `mappings: [{type: cssVariable, value: <variable>}]`, optional `editorType` `ColorPicker`/`Length`), is accepted from a site initializer's style book and declared in each page's `:root` like Classic's tokens. A mapping may name a variable Clay already reads but Classic has no token for (`line-height-base`). Declare the same variables with their defaults in `_custom.scss` too, for a site whose book sets none. The definition is the deployed CET's: redeploy the CET before an initializer imports a book that sets a new token, or the token is dropped.
 
@@ -141,7 +141,7 @@ The portable path is the master page binding: set `settings.themeCSSClientExtens
 
 A style book maps Clay token names to site specific values. Unlike a themeCSS CET's compiled output, a style book **can** be applied from the initializer tree, which makes it the reproducible half of the theme layer.
 
-> **A themeCSS CET built with the stock theme build bypasses the style book — unless it compiles Clay against the custom-properties variables.** By default the SCSS build emits **literal values**, not `var(--token)` references, so style book tokens never reach any rule the CET's compiled CSS sets — a token edit "succeeds" (and a reprovision succeeds) with zero visible change. The `src/css/_clay_variables.scss` import above ("The Stock Theme Build Compiles Clay STATIC") removes the bypass: with it, the compiled Clay consumes `var(--token)` throughout and the style book drives typography and Clay colors as designed. Either way, the brand ships in the themeCSS CET; put only the values that should be marketer-tunable in a **style book** bound alongside it. To make a style book drive tokens on a themeCSS-bound site, the CET must also ship its own `frontend-token-definition.json` declaring the tokens **and** the style book must be bound alongside the CET (same master `settings` block, style book by key, CET by full `LXC:` ERC). Two related facts: a themeCSS CET selected as the site theme **without** a token definition makes the page editor NPE, and the CET's `getThemeId()` is its **ERC** — so a `style-book.json` targeting a themeCSS-themed site sets `themeId` to that ERC, not `classic_WAR_classictheme`. Also note a style book's `themeId` is **fixed at creation**: it is set only when the book is created, and the initializer upsert (`updateStyleBookEntry`) takes no `themeId`, so a book first created against the wrong theme keeps it on every redeploy. Bind it again by deleting the book, then firing the initializer again — plan the theme before first provision.
+> **A themeCSS CET built with the stock theme build bypasses the style book — unless it compiles Clay against the variables built on CSS custom properties.** By default the SCSS build emits **literal values**, not `var(--token)` references, so style book tokens never reach any rule the CET's compiled CSS sets — a token edit "succeeds" (and a reprovision succeeds) with zero visible change. The `src/css/_clay_variables.scss` import above ("The Stock Theme Build Compiles Clay STATIC") removes the bypass: with it, the compiled Clay consumes `var(--token)` throughout and the style book drives typography and Clay colors as designed. Either way, the brand ships in the themeCSS CET; put only the values that marketers should be able to tune in a **style book** bound alongside it. To make a style book drive tokens on a site bound to a themeCSS CET, the CET must also ship its own `frontend-token-definition.json` declaring the tokens **and** the style book must be bound alongside the CET (same master `settings` block, style book by key, CET by full `LXC:` ERC). Two related facts: a themeCSS CET selected as the site theme **without** a token definition makes the page editor NPE, and the CET's `getThemeId()` is its **ERC** — so a `style-book.json` targeting a site themed by a themeCSS CET sets `themeId` to that ERC, not `classic_WAR_classictheme`. Also note a style book's `themeId` is **fixed at creation**: it is set only when the book is created, and the initializer upsert (`updateStyleBookEntry`) takes no `themeId`, so a book first created against the wrong theme keeps it on every redeploy. Bind it again by deleting the book, then firing the initializer again — plan the theme before first provision.
 
 #### Author It in the Tree
 
@@ -156,9 +156,9 @@ A style book maps Clay token names to site specific values. Unlike a themeCSS CE
 }
 ```
 
-`classic_WAR_classictheme` is right **only when no themeCSS CET is bound**. When the master binds one, `themeId` must be that CET's full ERC, `"LXC:<config-erc>"`; a Classic-bound book is then silently orphaned, so the tokens never emit and the Style Books list shows it against the wrong theme (verified on 2026.Q2, `_isStyleBookEntryApplicable`).
+`classic_WAR_classictheme` is right **only when no themeCSS CET is bound**. When the master binds one, `themeId` must be that CET's full ERC, `"LXC:<config-erc>"`; a book bound to Classic is then silently orphaned, so the tokens never emit and the Style Books list shows it against the wrong theme (verified on 2026.Q2, `_isStyleBookEntryApplicable`).
 
-`frontend-tokens-values.json` beside it, one entry per token. **The key the Style Book editor reads depends on the release**: on q3.1 it is namespaced with the token definition id (the book's `themeId`, so `LXC:<config-erc>:primaryColor` on a themeCSS-bound site); on **2026.Q2.7 it is the plain token name** (`primaryColor`). The wrong form still renders, but the editor shows the theme defaults for every token:
+`frontend-tokens-values.json` beside it, one entry per token. **The key the Style Book editor reads depends on the release**: on q3.1 it is namespaced with the token definition ID (the book's `themeId`, so `LXC:<config-erc>:primaryColor` on a site bound to a themeCSS CET); on **2026.Q2.7 it is the plain token name** (`primaryColor`). The wrong form still renders, but the editor shows the theme defaults for every token:
 
 ```json
 {
@@ -169,9 +169,9 @@ A style book maps Clay token names to site specific values. Unlike a themeCSS CE
 }
 ```
 
-**The initializer upsert leaves the book in a "Draft" state — benign.** The style book handler writes through Liferay's versioned-entity service, which updates the published head AND an identical draft row together; the editor shows a "Draft" badge whenever a draft row exists. Verified on q3.1: head and draft byte-identical after an upsert, live pages serve the head. Publish (a content no-op that clears the badge) or ignore it; it reappears after every reprovision that touches the book.
+**The initializer upsert leaves the book in a "Draft" state — benign.** The style book handler writes through Liferay's versioned entity service, which updates the published head AND an identical draft row together; the editor shows a "Draft" badge whenever a draft row exists. Verified on q3.1: head and draft identical byte for byte after an upsert, live pages serve the head. Publish (it changes no content and clears the badge) or ignore it; it reappears after every reprovision that touches the book.
 
-**Why the namespace (verified on q3.1, root-caused in `style-book-web` source):** the runtime CSS-variable provider (`StyleBookScopedCSSVariablesProvider`) iterates all entries reading only `cssVariableMapping`/`value` — key-agnostic, so a plain key like `"primaryColor"` renders fine. But the editor's sidebar (`Sidebar.js` → `FrontendTokenCategories`) rewrites every token's `name` to `` `${definitionId}:${token.name}` `` and looks values up by that namespaced key — a plain key is simply not found, so the editor shows the theme **default** while the page renders your value. The failure is doubly deceptive: everything looks right on the site, wrong in the admin UI, and if an admin then edits and publishes from that editor state, the UI saves namespaced keys **alongside** your plain ones and the defaults it displayed overwrite your values wherever they touched a field. Use namespaced keys from the start on q3.1 — that is the format the UI itself saves.
+**Why the namespace (verified on q3.1, root cause found in `style-book-web` source):** the runtime provider of CSS variables (`StyleBookScopedCSSVariablesProvider`) iterates all entries reading only `cssVariableMapping`/`value` — regardless of key, so a plain key like `"primaryColor"` renders fine. But the editor's sidebar (`Sidebar.js` → `FrontendTokenCategories`) rewrites every token's `name` to `` `${definitionId}:${token.name}` `` and looks values up by that namespaced key — a plain key is simply not found, so the editor shows the theme **default** while the page renders your value. The failure is doubly deceptive: everything looks right on the site, wrong in the admin UI, and if an admin then edits and publishes from that editor state, the UI saves namespaced keys **alongside** your plain ones and the defaults it displayed overwrite your values wherever they touched a field. Use namespaced keys from the start on q3.1 — that is the format the UI itself saves.
 
 **On 2026.Q2.7 it is the reverse: plain keys** (read from the bundle's `style-book-web` JS). `FrontendTokenSet.js` looks a value up as `frontendTokensValues[frontendToken.name]`, and nothing in q2.7's editor prefixes the name, so a book written with `LXC:<config-erc>:` keys showed the theme default for all 66 of its tokens (Font Family Base read `system-ui, …` while every page rendered the book's `'Open Sans'`). The same book imported again with plain keys showed its own values. Check the release before choosing the form: in the bundle's `com.liferay.style.book.web.jar`, `META-INF/resources/js/style-book-editor/Sidebar.js` builds `${definitionId}:${…}` names only on the releases that namespace.
 
@@ -179,7 +179,7 @@ A style book maps Clay token names to site specific values. Unlike a themeCSS CE
 
 A token only takes effect if its name is declared in the active theme's `frontend-token-definition.json`. An invented name is discarded with **no error**: the initializer logs `addStyleBookEntries took N ms`, nothing warns, and the page keeps the default value. Do not guess — enumerate first:
 
-Each entry needs **two** things — the token `name` (the JSON key) and its `cssVariableMapping`. The mapping is not derivable from the name (`primaryD1Color` → `primary-d1`, `btnPrimaryBackgroundColor` → `btn-primary-background-color`, `fontFamilyBase` → `font-family-base`), so dump both at once rather than guessing the kebab-case form:
+Each entry needs **two** things — the token `name` (the JSON key) and its `cssVariableMapping`. The mapping is not derivable from the name (`primaryD1Color` → `primary-d1`, `btnPrimaryBackgroundColor` → `btn-primary-background-color`, `fontFamilyBase` → `font-family-base`), so dump both at once rather than guessing the form in kebab case:
 
 Read it from the **deployed theme in the bundle**, not from portal source. A Liferay Workspace is not a portal checkout — `modules/apps/frontend-theme/...` does not exist there, and reaching for it sends you looking for a repository you may not have. The definition ships inside the theme WAR:
 
@@ -198,7 +198,7 @@ for c in d['frontendTokenCategories']:
 
 This has the added benefit of describing the theme **actually running**, so the list matches the release under test rather than whatever branch is checked out. Verified on a 2026.Q2 bundle: 252 tokens, and no `headings*` among them.
 
-Filter that list to what you need (`grep --extended-regexp '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252. For a non Classic theme, substitute its WAR under `bundles/osgi/portal-war/` (or `bundles/osgi/war/` for a deployed custom theme).
+Filter that list to what you need (`grep --extended-regexp '^(primary|btnPrimary|body|font|h[1-6])'`) rather than reading all 252. For a non Classic theme, substitute its WAR under `bundles/osgi/portal-war` (or `bundles/osgi/war` for a deployed custom theme).
 
 Classic declares 252 tokens. Useful ones: `bodyBgColor`, `bodyColor`, `primaryColor`, `primaryD1Color`, `primaryD2Color`, `primaryL1Color`…`primaryL3Color`, `secondaryColor`, `warningColor`, `warningD1Color`, `fontFamilyBase`, `fontSizeBase`, `fontWeightBold`, `fontWeightBolder`, `h1FontSize`…`h6FontSize`, and the full `btnPrimary*` / `btnSecondary*` sets (`BackgroundColor`, `BorderColor`, `Color`, and their `Hover` variants).
 
@@ -238,15 +238,15 @@ With both, 31 injected Clay components matched the old site in radius, height, p
 
 ##### Never Trust a `var()` Fallback for Contrast
 
-`var(--some-token, #safe-color)` in fragment CSS is a WCAG trap: the fallback only applies when the variable is **unset**, and a Clay/theme default counts as set. Example: `var(--text-muted, #6b7280)` — no style book defines `text-muted`, so Clay's built-in `#a7a9bc` (~2.3:1 on white, an AA fail) wins and the compliant fallback is dead code. Reference a token the style book actually defines (a `--gray-*` ramp value), or measure the resolved color in the browser (`getComputedStyle`) — never assume the fallback is what renders.
+`var(--some-token, #safe-color)` in fragment CSS is a WCAG trap: the fallback only applies when the variable is **unset**, and a Clay/theme default counts as set. Example: `var(--text-muted, #6b7280)` — no style book defines `text-muted`, so Clay's default `#a7a9bc` (~2.3:1 on white, an AA fail) wins and the compliant fallback is dead code. Reference a token the style book actually defines (a `--gray-*` ramp value), or measure the resolved color in the browser (`getComputedStyle`) — never assume the fallback is what renders.
 
 **Classic has no `headings*` tokens at all** — `headingsColor`, `headingsFontFamily`, and `headingsFontWeight` are all plausible and all ignored. Only the *sizes* are tokenized (`h1FontSize`…`h6FontSize`); heading **family** and **weight** have no token.
 
-##### Site Wide CSS With No Token — Prefer the themeCSS CET
+##### CSS Across the Site With No Token — Prefer the themeCSS CET
 
-Put a site wide rule that no style book token expresses in the themeCSS CET's `src/css/_custom.scss`, which every page bound to the master loads. Only when the site ships no themeCSS CET is the **master page's header fragment** the reproducible fallback, as described below.
+Put a rule that applies across the site, and that no style book token expresses, in the themeCSS CET's `src/css/_custom.scss`, which every page bound to the master loads. Only when the site ships no themeCSS CET is the **master page's header fragment** the reproducible fallback, as described below.
 
-A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place site wide CSS can live and still survive delete and redeploy:
+A fragment's `index.css` is a stylesheet on the page, so its rules can target anything — they are not confined to the fragment's markup. A fragment placed in the master page loads on **every page using that master**, which makes it the one place CSS across the site can live and still survive delete and redeploy:
 
 ```css
 /* site-header/index.css — deliberately NOT scoped to the fragment wrapper */
@@ -289,7 +289,7 @@ The selector above is one ID plus a **type**, so any fragment styling its own he
 #wrapper .conference-hero__title   /* fragment rule — 1 id, 1 class          */
 ```
 
-The fragment wins. The failure is quiet because it is partial: family and tracking still apply (the fragment did not set those), so headings look *almost* right while `font-weight` silently stays at whatever the fragment declared. Verified on 2026.Q2 — a site wide rule asking for `800` computed to `700` on every heading whose fragment set `font-weight: 700`, and reads as "the heavy font did not take".
+The fragment wins. The failure is quiet because it is partial: family and tracking still apply (the fragment did not set those), so headings look *almost* right while `font-weight` silently stays at whatever the fragment declared. Verified on 2026.Q2 — a rule across the site asking for `800` computed to `700` on every heading whose fragment set `font-weight: 700`, and reads as "the heavy font did not take".
 
 Fix it at the fragments, not by escalating the master selector. **Delete `font-weight` from every heading rule in every content fragment** so the master rule is the single source of truth:
 
@@ -311,10 +311,10 @@ Weigh it against the alternatives before reaching for it:
 
 | Need | Put it in |
 | --- | --- |
-| Site wide brand, Clay variable overrides, no token | `themeCSS` CET bound in the master's `settings.themeCSSClientExtension` — preferred (survives reprovision) |
-| Site wide, no token, plain CSS | The `themeCSS` CET's `src/css/_custom.scss`; master page fragment CSS (above) only when the site has no themeCSS CET |
+| Brand across the site, Clay variable overrides, no token | `themeCSS` CET bound in the master's `settings.themeCSSClientExtension` — preferred (survives reprovision) |
+| Across the site, no token, plain CSS | The `themeCSS` CET's `src/css/_custom.scss`; master page fragment CSS (above) only when the site has no themeCSS CET |
 | Value has a style book token, and editors should tune it | Style book bound alongside the `themeCSS` CET (Layer 2) |
-| Truly instance wide, every site | `globalCSS` CET (no per site scoping available) |
+| Truly across the instance, every site | `globalCSS` CET (no per site scoping available) |
 | One section's look | That fragment's own scoped CSS |
 
 A webfont still needs a file served from a CET; a system font stack at weight 800/900 gets a heavy sans with no external dependency.
@@ -329,7 +329,7 @@ Consult learn.liferay.com for the full style book token reference (search `style
 
 Master pages define the persistent header and footer that surround all Content Pages assigned to that master.
 
-Author the master in the site initializer tree, under `layout-page-templates/master-pages/<name>/` (see `rules/site-initializer-format.md` → "Master Pages"), and bind the theme, favicon, and style book from its `settings`. The API call below is for a change made once to a running instance. See `liferay-rules.md` → "Deliver Through Client Extensions".
+Author the master in the site initializer tree, under `layout-page-templates/master-pages/<name>` (see `rules/site-initializer-format.md` → "Master Pages"), and bind the theme, favicon, and style book from its `settings`. The API call below is for a change made once to a running instance. See `liferay-rules.md` → "Deliver Through Client Extensions".
 
 #### Create via API
 
@@ -376,7 +376,7 @@ The `DropZone` element must carry a `definition.fragmentSettings` block — a **
 
 `settings.masterPage.key` in each `page-definition.json` applies the master to the pages in the tree. Pages created later, in the UI or over REST, get the site's **default** master instead, so mark yours as the default, or new pages render without the header and footer.
 
-The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. This is one of the settings no client extension can carry, so it stays a post-deploy step: script it next to the initializer and run it after each provision. Mark it over REST by sending the master page back with `markedAsDefault` set:
+The tree cannot do this. `master-page.json` accepts only `key` and `name`, and an extra key such as `"defaultTemplate": true` makes the importer drop the master page: the site provisions with no master and every page loses its header and footer. This is one of the settings no client extension can carry, so it stays a step after deployment: script it next to the initializer and run it after each provision. Mark it over REST by sending the master page back with `markedAsDefault` set:
 
 ```bash
 SITE="http://localhost:${PORT}/o/headless-admin-site/v1.0/sites/<site-erc>"
@@ -410,7 +410,7 @@ Consult learn.liferay.com for the full master page template reference (search `m
 Follow WCAG 2.1 AA as the baseline:
 
 - Color contrast: minimum 4.5:1 for normal text, 3:1 for large text (18pt+). Use a contrast checker before finalizing the `$primary` color.
-- **Measure what renders, not the token values.** In headless Chrome, for each visible element with its own text, take its computed `color` and the first opaque `background-color` walking up its ancestors (compose semi-transparent layers, and an ancestor's absolutely positioned `::before` overlay from `getComputedStyle(node, '::before')` at its opacity, taking a gradient's worst stop; an ancestor with a `background-image` makes the pair unmeasurable unless an overlay of about 0.8 or more hides it), and compute the WCAG ratio; open each menu panel and measure again. On a migrated site this finds what a token audit cannot: colors a page definition carries as raw hex, a text color the migration dropped, a fragment's own CSS.
+- **Measure what renders, not the token values.** In headless Chrome, for each visible element with its own text, take its computed `color` and the first opaque `background-color` walking up its ancestors (compose semitransparent layers, and an ancestor's absolutely positioned `::before` overlay from `getComputedStyle(node, '::before')` at its opacity, taking a gradient's worst stop; an ancestor with a `background-image` makes the pair unmeasurable unless an overlay of about 0.8 or more hides it), and compute the WCAG ratio; open each menu panel and measure again. On a migrated site this finds what a token audit cannot: colors a page definition carries as raw hex, a text color the migration dropped, a fragment's own CSS.
 - Focus indicators: ensure Clay's default focus ring is not overridden to `outline: none` without a replacement.
 - Skip link: include a `<a href="#main-content" class="skip-link">Skip to main content</a>` in the master page header.
 - Image alt text: enforce via `data-lfr-editable-type="image"` regions, which prompt editors to provide alt text.
@@ -435,7 +435,7 @@ Ship these in the same `frontend` project as the `themeCSS` CET, with the icon f
 
 ## globalCSS Versus themeCSS
 
-A `themeCSS` CET overrides Clay Design System variables and is applied per site — durably via the master's `settings.themeCSSClientExtension` binding, or manually under Design → Theme. A `globalCSS` CET is different: it injects a plain CSS file on **every page** automatically as soon as it is deployed — there is no per site selection and **no Instance Settings or manual enablement step**. Scope is controlled on the CET itself (`scope: company` injects instance wide; omitting `scope` uses the default):
+A `themeCSS` CET overrides Clay Design System variables and is applied per site — durably via the master's `settings.themeCSSClientExtension` binding, or manually under Design → Theme. A `globalCSS` CET is different: it injects a plain CSS file on **every page** automatically as soon as it is deployed — there is no per site selection and **no Instance Settings or manual enablement step**. Scope is controlled on the CET itself (`scope: company` injects across the instance; omitting `scope` uses the default):
 
 ```yaml
 assemble:
@@ -450,7 +450,7 @@ assemble:
   url: global.*.css
 ```
 
-`assemble` is a **top-level** key of `client-extension.yaml`, a sibling of the entries, never a key inside one. Inside an entry, `createClientExtensionConfig` fails with `class java.util.LinkedHashMap cannot be cast to class java.lang.String`, after the build tasks before it reported success (verified on 2026.Q2.7 with workspace plugin 17.1.5).
+`assemble` is a key at the **top level** of `client-extension.yaml`, a sibling of the entries, never a key inside one. Inside an entry, `createClientExtensionConfig` fails with `class java.util.LinkedHashMap cannot be cast to class java.lang.String`, after the build tasks before it reported success (verified on 2026.Q2.7 with workspace plugin 17.1.5).
 
 Use `globalCSS` for site agnostic CSS that must always load; use `themeCSS` for brand tokens applied per site through the master binding or theme picker.
 
@@ -462,7 +462,7 @@ After deploying and assigning:
 
 1. Confirm the CET is actually taking effect by its **rendered result**, not by a URL string. A `themeCSS` CET **replaces the theme's compiled CSS** (its `main.css` carries the Clay variable overrides and any custom rules) — it does **not** add a `<link>` whose href contains the config ERC. So verify the *effect*: `getComputedStyle(document.documentElement).getPropertyValue('--some-token')` returns the CET's value, or a rule the CET sets is measurably in force (e.g. a brand color on a primary button). The master's `settings.themeCSSClientExtension` binding (or Design → Theme showing the CET) is itself ground truth that the bind exists.
 
-   > **Do not verify by grepping stylesheet hrefs for the CET name.** Because the CET replaces the theme CSS rather than adding a separately-named file, its config ERC never appears in a `<link>` href — and the base `classic-theme` `clay.css`/`main.css` URLs can still be present. Concluding "the theme CSS is not applied" from the absence of a `<CET-name>`-named stylesheet is a **false negative**. Trust the computed style or the master binding, not the href.
+   > **Do not verify by grepping stylesheet hrefs for the CET name.** Because the CET replaces the theme CSS rather than adding a separately named file, its config ERC never appears in a `<link>` href — and the base `classic-theme` `clay.css`/`main.css` URLs can still be present. Concluding "the theme CSS is not applied" from the absence of a `<CET-name>`-named stylesheet is a **false negative**. Trust the computed style or the master binding, not the href.
 
 1. Confirm brand colors appear in primary buttons and headings.
 

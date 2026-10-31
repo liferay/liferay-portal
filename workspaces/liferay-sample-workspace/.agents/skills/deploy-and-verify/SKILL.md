@@ -35,10 +35,10 @@ Target type drives the command:
 
 | Target type | Detection | Tomcat command | Docker command |
 | --- | --- | --- | --- |
-| Client extension | `client-extension.yaml` under `client-extensions/<name>/` | `cd client-extensions/<name> && blade gw deploy` | `./gradlew deploy "-Ddeploy.docker.container.id=$(docker compose ps --quiet liferay)"` |
-| OSGi module | `bnd.bnd` and `build.gradle` under `modules/<name>/` | `cd modules/<name> && blade gw deploy` | Same as client extension (run from module dir) |
-| Theme | `liferay-theme.json` under `themes/<name>/` | `cd themes/<name> && blade gw deploy` | Same as client extension (run from theme dir) |
-| Fragment collection (file based) | `fragments/group/<collection>/` under a site initializer | Deploys via the parent `siteInitializer` client extension | Same |
+| Client extension | `client-extension.yaml` under `client-extensions/<name>` | `cd client-extensions/<name> && blade gw deploy` | `./gradlew deploy "-Ddeploy.docker.container.id=$(docker compose ps --quiet liferay)"` |
+| OSGi module | `bnd.bnd` and `build.gradle` under `modules/<name>` | `cd modules/<name> && blade gw deploy` | Same as client extension (run from module dir) |
+| Theme | `liferay-theme.json` under `themes/<name>` | `cd themes/<name> && blade gw deploy` | Same as client extension (run from theme dir) |
+| Fragment collection (file based) | `fragments/group/<collection>` under a site initializer | Deploys via the parent `siteInitializer` client extension | Same |
 
 When the target lives across multiple modules (siteInitializer with batch + layouts + fragments), deploy from the client extension root.
 
@@ -104,7 +104,7 @@ When STARTED never appears:
 - **Tomcat down**: probe `http://localhost:${PORT}`. If down, start it.
 - **Bundle in `INSTALLED` state but not `ACTIVE`**: open a Gogo shell with `telnet localhost 11311` and run `lb | grep <bsn>` to see the wired state, then `diag <id>` to read the resolution error.
   - **In a Docker container whose 11311 is not published**, script it with the container's own `telnet`, which answers Gogo's option negotiation: `docker exec <container> sh -c '(sleep 3; printf "lb -s <bsn>\r\n"; sleep 4; printf "disconnect\r\n"; sleep 1; printf "y\r\n") | telnet localhost 11311'`. A bash `/dev/tcp/localhost/11311` socket gets the echo of the command and never its output (verified on a 2026.Q2.7 image).
-  - **A core bundle replaced at boot logs no `STARTED` line.** A patched `osgi/portal` jar shows `STOPPED …_<old>` / `STARTED …_<new>` when hot-swapped, but after a container restart it starts silently with the framework, so check `lb -s <bsn>` (state `Active`, the patched version) rather than grepping the log.
+  - **A core bundle replaced at boot logs no `STARTED` line.** A patched `osgi/portal` jar shows `STOPPED …_<old>` / `STARTED …_<new>` when hotswapped, but after a container restart it starts silently with the framework, so check `lb -s <bsn>` (state `Active`, the patched version) rather than grepping the log.
 - **Stale cache**: stop Tomcat, delete `bundles/osgi/state` and `work`, start Tomcat. This is a restart under `liferay-rules.md` → "Server Restarts".
 - **Missing dependency**: read `bnd.bnd` `Import-Package` against the OSGi registry.
 - **`STARTED` appears, yet the module does nothing: an optional import that missed at resolve time.** A package imported `resolution:=optional` is wired only if its provider is already installed when the bundle resolves, and stays unwired after the provider arrives until the bundle is refreshed. Then any DS component with a field of that package's type cannot be built: SCR logs `Field [_x] not found` for **every** field of the class, and a JAX-RS application holding it is not registered (its path answers `404`). Verified on 2026.Q2.7: a fresh build deployed a bridge module before the module exporting its API (deploy order is alphabetical by project), `inspect requirement osgi.wiring.package <bsn>` listed no provider for that package, and a later hot redeploy of the bridge wired it. When the module is useless without the package anyway, import it as mandatory, with a mandatory `@Reference`: the bundle then resolves whenever the provider is installed, in either order (FileInstall resolves waiting bundles), and is refreshed with it on a redeploy. Measured on a second fresh build with the same order: it started after the provider, wired.
@@ -139,11 +139,11 @@ When deploying multiple client extensions in the same cycle, deploy in this orde
 
 - **Tomcat**: if `configs/local/portal-ext.properties` changed, copy it to `bundles/portal-ext.properties` and restart the server, following `liferay-rules.md` → "Server Restarts". Do NOT use `blade gw initBundle` — it deletes the entire bundle directory.
 - **Docker (prebuilt image)**: configure via `liferay.env` environment variables. Changes require a container restart (`docker compose down && docker compose up`), under the same restart policy.
-- **Docker (custom image)**: if `docker-compose.yaml` uses `build:` instead of `image:`, configuration files in `configs/docker/` are baked into the image by the workspace Gradle plugin. Rebuild the image to apply changes.
+- **Docker (custom image)**: if `docker-compose.yaml` uses `build:` instead of `image:`, configuration files in `configs/docker` are baked into the image by the workspace Gradle plugin. Rebuild the image to apply changes.
 
 ## portal-ext.properties Sync (Tomcat)
 
-Copying `configs/local/portal-ext.properties` to `bundles/portal-ext.properties` is destructive. If any property exists only in `bundles/portal-ext.properties` (e.g. added via the portal UI or a manual runtime edit), a blind copy silently deletes it. Diff the two files before syncing and migrate any `bundles/`-only properties to `configs/local/` first. Verify the property is honored at runtime after restart — matching file contents is not the same as runtime activation.
+Copying `configs/local/portal-ext.properties` to `bundles/portal-ext.properties` is destructive. If any property exists only in `bundles/portal-ext.properties` (e.g. added via the portal UI or a manual runtime edit), a blind copy silently deletes it. Diff the two files before syncing and migrate any properties found only in `bundles` to `configs/local` first. Verify the property is honored at runtime after restart — matching file contents is not the same as runtime activation.
 
 ## Success Signal
 

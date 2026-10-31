@@ -23,7 +23,7 @@ None for roles and grants. The object collaborators API (sharing an entry with o
 
 ## Workflow
 
-> **Ship roles and grants in the site initializer tree.** Roles go in `roles.json`, permission grants in `resource-permissions.json`, users and accounts in `user-accounts.json` and `accounts.json` (see `rules/site-initializer-format.md`). The REST calls below show each payload's shape and serve one-off changes to a running instance. See `liferay-rules.md` → "Deliver Through Client Extensions".
+> **Ship roles and grants in the site initializer tree.** Roles go in `roles.json`, permission grants in `resource-permissions.json`, users and accounts in `user-accounts.json` and `accounts.json` (see `rules/site-initializer-format.md`). The REST calls below show each payload's shape and serve single changes to a running instance. See `liferay-rules.md` → "Deliver Through Client Extensions".
 
 ### Create a Role
 
@@ -45,9 +45,9 @@ curl \
 
 | Value | Scope |
 | --- | --- |
-| `regular` | Portal wide; applies across all sites |
-| `site` | Site scoped; membership and permissions are site specific |
-| `organization` | Organization scoped |
+| `regular` | Across the portal; applies to all sites |
+| `site` | Scoped at the site level; membership and permissions are site specific |
+| `organization` | Scoped at the organization level |
 
 Save the returned `id` as `<role-id>`.
 
@@ -63,7 +63,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-For site scoped role assignment, use the role association endpoint scoped to the site (there is **no** `/sites/{id}/site-members` endpoint). The site is addressed by its numeric `<site-id>` here. On a regular site, the association also adds the user as a site member:
+For role assignment scoped at the site level, use the role association endpoint scoped to the site (there is **no** `/sites/{id}/site-members` endpoint). The site is addressed by its numeric `<site-id>` here. On a regular site, the association also adds the user as a site member:
 
 ```bash
 curl \
@@ -79,7 +79,7 @@ Object level permissions control which roles can create, view, update, or delete
 
 > **There is no `/permissions` endpoint for an object definition.** `object-admin` declares none (from source), so `PUT /o/object-admin/v1.0/object-definitions/<id>/permissions` cannot work. The definition DTO's `permissions` property sets permissions on the definition itself, not on its entries. Grant object level permissions in the initializer tree with `resource-permissions.json` (the next section and `rules/site-initializer-format.md`), or in Control Panel → Objects → [Object] → Permissions.
 
-> **A grant on the role itself works over `headless-admin-user` instead:** `PATCH /o/headless-admin-user/v1.0/roles/{roleId}` with only `{"rolePermissions": [{"actionIds": ["ADD_OBJECT_ENTRY"], "primaryKey": "<companyId>", "resourceName": "com.liferay.object#<definitionId>", "scope": 1}]}`. `RoleResourceImpl.patchRole` calls `ResourcePermissionService.addResourcePermission` for each listed action, so it **only adds**: other grants stay, and the role's name, titles and description are kept (omitted fields fall back to the stored ones). Entries with `scope` `4` (individual) are skipped. Read the role first, `GET /roles/{roleId}`, whose `rolePermissions` lists every grant the role holds (`resourceName`, `scope`, `actionIds`), to compare before writing; on the Guest role that is tens of thousands of rows. It cannot revoke: there is no remove path in this method. Verified on 2026.Q2: Guest got company-scope `ADD_OBJECT_ENTRY` on a new object, and an anonymous `GET /o/c/<plural>` still answered `totalCount: 0`.
+> **A grant on the role itself works over `headless-admin-user` instead:** `PATCH /o/headless-admin-user/v1.0/roles/{roleId}` with only `{"rolePermissions": [{"actionIds": ["ADD_OBJECT_ENTRY"], "primaryKey": "<companyId>", "resourceName": "com.liferay.object#<definitionId>", "scope": 1}]}`. `RoleResourceImpl.patchRole` calls `ResourcePermissionService.addResourcePermission` for each listed action, so it **only adds**: other grants stay, and the role's name, titles and description are kept (omitted fields fall back to the stored ones). Entries with `scope` `4` (individual) are skipped. Read the role first, `GET /roles/{roleId}`, whose `rolePermissions` lists every grant the role holds (`resourceName`, `scope`, `actionIds`), to compare before writing; on the Guest role that is tens of thousands of rows. It cannot revoke: there is no remove path in this method. Verified on 2026.Q2: Guest got `ADD_OBJECT_ENTRY` at the company level on a new object, and an anonymous `GET /o/c/<plural>` still answered `totalCount: 0`.
 
 Common `actionIds` for object definitions:
 
@@ -91,7 +91,7 @@ Common `actionIds` for object definitions:
 
 ### Public Form: Let Guest Create Without Reading
 
-> **A site role never grants the add on a company-scoped object.** The add is checked in group 0, where no site role counts, so a company-scope `ADD_OBJECT_ENTRY` for Site Member renders a Form Container for the site's members and then fails every submission silently. Grant it to a regular role (Guest, User, or a role the members hold). Verified on 2026.Q3; see `manage-form-containers` → "First: Grant `ADD_OBJECT_ENTRY`".
+> **A site role never grants the add on an object scoped at the company level.** The add is checked in group 0, where no site role counts, so an `ADD_OBJECT_ENTRY` grant at the company level for Site Member renders a Form Container for the site's members and then fails every submission silently. Grant it to a regular role (Guest, User, or a role the members hold). Verified on 2026.Q3; see `manage-form-containers` → "First: Grant `ADD_OBJECT_ENTRY`".
 
 An object registers **two** resource names and the action decides which to grant on — `ADD_OBJECT_ENTRY` is **not** on the `[$OBJECT_DEFINITION_CLASS_NAME:…$]` resource, and granting it there silently does nothing. `rules/guest-access.md` has the table and the `guest-unsupported` set; it is always loaded, so read it there rather than guessing here.
 
@@ -116,7 +116,7 @@ For an anonymous registration, enquiry, or application form, grant creation on t
 ]
 ```
 
-Do **not** add `VIEW` on the object that receives submissions. Those rows hold whatever the visitor typed — names, emails, addresses — and `VIEW` at company scope publishes all of them to anonymous users. Write only is the correct posture for a public form, and it is why any count or aggregate over that object has to be denormalized onto the public object rather than computed in the browser (see `manage-pages` → "Mapping Limits").
+Do **not** add `VIEW` on the object that receives submissions. Those rows hold whatever the visitor typed — names, emails, addresses — and `VIEW` at the company level publishes all of them to anonymous users. Write only is the correct posture for a public form, and it is why any count or aggregate over that object has to be denormalized onto the public object rather than computed in the browser (see `manage-pages` → "Mapping Limits").
 
 ### Grant Permissions on Object Entries
 
@@ -159,10 +159,10 @@ Liferay Sharing gives one user access to one object entry, beside the role grant
 - **The call:** `PUT /o/c/<plural>/scopes/<scope>/by-external-reference-code/<erc>/collaborators/by-type/User/<userId>` (or `/o/c/<plural>/<id>/collaborators/by-type/User/<userId>`) with `{"actionIds": ["DOWNLOAD", "VIEW"], "type": "User"}`. Sharing actions are `VIEW`, `DOWNLOAD`, `UPDATE`, `ADD_DISCUSSION`; `"share": true` lets the user reshare. `GET` on the same path answers `404` when there is no share.
 - **Not by email address:** `…/collaborators/by-email-address/<email>` makes an `Email` collaborator, which may only `VIEW` (`400 "Collaborators of type \"Email\" can only be granted the VIEW action"`), even for an existing user's address.
 - **The collection takes no `PUT`.** `POST …/collaborators` replaces the whole list (it deletes collaborators left out).
-- **What a share opens:** the entry over REST (by id, by ERC, in the scoped list), its file by its `/documents/` URL (`200` for the shared user; another user `401`, an anonymous visitor `404`), search, and a link to the file held by another object's Attachment field, which follows the file's own entry, not the linking entry.
-- **On a custom object's entry (not a CMS file type), `DOWNLOAD` cannot be shared.** `{"actionIds": ["DOWNLOAD", "VIEW"]}` answered `403`, even for the administrator, since the object has no `DOWNLOAD` action. Share `VIEW` alone: a role's company-scope `DOWNLOAD_<FIELD>` grant still gives the shared user the attachment's link. A share's `UPDATE` lets the user PATCH the entry.
-- **Every write notifies, an identical one too.** Each `PUT` sends the user a website notification, "<sharer> has shared <title> with you for viewing." (language key `x-has-shared-x-with-you-for-x`), and attempts an email. So compare with the `GET` first and write only on a difference. Unlike the CMS's Space-membership notifications, these render over `headless-user-notification`: an admin can list them (`GET /o/headless-user-notification/v1.0/user-accounts/<userId>/user-notifications`) and mark them read (`PUT /user-notifications/<id>/read`, `204`).
-- **A share is indexed as a `SharingEntry`, with no permission filter.** Its document holds the entry's title, dates, `userId` and `toUserId`, and any signed-in user's `/o/search/v1.0/search` finds that title and those dates (no link, no content). Leave `com.liferay.sharing.model.SharingEntry` out of a blueprint's searchable types where the titles matter.
+- **What a share opens:** the entry over REST (by ID, by ERC, in the scoped list), its file by its `/documents` URL (`200` for the shared user; another user `401`, an anonymous visitor `404`), search, and a link to the file held by another object's Attachment field, which follows the file's own entry, not the linking entry.
+- **On a custom object's entry (not a CMS file type), `DOWNLOAD` cannot be shared.** `{"actionIds": ["DOWNLOAD", "VIEW"]}` answered `403`, even for the administrator, since the object has no `DOWNLOAD` action. Share `VIEW` alone: a role's `DOWNLOAD_<FIELD>` grant at the company level still gives the shared user the attachment's link. A share's `UPDATE` lets the user PATCH the entry.
+- **Every write notifies, an identical one too.** Each `PUT` sends the user a website notification, "<sharer> has shared <title> with you for viewing." (language key `x-has-shared-x-with-you-for-x`), and attempts an email. So compare with the `GET` first and write only on a difference. Unlike the CMS's notifications about Space membership, these render over `headless-user-notification`: an admin can list them (`GET /o/headless-user-notification/v1.0/user-accounts/<userId>/user-notifications`) and mark them read (`PUT /user-notifications/<id>/read`, `204`).
+- **A share is indexed as a `SharingEntry`, with no permission filter.** Its document holds the entry's title, dates, `userId` and `toUserId`, and any signed in user's `/o/search/v1.0/search` finds that title and those dates (no link, no content). Leave `com.liferay.sharing.model.SharingEntry` out of a blueprint's searchable types where the titles matter.
 - **Deleting the entry** deletes its shares, their search documents and their notifications. A CMS entry's first `DELETE` only moves it to the Space's trash (`status` 8, still readable by ERC); a second `DELETE` removes it.
 
 ### Depot Roles (Spaces and Asset Libraries)
@@ -174,7 +174,7 @@ A Space or asset library has its own role type, `roleType: depot` (`role_.type_`
 | Asset Library Member | `L_ASSET_LIBRARY_MEMBER` | Members of the library or Space itself |
 | Asset Library Connected Site Member | `L_ASSET_LIBRARY_CONNECTED_SITE_MEMBER` | Members of any Site the library is connected to, **including members only through a user group** (the user bag counts inherited groups) |
 
-Grant the second one on items and folders to say "whoever belongs to the connected Site", with the same bare `Permission[]` body (`"roleType": "depot"`). Space entries also start with a `User` VIEW grant, which opens them to every signed-in user, so a restricted audience means a full replace without it.
+Grant the second one on items and folders to say "whoever belongs to the connected Site", with the same bare `Permission[]` body (`"roleType": "depot"`). Space entries also start with a `User` VIEW grant, which opens them to every signed in user, so a restricted audience means a full replace without it.
 
 ### Grant Permissions on a Site Page
 
@@ -227,7 +227,7 @@ curl \
 	| jq '.items'
 ```
 
-**Checking a user's roles client-side: they are scoped, not flat.** `GET /o/headless-admin-user/v1.0/my-user-account` returns roles split across `roleBriefs` (regular), `accountBriefs[].roleBriefs`, `organizationBriefs[].roleBriefs`, `siteBriefs[].roleBriefs`, and `userGroupBriefs[].roleBriefs`. Code that checks only the top-level `roleBriefs` misses every account/site/org role — flatten all five before testing for a role name. Also note a plain account **member** shows an empty `accountBriefs[].roleBriefs` (membership is implicit, not a role).
+**Checking a user's roles on the client: they are scoped, not flat.** `GET /o/headless-admin-user/v1.0/my-user-account` returns roles split across `roleBriefs` (regular), `accountBriefs[].roleBriefs`, `organizationBriefs[].roleBriefs`, `siteBriefs[].roleBriefs`, and `userGroupBriefs[].roleBriefs`. Code that checks only the `roleBriefs` at the top level misses every account/site/org role — flatten all five before testing for a role name. Also note a plain account **member** shows an empty `accountBriefs[].roleBriefs` (membership is implicit, not a role).
 
 **`roleBriefs` lists only the roles the caller can view, and a brief's `name` is the role's title.** `UserResourceDTOConverter._toRoleBriefs` drops every role the caller lacks `VIEW` on (`:522–537`), and `RoleBriefUtil` sets `name` to the title and `key` to the role's name (`:25–32`). Verified on 2026.Q3: a user's own `my-user-account` listed only `User` although the user held another regular role, and listed it as `{"name": "<role title>", "key": "<role name>"}` once that role got `VIEW` on itself at individual scope. An administrator sees every role. So code that reads a user's roles with that user's own token needs that `VIEW`, and must match titles or read `key`.
 
@@ -237,8 +237,8 @@ curl \
 - Use site roles (not regular roles) for permissions that should vary per site.
 - The Guest role represents unauthenticated visitors. Remove VIEW from Guest to require login.
 - The User role represents any authenticated user. Remove VIEW from User and grant to a specific role to restrict access.
-- **Company-scope grants on `AccountEntry` read no account-restricted entry.** A regular role holding `VIEW`, `UPDATE` and the user actions on every account still gets `404` on an account-restricted object's entries: the restriction admits the account's members and administrators, not holders of account permissions. Give such a role entry access by membership, or by an explicit object grant, which then opens every account's entries to it. Verified on 2026.Q2.
-- **A Site Administrator or Site Owner needs no grant on a site-scoped object, and none can be withheld.** They are group admins, and `AdvancedPermissionChecker` answers `true` for a group admin on any resource of the group after the role check fails. Verified on 2026.Q2 with a user given only the site role Site Administrator, no membership and no grant: `GET` showed every action (`update`, `delete`, `permissions`, `share`), `PATCH` and `DELETE` worked on an entry another user owns, and **`POST` answered `200` without `ADD_OBJECT_ENTRY`**. Only `readOnly` fields bind them, and those not on create. Removing a grant from these roles therefore changes nothing; route such writes through a module if they must be checked.
+- **Grants at the company level on `AccountEntry` read no entry under account restriction.** A regular role holding `VIEW`, `UPDATE` and the user actions on every account still gets `404` on entries under account restriction: the restriction admits the account's members and administrators, not holders of account permissions. Give such a role entry access by membership, or by an explicit object grant, which then opens every account's entries to it. Verified on 2026.Q2.
+- **A Site Administrator or Site Owner needs no grant on an object scoped at the site level, and none can be withheld.** They are group admins, and `AdvancedPermissionChecker` answers `true` for a group admin on any resource of the group after the role check fails. Verified on 2026.Q2 with a user given only the site role Site Administrator, no membership and no grant: `GET` showed every action (`update`, `delete`, `permissions`, `share`), `PATCH` and `DELETE` worked on an entry another user owns, and **`POST` answered `200` without `ADD_OBJECT_ENTRY`**. Only `readOnly` fields bind them, and those not on create. Removing a grant from these roles therefore changes nothing; route such writes through a module if they must be checked.
 
 ## Creating Users via API — Clear Password and Terms Flags
 
