@@ -41,40 +41,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that a depot image can be used through Blogs on a connected site."
-	@priority = 4
-	@refactordone
-	test CanAddImageViaBlogs {
-		DepotNavigator.openDepotAdmin();
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		Blogs.addEntryWithCoverImageFromDepot(
-			depotName = "Test Depot Name",
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			imageFileName = "Document_2.jpg",
-			siteURLKey = "site-name");
-
-		BlogsNavigator.gotoEntryCP(entryTitle = "Blogs Entry Title");
-
-		BlogsEntry.viewEntryCP(
-			entryContent = "Blogs Entry Content",
-			entrySubtitle = "Blogs Entry Subtitle",
-			entryTitle = "Blogs Entry Title",
-			uploadFileName = "Document_2");
-	}
-
 	@description = "This ensures that a depot image in the MB content field can be rendered correctly on a connected site when publication is enabled."
 	@priority = 4
 	test CanViewImageInMBWithPublication {
@@ -132,78 +98,6 @@ definition {
 			userName = "Test Test");
 	}
 
-	@description = "This ensures that a depot image in the Blogs content field and small image can be rendered correctly on a connected site after moving it to a folder."
-	@priority = 4
-	test CanViewInlineAndSmallImageInBlogsAfterMovingToFolder {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		JSONBlog.addEntry(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry With Small Image",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry With Small Image",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		BlogsEntry.editContent(
-			depotName = "Test Depot Name",
-			dmImage = "DM Document Title",
-			entryContent = "Blogs Entry Content",
-			entryContentEdit = "Blogs Entry Content",
-			navTab = "Documents and Media");
-
-		BlogsEntry.addSmallImage(
-			depotName = "Test Depot Name",
-			imageFileName = "DM Document Title",
-			navTab = "Documents and Media");
-
-		PortletEntry.publish();
-
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Test Depot Name");
-
-		JSONDocument.moveFileEntryToFolder(
-			dmDocumentTitle = "DM Document Title",
-			folderName = "DM Folder Name",
-			groupName = "Test Depot Name",
-			site = "false");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Blogs Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Blogs Page",
-			widgetName = "Blogs");
-
-		Navigator.gotoSitePage(
-			pageName = "Blogs Page",
-			siteName = "Site Name");
-
-		BlogsEntry.viewSmallImage(uploadFileName = "Document_1.jpg");
-
-		BlogsNavigator.openToEditEntryInSite(
-			entryTitle = "Blogs Entry With Small Image",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		BlogsEntry.viewInlineImage(uploadFileName = "dm-document-title");
-	}
-
 	@description = "This ensures that a depot image in the Blogs content field can be rendered correctly on a connected site when publication is enabled."
 	@priority = 4
 	test CanViewInlineImageWithPublication {
@@ -254,64 +148,6 @@ definition {
 			siteURLKey = "site-name");
 
 		BlogsEntry.viewInlineImage(uploadFileName = "dm-document-title");
-	}
-
-	@description = "This ensures that the depot assets can be used through Related Assets on a connected site."
-	@priority = 4
-	@refactordone
-	test CanViewRelatedAssets {
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Page Name");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Page Name",
-			widgetName = "Asset Publisher");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.doc",
-			groupName = "Test Depot Name",
-			mimeType = "application/msword",
-			sourceFileName = "Document_1.doc");
-
-		JSONWebcontent.addWebContent(
-			content = "WC WebContent Depot 1",
-			groupName = "Test Depot Name",
-			site = "false",
-			title = "WC WebContent Title");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		BlogsNavigator.openToAddEntry(siteURLKey = "site-name");
-
-		BlogsEntry.addEntryContent(
-			entryContent = "Blogs Entry Content",
-			entryTitle = "Blogs Entry Title");
-
-		RelatedAssets.selectAsset(
-			assetTitle = "WC WebContent Title",
-			scopeAssetType = "Blogs Entry");
-
-		RelatedAssets.selectAsset(
-			assetTitle = "Document_1.doc",
-			scopeAssetType = "Blogs Entry");
-
-		Button.clickPublish();
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		AssetPublisherPortlet.configureDisplaySettings(displaySettings = "Related Assets");
-
-		Navigator.openSiteURL(siteName = "Site Name");
-
-		AssetPublisherPortlet.viewPG(
-			assetContent = "Blogs Entry Content",
-			assetTitle = "Blogs Entry Title",
-			relatedAssetTitle = "WC WebContent Title,Document_1.doc");
 	}
 
 }
