@@ -210,14 +210,20 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 		return fileNames;
 	}
 
-	private synchronized void _processCheckstyle(File file) throws Exception {
-		_ungeneratedFiles.add(file);
+	private void _processCheckstyle(File file) throws Exception {
+		File[] files = null;
 
-		if (_ungeneratedFiles.size() == CheckstyleUtil.BATCH_SIZE) {
-			_processCheckstyle(_ungeneratedFiles.toArray(new File[0]));
+		synchronized (this) {
+			_ungeneratedFiles.add(file);
 
-			_ungeneratedFiles.clear();
+			if (_ungeneratedFiles.size() == CheckstyleUtil.BATCH_SIZE) {
+				files = _ungeneratedFiles.toArray(new File[0]);
+
+				_ungeneratedFiles.clear();
+			}
 		}
+
+		_processCheckstyle(files);
 	}
 
 	private void _processCheckstyle(File[] files) throws Exception {
@@ -225,9 +231,12 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 			return;
 		}
 
-		_sourceFormatterMessages.addAll(
-			processCheckstyle(
-				_checkstyleConfiguration, _checkstyleLogger, files));
+		Set<SourceFormatterMessage> sourceFormatterMessages = processCheckstyle(
+			_checkstyleConfiguration, _checkstyleLogger, files);
+
+		synchronized (this) {
+			_sourceFormatterMessages.addAll(sourceFormatterMessages);
+		}
 	}
 
 	private static final String[] _INCLUDES = {"**/*.java"};
