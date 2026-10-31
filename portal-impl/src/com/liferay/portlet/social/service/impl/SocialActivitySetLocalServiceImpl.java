@@ -95,26 +95,6 @@ public class SocialActivitySetLocalServiceImpl
 	}
 
 	@Override
-	public SocialActivitySet getClassActivitySet(
-			long classNameId, long classPK, int type)
-		throws PortalException {
-
-		return socialActivitySetPersistence.findByC_C_T_First(
-			classNameId, classPK, type,
-			SocialActivitySetModifiedDateComparator.getInstance(false));
-	}
-
-	@Override
-	public SocialActivitySet getClassActivitySet(
-			long userId, long classNameId, long classPK, int type)
-		throws PortalException {
-
-		return socialActivitySetPersistence.findByU_C_C_T_First(
-			userId, classNameId, classPK, type,
-			SocialActivitySetModifiedDateComparator.getInstance(false));
-	}
-
-	@Override
 	public List<SocialActivitySet> getGroupActivitySets(
 		long groupId, int start, int end) {
 
@@ -152,26 +132,6 @@ public class SocialActivitySetLocalServiceImpl
 	@Override
 	public int getRelationActivitySetsCount(long userId, int type) {
 		return socialActivitySetFinder.countByRelationType(userId, type);
-	}
-
-	@Override
-	public SocialActivitySet getUserActivitySet(
-			long groupId, long userId, int type)
-		throws PortalException {
-
-		return socialActivitySetPersistence.findByG_U_T_First(
-			groupId, userId, type,
-			SocialActivitySetModifiedDateComparator.getInstance(false));
-	}
-
-	@Override
-	public SocialActivitySet getUserActivitySet(
-			long groupId, long userId, long classNameId, int type)
-		throws PortalException {
-
-		return socialActivitySetPersistence.findByG_U_C_T_First(
-			groupId, userId, classNameId, type,
-			SocialActivitySetModifiedDateComparator.getInstance(false));
 	}
 
 	@Override
