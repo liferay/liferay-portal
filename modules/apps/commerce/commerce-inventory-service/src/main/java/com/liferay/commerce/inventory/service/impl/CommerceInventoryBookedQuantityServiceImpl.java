@@ -44,9 +44,8 @@ public class CommerceInventoryBookedQuantityServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryBookedQuantityLocalService.
-			getCommerceInventoryBookedQuantities(
-				companyId, sku, unitOfMeasureKey, start, end);
+		return commerceInventoryBookedQuantityPersistence.findByC_S_U(
+			companyId, sku, unitOfMeasureKey, start, end);
 	}
 
 	@Override
@@ -77,9 +76,8 @@ public class CommerceInventoryBookedQuantityServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryBookedQuantityLocalService.
-			getCommerceInventoryBookedQuantitiesCount(
-				companyId, sku, unitOfMeasureKey);
+		return commerceInventoryBookedQuantityPersistence.countByC_S_U(
+			companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override

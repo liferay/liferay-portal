@@ -43,9 +43,8 @@ public class CommerceInventoryAuditServiceImpl
 				getPermissionChecker(), null,
 				CommerceInventoryActionKeys.VIEW_INVENTORIES)) {
 
-			return commerceInventoryAuditLocalService.
-				getCommerceInventoryAudits(
-					companyId, sku, unitOfMeasureKey, start, end);
+			return commerceInventoryAuditPersistence.findByC_S_U(
+				companyId, sku, unitOfMeasureKey, start, end);
 		}
 
 		return Collections.emptyList();
@@ -60,9 +59,8 @@ public class CommerceInventoryAuditServiceImpl
 				getPermissionChecker(), null,
 				CommerceInventoryActionKeys.VIEW_INVENTORIES)) {
 
-			return commerceInventoryAuditLocalService.
-				getCommerceInventoryAuditsCount(
-					companyId, sku, unitOfMeasureKey);
+			return commerceInventoryAuditPersistence.countByC_S_U(
+				companyId, sku, unitOfMeasureKey);
 		}
 
 		return 0;

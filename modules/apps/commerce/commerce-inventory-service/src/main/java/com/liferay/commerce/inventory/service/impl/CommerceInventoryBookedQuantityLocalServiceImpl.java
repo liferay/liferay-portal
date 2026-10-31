@@ -436,9 +436,8 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 		throws PortalException {
 
 		CommerceInventoryBookedQuantity commerceInventoryBookedQuantity =
-			commerceInventoryBookedQuantityLocalService.
-				getCommerceInventoryBookedQuantity(
-					commerceInventoryBookedQuantityId);
+			commerceInventoryBookedQuantityPersistence.findByPrimaryKey(
+				commerceInventoryBookedQuantityId);
 
 		if (commerceInventoryBookedQuantity.getMvccVersion() != mvccVersion) {
 			throw new MVCCException();

@@ -81,9 +81,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemLocalService.
-				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseItemId);
+			commerceInventoryWarehouseItemPersistence.fetchByPrimaryKey(
+				commerceInventoryWarehouseItemId);
 
 		if (commerceInventoryWarehouseItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -116,9 +115,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			}
 
 			CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-				commerceInventoryWarehouseItemLocalService.
-					fetchCommerceInventoryWarehouseItem(
-						commerceInventoryWarehouseId, sku, unitOfMeasureKey);
+				commerceInventoryWarehouseItemPersistence.fetchByCIWI_S_U(
+					commerceInventoryWarehouseId, sku, unitOfMeasureKey);
 
 			if (commerceInventoryWarehouseItem == null) {
 				continue;
@@ -141,9 +139,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseItemLocalService.
-			fetchCommerceInventoryWarehouseItem(
-				commerceInventoryWarehouseId, sku, unitOfMeasureKey);
+		return commerceInventoryWarehouseItemPersistence.fetchByCIWI_S_U(
+			commerceInventoryWarehouseId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -153,9 +150,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemLocalService.
-				fetchCommerceInventoryWarehouseItemByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceInventoryWarehouseItemPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceInventoryWarehouseItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -174,9 +170,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseItemId);
+			commerceInventoryWarehouseItemPersistence.findByPrimaryKey(
+				commerceInventoryWarehouseItemId);
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
 			getPermissionChecker(),
@@ -196,9 +191,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItem(
-				commerceInventoryWarehouseId, sku, unitOfMeasureKey);
+		return commerceInventoryWarehouseItemPersistence.findByCIWI_S_U(
+			commerceInventoryWarehouseId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -211,8 +205,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItems(
+		return commerceInventoryWarehouseItemPersistence.
+			findByCommerceInventoryWarehouseId(
 				commerceInventoryWarehouseId, start, end);
 	}
 
@@ -255,9 +249,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItemsCount(
-				commerceInventoryWarehouseId);
+		return commerceInventoryWarehouseItemPersistence.
+			countByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
 	}
 
 	@Override
@@ -368,9 +361,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemLocalService.
-				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseItemId);
+			commerceInventoryWarehouseItemPersistence.fetchByPrimaryKey(
+				commerceInventoryWarehouseItemId);
 
 		if (commerceInventoryWarehouseItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -415,9 +407,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem =
-			commerceInventoryWarehouseItemLocalService.
-				fetchCommerceInventoryWarehouseItem(
-					commerceInventoryWarehouseItemId);
+			commerceInventoryWarehouseItemPersistence.fetchByPrimaryKey(
+				commerceInventoryWarehouseItemId);
 
 		if (commerceInventoryWarehouseItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(

@@ -406,8 +406,8 @@ public class CommerceInventoryWarehouseLocalServiceImpl
 				companyId, active, commerceCountryCode);
 		}
 
-		return commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehousesCount(companyId, active);
+		return commerceInventoryWarehousePersistence.countByC_A(
+			companyId, active);
 	}
 
 	@Override
@@ -589,9 +589,8 @@ public class CommerceInventoryWarehouseLocalServiceImpl
 				document.get(Field.ENTRY_CLASS_PK));
 
 			CommerceInventoryWarehouse commerceInventoryWarehouse =
-				commerceInventoryWarehouseLocalService.
-					fetchCommerceInventoryWarehouse(
-						commerceInventoryWarehouseId);
+				commerceInventoryWarehousePersistence.fetchByPrimaryKey(
+					commerceInventoryWarehouseId);
 
 			if (commerceInventoryWarehouse == null) {
 				commerceInventoryWarehouses = null;

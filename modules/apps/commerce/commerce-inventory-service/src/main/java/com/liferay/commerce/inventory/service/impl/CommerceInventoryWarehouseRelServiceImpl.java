@@ -52,9 +52,8 @@ public class CommerceInventoryWarehouseRelServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseRel commerceInventoryWarehouseRel =
-			commerceInventoryWarehouseRelLocalService.
-				getCommerceInventoryWarehouseRel(
-					commerceInventoryWarehouseRelId);
+			commerceInventoryWarehouseRelPersistence.findByPrimaryKey(
+				commerceInventoryWarehouseRelId);
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
 			getPermissionChecker(),
@@ -173,9 +172,8 @@ public class CommerceInventoryWarehouseRelServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouseRel commerceInventoryWarehouseRel =
-			commerceInventoryWarehouseRelLocalService.
-				getCommerceInventoryWarehouseRel(
-					commerceInventoryWarehouseRelId);
+			commerceInventoryWarehouseRelPersistence.findByPrimaryKey(
+				commerceInventoryWarehouseRelId);
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
 			getPermissionChecker(),
@@ -194,8 +192,8 @@ public class CommerceInventoryWarehouseRelServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRels(commerceInventoryWarehouseId);
+		return commerceInventoryWarehouseRelPersistence.
+			findByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
 	}
 
 	@Override
@@ -210,8 +208,8 @@ public class CommerceInventoryWarehouseRelServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRels(
+		return commerceInventoryWarehouseRelPersistence.
+			findByCommerceInventoryWarehouseId(
 				commerceInventoryWarehouseId, start, end, orderByComparator);
 	}
 
@@ -258,9 +256,8 @@ public class CommerceInventoryWarehouseRelServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseRelLocalService.
-			getCommerceInventoryWarehouseRelsCount(
-				commerceInventoryWarehouseId);
+		return commerceInventoryWarehouseRelPersistence.
+			countByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
 	}
 
 	@Override

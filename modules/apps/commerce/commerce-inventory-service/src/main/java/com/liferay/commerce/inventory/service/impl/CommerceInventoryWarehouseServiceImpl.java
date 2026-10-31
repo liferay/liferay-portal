@@ -81,8 +81,8 @@ public class CommerceInventoryWarehouseServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			commerceInventoryWarehouseLocalService.
-				fetchCommerceInventoryWarehouse(commerceInventoryWarehouseId);
+			commerceInventoryWarehousePersistence.fetchByPrimaryKey(
+				commerceInventoryWarehouseId);
 
 		if (commerceInventoryWarehouse != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -100,9 +100,8 @@ public class CommerceInventoryWarehouseServiceImpl
 		throws PortalException {
 
 		CommerceInventoryWarehouse commerceInventoryWarehouse =
-			commerceInventoryWarehouseLocalService.
-				fetchCommerceInventoryWarehouseByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceInventoryWarehousePersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceInventoryWarehouse != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -137,8 +136,8 @@ public class CommerceInventoryWarehouseServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehouse(commerceInventoryWarehouseId);
+		return commerceInventoryWarehousePersistence.findByPrimaryKey(
+			commerceInventoryWarehouseId);
 	}
 
 	@Override
@@ -155,9 +154,8 @@ public class CommerceInventoryWarehouseServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehouses(
-				companyId, active, start, end, orderByComparator);
+		return commerceInventoryWarehousePersistence.filterFindByC_A(
+			companyId, active, start, end, orderByComparator);
 	}
 
 	@Override
@@ -175,10 +173,9 @@ public class CommerceInventoryWarehouseServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehouses(
-				companyId, active, commerceCountryCode, start, end,
-				orderByComparator);
+		return commerceInventoryWarehousePersistence.findByC_A_C(
+			companyId, active, commerceCountryCode, start, end,
+			orderByComparator);
 	}
 
 	@Override
@@ -230,8 +227,8 @@ public class CommerceInventoryWarehouseServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryWarehouseLocalService.
-			getCommerceInventoryWarehousesCount(companyId);
+		return commerceInventoryWarehousePersistence.countByCompanyId(
+			companyId);
 	}
 
 	@Override

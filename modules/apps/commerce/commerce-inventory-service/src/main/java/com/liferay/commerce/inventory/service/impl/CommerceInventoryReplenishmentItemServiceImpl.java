@@ -60,9 +60,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			commerceInventoryReplenishmentItemLocalService.
-				fetchCommerceInventoryReplenishmentItem(
-					commerceInventoryReplenishmentItemId);
+			commerceInventoryReplenishmentItemPersistence.fetchByPrimaryKey(
+				commerceInventoryReplenishmentItemId);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -107,9 +106,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			commerceInventoryReplenishmentItemLocalService.
-				fetchCommerceInventoryReplenishmentItemByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceInventoryReplenishmentItemPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(
@@ -129,9 +127,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			commerceInventoryReplenishmentItemLocalService.
-				getCommerceInventoryReplenishmentItem(
-					commerceInventoryReplenishmentItemId);
+			commerceInventoryReplenishmentItemPersistence.findByPrimaryKey(
+				commerceInventoryReplenishmentItemId);
 
 		_commerceInventoryWarehouseModelResourcePermission.check(
 			getPermissionChecker(),
@@ -152,8 +149,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryReplenishmentItemLocalService.
-			getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
+		return commerceInventoryReplenishmentItemPersistence.
+			findByCommerceInventoryWarehouseId(
 				commerceInventoryWarehouseId, start, end);
 	}
 
@@ -194,9 +191,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 			getPermissionChecker(), commerceInventoryWarehouseId,
 			ActionKeys.VIEW);
 
-		return commerceInventoryReplenishmentItemLocalService.
-			getCommerceInventoryReplenishmentItemsCountByCommerceInventoryWarehouseId(
-				commerceInventoryWarehouseId);
+		return commerceInventoryReplenishmentItemPersistence.
+			countByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
 	}
 
 	@Override
@@ -205,9 +201,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 				long companyId, String sku, String unitOfMeasureKey)
 		throws PortalException {
 
-		return commerceInventoryReplenishmentItemLocalService.
-			getCommerceInventoryReplenishmentItemsCountByCompanyIdSkuAndUnitOfMeasureKey(
-				companyId, sku, unitOfMeasureKey);
+		return commerceInventoryReplenishmentItemPersistence.countByC_S_U(
+			companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override
@@ -219,9 +214,8 @@ public class CommerceInventoryReplenishmentItemServiceImpl
 		throws PortalException {
 
 		CommerceInventoryReplenishmentItem commerceInventoryReplenishmentItem =
-			commerceInventoryReplenishmentItemLocalService.
-				fetchCommerceInventoryReplenishmentItem(
-					commerceInventoryReplenishmentItemId);
+			commerceInventoryReplenishmentItemPersistence.fetchByPrimaryKey(
+				commerceInventoryReplenishmentItemId);
 
 		if (commerceInventoryReplenishmentItem != null) {
 			_commerceInventoryWarehouseModelResourcePermission.check(

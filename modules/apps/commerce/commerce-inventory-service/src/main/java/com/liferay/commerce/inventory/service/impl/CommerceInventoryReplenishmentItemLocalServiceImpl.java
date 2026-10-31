@@ -210,7 +210,7 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 		}
 
 		List<BigDecimal> results =
-			commerceInventoryReplenishmentItemLocalService.dynamicQuery(
+			commerceInventoryReplenishmentItemPersistence.findWithDynamicQuery(
 				dynamicQuery);
 
 		if (results.get(0) == null) {
