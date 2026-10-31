@@ -9510,7 +9510,7 @@ public class ObjectEntryLocalServiceTest {
 				0, objectDefinition1.getObjectDefinitionId(),
 				Collections.emptyMap());
 
-			_assertExtensionTableInsertSQLs(0, logCapture, objectDefinition1);
+			_assertExtensionTableInsertSQLs(1, logCapture, objectDefinition1);
 
 			ObjectField textObjectField = _addCustomObjectField(
 				new TextObjectFieldBuilder(
@@ -9558,7 +9558,7 @@ public class ObjectEntryLocalServiceTest {
 				).build(),
 				ServiceContextTestUtil.getServiceContext());
 
-			_assertExtensionTableInsertSQLs(0, logCapture, objectDefinition1);
+			_assertExtensionTableInsertSQLs(1, logCapture, objectDefinition1);
 
 			Assert.assertEquals(
 				value,
