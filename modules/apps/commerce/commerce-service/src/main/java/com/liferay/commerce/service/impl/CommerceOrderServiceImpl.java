@@ -757,8 +757,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			String shippingOptionName, BigDecimal subtotal, BigDecimal total)
 		throws PortalException {
 
-		CommerceOrder commerceOrder =
-			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
@@ -793,8 +793,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			BigDecimal totalDiscountAmount, BigDecimal totalWithTaxAmount)
 		throws PortalException {
 
-		CommerceOrder commerceOrder =
-			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrder, ActionKeys.UPDATE);
@@ -950,8 +950,8 @@ public class CommerceOrderServiceImpl extends CommerceOrderServiceBaseImpl {
 			long commerceOrderId, String commercePaymentMethodKey)
 		throws PortalException {
 
-		CommerceOrder commerceOrder =
-			commerceOrderLocalService.getCommerceOrder(commerceOrderId);
+		CommerceOrder commerceOrder = commerceOrderPersistence.findByPrimaryKey(
+			commerceOrderId);
 
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrder,

@@ -58,8 +58,8 @@ public class CommerceSubscriptionEntryServiceImpl
 
 		_checkPortletResourcePermission(commerceSubscriptionEntryId);
 
-		return commerceSubscriptionEntryLocalService.
-			fetchCommerceSubscriptionEntry(commerceSubscriptionEntryId);
+		return commerceSubscriptionEntryPersistence.fetchByPrimaryKey(
+			commerceSubscriptionEntryId);
 	}
 
 	@Override
@@ -76,9 +76,8 @@ public class CommerceSubscriptionEntryServiceImpl
 				CommerceActionKeys.MANAGE_COMMERCE_SUBSCRIPTIONS);
 		}
 
-		return commerceSubscriptionEntryLocalService.
-			getCommerceSubscriptionEntries(
-				companyId, groupId, userId, start, end, orderByComparator);
+		return commerceSubscriptionEntryPersistence.findByG_C_U(
+			groupId, companyId, userId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -94,8 +93,8 @@ public class CommerceSubscriptionEntryServiceImpl
 				CommerceActionKeys.MANAGE_COMMERCE_SUBSCRIPTIONS);
 		}
 
-		return commerceSubscriptionEntryLocalService.
-			getCommerceSubscriptionEntriesCount(companyId, groupId, userId);
+		return commerceSubscriptionEntryPersistence.countByG_C_U(
+			groupId, companyId, userId);
 	}
 
 	@Override
@@ -171,8 +170,8 @@ public class CommerceSubscriptionEntryServiceImpl
 		throws PortalException {
 
 		CommerceSubscriptionEntry commerceSubscriptionEntry =
-			commerceSubscriptionEntryLocalService.
-				fetchCommerceSubscriptionEntry(commerceSubscriptionEntryId);
+			commerceSubscriptionEntryPersistence.fetchByPrimaryKey(
+				commerceSubscriptionEntryId);
 
 		if (commerceSubscriptionEntry == null) {
 			return;

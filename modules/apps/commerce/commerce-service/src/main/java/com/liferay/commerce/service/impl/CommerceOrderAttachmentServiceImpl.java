@@ -90,9 +90,8 @@ public class CommerceOrderAttachmentServiceImpl
 		throws PortalException {
 
 		CommerceOrderAttachment commerceOrderAttachment =
-			commerceOrderAttachmentLocalService.
-				fetchCommerceOrderAttachmentByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceOrderAttachmentPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceOrderAttachment == null) {
 			return null;
@@ -150,9 +149,8 @@ public class CommerceOrderAttachmentServiceImpl
 				CommerceOrderActionKeys.
 					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS)) {
 
-			return commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachments(
-					commerceOrderId, start, end, orderByComparator);
+			return commerceOrderAttachmentPersistence.findByCommerceOrderId(
+				commerceOrderId, start, end, orderByComparator);
 		}
 
 		return commerceOrderAttachmentPersistence.findByC_R(
@@ -171,12 +169,12 @@ public class CommerceOrderAttachmentServiceImpl
 				CommerceOrderActionKeys.
 					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS)) {
 
-			return commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(commerceOrderId);
+			return commerceOrderAttachmentPersistence.countByCommerceOrderId(
+				commerceOrderId);
 		}
 
-		return commerceOrderAttachmentLocalService.
-			getCommerceOrderAttachmentsCount(commerceOrderId, false);
+		return commerceOrderAttachmentPersistence.countByC_R(
+			commerceOrderId, false);
 	}
 
 	@Override
@@ -194,8 +192,8 @@ public class CommerceOrderAttachmentServiceImpl
 					VIEW_RESTRICTED_COMMERCE_ORDER_ATTACHMENTS);
 		}
 
-		return commerceOrderAttachmentLocalService.
-			getCommerceOrderAttachmentsCount(commerceOrderId, restricted);
+		return commerceOrderAttachmentPersistence.countByC_R(
+			commerceOrderId, restricted);
 	}
 
 	@Override

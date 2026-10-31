@@ -51,8 +51,8 @@ public class CSDiagramSettingServiceImpl
 		_cpDefinitionModelResourcePermission.check(
 			getPermissionChecker(), cpDefinitionId, ActionKeys.UPDATE);
 
-		return csDiagramSettingLocalService.
-			fetchCSDiagramSettingByCPDefinitionId(cpDefinitionId);
+		return csDiagramSettingPersistence.fetchByCPDefinitionId(
+			cpDefinitionId);
 	}
 
 	@Override

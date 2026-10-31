@@ -96,9 +96,8 @@ public class CommerceOrderTypeServiceImpl
 		throws PortalException {
 
 		CommerceOrderType commerceOrderType =
-			commerceOrderTypeLocalService.
-				fetchCommerceOrderTypeByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceOrderTypePersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceOrderType != null) {
 			_commerceOrderTypeModelResourcePermission.check(

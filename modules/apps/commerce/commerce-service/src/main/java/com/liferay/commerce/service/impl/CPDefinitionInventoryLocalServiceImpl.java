@@ -98,8 +98,8 @@ public class CPDefinitionInventoryLocalServiceImpl
 		long cpDefinitionId, long newCPDefinitionId) {
 
 		CPDefinitionInventory cpDefinitionInventory =
-			cpDefinitionInventoryLocalService.
-				fetchCPDefinitionInventoryByCPDefinitionId(cpDefinitionId);
+			cpDefinitionInventoryPersistence.fetchByCPDefinitionId(
+				cpDefinitionId);
 
 		if (cpDefinitionInventory != null) {
 			CPDefinitionInventory newCPDefinitionInventory =
@@ -158,8 +158,8 @@ public class CPDefinitionInventoryLocalServiceImpl
 		long cpDefinitionId) {
 
 		CPDefinitionInventory cpDefinitionInventory =
-			cpDefinitionInventoryLocalService.
-				fetchCPDefinitionInventoryByCPDefinitionId(cpDefinitionId);
+			cpDefinitionInventoryPersistence.fetchByCPDefinitionId(
+				cpDefinitionId);
 
 		if (cpDefinitionInventory != null) {
 			cpDefinitionInventoryLocalService.deleteCPDefinitionInventory(

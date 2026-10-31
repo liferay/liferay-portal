@@ -99,9 +99,8 @@ public class CommerceTermEntryServiceImpl
 		throws PortalException {
 
 		CommerceTermEntry commerceTermEntry =
-			commerceTermEntryLocalService.
-				fetchCommerceTermEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceTermEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceTermEntry != null) {
 			_commerceTermEntryModelResourcePermission.check(

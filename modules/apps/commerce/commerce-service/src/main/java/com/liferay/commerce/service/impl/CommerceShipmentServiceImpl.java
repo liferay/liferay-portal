@@ -89,9 +89,8 @@ public class CommerceShipmentServiceImpl
 		throws PortalException {
 
 		CommerceShipment commerceShipment =
-			commerceShipmentLocalService.
-				fetchCommerceShipmentByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceShipmentPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceShipment != null) {
 			_commerceShipmentModelResourcePermission.check(

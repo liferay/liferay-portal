@@ -75,8 +75,8 @@ public class CPDefinitionInventoryServiceImpl
 		throws PortalException {
 
 		CPDefinitionInventory cpDefinitionInventory =
-			cpDefinitionInventoryLocalService.
-				fetchCPDefinitionInventoryByCPDefinitionId(cpDefinitionId);
+			cpDefinitionInventoryPersistence.fetchByCPDefinitionId(
+				cpDefinitionId);
 
 		if (cpDefinitionInventory != null) {
 			_checkCommerceCatalog(

@@ -3014,9 +3014,9 @@ public class CommerceOrderItemLocalServiceImpl
 		}
 
 		CommerceOrderItem commerceOrderItem =
-			commerceOrderItemLocalService.
-				fetchCommerceOrderItemByCommerceInventoryBookedQuantityId(
-					commerceInventoryBookedQuantityId);
+			commerceOrderItemPersistence.
+				fetchByCommerceInventoryBookedQuantityId_First(
+					commerceInventoryBookedQuantityId, null);
 
 		if ((commerceOrderItem != null) &&
 			(commerceOrderItem.getCommerceOrderItemId() !=

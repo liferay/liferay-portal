@@ -123,9 +123,8 @@ public class CommerceShipmentItemServiceImpl
 		throws PortalException {
 
 		CommerceShipmentItem commerceShipmentItem =
-			commerceShipmentItemLocalService.
-				fetchCommerceShipmentItemByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceShipmentItemPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceShipmentItem != null) {
 			_commerceShipmentModelResourcePermission.check(
@@ -178,8 +177,8 @@ public class CommerceShipmentItemServiceImpl
 			getPermissionChecker(), commerceOrderItem.getCommerceOrderId(),
 			ActionKeys.VIEW);
 
-		return commerceShipmentItemLocalService.
-			getCommerceShipmentItemsByCommerceOrderItemId(commerceOrderItemId);
+		return commerceShipmentItemPersistence.findByCommerceOrderItemId(
+			commerceOrderItemId);
 	}
 
 	@Override
@@ -200,9 +199,8 @@ public class CommerceShipmentItemServiceImpl
 
 		_commerceOrderItemService.fetchCommerceOrderItem(commerceOrderItemId);
 
-		return commerceShipmentItemLocalService.
-			getCommerceShipmentItemsCountByCommerceOrderItemId(
-				commerceOrderItemId);
+		return commerceShipmentItemPersistence.countByCommerceOrderItemId(
+			commerceOrderItemId);
 	}
 
 	@Override

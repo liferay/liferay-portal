@@ -70,10 +70,8 @@ public class CommerceOrderNoteServiceImpl
 				commerceOrderNoteId);
 		}
 		else {
-			commerceOrderNote =
-				commerceOrderNoteLocalService.
-					fetchCommerceOrderNoteByExternalReferenceCode(
-						externalReferenceCode, serviceContext.getCompanyId());
+			commerceOrderNote = commerceOrderNotePersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
 		}
 
 		if (((commerceOrderNote != null) && commerceOrderNote.isRestricted()) ||
@@ -131,9 +129,8 @@ public class CommerceOrderNoteServiceImpl
 		throws PortalException {
 
 		CommerceOrderNote commerceOrderNote =
-			commerceOrderNoteLocalService.
-				fetchCommerceOrderNoteByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceOrderNotePersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceOrderNote != null) {
 			_commerceOrderModelResourcePermission.check(

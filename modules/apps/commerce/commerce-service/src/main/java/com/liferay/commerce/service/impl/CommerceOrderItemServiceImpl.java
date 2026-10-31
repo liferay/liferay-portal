@@ -93,8 +93,7 @@ public class CommerceOrderItemServiceImpl
 		_commerceOrderModelResourcePermission.check(
 			getPermissionChecker(), commerceOrderId, ActionKeys.VIEW);
 
-		return commerceOrderItemLocalService.
-			countSubscriptionCommerceOrderItems(commerceOrderId);
+		return commerceOrderItemPersistence.countByC_S(commerceOrderId, true);
 	}
 
 	@Override
@@ -175,9 +174,8 @@ public class CommerceOrderItemServiceImpl
 		throws PortalException {
 
 		CommerceOrderItem commerceOrderItem =
-			commerceOrderItemLocalService.
-				fetchCommerceOrderItemByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceOrderItemPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceOrderItem != null) {
 			_commerceOrderModelResourcePermission.check(

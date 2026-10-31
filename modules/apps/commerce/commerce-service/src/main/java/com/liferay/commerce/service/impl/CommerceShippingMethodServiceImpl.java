@@ -11,6 +11,7 @@ import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceAddressRestrictionLocalService;
 import com.liferay.commerce.service.base.CommerceShippingMethodServiceBaseImpl;
+import com.liferay.commerce.service.persistence.CommerceAddressRestrictionPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -106,8 +107,8 @@ public class CommerceShippingMethodServiceImpl
 		throws PortalException {
 
 		CommerceAddressRestriction commerceAddressRestriction =
-			_commerceAddressRestrictionLocalService.
-				getCommerceAddressRestriction(commerceAddressRestrictionId);
+			_commerceAddressRestrictionPersistence.findByPrimaryKey(
+				commerceAddressRestrictionId);
 
 		_checkCommerceChannel(
 			ActionKeys.UPDATE, commerceAddressRestriction.getGroupId());
@@ -254,8 +255,7 @@ public class CommerceShippingMethodServiceImpl
 
 		_checkCommerceChannel(ActionKeys.VIEW, groupId);
 
-		return commerceShippingMethodLocalService.
-			getCommerceShippingMethodsCount(groupId);
+		return commerceShippingMethodPersistence.countByGroupId(groupId);
 	}
 
 	@Override
@@ -320,6 +320,10 @@ public class CommerceShippingMethodServiceImpl
 	@Reference
 	private CommerceAddressRestrictionLocalService
 		_commerceAddressRestrictionLocalService;
+
+	@Reference
+	private CommerceAddressRestrictionPersistence
+		_commerceAddressRestrictionPersistence;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;

@@ -70,6 +70,8 @@ import com.liferay.portal.vulcan.dto.converter.DTOConverter;
 import com.liferay.portal.vulcan.dto.converter.DTOConverterRegistry;
 import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
+import java.math.BigDecimal;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -660,8 +662,8 @@ public class CommerceShipmentLocalServiceImpl
 		}
 
 		int validCommerceShipmentItemsCount =
-			_commerceShipmentItemLocalService.
-				getValidCommerceShipmentItemsCount(commerceShipmentId);
+			_commerceShipmentItemPersistence.countByC_NotC_GteQ(
+				commerceShipmentId, 0, BigDecimal.ONE);
 
 		if (validCommerceShipmentItemsCount != commerceShipmentItemsCount) {
 			throw new CommerceShipmentStatusException();

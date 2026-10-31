@@ -301,8 +301,8 @@ public class CommerceShipmentItemLocalServiceImpl
 	public List<CommerceShipmentItem> getCommerceShipmentItems(
 		long commerceOrderItemId) {
 
-		return commerceShipmentItemLocalService.
-			getCommerceShipmentItemsByCommerceOrderItemId(commerceOrderItemId);
+		return commerceShipmentItemPersistence.findByCommerceOrderItemId(
+			commerceOrderItemId);
 	}
 
 	@Override

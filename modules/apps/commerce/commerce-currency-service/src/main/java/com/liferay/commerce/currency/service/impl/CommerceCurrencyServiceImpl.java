@@ -82,9 +82,8 @@ public class CommerceCurrencyServiceImpl
 			getPermissionChecker(), null,
 			CommerceCurrencyActionKeys.MANAGE_COMMERCE_CURRENCIES);
 
-		return commerceCurrencyLocalService.
-			fetchCommerceCurrencyByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		return commerceCurrencyPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 	}
 
 	@Override

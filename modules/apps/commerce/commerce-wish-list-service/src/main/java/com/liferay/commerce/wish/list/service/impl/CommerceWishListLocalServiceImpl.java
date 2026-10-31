@@ -152,9 +152,8 @@ public class CommerceWishListLocalServiceImpl
 		CommerceWishList guestCommerceWishList = null;
 
 		if (Validator.isNotNull(guestUuid)) {
-			guestCommerceWishList =
-				commerceWishListLocalService.
-					fetchCommerceWishListByUuidAndGroupId(guestUuid, groupId);
+			guestCommerceWishList = commerceWishListPersistence.fetchByUUID_G(
+				guestUuid, groupId);
 
 			if ((guestCommerceWishList != null) &&
 				!guestCommerceWishList.isGuestWishList()) {

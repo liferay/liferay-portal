@@ -54,9 +54,8 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 		CommerceShippingOptionAccountEntryRel
 			commerceShippingOptionAccountEntryRel =
-				commerceShippingOptionAccountEntryRelLocalService.
-					getCommerceShippingOptionAccountEntryRel(
-						commerceShippingOptionAccountEntryRelId);
+				commerceShippingOptionAccountEntryRelPersistence.
+					findByPrimaryKey(commerceShippingOptionAccountEntryRelId);
 
 		_checkAccountEntry(
 			commerceShippingOptionAccountEntryRel.getAccountEntryId(),
@@ -75,9 +74,8 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
-		return commerceShippingOptionAccountEntryRelLocalService.
-			fetchCommerceShippingOptionAccountEntryRel(
-				accountEntryId, commerceChannelId);
+		return commerceShippingOptionAccountEntryRelPersistence.fetchByA_C(
+			accountEntryId, commerceChannelId);
 	}
 
 	@Override
@@ -88,9 +86,8 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 		CommerceShippingOptionAccountEntryRel
 			commerceShippingOptionAccountEntryRel =
-				commerceShippingOptionAccountEntryRelLocalService.
-					getCommerceShippingOptionAccountEntryRel(
-						commerceShippingOptionAccountEntryRelId);
+				commerceShippingOptionAccountEntryRelPersistence.
+					findByPrimaryKey(commerceShippingOptionAccountEntryRelId);
 
 		_checkAccountEntry(
 			commerceShippingOptionAccountEntryRel.getAccountEntryId(),
@@ -106,8 +103,8 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
-		return commerceShippingOptionAccountEntryRelLocalService.
-			getCommerceShippingOptionAccountEntryRels(accountEntryId);
+		return commerceShippingOptionAccountEntryRelPersistence.
+			findByAccountEntryId(accountEntryId);
 	}
 
 	@Override
@@ -117,8 +114,8 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 		_checkAccountEntry(accountEntryId, ActionKeys.VIEW);
 
-		return commerceShippingOptionAccountEntryRelLocalService.
-			getCommerceShippingOptionAccountEntryRelsCount(accountEntryId);
+		return commerceShippingOptionAccountEntryRelPersistence.
+			countByAccountEntryId(accountEntryId);
 	}
 
 	@Override
@@ -131,9 +128,8 @@ public class CommerceShippingOptionAccountEntryRelServiceImpl
 
 		CommerceShippingOptionAccountEntryRel
 			commerceShippingOptionAccountEntryRel =
-				commerceShippingOptionAccountEntryRelLocalService.
-					getCommerceShippingOptionAccountEntryRel(
-						commerceShippingOptionAccountEntryRelId);
+				commerceShippingOptionAccountEntryRelPersistence.
+					findByPrimaryKey(commerceShippingOptionAccountEntryRelId);
 
 		_checkAccountEntry(
 			commerceShippingOptionAccountEntryRel.getAccountEntryId(),
