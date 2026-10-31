@@ -1671,8 +1671,7 @@ public class ObjectEntryLocalServiceImpl
 		LimitStep limitStep = null;
 
 		if (_isObjectEntryTableRequired(
-				objectDefinition, orderByTableNames, predicate,
-				preferApproved)) {
+				objectDefinition, orderByTableNames, predicate)) {
 
 			limitStep = _getObjectEntriesLimitStep(
 				_isDefaultOrderBy(end, sorts, start),
@@ -1696,14 +1695,8 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinition, null, orderByTableNames,
 				Predicate.and(
 					predicate,
-					primaryKeyColumn.notIn(
-						DSLQueryFactoryUtil.select(
-							ObjectEntryTable.INSTANCE.objectEntryId
-						).from(
-							ObjectEntryTable.INSTANCE
-						).where(
-							_getInTrashPredicate(objectDefinition)
-						))));
+					_getListedPredicate(
+						objectDefinition, preferApproved, primaryKeyColumn)));
 		}
 
 		DSLQuery dslQuery = limitStep.limit(start, end);
@@ -2073,8 +2066,7 @@ public class ObjectEntryLocalServiceImpl
 			_fillPredicate(objectDefinition, predicate, search));
 
 		if (_isObjectEntryTableRequired(
-				objectDefinition, Collections.emptySet(), predicate,
-				preferApproved)) {
+				objectDefinition, Collections.emptySet(), predicate)) {
 
 			return objectEntryPersistence.dslQueryCount(
 				_getObjectEntriesLimitStep(
@@ -2093,7 +2085,7 @@ public class ObjectEntryLocalServiceImpl
 				_getObjectEntriesLimitStep(
 					false, fromDynamicObjectDefinitionTable,
 					DSLQueryFactoryUtil.count(), groupIds, objectDefinition,
-					_getInTrashPredicate(objectDefinition),
+					_getUnlistedPredicate(objectDefinition, preferApproved),
 					Collections.emptySet(), predicate)));
 
 		return objectEntryPersistence.dslQueryCount(
@@ -5071,15 +5063,6 @@ public class ObjectEntryLocalServiceImpl
 			ObjectEntryTable.INSTANCE.headObjectEntryId);
 	}
 
-	private Predicate _getInTrashPredicate(ObjectDefinition objectDefinition) {
-		return ObjectEntryTable.INSTANCE.objectDefinitionId.eq(
-			objectDefinition.getObjectDefinitionId()
-		).and(
-			ObjectEntryTable.INSTANCE.status.eq(
-				WorkflowConstants.STATUS_IN_TRASH)
-		);
-	}
-
 	private Map<Long, Map<String, Serializable>> _getIndexedValuesMap(
 		ObjectEntry objectEntry, ObjectDefinition objectDefinition,
 		List<ObjectField> indexedObjectFields) {
@@ -5180,6 +5163,36 @@ public class ObjectEntryLocalServiceImpl
 		).eq(
 			ObjectEntryTable.INSTANCE.rootObjectEntryId
 		);
+	}
+
+	private Predicate _getListedPredicate(
+		ObjectDefinition objectDefinition, boolean preferApproved,
+		Column<DynamicObjectDefinitionTable, Long> primaryKeyColumn) {
+
+		if (preferApproved) {
+			return primaryKeyColumn.in(
+				DSLQueryFactoryUtil.select(
+					ObjectEntryTable.INSTANCE.objectEntryId
+				).from(
+					ObjectEntryTable.INSTANCE
+				).where(
+					ObjectEntryTable.INSTANCE.objectDefinitionId.eq(
+						objectDefinition.getObjectDefinitionId()
+					).and(
+						ObjectEntryTable.INSTANCE.status.eq(
+							WorkflowConstants.STATUS_APPROVED)
+					)
+				));
+		}
+
+		return primaryKeyColumn.notIn(
+			DSLQueryFactoryUtil.select(
+				ObjectEntryTable.INSTANCE.objectEntryId
+			).from(
+				ObjectEntryTable.INSTANCE
+			).where(
+				_getUnlistedPredicate(objectDefinition, false)
+			));
 	}
 
 	private Locale _getLocale(long userId) throws PortalException {
@@ -6432,6 +6445,23 @@ public class ObjectEntryLocalServiceImpl
 		return tableNames;
 	}
 
+	private Predicate _getUnlistedPredicate(
+		ObjectDefinition objectDefinition, boolean preferApproved) {
+
+		Predicate predicate = ObjectEntryTable.INSTANCE.objectDefinitionId.eq(
+			objectDefinition.getObjectDefinitionId());
+
+		if (preferApproved) {
+			return predicate.and(
+				ObjectEntryTable.INSTANCE.status.neq(
+					WorkflowConstants.STATUS_APPROVED));
+		}
+
+		return predicate.and(
+			ObjectEntryTable.INSTANCE.status.eq(
+				WorkflowConstants.STATUS_IN_TRASH));
+	}
+
 	private String _getUrlTitle(
 		long classNameId, long groupId, String languageId,
 		ObjectEntry objectEntry, ObjectField objectField,
@@ -6973,10 +7003,9 @@ public class ObjectEntryLocalServiceImpl
 
 	private boolean _isObjectEntryTableRequired(
 		ObjectDefinition objectDefinition, Set<String> orderByTableNames,
-		Predicate predicate, boolean preferApproved) {
+		Predicate predicate) {
 
-		if (preferApproved ||
-			!StringUtil.equals(
+		if (!StringUtil.equals(
 				objectDefinition.getScope(),
 				ObjectDefinitionConstants.SCOPE_COMPANY) ||
 			objectDefinition.isEnableObjectEntryVersioning() ||
