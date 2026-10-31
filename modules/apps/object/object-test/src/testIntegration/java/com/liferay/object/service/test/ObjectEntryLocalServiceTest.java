@@ -7369,6 +7369,51 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetValuesListCountWithObjectDefinitionTree()
+		throws Exception {
+
+		TreeTestUtil.createObjectDefinitionTree(
+			_objectDefinitionLocalService, _objectRelationshipLocalService,
+			true,
+			LinkedHashMapBuilder.put(
+				"A", new String[] {"AA"}
+			).put(
+				"AA", new String[0]
+			).build());
+
+		try {
+			ObjectDefinition objectDefinitionA =
+				_objectDefinitionLocalService.getObjectDefinition(
+					TestPropsValues.getCompanyId(), "C_A");
+
+			TreeTestUtil.createObjectEntryTree(
+				"1", _objectDefinitionLocalService, _objectEntryLocalService,
+				_objectFieldLocalService, _objectRelationshipLocalService,
+				objectDefinitionA.getObjectDefinitionId());
+
+			ObjectDefinition objectDefinitionAA =
+				_objectDefinitionLocalService.getObjectDefinition(
+					TestPropsValues.getCompanyId(), "C_AA");
+
+			ObjectEntry objectEntryAA2 = _addObjectEntry(
+				objectDefinitionAA, Collections.emptyMap(),
+				ServiceContextTestUtil.getServiceContext());
+
+			Assert.assertEquals(
+				Arrays.asList(objectEntryAA2.getObjectEntryId()),
+				_getPrimaryKeys(objectDefinitionAA, null, null));
+
+			Assert.assertEquals(
+				1, _getValuesListCount(objectDefinitionAA, null));
+		}
+		finally {
+			TreeTestUtil.deleteObjectDefinitionHierarchy(
+				_objectDefinitionLocalService, new String[] {"C_A", "C_AA"},
+				_objectEntryLocalService, _objectRelationshipLocalService);
+		}
+	}
+
+	@Test
 	public void testGetValuesWithFirstExtensionTableAggregationObjectField()
 		throws Exception {
 
@@ -11801,6 +11846,16 @@ public class ObjectEntryLocalServiceTest {
 		}
 
 		return values;
+	}
+
+	private int _getValuesListCount(
+			ObjectDefinition objectDefinition, Predicate predicate)
+		throws Exception {
+
+		return _objectEntryLocalService.getValuesListCount(
+			new Long[] {0L}, TestPropsValues.getCompanyId(),
+			TestPropsValues.getUserId(),
+			objectDefinition.getObjectDefinitionId(), predicate, false, null);
 	}
 
 	private boolean _hasResourcePermission(
