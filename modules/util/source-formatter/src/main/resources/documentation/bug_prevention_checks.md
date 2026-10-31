@@ -172,7 +172,6 @@ JavaSystemEventAnnotationCheck | .java | Finds missing method `setDeletionSystem
 JavaSystemExceptionCheck | .java | Finds unnecessary SystemExceptions. |
 JavaTaglibMethodCheck | .java | Checks that a `*Tag` class has a `set*` and `get*` or `is*` method for each attribute. |
 JavaTransactionBoundaryCheck | .java | Finds direct `add*` or `get*` calls in `*ServiceImpl` (those should use the `*service` global variable instead). |
-[JavaTypedPropertyKeyCheck](check/java_typed_property_key_check.md#javatypedpropertykeycheck) | .java | Checks that a typed property key such as `service.ranking:Integer` is not used outside component property strings. |
 JavaUniqueUpgradeProcessCheck | .java | Checks that only one regular `UpgradeProcess` is allowed when registering a new upgrade process |
 [JavaUnsafeCastingCheck](check/java_unsafe_casting_check.md#javaunsafecastingcheck) | .java | Checks for potential ClassCastException. |
 [JavaUpgradeAlterCheck](check/java_upgrade_alter_check.md#javaupgradealtercheck) | .java | Performs several checks on `alter` calls in Upgrade classes. |
@@ -255,6 +254,7 @@ TestClassMissingLiferayUnitTestRuleCheck | .java | Finds missing LiferayUnitTest
 [TestClassStaticInitializerCheck](check/test_class_static_initializer_check.md#testclassstaticinitializercheck) | .java | Checks that static initializers of Arquillian tests do not call portal test utilities and service methods. |
 [ThreadContextClassLoaderCheck](check/thread_context_class_loader_check.md#threadcontextclassloadercheck) | .java | Checks usage of `Thread.setContextClassLoader`. |
 TransactionalTestRuleCheck | .java | Finds usage of `TransactionalTestRule` in `*StagedModelDataHandlerTest`. |
+[TypedPropertyKeyCheck](check/typed_property_key_check.md#typedpropertykeycheck) | .java | Checks that a typed property key such as `service.ranking:Integer` is not used outside component property strings. |
 URLInputStreamCheck | .java | Checks usages of `URL.openStream()`. |
 UnparameterizedClassCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds `Class` instantiation without generic type. |
 UnwrappedVariableInfoCheck | .java | Finds cases where the variable should be wrapped into an inner class in order to defer array elements initialization. |

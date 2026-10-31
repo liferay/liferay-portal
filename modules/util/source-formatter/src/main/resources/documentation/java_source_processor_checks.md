@@ -198,7 +198,6 @@ JavaTermStylingCheck | [Styling](styling_checks.md#styling-checks) | Applies rul
 [JavaTestMethodAnnotationsCheck](check/java_test_method_annotations_check.md#javatestmethodannotationscheck) | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks if methods with test annotations follow the naming conventions. |
 JavaToJSONArrayCheck | [Styling](styling_checks.md#styling-checks) | Finds missing and unnecessary whitespace on `toJSONArray` calls. |
 JavaTransactionBoundaryCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds direct `add*` or `get*` calls in `*ServiceImpl` (those should use the `*service` global variable instead). |
-[JavaTypedPropertyKeyCheck](check/java_typed_property_key_check.md#javatypedpropertykeycheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that a typed property key such as `service.ranking:Integer` is not used outside component property strings. |
 JavaUniqueUpgradeProcessCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that only one regular `UpgradeProcess` is allowed when registering a new upgrade process |
 [JavaUnsafeCastingCheck](check/java_unsafe_casting_check.md#javaunsafecastingcheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks for potential ClassCastException. |
 [JavaUnusedSourceFormatterChecksCheck](check/java_unused_source_formatter_checks_check.md#javaunusedsourceformattercheckscheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Finds `*Check` classes that are not configured. |
@@ -330,6 +329,7 @@ ThreadNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conve
 TransactionalTestRuleCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds usage of `TransactionalTestRule` in `*StagedModelDataHandlerTest`. |
 TryWithResourcesCheck | [Performance](performance_checks.md#performance-checks) | Ensures using Try-With-Resources statement to properly close the resource. |
 [TypeNameCheck](https://checkstyle.sourceforge.io/checks/naming/typename.html) | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | Checks that type names conform to a specified pattern. |
+[TypedPropertyKeyCheck](check/typed_property_key_check.md#typedpropertykeycheck) | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks that a typed property key such as `service.ranking:Integer` is not used outside component property strings. |
 URLInputStreamCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Checks usages of `URL.openStream()`. |
 [UnicodePropertiesBuilderCheck](check/builder_check.md#buildercheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Checks that `UnicodePropertiesBuilder` is used when possible. |
 [UnnecessaryAssignCheck](check/unnecessary_assign_check.md#unnecessaryassigncheck) | [Performance](performance_checks.md#performance-checks) | Finds unnecessary assign statements (when it is either reassigned or returned right after). |
