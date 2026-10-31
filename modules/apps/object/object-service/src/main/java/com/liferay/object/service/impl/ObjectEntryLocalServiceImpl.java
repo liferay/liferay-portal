@@ -5382,7 +5382,15 @@ public class ObjectEntryLocalServiceImpl
 				ObjectEntryTable.INSTANCE.status.neq(
 					WorkflowConstants.STATUS_IN_TRASH)
 			).and(
-				_getHeadObjectEntryPredicate(preferApproved)
+				() -> {
+					if (!objectDefinition.isEnableObjectEntryVersioning() &&
+						!preferApproved) {
+
+						return null;
+					}
+
+					return _getHeadObjectEntryPredicate(preferApproved);
+				}
 			).and(
 				_getPermissionWherePredicate(
 					dynamicObjectDefinitionTable, groupIds)
