@@ -2138,15 +2138,17 @@ public class ObjectEntryLocalServiceImpl
 			objectEntry.getObjectDefinitionId(),
 			objectEntryFolder.getGroupId());
 
+		ObjectDefinition objectDefinition =
+			_objectDefinitionPersistence.findByPrimaryKey(
+				objectEntry.getObjectDefinitionId());
+
 		if (objectEntryFolder.getGroupId() != objectEntry.getGroupId()) {
+			_validateGroupId(objectEntryFolder.getGroupId(), objectDefinition);
+
 			objectEntry.setGroupId(objectEntryFolder.getGroupId());
 
 			updateObjectEntry(objectEntry);
 		}
-
-		ObjectDefinition objectDefinition =
-			_objectDefinitionPersistence.findByPrimaryKey(
-				objectEntry.getObjectDefinitionId());
 
 		_removeInvalidAssetCategories(
 			objectDefinition.getClassName(), objectEntryFolder.getGroupId(),
