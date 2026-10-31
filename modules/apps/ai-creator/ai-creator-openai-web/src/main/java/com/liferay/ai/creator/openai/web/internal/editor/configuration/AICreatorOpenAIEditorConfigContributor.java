@@ -6,8 +6,8 @@
 package com.liferay.ai.creator.openai.web.internal.editor.configuration;
 
 import com.liferay.ai.creator.openai.configuration.manager.AICreatorOpenAIConfigurationManager;
-import com.liferay.ai.creator.openai.manager.AICreatorOpenAIManager;
 import com.liferay.ai.creator.openai.web.internal.constants.AICreatorOpenAIPortletKeys;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.portal.kernel.editor.configuration.BaseEditorConfigContributor;
 import com.liferay.portal.kernel.editor.configuration.EditorConfigContributor;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.Validator;
 import jakarta.portlet.PortletMode;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -49,10 +50,7 @@ public class AICreatorOpenAIEditorConfigContributor
 		ThemeDisplay themeDisplay,
 		RequestBackedPortletURLFactory requestBackedPortletURLFactory) {
 
-		if (!_aiCreatorOpenAIManager.isAICreatorToolbarEnabled(
-				themeDisplay.getCompanyId(), themeDisplay.getScopeGroupId(),
-				_portal.getPortletNamespace(themeDisplay.getPpid()))) {
-
+		if (!_isAICreatorToolbarEnabled(themeDisplay)) {
 			return;
 		}
 
@@ -145,15 +143,35 @@ public class AICreatorOpenAIEditorConfigContributor
 		return false;
 	}
 
+	private boolean _isAICreatorToolbarEnabled(ThemeDisplay themeDisplay) {
+		if (!Objects.equals(
+				_portal.getPortletNamespace(themeDisplay.getPpid()),
+				_portal.getPortletNamespace(JournalPortletKeys.JOURNAL))) {
+
+			return false;
+		}
+
+		try {
+			return _aiCreatorOpenAIConfigurationManager.
+				isAICreatorChatGPTGroupEnabled(
+					themeDisplay.getCompanyId(),
+					themeDisplay.getScopeGroupId());
+		}
+		catch (ConfigurationException configurationException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(configurationException);
+			}
+		}
+
+		return false;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		AICreatorOpenAIEditorConfigContributor.class);
 
 	@Reference
 	private AICreatorOpenAIConfigurationManager
 		_aiCreatorOpenAIConfigurationManager;
-
-	@Reference
-	private AICreatorOpenAIManager _aiCreatorOpenAIManager;
 
 	@Reference
 	private Portal _portal;
