@@ -7834,6 +7834,29 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testMoveObjectEntry() throws Exception {
+		ObjectEntry objectEntry = _addObjectEntry(
+			0, _irrelevantObjectDefinition.getObjectDefinitionId(),
+			Collections.emptyMap());
+
+		ObjectEntryFolder objectEntryFolder =
+			ObjectEntryFolderTestUtil.addObjectEntryFolder(
+				TestPropsValues.getGroupId());
+
+		AssertUtils.assertFailure(
+			ObjectEntryGroupIdException.InvalidGroupIdForScope.class,
+			StringBundler.concat(
+				"Group ID ", TestPropsValues.getGroupId(),
+				" is not valid for scope \"",
+				ObjectDefinitionConstants.SCOPE_COMPANY, "\""),
+			() -> _objectEntryLocalService.moveObjectEntry(
+				TestPropsValues.getUserId(), objectEntry.getObjectEntryId(),
+				objectEntryFolder.getObjectEntryFolderId(),
+				objectEntry.getValues(),
+				ServiceContextTestUtil.getServiceContext()));
+	}
+
+	@Test
 	public void testMoveObjectEntryToTrashWithComments() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
