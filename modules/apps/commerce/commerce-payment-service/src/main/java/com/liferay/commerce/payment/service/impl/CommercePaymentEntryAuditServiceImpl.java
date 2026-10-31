@@ -52,8 +52,8 @@ public class CommercePaymentEntryAuditServiceImpl
 				ActionKeys.VIEW);
 		}
 
-		return commercePaymentEntryAuditLocalService.
-			getCommercePaymentEntryAudits(
+		return commercePaymentEntryAuditPersistence.
+			findByCommercePaymentEntryId(
 				commercePaymentEntryId, start, end, orderByComparator);
 	}
 
@@ -66,8 +66,8 @@ public class CommercePaymentEntryAuditServiceImpl
 			getPermissionChecker(), commercePaymentEntryAuditId,
 			ActionKeys.VIEW);
 
-		return commercePaymentEntryAuditLocalService.
-			getCommercePaymentEntryAudit(commercePaymentEntryAuditId);
+		return commercePaymentEntryAuditPersistence.findByPrimaryKey(
+			commercePaymentEntryAuditId);
 	}
 
 	@Override

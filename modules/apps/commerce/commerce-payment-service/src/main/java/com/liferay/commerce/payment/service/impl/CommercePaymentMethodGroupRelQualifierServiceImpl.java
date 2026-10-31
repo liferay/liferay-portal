@@ -7,8 +7,8 @@ package com.liferay.commerce.payment.service.impl;
 
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel;
 import com.liferay.commerce.payment.model.CommercePaymentMethodGroupRelQualifier;
-import com.liferay.commerce.payment.service.CommercePaymentMethodGroupRelLocalService;
 import com.liferay.commerce.payment.service.base.CommercePaymentMethodGroupRelQualifierServiceBaseImpl;
+import com.liferay.commerce.payment.service.persistence.CommercePaymentMethodGroupRelPersistence;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.portal.aop.AopService;
@@ -57,9 +57,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 
 		CommercePaymentMethodGroupRelQualifier
 			commercePaymentMethodGroupRelQualifier =
-				commercePaymentMethodGroupRelQualifierLocalService.
-					getCommercePaymentMethodGroupRelQualifier(
-						commercePaymentMethodGroupRelQualifierId);
+				commercePaymentMethodGroupRelQualifierPersistence.
+					findByPrimaryKey(commercePaymentMethodGroupRelQualifierId);
 
 		_checkCommerceChannel(
 			commercePaymentMethodGroupRelQualifier.
@@ -143,9 +142,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 
 		CommercePaymentMethodGroupRelQualifier
 			commercePaymentMethodGroupRelQualifier =
-				commercePaymentMethodGroupRelQualifierLocalService.
-					getCommercePaymentMethodGroupRelQualifier(
-						commercePaymentMethodGroupRelQualifierId);
+				commercePaymentMethodGroupRelQualifierPersistence.
+					findByPrimaryKey(commercePaymentMethodGroupRelQualifierId);
 
 		_checkCommerceChannel(
 			commercePaymentMethodGroupRelQualifier.
@@ -164,8 +162,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 
 		_checkCommerceChannel(commercePaymentMethodGroupRelId);
 
-		return commercePaymentMethodGroupRelQualifierLocalService.
-			getCommercePaymentMethodGroupRelQualifiers(
+		return commercePaymentMethodGroupRelQualifierPersistence.
+			findByCommercePaymentMethodGroupRelId(
 				commercePaymentMethodGroupRelId, start, end, orderByComparator);
 	}
 
@@ -189,8 +187,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 
 		_checkCommerceChannel(commercePaymentMethodGroupRelId);
 
-		return commercePaymentMethodGroupRelQualifierLocalService.
-			getCommercePaymentMethodGroupRelQualifiersCount(
+		return commercePaymentMethodGroupRelQualifierPersistence.
+			countByCommercePaymentMethodGroupRelId(
 				commercePaymentMethodGroupRelId);
 	}
 
@@ -224,9 +222,8 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			_commercePaymentMethodGroupRelLocalService.
-				getCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			_commercePaymentMethodGroupRelPersistence.findByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannelByGroupId(
@@ -246,7 +243,7 @@ public class CommercePaymentMethodGroupRelQualifierServiceImpl
 		_commerceChannelModelResourcePermission;
 
 	@Reference
-	private CommercePaymentMethodGroupRelLocalService
-		_commercePaymentMethodGroupRelLocalService;
+	private CommercePaymentMethodGroupRelPersistence
+		_commercePaymentMethodGroupRelPersistence;
 
 }

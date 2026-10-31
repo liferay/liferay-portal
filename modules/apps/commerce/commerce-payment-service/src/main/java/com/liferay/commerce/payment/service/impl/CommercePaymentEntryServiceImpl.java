@@ -81,9 +81,8 @@ public class CommercePaymentEntryServiceImpl
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
-			commercePaymentEntryLocalService.
-				fetchCommercePaymentEntryByExternalReferenceCode(
-					externalReferenceCode, serviceContext.getCompanyId());
+			commercePaymentEntryPersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
 
 		if (commercePaymentEntry == null) {
 			String actionId = CommercePaymentEntryActionKeys.ADD_PAYMENT;
@@ -146,9 +145,8 @@ public class CommercePaymentEntryServiceImpl
 		throws PortalException {
 
 		CommercePaymentEntry commercePaymentEntry =
-			commercePaymentEntryLocalService.
-				fetchCommercePaymentEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commercePaymentEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commercePaymentEntry != null) {
 			_commercePaymentEntryModelResourcePermission.check(

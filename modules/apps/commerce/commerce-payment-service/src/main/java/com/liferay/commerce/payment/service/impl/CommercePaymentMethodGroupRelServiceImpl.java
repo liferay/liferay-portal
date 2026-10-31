@@ -106,9 +106,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				getCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelPersistence.findByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
 
@@ -125,9 +124,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				getCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelPersistence.findByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
 
@@ -141,9 +139,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				fetchCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelPersistence.fetchByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		if (commercePaymentMethodGroupRel != null) {
 			_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
@@ -158,8 +155,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				fetchCommercePaymentMethodGroupRel(groupId, engineKey);
+			commercePaymentMethodGroupRelPersistence.fetchByG_P(
+				groupId, engineKey);
 
 		if (commercePaymentMethodGroupRel != null) {
 			_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
@@ -175,8 +172,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				fetchCommercePaymentMethodGroupRel(classPK);
+			commercePaymentMethodGroupRelPersistence.fetchByPrimaryKey(classPK);
 
 		if (commercePaymentMethodGroupRel == null) {
 			return Collections.emptyList();
@@ -194,8 +190,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				fetchCommercePaymentMethodGroupRel(classPK);
+			commercePaymentMethodGroupRelPersistence.fetchByPrimaryKey(classPK);
 
 		if (commercePaymentMethodGroupRel == null) {
 			return 0;
@@ -213,9 +208,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				getCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelPersistence.findByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
 
@@ -229,8 +223,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRel(groupId, engineKey);
+		return commercePaymentMethodGroupRelPersistence.findByG_P(
+			groupId, engineKey);
 	}
 
 	@Override
@@ -240,8 +234,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId);
+		return commercePaymentMethodGroupRelPersistence.findByGroupId(groupId);
 	}
 
 	@Override
@@ -277,9 +270,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(
-				groupId, active, start, end, orderByComparator);
+		return commercePaymentMethodGroupRelPersistence.findByG_A(
+			groupId, active, start, end, orderByComparator);
 	}
 
 	@Override
@@ -315,8 +307,7 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRelsCount(groupId);
+		return commercePaymentMethodGroupRelPersistence.countByGroupId(groupId);
 	}
 
 	@Override
@@ -326,8 +317,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRelsCount(groupId, active);
+		return commercePaymentMethodGroupRelPersistence.countByG_A(
+			groupId, active);
 	}
 
 	@Override
@@ -336,9 +327,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				fetchCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelPersistence.fetchByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		if (commercePaymentMethodGroupRel != null) {
 			_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
@@ -367,9 +357,8 @@ public class CommercePaymentMethodGroupRelServiceImpl
 		throws PortalException {
 
 		CommercePaymentMethodGroupRel commercePaymentMethodGroupRel =
-			commercePaymentMethodGroupRelLocalService.
-				getCommercePaymentMethodGroupRel(
-					commercePaymentMethodGroupRelId);
+			commercePaymentMethodGroupRelPersistence.findByPrimaryKey(
+				commercePaymentMethodGroupRelId);
 
 		_checkCommerceChannel(commercePaymentMethodGroupRel.getGroupId());
 
