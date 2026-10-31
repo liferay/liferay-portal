@@ -51,9 +51,8 @@ public class CommerceMLForecastAlertEntryServiceImpl
 
 		long[] accountEntryIds = _getUserAccountEntryIds(userId);
 
-		return commerceMLForecastAlertEntryLocalService.
-			getAboveThresholdCommerceMLForecastAlertEntries(
-				companyId, accountEntryIds, relativeChange, status, start, end);
+		return commerceMLForecastAlertEntryPersistence.findByC_C_GtRc_S(
+			companyId, accountEntryIds, relativeChange, status, start, end);
 	}
 
 	@Override
@@ -67,9 +66,8 @@ public class CommerceMLForecastAlertEntryServiceImpl
 
 		long[] accountEntryIds = _getUserAccountEntryIds(userId);
 
-		return commerceMLForecastAlertEntryLocalService.
-			getAboveThresholdCommerceMLForecastAlertEntriesCount(
-				companyId, accountEntryIds, relativeChange, status);
+		return commerceMLForecastAlertEntryPersistence.countByC_C_GtRc_S(
+			companyId, accountEntryIds, relativeChange, status);
 	}
 
 	@Override
@@ -85,9 +83,8 @@ public class CommerceMLForecastAlertEntryServiceImpl
 
 		long[] accountEntryIds = _getUserAccountEntryIds(userId);
 
-		return commerceMLForecastAlertEntryLocalService.
-			getBelowThresholdCommerceMLForecastAlertEntries(
-				companyId, accountEntryIds, relativeChange, status, start, end);
+		return commerceMLForecastAlertEntryPersistence.findByC_C_LtRc_S(
+			companyId, accountEntryIds, relativeChange, status, start, end);
 	}
 
 	@Override
@@ -101,9 +98,8 @@ public class CommerceMLForecastAlertEntryServiceImpl
 
 		long[] accountEntryIds = _getUserAccountEntryIds(userId);
 
-		return commerceMLForecastAlertEntryLocalService.
-			getBelowThresholdCommerceMLForecastAlertEntriesCount(
-				companyId, accountEntryIds, relativeChange, status);
+		return commerceMLForecastAlertEntryPersistence.countByC_C_LtRc_S(
+			companyId, accountEntryIds, relativeChange, status);
 	}
 
 	@Override
@@ -117,9 +113,8 @@ public class CommerceMLForecastAlertEntryServiceImpl
 
 		long[] accountEntryIds = _getUserAccountEntryIds(userId);
 
-		return commerceMLForecastAlertEntryLocalService.
-			getCommerceMLForecastAlertEntries(
-				companyId, accountEntryIds, status, start, end);
+		return commerceMLForecastAlertEntryPersistence.findByC_C_S(
+			companyId, accountEntryIds, status, start, end);
 	}
 
 	@Override
@@ -133,9 +128,8 @@ public class CommerceMLForecastAlertEntryServiceImpl
 
 		long[] accountEntryIds = _getUserAccountEntryIds(userId);
 
-		return commerceMLForecastAlertEntryLocalService.
-			getCommerceMLForecastAlertEntriesCount(
-				companyId, accountEntryIds, status);
+		return commerceMLForecastAlertEntryPersistence.countByC_C_S(
+			companyId, accountEntryIds, status);
 	}
 
 	@Override
