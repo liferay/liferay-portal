@@ -282,8 +282,8 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 		}
 
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
-			oAuthClientPRLocalMetadataLocalService.
-				getOAuthClientPRLocalMetadata(oAuthClientPRLocalMetadataId);
+			oAuthClientPRLocalMetadataPersistence.findByPrimaryKey(
+				oAuthClientPRLocalMetadataId);
 
 		String localWellKnownURI =
 			oAuthClientPRLocalMetadata.getLocalWellKnownURI();

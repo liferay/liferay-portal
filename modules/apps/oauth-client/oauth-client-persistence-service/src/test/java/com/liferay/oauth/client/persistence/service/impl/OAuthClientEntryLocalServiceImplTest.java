@@ -9,7 +9,7 @@ import com.liferay.oauth.client.persistence.configuration.OAuthClientCompanyConf
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthRequestParametersJSONException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryAuthServerWellKnownURIException;
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryTokenRequestParametersJSONException;
-import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
+import com.liferay.oauth.client.persistence.service.persistence.OAuthClientASLocalMetadataPersistence;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -353,8 +353,8 @@ public class OAuthClientEntryLocalServiceImplTest {
 
 		ReflectionTestUtil.setFieldValue(
 			oAuthClientEntryLocalServiceImpl,
-			"_oAuthClientASLocalMetadataLocalService",
-			Mockito.mock(OAuthClientASLocalMetadataLocalService.class));
+			"_oAuthClientASLocalMetadataPersistence",
+			Mockito.mock(OAuthClientASLocalMetadataPersistence.class));
 
 		_validateAuthServerWellKnownURI(
 			_getWellKnownURI(_getRandomHost(3, _HOST_PREFIX_LOOPBACK)) +

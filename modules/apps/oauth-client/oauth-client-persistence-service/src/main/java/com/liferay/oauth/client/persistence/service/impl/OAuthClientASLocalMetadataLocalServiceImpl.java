@@ -327,8 +327,8 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 		issuer = _removeTrailingSlash(issuer);
 
 		OAuthClientASLocalMetadata oAuthClientASLocalMetadata =
-			oAuthClientASLocalMetadataLocalService.
-				getOAuthClientASLocalMetadata(oAuthClientASLocalMetadataId);
+			oAuthClientASLocalMetadataPersistence.findByPrimaryKey(
+				oAuthClientASLocalMetadataId);
 
 		String oldLocalWellKnownURI =
 			oAuthClientASLocalMetadata.getLocalWellKnownURI();

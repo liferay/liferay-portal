@@ -90,9 +90,8 @@ public class OAuthClientEntryServiceImpl
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
-			oAuthClientEntryLocalService.
-				fetchOAuthClientEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			oAuthClientEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (oAuthClientEntry != null) {
 			_oAuthClientEntryModelResourcePermission.check(
@@ -155,9 +154,8 @@ public class OAuthClientEntryServiceImpl
 		throws PortalException {
 
 		OAuthClientEntry oAuthClientEntry =
-			oAuthClientEntryLocalService.
-				getOAuthClientEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			oAuthClientEntryPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_oAuthClientEntryModelResourcePermission.check(
 			getPermissionChecker(), oAuthClientEntry, ActionKeys.VIEW);

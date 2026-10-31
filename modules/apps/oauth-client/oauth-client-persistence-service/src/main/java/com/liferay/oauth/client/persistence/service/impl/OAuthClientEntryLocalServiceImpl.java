@@ -14,8 +14,8 @@ import com.liferay.oauth.client.persistence.exception.OAuthClientEntryOIDCUserIn
 import com.liferay.oauth.client.persistence.exception.OAuthClientEntryTokenRequestParametersJSONException;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntry;
 import com.liferay.oauth.client.persistence.model.OAuthClientEntryTable;
-import com.liferay.oauth.client.persistence.service.OAuthClientASLocalMetadataLocalService;
 import com.liferay.oauth.client.persistence.service.base.OAuthClientEntryLocalServiceBaseImpl;
+import com.liferay.oauth.client.persistence.service.persistence.OAuthClientASLocalMetadataPersistence;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -477,9 +477,8 @@ public class OAuthClientEntryLocalServiceImpl
 
 		try {
 			if (authServerWellKnownURI.endsWith("local")) {
-				_oAuthClientASLocalMetadataLocalService.
-					getOAuthClientASLocalMetadata(
-						companyId, authServerWellKnownURI);
+				_oAuthClientASLocalMetadataPersistence.findByC_LWKURI(
+					companyId, authServerWellKnownURI);
 
 				return;
 			}
@@ -722,8 +721,8 @@ public class OAuthClientEntryLocalServiceImpl
 	private Http _http;
 
 	@Reference
-	private OAuthClientASLocalMetadataLocalService
-		_oAuthClientASLocalMetadataLocalService;
+	private OAuthClientASLocalMetadataPersistence
+		_oAuthClientASLocalMetadataPersistence;
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;

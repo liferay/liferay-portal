@@ -76,8 +76,8 @@ public class OAuthClientPRLocalMetadataServiceImpl
 		throws PortalException {
 
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
-			oAuthClientPRLocalMetadataLocalService.
-				getOAuthClientPRLocalMetadata(oAuthClientPRLocalMetadataId);
+			oAuthClientPRLocalMetadataPersistence.findByPrimaryKey(
+				oAuthClientPRLocalMetadataId);
 
 		_oAuthClientPRLocalMetadataModelResourcePermission.check(
 			getPermissionChecker(), oAuthClientPRLocalMetadata,
@@ -93,8 +93,8 @@ public class OAuthClientPRLocalMetadataServiceImpl
 		throws PortalException {
 
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
-			oAuthClientPRLocalMetadataLocalService.
-				getOAuthClientPRLocalMetadata(companyId, localWellKnownURI);
+			oAuthClientPRLocalMetadataPersistence.findByC_LWKURI(
+				companyId, localWellKnownURI);
 
 		_oAuthClientPRLocalMetadataModelResourcePermission.check(
 			getPermissionChecker(), oAuthClientPRLocalMetadata,
@@ -147,9 +147,8 @@ public class OAuthClientPRLocalMetadataServiceImpl
 		throws PortalException {
 
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
-			oAuthClientPRLocalMetadataLocalService.
-				fetchOAuthClientPRLocalMetadataByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			oAuthClientPRLocalMetadataPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (oAuthClientPRLocalMetadata != null) {
 			_oAuthClientPRLocalMetadataModelResourcePermission.check(
@@ -217,9 +216,8 @@ public class OAuthClientPRLocalMetadataServiceImpl
 		throws PortalException {
 
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata =
-			oAuthClientPRLocalMetadataLocalService.
-				getOAuthClientPRLocalMetadataByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			oAuthClientPRLocalMetadataPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_oAuthClientPRLocalMetadataModelResourcePermission.check(
 			getPermissionChecker(), oAuthClientPRLocalMetadata,
