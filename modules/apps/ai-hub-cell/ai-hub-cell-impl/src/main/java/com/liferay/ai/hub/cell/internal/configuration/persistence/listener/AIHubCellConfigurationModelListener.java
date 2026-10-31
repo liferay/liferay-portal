@@ -10,6 +10,7 @@ import com.liferay.oauth2.provider.constants.ClientProfile;
 import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
+import com.liferay.oauth2.provider.service.OAuth2ApplicationScopeAliasesLocalService;
 import com.liferay.oauth2.provider.util.OAuth2SecureRandomGenerator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.persistence.listener.ConfigurationModelListener;
@@ -24,16 +25,22 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.service.access.policy.model.SAPEntry;
 import com.liferay.portal.security.service.access.policy.service.SAPEntryLocalService;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Dictionary;
+import java.util.Objects;
 import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -61,7 +68,8 @@ public class AIHubCellConfigurationModelListener
 			return;
 		}
 
-		_addOAuth2Application(company);
+		_addOrUpdateOAuth2Application(
+			company, GetterUtil.getString(properties.get("serviceURL")));
 		_addSAPEntry(company);
 	}
 
@@ -80,14 +88,52 @@ public class AIHubCellConfigurationModelListener
 		}
 	}
 
-	private void _addOAuth2Application(Company company) {
+	private void _addOrUpdateOAuth2Application(
+		Company company, String serviceURL) {
+
 		try {
 			OAuth2Application oAuth2Application =
 				_oAuth2ApplicationLocalService.
 					fetchOAuth2ApplicationByExternalReferenceCode(
 						"AI-HUB-CELL", company.getCompanyId());
 
+			boolean local = StringUtil.equalsIgnoreCase(
+				company.getVirtualHostname(),
+				HttpComponentsUtil.getDomain(serviceURL));
+
 			if (oAuth2Application != null) {
+				if (!local) {
+					return;
+				}
+
+				Set<String> scopeAliases = new TreeSet<>(
+					_oAuth2ApplicationScopeAliasesLocalService.
+						getScopeAliasesList(
+							oAuth2Application.
+								getOAuth2ApplicationScopeAliasesId()));
+
+				if (Collections.addAll(
+						scopeAliases, "Liferay.AI.Hub.REST.everything",
+						"Liferay.AI.Hub.REST.everything.read",
+						"Liferay.AI.Hub.REST.everything.write")) {
+
+					oAuth2Application =
+						_oAuth2ApplicationLocalService.updateScopeAliases(
+							oAuth2Application.getUserId(),
+							oAuth2Application.getUserName(),
+							oAuth2Application.getOAuth2ApplicationId(),
+							new ArrayList<>(scopeAliases));
+				}
+
+				if (!Objects.equals(
+						oAuth2Application.getHomePageURL(), serviceURL)) {
+
+					oAuth2Application.setHomePageURL(serviceURL);
+
+					_oAuth2ApplicationLocalService.updateOAuth2Application(
+						oAuth2Application);
+				}
+
 				return;
 			}
 
@@ -98,6 +144,12 @@ public class AIHubCellConfigurationModelListener
 				return;
 			}
 
+			String homePageURL = company.getPortalURL(0);
+
+			if (local) {
+				homePageURL = serviceURL;
+			}
+
 			_oAuth2ApplicationLocalService.addOrUpdateOAuth2Application(
 				"AI-HUB-CELL", user.getUserId(), user.getScreenName(),
 				Arrays.asList(GrantType.CLIENT_CREDENTIALS),
@@ -105,9 +157,12 @@ public class AIHubCellConfigurationModelListener
 				OAuth2SecureRandomGenerator.generateClientId(),
 				ClientProfile.HEADLESS_SERVER.id(),
 				OAuth2SecureRandomGenerator.generateClientSecret(), null, null,
-				company.getPortalURL(0), 0, null, "AI Hub Cell", null,
-				Arrays.asList(), false,
+				homePageURL, 0, null, "AI Hub Cell", null, Arrays.asList(),
+				false,
 				Arrays.asList(
+					"Liferay.AI.Hub.REST.everything",
+					"Liferay.AI.Hub.REST.everything.read",
+					"Liferay.AI.Hub.REST.everything.write",
 					"Liferay.Bulk.REST.everything.write",
 					"Liferay.Headless.Admin.Taxonomy.everything.read",
 					"Liferay.Headless.Admin.User.everything.read",
@@ -120,7 +175,7 @@ public class AIHubCellConfigurationModelListener
 		}
 		catch (PortalException portalException) {
 			_log.error(
-				"Unable to add OAuth2 application for company " +
+				"Unable to add or update OAuth2 application for company " +
 					company.getCompanyId(),
 				portalException);
 		}
@@ -181,6 +236,10 @@ public class AIHubCellConfigurationModelListener
 
 	@Reference
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
+
+	@Reference
+	private OAuth2ApplicationScopeAliasesLocalService
+		_oAuth2ApplicationScopeAliasesLocalService;
 
 	@Reference
 	private SAPEntryLocalService _sapEntryLocalService;
