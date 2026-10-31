@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -215,9 +216,11 @@ public class DLFileShortcutTrashHandlerTest
 
 		DLFolder dlFolder = (DLFolder)parentBaseModel;
 
-		return DLFileShortcutLocalServiceUtil.getFileShortcutsCount(
-			dlFolder.getGroupId(), dlFolder.getFolderId(), true,
-			WorkflowConstants.STATUS_APPROVED);
+		return ListUtil.count(
+			DLFileShortcutLocalServiceUtil.getFileShortcuts(
+				dlFolder.getGroupId(), dlFolder.getFolderId()),
+			dlFileShortcut ->
+				dlFileShortcut.isActive() && dlFileShortcut.isApproved());
 	}
 
 	@Override

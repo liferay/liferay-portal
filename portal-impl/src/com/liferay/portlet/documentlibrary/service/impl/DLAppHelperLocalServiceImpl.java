@@ -257,22 +257,6 @@ public class DLAppHelperLocalServiceImpl
 	}
 
 	@Override
-	public List<DLFileShortcut> getFileShortcuts(
-		long groupId, long folderId, boolean active, int status) {
-
-		return _dlFileShortcutPersistence.findByG_F_A_S(
-			groupId, folderId, active, status);
-	}
-
-	@Override
-	public int getFileShortcutsCount(
-		long groupId, long folderId, boolean active, int status) {
-
-		return _dlFileShortcutPersistence.countByG_F_A_S(
-			groupId, folderId, active, status);
-	}
-
-	@Override
 	public List<DLFileShortcut> getGroupFileShortcuts(long groupId) {
 		return _dlFileShortcutPersistence.findByGroupId(groupId);
 	}

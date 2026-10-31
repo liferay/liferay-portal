@@ -50,7 +50,6 @@ import com.liferay.exportimport.kernel.service.StagingLocalServiceUtil;
 import com.liferay.exportimport.test.util.TestUserIdStrategy;
 import com.liferay.exportimport.test.util.lar.BasePortletDataHandlerTestCase;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -841,9 +840,7 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 
 			stagedModels.addAll(
 				DLFileShortcutLocalServiceUtil.getFileShortcuts(
-					portletDataContext.getGroupId(), folder.getFolderId(), true,
-					WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS));
+					portletDataContext.getGroupId(), folder.getFolderId()));
 		}
 
 		stagedModels.addAll(
@@ -854,9 +851,7 @@ public class DLPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 		stagedModels.addAll(
 			DLFileShortcutLocalServiceUtil.getFileShortcuts(
 				portletDataContext.getGroupId(),
-				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, true,
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
 
 		stagedModels.addAll(
 			RepositoryLocalServiceUtil.getGroupRepositories(
