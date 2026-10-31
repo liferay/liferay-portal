@@ -7,6 +7,7 @@ package com.liferay.adaptive.media.image.internal.exportimport.content.processor
 
 import com.liferay.adaptive.media.image.html.AMImageHTMLTagFactory;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.exportimport.kernel.lar.ExportImportPathUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
@@ -16,11 +17,13 @@ import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
@@ -46,9 +49,6 @@ public class AMImageHTMLExportImportContentProcessorTest {
 	@Before
 	public void setUp() throws Exception {
 		ReflectionTestUtil.setFieldValue(
-			_amImageHTMLExportImportContentProcessor,
-			"_amEmbeddedReferenceSetFactory", _amEmbeddedReferenceSetFactory);
-		ReflectionTestUtil.setFieldValue(
 			_amImageHTMLExportImportContentProcessor, "_amImageHTMLTagFactory",
 			_amImageHTMLTagFactory);
 		ReflectionTestUtil.setFieldValue(
@@ -56,12 +56,11 @@ public class AMImageHTMLExportImportContentProcessorTest {
 			_dlAppLocalService);
 
 		Mockito.doReturn(
-			_amEmbeddedReferenceSet
+			_referenceElements
 		).when(
-			_amEmbeddedReferenceSetFactory
-		).create(
-			Mockito.any(PortletDataContext.class),
-			Mockito.any(StagedModel.class)
+			_portletDataContext
+		).getReferenceElements(
+			_stagedModel, DLFileEntry.class
 		);
 
 		Mockito.doAnswer(
@@ -431,20 +430,34 @@ public class AMImageHTMLExportImportContentProcessorTest {
 	private void _setUpFileEntryToImport(long fileEntryId, FileEntry fileEntry)
 		throws Exception {
 
+		Element referenceElement = Mockito.mock(Element.class);
+
 		Mockito.doReturn(
-			true
+			String.valueOf(fileEntryId)
 		).when(
-			_amEmbeddedReferenceSet
-		).containsReference(
+			referenceElement
+		).attributeValue(
+			"class-pk"
+		);
+
+		_referenceElements.add(referenceElement);
+
+		Element referenceDataElement = Mockito.mock(Element.class);
+
+		Mockito.doReturn(
 			"PATH_" + fileEntryId
+		).when(
+			referenceDataElement
+		).attributeValue(
+			"path"
 		);
 
 		Mockito.doReturn(
-			fileEntryId
+			referenceDataElement
 		).when(
-			_amEmbeddedReferenceSet
-		).importReference(
-			"PATH_" + fileEntryId
+			_portletDataContext
+		).getReferenceDataElement(
+			_stagedModel, DLFileEntry.class, fileEntryId
 		);
 
 		Mockito.doReturn(
@@ -748,10 +761,6 @@ public class AMImageHTMLExportImportContentProcessorTest {
 
 	private static final long _FILE_ENTRY_ID_2 = RandomTestUtil.randomLong();
 
-	private final AMEmbeddedReferenceSet _amEmbeddedReferenceSet = Mockito.mock(
-		AMEmbeddedReferenceSet.class);
-	private final AMEmbeddedReferenceSetFactory _amEmbeddedReferenceSetFactory =
-		Mockito.mock(AMEmbeddedReferenceSetFactory.class);
 	private final AMImageHTMLExportImportContentProcessor
 		_amImageHTMLExportImportContentProcessor =
 			new AMImageHTMLExportImportContentProcessor();
@@ -766,6 +775,7 @@ public class AMImageHTMLExportImportContentProcessorTest {
 	private final FileEntry _fileEntry2 = Mockito.mock(FileEntry.class);
 	private final PortletDataContext _portletDataContext = Mockito.mock(
 		PortletDataContext.class);
+	private final List<Element> _referenceElements = new ArrayList<>();
 	private final StagedModel _stagedModel = Mockito.mock(StagedModel.class);
 
 }
