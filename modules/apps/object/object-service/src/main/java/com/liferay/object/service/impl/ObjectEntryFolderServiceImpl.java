@@ -91,9 +91,8 @@ public class ObjectEntryFolderServiceImpl
 		throws PortalException {
 
 		ObjectEntryFolder objectEntryFolder =
-			objectEntryFolderLocalService.
-				getObjectEntryFolderByExternalReferenceCode(
-					externalReferenceCode, groupId, companyId);
+			objectEntryFolderPersistence.findByERC_G_C(
+				externalReferenceCode, groupId, companyId);
 
 		ModelResourcePermissionUtil.check(
 			_modelResourcePermission, getPermissionChecker(), groupId,
@@ -124,9 +123,8 @@ public class ObjectEntryFolderServiceImpl
 		throws PortalException {
 
 		ObjectEntryFolder objectEntryFolder =
-			objectEntryFolderLocalService.
-				fetchObjectEntryFolderByExternalReferenceCode(
-					externalReferenceCode, groupId, companyId);
+			objectEntryFolderPersistence.fetchByERC_G_C(
+				externalReferenceCode, groupId, companyId);
 
 		if (objectEntryFolder == null) {
 			return null;
@@ -158,9 +156,8 @@ public class ObjectEntryFolderServiceImpl
 		throws PortalException {
 
 		ObjectEntryFolder objectEntryFolder =
-			objectEntryFolderLocalService.
-				getObjectEntryFolderByExternalReferenceCode(
-					externalReferenceCode, groupId, companyId);
+			objectEntryFolderPersistence.findByERC_G_C(
+				externalReferenceCode, groupId, companyId);
 
 		ModelResourcePermissionUtil.check(
 			_modelResourcePermission, getPermissionChecker(), groupId,

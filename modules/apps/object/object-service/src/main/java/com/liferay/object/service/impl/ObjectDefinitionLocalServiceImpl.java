@@ -1811,9 +1811,8 @@ public class ObjectDefinitionLocalServiceImpl
 		}
 
 		for (ObjectDefinitionSetting oldObjectDefinitionSetting :
-				_objectDefinitionSettingLocalService.
-					getObjectDefinitionSettings(
-						objectDefinition.getObjectDefinitionId())) {
+				_objectDefinitionSettingPersistence.findByObjectDefinitionId(
+					objectDefinition.getObjectDefinitionId())) {
 
 			if (oldObjectDefinitionSetting.isReadOnly()) {
 				continue;

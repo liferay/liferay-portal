@@ -12,8 +12,8 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectFolder;
-import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.base.ObjectDefinitionServiceBaseImpl;
+import com.liferay.object.service.persistence.ObjectFolderPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -156,9 +156,8 @@ public class ObjectDefinitionServiceImpl
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.
-				fetchObjectDefinitionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			objectDefinitionPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (objectDefinition != null) {
 			_objectDefinitionModelResourcePermission.check(
@@ -176,9 +175,8 @@ public class ObjectDefinitionServiceImpl
 			Arrays.asList(objectFolderExternalReferenceCodes),
 			objectFolderExternalReferenceCode -> {
 				ObjectFolder objectFolder =
-					_objectFolderLocalService.
-						fetchObjectFolderByExternalReferenceCode(
-							objectFolderExternalReferenceCode, companyId);
+					_objectFolderPersistence.fetchByERC_C(
+						objectFolderExternalReferenceCode, companyId);
 
 				if (objectFolder != null) {
 					return objectFolder.getObjectFolderId();
@@ -211,9 +209,8 @@ public class ObjectDefinitionServiceImpl
 		throws PortalException {
 
 		ObjectDefinition objectDefinition =
-			objectDefinitionLocalService.
-				getObjectDefinitionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			objectDefinitionPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_objectDefinitionModelResourcePermission.check(
 			getPermissionChecker(), objectDefinition, ActionKeys.VIEW);
@@ -361,14 +358,14 @@ public class ObjectDefinitionServiceImpl
 	private ModelResourcePermission<ObjectDefinition>
 		_objectDefinitionModelResourcePermission;
 
-	@Reference
-	private ObjectFolderLocalService _objectFolderLocalService;
-
 	@Reference(
 		target = "(model.class.name=com.liferay.object.model.ObjectFolder)"
 	)
 	private ModelResourcePermission<ObjectFolder>
 		_objectFolderModelResourcePermission;
+
+	@Reference
+	private ObjectFolderPersistence _objectFolderPersistence;
 
 	@Reference(target = "(resource.name=" + ObjectConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;

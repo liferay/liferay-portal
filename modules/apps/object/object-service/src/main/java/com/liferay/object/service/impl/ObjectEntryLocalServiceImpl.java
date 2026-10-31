@@ -362,7 +362,7 @@ public class ObjectEntryLocalServiceImpl
 				ObjectFieldConstants.BUSINESS_TYPE_ATTACHMENT);
 
 		for (ObjectField objectField :
-				_objectFieldLocalService.getObjectFields(
+				_objectFieldPersistence.findByObjectDefinitionId(
 					objectDefinition.getObjectDefinitionId())) {
 
 			if (!objectField.compareBusinessType(
@@ -1830,7 +1830,7 @@ public class ObjectEntryLocalServiceImpl
 				objectDefinition.getTitleObjectFieldId());
 
 		if (Objects.isNull(titleObjectField)) {
-			titleObjectField = _objectFieldLocalService.getObjectField(
+			titleObjectField = _objectFieldPersistence.findByODI_N(
 				objectDefinitionId, "id");
 		}
 

@@ -117,9 +117,8 @@ public class ObjectRelationshipServiceImpl
 		throws PortalException {
 
 		ObjectRelationship objectRelationship =
-			objectRelationshipLocalService.
-				fetchObjectRelationshipByExternalReferenceCode(
-					externalReferenceCode, companyId, objectDefinitionId1);
+			objectRelationshipPersistence.fetchByERC_C_ODI1(
+				externalReferenceCode, companyId, objectDefinitionId1);
 
 		if (objectRelationship != null) {
 			_objectDefinitionModelResourcePermission.check(

@@ -56,7 +56,6 @@ import com.liferay.object.service.ObjectRelationshipLocalService;
 import com.liferay.object.service.ObjectStateFlowLocalService;
 import com.liferay.object.service.ObjectStateTransitionLocalService;
 import com.liferay.object.service.ObjectValidationRuleLocalService;
-import com.liferay.object.service.ObjectValidationRuleSettingLocalService;
 import com.liferay.object.service.ObjectViewLocalService;
 import com.liferay.object.service.base.ObjectFieldLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectDefinitionPersistence;
@@ -64,6 +63,7 @@ import com.liferay.object.service.persistence.ObjectEntryPersistence;
 import com.liferay.object.service.persistence.ObjectFieldSettingPersistence;
 import com.liferay.object.service.persistence.ObjectLayoutColumnPersistence;
 import com.liferay.object.service.persistence.ObjectRelationshipPersistence;
+import com.liferay.object.service.persistence.ObjectValidationRuleSettingPersistence;
 import com.liferay.object.system.SystemObjectDefinitionManager;
 import com.liferay.object.system.SystemObjectDefinitionManagerRegistry;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -1296,12 +1296,10 @@ public class ObjectFieldLocalServiceImpl
 				"Only allowed bundles can delete system object fields");
 		}
 
-		int count =
-			_objectValidationRuleSettingLocalService.
-				getObjectValidationRuleSettingsCount(
-					ObjectValidationRuleSettingConstants.
-						NAME_COMPOSITE_KEY_OBJECT_FIELD_ID,
-					String.valueOf(objectField.getObjectFieldId()));
+		int count = _objectValidationRuleSettingPersistence.countByN_V(
+			ObjectValidationRuleSettingConstants.
+				NAME_COMPOSITE_KEY_OBJECT_FIELD_ID,
+			String.valueOf(objectField.getObjectFieldId()));
 
 		if (count > 0) {
 			throw new RequiredObjectFieldException.
@@ -2280,8 +2278,8 @@ public class ObjectFieldLocalServiceImpl
 	private ObjectValidationRuleLocalService _objectValidationRuleLocalService;
 
 	@Reference
-	private ObjectValidationRuleSettingLocalService
-		_objectValidationRuleSettingLocalService;
+	private ObjectValidationRuleSettingPersistence
+		_objectValidationRuleSettingPersistence;
 
 	@Reference
 	private ObjectViewLocalService _objectViewLocalService;
