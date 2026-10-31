@@ -98,8 +98,8 @@ public class CommerceNotificationTemplateServiceImpl
 			getPermissionChecker(), commerceNotificationTemplateId,
 			ActionKeys.VIEW);
 
-		return commerceNotificationTemplateLocalService.
-			getCommerceNotificationTemplate(commerceNotificationTemplateId);
+		return commerceNotificationTemplatePersistence.findByPrimaryKey(
+			commerceNotificationTemplateId);
 	}
 
 	@Override

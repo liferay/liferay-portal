@@ -9,6 +9,7 @@ import com.liferay.commerce.notification.model.CommerceNotificationAttachment;
 import com.liferay.commerce.notification.model.CommerceNotificationQueueEntry;
 import com.liferay.commerce.notification.service.CommerceNotificationAttachmentLocalService;
 import com.liferay.commerce.notification.service.base.CommerceNotificationQueueEntryLocalServiceBaseImpl;
+import com.liferay.commerce.notification.service.persistence.CommerceNotificationAttachmentPersistence;
 import com.liferay.commerce.notification.util.comparator.CommerceNotificationAttachmentCreateDateComparator;
 import com.liferay.mail.kernel.model.MailMessage;
 import com.liferay.mail.kernel.service.MailService;
@@ -238,8 +239,8 @@ public class CommerceNotificationQueueEntryLocalServiceImpl
 
 			List<CommerceNotificationAttachment>
 				commerceNotificationAttachments =
-					_commerceNotificationAttachmentLocalService.
-						getCommerceNotificationAttachments(
+					_commerceNotificationAttachmentPersistence.
+						findByCommerceNotificationQueueEntryId(
 							commerceNotificationQueueEntry.
 								getCommerceNotificationQueueEntryId(),
 							QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -345,6 +346,10 @@ public class CommerceNotificationQueueEntryLocalServiceImpl
 	@Reference
 	private CommerceNotificationAttachmentLocalService
 		_commerceNotificationAttachmentLocalService;
+
+	@Reference
+	private CommerceNotificationAttachmentPersistence
+		_commerceNotificationAttachmentPersistence;
 
 	@Reference
 	private MailService _mailService;
