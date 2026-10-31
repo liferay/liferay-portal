@@ -96,9 +96,8 @@ public class CPDefinitionSpecificationOptionValueServiceImpl
 
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue =
-				cpDefinitionSpecificationOptionValueLocalService.
-					fetchCPDefinitionSpecificationOptionValue(
-						cpDefinitionSpecificationOptionValueId);
+				cpDefinitionSpecificationOptionValuePersistence.
+					fetchByPrimaryKey(cpDefinitionSpecificationOptionValueId);
 
 		if (cpDefinitionSpecificationOptionValue != null) {
 			_checkCommerceCatalog(
@@ -117,9 +116,8 @@ public class CPDefinitionSpecificationOptionValueServiceImpl
 
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue =
-				cpDefinitionSpecificationOptionValueLocalService.
-					fetchCPDefinitionSpecificationOptionValueByExternalReferenceCode(
-						externalReferenceCode, companyId);
+				cpDefinitionSpecificationOptionValuePersistence.fetchByERC_C(
+					externalReferenceCode, companyId);
 
 		if (cpDefinitionSpecificationOptionValue != null) {
 			_checkCommerceCatalog(
@@ -138,9 +136,8 @@ public class CPDefinitionSpecificationOptionValueServiceImpl
 
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue =
-				cpDefinitionSpecificationOptionValueLocalService.
-					getCPDefinitionSpecificationOptionValue(
-						cpDefinitionSpecificationOptionValueId);
+				cpDefinitionSpecificationOptionValuePersistence.
+					findByPrimaryKey(cpDefinitionSpecificationOptionValueId);
 
 		_checkCommerceCatalog(
 			cpDefinitionSpecificationOptionValue.getCPDefinitionId(),
@@ -157,9 +154,8 @@ public class CPDefinitionSpecificationOptionValueServiceImpl
 
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue =
-				cpDefinitionSpecificationOptionValueLocalService.
-					getCPDefinitionSpecificationOptionValueByExternalReferenceCode(
-						externalReferenceCode, companyId);
+				cpDefinitionSpecificationOptionValuePersistence.findByERC_C(
+					externalReferenceCode, companyId);
 
 		_checkCommerceCatalog(
 			cpDefinitionSpecificationOptionValue.getCPDefinitionId(),
@@ -220,9 +216,8 @@ public class CPDefinitionSpecificationOptionValueServiceImpl
 
 		CPDefinitionSpecificationOptionValue
 			cpDefinitionSpecificationOptionValue =
-				cpDefinitionSpecificationOptionValueLocalService.
-					getCPDefinitionSpecificationOptionValue(
-						cpDefinitionSpecificationOptionValueId);
+				cpDefinitionSpecificationOptionValuePersistence.
+					findByPrimaryKey(cpDefinitionSpecificationOptionValueId);
 
 		_checkCommerceCatalog(
 			cpDefinitionSpecificationOptionValue.getCPDefinitionId(),

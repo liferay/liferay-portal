@@ -29,11 +29,11 @@ import com.liferay.commerce.product.model.CPOption;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPInstanceLocalService;
-import com.liferay.commerce.product.service.CPInstanceOptionValueRelLocalService;
-import com.liferay.commerce.product.service.CPInstanceUnitOfMeasureLocalService;
 import com.liferay.commerce.product.service.base.CPDefinitionOptionValueRelLocalServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
+import com.liferay.commerce.product.service.persistence.CPInstanceOptionValueRelPersistence;
 import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
+import com.liferay.commerce.product.service.persistence.CPInstanceUnitOfMeasurePersistence;
 import com.liferay.commerce.product.service.persistence.CPOptionPersistence;
 import com.liferay.commerce.product.service.persistence.CPOptionValuePersistence;
 import com.liferay.expando.kernel.model.ExpandoBridge;
@@ -650,9 +650,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		throws PortalException {
 
 		List<CPInstanceOptionValueRel> cpInstanceCPInstanceOptionValueRels =
-			_cpInstanceOptionValueRelLocalService.
-				getCPInstanceCPInstanceOptionValueRels(
-					cpDefinitionOptionRelId, cpInstanceId);
+			_cpInstanceOptionValueRelPersistence.findByCDORI_CII(
+				cpDefinitionOptionRelId, cpInstanceId);
 
 		for (CPInstanceOptionValueRel cpInstanceCPInstanceOptionValueRel :
 				cpInstanceCPInstanceOptionValueRels) {
@@ -771,8 +770,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		cpDefinitionOptionValueRel.setCPInstanceUuid(null);
 		cpDefinitionOptionValueRel.setCProductId(0);
@@ -1297,9 +1296,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 		if (cpInstanceId > 0) {
 			if (Validator.isNotNull(unitOfMeasureKey)) {
 				CPInstanceUnitOfMeasure cpInstanceUnitOfMeasure =
-					_cpInstanceUnitOfMeasureLocalService.
-						fetchCPInstanceUnitOfMeasure(
-							cpInstanceId, unitOfMeasureKey);
+					_cpInstanceUnitOfMeasurePersistence.fetchByC_K(
+						cpInstanceId, unitOfMeasureKey);
 
 				if (cpInstanceUnitOfMeasure == null) {
 					throw new NoSuchCPInstanceUnitOfMeasureException(
@@ -1309,8 +1307,8 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 			}
 			else {
 				int cpInstanceUnitOfMeasuresCount =
-					_cpInstanceUnitOfMeasureLocalService.
-						getCPInstanceUnitOfMeasuresCount(cpInstanceId);
+					_cpInstanceUnitOfMeasurePersistence.countByCPInstanceId(
+						cpInstanceId);
 
 				if (cpInstanceUnitOfMeasuresCount > 0) {
 					throw new CommerceInventoryWarehouseItemUnitOfMeasureKeyException(
@@ -1454,15 +1452,15 @@ public class CPDefinitionOptionValueRelLocalServiceImpl
 	private CPInstanceLocalService _cpInstanceLocalService;
 
 	@Reference
-	private CPInstanceOptionValueRelLocalService
-		_cpInstanceOptionValueRelLocalService;
+	private CPInstanceOptionValueRelPersistence
+		_cpInstanceOptionValueRelPersistence;
 
 	@Reference
 	private CPInstancePersistence _cpInstancePersistence;
 
 	@Reference
-	private CPInstanceUnitOfMeasureLocalService
-		_cpInstanceUnitOfMeasureLocalService;
+	private CPInstanceUnitOfMeasurePersistence
+		_cpInstanceUnitOfMeasurePersistence;
 
 	@Reference
 	private CPOptionPersistence _cpOptionPersistence;

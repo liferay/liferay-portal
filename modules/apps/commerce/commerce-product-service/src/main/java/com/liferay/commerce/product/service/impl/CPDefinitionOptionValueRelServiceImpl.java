@@ -97,8 +97,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
@@ -117,8 +117,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				fetchCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.fetchByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		if (cpDefinitionOptionValueRel != null) {
 			CPDefinitionOptionRel cpDefinitionOptionRel =
@@ -160,9 +160,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				fetchCPDefinitionOptionValueRelByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpDefinitionOptionValueRelPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (cpDefinitionOptionValueRel != null) {
 			CPDefinitionOptionRel cpDefinitionOptionRel =
@@ -182,8 +181,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
@@ -192,8 +191,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		_checkCommerceCatalog(
 			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
 
-		return cpDefinitionOptionValueRelLocalService.
-			getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+		return cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+			cpDefinitionOptionValueRelId);
 	}
 
 	@Override
@@ -256,8 +255,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		_checkCommerceCatalog(
 			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);
 
-		return cpDefinitionOptionValueRelLocalService.
-			getCPDefinitionOptionValueRelsCount(cpDefinitionOptionRelId);
+		return cpDefinitionOptionValueRelPersistence.
+			countByCPDefinitionOptionRelId(cpDefinitionOptionRelId);
 	}
 
 	@Override
@@ -287,8 +286,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
@@ -349,8 +348,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
@@ -373,8 +372,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(
@@ -394,8 +393,8 @@ public class CPDefinitionOptionValueRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionValueRel cpDefinitionOptionValueRel =
-			cpDefinitionOptionValueRelLocalService.
-				getCPDefinitionOptionValueRel(cpDefinitionOptionValueRelId);
+			cpDefinitionOptionValueRelPersistence.findByPrimaryKey(
+				cpDefinitionOptionValueRelId);
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
 			_cpDefinitionOptionRelPersistence.findByPrimaryKey(

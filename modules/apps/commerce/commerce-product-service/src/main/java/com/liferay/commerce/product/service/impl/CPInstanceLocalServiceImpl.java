@@ -1752,8 +1752,8 @@ public class CPInstanceLocalServiceImpl extends CPInstanceLocalServiceBaseImpl {
 			cpDefinitionId, WorkflowConstants.STATUS_APPROVED);
 
 		List<CPInstanceOptionValueRel> cpInstanceCPInstanceOptionValueRels =
-			_cpInstanceOptionValueRelLocalService.
-				getCPInstanceCPInstanceOptionValueRels(cpInstanceId);
+			_cpInstanceOptionValueRelPersistence.findByCPInstanceId(
+				cpInstanceId);
 
 		for (CPInstance curCPInstance : cpInstances) {
 			if (!_cpInstanceOptionValueRelLocalService.

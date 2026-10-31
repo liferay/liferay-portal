@@ -14,6 +14,7 @@ import com.liferay.commerce.product.model.CPConfigurationList;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationEntryLocalServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPConfigurationEntrySettingPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -217,10 +218,9 @@ public class CPConfigurationEntryLocalServiceImpl
 		}
 
 		CPConfigurationEntrySetting cpConfigurationEntrySetting =
-			_cpConfigurationEntrySettingLocalService.
-				fetchCPConfigurationEntrySetting(
-					cpConfigurationEntry.getCPConfigurationEntryId(),
-					CPConfigurationEntrySettingConstants.TYPE_CHANGE_LOG);
+			_cpConfigurationEntrySettingPersistence.fetchByC_T(
+				cpConfigurationEntry.getCPConfigurationEntryId(),
+				CPConfigurationEntrySettingConstants.TYPE_CHANGE_LOG);
 
 		if (cpConfigurationEntrySetting != null) {
 			_cpConfigurationEntrySettingLocalService.
@@ -228,10 +228,9 @@ public class CPConfigurationEntryLocalServiceImpl
 		}
 
 		cpConfigurationEntrySetting =
-			_cpConfigurationEntrySettingLocalService.
-				fetchCPConfigurationEntrySetting(
-					cpConfigurationEntry.getCPConfigurationEntryId(),
-					CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
+			_cpConfigurationEntrySettingPersistence.fetchByC_T(
+				cpConfigurationEntry.getCPConfigurationEntryId(),
+				CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
 
 		if (cpConfigurationEntrySetting != null) {
 			_cpConfigurationEntrySettingLocalService.
@@ -395,10 +394,9 @@ public class CPConfigurationEntryLocalServiceImpl
 		throws PortalException {
 
 		CPConfigurationEntrySetting cpConfigurationEntrySetting =
-			_cpConfigurationEntrySettingLocalService.
-				fetchCPConfigurationEntrySetting(
-					cpConfigurationEntry.getCPConfigurationEntryId(),
-					CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
+			_cpConfigurationEntrySettingPersistence.fetchByC_T(
+				cpConfigurationEntry.getCPConfigurationEntryId(),
+				CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
 
 		CPConfigurationList parentCPConfigurationList =
 			cpConfigurationEntry.getParentCPConfigurationList();
@@ -435,10 +433,9 @@ public class CPConfigurationEntryLocalServiceImpl
 			return null;
 		}
 
-		return _cpConfigurationEntrySettingLocalService.
-			fetchCPConfigurationEntrySetting(
-				parentCPConfigurationEntry.getCPConfigurationEntryId(),
-				CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
+		return _cpConfigurationEntrySettingPersistence.fetchByC_T(
+			parentCPConfigurationEntry.getCPConfigurationEntryId(),
+			CPConfigurationEntrySettingConstants.TYPE_INDEX_IDS);
 	}
 
 	private void _reindexCPConfigurationEntry(long cpConfigurationEntryId)
@@ -484,6 +481,10 @@ public class CPConfigurationEntryLocalServiceImpl
 	@Reference
 	private CPConfigurationEntrySettingLocalService
 		_cpConfigurationEntrySettingLocalService;
+
+	@Reference
+	private CPConfigurationEntrySettingPersistence
+		_cpConfigurationEntrySettingPersistence;
 
 	@Reference
 	private JSONFactory _jsonFactory;

@@ -224,8 +224,8 @@ public class CPConfigurationListRelServiceImpl
 
 		_checkCommerceCatalog(cpConfigurationListId, ActionKeys.VIEW);
 
-		return cpConfigurationListRelLocalService.
-			getCPConfigurationListRelsCount(cpConfigurationListId);
+		return cpConfigurationListRelPersistence.countByCPConfigurationListId(
+			cpConfigurationListId);
 	}
 
 	@Override

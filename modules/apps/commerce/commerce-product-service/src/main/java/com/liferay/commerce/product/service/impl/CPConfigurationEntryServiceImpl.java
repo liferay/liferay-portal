@@ -113,9 +113,8 @@ public class CPConfigurationEntryServiceImpl
 		throws PortalException {
 
 		CPConfigurationEntry cpConfigurationEntry =
-			cpConfigurationEntryLocalService.
-				getCPConfigurationEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpConfigurationEntryPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_checkCommerceCatalog(
 			cpConfigurationEntry.getGroupId(), ActionKeys.VIEW);

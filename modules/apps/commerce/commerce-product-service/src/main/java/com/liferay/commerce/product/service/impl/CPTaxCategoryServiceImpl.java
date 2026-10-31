@@ -82,9 +82,8 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		CPTaxCategory cpTaxCategory =
-			cpTaxCategoryLocalService.fetchCPTaxCategoryByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CPTaxCategory cpTaxCategory = cpTaxCategoryPersistence.fetchByERC_C(
+			externalReferenceCode, companyId);
 
 		if (cpTaxCategory != null) {
 			_modelResourcePermission.check(
@@ -156,9 +155,8 @@ public class CPTaxCategoryServiceImpl extends CPTaxCategoryServiceBaseImpl {
 			String externalReferenceCode, long companyId)
 		throws PortalException {
 
-		CPTaxCategory cpTaxCategory =
-			cpTaxCategoryLocalService.getCPTaxCategoryByExternalReferenceCode(
-				externalReferenceCode, companyId);
+		CPTaxCategory cpTaxCategory = cpTaxCategoryPersistence.findByERC_C(
+			externalReferenceCode, companyId);
 
 		_modelResourcePermission.check(
 			getPermissionChecker(), cpTaxCategory, ActionKeys.VIEW);

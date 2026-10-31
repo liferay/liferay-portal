@@ -94,9 +94,8 @@ public class CPSpecificationOptionServiceImpl
 		throws PortalException {
 
 		CPSpecificationOption cpSpecificationOption =
-			cpSpecificationOptionLocalService.
-				fetchCPSpecificationOptionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpSpecificationOptionPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (cpSpecificationOption != null) {
 			_cpSpecificationOptionModelResourcePermission.check(

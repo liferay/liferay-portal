@@ -168,8 +168,8 @@ public class CPInstanceOptionValueRelLocalServiceImpl
 			_cpDefinitionOptionRelPersistence.findByC_SC(cpDefinitionId, true);
 
 		List<CPInstanceOptionValueRel> cpInstanceCPInstanceOptionValueRels =
-			cpInstanceOptionValueRelLocalService.
-				getCPInstanceCPInstanceOptionValueRels(cpInstanceId);
+			cpInstanceOptionValueRelPersistence.findByCPInstanceId(
+				cpInstanceId);
 
 		if (cpDefinitionCPDefinitionOptionRels.size() !=
 				cpInstanceCPInstanceOptionValueRels.size()) {

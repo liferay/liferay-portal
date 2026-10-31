@@ -26,6 +26,8 @@ import com.liferay.commerce.product.model.CommerceChannelRelTable;
 import com.liferay.commerce.product.service.CPConfigurationEntryLocalService;
 import com.liferay.commerce.product.service.CPConfigurationEntrySettingLocalService;
 import com.liferay.commerce.product.service.base.CPConfigurationListLocalServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPConfigurationEntryPersistence;
+import com.liferay.commerce.product.service.persistence.CPConfigurationEntrySettingPersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -150,8 +152,8 @@ public class CPConfigurationListLocalServiceImpl
 
 			while (parentCPConfigurationListId > 0) {
 				for (CPConfigurationEntry cpConfigurationEntry :
-						_cpConfigurationEntryLocalService.
-							getCPConfigurationEntries(
+						_cpConfigurationEntryPersistence.
+							findByCPConfigurationListId(
 								parentCPConfigurationListId)) {
 
 					if (Objects.equals(
@@ -163,12 +165,10 @@ public class CPConfigurationListLocalServiceImpl
 					}
 
 					CPConfigurationEntrySetting cpConfigurationEntrySetting =
-						_cpConfigurationEntrySettingLocalService.
-							fetchCPConfigurationEntrySetting(
-								cpConfigurationEntry.
-									getCPConfigurationEntryId(),
-								CPConfigurationEntrySettingConstants.
-									TYPE_INDEX_IDS);
+						_cpConfigurationEntrySettingPersistence.fetchByC_T(
+							cpConfigurationEntry.getCPConfigurationEntryId(),
+							CPConfigurationEntrySettingConstants.
+								TYPE_INDEX_IDS);
 
 					if (Validator.isNull(
 							cpConfigurationEntrySetting.getValue())) {
@@ -696,8 +696,15 @@ public class CPConfigurationListLocalServiceImpl
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
 
 	@Reference
+	private CPConfigurationEntryPersistence _cpConfigurationEntryPersistence;
+
+	@Reference
 	private CPConfigurationEntrySettingLocalService
 		_cpConfigurationEntrySettingLocalService;
+
+	@Reference
+	private CPConfigurationEntrySettingPersistence
+		_cpConfigurationEntrySettingPersistence;
 
 	@Reference
 	private EmptyModelManager _emptyModelManager;

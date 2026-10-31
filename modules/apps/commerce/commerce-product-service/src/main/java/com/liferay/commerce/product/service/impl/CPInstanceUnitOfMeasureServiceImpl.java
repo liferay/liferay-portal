@@ -11,7 +11,9 @@ import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CommerceCatalogLocalService;
 import com.liferay.commerce.product.service.base.CPInstanceUnitOfMeasureServiceBaseImpl;
 import com.liferay.commerce.product.service.persistence.CPInstancePersistence;
+import com.liferay.commerce.product.util.comparator.CPInstanceUnitOfMeasurePriorityComparator;
 import com.liferay.portal.aop.AopService;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -124,8 +126,8 @@ public class CPInstanceUnitOfMeasureServiceImpl
 
 		_checkCommerceCatalog(cpInstanceId, ActionKeys.VIEW);
 
-		return cpInstanceUnitOfMeasureLocalService.
-			fetchPrimaryCPInstanceUnitOfMeasure(cpInstanceId);
+		return cpInstanceUnitOfMeasurePersistence.fetchByC_P_First(
+			cpInstanceId, true, null);
 	}
 
 	@Override
@@ -135,8 +137,9 @@ public class CPInstanceUnitOfMeasureServiceImpl
 
 		_checkCommerceCatalog(cpInstanceId, ActionKeys.VIEW);
 
-		return cpInstanceUnitOfMeasureLocalService.
-			getActiveCPInstanceUnitOfMeasures(cpInstanceId);
+		return cpInstanceUnitOfMeasurePersistence.findByC_A(
+			cpInstanceId, true, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			CPInstanceUnitOfMeasurePriorityComparator.getInstance(true));
 	}
 
 	@Override
@@ -145,8 +148,8 @@ public class CPInstanceUnitOfMeasureServiceImpl
 
 		_checkCommerceCatalog(cpInstanceId, ActionKeys.VIEW);
 
-		return cpInstanceUnitOfMeasureLocalService.
-			getActiveCPInstanceUnitOfMeasuresCount(cpInstanceId);
+		return cpInstanceUnitOfMeasurePersistence.countByC_A(
+			cpInstanceId, true);
 	}
 
 	@Override
@@ -192,8 +195,8 @@ public class CPInstanceUnitOfMeasureServiceImpl
 
 		_checkCommerceCatalog(cpInstanceId, ActionKeys.VIEW);
 
-		return cpInstanceUnitOfMeasureLocalService.
-			getCPInstanceUnitOfMeasuresCount(cpInstanceId);
+		return cpInstanceUnitOfMeasurePersistence.countByCPInstanceId(
+			cpInstanceId);
 	}
 
 	@Override

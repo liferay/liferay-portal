@@ -57,9 +57,8 @@ public class CommerceChannelAccountEntryRelServiceImpl
 		throws PortalException {
 
 		CommerceChannelAccountEntryRel commerceChannelAccountEntryRel =
-			commerceChannelAccountEntryRelLocalService.
-				getCommerceChannelAccountEntryRel(
-					commerceChannelAccountEntryRelId);
+			commerceChannelAccountEntryRelPersistence.findByPrimaryKey(
+				commerceChannelAccountEntryRelId);
 
 		_accountEntryModelResourcePermission.check(
 			getPermissionChecker(),
@@ -77,9 +76,8 @@ public class CommerceChannelAccountEntryRelServiceImpl
 		throws PortalException {
 
 		CommerceChannelAccountEntryRel commerceChannelAccountEntryRel =
-			commerceChannelAccountEntryRelLocalService.
-				fetchCommerceChannelAccountEntryRel(
-					commerceChannelAccountEntryRelId);
+			commerceChannelAccountEntryRelPersistence.fetchByPrimaryKey(
+				commerceChannelAccountEntryRelId);
 
 		if (commerceChannelAccountEntryRel != null) {
 			_accountEntryModelResourcePermission.check(
@@ -117,9 +115,8 @@ public class CommerceChannelAccountEntryRelServiceImpl
 		throws PortalException {
 
 		CommerceChannelAccountEntryRel commerceChannelAccountEntryRel =
-			commerceChannelAccountEntryRelLocalService.
-				getCommerceChannelAccountEntryRel(
-					commerceChannelAccountEntryRelId);
+			commerceChannelAccountEntryRelPersistence.findByPrimaryKey(
+				commerceChannelAccountEntryRelId);
 
 		_accountEntryModelResourcePermission.check(
 			getPermissionChecker(),
@@ -175,8 +172,8 @@ public class CommerceChannelAccountEntryRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			CommerceAccountActionKeys.VIEW_CHANNEL_DEFAULTS);
 
-		return commerceChannelAccountEntryRelLocalService.
-			getCommerceChannelAccountEntryRelsCount(accountEntryId, type);
+		return commerceChannelAccountEntryRelPersistence.countByA_T(
+			accountEntryId, type);
 	}
 
 	@Override
@@ -195,9 +192,8 @@ public class CommerceChannelAccountEntryRelServiceImpl
 		throws PortalException {
 
 		CommerceChannelAccountEntryRel commerceChannelAccountEntryRel =
-			commerceChannelAccountEntryRelLocalService.
-				getCommerceChannelAccountEntryRel(
-					commerceChannelAccountEntryRelId);
+			commerceChannelAccountEntryRelPersistence.findByPrimaryKey(
+				commerceChannelAccountEntryRelId);
 
 		_accountEntryModelResourcePermission.check(
 			getPermissionChecker(),

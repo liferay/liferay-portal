@@ -101,9 +101,8 @@ public class CPMeasurementUnitServiceImpl
 		throws PortalException {
 
 		CPMeasurementUnit cpMeasurementUnit =
-			cpMeasurementUnitLocalService.
-				fetchCPMeasurementUnitByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpMeasurementUnitPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (cpMeasurementUnit != null) {
 			_cpMeasurementUnitModelResourcePermission.check(

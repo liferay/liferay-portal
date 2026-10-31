@@ -96,9 +96,8 @@ public class CommerceCatalogServiceImpl extends CommerceCatalogServiceBaseImpl {
 		throws PortalException {
 
 		CommerceCatalog commerceCatalog =
-			commerceCatalogLocalService.
-				fetchCommerceCatalogByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceCatalogPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceCatalog != null) {
 			_commerceCatalogModelResourcePermission.check(

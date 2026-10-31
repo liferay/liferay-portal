@@ -67,9 +67,8 @@ public class CPOptionCategoryServiceImpl
 		throws PortalException {
 
 		CPOptionCategory cpOptionCategory =
-			cpOptionCategoryLocalService.
-				fetchCPOptionCategoryByExternalReferenceCode(
-					externalReferenceCode, serviceContext.getCompanyId());
+			cpOptionCategoryPersistence.fetchByERC_C(
+				externalReferenceCode, serviceContext.getCompanyId());
 
 		if ((cpOptionCategory == null) && (cpOptionCategoryId > 0)) {
 			cpOptionCategory = cpOptionCategoryPersistence.fetchByPrimaryKey(
@@ -127,9 +126,8 @@ public class CPOptionCategoryServiceImpl
 		throws PortalException {
 
 		CPOptionCategory cpOptionCategory =
-			cpOptionCategoryLocalService.
-				fetchCPOptionCategoryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpOptionCategoryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (cpOptionCategory != null) {
 			_cpOptionCategoryModelResourcePermission.check(
@@ -156,9 +154,8 @@ public class CPOptionCategoryServiceImpl
 		throws PortalException {
 
 		CPOptionCategory cpOptionCategory =
-			cpOptionCategoryLocalService.
-				getCPOptionCategoryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpOptionCategoryPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_cpOptionCategoryModelResourcePermission.check(
 			getPermissionChecker(), cpOptionCategory.getCPOptionCategoryId(),

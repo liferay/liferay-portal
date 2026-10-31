@@ -177,9 +177,8 @@ public class CPAttachmentFileEntryServiceImpl
 		throws PortalException {
 
 		CPAttachmentFileEntry cpAttachmentFileEntry =
-			cpAttachmentFileEntryLocalService.
-				fetchCPAttachmentFileEntryByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpAttachmentFileEntryPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (cpAttachmentFileEntry != null) {
 			long cpDefinitionClassNameId = _portal.getClassNameId(

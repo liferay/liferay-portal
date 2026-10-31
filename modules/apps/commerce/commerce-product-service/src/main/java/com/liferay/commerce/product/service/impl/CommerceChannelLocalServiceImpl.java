@@ -195,10 +195,8 @@ public class CommerceChannelLocalServiceImpl
 		if (Validator.isNotNull(externalReferenceCode)) {
 			User user = _userLocalService.getUser(userId);
 
-			commerceChannel =
-				commerceChannelLocalService.
-					fetchCommerceChannelByExternalReferenceCode(
-						externalReferenceCode, user.getCompanyId());
+			commerceChannel = commerceChannelPersistence.fetchByERC_C(
+				externalReferenceCode, user.getCompanyId());
 		}
 
 		if (commerceChannel == null) {

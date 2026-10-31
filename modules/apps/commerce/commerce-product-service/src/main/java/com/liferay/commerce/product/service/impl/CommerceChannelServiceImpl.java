@@ -111,9 +111,8 @@ public class CommerceChannelServiceImpl extends CommerceChannelServiceBaseImpl {
 		throws PortalException {
 
 		CommerceChannel commerceChannel =
-			commerceChannelLocalService.
-				fetchCommerceChannelByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceChannelPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceChannel != null) {
 			_commerceChannelModelResourcePermission.check(

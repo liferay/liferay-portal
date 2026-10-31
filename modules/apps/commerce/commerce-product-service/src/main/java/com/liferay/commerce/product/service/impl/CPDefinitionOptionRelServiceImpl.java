@@ -144,9 +144,8 @@ public class CPDefinitionOptionRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			cpDefinitionOptionRelLocalService.
-				fetchCPDefinitionOptionRelByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpDefinitionOptionRelPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (cpDefinitionOptionRel != null) {
 			_checkCommerceCatalog(
@@ -178,9 +177,8 @@ public class CPDefinitionOptionRelServiceImpl
 		throws PortalException {
 
 		CPDefinitionOptionRel cpDefinitionOptionRel =
-			cpDefinitionOptionRelLocalService.
-				getCPDefinitionOptionRelByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			cpDefinitionOptionRelPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_checkCommerceCatalog(
 			cpDefinitionOptionRel.getCPDefinitionId(), ActionKeys.VIEW);

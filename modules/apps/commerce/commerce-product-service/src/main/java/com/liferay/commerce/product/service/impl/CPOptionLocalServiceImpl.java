@@ -12,9 +12,9 @@ import com.liferay.commerce.product.exception.CPOptionKeyException;
 import com.liferay.commerce.product.exception.CPOptionSKUContributorException;
 import com.liferay.commerce.product.exception.RequiredCPOptionException;
 import com.liferay.commerce.product.model.CPOption;
-import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.service.base.CPOptionLocalServiceBaseImpl;
+import com.liferay.commerce.product.service.persistence.CPDefinitionOptionRelPersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.portal.aop.AopService;
@@ -24,7 +24,6 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
-import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Field;
@@ -157,13 +156,8 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 
 		// Commerce product option rels
 
-		CPDefinitionOptionRelLocalService cpDefinitionOptionRelLocalService =
-			_cpDefinitionOptionRelLocalServiceSnapshot.get();
-
-		int count =
-			cpDefinitionOptionRelLocalService.
-				getCPOptionCPDefinitionOptionRelsCount(
-					cpOption.getCPOptionId());
+		int count = _cpDefinitionOptionRelPersistence.countByCPOptionId(
+			cpOption.getCPOptionId());
 
 		if (count > 0) {
 			throw new RequiredCPOptionException();
@@ -470,13 +464,11 @@ public class CPOptionLocalServiceImpl extends CPOptionLocalServiceBaseImpl {
 		Field.ENTRY_CLASS_PK, Field.COMPANY_ID, Field.UID
 	};
 
-	private static final Snapshot<CPDefinitionOptionRelLocalService>
-		_cpDefinitionOptionRelLocalServiceSnapshot = new Snapshot<>(
-			CPOptionLocalServiceImpl.class,
-			CPDefinitionOptionRelLocalService.class);
-
 	@Reference
 	private ConfigurationProvider _configurationProvider;
+
+	@Reference
+	private CPDefinitionOptionRelPersistence _cpDefinitionOptionRelPersistence;
 
 	@Reference
 	private CPOptionValueLocalService _cpOptionValueLocalService;

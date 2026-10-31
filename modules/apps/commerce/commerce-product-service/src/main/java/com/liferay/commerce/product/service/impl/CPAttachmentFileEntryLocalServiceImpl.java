@@ -266,9 +266,8 @@ public class CPAttachmentFileEntryLocalServiceImpl
 		}
 		else if (Validator.isNotNull(externalReferenceCode)) {
 			cpAttachmentFileEntry =
-				cpAttachmentFileEntryLocalService.
-					fetchCPAttachmentFileEntryByExternalReferenceCode(
-						externalReferenceCode, serviceContext.getCompanyId());
+				cpAttachmentFileEntryPersistence.fetchByERC_C(
+					externalReferenceCode, serviceContext.getCompanyId());
 		}
 
 		if ((cpAttachmentFileEntry != null) &&

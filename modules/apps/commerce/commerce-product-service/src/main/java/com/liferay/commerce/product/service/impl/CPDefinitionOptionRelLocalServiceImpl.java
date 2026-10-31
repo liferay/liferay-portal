@@ -478,10 +478,9 @@ public class CPDefinitionOptionRelLocalServiceImpl
 				i);
 
 			CPDefinitionOptionRel cpDefinitionOptionRel =
-				cpDefinitionOptionRelLocalService.
-					fetchCPDefinitionOptionRelByKey(
-						cpDefinitionId,
-						skuOptionJSONObject.getString("skuOptionKey"));
+				cpDefinitionOptionRelPersistence.fetchByC_K(
+					cpDefinitionId,
+					skuOptionJSONObject.getString("skuOptionKey"));
 
 			if ((cpDefinitionOptionRel == null) ||
 				(skuContributorsOnly &&
@@ -550,16 +549,13 @@ public class CPDefinitionOptionRelLocalServiceImpl
 			JSONObject jsonObject = jsonArray.getJSONObject(i);
 
 			CPDefinitionOptionRel cpDefinitionOptionRel =
-				cpDefinitionOptionRelLocalService.
-					fetchCPDefinitionOptionRelByKey(
-						cpDefinitionId, jsonObject.getString("key"));
+				cpDefinitionOptionRelPersistence.fetchByC_K(
+					cpDefinitionId, jsonObject.getString("key"));
 
 			if (cpDefinitionOptionRel == null) {
 				cpDefinitionOptionRel =
-					cpDefinitionOptionRelLocalService.
-						fetchCPDefinitionOptionRelByKey(
-							cpDefinitionId,
-							jsonObject.getString("skuOptionKey"));
+					cpDefinitionOptionRelPersistence.fetchByC_K(
+						cpDefinitionId, jsonObject.getString("skuOptionKey"));
 			}
 
 			if ((cpDefinitionOptionRel == null) ||
