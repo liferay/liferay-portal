@@ -14,14 +14,22 @@ import com.liferay.portal.kernel.service.PortletLocalService;
 
 import java.util.Map;
 
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 /**
  * @author Jürgen Kappler
  */
-@Component(service = PortletConfigurationImporterHelper.class)
 public class PortletConfigurationImporterHelper {
+
+	public PortletConfigurationImporterHelper(
+		LayoutLocalService layoutLocalService,
+		PortletLocalService portletLocalService,
+		PortletPreferencesPortletConfigurationImporter
+			portletPreferencesPortletConfigurationImporter) {
+
+		_layoutLocalService = layoutLocalService;
+		_portletLocalService = portletLocalService;
+		_portletPreferencesPortletConfigurationImporter =
+			portletPreferencesPortletConfigurationImporter;
+	}
 
 	public void importPortletConfiguration(
 			long plid, String portletId, Map<String, Object> widgetConfig)
@@ -50,14 +58,9 @@ public class PortletConfigurationImporterHelper {
 				layout.getPlid(), portletId, widgetConfig);
 	}
 
-	@Reference
-	private LayoutLocalService _layoutLocalService;
-
-	@Reference
-	private PortletLocalService _portletLocalService;
-
-	@Reference
-	private PortletPreferencesPortletConfigurationImporter
+	private final LayoutLocalService _layoutLocalService;
+	private final PortletLocalService _portletLocalService;
+	private final PortletPreferencesPortletConfigurationImporter
 		_portletPreferencesPortletConfigurationImporter;
 
 }
