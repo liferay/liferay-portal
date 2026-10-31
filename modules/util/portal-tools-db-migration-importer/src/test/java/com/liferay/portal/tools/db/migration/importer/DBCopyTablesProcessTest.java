@@ -77,6 +77,9 @@ public class DBCopyTablesProcessTest {
 			RandomTestUtil.randomInt(), -101, RandomTestUtil.randomInt(),
 			"timestamp with time zone");
 		_testGetPostgreSQLColumnType(
+			RandomTestUtil.randomInt(), -102, RandomTestUtil.randomInt(),
+			"timestamp with time zone");
+		_testGetPostgreSQLColumnType(
 			RandomTestUtil.randomInt(), -155, RandomTestUtil.randomInt(),
 			"timestamp with time zone");
 		_testGetPostgreSQLColumnType(

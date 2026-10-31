@@ -217,26 +217,43 @@ public class DBCopyTablesProcessTest {
 	public void testRunWithCustomColumns() throws Exception {
 		DBType dbType = _sourceDB.getDBType();
 
-		if ((dbType == DBType.DB2) || (dbType == DBType.MARIADB) ||
-			(dbType == DBType.MYSQL)) {
-
+		if (dbType == DBType.DB2) {
 			_testRunWithCustomColumns(
 				"bytea", value -> Arrays.toString((byte[])value),
 				value -> Arrays.toString((byte[])value), "varbinary(16)",
 				RandomTestUtil::randomBytes);
-
-			String floatType = "float";
-
-			if (dbType == DBType.DB2) {
-				floatType = "real";
-			}
-
 			_testRunWithCustomColumns(
 				"double precision",
 				value -> GetterUtil.getDouble(String.valueOf(value)),
-				Function.identity(), floatType,
+				Function.identity(), "real",
 				() -> RandomTestUtil.randomInt(0, 99999) / 100F);
-
+			_testRunWithCustomColumns(
+				"text", Function.identity(), Function.identity(), "dbclob",
+				() -> StringBundler.concat(
+					RandomTestUtil.randomString(), StringPool.NEW_LINE,
+					RandomTestUtil.randomString()));
+			_testRunWithCustomColumns(
+				"time without time zone", Function.identity(),
+				Function.identity(), "time",
+				() -> Time.valueOf(
+					LocalTime.ofSecondOfDay(
+						RandomTestUtil.randomInt(0, 86399))));
+			_testRunWithCustomColumns(
+				"timestamp without time zone", Function.identity(),
+				Function.identity(), "date",
+				() -> Date.valueOf(
+					LocalDate.ofEpochDay(RandomTestUtil.randomInt(0, 36524))));
+		}
+		else if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
+			_testRunWithCustomColumns(
+				"bytea", value -> Arrays.toString((byte[])value),
+				value -> Arrays.toString((byte[])value), "varbinary(16)",
+				RandomTestUtil::randomBytes);
+			_testRunWithCustomColumns(
+				"double precision",
+				value -> GetterUtil.getDouble(String.valueOf(value)),
+				Function.identity(), "float",
+				() -> RandomTestUtil.randomInt(0, 99999) / 100F);
 			_testRunWithCustomColumns(
 				"time without time zone", Function.identity(),
 				Function.identity(), "time",
@@ -271,10 +288,22 @@ public class DBCopyTablesProcessTest {
 			_testRunWithCustomColumns(
 				"timestamp with time zone",
 				value -> Timestamp.from(Instant.from((OffsetDateTime)value)),
+				Function.identity(), "timestamp with local time zone",
+				() -> OffsetDateTime.ofInstant(
+					Instant.ofEpochSecond(RandomTestUtil.randomInt()),
+					ZoneOffset.ofHours(RandomTestUtil.randomInt(-12, 14))));
+			_testRunWithCustomColumns(
+				"timestamp with time zone",
+				value -> Timestamp.from(Instant.from((OffsetDateTime)value)),
 				Function.identity(), "timestamp with time zone",
 				() -> OffsetDateTime.ofInstant(
 					Instant.ofEpochSecond(RandomTestUtil.randomInt()),
 					ZoneOffset.ofHours(RandomTestUtil.randomInt(-12, 14))));
+			_testRunWithCustomColumns(
+				"timestamp without time zone", Function.identity(),
+				Function.identity(), "date",
+				() -> Date.valueOf(
+					LocalDate.ofEpochDay(RandomTestUtil.randomInt(0, 36524))));
 		}
 		else if (dbType == DBType.SQLSERVER) {
 			_testRunWithCustomColumns(
@@ -290,6 +319,11 @@ public class DBCopyTablesProcessTest {
 				value -> GetterUtil.getDouble(String.valueOf(value)),
 				Function.identity(), "real",
 				() -> RandomTestUtil.randomInt(0, 99999) / 100F);
+			_testRunWithCustomColumns(
+				"text", Function.identity(), Function.identity(), "ntext",
+				() -> StringBundler.concat(
+					RandomTestUtil.randomString(), StringPool.RETURN_NEW_LINE,
+					RandomTestUtil.randomString()));
 			_testRunWithCustomColumns(
 				"time without time zone", Function.identity(),
 				Function.identity(), "time",
@@ -309,6 +343,18 @@ public class DBCopyTablesProcessTest {
 				() -> Date.valueOf(
 					LocalDate.ofEpochDay(RandomTestUtil.randomInt(0, 36524))));
 		}
+
+		_testRunWithCustomColumns(
+			"character varying(10)",
+			value -> {
+				if ((dbType == DBType.MARIADB) || (dbType == DBType.MYSQL)) {
+					return value;
+				}
+
+				return value + "     ";
+			},
+			Function.identity(), "char(10)",
+			() -> RandomTestUtil.randomString(5));
 
 		_testRunWithCustomColumns();
 	}
