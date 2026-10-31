@@ -134,6 +134,52 @@ public class CopyDLObjectsMVCActionCommandTest {
 	}
 
 	@Test
+	@TestInfo("LPD-109885")
+	public void testCheckDestinationGroupFromDepotToConnectedSite()
+		throws Exception {
+
+		long depotGroupId = RandomTestUtil.randomLong();
+
+		_setUpDepotGroup(depotGroupId);
+
+		long siteGroupId = RandomTestUtil.randomLong();
+
+		ReflectionTestUtil.invoke(
+			_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
+			new Class<?>[] {Group.class, long[].class, long.class},
+			Mockito.mock(Group.class), new long[] {siteGroupId, depotGroupId},
+			depotGroupId);
+	}
+
+	@Test
+	@TestInfo("LPD-109885")
+	public void testCheckDestinationGroupFromDepotToUnconnectedSite()
+		throws Exception {
+
+		long depotGroupId = RandomTestUtil.randomLong();
+
+		_setUpDepotGroup(depotGroupId);
+
+		long siteGroupId = RandomTestUtil.randomLong();
+
+		try {
+			ReflectionTestUtil.invoke(
+				_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
+				new Class<?>[] {Group.class, long[].class, long.class},
+				Mockito.mock(Group.class), new long[] {siteGroupId},
+				depotGroupId);
+
+			Assert.fail();
+		}
+		catch (Exception exception) {
+			Assert.assertEquals(
+				"the-item-is-not-copied-because-the-site-and-asset-library-" +
+					"are-not-connected",
+				exception.getMessage());
+		}
+	}
+
+	@Test
 	public void testRepositoryGroupIsUsed() throws Exception {
 		long destinationGroupId = RandomTestUtil.randomLong();
 		long destinationRepositoryId = RandomTestUtil.randomLong();
