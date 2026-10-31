@@ -57,9 +57,8 @@ public class CommerceDiscountCommerceAccountGroupRelServiceImpl
 
 		CommerceDiscountCommerceAccountGroupRel
 			commerceDiscountCommerceAccountGroupRel =
-				commerceDiscountCommerceAccountGroupRelLocalService.
-					getCommerceDiscountCommerceAccountGroupRel(
-						commerceDiscountCommerceAccountGroupRelId);
+				commerceDiscountCommerceAccountGroupRelPersistence.
+					findByPrimaryKey(commerceDiscountCommerceAccountGroupRelId);
 
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(),
@@ -93,9 +92,8 @@ public class CommerceDiscountCommerceAccountGroupRelServiceImpl
 
 		CommerceDiscountCommerceAccountGroupRel
 			commerceDiscountCommerceAccountGroupRel =
-				commerceDiscountCommerceAccountGroupRelLocalService.
-					fetchCommerceDiscountCommerceAccountGroupRel(
-						commerceDiscountId, commerceAccountGroupId);
+				commerceDiscountCommerceAccountGroupRelPersistence.
+					fetchByCDI_CAGI(commerceDiscountId, commerceAccountGroupId);
 
 		if (commerceDiscountCommerceAccountGroupRel != null) {
 			_commerceDiscountResourcePermission.check(
@@ -115,9 +113,8 @@ public class CommerceDiscountCommerceAccountGroupRelServiceImpl
 
 		CommerceDiscountCommerceAccountGroupRel
 			commerceDiscountCommerceAccountGroupRel =
-				commerceDiscountCommerceAccountGroupRelLocalService.
-					getCommerceDiscountCommerceAccountGroupRel(
-						commerceDiscountCommerceAccountGroupRelId);
+				commerceDiscountCommerceAccountGroupRelPersistence.
+					findByPrimaryKey(commerceDiscountCommerceAccountGroupRelId);
 
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(),
@@ -138,8 +135,8 @@ public class CommerceDiscountCommerceAccountGroupRelServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountCommerceAccountGroupRelLocalService.
-			getCommerceDiscountCommerceAccountGroupRels(
+		return commerceDiscountCommerceAccountGroupRelPersistence.
+			findByCommerceDiscountId(
 				commerceDiscountId, start, end, orderByComparator);
 	}
 
@@ -161,9 +158,8 @@ public class CommerceDiscountCommerceAccountGroupRelServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountCommerceAccountGroupRelLocalService.
-			getCommerceDiscountCommerceAccountGroupRelsCount(
-				commerceDiscountId);
+		return commerceDiscountCommerceAccountGroupRelPersistence.
+			countByCommerceDiscountId(commerceDiscountId);
 	}
 
 	@Override

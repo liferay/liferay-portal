@@ -135,7 +135,7 @@ public class CommerceDiscountRuleServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountRuleLocalService.getCommerceDiscountRules(
+		return commerceDiscountRulePersistence.findByCommerceDiscountId(
 			commerceDiscountId, start, end, orderByComparator);
 	}
 

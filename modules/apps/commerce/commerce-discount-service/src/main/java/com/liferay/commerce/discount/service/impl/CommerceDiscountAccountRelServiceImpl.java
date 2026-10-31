@@ -55,8 +55,8 @@ public class CommerceDiscountAccountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountAccountRel commerceDiscountAccountRel =
-			commerceDiscountAccountRelLocalService.
-				getCommerceDiscountAccountRel(commerceDiscountAccountRelId);
+			commerceDiscountAccountRelPersistence.findByPrimaryKey(
+				commerceDiscountAccountRelId);
 
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(),
@@ -86,9 +86,8 @@ public class CommerceDiscountAccountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountAccountRel commerceDiscountAccountRel =
-			commerceDiscountAccountRelLocalService.
-				fetchCommerceDiscountAccountRel(
-					commerceAccountId, commerceDiscountId);
+			commerceDiscountAccountRelPersistence.fetchByCAI_CDI(
+				commerceAccountId, commerceDiscountId);
 
 		if (commerceDiscountAccountRel != null) {
 			_commerceDiscountResourcePermission.check(
@@ -106,8 +105,8 @@ public class CommerceDiscountAccountRelServiceImpl
 		throws PortalException {
 
 		CommerceDiscountAccountRel commerceDiscountAccountRel =
-			commerceDiscountAccountRelLocalService.
-				getCommerceDiscountAccountRel(commerceDiscountAccountRelId);
+			commerceDiscountAccountRelPersistence.findByPrimaryKey(
+				commerceDiscountAccountRelId);
 
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(),
@@ -126,9 +125,8 @@ public class CommerceDiscountAccountRelServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountAccountRelLocalService.
-			getCommerceDiscountAccountRels(
-				commerceDiscountId, start, end, orderByComparator);
+		return commerceDiscountAccountRelPersistence.findByCommerceDiscountId(
+			commerceDiscountId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -146,8 +144,8 @@ public class CommerceDiscountAccountRelServiceImpl
 		_commerceDiscountResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.UPDATE);
 
-		return commerceDiscountAccountRelLocalService.
-			getCommerceDiscountAccountRelsCount(commerceDiscountId);
+		return commerceDiscountAccountRelPersistence.countByCommerceDiscountId(
+			commerceDiscountId);
 	}
 
 	@Override

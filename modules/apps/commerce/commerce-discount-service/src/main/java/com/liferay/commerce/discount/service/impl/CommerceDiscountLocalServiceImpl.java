@@ -37,6 +37,7 @@ import com.liferay.commerce.discount.service.CommerceDiscountRelLocalService;
 import com.liferay.commerce.discount.service.CommerceDiscountRuleLocalService;
 import com.liferay.commerce.discount.service.CommerceDiscountUsageEntryLocalService;
 import com.liferay.commerce.discount.service.base.CommerceDiscountLocalServiceBaseImpl;
+import com.liferay.commerce.discount.service.persistence.CommerceDiscountRulePersistence;
 import com.liferay.commerce.discount.target.CommerceDiscountTarget;
 import com.liferay.commerce.discount.target.CommerceDiscountTargetRegistry;
 import com.liferay.commerce.discount.util.comparator.CommerceDiscountCreateDateComparator;
@@ -2037,7 +2038,7 @@ public class CommerceDiscountLocalServiceImpl
 
 		if (commerceDiscountId > 0) {
 			List<CommerceDiscountRule> commerceDiscountRules =
-				_commerceDiscountRuleLocalService.getCommerceDiscountRules(
+				_commerceDiscountRulePersistence.findByCommerceDiscountId(
 					commerceDiscountId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					null);
 
@@ -2089,6 +2090,9 @@ public class CommerceDiscountLocalServiceImpl
 
 	@Reference
 	private CommerceDiscountRuleLocalService _commerceDiscountRuleLocalService;
+
+	@Reference
+	private CommerceDiscountRulePersistence _commerceDiscountRulePersistence;
 
 	@Reference
 	private CommerceDiscountRuleTypeRegistry _commerceDiscountRuleTypeRegistry;

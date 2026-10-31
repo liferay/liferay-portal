@@ -74,9 +74,8 @@ public class CommerceDiscountOrderTypeRelServiceImpl
 		_commerceDiscountModelResourcePermission.check(
 			getPermissionChecker(), commerceDiscountId, ActionKeys.VIEW);
 
-		return commerceDiscountOrderTypeRelLocalService.
-			fetchCommerceDiscountOrderTypeRel(
-				commerceDiscountId, commerceOrderTypeId);
+		return commerceDiscountOrderTypeRelPersistence.fetchByCDI_COTI(
+			commerceDiscountId, commerceOrderTypeId);
 	}
 
 	@Override

@@ -301,9 +301,8 @@ public class CommerceDiscountServiceImpl
 		throws PortalException {
 
 		CommerceDiscount commerceDiscount =
-			commerceDiscountLocalService.
-				fetchCommerceDiscountByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commerceDiscountPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commerceDiscount != null) {
 			_commerceDiscountResourcePermission.check(
