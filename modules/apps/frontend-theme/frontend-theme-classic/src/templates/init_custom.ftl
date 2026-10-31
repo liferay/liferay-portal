@@ -1,8 +1,8 @@
 <#assign
-	show_footer = getterUtil.getBoolean(themeDisplay.getThemeSetting("show-footer"))
-	show_header = getterUtil.getBoolean(themeDisplay.getThemeSetting("show-header"))
-	show_header_search = getterUtil.getBoolean(themeDisplay.getThemeSetting("show-header-search"))
-	wrap_widget_page_content = getterUtil.getBoolean(themeDisplay.getThemeSetting("wrap-widget-page-content"))
+	show_footer = getterUtil.getBoolean(theme_settings["show-footer"]!)
+	show_header = getterUtil.getBoolean(theme_settings["show-header"]!)
+	show_header_search = getterUtil.getBoolean(theme_settings["show-header-search"]!)
+	wrap_widget_page_content = getterUtil.getBoolean(theme_settings["wrap-widget-page-content"]!)
 />
 
 <#if wrap_widget_page_content && ((layout.isTypeContent() && themeDisplay.isStateMaximized()) || (layout.getType() == "portlet"))>
