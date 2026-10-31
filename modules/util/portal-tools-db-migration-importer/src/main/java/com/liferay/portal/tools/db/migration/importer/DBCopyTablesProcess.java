@@ -394,6 +394,8 @@ public class DBCopyTablesProcess {
 		else if ((sourceType == Types.DATE) ||
 				 (sourceType == Types.TIMESTAMP) ||
 				 (sourceType == Types.TIMESTAMP_WITH_TIMEZONE) ||
+				 (sourceType ==
+					 _SQL_TYPE_ORACLE_TIMESTAMP_WITH_LOCAL_TIME_ZONE) ||
 				 (sourceType == _SQL_TYPE_ORACLE_TIMESTAMP_WITH_TIME_ZONE) ||
 				 (sourceType == _SQL_TYPE_SQL_SERVER_DATETIMEOFFSET)) {
 
@@ -599,6 +601,7 @@ public class DBCopyTablesProcess {
 		}
 
 		if ((dataType == Types.TIMESTAMP_WITH_TIMEZONE) ||
+			(dataType == _SQL_TYPE_ORACLE_TIMESTAMP_WITH_LOCAL_TIME_ZONE) ||
 			(dataType == _SQL_TYPE_ORACLE_TIMESTAMP_WITH_TIME_ZONE) ||
 			(dataType == _SQL_TYPE_SQL_SERVER_DATETIMEOFFSET)) {
 
@@ -769,6 +772,9 @@ public class DBCopyTablesProcess {
 	private static final int _SQL_TYPE_ORACLE_BINARY_DOUBLE = 101;
 
 	private static final int _SQL_TYPE_ORACLE_BINARY_FLOAT = 100;
+
+	private static final int _SQL_TYPE_ORACLE_TIMESTAMP_WITH_LOCAL_TIME_ZONE =
+		-102;
 
 	private static final int _SQL_TYPE_ORACLE_TIMESTAMP_WITH_TIME_ZONE = -101;
 
