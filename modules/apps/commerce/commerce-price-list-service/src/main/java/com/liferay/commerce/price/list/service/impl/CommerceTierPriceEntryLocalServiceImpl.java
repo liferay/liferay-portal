@@ -195,8 +195,12 @@ public class CommerceTierPriceEntryLocalServiceImpl
 		_commercePriceEntryLocalService.setHasTierPrice(
 			commercePriceEntryId, true, bulkPricing);
 
-		return _startWorkflowInstance(
-			user.getUserId(), commerceTierPriceEntry, serviceContext);
+		if (!commerceTierPriceEntry.isExpired()) {
+			commerceTierPriceEntry = _startWorkflowInstance(
+				user.getUserId(), commerceTierPriceEntry, serviceContext);
+		}
+
+		return commerceTierPriceEntry;
 	}
 
 	@Override
@@ -682,8 +686,10 @@ public class CommerceTierPriceEntryLocalServiceImpl
 		commerceTierPriceEntry = commerceTierPriceEntryPersistence.update(
 			commerceTierPriceEntry);
 
-		commerceTierPriceEntry = _startWorkflowInstance(
-			user.getUserId(), commerceTierPriceEntry, serviceContext);
+		if (!commerceTierPriceEntry.isExpired()) {
+			commerceTierPriceEntry = _startWorkflowInstance(
+				user.getUserId(), commerceTierPriceEntry, serviceContext);
+		}
 
 		return commerceTierPriceEntry;
 	}
