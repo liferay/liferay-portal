@@ -315,29 +315,12 @@ public class DLFileVersionPersistenceTest {
 	}
 
 	@Test
-	public void testCountByMimeType() throws Exception {
-		_persistence.countByMimeType("");
-
-		_persistence.countByMimeType("null");
-
-		_persistence.countByMimeType((String)null);
-	}
-
-	@Test
 	public void testCountByC_SU() throws Exception {
 		_persistence.countByC_SU(RandomTestUtil.nextLong(), "");
 
 		_persistence.countByC_SU(0L, "null");
 
 		_persistence.countByC_SU(0L, (String)null);
-	}
-
-	@Test
-	public void testCountByC_NotS() throws Exception {
-		_persistence.countByC_NotS(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByC_NotS(0L, 0);
 	}
 
 	@Test
@@ -803,4 +786,4 @@ public class DLFileVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2058920317
+// LIFERAY-SERVICE-BUILDER-HASH:430909051

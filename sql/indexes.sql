@@ -101,9 +101,8 @@ create index IX_1DC796CD on DLFileEntry (groupId, folderId, userId);
 create index IX_43261870 on DLFileEntry (groupId, userId);
 create unique index IX_E111251C on DLFileEntry (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_4DB7A143 on DLFileEntry (largeImageId);
-create index IX_D9492CF6 on DLFileEntry (mimeType[$COLUMN_LENGTH:75$]);
 create index IX_9EE96CAD on DLFileEntry (repositoryId);
-create index IX_25F5CAB9 on DLFileEntry (smallImageId, largeImageId, custom1ImageId, custom2ImageId);
+create index IX_BC9A0CF7 on DLFileEntry (smallImageId);
 create index IX_64F0FE40 on DLFileEntry (uuid_[$COLUMN_LENGTH:75$]);
 
 create unique index IX_1B8022EC on DLFileEntryMetadata (externalReferenceCode[$COLUMN_LENGTH:75$], companyId, ctCollectionId);
@@ -123,18 +122,17 @@ create index IX_6E00A2EC on DLFileEntryTypes_DLFolders (folderId);
 
 create index IX_A4BB2E58 on DLFileShortcut (companyId);
 create unique index IX_5AF71D81 on DLFileShortcut (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);
-create index IX_17EE3098 on DLFileShortcut (groupId, folderId, active_, status);
+create index IX_B0051937 on DLFileShortcut (groupId, folderId);
 create unique index IX_86FE17F8 on DLFileShortcut (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_4B7247F6 on DLFileShortcut (toFileEntryId);
 create index IX_4831EBE4 on DLFileShortcut (uuid_[$COLUMN_LENGTH:75$]);
 
 create index IX_CF394FE on DLFileVersion (companyId, storeUUID[$COLUMN_LENGTH:255$]);
+create index IX_D47BB14D on DLFileVersion (fileEntryId, status);
 create unique index IX_10E504DF on DLFileVersion (fileEntryId, version[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_BC5541ED on DLFileVersion (groupId, folderId, version[$COLUMN_LENGTH:75$], title[$COLUMN_LENGTH:255$]);
-create index IX_FFB3395C on DLFileVersion (mimeType[$COLUMN_LENGTH:75$]);
+create index IX_F65D4F53 on DLFileVersion (groupId, status, folderId);
 create index IX_5898E799 on DLFileVersion (status, companyId, expirationDate);
-create index IX_D50EAA41 on DLFileVersion (status, fileEntryId);
-create index IX_799D5D47 on DLFileVersion (status, groupId, folderId);
 create unique index IX_350F5CAE on DLFileVersion (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId);
 
 create index IX_A74DB14C on DLFolder (companyId);

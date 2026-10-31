@@ -403,79 +403,6 @@ public class DLFileEntryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the document library file entries where mimeType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param mimeType the mime type
-	 * @param start the lower bound of the range of document library file entries
-	 * @param end the upper bound of the range of document library file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching document library file entries
-	 */
-	public static List<DLFileEntry> findByMimeType(
-		String mimeType, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByMimeType(
-			mimeType, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first document library file entry in the ordered set where mimeType = &#63;.
-	 *
-	 * @param mimeType the mime type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file entry
-	 * @throws NoSuchFileEntryException if a matching document library file entry could not be found
-	 */
-	public static DLFileEntry findByMimeType_First(
-			String mimeType, OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.document.library.kernel.exception.
-			NoSuchFileEntryException {
-
-		return getPersistence().findByMimeType_First(
-			mimeType, orderByComparator);
-	}
-
-	/**
-	 * Returns the first document library file entry in the ordered set where mimeType = &#63;.
-	 *
-	 * @param mimeType the mime type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
-	 */
-	public static DLFileEntry fetchByMimeType_First(
-		String mimeType, OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return getPersistence().fetchByMimeType_First(
-			mimeType, orderByComparator);
-	}
-
-	/**
-	 * Removes all the document library file entries where mimeType = &#63; from the database.
-	 *
-	 * @param mimeType the mime type
-	 */
-	public static void removeByMimeType(String mimeType) {
-		getPersistence().removeByMimeType(mimeType);
-	}
-
-	/**
-	 * Returns the number of document library file entries where mimeType = &#63;.
-	 *
-	 * @param mimeType the mime type
-	 * @return the number of matching document library file entries
-	 */
-	public static int countByMimeType(String mimeType) {
-		return getPersistence().countByMimeType(mimeType);
-	}
-
-	/**
 	 * Returns an ordered range of all the document library file entries where fileEntryTypeId = &#63;.
 	 *
 	 * <p>
@@ -1902,109 +1829,6 @@ public class DLFileEntryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the document library file entries where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @param start the lower bound of the range of document library file entries
-	 * @param end the upper bound of the range of document library file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching document library file entries
-	 */
-	public static List<DLFileEntry> findByS_L_C1_C2(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByS_L_C1_C2(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId, start,
-			end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first document library file entry in the ordered set where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file entry
-	 * @throws NoSuchFileEntryException if a matching document library file entry could not be found
-	 */
-	public static DLFileEntry findByS_L_C1_C2_First(
-			long smallImageId, long largeImageId, long custom1ImageId,
-			long custom2ImageId,
-			OrderByComparator<DLFileEntry> orderByComparator)
-		throws com.liferay.document.library.kernel.exception.
-			NoSuchFileEntryException {
-
-		return getPersistence().findByS_L_C1_C2_First(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId,
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first document library file entry in the ordered set where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching document library file entry, or <code>null</code> if a matching document library file entry could not be found
-	 */
-	public static DLFileEntry fetchByS_L_C1_C2_First(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId, OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return getPersistence().fetchByS_L_C1_C2_First(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId,
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the document library file entries where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63; from the database.
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 */
-	public static void removeByS_L_C1_C2(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId) {
-
-		getPersistence().removeByS_L_C1_C2(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId);
-	}
-
-	/**
-	 * Returns the number of document library file entries where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @return the number of matching document library file entries
-	 */
-	public static int countByS_L_C1_C2(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId) {
-
-		return getPersistence().countByS_L_C1_C2(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId);
-	}
-
-	/**
 	 * Returns the document library file entry where externalReferenceCode = &#63; and groupId = &#63; or throws a <code>NoSuchFileEntryException</code> if it could not be found.
 	 *
 	 * @param externalReferenceCode the external reference code
@@ -2326,55 +2150,6 @@ public class DLFileEntryUtil {
 
 		return getPersistence().findByRepositoryId(
 			repositoryId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the document library file entries where mimeType = &#63;.
-	 *
-	 * @param mimeType the mime type
-	 * @return the matching document library file entries
-	 */
-	public static List<DLFileEntry> findByMimeType(String mimeType) {
-		return getPersistence().findByMimeType(mimeType);
-	}
-
-	/**
-	 * Returns a range of all the document library file entries where mimeType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param mimeType the mime type
-	 * @param start the lower bound of the range of document library file entries
-	 * @param end the upper bound of the range of document library file entries (not inclusive)
-	 * @return the range of matching document library file entries
-	 */
-	public static List<DLFileEntry> findByMimeType(
-		String mimeType, int start, int end) {
-
-		return getPersistence().findByMimeType(mimeType, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the document library file entries where mimeType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param mimeType the mime type
-	 * @param start the lower bound of the range of document library file entries
-	 * @param end the upper bound of the range of document library file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching document library file entries
-	 */
-	public static List<DLFileEntry> findByMimeType(
-		String mimeType, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return getPersistence().findByMimeType(
-			mimeType, start, end, orderByComparator);
 	}
 
 	/**
@@ -3364,73 +3139,6 @@ public class DLFileEntryUtil {
 			companyId, classNameId, classPK, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the document library file entries where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @return the matching document library file entries
-	 */
-	public static List<DLFileEntry> findByS_L_C1_C2(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId) {
-
-		return getPersistence().findByS_L_C1_C2(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId);
-	}
-
-	/**
-	 * Returns a range of all the document library file entries where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @param start the lower bound of the range of document library file entries
-	 * @param end the upper bound of the range of document library file entries (not inclusive)
-	 * @return the range of matching document library file entries
-	 */
-	public static List<DLFileEntry> findByS_L_C1_C2(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId, int start, int end) {
-
-		return getPersistence().findByS_L_C1_C2(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId, start,
-			end);
-	}
-
-	/**
-	 * Returns an ordered range of all the document library file entries where smallImageId = &#63; and largeImageId = &#63; and custom1ImageId = &#63; and custom2ImageId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.documentlibrary.model.impl.DLFileEntryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param smallImageId the small image ID
-	 * @param largeImageId the large image ID
-	 * @param custom1ImageId the custom1 image ID
-	 * @param custom2ImageId the custom2 image ID
-	 * @param start the lower bound of the range of document library file entries
-	 * @param end the upper bound of the range of document library file entries (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching document library file entries
-	 */
-	public static List<DLFileEntry> findByS_L_C1_C2(
-		long smallImageId, long largeImageId, long custom1ImageId,
-		long custom2ImageId, int start, int end,
-		OrderByComparator<DLFileEntry> orderByComparator) {
-
-		return getPersistence().findByS_L_C1_C2(
-			smallImageId, largeImageId, custom1ImageId, custom2ImageId, start,
-			end, orderByComparator);
-	}
-
 	public static DLFileEntryPersistence getPersistence() {
 		return _persistence;
 	}
@@ -3442,4 +3150,4 @@ public class DLFileEntryUtil {
 	private static volatile DLFileEntryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1373237162
+// LIFERAY-SERVICE-BUILDER-HASH:-581794924

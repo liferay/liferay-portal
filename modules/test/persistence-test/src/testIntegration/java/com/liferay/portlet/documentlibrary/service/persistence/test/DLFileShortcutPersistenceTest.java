@@ -303,24 +303,6 @@ public class DLFileShortcutPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_F_A() throws Exception {
-		_persistence.countByG_F_A(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.randomBoolean());
-
-		_persistence.countByG_F_A(0L, 0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByG_F_A_S() throws Exception {
-		_persistence.countByG_F_A_S(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.randomBoolean(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_F_A_S(0L, 0L, RandomTestUtil.randomBoolean(), 0);
-	}
-
-	@Test
 	public void testCountByERC_G() throws Exception {
 		_persistence.countByERC_G("", RandomTestUtil.nextLong());
 
@@ -730,4 +712,4 @@ public class DLFileShortcutPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:276602882
+// LIFERAY-SERVICE-BUILDER-HASH:-1939685796
