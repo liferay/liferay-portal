@@ -223,7 +223,7 @@ public class SegmentsExperimentLocalServiceImpl
 		long groupId, String segmentsExperienceKey, long plid) {
 
 		SegmentsExperience segmentsExperience =
-			_segmentsExperienceLocalService.fetchSegmentsExperience(
+			_segmentsExperiencePersistence.fetchByG_SEK_P(
 				groupId, segmentsExperienceKey, _getPublishedLayoutPlid(plid));
 
 		if (segmentsExperience == null) {

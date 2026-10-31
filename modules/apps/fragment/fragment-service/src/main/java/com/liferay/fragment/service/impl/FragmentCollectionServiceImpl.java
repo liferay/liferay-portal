@@ -93,9 +93,8 @@ public class FragmentCollectionServiceImpl
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
 		FragmentCollection fragmentCollection =
-			fragmentCollectionLocalService.
-				getFragmentCollectionByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			fragmentCollectionPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		return fragmentCollectionLocalService.deleteFragmentCollection(
 			fragmentCollection);
@@ -201,9 +200,8 @@ public class FragmentCollectionServiceImpl
 			getPermissionChecker(), groupId,
 			FragmentActionKeys.MANAGE_FRAGMENT_ENTRIES);
 
-		return fragmentCollectionLocalService.
-			getFragmentCollectionByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		return fragmentCollectionPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 	}
 
 	@Override

@@ -12,8 +12,8 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperienceAudienceEntryRel;
-import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.service.base.SegmentsExperienceAudienceEntryRelServiceBaseImpl;
+import com.liferay.segments.service.persistence.SegmentsExperiencePersistence;
 
 import java.util.List;
 
@@ -41,9 +41,8 @@ public class SegmentsExperienceAudienceEntryRelServiceImpl
 		throws PortalException {
 
 		SegmentsExperience segmentsExperience =
-			_segmentsExperienceLocalService.
-				getSegmentsExperienceByExternalReferenceCode(
-					segmentsExperienceERC, groupId);
+			_segmentsExperiencePersistence.findByERC_G(
+				segmentsExperienceERC, groupId);
 
 		_layoutModelResourcePermission.check(
 			getPermissionChecker(), segmentsExperience.getPlid(),
@@ -60,6 +59,6 @@ public class SegmentsExperienceAudienceEntryRelServiceImpl
 	private ModelResourcePermission<Layout> _layoutModelResourcePermission;
 
 	@Reference
-	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
+	private SegmentsExperiencePersistence _segmentsExperiencePersistence;
 
 }

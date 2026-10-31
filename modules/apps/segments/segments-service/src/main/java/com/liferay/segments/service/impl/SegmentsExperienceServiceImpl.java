@@ -135,9 +135,8 @@ public class SegmentsExperienceServiceImpl
 		throws PortalException {
 
 		SegmentsExperience segmentsExperience =
-			segmentsExperienceLocalService.
-				getSegmentsExperienceByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			segmentsExperiencePersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_segmentsExperienceResourcePermission.check(
 			getPermissionChecker(), segmentsExperience, ActionKeys.DELETE);
@@ -169,9 +168,8 @@ public class SegmentsExperienceServiceImpl
 		throws PortalException {
 
 		SegmentsExperience segmentsExperience =
-			segmentsExperienceLocalService.
-				fetchSegmentsExperienceByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			segmentsExperiencePersistence.fetchByERC_G(
+				externalReferenceCode, groupId);
 
 		if (segmentsExperience != null) {
 			_segmentsExperienceResourcePermission.check(
@@ -216,9 +214,8 @@ public class SegmentsExperienceServiceImpl
 		throws PortalException {
 
 		SegmentsExperience segmentsExperience =
-			segmentsExperienceLocalService.
-				getSegmentsExperienceByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			segmentsExperiencePersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_segmentsExperienceResourcePermission.check(
 			getPermissionChecker(), segmentsExperience, ActionKeys.VIEW);

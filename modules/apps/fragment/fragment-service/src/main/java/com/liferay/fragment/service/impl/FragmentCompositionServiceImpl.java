@@ -115,9 +115,8 @@ public class FragmentCompositionServiceImpl
 		throws PortalException {
 
 		FragmentComposition fragmentComposition =
-			fragmentCompositionLocalService.
-				getFragmentCompositionByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			fragmentCompositionPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), fragmentComposition.getGroupId(),

@@ -46,9 +46,9 @@ import com.liferay.segments.exception.SegmentsExperiencePriorityException;
 import com.liferay.segments.model.SegmentsEntry;
 import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.model.SegmentsExperiment;
-import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsExperienceAudienceEntryRelLocalService;
 import com.liferay.segments.service.base.SegmentsExperienceLocalServiceBaseImpl;
+import com.liferay.segments.service.persistence.SegmentsEntryPersistence;
 import com.liferay.segments.service.persistence.SegmentsExperimentPersistence;
 import com.liferay.segments.service.persistence.SegmentsExperimentRelPersistence;
 import com.liferay.segments.util.comparator.SegmentsExperiencePriorityComparator;
@@ -756,11 +756,8 @@ public class SegmentsExperienceLocalServiceImpl
 			return active;
 		}
 
-		SegmentsEntryLocalService segmentsEntryLocalService =
-			_segmentsEntryLocalServiceSnapshot.get();
-
 		SegmentsEntry segmentsEntry =
-			segmentsEntryLocalService.fetchSegmentsEntry(
+			_segmentsEntryPersistence.fetchByPrimaryKey(
 				segmentsExperience.getSegmentsEntryId());
 
 		if ((segmentsEntry == null) ||
@@ -928,10 +925,6 @@ public class SegmentsExperienceLocalServiceImpl
 		_layoutPageTemplateEntryLocalServiceSnapshot = new Snapshot<>(
 			SegmentsExperienceLocalServiceImpl.class,
 			LayoutPageTemplateEntryLocalService.class);
-	private static final Snapshot<SegmentsEntryLocalService>
-		_segmentsEntryLocalServiceSnapshot = new Snapshot<>(
-			SegmentsExperienceLocalServiceImpl.class,
-			SegmentsEntryLocalService.class);
 
 	@Reference
 	private Language _language;
@@ -941,6 +934,9 @@ public class SegmentsExperienceLocalServiceImpl
 
 	@Reference
 	private ResourceLocalService _resourceLocalService;
+
+	@Reference
+	private SegmentsEntryPersistence _segmentsEntryPersistence;
 
 	@Reference
 	private SegmentsExperienceAudienceEntryRelLocalService

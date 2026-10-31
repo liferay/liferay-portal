@@ -95,9 +95,8 @@ public class FragmentEntryLinkServiceImpl
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		return fragmentEntryLinkLocalService.
-			getFragmentEntryLinkByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		return fragmentEntryLinkPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 	}
 
 	@Override
