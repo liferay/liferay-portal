@@ -81,9 +81,8 @@ public class CommercePriceModifierServiceImpl
 			Validator.isNotNull(externalReferenceCode)) {
 
 			commercePriceModifier =
-				commercePriceModifierLocalService.
-					fetchCommercePriceModifierByExternalReferenceCode(
-						externalReferenceCode, serviceContext.getCompanyId());
+				commercePriceModifierPersistence.fetchByERC_C(
+					externalReferenceCode, serviceContext.getCompanyId());
 		}
 
 		_commercePriceListModelResourcePermission.check(
@@ -153,9 +152,8 @@ public class CommercePriceModifierServiceImpl
 		throws PortalException {
 
 		CommercePriceModifier commercePriceModifier =
-			commercePriceModifierLocalService.
-				fetchCommercePriceModifierByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			commercePriceModifierPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (commercePriceModifier != null) {
 			_commercePriceListModelResourcePermission.check(

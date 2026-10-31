@@ -11,6 +11,7 @@ import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassCPDefinitionRel;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
 import com.liferay.commerce.pricing.service.base.CommercePricingClassLocalServiceBaseImpl;
+import com.liferay.commerce.pricing.service.persistence.CommercePricingClassCPDefinitionRelPersistence;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.exportimport.kernel.empty.model.EmptyModelManager;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -231,8 +232,8 @@ public class CommercePricingClassLocalServiceImpl
 	@Override
 	public long[] getCommercePricingClassByCPDefinition(long cpDefinitionId) {
 		return TransformUtil.transformToLongArray(
-			_commercePricingClassCPDefinitionRelLocalService.
-				getCommercePricingClassByCPDefinitionId(cpDefinitionId),
+			_commercePricingClassCPDefinitionRelPersistence.
+				findByCPDefinitionId(cpDefinitionId),
 			CommercePricingClassCPDefinitionRel::getCommercePricingClassId);
 	}
 
@@ -457,6 +458,10 @@ public class CommercePricingClassLocalServiceImpl
 	@Reference
 	private CommercePricingClassCPDefinitionRelLocalService
 		_commercePricingClassCPDefinitionRelLocalService;
+
+	@Reference
+	private CommercePricingClassCPDefinitionRelPersistence
+		_commercePricingClassCPDefinitionRelPersistence;
 
 	@Reference
 	private EmptyModelManager _emptyModelManager;

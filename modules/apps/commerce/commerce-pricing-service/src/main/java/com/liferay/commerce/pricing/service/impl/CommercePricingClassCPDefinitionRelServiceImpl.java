@@ -73,9 +73,8 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 
 		CommercePricingClassCPDefinitionRel
 			commercePricingClassCPDefinitionRel =
-				commercePricingClassCPDefinitionRelLocalService.
-					getCommercePricingClassCPDefinitionRel(
-						commercePricingClassCPDefinitionRelId);
+				commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
+					commercePricingClassCPDefinitionRelId);
 
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(),
@@ -96,9 +95,8 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
 
-		return commercePricingClassCPDefinitionRelLocalService.
-			fetchCommercePricingClassCPDefinitionRel(
-				commercePricingClassId, cpDefinitionId);
+		return commercePricingClassCPDefinitionRelPersistence.fetchByC_C(
+			commercePricingClassId, cpDefinitionId);
 	}
 
 	@Override
@@ -120,18 +118,16 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 
 		CommercePricingClassCPDefinitionRel
 			commercePricingClassCPDefinitionRel =
-				commercePricingClassCPDefinitionRelLocalService.
-					getCommercePricingClassCPDefinitionRel(
-						commercePricingClassCPDefinitionRelId);
+				commercePricingClassCPDefinitionRelPersistence.findByPrimaryKey(
+					commercePricingClassCPDefinitionRelId);
 
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(),
 			commercePricingClassCPDefinitionRel.getCommercePricingClassId(),
 			ActionKeys.VIEW);
 
-		return commercePricingClassCPDefinitionRelLocalService.
-			fetchCommercePricingClassCPDefinitionRel(
-				commercePricingClassCPDefinitionRelId);
+		return commercePricingClassCPDefinitionRelPersistence.fetchByPrimaryKey(
+			commercePricingClassCPDefinitionRelId);
 	}
 
 	@Override
@@ -143,8 +139,8 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
 
-		return commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRels(commercePricingClassId);
+		return commercePricingClassCPDefinitionRelPersistence.
+			findByCommercePricingClassId(commercePricingClassId);
 	}
 
 	@Override
@@ -158,8 +154,8 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
 
-		return commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRels(
+		return commercePricingClassCPDefinitionRelPersistence.
+			findByCommercePricingClassId(
 				commercePricingClassId, start, end, orderByComparator);
 	}
 
@@ -171,9 +167,8 @@ public class CommercePricingClassCPDefinitionRelServiceImpl
 		_commercePricingClassResourcePermission.check(
 			getPermissionChecker(), commercePricingClassId, ActionKeys.VIEW);
 
-		return commercePricingClassCPDefinitionRelLocalService.
-			getCommercePricingClassCPDefinitionRelsCount(
-				commercePricingClassId);
+		return commercePricingClassCPDefinitionRelPersistence.
+			countByCommercePricingClassId(commercePricingClassId);
 	}
 
 	@Override
