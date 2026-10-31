@@ -317,7 +317,7 @@ public abstract class TransactionSynchronizationManager {
 		if (!isSynchronizationActive()) {
 			throw new IllegalStateException("Cannot deactivate transaction synchronization - not active");
 		}
-		synchronizations.remove();
+		synchronizations.set(null);
 	}
 
 
@@ -451,11 +451,11 @@ public abstract class TransactionSynchronizationManager {
 	 * @see #setActualTransactionActive
 	 */
 	public static void clear() {
-		synchronizations.remove();
-		currentTransactionName.remove();
-		currentTransactionReadOnly.remove();
-		currentTransactionIsolationLevel.remove();
-		actualTransactionActive.remove();
+		synchronizations.set(null);
+		currentTransactionName.set(null);
+		currentTransactionReadOnly.set(null);
+		currentTransactionIsolationLevel.set(null);
+		actualTransactionActive.set(null);
 	}
 
 }
