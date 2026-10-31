@@ -19,11 +19,11 @@ import com.liferay.asset.list.model.AssetListEntryAssetEntryRelTable;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
-import com.liferay.asset.list.service.AssetListEntryUsageLocalService;
 import com.liferay.asset.list.service.base.AssetListEntryLocalServiceBaseImpl;
 import com.liferay.asset.list.service.persistence.AssetListEntryAssetEntryRelPersistence;
 import com.liferay.asset.list.service.persistence.AssetListEntryAudienceEntryRelPersistence;
 import com.liferay.asset.list.service.persistence.AssetListEntrySegmentsEntryRelPersistence;
+import com.liferay.asset.list.service.persistence.AssetListEntryUsagePersistence;
 import com.liferay.asset.util.AssetRendererFactoryWrapper;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -103,9 +103,8 @@ public class AssetListEntryLocalServiceImpl
 		// Asset list entry segments entry rel
 
 		AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel =
-			_assetListEntrySegmentsEntryRelLocalService.
-				fetchAssetListEntrySegmentsEntryRel(
-					assetListEntryId, segmentsEntryId);
+			_assetListEntrySegmentsEntryRelPersistence.fetchByA_S(
+				assetListEntryId, segmentsEntryId);
 
 		if (assetListEntrySegmentsEntryRel == null) {
 			assetListEntrySegmentsEntryRel =
@@ -447,9 +446,8 @@ public class AssetListEntryLocalServiceImpl
 		// Asset list entry segments entry rel
 
 		AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel =
-			_assetListEntrySegmentsEntryRelLocalService.
-				fetchAssetListEntrySegmentsEntryRel(
-					assetListEntryId, segmentsEntryId);
+			_assetListEntrySegmentsEntryRelPersistence.fetchByA_S(
+				assetListEntryId, segmentsEntryId);
 
 		if (assetListEntrySegmentsEntryRel == null) {
 			_assetListEntrySegmentsEntryRelLocalService.
@@ -555,12 +553,10 @@ public class AssetListEntryLocalServiceImpl
 			AssetListEntry assetListEntry)
 		throws PortalException {
 
-		int count =
-			_assetListEntryUsageLocalService.
-				getCompanyAssetListEntryUsagesCount(
-					assetListEntry.getCompanyId(),
-					_portal.getClassNameId(AssetListEntry.class),
-					String.valueOf(assetListEntry.getAssetListEntryId()));
+		int count = _assetListEntryUsagePersistence.countByC_C_K(
+			assetListEntry.getCompanyId(),
+			_portal.getClassNameId(AssetListEntry.class),
+			String.valueOf(assetListEntry.getAssetListEntryId()));
 
 		if (count > 0) {
 			throw new RequiredAssetListEntryException();
@@ -711,9 +707,8 @@ public class AssetListEntryLocalServiceImpl
 		}
 
 		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
-			_assetListEntryAssetEntryRelLocalService.
-				getAssetListEntryAssetEntryRels(
-					assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			_assetListEntryAssetEntryRelPersistence.findByAssetListEntryId(
+				assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		if (ListUtil.isEmpty(assetListEntryAssetEntryRels)) {
 			return StringPool.BLANK;
@@ -743,9 +738,8 @@ public class AssetListEntryLocalServiceImpl
 
 	private String _getManualAssetEntryType(long assetListEntryId) {
 		List<AssetListEntryAssetEntryRel> assetListEntryAssetEntryRels =
-			_assetListEntryAssetEntryRelLocalService.
-				getAssetListEntryAssetEntryRels(
-					assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			_assetListEntryAssetEntryRelPersistence.findByAssetListEntryId(
+				assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		if (ListUtil.isEmpty(assetListEntryAssetEntryRels)) {
 			return AssetEntry.class.getName();
@@ -780,9 +774,8 @@ public class AssetListEntryLocalServiceImpl
 			assetEntryType, typeSettings);
 
 		List<AssetListEntrySegmentsEntryRel> assetListEntrySegmentsEntryRels =
-			_assetListEntrySegmentsEntryRelLocalService.
-				getAssetListEntrySegmentsEntryRels(
-					assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			_assetListEntrySegmentsEntryRelPersistence.findByAssetListEntryId(
+				assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel :
 				assetListEntrySegmentsEntryRels) {
@@ -810,9 +803,8 @@ public class AssetListEntryLocalServiceImpl
 		String assetEntryType = _getAssetEntryType(typeSettings);
 
 		List<AssetListEntrySegmentsEntryRel> assetListEntrySegmentsEntryRels =
-			_assetListEntrySegmentsEntryRelLocalService.
-				getAssetListEntrySegmentsEntryRels(
-					assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			_assetListEntrySegmentsEntryRelPersistence.findByAssetListEntryId(
+				assetListEntryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel :
 				assetListEntrySegmentsEntryRels) {
@@ -989,7 +981,7 @@ public class AssetListEntryLocalServiceImpl
 		_assetListEntrySegmentsEntryRelPersistence;
 
 	@Reference
-	private AssetListEntryUsageLocalService _assetListEntryUsageLocalService;
+	private AssetListEntryUsagePersistence _assetListEntryUsagePersistence;
 
 	@Reference
 	private Portal _portal;

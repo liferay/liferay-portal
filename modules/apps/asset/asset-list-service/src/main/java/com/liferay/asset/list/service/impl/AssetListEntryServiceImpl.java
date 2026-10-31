@@ -188,10 +188,8 @@ public class AssetListEntryServiceImpl extends AssetListEntryServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		AssetListEntry assetListEntry =
-			assetListEntryLocalService.
-				fetchAssetListEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
+		AssetListEntry assetListEntry = assetListEntryPersistence.fetchByERC_G(
+			externalReferenceCode, groupId);
 
 		if (assetListEntry != null) {
 			_assetListEntryModelResourcePermission.check(

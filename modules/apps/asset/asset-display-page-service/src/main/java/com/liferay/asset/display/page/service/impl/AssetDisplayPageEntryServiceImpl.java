@@ -127,9 +127,8 @@ public class AssetDisplayPageEntryServiceImpl
 		}
 
 		return ListUtil.filter(
-			assetDisplayPageEntryLocalService.
-				getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-					layoutPageTemplateEntryId),
+			assetDisplayPageEntryPersistence.findByLayoutPageTemplateEntryId(
+				layoutPageTemplateEntryId),
 			this::_hasAssetViewPermission);
 	}
 
@@ -146,9 +145,8 @@ public class AssetDisplayPageEntryServiceImpl
 		}
 
 		return ListUtil.filter(
-			assetDisplayPageEntryLocalService.
-				getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-					layoutPageTemplateEntryId, start, end, orderByComparator),
+			assetDisplayPageEntryPersistence.findByLayoutPageTemplateEntryId(
+				layoutPageTemplateEntryId, start, end, orderByComparator),
 			this::_hasAssetViewPermission);
 	}
 
@@ -179,9 +177,8 @@ public class AssetDisplayPageEntryServiceImpl
 			return 0;
 		}
 
-		return assetDisplayPageEntryLocalService.
-			getAssetDisplayPageEntriesCountByLayoutPageTemplateEntryId(
-				layoutPageTemplateEntryId);
+		return assetDisplayPageEntryPersistence.
+			countByLayoutPageTemplateEntryId(layoutPageTemplateEntryId);
 	}
 
 	@Override
