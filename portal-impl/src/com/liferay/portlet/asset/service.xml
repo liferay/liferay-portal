@@ -61,16 +61,8 @@
 			<finder-column arrayable-operator="OR" name="groupId" />
 			<finder-column arrayable-operator="OR" name="vocabularyId" />
 		</finder>
-		<finder name="P_N" return-type="Collection">
-			<finder-column name="parentCategoryId" />
-			<finder-column name="name" />
-		</finder>
 		<finder name="P_V" return-type="Collection">
 			<finder-column name="parentCategoryId" />
-			<finder-column name="vocabularyId" />
-		</finder>
-		<finder name="N_V" return-type="Collection">
-			<finder-column name="name" />
 			<finder-column name="vocabularyId" />
 		</finder>
 		<finder name="G_P_V" return-type="Collection">
@@ -149,25 +141,9 @@
 		<finder name="ClassUuid" return-type="Collection">
 			<finder-column name="classUuid" />
 		</finder>
-		<finder name="Visible" return-type="Collection">
-			<finder-column name="visible" />
-		</finder>
-		<finder name="PublishDate" return-type="Collection">
-			<finder-column name="publishDate" />
-		</finder>
-		<finder name="ExpirationDate" return-type="Collection">
-			<finder-column name="expirationDate" />
-		</finder>
-		<finder name="LayoutUuid" return-type="Collection">
-			<finder-column name="layoutUuid" />
-		</finder>
 		<finder name="G_CU" return-type="AssetEntry">
 			<finder-column name="groupId" />
 			<finder-column name="classUuid" />
-		</finder>
-		<finder name="C_CN" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column name="classNameId" />
 		</finder>
 		<finder name="C_C" return-type="AssetEntry" unique="true">
 			<finder-column name="classNameId" />
@@ -177,12 +153,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="classNameId" />
 			<finder-column name="visible" />
-		</finder>
-		<finder name="G_C_P_E" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="classNameId" />
-			<finder-column name="publishDate" />
-			<finder-column name="expirationDate" />
 		</finder>
 	</entity>
 	<entity external-reference-code="group" local-service="true" name="AssetTag" remote-service="true" uuid="true">
