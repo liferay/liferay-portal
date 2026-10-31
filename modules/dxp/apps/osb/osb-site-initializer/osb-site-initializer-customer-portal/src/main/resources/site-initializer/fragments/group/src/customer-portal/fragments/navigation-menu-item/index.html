@@ -1,0 +1,28 @@
+<div class="f-navigation-menu-item">
+	<div class="d-flex menu-item-wrapper">
+		<a class="d-flex justify-content-between menu-item menu-item-${fragmentEntryLinkNamespace} mx-2 text-decoration-none" href="${configuration.menuItemUrl}">
+			<div class="d-flex menu-item-group">
+				<div class="menu-item-icon mr-1 px-1">
+					[@clay["icon"] cssClass="sites-icon" symbol="sites"/]
+				</div>
+
+				<div class="menu-item-text ml-2" data-lfr-editable-id="menuItemText" data-lfr-editable-type="text">
+					Menu Item Text
+				</div>
+			</div>
+
+			<div class="arrow-hover-icon">
+				[@clay["icon"] symbol="shortcut"/]
+			</div>
+		</a>
+	</div>
+
+<style>
+	.f-navigation-menu-item .menu-item-${fragmentEntryLinkNamespace} .menu-item-icon {
+		background-color: ${configuration.iconBackgroundColor};
+	}
+
+	.f-navigation-menu-item .menu-item-${fragmentEntryLinkNamespace} .sites-icon {
+		fill: ${configuration.iconColor};
+	}
+</style>

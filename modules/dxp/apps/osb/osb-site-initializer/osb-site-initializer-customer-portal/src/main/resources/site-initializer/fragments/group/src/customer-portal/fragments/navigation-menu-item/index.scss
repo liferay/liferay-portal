@@ -1,0 +1,32 @@
+.menu-item-wrapper {
+	border-radius: var(--border-radius-sm);
+
+	.arrow-hover-icon {
+		display: none;
+	}
+
+	.menu-item {
+		border-radius: 4px;
+		padding: 0.75rem;
+		width: 100%;
+
+		&:hover,
+		&:active,
+		&:focus {
+			background: var(--color-action-primary-hover-lighten);
+			color: var(--color-action-primary-default);
+
+			.arrow-hover-icon {
+				display: block;
+			}
+		}
+
+		.menu-item-text {
+			color: var(--color-neutral-10);
+		}
+	}
+
+	.menu-item-icon {
+		border-radius: 4px;
+	}
+}
