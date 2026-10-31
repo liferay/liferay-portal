@@ -488,98 +488,6 @@ public class SocialRequestPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<SocialRequest, NoSuchRequestException>
-		_collectionPersistenceFinderByU_S;
-
-	/**
-	 * Returns an ordered range of all the social requests where userId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param start the lower bound of the range of social requests
-	 * @param end the upper bound of the range of social requests (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social requests
-	 */
-	@Override
-	public List<SocialRequest> findByU_S(
-		long userId, int status, int start, int end,
-		OrderByComparator<SocialRequest> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByU_S.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId, status},
-			start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first social request in the ordered set where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social request
-	 * @throws NoSuchRequestException if a matching social request could not be found
-	 */
-	@Override
-	public SocialRequest findByU_S_First(
-			long userId, int status,
-			OrderByComparator<SocialRequest> orderByComparator)
-		throws NoSuchRequestException {
-
-		return _collectionPersistenceFinderByU_S.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId, status},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first social request in the ordered set where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social request, or <code>null</code> if a matching social request could not be found
-	 */
-	@Override
-	public SocialRequest fetchByU_S_First(
-		long userId, int status,
-		OrderByComparator<SocialRequest> orderByComparator) {
-
-		return _collectionPersistenceFinderByU_S.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId, status},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the social requests where userId = &#63; and status = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 */
-	@Override
-	public void removeByU_S(long userId, int status) {
-		_collectionPersistenceFinderByU_S.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId, status});
-	}
-
-	/**
-	 * Returns the number of social requests where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @return the number of matching social requests
-	 */
-	@Override
-	public int countByU_S(long userId, int status) {
-		return _collectionPersistenceFinderByU_S.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {userId, status});
-	}
-
-	private CollectionPersistenceFinder<SocialRequest, NoSuchRequestException>
 		_collectionPersistenceFinderByC_C;
 
 	/**
@@ -1490,34 +1398,6 @@ public class SocialRequestPersistenceImpl
 					"socialRequest.", "receiverUserId", FinderColumn.Type.LONG,
 					"=", true, true, SocialRequest::getReceiverUserId));
 
-		_collectionPersistenceFinderByU_S = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByU_S",
-				new String[] {
-					Long.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"userId", "status"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByU_S",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"userId", "status"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByU_S",
-				new String[] {Long.class.getName(), Integer.class.getName()},
-				new String[] {"userId", "status"}, false),
-			_SQL_SELECT_SOCIALREQUEST_WHERE, _SQL_COUNT_SOCIALREQUEST_WHERE,
-			SocialRequestModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"socialRequest.", "userId", FinderColumn.Type.LONG, "=", true,
-				true, SocialRequest::getUserId),
-			new FinderColumn<>(
-				"socialRequest.", "status", FinderColumn.Type.INTEGER, "=",
-				true, true, SocialRequest::getStatus));
-
 		_collectionPersistenceFinderByC_C = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1760,4 +1640,4 @@ public class SocialRequestPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1610586520
+// LIFERAY-SERVICE-BUILDER-HASH:-1324651317

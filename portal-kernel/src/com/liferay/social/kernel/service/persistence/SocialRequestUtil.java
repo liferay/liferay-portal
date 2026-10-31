@@ -470,85 +470,6 @@ public class SocialRequestUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the social requests where userId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.social.model.impl.SocialRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param start the lower bound of the range of social requests
-	 * @param end the upper bound of the range of social requests (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social requests
-	 */
-	public static List<SocialRequest> findByU_S(
-		long userId, int status, int start, int end,
-		OrderByComparator<SocialRequest> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByU_S(
-			userId, status, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first social request in the ordered set where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social request
-	 * @throws NoSuchRequestException if a matching social request could not be found
-	 */
-	public static SocialRequest findByU_S_First(
-			long userId, int status,
-			OrderByComparator<SocialRequest> orderByComparator)
-		throws com.liferay.social.kernel.exception.NoSuchRequestException {
-
-		return getPersistence().findByU_S_First(
-			userId, status, orderByComparator);
-	}
-
-	/**
-	 * Returns the first social request in the ordered set where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social request, or <code>null</code> if a matching social request could not be found
-	 */
-	public static SocialRequest fetchByU_S_First(
-		long userId, int status,
-		OrderByComparator<SocialRequest> orderByComparator) {
-
-		return getPersistence().fetchByU_S_First(
-			userId, status, orderByComparator);
-	}
-
-	/**
-	 * Removes all the social requests where userId = &#63; and status = &#63; from the database.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 */
-	public static void removeByU_S(long userId, int status) {
-		getPersistence().removeByU_S(userId, status);
-	}
-
-	/**
-	 * Returns the number of social requests where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @return the number of matching social requests
-	 */
-	public static int countByU_S(long userId, int status) {
-		return getPersistence().countByU_S(userId, status);
-	}
-
-	/**
 	 * Returns an ordered range of all the social requests where classNameId = &#63; and classPK = &#63;.
 	 *
 	 * <p>
@@ -1274,58 +1195,6 @@ public class SocialRequestUtil {
 	}
 
 	/**
-	 * Returns all the social requests where userId = &#63; and status = &#63;.
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @return the matching social requests
-	 */
-	public static List<SocialRequest> findByU_S(long userId, int status) {
-		return getPersistence().findByU_S(userId, status);
-	}
-
-	/**
-	 * Returns a range of all the social requests where userId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.social.model.impl.SocialRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param start the lower bound of the range of social requests
-	 * @param end the upper bound of the range of social requests (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	public static List<SocialRequest> findByU_S(
-		long userId, int status, int start, int end) {
-
-		return getPersistence().findByU_S(userId, status, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the social requests where userId = &#63; and status = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.social.model.impl.SocialRequestModelImpl</code>.
-	 * </p>
-	 *
-	 * @param userId the user ID
-	 * @param status the status
-	 * @param start the lower bound of the range of social requests
-	 * @param end the upper bound of the range of social requests (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching social requests
-	 */
-	public static List<SocialRequest> findByU_S(
-		long userId, int status, int start, int end,
-		OrderByComparator<SocialRequest> orderByComparator) {
-
-		return getPersistence().findByU_S(
-			userId, status, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the social requests where classNameId = &#63; and classPK = &#63;.
 	 *
 	 * @param classNameId the class name ID
@@ -1581,4 +1450,4 @@ public class SocialRequestUtil {
 	private static volatile SocialRequestPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-241126866
+// LIFERAY-SERVICE-BUILDER-HASH:1785431587

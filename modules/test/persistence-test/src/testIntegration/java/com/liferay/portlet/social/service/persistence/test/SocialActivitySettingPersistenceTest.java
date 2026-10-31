@@ -175,14 +175,6 @@ public class SocialActivitySettingPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C() throws Exception {
-		_persistence.countByG_C(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByG_C(0L, 0L);
-	}
-
-	@Test
 	public void testCountByG_A() throws Exception {
 		_persistence.countByG_A(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
@@ -588,4 +580,4 @@ public class SocialActivitySettingPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-285414677
+// LIFERAY-SERVICE-BUILDER-HASH:1698466225

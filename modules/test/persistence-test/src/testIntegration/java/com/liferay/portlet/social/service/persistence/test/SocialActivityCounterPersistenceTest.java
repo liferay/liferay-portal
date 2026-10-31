@@ -213,15 +213,6 @@ public class SocialActivityCounterPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_C_C_O() throws Exception {
-		_persistence.countByG_C_C_O(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_C_C_O(0L, 0L, 0L, 0);
-	}
-
-	@Test
 	public void testCountByG_C_C_N_O_S() throws Exception {
 		_persistence.countByG_C_C_N_O_S(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
@@ -677,4 +668,4 @@ public class SocialActivityCounterPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:16584529
+// LIFERAY-SERVICE-BUILDER-HASH:-840366426

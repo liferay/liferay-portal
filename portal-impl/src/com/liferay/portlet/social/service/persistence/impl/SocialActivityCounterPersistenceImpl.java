@@ -256,118 +256,6 @@ public class SocialActivityCounterPersistenceImpl
 			new Object[] {classNameId, classPK});
 	}
 
-	private CollectionPersistenceFinder
-		<SocialActivityCounter, NoSuchActivityCounterException>
-			_collectionPersistenceFinderByG_C_C_O;
-
-	/**
-	 * Returns an ordered range of all the social activity counters where groupId = &#63; and classNameId = &#63; and classPK = &#63; and ownerType = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialActivityCounterModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param ownerType the owner type
-	 * @param start the lower bound of the range of social activity counters
-	 * @param end the upper bound of the range of social activity counters (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social activity counters
-	 */
-	@Override
-	public List<SocialActivityCounter> findByG_C_C_O(
-		long groupId, long classNameId, long classPK, int ownerType, int start,
-		int end, OrderByComparator<SocialActivityCounter> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_C_C_O.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK, ownerType}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first social activity counter in the ordered set where groupId = &#63; and classNameId = &#63; and classPK = &#63; and ownerType = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param ownerType the owner type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity counter
-	 * @throws NoSuchActivityCounterException if a matching social activity counter could not be found
-	 */
-	@Override
-	public SocialActivityCounter findByG_C_C_O_First(
-			long groupId, long classNameId, long classPK, int ownerType,
-			OrderByComparator<SocialActivityCounter> orderByComparator)
-		throws NoSuchActivityCounterException {
-
-		return _collectionPersistenceFinderByG_C_C_O.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK, ownerType},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first social activity counter in the ordered set where groupId = &#63; and classNameId = &#63; and classPK = &#63; and ownerType = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param ownerType the owner type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity counter, or <code>null</code> if a matching social activity counter could not be found
-	 */
-	@Override
-	public SocialActivityCounter fetchByG_C_C_O_First(
-		long groupId, long classNameId, long classPK, int ownerType,
-		OrderByComparator<SocialActivityCounter> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_C_C_O.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK, ownerType},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the social activity counters where groupId = &#63; and classNameId = &#63; and classPK = &#63; and ownerType = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param ownerType the owner type
-	 */
-	@Override
-	public void removeByG_C_C_O(
-		long groupId, long classNameId, long classPK, int ownerType) {
-
-		_collectionPersistenceFinderByG_C_C_O.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK, ownerType});
-	}
-
-	/**
-	 * Returns the number of social activity counters where groupId = &#63; and classNameId = &#63; and classPK = &#63; and ownerType = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param classPK the class pk
-	 * @param ownerType the owner type
-	 * @return the number of matching social activity counters
-	 */
-	@Override
-	public int countByG_C_C_O(
-		long groupId, long classNameId, long classPK, int ownerType) {
-
-		return _collectionPersistenceFinderByG_C_C_O.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId, classPK, ownerType});
-	}
-
 	private UniquePersistenceFinder
 		<SocialActivityCounter, NoSuchActivityCounterException>
 			_uniquePersistenceFinderByG_C_C_N_O_S;
@@ -904,61 +792,6 @@ public class SocialActivityCounterPersistenceImpl
 				"socialActivityCounter.", "classPK", FinderColumn.Type.LONG,
 				"=", true, true, SocialActivityCounter::getClassPK));
 
-		_collectionPersistenceFinderByG_C_C_O =
-			new CollectionPersistenceFinder<>(
-				this,
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C_C_O",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Integer.class.getName(),
-						Integer.class.getName(), Integer.class.getName(),
-						OrderByComparator.class.getName()
-					},
-					new String[] {
-						"groupId", "classNameId", "classPK", "ownerType"
-					},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C_C_O",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "classNameId", "classPK", "ownerType"
-					},
-					true),
-				new FinderPath(
-					FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C_C_O",
-					new String[] {
-						Long.class.getName(), Long.class.getName(),
-						Long.class.getName(), Integer.class.getName()
-					},
-					new String[] {
-						"groupId", "classNameId", "classPK", "ownerType"
-					},
-					false),
-				_SQL_SELECT_SOCIALACTIVITYCOUNTER_WHERE,
-				_SQL_COUNT_SOCIALACTIVITYCOUNTER_WHERE,
-				SocialActivityCounterModelImpl.ORDER_BY_JPQL,
-				_ENTITY_ALIAS_PREFIX, "socialActivityCounter.endPeriod = -1",
-				"socialActivityCounter.endPeriod = -1", null,
-				new FinderColumn<>(
-					"socialActivityCounter.", "groupId", FinderColumn.Type.LONG,
-					"=", true, true, SocialActivityCounter::getGroupId),
-				new FinderColumn<>(
-					"socialActivityCounter.", "classNameId",
-					FinderColumn.Type.LONG, "=", true, true,
-					SocialActivityCounter::getClassNameId),
-				new FinderColumn<>(
-					"socialActivityCounter.", "classPK", FinderColumn.Type.LONG,
-					"=", true, true, SocialActivityCounter::getClassPK),
-				new FinderColumn<>(
-					"socialActivityCounter.", "ownerType",
-					FinderColumn.Type.INTEGER, "=", true, true,
-					SocialActivityCounter::getOwnerType));
-
 		_uniquePersistenceFinderByG_C_C_N_O_S = new UniquePersistenceFinder<>(
 			this,
 			createUniqueFinderPath(
@@ -1071,4 +904,4 @@ public class SocialActivityCounterPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1482471329
+// LIFERAY-SERVICE-BUILDER-HASH:-327644200

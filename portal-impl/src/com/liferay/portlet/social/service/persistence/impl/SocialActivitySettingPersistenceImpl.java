@@ -160,102 +160,6 @@ public class SocialActivitySettingPersistenceImpl
 
 	private CollectionPersistenceFinder
 		<SocialActivitySetting, NoSuchActivitySettingException>
-			_collectionPersistenceFinderByG_C;
-
-	/**
-	 * Returns an ordered range of all the social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialActivitySettingModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of social activity settings
-	 * @param end the upper bound of the range of social activity settings (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social activity settings
-	 */
-	@Override
-	public List<SocialActivitySetting> findByG_C(
-		long groupId, long classNameId, int start, int end,
-		OrderByComparator<SocialActivitySetting> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByG_C.find(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId}, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first social activity setting in the ordered set where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity setting
-	 * @throws NoSuchActivitySettingException if a matching social activity setting could not be found
-	 */
-	@Override
-	public SocialActivitySetting findByG_C_First(
-			long groupId, long classNameId,
-			OrderByComparator<SocialActivitySetting> orderByComparator)
-		throws NoSuchActivitySettingException {
-
-		return _collectionPersistenceFinderByG_C.findFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId}, orderByComparator);
-	}
-
-	/**
-	 * Returns the first social activity setting in the ordered set where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity setting, or <code>null</code> if a matching social activity setting could not be found
-	 */
-	@Override
-	public SocialActivitySetting fetchByG_C_First(
-		long groupId, long classNameId,
-		OrderByComparator<SocialActivitySetting> orderByComparator) {
-
-		return _collectionPersistenceFinderByG_C.fetchFirst(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId}, orderByComparator);
-	}
-
-	/**
-	 * Removes all the social activity settings where groupId = &#63; and classNameId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 */
-	@Override
-	public void removeByG_C(long groupId, long classNameId) {
-		_collectionPersistenceFinderByG_C.remove(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId});
-	}
-
-	/**
-	 * Returns the number of social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @return the number of matching social activity settings
-	 */
-	@Override
-	public int countByG_C(long groupId, long classNameId) {
-		return _collectionPersistenceFinderByG_C.count(
-			FinderCacheUtil.getFinderCache(),
-			new Object[] {groupId, classNameId});
-	}
-
-	private CollectionPersistenceFinder
-		<SocialActivitySetting, NoSuchActivitySettingException>
 			_collectionPersistenceFinderByG_A;
 
 	/**
@@ -819,35 +723,6 @@ public class SocialActivitySettingPersistenceImpl
 					"socialActivitySetting.", "groupId", FinderColumn.Type.LONG,
 					"=", true, true, SocialActivitySetting::getGroupId));
 
-		_collectionPersistenceFinderByG_C = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByG_C",
-				new String[] {
-					Long.class.getName(), Long.class.getName(),
-					Integer.class.getName(), Integer.class.getName(),
-					OrderByComparator.class.getName()
-				},
-				new String[] {"groupId", "classNameId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByG_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"groupId", "classNameId"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByG_C",
-				new String[] {Long.class.getName(), Long.class.getName()},
-				new String[] {"groupId", "classNameId"}, false),
-			_SQL_SELECT_SOCIALACTIVITYSETTING_WHERE,
-			_SQL_COUNT_SOCIALACTIVITYSETTING_WHERE,
-			SocialActivitySettingModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX,
-			"", "", null,
-			new FinderColumn<>(
-				"socialActivitySetting.", "groupId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivitySetting::getGroupId),
-			new FinderColumn<>(
-				"socialActivitySetting.", "classNameId", FinderColumn.Type.LONG,
-				"=", true, true, SocialActivitySetting::getClassNameId));
-
 		_collectionPersistenceFinderByG_A = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -972,4 +847,4 @@ public class SocialActivitySettingPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1852241604
+// LIFERAY-SERVICE-BUILDER-HASH:-198351746

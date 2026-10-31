@@ -96,72 +96,6 @@ public interface SocialActivitySettingPersistence
 	public int countByGroupId(long groupId);
 
 	/**
-	 * Returns an ordered range of all the social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.social.model.impl.SocialActivitySettingModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of social activity settings
-	 * @param end the upper bound of the range of social activity settings (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social activity settings
-	 */
-	public java.util.List<SocialActivitySetting> findByG_C(
-		long groupId, long classNameId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<SocialActivitySetting>
-			orderByComparator,
-		boolean useFinderCache);
-
-	/**
-	 * Returns the first social activity setting in the ordered set where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity setting
-	 * @throws NoSuchActivitySettingException if a matching social activity setting could not be found
-	 */
-	public SocialActivitySetting findByG_C_First(
-			long groupId, long classNameId,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<SocialActivitySetting> orderByComparator)
-		throws NoSuchActivitySettingException;
-
-	/**
-	 * Returns the first social activity setting in the ordered set where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social activity setting, or <code>null</code> if a matching social activity setting could not be found
-	 */
-	public SocialActivitySetting fetchByG_C_First(
-		long groupId, long classNameId,
-		com.liferay.portal.kernel.util.OrderByComparator<SocialActivitySetting>
-			orderByComparator);
-
-	/**
-	 * Removes all the social activity settings where groupId = &#63; and classNameId = &#63; from the database.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 */
-	public void removeByG_C(long groupId, long classNameId);
-
-	/**
-	 * Returns the number of social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @return the number of matching social activity settings
-	 */
-	public int countByG_C(long groupId, long classNameId);
-
-	/**
 	 * Returns an ordered range of all the social activity settings where groupId = &#63; and activityType = &#63;.
 	 *
 	 * <p>
@@ -459,64 +393,6 @@ public interface SocialActivitySettingPersistence
 	}
 
 	/**
-	 * Returns all the social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @return the matching social activity settings
-	 */
-	public default java.util.List<SocialActivitySetting> findByG_C(
-		long groupId, long classNameId) {
-
-		return findByG_C(
-			groupId, classNameId,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS,
-			com.liferay.portal.kernel.dao.orm.QueryUtil.ALL_POS, null, true);
-	}
-
-	/**
-	 * Returns a range of all the social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.social.model.impl.SocialActivitySettingModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of social activity settings
-	 * @param end the upper bound of the range of social activity settings (not inclusive)
-	 * @return the range of matching social activity settings
-	 */
-	public default java.util.List<SocialActivitySetting> findByG_C(
-		long groupId, long classNameId, int start, int end) {
-
-		return findByG_C(groupId, classNameId, start, end, null, true);
-	}
-
-	/**
-	 * Returns an ordered range of all the social activity settings where groupId = &#63; and classNameId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.social.model.impl.SocialActivitySettingModelImpl</code>.
-	 * </p>
-	 *
-	 * @param groupId the group ID
-	 * @param classNameId the class name ID
-	 * @param start the lower bound of the range of social activity settings
-	 * @param end the upper bound of the range of social activity settings (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching social activity settings
-	 */
-	public default java.util.List<SocialActivitySetting> findByG_C(
-		long groupId, long classNameId, int start, int end,
-		com.liferay.portal.kernel.util.OrderByComparator<SocialActivitySetting>
-			orderByComparator) {
-
-		return findByG_C(
-			groupId, classNameId, start, end, orderByComparator, true);
-	}
-
-	/**
 	 * Returns all the social activity settings where groupId = &#63; and activityType = &#63;.
 	 *
 	 * @param groupId the group ID
@@ -638,4 +514,4 @@ public interface SocialActivitySettingPersistence
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1201860461
+// LIFERAY-SERVICE-BUILDER-HASH:-1357473770

@@ -421,91 +421,6 @@ public class SocialRelationPersistenceImpl
 	}
 
 	private CollectionPersistenceFinder<SocialRelation, NoSuchRelationException>
-		_collectionPersistenceFinderByType;
-
-	/**
-	 * Returns an ordered range of all the social relations where type = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>SocialRelationModelImpl</code>.
-	 * </p>
-	 *
-	 * @param type the type
-	 * @param start the lower bound of the range of social relations
-	 * @param end the upper bound of the range of social relations (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching social relations
-	 */
-	@Override
-	public List<SocialRelation> findByType(
-		int type, int start, int end,
-		OrderByComparator<SocialRelation> orderByComparator,
-		boolean useFinderCache) {
-
-		return _collectionPersistenceFinderByType.find(
-			FinderCacheUtil.getFinderCache(), new Object[] {type}, start, end,
-			orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first social relation in the ordered set where type = &#63;.
-	 *
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social relation
-	 * @throws NoSuchRelationException if a matching social relation could not be found
-	 */
-	@Override
-	public SocialRelation findByType_First(
-			int type, OrderByComparator<SocialRelation> orderByComparator)
-		throws NoSuchRelationException {
-
-		return _collectionPersistenceFinderByType.findFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {type},
-			orderByComparator);
-	}
-
-	/**
-	 * Returns the first social relation in the ordered set where type = &#63;.
-	 *
-	 * @param type the type
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching social relation, or <code>null</code> if a matching social relation could not be found
-	 */
-	@Override
-	public SocialRelation fetchByType_First(
-		int type, OrderByComparator<SocialRelation> orderByComparator) {
-
-		return _collectionPersistenceFinderByType.fetchFirst(
-			FinderCacheUtil.getFinderCache(), new Object[] {type},
-			orderByComparator);
-	}
-
-	/**
-	 * Removes all the social relations where type = &#63; from the database.
-	 *
-	 * @param type the type
-	 */
-	@Override
-	public void removeByType(int type) {
-		_collectionPersistenceFinderByType.remove(
-			FinderCacheUtil.getFinderCache(), new Object[] {type});
-	}
-
-	/**
-	 * Returns the number of social relations where type = &#63;.
-	 *
-	 * @param type the type
-	 * @return the number of matching social relations
-	 */
-	@Override
-	public int countByType(int type) {
-		return _collectionPersistenceFinderByType.count(
-			FinderCacheUtil.getFinderCache(), new Object[] {type});
-	}
-
-	private CollectionPersistenceFinder<SocialRelation, NoSuchRelationException>
 		_collectionPersistenceFinderByC_T;
 
 	/**
@@ -1320,30 +1235,6 @@ public class SocialRelationPersistenceImpl
 					"socialRelation.", "userId2", FinderColumn.Type.LONG, "=",
 					true, true, SocialRelation::getUserId2));
 
-		_collectionPersistenceFinderByType = new CollectionPersistenceFinder<>(
-			this,
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByType",
-				new String[] {
-					Integer.class.getName(), Integer.class.getName(),
-					Integer.class.getName(), OrderByComparator.class.getName()
-				},
-				new String[] {"type_"}, true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByType",
-				new String[] {Integer.class.getName()}, new String[] {"type_"},
-				true),
-			new FinderPath(
-				FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByType",
-				new String[] {Integer.class.getName()}, new String[] {"type_"},
-				false),
-			_SQL_SELECT_SOCIALRELATION_WHERE, _SQL_COUNT_SOCIALRELATION_WHERE,
-			SocialRelationModelImpl.ORDER_BY_JPQL, _ENTITY_ALIAS_PREFIX, "", "",
-			null,
-			new FinderColumn<>(
-				"socialRelation.", "type", "type_", FinderColumn.Type.INTEGER,
-				"=", true, true, SocialRelation::getType));
-
 		_collectionPersistenceFinderByC_T = new CollectionPersistenceFinder<>(
 			this,
 			new FinderPath(
@@ -1508,4 +1399,4 @@ public class SocialRelationPersistenceImpl
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-21811959
+// LIFERAY-SERVICE-BUILDER-HASH:871440485

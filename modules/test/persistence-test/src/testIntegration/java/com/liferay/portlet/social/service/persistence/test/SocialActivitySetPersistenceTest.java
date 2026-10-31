@@ -195,42 +195,6 @@ public class SocialActivitySetPersistenceTest {
 	}
 
 	@Test
-	public void testCountByG_U_T() throws Exception {
-		_persistence.countByG_U_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByG_U_T(0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByC_C_T() throws Exception {
-		_persistence.countByC_C_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextInt());
-
-		_persistence.countByC_C_T(0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByG_U_C_T() throws Exception {
-		_persistence.countByG_U_C_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByG_U_C_T(0L, 0L, 0L, 0);
-	}
-
-	@Test
-	public void testCountByU_C_C_T() throws Exception {
-		_persistence.countByU_C_C_T(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
-
-		_persistence.countByU_C_C_T(0L, 0L, 0L, 0);
-	}
-
-	@Test
 	public void testFindByPrimaryKeyExisting() throws Exception {
 		SocialActivitySet newSocialActivitySet = addSocialActivitySet();
 
@@ -516,4 +480,4 @@ public class SocialActivitySetPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1368131997
+// LIFERAY-SERVICE-BUILDER-HASH:-592983255

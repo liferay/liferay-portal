@@ -192,13 +192,6 @@ public class SocialRelationPersistenceTest {
 	}
 
 	@Test
-	public void testCountByType() throws Exception {
-		_persistence.countByType(RandomTestUtil.nextInt());
-
-		_persistence.countByType(0);
-	}
-
-	@Test
 	public void testCountByC_T() throws Exception {
 		_persistence.countByC_T(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextInt());
@@ -581,4 +574,4 @@ public class SocialRelationPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1422177860
+// LIFERAY-SERVICE-BUILDER-HASH:1026975491
