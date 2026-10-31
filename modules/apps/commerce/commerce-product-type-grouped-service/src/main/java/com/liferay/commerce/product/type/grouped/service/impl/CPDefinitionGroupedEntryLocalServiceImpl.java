@@ -121,8 +121,8 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 		long cpDefinitionId, long newCPDefinitionId) {
 
 		List<CPDefinitionGroupedEntry> cpDefinitionGroupedEntries =
-			cpDefinitionGroupedEntryLocalService.
-				getCPDefinitionGroupedEntriesByCPDefinitionId(cpDefinitionId);
+			cpDefinitionGroupedEntryPersistence.findByCPDefinitionId(
+				cpDefinitionId);
 
 		for (CPDefinitionGroupedEntry cpDefinitionGroupedEntry :
 				cpDefinitionGroupedEntries) {

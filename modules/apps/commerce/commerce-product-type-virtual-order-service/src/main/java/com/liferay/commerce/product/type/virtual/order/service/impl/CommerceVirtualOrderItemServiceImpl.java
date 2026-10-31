@@ -77,9 +77,8 @@ public class CommerceVirtualOrderItemServiceImpl
 		throws PortalException {
 
 		CommerceVirtualOrderItem commerceVirtualOrderItem =
-			commerceVirtualOrderItemLocalService.
-				fetchCommerceVirtualOrderItemByCommerceOrderItemId(
-					commerceOrderItemId);
+			commerceVirtualOrderItemPersistence.fetchByCommerceOrderItemId(
+				commerceOrderItemId);
 
 		if (commerceVirtualOrderItem != null) {
 			CommerceOrderItem commerceOrderItem =

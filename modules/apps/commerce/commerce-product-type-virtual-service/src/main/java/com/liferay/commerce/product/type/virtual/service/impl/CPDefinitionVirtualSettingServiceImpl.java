@@ -97,8 +97,8 @@ public class CPDefinitionVirtualSettingServiceImpl
 		throws PortalException {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-			cpDefinitionVirtualSettingLocalService.
-				getCPDefinitionVirtualSetting(cpDefinitionVirtualSettingId);
+			cpDefinitionVirtualSettingPersistence.findByPrimaryKey(
+				cpDefinitionVirtualSettingId);
 
 		_checkPermission(
 			cpDefinitionVirtualSetting.getClassName(),
@@ -119,8 +119,8 @@ public class CPDefinitionVirtualSettingServiceImpl
 		throws PortalException {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-			cpDefinitionVirtualSettingLocalService.
-				getCPDefinitionVirtualSetting(cpDefinitionVirtualSettingId);
+			cpDefinitionVirtualSettingPersistence.findByPrimaryKey(
+				cpDefinitionVirtualSettingId);
 
 		_checkPermission(
 			cpDefinitionVirtualSetting.getClassName(),
@@ -147,8 +147,8 @@ public class CPDefinitionVirtualSettingServiceImpl
 		throws PortalException {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-			cpDefinitionVirtualSettingLocalService.
-				getCPDefinitionVirtualSetting(cpDefinitionVirtualSettingId);
+			cpDefinitionVirtualSettingPersistence.findByPrimaryKey(
+				cpDefinitionVirtualSettingId);
 
 		_checkPermission(
 			cpDefinitionVirtualSetting.getClassName(),

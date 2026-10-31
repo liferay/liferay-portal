@@ -105,9 +105,8 @@ public class CPDefinitionGroupedEntryServiceImpl
 
 		_checkCommerceCatalog(cpDefinitionId, ActionKeys.VIEW);
 
-		return cpDefinitionGroupedEntryLocalService.
-			getCPDefinitionGroupedEntries(
-				cpDefinitionId, start, end, orderByComparator);
+		return cpDefinitionGroupedEntryPersistence.findByCPDefinitionId(
+			cpDefinitionId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -129,8 +128,8 @@ public class CPDefinitionGroupedEntryServiceImpl
 
 		_checkCommerceCatalog(cpDefinitionId, ActionKeys.VIEW);
 
-		return cpDefinitionGroupedEntryLocalService.
-			getCPDefinitionGroupedEntriesCount(cpDefinitionId);
+		return cpDefinitionGroupedEntryPersistence.countByCPDefinitionId(
+			cpDefinitionId);
 	}
 
 	@Override
