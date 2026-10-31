@@ -4926,6 +4926,21 @@ public class ObjectEntryLocalServiceImpl
 		);
 	}
 
+	private DynamicObjectDefinitionTable _getFromDynamicObjectDefinitionTable(
+		DynamicObjectDefinitionTable dynamicObjectDefinitionTable,
+		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable,
+		Set<String> tableNames) {
+
+		if (tableNames.contains(dynamicObjectDefinitionTable.getTableName()) ||
+			!tableNames.contains(
+				extensionDynamicObjectDefinitionTable.getTableName())) {
+
+			return dynamicObjectDefinitionTable;
+		}
+
+		return extensionDynamicObjectDefinitionTable;
+	}
+
 	private Expression<?> _getFunctionExpression(
 		Column<?, ?> column, String function) {
 
@@ -5376,20 +5391,28 @@ public class ObjectEntryLocalServiceImpl
 
 		tableNames.addAll(orderByTableNames);
 
-		DynamicObjectDefinitionLocalizationTable
-			dynamicObjectDefinitionLocalizationTable =
-				DynamicObjectDefinitionLocalizationTableFactory.create(
-					objectDefinition, _objectFieldLocalService);
 		DynamicObjectDefinitionTable extensionDynamicObjectDefinitionTable =
 			DynamicObjectDefinitionTableUtil.getDynamicObjectDefinitionTable(
 				true, objectDefinition, _objectFieldLocalService);
 
+		DynamicObjectDefinitionTable fromDynamicObjectDefinitionTable =
+			_getFromDynamicObjectDefinitionTable(
+				dynamicObjectDefinitionTable,
+				extensionDynamicObjectDefinitionTable, tableNames);
+
+		DynamicObjectDefinitionLocalizationTable
+			dynamicObjectDefinitionLocalizationTable =
+				DynamicObjectDefinitionLocalizationTableFactory.create(
+					objectDefinition, _objectFieldLocalService);
+
 		return fromStep.from(
-			dynamicObjectDefinitionTable
+			fromDynamicObjectDefinitionTable
 		).leftJoinOn(
 			extensionDynamicObjectDefinitionTable,
 			() -> {
-				if (!tableNames.contains(
+				if ((fromDynamicObjectDefinitionTable ==
+						extensionDynamicObjectDefinitionTable) ||
+					!tableNames.contains(
 						objectDefinition.getExtensionDBTableName())) {
 
 					return null;
@@ -5402,7 +5425,7 @@ public class ObjectEntryLocalServiceImpl
 		).innerJoinON(
 			ObjectEntryTable.INSTANCE,
 			ObjectEntryTable.INSTANCE.objectEntryId.eq(
-				dynamicObjectDefinitionTable.getPrimaryKeyColumn())
+				fromDynamicObjectDefinitionTable.getPrimaryKeyColumn())
 		).leftJoinOn(
 			dynamicObjectDefinitionLocalizationTable,
 			() -> {
@@ -5415,7 +5438,7 @@ public class ObjectEntryLocalServiceImpl
 				return ObjectEntrySearchUtil.
 					getLeftJoinLocalizationTablePredicate(
 						dynamicObjectDefinitionLocalizationTable,
-						dynamicObjectDefinitionTable, null);
+						fromDynamicObjectDefinitionTable, null);
 			}
 		).where(
 			wherePredicate
