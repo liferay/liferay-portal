@@ -452,30 +452,6 @@ public interface SocialRequestLocalService
 	public List<SocialRequest> getUserRequests(long userId, int start, int end);
 
 	/**
-	 * Returns a range of all the social requests with the given status for the
-	 * requesting user.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link
-	 * com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @param status the social request's status
-	 * @param start the lower bound of the range of results
-	 * @param end the upper bound of the range of results (not inclusive)
-	 * @return the range of matching social requests
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<SocialRequest> getUserRequests(
-		long userId, int status, int start, int end);
-
-	/**
 	 * Returns the number of social requests for the requesting user.
 	 *
 	 * @param userId the primary key of the requesting user
@@ -483,17 +459,6 @@ public interface SocialRequestLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserRequestsCount(long userId);
-
-	/**
-	 * Returns the number of social requests with the given status for the
-	 * requesting user.
-	 *
-	 * @param userId the primary key of the requesting user
-	 * @param status the social request's status
-	 * @return the number of matching social request
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserRequestsCount(long userId, int status);
 
 	/**
 	 * Returns <code>true</code> if a matching social requests exists in the
@@ -584,4 +549,4 @@ public interface SocialRequestLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:159556813
+// LIFERAY-SERVICE-BUILDER-HASH:772876241

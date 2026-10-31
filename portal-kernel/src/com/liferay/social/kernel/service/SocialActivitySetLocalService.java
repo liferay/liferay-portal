@@ -217,16 +217,6 @@ public interface SocialActivitySetLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivitySet getClassActivitySet(
-			long classNameId, long classPK, int type)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivitySet getClassActivitySet(
-			long userId, long classNameId, long classPK, int type)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SocialActivitySet> getGroupActivitySets(
 		long groupId, int start, int end);
 
@@ -299,16 +289,6 @@ public interface SocialActivitySetLocalService
 	public int getSocialActivitySetsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivitySet getUserActivitySet(
-			long groupId, long userId, int type)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public SocialActivitySet getUserActivitySet(
-			long groupId, long userId, long classNameId, int type)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<SocialActivitySet> getUserActivitySets(
 		long userId, int start, int end);
 
@@ -362,4 +342,4 @@ public interface SocialActivitySetLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1020211200
+// LIFERAY-SERVICE-BUILDER-HASH:672757832

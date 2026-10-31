@@ -229,21 +229,6 @@ public class SocialActivitySetLocalServiceUtil {
 		return getService().getActionableDynamicQuery();
 	}
 
-	public static SocialActivitySet getClassActivitySet(
-			long classNameId, long classPK, int type)
-		throws PortalException {
-
-		return getService().getClassActivitySet(classNameId, classPK, type);
-	}
-
-	public static SocialActivitySet getClassActivitySet(
-			long userId, long classNameId, long classPK, int type)
-		throws PortalException {
-
-		return getService().getClassActivitySet(
-			userId, classNameId, classPK, type);
-	}
-
 	public static List<SocialActivitySet> getGroupActivitySets(
 		long groupId, int start, int end) {
 
@@ -339,21 +324,6 @@ public class SocialActivitySetLocalServiceUtil {
 		return getService().getSocialActivitySetsCount();
 	}
 
-	public static SocialActivitySet getUserActivitySet(
-			long groupId, long userId, int type)
-		throws PortalException {
-
-		return getService().getUserActivitySet(groupId, userId, type);
-	}
-
-	public static SocialActivitySet getUserActivitySet(
-			long groupId, long userId, long classNameId, int type)
-		throws PortalException {
-
-		return getService().getUserActivitySet(
-			groupId, userId, classNameId, type);
-	}
-
 	public static List<SocialActivitySet> getUserActivitySets(
 		long userId, int start, int end) {
 
@@ -418,4 +388,4 @@ public class SocialActivitySetLocalServiceUtil {
 	private static volatile SocialActivitySetLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1407662068
+// LIFERAY-SERVICE-BUILDER-HASH:1172203104
