@@ -769,6 +769,79 @@ public class CommercePriceEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testAddOrUpdateCommercePriceEntryWithPastExpirationDate()
+		throws Exception {
+
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
+
+		CommercePriceList commercePriceList =
+			CommercePriceListTestUtil.addCommercePriceList(
+				null, _group.getGroupId(), _commerceCurrency.getCode(),
+				RandomTestUtil.randomString(), RandomTestUtil.randomDouble(),
+				true, null, null);
+
+		CPDefinition cpDefinition = cpInstance.getCPDefinition();
+
+		Calendar displayCalendar = new GregorianCalendar();
+
+		Calendar expirationCalendar = new GregorianCalendar();
+
+		expirationCalendar.add(Calendar.DAY_OF_MONTH, -1);
+
+		CommercePriceEntry commercePriceEntry =
+			_commercePriceEntryLocalService.addOrUpdateCommercePriceEntry(
+				null, 0, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), true, null, null,
+				null, null, displayCalendar.get(Calendar.MONTH),
+				displayCalendar.get(Calendar.DAY_OF_MONTH),
+				displayCalendar.get(Calendar.YEAR),
+				displayCalendar.get(Calendar.HOUR),
+				displayCalendar.get(Calendar.MINUTE),
+				expirationCalendar.get(Calendar.MONTH),
+				expirationCalendar.get(Calendar.DAY_OF_MONTH),
+				expirationCalendar.get(Calendar.YEAR),
+				expirationCalendar.get(Calendar.HOUR),
+				expirationCalendar.get(Calendar.MINUTE), false,
+				BigDecimal.valueOf(RandomTestUtil.randomDouble()), false,
+				BigDecimal.valueOf(RandomTestUtil.randomDouble()), null, null,
+				ServiceContextTestUtil.getServiceContext(
+					commercePriceList.getGroupId()));
+
+		Assert.assertNotNull(commercePriceEntry.getExpirationDate());
+		Assert.assertTrue(commercePriceEntry.isExpired());
+
+		commercePriceEntry = _addOrUpdateCommercePriceEntry(
+			commercePriceList.getCommercePriceListId(), cpInstance, null, null);
+
+		Assert.assertTrue(commercePriceEntry.isApproved());
+		Assert.assertNull(commercePriceEntry.getExpirationDate());
+
+		commercePriceEntry =
+			_commercePriceEntryLocalService.addOrUpdateCommercePriceEntry(
+				null, commercePriceEntry.getCommercePriceEntryId(),
+				cpDefinition.getCProductId(), cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), true, null, null,
+				null, null, displayCalendar.get(Calendar.MONTH),
+				displayCalendar.get(Calendar.DAY_OF_MONTH),
+				displayCalendar.get(Calendar.YEAR),
+				displayCalendar.get(Calendar.HOUR),
+				displayCalendar.get(Calendar.MINUTE),
+				expirationCalendar.get(Calendar.MONTH),
+				expirationCalendar.get(Calendar.DAY_OF_MONTH),
+				expirationCalendar.get(Calendar.YEAR),
+				expirationCalendar.get(Calendar.HOUR),
+				expirationCalendar.get(Calendar.MINUTE), false,
+				BigDecimal.valueOf(RandomTestUtil.randomDouble()), false,
+				BigDecimal.valueOf(RandomTestUtil.randomDouble()), null, null,
+				ServiceContextTestUtil.getServiceContext(
+					commercePriceList.getGroupId()));
+
+		Assert.assertNotNull(commercePriceEntry.getExpirationDate());
+		Assert.assertTrue(commercePriceEntry.isExpired());
+	}
+
+	@Test
 	public void testDeleteCommercePriceEntry() throws Exception {
 		frutillaRule.scenario(
 			"Delete a Price Entry"
