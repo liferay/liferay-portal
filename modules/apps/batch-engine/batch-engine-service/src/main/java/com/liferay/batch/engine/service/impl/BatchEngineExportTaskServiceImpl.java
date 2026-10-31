@@ -75,9 +75,8 @@ public class BatchEngineExportTaskServiceImpl
 		_checkPermission(companyId);
 
 		BatchEngineExportTask batchEngineExportTask =
-			batchEngineExportTaskLocalService.
-				getBatchEngineExportTaskByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			batchEngineExportTaskPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_checkPermission(batchEngineExportTask);
 

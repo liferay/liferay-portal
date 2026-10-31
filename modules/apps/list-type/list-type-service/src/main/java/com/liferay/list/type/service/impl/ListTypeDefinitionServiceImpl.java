@@ -85,9 +85,8 @@ public class ListTypeDefinitionServiceImpl
 		throws PortalException {
 
 		ListTypeDefinition listTypeDefinition =
-			listTypeDefinitionLocalService.
-				fetchListTypeDefinitionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			listTypeDefinitionPersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (listTypeDefinition != null) {
 			_listTypeDefinitionModelResourcePermission.check(
@@ -115,9 +114,8 @@ public class ListTypeDefinitionServiceImpl
 		throws PortalException {
 
 		ListTypeDefinition listTypeDefinition =
-			listTypeDefinitionLocalService.
-				getListTypeDefinitionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			listTypeDefinitionPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_listTypeDefinitionModelResourcePermission.check(
 			getPermissionChecker(),

@@ -91,9 +91,8 @@ public class NotificationTemplateServiceImpl
 		throws PortalException {
 
 		NotificationTemplate notificationTemplate =
-			notificationTemplateLocalService.
-				fetchNotificationTemplateByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			notificationTemplatePersistence.fetchByERC_C(
+				externalReferenceCode, companyId);
 
 		if (notificationTemplate != null) {
 			_notificationTemplateModelResourcePermission.check(
@@ -121,9 +120,8 @@ public class NotificationTemplateServiceImpl
 		throws PortalException {
 
 		NotificationTemplate notificationTemplate =
-			notificationTemplateLocalService.
-				getNotificationTemplateByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			notificationTemplatePersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_notificationTemplateModelResourcePermission.check(
 			getPermissionChecker(), notificationTemplate, ActionKeys.VIEW);

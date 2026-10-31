@@ -129,9 +129,8 @@ public class KaleoDefinitionServiceImpl extends KaleoDefinitionServiceBaseImpl {
 		throws PortalException {
 
 		KaleoDefinition kaleoDefinition =
-			_kaleoDefinitionLocalService.
-				getKaleoDefinitionByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			kaleoDefinitionPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_kaleoDefinitionModelResourcePermission.check(
 			getPermissionChecker(), kaleoDefinition, ActionKeys.VIEW);

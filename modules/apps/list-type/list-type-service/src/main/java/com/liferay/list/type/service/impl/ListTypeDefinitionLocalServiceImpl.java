@@ -295,10 +295,9 @@ public class ListTypeDefinitionLocalServiceImpl
 				Validator.isNotNull(listTypeEntry.getExternalReferenceCode())) {
 
 				existingListTypeEntry =
-					_listTypeEntryLocalService.
-						fetchListTypeEntryByExternalReferenceCode(
-							listTypeEntry.getExternalReferenceCode(),
-							listTypeEntry.getCompanyId(), listTypeDefinitionId);
+					_listTypeEntryPersistence.fetchByERC_C_LTDI(
+						listTypeEntry.getExternalReferenceCode(),
+						listTypeEntry.getCompanyId(), listTypeDefinitionId);
 			}
 
 			if ((existingListTypeEntry == null) &&

@@ -78,9 +78,8 @@ public class DepotEntryGroupRelServiceImpl
 		_depotEntryModelResourcePermission.check(
 			getPermissionChecker(), depotEntryId, ActionKeys.VIEW);
 
-		return depotEntryGroupRelLocalService.
-			getDepotEntryGroupRelByDepotEntryIdToGroupId(
-				depotEntryId, toGroupId);
+		return depotEntryGroupRelPersistence.findByD_TGI(
+			depotEntryId, toGroupId);
 	}
 
 	@Override

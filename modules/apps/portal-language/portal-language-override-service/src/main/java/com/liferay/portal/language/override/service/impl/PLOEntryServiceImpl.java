@@ -163,7 +163,7 @@ public class PLOEntryServiceImpl extends PLOEntryServiceBaseImpl {
 		PortalPermissionUtil.check(
 			permissionChecker, PLOActionKeys.MANAGE_LANGUAGE_OVERRIDES);
 
-		return ploEntryLocalService.getPLOEntryByExternalReferenceCode(
+		return ploEntryPersistence.findByERC_C(
 			externalReferenceCode, permissionChecker.getCompanyId());
 	}
 

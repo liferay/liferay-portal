@@ -135,9 +135,8 @@ public class ClientExtensionEntryLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		ClientExtensionEntry clientExtensionEntry =
-			clientExtensionEntryLocalService.
-				fetchClientExtensionEntryByExternalReferenceCode(
-					externalReferenceCode, user.getCompanyId());
+			clientExtensionEntryPersistence.fetchByERC_C(
+				externalReferenceCode, user.getCompanyId());
 
 		if (clientExtensionEntry != null) {
 			return updateClientExtensionEntry(

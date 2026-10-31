@@ -21,8 +21,8 @@ import com.liferay.notification.model.NotificationTemplateAttachment;
 import com.liferay.notification.service.NotificationQueueEntryAttachmentLocalService;
 import com.liferay.notification.service.NotificationRecipientLocalService;
 import com.liferay.notification.service.NotificationRecipientSettingLocalService;
-import com.liferay.notification.service.NotificationTemplateAttachmentLocalService;
 import com.liferay.notification.service.base.NotificationQueueEntryLocalServiceBaseImpl;
+import com.liferay.notification.service.persistence.NotificationTemplateAttachmentPersistence;
 import com.liferay.notification.type.NotificationType;
 import com.liferay.notification.type.NotificationTypeServiceTracker;
 import com.liferay.object.model.ObjectField;
@@ -302,8 +302,8 @@ public class NotificationQueueEntryLocalServiceImpl
 		}
 
 		List<NotificationTemplateAttachment> notificationTemplateAttachments =
-			_notificationTemplateAttachmentLocalService.
-				getNotificationTemplateAttachments(
+			_notificationTemplateAttachmentPersistence.
+				findByNotificationTemplateId(
 					notificationTemplate.getNotificationTemplateId());
 
 		if (ListUtil.isEmpty(notificationTemplateAttachments)) {
@@ -419,8 +419,8 @@ public class NotificationQueueEntryLocalServiceImpl
 		_notificationRecipientSettingLocalService;
 
 	@Reference
-	private NotificationTemplateAttachmentLocalService
-		_notificationTemplateAttachmentLocalService;
+	private NotificationTemplateAttachmentPersistence
+		_notificationTemplateAttachmentPersistence;
 
 	@Reference
 	private NotificationTypeServiceTracker _notificationTypeServiceTracker;

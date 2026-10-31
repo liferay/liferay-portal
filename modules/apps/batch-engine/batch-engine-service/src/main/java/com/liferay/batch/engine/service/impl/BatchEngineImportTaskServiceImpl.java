@@ -100,9 +100,8 @@ public class BatchEngineImportTaskServiceImpl
 		_checkPermission(companyId);
 
 		BatchEngineImportTask batchEngineImportTask =
-			batchEngineImportTaskLocalService.
-				getBatchEngineImportTaskByExternalReferenceCode(
-					externalReferenceCode, companyId);
+			batchEngineImportTaskPersistence.findByERC_C(
+				externalReferenceCode, companyId);
 
 		_checkPermission(batchEngineImportTask);
 

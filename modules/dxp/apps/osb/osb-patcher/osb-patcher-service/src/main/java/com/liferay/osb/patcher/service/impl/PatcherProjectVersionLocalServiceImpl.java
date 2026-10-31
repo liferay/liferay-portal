@@ -7,10 +7,10 @@ package com.liferay.osb.patcher.service.impl;
 
 import com.liferay.osb.patcher.model.PatcherProductVersion;
 import com.liferay.osb.patcher.model.PatcherProjectVersion;
-import com.liferay.osb.patcher.service.PatcherBuildLocalService;
-import com.liferay.osb.patcher.service.PatcherFixLocalService;
 import com.liferay.osb.patcher.service.PatcherProductVersionLocalService;
 import com.liferay.osb.patcher.service.base.PatcherProjectVersionLocalServiceBaseImpl;
+import com.liferay.osb.patcher.service.persistence.PatcherBuildPersistence;
+import com.liferay.osb.patcher.service.persistence.PatcherFixPersistence;
 import com.liferay.osb.patcher.util.comparator.PatcherProjectVersionNameComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -180,9 +180,8 @@ public class PatcherProjectVersionLocalServiceImpl
 		throws PortalException {
 
 		long patcherBuildCount =
-			_patcherBuildLocalService.
-				getPatcherBuildsCountByPatcherProjectVersionId(
-					patcherProjectVersion.getPatcherProjectVersionId());
+			_patcherBuildPersistence.countByPatcherProjectVersionId(
+				patcherProjectVersion.getPatcherProjectVersionId());
 
 		if (patcherBuildCount > 0) {
 			throw new PortalException(
@@ -196,9 +195,8 @@ public class PatcherProjectVersionLocalServiceImpl
 		throws PortalException {
 
 		long patcherFixCount =
-			_patcherFixLocalService.
-				getPatcherFixesCountByPatcherProjectVersionId(
-					patcherProjectVersion.getPatcherProjectVersionId());
+			_patcherFixPersistence.countByPatcherProjectVersionId(
+				patcherProjectVersion.getPatcherProjectVersionId());
 
 		if (patcherFixCount > 0) {
 			throw new PortalException(
@@ -253,10 +251,10 @@ public class PatcherProjectVersionLocalServiceImpl
 	}
 
 	@Reference
-	private PatcherBuildLocalService _patcherBuildLocalService;
+	private PatcherBuildPersistence _patcherBuildPersistence;
 
 	@Reference
-	private PatcherFixLocalService _patcherFixLocalService;
+	private PatcherFixPersistence _patcherFixPersistence;
 
 	@Reference
 	private PatcherProductVersionLocalService

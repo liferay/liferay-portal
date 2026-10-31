@@ -53,6 +53,7 @@ import com.liferay.portal.workflow.kaleo.service.KaleoTaskFormInstanceLocalServi
 import com.liferay.portal.workflow.kaleo.service.KaleoTimerInstanceTokenLocalService;
 import com.liferay.portal.workflow.kaleo.service.base.KaleoTaskInstanceTokenLocalServiceBaseImpl;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoInstanceTokenPersistence;
+import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskAssignmentInstancePersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskAssignmentPersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskFormInstancePersistence;
 import com.liferay.portal.workflow.kaleo.service.persistence.KaleoTaskFormPersistence;
@@ -1072,8 +1073,8 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 				User.class.getName())) {
 
 			List<KaleoTaskAssignmentInstance> kaleoTaskAssignmentInstances =
-				_kaleoTaskAssignmentInstanceLocalService.
-					getKaleoTaskAssignmentInstances(
+				_kaleoTaskAssignmentInstancePersistence.
+					findByKaleoTaskInstanceTokenId(
 						kaleoTaskInstanceToken.getKaleoTaskInstanceTokenId());
 
 			for (KaleoTaskAssignmentInstance kaleoTaskAssignmentInstance :
@@ -1201,6 +1202,10 @@ public class KaleoTaskInstanceTokenLocalServiceImpl
 	@Reference
 	private KaleoTaskAssignmentInstanceLocalService
 		_kaleoTaskAssignmentInstanceLocalService;
+
+	@Reference
+	private KaleoTaskAssignmentInstancePersistence
+		_kaleoTaskAssignmentInstancePersistence;
 
 	@Reference
 	private KaleoTaskAssignmentLocalService _kaleoTaskAssignmentLocalService;
