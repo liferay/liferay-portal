@@ -22,7 +22,7 @@ definition {
 		SearchAdministration.executeReindex();
 	}
 
-	@description = "This test covers LPS-154493. It ensures that a blog small image can be published and rendered correctly after upgrading from 7.3.10.1."
+	@description = "1This test covers LPS-154493. It ensures that a blog small image can be published and rendered correctly after upgrading from 7.3.10.1."
 	@priority = 5
 	test CanPublishBlogSmallImageAfterUpgradeFrom73101Archive {
 		property data.archive.type = "data-archive-depot-remote-staging-with-image";
