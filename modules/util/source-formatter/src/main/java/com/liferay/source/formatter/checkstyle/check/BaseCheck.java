@@ -150,10 +150,22 @@ public abstract class BaseCheck extends AbstractCheck {
 	protected String getAbsolutePath() {
 		FileContents fileContents = getFileContents();
 
-		String fileName = StringUtil.replace(
-			fileContents.getFileName(), CharPool.BACK_SLASH, CharPool.SLASH);
+		String fileName = fileContents.getFileName();
 
-		return SourceUtil.getAbsolutePath(fileName);
+		String[] absolutePathEntry = _absolutePathEntry;
+
+		if ((absolutePathEntry != null) &&
+			fileName.equals(absolutePathEntry[0])) {
+
+			return absolutePathEntry[1];
+		}
+
+		String absolutePath = SourceUtil.getAbsolutePath(
+			StringUtil.replace(fileName, CharPool.BACK_SLASH, CharPool.SLASH));
+
+		_absolutePathEntry = new String[] {fileName, absolutePath};
+
+		return absolutePath;
 	}
 
 	protected List<DetailAST> getAllChildTokens(
@@ -1814,6 +1826,7 @@ public abstract class BaseCheck extends AbstractCheck {
 
 	private static final Log _log = LogFactoryUtil.getLog(BaseCheck.class);
 
+	private volatile String[] _absolutePathEntry;
 	private final Map<String, String> _attributeValueMap =
 		new ConcurrentHashMap<>();
 	private final Map<String, List<String>> _attributeValuesMap =
