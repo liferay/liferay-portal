@@ -167,6 +167,7 @@ public class GetEmailNotificationRolesMVCResourceCommandTest {
 			).put(
 				"regularRoles",
 				JSONUtil.putAll(
+					JSONUtil.put("name", "CMS Space Administrator"),
 					JSONUtil.put(
 						"name",
 						AccountRoleConstants.ROLE_NAME_ORDER_ADMINISTRATOR),
