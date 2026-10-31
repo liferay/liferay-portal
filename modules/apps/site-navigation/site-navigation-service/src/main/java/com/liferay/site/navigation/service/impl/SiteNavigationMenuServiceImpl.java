@@ -99,9 +99,8 @@ public class SiteNavigationMenuServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenu siteNavigationMenu =
-			siteNavigationMenuLocalService.
-				fetchSiteNavigationMenuByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			siteNavigationMenuPersistence.fetchByERC_G(
+				externalReferenceCode, groupId);
 
 		_siteNavigationMenuModelResourcePermission.check(
 			getPermissionChecker(), siteNavigationMenu, ActionKeys.DELETE);
@@ -127,9 +126,8 @@ public class SiteNavigationMenuServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenu siteNavigationMenu =
-			siteNavigationMenuLocalService.
-				getSiteNavigationMenuByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			siteNavigationMenuPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_siteNavigationMenuModelResourcePermission.check(
 			getPermissionChecker(), siteNavigationMenu, ActionKeys.VIEW);

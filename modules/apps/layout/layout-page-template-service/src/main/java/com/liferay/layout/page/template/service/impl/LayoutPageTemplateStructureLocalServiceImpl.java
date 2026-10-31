@@ -12,6 +12,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
 import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureRelLocalService;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateStructureLocalServiceBaseImpl;
+import com.liferay.layout.page.template.service.persistence.LayoutPageTemplateStructureRelPersistence;
 import com.liferay.layout.page.template.util.CheckUnlockedLayoutThreadLocal;
 import com.liferay.layout.util.UpdateLayoutStatusThreadLocal;
 import com.liferay.portal.aop.AopService;
@@ -112,8 +113,8 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 		// Layout page template structure rels
 
 		List<LayoutPageTemplateStructureRel> layoutPageTemplateStructureRels =
-			_layoutPageTemplateStructureRelLocalService.
-				getLayoutPageTemplateStructureRels(
+			_layoutPageTemplateStructureRelPersistence.
+				findByLayoutPageTemplateStructureId(
 					layoutPageTemplateStructure.
 						getLayoutPageTemplateStructureId());
 
@@ -167,11 +168,9 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 		// Layout page template structure rel
 
 		LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
-			_layoutPageTemplateStructureRelLocalService.
-				fetchLayoutPageTemplateStructureRel(
-					layoutPageTemplateStructure.
-						getLayoutPageTemplateStructureId(),
-					segmentsExperienceId);
+			_layoutPageTemplateStructureRelPersistence.fetchByL_S(
+				layoutPageTemplateStructure.getLayoutPageTemplateStructureId(),
+				segmentsExperienceId);
 
 		if ((layoutPageTemplateStructureRel != null) &&
 			Objects.equals(layoutPageTemplateStructureRel.getData(), data)) {
@@ -252,6 +251,10 @@ public class LayoutPageTemplateStructureLocalServiceImpl
 	@Reference
 	private LayoutPageTemplateStructureRelLocalService
 		_layoutPageTemplateStructureRelLocalService;
+
+	@Reference
+	private LayoutPageTemplateStructureRelPersistence
+		_layoutPageTemplateStructureRelPersistence;
 
 	@Reference
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;

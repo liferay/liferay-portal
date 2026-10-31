@@ -103,9 +103,8 @@ public class LayoutUtilityPageEntryServiceImpl
 		throws PortalException {
 
 		LayoutUtilityPageEntry layoutUtilityPageEntry =
-			layoutUtilityPageEntryLocalService.
-				getLayoutUtilityPageEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			layoutUtilityPageEntryPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_layoutUtilityPageEntryModelResourcePermission.check(
 			getPermissionChecker(), layoutUtilityPageEntry, ActionKeys.DELETE);
@@ -128,9 +127,8 @@ public class LayoutUtilityPageEntryServiceImpl
 				String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		return layoutUtilityPageEntryLocalService.
-			fetchLayoutUtilityPageEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		return layoutUtilityPageEntryPersistence.fetchByERC_G(
+			externalReferenceCode, groupId);
 	}
 
 	@Override
@@ -138,8 +136,8 @@ public class LayoutUtilityPageEntryServiceImpl
 			long groupId, String type)
 		throws PortalException {
 
-		return layoutUtilityPageEntryLocalService.
-			getDefaultLayoutUtilityPageEntry(groupId, type);
+		return layoutUtilityPageEntryPersistence.findByG_D_T_First(
+			groupId, true, type, null);
 	}
 
 	@Override
@@ -214,9 +212,8 @@ public class LayoutUtilityPageEntryServiceImpl
 				String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		return layoutUtilityPageEntryLocalService.
-			getLayoutUtilityPageEntryByExternalReferenceCode(
-				externalReferenceCode, groupId);
+		return layoutUtilityPageEntryPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 	}
 
 	@Override

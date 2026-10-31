@@ -43,9 +43,8 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 
 		LayoutPageTemplateStructureRelElementVariation
 			layoutPageTemplateStructureRelElementVariation =
-				layoutPageTemplateStructureRelElementVariationLocalService.
-					fetchLayoutPageTemplateStructureRelElementVariationByExternalReferenceCode(
-						externalReferenceCode, groupId);
+				layoutPageTemplateStructureRelElementVariationPersistence.
+					fetchByERC_G(externalReferenceCode, groupId);
 
 		if (layoutPageTemplateStructureRelElementVariation != null) {
 			plid = layoutPageTemplateStructureRelElementVariation.getPlid();
@@ -68,9 +67,8 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 
 		LayoutPageTemplateStructureRelElementVariation
 			layoutPageTemplateStructureRelElementVariation =
-				layoutPageTemplateStructureRelElementVariationLocalService.
-					getLayoutPageTemplateStructureRelElementVariationByExternalReferenceCode(
-						externalReferenceCode, groupId);
+				layoutPageTemplateStructureRelElementVariationPersistence.
+					findByERC_G(externalReferenceCode, groupId);
 
 		_layoutModelResourcePermission.check(
 			getPermissionChecker(),
@@ -90,8 +88,8 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 		_layoutModelResourcePermission.check(
 			getPermissionChecker(), plid, ActionKeys.VIEW);
 
-		return layoutPageTemplateStructureRelElementVariationLocalService.
-			getLayoutPageTemplateStructureRelElementVariations(plid);
+		return layoutPageTemplateStructureRelElementVariationPersistence.
+			findByPlid(plid);
 	}
 
 	@Override
@@ -102,9 +100,8 @@ public class LayoutPageTemplateStructureRelElementVariationServiceImpl
 
 		LayoutPageTemplateStructureRelElementVariation
 			layoutPageTemplateStructureRelElementVariation =
-				layoutPageTemplateStructureRelElementVariationLocalService.
-					getLayoutPageTemplateStructureRelElementVariationByExternalReferenceCode(
-						externalReferenceCode, groupId);
+				layoutPageTemplateStructureRelElementVariationPersistence.
+					findByERC_G(externalReferenceCode, groupId);
 
 		_layoutModelResourcePermission.check(
 			getPermissionChecker(),

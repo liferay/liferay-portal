@@ -99,9 +99,8 @@ public class LayoutPageTemplateCollectionServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			layoutPageTemplateCollectionLocalService.
-				getLayoutPageTemplateCollectionByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			layoutPageTemplateCollectionPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_layoutPageTemplateCollectionModelResourcePermission.check(
 			getPermissionChecker(), layoutPageTemplateCollection,
@@ -155,9 +154,8 @@ public class LayoutPageTemplateCollectionServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			layoutPageTemplateCollectionLocalService.
-				fetchLayoutPageTemplateCollection(
-					groupId, name, parentLayoutPageTemplateCollectionId, type);
+			layoutPageTemplateCollectionPersistence.fetchByG_P_N_T(
+				groupId, parentLayoutPageTemplateCollectionId, name, type);
 
 		if (layoutPageTemplateCollection != null) {
 			_layoutPageTemplateCollectionModelResourcePermission.check(
@@ -174,9 +172,8 @@ public class LayoutPageTemplateCollectionServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			layoutPageTemplateCollectionLocalService.
-				fetchLayoutPageTemplateCollectionByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			layoutPageTemplateCollectionPersistence.fetchByERC_G(
+				externalReferenceCode, groupId);
 
 		if (layoutPageTemplateCollection != null) {
 			_layoutPageTemplateCollectionModelResourcePermission.check(
@@ -193,9 +190,8 @@ public class LayoutPageTemplateCollectionServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			layoutPageTemplateCollectionLocalService.
-				getLayoutPageTemplateCollectionByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			layoutPageTemplateCollectionPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_layoutPageTemplateCollectionModelResourcePermission.check(
 			getPermissionChecker(), layoutPageTemplateCollection,

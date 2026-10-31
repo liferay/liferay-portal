@@ -413,8 +413,8 @@ public class LayoutPageTemplateCollectionLocalServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateCollection layoutPageTemplateCollection =
-			layoutPageTemplateCollectionLocalService.
-				getLayoutPageTemplateCollection(layoutPageTemplateCollectionId);
+			layoutPageTemplateCollectionPersistence.findByPrimaryKey(
+				layoutPageTemplateCollectionId);
 
 		if ((parentLayoutPageTemplateCollectionId ==
 				layoutPageTemplateCollection.

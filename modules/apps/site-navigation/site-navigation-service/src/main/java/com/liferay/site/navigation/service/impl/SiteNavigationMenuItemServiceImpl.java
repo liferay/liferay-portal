@@ -90,9 +90,8 @@ public class SiteNavigationMenuItemServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
-			siteNavigationMenuItemLocalService.
-				getSiteNavigationMenuItemByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			siteNavigationMenuItemPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_siteNavigationMenuModelResourcePermission.check(
 			getPermissionChecker(),
@@ -134,9 +133,8 @@ public class SiteNavigationMenuItemServiceImpl
 		throws PortalException {
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
-			siteNavigationMenuItemLocalService.
-				getSiteNavigationMenuItemByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			siteNavigationMenuItemPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		if (siteNavigationMenuItem != null) {
 			_siteNavigationMenuModelResourcePermission.check(

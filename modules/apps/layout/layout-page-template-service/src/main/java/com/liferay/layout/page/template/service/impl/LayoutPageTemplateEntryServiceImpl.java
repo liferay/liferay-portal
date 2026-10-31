@@ -15,6 +15,7 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateEntryTable;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateEntryServiceBaseImpl;
+import com.liferay.layout.page.template.service.persistence.LayoutPageTemplateCollectionPersistence;
 import com.liferay.layout.page.template.util.LayoutPageTemplateEntryUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -145,7 +146,7 @@ public class LayoutPageTemplateEntryServiceImpl
 			ActionKeys.VIEW);
 
 		LayoutPageTemplateEntry sourceLayoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.getLayoutPageTemplateEntry(
+			layoutPageTemplateEntryPersistence.findByPrimaryKey(
 				sourceLayoutPageTemplateEntryId);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
@@ -186,9 +187,8 @@ public class LayoutPageTemplateEntryServiceImpl
 			LayoutPageTemplateActionKeys.ADD_LAYOUT_PAGE_TEMPLATE_ENTRY);
 
 		LayoutPageTemplateCollection targetLayoutPageTemplateCollection =
-			_layoutPageTemplateCollectionLocalService.
-				getLayoutPageTemplateCollection(
-					targetLayoutPageTemplateCollectionId);
+			_layoutPageTemplateCollectionPersistence.findByPrimaryKey(
+				targetLayoutPageTemplateCollectionId);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
 			layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
@@ -338,9 +338,8 @@ public class LayoutPageTemplateEntryServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			layoutPageTemplateEntryPersistence.fetchByERC_G(
+				externalReferenceCode, groupId);
 
 		if (layoutPageTemplateEntry != null) {
 			_layoutPageTemplateEntryModelResourcePermission.check(
@@ -356,8 +355,7 @@ public class LayoutPageTemplateEntryServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.
-				fetchLayoutPageTemplateEntryByPlid(plid);
+			layoutPageTemplateEntryPersistence.fetchByPlid(plid);
 
 		if (layoutPageTemplateEntry != null) {
 			_layoutPageTemplateEntryModelResourcePermission.check(
@@ -372,8 +370,7 @@ public class LayoutPageTemplateEntryServiceImpl
 	public LayoutPageTemplateEntry fetchLayoutPageTemplateEntryByUuidAndGroupId(
 		String uuid, long groupId) {
 
-		return layoutPageTemplateEntryLocalService.
-			fetchLayoutPageTemplateEntryByUuidAndGroupId(uuid, groupId);
+		return layoutPageTemplateEntryPersistence.fetchByUUID_G(uuid, groupId);
 	}
 
 	@Override
@@ -1090,9 +1087,8 @@ public class LayoutPageTemplateEntryServiceImpl
 		throws PortalException {
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			layoutPageTemplateEntryLocalService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			layoutPageTemplateEntryPersistence.findByERC_G(
+				externalReferenceCode, groupId);
 
 		_layoutPageTemplateEntryModelResourcePermission.check(
 			getPermissionChecker(), layoutPageTemplateEntry, ActionKeys.VIEW);
@@ -1339,6 +1335,10 @@ public class LayoutPageTemplateEntryServiceImpl
 	@Reference
 	private LayoutPageTemplateCollectionLocalService
 		_layoutPageTemplateCollectionLocalService;
+
+	@Reference
+	private LayoutPageTemplateCollectionPersistence
+		_layoutPageTemplateCollectionPersistence;
 
 	@Reference
 	private LayoutPageTemplateEntryLocalService
