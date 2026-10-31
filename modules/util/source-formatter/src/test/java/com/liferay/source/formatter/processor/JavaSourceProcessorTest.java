@@ -60,6 +60,31 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testBasePortalFilterIsFilterEnabled() throws Exception {
+		test(
+			SourceProcessorTestParameters.create(
+				"IncorrectBasePortalFilter.testjava"
+			).addExpectedMessage(
+				"Classes extending BasePortalFilter must be listed in " +
+					"portal.properties Servlet Filters section"
+			).addExpectedMessage(
+				"Classes extending BasePortalFilter must not override " +
+					"\"isFilterEnabled()\", either remove the method to " +
+						"use portal.properties configuration or extend " +
+							"BaseFilter instead",
+				15
+			));
+	}
+
+	@Test
+	public void testBasePortalFilterPortalProperties() throws Exception {
+		test(
+			"IncorrectPortalPropertiesBasePortalFilter.testjava",
+			"Classes extending BasePortalFilter must be listed in " +
+				"portal.properties Servlet Filters section");
+	}
+
+	@Test
 	public void testBaseReferenceVariableWithoutComponent() throws Exception {
 		test(
 			"BaseReferenceVariableWithoutComponent.testjava",
