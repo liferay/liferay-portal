@@ -179,7 +179,8 @@ public class FinderCacheImpl
 		if (cacheValue == null) {
 			finderPath.touch();
 
-			portalCache = _getCTPortalCache(finderPath.getCacheName());
+			portalCache = _getCTPortalCache(
+				finderPath.getCacheName(), productionMode);
 
 			boolean transactionalCount = false;
 
@@ -223,7 +224,8 @@ public class FinderCacheImpl
 
 		if (result == null) {
 			if (portalCache == null) {
-				portalCache = _getCTPortalCache(finderPath.getCacheName());
+				portalCache = _getCTPortalCache(
+					finderPath.getCacheName(), productionMode);
 			}
 
 			TransactionalPortalCacheUtil.preparePut(portalCache, cacheKey);
@@ -331,8 +333,8 @@ public class FinderCacheImpl
 		}
 
 		if (!TransactionalPortalCacheUtil.completePut(
-				_getCTPortalCache(finderPath.getCacheName()), cacheKey,
-				portalCacheValue, timeToLive)) {
+				_getCTPortalCache(finderPath.getCacheName(), productionMode),
+				cacheKey, portalCacheValue, timeToLive)) {
 
 			if (_isLocalCacheEnabled(productionMode)) {
 				Map<LocalCacheKey, Serializable> localCache = _localCache.get();
@@ -879,12 +881,16 @@ public class FinderCacheImpl
 	}
 
 	private PortalCache<Serializable, Serializable> _getCTPortalCache(
-		String cacheName) {
+		String cacheName, boolean productionMode) {
 
 		PortalCache<Serializable, Serializable> portalCache = _getPortalCache(
 			cacheName);
 
 		if (portalCache instanceof CTAwarePortalCache ctAwarePortalCache) {
+			if (productionMode) {
+				return ctAwarePortalCache.getProductionPortalCache();
+			}
+
 			return ctAwarePortalCache.getCTPortalCache();
 		}
 
