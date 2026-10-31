@@ -6,6 +6,7 @@
 package com.liferay.depot.web.internal.item.selector.provider.test;
 
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
@@ -91,6 +92,34 @@ public abstract class BaseDepotGroupItemSelectorProviderTestCase {
 			1,
 			getGroupItemSelectorProvider().getGroupsCount(
 				stagingGroup.getCompanyId(), stagingGroup.getGroupId(), null));
+	}
+
+	@Test
+	@TestInfo("LPD-109885")
+	public void testGetGroupsDisconnected() throws Exception {
+		DepotEntry connectedDepotEntry = _addDepotEntry(getDepotType());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			connectedDepotEntry.getDepotEntryId(), _group.getGroupId());
+
+		DepotEntry disconnectedDepotEntry = _addDepotEntry(getDepotType());
+
+		DepotEntryGroupRel depotEntryGroupRel =
+			_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+				disconnectedDepotEntry.getDepotEntryId(), _group.getGroupId());
+
+		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
+			depotEntryGroupRel);
+
+		List<Group> groups = getGroupItemSelectorProvider().getGroups(
+			_group.getCompanyId(), _group.getGroupId(), null, 0, 20);
+
+		Assert.assertEquals(groups.toString(), 1, groups.size());
+
+		Group group = groups.get(0);
+
+		Assert.assertEquals(
+			connectedDepotEntry.getGroupId(), group.getGroupId());
 	}
 
 	@Test
