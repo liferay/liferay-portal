@@ -7414,6 +7414,56 @@ public class ObjectEntryLocalServiceTest {
 	}
 
 	@Test
+	public void testGetValuesListCountWithObjectEntryInTrash()
+		throws Exception {
+
+		ObjectDefinition objectDefinition2 =
+			ObjectDefinitionTestUtil.publishObjectDefinition();
+
+		PermissionChecker originalPermissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		try {
+			ObjectEntry objectEntry2 = _addObjectEntry(
+				0, objectDefinition2.getObjectDefinitionId(),
+				Collections.emptyMap());
+			ObjectEntry objectEntry3 = _addObjectEntry(
+				0, objectDefinition2.getObjectDefinitionId(),
+				Collections.emptyMap());
+			ObjectEntry objectEntry4 = _addObjectEntry(
+				0, objectDefinition2.getObjectDefinitionId(),
+				Collections.emptyMap());
+
+			_objectEntryLocalService.moveObjectEntryToTrash(
+				TestPropsValues.getUserId(), objectEntry3,
+				ServiceContextTestUtil.getServiceContext());
+
+			_assertPrimaryKeysAndValuesListCount(
+				Arrays.asList(objectEntry2, objectEntry4), objectDefinition2,
+				null);
+
+			User user = UserTestUtil.addUser();
+
+			_addViewRoleUser(
+				objectDefinition2, Arrays.asList(objectEntry3, objectEntry4),
+				user);
+
+			PermissionThreadLocal.setPermissionChecker(
+				PermissionCheckerFactoryUtil.create(user));
+
+			_assertPrimaryKeysAndValuesListCount(
+				Arrays.asList(objectEntry4), objectDefinition2, null);
+		}
+		finally {
+			PermissionThreadLocal.setPermissionChecker(
+				originalPermissionChecker);
+
+			_objectDefinitionLocalService.deleteObjectDefinition(
+				objectDefinition2);
+		}
+	}
+
+	@Test
 	public void testGetValuesListCountWithObjectEntryVersioning()
 		throws Exception {
 
@@ -11294,6 +11344,24 @@ public class ObjectEntryLocalServiceTest {
 			title + ".txt", _objectDefinition);
 	}
 
+	private void _addViewRoleUser(
+			ObjectDefinition objectDefinition, List<ObjectEntry> objectEntries,
+			User user)
+		throws Exception {
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		for (ObjectEntry objectEntry : objectEntries) {
+			_resourcePermissionLocalService.setResourcePermissions(
+				TestPropsValues.getCompanyId(), objectDefinition.getClassName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(objectEntry.getObjectEntryId()),
+				role.getRoleId(), new String[] {ActionKeys.VIEW});
+		}
+
+		_userLocalService.addRoleUser(role.getRoleId(), user);
+	}
+
 	private void _assertAssetEntry(
 			Date expectedExpirationDate, Date expectedPublishDate,
 			String expectedTitle, ObjectEntry objectEntry)
@@ -11635,6 +11703,20 @@ public class ObjectEntryLocalServiceTest {
 		Assert.assertEquals(
 			expectedObjectFieldName,
 			objectValidationRuleResult.getObjectFieldName());
+	}
+
+	private void _assertPrimaryKeysAndValuesListCount(
+			List<ObjectEntry> expectedObjectEntries,
+			ObjectDefinition objectDefinition, Predicate predicate)
+		throws Exception {
+
+		Assert.assertEquals(
+			TransformUtil.transform(
+				expectedObjectEntries, ObjectEntry::getObjectEntryId),
+			_getPrimaryKeys(objectDefinition, predicate, null));
+		Assert.assertEquals(
+			expectedObjectEntries.size(),
+			_getValuesListCount(objectDefinition, predicate));
 	}
 
 	private void _assertValuesLoaded(
