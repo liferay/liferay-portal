@@ -40,6 +40,7 @@ import com.liferay.dynamic.data.mapping.service.DDMStorageLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.base.DDMFormInstanceRecordLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstancePersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceRecordVersionPersistence;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceReportPersistence;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.DDMStorageAdapter;
@@ -200,9 +201,8 @@ public class DDMFormInstanceRecordLocalServiceImpl
 				WorkflowConstants.STATUS_APPROVED) {
 
 			DDMFormInstanceReport ddmFormInstanceReport =
-				_ddmFormInstanceReportLocalService.
-					getFormInstanceReportByFormInstanceId(
-						ddmFormInstanceRecord.getFormInstanceId());
+				_ddmFormInstanceReportPersistence.findByFormInstanceId(
+					ddmFormInstanceRecord.getFormInstanceId());
 
 			_ddmFormInstanceReportLocalService.processFormInstanceReportEvent(
 				ddmFormInstanceReport.getFormInstanceReportId(),
@@ -353,8 +353,8 @@ public class DDMFormInstanceRecordLocalServiceImpl
 		throws PortalException {
 
 		DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion =
-			_ddmFormInstanceRecordVersionLocalService.
-				getFormInstanceRecordVersion(ddmFormInstanceRecordId, version);
+			_ddmFormInstanceRecordVersionPersistence.findByF_V(
+				ddmFormInstanceRecordId, version);
 
 		if (!ddmFormInstanceRecordVersion.isApproved()) {
 			return;
@@ -1326,6 +1326,9 @@ public class DDMFormInstanceRecordLocalServiceImpl
 	@Reference
 	private DDMFormInstanceReportLocalService
 		_ddmFormInstanceReportLocalService;
+
+	@Reference
+	private DDMFormInstanceReportPersistence _ddmFormInstanceReportPersistence;
 
 	@Reference
 	private DDMFormValuesValidator _ddmFormValuesValidator;

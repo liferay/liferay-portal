@@ -8,6 +8,7 @@ package com.liferay.dynamic.data.mapping.service.impl;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecord;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
 import com.liferay.dynamic.data.mapping.service.base.DDMFormInstanceRecordVersionServiceBaseImpl;
+import com.liferay.dynamic.data.mapping.util.comparator.DDMFormInstanceRecordVersionIdComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -40,9 +41,9 @@ public class DDMFormInstanceRecordVersionServiceImpl
 		throws PortalException {
 
 		DDMFormInstanceRecordVersion latestFormInstanceRecordVersion =
-			ddmFormInstanceRecordVersionLocalService.
-				fetchLatestFormInstanceRecordVersion(
-					userId, formInstanceId, formInstanceVersion, status);
+			ddmFormInstanceRecordVersionPersistence.fetchByU_F_F_S_First(
+				userId, formInstanceId, formInstanceVersion, status,
+				DDMFormInstanceRecordVersionIdComparator.getInstance(false));
 
 		_ddmFormInstanceRecordModelResourcePermission.check(
 			getPermissionChecker(),
@@ -58,8 +59,8 @@ public class DDMFormInstanceRecordVersionServiceImpl
 		throws PortalException {
 
 		DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion =
-			ddmFormInstanceRecordVersionLocalService.
-				getFormInstanceRecordVersion(ddmFormInstanceRecordVersionId);
+			ddmFormInstanceRecordVersionPersistence.findByPrimaryKey(
+				ddmFormInstanceRecordVersionId);
 
 		_ddmFormInstanceRecordModelResourcePermission.check(
 			getPermissionChecker(),

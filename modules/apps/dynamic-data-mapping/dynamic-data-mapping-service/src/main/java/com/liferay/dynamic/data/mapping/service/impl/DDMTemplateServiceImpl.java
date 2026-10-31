@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermi
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.io.File;
@@ -277,8 +278,9 @@ public class DDMTemplateServiceImpl extends DDMTemplateServiceBaseImpl {
 			long groupId, long classNameId, String templateKey)
 		throws PortalException {
 
-		DDMTemplate ddmTemplate = ddmTemplateLocalService.fetchTemplate(
-			groupId, classNameId, templateKey);
+		DDMTemplate ddmTemplate = ddmTemplatePersistence.fetchByG_C_T(
+			groupId, classNameId,
+			StringUtil.toUpperCase(StringUtil.trim(templateKey)));
 
 		if (ddmTemplate != null) {
 			_ddmTemplateModelResourcePermission.check(
@@ -316,8 +318,9 @@ public class DDMTemplateServiceImpl extends DDMTemplateServiceBaseImpl {
 			long groupId, long classNameId, String templateKey)
 		throws PortalException {
 
-		DDMTemplate ddmTemplate = ddmTemplateLocalService.getTemplate(
-			groupId, classNameId, templateKey);
+		DDMTemplate ddmTemplate = ddmTemplatePersistence.findByG_C_T(
+			groupId, classNameId,
+			StringUtil.toUpperCase(StringUtil.trim(templateKey)));
 
 		_ddmTemplateModelResourcePermission.check(
 			getPermissionChecker(), ddmTemplate, ActionKeys.VIEW);

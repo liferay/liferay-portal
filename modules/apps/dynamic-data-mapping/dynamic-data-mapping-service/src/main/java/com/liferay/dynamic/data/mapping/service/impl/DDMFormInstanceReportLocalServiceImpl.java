@@ -11,9 +11,9 @@ import com.liferay.dynamic.data.mapping.model.DDMFormInstanceRecordVersion;
 import com.liferay.dynamic.data.mapping.model.DDMFormInstanceReport;
 import com.liferay.dynamic.data.mapping.report.DDMFormFieldTypeReportProcessor;
 import com.liferay.dynamic.data.mapping.report.DDMFormFieldTypeReportProcessorRegistry;
-import com.liferay.dynamic.data.mapping.service.DDMFormInstanceRecordVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.base.DDMFormInstanceReportLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstancePersistence;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMFormInstanceRecordVersionPersistence;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.petra.string.StringBundler;
@@ -115,9 +115,8 @@ public class DDMFormInstanceReportLocalServiceImpl
 
 		try {
 			DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion =
-				_ddmFormInstanceRecordVersionLocalService.
-					getDDMFormInstanceRecordVersion(
-						formInstanceRecordVersionId);
+				_ddmFormInstanceRecordVersionPersistence.findByPrimaryKey(
+					formInstanceRecordVersionId);
 
 			DDMFormInstanceReport ddmFormInstanceReport =
 				ddmFormInstanceReportPersistence.findByFormInstanceId(
@@ -222,8 +221,8 @@ public class DDMFormInstanceReportLocalServiceImpl
 	private DDMFormInstancePersistence _ddmFormInstancePersistence;
 
 	@Reference
-	private DDMFormInstanceRecordVersionLocalService
-		_ddmFormInstanceRecordVersionLocalService;
+	private DDMFormInstanceRecordVersionPersistence
+		_ddmFormInstanceRecordVersionPersistence;
 
 	@Reference
 	private JSONFactory _jsonFactory;

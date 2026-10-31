@@ -40,12 +40,12 @@ import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLinkLocalService;
-import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureVersionLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.dynamic.data.mapping.service.base.DDMStructureLocalServiceBaseImpl;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstanceLinkPersistence;
+import com.liferay.dynamic.data.mapping.service.persistence.DDMDataProviderInstancePersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureLayoutPersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureLinkPersistence;
 import com.liferay.dynamic.data.mapping.service.persistence.DDMStructureVersionPersistence;
@@ -1829,9 +1829,8 @@ public class DDMStructureLocalServiceImpl
 				String dataProviderUuid = matcher.group(1);
 
 				DDMDataProviderInstance dataProviderInstance =
-					_ddmDataProviderInstanceLocalService.
-						fetchDDMDataProviderInstanceByUuidAndGroupId(
-							dataProviderUuid, groupId);
+					_ddmDataProviderInstancePersistence.fetchByUUID_G(
+						dataProviderUuid, groupId);
 
 				if (dataProviderInstance == null) {
 					continue;
@@ -2036,8 +2035,8 @@ public class DDMStructureLocalServiceImpl
 			groupId, ddmForm);
 
 		List<DDMDataProviderInstanceLink> dataProviderInstanceLinks =
-			_ddmDataProviderInstanceLinkLocalService.
-				getDataProviderInstanceLinks(structureId);
+			_ddmDataProviderInstanceLinkPersistence.findByStructureId(
+				structureId);
 
 		for (DDMDataProviderInstanceLink dataProviderInstanceLink :
 				dataProviderInstanceLinks) {
@@ -2386,8 +2385,8 @@ public class DDMStructureLocalServiceImpl
 		_ddmDataProviderInstanceLinkPersistence;
 
 	@Reference
-	private DDMDataProviderInstanceLocalService
-		_ddmDataProviderInstanceLocalService;
+	private DDMDataProviderInstancePersistence
+		_ddmDataProviderInstancePersistence;
 
 	@Reference
 	private DDMFormValidator _ddmFormValidator;
