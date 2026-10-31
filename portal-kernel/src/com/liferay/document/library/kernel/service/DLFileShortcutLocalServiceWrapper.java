@@ -502,23 +502,6 @@ public class DLFileShortcutLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<DLFileShortcut> getFileShortcuts(
-		long groupId, long folderId, boolean active, int status, int start,
-		int end) {
-
-		return _dlFileShortcutLocalService.getFileShortcuts(
-			groupId, folderId, active, status, start, end);
-	}
-
-	@Override
-	public int getFileShortcutsCount(
-		long groupId, long folderId, boolean active, int status) {
-
-		return _dlFileShortcutLocalService.getFileShortcutsCount(
-			groupId, folderId, active, status);
-	}
-
-	@Override
 	public java.util.List<DLFileShortcut> getGroupFileShortcuts(long groupId) {
 		return _dlFileShortcutLocalService.getGroupFileShortcuts(groupId);
 	}
@@ -666,4 +649,4 @@ public class DLFileShortcutLocalServiceWrapper
 	private DLFileShortcutLocalService _dlFileShortcutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1472845477
+// LIFERAY-SERVICE-BUILDER-HASH:357996749

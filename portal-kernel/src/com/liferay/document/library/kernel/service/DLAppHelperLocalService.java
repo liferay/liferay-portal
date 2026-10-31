@@ -84,14 +84,6 @@ public interface DLAppHelperLocalService extends BaseLocalService {
 		long userId, FileEntry fileEntry, boolean incrementCounter);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLFileShortcut> getFileShortcuts(
-		long groupId, long folderId, boolean active, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getFileShortcutsCount(
-		long groupId, long folderId, boolean active, int status);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<DLFileShortcut> getGroupFileShortcuts(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -210,4 +202,4 @@ public interface DLAppHelperLocalService extends BaseLocalService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1946046677
+// LIFERAY-SERVICE-BUILDER-HASH:394497898
