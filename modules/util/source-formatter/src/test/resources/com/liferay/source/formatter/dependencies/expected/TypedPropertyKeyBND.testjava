@@ -7,6 +7,9 @@ package com.liferay.source.formatter.dependencies;
 
 import aQute.bnd.header.Attrs;
 
+import java.util.Dictionary;
+import java.util.Hashtable;
+
 /**
  * @author Shuyang Zhou
  */
@@ -18,6 +21,14 @@ public class TypedPropertyKeyBND {
 		attrs.put("resource.bundle.aggregate:String", "a");
 
 		return attrs;
+	}
+
+	public Dictionary<String, Object> register() {
+		Dictionary<String, Object> dictionary = new Hashtable<>();
+
+		dictionary.put("service.ranking:Integer", 100);
+
+		return dictionary;
 	}
 
 }
