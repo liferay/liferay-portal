@@ -706,7 +706,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 			infoFieldValues.add(
 				new InfoFieldValue<>(
 					objectFieldInfoFieldConverter.getInfoField(
-						false, objectFieldNamespace, objectField),
+						false, objectFieldNamespace, objectField,
+						objectRelationship),
 					StringPool.BLANK));
 
 			return;
@@ -728,7 +729,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 		infoFieldValues.add(
 			new InfoFieldValue<>(
 				objectFieldInfoFieldConverter.getInfoField(
-					false, objectFieldNamespace, objectField),
+					false, objectFieldNamespace, objectField,
+					objectRelationship),
 				unsafeSupplierValue::getValue));
 	}
 

@@ -149,26 +149,16 @@ public class ObjectFieldInfoFieldConverter {
 		boolean editable, String namespace, ObjectField objectField) {
 
 		return _addAttributes(
-			InfoField.builder(
-			).infoFieldType(
-				ObjectFieldInfoFieldTypeUtil.getInfoFieldType(objectField)
-			).namespace(
-				namespace
-			).name(
-				objectField.getName()
-			).editable(
-				editable
-			).labelInfoLocalizedValue(
-				new LazyInfoLocalizedValue(
-					() -> _getLabelInfoLocalizedValue(objectField))
-			).localizable(
-				objectField.isLocalized()
-			).readOnly(
-				_isReadOnly(objectField)
-			).required(
-				objectField.isRequired()
-			),
-			objectField);
+			_getFinalStep(editable, namespace, objectField), objectField);
+	}
+
+	public InfoField<?> getInfoField(
+		boolean editable, String namespace, ObjectField objectField,
+		ObjectRelationship objectRelationship) {
+
+		return addRelationshipInfoFieldAttributes(
+			_getFinalStep(editable, namespace, objectField),
+			objectRelationship);
 	}
 
 	private InfoField<?> _addAttributes(
@@ -409,6 +399,30 @@ public class ObjectFieldInfoFieldConverter {
 		}
 
 		return null;
+	}
+
+	private InfoField.FinalStep _getFinalStep(
+		boolean editable, String namespace, ObjectField objectField) {
+
+		return InfoField.builder(
+		).infoFieldType(
+			ObjectFieldInfoFieldTypeUtil.getInfoFieldType(objectField)
+		).namespace(
+			namespace
+		).name(
+			objectField.getName()
+		).editable(
+			editable
+		).labelInfoLocalizedValue(
+			new LazyInfoLocalizedValue(
+				() -> _getLabelInfoLocalizedValue(objectField))
+		).localizable(
+			objectField.isLocalized()
+		).readOnly(
+			_isReadOnly(objectField)
+		).required(
+			objectField.isRequired()
+		);
 	}
 
 	private Group _getGroup(ServiceContext serviceContext) {
