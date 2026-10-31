@@ -7,6 +7,6 @@
 
 <%@ include file="/init.jsp" %>
 
-<%@ page import="com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem" %><%@
+<%@ page import="com.liferay.frontend.taglib.servlet.taglib.IconOptionsTag" %><%@
 page import="com.liferay.portal.kernel.portlet.configuration.icon.PortletConfigurationIcon" %><%@
 page import="com.liferay.taglib.servlet.PipingServletResponseFactory" %>

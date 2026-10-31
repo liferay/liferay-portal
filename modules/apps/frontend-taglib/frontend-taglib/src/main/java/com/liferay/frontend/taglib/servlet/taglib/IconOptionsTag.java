@@ -40,7 +40,7 @@ public class IconOptionsTag extends IncludeTag {
 
 	@Override
 	public int doEndTag() throws JspException {
-		if (ListUtil.isEmpty(_getPortletConfigurationIcons())) {
+		if (ListUtil.isEmpty(getPortletConfigurationIcons())) {
 			return SKIP_PAGE;
 		}
 
@@ -49,6 +49,36 @@ public class IconOptionsTag extends IncludeTag {
 
 	public String getCssClass() {
 		return GetterUtil.getString(_cssClass);
+	}
+
+	public List<DropdownItem> getDropdownItems() {
+		return new DropdownItemList() {
+			{
+				for (List<PortletConfigurationIcon> portletConfigurationIcons :
+						_getPortletConfigurationIconsList()) {
+
+					addGroup(
+						dropdownGroupItem -> {
+							dropdownGroupItem.setDropdownItems(
+								_getDropdownItems(portletConfigurationIcons));
+							dropdownGroupItem.setSeparator(true);
+						});
+				}
+			}
+		};
+	}
+
+	public List<PortletConfigurationIcon> getPortletConfigurationIcons() {
+		if (_portletConfigurationIcons != null) {
+			return _portletConfigurationIcons;
+		}
+
+		_portletConfigurationIcons =
+			PortletConfigurationIconTracker.getPortletConfigurationIcons(
+				_getPortletId(), _getPortletRequest(),
+				PortletConfigurationIconComparator.INSTANCE);
+
+		return _portletConfigurationIcons;
 	}
 
 	public boolean isMonospaced() {
@@ -89,36 +119,6 @@ public class IconOptionsTag extends IncludeTag {
 		return _CLEAN_UP_SET_ATTRIBUTES;
 	}
 
-	@Override
-	protected void setAttributes(HttpServletRequest httpServletRequest) {
-		httpServletRequest.setAttribute(
-			"liferay-frontend:icon-options:cssClass", getCssClass());
-		httpServletRequest.setAttribute(
-			"liferay-frontend:icon-options:dropdownItems", _getDropdownItems());
-		httpServletRequest.setAttribute(
-			"liferay-frontend:icon-options:monospaced", isMonospaced());
-		httpServletRequest.setAttribute(
-			"liferay-frontend:icon-options:portletConfigurationIcons",
-			_getPortletConfigurationIcons());
-	}
-
-	private List<DropdownItem> _getDropdownItems() {
-		return new DropdownItemList() {
-			{
-				for (List<PortletConfigurationIcon> portletConfigurationIcons :
-						_getPortletConfigurationIconsList()) {
-
-					addGroup(
-						dropdownGroupItem -> {
-							dropdownGroupItem.setDropdownItems(
-								_getDropdownItems(portletConfigurationIcons));
-							dropdownGroupItem.setSeparator(true);
-						});
-				}
-			}
-		};
-	}
-
 	private List<DropdownItem> _getDropdownItems(
 		List<PortletConfigurationIcon> portletConfigurationIcons) {
 
@@ -145,19 +145,6 @@ public class IconOptionsTag extends IncludeTag {
 		return portletDisplay.getId();
 	}
 
-	private List<PortletConfigurationIcon> _getPortletConfigurationIcons() {
-		if (_portletConfigurationIcons != null) {
-			return _portletConfigurationIcons;
-		}
-
-		_portletConfigurationIcons =
-			PortletConfigurationIconTracker.getPortletConfigurationIcons(
-				_getPortletId(), _getPortletRequest(),
-				PortletConfigurationIconComparator.INSTANCE);
-
-		return _portletConfigurationIcons;
-	}
-
 	private List<List<PortletConfigurationIcon>>
 		_getPortletConfigurationIconsList() {
 
@@ -170,7 +157,7 @@ public class IconOptionsTag extends IncludeTag {
 		portletConfigurationIconsList.add(portletConfigurationIcons);
 
 		for (PortletConfigurationIcon portletConfigurationIcon :
-				_getPortletConfigurationIcons()) {
+				getPortletConfigurationIcons()) {
 
 			portletConfigurationIcons.add(portletConfigurationIcon);
 

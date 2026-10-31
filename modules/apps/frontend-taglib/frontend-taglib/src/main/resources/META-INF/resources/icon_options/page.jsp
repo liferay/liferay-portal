@@ -8,26 +8,24 @@
 <%@ include file="/icon_options/init.jsp" %>
 
 <%
-String cssClass = (String)request.getAttribute("liferay-frontend:icon-options:cssClass");
-
-List<PortletConfigurationIcon> portletConfigurationIcons = (List<PortletConfigurationIcon>)request.getAttribute("liferay-frontend:icon-options:portletConfigurationIcons");
+IconOptionsTag iconOptionsTag = (IconOptionsTag)request.getAttribute(IconOptionsTag.class.getName());
 %>
 
 <clay:dropdown-menu
 	aria-label='<%= LanguageUtil.get(request, "options") %>'
 	borderless="<%= true %>"
-	cssClass='<%= cssClass + " component-action portlet-options" %>'
+	cssClass='<%= iconOptionsTag.getCssClass() + " component-action portlet-options" %>'
 	displayType="secondary"
-	dropdownItems='<%= (List<DropdownItem>)request.getAttribute("liferay-frontend:icon-options:dropdownItems") %>'
+	dropdownItems="<%= iconOptionsTag.getDropdownItems() %>"
 	icon="ellipsis-v"
-	monospaced='<%= (boolean)request.getAttribute("liferay-frontend:icon-options:monospaced") %>'
+	monospaced="<%= iconOptionsTag.isMonospaced() %>"
 	propsTransformer="{PortletOptionsDropdownPropsTransformer} from frontend-taglib"
 	small="<%= true %>"
 	title='<%= LanguageUtil.get(request, "options") %>'
 />
 
 <%
-for (PortletConfigurationIcon portletConfigurationIcon : portletConfigurationIcons) {
+for (PortletConfigurationIcon portletConfigurationIcon : iconOptionsTag.getPortletConfigurationIcons()) {
 	portletConfigurationIcon.include(request, PipingServletResponseFactory.createPipingServletResponse(pageContext));
 }
 %>
