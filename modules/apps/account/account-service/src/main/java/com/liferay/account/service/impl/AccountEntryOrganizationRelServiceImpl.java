@@ -91,8 +91,8 @@ public class AccountEntryOrganizationRelServiceImpl
 		throws PortalException {
 
 		AccountEntryOrganizationRel accountEntryOrganizationRel =
-			accountEntryOrganizationRelLocalService.
-				fetchAccountEntryOrganizationRel(accountEntryOrganizationRelId);
+			accountEntryOrganizationRelPersistence.fetchByPrimaryKey(
+				accountEntryOrganizationRelId);
 
 		if (accountEntryOrganizationRel != null) {
 			_accountEntryModelResourcePermission.check(
@@ -110,9 +110,8 @@ public class AccountEntryOrganizationRelServiceImpl
 		throws PortalException {
 
 		AccountEntryOrganizationRel accountEntryOrganizationRel =
-			accountEntryOrganizationRelLocalService.
-				fetchAccountEntryOrganizationRel(
-					accountEntryId, organizationId);
+			accountEntryOrganizationRelPersistence.fetchByA_O(
+				accountEntryId, organizationId);
 
 		if (accountEntryOrganizationRel != null) {
 			_accountEntryModelResourcePermission.check(
@@ -133,8 +132,8 @@ public class AccountEntryOrganizationRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.UPDATE_ORGANIZATIONS);
 
-		return accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRel(accountEntryId, organizationId);
+		return accountEntryOrganizationRelPersistence.findByA_O(
+			accountEntryId, organizationId);
 	}
 
 	@Override
@@ -146,8 +145,8 @@ public class AccountEntryOrganizationRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.UPDATE_ORGANIZATIONS);
 
-		return accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRels(accountEntryId, start, end);
+		return accountEntryOrganizationRelPersistence.findByAccountEntryId(
+			accountEntryId, start, end);
 	}
 
 	@Override
@@ -158,8 +157,8 @@ public class AccountEntryOrganizationRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.UPDATE_ORGANIZATIONS);
 
-		return accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRelsCount(accountEntryId);
+		return accountEntryOrganizationRelPersistence.countByAccountEntryId(
+			accountEntryId);
 	}
 
 	@Override

@@ -241,8 +241,8 @@ public class AccountEntryUserRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.VIEW_USERS);
 
-		return accountEntryUserRelLocalService.
-			getAccountEntryUserRelsByAccountEntryId(accountEntryId);
+		return accountEntryUserRelPersistence.findByAccountEntryId(
+			accountEntryId);
 	}
 
 	@Override
@@ -254,8 +254,8 @@ public class AccountEntryUserRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.VIEW_USERS);
 
-		return accountEntryUserRelLocalService.
-			getAccountEntryUserRelsByAccountEntryId(accountEntryId, start, end);
+		return accountEntryUserRelPersistence.findByAccountEntryId(
+			accountEntryId, start, end);
 	}
 
 	@Override
@@ -267,8 +267,8 @@ public class AccountEntryUserRelServiceImpl
 			getPermissionChecker(), accountUserId,
 			AccountActionKeys.VIEW_USERS);
 
-		return accountEntryUserRelLocalService.
-			getAccountEntryUserRelsByAccountUserId(accountUserId);
+		return accountEntryUserRelPersistence.findByAccountUserId(
+			accountUserId);
 	}
 
 	@Override
@@ -280,8 +280,8 @@ public class AccountEntryUserRelServiceImpl
 			getPermissionChecker(), accountEntryId,
 			AccountActionKeys.VIEW_USERS);
 
-		return accountEntryUserRelLocalService.
-			getAccountEntryUserRelsCountByAccountEntryId(accountEntryId);
+		return accountEntryUserRelPersistence.countByAccountEntryId(
+			accountEntryId);
 	}
 
 	@Override
