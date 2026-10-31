@@ -67,7 +67,7 @@ public class ObjectEntryLocalServiceImplTest {
 						Mockito.mock(DSLQuery.class)
 					))) {
 
-			_applyOrderBy(-1, -1, null);
+			_applyOrderBy(null);
 
 			List<SortDSLQueryVisitor> sortDSLQueryVisitors =
 				mockedConstruction.constructed();
@@ -76,7 +76,7 @@ public class ObjectEntryLocalServiceImplTest {
 				sortDSLQueryVisitors.toString(), 0,
 				sortDSLQueryVisitors.size());
 
-			_applyOrderBy(0, 100, null);
+			_applyOrderBy(new Sort[] {new Sort(Field.CREATE_DATE, true)});
 
 			sortDSLQueryVisitors = mockedConstruction.constructed();
 
@@ -84,33 +84,29 @@ public class ObjectEntryLocalServiceImplTest {
 				sortDSLQueryVisitors.toString(), 1,
 				sortDSLQueryVisitors.size());
 
-			_assertSort("id", false, sortDSLQueryVisitors.get(0));
-
-			_applyOrderBy(
-				0, 100, new Sort[] {new Sort(Field.CREATE_DATE, true)});
-
-			sortDSLQueryVisitors = mockedConstruction.constructed();
-
-			Assert.assertEquals(
-				sortDSLQueryVisitors.toString(), 2,
-				sortDSLQueryVisitors.size());
-
-			_assertSort(Field.CREATE_DATE, true, sortDSLQueryVisitors.get(1));
+			_assertSort(Field.CREATE_DATE, true, sortDSLQueryVisitors.get(0));
 		}
 	}
 
-	private void _applyOrderBy(int start, int end, Sort[] sorts)
-		throws Exception {
+	@Test
+	public void testIsDefaultOrderBy() throws Exception {
+		Assert.assertFalse(_isDefaultOrderBy(-1, null, -1));
+		Assert.assertFalse(
+			_isDefaultOrderBy(
+				100, new Sort[] {new Sort(Field.CREATE_DATE, true)}, 0));
+		Assert.assertTrue(_isDefaultOrderBy(100, null, 0));
+	}
 
+	private void _applyOrderBy(Sort[] sorts) throws Exception {
 		Method method = ObjectEntryLocalServiceImpl.class.getDeclaredMethod(
-			"_applyOrderBy", DSLQuery.class, ObjectDefinition.class, int.class,
-			int.class, Sort[].class);
+			"_applyOrderBy", DSLQuery.class, ObjectDefinition.class,
+			Sort[].class);
 
 		method.setAccessible(true);
 
 		method.invoke(
 			_objectEntryLocalServiceImpl, Mockito.mock(DSLQuery.class),
-			Mockito.mock(ObjectDefinition.class), start, end, sorts);
+			Mockito.mock(ObjectDefinition.class), sorts);
 	}
 
 	private void _assertSort(
@@ -132,6 +128,18 @@ public class ObjectEntryLocalServiceImplTest {
 
 		Assert.assertEquals(expectedFieldName, sort.getFieldName());
 		Assert.assertEquals(expectedReverse, sort.isReverse());
+	}
+
+	private boolean _isDefaultOrderBy(int end, Sort[] sorts, int start)
+		throws Exception {
+
+		Method method = ObjectEntryLocalServiceImpl.class.getDeclaredMethod(
+			"_isDefaultOrderBy", int.class, Sort[].class, int.class);
+
+		method.setAccessible(true);
+
+		return (boolean)method.invoke(
+			_objectEntryLocalServiceImpl, end, sorts, start);
 	}
 
 	private final ObjectEntryLocalServiceImpl _objectEntryLocalServiceImpl =
