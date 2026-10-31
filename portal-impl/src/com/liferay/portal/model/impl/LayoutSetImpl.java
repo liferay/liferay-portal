@@ -426,20 +426,7 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 	}
 
 	protected Theme getTheme(String device) {
-		boolean controlPanel = false;
-
-		try {
-			Group group = getGroup();
-
-			controlPanel = group.isControlPanel();
-		}
-		catch (Exception exception) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(exception);
-			}
-		}
-
-		if (controlPanel) {
+		if (_isControlPanel()) {
 			String themeId = PrefsPropsUtil.getString(
 				getCompanyId(),
 				PropsKeys.CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID);
@@ -450,11 +437,33 @@ public class LayoutSetImpl extends LayoutSetBaseImpl {
 		return getTheme();
 	}
 
+	private boolean _isControlPanel() {
+		if (_controlPanel != null) {
+			return _controlPanel;
+		}
+
+		try {
+			Group group = getGroup();
+
+			_controlPanel = group.isControlPanel();
+
+			return _controlPanel;
+		}
+		catch (Exception exception) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(exception);
+			}
+		}
+
+		return false;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(LayoutSetImpl.class);
 
 	@CacheField(propagateToInterface = true)
 	private String _companyFallbackVirtualHostname;
 
+	private Boolean _controlPanel;
 	private String _faviconURL;
 	private UnicodeProperties _settingsUnicodeProperties;
 	private Theme _theme;
