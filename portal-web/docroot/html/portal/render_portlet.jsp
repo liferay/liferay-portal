@@ -290,11 +290,17 @@ if (layoutTypeController.isFullPageDisplayable()) {
 	showCloseIcon = false;
 }
 
+long portletScopeGroupId = 0;
+
 if (Validator.isNotNull(portletResource)) {
-	themeDisplay.setScopeGroupId(PortalUtil.getScopeGroupId(request, portletResourcePortlet.getPortletId()));
+	portletScopeGroupId = PortalUtil.getScopeGroupId(request, portletResourcePortlet.getPortletId());
 }
 else {
-	themeDisplay.setScopeGroupId(PortalUtil.getScopeGroupId(request, portletId));
+	portletScopeGroupId = PortalUtil.getScopeGroupId(request, portletId);
+}
+
+if (portletScopeGroupId != themeDisplay.getScopeGroupId()) {
+	themeDisplay.setScopeGroupId(portletScopeGroupId);
 }
 
 Group siteGroup = themeDisplay.getSiteGroup();
