@@ -403,8 +403,7 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 		}
 
 		CommerceShippingFixedOption commerceShippingFixedOption =
-			commerceShippingFixedOptionLocalService.
-				fetchCommerceShippingFixedOption(companyId, key);
+			commerceShippingFixedOptionPersistence.fetchByC_K(companyId, key);
 
 		if (commerceShippingFixedOption != null) {
 			key = key + StringUtil.randomString(5);

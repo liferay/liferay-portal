@@ -54,8 +54,8 @@ public class CommerceTaxCategoryMappingServiceImpl
 		throws PortalException {
 
 		CommerceTaxCategoryMapping commerceTaxCategoryMapping =
-			commerceTaxCategoryMappingLocalService.
-				getCommerceTaxCategoryMapping(commerceTaxCategoryMappingId);
+			commerceTaxCategoryMappingPersistence.findByPrimaryKey(
+				commerceTaxCategoryMappingId);
 
 		_checkCommerceChannel(commerceTaxCategoryMapping.getGroupId());
 
@@ -69,8 +69,8 @@ public class CommerceTaxCategoryMappingServiceImpl
 		throws PortalException {
 
 		CommerceTaxCategoryMapping commerceTaxFixedRate =
-			commerceTaxCategoryMappingLocalService.
-				fetchCommerceTaxCategoryMapping(commerceTaxCategoryMappingId);
+			commerceTaxCategoryMappingPersistence.fetchByPrimaryKey(
+				commerceTaxCategoryMappingId);
 
 		if (commerceTaxFixedRate != null) {
 			_checkCommerceChannel(commerceTaxFixedRate.getGroupId());
@@ -86,8 +86,8 @@ public class CommerceTaxCategoryMappingServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxCategoryMappingLocalService.
-			getCommerceTaxCategoryMappingCount(commerceTaxMethodId);
+		return commerceTaxCategoryMappingPersistence.countByCommerceTaxMethodId(
+			commerceTaxMethodId);
 	}
 
 	@Override
@@ -98,9 +98,8 @@ public class CommerceTaxCategoryMappingServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxCategoryMappingLocalService.
-			getCommerceTaxCategoryMappings(
-				commerceTaxMethodId, start, end, orderByComparator);
+		return commerceTaxCategoryMappingPersistence.findByCommerceTaxMethodId(
+			commerceTaxMethodId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -109,8 +108,8 @@ public class CommerceTaxCategoryMappingServiceImpl
 		throws PortalException {
 
 		CommerceTaxCategoryMapping commerceTaxCategoryMapping =
-			commerceTaxCategoryMappingLocalService.
-				getCommerceTaxCategoryMapping(commerceTaxCategoryMappingId);
+			commerceTaxCategoryMappingPersistence.findByPrimaryKey(
+				commerceTaxCategoryMappingId);
 
 		_checkCommerceChannel(commerceTaxCategoryMapping.getGroupId());
 

@@ -60,8 +60,8 @@ public class CommerceShippingFixedOptionServiceImpl
 		throws PortalException {
 
 		CommerceShippingFixedOption commerceShippingFixedOption =
-			commerceShippingFixedOptionLocalService.
-				getCommerceShippingFixedOption(commerceShippingFixedOptionId);
+			commerceShippingFixedOptionPersistence.findByPrimaryKey(
+				commerceShippingFixedOptionId);
 
 		_checkCommerceChannel(commerceShippingFixedOption.getGroupId());
 
@@ -75,8 +75,8 @@ public class CommerceShippingFixedOptionServiceImpl
 		throws PortalException {
 
 		CommerceShippingFixedOption commerceShippingFixedOption =
-			commerceShippingFixedOptionLocalService.
-				fetchCommerceShippingFixedOption(commerceShippingFixedOptionId);
+			commerceShippingFixedOptionPersistence.fetchByPrimaryKey(
+				commerceShippingFixedOptionId);
 
 		if (commerceShippingFixedOption != null) {
 			_checkCommerceChannel(commerceShippingFixedOption.getGroupId());
@@ -91,8 +91,7 @@ public class CommerceShippingFixedOptionServiceImpl
 		throws PortalException {
 
 		CommerceShippingFixedOption commerceShippingFixedOption =
-			commerceShippingFixedOptionLocalService.
-				fetchCommerceShippingFixedOption(companyId, key);
+			commerceShippingFixedOptionPersistence.fetchByC_K(companyId, key);
 
 		if (commerceShippingFixedOption != null) {
 			_checkCommerceChannel(commerceShippingFixedOption.getGroupId());
@@ -112,8 +111,8 @@ public class CommerceShippingFixedOptionServiceImpl
 
 		_checkCommerceChannel(commerceShippingMethod.getGroupId());
 
-		return commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptions(
+		return commerceShippingFixedOptionPersistence.
+			findByCommerceShippingMethodId(
 				commerceShippingMethod.getCommerceShippingMethodId(), start,
 				end);
 	}
@@ -130,8 +129,8 @@ public class CommerceShippingFixedOptionServiceImpl
 
 		_checkCommerceChannel(commerceShippingMethod.getGroupId());
 
-		return commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptions(
+		return commerceShippingFixedOptionPersistence.
+			findByCommerceShippingMethodId(
 				commerceShippingMethod.getCommerceShippingMethodId(), start,
 				end, orderByComparator);
 	}
@@ -161,8 +160,8 @@ public class CommerceShippingFixedOptionServiceImpl
 
 		_checkCommerceChannel(commerceShippingMethod.getGroupId());
 
-		return commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptionsCount(
+		return commerceShippingFixedOptionPersistence.
+			countByCommerceShippingMethodId(
 				commerceShippingMethod.getCommerceShippingMethodId());
 	}
 
@@ -187,8 +186,8 @@ public class CommerceShippingFixedOptionServiceImpl
 		throws PortalException {
 
 		CommerceShippingFixedOption commerceShippingFixedOption =
-			commerceShippingFixedOptionLocalService.
-				getCommerceShippingFixedOption(commerceShippingFixedOptionId);
+			commerceShippingFixedOptionPersistence.findByPrimaryKey(
+				commerceShippingFixedOptionId);
 
 		_checkCommerceChannel(commerceShippingFixedOption.getGroupId());
 

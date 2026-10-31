@@ -72,9 +72,8 @@ public class CommerceTaxFixedRateAddressRelServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRateAddressRel commerceTaxFixedRateAddressRel =
-			commerceTaxFixedRateAddressRelLocalService.
-				getCommerceTaxFixedRateAddressRel(
-					commerceTaxFixedRateAddressRelId);
+			commerceTaxFixedRateAddressRelPersistence.findByPrimaryKey(
+				commerceTaxFixedRateAddressRelId);
 
 		_checkCommerceChannel(commerceTaxFixedRateAddressRel.getGroupId());
 
@@ -89,9 +88,8 @@ public class CommerceTaxFixedRateAddressRelServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRateAddressRel commerceTaxFixedRateAddressRel =
-			commerceTaxFixedRateAddressRelLocalService.
-				fetchCommerceTaxFixedRateAddressRel(
-					commerceTaxFixedRateAddressRelId);
+			commerceTaxFixedRateAddressRelPersistence.fetchByPrimaryKey(
+				commerceTaxFixedRateAddressRelId);
 
 		if (commerceTaxFixedRateAddressRel != null) {
 			_checkCommerceChannel(commerceTaxFixedRateAddressRel.getGroupId());
@@ -110,8 +108,8 @@ public class CommerceTaxFixedRateAddressRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxMethodFixedRateAddressRels(
+		return commerceTaxFixedRateAddressRelPersistence.
+			findByCommerceTaxMethodId(
 				commerceTaxMethodId, start, end, orderByComparator);
 	}
 
@@ -122,8 +120,8 @@ public class CommerceTaxFixedRateAddressRelServiceImpl
 
 		_checkCommerceChannel(groupId);
 
-		return commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxMethodFixedRateAddressRelsCount(commerceTaxMethodId);
+		return commerceTaxFixedRateAddressRelPersistence.
+			countByCommerceTaxMethodId(commerceTaxMethodId);
 	}
 
 	@Override
@@ -133,9 +131,8 @@ public class CommerceTaxFixedRateAddressRelServiceImpl
 		throws PortalException {
 
 		CommerceTaxFixedRateAddressRel commerceTaxFixedRateAddressRel =
-			commerceTaxFixedRateAddressRelLocalService.
-				getCommerceTaxFixedRateAddressRel(
-					commerceTaxFixedRateAddressRelId);
+			commerceTaxFixedRateAddressRelPersistence.findByPrimaryKey(
+				commerceTaxFixedRateAddressRelId);
 
 		_checkCommerceChannel(commerceTaxFixedRateAddressRel.getGroupId());
 
