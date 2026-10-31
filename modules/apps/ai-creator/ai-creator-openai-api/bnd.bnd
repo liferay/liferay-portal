@@ -4,5 +4,4 @@ Bundle-Version: 4.0.0
 Export-Package:\
 	com.liferay.ai.creator.openai.configuration,\
 	com.liferay.ai.creator.openai.configuration.manager,\
-	com.liferay.ai.creator.openai.display.context.factory,\
-	com.liferay.ai.creator.openai.manager
+	com.liferay.ai.creator.openai.display.context.factory
