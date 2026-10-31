@@ -166,10 +166,11 @@ public class ObjectEntryWorkflowHandler
 
 	@Override
 	public boolean isVisible(Group group) {
-		if (group.isSite() &&
-			!Objects.equals(
-				ObjectDefinitionConstants.SCOPE_SITE,
-				_objectDefinition.getScope())) {
+		if ((group.getCompanyId() != _objectDefinition.getCompanyId()) ||
+			(group.isSite() &&
+			 !Objects.equals(
+				 ObjectDefinitionConstants.SCOPE_SITE,
+				 _objectDefinition.getScope()))) {
 
 			return false;
 		}
