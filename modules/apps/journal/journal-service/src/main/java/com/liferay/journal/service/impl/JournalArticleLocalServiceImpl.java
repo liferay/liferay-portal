@@ -6064,9 +6064,8 @@ public class JournalArticleLocalServiceImpl
 		}
 
 		JournalArticleResource articleResource =
-			_journalArticleResourceLocalService.
-				fetchJournalArticleResourceByUuidAndGroupId(
-					article.getArticleResourceUuid(), liveGroupId);
+			_journalArticleResourcePersistence.fetchByUUID_G(
+				article.getArticleResourceUuid(), liveGroupId);
 
 		if (articleResource == null) {
 			return null;

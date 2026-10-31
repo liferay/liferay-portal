@@ -15,6 +15,7 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderService;
 import com.liferay.journal.service.base.JournalArticleServiceBaseImpl;
+import com.liferay.journal.util.comparator.ArticleVersionComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
@@ -484,10 +485,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		JournalArticle article =
-			journalArticleLocalService.
-				fetchLatestArticleByExternalReferenceCode(
-					groupId, externalReferenceCode);
+		JournalArticle article = journalArticlePersistence.fetchByG_ERC_First(
+			groupId, externalReferenceCode,
+			ArticleVersionComparator.getInstance(false));
 
 		if (article != null) {
 			_journalArticleModelResourcePermission.check(
@@ -1617,9 +1617,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		JournalArticle article =
-			journalArticleLocalService.getLatestArticleByExternalReferenceCode(
-				groupId, externalReferenceCode);
+		JournalArticle article = journalArticlePersistence.findByG_ERC_First(
+			groupId, externalReferenceCode,
+			ArticleVersionComparator.getInstance(false));
 
 		_journalArticleModelResourcePermission.check(
 			getPermissionChecker(), article, ActionKeys.VIEW);

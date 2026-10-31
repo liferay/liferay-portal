@@ -9,9 +9,9 @@ import com.liferay.message.boards.constants.MBConstants;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBSuspiciousActivity;
 import com.liferay.message.boards.model.MBThread;
-import com.liferay.message.boards.service.MBMessageLocalService;
-import com.liferay.message.boards.service.MBThreadLocalService;
 import com.liferay.message.boards.service.base.MBSuspiciousActivityServiceBaseImpl;
+import com.liferay.message.boards.service.persistence.MBMessagePersistence;
+import com.liferay.message.boards.service.persistence.MBThreadPersistence;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -76,7 +76,7 @@ public class MBSuspiciousActivityServiceImpl
 			long messageId)
 		throws PortalException {
 
-		MBMessage mbMessage = _mbMessageLocalService.getMBMessage(messageId);
+		MBMessage mbMessage = _mbMessagePersistence.findByPrimaryKey(messageId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), mbMessage.getGroupId(),
@@ -105,7 +105,7 @@ public class MBSuspiciousActivityServiceImpl
 			long threadId)
 		throws PortalException {
 
-		MBThread mbThread = _mbThreadLocalService.getMBThread(threadId);
+		MBThread mbThread = _mbThreadPersistence.findByPrimaryKey(threadId);
 
 		_portletResourcePermission.check(
 			getPermissionChecker(), mbThread.getGroupId(), ActionKeys.BAN_USER);
@@ -130,10 +130,10 @@ public class MBSuspiciousActivityServiceImpl
 	}
 
 	@Reference
-	private MBMessageLocalService _mbMessageLocalService;
+	private MBMessagePersistence _mbMessagePersistence;
 
 	@Reference
-	private MBThreadLocalService _mbThreadLocalService;
+	private MBThreadPersistence _mbThreadPersistence;
 
 	@Reference(target = "(resource.name=" + MBConstants.RESOURCE_NAME + ")")
 	private PortletResourcePermission _portletResourcePermission;
