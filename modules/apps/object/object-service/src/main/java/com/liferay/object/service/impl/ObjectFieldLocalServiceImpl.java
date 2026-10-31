@@ -1082,18 +1082,6 @@ public class ObjectFieldLocalServiceImpl
 
 			_addObjectFieldColumn(dbTableName, objectField);
 
-			if (!objectDefinition.isUnmodifiableSystemObject() &&
-				Objects.equals(
-					dbTableName, objectDefinition.getExtensionDBTableName())) {
-
-				runSQL(
-					DynamicObjectDefinitionTableUtil.
-						getInsertMissingExtensionTableRowsSQL(
-							dbTableName,
-							objectDefinition.getPKObjectFieldDBColumnName(),
-							objectDefinition.getDBTableName()));
-			}
-
 			Object defaultValue = ObjectFieldSettingUtil.getDefaultValue(
 				null, objectField, null);
 
