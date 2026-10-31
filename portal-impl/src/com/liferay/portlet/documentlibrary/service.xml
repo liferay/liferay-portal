@@ -64,9 +64,6 @@
 		<finder name="RepositoryId" return-type="Collection">
 			<finder-column name="repositoryId" />
 		</finder>
-		<finder name="MimeType" return-type="Collection">
-			<finder-column name="mimeType" />
-		</finder>
 		<finder name="FileEntryTypeId" return-type="Collection">
 			<finder-column name="fileEntryTypeId" />
 		</finder>
@@ -123,12 +120,6 @@
 			<finder-column name="companyId" />
 			<finder-column name="classNameId" />
 			<finder-column name="classPK" />
-		</finder>
-		<finder name="S_L_C1_C2" return-type="Collection">
-			<finder-column name="smallImageId" />
-			<finder-column name="largeImageId" />
-			<finder-column name="custom1ImageId" />
-			<finder-column name="custom2ImageId" />
 		</finder>
 	</entity>
 	<entity external-reference-code="company" human-name="document library file entry metadata" local-service="true" name="DLFileEntryMetadata" remote-service="false" uuid="true">
@@ -255,17 +246,6 @@
 			<finder-column name="groupId" />
 			<finder-column name="folderId" />
 		</finder>
-		<finder name="G_F_A" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="folderId" />
-			<finder-column name="active" />
-		</finder>
-		<finder name="G_F_A_S" return-type="Collection">
-			<finder-column name="groupId" />
-			<finder-column name="folderId" />
-			<finder-column name="active" />
-			<finder-column name="status" />
-		</finder>
 	</entity>
 	<entity human-name="document library file version" local-service="true" name="DLFileVersion" remote-service="true" uuid="true">
 
@@ -324,16 +304,9 @@
 		<finder name="FileEntryId" return-type="Collection">
 			<finder-column name="fileEntryId" />
 		</finder>
-		<finder name="MimeType" return-type="Collection">
-			<finder-column name="mimeType" />
-		</finder>
 		<finder name="C_SU" return-type="Collection">
 			<finder-column name="companyId" />
 			<finder-column name="storeUUID" />
-		</finder>
-		<finder name="C_NotS" return-type="Collection">
-			<finder-column name="companyId" />
-			<finder-column comparator="!=" name="status" />
 		</finder>
 		<finder name="F_V" return-type="DLFileVersion" unique="true">
 			<finder-column name="fileEntryId" />
