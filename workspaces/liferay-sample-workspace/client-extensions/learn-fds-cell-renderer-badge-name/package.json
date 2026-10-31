@@ -1,0 +1,20 @@
+{
+	"dependencies": {
+		"@liferay/js-api": "0.6.2"
+	},
+	"description": "Liferay Sample Frontend Data Set Cell Renderer",
+	"devDependencies": {
+		"ts-loader": "9.5.1",
+		"typescript": "^5.0.4",
+		"webpack": "5.90.1",
+		"webpack-cli": "5.1.4",
+		"webpack-dev-server": "4.15.1"
+	},
+	"name": "@liferay/liferay-sample-fds-cell-renderer",
+	"scripts": {
+		"build": "webpack",
+		"start": "webpack serve",
+		"watch": "tsc --watch"
+	},
+	"version": "0.0.0"
+}
