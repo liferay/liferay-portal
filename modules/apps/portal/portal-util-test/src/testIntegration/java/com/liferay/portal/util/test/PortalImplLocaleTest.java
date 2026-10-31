@@ -68,8 +68,10 @@ public class PortalImplLocaleTest {
 
 		_language.init();
 
-		LanguageResources.getSuperLocale(LocaleUtil.GERMANY);
-		LanguageResources.getSuperLocale(LocaleUtil.US);
+		LanguageResources.getSuperLocale(
+			TestPropsValues.getCompanyId(), LocaleUtil.GERMANY);
+		LanguageResources.getSuperLocale(
+			TestPropsValues.getCompanyId(), LocaleUtil.US);
 
 		_group = GroupTestUtil.addGroup();
 

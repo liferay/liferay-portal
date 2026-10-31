@@ -20,9 +20,11 @@ import org.osgi.service.component.annotations.Reference;
 public class PLOLanguageOverrideProvider implements LanguageOverrideProvider {
 
 	@Override
-	public ResourceBundle getOverrideResourceBundle(Locale locale) {
+	public ResourceBundle getOverrideResourceBundle(
+		long companyId, Locale locale) {
+
 		return _ploOverrideResourceBundleManager.getOverrideResourceBundle(
-			locale);
+			companyId, locale);
 	}
 
 	@Reference

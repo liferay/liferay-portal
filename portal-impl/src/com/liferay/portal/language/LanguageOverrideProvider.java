@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
  */
 public interface LanguageOverrideProvider {
 
-	public ResourceBundle getOverrideResourceBundle(Locale locale);
+	public ResourceBundle getOverrideResourceBundle(
+		long companyId, Locale locale);
 
 }

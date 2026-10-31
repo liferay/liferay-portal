@@ -7,7 +7,6 @@ package com.liferay.portal.language.override.internal;
 
 import com.liferay.petra.concurrent.DCLSingleton;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.language.LanguageResources;
 import com.liferay.portal.language.override.internal.provider.PLOOriginalTranslationThreadLocal;
 import com.liferay.portal.language.override.model.PLOEntry;
@@ -31,8 +30,8 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = PLOOverrideResourceBundleManager.class)
 public class PLOOverrideResourceBundleManager {
 
-	public ResourceBundle getOverrideResourceBundle(Locale locale) {
-		long companyId = CompanyThreadLocal.getCompanyId();
+	public ResourceBundle getOverrideResourceBundle(
+		long companyId, Locale locale) {
 
 		DCLSingleton<Map<String, OverrideResourceBundle>>
 			overrideResourceBundleDCLSingleton =

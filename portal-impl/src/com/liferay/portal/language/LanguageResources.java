@@ -59,33 +59,7 @@ public class LanguageResources {
 	}
 
 	public static String getMessage(Locale locale, String key) {
-		if (locale == null) {
-			return null;
-		}
-
-		ResourceBundle overrideResourceBundle = _getOverrideResourceBundle(
-			locale);
-
-		if (overrideResourceBundle != null) {
-			String overrideValue = ResourceBundleUtil.getString(
-				overrideResourceBundle, key);
-
-			if (overrideValue != null) {
-				return overrideValue;
-			}
-		}
-
-		MapHolder mapHolder = _getMapHolder(locale);
-
-		Map<String, String> languageMap = mapHolder.getMap();
-
-		String value = languageMap.get(key);
-
-		if (value == null) {
-			return getMessage(getSuperLocale(locale), key);
-		}
-
-		return value;
+		return _getMessage(CompanyThreadLocal.getCompanyId(), locale, key);
 	}
 
 	public static ResourceBundle getResourceBundle(Locale locale) {
@@ -96,9 +70,7 @@ public class LanguageResources {
 				new LanguageResourcesBundle(key)));
 	}
 
-	public static Locale getSuperLocale(Locale locale) {
-		Long companyId = CompanyThreadLocal.getCompanyId();
-
+	public static Locale getSuperLocale(long companyId, Locale locale) {
 		Map<Locale, Locale> superLocales = _superLocalesMap.get(companyId);
 
 		if (superLocales == null) {
@@ -166,7 +138,42 @@ public class LanguageResources {
 		return mapHolder;
 	}
 
-	private static ResourceBundle _getOverrideResourceBundle(Locale locale) {
+	private static String _getMessage(
+		long companyId, Locale locale, String key) {
+
+		if (locale == null) {
+			return null;
+		}
+
+		ResourceBundle overrideResourceBundle = _getOverrideResourceBundle(
+			companyId, locale);
+
+		if (overrideResourceBundle != null) {
+			String overrideValue = ResourceBundleUtil.getString(
+				overrideResourceBundle, key);
+
+			if (overrideValue != null) {
+				return overrideValue;
+			}
+		}
+
+		MapHolder mapHolder = _getMapHolder(locale);
+
+		Map<String, String> languageMap = mapHolder.getMap();
+
+		String value = languageMap.get(key);
+
+		if (value == null) {
+			return _getMessage(
+				companyId, getSuperLocale(companyId, locale), key);
+		}
+
+		return value;
+	}
+
+	private static ResourceBundle _getOverrideResourceBundle(
+		long companyId, Locale locale) {
+
 		LanguageOverrideProvider languageOverrideProvider =
 			_languageOverrideProviderSnapshot.get();
 
@@ -174,7 +181,8 @@ public class LanguageResources {
 			return null;
 		}
 
-		return languageOverrideProvider.getOverrideResourceBundle(locale);
+		return languageOverrideProvider.getOverrideResourceBundle(
+			companyId, locale);
 	}
 
 	private static Locale _getSuperLocale(Locale locale) {
@@ -258,7 +266,7 @@ public class LanguageResources {
 		@Override
 		public Enumeration<String> getKeys() {
 			ResourceBundle overrideResourceBundle = _getOverrideResourceBundle(
-				_locale);
+				CompanyThreadLocal.getCompanyId(), _locale);
 
 			if (overrideResourceBundle != null) {
 				return overrideResourceBundle.getKeys();
@@ -275,7 +283,7 @@ public class LanguageResources {
 		@Override
 		protected Object handleGetObject(String key) {
 			ResourceBundle overrideResourceBundle = _getOverrideResourceBundle(
-				_locale);
+				CompanyThreadLocal.getCompanyId(), _locale);
 
 			if (overrideResourceBundle != null) {
 				try {
@@ -293,7 +301,7 @@ public class LanguageResources {
 		@Override
 		protected Set<String> handleKeySet() {
 			ResourceBundle overrideResourceBundle = _getOverrideResourceBundle(
-				_locale);
+				CompanyThreadLocal.getCompanyId(), _locale);
 
 			if (overrideResourceBundle != null) {
 				try {
@@ -379,14 +387,16 @@ public class LanguageResources {
 		private LanguageResourcesBundle(Locale locale) {
 			_locale = locale;
 
-			Locale superLocale = getSuperLocale(locale);
+			long companyId = CompanyThreadLocal.getCompanyId();
+
+			Locale superLocale = getSuperLocale(companyId, locale);
 
 			if (superLocale != null) {
 				ResourceBundle superResourceBundle =
 					new LanguageResourcesBundle(superLocale);
 
 				ResourceBundle superLocaleOverrideResourceBundle =
-					_getOverrideResourceBundle(superLocale);
+					_getOverrideResourceBundle(companyId, superLocale);
 
 				if (superLocaleOverrideResourceBundle != null) {
 					superResourceBundle = new AggregateResourceBundle(
