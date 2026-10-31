@@ -483,10 +483,7 @@ public class ObjectFieldInfoFieldConverter {
 		return maximumFileSize;
 	}
 
-	private ObjectEntry _getObjectEntry() {
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
+	private ObjectEntry _getObjectEntry(ServiceContext serviceContext) {
 		if (serviceContext == null) {
 			return null;
 		}
@@ -545,7 +542,8 @@ public class ObjectFieldInfoFieldConverter {
 
 		String listTypeEntryKey = defaultValue;
 
-		ObjectEntry objectEntry = _getObjectEntry();
+		ObjectEntry objectEntry = _getObjectEntry(
+			ServiceContextThreadLocal.getServiceContext());
 
 		if (objectEntry != null) {
 			listTypeEntryKey = MapUtil.getString(
@@ -719,8 +717,11 @@ public class ObjectFieldInfoFieldConverter {
 	}
 
 	private boolean _isReadOnly(ObjectField objectField) {
-		ObjectEntry objectEntry = _getObjectEntry();
-		User user = ObjectEntryInfoItemUtil.getUser();
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		ObjectEntry objectEntry = _getObjectEntry(serviceContext);
+		User user = ObjectEntryInfoItemUtil.getUser(serviceContext);
 
 		try {
 			if (ObjectFieldUtil.isReadOnly(

@@ -195,10 +195,7 @@ public class ObjectEntryInfoItemUtil {
 		};
 	}
 
-	public static User getUser() {
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
-
+	public static User getUser(ServiceContext serviceContext) {
 		if (serviceContext == null) {
 			return null;
 		}
