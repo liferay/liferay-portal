@@ -226,8 +226,10 @@ public class CommercePriceEntryLocalServiceImpl
 		commercePriceEntry = commercePriceEntryPersistence.update(
 			commercePriceEntry);
 
-		commercePriceEntry = _startWorkflowInstance(
-			user.getUserId(), commercePriceEntry, serviceContext);
+		if (!commercePriceEntry.isExpired()) {
+			commercePriceEntry = _startWorkflowInstance(
+				user.getUserId(), commercePriceEntry, serviceContext);
+		}
 
 		if (cpInstance != null) {
 			_reindexCPDefinition(cpInstance.getCPDefinitionId());
@@ -788,8 +790,10 @@ public class CommercePriceEntryLocalServiceImpl
 		commercePriceEntry = commercePriceEntryPersistence.update(
 			commercePriceEntry);
 
-		commercePriceEntry = _startWorkflowInstance(
-			user.getUserId(), commercePriceEntry, serviceContext);
+		if (!commercePriceEntry.isExpired()) {
+			commercePriceEntry = _startWorkflowInstance(
+				user.getUserId(), commercePriceEntry, serviceContext);
+		}
 
 		if (cpInstance != null) {
 			_reindexCPDefinition(cpInstance.getCPDefinitionId());
