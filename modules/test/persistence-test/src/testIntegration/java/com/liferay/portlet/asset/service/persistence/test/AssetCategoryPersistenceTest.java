@@ -315,29 +315,11 @@ public class AssetCategoryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByP_N() throws Exception {
-		_persistence.countByP_N(RandomTestUtil.nextLong(), "");
-
-		_persistence.countByP_N(0L, "null");
-
-		_persistence.countByP_N(0L, (String)null);
-	}
-
-	@Test
 	public void testCountByP_V() throws Exception {
 		_persistence.countByP_V(
 			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
 
 		_persistence.countByP_V(0L, 0L);
-	}
-
-	@Test
-	public void testCountByN_V() throws Exception {
-		_persistence.countByN_V("", RandomTestUtil.nextLong());
-
-		_persistence.countByN_V("null", 0L);
-
-		_persistence.countByN_V((String)null, 0L);
 	}
 
 	@Test
@@ -808,4 +790,4 @@ public class AssetCategoryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-652744945
+// LIFERAY-SERVICE-BUILDER-HASH:203920897

@@ -265,50 +265,12 @@ public class AssetEntryPersistenceTest {
 	}
 
 	@Test
-	public void testCountByVisible() throws Exception {
-		_persistence.countByVisible(RandomTestUtil.randomBoolean());
-
-		_persistence.countByVisible(RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByPublishDate() throws Exception {
-		_persistence.countByPublishDate(RandomTestUtil.nextDate());
-
-		_persistence.countByPublishDate(RandomTestUtil.nextDate());
-	}
-
-	@Test
-	public void testCountByExpirationDate() throws Exception {
-		_persistence.countByExpirationDate(RandomTestUtil.nextDate());
-
-		_persistence.countByExpirationDate(RandomTestUtil.nextDate());
-	}
-
-	@Test
-	public void testCountByLayoutUuid() throws Exception {
-		_persistence.countByLayoutUuid("");
-
-		_persistence.countByLayoutUuid("null");
-
-		_persistence.countByLayoutUuid((String)null);
-	}
-
-	@Test
 	public void testCountByG_CU() throws Exception {
 		_persistence.countByG_CU(RandomTestUtil.nextLong(), "");
 
 		_persistence.countByG_CU(0L, "null");
 
 		_persistence.countByG_CU(0L, (String)null);
-	}
-
-	@Test
-	public void testCountByC_CN() throws Exception {
-		_persistence.countByC_CN(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
-
-		_persistence.countByC_CN(0L, 0L);
 	}
 
 	@Test
@@ -326,16 +288,6 @@ public class AssetEntryPersistenceTest {
 			RandomTestUtil.randomBoolean());
 
 		_persistence.countByG_C_V(0L, 0L, RandomTestUtil.randomBoolean());
-	}
-
-	@Test
-	public void testCountByG_C_P_E() throws Exception {
-		_persistence.countByG_C_P_E(
-			RandomTestUtil.nextLong(), RandomTestUtil.nextLong(),
-			RandomTestUtil.nextDate(), RandomTestUtil.nextDate());
-
-		_persistence.countByG_C_P_E(
-			0L, 0L, RandomTestUtil.nextDate(), RandomTestUtil.nextDate());
 	}
 
 	@Test
@@ -717,4 +669,4 @@ public class AssetEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-894708562
+// LIFERAY-SERVICE-BUILDER-HASH:-1897280454

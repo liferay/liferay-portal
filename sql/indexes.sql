@@ -25,25 +25,18 @@ create index IX_F67BECAD on AssetCategory (groupId, parentCategoryId);
 create unique index IX_AF94405C on AssetCategory (groupId, uuid_[$COLUMN_LENGTH:75$], ctCollectionId);
 create index IX_2710C64A on AssetCategory (groupId, vocabularyId, name[$COLUMN_LENGTH:255$]);
 create index IX_68169942 on AssetCategory (groupId, vocabularyId, parentCategoryId);
-create index IX_9DDD15EA on AssetCategory (parentCategoryId, name[$COLUMN_LENGTH:255$]);
+create index IX_7BB1826B on AssetCategory (parentCategoryId);
 create index IX_4D37BB00 on AssetCategory (uuid_[$COLUMN_LENGTH:75$]);
-create index IX_3537E488 on AssetCategory (vocabularyId, name[$COLUMN_LENGTH:255$]);
 create unique index IX_8C99329D on AssetCategory (vocabularyId, parentCategoryId, name[$COLUMN_LENGTH:255$], ctCollectionId);
 
 create index IX_112337B8 on AssetEntries_AssetTags (companyId);
 create index IX_B2A61B55 on AssetEntries_AssetTags (tagId);
 
 create unique index IX_7BF8337B on AssetEntry (classNameId, classPK, ctCollectionId);
-create index IX_23280E2 on AssetEntry (classNameId, companyId);
 create index IX_FC1F9C7B on AssetEntry (classUuid[$COLUMN_LENGTH:75$]);
 create index IX_7306C60 on AssetEntry (companyId);
-create index IX_75D42FF9 on AssetEntry (expirationDate);
-create index IX_6418BB52 on AssetEntry (groupId, classNameId, publishDate, expirationDate);
 create index IX_82C4BEF6 on AssetEntry (groupId, classNameId, visible);
 create index IX_1EBA6821 on AssetEntry (groupId, classUuid[$COLUMN_LENGTH:75$]);
-create index IX_FEC4A201 on AssetEntry (layoutUuid[$COLUMN_LENGTH:75$]);
-create index IX_2E4E3885 on AssetEntry (publishDate);
-create index IX_9029E15A on AssetEntry (visible);
 
 create index IX_94A69238 on AssetTag (companyId);
 create unique index IX_ACC6A5A1 on AssetTag (groupId, externalReferenceCode[$COLUMN_LENGTH:75$], ctCollectionId);

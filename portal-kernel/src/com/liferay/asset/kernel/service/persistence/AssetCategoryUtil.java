@@ -942,86 +942,6 @@ public class AssetCategoryUtil {
 	}
 
 	/**
-	 * Returns an ordered range of all the asset categories where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.asset.model.impl.AssetCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @param start the lower bound of the range of asset categories
-	 * @param end the upper bound of the range of asset categories (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching asset categories
-	 */
-	public static List<AssetCategory> findByP_N(
-		long parentCategoryId, String name, int start, int end,
-		OrderByComparator<AssetCategory> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByP_N(
-			parentCategoryId, name, start, end, orderByComparator,
-			useFinderCache);
-	}
-
-	/**
-	 * Returns the first asset category in the ordered set where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset category
-	 * @throws NoSuchCategoryException if a matching asset category could not be found
-	 */
-	public static AssetCategory findByP_N_First(
-			long parentCategoryId, String name,
-			OrderByComparator<AssetCategory> orderByComparator)
-		throws com.liferay.asset.kernel.exception.NoSuchCategoryException {
-
-		return getPersistence().findByP_N_First(
-			parentCategoryId, name, orderByComparator);
-	}
-
-	/**
-	 * Returns the first asset category in the ordered set where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset category, or <code>null</code> if a matching asset category could not be found
-	 */
-	public static AssetCategory fetchByP_N_First(
-		long parentCategoryId, String name,
-		OrderByComparator<AssetCategory> orderByComparator) {
-
-		return getPersistence().fetchByP_N_First(
-			parentCategoryId, name, orderByComparator);
-	}
-
-	/**
-	 * Removes all the asset categories where parentCategoryId = &#63; and name = &#63; from the database.
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 */
-	public static void removeByP_N(long parentCategoryId, String name) {
-		getPersistence().removeByP_N(parentCategoryId, name);
-	}
-
-	/**
-	 * Returns the number of asset categories where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @return the number of matching asset categories
-	 */
-	public static int countByP_N(long parentCategoryId, String name) {
-		return getPersistence().countByP_N(parentCategoryId, name);
-	}
-
-	/**
 	 * Returns an ordered range of all the asset categories where parentCategoryId = &#63; and vocabularyId = &#63;.
 	 *
 	 * <p>
@@ -1099,85 +1019,6 @@ public class AssetCategoryUtil {
 	 */
 	public static int countByP_V(long parentCategoryId, long vocabularyId) {
 		return getPersistence().countByP_V(parentCategoryId, vocabularyId);
-	}
-
-	/**
-	 * Returns an ordered range of all the asset categories where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.asset.model.impl.AssetCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @param start the lower bound of the range of asset categories
-	 * @param end the upper bound of the range of asset categories (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
-	 * @return the ordered range of matching asset categories
-	 */
-	public static List<AssetCategory> findByN_V(
-		String name, long vocabularyId, int start, int end,
-		OrderByComparator<AssetCategory> orderByComparator,
-		boolean useFinderCache) {
-
-		return getPersistence().findByN_V(
-			name, vocabularyId, start, end, orderByComparator, useFinderCache);
-	}
-
-	/**
-	 * Returns the first asset category in the ordered set where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset category
-	 * @throws NoSuchCategoryException if a matching asset category could not be found
-	 */
-	public static AssetCategory findByN_V_First(
-			String name, long vocabularyId,
-			OrderByComparator<AssetCategory> orderByComparator)
-		throws com.liferay.asset.kernel.exception.NoSuchCategoryException {
-
-		return getPersistence().findByN_V_First(
-			name, vocabularyId, orderByComparator);
-	}
-
-	/**
-	 * Returns the first asset category in the ordered set where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @param orderByComparator the comparator to order the set by (optionally <code>null</code>)
-	 * @return the first matching asset category, or <code>null</code> if a matching asset category could not be found
-	 */
-	public static AssetCategory fetchByN_V_First(
-		String name, long vocabularyId,
-		OrderByComparator<AssetCategory> orderByComparator) {
-
-		return getPersistence().fetchByN_V_First(
-			name, vocabularyId, orderByComparator);
-	}
-
-	/**
-	 * Removes all the asset categories where name = &#63; and vocabularyId = &#63; from the database.
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 */
-	public static void removeByN_V(String name, long vocabularyId) {
-		getPersistence().removeByN_V(name, vocabularyId);
-	}
-
-	/**
-	 * Returns the number of asset categories where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @return the number of matching asset categories
-	 */
-	public static int countByN_V(String name, long vocabularyId) {
-		return getPersistence().countByN_V(name, vocabularyId);
 	}
 
 	/**
@@ -2732,60 +2573,6 @@ public class AssetCategoryUtil {
 	}
 
 	/**
-	 * Returns all the asset categories where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @return the matching asset categories
-	 */
-	public static List<AssetCategory> findByP_N(
-		long parentCategoryId, String name) {
-
-		return getPersistence().findByP_N(parentCategoryId, name);
-	}
-
-	/**
-	 * Returns a range of all the asset categories where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.asset.model.impl.AssetCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @param start the lower bound of the range of asset categories
-	 * @param end the upper bound of the range of asset categories (not inclusive)
-	 * @return the range of matching asset categories
-	 */
-	public static List<AssetCategory> findByP_N(
-		long parentCategoryId, String name, int start, int end) {
-
-		return getPersistence().findByP_N(parentCategoryId, name, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the asset categories where parentCategoryId = &#63; and name = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.asset.model.impl.AssetCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param parentCategoryId the parent category ID
-	 * @param name the name
-	 * @param start the lower bound of the range of asset categories
-	 * @param end the upper bound of the range of asset categories (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching asset categories
-	 */
-	public static List<AssetCategory> findByP_N(
-		long parentCategoryId, String name, int start, int end,
-		OrderByComparator<AssetCategory> orderByComparator) {
-
-		return getPersistence().findByP_N(
-			parentCategoryId, name, start, end, orderByComparator);
-	}
-
-	/**
 	 * Returns all the asset categories where parentCategoryId = &#63; and vocabularyId = &#63;.
 	 *
 	 * @param parentCategoryId the parent category ID
@@ -2838,60 +2625,6 @@ public class AssetCategoryUtil {
 
 		return getPersistence().findByP_V(
 			parentCategoryId, vocabularyId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns all the asset categories where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @return the matching asset categories
-	 */
-	public static List<AssetCategory> findByN_V(
-		String name, long vocabularyId) {
-
-		return getPersistence().findByN_V(name, vocabularyId);
-	}
-
-	/**
-	 * Returns a range of all the asset categories where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.asset.model.impl.AssetCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @param start the lower bound of the range of asset categories
-	 * @param end the upper bound of the range of asset categories (not inclusive)
-	 * @return the range of matching asset categories
-	 */
-	public static List<AssetCategory> findByN_V(
-		String name, long vocabularyId, int start, int end) {
-
-		return getPersistence().findByN_V(name, vocabularyId, start, end);
-	}
-
-	/**
-	 * Returns an ordered range of all the asset categories where name = &#63; and vocabularyId = &#63;.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>com.liferay.portal.kernel.dao.orm.QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>com.liferay.portlet.asset.model.impl.AssetCategoryModelImpl</code>.
-	 * </p>
-	 *
-	 * @param name the name
-	 * @param vocabularyId the vocabulary ID
-	 * @param start the lower bound of the range of asset categories
-	 * @param end the upper bound of the range of asset categories (not inclusive)
-	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @return the ordered range of matching asset categories
-	 */
-	public static List<AssetCategory> findByN_V(
-		String name, long vocabularyId, int start, int end,
-		OrderByComparator<AssetCategory> orderByComparator) {
-
-		return getPersistence().findByN_V(
-			name, vocabularyId, start, end, orderByComparator);
 	}
 
 	/**
@@ -3003,4 +2736,4 @@ public class AssetCategoryUtil {
 	private static volatile AssetCategoryPersistence _persistence;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1349448533
+// LIFERAY-SERVICE-BUILDER-HASH:-1087406713
