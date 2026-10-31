@@ -19,6 +19,7 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -106,7 +107,7 @@ public class AutoBatchPreparedStatementUtil {
 			if (++_count >= ConnectionConfigUtil.getBatchSize()) {
 				_count = 0;
 
-				_executeAsync(() -> _executeBatch(preparedStatement));
+				_executeAsync(preparedStatement::executeBatch);
 			}
 		}
 
@@ -143,8 +144,8 @@ public class AutoBatchPreparedStatementUtil {
 			throwableCollector.rethrow();
 		}
 
-		private void _executeAsync(Runnable runnable) {
-			_futures.add(_executorService.submit(runnable));
+		private void _executeAsync(Callable<?> callable) {
+			_futures.add(_executorService.submit(callable));
 
 			_preparedStatement = null;
 		}
@@ -155,21 +156,10 @@ public class AutoBatchPreparedStatementUtil {
 
 				PreparedStatement preparedStatement = getPreparedStatement();
 
-				_executeAsync(() -> _executeBatch(preparedStatement));
+				_executeAsync(preparedStatement::executeBatch);
 			}
 
 			return new int[0];
-		}
-
-		private void _executeBatch(PreparedStatement preparedStatement) {
-			try {
-				preparedStatement.executeBatch();
-			}
-			catch (Exception exception) {
-				exception.printStackTrace(System.err);
-
-				throw new RuntimeException(exception);
-			}
 		}
 
 		private final Connection _connection;

@@ -173,9 +173,8 @@ public class DBCopyTablesProcessTest {
 
 			Assert.fail();
 		}
-		catch (RuntimeException runtimeException) {
-			Assert.assertTrue(
-				runtimeException.getCause() instanceof BatchUpdateException);
+		catch (Exception exception) {
+			Assert.assertTrue(exception instanceof BatchUpdateException);
 		}
 	}
 
