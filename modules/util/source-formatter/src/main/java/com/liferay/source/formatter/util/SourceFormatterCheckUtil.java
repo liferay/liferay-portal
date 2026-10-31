@@ -199,6 +199,7 @@ public class SourceFormatterCheckUtil {
 			return value;
 		}
 
+		String baseDirNameAbsolutePath = null;
 		boolean cacheValue = true;
 		String closestPropertiesFileLocation = null;
 
@@ -226,8 +227,10 @@ public class SourceFormatterCheckUtil {
 				continue;
 			}
 
-			String baseDirNameAbsolutePath = SourceUtil.getAbsolutePath(
-				baseDirName);
+			if (baseDirNameAbsolutePath == null) {
+				baseDirNameAbsolutePath = SourceUtil.getAbsolutePath(
+					baseDirName);
+			}
 
 			if (fileLocation.length() > baseDirNameAbsolutePath.length()) {
 				cacheValue = false;
@@ -279,6 +282,7 @@ public class SourceFormatterCheckUtil {
 
 		values = new ArrayList<>();
 
+		String baseDirNameAbsolutePath = null;
 		boolean cacheValues = true;
 
 		Iterator<String> iterator = jsonObject.keys();
@@ -294,8 +298,10 @@ public class SourceFormatterCheckUtil {
 			}
 
 			if (!fileLocation.equals(CONFIGURATION_FILE_LOCATION)) {
-				String baseDirNameAbsolutePath = SourceUtil.getAbsolutePath(
-					baseDirName);
+				if (baseDirNameAbsolutePath == null) {
+					baseDirNameAbsolutePath = SourceUtil.getAbsolutePath(
+						baseDirName);
+				}
 
 				if (fileLocation.length() > baseDirNameAbsolutePath.length()) {
 					cacheValues = false;
