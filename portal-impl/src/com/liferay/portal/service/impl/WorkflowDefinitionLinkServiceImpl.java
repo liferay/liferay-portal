@@ -47,9 +47,8 @@ public class WorkflowDefinitionLinkServiceImpl
 		throws PortalException {
 
 		WorkflowDefinitionLink workflowDefinitionLink =
-			workflowDefinitionLinkLocalService.
-				fetchWorkflowDefinitionLinkByExternalReferenceCode(
-					externalReferenceCode, groupId);
+			workflowDefinitionLinkPersistence.fetchByERC_G(
+				externalReferenceCode, groupId);
 
 		if (workflowDefinitionLink != null) {
 			ModelResourcePermission<WorkflowDefinitionLink>

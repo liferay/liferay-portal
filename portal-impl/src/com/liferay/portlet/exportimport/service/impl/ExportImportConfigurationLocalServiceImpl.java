@@ -192,8 +192,8 @@ public class ExportImportConfigurationLocalServiceImpl
 				document.get("exportImportConfigurationId"));
 
 			ExportImportConfiguration exportImportConfiguration =
-				exportImportConfigurationLocalService.
-					getExportImportConfiguration(exportImportConfigurationId);
+				exportImportConfigurationPersistence.findByPrimaryKey(
+					exportImportConfigurationId);
 
 			if (exportImportConfiguration == null) {
 				exportImportConfigurations = null;

@@ -66,9 +66,8 @@ public class DLFileEntryMetadataLocalServiceImpl
 		throws PortalException {
 
 		deleteFileEntryMetadata(
-			dlFileEntryMetadataLocalService.
-				getDLFileEntryMetadataByExternalReferenceCode(
-					externalReferenceCode, companyId));
+			dlFileEntryMetadataPersistence.findByERC_C(
+				externalReferenceCode, companyId));
 	}
 
 	@Override

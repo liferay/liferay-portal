@@ -516,9 +516,8 @@ public class LayoutRevisionLocalServiceImpl
 						removePortletIdsArray);
 
 					for (PortletPreferences portletPreferences :
-							_portletPreferencesLocalService.
-								getPortletPreferencesByPlid(
-									layoutRevision.getLayoutRevisionId())) {
+							_portletPreferencesPersistence.findByPlid(
+								layoutRevision.getLayoutRevisionId())) {
 
 						if (!removePortletIds.contains(
 								portletPreferences.getPortletId())) {

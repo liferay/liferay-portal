@@ -39,8 +39,8 @@ public class AssetVocabularyGroupRelServiceImpl
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabularyId, ActionKeys.VIEW);
 
-		return assetVocabularyGroupRelLocalService.
-			getAssetVocabularyGroupRelsByVocabularyId(vocabularyId);
+		return assetVocabularyGroupRelPersistence.findByVocabularyId(
+			vocabularyId);
 	}
 
 	@Override

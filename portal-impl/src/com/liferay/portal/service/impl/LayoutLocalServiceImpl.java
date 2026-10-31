@@ -86,7 +86,6 @@ import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
-import com.liferay.portal.kernel.service.LayoutSetPrototypeLocalService;
 import com.liferay.portal.kernel.service.PortalPreferenceValueLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -2604,9 +2603,8 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 		throws PortalException {
 
 		LayoutSetPrototype layoutSetPrototype =
-			_layoutSetPrototypeLocalService.
-				getLayoutSetPrototypeByUuidAndCompanyId(
-					layoutSetPrototypeUuid, companyId);
+			_layoutSetPrototypePersistence.findByUuid_C_First(
+				layoutSetPrototypeUuid, companyId, null);
 
 		return layoutLocalServiceHelper.hasLayoutSetPrototypeLayout(
 			layoutSetPrototype, layoutUuid);
@@ -4660,9 +4658,6 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 
 	@BeanReference(type = LayoutSetPersistence.class)
 	private LayoutSetPersistence _layoutSetPersistence;
-
-	@BeanReference(type = LayoutSetPrototypeLocalService.class)
-	private LayoutSetPrototypeLocalService _layoutSetPrototypeLocalService;
 
 	@BeanReference(type = LayoutSetPrototypePersistence.class)
 	private LayoutSetPrototypePersistence _layoutSetPrototypePersistence;

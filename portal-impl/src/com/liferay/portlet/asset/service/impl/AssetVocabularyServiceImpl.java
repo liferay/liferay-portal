@@ -178,10 +178,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		AssetVocabulary vocabulary =
-			assetVocabularyLocalService.
-				getAssetVocabularyByExternalReferenceCode(
-					externalReferenceCode, groupId);
+		AssetVocabulary vocabulary = assetVocabularyPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabulary.getVocabularyId(),
@@ -210,10 +208,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			String externalReferenceCode, long groupId)
 		throws PortalException {
 
-		AssetVocabulary vocabulary =
-			assetVocabularyLocalService.
-				fetchAssetVocabularyByExternalReferenceCode(
-					externalReferenceCode, groupId);
+		AssetVocabulary vocabulary = assetVocabularyPersistence.fetchByERC_G(
+			externalReferenceCode, groupId);
 
 		if (vocabulary != null) {
 			AssetVocabularyPermission.check(
@@ -228,10 +224,8 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			long groupId, String externalReferenceCode)
 		throws PortalException {
 
-		AssetVocabulary vocabulary =
-			assetVocabularyLocalService.
-				getAssetVocabularyByExternalReferenceCode(
-					externalReferenceCode, groupId);
+		AssetVocabulary vocabulary = assetVocabularyPersistence.findByERC_G(
+			externalReferenceCode, groupId);
 
 		AssetVocabularyPermission.check(
 			getPermissionChecker(), vocabulary.getVocabularyId(),
