@@ -80,9 +80,9 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 		}
 
 		String variableTypeName = getVariableTypeName(
-			methodCallDetailAST, variableName, false);
+			methodCallDetailAST, variableName, false, false, true);
 
-		return variableTypeName.equals("Attrs");
+		return variableTypeName.equals("aQute.bnd.header.Attrs");
 	}
 
 	private static final String _MSG_TYPED_PROPERTY_KEY_FILTER =
