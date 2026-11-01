@@ -9,6 +9,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesRegistryUtil;
 import com.liferay.portal.kernel.frontend.hashed.files.HashedFilesUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Theme;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
@@ -31,6 +32,12 @@ public class ThemeDisplayTest {
 	@Before
 	public void setUp() {
 		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			group.getGroupId()
+		).thenReturn(
+			_GROUP_ID
+		);
 
 		Mockito.when(
 			group.getParentGroupId()
@@ -131,6 +138,38 @@ public class ThemeDisplayTest {
 		Assert.assertEquals(
 			"/liferay/o/classic-theme/css/clay.(" + _HASH + ").css",
 			_themeDisplay.getClayCSSURL());
+	}
+
+	@Test
+	public void testGetLayoutGroup() throws Exception {
+		_themeDisplay.setSiteGroupId(_GROUP_ID);
+
+		Layout layout = Mockito.mock(Layout.class);
+
+		Mockito.when(
+			layout.getGroupId()
+		).thenReturn(
+			_GROUP_ID
+		);
+
+		Assert.assertSame(
+			_themeDisplay.getSiteGroup(), _themeDisplay.getLayoutGroup(layout));
+
+		Group group = Mockito.mock(Group.class);
+
+		Mockito.when(
+			layout.getGroup()
+		).thenReturn(
+			group
+		);
+
+		Mockito.when(
+			layout.getGroupId()
+		).thenReturn(
+			_PARENT_GROUP_ID
+		);
+
+		Assert.assertSame(group, _themeDisplay.getLayoutGroup(layout));
 	}
 
 	@Test
