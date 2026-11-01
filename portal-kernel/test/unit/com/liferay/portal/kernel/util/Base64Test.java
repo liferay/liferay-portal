@@ -5,6 +5,8 @@
 
 package com.liferay.portal.kernel.util;
 
+import com.liferay.petra.string.CharPool;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,5 +48,44 @@ public class Base64Test {
 		Assert.assertArrayEquals(
 			"liferay".getBytes(), Base64.decode("bGlmZXJheQ="));
 	}
+
+	@Test
+	public void testEncode() {
+		java.util.Base64.Encoder encoder = java.util.Base64.getEncoder();
+
+		for (int length : _LENGTHS) {
+			byte[] bytes = _getBytes(length);
+
+			Assert.assertEquals(
+				encoder.encodeToString(bytes), Base64.encode(bytes));
+		}
+	}
+
+	@Test
+	public void testEncodeToURL() {
+		java.util.Base64.Encoder encoder = java.util.Base64.getUrlEncoder();
+
+		for (int length : _LENGTHS) {
+			byte[] bytes = _getBytes(length);
+
+			Assert.assertEquals(
+				StringUtil.replace(
+					encoder.encodeToString(bytes), CharPool.EQUAL,
+					CharPool.STAR),
+				Base64.encodeToURL(bytes));
+		}
+	}
+
+	private byte[] _getBytes(int length) {
+		byte[] bytes = new byte[length];
+
+		for (int i = 0; i < length; i++) {
+			bytes[i] = (byte)((i * 31) + length);
+		}
+
+		return bytes;
+	}
+
+	private static final int[] _LENGTHS = {0, 1, 2, 3, 1000};
 
 }
