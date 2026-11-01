@@ -43,6 +43,8 @@ public class TypedPropertyKey {
 
 		_filter = "(service.ranking:Integer=1)";
 
+		_filter = "(&(service.ranking:Integer>=1)(order:Double<=2))";
+
 		_message = "A \"key:Long\" in a message";
 		_plain = "service.ranking";
 	}

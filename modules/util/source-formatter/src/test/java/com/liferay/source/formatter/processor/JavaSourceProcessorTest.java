@@ -1481,6 +1481,16 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 					"parsed in component property strings, use the plain key " +
 						"\"service.ranking\" in a filter",
 				44
+			).addExpectedMessage(
+				"The typed key syntax \"order:Double\" is only parsed in " +
+					"component property strings, use the plain key \"order\" " +
+						"in a filter",
+				46
+			).addExpectedMessage(
+				"The typed key syntax \"service.ranking:Integer\" is only " +
+					"parsed in component property strings, use the plain key " +
+						"\"service.ranking\" in a filter",
+				46
 			));
 	}
 
