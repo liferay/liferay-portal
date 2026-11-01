@@ -40,16 +40,16 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 			}
 
 			log(
-				detailAST, _MSG_TYPED_PROPERTY_KEY_VALUE, matcher.group(1),
-				matcher.group(2));
+				detailAST, _MSG_INCORRECT_TYPED_PROPERTY_KEY_VALUE,
+				matcher.group(1), matcher.group(2));
 		}
 		else {
 			matcher = _filterTypedPropertyKeyPattern.matcher(text);
 
 			while (matcher.find()) {
 				log(
-					detailAST, _MSG_TYPED_PROPERTY_KEY_FILTER, matcher.group(1),
-					matcher.group(2));
+					detailAST, _MSG_INCORRECT_TYPED_PROPERTY_KEY_FILTER,
+					matcher.group(1), matcher.group(2));
 			}
 		}
 	}
@@ -85,11 +85,11 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 		return variableTypeName.equals("aQute.bnd.header.Attrs");
 	}
 
-	private static final String _MSG_TYPED_PROPERTY_KEY_FILTER =
-		"typed.property.key.filter";
+	private static final String _MSG_INCORRECT_TYPED_PROPERTY_KEY_FILTER =
+		"typed.property.key.filter.incorrect";
 
-	private static final String _MSG_TYPED_PROPERTY_KEY_VALUE =
-		"typed.property.key.value";
+	private static final String _MSG_INCORRECT_TYPED_PROPERTY_KEY_VALUE =
+		"typed.property.key.value.incorrect";
 
 	private static final String _TYPED_PROPERTY_KEY_REGEX =
 		"(([\\w.-]+):(?:Boolean|Byte|Character|Double|Float|Integer|Long|" +

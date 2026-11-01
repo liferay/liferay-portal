@@ -1066,8 +1066,8 @@
 		<module name="com.liferay.source.formatter.checkstyle.check.TypedPropertyKeyCheck">
 			<property name="category" value="Bug Prevention" />
 			<property name="description" value="Checks that a typed property key such as `service.ranking:Integer` is not used outside component property strings." />
-			<message key="typed.property.key.filter" value="The typed key syntax &quot;{0}&quot; is only parsed in component property strings, use the plain key &quot;{1}&quot; in a filter" />
-			<message key="typed.property.key.value" value="The typed key syntax &quot;{0}&quot; is only parsed in component property strings, use the plain key &quot;{1}&quot; with a typed value" />
+			<message key="typed.property.key.filter.incorrect" value="The typed key syntax &quot;{0}&quot; is only parsed in component property strings, use the plain key &quot;{1}&quot; in a filter" />
+			<message key="typed.property.key.value.incorrect" value="The typed key syntax &quot;{0}&quot; is only parsed in component property strings, use the plain key &quot;{1}&quot; with a typed value" />
 		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.UnicodePropertiesBuilderCheck">
 			<property name="category" value="Miscellaneous" />
