@@ -1115,6 +1115,12 @@
 			<property name="description" value="Finds parameters in private methods that are not used." />
 			<message key="parameter.unused" value="Parameter &quot;{0}&quot; is unused" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.UnusedToSQLStringCheck">
+			<property name="category" value="Performance" />
+			<property name="description" value="Finds `toSQL(ASTNodeListener)` calls whose SQL string is unused, which should pass a consumer that ignores the text to `toSQL(Consumer, ASTNodeListener)` instead." />
+			<property name="enabled" value="false" />
+			<message key="consumer.use" value="Use &quot;toSQL(string -&gt; '{}', astNodeListener)&quot; instead of &quot;toSQL(astNodeListener)&quot; when the SQL string is unused, see LPD-113238" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.UnusedVariableCheck">
 			<property name="category" value="Performance" />
 			<property name="description" value="Finds variables that are declared, but not used." />

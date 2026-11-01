@@ -338,6 +338,7 @@ UnparameterizedClassCheck | [Bug Prevention](bug_prevention_checks.md#bug-preven
 UnprocessedExceptionCheck | [Performance](performance_checks.md#performance-checks) | Finds cases where an `Exception` is swallowed without being processed. |
 UnusedMethodCheck | [Performance](performance_checks.md#performance-checks) | Finds private methods that are not used. |
 UnusedParameterCheck | [Performance](performance_checks.md#performance-checks) | Finds parameters in private methods that are not used. |
+[UnusedToSQLStringCheck](check/unused_to_sql_string_check.md#unusedtosqlstringcheck) | [Performance](performance_checks.md#performance-checks) | Finds `toSQL(ASTNodeListener)` calls whose SQL string is unused, which should pass a consumer that ignores the text to `toSQL(Consumer, ASTNodeListener)` instead. |
 UnusedVariableCheck | [Performance](performance_checks.md#performance-checks) | Finds variables that are declared, but not used. |
 UnwrappedVariableInfoCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where the variable should be wrapped into an inner class in order to defer array elements initialization. |
 UpgradeDeprecatedAPICheck | [Upgrade](upgrade_checks.md#upgrade-checks) | Finds calls to deprecated classes, constructors, fields or methods after an upgrade. |

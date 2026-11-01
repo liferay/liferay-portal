@@ -47,6 +47,7 @@ UnnecessaryTypeCastCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Finds
 UnprocessedExceptionCheck | .java | Finds cases where an `Exception` is swallowed without being processed. |
 UnusedMethodCheck | .java | Finds private methods that are not used. |
 UnusedParameterCheck | .java | Finds parameters in private methods that are not used. |
+[UnusedToSQLStringCheck](check/unused_to_sql_string_check.md#unusedtosqlstringcheck) | .java | Finds `toSQL(ASTNodeListener)` calls whose SQL string is unused, which should pass a consumer that ignores the text to `toSQL(Consumer, ASTNodeListener)` instead. |
 UnusedVariableCheck | .java | Finds variables that are declared, but not used. |
 [UpgradeProcessCheck](check/upgrade_process_check.md#upgradeprocesscheck) | .java | Performs several checks on `*UpgradeProcess` classes. |
 [ValidatorEqualsCheck](check/validator_equals_check.md#validatorequalscheck) | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Checks that there are no calls to `Validator.equals(Object, Object)`. |
