@@ -32,7 +32,7 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 			return;
 		}
 
-		Matcher matcher = _typedPropertyKeyPattern.matcher(text);
+		Matcher matcher = _literalTypedPropertyKeyPattern.matcher(text);
 
 		if (matcher.matches()) {
 			if (!_isAttrsPut(detailAST)) {
@@ -96,7 +96,7 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 
 	private static final Pattern _filterTypedPropertyKeyPattern =
 		Pattern.compile("\\(" + _TYPED_PROPERTY_KEY_REGEX + "(?=[=~<>])");
-	private static final Pattern _typedPropertyKeyPattern = Pattern.compile(
-		"\"" + _TYPED_PROPERTY_KEY_REGEX + "\"");
+	private static final Pattern _literalTypedPropertyKeyPattern =
+		Pattern.compile("\"" + _TYPED_PROPERTY_KEY_REGEX + "\"");
 
 }
