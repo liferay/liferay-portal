@@ -224,9 +224,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItemsByCompanyId(
-				companyId, start, end);
+		return commerceInventoryWarehouseItemPersistence.findByCompanyId(
+			companyId, start, end);
 	}
 
 	@Override
@@ -295,8 +294,8 @@ public class CommerceInventoryWarehouseItemServiceImpl
 			getPermissionChecker(), null,
 			CommerceInventoryActionKeys.VIEW_INVENTORIES);
 
-		return commerceInventoryWarehouseItemLocalService.
-			getCommerceInventoryWarehouseItemsCountByCompanyId(companyId);
+		return commerceInventoryWarehouseItemPersistence.countByCompanyId(
+			companyId);
 	}
 
 	@Override
