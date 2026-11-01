@@ -180,6 +180,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Source Format](validations/branch/source-format.md)
 
+1. [Redundant Assert Message](validations/branch/redundant-assert-message.md)
+
 1. [Workspace Source Format](validations/workspaces/source-format.md)
 
 1. [Go Source Format](validations/portal/go-source-format.md)
