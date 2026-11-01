@@ -64,7 +64,7 @@ if (layout instanceof VirtualLayout) {
 	group = sourceLayout.getGroup();
 }
 else {
-	group = layout.getGroup();
+	group = themeDisplay.getLayoutGroup(layout);
 }
 
 long portletItemId = ParamUtil.getLong(request, "p_p_i_id");

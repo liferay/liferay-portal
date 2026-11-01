@@ -53,7 +53,7 @@ if (layout instanceof VirtualLayout) {
 	privateLayout = sourceLayout.isPrivateLayout();
 }
 else {
-	group = layout.getGroup();
+	group = themeDisplay.getLayoutGroup(layout);
 	privateLayout = layout.isPrivateLayout();
 }
 
