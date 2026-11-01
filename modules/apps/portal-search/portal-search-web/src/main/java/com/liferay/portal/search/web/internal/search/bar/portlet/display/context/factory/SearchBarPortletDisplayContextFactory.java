@@ -122,18 +122,13 @@ public class SearchBarPortletDisplayContextFactory {
 		PortletSharedSearchResponse portletSharedSearchResponse =
 			portletSharedSearchRequest.search(_renderRequest);
 
-		SearchBarPortletInstanceConfiguration
-			searchBarPortletInstanceConfiguration =
-				getSearchBarPortletInstanceConfiguration(themeDisplay);
-
 		searchBarPortletDisplayContext.setAvailableEverythingSearchScope(
 			isAvailableEverythingSearchScope());
 		searchBarPortletDisplayContext.setCurrentSiteSearchScopeParameterString(
 			SearchScope.THIS_SITE.getParameterString());
 		searchBarPortletDisplayContext.setDestinationFriendlyURL(destination);
 		searchBarPortletDisplayContext.setDisplayStyleGroupId(
-			getDisplayStyleGroupId(
-				searchBarPortletInstanceConfiguration, themeDisplay));
+			getDisplayStyleGroupId(themeDisplay));
 
 		SearchResponse searchResponse =
 			portletSharedSearchResponse.getFederatedSearchResponse(
@@ -187,7 +182,7 @@ public class SearchBarPortletDisplayContextFactory {
 		searchBarPortletDisplayContext.setScopeParameterValue(
 			GetterUtil.getString(scopeParameterValue));
 		searchBarPortletDisplayContext.setSearchBarPortletInstanceConfiguration(
-			searchBarPortletInstanceConfiguration);
+			_searchBarPortletInstanceConfiguration);
 
 		_setSelectedSearchScopePreference(
 			headerSearchBarSameDestination, scopeParameterValue,
@@ -216,10 +211,10 @@ public class SearchBarPortletDisplayContextFactory {
 							headerSearchBarSameDestination,
 							searchBarPortletPreferences,
 							portletSharedSearchResponse.getSearchSettings()),
-						searchBarPortletInstanceConfiguration.
+						_searchBarPortletInstanceConfiguration.
 							suggestionsContributorConfigurations()));
 			searchBarPortletDisplayContext.setSuggestionsDisplayThreshold(
-				searchBarPortletInstanceConfiguration.
+				_searchBarPortletInstanceConfiguration.
 					suggestionsDisplayThreshold());
 			searchBarPortletDisplayContext.setSuggestionsEnabled(
 				searchBarPortletPreferences.isSuggestionsEnabled());
@@ -247,13 +242,9 @@ public class SearchBarPortletDisplayContextFactory {
 			groupId, true, friendlyURL);
 	}
 
-	protected long getDisplayStyleGroupId(
-		SearchBarPortletInstanceConfiguration
-			searchBarPortletInstanceConfiguration,
-		ThemeDisplay themeDisplay) {
-
+	protected long getDisplayStyleGroupId(ThemeDisplay themeDisplay) {
 		return DisplayContextHelperUtil.getDisplayStyleGroupId(
-			searchBarPortletInstanceConfiguration.
+			_searchBarPortletInstanceConfiguration.
 				displayStyleGroupExternalReferenceCode(),
 			themeDisplay);
 	}
@@ -282,18 +273,6 @@ public class SearchBarPortletDisplayContextFactory {
 			}
 
 			return null;
-		}
-	}
-
-	protected SearchBarPortletInstanceConfiguration
-		getSearchBarPortletInstanceConfiguration(ThemeDisplay themeDisplay) {
-
-		try {
-			return ConfigurationProviderUtil.getPortletInstanceConfiguration(
-				SearchBarPortletInstanceConfiguration.class, themeDisplay);
-		}
-		catch (ConfigurationException configurationException) {
-			throw new RuntimeException(configurationException);
 		}
 	}
 
