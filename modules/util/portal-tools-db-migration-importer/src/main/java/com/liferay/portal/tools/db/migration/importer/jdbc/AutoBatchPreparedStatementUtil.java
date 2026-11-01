@@ -104,7 +104,7 @@ public class AutoBatchPreparedStatementUtil {
 			return _preparedStatement;
 		}
 
-		private void _addBatch() throws SQLException {
+		private void _addBatch() throws Exception {
 			PreparedStatement preparedStatement = getPreparedStatement();
 
 			preparedStatement.addBatch();
@@ -149,22 +149,33 @@ public class AutoBatchPreparedStatementUtil {
 			throwableCollector.rethrow();
 		}
 
-		private void _executeAsync(PreparedStatement preparedStatement) {
-			_futures.add(
-				_executorService.submit(
-					() -> {
-						try {
-							return preparedStatement.executeBatch();
-						}
-						finally {
-							_cleanUp(preparedStatement);
-						}
-					}));
+		private void _executeAsync(PreparedStatement preparedStatement)
+			throws Exception {
+
+			if (_future != null) {
+				try {
+					_future.get();
+				}
+				catch (ExecutionException executionException) {
+				}
+			}
+
+			_future = _executorService.submit(
+				() -> {
+					try {
+						return preparedStatement.executeBatch();
+					}
+					finally {
+						_cleanUp(preparedStatement);
+					}
+				});
+
+			_futures.add(_future);
 
 			_preparedStatement = null;
 		}
 
-		private int[] _executeBatch() throws SQLException {
+		private int[] _executeBatch() throws Exception {
 			if (_count > 0) {
 				_count = 0;
 
@@ -176,6 +187,7 @@ public class AutoBatchPreparedStatementUtil {
 
 		private final Connection _connection;
 		private int _count;
+		private Future<?> _future;
 		private final Set<Future<?>> _futures = Collections.newSetFromMap(
 			new ConcurrentHashMap<>());
 		private PreparedStatement _preparedStatement;
