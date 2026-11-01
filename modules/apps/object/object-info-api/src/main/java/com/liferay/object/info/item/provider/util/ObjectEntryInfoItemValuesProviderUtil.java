@@ -222,16 +222,15 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 			ObjectFieldBag objectFieldBag =
 				parentObjectDefinition.getObjectFieldBag();
 
+			String namespace = ObjectEntryInfoItemUtil.getInfoFieldNamespace(
+				parentObjectDefinition, objectRelationship);
+
 			for (ObjectField relatedObjectField :
 					objectFieldBag.getObjectFields()) {
 
 				if (relatedObjectField.isMetadata()) {
 					continue;
 				}
-
-				String namespace =
-					ObjectEntryInfoItemUtil.getInfoFieldNamespace(
-						parentObjectDefinition, objectRelationship);
 
 				value = properties.get(relatedObjectField.getName());
 
