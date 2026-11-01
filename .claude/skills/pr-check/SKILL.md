@@ -190,6 +190,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Portlet Title](validations/portal/portlet-title.md)
 
+1. [BND DS Annotations Options](validations/branch/bnd-dsannotations-options.md)
+
 1. [Service Registration](validations/branch/service-registration.md)
 
 1. [Transaction Usage](validations/branch/transaction-usage.md)
