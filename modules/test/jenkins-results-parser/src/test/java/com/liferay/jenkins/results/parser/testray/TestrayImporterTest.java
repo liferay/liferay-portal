@@ -52,6 +52,7 @@ public class TestrayImporterTest
 	public void testGetTestcaseElementAttachment() throws Exception {
 		TestrayCaseResult testrayCaseResult = Mockito.mock(
 			TestrayCaseResult.class);
+
 		TestrayAttachment testrayAttachment = Mockito.mock(
 			TestrayAttachment.class);
 
