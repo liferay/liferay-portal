@@ -11,6 +11,7 @@ import com.liferay.object.exception.RequiredObjectRelationshipException;
 import com.liferay.object.internal.entry.util.ObjectEntrySearchUtil;
 import com.liferay.object.internal.security.permission.util.ObjectEntryPermissionUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.petra.sql.dsl.DynamicObjectDefinitionTable;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelper;
 import com.liferay.portal.kernel.service.PersistedModelLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
@@ -151,9 +153,10 @@ public class SystemObject1toMObjectRelatedModelsProviderImpl
 			_objectRelationshipLocalService.getObjectRelationship(
 				objectRelationshipId);
 
-		_objectEntryLocalService.insertIntoOrUpdateExtensionTable(
-			userId, objectRelationship.getObjectDefinitionId2(),
-			GetterUtil.getLong(primaryKey2),
+		ObjectDefinition objectDefinition =
+			_objectDefinitionLocalService.getObjectDefinition(
+				objectRelationship.getObjectDefinitionId2());
+		Map<String, Serializable> values =
 			HashMapBuilder.<String, Serializable>put(
 				() -> {
 					ObjectField objectField =
@@ -163,7 +166,22 @@ public class SystemObject1toMObjectRelatedModelsProviderImpl
 					return objectField.getName();
 				},
 				0
-			).build());
+			).build();
+
+		if (objectDefinition.isUnmodifiableSystemObject()) {
+			_objectEntryLocalService.insertIntoOrUpdateExtensionTable(
+				userId, objectDefinition.getObjectDefinitionId(), primaryKey2,
+				values);
+
+			return;
+		}
+
+		ObjectEntry objectEntry = _objectEntryLocalService.getObjectEntry(
+			primaryKey2);
+
+		_objectEntryLocalService.partialUpdateObjectEntry(
+			userId, primaryKey2, objectEntry.getObjectEntryFolderId(), values,
+			new ServiceContext());
 	}
 
 	@Override
