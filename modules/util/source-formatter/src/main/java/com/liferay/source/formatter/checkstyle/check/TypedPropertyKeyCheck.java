@@ -5,6 +5,8 @@
 
 package com.liferay.source.formatter.checkstyle.check;
 
+import com.liferay.petra.string.StringPool;
+
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
@@ -25,6 +27,10 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 	@Override
 	protected void doVisitToken(DetailAST detailAST) {
 		String text = detailAST.getText();
+
+		if (!text.contains(StringPool.COLON)) {
+			return;
+		}
 
 		Matcher matcher = _typedPropertyKeyPattern.matcher(text);
 
