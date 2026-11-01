@@ -202,10 +202,10 @@ public class CommercePriceModifierRelServiceImpl
 			getPermissionChecker(),
 			commercePriceModifier.getCommercePriceListId(), ActionKeys.VIEW);
 
-		return commercePriceModifierRelLocalService.
-			getCommercePriceModifierRels(
-				commercePriceModifierId, className, start, end,
-				orderByComparator);
+		return commercePriceModifierRelPersistence.findByCPM_CN(
+			commercePriceModifierId,
+			_classNameLocalService.getClassNameId(className), start, end,
+			orderByComparator);
 	}
 
 	@Override
@@ -221,9 +221,9 @@ public class CommercePriceModifierRelServiceImpl
 			getPermissionChecker(),
 			commercePriceModifier.getCommercePriceListId(), ActionKeys.VIEW);
 
-		return commercePriceModifierRelLocalService.
-			getCommercePriceModifierRelsCount(
-				commercePriceModifierId, className);
+		return commercePriceModifierRelPersistence.countByCPM_CN(
+			commercePriceModifierId,
+			_classNameLocalService.getClassNameId(className));
 	}
 
 	@Override
