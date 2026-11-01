@@ -81,6 +81,7 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -282,9 +283,12 @@ public class RenderLayoutStructureDisplayContext {
 				_getSegmentsEntryIds());
 		}
 
-		if (LayoutStructureItemUtil.hasAncestor(
-				itemId, LayoutDataItemTypeConstants.TYPE_COLLECTION_ITEM,
-				_layoutStructure)) {
+		if (_collectionItemAncestorExistsMap.computeIfAbsent(
+				itemId,
+				layoutStructureItemId -> LayoutStructureItemUtil.hasAncestor(
+					layoutStructureItemId,
+					LayoutDataItemTypeConstants.TYPE_COLLECTION_ITEM,
+					_layoutStructure))) {
 
 			defaultFragmentRendererContext.setUseCachedContent(false);
 		}
@@ -1221,6 +1225,8 @@ public class RenderLayoutStructureDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		RenderLayoutStructureDisplayContext.class);
 
+	private final Map<String, Boolean> _collectionItemAncestorExistsMap =
+		new HashMap<>();
 	private final HttpServletRequest _httpServletRequest;
 	private final LayoutStructure _layoutStructure;
 	private LayoutStructureRulesHelper.LayoutStructureRulesResult
