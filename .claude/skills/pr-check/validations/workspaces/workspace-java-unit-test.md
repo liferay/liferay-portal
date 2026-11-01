@@ -12,7 +12,7 @@ cd "${BUILD_ROOT}"
 ./gradlew --continue test
 ```
 
-`test` runs every Java unit test in the workspace, with no integration test and no product bundle. A workspace runs its whole Java suite in a few minutes, so every test runs rather than a selection by counterpart, which also catches a module whose tests break through an API another module changed.
+`test` runs every Java unit test in the workspace, with no integration test and no product bundle. A workspace runs its whole Java suite in a few minutes, so every test runs rather than a selection by counterpart. Running every test also catches a module whose tests break through an API that another module changed.
 
 The match selects the paths that can change a Java unit test: a Java source, a `bnd.bnd` or `build.gradle` file, the `gradle.properties` file that sets the product version the tests resolve their portal dependencies against, and a test resource under `src/test/resources`. Any other path, such as a frontend source or a language file, runs no Java test.
 

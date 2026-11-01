@@ -2,7 +2,7 @@
 
 ## Match
 
-`\.(cjs|css|js|json|jsx|mjs|scss|snap|ts|tsx)$|(^|/)(\.babelrc|package-lock\.json|yarn\.lock)$`
+`\.(cjs|css|js|json|jsx|mjs|scss|snap|ts|tsx)$|(^|/)(\.babelrc|yarn\.lock)$`
 
 ## Command
 
@@ -12,7 +12,7 @@ cd "${BUILD_ROOT}"
 git grep --extended-regexp --quiet '"test"[[:space:]]*:' -- ':(glob)**/package.json'
 ```
 
-When the command exits nonzero, no `package.json` in the workspace declares a `test` script, so there is no JavaScript suite to run. Report **NOT APPLICABLE**, since `packageRunTest` exists only in such a workspace and naming a task Gradle cannot find fails the whole command before any test runs. Otherwise run:
+When the command exits nonzero, no `package.json` in the workspace declares a `test` script, so there is no JavaScript suite to run. Report **NOT APPLICABLE**, since `packageRunTest` exists only in a workspace where some `package.json` declares a `test` script, and naming a task that Gradle cannot find fails the whole command before any test runs. Otherwise run:
 
 ```bash
 cd "${BUILD_ROOT}"
