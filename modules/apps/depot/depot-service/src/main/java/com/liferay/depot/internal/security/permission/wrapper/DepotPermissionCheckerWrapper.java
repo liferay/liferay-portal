@@ -15,7 +15,6 @@ import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
 import com.liferay.petra.function.UnsafeFunction;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -75,8 +74,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 		}
 
 		Boolean hasPermission = _hasPermission(
-			BeanPropertiesUtil.getLong(group, "groupId"), name, primKey,
-			actionId);
+			_getGroupId(group), name, primKey, actionId);
 
 		if (hasPermission != null) {
 			return hasPermission;
@@ -94,8 +92,7 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 		}
 
 		Boolean hasPermission = _hasPermission(
-			BeanPropertiesUtil.getLong(group, "groupId"), name,
-			GetterUtil.getLong(primKey), actionId);
+			_getGroupId(group), name, GetterUtil.getLong(primKey), actionId);
 
 		if (hasPermission != null) {
 			return hasPermission;
@@ -252,6 +249,14 @@ public class DepotPermissionCheckerWrapper extends PermissionCheckerWrapper {
 
 			return false;
 		}
+	}
+
+	private long _getGroupId(Group group) {
+		if (group == null) {
+			return 0;
+		}
+
+		return group.getGroupId();
 	}
 
 	private String _getSubtype(Group group) {
