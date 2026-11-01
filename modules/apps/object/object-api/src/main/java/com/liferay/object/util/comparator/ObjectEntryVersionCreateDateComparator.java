@@ -40,7 +40,7 @@ public class ObjectEntryVersionCreateDateComparator
 
 		int value = DateUtil.compareTo(
 			objectEntryVersion1.getCreateDate(),
-			objectEntryVersion1.getCreateDate());
+			objectEntryVersion2.getCreateDate());
 
 		if (_ascending) {
 			return value;

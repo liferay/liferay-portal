@@ -6,7 +6,6 @@
 package com.liferay.object.util.comparator;
 
 import com.liferay.object.model.ObjectEntryVersion;
-import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 /**
@@ -37,9 +36,8 @@ public class ObjectEntryVersionVersionComparator
 		ObjectEntryVersion objectEntryVersion1,
 		ObjectEntryVersion objectEntryVersion2) {
 
-		int value = DateUtil.compareTo(
-			objectEntryVersion1.getCreateDate(),
-			objectEntryVersion1.getCreateDate());
+		int value = Integer.compare(
+			objectEntryVersion1.getVersion(), objectEntryVersion2.getVersion());
 
 		if (_ascending) {
 			return value;
