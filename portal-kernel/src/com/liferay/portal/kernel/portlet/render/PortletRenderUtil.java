@@ -36,7 +36,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Writer;
 
 import java.net.URL;
@@ -96,8 +95,9 @@ public class PortletRenderUtil {
 	}
 
 	public static void writeFooterCSSPaths(
-		HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
-		Writer writer) {
+			HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
+			Writer writer)
+		throws IOException {
 
 		Collection<String> urls = _getURLs(
 			httpServletRequest,
@@ -105,13 +105,14 @@ public class PortletRenderUtil {
 			URLType.CSS);
 
 		for (String url : urls) {
-			_writeCSSPath(new PrintWriter(writer, true), url, null);
+			_writeCSSPath(writer, url, null);
 		}
 	}
 
 	public static void writeFooterJavaScriptPaths(
-		HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
-		Writer writer) {
+			HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
+			Writer writer)
+		throws IOException {
 
 		Collection<String> urls = _getURLs(
 			httpServletRequest,
@@ -119,7 +120,7 @@ public class PortletRenderUtil {
 			URLType.JAVASCRIPT);
 
 		for (String url : urls) {
-			_writeJavaScriptPath(new PrintWriter(writer, true), url, null);
+			_writeJavaScriptPath(writer, url, null);
 		}
 	}
 
@@ -134,8 +135,9 @@ public class PortletRenderUtil {
 	}
 
 	public static void writeHeaderCSSPaths(
-		HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
-		Writer writer) {
+			HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
+			Writer writer)
+		throws IOException {
 
 		Collection<String> urls = _getURLs(
 			httpServletRequest,
@@ -144,7 +146,7 @@ public class PortletRenderUtil {
 
 		for (String url : urls) {
 			_writeCSSPath(
-				new PrintWriter(writer, true), url,
+				writer, url,
 				HashMapBuilder.put(
 					"data-senna-track", "temporary"
 				).put(
@@ -156,8 +158,9 @@ public class PortletRenderUtil {
 	}
 
 	public static void writeHeaderJavaScriptPaths(
-		HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
-		Writer writer) {
+			HttpServletRequest httpServletRequest, Collection<Portlet> portlets,
+			Writer writer)
+		throws IOException {
 
 		Collection<String> urls = _getURLs(
 			httpServletRequest,
@@ -166,7 +169,7 @@ public class PortletRenderUtil {
 
 		for (String url : urls) {
 			_writeJavaScriptPath(
-				new PrintWriter(writer, true), url,
+				writer, url,
 				Collections.singletonMap("data-senna-track", "temporary"));
 		}
 	}
@@ -485,32 +488,33 @@ public class PortletRenderUtil {
 	}
 
 	private static void _writeCSSPath(
-		PrintWriter printWriter, String cssPath,
-		Map<String, String> attributes) {
+			Writer writer, String cssPath, Map<String, String> attributes)
+		throws IOException {
 
-		printWriter.print("<link href=\"");
-		printWriter.print(HtmlUtil.escape(cssPath));
-		printWriter.print(StringPool.QUOTE);
-		printWriter.print(
+		writer.write("<link href=\"");
+		writer.write(HtmlUtil.escape(cssPath));
+		writer.write(StringPool.QUOTE);
+		writer.write(
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(null));
-		printWriter.println(" rel=\"stylesheet\" type=\"text/css\"");
+		writer.write(" rel=\"stylesheet\" type=\"text/css\"\n");
 
 		if (attributes != null) {
 			for (Map.Entry<String, String> entry : attributes.entrySet()) {
-				printWriter.print(StringPool.SPACE);
-				printWriter.print(entry.getKey());
-				printWriter.print("=\"");
-				printWriter.print(HtmlUtil.escapeAttribute(entry.getValue()));
-				printWriter.print(StringPool.QUOTE);
+				writer.write(StringPool.SPACE);
+				writer.write(entry.getKey());
+				writer.write("=\"");
+				writer.write(HtmlUtil.escapeAttribute(entry.getValue()));
+				writer.write(StringPool.QUOTE);
 			}
 		}
 
-		printWriter.println(" />");
+		writer.write(" />\n");
 	}
 
 	private static void _writeJavaScriptPath(
-		PrintWriter printWriter, String javaScriptPath,
-		Map<String, String> attributes) {
+			Writer writer, String javaScriptPath,
+			Map<String, String> attributes)
+		throws IOException {
 
 		String type = "text/javascript";
 
@@ -519,26 +523,26 @@ public class PortletRenderUtil {
 			type = "module";
 		}
 
-		printWriter.print("<script");
-		printWriter.print(
+		writer.write("<script");
+		writer.write(
 			ContentSecurityPolicyNonceProviderUtil.getNonceAttribute(null));
-		printWriter.print(" src=\"");
-		printWriter.print(HtmlUtil.escapeAttribute(javaScriptPath));
-		printWriter.print("\" type=\"");
-		printWriter.print(type);
-		printWriter.print(StringPool.QUOTE);
+		writer.write(" src=\"");
+		writer.write(HtmlUtil.escapeAttribute(javaScriptPath));
+		writer.write("\" type=\"");
+		writer.write(type);
+		writer.write(StringPool.QUOTE);
 
 		if (attributes != null) {
 			for (Map.Entry<String, String> entry : attributes.entrySet()) {
-				printWriter.print(StringPool.SPACE);
-				printWriter.print(entry.getKey());
-				printWriter.print("=\"");
-				printWriter.print(HtmlUtil.escapeAttribute(entry.getValue()));
-				printWriter.print(StringPool.QUOTE);
+				writer.write(StringPool.SPACE);
+				writer.write(entry.getKey());
+				writer.write("=\"");
+				writer.write(HtmlUtil.escapeAttribute(entry.getValue()));
+				writer.write(StringPool.QUOTE);
 			}
 		}
 
-		printWriter.println("></script>");
+		writer.write("></script>\n");
 	}
 
 	private static void _writePaths(
@@ -552,14 +556,14 @@ public class PortletRenderUtil {
 			return;
 		}
 
-		PrintWriter printWriter = httpServletResponse.getWriter();
+		Writer writer = httpServletResponse.getWriter();
 
 		for (String cssPath : cssPaths) {
-			_writeCSSPath(printWriter, cssPath, null);
+			_writeCSSPath(writer, cssPath, null);
 		}
 
 		for (String javaScriptPath : javaScriptPaths) {
-			_writeJavaScriptPath(printWriter, javaScriptPath, null);
+			_writeJavaScriptPath(writer, javaScriptPath, null);
 		}
 	}
 
