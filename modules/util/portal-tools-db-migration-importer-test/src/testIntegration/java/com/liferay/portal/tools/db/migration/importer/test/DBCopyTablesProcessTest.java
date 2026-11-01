@@ -306,10 +306,15 @@ public class DBCopyTablesProcessTest {
 	}
 
 	@Test
+	@TestInfo("LPD-110961")
 	public void testTextColumn() throws Exception {
 		_testColumnTypeOf(
 			Function.identity(), Function.identity(), "TEXT",
-			RandomTestUtil::randomString);
+			() -> StringBundler.concat(
+				StringPool.NEW_LINE, StringPool.NEW_LINE,
+				RandomTestUtil.randomString(), StringPool.RETURN_NEW_LINE,
+				RandomTestUtil.randomString(), StringPool.RETURN,
+				RandomTestUtil.randomString(), StringPool.NEW_LINE));
 	}
 
 	@Test
