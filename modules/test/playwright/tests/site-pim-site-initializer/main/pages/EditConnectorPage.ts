@@ -20,7 +20,7 @@ export class EditConnectorPage {
 	readonly urlInput: Locator;
 
 	constructor(page: Page) {
-		this.activeToggle = page.getByRole('switch', {name: 'Enable'});
+		this.activeToggle = page.getByRole('switch', {name: 'Active'});
 		this.clientIdInput = page.getByLabel('Client ID');
 		this.clientSecretInput = page.getByLabel('Client Secret');
 		this.connectorSelect = page.getByRole('combobox', {name: 'Connector'});

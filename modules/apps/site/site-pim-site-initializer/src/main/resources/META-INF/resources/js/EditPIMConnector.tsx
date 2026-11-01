@@ -319,7 +319,7 @@ export default function EditPIMConnector({
 
 							<ClayForm.Group className="mb-0">
 								<ClayToggle
-									label={Liferay.Language.get('enable')}
+									label={Liferay.Language.get('active')}
 									onToggle={setActive}
 									toggled={active}
 								/>
