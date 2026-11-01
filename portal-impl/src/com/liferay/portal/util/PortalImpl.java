@@ -4341,7 +4341,7 @@ public class PortalImpl implements Portal {
 				WebKeys.THEME_DISPLAY);
 
 		if (layout != null) {
-			Group group = layout.getGroup();
+			Group group = _getLayoutGroup(layout, themeDisplay);
 
 			long doAsGroupId = ParamUtil.getLong(
 				httpServletRequest, "doAsGroupId");
@@ -4386,7 +4386,7 @@ public class PortalImpl implements Portal {
 			}
 
 			if ((group != null) && group.isInheritContent()) {
-				Group layoutGroup = layout.getGroup();
+				Group layoutGroup = _getLayoutGroup(layout, themeDisplay);
 
 				if (!layoutGroup.isControlPanel()) {
 					scopeGroupId = group.getParentGroupId();
@@ -8066,6 +8066,16 @@ public class PortalImpl implements Portal {
 		}
 
 		return sb.toString();
+	}
+
+	private Group _getLayoutGroup(Layout layout, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		if (themeDisplay == null) {
+			return layout.getGroup();
+		}
+
+		return themeDisplay.getLayoutGroup(layout);
 	}
 
 	private String _getPortalURL(

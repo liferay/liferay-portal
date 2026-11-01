@@ -482,6 +482,16 @@ public class ThemeDisplay
 		return _getFriendlyURL(layout);
 	}
 
+	public Group getLayoutGroup(Layout layout) throws PortalException {
+		if ((_siteGroup != null) &&
+			(_siteGroup.getGroupId() == layout.getGroupId())) {
+
+			return _siteGroup;
+		}
+
+		return layout.getGroup();
+	}
+
 	/**
 	 * Returns the current layout set, being either a public layout set or a
 	 * private layout set.
