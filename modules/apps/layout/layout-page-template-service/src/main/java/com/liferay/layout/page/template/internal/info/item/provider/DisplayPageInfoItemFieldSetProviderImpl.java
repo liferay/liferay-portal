@@ -133,7 +133,10 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-				_getGroupIds(themeDisplay.getScopeGroupId()), classNameId,
+				_getGroupIds(
+					themeDisplay.getScopeGroup(),
+					themeDisplay.getScopeGroupId()),
+				classNameId,
 				LayoutPageTemplateEntryUtil.getClassTypeKey(
 					classNameId, GetterUtil.getLong(infoItemFormVariationKey),
 					themeDisplay.getScopeGroupId()),
@@ -238,10 +241,8 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 			externalReferenceCode);
 	}
 
-	private long[] _getGroupIds(long groupId) {
+	private long[] _getGroupIds(Group group, long groupId) {
 		long[] groupIds = {groupId};
-
-		Group group = _groupLocalService.fetchGroup(groupId);
 
 		if ((group == null) ||
 			!FeatureFlagManagerUtil.isEnabled(
@@ -280,7 +281,9 @@ public class DisplayPageInfoItemFieldSetProviderImpl
 
 		List<LayoutPageTemplateEntry> layoutPageTemplateEntries =
 			_layoutPageTemplateEntryService.getLayoutPageTemplateEntries(
-				_getGroupIds(scopeGroupId), classNameId,
+				_getGroupIds(
+					_groupLocalService.fetchGroup(scopeGroupId), scopeGroupId),
+				classNameId,
 				LayoutPageTemplateEntryUtil.getClassTypeKey(
 					classNameId, GetterUtil.getLong(infoItemFormVariationKey),
 					scopeGroupId),
