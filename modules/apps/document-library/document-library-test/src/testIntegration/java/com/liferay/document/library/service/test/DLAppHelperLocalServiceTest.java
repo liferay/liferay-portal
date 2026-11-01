@@ -18,12 +18,15 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryTypeLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileVersionLocalService;
 import com.liferay.layout.page.template.test.util.DisplayPageTemplateTestUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -141,6 +144,25 @@ public class DLAppHelperLocalServiceTest {
 		publishDate = fileVersionAssetEntry.getPublishDate();
 
 		Assert.assertEquals(displayDate.getTime(), publishDate.getTime());
+	}
+
+	@Test
+	public void testDeleteRepositoryFileEntries() throws Exception {
+		_group = GroupTestUtil.addGroup();
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_dlAppHelperLocalService.deleteRepositoryFileEntries(
+			fileEntry.getRepositoryId());
+
+		Assert.assertNull(
+			_assetEntryLocalService.fetchEntry(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId()));
 	}
 
 	@Test
@@ -323,6 +345,9 @@ public class DLAppHelperLocalServiceTest {
 
 	@Inject
 	private File _file;
+
+	@DeleteAfterTestRun
+	private Group _group;
 
 	@Inject
 	private WorkflowDefinitionManager _workflowDefinitionManager;
