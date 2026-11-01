@@ -59,14 +59,13 @@ public class BaseTemplateTest {
 
 		baseTemplate.clear();
 
-		Assert.assertNull(baseTemplate.get("key2"));
-		Assert.assertNull(baseTemplate.get("key3"));
-
 		Assert.assertFalse(baseTemplate.containsKey("key2"));
 		Assert.assertFalse(baseTemplate.containsKey("key3"));
+		Assert.assertNull(baseTemplate.get("key2"));
+		Assert.assertNull(baseTemplate.get("key3"));
 		Assert.assertTrue(baseTemplate.isEmpty());
-
 		Assert.assertEquals(0, baseTemplate.size());
+
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
 				"key2", "shared2"
@@ -242,14 +241,19 @@ public class BaseTemplateTest {
 			).build());
 
 		Assert.assertNull(baseTemplate.put("key1", "own1"));
+
 		Assert.assertEquals("own1", baseTemplate.get("key1"));
+
 		Assert.assertEquals("own1", baseTemplate.put("key1", "own1new"));
+
 		Assert.assertEquals("own1new", baseTemplate.get("key1"));
 
 		baseTemplate.remove("key2");
 
 		Assert.assertNull(baseTemplate.put("key2", "own2"));
+
 		Assert.assertEquals("own2", baseTemplate.get("key2"));
+
 		Assert.assertNull(baseTemplate.put("key3", "own3"));
 	}
 
@@ -275,9 +279,13 @@ public class BaseTemplateTest {
 		baseTemplate.put("key1", "own1");
 
 		Assert.assertEquals("own1", baseTemplate.get("key1"));
+
 		Assert.assertEquals("own1", baseTemplate.remove("key1"));
+
 		Assert.assertNull(baseTemplate.get("key1"));
+
 		Assert.assertNull(baseTemplate.remove("key3"));
+
 		Assert.assertEquals(
 			HashMapBuilder.<String, Object>put(
 				"key1", "shared1"
