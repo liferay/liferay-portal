@@ -24,32 +24,33 @@ import org.osgi.service.component.annotations.Component;
 )
 public class TypedPropertyKey {
 
-	public void method1() {
+	public Dictionary<String, Object> method1() {
 		Dictionary<String, Object> dictionary = new Hashtable<>();
 
 		dictionary.put("service.ranking:Integer", 100);
 
+		return dictionary;
+	}
+
+	public void method2() {
 		_dictionary = HashMapDictionaryBuilder.<String, Object>put(
 			"service.ranking:Integer", 100
 		).put(
 			"service.vendor", "Liferay"
 		).build();
-
-		_dictionary = MapUtil.singletonDictionary("order:Double", 1.5);
-
-		_filter = "(&(service.ranking=1)(order:Double>=1))";
-
-		_filter = "(service.ranking=1)";
-
-		_filter = "(service.ranking:Integer=1)";
-
-		_filter = "(&(service.ranking:Integer>=1)(order:Double<=2))";
-
-		_message = "A \"key:Long\" in a message";
-		_plain = "service.ranking";
 	}
 
-	public Attrs method2() {
+	public void method3() {
+		_dictionary = MapUtil.singletonDictionary("order:Double", 1.5);
+		_message = "A \"key:Long\" in a message";
+		_mixedFilter = "(&(service.ranking=1)(order:Double>=1))";
+		_multiTypedFilter = "(&(service.ranking:Integer>=1)(order:Double<=2))";
+		_plain = "service.ranking";
+		_plainFilter = "(service.ranking=1)";
+		_typedFilter = "(service.ranking:Integer=1)";
+	}
+
+	public Attrs method4() {
 		Attrs attrs = new Attrs();
 
 		attrs.put("resource.bundle.aggregate:String", "a");
@@ -58,8 +59,11 @@ public class TypedPropertyKey {
 	}
 
 	private Dictionary<String, Object> _dictionary;
-	private String _filter;
 	private String _message;
+	private String _mixedFilter;
+	private String _multiTypedFilter;
 	private String _plain;
+	private String _plainFilter;
+	private String _typedFilter;
 
 }

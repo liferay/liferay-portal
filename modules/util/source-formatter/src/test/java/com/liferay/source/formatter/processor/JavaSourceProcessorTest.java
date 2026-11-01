@@ -1465,21 +1465,11 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"The typed key syntax \"service.ranking:Integer\" is only " +
 					"parsed in component property strings, use the plain key " +
 						"\"service.ranking\" with a typed value",
-				33
+				37
 			).addExpectedMessage(
 				"The typed key syntax \"order:Double\" is only parsed in " +
 					"component property strings, use the plain key \"order\" " +
 						"with a typed value",
-				38
-			).addExpectedMessage(
-				"The typed key syntax \"order:Double\" is only parsed in " +
-					"component property strings, use the plain key \"order\" " +
-						"in a filter",
-				40
-			).addExpectedMessage(
-				"The typed key syntax \"service.ranking:Integer\" is only " +
-					"parsed in component property strings, use the plain key " +
-						"\"service.ranking\" in a filter",
 				44
 			).addExpectedMessage(
 				"The typed key syntax \"order:Double\" is only parsed in " +
@@ -1487,10 +1477,20 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 						"in a filter",
 				46
 			).addExpectedMessage(
+				"The typed key syntax \"order:Double\" is only parsed in " +
+					"component property strings, use the plain key \"order\" " +
+						"in a filter",
+				47
+			).addExpectedMessage(
 				"The typed key syntax \"service.ranking:Integer\" is only " +
 					"parsed in component property strings, use the plain key " +
 						"\"service.ranking\" in a filter",
-				46
+				47
+			).addExpectedMessage(
+				"The typed key syntax \"service.ranking:Integer\" is only " +
+					"parsed in component property strings, use the plain key " +
+						"\"service.ranking\" in a filter",
+				50
 			));
 	}
 
