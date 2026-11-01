@@ -121,7 +121,7 @@ public class GraphQLServletTest {
 
 			Assert.assertEquals(
 				_testDTO1.getString(),
-				jsonObject.getString("contributedString"));
+				jsonObject.getString("contributorString"));
 		}
 		finally {
 			serviceRegistration.unregister();
@@ -783,7 +783,7 @@ public class GraphQLServletTest {
 				}
 
 				@com.liferay.portal.vulcan.graphql.annotation.GraphQLField
-				public String contributedString() {
+				public String contributorString() {
 					return _testDTO1.getString();
 				}
 
@@ -1100,7 +1100,7 @@ public class GraphQLServletTest {
 		return JSONUtil.getValueAsJSONObject(
 			_invoke(
 				new GraphQLField(
-					"testDTO1", new GraphQLField("contributedString")),
+					"testDTO1", new GraphQLField("contributorString")),
 				"query"),
 			"JSONObject/data", "JSONObject/testDTO1");
 	}
