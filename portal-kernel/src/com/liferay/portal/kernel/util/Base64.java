@@ -10,7 +10,6 @@ import com.liferay.petra.io.ProtectedObjectInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.string.CharPool;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 
@@ -117,18 +116,18 @@ public class Base64 {
 
 		int lastIndex = Math.min(raw.length, offset + length);
 
-		StringBundler sb = new StringBundler(
-			(((lastIndex - offset) / 3) + 1) * 4);
+		char[] chars = new char[((lastIndex - offset + 2) / 3) * 4];
 
 		for (int i = offset; i < lastIndex; i += 3) {
-			sb.append(_encodeBlock(raw, i, lastIndex, url));
+			_encodeBlock(raw, i, lastIndex, url, chars, ((i - offset) / 3) * 4);
 		}
 
-		return sb.toString();
+		return new String(chars);
 	}
 
-	private static char[] _encodeBlock(
-		byte[] raw, int offset, int lastIndex, boolean url) {
+	private static void _encodeBlock(
+		byte[] raw, int offset, int lastIndex, boolean url, char[] chars,
+		int index) {
 
 		int block = 0;
 
@@ -144,34 +143,30 @@ public class Base64 {
 			block += neuter << (8 * (2 - i));
 		}
 
-		char[] base64 = new char[4];
-
 		for (int i = 0; i < 4; i++) {
 			int sixbit = (block >>> (6 * (3 - i))) & 0x3f;
 
-			base64[i] = _getChar(sixbit, url);
+			chars[index + i] = _getChar(sixbit, url);
 		}
 
 		if (url) {
 			if (slack < 1) {
-				base64[2] = CharPool.STAR;
+				chars[index + 2] = CharPool.STAR;
 			}
 
 			if (slack < 2) {
-				base64[3] = CharPool.STAR;
+				chars[index + 3] = CharPool.STAR;
 			}
 		}
 		else {
 			if (slack < 1) {
-				base64[2] = CharPool.EQUAL;
+				chars[index + 2] = CharPool.EQUAL;
 			}
 
 			if (slack < 2) {
-				base64[3] = CharPool.EQUAL;
+				chars[index + 3] = CharPool.EQUAL;
 			}
 		}
-
-		return base64;
 	}
 
 	private static char _getChar(int sixbit, boolean url) {
