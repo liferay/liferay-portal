@@ -568,7 +568,7 @@
 			WHERE
 				(Organization_.organizationId = ?)
 			ORDER BY
-				SocialActivity.createDate DESC
+				SocialActivitySet.modifiedDate DESC
 		]]>
 	</sql>
 	<sql id="com.liferay.social.kernel.service.persistence.SocialActivitySetFinder.findByRelationType">
