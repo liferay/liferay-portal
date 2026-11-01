@@ -1,0 +1,51 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.petra.sql.dsl.ast.ASTNodeListener;
+import com.liferay.petra.sql.dsl.query.DSLQuery;
+
+import java.util.List;
+
+/**
+ * @author Shuyang Zhou
+ */
+public class UnusedToSQLString {
+
+	public void method1(ASTNodeListener astNodeListener, DSLQuery dslQuery) {
+		dslQuery.toSQL(astNodeListener);
+	}
+
+	public void method2(ASTNodeListener astNodeListener, DSLQuery dslQuery) {
+		dslQuery.toSQL(
+			string -> {
+			},
+			astNodeListener);
+	}
+
+	public String method3(ASTNodeListener astNodeListener, DSLQuery dslQuery) {
+		return dslQuery.toSQL(astNodeListener);
+	}
+
+	public int method4(ASTNodeListener astNodeListener, DSLQuery dslQuery) {
+		String sql = dslQuery.toSQL(astNodeListener);
+
+		return sql.length();
+	}
+
+	public void method5(
+		ASTNodeListener astNodeListener, DSLQuery dslQuery, List<String> sqls) {
+
+		sqls.add(dslQuery.toSQL(astNodeListener));
+	}
+
+	public String method6(
+		ASTNodeListener astNodeListener, DSLQuery dslQuery, String prefix) {
+
+		return prefix + dslQuery.toSQL(astNodeListener);
+	}
+
+}

@@ -1552,6 +1552,16 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testUnusedToSQLString() throws Exception {
+		test(
+			"UnusedToSQLString.testjava",
+			"Use \"toSQL(string -> {}, astNodeListener)\" instead of " +
+				"\"toSQL(astNodeListener)\" when the SQL string is unused, " +
+					"see LPD-113238",
+			19);
+	}
+
+	@Test
 	public void testUnusedVariable() throws Exception {
 		test(
 			SourceProcessorTestParameters.create(
