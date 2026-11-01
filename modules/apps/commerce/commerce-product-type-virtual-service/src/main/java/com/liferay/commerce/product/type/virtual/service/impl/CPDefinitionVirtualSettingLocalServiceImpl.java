@@ -195,9 +195,10 @@ public class CPDefinitionVirtualSettingLocalServiceImpl
 		long cpDefinitionId, long newCPDefinitionId) {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-			cpDefinitionVirtualSettingLocalService.
-				fetchCPDefinitionVirtualSetting(
-					CPDefinition.class.getName(), cpDefinitionId);
+			cpDefinitionVirtualSettingPersistence.fetchByC_C(
+				_classNameLocalService.getClassNameId(
+					CPDefinition.class.getName()),
+				cpDefinitionId);
 
 		if (cpDefinitionVirtualSetting != null) {
 			CPDefinitionVirtualSetting newCPDefinitionVirtualSetting =

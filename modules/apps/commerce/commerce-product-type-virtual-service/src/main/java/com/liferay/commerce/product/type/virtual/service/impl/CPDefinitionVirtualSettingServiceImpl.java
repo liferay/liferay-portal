@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 
 import java.util.Locale;
@@ -81,8 +82,8 @@ public class CPDefinitionVirtualSettingServiceImpl
 		throws PortalException {
 
 		CPDefinitionVirtualSetting cpDefinitionVirtualSetting =
-			cpDefinitionVirtualSettingLocalService.
-				fetchCPDefinitionVirtualSetting(className, classPK);
+			cpDefinitionVirtualSettingPersistence.fetchByC_C(
+				_classNameLocalService.getClassNameId(className), classPK);
 
 		if (cpDefinitionVirtualSetting != null) {
 			_checkPermission(className, classPK, ActionKeys.VIEW);
@@ -205,6 +206,9 @@ public class CPDefinitionVirtualSettingServiceImpl
 
 		_checkCommerceCatalog(cpDefinitionId, action);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference(
 		target = "(model.class.name=com.liferay.commerce.product.model.CommerceCatalog)"

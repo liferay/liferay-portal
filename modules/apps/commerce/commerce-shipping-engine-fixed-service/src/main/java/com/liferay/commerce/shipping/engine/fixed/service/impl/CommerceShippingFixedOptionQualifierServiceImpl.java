@@ -15,6 +15,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
@@ -101,9 +102,9 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 
 		_checkCommerceChannel(commerceShippingFixedOptionId);
 
-		return commerceShippingFixedOptionQualifierLocalService.
-			fetchCommerceShippingFixedOptionQualifier(
-				className, classPK, commerceShippingFixedOptionId);
+		return commerceShippingFixedOptionQualifierPersistence.fetchByC_C_C(
+			_classNameLocalService.getClassNameId(className), classPK,
+			commerceShippingFixedOptionId);
 	}
 
 	@Override
@@ -228,6 +229,9 @@ public class CommerceShippingFixedOptionQualifierServiceImpl
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannel, ActionKeys.UPDATE);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private CommerceChannelLocalService _commerceChannelLocalService;
