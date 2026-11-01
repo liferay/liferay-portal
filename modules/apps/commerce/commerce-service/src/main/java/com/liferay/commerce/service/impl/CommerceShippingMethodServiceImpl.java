@@ -16,6 +16,7 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -178,9 +179,10 @@ public class CommerceShippingMethodServiceImpl
 		_checkCommerceChannel(
 			ActionKeys.VIEW, commerceShippingMethod.getGroupId());
 
-		return commerceShippingMethodLocalService.
-			getCommerceAddressRestrictions(
-				commerceShippingMethodId, start, end, orderByComparator);
+		return _commerceAddressRestrictionPersistence.findByC_C(
+			_classNameLocalService.getClassNameId(
+				CommerceShippingMethod.class.getName()),
+			commerceShippingMethodId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -195,8 +197,10 @@ public class CommerceShippingMethodServiceImpl
 		_checkCommerceChannel(
 			ActionKeys.VIEW, commerceShippingMethod.getGroupId());
 
-		return commerceShippingMethodLocalService.
-			getCommerceAddressRestrictionsCount(commerceShippingMethodId);
+		return _commerceAddressRestrictionPersistence.countByC_C(
+			_classNameLocalService.getClassNameId(
+				CommerceShippingMethod.class.getName()),
+			commerceShippingMethodId);
 	}
 
 	@Override
@@ -316,6 +320,9 @@ public class CommerceShippingMethodServiceImpl
 		_commerceChannelModelResourcePermission.check(
 			getPermissionChecker(), commerceChannel, actionId);
 	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private CommerceAddressRestrictionLocalService
