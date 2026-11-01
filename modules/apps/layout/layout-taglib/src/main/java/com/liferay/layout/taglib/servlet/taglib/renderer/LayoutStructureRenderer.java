@@ -683,16 +683,16 @@ public class LayoutStructureRenderer {
 			ColumnLayoutStructureItem columnLayoutStructureItem)
 		throws Exception {
 
-		RowStyledLayoutStructureItem rowStyledLayoutStructureItem =
-			(RowStyledLayoutStructureItem)
-				_layoutStructure.getLayoutStructureItem(
-					columnLayoutStructureItem.getParentItemId());
-
 		ColTag colTag = new ColTag();
 
 		colTag.setCssClass(
-			ResponsiveLayoutStructureUtil.getColumnCssClass(
-				columnLayoutStructureItem, rowStyledLayoutStructureItem));
+			_columnCssClasses.computeIfAbsent(
+				columnLayoutStructureItem.getItemId(),
+				itemId -> ResponsiveLayoutStructureUtil.getColumnCssClass(
+					columnLayoutStructureItem,
+					(RowStyledLayoutStructureItem)
+						_layoutStructure.getLayoutStructureItem(
+							columnLayoutStructureItem.getParentItemId()))));
 		colTag.setPageContext(_pageContext);
 
 		colTag.doStartTag();
@@ -2131,6 +2131,7 @@ public class LayoutStructureRenderer {
 
 	private static final String _INITIAL_UUID_PREFIX = "0000";
 
+	private final Map<String, String> _columnCssClasses = new HashMap<>();
 	private final Map<Long, FragmentEntryLink> _fragmentEntryLinks =
 		new HashMap<>();
 	private final HttpServletRequest _httpServletRequest;
