@@ -7,6 +7,7 @@ package com.liferay.object.internal.sort;
 
 import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.internal.entry.util.ObjectEntrySearchUtil;
+import com.liferay.object.internal.sort.util.ObjectEntryFieldSortUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntryTable;
 import com.liferay.object.model.ObjectField;
@@ -52,7 +53,7 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 	@Override
 	public DSLQuery visit(DSLQuery dslQuery, Sort sort) throws PortalException {
 		ObjectDefinition objectDefinition = sort.getObjectDefinition();
-		String fieldName = _getSortFieldName(sort);
+		String fieldName = ObjectEntryFieldSortUtil.getSortFieldName(sort);
 
 		ObjectField objectField = objectFieldLocalService.fetchObjectField(
 			objectDefinition.getObjectDefinitionId(), fieldName);
@@ -80,7 +81,8 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 
 			columnExpression = _getColumnExpression(objectField, fieldTable);
 
-			if (!_isParentComplexField(sort) && objectField.isLocalized() &&
+			if (!ObjectEntryFieldSortUtil.isParentComplexField(sort) &&
+				objectField.isLocalized() &&
 				(objectFieldTable instanceof
 					DynamicObjectDefinitionLocalizationTable)) {
 
@@ -137,8 +139,8 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 		}
 
 		OrderByExpression orderByExpression = _getOrderByExpression(
-			_isParentComplexField(sort), columnExpression, prefix,
-			sort.isReverse());
+			ObjectEntryFieldSortUtil.isParentComplexField(sort),
+			columnExpression, prefix, sort.isReverse());
 
 		OrderByExpression[] orderByExpressions = {orderByExpression};
 
@@ -227,30 +229,17 @@ public class ObjectEntryFieldSortDSLQueryVisitor
 		return expression.ascending();
 	}
 
-	private String _getSortFieldName(Sort sort) {
-		String fieldName = sort.getFieldName();
-
-		if (!fieldName.contains(StringPool.SLASH)) {
-			return fieldName;
-		}
-
-		return StringUtil.extractLast(fieldName, StringPool.SLASH);
-	}
-
 	private String _getSuffix(Sort sort) {
-		if (!_isParentComplexField(sort)) {
+		if (!ObjectEntryFieldSortUtil.isParentComplexField(sort)) {
 			return null;
 		}
 
 		return StringUtil.replace(
 			StringUtil.removeLast(
 				sort.getFieldPath(),
-				CharPool.FORWARD_SLASH + _getSortFieldName(sort)),
+				CharPool.FORWARD_SLASH +
+					ObjectEntryFieldSortUtil.getSortFieldName(sort)),
 			CharPool.FORWARD_SLASH, CharPool.UNDERLINE);
-	}
-
-	private boolean _isParentComplexField(Sort sort) {
-		return !StringUtil.equals(_getSortFieldName(sort), sort.getFieldPath());
 	}
 
 }
