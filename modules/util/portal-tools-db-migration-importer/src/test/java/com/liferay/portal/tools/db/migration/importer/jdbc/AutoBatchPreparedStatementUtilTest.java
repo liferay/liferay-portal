@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -44,6 +45,9 @@ public class AutoBatchPreparedStatementUtilTest {
 	public void testConcurrentAutoBatch() throws Exception {
 		ConnectionConfigUtil.setBatchSize("2");
 
+		AtomicInteger executeBatchesCount = new AtomicInteger();
+		AtomicInteger maxExecuteBatchesCount = new AtomicInteger();
+
 		Connection connection = Mockito.mock(Connection.class);
 
 		List<PreparedStatement> preparedStatements = new ArrayList<>();
@@ -55,6 +59,21 @@ public class AutoBatchPreparedStatementUtilTest {
 				PreparedStatement preparedStatement = Mockito.mock(
 					PreparedStatement.class);
 
+				Mockito.doAnswer(
+					executeBatchInvocation -> {
+						maxExecuteBatchesCount.accumulateAndGet(
+							executeBatchesCount.incrementAndGet(), Math::max);
+
+						Thread.sleep(10);
+
+						executeBatchesCount.decrementAndGet();
+
+						return new int[0];
+					}
+				).when(
+					preparedStatement
+				).executeBatch();
+
 				preparedStatements.add(preparedStatement);
 
 				return preparedStatement;
@@ -65,15 +84,16 @@ public class AutoBatchPreparedStatementUtilTest {
 				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 					connection, RandomTestUtil.randomString())) {
 
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 21; i++) {
 				autoBatchPreparedStatement.addBatch();
 			}
 
 			autoBatchPreparedStatement.executeBatch();
 		}
 
+		Assert.assertEquals(1, maxExecuteBatchesCount.get());
 		Assert.assertEquals(
-			preparedStatements.toString(), 2, preparedStatements.size());
+			preparedStatements.toString(), 11, preparedStatements.size());
 
 		for (PreparedStatement preparedStatement : preparedStatements) {
 			Mockito.verify(
