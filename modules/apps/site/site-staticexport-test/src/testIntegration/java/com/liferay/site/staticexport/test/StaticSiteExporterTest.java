@@ -215,9 +215,7 @@ public class StaticSiteExporterTest {
 				staticSiteExportReport.getResourceFailures(),
 				StaticSiteExportReport.Failure::getURL);
 
-			Assert.assertEquals(
-				resourceFailureURLs.toString(), List.of(imageURL),
-				resourceFailureURLs);
+			Assert.assertEquals(List.of(imageURL), resourceFailureURLs);
 
 			List<StaticSiteExportEntry> staticSiteExportEntries =
 				staticSiteExport.getStaticSiteExportEntries();
