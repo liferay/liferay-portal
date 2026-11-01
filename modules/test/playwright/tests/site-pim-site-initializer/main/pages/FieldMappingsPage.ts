@@ -6,7 +6,6 @@
 import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
-import {waitForAlert} from '../../../../utils/waitForAlert';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
 import {EditFieldMappingsPage} from './EditFieldMappingsPage';
 
@@ -60,19 +59,6 @@ export class FieldMappingsPage {
 			action: 'Edit',
 			filter: channelField,
 		});
-	}
-
-	async executeConnector() {
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.moreActionsMenuItem('Execute'),
-			trigger: this.moreActionsButton,
-		});
-
-		await waitForAlert(
-			this.page,
-			'Execution has started successfully and will continue in the background.'
-		);
 	}
 
 	async expectClearVisible(channelField: string) {
@@ -133,15 +119,5 @@ export class FieldMappingsPage {
 
 			await expect(this.status(channelField)).toHaveText('Mapped');
 		}
-	}
-
-	async openConnectorSchedule() {
-		await clickAndExpectToBeVisible({
-			autoClick: true,
-			target: this.moreActionsMenuItem('Schedule'),
-			trigger: this.moreActionsButton,
-		});
-
-		await this.page.waitForURL(/edit_dispatch_trigger/);
 	}
 }

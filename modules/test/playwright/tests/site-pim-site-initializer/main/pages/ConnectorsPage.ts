@@ -6,7 +6,6 @@
 import {Locator, Page, expect} from '@playwright/test';
 
 import {PORTLET_URLS} from '../../../../utils/portletUrls';
-import {waitForAlert} from '../../../../utils/waitForAlert';
 import {DataSetPage} from '../../../site-cms-site-initializer/main/pages/DataSetPage';
 import {EditConnectorPage} from './EditConnectorPage';
 
@@ -79,18 +78,6 @@ export class ConnectorsPage {
 		if (await this.getConnector(name).isVisible()) {
 			await this.deleteConnector(name);
 		}
-	}
-
-	async executeConnector(name: string) {
-		await this.dataSetFragmentPage.execItemAction({
-			action: 'Execute',
-			filter: name,
-		});
-
-		await waitForAlert(
-			this.page,
-			'Execution has started successfully and will continue in the background.'
-		);
 	}
 
 	getConnector(name: string) {

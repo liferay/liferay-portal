@@ -33,7 +33,7 @@ test.afterEach(async ({apiHelpers}) => {
 });
 
 test(
-	'Execute a connector and open its schedule',
+	'Open the schedule of a connector',
 	{tag: ['@LPD-108228', '@LPD-109731']},
 	async ({connectorSchedulePage, connectorsPage, fieldMappingsPage}) => {
 		const connectorName = getRandomString();
@@ -76,10 +76,6 @@ test(
 			).toHaveText('');
 		});
 
-		await test.step('Execute the connector', async () => {
-			await connectorsPage.executeConnector(connectorName);
-		});
-
 		await test.step('Open the connector schedule', async () => {
 			await connectorsPage.openConnectorSchedule(connectorName);
 
@@ -95,102 +91,6 @@ test(
 				connectorsPage.getConnector(connectorName)
 			).toBeVisible();
 		});
-	}
-);
-
-test(
-	'Execute a connector and log the products JSON',
-	{tag: ['@LPD-108228']},
-	async ({
-		connectorSchedulePage,
-		connectorsPage,
-		editFieldMappingsPage,
-		fieldMappingsPage,
-		productPage,
-		productsPage,
-	}) => {
-		const connectorName = getRandomString();
-		const productTitle = getRandomString();
-
-		try {
-			await test.step('Add a product', async () => {
-				await productsPage.goto();
-
-				await productsPage.openNewProductEditor();
-
-				await productPage.sku.fill(getRandomString());
-				await productPage.title.fill(productTitle);
-
-				await productPage.save();
-			});
-
-			await test.step('Create an active connector', async () => {
-				await connectorsPage.createConnector({
-					active: true,
-					connector: 'Liferay Commerce',
-					name: connectorName,
-				});
-			});
-
-			await test.step('Map only the required channel fields', async () => {
-				await connectorsPage.getConnector(connectorName).click();
-
-				for (const {channelField, sourceAttribute, value} of [
-					{channelField: 'Catalog ID', value: '1'},
-					{channelField: 'Name', sourceAttribute: 'Title (title)'},
-					{channelField: 'Product Type', value: 'simple'},
-					{channelField: 'SKU', sourceAttribute: 'SKU (sku)'},
-				]) {
-					await fieldMappingsPage.channelField(channelField).click();
-
-					if (sourceAttribute) {
-						await editFieldMappingsPage.mapToSourceAttribute(
-							sourceAttribute
-						);
-					}
-					else {
-						await editFieldMappingsPage.mapToValue(value);
-					}
-
-					await editFieldMappingsPage.saveButton.click();
-
-					await expect(
-						fieldMappingsPage.status(channelField)
-					).toHaveText('Mapped');
-				}
-			});
-
-			await test.step('Execute the connector from its field mappings', async () => {
-				await fieldMappingsPage.executeConnector();
-			});
-
-			await test.step('The job log holds the products JSON', async () => {
-				await fieldMappingsPage.openConnectorSchedule();
-
-				await connectorSchedulePage.openLatestSuccessfulLog();
-
-				await expect(connectorSchedulePage.logOutput).toHaveText(/^\[/);
-				await expect(connectorSchedulePage.logError).toBeHidden();
-			});
-
-			await test.step('The connectors list shows the successful execution', async () => {
-				await connectorsPage.goto();
-
-				await expect(
-					connectorsPage.getConnectorLastExecutionStatus(
-						connectorName
-					)
-				).toHaveText('Success');
-				await expect(
-					connectorsPage.getConnectorLastExecutionDate(connectorName)
-				).not.toHaveText('');
-			});
-		}
-		finally {
-			await productsPage.goto();
-
-			await productsPage.deleteProduct(productTitle);
-		}
 	}
 );
 

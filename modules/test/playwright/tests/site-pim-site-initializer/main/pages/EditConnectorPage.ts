@@ -5,18 +5,24 @@
 
 import {Locator, Page} from '@playwright/test';
 
+import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 
 export class EditConnectorPage {
 	readonly activeToggle: Locator;
+	readonly clientIdInput: Locator;
+	readonly clientSecretInput: Locator;
 	readonly connectorSelect: Locator;
 	readonly nameInput: Locator;
 	readonly page: Page;
 	readonly referenceMark: (field: Locator) => Locator;
 	readonly saveButton: Locator;
+	readonly urlInput: Locator;
 
 	constructor(page: Page) {
-		this.activeToggle = page.getByRole('switch', {name: 'Active'});
+		this.activeToggle = page.getByRole('switch', {name: 'Enable'});
+		this.clientIdInput = page.getByLabel('Client ID');
+		this.clientSecretInput = page.getByLabel('Client Secret');
 		this.connectorSelect = page.getByRole('combobox', {name: 'Connector'});
 		this.nameInput = page.getByRole('textbox', {name: 'Name'});
 		this.page = page;
@@ -25,6 +31,7 @@ export class EditConnectorPage {
 				.locator('.form-group', {has: field})
 				.locator('.reference-mark');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
+		this.urlInput = page.getByLabel('URL');
 	}
 
 	async createConnector({
@@ -39,6 +46,10 @@ export class EditConnectorPage {
 		await this.nameInput.fill(name);
 
 		await this.connectorSelect.selectOption({label: connector});
+
+		await this.clientIdInput.fill(getRandomString());
+		await this.clientSecretInput.fill(getRandomString());
+		await this.urlInput.fill(getRandomString());
 
 		if (active) {
 			await this.activeToggle.click();
