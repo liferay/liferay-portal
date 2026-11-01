@@ -1460,36 +1460,27 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				"The typed key syntax \"service.ranking:Integer\" is only " +
 					"parsed in component property strings, use the plain key " +
 						"\"service.ranking\" with a typed value",
-				28
+				30
 			).addExpectedMessage(
 				"The typed key syntax \"service.ranking:Integer\" is only " +
 					"parsed in component property strings, use the plain key " +
 						"\"service.ranking\" with a typed value",
-				31
+				33
 			).addExpectedMessage(
 				"The typed key syntax \"order:Double\" is only parsed in " +
 					"component property strings, use the plain key \"order\" " +
 						"with a typed value",
-				36
+				38
 			).addExpectedMessage(
 				"The typed key syntax \"order:Double\" is only parsed in " +
 					"component property strings, use the plain key \"order\" " +
 						"in a filter",
-				38
+				40
 			).addExpectedMessage(
 				"The typed key syntax \"service.ranking:Integer\" is only " +
 					"parsed in component property strings, use the plain key " +
 						"\"service.ranking\" in a filter",
-				42
-			));
-		test(
-			SourceProcessorTestParameters.create(
-				"TypedPropertyKeyBND.testjava"
-			).addExpectedMessage(
-				"The typed key syntax \"service.ranking:Integer\" is only " +
-					"parsed in component property strings, use the plain key " +
-						"\"service.ranking\" with a typed value",
-				29
+				44
 			));
 	}
 

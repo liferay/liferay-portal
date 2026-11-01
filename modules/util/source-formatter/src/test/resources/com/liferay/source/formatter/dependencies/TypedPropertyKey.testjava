@@ -5,6 +5,8 @@
 
 package com.liferay.source.formatter.dependencies;
 
+import aQute.bnd.header.Attrs;
+
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.MapUtil;
 
@@ -22,7 +24,7 @@ import org.osgi.service.component.annotations.Component;
 )
 public class TypedPropertyKey {
 
-	public void register() {
+	public void method1() {
 		Dictionary<String, Object> dictionary = new Hashtable<>();
 
 		dictionary.put("service.ranking:Integer", 100);
@@ -43,6 +45,14 @@ public class TypedPropertyKey {
 
 		_message = "A \"key:Long\" in a message";
 		_plain = "service.ranking";
+	}
+
+	public Attrs method2() {
+		Attrs attrs = new Attrs();
+
+		attrs.put("resource.bundle.aggregate:String", "a");
+
+		return attrs;
 	}
 
 	private Dictionary<String, Object> _dictionary;
