@@ -5,8 +5,6 @@
 
 package com.liferay.source.formatter.checkstyle.check;
 
-import com.liferay.petra.string.StringBundler;
-
 import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
@@ -86,13 +84,13 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 	private static final String _MSG_TYPED_PROPERTY_KEY_VALUE =
 		"typed.property.key.value";
 
-	private static final String _TYPES =
-		"(?:Boolean|Byte|Character|Double|Float|Integer|Long|Short|String)";
+	private static final String _TYPED_PROPERTY_KEY_REGEX =
+		"(([\\w.-]+):(?:Boolean|Byte|Character|Double|Float|Integer|Long|" +
+			"Short|String))";
 
 	private static final Pattern _filterTypedPropertyKeyPattern =
-		Pattern.compile(
-			StringBundler.concat("\\((([\\w.-]+):", _TYPES, ")(?=[=~<>])"));
+		Pattern.compile("\\(" + _TYPED_PROPERTY_KEY_REGEX + "(?=[=~<>])");
 	private static final Pattern _typedPropertyKeyPattern = Pattern.compile(
-		StringBundler.concat("\"(([\\w.-]+):", _TYPES, ")\""));
+		"\"" + _TYPED_PROPERTY_KEY_REGEX + "\"");
 
 }
