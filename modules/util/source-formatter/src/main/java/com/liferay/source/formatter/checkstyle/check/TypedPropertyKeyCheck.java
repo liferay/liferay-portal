@@ -35,21 +35,22 @@ public class TypedPropertyKeyCheck extends BaseCheck {
 		Matcher matcher = _literalTypedPropertyKeyPattern.matcher(text);
 
 		if (matcher.matches()) {
-			if (!_isAttrsPut(detailAST)) {
-				log(
-					detailAST, _MSG_TYPED_PROPERTY_KEY_VALUE, matcher.group(1),
-					matcher.group(2));
+			if (_isAttrsPut(detailAST)) {
+				return;
 			}
 
-			return;
-		}
-
-		matcher = _filterTypedPropertyKeyPattern.matcher(text);
-
-		while (matcher.find()) {
 			log(
-				detailAST, _MSG_TYPED_PROPERTY_KEY_FILTER, matcher.group(1),
+				detailAST, _MSG_TYPED_PROPERTY_KEY_VALUE, matcher.group(1),
 				matcher.group(2));
+		}
+		else {
+			matcher = _filterTypedPropertyKeyPattern.matcher(text);
+
+			while (matcher.find()) {
+				log(
+					detailAST, _MSG_TYPED_PROPERTY_KEY_FILTER, matcher.group(1),
+					matcher.group(2));
+			}
 		}
 	}
 
