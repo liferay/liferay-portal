@@ -91,9 +91,6 @@ public class DeleteStaleBatchEngineDataUpgradeProcessTest {
 
 		_runUpgrade();
 
-		Assert.assertNull(
-			_batchEngineExportTaskLocalService.fetchBatchEngineExportTask(
-				batchEngineExportTask.getBatchEngineExportTaskId()));
 		Assert.assertEquals(
 			0,
 			_batchEngineExportTaskLocalService.dslQueryCount(
@@ -103,7 +100,9 @@ public class DeleteStaleBatchEngineDataUpgradeProcessTest {
 				).where(
 					BatchEngineExportTaskTable.INSTANCE.companyId.eq(companyId)
 				)));
-
+		Assert.assertNull(
+			_batchEngineExportTaskLocalService.fetchBatchEngineExportTask(
+				batchEngineExportTask.getBatchEngineExportTaskId()));
 		Assert.assertNull(
 			_batchEngineImportTaskErrorLocalService.
 				fetchBatchEngineImportTaskError(
@@ -114,10 +113,6 @@ public class DeleteStaleBatchEngineDataUpgradeProcessTest {
 			_batchEngineImportTaskErrorLocalService.
 				getBatchEngineImportTaskErrorsCount(
 					batchEngineImportTask.getBatchEngineImportTaskId()));
-
-		Assert.assertNull(
-			_batchEngineImportTaskLocalService.fetchBatchEngineImportTask(
-				batchEngineImportTask.getBatchEngineImportTaskId()));
 		Assert.assertEquals(
 			0,
 			_batchEngineImportTaskLocalService.dslQueryCount(
@@ -127,6 +122,9 @@ public class DeleteStaleBatchEngineDataUpgradeProcessTest {
 				).where(
 					BatchEngineImportTaskTable.INSTANCE.companyId.eq(companyId)
 				)));
+		Assert.assertNull(
+			_batchEngineImportTaskLocalService.fetchBatchEngineImportTask(
+				batchEngineImportTask.getBatchEngineImportTaskId()));
 	}
 
 	private void _runUpgrade() throws Exception {
