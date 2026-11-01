@@ -471,8 +471,14 @@ public class RenderLayoutStructureDisplayContext {
 	}
 
 	public String getLayoutMode() {
-		return ParamUtil.getString(
+		if (_layoutMode != null) {
+			return _layoutMode;
+		}
+
+		_layoutMode = ParamUtil.getString(
 			_httpServletRequest, "p_l_mode", Constants.VIEW);
+
+		return _layoutMode;
 	}
 
 	public LayoutStructure getLayoutStructure() {
@@ -1227,6 +1233,7 @@ public class RenderLayoutStructureDisplayContext {
 
 	private final Map<String, Boolean> _hasAncestors = new HashMap<>();
 	private final HttpServletRequest _httpServletRequest;
+	private String _layoutMode;
 	private final LayoutStructure _layoutStructure;
 	private LayoutStructureRulesHelper.LayoutStructureRulesResult
 		_layoutStructureRulesResult;
