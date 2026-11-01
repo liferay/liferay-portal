@@ -247,26 +247,26 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					objectFieldInfoFieldConverter, namespace,
 					objectRelationshipLocalService,
 					serviceBuilderRelatedObjectEntry, themeDisplay, value);
-
-				infoFieldValues.add(
-					new InfoFieldValue<>(
-						ObjectEntryInfoItemFields.getFriendlyURLInfoField(
-							parentObjectDefinition.
-								isEnableFriendlyURLCustomization(),
-							objectRelationship.getName(), namespace),
-						() -> {
-							if (objectEntry == null) {
-								return null;
-							}
-
-							return getFriendlyURLInfoFieldValue(
-								portal.getClassNameId(
-									parentObjectDefinition.getClassName()),
-								friendlyURLEntryLocalService,
-								GetterUtil.getLong(
-									values.get(objectField.getName())));
-						}));
 			}
+
+			infoFieldValues.add(
+				new InfoFieldValue<>(
+					ObjectEntryInfoItemFields.getFriendlyURLInfoField(
+						parentObjectDefinition.
+							isEnableFriendlyURLCustomization(),
+						objectRelationship.getName(), namespace),
+					() -> {
+						if (objectEntry == null) {
+							return null;
+						}
+
+						return getFriendlyURLInfoFieldValue(
+							portal.getClassNameId(
+								parentObjectDefinition.getClassName()),
+							friendlyURLEntryLocalService,
+							GetterUtil.getLong(
+								values.get(objectField.getName())));
+					}));
 		}
 
 		if (!objectDefinition.isDefaultStorageType()) {
