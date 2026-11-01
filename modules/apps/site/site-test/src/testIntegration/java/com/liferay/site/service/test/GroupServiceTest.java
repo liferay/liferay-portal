@@ -1016,10 +1016,10 @@ public class GroupServiceTest {
 	public void testInheritLocalesByDefault() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		Assert.assertTrue(_language.isInheritLocales(_group.getGroupId()));
 		Assert.assertEquals(
 			_language.getAvailableLocales(),
 			_language.getAvailableLocales(_group.getGroupId()));
+		Assert.assertTrue(_language.isInheritLocales(_group));
 	}
 
 	@Test
