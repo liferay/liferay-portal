@@ -35,6 +35,7 @@ import com.liferay.info.test.util.model.MockObject;
 import com.liferay.item.selector.criteria.InfoListItemSelectorReturnType;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -51,6 +52,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.servlet.HttpMethods;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -85,11 +87,16 @@ import com.liferay.segments.model.SegmentsExperience;
 import com.liferay.segments.service.SegmentsEntryLocalService;
 import com.liferay.segments.service.SegmentsExperienceLocalService;
 import com.liferay.segments.test.util.SegmentsTestUtil;
+import com.liferay.template.model.TemplateEntry;
+import com.liferay.template.test.util.TemplateTestUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
 import java.util.Locale;
+
+import org.hamcrest.CoreMatchers;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -147,6 +154,11 @@ public class GetCollectionFieldMVCResourceCommandTest {
 				(Class<InfoCollectionProvider<?>>)
 					(Class<?>)InfoCollectionProvider.class,
 				new TestInfoCollectionProvider(), null);
+		_journalArticleInfoCollectionProviderServiceRegistration =
+			bundleContext.registerService(
+				(Class<InfoCollectionProvider<?>>)
+					(Class<?>)InfoCollectionProvider.class,
+				new TestJournalArticleInfoCollectionProvider(), null);
 
 		_originalThemeDisplayDefaultLocale =
 			LocaleThreadLocal.getThemeDisplayLocale();
@@ -160,6 +172,11 @@ public class GetCollectionFieldMVCResourceCommandTest {
 
 		if (_infoCollectionProviderServiceRegistration != null) {
 			_infoCollectionProviderServiceRegistration.unregister();
+		}
+
+		if (_journalArticleInfoCollectionProviderServiceRegistration != null) {
+			_journalArticleInfoCollectionProviderServiceRegistration.
+				unregister();
 		}
 
 		LocaleThreadLocal.setThemeDisplayLocale(
@@ -601,6 +618,95 @@ public class GetCollectionFieldMVCResourceCommandTest {
 	}
 
 	@Test
+	public void testGetCollectionFieldWithListItemStyleOfAnotherItemType()
+		throws Exception {
+
+		_addBlogsEntry();
+
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
+			new Class<?>[] {
+				long.class, HttpServletRequest.class, HttpServletResponse.class,
+				int.class, boolean.class, boolean.class, String.class,
+				String.class, String.class, String.class, String.class,
+				int.class, int.class, int.class, String.class, long.class,
+				long.class, String.class
+			},
+			_group.getCompanyId(), _getHttpServletRequest(),
+			new MockHttpServletResponse(), 0, false, false,
+			LocaleUtil.toLanguageId(LocaleUtil.US),
+			JSONUtil.put(
+				"itemType", BlogsEntry.class.getName()
+			).put(
+				"key", TestInfoCollectionProvider.class.getName()
+			).put(
+				"type", InfoListProviderItemSelectorReturnType.class.getName()
+			).toString(),
+			"com.liferay.blogs.web.internal.info.list.renderer." +
+				"BulletedBlogsEntryBasicInfoListRenderer",
+			"com.liferay.journal.web.internal.info.item.renderer." +
+				"JournalArticleTitleInfoItemRenderer",
+			StringPool.BLANK, 1, 20, 0, "regular", _group.getGroupId(),
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()),
+			StringPool.BLANK);
+
+		Assert.assertFalse(jsonObject.has("content"));
+		Assert.assertEquals(1, jsonObject.getInt("length"));
+	}
+
+	@Test
+	public void testGetCollectionFieldWithTemplateEntry() throws Exception {
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString());
+
+		TemplateEntry templateEntry = TemplateTestUtil.addTemplateEntry(
+			JournalArticle.class.getName(),
+			String.valueOf(journalArticle.getDDMStructureId()),
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			"${title.getData()}", _serviceContext);
+
+		HttpServletRequest httpServletRequest = _getHttpServletRequest();
+
+		_serviceContext.setRequest(httpServletRequest);
+
+		JSONObject jsonObject = ReflectionTestUtil.invoke(
+			_mvcResourceCommand, "_getCollectionFieldsJSONObject",
+			new Class<?>[] {
+				long.class, HttpServletRequest.class, HttpServletResponse.class,
+				int.class, boolean.class, boolean.class, String.class,
+				String.class, String.class, String.class, String.class,
+				int.class, int.class, int.class, String.class, long.class,
+				long.class, String.class
+			},
+			_group.getCompanyId(), httpServletRequest,
+			new MockHttpServletResponse(), 0, false, false,
+			LocaleUtil.toLanguageId(LocaleUtil.US),
+			JSONUtil.put(
+				"itemType", JournalArticle.class.getName()
+			).put(
+				"key", TestJournalArticleInfoCollectionProvider.class.getName()
+			).put(
+				"type", InfoListProviderItemSelectorReturnType.class.getName()
+			).toString(),
+			"com.liferay.journal.web.internal.info.list.renderer." +
+				"BulletedJournalArticleBasicInfoListRenderer",
+			"com.liferay.template.internal.info.item.renderer." +
+				"TemplateInfoItemTemplatedRenderer",
+			StringPool.BLANK, 1, 20, 0, "regular", _group.getGroupId(),
+			_segmentsExperienceLocalService.fetchDefaultSegmentsExperienceId(
+				_layout.getPlid()),
+			String.valueOf(templateEntry.getTemplateEntryId()));
+
+		Assert.assertThat(
+			jsonObject.getString("content"),
+			CoreMatchers.containsString(
+				journalArticle.getTitle(LocaleUtil.US)));
+		Assert.assertEquals(1, jsonObject.getInt("length"));
+	}
+
+	@Test
 	@TestInfo("LPD-61012")
 	public void testGetInfoFieldWithERCInfoItemIdentifier() throws Exception {
 		MockObject mockObject = new MockObject(
@@ -680,21 +786,25 @@ public class GetCollectionFieldMVCResourceCommandTest {
 	}
 
 	private HttpServletRequest _getHttpServletRequest() throws Exception {
-		HttpServletRequest httpServletRequest = new MockHttpServletRequest();
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest();
 
-		httpServletRequest.setAttribute(WebKeys.LAYOUT, _layout);
+		mockHttpServletRequest.setAttribute(WebKeys.LAYOUT, _layout);
+		mockHttpServletRequest.setMethod(HttpMethods.GET);
 
 		ThemeDisplay themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
 			_companyLocalService.fetchCompany(_group.getCompanyId()), _group,
 			_layout);
 
-		themeDisplay.setRequest(httpServletRequest);
+		themeDisplay.setRequest(mockHttpServletRequest);
+		themeDisplay.setResponse(new MockHttpServletResponse());
 
-		httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, themeDisplay);
+		mockHttpServletRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, themeDisplay);
 
-		httpServletRequest.setAttribute(WebKeys.USER_ID, _user.getUserId());
+		mockHttpServletRequest.setAttribute(WebKeys.USER_ID, _user.getUserId());
 
-		return httpServletRequest;
+		return mockHttpServletRequest;
 	}
 
 	private String _getTypeSettings() {
@@ -742,6 +852,11 @@ public class GetCollectionFieldMVCResourceCommandTest {
 
 	private ServiceRegistration<InfoCollectionProvider<?>>
 		_infoCollectionProviderServiceRegistration;
+	private ServiceRegistration<InfoCollectionProvider<?>>
+		_journalArticleInfoCollectionProviderServiceRegistration;
+
+	@Inject
+	private JournalArticleLocalService _journalArticleLocalService;
 
 	@Inject(filter = "ddm.form.deserializer.type=json")
 	private DDMFormDeserializer _jsonDDMFormDeserializer;
@@ -797,6 +912,29 @@ public class GetCollectionFieldMVCResourceCommandTest {
 			new QueryDefinition<>(
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
+
+	}
+
+	private class TestJournalArticleInfoCollectionProvider
+		implements InfoCollectionProvider<JournalArticle> {
+
+		@Override
+		public InfoPage<JournalArticle> getCollectionInfoPage(
+			CollectionQuery collectionQuery) {
+
+			List<JournalArticle> journalArticles =
+				_journalArticleLocalService.getArticles(_group.getGroupId());
+
+			return InfoPage.of(
+				journalArticles, collectionQuery.getPagination(),
+				journalArticles.size());
+		}
+
+		@Override
+		public String getLabel(Locale locale) {
+			return TestJournalArticleInfoCollectionProvider.class.
+				getSimpleName();
+		}
 
 	}
 
