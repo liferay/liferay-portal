@@ -16,8 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseWorkflowStatusTag
-	extends IncludeTag {
+public abstract class BaseWorkflowStatusTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -143,11 +142,13 @@ public abstract class BaseWorkflowStatusTag
 		setNamespacedAttribute(httpServletRequest, "id", _id);
 		setNamespacedAttribute(httpServletRequest, "markupView", _markupView);
 		setNamespacedAttribute(httpServletRequest, "model", _model);
-		setNamespacedAttribute(httpServletRequest, "showHelpMessage", _showHelpMessage);
+		setNamespacedAttribute(
+			httpServletRequest, "showHelpMessage", _showHelpMessage);
 		setNamespacedAttribute(httpServletRequest, "showIcon", _showIcon);
 		setNamespacedAttribute(httpServletRequest, "showLabel", _showLabel);
 		setNamespacedAttribute(httpServletRequest, "status", _status);
-		setNamespacedAttribute(httpServletRequest, "statusMessage", _statusMessage);
+		setNamespacedAttribute(
+			httpServletRequest, "statusMessage", _statusMessage);
 		setNamespacedAttribute(httpServletRequest, "version", _version);
 	}
 

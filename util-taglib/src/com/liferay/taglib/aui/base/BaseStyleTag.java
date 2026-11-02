@@ -15,8 +15,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseStyleTag
-	extends PositionTagSupport {
+public abstract class BaseStyleTag extends PositionTagSupport {
 
 	public int doStartTag() throws JspException {
 		return super.doStartTag();

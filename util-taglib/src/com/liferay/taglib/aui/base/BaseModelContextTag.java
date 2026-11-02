@@ -15,8 +15,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseModelContextTag
-	extends IncludeTag {
+public abstract class BaseModelContextTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {

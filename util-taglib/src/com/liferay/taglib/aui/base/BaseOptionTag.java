@@ -125,10 +125,12 @@ public abstract class BaseOptionTag extends IncludeTag {
 		setNamespacedAttribute(httpServletRequest, "data", _data);
 		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
 		setNamespacedAttribute(httpServletRequest, "label", _label);
-		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(
+			httpServletRequest, "localizeLabel", _localizeLabel);
 		setNamespacedAttribute(httpServletRequest, "selected", _selected);
 		setNamespacedAttribute(httpServletRequest, "style", _style);
-		setNamespacedAttribute(httpServletRequest, "useModelValue", _useModelValue);
+		setNamespacedAttribute(
+			httpServletRequest, "useModelValue", _useModelValue);
 		setNamespacedAttribute(httpServletRequest, "value", _value);
 	}
 

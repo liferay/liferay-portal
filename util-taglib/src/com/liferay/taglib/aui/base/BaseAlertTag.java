@@ -109,7 +109,8 @@ public abstract class BaseAlertTag extends IncludeTag {
 		setNamespacedAttribute(httpServletRequest, "animated", _animated);
 		setNamespacedAttribute(httpServletRequest, "closeable", _closeable);
 		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
-		setNamespacedAttribute(httpServletRequest, "destroyOnHide", _destroyOnHide);
+		setNamespacedAttribute(
+			httpServletRequest, "destroyOnHide", _destroyOnHide);
 		setNamespacedAttribute(httpServletRequest, "duration", _duration);
 		setNamespacedAttribute(httpServletRequest, "id", _id);
 		setNamespacedAttribute(httpServletRequest, "type", _type);

@@ -16,8 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseFieldWrapperTag
-	extends IncludeTag {
+public abstract class BaseFieldWrapperTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -161,7 +160,8 @@ public abstract class BaseFieldWrapperTag
 		setNamespacedAttribute(httpServletRequest, "inlineLabel", _inlineLabel);
 		setNamespacedAttribute(httpServletRequest, "label", _label);
 		setNamespacedAttribute(httpServletRequest, "last", _last);
-		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(
+			httpServletRequest, "localizeLabel", _localizeLabel);
 		setNamespacedAttribute(httpServletRequest, "name", _name);
 		setNamespacedAttribute(httpServletRequest, "required", _required);
 	}

@@ -16,8 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseButtonRowTag
-	extends IncludeTag {
+public abstract class BaseButtonRowTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {

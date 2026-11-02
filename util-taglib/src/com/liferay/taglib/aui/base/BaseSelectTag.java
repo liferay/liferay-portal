@@ -18,8 +18,7 @@ import java.util.Map;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseSelectTag
-	extends BaseValidatorTagSupport {
+public abstract class BaseSelectTag extends BaseValidatorTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -326,7 +325,8 @@ public abstract class BaseSelectTag
 	@Override
 	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		setNamespacedAttribute(httpServletRequest, "bean", _bean);
-		setNamespacedAttribute(httpServletRequest, "changesContext", _changesContext);
+		setNamespacedAttribute(
+			httpServletRequest, "changesContext", _changesContext);
 		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
 		setNamespacedAttribute(httpServletRequest, "data", _data);
 		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
@@ -343,7 +343,8 @@ public abstract class BaseSelectTag
 		setNamespacedAttribute(httpServletRequest, "listType", _listType);
 		setNamespacedAttribute(
 			httpServletRequest, "listTypeFieldName", _listTypeFieldName);
-		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(
+			httpServletRequest, "localizeLabel", _localizeLabel);
 		setNamespacedAttribute(httpServletRequest, "model", _model);
 		setNamespacedAttribute(httpServletRequest, "multiple", _multiple);
 		setNamespacedAttribute(httpServletRequest, "name", _name);
@@ -351,14 +352,17 @@ public abstract class BaseSelectTag
 		setNamespacedAttribute(httpServletRequest, "onClick", _onClick);
 		setNamespacedAttribute(httpServletRequest, "prefix", _prefix);
 		setNamespacedAttribute(httpServletRequest, "required", _required);
-		setNamespacedAttribute(httpServletRequest, "showEmptyOption", _showEmptyOption);
+		setNamespacedAttribute(
+			httpServletRequest, "showEmptyOption", _showEmptyOption);
 		setNamespacedAttribute(
 			httpServletRequest, "showRequiredLabel", _showRequiredLabel);
 		setNamespacedAttribute(httpServletRequest, "suffix", _suffix);
 		setNamespacedAttribute(httpServletRequest, "title", _title);
-		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(
+			httpServletRequest, "useNamespace", _useNamespace);
 		setNamespacedAttribute(httpServletRequest, "value", _value);
-		setNamespacedAttribute(httpServletRequest, "wrapperCssClass", _wrapperCssClass);
+		setNamespacedAttribute(
+			httpServletRequest, "wrapperCssClass", _wrapperCssClass);
 	}
 
 	private static final String _ATTRIBUTE_NAMESPACE = "aui:select:";

@@ -15,8 +15,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseValidatorTagImpl
-	extends BaseBodyTagSupport {
+public abstract class BaseValidatorTagImpl extends BaseBodyTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {

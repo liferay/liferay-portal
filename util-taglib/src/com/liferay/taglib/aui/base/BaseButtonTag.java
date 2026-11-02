@@ -176,7 +176,8 @@ public abstract class BaseButtonTag extends IncludeTag {
 		setNamespacedAttribute(httpServletRequest, "primary", _primary);
 		setNamespacedAttribute(httpServletRequest, "type", _type);
 		setNamespacedAttribute(httpServletRequest, "useDialog", _useDialog);
-		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(
+			httpServletRequest, "useNamespace", _useNamespace);
 		setNamespacedAttribute(httpServletRequest, "value", _value);
 	}
 

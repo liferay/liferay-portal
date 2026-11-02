@@ -16,8 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseFieldsetTag
-	extends IncludeTag {
+public abstract class BaseFieldsetTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -141,10 +140,12 @@ public abstract class BaseFieldsetTag
 		setNamespacedAttribute(httpServletRequest, "helpMessage", _helpMessage);
 		setNamespacedAttribute(httpServletRequest, "id", _id);
 		setNamespacedAttribute(httpServletRequest, "label", _label);
-		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(
+			httpServletRequest, "localizeLabel", _localizeLabel);
 		setNamespacedAttribute(httpServletRequest, "markupView", _markupView);
 		setNamespacedAttribute(
-			httpServletRequest, "panelHeaderLinkCssClass", _panelHeaderLinkCssClass);
+			httpServletRequest, "panelHeaderLinkCssClass",
+			_panelHeaderLinkCssClass);
 	}
 
 	private static final String _ATTRIBUTE_NAMESPACE = "aui:fieldset:";

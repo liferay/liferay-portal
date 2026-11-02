@@ -136,13 +136,17 @@ public abstract class BaseFormTag extends IncludeTag {
 		setNamespacedAttribute(httpServletRequest, "action", _action);
 		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
 		setNamespacedAttribute(httpServletRequest, "escapeXml", _escapeXml);
-		setNamespacedAttribute(httpServletRequest, "inlineLabels", _inlineLabels);
+		setNamespacedAttribute(
+			httpServletRequest, "inlineLabels", _inlineLabels);
 		setNamespacedAttribute(httpServletRequest, "method", _method);
 		setNamespacedAttribute(httpServletRequest, "name", _name);
 		setNamespacedAttribute(httpServletRequest, "onSubmit", _onSubmit);
-		setNamespacedAttribute(httpServletRequest, "portletNamespace", _portletNamespace);
-		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
-		setNamespacedAttribute(httpServletRequest, "validateOnBlur", _validateOnBlur);
+		setNamespacedAttribute(
+			httpServletRequest, "portletNamespace", _portletNamespace);
+		setNamespacedAttribute(
+			httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(
+			httpServletRequest, "validateOnBlur", _validateOnBlur);
 	}
 
 	private static final String _ATTRIBUTE_NAMESPACE = "aui:form:";
