@@ -136,19 +136,6 @@ public class ListTypeEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteListTypeEntryByListTypeDefinitionId(
-			long listTypeDefinitionId)
-		throws PortalException {
-
-		for (ListTypeEntry listTypeEntry :
-				listTypeEntryPersistence.findByListTypeDefinitionId(
-					listTypeDefinitionId)) {
-
-			listTypeEntryLocalService.deleteListTypeEntry(listTypeEntry);
-		}
-	}
-
-	@Override
 	public ListTypeEntry fetchListTypeEntry(
 		long listTypeDefinitionId, String key) {
 
@@ -207,16 +194,6 @@ public class ListTypeEntryLocalServiceImpl
 		throws PortalException {
 
 		return listTypeEntryPersistence.findByLTDI_K(listTypeDefinitionId, key);
-	}
-
-	@Override
-	public ListTypeEntry getListTypeEntryByExternalReferenceCode(
-			String externalReferenceCode, long companyId,
-			long listTypeDefinitionId)
-		throws PortalException {
-
-		return listTypeEntryPersistence.findByERC_C_LTDI(
-			externalReferenceCode, companyId, listTypeDefinitionId);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

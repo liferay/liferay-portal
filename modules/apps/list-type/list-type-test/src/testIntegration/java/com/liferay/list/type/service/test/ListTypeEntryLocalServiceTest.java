@@ -203,21 +203,6 @@ public class ListTypeEntryLocalServiceTest {
 			_listTypeEntryLocalService.getListTypeEntry(
 				_listTypeDefinition.getListTypeDefinitionId(),
 				_listTypeEntry.getKey()));
-
-		try {
-			_listTypeEntryLocalService.getListTypeEntryByExternalReferenceCode(
-				RandomTestUtil.randomString(), _listTypeEntry.getCompanyId(),
-				_listTypeDefinition.getListTypeDefinitionId());
-		}
-		catch (NoSuchListTypeEntryException noSuchListTypeEntryException) {
-			Assert.assertNotNull(noSuchListTypeEntryException);
-		}
-
-		Assert.assertNotNull(
-			_listTypeEntryLocalService.getListTypeEntryByExternalReferenceCode(
-				_listTypeEntry.getExternalReferenceCode(),
-				_listTypeEntry.getCompanyId(),
-				_listTypeDefinition.getListTypeDefinitionId()));
 	}
 
 	@Test
