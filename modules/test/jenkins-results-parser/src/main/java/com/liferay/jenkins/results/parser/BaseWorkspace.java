@@ -338,19 +338,21 @@ public abstract class BaseWorkspace implements Workspace {
 			return _workspaceRepositoryDirNames;
 		}
 
-		String workspaceRepositoryDirNames = jsonObject.optString(
+		String workspaceRepositoryDirNamesString = jsonObject.optString(
 			"workspace_repository_dir_names");
 
 		if (JenkinsResultsParserUtil.isNullOrEmpty(
-				workspaceRepositoryDirNames)) {
+				workspaceRepositoryDirNamesString)) {
 
 			return Collections.emptyList();
 		}
 
-		workspaceRepositoryDirNames = workspaceRepositoryDirNames.trim();
+		workspaceRepositoryDirNamesString =
+			workspaceRepositoryDirNamesString.trim();
 
 		_workspaceRepositoryDirNames = Collections.unmodifiableList(
-			Arrays.asList(workspaceRepositoryDirNames.split("\\s*,\\s*")));
+			Arrays.asList(
+				workspaceRepositoryDirNamesString.split("\\s*,\\s*")));
 
 		return _workspaceRepositoryDirNames;
 	}
