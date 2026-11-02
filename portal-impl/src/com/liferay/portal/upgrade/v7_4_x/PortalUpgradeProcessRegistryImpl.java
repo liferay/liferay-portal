@@ -867,6 +867,15 @@ public class PortalUpgradeProcessRegistryImpl
 			new Version(39, 3, 0),
 			UpgradeProcessFactory.addColumns(
 				"Layout", "masterLPTESERC VARCHAR(75) null"));
+
+		upgradeVersionTreeMap.put(
+			new Version(39, 3, 1),
+			UpgradeProcessFactory.alterColumnType(
+				"DLFileEntryType", "name", "TEXT null"),
+			UpgradeProcessFactory.alterColumnType(
+				"Layout", "name", "TEXT null"),
+			UpgradeProcessFactory.alterColumnType(
+				"Role_", "title", "TEXT null"));
 	}
 
 }

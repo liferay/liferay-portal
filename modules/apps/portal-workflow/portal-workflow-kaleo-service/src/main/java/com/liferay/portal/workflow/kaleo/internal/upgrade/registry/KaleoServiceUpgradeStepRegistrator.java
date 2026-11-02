@@ -258,6 +258,13 @@ public class KaleoServiceUpgradeStepRegistrator
 			"4.6.0", "4.7.0",
 			new com.liferay.portal.workflow.kaleo.internal.upgrade.v4_7_0.
 				KaleoDefinitionUpgradeProcess());
+
+		registry.register(
+			"4.7.0", "4.7.1",
+			UpgradeProcessFactory.alterColumnType(
+				"KaleoDefinition", "title", "TEXT null"),
+			UpgradeProcessFactory.alterColumnType(
+				"KaleoDefinitionVersion", "title", "TEXT null"));
 	}
 
 }

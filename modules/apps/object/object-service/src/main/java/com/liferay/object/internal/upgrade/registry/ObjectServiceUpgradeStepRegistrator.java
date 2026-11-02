@@ -830,6 +830,15 @@ public class ObjectServiceUpgradeStepRegistrator
 					PanelCategoryKeys.CONTROL_PANEL_OBJECT,
 					"' where panelCategoryKey = ",
 					"'control_panel.configuration'")));
+
+		registry.register(
+			"13.13.0", "13.13.1",
+			UpgradeProcessFactory.alterColumnType(
+				"ObjectDefinition", "label", "TEXT null"),
+			UpgradeProcessFactory.alterColumnType(
+				"ObjectDefinition", "pluralLabel", "TEXT null"),
+			UpgradeProcessFactory.alterColumnType(
+				"ObjectField", "label", "TEXT null"));
 	}
 
 	private static final String[] _REMOVED_PANEL_CATEGORY_KEYS = {

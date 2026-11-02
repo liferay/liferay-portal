@@ -709,6 +709,13 @@ public class DDMServiceUpgradeStepRegistrator
 			new DDMFacetTemplateVersionUpgradeProcess(_classNameLocalService));
 
 		registry.register("7.1.0", "7.1.1", new DummyUpgradeStep());
+
+		registry.register(
+			"7.1.1", "7.1.2",
+			UpgradeProcessFactory.alterColumnType(
+				"DDMStructure", "name", "TEXT null"),
+			UpgradeProcessFactory.alterColumnType(
+				"DDMStructureVersion", "name", "TEXT null"));
 	}
 
 	@Activate
