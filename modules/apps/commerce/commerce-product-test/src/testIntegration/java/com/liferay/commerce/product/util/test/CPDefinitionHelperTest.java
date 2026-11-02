@@ -336,8 +336,8 @@ public class CPDefinitionHelperTest {
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.addCommerceChannel(
-				StringPool.BLANK, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-				RandomTestUtil.nextLong(), RandomTestUtil.randomString(),
+				StringPool.BLANK, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, 0,
+				RandomTestUtil.randomString(),
 				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 				commerceCurrency.getCode(),
 				ServiceContextTestUtil.getServiceContext(
