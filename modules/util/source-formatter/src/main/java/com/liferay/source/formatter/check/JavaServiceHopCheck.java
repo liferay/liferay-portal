@@ -98,11 +98,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 				continue;
 			}
 
-			String baseImplFullyQualifiedName = _getBaseImplName(
-				localServiceFullyQualifiedName);
-
 			File baseImplFile = JavaSourceUtil.getJavaFile(
-				baseImplFullyQualifiedName, rootDirName,
+				_getBaseImplName(localServiceFullyQualifiedName), rootDirName,
 				getBundleSymbolicNamesMap(absolutePath));
 
 			if ((baseImplFile == null) ||
@@ -133,8 +130,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 
 			if (content.contains("->") &&
 				_isInTransactionDisabledLambda(
-					content, matcher.start(), fileName, fileContent,
-					absolutePath, rootDirName, getImportNames(javaTerm))) {
+					absolutePath, content, fileContent, fileName,
+					getImportNames(javaTerm), matcher.start(), rootDirName)) {
 
 				continue;
 			}
@@ -294,14 +291,11 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private File _getImplFile(
-		String localServiceFullyQualifiedName, String rootDirName,
-		String absolutePath) {
-
-		String baseImplFullyQualifiedName = _getBaseImplName(
-			localServiceFullyQualifiedName);
+		String absolutePath, String localServiceFullyQualifiedName,
+		String rootDirName) {
 
 		File baseImplFile = JavaSourceUtil.getJavaFile(
-			baseImplFullyQualifiedName, rootDirName,
+			_getBaseImplName(localServiceFullyQualifiedName), rootDirName,
 			getBundleSymbolicNamesMap(absolutePath));
 
 		if (baseImplFile == null) {
@@ -532,8 +526,9 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private boolean _isInTransactionDisabledLambda(
-			String content, int pos, String fileName, String fileContent,
-			String absolutePath, String rootDirName, List<String> importNames)
+			String absolutePath, String content, String fileContent,
+			String fileName, List<String> importNames, int pos,
+			String rootDirName)
 		throws Exception {
 
 		for (String target : _getEnclosingLambdaTargets(content, pos)) {
@@ -586,7 +581,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 		}
 
 		File implFile = _getImplFile(
-			localServiceFullyQualifiedName, rootDirName, absolutePath);
+			absolutePath, localServiceFullyQualifiedName, rootDirName);
 
 		if ((implFile == null) || !implFile.exists()) {
 			return false;
