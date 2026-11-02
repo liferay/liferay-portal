@@ -11,6 +11,8 @@ import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
+import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
@@ -98,7 +100,10 @@ public class DLFileEntryLocalServiceTreeTest {
 			DLFileEntryLocalServiceUtil.updateDLFileEntry(dlFileEntry);
 		}
 
-		DLFileEntryLocalServiceUtil.rebuildTree(TestPropsValues.getCompanyId());
+		DLFolderLocalServiceUtil.rebuildTree(
+			TestPropsValues.getCompanyId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, StringPool.SLASH,
+			false);
 
 		for (FileEntry fileEntry : fileEntries) {
 			DLFileEntry dlFileEntry = DLFileEntryLocalServiceUtil.getFileEntry(

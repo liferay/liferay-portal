@@ -312,11 +312,6 @@ public class DLFileShortcutLocalServiceImpl
 	}
 
 	@Override
-	public void rebuildTree(long companyId) throws PortalException {
-		_dlFolderLocalService.rebuildTree(companyId);
-	}
-
-	@Override
 	public void setTreePaths(long folderId, String treePath)
 		throws PortalException {
 

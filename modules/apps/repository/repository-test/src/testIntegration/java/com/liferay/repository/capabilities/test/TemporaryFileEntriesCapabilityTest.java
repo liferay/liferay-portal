@@ -10,9 +10,11 @@ import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.model.DLFolderTable;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
@@ -193,9 +195,8 @@ public class TemporaryFileEntriesCapabilityTest {
 
 		LocalRepository localRepository = _getLocalRepository();
 
-		int repositoryFoldersCount =
-			DLFolderLocalServiceUtil.getRepositoryFoldersCount(
-				localRepository.getRepositoryId());
+		int repositoryFoldersCount = _getRepositoryFoldersCount(
+			localRepository.getRepositoryId());
 
 		Assert.assertArrayEquals(
 			new String[0],
@@ -204,8 +205,7 @@ public class TemporaryFileEntriesCapabilityTest {
 
 		Assert.assertEquals(
 			repositoryFoldersCount,
-			DLFolderLocalServiceUtil.getRepositoryFoldersCount(
-				localRepository.getRepositoryId()));
+			_getRepositoryFoldersCount(localRepository.getRepositoryId()));
 
 		String fileName = RandomTestUtil.randomString() + ".jpg";
 
@@ -283,6 +283,16 @@ public class TemporaryFileEntriesCapabilityTest {
 
 		return RepositoryProviderUtil.getLocalRepository(
 			repository.getRepositoryId());
+	}
+
+	private int _getRepositoryFoldersCount(long repositoryId) {
+		return DLFolderLocalServiceUtil.dslQueryCount(
+			DSLQueryFactoryUtil.count(
+			).from(
+				DLFolderTable.INSTANCE
+			).where(
+				DLFolderTable.INSTANCE.repositoryId.eq(repositoryId)
+			));
 	}
 
 	@DeleteAfterTestRun

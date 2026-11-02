@@ -10,7 +10,6 @@ import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLAppServiceUtil;
-import com.liferay.document.library.kernel.service.DLFileShortcutLocalServiceUtil;
 import com.liferay.document.library.kernel.service.DLFolderServiceUtil;
 import com.liferay.petra.io.unsync.UnsyncByteArrayInputStream;
 import com.liferay.petra.string.StringBundler;
@@ -27,11 +26,9 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.PortalUtil;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.repository.liferayrepository.LiferayRepository;
@@ -139,38 +136,6 @@ public class RepositoryTest {
 	}
 
 	@Test
-	public void testDeleteGroupRepository() throws Exception {
-		FileEntry fileEntry = DLAppServiceUtil.addFileEntry(
-			null, _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(), new byte[0],
-			null, null, null,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		DLFileShortcutLocalServiceUtil.addFileShortcut(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			fileEntry.getFileEntryId(),
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		Assert.assertEquals(
-			2,
-			DLAppServiceUtil.getFileEntriesAndFileShortcutsCount(
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				WorkflowConstants.STATUS_ANY));
-
-		DLAppLocalServiceUtil.deleteAll(_group.getGroupId());
-
-		Assert.assertEquals(
-			0,
-			DLAppServiceUtil.getFileEntriesAndFileShortcutsCount(
-				_group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				WorkflowConstants.STATUS_ANY));
-	}
-
-	@Test
 	public void testFileEntriesAreDeletedWhenDeletingAllRepositories()
 		throws Exception {
 
@@ -245,111 +210,6 @@ public class RepositoryTest {
 			DLFolderServiceUtil.getMountFoldersCount(
 				_group.getGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
-	}
-
-	@Test
-	public void testRepositoryFileEntriesAreDeletedWhenDeletingLiferayRepository()
-		throws Exception {
-
-		long[] fileEntryIds = new long[4];
-
-		long[] primaryKeys = populateRepository(_group.getGroupId());
-
-		fileEntryIds[0] = primaryKeys[0];
-		fileEntryIds[1] = primaryKeys[2];
-
-		Repository repository = RepositoryLocalServiceUtil.addRepository(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			PortalUtil.getClassNameId(LiferayRepository.class),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), new UnicodeProperties(), true,
-			new ServiceContext());
-
-		primaryKeys = populateRepository(repository.getRepositoryId());
-
-		fileEntryIds[2] = primaryKeys[0];
-		fileEntryIds[3] = primaryKeys[2];
-
-		DLAppLocalServiceUtil.deleteAll(_group.getGroupId());
-
-		try {
-			LocalRepository localRepository =
-				RepositoryProviderUtil.getLocalRepository(_group.getGroupId());
-
-			localRepository.getFileEntry(fileEntryIds[0]);
-			localRepository.getFileEntry(fileEntryIds[1]);
-
-			Assert.fail(
-				"Should not be able to get file entry from repository " +
-					_group.getGroupId());
-		}
-		catch (Exception exception) {
-		}
-
-		LocalRepository localRepository =
-			RepositoryProviderUtil.getLocalRepository(
-				repository.getRepositoryId());
-
-		localRepository.getFileEntry(fileEntryIds[2]);
-		localRepository.getFileEntry(fileEntryIds[3]);
-	}
-
-	@Test
-	public void testRepositoryFileEntriesAreDeletedWhenDeletingRepository()
-		throws Exception {
-
-		long classNameId = PortalUtil.getClassNameId(LiferayRepository.class);
-
-		Repository repository1 = RepositoryLocalServiceUtil.addRepository(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), classNameId,
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), new UnicodeProperties(), true,
-			new ServiceContext());
-
-		long[] fileEntryIds = new long[4];
-
-		long[] primaryKeys = populateRepository(repository1.getRepositoryId());
-
-		fileEntryIds[0] = primaryKeys[0];
-		fileEntryIds[1] = primaryKeys[2];
-
-		Repository repository2 = RepositoryLocalServiceUtil.addRepository(
-			null, TestPropsValues.getUserId(), _group.getGroupId(), classNameId,
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), new UnicodeProperties(), true,
-			new ServiceContext());
-
-		primaryKeys = populateRepository(repository2.getRepositoryId());
-
-		fileEntryIds[2] = primaryKeys[0];
-		fileEntryIds[3] = primaryKeys[2];
-
-		DLAppLocalServiceUtil.deleteAll(repository1.getRepositoryId());
-
-		try {
-			LocalRepository localRepository =
-				RepositoryProviderUtil.getLocalRepository(
-					repository2.getRepositoryId());
-
-			localRepository.getFileEntry(fileEntryIds[0]);
-			localRepository.getFileEntry(fileEntryIds[1]);
-
-			Assert.fail(
-				"Should be able to get file entry from repository " +
-					repository2.getRepositoryId());
-		}
-		catch (Exception exception) {
-		}
-
-		LocalRepository localRepository =
-			RepositoryProviderUtil.getLocalRepository(
-				repository2.getRepositoryId());
-
-		localRepository.getFileEntry(fileEntryIds[2]);
-		localRepository.getFileEntry(fileEntryIds[3]);
 	}
 
 	protected long[] populateRepository(long repositoryId) throws Exception {

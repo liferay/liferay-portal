@@ -289,16 +289,6 @@ public class DLFileEntryTypeLocalServiceImpl
 	}
 
 	@Override
-	public void deleteFileEntryTypeByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		dlFileEntryTypeLocalService.deleteFileEntryType(
-			getDLFileEntryTypeByExternalReferenceCode(
-				externalReferenceCode, groupId));
-	}
-
-	@Override
 	public void deleteFileEntryTypes(long groupId) throws PortalException {
 		List<DLFileEntryType> dlFileEntryTypes =
 			dlFileEntryTypePersistence.findByGroupId(groupId);

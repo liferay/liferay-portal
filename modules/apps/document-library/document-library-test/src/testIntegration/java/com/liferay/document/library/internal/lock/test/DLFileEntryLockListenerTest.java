@@ -6,11 +6,13 @@
 package com.liferay.document.library.internal.lock.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.kernel.service.DLFileEntryLocalService;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.lang.SafeCloseable;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.lock.LockListener;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -67,6 +69,7 @@ public class DLFileEntryLockListenerTest {
 
 				_dlFileEntryLocalService.checkOutFileEntry(
 					TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
+					StringPool.BLANK, DLFileEntryConstants.LOCK_EXPIRATION_TIME,
 					ServiceContextTestUtil.getServiceContext());
 
 				_lockListener.onAfterExpire(
@@ -101,6 +104,7 @@ public class DLFileEntryLockListenerTest {
 
 				_dlFileEntryLocalService.checkOutFileEntry(
 					TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
+					StringPool.BLANK, DLFileEntryConstants.LOCK_EXPIRATION_TIME,
 					ServiceContextTestUtil.getServiceContext());
 
 				_lockListener.onAfterExpire(
