@@ -454,24 +454,6 @@ public class AssetLinkLocalServiceImpl extends AssetLinkLocalServiceBaseImpl {
 			));
 	}
 
-	/**
-	 * Returns all the asset links of the given link type whose second entry ID
-	 * is the given entry ID.
-	 *
-	 * @param  entryId the primary key of the asset entry
-	 * @param  typeId the link type. Acceptable values include {@link
-	 *         AssetLinkConstants#TYPE_RELATED} which is a bidirectional
-	 *         relationship and {@link AssetLinkConstants#TYPE_CHILD} which is a
-	 *         unidirectional relationship. For more information see {@link
-	 *         AssetLinkConstants}
-	 * @return the asset links of the given link type whose second entry ID is
-	 *         the given entry ID
-	 */
-	@Override
-	public List<AssetLink> getReverseLinks(long entryId, int typeId) {
-		return assetLinkPersistence.findByE2_T(entryId, typeId);
-	}
-
 	@Override
 	public AssetLink updateLink(
 			long userId, long entryId1, long entryId2, int typeId, int weight)
