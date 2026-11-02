@@ -158,9 +158,22 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			themeDisplay
 		);
 
+		_mockObjectDefinition(
+			PIMObjectDefinitionConstants.
+				EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING_RULE,
+			"/pim/connector-field-mapping-rules");
+		_mockObjectRelationship(
+			"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
+			RandomTestUtil.randomLong(),
+			"r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId",
+			_PIM_FIELD_MAPPING_OBJECT_RELATIONSHIP_ID);
+		_mockObjectRelationship(
+			"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPING_RULES",
+			RandomTestUtil.randomLong(),
+			"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+			_PIM_FIELD_MAPPING_RULE_OBJECT_RELATIONSHIP_ID);
 		_mockPIMConnectorFieldMappingObjectDefinition();
 		_mockPIMConnectorObjectEntry();
-		_mockPIMObjectRelationship();
 	}
 
 	@After
@@ -178,6 +191,27 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 				_CHANNEL_FIELD, 1, "sku", "dynamicValue", StringPool.BLANK),
 			_mockPIMConnectorFieldMappingObjectEntry(
 				"name", 2, "title", "dynamicValue", StringPool.BLANK));
+		_mockPIMConnectorFieldMappingRuleObjectEntries(
+			_mockPIMConnectorFieldMappingRuleObjectEntry(
+				"name", RandomTestUtil.randomLong(),
+				HashMapBuilder.<String, Serializable>put(
+					"textCase", RandomTestUtil.randomString()
+				).build()),
+			_mockPIMConnectorFieldMappingRuleObjectEntry(
+				_CHANNEL_FIELD, 4,
+				HashMapBuilder.<String, Serializable>put(
+					"stripHTMLTags", true
+				).put(
+					"textCase", "upper"
+				).put(
+					"trimWhitespace", true
+				).put(
+					"truncateLength", 80
+				).put(
+					"urlEncode", true
+				).put(
+					"useFirstNonemptySource", true
+				).build()));
 
 		EditPIMConnectorFieldMappingsDisplayContext
 			editPIMConnectorFieldMappingsDisplayContext =
@@ -197,6 +231,14 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 			reactData.get("backURL"));
 		Assert.assertEquals(_CHANNEL_FIELD, reactData.get("channelField"));
 		Assert.assertEquals("SKU", reactData.get("channelFieldLabel"));
+		Assert.assertEquals(
+			Boolean.FALSE, reactData.get("channelFieldMultiple"));
+		Assert.assertEquals(
+			"/o/pim/connector-field-mapping-rules",
+			reactData.get("mappingRuleAPIURL"));
+		Assert.assertEquals(
+			"r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId",
+			reactData.get("mappingRuleObjectRelationshipObjectFieldName"));
 		Assert.assertEquals(_OBJECT_ENTRY_ID, reactData.get("objectEntryId"));
 		Assert.assertEquals(
 			"r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId",
@@ -213,6 +255,16 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals(1, jsonObject.getLong("id"));
 		Assert.assertEquals("dynamicValue", jsonObject.getString("type"));
 		Assert.assertEquals("sku", jsonObject.getString("sourceFieldName"));
+
+		jsonObject = (JSONObject)reactData.get("mappingRule");
+
+		Assert.assertEquals(4, jsonObject.getLong("id"));
+		Assert.assertTrue(jsonObject.getBoolean("stripHTMLTags"));
+		Assert.assertEquals("upper", jsonObject.getString("textCase"));
+		Assert.assertTrue(jsonObject.getBoolean("trimWhitespace"));
+		Assert.assertEquals(80, jsonObject.getInt("truncateLength"));
+		Assert.assertTrue(jsonObject.getBoolean("urlEncode"));
+		Assert.assertTrue(jsonObject.getBoolean("useFirstNonemptySource"));
 
 		jsonArray = (JSONArray)reactData.get("objectDefinitions");
 
@@ -236,7 +288,17 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 				ObjectRelationshipLocalServiceUtil.
 					fetchObjectRelationshipByExternalReferenceCode(
 						"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
-						_CONNECTOR_OBJECT_DEFINITION_ID)
+						_PIM_CONNECTOR_OBJECT_DEFINITION_ID)
+		).thenReturn(
+			null
+		);
+
+		_objectRelationshipLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectRelationshipLocalServiceUtil.
+					fetchObjectRelationshipByExternalReferenceCode(
+						"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPING_RULES",
+						_PIM_CONNECTOR_OBJECT_DEFINITION_ID)
 		).thenReturn(
 			null
 		);
@@ -256,6 +318,40 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		jsonArray = (JSONArray)reactData.get("fieldMappings");
 
 		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
+
+		jsonObject = (JSONObject)reactData.get("mappingRule");
+
+		Assert.assertEquals(0, jsonObject.getLong("id"));
+		Assert.assertFalse(jsonObject.getBoolean("stripHTMLTags"));
+
+		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
+
+		Mockito.when(
+			pimConnector.getPIMConnectorChannelFields()
+		).thenReturn(
+			Collections.singletonList(
+				new PIMConnectorChannelField(
+					RandomTestUtil.randomString(), true, _CHANNEL_FIELD, true,
+					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER))
+		);
+
+		Mockito.when(
+			_pimConnectorRegistry.getPIMConnector(_KEY)
+		).thenReturn(
+			pimConnector
+		);
+
+		editPIMConnectorFieldMappingsDisplayContext =
+			new EditPIMConnectorFieldMappingsDisplayContext(
+				_httpServletRequest, _objectDefinitionService,
+				_objectEntryLocalService, _objectFieldLocalService,
+				_pimConnectorRegistry);
+
+		reactData = editPIMConnectorFieldMappingsDisplayContext.getReactData();
+
+		Assert.assertEquals(
+			Boolean.TRUE, reactData.get("channelFieldMultiple"));
+		Assert.assertNull(reactData.get("mappingRule"));
 
 		_objectDefinitionLocalServiceUtilMockedStatic.when(
 			() ->
@@ -302,6 +398,72 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Assert.assertEquals(jsonArray.toString(), 0, jsonArray.length());
 	}
 
+	private void _mockObjectDefinition(
+		String externalReferenceCode, String restContextPath) {
+
+		ObjectDefinition objectDefinition = Mockito.mock(
+			ObjectDefinition.class);
+
+		Mockito.when(
+			objectDefinition.getRESTContextPath()
+		).thenReturn(
+			restContextPath
+		);
+
+		_objectDefinitionLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectDefinitionLocalServiceUtil.
+					fetchObjectDefinitionByExternalReferenceCode(
+						externalReferenceCode, _COMPANY_ID)
+		).thenReturn(
+			objectDefinition
+		);
+	}
+
+	private void _mockObjectRelationship(
+		String externalReferenceCode, long objectFieldId,
+		String objectFieldName, long objectRelationshipId) {
+
+		ObjectField objectField = Mockito.mock(ObjectField.class);
+
+		Mockito.when(
+			objectField.getName()
+		).thenReturn(
+			objectFieldName
+		);
+
+		Mockito.when(
+			_objectFieldLocalService.fetchObjectField(objectFieldId)
+		).thenReturn(
+			objectField
+		);
+
+		ObjectRelationship objectRelationship = Mockito.mock(
+			ObjectRelationship.class);
+
+		Mockito.when(
+			objectRelationship.getObjectFieldId2()
+		).thenReturn(
+			objectFieldId
+		);
+
+		Mockito.when(
+			objectRelationship.getObjectRelationshipId()
+		).thenReturn(
+			objectRelationshipId
+		);
+
+		_objectRelationshipLocalServiceUtilMockedStatic.when(
+			() ->
+				ObjectRelationshipLocalServiceUtil.
+					fetchObjectRelationshipByExternalReferenceCode(
+						externalReferenceCode,
+						_PIM_CONNECTOR_OBJECT_DEFINITION_ID)
+		).thenReturn(
+			objectRelationship
+		);
+	}
+
 	private void _mockPIMConnector() {
 		PIMConnector pimConnector = Mockito.mock(PIMConnector.class);
 
@@ -322,25 +484,10 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 	}
 
 	private void _mockPIMConnectorFieldMappingObjectDefinition() {
-		ObjectDefinition objectDefinition = Mockito.mock(
-			ObjectDefinition.class);
-
-		Mockito.when(
-			objectDefinition.getRESTContextPath()
-		).thenReturn(
-			"/pim/connector-field-mappings"
-		);
-
-		_objectDefinitionLocalServiceUtilMockedStatic.when(
-			() ->
-				ObjectDefinitionLocalServiceUtil.
-					fetchObjectDefinitionByExternalReferenceCode(
-						PIMObjectDefinitionConstants.
-							EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
-						_COMPANY_ID)
-		).thenReturn(
-			objectDefinition
-		);
+		_mockObjectDefinition(
+			PIMObjectDefinitionConstants.
+				EXTERNAL_REFERENCE_CODE_CONNECTOR_FIELD_MAPPING,
+			"/pim/connector-field-mappings");
 
 		ObjectDefinition productTypeObjectDefinition = Mockito.mock(
 			ObjectDefinition.class);
@@ -396,8 +543,8 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 		_objectEntryLocalServiceUtilMockedStatic.when(
 			() -> ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
-				_GROUP_ID, _OBJECT_RELATIONSHIP_ID, null, false,
-				_OBJECT_ENTRY_ID, true, null, QueryUtil.ALL_POS,
+				_GROUP_ID, _PIM_FIELD_MAPPING_OBJECT_RELATIONSHIP_ID, null,
+				false, _OBJECT_ENTRY_ID, true, null, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)
 		).thenReturn(
 			Arrays.asList(objectEntries)
@@ -437,6 +584,44 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		return objectEntry;
 	}
 
+	private void _mockPIMConnectorFieldMappingRuleObjectEntries(
+		ObjectEntry... objectEntries) {
+
+		_objectEntryLocalServiceUtilMockedStatic.when(
+			() -> ObjectEntryLocalServiceUtil.getOneToManyObjectEntries(
+				_GROUP_ID, _PIM_FIELD_MAPPING_RULE_OBJECT_RELATIONSHIP_ID, null,
+				false, _OBJECT_ENTRY_ID, true, null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)
+		).thenReturn(
+			Arrays.asList(objectEntries)
+		);
+	}
+
+	private ObjectEntry _mockPIMConnectorFieldMappingRuleObjectEntry(
+		String channelFieldName, long objectEntryId,
+		Map<String, Serializable> values) {
+
+		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
+
+		Mockito.when(
+			objectEntry.getObjectEntryId()
+		).thenReturn(
+			objectEntryId
+		);
+
+		Mockito.when(
+			objectEntry.getValues()
+		).thenReturn(
+			HashMapBuilder.<String, Serializable>put(
+				"channelFieldName", channelFieldName
+			).putAll(
+				values
+			).build()
+		);
+
+		return objectEntry;
+	}
+
 	private void _mockPIMConnectorObjectEntry() {
 		ObjectEntry objectEntry = Mockito.mock(ObjectEntry.class);
 
@@ -449,7 +634,7 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		Mockito.when(
 			objectEntry.getObjectDefinitionId()
 		).thenReturn(
-			_CONNECTOR_OBJECT_DEFINITION_ID
+			_PIM_CONNECTOR_OBJECT_DEFINITION_ID
 		);
 
 		Mockito.when(
@@ -473,53 +658,9 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 		);
 	}
 
-	private void _mockPIMObjectRelationship() {
-		ObjectField objectField = Mockito.mock(ObjectField.class);
-
-		Mockito.when(
-			objectField.getName()
-		).thenReturn(
-			"r_pimConnectorToPIMConnectorFieldMappings_l_pimConnectorId"
-		);
-
-		Mockito.when(
-			_objectFieldLocalService.fetchObjectField(_OBJECT_FIELD_ID)
-		).thenReturn(
-			objectField
-		);
-
-		ObjectRelationship objectRelationship = Mockito.mock(
-			ObjectRelationship.class);
-
-		Mockito.when(
-			objectRelationship.getObjectFieldId2()
-		).thenReturn(
-			_OBJECT_FIELD_ID
-		);
-
-		Mockito.when(
-			objectRelationship.getObjectRelationshipId()
-		).thenReturn(
-			_OBJECT_RELATIONSHIP_ID
-		);
-
-		_objectRelationshipLocalServiceUtilMockedStatic.when(
-			() ->
-				ObjectRelationshipLocalServiceUtil.
-					fetchObjectRelationshipByExternalReferenceCode(
-						"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
-						_CONNECTOR_OBJECT_DEFINITION_ID)
-		).thenReturn(
-			objectRelationship
-		);
-	}
-
 	private static final String _CHANNEL_FIELD = "skus[].sku";
 
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
-
-	private static final long _CONNECTOR_OBJECT_DEFINITION_ID =
-		RandomTestUtil.randomLong();
 
 	private static final long _GROUP_ID = RandomTestUtil.randomLong();
 
@@ -530,9 +671,13 @@ public class EditPIMConnectorFieldMappingsDisplayContextTest {
 
 	private static final long _OBJECT_ENTRY_ID = RandomTestUtil.randomLong();
 
-	private static final long _OBJECT_FIELD_ID = RandomTestUtil.randomLong();
+	private static final long _PIM_CONNECTOR_OBJECT_DEFINITION_ID =
+		RandomTestUtil.randomLong();
 
-	private static final long _OBJECT_RELATIONSHIP_ID =
+	private static final long _PIM_FIELD_MAPPING_OBJECT_RELATIONSHIP_ID =
+		RandomTestUtil.randomLong();
+
+	private static final long _PIM_FIELD_MAPPING_RULE_OBJECT_RELATIONSHIP_ID =
 		RandomTestUtil.randomLong();
 
 	private HttpServletRequest _httpServletRequest;

@@ -8,6 +8,7 @@ import {waitFor} from '@testing-library/react';
 import propsTransformer from '../../src/main/resources/META-INF/resources/js/FieldMappingsFDSPropsTransformer';
 import FieldMappingChannelFieldRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingChannelFieldRenderer';
 import FieldMappingSourceAttributesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingSourceAttributesRenderer';
+import FieldMappingTransformationRulesRenderer from '../../src/main/resources/META-INF/resources/js/cell_renderers/FieldMappingTransformationRulesRenderer';
 
 const mockFetch = jest.fn();
 const mockOpenToast = jest.fn();
@@ -21,7 +22,11 @@ jest.mock('frontend-js-web', () => ({
 }));
 
 const CLEAR_ACTION = {
-	data: {apiURL: '/o/pim/connector-field-mappings', id: 'clear'},
+	data: {
+		apiURL: '/o/pim/connector-field-mappings',
+		id: 'clear',
+		mappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
+	},
 };
 
 const ITEM_DATA = {channelField: 'SKU', fieldMappingIds: [7, 11]};
@@ -47,6 +52,11 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 			{
 				component: FieldMappingSourceAttributesRenderer,
 				name: 'sourceAttributesTableCellRenderer',
+				type: 'internal',
+			},
+			{
+				component: FieldMappingTransformationRulesRenderer,
+				name: 'transformationRulesTableCellRenderer',
 				type: 'internal',
 			},
 		]);
@@ -105,6 +115,28 @@ describe('FieldMappingsFDSPropsTransformer', () => {
 			expect.objectContaining({type: 'success'})
 		);
 		expect(Liferay.fire).not.toHaveBeenCalled();
+	});
+
+	it('deletes the mapping rule the cleared channel field has', async () => {
+		const loadData = jest.fn();
+
+		propsTransformer({}).onActionDropdownItemClick({
+			action: CLEAR_ACTION,
+			itemData: {
+				channelField: 'SKU',
+				fieldMappingIds: [],
+				mappingRuleId: 5,
+			},
+			loadData,
+		});
+
+		await waitFor(() => expect(loadData).toHaveBeenCalled());
+
+		expect(mockFetch).toHaveBeenCalledTimes(1);
+		expect(mockFetch).toHaveBeenCalledWith(
+			'/o/pim/connector-field-mapping-rules/5',
+			{method: 'DELETE'}
+		);
 	});
 
 	it('does nothing when the channel field has no mapping to clear', () => {

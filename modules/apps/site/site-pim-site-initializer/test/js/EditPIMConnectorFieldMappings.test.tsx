@@ -33,8 +33,27 @@ jest.mock('@liferay/site-cms-site-initializer', () => {
 	return {
 		RequiredMark: () => <span>required</span>,
 		Toolbar,
+		VerticalNavLayout: ({items}: any) => (
+			<div>
+				{items.map((item: any) => (
+					<section aria-label={item.label} key={item.id}>
+						{item.component}
+					</section>
+				))}
+			</div>
+		),
 	};
 });
+
+const MAPPING_RULE = {
+	id: 0,
+	stripHTMLTags: false,
+	textCase: '',
+	trimWhitespace: false,
+	truncateLength: 0,
+	urlEncode: false,
+	useFirstNonemptySource: false,
+};
 
 const PIM_BASIC_PRODUCT_CLASS_NAME =
 	'com.liferay.object.model.ObjectDefinition#P4R4';
@@ -44,7 +63,12 @@ const PROPS = {
 	backURL: '/web/cms/field-mappings?objectEntryId=42',
 	channelField: 'skus[].sku',
 	channelFieldLabel: 'SKU',
+	channelFieldMultiple: false,
 	fieldMappings: [],
+	mappingRule: null,
+	mappingRuleAPIURL: '/o/pim/connector-field-mapping-rules',
+	mappingRuleObjectRelationshipObjectFieldName:
+		'r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId',
 	objectDefinitions: [
 		{
 			className: PIM_BASIC_PRODUCT_CLASS_NAME,
@@ -248,5 +272,137 @@ describe('EditPIMConnectorFieldMappings', () => {
 		);
 
 		expect(screen.getByLabelText('source-attribute')).toHaveValue('');
+	});
+
+	it('disables the mapping rules of a channel field that is not text', () => {
+		render(<EditPIMConnectorFieldMappings {...PROPS} />);
+
+		expect(screen.getByLabelText('strip-html-tags')).toBeDisabled();
+	});
+
+	it('creates a mapping rule carrying the connector relationship', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				mappingRule={MAPPING_RULE}
+			/>
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('source-attribute'),
+			'sku'
+		);
+
+		await userEvent.click(screen.getByLabelText('strip-html-tags'));
+
+		await userEvent.selectOptions(screen.getByLabelText('truncate'), '80');
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(2));
+
+		expect(mockFetch.mock.calls[1][0]).toBe(
+			'/o/pim/connector-field-mapping-rules'
+		);
+		expect(mockFetch.mock.calls[1][1].method).toBe('POST');
+		expect(getRequestBody(1)).toEqual({
+			channelFieldName: 'skus[].sku',
+			r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId: 42,
+			stripHTMLTags: true,
+			textCase: '',
+			trimWhitespace: false,
+			truncateLength: 80,
+			urlEncode: false,
+			useFirstNonemptySource: false,
+		});
+
+		expect(mockNavigate).toHaveBeenCalledWith(PROPS.backURL);
+	});
+
+	it('patches a mapping rule it was given', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				mappingRule={{...MAPPING_RULE, id: 9, stripHTMLTags: true}}
+			/>
+		);
+
+		await userEvent.selectOptions(
+			screen.getByLabelText('source-attribute'),
+			'sku'
+		);
+
+		await userEvent.selectOptions(screen.getByLabelText('case'), 'upper');
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(2));
+
+		expect(mockFetch.mock.calls[1][0]).toBe(
+			'/o/pim/connector-field-mapping-rules/9'
+		);
+		expect(mockFetch.mock.calls[1][1].method).toBe('PATCH');
+		expect(getRequestBody(1)).not.toHaveProperty(
+			'r_pimConnectorToPIMFieldMappingRules_l_pimConnectorId'
+		);
+		expect(getRequestBody(1).textCase).toBe('upper');
+	});
+
+	it('deletes a mapping rule whose rules are all turned off', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				mappingRule={{...MAPPING_RULE, id: 9, stripHTMLTags: true}}
+			/>
+		);
+
+		await userEvent.click(screen.getByLabelText('strip-html-tags'));
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() => expect(mockFetch).toHaveBeenCalledTimes(1));
+
+		expect(mockFetch.mock.calls[0][0]).toBe(
+			'/o/pim/connector-field-mapping-rules/9'
+		);
+		expect(mockFetch.mock.calls[0][1].method).toBe('DELETE');
+	});
+
+	it('creates no mapping rule when every rule is off', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				mappingRule={MAPPING_RULE}
+			/>
+		);
+
+		await userEvent.click(screen.getByText('save'));
+
+		await waitFor(() =>
+			expect(mockNavigate).toHaveBeenCalledWith(PROPS.backURL)
+		);
+
+		expect(mockFetch).not.toHaveBeenCalled();
+	});
+
+	it('refuses to save mapping rules without a source', async () => {
+		render(
+			<EditPIMConnectorFieldMappings
+				{...PROPS}
+				mappingRule={MAPPING_RULE}
+			/>
+		);
+
+		await userEvent.click(screen.getByLabelText('strip-html-tags'));
+
+		await userEvent.click(screen.getByText('save'));
+
+		expect(Liferay.Util.openToast).toHaveBeenCalledWith({
+			message:
+				'add-at-least-one-source-attribute-to-save-the-mapping-rules-or-turn-the-mapping-rules-off',
+			type: 'danger',
+		});
+		expect(mockFetch).not.toHaveBeenCalled();
+		expect(mockNavigate).not.toHaveBeenCalled();
 	});
 });

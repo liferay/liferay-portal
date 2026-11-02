@@ -32,6 +32,19 @@ describe('FieldMappingSourceAttributesRenderer', () => {
 		expect(screen.getByText('+2')).toBeInTheDocument();
 	});
 
+	it('shows only the first source attribute when the first nonempty source is used', () => {
+		render(
+			<FieldMappingSourceAttributesRenderer
+				itemData={{useFirstNonemptySource: true}}
+				value={['a', 'b', 'c']}
+			/>
+		);
+
+		expect(screen.getByText('a')).toBeInTheDocument();
+		expect(screen.queryByText('b')).not.toBeInTheDocument();
+		expect(screen.getByText('+2')).toBeInTheDocument();
+	});
+
 	it('shows nothing when the channel field is not mapped', () => {
 		const {container} = render(
 			<FieldMappingSourceAttributesRenderer value={[]} />
