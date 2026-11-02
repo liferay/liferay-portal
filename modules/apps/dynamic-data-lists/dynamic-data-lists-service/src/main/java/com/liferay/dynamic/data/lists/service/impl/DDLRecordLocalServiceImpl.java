@@ -203,22 +203,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 			serviceContext);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public DDLRecord addRecord(
-			long userId, long groupId, long ddmStorageId, long ddlRecordSetId,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return addRecord(
-			userId, groupId, ddmStorageId, ddlRecordSetId, null, 0,
-			serviceContext);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public DDLRecord addRecord(
@@ -445,18 +429,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 			recordSetId, start, end, orderByComparator);
 	}
 
-	/**
-	 * Returns all the records matching the record set ID and user ID.
-	 *
-	 * @param  recordSetId the record's record set ID
-	 * @param  userId the user ID the records belong to
-	 * @return the list of matching records ordered by the comparator
-	 */
-	@Override
-	public List<DDLRecord> getRecords(long recordSetId, long userId) {
-		return ddlRecordPersistence.findByR_U(recordSetId, userId);
-	}
-
 	@Override
 	public List<DDLRecord> getRecords(
 		long recordSetId, long userId, int start, int end,
@@ -464,11 +436,6 @@ public class DDLRecordLocalServiceImpl extends DDLRecordLocalServiceBaseImpl {
 
 		return ddlRecordPersistence.findByR_U(
 			recordSetId, userId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getRecordsCount(long recordSetId) {
-		return ddlRecordPersistence.countByRecordSetId(recordSetId);
 	}
 
 	/**

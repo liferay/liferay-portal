@@ -12,7 +12,6 @@ import com.liferay.dynamic.data.lists.util.comparator.DDLRecordVersionVersionCom
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.Collections;
 import java.util.List;
@@ -86,46 +85,6 @@ public class DDLRecordVersionLocalServiceImpl
 		throws PortalException {
 
 		return ddlRecordVersionPersistence.findByR_V(recordId, version);
-	}
-
-	/**
-	 * Returns an ordered range of record versions matching the record's ID.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to <code>QueryUtil.ALL_POS</code> will return the
-	 * full result set.
-	 * </p>
-	 *
-	 * @param  recordId the primary key of the record
-	 * @param  start the lower bound of the range of record versions to return
-	 * @param  end the upper bound of the range of record versions to return
-	 *         (not inclusive)
-	 * @param  orderByComparator the comparator used to order the record
-	 *         versions
-	 * @return the range of matching record versions ordered by the comparator
-	 */
-	@Override
-	public List<DDLRecordVersion> getRecordVersions(
-		long recordId, int start, int end,
-		OrderByComparator<DDLRecordVersion> orderByComparator) {
-
-		return ddlRecordVersionPersistence.findByRecordId(
-			recordId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of record versions matching the record ID.
-	 *
-	 * @param  recordId the primary key of the record
-	 * @return the number of matching record versions
-	 */
-	@Override
-	public int getRecordVersionsCount(long recordId) {
-		return ddlRecordVersionPersistence.countByRecordId(recordId);
 	}
 
 }

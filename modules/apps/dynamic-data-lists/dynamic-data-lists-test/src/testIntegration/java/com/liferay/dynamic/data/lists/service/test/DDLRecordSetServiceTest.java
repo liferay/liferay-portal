@@ -11,7 +11,7 @@ import com.liferay.dynamic.data.lists.helper.DDLRecordSetTestHelper;
 import com.liferay.dynamic.data.lists.model.DDLRecordSet;
 import com.liferay.dynamic.data.lists.model.DDLRecordSetVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalServiceUtil;
-import com.liferay.dynamic.data.lists.service.DDLRecordSetVersionLocalServiceUtil;
+import com.liferay.dynamic.data.lists.service.persistence.DDLRecordSetVersionUtil;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.storage.StorageType;
@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -104,9 +105,11 @@ public class DDLRecordSetServiceTest {
 		DDLRecordSetLocalServiceUtil.deleteRecordSet(
 			ddlRecordSet.getRecordSetId());
 
-		int actualCount =
-			DDLRecordSetVersionLocalServiceUtil.getRecordSetVersionsCount(
-				ddlRecordSet.getRecordSetId());
+		int actualCount = TransactionTestUtil.invoke(
+			DDLRecordSetVersionUtil.getPersistence(),
+			ddlRecordSetVersionPersistence ->
+				ddlRecordSetVersionPersistence.countByRecordSetId(
+					ddlRecordSet.getRecordSetId()));
 
 		Assert.assertEquals(0, actualCount);
 	}
@@ -156,9 +159,8 @@ public class DDLRecordSetServiceTest {
 		Assert.assertEquals(
 			recordSet.getVersion(), recordSetVersion.getVersion());
 
-		List<DDLRecordSetVersion> ddlRecordSetVersions =
-			DDLRecordSetVersionLocalServiceUtil.getRecordSetVersions(
-				recordSetId);
+		List<DDLRecordSetVersion> ddlRecordSetVersions = _getRecordSetVersions(
+			recordSetId);
 
 		Assert.assertEquals(
 			ddlRecordSetVersions.toString(), 2, ddlRecordSetVersions.size());
@@ -179,9 +181,7 @@ public class DDLRecordSetServiceTest {
 		Assert.assertEquals(
 			recordSet.getVersion(), recordSetVersion.getVersion());
 
-		ddlRecordSetVersions =
-			DDLRecordSetVersionLocalServiceUtil.getRecordSetVersions(
-				recordSetId);
+		ddlRecordSetVersions = _getRecordSetVersions(recordSetId);
 
 		Assert.assertEquals(
 			ddlRecordSetVersions.toString(), 3, ddlRecordSetVersions.size());
@@ -229,9 +229,8 @@ public class DDLRecordSetServiceTest {
 		Assert.assertEquals(
 			recordSet.getVersion(), recordSetVersion.getVersion());
 
-		List<DDLRecordSetVersion> ddlRecordSetVersions =
-			DDLRecordSetVersionLocalServiceUtil.getRecordSetVersions(
-				recordSetId);
+		List<DDLRecordSetVersion> ddlRecordSetVersions = _getRecordSetVersions(
+			recordSetId);
 
 		Assert.assertEquals(
 			ddlRecordSetVersions.toString(), 1, ddlRecordSetVersions.size());
@@ -321,6 +320,15 @@ public class DDLRecordSetServiceTest {
 
 		return _ddlRecordSetTestHelper.updateRecordSet(
 			ddlRecordSet.getRecordSetId(), ddmStructure);
+	}
+
+	private List<DDLRecordSetVersion> _getRecordSetVersions(long recordSetId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			DDLRecordSetVersionUtil.getPersistence(),
+			ddlRecordSetVersionPersistence ->
+				ddlRecordSetVersionPersistence.findByRecordSetId(recordSetId));
 	}
 
 	private DDLRecordSetTestHelper _ddlRecordSetTestHelper;

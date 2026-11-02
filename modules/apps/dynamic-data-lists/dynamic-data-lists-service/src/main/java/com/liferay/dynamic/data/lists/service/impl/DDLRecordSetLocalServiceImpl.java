@@ -278,56 +278,6 @@ public class DDLRecordSetLocalServiceImpl
 	}
 
 	/**
-	 * Deletes the record set and its resources.
-	 *
-	 * <p>
-	 * This operation updates the record set matching the group and
-	 * recordSetKey.
-	 * </p>
-	 *
-	 * @param  groupId the primary key of the record set's group
-	 * @param  recordSetKey the record set's mnemonic primary key
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public void deleteRecordSet(long groupId, String recordSetKey)
-		throws PortalException {
-
-		DDLRecordSet recordSet = ddlRecordSetPersistence.findByG_R(
-			groupId, recordSetKey);
-
-		ddlRecordSetLocalService.deleteRecordSet(recordSet);
-	}
-
-	/**
-	 * Deletes all the record sets matching the group.
-	 *
-	 * @param  groupId the primary key of the record set's group
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public void deleteRecordSets(long groupId) throws PortalException {
-		List<DDLRecordSet> ddlRecordSets =
-			ddlRecordSetPersistence.findByGroupId(groupId);
-
-		for (DDLRecordSet ddlRecordSet : ddlRecordSets) {
-			ddlRecordSetLocalService.deleteRecordSet(ddlRecordSet);
-		}
-	}
-
-	/**
-	 * Returns the record set with the ID.
-	 *
-	 * @param  recordSetId the primary key of the record set
-	 * @return the record set with the ID, or <code>null</code> if a matching
-	 *         record set could not be found
-	 */
-	@Override
-	public DDLRecordSet fetchRecordSet(long recordSetId) {
-		return ddlRecordSetPersistence.fetchByPrimaryKey(recordSetId);
-	}
-
-	/**
 	 * Returns the record set matching the group and record set key.
 	 *
 	 * @param  groupId the primary key of the record set's group
@@ -377,32 +327,6 @@ public class DDLRecordSetLocalServiceImpl
 		throws PortalException {
 
 		return ddlRecordSetPersistence.findByUUID_G(uuid, recordSetId);
-	}
-
-	/**
-	 * Returns all the record sets belonging the group.
-	 *
-	 * @return the record sets belonging to the group
-	 */
-	@Override
-	public List<DDLRecordSet> getRecordSets(long groupId) {
-		return ddlRecordSetPersistence.findByGroupId(groupId);
-	}
-
-	@Override
-	public List<DDLRecordSet> getRecordSets(long groupId, int start, int end) {
-		return ddlRecordSetPersistence.findByGroupId(groupId, start, end);
-	}
-
-	/**
-	 * Returns the number of all the record sets belonging the group.
-	 *
-	 * @param  groupId the primary key of the record set's group
-	 * @return the number of record sets belonging to the group
-	 */
-	@Override
-	public int getRecordSetsCount(long groupId) {
-		return ddlRecordSetPersistence.countByGroupId(groupId);
 	}
 
 	/**
