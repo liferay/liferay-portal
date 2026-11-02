@@ -221,26 +221,6 @@ public class ExpandoTableLocalServiceImpl
 			companyId, _classNameLocalService.getClassNameId(className));
 	}
 
-	@Override
-	public ExpandoTable updateTable(long tableId, String name)
-		throws PortalException {
-
-		ExpandoTable table = expandoTablePersistence.findByPrimaryKey(tableId);
-
-		String tableName = table.getName();
-
-		if (tableName.equals(ExpandoTableConstants.DEFAULT_TABLE_NAME)) {
-			throw new TableNameException(
-				"Cannot rename " + ExpandoTableConstants.DEFAULT_TABLE_NAME);
-		}
-
-		validate(table.getCompanyId(), tableId, table.getClassNameId(), name);
-
-		table.setName(name);
-
-		return expandoTablePersistence.update(table);
-	}
-
 	protected void validate(
 			long companyId, long tableId, long classNameId, String name)
 		throws PortalException {

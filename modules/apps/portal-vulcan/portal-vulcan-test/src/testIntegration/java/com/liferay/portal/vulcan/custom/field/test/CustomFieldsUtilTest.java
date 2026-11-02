@@ -88,10 +88,7 @@ public class CustomFieldsUtilTest {
 
 	@Before
 	public void setUp() throws Exception {
-		_initialExpandoColumnsCount =
-			_expandoColumnLocalService.getColumnsCount(
-				TestPropsValues.getCompanyId(),
-				_classNameLocalService.getClassNameId(_clazz), "CUSTOM_FIELDS");
+		_initialExpandoColumnsCount = _getExpandoColumnsCount();
 
 		_expandoTable = ExpandoTestUtil.addTable(
 			_classNameLocalService.getClassNameId(_clazz), "CUSTOM_FIELDS");
@@ -2273,10 +2270,7 @@ public class CustomFieldsUtilTest {
 
 		ExportImportThreadLocal.setLayoutImportInProcess(true);
 
-		int initialExpandoColumnsCount =
-			_expandoColumnLocalService.getColumnsCount(
-				TestPropsValues.getCompanyId(),
-				_classNameLocalService.getClassNameId(_clazz), "CUSTOM_FIELDS");
+		int initialExpandoColumnsCount = _getExpandoColumnsCount();
 
 		try {
 			CustomFieldsUtil.toMap(
@@ -2306,11 +2300,7 @@ public class CustomFieldsUtilTest {
 			Assert.assertNotNull(nullPointerException);
 
 			Assert.assertEquals(
-				initialExpandoColumnsCount,
-				_expandoColumnLocalService.getColumnsCount(
-					TestPropsValues.getCompanyId(),
-					_classNameLocalService.getClassNameId(_clazz),
-					"CUSTOM_FIELDS"));
+				initialExpandoColumnsCount, _getExpandoColumnsCount());
 			Assert.assertTrue(
 				ListUtil.isEmpty(
 					_exportImportReportEntryLocalService.
@@ -2332,10 +2322,7 @@ public class CustomFieldsUtilTest {
 
 		ExportImportThreadLocal.setLayoutImportInProcess(true);
 
-		int initialExpandoColumnsCount =
-			_expandoColumnLocalService.getColumnsCount(
-				TestPropsValues.getCompanyId(),
-				_classNameLocalService.getClassNameId(_clazz), "CUSTOM_FIELDS");
+		int initialExpandoColumnsCount = _getExpandoColumnsCount();
 
 		Date randomDate = RandomTestUtil.nextDate();
 		String randomName1 = RandomTestUtil.randomString();
@@ -2634,11 +2621,7 @@ public class CustomFieldsUtilTest {
 			LocaleUtil.getDefault());
 
 		Assert.assertEquals(
-			initialExpandoColumnsCount + 21,
-			_expandoColumnLocalService.getColumnsCount(
-				TestPropsValues.getCompanyId(),
-				_classNameLocalService.getClassNameId(_clazz),
-				"CUSTOM_FIELDS"));
+			initialExpandoColumnsCount + 21, _getExpandoColumnsCount());
 
 		ExpandoBridge expandoBridge = ExpandoBridgeFactoryUtil.getExpandoBridge(
 			TestPropsValues.getCompanyId(), _clazz.getName());
@@ -2882,6 +2865,15 @@ public class CustomFieldsUtilTest {
 		}
 
 		throw new NoSuchValueException();
+	}
+
+	private int _getExpandoColumnsCount() throws Exception {
+		List<ExpandoColumn> expandoColumns =
+			_expandoColumnLocalService.getColumns(
+				TestPropsValues.getCompanyId(),
+				_classNameLocalService.getClassNameId(_clazz), "CUSTOM_FIELDS");
+
+		return expandoColumns.size();
 	}
 
 	private void _testToMapExpectedClassAndValue(

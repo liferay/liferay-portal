@@ -10,7 +10,6 @@ import com.liferay.expando.kernel.model.ExpandoColumn;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoRow;
 import com.liferay.expando.kernel.model.ExpandoTable;
-import com.liferay.expando.kernel.model.ExpandoTableConstants;
 import com.liferay.expando.kernel.model.ExpandoValue;
 import com.liferay.expando.kernel.service.persistence.ExpandoColumnPersistence;
 import com.liferay.expando.kernel.service.persistence.ExpandoRowPersistence;
@@ -898,16 +897,6 @@ public class ExpandoValueLocalServiceImpl
 	}
 
 	@Override
-	public void deleteTableValues(long tableId) {
-		List<ExpandoValue> values = expandoValuePersistence.findByTableId(
-			tableId);
-
-		for (ExpandoValue value : values) {
-			deleteValue(value);
-		}
-	}
-
-	@Override
 	public void deleteValue(ExpandoValue value) {
 		expandoValuePersistence.remove(value);
 
@@ -943,13 +932,6 @@ public class ExpandoValueLocalServiceImpl
 	@Override
 	public void deleteValue(long valueId) throws PortalException {
 		ExpandoValue value = expandoValuePersistence.findByPrimaryKey(valueId);
-
-		deleteValue(value);
-	}
-
-	@Override
-	public void deleteValue(long columnId, long rowId) throws PortalException {
-		ExpandoValue value = expandoValuePersistence.findByC_R(columnId, rowId);
 
 		deleteValue(value);
 	}
@@ -1057,15 +1039,6 @@ public class ExpandoValueLocalServiceImpl
 	@Override
 	public List<ExpandoValue> getColumnValues(
 		long companyId, long classNameId, String tableName, String columnName,
-		int start, int end) {
-
-		return expandoValueLocalService.getColumnValues(
-			companyId, classNameId, tableName, columnName, null, start, end);
-	}
-
-	@Override
-	public List<ExpandoValue> getColumnValues(
-		long companyId, long classNameId, String tableName, String columnName,
 		String data, int start, int end) {
 
 		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
@@ -1094,81 +1067,11 @@ public class ExpandoValueLocalServiceImpl
 	@Override
 	public List<ExpandoValue> getColumnValues(
 		long companyId, String className, String tableName, String columnName,
-		int start, int end) {
-
-		return expandoValueLocalService.getColumnValues(
-			companyId, _classNameLocalService.getClassNameId(className),
-			tableName, columnName, start, end);
-	}
-
-	@Override
-	public List<ExpandoValue> getColumnValues(
-		long companyId, String className, String tableName, String columnName,
 		String data, int start, int end) {
 
 		return expandoValueLocalService.getColumnValues(
 			companyId, _classNameLocalService.getClassNameId(className),
 			tableName, columnName, data, start, end);
-	}
-
-	@Override
-	public int getColumnValuesCount(long columnId) {
-		return expandoValuePersistence.countByColumnId(columnId);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName) {
-
-		return expandoValueLocalService.getColumnValuesCount(
-			companyId, classNameId, tableName, columnName, null);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, long classNameId, String tableName, String columnName,
-		String data) {
-
-		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
-			companyId, classNameId, tableName);
-
-		if (table == null) {
-			return 0;
-		}
-
-		ExpandoColumn column = _expandoColumnPersistence.fetchByT_N(
-			table.getTableId(), columnName);
-
-		if (column == null) {
-			return 0;
-		}
-
-		if (data == null) {
-			return expandoValuePersistence.countByT_C(
-				table.getTableId(), column.getColumnId());
-		}
-
-		return expandoValuePersistence.countByT_C_D(
-			table.getTableId(), column.getColumnId(), data);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName) {
-
-		return expandoValueLocalService.getColumnValuesCount(
-			companyId, _classNameLocalService.getClassNameId(className),
-			tableName, columnName);
-	}
-
-	@Override
-	public int getColumnValuesCount(
-		long companyId, String className, String tableName, String columnName,
-		String data) {
-
-		return expandoValueLocalService.getColumnValuesCount(
-			companyId, _classNameLocalService.getClassNameId(className),
-			tableName, columnName, data);
 	}
 
 	@Override
@@ -1575,51 +1478,8 @@ public class ExpandoValueLocalServiceImpl
 	}
 
 	@Override
-	public List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, long classNameId, String columnName, int start,
-		int end) {
-
-		return expandoValueLocalService.getColumnValues(
-			companyId, classNameId, ExpandoTableConstants.DEFAULT_TABLE_NAME,
-			columnName, start, end);
-	}
-
-	@Override
-	public List<ExpandoValue> getDefaultTableColumnValues(
-		long companyId, String className, String columnName, int start,
-		int end) {
-
-		return expandoValueLocalService.getDefaultTableColumnValues(
-			companyId, _classNameLocalService.getClassNameId(className),
-			columnName, start, end);
-	}
-
-	@Override
-	public int getDefaultTableColumnValuesCount(
-		long companyId, long classNameId, String columnName) {
-
-		return expandoValueLocalService.getColumnValuesCount(
-			companyId, classNameId, ExpandoTableConstants.DEFAULT_TABLE_NAME,
-			columnName);
-	}
-
-	@Override
-	public int getDefaultTableColumnValuesCount(
-		long companyId, String className, String columnName) {
-
-		return expandoValueLocalService.getDefaultTableColumnValuesCount(
-			companyId, _classNameLocalService.getClassNameId(className),
-			columnName);
-	}
-
-	@Override
 	public List<ExpandoValue> getRowValues(long rowId) {
 		return expandoValuePersistence.findByRowId(rowId);
-	}
-
-	@Override
-	public List<ExpandoValue> getRowValues(long rowId, int start, int end) {
-		return expandoValuePersistence.findByRowId(rowId, start, end);
 	}
 
 	@Override
@@ -1649,35 +1509,6 @@ public class ExpandoValueLocalServiceImpl
 	}
 
 	@Override
-	public int getRowValuesCount(long rowId) {
-		return expandoValuePersistence.countByRowId(rowId);
-	}
-
-	@Override
-	public int getRowValuesCount(
-		long companyId, long classNameId, String tableName, long classPK) {
-
-		ExpandoTable table = _expandoTablePersistence.fetchByC_C_N(
-			companyId, classNameId, tableName);
-
-		if (table == null) {
-			return 0;
-		}
-
-		return expandoValuePersistence.countByT_CPK(
-			table.getTableId(), classPK);
-	}
-
-	@Override
-	public int getRowValuesCount(
-		long companyId, String className, String tableName, long classPK) {
-
-		return expandoValueLocalService.getRowValuesCount(
-			companyId, _classNameLocalService.getClassNameId(className),
-			tableName, classPK);
-	}
-
-	@Override
 	public ExpandoValue getValue(long valueId) throws PortalException {
 		return expandoValuePersistence.findByPrimaryKey(valueId);
 	}
@@ -1694,33 +1525,6 @@ public class ExpandoValueLocalServiceImpl
 		throws PortalException {
 
 		return expandoValuePersistence.findByT_C_C(tableId, columnId, classPK);
-	}
-
-	@Override
-	public ExpandoValue getValue(
-			long companyId, long classNameId, String tableName,
-			String columnName, long classPK)
-		throws PortalException {
-
-		ExpandoTable table = _expandoTablePersistence.findByC_C_N(
-			companyId, classNameId, tableName);
-
-		ExpandoColumn column = _expandoColumnPersistence.findByT_N(
-			table.getTableId(), columnName);
-
-		return expandoValuePersistence.findByT_C_C(
-			table.getTableId(), column.getColumnId(), classPK);
-	}
-
-	@Override
-	public ExpandoValue getValue(
-			long companyId, String className, String tableName,
-			String columnName, long classPK)
-		throws PortalException {
-
-		return expandoValueLocalService.getValue(
-			companyId, _classNameLocalService.getClassNameId(className),
-			tableName, columnName, classPK);
 	}
 
 	protected <T> T convertType(int type, Object data) {

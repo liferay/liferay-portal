@@ -7,12 +7,16 @@ package com.liferay.expando.change.tracking.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.test.util.BaseTableReferenceDefinitionTestCase;
+import com.liferay.expando.kernel.model.ExpandoColumn;
+import com.liferay.expando.kernel.model.ExpandoColumnConstants;
 import com.liferay.expando.kernel.model.ExpandoTable;
+import com.liferay.expando.kernel.model.ExpandoValue;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
 import com.liferay.expando.test.util.ExpandoTestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -45,13 +49,22 @@ public class ExpandoRowTableReferenceDefinitionTest
 		_expandoTable = ExpandoTestUtil.addTable(
 			_portal.getClassNameId(Group.class),
 			ExpandoRowTableReferenceDefinitionTest.class.getSimpleName());
+
+		_expandoColumn = ExpandoTestUtil.addColumn(
+			_expandoTable, RandomTestUtil.randomString(),
+			ExpandoColumnConstants.STRING);
 	}
 
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
-		return _expandoRowLocalService.addRow(
-			_expandoTable.getTableId(), group.getPrimaryKey());
+		ExpandoValue expandoValue = ExpandoTestUtil.addValue(
+			_expandoTable, _expandoColumn, group.getPrimaryKey(),
+			RandomTestUtil.randomString());
+
+		return _expandoRowLocalService.getExpandoRow(expandoValue.getRowId());
 	}
+
+	private ExpandoColumn _expandoColumn;
 
 	@Inject
 	private ExpandoRowLocalService _expandoRowLocalService;

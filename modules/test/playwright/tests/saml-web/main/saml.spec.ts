@@ -1902,7 +1902,7 @@ test('LPD-56043 and LPD-56046: Verify User and User Group Provisioning source is
 		import com.liferay.portal.kernel.model.User;
 		
 		out.println(
-			ExpandoValueLocalServiceUtil.getValue(
+			ExpandoValueLocalServiceUtil.getData(
 				${spCompany.companyId}, User.class.getName(), "CUSTOM_FIELDS",
 						"samlIdpEntityId", ${spUserAccount.id}));
 		`;
@@ -1928,7 +1928,7 @@ test('LPD-56043 and LPD-56046: Verify User and User Group Provisioning source is
 		import com.liferay.portal.kernel.model.UserGroup;
 		
 		out.println(
-			ExpandoValueLocalServiceUtil.getValue(
+			ExpandoValueLocalServiceUtil.getData(
 				${spCompany.companyId}, UserGroup.class.getName(),
 				"CUSTOM_FIELDS", "samlIdpEntityId", ${spUserGroup.id}));
 		`;
@@ -2123,7 +2123,7 @@ test('LPD-56047: Verify User Group membership deletions from the IdP only apply 
 			import com.liferay.portal.kernel.model.UserGroup;
 			
 			out.println(
-				ExpandoValueLocalServiceUtil.getValue(
+				ExpandoValueLocalServiceUtil.getData(
 					${spCompany.companyId}, UserGroup.class.getName(),
 					"CUSTOM_FIELDS", "samlIdpEntityId", ${secondarySpUserGroup.id}));
 			`;
@@ -2149,7 +2149,7 @@ test('LPD-56047: Verify User Group membership deletions from the IdP only apply 
 			import com.liferay.portal.kernel.model.UserGroup;
 			
 			out.println(
-				ExpandoValueLocalServiceUtil.getValue(
+				ExpandoValueLocalServiceUtil.getData(
 					${spCompany.companyId}, UserGroup.class.getName(),
 					"CUSTOM_FIELDS", "samlIdpEntityId", ${spUserGroup.id}));
 			`;

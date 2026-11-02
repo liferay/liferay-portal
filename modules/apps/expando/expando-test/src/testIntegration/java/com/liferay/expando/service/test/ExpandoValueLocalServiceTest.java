@@ -452,7 +452,8 @@ public class ExpandoValueLocalServiceTest {
 
 		_expandoValueLocalService.deleteColumnValues(column1.getColumnId());
 
-		Assert.assertNotNull(_expandoRowLocalService.getRow(value.getRowId()));
+		Assert.assertNotNull(
+			_expandoRowLocalService.getExpandoRow(value.getRowId()));
 	}
 
 	@Test
