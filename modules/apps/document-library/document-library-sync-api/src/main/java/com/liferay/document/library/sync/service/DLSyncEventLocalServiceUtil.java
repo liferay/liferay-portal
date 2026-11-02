@@ -51,12 +51,6 @@ public class DLSyncEventLocalServiceUtil {
 		return getService().addDLSyncEvent(dlSyncEvent);
 	}
 
-	public static DLSyncEvent addDLSyncEvent(
-		String event, String type, long typePK) {
-
-		return getService().addDLSyncEvent(event, type, typePK);
-	}
-
 	/**
 	 * Creates a new dl sync event with the primary key. Does not add the dl sync event to the database.
 	 *
@@ -106,10 +100,6 @@ public class DLSyncEventLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteDLSyncEvent(syncEventId);
-	}
-
-	public static void deleteDLSyncEvents() {
-		getService().deleteDLSyncEvents();
 	}
 
 	/**
@@ -261,10 +251,6 @@ public class DLSyncEventLocalServiceUtil {
 		return getService().getIndexableActionableDynamicQuery();
 	}
 
-	public static List<DLSyncEvent> getLatestDLSyncEvents() {
-		return getService().getLatestDLSyncEvents();
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -306,4 +292,4 @@ public class DLSyncEventLocalServiceUtil {
 			DLSyncEventLocalServiceUtil.class, DLSyncEventLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:576628628
+// LIFERAY-SERVICE-BUILDER-HASH:808561281

@@ -66,8 +66,6 @@ public interface DLSyncEventLocalService
 	@Indexable(type = IndexableType.REINDEX)
 	public DLSyncEvent addDLSyncEvent(DLSyncEvent dlSyncEvent);
 
-	public DLSyncEvent addDLSyncEvent(String event, String type, long typePK);
-
 	/**
 	 * Creates a new dl sync event with the primary key. Does not add the dl sync event to the database.
 	 *
@@ -110,8 +108,6 @@ public interface DLSyncEventLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public DLSyncEvent deleteDLSyncEvent(long syncEventId)
 		throws PortalException;
-
-	public void deleteDLSyncEvents();
 
 	/**
 	 * @throws PortalException
@@ -233,9 +229,6 @@ public interface DLSyncEventLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<DLSyncEvent> getLatestDLSyncEvents();
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -265,4 +258,4 @@ public interface DLSyncEventLocalService
 	public DLSyncEvent updateDLSyncEvent(DLSyncEvent dlSyncEvent);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1553793899
+// LIFERAY-SERVICE-BUILDER-HASH:-360058978
