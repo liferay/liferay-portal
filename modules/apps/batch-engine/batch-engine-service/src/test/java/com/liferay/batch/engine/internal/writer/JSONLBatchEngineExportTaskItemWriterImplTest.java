@@ -10,10 +10,14 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,6 +34,36 @@ public class JSONLBatchEngineExportTaskItemWriterImplTest
 	@Rule
 	public static final LiferayUnitTestRule liferayUnitTestRule =
 		LiferayUnitTestRule.INSTANCE;
+
+	@Test
+	public void testWriteRowsToFailingOutputStream() throws Exception {
+		try {
+			JSONLBatchEngineExportTaskItemWriterImpl
+				jsonlBatchEngineExportTaskItemWriterImpl =
+					new JSONLBatchEngineExportTaskItemWriterImpl(
+						Collections.emptyList(),
+						new OutputStream() {
+
+							@Override
+							public void write(int b) throws IOException {
+								throw new IOException("Disk is full");
+							}
+
+						});
+
+			for (Item[] items : getItemGroups()) {
+				jsonlBatchEngineExportTaskItemWriterImpl.write(
+					Arrays.asList(items));
+			}
+
+			jsonlBatchEngineExportTaskItemWriterImpl.close();
+
+			Assert.fail();
+		}
+		catch (IOException ioException) {
+			Assert.assertEquals("Disk is full", ioException.getMessage());
+		}
+	}
 
 	@Test
 	public void testWriteRowsWithDefinedFieldNames1() throws Exception {
