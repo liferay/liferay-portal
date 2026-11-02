@@ -298,15 +298,6 @@ public class CookiesConsentPreferenceLocalServiceWrapper
 			getCookiesConsentPreference(cookiesConsentPreferenceId);
 	}
 
-	@Override
-	public com.liferay.cookies.model.CookiesConsentPreference
-			getCookiesConsentPreference(long userId, String domain, String name)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _cookiesConsentPreferenceLocalService.
-			getCookiesConsentPreference(userId, domain, name);
-	}
-
 	/**
 	 * Returns a range of all the cookies consent preferences.
 	 *
@@ -418,4 +409,4 @@ public class CookiesConsentPreferenceLocalServiceWrapper
 		_cookiesConsentPreferenceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2076735159
+// LIFERAY-SERVICE-BUILDER-HASH:2004980100
