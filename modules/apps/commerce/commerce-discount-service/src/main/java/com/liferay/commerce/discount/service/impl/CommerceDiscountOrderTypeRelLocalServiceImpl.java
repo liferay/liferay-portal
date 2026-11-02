@@ -131,14 +131,6 @@ public class CommerceDiscountOrderTypeRelLocalServiceImpl
 	}
 
 	@Override
-	public CommerceDiscountOrderTypeRel fetchCommerceDiscountOrderTypeRel(
-		long commerceDiscountId, long commerceOrderTypeId) {
-
-		return commerceDiscountOrderTypeRelPersistence.fetchByCDI_COTI(
-			commerceDiscountId, commerceOrderTypeId);
-	}
-
-	@Override
 	public CommerceDiscountOrderTypeRel getCommerceDiscountOrderTypeRel(
 			long commerceDiscountOrderTypeRelId)
 		throws PortalException {

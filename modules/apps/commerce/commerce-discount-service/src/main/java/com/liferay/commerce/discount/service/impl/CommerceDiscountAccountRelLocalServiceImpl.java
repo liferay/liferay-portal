@@ -136,26 +136,12 @@ public class CommerceDiscountAccountRelLocalServiceImpl
 	}
 
 	@Override
-	public CommerceDiscountAccountRel fetchCommerceDiscountAccountRel(
-		long commerceAccountId, long commerceDiscountId) {
-
-		return commerceDiscountAccountRelPersistence.fetchByCAI_CDI(
-			commerceAccountId, commerceDiscountId);
-	}
-
-	@Override
 	public List<CommerceDiscountAccountRel> getCommerceDiscountAccountRels(
 		long commerceDiscountId, int start, int end,
 		OrderByComparator<CommerceDiscountAccountRel> orderByComparator) {
 
 		return commerceDiscountAccountRelPersistence.findByCommerceDiscountId(
 			commerceDiscountId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceDiscountAccountRelsCount(long commerceDiscountId) {
-		return commerceDiscountAccountRelPersistence.countByCommerceDiscountId(
-			commerceDiscountId);
 	}
 
 	private void _reindexCommerceDiscount(long commerceDiscountId)

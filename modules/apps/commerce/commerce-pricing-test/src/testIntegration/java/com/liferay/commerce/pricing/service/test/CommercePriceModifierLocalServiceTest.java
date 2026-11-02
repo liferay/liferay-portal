@@ -25,6 +25,7 @@ import com.liferay.commerce.pricing.service.CommercePriceModifierLocalService;
 import com.liferay.commerce.pricing.service.CommercePriceModifierRelLocalService;
 import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelLocalService;
 import com.liferay.commerce.pricing.service.CommercePricingClassLocalService;
+import com.liferay.commerce.pricing.service.persistence.CommercePricingClassCPDefinitionRelUtil;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.product.model.CommerceCatalog;
@@ -41,6 +42,7 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -428,10 +430,12 @@ public class CommercePriceModifierLocalServiceTest {
 			commercePriceModifierRel.getClassPK());
 
 		List<CommercePricingClassCPDefinitionRel>
-			commercePricingClassCPDefinitionRels =
-				_commercePricingClassCPDefinitionRelLocalService.
-					getCommercePricingClassCPDefinitionRels(
-						commercePricingClass.getCommercePricingClassId());
+			commercePricingClassCPDefinitionRels = TransactionTestUtil.invoke(
+				CommercePricingClassCPDefinitionRelUtil.getPersistence(),
+				commercePricingClassCPDefinitionRelPersistence ->
+					commercePricingClassCPDefinitionRelPersistence.
+						findByCommercePricingClassId(
+							commercePricingClass.getCommercePricingClassId()));
 
 		Assert.assertEquals(
 			commercePricingClassCPDefinitionRels.toString(), 1,

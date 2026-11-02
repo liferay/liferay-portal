@@ -73,9 +73,7 @@ public class DiscountAccountGroupResourceTest
 					CommerceDiscountCommerceAccountGroupRelLocalServiceUtil.
 						fetchCommerceDiscountCommerceAccountGroupRel(
 							commerceDiscountCommerceAccountGroupRelIterator.
-								getCommerceDiscountId(),
-							commerceDiscountCommerceAccountGroupRelIterator.
-								getCommerceAccountGroupId());
+								getCommerceDiscountCommerceAccountGroupRelId());
 
 			if (commerceDiscountCommerceAccountGroupRel != null) {
 				CommerceDiscountCommerceAccountGroupRelLocalServiceUtil.
@@ -122,9 +120,7 @@ public class DiscountAccountGroupResourceTest
 					CommerceDiscountCommerceAccountGroupRelLocalServiceUtil.
 						fetchCommerceDiscountCommerceAccountGroupRel(
 							commerceDiscountCommerceAccountGroupRelIterator.
-								getCommerceDiscountId(),
-							commerceDiscountCommerceAccountGroupRelIterator.
-								getCommerceAccountGroupId());
+								getCommerceDiscountCommerceAccountGroupRelId());
 
 			if (commerceDiscountCommerceAccountGroupRel != null) {
 				CommerceDiscountCommerceAccountGroupRelLocalServiceUtil.

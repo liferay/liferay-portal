@@ -16,7 +16,6 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
@@ -142,26 +141,6 @@ public class CommercePriceModifierRelLocalServiceImpl
 		long commercePriceModifierId, String className) {
 
 		return commercePriceModifierRelPersistence.findByCPM_CN(
-			commercePriceModifierId,
-			_classNameLocalService.getClassNameId(className));
-	}
-
-	@Override
-	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
-		long commercePriceModifierId, String className, int start, int end,
-		OrderByComparator<CommercePriceModifierRel> orderByComparator) {
-
-		return commercePriceModifierRelPersistence.findByCPM_CN(
-			commercePriceModifierId,
-			_classNameLocalService.getClassNameId(className), start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int getCommercePriceModifierRelsCount(
-		long commercePriceModifierId, String className) {
-
-		return commercePriceModifierRelPersistence.countByCPM_CN(
 			commercePriceModifierId,
 			_classNameLocalService.getClassNameId(className));
 	}

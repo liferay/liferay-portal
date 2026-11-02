@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.List;
 
@@ -109,35 +108,11 @@ public class CommercePriceListDiscountRelLocalServiceImpl
 	}
 
 	@Override
-	public CommercePriceListDiscountRel fetchCommercePriceListDiscountRel(
-		long commerceDiscountId, long commercePriceListId) {
-
-		return commercePriceListDiscountRelPersistence.fetchByCDI_CPI(
-			commerceDiscountId, commercePriceListId);
-	}
-
-	@Override
 	public List<CommercePriceListDiscountRel> getCommercePriceListDiscountRels(
 		long commercePriceListId) {
 
 		return commercePriceListDiscountRelPersistence.
 			findByCommercePriceListId(commercePriceListId);
-	}
-
-	@Override
-	public List<CommercePriceListDiscountRel> getCommercePriceListDiscountRels(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceListDiscountRel> orderByComparator) {
-
-		return commercePriceListDiscountRelPersistence.
-			findByCommercePriceListId(
-				commercePriceListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommercePriceListDiscountRelsCount(long commercePriceListId) {
-		return commercePriceListDiscountRelPersistence.
-			countByCommercePriceListId(commercePriceListId);
 	}
 
 	private void _reindexPriceList(long commercePriceListId)

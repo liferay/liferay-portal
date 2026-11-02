@@ -157,15 +157,6 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public CommerceDiscountCommerceAccountGroupRel
-		fetchCommerceDiscountCommerceAccountGroupRel(
-			long commerceDiscountId, long commerceAccountGroupId) {
-
-		return commerceDiscountCommerceAccountGroupRelPersistence.
-			fetchByCDI_CAGI(commerceDiscountId, commerceAccountGroupId);
-	}
-
-	@Override
 	public List<CommerceDiscountCommerceAccountGroupRel>
 		getCommerceDiscountCommerceAccountGroupRels(
 			long commerceDiscountId, int start, int end,
@@ -175,14 +166,6 @@ public class CommerceDiscountCommerceAccountGroupRelLocalServiceImpl
 		return commerceDiscountCommerceAccountGroupRelPersistence.
 			findByCommerceDiscountId(
 				commerceDiscountId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceDiscountCommerceAccountGroupRelsCount(
-		long commerceDiscountId) {
-
-		return commerceDiscountCommerceAccountGroupRelPersistence.
-			countByCommerceDiscountId(commerceDiscountId);
 	}
 
 	private void _reindexCommerceDiscount(long commerceDiscountId)

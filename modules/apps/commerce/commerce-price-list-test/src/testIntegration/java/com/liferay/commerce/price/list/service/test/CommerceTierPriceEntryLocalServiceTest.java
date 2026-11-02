@@ -15,6 +15,7 @@ import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalService;
+import com.liferay.commerce.price.list.service.persistence.CommerceTierPriceEntryUtil;
 import com.liferay.commerce.test.util.price.list.CommercePriceEntryTestUtil;
 import com.liferay.commerce.test.util.price.list.CommerceTierPriceEntryTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -26,6 +27,7 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -408,9 +410,13 @@ public class CommerceTierPriceEntryLocalServiceTest {
 		Assert.assertTrue(actualCommercePriceEntry.isHasTierPrice());
 
 		Assert.assertThat(
-			_commerceTierPriceEntryLocalService.
-				getCommerceTierPriceEntriesCount(
-					actualCommercePriceEntry.getCommercePriceEntryId()),
+			TransactionTestUtil.invoke(
+				CommerceTierPriceEntryUtil.getPersistence(),
+				commerceTierPriceEntryPersistence ->
+					commerceTierPriceEntryPersistence.
+						countByCommercePriceEntryId(
+							actualCommercePriceEntry.
+								getCommercePriceEntryId())),
 			CoreMatchers.equalTo(1));
 
 		List<CommerceTierPriceEntry> commerceTierPriceEntries =

@@ -123,14 +123,6 @@ public class CommercePriceListChannelRelLocalServiceImpl
 	}
 
 	@Override
-	public CommercePriceListChannelRel fetchCommercePriceListChannelRel(
-		long commerceChannelId, long commercePriceListId) {
-
-		return commercePriceListChannelRelPersistence.fetchByCCI_CPI(
-			commerceChannelId, commercePriceListId);
-	}
-
-	@Override
 	public List<CommercePriceListChannelRel> getCommercePriceListChannelRels(
 		long commercePriceListId) {
 
@@ -153,12 +145,6 @@ public class CommercePriceListChannelRelLocalServiceImpl
 
 		return commercePriceListChannelRelFinder.findByCommercePriceListId(
 			commercePriceListId, name, start, end);
-	}
-
-	@Override
-	public int getCommercePriceListChannelRelsCount(long commercePriceListId) {
-		return commercePriceListChannelRelPersistence.
-			countByCommercePriceListId(commercePriceListId);
 	}
 
 	private void _reindexCommercePriceList(long commercePriceListId)
