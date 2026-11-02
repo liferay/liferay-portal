@@ -50,15 +50,6 @@ public class AnalyticsMessageLocalServiceWrapper
 			analyticsMessage);
 	}
 
-	@Override
-	public AnalyticsMessage addAnalyticsMessage(
-			long companyId, long userId, byte[] body)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _analyticsMessageLocalService.addAnalyticsMessage(
-			companyId, userId, body);
-	}
-
 	/**
 	 * Creates a new analytics message with the primary key. Does not add the analytics message to the database.
 	 *
@@ -294,14 +285,6 @@ public class AnalyticsMessageLocalServiceWrapper
 		return _analyticsMessageLocalService.getAnalyticsMessages(start, end);
 	}
 
-	@Override
-	public java.util.List<AnalyticsMessage> getAnalyticsMessages(
-		long companyId, int start, int end) {
-
-		return _analyticsMessageLocalService.getAnalyticsMessages(
-			companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of analytics messages.
 	 *
@@ -319,11 +302,6 @@ public class AnalyticsMessageLocalServiceWrapper
 				java.io.Serializable primaryKey) {
 
 		return _analyticsMessageLocalService.getBodyBlobModel(primaryKey);
-	}
-
-	@Override
-	public java.util.List<Long> getCompanyIds() {
-		return _analyticsMessageLocalService.getCompanyIds();
 	}
 
 	@Override
@@ -419,4 +397,4 @@ public class AnalyticsMessageLocalServiceWrapper
 	private AnalyticsMessageLocalService _analyticsMessageLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1568953459
+// LIFERAY-SERVICE-BUILDER-HASH:-2111738941

@@ -313,15 +313,6 @@ public class AnalyticsAssociationLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List<AnalyticsAssociation> getAnalyticsAssociations(
-		long companyId, java.util.Date modifiedDate,
-		String associationClassName, int start, int end) {
-
-		return _analyticsAssociationLocalService.getAnalyticsAssociations(
-			companyId, modifiedDate, associationClassName, start, end);
-	}
-
 	/**
 	 * Returns the number of analytics associations.
 	 *
@@ -331,15 +322,6 @@ public class AnalyticsAssociationLocalServiceWrapper
 	public int getAnalyticsAssociationsCount() {
 		return _analyticsAssociationLocalService.
 			getAnalyticsAssociationsCount();
-	}
-
-	@Override
-	public int getAnalyticsAssociationsCount(
-		long companyId, java.util.Date modifiedDate,
-		String associationClassName) {
-
-		return _analyticsAssociationLocalService.getAnalyticsAssociationsCount(
-			companyId, modifiedDate, associationClassName);
 	}
 
 	@Override
@@ -430,4 +412,4 @@ public class AnalyticsAssociationLocalServiceWrapper
 	private AnalyticsAssociationLocalService _analyticsAssociationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:234133749
+// LIFERAY-SERVICE-BUILDER-HASH:46736939

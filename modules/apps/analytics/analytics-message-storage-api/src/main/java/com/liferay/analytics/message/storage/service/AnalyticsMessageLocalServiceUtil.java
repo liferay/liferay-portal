@@ -54,13 +54,6 @@ public class AnalyticsMessageLocalServiceUtil {
 		return getService().addAnalyticsMessage(analyticsMessage);
 	}
 
-	public static AnalyticsMessage addAnalyticsMessage(
-			long companyId, long userId, byte[] body)
-		throws PortalException {
-
-		return getService().addAnalyticsMessage(companyId, userId, body);
-	}
-
 	/**
 	 * Creates a new analytics message with the primary key. Does not add the analytics message to the database.
 	 *
@@ -264,12 +257,6 @@ public class AnalyticsMessageLocalServiceUtil {
 		return getService().getAnalyticsMessages(start, end);
 	}
 
-	public static List<AnalyticsMessage> getAnalyticsMessages(
-		long companyId, int start, int end) {
-
-		return getService().getAnalyticsMessages(companyId, start, end);
-	}
-
 	/**
 	 * Returns the number of analytics messages.
 	 *
@@ -285,10 +272,6 @@ public class AnalyticsMessageLocalServiceUtil {
 				Serializable primaryKey) {
 
 		return getService().getBodyBlobModel(primaryKey);
-	}
-
-	public static List<Long> getCompanyIds() {
-		return getService().getCompanyIds();
 	}
 
 	public static
@@ -346,4 +329,4 @@ public class AnalyticsMessageLocalServiceUtil {
 			AnalyticsMessageLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2051125209
+// LIFERAY-SERVICE-BUILDER-HASH:-369214412

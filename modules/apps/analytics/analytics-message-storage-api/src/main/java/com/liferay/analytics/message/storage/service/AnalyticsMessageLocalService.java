@@ -75,10 +75,6 @@ public interface AnalyticsMessageLocalService
 	public AnalyticsMessage addAnalyticsMessage(
 		AnalyticsMessage analyticsMessage);
 
-	public AnalyticsMessage addAnalyticsMessage(
-			long companyId, long userId, byte[] body)
-		throws PortalException;
-
 	/**
 	 * Creates a new analytics message with the primary key. Does not add the analytics message to the database.
 	 *
@@ -238,10 +234,6 @@ public interface AnalyticsMessageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AnalyticsMessage> getAnalyticsMessages(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AnalyticsMessage> getAnalyticsMessages(
-		long companyId, int start, int end);
-
 	/**
 	 * Returns the number of analytics messages.
 	 *
@@ -253,9 +245,6 @@ public interface AnalyticsMessageLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public AnalyticsMessageBodyBlobModel getBodyBlobModel(
 		Serializable primaryKey);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<Long> getCompanyIds();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -308,4 +297,4 @@ public interface AnalyticsMessageLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:754319655
+// LIFERAY-SERVICE-BUILDER-HASH:-431902351
