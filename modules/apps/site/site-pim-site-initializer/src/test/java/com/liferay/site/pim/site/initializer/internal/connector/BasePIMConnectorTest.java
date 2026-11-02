@@ -196,20 +196,19 @@ public class BasePIMConnectorTest {
 
 		_mockSearchResponse(Collections.emptyList());
 
-		Map<String, Serializable> pimConnectorConfigurationValues =
+		Map<String, Serializable> values =
 			HashMapBuilder.<String, Serializable>put(
 				"url", RandomTestUtil.randomString()
 			).build();
 
-		_mockPIMConnectorConfigurationObjectEntry(
-			pimConnectorConfigurationValues);
+		_mockPIMConnectorConfigurationObjectEntry(values);
 
 		_pimConnector.execute(_pimConnectorObjectEntry);
 
 		Mockito.verify(
 			_pimConnector
 		).doExecute(
-			pimConnectorConfigurationValues, _pimConnectorObjectEntry,
+			values, _pimConnectorObjectEntry,
 			HashMapBuilder.put(
 				"name", Collections.singletonList(fieldMappingObjectEntry)
 			).build(),

@@ -72,7 +72,7 @@ const PROPS = {
 const EDIT_PROPS = {
 	...PROPS,
 	configuration: {
-		externalReferenceCode: 'CONNECTOR_ERC',
+		externalReferenceCode: 'PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE',
 		values: {
 			clientSecret: 'TEMP_OBFUSCATION_VALUE',
 			url: 'https://commerce.minium.com',
@@ -81,7 +81,7 @@ const EDIT_PROPS = {
 	objectEntryId: 42,
 	pimConnector: {
 		active: true,
-		externalReferenceCode: 'CONNECTOR_ERC',
+		externalReferenceCode: 'PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE',
 		key: 'liferay-commerce',
 		name: 'Liferay',
 	},
@@ -97,7 +97,9 @@ describe('EditPIMConnector', () => {
 		jest.clearAllMocks();
 
 		mockFetch.mockResolvedValue({
-			json: async () => ({externalReferenceCode: 'CONNECTOR_ERC'}),
+			json: async () => ({
+				externalReferenceCode: 'PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE',
+			}),
 			ok: true,
 		});
 	});
@@ -139,7 +141,7 @@ describe('EditPIMConnector', () => {
 		});
 
 		expect(mockFetch.mock.calls[1][0]).toBe(
-			'/o/pim/connector-configuration-liferay-commerce/by-external-reference-code/CONNECTOR_ERC'
+			'/o/pim/connector-configuration-liferay-commerce/by-external-reference-code/PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE'
 		);
 		expect(mockFetch.mock.calls[1][1].method).toBe('PUT');
 		expect(getRequestBody(1)).toEqual({
@@ -187,7 +189,10 @@ describe('EditPIMConnector', () => {
 	it('stays on the page when the configuration request fails', async () => {
 		mockFetch
 			.mockResolvedValueOnce({
-				json: async () => ({externalReferenceCode: 'CONNECTOR_ERC'}),
+				json: async () => ({
+					externalReferenceCode:
+						'PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE',
+				}),
 				ok: true,
 			})
 			.mockResolvedValueOnce({ok: false});

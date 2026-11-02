@@ -135,14 +135,6 @@ public class LiferayCommercePIMConnectorTest {
 	}
 
 	@Test
-	public void testGetConfigurationObjectDefinitionExternalReferenceCode() {
-		Assert.assertEquals(
-			"L_PIM_CONNECTOR_CONFIGURATION_LIFERAY_COMMERCE",
-			_liferayCommercePIMConnector.
-				getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode());
-	}
-
-	@Test
 	public void testGetKey() {
 		Assert.assertEquals(
 			"liferay-commerce", _liferayCommercePIMConnector.getKey());
@@ -212,6 +204,14 @@ public class LiferayCommercePIMConnectorTest {
 
 					return pimConnectorChannelField.getName();
 				}));
+	}
+
+	@Test
+	public void testGetPIMConnectorConfigurationObjectDefinitionExternalReferenceCode() {
+		Assert.assertEquals(
+			"L_PIM_CONNECTOR_CONFIGURATION_LIFERAY_COMMERCE",
+			_liferayCommercePIMConnector.
+				getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode());
 	}
 
 	private JSONObject _execute(
