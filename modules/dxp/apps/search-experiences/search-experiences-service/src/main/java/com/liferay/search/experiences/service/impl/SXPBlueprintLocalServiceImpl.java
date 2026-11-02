@@ -155,11 +155,6 @@ public class SXPBlueprintLocalServiceImpl
 		return sxpBlueprintPersistence.findByCompanyId(companyId);
 	}
 
-	@Override
-	public int getSXPBlueprintsCount(long companyId) {
-		return sxpBlueprintPersistence.countByCompanyId(companyId);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public SXPBlueprint updateSXPBlueprint(
