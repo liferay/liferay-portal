@@ -204,19 +204,17 @@ public class BasePIMConnectorTest {
 		_mockPIMConnectorConfigurationObjectEntry(
 			pimConnectorConfigurationValues);
 
-		Assert.assertEquals(
-			"executed", _pimConnector.execute(_pimConnectorObjectEntry));
-		Assert.assertEquals(
-			pimConnectorConfigurationValues,
-			_pimConnector.getExecutedPIMConnectorConfigurationValues());
-		Assert.assertEquals(
+		_pimConnector.execute(_pimConnectorObjectEntry);
+
+		Mockito.verify(
+			_pimConnector
+		).doExecute(
+			pimConnectorConfigurationValues, _pimConnectorObjectEntry,
 			HashMapBuilder.put(
 				"name", Collections.singletonList(fieldMappingObjectEntry)
 			).build(),
-			_pimConnector.getExecutedPIMFieldMappingObjectEntriesMap());
-		Assert.assertEquals(
-			Collections.emptyMap(),
-			_pimConnector.getExecutedPIMProductObjectEntriesMap());
+			Collections.emptyMap()
+		);
 	}
 
 	@Test
@@ -660,7 +658,8 @@ public class BasePIMConnectorTest {
 	private final MockedStatic<ObjectRelationshipLocalServiceUtil>
 		_objectRelationshipLocalServiceUtilMockedStatic = Mockito.mockStatic(
 			ObjectRelationshipLocalServiceUtil.class);
-	private final TestPIMConnector _pimConnector = new TestPIMConnector();
+	private final TestPIMConnector _pimConnector = Mockito.spy(
+		new TestPIMConnector());
 	private final ObjectEntry _pimConnectorObjectEntry = Mockito.mock(
 		ObjectEntry.class);
 	private final MockedStatic<QueriesUtil> _queriesUtilMockedStatic =
@@ -677,24 +676,6 @@ public class BasePIMConnectorTest {
 	private final Sorts _sorts = Mockito.mock(Sorts.class);
 
 	private class TestPIMConnector extends BasePIMConnector {
-
-		public Map<String, Serializable>
-			getExecutedPIMConnectorConfigurationValues() {
-
-			return _pimConnectorConfigurationValues;
-		}
-
-		public Map<String, List<ObjectEntry>>
-			getExecutedPIMFieldMappingObjectEntriesMap() {
-
-			return _pimFieldMappingObjectEntriesMap;
-		}
-
-		public Map<String, List<ObjectEntry>>
-			getExecutedPIMProductObjectEntriesMap() {
-
-			return _pimProductObjectEntriesMap;
-		}
 
 		@Override
 		public String getKey() {
@@ -727,16 +708,8 @@ public class BasePIMConnectorTest {
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap) {
 
-			_pimConnectorConfigurationValues = pimConnectorConfigurationValues;
-			_pimFieldMappingObjectEntriesMap = pimFieldMappingObjectEntriesMap;
-			_pimProductObjectEntriesMap = pimProductObjectEntriesMap;
-
-			return "executed";
+			return RandomTestUtil.randomString();
 		}
-
-		private Map<String, Serializable> _pimConnectorConfigurationValues;
-		private Map<String, List<ObjectEntry>> _pimFieldMappingObjectEntriesMap;
-		private Map<String, List<ObjectEntry>> _pimProductObjectEntriesMap;
 
 	}
 
