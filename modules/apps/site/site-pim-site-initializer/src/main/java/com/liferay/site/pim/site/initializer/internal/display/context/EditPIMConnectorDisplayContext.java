@@ -265,14 +265,14 @@ public class EditPIMConnectorDisplayContext {
 			"externalReferenceCode",
 			pimConnectorConfigurationObjectEntry.getExternalReferenceCode());
 
-		Map<String, Serializable> values =
-			pimConnectorConfigurationObjectEntry.getValues();
 		JSONObject valuesJSONObject = JSONFactoryUtil.createJSONObject();
 
 		List<ObjectField> objectFields = ListUtil.filter(
 			_objectFieldLocalService.getObjectFields(
 				pimConnectorConfigurationObjectEntry.getObjectDefinitionId()),
 			objectField -> !objectField.isMetadata());
+		Map<String, Serializable> values =
+			pimConnectorConfigurationObjectEntry.getValues();
 
 		for (ObjectField objectField : objectFields) {
 			valuesJSONObject.put(
