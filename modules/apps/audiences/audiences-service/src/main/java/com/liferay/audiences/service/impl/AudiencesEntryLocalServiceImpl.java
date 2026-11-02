@@ -14,10 +14,8 @@ import com.liferay.audiences.service.AudiencesEntryGroupRelLocalService;
 import com.liferay.audiences.service.base.AudiencesEntryLocalServiceBaseImpl;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.json.validator.JSONValidator;
 import com.liferay.portal.json.validator.JSONValidatorException;
-import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -106,27 +104,8 @@ public class AudiencesEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<AudiencesEntry> getAudiencesEntries(
-			long companyId, String name, int start, int end,
-			OrderByComparator<AudiencesEntry> orderByComparator)
-		throws PortalException {
-
-		return audiencesEntryPersistence.findByC_LikeN(
-			companyId,
-			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0], start,
-			end, orderByComparator);
-	}
-
-	@Override
 	public int getAudiencesEntriesCount(long companyId) {
 		return audiencesEntryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public int getAudiencesEntriesCount(long companyId, String name) {
-		return audiencesEntryPersistence.countByC_LikeN(
-			companyId,
-			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0]);
 	}
 
 	@Override
@@ -227,9 +206,6 @@ public class AudiencesEntryLocalServiceImpl
 	@Reference
 	private AudiencesEntryGroupRelLocalService
 		_audiencesEntryGroupRelLocalService;
-
-	@Reference
-	private CustomSQL _customSQL;
 
 	@Reference
 	private JSONFactory _jsonFactory;
