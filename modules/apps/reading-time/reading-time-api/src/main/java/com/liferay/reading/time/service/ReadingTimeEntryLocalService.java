@@ -64,9 +64,6 @@ public interface ReadingTimeEntryLocalService
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.reading.time.service.impl.ReadingTimeEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the reading time entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ReadingTimeEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
 	public ReadingTimeEntry addReadingTimeEntry(
-		GroupedModel groupedModel, Duration readingTimeDuration);
-
-	public ReadingTimeEntry addReadingTimeEntry(
 		long groupId, long classNameId, long classPK,
 		Duration readingTimeDuration);
 
@@ -122,9 +119,6 @@ public interface ReadingTimeEntryLocalService
 	@Indexable(type = IndexableType.DELETE)
 	public ReadingTimeEntry deleteReadingTimeEntry(long readingTimeEntryId)
 		throws PortalException;
-
-	public ReadingTimeEntry deleteReadingTimeEntry(
-		long groupId, long classNameId, long classPK);
 
 	/**
 	 * Deletes the reading time entry from the database. Also notifies the appropriate model listeners.
@@ -370,4 +364,4 @@ public interface ReadingTimeEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:674334002
+// LIFERAY-SERVICE-BUILDER-HASH:-1646368837

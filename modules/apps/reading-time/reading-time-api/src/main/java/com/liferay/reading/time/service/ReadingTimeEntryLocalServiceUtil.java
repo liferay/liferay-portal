@@ -37,14 +37,6 @@ public class ReadingTimeEntryLocalServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.reading.time.service.impl.ReadingTimeEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static ReadingTimeEntry addReadingTimeEntry(
-		com.liferay.portal.kernel.model.GroupedModel groupedModel,
-		java.time.Duration readingTimeDuration) {
-
-		return getService().addReadingTimeEntry(
-			groupedModel, readingTimeDuration);
-	}
-
-	public static ReadingTimeEntry addReadingTimeEntry(
 		long groupId, long classNameId, long classPK,
 		java.time.Duration readingTimeDuration) {
 
@@ -122,13 +114,6 @@ public class ReadingTimeEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deleteReadingTimeEntry(readingTimeEntryId);
-	}
-
-	public static ReadingTimeEntry deleteReadingTimeEntry(
-		long groupId, long classNameId, long classPK) {
-
-		return getService().deleteReadingTimeEntry(
-			groupId, classNameId, classPK);
 	}
 
 	/**
@@ -437,4 +422,4 @@ public class ReadingTimeEntryLocalServiceUtil {
 			ReadingTimeEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1070447231
+// LIFERAY-SERVICE-BUILDER-HASH:357203666

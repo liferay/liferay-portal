@@ -34,15 +34,6 @@ public class ReadingTimeEntryLocalServiceWrapper
 
 	@Override
 	public ReadingTimeEntry addReadingTimeEntry(
-		com.liferay.portal.kernel.model.GroupedModel groupedModel,
-		java.time.Duration readingTimeDuration) {
-
-		return _readingTimeEntryLocalService.addReadingTimeEntry(
-			groupedModel, readingTimeDuration);
-	}
-
-	@Override
-	public ReadingTimeEntry addReadingTimeEntry(
 		long groupId, long classNameId, long classPK,
 		java.time.Duration readingTimeDuration) {
 
@@ -129,14 +120,6 @@ public class ReadingTimeEntryLocalServiceWrapper
 
 		return _readingTimeEntryLocalService.deleteReadingTimeEntry(
 			readingTimeEntryId);
-	}
-
-	@Override
-	public ReadingTimeEntry deleteReadingTimeEntry(
-		long groupId, long classNameId, long classPK) {
-
-		return _readingTimeEntryLocalService.deleteReadingTimeEntry(
-			groupId, classNameId, classPK);
 	}
 
 	/**
@@ -523,4 +506,4 @@ public class ReadingTimeEntryLocalServiceWrapper
 	private ReadingTimeEntryLocalService _readingTimeEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1815950438
+// LIFERAY-SERVICE-BUILDER-HASH:-922718777
