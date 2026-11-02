@@ -28,6 +28,7 @@ LocalVariableTypeInferenceCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm 
 ParsePrimitiveTypeCheck | .java, .jsp, .jspf, .jspx, .tag, .tpl, or .vm | Verifies that `GetterUtil.parse*` is used to parse primitive types, when possible. |
 PatternMatchingForSwitchCheck | .java | Finds usage of pattern matching for `switch`. |
 [PoshiPauseUsageCheck](check/poshi_pause_usage_check.md#poshipauseusagecheck) | .function, .jar, .lar, .macro, .path, .testcase, .war, or .zip | Finds missing comment with JIRA project when using `Pause`. |
+[PrintWriterWrapperCheck](check/print_writer_wrapper_check.md#printwriterwrappercheck) | .java | Finds a `PrintWriter` or `UnsyncPrintWriter` that only wraps another writer or stream to print to it, which should write to the wrapped writer directly instead. |
 RESTDTOSetCallCheck | .java | Ensures using set calls with `UnsafeSupplier` parameter for REST DTO. |
 RecordClassCheck | .java | Finds usage of `record`. |
 RecordPatternCheck | .java | Finds usage of record patterns. |

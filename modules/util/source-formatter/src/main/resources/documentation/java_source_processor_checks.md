@@ -277,6 +277,7 @@ PlusStatementCheck | [Styling](styling_checks.md#styling-checks) | Performs seve
 [PortletURLBuilderCheck](check/builder_check.md#buildercheck) | [Miscellaneous](miscellaneous_checks.md#miscellaneous-checks) | Checks that `PortletURLBuilder` is used when possible. |
 PrimitiveWrapperInstantiationCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds cases where `new Type` is used for primitive types (use `Type.valueOf` instead). |
 PrincipalExceptionCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | Finds calls to `PrincipalException.class.getName()` (use `PrincipalException.getNestedClasses()` instead). |
+[PrintWriterWrapperCheck](check/print_writer_wrapper_check.md#printwriterwrappercheck) | [Performance](performance_checks.md#performance-checks) | Finds a `PrintWriter` or `UnsyncPrintWriter` that only wraps another writer or stream to print to it, which should write to the wrapped writer directly instead. |
 RESTDTOSetCallCheck | [Performance](performance_checks.md#performance-checks) | Ensures using set calls with `UnsafeSupplier` parameter for REST DTO. |
 RecordClassCheck | [Performance](performance_checks.md#performance-checks) | Finds usage of `record`. |
 RecordPatternCheck | [Performance](performance_checks.md#performance-checks) | Finds usage of record patterns. |

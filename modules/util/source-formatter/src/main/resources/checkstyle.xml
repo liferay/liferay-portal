@@ -796,6 +796,12 @@
 			<message key="keyword.reserved" value="Do not use &quot;{0}&quot; to set parameter &quot;{1}&quot;, use &quot;{2}&quot; instead" />
 			<message key="string.cast.unneeded" value="No need to cast parameter to &quot;String&quot; when passing to method &quot;{0}&quot;" />
 		</module>
+		<module name="com.liferay.source.formatter.checkstyle.check.PrintWriterWrapperCheck">
+			<property name="category" value="Performance" />
+			<property name="description" value="Finds a `PrintWriter` or `UnsyncPrintWriter` that only wraps another writer or stream to print to it, which should write to the wrapped writer directly instead." />
+			<property name="enabled" value="false" />
+			<message key="writer.write.directly" value="Write to the wrapped &quot;Writer&quot; or the response writer directly, or use an &quot;OutputStreamWriter&quot; with an explicit charset for a stream, instead of a &quot;PrintWriter&quot; that only prints" />
+		</module>
 		<module name="com.liferay.source.formatter.checkstyle.check.RecordClassCheck">
 			<property name="category" value="Performance" />
 			<property name="description" value="Finds usage of `record`." />
