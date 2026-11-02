@@ -67,6 +67,7 @@
 		<field name="enableObjectEntryVersioning" type="boolean" />
 		<field name="friendlyURLSeparator" type="String" />
 		<field localized="true" name="label" type="String">
+			<hint-collection name="CLOB" />
 			<validator name="required" />
 		</field>
 		<field name="modifiable" type="boolean" />
@@ -76,6 +77,7 @@
 		<field name="PKObjectFieldDBColumnName" type="String" />
 		<field name="PKObjectFieldName" type="String" />
 		<field localized="true" name="pluralLabel" type="String">
+			<hint-collection name="CLOB" />
 			<validator name="required" />
 		</field>
 		<field name="portlet" type="boolean" />
@@ -196,7 +198,9 @@
 		<field name="indexed" type="boolean" />
 		<field name="indexedAsKeyword" type="boolean" />
 		<field name="indexedLanguageId" type="String" />
-		<field localized="true" name="label" type="String" />
+		<field localized="true" name="label" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 		<field name="localized" type="boolean" />
 		<field name="name" type="String" />
 		<field name="readOnly" type="String" />

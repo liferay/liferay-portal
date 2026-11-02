@@ -226,6 +226,7 @@
 		</field>
 		<field name="version" type="String" />
 		<field localized="true" name="name" type="String">
+			<hint-collection name="CLOB" />
 			<validator name="required" />
 		</field>
 		<field localized="true" name="description" type="String">
@@ -287,6 +288,7 @@
 		<field name="version" type="String" />
 		<field name="parentStructureId" type="long" />
 		<field localized="true" name="name" type="String">
+			<hint-collection name="CLOB" />
 			<validator name="required" />
 		</field>
 		<field localized="true" name="description" type="String">

@@ -301,7 +301,7 @@
 		<field name="dataDefinitionId" type="long" />
 		<field name="fileEntryTypeKey" type="String" />
 		<field localized="true" name="name" type="String">
-			<hint name="max-length">4000</hint>
+			<hint-collection name="CLOB" />
 			<validator name="required" />
 		</field>
 		<field localized="true" name="description" type="String">
@@ -778,8 +778,8 @@
 		<field name="classPK" type="long" />
 		<field name="launchSetId" type="long" />
 		<field localized="true" name="name" type="String">
+			<hint-collection name="CLOB" />
 			<hint name="display-width">210</hint>
-			<hint name="max-length">4000</hint>
 			<validator name="required" />
 		</field>
 		<field localized="true" name="title" type="String">
@@ -1466,7 +1466,7 @@
 			<validator name="required" />
 		</field>
 		<field localized="true" name="title" type="String">
-			<hint name="max-length">4000</hint>
+			<hint-collection name="CLOB" />
 		</field>
 		<field localized="true" name="description" type="String">
 			<hint-collection name="CLOB" />

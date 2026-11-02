@@ -15,6 +15,8 @@
 		<field name="defaultSAPEntry" type="boolean" />
 		<field name="enabled" type="boolean" />
 		<field name="name" type="String" />
-		<field localized="true" name="title" type="String" />
+		<field localized="true" name="title" type="String">
+			<hint-collection name="CLOB" />
+		</field>
 	</model>
 </model-hints>

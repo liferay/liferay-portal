@@ -85,7 +85,7 @@
 			<hint name="max-length">200</hint>
 		</field>
 		<field localized="true" name="title" type="String">
-			<hint name="max-length">4000</hint>
+			<hint-collection name="CLOB" />
 		</field>
 		<field name="description" type="String">
 			<hint-collection name="TEXTAREA" />
@@ -116,7 +116,7 @@
 			<hint name="max-length">200</hint>
 		</field>
 		<field localized="true" name="title" type="String">
-			<hint name="max-length">4000</hint>
+			<hint-collection name="CLOB" />
 		</field>
 		<field name="description" type="String">
 			<hint-collection name="TEXTAREA" />
