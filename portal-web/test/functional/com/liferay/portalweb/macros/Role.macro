@@ -301,12 +301,8 @@ definition {
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
-		if ((IsElementNotPresent(key_tableEntry = ${roleTitle}, locator1 = "LexiconTable#TABLE_ENTRY_EXACT_MATCH")) && (IsEditable(locator1 = "Pagination#NEXT_LINK"))) {
-			Type.typeKeys(
-				locator1 = "//body",
-				value1 = "keys=CONTROL,END");
-
-			Pagination.changePaginationViaKeyboard(itemsPerPage = 60);
+		if (IsElementNotPresent(key_tableEntry = ${roleTitle}, locator1 = "LexiconTable#TABLE_ENTRY_EXACT_MATCH")) {
+			Search.searchCP(searchTerm = ${roleTitle});
 		}
 
 		ScrollWebElementIntoView(locator1 = "Permissions#${permissionDefinitionKey}");
