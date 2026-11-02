@@ -175,7 +175,9 @@ public abstract class BaseOpenNLPDocumentAssetAutoTaggerTestCase {
 					_OPEN_NLP_AUTO_TAG_CONFIGURATION_PID,
 					HashMapDictionaryBuilder.<String, Object>put(
 						"enabledClassNames", new String[] {className}
-					).build())) {
+					).build());
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"opennlp.tools.util.XmlUtil", LoggerTestUtil.OFF)) {
 
 			unsafeRunnable.run();
 		}
