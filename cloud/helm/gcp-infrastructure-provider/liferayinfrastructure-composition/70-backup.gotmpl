@@ -120,7 +120,7 @@ spec:
                     namespace: {{ $namespace }}
     managementPolicies: {{ $managementPolicies }}
 ---
-{{- $timeOfDay := splitList ":" $backup.timeOfDay }}
+{{- $timeOfDayParts := splitList ":" $backup.timeOfDay }}
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
@@ -138,7 +138,7 @@ spec:
             spec:
                 concurrencyPolicy: Forbid
                 schedules:
-                    -   {{ printf "%s %s * * %s" (index $timeOfDay 1) (index $timeOfDay 0) (eq $backup.frequency "Weekly" | ternary (upper (trunc 3 $backup.dayOfWeek)) "*") | quote }}
+                    -   {{ printf "%s %s * * %s" (index $timeOfDayParts 1) (index $timeOfDayParts 0) (eq $backup.frequency "Weekly" | ternary (upper (trunc 3 $backup.dayOfWeek)) "*") | quote }}
                 startingDeadlineSeconds: 300
                 timezone: {{ $backup.timeZone | quote }}
                 workflowSpec:

@@ -19,13 +19,16 @@ function main {
 			liferaybackups \
 			--namespace "{{ "{{" }}workflow.namespace}}" \
 			--output json \
-			| jq --argjson retention "${retention_seconds}" --raw-output '
-			.items[]
-			| select(
-				(.status.completionTime != null and (now - (.status.completionTime | fromdateiso8601)) > $retention) or
-				(any(.status.conditions[]?; .status == "False" and .type == "Succeeded"))
-			)
-			| .metadata.name')
+			| jq \
+				--argjson retention "${retention_seconds}" \
+				--raw-output \
+				'
+				.items[]
+				| select(
+					(.status.completionTime != null and (now - (.status.completionTime | fromdateiso8601)) > $retention) or
+					(any(.status.conditions[]?; .status == "False" and .type == "Succeeded"))
+				)
+				| .metadata.name')
 
 	if [ -z "${backups_to_clean_up}" ]
 	then

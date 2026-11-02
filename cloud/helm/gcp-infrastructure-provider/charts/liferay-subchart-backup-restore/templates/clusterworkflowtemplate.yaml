@@ -273,10 +273,10 @@ spec:
                         template: apply-wait-infrastructure
                     -   arguments:
                             parameters:
-                                -   name: restore-instance
-                                    value: "{{ "{{" }}tasks.get-inactive-cloudsql-instance.outputs.result}}"
                                 -   name: data-inactive
                                     value: "{{ "{{" }}inputs.parameters.data-inactive}}"
+                                -   name: restore-instance
+                                    value: "{{ "{{" }}tasks.get-inactive-cloudsql-instance.outputs.result}}"
                         depends: restore-cloudsql-backup
                         name: reset-postgres-password
                         template: reset-postgres-password

@@ -1,11 +1,11 @@
 {{- if $backup.enabled }}
 {{- $daysOfWeek := dict "Friday" "FRI" "Monday" "MON" "Saturday" "SAT" "Sunday" "SUN" "Thursday" "THU" "Tuesday" "TUE" "Wednesday" "WED" -}}
-{{- $timeOfDay := splitList ":" $backup.timeOfDay -}}
+{{- $timeOfDayParts := splitList ":" $backup.timeOfDay -}}
 
-{{- $backupSchedule := printf "cron(%s %s * * ? *)" (index $timeOfDay 1) (index $timeOfDay 0) -}}
+{{- $backupSchedule := printf "cron(%s %s * * ? *)" (index $timeOfDayParts 1) (index $timeOfDayParts 0) -}}
 
 {{- if eq $backup.frequency "Weekly" -}}
-    {{- $backupSchedule = printf "cron(%s %s ? * %s *)" (index $timeOfDay 1) (index $timeOfDay 0) (index $daysOfWeek $backup.dayOfWeek) -}}
+    {{- $backupSchedule = printf "cron(%s %s ? * %s *)" (index $timeOfDayParts 1) (index $timeOfDayParts 0) (index $daysOfWeek $backup.dayOfWeek) -}}
 {{- end }}
 apiVersion: backup.aws.m.upbound.io/v1beta1
 kind: Plan

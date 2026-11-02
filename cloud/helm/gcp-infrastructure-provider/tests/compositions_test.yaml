@@ -139,7 +139,7 @@ tests:
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
-                    pattern: "printf \"%s %s \\* \\* %s\" \\(index \\$timeOfDay 1\\) \\(index \\$timeOfDay 0\\) \\(eq \\$backup\\.frequency \"Weekly\" \\| ternary \\(upper \\(trunc 3 \\$backup\\.dayOfWeek\\)\\) \"\\*\"\\)"
+                    pattern: "printf \"%s %s \\* \\* %s\" \\(index \\$timeOfDayParts 1\\) \\(index \\$timeOfDayParts 0\\) \\(eq \\$backup\\.frequency \"Weekly\" \\| ternary \\(upper \\(trunc 3 \\$backup\\.dayOfWeek\\)\\) \"\\*\"\\)"
             -   documentIndex: 0
                 matchRegex:
                     path: spec.pipeline[1].input.inline.template
