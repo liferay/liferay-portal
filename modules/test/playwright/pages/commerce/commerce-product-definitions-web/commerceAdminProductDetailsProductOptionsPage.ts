@@ -174,6 +174,10 @@ export class CommerceAdminProductDetailsProductOptionsPage extends CommerceDNDTa
 	}
 
 	async searchSku(sku: string) {
+		await this.optionValueSkuInput.evaluate((element) =>
+			element.scrollIntoView({block: 'center'})
+		);
+
 		await this.optionValueSkuInput.fill(sku);
 
 		await expect(this.optionValueSkuDropdownItems.first()).toBeVisible();
