@@ -11,16 +11,20 @@ import com.liferay.bookmarks.model.BookmarksFolder;
 import com.liferay.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.bookmarks.service.BookmarksEntryServiceUtil;
 import com.liferay.bookmarks.service.BookmarksFolderServiceUtil;
+import com.liferay.bookmarks.service.persistence.BookmarksFolderUtil;
 import com.liferay.portal.kernel.search.QueryConfig;
 import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
+
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -116,6 +120,15 @@ public class BookmarksTestUtil {
 
 	public static BookmarksFolder addFolder(String name) throws Exception {
 		return addFolder(TestPropsValues.getGroupId(), name);
+	}
+
+	public static List<BookmarksFolder> getFolders(long groupId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			BookmarksFolderUtil.getPersistence(),
+			bookmarksFolderPersistence ->
+				bookmarksFolderPersistence.findByGroupId(groupId));
 	}
 
 	public static SearchContext getSearchContext(

@@ -55,12 +55,9 @@ import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.transaction.Transactional;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GroupSubscriptionCheckSubscriptionSender;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.Localization;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.SubscriptionSender;
 import com.liferay.portal.kernel.util.Validator;
@@ -261,46 +258,6 @@ public class BookmarksEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int start, int end) {
-
-		return getEntries(
-			groupId, folderId, WorkflowConstants.STATUS_APPROVED, start, end);
-	}
-
-	@Override
-	public List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int status, int start, int end) {
-
-		return getEntries(groupId, folderId, status, start, end, null);
-	}
-
-	@Override
-	public List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int status, int start, int end,
-		OrderByComparator<BookmarksEntry> orderByComparator) {
-
-		return bookmarksEntryPersistence.findByG_F_S(
-			groupId, folderId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<BookmarksEntry> getEntries(
-		long groupId, long folderId, int start, int end,
-		OrderByComparator<BookmarksEntry> orderByComparator) {
-
-		return getEntries(
-			groupId, folderId, WorkflowConstants.STATUS_APPROVED, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int getEntriesCount(long groupId, long folderId) {
-		return getEntriesCount(
-			groupId, folderId, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
 	public int getEntriesCount(long groupId, long folderId, int status) {
 		return bookmarksEntryPersistence.countByG_F_S(
 			groupId, folderId, status);
@@ -309,17 +266,6 @@ public class BookmarksEntryLocalServiceImpl
 	@Override
 	public BookmarksEntry getEntry(long entryId) throws PortalException {
 		return bookmarksEntryPersistence.findByPrimaryKey(entryId);
-	}
-
-	@Override
-	public int getFoldersEntriesCount(long groupId, List<Long> folderIds) {
-		if (ListUtil.isEmpty(folderIds)) {
-			return 0;
-		}
-
-		return bookmarksEntryPersistence.countByG_F_S(
-			groupId, ArrayUtil.toArray(folderIds.toArray(new Long[0])),
-			WorkflowConstants.STATUS_APPROVED);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

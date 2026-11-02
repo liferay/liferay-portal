@@ -8,8 +8,7 @@ package com.liferay.bookmarks.internal.exportimport.data.handler.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.bookmarks.constants.BookmarksPortletKeys;
 import com.liferay.bookmarks.model.BookmarksFolder;
-import com.liferay.bookmarks.service.BookmarksEntryLocalServiceUtil;
-import com.liferay.bookmarks.service.BookmarksFolderLocalServiceUtil;
+import com.liferay.bookmarks.service.BookmarksEntryServiceUtil;
 import com.liferay.bookmarks.service.BookmarksFolderServiceUtil;
 import com.liferay.bookmarks.test.util.BookmarksTestUtil;
 import com.liferay.exportimport.kernel.lar.DataLevel;
@@ -76,8 +75,8 @@ public class BookmarksPortletDataHandlerTest
 
 		GroupLocalServiceUtil.deleteGroup(group);
 
-		List<BookmarksFolder> folders =
-			BookmarksFolderLocalServiceUtil.getFolders(group.getGroupId());
+		List<BookmarksFolder> folders = BookmarksTestUtil.getFolders(
+			group.getGroupId());
 
 		Assert.assertEquals(folders.toString(), 0, folders.size());
 	}
@@ -115,13 +114,12 @@ public class BookmarksPortletDataHandlerTest
 	protected List<StagedModel> getStagedModels() {
 		List<StagedModel> stagedModels = new ArrayList<>();
 
-		List<BookmarksFolder> folders =
-			BookmarksFolderLocalServiceUtil.getFolders(
-				portletDataContext.getGroupId());
+		List<BookmarksFolder> folders = BookmarksFolderServiceUtil.getFolders(
+			portletDataContext.getGroupId());
 
 		for (BookmarksFolder folder : folders) {
 			stagedModels.addAll(
-				BookmarksEntryLocalServiceUtil.getEntries(
+				BookmarksEntryServiceUtil.getEntries(
 					portletDataContext.getGroupId(), folder.getFolderId(),
 					QueryUtil.ALL_POS, QueryUtil.ALL_POS));
 		}

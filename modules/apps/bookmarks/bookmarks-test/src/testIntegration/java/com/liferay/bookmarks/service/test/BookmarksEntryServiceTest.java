@@ -7,7 +7,6 @@ package com.liferay.bookmarks.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.bookmarks.model.BookmarksEntry;
-import com.liferay.bookmarks.service.BookmarksEntryLocalServiceUtil;
 import com.liferay.bookmarks.service.BookmarksEntryServiceUtil;
 import com.liferay.bookmarks.test.util.BookmarksTestUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -75,10 +74,6 @@ public class BookmarksEntryServiceTest {
 		Assert.assertEquals(
 			0,
 			BookmarksEntryServiceUtil.getFoldersEntriesCount(
-				_group.getGroupId(), Collections.emptyList()));
-		Assert.assertEquals(
-			0,
-			BookmarksEntryLocalServiceUtil.getFoldersEntriesCount(
 				_group.getGroupId(), Collections.emptyList()));
 	}
 

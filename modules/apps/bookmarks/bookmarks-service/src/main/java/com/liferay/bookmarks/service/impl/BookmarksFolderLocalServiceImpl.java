@@ -248,16 +248,6 @@ public class BookmarksFolderLocalServiceImpl
 	}
 
 	@Override
-	public List<BookmarksFolder> getFolders(long groupId) {
-		return bookmarksFolderPersistence.findByGroupId(groupId);
-	}
-
-	@Override
-	public List<BookmarksFolder> getFolders(long groupId, long parentFolderId) {
-		return bookmarksFolderPersistence.findByG_P(groupId, parentFolderId);
-	}
-
-	@Override
 	public List<BookmarksFolder> getFolders(
 		long groupId, long parentFolderId, int start, int end) {
 
