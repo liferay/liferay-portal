@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -58,22 +57,6 @@ public class CommercePaymentMethodGroupRelLocalServiceImpl
 		return _commerceAddressRestrictionLocalService.
 			addCommerceAddressRestriction(
 				userId, groupId, CommercePaymentMethodGroupRel.class.getName(),
-				commercePaymentMethodGroupRelId, countryId);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceAddressRestriction addCommerceAddressRestriction(
-			long commercePaymentMethodGroupRelId, long countryId,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commercePaymentMethodGroupRelLocalService.
-			addCommerceAddressRestriction(
-				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
 				commercePaymentMethodGroupRelId, countryId);
 	}
 

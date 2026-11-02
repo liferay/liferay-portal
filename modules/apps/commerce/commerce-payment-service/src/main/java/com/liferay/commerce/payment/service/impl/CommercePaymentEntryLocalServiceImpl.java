@@ -238,23 +238,6 @@ public class CommercePaymentEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<CommercePaymentEntry> getCommercePaymentEntries(
-		long companyId, long classNameId, long classPK, int start, int end,
-		OrderByComparator<CommercePaymentEntry> orderByComparator) {
-
-		return commercePaymentEntryPersistence.findByC_C_C(
-			companyId, classNameId, classPK, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommercePaymentEntriesCount(
-		long companyId, long classNameId, long classPK) {
-
-		return commercePaymentEntryPersistence.countByC_C_C(
-			companyId, classNameId, classPK);
-	}
-
-	@Override
 	public int getCommercePaymentEntriesCount(
 		long companyId, long classNameId, long classPK, int type) {
 

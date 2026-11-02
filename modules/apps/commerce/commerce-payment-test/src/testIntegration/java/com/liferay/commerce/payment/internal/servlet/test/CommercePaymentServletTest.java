@@ -239,7 +239,8 @@ public class CommercePaymentServletTest {
 					getCommercePaymentEntriesCount(
 						commerceOrder.getCompanyId(),
 						PortalUtil.getClassNameId(CommerceOrder.class),
-						commerceOrder.getCommerceOrderId()));
+						commerceOrder.getCommerceOrderId(),
+						CommercePaymentEntryConstants.TYPE_PAYMENT));
 		}
 	}
 
@@ -822,7 +823,8 @@ public class CommercePaymentServletTest {
 			_commercePaymentEntryLocalService.getCommercePaymentEntries(
 				commerceOrder.getCompanyId(),
 				PortalUtil.getClassNameId(CommerceOrder.class),
-				commerceOrder.getCommerceOrderId(), QueryUtil.ALL_POS,
+				commerceOrder.getCommerceOrderId(),
+				CommercePaymentEntryConstants.TYPE_PAYMENT, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null);
 
 		return commercePaymentEntries.get(0);

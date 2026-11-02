@@ -127,12 +127,6 @@ public class CommercePaymentEntryAuditLocalServiceImpl
 	}
 
 	@Override
-	public int getCommercePaymentEntryAuditsCount(long commercePaymentEntryId) {
-		return commercePaymentEntryAuditPersistence.
-			countByCommercePaymentEntryId(commercePaymentEntryId);
-	}
-
-	@Override
 	public BaseModelSearchResult<CommercePaymentEntryAudit>
 		searchCommercePaymentEntryAudits(
 			long companyId, String keywords,
