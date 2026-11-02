@@ -13,18 +13,6 @@ provider "google-beta" {
 	project=var.project_id
 	region=var.region
 }
-provider "helm" {
-	kubernetes={
-		config_path=""
-		host="https://connectgateway.googleapis.com/v1/projects/${local.project_number}/locations/global/gkeMemberships/${var.deployment_name}-membership"
-		token=data.google_client_config.default.access_token
-	}
-}
-provider "kubernetes" {
-	config_path=""
-	host="https://connectgateway.googleapis.com/v1/projects/${local.project_number}/locations/global/gkeMemberships/${var.deployment_name}-membership"
-	token=data.google_client_config.default.access_token
-}
 terraform {
 	backend "gcs" {}
 	required_providers {
@@ -35,14 +23,6 @@ terraform {
 		google-beta={
 			source="hashicorp/google-beta"
 			version="~> 7.0"
-		}
-		helm={
-			source="hashicorp/helm"
-			version="~> 3.1"
-		}
-		kubernetes={
-			source="hashicorp/kubernetes"
-			version="~> 2.36.0"
 		}
 		null={
 			source="hashicorp/null"

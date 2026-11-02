@@ -13,16 +13,9 @@ variable "deployment_name" {
 		error_message="The variable \"deployment_name\" must be 3-24 characters, start with a lowercase letter, and contain only lowercase letters, numbers, and hyphens."
 	}
 }
-variable "envoy_gateway_helm_chart_version" {
-	type=string
-}
 variable "envoy_listener_ports" {
 	default=["10080", "10443"]
 	type=list(string)
-}
-variable "gateway_namespace" {
-	default="envoy-gateway-system"
-	type=string
 }
 variable "gke_security_group" {
 	default=null
@@ -43,15 +36,6 @@ variable "master_ipv4_cidr_block" {
 variable "max_node_count" {
 	default=4
 	type=number
-}
-variable "metrics_scrape_config" {
-	default={}
-	type=object(
-		{
-			enabled=optional(bool, true)
-			namespace=optional(string, "gmp-system")
-		}
-	)
 }
 variable "min_node_count" {
 	default=1

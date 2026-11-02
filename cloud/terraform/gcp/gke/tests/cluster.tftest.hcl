@@ -1,7 +1,5 @@
 mock_provider "google" {}
 mock_provider "google-beta" {}
-mock_provider "helm" {}
-mock_provider "kubernetes" {}
 mock_provider "null" {}
 mock_provider "time" {}
 override_data {
@@ -146,7 +144,6 @@ run "should_set_node_autoscaling_bounds" {
 }
 variables {
 	deployment_name="liferay-test"
-	envoy_gateway_helm_chart_version="1.6.3"
 	project_id="liferay-test-project"
 	region="us-central1"
 }
