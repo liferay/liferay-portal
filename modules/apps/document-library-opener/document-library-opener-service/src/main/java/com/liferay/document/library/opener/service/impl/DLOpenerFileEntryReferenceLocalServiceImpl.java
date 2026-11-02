@@ -28,46 +28,6 @@ import org.osgi.service.component.annotations.Reference;
 public class DLOpenerFileEntryReferenceLocalServiceImpl
 	extends DLOpenerFileEntryReferenceLocalServiceBaseImpl {
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             #addDLOpenerFileEntryReference(long, String, String,
-	 *             FileEntry, int)}
-	 */
-	@Deprecated
-	@Override
-	public DLOpenerFileEntryReference addDLOpenerFileEntryReference(
-			long userId, String referenceKey, FileEntry fileEntry, int type)
-		throws PortalException {
-
-		return addDLOpenerFileEntryReference(
-			userId, referenceKey, _GOOGLE_REFERENCE_TYPE, fileEntry, type);
-	}
-
-	@Override
-	public DLOpenerFileEntryReference addDLOpenerFileEntryReference(
-			long userId, String referenceKey, String referenceType,
-			FileEntry fileEntry, int type)
-		throws PortalException {
-
-		return _addDLOpenerFileEntryReference(
-			userId, referenceKey, referenceType, fileEntry, type);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             #addPlaceholderDLOpenerFileEntryReference(long, String,
-	 *             FileEntry, int)}
-	 */
-	@Deprecated
-	@Override
-	public DLOpenerFileEntryReference addPlaceholderDLOpenerFileEntryReference(
-			long userId, FileEntry fileEntry, int type)
-		throws PortalException {
-
-		return addPlaceholderDLOpenerFileEntryReference(
-			userId, _GOOGLE_REFERENCE_TYPE, fileEntry, type);
-	}
-
 	@Override
 	public DLOpenerFileEntryReference addPlaceholderDLOpenerFileEntryReference(
 			long userId, String referenceType, FileEntry fileEntry, int type)
@@ -143,19 +103,6 @@ public class DLOpenerFileEntryReferenceLocalServiceImpl
 
 		return dlOpenerFileEntryReferencePersistence.findByR_F(
 			referenceType, fileEntry.getFileEntryId());
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 *             #updateDLOpenerFileEntryReference(String, String, FileEntry)}
-	 */
-	@Deprecated
-	@Override
-	public DLOpenerFileEntryReference updateDLOpenerFileEntryReference(
-		String referenceKey, FileEntry fileEntry) {
-
-		return updateDLOpenerFileEntryReference(
-			referenceKey, _GOOGLE_REFERENCE_TYPE, fileEntry);
 	}
 
 	@Override
