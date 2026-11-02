@@ -134,9 +134,6 @@ public interface LayoutSEOEntryLocalService
 			long groupId, boolean privateLayout, long layoutId)
 		throws NoSuchEntryException;
 
-	public void deleteLayoutSEOEntry(String uuid, long groupId)
-		throws NoSuchEntryException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -405,4 +402,4 @@ public interface LayoutSEOEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2067909273
+// LIFERAY-SERVICE-BUILDER-HASH:-1905923090

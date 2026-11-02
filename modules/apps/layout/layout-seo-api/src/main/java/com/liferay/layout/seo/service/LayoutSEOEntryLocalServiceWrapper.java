@@ -125,13 +125,6 @@ public class LayoutSEOEntryLocalServiceWrapper
 			groupId, privateLayout, layoutId);
 	}
 
-	@Override
-	public void deleteLayoutSEOEntry(String uuid, long groupId)
-		throws com.liferay.layout.seo.exception.NoSuchEntryException {
-
-		_layoutSEOEntryLocalService.deleteLayoutSEOEntry(uuid, groupId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -559,4 +552,4 @@ public class LayoutSEOEntryLocalServiceWrapper
 	private LayoutSEOEntryLocalService _layoutSEOEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1108466164
+// LIFERAY-SERVICE-BUILDER-HASH:1732395369
