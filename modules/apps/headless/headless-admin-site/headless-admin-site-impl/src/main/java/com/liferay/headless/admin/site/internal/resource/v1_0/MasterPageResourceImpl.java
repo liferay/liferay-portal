@@ -103,7 +103,7 @@ public class MasterPageResourceImpl
 			designLibraryExternalReferenceCode);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode, groupId);
 
 		int masterLayoutsCount = _layoutLocalService.getMasterLayoutsCount(
@@ -140,7 +140,7 @@ public class MasterPageResourceImpl
 
 		return _toDesignLibraryMasterPage(
 			designLibraryExternalReferenceCode,
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				_getDesignLibraryGroupId(designLibraryExternalReferenceCode)));
 	}
@@ -306,7 +306,7 @@ public class MasterPageResourceImpl
 		EnabledUtil.checkDesignLibraryMasterPagesEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				_getDesignLibraryGroupId(designLibraryExternalReferenceCode));
 
@@ -331,7 +331,7 @@ public class MasterPageResourceImpl
 		EnabledUtil.checkDesignLibraryMasterPagesEnabled(contextCompany);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				_getDesignLibraryGroupId(designLibraryExternalReferenceCode));
 
@@ -412,7 +412,7 @@ public class MasterPageResourceImpl
 		throws Exception {
 
 		return _toMasterPage(
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode,
 				GroupUtil.getGroupId(
 					true, contextCompany.getCompanyId(),
@@ -617,7 +617,7 @@ public class MasterPageResourceImpl
 			designLibraryExternalReferenceCode);
 
 		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_getLayoutPageTemplateEntry(
+			_getMasterLayoutPageTemplateEntry(
 				masterPageExternalReferenceCode, groupId);
 
 		if (layoutPageTemplateEntry.isDraft()) {
@@ -646,20 +646,6 @@ public class MasterPageResourceImpl
 			DepotConstants.TYPE_DESIGN_LIBRARY);
 	}
 
-	private LayoutPageTemplateEntry _getLayoutPageTemplateEntry(
-			String externalReferenceCode, long groupId)
-		throws Exception {
-
-		LayoutPageTemplateEntry layoutPageTemplateEntry =
-			_layoutPageTemplateEntryService.
-				getLayoutPageTemplateEntryByExternalReferenceCode(
-					externalReferenceCode, groupId);
-
-		_validateMasterPage(layoutPageTemplateEntry);
-
-		return layoutPageTemplateEntry;
-	}
-
 	private long _getLayoutPlid(
 			long groupId, MasterPage masterPage, ServiceContext serviceContext)
 		throws Exception {
@@ -682,6 +668,20 @@ public class MasterPageResourceImpl
 			serviceContext);
 
 		return layout.getPlid();
+	}
+
+	private LayoutPageTemplateEntry _getMasterLayoutPageTemplateEntry(
+			String externalReferenceCode, long groupId)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryService.
+				getLayoutPageTemplateEntryByExternalReferenceCode(
+					externalReferenceCode, groupId);
+
+		_validateMasterPage(layoutPageTemplateEntry);
+
+		return layoutPageTemplateEntry;
 	}
 
 	private Page<MasterPage> _getMasterPagesPage(
