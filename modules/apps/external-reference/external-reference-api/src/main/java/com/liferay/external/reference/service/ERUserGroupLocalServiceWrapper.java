@@ -28,18 +28,6 @@ public class ERUserGroupLocalServiceWrapper
 		_erUserGroupLocalService = erUserGroupLocalService;
 	}
 
-	@Override
-	public com.liferay.portal.kernel.model.UserGroup addOrUpdateUserGroup(
-			String externalReferenceCode, long userId, long companyId,
-			String name, String description,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _erUserGroupLocalService.addOrUpdateUserGroup(
-			externalReferenceCode, userId, companyId, name, description,
-			serviceContext);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -65,4 +53,4 @@ public class ERUserGroupLocalServiceWrapper
 	private ERUserGroupLocalService _erUserGroupLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:816529223
+// LIFERAY-SERVICE-BUILDER-HASH:-810762533

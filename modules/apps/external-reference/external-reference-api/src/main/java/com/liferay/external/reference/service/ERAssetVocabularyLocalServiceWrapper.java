@@ -28,20 +28,6 @@ public class ERAssetVocabularyLocalServiceWrapper
 		_erAssetVocabularyLocalService = erAssetVocabularyLocalService;
 	}
 
-	@Override
-	public com.liferay.asset.kernel.model.AssetVocabulary addOrUpdateVocabulary(
-			String externalReferenceCode, long userId, long groupId,
-			String title, java.util.Map<java.util.Locale, String> titleMap,
-			java.util.Map<java.util.Locale, String> descriptionMap,
-			String settings,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _erAssetVocabularyLocalService.addOrUpdateVocabulary(
-			externalReferenceCode, userId, groupId, title, titleMap,
-			descriptionMap, settings, serviceContext);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -67,4 +53,4 @@ public class ERAssetVocabularyLocalServiceWrapper
 	private ERAssetVocabularyLocalService _erAssetVocabularyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1977986615
+// LIFERAY-SERVICE-BUILDER-HASH:704859479

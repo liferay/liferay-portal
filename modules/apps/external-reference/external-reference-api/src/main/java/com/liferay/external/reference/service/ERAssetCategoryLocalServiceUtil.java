@@ -5,10 +5,7 @@
 
 package com.liferay.external.reference.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
-
-import java.util.Map;
 
 /**
  * Provides the local service utility for ERAssetCategory. This utility wraps
@@ -29,19 +26,6 @@ public class ERAssetCategoryLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.ERAssetCategoryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static com.liferay.asset.kernel.model.AssetCategory
-			addOrUpdateCategory(
-				String externalReferenceCode, long userId, long groupId,
-				long parentCategoryId, Map<java.util.Locale, String> titleMap,
-				Map<java.util.Locale, String> descriptionMap, long vocabularyId,
-				String[] categoryProperties,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addOrUpdateCategory(
-			externalReferenceCode, userId, groupId, parentCategoryId, titleMap,
-			descriptionMap, vocabularyId, categoryProperties, serviceContext);
-	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -62,4 +46,4 @@ public class ERAssetCategoryLocalServiceUtil {
 			ERAssetCategoryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2033009260
+// LIFERAY-SERVICE-BUILDER-HASH:-1303967038

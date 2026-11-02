@@ -7,9 +7,7 @@ package com.liferay.external.reference.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.service.BaseLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
@@ -37,12 +35,6 @@ public interface EROrganizationLocalService extends BaseLocalService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.EROrganizationLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the er organization local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link EROrganizationLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public Organization addOrUpdateOrganization(
-			String externalReferenceCode, long userId,
-			long parentOrganizationId, String name, String type, long regionId,
-			long countryId, long statusId, String comments, boolean site,
-			boolean hasLogo, byte[] logoBytes, ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -52,4 +44,4 @@ public interface EROrganizationLocalService extends BaseLocalService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1860128518
+// LIFERAY-SERVICE-BUILDER-HASH:18613544

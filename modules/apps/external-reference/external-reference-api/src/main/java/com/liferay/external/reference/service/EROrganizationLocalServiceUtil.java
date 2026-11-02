@@ -5,7 +5,6 @@
 
 package com.liferay.external.reference.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
 
 /**
@@ -27,20 +26,6 @@ public class EROrganizationLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.EROrganizationLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static com.liferay.portal.kernel.model.Organization
-			addOrUpdateOrganization(
-				String externalReferenceCode, long userId,
-				long parentOrganizationId, String name, String type,
-				long regionId, long countryId, long statusId, String comments,
-				boolean site, boolean hasLogo, byte[] logoBytes,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addOrUpdateOrganization(
-			externalReferenceCode, userId, parentOrganizationId, name, type,
-			regionId, countryId, statusId, comments, site, hasLogo, logoBytes,
-			serviceContext);
-	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -61,4 +46,4 @@ public class EROrganizationLocalServiceUtil {
 			EROrganizationLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1191217152
+// LIFERAY-SERVICE-BUILDER-HASH:-271584021

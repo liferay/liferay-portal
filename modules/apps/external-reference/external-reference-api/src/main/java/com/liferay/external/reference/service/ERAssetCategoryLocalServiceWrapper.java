@@ -28,21 +28,6 @@ public class ERAssetCategoryLocalServiceWrapper
 		_erAssetCategoryLocalService = erAssetCategoryLocalService;
 	}
 
-	@Override
-	public com.liferay.asset.kernel.model.AssetCategory addOrUpdateCategory(
-			String externalReferenceCode, long userId, long groupId,
-			long parentCategoryId,
-			java.util.Map<java.util.Locale, String> titleMap,
-			java.util.Map<java.util.Locale, String> descriptionMap,
-			long vocabularyId, String[] categoryProperties,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _erAssetCategoryLocalService.addOrUpdateCategory(
-			externalReferenceCode, userId, groupId, parentCategoryId, titleMap,
-			descriptionMap, vocabularyId, categoryProperties, serviceContext);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -68,4 +53,4 @@ public class ERAssetCategoryLocalServiceWrapper
 	private ERAssetCategoryLocalService _erAssetCategoryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1257149090
+// LIFERAY-SERVICE-BUILDER-HASH:248834791

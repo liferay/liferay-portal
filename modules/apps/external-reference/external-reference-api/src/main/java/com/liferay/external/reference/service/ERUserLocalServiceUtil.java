@@ -5,10 +5,7 @@
 
 package com.liferay.external.reference.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
-
-import java.util.List;
 
 /**
  * Provides the local service utility for ERUser. This utility wraps
@@ -29,28 +26,6 @@ public class ERUserLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.ERUserLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static com.liferay.portal.kernel.model.User addOrUpdateUser(
-			String externalReferenceCode, long creatorUserId, long companyId,
-			boolean autoPassword, String password1, String password2,
-			boolean autoScreenName, String screenName, String emailAddress,
-			java.util.Locale locale, String firstName, String middleName,
-			String lastName, long prefixListTypeId, long suffixListTypeId,
-			boolean male, int birthdayMonth, int birthdayDay, int birthdayYear,
-			String jobTitle, long[] groupIds, long[] organizationIds,
-			long[] roleIds,
-			List<com.liferay.portal.kernel.model.UserGroupRole> userGroupRoles,
-			long[] userGroupIds, boolean sendEmail,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addOrUpdateUser(
-			externalReferenceCode, creatorUserId, companyId, autoPassword,
-			password1, password2, autoScreenName, screenName, emailAddress,
-			locale, firstName, middleName, lastName, prefixListTypeId,
-			suffixListTypeId, male, birthdayMonth, birthdayDay, birthdayYear,
-			jobTitle, groupIds, organizationIds, roleIds, userGroupRoles,
-			userGroupIds, sendEmail, serviceContext);
-	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -69,4 +44,4 @@ public class ERUserLocalServiceUtil {
 		new Snapshot<>(ERUserLocalServiceUtil.class, ERUserLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:187338891
+// LIFERAY-SERVICE-BUILDER-HASH:339187187

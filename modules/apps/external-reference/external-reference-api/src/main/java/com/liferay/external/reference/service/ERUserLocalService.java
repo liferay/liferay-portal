@@ -7,15 +7,9 @@ package com.liferay.external.reference.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.model.UserGroupRole;
 import com.liferay.portal.kernel.service.BaseLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
-
-import java.util.List;
-import java.util.Locale;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -41,18 +35,6 @@ public interface ERUserLocalService extends BaseLocalService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.ERUserLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the er user local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ERUserLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public User addOrUpdateUser(
-			String externalReferenceCode, long creatorUserId, long companyId,
-			boolean autoPassword, String password1, String password2,
-			boolean autoScreenName, String screenName, String emailAddress,
-			Locale locale, String firstName, String middleName, String lastName,
-			long prefixListTypeId, long suffixListTypeId, boolean male,
-			int birthdayMonth, int birthdayDay, int birthdayYear,
-			String jobTitle, long[] groupIds, long[] organizationIds,
-			long[] roleIds, List<UserGroupRole> userGroupRoles,
-			long[] userGroupIds, boolean sendEmail,
-			ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -62,4 +44,4 @@ public interface ERUserLocalService extends BaseLocalService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-265480371
+// LIFERAY-SERVICE-BUILDER-HASH:-232089608

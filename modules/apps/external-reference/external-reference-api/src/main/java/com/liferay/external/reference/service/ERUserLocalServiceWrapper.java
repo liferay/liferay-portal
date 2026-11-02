@@ -25,31 +25,6 @@ public class ERUserLocalServiceWrapper
 		_erUserLocalService = erUserLocalService;
 	}
 
-	@Override
-	public com.liferay.portal.kernel.model.User addOrUpdateUser(
-			String externalReferenceCode, long creatorUserId, long companyId,
-			boolean autoPassword, String password1, String password2,
-			boolean autoScreenName, String screenName, String emailAddress,
-			java.util.Locale locale, String firstName, String middleName,
-			String lastName, long prefixListTypeId, long suffixListTypeId,
-			boolean male, int birthdayMonth, int birthdayDay, int birthdayYear,
-			String jobTitle, long[] groupIds, long[] organizationIds,
-			long[] roleIds,
-			java.util.List<com.liferay.portal.kernel.model.UserGroupRole>
-				userGroupRoles,
-			long[] userGroupIds, boolean sendEmail,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _erUserLocalService.addOrUpdateUser(
-			externalReferenceCode, creatorUserId, companyId, autoPassword,
-			password1, password2, autoScreenName, screenName, emailAddress,
-			locale, firstName, middleName, lastName, prefixListTypeId,
-			suffixListTypeId, male, birthdayMonth, birthdayDay, birthdayYear,
-			jobTitle, groupIds, organizationIds, roleIds, userGroupRoles,
-			userGroupIds, sendEmail, serviceContext);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -73,4 +48,4 @@ public class ERUserLocalServiceWrapper
 	private ERUserLocalService _erUserLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-77394725
+// LIFERAY-SERVICE-BUILDER-HASH:-679089589

@@ -7,9 +7,7 @@ package com.liferay.external.reference.service;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.model.UserGroup;
 import com.liferay.portal.kernel.service.BaseLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
 
@@ -37,10 +35,6 @@ public interface ERUserGroupLocalService extends BaseLocalService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.ERUserGroupLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the er user group local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ERUserGroupLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public UserGroup addOrUpdateUserGroup(
-			String externalReferenceCode, long userId, long companyId,
-			String name, String description, ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -50,4 +44,4 @@ public interface ERUserGroupLocalService extends BaseLocalService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1126901681
+// LIFERAY-SERVICE-BUILDER-HASH:476870970

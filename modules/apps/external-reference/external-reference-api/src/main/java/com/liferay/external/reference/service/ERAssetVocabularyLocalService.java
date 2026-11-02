@@ -5,16 +5,11 @@
 
 package com.liferay.external.reference.service;
 
-import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.service.BaseLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.transaction.Isolation;
 import com.liferay.portal.kernel.transaction.Transactional;
-
-import java.util.Locale;
-import java.util.Map;
 
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -40,12 +35,6 @@ public interface ERAssetVocabularyLocalService extends BaseLocalService {
 	 *
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.ERAssetVocabularyLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the er asset vocabulary local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link ERAssetVocabularyLocalServiceUtil} if injection and service tracking are not available.
 	 */
-	public AssetVocabulary addOrUpdateVocabulary(
-			String externalReferenceCode, long userId, long groupId,
-			String title, Map<Locale, String> titleMap,
-			Map<Locale, String> descriptionMap, String settings,
-			ServiceContext serviceContext)
-		throws PortalException;
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -55,4 +44,4 @@ public interface ERAssetVocabularyLocalService extends BaseLocalService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1658149471
+// LIFERAY-SERVICE-BUILDER-HASH:1143470432

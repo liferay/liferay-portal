@@ -28,21 +28,6 @@ public class EROrganizationLocalServiceWrapper
 		_erOrganizationLocalService = erOrganizationLocalService;
 	}
 
-	@Override
-	public com.liferay.portal.kernel.model.Organization addOrUpdateOrganization(
-			String externalReferenceCode, long userId,
-			long parentOrganizationId, String name, String type, long regionId,
-			long countryId, long statusId, String comments, boolean site,
-			boolean hasLogo, byte[] logoBytes,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _erOrganizationLocalService.addOrUpdateOrganization(
-			externalReferenceCode, userId, parentOrganizationId, name, type,
-			regionId, countryId, statusId, comments, site, hasLogo, logoBytes,
-			serviceContext);
-	}
-
 	/**
 	 * Returns the OSGi service identifier.
 	 *
@@ -68,4 +53,4 @@ public class EROrganizationLocalServiceWrapper
 	private EROrganizationLocalService _erOrganizationLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1100675234
+// LIFERAY-SERVICE-BUILDER-HASH:2024256283

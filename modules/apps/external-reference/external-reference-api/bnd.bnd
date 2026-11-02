@@ -1,4 +1,4 @@
 Bundle-Name: Liferay External Reference API
 Bundle-SymbolicName: com.liferay.external.reference.api
-Bundle-Version: 6.0.4
+Bundle-Version: 7.0.0
 Export-Package: com.liferay.external.reference.service

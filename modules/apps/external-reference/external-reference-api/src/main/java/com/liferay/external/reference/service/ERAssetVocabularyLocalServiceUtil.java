@@ -5,10 +5,7 @@
 
 package com.liferay.external.reference.service;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.module.service.Snapshot;
-
-import java.util.Map;
 
 /**
  * Provides the local service utility for ERAssetVocabulary. This utility wraps
@@ -29,18 +26,6 @@ public class ERAssetVocabularyLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.external.reference.service.impl.ERAssetVocabularyLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static com.liferay.asset.kernel.model.AssetVocabulary
-			addOrUpdateVocabulary(
-				String externalReferenceCode, long userId, long groupId,
-				String title, Map<java.util.Locale, String> titleMap,
-				Map<java.util.Locale, String> descriptionMap, String settings,
-				com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addOrUpdateVocabulary(
-			externalReferenceCode, userId, groupId, title, titleMap,
-			descriptionMap, settings, serviceContext);
-	}
 
 	/**
 	 * Returns the OSGi service identifier.
@@ -61,4 +46,4 @@ public class ERAssetVocabularyLocalServiceUtil {
 			ERAssetVocabularyLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-5486421
+// LIFERAY-SERVICE-BUILDER-HASH:94277626
