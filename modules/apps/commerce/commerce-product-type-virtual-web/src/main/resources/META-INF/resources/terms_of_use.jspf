@@ -5,6 +5,14 @@
  */
 --%>
 
+<%
+String termsOfUseContent = StringPool.BLANK;
+
+if (cpDefinitionVirtualSetting != null) {
+	termsOfUseContent = cpDefinitionVirtualSetting.getTermsOfUseContent();
+}
+%>
+
 <liferay-ui:error-marker
 	key="<%= WebKeys.ERROR_SECTION %>"
 	value="terms-of-use"
@@ -62,14 +70,14 @@
 								disabled="<%= useTermsOfUseJournal %>"
 								name="termsOfUseContent"
 								type="editor"
-								xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
+								xml="<%= termsOfUseContent %>"
 							/>
 						</c:when>
 						<c:otherwise>
 							<liferay-editor:input-localized
 								defaultLanguageId="<%= themeDisplay.getLanguageId() %>"
 								name="termsOfUseContent"
-								xml='<%= BeanPropertiesUtil.getString(cpDefinitionVirtualSetting, "termsOfUseContent") %>'
+								xml="<%= termsOfUseContent %>"
 							/>
 						</c:otherwise>
 					</c:choose>
