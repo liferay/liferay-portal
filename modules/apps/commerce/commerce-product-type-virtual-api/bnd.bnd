@@ -7,5 +7,4 @@ Export-Package:\
 	com.liferay.commerce.product.type.virtual.helper,\
 	com.liferay.commerce.product.type.virtual.model,\
 	com.liferay.commerce.product.type.virtual.service,\
-	com.liferay.commerce.product.type.virtual.service.persistence,\
-	com.liferay.commerce.product.type.virtual.util
+	com.liferay.commerce.product.type.virtual.service.persistence

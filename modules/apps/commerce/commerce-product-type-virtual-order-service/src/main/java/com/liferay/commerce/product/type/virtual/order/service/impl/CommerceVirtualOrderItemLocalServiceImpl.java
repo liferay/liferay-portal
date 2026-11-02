@@ -28,9 +28,9 @@ import com.liferay.commerce.product.type.virtual.order.service.CommerceVirtualOr
 import com.liferay.commerce.product.type.virtual.order.service.base.CommerceVirtualOrderItemLocalServiceBaseImpl;
 import com.liferay.commerce.product.type.virtual.service.CPDefinitionVirtualSettingLocalService;
 import com.liferay.commerce.product.type.virtual.service.persistence.CPDVirtualSettingFileEntryPersistence;
-import com.liferay.commerce.product.type.virtual.util.VirtualCPTypeURLValidatorUtil;
 import com.liferay.commerce.service.CommerceOrderItemLocalService;
 import com.liferay.commerce.service.CommerceSubscriptionEntryLocalService;
+import com.liferay.commerce.util.CommerceURLValidatorUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.sql.dsl.expression.Predicate;
 import com.liferay.petra.sql.dsl.query.DSLQuery;
@@ -529,7 +529,7 @@ public class CommerceVirtualOrderItemLocalServiceImpl
 		URL currentURL = new URL(url);
 
 		for (int i = 0; i <= _MAX_REDIRECTS; i++) {
-			if (!VirtualCPTypeURLValidatorUtil.isValidURL(
+			if (!CommerceURLValidatorUtil.isValidURL(
 					companyId, currentURL.toString())) {
 
 				throw new CommerceVirtualOrderItemUrlException();

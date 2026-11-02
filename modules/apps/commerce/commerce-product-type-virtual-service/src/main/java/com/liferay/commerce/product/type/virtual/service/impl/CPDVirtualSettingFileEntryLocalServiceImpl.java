@@ -10,7 +10,7 @@ import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSe
 import com.liferay.commerce.product.type.virtual.exception.CPDefinitionVirtualSettingURLException;
 import com.liferay.commerce.product.type.virtual.model.CPDVirtualSettingFileEntry;
 import com.liferay.commerce.product.type.virtual.service.base.CPDVirtualSettingFileEntryLocalServiceBaseImpl;
-import com.liferay.commerce.product.type.virtual.util.VirtualCPTypeURLValidatorUtil;
+import com.liferay.commerce.util.CommerceURLValidatorUtil;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.portal.aop.AopService;
@@ -192,7 +192,7 @@ public class CPDVirtualSettingFileEntryLocalServiceImpl
 		else if (Validator.isNull(url)) {
 			throw new CPDefinitionVirtualSettingException();
 		}
-		else if (!VirtualCPTypeURLValidatorUtil.isValidURL(companyId, url)) {
+		else if (!CommerceURLValidatorUtil.isValidURL(companyId, url)) {
 			throw new CPDefinitionVirtualSettingURLException();
 		}
 	}
