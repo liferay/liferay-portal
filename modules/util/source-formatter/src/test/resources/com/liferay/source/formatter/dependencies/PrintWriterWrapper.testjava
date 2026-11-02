@@ -1,0 +1,95 @@
+/**
+ * SPDX-FileCopyrightText: (c) 2026 Liferay, Inc. https://liferay.com
+ * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
+ */
+
+package com.liferay.source.formatter.dependencies;
+
+import com.liferay.petra.io.unsync.UnsyncPrintWriter;
+
+import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.Writer;
+
+import java.util.Map;
+
+/**
+ * @author Shuyang Zhou
+ */
+public class PrintWriterWrapper {
+
+	public PrintWriterWrapper(OutputStream outputStream) {
+		_unsyncPrintWriter = new UnsyncPrintWriter(outputStream);
+	}
+
+	public void method01(OutputStream outputStream, String s) {
+		PrintWriter printWriter = new PrintWriter(outputStream, true);
+
+		printWriter.println(s);
+
+		printWriter.close();
+	}
+
+	public void method02(OutputStream outputStream, String s) {
+		try (PrintWriter printWriter = new PrintWriter(outputStream)) {
+			printWriter.print(s);
+		}
+	}
+
+	public void method03(String s) {
+		_unsyncPrintWriter.write(s);
+
+		_unsyncPrintWriter.flush();
+	}
+
+	public void method04(Writer writer, String s) {
+		_write(new PrintWriter(writer, true), s);
+	}
+
+	public void method05(Map<String, Object> map, Writer writer) {
+		Writer templateWriter = new UnsyncPrintWriter(writer);
+
+		map.put("writer", templateWriter);
+	}
+
+	public void method06(Exception exception, Writer writer) {
+		exception.printStackTrace(new PrintWriter(writer));
+	}
+
+	public PrintWriter method07(Writer writer) {
+		return new UnsyncPrintWriter(writer);
+	}
+
+	public void method08(OutputStream outputStream, String s) {
+		PrintWriter printWriter = new PrintWriter(outputStream);
+
+		printWriter.printf("%s", s);
+
+		printWriter.close();
+	}
+
+	public void method09(Map<String, Object> map, Writer writer) {
+		PrintWriter printWriter = new PrintWriter(writer);
+
+		printWriter.println();
+
+		map.put("writer", printWriter);
+	}
+
+	public void method10(Writer writer, String s) {
+		_put(new PrintWriter(writer), s);
+	}
+
+	private void _put(PrintWriter printWriter, String s) {
+		printWriter.print(s);
+
+		_write(printWriter, s);
+	}
+
+	private void _write(PrintWriter printWriter, String s) {
+		printWriter.println(s);
+	}
+
+	private final UnsyncPrintWriter _unsyncPrintWriter;
+
+}

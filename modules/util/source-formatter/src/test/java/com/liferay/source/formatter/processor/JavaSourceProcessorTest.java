@@ -1011,6 +1011,29 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 	}
 
 	@Test
+	public void testPrintWriterWrapper() throws Exception {
+		String message = StringBundler.concat(
+			"Write to the wrapped \"Writer\" or the response writer directly, ",
+			"or use an \"OutputStreamWriter\" with an explicit charset for a ",
+			"stream, instead of a \"PrintWriter\" that only prints");
+
+		test(
+			SourceProcessorTestParameters.create(
+				"PrintWriterWrapper.testjava"
+			).addExpectedMessage(
+				message, 22
+			).addExpectedMessage(
+				message, 26
+			).addExpectedMessage(
+				message, 34
+			).addExpectedMessage(
+				message, 46
+			).addExpectedMessage(
+				message, 50
+			));
+	}
+
+	@Test
 	public void testProxyUsage() throws Exception {
 		test(
 			"ProxyUsage.testjava",
