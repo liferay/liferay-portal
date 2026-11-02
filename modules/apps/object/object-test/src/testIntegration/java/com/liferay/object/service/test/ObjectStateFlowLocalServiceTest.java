@@ -345,9 +345,8 @@ public class ObjectStateFlowLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			objectState.setObjectStateTransitions(
-				_objectStateTransitionLocalService.
-					getObjectStateObjectStateTransitions(
-						objectState.getObjectStateId()));
+				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
+					objectState.getObjectStateId()));
 		}
 
 		_objectStateFlow.setObjectStates(objectStates);
@@ -359,9 +358,8 @@ public class ObjectStateFlowLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			List<ObjectStateTransition> objectStateTransitions =
-				_objectStateTransitionLocalService.
-					getObjectStateObjectStateTransitions(
-						objectState.getObjectStateId());
+				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
+					objectState.getObjectStateId());
 
 			if (objectStateTransitions.isEmpty()) {
 				continue;
@@ -442,7 +440,8 @@ public class ObjectStateFlowLocalServiceTest {
 	}
 
 	private void _assertEquals(
-		List<ObjectState> objectStates1, List<ObjectState> objectStates2) {
+			List<ObjectState> objectStates1, List<ObjectState> objectStates2)
+		throws Exception {
 
 		Assert.assertEquals(
 			objectStates1.toString(), objectStates1.size(),
@@ -459,9 +458,8 @@ public class ObjectStateFlowLocalServiceTest {
 			List<ObjectStateTransition> objectStateTransitions1 =
 				objectState1.getObjectStateTransitions();
 			List<ObjectStateTransition> objectStateTransitions2 =
-				_objectStateTransitionLocalService.
-					getObjectStateObjectStateTransitions(
-						objectState2.getObjectStateId());
+				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
+					objectState2.getObjectStateId());
 
 			Assert.assertEquals(
 				objectStateTransitions1.toString(),

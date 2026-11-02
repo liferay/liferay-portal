@@ -2907,7 +2907,7 @@ public class ObjectDefinitionLocalServiceTest {
 			StringPool.TRUE);
 
 		Assert.assertNotNull(
-			_objectDefinitionSettingLocalService.getObjectDefinitionSetting(
+			ObjectDefinitionTestUtil.getObjectDefinitionSetting(
 				objectDefinition.getObjectDefinitionId(),
 				ObjectDefinitionSettingConstants.NAME_ACCEPT_ALL_GROUPS));
 

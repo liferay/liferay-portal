@@ -129,31 +129,6 @@ public class ObjectFolderItemLocalServiceImpl
 	}
 
 	@Override
-	public ObjectFolderItem fetchObjectFolderItem(
-		long objectDefinitionId, long objectFolderId) {
-
-		return objectFolderItemPersistence.fetchByODI_OFI(
-			objectDefinitionId, objectFolderId);
-	}
-
-	@Override
-	public ObjectFolderItem getObjectFolderItem(
-			long objectDefinitionId, long objectFolderId)
-		throws PortalException {
-
-		return objectFolderItemPersistence.findByODI_OFI(
-			objectDefinitionId, objectFolderId);
-	}
-
-	@Override
-	public List<ObjectFolderItem> getObjectFolderItemsByObjectDefinitionId(
-		long objectDefinitionId) {
-
-		return objectFolderItemPersistence.findByObjectDefinitionId(
-			objectDefinitionId);
-	}
-
-	@Override
 	public List<ObjectFolderItem> getObjectFolderItemsByObjectFolderId(
 		long objectFolderId) {
 

@@ -210,14 +210,6 @@ public class ObjectEntryVersionLocalServiceImpl
 	}
 
 	@Override
-	public ObjectEntryVersion expireObjectEntryVersion(
-			long userId, ObjectEntryVersion objectEntryVersion)
-		throws PortalException {
-
-		return _expireObjectEntryVersion(userId, objectEntryVersion);
-	}
-
-	@Override
 	public void expireObjectEntryVersions(
 			long userId, ObjectEntry objectEntry, ServiceContext serviceContext)
 		throws Exception {
@@ -270,23 +262,6 @@ public class ObjectEntryVersionLocalServiceImpl
 	@Override
 	public List<ObjectEntryVersion> getObjectEntryVersions(long objectEntryId) {
 		return objectEntryVersionPersistence.findByObjectEntryId(objectEntryId);
-	}
-
-	@Override
-	public List<ObjectEntryVersion> getObjectEntryVersions(
-		long objectEntryId, int start, int end) {
-
-		return objectEntryVersionPersistence.findByObjectEntryId(
-			objectEntryId, start, end);
-	}
-
-	@Override
-	public List<ObjectEntryVersion> getObjectEntryVersions(
-		long objectEntryId, int start, int end,
-		OrderByComparator<ObjectEntryVersion> orderByComparator) {
-
-		return objectEntryVersionPersistence.findByObjectEntryId(
-			objectEntryId, start, end, orderByComparator);
 	}
 
 	@Override

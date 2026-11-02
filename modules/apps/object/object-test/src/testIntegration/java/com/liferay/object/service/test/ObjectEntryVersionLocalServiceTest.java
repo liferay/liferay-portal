@@ -19,6 +19,7 @@ import com.liferay.object.related.models.test.util.ObjectEntryTestUtil;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryVersionLocalService;
+import com.liferay.object.service.persistence.ObjectEntryVersionUtil;
 import com.liferay.object.util.comparator.ObjectEntryVersionVersionComparator;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
@@ -42,9 +43,11 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -820,19 +823,19 @@ public class ObjectEntryVersionLocalServiceTest {
 				objectEntry.getObjectEntryId()));
 		_assertEquals(
 			expectedObjectEntryVersions.subList(0, 5),
-			_objectEntryVersionLocalService.getObjectEntryVersions(
-				objectEntry.getObjectEntryId(), 0, 5));
+			_getObjectEntryVersions(
+				objectEntry.getObjectEntryId(), 0, 5, null));
 		_assertEquals(
 			expectedObjectEntryVersions.subList(5, 10),
-			_objectEntryVersionLocalService.getObjectEntryVersions(
-				objectEntry.getObjectEntryId(), 5, 10));
+			_getObjectEntryVersions(
+				objectEntry.getObjectEntryId(), 5, 10, null));
 		_assertEquals(
 			Collections.emptyList(),
-			_objectEntryVersionLocalService.getObjectEntryVersions(
-				objectEntry.getObjectEntryId(), 10, 11));
+			_getObjectEntryVersions(
+				objectEntry.getObjectEntryId(), 10, 11, null));
 		_assertEquals(
 			expectedObjectEntryVersions,
-			_objectEntryVersionLocalService.getObjectEntryVersions(
+			_getObjectEntryVersions(
 				objectEntry.getObjectEntryId(), 0, 10,
 				ObjectEntryVersionVersionComparator.getInstance(true)));
 
@@ -840,7 +843,7 @@ public class ObjectEntryVersionLocalServiceTest {
 
 		_assertEquals(
 			expectedObjectEntryVersions,
-			_objectEntryVersionLocalService.getObjectEntryVersions(
+			_getObjectEntryVersions(
 				objectEntry.getObjectEntryId(), 0, 10,
 				ObjectEntryVersionVersionComparator.getInstance(false)));
 	}
@@ -986,6 +989,18 @@ public class ObjectEntryVersionLocalServiceTest {
 			).put(
 				"maximumVersionsPerEntry", maximumVersionsPerEntry
 			).build());
+	}
+
+	private List<ObjectEntryVersion> _getObjectEntryVersions(
+			long objectEntryId, int start, int end,
+			OrderByComparator<ObjectEntryVersion> orderByComparator)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			ObjectEntryVersionUtil.getPersistence(),
+			objectEntryVersionPersistence ->
+				objectEntryVersionPersistence.findByObjectEntryId(
+					objectEntryId, start, end, orderByComparator));
 	}
 
 	private Date _getPastDate(int months) {

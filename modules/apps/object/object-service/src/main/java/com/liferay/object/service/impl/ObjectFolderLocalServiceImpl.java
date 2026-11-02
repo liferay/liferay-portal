@@ -152,11 +152,6 @@ public class ObjectFolderLocalServiceImpl
 	}
 
 	@Override
-	public int getObjectFoldersCount(long companyId) {
-		return objectFolderPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public ObjectFolder getOrAddDefaultObjectFolder(long companyId)
 		throws PortalException {
 

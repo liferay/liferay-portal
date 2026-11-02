@@ -10,8 +10,12 @@ import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.field.builder.TextObjectFieldBuilder;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
+import com.liferay.object.model.ObjectDefinitionSetting;
 import com.liferay.object.model.ObjectField;
+import com.liferay.object.model.ObjectStateTransition;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
+import com.liferay.object.service.persistence.ObjectDefinitionSettingUtil;
+import com.liferay.object.service.persistence.ObjectStateTransitionUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
@@ -19,6 +23,7 @@ import com.liferay.portal.kernel.security.RandomUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.vulcan.util.LocalizedMapUtil;
@@ -175,6 +180,28 @@ public class ObjectDefinitionTestUtil {
 			pkObjectFieldName, pluralLabelMap, false, scope,
 			titleObjectFieldName, version, WorkflowConstants.STATUS_APPROVED,
 			Collections.emptyList(), objectFields, Collections.emptyList());
+	}
+
+	public static ObjectDefinitionSetting getObjectDefinitionSetting(
+			long objectDefinitionId, String name)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			ObjectDefinitionSettingUtil.getPersistence(),
+			objectDefinitionSettingPersistence ->
+				objectDefinitionSettingPersistence.findByODI_N(
+					objectDefinitionId, name));
+	}
+
+	public static List<ObjectStateTransition>
+			getObjectStateObjectStateTransitions(long objectStateId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			ObjectStateTransitionUtil.getPersistence(),
+			objectStateTransitionPersistence ->
+				objectStateTransitionPersistence.findBySourceObjectStateId(
+					objectStateId));
 	}
 
 	public static String getRandomModifiableSystemObjectDefinitionName() {

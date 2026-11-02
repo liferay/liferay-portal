@@ -196,15 +196,12 @@ public class GroupModelListenerTest {
 					objectDefinition1.getObjectDefinitionId(), ", name=",
 					ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS,
 					"}"),
-				() ->
-					_objectDefinitionSettingLocalService.
-						getObjectDefinitionSetting(
-							objectDefinition1.getObjectDefinitionId(),
-							ObjectDefinitionSettingConstants.
-								NAME_ACCEPTED_GROUP_IDS));
+				() -> ObjectDefinitionTestUtil.getObjectDefinitionSetting(
+					objectDefinition1.getObjectDefinitionId(),
+					ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS));
 
 			objectDefinitionSetting =
-				_objectDefinitionSettingLocalService.getObjectDefinitionSetting(
+				ObjectDefinitionTestUtil.getObjectDefinitionSetting(
 					objectDefinition2.getObjectDefinitionId(),
 					ObjectDefinitionSettingConstants.NAME_ACCEPTED_GROUP_IDS);
 

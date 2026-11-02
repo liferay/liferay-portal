@@ -13210,9 +13210,8 @@ public class ObjectEntryLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			List<ObjectStateTransition> objectStateTransitions =
-				_objectStateTransitionLocalService.
-					getObjectStateObjectStateTransitions(
-						objectState.getObjectStateId());
+				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
+					objectState.getObjectStateId());
 
 			objectState.setObjectStateTransitions(
 				Collections.singletonList(objectStateTransitions.get(0)));
@@ -13794,9 +13793,8 @@ public class ObjectEntryLocalServiceTest {
 
 		for (ObjectState objectState : objectStates) {
 			List<ObjectStateTransition> objectStateTransitions =
-				_objectStateTransitionLocalService.
-					getObjectStateObjectStateTransitions(
-						objectState.getObjectStateId());
+				ObjectDefinitionTestUtil.getObjectStateObjectStateTransitions(
+					objectState.getObjectStateId());
 
 			objectState.setObjectStateTransitions(
 				Collections.singletonList(objectStateTransitions.get(0)));

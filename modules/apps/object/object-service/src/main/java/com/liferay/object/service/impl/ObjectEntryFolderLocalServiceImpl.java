@@ -26,11 +26,9 @@ import com.liferay.object.exception.ObjectEntryFolderScopeException;
 import com.liferay.object.exception.RequiredObjectEntryFolderException;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectEntryFolder;
-import com.liferay.object.model.ObjectEntryFolderTable;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.base.ObjectEntryFolderLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectEntryPersistence;
-import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -323,27 +321,6 @@ public class ObjectEntryFolderLocalServiceImpl
 
 		return objectEntryFolderPersistence.findByG_C_P(
 			groupId, companyId, parentObjectEntryFolderId, start, end);
-	}
-
-	@Override
-	public List<ObjectEntryFolder> getObjectEntryFoldersByExternalReferenceCode(
-		String externalReferenceCode, List<Long> groupIds, long companyId) {
-
-		return dslQuery(
-			DSLQueryFactoryUtil.select(
-				ObjectEntryFolderTable.INSTANCE
-			).from(
-				ObjectEntryFolderTable.INSTANCE
-			).where(
-				ObjectEntryFolderTable.INSTANCE.externalReferenceCode.eq(
-					externalReferenceCode
-				).and(
-					ObjectEntryFolderTable.INSTANCE.groupId.in(
-						groupIds.toArray(new Long[0]))
-				).and(
-					ObjectEntryFolderTable.INSTANCE.companyId.eq(companyId)
-				)
-			));
 	}
 
 	@Override

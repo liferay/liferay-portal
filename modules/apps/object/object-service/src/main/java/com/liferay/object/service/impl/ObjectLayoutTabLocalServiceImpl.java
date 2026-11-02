@@ -94,13 +94,6 @@ public class ObjectLayoutTabLocalServiceImpl
 		}
 	}
 
-	@Override
-	public List<ObjectLayoutTab> getObjectLayoutObjectLayoutTabs(
-		long objectLayoutId) {
-
-		return objectLayoutTabPersistence.findByObjectLayoutId(objectLayoutId);
-	}
-
 	@Clusterable
 	@Override
 	public void registerObjectLayoutTabScreenNavigationCategories(

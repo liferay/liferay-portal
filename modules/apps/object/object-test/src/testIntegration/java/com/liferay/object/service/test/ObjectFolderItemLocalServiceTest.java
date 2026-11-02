@@ -17,6 +17,7 @@ import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectFolderItemLocalService;
 import com.liferay.object.service.ObjectFolderLocalService;
 import com.liferay.object.service.ObjectRelationshipLocalService;
+import com.liferay.object.service.persistence.ObjectFolderItemUtil;
 import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.object.test.util.ObjectRelationshipTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -209,7 +211,7 @@ public class ObjectFolderItemLocalServiceTest {
 			_objectFolderB.getObjectFolderId());
 
 		Assert.assertNotNull(
-			_objectFolderItemLocalService.getObjectFolderItem(
+			_getObjectFolderItem(
 				_objectDefinition1.getObjectDefinitionId(),
 				_objectFolderB.getObjectFolderId()));
 
@@ -220,7 +222,7 @@ public class ObjectFolderItemLocalServiceTest {
 			_objectFolderB.getObjectFolderId());
 
 		Assert.assertNotNull(
-			_objectFolderItemLocalService.getObjectFolderItem(
+			_getObjectFolderItem(
 				_objectDefinition2.getObjectDefinitionId(),
 				_objectFolderB.getObjectFolderId()));
 
@@ -242,12 +244,13 @@ public class ObjectFolderItemLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteObjectFolderItemByObjectDefinitionId() {
+	public void testDeleteObjectFolderItemByObjectDefinitionId()
+		throws Exception {
+
 		Assert.assertTrue(
 			ListUtil.isNotEmpty(
-				_objectFolderItemLocalService.
-					getObjectFolderItemsByObjectDefinitionId(
-						_objectDefinition1.getObjectDefinitionId())));
+				_getObjectFolderItems(
+					_objectDefinition1.getObjectDefinitionId())));
 
 		_objectFolderItemLocalService.
 			deleteObjectFolderItemByObjectDefinitionId(
@@ -255,9 +258,8 @@ public class ObjectFolderItemLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				_objectFolderItemLocalService.
-					getObjectFolderItemsByObjectDefinitionId(
-						_objectDefinition1.getObjectDefinitionId())));
+				_getObjectFolderItems(
+					_objectDefinition1.getObjectDefinitionId())));
 	}
 
 	@Test
@@ -389,6 +391,28 @@ public class ObjectFolderItemLocalServiceTest {
 
 		Assert.assertArrayEquals(
 			expectedObjectDefinitionIds, actualObjectDefinitionIds);
+	}
+
+	private ObjectFolderItem _getObjectFolderItem(
+			long objectDefinitionId, long objectFolderId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			ObjectFolderItemUtil.getPersistence(),
+			objectFolderItemPersistence ->
+				objectFolderItemPersistence.findByODI_OFI(
+					objectDefinitionId, objectFolderId));
+	}
+
+	private List<ObjectFolderItem> _getObjectFolderItems(
+			long objectDefinitionId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			ObjectFolderItemUtil.getPersistence(),
+			objectFolderItemPersistence ->
+				objectFolderItemPersistence.findByObjectDefinitionId(
+					objectDefinitionId));
 	}
 
 	@DeleteAfterTestRun

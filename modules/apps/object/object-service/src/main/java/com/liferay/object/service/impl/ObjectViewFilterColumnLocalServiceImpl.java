@@ -15,7 +15,6 @@ import com.liferay.object.model.ObjectView;
 import com.liferay.object.model.ObjectViewFilterColumn;
 import com.liferay.object.service.base.ObjectViewFilterColumnLocalServiceBaseImpl;
 import com.liferay.object.service.persistence.ObjectFieldPersistence;
-import com.liferay.object.service.persistence.ObjectViewPersistence;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
@@ -75,30 +74,6 @@ public class ObjectViewFilterColumnLocalServiceImpl
 				return objectViewFilterColumnPersistence.update(
 					newObjectViewFilterColumn);
 			});
-	}
-
-	@Override
-	public ObjectViewFilterColumn updateObjectViewFilterColumn(
-			long objectViewFilterColumnId, long objectViewId, String filterType,
-			String json, String objectFieldName)
-		throws PortalException {
-
-		ObjectView objectView = _objectViewPersistence.findByPrimaryKey(
-			objectViewId);
-
-		ObjectViewFilterColumn objectViewFilterColumn =
-			objectViewFilterColumnPersistence.findByPrimaryKey(
-				objectViewFilterColumnId);
-
-		objectViewFilterColumn.setFilterType(filterType);
-		objectViewFilterColumn.setJSON(json);
-		objectViewFilterColumn.setObjectFieldName(objectFieldName);
-
-		_validate(
-			objectView.getObjectDefinitionId(),
-			Collections.singletonList(objectViewFilterColumn));
-
-		return objectViewFilterColumnPersistence.update(objectViewFilterColumn);
 	}
 
 	private boolean _isEmpty(ObjectViewFilterColumn objectViewFilterColumn)
@@ -201,8 +176,5 @@ public class ObjectViewFilterColumnLocalServiceImpl
 
 	@Reference
 	private ObjectFieldPersistence _objectFieldPersistence;
-
-	@Reference
-	private ObjectViewPersistence _objectViewPersistence;
 
 }
