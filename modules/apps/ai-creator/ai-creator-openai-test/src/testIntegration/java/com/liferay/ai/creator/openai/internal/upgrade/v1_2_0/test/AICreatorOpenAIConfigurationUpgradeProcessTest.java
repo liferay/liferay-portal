@@ -82,6 +82,8 @@ public class AICreatorOpenAIConfigurationUpgradeProcessTest {
 			AICreatorOpenAIGroupConfiguration.class.getName() + ".scoped",
 			StringPool.QUESTION,
 			HashMapDictionaryBuilder.<String, Object>put(
+				"companyId", TestPropsValues.getCompanyId()
+			).put(
 				"enableDALLEToCreateImages", false
 			).put(
 				"groupId", _group.getGroupId()
