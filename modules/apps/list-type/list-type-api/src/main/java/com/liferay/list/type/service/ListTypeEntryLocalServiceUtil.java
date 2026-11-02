@@ -123,14 +123,6 @@ public class ListTypeEntryLocalServiceUtil {
 		return getService().deleteListTypeEntry(listTypeEntryId);
 	}
 
-	public static void deleteListTypeEntryByListTypeDefinitionId(
-			long listTypeDefinitionId)
-		throws PortalException {
-
-		getService().deleteListTypeEntryByListTypeDefinitionId(
-			listTypeDefinitionId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -354,15 +346,6 @@ public class ListTypeEntryLocalServiceUtil {
 		return getService().getListTypeEntry(listTypeDefinitionId, key);
 	}
 
-	public static ListTypeEntry getListTypeEntryByExternalReferenceCode(
-			String externalReferenceCode, long companyId,
-			long listTypeDefinitionId)
-		throws PortalException {
-
-		return getService().getListTypeEntryByExternalReferenceCode(
-			externalReferenceCode, companyId, listTypeDefinitionId);
-	}
-
 	/**
 	 * Returns the list type entry with the matching UUID and company.
 	 *
@@ -446,4 +429,4 @@ public class ListTypeEntryLocalServiceUtil {
 			ListTypeEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1502413707
+// LIFERAY-SERVICE-BUILDER-HASH:-1028348127

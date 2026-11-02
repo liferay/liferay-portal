@@ -125,10 +125,6 @@ public interface ListTypeEntryLocalService
 	public ListTypeEntry deleteListTypeEntry(long listTypeEntryId)
 		throws PortalException;
 
-	public void deleteListTypeEntryByListTypeDefinitionId(
-			long listTypeDefinitionId)
-		throws PortalException;
-
 	/**
 	 * @throws PortalException
 	 */
@@ -296,12 +292,6 @@ public interface ListTypeEntryLocalService
 	public ListTypeEntry getListTypeEntry(long listTypeDefinitionId, String key)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public ListTypeEntry getListTypeEntryByExternalReferenceCode(
-			String externalReferenceCode, long companyId,
-			long listTypeDefinitionId)
-		throws PortalException;
-
 	/**
 	 * Returns the list type entry with the matching UUID and company.
 	 *
@@ -359,4 +349,4 @@ public interface ListTypeEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1268605703
+// LIFERAY-SERVICE-BUILDER-HASH:-2140263931

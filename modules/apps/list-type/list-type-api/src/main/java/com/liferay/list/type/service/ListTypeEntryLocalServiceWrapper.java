@@ -127,15 +127,6 @@ public class ListTypeEntryLocalServiceWrapper
 		return _listTypeEntryLocalService.deleteListTypeEntry(listTypeEntryId);
 	}
 
-	@Override
-	public void deleteListTypeEntryByListTypeDefinitionId(
-			long listTypeDefinitionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_listTypeEntryLocalService.deleteListTypeEntryByListTypeDefinitionId(
-			listTypeDefinitionId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -408,18 +399,6 @@ public class ListTypeEntryLocalServiceWrapper
 			listTypeDefinitionId, key);
 	}
 
-	@Override
-	public com.liferay.list.type.model.ListTypeEntry
-			getListTypeEntryByExternalReferenceCode(
-				String externalReferenceCode, long companyId,
-				long listTypeDefinitionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _listTypeEntryLocalService.
-			getListTypeEntryByExternalReferenceCode(
-				externalReferenceCode, companyId, listTypeDefinitionId);
-	}
-
 	/**
 	 * Returns the list type entry with the matching UUID and company.
 	 *
@@ -522,4 +501,4 @@ public class ListTypeEntryLocalServiceWrapper
 	private ListTypeEntryLocalService _listTypeEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-883952857
+// LIFERAY-SERVICE-BUILDER-HASH:1654838985
