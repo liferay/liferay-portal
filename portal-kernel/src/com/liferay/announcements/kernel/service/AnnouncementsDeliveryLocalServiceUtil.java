@@ -127,10 +127,6 @@ public class AnnouncementsDeliveryLocalServiceUtil {
 		getService().deleteDelivery(deliveryId);
 	}
 
-	public static void deleteDelivery(long userId, String type) {
-		getService().deleteDelivery(userId, type);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -278,12 +274,6 @@ public class AnnouncementsDeliveryLocalServiceUtil {
 		return getService().getAnnouncementsDelivery(deliveryId);
 	}
 
-	public static AnnouncementsDelivery getDelivery(long deliveryId)
-		throws PortalException {
-
-		return getService().getDelivery(deliveryId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -356,4 +346,4 @@ public class AnnouncementsDeliveryLocalServiceUtil {
 	private static volatile AnnouncementsDeliveryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:143034466
+// LIFERAY-SERVICE-BUILDER-HASH:-939025031

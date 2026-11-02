@@ -357,13 +357,6 @@ public interface AnnouncementsEntryLocalService
 	public PersistedModel getPersistedModel(Serializable primaryKeyObj)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AnnouncementsEntry> getUserEntries(
-		long userId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserEntriesCount(long userId);
-
 	/**
 	 * Updates the announcements entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -399,4 +392,4 @@ public interface AnnouncementsEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:69301426
+// LIFERAY-SERVICE-BUILDER-HASH:-1899988676

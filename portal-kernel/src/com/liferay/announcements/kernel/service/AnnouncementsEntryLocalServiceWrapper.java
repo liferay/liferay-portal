@@ -482,19 +482,6 @@ public class AnnouncementsEntryLocalServiceWrapper
 		return _announcementsEntryLocalService.getPersistedModel(primaryKeyObj);
 	}
 
-	@Override
-	public java.util.List<AnnouncementsEntry> getUserEntries(
-		long userId, int start, int end) {
-
-		return _announcementsEntryLocalService.getUserEntries(
-			userId, start, end);
-	}
-
-	@Override
-	public int getUserEntriesCount(long userId) {
-		return _announcementsEntryLocalService.getUserEntriesCount(userId);
-	}
-
 	/**
 	 * Updates the announcements entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -565,4 +552,4 @@ public class AnnouncementsEntryLocalServiceWrapper
 	private AnnouncementsEntryLocalService _announcementsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:640553938
+// LIFERAY-SERVICE-BUILDER-HASH:-794964408

@@ -425,16 +425,6 @@ public class AnnouncementsEntryLocalServiceUtil {
 		return getService().getPersistedModel(primaryKeyObj);
 	}
 
-	public static List<AnnouncementsEntry> getUserEntries(
-		long userId, int start, int end) {
-
-		return getService().getUserEntries(userId, start, end);
-	}
-
-	public static int getUserEntriesCount(long userId) {
-		return getService().getUserEntriesCount(userId);
-	}
-
 	/**
 	 * Updates the announcements entry in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
@@ -473,4 +463,4 @@ public class AnnouncementsEntryLocalServiceUtil {
 	private static volatile AnnouncementsEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2055724482
+// LIFERAY-SERVICE-BUILDER-HASH:234281842

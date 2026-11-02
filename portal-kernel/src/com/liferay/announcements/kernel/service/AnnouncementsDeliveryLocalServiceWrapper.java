@@ -135,11 +135,6 @@ public class AnnouncementsDeliveryLocalServiceWrapper
 		_announcementsDeliveryLocalService.deleteDelivery(deliveryId);
 	}
 
-	@Override
-	public void deleteDelivery(long userId, String type) {
-		_announcementsDeliveryLocalService.deleteDelivery(userId, type);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -315,13 +310,6 @@ public class AnnouncementsDeliveryLocalServiceWrapper
 	}
 
 	@Override
-	public AnnouncementsDelivery getDelivery(long deliveryId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _announcementsDeliveryLocalService.getDelivery(deliveryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -433,4 +421,4 @@ public class AnnouncementsDeliveryLocalServiceWrapper
 		_announcementsDeliveryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2026996958
+// LIFERAY-SERVICE-BUILDER-HASH:369853315

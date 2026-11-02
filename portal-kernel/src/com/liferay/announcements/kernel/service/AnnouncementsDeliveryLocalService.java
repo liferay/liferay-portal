@@ -132,8 +132,6 @@ public interface AnnouncementsDeliveryLocalService
 
 	public void deleteDelivery(long deliveryId) throws PortalException;
 
-	public void deleteDelivery(long userId, String type);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -254,10 +252,6 @@ public interface AnnouncementsDeliveryLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AnnouncementsDelivery getDelivery(long deliveryId)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -317,4 +311,4 @@ public interface AnnouncementsDeliveryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1611069200
+// LIFERAY-SERVICE-BUILDER-HASH:-1922289171
