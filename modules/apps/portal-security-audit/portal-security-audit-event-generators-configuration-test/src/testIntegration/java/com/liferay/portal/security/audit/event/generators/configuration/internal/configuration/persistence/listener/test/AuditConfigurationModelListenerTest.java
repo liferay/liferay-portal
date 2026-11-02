@@ -143,8 +143,6 @@ public class AuditConfigurationModelListenerTest {
 		JSONArray attributesJSONArray = additionalInfoJSONObject.getJSONArray(
 			"attributes");
 
-		Assert.assertEquals(1, attributesJSONArray.length());
-
 		JSONObject attributeJSONObject = attributesJSONArray.getJSONObject(0);
 
 		Assert.assertEquals(name, attributeJSONObject.getString("name"));
@@ -152,6 +150,8 @@ public class AuditConfigurationModelListenerTest {
 			StringPool.BLANK, attributeJSONObject.getString("newValue"));
 		Assert.assertEquals(
 			StringPool.BLANK, attributeJSONObject.getString("oldValue"));
+
+		Assert.assertEquals(1, attributesJSONArray.length());
 	}
 
 	private void _assertNotContains(AuditMessage auditMessage, String value) {
