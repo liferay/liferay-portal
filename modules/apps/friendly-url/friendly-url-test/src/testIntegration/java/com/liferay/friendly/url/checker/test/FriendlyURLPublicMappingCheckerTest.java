@@ -6,6 +6,7 @@
 package com.liferay.friendly.url.checker.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.friendly.url.checker.FriendlyURLPublicMappingChecker;
 import com.liferay.friendly.url.checker.FriendlyURLPublicMappingConflict;
 import com.liferay.friendly.url.model.FriendlyURLEntry;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
+import com.liferay.site.model.SiteFriendlyURL;
 import com.liferay.site.service.SiteFriendlyURLLocalService;
 
 import java.util.ArrayList;
@@ -265,9 +267,17 @@ public class FriendlyURLPublicMappingCheckerTest {
 			Group group, String friendlyURL, String languageId)
 		throws Exception {
 
-		_siteFriendlyURLLocalService.addSiteFriendlyURL(
-			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
-			group.getGroupId(), friendlyURL, languageId, _getServiceContext());
+		SiteFriendlyURL siteFriendlyURL =
+			_siteFriendlyURLLocalService.createSiteFriendlyURL(
+				_counterLocalService.increment());
+
+		siteFriendlyURL.setGroupId(group.getGroupId());
+		siteFriendlyURL.setCompanyId(TestPropsValues.getCompanyId());
+		siteFriendlyURL.setUserId(TestPropsValues.getUserId());
+		siteFriendlyURL.setFriendlyURL(friendlyURL);
+		siteFriendlyURL.setLanguageId(languageId);
+
+		_siteFriendlyURLLocalService.addSiteFriendlyURL(siteFriendlyURL);
 	}
 
 	private FriendlyURLPublicMappingConflict
@@ -306,6 +316,9 @@ public class FriendlyURLPublicMappingCheckerTest {
 		return ServiceContextTestUtil.getServiceContext(
 			_defaultGroup.getGroupId(), TestPropsValues.getUserId());
 	}
+
+	@Inject
+	private CounterLocalService _counterLocalService;
 
 	private Group _defaultGroup;
 
