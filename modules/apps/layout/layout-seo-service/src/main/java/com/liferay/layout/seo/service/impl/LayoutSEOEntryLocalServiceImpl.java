@@ -117,14 +117,6 @@ public class LayoutSEOEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteLayoutSEOEntry(String uuid, long groupId)
-		throws NoSuchEntryException {
-
-		layoutSEOEntryLocalService.deleteLayoutSEOEntry(
-			layoutSEOEntryPersistence.findByUUID_G(uuid, groupId));
-	}
-
-	@Override
 	public LayoutSEOEntry fetchLayoutSEOEntry(Layout layout) {
 		if (layout instanceof VirtualLayout) {
 			VirtualLayout virtualLayout = (VirtualLayout)layout;

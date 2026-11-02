@@ -5,7 +5,6 @@
 
 package com.liferay.layout.seo.service.impl;
 
-import com.liferay.layout.seo.exception.NoSuchSiteException;
 import com.liferay.layout.seo.model.LayoutSEOSite;
 import com.liferay.layout.seo.service.base.LayoutSEOSiteLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
@@ -33,13 +32,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class LayoutSEOSiteLocalServiceImpl
 	extends LayoutSEOSiteLocalServiceBaseImpl {
-
-	@Override
-	public void deleteLayoutSEOSite(String uuid, long groupId)
-		throws NoSuchSiteException {
-
-		layoutSEOSitePersistence.removeByUUID_G(uuid, groupId);
-	}
 
 	@Override
 	public LayoutSEOSite fetchLayoutSEOSiteByGroupId(long groupId) {
