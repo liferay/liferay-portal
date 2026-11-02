@@ -100,11 +100,13 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcessTest {
 			Validator.isNull(
 				draftLayout.getMasterLayoutPageTemplateEntryERC()));
 
-		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
-			_upgradeStepRegistrator, _CLASS_NAME);
-
 		try (SafeCloseable safeCloseable = CompanyThreadLocal.lock(
 				_company.getCompanyId())) {
+
+			UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
+				_upgradeStepRegistrator,
+				"com.liferay.site.cms.site.initializer.internal.upgrade." +
+					"v3_0_6.CMSMissingLayoutPageTemplatesUpgradeProcess");
 
 			upgradeProcess.upgrade();
 		}
@@ -116,8 +118,6 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcessTest {
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 				group.getGroupId(), "content-editor-master");
 
-		Assert.assertNotNull(contentEditorMasterLayoutPageTemplateEntry);
-
 		Layout updatedDraftLayout = _layoutLocalService.fetchLayout(
 			draftLayout.getPlid());
 
@@ -126,10 +126,6 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcessTest {
 				getExternalReferenceCode(),
 			updatedDraftLayout.getMasterLayoutPageTemplateEntryERC());
 	}
-
-	private static final String _CLASS_NAME =
-		"com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6." +
-			"CMSMissingLayoutPageTemplatesUpgradeProcess";
 
 	private static Company _company;
 

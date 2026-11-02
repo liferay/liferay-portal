@@ -68,7 +68,14 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		_companyLocalService.forEachCompanyId(this::_upgradeCompany);
+		File file = _getLayoutPageTemplatesFile();
+
+		if (file == null) {
+			return;
+		}
+
+		_companyLocalService.forEachCompanyId(
+			companyId -> _upgradeCompany(companyId, file));
 	}
 
 	private void _backfillContentEditorMasterExternalReferenceCode(long groupId)
@@ -81,10 +88,6 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 		if (contentEditorMasterLayoutPageTemplateEntry == null) {
 			return;
 		}
-
-		String externalReferenceCode =
-			contentEditorMasterLayoutPageTemplateEntry.
-				getExternalReferenceCode();
 
 		for (LayoutPageTemplateEntry layoutPageTemplateEntry :
 				_layoutPageTemplateEntryLocalService.
@@ -113,7 +116,8 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 			}
 
 			draftLayout.setMasterLayoutPageTemplateEntryERC(
-				externalReferenceCode);
+				contentEditorMasterLayoutPageTemplateEntry.
+					getExternalReferenceCode());
 
 			_layoutLocalService.updateLayout(draftLayout);
 		}
@@ -133,7 +137,7 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 		for (Bundle candidateBundle : bundleContext.getBundles()) {
 			if (Objects.equals(
 					candidateBundle.getSymbolicName(),
-					_SITE_INITIALIZER_CMS_SYMBOLIC_NAME)) {
+					"com.liferay.site.initializer.cms")) {
 
 				siteInitializerCMSBundle = candidateBundle;
 
@@ -165,13 +169,19 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 
 			try (InputStream inputStream = url.openStream()) {
 				zipWriter.addEntry(
-					_removeFirst(
+					_getRelativePath(
 						urlPath, "/site-initializer/layout-page-templates"),
 					inputStream);
 			}
 		}
 
 		return zipWriter.getFile();
+	}
+
+	private String _getRelativePath(String path, String basePath) {
+		int index = path.indexOf(basePath);
+
+		return path.substring(index + basePath.length());
 	}
 
 	private User _getUser(long companyId) throws Exception {
@@ -192,13 +202,7 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 		return adminUsers.get(0);
 	}
 
-	private String _removeFirst(String s, String oldSub) {
-		int index = s.indexOf(oldSub);
-
-		return s.substring(index + oldSub.length());
-	}
-
-	private void _upgradeCompany(long companyId) throws Exception {
+	private void _upgradeCompany(long companyId, File file) throws Exception {
 		Group group = _groupLocalService.fetchGroup(
 			companyId, GroupConstants.CMS);
 
@@ -209,12 +213,6 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 		User user = _getUser(companyId);
 
 		if (user == null) {
-			return;
-		}
-
-		File file = _getLayoutPageTemplatesFile();
-
-		if (file == null) {
 			return;
 		}
 
@@ -239,9 +237,6 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 
 		_backfillContentEditorMasterExternalReferenceCode(group.getGroupId());
 	}
-
-	private static final String _SITE_INITIALIZER_CMS_SYMBOLIC_NAME =
-		"com.liferay.site.initializer.cms";
 
 	private final CompanyLocalService _companyLocalService;
 	private final GroupLocalService _groupLocalService;
