@@ -15,11 +15,21 @@ NotificationType notificationType = NotificationType.parse(tabs3Values[1]);
 
 CalendarNotificationTemplate calendarNotificationTemplate = CalendarNotificationTemplateLocalServiceUtil.fetchCalendarNotificationTemplate(calendar.getCalendarId(), notificationType, notificationTemplateType);
 
-long calendarNotificationTemplateId = BeanPropertiesUtil.getLong(calendarNotificationTemplate, "calendarNotificationTemplateId");
+long calendarNotificationTemplateId = 0;
+
+if (calendarNotificationTemplate != null) {
+	calendarNotificationTemplateId = calendarNotificationTemplate.getCalendarNotificationTemplateId();
+}
 
 String fromName = NotificationUtil.getTemplatePropertyValue(calendarNotificationTemplate, CalendarNotificationTemplateConstants.PROPERTY_FROM_NAME, PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_NAME));
 String fromAddress = NotificationUtil.getTemplatePropertyValue(calendarNotificationTemplate, CalendarNotificationTemplateConstants.PROPERTY_FROM_ADDRESS, PrefsPropsUtil.getString(PropsKeys.ADMIN_EMAIL_FROM_ADDRESS));
-String body = BeanPropertiesUtil.getString(calendarNotificationTemplate, "body", NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.BODY));
+String body = NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.BODY);
+String subject = NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.SUBJECT);
+
+if (calendarNotificationTemplate != null) {
+	body = calendarNotificationTemplate.getBody();
+	subject = calendarNotificationTemplate.getSubject();
+}
 %>
 
 <liferay-ui:header
@@ -76,7 +86,7 @@ String body = BeanPropertiesUtil.getString(calendarNotificationTemplate, "body",
 
 		<aui:input name="fromAddress" value="<%= fromAddress %>" />
 
-		<aui:input name="subject" value='<%= BeanPropertiesUtil.getString(calendarNotificationTemplate, "subject", NotificationUtil.getDefaultTemplate(notificationType, notificationTemplateType, NotificationField.SUBJECT)) %>' />
+		<aui:input name="subject" value="<%= subject %>" />
 
 		<c:choose>
 			<c:when test='<%= !FeatureFlagManagerUtil.isEnabled("LPD-11235") %>'>
