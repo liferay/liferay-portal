@@ -1653,61 +1653,6 @@ public class KBArticleLocalServiceTest {
 	}
 
 	@Test
-	public void testPreviousAndNextKBArticles() throws Exception {
-		KBArticle parentKBArticle = _addKBArticle();
-
-		KBArticle childKBArticle1 = _kbArticleLocalService.addKBArticle(
-			null, _user.getUserId(), parentKBArticle.getClassNameId(),
-			parentKBArticle.getResourcePrimKey(), StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), null, null, new Date(), null, null, null,
-			_serviceContext);
-
-		KBArticle childKBArticle2 = _kbArticleLocalService.addKBArticle(
-			null, _user.getUserId(), parentKBArticle.getClassNameId(),
-			parentKBArticle.getResourcePrimKey(), StringUtil.randomString(),
-			StringUtil.randomString(), StringUtil.randomString(),
-			StringUtil.randomString(), null, null, new Date(), null, null, null,
-			_serviceContext);
-
-		KBArticle topLevelKBArticle = _addKBArticle();
-
-		KBArticle[] parentPreviousAndNextKBArticles =
-			_kbArticleLocalService.getPreviousAndNextKBArticles(
-				parentKBArticle.getKbArticleId());
-
-		Assert.assertNull(parentPreviousAndNextKBArticles[0]);
-		Assert.assertEquals(
-			childKBArticle1, parentPreviousAndNextKBArticles[2]);
-
-		KBArticle[] child1PreviousAndNextKBArticles =
-			_kbArticleLocalService.getPreviousAndNextKBArticles(
-				childKBArticle1.getKbArticleId());
-
-		Assert.assertEquals(
-			parentKBArticle, child1PreviousAndNextKBArticles[0]);
-		Assert.assertEquals(
-			childKBArticle2, child1PreviousAndNextKBArticles[2]);
-
-		KBArticle[] child2PreviousAndNextKBArticles =
-			_kbArticleLocalService.getPreviousAndNextKBArticles(
-				childKBArticle2.getKbArticleId());
-
-		Assert.assertEquals(
-			childKBArticle1, child2PreviousAndNextKBArticles[0]);
-		Assert.assertEquals(
-			topLevelKBArticle, child2PreviousAndNextKBArticles[2]);
-
-		KBArticle[] topLevelPreviousAndNextKBArticles =
-			_kbArticleLocalService.getPreviousAndNextKBArticles(
-				topLevelKBArticle.getKbArticleId());
-
-		Assert.assertEquals(
-			childKBArticle2, topLevelPreviousAndNextKBArticles[0]);
-		Assert.assertNull(topLevelPreviousAndNextKBArticles[2]);
-	}
-
-	@Test
 	public void testRemoveExpirationReviewDate() throws Exception {
 		_serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 

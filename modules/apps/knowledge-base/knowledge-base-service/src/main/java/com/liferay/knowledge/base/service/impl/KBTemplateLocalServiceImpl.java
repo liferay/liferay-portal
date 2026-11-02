@@ -182,20 +182,6 @@ public class KBTemplateLocalServiceImpl extends KBTemplateLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<KBTemplate> getGroupKBTemplates(
-		long groupId, int start, int end,
-		OrderByComparator<KBTemplate> orderByComparator) {
-
-		return kbTemplatePersistence.findByGroupId(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getGroupKBTemplatesCount(long groupId) {
-		return kbTemplatePersistence.countByGroupId(groupId);
-	}
-
-	@Override
 	public List<KBTemplate> search(
 		long groupId, String title, String content, Date startDate,
 		Date endDate, boolean andOperator, int start, int end,
@@ -238,18 +224,6 @@ public class KBTemplateLocalServiceImpl extends KBTemplateLocalServiceBaseImpl {
 			extraDataJSONObject.toString(), 0);
 
 		return kbTemplate;
-	}
-
-	@Override
-	public void updateKBTemplateResources(
-			KBTemplate kbTemplate, String[] groupPermissions,
-			String[] guestPermissions)
-		throws PortalException {
-
-		_resourceLocalService.updateResources(
-			kbTemplate.getCompanyId(), kbTemplate.getGroupId(),
-			KBTemplate.class.getName(), kbTemplate.getKbTemplateId(),
-			groupPermissions, guestPermissions);
 	}
 
 	private DynamicQuery _buildDynamicQuery(

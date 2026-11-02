@@ -12,6 +12,7 @@ import com.liferay.knowledge.base.constants.KBPortletKeys;
 import com.liferay.knowledge.base.model.KBTemplate;
 import com.liferay.knowledge.base.service.KBTemplateLocalService;
 import com.liferay.knowledge.base.service.KBTemplateService;
+import com.liferay.knowledge.base.service.persistence.KBTemplateUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -128,6 +130,13 @@ public class KBTemplateServiceTest {
 			actionId);
 	}
 
+	private int _getGroupKBTemplatesCount() throws Exception {
+		return TransactionTestUtil.invoke(
+			KBTemplateUtil.getPersistence(),
+			kbTemplatePersistence -> kbTemplatePersistence.countByGroupId(
+				_group1.getGroupId()));
+	}
+
 	private void _testAddKBTemplate(String portletId) throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
 				_user)) {
@@ -137,9 +146,7 @@ public class KBTemplateServiceTest {
 	}
 
 	private void _testAddKBTemplateWithInvalidPortletId() throws Exception {
-		int groupKBTemplatesCount =
-			_kbTemplateLocalService.getGroupKBTemplatesCount(
-				_group1.getGroupId());
+		int groupKBTemplatesCount = _getGroupKBTemplatesCount();
 
 		String portletId = RandomTestUtil.randomString();
 
@@ -154,10 +161,7 @@ public class KBTemplateServiceTest {
 				principalException.getMessage());
 		}
 
-		Assert.assertEquals(
-			groupKBTemplatesCount,
-			_kbTemplateLocalService.getGroupKBTemplatesCount(
-				_group1.getGroupId()));
+		Assert.assertEquals(groupKBTemplatesCount, _getGroupKBTemplatesCount());
 	}
 
 	private void _testAddKBTemplateWithoutAddKBTemplatePermission(

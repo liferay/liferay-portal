@@ -152,18 +152,6 @@ public class KBCommentLocalServiceImpl extends KBCommentLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void deleteKBComments(String className, long classPK)
-		throws PortalException {
-
-		List<KBComment> kbComments = kbCommentPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(className), classPK);
-
-		for (KBComment kbComment : kbComments) {
-			kbCommentLocalService.deleteKBComment(kbComment);
-		}
-	}
-
-	@Override
 	public KBComment getKBComment(long userId, String className, long classPK)
 		throws PortalException {
 
