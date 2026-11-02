@@ -34,14 +34,7 @@ public class StagingPermissionImpl implements StagingPermission {
 			return null;
 		}
 
-		try {
-			return _hasPermission(group, portletId);
-		}
-		catch (Exception exception) {
-			_log.error(exception);
-		}
-
-		return null;
+		return _hasPermission(group, portletId);
 	}
 
 	@Override
