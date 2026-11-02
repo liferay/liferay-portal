@@ -68,14 +68,6 @@ public class CookiesConsentPreferenceLocalServiceImpl
 		cookiesConsentPreferencePersistence.removeByU_D(userId, domain);
 	}
 
-	public CookiesConsentPreference getCookiesConsentPreference(
-			long userId, String domain, String name)
-		throws PortalException {
-
-		return cookiesConsentPreferencePersistence.findByU_D_N(
-			userId, domain, name);
-	}
-
 	public List<CookiesConsentPreference> getCookiesConsentPreferences(
 		long userId, String domain) {
 
