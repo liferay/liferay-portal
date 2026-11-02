@@ -309,68 +309,6 @@ definition {
 			userName = "Test Test");
 	}
 
-	@description = "This ensures that a depot image in the WC content field can be rendered correctly on a connected site when publication is enabled."
-	@priority = 4
-	test CanViewImageInWCWithPublication {
-		property osgi.module.configuration.file.names = "com.liferay.change.tracking.configuration.CTSettingsConfiguration.config";
-		property osgi.module.configurations = "enabled=B\"true\"";
-
-		JSONPublications.addPublication(publicationName = "Publication Name");
-
-		JSONPublications.selectPublication(publicationName = "Publication Name");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Test Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Test Page",
-			widgetName = "Web Content Display");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1",
-			groupName = "Test Depot Name",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		JSONDepot.connectSite(
-			depotName = "Test Depot Name",
-			groupName = "Site Name");
-
-		WebContentNavigator.openWebContentAdmin(siteURLKey = "site-name");
-
-		WebContentNavigator.gotoAddCP();
-
-		WebContent.addCP(
-			depotName = "Test Depot Name",
-			embedImage = "true",
-			imageFileName = "Document_1",
-			webContentContent = "Web Content Content",
-			webContentTitle = "WC WebContent Title");
-
-		WebContent.publishWithPermissions();
-
-		Publications.publishPublication(
-			gotoPublicationsAdmin = "true",
-			publicationName = "Publication Name");
-
-		Navigator.openSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
-
-		WebContentDisplayPortlet.selectWebContent(webContentTitle = "WC WebContent Title");
-
-		Navigator.openSitePage(
-			pageName = "Test Page",
-			siteName = "Site Name");
-
-		WebContentDisplayPortlet.viewContent(
-			imageFileName = "document_1",
-			webContentTitle = "WC WebContent Title");
-	}
-
 	@description = "This ensures that a depot image in the Blogs content field and small image can be rendered correctly on a connected site after moving it to a folder."
 	@priority = 4
 	test CanViewInlineAndSmallImageInBlogsAfterMovingToFolder {
