@@ -14,7 +14,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
@@ -71,24 +70,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceImpl
 			commerceTaxFixedRateAddressRel);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceTaxFixedRateAddressRel addCommerceTaxFixedRateAddressRel(
-			long commerceTaxMethodId, long cpTaxCategoryId, long countryId,
-			long regionId, String zip, double rate,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commerceTaxFixedRateAddressRelLocalService.
-			addCommerceTaxFixedRateAddressRel(
-				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-				commerceTaxMethodId, cpTaxCategoryId, countryId, regionId, zip,
-				rate);
-	}
-
 	@Override
 	public void deleteCommerceTaxFixedRateAddressRelsByCPTaxCategoryId(
 		long cpTaxCategoryId) {
@@ -132,41 +113,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceImpl
 				commerceTaxMethodId, countryIds, regionIds, curZip, 0, 1,
 				_orderByComparator),
 			zip);
-	}
-
-	@Override
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxFixedRateAddressRels(
-			long cpTaxCategoryId, int start, int end) {
-
-		return commerceTaxFixedRateAddressRelPersistence.findByCPTaxCategoryId(
-			cpTaxCategoryId, start, end);
-	}
-
-	@Override
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxFixedRateAddressRels(
-			long cpTaxCategoryId, int start, int end,
-			OrderByComparator<CommerceTaxFixedRateAddressRel>
-				orderByComparator) {
-
-		return commerceTaxFixedRateAddressRelPersistence.findByCPTaxCategoryId(
-			cpTaxCategoryId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceTaxFixedRateAddressRelsCount(long cpTaxCategoryId) {
-		return commerceTaxFixedRateAddressRelPersistence.countByCPTaxCategoryId(
-			cpTaxCategoryId);
-	}
-
-	@Override
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxMethodFixedRateAddressRels(
-			long commerceTaxMethodId, int start, int end) {
-
-		return commerceTaxFixedRateAddressRelPersistence.
-			findByCommerceTaxMethodId(commerceTaxMethodId, start, end);
 	}
 
 	@Override

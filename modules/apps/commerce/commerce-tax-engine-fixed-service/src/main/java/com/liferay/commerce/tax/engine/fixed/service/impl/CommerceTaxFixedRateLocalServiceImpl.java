@@ -13,11 +13,7 @@ import com.liferay.commerce.tax.engine.fixed.service.base.CommerceTaxFixedRateLo
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.OrderByComparator;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -32,21 +28,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class CommerceTaxFixedRateLocalServiceImpl
 	extends CommerceTaxFixedRateLocalServiceBaseImpl {
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceTaxFixedRate addCommerceTaxFixedRate(
-			long commerceTaxMethodId, long cpTaxCategoryId, double rate,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commerceTaxFixedRateLocalService.addCommerceTaxFixedRate(
-			serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-			commerceTaxMethodId, cpTaxCategoryId, rate);
-	}
 
 	@Override
 	public CommerceTaxFixedRate addCommerceTaxFixedRate(
@@ -101,30 +82,6 @@ public class CommerceTaxFixedRateLocalServiceImpl
 
 		return commerceTaxFixedRatePersistence.fetchByC_C(
 			cpTaxCategoryId, commerceTaxMethodId);
-	}
-
-	@Override
-	public CommerceTaxFixedRate getCommerceTaxFixedRate(
-			long cpTaxCategoryId, long commerceTaxMethodId)
-		throws PortalException {
-
-		return commerceTaxFixedRatePersistence.findByC_C(
-			cpTaxCategoryId, commerceTaxMethodId);
-	}
-
-	@Override
-	public List<CommerceTaxFixedRate> getCommerceTaxFixedRates(
-		long commerceTaxMethodId, int start, int end,
-		OrderByComparator<CommerceTaxFixedRate> orderByComparator) {
-
-		return commerceTaxFixedRatePersistence.findByCommerceTaxMethodId(
-			commerceTaxMethodId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceTaxFixedRatesCount(long commerceTaxMethodId) {
-		return commerceTaxFixedRatePersistence.countByCommerceTaxMethodId(
-			commerceTaxMethodId);
 	}
 
 	@Override
