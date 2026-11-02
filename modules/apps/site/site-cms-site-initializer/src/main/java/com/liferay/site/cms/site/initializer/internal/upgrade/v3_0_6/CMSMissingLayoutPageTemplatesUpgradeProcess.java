@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.Validator;
@@ -216,9 +218,24 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcess
 			return;
 		}
 
-		_layoutsImporter.importFile(
-			user.getUserId(), group.getGroupId(), file,
-			LayoutsImportStrategy.DO_NOT_OVERWRITE, true);
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setAddGroupPermissions(true);
+		serviceContext.setAddGuestPermissions(true);
+		serviceContext.setCompanyId(companyId);
+		serviceContext.setScopeGroupId(group.getGroupId());
+		serviceContext.setUserId(user.getUserId());
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			_layoutsImporter.importFile(
+				user.getUserId(), group.getGroupId(), file,
+				LayoutsImportStrategy.DO_NOT_OVERWRITE, true);
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 
 		_backfillContentEditorMasterExternalReferenceCode(group.getGroupId());
 	}
