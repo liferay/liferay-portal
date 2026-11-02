@@ -204,10 +204,8 @@ public class AzureTranslatorTest {
 
 		Mockito.when(
 			PortalUtil.stripURLAnchor(Mockito.anyString(), Mockito.anyString())
-		).thenReturn(
-			new String[] {
-				"https://api.cognitive.microsofttranslator.com/translate", ""
-			}
+		).thenAnswer(
+			invocation -> new String[] {invocation.getArgument(0), ""}
 		);
 	}
 
