@@ -84,11 +84,6 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Entry> getEntries(long userId, int start, int end) {
-		return entryPersistence.findByUserId(userId);
-	}
-
-	@Override
 	public int getEntriesCount(long userId) {
 		return entryPersistence.countByUserId(userId);
 	}
