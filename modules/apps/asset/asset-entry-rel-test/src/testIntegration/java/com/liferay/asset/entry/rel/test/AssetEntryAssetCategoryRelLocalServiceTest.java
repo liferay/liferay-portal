@@ -118,7 +118,7 @@ public class AssetEntryAssetCategoryRelLocalServiceTest {
 		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
 			_assetEntryAssetCategoryRelLocalService.
 				getAssetEntryAssetCategoryRelsByAssetCategoryId(
-					assetCategoryId, 0, 1);
+					assetCategoryId);
 
 		AssetEntryAssetCategoryRel assetEntryAssetCategoryRel =
 			assetEntryAssetCategoryRels.get(0);
@@ -188,7 +188,7 @@ public class AssetEntryAssetCategoryRelLocalServiceTest {
 		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
 			_assetEntryAssetCategoryRelLocalService.
 				getAssetEntryAssetCategoryRelsByAssetCategoryId(
-					assetCategoryId, 0, 1);
+					assetCategoryId);
 
 		AssetEntryAssetCategoryRel assetEntryAssetCategoryRel =
 			assetEntryAssetCategoryRels.get(0);
@@ -199,39 +199,6 @@ public class AssetEntryAssetCategoryRelLocalServiceTest {
 		Assert.assertEquals(
 			assetCategoryId, assetEntryAssetCategoryRel.getAssetCategoryId());
 		Assert.assertEquals(0, assetEntryAssetCategoryRel.getPriority());
-	}
-
-	@Test
-	public void testFetchAssetEntryAssetCategoryRel() {
-		long assetEntryId = RandomTestUtil.randomLong();
-		long assetCategoryId = RandomTestUtil.randomLong();
-
-		_assetEntryAssetCategoryRelLocalService.addAssetEntryAssetCategoryRel(
-			assetEntryId, assetCategoryId);
-
-		AssetEntryAssetCategoryRel assetEntryAssetCategoryRel =
-			_assetEntryAssetCategoryRelLocalService.
-				fetchAssetEntryAssetCategoryRel(assetEntryId, assetCategoryId);
-
-		_assetEntryAssetCategoryRels.add(assetEntryAssetCategoryRel);
-
-		Assert.assertEquals(
-			_initialAssetEntryAssetCategoryRelsCount + 1,
-			_assetEntryAssetCategoryRelLocalService.
-				getAssetEntryAssetCategoryRelsCount());
-		Assert.assertEquals(
-			assetEntryId, assetEntryAssetCategoryRel.getAssetEntryId());
-		Assert.assertEquals(
-			assetCategoryId, assetEntryAssetCategoryRel.getAssetCategoryId());
-		Assert.assertEquals(0, assetEntryAssetCategoryRel.getPriority());
-	}
-
-	@Test
-	public void testFetchAssetEntryAssetCategoryRelWithInvalidAssetEntryId() {
-		Assert.assertNull(
-			_assetEntryAssetCategoryRelLocalService.
-				fetchAssetEntryAssetCategoryRel(
-					RandomTestUtil.randomLong(), RandomTestUtil.randomLong()));
 	}
 
 	@Test
@@ -272,7 +239,7 @@ public class AssetEntryAssetCategoryRelLocalServiceTest {
 		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
 			_assetEntryAssetCategoryRelLocalService.
 				getAssetEntryAssetCategoryRelsByAssetCategoryId(
-					assetCategoryId, 0, 1);
+					assetCategoryId);
 
 		AssetEntryAssetCategoryRel assetEntryAssetCategoryRel =
 			assetEntryAssetCategoryRels.get(0);
@@ -298,8 +265,7 @@ public class AssetEntryAssetCategoryRelLocalServiceTest {
 
 		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
 			_assetEntryAssetCategoryRelLocalService.
-				getAssetEntryAssetCategoryRelsByAssetEntryId(
-					assetEntryId, 0, 1);
+				getAssetEntryAssetCategoryRelsByAssetEntryId(assetEntryId);
 
 		AssetEntryAssetCategoryRel assetEntryAssetCategoryRel =
 			assetEntryAssetCategoryRels.get(0);
@@ -342,29 +308,6 @@ public class AssetEntryAssetCategoryRelLocalServiceTest {
 				getAssetEntryAssetCategoryRelsCountByClassNameId(
 					assetCategoryId,
 					_portal.getClassNameId(FriendlyURLEntry.class)));
-	}
-
-	@Test
-	public void testGetAssetEntryPrimaryKeys() {
-		long assetEntryId1 = RandomTestUtil.randomLong();
-		long assetCategoryId = RandomTestUtil.randomLong();
-
-		_addAssetEntryAssetCategoryRel(assetEntryId1, assetCategoryId);
-
-		long assetEntryId2 = RandomTestUtil.randomLong();
-
-		_addAssetEntryAssetCategoryRel(assetEntryId2, assetCategoryId);
-
-		long[] assetEntryPrimaryKeys =
-			_assetEntryAssetCategoryRelLocalService.getAssetEntryPrimaryKeys(
-				assetCategoryId);
-
-		Assert.assertEquals(
-			Arrays.toString(assetEntryPrimaryKeys), 2,
-			assetEntryPrimaryKeys.length);
-
-		Assert.assertEquals(assetEntryId1, assetEntryPrimaryKeys[0]);
-		Assert.assertEquals(assetEntryId2, assetEntryPrimaryKeys[1]);
 	}
 
 	private AssetEntryAssetCategoryRel _addAssetEntryAssetCategoryRel(
