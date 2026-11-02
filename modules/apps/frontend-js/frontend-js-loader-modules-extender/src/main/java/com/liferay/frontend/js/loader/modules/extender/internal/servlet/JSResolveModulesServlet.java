@@ -70,12 +70,11 @@ public class JSResolveModulesServlet extends HttpServlet {
 		httpServletResponse.setCharacterEncoding(StringPool.UTF8);
 		httpServletResponse.setContentType(ContentTypes.APPLICATION_JSON);
 
-		PrintWriter printWriter = new PrintWriter(
-			httpServletResponse.getOutputStream(), true);
-
 		BrowserModulesResolution browserModulesResolution =
 			_browserModulesResolver.resolve(
 				_getModuleNames(httpServletRequest), httpServletRequest);
+
+		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		printWriter.write(browserModulesResolution.toJSON());
 

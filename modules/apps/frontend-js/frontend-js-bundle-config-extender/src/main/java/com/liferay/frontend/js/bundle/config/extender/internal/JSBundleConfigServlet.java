@@ -17,7 +17,6 @@ import jakarta.servlet.Servlet;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -73,10 +72,7 @@ public class JSBundleConfigServlet extends HttpServlet {
 
 		httpServletResponse.setContentType(ContentTypes.TEXT_JAVASCRIPT_UTF8);
 
-		ServletOutputStream servletOutputStream =
-			httpServletResponse.getOutputStream();
-
-		PrintWriter printWriter = new PrintWriter(servletOutputStream, true);
+		PrintWriter printWriter = httpServletResponse.getWriter();
 
 		Collection<JSBundleConfigRegistryUtil.JSConfig> jsConfigs =
 			JSBundleConfigRegistryUtil.getJSConfigs();
