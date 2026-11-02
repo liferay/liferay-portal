@@ -296,15 +296,6 @@ public class CSDiagramSettingLocalServiceWrapper
 			CSDiagramSettingId);
 	}
 
-	@Override
-	public CSDiagramSetting getCSDiagramSettingByCPDefinitionId(
-			long cpDefinitionId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _csDiagramSettingLocalService.
-			getCSDiagramSettingByCPDefinitionId(cpDefinitionId);
-	}
-
 	/**
 	 * Returns the cs diagram setting with the matching UUID and company.
 	 *
@@ -457,4 +448,4 @@ public class CSDiagramSettingLocalServiceWrapper
 	private CSDiagramSettingLocalService _csDiagramSettingLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:961364154
+// LIFERAY-SERVICE-BUILDER-HASH:-1666777043

@@ -275,12 +275,6 @@ public class CSDiagramEntryLocalServiceUtil {
 		return getService().getCSDiagramEntries(start, end);
 	}
 
-	public static List<CSDiagramEntry> getCSDiagramEntries(
-		long cpDefinitionId, int start, int end) {
-
-		return getService().getCSDiagramEntries(cpDefinitionId, start, end);
-	}
-
 	/**
 	 * Returns the number of cs diagram entries.
 	 *
@@ -288,10 +282,6 @@ public class CSDiagramEntryLocalServiceUtil {
 	 */
 	public static int getCSDiagramEntriesCount() {
 		return getService().getCSDiagramEntriesCount();
-	}
-
-	public static int getCSDiagramEntriesCount(long cpDefinitionId) {
-		return getService().getCSDiagramEntriesCount(cpDefinitionId);
 	}
 
 	/**
@@ -384,4 +374,4 @@ public class CSDiagramEntryLocalServiceUtil {
 			CSDiagramEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1896285441
+// LIFERAY-SERVICE-BUILDER-HASH:-1228276316

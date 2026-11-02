@@ -267,13 +267,6 @@ public class CSDiagramSettingLocalServiceUtil {
 		return getService().getCSDiagramSetting(CSDiagramSettingId);
 	}
 
-	public static CSDiagramSetting getCSDiagramSettingByCPDefinitionId(
-			long cpDefinitionId)
-		throws PortalException {
-
-		return getService().getCSDiagramSettingByCPDefinitionId(cpDefinitionId);
-	}
-
 	/**
 	 * Returns the cs diagram setting with the matching UUID and company.
 	 *
@@ -384,4 +377,4 @@ public class CSDiagramSettingLocalServiceUtil {
 			CSDiagramSettingLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1037417405
+// LIFERAY-SERVICE-BUILDER-HASH:-147551425

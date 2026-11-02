@@ -241,11 +241,6 @@ public interface CSDiagramSettingLocalService
 	public CSDiagramSetting getCSDiagramSetting(long CSDiagramSettingId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CSDiagramSetting getCSDiagramSettingByCPDefinitionId(
-			long cpDefinitionId)
-		throws PortalException;
-
 	/**
 	 * Returns the cs diagram setting with the matching UUID and company.
 	 *
@@ -338,4 +333,4 @@ public interface CSDiagramSettingLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-185537507
+// LIFERAY-SERVICE-BUILDER-HASH:1846856343
