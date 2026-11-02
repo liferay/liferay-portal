@@ -1474,6 +1474,7 @@
 		<exception>CPDefinitionDeliverySubscriptionLength</exception>
 		<exception>CPDefinitionDisplayDate</exception>
 		<exception>CPDefinitionExpirationDate</exception>
+		<exception>CPDefinitionGroupId</exception>
 		<exception>CPDefinitionIgnoreSKUCombinations</exception>
 		<exception>CPDefinitionLinkDisplayDate</exception>
 		<exception>CPDefinitionLinkExpirationDate</exception>
