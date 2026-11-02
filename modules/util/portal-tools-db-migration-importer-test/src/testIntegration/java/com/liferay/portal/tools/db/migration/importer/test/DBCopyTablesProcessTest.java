@@ -6,6 +6,7 @@
 package com.liferay.portal.tools.db.migration.importer.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.dao.jdbc.postgresql.PostgreSQLJDBCUtil;
@@ -21,15 +22,18 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.InfrastructureUtil;
+import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.tools.db.migration.importer.DBCopyTablesProcess;
 import com.liferay.portal.tools.db.migration.importer.jdbc.AutoBatchPreparedStatementUtil;
 
 import java.sql.BatchUpdateException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 
@@ -79,6 +83,53 @@ public class DBCopyTablesProcessTest {
 
 			_sourceTableName = dbInspector.normalizeName("TestTable");
 		}
+
+		DataSource dataSource = InfrastructureUtil.getDataSource();
+
+		_sourceDataSource = ProxyUtil.newDelegateProxyInstance(
+			DataSource.class.getClassLoader(), DataSource.class,
+			new Object() {
+
+				public Connection getConnection() throws SQLException {
+					Connection connection = dataSource.getConnection();
+
+					DatabaseMetaData databaseMetaData =
+						connection.getMetaData();
+
+					DatabaseMetaData proxyDatabaseMetaData =
+						ProxyUtil.newDelegateProxyInstance(
+							DatabaseMetaData.class.getClassLoader(),
+							DatabaseMetaData.class,
+							new Object() {
+
+								public ResultSet getColumns(
+										String catalog, String schemaPattern,
+										String tableNamePattern,
+										String columnNamePattern)
+									throws SQLException {
+
+									return databaseMetaData.getColumns(
+										catalog, schemaPattern,
+										_sourceTableName, columnNamePattern);
+								}
+
+							},
+							databaseMetaData);
+
+					return ProxyUtil.newDelegateProxyInstance(
+						Connection.class.getClassLoader(), Connection.class,
+						new Object() {
+
+							public DatabaseMetaData getMetaData() {
+								return proxyDatabaseMetaData;
+							}
+
+						},
+						connection);
+				}
+
+			},
+			dataSource);
 
 		try (Connection connection = _targetDataSource.getConnection()) {
 			DBInspector dbInspector = new DBInspector(connection);
@@ -385,35 +436,19 @@ public class DBCopyTablesProcessTest {
 	@Test
 	@TestInfo("LPD-110097")
 	public void testRunWithCustomColumnsInPartition() throws Exception {
-		String partitionName = "test" + RandomTestUtil.randomInt();
+		_testInPartition(this::_testRunWithCustomColumns);
+	}
 
-		try (Connection connection = _targetDataSource.getConnection()) {
-			_targetDB.runSQL(connection, "create schema " + partitionName);
-		}
+	@Test
+	@TestInfo("LPD-110099")
+	public void testRunWithCustomTables() throws Exception {
+		_testRunWithCustomTables();
+	}
 
-		DataSource targetDataSource = _targetDataSource;
-
-		_targetDataSource = DataSourceFactoryUtil.initDataSource(
-			System.getProperty("database.postgresql.driver"),
-			System.getProperty("database.postgresql.url") + "?currentSchema=" +
-				partitionName,
-			System.getProperty("database.postgresql.username"),
-			System.getProperty("database.postgresql.password"),
-			StringPool.BLANK);
-
-		try {
-			_testRunWithCustomColumns();
-		}
-		finally {
-			DataSourceFactoryUtil.destroyDataSource(_targetDataSource);
-
-			_targetDataSource = targetDataSource;
-
-			try (Connection connection = _targetDataSource.getConnection()) {
-				_targetDB.runSQL(
-					connection, "drop schema " + partitionName + " cascade");
-			}
-		}
+	@Test
+	@TestInfo("LPD-110099")
+	public void testRunWithCustomTablesInPartition() throws Exception {
+		_testInPartition(this::_testRunWithCustomTables);
 	}
 
 	@Test
@@ -482,9 +517,10 @@ public class DBCopyTablesProcessTest {
 		try (Connection connection = _targetDataSource.getConnection();
 
 			PreparedStatement preparedStatement = connection.prepareStatement(
-				"select format_type(atttypid, atttypmod) as columnType from " +
-					"pg_attribute where attrelid = ?::regclass and attname = " +
-						"?")) {
+				"select format_type(atttypid, atttypmod) || case when " +
+					"attnotnull then ' not null' else '' end as columnType " +
+						"from pg_attribute where attrelid = ?::regclass and " +
+							"attname = ?")) {
 
 			preparedStatement.setString(1, _targetTableName);
 			preparedStatement.setString(2, StringUtil.toLowerCase(columnName));
@@ -525,7 +561,7 @@ public class DBCopyTablesProcessTest {
 
 	private void _copyTable() {
 		DBCopyTablesProcess dbCopyTablesProcess = new DBCopyTablesProcess(
-			InfrastructureUtil.getDataSource(), _targetDataSource);
+			_sourceDataSource, _targetDataSource);
 
 		ReflectionTestUtil.invoke(
 			dbCopyTablesProcess, "_loadColumnsMetadata", new Class<?>[0]);
@@ -619,6 +655,40 @@ public class DBCopyTablesProcessTest {
 		_assertValues("testColumn", expectedFunction, values, getFunction);
 	}
 
+	private void _testInPartition(UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		String partitionName = "test" + RandomTestUtil.randomInt();
+
+		try (Connection connection = _targetDataSource.getConnection()) {
+			_targetDB.runSQL(connection, "create schema " + partitionName);
+		}
+
+		DataSource targetDataSource = _targetDataSource;
+
+		_targetDataSource = DataSourceFactoryUtil.initDataSource(
+			System.getProperty("database.postgresql.driver"),
+			System.getProperty("database.postgresql.url") + "?currentSchema=" +
+				partitionName,
+			System.getProperty("database.postgresql.username"),
+			System.getProperty("database.postgresql.password"),
+			StringPool.BLANK);
+
+		try {
+			unsafeRunnable.run();
+		}
+		finally {
+			DataSourceFactoryUtil.destroyDataSource(_targetDataSource);
+
+			_targetDataSource = targetDataSource;
+
+			try (Connection connection = _targetDataSource.getConnection()) {
+				_targetDB.runSQL(
+					connection, "drop schema " + partitionName + " cascade");
+			}
+		}
+	}
+
 	private void _testRunWithCustomColumns() throws Exception {
 		_createTable(
 			"create table TestTable (id INTEGER, charColumn CHAR(10), " +
@@ -636,7 +706,7 @@ public class DBCopyTablesProcessTest {
 				"', longColumn = ", longColumnValue));
 
 		new DBCopyTablesProcess(
-			InfrastructureUtil.getDataSource(), _targetDataSource
+			_sourceDataSource, _targetDataSource
 		).run();
 
 		_assertColumnType("charColumn", "character varying(10)");
@@ -676,7 +746,7 @@ public class DBCopyTablesProcessTest {
 		_insertValues(values);
 
 		new DBCopyTablesProcess(
-			InfrastructureUtil.getDataSource(), _targetDataSource
+			_sourceDataSource, _targetDataSource
 		).run();
 
 		_assertColumnType("testColumn", expectedColumnType);
@@ -686,8 +756,28 @@ public class DBCopyTablesProcessTest {
 		tearDown();
 	}
 
+	private void _testRunWithCustomTables() throws Exception {
+		_sourceDB.runSQL(
+			"create table TestTable (id INTEGER, charColumn CHAR(10), " +
+				"testColumn VARCHAR(75) not null)");
+
+		String[] values = RandomTestUtil.randomStrings(_TABLE_SIZE);
+
+		_insertValues(values);
+
+		new DBCopyTablesProcess(
+			_sourceDataSource, _targetDataSource
+		).run();
+
+		_assertColumnType("testColumn", "character varying(75) not null");
+
+		_assertValues(
+			"testColumn", Function.identity(), values, Function.identity());
+	}
+
 	private static final int _TABLE_SIZE = 5000;
 
+	private static DataSource _sourceDataSource;
 	private static String _sourceTableName;
 	private static DataSource _targetDataSource;
 	private static String _targetTableName;
