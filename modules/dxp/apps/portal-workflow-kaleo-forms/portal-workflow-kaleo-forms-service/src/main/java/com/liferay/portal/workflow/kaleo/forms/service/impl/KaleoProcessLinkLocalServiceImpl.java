@@ -7,7 +7,6 @@ package com.liferay.portal.workflow.kaleo.forms.service.impl;
 
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLinkLocalService;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.workflow.kaleo.forms.model.KaleoProcessLink;
 import com.liferay.portal.workflow.kaleo.forms.service.base.KaleoProcessLinkLocalServiceBaseImpl;
@@ -115,67 +114,6 @@ public class KaleoProcessLinkLocalServiceImpl
 	@Override
 	public List<KaleoProcessLink> getKaleoProcessLinks(long kaleoProcessId) {
 		return kaleoProcessLinkPersistence.findByKaleoProcessId(kaleoProcessId);
-	}
-
-	/**
-	 * Updates the Kaleo process link, setting the primary key of the associated
-	 * Kaleo process.
-	 *
-	 * @param  kaleoProcessLinkId the primary key of the Kaleo process link
-	 * @param  kaleoProcessId the primary key of the Kaleo process link's Kaleo
-	 *         process
-	 * @return the Kaleo process link
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public KaleoProcessLink updateKaleoProcessLink(
-			long kaleoProcessLinkId, long kaleoProcessId)
-		throws PortalException {
-
-		KaleoProcessLink kaleoProcessLink =
-			kaleoProcessLinkPersistence.findByPrimaryKey(kaleoProcessLinkId);
-
-		kaleoProcessLink.setKaleoProcessId(kaleoProcessId);
-
-		return kaleoProcessLinkPersistence.update(kaleoProcessLink);
-	}
-
-	/**
-	 * Updates the Kaleo process link, replacing its values with new ones. New
-	 * values are set for the primary key of the associated Kaleo process, the
-	 * name of the associated workflow task, and the primary key of the
-	 * associated DDM Template.
-	 *
-	 * @param  kaleoProcessLinkId the primary key of the Kaleo process link
-	 * @param  kaleoProcessId the primary key of the Kaleo process link's Kaleo
-	 *         process
-	 * @param  workflowTaskName the name of the Kaleo process link's workflow
-	 *         task
-	 * @param  ddmTemplateId the primary key of the Kaleo process link's DDM
-	 *         template
-	 * @return the Kaleo process link
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public KaleoProcessLink updateKaleoProcessLink(
-			long kaleoProcessLinkId, long kaleoProcessId,
-			String workflowTaskName, long ddmTemplateId)
-		throws PortalException {
-
-		KaleoProcessLink kaleoProcessLink =
-			kaleoProcessLinkPersistence.findByPrimaryKey(kaleoProcessLinkId);
-
-		kaleoProcessLink.setKaleoProcessId(kaleoProcessId);
-		kaleoProcessLink.setWorkflowTaskName(workflowTaskName);
-		kaleoProcessLink.setDDMTemplateId(ddmTemplateId);
-
-		kaleoProcessLink = kaleoProcessLinkPersistence.update(kaleoProcessLink);
-
-		_ddmTemplateLinkLocalService.updateTemplateLink(
-			_classNameLocalService.getClassNameId(KaleoProcessLink.class),
-			kaleoProcessLink.getKaleoProcessLinkId(), ddmTemplateId);
-
-		return kaleoProcessLink;
 	}
 
 	/**
