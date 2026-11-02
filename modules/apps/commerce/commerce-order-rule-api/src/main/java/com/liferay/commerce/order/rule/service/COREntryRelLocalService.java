@@ -206,10 +206,6 @@ public interface COREntryRelLocalService
 	public COREntryRel fetchCOREntryRel(long COREntryRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public COREntryRel fetchCOREntryRel(
-		String className, long classPK, long corEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<COREntryRel> getAccountEntryCOREntryRels(
 		long corEntryId, String keywords, int start, int end);
 
@@ -320,4 +316,4 @@ public interface COREntryRelLocalService
 	public COREntryRel updateCOREntryRel(COREntryRel corEntryRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2018366994
+// LIFERAY-SERVICE-BUILDER-HASH:1939425737

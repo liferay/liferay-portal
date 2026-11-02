@@ -224,12 +224,6 @@ public class COREntryRelLocalServiceUtil {
 		return getService().fetchCOREntryRel(COREntryRelId);
 	}
 
-	public static COREntryRel fetchCOREntryRel(
-		String className, long classPK, long corEntryId) {
-
-		return getService().fetchCOREntryRel(className, classPK, corEntryId);
-	}
-
 	public static List<COREntryRel> getAccountEntryCOREntryRels(
 		long corEntryId, String keywords, int start, int end) {
 
@@ -393,4 +387,4 @@ public class COREntryRelLocalServiceUtil {
 			COREntryRelLocalServiceUtil.class, COREntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1878759196
+// LIFERAY-SERVICE-BUILDER-HASH:-2019977395
