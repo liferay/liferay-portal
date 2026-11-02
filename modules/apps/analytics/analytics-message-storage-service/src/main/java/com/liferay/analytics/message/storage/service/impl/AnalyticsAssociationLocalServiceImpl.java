@@ -10,7 +10,6 @@ import com.liferay.analytics.message.storage.service.base.AnalyticsAssociationLo
 import com.liferay.portal.aop.AopService;
 
 import java.util.Date;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -62,23 +61,6 @@ public class AnalyticsAssociationLocalServiceImpl
 
 		analyticsAssociationPersistence.removeByC_A_A(
 			companyId, associationClassName, associationClassPK);
-	}
-
-	@Override
-	public List<AnalyticsAssociation> getAnalyticsAssociations(
-		long companyId, Date modifiedDate, String associationClassName,
-		int start, int end) {
-
-		return analyticsAssociationPersistence.findByC_GtM_A(
-			companyId, modifiedDate, associationClassName, start, end);
-	}
-
-	@Override
-	public int getAnalyticsAssociationsCount(
-		long companyId, Date modifiedDate, String associationClassName) {
-
-		return analyticsAssociationPersistence.countByC_GtM_A(
-			companyId, modifiedDate, associationClassName);
 	}
 
 }
