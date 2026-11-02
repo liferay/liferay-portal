@@ -82,8 +82,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			String localServiceFullyQualifiedName = _getImportedName(
 				getImportNames(javaTerm), localServiceInterface);
 
-			// Self hop: the caller's own service interface is not imported,
-			// so derive it from the caller's package
+			// The caller's own service interface is not imported, so derive it
+			// from the caller's package.
 
 			if (localServiceFullyQualifiedName == null) {
 				String packageName = JavaSourceUtil.getPackageName(fileContent);
@@ -154,8 +154,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private void _collectMatchedMethods(
-			File file, String methodName, int parametersCount,
-			List<JavaMethod> matchedMethods)
+			File file, List<JavaMethod> matchedMethods, String methodName,
+			int parametersCount)
 		throws Exception {
 
 		if (!file.exists()) {
@@ -229,7 +229,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	private String _getBaseImplName(String localServiceFullyQualifiedName) {
 
 		// A kernel service interface is implemented in portal-impl, where the
-		// base impl package drops the ".kernel" segment
+		// base impl package drops the ".kernel" segment.
 
 		if (localServiceFullyQualifiedName.contains(".kernel.service.")) {
 			String baseName = StringUtil.replace(
@@ -443,7 +443,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 		List<JavaMethod> matchedMethods = new ArrayList<>();
 
 		_collectMatchedMethods(
-			baseImplFile, methodName, parametersCount, matchedMethods);
+			baseImplFile, matchedMethods, methodName, parametersCount);
 
 		File implFile = new File(
 			StringUtil.replace(
@@ -452,7 +452,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 				"BaseImpl.java", "Impl.java"));
 
 		_collectMatchedMethods(
-			implFile, methodName, parametersCount, matchedMethods);
+			implFile, matchedMethods, methodName, parametersCount);
 
 		if (matchedMethods.size() != 1) {
 			return null;
@@ -533,8 +533,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 
 		for (String target : _getEnclosingLambdaTargets(content, pos)) {
 			if (_isTransactionDisabledTarget(
-					target, fileName, fileContent, absolutePath, rootDirName,
-					importNames)) {
+					absolutePath, fileContent, fileName, importNames, target,
+					rootDirName)) {
 
 				return true;
 			}
@@ -544,8 +544,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private boolean _isTransactionDisabledTarget(
-			String methodCall, String fileName, String fileContent,
-			String absolutePath, String rootDirName, List<String> importNames)
+			String absolutePath, String fileContent, String fileName,
+			List<String> importNames, String methodCall, String rootDirName)
 		throws Exception {
 
 		int index = methodCall.lastIndexOf('.');
