@@ -594,6 +594,13 @@ public interface CommerceOrderItemLocalService
 			BigDecimal unitPrice, BigDecimal unitPriceWithTaxAmount)
 		throws PortalException;
 
+	@Indexable(type = IndexableType.REINDEX)
+	public CommerceOrderItem updateCommerceOrderItemUnitOfMeasure(
+			long userId, long commerceOrderItemId, BigDecimal quantity,
+			String unitOfMeasureKey, CommerceContext commerceContext,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x)
 	 */
@@ -617,4 +624,4 @@ public interface CommerceOrderItemLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1377531969
+// LIFERAY-SERVICE-BUILDER-HASH:-1105793827

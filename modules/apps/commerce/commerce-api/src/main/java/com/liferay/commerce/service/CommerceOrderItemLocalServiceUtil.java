@@ -841,6 +841,18 @@ public class CommerceOrderItemLocalServiceUtil {
 			promoPriceWithTaxAmount, unitPrice, unitPriceWithTaxAmount);
 	}
 
+	public static CommerceOrderItem updateCommerceOrderItemUnitOfMeasure(
+			long userId, long commerceOrderItemId,
+			java.math.BigDecimal quantity, String unitOfMeasureKey,
+			com.liferay.commerce.context.CommerceContext commerceContext,
+			com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws PortalException {
+
+		return getService().updateCommerceOrderItemUnitOfMeasure(
+			userId, commerceOrderItemId, quantity, unitOfMeasureKey,
+			commerceContext, serviceContext);
+	}
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x)
 	 */
@@ -889,4 +901,4 @@ public class CommerceOrderItemLocalServiceUtil {
 			CommerceOrderItemLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1990702472
+// LIFERAY-SERVICE-BUILDER-HASH:1197827285

@@ -264,6 +264,12 @@ public interface CommerceOrderItemService extends BaseService {
 			BigDecimal unitPrice, BigDecimal unitPriceWithTaxAmount)
 		throws PortalException;
 
+	public CommerceOrderItem updateCommerceOrderItemUnitOfMeasure(
+			long commerceOrderItemId, BigDecimal quantity,
+			String unitOfMeasureKey, CommerceContext commerceContext,
+			ServiceContext serviceContext)
+		throws PortalException;
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x)
 	 */
@@ -285,4 +291,4 @@ public interface CommerceOrderItemService extends BaseService {
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:518933317
+// LIFERAY-SERVICE-BUILDER-HASH:1971899582
