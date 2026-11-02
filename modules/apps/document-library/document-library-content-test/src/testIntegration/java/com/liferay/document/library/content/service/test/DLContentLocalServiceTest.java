@@ -214,33 +214,6 @@ public class DLContentLocalServiceTest {
 	}
 
 	@Test
-	public void testGetContentsAll() throws Exception {
-		DLContent dlContent1 = _dlContentLocalService.addContent(
-			_companyId, _repositoryId, RandomTestUtil.randomString(),
-			Store.VERSION_DEFAULT,
-			new UnsyncByteArrayInputStream(_DATA_VERSION_1));
-		DLContent dlContent2 = _dlContentLocalService.addContent(
-			_companyId, _repositoryId, RandomTestUtil.randomString(),
-			Store.VERSION_DEFAULT,
-			new UnsyncByteArrayInputStream(_DATA_VERSION_1));
-		DLContent dlContent3 = _dlContentLocalService.addContent(
-			_companyId, _repositoryId, RandomTestUtil.randomString(),
-			Store.VERSION_DEFAULT,
-			new UnsyncByteArrayInputStream(_DATA_VERSION_1));
-
-		List<DLContent> dlContents = _dlContentLocalService.getContents(
-			_companyId, _repositoryId);
-
-		Assert.assertEquals(dlContents.toString(), 3, dlContents.size());
-		Assert.assertTrue(
-			dlContents.toString(), dlContents.contains(dlContent1));
-		Assert.assertTrue(
-			dlContents.toString(), dlContents.contains(dlContent2));
-		Assert.assertTrue(
-			dlContents.toString(), dlContents.contains(dlContent3));
-	}
-
-	@Test
 	public void testGetContentsByDirectory() throws Exception {
 		String path1 = RandomTestUtil.randomString();
 		String path2 = RandomTestUtil.randomString();
@@ -337,30 +310,6 @@ public class DLContentLocalServiceTest {
 		Assert.assertTrue(
 			_dlContentLocalService.hasContent(
 				_companyId, _repositoryId, path, "1.1"));
-	}
-
-	@Test
-	public void testUpdateContent() throws Exception {
-		long newRepositoryId = RandomTestUtil.nextLong();
-		String oldPath = RandomTestUtil.randomString();
-		String newPath = RandomTestUtil.randomString();
-
-		DLContent addDLContent = _dlContentLocalService.addContent(
-			_companyId, _repositoryId, oldPath, Store.VERSION_DEFAULT,
-			new UnsyncByteArrayInputStream(_DATA_VERSION_1));
-
-		_dlContentLocalService.updateDLContent(
-			_companyId, _repositoryId, newRepositoryId, oldPath, newPath);
-
-		DLContent getDLContent = _dlContentLocalService.getContent(
-			_companyId, newRepositoryId, newPath, StringPool.BLANK);
-
-		addDLContent.setRepositoryId(newRepositoryId);
-		addDLContent.setPath(newPath);
-
-		assertEquals(addDLContent, getDLContent);
-
-		_dlContentLocalService.deleteDLContent(getDLContent);
 	}
 
 	protected void assertEquals(

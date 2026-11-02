@@ -99,45 +99,6 @@ public class DLContentLocalServiceImpl extends DLContentLocalServiceBaseImpl {
 		return dlContentPersistence.update(dlContent);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #addContent(long, long, String, String, InputStream)}
-	 */
-	@Deprecated
-	@Override
-	public DLContent addContent(
-		long companyId, long repositoryId, String path, String version,
-		InputStream inputStream, long size) {
-
-		DLContent dlContent = null;
-
-		try (InputStream copyInputStream = inputStream) {
-			long contentId = counterLocalService.increment();
-
-			dlContent = dlContentPersistence.create(contentId);
-
-			dlContent.setCompanyId(companyId);
-			dlContent.setRepositoryId(repositoryId);
-			dlContent.setPath(path);
-			dlContent.setVersion(version);
-
-			OutputBlob dataOutputBlob = new OutputBlob(copyInputStream, size);
-
-			dlContent.setData(dataOutputBlob);
-
-			dlContent.setSize(size);
-
-			dlContent = dlContentPersistence.update(dlContent);
-		}
-		catch (IOException ioException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(ioException);
-			}
-		}
-
-		return dlContent;
-	}
-
 	@Override
 	public void deleteContent(
 		long companyId, long repositoryId, String path, String version) {
@@ -148,15 +109,6 @@ public class DLContentLocalServiceImpl extends DLContentLocalServiceBaseImpl {
 		if (dlContent != null) {
 			dlContentPersistence.remove(dlContent);
 		}
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public void deleteContents(long companyId, long repositoryId, String path) {
-		dlContentPersistence.removeByC_R_P(companyId, repositoryId, path);
 	}
 
 	@Override
@@ -177,28 +129,6 @@ public class DLContentLocalServiceImpl extends DLContentLocalServiceBaseImpl {
 
 		dlContentPersistence.removeByC_R_LikeP(
 			companyId, repositoryId, dirName);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getContent(long, long, String, String)}
-	 */
-	@Deprecated
-	@Override
-	public DLContent getContent(long companyId, long repositoryId, String path)
-		throws NoSuchContentException {
-
-		OrderByComparator<DLContent> orderByComparator =
-			DLContentVersionComparator.getInstance(false);
-
-		List<DLContent> dlContents = dlContentPersistence.findByC_R_P(
-			companyId, repositoryId, path, 0, 1, orderByComparator);
-
-		if (ListUtil.isEmpty(dlContents)) {
-			throw new NoSuchContentException(path);
-		}
-
-		return dlContents.get(0);
 	}
 
 	@Override
@@ -222,16 +152,6 @@ public class DLContentLocalServiceImpl extends DLContentLocalServiceBaseImpl {
 
 		return dlContentPersistence.findByC_R_P_V(
 			companyId, repositoryId, path, version);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getContentsByDirectory(long, long, String)}
-	 */
-	@Deprecated
-	@Override
-	public List<DLContent> getContents(long companyId, long repositoryId) {
-		return dlContentPersistence.findByC_R(companyId, repositoryId);
 	}
 
 	@Override
@@ -271,26 +191,6 @@ public class DLContentLocalServiceImpl extends DLContentLocalServiceBaseImpl {
 		}
 
 		return false;
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public void updateDLContent(
-		long companyId, long oldRepositoryId, long newRepositoryId,
-		String oldPath, String newPath) {
-
-		List<DLContent> dlContents = dlContentPersistence.findByC_R_P(
-			companyId, oldRepositoryId, oldPath);
-
-		for (DLContent dLContent : dlContents) {
-			dLContent.setRepositoryId(newRepositoryId);
-			dLContent.setPath(newPath);
-
-			dlContentPersistence.update(dLContent);
-		}
 	}
 
 	private OutputBlob _toOutputBlob(InputStream inputStream) {
