@@ -23,7 +23,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.bean.BeanParamUtil;
-import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -136,7 +135,7 @@ public class EditKBArticleDisplayContext {
 	public String getContent() {
 		return BeanParamUtil.getString(
 			getKBArticle(), _liferayPortletRequest, "content",
-			BeanPropertiesUtil.getString(_getKBTemplate(), "content"));
+			_getKBTemplateContent());
 	}
 
 	public String getDatePickerFormattedDisplayDate() {
@@ -256,7 +255,7 @@ public class EditKBArticleDisplayContext {
 	public String getKBArticleTitle() {
 		return BeanParamUtil.getString(
 			getKBArticle(), _liferayPortletRequest, "title",
-			BeanPropertiesUtil.getString(_getKBTemplate(), "title"));
+			_getKBTemplateTitle());
 	}
 
 	public String getKBArticleURLTitle() {
@@ -541,12 +540,17 @@ public class EditKBArticleDisplayContext {
 			kbSectionPortletInstanceConfiguration =
 				_getKBSectionPortletInstanceConfiguration();
 
-		_sections = AdminUtil.unescapeSections(
-			BeanPropertiesUtil.getString(
-				getKBArticle(), "sections",
-				StringUtil.merge(
-					kbSectionPortletInstanceConfiguration.
-						adminKBArticleSectionsDefault())));
+		String sections = StringUtil.merge(
+			kbSectionPortletInstanceConfiguration.
+				adminKBArticleSectionsDefault());
+
+		KBArticle kbArticle = getKBArticle();
+
+		if (kbArticle != null) {
+			sections = kbArticle.getSections();
+		}
+
+		_sections = AdminUtil.unescapeSections(sections);
 
 		return _sections;
 	}
@@ -575,6 +579,26 @@ public class EditKBArticleDisplayContext {
 			KBWebKeys.KNOWLEDGE_BASE_KB_TEMPLATE);
 
 		return _kbTemplate;
+	}
+
+	private String _getKBTemplateContent() {
+		KBTemplate kbTemplate = _getKBTemplate();
+
+		if (kbTemplate == null) {
+			return StringPool.BLANK;
+		}
+
+		return kbTemplate.getContent();
+	}
+
+	private String _getKBTemplateTitle() {
+		KBTemplate kbTemplate = _getKBTemplate();
+
+		if (kbTemplate == null) {
+			return StringPool.BLANK;
+		}
+
+		return kbTemplate.getTitle();
 	}
 
 	private final HttpServletRequest _httpServletRequest;
