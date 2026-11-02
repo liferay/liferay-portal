@@ -17,6 +17,8 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.struts.StrutsAction;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -24,6 +26,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -106,6 +109,11 @@ public class StatusStrutsActionTest {
 				_groupLocalService.getGroup(TestPropsValues.getGroupId()),
 				_layoutLocalService.getLayout(TestPropsValues.getPlid()));
 
+		mockHttpServletRequest.setAttribute(
+			WebKeys.CTX,
+			ServletContextPool.get(PortalUtil.getServletContextName()));
+		mockHttpServletRequest.setMethod(HttpMethods.GET);
+
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay)mockHttpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
@@ -134,6 +142,11 @@ public class StatusStrutsActionTest {
 						"href=\"http://www.liferay.com\" rel=\"external\">" +
 							"Liferay</a>")));
 		Assert.assertTrue(content, content.contains(expectedContent));
+
+		String contentElement = content.substring(
+			content.indexOf("id=\"content\""));
+
+		Assert.assertTrue(contentElement.contains("lfr-url-error"));
 	}
 
 	@Inject
