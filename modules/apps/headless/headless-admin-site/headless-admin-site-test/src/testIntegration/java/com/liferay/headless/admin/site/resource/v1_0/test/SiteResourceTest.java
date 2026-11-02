@@ -14,12 +14,14 @@ import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
 import com.liferay.exportimport.kernel.configuration.constants.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
+import com.liferay.exportimport.kernel.lar.UserIdStrategy;
 import com.liferay.exportimport.kernel.service.ExportImportConfigurationLocalService;
 import com.liferay.exportimport.kernel.service.ExportImportLocalService;
 import com.liferay.exportimport.test.rule.LazyReferencing;
 import com.liferay.exportimport.test.rule.LazyReferencingTestRule;
 import com.liferay.exportimport.test.util.ExportImportTestUtil;
 import com.liferay.headless.admin.site.client.dto.v1_0.AnalyticsConfiguration;
+import com.liferay.headless.admin.site.client.dto.v1_0.Creator;
 import com.liferay.headless.admin.site.client.dto.v1_0.GoogleAnalyticsConfiguration;
 import com.liferay.headless.admin.site.client.dto.v1_0.RatingsTypes;
 import com.liferay.headless.admin.site.client.dto.v1_0.Site;
@@ -176,6 +178,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	public void testGetSite() throws Exception {
 		super.testGetSite();
 
+		_testGetSiteWithCreator();
 		_testGetSiteWithDollar();
 		_testGetSiteWithoutViewPermission();
 	}
@@ -235,6 +238,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteSuccessMembershipTypeRestricted();
 		_testPostSiteSuccessSiteInitializer();
 		_testPostSiteSuccessSiteTemplate();
+		_testPostSiteWithCreatorWithoutAddSitePermissionOnImport();
 		_testPostSiteWithFriendlyURLMissingSlash();
 		_testPostSiteWithInheritLocales();
 		_testPostSiteWithLocalizedDescription();
@@ -247,6 +251,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteWithoutAuthentication();
 	}
 
+	@FeatureFlags(featureFlags = @FeatureFlag("LPD-85946"))
 	@LazyReferencing
 	@Override
 	@Test
@@ -255,6 +260,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		_testPutSiteBatch();
 		_testPutSiteBatchWithParentSiteExternalReferenceCode();
+		_testPutSiteWithCreatorWithoutUpdatePermissionOnImport();
 		_testPutSiteWithExcludedTypeSettings();
 		_testPutSiteWithParentSiteExternalReferenceCode();
 		_testPutSiteWithoutUpdatePermission();
@@ -563,8 +569,26 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 							).put(
 								PortletDataHandlerKeys.PORTLET_DATA_ALL,
 								new String[] {Boolean.TRUE.toString()}
+							).put(
+								PortletDataHandlerKeys.USER_ID_STRATEGY,
+								new String[] {UserIdStrategy.CURRENT_USER_ID}
 							).build())),
 			larFile);
+	}
+
+	private void _testGetSiteWithCreator() throws Exception {
+		Site postSite = _testPostSite_addSite(randomSite());
+
+		Site getSite = siteResource.getSite(
+			postSite.getExternalReferenceCode());
+
+		Creator creator = getSite.getCreator();
+
+		User user = TestPropsValues.getUser();
+
+		Assert.assertEquals(
+			user.getExternalReferenceCode(),
+			creator.getExternalReferenceCode());
 	}
 
 	private void _testGetSiteWithDollar() throws Exception {
@@ -1275,6 +1299,45 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 					layoutSetPrototypeLayout.getFriendlyURL())));
 	}
 
+	private void _testPostSiteWithCreatorWithoutAddSitePermissionOnImport()
+		throws Exception {
+
+		Site postSite = _testPostSite_addSite(randomSite());
+
+		String externalReferenceCode = postSite.getExternalReferenceCode();
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			externalReferenceCode, TestPropsValues.getCompanyId());
+
+		User user = UserTestUtil.addUser(false);
+
+		group.setCreatorUserId(user.getUserId());
+
+		_groupLocalService.updateGroup(group);
+
+		File larFile = _exportLayoutsAsFile(externalReferenceCode);
+
+		siteResource.deleteSite(externalReferenceCode);
+
+		_importSites(larFile, externalReferenceCode);
+
+		group = _groupLocalService.getGroupByExternalReferenceCode(
+			externalReferenceCode, TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(user.getUserId(), group.getCreatorUserId());
+		Assert.assertTrue(
+			_userLocalService.hasGroupUser(
+				group.getGroupId(), user.getUserId()));
+		Assert.assertFalse(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				TestPropsValues.getUserId(), group.getGroupId(),
+				RoleConstants.SITE_OWNER));
+		Assert.assertTrue(
+			_userGroupRoleLocalService.hasUserGroupRole(
+				user.getUserId(), group.getGroupId(),
+				RoleConstants.SITE_OWNER));
+	}
+
 	private void _testPostSiteWithFriendlyURLMissingSlash() throws Exception {
 		Site site = randomSite();
 
@@ -1927,6 +1990,38 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			_userLocalService.hasRoleUser(
 				TestPropsValues.getCompanyId(), RoleConstants.ADMINISTRATOR,
 				user.getUserId(), true));
+	}
+
+	private void _testPutSiteWithCreatorWithoutUpdatePermissionOnImport()
+		throws Exception {
+
+		Site postSite = _testPostSite_addSite(randomSite());
+
+		String externalReferenceCode = postSite.getExternalReferenceCode();
+
+		Group group = _groupLocalService.getGroupByExternalReferenceCode(
+			externalReferenceCode, TestPropsValues.getCompanyId());
+
+		User user = UserTestUtil.addUser(false);
+
+		group.setCreatorUserId(user.getUserId());
+
+		group = _groupLocalService.updateGroup(group);
+
+		File larFile = _exportLayoutsAsFile(externalReferenceCode);
+
+		group.setName(RandomTestUtil.randomString(), LocaleUtil.getDefault());
+
+		_groupLocalService.updateGroup(group);
+
+		_importSites(larFile, externalReferenceCode);
+
+		group = _groupLocalService.getGroupByExternalReferenceCode(
+			externalReferenceCode, TestPropsValues.getCompanyId());
+
+		Assert.assertEquals(user.getUserId(), group.getCreatorUserId());
+		Assert.assertEquals(
+			postSite.getName(), group.getName(LocaleUtil.getDefault()));
 	}
 
 	private void _testPutSiteWithExcludedTypeSettings() throws Exception {
