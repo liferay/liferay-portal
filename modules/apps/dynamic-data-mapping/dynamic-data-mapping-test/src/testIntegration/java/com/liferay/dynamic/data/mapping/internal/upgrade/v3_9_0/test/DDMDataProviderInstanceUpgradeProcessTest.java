@@ -98,7 +98,7 @@ public class DDMDataProviderInstanceUpgradeProcessTest {
 		EntityCacheUtil.clearCache();
 
 		ddmDataProviderInstance =
-			_ddmDataProviderInstanceLocalService.getDataProviderInstance(
+			_ddmDataProviderInstanceLocalService.getDDMDataProviderInstance(
 				ddmDataProviderInstance.getDataProviderInstanceId());
 
 		Assert.assertEquals(

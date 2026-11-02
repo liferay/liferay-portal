@@ -89,30 +89,10 @@ public class DDMStorageLinkLocalServiceImpl
 	}
 
 	@Override
-	public DDMStorageLink fetchClassStorageLink(long classPK) {
-		return ddmStorageLinkPersistence.fetchByClassPK(classPK);
-	}
-
-	@Override
 	public DDMStorageLink getClassStorageLink(long classPK)
 		throws PortalException {
 
 		return ddmStorageLinkPersistence.findByClassPK(classPK);
-	}
-
-	@Override
-	public DDMStorageLink getStorageLink(long storageLinkId)
-		throws PortalException {
-
-		return ddmStorageLinkPersistence.findByPrimaryKey(storageLinkId);
-	}
-
-	@Override
-	public List<DDMStorageLink> getStructureStorageLinks(long structureId) {
-		return ddmStorageLinkPersistence.findByStructureVersionId(
-			ListUtil.toLongArray(
-				_ddmStructureVersionPersistence.findByStructureId(structureId),
-				DDMStructureVersion::getStructureVersionId));
 	}
 
 	@Override
@@ -121,34 +101,6 @@ public class DDMStorageLinkLocalServiceImpl
 			ListUtil.toLongArray(
 				_ddmStructureVersionPersistence.findByStructureId(structureId),
 				DDMStructureVersion::getStructureVersionId));
-	}
-
-	@Override
-	public List<DDMStorageLink> getStructureVersionStorageLinks(
-		long structureVersionId) {
-
-		return ddmStorageLinkPersistence.findByStructureVersionId(
-			structureVersionId);
-	}
-
-	@Override
-	public int getStructureVersionStorageLinksCount(long structureVersionId) {
-		return ddmStorageLinkPersistence.countByStructureVersionId(
-			structureVersionId);
-	}
-
-	@Override
-	public DDMStorageLink updateStorageLink(
-			long storageLinkId, long classNameId, long classPK)
-		throws PortalException {
-
-		DDMStorageLink storageLink = ddmStorageLinkPersistence.findByPrimaryKey(
-			storageLinkId);
-
-		storageLink.setClassNameId(classNameId);
-		storageLink.setClassPK(classPK);
-
-		return ddmStorageLinkPersistence.update(storageLink);
 	}
 
 	@Reference

@@ -130,14 +130,6 @@ public class DDMFormInstanceRecordVersionLocalServiceImpl
 	}
 
 	@Override
-	public int getFormInstanceRecordVersionsCount(
-		long ddmFormInstanceRecordId) {
-
-		return ddmFormInstanceRecordVersionPersistence.
-			countByFormInstanceRecordId(ddmFormInstanceRecordId);
-	}
-
-	@Override
 	public DDMFormInstanceRecordVersion getLatestFormInstanceRecordVersion(
 			long ddmFormInstanceId)
 		throws PortalException {

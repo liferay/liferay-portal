@@ -107,7 +107,7 @@ public class JournalFragmentEntryProcessorEditableTest {
 			FragmentEntryLink.class.getName(), "editable_text");
 
 		DDMTemplateLink ddmTemplateLink =
-			_ddmTemplateLinkLocalService.getTemplateLink(
+			_ddmTemplateLinkLocalService.deleteTemplateLink(
 				PortalUtil.getClassNameId(compositeClassName),
 				fragmentEntryLink.getFragmentEntryLinkId());
 

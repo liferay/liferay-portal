@@ -13,9 +13,6 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 
 import java.util.List;
@@ -95,29 +92,6 @@ public class DDMStructureLinkLocalServiceImpl
 		for (DDMStructureLink structureLink : structureLinks) {
 			deleteStructureLink(structureLink);
 		}
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public List<DDMStructureLink> getClassNameStructureLinks(long classNameId) {
-		DynamicQuery dynamicQuery = dynamicQuery();
-
-		Property classNameIdProperty = PropertyFactoryUtil.forName(
-			"classNameId");
-
-		dynamicQuery.add(classNameIdProperty.eq(classNameId));
-
-		return dynamicQuery(dynamicQuery);
-	}
-
-	@Override
-	public DDMStructureLink getStructureLink(long structureLinkId)
-		throws PortalException {
-
-		return ddmStructureLinkPersistence.findByPrimaryKey(structureLinkId);
 	}
 
 	@Override

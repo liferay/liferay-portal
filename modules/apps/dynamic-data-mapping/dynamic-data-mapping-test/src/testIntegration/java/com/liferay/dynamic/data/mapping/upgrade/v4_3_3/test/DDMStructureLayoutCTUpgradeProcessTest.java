@@ -107,9 +107,10 @@ public class DDMStructureLayoutCTUpgradeProcessTest
 
 		return _ddmStructureLayoutLocalService.updateStructureLayout(
 			ddmStructureLayout.getStructureLayoutId(),
-			_createDDMFormLayout(
-				DDMFormTestUtil.createDDMForm(RandomTestUtil.randomString())),
-			_serviceContext);
+			ddmStructureLayout.getStructureVersionId(),
+			RandomTestUtil.randomLocaleStringMap(),
+			ddmStructureLayout.getDescriptionMap(),
+			ddmStructureLayout.getDefinition(), _serviceContext);
 	}
 
 	private DDMFormLayout _createDDMFormLayout(DDMForm ddmForm) {

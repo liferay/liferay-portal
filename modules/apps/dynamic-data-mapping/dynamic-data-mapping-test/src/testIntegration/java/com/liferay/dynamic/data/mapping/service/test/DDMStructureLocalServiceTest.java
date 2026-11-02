@@ -233,19 +233,23 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 		DDMStructure structure = ddmStructureTestHelper.addStructure(
 			ddmForm, StorageType.DEFAULT.getValue());
 
-		DDMDataProviderInstanceLink dataProviderInstanceLink =
+		List<DDMDataProviderInstanceLink> dataProviderInstanceLinks =
 			_ddmDataProviderInstanceLinkLocalService.
-				fetchDataProviderInstanceLink(
-					ddmDataProviderInstanceId, structure.getStructureId());
+				getDataProviderInstanceLinks(structure.getStructureId());
 
-		Assert.assertNotNull(dataProviderInstanceLink);
+		Assert.assertEquals(
+			dataProviderInstanceLinks.toString(), 1,
+			dataProviderInstanceLinks.size());
 
 		_ddmStructureLocalService.deleteStructure(structure);
 
-		Assert.assertNull(
+		dataProviderInstanceLinks =
 			_ddmDataProviderInstanceLinkLocalService.
-				fetchDataProviderInstanceLink(
-					ddmDataProviderInstanceId, structure.getStructureId()));
+				getDataProviderInstanceLinks(structure.getStructureId());
+
+		Assert.assertEquals(
+			dataProviderInstanceLinks.toString(), 0,
+			dataProviderInstanceLinks.size());
 	}
 
 	@Test
@@ -275,19 +279,23 @@ public class DDMStructureLocalServiceTest extends BaseDDMServiceTestCase {
 		DDMStructure structure = ddmStructureTestHelper.addStructure(
 			ddmForm, StorageType.DEFAULT.getValue());
 
-		DDMDataProviderInstanceLink dataProviderInstanceLink =
+		List<DDMDataProviderInstanceLink> dataProviderInstanceLinks =
 			_ddmDataProviderInstanceLinkLocalService.
-				fetchDataProviderInstanceLink(
-					ddmDataProviderInstanceId, structure.getStructureId());
+				getDataProviderInstanceLinks(structure.getStructureId());
 
-		Assert.assertNotNull(dataProviderInstanceLink);
+		Assert.assertEquals(
+			dataProviderInstanceLinks.toString(), 1,
+			dataProviderInstanceLinks.size());
 
 		_ddmStructureLocalService.deleteStructure(structure);
 
-		Assert.assertNull(
+		dataProviderInstanceLinks =
 			_ddmDataProviderInstanceLinkLocalService.
-				fetchDataProviderInstanceLink(
-					ddmDataProviderInstanceId, structure.getStructureId()));
+				getDataProviderInstanceLinks(structure.getStructureId());
+
+		Assert.assertEquals(
+			dataProviderInstanceLinks.toString(), 0,
+			dataProviderInstanceLinks.size());
 	}
 
 	@Test

@@ -20,9 +20,11 @@ import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.StorageType;
 import com.liferay.dynamic.data.mapping.util.DDM;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -106,9 +108,8 @@ public class StorageLinksUpgradeProcessTest {
 					ServiceContextTestUtil.getServiceContext(
 						_group.getGroupId()));
 
-			List<DDMStorageLink> ddmStorageLinks =
-				_ddmStorageLinkLocalService.getStructureStorageLinks(
-					ctCollectionDDMStructure.getStructureId());
+			List<DDMStorageLink> ddmStorageLinks = _getDDMStorageLinks(
+				ctCollectionDDMStructure.getStructureId());
 
 			for (DDMStorageLink ddmStorageLink : ddmStorageLinks) {
 				ddmStorageLink.setStructureVersionId(0);
@@ -131,8 +132,7 @@ public class StorageLinksUpgradeProcessTest {
 					productionDDMStructure.getStructureId());
 
 			List<DDMStorageLink> ctCollectionDDMStorageLinks =
-				_ddmStorageLinkLocalService.getStructureStorageLinks(
-					ctCollectionDDMStructure.getStructureId());
+				_getDDMStorageLinks(ctCollectionDDMStructure.getStructureId());
 			DDMStructureVersion ctCollectionDDMStructureVersion =
 				ctCollectionDDMStructure.getStructureVersion();
 
@@ -166,6 +166,19 @@ public class StorageLinksUpgradeProcessTest {
 		ddmForm.setDefaultLocale(LocaleUtil.US);
 
 		return ddmForm;
+	}
+
+	private List<DDMStorageLink> _getDDMStorageLinks(long structureId) {
+		return TransformUtil.transform(
+			_ddmStorageLinkLocalService.getDDMStorageLinks(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+			ddmStorageLink -> {
+				if (ddmStorageLink.getStructureId() == structureId) {
+					return ddmStorageLink;
+				}
+
+				return null;
+			});
 	}
 
 	private void _runUpgrade() throws Exception {

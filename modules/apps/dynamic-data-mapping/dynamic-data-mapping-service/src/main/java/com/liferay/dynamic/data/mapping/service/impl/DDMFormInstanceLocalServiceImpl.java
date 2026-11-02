@@ -271,16 +271,6 @@ public class DDMFormInstanceLocalServiceImpl
 	}
 
 	@Override
-	public void deleteFormInstances(long groupId) throws PortalException {
-		List<DDMFormInstance> ddmFormInstances =
-			ddmFormInstancePersistence.findByGroupId(groupId);
-
-		for (DDMFormInstance ddmFormInstance : ddmFormInstances) {
-			deleteFormInstance(ddmFormInstance);
-		}
-	}
-
-	@Override
 	public DDMFormInstance fetchFormInstance(long ddmFormInstanceId) {
 		return ddmFormInstancePersistence.fetchByPrimaryKey(ddmFormInstanceId);
 	}
@@ -290,13 +280,6 @@ public class DDMFormInstanceLocalServiceImpl
 		throws PortalException {
 
 		return ddmFormInstancePersistence.findByPrimaryKey(ddmFormInstanceId);
-	}
-
-	@Override
-	public DDMFormInstance getFormInstance(String uuid, long ddmFormInstanceId)
-		throws PortalException {
-
-		return ddmFormInstancePersistence.findByUUID_G(uuid, ddmFormInstanceId);
 	}
 
 	@Override

@@ -92,9 +92,14 @@ public class DDMFieldUpgradeProcessTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
-		DDMContent ddmContent = _ddmContentLocalService.addContent(
-			_group.getCreatorUserId(), _group.getGroupId(),
-			RandomTestUtil.randomString(), null,
+		DDMContent ddmContent = _ddmContentLocalService.createDDMContent(
+			RandomTestUtil.nextLong());
+
+		ddmContent.setGroupId(_group.getGroupId());
+		ddmContent.setCompanyId(_group.getCompanyId());
+		ddmContent.setUserId(_group.getCreatorUserId());
+		ddmContent.setName(RandomTestUtil.randomString());
+		ddmContent.setData(
 			JSONUtil.put(
 				"availableLanguageIds", JSONUtil.putAll("en_US")
 			).put(
@@ -116,8 +121,9 @@ public class DDMFieldUpgradeProcessTest {
 					).put(
 						"value", JSONUtil.put("en_US", "value2")
 					))
-			).toString(),
-			serviceContext);
+			).toString());
+
+		ddmContent = _ddmContentLocalService.addDDMContent(ddmContent);
 
 		_contentId = ddmContent.getContentId();
 

@@ -592,7 +592,7 @@ public class DDMStructureStagedModelDataHandlerTest
 			ddmDataProviderInstanceLinks.get(0);
 
 		DDMDataProviderInstance dataProviderInstance =
-			DDMDataProviderInstanceLocalServiceUtil.getDataProviderInstance(
+			DDMDataProviderInstanceLocalServiceUtil.getDDMDataProviderInstance(
 				dataProviderInstanceLink.getDataProviderInstanceId());
 
 		DDMDataProviderInstanceLink importedDataProviderInstanceLink =
@@ -602,7 +602,7 @@ public class DDMStructureStagedModelDataHandlerTest
 			importedDataProviderInstanceLink.getDataProviderInstanceId();
 
 		DDMDataProviderInstance importedDataProviderInstance =
-			DDMDataProviderInstanceLocalServiceUtil.getDataProviderInstance(
+			DDMDataProviderInstanceLocalServiceUtil.getDDMDataProviderInstance(
 				importedDataProviderInstanceId);
 
 		Assert.assertEquals(

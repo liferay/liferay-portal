@@ -7,11 +7,11 @@ package com.liferay.dynamic.data.mapping.change.tracking.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.change.tracking.test.util.BaseTableReferenceDefinitionTestCase;
+import com.liferay.dynamic.data.mapping.model.DDMContent;
 import com.liferay.dynamic.data.mapping.service.DDMContentLocalService;
 import com.liferay.portal.kernel.model.change.tracking.CTModel;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -37,11 +37,17 @@ public class DDMContentTableReferenceDefinitionTest
 
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
-		return _ddmContentLocalService.addContent(
-			TestPropsValues.getUserId(), group.getGroupId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(),
-			ServiceContextTestUtil.getServiceContext());
+		DDMContent ddmContent = _ddmContentLocalService.createDDMContent(
+			RandomTestUtil.nextLong());
+
+		ddmContent.setGroupId(group.getGroupId());
+		ddmContent.setCompanyId(group.getCompanyId());
+		ddmContent.setUserId(TestPropsValues.getUserId());
+		ddmContent.setName(RandomTestUtil.randomString());
+		ddmContent.setDescription(RandomTestUtil.randomString());
+		ddmContent.setData(RandomTestUtil.randomString());
+
+		return _ddmContentLocalService.addDDMContent(ddmContent);
 	}
 
 	@Inject

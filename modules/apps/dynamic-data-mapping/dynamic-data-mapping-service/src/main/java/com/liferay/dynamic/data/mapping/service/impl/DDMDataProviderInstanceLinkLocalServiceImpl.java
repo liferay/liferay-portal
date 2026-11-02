@@ -61,39 +61,6 @@ public class DDMDataProviderInstanceLinkLocalServiceImpl
 	}
 
 	@Override
-	public void deleteDataProviderInstanceLink(
-			long dataProviderInstanceId, long structureId)
-		throws PortalException {
-
-		DDMDataProviderInstanceLink dataProviderInstanceLink =
-			ddmDataProviderInstanceLinkPersistence.findByD_S(
-				dataProviderInstanceId, structureId);
-
-		ddmDataProviderInstanceLinkPersistence.remove(dataProviderInstanceLink);
-	}
-
-	@Override
-	public void deleteDataProviderInstanceLinks(long structureId) {
-		List<DDMDataProviderInstanceLink> dataProviderInstanceLinks =
-			ddmDataProviderInstanceLinkPersistence.findByStructureId(
-				structureId);
-
-		for (DDMDataProviderInstanceLink dataProviderInstanceLink :
-				dataProviderInstanceLinks) {
-
-			deleteDataProviderInstanceLink(dataProviderInstanceLink);
-		}
-	}
-
-	@Override
-	public DDMDataProviderInstanceLink fetchDataProviderInstanceLink(
-		long dataProviderInstanceId, long structureId) {
-
-		return ddmDataProviderInstanceLinkPersistence.fetchByD_S(
-			dataProviderInstanceId, structureId);
-	}
-
-	@Override
 	public List<DDMDataProviderInstanceLink> getDataProviderInstanceLinks(
 		long structureId) {
 

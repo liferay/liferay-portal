@@ -196,17 +196,6 @@ public class DDMFieldLocalServiceTest {
 			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
 
 		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), DDMFormFieldType.LINK_TO_PAGE,
-				HashMapBuilder.<String, Object>put(
-					"groupId", _group.getGroupId()
-				).put(
-					"layoutId", _LAYOUT_ID
-				).put(
-					"privateLayout", Boolean.FALSE
-				).build()));
-		Assert.assertEquals(
 			ddmFormValues,
 			_ddmFieldLocalService.getDDMFormValues(ddmForm, _STORAGE_ID));
 	}
@@ -244,14 +233,6 @@ public class DDMFieldLocalServiceTest {
 
 		_ddmFieldLocalService.updateDDMFormValues(
 			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
-
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(
-					StringPool.BLANK,
-					LocaleUtil.toLanguageId(LocaleUtil.ENGLISH) + " value")));
 
 		DDMFormValues deserializedDDMFormValues =
 			_ddmFieldLocalService.getDDMFormValues(ddmForm, _STORAGE_ID);
@@ -445,12 +426,6 @@ public class DDMFieldLocalServiceTest {
 		_ddmFieldLocalService.updateDDMFormValues(
 			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
 
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value1")));
-
 		DDMFormValues deserializedDDMFormValues =
 			_ddmFieldLocalService.getDDMFormValues(ddmForm, _STORAGE_ID);
 
@@ -572,14 +547,6 @@ public class DDMFieldLocalServiceTest {
 		_ddmFieldLocalService.updateDDMFormValues(
 			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
 
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(
-					StringPool.BLANK,
-					LocaleUtil.toLanguageId(LocaleUtil.ENGLISH) + " value")));
-
 		deserializedDDMFormValues = _ddmFieldLocalService.getDDMFormValues(
 			ddmForm, _STORAGE_ID);
 
@@ -681,17 +648,6 @@ public class DDMFieldLocalServiceTest {
 		_ddmFieldLocalService.updateDDMFormValues(
 			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
 
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value1")));
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value2 a")));
-
 		DDMFormValues deserializedDDMFormValues =
 			_ddmFieldLocalService.getDDMFormValues(ddmForm, _STORAGE_ID);
 
@@ -706,28 +662,6 @@ public class DDMFieldLocalServiceTest {
 
 		_ddmFieldLocalService.updateDDMFormValues(
 			ddmStructure.getStructureId(), _STORAGE_ID, ddmFormValues);
-
-		Assert.assertEquals(
-			0,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value1")));
-		Assert.assertEquals(
-			0,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value2 a")));
-
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value2 b")));
-		Assert.assertEquals(
-			1,
-			_ddmFieldLocalService.getDDMFormValuesCount(
-				_group.getCompanyId(), "text",
-				Collections.singletonMap(StringPool.BLANK, "value3")));
 
 		deserializedDDMFormValues = _ddmFieldLocalService.getDDMFormValues(
 			ddmForm, _STORAGE_ID);

@@ -25,7 +25,6 @@ import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
 import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
@@ -178,11 +177,8 @@ public class DLFileEntryDataCleanupPreupgradeProcessTest
 
 		upgrade();
 
-		DDMStructureVersion ddmStructureVersion =
-			ddmStructure.getStructureVersion();
-
-		_ddmFieldLocalService.deleteDDMFields(
-			ddmStructureVersion.getStructureId());
+		_ddmFieldLocalService.deleteDDMFormValues(
+			dlFileEntryMetadata.getDDMStorageId());
 
 		_ddmStructureLocalService.deleteStructure(ddmStructure);
 	}

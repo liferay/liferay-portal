@@ -8,12 +8,7 @@ package com.liferay.dynamic.data.mapping.service.impl;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateLink;
 import com.liferay.dynamic.data.mapping.service.base.DDMTemplateLinkLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -73,54 +68,6 @@ public class DDMTemplateLinkLocalServiceImpl
 	@Override
 	public void deleteTemplateLinks(long templateId) {
 		ddmTemplateLinkPersistence.removeByTemplateId(templateId);
-	}
-
-	@Override
-	public DDMTemplateLink getTemplateLink(long templateLinkId)
-		throws PortalException {
-
-		return ddmTemplateLinkPersistence.findByPrimaryKey(templateLinkId);
-	}
-
-	@Override
-	public DDMTemplateLink getTemplateLink(long classNameId, long classPK)
-		throws PortalException {
-
-		return ddmTemplateLinkPersistence.findByC_C(classNameId, classPK);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public List<DDMTemplateLink> getTemplateLinks(long classNameId) {
-		DynamicQuery dynamicQuery = dynamicQuery();
-
-		Property classNameIdProperty = PropertyFactoryUtil.forName(
-			"classNameId");
-
-		dynamicQuery.add(classNameIdProperty.eq(classNameId));
-
-		return dynamicQuery(dynamicQuery);
-	}
-
-	@Override
-	public List<DDMTemplateLink> getTemplateLinksByTemplateId(long templateId) {
-		return ddmTemplateLinkPersistence.findByTemplateId(templateId);
-	}
-
-	@Override
-	public DDMTemplateLink updateTemplateLink(
-			long templateLinkId, long templateId)
-		throws PortalException {
-
-		DDMTemplateLink templateLink =
-			ddmTemplateLinkPersistence.findByPrimaryKey(templateLinkId);
-
-		templateLink.setTemplateId(templateId);
-
-		return ddmTemplateLinkPersistence.update(templateLink);
 	}
 
 	@Override

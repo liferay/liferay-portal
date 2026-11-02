@@ -20,7 +20,6 @@ import com.liferay.dynamic.data.mapping.exception.TemplateScriptException;
 import com.liferay.dynamic.data.mapping.exception.TemplateSmallImageContentException;
 import com.liferay.dynamic.data.mapping.exception.TemplateSmallImageNameException;
 import com.liferay.dynamic.data.mapping.exception.TemplateSmallImageSizeException;
-import com.liferay.dynamic.data.mapping.internal.search.util.DDMSearchUtil;
 import com.liferay.dynamic.data.mapping.model.DDMTemplate;
 import com.liferay.dynamic.data.mapping.model.DDMTemplateVersion;
 import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport;
@@ -34,7 +33,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -48,7 +46,6 @@ import com.liferay.portal.kernel.search.Indexable;
 import com.liferay.portal.kernel.search.IndexableType;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
-import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.service.ImageLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -469,16 +466,6 @@ public class DDMTemplateLocalServiceImpl
 		ddmTemplateLocalService.deleteTemplate(template);
 	}
 
-	@Override
-	public DDMTemplate deleteTemplate(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		return ddmTemplateLocalService.deleteTemplate(
-			getDDMTemplateByExternalReferenceCode(
-				externalReferenceCode, groupId));
-	}
-
 	/**
 	 * Deletes all the templates of the group.
 	 *
@@ -828,28 +815,9 @@ public class DDMTemplateLocalServiceImpl
 
 	@Override
 	public List<DDMTemplate> getTemplatesByClassPK(
-		long groupId, long classPK, int start, int end) {
-
-		return ddmTemplatePersistence.findByG_CPK(groupId, classPK, start, end);
-	}
-
-	@Override
-	public List<DDMTemplate> getTemplatesByClassPK(
 		long[] groupIds, long classPK) {
 
 		return ddmTemplatePersistence.findByG_CPK(groupIds, classPK);
-	}
-
-	/**
-	 * Returns the number of templates matching the group and class PK.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  classPK the primary key of the template's related entity
-	 * @return the number of templates belonging to the group and class PK
-	 */
-	@Override
-	public int getTemplatesByClassPKCount(long groupId, long classPK) {
-		return ddmTemplatePersistence.countByG_CPK(groupId, classPK);
 	}
 
 	@Override
@@ -891,30 +859,6 @@ public class DDMTemplateLocalServiceImpl
 		return ddmTemplateFinder.findByG_SC_S(
 			groupId, structureClassNameId, status, start, end,
 			orderByComparator);
-	}
-
-	/**
-	 * Returns the number of templates belonging to the group.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @return the number of templates belonging to the group
-	 */
-	@Override
-	public int getTemplatesCount(long groupId) {
-		return ddmTemplatePersistence.countByGroupId(groupId);
-	}
-
-	/**
-	 * Returns the number of templates matching the group and class name ID.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the class name for the template's
-	 *         related model
-	 * @return the number of matching templates
-	 */
-	@Override
-	public int getTemplatesCount(long groupId, long classNameId) {
-		return ddmTemplatePersistence.countByG_C(groupId, classNameId);
 	}
 
 	/**
@@ -978,409 +922,6 @@ public class DDMTemplateLocalServiceImpl
 			template.getType(), template.getMode(),
 			templateVersion.getLanguage(), templateVersion.getScript(),
 			template.isCacheable(), serviceContext);
-	}
-
-	/**
-	 * Returns an ordered range of all the templates matching the group, class
-	 * name ID, class PK, type, mode, and status, and matching the keywords in
-	 * the template names and descriptions.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the class name for the template's
-	 *         related model
-	 * @param  classPK the primary key of the template's related entity
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  keywords the keywords (space separated), which may occur in the
-	 *         template's name or description (optionally <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @param  start the lower bound of the range of templates to return
-	 * @param  end the upper bound of the range of templates to return (not
-	 *         inclusive)
-	 * @param  orderByComparator the comparator to order the templates
-	 *         (optionally <code>null</code>)
-	 * @return the range of matching templates ordered by the comparator
-	 */
-	@Override
-	public List<DDMTemplate> search(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupId, classNameId, classPK,
-			resourceClassNameId, keywords, keywords, type, mode, null, status,
-			start, end, orderByComparator);
-
-		return DDMSearchUtil.doSearch(
-			searchContext, DDMTemplate.class,
-			ddmTemplatePersistence::findByPrimaryKey);
-	}
-
-	/**
-	 * Returns an ordered range of all the templates matching the group, class
-	 * name ID, class PK, name keyword, description keyword, type, mode, status,
-	 * and language.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the class name for the template's
-	 *         related model
-	 * @param  classPK the primary key of the template's related entity
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  name the name keywords (optionally <code>null</code>)
-	 * @param  description the description keywords (optionally
-	 *         <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  language the template's script language (optionally
-	 *         <code>null</code>). For more information, see
-	 *         DDMTemplateConstants in the dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @param  andOperator whether every field must match its keywords, or just
-	 *         one field
-	 * @param  start the lower bound of the range of templates to return
-	 * @param  end the upper bound of the range of templates to return (not
-	 *         inclusive)
-	 * @param  orderByComparator the comparator to order the templates
-	 *         (optionally <code>null</code>)
-	 * @return the range of matching templates ordered by the comparator
-	 */
-	@Override
-	public List<DDMTemplate> search(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupId, classNameId, classPK,
-			resourceClassNameId, name, description, type, mode, language,
-			status, start, end, orderByComparator);
-
-		return DDMSearchUtil.doSearch(
-			searchContext, DDMTemplate.class,
-			ddmTemplatePersistence::findByPrimaryKey);
-	}
-
-	/**
-	 * Returns an ordered range of all the templates matching the group IDs,
-	 * class Name IDs, class PK, type, mode, and status, and include the
-	 * keywords on its names and descriptions.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupIds the primary keys of the groups
-	 * @param  classNameIds the primary keys of the entity's instances the
-	 *         templates are related to
-	 * @param  classPKs the primary keys of the template's related entities
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  keywords the keywords (space separated), which may occur in the
-	 *         template's name or description (optionally <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @param  start the lower bound of the range of templates to return
-	 * @param  end the upper bound of the range of templates to return (not
-	 *         inclusive)
-	 * @param  orderByComparator the comparator to order the templates
-	 *         (optionally <code>null</code>)
-	 * @return the range of matching templates ordered by the comparator
-	 */
-	@Override
-	public List<DDMTemplate> search(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status, int start, int end,
-		OrderByComparator<DDMTemplate> orderByComparator) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupIds, classNameIds, classPKs,
-			resourceClassNameId, keywords, keywords, type, mode, null, status,
-			start, end, orderByComparator);
-
-		return DDMSearchUtil.doSearch(
-			searchContext, DDMTemplate.class,
-			ddmTemplatePersistence::findByPrimaryKey);
-	}
-
-	/**
-	 * Returns an ordered range of all the templates matching the group IDs,
-	 * class name IDs, class PK, name keyword, description keyword, type, mode,
-	 * language, and status.
-	 *
-	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end -
-	 * start</code> instances. <code>start</code> and <code>end</code> are not
-	 * primary keys, they are indexes in the result set. Thus, <code>0</code>
-	 * refers to the first result in the set. Setting both <code>start</code>
-	 * and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full
-	 * result set.
-	 * </p>
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupIds the primary keys of the groups
-	 * @param  classNameIds the primary keys of the entity's instances the
-	 *         templates are related to
-	 * @param  classPKs the primary keys of the template's related entities
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  name the name keywords (optionally <code>null</code>)
-	 * @param  description the description keywords (optionally
-	 *         <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  language the template's script language (optionally
-	 *         <code>null</code>). For more information, see
-	 *         DDMTemplateConstants in the dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @param  andOperator whether every field must match its keywords, or just
-	 *         one field.
-	 * @param  start the lower bound of the range of templates to return
-	 * @param  end the upper bound of the range of templates to return (not
-	 *         inclusive)
-	 * @param  orderByComparator the comparator to order the templates
-	 *         (optionally <code>null</code>)
-	 * @return the range of matching templates ordered by the comparator
-	 */
-	@Override
-	public List<DDMTemplate> search(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator,
-		int start, int end, OrderByComparator<DDMTemplate> orderByComparator) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupIds, classNameIds, classPKs,
-			resourceClassNameId, name, description, type, mode, language,
-			status, start, end, orderByComparator);
-
-		return DDMSearchUtil.doSearch(
-			searchContext, DDMTemplate.class,
-			ddmTemplatePersistence::findByPrimaryKey);
-	}
-
-	/**
-	 * Returns the number of templates matching the group, class name ID, class
-	 * PK, type, mode, and status, and matching the keywords in the template
-	 * names and descriptions.
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the class name for the template's
-	 *         related model
-	 * @param  classPK the primary key of the template's related entity
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  keywords the keywords (space separated), which may occur in the
-	 *         template's name or description (optionally <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @return the number of matching templates
-	 */
-	@Override
-	public int searchCount(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupId, classNameId, classPK,
-			resourceClassNameId, keywords, keywords, type, mode, null, status,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		return DDMSearchUtil.doSearchCount(searchContext, DDMTemplate.class);
-	}
-
-	/**
-	 * Returns the number of templates matching the group, class name ID, class
-	 * PK, name keyword, description keyword, type, mode, language, and status.
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the class name for the template's
-	 *         related model
-	 * @param  classPK the primary key of the template's related entity
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  name the name keywords (optionally <code>null</code>)
-	 * @param  description the description keywords (optionally
-	 *         <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  language the template's script language (optionally
-	 *         <code>null</code>). For more information, see
-	 *         DDMTemplateConstants in the dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @param  andOperator whether every field must match its keywords, or just
-	 *         one field.
-	 * @return the number of matching templates
-	 */
-	@Override
-	public int searchCount(
-		long companyId, long groupId, long classNameId, long classPK,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupId, classNameId, classPK,
-			resourceClassNameId, name, description, type, mode, language,
-			status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		return DDMSearchUtil.doSearchCount(searchContext, DDMTemplate.class);
-	}
-
-	/**
-	 * Returns the number of templates matching the group IDs, class name IDs,
-	 * class PK, type, mode, and status, and matching the keywords in the
-	 * template names and descriptions.
-	 *
-	 * @param  companyId the primary key of the template's company
-	 * @param  groupIds the primary keys of the groups
-	 * @param  classNameIds the primary keys of the entity's instance the
-	 *         templates are related to
-	 * @param  classPKs the primary keys of the template's related entities
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  keywords the keywords (space separated), which may occur in the
-	 *         template's name or description (optionally <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @return the number of matching templates
-	 */
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String keywords, String type, String mode,
-		int status) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupIds, classNameIds, classPKs,
-			resourceClassNameId, keywords, keywords, type, mode, null, status,
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		return DDMSearchUtil.doSearchCount(searchContext, DDMTemplate.class);
-	}
-
-	/**
-	 * Returns the number of templates matching the group IDs, class name IDs,
-	 * class PKs, name keyword, description keyword, type, mode, language, and
-	 * status.
-	 *
-	 * @param  companyId the primary key of the templates company
-	 * @param  groupIds the primary keys of the groups
-	 * @param  classNameIds the primary keys of the entity's instance the
-	 *         templates are related to
-	 * @param  classPKs the primary keys of the template's related entities
-	 * @param  resourceClassNameId the primary key of the class name for
-	 *         template's resource model
-	 * @param  name the name keywords (optionally <code>null</code>)
-	 * @param  description the description keywords (optionally
-	 *         <code>null</code>)
-	 * @param  type the template's type (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  mode the template's mode (optionally <code>null</code>). For more
-	 *         information, see DDMTemplateConstants in the
-	 *         dynamic-data-mapping-api module.
-	 * @param  language the template's script language (optionally
-	 *         <code>null</code>). For more information, see
-	 *         DDMTemplateConstants in the dynamic-data-mapping-api module.
-	 * @param  status the template's workflow status. For more information see
-	 *         {@link WorkflowConstants} for constants starting with the
-	 *         "STATUS_" prefix.
-	 * @param  andOperator whether every field must match its keywords, or just
-	 *         one field.
-	 * @return the number of matching templates
-	 */
-	@Override
-	public int searchCount(
-		long companyId, long[] groupIds, long[] classNameIds, long[] classPKs,
-		long resourceClassNameId, String name, String description, String type,
-		String mode, String language, int status, boolean andOperator) {
-
-		SearchContext searchContext = DDMSearchUtil.buildTemplateSearchContext(
-			_ddmPermissionSupport, companyId, groupIds, classNameIds, classPKs,
-			resourceClassNameId, name, description, type, mode, language,
-			status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
-
-		return DDMSearchUtil.doSearchCount(searchContext, DDMTemplate.class);
 	}
 
 	/**

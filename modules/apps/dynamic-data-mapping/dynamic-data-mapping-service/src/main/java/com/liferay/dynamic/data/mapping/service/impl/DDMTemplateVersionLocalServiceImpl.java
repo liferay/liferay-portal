@@ -12,7 +12,6 @@ import com.liferay.dynamic.data.mapping.util.comparator.TemplateVersionVersionCo
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.Collections;
 import java.util.List;
@@ -55,14 +54,6 @@ public class DDMTemplateVersionLocalServiceImpl
 	}
 
 	@Override
-	public DDMTemplateVersion getTemplateVersion(long templateVersionId)
-		throws PortalException {
-
-		return ddmTemplateVersionPersistence.findByPrimaryKey(
-			templateVersionId);
-	}
-
-	@Override
 	public DDMTemplateVersion getTemplateVersion(
 			long templateId, String version)
 		throws PortalException {
@@ -73,20 +64,6 @@ public class DDMTemplateVersionLocalServiceImpl
 	@Override
 	public List<DDMTemplateVersion> getTemplateVersions(long templateId) {
 		return ddmTemplateVersionPersistence.findByTemplateId(templateId);
-	}
-
-	@Override
-	public List<DDMTemplateVersion> getTemplateVersions(
-		long templateId, int start, int end,
-		OrderByComparator<DDMTemplateVersion> orderByComparator) {
-
-		return ddmTemplateVersionPersistence.findByTemplateId(
-			templateId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getTemplateVersionsCount(long templateId) {
-		return ddmTemplateVersionPersistence.countByTemplateId(templateId);
 	}
 
 }

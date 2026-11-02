@@ -38,15 +38,6 @@ public class DDMFormInstanceVersionLocalServiceImpl
 
 	@Override
 	public DDMFormInstanceVersion getFormInstanceVersion(
-			long ddmFormInstanceVersionId)
-		throws PortalException {
-
-		return ddmFormInstanceVersionPersistence.findByPrimaryKey(
-			ddmFormInstanceVersionId);
-	}
-
-	@Override
-	public DDMFormInstanceVersion getFormInstanceVersion(
 			long ddmFormInstanceId, String version)
 		throws PortalException {
 
@@ -56,25 +47,11 @@ public class DDMFormInstanceVersionLocalServiceImpl
 
 	@Override
 	public List<DDMFormInstanceVersion> getFormInstanceVersions(
-		long ddmFormInstanceId) {
-
-		return ddmFormInstanceVersionPersistence.findByFormInstanceId(
-			ddmFormInstanceId);
-	}
-
-	@Override
-	public List<DDMFormInstanceVersion> getFormInstanceVersions(
 		long ddmFormInstanceId, int start, int end,
 		OrderByComparator<DDMFormInstanceVersion> orderByComparator) {
 
 		return ddmFormInstanceVersionPersistence.findByFormInstanceId(
 			ddmFormInstanceId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getFormInstanceVersionsCount(long ddmFormInstanceId) {
-		return ddmFormInstanceVersionPersistence.countByFormInstanceId(
-			ddmFormInstanceId);
 	}
 
 	@Override

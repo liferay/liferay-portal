@@ -6,8 +6,6 @@
 package com.liferay.portal.upgrade.data.cleanup.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.dynamic.data.mapping.model.DDMStructure;
-import com.liferay.dynamic.data.mapping.model.DDMStructureVersion;
 import com.liferay.dynamic.data.mapping.service.DDMFieldLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
@@ -166,15 +164,10 @@ public class JournalDataCleanupPreupgradeProcessTest
 	private void _deleteDDMStructure(JournalArticle journalArticle)
 		throws Exception {
 
-		DDMStructure ddmStructure = journalArticle.getDDMStructure();
+		_ddmFieldLocalService.deleteDDMFormValues(journalArticle.getId());
 
-		DDMStructureVersion ddmStructureVersion =
-			ddmStructure.getStructureVersion();
-
-		_ddmFieldLocalService.deleteDDMFields(
-			ddmStructureVersion.getStructureId());
-
-		_ddmStructureLocalService.deleteStructure(ddmStructure);
+		_ddmStructureLocalService.deleteStructure(
+			journalArticle.getDDMStructure());
 	}
 
 	private SafeCloseable _classNamesSavepointSafeCloseable;

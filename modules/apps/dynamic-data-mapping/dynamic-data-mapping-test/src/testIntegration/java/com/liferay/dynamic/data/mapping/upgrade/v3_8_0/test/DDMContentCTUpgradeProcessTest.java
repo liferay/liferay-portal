@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.test.rule.Inject;
@@ -104,9 +103,15 @@ public class DDMContentCTUpgradeProcessTest
 
 	@Override
 	protected CTModel<?> addCTModel() throws Exception {
-		DDMContent ddmContent = _ddmContentLocalService.addContent(
-			TestPropsValues.getUserId(), _group.getGroupId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+		DDMContent ddmContent = _ddmContentLocalService.createDDMContent(
+			RandomTestUtil.nextLong());
+
+		ddmContent.setGroupId(_group.getGroupId());
+		ddmContent.setCompanyId(_group.getCompanyId());
+		ddmContent.setUserId(TestPropsValues.getUserId());
+		ddmContent.setName(RandomTestUtil.randomString());
+		ddmContent.setDescription(RandomTestUtil.randomString());
+		ddmContent.setData(
 			JSONUtil.put(
 				"fieldValues",
 				JSONUtil.putAll(
@@ -115,8 +120,9 @@ public class DDMContentCTUpgradeProcessTest
 						RandomTestUtil.randomString()))
 			).put(
 				"name", RandomTestUtil.randomString()
-			).toString(),
-			ServiceContextTestUtil.getServiceContext());
+			).toString());
+
+		ddmContent = _ddmContentLocalService.addDDMContent(ddmContent);
 
 		DDMFormInstanceRecordVersion ddmFormInstanceRecordVersion =
 			_ddmFormInstanceRecord.getFormInstanceRecordVersion();

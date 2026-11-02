@@ -17,7 +17,6 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.Collections;
 import java.util.List;
@@ -92,20 +91,6 @@ public class DDMStructureVersionLocalServiceImpl
 	@Override
 	public List<DDMStructureVersion> getStructureVersions(long structureId) {
 		return ddmStructureVersionPersistence.findByStructureId(structureId);
-	}
-
-	@Override
-	public List<DDMStructureVersion> getStructureVersions(
-		long structureId, int start, int end,
-		OrderByComparator<DDMStructureVersion> orderByComparator) {
-
-		return ddmStructureVersionPersistence.findByStructureId(
-			structureId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getStructureVersionsCount(long structureId) {
-		return ddmStructureVersionPersistence.countByStructureId(structureId);
 	}
 
 	@Reference(target = "(ddm.form.deserializer.type=json)")
