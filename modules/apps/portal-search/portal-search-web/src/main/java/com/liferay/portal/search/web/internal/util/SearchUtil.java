@@ -155,8 +155,12 @@ public class SearchUtil {
 				return viewContentURL.toString();
 			}
 
-			AssetEntry assetEntry = AssetEntryLocalServiceUtil.getEntry(
+			AssetEntry assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
 				className, classPK);
+
+			if (assetEntry == null) {
+				return StringPool.BLANK;
+			}
 
 			AssetRendererFactory<?> assetRendererFactory =
 				AssetRendererFactoryRegistryUtil.
