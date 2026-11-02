@@ -5,9 +5,6 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BrowserTracker;
 import com.liferay.portal.service.base.BrowserTrackerLocalServiceBaseImpl;
 
@@ -26,55 +23,5 @@ public class BrowserTrackerLocalServiceImpl
 			browserTrackerPersistence.remove(browserTracker);
 		}
 	}
-
-	@Override
-	public BrowserTracker getBrowserTracker(long userId, long browserKey) {
-		BrowserTracker browserTracker = browserTrackerPersistence.fetchByUserId(
-			userId);
-
-		if (browserTracker == null) {
-			browserTracker = browserTrackerLocalService.updateBrowserTracker(
-				userId, browserKey);
-		}
-
-		return browserTracker;
-	}
-
-	@Override
-	public BrowserTracker updateBrowserTracker(long userId, long browserKey) {
-		BrowserTracker browserTracker = browserTrackerPersistence.fetchByUserId(
-			userId);
-
-		if (browserTracker == null) {
-			long browserTrackerId = counterLocalService.increment();
-
-			browserTracker = browserTrackerPersistence.create(browserTrackerId);
-
-			browserTracker.setUserId(userId);
-		}
-
-		browserTracker.setBrowserKey(browserKey);
-
-		try {
-			browserTracker = browserTrackerPersistence.update(browserTracker);
-		}
-		catch (SystemException systemException) {
-			if (_log.isWarnEnabled()) {
-				_log.warn("Add failed, fetch {userId=" + userId + "}");
-			}
-
-			browserTracker = browserTrackerPersistence.fetchByUserId(
-				userId, false);
-
-			if (browserTracker == null) {
-				throw systemException;
-			}
-		}
-
-		return browserTracker;
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		BrowserTrackerLocalServiceImpl.class);
 
 }

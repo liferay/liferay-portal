@@ -14,16 +14,13 @@ import com.liferay.expando.kernel.service.ExpandoValueLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.InvalidRepositoryException;
-import com.liferay.portal.kernel.exception.NoSuchRepositoryException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Repository;
 import com.liferay.portal.kernel.model.RepositoryTable;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.repository.InvalidRepositoryIdException;
 import com.liferay.portal.kernel.repository.LocalRepository;
 import com.liferay.portal.kernel.repository.RepositoryException;
 import com.liferay.portal.kernel.repository.RepositoryFactoryUtil;
@@ -94,23 +91,6 @@ public class RepositoryLocalServiceImpl extends RepositoryLocalServiceBaseImpl {
 		}
 
 		return repository;
-	}
-
-	@Override
-	public void checkRepository(long repositoryId) {
-		Group group = _groupPersistence.fetchByPrimaryKey(repositoryId);
-
-		if (group != null) {
-			return;
-		}
-
-		try {
-			repositoryPersistence.findByPrimaryKey(repositoryId);
-		}
-		catch (NoSuchRepositoryException noSuchRepositoryException) {
-			throw new InvalidRepositoryIdException(
-				noSuchRepositoryException.getMessage());
-		}
 	}
 
 	@Override

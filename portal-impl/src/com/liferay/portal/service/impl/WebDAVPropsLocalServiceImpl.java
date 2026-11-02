@@ -21,16 +21,6 @@ public class WebDAVPropsLocalServiceImpl
 	extends WebDAVPropsLocalServiceBaseImpl {
 
 	@Override
-	public void deleteWebDAVProps(String className, long classPK) {
-		WebDAVProps webDAVProps = webDAVPropsPersistence.fetchByC_C(
-			_classNameLocalService.getClassNameId(className), classPK);
-
-		if (webDAVProps != null) {
-			webDAVPropsPersistence.remove(webDAVProps);
-		}
-	}
-
-	@Override
 	public WebDAVProps getWebDAVProps(
 		long companyId, String className, long classPK) {
 

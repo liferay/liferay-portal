@@ -1265,7 +1265,9 @@ public class PermissionCheckerTest {
 		_resourceActions.populatePortletResource(
 			portlet, PermissionCheckerTest.class.getClassLoader(), _source);
 
-		_portletLocalService.deployRemotePortlet(portlet, "category.hidden");
+		_portletLocalService.deployRemotePortlet(
+			new long[] {companyId}, portlet, new String[] {"category.hidden"},
+			true, true);
 	}
 
 	private void _destroyRemotePortlet(long companyId, String portletName)
@@ -1287,7 +1289,7 @@ public class PermissionCheckerTest {
 			_user.getCompanyId(), portletName,
 			ResourceConstants.SCOPE_INDIVIDUAL, portletName);
 
-		_portletLocalService.destroyRemotePortlet(portlet);
+		_portletLocalService.destroyPortlet(portlet);
 	}
 
 	private void _testHasPermissionWithLiveGroup() throws Exception {

@@ -600,7 +600,7 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 		finally {
 			Portlet portlet = _portletLocalService.getPortletById(portletName);
 
-			_portletLocalService.destroyRemotePortlet(portlet);
+			_portletLocalService.destroyPortlet(portlet);
 		}
 
 		try {
@@ -646,7 +646,7 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 						companyId, portletName);
 
 					if (portlet != null) {
-						_portletLocalService.destroyRemotePortlet(portlet);
+						_portletLocalService.destroyPortlet(portlet);
 					}
 				});
 		}

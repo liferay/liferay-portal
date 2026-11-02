@@ -31,7 +31,6 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.internal.configuration.ConfigurationFactoryImpl;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.CompanyConstants;
 import com.liferay.portal.kernel.model.EventDefinition;
 import com.liferay.portal.kernel.model.Portlet;
@@ -157,25 +156,6 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 	@Override
-	@Transactional(enabled = false)
-	public void addPortletCategory(long companyId, String categoryName) {
-		PortletCategory portletCategory = (PortletCategory)WebAppPool.get(
-			companyId, WebKeys.PORTLET_CATEGORY);
-
-		if (portletCategory == null) {
-			_log.error(
-				"Unable to add portlet category for company " + companyId +
-					" because it does not exist");
-
-			return;
-		}
-
-		PortletCategory newPortletCategory = new PortletCategory(categoryName);
-
-		portletCategory.mergeCategory(newPortletCategory.getRootCategory());
-	}
-
-	@Override
 	@SuppressWarnings("unchecked")
 	public void afterPropertiesSet() {
 		super.afterPropertiesSet();
@@ -288,14 +268,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		for (Consumer<Long> consumer : _serviceTrackerList) {
 			consumer.accept(null);
 		}
-	}
-
-	@Override
-	@Transactional(enabled = false)
-	public Portlet clonePortlet(String portletId) {
-		Portlet portlet = getPortletById(portletId);
-
-		return (Portlet)portlet.clone();
 	}
 
 	@CTAware
@@ -423,34 +395,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 	}
 
 	@Override
-	public Portlet deployRemotePortlet(Portlet portlet, String categoryName)
-		throws PortalException {
-
-		return deployRemotePortlet(portlet, new String[] {categoryName});
-	}
-
-	@Override
-	public Portlet deployRemotePortlet(Portlet portlet, String[] categoryNames)
-		throws PortalException {
-
-		return deployRemotePortlet(portlet, categoryNames, true);
-	}
-
-	@Override
-	public Portlet deployRemotePortlet(
-			Portlet portlet, String[] categoryNames, boolean eagerDestroy)
-		throws PortalException {
-
-		long[] companyIds = ListUtil.toLongArray(
-			_companyPersistence.findAll(), Company::getCompanyId);
-
-		deployRemotePortlet(
-			companyIds, portlet, categoryNames, eagerDestroy, true);
-
-		return portlet;
-	}
-
-	@Override
 	public void destroy() {
 		_serviceTrackerList.close();
 
@@ -481,12 +425,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		}
 
 		clearCache();
-	}
-
-	@Override
-	@Transactional(enabled = false)
-	public void destroyRemotePortlet(Portlet portlet) {
-		destroyPortlet(portlet);
 	}
 
 	@Override
@@ -636,17 +574,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 		}
 
 		return customAttributesDisplays;
-	}
-
-	@Override
-	@Transactional(enabled = false)
-	public PortletCategory getEARDisplay(String xml) {
-		try {
-			return readLiferayDisplayXML(xml);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
 	}
 
 	@Override
@@ -939,31 +866,6 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			else if (!showSystem && portlet.isSystem()) {
 				iterator.remove();
 			}
-		}
-
-		return portlets;
-	}
-
-	@Override
-	public int getPortletsCount(long companyId) {
-		return portletPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	@Transactional(enabled = false)
-	public List<Portlet> getScopablePortlets() {
-		List<Portlet> portlets = ListUtil.fromMapValues(_portletsMap);
-
-		Iterator<Portlet> iterator = portlets.iterator();
-
-		while (iterator.hasNext()) {
-			Portlet portlet = iterator.next();
-
-			if (portlet.isScopeable()) {
-				continue;
-			}
-
-			iterator.remove();
 		}
 
 		return portlets;

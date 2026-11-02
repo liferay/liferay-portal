@@ -31,7 +31,6 @@ import java.io.InputStream;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -97,22 +96,6 @@ public class ImageLocalServiceImpl extends ImageLocalServiceBaseImpl {
 
 		return store.getFileAsStream(
 			0, _REPOSITORY_ID, fileName, StringPool.BLANK);
-	}
-
-	@Override
-	public Image getImageOrDefault(long imageId) {
-		Image image = fetchImage(imageId);
-
-		if (image != null) {
-			return image;
-		}
-
-		return ImageToolUtil.getDefaultSpacer();
-	}
-
-	@Override
-	public List<Image> getImages() {
-		return imagePersistence.findAll();
 	}
 
 	@Override
