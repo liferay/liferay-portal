@@ -13,6 +13,7 @@ import com.liferay.jenkins.results.parser.PortalGitWorkingDirectory;
 import com.liferay.jenkins.results.parser.PortalTestClassJob;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.ReflectionTestUtil;
+import com.liferay.jenkins.results.parser.history.JobHistory;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import java.io.File;
@@ -76,6 +77,9 @@ public class BatchTestClassGroupTestUtil {
 					"/BatchTestClassGroupTestUtil/test.properties"));
 
 		_setDefaults(portalTestClassJob.getPortalGitWorkingDirectory());
+
+		ReflectionTestUtil.setFieldValue(
+			portalTestClassJob, "_jobHistory", Mockito.mock(JobHistory.class));
 
 		return portalTestClassJob;
 	}
