@@ -122,6 +122,50 @@ public class CommercePriceModifierRelServiceTest {
 					languageId));
 	}
 
+	@Test
+	public void testGetCommercePriceModifierRelsCount() throws Exception {
+		CommerceCurrency commerceCurrency =
+			CommerceCurrencyTestUtil.addCommerceCurrency(_group.getCompanyId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getCompanyId(), _group.getGroupId(),
+				TestPropsValues.getUserId());
+
+		CommerceCatalog commerceCatalog =
+			_commerceCatalogLocalService.addCommerceCatalog(
+				null, RandomTestUtil.randomString(), commerceCurrency.getCode(),
+				LocaleUtil.US.getDisplayLanguage(), serviceContext);
+
+		CommercePriceList commercePriceList =
+			CommercePriceListTestUtil.addCommercePriceList(
+				commerceCatalog.getGroupId(), TestPropsValues.getUser(),
+				commerceCurrency, 0.0, serviceContext);
+
+		CommercePriceModifier commercePriceModifier =
+			CommercePriceModifierTestUtil.addCommercePriceModifier(
+				commerceCatalog.getGroupId(), TestPropsValues.getUser(),
+				commercePriceList.getCommercePriceListId(),
+				CommercePriceModifierConstants.TARGET_PRODUCTS,
+				BigDecimal.valueOf(RandomTestUtil.randomDouble()),
+				CommercePriceModifierConstants.MODIFIER_TYPE_REPLACE, true,
+				serviceContext);
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinition(
+			commerceCatalog.getGroupId());
+
+		CommercePriceModifierRelTestUtil.addCommercePriceModifierRel(
+			commercePriceModifier.getCommercePriceModifierId(),
+			CPDefinition.class.getName(), cpDefinition.getCPDefinitionId(),
+			serviceContext);
+
+		Assert.assertEquals(
+			1,
+			_commercePriceModifierRelService.getCommercePriceModifierRelsCount(
+				commercePriceModifier.getCommercePriceModifierId(),
+				CPDefinition.class.getName()));
+	}
+
 	@Inject
 	private CommerceCatalogLocalService _commerceCatalogLocalService;
 
