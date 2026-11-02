@@ -64,84 +64,38 @@ public class AzureTranslator extends BaseTranslator {
 			return translatorPacket;
 		}
 
-		try {
-			Http.Options options = new Http.Options();
+		Map<String, String> translatedFieldsMap = _translate(
+			azureTranslatorConfiguration, translatorPacket.getFieldsMap(),
+			translatorPacket);
 
-			options.addHeader(
-				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
-			options.addHeader(
-				HttpHeaders.USER_AGENT,
-				_getUserAgent(azureTranslatorConfiguration.userAgent()));
-			options.addHeader(
-				"Ocp-Apim-Subscription-Key",
-				_secretResolver.resolve(
-					translatorPacket.getCompanyId(),
-					azureTranslatorConfiguration.subscriptionKey()));
-			options.addHeader(
-				"Ocp-Apim-Subscription-Region",
-				azureTranslatorConfiguration.resourceLocation());
-			options.setBody(
-				_getPayload(translatorPacket.getFieldsMap()),
-				ContentTypes.APPLICATION_JSON, StringPool.UTF8);
-			options.setLocation(
-				URLBuilder.create(
-					"https://api.cognitive.microsofttranslator.com/translate"
-				).addParameter(
-					"api-version", "3.0"
-				).addParameter(
-					"from",
-					getLanguageCode(translatorPacket.getSourceLanguageId())
-				).addParameter(
-					"to",
-					getLanguageCode(translatorPacket.getTargetLanguageId())
-				).build());
-			options.setPost(true);
+		return new TranslatorPacket() {
 
-			String json = _http.URLtoString(options);
-
-			Http.Response response = options.getResponse();
-
-			if (response.getResponseCode() != 200) {
-				throw new PortalException(
-					"Response code " + response.getResponseCode());
+			@Override
+			public long getCompanyId() {
+				return translatorPacket.getCompanyId();
 			}
 
-			Map<String, String> translatedFieldsMap = _getTranslatedFieldsMap(
-				translatorPacket.getFieldsMap(),
-				_jsonFactory.createJSONArray(json));
+			@Override
+			public Map<String, String> getFieldsMap() {
+				return translatedFieldsMap;
+			}
 
-			return new TranslatorPacket() {
+			@Override
+			public Map<String, Boolean> getHTMLMap() {
+				return translatorPacket.getHTMLMap();
+			}
 
-				@Override
-				public long getCompanyId() {
-					return translatorPacket.getCompanyId();
-				}
+			@Override
+			public String getSourceLanguageId() {
+				return translatorPacket.getSourceLanguageId();
+			}
 
-				@Override
-				public Map<String, String> getFieldsMap() {
-					return translatedFieldsMap;
-				}
+			@Override
+			public String getTargetLanguageId() {
+				return translatorPacket.getTargetLanguageId();
+			}
 
-				@Override
-				public Map<String, Boolean> getHTMLMap() {
-					return translatorPacket.getHTMLMap();
-				}
-
-				@Override
-				public String getSourceLanguageId() {
-					return translatorPacket.getSourceLanguageId();
-				}
-
-				@Override
-				public String getTargetLanguageId() {
-					return translatorPacket.getTargetLanguageId();
-				}
-
-			};
-		}
-		catch (IOException ioException) {
-			throw new PortalException(ioException);
-		}
+		};
 	}
 
 	private String _getPayload(Map<String, String> fieldsMap) {
@@ -184,6 +138,61 @@ public class AzureTranslator extends BaseTranslator {
 		}
 
 		return userAgent;
+	}
+
+	private Map<String, String> _translate(
+			AzureTranslatorConfiguration azureTranslatorConfiguration,
+			Map<String, String> fieldsMap, TranslatorPacket translatorPacket)
+		throws PortalException {
+
+		try {
+			Http.Options options = new Http.Options();
+
+			options.addHeader(
+				HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);
+			options.addHeader(
+				HttpHeaders.USER_AGENT,
+				_getUserAgent(azureTranslatorConfiguration.userAgent()));
+			options.addHeader(
+				"Ocp-Apim-Subscription-Key",
+				_secretResolver.resolve(
+					translatorPacket.getCompanyId(),
+					azureTranslatorConfiguration.subscriptionKey()));
+			options.addHeader(
+				"Ocp-Apim-Subscription-Region",
+				azureTranslatorConfiguration.resourceLocation());
+			options.setBody(
+				_getPayload(fieldsMap), ContentTypes.APPLICATION_JSON,
+				StringPool.UTF8);
+			options.setLocation(
+				URLBuilder.create(
+					"https://api.cognitive.microsofttranslator.com/translate"
+				).addParameter(
+					"api-version", "3.0"
+				).addParameter(
+					"from",
+					getLanguageCode(translatorPacket.getSourceLanguageId())
+				).addParameter(
+					"to",
+					getLanguageCode(translatorPacket.getTargetLanguageId())
+				).build());
+			options.setPost(true);
+
+			String json = _http.URLtoString(options);
+
+			Http.Response response = options.getResponse();
+
+			if (response.getResponseCode() != 200) {
+				throw new PortalException(
+					"Response code " + response.getResponseCode());
+			}
+
+			return _getTranslatedFieldsMap(
+				fieldsMap, _jsonFactory.createJSONArray(json));
+		}
+		catch (IOException ioException) {
+			throw new PortalException(ioException);
+		}
 	}
 
 	@Reference
