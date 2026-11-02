@@ -68,31 +68,6 @@ public interface DLOpenerFileEntryReferenceLocalService
 	public DLOpenerFileEntryReference addDLOpenerFileEntryReference(
 		DLOpenerFileEntryReference dlOpenerFileEntryReference);
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #addDLOpenerFileEntryReference(long, String, String,
-	 FileEntry, int)}
-	 */
-	@Deprecated
-	public DLOpenerFileEntryReference addDLOpenerFileEntryReference(
-			long userId, String referenceKey, FileEntry fileEntry, int type)
-		throws PortalException;
-
-	public DLOpenerFileEntryReference addDLOpenerFileEntryReference(
-			long userId, String referenceKey, String referenceType,
-			FileEntry fileEntry, int type)
-		throws PortalException;
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #addPlaceholderDLOpenerFileEntryReference(long, String,
-	 FileEntry, int)}
-	 */
-	@Deprecated
-	public DLOpenerFileEntryReference addPlaceholderDLOpenerFileEntryReference(
-			long userId, FileEntry fileEntry, int type)
-		throws PortalException;
-
 	public DLOpenerFileEntryReference addPlaceholderDLOpenerFileEntryReference(
 			long userId, String referenceType, FileEntry fileEntry, int type)
 		throws PortalException;
@@ -336,16 +311,8 @@ public interface DLOpenerFileEntryReferenceLocalService
 	public DLOpenerFileEntryReference updateDLOpenerFileEntryReference(
 		DLOpenerFileEntryReference dlOpenerFileEntryReference);
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #updateDLOpenerFileEntryReference(String, String, FileEntry)}
-	 */
-	@Deprecated
-	public DLOpenerFileEntryReference updateDLOpenerFileEntryReference(
-		String referenceKey, FileEntry fileEntry);
-
 	public DLOpenerFileEntryReference updateDLOpenerFileEntryReference(
 		String referenceKey, String referenceType, FileEntry fileEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:47023126
+// LIFERAY-SERVICE-BUILDER-HASH:1400744894

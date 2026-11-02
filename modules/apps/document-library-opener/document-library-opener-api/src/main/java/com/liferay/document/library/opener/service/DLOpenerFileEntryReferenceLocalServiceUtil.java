@@ -54,49 +54,6 @@ public class DLOpenerFileEntryReferenceLocalServiceUtil {
 			dlOpenerFileEntryReference);
 	}
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #addDLOpenerFileEntryReference(long, String, String,
-	 FileEntry, int)}
-	 */
-	@Deprecated
-	public static DLOpenerFileEntryReference addDLOpenerFileEntryReference(
-			long userId, String referenceKey,
-			com.liferay.portal.kernel.repository.model.FileEntry fileEntry,
-			int type)
-		throws PortalException {
-
-		return getService().addDLOpenerFileEntryReference(
-			userId, referenceKey, fileEntry, type);
-	}
-
-	public static DLOpenerFileEntryReference addDLOpenerFileEntryReference(
-			long userId, String referenceKey, String referenceType,
-			com.liferay.portal.kernel.repository.model.FileEntry fileEntry,
-			int type)
-		throws PortalException {
-
-		return getService().addDLOpenerFileEntryReference(
-			userId, referenceKey, referenceType, fileEntry, type);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #addPlaceholderDLOpenerFileEntryReference(long, String,
-	 FileEntry, int)}
-	 */
-	@Deprecated
-	public static DLOpenerFileEntryReference
-			addPlaceholderDLOpenerFileEntryReference(
-				long userId,
-				com.liferay.portal.kernel.repository.model.FileEntry fileEntry,
-				int type)
-		throws PortalException {
-
-		return getService().addPlaceholderDLOpenerFileEntryReference(
-			userId, fileEntry, type);
-	}
-
 	public static DLOpenerFileEntryReference
 			addPlaceholderDLOpenerFileEntryReference(
 				long userId, String referenceType,
@@ -418,19 +375,6 @@ public class DLOpenerFileEntryReferenceLocalServiceUtil {
 			dlOpenerFileEntryReference);
 	}
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #updateDLOpenerFileEntryReference(String, String, FileEntry)}
-	 */
-	@Deprecated
-	public static DLOpenerFileEntryReference updateDLOpenerFileEntryReference(
-		String referenceKey,
-		com.liferay.portal.kernel.repository.model.FileEntry fileEntry) {
-
-		return getService().updateDLOpenerFileEntryReference(
-			referenceKey, fileEntry);
-	}
-
 	public static DLOpenerFileEntryReference updateDLOpenerFileEntryReference(
 		String referenceKey, String referenceType,
 		com.liferay.portal.kernel.repository.model.FileEntry fileEntry) {
@@ -449,4 +393,4 @@ public class DLOpenerFileEntryReferenceLocalServiceUtil {
 			DLOpenerFileEntryReferenceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1468077897
+// LIFERAY-SERVICE-BUILDER-HASH:-2116853186

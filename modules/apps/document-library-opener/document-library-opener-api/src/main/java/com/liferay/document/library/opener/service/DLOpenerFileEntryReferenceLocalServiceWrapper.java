@@ -51,56 +51,6 @@ public class DLOpenerFileEntryReferenceLocalServiceWrapper
 			addDLOpenerFileEntryReference(dlOpenerFileEntryReference);
 	}
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #addDLOpenerFileEntryReference(long, String, String,
-	 FileEntry, int)}
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.document.library.opener.model.DLOpenerFileEntryReference
-			addDLOpenerFileEntryReference(
-				long userId, String referenceKey,
-				com.liferay.portal.kernel.repository.model.FileEntry fileEntry,
-				int type)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlOpenerFileEntryReferenceLocalService.
-			addDLOpenerFileEntryReference(
-				userId, referenceKey, fileEntry, type);
-	}
-
-	@Override
-	public com.liferay.document.library.opener.model.DLOpenerFileEntryReference
-			addDLOpenerFileEntryReference(
-				long userId, String referenceKey, String referenceType,
-				com.liferay.portal.kernel.repository.model.FileEntry fileEntry,
-				int type)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlOpenerFileEntryReferenceLocalService.
-			addDLOpenerFileEntryReference(
-				userId, referenceKey, referenceType, fileEntry, type);
-	}
-
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #addPlaceholderDLOpenerFileEntryReference(long, String,
-	 FileEntry, int)}
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.document.library.opener.model.DLOpenerFileEntryReference
-			addPlaceholderDLOpenerFileEntryReference(
-				long userId,
-				com.liferay.portal.kernel.repository.model.FileEntry fileEntry,
-				int type)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _dlOpenerFileEntryReferenceLocalService.
-			addPlaceholderDLOpenerFileEntryReference(userId, fileEntry, type);
-	}
-
 	@Override
 	public com.liferay.document.library.opener.model.DLOpenerFileEntryReference
 			addPlaceholderDLOpenerFileEntryReference(
@@ -485,21 +435,6 @@ public class DLOpenerFileEntryReferenceLocalServiceWrapper
 			updateDLOpenerFileEntryReference(dlOpenerFileEntryReference);
 	}
 
-	/**
-	 * @deprecated As of Mueller (7.2.x), replaced by {@link
-	 #updateDLOpenerFileEntryReference(String, String, FileEntry)}
-	 */
-	@Deprecated
-	@Override
-	public com.liferay.document.library.opener.model.DLOpenerFileEntryReference
-		updateDLOpenerFileEntryReference(
-			String referenceKey,
-			com.liferay.portal.kernel.repository.model.FileEntry fileEntry) {
-
-		return _dlOpenerFileEntryReferenceLocalService.
-			updateDLOpenerFileEntryReference(referenceKey, fileEntry);
-	}
-
 	@Override
 	public com.liferay.document.library.opener.model.DLOpenerFileEntryReference
 		updateDLOpenerFileEntryReference(
@@ -534,4 +469,4 @@ public class DLOpenerFileEntryReferenceLocalServiceWrapper
 		_dlOpenerFileEntryReferenceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-79549828
+// LIFERAY-SERVICE-BUILDER-HASH:-1924432079
