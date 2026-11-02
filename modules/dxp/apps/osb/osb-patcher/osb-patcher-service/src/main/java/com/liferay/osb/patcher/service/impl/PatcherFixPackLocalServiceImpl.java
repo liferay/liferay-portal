@@ -152,14 +152,6 @@ public class PatcherFixPackLocalServiceImpl
 	}
 
 	@Override
-	public List<PatcherFixPack> getPatcherFixPacksByPatcherFixComponentId(
-		long patcherFixComponentId) {
-
-		return patcherFixPackPersistence.findByPatcherFixComponentId(
-			patcherFixComponentId);
-	}
-
-	@Override
 	public List<PatcherFixPack> getPatcherFixPacksByStatus(
 		long patcherProjectVersionId, int status) {
 

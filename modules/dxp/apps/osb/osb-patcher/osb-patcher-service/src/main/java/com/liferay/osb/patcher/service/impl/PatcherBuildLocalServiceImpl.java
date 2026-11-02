@@ -17,7 +17,6 @@ import com.liferay.osb.patcher.util.PatcherProductVersionUtil;
 import com.liferay.osb.patcher.util.PatcherProjectVersionUtil;
 import com.liferay.osb.patcher.util.PatcherUtil;
 import com.liferay.osb.patcher.util.comparator.PatcherBuildKeyVersionComparator;
-import com.liferay.osb.patcher.util.comparator.PatcherBuildSupportTicketVersionComparator;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -126,31 +125,6 @@ public class PatcherBuildLocalServiceImpl
 		long patcherFixId) {
 
 		return patcherBuildPersistence.findByPatcherFixId(patcherFixId);
-	}
-
-	@Override
-	public List<PatcherBuild> getPatcherBuildsByPatcherProjectVersionId(
-		long patcherProjectVersionId) {
-
-		return patcherBuildPersistence.findByPatcherProjectVersionId(
-			patcherProjectVersionId);
-	}
-
-	@Override
-	public List<PatcherBuild> getPatcherBuildsBySupportTicket(
-		String supportTicket, double supportTicketVersion, boolean older) {
-
-		if (older) {
-			return patcherBuildPersistence.findByS_LtS(
-				supportTicket, supportTicketVersion, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				PatcherBuildSupportTicketVersionComparator.getInstance(false));
-		}
-
-		return patcherBuildPersistence.findByS_GtS(
-			supportTicket, supportTicketVersion, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS,
-			PatcherBuildSupportTicketVersionComparator.getInstance(true));
 	}
 
 	@Override
