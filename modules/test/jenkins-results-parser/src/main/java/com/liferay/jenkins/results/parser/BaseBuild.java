@@ -39,6 +39,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.client.utils.URIBuilder;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -806,26 +807,10 @@ public abstract class BaseBuild implements Build {
 			return null;
 		}
 
-		StringBuffer sb = new StringBuffer(jobURL);
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			jobURL + "/buildWithParameters", getParameters());
 
-		sb.append("/buildWithParameters?");
-
-		Map<String, String> parameters = new HashMap<>(getParameters());
-
-		for (Map.Entry<String, String> parameter : parameters.entrySet()) {
-			sb.append(
-				JenkinsResultsParserUtil.encodeURLParameterPart(
-					parameter.getKey()));
-			sb.append("=");
-			sb.append(
-				JenkinsResultsParserUtil.encodeURLParameterPart(
-					parameter.getValue()));
-			sb.append("&");
-		}
-
-		sb.deleteCharAt(sb.length() - 1);
-
-		return sb.toString();
+		return uriBuilder.toString();
 	}
 
 	@Override
@@ -3127,18 +3112,17 @@ public abstract class BaseBuild implements Build {
 	}
 
 	protected void loadParametersFromQueryString(String queryString) {
-		for (String parameter : queryString.split("&")) {
-			if (!parameter.contains("=")) {
+		Map<String, String> parameters =
+			JenkinsResultsParserUtil.getQueryParameters(queryString);
+
+		for (Map.Entry<String, String> entry : parameters.entrySet()) {
+			String value = entry.getValue();
+
+			if (value == null) {
 				continue;
 			}
 
-			String[] parameterParts = parameter.split("=", 2);
-
-			_parameters.put(
-				JenkinsResultsParserUtil.decodeURLParameterPart(
-					parameterParts[0]),
-				JenkinsResultsParserUtil.decodeURLParameterPart(
-					parameterParts[1]));
+			_parameters.put(entry.getKey(), value);
 		}
 	}
 
@@ -3686,8 +3670,11 @@ public abstract class BaseBuild implements Build {
 			JenkinsResultsParserUtil.decodeURLParameterPart(
 				invocationURLMatcher.group("jobName")));
 
-		loadParametersFromQueryString(
-			invocationURLMatcher.group("queryString"));
+		String queryString = invocationURLMatcher.group("queryString");
+
+		if (queryString != null) {
+			loadParametersFromQueryString(queryString);
+		}
 
 		String masterId = invocationURLMatcher.group("masterId");
 
@@ -3730,7 +3717,7 @@ public abstract class BaseBuild implements Build {
 		JenkinsResultsParserUtil.combine(
 			"\\w+://(?<cohortName>test-\\d+)(-(?<masterId>\\d+))?",
 			"(\\.liferay\\.com)?/+job\\/+(?<jobName>[^\\/]+).*\\/",
-			"buildWithParameters\\?(?<queryString>.*)"));
+			"buildWithParameters(\\?(?<queryString>.*))?"));
 	private static final Pattern _testrayCloudObjectURLPattern =
 		Pattern.compile(
 			JenkinsResultsParserUtil.combine(
