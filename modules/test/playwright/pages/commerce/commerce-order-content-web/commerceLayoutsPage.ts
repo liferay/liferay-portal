@@ -33,7 +33,9 @@ export class CommerceLayoutsPage {
 	readonly createPageMenuItem: Locator;
 	readonly defaultDisplayPageTemplateIcon: Locator;
 	readonly deliveryGroupCell: (name: string) => Locator;
+	readonly deliveryGroupDateInput: Locator;
 	readonly deliveryGroupNameInput: Locator;
+	readonly deliveryGroupQuantityInput: (sku: string) => Locator;
 	readonly defineCustomThemeCheckbox: Locator;
 	readonly deleteEntriesButton: Locator;
 	readonly deleteLayoutModal: Locator;
@@ -181,7 +183,13 @@ export class CommerceLayoutsPage {
 			.nth(1);
 		this.deliveryGroupCell = (name: string) =>
 			page.locator('.delivery-group', {hasText: name});
+		this.deliveryGroupDateInput = page.getByLabel('Date', {exact: true});
 		this.deliveryGroupNameInput = page.getByLabel('Group Name');
+		this.deliveryGroupQuantityInput = (sku: string) =>
+			page
+				.locator('tr', {hasText: sku})
+				.locator('td.delivery-group')
+				.getByRole('spinbutton');
 		this.defineCustomThemeCheckbox = page.getByLabel(
 			'Define a custom theme for this page.'
 		);

@@ -17,6 +17,7 @@ import {CommerceThemeMiniumCatalogPage} from '../../../../pages/commerce/commerc
 import {CommerceMiniCartPage} from '../../../../pages/commerce/commerceMiniCartPage';
 import {clickAndExpectToBeHidden} from '../../../../utils/clickAndExpectToBeHidden';
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
+import {getRandomInt} from '../../../../utils/getRandomInt';
 import getRandomString from '../../../../utils/getRandomString';
 import performLogin, {
 	performLoginViaApi,
@@ -3567,6 +3568,269 @@ test(
 			await checkoutPage.performCheckoutUntilStep('Order Confirmation');
 
 			await expect(checkoutPage.orderSuccessMessage).toBeVisible();
+		});
+	}
+);
+
+test(
+	'Quick add to cart checks the minimum quantity against the emptied cart after all the items are removed',
+	{tag: ['@COMMERCE-10753', '@LPD-62368']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+	}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		await waitForAlert(page);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productConfiguration: {
+					allowedOrderQuantities: [7, 8],
+					minOrderQuantity: 8,
+				},
+			});
+
+		const sku = product.skus[0];
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		const layoutURL = `/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`;
+
+		await page.goto(layoutURL);
+
+		await test.step('Quick add skips the allowed quantity lower than the minimum quantity', async () => {
+			await commerceMiniCartPage.quickAddToCart(sku.sku);
+
+			await expect(
+				commerceMiniCartPage.miniCartSummaryItem('Quantity')
+			).toHaveText('8');
+		});
+
+		await performUserSwitchViaApi(page, 'test');
+
+		await apiHelpers.headlessCommerceAdminCatalog.patchProduct(
+			String(product.productId),
+			{
+				name: product.name,
+				productConfiguration: {
+					allowedOrderQuantities: [6, 7],
+				},
+			}
+		);
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		await page.goto(layoutURL);
+
+		await test.step('Quick add shows the minimum quantity error after all the items are removed', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+			await commerceMiniCartPage.removeAllItemsButton.click();
+			await commerceMiniCartPage.removeAllItemsConfirmButton.click();
+
+			await commerceMiniCartPage.quickAddToCart(sku.sku);
+
+			await waitForAlert(page, 'Error:The minimum quantity is 8.', {
+				type: 'danger',
+			});
+
+			await expect(commerceMiniCartPage.miniCartSku(sku.sku)).toHaveCount(
+				0
+			);
+		});
+	}
+);
+
+test(
+	'A unit of measure without stock cannot be chosen while editing a mini cart item',
+	{tag: ['@COMMERCE-12618', '@LPD-62368']},
+	async ({
+		apiHelpers,
+		commerceAdminChannelsPage,
+		commerceMiniCartPage,
+		page,
+	}) => {
+		const site = await apiHelpers.headlessAdminSite.postSite({
+			name: getRandomString(),
+		});
+
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+				}),
+			]),
+			siteId: site.id,
+			title: getRandomString(),
+		});
+
+		const channel =
+			await apiHelpers.headlessCommerceAdminChannel.postChannel({
+				siteGroupId: site.id,
+			});
+
+		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
+			channel.name,
+			'B2B'
+		);
+
+		await waitForAlert(page);
+
+		const catalog =
+			await apiHelpers.headlessCommerceAdminCatalog.postCatalog({
+				name: getRandomString(),
+			});
+
+		const product =
+			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
+				catalogId: catalog.id,
+				name: {en_US: getRandomString()},
+				productConfiguration: {
+					allowBackOrder: false,
+					minOrderQuantity: 0.01,
+					multipleOrderQuantity: 0.01,
+				},
+			});
+
+		const sku = product.skus[0];
+
+		await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+			sku.id,
+			{
+				active: false,
+				basePrice: 1,
+				precision: 1,
+				priority: 1,
+				rate: 1,
+			}
+		);
+
+		const unitOfMeasure1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					basePrice: 2,
+					incrementalOrderQuantity: 0.6,
+					precision: 1,
+					priority: 2,
+					rate: 1,
+				}
+			);
+
+		const unitOfMeasure2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					basePrice: 3,
+					incrementalOrderQuantity: 2,
+					precision: 1,
+					priority: 3,
+					rate: 1,
+				}
+			);
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: getRandomInt(),
+					longitude: getRandomInt(),
+					warehouseItems: [
+						{
+							quantity: 10,
+							sku: sku.sku,
+							unitOfMeasureKey: unitOfMeasure1.key,
+						},
+					],
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const {buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
+
+		await test.step('Quick add puts the SKU in the cart', async () => {
+			await commerceMiniCartPage.quickAddToCart(sku.sku);
+		});
+
+		await test.step('Saving a unit of measure without stock shows an error and keeps the cart item', async () => {
+			await commerceMiniCartPage
+				.miniCartItemActionsButton(product.name.en_US)
+				.click();
+			await commerceMiniCartPage.editMenuItem.click();
+			await commerceMiniCartPage.miniCartUnitOfMeasureSelector.selectOption(
+				unitOfMeasure2.key
+			);
+			await commerceMiniCartPage.editQuantitySelector.fill('6');
+			await commerceMiniCartPage.miniCartSaveButton.click();
+
+			await waitForAlert(
+				page,
+				'Error:The specified quantity is unavailable.',
+				{type: 'danger'}
+			);
+
+			await commerceMiniCartPage.miniCartCancelButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItemUnitOfMeasure(
+					product.name.en_US
+				)
+			).toHaveText(unitOfMeasure1.key);
+			await expect(
+				commerceMiniCartPage.miniCartSummaryItem('Quantity')
+			).toHaveText('0.6');
+			await expect(commerceMiniCartPage.miniCartTotalPrice).toHaveText(
+				'$ 2.00'
+			);
 		});
 	}
 );

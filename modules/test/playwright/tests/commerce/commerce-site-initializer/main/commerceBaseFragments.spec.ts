@@ -19,12 +19,14 @@ import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
 	performLogout,
+	performUserSwitchViaApi,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
 import {ORDER_WORKFLOW_STATUS_CODE} from '../../../workspaces/liferay-workspace-marketplace/main/utils/constants';
 import {
 	classicCommerceSetUp,
 	configureBuyerUserForSite,
+	createAccountWithBuyerUser,
 } from '../../utils/commerce';
 
 export const test = mergeTests(
@@ -125,22 +127,18 @@ test(
 );
 
 test(
-	'Multishipping tab displays correctly when enabled',
-	{tag: ['@LPD-35323']},
+	'A mini cart item keeps its multishipping delivery group after its unit of measure is changed',
+	{tag: ['@LPD-35323', '@LPD-62368']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelDetailsPage,
 		commerceAdminChannelsPage,
+		commerceLayoutsPage,
+		commerceMiniCartPage,
+		commerceThemeClassicOrdersPage,
 		page,
 	}) => {
-		test.setTimeout(180000);
-
 		const {catalog, channel, site} = await classicCommerceSetUp(apiHelpers);
-
-		const account = await apiHelpers.headlessAdminUser.postAccount({
-			name: getRandomString(),
-			type: 'business',
-		});
 
 		const product =
 			await apiHelpers.headlessCommerceAdminCatalog.postProduct({
@@ -158,6 +156,61 @@ test(
 
 		const sku = product.skus[0];
 
+		const unitOfMeasure1 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					basePrice: 1,
+					precision: 0,
+					priority: 1,
+					rate: 1,
+				}
+			);
+
+		const unitOfMeasure2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku.id,
+				{
+					basePrice: 2,
+					precision: 0,
+					priority: 2,
+					rate: 1,
+				}
+			);
+
+		const warehouse =
+			await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehouses(
+				{
+					active: true,
+					latitude: getRandomInt(),
+					longitude: getRandomInt(),
+					warehouseItems: [
+						{
+							quantity: 10,
+							sku: sku.sku,
+							unitOfMeasureKey: unitOfMeasure1.key,
+						},
+						{
+							quantity: 10,
+							sku: sku.sku,
+							unitOfMeasureKey: unitOfMeasure2.key,
+						},
+					],
+				}
+			);
+
+		await apiHelpers.headlessCommerceAdminInventoryApiHelper.postWarehousesChannels(
+			warehouse.id,
+			channel.id
+		);
+
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
+		);
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
 		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
 			{
 				accountId: account.id,
@@ -165,6 +218,7 @@ test(
 					{
 						quantity: 1,
 						skuId: sku.id,
+						skuUnitOfMeasure: {key: unitOfMeasure1.key},
 					},
 				],
 			},
@@ -175,37 +229,115 @@ test(
 			liferayConfig.environment.baseUrl +
 			`/web/${site.name}/order/${cart.id}`;
 
-		await page.goto(orderDetailsPageURL);
+		await test.step('Multishipping tab is hidden while multishipping is disabled', async () => {
+			await page.goto(orderDetailsPageURL);
 
-		const multishippingTab = page.getByRole('tab', {name: 'Multishipping'});
+			await expect(
+				commerceThemeClassicOrdersPage.orderTabs('Multishipping')
+			).toHaveCount(0);
+		});
 
-		await expect(multishippingTab).toHaveCount(0);
+		await test.step('Enable multishipping on the channel', async () => {
+			await performUserSwitchViaApi(page, 'test');
 
-		await commerceAdminChannelsPage.goto();
+			await commerceAdminChannelsPage.changeCommerceChannelAllowMultishipping(
+				commerceAdminChannelDetailsPage,
+				true,
+				channel.name
+			);
 
-		await (
-			await commerceAdminChannelsPage.channelsTableRowLink(channel.name)
-		).click();
+			await performUserSwitchViaApi(page, buyerUser.alternateName);
+		});
 
-		await commerceAdminChannelDetailsPage.allowMultishippingToggle.setChecked(
-			true
-		);
+		const deliveryGroupName = getRandomString();
 
-		await expect(
-			commerceAdminChannelDetailsPage.allowMultishippingToggle
-		).toBeChecked();
+		await test.step('Add a delivery group with a new shipping address', async () => {
+			await page.goto(orderDetailsPageURL);
 
-		await commerceAdminChannelDetailsPage.saveButton.click();
+			await commerceThemeClassicOrdersPage
+				.orderTabs('Multishipping')
+				.click();
 
-		await expect(
-			commerceAdminChannelDetailsPage.allowMultishippingToggle
-		).toBeChecked();
+			await commerceLayoutsPage.addDeliveryGroupButton.click();
+			await commerceLayoutsPage.deliveryGroupNameInput.fill(
+				deliveryGroupName
+			);
+			await commerceLayoutsPage.deliveryGroupDateInput.fill('2030-01-15');
 
-		await waitForAlert(page);
+			await commerceLayoutsPage.addressNameInput.fill(getRandomString());
+			await commerceLayoutsPage.addressCountrySelect.selectOption({
+				label: 'United States',
+			});
+			await commerceLayoutsPage.addressStreet1Input.fill(
+				getRandomString()
+			);
+			await commerceLayoutsPage.addressCityInput.fill(getRandomString());
+			await commerceLayoutsPage.addressRegionSelect.selectOption({
+				label: 'Alabama',
+			});
+			await commerceLayoutsPage.addressZipInput.fill('35004');
+			await commerceLayoutsPage.saveButton.click();
 
-		await page.goto(orderDetailsPageURL);
+			await waitForAlert(page);
 
-		await expect(multishippingTab).toBeVisible();
+			await expect(
+				commerceLayoutsPage.deliveryGroupQuantityInput(sku.sku)
+			).toHaveValue('1');
+		});
+
+		await test.step('Change the unit of measure from the mini cart after a cancel', async () => {
+			await commerceMiniCartPage.miniCartButton.click();
+			await commerceMiniCartPage
+				.miniCartItemActionsButton(product.name.en_US)
+				.click();
+			await commerceMiniCartPage.editMenuItem.click();
+			await commerceMiniCartPage.miniCartCancelButton.click();
+			await commerceMiniCartPage
+				.miniCartItemActionsButton(product.name.en_US)
+				.click();
+			await commerceMiniCartPage.editMenuItem.click();
+			await commerceMiniCartPage.miniCartUnitOfMeasureSelector.selectOption(
+				unitOfMeasure2.key
+			);
+
+			await expect(
+				commerceMiniCartPage.miniCartEditItemPrice('List Price')
+			).toHaveText('$ 2.00');
+
+			await commerceMiniCartPage.miniCartSaveButton.click();
+
+			await expect(
+				commerceMiniCartPage.miniCartItemUnitOfMeasure(
+					product.name.en_US
+				)
+			).toHaveText(unitOfMeasure2.key);
+		});
+
+		await test.step('The item stays in its delivery group', async () => {
+			await page.goto(orderDetailsPageURL);
+
+			await commerceThemeClassicOrdersPage
+				.orderTabs('Multishipping')
+				.click();
+
+			await expect(
+				commerceLayoutsPage.deliveryGroupQuantityInput(sku.sku)
+			).toHaveValue('1');
+
+			await commerceLayoutsPage
+				.deliveryGroupCell(deliveryGroupName)
+				.click();
+
+			await expect(
+				commerceLayoutsPage.deliveryGroupNameInput
+			).toHaveValue(deliveryGroupName);
+			await expect(
+				commerceLayoutsPage.deliveryGroupDateInput
+			).toHaveValue('2030-01-15');
+			await expect(commerceLayoutsPage.addressRegionSelect).toHaveValue(
+				'Alabama'
+			);
+		});
 	}
 );
 

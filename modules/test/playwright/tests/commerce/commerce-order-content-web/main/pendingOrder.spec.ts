@@ -24,6 +24,7 @@ import getRandomString from '../../../../utils/getRandomString';
 import {
 	performLoginViaApi,
 	performLogout,
+	performUserSwitchViaApi,
 	userData,
 } from '../../../../utils/performLogin';
 import {waitForAlert} from '../../../../utils/waitForAlert';
@@ -208,17 +209,28 @@ test(
 
 test(
 	'Edit pending order item with UOM',
-	{tag: '@LPD-13627'},
+	{tag: ['@LPD-13627', '@LPD-62368']},
 	async ({
 		apiHelpers,
 		commerceAdminChannelsPage,
+		commerceMiniCartPage,
 		page,
 		pendingOrdersPage,
 		site,
-		widgetPagePage,
 	}) => {
-		const layout = await apiHelpers.jsonWebServicesLayout.addLayout({
-			groupId: site.id,
+		const layout = await apiHelpers.headlessDelivery.createSitePage({
+			pageDefinition: getPageDefinition([
+				getWidgetDefinition({
+					id: getRandomString(),
+					widgetName:
+						'com_liferay_commerce_order_content_web_internal_portlet_CommerceOpenOrderContentPortlet',
+				}),
+				getFragmentDefinition({
+					id: getRandomString(),
+					key: 'COMMERCE_CART_FRAGMENTS-mini-cart',
+				}),
+			]),
+			siteId: site.id,
 			title: getRandomString(),
 		});
 
@@ -229,7 +241,7 @@ test(
 
 		await commerceAdminChannelsPage.changeCommerceChannelSiteType(
 			channel.name,
-			'B2C'
+			'B2B'
 		);
 
 		const catalog =
@@ -257,24 +269,41 @@ test(
 				}
 			);
 
-		const account = await apiHelpers.headlessAdminUser.postAccount({
-			name: getRandomString(),
-			type: 'person',
-		});
+		const uom2 =
+			await apiHelpers.headlessCommerceAdminCatalog.postSkuUnitOfMeasure(
+				sku1.id,
+				{
+					basePrice: 2,
+					incrementalOrderQuantity: 3,
+					name: {en_US: 'Pallet'},
+					priority: 2,
+					rate: 1,
+				}
+			);
 
-		await apiHelpers.headlessAdminUser.assignUserToAccountByEmailAddress(
-			account.id,
-			['test@liferay.com']
+		const {account, buyerUser} = await createAccountWithBuyerUser(
+			apiHelpers,
+			site.id
 		);
 
-		await apiHelpers.headlessCommerceDeliveryCart.postCart(
+		const address =
+			await apiHelpers.headlessCommerceAdminAccount.postAddress(
+				account.id
+			);
+
+		await performUserSwitchViaApi(page, buyerUser.alternateName);
+
+		const cart = await apiHelpers.headlessCommerceDeliveryCart.postCart(
 			{
 				accountId: account.id,
 				cartItems: [
 					{
+						deliveryGroupName: getRandomString(),
 						options: '[]',
 						quantity: 3,
 						replacedSkuId: 0,
+						requestedDeliveryDate: '2030-01-15T00:00:00Z',
+						shippingAddressId: String(address.id),
 						skuId: sku1.id,
 						skuUnitOfMeasure: {key: uom1.key},
 					},
@@ -285,9 +314,7 @@ test(
 
 		await page.waitForLoadState('networkidle');
 
-		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyURL}`);
-
-		await widgetPagePage.addPortlet('Open Carts');
+		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
 		await pendingOrdersPage.viewButton.click();
 
@@ -300,6 +327,40 @@ test(
 		await expect(
 			pendingOrdersPage.orderItemActionsButtonEdit
 		).toBeVisible();
+
+		await test.step('Saving another unit of measure from the mini cart keeps the delivery details', async () => {
+			await pendingOrdersPage.orderItemActionsButtonEdit.click();
+			await commerceMiniCartPage.miniCartUnitOfMeasureSelector.selectOption(
+				uom2.key
+			);
+
+			await expect(
+				commerceMiniCartPage.miniCartEditItemPrice('List Price')
+			).toHaveText('$ 2.00');
+
+			await commerceMiniCartPage.miniCartSaveButton.click();
+
+			await expect(
+				pendingOrdersPage.orderItemsTableRowWith(uom2.key)
+			).toBeVisible();
+
+			const cartItem = cart.cartItems[0];
+
+			await expect(async () => {
+				const cartItems =
+					await apiHelpers.headlessCommerceDeliveryCart.getCartItems(
+						cart.id
+					);
+
+				expect(cartItems.items).toHaveLength(1);
+				expect(cartItems.items[0]).toMatchObject({
+					deliveryGroupName: cartItem.deliveryGroupName,
+					requestedDeliveryDate: cartItem.requestedDeliveryDate,
+					shippingAddressId: cartItem.shippingAddressId,
+					skuUnitOfMeasure: {key: uom2.key},
+				});
+			}).toPass({timeout: 15000});
+		});
 	}
 );
 

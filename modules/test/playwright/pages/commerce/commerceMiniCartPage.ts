@@ -15,6 +15,7 @@ export class CommerceMiniCartPage {
 	readonly editUnitOfMeasureLabel: Locator;
 	readonly miniCartButton: Locator;
 	readonly miniCartButtonClose: Locator;
+	readonly miniCartCancelButton: Locator;
 	readonly miniCartOpenDrawer: Locator;
 	readonly miniCartOverlay: Locator;
 	readonly miniCartEditItemPanel: Locator;
@@ -110,6 +111,12 @@ export class CommerceMiniCartPage {
 		});
 		this.miniCartButton = page.getByTestId('miniCartButton');
 		this.miniCartButtonClose = page.locator('.mini-cart-close');
+		this.miniCartCancelButton = page
+			.locator('.mini-cart-footer')
+			.getByRole('button', {
+				exact: true,
+				name: 'Cancel',
+			});
 		this.miniCartOpenDrawer = page.locator('.mini-cart.is-open');
 		this.miniCartOverlay = page.locator('.mini-cart-overlay');
 		this.miniCartEditItemPanel = page.locator('.mini-cart-edit-item');

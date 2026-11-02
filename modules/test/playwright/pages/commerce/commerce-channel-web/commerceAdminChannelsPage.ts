@@ -187,6 +187,26 @@ export class CommerceAdminChannelsPage {
 		);
 	}
 
+	async changeCommerceChannelAllowMultishipping(
+		commerceAdminChannelDetailsPage: CommerceAdminChannelDetailsPage,
+		allowMultishipping: boolean,
+		channelName: string,
+		skipNavigation: boolean = false
+	) {
+		if (!skipNavigation) {
+			await this.goto();
+
+			await (await this.channelsTableRowLink(channelName)).click();
+		}
+
+		await commerceAdminChannelDetailsPage.allowMultishippingToggle.setChecked(
+			allowMultishipping
+		);
+		await this.headerActionsSaveButton.click();
+
+		await waitForAlert(this.page);
+	}
+
 	async changeCommerceChannelBuyerOrderApprovalWorkflow(
 		buyerOrderApprovalWorkflow: string,
 		channelName: string,
