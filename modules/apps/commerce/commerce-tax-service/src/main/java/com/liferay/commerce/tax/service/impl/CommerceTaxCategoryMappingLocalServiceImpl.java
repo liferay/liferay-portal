@@ -14,9 +14,6 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.OrderByComparator;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -71,23 +68,6 @@ public class CommerceTaxCategoryMappingLocalServiceImpl
 
 		return commerceTaxCategoryMappingPersistence.fetchByC_C(
 			commerceTaxMethodId, cpTaxCategoryId);
-	}
-
-	@Override
-	public int getCommerceTaxCategoryMappingCount(long commerceTaxMethodId)
-		throws PortalException {
-
-		return commerceTaxCategoryMappingPersistence.countByCommerceTaxMethodId(
-			commerceTaxMethodId);
-	}
-
-	@Override
-	public List<CommerceTaxCategoryMapping> getCommerceTaxCategoryMappings(
-		long commerceTaxMethodId, int start, int end,
-		OrderByComparator<CommerceTaxCategoryMapping> orderByComparator) {
-
-		return commerceTaxCategoryMappingPersistence.findByCommerceTaxMethodId(
-			commerceTaxMethodId, start, end, orderByComparator);
 	}
 
 	@Override

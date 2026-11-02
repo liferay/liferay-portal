@@ -112,32 +112,11 @@ public class CommerceShippingFixedOptionRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceShippingFixedOptionRel>
-		getCommerceShippingFixedOptionRels(
-			long commerceShippingFixedOptionId, long commerceShippingMethodId,
-			int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionRel>
-				orderByComparator) {
-
-		return commerceShippingFixedOptionRelPersistence.findByC_C(
-			commerceShippingFixedOptionId, commerceShippingMethodId, start, end,
-			orderByComparator);
-	}
-
-	@Override
 	public int getCommerceShippingFixedOptionRelsCount(
 		long commerceShippingFixedOptionId) {
 
 		return commerceShippingFixedOptionRelPersistence.
 			countByCommerceShippingFixedOptionId(commerceShippingFixedOptionId);
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionRelsCount(
-		long commerceShippingFixedOptionId, long commerceShippingMethodId) {
-
-		return commerceShippingFixedOptionRelPersistence.countByC_C(
-			commerceShippingFixedOptionId, commerceShippingMethodId);
 	}
 
 	@Override
@@ -148,26 +127,6 @@ public class CommerceShippingFixedOptionRelLocalServiceImpl
 		return commerceShippingFixedOptionRelPersistence.
 			findByCommerceShippingFixedOptionId(
 				commerceShippingMethodId, start, end);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOptionRel>
-		getCommerceShippingMethodFixedOptionRels(
-			long commerceShippingMethodId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionRel>
-				orderByComparator) {
-
-		return commerceShippingFixedOptionRelPersistence.
-			findByCommerceShippingMethodId(
-				commerceShippingMethodId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceShippingMethodFixedOptionRelsCount(
-		long commerceShippingMethodId) {
-
-		return commerceShippingFixedOptionRelPersistence.
-			countByCommerceShippingMethodId(commerceShippingMethodId);
 	}
 
 	@Override

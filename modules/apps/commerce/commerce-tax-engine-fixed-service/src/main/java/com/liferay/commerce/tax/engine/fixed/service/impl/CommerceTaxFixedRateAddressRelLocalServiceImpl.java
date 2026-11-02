@@ -170,26 +170,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxMethodFixedRateAddressRels(
-			long commerceTaxMethodId, int start, int end,
-			OrderByComparator<CommerceTaxFixedRateAddressRel>
-				orderByComparator) {
-
-		return commerceTaxFixedRateAddressRelPersistence.
-			findByCommerceTaxMethodId(
-				commerceTaxMethodId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceTaxMethodFixedRateAddressRelsCount(
-		long commerceTaxMethodId) {
-
-		return commerceTaxFixedRateAddressRelPersistence.
-			countByCommerceTaxMethodId(commerceTaxMethodId);
-	}
-
-	@Override
 	public CommerceTaxFixedRateAddressRel updateCommerceTaxFixedRateAddressRel(
 			long commerceTaxFixedRateAddressRelId, long countryId,
 			long regionId, String zip, double rate)

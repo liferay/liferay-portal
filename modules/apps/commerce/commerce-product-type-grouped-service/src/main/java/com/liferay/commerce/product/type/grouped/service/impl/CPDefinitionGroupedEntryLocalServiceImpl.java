@@ -208,20 +208,6 @@ public class CPDefinitionGroupedEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<CPDefinitionGroupedEntry>
-		getCPDefinitionGroupedEntriesByCPDefinitionId(long cpDefinitionId) {
-
-		return cpDefinitionGroupedEntryPersistence.findByCPDefinitionId(
-			cpDefinitionId);
-	}
-
-	@Override
-	public int getCPDefinitionGroupedEntriesCount(long cpDefinitionId) {
-		return cpDefinitionGroupedEntryPersistence.countByCPDefinitionId(
-			cpDefinitionId);
-	}
-
-	@Override
 	public int getCPDefinitionGroupedEntriesCount(
 			long companyId, long cpDefinitionId, String keywords)
 		throws PortalException {

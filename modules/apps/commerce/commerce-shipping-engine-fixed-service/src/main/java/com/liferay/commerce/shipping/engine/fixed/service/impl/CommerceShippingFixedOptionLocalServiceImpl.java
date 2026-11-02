@@ -173,15 +173,6 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 
 	@Override
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-		long commerceShippingMethodId, int start, int end) {
-
-		return commerceShippingFixedOptionPersistence.
-			findByCommerceShippingMethodId(
-				commerceShippingMethodId, start, end);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 		long commerceShippingMethodId, int start, int end,
 		OrderByComparator<CommerceShippingFixedOption> orderByComparator) {
 
@@ -204,14 +195,6 @@ public class CommerceShippingFixedOptionLocalServiceImpl
 				searchContext);
 
 		return baseModelSearchResult.getBaseModels();
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId) {
-
-		return commerceShippingFixedOptionPersistence.
-			countByCommerceShippingMethodId(commerceShippingMethodId);
 	}
 
 	@Override

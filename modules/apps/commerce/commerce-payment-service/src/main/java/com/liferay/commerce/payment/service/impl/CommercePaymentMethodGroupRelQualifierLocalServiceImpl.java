@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -154,17 +153,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceImpl
 	}
 
 	@Override
-	public CommercePaymentMethodGroupRelQualifier
-		fetchCommercePaymentMethodGroupRelQualifier(
-			String className, long classPK,
-			long commercePaymentMethodGroupRelId) {
-
-		return commercePaymentMethodGroupRelQualifierPersistence.fetchByC_C_C(
-			_classNameLocalService.getClassNameId(className), classPK,
-			commercePaymentMethodGroupRelId);
-	}
-
-	@Override
 	public List<CommercePaymentMethodGroupRelQualifier>
 		getCommerceOrderTypeCommercePaymentMethodGroupRelQualifiers(
 			long commercePaymentMethodGroupRelId, String keywords, int start,
@@ -207,32 +195,11 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceImpl
 	@Override
 	public List<CommercePaymentMethodGroupRelQualifier>
 		getCommercePaymentMethodGroupRelQualifiers(
-			long commercePaymentMethodGroupRelId, int start, int end,
-			OrderByComparator<CommercePaymentMethodGroupRelQualifier>
-				orderByComparator) {
-
-		return commercePaymentMethodGroupRelQualifierPersistence.
-			findByCommercePaymentMethodGroupRelId(
-				commercePaymentMethodGroupRelId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommercePaymentMethodGroupRelQualifier>
-		getCommercePaymentMethodGroupRelQualifiers(
 			String className, long commercePaymentMethodGroupRelId) {
 
 		return commercePaymentMethodGroupRelQualifierPersistence.findByC_C(
 			_classNameLocalService.getClassNameId(className),
 			commercePaymentMethodGroupRelId);
-	}
-
-	@Override
-	public int getCommercePaymentMethodGroupRelQualifiersCount(
-		long commercePaymentMethodGroupRelId) {
-
-		return commercePaymentMethodGroupRelQualifierPersistence.
-			countByCommercePaymentMethodGroupRelId(
-				commercePaymentMethodGroupRelId);
 	}
 
 	@Override

@@ -26,7 +26,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.search.document.Document;
 import com.liferay.portal.search.hits.SearchHits;
@@ -125,16 +124,6 @@ public class CommercePaymentEntryAuditLocalServiceImpl
 				deleteCommercePaymentEntryAudit(
 					commercePaymentEntryAudit.getCommercePaymentEntryAuditId());
 		}
-	}
-
-	@Override
-	public List<CommercePaymentEntryAudit> getCommercePaymentEntryAudits(
-		long commercePaymentEntryId, int start, int end,
-		OrderByComparator<CommercePaymentEntryAudit> orderByComparator) {
-
-		return commercePaymentEntryAuditPersistence.
-			findByCommercePaymentEntryId(
-				commercePaymentEntryId, start, end, orderByComparator);
 	}
 
 	@Override

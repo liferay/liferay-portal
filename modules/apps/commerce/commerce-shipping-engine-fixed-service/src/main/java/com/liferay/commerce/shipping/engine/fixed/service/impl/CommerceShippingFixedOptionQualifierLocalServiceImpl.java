@@ -28,7 +28,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -120,17 +119,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceImpl
 	}
 
 	@Override
-	public CommerceShippingFixedOptionQualifier
-		fetchCommerceShippingFixedOptionQualifier(
-			String className, long classPK,
-			long commerceShippingFixedOptionId) {
-
-		return commerceShippingFixedOptionQualifierPersistence.fetchByC_C_C(
-			_classNameLocalService.getClassNameId(className), classPK,
-			commerceShippingFixedOptionId);
-	}
-
-	@Override
 	public List<CommerceShippingFixedOptionQualifier>
 		getCommerceOrderTypeCommerceShippingFixedOptionQualifiers(
 			long commerceShippingFixedOptionId, String keywords, int start,
@@ -171,40 +159,11 @@ public class CommerceShippingFixedOptionQualifierLocalServiceImpl
 	@Override
 	public List<CommerceShippingFixedOptionQualifier>
 		getCommerceShippingFixedOptionQualifiers(
-			long commerceShippingFixedOptionId) {
-
-		return commerceShippingFixedOptionQualifierPersistence.
-			findByCommerceShippingFixedOptionId(commerceShippingFixedOptionId);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOptionQualifier>
-		getCommerceShippingFixedOptionQualifiers(
-			long commerceShippingFixedOptionId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionQualifier>
-				orderByComparator) {
-
-		return commerceShippingFixedOptionQualifierPersistence.
-			findByCommerceShippingFixedOptionId(
-				commerceShippingFixedOptionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOptionQualifier>
-		getCommerceShippingFixedOptionQualifiers(
 			String className, long commerceShippingFixedOptionId) {
 
 		return commerceShippingFixedOptionQualifierPersistence.findByC_C(
 			_classNameLocalService.getClassNameId(className),
 			commerceShippingFixedOptionId);
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionQualifiersCount(
-		long commerceShippingFixedOptionId) {
-
-		return commerceShippingFixedOptionQualifierPersistence.
-			countByCommerceShippingFixedOptionId(commerceShippingFixedOptionId);
 	}
 
 	@Override
