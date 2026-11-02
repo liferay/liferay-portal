@@ -427,31 +427,23 @@ export default function SpaceGeneralSettings({
 								value={values.mapProviderKey}
 							>
 								<ClayRadio
-									label={Liferay.Language.get(
-										'use-instance-default'
+									label={sub(
+										Liferay.Language.get(
+											'instance-default-x'
+										),
+										companyMapProviderKey === 'GoogleMaps'
+											? Liferay.Language.get(
+													'google-maps'
+												)
+											: Liferay.Language.get(
+													'openstreetmap'
+												)
 									)}
 									value=""
 								>
 									<div className="font-weight-normal form-text mb-1 mt-0">
-										{sub(
-											Liferay.Language.get(
-												'this-option-uses-the-provider-set-in-instance-settings.-currently-x'
-											),
-											[
-												<strong
-													className="text-body"
-													key="companyMapProviderKey"
-												>
-													{companyMapProviderKey ===
-													'GoogleMaps'
-														? Liferay.Language.get(
-																'google-maps'
-															)
-														: Liferay.Language.get(
-																'openstreetmap'
-															)}
-												</strong>,
-											]
+										{Liferay.Language.get(
+											'this-option-uses-the-provider-set-in-instance-settings'
 										)}
 									</div>
 								</ClayRadio>

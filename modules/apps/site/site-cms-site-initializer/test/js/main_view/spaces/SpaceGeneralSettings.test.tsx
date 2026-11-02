@@ -355,7 +355,7 @@ describe('SpaceGeneralSettings', () => {
 			});
 
 			await userEvent.click(
-				screen.getByRole('radio', {name: /^use-instance-default/})
+				screen.getByRole('radio', {name: /^instance-default/})
 			);
 
 			await userEvent.click(screen.getByRole('button', {name: 'save'}));
@@ -379,7 +379,7 @@ describe('SpaceGeneralSettings', () => {
 			renderComponent();
 
 			expect(
-				screen.getByRole('radio', {name: /^use-instance-default/})
+				screen.getByRole('radio', {name: /^instance-default/})
 			).toBeChecked();
 		});
 	});
