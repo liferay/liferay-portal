@@ -69,7 +69,7 @@ public interface CommercePriceModifierRelService extends BaseService {
 		long commercePriceModifierId, String name);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public long[] getClassPKs(long commercePriceModifierRelId, String className)
+	public long[] getClassPKs(long commercePriceModifierId, String className)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -79,19 +79,18 @@ public interface CommercePriceModifierRelService extends BaseService {
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePriceModifierRel> getCommercePriceModifierRels(
-			long commercePriceModifierRelId, String className, int start,
-			int end,
+			long commercePriceModifierId, String className, int start, int end,
 			OrderByComparator<CommercePriceModifierRel> orderByComparator)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePriceModifierRelsCount(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -125,4 +124,4 @@ public interface CommercePriceModifierRelService extends BaseService {
 	public String getOSGiServiceIdentifier();
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1002042588
+// LIFERAY-SERVICE-BUILDER-HASH:2050467442

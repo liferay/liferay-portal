@@ -76,11 +76,11 @@ public class CommercePriceModifierRelServiceWrapper
 	}
 
 	@Override
-	public long[] getClassPKs(long commercePriceModifierRelId, String className)
+	public long[] getClassPKs(long commercePriceModifierId, String className)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceModifierRelService.getClassPKs(
-			commercePriceModifierRelId, className);
+			commercePriceModifierId, className);
 	}
 
 	@Override
@@ -95,35 +95,34 @@ public class CommercePriceModifierRelServiceWrapper
 	@Override
 	public java.util.List<CommercePriceModifierRel>
 			getCommercePriceModifierRels(
-				long commercePriceModifierRelId, String className)
+				long commercePriceModifierId, String className)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceModifierRelService.getCommercePriceModifierRels(
-			commercePriceModifierRelId, className);
+			commercePriceModifierId, className);
 	}
 
 	@Override
 	public java.util.List<CommercePriceModifierRel>
 			getCommercePriceModifierRels(
-				long commercePriceModifierRelId, String className, int start,
+				long commercePriceModifierId, String className, int start,
 				int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<CommercePriceModifierRel> orderByComparator)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceModifierRelService.getCommercePriceModifierRels(
-			commercePriceModifierRelId, className, start, end,
-			orderByComparator);
+			commercePriceModifierId, className, start, end, orderByComparator);
 	}
 
 	@Override
 	public int getCommercePriceModifierRelsCount(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _commercePriceModifierRelService.
 			getCommercePriceModifierRelsCount(
-				commercePriceModifierRelId, className);
+				commercePriceModifierId, className);
 	}
 
 	@Override
@@ -198,4 +197,4 @@ public class CommercePriceModifierRelServiceWrapper
 	private CommercePriceModifierRelService _commercePriceModifierRelService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2023393821
+// LIFERAY-SERVICE-BUILDER-HASH:-1613994927

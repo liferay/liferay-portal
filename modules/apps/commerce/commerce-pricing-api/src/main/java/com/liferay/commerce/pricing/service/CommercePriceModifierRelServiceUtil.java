@@ -71,10 +71,10 @@ public class CommercePriceModifierRelServiceUtil {
 	}
 
 	public static long[] getClassPKs(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException {
 
-		return getService().getClassPKs(commercePriceModifierRelId, className);
+		return getService().getClassPKs(commercePriceModifierId, className);
 	}
 
 	public static CommercePriceModifierRel getCommercePriceModifierRel(
@@ -86,30 +86,28 @@ public class CommercePriceModifierRelServiceUtil {
 	}
 
 	public static List<CommercePriceModifierRel> getCommercePriceModifierRels(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException {
 
 		return getService().getCommercePriceModifierRels(
-			commercePriceModifierRelId, className);
+			commercePriceModifierId, className);
 	}
 
 	public static List<CommercePriceModifierRel> getCommercePriceModifierRels(
-			long commercePriceModifierRelId, String className, int start,
-			int end,
+			long commercePriceModifierId, String className, int start, int end,
 			OrderByComparator<CommercePriceModifierRel> orderByComparator)
 		throws PortalException {
 
 		return getService().getCommercePriceModifierRels(
-			commercePriceModifierRelId, className, start, end,
-			orderByComparator);
+			commercePriceModifierId, className, start, end, orderByComparator);
 	}
 
 	public static int getCommercePriceModifierRelsCount(
-			long commercePriceModifierRelId, String className)
+			long commercePriceModifierId, String className)
 		throws PortalException {
 
 		return getService().getCommercePriceModifierRelsCount(
-			commercePriceModifierRelId, className);
+			commercePriceModifierId, className);
 	}
 
 	public static List<CommercePriceModifierRel> getCommercePriceModifiersRels(
@@ -169,4 +167,4 @@ public class CommercePriceModifierRelServiceUtil {
 			CommercePriceModifierRelService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:276142773
+// LIFERAY-SERVICE-BUILDER-HASH:-1465969273
