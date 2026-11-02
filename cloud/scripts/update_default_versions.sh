@@ -52,8 +52,16 @@ function main {
 	_check_bootstrap "azure" "${azure_bootstrap_sources[@]}"
 
 	local gcp_bootstrap_sources=(
+		"${ROOT_CLOUD_DIR}/scripts/_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_gcp_common.sh"
+		"${ROOT_CLOUD_DIR}/scripts/_gcp_platform_values.jq"
+		"${ROOT_CLOUD_DIR}/scripts/_platform_values.jq"
+		"${ROOT_CLOUD_DIR}/scripts/config.json.defaults"
 		"${ROOT_CLOUD_DIR}/scripts/setup_gcp.sh"
+		"${ROOT_CLOUD_DIR}/scripts/teardown_gcp.sh"
 		"${ROOT_CLOUD_DIR}/terraform/gcp/gke"
+		"${ROOT_CLOUD_DIR}/terraform/gcp/platform"
+		"${ROOT_CLOUD_DIR}/terraform/modules/argocd"
 	)
 
 	_check_bootstrap "gcp" "${gcp_bootstrap_sources[@]}"
@@ -282,6 +290,7 @@ function _update_artifact {
 	then
 		_record_modified_bootstrap "aws"
 		_record_modified_bootstrap "azure"
+		_record_modified_bootstrap "gcp"
 	fi
 }
 
@@ -300,7 +309,7 @@ function _update_default_chart_version {
 
 	version=$(yq '.version' "${helm_chart_yaml}")
 
-	if [[ ${helm_chart_name} == aws ]] || [[ ${helm_chart_name} == aws-infrastructure-provider ]] || [[ ${helm_chart_name} == aws-marketplace ]] || [[ ${helm_chart_name} == azure ]] || [[ ${helm_chart_name} == azure-infrastructure-provider ]] || [[ ${helm_chart_name} == infrastructure ]] || [[ ${helm_chart_name} == platform ]]
+	if [[ ${helm_chart_name} == aws ]] || [[ ${helm_chart_name} == aws-infrastructure-provider ]] || [[ ${helm_chart_name} == aws-marketplace ]] || [[ ${helm_chart_name} == azure ]] || [[ ${helm_chart_name} == azure-infrastructure-provider ]] || [[ ${helm_chart_name} == gcp ]] || [[ ${helm_chart_name} == gcp-infrastructure-provider ]] || [[ ${helm_chart_name} == infrastructure ]] || [[ ${helm_chart_name} == platform ]]
 	then
 		_update_artifact "${chart_name}" "charts" "${version}"
 	elif [[ ${helm_chart_name} == dxp-operator ]]

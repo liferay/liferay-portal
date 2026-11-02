@@ -29,7 +29,7 @@ jobs:
                 uses: google-github-actions/setup-gcloud@v2
                 with:
                     project_id: ${{inputs.is_production && vars.GCP_PROJECT_ID_EXTERNAL_PRODUCTION || vars.GCP_PROJECT_ID_EXTERNAL_NONPRODUCTION}}
-            -   if: ${{(inputs.provider == 'aws' || inputs.provider == 'azure') && !inputs.is_production}}
+            -   if: ${{!inputs.is_production}}
                 name: Install ORAS
                 uses: oras-project/setup-oras@v1
             -   env:
@@ -120,6 +120,8 @@ jobs:
                             files=(
                                 cloud/scripts/_common.sh
                                 cloud/scripts/_gcp_common.sh
+                                cloud/scripts/_gcp_platform_values.jq
+                                cloud/scripts/_platform_values.jq
                                 cloud/scripts/config.json.defaults
                                 cloud/scripts/setup_gcp.sh
                                 cloud/scripts/teardown_gcp.sh
@@ -131,7 +133,7 @@ jobs:
                             )
                         fi
 
-                        if [[ "${provider}" == "aws" || "${provider}" == "azure" ]] && [[ "${{inputs.is_production}}" != "true" ]]
+                        if [[ "${{inputs.is_production}}" != "true" ]]
                         then
                             _point_artifacts_at_this_build ./cloud/scripts/config.json.defaults
                         fi
