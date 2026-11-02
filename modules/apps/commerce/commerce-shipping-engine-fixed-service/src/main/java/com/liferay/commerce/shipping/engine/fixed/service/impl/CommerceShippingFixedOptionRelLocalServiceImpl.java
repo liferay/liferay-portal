@@ -11,11 +11,8 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.math.BigDecimal;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -87,46 +84,6 @@ public class CommerceShippingFixedOptionRelLocalServiceImpl
 
 		return commerceShippingFixedOptionRelFinder.fetchByC_C_C_Z_W_First(
 			commerceShippingFixedOptionId, countryId, regionId, zip, weight);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOptionRel>
-		getCommerceShippingFixedOptionRels(
-			long commerceShippingFixedOptionId, int start, int end) {
-
-		return commerceShippingFixedOptionRelPersistence.
-			findByCommerceShippingFixedOptionId(
-				commerceShippingFixedOptionId, start, end);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOptionRel>
-		getCommerceShippingFixedOptionRels(
-			long commerceShippingFixedOptionId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionRel>
-				orderByComparator) {
-
-		return commerceShippingFixedOptionRelPersistence.
-			findByCommerceShippingFixedOptionId(
-				commerceShippingFixedOptionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionRelsCount(
-		long commerceShippingFixedOptionId) {
-
-		return commerceShippingFixedOptionRelPersistence.
-			countByCommerceShippingFixedOptionId(commerceShippingFixedOptionId);
-	}
-
-	@Override
-	public List<CommerceShippingFixedOptionRel>
-		getCommerceShippingMethodFixedOptionRels(
-			long commerceShippingMethodId, int start, int end) {
-
-		return commerceShippingFixedOptionRelPersistence.
-			findByCommerceShippingFixedOptionId(
-				commerceShippingMethodId, start, end);
 	}
 
 	@Override
