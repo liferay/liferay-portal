@@ -146,14 +146,6 @@ public class NotificationRecipientSettingLocalServiceImpl
 	}
 
 	@Override
-	public NotificationRecipientSetting fetchNotificationRecipientSetting(
-		long notificationRecipientId, String name) {
-
-		return notificationRecipientSettingPersistence.fetchByNRI_N(
-			notificationRecipientId, name);
-	}
-
-	@Override
 	public List<NotificationRecipientSetting> getNotificationRecipientSettings(
 		long notificationRecipientId) {
 

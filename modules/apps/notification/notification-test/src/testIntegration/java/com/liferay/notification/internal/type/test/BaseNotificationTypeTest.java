@@ -19,7 +19,6 @@ import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationQueueEntryLocalService;
 import com.liferay.notification.service.NotificationRecipientLocalService;
-import com.liferay.notification.service.NotificationRecipientSettingLocalService;
 import com.liferay.notification.service.NotificationTemplateLocalService;
 import com.liferay.notification.test.util.NotificationTemplateUtil;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
@@ -906,10 +905,6 @@ public class BaseNotificationTypeTest {
 	@Inject
 	protected NotificationRecipientLocalService
 		notificationRecipientLocalService;
-
-	@Inject
-	protected NotificationRecipientSettingLocalService
-		notificationRecipientSettingLocalService;
 
 	@Inject
 	protected NotificationTemplateLocalService notificationTemplateLocalService;

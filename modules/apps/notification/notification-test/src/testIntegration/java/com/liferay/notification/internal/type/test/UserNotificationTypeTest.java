@@ -16,6 +16,7 @@ import com.liferay.notification.model.NotificationQueueEntry;
 import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
+import com.liferay.notification.test.util.NotificationRecipientSettingTestUtil;
 import com.liferay.notification.util.NotificationRecipientSettingUtil;
 import com.liferay.object.constants.ObjectActionExecutorConstants;
 import com.liferay.object.constants.ObjectActionKeys;
@@ -246,7 +247,7 @@ public class UserNotificationTypeTest extends BaseNotificationTypeTest {
 			notificationTemplate.getNotificationRecipient();
 
 		NotificationRecipientSetting notificationRecipientSetting =
-			notificationRecipientSettingLocalService.
+			NotificationRecipientSettingTestUtil.
 				fetchNotificationRecipientSetting(
 					notificationRecipient.getNotificationRecipientId(),
 					NotificationRecipientSettingConstants.NAME_TERM);

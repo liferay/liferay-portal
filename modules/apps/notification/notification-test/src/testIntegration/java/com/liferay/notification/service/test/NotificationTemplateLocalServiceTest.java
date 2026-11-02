@@ -17,8 +17,8 @@ import com.liferay.notification.model.NotificationRecipient;
 import com.liferay.notification.model.NotificationRecipientSetting;
 import com.liferay.notification.model.NotificationTemplate;
 import com.liferay.notification.service.NotificationRecipientLocalService;
-import com.liferay.notification.service.NotificationRecipientSettingLocalService;
 import com.liferay.notification.service.NotificationTemplateLocalService;
+import com.liferay.notification.test.util.NotificationRecipientSettingTestUtil;
 import com.liferay.notification.test.util.NotificationTemplateUtil;
 import com.liferay.notification.util.NotificationRecipientSettingUtil;
 import com.liferay.petra.string.StringBundler;
@@ -213,7 +213,7 @@ public class NotificationTemplateLocalServiceTest {
 		throws Exception {
 
 		NotificationRecipientSetting notificationRecipientSetting =
-			_notificationRecipientSettingLocalService.
+			NotificationRecipientSettingTestUtil.
 				fetchNotificationRecipientSetting(
 					notificationRecipientId, name);
 
@@ -228,10 +228,6 @@ public class NotificationTemplateLocalServiceTest {
 	@Inject
 	private NotificationRecipientLocalService
 		_notificationRecipientLocalService;
-
-	@Inject
-	private NotificationRecipientSettingLocalService
-		_notificationRecipientSettingLocalService;
 
 	@Inject
 	private NotificationTemplateLocalService _notificationTemplateLocalService;
