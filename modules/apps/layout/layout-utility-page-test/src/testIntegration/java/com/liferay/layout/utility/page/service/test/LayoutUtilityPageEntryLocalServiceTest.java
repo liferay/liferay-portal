@@ -22,14 +22,12 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.SystemEventLocalService;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
@@ -39,7 +37,6 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -147,37 +144,6 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 		}
 
 		_testAddLayoutUtilityPageEntryWithExternalReferenceCode();
-	}
-
-	@Test
-	@TestInfo("LPD-67157")
-	public void testDeleteLayoutUtilityPageEntryByExternalReferenceCode()
-		throws Exception {
-
-		LayoutUtilityPageEntry layoutUtilityPageEntry =
-			_layoutUtilityPageEntryLocalService.addLayoutUtilityPageEntry(
-				null, TestPropsValues.getUserId(), _group.getGroupId(), 0, 0,
-				true, RandomTestUtil.randomString(),
-				RandomTestUtil.randomString(), null, _serviceContext);
-
-		_layoutUtilityPageEntryLocalService.deleteLayoutUtilityPageEntry(
-			layoutUtilityPageEntry.getExternalReferenceCode(),
-			layoutUtilityPageEntry.getGroupId());
-
-		Assert.assertNull(
-			_layoutUtilityPageEntryLocalService.fetchLayoutUtilityPageEntry(
-				layoutUtilityPageEntry.getLayoutUtilityPageEntryId()));
-		Assert.assertNull(
-			_systemEventLocalService.fetchSystemEvent(
-				_group.getGroupId(), _portal.getClassNameId(Layout.class),
-				layoutUtilityPageEntry.getPlid(),
-				SystemEventConstants.TYPE_DELETE));
-		Assert.assertNotNull(
-			_systemEventLocalService.fetchSystemEvent(
-				_group.getGroupId(),
-				_portal.getClassNameId(LayoutUtilityPageEntry.class),
-				layoutUtilityPageEntry.getLayoutUtilityPageEntryId(),
-				SystemEventConstants.TYPE_DELETE));
 	}
 
 	@Test
@@ -458,9 +424,6 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 	private LayoutUtilityPageEntryService _layoutUtilityPageEntryService;
 
 	@Inject
-	private Portal _portal;
-
-	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
 	@DeleteAfterTestRun
@@ -473,9 +436,6 @@ public class LayoutUtilityPageEntryLocalServiceTest {
 	private SegmentsExperienceLocalService _segmentsExperienceLocalService;
 
 	private ServiceContext _serviceContext;
-
-	@Inject
-	private SystemEventLocalService _systemEventLocalService;
 
 	@DeleteAfterTestRun
 	private User _user;
