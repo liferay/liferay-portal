@@ -36,7 +36,6 @@ public class AppServerBundleDownstreamBuildTest
 		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
 
 		PortalWorkspace portalWorkspace = Mockito.mock(PortalWorkspace.class);
-
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
 
@@ -136,6 +135,18 @@ public class AppServerBundleDownstreamBuildTest
 
 		AppServerBundleDownstreamBuild appServerBundleDownstreamBuild =
 			Mockito.mock(AppServerBundleDownstreamBuild.class);
+		TopLevelBuild topLevelBuild = Mockito.mock(
+			TopLevelBuild.class,
+			Mockito.withSettings(
+			).extraInterfaces(
+				PortalWorkspaceBuild.class
+			));
+
+		Mockito.doReturn(
+			portalWorkspace
+		).when(
+			(PortalWorkspaceBuild)topLevelBuild
+		).getWorkspace();
 
 		Mockito.doCallRealMethod(
 		).when(
@@ -161,19 +172,6 @@ public class AppServerBundleDownstreamBuildTest
 		).when(
 			appServerBundleDownstreamBuild
 		).getStartPropertiesTempMap();
-
-		TopLevelBuild topLevelBuild = Mockito.mock(
-			TopLevelBuild.class,
-			Mockito.withSettings(
-			).extraInterfaces(
-				PortalWorkspaceBuild.class
-			));
-
-		Mockito.doReturn(
-			portalWorkspace
-		).when(
-			(PortalWorkspaceBuild)topLevelBuild
-		).getWorkspace();
 
 		Mockito.doReturn(
 			topLevelBuild
