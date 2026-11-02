@@ -247,13 +247,6 @@ public class JournalFeedLocalServiceImpl
 	}
 
 	@Override
-	public void deleteFeed(long groupId, String feedId) throws PortalException {
-		JournalFeed feed = journalFeedPersistence.findByG_F(groupId, feedId);
-
-		journalFeedLocalService.deleteFeed(feed);
-	}
-
-	@Override
 	public JournalFeed fetchFeed(long groupId, String feedId) {
 		return journalFeedPersistence.fetchByG_F(groupId, feedId);
 	}
@@ -268,11 +261,6 @@ public class JournalFeedLocalServiceImpl
 		throws PortalException {
 
 		return journalFeedPersistence.findByG_F(groupId, feedId);
-	}
-
-	@Override
-	public List<JournalFeed> getFeeds() {
-		return journalFeedPersistence.findAll();
 	}
 
 	@Override

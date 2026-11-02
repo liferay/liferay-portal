@@ -44,6 +44,7 @@ import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
@@ -301,7 +302,8 @@ public class CTCollectionLocalServiceTest {
 			List<JournalFolder> journalFolders =
 				_journalFolderLocalService.getFolders(
 					_group.getGroupId(),
-					JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+					JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 			Assert.assertEquals(
 				journalFolders.toString(), 1, journalFolders.size());
@@ -312,7 +314,8 @@ public class CTCollectionLocalServiceTest {
 		List<JournalFolder> journalFolders =
 			_journalFolderLocalService.getFolders(
 				_group.getGroupId(),
-				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
 			journalFolders.toString(), 1, journalFolders.size());

@@ -120,8 +120,8 @@ public class DDMDataCleanupPreupgradeProcessTest
 				friendlyURLEntry);
 		}
 
-		_journalArticleResourceLocalService.deleteArticleResource(
-			group.getGroupId(), journalArticle.getArticleId());
+		_journalArticleResourceLocalService.deleteJournalArticleResource(
+			journalArticle.getResourcePrimKey());
 
 		GroupTestUtil.deleteGroupAndSystemEvent(group);
 

@@ -10,6 +10,7 @@ import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalService;
 import com.liferay.journal.test.util.JournalFolderFixture;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.TreeModel;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
@@ -155,7 +156,10 @@ public class JournalFolderLocalServiceTreeTest
 
 	@Override
 	protected void rebuildTree() throws Exception {
-		_journalFolderLocalService.rebuildTree(TestPropsValues.getCompanyId());
+		_journalFolderLocalService.rebuildTree(
+			TestPropsValues.getCompanyId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, StringPool.SLASH,
+			false);
 	}
 
 	@Inject

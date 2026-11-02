@@ -26,13 +26,6 @@ public class JournalArticleResourceLocalServiceImpl
 	extends JournalArticleResourceLocalServiceBaseImpl {
 
 	@Override
-	public void deleteArticleResource(long groupId, String articleId)
-		throws PortalException {
-
-		journalArticleResourcePersistence.removeByG_A(groupId, articleId);
-	}
-
-	@Override
 	public JournalArticleResource fetchArticleResource(
 		long groupId, String articleId) {
 

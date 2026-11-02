@@ -16,6 +16,7 @@ import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.journal.service.JournalFolderLocalServiceUtil;
+import com.liferay.journal.service.persistence.JournalFolderUtil;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -28,6 +29,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.test.rule.Inject;
@@ -115,8 +117,10 @@ public class JournalPortletDataHandlerTest
 
 		GroupLocalServiceUtil.deleteGroup(group);
 
-		List<JournalFolder> folders = JournalFolderLocalServiceUtil.getFolders(
-			group.getGroupId());
+		List<JournalFolder> folders = TransactionTestUtil.invoke(
+			JournalFolderUtil.getPersistence(),
+			journalFolderPersistence -> journalFolderPersistence.findByGroupId(
+				group.getGroupId()));
 
 		Assert.assertEquals(folders.toString(), 0, folders.size());
 	}
