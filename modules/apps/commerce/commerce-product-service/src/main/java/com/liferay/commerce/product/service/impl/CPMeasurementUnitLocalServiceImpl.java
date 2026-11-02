@@ -22,12 +22,10 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -122,13 +120,6 @@ public class CPMeasurementUnitLocalServiceImpl
 	}
 
 	@Override
-	public CPMeasurementUnit fetchCPMeasurementUnit(long companyId, String key)
-		throws PortalException {
-
-		return cpMeasurementUnitPersistence.fetchByC_K(companyId, key);
-	}
-
-	@Override
 	public CPMeasurementUnit fetchPrimaryCPMeasurementUnit(
 		long companyId, int type) {
 
@@ -146,55 +137,11 @@ public class CPMeasurementUnitLocalServiceImpl
 
 	@Override
 	public List<CPMeasurementUnit> getCPMeasurementUnits(
-			long companyId, int type, int start, int end,
-			OrderByComparator<CPMeasurementUnit> orderByComparator)
-		throws PortalException {
-
-		return cpMeasurementUnitPersistence.findByC_T(
-			companyId, type, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CPMeasurementUnit> getCPMeasurementUnits(
 		long companyId, int start, int end,
 		OrderByComparator<CPMeasurementUnit> orderByComparator) {
 
 		return cpMeasurementUnitPersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCPMeasurementUnitsCount(long companyId) {
-		return cpMeasurementUnitPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public int getCPMeasurementUnitsCount(long companyId, int type) {
-		return cpMeasurementUnitPersistence.countByC_T(companyId, type);
-	}
-
-	@Override
-	public CPMeasurementUnit getOrAddEmptyCPMeasurementUnit(
-			String externalReferenceCode, long companyId, long userId)
-		throws PortalException {
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(companyId);
-		serviceContext.setUserId(userId);
-
-		return _emptyModelManager.getOrAddEmptyModel(
-			CPMeasurementUnit.class, companyId,
-			() -> cpMeasurementUnitLocalService.addCPMeasurementUnit(
-				externalReferenceCode,
-				Collections.singletonMap(
-					LocaleUtil.getSiteDefault(), externalReferenceCode),
-				externalReferenceCode, 1, false, 0,
-				CPMeasurementUnitConstants.TYPE_UNIT, serviceContext),
-			externalReferenceCode,
-			this::fetchCPMeasurementUnitByExternalReferenceCode,
-			this::getCPMeasurementUnitByExternalReferenceCode,
-			CPMeasurementUnit.class.getName());
 	}
 
 	@Override

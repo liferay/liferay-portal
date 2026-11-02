@@ -9,11 +9,13 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.product.constants.CPActionKeys;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.model.CPOption;
+import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.service.CPOptionLocalService;
 import com.liferay.commerce.product.service.CPOptionService;
 import com.liferay.commerce.product.service.CPOptionValueLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -30,6 +32,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -118,10 +122,14 @@ public class CPOptionServiceTest {
 
 		Assert.assertNotNull(
 			_cpOptionLocalService.fetchCPOption(_cpOption.getCPOptionId()));
+
+		List<CPOptionValue> cpOptionValues =
+			_cpOptionValueLocalService.getCPOptionValues(
+				_cpOption.getCPOptionId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
 		Assert.assertEquals(
-			1,
-			_cpOptionValueLocalService.getCPOptionValuesCount(
-				_cpOption.getCPOptionId()));
+			cpOptionValues.toString(), 1, cpOptionValues.size());
 
 		_addResourcePermission(CPOption.class.getName(), ActionKeys.DELETE);
 
@@ -133,10 +141,12 @@ public class CPOptionServiceTest {
 
 		Assert.assertNull(
 			_cpOptionLocalService.fetchCPOption(_cpOption.getCPOptionId()));
+
+		cpOptionValues = _cpOptionValueLocalService.getCPOptionValues(
+			_cpOption.getCPOptionId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
 		Assert.assertEquals(
-			0,
-			_cpOptionValueLocalService.getCPOptionValuesCount(
-				_cpOption.getCPOptionId()));
+			cpOptionValues.toString(), 0, cpOptionValues.size());
 	}
 
 	@Test

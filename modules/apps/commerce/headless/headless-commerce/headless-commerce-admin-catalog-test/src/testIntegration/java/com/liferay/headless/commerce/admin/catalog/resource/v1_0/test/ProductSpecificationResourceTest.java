@@ -333,7 +333,7 @@ public class ProductSpecificationResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
@@ -353,13 +353,13 @@ public class ProductSpecificationResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 
@@ -392,13 +392,13 @@ public class ProductSpecificationResourceTest
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 

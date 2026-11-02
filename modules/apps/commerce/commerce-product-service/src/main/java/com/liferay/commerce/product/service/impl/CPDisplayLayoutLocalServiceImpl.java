@@ -120,27 +120,6 @@ public class CPDisplayLayoutLocalServiceImpl
 		return cpDisplayLayoutPersistence.update(cpDisplayLayout);
 	}
 
-	@Indexable(type = IndexableType.DELETE)
-	@Override
-	public CPDisplayLayout deleteCPDisplayLayout(Class<?> clazz, long classPK) {
-		try {
-			if ((clazz == CPDefinition.class) &&
-				CPDefinitionLocalServiceCircularDependencyUtil.isVersionable(
-					classPK)) {
-
-				CPDefinitionLocalServiceCircularDependencyUtil.copyCPDefinition(
-					classPK);
-			}
-		}
-		catch (PortalException portalException) {
-			throw new SystemException(portalException);
-		}
-
-		cpDisplayLayoutLocalService.deleteCPDisplayLayouts(clazz, classPK);
-
-		return null;
-	}
-
 	@Override
 	public void deleteCPDisplayLayouts(Class<?> clazz, long classPK) {
 		List<CPDisplayLayout> cpDisplayLayouts =
@@ -170,28 +149,10 @@ public class CPDisplayLayoutLocalServiceImpl
 	}
 
 	@Override
-	public List<CPDisplayLayout>
-		getCPDisplayLayoutsByGroupIdAndLayoutPageTemplateEntryUuid(
-			long groupId, String layoutPageTemplateEntryUuid, int start,
-			int end) {
-
-		return cpDisplayLayoutPersistence.findByG_LPTEU(
-			groupId, layoutPageTemplateEntryUuid, start, end);
-	}
-
-	@Override
 	public List<CPDisplayLayout> getCPDisplayLayoutsByGroupIdAndLayoutUuid(
 		long groupId, String layoutUuid) {
 
 		return cpDisplayLayoutPersistence.findByG_L(groupId, layoutUuid);
-	}
-
-	@Override
-	public List<CPDisplayLayout> getCPDisplayLayoutsByGroupIdAndLayoutUuid(
-		long groupId, String layoutUuid, int start, int end) {
-
-		return cpDisplayLayoutPersistence.findByG_L(
-			groupId, layoutUuid, start, end);
 	}
 
 	@Override

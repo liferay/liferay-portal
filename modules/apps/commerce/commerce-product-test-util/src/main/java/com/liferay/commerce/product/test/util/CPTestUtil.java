@@ -43,6 +43,7 @@ import com.liferay.commerce.product.service.CPOptionValueLocalServiceUtil;
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
 import com.liferay.commerce.product.service.persistence.CPConfigurationEntryUtil;
+import com.liferay.commerce.product.service.persistence.CPDefinitionUtil;
 import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.service.CPDefinitionInventoryLocalServiceUtil;
@@ -816,6 +817,25 @@ public class CPTestUtil {
 			commerceOptionType -> !Objects.equals(
 				CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY,
 				commerceOptionType));
+	}
+
+	public static List<CPDefinition> getCProductCPDefinitions(
+			long cProductId, int status, int start, int end)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			CPDefinitionUtil.getPersistence(),
+			cpDefinitionPersistence -> cpDefinitionPersistence.findByC_S(
+				cProductId, status, start, end));
+	}
+
+	public static int getCProductCPDefinitionsCount(long cProductId, int status)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			CPDefinitionUtil.getPersistence(),
+			cpDefinitionPersistence -> cpDefinitionPersistence.countByC_S(
+				cProductId, status));
 	}
 
 	public static List<CommerceChannelAccountEntryRel>

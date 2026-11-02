@@ -188,11 +188,6 @@ public class CPTaxCategoryLocalServiceImpl
 	}
 
 	@Override
-	public int getCPTaxCategoriesCount(long companyId) {
-		return cpTaxCategoryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public CPTaxCategory getOrAddEmptyCPTaxCategory(
 			String externalReferenceCode, long companyId, long userId)
 		throws PortalException {

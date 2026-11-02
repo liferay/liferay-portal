@@ -58,7 +58,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -224,29 +223,6 @@ public class CPSpecificationOptionLocalServiceImpl
 
 		return cpSpecificationOptionPersistence.findByC_K(
 			companyId, _friendlyURLNormalizer.normalize(key));
-	}
-
-	@Override
-	public CPSpecificationOption getOrAddEmptyCPSpecificationOption(
-			String externalReferenceCode, long companyId, long userId)
-		throws PortalException {
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(companyId);
-		serviceContext.setUserId(userId);
-
-		return _emptyModelManager.getOrAddEmptyModel(
-			CPSpecificationOption.class, companyId,
-			() -> cpSpecificationOptionLocalService.addCPSpecificationOption(
-				externalReferenceCode, userId, 0, null,
-				Collections.singletonMap(
-					LocaleUtil.getSiteDefault(), externalReferenceCode),
-				null, false, externalReferenceCode, 0, false, serviceContext),
-			externalReferenceCode,
-			this::fetchCPSpecificationOptionByExternalReferenceCode,
-			this::getCPSpecificationOptionByExternalReferenceCode,
-			CPSpecificationOption.class.getName());
 	}
 
 	@Override

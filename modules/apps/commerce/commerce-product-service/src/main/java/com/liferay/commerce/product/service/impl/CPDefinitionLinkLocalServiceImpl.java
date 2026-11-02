@@ -181,19 +181,6 @@ public class CPDefinitionLinkLocalServiceImpl
 	}
 
 	@Override
-	public CPDefinitionLink fetchCPDefinitionLink(
-		long cpDefinitionId, long cProductId, String type) {
-
-		return cpDefinitionLinkPersistence.fetchByC_C_T(
-			cpDefinitionId, cProductId, type);
-	}
-
-	@Override
-	public List<CPDefinitionLink> getCPDefinitionLinks(long cpDefinitionId) {
-		return cpDefinitionLinkPersistence.findByCPDefinitionId(cpDefinitionId);
-	}
-
-	@Override
 	public List<CPDefinitionLink> getCPDefinitionLinks(
 		long cpDefinitionId, int status) {
 
@@ -241,21 +228,6 @@ public class CPDefinitionLinkLocalServiceImpl
 	}
 
 	@Override
-	public List<CPDefinitionLink> getCPDefinitionLinks(
-		long cpDefinitionId, String type, int start, int end,
-		OrderByComparator<CPDefinitionLink> orderByComparator) {
-
-		return cpDefinitionLinkPersistence.findByCPD_T(
-			cpDefinitionId, type, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCPDefinitionLinksCount(long cpDefinitionId) {
-		return cpDefinitionLinkPersistence.countByCPDefinitionId(
-			cpDefinitionId);
-	}
-
-	@Override
 	public int getCPDefinitionLinksCount(long cpDefinitionId, int status) {
 		return cpDefinitionLinkPersistence.countByCPD_S(cpDefinitionId, status);
 	}
@@ -271,13 +243,6 @@ public class CPDefinitionLinkLocalServiceImpl
 
 		return cpDefinitionLinkPersistence.countByCPD_T_S(
 			cpDefinitionId, type, status);
-	}
-
-	@Override
-	public List<CPDefinitionLink> getReverseCPDefinitionLinks(
-		long cProductId, String type) {
-
-		return cpDefinitionLinkPersistence.findByCP_T(cProductId, type);
 	}
 
 	@Override

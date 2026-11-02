@@ -74,15 +74,6 @@ public class CPSpecificationOptionListTypeDefinitionRelLocalServiceImpl
 	}
 
 	@Override
-	public CPSpecificationOptionListTypeDefinitionRel
-		fetchCPSpecificationOptionListTypeDefinitionRel(
-			long cpSpecificationOptionId, long listTypeDefinitionId) {
-
-		return cpSpecificationOptionListTypeDefinitionRelPersistence.fetchByC_L(
-			cpSpecificationOptionId, listTypeDefinitionId);
-	}
-
-	@Override
 	public List<CPSpecificationOptionListTypeDefinitionRel>
 		getCPSpecificationOptionListTypeDefinitionRels(
 			long cpSpecificationOptionId) {

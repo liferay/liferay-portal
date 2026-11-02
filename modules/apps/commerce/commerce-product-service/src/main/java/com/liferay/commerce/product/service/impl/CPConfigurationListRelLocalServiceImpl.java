@@ -37,7 +37,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -149,15 +148,6 @@ public class CPConfigurationListRelLocalServiceImpl
 	}
 
 	@Override
-	public CPConfigurationListRel fetchCPConfigurationListRel(
-		String className, long classPK, long cpConfigurationListId) {
-
-		return cpConfigurationListRelPersistence.fetchByC_C_C(
-			_classNameLocalService.getClassNameId(className), classPK,
-			cpConfigurationListId);
-	}
-
-	@Override
 	public List<CPConfigurationListRel> getAccountEntryCPConfigurationListRels(
 		long cpConfigurationListId, String keywords, int start, int end) {
 
@@ -227,38 +217,11 @@ public class CPConfigurationListRelLocalServiceImpl
 
 	@Override
 	public List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId) {
-
-		return cpConfigurationListRelPersistence.findByCPConfigurationListId(
-			cpConfigurationListId);
-	}
-
-	@Override
-	public List<CPConfigurationListRel> getCPConfigurationListRels(
-		long cpConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationListRel> orderByComparator) {
-
-		return cpConfigurationListRelPersistence.findByCPConfigurationListId(
-			cpConfigurationListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CPConfigurationListRel> getCPConfigurationListRels(
 		String className, long cpConfigurationListId) {
 
 		return cpConfigurationListRelPersistence.findByC_C(
 			_classNameLocalService.getClassNameId(className),
 			cpConfigurationListId);
-	}
-
-	@Override
-	public List<CPConfigurationListRel> getCPConfigurationListRels(
-		String className, long cpConfigurationListId, int start, int end,
-		OrderByComparator<CPConfigurationListRel> orderByComparator) {
-
-		return cpConfigurationListRelPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(className),
-			cpConfigurationListId, start, end, orderByComparator);
 	}
 
 	@Override

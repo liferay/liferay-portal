@@ -385,14 +385,6 @@ public class CPDefinitionSpecificationOptionValueLocalServiceImpl
 	}
 
 	@Override
-	public int getCPSpecificationOptionDefinitionValuesCount(
-		long cpSpecificationOptionId) {
-
-		return cpDefinitionSpecificationOptionValuePersistence.
-			countByCPSpecificationOptionId(cpSpecificationOptionId);
-	}
-
-	@Override
 	public CPDefinitionSpecificationOptionValue
 			updateCPDefinitionSpecificationOptionValue(
 				String externalReferenceCode,

@@ -817,7 +817,7 @@ public class CPDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			1,
 			_cpDefinitionLinkLocalService.getCPDefinitionLinksCount(
-				cpDefinition1.getCPDefinitionId()));
+				cpDefinition1.getCPDefinitionId(), "related"));
 
 		_cpDefinitionLocalService.deleteCPDefinition(
 			cpDefinition2.getCPDefinitionId());
@@ -825,7 +825,7 @@ public class CPDefinitionLocalServiceTest {
 		Assert.assertEquals(
 			0,
 			_cpDefinitionLinkLocalService.getCPDefinitionLinksCount(
-				cpDefinition1.getCPDefinitionId()));
+				cpDefinition1.getCPDefinitionId(), "related"));
 	}
 
 	@Test
@@ -1770,7 +1770,7 @@ public class CPDefinitionLocalServiceTest {
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}
@@ -1956,7 +1956,7 @@ public class CPDefinitionLocalServiceTest {
 
 		Assert.assertEquals(
 			1,
-			_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+			CPTestUtil.getCProductCPDefinitionsCount(
 				cpDefinition1.getCProductId(), WorkflowConstants.STATUS_DRAFT));
 	}
 
@@ -2687,7 +2687,7 @@ public class CPDefinitionLocalServiceTest {
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}
@@ -3016,7 +3016,7 @@ public class CPDefinitionLocalServiceTest {
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT));
 		}

@@ -1880,28 +1880,6 @@ public class CPDefinitionLocalServiceImpl
 	}
 
 	@Override
-	public List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end) {
-
-		return cpDefinitionPersistence.findByC_S(
-			cProductId, status, start, end);
-	}
-
-	@Override
-	public List<CPDefinition> getCProductCPDefinitions(
-		long cProductId, int status, int start, int end,
-		OrderByComparator<CPDefinition> orderByComparator) {
-
-		return cpDefinitionPersistence.findByC_S(
-			cProductId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCProductCPDefinitionsCount(long cProductId, int status) {
-		return cpDefinitionPersistence.countByC_S(cProductId, status);
-	}
-
-	@Override
 	public CPAttachmentFileEntry getDefaultImageCPAttachmentFileEntry(
 			long cpDefinitionId)
 		throws PortalException {

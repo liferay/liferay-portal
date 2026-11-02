@@ -19,7 +19,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.BaseModelSearchResult;
@@ -42,7 +41,6 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TimeZoneUtil;
@@ -52,7 +50,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import java.io.Serializable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -211,57 +208,6 @@ public class CPOptionValueLocalServiceImpl
 
 		return cpOptionValuePersistence.findByCPOptionId(
 			cpOptionId, start, end);
-	}
-
-	@Override
-	public List<CPOptionValue> getCPOptionValues(
-		long cpOptionId, int start, int end,
-		OrderByComparator<CPOptionValue> orderByComparator) {
-
-		return cpOptionValuePersistence.findByCPOptionId(
-			cpOptionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCPOptionValuesCount(long cpOptionId) {
-		return cpOptionValuePersistence.countByCPOptionId(cpOptionId);
-	}
-
-	@Override
-	public CPOptionValue getOrAddEmptyCPOptionValue(
-			String externalReferenceCode, long cpOptionId, long companyId,
-			long userId)
-		throws PortalException {
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setCompanyId(companyId);
-		serviceContext.setUserId(userId);
-
-		return _emptyModelManager.getOrAddEmptyModel(
-			CPOptionValue.class, companyId,
-			() -> cpOptionValueLocalService.addCPOptionValue(
-				externalReferenceCode, cpOptionId,
-				Collections.singletonMap(
-					LocaleUtil.getSiteDefault(), externalReferenceCode),
-				0, externalReferenceCode, serviceContext),
-			externalReferenceCode,
-			this::fetchCPOptionValueByExternalReferenceCode,
-			this::getCPOptionValueByExternalReferenceCode,
-			CPOptionValue.class.getName());
-	}
-
-	@Override
-	public Hits search(SearchContext searchContext) {
-		try {
-			Indexer<CPOptionValue> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(CPOptionValue.class);
-
-			return indexer.search(searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
 	}
 
 	@Override

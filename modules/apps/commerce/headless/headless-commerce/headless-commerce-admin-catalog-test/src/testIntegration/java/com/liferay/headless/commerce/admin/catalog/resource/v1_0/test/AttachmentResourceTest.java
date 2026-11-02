@@ -17,7 +17,6 @@ import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
 import com.liferay.commerce.product.model.CProduct;
 import com.liferay.commerce.product.model.CommerceCatalog;
 import com.liferay.commerce.product.service.CPAttachmentFileEntryLocalService;
-import com.liferay.commerce.product.service.CPDefinitionLocalService;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
@@ -969,7 +968,7 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
@@ -1001,12 +1000,12 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 			Assert.assertEquals(
 				1,
-				_cpDefinitionLocalService.getCProductCPDefinitionsCount(
+				CPTestUtil.getCProductCPDefinitionsCount(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_APPROVED));
 
 			List<CPDefinition> cpDefinitions =
-				_cpDefinitionLocalService.getCProductCPDefinitions(
+				CPTestUtil.getCProductCPDefinitions(
 					cpDefinition1.getCProductId(),
 					WorkflowConstants.STATUS_DRAFT, QueryUtil.ALL_POS,
 					QueryUtil.ALL_POS);
@@ -1224,9 +1223,6 @@ public class AttachmentResourceTest extends BaseAttachmentResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CPDefinition _cpDefinition;
-
-	@Inject
-	private CPDefinitionLocalService _cpDefinitionLocalService;
 
 	@DeleteAfterTestRun
 	private List<CPDefinition> _cpDefinitions = new ArrayList<>();
