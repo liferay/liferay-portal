@@ -228,7 +228,6 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 			addStructure(
 				_classNameId,
 				StringUtil.toLowerCase(RandomTestUtil.randomString())));
-
 		_ddmStructures.add(
 			addStructure(
 				_classNameId,
