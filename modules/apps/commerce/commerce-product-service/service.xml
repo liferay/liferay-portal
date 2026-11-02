@@ -1459,6 +1459,7 @@
 		<exception>CommerceCatalogSystem</exception>
 		<exception>CommerceChannelAccountEntryRelType</exception>
 		<exception>CommerceChannelName</exception>
+		<exception>CommerceChannelSiteGroupId</exception>
 		<exception>CommerceChannelType</exception>
 		<exception>CPAttachmentFileEntryCDNURL</exception>
 		<exception>CPAttachmentFileEntryDisplayDate</exception>
