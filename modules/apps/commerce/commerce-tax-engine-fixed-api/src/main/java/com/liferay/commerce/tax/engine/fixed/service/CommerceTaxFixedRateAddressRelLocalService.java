@@ -287,17 +287,6 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 			long commerceTaxMethodId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxFixedRateAddressRel>
-		getCommerceTaxMethodFixedRateAddressRels(
-			long commerceTaxMethodId, int start, int end,
-			OrderByComparator<CommerceTaxFixedRateAddressRel>
-				orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTaxMethodFixedRateAddressRelsCount(
-		long commerceTaxMethodId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -335,4 +324,4 @@ public interface CommerceTaxFixedRateAddressRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2114903663
+// LIFERAY-SERVICE-BUILDER-HASH:1177811673

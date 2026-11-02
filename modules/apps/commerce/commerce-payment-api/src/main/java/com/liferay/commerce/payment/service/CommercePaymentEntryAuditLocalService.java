@@ -241,11 +241,6 @@ public interface CommercePaymentEntryAuditLocalService
 	public List<CommercePaymentEntryAudit> getCommercePaymentEntryAudits(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePaymentEntryAudit> getCommercePaymentEntryAudits(
-		long commercePaymentEntryId, int start, int end,
-		OrderByComparator<CommercePaymentEntryAudit> orderByComparator);
-
 	/**
 	 * Returns the number of commerce payment entry audits.
 	 *
@@ -297,4 +292,4 @@ public interface CommercePaymentEntryAuditLocalService
 		CommercePaymentEntryAudit commercePaymentEntryAudit);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1157772258
+// LIFERAY-SERVICE-BUILDER-HASH:1325459093

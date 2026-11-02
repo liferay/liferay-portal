@@ -257,10 +257,6 @@ public interface CommerceShippingFixedOptionLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-		long commerceShippingMethodId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 		long commerceShippingMethodId, int start, int end,
 		OrderByComparator<CommerceShippingFixedOption> orderByComparator);
 
@@ -277,10 +273,6 @@ public interface CommerceShippingFixedOptionLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingFixedOptionsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public long getCommerceShippingFixedOptionsCount(
@@ -333,4 +325,4 @@ public interface CommerceShippingFixedOptionLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1419109619
+// LIFERAY-SERVICE-BUILDER-HASH:485477485

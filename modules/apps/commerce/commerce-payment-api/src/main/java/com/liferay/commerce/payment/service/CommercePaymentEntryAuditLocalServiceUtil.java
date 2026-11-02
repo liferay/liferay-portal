@@ -272,14 +272,6 @@ public class CommercePaymentEntryAuditLocalServiceUtil {
 		return getService().getCommercePaymentEntryAudits(start, end);
 	}
 
-	public static List<CommercePaymentEntryAudit> getCommercePaymentEntryAudits(
-		long commercePaymentEntryId, int start, int end,
-		OrderByComparator<CommercePaymentEntryAudit> orderByComparator) {
-
-		return getService().getCommercePaymentEntryAudits(
-			commercePaymentEntryId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce payment entry audits.
 	 *
@@ -358,4 +350,4 @@ public class CommercePaymentEntryAuditLocalServiceUtil {
 			CommercePaymentEntryAuditLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1473371929
+// LIFERAY-SERVICE-BUILDER-HASH:-192407678

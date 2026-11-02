@@ -402,15 +402,6 @@ public class CommercePaymentMethodGroupRelLocalServiceWrapper
 	@Override
 	public java.util.List
 		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(long groupId) {
-
-		return _commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(groupId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
 			getCommercePaymentMethodGroupRels(long groupId, boolean active) {
 
 		return _commercePaymentMethodGroupRelLocalService.
@@ -425,20 +416,6 @@ public class CommercePaymentMethodGroupRelLocalServiceWrapper
 
 		return _commercePaymentMethodGroupRelLocalService.
 			getCommercePaymentMethodGroupRels(groupId, active, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.payment.model.CommercePaymentMethodGroupRel>
-			getCommercePaymentMethodGroupRels(
-				long groupId, boolean active, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.payment.model.
-						CommercePaymentMethodGroupRel> orderByComparator) {
-
-		return _commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRels(
-				groupId, active, start, end, orderByComparator);
 	}
 
 	@Override
@@ -474,12 +451,6 @@ public class CommercePaymentMethodGroupRelLocalServiceWrapper
 	public int getCommercePaymentMethodGroupRelsCount() {
 		return _commercePaymentMethodGroupRelLocalService.
 			getCommercePaymentMethodGroupRelsCount();
-	}
-
-	@Override
-	public int getCommercePaymentMethodGroupRelsCount(long groupId) {
-		return _commercePaymentMethodGroupRelLocalService.
-			getCommercePaymentMethodGroupRelsCount(groupId);
 	}
 
 	@Override
@@ -588,4 +559,4 @@ public class CommercePaymentMethodGroupRelLocalServiceWrapper
 		_commercePaymentMethodGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-866646740
+// LIFERAY-SERVICE-BUILDER-HASH:1887069673

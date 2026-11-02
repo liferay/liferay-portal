@@ -361,22 +361,6 @@ public class CommerceShippingFixedOptionRelLocalServiceWrapper
 				commerceShippingFixedOptionId, start, end, orderByComparator);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.shipping.engine.fixed.model.
-			CommerceShippingFixedOptionRel> getCommerceShippingFixedOptionRels(
-				long commerceShippingFixedOptionId,
-				long commerceShippingMethodId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.shipping.engine.fixed.model.
-						CommerceShippingFixedOptionRel> orderByComparator) {
-
-		return _commerceShippingFixedOptionRelLocalService.
-			getCommerceShippingFixedOptionRels(
-				commerceShippingFixedOptionId, commerceShippingMethodId, start,
-				end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce shipping fixed option rels.
 	 *
@@ -398,15 +382,6 @@ public class CommerceShippingFixedOptionRelLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceShippingFixedOptionRelsCount(
-		long commerceShippingFixedOptionId, long commerceShippingMethodId) {
-
-		return _commerceShippingFixedOptionRelLocalService.
-			getCommerceShippingFixedOptionRelsCount(
-				commerceShippingFixedOptionId, commerceShippingMethodId);
-	}
-
-	@Override
 	public java.util.List
 		<com.liferay.commerce.shipping.engine.fixed.model.
 			CommerceShippingFixedOptionRel>
@@ -416,30 +391,6 @@ public class CommerceShippingFixedOptionRelLocalServiceWrapper
 		return _commerceShippingFixedOptionRelLocalService.
 			getCommerceShippingMethodFixedOptionRels(
 				commerceShippingMethodId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.shipping.engine.fixed.model.
-			CommerceShippingFixedOptionRel>
-				getCommerceShippingMethodFixedOptionRels(
-					long commerceShippingMethodId, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.shipping.engine.fixed.model.
-							CommerceShippingFixedOptionRel> orderByComparator) {
-
-		return _commerceShippingFixedOptionRelLocalService.
-			getCommerceShippingMethodFixedOptionRels(
-				commerceShippingMethodId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceShippingMethodFixedOptionRelsCount(
-		long commerceShippingMethodId) {
-
-		return _commerceShippingFixedOptionRelLocalService.
-			getCommerceShippingMethodFixedOptionRelsCount(
-				commerceShippingMethodId);
 	}
 
 	@Override
@@ -534,4 +485,4 @@ public class CommerceShippingFixedOptionRelLocalServiceWrapper
 		_commerceShippingFixedOptionRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-246244324
+// LIFERAY-SERVICE-BUILDER-HASH:649742354

@@ -283,22 +283,12 @@ public interface CommercePaymentMethodGroupRelLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
-		getCommercePaymentMethodGroupRels(long groupId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePaymentMethodGroupRel>
 		getCommercePaymentMethodGroupRels(long groupId, boolean active);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
 		getCommercePaymentMethodGroupRels(
 			long groupId, boolean active, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePaymentMethodGroupRel>
-		getCommercePaymentMethodGroupRels(
-			long groupId, boolean active, int start, int end,
-			OrderByComparator<CommercePaymentMethodGroupRel> orderByComparator);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRel>
@@ -318,9 +308,6 @@ public interface CommercePaymentMethodGroupRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentMethodGroupRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePaymentMethodGroupRelsCount(long groupId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentMethodGroupRelsCount(
@@ -369,4 +356,4 @@ public interface CommercePaymentMethodGroupRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-328541985
+// LIFERAY-SERVICE-BUILDER-HASH:1285481310

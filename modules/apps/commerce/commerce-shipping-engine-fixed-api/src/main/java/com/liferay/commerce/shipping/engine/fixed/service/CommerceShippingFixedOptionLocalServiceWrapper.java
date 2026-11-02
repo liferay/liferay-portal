@@ -349,17 +349,6 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 	public java.util.List
 		<com.liferay.commerce.shipping.engine.fixed.model.
 			CommerceShippingFixedOption> getCommerceShippingFixedOptions(
-				long commerceShippingMethodId, int start, int end) {
-
-		return _commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptions(
-				commerceShippingMethodId, start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.shipping.engine.fixed.model.
-			CommerceShippingFixedOption> getCommerceShippingFixedOptions(
 				long commerceShippingMethodId, int start, int end,
 				com.liferay.portal.kernel.util.OrderByComparator
 					<com.liferay.commerce.shipping.engine.fixed.model.
@@ -393,14 +382,6 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 	public int getCommerceShippingFixedOptionsCount() {
 		return _commerceShippingFixedOptionLocalService.
 			getCommerceShippingFixedOptionsCount();
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId) {
-
-		return _commerceShippingFixedOptionLocalService.
-			getCommerceShippingFixedOptionsCount(commerceShippingMethodId);
 	}
 
 	@Override
@@ -518,4 +499,4 @@ public class CommerceShippingFixedOptionLocalServiceWrapper
 		_commerceShippingFixedOptionLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1325543046
+// LIFERAY-SERVICE-BUILDER-HASH:510507252

@@ -435,29 +435,6 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List
-		<com.liferay.commerce.tax.engine.fixed.model.
-			CommerceTaxFixedRateAddressRel>
-				getCommerceTaxMethodFixedRateAddressRels(
-					long commerceTaxMethodId, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.tax.engine.fixed.model.
-							CommerceTaxFixedRateAddressRel> orderByComparator) {
-
-		return _commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxMethodFixedRateAddressRels(
-				commerceTaxMethodId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceTaxMethodFixedRateAddressRelsCount(
-		long commerceTaxMethodId) {
-
-		return _commerceTaxFixedRateAddressRelLocalService.
-			getCommerceTaxMethodFixedRateAddressRelsCount(commerceTaxMethodId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -548,4 +525,4 @@ public class CommerceTaxFixedRateAddressRelLocalServiceWrapper
 		_commerceTaxFixedRateAddressRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1107239931
+// LIFERAY-SERVICE-BUILDER-HASH:196140583

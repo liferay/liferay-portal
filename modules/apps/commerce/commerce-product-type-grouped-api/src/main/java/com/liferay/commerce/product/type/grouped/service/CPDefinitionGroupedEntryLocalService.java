@@ -269,10 +269,6 @@ public interface CPDefinitionGroupedEntryLocalService
 			int end, Sort sort)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPDefinitionGroupedEntry>
-		getCPDefinitionGroupedEntriesByCPDefinitionId(long cpDefinitionId);
-
 	/**
 	 * Returns all the cp definition grouped entries matching the UUID and company.
 	 *
@@ -308,9 +304,6 @@ public interface CPDefinitionGroupedEntryLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCPDefinitionGroupedEntriesCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPDefinitionGroupedEntriesCount(long cpDefinitionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCPDefinitionGroupedEntriesCount(
@@ -401,4 +394,4 @@ public interface CPDefinitionGroupedEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:304905184
+// LIFERAY-SERVICE-BUILDER-HASH:-1890242708

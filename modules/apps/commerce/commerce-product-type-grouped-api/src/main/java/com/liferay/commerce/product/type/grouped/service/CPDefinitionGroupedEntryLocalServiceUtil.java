@@ -320,13 +320,6 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 			companyId, cpDefinitionId, keywords, start, end, sort);
 	}
 
-	public static List<CPDefinitionGroupedEntry>
-		getCPDefinitionGroupedEntriesByCPDefinitionId(long cpDefinitionId) {
-
-		return getService().getCPDefinitionGroupedEntriesByCPDefinitionId(
-			cpDefinitionId);
-	}
-
 	/**
 	 * Returns all the cp definition grouped entries matching the UUID and company.
 	 *
@@ -368,10 +361,6 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 	 */
 	public static int getCPDefinitionGroupedEntriesCount() {
 		return getService().getCPDefinitionGroupedEntriesCount();
-	}
-
-	public static int getCPDefinitionGroupedEntriesCount(long cpDefinitionId) {
-		return getService().getCPDefinitionGroupedEntriesCount(cpDefinitionId);
 	}
 
 	public static int getCPDefinitionGroupedEntriesCount(
@@ -508,4 +497,4 @@ public class CPDefinitionGroupedEntryLocalServiceUtil {
 			CPDefinitionGroupedEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1628046761
+// LIFERAY-SERVICE-BUILDER-HASH:-1006030590

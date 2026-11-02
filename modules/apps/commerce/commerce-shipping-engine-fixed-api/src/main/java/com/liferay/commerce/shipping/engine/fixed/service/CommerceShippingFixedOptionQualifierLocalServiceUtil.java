@@ -248,15 +248,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceUtil {
 			commerceShippingFixedOptionQualifierId);
 	}
 
-	public static CommerceShippingFixedOptionQualifier
-		fetchCommerceShippingFixedOptionQualifier(
-			String className, long classPK,
-			long commerceShippingFixedOptionId) {
-
-		return getService().fetchCommerceShippingFixedOptionQualifier(
-			className, classPK, commerceShippingFixedOptionId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -318,24 +309,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceUtil {
 
 	public static List<CommerceShippingFixedOptionQualifier>
 		getCommerceShippingFixedOptionQualifiers(
-			long commerceShippingFixedOptionId) {
-
-		return getService().getCommerceShippingFixedOptionQualifiers(
-			commerceShippingFixedOptionId);
-	}
-
-	public static List<CommerceShippingFixedOptionQualifier>
-		getCommerceShippingFixedOptionQualifiers(
-			long commerceShippingFixedOptionId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionQualifier>
-				orderByComparator) {
-
-		return getService().getCommerceShippingFixedOptionQualifiers(
-			commerceShippingFixedOptionId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceShippingFixedOptionQualifier>
-		getCommerceShippingFixedOptionQualifiers(
 			String className, long commerceShippingFixedOptionId) {
 
 		return getService().getCommerceShippingFixedOptionQualifiers(
@@ -349,13 +322,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceUtil {
 	 */
 	public static int getCommerceShippingFixedOptionQualifiersCount() {
 		return getService().getCommerceShippingFixedOptionQualifiersCount();
-	}
-
-	public static int getCommerceShippingFixedOptionQualifiersCount(
-		long commerceShippingFixedOptionId) {
-
-		return getService().getCommerceShippingFixedOptionQualifiersCount(
-			commerceShippingFixedOptionId);
 	}
 
 	public static List<CommerceShippingFixedOptionQualifier>
@@ -434,4 +400,4 @@ public class CommerceShippingFixedOptionQualifierLocalServiceUtil {
 				CommerceShippingFixedOptionQualifierLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1212434712
+// LIFERAY-SERVICE-BUILDER-HASH:-1864832843

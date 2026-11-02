@@ -344,14 +344,6 @@ public class CommerceTaxCategoryMappingLocalServiceWrapper
 			getCommerceTaxCategoryMappingByUuidAndGroupId(uuid, groupId);
 	}
 
-	@Override
-	public int getCommerceTaxCategoryMappingCount(long commerceTaxMethodId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceTaxCategoryMappingLocalService.
-			getCommerceTaxCategoryMappingCount(commerceTaxMethodId);
-	}
-
 	/**
 	 * Returns a range of all the commerce tax category mappings.
 	 *
@@ -370,20 +362,6 @@ public class CommerceTaxCategoryMappingLocalServiceWrapper
 
 		return _commerceTaxCategoryMappingLocalService.
 			getCommerceTaxCategoryMappings(start, end);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.tax.model.CommerceTaxCategoryMapping>
-			getCommerceTaxCategoryMappings(
-				long commerceTaxMethodId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.tax.model.CommerceTaxCategoryMapping>
-						orderByComparator) {
-
-		return _commerceTaxCategoryMappingLocalService.
-			getCommerceTaxCategoryMappings(
-				commerceTaxMethodId, start, end, orderByComparator);
 	}
 
 	/**
@@ -533,4 +511,4 @@ public class CommerceTaxCategoryMappingLocalServiceWrapper
 		_commerceTaxCategoryMappingLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-908154297
+// LIFERAY-SERVICE-BUILDER-HASH:1301536565

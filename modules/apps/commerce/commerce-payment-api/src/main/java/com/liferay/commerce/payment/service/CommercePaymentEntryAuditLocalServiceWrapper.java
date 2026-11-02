@@ -309,20 +309,6 @@ public class CommercePaymentEntryAuditLocalServiceWrapper
 			getCommercePaymentEntryAudits(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.payment.model.CommercePaymentEntryAudit>
-			getCommercePaymentEntryAudits(
-				long commercePaymentEntryId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.commerce.payment.model.
-						CommercePaymentEntryAudit> orderByComparator) {
-
-		return _commercePaymentEntryAuditLocalService.
-			getCommercePaymentEntryAudits(
-				commercePaymentEntryId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce payment entry audits.
 	 *
@@ -427,4 +413,4 @@ public class CommercePaymentEntryAuditLocalServiceWrapper
 		_commercePaymentEntryAuditLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1091094976
+// LIFERAY-SERVICE-BUILDER-HASH:-1958613883

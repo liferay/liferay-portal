@@ -250,11 +250,6 @@ public interface CommerceVirtualOrderItemFileEntryLocalService
 	public List<CommerceVirtualOrderItemFileEntry>
 		getCommerceVirtualOrderItemFileEntries(long commerceVirtualOrderItemId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceVirtualOrderItemFileEntry>
-		getCommerceVirtualOrderItemFileEntries(
-			long commerceVirtualOrderItemId, int start, int end);
-
 	/**
 	 * Returns all the commerce virtual order item file entries matching the UUID and company.
 	 *
@@ -372,4 +367,4 @@ public interface CommerceVirtualOrderItemFileEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:945701548
+// LIFERAY-SERVICE-BUILDER-HASH:-1535223376

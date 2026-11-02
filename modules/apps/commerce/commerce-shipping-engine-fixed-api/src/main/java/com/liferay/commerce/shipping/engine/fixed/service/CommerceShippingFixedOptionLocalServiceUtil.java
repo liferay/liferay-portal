@@ -290,14 +290,6 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 
 	public static List<CommerceShippingFixedOption>
 		getCommerceShippingFixedOptions(
-			long commerceShippingMethodId, int start, int end) {
-
-		return getService().getCommerceShippingFixedOptions(
-			commerceShippingMethodId, start, end);
-	}
-
-	public static List<CommerceShippingFixedOption>
-		getCommerceShippingFixedOptions(
 			long commerceShippingMethodId, int start, int end,
 			OrderByComparator<CommerceShippingFixedOption> orderByComparator) {
 
@@ -322,13 +314,6 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 	 */
 	public static int getCommerceShippingFixedOptionsCount() {
 		return getService().getCommerceShippingFixedOptionsCount();
-	}
-
-	public static int getCommerceShippingFixedOptionsCount(
-		long commerceShippingMethodId) {
-
-		return getService().getCommerceShippingFixedOptionsCount(
-			commerceShippingMethodId);
 	}
 
 	public static long getCommerceShippingFixedOptionsCount(
@@ -411,4 +396,4 @@ public class CommerceShippingFixedOptionLocalServiceUtil {
 			CommerceShippingFixedOptionLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:947064723
+// LIFERAY-SERVICE-BUILDER-HASH:-1677848335

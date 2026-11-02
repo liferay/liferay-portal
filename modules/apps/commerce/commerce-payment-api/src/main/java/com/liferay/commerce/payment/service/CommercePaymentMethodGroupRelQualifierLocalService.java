@@ -223,12 +223,6 @@ public interface CommercePaymentMethodGroupRelQualifierLocalService
 			long commercePaymentMethodGroupRelQualifierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommercePaymentMethodGroupRelQualifier
-		fetchCommercePaymentMethodGroupRelQualifier(
-			String className, long classPK,
-			long commercePaymentMethodGroupRelId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -272,13 +266,6 @@ public interface CommercePaymentMethodGroupRelQualifierLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRelQualifier>
 		getCommercePaymentMethodGroupRelQualifiers(
-			long commercePaymentMethodGroupRelId, int start, int end,
-			OrderByComparator<CommercePaymentMethodGroupRelQualifier>
-				orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommercePaymentMethodGroupRelQualifier>
-		getCommercePaymentMethodGroupRelQualifiers(
 			String className, long commercePaymentMethodGroupRelId);
 
 	/**
@@ -288,10 +275,6 @@ public interface CommercePaymentMethodGroupRelQualifierLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommercePaymentMethodGroupRelQualifiersCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommercePaymentMethodGroupRelQualifiersCount(
-		long commercePaymentMethodGroupRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommercePaymentMethodGroupRelQualifier>
@@ -338,4 +321,4 @@ public interface CommercePaymentMethodGroupRelQualifierLocalService
 				commercePaymentMethodGroupRelQualifier);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2061589377
+// LIFERAY-SERVICE-BUILDER-HASH:-1993757690

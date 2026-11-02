@@ -310,18 +310,6 @@ public class CommerceShippingFixedOptionRelLocalServiceUtil {
 			commerceShippingFixedOptionId, start, end, orderByComparator);
 	}
 
-	public static List<CommerceShippingFixedOptionRel>
-		getCommerceShippingFixedOptionRels(
-			long commerceShippingFixedOptionId, long commerceShippingMethodId,
-			int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionRel>
-				orderByComparator) {
-
-		return getService().getCommerceShippingFixedOptionRels(
-			commerceShippingFixedOptionId, commerceShippingMethodId, start, end,
-			orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce shipping fixed option rels.
 	 *
@@ -338,36 +326,12 @@ public class CommerceShippingFixedOptionRelLocalServiceUtil {
 			commerceShippingFixedOptionId);
 	}
 
-	public static int getCommerceShippingFixedOptionRelsCount(
-		long commerceShippingFixedOptionId, long commerceShippingMethodId) {
-
-		return getService().getCommerceShippingFixedOptionRelsCount(
-			commerceShippingFixedOptionId, commerceShippingMethodId);
-	}
-
 	public static List<CommerceShippingFixedOptionRel>
 		getCommerceShippingMethodFixedOptionRels(
 			long commerceShippingMethodId, int start, int end) {
 
 		return getService().getCommerceShippingMethodFixedOptionRels(
 			commerceShippingMethodId, start, end);
-	}
-
-	public static List<CommerceShippingFixedOptionRel>
-		getCommerceShippingMethodFixedOptionRels(
-			long commerceShippingMethodId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionRel>
-				orderByComparator) {
-
-		return getService().getCommerceShippingMethodFixedOptionRels(
-			commerceShippingMethodId, start, end, orderByComparator);
-	}
-
-	public static int getCommerceShippingMethodFixedOptionRelsCount(
-		long commerceShippingMethodId) {
-
-		return getService().getCommerceShippingMethodFixedOptionRelsCount(
-			commerceShippingMethodId);
 	}
 
 	public static
@@ -438,4 +402,4 @@ public class CommerceShippingFixedOptionRelLocalServiceUtil {
 			CommerceShippingFixedOptionRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:900554004
+// LIFERAY-SERVICE-BUILDER-HASH:-1171147762

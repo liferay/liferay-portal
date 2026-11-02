@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Tax API
 Bundle-SymbolicName: com.liferay.commerce.tax.api
-Bundle-Version: 10.0.1
+Bundle-Version: 11.0.0
 Export-Package:\
 	com.liferay.commerce.tax.configuration,\
 	com.liferay.commerce.tax.exception,\

@@ -288,14 +288,6 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceUtil {
 			commerceVirtualOrderItemId);
 	}
 
-	public static List<CommerceVirtualOrderItemFileEntry>
-		getCommerceVirtualOrderItemFileEntries(
-			long commerceVirtualOrderItemId, int start, int end) {
-
-		return getService().getCommerceVirtualOrderItemFileEntries(
-			commerceVirtualOrderItemId, start, end);
-	}
-
 	/**
 	 * Returns all the commerce virtual order item file entries matching the UUID and company.
 	 *
@@ -463,4 +455,4 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceUtil {
 			CommerceVirtualOrderItemFileEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1548469416
+// LIFERAY-SERVICE-BUILDER-HASH:707018150

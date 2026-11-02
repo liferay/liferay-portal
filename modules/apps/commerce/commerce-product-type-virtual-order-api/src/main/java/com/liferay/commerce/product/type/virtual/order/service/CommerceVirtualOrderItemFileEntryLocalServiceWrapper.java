@@ -340,18 +340,6 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceWrapper
 			getCommerceVirtualOrderItemFileEntries(commerceVirtualOrderItemId);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.commerce.product.type.virtual.order.model.
-			CommerceVirtualOrderItemFileEntry>
-				getCommerceVirtualOrderItemFileEntries(
-					long commerceVirtualOrderItemId, int start, int end) {
-
-		return _commerceVirtualOrderItemFileEntryLocalService.
-			getCommerceVirtualOrderItemFileEntries(
-				commerceVirtualOrderItemId, start, end);
-	}
-
 	/**
 	 * Returns all the commerce virtual order item file entries matching the UUID and company.
 	 *
@@ -566,4 +554,4 @@ public class CommerceVirtualOrderItemFileEntryLocalServiceWrapper
 		_commerceVirtualOrderItemFileEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-617808338
+// LIFERAY-SERVICE-BUILDER-HASH:224005869

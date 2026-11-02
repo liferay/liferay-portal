@@ -294,18 +294,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.shipping.engine.fixed.model.
-		CommerceShippingFixedOptionQualifier
-			fetchCommerceShippingFixedOptionQualifier(
-				String className, long classPK,
-				long commerceShippingFixedOptionId) {
-
-		return _commerceShippingFixedOptionQualifierLocalService.
-			fetchCommerceShippingFixedOptionQualifier(
-				className, classPK, commerceShippingFixedOptionId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -380,34 +368,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceWrapper
 		<com.liferay.commerce.shipping.engine.fixed.model.
 			CommerceShippingFixedOptionQualifier>
 				getCommerceShippingFixedOptionQualifiers(
-					long commerceShippingFixedOptionId) {
-
-		return _commerceShippingFixedOptionQualifierLocalService.
-			getCommerceShippingFixedOptionQualifiers(
-				commerceShippingFixedOptionId);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.shipping.engine.fixed.model.
-			CommerceShippingFixedOptionQualifier>
-				getCommerceShippingFixedOptionQualifiers(
-					long commerceShippingFixedOptionId, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.shipping.engine.fixed.model.
-							CommerceShippingFixedOptionQualifier>
-								orderByComparator) {
-
-		return _commerceShippingFixedOptionQualifierLocalService.
-			getCommerceShippingFixedOptionQualifiers(
-				commerceShippingFixedOptionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.shipping.engine.fixed.model.
-			CommerceShippingFixedOptionQualifier>
-				getCommerceShippingFixedOptionQualifiers(
 					String className, long commerceShippingFixedOptionId) {
 
 		return _commerceShippingFixedOptionQualifierLocalService.
@@ -424,15 +384,6 @@ public class CommerceShippingFixedOptionQualifierLocalServiceWrapper
 	public int getCommerceShippingFixedOptionQualifiersCount() {
 		return _commerceShippingFixedOptionQualifierLocalService.
 			getCommerceShippingFixedOptionQualifiersCount();
-	}
-
-	@Override
-	public int getCommerceShippingFixedOptionQualifiersCount(
-		long commerceShippingFixedOptionId) {
-
-		return _commerceShippingFixedOptionQualifierLocalService.
-			getCommerceShippingFixedOptionQualifiersCount(
-				commerceShippingFixedOptionId);
 	}
 
 	@Override
@@ -537,4 +488,4 @@ public class CommerceShippingFixedOptionQualifierLocalServiceWrapper
 		_commerceShippingFixedOptionQualifierLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-182716161
+// LIFERAY-SERVICE-BUILDER-HASH:1460739998

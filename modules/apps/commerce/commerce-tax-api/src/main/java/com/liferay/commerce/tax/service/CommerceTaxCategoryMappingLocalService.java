@@ -259,10 +259,6 @@ public interface CommerceTaxCategoryMappingLocalService
 				String uuid, long groupId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTaxCategoryMappingCount(long commerceTaxMethodId)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the commerce tax category mappings.
 	 *
@@ -277,11 +273,6 @@ public interface CommerceTaxCategoryMappingLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceTaxCategoryMapping> getCommerceTaxCategoryMappings(
 		int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTaxCategoryMapping> getCommerceTaxCategoryMappings(
-		long commerceTaxMethodId, int start, int end,
-		OrderByComparator<CommerceTaxCategoryMapping> orderByComparator);
 
 	/**
 	 * Returns all the commerce tax category mappings matching the UUID and company.
@@ -360,4 +351,4 @@ public interface CommerceTaxCategoryMappingLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1729404107
+// LIFERAY-SERVICE-BUILDER-HASH:-1968873918

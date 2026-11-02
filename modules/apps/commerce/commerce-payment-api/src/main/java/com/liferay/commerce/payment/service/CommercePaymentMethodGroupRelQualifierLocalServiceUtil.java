@@ -250,15 +250,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceUtil {
 			commercePaymentMethodGroupRelQualifierId);
 	}
 
-	public static CommercePaymentMethodGroupRelQualifier
-		fetchCommercePaymentMethodGroupRelQualifier(
-			String className, long classPK,
-			long commercePaymentMethodGroupRelId) {
-
-		return getService().fetchCommercePaymentMethodGroupRelQualifier(
-			className, classPK, commercePaymentMethodGroupRelId);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -320,16 +311,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceUtil {
 
 	public static List<CommercePaymentMethodGroupRelQualifier>
 		getCommercePaymentMethodGroupRelQualifiers(
-			long commercePaymentMethodGroupRelId, int start, int end,
-			OrderByComparator<CommercePaymentMethodGroupRelQualifier>
-				orderByComparator) {
-
-		return getService().getCommercePaymentMethodGroupRelQualifiers(
-			commercePaymentMethodGroupRelId, start, end, orderByComparator);
-	}
-
-	public static List<CommercePaymentMethodGroupRelQualifier>
-		getCommercePaymentMethodGroupRelQualifiers(
 			String className, long commercePaymentMethodGroupRelId) {
 
 		return getService().getCommercePaymentMethodGroupRelQualifiers(
@@ -343,13 +324,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceUtil {
 	 */
 	public static int getCommercePaymentMethodGroupRelQualifiersCount() {
 		return getService().getCommercePaymentMethodGroupRelQualifiersCount();
-	}
-
-	public static int getCommercePaymentMethodGroupRelQualifiersCount(
-		long commercePaymentMethodGroupRelId) {
-
-		return getService().getCommercePaymentMethodGroupRelQualifiersCount(
-			commercePaymentMethodGroupRelId);
 	}
 
 	public static List<CommercePaymentMethodGroupRelQualifier>
@@ -428,4 +402,4 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceUtil {
 				CommercePaymentMethodGroupRelQualifierLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1610000107
+// LIFERAY-SERVICE-BUILDER-HASH:-1599242053

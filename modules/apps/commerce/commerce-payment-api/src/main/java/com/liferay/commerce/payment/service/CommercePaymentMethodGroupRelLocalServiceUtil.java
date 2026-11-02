@@ -350,12 +350,6 @@ public class CommercePaymentMethodGroupRelLocalServiceUtil {
 	}
 
 	public static List<CommercePaymentMethodGroupRel>
-		getCommercePaymentMethodGroupRels(long groupId) {
-
-		return getService().getCommercePaymentMethodGroupRels(groupId);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
 		getCommercePaymentMethodGroupRels(long groupId, boolean active) {
 
 		return getService().getCommercePaymentMethodGroupRels(groupId, active);
@@ -367,16 +361,6 @@ public class CommercePaymentMethodGroupRelLocalServiceUtil {
 
 		return getService().getCommercePaymentMethodGroupRels(
 			groupId, active, start, end);
-	}
-
-	public static List<CommercePaymentMethodGroupRel>
-		getCommercePaymentMethodGroupRels(
-			long groupId, boolean active, int start, int end,
-			OrderByComparator<CommercePaymentMethodGroupRel>
-				orderByComparator) {
-
-		return getService().getCommercePaymentMethodGroupRels(
-			groupId, active, start, end, orderByComparator);
 	}
 
 	public static List<CommercePaymentMethodGroupRel>
@@ -404,10 +388,6 @@ public class CommercePaymentMethodGroupRelLocalServiceUtil {
 	 */
 	public static int getCommercePaymentMethodGroupRelsCount() {
 		return getService().getCommercePaymentMethodGroupRelsCount();
-	}
-
-	public static int getCommercePaymentMethodGroupRelsCount(long groupId) {
-		return getService().getCommercePaymentMethodGroupRelsCount(groupId);
 	}
 
 	public static int getCommercePaymentMethodGroupRelsCount(
@@ -490,4 +470,4 @@ public class CommercePaymentMethodGroupRelLocalServiceUtil {
 			CommercePaymentMethodGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1771833441
+// LIFERAY-SERVICE-BUILDER-HASH:-805430474

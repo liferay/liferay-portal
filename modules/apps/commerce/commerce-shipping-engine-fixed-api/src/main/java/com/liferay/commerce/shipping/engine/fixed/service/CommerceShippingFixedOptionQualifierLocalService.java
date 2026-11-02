@@ -218,11 +218,6 @@ public interface CommerceShippingFixedOptionQualifierLocalService
 			long commerceShippingFixedOptionQualifierId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceShippingFixedOptionQualifier
-		fetchCommerceShippingFixedOptionQualifier(
-			String className, long classPK, long commerceShippingFixedOptionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -266,18 +261,6 @@ public interface CommerceShippingFixedOptionQualifierLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShippingFixedOptionQualifier>
 		getCommerceShippingFixedOptionQualifiers(
-			long commerceShippingFixedOptionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingFixedOptionQualifier>
-		getCommerceShippingFixedOptionQualifiers(
-			long commerceShippingFixedOptionId, int start, int end,
-			OrderByComparator<CommerceShippingFixedOptionQualifier>
-				orderByComparator);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceShippingFixedOptionQualifier>
-		getCommerceShippingFixedOptionQualifiers(
 			String className, long commerceShippingFixedOptionId);
 
 	/**
@@ -287,10 +270,6 @@ public interface CommerceShippingFixedOptionQualifierLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceShippingFixedOptionQualifiersCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceShippingFixedOptionQualifiersCount(
-		long commerceShippingFixedOptionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceShippingFixedOptionQualifier>
@@ -337,4 +316,4 @@ public interface CommerceShippingFixedOptionQualifierLocalService
 				commerceShippingFixedOptionQualifier);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-337671324
+// LIFERAY-SERVICE-BUILDER-HASH:1737152500

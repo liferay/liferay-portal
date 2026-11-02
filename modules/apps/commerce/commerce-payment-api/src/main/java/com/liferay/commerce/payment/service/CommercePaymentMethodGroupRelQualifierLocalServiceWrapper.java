@@ -303,19 +303,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceWrapper
 	}
 
 	@Override
-	public
-		com.liferay.commerce.payment.model.
-			CommercePaymentMethodGroupRelQualifier
-				fetchCommercePaymentMethodGroupRelQualifier(
-					String className, long classPK,
-					long commercePaymentMethodGroupRelId) {
-
-		return _commercePaymentMethodGroupRelQualifierLocalService.
-			fetchCommercePaymentMethodGroupRelQualifier(
-				className, classPK, commercePaymentMethodGroupRelId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -391,22 +378,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceWrapper
 		<com.liferay.commerce.payment.model.
 			CommercePaymentMethodGroupRelQualifier>
 				getCommercePaymentMethodGroupRelQualifiers(
-					long commercePaymentMethodGroupRelId, int start, int end,
-					com.liferay.portal.kernel.util.OrderByComparator
-						<com.liferay.commerce.payment.model.
-							CommercePaymentMethodGroupRelQualifier>
-								orderByComparator) {
-
-		return _commercePaymentMethodGroupRelQualifierLocalService.
-			getCommercePaymentMethodGroupRelQualifiers(
-				commercePaymentMethodGroupRelId, start, end, orderByComparator);
-	}
-
-	@Override
-	public java.util.List
-		<com.liferay.commerce.payment.model.
-			CommercePaymentMethodGroupRelQualifier>
-				getCommercePaymentMethodGroupRelQualifiers(
 					String className, long commercePaymentMethodGroupRelId) {
 
 		return _commercePaymentMethodGroupRelQualifierLocalService.
@@ -423,15 +394,6 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceWrapper
 	public int getCommercePaymentMethodGroupRelQualifiersCount() {
 		return _commercePaymentMethodGroupRelQualifierLocalService.
 			getCommercePaymentMethodGroupRelQualifiersCount();
-	}
-
-	@Override
-	public int getCommercePaymentMethodGroupRelQualifiersCount(
-		long commercePaymentMethodGroupRelId) {
-
-		return _commercePaymentMethodGroupRelQualifierLocalService.
-			getCommercePaymentMethodGroupRelQualifiersCount(
-				commercePaymentMethodGroupRelId);
 	}
 
 	@Override
@@ -537,4 +499,4 @@ public class CommercePaymentMethodGroupRelQualifierLocalServiceWrapper
 		_commercePaymentMethodGroupRelQualifierLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-415826658
+// LIFERAY-SERVICE-BUILDER-HASH:-1246048616
