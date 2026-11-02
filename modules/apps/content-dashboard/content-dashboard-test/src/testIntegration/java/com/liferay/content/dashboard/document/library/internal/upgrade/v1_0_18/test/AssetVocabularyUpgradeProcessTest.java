@@ -35,6 +35,8 @@ import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.TextFormatter;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -87,10 +89,16 @@ public class AssetVocabularyUpgradeProcessTest {
 
 			PrincipalThreadLocal.setName(user.getUserId());
 
-			_stagingLocalService.enableLocalStaging(
-				user.getUserId(), companyGroup, false, false,
-				ServiceContextTestUtil.getServiceContext(
-					companyGroup.getGroupId()));
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.batch.engine.internal." +
+						"BatchEngineImportTaskExecutorImpl",
+					LoggerTestUtil.OFF)) {
+
+				_stagingLocalService.enableLocalStaging(
+					user.getUserId(), companyGroup, false, false,
+					ServiceContextTestUtil.getServiceContext(
+						companyGroup.getGroupId()));
+			}
 
 			Group stagingGroup = companyGroup.getStagingGroup();
 
