@@ -12,7 +12,6 @@ import com.liferay.commerce.tax.service.base.CommerceTaxMethodLocalServiceBaseIm
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -64,22 +63,6 @@ public class CommerceTaxMethodLocalServiceImpl
 		return commerceTaxMethodPersistence.update(commerceTaxMethod);
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceTaxMethod addCommerceTaxMethod(
-			Map<Locale, String> nameMap, Map<Locale, String> descriptionMap,
-			String engineKey, boolean percentage, boolean active,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commerceTaxMethodLocalService.addCommerceTaxMethod(
-			serviceContext.getUserId(), serviceContext.getScopeGroupId(),
-			nameMap, descriptionMap, engineKey, percentage, active);
-	}
-
 	@Override
 	public void deleteCommerceTaxMethods(long groupId) throws PortalException {
 		List<CommerceTaxMethod> commerceTaxMethods =
@@ -99,20 +82,10 @@ public class CommerceTaxMethodLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceTaxMethod> getCommerceTaxMethods(long groupId) {
-		return commerceTaxMethodPersistence.findByGroupId(groupId);
-	}
-
-	@Override
 	public List<CommerceTaxMethod> getCommerceTaxMethods(
 		long groupId, boolean active) {
 
 		return commerceTaxMethodPersistence.findByG_A(groupId, active);
-	}
-
-	@Override
-	public int getCommerceTaxMethodsCount(long groupId, boolean active) {
-		return commerceTaxMethodPersistence.countByG_A(groupId, active);
 	}
 
 	@Override
