@@ -16,6 +16,12 @@ import com.liferay.info.field.type.HTMLInfoFieldType;
 import com.liferay.info.field.type.InfoFieldType;
 import com.liferay.info.field.type.TextInfoFieldType;
 import com.liferay.info.localized.InfoLocalizedValue;
+import com.liferay.layout.page.template.model.LayoutPageTemplateStructure;
+import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalServiceUtil;
+import com.liferay.layout.util.structure.FragmentStyledLayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructure;
+import com.liferay.layout.util.structure.LayoutStructureItem;
+import com.liferay.layout.util.structure.LayoutStructureItemUtil;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.function.UnsafeTriConsumer;
 import com.liferay.petra.string.StringPool;
@@ -27,11 +33,15 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -93,10 +103,13 @@ public class InfoFieldUtil {
 		List<FragmentEntryLink> fragmentEntryLinks =
 			FragmentEntryLinkLocalServiceUtil.
 				getFragmentEntryLinksBySegmentsExperienceId(
-					layout.getGroupId(), segmentsExperienceId,
-					layout.getPlid());
+					layout.getGroupId(), segmentsExperienceId, layout.getPlid(),
+					false);
 
-		for (FragmentEntryLink fragmentEntryLink : fragmentEntryLinks) {
+		for (FragmentEntryLink fragmentEntryLink :
+				_sortByLayoutStructure(
+					fragmentEntryLinks, layout, segmentsExperienceId)) {
+
 			forEachInfoField(
 				fragmentEntryLink, fragmentRendererController, consumer);
 		}
@@ -188,6 +201,69 @@ public class InfoFieldUtil {
 		Matcher matcher = _pattern.matcher(fragmentEntryLink.getHtml());
 
 		return matcher.replaceAll(defaultElementName);
+	}
+
+	private static List<FragmentEntryLink> _sortByLayoutStructure(
+		List<FragmentEntryLink> fragmentEntryLinks, Layout layout,
+		long segmentsExperienceId) {
+
+		if (fragmentEntryLinks.size() < 2) {
+			return fragmentEntryLinks;
+		}
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			LayoutPageTemplateStructureLocalServiceUtil.
+				fetchLayoutPageTemplateStructure(
+					layout.getGroupId(), layout.getPlid());
+
+		if (layoutPageTemplateStructure == null) {
+			return fragmentEntryLinks;
+		}
+
+		String data = layoutPageTemplateStructure.getData(segmentsExperienceId);
+
+		if (Validator.isNull(data)) {
+			return fragmentEntryLinks;
+		}
+
+		LayoutStructure layoutStructure = LayoutStructure.of(data);
+
+		Map<Long, Integer> fragmentEntryLinkIndexes = new HashMap<>();
+
+		int index = 0;
+
+		for (String itemId :
+				LayoutStructureItemUtil.getChildrenItemIds(
+					layoutStructure.getMainItemId(), layoutStructure)) {
+
+			LayoutStructureItem layoutStructureItem =
+				layoutStructure.getLayoutStructureItem(itemId);
+
+			if (!(layoutStructureItem instanceof
+					FragmentStyledLayoutStructureItem)) {
+
+				continue;
+			}
+
+			FragmentStyledLayoutStructureItem
+				fragmentStyledLayoutStructureItem =
+					(FragmentStyledLayoutStructureItem)layoutStructureItem;
+
+			fragmentEntryLinkIndexes.put(
+				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId(),
+				index++);
+		}
+
+		List<FragmentEntryLink> sortedFragmentEntryLinks = new ArrayList<>(
+			fragmentEntryLinks);
+
+		sortedFragmentEntryLinks.sort(
+			Comparator.comparingInt(
+				fragmentEntryLink -> fragmentEntryLinkIndexes.getOrDefault(
+					fragmentEntryLink.getFragmentEntryLinkId(),
+					Integer.MAX_VALUE)));
+
+		return sortedFragmentEntryLinks;
 	}
 
 	private static final Pattern _pattern = Pattern.compile("\\$\\{[^}]*\\}");
