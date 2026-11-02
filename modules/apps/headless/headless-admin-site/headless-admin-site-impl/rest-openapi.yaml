@@ -3549,6 +3549,11 @@ components:
                     description:
                         Whether to allow subsites to display content from this site.
                     type: boolean
+                creator:
+                    $ref: ../../headless-admin-user/headless-admin-user-impl/rest-openapi.yaml#Creator
+                    description:
+                        The site's creator.
+                    readOnly: true
                 defaultLanguageId:
                     example: en_US
                     type: string
