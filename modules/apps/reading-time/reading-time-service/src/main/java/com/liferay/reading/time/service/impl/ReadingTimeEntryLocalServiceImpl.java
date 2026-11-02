@@ -29,16 +29,6 @@ public class ReadingTimeEntryLocalServiceImpl
 
 	@Override
 	public ReadingTimeEntry addReadingTimeEntry(
-		GroupedModel groupedModel, Duration readingTimeDuration) {
-
-		return addReadingTimeEntry(
-			groupedModel.getGroupId(),
-			_classNameLocalService.getClassNameId(groupedModel.getModelClass()),
-			(Long)groupedModel.getPrimaryKeyObj(), readingTimeDuration);
-	}
-
-	@Override
-	public ReadingTimeEntry addReadingTimeEntry(
 		long groupId, long classNameId, long classPK,
 		Duration readingTimeDuration) {
 
@@ -57,20 +47,6 @@ public class ReadingTimeEntryLocalServiceImpl
 	@Override
 	public ReadingTimeEntry deleteReadingTimeEntry(GroupedModel groupedModel) {
 		ReadingTimeEntry readingTimeEntry = fetchReadingTimeEntry(groupedModel);
-
-		if (readingTimeEntry != null) {
-			return deleteReadingTimeEntry(readingTimeEntry);
-		}
-
-		return null;
-	}
-
-	@Override
-	public ReadingTimeEntry deleteReadingTimeEntry(
-		long groupId, long classNameId, long classPK) {
-
-		ReadingTimeEntry readingTimeEntry = fetchReadingTimeEntry(
-			groupId, classNameId, classPK);
 
 		if (readingTimeEntry != null) {
 			return deleteReadingTimeEntry(readingTimeEntry);
