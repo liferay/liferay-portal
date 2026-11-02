@@ -152,18 +152,18 @@ public abstract class BaseCheck extends AbstractCheck {
 
 		String fileName = fileContents.getFileName();
 
-		String[] absolutePathEntry = _absolutePathEntry;
+		String[] cachedAbsolutePathPair = _cachedAbsolutePathPair;
 
-		if ((absolutePathEntry != null) &&
-			fileName.equals(absolutePathEntry[0])) {
+		if ((cachedAbsolutePathPair != null) &&
+			fileName.equals(cachedAbsolutePathPair[0])) {
 
-			return absolutePathEntry[1];
+			return cachedAbsolutePathPair[1];
 		}
 
 		String absolutePath = SourceUtil.getAbsolutePath(
 			StringUtil.replace(fileName, CharPool.BACK_SLASH, CharPool.SLASH));
 
-		_absolutePathEntry = new String[] {fileName, absolutePath};
+		_cachedAbsolutePathPair = new String[] {fileName, absolutePath};
 
 		return absolutePath;
 	}
@@ -1826,13 +1826,13 @@ public abstract class BaseCheck extends AbstractCheck {
 
 	private static final Log _log = LogFactoryUtil.getLog(BaseCheck.class);
 
-	private volatile String[] _absolutePathEntry;
 	private final Map<String, String> _attributeValueMap =
 		new ConcurrentHashMap<>();
 	private final Map<String, List<String>> _attributeValuesMap =
 		new ConcurrentHashMap<>();
 	private JSONObject _attributesJSONObject = new JSONObjectImpl();
 	private Map<String, String> _bundleSymbolicNamesMap;
+	private volatile String[] _cachedAbsolutePathPair;
 	private JSONObject _excludesJSONObject = new JSONObjectImpl();
 	private final Map<String, List<String>> _excludesValuesMap =
 		new ConcurrentHashMap<>();
