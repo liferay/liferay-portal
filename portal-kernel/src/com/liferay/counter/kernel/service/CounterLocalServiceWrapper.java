@@ -61,11 +61,6 @@ public class CounterLocalServiceWrapper
 	}
 
 	@Override
-	public void rename(String oldName, String newName) {
-		_counterLocalService.rename(oldName, newName);
-	}
-
-	@Override
 	public void reset(String name) {
 		_counterLocalService.reset(name);
 	}
@@ -88,4 +83,4 @@ public class CounterLocalServiceWrapper
 	private CounterLocalService _counterLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:481797444
+// LIFERAY-SERVICE-BUILDER-HASH:-838549041

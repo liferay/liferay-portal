@@ -57,11 +57,9 @@ public interface CounterLocalService extends BaseLocalService {
 
 	public long increment(String name, int size);
 
-	public void rename(String oldName, String newName);
-
 	public void reset(String name);
 
 	public void reset(String name, long size);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:749322635
+// LIFERAY-SERVICE-BUILDER-HASH:2082084501

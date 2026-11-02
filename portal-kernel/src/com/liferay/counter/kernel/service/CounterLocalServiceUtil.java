@@ -55,10 +55,6 @@ public class CounterLocalServiceUtil {
 		return getService().increment(name, size);
 	}
 
-	public static void rename(String oldName, String newName) {
-		getService().rename(oldName, newName);
-	}
-
 	public static void reset(String name) {
 		getService().reset(name);
 	}
@@ -78,4 +74,4 @@ public class CounterLocalServiceUtil {
 	private static volatile CounterLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1549212617
+// LIFERAY-SERVICE-BUILDER-HASH:-1715237132
