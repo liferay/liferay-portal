@@ -68,12 +68,6 @@ public class AuditEventLocalServiceImpl extends AuditEventLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<AuditEvent> getAuditEvents(long companyId, int start, int end) {
-		return auditEventPersistence.findByCompanyId(
-			companyId, start, end, new AuditEventCreateDateComparator());
-	}
-
-	@Override
 	public List<AuditEvent> getAuditEvents(
 		long companyId, int start, int end,
 		OrderByComparator<AuditEvent> orderByComparator) {
