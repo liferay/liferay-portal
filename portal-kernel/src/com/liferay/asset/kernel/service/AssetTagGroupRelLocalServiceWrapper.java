@@ -352,13 +352,6 @@ public class AssetTagGroupRelLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<AssetTagGroupRel> getAssetTagGroupRelsByTagId(
-		long tagId) {
-
-		return _assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(tagId);
-	}
-
-	@Override
 	public java.util.List<AssetTagGroupRel>
 		getAssetTagGroupRelsByTagIdAndDepotEntryType(
 			long tagId, int depotEntryType) {
@@ -510,4 +503,4 @@ public class AssetTagGroupRelLocalServiceWrapper
 	private AssetTagGroupRelLocalService _assetTagGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1188328177
+// LIFERAY-SERVICE-BUILDER-HASH:-788949252

@@ -325,9 +325,6 @@ public interface AssetVocabularyGroupRelLocalService
 	public int getAssetVocabularyGroupRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getAssetVocabularyGroupRelsCount(long vocabularyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -379,4 +376,4 @@ public interface AssetVocabularyGroupRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:418658790
+// LIFERAY-SERVICE-BUILDER-HASH:726911292

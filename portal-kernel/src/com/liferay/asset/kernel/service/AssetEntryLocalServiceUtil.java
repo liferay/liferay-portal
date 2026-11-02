@@ -361,16 +361,6 @@ public class AssetEntryLocalServiceUtil {
 		return getService().getAssetTagPrimaryKeys(entryId);
 	}
 
-	public static List<AssetEntry> getCompanyEntries(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyEntries(companyId, start, end);
-	}
-
-	public static int getCompanyEntriesCount(long companyId) {
-		return getService().getCompanyEntriesCount(companyId);
-	}
-
 	public static List<AssetEntry> getEntries(
 		com.liferay.asset.kernel.service.persistence.AssetEntryQuery
 			entryQuery) {
@@ -498,26 +488,6 @@ public class AssetEntryLocalServiceUtil {
 
 	public static com.liferay.portal.kernel.search.Hits search(
 		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, boolean showNonindexable, int status,
-		int start, int end) {
-
-		return getService().search(
-			companyId, groupIds, userId, className, classTypeId, keywords,
-			showNonindexable, status, start, end);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, boolean showNonindexable,
-		int[] statuses, int start, int end) {
-
-		return getService().search(
-			companyId, groupIds, userId, className, classTypeId, keywords,
-			showNonindexable, statuses, start, end);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long[] groupIds, long userId, String className,
 		long classTypeId, String keywords, boolean showNonindexable,
 		int[] statuses, int start, int end,
 		com.liferay.portal.kernel.search.Sort sort) {
@@ -536,15 +506,6 @@ public class AssetEntryLocalServiceUtil {
 		return getService().search(
 			companyId, groupIds, userId, className, classTypeId, keywords,
 			showNonindexable, statuses, start, end, sorts);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, int status, int start, int end) {
-
-		return getService().search(
-			companyId, groupIds, userId, className, classTypeId, keywords,
-			status, start, end);
 	}
 
 	public static com.liferay.portal.kernel.search.Hits search(
@@ -571,59 +532,6 @@ public class AssetEntryLocalServiceUtil {
 			showNonindexable, statuses, andSearch, start, end);
 	}
 
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, int status,
-		boolean andSearch, int start, int end) {
-
-		return getService().search(
-			companyId, groupIds, userId, className, classTypeId, userName,
-			title, description, assetCategoryIds, assetTagNames, status,
-			andSearch, start, end);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		String keywords, int status, int start, int end) {
-
-		return getService().search(
-			companyId, groupIds, userId, className, keywords, status, start,
-			end);
-	}
-
-	public static com.liferay.portal.kernel.search.Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, int status,
-		boolean andSearch, int start, int end) {
-
-		return getService().search(
-			companyId, groupIds, userId, className, userName, title,
-			description, assetCategoryIds, assetTagNames, status, andSearch,
-			start, end);
-	}
-
-	public static long searchCount(
-		long companyId, long[] groupIds, long userId, long[] classNameIds,
-		long classTypeId, String keywords, boolean showNonindexable,
-		int[] statuses) {
-
-		return getService().searchCount(
-			companyId, groupIds, userId, classNameIds, classTypeId, keywords,
-			showNonindexable, statuses);
-	}
-
-	public static long searchCount(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, boolean showNonindexable,
-		int[] statuses) {
-
-		return getService().searchCount(
-			companyId, groupIds, userId, className, classTypeId, keywords,
-			showNonindexable, statuses);
-	}
-
 	public static long searchCount(
 		long companyId, long[] groupIds, long userId, String className,
 		long classTypeId, String keywords, String assetCategoryIds,
@@ -634,30 +542,6 @@ public class AssetEntryLocalServiceUtil {
 			companyId, groupIds, userId, className, classTypeId, keywords,
 			assetCategoryIds, assetTagNames, showInvisible, showNonindexable,
 			statuses, andSearch);
-	}
-
-	public static long searchCount(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, boolean showInvisible,
-		boolean showNonindexable, int[] statuses, boolean andSearch) {
-
-		return getService().searchCount(
-			companyId, groupIds, userId, className, classTypeId, userName,
-			title, description, assetCategoryIds, assetTagNames, showInvisible,
-			showNonindexable, statuses, andSearch);
-	}
-
-	public static long searchCount(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, boolean showNonindexable,
-		int[] statuses, boolean andSearch) {
-
-		return getService().searchCount(
-			companyId, groupIds, userId, className, classTypeId, userName,
-			title, description, assetCategoryIds, assetTagNames,
-			showNonindexable, statuses, andSearch);
 	}
 
 	public static void setAssetTagAssetEntries(long tagId, long[] entryIds) {
@@ -778,4 +662,4 @@ public class AssetEntryLocalServiceUtil {
 	private static volatile AssetEntryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-159373524
+// LIFERAY-SERVICE-BUILDER-HASH:270026597

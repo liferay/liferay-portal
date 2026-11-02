@@ -569,11 +569,6 @@ public class AssetVocabularyLocalServiceWrapper
 	}
 
 	@Override
-	public int getGroupVocabulariesCount(long[] groupIds) {
-		return _assetVocabularyLocalService.getGroupVocabulariesCount(groupIds);
-	}
-
-	@Override
 	public AssetVocabulary getGroupVocabulary(long groupId, String name)
 		throws com.liferay.portal.kernel.exception.PortalException {
 
@@ -750,4 +745,4 @@ public class AssetVocabularyLocalServiceWrapper
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1848149171
+// LIFERAY-SERVICE-BUILDER-HASH:1529184682

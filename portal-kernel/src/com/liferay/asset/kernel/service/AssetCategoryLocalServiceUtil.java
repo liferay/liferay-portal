@@ -449,18 +449,8 @@ public class AssetCategoryLocalServiceUtil {
 		return getService().getCategory(categoryId);
 	}
 
-	public static AssetCategory getCategory(String uuid, long groupId)
-		throws PortalException {
-
-		return getService().getCategory(uuid, groupId);
-	}
-
 	public static long[] getCategoryIds(String className, long classPK) {
 		return getService().getCategoryIds(className, classPK);
-	}
-
-	public static String[] getCategoryNames() {
-		return getService().getCategoryNames();
 	}
 
 	public static String[] getCategoryNames(long classNameId, long classPK) {
@@ -475,14 +465,6 @@ public class AssetCategoryLocalServiceUtil {
 		long parentCategoryId) {
 
 		return getService().getChildCategories(parentCategoryId);
-	}
-
-	public static List<AssetCategory> getChildCategories(
-		long parentCategoryId, int start, int end,
-		OrderByComparator<AssetCategory> orderByComparator) {
-
-		return getService().getChildCategories(
-			parentCategoryId, start, end, orderByComparator);
 	}
 
 	public static int getChildCategoriesCount(long parentCategoryId) {
@@ -604,17 +586,6 @@ public class AssetCategoryLocalServiceUtil {
 			vocabularyId, start, end, orderByComparator);
 	}
 
-	public static int getVocabularyRootCategoriesCount(long vocabularyId) {
-		return getService().getVocabularyRootCategoriesCount(vocabularyId);
-	}
-
-	public static AssetCategory mergeCategories(
-			long fromCategoryId, long toCategoryId)
-		throws PortalException {
-
-		return getService().mergeCategories(fromCategoryId, toCategoryId);
-	}
-
 	public static AssetCategory moveCategory(
 			long categoryId, long parentCategoryId, long vocabularyId,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -717,4 +688,4 @@ public class AssetCategoryLocalServiceUtil {
 	private static volatile AssetCategoryLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:911809162
+// LIFERAY-SERVICE-BUILDER-HASH:1308932889

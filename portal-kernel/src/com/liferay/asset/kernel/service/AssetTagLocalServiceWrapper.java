@@ -618,21 +618,6 @@ public class AssetTagLocalServiceWrapper
 	 * @param groupId the primary key of the group
 	 * @param start the lower bound of the range of asset tags
 	 * @param end the upper bound of the range of asset tags (not inclusive)
-	 * @return the range of matching asset tags
-	 */
-	@Override
-	public java.util.List<AssetTag> getGroupTags(
-		long groupId, int start, int end) {
-
-		return _assetTagLocalService.getGroupTags(groupId, start, end);
-	}
-
-	/**
-	 * Returns a range of all the asset tags in the group.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param start the lower bound of the range of asset tags
-	 * @param end the upper bound of the range of asset tags (not inclusive)
 	 * @param orderByComparator the comparator to order the asset tags
 	 (optionally <code>null</code>)
 	 * @return the range of matching asset tags
@@ -645,17 +630,6 @@ public class AssetTagLocalServiceWrapper
 
 		return _assetTagLocalService.getGroupTags(
 			groupId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of asset tags in the group.
-	 *
-	 * @param groupId the primary key of the group
-	 * @return the number of asset tags in the group
-	 */
-	@Override
-	public int getGroupTagsCount(long groupId) {
-		return _assetTagLocalService.getGroupTagsCount(groupId);
 	}
 
 	@Override
@@ -684,19 +658,6 @@ public class AssetTagLocalServiceWrapper
 		throws com.liferay.portal.kernel.exception.PortalException {
 
 		return _assetTagLocalService.getPersistedModel(primaryKeyObj);
-	}
-
-	/**
-	 * Returns the asset tag with the primary key.
-	 *
-	 * @param tagId the primary key of the asset tag
-	 * @return the asset tag with the primary key
-	 */
-	@Override
-	public AssetTag getTag(long tagId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _assetTagLocalService.getTag(tagId);
 	}
 
 	/**
@@ -758,16 +719,6 @@ public class AssetTagLocalServiceWrapper
 	@Override
 	public long[] getTagIds(String name) {
 		return _assetTagLocalService.getTagIds(name);
-	}
-
-	/**
-	 * Returns the names of all the asset tags.
-	 *
-	 * @return the names of all the asset tags
-	 */
-	@Override
-	public String[] getTagNames() {
-		return _assetTagLocalService.getTagNames();
 	}
 
 	/**
@@ -1011,4 +962,4 @@ public class AssetTagLocalServiceWrapper
 	private AssetTagLocalService _assetTagLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1449043628
+// LIFERAY-SERVICE-BUILDER-HASH:1196977400

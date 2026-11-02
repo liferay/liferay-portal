@@ -492,10 +492,6 @@ public class AssetVocabularyLocalServiceUtil {
 		return getService().getGroupVocabularies(groupIds, visibilityTypes);
 	}
 
-	public static int getGroupVocabulariesCount(long[] groupIds) {
-		return getService().getGroupVocabulariesCount(groupIds);
-	}
-
 	public static AssetVocabulary getGroupVocabulary(long groupId, String name)
 		throws PortalException {
 
@@ -628,4 +624,4 @@ public class AssetVocabularyLocalServiceUtil {
 	private static volatile AssetVocabularyLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1362016759
+// LIFERAY-SERVICE-BUILDER-HASH:-1572449708

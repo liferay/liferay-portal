@@ -552,20 +552,6 @@ public class AssetTagLocalServiceUtil {
 	 * @param groupId the primary key of the group
 	 * @param start the lower bound of the range of asset tags
 	 * @param end the upper bound of the range of asset tags (not inclusive)
-	 * @return the range of matching asset tags
-	 */
-	public static List<AssetTag> getGroupTags(
-		long groupId, int start, int end) {
-
-		return getService().getGroupTags(groupId, start, end);
-	}
-
-	/**
-	 * Returns a range of all the asset tags in the group.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param start the lower bound of the range of asset tags
-	 * @param end the upper bound of the range of asset tags (not inclusive)
 	 * @param orderByComparator the comparator to order the asset tags
 	 (optionally <code>null</code>)
 	 * @return the range of matching asset tags
@@ -576,16 +562,6 @@ public class AssetTagLocalServiceUtil {
 
 		return getService().getGroupTags(
 			groupId, start, end, orderByComparator);
-	}
-
-	/**
-	 * Returns the number of asset tags in the group.
-	 *
-	 * @param groupId the primary key of the group
-	 * @return the number of asset tags in the group
-	 */
-	public static int getGroupTagsCount(long groupId) {
-		return getService().getGroupTagsCount(groupId);
 	}
 
 	public static
@@ -611,16 +587,6 @@ public class AssetTagLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getPersistedModel(primaryKeyObj);
-	}
-
-	/**
-	 * Returns the asset tag with the primary key.
-	 *
-	 * @param tagId the primary key of the asset tag
-	 * @return the asset tag with the primary key
-	 */
-	public static AssetTag getTag(long tagId) throws PortalException {
-		return getService().getTag(tagId);
 	}
 
 	/**
@@ -677,15 +643,6 @@ public class AssetTagLocalServiceUtil {
 	 */
 	public static long[] getTagIds(String name) {
 		return getService().getTagIds(name);
-	}
-
-	/**
-	 * Returns the names of all the asset tags.
-	 *
-	 * @return the names of all the asset tags
-	 */
-	public static String[] getTagNames() {
-		return getService().getTagNames();
 	}
 
 	/**
@@ -883,4 +840,4 @@ public class AssetTagLocalServiceUtil {
 	private static volatile AssetTagLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:92155394
+// LIFERAY-SERVICE-BUILDER-HASH:-1272512246

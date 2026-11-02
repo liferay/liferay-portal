@@ -311,12 +311,6 @@ public class AssetTagGroupRelLocalServiceUtil {
 			groupId, depotEntryType);
 	}
 
-	public static List<AssetTagGroupRel> getAssetTagGroupRelsByTagId(
-		long tagId) {
-
-		return getService().getAssetTagGroupRelsByTagId(tagId);
-	}
-
 	public static List<AssetTagGroupRel>
 		getAssetTagGroupRelsByTagIdAndDepotEntryType(
 			long tagId, int depotEntryType) {
@@ -425,4 +419,4 @@ public class AssetTagGroupRelLocalServiceUtil {
 	private static volatile AssetTagGroupRelLocalService _service;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:139069871
+// LIFERAY-SERVICE-BUILDER-HASH:1942315640

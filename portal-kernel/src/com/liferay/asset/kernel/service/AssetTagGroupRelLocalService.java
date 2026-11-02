@@ -278,9 +278,6 @@ public interface AssetTagGroupRelLocalService
 			long groupId, int depotEntryType);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetTagGroupRel> getAssetTagGroupRelsByTagId(long tagId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AssetTagGroupRel> getAssetTagGroupRelsByTagIdAndDepotEntryType(
 		long tagId, int depotEntryType);
 
@@ -370,4 +367,4 @@ public interface AssetTagGroupRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1067155195
+// LIFERAY-SERVICE-BUILDER-HASH:809679208

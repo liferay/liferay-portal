@@ -410,9 +410,6 @@ public interface AssetVocabularyLocalService
 		long[] groupIds, int[] visibilityTypes);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getGroupVocabulariesCount(long[] groupIds);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public AssetVocabulary getGroupVocabulary(long groupId, String name)
 		throws PortalException;
 
@@ -507,4 +504,4 @@ public interface AssetVocabularyLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2098662806
+// LIFERAY-SERVICE-BUILDER-HASH:-1751553718
