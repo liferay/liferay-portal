@@ -349,33 +349,11 @@ public class AssetCategoryPropertyLocalServiceWrapper
 	}
 
 	@Override
-	public java.util.List<AssetCategoryProperty> getCategoryProperties() {
-		return _assetCategoryPropertyLocalService.getCategoryProperties();
-	}
-
-	@Override
 	public java.util.List<AssetCategoryProperty> getCategoryProperties(
 		long entryId) {
 
 		return _assetCategoryPropertyLocalService.getCategoryProperties(
 			entryId);
-	}
-
-	@Override
-	public AssetCategoryProperty getCategoryProperty(long categoryPropertyId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _assetCategoryPropertyLocalService.getCategoryProperty(
-			categoryPropertyId);
-	}
-
-	@Override
-	public AssetCategoryProperty getCategoryProperty(
-			long categoryId, String key)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _assetCategoryPropertyLocalService.getCategoryProperty(
-			categoryId, key);
 	}
 
 	@Override
@@ -444,15 +422,6 @@ public class AssetCategoryPropertyLocalServiceWrapper
 	}
 
 	@Override
-	public AssetCategoryProperty updateCategoryProperty(
-			long categoryPropertyId, String key, String value)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _assetCategoryPropertyLocalService.updateCategoryProperty(
-			categoryPropertyId, key, value);
-	}
-
-	@Override
 	public BasePersistence<?> getBasePersistence() {
 		return _assetCategoryPropertyLocalService.getBasePersistence();
 	}
@@ -493,4 +462,4 @@ public class AssetCategoryPropertyLocalServiceWrapper
 		_assetCategoryPropertyLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:640427223
+// LIFERAY-SERVICE-BUILDER-HASH:732291467

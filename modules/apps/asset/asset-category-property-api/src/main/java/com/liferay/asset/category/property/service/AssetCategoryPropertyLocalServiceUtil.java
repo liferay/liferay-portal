@@ -302,28 +302,10 @@ public class AssetCategoryPropertyLocalServiceUtil {
 			externalReferenceCode, companyId);
 	}
 
-	public static List<AssetCategoryProperty> getCategoryProperties() {
-		return getService().getCategoryProperties();
-	}
-
 	public static List<AssetCategoryProperty> getCategoryProperties(
 		long entryId) {
 
 		return getService().getCategoryProperties(entryId);
-	}
-
-	public static AssetCategoryProperty getCategoryProperty(
-			long categoryPropertyId)
-		throws PortalException {
-
-		return getService().getCategoryProperty(categoryPropertyId);
-	}
-
-	public static AssetCategoryProperty getCategoryProperty(
-			long categoryId, String key)
-		throws PortalException {
-
-		return getService().getCategoryProperty(categoryId, key);
 	}
 
 	public static List<AssetCategoryProperty> getCategoryPropertyValues(
@@ -381,14 +363,6 @@ public class AssetCategoryPropertyLocalServiceUtil {
 			userId, categoryPropertyId, key, value);
 	}
 
-	public static AssetCategoryProperty updateCategoryProperty(
-			long categoryPropertyId, String key, String value)
-		throws PortalException {
-
-		return getService().updateCategoryProperty(
-			categoryPropertyId, key, value);
-	}
-
 	public static AssetCategoryPropertyLocalService getService() {
 		return _serviceSnapshot.get();
 	}
@@ -399,4 +373,4 @@ public class AssetCategoryPropertyLocalServiceUtil {
 			AssetCategoryPropertyLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-175459678
+// LIFERAY-SERVICE-BUILDER-HASH:-584809458
