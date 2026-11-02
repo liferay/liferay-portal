@@ -53,6 +53,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -283,6 +284,21 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 		ServiceContext serviceContext = _serviceContextHelper.getServiceContext(
 			commerceOrder.getGroupId());
 
+		SkuUnitOfMeasure skuUnitOfMeasure = cartItem.getSkuUnitOfMeasure();
+
+		if ((skuUnitOfMeasure != null) &&
+			Validator.isNotNull(skuUnitOfMeasure.getKey()) &&
+			!Objects.equals(
+				skuUnitOfMeasure.getKey(),
+				commerceOrderItem.getUnitOfMeasureKey())) {
+
+			commerceOrderItem =
+				_commerceOrderItemService.updateCommerceOrderItemUnitOfMeasure(
+					commerceOrderItem.getCommerceOrderItemId(),
+					cartItem.getQuantity(), skuUnitOfMeasure.getKey(),
+					commerceContext, serviceContext);
+		}
+
 		if (Validator.isNotNull(options)) {
 			commerceOrderItem =
 				_commerceOrderItemService.updateCommerceOrderItem(
@@ -376,6 +392,13 @@ public class CartItemResourceImpl extends BaseCartItemResourceImpl {
 
 		return putCartItem(
 			commerceOrderItem.getCommerceOrderItemId(), cartItem);
+	}
+
+	@Override
+	protected void preparePatch(CartItem cartItem, CartItem existingCartItem) {
+		if (cartItem.getSkuUnitOfMeasure() != null) {
+			existingCartItem.setSkuUnitOfMeasure(cartItem::getSkuUnitOfMeasure);
+		}
 	}
 
 	private CartItem[] _getCartItems(
