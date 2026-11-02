@@ -5,12 +5,10 @@
 
 package com.liferay.commerce.qualifier.service.impl;
 
-import com.liferay.commerce.qualifier.helper.CommerceQualifierHelper;
 import com.liferay.commerce.qualifier.metadata.CommerceQualifierMetadata;
 import com.liferay.commerce.qualifier.metadata.CommerceQualifierMetadataRegistry;
 import com.liferay.commerce.qualifier.model.CommerceQualifierEntry;
 import com.liferay.commerce.qualifier.model.CommerceQualifierEntryTable;
-import com.liferay.commerce.qualifier.search.context.CommerceQualifierSearchContext;
 import com.liferay.commerce.qualifier.service.base.CommerceQualifierEntryLocalServiceBaseImpl;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
@@ -30,15 +28,12 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -151,49 +146,6 @@ public class CommerceQualifierEntryLocalServiceImpl
 			commerceQualifierEntryLocalService.deleteCommerceQualifierEntry(
 				commerceQualifierEntry);
 		}
-	}
-
-	@Override
-	public CommerceQualifierEntry fetchCommerceQualifierEntry(
-		String sourceClassName, long sourceClassPK, String targetClassName,
-		long targetClassPK) {
-
-		return commerceQualifierEntryPersistence.fetchByS_S_T_T(
-			_classNameLocalService.getClassNameId(sourceClassName),
-			sourceClassPK,
-			_classNameLocalService.getClassNameId(targetClassName),
-			targetClassPK);
-	}
-
-	@Override
-	public <E> List<E> getSourceCommerceQualifierEntries(
-		long companyId, Class<E> sourceClass,
-		String sourceCommerceQualifierMetadataKey,
-		CommerceQualifierSearchContext commerceQualifierSearchContext) {
-
-		CommerceQualifierMetadata sourceCommerceQualifierMetadata =
-			_commerceQualifierMetadataRegistry.getCommerceQualifierMetadata(
-				sourceCommerceQualifierMetadataKey);
-
-		if (sourceCommerceQualifierMetadata == null) {
-			return Collections.emptyList();
-		}
-
-		PersistedModelLocalService persistedModelLocalService =
-			sourceCommerceQualifierMetadata.getPersistedModelLocalService();
-
-		return (List<E>)persistedModelLocalService.dslQuery(
-			_getGroupByStep(
-				companyId,
-				DSLQueryFactoryUtil.select(
-					sourceCommerceQualifierMetadata.getTable()),
-				sourceCommerceQualifierMetadata,
-				commerceQualifierSearchContext.getSourceAttributes(),
-				commerceQualifierSearchContext.getTargetAttributes()
-			).orderBy(
-				sourceCommerceQualifierMetadata.getOrderByExpressions(
-					commerceQualifierSearchContext.getTargetAttributes())
-			));
 	}
 
 	@Override
@@ -339,112 +291,6 @@ public class CommerceQualifierEntryLocalServiceImpl
 	}
 
 	private GroupByStep _getGroupByStep(
-		long companyId, FromStep fromStep,
-		CommerceQualifierMetadata sourceCommerceQualifierMetadata,
-		Map<String, ?> sourceAttributes, Map<String, ?> targetAttributes) {
-
-		Table sourceTable = sourceCommerceQualifierMetadata.getTable();
-
-		JoinStep joinStep = fromStep.from(sourceTable);
-
-		Predicate predicate = sourceTable.getColumn(
-			"companyId"
-		).eq(
-			companyId
-		).and(
-			sourceCommerceQualifierMetadata.getFilterPredicate()
-		);
-
-		if (sourceAttributes != null) {
-			for (Map.Entry<String, ?> sourceAttribute :
-					sourceAttributes.entrySet()) {
-
-				predicate = predicate.and(
-					() -> {
-						Object value = sourceAttribute.getValue();
-
-						if (value instanceof Object[]) {
-							return sourceTable.getColumn(
-								sourceAttribute.getKey()
-							).in(
-								(Object[])value
-							);
-						}
-
-						return sourceTable.getColumn(
-							sourceAttribute.getKey()
-						).eq(
-							value
-						);
-					});
-			}
-		}
-
-		if (targetAttributes == null) {
-			return joinStep.leftJoinOn(
-				CommerceQualifierEntryTable.INSTANCE,
-				CommerceQualifierEntryTable.INSTANCE.sourceClassNameId.eq(
-					_classNameLocalService.getClassNameId(
-						sourceCommerceQualifierMetadata.getModelClassName())
-				).and(
-					CommerceQualifierEntryTable.INSTANCE.sourceClassPK.eq(
-						sourceCommerceQualifierMetadata.getPrimaryKeyColumn())
-				)
-			).where(
-				predicate.and(
-					CommerceQualifierEntryTable.INSTANCE.
-						commerceQualifierEntryId.isNull())
-			);
-		}
-
-		List<String> allowedTargetKeysList = new ArrayList<>();
-
-		for (String[] allowedTargetKeys :
-				sourceCommerceQualifierMetadata.getAllowedTargetKeysArray()) {
-
-			Collections.addAll(allowedTargetKeysList, allowedTargetKeys);
-		}
-
-		if (allowedTargetKeysList.isEmpty()) {
-			return joinStep.where(predicate);
-		}
-
-		Predicate subpredicate = null;
-
-		for (String allowedTargetKey : allowedTargetKeysList) {
-			CommerceQualifierEntryTable aliasCommerceQualifierEntryTable =
-				_commerceQualifierHelper.getAliasCommerceQualifierEntryTable(
-					sourceCommerceQualifierMetadata.getKey(), allowedTargetKey);
-
-			joinStep = joinStep.leftJoinOn(
-				aliasCommerceQualifierEntryTable,
-				_getPredicate(
-					aliasCommerceQualifierEntryTable.sourceClassNameId,
-					sourceCommerceQualifierMetadata.getModelClassName(),
-					aliasCommerceQualifierEntryTable.sourceClassPK,
-					sourceCommerceQualifierMetadata.getPrimaryKeyColumn(),
-					aliasCommerceQualifierEntryTable.targetClassNameId,
-					aliasCommerceQualifierEntryTable.
-						targetCommerceQualifierMetadataKey,
-					allowedTargetKey));
-
-			Predicate targetPredicate = _getTargetPredicate(
-				aliasCommerceQualifierEntryTable.commerceQualifierEntryId,
-				aliasCommerceQualifierEntryTable.targetClassPK,
-				targetAttributes.get(allowedTargetKey));
-
-			if (subpredicate == null) {
-				subpredicate = targetPredicate;
-			}
-			else {
-				subpredicate = subpredicate.and(targetPredicate);
-			}
-		}
-
-		return joinStep.where(predicate.and(subpredicate.withParentheses()));
-	}
-
-	private GroupByStep _getGroupByStep(
 		long companyId, FromStep fromStep, Table innerJoinTable,
 		Predicate innerJoinPredicate, boolean target, String className1,
 		Long classPK1, String className2, String keywords,
@@ -505,65 +351,6 @@ public class CommerceQualifierEntryLocalServiceImpl
 			));
 	}
 
-	private Predicate _getPredicate(
-		Column<CommerceQualifierEntryTable, Long> sourceClassNameIdColumn,
-		String sourceClassName,
-		Column<CommerceQualifierEntryTable, Long> sourceClassPKColumn,
-		Column<?, Long> sourceCommerceQualifierPrimaryColumn,
-		Column<CommerceQualifierEntryTable, Long> targetClassNameIdColumn,
-		Column<CommerceQualifierEntryTable, String>
-			targetCommerceQualifierMetadataKeyColumn,
-		String targetCommerceQualifierMetadataKey) {
-
-		CommerceQualifierMetadata targetCommerceQualifierMetadata =
-			_commerceQualifierMetadataRegistry.getCommerceQualifierMetadata(
-				targetCommerceQualifierMetadataKey);
-
-		return targetClassNameIdColumn.eq(
-			_classNameLocalService.getClassNameId(
-				targetCommerceQualifierMetadata.getModelClassName())
-		).and(
-			targetCommerceQualifierMetadataKeyColumn.eq(
-				targetCommerceQualifierMetadataKey)
-		).and(
-			sourceClassNameIdColumn.eq(
-				_classNameLocalService.getClassNameId(sourceClassName))
-		).and(
-			sourceClassPKColumn.eq(sourceCommerceQualifierPrimaryColumn)
-		);
-	}
-
-	private Predicate _getTargetPredicate(
-		Column<?, Long> primaryKeyColumn, Column<?, Long> classPKColumn,
-		Object value) {
-
-		if (value == null) {
-			return primaryKeyColumn.isNull();
-		}
-
-		Class<?> clazz = value.getClass();
-
-		if (clazz.isArray()) {
-			Long[] longValueArray = (Long[])value;
-
-			if (longValueArray.length == 0) {
-				longValueArray = new Long[] {0L};
-			}
-
-			return classPKColumn.in(
-				longValueArray
-			).or(
-				primaryKeyColumn.isNull()
-			).withParentheses();
-		}
-
-		return classPKColumn.eq(
-			(Long)value
-		).or(
-			primaryKeyColumn.isNull()
-		).withParentheses();
-	}
-
 	private void _reindexSource(long sourceClassNameId, long sourceClassPK)
 		throws PortalException {
 
@@ -584,9 +371,6 @@ public class CommerceQualifierEntryLocalServiceImpl
 
 	@Reference
 	private ClassNameLocalService _classNameLocalService;
-
-	@Reference
-	private CommerceQualifierHelper _commerceQualifierHelper;
 
 	@Reference
 	private CommerceQualifierMetadataRegistry
