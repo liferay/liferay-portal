@@ -128,7 +128,10 @@ public class SearchBarPortletDisplayContextFactory {
 			SearchScope.THIS_SITE.getParameterString());
 		searchBarPortletDisplayContext.setDestinationFriendlyURL(destination);
 		searchBarPortletDisplayContext.setDisplayStyleGroupId(
-			getDisplayStyleGroupId(themeDisplay));
+			DisplayContextHelperUtil.getDisplayStyleGroupId(
+				_searchBarPortletInstanceConfiguration.
+					displayStyleGroupExternalReferenceCode(),
+				themeDisplay));
 
 		SearchResponse searchResponse =
 			portletSharedSearchResponse.getFederatedSearchResponse(
@@ -240,13 +243,6 @@ public class SearchBarPortletDisplayContextFactory {
 
 		return _layoutLocalService.fetchLayoutByFriendlyURL(
 			groupId, true, friendlyURL);
-	}
-
-	protected long getDisplayStyleGroupId(ThemeDisplay themeDisplay) {
-		return DisplayContextHelperUtil.getDisplayStyleGroupId(
-			_searchBarPortletInstanceConfiguration.
-				displayStyleGroupExternalReferenceCode(),
-			themeDisplay);
 	}
 
 	protected HttpServletRequest getHttpServletRequest(
