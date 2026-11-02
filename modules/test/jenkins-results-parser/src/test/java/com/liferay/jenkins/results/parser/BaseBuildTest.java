@@ -71,6 +71,22 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 	}
 
 	@Test
+	public void testGetInvocationURL() throws Exception {
+		_testGetInvocationURL(new HashMap<String, String>());
+
+		Map<String, String> parameters = new HashMap<>();
+
+		parameters.put("PORTAL BUILD NOTES", "encoded name");
+		parameters.put("PORTAL_BATCH_TEST_SELECTOR", "PortalSmoke#Smoke");
+		parameters.put("PORTAL_BUILD_NOTES", "100% pass");
+		parameters.put("PORTAL_QUERY", "a=b");
+		parameters.put("PORTAL_UPSTREAM", "a+b");
+		parameters.put("TESTRAY_PROJECT_NAME", "AWS & CI");
+
+		_testGetInvocationURL(parameters);
+	}
+
+	@Test
 	public void testLoadParametersFromQueryString() {
 		Map<String, String> parameters = _loadParametersFromQueryString(
 			JenkinsResultsParserUtil.combine(
@@ -195,6 +211,62 @@ public class BaseBuildTest extends com.liferay.jenkins.results.parser.Test {
 		).getDisplayName();
 
 		return baseDownstreamBuild;
+	}
+
+	private void _testGetInvocationURL(Map<String, String> parameters)
+		throws Exception {
+
+		BaseBuild baseBuild = Mockito.mock(BaseBuild.class);
+
+		ReflectionTestUtil.setFieldValue(
+			baseBuild, "_parameters", new HashMap<String, String>());
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).getInvocationURL();
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).loadParametersFromQueryString(
+			Mockito.anyString()
+		);
+
+		Mockito.doCallRealMethod(
+		).when(
+			baseBuild
+		).setJobName(
+			Mockito.anyString()
+		);
+
+		Mockito.when(
+			baseBuild.getJobURL()
+		).thenReturn(
+			JenkinsResultsParserUtil.combine(
+				"https://test-1.liferay.com/job/",
+				"test-portal-acceptance-pullrequest%28master%29")
+		);
+
+		Mockito.when(
+			baseBuild.getParameters()
+		).thenReturn(
+			parameters
+		);
+
+		Method method = BaseBuild.class.getDeclaredMethod(
+			"_setInvocationURL", String.class);
+
+		method.setAccessible(true);
+
+		method.invoke(baseBuild, baseBuild.getInvocationURL());
+
+		Assert.assertEquals(
+			"test-portal-acceptance-pullrequest(master)",
+			ReflectionTestUtil.getFieldValue(baseBuild, "_jobName"));
+		Assert.assertEquals(
+			parameters,
+			ReflectionTestUtil.getFieldValue(baseBuild, "_parameters"));
 	}
 
 	private void _testSaveBuildURLInBuildDatabase(

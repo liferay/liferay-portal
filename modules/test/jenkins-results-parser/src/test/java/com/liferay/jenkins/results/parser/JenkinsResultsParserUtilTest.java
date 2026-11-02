@@ -377,6 +377,34 @@ public class JenkinsResultsParserUtilTest
 	}
 
 	@Test
+	public void testGetMostAvailableMasterURL() throws Exception {
+		Properties buildProperties = new Properties();
+
+		buildProperties.setProperty(
+			"jenkins.load.balancer.url", "http://test-1-0/load_balancer");
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		mockURLReaders();
+
+		JSONObject jsonObject = new JSONObject();
+
+		jsonObject.put("mostAvailableMasterURL", "http://test-1-2");
+
+		setURLReaderOutput(
+			jsonObject.toString(),
+			JenkinsResultsParserUtil.combine(
+				"?baseInvocationURL=http%3A%2F%2Ftest-1%3Fa%3D1%26b%3D2",
+				"&blacklist=test-1-1%2Ctest-1-3&invokedJobBatchSize=2",
+				"&jobName=test%25job"));
+
+		testEquals(
+			"http://test-1-2",
+			JenkinsResultsParserUtil.getMostAvailableMasterURL(
+				"http://test-1?a=1&b=2", "test-1-1,test-1-3", 2, "test%job"));
+	}
+
+	@Test
 	public void testGetProperty() {
 		Properties properties = new Properties();
 
