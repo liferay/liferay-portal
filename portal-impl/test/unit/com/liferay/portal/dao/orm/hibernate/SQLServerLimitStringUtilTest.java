@@ -73,6 +73,21 @@ public class SQLServerLimitStringUtilTest {
 	}
 
 	@Test
+	public void testOrderByWithTextCast() throws Exception {
+		String sql = SQLServerLimitStringUtil.getLimitString(
+			StringBundler.concat(
+				"select DDMStructure.* from DDMStructure where ",
+				"DDMStructure.companyId = ? order by CAST(DDMStructure.name ",
+				"AS NVARCHAR(MAX)) ASC"),
+			20, 40);
+
+		Assert.assertTrue(
+			sql.contains(
+				"order by CAST(DDMStructure.name AS NVARCHAR(MAX)) ASC"));
+		Assert.assertTrue(sql.contains("select top 40 DDMStructure.*"));
+	}
+
+	@Test
 	public void testUnionWithFieldsQuery() throws Exception {
 		String sql = SQLServerLimitStringUtil.getLimitString(
 			"( SELECT articleId, userName FROM JournalArticle ) UNION ALL ( " +

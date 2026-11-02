@@ -78,6 +78,8 @@ public class InventoryAnalysisResourceTest
 	public void testGetInventoryAnalysis() throws Exception {
 		_setUpCMSContext();
 
+		_testGetInventoryAnalysisWithLongTitle();
+
 		InventoryAnalysis inventoryAnalysis =
 			inventoryAnalysisResource.getInventoryAnalysis(
 				null, _depotEntry.getDepotEntryId(), null, null, null, null,
@@ -338,6 +340,34 @@ public class InventoryAnalysisResourceTest
 
 					return inventoryAnalysis.getTotalCount();
 				}));
+	}
+
+	private void _testGetInventoryAnalysisWithLongTitle() throws Exception {
+		String label = _webContentDefinition.getLabel();
+
+		String title = RandomTestUtil.randomString(4100);
+
+		_webContentDefinition.setLabel(title, LocaleUtil.getDefault());
+
+		_webContentDefinition =
+			_objectDefinitionLocalService.updateObjectDefinition(
+				_webContentDefinition);
+
+		try {
+			_assertInventoryAnalysis(
+				inventoryAnalysisResource.getInventoryAnalysis(
+					null, _depotEntry.getDepotEntryId(), null, null, null, null,
+					null, _webContentDefinition.getObjectDefinitionId(), null,
+					null, null),
+				1, 3, title);
+		}
+		finally {
+			_webContentDefinition.setLabel(label);
+
+			_webContentDefinition =
+				_objectDefinitionLocalService.updateObjectDefinition(
+					_webContentDefinition);
+		}
 	}
 
 	@DeleteAfterTestRun

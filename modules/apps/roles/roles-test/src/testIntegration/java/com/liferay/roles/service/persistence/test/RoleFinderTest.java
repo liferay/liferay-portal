@@ -25,6 +25,8 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -119,6 +121,24 @@ public class RoleFinderTest {
 		}
 	}
 
+	@Test
+	public void testFindByGroupRoleAndTeamRole() throws Exception {
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		String title = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		_role.setTitle(title, LocaleUtil.getDefault());
+
+		_role = _roleLocalService.updateRole(_role);
+
+		List<Role> roles = _roleFinder.findByGroupRoleAndTeamRole(
+			TestPropsValues.getCompanyId(), null, null, title, null, _TYPES,
+			null, 0, 0, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(roles.toString(), 1, roles.size());
+		Assert.assertEquals(_role, roles.get(0));
+	}
+
 	private List<String> _getExistingRoleNames() throws Exception {
 		return TransformUtil.transform(
 			_roleLocalService.getRoles(TestPropsValues.getCompanyId(), _TYPES),
@@ -129,6 +149,9 @@ public class RoleFinderTest {
 
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@DeleteAfterTestRun
+	private Role _role;
 
 	@Inject
 	private RoleFinder _roleFinder;

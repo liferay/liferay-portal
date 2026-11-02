@@ -219,6 +219,26 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 	}
 
 	@Test
+	public void testGetStructuresOrderByName() throws Exception {
+		_ddmStructures.add(
+			addStructure(
+				_classNameId,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())));
+		_ddmStructures.add(
+			addStructure(
+				_classNameId,
+				StringUtil.toLowerCase(RandomTestUtil.randomString())));
+
+		_ddmStructures.add(
+			addStructure(
+				_classNameId,
+				StringUtil.toLowerCase(RandomTestUtil.randomString(4100))));
+
+		_testGetStructuresOrderByName(false);
+		_testGetStructuresOrderByName(true);
+	}
+
+	@Test
 	@Transactional
 	public void testGetStructuresWithSiteAdminPermission() throws Throwable {
 		DDMStructure structure1 = addStructure(
@@ -358,6 +378,25 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 			QueryUtil.ALL_POS, null);
 
 		Assert.assertEquals(ddmStructures.toString(), 3, ddmStructures.size());
+	}
+
+	@Test
+	public void testSearchByName() throws Exception {
+		String name = StringUtil.toLowerCase(RandomTestUtil.randomString(4100));
+
+		DDMStructure ddmStructure = addStructure(_classNameId, name);
+
+		_ddmStructures.add(ddmStructure);
+
+		List<DDMStructure> ddmStructures = _ddmStructureService.search(
+			TestPropsValues.getCompanyId(), new long[] {group.getGroupId()},
+			_classNameId, name.substring(0, 10), null,
+			StorageType.DEFAULT.getValue(), DDMStructureConstants.TYPE_DEFAULT,
+			WorkflowConstants.STATUS_ANY, true, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
+
+		Assert.assertEquals(ddmStructures.toString(), 1, ddmStructures.size());
+		Assert.assertEquals(ddmStructure, ddmStructures.get(0));
 	}
 
 	@Test
@@ -577,6 +616,29 @@ public class DDMStructureServiceTest extends BaseDDMServiceTestCase {
 			structure.getStructureKey(), structure.getNameMap(),
 			structure.getDescriptionMap(), structure.getDefinition(),
 			ServiceContextTestUtil.getServiceContext(structure.getGroupId()));
+	}
+
+	private void _testGetStructuresOrderByName(boolean ascending)
+		throws Exception {
+
+		StructureNameComparator structureNameComparator =
+			new StructureNameComparator(ascending);
+
+		_ddmStructures.sort(structureNameComparator);
+
+		long[] groupIds = {group.getGroupId()};
+
+		List<DDMStructure> ddmStructures = new ArrayList<>(
+			_ddmStructureService.getStructures(
+				TestPropsValues.getCompanyId(), groupIds, _classNameId, 0, 2,
+				structureNameComparator));
+
+		ddmStructures.addAll(
+			_ddmStructureService.getStructures(
+				TestPropsValues.getCompanyId(), groupIds, _classNameId, 2, 4,
+				structureNameComparator));
+
+		Assert.assertEquals(_ddmStructures, ddmStructures);
 	}
 
 	private void _testSearchOrderByName(boolean ascending) throws Exception {
