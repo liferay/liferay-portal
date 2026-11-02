@@ -8,6 +8,8 @@ package com.liferay.jenkins.results.parser;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,12 +45,10 @@ public abstract class BaseWorkspace implements Workspace {
 		Map<String, WorkspaceGitRepository> workspaceGitRepositories =
 			new HashMap<>();
 
-		String workspaceRepositoryDirNames = jsonObject.getString(
-			"workspace_repository_dir_names");
+		List<String> workspaceRepositoryDirNames =
+			getWorkspaceRepositoryDirNames();
 
-		if (JenkinsResultsParserUtil.isNullOrEmpty(
-				workspaceRepositoryDirNames)) {
-
+		if (workspaceRepositoryDirNames.isEmpty()) {
 			_workspaceGitRepositories = workspaceGitRepositories;
 
 			return new ArrayList<>(workspaceGitRepositories.values());
@@ -57,7 +57,7 @@ public abstract class BaseWorkspace implements Workspace {
 		List<Callable<WorkspaceGitRepository>> callables = new ArrayList<>();
 
 		for (final String workspaceRepositoryDirName :
-				workspaceRepositoryDirNames.split(",")) {
+				workspaceRepositoryDirNames) {
 
 			Callable<WorkspaceGitRepository> callable =
 				new Callable<WorkspaceGitRepository>() {
@@ -65,7 +65,7 @@ public abstract class BaseWorkspace implements Workspace {
 					@Override
 					public WorkspaceGitRepository call() {
 						return GitRepositoryFactory.getWorkspaceGitRepository(
-							workspaceRepositoryDirName.trim());
+							workspaceRepositoryDirName);
 					}
 
 				};
@@ -271,13 +271,10 @@ public abstract class BaseWorkspace implements Workspace {
 
 		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
 
-		String workspaceRepositoryDirNames = jsonObject.getString(
-			"workspace_repository_dir_names");
-
 		_workspaceGitRepositories = new HashMap<>();
 
 		for (final String workspaceRepositoryDirName :
-				workspaceRepositoryDirNames.split("\\s*,\\s*")) {
+				getWorkspaceRepositoryDirNames()) {
 
 			try {
 				_workspaceGitRepositories.put(
@@ -336,6 +333,28 @@ public abstract class BaseWorkspace implements Workspace {
 		_validateKeys();
 	}
 
+	protected List<String> getWorkspaceRepositoryDirNames() {
+		if (_workspaceRepositoryDirNames != null) {
+			return _workspaceRepositoryDirNames;
+		}
+
+		String workspaceRepositoryDirNames = jsonObject.optString(
+			"workspace_repository_dir_names");
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(
+				workspaceRepositoryDirNames)) {
+
+			return Collections.emptyList();
+		}
+
+		workspaceRepositoryDirNames = workspaceRepositoryDirNames.trim();
+
+		_workspaceRepositoryDirNames = Collections.unmodifiableList(
+			Arrays.asList(workspaceRepositoryDirNames.split("\\s*,\\s*")));
+
+		return _workspaceRepositoryDirNames;
+	}
+
 	protected void updateBuildDatabase() {
 		BuildDatabase buildDatabase = BuildDatabaseUtil.getBuildDatabase();
 
@@ -364,5 +383,6 @@ public abstract class BaseWorkspace implements Workspace {
 	private ParallelExecutor<Object> _parallelExecutor;
 	private final WorkspaceGitRepository _primaryWorkspaceGitRepository;
 	private Map<String, WorkspaceGitRepository> _workspaceGitRepositories;
+	private List<String> _workspaceRepositoryDirNames;
 
 }

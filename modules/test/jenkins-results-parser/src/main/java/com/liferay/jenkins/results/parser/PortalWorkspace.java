@@ -10,7 +10,6 @@ import java.io.IOException;
 
 import java.nio.file.PathMatcher;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -580,7 +579,7 @@ public class PortalWorkspace extends BaseWorkspace {
 			repositoryName, upstreamBranchName);
 
 		List<String> workspaceRepositoryDirNames =
-			_getWorkspaceRepositoryDirNames();
+			getWorkspaceRepositoryDirNames();
 
 		if (!workspaceRepositoryDirNames.contains(gitDirectoryName)) {
 			return null;
@@ -606,15 +605,6 @@ public class PortalWorkspace extends BaseWorkspace {
 			workspaceGitRepository.getUpstreamBranchName(), "_",
 			workspaceGitRepository.getBaseBranchSHAShort(), "_",
 			workspaceGitRepository.getSenderBranchSHAShort());
-	}
-
-	private List<String> _getWorkspaceRepositoryDirNames() {
-		return Arrays.asList(
-			jsonObject.optString(
-				"workspace_repository_dir_names"
-			).split(
-				"\\s*,\\s*"
-			));
 	}
 
 	private void _setBasePortalWorkspaceGitRepository() {
