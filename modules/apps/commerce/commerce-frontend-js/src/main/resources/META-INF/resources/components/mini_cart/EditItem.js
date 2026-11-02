@@ -130,12 +130,12 @@ function EditItem() {
 		(refreshDataSet = false) => {
 			setEditedItem(null);
 
-			setSkuOptionsAtomState((skuOptionsAtomState) => ({
+			setSkuOptionsAtomState({
 				...skuOptionsAtomState,
 				miniCartErrors: [],
 				miniCartSkuOptions: [],
 				updating: false,
-			}));
+			});
 
 			if (editedItem?.dataSetId) {
 				if (refreshDataSet) {
@@ -147,7 +147,13 @@ function EditItem() {
 				closeCart();
 			}
 		},
-		[closeCart, editedItem, setEditedItem, setSkuOptionsAtomState]
+		[
+			closeCart,
+			editedItem,
+			setEditedItem,
+			setSkuOptionsAtomState,
+			skuOptionsAtomState,
+		]
 	);
 
 	const handleSave = useCallback(
@@ -166,15 +172,17 @@ function EditItem() {
 				if (didCPInstanceChange) {
 					await CartResource.deleteItemById(editedItem.id);
 
-					await CartResource.createItemByCartId(
-						cartId,
-						formatCartItem(
+					await CartResource.createItemByCartId(cartId, {
+						...formatCartItem(
 							cpInstance,
 							MINI_CART_NAMESPACE,
 							skuOptionsAtomState.miniCartSkuOptions,
 							MINI_CART_NAMESPACE
-						)
-					);
+						),
+						deliveryGroupName: editedItem.deliveryGroupName,
+						requestedDeliveryDate: editedItem.requestedDeliveryDate,
+						shippingAddressId: editedItem.shippingAddressId,
+					});
 				}
 				else {
 					const item = {...editedItem};
