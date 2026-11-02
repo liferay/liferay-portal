@@ -77,6 +77,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -471,7 +472,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		Map<Long, List<Long>>
 			cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds =
-				new HashMap<>();
+				new LinkedHashMap<>();
 
 		for (int i = 0; i < skuOptionJSONArray.length(); i++) {
 			JSONObject skuOptionJSONObject = skuOptionJSONArray.getJSONObject(
@@ -534,7 +535,7 @@ public class CPDefinitionOptionRelLocalServiceImpl
 
 		Map<Long, List<Long>>
 			cpDefinitionOptionRelIdCPDefinitionOptionValueRelIds =
-				new HashMap<>();
+				new LinkedHashMap<>();
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
