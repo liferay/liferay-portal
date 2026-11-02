@@ -216,15 +216,6 @@ public class OAuthClientPRLocalMetadataLocalServiceImpl
 	}
 
 	@Override
-	public OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata(
-			long companyId, String localWellKnownURI)
-		throws PortalException {
-
-		return oAuthClientPRLocalMetadataPersistence.findByC_LWKURI(
-			companyId, localWellKnownURI);
-	}
-
-	@Override
 	public int getOAuthClientPRLocalMetadatasCount(long companyId) {
 		return oAuthClientPRLocalMetadataPersistence.countByCompanyId(
 			companyId);

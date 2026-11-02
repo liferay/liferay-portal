@@ -19,7 +19,6 @@ import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -179,18 +178,6 @@ public class OAuth2ApplicationScopeAliasesLocalServiceImpl
 
 		return fetchOAuth2ApplicationScopeAliases(
 			oAuth2ApplicationScopeAliasesId);
-	}
-
-	@Override
-	public List<OAuth2ApplicationScopeAliases>
-		getOAuth2ApplicationScopeAliaseses(
-			long oAuth2ApplicationId, int start, int end,
-			OrderByComparator<OAuth2ApplicationScopeAliases>
-				orderByComparator) {
-
-		return oAuth2ApplicationScopeAliasesPersistence.
-			findByOAuth2ApplicationId(
-				oAuth2ApplicationId, start, end, orderByComparator);
 	}
 
 	@Override
