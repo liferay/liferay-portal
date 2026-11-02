@@ -86,8 +86,6 @@ public class PortalHibernateConfiguration
 
 		Properties properties = PropsUtil.getProperties();
 
-		properties.remove("hibernate.cache.region.factory_class");
-
 		properties.setProperty(
 			"hibernate.allow_update_outside_transaction", "true");
 		properties.setProperty("hibernate.cache.use_query_cache", "false");
