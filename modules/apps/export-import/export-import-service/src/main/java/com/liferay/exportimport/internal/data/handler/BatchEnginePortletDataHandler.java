@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.staging.StagingGroupHelper;
+import com.liferay.style.book.constants.StyleBookPortletKeys;
 
 import jakarta.portlet.PortletPreferences;
 
@@ -375,8 +376,16 @@ public class BatchEnginePortletDataHandler extends BasePortletDataHandler {
 
 	@Override
 	public boolean isStaged() {
-		return !StringUtil.startsWith(
-			getPortletId(), ObjectPortletKeys.OBJECT_DEFINITIONS);
+		String portletId = getPortletId();
+
+		if (StringUtil.startsWith(
+				portletId, ObjectPortletKeys.OBJECT_DEFINITIONS) ||
+			StringUtil.equals(portletId, StyleBookPortletKeys.STYLE_BOOK)) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	public void registerExportImportVulcanBatchEngineTaskItemDelegate(
