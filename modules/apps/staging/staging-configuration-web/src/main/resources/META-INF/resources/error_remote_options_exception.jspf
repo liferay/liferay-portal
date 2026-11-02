@@ -13,6 +13,17 @@
 
 	<c:if test="<%= roe.getType() == RemoteOptionsException.REMOTE_ADDRESS %>">
 		<liferay-ui:message arguments="<%= roe.getRemoteAddress() %>" key="the-remote-address-x-is-not-valid" translateArguments="<%= false %>" />
+
+		<c:if test="<%= liveGroup.isStaged() && liveGroup.isStagedRemotely() %>">
+			<c:choose>
+				<c:when test="<%= layout.isTypeControlPanel() %>">
+					<liferay-ui:message arguments='<%= "javascript:" + liferayPortletResponse.getNamespace() + "saveGroup(true);" %>' key="you-can-also-forcibly-disable-remote-staging" />
+				</c:when>
+				<c:otherwise>
+					<liferay-ui:message key="if-everything-is-configured-correctly,-but-you-still-encounter-this-error,-the-administrator-has-the-option-to-forcibly-disable-remote-staging" />
+				</c:otherwise>
+			</c:choose>
+		</c:if>
 	</c:if>
 
 	<c:if test="<%= roe.getType() == RemoteOptionsException.REMOTE_GROUP_ID %>">
