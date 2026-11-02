@@ -9,12 +9,7 @@ import com.liferay.json.storage.constants.JSONStorageEntryConstants;
 import com.liferay.json.storage.model.JSONStorageEntry;
 import com.liferay.json.storage.model.JSONStorageEntryTable;
 import com.liferay.json.storage.service.base.JSONStorageEntryLocalServiceBaseImpl;
-import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
-import com.liferay.petra.sql.dsl.expression.Predicate;
-import com.liferay.petra.sql.dsl.query.FromStep;
-import com.liferay.petra.sql.dsl.query.JoinStep;
-import com.liferay.petra.sql.dsl.query.OrderByStep;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
@@ -24,7 +19,6 @@ import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONSerializable;
 import com.liferay.portal.kernel.json.JSONSerializer;
-import com.liferay.portal.kernel.util.ArrayUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,51 +76,6 @@ public class JSONStorageEntryLocalServiceImpl
 			).limit(
 				start, end
 			));
-	}
-
-	@Override
-	public List<Long> getClassPKs(
-		long companyId, long classNameId, Object[] pathParts, Object value,
-		int start, int end) {
-
-		OrderByStep orderByStep = _getOrderByStep(
-			DSLQueryFactoryUtil.selectDistinct(
-				JSONStorageEntryTable.INSTANCE.classPK),
-			companyId, classNameId, pathParts, value);
-
-		return jsonStorageEntryPersistence.dslQuery(
-			orderByStep.orderBy(
-				JSONStorageEntryTable.INSTANCE.classPK.ascending()
-			).limit(
-				start, end
-			));
-	}
-
-	@Override
-	public int getClassPKsCount(long companyId, long classNameId) {
-		return jsonStorageEntryPersistence.dslQueryCount(
-			DSLQueryFactoryUtil.countDistinct(
-				JSONStorageEntryTable.INSTANCE.classPK
-			).from(
-				JSONStorageEntryTable.INSTANCE
-			).where(
-				JSONStorageEntryTable.INSTANCE.companyId.eq(
-					companyId
-				).and(
-					JSONStorageEntryTable.INSTANCE.classNameId.eq(classNameId)
-				)
-			));
-	}
-
-	@Override
-	public int getClassPKsCount(
-		long companyId, long classNameId, Object[] pathParts, Object value) {
-
-		return jsonStorageEntryPersistence.dslQueryCount(
-			_getOrderByStep(
-				DSLQueryFactoryUtil.countDistinct(
-					JSONStorageEntryTable.INSTANCE.classPK),
-				companyId, classNameId, pathParts, value));
 	}
 
 	@Override
@@ -246,124 +195,6 @@ public class JSONStorageEntryLocalServiceImpl
 
 		return map.get(
 			JSONStorageEntryConstants.PARENT_JSON_STORAGE_ENTRY_ID_DEFAULT);
-	}
-
-	private OrderByStep _getOrderByStep(
-		FromStep fromStep, long companyId, long classNameId, Object[] pathParts,
-		Object value) {
-
-		JoinStep joinStep = fromStep.from(JSONStorageEntryTable.INSTANCE);
-
-		Predicate predicate = JSONStorageEntryTable.INSTANCE.companyId.eq(
-			companyId
-		).and(
-			JSONStorageEntryTable.INSTANCE.classNameId.eq(classNameId)
-		);
-
-		Long valueLong = null;
-
-		if (value instanceof Integer || value instanceof Long) {
-			Number number = (Number)value;
-
-			valueLong = number.longValue();
-		}
-		else {
-			valueLong = _parseLong(value);
-		}
-
-		if (valueLong != null) {
-			predicate = predicate.and(
-				JSONStorageEntryTable.INSTANCE.type.in(
-					new Integer[] {
-						JSONStorageEntryConstants.TYPE_VALUE_LONG,
-						JSONStorageEntryConstants.TYPE_VALUE_LONG_QUOTED
-					})
-			).and(
-				JSONStorageEntryTable.INSTANCE.valueLong.eq(valueLong)
-			);
-		}
-		else if (value == null) {
-			predicate = predicate.and(
-				JSONStorageEntryTable.INSTANCE.type.eq(
-					JSONStorageEntryConstants.TYPE_NULL));
-		}
-		else {
-			JSONSerializer jsonSerializer = _jsonFactory.createJSONSerializer();
-
-			predicate = predicate.and(
-				JSONStorageEntryTable.INSTANCE.type.eq(
-					JSONStorageEntryConstants.TYPE_VALUE_STRING)
-			).and(
-				DSLFunctionFactoryUtil.castClobText(
-					JSONStorageEntryTable.INSTANCE.valueString
-				).eq(
-					jsonSerializer.serialize(value)
-				)
-			);
-		}
-
-		if (ArrayUtil.isEmpty(pathParts)) {
-			return joinStep.where(predicate);
-		}
-
-		Object pathPart = pathParts[pathParts.length - 1];
-
-		if (pathPart instanceof String) {
-			predicate = predicate.and(
-				JSONStorageEntryTable.INSTANCE.key.eq((String)pathPart));
-		}
-		else if (pathPart instanceof Integer) {
-			predicate = predicate.and(
-				JSONStorageEntryTable.INSTANCE.index.eq((Integer)pathPart));
-		}
-
-		JSONStorageEntryTable previousJSONStorageEntryTable =
-			JSONStorageEntryTable.INSTANCE;
-
-		Object previousPathPart = pathPart;
-
-		for (int i = pathParts.length - 2; i >= 0; i--) {
-			JSONStorageEntryTable aliasJSONStorageEntryTable =
-				JSONStorageEntryTable.INSTANCE.as(
-					"aliasJSONStorageEntryTable" + i);
-
-			joinStep = joinStep.innerJoinON(
-				aliasJSONStorageEntryTable,
-				aliasJSONStorageEntryTable.jsonStorageEntryId.eq(
-					previousJSONStorageEntryTable.parentJSONStorageEntryId));
-
-			pathPart = pathParts[i];
-
-			if (pathPart instanceof String) {
-				String key = (String)pathPart;
-
-				predicate = predicate.and(
-					aliasJSONStorageEntryTable.key.eq(key));
-			}
-			else if (pathPart instanceof Integer) {
-				Integer index = (Integer)pathPart;
-
-				predicate = predicate.and(
-					aliasJSONStorageEntryTable.index.eq(index));
-			}
-
-			if (previousPathPart instanceof String) {
-				predicate = predicate.and(
-					aliasJSONStorageEntryTable.type.eq(
-						JSONStorageEntryConstants.TYPE_OBJECT));
-			}
-			else if (previousPathPart instanceof Integer) {
-				predicate = predicate.and(
-					aliasJSONStorageEntryTable.type.eq(
-						JSONStorageEntryConstants.TYPE_ARRAY));
-			}
-
-			previousJSONStorageEntryTable = aliasJSONStorageEntryTable;
-
-			previousPathPart = pathPart;
-		}
-
-		return joinStep.where(predicate);
 	}
 
 	private Long _parseLong(Object object) {

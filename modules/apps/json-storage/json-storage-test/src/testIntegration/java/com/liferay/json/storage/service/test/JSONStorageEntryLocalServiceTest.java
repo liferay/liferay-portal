@@ -9,16 +9,11 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.json.storage.model.JSONStorageEntryTable;
 import com.liferay.json.storage.service.JSONStorageEntryLocalService;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -129,54 +124,6 @@ public class JSONStorageEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetClassPKsCount() {
-		_jsonStorageEntryLocalService.addJSONStorageEntries(
-			_COMPANY_ID, _CLASS_NAME_ID, _CLASS_PK_1,
-			"{\"object\": {\"array\": [1, 2],\"key 1\": \"value 1 a\", \"key " +
-				"2\": \"value 2\"}}");
-		_jsonStorageEntryLocalService.addJSONStorageEntries(
-			_COMPANY_ID, _CLASS_NAME_ID, _CLASS_PK_2, "[2,3,4]");
-		_jsonStorageEntryLocalService.addJSONStorageEntries(
-			_COMPANY_ID, _CLASS_NAME_ID, _CLASS_PK_3,
-			"{\"object\": {\"array\": [], \"key 1\": \"value 1 b\", \"key " +
-				"2\": \"value 2\"}}");
-
-		_assertClassPKs(
-			Collections.emptyList(), new Object[] {"object"}, "value 1 a");
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_1),
-			new Object[] {"object", "key 1"}, "value 1 a");
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_1), new Object[] {null, null},
-			"value 1 a");
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_1),
-			new Object[] {"object", null}, "value 1 a");
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_1),
-			new Object[] {null, "key 1"}, "value 1 a");
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_1),
-			new Object[] {"array", null}, 2);
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_2), new Object[] {0}, 2);
-		_assertClassPKs(Arrays.asList(_CLASS_PK_1, _CLASS_PK_2), null, 2);
-		_assertClassPKs(
-			Arrays.asList(_CLASS_PK_1, _CLASS_PK_3),
-			new Object[] {"object", "key 2"}, "value 2");
-
-		Assert.assertEquals(
-			Arrays.asList(_CLASS_PK_1, _CLASS_PK_2, _CLASS_PK_3),
-			_jsonStorageEntryLocalService.getClassPKs(
-				_COMPANY_ID, _CLASS_NAME_ID, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
-		Assert.assertEquals(
-			3,
-			_jsonStorageEntryLocalService.getClassPKsCount(
-				_COMPANY_ID, _CLASS_NAME_ID));
-	}
-
-	@Test
 	public void testGetMissing() {
 		Assert.assertNull(
 			_jsonStorageEntryLocalService.getJSONArray(
@@ -211,9 +158,6 @@ public class JSONStorageEntryLocalServiceTest {
 
 		_jsonStorageEntryLocalService.updateJSONStorageEntries(
 			_COMPANY_ID, _CLASS_NAME_ID, _CLASS_PK_1, json);
-
-		_assertClassPKs(
-			Collections.singletonList(_CLASS_PK_1), new Object[] {"key"}, null);
 
 		JSONObject jsonObject = _jsonStorageEntryLocalService.getJSONObject(
 			_CLASS_NAME_ID, _CLASS_PK_1);
@@ -452,20 +396,6 @@ public class JSONStorageEntryLocalServiceTest {
 			json,
 			_jsonStorageEntryLocalService.getJSON(_CLASS_NAME_ID, _CLASS_PK_1),
 			true);
-	}
-
-	private void _assertClassPKs(
-		List<Long> expectedValues, Object[] pathParts, Object value) {
-
-		Assert.assertEquals(
-			expectedValues,
-			_jsonStorageEntryLocalService.getClassPKs(
-				_COMPANY_ID, _CLASS_NAME_ID, pathParts, value,
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS));
-		Assert.assertEquals(
-			expectedValues.size(),
-			_jsonStorageEntryLocalService.getClassPKsCount(
-				_COMPANY_ID, _CLASS_NAME_ID, pathParts, value));
 	}
 
 	private void _assertJSONStoreEntryCount(long classPK, int expectedCount) {
