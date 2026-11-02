@@ -288,18 +288,6 @@ public class AnnouncementsEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<AnnouncementsEntry> getUserEntries(
-		long userId, int start, int end) {
-
-		return announcementsEntryPersistence.findByUserId(userId, start, end);
-	}
-
-	@Override
-	public int getUserEntriesCount(long userId) {
-		return announcementsEntryPersistence.countByUserId(userId);
-	}
-
-	@Override
 	public AnnouncementsEntry updateEntry(
 			long entryId, String title, String content, String url, String type,
 			Date displayDate, Date expirationDate, int priority)

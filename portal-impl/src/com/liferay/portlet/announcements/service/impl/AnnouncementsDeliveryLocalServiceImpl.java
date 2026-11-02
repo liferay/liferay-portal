@@ -90,23 +90,6 @@ public class AnnouncementsDeliveryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteDelivery(long userId, String type) {
-		AnnouncementsDelivery delivery =
-			announcementsDeliveryPersistence.fetchByU_T(userId, type);
-
-		if (delivery != null) {
-			deleteDelivery(delivery);
-		}
-	}
-
-	@Override
-	public AnnouncementsDelivery getDelivery(long deliveryId)
-		throws PortalException {
-
-		return announcementsDeliveryPersistence.findByPrimaryKey(deliveryId);
-	}
-
-	@Override
 	public List<AnnouncementsDelivery> getUserDeliveries(long userId)
 		throws PortalException {
 
