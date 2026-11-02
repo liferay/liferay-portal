@@ -205,7 +205,7 @@ public class SocialRelationLocalServiceTest {
 				user2.getUserId(), SocialRelationConstants.TYPE_UNI_PARENT));
 		Assert.assertEquals(
 			0,
-			SocialRelationLocalServiceUtil.getRelationsCount(
+			SocialRelationLocalServiceUtil.getInverseRelationsCount(
 				user2.getUserId(), SocialRelationConstants.TYPE_BI_FRIEND));
 
 		UserLocalServiceUtil.deleteUser(user2);

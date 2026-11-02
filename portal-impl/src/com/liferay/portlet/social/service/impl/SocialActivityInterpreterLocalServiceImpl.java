@@ -31,9 +31,7 @@ import com.liferay.social.kernel.service.persistence.SocialActivityPersistence;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -116,19 +114,6 @@ public class SocialActivityInterpreterLocalServiceImpl
 		super.destroy();
 
 		_serviceTrackerMap.close();
-	}
-
-	@Override
-	public Map<String, List<SocialActivityInterpreter>>
-		getActivityInterpreters() {
-
-		Map<String, List<SocialActivityInterpreter>> map = new HashMap<>();
-
-		for (String selector : _serviceTrackerMap.keySet()) {
-			map.put(selector, _serviceTrackerMap.getService(selector));
-		}
-
-		return map;
 	}
 
 	@Override

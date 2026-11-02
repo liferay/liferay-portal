@@ -14,8 +14,6 @@ import com.liferay.social.kernel.model.SocialAchievement;
 import com.liferay.social.kernel.model.SocialActivityAchievement;
 import com.liferay.social.kernel.service.SocialActivityCounterLocalService;
 
-import java.util.List;
-
 /**
  * @author Zsolt Berentey
  * @author Brian Wing Shun Chan
@@ -69,30 +67,6 @@ public class SocialActivityAchievementLocalServiceImpl
 
 		return socialActivityAchievementPersistence.fetchByG_U_N(
 			groupId, userId, name);
-	}
-
-	@Override
-	public List<SocialActivityAchievement> getGroupAchievements(
-		long groupId, String name) {
-
-		return socialActivityAchievementPersistence.findByG_N(groupId, name);
-	}
-
-	@Override
-	public int getGroupAchievementsCount(long groupId, String name) {
-		return socialActivityAchievementPersistence.countByG_N(groupId, name);
-	}
-
-	@Override
-	public List<SocialActivityAchievement> getUserAchievements(
-		long userId, long groupId) {
-
-		return socialActivityAchievementPersistence.findByG_U(groupId, userId);
-	}
-
-	@Override
-	public int getUserAchievementsCount(long userId, long groupId) {
-		return socialActivityAchievementPersistence.countByG_U(groupId, userId);
 	}
 
 	@BeanReference(type = SocialActivityCounterLocalService.class)

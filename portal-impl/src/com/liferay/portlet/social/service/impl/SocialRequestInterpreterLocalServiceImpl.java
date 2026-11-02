@@ -19,7 +19,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portlet.social.service.base.SocialRequestInterpreterLocalServiceBaseImpl;
 import com.liferay.social.kernel.model.SocialRequest;
-import com.liferay.social.kernel.model.SocialRequestFeedEntry;
 import com.liferay.social.kernel.model.SocialRequestInterpreter;
 import com.liferay.social.kernel.model.impl.SocialRequestInterpreterImpl;
 
@@ -58,52 +57,6 @@ public class SocialRequestInterpreterLocalServiceImpl
 					_bundleContext, SocialRequestInterpreter.class,
 					"(jakarta.portlet.name=*)",
 					new SocialRequestInterpreterServiceTrackerCustomizer());
-	}
-
-	/**
-	 * Creates a human readable request feed entry for the social request using
-	 * an available compatible request interpreter.
-	 *
-	 * <p>
-	 * This method finds the appropriate interpreter for the request by going
-	 * through the available interpreters to find one that can handle the asset
-	 * type of the request.
-	 * </p>
-	 *
-	 * @param  request the social request to be translated to human readable
-	 *         form
-	 * @param  themeDisplay the theme display needed by interpreters to create
-	 *         links and get localized text fragments
-	 * @return the social request feed entry
-	 */
-	@Override
-	public SocialRequestFeedEntry interpret(
-		SocialRequest request, ThemeDisplay themeDisplay) {
-
-		String className = PortalUtil.getClassName(request.getClassNameId());
-
-		for (SocialRequestInterpreter requestInterpreter :
-				_serviceTrackerList) {
-
-			SocialRequestInterpreterImpl socialRequestInterpreterImpl =
-				(SocialRequestInterpreterImpl)requestInterpreter;
-
-			if (!matches(socialRequestInterpreterImpl, className, request)) {
-				continue;
-			}
-
-			SocialRequestFeedEntry requestFeedEntry =
-				socialRequestInterpreterImpl.interpret(request, themeDisplay);
-
-			if (requestFeedEntry != null) {
-				requestFeedEntry.setPortletId(
-					socialRequestInterpreterImpl.getPortletId());
-
-				return requestFeedEntry;
-			}
-		}
-
-		return null;
 	}
 
 	/**

@@ -100,11 +100,6 @@ public class SocialActivitySettingLocalServiceImpl
 	}
 
 	@Override
-	public List<SocialActivitySetting> getActivitySettings(long groupId) {
-		return socialActivitySettingPersistence.findByG_A(groupId, 0);
-	}
-
-	@Override
 	public boolean isEnabled(long groupId, long classNameId) {
 		SocialActivitySetting activitySetting =
 			socialActivitySettingPersistence.fetchByG_C_A_N(

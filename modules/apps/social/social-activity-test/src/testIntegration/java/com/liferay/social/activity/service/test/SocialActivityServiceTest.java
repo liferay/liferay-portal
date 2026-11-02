@@ -192,9 +192,13 @@ public class SocialActivityServiceTest {
 			RandomTestUtil.randomString() + ".txt", _group.getGroupId(),
 			RandomTestUtil.randomString());
 
+		List<SocialActivity> userActivities =
+			SocialActivityLocalServiceUtil.getUserActivities(
+				TestPropsValues.getUserId(), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
 		Assert.assertEquals(
-			SocialActivityLocalServiceUtil.getUserActivitiesCount(
-				TestPropsValues.getUserId()),
+			userActivities.size(),
 			SocialActivityServiceUtil.getUserActivitiesCount(
 				TestPropsValues.getUserId()));
 

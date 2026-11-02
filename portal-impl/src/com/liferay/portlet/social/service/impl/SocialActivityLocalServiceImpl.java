@@ -600,17 +600,6 @@ public class SocialActivityLocalServiceImpl
 		return count.intValue();
 	}
 
-	@Override
-	public int getActivitiesCount(
-		long userId, long groupId, Date createDate, String className,
-		long classPK, int type, long receiverUserId) {
-
-		return socialActivityPersistence.countByG_U_CD_C_C_T_R(
-			groupId, userId, createDate.getTime(),
-			_classNameLocalService.getClassNameId(className), classPK, type,
-			receiverUserId);
-	}
-
 	/**
 	 * Returns the number of activities done on the asset identified by the
 	 * class name ID and class primary key that are mirrors of the activity
@@ -816,20 +805,6 @@ public class SocialActivityLocalServiceImpl
 	}
 
 	/**
-	 * Returns the activity that has the mirror activity.
-	 *
-	 * @param  mirrorActivityId the primary key of the mirror activity
-	 * @return Returns the mirror activity
-	 */
-	@Override
-	public SocialActivity getMirrorActivity(long mirrorActivityId)
-		throws PortalException {
-
-		return socialActivityPersistence.findByMirrorActivityId(
-			mirrorActivityId);
-	}
-
-	/**
 	 * Returns a range of all the activities done in the organization. This
 	 * method only finds activities without mirrors.
 	 *
@@ -1006,17 +981,6 @@ public class SocialActivityLocalServiceImpl
 		long userId, int start, int end) {
 
 		return socialActivityPersistence.findByUserId(userId, start, end);
-	}
-
-	/**
-	 * Returns the number of activities done by the user.
-	 *
-	 * @param  userId the primary key of the user
-	 * @return the number of matching activities
-	 */
-	@Override
-	public int getUserActivitiesCount(long userId) {
-		return socialActivityPersistence.countByUserId(userId);
 	}
 
 	/**

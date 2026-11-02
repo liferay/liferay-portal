@@ -513,48 +513,6 @@ public class SocialActivityCounterLocalServiceImpl
 	}
 
 	/**
-	 * Returns the activity counter with the given name, owner, and end period
-	 * that belong to the given entity.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the entity's class
-	 * @param  classPK the primary key of the entity
-	 * @param  name the counter name
-	 * @param  ownerType the owner type
-	 * @param  endPeriod the end period, <code>-1</code> for the latest one
-	 * @return the matching activity counter
-	 */
-	@Override
-	public SocialActivityCounter fetchActivityCounterByEndPeriod(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int endPeriod) {
-
-		return socialActivityCounterPersistence.fetchByG_C_C_N_O_E(
-			groupId, classNameId, classPK, name, ownerType, endPeriod);
-	}
-
-	/**
-	 * Returns the activity counter with the given name, owner, and start period
-	 * that belong to the given entity.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the entity's class
-	 * @param  classPK the primary key of the entity
-	 * @param  name the counter name
-	 * @param  ownerType the owner type
-	 * @param  startPeriod the start period
-	 * @return the matching activity counter
-	 */
-	@Override
-	public SocialActivityCounter fetchActivityCounterByStartPeriod(
-		long groupId, long classNameId, long classPK, String name,
-		int ownerType, int startPeriod) {
-
-		return socialActivityCounterPersistence.fetchByG_C_C_N_O_S(
-			groupId, classNameId, classPK, name, ownerType, startPeriod);
-	}
-
-	/**
 	 * Returns the latest activity counter with the given name and owner that
 	 * belong to the given entity.
 	 *

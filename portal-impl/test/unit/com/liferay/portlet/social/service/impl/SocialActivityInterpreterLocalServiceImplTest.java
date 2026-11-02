@@ -12,7 +12,6 @@ import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.social.kernel.model.SocialActivityInterpreter;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 import org.junit.AfterClass;
@@ -68,27 +67,6 @@ public class SocialActivityInterpreterLocalServiceImplTest {
 	@AfterClass
 	public static void tearDownClass() {
 		_serviceRegistration.unregister();
-	}
-
-	@Test
-	public void testGetActivityInterpreters() {
-		Map<String, List<SocialActivityInterpreter>> activityInterpreters =
-			_socialActivityInterpreterLocalServiceImpl.
-				getActivityInterpreters();
-
-		List<SocialActivityInterpreter> socialActivityInterpreters =
-			activityInterpreters.get(_SELECTOR);
-
-		Assert.assertEquals(
-			socialActivityInterpreters.toString(), 1,
-			socialActivityInterpreters.size());
-
-		SocialActivityInterpreter socialActivityInterpreter =
-			socialActivityInterpreters.get(0);
-
-		Assert.assertSame(_SELECTOR, socialActivityInterpreter.getSelector());
-		Assert.assertSame(
-			_CLASS_NAMES, socialActivityInterpreter.getClassNames());
 	}
 
 	@Test
