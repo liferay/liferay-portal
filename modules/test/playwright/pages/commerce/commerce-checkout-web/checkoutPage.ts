@@ -59,6 +59,7 @@ export class CheckoutPage extends CommerceDNDTablePage {
 	readonly orderConfirmationContainer: Locator;
 	readonly orderItemsTabLink: Locator;
 	readonly orderItemsTableLocator: Locator;
+	readonly orderNotCompletedMessage: Locator;
 	readonly orderSuccessMessage: Locator;
 	readonly noDefaultBillingAddressError: Locator;
 	readonly orderSummaryDelivery: Locator;
@@ -189,6 +190,9 @@ export class CheckoutPage extends CommerceDNDTablePage {
 		);
 		this.orderConfirmationContainer = page.locator(
 			'.commerce-checkout-confirmation'
+		);
+		this.orderNotCompletedMessage = page.getByText(
+			'Your order has been processed but not completed yet.'
 		);
 		this.orderSuccessMessage = page.getByText(
 			'Success! Your order has been processed.'

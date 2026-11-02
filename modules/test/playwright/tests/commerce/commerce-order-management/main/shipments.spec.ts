@@ -903,7 +903,7 @@ test(
 			await checkoutPage.continueButton.click();
 			await checkoutPage.continueButton.click();
 
-			await expect(checkoutPage.orderSuccessMessage).toBeVisible();
+			await expect(checkoutPage.orderNotCompletedMessage).toBeVisible();
 
 			await performLoginViaApi({page, screenName: 'test'});
 
