@@ -16,8 +16,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -107,28 +105,6 @@ public class MBSuspiciousActivityLocalServiceImpl
 		throws PortalException {
 
 		return mbSuspiciousActivityPersistence.remove(suspiciousActivityId);
-	}
-
-	@Override
-	public List<MBSuspiciousActivity> getMessageSuspiciousActivities(
-		long messageId) {
-
-		return mbSuspiciousActivityPersistence.findByMessageId(messageId);
-	}
-
-	@Override
-	public MBSuspiciousActivity getSuspiciousActivity(long suspiciousActivityId)
-		throws PortalException {
-
-		return mbSuspiciousActivityPersistence.findByPrimaryKey(
-			suspiciousActivityId);
-	}
-
-	@Override
-	public List<MBSuspiciousActivity> getThreadSuspiciousActivities(
-		long threadId) {
-
-		return mbSuspiciousActivityPersistence.findByThreadId(threadId);
 	}
 
 	@Override

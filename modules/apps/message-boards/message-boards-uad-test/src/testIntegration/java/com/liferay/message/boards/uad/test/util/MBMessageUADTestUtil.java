@@ -11,6 +11,7 @@ import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBCategoryLocalService;
 import com.liferay.message.boards.service.MBMessageLocalService;
+import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -49,7 +50,7 @@ public class MBMessageUADTestUtil {
 			long mbCategoryId)
 		throws Exception {
 
-		return mbMessageLocalService.addMessage(
+		return MBTestUtil.addMessage(
 			userId, RandomTestUtil.randomString(), TestPropsValues.getGroupId(),
 			mbCategoryId, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),

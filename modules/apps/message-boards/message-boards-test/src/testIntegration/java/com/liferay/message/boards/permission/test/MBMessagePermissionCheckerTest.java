@@ -11,7 +11,7 @@ import com.liferay.message.boards.constants.MBConstants;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBCategoryLocalServiceUtil;
-import com.liferay.message.boards.service.MBMessageLocalServiceUtil;
+import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -67,7 +67,7 @@ public class MBMessagePermissionCheckerTest extends BasePermissionTestCase {
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), TestPropsValues.getUserId());
 
-		_message = MBMessageLocalServiceUtil.addMessage(
+		_message = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			group.getGroupId(), MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -78,7 +78,7 @@ public class MBMessagePermissionCheckerTest extends BasePermissionTestCase {
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			RandomTestUtil.randomString(), StringPool.BLANK, serviceContext);
 
-		_submessage = MBMessageLocalServiceUtil.addMessage(
+		_submessage = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			group.getGroupId(), category.getCategoryId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

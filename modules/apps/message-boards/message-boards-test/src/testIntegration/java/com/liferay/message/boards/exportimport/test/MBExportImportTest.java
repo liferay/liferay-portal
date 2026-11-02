@@ -14,6 +14,7 @@ import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.service.MBMessageLocalServiceUtil;
 import com.liferay.message.boards.service.MBThreadLocalServiceUtil;
+import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -66,7 +67,7 @@ public class MBExportImportTest extends BasePortletExportImportTestCase {
 
 	@Test
 	public void testExportImportThreadsDeletions() throws Exception {
-		MBMessage message = MBMessageLocalServiceUtil.addMessage(
+		MBMessage message = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			group.getGroupId(), MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -115,7 +116,7 @@ public class MBExportImportTest extends BasePortletExportImportTestCase {
 			ServiceContextTestUtil.getServiceContext(
 				groupId, TestPropsValues.getUserId());
 
-		return MBMessageLocalServiceUtil.addMessage(
+		return MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(), groupId,
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
@@ -134,7 +135,7 @@ public class MBExportImportTest extends BasePortletExportImportTestCase {
 		serviceContext.setCreateDate(createdDate);
 		serviceContext.setModifiedDate(createdDate);
 
-		return MBMessageLocalServiceUtil.addMessage(
+		return MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(), groupId,
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

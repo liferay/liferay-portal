@@ -113,16 +113,6 @@ public class MBMailingListLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCategoryMailingList(long groupId, long categoryId)
-		throws PortalException {
-
-		MBMailingList mailingList = mbMailingListPersistence.findByG_C(
-			groupId, categoryId);
-
-		deleteMailingList(mailingList);
-	}
-
-	@Override
 	public void deleteMailingList(long mailingListId) throws PortalException {
 		MBMailingList mailingList = mbMailingListPersistence.findByPrimaryKey(
 			mailingListId);
@@ -145,13 +135,6 @@ public class MBMailingListLocalServiceImpl
 		long groupId, long categoryId) {
 
 		return mbMailingListPersistence.fetchByG_C(groupId, categoryId);
-	}
-
-	@Override
-	public MBMailingList getCategoryMailingList(long groupId, long categoryId)
-		throws PortalException {
-
-		return mbMailingListPersistence.findByG_C(groupId, categoryId);
 	}
 
 	@Override

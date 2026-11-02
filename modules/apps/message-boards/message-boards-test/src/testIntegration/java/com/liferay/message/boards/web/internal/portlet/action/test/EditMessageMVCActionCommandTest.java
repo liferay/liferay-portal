@@ -202,7 +202,7 @@ public class EditMessageMVCActionCommandTest {
 			SessionErrors.isEmpty(mockLiferayPortletActionRequest));
 
 		List<MBMessage> groupMessages = _mbMessageLocalService.getGroupMessages(
-			group.getGroupId(), WorkflowConstants.STATUS_ANY, 0, 1);
+			group.getGroupId(), WorkflowConstants.STATUS_ANY, 0, 1, null);
 
 		Assert.assertEquals(groupMessages.toString(), 1, groupMessages.size());
 

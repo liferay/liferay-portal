@@ -314,7 +314,7 @@ public class MBAttachmentsTest {
 			addCategory();
 		}
 
-		_message = MBMessageLocalServiceUtil.addMessage(
+		_message = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			_category.getGroupId(), _category.getCategoryId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

@@ -203,7 +203,7 @@ public class MBMessageLocalServiceTest {
 		User user = TestPropsValues.getUser();
 		String subject = StringUtil.randomString();
 
-		MBMessage mbMessage = MBMessageLocalServiceUtil.addMessage(
+		MBMessage mbMessage = MBTestUtil.addMessage(
 			user.getUserId(), user.getFullName(), TestPropsValues.getGroupId(),
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, subject,
 			StringPool.BLANK, ServiceContextTestUtil.getServiceContext());
@@ -252,7 +252,7 @@ public class MBMessageLocalServiceTest {
 		User user = TestPropsValues.getUser();
 		String subject = StringUtil.randomString();
 
-		MBMessage mbMessage = MBMessageLocalServiceUtil.addMessage(
+		MBMessage mbMessage = MBTestUtil.addMessage(
 			user.getUserId(), user.getFullName(), TestPropsValues.getGroupId(),
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, subject, null,
 			ServiceContextTestUtil.getServiceContext());
@@ -266,7 +266,7 @@ public class MBMessageLocalServiceTest {
 		String subject = StringUtil.randomString();
 		String body = StringPool.SPACE;
 
-		MBMessage mbMessage = MBMessageLocalServiceUtil.addMessage(
+		MBMessage mbMessage = MBTestUtil.addMessage(
 			user.getUserId(), user.getFullName(), TestPropsValues.getGroupId(),
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, subject, body,
 			ServiceContextTestUtil.getServiceContext());
@@ -278,7 +278,7 @@ public class MBMessageLocalServiceTest {
 	public void testAddMessageWithoutExternalReferenceCode() throws Exception {
 		User user = TestPropsValues.getUser();
 
-		MBMessage mbMessage1 = MBMessageLocalServiceUtil.addMessage(
+		MBMessage mbMessage1 = MBTestUtil.addMessage(
 			user.getUserId(), user.getFullName(), _group.getGroupId(),
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

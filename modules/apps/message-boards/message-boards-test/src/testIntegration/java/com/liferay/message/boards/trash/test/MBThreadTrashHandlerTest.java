@@ -260,7 +260,7 @@ public class MBThreadTrashHandlerTest
 			ServiceContext serviceContext)
 		throws Exception {
 
-		MBMessage message = MBMessageLocalServiceUtil.addMessage(
+		MBMessage message = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			serviceContext.getScopeGroupId(),
 			MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
@@ -303,7 +303,7 @@ public class MBThreadTrashHandlerTest
 
 		MBCategory category = (MBCategory)parentBaseModel;
 
-		return MBThreadLocalServiceUtil.getCategoryThreadsCount(
+		return MBThreadLocalServiceUtil.getThreadsCount(
 			category.getGroupId(), category.getCategoryId(),
 			WorkflowConstants.STATUS_APPROVED);
 	}

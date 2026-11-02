@@ -18,8 +18,8 @@ import com.liferay.message.boards.model.MBThread;
 import com.liferay.message.boards.service.MBBanLocalServiceUtil;
 import com.liferay.message.boards.service.MBCategoryLocalServiceUtil;
 import com.liferay.message.boards.service.MBCategoryServiceUtil;
-import com.liferay.message.boards.service.MBMessageLocalServiceUtil;
 import com.liferay.message.boards.service.MBThreadFlagLocalServiceUtil;
+import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -119,7 +119,7 @@ public class MBPortletDataHandlerTest extends BasePortletDataHandlerTestCase {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_PUBLISH);
 
-		MBMessage message = MBMessageLocalServiceUtil.addMessage(
+		MBMessage message = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			stagingGroup.getGroupId(), category.getCategoryId(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),

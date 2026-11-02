@@ -51,7 +51,7 @@ public class MBSubscriptionRootContainerModelTest
 		MBTestUtil.populateNotificationsServiceContext(
 			serviceContext, Constants.ADD);
 
-		MBMessage message = MBMessageLocalServiceUtil.addMessage(
+		MBMessage message = MBTestUtil.addMessage(
 			userId, RandomTestUtil.randomString(), group.getGroupId(),
 			containerModelId, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);

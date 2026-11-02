@@ -10,16 +10,13 @@ import com.liferay.message.boards.constants.MBCategoryConstants;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.constants.MBThreadConstants;
 import com.liferay.message.boards.exception.DuplicateMBCategoryExternalReferenceCodeException;
-import com.liferay.message.boards.exception.NoSuchCategoryException;
 import com.liferay.message.boards.model.MBCategory;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBCategoryLocalService;
 import com.liferay.message.boards.service.MBMessageLocalService;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -34,7 +31,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.io.InputStream;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -91,24 +87,6 @@ public class MBCategoryLocalServiceTest {
 				externalReferenceCode, _group.getGroupId());
 
 		Assert.assertEquals(category1, category2);
-	}
-
-	@Test(expected = NoSuchCategoryException.class)
-	public void testDeleteCategoryByExternalReferenceCode() throws Exception {
-		String externalReferenceCode = RandomTestUtil.randomString();
-
-		MBCategory category = addCategory(externalReferenceCode);
-
-		Assert.assertNotNull(category);
-
-		Assert.assertEquals(
-			externalReferenceCode, category.getExternalReferenceCode());
-
-		_mbCategoryLocalService.deleteCategoryByExternalReferenceCode(
-			externalReferenceCode, _group.getGroupId());
-
-		_mbCategoryLocalService.getMBCategoryByExternalReferenceCode(
-			externalReferenceCode, _group.getGroupId());
 	}
 
 	@Test
@@ -310,252 +288,6 @@ public class MBCategoryLocalServiceTest {
 			priorityMessage.getThread(), categoriesAndThreads.get(1));
 		Assert.assertEquals(message1.getThread(), categoriesAndThreads.get(2));
 		Assert.assertEquals(message2.getThread(), categoriesAndThreads.get(3));
-	}
-
-	@Test
-	public void testGetCategoriesCountWithExcludedCategories()
-		throws Exception {
-
-		addCategory();
-
-		MBCategory excludedCategory1 = addCategory();
-		MBCategory excludedCategory2 = addCategory();
-
-		Assert.assertEquals(
-			3,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_ANY));
-		Assert.assertEquals(
-			1,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(),
-				new long[] {
-					excludedCategory1.getCategoryId(),
-					excludedCategory2.getCategoryId()
-				},
-				new long[] {MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID},
-				WorkflowConstants.STATUS_ANY));
-	}
-
-	@Test
-	public void testGetCategoriesCountWithExcludedCategory() throws Exception {
-		addCategory();
-		addCategory();
-
-		MBCategory excludedCategory = addCategory();
-
-		Assert.assertEquals(
-			3,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_ANY));
-		Assert.assertEquals(
-			2,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(), excludedCategory.getCategoryId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_ANY));
-	}
-
-	@Test
-	public void testGetCategoriesCountWithStatusApprovedAndExcludedCategories()
-		throws Exception {
-
-		addCategory();
-
-		MBCategory excludedCategory1 = addCategory();
-		MBCategory excludedCategory2 = addCategory();
-
-		MBCategory draftCategory = addCategory();
-
-		_mbCategoryLocalService.updateStatus(
-			draftCategory.getUserId(), draftCategory.getCategoryId(),
-			WorkflowConstants.STATUS_DRAFT);
-
-		Assert.assertEquals(
-			3,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_APPROVED));
-		Assert.assertEquals(
-			1,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(),
-				new long[] {
-					excludedCategory1.getCategoryId(),
-					excludedCategory2.getCategoryId()
-				},
-				new long[] {MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID},
-				WorkflowConstants.STATUS_APPROVED));
-	}
-
-	@Test
-	public void testGetCategoriesCountWithStatusApprovedAndExcludedCategory()
-		throws Exception {
-
-		addCategory();
-
-		MBCategory excludedCategory = addCategory();
-
-		MBCategory draftCategory = addCategory();
-
-		_mbCategoryLocalService.updateStatus(
-			draftCategory.getUserId(), draftCategory.getCategoryId(),
-			WorkflowConstants.STATUS_DRAFT);
-
-		Assert.assertEquals(
-			2,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_APPROVED));
-		Assert.assertEquals(
-			1,
-			_mbCategoryLocalService.getCategoriesCount(
-				_group.getGroupId(), excludedCategory.getCategoryId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_APPROVED));
-	}
-
-	@Test
-	public void testGetCategoriesWithExcludedCategories() throws Exception {
-		List<MBCategory> expectedCategories = new ArrayList<>();
-
-		expectedCategories.add(addCategory());
-
-		MBCategory excludedCategory1 = addCategory();
-
-		expectedCategories.add(excludedCategory1);
-
-		MBCategory excludedCategory2 = addCategory();
-
-		expectedCategories.add(excludedCategory2);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(_group.getGroupId()));
-
-		expectedCategories.remove(excludedCategory1);
-		expectedCategories.remove(excludedCategory2);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(
-				_group.getGroupId(),
-				new long[] {
-					excludedCategory1.getCategoryId(),
-					excludedCategory2.getCategoryId()
-				},
-				new long[] {MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID},
-				WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
-	}
-
-	@Test
-	public void testGetCategoriesWithExcludedCategory() throws Exception {
-		List<MBCategory> expectedCategories = new ArrayList<>();
-
-		expectedCategories.add(addCategory());
-		expectedCategories.add(addCategory());
-
-		MBCategory excludedCategory = addCategory();
-
-		expectedCategories.add(excludedCategory);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(_group.getGroupId()));
-
-		expectedCategories.remove(excludedCategory);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(
-				_group.getGroupId(), excludedCategory.getCategoryId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_ANY, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
-	}
-
-	@Test
-	public void testGetCategoriesWithStatusApprovedAndExcludedCategories()
-		throws Exception {
-
-		List<MBCategory> expectedCategories = new ArrayList<>();
-
-		expectedCategories.add(addCategory());
-
-		MBCategory excludedCategory1 = addCategory();
-
-		expectedCategories.add(excludedCategory1);
-
-		MBCategory excludedCategory2 = addCategory();
-
-		expectedCategories.add(excludedCategory2);
-
-		MBCategory draftCategory = addCategory();
-
-		_mbCategoryLocalService.updateStatus(
-			draftCategory.getUserId(), draftCategory.getCategoryId(),
-			WorkflowConstants.STATUS_DRAFT);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(
-				_group.getGroupId(), WorkflowConstants.STATUS_APPROVED));
-
-		expectedCategories.remove(excludedCategory1);
-		expectedCategories.remove(excludedCategory2);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(
-				_group.getGroupId(),
-				new long[] {
-					excludedCategory1.getCategoryId(),
-					excludedCategory2.getCategoryId()
-				},
-				new long[] {MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID},
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
-	}
-
-	@Test
-	public void testGetCategoriesWithStatusApprovedAndExcludedCategory()
-		throws Exception {
-
-		List<MBCategory> expectedCategories = new ArrayList<>();
-
-		expectedCategories.add(addCategory());
-
-		MBCategory excludedCategory = addCategory();
-
-		expectedCategories.add(excludedCategory);
-
-		MBCategory draftCategory = addCategory();
-
-		_mbCategoryLocalService.updateStatus(
-			draftCategory.getUserId(), draftCategory.getCategoryId(),
-			WorkflowConstants.STATUS_DRAFT);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(
-				_group.getGroupId(), WorkflowConstants.STATUS_APPROVED));
-
-		expectedCategories.remove(excludedCategory);
-
-		AssertUtils.assertEquals(
-			expectedCategories,
-			_mbCategoryLocalService.getCategories(
-				_group.getGroupId(), excludedCategory.getCategoryId(),
-				MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS));
 	}
 
 	@Test

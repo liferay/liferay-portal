@@ -6,6 +6,7 @@
 package com.liferay.message.boards.test.util;
 
 import com.liferay.message.boards.constants.MBCategoryConstants;
+import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.service.MBMessageLocalServiceUtil;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -23,6 +24,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,7 +38,7 @@ public class MBTestUtil {
 			String body, ServiceContext serviceContext)
 		throws PortalException {
 
-		return MBMessageLocalServiceUtil.addMessage(
+		return addMessage(
 			userId, RandomTestUtil.randomString(), groupId, categoryId, subject,
 			body, serviceContext);
 	}
@@ -51,6 +53,20 @@ public class MBTestUtil {
 		return addMessage(
 			groupId, userId, MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID,
 			subject, body, serviceContext);
+	}
+
+	public static MBMessage addMessage(
+			long userId, String userName, long groupId, long categoryId,
+			String subject, String body, ServiceContext serviceContext)
+		throws PortalException {
+
+		List<ObjectValuePair<String, InputStream>> inputStreamOVPs =
+			Collections.emptyList();
+
+		return MBMessageLocalServiceUtil.addMessage(
+			userId, userName, groupId, categoryId, 0, 0, subject, body,
+			MBMessageConstants.DEFAULT_FORMAT, inputStreamOVPs, false, 0.0,
+			false, serviceContext);
 	}
 
 	public static MBMessage addMessage(String subject, String body)

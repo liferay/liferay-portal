@@ -316,17 +316,6 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 	}
 
 	@Override
-	public int getCategoryThreadsCount(
-		long groupId, long categoryId, int status) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbThreadPersistence.countByG_C(groupId, categoryId);
-		}
-
-		return mbThreadPersistence.countByG_C_S(groupId, categoryId, status);
-	}
-
-	@Override
 	public int getMessageCount(long threadId, int status) {
 		if (status == WorkflowConstants.STATUS_ANY) {
 			return _mbMessagePersistence.countByThreadId(threadId);
@@ -338,19 +327,6 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 	@Override
 	public MBThread getThread(long threadId) throws PortalException {
 		return mbThreadPersistence.findByPrimaryKey(threadId);
-	}
-
-	@Override
-	public List<MBThread> getThreads(
-		long groupId, long categoryId, int status, int start, int end) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return mbThreadPersistence.findByG_C(
-				groupId, categoryId, start, end);
-		}
-
-		return mbThreadPersistence.findByG_C_S(
-			groupId, categoryId, status, start, end);
 	}
 
 	@Override

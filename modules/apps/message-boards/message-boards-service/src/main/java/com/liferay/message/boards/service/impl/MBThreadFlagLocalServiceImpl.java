@@ -115,24 +115,6 @@ public class MBThreadFlagLocalServiceImpl
 	}
 
 	@Override
-	public MBThreadFlag fetchThreadFlag(long userId, MBThread thread) {
-		User user = _userLocalService.fetchUser(userId);
-
-		if ((user == null) || user.isGuestUser()) {
-			return null;
-		}
-
-		return mbThreadFlagPersistence.fetchByU_T(userId, thread.getThreadId());
-	}
-
-	@Override
-	public MBThreadFlag getThreadFlag(long userId, MBThread thread)
-		throws PortalException {
-
-		return mbThreadFlagPersistence.findByU_T(userId, thread.getThreadId());
-	}
-
-	@Override
 	public boolean hasThreadFlag(long userId, MBThread thread)
 		throws PortalException {
 

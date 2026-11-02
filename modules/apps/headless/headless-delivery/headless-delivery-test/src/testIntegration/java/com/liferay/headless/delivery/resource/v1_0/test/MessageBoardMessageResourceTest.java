@@ -11,7 +11,6 @@ import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.headless.delivery.client.pagination.Pagination;
 import com.liferay.message.boards.model.MBMessage;
 import com.liferay.message.boards.model.MBThread;
-import com.liferay.message.boards.service.MBMessageLocalServiceUtil;
 import com.liferay.message.boards.test.util.MBTestUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
@@ -318,7 +317,7 @@ public class MessageBoardMessageResourceTest
 			testGraphQLMessageBoardMessage_addMessageBoardMessage()
 		throws Exception {
 
-		MBMessage mbMessage = MBMessageLocalServiceUtil.addMessage(
+		MBMessage mbMessage = MBTestUtil.addMessage(
 			TestPropsValues.getUserId(), "test", testGroup.getGroupId(), 0,
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			new ServiceContext());
