@@ -13,8 +13,6 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -86,31 +84,6 @@ public class CommerceShippingOptionAccountEntryRelLocalServiceImpl
 
 		commerceShippingOptionAccountEntryRelPersistence.
 			removeByCommerceChannelId(commerceChannelId);
-	}
-
-	@Override
-	public CommerceShippingOptionAccountEntryRel
-		fetchCommerceShippingOptionAccountEntryRel(
-			long accountEntryId, long commerceChannelId) {
-
-		return commerceShippingOptionAccountEntryRelPersistence.fetchByA_C(
-			accountEntryId, commerceChannelId);
-	}
-
-	@Override
-	public List<CommerceShippingOptionAccountEntryRel>
-		getCommerceShippingOptionAccountEntryRels(long accountEntryId) {
-
-		return commerceShippingOptionAccountEntryRelPersistence.
-			findByAccountEntryId(accountEntryId);
-	}
-
-	@Override
-	public int getCommerceShippingOptionAccountEntryRelsCount(
-		long accountEntryId) {
-
-		return commerceShippingOptionAccountEntryRelPersistence.
-			countByAccountEntryId(accountEntryId);
 	}
 
 	@Override

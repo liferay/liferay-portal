@@ -322,11 +322,6 @@ public class CommerceOrderItemLocalServiceImpl
 		}
 	}
 
-	@Override
-	public int countSubscriptionCommerceOrderItems(long commerceOrderId) {
-		return commerceOrderItemPersistence.countByC_S(commerceOrderId, true);
-	}
-
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	public CommerceOrderItem deleteCommerceOrderItem(

@@ -178,20 +178,6 @@ public class CommerceOrderAttachmentLocalServiceImpl
 			commerceOrderId, start, end, orderByComparator);
 	}
 
-	@Override
-	public int getCommerceOrderAttachmentsCount(long commerceOrderId) {
-		return commerceOrderAttachmentPersistence.countByCommerceOrderId(
-			commerceOrderId);
-	}
-
-	@Override
-	public int getCommerceOrderAttachmentsCount(
-		long commerceOrderId, boolean restricted) {
-
-		return commerceOrderAttachmentPersistence.countByC_R(
-			commerceOrderId, restricted);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceOrderAttachment updateCommerceOrderAttachment(

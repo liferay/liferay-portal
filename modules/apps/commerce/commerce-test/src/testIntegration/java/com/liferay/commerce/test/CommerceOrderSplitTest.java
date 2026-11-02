@@ -738,9 +738,8 @@ public class CommerceOrderSplitTest {
 		commerceOrderItem = commerceOrderItems.get(0);
 
 		List<CommerceShipmentItem> commerceShipmentItems =
-			_commerceShipmentItemLocalService.
-				getCommerceShipmentItemsByCommerceOrderItemId(
-					commerceOrderItem.getCommerceOrderItemId());
+			CommerceTestUtil.getCommerceShipmentItemsByCommerceOrderItemId(
+				commerceOrderItem.getCommerceOrderItemId());
 
 		CommerceShipmentItem commerceShipmentItem = commerceShipmentItems.get(
 			0);

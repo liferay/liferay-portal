@@ -82,15 +82,6 @@ public class CommerceAddressRestrictionLocalServiceImpl
 	}
 
 	@Override
-	public CommerceAddressRestriction fetchCommerceAddressRestriction(
-		String className, long classPK, long countryId) {
-
-		return commerceAddressRestrictionPersistence.fetchByC_C_C(
-			_classNameLocalService.getClassNameId(className), classPK,
-			countryId);
-	}
-
-	@Override
 	public List<CommerceAddressRestriction> getCommerceAddressRestrictions(
 		String className, long classPK, int start, int end,
 		OrderByComparator<CommerceAddressRestriction> orderByComparator) {

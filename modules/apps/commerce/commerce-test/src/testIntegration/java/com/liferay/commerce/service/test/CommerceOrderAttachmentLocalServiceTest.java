@@ -199,9 +199,8 @@ public class CommerceOrderAttachmentLocalServiceTest {
 
 		Assert.assertEquals(
 			0,
-			_commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(
-					_commerceOrder.getCommerceOrderId()));
+			CommerceTestUtil.getCommerceOrderAttachmentsCount(
+				_commerceOrder.getCommerceOrderId()));
 
 		LocalRepository localRepository = _commerceOrder.getLocalRepository();
 
@@ -245,28 +244,6 @@ public class CommerceOrderAttachmentLocalServiceTest {
 		Assert.assertEquals(
 			commerceOrderAttachments.toString(), 1,
 			commerceOrderAttachments.size());
-	}
-
-	@Test
-	public void testGetCommerceOrderAttachmentsCount() throws Exception {
-		_addCommerceOrderAttachment(false);
-		_addCommerceOrderAttachment(true);
-
-		Assert.assertEquals(
-			2,
-			_commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(
-					_commerceOrder.getCommerceOrderId()));
-		Assert.assertEquals(
-			1,
-			_commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(
-					_commerceOrder.getCommerceOrderId(), false));
-		Assert.assertEquals(
-			1,
-			_commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(
-					_commerceOrder.getCommerceOrderId(), true));
 	}
 
 	@Test

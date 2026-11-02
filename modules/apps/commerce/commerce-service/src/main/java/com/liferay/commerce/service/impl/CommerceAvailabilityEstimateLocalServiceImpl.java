@@ -149,12 +149,6 @@ public class CommerceAvailabilityEstimateLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceAvailabilityEstimatesCount(long companyId) {
-		return commerceAvailabilityEstimatePersistence.countByCompanyId(
-			companyId);
-	}
-
-	@Override
 	public CommerceAvailabilityEstimate
 			getOrAddEmptyCommerceAvailabilityEstimate(
 				String externalReferenceCode, long companyId, long userId,

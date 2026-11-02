@@ -265,14 +265,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceSubscriptionEntriesCount(
-		long companyId, long groupId, long userId) {
-
-		return commerceSubscriptionEntryPersistence.countByG_C_U(
-			groupId, companyId, userId);
-	}
-
-	@Override
 	public List<CommerceSubscriptionEntry>
 		getCommerceSubscriptionEntriesToRenew() {
 

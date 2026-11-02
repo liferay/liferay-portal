@@ -104,10 +104,8 @@ public class CommerceOrderAttachmentUpgradeProcessTest {
 				RandomTestUtil.randomString(),
 				new ByteArrayInputStream("Liferay".getBytes()));
 
-		int count =
-			_commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(
-					_commerceOrder.getCommerceOrderId());
+		int count = CommerceTestUtil.getCommerceOrderAttachmentsCount(
+			_commerceOrder.getCommerceOrderId());
 
 		_runUpgrade();
 
@@ -140,9 +138,8 @@ public class CommerceOrderAttachmentUpgradeProcessTest {
 
 		Assert.assertEquals(
 			count + 2,
-			_commerceOrderAttachmentLocalService.
-				getCommerceOrderAttachmentsCount(
-					_commerceOrder.getCommerceOrderId()));
+			CommerceTestUtil.getCommerceOrderAttachmentsCount(
+				_commerceOrder.getCommerceOrderId()));
 	}
 
 	private void _assertCommerceOrderAttachment(

@@ -315,26 +315,9 @@ public class CommerceShipmentItemLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceShipmentItem>
-		getCommerceShipmentItemsByCommerceOrderItemId(
-			long commerceOrderItemId) {
-
-		return commerceShipmentItemPersistence.findByCommerceOrderItemId(
-			commerceOrderItemId);
-	}
-
-	@Override
 	public int getCommerceShipmentItemsCount(long commerceShipmentId) {
 		return commerceShipmentItemPersistence.countByCommerceShipmentId(
 			commerceShipmentId);
-	}
-
-	@Override
-	public int getCommerceShipmentItemsCountByCommerceOrderItemId(
-		long commerceOrderItemId) {
-
-		return commerceShipmentItemPersistence.countByCommerceOrderItemId(
-			commerceOrderItemId);
 	}
 
 	@Override
@@ -343,12 +326,6 @@ public class CommerceShipmentItemLocalServiceImpl
 
 		return commerceShipmentItemFinder.getCommerceShipmentOrderItemsQuantity(
 			commerceShipmentId, commerceOrderItemId);
-	}
-
-	@Override
-	public int getValidCommerceShipmentItemsCount(long commerceShipmentId) {
-		return commerceShipmentItemPersistence.countByC_NotC_GteQ(
-			commerceShipmentId, 0L, BigDecimal.ONE);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
