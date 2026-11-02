@@ -5,8 +5,19 @@
 
 import {Locator, Page} from '@playwright/test';
 
-import getRandomString from '../../../../utils/getRandomString';
 import {waitForAlert} from '../../../../utils/waitForAlert';
+
+export type ConnectorConfiguration = {
+	clientId: string;
+	clientSecret: string;
+	url: string;
+};
+
+const DEFAULT_CONNECTOR_CONFIGURATION: ConnectorConfiguration = {
+	clientId: 'client-id',
+	clientSecret: 'client-secret',
+	url: 'http://localhost:1',
+};
 
 export class EditConnectorPage {
 	readonly activeToggle: Locator;
@@ -36,10 +47,12 @@ export class EditConnectorPage {
 
 	async createConnector({
 		active = false,
+		configuration = DEFAULT_CONNECTOR_CONFIGURATION,
 		connector,
 		name,
 	}: {
 		active?: boolean;
+		configuration?: ConnectorConfiguration;
 		connector: string;
 		name: string;
 	}) {
@@ -47,9 +60,9 @@ export class EditConnectorPage {
 
 		await this.connectorSelect.selectOption({label: connector});
 
-		await this.clientIdInput.fill(getRandomString());
-		await this.clientSecretInput.fill(getRandomString());
-		await this.urlInput.fill(getRandomString());
+		await this.clientIdInput.fill(configuration.clientId);
+		await this.clientSecretInput.fill(configuration.clientSecret);
+		await this.urlInput.fill(configuration.url);
 
 		if (active) {
 			await this.activeToggle.click();

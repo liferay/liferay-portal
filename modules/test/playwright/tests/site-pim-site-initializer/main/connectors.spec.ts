@@ -33,7 +33,7 @@ test.afterEach(async ({apiHelpers}) => {
 });
 
 test(
-	'Open the schedule of a connector',
+	'Execute a connector and open its schedule',
 	{tag: ['@LPD-108228', '@LPD-109731']},
 	async ({connectorSchedulePage, connectorsPage, fieldMappingsPage}) => {
 		const connectorName = getRandomString();
@@ -76,6 +76,10 @@ test(
 			).toHaveText('');
 		});
 
+		await test.step('Execute the connector', async () => {
+			await connectorsPage.executeConnector(connectorName);
+		});
+
 		await test.step('Open the connector schedule', async () => {
 			await connectorsPage.openConnectorSchedule(connectorName);
 
@@ -91,6 +95,70 @@ test(
 				connectorsPage.getConnector(connectorName)
 			).toBeVisible();
 		});
+	}
+);
+
+test(
+	'Execute a connector and log the products JSON',
+	{tag: ['@LPD-108228']},
+	async ({
+		connectorSchedulePage,
+		connectorsPage,
+		fieldMappingsPage,
+		productPage,
+		productsPage,
+	}) => {
+		const connectorName = getRandomString();
+		const productTitle = getRandomString();
+
+		try {
+			await test.step('Add a product', async () => {
+				await productsPage.goto();
+
+				await productsPage.openNewProductEditor();
+
+				await productPage.sku.fill(getRandomString());
+				await productPage.title.fill(productTitle);
+
+				await productPage.save();
+			});
+
+			await test.step('Create an active connector', async () => {
+				await connectorsPage.createConnector({
+					active: true,
+					connector: 'Liferay Commerce',
+					name: connectorName,
+				});
+			});
+
+			await test.step('Map only the required channel fields', async () => {
+				await connectorsPage.getConnector(connectorName).click();
+
+				await fieldMappingsPage.mapRequiredChannelFields();
+			});
+
+			await test.step('Execute the connector from its field mappings', async () => {
+				await fieldMappingsPage.executeConnector();
+			});
+
+			await test.step('The job log holds the requests sent to the remote instance', async () => {
+				await fieldMappingsPage.openConnectorSchedule();
+
+				await connectorSchedulePage.openLatestLog('Failed');
+
+				await expect(connectorSchedulePage.logError).toHaveText(
+					'Unable to connect to the remote instance.'
+				);
+				await expect(connectorSchedulePage.logOutput).toContainText(
+					'http://localhost:1/o/oauth2/token'
+				);
+			});
+		}
+		finally {
+			await productsPage.goto();
+
+			await productsPage.deleteProduct(productTitle);
+		}
 	}
 );
 
