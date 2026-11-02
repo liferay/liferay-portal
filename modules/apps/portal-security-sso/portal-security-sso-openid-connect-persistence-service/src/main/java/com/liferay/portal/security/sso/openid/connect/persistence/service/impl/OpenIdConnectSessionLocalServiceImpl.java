@@ -40,14 +40,6 @@ public class OpenIdConnectSessionLocalServiceImpl
 	}
 
 	@Override
-	public void deleteOpenIdConnectSessions(
-		long companyId, String authServerWellKnownURI, String clientId) {
-
-		openIdConnectSessionPersistence.removeByC_A_C(
-			companyId, authServerWellKnownURI, clientId);
-	}
-
-	@Override
 	public OpenIdConnectSession fetchCurrentOpenIdConnectSession() {
 		ServiceContext serviceContext =
 			ServiceContextThreadLocal.getServiceContext();
