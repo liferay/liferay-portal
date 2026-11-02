@@ -80,7 +80,7 @@ public class DynamicSectionTag extends BaseBodyTagSupport implements BodyTag {
 		}
 
 		List<DynamicSection> dynamicSections =
-			_dynamicSectionServiceTrackerMap.getService(_name);
+			_dynamicSectionsServiceTrackerMap.getService(_name);
 
 		if ((dynamicSections != null) && !dynamicSections.isEmpty()) {
 			_dynamicSections = dynamicSections;
@@ -101,7 +101,7 @@ public class DynamicSectionTag extends BaseBodyTagSupport implements BodyTag {
 	private static final ServiceTrackerMap<String, DynamicSectionReplace>
 		_dynamicSectionReplaceServiceTrackerMap;
 	private static final ServiceTrackerMap<String, List<DynamicSection>>
-		_dynamicSectionServiceTrackerMap;
+		_dynamicSectionsServiceTrackerMap;
 
 	static {
 		Bundle bundle = FrameworkUtil.getBundle(DynamicSectionTag.class);
@@ -109,7 +109,7 @@ public class DynamicSectionTag extends BaseBodyTagSupport implements BodyTag {
 		_dynamicSectionReplaceServiceTrackerMap =
 			ServiceTrackerMapFactory.openSingleValueMap(
 				bundle.getBundleContext(), DynamicSectionReplace.class, "name");
-		_dynamicSectionServiceTrackerMap =
+		_dynamicSectionsServiceTrackerMap =
 			ServiceTrackerMapFactory.openMultiValueMap(
 				bundle.getBundleContext(), DynamicSection.class, "(name=*)",
 				(serviceReference, emitter) -> emitter.emit(
