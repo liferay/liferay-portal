@@ -34,7 +34,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -59,7 +58,6 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -536,25 +534,10 @@ public class CommercePriceEntryLocalServiceImpl
 
 	@Override
 	public List<CommercePriceEntry> getCommercePriceEntries(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceEntry> orderByComparator) {
-
-		return commercePriceEntryPersistence.findByCommercePriceListId(
-			commercePriceListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommercePriceEntry> getCommercePriceEntries(
 		String cpInstanceUuid, BigDecimal quantity, String unitOfMeasureKey) {
 
 		return commercePriceEntryPersistence.findByC_Q_U(
 			cpInstanceUuid, quantity, unitOfMeasureKey);
-	}
-
-	@Override
-	public int getCommercePriceEntriesCount(long commercePriceListId) {
-		return commercePriceEntryPersistence.countByCommercePriceListId(
-			commercePriceListId);
 	}
 
 	@Override
@@ -595,35 +578,6 @@ public class CommercePriceEntryLocalServiceImpl
 		}
 
 		return commercePriceEntries.get(0);
-	}
-
-	@Override
-	public List<CommercePriceEntry> getInstanceCommercePriceEntries(
-		String cpInstanceUuid, int start, int end,
-		OrderByComparator<CommercePriceEntry> orderByComparator) {
-
-		return commercePriceEntryPersistence.findByCPInstanceUuid(
-			cpInstanceUuid, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getInstanceCommercePriceEntriesCount(String cpInstanceUuid) {
-		return commercePriceEntryPersistence.countByCPInstanceUuid(
-			cpInstanceUuid);
-	}
-
-	@Override
-	public Hits search(SearchContext searchContext) {
-		try {
-			Indexer<CommercePriceEntry> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(
-					CommercePriceEntry.class);
-
-			return indexer.search(searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
 	}
 
 	@Override

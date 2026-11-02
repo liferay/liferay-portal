@@ -14,14 +14,29 @@ import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalServic
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 
 import java.math.BigDecimal;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * @author Zoltán Takács
  */
 public class CommerceTierPriceEntryTestUtil {
+
+	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
+			long commercePriceEntryId, BigDecimal price, BigDecimal promoPrice,
+			boolean bulkPricing, BigDecimal minQuantity,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return CommerceTierPriceEntryLocalServiceUtil.addCommerceTierPriceEntry(
+			null, commercePriceEntryId, price, promoPrice, bulkPricing,
+			minQuantity, serviceContext);
+	}
 
 	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
 			long commercePriceEntryId, double minQuantity, double price,
@@ -35,12 +50,28 @@ public class CommerceTierPriceEntryTestUtil {
 		CommercePriceList commercePriceList =
 			commercePriceEntry.getCommercePriceList();
 
-		return CommerceTierPriceEntryLocalServiceUtil.addCommerceTierPriceEntry(
+		return addCommerceTierPriceEntry(
 			externalReferenceCode, commercePriceEntryId,
 			BigDecimal.valueOf(price), BigDecimal.valueOf(promoPrice),
 			BigDecimal.valueOf(minQuantity),
 			ServiceContextTestUtil.getServiceContext(
 				commercePriceList.getGroupId()));
+	}
+
+	public static CommerceTierPriceEntry addCommerceTierPriceEntry(
+			String externalReferenceCode, long commercePriceEntryId,
+			BigDecimal price, BigDecimal promoPrice, BigDecimal minQuantity,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		Calendar now = new GregorianCalendar();
+
+		return CommerceTierPriceEntryLocalServiceUtil.addCommerceTierPriceEntry(
+			externalReferenceCode, commercePriceEntryId, price, promoPrice,
+			minQuantity, true, true, null, null, null, null,
+			now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH),
+			now.get(Calendar.YEAR), now.get(Calendar.HOUR),
+			now.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, serviceContext);
 	}
 
 	public static CommerceTierPriceEntry addOrUpdateCommerceTierPriceEntry(

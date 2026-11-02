@@ -11,6 +11,7 @@ import com.liferay.commerce.price.list.model.CommerceTierPriceEntry;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalServiceUtil;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil;
 import com.liferay.commerce.price.list.service.CommerceTierPriceEntryLocalServiceUtil;
+import com.liferay.commerce.test.util.price.list.CommerceTierPriceEntryTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -111,7 +112,7 @@ public class CommercePriceEntryTestUtil {
 		CommercePriceList commercePriceList =
 			commercePriceEntry.getCommercePriceList();
 
-		return CommerceTierPriceEntryLocalServiceUtil.addCommerceTierPriceEntry(
+		return CommerceTierPriceEntryTestUtil.addCommerceTierPriceEntry(
 			commercePriceEntryId, price, null, bulkPricing, minQuantity,
 			ServiceContextTestUtil.getServiceContext(
 				commercePriceList.getGroupId()));

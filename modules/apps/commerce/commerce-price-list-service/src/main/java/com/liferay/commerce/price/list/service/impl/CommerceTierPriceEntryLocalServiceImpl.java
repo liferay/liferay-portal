@@ -30,7 +30,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -87,29 +86,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class CommerceTierPriceEntryLocalServiceImpl
 	extends CommerceTierPriceEntryLocalServiceBaseImpl {
-
-	@Override
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, BigDecimal price, BigDecimal promoPrice,
-			BigDecimal minQuantity, ServiceContext serviceContext)
-		throws PortalException {
-
-		return commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
-			null, commercePriceEntryId, price, promoPrice, minQuantity,
-			serviceContext);
-	}
-
-	@Override
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			long commercePriceEntryId, BigDecimal price, BigDecimal promoPrice,
-			boolean bulkPricing, BigDecimal minQuantity,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
-			null, commercePriceEntryId, price, promoPrice, bulkPricing,
-			minQuantity, serviceContext);
-	}
 
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
@@ -201,23 +177,6 @@ public class CommerceTierPriceEntryLocalServiceImpl
 		}
 
 		return commerceTierPriceEntry;
-	}
-
-	@Override
-	public CommerceTierPriceEntry addCommerceTierPriceEntry(
-			String externalReferenceCode, long commercePriceEntryId,
-			BigDecimal price, BigDecimal promoPrice, BigDecimal minQuantity,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		Calendar now = new GregorianCalendar();
-
-		return commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
-			externalReferenceCode, commercePriceEntryId, price, promoPrice,
-			minQuantity, true, true, null, null, null, null,
-			now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH),
-			now.get(Calendar.YEAR), now.get(Calendar.HOUR),
-			now.get(Calendar.MINUTE), 0, 0, 0, 0, 0, true, serviceContext);
 	}
 
 	@Override
@@ -543,38 +502,11 @@ public class CommerceTierPriceEntryLocalServiceImpl
 
 	@Override
 	public List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
-		long commercePriceEntryId, int start, int end) {
-
-		return commerceTierPriceEntryPersistence.findByCommercePriceEntryId(
-			commercePriceEntryId, start, end);
-	}
-
-	@Override
-	public List<CommerceTierPriceEntry> getCommerceTierPriceEntries(
 		long commercePriceEntryId, int start, int end,
 		OrderByComparator<CommerceTierPriceEntry> orderByComparator) {
 
 		return commerceTierPriceEntryPersistence.findByCommercePriceEntryId(
 			commercePriceEntryId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceTierPriceEntriesCountByCompanyId(long companyId) {
-		return commerceTierPriceEntryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public Hits search(SearchContext searchContext) {
-		try {
-			Indexer<CommerceTierPriceEntry> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(
-					CommerceTierPriceEntry.class);
-
-			return indexer.search(searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
 	}
 
 	@Override
@@ -588,18 +520,6 @@ public class CommerceTierPriceEntryLocalServiceImpl
 			companyId, commercePriceEntryId, keywords, start, end, sort);
 
 		return _searchCommerceTierPriceEntries(searchContext);
-	}
-
-	@Override
-	public int searchCommerceTierPriceEntriesCount(
-			long companyId, long commercePriceEntryId, String keywords)
-		throws PortalException {
-
-		SearchContext searchContext = _buildSearchContext(
-			companyId, commercePriceEntryId, keywords, QueryUtil.ALL_POS,
-			QueryUtil.ALL_POS, null);
-
-		return _searchCommerceTierPriceEntriesCount(searchContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -982,17 +902,6 @@ public class CommerceTierPriceEntryLocalServiceImpl
 
 		throw new SearchException(
 			"Unable to fix the search index after 10 attempts");
-	}
-
-	private int _searchCommerceTierPriceEntriesCount(
-			SearchContext searchContext)
-		throws PortalException {
-
-		Indexer<CommerceTierPriceEntry> indexer =
-			IndexerRegistryUtil.nullSafeGetIndexer(
-				CommerceTierPriceEntry.class);
-
-		return GetterUtil.getInteger(indexer.searchCount(searchContext));
 	}
 
 	private CommerceTierPriceEntry _startWorkflowInstance(

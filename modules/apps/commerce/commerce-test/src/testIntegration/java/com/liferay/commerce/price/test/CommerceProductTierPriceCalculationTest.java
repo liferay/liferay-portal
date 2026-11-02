@@ -32,6 +32,7 @@ import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.commerce.test.util.context.TestCommerceContext;
+import com.liferay.commerce.test.util.price.list.CommerceTierPriceEntryTestUtil;
 import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
@@ -201,7 +202,7 @@ public class CommerceProductTierPriceCalculationTest {
 			BigDecimalUtil.eq(new BigDecimal(10000), commerceMoney.getPrice()));
 
 		CommerceTierPriceEntry commerceTierPriceEntry =
-			_commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
+			CommerceTierPriceEntryTestUtil.addCommerceTierPriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(), BigDecimal.TEN,
 				BigDecimal.ZERO, true, new BigDecimal(100), _serviceContext);
 
@@ -290,7 +291,7 @@ public class CommerceProductTierPriceCalculationTest {
 			BigDecimalUtil.eq(new BigDecimal(20), commerceMoney.getPrice()));
 
 		CommerceTierPriceEntry commerceTierPriceEntry =
-			_commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
+			CommerceTierPriceEntryTestUtil.addCommerceTierPriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(), BigDecimal.TEN,
 				BigDecimal.ZERO, true, new BigDecimal(10), _serviceContext);
 
@@ -389,7 +390,7 @@ public class CommerceProductTierPriceCalculationTest {
 			BigDecimalUtil.eq(new BigDecimal(400), commerceMoney.getPrice()));
 
 		CommerceTierPriceEntry commerceTierPriceEntry =
-			_commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
+			CommerceTierPriceEntryTestUtil.addCommerceTierPriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(),
 				new BigDecimal(15), BigDecimal.ZERO, false, new BigDecimal(5),
 				_serviceContext);
@@ -520,7 +521,7 @@ public class CommerceProductTierPriceCalculationTest {
 			BigDecimalUtil.eq(new BigDecimal(100), commerceMoney.getPrice()));
 
 		CommerceTierPriceEntry commerceTierPriceEntry =
-			_commerceTierPriceEntryLocalService.addCommerceTierPriceEntry(
+			CommerceTierPriceEntryTestUtil.addCommerceTierPriceEntry(
 				commercePriceEntry.getCommercePriceEntryId(), new BigDecimal(4),
 				BigDecimal.ZERO, false, new BigDecimal(5), _serviceContext);
 

@@ -14,6 +14,7 @@ import com.liferay.commerce.price.list.model.CommercePriceList;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalService;
 import com.liferay.commerce.price.list.service.CommercePriceEntryLocalServiceUtil;
 import com.liferay.commerce.price.list.service.CommercePriceListLocalService;
+import com.liferay.commerce.price.list.service.persistence.CommercePriceEntryUtil;
 import com.liferay.commerce.price.list.util.comparator.CommercePriceEntryUOMCreateDateComparator;
 import com.liferay.commerce.product.exception.NoSuchCPInstanceException;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -1187,10 +1189,14 @@ public class CommercePriceEntryLocalServiceTest {
 			unitOfMeasureKey2);
 
 		List<CommercePriceEntry> commercePriceEntries =
-			_commercePriceEntryLocalService.getInstanceCommercePriceEntries(
-				cpInstance.getCPInstanceUuid(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				CommercePriceEntryUOMCreateDateComparator.getInstance(true));
+			TransactionTestUtil.invoke(
+				CommercePriceEntryUtil.getPersistence(),
+				commercePriceEntryPersistence ->
+					commercePriceEntryPersistence.findByCPInstanceUuid(
+						cpInstance.getCPInstanceUuid(), QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS,
+						CommercePriceEntryUOMCreateDateComparator.getInstance(
+							true)));
 
 		CommercePriceEntry commercePriceEntry1 = commercePriceEntries.get(0);
 

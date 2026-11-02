@@ -59,7 +59,6 @@ import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -1013,19 +1012,6 @@ public class CommercePriceListLocalServiceImpl
 	}
 
 	@Override
-	public int getCommercePriceListsCount(
-		long[] groupIds, long companyId, int status) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return commercePriceListPersistence.countByG_C_NotS(
-				groupIds, companyId, WorkflowConstants.STATUS_IN_TRASH);
-		}
-
-		return commercePriceListPersistence.countByG_C_S(
-			groupIds, companyId, status);
-	}
-
-	@Override
 	public CommercePriceList getOrAddEmptyCommercePriceList(
 			String externalReferenceCode, long groupId, long companyId,
 			long userId)
@@ -1052,19 +1038,6 @@ public class CommercePriceListLocalServiceImpl
 			this::fetchCommercePriceListByExternalReferenceCode,
 			this::getCommercePriceListByExternalReferenceCode,
 			CommercePriceList.class.getName());
-	}
-
-	@Override
-	public Hits search(SearchContext searchContext) {
-		try {
-			Indexer<CommercePriceList> indexer =
-				IndexerRegistryUtil.nullSafeGetIndexer(CommercePriceList.class);
-
-			return indexer.search(searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
 	}
 
 	@Override

@@ -422,7 +422,7 @@ public class CommerceTierPriceEntryLocalServiceTest {
 		List<CommerceTierPriceEntry> commerceTierPriceEntries =
 			_commerceTierPriceEntryLocalService.getCommerceTierPriceEntries(
 				actualCommercePriceEntry.getCommercePriceEntryId(),
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		_assertTierPriceEntryAttributes(
 			actualCommercePriceEntry, minQuantity, price, promoPrice,
