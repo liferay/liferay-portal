@@ -154,23 +154,6 @@ public class PushNotificationsDeviceLocalServiceImpl
 		}
 	}
 
-	@Override
-	public void updateToken(String oldToken, String newToken)
-		throws PortalException {
-
-		PushNotificationsDevice oldPushNotificationsDevice =
-			deletePushNotificationsDevice(oldToken);
-
-		PushNotificationsDevice newPushNotificationsDevice =
-			pushNotificationsDevicePersistence.fetchByToken(newToken);
-
-		if (newPushNotificationsDevice == null) {
-			addPushNotificationsDevice(
-				oldPushNotificationsDevice.getUserId(),
-				oldPushNotificationsDevice.getPlatform(), newToken);
-		}
-	}
-
 	@Activate
 	protected void activate(BundleContext bundleContext) {
 		_serviceTrackerMap = ServiceTrackerMapFactory.openSingleValueMap(
