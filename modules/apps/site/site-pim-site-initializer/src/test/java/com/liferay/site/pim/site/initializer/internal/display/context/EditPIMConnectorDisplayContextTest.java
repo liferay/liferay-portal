@@ -363,11 +363,6 @@ public class EditPIMConnectorDisplayContextTest {
 		ObjectEntry pimConnectorConfigurationObjectEntry = Mockito.mock(
 			ObjectEntry.class);
 
-		Calendar calendar = new GregorianCalendar(
-			2026, Calendar.NOVEMBER, 2, 13, 45);
-
-		Date date = calendar.getTime();
-
 		Mockito.when(
 			pimConnectorConfigurationObjectEntry.getExternalReferenceCode()
 		).thenReturn(
@@ -379,6 +374,11 @@ public class EditPIMConnectorDisplayContextTest {
 		).thenReturn(
 			_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_ID
 		);
+
+		Calendar calendar = new GregorianCalendar(
+			2026, Calendar.NOVEMBER, 2, 13, 45);
+
+		Date date = calendar.getTime();
 
 		Mockito.when(
 			pimConnectorConfigurationObjectEntry.getValues()
@@ -433,14 +433,14 @@ public class EditPIMConnectorDisplayContextTest {
 
 			List<ObjectField> objectFields = ListUtil.fromArray(
 				_mockObjectField(
-					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED,
-					"Client Secret", false, "clientSecret", true),
-				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_DATE,
 					RandomTestUtil.randomString(), false, "date", false),
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
 					RandomTestUtil.randomString(), false, "dateTime", false),
+				_mockObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED,
+					"Client Secret", false, "clientSecret", true),
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
 					RandomTestUtil.randomString(), true, "id", false),
@@ -497,7 +497,7 @@ public class EditPIMConnectorDisplayContextTest {
 			Assert.assertEquals(
 				fieldsJSONArray.toString(), 4, fieldsJSONArray.length());
 
-			JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(0);
+			JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(2);
 
 			Assert.assertEquals(
 				ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED,
