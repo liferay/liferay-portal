@@ -16,6 +16,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
@@ -29,6 +30,7 @@ import com.liferay.redirect.model.RedirectEntry;
 import com.liferay.redirect.model.RedirectNotFoundEntry;
 import com.liferay.redirect.service.RedirectEntryLocalService;
 import com.liferay.redirect.service.RedirectNotFoundEntryLocalService;
+import com.liferay.redirect.service.persistence.RedirectNotFoundEntryUtil;
 
 import java.time.Instant;
 
@@ -73,8 +75,11 @@ public class RedirectEntryLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 
 		Assert.assertNull(
-			_redirectNotFoundEntryLocalService.fetchRedirectNotFoundEntry(
-				_group.getGroupId(), _URL_SOURCE));
+			TransactionTestUtil.invoke(
+				RedirectNotFoundEntryUtil.getPersistence(),
+				redirectNotFoundEntryPersistence ->
+					redirectNotFoundEntryPersistence.fetchByG_U(
+						_group.getGroupId(), _URL_SOURCE)));
 	}
 
 	@Test

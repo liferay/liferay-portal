@@ -107,13 +107,6 @@ public class RedirectNotFoundEntryLocalServiceImpl
 	}
 
 	@Override
-	public RedirectNotFoundEntry fetchRedirectNotFoundEntry(
-		long groupId, String url) {
-
-		return redirectNotFoundEntryPersistence.fetchByG_U(groupId, url);
-	}
-
-	@Override
 	public List<RedirectNotFoundEntry> getRedirectNotFoundEntries(
 		long groupId, Boolean ignored, Date minModifiedDate, int start, int end,
 		OrderByComparator<RedirectNotFoundEntry> orderByComparator) {
@@ -133,20 +126,6 @@ public class RedirectNotFoundEntryLocalServiceImpl
 			_getRedirectNotFoundEntriesDynamicQuery(
 				groupId, null, minModifiedDate, orderByComparator),
 			start, end);
-	}
-
-	@Override
-	public List<RedirectNotFoundEntry> getRedirectNotFoundEntries(
-		long groupId, int start, int end,
-		OrderByComparator<RedirectNotFoundEntry> orderByComparator) {
-
-		return redirectNotFoundEntryPersistence.findByGroupId(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getRedirectNotFoundEntriesCount(long groupId) {
-		return redirectNotFoundEntryPersistence.countByGroupId(groupId);
 	}
 
 	@Override

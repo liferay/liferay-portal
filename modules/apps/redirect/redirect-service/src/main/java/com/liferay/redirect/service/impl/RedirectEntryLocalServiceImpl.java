@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizer;
 import com.liferay.portal.kernel.util.ListUtil;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.impl.LayoutImpl;
@@ -226,15 +225,6 @@ public class RedirectEntryLocalServiceImpl
 		}
 
 		return redirectEntry;
-	}
-
-	@Override
-	public List<RedirectEntry> getRedirectEntries(
-		long groupId, int start, int end,
-		OrderByComparator<RedirectEntry> orderByComparator) {
-
-		return redirectEntryPersistence.findByGroupId(
-			groupId, start, end, orderByComparator);
 	}
 
 	@Override

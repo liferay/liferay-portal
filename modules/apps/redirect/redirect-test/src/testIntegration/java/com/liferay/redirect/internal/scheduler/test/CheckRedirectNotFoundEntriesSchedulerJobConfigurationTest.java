@@ -19,10 +19,12 @@ import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.SearchContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.redirect.model.RedirectNotFoundEntry;
 import com.liferay.redirect.service.RedirectNotFoundEntryLocalService;
+import com.liferay.redirect.service.persistence.RedirectNotFoundEntryUtil;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -106,9 +108,7 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 		}
 
 		Assert.assertEquals(
-			1001,
-			_redirectNotFoundEntryLocalService.getRedirectNotFoundEntriesCount(
-				_group.getGroupId()));
+			1001, _getRedirectNotFoundEntriesCount(_group.getGroupId()));
 		Assert.assertEquals(1001, _getRedirectNotFoundEntryCount());
 
 		UnsafeRunnable<Exception> jobExecutorUnsafeRunnable =
@@ -117,9 +117,7 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 		jobExecutorUnsafeRunnable.run();
 
 		Assert.assertEquals(
-			1000,
-			_redirectNotFoundEntryLocalService.getRedirectNotFoundEntriesCount(
-				_group.getGroupId()));
+			1000, _getRedirectNotFoundEntriesCount(_group.getGroupId()));
 		Assert.assertEquals(1000, _getRedirectNotFoundEntryCount());
 	}
 
@@ -134,6 +132,15 @@ public class CheckRedirectNotFoundEntriesSchedulerJobConfigurationTest {
 
 		return _redirectNotFoundEntryLocalService.updateRedirectNotFoundEntry(
 			redirectNotFoundEntry);
+	}
+
+	private int _getRedirectNotFoundEntriesCount(long groupId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			RedirectNotFoundEntryUtil.getPersistence(),
+			redirectNotFoundEntryPersistence ->
+				redirectNotFoundEntryPersistence.countByGroupId(groupId));
 	}
 
 	private int _getRedirectNotFoundEntryCount() throws Exception {
