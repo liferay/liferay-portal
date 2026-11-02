@@ -331,10 +331,6 @@ public class CommerceDiscountRuleLocalServiceUtil {
 		return getService().getCommerceDiscountRulesCount();
 	}
 
-	public static int getCommerceDiscountRulesCount(long commerceDiscountId) {
-		return getService().getCommerceDiscountRulesCount(commerceDiscountId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -403,4 +399,4 @@ public class CommerceDiscountRuleLocalServiceUtil {
 			CommerceDiscountRuleLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2092738233
+// LIFERAY-SERVICE-BUILDER-HASH:340443860

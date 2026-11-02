@@ -389,12 +389,6 @@ public class CommerceDiscountRuleLocalServiceWrapper
 	}
 
 	@Override
-	public int getCommerceDiscountRulesCount(long commerceDiscountId) {
-		return _commerceDiscountRuleLocalService.getCommerceDiscountRulesCount(
-			commerceDiscountId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 		getIndexableActionableDynamicQuery() {
 
@@ -485,4 +479,4 @@ public class CommerceDiscountRuleLocalServiceWrapper
 	private CommerceDiscountRuleLocalService _commerceDiscountRuleLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1393447135
+// LIFERAY-SERVICE-BUILDER-HASH:-1095561654

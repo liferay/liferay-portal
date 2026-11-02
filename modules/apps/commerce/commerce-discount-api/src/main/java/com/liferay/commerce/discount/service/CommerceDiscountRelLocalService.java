@@ -220,14 +220,6 @@ public interface CommerceDiscountRelLocalService
 		long commerceDiscountRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceDiscountRel fetchCommerceDiscountRel(
-		long commerceDiscountId, String className, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceDiscountRel fetchCommerceDiscountRel(
-		String className, long classPK);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -298,10 +290,6 @@ public interface CommerceDiscountRelLocalService
 	public int getCommerceDiscountRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceDiscountRelsCount(
-		long commerceDiscountId, String className);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CommerceDiscountRel>
 		getCommercePricingClassesByCommerceDiscountId(
 			long commerceDiscountId, String title, int start, int end);
@@ -365,4 +353,4 @@ public interface CommerceDiscountRelLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1569103187
+// LIFERAY-SERVICE-BUILDER-HASH:1315522545

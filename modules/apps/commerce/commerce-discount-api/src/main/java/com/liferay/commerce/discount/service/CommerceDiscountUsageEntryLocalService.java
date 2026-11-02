@@ -119,9 +119,6 @@ public interface CommerceDiscountUsageEntryLocalService
 			long commerceDiscountUsageEntryId)
 		throws PortalException;
 
-	public void deleteCommerceUsageEntry(
-		long commerceAccountId, long commerceOrderId, long commerceDiscountId);
-
 	public void deleteCommerceUsageEntryByDiscountId(long commerceDiscountId);
 
 	/**
@@ -237,10 +234,6 @@ public interface CommerceDiscountUsageEntryLocalService
 	public int getCommerceDiscountUsageEntriesCount(long commerceDiscountId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceDiscountUsageEntriesCount(
-		long commerceAccountId, long commerceOrderId, long commerceDiscountId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceDiscountUsageEntriesCountByAccountId(
 		long commerceAccountId, long commerceDiscountId);
 
@@ -293,4 +286,4 @@ public interface CommerceDiscountUsageEntryLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1328309605
+// LIFERAY-SERVICE-BUILDER-HASH:-695585541

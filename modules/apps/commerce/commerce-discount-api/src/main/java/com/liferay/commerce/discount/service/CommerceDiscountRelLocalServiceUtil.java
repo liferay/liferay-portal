@@ -247,19 +247,6 @@ public class CommerceDiscountRelLocalServiceUtil {
 		return getService().fetchCommerceDiscountRel(commerceDiscountRelId);
 	}
 
-	public static CommerceDiscountRel fetchCommerceDiscountRel(
-		long commerceDiscountId, String className, long classPK) {
-
-		return getService().fetchCommerceDiscountRel(
-			commerceDiscountId, className, classPK);
-	}
-
-	public static CommerceDiscountRel fetchCommerceDiscountRel(
-		String className, long classPK) {
-
-		return getService().fetchCommerceDiscountRel(className, classPK);
-	}
-
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -359,13 +346,6 @@ public class CommerceDiscountRelLocalServiceUtil {
 	 */
 	public static int getCommerceDiscountRelsCount() {
 		return getService().getCommerceDiscountRelsCount();
-	}
-
-	public static int getCommerceDiscountRelsCount(
-		long commerceDiscountId, String className) {
-
-		return getService().getCommerceDiscountRelsCount(
-			commerceDiscountId, className);
 	}
 
 	public static List<CommerceDiscountRel>
@@ -474,4 +454,4 @@ public class CommerceDiscountRelLocalServiceUtil {
 			CommerceDiscountRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-794974829
+// LIFERAY-SERVICE-BUILDER-HASH:-439583391
