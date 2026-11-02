@@ -170,28 +170,11 @@ public class AccountEntryOrganizationRelLocalServiceImpl
 	}
 
 	@Override
-	public AccountEntryOrganizationRel getAccountEntryOrganizationRel(
-			long accountEntryId, long organizationId)
-		throws PortalException {
-
-		return accountEntryOrganizationRelPersistence.findByA_O(
-			accountEntryId, organizationId);
-	}
-
-	@Override
 	public List<AccountEntryOrganizationRel> getAccountEntryOrganizationRels(
 		long accountEntryId) {
 
 		return accountEntryOrganizationRelPersistence.findByAccountEntryId(
 			accountEntryId);
-	}
-
-	@Override
-	public List<AccountEntryOrganizationRel> getAccountEntryOrganizationRels(
-		long accountEntryId, int start, int end) {
-
-		return accountEntryOrganizationRelPersistence.findByAccountEntryId(
-			accountEntryId, start, end);
 	}
 
 	@Override

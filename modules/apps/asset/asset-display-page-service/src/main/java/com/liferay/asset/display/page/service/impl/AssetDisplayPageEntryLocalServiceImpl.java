@@ -200,25 +200,6 @@ public class AssetDisplayPageEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<AssetDisplayPageEntry>
-		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-			long layoutPageTemplateEntryId) {
-
-		return assetDisplayPageEntryPersistence.findByLayoutPageTemplateEntryId(
-			layoutPageTemplateEntryId);
-	}
-
-	@Override
-	public List<AssetDisplayPageEntry>
-		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-			long layoutPageTemplateEntryId, int start, int end,
-			OrderByComparator<AssetDisplayPageEntry> orderByComparator) {
-
-		return assetDisplayPageEntryPersistence.findByLayoutPageTemplateEntryId(
-			layoutPageTemplateEntryId, start, end, orderByComparator);
-	}
-
-	@Override
 	public int getAssetDisplayPageEntriesCount(long groupId, long classNameId) {
 		return assetDisplayPageEntryPersistence.countByG_CN(
 			groupId, classNameId);

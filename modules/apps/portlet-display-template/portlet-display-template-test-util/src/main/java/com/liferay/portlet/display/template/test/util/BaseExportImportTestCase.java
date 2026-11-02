@@ -74,7 +74,7 @@ public abstract class BaseExportImportTestCase
 		Assert.assertNotNull(
 			DDMTemplateLocalServiceUtil.getTemplate(
 				importedGroup.getGroupId(), classNameId,
-				ddmTemplate.getTemplateKey()));
+				ddmTemplate.getTemplateKey(), false));
 
 		Assert.assertEquals(
 			PortletDisplayTemplate.DISPLAY_STYLE_PREFIX +

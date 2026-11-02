@@ -636,27 +636,6 @@ public class DDMTemplateLocalServiceImpl
 	}
 
 	/**
-	 * Returns the template matching the group and template key.
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  classNameId the primary key of the class name for the template's
-	 *         related model
-	 * @param  templateKey the unique string identifying the template
-	 * @return the matching template
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public DDMTemplate getTemplate(
-			long groupId, long classNameId, String templateKey)
-		throws PortalException {
-
-		templateKey = StringUtil.toUpperCase(StringUtil.trim(templateKey));
-
-		return ddmTemplatePersistence.findByG_C_T(
-			groupId, classNameId, templateKey);
-	}
-
-	/**
 	 * Returns the template matching the group and template key, optionally
 	 * searching ancestor sites (that have sharing enabled) and global scoped
 	 * sites.
