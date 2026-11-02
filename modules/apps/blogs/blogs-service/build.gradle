@@ -15,6 +15,7 @@ dependencies {
 	compileOnly project(":apps:asset:asset-display-page-api")
 	compileOnly project(":apps:asset:asset-link-api")
 	compileOnly project(":apps:blogs:blogs-api")
+	compileOnly project(":apps:change-tracking:change-tracking-api")
 	compileOnly project(":apps:change-tracking:change-tracking-spi")
 	compileOnly project(":apps:comment:comment-api")
 	compileOnly project(":apps:document-library:document-library-api")
