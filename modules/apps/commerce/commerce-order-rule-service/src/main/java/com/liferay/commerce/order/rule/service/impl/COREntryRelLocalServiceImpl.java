@@ -126,15 +126,6 @@ public class COREntryRelLocalServiceImpl
 	}
 
 	@Override
-	public COREntryRel fetchCOREntryRel(
-		String className, long classPK, long corEntryId) {
-
-		return corEntryRelPersistence.fetchByC_C_C(
-			_classNameLocalService.getClassNameId(className), classPK,
-			corEntryId);
-	}
-
-	@Override
 	public List<COREntryRel> getAccountEntryCOREntryRels(
 		long corEntryId, String keywords, int start, int end) {
 
