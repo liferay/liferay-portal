@@ -410,19 +410,6 @@ public class FriendlyURLEntryLocalServiceImpl
 
 	@Override
 	public FriendlyURLEntryLocalization getFriendlyURLEntryLocalization(
-			long groupId, long classNameId, String urlTitle)
-		throws NoSuchFriendlyURLEntryLocalizationException {
-
-		return friendlyURLEntryLocalizationPersistence.findByG_C_P_L_U(
-			groupId, classNameId,
-			FriendlyURLEntryConstants.
-				FRIENDLY_URL_ENTRY_PARENT_CLASS_PK_DEFAULT,
-			LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()),
-			_friendlyURLNormalizer.normalizeWithEncoding(urlTitle));
-	}
-
-	@Override
-	public FriendlyURLEntryLocalization getFriendlyURLEntryLocalization(
 			long groupId, long classNameId, String languageId, String urlTitle)
 		throws NoSuchFriendlyURLEntryLocalizationException {
 
@@ -602,17 +589,6 @@ public class FriendlyURLEntryLocalServiceImpl
 	@Override
 	public FriendlyURLEntry updateFriendlyURLEntry(
 			long friendlyURLEntryId, long classNameId, long classPK,
-			String defaultLanguageId, Map<String, String> urlTitleMap)
-		throws PortalException {
-
-		return updateFriendlyURLEntry(
-			friendlyURLEntryId, classNameId, classPK, defaultLanguageId,
-			urlTitleMap, null);
-	}
-
-	@Override
-	public FriendlyURLEntry updateFriendlyURLEntry(
-			long friendlyURLEntryId, long classNameId, long classPK,
 			String defaultLanguageId, Map<String, String> urlTitleMap,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -629,25 +605,6 @@ public class FriendlyURLEntryLocalServiceImpl
 	@Override
 	public FriendlyURLEntryLocalization updateFriendlyURLLocalization(
 		FriendlyURLEntryLocalization friendlyURLEntryLocalization) {
-
-		return friendlyURLEntryLocalizationPersistence.update(
-			friendlyURLEntryLocalization);
-	}
-
-	@Override
-	public FriendlyURLEntryLocalization updateFriendlyURLLocalization(
-			long friendlyURLLocalizationId, String urlTitle)
-		throws PortalException {
-
-		FriendlyURLEntryLocalization friendlyURLEntryLocalization =
-			friendlyURLEntryLocalizationPersistence.fetchByPrimaryKey(
-				friendlyURLLocalizationId);
-
-		if (friendlyURLEntryLocalization == null) {
-			return null;
-		}
-
-		friendlyURLEntryLocalization.setUrlTitle(urlTitle);
 
 		return friendlyURLEntryLocalizationPersistence.update(
 			friendlyURLEntryLocalization);
