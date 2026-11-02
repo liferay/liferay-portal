@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFileEntryConstants;
 import com.liferay.document.library.kernel.model.DLFileEntryMetadata;
 import com.liferay.document.library.kernel.model.DLFileEntryType;
 import com.liferay.document.library.kernel.model.DLFileEntryTypeConstants;
@@ -213,6 +214,7 @@ public class FileEntryStagedModelDataHandlerTest
 
 			_dlFileEntryLocalService.checkOutFileEntry(
 				TestPropsValues.getUserId(), fileEntry.getFileEntryId(),
+				StringPool.BLANK, DLFileEntryConstants.LOCK_EXPIRATION_TIME,
 				serviceContext);
 
 			exportImportStagedModelFromLiveToStaging(fileEntry);

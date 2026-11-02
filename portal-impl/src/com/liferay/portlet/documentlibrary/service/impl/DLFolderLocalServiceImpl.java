@@ -175,29 +175,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void deleteAllByGroup(long groupId) throws PortalException {
-		Group group = _groupLocalService.getGroup(groupId);
-
-		List<DLFolder> dlFolders = dlFolderPersistence.findByG_P(
-			groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		for (DLFolder dlFolder : dlFolders) {
-			dlFolderLocalService.deleteFolder(dlFolder);
-		}
-
-		_dlFileEntryLocalService.deleteFileEntries(
-			groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		_dlFileEntryTypeLocalService.deleteFileEntryTypes(groupId);
-
-		_dlFileShortcutLocalService.deleteFileShortcuts(
-			groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		DLStoreUtil.deleteDirectory(
-			group.getCompanyId(), groupId, StringPool.BLANK);
-	}
-
-	@Override
 	public void deleteAllByRepository(long repositoryId)
 		throws PortalException {
 
@@ -325,18 +302,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	@Override
 	public DLFolder fetchFolder(String uuid, long groupId) {
 		return dlFolderPersistence.fetchByUUID_G(uuid, groupId);
-	}
-
-	@Override
-	public List<DLFolder> getCompanyFolders(
-		long companyId, int start, int end) {
-
-		return dlFolderPersistence.findByCompanyId(companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyFoldersCount(long companyId) {
-		return dlFolderPersistence.countByCompanyId(companyId);
 	}
 
 	@Override
@@ -571,22 +536,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<DLFolder> getMountFolders(
-		long groupId, long parentFolderId, int start, int end,
-		OrderByComparator<DLFolder> orderByComparator) {
-
-		return dlFolderPersistence.findByG_M_P_H(
-			groupId, true, parentFolderId, false, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public int getMountFoldersCount(long groupId, long parentFolderId) {
-		return dlFolderPersistence.countByG_M_P_H(
-			groupId, true, parentFolderId, false);
-	}
-
-	@Override
 	public List<DLFolder> getNoAssetFolders() {
 		return dlFolderFinder.findF_ByNoAssets();
 	}
@@ -611,18 +560,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 		getRepositorySubfolderIds(folderIds, repositoryId, parentFolderId);
 
 		return folderIds;
-	}
-
-	@Override
-	public List<DLFolder> getRepositoryFolders(
-		long repositoryId, int start, int end) {
-
-		return dlFolderPersistence.findByRepositoryId(repositoryId, start, end);
-	}
-
-	@Override
-	public int getRepositoryFoldersCount(long repositoryId) {
-		return dlFolderPersistence.countByRepositoryId(repositoryId);
 	}
 
 	@Override
@@ -761,13 +698,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void rebuildTree(long companyId) throws PortalException {
-		rebuildTree(
-			companyId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			StringPool.SLASH, false);
-	}
-
-	@Override
 	public void rebuildTree(
 			long companyId, long parentFolderId, String parentTreePath,
 			boolean reindex)
@@ -802,16 +732,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 				}
 
 			});
-	}
-
-	@Override
-	public void unlockFolder(
-			long groupId, long parentFolderId, String name, String lockUuid)
-		throws PortalException {
-
-		DLFolder dlFolder = getFolder(groupId, parentFolderId, name);
-
-		unlockFolder(dlFolder.getFolderId(), lockUuid);
 	}
 
 	@Override
@@ -890,27 +810,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 				unlockFolder(folderId, lock.getUuid());
 			}
 		}
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public DLFolder updateFolder(
-			long folderId, String name, String description,
-			long defaultFileEntryTypeId, List<Long> fileEntryTypeIds,
-			int restrictionType, ServiceContext serviceContext)
-		throws PortalException {
-
-		long parentFolderId = DLFolderConstants.DEFAULT_PARENT_FOLDER_ID;
-
-		if (folderId != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
-			DLFolder dlFolder = getDLFolder(folderId);
-
-			parentFolderId = dlFolder.getParentFolderId();
-		}
-
-		return updateFolder(
-			folderId, parentFolderId, name, description, defaultFileEntryTypeId,
-			fileEntryTypeIds, restrictionType, serviceContext);
 	}
 
 	@Override

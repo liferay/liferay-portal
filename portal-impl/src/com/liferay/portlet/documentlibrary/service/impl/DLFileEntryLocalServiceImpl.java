@@ -602,16 +602,6 @@ public class DLFileEntryLocalServiceImpl
 
 	@Override
 	public DLFileEntry checkOutFileEntry(
-			long userId, long fileEntryId, ServiceContext serviceContext)
-		throws PortalException {
-
-		return checkOutFileEntry(
-			userId, fileEntryId, StringPool.BLANK,
-			DLFileEntryImpl.LOCK_EXPIRATION_TIME, serviceContext);
-	}
-
-	@Override
-	public DLFileEntry checkOutFileEntry(
 			long userId, long fileEntryId, String owner, long expirationTime,
 			ServiceContext serviceContext)
 		throws PortalException {
@@ -733,13 +723,6 @@ public class DLFileEntryLocalServiceImpl
 		_copyFileEntryMetadata(
 			companyId, fileEntryId, sourceFileVersionId, targetFileVersionId,
 			serviceContext, ddmFormValuesMap, ddmStructures);
-	}
-
-	@Override
-	public void deleteFileEntries(long groupId, long folderId)
-		throws PortalException {
-
-		deleteFileEntries(groupId, folderId, true);
 	}
 
 	@Override
@@ -904,18 +887,6 @@ public class DLFileEntryLocalServiceImpl
 		finally {
 			unlockFileEntry(fileEntryId);
 		}
-	}
-
-	@Indexable(type = IndexableType.DELETE)
-	@Override
-	public DLFileEntry deleteFileEntryByExternalReferenceCode(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		DLFileEntry dlFileEntry = getFileEntryByExternalReferenceCode(
-			externalReferenceCode, groupId);
-
-		return dlFileEntryLocalService.deleteFileEntry(dlFileEntry);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -1260,11 +1231,6 @@ public class DLFileEntryLocalServiceImpl
 	}
 
 	@Override
-	public int getExtraSettingsFileEntriesCount() {
-		return dlFileEntryFinder.countByExtraSettings();
-	}
-
-	@Override
 	public InputStream getFileAsStream(long fileEntryId, String version)
 		throws PortalException {
 
@@ -1449,14 +1415,6 @@ public class DLFileEntryLocalServiceImpl
 	}
 
 	@Override
-	public DLFileEntry getFileEntryByName(
-			long groupId, long folderId, String name)
-		throws PortalException {
-
-		return dlFileEntryPersistence.findByG_F_N(groupId, folderId, name);
-	}
-
-	@Override
 	public DLFileEntry getFileEntryByUuidAndGroupId(String uuid, long groupId)
 		throws PortalException {
 
@@ -1558,19 +1516,6 @@ public class DLFileEntryLocalServiceImpl
 	@Override
 	public List<DLFileEntry> getNoAssetFileEntries() {
 		return dlFileEntryFinder.findByNoAssets();
-	}
-
-	@Override
-	public List<DLFileEntry> getRepositoryFileEntries(
-		long repositoryId, int start, int end) {
-
-		return dlFileEntryPersistence.findByRepositoryId(
-			repositoryId, start, end);
-	}
-
-	@Override
-	public int getRepositoryFileEntriesCount(long repositoryId) {
-		return dlFileEntryPersistence.countByRepositoryId(repositoryId);
 	}
 
 	@Override
@@ -1698,11 +1643,6 @@ public class DLFileEntryLocalServiceImpl
 				unlockFileEntry(fileEntryId);
 			}
 		}
-	}
-
-	@Override
-	public void rebuildTree(long companyId) throws PortalException {
-		_dlFolderLocalService.rebuildTree(companyId);
 	}
 
 	@Override

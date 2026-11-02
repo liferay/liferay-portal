@@ -14,7 +14,6 @@ import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.document.library.kernel.service.DLFolderLocalService;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -51,36 +50,6 @@ public class DLFolderLocalServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
-	}
-
-	@Test
-	public void testDeleteAllByGroup() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		Folder parentFolder = _dlAppService.addFolder(
-			null, _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
-
-		_dlAppService.addFolder(
-			null, _group.getGroupId(), parentFolder.getFolderId(),
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
-
-		Assert.assertEquals(
-			2,
-			_dlFolderLocalService.getRepositoryFoldersCount(
-				_group.getGroupId()));
-
-		_dlFolderLocalService.deleteAllByGroup(_group.getGroupId());
-
-		Assert.assertEquals(
-			0,
-			_dlFolderLocalService.getRepositoryFoldersCount(
-				_group.getGroupId()));
 	}
 
 	@Test

@@ -2110,9 +2110,9 @@ public class DSRequestManagerTest {
 			null, null, serviceContext);
 
 		_dlFolderLocalService.updateFolder(
-			folder.getFolderId(), folder.getName(), folder.getDescription(), 0,
-			ListUtil.fromArray(0L), DLFolderConstants.RESTRICTION_TYPE_WORKFLOW,
-			serviceContext);
+			folder.getFolderId(), folder.getParentFolderId(), folder.getName(),
+			folder.getDescription(), 0, ListUtil.fromArray(0L),
+			DLFolderConstants.RESTRICTION_TYPE_WORKFLOW, serviceContext);
 
 		_workflowDefinitionLinkLocalService.addWorkflowDefinitionLink(
 			null, TestPropsValues.getUserId(), TestPropsValues.getCompanyId(),
