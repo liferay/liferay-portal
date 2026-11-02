@@ -121,14 +121,16 @@ public class ObjectEntryModelListener extends BaseModelListener<ObjectEntry> {
 	}
 
 	private void _deletePIMConnectorConfigurationObjectEntry(
-			ObjectEntry objectEntry)
+			ObjectEntry pimConnectorObjectEntry)
 		throws PortalException {
 
 		ObjectEntry pimConnectorConfigurationObjectEntry =
-			PIMConnectorConfigurationUtil.fetchObjectEntry(
-				_pimConnectorRegistry.getPIMConnector(
-					MapUtil.getString(objectEntry.getValues(), "key")),
-				objectEntry);
+			PIMConnectorConfigurationUtil.
+				fetchPIMConnectorConfigurationObjectEntry(
+					_pimConnectorRegistry.getPIMConnector(
+						MapUtil.getString(
+							pimConnectorObjectEntry.getValues(), "key")),
+					pimConnectorObjectEntry);
 
 		if (pimConnectorConfigurationObjectEntry == null) {
 			return;

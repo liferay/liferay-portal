@@ -17,13 +17,14 @@ import com.liferay.site.pim.site.initializer.connector.PIMConnector;
  */
 public class PIMConnectorConfigurationUtil {
 
-	public static ObjectDefinition fetchObjectDefinition(
-		long companyId, PIMConnector pimConnector) {
+	public static ObjectDefinition
+		fetchPIMConnectorConfigurationObjectDefinition(
+			long companyId, PIMConnector pimConnector) {
 
 		if ((pimConnector == null) ||
 			Validator.isNull(
 				pimConnector.
-					getConfigurationObjectDefinitionExternalReferenceCode())) {
+					getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode())) {
 
 			return null;
 		}
@@ -31,15 +32,16 @@ public class PIMConnectorConfigurationUtil {
 		return ObjectDefinitionLocalServiceUtil.
 			fetchObjectDefinitionByExternalReferenceCode(
 				pimConnector.
-					getConfigurationObjectDefinitionExternalReferenceCode(),
+					getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode(),
 				companyId);
 	}
 
-	public static ObjectEntry fetchObjectEntry(
+	public static ObjectEntry fetchPIMConnectorConfigurationObjectEntry(
 		PIMConnector pimConnector, ObjectEntry pimConnectorObjectEntry) {
 
-		ObjectDefinition objectDefinition = fetchObjectDefinition(
-			pimConnectorObjectEntry.getCompanyId(), pimConnector);
+		ObjectDefinition objectDefinition =
+			fetchPIMConnectorConfigurationObjectDefinition(
+				pimConnectorObjectEntry.getCompanyId(), pimConnector);
 
 		if (objectDefinition == null) {
 			return null;

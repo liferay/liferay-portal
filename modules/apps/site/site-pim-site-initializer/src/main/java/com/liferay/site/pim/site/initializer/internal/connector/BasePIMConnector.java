@@ -58,7 +58,8 @@ public abstract class BasePIMConnector implements PIMConnector {
 		throws Exception {
 
 		return doExecute(
-			_getConfiguration(pimConnectorObjectEntry), pimConnectorObjectEntry,
+			_getPIMConnectorConfigurationValues(pimConnectorObjectEntry),
+			pimConnectorObjectEntry,
 			getPIMFieldMappingObjectEntriesMap(pimConnectorObjectEntry),
 			getPIMProductObjectEntriesMap(
 				pimConnectorObjectEntry.getCompanyId()));
@@ -70,7 +71,7 @@ public abstract class BasePIMConnector implements PIMConnector {
 	}
 
 	protected abstract String doExecute(
-			Map<String, Serializable> configuration,
+			Map<String, Serializable> pimConnectorConfigurationValues,
 			ObjectEntry pimConnectorObjectEntry,
 			Map<String, List<ObjectEntry>> pimFieldMappingObjectEntriesMap,
 			Map<String, List<ObjectEntry>> pimProductObjectEntriesMap)
@@ -178,18 +179,19 @@ public abstract class BasePIMConnector implements PIMConnector {
 	@Reference
 	protected Sorts sorts;
 
-	private Map<String, Serializable> _getConfiguration(
+	private Map<String, Serializable> _getPIMConnectorConfigurationValues(
 		ObjectEntry pimConnectorObjectEntry) {
 
-		ObjectEntry configurationObjectEntry =
-			PIMConnectorConfigurationUtil.fetchObjectEntry(
-				this, pimConnectorObjectEntry);
+		ObjectEntry pimConnectorConfigurationObjectEntry =
+			PIMConnectorConfigurationUtil.
+				fetchPIMConnectorConfigurationObjectEntry(
+					this, pimConnectorObjectEntry);
 
-		if (configurationObjectEntry == null) {
+		if (pimConnectorConfigurationObjectEntry == null) {
 			return Collections.emptyMap();
 		}
 
-		return configurationObjectEntry.getValues();
+		return pimConnectorConfigurationObjectEntry.getValues();
 	}
 
 	private List<ObjectEntry> _getPIMProductObjectEntries(long companyId) {

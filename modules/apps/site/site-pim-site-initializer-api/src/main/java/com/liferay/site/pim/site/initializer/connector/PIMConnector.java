@@ -21,13 +21,14 @@ public interface PIMConnector {
 
 	public String execute(ObjectEntry objectEntry) throws Exception;
 
-	public String getConfigurationObjectDefinitionExternalReferenceCode();
-
 	public String getKey();
 
 	public String getName(Locale locale);
 
 	public List<PIMConnectorChannelField> getPIMConnectorChannelFields();
+
+	public String
+		getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode();
 
 	public boolean isActive(long companyId);
 

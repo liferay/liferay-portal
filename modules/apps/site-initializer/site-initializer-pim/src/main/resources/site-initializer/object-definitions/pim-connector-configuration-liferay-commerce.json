@@ -9,12 +9,12 @@
 	"enableObjectEntryHistory": false,
 	"enableObjectEntrySchedule": false,
 	"enableObjectEntrySubscription": false,
-	"externalReferenceCode": "L_PIM_CONNECTOR_LIFERAY_COMMERCE_CONFIGURATION",
+	"externalReferenceCode": "L_PIM_CONNECTOR_CONFIGURATION_LIFERAY_COMMERCE",
 	"label": {
-		"en_US": "Liferay Commerce Configuration"
+		"en_US": "PIM Connector Configuration Liferay Commerce"
 	},
 	"modifiable": true,
-	"name": "PIMConnectorLiferayCommerceConfiguration",
+	"name": "PIMConnectorConfigurationLiferayCommerce",
 	"objectActions": [
 	],
 	"objectDefinitionSettings": [
@@ -68,7 +68,7 @@
 	],
 	"panelCategoryKey": "",
 	"pluralLabel": {
-		"en_US": "Liferay Commerce Configuration"
+		"en_US": "PIM Connector Configurations Liferay Commerce"
 	},
 	"scope": "company",
 	"system": true,
