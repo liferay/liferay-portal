@@ -30,6 +30,8 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -107,7 +109,10 @@ public class AddTempAttachmentMVCActionCommandTest {
 						"UploadServletRequestConfiguration",
 					HashMapDictionaryBuilder.<String, Object>put(
 						"maxSize", 102400L
-					).build())) {
+					).build());
+			LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.upload.UploadServletRequestImpl",
+				LoggerTestUtil.WARN)) {
 
 			Assert.assertEquals(
 				102400,
