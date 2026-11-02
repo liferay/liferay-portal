@@ -339,18 +339,6 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void updateLayoutSetPrototypeLinkEnabled(
-			long groupId, boolean privateLayout,
-			boolean layoutSetPrototypeLinkEnabled,
-			String layoutSetPrototypeUuid)
-		throws PortalException {
-
-		layoutSetLocalService.updateLayoutSetPrototypeLinkEnabled(
-			groupId, true, privateLayout, layoutSetPrototypeLinkEnabled,
-			layoutSetPrototypeUuid);
-	}
-
-	@Override
 	public LayoutSet updateLogo(
 			long groupId, boolean privateLayout, boolean hasLogo, byte[] bytes)
 		throws PortalException {

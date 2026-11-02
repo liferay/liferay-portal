@@ -148,24 +148,6 @@ public class LayoutPrototypeLocalServiceImpl
 	}
 
 	@Override
-	public void deleteNondefaultLayoutPrototypes(long companyId)
-		throws PortalException {
-
-		long guestUserId = _userLocalService.getGuestUserId(companyId);
-
-		List<LayoutPrototype> layoutPrototypes =
-			layoutPrototypePersistence.findByCompanyId(companyId);
-
-		for (LayoutPrototype layoutPrototype : layoutPrototypes) {
-			if (layoutPrototype.getUserId() == guestUserId) {
-				continue;
-			}
-
-			layoutPrototypeLocalService.deleteLayoutPrototype(layoutPrototype);
-		}
-	}
-
-	@Override
 	public LayoutPrototype fetchLayoutPrototype(
 		long companyId, String name, Locale locale) {
 
@@ -186,14 +168,6 @@ public class LayoutPrototypeLocalServiceImpl
 	@Override
 	public LayoutPrototype fetchLayoutProtoype(long companyId, String name) {
 		return layoutPrototypeLocalService.fetchLayoutPrototype(
-			companyId, name, LocaleUtil.getDefault());
-	}
-
-	@Override
-	public LayoutPrototype getLayoutPrototype(long companyId, String name)
-		throws PortalException {
-
-		return layoutPrototypeLocalService.getLayoutPrototype(
 			companyId, name, LocaleUtil.getDefault());
 	}
 
@@ -225,15 +199,6 @@ public class LayoutPrototypeLocalServiceImpl
 
 		return layoutPrototypePersistence.findByCompanyId(
 			companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int searchCount(long companyId, Boolean active) {
-		if (active != null) {
-			return layoutPrototypePersistence.countByC_A(companyId, active);
-		}
-
-		return layoutPrototypePersistence.countByCompanyId(companyId);
 	}
 
 	@Override

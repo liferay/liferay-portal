@@ -136,7 +136,8 @@ public class LayoutPrototypeExportImportTest {
 		Assert.assertNotNull(
 			_layoutPrototypeLocalService.getLayoutPrototype(
 				_company.getCompanyId(),
-				layoutPrototype.getName(LocaleUtil.getDefault())));
+				layoutPrototype.getName(LocaleUtil.getDefault()),
+				LocaleUtil.getDefault()));
 	}
 
 	private Map<String, String[]> _getExportParameterMap() {

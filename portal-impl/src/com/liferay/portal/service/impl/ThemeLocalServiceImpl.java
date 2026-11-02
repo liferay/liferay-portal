@@ -63,41 +63,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ThemeLocalServiceImpl extends ThemeLocalServiceBaseImpl {
 
 	@Override
-	public ColorScheme fetchColorScheme(
-		long companyId, String themeId, String colorSchemeId) {
-
-		colorSchemeId = GetterUtil.getString(colorSchemeId);
-
-		Theme theme = fetchTheme(companyId, themeId);
-
-		if (theme == null) {
-			return null;
-		}
-
-		Map<String, ColorScheme> colorSchemesMap = theme.getColorSchemesMap();
-
-		return colorSchemesMap.get(colorSchemeId);
-	}
-
-	@Override
-	public PortletDecorator fetchPortletDecorator(
-		long companyId, String themeId, String colorSchemeId) {
-
-		colorSchemeId = GetterUtil.getString(colorSchemeId);
-
-		Theme theme = fetchTheme(companyId, themeId);
-
-		if (theme == null) {
-			return null;
-		}
-
-		Map<String, PortletDecorator> portletDecoratorsMap =
-			theme.getPortletDecoratorsMap();
-
-		return portletDecoratorsMap.get(colorSchemeId);
-	}
-
-	@Override
 	public Theme fetchTheme(long companyId, String themeId) {
 		themeId = GetterUtil.getString(themeId);
 
@@ -283,17 +248,6 @@ public class ThemeLocalServiceImpl extends ThemeLocalServiceBaseImpl {
 		}
 
 		return themes;
-	}
-
-	@Override
-	public List<Theme> init(
-		ServletContext servletContext, String themesPath,
-		boolean loadFromServletContext, String[] xmls,
-		PluginPackage pluginPackage) {
-
-		return init(
-			null, servletContext, themesPath, loadFromServletContext, xmls,
-			pluginPackage);
 	}
 
 	@Override

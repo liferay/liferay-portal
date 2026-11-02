@@ -890,7 +890,7 @@ public class LayoutSetPrototypePropagationTest
 				layoutSetPrototypeAssetVocabulary2.getVocabularyId());
 
 		LayoutSetLocalServiceUtil.updateLayoutSetPrototypeLinkEnabled(
-			group.getGroupId(), true, true,
+			group.getGroupId(), true, true, true,
 			_privateLayoutSetPrototype.getUuid());
 
 		List<AssetVocabulary> assetVocabularies =

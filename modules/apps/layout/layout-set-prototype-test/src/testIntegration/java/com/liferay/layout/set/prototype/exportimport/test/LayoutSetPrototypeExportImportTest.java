@@ -19,6 +19,7 @@ import com.liferay.layout.set.prototype.constants.LayoutSetPrototypePortletKeys;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -93,7 +94,7 @@ public class LayoutSetPrototypeExportImportTest
 	public void testDeleteLayoutSetPrototypeImportedToAnotherCompany()
 		throws Exception {
 
-		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototypes();
+		_deleteLayoutSetPrototypes();
 
 		LayoutSetPrototype exportedLayoutSetPrototype =
 			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
@@ -203,7 +204,7 @@ public class LayoutSetPrototypeExportImportTest
 	public void testExportImportLayoutSetPrototypeWithCleanImport()
 		throws Exception {
 
-		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototypes();
+		_deleteLayoutSetPrototypes();
 
 		LayoutSetPrototype exportedLayoutSetPrototype =
 			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
@@ -277,7 +278,7 @@ public class LayoutSetPrototypeExportImportTest
 	public void testExportImportLayoutSetPrototypeWithContentPageFragmentEditableValues()
 		throws Exception {
 
-		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototypes();
+		_deleteLayoutSetPrototypes();
 
 		LayoutSetPrototype exportedLayoutSetPrototype =
 			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
@@ -389,7 +390,7 @@ public class LayoutSetPrototypeExportImportTest
 
 		// Exclude default site templates
 
-		LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototypes();
+		_deleteLayoutSetPrototypes();
 
 		LayoutSetPrototype exportedLayoutSetPrototype =
 			LayoutTestUtil.addLayoutSetPrototype(RandomTestUtil.randomString());
@@ -451,6 +452,16 @@ public class LayoutSetPrototypeExportImportTest
 	@Override
 	protected void testExportImportDisplayStyle(long groupId, String scopeType)
 		throws Exception {
+	}
+
+	private void _deleteLayoutSetPrototypes() throws Exception {
+		for (LayoutSetPrototype layoutSetPrototype :
+				LayoutSetPrototypeLocalServiceUtil.getLayoutSetPrototypes(
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS)) {
+
+			LayoutSetPrototypeLocalServiceUtil.deleteLayoutSetPrototype(
+				layoutSetPrototype);
+		}
 	}
 
 	private FragmentEntryLink _getFragmentEntryLink(Layout layout) {

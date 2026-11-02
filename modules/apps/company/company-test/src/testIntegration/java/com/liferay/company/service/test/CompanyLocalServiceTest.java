@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.model.LayoutPrototype;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Organization;
@@ -770,14 +771,13 @@ public class CompanyLocalServiceTest {
 
 	@Test
 	public void testDeleteCompanyDeletesLayoutPrototypes() throws Exception {
+		List<LayoutPrototype> layoutPrototypes =
+			_layoutPrototypeLocalService.search(
+				_deletedCompany.getCompanyId(), null, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null);
+
 		Assert.assertEquals(
-			0,
-			_layoutPrototypeLocalService.searchCount(
-				_deletedCompany.getCompanyId(), true));
-		Assert.assertEquals(
-			0,
-			_layoutPrototypeLocalService.searchCount(
-				_deletedCompany.getCompanyId(), false));
+			layoutPrototypes.toString(), 0, layoutPrototypes.size());
 	}
 
 	@Test

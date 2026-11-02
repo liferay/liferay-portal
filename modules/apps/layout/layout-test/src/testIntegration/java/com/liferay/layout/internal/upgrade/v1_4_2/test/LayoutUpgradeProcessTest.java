@@ -91,7 +91,8 @@ public class LayoutUpgradeProcessTest {
 
 		LayoutFriendlyURL draftLayoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
-				draftLayout.getPlid(), draftLayout.getDefaultLanguageId());
+				draftLayout.getPlid(), draftLayout.getDefaultLanguageId(),
+				true);
 
 		draftLayoutFriendlyURL.setPrivateLayout(false);
 
@@ -100,7 +101,7 @@ public class LayoutUpgradeProcessTest {
 
 		LayoutFriendlyURL layoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
-				layout.getPlid(), layout.getDefaultLanguageId());
+				layout.getPlid(), layout.getDefaultLanguageId(), true);
 
 		layoutFriendlyURL.setPrivateLayout(false);
 
@@ -122,13 +123,14 @@ public class LayoutUpgradeProcessTest {
 		LayoutFriendlyURL updatedDraftLayoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
 				updatedDraftLayout.getPlid(),
-				updatedDraftLayout.getDefaultLanguageId());
+				updatedDraftLayout.getDefaultLanguageId(), true);
 
 		Assert.assertTrue(updatedDraftLayoutFriendlyURL.isPrivateLayout());
 
 		LayoutFriendlyURL updatedLayoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
-				updatedLayout.getPlid(), updatedLayout.getDefaultLanguageId());
+				updatedLayout.getPlid(), updatedLayout.getDefaultLanguageId(),
+				true);
 
 		Assert.assertTrue(updatedLayoutFriendlyURL.isPrivateLayout());
 	}
@@ -170,12 +172,12 @@ public class LayoutUpgradeProcessTest {
 
 		LayoutFriendlyURL layoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
-				layout.getPlid(), layout.getDefaultLanguageId());
+				layout.getPlid(), layout.getDefaultLanguageId(), true);
 
 		LayoutFriendlyURL duplicateLayoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
 				duplicateLayout.getPlid(),
-				duplicateDraftLayout.getDefaultLanguageId());
+				duplicateDraftLayout.getDefaultLanguageId(), true);
 
 		duplicateLayoutFriendlyURL.setPrivateLayout(false);
 		duplicateLayoutFriendlyURL.setFriendlyURL(
@@ -193,7 +195,8 @@ public class LayoutUpgradeProcessTest {
 
 		LayoutFriendlyURL updatedLayoutFriendlyURL =
 			_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
-				updatedLayout.getPlid(), updatedLayout.getDefaultLanguageId());
+				updatedLayout.getPlid(), updatedLayout.getDefaultLanguageId(),
+				true);
 
 		Assert.assertTrue(updatedLayoutFriendlyURL.isPrivateLayout());
 	}

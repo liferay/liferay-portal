@@ -84,47 +84,11 @@ public class LayoutFriendlyURLLocalServiceImpl
 	}
 
 	@Override
-	public List<LayoutFriendlyURL> addLayoutFriendlyURLs(
-			long userId, long companyId, long groupId, long plid,
-			boolean privateLayout, Map<Locale, String> friendlyURLMap,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		List<LayoutFriendlyURL> layoutFriendlyURLs = new ArrayList<>();
-
-		for (Locale locale : LanguageUtil.getAvailableLocales(groupId)) {
-			String friendlyURL = friendlyURLMap.get(locale);
-
-			if (Validator.isNull(friendlyURL)) {
-				continue;
-			}
-
-			LayoutFriendlyURL layoutFriendlyURL = addLayoutFriendlyURL(
-				userId, companyId, groupId, plid, privateLayout, friendlyURL,
-				LocaleUtil.toLanguageId(locale), serviceContext);
-
-			layoutFriendlyURLs.add(layoutFriendlyURL);
-		}
-
-		return layoutFriendlyURLs;
-	}
-
-	@Override
 	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public LayoutFriendlyURL deleteLayoutFriendlyURL(
 		LayoutFriendlyURL layoutFriendlyURL) {
 
 		return layoutFriendlyURLPersistence.remove(layoutFriendlyURL);
-	}
-
-	@Override
-	public void deleteLayoutFriendlyURL(long plid, String languageId) {
-		LayoutFriendlyURL layoutFriendlyURL =
-			layoutFriendlyURLPersistence.fetchByP_L(plid, languageId);
-
-		if (layoutFriendlyURL != null) {
-			deleteLayoutFriendlyURL(layoutFriendlyURL);
-		}
 	}
 
 	@Override
@@ -156,13 +120,6 @@ public class LayoutFriendlyURLLocalServiceImpl
 
 	@Override
 	public LayoutFriendlyURL fetchLayoutFriendlyURL(
-		long plid, String languageId) {
-
-		return fetchLayoutFriendlyURL(plid, languageId, true);
-	}
-
-	@Override
-	public LayoutFriendlyURL fetchLayoutFriendlyURL(
 		long plid, String languageId, boolean useDefault) {
 
 		LayoutFriendlyURL layoutFriendlyURL =
@@ -183,16 +140,6 @@ public class LayoutFriendlyURLLocalServiceImpl
 		}
 
 		return layoutFriendlyURL;
-	}
-
-	@Override
-	public LayoutFriendlyURL getLayoutFriendlyURL(
-			long groupId, boolean privateLayout, String friendlyURL,
-			String languageId)
-		throws NoSuchLayoutFriendlyURLException {
-
-		return layoutFriendlyURLPersistence.findByG_P_F_L(
-			groupId, privateLayout, friendlyURL, languageId);
 	}
 
 	@Override

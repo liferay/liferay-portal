@@ -359,13 +359,6 @@ public class LayoutSetBranchLocalServiceImpl
 	}
 
 	@Override
-	public void deleteLayoutSetBranches(long groupId, boolean privateLayout)
-		throws PortalException {
-
-		deleteLayoutSetBranches(groupId, privateLayout, false);
-	}
-
-	@Override
 	public void deleteLayoutSetBranches(
 			long groupId, boolean privateLayout, boolean includeMaster)
 		throws PortalException {
@@ -387,23 +380,6 @@ public class LayoutSetBranchLocalServiceImpl
 		if (masterLayoutSetBranch != null) {
 			deleteLayoutSetBranch(masterLayoutSetBranch, includeMaster);
 		}
-	}
-
-	@Override
-	public LayoutSetBranch fetchLayoutSetBranch(
-		long groupId, boolean privateLayout, String name) {
-
-		return layoutSetBranchPersistence.fetchByG_P_N(
-			groupId, privateLayout, name);
-	}
-
-	@Override
-	public LayoutSetBranch getLayoutSetBranch(
-			long groupId, boolean privateLayout, String name)
-		throws PortalException {
-
-		return layoutSetBranchPersistence.findByG_P_N(
-			groupId, privateLayout, name);
 	}
 
 	@Override

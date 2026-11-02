@@ -107,7 +107,8 @@ public class LayoutConstraintResolverTest {
 				LayoutFriendlyURL layoutFriendlyURL =
 					_layoutFriendlyURLLocalService.fetchLayoutFriendlyURL(
 						layout.getPlid(),
-						LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()));
+						LocaleUtil.toLanguageId(LocaleUtil.getSiteDefault()),
+						true);
 
 				Assert.assertEquals(
 					resolvedLayout.getFriendlyURL(),

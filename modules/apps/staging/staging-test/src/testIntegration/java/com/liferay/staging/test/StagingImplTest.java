@@ -53,7 +53,6 @@ import com.liferay.portal.kernel.model.LayoutBranch;
 import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutSetBranch;
-import com.liferay.portal.kernel.model.LayoutSetBranchConstants;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
@@ -897,13 +896,11 @@ public class StagingImplTest {
 		Group stagingGroup = _group.getStagingGroup();
 
 		Assert.assertNotNull(
-			_layoutSetBranchLocalService.fetchLayoutSetBranch(
-				stagingGroup.getGroupId(), false,
-				LayoutSetBranchConstants.MASTER_BRANCH_NAME));
+			_layoutSetBranchLocalService.getMasterLayoutSetBranch(
+				stagingGroup.getGroupId(), false));
 		Assert.assertNotNull(
-			_layoutSetBranchLocalService.fetchLayoutSetBranch(
-				stagingGroup.getGroupId(), true,
-				LayoutSetBranchConstants.MASTER_BRANCH_NAME));
+			_layoutSetBranchLocalService.getMasterLayoutSetBranch(
+				stagingGroup.getGroupId(), true));
 	}
 
 	protected void enableLocalStaging(
@@ -1054,13 +1051,11 @@ public class StagingImplTest {
 						"branchingPublic")));
 
 			Assert.assertNotNull(
-				_layoutSetBranchLocalService.fetchLayoutSetBranch(
-					_remoteStagingGroup.getGroupId(), false,
-					LayoutSetBranchConstants.MASTER_BRANCH_NAME));
+				_layoutSetBranchLocalService.getMasterLayoutSetBranch(
+					_remoteStagingGroup.getGroupId(), false));
 			Assert.assertNotNull(
-				_layoutSetBranchLocalService.fetchLayoutSetBranch(
-					_remoteStagingGroup.getGroupId(), true,
-					LayoutSetBranchConstants.MASTER_BRANCH_NAME));
+				_layoutSetBranchLocalService.getMasterLayoutSetBranch(
+					_remoteStagingGroup.getGroupId(), true));
 		}
 	}
 
