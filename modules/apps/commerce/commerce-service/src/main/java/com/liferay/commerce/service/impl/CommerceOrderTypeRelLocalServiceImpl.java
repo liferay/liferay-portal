@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.search.IndexerRegistry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -173,22 +172,6 @@ public class CommerceOrderTypeRelLocalServiceImpl
 
 		return commerceOrderTypeRelPersistence.findByPrimaryKey(
 			commerceOrderTypeRelId);
-	}
-
-	@Override
-	public List<CommerceOrderTypeRel> getCommerceOrderTypeRels(
-		String className, long classPK, int start, int end,
-		OrderByComparator<CommerceOrderTypeRel> orderByComparator) {
-
-		return commerceOrderTypeRelPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(className), classPK, start,
-			end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceOrderTypeRelsCount(String className, long classPK) {
-		return commerceOrderTypeRelPersistence.countByC_C(
-			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	private GroupByStep _getGroupByStep(

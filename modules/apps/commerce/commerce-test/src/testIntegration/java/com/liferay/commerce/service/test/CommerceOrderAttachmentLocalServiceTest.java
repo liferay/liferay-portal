@@ -188,31 +188,6 @@ public class CommerceOrderAttachmentLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteCommerceOrderAttachments() throws Exception {
-		CommerceOrderAttachment commerceOrderAttachment1 =
-			_addCommerceOrderAttachment(false);
-		CommerceOrderAttachment commerceOrderAttachment2 =
-			_addCommerceOrderAttachment(true);
-
-		_commerceOrderAttachmentLocalService.deleteCommerceOrderAttachments(
-			_commerceOrder.getCommerceOrderId());
-
-		Assert.assertEquals(
-			0,
-			CommerceTestUtil.getCommerceOrderAttachmentsCount(
-				_commerceOrder.getCommerceOrderId()));
-
-		LocalRepository localRepository = _commerceOrder.getLocalRepository();
-
-		Assert.assertNull(
-			localRepository.fetchFileEntry(
-				commerceOrderAttachment1.getFileEntryId()));
-		Assert.assertNull(
-			localRepository.fetchFileEntry(
-				commerceOrderAttachment2.getFileEntryId()));
-	}
-
-	@Test
 	public void testGetCommerceOrderAttachments() throws Exception {
 		_addCommerceOrderAttachment(false);
 		_addCommerceOrderAttachment(false);
@@ -225,24 +200,6 @@ public class CommerceOrderAttachmentLocalServiceTest {
 
 		Assert.assertEquals(
 			commerceOrderAttachments.toString(), 3,
-			commerceOrderAttachments.size());
-
-		commerceOrderAttachments =
-			_commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
-				_commerceOrder.getCommerceOrderId(), false, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
-
-		Assert.assertEquals(
-			commerceOrderAttachments.toString(), 2,
-			commerceOrderAttachments.size());
-
-		commerceOrderAttachments =
-			_commerceOrderAttachmentLocalService.getCommerceOrderAttachments(
-				_commerceOrder.getCommerceOrderId(), true, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
-
-		Assert.assertEquals(
-			commerceOrderAttachments.toString(), 1,
 			commerceOrderAttachments.size());
 	}
 

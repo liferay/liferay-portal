@@ -145,31 +145,6 @@ public class CommerceOrderAttachmentLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceOrderAttachments(long commerceOrderId)
-		throws PortalException {
-
-		List<CommerceOrderAttachment> commerceOrderAttachments =
-			commerceOrderAttachmentPersistence.findByCommerceOrderId(
-				commerceOrderId);
-
-		for (CommerceOrderAttachment commerceOrderAttachment :
-				commerceOrderAttachments) {
-
-			commerceOrderAttachmentLocalService.deleteCommerceOrderAttachment(
-				commerceOrderAttachment);
-		}
-	}
-
-	@Override
-	public List<CommerceOrderAttachment> getCommerceOrderAttachments(
-		long commerceOrderId, boolean restricted, int start, int end,
-		OrderByComparator<CommerceOrderAttachment> orderByComparator) {
-
-		return commerceOrderAttachmentPersistence.findByC_R(
-			commerceOrderId, restricted, start, end, orderByComparator);
-	}
-
-	@Override
 	public List<CommerceOrderAttachment> getCommerceOrderAttachments(
 		long commerceOrderId, int start, int end,
 		OrderByComparator<CommerceOrderAttachment> orderByComparator) {

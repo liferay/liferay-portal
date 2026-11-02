@@ -190,15 +190,8 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			_accountEntryValidatorServiceRegistration.unregister();
 		}
 
-		List<CommerceOrder> commerceOrders =
-			_commerceOrderLocalService.getCommerceOrders(
-				_commerceChannel.getGroupId(),
-				_accountEntry.getAccountEntryId(), -1, -1, null);
-
-		for (CommerceOrder commerceOrder : commerceOrders) {
-			_commerceOrderLocalService.deleteCommerceOrder(
-				commerceOrder.getCommerceOrderId());
-		}
+		_commerceOrderLocalService.deleteCommerceOrders(
+			_commerceChannel.getGroupId());
 
 		if (_accountEntry != null) {
 			_accountEntryLocalService.deleteAccountEntry(_accountEntry);

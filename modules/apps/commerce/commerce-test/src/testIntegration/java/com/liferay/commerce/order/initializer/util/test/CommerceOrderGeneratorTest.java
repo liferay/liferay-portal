@@ -158,9 +158,9 @@ public class CommerceOrderGeneratorTest {
 
 		Assert.assertEquals(
 			5,
-			_commerceOrderLocalService.getCommerceOrdersCount(
-				_commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId()));
+			_commerceOrderLocalService.
+				getCommerceOrdersCountByCommerceAccountId(
+					accountEntry.getAccountEntryId()));
 	}
 
 	@DeleteAfterTestRun

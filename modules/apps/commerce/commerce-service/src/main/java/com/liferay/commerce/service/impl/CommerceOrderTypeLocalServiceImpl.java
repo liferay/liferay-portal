@@ -216,11 +216,6 @@ public class CommerceOrderTypeLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceOrderTypesCount(long companyId, boolean active) {
-		return commerceOrderTypePersistence.countByC_A(companyId, active);
-	}
-
-	@Override
 	public int getCommerceOrderTypesCount(
 			long companyId, String className, long classPK, boolean active)
 		throws PortalException {

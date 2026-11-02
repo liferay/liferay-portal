@@ -69,25 +69,6 @@ import org.osgi.service.component.annotations.Reference;
 public class CommerceSubscriptionEntryLocalServiceImpl
 	extends CommerceSubscriptionEntryLocalServiceBaseImpl {
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceSubscriptionEntry addCommerceSubscriptionEntry(
-			long userId, long groupId, long commerceOrderItemId,
-			int subscriptionLength, String subscriptionType,
-			long maxSubscriptionCycles,
-			UnicodeProperties subscriptionTypeSettingsUnicodeProperties)
-		throws PortalException {
-
-		return commerceSubscriptionEntryLocalService.
-			addCommerceSubscriptionEntry(
-				userId, groupId, commerceOrderItemId, subscriptionLength,
-				subscriptionType, maxSubscriptionCycles,
-				subscriptionTypeSettingsUnicodeProperties, 0, null, 0, null);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CommerceSubscriptionEntry addCommerceSubscriptionEntry(
@@ -230,19 +211,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 			new Date());
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public List<CommerceSubscriptionEntry> getCommerceSubscriptionEntries(
-		long companyId, long userId, int start, int end,
-		OrderByComparator<CommerceSubscriptionEntry> orderByComparator) {
-
-		return commerceSubscriptionEntryPersistence.findByC_U(
-			companyId, userId, start, end, orderByComparator);
-	}
-
 	@Override
 	public List<CommerceSubscriptionEntry> getCommerceSubscriptionEntries(
 		long companyId, long groupId, long userId, int start, int end,
@@ -250,18 +218,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 
 		return commerceSubscriptionEntryPersistence.findByG_C_U(
 			groupId, companyId, userId, start, end, orderByComparator);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public int getCommerceSubscriptionEntriesCount(
-		long companyId, long userId) {
-
-		return commerceSubscriptionEntryPersistence.countByC_U(
-			companyId, userId);
 	}
 
 	@Override
@@ -406,25 +362,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 		return updatedSubscriptionEntry;
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public BaseModelSearchResult<CommerceSubscriptionEntry>
-			searchCommerceSubscriptionEntries(
-				long companyId, Long maxSubscriptionCycles,
-				Integer subscriptionStatus, String keywords, int start, int end,
-				Sort sort)
-		throws PortalException {
-
-		SearchContext searchContext = _buildSearchContext(
-			companyId, null, maxSubscriptionCycles, subscriptionStatus,
-			keywords, start, end, sort);
-
-		return _searchCommerceSubscriptionEntries(searchContext);
-	}
-
 	@Override
 	public BaseModelSearchResult<CommerceSubscriptionEntry>
 			searchCommerceSubscriptionEntries(
@@ -438,33 +375,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 			keywords, start, end, sort);
 
 		return _searchCommerceSubscriptionEntries(searchContext);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceSubscriptionEntry updateCommerceSubscriptionEntry(
-			long commerceSubscriptionEntryId, int subscriptionLength,
-			String subscriptionType,
-			UnicodeProperties subscriptionTypeSettingsUnicodeProperties,
-			long maxSubscriptionCycles, int subscriptionStatus,
-			int nextIterationDateMonth, int nextIterationDateDay,
-			int nextIterationDateYear, int nextIterationDateHour,
-			int nextIterationDateMinute)
-		throws PortalException {
-
-		return commerceSubscriptionEntryLocalService.
-			updateCommerceSubscriptionEntry(
-				commerceSubscriptionEntryId, subscriptionLength,
-				subscriptionType, subscriptionTypeSettingsUnicodeProperties,
-				maxSubscriptionCycles, subscriptionStatus,
-				nextIterationDateMonth, nextIterationDateDay,
-				nextIterationDateYear, nextIterationDateHour,
-				nextIterationDateMinute, 0, null, null, 0,
-				CommerceSubscriptionEntryConstants.SUBSCRIPTION_STATUS_INACTIVE,
-				0, 0, 0, 0, 0);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -565,44 +475,6 @@ public class CommerceSubscriptionEntryLocalServiceImpl
 					deliveryNextIterationDateMinute, user.getTimeZone(),
 					CommerceSubscriptionEntryNextIterationDateException.class));
 		}
-
-		return commerceSubscriptionEntryPersistence.update(
-			commerceSubscriptionEntry);
-	}
-
-	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	@Override
-	public CommerceSubscriptionEntry
-			updateCommerceSubscriptionEntryIterationDates(
-				long commerceSubscriptionEntryId, Date lastIterationDate)
-		throws PortalException {
-
-		CommerceSubscriptionEntry commerceSubscriptionEntry =
-			commerceSubscriptionEntryPersistence.findByPrimaryKey(
-				commerceSubscriptionEntryId);
-
-		CPSubscriptionType cpSubscriptionType =
-			_cpSubscriptionTypeRegistry.getCPSubscriptionType(
-				commerceSubscriptionEntry.getSubscriptionType());
-
-		User user = _userLocalService.getUser(
-			commerceSubscriptionEntry.getUserId());
-
-		commerceSubscriptionEntry.setLastIterationDate(lastIterationDate);
-
-		Date subscriptionNextIterationDate =
-			cpSubscriptionType.getSubscriptionNextIterationDate(
-				user.getTimeZone(),
-				commerceSubscriptionEntry.getSubscriptionLength(),
-				commerceSubscriptionEntry.
-					getSubscriptionTypeSettingsUnicodeProperties(),
-				lastIterationDate);
-
-		commerceSubscriptionEntry.setNextIterationDate(
-			subscriptionNextIterationDate);
 
 		return commerceSubscriptionEntryPersistence.update(
 			commerceSubscriptionEntry);

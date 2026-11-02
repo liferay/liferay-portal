@@ -32,6 +32,7 @@ import com.liferay.commerce.product.service.CommerceChannelRelLocalServiceUtil;
 import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.service.CommerceSubscriptionEntryLocalService;
+import com.liferay.commerce.service.persistence.CommerceSubscriptionEntryUtil;
 import com.liferay.commerce.subscription.CommerceSubscriptionEntryHelper;
 import com.liferay.commerce.subscription.test.util.CommerceSubscriptionEntryTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.Inject;
@@ -125,10 +127,13 @@ public class CommerceSubscriptionEntryTest {
 			_commerceSubscriptionEntryHelper);
 
 		Assert.assertEquals(
-			1,
-			_commerceSubscriptionEntryLocalService.
-				getCommerceSubscriptionEntriesCount(
-					_user.getCompanyId(), _user.getUserId()));
+			Integer.valueOf(1),
+			TransactionTestUtil.invoke(
+				CommerceSubscriptionEntryUtil.getPersistence(),
+				commerceSubscriptionEntryPersistence ->
+					commerceSubscriptionEntryPersistence.countByG_C_U(
+						_commerceChannel.getGroupId(), _user.getCompanyId(),
+						_user.getUserId())));
 	}
 
 	@Test
@@ -320,8 +325,8 @@ public class CommerceSubscriptionEntryTest {
 		List<CommerceSubscriptionEntry> commerceSubscriptionEntries =
 			_commerceSubscriptionEntryLocalService.
 				getCommerceSubscriptionEntries(
-					_group.getCompanyId(), _user.getUserId(), QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS,
+					_group.getCompanyId(), _commerceChannel.getGroupId(),
+					_user.getUserId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 					CommerceSubscriptionEntryCreateDateComparator.getInstance(
 						false));
 

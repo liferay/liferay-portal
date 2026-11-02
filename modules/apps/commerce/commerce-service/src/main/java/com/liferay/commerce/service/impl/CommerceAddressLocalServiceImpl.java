@@ -13,7 +13,6 @@ import com.liferay.commerce.exception.CommerceAddressStreetException;
 import com.liferay.commerce.exception.CommerceAddressTypeException;
 import com.liferay.commerce.exception.CommerceAddressZipException;
 import com.liferay.commerce.model.CommerceAddress;
-import com.liferay.commerce.model.CommerceGeocoder;
 import com.liferay.commerce.model.impl.CommerceAddressImpl;
 import com.liferay.commerce.product.model.CommerceChannelRel;
 import com.liferay.commerce.product.model.CommerceChannelRelTable;
@@ -158,20 +157,6 @@ public class CommerceAddressLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCountryCommerceAddresses(long countryId)
-		throws PortalException {
-
-		_addressLocalService.deleteCountryAddresses(countryId);
-	}
-
-	@Override
-	public void deleteRegionCommerceAddresses(long regionId)
-		throws PortalException {
-
-		_addressLocalService.deleteRegionAddresses(regionId);
-	}
-
-	@Override
 	public CommerceAddress fetchCommerceAddress(long commerceAddressId) {
 		return CommerceAddressImpl.fromAddress(
 			_addressLocalService.fetchAddress(commerceAddressId));
@@ -184,40 +169,6 @@ public class CommerceAddressLocalServiceImpl
 		return CommerceAddressImpl.fromAddress(
 			_addressLocalService.fetchAddressByExternalReferenceCode(
 				externalReferenceCode, companyId));
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public CommerceAddress geolocateCommerceAddress(long commerceAddressId)
-		throws PortalException {
-
-		Address address = _addressLocalService.getAddress(commerceAddressId);
-
-		double[] coordinates = _commerceGeocoder.getCoordinates(
-			address.getStreet1(), address.getCity(), address.getZip(),
-			address.getRegion(), address.getCountry());
-
-		address.setLatitude(coordinates[0]);
-		address.setLongitude(coordinates[1]);
-
-		return CommerceAddressImpl.fromAddress(
-			_addressLocalService.updateAddress(address));
-	}
-
-	@Override
-	public List<CommerceAddress> getBillingAndShippingCommerceAddresses(
-			long companyId, String className, long classPK)
-		throws PortalException {
-
-		return TransformUtil.transform(
-			_addressLocalService.getListTypeAddresses(
-				companyId, className, classPK,
-				new long[] {
-					CommerceAddressImpl.toAddressTypeId(
-						CommerceAddressConstants.
-							ADDRESS_TYPE_BILLING_AND_SHIPPING)
-				}),
-			CommerceAddressImpl::fromAddress);
 	}
 
 	@Override
@@ -804,9 +755,6 @@ public class CommerceAddressLocalServiceImpl
 
 	@Reference
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
-
-	@Reference
-	private CommerceGeocoder _commerceGeocoder;
 
 	@Reference
 	private GroupLocalService _groupLocalService;

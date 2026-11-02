@@ -115,36 +115,6 @@ public class CommerceOrderNoteLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceOrderNote> getCommerceOrderNotes(
-		long commerceOrderId, boolean restricted, int start, int end) {
-
-		return commerceOrderNotePersistence.findByC_R(
-			commerceOrderId, restricted, start, end);
-	}
-
-	@Override
-	public List<CommerceOrderNote> getCommerceOrderNotes(
-		long commerceOrderId, int start, int end) {
-
-		return commerceOrderNotePersistence.findByCommerceOrderId(
-			commerceOrderId, start, end);
-	}
-
-	@Override
-	public int getCommerceOrderNotesCount(long commerceOrderId) {
-		return commerceOrderNotePersistence.countByCommerceOrderId(
-			commerceOrderId);
-	}
-
-	@Override
-	public int getCommerceOrderNotesCount(
-		long commerceOrderId, boolean restricted) {
-
-		return commerceOrderNotePersistence.countByC_R(
-			commerceOrderId, restricted);
-	}
-
-	@Override
 	public CommerceOrderNote updateCommerceOrderNote(
 			long commerceOrderNoteId, String content, boolean restricted)
 		throws PortalException {

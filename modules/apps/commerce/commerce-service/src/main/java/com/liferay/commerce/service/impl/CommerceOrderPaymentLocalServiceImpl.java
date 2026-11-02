@@ -13,7 +13,6 @@ import com.liferay.commerce.util.comparator.CommerceOrderPaymentCreateDateCompar
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.OrderByComparator;
 
@@ -45,18 +44,6 @@ public class CommerceOrderPaymentLocalServiceImpl
 		User user = _userLocalService.getUser(commerceOrder.getUserId());
 
 		return _getCommerceOrderPayment(status, result, commerceOrder, user);
-	}
-
-	@Override
-	public CommerceOrderPayment addCommerceOrderPayment(
-			long commerceOrderId, int status, String content,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return _getCommerceOrderPayment(
-			status, content,
-			_commerceOrderPersistence.findByPrimaryKey(commerceOrderId),
-			_userLocalService.getUser(serviceContext.getUserId()));
 	}
 
 	@Override

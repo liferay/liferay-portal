@@ -157,8 +157,9 @@ public class CommerceSubscriptionsNotificationTest {
 		List<CommerceSubscriptionEntry> commerceSubscriptionEntries =
 			_commerceSubscriptionEntryLocalService.
 				getCommerceSubscriptionEntries(
-					_group.getCompanyId(), _commerceOrder.getUserId(),
-					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+					_group.getCompanyId(), _commerceChannel.getGroupId(),
+					_commerceOrder.getUserId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
 
 		Assert.assertEquals(
 			commerceSubscriptionEntries.toString(), 1,
