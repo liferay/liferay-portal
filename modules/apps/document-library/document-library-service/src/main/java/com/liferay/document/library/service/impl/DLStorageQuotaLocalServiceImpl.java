@@ -33,13 +33,6 @@ import org.osgi.service.component.annotations.Component;
 public class DLStorageQuotaLocalServiceImpl
 	extends DLStorageQuotaLocalServiceBaseImpl {
 
-	@Override
-	public DLStorageQuota getCompanyDLStorageQuota(long companyId)
-		throws PortalException {
-
-		return dlStorageQuotaPersistence.findByCompanyId(companyId);
-	}
-
 	@BufferedIncrement(incrementClass = NumberIncrement.class)
 	@Override
 	public void incrementStorageSize(long companyId, long increment) {

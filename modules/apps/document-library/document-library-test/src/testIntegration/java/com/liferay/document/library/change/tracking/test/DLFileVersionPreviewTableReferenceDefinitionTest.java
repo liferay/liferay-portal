@@ -75,7 +75,7 @@ public class DLFileVersionPreviewTableReferenceDefinitionTest
 			_dlFileVersion.getFileEntryId(), _dlFileVersion.getFileVersionId(),
 			DLFileVersionPreviewConstants.STATUS_SUCCESS);
 
-		return _dlFileVersionPreviewLocalService.getDLFileVersionPreview(
+		return _dlFileVersionPreviewLocalService.fetchDLFileVersionPreview(
 			_dlFileVersion.getFileEntryId(), _dlFileVersion.getFileVersionId());
 	}
 

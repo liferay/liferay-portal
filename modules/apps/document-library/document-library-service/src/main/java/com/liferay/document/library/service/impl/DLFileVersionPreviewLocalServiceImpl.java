@@ -10,8 +10,6 @@ import com.liferay.document.library.service.base.DLFileVersionPreviewLocalServic
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -52,39 +50,6 @@ public class DLFileVersionPreviewLocalServiceImpl
 
 		return dlFileVersionPreviewPersistence.fetchByF_F(
 			fileEntryId, fileVersionId);
-	}
-
-	@Override
-	public DLFileVersionPreview fetchDLFileVersionPreview(
-		long fileEntryId, long fileVersionId, int previewStatus) {
-
-		return dlFileVersionPreviewPersistence.fetchByF_F_P(
-			fileEntryId, fileVersionId, previewStatus);
-	}
-
-	@Override
-	public DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId)
-		throws PortalException {
-
-		return dlFileVersionPreviewPersistence.findByF_F(
-			fileEntryId, fileVersionId);
-	}
-
-	@Override
-	public DLFileVersionPreview getDLFileVersionPreview(
-			long fileEntryId, long fileVersionId, int previewStatus)
-		throws PortalException {
-
-		return dlFileVersionPreviewPersistence.findByF_F_P(
-			fileEntryId, fileVersionId, previewStatus);
-	}
-
-	@Override
-	public List<DLFileVersionPreview> getFileEntryDLFileVersionPreviews(
-		long fileEntryId) {
-
-		return dlFileVersionPreviewPersistence.findByFileEntryId(fileEntryId);
 	}
 
 	@Override

@@ -10,7 +10,7 @@ import com.liferay.document.library.exception.NoSuchStorageQuotaException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.model.DLStorageQuota;
-import com.liferay.document.library.service.DLStorageQuotaLocalService;
+import com.liferay.document.library.service.persistence.DLStorageQuotaUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -112,9 +113,11 @@ public class DLAppDLStorageQuotaLocalServiceTest {
 
 	private long _getStorageSize() throws Exception {
 		try {
-			DLStorageQuota dlStorageQuota =
-				_dlStorageQuotaLocalService.getCompanyDLStorageQuota(
-					TestPropsValues.getCompanyId());
+			DLStorageQuota dlStorageQuota = TransactionTestUtil.invoke(
+				DLStorageQuotaUtil.getPersistence(),
+				dlStorageQuotaPersistence ->
+					dlStorageQuotaPersistence.findByCompanyId(
+						TestPropsValues.getCompanyId()));
 
 			return dlStorageQuota.getStorageSize();
 		}
@@ -125,9 +128,6 @@ public class DLAppDLStorageQuotaLocalServiceTest {
 
 	@Inject
 	private DLAppLocalService _dlAppLocalService;
-
-	@Inject
-	private DLStorageQuotaLocalService _dlStorageQuotaLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;
