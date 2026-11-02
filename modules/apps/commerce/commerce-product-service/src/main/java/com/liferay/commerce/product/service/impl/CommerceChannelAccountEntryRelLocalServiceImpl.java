@@ -271,24 +271,6 @@ public class CommerceChannelAccountEntryRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CommerceChannelAccountEntryRel>
-		getCommerceChannelAccountEntryRels(
-			String className, long classPK, long commerceChannelId, int type) {
-
-		return commerceChannelAccountEntryRelPersistence.findByC_C_C_T(
-			_classNameLocalService.getClassNameId(className), classPK,
-			commerceChannelId, type);
-	}
-
-	@Override
-	public int getCommerceChannelAccountEntryRelsCount(
-		long accountEntryId, int type) {
-
-		return commerceChannelAccountEntryRelPersistence.countByA_T(
-			accountEntryId, type);
-	}
-
-	@Override
 	public int getCommerceChannelAccountEntryRelsCount(
 		long commerceChannelId, String name, int type) {
 

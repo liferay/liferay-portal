@@ -109,15 +109,6 @@ public class CPInstanceOptionValueRelLocalServiceImpl
 	}
 
 	@Override
-	public List<CPInstanceOptionValueRel>
-		getCPInstanceCPInstanceOptionValueRels(
-			long cpDefinitionOptionRelId, long cpInstanceId) {
-
-		return cpInstanceOptionValueRelPersistence.findByCDORI_CII(
-			cpDefinitionOptionRelId, cpInstanceId);
-	}
-
-	@Override
 	public boolean hasCPInstanceCPDefinitionOptionRel(
 		long cpDefinitionOptionRelId, long cpInstanceId) {
 

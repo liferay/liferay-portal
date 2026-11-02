@@ -15,6 +15,7 @@ import com.liferay.commerce.product.exception.DuplicateCommerceChannelAccountEnt
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CommerceChannelAccountEntryRelLocalService;
+import com.liferay.commerce.product.test.util.CPTestUtil;
 import com.liferay.commerce.test.util.CommerceTestUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -218,13 +219,12 @@ public class CommerceChannelAccountEntryRelLocalServiceTest {
 				CommerceChannelAccountEntryRelConstants.TYPE_USER);
 	}
 
-	private List<Long> _getAccountEntryIds(User user) {
+	private List<Long> _getAccountEntryIds(User user) throws Exception {
 		return TransformUtil.transform(
-			_commerceChannelAccountEntryRelLocalService.
-				getCommerceChannelAccountEntryRels(
-					User.class.getName(), user.getUserId(),
-					_commerceChannel.getCommerceChannelId(),
-					CommerceChannelAccountEntryRelConstants.TYPE_USER),
+			CPTestUtil.getCommerceChannelAccountEntryRels(
+				User.class.getName(), user.getUserId(),
+				_commerceChannel.getCommerceChannelId(),
+				CommerceChannelAccountEntryRelConstants.TYPE_USER),
 			CommerceChannelAccountEntryRel::getAccountEntryId);
 	}
 

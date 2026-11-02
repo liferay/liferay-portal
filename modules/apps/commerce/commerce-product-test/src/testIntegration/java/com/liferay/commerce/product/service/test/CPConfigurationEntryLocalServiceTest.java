@@ -143,7 +143,7 @@ public class CPConfigurationEntryLocalServiceTest {
 			cpConfigurationEntry1.getExternalReferenceCode());
 
 		List<CPConfigurationEntry> cpConfigurationEntries =
-			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+			CPTestUtil.getCPConfigurationEntries(
 				_cpConfigurationList.getCPConfigurationListId());
 
 		CPConfigurationEntry cpConfigurationEntry2 = cpConfigurationEntries.get(
@@ -238,7 +238,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				CPTestUtil.getCPConfigurationEntries(
 					cpConfigurationList1.getCPConfigurationListId())));
 
 		CPConfigurationEntrySetting cpConfigurationEntrySetting =
@@ -268,7 +268,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				CPTestUtil.getCPConfigurationEntries(
 					cpConfigurationList2.getCPConfigurationListId())));
 
 		cpConfigurationEntrySetting =
@@ -299,7 +299,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertFalse(
 			ListUtil.isEmpty(
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				CPTestUtil.getCPConfigurationEntries(
 					cpConfigurationList2.getCPConfigurationListId())));
 
 		cpConfigurationEntrySetting =
@@ -579,7 +579,7 @@ public class CPConfigurationEntryLocalServiceTest {
 
 		Assert.assertTrue(
 			ListUtil.isEmpty(
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				CPTestUtil.getCPConfigurationEntries(
 					cpConfigurationList.getCPConfigurationListId())));
 
 		CPConfigurationEntrySetting cpConfigurationEntrySetting =

@@ -307,14 +307,6 @@ public class CPConfigurationEntryLocalServiceImpl
 
 	@Override
 	public List<CPConfigurationEntry> getCPConfigurationEntries(
-		long cpConfigurationListId) {
-
-		return cpConfigurationEntryPersistence.findByCPConfigurationListId(
-			cpConfigurationListId);
-	}
-
-	@Override
-	public List<CPConfigurationEntry> getCPConfigurationEntries(
 		long classNameId, long classPK) {
 
 		return cpConfigurationEntryPersistence.findByC_C(classNameId, classPK);

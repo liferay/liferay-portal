@@ -751,11 +751,6 @@ public class CPDefinitionOptionRelLocalServiceImpl
 	}
 
 	@Override
-	public int getCPOptionCPDefinitionOptionRelsCount(long cpOptionId) {
-		return cpDefinitionOptionRelPersistence.countByCPOptionId(cpOptionId);
-	}
-
-	@Override
 	public CPDefinitionOptionRel getOrAddEmptyCPDefinitionOptionRel(
 			String externalReferenceCode, long companyId, long userId,
 			long cpDefinitionId, long cpOptionId, String commerceOptionTypeKey,

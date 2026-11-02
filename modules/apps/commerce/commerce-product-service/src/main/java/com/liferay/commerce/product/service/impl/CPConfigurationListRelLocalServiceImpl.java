@@ -262,21 +262,6 @@ public class CPConfigurationListRelLocalServiceImpl
 	}
 
 	@Override
-	public int getCPConfigurationListRelsCount(long cpConfigurationListId) {
-		return cpConfigurationListRelPersistence.countByCPConfigurationListId(
-			cpConfigurationListId);
-	}
-
-	@Override
-	public int getCPConfigurationListRelsCount(
-		String className, long cpConfigurationListId) {
-
-		return cpConfigurationListRelPersistence.countByC_C(
-			_classNameLocalService.getClassNameId(className),
-			cpConfigurationListId);
-	}
-
-	@Override
 	public List<CPConfigurationListRel>
 		getCommerceOrderTypeCPConfigurationListRels(
 			long cpConfigurationListId, String keywords, int start, int end) {

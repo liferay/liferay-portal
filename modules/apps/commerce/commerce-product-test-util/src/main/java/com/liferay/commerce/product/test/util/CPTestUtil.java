@@ -20,6 +20,7 @@ import com.liferay.commerce.price.list.service.CommercePriceListLocalServiceUtil
 import com.liferay.commerce.product.configuration.CPOptionConfiguration;
 import com.liferay.commerce.product.constants.CPConstants;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
+import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPDefinition;
 import com.liferay.commerce.product.model.CPDefinitionOptionRel;
 import com.liferay.commerce.product.model.CPDefinitionOptionValueRel;
@@ -30,6 +31,7 @@ import com.liferay.commerce.product.model.CPOptionCategory;
 import com.liferay.commerce.product.model.CPOptionValue;
 import com.liferay.commerce.product.model.CPSpecificationOption;
 import com.liferay.commerce.product.model.CommerceCatalog;
+import com.liferay.commerce.product.model.CommerceChannelAccountEntryRel;
 import com.liferay.commerce.product.service.CPDefinitionLocalServiceUtil;
 import com.liferay.commerce.product.service.CPDefinitionOptionRelLocalServiceUtil;
 import com.liferay.commerce.product.service.CPDefinitionOptionValueRelLocalServiceUtil;
@@ -40,6 +42,8 @@ import com.liferay.commerce.product.service.CPOptionLocalServiceUtil;
 import com.liferay.commerce.product.service.CPOptionValueLocalServiceUtil;
 import com.liferay.commerce.product.service.CPSpecificationOptionLocalServiceUtil;
 import com.liferay.commerce.product.service.CommerceCatalogLocalServiceUtil;
+import com.liferay.commerce.product.service.persistence.CPConfigurationEntryUtil;
+import com.liferay.commerce.product.service.persistence.CommerceChannelAccountEntryRelUtil;
 import com.liferay.commerce.product.type.simple.constants.SimpleCPTypeConstants;
 import com.liferay.commerce.service.CPDefinitionInventoryLocalServiceUtil;
 import com.liferay.petra.function.transform.TransformUtil;
@@ -51,10 +55,12 @@ import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.service.ClassNameLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -788,6 +794,17 @@ public class CPTestUtil {
 				cpDefinition.getGroupId()));
 	}
 
+	public static List<CPConfigurationEntry> getCPConfigurationEntries(
+			long cpConfigurationListId)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			CPConfigurationEntryUtil.getPersistence(),
+			cpConfigurationEntryPersistence ->
+				cpConfigurationEntryPersistence.findByCPConfigurationListId(
+					cpConfigurationListId));
+	}
+
 	public static String[] getCPOptionFieldTypes()
 		throws ConfigurationException {
 
@@ -799,6 +816,20 @@ public class CPTestUtil {
 			commerceOptionType -> !Objects.equals(
 				CPConstants.PRODUCT_OPTION_SELECT_DATE_KEY,
 				commerceOptionType));
+	}
+
+	public static List<CommerceChannelAccountEntryRel>
+			getCommerceChannelAccountEntryRels(
+				String className, long classPK, long commerceChannelId,
+				int type)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			CommerceChannelAccountEntryRelUtil.getPersistence(),
+			commerceChannelAccountEntryRelPersistence ->
+				commerceChannelAccountEntryRelPersistence.findByC_C_C_T(
+					ClassNameLocalServiceUtil.getClassNameId(className),
+					classPK, commerceChannelId, type));
 	}
 
 	public static String getDefaultCommerceOptionTypeKey(boolean skuContributor)

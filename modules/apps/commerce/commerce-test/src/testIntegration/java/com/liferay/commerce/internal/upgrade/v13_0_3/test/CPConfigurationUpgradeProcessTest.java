@@ -92,7 +92,7 @@ public class CPConfigurationUpgradeProcessTest {
 		Assert.assertNotNull(cpConfigurationList);
 
 		List<CPConfigurationEntry> cpConfigurationEntries =
-			_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+			CPTestUtil.getCPConfigurationEntries(
 				cpConfigurationList.getCPConfigurationListId());
 
 		Assert.assertFalse(cpConfigurationEntries.isEmpty());
@@ -160,7 +160,7 @@ public class CPConfigurationUpgradeProcessTest {
 			Assert.assertNotNull(cpConfigurationList);
 
 			List<CPConfigurationEntry> cpConfigurationEntries =
-				_cpConfigurationEntryLocalService.getCPConfigurationEntries(
+				CPTestUtil.getCPConfigurationEntries(
 					cpConfigurationList.getCPConfigurationListId());
 
 			Assert.assertFalse(cpConfigurationEntries.isEmpty());
