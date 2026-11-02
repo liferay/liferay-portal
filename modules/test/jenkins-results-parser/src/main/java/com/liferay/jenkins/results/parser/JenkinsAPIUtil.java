@@ -36,7 +36,7 @@ public class JenkinsAPIUtil {
 			uriBuilder.addParameter("tree", tree);
 		}
 
-		final String jenkinsAPIURL = uriBuilder.toString();
+		String jenkinsAPIURL = uriBuilder.toString();
 
 		Retryable<JSONObject> retryable = new Retryable<JSONObject>() {
 
