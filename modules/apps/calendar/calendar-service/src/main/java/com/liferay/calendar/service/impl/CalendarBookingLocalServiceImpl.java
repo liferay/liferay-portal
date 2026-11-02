@@ -51,7 +51,6 @@ import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -614,24 +613,6 @@ public class CalendarBookingLocalServiceImpl
 	}
 
 	@Override
-	public CalendarBooking deleteRecurringCalendarBooking(
-			CalendarBooking calendarBooking)
-		throws PortalException {
-
-		return calendarBookingLocalService.deleteCalendarBooking(
-			calendarBooking, true);
-	}
-
-	@Override
-	public CalendarBooking deleteRecurringCalendarBooking(
-			long calendarBookingId)
-		throws PortalException {
-
-		return calendarBookingLocalService.deleteCalendarBooking(
-			calendarBookingId, true);
-	}
-
-	@Override
 	public String exportCalendarBooking(long calendarBookingId, String type)
 		throws Exception {
 
@@ -682,11 +663,6 @@ public class CalendarBookingLocalServiceImpl
 	}
 
 	@Override
-	public List<CalendarBooking> getCalendarBookings(long calendarId) {
-		return calendarBookingPersistence.findByCalendarId(calendarId);
-	}
-
-	@Override
 	public List<CalendarBooking> getCalendarBookings(
 		long calendarId, int[] statuses) {
 
@@ -695,14 +671,6 @@ public class CalendarBookingLocalServiceImpl
 		}
 
 		return calendarBookingPersistence.findByC_S(calendarId, statuses);
-	}
-
-	@Override
-	public List<CalendarBooking> getCalendarBookings(
-		long calendarId, long startTime, long endTime) {
-
-		return getCalendarBookings(
-			calendarId, startTime, endTime, QueryUtil.ALL_POS);
 	}
 
 	@Override
@@ -753,14 +721,6 @@ public class CalendarBookingLocalServiceImpl
 	}
 
 	@Override
-	public List<CalendarBooking> getChildCalendarBookings(
-		long parentCalendarBookingId, int status) {
-
-		return calendarBookingPersistence.findByP_S(
-			parentCalendarBookingId, status);
-	}
-
-	@Override
 	public long[] getChildCalendarIds(long calendarBookingId, long calendarId)
 		throws PortalException {
 
@@ -805,21 +765,6 @@ public class CalendarBookingLocalServiceImpl
 
 		return calendarBookingPersistence.findByRecurringCalendarBookingId(
 			calendarBooking.getRecurringCalendarBookingId());
-	}
-
-	@Override
-	public List<CalendarBooking> getRecurringCalendarBookings(
-		CalendarBooking calendarBooking, long startTime) {
-
-		return TransformUtil.transform(
-			getRecurringCalendarBookings(calendarBooking),
-			recurringCalendarBooking -> {
-				if (recurringCalendarBooking.getStartTime() > startTime) {
-					return recurringCalendarBooking;
-				}
-
-				return null;
-			});
 	}
 
 	@Override

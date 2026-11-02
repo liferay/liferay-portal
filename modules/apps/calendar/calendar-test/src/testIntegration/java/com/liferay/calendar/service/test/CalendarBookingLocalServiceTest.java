@@ -961,10 +961,13 @@ public class CalendarBookingLocalServiceTest {
 			CalendarBookingTestUtil.updateCalendarBookingInstance(
 				calendarBooking, 4, titleMap, serviceContext);
 
-		List<CalendarBooking> instances =
+		List<CalendarBooking> instances = new ArrayList<>();
+
+		partitionCalendarBookingListByStartTime(
 			_calendarBookingLocalService.getRecurringCalendarBookings(
-				calendarBooking,
-				firstCalendarBookingInstance.getStartTime() + 1);
+				calendarBooking),
+			firstCalendarBookingInstance.getStartTime() + 2, new ArrayList<>(),
+			instances);
 
 		Assert.assertEquals(instances.toString(), 1, instances.size());
 
@@ -2091,7 +2094,7 @@ public class CalendarBookingLocalServiceTest {
 
 		List<CalendarBooking> liveCalendarBookings =
 			_calendarBookingLocalService.getCalendarBookings(
-				liveCalendar.getCalendarId());
+				liveCalendar.getCalendarId(), -1, -1, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
 			liveCalendarBookings.toString(), 0, liveCalendarBookings.size());
@@ -2107,7 +2110,7 @@ public class CalendarBookingLocalServiceTest {
 		CalendarStagingTestUtil.publishLayouts(liveGroup, true);
 
 		liveCalendarBookings = _calendarBookingLocalService.getCalendarBookings(
-			liveCalendar.getCalendarId());
+			liveCalendar.getCalendarId(), -1, -1, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
 			liveCalendarBookings.toString(), 1, liveCalendarBookings.size());
@@ -2235,9 +2238,13 @@ public class CalendarBookingLocalServiceTest {
 					laterDescriptionMap, instanceStartTime, instanceEndTime,
 					serviceContext);
 
-		List<CalendarBooking> recurringCalendarBookings =
+		List<CalendarBooking> recurringCalendarBookings = new ArrayList<>();
+
+		partitionCalendarBookingListByStartTime(
 			_calendarBookingLocalService.getRecurringCalendarBookings(
-				calendarBooking, calendarBooking.getEndTime());
+				calendarBooking),
+			calendarBooking.getEndTime() + 1, new ArrayList<>(),
+			recurringCalendarBookings);
 
 		Assert.assertEquals(
 			recurringCalendarBookings.toString(), 2,
@@ -2308,9 +2315,13 @@ public class CalendarBookingLocalServiceTest {
 					laterDescriptionMap, instanceStartTime, instanceEndTime,
 					serviceContext);
 
-		List<CalendarBooking> recurringCalendarBookings =
+		List<CalendarBooking> recurringCalendarBookings = new ArrayList<>();
+
+		partitionCalendarBookingListByStartTime(
 			_calendarBookingLocalService.getRecurringCalendarBookings(
-				calendarBooking, calendarBooking.getEndTime());
+				calendarBooking),
+			calendarBooking.getEndTime() + 1, new ArrayList<>(),
+			recurringCalendarBookings);
 
 		Assert.assertEquals(
 			recurringCalendarBookings.toString(), 2,
@@ -3143,7 +3154,7 @@ public class CalendarBookingLocalServiceTest {
 
 		List<CalendarBooking> invitedCalendarBookings =
 			_calendarBookingLocalService.getCalendarBookings(
-				liveCalendar.getCalendarId());
+				liveCalendar.getCalendarId(), -1, -1, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
 			invitedCalendarBookings.toString(), 1,
@@ -3229,7 +3240,7 @@ public class CalendarBookingLocalServiceTest {
 	protected void assertCalendarBookingsCount(Calendar calendar, int count) {
 		List<CalendarBooking> calendarBookings =
 			_calendarBookingLocalService.getCalendarBookings(
-				calendar.getCalendarId());
+				calendar.getCalendarId(), -1, -1, QueryUtil.ALL_POS);
 
 		Assert.assertEquals(
 			calendarBookings.toString(), count, calendarBookings.size());

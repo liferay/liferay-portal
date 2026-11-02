@@ -219,11 +219,6 @@ public class CalendarResourceLocalServiceImpl
 	}
 
 	@Override
-	public List<CalendarResource> getCalendarResources(long groupId) {
-		return calendarResourcePersistence.findByGroupId(groupId);
-	}
-
-	@Override
 	public List<CalendarResource> searchByKeywords(
 		long companyId, long[] groupIds, long[] classNameIds, String keywords,
 		boolean active, boolean andOperator, int start, int end,
