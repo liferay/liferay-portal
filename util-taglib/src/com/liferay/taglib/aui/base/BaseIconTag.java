@@ -13,7 +13,6 @@ import jakarta.servlet.jsp.JspException;
  * @author Bruno Basto
  * @author Nathan Cavanaugh
  * @author Julio Camarero
- * @generated
  */
 public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
 
