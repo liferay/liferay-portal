@@ -85,6 +85,16 @@ public class SiteSerDes {
 			sb.append(site.getContentSharingWithChildrenEnabled());
 		}
 
+		if (site.getCreator() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(site.getCreator());
+		}
+
 		if (site.getDefaultLanguageId() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -483,6 +493,13 @@ public class SiteSerDes {
 				String.valueOf(site.getContentSharingWithChildrenEnabled()));
 		}
 
+		if (site.getCreator() == null) {
+			map.put("creator", null);
+		}
+		else {
+			map.put("creator", String.valueOf(site.getCreator()));
+		}
+
 		if (site.getDefaultLanguageId() == null) {
 			map.put("defaultLanguageId", null);
 		}
@@ -734,6 +751,9 @@ public class SiteSerDes {
 
 				return false;
 			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				return false;
+			}
 			else if (Objects.equals(jsonParserFieldName, "defaultLanguageId")) {
 				return false;
 			}
@@ -869,6 +889,12 @@ public class SiteSerDes {
 				if (jsonParserFieldValue != null) {
 					site.setContentSharingWithChildrenEnabled(
 						(Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "creator")) {
+				if (jsonParserFieldValue != null) {
+					site.setCreator(
+						CreatorSerDes.toDTO((String)jsonParserFieldValue));
 				}
 			}
 			else if (Objects.equals(jsonParserFieldName, "defaultLanguageId")) {
@@ -1139,4 +1165,4 @@ public class SiteSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:504885770
+// LIFERAY-REST-BUILDER-HASH:-1755784210

@@ -120,6 +120,27 @@ public class Site implements Cloneable, Serializable {
 
 	protected Boolean contentSharingWithChildrenEnabled;
 
+	public Creator getCreator() {
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+	}
+
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		try {
+			creator = creatorUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Creator creator;
+
 	public String getDefaultLanguageId() {
 		return defaultLanguageId;
 	}
@@ -877,4 +898,4 @@ public class Site implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1045296917
+// LIFERAY-REST-BUILDER-HASH:1131312237

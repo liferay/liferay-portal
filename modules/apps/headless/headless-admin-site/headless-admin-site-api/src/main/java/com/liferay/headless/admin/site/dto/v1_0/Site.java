@@ -12,6 +12,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
 
+import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.petra.function.UnsafeSupplier;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -240,6 +241,50 @@ public class Site implements Serializable {
 
 	@JsonIgnore
 	private Supplier<Boolean> _contentSharingWithChildrenEnabledSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "The site's creator."
+	)
+	@Valid
+	public Creator getCreator() {
+		if (_creatorSupplier != null) {
+			creator = _creatorSupplier.get();
+
+			_creatorSupplier = null;
+		}
+
+		return creator;
+	}
+
+	public void setCreator(Creator creator) {
+		this.creator = creator;
+
+		_creatorSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCreator(
+		UnsafeSupplier<Creator, Exception> creatorUnsafeSupplier) {
+
+		_creatorSupplier = () -> {
+			try {
+				return creatorUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(description = "The site's creator.")
+	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
+	protected Creator creator;
+
+	@JsonIgnore
+	private Supplier<Creator> _creatorSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(example = "en_US")
 	public String getDefaultLanguageId() {
@@ -1555,6 +1600,18 @@ public class Site implements Serializable {
 			sb.append(contentSharingWithChildrenEnabled);
 		}
 
+		Creator creator = getCreator();
+
+		if (creator != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"creator\": ");
+
+			sb.append(creator);
+		}
+
 		String defaultLanguageId = getDefaultLanguageId();
 
 		if (defaultLanguageId != null) {
@@ -2199,4 +2256,4 @@ public class Site implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1745930621
+// LIFERAY-REST-BUILDER-HASH:827646572
