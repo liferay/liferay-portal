@@ -555,6 +555,11 @@ public class PortalWorkspaceTest
 			portalWorkspace
 		).getPrivatePortalWorkspaceGitRepository();
 
+		Mockito.doCallRealMethod(
+		).when(
+			portalWorkspace
+		).getWorkspaceRepositoryDirNames();
+
 		for (Map.Entry<String, WorkspaceGitRepository> entry :
 				workspaceGitRepositories.entrySet()) {
 

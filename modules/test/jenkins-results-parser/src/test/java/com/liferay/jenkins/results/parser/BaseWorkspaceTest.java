@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -129,6 +130,51 @@ public class BaseWorkspaceTest extends com.liferay.jenkins.results.parser.Test {
 		testEquals(
 			Arrays.asList(workspaceGitRepository),
 			loadFuture.get(10, TimeUnit.SECONDS));
+	}
+
+	@Test
+	public void testGetWorkspaceRepositoryDirNames() {
+		BaseWorkspace baseWorkspace = Mockito.mock(
+			BaseWorkspace.class, Mockito.CALLS_REAL_METHODS);
+
+		JSONObject jsonObject = new JSONObject();
+
+		ReflectionTestUtil.setFieldValue(
+			baseWorkspace, "jsonObject", jsonObject);
+
+		testEquals(
+			Collections.emptyList(),
+			baseWorkspace.getWorkspaceRepositoryDirNames());
+
+		jsonObject.put("workspace_repository_dir_names", " ");
+
+		testEquals(
+			Collections.emptyList(),
+			baseWorkspace.getWorkspaceRepositoryDirNames());
+
+		String workspaceRepositoryDirName1 = RandomTestUtil.randomString();
+		String workspaceRepositoryDirName2 = RandomTestUtil.randomString();
+
+		jsonObject.put(
+			"workspace_repository_dir_names",
+			JenkinsResultsParserUtil.combine(
+				" ", workspaceRepositoryDirName1, " ,\t",
+				workspaceRepositoryDirName2, " "));
+
+		List<String> workspaceRepositoryDirNames =
+			baseWorkspace.getWorkspaceRepositoryDirNames();
+
+		testEquals(
+			Arrays.asList(
+				workspaceRepositoryDirName1, workspaceRepositoryDirName2),
+			workspaceRepositoryDirNames);
+
+		jsonObject.put(
+			"workspace_repository_dir_names", RandomTestUtil.randomString());
+
+		testSame(
+			workspaceRepositoryDirNames,
+			baseWorkspace.getWorkspaceRepositoryDirNames());
 	}
 
 	private final ExecutorService _executorService =
