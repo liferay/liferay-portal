@@ -24,10 +24,8 @@ import com.liferay.portal.configuration.metatype.bnd.util.ConfigurableUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
-import java.util.List;
 import java.util.Map;
 
 import org.osgi.service.component.annotations.Activate;
@@ -130,51 +128,12 @@ public class CommerceWishListItemLocalServiceImpl
 	}
 
 	@Override
-	public CommerceWishListItem fetchCommerceWishListItem(
-		long commerceWishListId, String cpInstanceUuid, long cProductId) {
-
-		return commerceWishListItemPersistence.fetchByCW_CPI_CP(
-			commerceWishListId, cpInstanceUuid, cProductId);
-	}
-
-	@Override
 	public CommerceWishListItem getCommerceWishListItem(
 			long commerceWishListId, String cpInstanceUuid, long cProductId)
 		throws PortalException {
 
 		return commerceWishListItemPersistence.findByCW_CPI_CP(
 			commerceWishListId, cpInstanceUuid, cProductId);
-	}
-
-	@Override
-	public int getCommerceWishListItemByContainsCPInstanceCount(
-		long commerceWishListId, String cpInstanceUuid) {
-
-		return commerceWishListItemPersistence.countByCW_CPI(
-			commerceWishListId, cpInstanceUuid);
-	}
-
-	@Override
-	public int getCommerceWishListItemByContainsCProductCount(
-		long commerceWishListId, long cProductId) {
-
-		return commerceWishListItemPersistence.countByCW_CP(
-			commerceWishListId, cProductId);
-	}
-
-	@Override
-	public List<CommerceWishListItem> getCommerceWishListItems(
-		long commerceWishListId, int start, int end,
-		OrderByComparator<CommerceWishListItem> orderByComparator) {
-
-		return commerceWishListItemPersistence.findByCommerceWishListId(
-			commerceWishListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceWishListItemsCount(long commerceWishListId) {
-		return commerceWishListItemPersistence.countByCommerceWishListId(
-			commerceWishListId);
 	}
 
 	@Override
