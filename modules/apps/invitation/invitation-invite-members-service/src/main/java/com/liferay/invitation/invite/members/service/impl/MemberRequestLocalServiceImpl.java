@@ -46,7 +46,6 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import jakarta.mail.internet.InternetAddress;
 
 import java.util.Date;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -163,30 +162,6 @@ public class MemberRequestLocalServiceImpl
 				userId, groupId, 0, emailAddress, invitedRoleId, invitedTeamId,
 				serviceContext);
 		}
-	}
-
-	@Override
-	public MemberRequest getMemberRequest(
-			long groupId, long receiverUserId, int status)
-		throws PortalException {
-
-		return memberRequestPersistence.findByG_R_S(
-			groupId, receiverUserId, status);
-	}
-
-	@Override
-	public List<MemberRequest> getReceiverStatusMemberRequest(
-		long receiverUserId, int status, int start, int end) {
-
-		return memberRequestPersistence.findByR_S(
-			receiverUserId, status, start, end);
-	}
-
-	@Override
-	public int getReceiverStatusMemberRequestCount(
-		long receiverUserId, int status) {
-
-		return memberRequestPersistence.countByR_S(receiverUserId, status);
 	}
 
 	@Override

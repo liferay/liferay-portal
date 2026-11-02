@@ -11,6 +11,7 @@ import com.liferay.invitation.invite.members.exception.MemberRequestServiceConte
 import com.liferay.invitation.invite.members.model.MemberRequest;
 import com.liferay.invitation.invite.members.service.MemberRequestLocalService;
 import com.liferay.invitation.invite.members.service.MemberRequestService;
+import com.liferay.invitation.invite.members.service.persistence.MemberRequestUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.Team;
@@ -30,6 +31,7 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -105,10 +107,9 @@ public class MemberRequestServiceTest {
 		_addMemberRequests(
 			role.getRoleId(), 0, receiverUser, _getServiceContext(), user);
 
-		MemberRequest memberRequest =
-			_memberRequestLocalService.getMemberRequest(
-				_group.getGroupId(), receiverUser.getUserId(),
-				InviteMembersConstants.STATUS_PENDING);
+		MemberRequest memberRequest = _getMemberRequest(
+			_group.getGroupId(), receiverUser.getUserId(),
+			InviteMembersConstants.STATUS_PENDING);
 
 		Assert.assertEquals(role.getRoleId(), memberRequest.getInvitedRoleId());
 
@@ -117,7 +118,7 @@ public class MemberRequestServiceTest {
 		_addMemberRequests(
 			0, team.getTeamId(), receiverUser, _getServiceContext(), user);
 
-		memberRequest = _memberRequestLocalService.getMemberRequest(
+		memberRequest = _getMemberRequest(
 			_group.getGroupId(), receiverUser.getUserId(),
 			InviteMembersConstants.STATUS_PENDING);
 
@@ -190,6 +191,16 @@ public class MemberRequestServiceTest {
 				_group.getGroupId(), new long[] {receiverUser.getUserId()},
 				invitedRoleId, invitedTeamId, serviceContext);
 		}
+	}
+
+	private MemberRequest _getMemberRequest(
+			long groupId, long receiverUserId, int status)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			MemberRequestUtil.getPersistence(),
+			memberRequestPersistence -> memberRequestPersistence.findByG_R_S(
+				groupId, receiverUserId, status));
 	}
 
 	private ServiceContext _getServiceContext() throws Exception {
