@@ -55,22 +55,6 @@ public class CommerceNotificationAttachmentLocalServiceWrapper
 			addCommerceNotificationAttachment(commerceNotificationAttachment);
 	}
 
-	@Override
-	public
-		com.liferay.commerce.notification.model.CommerceNotificationAttachment
-				addCommerceNotificationAttachment(
-					long commerceNotificationQueueEntryId, long fileEntryId,
-					boolean deleteOnSend,
-					com.liferay.portal.kernel.service.ServiceContext
-						serviceContext)
-			throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _commerceNotificationAttachmentLocalService.
-			addCommerceNotificationAttachment(
-				commerceNotificationQueueEntryId, fileEntryId, deleteOnSend,
-				serviceContext);
-	}
-
 	/**
 	 * Creates a new commerce notification attachment with the primary key. Does not add the commerce notification attachment to the database.
 	 *
@@ -521,4 +505,4 @@ public class CommerceNotificationAttachmentLocalServiceWrapper
 		_commerceNotificationAttachmentLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-208620042
+// LIFERAY-SERVICE-BUILDER-HASH:-838630905

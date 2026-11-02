@@ -72,24 +72,6 @@ public class CommerceNotificationTemplateLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated As of Athanasius (7.3.x)
-	 */
-	@Deprecated
-	public static CommerceNotificationTemplate addCommerceNotificationTemplate(
-			String name, String description, String from,
-			Map<java.util.Locale, String> fromNameMap, String to, String cc,
-			String bcc, String type, boolean enabled,
-			Map<java.util.Locale, String> subjectMap,
-			Map<java.util.Locale, String> bodyMap,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addCommerceNotificationTemplate(
-			name, description, from, fromNameMap, to, cc, bcc, type, enabled,
-			subjectMap, bodyMap, serviceContext);
-	}
-
-	/**
 	 * Creates a new commerce notification template with the primary key. Does not add the commerce notification template to the database.
 	 *
 	 * @param commerceNotificationTemplateId the primary key for the new commerce notification template
@@ -333,24 +315,6 @@ public class CommerceNotificationTemplateLocalServiceUtil {
 
 	public static List<CommerceNotificationTemplate>
 		getCommerceNotificationTemplates(
-			long groupId, boolean enabled, int start, int end,
-			OrderByComparator<CommerceNotificationTemplate> orderByComparator) {
-
-		return getService().getCommerceNotificationTemplates(
-			groupId, enabled, start, end, orderByComparator);
-	}
-
-	public static List<CommerceNotificationTemplate>
-		getCommerceNotificationTemplates(
-			long groupId, int start, int end,
-			OrderByComparator<CommerceNotificationTemplate> orderByComparator) {
-
-		return getService().getCommerceNotificationTemplates(
-			groupId, start, end, orderByComparator);
-	}
-
-	public static List<CommerceNotificationTemplate>
-		getCommerceNotificationTemplates(
 			long groupId, String type, boolean enabled) {
 
 		return getService().getCommerceNotificationTemplates(
@@ -398,17 +362,6 @@ public class CommerceNotificationTemplateLocalServiceUtil {
 	 */
 	public static int getCommerceNotificationTemplatesCount() {
 		return getService().getCommerceNotificationTemplatesCount();
-	}
-
-	public static int getCommerceNotificationTemplatesCount(long groupId) {
-		return getService().getCommerceNotificationTemplatesCount(groupId);
-	}
-
-	public static int getCommerceNotificationTemplatesCount(
-		long groupId, boolean enabled) {
-
-		return getService().getCommerceNotificationTemplatesCount(
-			groupId, enabled);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ExportActionableDynamicQuery
@@ -489,4 +442,4 @@ public class CommerceNotificationTemplateLocalServiceUtil {
 			CommerceNotificationTemplateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:26293445
+// LIFERAY-SERVICE-BUILDER-HASH:160886374

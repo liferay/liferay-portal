@@ -96,10 +96,6 @@ public interface CommerceNotificationTemplateCommerceAccountGroupRelLocalService
 		throws PortalException;
 
 	public void
-		deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId);
-
-	public void
 		deleteCNTemplateCommerceAccountGroupRelsByCommerceNotificationTemplateId(
 			long commerceNotificationTemplateId);
 
@@ -308,4 +304,4 @@ public interface CommerceNotificationTemplateCommerceAccountGroupRelLocalService
 				commerceNotificationTemplateCommerceAccountGroupRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:744968817
+// LIFERAY-SERVICE-BUILDER-HASH:267971395

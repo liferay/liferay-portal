@@ -105,16 +105,6 @@ public class
 
 	@Override
 	public void
-		deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
-
-		_commerceNotificationTemplateCommerceAccountGroupRelLocalService.
-			deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-				commerceAccountGroupId);
-	}
-
-	@Override
-	public void
 		deleteCNTemplateCommerceAccountGroupRelsByCommerceNotificationTemplateId(
 			long commerceNotificationTemplateId) {
 
@@ -468,4 +458,4 @@ public class
 		_commerceNotificationTemplateCommerceAccountGroupRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:806183558
+// LIFERAY-SERVICE-BUILDER-HASH:-1357430355

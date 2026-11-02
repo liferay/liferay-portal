@@ -1,6 +1,6 @@
 Bundle-Name: Liferay Commerce Notification API
 Bundle-SymbolicName: com.liferay.commerce.notification.api
-Bundle-Version: 13.0.1
+Bundle-Version: 14.0.0
 Export-Package:\
 	com.liferay.commerce.notification,\
 	com.liferay.commerce.notification.constants,\

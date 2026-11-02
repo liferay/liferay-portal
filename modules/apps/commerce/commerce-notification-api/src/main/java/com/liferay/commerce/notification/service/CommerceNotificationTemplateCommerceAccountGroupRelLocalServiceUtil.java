@@ -99,15 +99,6 @@ public class
 	}
 
 	public static void
-		deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
-
-		getService().
-			deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-				commerceAccountGroupId);
-	}
-
-	public static void
 		deleteCNTemplateCommerceAccountGroupRelsByCommerceNotificationTemplateId(
 			long commerceNotificationTemplateId) {
 
@@ -396,4 +387,4 @@ public class
 					class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-867390652
+// LIFERAY-SERVICE-BUILDER-HASH:1225436763
