@@ -191,12 +191,6 @@ public class CommerceDiscountRuleLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceDiscountRulesCount(long commerceDiscountId) {
-		return commerceDiscountRulePersistence.countByCommerceDiscountId(
-			commerceDiscountId);
-	}
-
-	@Override
 	public CommerceDiscountRule updateCommerceDiscountRule(
 			long commerceDiscountRuleId, String type, String typeSettings)
 		throws PortalException {

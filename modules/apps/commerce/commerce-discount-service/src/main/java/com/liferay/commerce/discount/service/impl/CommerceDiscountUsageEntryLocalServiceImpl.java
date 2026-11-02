@@ -63,20 +63,6 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommerceUsageEntry(
-		long commerceAccountId, long commerceOrderId, long commerceDiscountId) {
-
-		CommerceDiscountUsageEntry commerceDiscountUsageEntry =
-			commerceDiscountUsageEntryPersistence.fetchByCAI_COI_CDI_First(
-				commerceAccountId, commerceOrderId, commerceDiscountId, null);
-
-		if (commerceDiscountUsageEntry != null) {
-			commerceDiscountUsageEntryPersistence.remove(
-				commerceDiscountUsageEntry);
-		}
-	}
-
-	@Override
 	public void deleteCommerceUsageEntryByDiscountId(long commerceDiscountId) {
 		commerceDiscountUsageEntryPersistence.removeByCommerceDiscountId(
 			commerceDiscountId);
@@ -86,14 +72,6 @@ public class CommerceDiscountUsageEntryLocalServiceImpl
 	public int getCommerceDiscountUsageEntriesCount(long commerceDiscountId) {
 		return commerceDiscountUsageEntryPersistence.countByCommerceDiscountId(
 			commerceDiscountId);
-	}
-
-	@Override
-	public int getCommerceDiscountUsageEntriesCount(
-		long commerceAccountId, long commerceOrderId, long commerceDiscountId) {
-
-		return commerceDiscountUsageEntryPersistence.countByCAI_COI_CDI(
-			commerceAccountId, commerceOrderId, commerceDiscountId);
 	}
 
 	@Override

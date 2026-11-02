@@ -13,7 +13,6 @@ import com.liferay.commerce.discount.model.CommerceDiscountRel;
 import com.liferay.commerce.discount.model.CommerceDiscountRelTable;
 import com.liferay.commerce.discount.service.base.CommerceDiscountRelLocalServiceBaseImpl;
 import com.liferay.commerce.discount.service.persistence.CommerceDiscountPersistence;
-import com.liferay.commerce.discount.util.comparator.CommerceDiscountRelCreateDateComparator;
 import com.liferay.commerce.pricing.model.CommercePricingClass;
 import com.liferay.commerce.pricing.model.CommercePricingClassTable;
 import com.liferay.commerce.product.model.CPDefinition;
@@ -153,25 +152,6 @@ public class CommerceDiscountRelLocalServiceImpl
 			commerceDiscountRelLocalService.deleteCommerceDiscountRel(
 				commerceDiscountRel.getCommerceDiscount(), commerceDiscountRel);
 		}
-	}
-
-	@Override
-	public CommerceDiscountRel fetchCommerceDiscountRel(
-		long commerceDiscountId, String className, long classPK) {
-
-		return commerceDiscountRelPersistence.fetchByCD_CN_CPK_First(
-			commerceDiscountId,
-			_classNameLocalService.getClassNameId(className), classPK,
-			CommerceDiscountRelCreateDateComparator.getInstance(false));
-	}
-
-	@Override
-	public CommerceDiscountRel fetchCommerceDiscountRel(
-		String className, long classPK) {
-
-		return commerceDiscountRelPersistence.fetchByCN_CPK_First(
-			_classNameLocalService.getClassNameId(className), classPK,
-			CommerceDiscountRelCreateDateComparator.getInstance(false));
 	}
 
 	@Override
@@ -380,15 +360,6 @@ public class CommerceDiscountRelLocalServiceImpl
 		return commerceDiscountRelPersistence.findByCD_CN_CPK(
 			commerceDiscountId,
 			_classNameLocalService.getClassNameId(className), classPK);
-	}
-
-	@Override
-	public int getCommerceDiscountRelsCount(
-		long commerceDiscountId, String className) {
-
-		return commerceDiscountRelPersistence.countByCD_CN(
-			commerceDiscountId,
-			_classNameLocalService.getClassNameId(className));
 	}
 
 	@Override
