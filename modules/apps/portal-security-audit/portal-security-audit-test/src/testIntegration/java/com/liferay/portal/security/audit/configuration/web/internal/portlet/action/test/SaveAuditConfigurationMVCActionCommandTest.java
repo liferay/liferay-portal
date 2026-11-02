@@ -561,9 +561,6 @@ public class SaveAuditConfigurationMVCActionCommandTest {
 
 			for (AuditMessage curAuditMessage : auditMessages) {
 				if (Objects.equals(
-						curAuditMessage.getClassPK(),
-						String.valueOf(TestPropsValues.getCompanyId())) &&
-					Objects.equals(
 						curAuditMessage.getEventType(),
 						"AUDIT_CONFIG_CHANGE")) {
 
