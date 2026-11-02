@@ -39,16 +39,6 @@ public class WorkflowMetricsSLADefinitionVersionLocalServiceImpl
 	@Override
 	public List<WorkflowMetricsSLADefinitionVersion>
 		getWorkflowMetricsSLADefinitionVersions(
-			long workflowMetricsSLADefinitionId) {
-
-		return workflowMetricsSLADefinitionVersionPersistence.
-			findByWorkflowMetricsSLADefinitionId(
-				workflowMetricsSLADefinitionId);
-	}
-
-	@Override
-	public List<WorkflowMetricsSLADefinitionVersion>
-		getWorkflowMetricsSLADefinitionVersions(
 			long workflowMetricsSLADefinitionId,
 			OrderByComparator<WorkflowMetricsSLADefinitionVersion>
 				orderByComparator) {
