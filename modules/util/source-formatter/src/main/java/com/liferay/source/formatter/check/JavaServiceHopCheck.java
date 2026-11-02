@@ -59,7 +59,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			return javaTerm.getContent();
 		}
 
-		boolean hasLambda = content.contains("->");
+		boolean lambda = content.contains("->");
 
 		Matcher matcher = _localServiceCallPattern.matcher(content);
 
@@ -76,7 +76,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			String localServiceFullyQualifiedName = _getImportedName(
 				getImportNames(javaTerm), localServiceInterface);
 
-			// Self-hop: the caller's own service interface is not imported,
+			// Self hop: the caller's own service interface is not imported,
 			// so derive it from the caller's package
 
 			if (localServiceFullyQualifiedName == null) {
@@ -127,7 +127,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			// the transaction the persistence access requires, so leave it in
 			// place.
 
-			if (hasLambda &&
+			if (lambda &&
 				_isInTransactionDisabledLambda(
 					content, matcher.start(), fileName, fileContent,
 					absolutePath, rootDirName, getImportNames(javaTerm))) {
@@ -139,8 +139,8 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 				fileName,
 				StringBundler.concat(
 					"Avoid the AOP proxy hop: \"", reference, "LocalService.",
-					methodName, "\" is a pass-through, call \"",
-					persistenceCall, "\" directly"),
+					methodName, "\" is a passthrough, call \"", persistenceCall,
+					"\" directly"),
 				javaTerm.getLineNumber(matcher.start()));
 		}
 
@@ -153,7 +153,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private void _collectMatchedMethods(
-			File file, String methodName, int parameterCount,
+			File file, String methodName, int parametersCount,
 			List<JavaMethod> matchedMethods)
 		throws Exception {
 
@@ -189,9 +189,11 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 
 			List<JavaParameter> javaParameters = javaSignature.getParameters();
 
-			if (javaParameters.size() == parameterCount) {
-				matchedMethods.add(javaMethod);
+			if (javaParameters.size() != parametersCount) {
+				continue;
 			}
+
+			matchedMethods.add(javaMethod);
 		}
 	}
 
@@ -431,7 +433,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private String _getPassthroughPersistenceCall(
-			File baseImplFile, String methodName, int parameterCount)
+			File baseImplFile, String methodName, int parametersCount)
 		throws Exception {
 
 		// Collect matching overloads from BOTH the generated base impl and the
@@ -443,7 +445,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 		List<JavaMethod> matchedMethods = new ArrayList<>();
 
 		_collectMatchedMethods(
-			baseImplFile, methodName, parameterCount, matchedMethods);
+			baseImplFile, methodName, parametersCount, matchedMethods);
 
 		File implFile = new File(
 			StringUtil.replace(
@@ -452,7 +454,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 				"BaseImpl.java", "Impl.java"));
 
 		_collectMatchedMethods(
-			implFile, methodName, parameterCount, matchedMethods);
+			implFile, methodName, parametersCount, matchedMethods);
 
 		if (matchedMethods.size() != 1) {
 			return null;
@@ -595,7 +597,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private static final String[][] _ALL_CAPS_STRINGS = {
-		{"CT", "Ct"}, {"COR", "Cor"}, {"CP", "Cp"}, {"CS", "Cs"},
+		{"COR", "Cor"}, {"CP", "Cp"}, {"CS", "Cs"}, {"CT", "Ct"},
 		{"DDL", "Ddl"}, {"DDM", "Ddm"}, {"DL", "Dl"}, {"KB", "Kb"},
 		{"MB", "Mb"}, {"PK", "Pk"}, {"PLO", "Plo"}, {"SXP", "Sxp"},
 		{"URL", "Url"}

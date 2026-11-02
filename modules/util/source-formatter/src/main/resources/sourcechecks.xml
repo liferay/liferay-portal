@@ -698,7 +698,7 @@
 		</check>
 		<check name="JavaServiceHopCheck">
 			<category name="Performance" />
-			<description name="Flags a service method that delegates to a same-bundle service pass-through method, so it can call persistence directly and skip the AOP proxy hop." />
+			<description name="Flags a service method that delegates to a passthrough service method in the same bundle, so it can call persistence directly and skip the AOP proxy hop." />
 			<property name="enabled" value="true" />
 		</check>
 		<check name="JavaServiceImplCheck">
@@ -948,7 +948,7 @@
 		</check>
 		<check name="JavaServiceHopCheck">
 			<category name="Performance" />
-			<description name="Flags a service method that delegates to a same-bundle service pass-through method, so it can call persistence directly and skip the AOP proxy hop." />
+			<description name="Flags a service method that delegates to a passthrough service method in the same bundle, so it can call persistence directly and skip the AOP proxy hop." />
 			<property name="enabled" value="true" />
 		</check>
 		<check name="JavaServiceImplGetFetchCheck">
