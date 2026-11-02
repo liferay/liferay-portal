@@ -10,6 +10,8 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
 import java.net.HttpURLConnection;
@@ -74,7 +76,11 @@ public class GetEditorStrutsActionTest {
 		HttpURLConnection httpURLConnection = _openHttpURLConnection(
 			"_name\"space_");
 
-		Assert.assertEquals(400, httpURLConnection.getResponseCode());
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"portal_web.docroot.errors.code_jsp", LoggerTestUtil.WARN)) {
+
+			Assert.assertEquals(400, httpURLConnection.getResponseCode());
+		}
 
 		String content = StringUtil.read(httpURLConnection.getErrorStream());
 
