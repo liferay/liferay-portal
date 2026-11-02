@@ -91,15 +91,6 @@ public class SharepointOAuth2TokenEntryLocalServiceImpl
 	}
 
 	@Override
-	public SharepointOAuth2TokenEntry getSharepointOAuth2TokenEntry(
-			long userId, String configurationPid)
-		throws PortalException {
-
-		return sharepointOAuth2TokenEntryPersistence.findByU_C(
-			userId, configurationPid);
-	}
-
-	@Override
 	public int getUserSharepointOAuth2TokenEntriesCount(long userId) {
 		return sharepointOAuth2TokenEntryPersistence.countByUserId(userId);
 	}
