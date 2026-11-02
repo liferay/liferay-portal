@@ -7,8 +7,6 @@ package com.liferay.exportimport.internal.staging.permission;
 
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.staging.permission.StagingPermission;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
@@ -46,15 +44,13 @@ public class StagingPermissionImpl implements StagingPermission {
 			return null;
 		}
 
-		try {
-			return _hasPermission(
-				_groupLocalService.getGroup(groupId), portletId);
-		}
-		catch (Exception exception) {
-			_log.error(exception);
+		Group group = _groupLocalService.fetchGroup(groupId);
+
+		if (group == null) {
+			return null;
 		}
 
-		return null;
+		return _hasPermission(group, portletId);
 	}
 
 	private Boolean _hasPermission(Group group, String portletId) {
@@ -95,9 +91,6 @@ public class StagingPermissionImpl implements StagingPermission {
 
 		return false;
 	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		StagingPermissionImpl.class);
 
 	@Reference
 	private GroupLocalService _groupLocalService;
