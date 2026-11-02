@@ -366,22 +366,6 @@ public interface AssetLinkLocalService
 		throws PortalException;
 
 	/**
-	 * Returns all the asset links of the given link type whose second entry ID
-	 * is the given entry ID.
-	 *
-	 * @param entryId the primary key of the asset entry
-	 * @param typeId the link type. Acceptable values include {@link
-	 AssetLinkConstants#TYPE_RELATED} which is a bidirectional
-	 relationship and {@link AssetLinkConstants#TYPE_CHILD} which is a
-	 unidirectional relationship. For more information see {@link
-	 AssetLinkConstants}
-	 * @return the asset links of the given link type whose second entry ID is
-	 the given entry ID
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetLink> getReverseLinks(long entryId, int typeId);
-
-	/**
 	 * Updates the asset link in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -439,4 +423,4 @@ public interface AssetLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2049600806
+// LIFERAY-SERVICE-BUILDER-HASH:-2038455875

@@ -453,24 +453,6 @@ public class AssetLinkLocalServiceWrapper
 	}
 
 	/**
-	 * Returns all the asset links of the given link type whose second entry ID
-	 * is the given entry ID.
-	 *
-	 * @param entryId the primary key of the asset entry
-	 * @param typeId the link type. Acceptable values include {@link
-	 AssetLinkConstants#TYPE_RELATED} which is a bidirectional
-	 relationship and {@link AssetLinkConstants#TYPE_CHILD} which is a
-	 unidirectional relationship. For more information see {@link
-	 AssetLinkConstants}
-	 * @return the asset links of the given link type whose second entry ID is
-	 the given entry ID
-	 */
-	@Override
-	public java.util.List<AssetLink> getReverseLinks(long entryId, int typeId) {
-		return _assetLinkLocalService.getReverseLinks(entryId, typeId);
-	}
-
-	/**
 	 * Updates the asset link in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
 	 * <p>
@@ -562,4 +544,4 @@ public class AssetLinkLocalServiceWrapper
 	private AssetLinkLocalService _assetLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1327607518
+// LIFERAY-SERVICE-BUILDER-HASH:-1336834055
