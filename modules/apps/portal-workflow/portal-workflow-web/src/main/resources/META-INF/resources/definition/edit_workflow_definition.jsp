@@ -244,7 +244,7 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 								<liferay-ui:input-localized
 									name="title"
 									placeholder="untitled-workflow"
-									xml='<%= BeanPropertiesUtil.getString(workflowDefinition, "title") %>'
+									xml="<%= (workflowDefinition == null) ? StringPool.BLANK : workflowDefinition.getTitle() %>"
 								/>
 							</aui:field-wrapper>
 						</clay:col>
