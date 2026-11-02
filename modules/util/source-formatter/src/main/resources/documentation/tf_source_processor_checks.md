@@ -1,4 +1,4 @@
-# Checks for .tf
+# Checks for .hcl or .tf
 
 Check | Category | Description
 ----- | -------- | -----------
