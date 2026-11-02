@@ -82,12 +82,12 @@ public class DBCopyTablesProcess {
 	public void run() throws Exception {
 		_loadColumnsMetadata();
 
-		_addCustomColumns();
+		_addCustomColumnsAndTables();
 
 		_copyTables();
 	}
 
-	private void _addCustomColumns() throws Exception {
+	private void _addCustomColumnsAndTables() throws Exception {
 		try (Connection sourceConnection = _sourceDataSource.getConnection();
 
 			Connection targetConnection = _targetDataSource.getConnection();
@@ -95,6 +95,8 @@ public class DBCopyTablesProcess {
 			Statement statement = targetConnection.createStatement()) {
 
 			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
+			Map<String, List<String>> columnDefinitionsMap = new TreeMap<>(
+				String.CASE_INSENSITIVE_ORDER);
 
 			try (ResultSet resultSet = databaseMetaData.getColumns(
 					sourceConnection.getCatalog(), sourceConnection.getSchema(),
@@ -107,31 +109,51 @@ public class DBCopyTablesProcess {
 						continue;
 					}
 
+					String columnName = resultSet.getString("COLUMN_NAME");
+
+					String columnDefinition = StringBundler.concat(
+						columnName, " ",
+						_getPostgreSQLColumnType(
+							resultSet.getInt("COLUMN_SIZE"),
+							resultSet.getInt("DATA_TYPE"),
+							resultSet.getInt("DECIMAL_DIGITS")));
+
 					List<String> targetColumnNames = _targetColumnNamesMap.get(
 						tableName);
 
 					if (targetColumnNames == null) {
-						continue;
+						if (resultSet.getInt("NULLABLE") ==
+								DatabaseMetaData.columnNoNulls) {
+
+							columnDefinition += " not null";
+						}
+
+						List<String> columnDefinitions =
+							columnDefinitionsMap.computeIfAbsent(
+								tableName, key -> new ArrayList<>());
+
+						columnDefinitions.add(columnDefinition);
 					}
+					else if (!ListUtil.exists(
+								targetColumnNames,
+								targetColumnName -> StringUtil.equalsIgnoreCase(
+									targetColumnName, columnName))) {
 
-					String columnName = resultSet.getString("COLUMN_NAME");
-
-					if (ListUtil.exists(
-							targetColumnNames,
-							targetColumnName -> StringUtil.equalsIgnoreCase(
-								targetColumnName, columnName))) {
-
-						continue;
+						statement.executeUpdate(
+							StringBundler.concat(
+								"alter table ", tableName, " add ",
+								columnDefinition));
 					}
-
-					statement.executeUpdate(
-						StringBundler.concat(
-							"alter table ", tableName, " add ", columnName, " ",
-							_getPostgreSQLColumnType(
-								resultSet.getInt("COLUMN_SIZE"),
-								resultSet.getInt("DATA_TYPE"),
-								resultSet.getInt("DECIMAL_DIGITS"))));
 				}
+			}
+
+			for (Map.Entry<String, List<String>> entry :
+					columnDefinitionsMap.entrySet()) {
+
+				statement.executeUpdate(
+					StringBundler.concat(
+						"create table ", entry.getKey(), " (",
+						StringUtil.merge(entry.getValue()), ")"));
 			}
 		}
 
