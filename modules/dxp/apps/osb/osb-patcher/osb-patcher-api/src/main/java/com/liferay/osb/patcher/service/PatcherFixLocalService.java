@@ -356,10 +356,6 @@ public interface PatcherFixLocalService
 	public int getPatcherFixesCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPatcherFixesCountByPatcherProjectVersionId(
-		long patcherProjectVersionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherFix> getPatcherFixPackPatcherFixes(
 		long patcherFixPackId);
 
@@ -481,4 +477,4 @@ public interface PatcherFixLocalService
 		throws PortalException;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1193074550
+// LIFERAY-SERVICE-BUILDER-HASH:-768699283

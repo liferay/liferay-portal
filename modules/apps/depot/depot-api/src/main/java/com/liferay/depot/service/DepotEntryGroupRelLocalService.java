@@ -253,11 +253,6 @@ public interface DepotEntryGroupRelLocalService
 	public DepotEntryGroupRel getDepotEntryGroupRel(long depotEntryGroupRelId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DepotEntryGroupRel getDepotEntryGroupRelByDepotEntryIdToGroupId(
-			long depotEntryId, long toGroupId)
-		throws PortalException;
-
 	/**
 	 * Returns the depot entry group rel matching the UUID and group.
 	 *
@@ -404,4 +399,4 @@ public interface DepotEntryGroupRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1076597209
+// LIFERAY-SERVICE-BUILDER-HASH:1420810861

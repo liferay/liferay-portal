@@ -367,10 +367,6 @@ public interface PatcherBuildLocalService
 		int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getPatcherBuildsCountByPatcherProjectVersionId(
-		long patcherProjectVersionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<PatcherBuild> getPatcherFixPatcherBuilds(long patcherFixId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -495,4 +491,4 @@ public interface PatcherBuildLocalService
 		throws Exception;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-906455652
+// LIFERAY-SERVICE-BUILDER-HASH:-922737473

@@ -575,15 +575,6 @@ public class PatcherFixLocalServiceWrapper
 	}
 
 	@Override
-	public int getPatcherFixesCountByPatcherProjectVersionId(
-		long patcherProjectVersionId) {
-
-		return _patcherFixLocalService.
-			getPatcherFixesCountByPatcherProjectVersionId(
-				patcherProjectVersionId);
-	}
-
-	@Override
 	public java.util.List<com.liferay.osb.patcher.model.PatcherFix>
 		getPatcherFixPackPatcherFixes(long patcherFixPackId) {
 
@@ -826,4 +817,4 @@ public class PatcherFixLocalServiceWrapper
 	private PatcherFixLocalService _patcherFixLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:35594231
+// LIFERAY-SERVICE-BUILDER-HASH:-1240517604

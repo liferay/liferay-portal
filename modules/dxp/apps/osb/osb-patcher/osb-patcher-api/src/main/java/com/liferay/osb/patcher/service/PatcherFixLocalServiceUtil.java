@@ -484,13 +484,6 @@ public class PatcherFixLocalServiceUtil {
 		return getService().getPatcherFixesCount();
 	}
 
-	public static int getPatcherFixesCountByPatcherProjectVersionId(
-		long patcherProjectVersionId) {
-
-		return getService().getPatcherFixesCountByPatcherProjectVersionId(
-			patcherProjectVersionId);
-	}
-
 	public static List<PatcherFix> getPatcherFixPackPatcherFixes(
 		long patcherFixPackId) {
 
@@ -681,4 +674,4 @@ public class PatcherFixLocalServiceUtil {
 			PatcherFixLocalServiceUtil.class, PatcherFixLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1726772050
+// LIFERAY-SERVICE-BUILDER-HASH:1115951505

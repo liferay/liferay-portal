@@ -281,15 +281,6 @@ public class DepotEntryGroupRelLocalServiceUtil {
 		return getService().getDepotEntryGroupRel(depotEntryGroupRelId);
 	}
 
-	public static DepotEntryGroupRel
-			getDepotEntryGroupRelByDepotEntryIdToGroupId(
-				long depotEntryId, long toGroupId)
-		throws PortalException {
-
-		return getService().getDepotEntryGroupRelByDepotEntryIdToGroupId(
-			depotEntryId, toGroupId);
-	}
-
 	/**
 	 * Returns the depot entry group rel matching the UUID and group.
 	 *
@@ -478,4 +469,4 @@ public class DepotEntryGroupRelLocalServiceUtil {
 			DepotEntryGroupRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-660098782
+// LIFERAY-SERVICE-BUILDER-HASH:446811924
