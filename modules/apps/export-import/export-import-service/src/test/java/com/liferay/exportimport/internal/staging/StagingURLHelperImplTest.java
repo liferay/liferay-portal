@@ -97,6 +97,14 @@ public class StagingURLHelperImplTest {
 		_setStagingRemoteHostsAllowed("live.example.com");
 
 		_assertRemoteHostNotAllowed(
+			"10.0.0.1",
+			() -> _stagingURLHelperImpl.buildRemoteURL(
+				UnicodePropertiesBuilder.put(
+					"remoteAddress", "10.0.0.1"
+				).put(
+					"remotePort", String.valueOf(RandomTestUtil.randomInt())
+				).build()));
+		_assertRemoteHostNotAllowed(
 			"127.0.0.1",
 			() -> _stagingURLHelperImpl.buildRemoteURL(
 				"127.0.0.1", RandomTestUtil.randomInt(), null, false));
@@ -105,14 +113,6 @@ public class StagingURLHelperImplTest {
 			() -> _stagingURLHelperImpl.buildRemoteURL(
 				"live.example.com.evil.com", RandomTestUtil.randomInt(), null,
 				false));
-		_assertRemoteHostNotAllowed(
-			"10.0.0.1",
-			() -> _stagingURLHelperImpl.buildRemoteURL(
-				UnicodePropertiesBuilder.put(
-					"remoteAddress", "10.0.0.1"
-				).put(
-					"remotePort", String.valueOf(RandomTestUtil.randomInt())
-				).build()));
 	}
 
 	private void _assertRemoteHostNotAllowed(
