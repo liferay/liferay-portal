@@ -83,9 +83,6 @@ spec:
                     -   name: liferay-workload-name
                         valueFrom:
                             path: /tmp/liferay-workload-name.txt
-                    -   name: root-password-secret-name
-                        valueFrom:
-                            path: /tmp/root-password-secret-name.txt
                     -   name: vault-bucket
                         valueFrom:
                             path: /tmp/vault-bucket.txt
@@ -185,8 +182,6 @@ spec:
                                     value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.data-inactive}}"
                                 -   name: liferay-infrastructure-name
                                     value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.liferay-infrastructure-name}}"
-                                -   name: root-password-secret-name
-                                    value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.root-password-secret-name}}"
                                 -   name: vault-bucket
                                     value: "{{ "{{" }}tasks.get-current-infrastructure-state.outputs.parameters.vault-bucket}}"
                                 -   name: vault-path
@@ -280,8 +275,8 @@ spec:
                             parameters:
                                 -   name: restore-instance
                                     value: "{{ "{{" }}tasks.get-inactive-cloudsql-instance.outputs.result}}"
-                                -   name: root-password-secret-name
-                                    value: "{{ "{{" }}inputs.parameters.root-password-secret-name}}"
+                                -   name: data-inactive
+                                    value: "{{ "{{" }}inputs.parameters.data-inactive}}"
                         depends: restore-cloudsql-backup
                         name: reset-postgres-password
                         template: reset-postgres-password
@@ -317,7 +312,6 @@ spec:
                     -   name: database-snapshot-uuid
                     -   name: data-inactive
                     -   name: liferay-infrastructure-name
-                    -   name: root-password-secret-name
                     -   name: vault-bucket
                     -   name: vault-path
             name: prepare-target-data-plane
@@ -338,14 +332,14 @@ spec:
                         valueFrom:
                             secretKeyRef:
                                 key: password
-                                name: "{{ "{{" }}inputs.parameters.root-password-secret-name}}"
+                                name: liferay-database-{{ "{{" }}inputs.parameters.data-inactive}}-root-password
                 image: "{{ .Values.images.gcloud.repository }}:{{ .Values.images.gcloud.tag }}"
                 resources:
                     {{- .Values.resources.default | toYaml | nindent 20 }}
             inputs:
                 parameters:
+                    -   name: data-inactive
                     -   name: restore-instance
-                    -   name: root-password-secret-name
             name: reset-postgres-password
         -   name: reset-restore-phase
             script:
