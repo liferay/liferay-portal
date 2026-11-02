@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.WorkflowInstanceLinkLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.Constants;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -273,29 +272,6 @@ public class CommercePriceModifierLocalServiceImpl
 			commercePriceModifierLocalService.deleteCommercePriceModifier(
 				commercePriceModifier);
 		}
-	}
-
-	@Override
-	public List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId) {
-
-		return commercePriceModifierPersistence.findByCommercePriceListId(
-			commercePriceListId);
-	}
-
-	@Override
-	public List<CommercePriceModifier> getCommercePriceModifiers(
-		long commercePriceListId, int start, int end,
-		OrderByComparator<CommercePriceModifier> orderByComparator) {
-
-		return commercePriceModifierPersistence.findByCommercePriceListId(
-			commercePriceListId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommercePriceModifiersCount(long commercePriceListId) {
-		return commercePriceModifierPersistence.countByCommercePriceListId(
-			commercePriceListId);
 	}
 
 	@Override

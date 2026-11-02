@@ -103,31 +103,6 @@ public class CommercePriceModifierRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteCommercePriceModifierRels(String className, long classPK)
-		throws PortalException {
-
-		List<CommercePriceModifierRel> commercePriceModifierRels =
-			commercePriceModifierRelPersistence.findByCN_CPK(
-				_classNameLocalService.getClassNameId(className), classPK);
-
-		for (CommercePriceModifierRel commercePriceModifierRel :
-				commercePriceModifierRels) {
-
-			commercePriceModifierRelLocalService.deleteCommercePriceModifierRel(
-				commercePriceModifierRel);
-		}
-	}
-
-	@Override
-	public CommercePriceModifierRel fetchCommercePriceModifierRel(
-		long commercePriceModifierId, String className, long classPK) {
-
-		return commercePriceModifierRelPersistence.fetchByCPM_CN_CPK(
-			commercePriceModifierId,
-			_classNameLocalService.getClassNameId(className), classPK);
-	}
-
-	@Override
 	public long[] getClassPKs(long commercePriceModifierId, String className) {
 		return ListUtil.toLongArray(
 			commercePriceModifierRelPersistence.findByCPM_CN(
@@ -143,14 +118,6 @@ public class CommercePriceModifierRelLocalServiceImpl
 		return commercePriceModifierRelPersistence.findByCPM_CN(
 			commercePriceModifierId,
 			_classNameLocalService.getClassNameId(className));
-	}
-
-	@Override
-	public List<CommercePriceModifierRel> getCommercePriceModifiersRels(
-		String className, long classPK) {
-
-		return commercePriceModifierRelPersistence.findByCN_CPK(
-			_classNameLocalService.getClassNameId(className), classPK);
 	}
 
 	@Reference
