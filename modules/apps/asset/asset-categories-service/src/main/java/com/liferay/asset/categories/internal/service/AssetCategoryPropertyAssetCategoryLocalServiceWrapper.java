@@ -121,34 +121,6 @@ public class AssetCategoryPropertyAssetCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public AssetCategory mergeCategories(long fromCategoryId, long toCategoryId)
-		throws PortalException {
-
-		List<AssetCategoryProperty> assetCategoryProperties =
-			_assetCategoryPropertyLocalService.getCategoryProperties(
-				fromCategoryId);
-
-		for (AssetCategoryProperty fromCategoryProperty :
-				assetCategoryProperties) {
-
-			AssetCategoryProperty toCategoryProperty =
-				_assetCategoryPropertyLocalService.fetchCategoryProperty(
-					toCategoryId, fromCategoryProperty.getKey());
-
-			if (toCategoryProperty != null) {
-				continue;
-			}
-
-			fromCategoryProperty.setCategoryId(toCategoryId);
-
-			_assetCategoryPropertyLocalService.updateAssetCategoryProperty(
-				fromCategoryProperty);
-		}
-
-		return super.mergeCategories(fromCategoryId, toCategoryId);
-	}
-
-	@Override
 	public AssetCategory updateCategory(
 			String externalReferenceCode, long userId, long categoryId,
 			long parentCategoryId, Map<Locale, String> titleMap,

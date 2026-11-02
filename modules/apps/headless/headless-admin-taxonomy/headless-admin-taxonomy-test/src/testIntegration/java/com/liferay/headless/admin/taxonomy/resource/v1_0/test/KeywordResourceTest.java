@@ -1326,8 +1326,9 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		Assert.assertEquals("FORBIDDEN", problem.getStatus());
 
 		List<AssetTagGroupRel> assetTagGroupRels =
-			_assetTagGroupRelLocalService.getAssetTagGroupRelsByTagId(
-				keyword.getId());
+			_assetTagGroupRelLocalService.
+				getAssetTagGroupRelsByTagIdAndDepotEntryType(
+					keyword.getId(), DepotConstants.TYPE_SPACE);
 
 		Assert.assertTrue(
 			assetTagGroupRels.toString(), assetTagGroupRels.isEmpty());

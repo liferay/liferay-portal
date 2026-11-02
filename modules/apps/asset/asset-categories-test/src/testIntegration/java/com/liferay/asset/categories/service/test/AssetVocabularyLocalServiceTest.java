@@ -109,16 +109,6 @@ public class AssetVocabularyLocalServiceTest {
 	}
 
 	@Test
-	public void testGetGroupVocabulariesCount() throws Exception {
-		AssetTestUtil.addVocabulary(_group.getGroupId());
-
-		Assert.assertEquals(
-			0,
-			_assetVocabularyLocalService.getGroupVocabulariesCount(
-				new long[0]));
-	}
-
-	@Test
 	public void testGetGroupsVocabularies() throws Exception {
 		AssetTestUtil.addVocabulary(_group.getGroupId());
 

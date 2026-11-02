@@ -18,7 +18,6 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.AssertUtils;
-import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -141,41 +140,6 @@ public class AssetVocabularyGroupRelLocalServiceTest {
 					_assetVocabulary.getVocabularyId());
 
 		Assert.assertTrue(assetVocabularyGroupRels.isEmpty());
-	}
-
-	@Test
-	@TestInfo("LPD-83676")
-	public void testGetAssetVocabularyGroupRelsCount() throws Exception {
-		Group group1 = GroupTestUtil.addGroup();
-		Group group2 = GroupTestUtil.addGroup();
-
-		long[] groupIds = {group1.getGroupId(), group2.getGroupId()};
-
-		_assetVocabularyGroupRelLocalService.setAssetVocabularyGroupRels(
-			_assetVocabulary.getVocabularyId(), groupIds,
-			DepotConstants.TYPE_ANY);
-
-		Assert.assertEquals(
-			2,
-			_assetVocabularyGroupRelLocalService.
-				getAssetVocabularyGroupRelsCount(
-					_assetVocabulary.getVocabularyId()));
-
-		GroupTestUtil.deleteGroup(group2);
-
-		Assert.assertEquals(
-			1,
-			_assetVocabularyGroupRelLocalService.
-				getAssetVocabularyGroupRelsCount(
-					_assetVocabulary.getVocabularyId()));
-
-		_assetVocabularyLocalService.deleteVocabulary(_assetVocabulary);
-
-		Assert.assertEquals(
-			0,
-			_assetVocabularyGroupRelLocalService.
-				getAssetVocabularyGroupRelsCount(
-					_assetVocabulary.getVocabularyId()));
 	}
 
 	@Test

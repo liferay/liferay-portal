@@ -61,9 +61,11 @@ public class AssetTagServiceTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
-		int initialTagsCount = AssetTagLocalServiceUtil.getGroupTagsCount(
+		List<AssetTag> assetTags = AssetTagLocalServiceUtil.getGroupTags(
 			_group.getGroupId());
 
+		int initialTagsCount = assetTags.size();
+
 		AssetTagLocalServiceUtil.addTag(
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			RandomTestUtil.randomString(), serviceContext);
@@ -71,15 +73,17 @@ public class AssetTagServiceTest {
 			null, TestPropsValues.getUserId(), _group.getGroupId(),
 			RandomTestUtil.randomString(), serviceContext);
 
+		assetTags = AssetTagLocalServiceUtil.getGroupTags(_group.getGroupId());
+
 		Assert.assertEquals(
-			initialTagsCount + 2,
-			AssetTagLocalServiceUtil.getGroupTagsCount(_group.getGroupId()));
+			assetTags.toString(), initialTagsCount + 2, assetTags.size());
 
 		AssetTagLocalServiceUtil.deleteGroupTags(_group.getGroupId());
 
+		assetTags = AssetTagLocalServiceUtil.getGroupTags(_group.getGroupId());
+
 		Assert.assertEquals(
-			initialTagsCount,
-			AssetTagLocalServiceUtil.getGroupTagsCount(_group.getGroupId()));
+			assetTags.toString(), initialTagsCount, assetTags.size());
 	}
 
 	@Test

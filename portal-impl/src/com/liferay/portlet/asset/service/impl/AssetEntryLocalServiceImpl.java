@@ -258,18 +258,6 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<AssetEntry> getCompanyEntries(
-		long companyId, int start, int end) {
-
-		return assetEntryPersistence.findByCompanyId(companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyEntriesCount(long companyId) {
-		return assetEntryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public List<AssetEntry> getEntries(AssetEntryQuery entryQuery) {
 		return assetEntryFinder.findEntries(entryQuery);
 	}
@@ -441,36 +429,6 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	@Override
 	public Hits search(
 		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, boolean showNonindexable, int status,
-		int start, int end) {
-
-		return search(
-			companyId, groupIds, userId, className, classTypeId, keywords,
-			keywords, keywords, null, null, showNonindexable,
-			new int[] {status}, false, start, end);
-	}
-
-	@Override
-	public Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, boolean showNonindexable,
-		int[] statuses, int start, int end) {
-
-		try {
-			SearchContext searchContext = buildSearchContext(
-				companyId, groupIds, userId, classTypeId, keywords, null, null,
-				showNonindexable, statuses, false, start, end);
-
-			return doSearch(companyId, className, searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	@Override
-	public Hits search(
-		long companyId, long[] groupIds, long userId, String className,
 		long classTypeId, String keywords, boolean showNonindexable,
 		int[] statuses, int start, int end, Sort sort) {
 
@@ -507,16 +465,6 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	@Override
 	public Hits search(
 		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, int status, int start, int end) {
-
-		return search(
-			companyId, groupIds, userId, className, classTypeId, keywords,
-			false, status, start, end);
-	}
-
-	@Override
-	public Hits search(
-		long companyId, long[] groupIds, long userId, String className,
 		long classTypeId, String userName, String title, String description,
 		String assetCategoryIds, String assetTagNames, boolean showNonindexable,
 		int status, boolean andSearch, int start, int end) {
@@ -548,80 +496,6 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, int status,
-		boolean andSearch, int start, int end) {
-
-		return search(
-			companyId, groupIds, userId, className, classTypeId, userName,
-			title, description, assetCategoryIds, assetTagNames, false,
-			new int[] {status}, andSearch, start, end);
-	}
-
-	@Override
-	public Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		String keywords, int status, int start, int end) {
-
-		return search(
-			companyId, groupIds, userId, className, 0, keywords, status, start,
-			end);
-	}
-
-	@Override
-	public Hits search(
-		long companyId, long[] groupIds, long userId, String className,
-		String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, int status,
-		boolean andSearch, int start, int end) {
-
-		return search(
-			companyId, groupIds, userId, className, 0, userName, title,
-			description, assetCategoryIds, assetTagNames, status, andSearch,
-			start, end);
-	}
-
-	@Override
-	public long searchCount(
-		long companyId, long[] groupIds, long userId, long[] classNameIds,
-		long classTypeId, String keywords, boolean showNonindexable,
-		int[] statuses) {
-
-		try {
-			SearchContext searchContext = buildSearchContext(
-				companyId, groupIds, userId, classTypeId, keywords, null, null,
-				showNonindexable, statuses, false, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-			return doSearchCount(classNameIds, searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	@Override
-	public long searchCount(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String keywords, boolean showNonindexable,
-		int[] statuses) {
-
-		try {
-			SearchContext searchContext = buildSearchContext(
-				companyId, groupIds, userId, classTypeId, keywords, null, null,
-				showNonindexable, statuses, false, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS);
-
-			return doSearchCount(companyId, className, searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	@Override
 	public long searchCount(
 		long companyId, long[] groupIds, long userId, String className,
 		long classTypeId, String keywords, String assetCategoryIds,
@@ -639,39 +513,6 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		catch (Exception exception) {
 			throw new SystemException(exception);
 		}
-	}
-
-	@Override
-	public long searchCount(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, boolean showInvisible,
-		boolean showNonindexable, int[] statuses, boolean andSearch) {
-
-		try {
-			SearchContext searchContext = buildSearchContext(
-				companyId, groupIds, userId, classTypeId, userName, title,
-				description, assetCategoryIds, assetTagNames, showNonindexable,
-				statuses, andSearch, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-			return doSearchCount(companyId, className, searchContext);
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	@Override
-	public long searchCount(
-		long companyId, long[] groupIds, long userId, String className,
-		long classTypeId, String userName, String title, String description,
-		String assetCategoryIds, String assetTagNames, boolean showNonindexable,
-		int[] statuses, boolean andSearch) {
-
-		return searchCount(
-			companyId, groupIds, userId, className, classTypeId, userName,
-			title, description, assetCategoryIds, assetTagNames,
-			showNonindexable, false, statuses, andSearch);
 	}
 
 	@Override

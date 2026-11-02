@@ -82,22 +82,6 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 	}
 
 	@Override
-	public AssetCategory mergeCategories(long fromCategoryId, long toCategoryId)
-		throws PortalException {
-
-		List<AssetEntry> assetEntries = _getAssetEntriesByAssetCategoryId(
-			fromCategoryId);
-
-		for (AssetEntry assetEntry : assetEntries) {
-			_assetEntryAssetCategoryRelLocalService.
-				addAssetEntryAssetCategoryRel(
-					assetEntry.getEntryId(), toCategoryId);
-		}
-
-		return super.mergeCategories(fromCategoryId, toCategoryId);
-	}
-
-	@Override
 	public AssetCategory updateCategory(
 			String externalReferenceCode, long userId, long categoryId,
 			long parentCategoryId, Map<Locale, String> titleMap,
@@ -141,28 +125,6 @@ public class AssetEntryAssetCategoryRelAssetCategoryLocalServiceWrapper
 
 				if (category != null) {
 					return category;
-				}
-
-				return null;
-			});
-	}
-
-	private List<AssetEntry> _getAssetEntriesByAssetCategoryId(
-		long assetCategoryId) {
-
-		List<AssetEntryAssetCategoryRel> assetEntryAssetCategoryRels =
-			_assetEntryAssetCategoryRelLocalService.
-				getAssetEntryAssetCategoryRelsByAssetCategoryId(
-					assetCategoryId);
-
-		return TransformUtil.transform(
-			assetEntryAssetCategoryRels,
-			assetEntryAssetCategoryRel -> {
-				AssetEntry entry = _assetEntryLocalService.fetchEntry(
-					assetEntryAssetCategoryRel.getAssetEntryId());
-
-				if (entry != null) {
-					return entry;
 				}
 
 				return null;

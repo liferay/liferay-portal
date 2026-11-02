@@ -43,8 +43,10 @@ public class AssetTagStagedModelDataHandlerTest
 
 	@Test
 	public void testExportImportDuplicateTags() throws Exception {
-		int groupTagsCount = AssetTagLocalServiceUtil.getGroupTagsCount(
+		List<AssetTag> assetTags = AssetTagLocalServiceUtil.getGroupTags(
 			liveGroup.getGroupId());
+
+		int groupTagsCount = assetTags.size();
 
 		String name = RandomTestUtil.randomString();
 
@@ -52,9 +54,11 @@ public class AssetTagStagedModelDataHandlerTest
 		_exportImportDeletedTag(name);
 		_exportImportDeletedTag(name);
 
+		assetTags = AssetTagLocalServiceUtil.getGroupTags(
+			liveGroup.getGroupId());
+
 		Assert.assertEquals(
-			groupTagsCount + 3,
-			AssetTagLocalServiceUtil.getGroupTagsCount(liveGroup.getGroupId()));
+			assetTags.toString(), groupTagsCount + 3, assetTags.size());
 
 		AssetTagLocalServiceUtil.getTag(liveGroup.getGroupId(), name);
 		AssetTagLocalServiceUtil.getTag(

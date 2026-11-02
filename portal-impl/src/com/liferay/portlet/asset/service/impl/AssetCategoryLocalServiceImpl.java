@@ -392,20 +392,8 @@ public class AssetCategoryLocalServiceImpl
 	}
 
 	@Override
-	public AssetCategory getCategory(String uuid, long groupId)
-		throws PortalException {
-
-		return assetCategoryPersistence.findByUUID_G(uuid, groupId);
-	}
-
-	@Override
 	public long[] getCategoryIds(String className, long classPK) {
 		return getCategoryIds(getCategories(className, classPK));
-	}
-
-	@Override
-	public String[] getCategoryNames() {
-		return getCategoryNames(getCategories());
 	}
 
 	@Override
@@ -422,15 +410,6 @@ public class AssetCategoryLocalServiceImpl
 	public List<AssetCategory> getChildCategories(long parentCategoryId) {
 		return assetCategoryPersistence.findByParentCategoryId(
 			parentCategoryId);
-	}
-
-	@Override
-	public List<AssetCategory> getChildCategories(
-		long parentCategoryId, int start, int end,
-		OrderByComparator<AssetCategory> orderByComparator) {
-
-		return assetCategoryPersistence.findByParentCategoryId(
-			parentCategoryId, start, end, orderByComparator);
 	}
 
 	@Override
@@ -648,22 +627,6 @@ public class AssetCategoryLocalServiceImpl
 		return getVocabularyCategories(
 			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, vocabularyId,
 			start, end, orderByComparator);
-	}
-
-	@Override
-	public int getVocabularyRootCategoriesCount(long vocabularyId) {
-		return assetCategoryPersistence.countByP_V(
-			AssetCategoryConstants.DEFAULT_PARENT_CATEGORY_ID, vocabularyId);
-	}
-
-	@Indexable(type = IndexableType.REINDEX)
-	@Override
-	public AssetCategory mergeCategories(long fromCategoryId, long toCategoryId)
-		throws PortalException {
-
-		assetCategoryLocalService.deleteCategory(fromCategoryId);
-
-		return getCategory(toCategoryId);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

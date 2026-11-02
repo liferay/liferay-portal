@@ -832,19 +832,24 @@ public class LayoutSetPrototypePropagationTest
 			group.getGroupId(), true, true,
 			_privateLayoutSetPrototype.getUuid());
 
-		int vocabulariesCount =
-			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
+		List<AssetVocabulary> assetVocabularies =
+			AssetVocabularyLocalServiceUtil.getGroupVocabularies(
 				new long[] {group.getGroupId()});
+
+		int vocabulariesCount = assetVocabularies.size();
 
 		propagateChanges(false, group);
 
 		_sites.mergeLayoutSetPrototypeLayouts(
 			_privateLayoutSetPrototype, TestPropsValues.getUserId());
 
+		assetVocabularies =
+			AssetVocabularyLocalServiceUtil.getGroupVocabularies(
+				new long[] {group.getGroupId()});
+
 		Assert.assertEquals(
-			vocabulariesCount,
-			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
-				new long[] {group.getGroupId()}));
+			assetVocabularies.toString(), vocabulariesCount,
+			assetVocabularies.size());
 
 		_assertAssetCategory(assetVocabulary, layoutSetPrototypeAssetCategory1);
 		_assertAssetCategory(assetVocabulary, layoutSetPrototypeAssetCategory2);
@@ -2001,16 +2006,21 @@ public class LayoutSetPrototypePropagationTest
 				_layoutSetPrototypeGroup.getGroupId(),
 				layoutSetPrototypeAssetVocabulary.getVocabularyId());
 
-		int vocabulariesCount =
-			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
+		List<AssetVocabulary> assetVocabularies =
+			AssetVocabularyLocalServiceUtil.getGroupVocabularies(
 				new long[] {group.getGroupId()});
+
+		int vocabulariesCount = assetVocabularies.size();
 
 		propagateChanges(initial, group);
 
+		assetVocabularies =
+			AssetVocabularyLocalServiceUtil.getGroupVocabularies(
+				new long[] {group.getGroupId()});
+
 		Assert.assertEquals(
-			vocabulariesCount,
-			AssetVocabularyLocalServiceUtil.getGroupVocabulariesCount(
-				new long[] {group.getGroupId()}));
+			assetVocabularies.toString(), vocabulariesCount,
+			assetVocabularies.size());
 
 		_assertAssetCategory(assetVocabulary, layoutSetPrototypeAssetCategory);
 	}

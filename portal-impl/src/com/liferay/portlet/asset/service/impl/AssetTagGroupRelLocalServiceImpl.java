@@ -83,11 +83,6 @@ public class AssetTagGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public List<AssetTagGroupRel> getAssetTagGroupRelsByTagId(long tagId) {
-		return assetTagGroupRelPersistence.findByTagId(tagId);
-	}
-
-	@Override
 	public List<AssetTagGroupRel> getAssetTagGroupRelsByTagIdAndDepotEntryType(
 		long tagId, int depotEntryType) {
 

@@ -393,15 +393,6 @@ public class AssetVocabularyLocalServiceImpl
 	}
 
 	@Override
-	public int getGroupVocabulariesCount(long[] groupIds) {
-		if (ArrayUtil.isEmpty(groupIds)) {
-			return 0;
-		}
-
-		return assetVocabularyPersistence.countByGroupId(groupIds);
-	}
-
-	@Override
 	public AssetVocabulary getGroupVocabulary(long groupId, String name)
 		throws PortalException {
 

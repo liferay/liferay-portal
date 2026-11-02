@@ -6,6 +6,7 @@
 package com.liferay.site.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -350,16 +351,19 @@ public class GroupServiceTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(group.getGroupId());
 
-		int initialTagsCount = _assetTagLocalService.getGroupTagsCount(
+		List<AssetTag> assetTags = _assetTagLocalService.getGroupTags(
 			group.getGroupId());
+
+		int initialTagsCount = assetTags.size();
 
 		_assetTagLocalService.addTag(
 			null, TestPropsValues.getUserId(), group.getGroupId(),
 			RandomTestUtil.randomString(), serviceContext);
 
+		assetTags = _assetTagLocalService.getGroupTags(group.getGroupId());
+
 		Assert.assertEquals(
-			initialTagsCount + 1,
-			_assetTagLocalService.getGroupTagsCount(group.getGroupId()));
+			assetTags.toString(), initialTagsCount + 1, assetTags.size());
 
 		Assert.assertEquals(
 			1,
@@ -381,9 +385,10 @@ public class GroupServiceTest {
 
 		_groupService.deleteGroup(group.getGroupId());
 
+		assetTags = _assetTagLocalService.getGroupTags(group.getGroupId());
+
 		Assert.assertEquals(
-			initialTagsCount,
-			_assetTagLocalService.getGroupTagsCount(group.getGroupId()));
+			assetTags.toString(), initialTagsCount, assetTags.size());
 
 		Assert.assertEquals(
 			0,
