@@ -31,7 +31,6 @@ import com.liferay.info.item.InfoItemServiceRegistry;
 import com.liferay.info.item.provider.InfoItemFieldValuesProvider;
 import com.liferay.info.item.provider.InfoItemObjectProvider;
 import com.liferay.info.item.renderer.InfoItemRenderer;
-import com.liferay.info.item.renderer.InfoItemRendererRegistry;
 import com.liferay.info.list.provider.item.selector.criterion.InfoListProviderItemSelectorReturnType;
 import com.liferay.info.list.renderer.DefaultInfoListRendererContext;
 import com.liferay.info.list.renderer.InfoListRenderer;
@@ -72,6 +71,7 @@ import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.servlet.PipingServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -345,17 +345,18 @@ public class GetCollectionFieldMVCResourceCommand
 					return null;
 				}
 
-				InfoItemRenderer<Object> infoItemRenderer =
-					(InfoItemRenderer<Object>)
-						_infoItemRendererRegistry.getInfoItemRenderer(
-							listItemStyle);
+				if (Validator.isNotNull(listItemStyle)) {
+					List<InfoItemRenderer<?>> infoItemRenderers =
+						infoListRenderer.getAvailableInfoItemRenderers();
 
-				if ((infoItemRenderer != null) &&
-					!Objects.equals(
-						infoItemRenderer.getItemClassName(),
-						infoListRenderer.getCollectionItemClassName())) {
+					if (ListUtil.isNotEmpty(infoItemRenderers) &&
+						!ListUtil.exists(
+							infoItemRenderers,
+							infoItemRenderer -> Objects.equals(
+								infoItemRenderer.getKey(), listItemStyle))) {
 
-					return null;
+						return null;
+					}
 				}
 
 				UnsyncStringWriter unsyncStringWriter =
@@ -700,9 +701,6 @@ public class GetCollectionFieldMVCResourceCommand
 
 	@Reference
 	private FragmentEntryProcessorHelper _fragmentEntryProcessorHelper;
-
-	@Reference
-	private InfoItemRendererRegistry _infoItemRendererRegistry;
 
 	@Reference
 	private InfoItemServiceRegistry _infoItemServiceRegistry;
