@@ -158,19 +158,6 @@ public class CSDiagramEntryLocalServiceImpl
 			cProductId, start, end, orderByComparator);
 	}
 
-	@Override
-	public List<CSDiagramEntry> getCSDiagramEntries(
-		long cpDefinitionId, int start, int end) {
-
-		return csDiagramEntryPersistence.findByCPDefinitionId(
-			cpDefinitionId, start, end);
-	}
-
-	@Override
-	public int getCSDiagramEntriesCount(long cpDefinitionId) {
-		return csDiagramEntryPersistence.countByCPDefinitionId(cpDefinitionId);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CSDiagramEntry getCSDiagramEntry(
