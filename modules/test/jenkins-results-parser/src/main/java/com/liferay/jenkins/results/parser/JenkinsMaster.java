@@ -882,7 +882,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		if (_buildsCountJSONObject == null) {
 			try {
 				URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-					getURL() + "api/json");
+					getURL() + "/api/json");
 
 				uriBuilder.addParameter(
 					"tree", "jobs[name,allBuilds[timestamp]]");
