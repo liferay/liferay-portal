@@ -118,6 +118,8 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcessTest {
 			_layoutPageTemplateEntryLocalService.fetchLayoutPageTemplateEntry(
 				group.getGroupId(), "content-editor-master");
 
+		Assert.assertNotNull(contentEditorMasterLayoutPageTemplateEntry);
+
 		Layout updatedDraftLayout = _layoutLocalService.fetchLayout(
 			draftLayout.getPlid());
 
