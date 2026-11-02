@@ -31,6 +31,7 @@ import com.liferay.journal.internal.dynamic.data.mapping.util.JournalArticleImpo
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.layout.dynamic.data.mapping.form.field.type.constants.LayoutDDMFormFieldTypeConstants;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
@@ -133,6 +134,26 @@ public class JournalArticleExportImportContentProcessor
 			_ddmFormValuesExportImportContentProcessor.
 				replaceExportContentReferences(
 					portletDataContext, stagedModel, ddmFormValues, true, true);
+
+		Fields exportFields = null;
+
+		for (Field field : fields) {
+			if (!Objects.equals(
+					field.getType(),
+					LayoutDDMFormFieldTypeConstants.LINK_TO_LAYOUT)) {
+
+				continue;
+			}
+
+			if (exportFields == null) {
+				exportFields = _ddmFormValuesToFieldsConverter.convert(
+					ddmStructure, ddmFormValues);
+			}
+
+			Field exportField = exportFields.get(field.getName());
+
+			field.setValuesMap(exportField.getValuesMap());
+		}
 
 		DDMFormValuesTransformer ddmFormValuesTransformer =
 			new DDMFormValuesTransformer(ddmFormValues);
