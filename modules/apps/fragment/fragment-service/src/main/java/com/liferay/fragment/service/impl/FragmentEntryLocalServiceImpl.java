@@ -16,7 +16,6 @@ import com.liferay.fragment.configuration.FragmentServiceConfiguration;
 import com.liferay.fragment.constants.FragmentPortletKeys;
 import com.liferay.fragment.exception.DuplicateFragmentEntryKeyException;
 import com.liferay.fragment.exception.FragmentEntryNameException;
-import com.liferay.fragment.exception.NoSuchEntryException;
 import com.liferay.fragment.exception.RequiredFragmentEntryException;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentCompositionTable;
@@ -613,15 +612,6 @@ public class FragmentEntryLocalServiceImpl
 
 	@Override
 	public List<FragmentEntry> getFragmentEntries(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentEntry> orderByComparator) {
-
-		return fragmentEntryPersistence.findByG_FCI(
-			groupId, fragmentCollectionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<FragmentEntry> getFragmentEntries(
 		long groupId, long fragmentCollectionId, String name, int status,
 		int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
@@ -656,39 +646,11 @@ public class FragmentEntryLocalServiceImpl
 
 	@Override
 	public List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
-		String uuid, long companyId) {
-
-		return fragmentEntryPersistence.findByUuid_C(uuid, companyId);
-	}
-
-	@Override
-	public List<FragmentEntry> getFragmentEntriesByUuidAndCompanyId(
 		String uuid, long companyId, int start, int end,
 		OrderByComparator<FragmentEntry> orderByComparator) {
 
 		return fragmentEntryPersistence.findByUuid_C(
 			uuid, companyId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getFragmentEntriesCount(long fragmentCollectionId) {
-		return fragmentEntryPersistence.countByFragmentCollectionId(
-			fragmentCollectionId);
-	}
-
-	@Override
-	public FragmentEntry getFragmentEntryByUuidAndGroupId(
-			String uuid, long groupId)
-		throws PortalException {
-
-		FragmentEntry fragmentEntry = fetchFragmentEntryByUuidAndGroupId(
-			uuid, groupId);
-
-		if (fragmentEntry == null) {
-			throw new NoSuchEntryException();
-		}
-
-		return fragmentEntry;
 	}
 
 	@Override

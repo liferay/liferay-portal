@@ -741,13 +741,13 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_layoutLocalService.copyLayoutContent(draftLayout, layout);
 
 		FragmentEntryLink fragmentEntryLink1 =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_group.getGroupId(),
 				draftFragmentEntryLink1.getExternalReferenceCode(),
 				layout.getPlid());
 
 		FragmentEntryLink fragmentEntryLink2 =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_group.getGroupId(),
 				draftFragmentEntryLink2.getExternalReferenceCode(),
 				layout.getPlid());
@@ -777,13 +777,13 @@ public class LayoutLocalServiceCopyLayoutContentTest {
 		_layoutLocalService.copyLayoutContent(draftLayout, layout);
 
 		FragmentEntryLink updatedFragmentEntryLink1 =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_group.getGroupId(),
 				draftFragmentEntryLink1.getExternalReferenceCode(),
 				layout.getPlid());
 
 		FragmentEntryLink updatedFragmentEntryLink2 =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_group.getGroupId(),
 				draftFragmentEntryLink2.getExternalReferenceCode(),
 				layout.getPlid());

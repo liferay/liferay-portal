@@ -10,8 +10,8 @@ import com.liferay.fragment.cache.FragmentEntryLinkCache;
 import com.liferay.fragment.constants.FragmentConstants;
 import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.model.FragmentEntryLink;
-import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -96,7 +96,7 @@ public class FragmentEntryLinkCacheTest {
 		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 
 		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			FragmentTestUtil.getFragmentEntryLink(
 				layout.getGroupId(),
 				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid());
@@ -162,9 +162,6 @@ public class FragmentEntryLinkCacheTest {
 
 	@Inject
 	private FragmentEntryLinkCache _fragmentEntryLinkCache;
-
-	@Inject
-	private FragmentEntryLinkLocalService _fragmentEntryLinkLocalService;
 
 	@Inject
 	private FragmentEntryLocalService _fragmentEntryLocalService;

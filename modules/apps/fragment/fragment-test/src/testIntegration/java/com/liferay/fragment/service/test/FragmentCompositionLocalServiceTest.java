@@ -133,29 +133,6 @@ public class FragmentCompositionLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext());
 	}
 
-	@Test
-	public void testDeleteFragmentCompositionByExternalReferenceCode()
-		throws Exception {
-
-		FragmentComposition fragmentComposition =
-			_fragmentCompositionLocalService.addFragmentComposition(
-				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
-				_group.getGroupId(),
-				_fragmentCollection.getFragmentCollectionId(),
-				StringUtil.randomId(), RandomTestUtil.randomString(),
-				StringPool.BLANK, StringPool.BLANK, 0,
-				WorkflowConstants.STATUS_APPROVED,
-				ServiceContextTestUtil.getServiceContext());
-
-		_fragmentCompositionLocalService.deleteFragmentComposition(
-			fragmentComposition.getExternalReferenceCode(),
-			fragmentComposition.getGroupId());
-
-		Assert.assertNull(
-			_fragmentCompositionLocalService.fetchFragmentComposition(
-				fragmentComposition.getFragmentCompositionId()));
-	}
-
 	@Test(expected = FragmentCompositionNameException.class)
 	public void testFragmentCompositionNameRequired() throws Exception {
 		_fragmentCompositionLocalService.addFragmentComposition(

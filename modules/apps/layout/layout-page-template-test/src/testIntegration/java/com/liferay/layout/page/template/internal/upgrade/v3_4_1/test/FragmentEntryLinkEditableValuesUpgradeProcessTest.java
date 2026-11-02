@@ -366,7 +366,7 @@ public class FragmentEntryLinkEditableValuesUpgradeProcessTest
 		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
 
 		FragmentEntryLink fragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_layout.getGroupId(),
 				draftFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());

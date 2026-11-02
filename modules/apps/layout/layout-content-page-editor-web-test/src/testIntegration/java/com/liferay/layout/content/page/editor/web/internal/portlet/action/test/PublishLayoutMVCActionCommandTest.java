@@ -218,7 +218,7 @@ public class PublishLayoutMVCActionCommandTest {
 		ContentLayoutTestUtil.publishLayout(_draftLayout, _layout);
 
 		FragmentEntryLink publishedLayoutDropzoneFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_group.getGroupId(),
 				dropzoneFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
@@ -226,7 +226,7 @@ public class PublishLayoutMVCActionCommandTest {
 		Assert.assertNotNull(publishedLayoutDropzoneFragmentEntryLink);
 
 		FragmentEntryLink publishedLayoutFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				_group.getGroupId(),
 				fragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());

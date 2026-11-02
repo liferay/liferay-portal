@@ -169,13 +169,13 @@ public class FragmentEntryLinkUpgradeProcessTest
 			fragmentEntryLinks.toString(), 2, fragmentEntryLinks.size());
 
 		FragmentEntryLink globalPublishedLayoutFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			FragmentTestUtil.getFragmentEntryLink(
 				_layout.getGroupId(),
 				globalDraftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
 
 		FragmentEntryLink publishedLayoutFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			FragmentTestUtil.getFragmentEntryLink(
 				_layout.getGroupId(),
 				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());

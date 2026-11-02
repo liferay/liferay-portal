@@ -138,7 +138,7 @@ public class FragmentEntryLinkStagingTest {
 			_stagingGroup.getGroupId());
 
 		FragmentEntry stagingFragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+			_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 				liveFragmentEntry.getUuid(), _stagingGroup.getGroupId());
 
 		_fragmentEntryLocalService.deleteFragmentEntry(stagingFragmentEntry);

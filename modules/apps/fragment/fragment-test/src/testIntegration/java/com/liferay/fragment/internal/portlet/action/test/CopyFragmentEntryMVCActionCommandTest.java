@@ -83,10 +83,6 @@ public class CopyFragmentEntryMVCActionCommandTest {
 			_fragmentCollectionContributorRegistry.getFragmentComposition(
 				"FEATURED_CONTENT-composition-banner-center");
 
-		String fragmentCompositionNameCopy = StringBundler.concat(
-			fragmentComposition.getName(), " (",
-			_language.get(LocaleUtil.getSiteDefault(), "copy"), ")");
-
 		FragmentCollection fragmentCollection =
 			_fragmentCollectionLocalService.addFragmentCollection(
 				null, TestPropsValues.getUserId(), _group.getGroupId(),
@@ -95,10 +91,7 @@ public class CopyFragmentEntryMVCActionCommandTest {
 
 		List<FragmentComposition> fragmentCompositions =
 			_fragmentCompositionLocalService.getFragmentCompositions(
-				_group.getGroupId(),
-				fragmentCollection.getFragmentCollectionId(),
-				fragmentCompositionNameCopy, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+				fragmentCollection.getFragmentCollectionId());
 
 		Assert.assertTrue(ListUtil.isEmpty(fragmentCompositions));
 
@@ -116,10 +109,7 @@ public class CopyFragmentEntryMVCActionCommandTest {
 
 		fragmentCompositions =
 			_fragmentCompositionLocalService.getFragmentCompositions(
-				_group.getGroupId(),
-				fragmentCollection.getFragmentCollectionId(),
-				fragmentCompositionNameCopy, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+				fragmentCollection.getFragmentCollectionId());
 
 		Assert.assertTrue(ListUtil.isNotEmpty(fragmentCompositions));
 

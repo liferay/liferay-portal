@@ -375,15 +375,6 @@ public class FragmentEntryLinkLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteFragmentEntryLinkByExternalReferenceCode()
-		throws Exception {
-
-		_assertDeleteFragmentEntryLinkByExternalReferenceCode(_fragmentEntry);
-		_assertDeleteFragmentEntryLinkByExternalReferenceCode(
-			_globalFragmentEntry);
-	}
-
-	@Test
 	public void testDeleteFragmentEntryLinkGlobal() throws Exception {
 		FragmentEntryLink fragmentEntryLink =
 			_addFragmentEntryLinkFromGlobalToLayout();
@@ -1151,24 +1142,6 @@ public class FragmentEntryLinkLocalServiceTest {
 
 		_fragmentEntryLinkLocalService.deleteFragmentEntryLink(
 			fragmentEntryLink.getFragmentEntryLinkId());
-
-		Assert.assertNull(
-			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
-				fragmentEntryLink.getFragmentEntryLinkId()));
-	}
-
-	private void _assertDeleteFragmentEntryLinkByExternalReferenceCode(
-			FragmentEntry fragmentEntry)
-		throws Exception {
-
-		FragmentEntryLink fragmentEntryLink = _addFragmentEntryLink(
-			fragmentEntry, null, _defaultSegmentsExperienceId,
-			_layout.getPlid(), _read("editable-values-light-modified.json"), 0,
-			null);
-
-		_fragmentEntryLinkLocalService.deleteFragmentEntryLink(
-			fragmentEntryLink.getExternalReferenceCode(),
-			fragmentEntryLink.getGroupId());
 
 		Assert.assertNull(
 			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(

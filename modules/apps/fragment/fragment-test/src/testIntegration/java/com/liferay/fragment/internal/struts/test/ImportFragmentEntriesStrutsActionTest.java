@@ -7,6 +7,7 @@ package com.liferay.fragment.internal.struts.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.model.FragmentCollection;
+import com.liferay.fragment.model.FragmentEntry;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentCompositionService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
@@ -139,10 +140,12 @@ public class ImportFragmentEntriesStrutsActionTest {
 
 		FragmentCollection fragmentCollection = fragmentCollections.get(0);
 
+		List<FragmentEntry> fragmentEntries =
+			_fragmentEntryLocalService.getFragmentEntries(
+				fragmentCollection.getFragmentCollectionId());
+
 		Assert.assertEquals(
-			5,
-			_fragmentEntryLocalService.getFragmentEntriesCount(
-				fragmentCollection.getFragmentCollectionId()));
+			fragmentEntries.toString(), 5, fragmentEntries.size());
 
 		Assert.assertEquals(
 			1,

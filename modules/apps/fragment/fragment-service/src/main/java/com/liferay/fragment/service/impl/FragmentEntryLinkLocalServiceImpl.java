@@ -192,16 +192,6 @@ public class FragmentEntryLinkLocalServiceImpl
 	}
 
 	@Override
-	public FragmentEntryLink deleteFragmentEntryLink(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		return fragmentEntryLinkLocalService.deleteFragmentEntryLink(
-			getFragmentEntryLinkByExternalReferenceCode(
-				externalReferenceCode, groupId));
-	}
-
-	@Override
 	public void deleteFragmentEntryLinks(long groupId) {
 		List<FragmentEntryLink> fragmentEntryLinks =
 			fragmentEntryLinkPersistence.findByGroupId(groupId);
@@ -462,28 +452,6 @@ public class FragmentEntryLinkLocalServiceImpl
 			));
 	}
 
-	/**
-	 * @deprecated As of Athanasius (7.3.x), replaced by {@link
-	 *             #getFragmentEntryLinksCountByPlid(long, long)}
-	 */
-	@Deprecated
-	@Override
-	public int getClassedModelFragmentEntryLinksCount(
-		long groupId, long classNameId, long classPK) {
-
-		return fragmentEntryLinkPersistence.countByG_C_C(
-			groupId, classNameId, classPK);
-	}
-
-	@Override
-	public FragmentEntryLink getFragmentEntryLink(
-			long groupId, String originalFragmentEntryLinkERC, long plid)
-		throws PortalException {
-
-		return fragmentEntryLinkPersistence.findByG_OFELERC_P_First(
-			groupId, originalFragmentEntryLinkERC, plid, null);
-	}
-
 	@Override
 	public List<FragmentEntryLink> getFragmentEntryLinks(
 		int type, int start, int end,
@@ -586,18 +554,6 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		return fragmentEntryLinkPersistence.findByG_S_P_D(
 			groupId, segmentsExperienceIds, plid, deleted);
-	}
-
-	@Override
-	public int getFragmentEntryLinksCountByFragmentEntry(
-			long groupId, FragmentEntry fragmentEntry, boolean deleted)
-		throws PortalException {
-
-		return fragmentEntryLinkPersistence.countByG_FEERC_FESERC_D(
-			groupId, fragmentEntry.getExternalReferenceCode(),
-			ScopeUtil.getItemScopeExternalReferenceCode(
-				fragmentEntry.getGroupId(), groupId),
-			deleted);
 	}
 
 	@Override

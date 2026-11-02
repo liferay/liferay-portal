@@ -279,7 +279,7 @@ public class FragmentEntryStagedModelDataHandlerTest
 				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
 
 		FragmentEntryLink publishedFragmentEntryLink =
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			FragmentTestUtil.getFragmentEntryLink(
 				stagingGroup.getGroupId(),
 				originalFragmentEntryLink.getExternalReferenceCode(),
 				_layout.getPlid());
@@ -297,7 +297,7 @@ public class FragmentEntryStagedModelDataHandlerTest
 		_exportImportStagedModel(fragmentEntry);
 
 		FragmentEntry liveFragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+			_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 				fragmentEntry.getUuid(), liveGroup.getGroupId());
 
 		Assert.assertEquals(
@@ -329,7 +329,7 @@ public class FragmentEntryStagedModelDataHandlerTest
 		_exportImportStagedModel(fragmentEntry);
 
 		liveFragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+			_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 				fragmentEntry.getUuid(), liveGroup.getGroupId());
 
 		Assert.assertEquals(
@@ -351,7 +351,7 @@ public class FragmentEntryStagedModelDataHandlerTest
 	protected StagedModel getStagedModel(String uuid, Group group)
 		throws PortalException {
 
-		return _fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+		return _fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 			uuid, group.getGroupId());
 	}
 

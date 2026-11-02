@@ -18,8 +18,6 @@ import com.liferay.fragment.service.base.FragmentCompositionLocalServiceBaseImpl
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
@@ -35,9 +33,7 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.Date;
@@ -152,16 +148,6 @@ public class FragmentCompositionLocalServiceImpl
 	}
 
 	@Override
-	public FragmentComposition deleteFragmentComposition(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		return fragmentCompositionLocalService.deleteFragmentComposition(
-			getFragmentCompositionByExternalReferenceCode(
-				externalReferenceCode, groupId));
-	}
-
-	@Override
 	public FragmentComposition fetchFragmentComposition(
 		long fragmentCompositionId) {
 
@@ -227,45 +213,6 @@ public class FragmentCompositionLocalServiceImpl
 
 		return fragmentCompositionPersistence.findByG_FCI_S(
 			groupId, fragmentCollectionId, status);
-	}
-
-	@Override
-	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, int start, int end,
-		OrderByComparator<FragmentComposition> orderByComparator) {
-
-		return fragmentCompositionPersistence.findByG_FCI(
-			groupId, fragmentCollectionId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<FragmentComposition> getFragmentCompositions(
-		long groupId, long fragmentCollectionId, String name, int start,
-		int end, OrderByComparator<FragmentComposition> orderByComparator) {
-
-		if (Validator.isNull(name)) {
-			return fragmentCompositionPersistence.findByG_FCI(
-				groupId, fragmentCollectionId, start, end, orderByComparator);
-		}
-
-		return fragmentCompositionPersistence.findByG_FCI_LikeN(
-			groupId, fragmentCollectionId,
-			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0], start,
-			end, orderByComparator);
-	}
-
-	@Override
-	public int getFragmentCompositionsCount(long fragmentCollectionId) {
-		return fragmentCompositionPersistence.countByFragmentCollectionId(
-			fragmentCollectionId);
-	}
-
-	@Override
-	public String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws PortalException {
-
-		return TempFileEntryUtil.getTempFileNames(groupId, userId, folderName);
 	}
 
 	@Override
@@ -477,9 +424,6 @@ public class FragmentCompositionLocalServiceImpl
 					" as a preview");
 		}
 	}
-
-	@Reference
-	private CustomSQL _customSQL;
 
 	@Reference
 	private DLAppLocalService _dlAppLocalService;

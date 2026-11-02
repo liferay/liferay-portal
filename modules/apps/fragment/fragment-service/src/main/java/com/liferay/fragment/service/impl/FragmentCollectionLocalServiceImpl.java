@@ -48,7 +48,6 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.TempFileEntryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
@@ -490,14 +489,6 @@ public class FragmentCollectionLocalServiceImpl
 			groupIds,
 			_customSQL.keywords(name, false, WildcardMode.SURROUND)[0],
 			marketplace);
-	}
-
-	@Override
-	public String[] getTempFileNames(
-			long userId, long groupId, String folderName)
-		throws PortalException {
-
-		return TempFileEntryUtil.getTempFileNames(groupId, userId, folderName);
 	}
 
 	@Override

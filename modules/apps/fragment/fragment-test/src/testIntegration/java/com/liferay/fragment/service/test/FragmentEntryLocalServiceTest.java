@@ -176,61 +176,9 @@ public class FragmentEntryLocalServiceTest {
 	@Test
 	public void testGetFragmentEntries() throws Exception {
 		_testGetFragmentEntriesByFragmentCollectionId();
-		_testGetFragmentEntriesByGroupIdAndFragmentCollectionIdOrderByCreateDateComparator();
-		_testGetFragmentEntriesByGroupIdAndFragmentCollectionIdOrderByNameComparator();
 		_testGetFragmentEntriesByGroupIdFragmentCollectionIdAndNameOrderByCreateDateComparator();
 		_testGetFragmentEntriesByGroupIdFragmentCollectionIdAndNameOrderByNameComparator();
 		_testGetFragmentEntriesByGroupIdFragmentCollectionIdAndStatus();
-	}
-
-	@Test
-	public void testGetFragmentEntriesByUuidAndCompanyId() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		FragmentEntry fragmentEntry1 = FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId(),
-			RandomTestUtil.randomString());
-
-		List<FragmentEntry> fragmentEntries1 =
-			_fragmentEntryLocalService.getFragmentEntriesByUuidAndCompanyId(
-				fragmentEntry1.getUuid(), _group.getCompanyId());
-
-		Assert.assertEquals(
-			fragmentEntries1.toString(), 1, fragmentEntries1.size());
-		Assert.assertEquals(fragmentEntry1, fragmentEntries1.get(0));
-
-		FragmentCollection fragmentCollection =
-			FragmentTestUtil.addFragmentCollection(group.getGroupId());
-
-		FragmentEntry fragmentEntry2 = FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection.getFragmentCollectionId(),
-			RandomTestUtil.randomString());
-
-		List<FragmentEntry> fragmentEntries2 =
-			_fragmentEntryLocalService.getFragmentEntriesByUuidAndCompanyId(
-				fragmentEntry2.getUuid(), group.getCompanyId());
-
-		Assert.assertEquals(
-			fragmentEntries2.toString(), 1, fragmentEntries2.size());
-		Assert.assertEquals(fragmentEntry2, fragmentEntries2.get(0));
-
-		GroupLocalServiceUtil.deleteGroup(group);
-	}
-
-	@Test
-	public void testGetFragmentEntriesCount() throws Exception {
-		int originalCount = _fragmentEntryLocalService.getFragmentEntriesCount(
-			_fragmentCollection.getFragmentCollectionId());
-
-		FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId());
-		FragmentEntryTestUtil.addFragmentEntry(
-			_fragmentCollection.getFragmentCollectionId());
-
-		int actualCount = _fragmentEntryLocalService.getFragmentEntriesCount(
-			_fragmentCollection.getFragmentCollectionId());
-
-		Assert.assertEquals(originalCount + 2, actualCount);
 	}
 
 	@Test
@@ -961,88 +909,6 @@ public class FragmentEntryLocalServiceTest {
 		Assert.assertEquals(
 			actualFragmentEntries.toString(),
 			originalFragmentEntries.size() + 2, actualFragmentEntries.size());
-	}
-
-	private void _testGetFragmentEntriesByGroupIdAndFragmentCollectionIdOrderByCreateDateComparator()
-		throws Exception {
-
-		FragmentCollection fragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		LocalDateTime localDateTime = LocalDateTime.now();
-
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection.getFragmentCollectionId(), "AB Fragment Entry",
-			Timestamp.valueOf(localDateTime));
-
-		localDateTime = localDateTime.plus(1, ChronoUnit.SECONDS);
-
-		FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection.getFragmentCollectionId(), "AA Fragment Entry",
-			Timestamp.valueOf(localDateTime));
-
-		List<FragmentEntry> fragmentEntries =
-			_fragmentEntryLocalService.getFragmentEntries(
-				_group.getGroupId(),
-				fragmentCollection.getFragmentCollectionId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				FragmentEntryCreateDateComparator.getInstance(true));
-
-		FragmentEntry firstFragmentEntry = fragmentEntries.get(0);
-
-		Assert.assertEquals(
-			fragmentEntries.toString(), fragmentEntry.getName(),
-			firstFragmentEntry.getName());
-
-		fragmentEntries = _fragmentEntryLocalService.getFragmentEntries(
-			_group.getGroupId(), fragmentCollection.getFragmentCollectionId(),
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			FragmentEntryCreateDateComparator.getInstance(false));
-
-		FragmentEntry lastFragmentEntry = fragmentEntries.get(
-			fragmentEntries.size() - 1);
-
-		Assert.assertEquals(
-			fragmentEntries.toString(), fragmentEntry.getName(),
-			lastFragmentEntry.getName());
-	}
-
-	private void _testGetFragmentEntriesByGroupIdAndFragmentCollectionIdOrderByNameComparator()
-		throws Exception {
-
-		FragmentCollection fragmentCollection =
-			FragmentTestUtil.addFragmentCollection(_group.getGroupId());
-
-		FragmentEntry fragmentEntry = FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection.getFragmentCollectionId(), "AB Fragment Entry");
-
-		FragmentEntryTestUtil.addFragmentEntry(
-			fragmentCollection.getFragmentCollectionId(), "AA Fragment Entry");
-
-		List<FragmentEntry> fragmentEntries =
-			_fragmentEntryLocalService.getFragmentEntries(
-				_group.getGroupId(),
-				fragmentCollection.getFragmentCollectionId(), QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
-				FragmentEntryNameComparator.getInstance(true));
-
-		FragmentEntry lastFragmentEntry = fragmentEntries.get(
-			fragmentEntries.size() - 1);
-
-		Assert.assertEquals(
-			fragmentEntries.toString(), fragmentEntry.getName(),
-			lastFragmentEntry.getName());
-
-		fragmentEntries = _fragmentEntryLocalService.getFragmentEntries(
-			_group.getGroupId(), fragmentCollection.getFragmentCollectionId(),
-			QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			FragmentEntryNameComparator.getInstance(false));
-
-		FragmentEntry firstFragmentEntry = fragmentEntries.get(0);
-
-		Assert.assertEquals(
-			fragmentEntries.toString(), fragmentEntry.getName(),
-			firstFragmentEntry.getName());
 	}
 
 	private void _testGetFragmentEntriesByGroupIdFragmentCollectionIdAndNameOrderByCreateDateComparator()

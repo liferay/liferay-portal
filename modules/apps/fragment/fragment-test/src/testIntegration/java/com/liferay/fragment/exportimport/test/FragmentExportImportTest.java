@@ -185,7 +185,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 			Group stagingGroup = _group.getStagingGroup();
 
 			FragmentEntry importedGroupFragmentEntry =
-				_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+				_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 					fragmentEntry.getUuid(), stagingGroup.getGroupId());
 
 			_assertContains(
@@ -331,7 +331,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 			exportImportPortlet(FragmentPortletKeys.FRAGMENT, false);
 
 			FragmentEntry importedGroupFragmentEntry =
-				_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+				_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 					fragmentEntry.getUuid(), importedGroup.getGroupId());
 
 			Assert.assertEquals(
@@ -497,7 +497,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 		exportImportLayouts(new long[0], getImportParameterMap());
 
 		FragmentEntry importedGroupFragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+			_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 				fragmentEntry.getUuid(), importedGroup.getGroupId());
 
 		Assert.assertEquals(
@@ -519,7 +519,7 @@ public class FragmentExportImportTest extends BasePortletExportImportTestCase {
 		exportImportPortlet(FragmentPortletKeys.FRAGMENT, false);
 
 		FragmentEntry importedGroupFragmentEntry =
-			_fragmentEntryLocalService.getFragmentEntryByUuidAndGroupId(
+			_fragmentEntryLocalService.fetchFragmentEntryByUuidAndGroupId(
 				fragmentEntry.getUuid(), importedGroup.getGroupId());
 
 		Assert.assertEquals(

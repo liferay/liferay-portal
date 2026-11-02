@@ -131,7 +131,7 @@ public class LayoutReferencesExportImportContentProcessorTest {
 		ContentLayoutTestUtil.publishLayout(draftLayout, layout);
 
 		Assert.assertNotNull(
-			_fragmentEntryLinkLocalService.getFragmentEntryLink(
+			_fragmentEntryLinkLocalService.fetchFragmentEntryLink(
 				liveGroup.getGroupId(),
 				draftLayoutFragmentEntryLink.getExternalReferenceCode(),
 				layout.getPlid()));

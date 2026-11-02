@@ -85,6 +85,7 @@ import jakarta.portlet.ActionRequest;
 import jakarta.portlet.ActionResponse;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -368,10 +369,12 @@ public class AddFragmentCompositionMVCActionCommandTest {
 
 		Assert.assertFalse(jsonObject.getBoolean("valid"));
 
+		List<FragmentComposition> fragmentCompositions =
+			_fragmentCompositionLocalService.getFragmentCompositions(
+				fragmentCollection.getFragmentCollectionId());
+
 		Assert.assertEquals(
-			0,
-			_fragmentCompositionLocalService.getFragmentCompositionsCount(
-				fragmentCollection.getFragmentCollectionId()));
+			fragmentCompositions.toString(), 0, fragmentCompositions.size());
 	}
 
 	@Test

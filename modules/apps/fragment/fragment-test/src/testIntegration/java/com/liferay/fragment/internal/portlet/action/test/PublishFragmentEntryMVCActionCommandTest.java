@@ -14,6 +14,7 @@ import com.liferay.fragment.model.FragmentEntryLink;
 import com.liferay.fragment.service.FragmentCollectionLocalService;
 import com.liferay.fragment.service.FragmentEntryLinkLocalService;
 import com.liferay.fragment.service.FragmentEntryLocalService;
+import com.liferay.fragment.test.util.FragmentTestUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateStructureLocalService;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.layout.test.util.LayoutTestUtil;
@@ -235,7 +236,7 @@ public class PublishFragmentEntryMVCActionCommandTest {
 				fragmentEntry.getHtml(),
 				_fragmentEntryLinkLocalService.getFragmentEntryLink(
 					fragmentEntryLink.getFragmentEntryLinkId()),
-				_fragmentEntryLinkLocalService.getFragmentEntryLink(
+				FragmentTestUtil.getFragmentEntryLink(
 					_group.getGroupId(),
 					fragmentEntryLink.getExternalReferenceCode(),
 					layout.getPlid()));
@@ -266,7 +267,7 @@ public class PublishFragmentEntryMVCActionCommandTest {
 				fragmentEntry.getHtml(),
 				_fragmentEntryLinkLocalService.getFragmentEntryLink(
 					fragmentEntryLink.getFragmentEntryLinkId()),
-				_fragmentEntryLinkLocalService.getFragmentEntryLink(
+				FragmentTestUtil.getFragmentEntryLink(
 					_group.getGroupId(),
 					fragmentEntryLink.getExternalReferenceCode(),
 					layout.getPlid()));
