@@ -124,7 +124,8 @@ public class AddressCommerceCheckoutStepDisplayContext {
 						actionRequest, "subtype", commerceAddress.getSubtype()),
 					_commerceAddressType, commerceAddress.getZip(), null);
 
-				commerceOrder.setBillingAddressId(commerceAddressId);
+				commerceOrder = _commerceOrderService.getCommerceOrder(
+					commerceOrder.getCommerceOrderId());
 
 				commerceOrder = updateCommerceOrderAddress(
 					commerceOrder, commerceAddressId, commerceAddressId,
