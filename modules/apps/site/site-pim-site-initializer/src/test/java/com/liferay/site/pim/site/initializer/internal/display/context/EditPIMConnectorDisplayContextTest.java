@@ -354,7 +354,7 @@ public class EditPIMConnectorDisplayContextTest {
 		Mockito.when(
 			configurationObjectDefinition.getRESTContextPath()
 		).thenReturn(
-			"/pim/liferay-commerce-connector-configurations"
+			"/pim/connector-liferay-commerce-configuration"
 		);
 
 		ObjectEntry configurationObjectEntry = Mockito.mock(ObjectEntry.class);
@@ -464,7 +464,7 @@ public class EditPIMConnectorDisplayContextTest {
 				pimConnectorJSONObject.getJSONObject("configuration");
 
 			Assert.assertEquals(
-				"/o/pim/liferay-commerce-connector-configurations",
+				"/o/pim/connector-liferay-commerce-configuration",
 				configurationJSONObject.getString("apiURL"));
 			Assert.assertEquals(
 				"Liferay Commerce Configuration",

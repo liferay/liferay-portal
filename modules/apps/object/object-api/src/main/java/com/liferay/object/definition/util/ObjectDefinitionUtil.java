@@ -276,7 +276,7 @@ public class ObjectDefinitionUtil {
 			"PIMConnectorFieldMapping", "/pim/connector-field-mappings"
 		).put(
 			"PIMConnectorLiferayCommerceConfiguration",
-			"/pim/liferay-commerce-connector-configurations"
+			"/pim/connector-liferay-commerce-configuration"
 		).put(
 			"PIMLink", "/pim/links"
 		).build();
