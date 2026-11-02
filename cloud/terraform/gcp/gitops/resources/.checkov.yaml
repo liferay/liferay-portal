@@ -1,3 +1,0 @@
-skip-check:
-    -   CKV_GCP_49
-    -   CKV_SECRET_6

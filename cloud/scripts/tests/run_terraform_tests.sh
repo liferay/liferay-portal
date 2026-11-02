@@ -12,8 +12,6 @@ function main {
 		aws/platform
 		azure/aks
 		azure/platform
-		gcp/gitops/platform
-		gcp/gitops/resources
 		gcp/gke
 		gcp/platform
 		modules/argocd
