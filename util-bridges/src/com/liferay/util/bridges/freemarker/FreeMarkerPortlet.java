@@ -5,7 +5,6 @@
 
 package com.liferay.util.bridges.freemarker;
 
-import com.liferay.petra.io.unsync.UnsyncPrintWriter;
 import com.liferay.petra.io.unsync.UnsyncStringWriter;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.log.Log;
@@ -83,7 +82,7 @@ public class FreeMarkerPortlet extends MVCPortlet {
 				if (portletResponse instanceof MimeResponse) {
 					MimeResponse mimeResponse = (MimeResponse)portletResponse;
 
-					writer = new UnsyncPrintWriter(mimeResponse.getWriter());
+					writer = mimeResponse.getWriter();
 				}
 				else {
 					writer = new UnsyncStringWriter();
