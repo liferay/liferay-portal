@@ -13,8 +13,6 @@ import com.liferay.petra.reflect.ReflectionUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.internal.change.tracking.hibernate.CTSQLInterceptor;
-import com.liferay.portal.kernel.dao.db.DBManagerUtil;
-import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
@@ -87,16 +85,6 @@ public class PortalHibernateConfiguration
 
 	public void afterPropertiesSet() throws IOException {
 		Dialect dialect = DialectDetector.getDialect(_dataSource);
-
-		if (DBManagerUtil.getDBType(dialect) == DBType.ORACLE) {
-
-			// This must be done before the instantiating Configuration to
-			// ensure that org.hibernate.cfg.Environment's static init block can
-			// see it
-
-			System.setProperty(
-				PropsKeys.HIBERNATE_JDBC_USE_STREAMS_FOR_BINARY, "true");
-		}
 
 		Properties properties = PropsUtil.getProperties();
 
