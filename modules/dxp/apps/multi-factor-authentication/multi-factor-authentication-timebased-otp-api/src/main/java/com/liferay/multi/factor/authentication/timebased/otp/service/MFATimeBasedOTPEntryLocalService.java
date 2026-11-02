@@ -264,9 +264,6 @@ public interface MFATimeBasedOTPEntryLocalService
 			MFATimeBasedOTPEntry mfaTimeBasedOTPEntry)
 		throws PortalException;
 
-	public MFATimeBasedOTPEntry resetFailedAttempts(long userId)
-		throws PortalException;
-
 	public MFATimeBasedOTPEntry updateAttempts(
 			long userId, String ipAddress, boolean success)
 		throws PortalException;
@@ -290,4 +287,4 @@ public interface MFATimeBasedOTPEntryLocalService
 		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1090469820
+// LIFERAY-SERVICE-BUILDER-HASH:1845889294
