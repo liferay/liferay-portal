@@ -405,5 +405,8 @@ public interface User extends PersistedModel, UserModel {
 
 	public void setUserGroupIds(long[] userGroupIds);
 
+	@com.liferay.portal.kernel.template.TemplateRestricted
+	public String toString();
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:900785891
+// LIFERAY-SERVICE-BUILDER-HASH:1348386990

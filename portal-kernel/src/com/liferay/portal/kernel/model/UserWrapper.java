@@ -2019,6 +2019,11 @@ public class UserWrapper
 	}
 
 	@Override
+	public String toString() {
+		return model.toString();
+	}
+
+	@Override
 	public String toXmlString() {
 		return model.toXmlString();
 	}
@@ -2046,4 +2051,4 @@ public class UserWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1889895784
+// LIFERAY-SERVICE-BUILDER-HASH:-1689602330

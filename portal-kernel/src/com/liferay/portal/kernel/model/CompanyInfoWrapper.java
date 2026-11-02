@@ -528,6 +528,11 @@ public class CompanyInfoWrapper
 	}
 
 	@Override
+	public String toString() {
+		return model.toString();
+	}
+
+	@Override
 	public String toXmlString() {
 		return model.toXmlString();
 	}
@@ -538,4 +543,4 @@ public class CompanyInfoWrapper
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:748823636
+// LIFERAY-SERVICE-BUILDER-HASH:-1686002142

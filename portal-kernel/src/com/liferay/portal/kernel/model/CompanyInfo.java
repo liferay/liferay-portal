@@ -46,5 +46,8 @@ public interface CompanyInfo extends CompanyInfoModel, PersistedModel {
 
 		};
 
+	@com.liferay.portal.kernel.template.TemplateRestricted
+	public String toString();
+
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1708359741
+// LIFERAY-SERVICE-BUILDER-HASH:1773553032
