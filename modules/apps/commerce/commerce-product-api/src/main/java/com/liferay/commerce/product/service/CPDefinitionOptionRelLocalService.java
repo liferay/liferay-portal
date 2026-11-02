@@ -420,9 +420,6 @@ public interface CPDefinitionOptionRelLocalService
 		long cpOptionId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPOptionCPDefinitionOptionRelsCount(long cpOptionId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ExportActionableDynamicQuery getExportActionableDynamicQuery(
 		PortletDataContext portletDataContext);
 
@@ -530,4 +527,4 @@ public interface CPDefinitionOptionRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2125764152
+// LIFERAY-SERVICE-BUILDER-HASH:755328144

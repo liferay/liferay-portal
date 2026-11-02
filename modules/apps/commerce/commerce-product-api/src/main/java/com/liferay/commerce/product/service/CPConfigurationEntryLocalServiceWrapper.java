@@ -365,14 +365,6 @@ public class CPConfigurationEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<CPConfigurationEntry> getCPConfigurationEntries(
-		long cpConfigurationListId) {
-
-		return _cpConfigurationEntryLocalService.getCPConfigurationEntries(
-			cpConfigurationListId);
-	}
-
-	@Override
-	public java.util.List<CPConfigurationEntry> getCPConfigurationEntries(
 		long classNameId, long classPK) {
 
 		return _cpConfigurationEntryLocalService.getCPConfigurationEntries(
@@ -605,4 +597,4 @@ public class CPConfigurationEntryLocalServiceWrapper
 	private CPConfigurationEntryLocalService _cpConfigurationEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:549738440
+// LIFERAY-SERVICE-BUILDER-HASH:-2072363954

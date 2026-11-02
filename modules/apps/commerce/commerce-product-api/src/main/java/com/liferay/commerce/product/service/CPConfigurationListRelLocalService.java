@@ -305,13 +305,6 @@ public interface CPConfigurationListRelLocalService
 	public int getCPConfigurationListRelsCount();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPConfigurationListRelsCount(long cpConfigurationListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCPConfigurationListRelsCount(
-		String className, long cpConfigurationListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -359,4 +352,4 @@ public interface CPConfigurationListRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:876665476
+// LIFERAY-SERVICE-BUILDER-HASH:2111242497

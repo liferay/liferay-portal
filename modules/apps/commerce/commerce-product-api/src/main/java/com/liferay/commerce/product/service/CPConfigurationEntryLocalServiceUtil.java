@@ -322,12 +322,6 @@ public class CPConfigurationEntryLocalServiceUtil {
 	}
 
 	public static List<CPConfigurationEntry> getCPConfigurationEntries(
-		long cpConfigurationListId) {
-
-		return getService().getCPConfigurationEntries(cpConfigurationListId);
-	}
-
-	public static List<CPConfigurationEntry> getCPConfigurationEntries(
 		long classNameId, long classPK) {
 
 		return getService().getCPConfigurationEntries(classNameId, classPK);
@@ -508,4 +502,4 @@ public class CPConfigurationEntryLocalServiceUtil {
 			CPConfigurationEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-262944702
+// LIFERAY-SERVICE-BUILDER-HASH:-435788839

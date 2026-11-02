@@ -331,14 +331,6 @@ public class CommerceChannelAccountEntryRelLocalServiceUtil {
 			commerceChannelId, name, type, start, end);
 	}
 
-	public static List<CommerceChannelAccountEntryRel>
-		getCommerceChannelAccountEntryRels(
-			String className, long classPK, long commerceChannelId, int type) {
-
-		return getService().getCommerceChannelAccountEntryRels(
-			className, classPK, commerceChannelId, type);
-	}
-
 	/**
 	 * Returns the number of commerce channel account entry rels.
 	 *
@@ -346,13 +338,6 @@ public class CommerceChannelAccountEntryRelLocalServiceUtil {
 	 */
 	public static int getCommerceChannelAccountEntryRelsCount() {
 		return getService().getCommerceChannelAccountEntryRelsCount();
-	}
-
-	public static int getCommerceChannelAccountEntryRelsCount(
-		long accountEntryId, int type) {
-
-		return getService().getCommerceChannelAccountEntryRelsCount(
-			accountEntryId, type);
 	}
 
 	public static int getCommerceChannelAccountEntryRelsCount(
@@ -426,4 +411,4 @@ public class CommerceChannelAccountEntryRelLocalServiceUtil {
 			CommerceChannelAccountEntryRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1393129664
+// LIFERAY-SERVICE-BUILDER-HASH:-421125514

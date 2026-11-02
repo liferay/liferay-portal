@@ -283,10 +283,6 @@ public interface CPConfigurationEntryLocalService
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CPConfigurationEntry> getCPConfigurationEntries(
-		long cpConfigurationListId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPConfigurationEntry> getCPConfigurationEntries(
 		long classNameId, long classPK);
 
 	/**
@@ -427,4 +423,4 @@ public interface CPConfigurationEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1981912022
+// LIFERAY-SERVICE-BUILDER-HASH:-1603921488

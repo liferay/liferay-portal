@@ -276,11 +276,6 @@ public interface CommerceChannelAccountEntryRelLocalService
 		getCommerceChannelAccountEntryRels(
 			long commerceChannelId, String name, int type, int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceChannelAccountEntryRel>
-		getCommerceChannelAccountEntryRels(
-			String className, long classPK, long commerceChannelId, int type);
-
 	/**
 	 * Returns the number of commerce channel account entry rels.
 	 *
@@ -288,10 +283,6 @@ public interface CommerceChannelAccountEntryRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceChannelAccountEntryRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceChannelAccountEntryRelsCount(
-		long accountEntryId, int type);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceChannelAccountEntryRelsCount(
@@ -350,4 +341,4 @@ public interface CommerceChannelAccountEntryRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:713604907
+// LIFERAY-SERVICE-BUILDER-HASH:-266268795

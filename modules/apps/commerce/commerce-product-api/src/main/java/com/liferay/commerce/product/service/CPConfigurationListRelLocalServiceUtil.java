@@ -366,20 +366,6 @@ public class CPConfigurationListRelLocalServiceUtil {
 		return getService().getCPConfigurationListRelsCount();
 	}
 
-	public static int getCPConfigurationListRelsCount(
-		long cpConfigurationListId) {
-
-		return getService().getCPConfigurationListRelsCount(
-			cpConfigurationListId);
-	}
-
-	public static int getCPConfigurationListRelsCount(
-		String className, long cpConfigurationListId) {
-
-		return getService().getCPConfigurationListRelsCount(
-			className, cpConfigurationListId);
-	}
-
 	public static
 		com.liferay.portal.kernel.dao.orm.IndexableActionableDynamicQuery
 			getIndexableActionableDynamicQuery() {
@@ -432,4 +418,4 @@ public class CPConfigurationListRelLocalServiceUtil {
 			CPConfigurationListRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1076986003
+// LIFERAY-SERVICE-BUILDER-HASH:-134360728

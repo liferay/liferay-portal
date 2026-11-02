@@ -239,11 +239,6 @@ public interface CPInstanceOptionValueRelLocalService
 	public List<CPInstanceOptionValueRel>
 		getCPInstanceCPInstanceOptionValueRels(long cpInstanceId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CPInstanceOptionValueRel>
-		getCPInstanceCPInstanceOptionValueRels(
-			long cpDefinitionOptionRelId, long cpInstanceId);
-
 	/**
 	 * Returns the cp instance option value rel with the primary key.
 	 *
@@ -401,4 +396,4 @@ public interface CPInstanceOptionValueRelLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:688508886
+// LIFERAY-SERVICE-BUILDER-HASH:-1203548486
