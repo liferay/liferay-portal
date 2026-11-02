@@ -13,13 +13,13 @@ import {messageBoardsPagesTest} from '../../../fixtures/messageBoardsTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {selectMaxItemsPerPage} from '../../../utils/pagination';
 import {
 	performLogout,
 	performUserSwitch,
 	performUserSwitchViaApi,
 	userData,
 } from '../../../utils/performLogin';
-import {selectMaxItemsPerPage} from '../../../utils/pagination';
 
 const test = mergeTests(
 	apiHelpersTest,
