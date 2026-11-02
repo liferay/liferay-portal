@@ -25,6 +25,14 @@
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
 				"version": "0.2.0"
 			},
+			"liferay-gcp": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "3.0.0"
+			},
+			"liferay-gcp-infrastructure-provider": {
+				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
+				"version": "1.2.0"
+			},
 			"liferay-infrastructure": {
 				"registry": "us-central1-docker.pkg.dev/external-assets-prd/liferay-helm-chart",
 				"version": "0.2.0"

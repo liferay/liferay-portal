@@ -21,6 +21,9 @@ function main {
 	_run_test _test_azure_enables_keda_with_identity
 	_run_test _test_azure_enables_observability_with_workspace
 	_run_test _test_customer_values_override_platform_values
+	_run_test _test_gcp_admits_api_server_and_konnectivity_agent
+	_run_test _test_gcp_enables_keda_with_namespace
+	_run_test _test_gcp_enables_observability_from_configuration
 
 	echo ""
 	echo "Results: ${pass} passed, ${fail} failed."
@@ -70,12 +73,27 @@ function _get_azure_outputs {
 		} + $extra_outputs'
 }
 
+function _get_gcp_outputs {
+	jq \
+		--argjson extra_outputs "${1:-{\}}" \
+		--null-input \
+		'{
+			cluster_secret_store_provider: {value: {gcpsm: {projectID: "liferay-test-project"}}},
+			deployment_context: {value: {deploymentName: "liferay-test", projectId: "liferay-test-project", projectNumber: "123456789012", region: "us-central1", vpcName: "liferay-test-vpc"}},
+			keda_service_account_namespace: {value: ""},
+			kubernetes_endpoint_cidrs: {value: ["172.16.0.0/28"]},
+			marketplace_filestore_ip: {value: "10.1.0.2"},
+			marketplace_volume_handle: {value: "modeInstance/us-central1-a/liferay-test-marketplace/marketplace"}
+		} + $extra_outputs'
+}
+
 function _render {
 	local cloud="${1}"
 	local outputs="${2}"
 	local configuration="${3:-{\}}"
 
 	jq \
+		--arg cluster_name "liferay-test-cluster" \
 		--argjson configuration "$(jq --slurp '[.[0] * .[1]]' "${SCRIPTS_DIR}/config.json.defaults" <(echo "${configuration}"))" \
 		--from-file "${SCRIPTS_DIR}/_${cloud}_platform_values.jq" \
 		<<< "${outputs}"
@@ -146,6 +164,20 @@ function _test_azure_enables_observability_with_workspace {
 
 function _test_customer_values_override_platform_values {
 	_assert "$(_render "aws" "$(_get_aws_outputs)" '{"platformComponents": {"values": {"networkPolicy": {"apiServerSources": [{"ipBlock": {"cidr": "192.0.2.0/24"}}]}}}}')" '.networkPolicy.apiServerSources == [{ipBlock: {cidr: "192.0.2.0/24"}}]'
+}
+
+function _test_gcp_admits_api_server_and_konnectivity_agent {
+	_assert "$(_render "gcp" "$(_get_gcp_outputs)")" '.networkPolicy.apiServerSources | any(.[]; .ipBlock.cidr == "172.16.0.0/28") and any(.[]; .podSelector.matchLabels."k8s-app" == "konnectivity-agent")'
+}
+
+function _test_gcp_enables_keda_with_namespace {
+	_assert "$(_render "gcp" "$(_get_gcp_outputs)")" '(.operatorApplications.keda | has("enabled") | not) and all(.liferay.parameters[]; .name | contains("autoscaling.keda") | not)' &&
+	_assert "$(_render "gcp" "$(_get_gcp_outputs '{"keda_service_account_namespace": {"value": "keda-system"}}')")" '.operatorApplications.keda.enabled and any(.liferay.parameters[]; .name == "liferay-default.autoscaling.keda.prometheusTriggerMetadata.serverAddress")'
+}
+
+function _test_gcp_enables_observability_from_configuration {
+	_assert "$(_render "gcp" "$(_get_gcp_outputs)")" '.observability | has("enabled") | not' &&
+	_assert "$(_render "gcp" "$(_get_gcp_outputs)" '{"terraform": {"platform": {"observability_config": {"enabled": true}}}}')" '.observability.enabled and any(.observability.parameters[]; .name == "gcp.clusterName" and .value == "liferay-test-cluster")'
 }
 
 main "${@}"
