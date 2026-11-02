@@ -31,56 +31,48 @@ public class PortalWorkspaceGitRepositoryTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testConfigurePortalPublicWorkspaceGitRepository()
+	public void testConfigureBasePortalWorkspaceGitRepository()
 		throws Exception {
 
 		String gitHubRefURL = JenkinsResultsParserUtil.combine(
 			"https://github.com/", RandomTestUtil.randomString(),
 			"/liferay-portal/tree/", RandomTestUtil.randomString());
 
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			gitHubRefURL, null, gitHubRefURL + "\n", "master-private");
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			gitHubRefURL, null, gitHubRefURL, "master-private");
+		_testConfigureBasePortalWorkspaceGitRepository(
+			gitHubRefURL, null, gitHubRefURL + "\n", true);
+		_testConfigureBasePortalWorkspaceGitRepository(
+			gitHubRefURL, null, gitHubRefURL, true);
 
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, null, "", "master-private");
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, null, "\n", "master-private");
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, null, RandomTestUtil.randomString(), "master-private");
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, null, null, "master-private");
+		_testConfigureBasePortalWorkspaceGitRepository(null, null, "", true);
+		_testConfigureBasePortalWorkspaceGitRepository(null, null, "\n", true);
+		_testConfigureBasePortalWorkspaceGitRepository(
+			null, null, RandomTestUtil.randomString(), true);
+		_testConfigureBasePortalWorkspaceGitRepository(null, null, null, true);
 
 		String sha = RandomTestUtil.randomSHA();
 
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, null, sha, "master");
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, sha, sha + "\n", "master-private");
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, sha, sha, "master-private");
-
-		String privateBranchName = RandomTestUtil.randomString() + "-private";
-
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, sha, sha, privateBranchName);
+		_testConfigureBasePortalWorkspaceGitRepository(null, null, sha, false);
+		_testConfigureBasePortalWorkspaceGitRepository(
+			null, sha, sha + "\n", true);
+		_testConfigureBasePortalWorkspaceGitRepository(null, sha, sha, true);
 
 		String shortSHA = sha.substring(0, 7);
 
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			null, shortSHA, shortSHA, "master-private");
+		_testConfigureBasePortalWorkspaceGitRepository(
+			null, shortSHA, shortSHA, true);
 
 		String pullRequestURL = JenkinsResultsParserUtil.combine(
 			"https://github.com/", RandomTestUtil.randomString(),
 			"/liferay-portal/pull/",
 			String.valueOf(RandomTestUtil.randomInt() & Integer.MAX_VALUE));
 
-		_testConfigurePortalPublicWorkspaceGitRepository(
-			pullRequestURL, null, pullRequestURL, "master-private");
+		_testConfigureBasePortalWorkspaceGitRepository(
+			pullRequestURL, null, pullRequestURL, true);
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			_newPortalWorkspaceGitRepository(sha, "master-private");
+			_newPortalWorkspaceGitRepository(sha);
+
+		portalWorkspaceGitRepository.setPrimaryPortalBranchPrivate(true);
 
 		portalWorkspaceGitRepository.setUpAdditionalCaches();
 	}
@@ -172,10 +164,12 @@ public class PortalWorkspaceGitRepositoryTest
 		String sha = RandomTestUtil.randomSHA();
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			_newPortalWorkspaceGitRepository(sha, "master-private");
+			_newPortalWorkspaceGitRepository(sha);
 
 		portalWorkspaceGitRepository.setBasePortalWorkspaceGitRepository(
 			basePortalWorkspaceGitRepository);
+
+		portalWorkspaceGitRepository.setPrimaryPortalBranchPrivate(true);
 
 		File buildWorkingDirFile = new File(
 			portalWorkspaceGitRepository.getDirectory(),
@@ -305,17 +299,11 @@ public class PortalWorkspaceGitRepositoryTest
 	}
 
 	private PortalWorkspaceGitRepository _newPortalWorkspaceGitRepository(
-			String gitCommit, String upstreamBranchName)
+			String gitCommit)
 		throws Exception {
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
 			_newPortalWorkspaceGitRepository();
-
-		Mockito.doReturn(
-			upstreamBranchName
-		).when(
-			portalWorkspaceGitRepository
-		).getUpstreamBranchName();
 
 		if (gitCommit != null) {
 			JenkinsResultsParserUtil.write(
@@ -328,18 +316,21 @@ public class PortalWorkspaceGitRepositoryTest
 		return portalWorkspaceGitRepository;
 	}
 
-	private void _testConfigurePortalPublicWorkspaceGitRepository(
+	private void _testConfigureBasePortalWorkspaceGitRepository(
 			String expectedGitHubURL, String expectedSenderBranchSHA,
-			String gitCommit, String upstreamBranchName)
+			String gitCommit, boolean primaryPortalBranchPrivate)
 		throws Exception {
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
-			_newPortalWorkspaceGitRepository(gitCommit, upstreamBranchName);
+			_newPortalWorkspaceGitRepository(gitCommit);
 		PortalWorkspaceGitRepository basePortalWorkspaceGitRepository =
 			Mockito.mock(PortalWorkspaceGitRepository.class);
 
 		portalWorkspaceGitRepository.setBasePortalWorkspaceGitRepository(
 			basePortalWorkspaceGitRepository);
+
+		portalWorkspaceGitRepository.setPrimaryPortalBranchPrivate(
+			primaryPortalBranchPrivate);
 
 		portalWorkspaceGitRepository.setUpAdditionalCaches();
 
