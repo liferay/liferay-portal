@@ -1480,10 +1480,8 @@ public abstract class BaseJob implements Job {
 
 		try {
 			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-				JenkinsResultsParserUtil.combine(
-					JenkinsResultsParserUtil.getLocalURL(
-						getJobURL(jenkinsMaster)),
-					"/api/json"));
+				JenkinsResultsParserUtil.getLocalURL(getJobURL(jenkinsMaster)) +
+					"/api/json");
 
 			uriBuilder.addParameter("pretty", null);
 

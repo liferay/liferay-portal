@@ -467,9 +467,8 @@ public class BuildQueueRebalancer {
 		private boolean _isBuildInProgress(String buildURL) {
 			try {
 				URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-					JenkinsResultsParserUtil.combine(
-						JenkinsResultsParserUtil.getLocalURL(buildURL),
-						"/api/json"));
+					JenkinsResultsParserUtil.getLocalURL(buildURL) +
+						"/api/json");
 
 				uriBuilder.addParameter("tree", "result");
 

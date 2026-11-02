@@ -236,9 +236,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 			uriBuilder.addParameter(
 				"tree",
-				JenkinsResultsParserUtil.combine(
-					"actions[parameters[name,value]],cancelled,",
-					"executable[url],id,inQueueSince,task[name,url],url,why"));
+				"actions[parameters[name,value]],cancelled," +
+					"executable[url],id,inQueueSince,task[name,url],url,why");
 
 			response = JenkinsResultsParserUtil.toString(
 				uriBuilder.toString(), false, 0, 0, 5000);
@@ -510,9 +509,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 			uriBuilder.addParameter(
 				"tree",
-				JenkinsResultsParserUtil.combine(
-					"builds[actions[parameters[name,value]],queueId,",
-					"result,url]"));
+				"builds[actions[parameters[name,value]],queueId,result,url]");
 
 			JSONObject jobJSONObject = JenkinsResultsParserUtil.toJSONObject(
 				uriBuilder.toString(), false, 5000);
@@ -726,9 +723,8 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 
 			uriBuilder.addParameter(
 				"tree",
-				JenkinsResultsParserUtil.combine(
-					"items[actions[parameters[name,value]],id,inQueueSince,",
-					"task[name,url],url,why]"));
+				"items[actions[parameters[name,value]],id,inQueueSince," +
+					"task[name,url],url,why]");
 
 			JSONObject queueAPIJSONObject =
 				JenkinsResultsParserUtil.toJSONObject(

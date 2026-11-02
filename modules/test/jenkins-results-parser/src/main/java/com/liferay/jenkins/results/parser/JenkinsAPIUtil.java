@@ -30,8 +30,7 @@ public class JenkinsAPIUtil {
 		}
 
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-			JenkinsResultsParserUtil.combine(
-				JenkinsResultsParserUtil.getLocalURL(jenkinsURL), "/api/json"));
+			JenkinsResultsParserUtil.getLocalURL(jenkinsURL) + "/api/json");
 
 		if (tree != null) {
 			uriBuilder.addParameter("tree", tree);
@@ -104,9 +103,8 @@ public class JenkinsAPIUtil {
 
 		try {
 			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-				JenkinsResultsParserUtil.combine(
-					JenkinsResultsParserUtil.getLocalURL(jobURL),
-					"/lastCompletedBuild/api/json"));
+				JenkinsResultsParserUtil.getLocalURL(jobURL) +
+					"/lastCompletedBuild/api/json");
 
 			if (tree != null) {
 				uriBuilder.addParameter("tree", tree);

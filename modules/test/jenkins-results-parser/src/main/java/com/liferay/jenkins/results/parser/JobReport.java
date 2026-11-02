@@ -84,8 +84,7 @@ public class JobReport {
 
 		try {
 			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-				JenkinsResultsParserUtil.combine(
-					String.valueOf(getJobURL()), "/api/json"));
+				getJobURL() + "/api/json");
 
 			uriBuilder.addParameter(
 				"tree", "builds[actions[parameters[name,value]],*]");

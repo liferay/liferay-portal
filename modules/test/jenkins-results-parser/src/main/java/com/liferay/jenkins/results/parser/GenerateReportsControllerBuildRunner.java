@@ -99,9 +99,8 @@ public class GenerateReportsControllerBuildRunner
 			BuildData buildData = getBuildData();
 
 			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
-				JenkinsResultsParserUtil.combine(
-					JenkinsResultsParserUtil.getLocalURL(buildData.getJobURL()),
-					"/api/json"));
+				JenkinsResultsParserUtil.getLocalURL(buildData.getJobURL()) +
+					"/api/json");
 
 			uriBuilder.addParameter(
 				"tree", "builds[description,timestamp,url]");
