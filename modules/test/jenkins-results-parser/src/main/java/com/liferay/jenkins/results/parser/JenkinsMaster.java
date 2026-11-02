@@ -1770,8 +1770,18 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 		}
 	}
 
-	private JSONArray _getBuildsJSONArray(
-		final String jobName, final int page) {
+	private JSONArray _getBuildsJSONArray(String jobName, int page) {
+		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
+			JenkinsResultsParserUtil.getLocalURL(
+				JenkinsResultsParserUtil.combine(
+					getURL(), "/job/", jobName, "/api/json")));
+
+		uriBuilder.addParameter(
+			"tree",
+			JenkinsResultsParserUtil.combine(
+				"allBuilds[actions[parameters[name,value]],",
+				"queueId,timestamp,url]{", String.valueOf(page * 100), ",",
+				String.valueOf((page + 1) * 100), "}"));
 
 		Retryable<JSONArray> retryable = new Retryable<JSONArray>(
 			true, 2, 10, true) {
@@ -1779,21 +1789,6 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 			@Override
 			public JSONArray execute() {
 				try {
-					URIBuilder uriBuilder =
-						JenkinsResultsParserUtil.newURIBuilder(
-							JenkinsResultsParserUtil.getLocalURL(
-								JenkinsResultsParserUtil.combine(
-									String.valueOf(getURL()), "/job/", jobName,
-									"/api/json")));
-
-					uriBuilder.addParameter(
-						"tree",
-						JenkinsResultsParserUtil.combine(
-							"allBuilds[actions[parameters[name,value]],",
-							"queueId,timestamp,url]{",
-							String.valueOf(page * 100), ",",
-							String.valueOf((page + 1) * 100), "}"));
-
 					JSONObject jsonObject =
 						JenkinsResultsParserUtil.toJSONObject(
 							uriBuilder.toString(), false, 5000);
