@@ -138,6 +138,8 @@ import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portlet.asset.util.AssetVocabularySettingsHelper;
@@ -614,9 +616,15 @@ public class JournalArticleLocalServiceTest {
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 
-			_stagingLocalService.enableLocalStaging(
-				TestPropsValues.getUserId(), companyGroup, false, false,
-				serviceContext);
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.batch.engine.internal." +
+						"BatchEngineImportTaskExecutorImpl",
+					LoggerTestUtil.OFF)) {
+
+				_stagingLocalService.enableLocalStaging(
+					TestPropsValues.getUserId(), companyGroup, false, false,
+					serviceContext);
+			}
 
 			_assertArticleFriendlyURLMap(companyGroup.getStagingGroup());
 		}
@@ -666,9 +674,15 @@ public class JournalArticleLocalServiceTest {
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(TestPropsValues.getUser()));
 
-			_stagingLocalService.enableLocalStaging(
-				TestPropsValues.getUserId(), companyGroup, false, false,
-				serviceContext);
+			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+					"com.liferay.batch.engine.internal." +
+						"BatchEngineImportTaskExecutorImpl",
+					LoggerTestUtil.OFF)) {
+
+				_stagingLocalService.enableLocalStaging(
+					TestPropsValues.getUserId(), companyGroup, false, false,
+					serviceContext);
+			}
 
 			Group stagingGroup = companyGroup.getStagingGroup();
 
