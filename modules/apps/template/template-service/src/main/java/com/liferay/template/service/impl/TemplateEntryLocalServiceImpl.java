@@ -70,16 +70,6 @@ public class TemplateEntryLocalServiceImpl
 	}
 
 	@Override
-	public TemplateEntry deleteTemplateEntry(
-		String externalReferenceCode, long groupId) {
-
-		TemplateEntry templateEntry = templateEntryPersistence.fetchByERC_G(
-			externalReferenceCode, groupId);
-
-		return deleteTemplateEntry(templateEntry);
-	}
-
-	@Override
 	public TemplateEntry deleteTemplateEntry(TemplateEntry templateEntry) {
 		return templateEntryPersistence.remove(templateEntry);
 	}
@@ -110,11 +100,6 @@ public class TemplateEntryLocalServiceImpl
 	}
 
 	@Override
-	public List<TemplateEntry> getTemplateEntries(long[] groupIds) {
-		return templateEntryPersistence.findByGroupId(groupIds);
-	}
-
-	@Override
 	public List<TemplateEntry> getTemplateEntries(
 		long[] groupIds, String infoItemClassName,
 		String infoItemFormVariationKey, int start, int end,
@@ -138,18 +123,6 @@ public class TemplateEntryLocalServiceImpl
 			templateEntryId);
 
 		return templateEntryPersistence.update(templateEntry);
-	}
-
-	@Override
-	public TemplateEntry updateTemplateEntry(
-			String externalReferenceCode, long groupId)
-		throws PortalException {
-
-		TemplateEntry templateEntry = templateEntryPersistence.findByERC_G(
-			externalReferenceCode, groupId);
-
-		return templateEntryLocalService.updateTemplateEntry(
-			templateEntry.getTemplateEntryId());
 	}
 
 	@Reference

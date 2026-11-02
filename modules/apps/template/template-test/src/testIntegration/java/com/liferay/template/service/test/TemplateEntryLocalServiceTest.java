@@ -88,26 +88,6 @@ public class TemplateEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteTemplateEntryByExternalReferenceCode()
-		throws Exception {
-
-		String externalReferenceCode = StringUtil.randomString();
-
-		_templateEntryLocalService.addTemplateEntry(
-			externalReferenceCode, TestPropsValues.getUserId(),
-			_group.getGroupId(), 0, StringPool.BLANK, StringPool.BLANK,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		_templateEntryLocalService.deleteTemplateEntry(
-			externalReferenceCode, _group.getGroupId());
-
-		Assert.assertNull(
-			_templateEntryLocalService.
-				fetchTemplateEntryByExternalReferenceCode(
-					externalReferenceCode, _group.getGroupId()));
-	}
-
-	@Test
 	public void testFetchTemplateEntryByExternalReferenceCode()
 		throws Exception {
 
