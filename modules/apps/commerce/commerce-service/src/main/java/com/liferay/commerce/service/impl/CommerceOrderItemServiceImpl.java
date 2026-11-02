@@ -652,6 +652,26 @@ public class CommerceOrderItemServiceImpl
 			promoPriceWithTaxAmount, unitPrice, unitPriceWithTaxAmount);
 	}
 
+	@Override
+	public CommerceOrderItem updateCommerceOrderItemUnitOfMeasure(
+			long commerceOrderItemId, BigDecimal quantity,
+			String unitOfMeasureKey, CommerceContext commerceContext,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		CommerceOrderItem commerceOrderItem =
+			commerceOrderItemPersistence.findByPrimaryKey(commerceOrderItemId);
+
+		_commerceOrderModelResourcePermission.check(
+			getPermissionChecker(), commerceOrderItem.getCommerceOrderId(),
+			ActionKeys.UPDATE);
+
+		return commerceOrderItemLocalService.
+			updateCommerceOrderItemUnitOfMeasure(
+				getUserId(), commerceOrderItemId, quantity, unitOfMeasureKey,
+				commerceContext, serviceContext);
+	}
+
 	/**
 	 * @deprecated As of Athanasius (7.3.x)
 	 */
