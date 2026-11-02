@@ -159,9 +159,11 @@ public class CopyDLObjectsMVCActionCommand extends BaseMVCActionCommand {
 		Group sourceGroup = _groupLocalService.getGroup(sourceGroupId);
 
 		if (group.isDepot() ^ sourceGroup.isDepot()) {
+			long connectedGroupId = sourceGroupId;
 			long[] connectedGroupIds = groupIds;
 
 			if (group.isDepot()) {
+				connectedGroupId = group.getGroupId();
 				connectedGroupIds =
 					_siteConnectedGroupGroupProvider.
 						getCurrentAndAncestorSiteAndDepotGroupIds(
@@ -169,7 +171,7 @@ public class CopyDLObjectsMVCActionCommand extends BaseMVCActionCommand {
 			}
 
 			if (ArrayUtil.isEmpty(connectedGroupIds) ||
-				!ArrayUtil.contains(connectedGroupIds, sourceGroupId)) {
+				!ArrayUtil.contains(connectedGroupIds, connectedGroupId)) {
 
 				throw new PortalException(
 					"the-item-is-not-copied-because-the-site-and-asset-" +
