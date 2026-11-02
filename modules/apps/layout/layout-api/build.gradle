@@ -24,4 +24,5 @@ dependencies {
 	compileOnly project(":core:petra:petra-sql-dsl-api")
 	compileOnly project(":core:petra:petra-string")
 	testImplementation group: "junit", name: "junit", version: "4.13.1"
+	testImplementation group: "org.jsoup", name: "jsoup", version: "1.23.2"
 }
