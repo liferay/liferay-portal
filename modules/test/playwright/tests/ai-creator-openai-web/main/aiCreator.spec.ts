@@ -472,9 +472,10 @@ test(
 		await aiCreatorInstanceSettingsPage.saveButton.click();
 
 		await expect(
-			page.getByText(
-				'Each image size must be a width and height in pixels, separated by x (e.g. 1536x1024).'
-			)
+			page.getByRole('alert').filter({
+				hasText:
+					'Each image size must be a width and height in pixels, separated by x (e.g. 1536x1024).',
+			})
 		).toBeVisible();
 		await expect(aiCreatorInstanceSettingsPage.imageSizesInput).toHaveValue(
 			'1024x1024, 1536*1024'
