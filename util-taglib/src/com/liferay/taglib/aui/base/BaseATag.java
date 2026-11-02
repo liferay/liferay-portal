@@ -22,43 +22,43 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		return super.doStartTag();
 	}
 
-	public java.lang.String getAriaLabel() {
+	public String getAriaLabel() {
 		return _ariaLabel;
 	}
 
-	public java.lang.String getAriaRole() {
+	public String getAriaRole() {
 		return _ariaRole;
 	}
 
-	public java.lang.String getCssClass() {
+	public String getCssClass() {
 		return _cssClass;
 	}
 
-	public java.util.Map<java.lang.String, java.lang.Object> getData() {
+	public java.util.Map<String, Object> getData() {
 		return _data;
 	}
 
-	public java.lang.String getHref() {
+	public String getHref() {
 		return _href;
 	}
 
-	public java.lang.String getIconCssClass() {
-		return _iconCssClass;
-	}
-
-	public java.lang.String getIcon() {
+	public String getIcon() {
 		return _icon;
 	}
 
-	public java.lang.String getId() {
+	public String getIconCssClass() {
+		return _iconCssClass;
+	}
+
+	public String getId() {
 		return _id;
 	}
 
-	public java.lang.String getLabel() {
+	public String getLabel() {
 		return _label;
 	}
 
-	public java.lang.String getLang() {
+	public String getLang() {
 		return _lang;
 	}
 
@@ -66,55 +66,55 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		return _localizeLabel;
 	}
 
-	public java.lang.String getOnClick() {
+	public String getOnClick() {
 		return _onClick;
 	}
 
-	public java.lang.String getTarget() {
+	public String getTarget() {
 		return _target;
 	}
 
-	public java.lang.String getTitle() {
+	public String getTitle() {
 		return _title;
 	}
 
-	public void setAriaLabel(java.lang.String ariaLabel) {
+	public void setAriaLabel(String ariaLabel) {
 		_ariaLabel = ariaLabel;
 	}
 
-	public void setAriaRole(java.lang.String ariaRole) {
+	public void setAriaRole(String ariaRole) {
 		_ariaRole = ariaRole;
 	}
 
-	public void setCssClass(java.lang.String cssClass) {
+	public void setCssClass(String cssClass) {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<java.lang.String, java.lang.Object> data) {
+	public void setData(java.util.Map<String, Object> data) {
 		_data = data;
 	}
 
-	public void setHref(java.lang.String href) {
+	public void setHref(String href) {
 		_href = href;
 	}
 
-	public void setIconCssClass(java.lang.String iconCssClass) {
-		_iconCssClass = iconCssClass;
-	}
-
-	public void setIcon(java.lang.String icon) {
+	public void setIcon(String icon) {
 		_icon = icon;
 	}
 
-	public void setId(java.lang.String id) {
+	public void setIconCssClass(String iconCssClass) {
+		_iconCssClass = iconCssClass;
+	}
+
+	public void setId(String id) {
 		_id = id;
 	}
 
-	public void setLabel(java.lang.String label) {
+	public void setLabel(String label) {
 		_label = label;
 	}
 
-	public void setLang(java.lang.String lang) {
+	public void setLang(String lang) {
 		_lang = lang;
 	}
 
@@ -122,15 +122,15 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		_localizeLabel = localizeLabel;
 	}
 
-	public void setOnClick(java.lang.String onClick) {
+	public void setOnClick(String onClick) {
 		_onClick = onClick;
 	}
 
-	public void setTarget(java.lang.String target) {
+	public void setTarget(String target) {
 		_target = target;
 	}
 
-	public void setTitle(java.lang.String title) {
+	public void setTitle(String title) {
 		_title = title;
 	}
 
@@ -165,25 +165,23 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "aui:a:";
 
-	private static final String _END_PAGE =
-		"/html/taglib/aui/a/end.jsp";
+	private static final String _END_PAGE = "/html/taglib/aui/a/end.jsp";
 
-	private static final String _START_PAGE =
-		"/html/taglib/aui/a/start.jsp";
+	private static final String _START_PAGE = "/html/taglib/aui/a/start.jsp";
 
-	private java.lang.String _ariaLabel = null;
-	private java.lang.String _ariaRole = null;
-	private java.lang.String _cssClass = null;
-	private java.util.Map<java.lang.String, java.lang.Object> _data = null;
-	private java.lang.String _href = null;
-	private java.lang.String _iconCssClass = null;
-	private java.lang.String _icon = null;
-	private java.lang.String _id = null;
-	private java.lang.String _label = null;
-	private java.lang.String _lang = null;
+	private String _ariaLabel;
+	private String _ariaRole;
+	private String _cssClass;
+	private java.util.Map<String, Object> _data;
+	private String _href;
+	private String _icon;
+	private String _iconCssClass;
+	private String _id;
+	private String _label;
+	private String _lang;
 	private boolean _localizeLabel = true;
-	private java.lang.String _onClick = null;
-	private java.lang.String _target = null;
-	private java.lang.String _title = null;
+	private String _onClick;
+	private String _target;
+	private String _title;
 
 }

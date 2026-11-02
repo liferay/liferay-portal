@@ -16,7 +16,6 @@ java.lang.String method = GetterUtil.getString((java.lang.String)request.getAttr
 java.lang.String name = GetterUtil.getString((java.lang.String)request.getAttribute("aui:form:name"), "fm");
 java.lang.String onSubmit = GetterUtil.getString((java.lang.String)request.getAttribute("aui:form:onSubmit"));
 java.lang.String portletNamespace = GetterUtil.getString((java.lang.String)request.getAttribute("aui:form:portletNamespace"));
-boolean useNamespace = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:form:useNamespace")), true);
 boolean validateOnBlur = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:form:validateOnBlur")), true);
 Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:form:dynamicAttributes");
 %>

@@ -13,26 +13,27 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseValidatorTagImpl extends com.liferay.taglib.BaseBodyTagSupport {
+public abstract class BaseValidatorTagImpl
+	extends com.liferay.taglib.BaseBodyTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
 		return super.doStartTag();
 	}
 
-	public java.lang.String getErrorMessage() {
+	public String getErrorMessage() {
 		return _errorMessage;
 	}
 
-	public java.lang.String getName() {
+	public String getName() {
 		return _name;
 	}
 
-	public void setErrorMessage(java.lang.String errorMessage) {
+	public void setErrorMessage(String errorMessage) {
 		_errorMessage = errorMessage;
 	}
 
-	public void setName(java.lang.String name) {
+	public void setName(String name) {
 		_name = name;
 	}
 
@@ -45,10 +46,9 @@ public abstract class BaseValidatorTagImpl extends com.liferay.taglib.BaseBodyTa
 		return _PAGE;
 	}
 
-	private static final String _PAGE =
-		"/html/taglib/aui/validator/page.jsp";
+	private static final String _PAGE = "/html/taglib/aui/validator/page.jsp";
 
-	private java.lang.String _errorMessage = null;
-	private java.lang.String _name = null;
+	private String _errorMessage;
+	private String _name;
 
 }

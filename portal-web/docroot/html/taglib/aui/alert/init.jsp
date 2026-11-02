@@ -16,7 +16,6 @@ boolean destroyOnHide = GetterUtil.getBoolean(String.valueOf(request.getAttribut
 java.lang.Number duration = GetterUtil.getNumber(String.valueOf(request.getAttribute("aui:alert:duration")), 0.15);
 java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribute("aui:alert:id"));
 java.lang.String type = GetterUtil.getString((java.lang.String)request.getAttribute("aui:alert:type"), "info");
-Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:alert:dynamicAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/alert/init-ext.jspf" %>

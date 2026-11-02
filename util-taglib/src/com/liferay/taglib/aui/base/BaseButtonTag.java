@@ -23,11 +23,11 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 		return super.doStartTag();
 	}
 
-	public java.lang.String getCssClass() {
+	public String getCssClass() {
 		return _cssClass;
 	}
 
-	public java.lang.Object getData() {
+	public Object getData() {
 		return _data;
 	}
 
@@ -35,35 +35,35 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 		return _disabled;
 	}
 
-	public java.lang.String getHref() {
+	public String getHref() {
 		return _href;
 	}
 
-	public java.lang.String getIcon() {
+	public String getIcon() {
 		return _icon;
 	}
 
-	public java.lang.String getIconAlign() {
+	public String getIconAlign() {
 		return _iconAlign;
 	}
 
-	public java.lang.String getId() {
+	public String getId() {
 		return _id;
 	}
 
-	public java.lang.String getName() {
+	public String getName() {
 		return _name;
 	}
 
-	public java.lang.String getOnClick() {
+	public String getOnClick() {
 		return _onClick;
 	}
 
-	public java.lang.Object getPrimary() {
+	public Object getPrimary() {
 		return _primary;
 	}
 
-	public java.lang.String getType() {
+	public String getType() {
 		return _type;
 	}
 
@@ -75,15 +75,15 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 		return _useNamespace;
 	}
 
-	public java.lang.String getValue() {
+	public String getValue() {
 		return _value;
 	}
 
-	public void setCssClass(java.lang.String cssClass) {
+	public void setCssClass(String cssClass) {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.lang.Object data) {
+	public void setData(Object data) {
 		_data = data;
 	}
 
@@ -91,35 +91,35 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 		_disabled = disabled;
 	}
 
-	public void setHref(java.lang.String href) {
+	public void setHref(String href) {
 		_href = href;
 	}
 
-	public void setIcon(java.lang.String icon) {
+	public void setIcon(String icon) {
 		_icon = icon;
 	}
 
-	public void setIconAlign(java.lang.String iconAlign) {
+	public void setIconAlign(String iconAlign) {
 		_iconAlign = iconAlign;
 	}
 
-	public void setId(java.lang.String id) {
+	public void setId(String id) {
 		_id = id;
 	}
 
-	public void setName(java.lang.String name) {
+	public void setName(String name) {
 		_name = name;
 	}
 
-	public void setOnClick(java.lang.String onClick) {
+	public void setOnClick(String onClick) {
 		_onClick = onClick;
 	}
 
-	public void setPrimary(java.lang.Object primary) {
+	public void setPrimary(Object primary) {
 		_primary = primary;
 	}
 
-	public void setType(java.lang.String type) {
+	public void setType(String type) {
 		_type = type;
 	}
 
@@ -131,7 +131,7 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 		_useNamespace = useNamespace;
 	}
 
-	public void setValue(java.lang.String value) {
+	public void setValue(String value) {
 		_value = value;
 	}
 
@@ -180,22 +180,21 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "aui:button:";
 
-	private static final String _END_PAGE =
-		"/html/taglib/aui/button/end.jsp";
+	private static final String _END_PAGE = "/html/taglib/aui/button/end.jsp";
 
-	private java.lang.String _cssClass = null;
-	private java.lang.Object _data = null;
-	private boolean _disabled = false;
-	private java.lang.String _href = null;
-	private java.lang.String _icon = null;
-	private java.lang.String _iconAlign = "left";
-	private java.lang.String _id = null;
-	private java.lang.String _name = null;
-	private java.lang.String _onClick = null;
-	private java.lang.Object _primary = null;
-	private java.lang.String _type = "button";
-	private boolean _useDialog = false;
+	private String _cssClass;
+	private Object _data;
+	private boolean _disabled;
+	private String _href;
+	private String _icon;
+	private String _iconAlign = "left";
+	private String _id;
+	private String _name;
+	private String _onClick;
+	private Object _primary;
+	private String _type = "button";
+	private boolean _useDialog;
 	private boolean _useNamespace = true;
-	private java.lang.String _value = null;
+	private String _value;
 
 }

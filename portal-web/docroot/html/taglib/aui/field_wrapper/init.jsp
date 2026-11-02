@@ -21,7 +21,6 @@ boolean last = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:fi
 boolean localizeLabel = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:field-wrapper:localizeLabel")), true);
 java.lang.String name = GetterUtil.getString((java.lang.String)request.getAttribute("aui:field-wrapper:name"));
 boolean required = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:field-wrapper:required")));
-Map<String, Object> dynamicAttributes = (Map<String, Object>)request.getAttribute("aui:field-wrapper:dynamicAttributes");
 %>
 
 <%@ include file="/html/taglib/aui/field_wrapper/init-ext.jspf" %>

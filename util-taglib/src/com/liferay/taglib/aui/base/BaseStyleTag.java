@@ -22,25 +22,26 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseStyleTag extends com.liferay.taglib.util.PositionTagSupport {
+public abstract class BaseStyleTag
+	extends com.liferay.taglib.util.PositionTagSupport {
 
 	public int doStartTag() throws JspException {
 		return super.doStartTag();
 	}
 
-	public java.lang.String getSenna() {
+	public String getSenna() {
 		return _senna;
 	}
 
-	public void setSenna(java.lang.String senna) {
-		_senna = senna;
-	}
-
-	public java.lang.String getType() {
+	public String getType() {
 		return _type;
 	}
 
-	public void setType(java.lang.String type) {
+	public void setSenna(String senna) {
+		_senna = senna;
+	}
+
+	public void setType(String type) {
 		_type = type;
 	}
 
@@ -53,10 +54,9 @@ public abstract class BaseStyleTag extends com.liferay.taglib.util.PositionTagSu
 		return _PAGE;
 	}
 
-	private static final String _PAGE =
-		"/html/taglib/aui/style/page.jsp";
+	private static final String _PAGE = "/html/taglib/aui/style/page.jsp";
 
-	private java.lang.String _senna = null;
-	private java.lang.String _type = null;
+	private String _senna;
+	private String _type;
 
 }

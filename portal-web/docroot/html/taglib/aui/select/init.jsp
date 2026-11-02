@@ -19,7 +19,6 @@ java.lang.String field = GetterUtil.getString((java.lang.String)request.getAttri
 boolean first = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:first")));
 java.lang.String helpMessage = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:helpMessage"));
 java.lang.String id = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:id"));
-boolean ignoreRequestValue = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:ignoreRequestValue")));
 boolean inlineField = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:inlineField")));
 java.lang.String inlineLabel = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:inlineLabel"));
 java.lang.String label = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:label"));

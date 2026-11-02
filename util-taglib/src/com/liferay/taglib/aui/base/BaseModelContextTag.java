@@ -13,7 +13,8 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseModelContextTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseModelContextTag
+	extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -22,27 +23,27 @@ public abstract class BaseModelContextTag extends com.liferay.taglib.util.Includ
 		return super.doStartTag();
 	}
 
-	public java.lang.Object getBean() {
+	public Object getBean() {
 		return _bean;
 	}
 
-	public java.lang.String getDefaultLanguageId() {
+	public String getDefaultLanguageId() {
 		return _defaultLanguageId;
 	}
 
-	public java.lang.Class<?> getModel() {
+	public Class<?> getModel() {
 		return _model;
 	}
 
-	public void setBean(java.lang.Object bean) {
+	public void setBean(Object bean) {
 		_bean = bean;
 	}
 
-	public void setDefaultLanguageId(java.lang.String defaultLanguageId) {
+	public void setDefaultLanguageId(String defaultLanguageId) {
 		_defaultLanguageId = defaultLanguageId;
 	}
 
-	public void setModel(java.lang.Class<?> model) {
+	public void setModel(Class<?> model) {
 		_model = model;
 	}
 
@@ -65,8 +66,8 @@ public abstract class BaseModelContextTag extends com.liferay.taglib.util.Includ
 	private static final String _PAGE =
 		"/html/taglib/aui/model_context/page.jsp";
 
-	private java.lang.Object _bean = null;
-	private java.lang.String _defaultLanguageId = null;
-	private java.lang.Class<?> _model = null;
+	private Object _bean;
+	private String _defaultLanguageId;
+	private Class<?> _model;
 
 }

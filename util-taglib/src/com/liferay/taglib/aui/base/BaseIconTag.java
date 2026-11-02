@@ -23,83 +23,83 @@ public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
 		return super.doStartTag();
 	}
 
-	public java.lang.String getAriaLabel() {
+	public String getAriaLabel() {
 		return _ariaLabel;
 	}
 
-	public java.lang.String getCssClass() {
+	public String getCssClass() {
 		return _cssClass;
 	}
 
-	public java.util.Map<java.lang.String, java.lang.Object> getData() {
+	public java.util.Map<String, Object> getData() {
 		return _data;
 	}
 
-	public java.lang.String getId() {
+	public String getId() {
 		return _id;
 	}
 
-	public java.lang.String getImage() {
+	public String getImage() {
 		return _image;
 	}
 
-	public java.lang.String getLabel() {
+	public String getLabel() {
 		return _label;
 	}
 
-	public java.lang.String getMarkupView() {
+	public String getMarkupView() {
 		return _markupView;
 	}
 
-	public java.lang.String getSrc() {
+	public String getSrc() {
 		return _src;
 	}
 
-	public java.lang.String getTarget() {
+	public String getTarget() {
 		return _target;
 	}
 
-	public java.lang.String getUrl() {
+	public String getUrl() {
 		return _url;
 	}
 
-	public void setAriaLabel(java.lang.String ariaLabel) {
+	public void setAriaLabel(String ariaLabel) {
 		_ariaLabel = ariaLabel;
 	}
 
-	public void setCssClass(java.lang.String cssClass) {
+	public void setCssClass(String cssClass) {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<java.lang.String, java.lang.Object> data) {
+	public void setData(java.util.Map<String, Object> data) {
 		_data = data;
 	}
 
-	public void setId(java.lang.String id) {
+	public void setId(String id) {
 		_id = id;
 	}
 
-	public void setImage(java.lang.String image) {
+	public void setImage(String image) {
 		_image = image;
 	}
 
-	public void setLabel(java.lang.String label) {
+	public void setLabel(String label) {
 		_label = label;
 	}
 
-	public void setMarkupView(java.lang.String markupView) {
+	public void setMarkupView(String markupView) {
 		_markupView = markupView;
 	}
 
-	public void setSrc(java.lang.String src) {
+	public void setSrc(String src) {
 		_src = src;
 	}
 
-	public void setTarget(java.lang.String target) {
+	public void setTarget(String target) {
 		_target = target;
 	}
 
-	public void setUrl(java.lang.String url) {
+	public void setUrl(String url) {
 		_url = url;
 	}
 
@@ -140,18 +140,17 @@ public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
 
 	protected static final String _ATTRIBUTE_NAMESPACE = "aui:icon:";
 
-	private static final String _PAGE =
-		"/html/taglib/aui/icon/page.jsp";
+	private static final String _PAGE = "/html/taglib/aui/icon/page.jsp";
 
-	private java.lang.String _ariaLabel = null;
-	private java.lang.String _cssClass = null;
-	private java.util.Map<java.lang.String, java.lang.Object> _data = null;
-	private java.lang.String _id = null;
-	private java.lang.String _image = null;
-	private java.lang.String _label = null;
-	private java.lang.String _markupView = null;
-	private java.lang.String _src = null;
-	private java.lang.String _target = null;
-	private java.lang.String _url = null;
+	private String _ariaLabel;
+	private String _cssClass;
+	private java.util.Map<String, Object> _data;
+	private String _id;
+	private String _image;
+	private String _label;
+	private String _markupView;
+	private String _src;
+	private String _target;
+	private String _url;
 
 }

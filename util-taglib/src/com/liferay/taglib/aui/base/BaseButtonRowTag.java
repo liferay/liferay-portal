@@ -14,7 +14,8 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseButtonRowTag
+	extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -23,19 +24,19 @@ public abstract class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTa
 		return super.doStartTag();
 	}
 
-	public java.lang.String getCssClass() {
+	public String getCssClass() {
 		return _cssClass;
 	}
 
-	public java.lang.String getId() {
+	public String getId() {
 		return _id;
 	}
 
-	public void setCssClass(java.lang.String cssClass) {
+	public void setCssClass(String cssClass) {
 		_cssClass = cssClass;
 	}
 
-	public void setId(java.lang.String id) {
+	public void setId(String id) {
 		_id = id;
 	}
 
@@ -63,7 +64,7 @@ public abstract class BaseButtonRowTag extends com.liferay.taglib.util.IncludeTa
 	private static final String _START_PAGE =
 		"/html/taglib/aui/button_row/start.jsp";
 
-	private java.lang.String _cssClass = null;
-	private java.lang.String _id = null;
+	private String _cssClass;
+	private String _id;
 
 }

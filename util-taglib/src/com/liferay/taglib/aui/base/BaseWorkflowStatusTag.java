@@ -14,7 +14,8 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseWorkflowStatusTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseWorkflowStatusTag
+	extends com.liferay.taglib.util.IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -23,23 +24,23 @@ public abstract class BaseWorkflowStatusTag extends com.liferay.taglib.util.Incl
 		return super.doStartTag();
 	}
 
-	public java.lang.Object getBean() {
+	public Object getBean() {
 		return _bean;
 	}
 
-	public java.lang.String getHelpMessage() {
+	public String getHelpMessage() {
 		return _helpMessage;
 	}
 
-	public java.lang.String getId() {
+	public String getId() {
 		return _id;
 	}
 
-	public java.lang.String getMarkupView() {
+	public String getMarkupView() {
 		return _markupView;
 	}
 
-	public java.lang.Class<?> getModel() {
+	public Class<?> getModel() {
 		return _model;
 	}
 
@@ -55,35 +56,35 @@ public abstract class BaseWorkflowStatusTag extends com.liferay.taglib.util.Incl
 		return _showLabel;
 	}
 
-	public java.lang.Integer getStatus() {
+	public Integer getStatus() {
 		return _status;
 	}
 
-	public java.lang.String getStatusMessage() {
+	public String getStatusMessage() {
 		return _statusMessage;
 	}
 
-	public java.lang.String getVersion() {
+	public String getVersion() {
 		return _version;
 	}
 
-	public void setBean(java.lang.Object bean) {
+	public void setBean(Object bean) {
 		_bean = bean;
 	}
 
-	public void setHelpMessage(java.lang.String helpMessage) {
+	public void setHelpMessage(String helpMessage) {
 		_helpMessage = helpMessage;
 	}
 
-	public void setId(java.lang.String id) {
+	public void setId(String id) {
 		_id = id;
 	}
 
-	public void setMarkupView(java.lang.String markupView) {
+	public void setMarkupView(String markupView) {
 		_markupView = markupView;
 	}
 
-	public void setModel(java.lang.Class<?> model) {
+	public void setModel(Class<?> model) {
 		_model = model;
 	}
 
@@ -99,15 +100,15 @@ public abstract class BaseWorkflowStatusTag extends com.liferay.taglib.util.Incl
 		_showLabel = showLabel;
 	}
 
-	public void setStatus(java.lang.Integer status) {
+	public void setStatus(Integer status) {
 		_status = status;
 	}
 
-	public void setStatusMessage(java.lang.String statusMessage) {
+	public void setStatusMessage(String statusMessage) {
 		_statusMessage = statusMessage;
 	}
 
-	public void setVersion(java.lang.String version) {
+	public void setVersion(String version) {
 		_version = version;
 	}
 
@@ -153,16 +154,16 @@ public abstract class BaseWorkflowStatusTag extends com.liferay.taglib.util.Incl
 	private static final String _PAGE =
 		"/html/taglib/aui/workflow_status/page.jsp";
 
-	private java.lang.Object _bean = null;
-	private java.lang.String _helpMessage = null;
-	private java.lang.String _id = null;
-	private java.lang.String _markupView = null;
-	private java.lang.Class<?> _model = null;
+	private Object _bean;
+	private String _helpMessage;
+	private String _id;
+	private String _markupView;
+	private Class<?> _model;
 	private boolean _showHelpMessage = true;
 	private boolean _showIcon = true;
 	private boolean _showLabel = true;
-	private java.lang.Integer _status = null;
-	private java.lang.String _statusMessage = null;
-	private java.lang.String _version = null;
+	private Integer _status;
+	private String _statusMessage;
+	private String _version;
 
 }

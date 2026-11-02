@@ -22,78 +22,79 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseLinkTag extends com.liferay.taglib.util.PositionTagSupport {
+public abstract class BaseLinkTag
+	extends com.liferay.taglib.util.PositionTagSupport {
 
 	public int doStartTag() throws JspException {
 		return super.doStartTag();
-	}
-
-	public String getCssClass() {
-		return _cssClass;
-	}
-
-	public void setCssClass(String cssClass) {
-		_cssClass = cssClass;
 	}
 
 	public String getCrossOrigin() {
 		return _crossOrigin;
 	}
 
-	public void setCrossOrigin(String crossOrigin) {
-		_crossOrigin = crossOrigin;
+	public String getCssClass() {
+		return _cssClass;
 	}
 
 	public boolean getHashedFile() {
 		return _hashedFile;
 	}
 
-	public void setHashedFile(boolean hashedFile) {
-		_hashedFile = hashedFile;
-	}
-
 	public String getHref() {
 		return _href;
-	}
-
-	public void setHref(String href) {
-		_href = href;
 	}
 
 	public String getId() {
 		return _id;
 	}
 
-	public void setId(String id) {
-		_id = id;
-	}
-
 	public String getIntegrity() {
 		return _integrity;
-	}
-
-	public void setIntegrity(String integrity) {
-		_integrity = integrity;
 	}
 
 	public String getRel() {
 		return _rel;
 	}
 
-	public void setRel(String rel) {
-		_rel = rel;
-	}
-
 	public String getSenna() {
 		return _senna;
 	}
 
-	public void setSenna(String senna) {
-		_senna = senna;
-	}
-
 	public String getType() {
 		return _type;
+	}
+
+	public void setCrossOrigin(String crossOrigin) {
+		_crossOrigin = crossOrigin;
+	}
+
+	public void setCssClass(String cssClass) {
+		_cssClass = cssClass;
+	}
+
+	public void setHashedFile(boolean hashedFile) {
+		_hashedFile = hashedFile;
+	}
+
+	public void setHref(String href) {
+		_href = href;
+	}
+
+	public void setId(String id) {
+		_id = id;
+	}
+
+	public void setIntegrity(String integrity) {
+		_integrity = integrity;
+	}
+
+	public void setRel(String rel) {
+		_rel = rel;
+	}
+
+	public void setSenna(String senna) {
+		_senna = senna;
 	}
 
 	public void setType(String type) {
@@ -101,8 +102,8 @@ public abstract class BaseLinkTag extends com.liferay.taglib.util.PositionTagSup
 	}
 
 	protected void cleanUp() {
-		_cssClass = null;
 		_crossOrigin = null;
+		_cssClass = null;
 		_hashedFile = false;
 		_href = null;
 		_id = null;
@@ -116,17 +117,16 @@ public abstract class BaseLinkTag extends com.liferay.taglib.util.PositionTagSup
 		return _PAGE;
 	}
 
-	private static final String _PAGE =
-		"/html/taglib/aui/style/page.jsp";
+	private static final String _PAGE = "/html/taglib/aui/style/page.jsp";
 
-	private String _cssClass = null;
-	private String _crossOrigin = null;
+	private String _crossOrigin;
+	private String _cssClass;
 	private boolean _hashedFile;
-	private String _href = null;
-	private String _id = null;
-	private String _integrity = null;
-	private String _rel = null;
-	private String _senna = null;
-	private String _type = null;
+	private String _href;
+	private String _id;
+	private String _integrity;
+	private String _rel;
+	private String _senna;
+	private String _type;
 
 }

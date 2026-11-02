@@ -23,11 +23,11 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		return super.doStartTag();
 	}
 
-	public java.lang.String getCssClass() {
+	public String getCssClass() {
 		return _cssClass;
 	}
 
-	public java.util.Map<java.lang.String, java.lang.Object> getData() {
+	public java.util.Map<String, Object> getData() {
 		return _data;
 	}
 
@@ -35,7 +35,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		return _disabled;
 	}
 
-	public java.lang.Object getLabel() {
+	public Object getLabel() {
 		return _label;
 	}
 
@@ -47,7 +47,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		return _selected;
 	}
 
-	public java.lang.String getStyle() {
+	public String getStyle() {
 		return _style;
 	}
 
@@ -55,15 +55,15 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		return _useModelValue;
 	}
 
-	public java.lang.Object getValue() {
+	public Object getValue() {
 		return _value;
 	}
 
-	public void setCssClass(java.lang.String cssClass) {
+	public void setCssClass(String cssClass) {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<java.lang.String, java.lang.Object> data) {
+	public void setData(java.util.Map<String, Object> data) {
 		_data = data;
 	}
 
@@ -71,7 +71,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		_disabled = disabled;
 	}
 
-	public void setLabel(java.lang.Object label) {
+	public void setLabel(Object label) {
 		_label = label;
 	}
 
@@ -83,7 +83,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		_selected = selected;
 	}
 
-	public void setStyle(java.lang.String style) {
+	public void setStyle(String style) {
 		_style = style;
 	}
 
@@ -91,7 +91,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		_useModelValue = useModelValue;
 	}
 
-	public void setValue(java.lang.Object value) {
+	public void setValue(Object value) {
 		_value = value;
 	}
 
@@ -133,14 +133,14 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 	private static final String _START_PAGE =
 		"/html/taglib/aui/option/start.jsp";
 
-	private java.lang.String _cssClass = null;
-	private java.util.Map<java.lang.String, java.lang.Object> _data = null;
-	private boolean _disabled = false;
-	private java.lang.Object _label = null;
+	private String _cssClass;
+	private java.util.Map<String, Object> _data;
+	private boolean _disabled;
+	private Object _label;
 	private boolean _localizeLabel = true;
-	private boolean _selected = false;
-	private java.lang.String _style = null;
+	private boolean _selected;
+	private String _style;
 	private boolean _useModelValue = true;
-	private java.lang.Object _value = null;
+	private Object _value;
 
 }
