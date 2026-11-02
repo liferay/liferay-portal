@@ -135,3 +135,13 @@ tests:
                     path: spec.pipeline[1].input.inline.template
                     pattern: "\\$[A-Za-z]+ := dig \"liferay-cryptokey\" \"resource\" \"status\" \"atProvider\" \"id\" \"\" \\$[A-Za-z]+"
         it: Reads the service account and key identities that GCP reports
+    -   asserts:
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "printf \"%s %s \\* \\* %s\" \\(index \\$timeOfDay 1\\) \\(index \\$timeOfDay 0\\) \\(eq \\$backup\\.frequency \"Weekly\" \\| ternary \\(upper \\(trunc 3 \\$backup\\.dayOfWeek\\)\\) \"\\*\"\\)"
+            -   documentIndex: 0
+                matchRegex:
+                    path: spec.pipeline[1].input.inline.template
+                    pattern: "timezone: \\{\\{ \\$backup\\.timeZone \\| quote \\}\\}"
+        it: Schedules the backups from the shared backup fields

@@ -1,0 +1,4 @@
+apiVersion: v2
+name: liferay-subchart-backup-cleanup
+type: application
+version: 0.1.0

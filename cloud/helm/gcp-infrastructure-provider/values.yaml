@@ -4,6 +4,8 @@ deploymentContext:
     projectNumber: ""
     region: ""
     vpcName: ""
+liferay-subchart-backup-cleanup:
+    enabled: true
 liferay-subchart-backup-controller:
     enabled: true
     serviceAccountName: backup-controller

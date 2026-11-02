@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ClusterWorkflowTemplate
+metadata:
+    labels:
+        component: backup-cleanup-platform
+    name: backup-cleanup-cluster-workflow-template
+spec:
+    arguments:
+        parameters:
+            -   name: retention-days
+    entrypoint: clean-up-backups
+    podGC:
+        {{- .Values.argo.workflowSpec.podGC | toYaml | nindent 8 }}
+    serviceAccountName: backup-cleanup-service-account
+    templates:
+        -   name: clean-up-backups
+            script:
+                command: [sh]
+                image: "{{ .Values.images.helmKubectl.repository }}:{{ .Values.images.helmKubectl.tag }}"
+                resources:
+                    {{- .Values.resources.default | toYaml | nindent 20 }}
+                source: |-
+                    {{- tpl (.Files.Get "scripts/clean-up-backups.sh") . | nindent 20 }}
+    ttlStrategy:
+        {{- .Values.argo.workflowSpec.ttlStrategy | toYaml | nindent 8 }}

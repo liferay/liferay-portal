@@ -29,6 +29,77 @@ apiVersion: kubernetes.m.crossplane.io/v1alpha1
 kind: Object
 metadata:
     annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-cleanup-cron-workflow
+    name: backup-cleanup-cron-workflow
+spec:
+    forProvider:
+        manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: CronWorkflow
+            metadata:
+                name: backup-cleanup-cron-workflow
+                namespace: {{ $namespace }}
+            spec:
+                concurrencyPolicy: Forbid
+                schedules:
+                    -   0 2 * * *
+                startingDeadlineSeconds: 300
+                workflowSpec:
+                    arguments:
+                        parameters:
+                            -   name: retention-days
+                                value: {{ $backup.retentionDays | quote }}
+                    ttlStrategy:
+                        secondsAfterCompletion: 86400
+                    workflowTemplateRef:
+                        clusterScope: true
+                        name: backup-cleanup-cluster-workflow-template
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-cleanup-role-binding
+    name: backup-cleanup-role-binding
+spec:
+    forProvider:
+        manifest:
+            apiVersion: rbac.authorization.k8s.io/v1
+            kind: RoleBinding
+            metadata:
+                name: backup-cleanup-role-binding
+                namespace: {{ $namespace }}
+            roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: ClusterRole
+                name: backup-cleanup-cluster-role
+            subjects:
+                -   kind: ServiceAccount
+                    name: backup-cleanup-service-account
+                    namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-cleanup-service-account
+    name: backup-cleanup-service-account
+spec:
+    forProvider:
+        manifest:
+            apiVersion: v1
+            kind: ServiceAccount
+            metadata:
+                name: backup-cleanup-service-account
+                namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+---
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
         gotemplating.fn.crossplane.io/composition-resource-name: backup-create-role-binding
     name: backup-create-role-binding
 spec:
@@ -47,6 +118,35 @@ spec:
                 -   kind: ServiceAccount
                     name: backup-create-service-account
                     namespace: {{ $namespace }}
+    managementPolicies: {{ $managementPolicies }}
+---
+{{- $timeOfDay := splitList ":" $backup.timeOfDay }}
+apiVersion: kubernetes.m.crossplane.io/v1alpha1
+kind: Object
+metadata:
+    annotations:
+        gotemplating.fn.crossplane.io/composition-resource-name: backup-create-scheduler-cron-workflow
+    name: backup-create-scheduler-cron-workflow
+spec:
+    forProvider:
+        manifest:
+            apiVersion: argoproj.io/v1alpha1
+            kind: CronWorkflow
+            metadata:
+                name: backup-create-scheduler-cron-workflow
+                namespace: {{ $namespace }}
+            spec:
+                concurrencyPolicy: Forbid
+                schedules:
+                    -   {{ printf "%s %s * * %s" (index $timeOfDay 1) (index $timeOfDay 0) (eq $backup.frequency "Weekly" | ternary (upper (trunc 3 $backup.dayOfWeek)) "*") | quote }}
+                startingDeadlineSeconds: 300
+                timezone: {{ $backup.timeZone | quote }}
+                workflowSpec:
+                    ttlStrategy:
+                        secondsAfterCompletion: 86400
+                    workflowTemplateRef:
+                        clusterScope: true
+                        name: backup-create-cluster-workflow-template
     managementPolicies: {{ $managementPolicies }}
 ---
 apiVersion: kubernetes.m.crossplane.io/v1alpha1
