@@ -19,6 +19,7 @@ import {
 	performUserSwitchViaApi,
 	userData,
 } from '../../../utils/performLogin';
+import {selectMaxItemsPerPage} from '../../../utils/pagination';
 
 const test = mergeTests(
 	apiHelpersTest,
@@ -495,6 +496,15 @@ test('A reply keeps the owner only view permissions of its thread', async ({
 	});
 
 	const permissionsFrame = page.frameLocator('iframe[title="Permissions"]');
+
+	await expect(
+		permissionsFrame.getByRole('button', {name: 'Save'})
+	).toBeVisible();
+
+	await selectMaxItemsPerPage(
+		permissionsFrame.getByLabel('Items per Page'),
+		permissionsFrame.locator('a[href*="_delta=60"]')
+	);
 
 	// Only the owner keeps the view permission on the reply
 
