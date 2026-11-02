@@ -8,7 +8,6 @@ package com.liferay.oauth2.provider.service.impl;
 import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.oauth2.provider.exception.NoSuchOAuth2AuthorizationException;
 import com.liferay.oauth2.provider.model.OAuth2Authorization;
-import com.liferay.oauth2.provider.model.OAuth2ScopeGrant;
 import com.liferay.oauth2.provider.service.base.OAuth2AuthorizationLocalServiceBaseImpl;
 import com.liferay.oauth2.provider.util.OAuth2TokenContentUtil;
 import com.liferay.portal.aop.AopService;
@@ -24,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 
 import java.security.MessageDigest;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -212,57 +210,12 @@ public class OAuth2AuthorizationLocalServiceImpl
 	}
 
 	@Override
-	public OAuth2Authorization getOAuth2AuthorizationByRefreshTokenContent(
-			String refreshTokenContent)
-		throws NoSuchOAuth2AuthorizationException {
-
-		OAuth2Authorization oAuth2Authorization =
-			fetchOAuth2AuthorizationByRefreshTokenContent(refreshTokenContent);
-
-		if (oAuth2Authorization == null) {
-			throw new NoSuchOAuth2AuthorizationException(
-				"No OAuth2 authorization exists with refresh token content " +
-					refreshTokenContent);
-		}
-
-		return oAuth2Authorization;
-	}
-
-	@Override
 	public List<OAuth2Authorization> getOAuth2Authorizations(
 		long oAuth2ApplicationId, int start, int end,
 		OrderByComparator<OAuth2Authorization> orderByComparator) {
 
 		return oAuth2AuthorizationPersistence.findByOAuth2ApplicationId(
 			oAuth2ApplicationId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getOAuth2AuthorizationsCount(long oAuth2ApplicationId) {
-		return oAuth2AuthorizationPersistence.countByOAuth2ApplicationId(
-			oAuth2ApplicationId);
-	}
-
-	@Override
-	public Collection<OAuth2ScopeGrant> getOAuth2ScopeGrants(
-		long oAuth2AuthorizationId) {
-
-		return oAuth2ScopeGrantPersistence.
-			getOAuth2AuthorizationOAuth2ScopeGrants(oAuth2AuthorizationId);
-	}
-
-	@Override
-	public List<OAuth2Authorization> getUserOAuth2Authorizations(
-		long userId, int start, int end,
-		OrderByComparator<OAuth2Authorization> orderByComparator) {
-
-		return oAuth2AuthorizationPersistence.findByUserId(
-			userId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getUserOAuth2AuthorizationsCount(long userId) {
-		return oAuth2AuthorizationPersistence.countByUserId(userId);
 	}
 
 	@Override

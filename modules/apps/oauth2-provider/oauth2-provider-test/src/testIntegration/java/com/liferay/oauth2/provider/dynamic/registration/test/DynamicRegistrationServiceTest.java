@@ -12,7 +12,7 @@ import com.liferay.oauth2.provider.constants.GrantType;
 import com.liferay.oauth2.provider.constants.OAuth2AuthorizationConstants;
 import com.liferay.oauth2.provider.model.OAuth2Application;
 import com.liferay.oauth2.provider.service.OAuth2ApplicationLocalService;
-import com.liferay.oauth2.provider.service.OAuth2AuthorizationLocalService;
+import com.liferay.oauth2.provider.service.persistence.OAuth2AuthorizationUtil;
 import com.liferay.petra.string.CharPool;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
@@ -590,9 +591,13 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 					TestPropsValues.getCompanyId(), clientId);
 
 			Assert.assertEquals(
-				0,
-				_oAuth2AuthorizationLocalService.getOAuth2AuthorizationsCount(
-					oAuth2Application.getOAuth2ApplicationId()));
+				Integer.valueOf(0),
+				TransactionTestUtil.invoke(
+					OAuth2AuthorizationUtil.getPersistence(),
+					oAuth2AuthorizationPersistence ->
+						oAuth2AuthorizationPersistence.
+							countByOAuth2ApplicationId(
+								oAuth2Application.getOAuth2ApplicationId())));
 
 			registerWebTarget = getRegisterWebTarget(clientId);
 
@@ -1551,9 +1556,6 @@ public class DynamicRegistrationServiceTest extends BaseClientTestCase {
 
 	@Inject
 	private OAuth2ApplicationLocalService _oAuth2ApplicationLocalService;
-
-	@Inject
-	private OAuth2AuthorizationLocalService _oAuth2AuthorizationLocalService;
 
 	private ServiceRegistration<AuditMessageProcessor> _serviceRegistration;
 
