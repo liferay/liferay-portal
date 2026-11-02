@@ -415,7 +415,7 @@ public class BlogsEntryStagedModelDataHandlerTest
 			Map<String, List<StagedModel>> dependentStagedModelsMap)
 		throws Exception {
 
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -448,7 +448,7 @@ public class BlogsEntryStagedModelDataHandlerTest
 			ServiceContextTestUtil.getServiceContext(
 				group, TestPropsValues.getUserId());
 
-		BlogsEntry approvedEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry approvedEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 

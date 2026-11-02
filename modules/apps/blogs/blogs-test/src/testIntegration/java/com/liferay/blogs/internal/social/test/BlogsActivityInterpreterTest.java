@@ -10,6 +10,7 @@ import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.blogs.social.BlogsActivityKeys;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
@@ -39,7 +40,7 @@ public class BlogsActivityInterpreterTest
 
 	@Override
 	protected void addActivities() throws Exception {
-		_entry = BlogsEntryLocalServiceUtil.addEntry(
+		_entry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -73,7 +74,7 @@ public class BlogsActivityInterpreterTest
 
 		serviceContext.setCommand(Constants.UPDATE);
 
-		BlogsEntryLocalServiceUtil.updateEntry(
+		BlogsTestUtil.updateEntry(
 			_entry.getUserId(), _entry.getEntryId(), _entry.getTitle(),
 			_entry.getSubtitle(), _entry.getDescription(), _entry.getContent(),
 			1, 1, 2012, 12, 00, true, true, new String[0], StringPool.BLANK,

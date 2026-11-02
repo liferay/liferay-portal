@@ -14,7 +14,7 @@ import com.liferay.asset.kernel.model.AssetVocabulary;
 import com.liferay.asset.kernel.service.AssetCategoryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
@@ -802,7 +802,7 @@ public class
 
 		serviceContext.setAssetCategoryIds(assetCategoryIds);
 
-		return _blogsEntryLocalService.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -972,9 +972,6 @@ public class
 
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

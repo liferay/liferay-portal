@@ -8,6 +8,7 @@ package com.liferay.blogs.internal.workflow.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -86,7 +87,7 @@ public class BlogsEntryWorkflowHandlerTest {
 
 		serviceContext.setRequest(mockHttpServletRequest);
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 

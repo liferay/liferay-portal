@@ -13,6 +13,7 @@ import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.dynamic.data.mapping.constants.DDMStructureConstants;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializer;
 import com.liferay.dynamic.data.mapping.io.DDMFormDeserializerDeserializeRequest;
@@ -661,7 +662,7 @@ public class GetCollectionFieldMVCResourceCommandTest {
 	public SearchTestRule searchTestRule = new SearchTestRule();
 
 	private BlogsEntry _addBlogsEntry() throws Exception {
-		return _blogsEntryLocalService.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), _serviceContext);
 	}

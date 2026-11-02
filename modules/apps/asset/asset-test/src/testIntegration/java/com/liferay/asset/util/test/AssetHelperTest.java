@@ -14,7 +14,7 @@ import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.asset.util.AssetHelper;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -93,14 +93,14 @@ public class AssetHelperTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
 		serviceContext.setAssetCategoryIds(assetCategoryIds);
 		serviceContext.setAssetTagNames(assetTagNames);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -128,7 +128,7 @@ public class AssetHelperTest {
 
 		serviceContext.setAssetTagNames(new String[] {assetTag.getName()});
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -172,7 +172,7 @@ public class AssetHelperTest {
 		serviceContext.setAssetCategoryIds(assetCategoryIds);
 		serviceContext.setAssetTagNames(assetTagNames);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -188,17 +188,17 @@ public class AssetHelperTest {
 		Group group2 = GroupTestUtil.addGroup();
 
 		try {
-			_blogsEntryLocalService.addEntry(
+			BlogsTestUtil.addEntry(
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 
-			_blogsEntryLocalService.addEntry(
+			BlogsTestUtil.addEntry(
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(group1.getGroupId()));
 
-			_blogsEntryLocalService.addEntry(
+			BlogsTestUtil.addEntry(
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				RandomTestUtil.randomString(),
 				ServiceContextTestUtil.getServiceContext(group2.getGroupId()));
@@ -243,7 +243,7 @@ public class AssetHelperTest {
 
 		serviceContext.setAssetTagNames(new String[] {assetTag1.getName()});
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -252,11 +252,11 @@ public class AssetHelperTest {
 
 		serviceContext.setAssetTagNames(new String[] {assetTag2.getName()});
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
@@ -320,9 +320,6 @@ public class AssetHelperTest {
 
 	@Inject
 	private AssetHelper _assetHelper;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

@@ -7,7 +7,6 @@ package com.liferay.comment.subscriptions.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.model.MBMessage;
@@ -73,7 +72,7 @@ public class CommentsSubscriptionTest {
 	public void testCanSubscribeToCommentsWithViewPermissions()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_creatorUser.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -90,7 +89,7 @@ public class CommentsSubscriptionTest {
 	public void testCannotSubscribeToCommentsWithoutViewPermissions()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_creatorUser.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -120,7 +119,7 @@ public class CommentsSubscriptionTest {
 		BlogsTestUtil.populateNotificationsServiceContext(
 			serviceContext, Constants.ADD);
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_creatorUser.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -145,7 +144,7 @@ public class CommentsSubscriptionTest {
 		BlogsTestUtil.populateNotificationsServiceContext(
 			serviceContext, Constants.ADD);
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_creatorUser.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -176,7 +175,7 @@ public class CommentsSubscriptionTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _creatorUser.getUserId());
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_creatorUser.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -201,7 +200,7 @@ public class CommentsSubscriptionTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group.getGroupId(), _creatorUser.getUserId());
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_creatorUser.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 

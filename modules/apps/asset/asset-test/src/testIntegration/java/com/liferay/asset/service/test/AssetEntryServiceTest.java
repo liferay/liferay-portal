@@ -17,7 +17,7 @@ import com.liferay.asset.kernel.service.AssetVocabularyGroupRelLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -126,7 +126,7 @@ public class AssetEntryServiceTest {
 
 		serviceContext.setAddGuestPermissions(false);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -335,7 +335,7 @@ public class AssetEntryServiceTest {
 	public void testUpdateEntry() throws Exception {
 		User user = UserTestUtil.addUser(_group.getGroupId());
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -523,9 +523,6 @@ public class AssetEntryServiceTest {
 	@Inject
 	private AssetVocabularyGroupRelLocalService
 		_assetVocabularyGroupRelLocalService;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

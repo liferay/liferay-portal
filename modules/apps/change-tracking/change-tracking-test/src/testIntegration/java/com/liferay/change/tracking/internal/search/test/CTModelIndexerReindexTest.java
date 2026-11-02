@@ -8,6 +8,7 @@ package com.liferay.change.tracking.internal.search.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.petra.lang.SafeCloseable;
@@ -64,7 +65,7 @@ public class CTModelIndexerReindexTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
-		BlogsEntry productionBlogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry productionBlogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 

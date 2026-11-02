@@ -8,7 +8,7 @@ package com.liferay.asset.search.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.search.AssetSearcherFactory;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.bookmarks.constants.BookmarksFolderConstants;
 import com.liferay.bookmarks.service.BookmarksEntryLocalService;
 import com.liferay.journal.constants.JournalFolderConstants;
@@ -57,7 +57,7 @@ public class AssetSearcherClassNameIdsTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), getServiceContext());
 
@@ -156,9 +156,6 @@ public class AssetSearcherClassNameIdsTest {
 
 	@Inject
 	private AssetSearcherFactory _assetSearcherFactory;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private BookmarksEntryLocalService _bookmarksEntryLocalService;

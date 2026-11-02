@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.web.internal.portlet.tab.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -78,7 +78,7 @@ public class WorkflowInstancePortletTabTest {
 
 		// Administrator user
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -179,9 +179,6 @@ public class WorkflowInstancePortletTabTest {
 
 		return mockLiferayPortletRenderRequest;
 	}
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Company _company;

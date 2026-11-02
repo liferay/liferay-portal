@@ -8,6 +8,7 @@ package com.liferay.blogs.web.internal.info.item.provider.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldValue;
 import com.liferay.info.field.type.HTMLInfoFieldType;
@@ -73,7 +74,7 @@ public class BlogsEntryInfoItemFieldValuesProviderTest {
 	@Ignore
 	@Test
 	public void testGetInfoItemFieldValues() throws PortalException {
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));

@@ -8,6 +8,7 @@ package com.liferay.blogs.model.impl.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -72,7 +73,7 @@ public class BlogsEntryImplTest {
 
 	@Test
 	public void testIsVisible() throws Exception {
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
@@ -82,7 +83,7 @@ public class BlogsEntryImplTest {
 
 	@Test
 	public void testIsVisibleWithFutureDisplayDate() throws Exception {
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
@@ -98,7 +99,7 @@ public class BlogsEntryImplTest {
 
 	@Test
 	public void testIsVisibleWithPendingBlogsEntry() throws Exception {
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());

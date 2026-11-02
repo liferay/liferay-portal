@@ -10,7 +10,7 @@ import com.liferay.analytics.layout.page.template.web.internal.layout.display.pa
 import com.liferay.analytics.test.util.AnalyticsCompanyConfigurationTemporarySwapper;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.info.item.InfoItemReference;
@@ -69,7 +69,7 @@ public class AnalyticsRenderFragmentLayoutPreDynamicIncludeTest {
 
 	@Test
 	public void testIncludeWithBlog() throws Exception {
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
@@ -225,9 +225,6 @@ public class AnalyticsRenderFragmentLayoutPreDynamicIncludeTest {
 				RandomTestUtil.randomString());
 		}
 	}
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject(
 		filter = "component.name=com.liferay.blogs.web.internal.layout.display.page.BlogsLayoutDisplayPageProvider"

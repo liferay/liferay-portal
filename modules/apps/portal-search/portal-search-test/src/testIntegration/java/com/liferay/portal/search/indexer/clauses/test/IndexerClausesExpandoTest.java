@@ -7,7 +7,7 @@ package com.liferay.portal.search.indexer.clauses.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
@@ -214,7 +214,7 @@ public class IndexerClausesExpandoTest {
 
 				if (clazz.equals(BlogsEntry.class)) {
 					_blogsEntries.add(
-						BlogsEntryLocalServiceUtil.addEntry(
+						BlogsTestUtil.addEntry(
 							TestPropsValues.getUserId(),
 							RandomTestUtil.randomString(),
 							RandomTestUtil.randomString(), serviceContext));

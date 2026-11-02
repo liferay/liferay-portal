@@ -8,6 +8,7 @@ package com.liferay.blogs.internal.change.tracking.spi.listener.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.change.tracking.model.CTCollection;
 import com.liferay.change.tracking.service.CTCollectionLocalService;
 import com.liferay.change.tracking.service.CTCollectionServiceUtil;
@@ -60,7 +61,7 @@ public class BlogsEntryCTEventListenerTest {
 				CTCollectionThreadLocal.setCTCollectionIdWithSafeCloseable(
 					ctCollection.getCtCollectionId())) {
 
-			blogsEntry = _blogsEntryLocalService.addEntry(
+			blogsEntry = BlogsTestUtil.addEntry(
 				TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 				"<img src=\"/documents/d/guest/image?previewCTCollectionId=" +
 					ctCollection.getCtCollectionId() + "\">",

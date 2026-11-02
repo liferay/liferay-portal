@@ -8,6 +8,7 @@ package com.liferay.mentions.web.internal.notifications.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.mentions.constants.MentionsPortletKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -89,11 +90,11 @@ public class MentionsUserNotificationHandlerTest {
 	}
 
 	private void _testIsApplicableWithBlogsEntry() throws Exception {
-		BlogsEntry blogsEntry1 = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry1 = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());
-		BlogsEntry blogsEntry2 = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry2 = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext());

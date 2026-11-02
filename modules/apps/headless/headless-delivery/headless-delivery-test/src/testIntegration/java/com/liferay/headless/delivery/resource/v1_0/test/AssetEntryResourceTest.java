@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.headless.delivery.client.dto.v1_0.AssetEntry;
 import com.liferay.headless.delivery.client.pagination.Page;
@@ -88,7 +89,7 @@ public class AssetEntryResourceTest extends BaseAssetEntryResourceTestCase {
 	}
 
 	private BlogsEntry _addBlogsEntry(long groupId) throws Exception {
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(

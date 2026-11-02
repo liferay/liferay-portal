@@ -8,8 +8,8 @@ package com.liferay.blogs.service.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.model.BlogsStatsUser;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.blogs.service.BlogsStatsUserLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
@@ -60,7 +60,7 @@ public class BlogsStatsUserLocalServiceTest {
 	public void testAddFirstUserBlogsEntryAddsNewBlogsStatsUser()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -84,11 +84,11 @@ public class BlogsStatsUserLocalServiceTest {
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user1.getUserId());
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
-		BlogsEntryLocalServiceUtil.addEntry(
+		BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -106,7 +106,7 @@ public class BlogsStatsUserLocalServiceTest {
 	public void testAddNewRatingsEntryIncrementsBlogsStatsUserRatings()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -140,7 +140,7 @@ public class BlogsStatsUserLocalServiceTest {
 	public void testDeleteRatingsEntryDecreasesBlogsStatsUserEntryEntryCount()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -178,7 +178,7 @@ public class BlogsStatsUserLocalServiceTest {
 	public void testDeleteRatingsEntryUpdatesBlogsStatsUserRatings()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -216,13 +216,13 @@ public class BlogsStatsUserLocalServiceTest {
 
 	@Test
 	public void testGetOrganizationStatsUsers() throws Exception {
-		BlogsEntryLocalServiceUtil.addEntry(
+		BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user1.getUserId()));
 
-		BlogsEntryLocalServiceUtil.addEntry(
+		BlogsTestUtil.addEntry(
 			_user2.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -277,7 +277,7 @@ public class BlogsStatsUserLocalServiceTest {
 	public void testUpdateRatingsEntryDoesNotIncreaseBlogsStatsUserEntryEntryCount()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -306,7 +306,7 @@ public class BlogsStatsUserLocalServiceTest {
 	public void testUpdateRatingsEntryUpdatesBlogsStatsUserRatings()
 		throws Exception {
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(

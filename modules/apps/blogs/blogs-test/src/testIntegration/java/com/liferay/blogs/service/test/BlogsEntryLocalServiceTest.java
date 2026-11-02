@@ -47,7 +47,6 @@ import com.liferay.portal.kernel.module.util.BundleUtil;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
-import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.IdentityServiceContextFunction;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.taglib.ui.ImageSelector;
@@ -225,7 +224,7 @@ public class BlogsEntryLocalServiceTest {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), StringPool.BLANK, RandomTestUtil.randomString(),
 			serviceContext);
 
@@ -271,7 +270,7 @@ public class BlogsEntryLocalServiceTest {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), null, RandomTestUtil.randomString(),
 			serviceContext);
 
@@ -363,7 +362,7 @@ public class BlogsEntryLocalServiceTest {
 					ServiceContextTestUtil.getServiceContext(
 						_group.getGroupId(), _creatorUser.getUserId());
 
-				BlogsEntry entry = _blogsEntryLocalService.addEntry(
+				BlogsEntry entry = BlogsTestUtil.addEntry(
 					_creatorUser.getUserId(), RandomTestUtil.randomString(),
 					RandomTestUtil.randomString(), serviceContext);
 
@@ -545,7 +544,7 @@ public class BlogsEntryLocalServiceTest {
 
 		String content = _repeat("0", maxLength + 1);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(), content,
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -558,7 +557,7 @@ public class BlogsEntryLocalServiceTest {
 
 		String title = _repeat("0", maxLength + 1);
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), title, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -594,7 +593,7 @@ public class BlogsEntryLocalServiceTest {
 
 	@Test
 	public void testAddOriginalImageInVisibleImageFolder() throws Exception {
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -785,16 +784,6 @@ public class BlogsEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetCompanyEntriesCountInTrash() throws Exception {
-		testGetCompanyEntriesCount(true);
-	}
-
-	@Test
-	public void testGetCompanyEntriesCountNotInTrash() throws Exception {
-		testGetCompanyEntriesCount(false);
-	}
-
-	@Test
 	public void testGetCompanyEntriesInTrash() throws Exception {
 		testGetCompanyEntries(true);
 	}
@@ -811,182 +800,6 @@ public class BlogsEntryLocalServiceTest {
 		MBMessageLocalServiceUtil.getDiscussionMessageDisplay(
 			_user.getUserId(), _group.getGroupId(), BlogsEntry.class.getName(),
 			entry.getEntryId(), WorkflowConstants.STATUS_ANY);
-	}
-
-	@Test
-	public void testGetEntriesPrevAndNextByDisplayDate() throws Exception {
-		BlogsEntry firstEntry = addEntry(false, 1);
-
-		BlogsEntry thirdEntry = addEntry(false, 3);
-
-		BlogsEntry secondEntry = addEntry(false, 2);
-
-		BlogsEntry[] entries = _blogsEntryLocalService.getEntriesPrevAndNext(
-			secondEntry.getEntryId());
-
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The previous entry relative to entry ",
-				secondEntry.getEntryId(), " should be ",
-				firstEntry.getEntryId(), " but is null"),
-			entries[0]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The current entry relative to entry ",
-				secondEntry.getEntryId(), " should be ",
-				secondEntry.getEntryId(), " but is null"),
-			entries[1]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The next entry relative to entry ", secondEntry.getEntryId(),
-				" should be ", thirdEntry.getEntryId(), " but is null"),
-			entries[2]);
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The previous entry relative to entry ",
-				secondEntry.getEntryId(), " should be ",
-				firstEntry.getEntryId()),
-			entries[0].getEntryId(), firstEntry.getEntryId());
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The current entry relative to entry ",
-				secondEntry.getEntryId(), " should be ",
-				secondEntry.getEntryId()),
-			entries[1].getEntryId(), secondEntry.getEntryId());
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The next entry relative to entry ", secondEntry.getEntryId(),
-				" should be ", thirdEntry.getEntryId()),
-			entries[2].getEntryId(), thirdEntry.getEntryId());
-	}
-
-	@Test
-	public void testGetEntriesPrevAndNextRelativeToCurrentEntry()
-		throws Exception {
-
-		BlogsEntry previousEntry = addEntry(false);
-
-		BlogsEntry currentEntry = addEntry(false);
-
-		BlogsEntry nextEntry = addEntry(false);
-
-		BlogsEntry[] entries = _blogsEntryLocalService.getEntriesPrevAndNext(
-			currentEntry.getEntryId());
-
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The previous entry relative to entry ",
-				currentEntry.getEntryId(), " should be ",
-				previousEntry.getEntryId(), " but is null"),
-			entries[0]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The current entry relative to entry ",
-				currentEntry.getEntryId(), " should be ",
-				currentEntry.getEntryId(), " but is null"),
-			entries[1]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The next entry relative to entry ", currentEntry.getEntryId(),
-				" should be ", nextEntry.getEntryId(), " but is null"),
-			entries[2]);
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The previous entry relative to entry",
-				currentEntry.getEntryId(), " should be ",
-				previousEntry.getEntryId()),
-			entries[0].getEntryId(), previousEntry.getEntryId());
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The current entry relative to entry ",
-				currentEntry.getEntryId(), " should be ",
-				currentEntry.getEntryId()),
-			entries[1].getEntryId(), currentEntry.getEntryId());
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The next entry relative to entry ", currentEntry.getEntryId(),
-				" should be ", nextEntry.getEntryId()),
-			entries[2].getEntryId(), nextEntry.getEntryId());
-	}
-
-	@Test
-	public void testGetEntriesPrevAndNextRelativeToNextEntry()
-		throws Exception {
-
-		addEntry(false);
-
-		BlogsEntry currentEntry = addEntry(false);
-
-		BlogsEntry nextEntry = addEntry(false);
-
-		BlogsEntry[] entries = _blogsEntryLocalService.getEntriesPrevAndNext(
-			nextEntry.getEntryId());
-
-		Assert.assertNull(
-			"The next entry relative to entry " + nextEntry.getEntryId() +
-				" should be null",
-			entries[2]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The current entry relative to entry ", nextEntry.getEntryId(),
-				" should be ", nextEntry.getEntryId(), " but is null"),
-			entries[1]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The previous entry relative to entry ", nextEntry.getEntryId(),
-				" should be ", currentEntry.getEntryId(), " but is null"),
-			entries[0]);
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The previous entry relative to entry ", nextEntry.getEntryId(),
-				" should be ", currentEntry.getEntryId()),
-			entries[0].getEntryId(), currentEntry.getEntryId());
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The current entry relative to entry", nextEntry.getEntryId(),
-				" should be ", nextEntry.getEntryId()),
-			entries[1].getEntryId(), nextEntry.getEntryId());
-	}
-
-	@Test
-	public void testGetEntriesPrevAndNextRelativeToPreviousEntry()
-		throws Exception {
-
-		BlogsEntry previousEntry = addEntry(false);
-
-		BlogsEntry currentEntry = addEntry(false);
-
-		addEntry(false);
-
-		BlogsEntry[] entries = _blogsEntryLocalService.getEntriesPrevAndNext(
-			previousEntry.getEntryId());
-
-		Assert.assertNull(
-			"The previous entry relative to entry " +
-				previousEntry.getEntryId() + " should be null",
-			entries[0]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The current entry relative to entry ",
-				previousEntry.getEntryId(), " should be ",
-				previousEntry.getEntryId(), " but is null"),
-			entries[1]);
-		Assert.assertNotNull(
-			StringBundler.concat(
-				"The next entry relative to entry ", previousEntry.getEntryId(),
-				" should be ", currentEntry.getEntryId(), " but is null"),
-			entries[2]);
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The current entry relative to entry ",
-				previousEntry.getEntryId(), " should be ",
-				previousEntry.getEntryId()),
-			entries[1].getEntryId(), previousEntry.getEntryId());
-		Assert.assertEquals(
-			StringBundler.concat(
-				"The next entry relative to entry ", previousEntry.getEntryId(),
-				" should be ", currentEntry.getEntryId()),
-			entries[2].getEntryId(), currentEntry.getEntryId());
 	}
 
 	@Test
@@ -1083,16 +896,6 @@ public class BlogsEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testGetGroupUserEntriesInTrash() throws Exception {
-		testGetGroupUserEntries(true);
-	}
-
-	@Test
-	public void testGetGroupUserEntriesNotInTrash() throws Exception {
-		testGetGroupUserEntries(false);
-	}
-
-	@Test
 	public void testGetGroupsEntries() throws Exception {
 		List<BlogsEntry> initialBlogsEntries =
 			_blogsEntryLocalService.getGroupsEntries(
@@ -1129,7 +932,7 @@ public class BlogsEntryLocalServiceTest {
 
 	@Test(expected = EntryTitleException.class)
 	public void testPublishWithBlankTitle() throws Exception {
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), StringPool.BLANK, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -1137,7 +940,7 @@ public class BlogsEntryLocalServiceTest {
 
 	@Test(expected = EntryTitleException.class)
 	public void testPublishWithNullTitle() throws Exception {
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), null, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -1145,7 +948,7 @@ public class BlogsEntryLocalServiceTest {
 
 	@Test(expected = EntryTitleException.class)
 	public void testPublishWithoutTitle() throws Exception {
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			_user.getUserId(), StringPool.BLANK, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -1174,7 +977,7 @@ public class BlogsEntryLocalServiceTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
 
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -1195,7 +998,7 @@ public class BlogsEntryLocalServiceTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
 
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -1215,7 +1018,7 @@ public class BlogsEntryLocalServiceTest {
 	public void testURLTitleIsSavedWhenAddingApprovedEntry() throws Exception {
 		String title = RandomTestUtil.randomString();
 
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), title, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				_group, _user.getUserId()));
@@ -1248,7 +1051,7 @@ public class BlogsEntryLocalServiceTest {
 
 		serviceContext.setWorkflowAction(WorkflowConstants.STATUS_DRAFT);
 
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -1318,14 +1121,6 @@ public class BlogsEntryLocalServiceTest {
 		Assert.assertNotEquals(urlTitle, entry.getUrlTitle());
 	}
 
-	@Test
-	public void testUpdateEntryResources() throws Exception {
-		BlogsEntry entry = addEntry(false);
-
-		_blogsEntryLocalService.updateEntryResources(
-			entry, new String[] {ActionKeys.ADD_DISCUSSION}, null);
-	}
-
 	@Test(expected = AssetCategoryException.class)
 	public void testUpdateEntryWithAssetCategoriesFromNonmultiValuedAssetVocabulary()
 		throws Exception {
@@ -1389,7 +1184,7 @@ public class BlogsEntryLocalServiceTest {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group, _user.getUserId());
 
-		BlogsEntry entry = _blogsEntryLocalService.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 
@@ -1408,12 +1203,6 @@ public class BlogsEntryLocalServiceTest {
 
 	protected BlogsEntry addEntry(boolean statusInTrash) throws Exception {
 		return addEntry(_user.getUserId(), statusInTrash);
-	}
-
-	protected BlogsEntry addEntry(boolean statusInTrash, int date)
-		throws Exception {
-
-		return addEntry(_user.getUserId(), statusInTrash, date);
 	}
 
 	protected BlogsEntry addEntry(long userId, boolean statusInTrash)
@@ -1509,28 +1298,6 @@ public class BlogsEntryLocalServiceTest {
 		assertBlogsEntriesStatus(actualBlogsEntries, statusInTrash);
 	}
 
-	protected void testGetCompanyEntriesCount(boolean statusInTrash)
-		throws Exception {
-
-		QueryDefinition<BlogsEntry> queryDefinition =
-			_statusInTrashQueryDefinition;
-
-		if (!statusInTrash) {
-			queryDefinition = _statusAnyQueryDefinition;
-		}
-
-		int initialCount = _blogsEntryLocalService.getCompanyEntriesCount(
-			_user.getCompanyId(), new Date(), queryDefinition);
-
-		addEntry(false);
-		addEntry(true);
-
-		int actualCount = _blogsEntryLocalService.getCompanyEntriesCount(
-			_user.getCompanyId(), new Date(), queryDefinition);
-
-		Assert.assertEquals(initialCount + 1, actualCount);
-	}
-
 	protected void testGetGroupEntries(
 			boolean statusInTrash, boolean displayDate)
 		throws Exception {
@@ -1613,38 +1380,6 @@ public class BlogsEntryLocalServiceTest {
 		}
 
 		Assert.assertEquals(initialCount + 1, actualCount);
-	}
-
-	protected void testGetGroupUserEntries(boolean statusInTrash)
-		throws Exception {
-
-		QueryDefinition<BlogsEntry> queryDefinition =
-			_statusInTrashQueryDefinition;
-
-		if (!statusInTrash) {
-			queryDefinition = _statusAnyQueryDefinition;
-		}
-
-		List<BlogsEntry> initialBlogsEntries =
-			_blogsEntryLocalService.getGroupUserEntries(
-				_group.getGroupId(), _user.getUserId(), new Date(),
-				queryDefinition);
-
-		int initialCount = initialBlogsEntries.size();
-
-		addEntry(false);
-		addEntry(true);
-
-		List<BlogsEntry> actualBlogsEntries =
-			_blogsEntryLocalService.getGroupUserEntries(
-				_group.getGroupId(), _user.getUserId(), new Date(),
-				queryDefinition);
-
-		Assert.assertEquals(
-			actualBlogsEntries.toString(), initialCount + 1,
-			actualBlogsEntries.size());
-
-		assertBlogsEntriesStatus(actualBlogsEntries, statusInTrash);
 	}
 
 	private FileEntry _addAttachmentFileEntry(

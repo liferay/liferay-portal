@@ -7,7 +7,7 @@ package com.liferay.blogs.web.internal.info.item.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.info.field.InfoField;
 import com.liferay.info.field.InfoFieldSet;
 import com.liferay.info.form.InfoForm;
@@ -61,7 +61,7 @@ public class BlogsEntryInfoItemFormProviderTest {
 				_infoItemServiceRegistry.getFirstInfoItemService(
 					InfoItemFormProvider.class, BlogsEntry.class.getName());
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
@@ -105,9 +105,6 @@ public class BlogsEntryInfoItemFormProviderTest {
 				infoField.getLabel(LocaleUtil.getSiteDefault()));
 		}
 	}
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

@@ -49,7 +49,7 @@ public class BlogsSubscriptionLocalizedContentTest
 		BlogsTestUtil.populateNotificationsServiceContext(
 			serviceContext, Constants.ADD);
 
-		BlogsEntry entry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			userId, RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 

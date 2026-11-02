@@ -7,7 +7,7 @@ package com.liferay.blogs.web.internal.info.item.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.info.item.ClassPKInfoItemIdentifier;
 import com.liferay.info.item.ERCInfoItemIdentifier;
 import com.liferay.info.item.InfoItemServiceRegistry;
@@ -43,7 +43,7 @@ public class BlogsEntryInfoItemObjectProviderTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_blogsEntry = _blogsEntryLocalService.addEntry(
+		_blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
@@ -76,9 +76,6 @@ public class BlogsEntryInfoItemObjectProviderTest {
 	}
 
 	private BlogsEntry _blogsEntry;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _group;

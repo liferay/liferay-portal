@@ -10,7 +10,7 @@ import com.liferay.account.model.AccountEntry;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.ConfigurationTestUtil;
@@ -348,7 +348,7 @@ public class KaleoInstanceServiceTest {
 			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), 0,
 			BlogsEntry.class.getName(), 0, 0, "Single Approver", 1);
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -402,9 +402,6 @@ public class KaleoInstanceServiceTest {
 
 	@Inject
 	private AccountEntryLocalService _accountEntryLocalService;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

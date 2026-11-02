@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.kaleo.internal.upgrade.v4_5_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -49,12 +49,12 @@ public class WorkflowInstanceLinkUpgradeProcessTest {
 			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), 0,
 			BlogsEntry.class.getName(), 0, 0, "Single Approver", 1);
 
-		BlogsEntry blogsEntry1 = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry1 = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				TestPropsValues.getGroupId()));
-		BlogsEntry blogsEntry2 = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry2 = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -94,9 +94,6 @@ public class WorkflowInstanceLinkUpgradeProcessTest {
 
 		CacheRegistryUtil.clear();
 	}
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject(
 		filter = "(&(component.name=com.liferay.portal.workflow.kaleo.internal.upgrade.registry.KaleoServiceUpgradeStepRegistrator))"

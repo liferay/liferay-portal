@@ -7,7 +7,7 @@ package com.liferay.comment.notifications.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.message.boards.constants.MBMessageConstants;
 import com.liferay.message.boards.model.MBDiscussion;
 import com.liferay.message.boards.model.MBMessage;
@@ -62,7 +62,7 @@ public class CommentUserNotificationTest extends BaseUserNotificationTestCase {
 	public void setUp() throws Exception {
 		super.setUp();
 
-		_entry = BlogsEntryLocalServiceUtil.addEntry(
+		_entry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(

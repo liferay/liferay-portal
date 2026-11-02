@@ -152,7 +152,7 @@ public class BlogsEntryStatusTransitionTest {
 		ServiceContext serviceContext = getServiceContext(entry);
 		String title = "";
 
-		BlogsEntry entryWithoutTitle = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry entryWithoutTitle = BlogsTestUtil.addEntry(
 			user.getUserId(), title, RandomTestUtil.randomString(),
 			serviceContext);
 

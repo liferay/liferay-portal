@@ -8,7 +8,7 @@ package com.liferay.blogs.asset.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.asset.test.util.BaseAssetSearchTestCase;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -72,7 +72,7 @@ public class BlogsEntryAssetSearchTest extends BaseAssetSearchTestCase {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), titleMap.get(LocaleUtil.getDefault()),
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -83,7 +83,7 @@ public class BlogsEntryAssetSearchTest extends BaseAssetSearchTestCase {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), keywords,
 			RandomTestUtil.randomString(), serviceContext);
 	}

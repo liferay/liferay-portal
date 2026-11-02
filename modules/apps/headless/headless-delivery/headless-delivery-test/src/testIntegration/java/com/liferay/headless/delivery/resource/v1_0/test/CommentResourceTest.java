@@ -7,7 +7,7 @@ package com.liferay.headless.delivery.resource.v1_0.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.document.library.test.util.DLAppTestUtil;
 import com.liferay.headless.delivery.client.dto.v1_0.Comment;
 import com.liferay.headless.delivery.client.pagination.Page;
@@ -1272,7 +1272,7 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 
 		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 	}
@@ -1370,7 +1370,7 @@ public class CommentResourceTest extends BaseCommentResourceTestCase {
 		serviceContext.setAddGroupPermissions(true);
 		serviceContext.setScopeGroupId(testGroup.getGroupId());
 
-		BlogsEntry blogsEntry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 

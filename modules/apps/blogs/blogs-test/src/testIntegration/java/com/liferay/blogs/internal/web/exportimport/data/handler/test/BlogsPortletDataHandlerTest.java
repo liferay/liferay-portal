@@ -7,7 +7,7 @@ package com.liferay.blogs.internal.web.exportimport.data.handler.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.constants.BlogsPortletKeys;
-import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.exportimport.kernel.lar.DataLevel;
 import com.liferay.exportimport.test.util.lar.BasePortletDataHandlerTestCase;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -34,7 +34,7 @@ public class BlogsPortletDataHandlerTest
 
 	@Override
 	protected void addStagedModels() throws Exception {
-		BlogsEntryLocalServiceUtil.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(

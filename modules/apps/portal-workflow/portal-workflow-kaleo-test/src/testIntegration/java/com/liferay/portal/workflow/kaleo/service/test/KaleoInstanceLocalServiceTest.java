@@ -7,7 +7,7 @@ package com.liferay.portal.workflow.kaleo.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.exception.NoSuchWorkflowInstanceLinkException;
 import com.liferay.portal.kernel.model.WorkflowInstanceLink;
 import com.liferay.portal.kernel.security.auth.CompanyInheritableThreadLocalCallable;
@@ -47,7 +47,7 @@ public class KaleoInstanceLocalServiceTest
 			TestPropsValues.getUserId(), TestPropsValues.getCompanyId(), 0,
 			BlogsEntry.class.getName(), 0, 0, "Single Approver", 1);
 
-		BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+		BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -121,9 +121,6 @@ public class KaleoInstanceLocalServiceTest
 
 		Assert.assertEquals(parties, kaleoInstance.getMvccVersion());
 	}
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private KaleoInstanceLocalService _kaleoInstanceLocalService;

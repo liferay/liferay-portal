@@ -24,8 +24,6 @@ import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.base.BlogsEntryLocalServiceBaseImpl;
 import com.liferay.blogs.settings.BlogsGroupServiceSettings;
 import com.liferay.blogs.social.BlogsActivityKeys;
-import com.liferay.blogs.util.comparator.EntryDisplayDateComparator;
-import com.liferay.blogs.util.comparator.EntryIdComparator;
 import com.liferay.document.library.kernel.exception.NoSuchFileEntryException;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.expando.kernel.service.ExpandoRowLocalService;
@@ -44,7 +42,6 @@ import com.liferay.portal.configuration.module.configuration.ConfigurationProvid
 import com.liferay.portal.image.ImageToolUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.json.JSONFactory;
@@ -220,18 +217,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			userId, title, StringPool.BLANK, StringPool.BLANK, content,
 			displayDate, true, true, new String[0], StringPool.BLANK, null,
 			null, serviceContext);
-	}
-
-	@Override
-	public BlogsEntry addEntry(
-			long userId, String title, String content,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return blogsEntryLocalService.addEntry(
-			userId, title, StringPool.BLANK, StringPool.BLANK, content,
-			new Date(), true, true, new String[0], StringPool.BLANK, null, null,
-			serviceContext);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)
@@ -811,50 +796,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public int getCompanyEntriesCount(
-		long companyId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		if (queryDefinition.isExcludeStatus()) {
-			return blogsEntryPersistence.countByC_LtD_NotS(
-				companyId, displayDate, queryDefinition.getStatus());
-		}
-
-		return blogsEntryPersistence.countByC_LtD_S(
-			companyId, displayDate, queryDefinition.getStatus());
-	}
-
-	@Override
-	public BlogsEntry[] getEntriesPrevAndNext(long entryId)
-		throws PortalException {
-
-		BlogsEntry entry = blogsEntryPersistence.findByPrimaryKey(entryId);
-
-		BlogsEntry[] entries = ListUtil.getPreviousAndNext(
-			blogsEntryPersistence.findByG_D_S(
-				entry.getGroupId(), entry.getDisplayDate(),
-				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, EntryIdComparator.getInstance(true)),
-			entry::equals, BlogsEntry[]::new);
-
-		if (entries[0] == null) {
-			entries[0] = blogsEntryPersistence.fetchByG_LtD_S_First(
-				entry.getGroupId(), entry.getDisplayDate(),
-				WorkflowConstants.STATUS_APPROVED,
-				EntryDisplayDateComparator.getInstance(false));
-		}
-
-		if (entries[2] == null) {
-			entries[2] = blogsEntryPersistence.fetchByG_GtD_S_First(
-				entry.getGroupId(), entry.getDisplayDate(),
-				WorkflowConstants.STATUS_APPROVED,
-				EntryDisplayDateComparator.getInstance(true));
-		}
-
-		return entries;
-	}
-
-	@Override
 	public BlogsEntry getEntry(long entryId) throws PortalException {
 		return blogsEntryPersistence.findByPrimaryKey(entryId);
 	}
@@ -938,24 +879,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 
 		return blogsEntryPersistence.countByG_S(
 			groupId, queryDefinition.getStatus());
-	}
-
-	@Override
-	public List<BlogsEntry> getGroupUserEntries(
-		long groupId, long userId, Date displayDate,
-		QueryDefinition<BlogsEntry> queryDefinition) {
-
-		if (queryDefinition.isExcludeStatus()) {
-			return blogsEntryPersistence.findByG_U_NotS(
-				groupId, userId, queryDefinition.getStatus(),
-				queryDefinition.getStart(), queryDefinition.getEnd(),
-				queryDefinition.getOrderByComparator());
-		}
-
-		return blogsEntryPersistence.findByG_U_S(
-			groupId, userId, queryDefinition.getStatus(),
-			queryDefinition.getStart(), queryDefinition.getEnd(),
-			queryDefinition.getOrderByComparator());
 	}
 
 	@Override
@@ -1166,26 +1089,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			smallImageImageSelector, serviceContext);
 	}
 
-	@Override
-	public BlogsEntry updateEntry(
-			long userId, long entryId, String title, String subtitle,
-			String description, String content, int displayDateMonth,
-			int displayDateDay, int displayDateYear, int displayDateHour,
-			int displayDateMinute, boolean allowPingbacks,
-			boolean allowTrackbacks, String[] trackbacks,
-			String coverImageCaption, ImageSelector coverImageImageSelector,
-			ImageSelector smallImageImageSelector,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		return blogsEntryLocalService.updateEntry(
-			userId, entryId, title, subtitle, _getURLTitle(entryId),
-			description, content, displayDateMonth, displayDateDay,
-			displayDateYear, displayDateHour, displayDateMinute, allowPingbacks,
-			allowTrackbacks, trackbacks, coverImageCaption,
-			coverImageImageSelector, smallImageImageSelector, serviceContext);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public BlogsEntry updateEntry(
@@ -1389,28 +1292,6 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			displayDate, allowPingbacks, allowTrackbacks, trackbacks,
 			coverImageCaption, coverImageImageSelector, smallImageImageSelector,
 			serviceContext);
-	}
-
-	@Override
-	public void updateEntryResources(
-			BlogsEntry entry, ModelPermissions modelPermissions)
-		throws PortalException {
-
-		_resourceLocalService.updateResources(
-			entry.getCompanyId(), entry.getGroupId(),
-			BlogsEntry.class.getName(), entry.getEntryId(), modelPermissions);
-	}
-
-	@Override
-	public void updateEntryResources(
-			BlogsEntry entry, String[] groupPermissions,
-			String[] guestPermissions)
-		throws PortalException {
-
-		_resourceLocalService.updateResources(
-			entry.getCompanyId(), entry.getGroupId(),
-			BlogsEntry.class.getName(), entry.getEntryId(), groupPermissions,
-			guestPermissions);
 	}
 
 	@Indexable(type = IndexableType.REINDEX)

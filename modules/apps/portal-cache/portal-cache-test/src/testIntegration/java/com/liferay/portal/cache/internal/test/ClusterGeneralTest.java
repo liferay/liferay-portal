@@ -14,6 +14,7 @@ import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalServiceUtil;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
@@ -169,7 +170,7 @@ public class ClusterGeneralTest implements Serializable {
 		long userId = TestPropsValues.getUserId();
 
 		BlogsEntry blogsEntry1 = _tomcatNode1.syncExecute(
-			() -> BlogsEntryLocalServiceUtil.addEntry(
+			() -> BlogsTestUtil.addEntry(
 				userId, "Blogs Entry1 Title", "Blogs Entry1 Content",
 				ServiceContextTestUtil.getServiceContext(groupId, userId)));
 
@@ -180,7 +181,7 @@ public class ClusterGeneralTest implements Serializable {
 					blogsEntry1.getEntryId())));
 
 		BlogsEntry blogsEntry2 = _tomcatNode2.syncExecute(
-			() -> BlogsEntryLocalServiceUtil.addEntry(
+			() -> BlogsTestUtil.addEntry(
 				userId, "Blogs Entry2 Title", "Blogs Entry2 Content",
 				ServiceContextTestUtil.getServiceContext(groupId, userId)));
 
@@ -566,7 +567,7 @@ public class ClusterGeneralTest implements Serializable {
 						liveGroupId, stagingGroupId,
 						LayoutTestUtil.addTypePortletLayout(
 							stagingGroupId, "Staging Test Page", false),
-						BlogsEntryLocalServiceUtil.addEntry(
+						BlogsTestUtil.addEntry(
 							userId, "Blogs Entry Title", "Blogs Entry Content",
 							ServiceContextTestUtil.getServiceContext(
 								stagingGroupId, userId))

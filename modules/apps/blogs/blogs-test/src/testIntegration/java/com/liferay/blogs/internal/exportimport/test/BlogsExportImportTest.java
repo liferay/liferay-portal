@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.constants.BlogsPortletKeys;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalServiceUtil;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.exportimport.test.util.lar.BasePortletExportImportTestCase;
 import com.liferay.portal.kernel.dao.orm.QueryDefinition;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -70,12 +71,12 @@ public class BlogsExportImportTest extends BasePortletExportImportTestCase {
 	public void testExportImportBlogsEntryWithExistingTitle() throws Exception {
 		String title = RandomTestUtil.randomString();
 
-		BlogsEntryLocalServiceUtil.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), title, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				group.getGroupId(), TestPropsValues.getUserId()));
 
-		BlogsEntryLocalServiceUtil.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), title, RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
 				importedGroup.getGroupId(), TestPropsValues.getUserId()));
@@ -94,7 +95,7 @@ public class BlogsExportImportTest extends BasePortletExportImportTestCase {
 
 	@Override
 	protected StagedModel addStagedModel(long groupId) throws Exception {
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -112,7 +113,7 @@ public class BlogsExportImportTest extends BasePortletExportImportTestCase {
 		serviceContext.setCreateDate(createdDate);
 		serviceContext.setModifiedDate(createdDate);
 
-		return BlogsEntryLocalServiceUtil.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 	}

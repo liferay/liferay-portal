@@ -7,6 +7,7 @@ package com.liferay.blogs.test.util.search;
 
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -35,7 +36,7 @@ public class BlogsEntrySearchFixture {
 					blogsEntryBlueprint.getGroupId());
 			}
 
-			BlogsEntry blogsEntry = _blogsEntryLocalService.addEntry(
+			BlogsEntry blogsEntry = BlogsTestUtil.addEntry(
 				blogsEntryBlueprint.getUserId(), blogsEntryBlueprint.getTitle(),
 				blogsEntryBlueprint.getContent(), serviceContext);
 

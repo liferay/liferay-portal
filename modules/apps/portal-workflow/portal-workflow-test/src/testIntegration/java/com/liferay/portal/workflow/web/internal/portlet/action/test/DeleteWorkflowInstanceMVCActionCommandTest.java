@@ -8,6 +8,7 @@ package com.liferay.portal.workflow.web.internal.portlet.action.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
 import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
@@ -163,7 +164,7 @@ public class DeleteWorkflowInstanceMVCActionCommandTest {
 	}
 
 	private BlogsEntry _addBlogsEntry() throws Exception {
-		return _blogsEntryLocalService.addEntry(
+		return BlogsTestUtil.addEntry(
 			_user1.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(

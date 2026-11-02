@@ -7,7 +7,7 @@ package com.liferay.comment.permission.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.portal.kernel.comment.CommentManager;
 import com.liferay.portal.kernel.comment.DiscussionPermission;
 import com.liferay.portal.kernel.model.Group;
@@ -52,7 +52,7 @@ public class BlogsEntryDiscussionPermissionTest {
 	public void setUp() throws Exception {
 		_group = GroupTestUtil.addGroup();
 
-		_blogsEntry = _blogsEntryLocalService.addEntry(
+		_blogsEntry = BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -131,9 +131,6 @@ public class BlogsEntryDiscussionPermissionTest {
 	}
 
 	private BlogsEntry _blogsEntry;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private CommentManager _commentManager;

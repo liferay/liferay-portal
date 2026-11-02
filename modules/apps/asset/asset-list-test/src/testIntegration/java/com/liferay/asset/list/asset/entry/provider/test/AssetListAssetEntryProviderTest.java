@@ -25,7 +25,7 @@ import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService
 import com.liferay.asset.list.test.util.AssetListTestUtil;
 import com.liferay.asset.test.util.AssetTestUtil;
 import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
+import com.liferay.blogs.test.util.BlogsTestUtil;
 import com.liferay.data.engine.rest.dto.v2_0.DataDefinition;
 import com.liferay.data.engine.rest.resource.v2_0.DataDefinitionResource;
 import com.liferay.data.engine.rest.test.util.DataDefinitionTestUtil;
@@ -690,7 +690,7 @@ public class AssetListAssetEntryProviderTest {
 	@Test
 	@TestInfo("LPD-105769")
 	public void testGetBooleanQueryOfDynamicCollection() throws Exception {
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -1319,7 +1319,7 @@ public class AssetListAssetEntryProviderTest {
 	public void testGetDynamicAssetEntriesWithAnyClassNameIds()
 		throws Exception {
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -1441,7 +1441,7 @@ public class AssetListAssetEntryProviderTest {
 	public void testGetDynamicAssetEntriesWithMultipleClassNameIds()
 		throws Exception {
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -1499,7 +1499,7 @@ public class AssetListAssetEntryProviderTest {
 	public void testGetDynamicAssetEntriesWithNonexistentClassNameIds()
 		throws Exception {
 
-		_blogsEntryLocalService.addEntry(
+		BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(
@@ -2788,9 +2788,6 @@ public class AssetListAssetEntryProviderTest {
 
 	@Inject
 	private AssetVocabularyLocalService _assetVocabularyLocalService;
-
-	@Inject
-	private BlogsEntryLocalService _blogsEntryLocalService;
 
 	@Inject
 	private CompanyLocalService _companyLocalService;

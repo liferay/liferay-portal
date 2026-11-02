@@ -166,7 +166,7 @@ public class BlogsEntryAttachmentFileEntryHelperTest {
 			getBlogsEntryAttachmentFileEntryReferences(FileEntry tempFileEntry)
 		throws Exception {
 
-		BlogsEntry entry = BlogsEntryLocalServiceUtil.addEntry(
+		BlogsEntry entry = BlogsTestUtil.addEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(),
 			ServiceContextTestUtil.getServiceContext(

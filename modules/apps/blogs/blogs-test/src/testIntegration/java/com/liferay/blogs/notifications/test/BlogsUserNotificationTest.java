@@ -116,7 +116,7 @@ public class BlogsUserNotificationTest extends BaseUserNotificationTestCase {
 		BlogsTestUtil.populateNotificationsServiceContext(
 			serviceContext, Constants.ADD);
 
-		return _blogsEntryLocalService.addEntry(
+		return BlogsTestUtil.addEntry(
 			TestPropsValues.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), serviceContext);
 	}
