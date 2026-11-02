@@ -5,13 +5,16 @@
 
 package com.liferay.jenkins.results.parser.persistent.resource;
 
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalWorkspace;
 import com.liferay.jenkins.results.parser.PortalWorkspaceGitRepository;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.SubrepositoryWorkspace;
 import com.liferay.jenkins.results.parser.Workspace;
-import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
 
+import java.util.Properties;
+
+import org.junit.Assert;
 import org.junit.Test;
 
 import org.mockito.Mockito;
@@ -23,10 +26,38 @@ public class PortalBundlePersistentResourceTest
 	extends com.liferay.jenkins.results.parser.Test {
 
 	@Test
-	public void testGetBundleWorkspaceGitRepository() {
-		String portalTopLevelBuildURL = _getTopLevelBuildURL(
-			"test-portal-acceptance-pullrequest(master-private)");
+	public void testGetBaseS3ObjectPath() {
+		Properties buildProperties = new Properties();
 
+		String archivesPath = RandomTestUtil.randomString();
+
+		buildProperties.setProperty(
+			"cloud.ci.s3.bucket.persistent.resources.archives.path",
+			archivesPath);
+
+		JenkinsResultsParserUtil.setBuildProperties(buildProperties);
+
+		PortalWorkspace portalWorkspace = Mockito.mock(PortalWorkspace.class);
+
+		String s3ObjectPathName = RandomTestUtil.randomString();
+
+		Mockito.doReturn(
+			s3ObjectPathName
+		).when(
+			portalWorkspace
+		).getS3ObjectPathName();
+
+		PortalBundlePersistentResource portalBundlePersistentResource =
+			_newPortalBundlePersistentResource(portalWorkspace);
+
+		testEquals(
+			JenkinsResultsParserUtil.combine(
+				archivesPath, "/portal-bundle/", s3ObjectPathName),
+			portalBundlePersistentResource.getBaseS3ObjectPath());
+	}
+
+	@Test
+	public void testGetBundleWorkspaceGitRepository() {
 		PortalWorkspace portalWorkspace = Mockito.mock(PortalWorkspace.class);
 
 		PortalWorkspaceGitRepository portalWorkspaceGitRepository =
@@ -38,56 +69,42 @@ public class PortalBundlePersistentResourceTest
 			portalWorkspace
 		).getPortalWorkspaceGitRepository();
 
-		_testGetBundleWorkspaceGitRepository(
-			portalWorkspaceGitRepository, portalTopLevelBuildURL,
-			portalWorkspace);
+		PortalBundlePersistentResource portalBundlePersistentResource =
+			_newPortalBundlePersistentResource(portalWorkspace);
 
-		Workspace workspace = Mockito.mock(Workspace.class);
-
-		WorkspaceGitRepository primaryWorkspaceGitRepository = Mockito.mock(
-			WorkspaceGitRepository.class);
-
-		Mockito.doReturn(
-			primaryWorkspaceGitRepository
-		).when(
-			workspace
-		).getPrimaryWorkspaceGitRepository();
-
-		_testGetBundleWorkspaceGitRepository(
-			primaryWorkspaceGitRepository, portalTopLevelBuildURL, workspace);
+		testSame(
+			portalWorkspaceGitRepository,
+			portalBundlePersistentResource.getBundleWorkspaceGitRepository());
 
 		SubrepositoryWorkspace subrepositoryWorkspace = Mockito.mock(
 			SubrepositoryWorkspace.class);
 
-		WorkspaceGitRepository workspaceGitRepository = Mockito.mock(
-			WorkspaceGitRepository.class);
-
 		Mockito.doReturn(
-			workspaceGitRepository
+			portalWorkspaceGitRepository
 		).when(
 			subrepositoryWorkspace
+		).getPortalWorkspaceGitRepository();
+
+		portalBundlePersistentResource = _newPortalBundlePersistentResource(
+			subrepositoryWorkspace);
+
+		testSame(
+			portalWorkspaceGitRepository,
+			portalBundlePersistentResource.getBundleWorkspaceGitRepository());
+
+		Mockito.verify(
+			subrepositoryWorkspace, Mockito.never()
 		).getWorkspaceGitRepository(
 			"liferay-portal"
 		);
 
-		_testGetBundleWorkspaceGitRepository(
-			workspaceGitRepository,
-			_getTopLevelBuildURL("test-subrepository-acceptance-pullrequest"),
-			subrepositoryWorkspace);
-
-		Mockito.verify(
-			subrepositoryWorkspace, Mockito.never()
-		).getPortalWorkspaceGitRepository();
+		_testGetBundleWorkspaceGitRepositoryThrows(
+			Mockito.mock(Workspace.class));
+		_testGetBundleWorkspaceGitRepositoryThrows(null);
 	}
 
-	private String _getTopLevelBuildURL(String jobName) {
-		return "https://" + RandomTestUtil.randomString() + "/job/" + jobName +
-			"/1/";
-	}
-
-	private void _testGetBundleWorkspaceGitRepository(
-		WorkspaceGitRepository expectedWorkspaceGitRepository,
-		String topLevelBuildURL, Workspace workspace) {
+	private PortalBundlePersistentResource _newPortalBundlePersistentResource(
+		Workspace workspace) {
 
 		PortalBundlePersistentResource portalBundlePersistentResource =
 			Mockito.mock(PortalBundlePersistentResource.class);
@@ -95,13 +112,22 @@ public class PortalBundlePersistentResourceTest
 		Mockito.doCallRealMethod(
 		).when(
 			portalBundlePersistentResource
-		).getBundleWorkspaceGitRepository();
+		).getBaseS3ObjectPath();
 
-		Mockito.doReturn(
-			topLevelBuildURL
+		Mockito.doCallRealMethod(
 		).when(
 			portalBundlePersistentResource
-		).getCurrentTopLevelBuildURL();
+		).getBundleWorkspaceGitRepository();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalBundlePersistentResource
+		).getS3ObjectPathName();
+
+		Mockito.doCallRealMethod(
+		).when(
+			portalBundlePersistentResource
+		).getType();
 
 		Mockito.doReturn(
 			workspace
@@ -109,9 +135,21 @@ public class PortalBundlePersistentResourceTest
 			portalBundlePersistentResource
 		).getWorkspace();
 
-		testSame(
-			expectedWorkspaceGitRepository,
-			portalBundlePersistentResource.getBundleWorkspaceGitRepository());
+		return portalBundlePersistentResource;
+	}
+
+	private void _testGetBundleWorkspaceGitRepositoryThrows(
+		Workspace workspace) {
+
+		PortalBundlePersistentResource portalBundlePersistentResource =
+			_newPortalBundlePersistentResource(workspace);
+
+		RuntimeException runtimeException = Assert.assertThrows(
+			RuntimeException.class,
+			portalBundlePersistentResource::getBundleWorkspaceGitRepository);
+
+		testEquals(
+			"The portal workspace is not set", runtimeException.getMessage());
 	}
 
 }
