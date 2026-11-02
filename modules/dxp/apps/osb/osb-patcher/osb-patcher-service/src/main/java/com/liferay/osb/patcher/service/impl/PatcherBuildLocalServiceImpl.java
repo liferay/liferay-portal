@@ -163,14 +163,6 @@ public class PatcherBuildLocalServiceImpl
 	}
 
 	@Override
-	public int getPatcherBuildsCountByPatcherProjectVersionId(
-		long patcherProjectVersionId) {
-
-		return patcherBuildPersistence.countByPatcherProjectVersionId(
-			patcherProjectVersionId);
-	}
-
-	@Override
 	public boolean hasPatcherFixes(long patcherFixId) {
 		return patcherBuildPersistence.containsPatcherFixes(patcherFixId);
 	}

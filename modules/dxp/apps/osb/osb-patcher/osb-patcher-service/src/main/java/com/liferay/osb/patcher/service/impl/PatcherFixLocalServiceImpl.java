@@ -266,14 +266,6 @@ public class PatcherFixLocalServiceImpl extends PatcherFixLocalServiceBaseImpl {
 			PatcherFixKeyVersionComparator.getInstance(true));
 	}
 
-	@Override
-	public int getPatcherFixesCountByPatcherProjectVersionId(
-		long patcherProjectVersionId) {
-
-		return patcherFixPersistence.countByPatcherProjectVersionId(
-			patcherProjectVersionId);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public PatcherFix updateComments(long patcherFixId, String comments)

@@ -8,6 +8,7 @@ package com.liferay.depot.web.internal.util.test;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.model.DepotEntryGroupRel;
 import com.liferay.depot.search.DepotEntrySearch;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
@@ -154,10 +155,11 @@ public class DepotEntryAdminSearchProviderTest {
 	public void testGetGroupSearch() throws Exception {
 		DepotEntry depotEntry = _initialDepotEntries.get(0);
 
+		List<DepotEntryGroupRel> depotEntryGroupRels =
+			_depotEntryGroupRelLocalService.getDepotEntryGroupRels(depotEntry);
+
 		_depotEntryGroupRelLocalService.deleteDepotEntryGroupRel(
-			_depotEntryGroupRelLocalService.
-				getDepotEntryGroupRelByDepotEntryIdToGroupId(
-					depotEntry.getDepotEntryId(), _group.getGroupId()));
+			depotEntryGroupRels.get(0));
 
 		_addDepotEntry(false, RandomTestUtil.randomString());
 
