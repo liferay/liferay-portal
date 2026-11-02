@@ -234,6 +234,14 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 
 		DesignLibraryTestUtil.assertDesignLibraryPermissionActionHrefs(
 			page.getActions());
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"The external reference code does not point to a master page",
+			() -> masterPageResource.getDesignLibraryMasterPagePermissionsPage(
+				designLibraryExternalReferenceCode,
+				_getPageTemplateExternalReferenceCode(_designLibraryGroup),
+				RoleConstants.GUEST));
 	}
 
 	@Ignore
@@ -294,6 +302,20 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		_enableLocalStaging();
 
 		_testGetSiteMasterPage(masterPage);
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-97472")
+	public void testGetSiteMasterPagePermissionsPage() throws Exception {
+		super.testGetSiteMasterPagePermissionsPage();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"The external reference code does not point to a master page",
+			() -> masterPageResource.getSiteMasterPagePermissionsPage(
+				testGroup.getExternalReferenceCode(),
+				_getPageTemplateExternalReferenceCode(), RoleConstants.GUEST));
 	}
 
 	@Override
@@ -642,11 +664,27 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 			_hasViewPermission(
 				designLibraryExternalReferenceCode,
 				masterPage.getExternalReferenceCode(), role.getName()));
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"The external reference code does not point to a master page",
+			() -> masterPageResource.putDesignLibraryMasterPagePermissionsPage(
+				designLibraryExternalReferenceCode,
+				_getPageTemplateExternalReferenceCode(_designLibraryGroup),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(
+								new String[] {RandomTestUtil.randomString()});
+							setRoleName(RandomTestUtil.randomString());
+						}
+					}
+				}));
 	}
 
 	@Override
 	@Test
-	@TestInfo({"LPD-86817", "LPD-92443"})
+	@TestInfo({"LPD-86817", "LPD-92443", "LPD-97472"})
 	public void testPutSiteMasterPage() throws Exception {
 		_testPutSiteMasterPage(randomMasterPage());
 
@@ -670,6 +708,13 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		_testPutSiteMasterPageWithThumbnailURLReferenceFileBase64();
 		_testPutSiteMasterPageWithThumbnailURLReferenceURL();
 
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"The external reference code does not point to a master page",
+			() -> masterPageResource.putSiteMasterPage(
+				testGroup.getExternalReferenceCode(),
+				_getPageTemplateExternalReferenceCode(), randomMasterPage()));
+
 		_enableLocalStaging();
 
 		_assertStagingGroupMasterPageThumbnail(fileEntry, masterPage);
@@ -682,6 +727,29 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 				_getMasterPage(
 					null, masterPage.getExternalReferenceCode(), null,
 					thumbnailURL)));
+	}
+
+	@Override
+	@Test
+	@TestInfo("LPD-97472")
+	public void testPutSiteMasterPagePermissionsPage() throws Exception {
+		super.testPutSiteMasterPagePermissionsPage();
+
+		ProblemExceptionTestUtil.assertProblemException(
+			"BAD_REQUEST",
+			"The external reference code does not point to a master page",
+			() -> masterPageResource.putSiteMasterPagePermissionsPage(
+				testGroup.getExternalReferenceCode(),
+				_getPageTemplateExternalReferenceCode(),
+				new Permission[] {
+					new Permission() {
+						{
+							setActionIds(
+								new String[] {RandomTestUtil.randomString()});
+							setRoleName(RandomTestUtil.randomString());
+						}
+					}
+				}));
 	}
 
 	@Override
@@ -1161,6 +1229,21 @@ public class MasterPageResourceTest extends BaseMasterPageResourceTestCase {
 		).parameters(
 			"nestedFields", "pageSpecifications,thumbnailURLReference"
 		).build();
+	}
+
+	private String _getPageTemplateExternalReferenceCode() throws Exception {
+		return _getPageTemplateExternalReferenceCode(testGroup);
+	}
+
+	private String _getPageTemplateExternalReferenceCode(Group group)
+		throws Exception {
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			LayoutPageTemplateEntryTestUtil.getBasicLayoutPageTemplateEntry(
+				ServiceContextTestUtil.getServiceContext(
+					group.getGroupId(), TestPropsValues.getUserId()));
+
+		return layoutPageTemplateEntry.getExternalReferenceCode();
 	}
 
 	private boolean _hasViewPermission(
