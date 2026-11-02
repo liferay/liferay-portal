@@ -72,11 +72,6 @@ public class CTRemoteLocalServiceImpl extends CTRemoteLocalServiceBaseImpl {
 		return ctRemotePersistence.findByCompanyId(companyId);
 	}
 
-	@Override
-	public List<CTRemote> getCTRemotes(long companyId, int start, int end) {
-		return ctRemotePersistence.findByCompanyId(companyId, start, end);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	@Override
 	public CTRemote updateCTRemote(

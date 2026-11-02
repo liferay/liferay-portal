@@ -192,11 +192,6 @@ public class CTCollectionServiceTest {
 		long folderClassNameId = _classNameLocalService.getClassNameId(
 			JournalFolder.class);
 
-		Assert.assertFalse(
-			_ctCollectionLocalService.isCTEntryEnclosed(
-				_ctCollection.getCtCollectionId(), journalArticleClassNameId,
-				journalArticle.getPrimaryKey()));
-
 		_ctCollectionService.discardCTEntry(
 			_ctCollection.getCtCollectionId(), journalArticleClassNameId,
 			journalArticle.getPrimaryKey());
@@ -204,11 +199,6 @@ public class CTCollectionServiceTest {
 		Assert.assertNull(
 			_ctEntryLocalService.fetchCTEntry(
 				_ctCollection.getCtCollectionId(), journalArticleClassNameId,
-				journalArticle.getPrimaryKey()));
-
-		Assert.assertTrue(
-			_ctCollectionLocalService.isCTEntryEnclosed(
-				_ctCollection.getCtCollectionId(), folderClassNameId,
 				journalArticle.getPrimaryKey()));
 
 		_ctCollectionService.discardCTEntry(

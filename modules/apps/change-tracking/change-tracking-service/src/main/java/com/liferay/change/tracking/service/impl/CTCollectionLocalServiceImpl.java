@@ -981,30 +981,6 @@ public class CTCollectionLocalServiceImpl
 	}
 
 	@Override
-	public boolean isCTEntryEnclosed(
-		long ctCollectionId, long modelClassNameId, long modelClassPK) {
-
-		CTClosure ctClosure = _ctClosureFactory.create(ctCollectionId);
-
-		Map<Long, Set<Long>> enclosureMap = CTEnclosureUtil.getEnclosureMap(
-			ctClosure, modelClassNameId, modelClassPK);
-
-		for (Map.Entry<Long, Long> entry :
-				CTEnclosureUtil.getEnclosureParentEntries(
-					ctClosure, enclosureMap)) {
-
-			int count = _ctEntryPersistence.countByC_MCNI_MCPK(
-				ctCollectionId, entry.getKey(), entry.getValue());
-
-			if (count > 0) {
-				return false;
-			}
-		}
-
-		return true;
-	}
-
-	@Override
 	public void moveCTEntries(
 			long fromCTCollectionId, long toCTCollectionId,
 			List<CTEntry> ctEntries)

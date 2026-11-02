@@ -169,11 +169,6 @@ public class CTProcessLocalServiceImpl extends CTProcessLocalServiceBaseImpl {
 	}
 
 	@Override
-	public CTProcess fetchLatestCTProcess(long companyId) {
-		return ctProcessPersistence.fetchByCompanyId_First(companyId, null);
-	}
-
-	@Override
 	public List<CTProcess> getCTProcesses(long ctCollectionId) {
 		return ctProcessPersistence.findByCtCollectionId(ctCollectionId);
 	}
