@@ -296,16 +296,6 @@ public class OAuth2ApplicationScopeAliasesLocalServiceUtil {
 		return getService().getOAuth2ApplicationScopeAliaseses(start, end);
 	}
 
-	public static List<OAuth2ApplicationScopeAliases>
-		getOAuth2ApplicationScopeAliaseses(
-			long oAuth2ApplicationId, int start, int end,
-			OrderByComparator<OAuth2ApplicationScopeAliases>
-				orderByComparator) {
-
-		return getService().getOAuth2ApplicationScopeAliaseses(
-			oAuth2ApplicationId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of o auth2 application scope aliaseses.
 	 *
@@ -368,4 +358,4 @@ public class OAuth2ApplicationScopeAliasesLocalServiceUtil {
 			OAuth2ApplicationScopeAliasesLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1000544962
+// LIFERAY-SERVICE-BUILDER-HASH:-260102327

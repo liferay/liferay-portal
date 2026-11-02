@@ -400,16 +400,6 @@ public class OAuthClientPRLocalMetadataLocalServiceWrapper
 
 	@Override
 	public com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata
-			getOAuthClientPRLocalMetadata(
-				long companyId, String localWellKnownURI)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _oAuthClientPRLocalMetadataLocalService.
-			getOAuthClientPRLocalMetadata(companyId, localWellKnownURI);
-	}
-
-	@Override
-	public com.liferay.oauth.client.persistence.model.OAuthClientPRLocalMetadata
 			getOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String externalReferenceCode, long companyId)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -585,4 +575,4 @@ public class OAuthClientPRLocalMetadataLocalServiceWrapper
 		_oAuthClientPRLocalMetadataLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-974405723
+// LIFERAY-SERVICE-BUILDER-HASH:2047105985

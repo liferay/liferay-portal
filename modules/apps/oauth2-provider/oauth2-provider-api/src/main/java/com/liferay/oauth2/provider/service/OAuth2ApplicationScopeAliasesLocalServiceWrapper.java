@@ -341,20 +341,6 @@ public class OAuth2ApplicationScopeAliasesLocalServiceWrapper
 			getOAuth2ApplicationScopeAliaseses(start, end);
 	}
 
-	@Override
-	public java.util.List
-		<com.liferay.oauth2.provider.model.OAuth2ApplicationScopeAliases>
-			getOAuth2ApplicationScopeAliaseses(
-				long oAuth2ApplicationId, int start, int end,
-				com.liferay.portal.kernel.util.OrderByComparator
-					<com.liferay.oauth2.provider.model.
-						OAuth2ApplicationScopeAliases> orderByComparator) {
-
-		return _oAuth2ApplicationScopeAliasesLocalService.
-			getOAuth2ApplicationScopeAliaseses(
-				oAuth2ApplicationId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of o auth2 application scope aliaseses.
 	 *
@@ -440,4 +426,4 @@ public class OAuth2ApplicationScopeAliasesLocalServiceWrapper
 		_oAuth2ApplicationScopeAliasesLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2037416644
+// LIFERAY-SERVICE-BUILDER-HASH:-351383488

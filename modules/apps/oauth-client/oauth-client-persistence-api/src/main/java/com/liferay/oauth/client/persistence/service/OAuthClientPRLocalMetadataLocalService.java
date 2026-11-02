@@ -277,11 +277,6 @@ public interface OAuthClientPRLocalMetadataLocalService
 		throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata(
-			long companyId, String localWellKnownURI)
-		throws PortalException;
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public OAuthClientPRLocalMetadata
 			getOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String externalReferenceCode, long companyId)
@@ -376,4 +371,4 @@ public interface OAuthClientPRLocalMetadataLocalService
 		OAuthClientPRLocalMetadata oAuthClientPRLocalMetadata);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-86480446
+// LIFERAY-SERVICE-BUILDER-HASH:-785377467

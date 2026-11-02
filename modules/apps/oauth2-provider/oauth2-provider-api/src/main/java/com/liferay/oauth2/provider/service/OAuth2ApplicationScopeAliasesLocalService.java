@@ -245,12 +245,6 @@ public interface OAuth2ApplicationScopeAliasesLocalService
 	public List<OAuth2ApplicationScopeAliases>
 		getOAuth2ApplicationScopeAliaseses(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<OAuth2ApplicationScopeAliases>
-		getOAuth2ApplicationScopeAliaseses(
-			long oAuth2ApplicationId, int start, int end,
-			OrderByComparator<OAuth2ApplicationScopeAliases> orderByComparator);
-
 	/**
 	 * Returns the number of o auth2 application scope aliaseses.
 	 *
@@ -293,4 +287,4 @@ public interface OAuth2ApplicationScopeAliasesLocalService
 		OAuth2ApplicationScopeAliases oAuth2ApplicationScopeAliases);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:223143113
+// LIFERAY-SERVICE-BUILDER-HASH:1016925022

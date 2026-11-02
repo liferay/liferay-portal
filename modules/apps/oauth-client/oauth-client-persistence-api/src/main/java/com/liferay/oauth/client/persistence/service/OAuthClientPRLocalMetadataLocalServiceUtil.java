@@ -341,14 +341,6 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 			oAuthClientPRLocalMetadataId);
 	}
 
-	public static OAuthClientPRLocalMetadata getOAuthClientPRLocalMetadata(
-			long companyId, String localWellKnownURI)
-		throws PortalException {
-
-		return getService().getOAuthClientPRLocalMetadata(
-			companyId, localWellKnownURI);
-	}
-
 	public static OAuthClientPRLocalMetadata
 			getOAuthClientPRLocalMetadataByExternalReferenceCode(
 				String externalReferenceCode, long companyId)
@@ -485,4 +477,4 @@ public class OAuthClientPRLocalMetadataLocalServiceUtil {
 			OAuthClientPRLocalMetadataLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1236153144
+// LIFERAY-SERVICE-BUILDER-HASH:1529773338
