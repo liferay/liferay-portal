@@ -1,13 +1,33 @@
 {
+	"deployment_name": "liferay-gcp-test",
 	"options": {
 		"auto_approve": false,
 		"parallelism": 10,
 		"provider": "gcp",
 		"version": "3.0.0"
 	},
-	"variables": {
-		"deployment_name": "liferay-gcp-test",
-		"project_id": "your-gcp-project-id",
-		"region": "us-central1"
+	"platformComponents": {
+		"values": {
+			"gitops": {
+				"repository": {
+					"url": "https://github.com/example/liferay-gitops.git"
+				}
+			}
+		}
+	},
+	"project_id": "your-gcp-project-id",
+	"region": "us-central1",
+	"terraform": {
+		"platform": {
+			"keda_config": {
+				"enabled": true
+			},
+			"observability_config": {
+				"enabled": true
+			}
+		}
+	},
+	"tfstate": {
+		"bucket_name": "your-tfstate-bucket"
 	}
 }
