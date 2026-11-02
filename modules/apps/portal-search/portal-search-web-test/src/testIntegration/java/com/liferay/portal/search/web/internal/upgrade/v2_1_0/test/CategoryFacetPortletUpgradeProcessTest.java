@@ -94,7 +94,7 @@ public class CategoryFacetPortletUpgradeProcessTest {
 
 		long deletedVocabularyId = _assetVocabulary3.getVocabularyId();
 
-		_assetVocabularyLocalService.deleteAssetVocabulary(_assetVocabulary3);
+		_assetVocabularyLocalService.deleteVocabulary(_assetVocabulary3);
 
 		UpgradeProcess upgradeProcess = UpgradeTestUtil.getUpgradeStep(
 			_upgradeStepRegistrator,
