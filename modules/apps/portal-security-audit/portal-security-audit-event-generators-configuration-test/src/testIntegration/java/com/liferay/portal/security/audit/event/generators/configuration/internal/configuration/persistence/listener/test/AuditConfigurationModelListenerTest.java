@@ -218,7 +218,7 @@ public class AuditConfigurationModelListenerTest {
 		configuration.delete();
 
 		AuditMessage auditMessage = _getAuditMessage(
-			EventTypes.AUDIT_CONFIG_CHANGE, pid);
+			"AUDIT_CONFIG_CHANGE", pid);
 
 		_assertAttribute(auditMessage, "key");
 
@@ -276,7 +276,7 @@ public class AuditConfigurationModelListenerTest {
 			RandomTestUtil.randomString());
 
 		AuditMessage auditMessage = _getAuditMessage(
-			EventTypes.AUDIT_CONFIG_CHANGE, configuration.getPid());
+			"AUDIT_CONFIG_CHANGE", configuration.getPid());
 
 		JSONObject additionalInfoJSONObject = auditMessage.getAdditionalInfo();
 
