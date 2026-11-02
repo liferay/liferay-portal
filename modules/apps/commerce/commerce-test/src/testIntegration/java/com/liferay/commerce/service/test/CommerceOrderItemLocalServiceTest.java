@@ -490,9 +490,10 @@ public class CommerceOrderItemLocalServiceTest {
 
 		_commerceCurrencies.add(commerceCurrency);
 
-		commerceCurrency =
-			_commerceCurrencyLocalService.updateCommerceCurrencyRate(
-				commerceCurrency.getCommerceCurrencyId(), BigDecimal.TEN);
+		commerceCurrency.setRate(BigDecimal.TEN);
+
+		commerceCurrency = _commerceCurrencyLocalService.updateCommerceCurrency(
+			commerceCurrency);
 
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.addCommerceOrder(

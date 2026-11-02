@@ -521,10 +521,10 @@ public class SkuResourceTest extends BaseSkuResourceTestCase {
 			CommerceCurrencyTestUtil.addCommerceCurrency(
 				testCompany.getCompanyId(), RandomTestUtil.randomString());
 
-		commerceCurrency =
-			_commerceCurrencyLocalService.updateCommerceCurrencyRate(
-				commerceCurrency.getCommerceCurrencyId(),
-				BigDecimal.valueOf(0.5));
+		commerceCurrency.setRate(BigDecimal.valueOf(0.5));
+
+		commerceCurrency = _commerceCurrencyLocalService.updateCommerceCurrency(
+			commerceCurrency);
 
 		Long channelId = testGetChannelProductSkusPage_getChannelId();
 		Long productId = testGetChannelProductSkusPage_getProductId();

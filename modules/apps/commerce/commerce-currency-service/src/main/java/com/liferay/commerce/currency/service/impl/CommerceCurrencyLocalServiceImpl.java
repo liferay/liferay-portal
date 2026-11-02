@@ -238,16 +238,6 @@ public class CommerceCurrencyLocalServiceImpl
 	}
 
 	@Override
-	public int getCommerceCurrenciesCount(long companyId) {
-		return commerceCurrencyPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public int getCommerceCurrenciesCount(long companyId, boolean active) {
-		return commerceCurrencyPersistence.countByC_A(companyId, active);
-	}
-
-	@Override
 	public CommerceCurrency getCommerceCurrency(long companyId, String code)
 		throws NoSuchCurrencyException {
 
@@ -490,19 +480,6 @@ public class CommerceCurrencyLocalServiceImpl
 				commerceCurrency.getCompanyId(), 0,
 				commerceCurrency.getStatus(),
 				() -> WorkflowConstants.STATUS_APPROVED));
-
-		return commerceCurrencyPersistence.update(commerceCurrency);
-	}
-
-	@Override
-	public CommerceCurrency updateCommerceCurrencyRate(
-			long commerceCurrencyId, BigDecimal rate)
-		throws PortalException {
-
-		CommerceCurrency commerceCurrency =
-			commerceCurrencyPersistence.findByPrimaryKey(commerceCurrencyId);
-
-		commerceCurrency.setRate(rate);
 
 		return commerceCurrencyPersistence.update(commerceCurrency);
 	}

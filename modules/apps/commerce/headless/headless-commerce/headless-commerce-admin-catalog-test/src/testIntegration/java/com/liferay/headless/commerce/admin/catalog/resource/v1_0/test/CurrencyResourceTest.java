@@ -15,6 +15,7 @@ import com.liferay.headless.commerce.admin.catalog.client.pagination.Pagination;
 import com.liferay.headless.commerce.admin.catalog.client.resource.v1_0.CurrencyResource;
 import com.liferay.headless.commerce.admin.catalog.client.serdes.v1_0.CurrencySerDes;
 import com.liferay.headless.commerce.core.util.LanguageUtils;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.User;
@@ -95,12 +96,12 @@ public class CurrencyResourceTest extends BaseCurrencyResourceTestCase {
 			).put(
 				"pageSize",
 				() -> {
-					int commerceCurrenciesCount =
-						_commerceCurrencyLocalService.
-							getCommerceCurrenciesCount(
-								TestPropsValues.getCompanyId());
+					List<CommerceCurrency> commerceCurrencies =
+						_commerceCurrencyLocalService.getCommerceCurrencies(
+							TestPropsValues.getCompanyId(), QueryUtil.ALL_POS,
+							QueryUtil.ALL_POS, null);
 
-					return commerceCurrenciesCount + 10;
+					return commerceCurrencies.size() + 10;
 				}
 			).build(),
 			new GraphQLField("items", getGraphQLFields()),

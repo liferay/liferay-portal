@@ -12,6 +12,7 @@ import com.liferay.commerce.currency.exception.DuplicateCommerceCurrencyExceptio
 import com.liferay.commerce.currency.exception.NoSuchCurrencyException;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
+import com.liferay.commerce.currency.service.persistence.CommerceCurrencyUtil;
 import com.liferay.commerce.currency.test.util.TestExchangeRateProvider;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -113,17 +115,13 @@ public class CommerceCurrencyLocalServiceTest {
 			2, 2, "HALF_EVEN", false, 0.0, true);
 
 		_assertSearchCommerceCurrenciesCount(
-			company,
-			_commerceCurrencyLocalService.getCommerceCurrenciesCount(
-				company.getCompanyId()));
+			company, _getCommerceCurrenciesCount(company.getCompanyId()));
 
 		_commerceCurrencyLocalService.deleteCommerceCurrencies(
 			company.getCompanyId());
 
 		Assert.assertEquals(
-			0,
-			_commerceCurrencyLocalService.getCommerceCurrenciesCount(
-				company.getCompanyId()));
+			0, _getCommerceCurrenciesCount(company.getCompanyId()));
 
 		_assertSearchCommerceCurrenciesCount(company, 0);
 	}
@@ -264,6 +262,13 @@ public class CommerceCurrencyLocalServiceTest {
 		searchContext.setCompanyId(company.getCompanyId());
 
 		Assert.assertEquals(expectedCount, indexer.searchCount(searchContext));
+	}
+
+	private int _getCommerceCurrenciesCount(long companyId) throws Exception {
+		return TransactionTestUtil.invoke(
+			CommerceCurrencyUtil.getPersistence(),
+			commerceCurrencyPersistence ->
+				commerceCurrencyPersistence.countByCompanyId(companyId));
 	}
 
 	@Inject
