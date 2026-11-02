@@ -432,7 +432,7 @@ public class Channel implements Serializable {
 	private Supplier<String> _nameSupplier;
 
 	@io.swagger.v3.oas.annotations.media.Schema(
-		description = "Reference to the Liferay site that backs this channel (FK identifier); drives content scoping, theme, and language settings.",
+		description = "Reference to the Liferay site that backs this channel (FK identifier); drives content scoping, theme, and language settings. 0 means the channel has no site; any other value must match an existing site of the instance, or the write is rejected with 400.",
 		example = "20121"
 	)
 	public Long getSiteGroupId() {
@@ -469,7 +469,7 @@ public class Channel implements Serializable {
 	}
 
 	@GraphQLField(
-		description = "Reference to the Liferay site that backs this channel (FK identifier); drives content scoping, theme, and language settings."
+		description = "Reference to the Liferay site that backs this channel (FK identifier); drives content scoping, theme, and language settings. 0 means the channel has no site; any other value must match an existing site of the instance, or the write is rejected with 400."
 	)
 	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
 	protected Long siteGroupId;
@@ -816,4 +816,4 @@ public class Channel implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:24105531
+// LIFERAY-REST-BUILDER-HASH:-1330855285
