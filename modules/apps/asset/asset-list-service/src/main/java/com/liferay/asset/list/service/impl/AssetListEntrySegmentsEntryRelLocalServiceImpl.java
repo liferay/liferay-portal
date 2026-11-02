@@ -159,15 +159,6 @@ public class AssetListEntrySegmentsEntryRelLocalServiceImpl
 
 	@Override
 	public List<AssetListEntrySegmentsEntryRel>
-		fetchAssetListEntrySegmentsEntryRels(
-			long assetListEntryId, long[] segmentsEntryIds) {
-
-		return assetListEntrySegmentsEntryRelPersistence.findByA_S_C(
-			assetListEntryId, segmentsEntryIds);
-	}
-
-	@Override
-	public List<AssetListEntrySegmentsEntryRel>
 		fetchDynamicAssetListEntrySegmentsEntryRels(long companyId) {
 
 		return assetListEntrySegmentsEntryRelPersistence.dslQuery(
@@ -188,15 +179,6 @@ public class AssetListEntrySegmentsEntryRelLocalServiceImpl
 						companyId)
 				)
 			));
-	}
-
-	@Override
-	public AssetListEntrySegmentsEntryRel getAssetListEntrySegmentsEntryRel(
-			long assetListEntryId, long segmentsEntryId)
-		throws PortalException {
-
-		return assetListEntrySegmentsEntryRelPersistence.findByA_S(
-			assetListEntryId, segmentsEntryId);
 	}
 
 	@Override

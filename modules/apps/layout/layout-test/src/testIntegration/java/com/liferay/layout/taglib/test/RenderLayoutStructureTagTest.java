@@ -1236,13 +1236,13 @@ public class RenderLayoutStructureTagTest {
 
 		AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel1 =
 			_assetListEntrySegmentsEntryRelLocalService.
-				getAssetListEntrySegmentsEntryRel(
+				fetchAssetListEntrySegmentsEntryRel(
 					assetListEntry.getAssetListEntryId(),
 					SegmentsEntryConstants.ID_DEFAULT);
 
 		AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel2 =
 			_assetListEntrySegmentsEntryRelLocalService.
-				getAssetListEntrySegmentsEntryRel(
+				fetchAssetListEntrySegmentsEntryRel(
 					assetListEntry.getAssetListEntryId(),
 					segmentsEntry1.getSegmentsEntryId());
 

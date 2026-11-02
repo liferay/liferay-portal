@@ -5873,7 +5873,7 @@ public class ObjectDefinitionLocalServiceTest {
 
 		AssetListEntrySegmentsEntryRel assetListEntrySegmentsEntryRel =
 			_assetListEntrySegmentsEntryRelLocalService.
-				getAssetListEntrySegmentsEntryRel(
+				fetchAssetListEntrySegmentsEntryRel(
 					assetListEntry.getAssetListEntryId(),
 					SegmentsEntryConstants.ID_DEFAULT);
 

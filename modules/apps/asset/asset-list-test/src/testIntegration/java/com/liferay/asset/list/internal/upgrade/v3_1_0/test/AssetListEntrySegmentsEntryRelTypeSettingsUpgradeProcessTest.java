@@ -344,7 +344,7 @@ public class AssetListEntrySegmentsEntryRelTypeSettingsUpgradeProcessTest {
 			SegmentsEntryConstants.ID_DEFAULT, typeSettings);
 
 		return _assetListEntrySegmentsEntryRelLocalService.
-			getAssetListEntrySegmentsEntryRel(
+			fetchAssetListEntrySegmentsEntryRel(
 				_assetListEntry.getAssetListEntryId(),
 				SegmentsEntryConstants.ID_DEFAULT);
 	}

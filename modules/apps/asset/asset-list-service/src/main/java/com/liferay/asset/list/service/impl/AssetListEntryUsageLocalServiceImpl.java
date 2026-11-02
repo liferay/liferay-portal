@@ -83,22 +83,6 @@ public class AssetListEntryUsageLocalServiceImpl
 	}
 
 	@Override
-	public AssetListEntryUsage fetchAssetListEntryUsage(
-		long groupId, long classNameId, String containerKey, long containerType,
-		String key, long plid) {
-
-		return assetListEntryUsagePersistence.fetchByG_C_CK_CT_K_P(
-			groupId, classNameId, containerKey, containerType, key, plid);
-	}
-
-	@Override
-	public List<AssetListEntryUsage> getAssetEntryListUsages(
-		long containerType, long plid) {
-
-		return assetListEntryUsagePersistence.findByCT_P(containerType, plid);
-	}
-
-	@Override
 	public List<AssetListEntryUsage> getAssetEntryListUsagesByPlid(long plid) {
 		return assetListEntryUsagePersistence.findByPlid(plid);
 	}
@@ -109,14 +93,6 @@ public class AssetListEntryUsageLocalServiceImpl
 
 		return assetListEntryUsagePersistence.findByG_C_K(
 			groupId, classNameId, key);
-	}
-
-	@Override
-	public List<AssetListEntryUsage> getAssetListEntryUsages(
-		long groupId, long classNameId, String key, int type) {
-
-		return assetListEntryUsagePersistence.findByG_C_K_T(
-			groupId, classNameId, key, type);
 	}
 
 	@Override
