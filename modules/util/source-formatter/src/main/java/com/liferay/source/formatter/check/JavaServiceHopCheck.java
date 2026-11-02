@@ -484,13 +484,9 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 	}
 
 	private boolean _hasSideEffectingAnnotation(String content) {
-		for (String annotation : _SIDE_EFFECTING_ANNOTATIONS) {
-			if (content.contains(annotation)) {
-				return true;
-			}
-		}
+		Matcher matcher = _sideEffectingAnnotationPattern.matcher(content);
 
-		return false;
+		return matcher.find();
 	}
 
 	private boolean _hasSideEffectingClassAnnotation(String content) {
@@ -607,11 +603,6 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 		{"URL", "Url"}
 	};
 
-	private static final String[] _SIDE_EFFECTING_ANNOTATIONS = {
-		"@AccessControlled", "@Async", "@BufferedIncrement", "@Clusterable",
-		"@Indexable", "@Retry", "@SystemEvent", "@ThreadLocalCachable"
-	};
-
 	private static final Pattern _classDeclarationPattern = Pattern.compile(
 		"((?:@\\w+(?:\\([^)]*\\))?\\s*)*)public\\s+(?:abstract\\s+)?class\\s");
 	private static final Pattern _localServiceCallPattern = Pattern.compile(
@@ -620,5 +611,9 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 		"\\)\\s*(?:throws[\\w\\s,.]*)?\\{\\s*return\\s+(\\w+Persistence)\\.\\" +
 			"s*(\\s*(?:count|fetch|filterCount|filterFind|find)\\w*)\\([^;]*" +
 				"\\);\\s*\\}\\s*\\z");
+	private static final Pattern _sideEffectingAnnotationPattern =
+		Pattern.compile(
+			"@(AccessControlled|Async|BufferedIncrement|Clusterable|" +
+				"Indexable|Retry|SystemEvent|ThreadLocalCachable)\\b");
 
 }
