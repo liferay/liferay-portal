@@ -246,9 +246,12 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 				objectDefinition, dtoObjectEntry);
 
 			if (objectDefinition.isDefaultStorageType()) {
-				_relateMainObjectEntry(
-					infoItemFieldValues, objectDefinition, updatedObjectEntry,
-					serviceContext, themeDisplay.getUserId());
+				ObjectEntryUtil.relateObjectEntries(
+					DefaultObjectEntryManagerProvider.provide(
+						objectEntryManager),
+					infoItemFieldValues, objectDefinition,
+					updatedObjectEntry.getPrimaryKey(), serviceContext,
+					themeDisplay.getUserId());
 
 				_relateNestedObjectEntries(
 					themeDisplay.getCompanyId(),
@@ -405,68 +408,6 @@ public class ObjectEntryInfoItemFieldValuesUpdater
 		}
 
 		return _toTaxonomyCategoryBriefs(assetCategoryIds, locale);
-	}
-
-	private void _relateMainObjectEntry(
-			InfoItemFieldValues infoItemFieldValues,
-			ObjectDefinition objectDefinition, ObjectEntry objectEntry,
-			ServiceContext serviceContext, long userId)
-		throws Exception {
-
-		DefaultObjectEntryManager defaultObjectEntryManager =
-			DefaultObjectEntryManagerProvider.provide(
-				_objectEntryManagerRegistry.getObjectEntryManager(
-					objectDefinition.getCompanyId(),
-					objectDefinition.getStorageType()));
-
-		for (ObjectRelationship objectRelationship :
-				ObjectRelationshipLocalServiceUtil.getObjectRelationships(
-					objectDefinition.getObjectDefinitionId(),
-					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
-					false)) {
-
-			if (!objectRelationship.compareType(
-					ObjectRelationshipConstants.TYPE_MANY_TO_MANY)) {
-
-				continue;
-			}
-
-			ObjectDefinition relatedObjectDefinition =
-				ObjectRelationshipUtil.getRelatedObjectDefinition(
-					objectDefinition, objectRelationship);
-
-			defaultObjectEntryManager.disassociateRelatedModels(
-				new DefaultDTOConverterContext(
-					false, null, null, null,
-					LocaleUtil.fromLanguageId(
-						objectDefinition.getDefaultLanguageId(), true, false),
-					null, null),
-				objectDefinition, objectRelationship,
-				objectEntry.getPrimaryKey(), relatedObjectDefinition, userId);
-
-			InfoFieldValue<Object> infoFieldValue =
-				infoItemFieldValues.getInfoFieldValue(
-					ObjectRelationshipConstants.
-						OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
-							objectRelationship.getName());
-
-			Object value = infoFieldValue.getValue();
-
-			if (!(value instanceof List)) {
-				continue;
-			}
-
-			List<String> relatedObjectEntryIds = (List<String>)value;
-
-			for (String relatedObjectEntryId : relatedObjectEntryIds) {
-				ObjectRelationshipLocalServiceUtil.
-					addObjectRelationshipMappingTableValues(
-						userId, objectRelationship.getObjectRelationshipId(),
-						objectEntry.getPrimaryKey(),
-						GetterUtil.getLong(relatedObjectEntryId),
-						serviceContext);
-			}
-		}
 	}
 
 	private void _relateNestedObjectEntries(

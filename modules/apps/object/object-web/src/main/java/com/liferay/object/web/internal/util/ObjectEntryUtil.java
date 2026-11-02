@@ -18,6 +18,7 @@ import com.liferay.info.localized.InfoLocalizedValue;
 import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeEntryLocalServiceUtil;
 import com.liferay.object.constants.ObjectFieldConstants;
+import com.liferay.object.constants.ObjectRelationshipConstants;
 import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
@@ -27,11 +28,13 @@ import com.liferay.object.relationship.util.ObjectRelationshipUtil;
 import com.liferay.object.rest.dto.v1_0.FileEntry;
 import com.liferay.object.rest.dto.v1_0.ListEntry;
 import com.liferay.object.rest.dto.v1_0.Status;
+import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManager;
 import com.liferay.object.service.ObjectDefinitionLocalServiceUtil;
 import com.liferay.object.service.ObjectEntryLocalServiceUtil;
 import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.object.web.internal.model.ProxyObjectEntry;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -39,6 +42,7 @@ import com.liferay.portal.kernel.util.KeyValuePair;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.vulcan.dto.converter.DefaultDTOConverterContext;
 
 import java.io.Serializable;
 
@@ -148,6 +152,47 @@ public class ObjectEntryUtil {
 		}
 
 		return value;
+	}
+
+	public static void relateObjectEntries(
+			DefaultObjectEntryManager defaultObjectEntryManager,
+			InfoItemFieldValues infoItemFieldValues,
+			ObjectDefinition objectDefinition, long primaryKey,
+			ServiceContext serviceContext, long userId)
+		throws Exception {
+
+		for (ObjectRelationship objectRelationship :
+				ObjectRelationshipLocalServiceUtil.getObjectRelationships(
+					objectDefinition.getObjectDefinitionId(),
+					ObjectRelationshipConstants.DELETION_TYPE_DISASSOCIATE,
+					false)) {
+
+			if (!objectRelationship.compareType(
+					ObjectRelationshipConstants.TYPE_MANY_TO_MANY)) {
+
+				continue;
+			}
+
+			InfoFieldValue<Object> infoFieldValue =
+				infoItemFieldValues.getInfoFieldValue(
+					ObjectRelationshipConstants.
+						OBJECT_RELATIONSHIP_FIELD_NAME_PREFIX +
+							objectRelationship.getName());
+
+			if (infoFieldValue == null) {
+				continue;
+			}
+
+			Object value = infoFieldValue.getValue();
+
+			if (!(value instanceof List)) {
+				continue;
+			}
+
+			_relateObjectEntries(
+				defaultObjectEntryManager, objectDefinition, objectRelationship,
+				primaryKey, (List<String>)value, serviceContext, userId);
+		}
 	}
 
 	public static ObjectEntry toObjectEntry(
@@ -507,6 +552,36 @@ public class ObjectEntryUtil {
 		}
 
 		return value;
+	}
+
+	private static void _relateObjectEntries(
+			DefaultObjectEntryManager defaultObjectEntryManager,
+			ObjectDefinition objectDefinition,
+			ObjectRelationship objectRelationship, long primaryKey,
+			List<String> relatedObjectEntryIds, ServiceContext serviceContext,
+			long userId)
+		throws Exception {
+
+		ObjectDefinition relatedObjectDefinition =
+			ObjectRelationshipUtil.getRelatedObjectDefinition(
+				objectDefinition, objectRelationship);
+
+		defaultObjectEntryManager.disassociateRelatedModels(
+			new DefaultDTOConverterContext(
+				false, null, null, null,
+				LocaleUtil.fromLanguageId(
+					objectDefinition.getDefaultLanguageId(), true, false),
+				null, null),
+			objectDefinition, objectRelationship, primaryKey,
+			relatedObjectDefinition, userId);
+
+		for (String relatedObjectEntryId : relatedObjectEntryIds) {
+			ObjectRelationshipLocalServiceUtil.
+				addObjectRelationshipMappingTableValues(
+					userId, objectRelationship.getObjectRelationshipId(),
+					primaryKey, GetterUtil.getLong(relatedObjectEntryId),
+					serviceContext);
+		}
 	}
 
 }

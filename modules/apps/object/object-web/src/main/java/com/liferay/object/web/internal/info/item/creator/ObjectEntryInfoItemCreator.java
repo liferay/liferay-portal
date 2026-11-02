@@ -14,6 +14,7 @@ import com.liferay.object.info.item.util.ObjectEntryInfoItemUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.rest.dto.v1_0.Status;
+import com.liferay.object.rest.manager.v1_0.DefaultObjectEntryManagerProvider;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManager;
 import com.liferay.object.rest.manager.v1_0.ObjectEntryManagerRegistry;
 import com.liferay.object.scope.ObjectScopeProviderRegistry;
@@ -131,6 +132,15 @@ public class ObjectEntryInfoItemCreator
 					ObjectEntryInfoItemUtil.getScopeKey(
 						groupId, objectDefinition,
 						_objectScopeProviderRegistry));
+
+			if (objectDefinition.isDefaultStorageType()) {
+				ObjectEntryUtil.relateObjectEntries(
+					DefaultObjectEntryManagerProvider.provide(
+						objectEntryManager),
+					infoItemFieldValues, objectDefinition,
+					GetterUtil.getLong(objectEntry.getId()), serviceContext,
+					themeDisplay.getUserId());
+			}
 
 			ObjectEntry serviceBuilderObjectEntry =
 				_objectEntryLocalService.createObjectEntry(
