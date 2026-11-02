@@ -133,8 +133,6 @@ public class AppServerBundleDownstreamBuildTest
 			PortalWorkspace portalWorkspace)
 		throws Exception {
 
-		AppServerBundleDownstreamBuild appServerBundleDownstreamBuild =
-			Mockito.mock(AppServerBundleDownstreamBuild.class);
 		TopLevelBuild topLevelBuild = Mockito.mock(
 			TopLevelBuild.class,
 			Mockito.withSettings(
@@ -147,6 +145,9 @@ public class AppServerBundleDownstreamBuildTest
 		).when(
 			(PortalWorkspaceBuild)topLevelBuild
 		).getWorkspace();
+
+		AppServerBundleDownstreamBuild appServerBundleDownstreamBuild =
+			Mockito.mock(AppServerBundleDownstreamBuild.class);
 
 		Mockito.doCallRealMethod(
 		).when(
