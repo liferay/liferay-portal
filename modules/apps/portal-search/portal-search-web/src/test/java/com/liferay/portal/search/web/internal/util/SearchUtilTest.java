@@ -10,16 +10,22 @@ import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRenderer;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.service.AssetEntryLocalServiceUtil;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LogEntry;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
 import jakarta.portlet.RenderRequest;
 import jakarta.portlet.RenderResponse;
 import jakarta.portlet.RenderURL;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -70,6 +76,23 @@ public class SearchUtilTest {
 				false));
 	}
 
+	@Test
+	public void testGetSearchResultViewURLWithoutAssetEntry() {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				SearchUtil.class.getName(), LoggerTestUtil.ERROR)) {
+
+			Assert.assertEquals(
+				StringPool.BLANK,
+				SearchUtil.getSearchResultViewURL(
+					_renderRequest, _renderResponse, _CLASS_NAME, _CLASS_PK,
+					false));
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.isEmpty());
+		}
+	}
+
 	private void _setUpAssetEntryLocalServiceUtil(boolean visible) {
 		AssetEntry assetEntry = Mockito.mock(AssetEntry.class);
 
@@ -80,7 +103,7 @@ public class SearchUtilTest {
 		).isVisible();
 
 		_assetEntryLocalServiceUtilMockedStatic.when(
-			() -> AssetEntryLocalServiceUtil.getEntry(_CLASS_NAME, _CLASS_PK)
+			() -> AssetEntryLocalServiceUtil.fetchEntry(_CLASS_NAME, _CLASS_PK)
 		).thenReturn(
 			assetEntry
 		);
