@@ -35,7 +35,6 @@ import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 
 import java.util.List;
@@ -154,15 +153,6 @@ public class CommerceInventoryWarehouseRelLocalServiceImpl
 	}
 
 	@Override
-	public CommerceInventoryWarehouseRel fetchCommerceInventoryWarehouseRel(
-		String className, long classPK, long commerceInventoryWarehouseId) {
-
-		return commerceInventoryWarehouseRelPersistence.fetchByC_C_CIWI(
-			_classNameLocalService.getClassNameId(className), classPK,
-			commerceInventoryWarehouseId);
-	}
-
-	@Override
 	public List<CommerceInventoryWarehouseRel>
 		getAccountEntryCommerceInventoryWarehouseRels(
 			long commerceInventoryWarehouseId, String keywords, int start,
@@ -236,60 +226,10 @@ public class CommerceInventoryWarehouseRelLocalServiceImpl
 
 	@Override
 	public List<CommerceInventoryWarehouseRel>
-		getCommerceInventoryWarehouseRels(long commerceInventoryWarehouseId) {
-
-		return commerceInventoryWarehouseRelPersistence.
-			findByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public List<CommerceInventoryWarehouseRel>
-		getCommerceInventoryWarehouseRels(
-			long commerceInventoryWarehouseId, int start, int end,
-			OrderByComparator<CommerceInventoryWarehouseRel>
-				orderByComparator) {
-
-		return commerceInventoryWarehouseRelPersistence.
-			findByCommerceInventoryWarehouseId(
-				commerceInventoryWarehouseId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommerceInventoryWarehouseRel>
 		getCommerceInventoryWarehouseRels(
 			String className, long commerceInventoryWarehouseId) {
 
 		return commerceInventoryWarehouseRelPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(className),
-			commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public List<CommerceInventoryWarehouseRel>
-		getCommerceInventoryWarehouseRels(
-			String className, long commerceInventoryWarehouseId, int start,
-			int end,
-			OrderByComparator<CommerceInventoryWarehouseRel>
-				orderByComparator) {
-
-		return commerceInventoryWarehouseRelPersistence.findByC_C(
-			_classNameLocalService.getClassNameId(className),
-			commerceInventoryWarehouseId, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseRelsCount(
-		long commerceInventoryWarehouseId) {
-
-		return commerceInventoryWarehouseRelPersistence.
-			countByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseRelsCount(
-		String className, long commerceInventoryWarehouseId) {
-
-		return commerceInventoryWarehouseRelPersistence.countByC_C(
 			_classNameLocalService.getClassNameId(className),
 			commerceInventoryWarehouseId);
 	}

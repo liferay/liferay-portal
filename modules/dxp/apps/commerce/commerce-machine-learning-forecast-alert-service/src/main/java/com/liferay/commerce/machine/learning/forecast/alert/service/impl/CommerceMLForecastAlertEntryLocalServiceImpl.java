@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 
 import java.util.Date;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -83,61 +82,6 @@ public class CommerceMLForecastAlertEntryLocalServiceImpl
 			false);
 
 		return commerceMLForecastAlertEntry;
-	}
-
-	@Override
-	public List<CommerceMLForecastAlertEntry>
-		getAboveThresholdCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, double relativeChange,
-			int status, int start, int end) {
-
-		return commerceMLForecastAlertEntryPersistence.findByC_C_GtRc_S(
-			companyId, commerceAccountIds, relativeChange, status, start, end);
-	}
-
-	@Override
-	public int getAboveThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status) {
-
-		return commerceMLForecastAlertEntryPersistence.countByC_C_GtRc_S(
-			companyId, commerceAccountIds, relativeChange, status);
-	}
-
-	@Override
-	public List<CommerceMLForecastAlertEntry>
-		getBelowThresholdCommerceMLForecastAlertEntries(
-			long companyId, long[] commerceAccountIds, double relativeChange,
-			int status, int start, int end) {
-
-		return commerceMLForecastAlertEntryPersistence.findByC_C_LtRc_S(
-			companyId, commerceAccountIds, relativeChange, status, start, end);
-	}
-
-	@Override
-	public int getBelowThresholdCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, double relativeChange,
-		int status) {
-
-		return commerceMLForecastAlertEntryPersistence.countByC_C_LtRc_S(
-			companyId, commerceAccountIds, relativeChange, status);
-	}
-
-	@Override
-	public List<CommerceMLForecastAlertEntry> getCommerceMLForecastAlertEntries(
-		long companyId, long[] commerceAccountIds, int status, int start,
-		int end) {
-
-		return commerceMLForecastAlertEntryPersistence.findByC_C_S(
-			companyId, commerceAccountIds, status, start, end);
-	}
-
-	@Override
-	public int getCommerceMLForecastAlertEntriesCount(
-		long companyId, long[] commerceAccountIds, int status) {
-
-		return commerceMLForecastAlertEntryPersistence.countByC_C_S(
-			companyId, commerceAccountIds, status);
 	}
 
 	@Override

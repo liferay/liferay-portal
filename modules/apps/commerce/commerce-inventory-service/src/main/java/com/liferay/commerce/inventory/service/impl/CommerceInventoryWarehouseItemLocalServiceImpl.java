@@ -293,16 +293,6 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 	}
 
 	@Override
-	public CommerceInventoryWarehouseItem getCommerceInventoryWarehouseItem(
-			long commerceInventoryWarehouseId, String sku,
-			String unitOfMeasureKey)
-		throws PortalException {
-
-		return commerceInventoryWarehouseItemPersistence.findByCIWI_S_U(
-			commerceInventoryWarehouseId, sku, unitOfMeasureKey);
-	}
-
-	@Override
 	public List<CommerceInventoryWarehouseItem>
 		getCommerceInventoryWarehouseItems(
 			long commerceInventoryWarehouseId, int start, int end) {
@@ -310,15 +300,6 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		return commerceInventoryWarehouseItemPersistence.
 			findByCommerceInventoryWarehouseId(
 				commerceInventoryWarehouseId, start, end);
-	}
-
-	@Override
-	public List<CommerceInventoryWarehouseItem>
-		getCommerceInventoryWarehouseItemsByCompanyId(
-			long companyId, int start, int end) {
-
-		return commerceInventoryWarehouseItemPersistence.findByCompanyId(
-			companyId, start, end);
 	}
 
 	@Override
@@ -394,14 +375,6 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 				CommerceInventoryWarehouseItemTable.INSTANCE.unitOfMeasureKey.
 					ascending()
 			));
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseItemsCount(
-		long commerceInventoryWarehouseId) {
-
-		return commerceInventoryWarehouseItemPersistence.
-			countByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
 	}
 
 	@Override
@@ -560,14 +533,6 @@ public class CommerceInventoryWarehouseItemLocalServiceImpl
 		}
 
 		return dslQueryCount(dslQuery);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehouseItemsCountByCompanyId(
-		long companyId) {
-
-		return commerceInventoryWarehouseItemPersistence.countByCompanyId(
-			companyId);
 	}
 
 	@Override

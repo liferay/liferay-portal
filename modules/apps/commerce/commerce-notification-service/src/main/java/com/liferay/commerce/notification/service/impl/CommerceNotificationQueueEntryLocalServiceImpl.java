@@ -181,17 +181,6 @@ public class CommerceNotificationQueueEntryLocalServiceImpl
 	@Override
 	public List<CommerceNotificationQueueEntry>
 		getCommerceNotificationQueueEntries(
-			long groupId, int start, int end,
-			OrderByComparator<CommerceNotificationQueueEntry>
-				orderByComparator) {
-
-		return commerceNotificationQueueEntryPersistence.findByGroupId(
-			groupId, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommerceNotificationQueueEntry>
-		getCommerceNotificationQueueEntries(
 			long groupId, String className, long classPK, boolean sent,
 			int start, int end,
 			OrderByComparator<CommerceNotificationQueueEntry>
@@ -200,12 +189,6 @@ public class CommerceNotificationQueueEntryLocalServiceImpl
 		return commerceNotificationQueueEntryPersistence.findByG_C_C_S(
 			groupId, _classNameLocalService.getClassNameId(className), classPK,
 			sent, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getCommerceNotificationQueueEntriesCount(long groupId) {
-		return commerceNotificationQueueEntryPersistence.countByGroupId(
-			groupId);
 	}
 
 	@Override

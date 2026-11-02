@@ -207,7 +207,7 @@ public class CommerceSubscriptionsNotificationTest {
 
 		List<String> commerceNotificationTemplateTypes =
 			TransformUtil.transform(
-				_commerceNotificationQueueEntryLocalService.
+				CommerceNotificationTestUtil.
 					getCommerceNotificationQueueEntries(
 						_group.getGroupId(), QueryUtil.ALL_POS,
 						QueryUtil.ALL_POS, null),

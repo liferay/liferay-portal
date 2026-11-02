@@ -125,10 +125,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -164,7 +163,7 @@ public class CommerceNotificationTest {
 
 		Assert.assertEquals(
 			1,
-			_commerceNotificationQueueEntryLocalService.
+			CommerceNotificationTestUtil.
 				getCommerceNotificationQueueEntriesCount(_group.getGroupId()));
 	}
 
@@ -185,10 +184,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -222,10 +220,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -260,10 +257,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -301,10 +297,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -337,10 +332,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -372,10 +366,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -409,10 +402,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 2,
@@ -473,10 +465,9 @@ public class CommerceNotificationTest {
 			CommerceOrderConstants.ORDER_NOTIFICATION_PLACED, _commerceOrder);
 
 		List<CommerceNotificationQueueEntry> commerceNotificationQueueEntries =
-			_commerceNotificationQueueEntryLocalService.
-				getCommerceNotificationQueueEntries(
-					_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null);
+			CommerceNotificationTestUtil.getCommerceNotificationQueueEntries(
+				_group.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			commerceNotificationQueueEntries.toString(), 1,
@@ -508,7 +499,7 @@ public class CommerceNotificationTest {
 
 		Assert.assertEquals(
 			1,
-			_commerceNotificationQueueEntryLocalService.
+			CommerceNotificationTestUtil.
 				getCommerceNotificationQueueEntriesCount(_group.getGroupId()));
 	}
 
@@ -536,7 +527,7 @@ public class CommerceNotificationTest {
 
 		Assert.assertEquals(
 			1,
-			_commerceNotificationQueueEntryLocalService.
+			CommerceNotificationTestUtil.
 				getCommerceNotificationQueueEntriesCount(_group.getGroupId()));
 	}
 

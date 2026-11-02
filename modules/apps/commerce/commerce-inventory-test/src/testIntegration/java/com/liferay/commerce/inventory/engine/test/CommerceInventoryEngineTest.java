@@ -27,6 +27,7 @@ import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLoc
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseRelLocalService;
+import com.liferay.commerce.inventory.service.persistence.CommerceInventoryAuditUtil;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditType;
 import com.liferay.commerce.inventory.type.CommerceInventoryAuditTypeRegistry;
 import com.liferay.commerce.inventory.type.constants.CommerceInventoryAuditTypeConstants;
@@ -54,6 +55,7 @@ import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -726,9 +728,12 @@ public class CommerceInventoryEngineTest {
 				_commerceChannel.getCommerceChannelId(), BigDecimal.valueOf(3),
 				_cpInstance1.getSku(), StringPool.BLANK, _serviceContext);
 
-		int auditCountBefore =
-			_commerceInventoryAuditLocalService.getCommerceInventoryAuditsCount(
-				_group.getCompanyId(), _cpInstance1.getSku(), StringPool.BLANK);
+		int auditCountBefore = TransactionTestUtil.invoke(
+			CommerceInventoryAuditUtil.getPersistence(),
+			commerceInventoryAuditPersistence ->
+				commerceInventoryAuditPersistence.countByC_S_U(
+					_group.getCompanyId(), _cpInstance1.getSku(),
+					StringPool.BLANK));
 
 		CommerceOrder commerceOrder = _addCommerceOrderWithBookedQuantity(
 			BigDecimal.valueOf(3), StringPool.BLANK);
@@ -738,9 +743,13 @@ public class CommerceInventoryEngineTest {
 		_commerceOrderLocalService.deleteCommerceOrder(commerceOrder);
 
 		List<CommerceInventoryAudit> commerceInventoryAudits =
-			_commerceInventoryAuditLocalService.getCommerceInventoryAudits(
-				_group.getCompanyId(), _cpInstance1.getSku(), StringPool.BLANK,
-				auditCountBefore, auditCountBefore + 10);
+			TransactionTestUtil.invoke(
+				CommerceInventoryAuditUtil.getPersistence(),
+				commerceInventoryAuditPersistence ->
+					commerceInventoryAuditPersistence.findByC_S_U(
+						_group.getCompanyId(), _cpInstance1.getSku(),
+						StringPool.BLANK, auditCountBefore,
+						auditCountBefore + 10));
 
 		CommerceInventoryAudit orderDeletionCommerceInventoryAudit = null;
 

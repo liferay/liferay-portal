@@ -1659,7 +1659,7 @@ public class CommerceOrderItemLocalServiceTest {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem1 =
 			_commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItem(
+				fetchCommerceInventoryWarehouseItem(
 					_commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
 					cpInstance.getSku(), unitOfMeasureKey1);
@@ -1675,7 +1675,7 @@ public class CommerceOrderItemLocalServiceTest {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem2 =
 			_commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItem(
+				fetchCommerceInventoryWarehouseItem(
 					_commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
 					cpInstance.getSku(), unitOfMeasureKey2);
@@ -1810,7 +1810,7 @@ public class CommerceOrderItemLocalServiceTest {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem1 =
 			_commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItem(
+				fetchCommerceInventoryWarehouseItem(
 					_commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
 					cpInstance.getSku(), unitOfMeasureKey1);
@@ -1826,7 +1826,7 @@ public class CommerceOrderItemLocalServiceTest {
 
 		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem2 =
 			_commerceInventoryWarehouseItemLocalService.
-				getCommerceInventoryWarehouseItem(
+				fetchCommerceInventoryWarehouseItem(
 					_commerceInventoryWarehouse.
 						getCommerceInventoryWarehouseId(),
 					cpInstance.getSku(), unitOfMeasureKey2);

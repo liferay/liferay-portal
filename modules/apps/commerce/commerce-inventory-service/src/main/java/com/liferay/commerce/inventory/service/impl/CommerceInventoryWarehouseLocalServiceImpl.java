@@ -210,26 +210,6 @@ public class CommerceInventoryWarehouseLocalServiceImpl
 
 	@Override
 	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses(
-		long companyId, boolean active, int start, int end,
-		OrderByComparator<CommerceInventoryWarehouse> orderByComparator) {
-
-		return commerceInventoryWarehousePersistence.filterFindByC_A(
-			companyId, active, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses(
-		long companyId, boolean active, String commerceCountryCode, int start,
-		int end,
-		OrderByComparator<CommerceInventoryWarehouse> orderByComparator) {
-
-		return commerceInventoryWarehousePersistence.findByC_A_C(
-			companyId, active, commerceCountryCode, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<CommerceInventoryWarehouse> getCommerceInventoryWarehouses(
 		long companyId, int start, int end,
 		OrderByComparator<CommerceInventoryWarehouse> orderByComparator) {
 
@@ -383,20 +363,6 @@ public class CommerceInventoryWarehouseLocalServiceImpl
 					CommerceInventoryWarehouseTable.INSTANCE.active.eq(true)
 				)
 			));
-	}
-
-	@Override
-	public int getCommerceInventoryWarehousesCount(long companyId) {
-		return commerceInventoryWarehousePersistence.countByCompanyId(
-			companyId);
-	}
-
-	@Override
-	public int getCommerceInventoryWarehousesCount(
-		long companyId, boolean active) {
-
-		return commerceInventoryWarehousePersistence.countByC_A(
-			companyId, active);
 	}
 
 	@Override

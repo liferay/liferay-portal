@@ -15,7 +15,6 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import java.math.BigDecimal;
 
 import java.util.Date;
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -59,23 +58,6 @@ public class CommerceInventoryAuditLocalServiceImpl
 	@Override
 	public void checkCommerceInventoryAudit(Date date) {
 		commerceInventoryAuditPersistence.removeByLtCreateDate(date);
-	}
-
-	@Override
-	public List<CommerceInventoryAudit> getCommerceInventoryAudits(
-		long companyId, String sku, String unitOfMeasureKey, int start,
-		int end) {
-
-		return commerceInventoryAuditPersistence.findByC_S_U(
-			companyId, sku, unitOfMeasureKey, start, end);
-	}
-
-	@Override
-	public int getCommerceInventoryAuditsCount(
-		long companyId, String sku, String unitOfMeasureKey) {
-
-		return commerceInventoryAuditPersistence.countByC_S_U(
-			companyId, sku, unitOfMeasureKey);
 	}
 
 	@Reference

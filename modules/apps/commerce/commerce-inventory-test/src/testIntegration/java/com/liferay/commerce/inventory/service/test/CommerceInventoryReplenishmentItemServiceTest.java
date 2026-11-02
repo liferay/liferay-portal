@@ -6,9 +6,11 @@
 package com.liferay.commerce.inventory.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.commerce.inventory.model.CommerceInventoryReplenishmentItem;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemLocalService;
 import com.liferay.commerce.inventory.service.CommerceInventoryReplenishmentItemService;
+import com.liferay.commerce.inventory.service.persistence.CommerceInventoryReplenishmentItemUtil;
 import com.liferay.commerce.product.model.CPInstance;
 import com.liferay.commerce.test.util.CommerceInventoryTestUtil;
 import com.liferay.petra.string.StringPool;
@@ -26,6 +28,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.test.rule.Inject;
@@ -35,6 +38,7 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.math.BigDecimal;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -95,11 +99,10 @@ public class CommerceInventoryReplenishmentItemServiceTest {
 
 			Assert.assertFalse(
 				ListUtil.isEmpty(
-					_commerceInventoryReplenishmentItemLocalService.
-						getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
-							_commerceInventoryWarehouse.
-								getCommerceInventoryWarehouseId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+					_getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
+						_commerceInventoryWarehouse.
+							getCommerceInventoryWarehouseId(),
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
 		}
 
 		_resourcePermissionLocalService.setResourcePermissions(
@@ -120,11 +123,10 @@ public class CommerceInventoryReplenishmentItemServiceTest {
 
 			Assert.assertTrue(
 				ListUtil.isEmpty(
-					_commerceInventoryReplenishmentItemLocalService.
-						getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
-							_commerceInventoryWarehouse.
-								getCommerceInventoryWarehouseId(),
-							QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
+					_getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
+						_commerceInventoryWarehouse.
+							getCommerceInventoryWarehouseId(),
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS)));
 		}
 	}
 
@@ -163,6 +165,19 @@ public class CommerceInventoryReplenishmentItemServiceTest {
 							StringPool.BLANK, QueryUtil.ALL_POS,
 							QueryUtil.ALL_POS)));
 		}
+	}
+
+	private List<CommerceInventoryReplenishmentItem>
+			_getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
+				long commerceInventoryWarehouseId, int start, int end)
+		throws Exception {
+
+		return TransactionTestUtil.invoke(
+			CommerceInventoryReplenishmentItemUtil.getPersistence(),
+			commerceInventoryReplenishmentItemPersistence ->
+				commerceInventoryReplenishmentItemPersistence.
+					findByCommerceInventoryWarehouseId(
+						commerceInventoryWarehouseId, start, end));
 	}
 
 	@Inject

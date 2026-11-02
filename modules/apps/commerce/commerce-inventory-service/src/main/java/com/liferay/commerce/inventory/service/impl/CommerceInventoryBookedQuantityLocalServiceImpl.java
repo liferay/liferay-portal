@@ -199,14 +199,6 @@ public class CommerceInventoryBookedQuantityLocalServiceImpl
 
 	@Override
 	public int getCommerceInventoryBookedQuantitiesCount(
-		long companyId, String sku, String unitOfMeasureKey) {
-
-		return commerceInventoryBookedQuantityPersistence.countByC_S_U(
-			companyId, sku, unitOfMeasureKey);
-	}
-
-	@Override
-	public int getCommerceInventoryBookedQuantitiesCount(
 			long companyId, String keywords, String sku,
 			String unitOfMeasureKey)
 		throws PortalException {

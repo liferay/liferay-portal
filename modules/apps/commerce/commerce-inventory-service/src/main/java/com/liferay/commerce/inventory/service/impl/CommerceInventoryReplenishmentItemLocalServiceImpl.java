@@ -118,16 +118,6 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 
 	@Override
 	public List<CommerceInventoryReplenishmentItem>
-		getCommerceInventoryReplenishmentItemsByCommerceInventoryWarehouseId(
-			long commerceInventoryWarehouseId, int start, int end) {
-
-		return commerceInventoryReplenishmentItemPersistence.
-			findByCommerceInventoryWarehouseId(
-				commerceInventoryWarehouseId, start, end);
-	}
-
-	@Override
-	public List<CommerceInventoryReplenishmentItem>
 		getCommerceInventoryReplenishmentItemsByCompanyIdSkuAndUnitOfMeasureKey(
 			long companyId, String sku, String unitOfMeasureKey, int start,
 			int end, boolean replacePermissionCheck) {
@@ -218,24 +208,6 @@ public class CommerceInventoryReplenishmentItemLocalServiceImpl
 		}
 
 		return results.get(0);
-	}
-
-	@Override
-	public int
-		getCommerceInventoryReplenishmentItemsCountByCommerceInventoryWarehouseId(
-			long commerceInventoryWarehouseId) {
-
-		return commerceInventoryReplenishmentItemPersistence.
-			countByCommerceInventoryWarehouseId(commerceInventoryWarehouseId);
-	}
-
-	@Override
-	public int
-		getCommerceInventoryReplenishmentItemsCountByCompanyIdSkuAndUnitOfMeasureKey(
-			long companyId, String sku, String unitOfMeasureKey) {
-
-		return commerceInventoryReplenishmentItemPersistence.countByC_S_U(
-			companyId, sku, unitOfMeasureKey);
 	}
 
 	@Override

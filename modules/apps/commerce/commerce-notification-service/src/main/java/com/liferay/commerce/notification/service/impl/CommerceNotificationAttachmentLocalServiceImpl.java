@@ -5,12 +5,8 @@
 
 package com.liferay.commerce.notification.service.impl;
 
-import com.liferay.commerce.notification.model.CommerceNotificationAttachment;
 import com.liferay.commerce.notification.service.base.CommerceNotificationAttachmentLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.util.OrderByComparator;
-
-import java.util.List;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -33,19 +29,6 @@ public class CommerceNotificationAttachmentLocalServiceImpl
 		commerceNotificationAttachmentPersistence.
 			removeByCommerceNotificationQueueEntryId(
 				commerceNotificationQueueEntryId);
-	}
-
-	@Override
-	public List<CommerceNotificationAttachment>
-		getCommerceNotificationAttachments(
-			long commerceNotificationQueueEntryId, int start, int end,
-			OrderByComparator<CommerceNotificationAttachment>
-				orderByComparator) {
-
-		return commerceNotificationAttachmentPersistence.
-			findByCommerceNotificationQueueEntryId(
-				commerceNotificationQueueEntryId, start, end,
-				orderByComparator);
 	}
 
 }
