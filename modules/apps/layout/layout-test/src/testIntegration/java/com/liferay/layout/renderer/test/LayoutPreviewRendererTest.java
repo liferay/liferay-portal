@@ -93,7 +93,8 @@ public class LayoutPreviewRendererTest {
 		Assert.assertThat(
 			html, CoreMatchers.containsString(fragmentEntryLink.getCss()));
 		Assert.assertThat(
-			html, CoreMatchers.containsString(fragmentEntryLink.getHtml()));
+			html.substring(html.indexOf("id=\"content\"")),
+			CoreMatchers.containsString(fragmentEntryLink.getHtml()));
 		Assert.assertThat(
 			html, CoreMatchers.containsString(fragmentEntryLink.getJs()));
 		Assert.assertThat(
