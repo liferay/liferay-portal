@@ -186,6 +186,7 @@ public class AuditConfigurationModelListener
 		}
 
 		Dictionary<Object, Object> dictionary = new HashMapDictionary<>();
+
 		Enumeration<String> enumeration = properties.keys();
 
 		while (enumeration.hasMoreElements()) {
@@ -205,9 +206,10 @@ public class AuditConfigurationModelListener
 			}
 		}
 
+		Set<String> originalKeys = Collections.emptySet();
+
 		Dictionary<?, ?> originalDictionary =
 			_reloadablePersistenceManager.load(pid);
-		Set<String> originalKeys = Collections.emptySet();
 
 		if (originalDictionary != null) {
 			originalKeys = _getKeys(originalDictionary);
