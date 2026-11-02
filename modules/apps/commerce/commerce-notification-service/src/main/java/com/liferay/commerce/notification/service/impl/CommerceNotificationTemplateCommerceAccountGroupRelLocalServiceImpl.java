@@ -77,15 +77,6 @@ public class CommerceNotificationTemplateCommerceAccountGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public void
-		deleteCNTemplateCommerceAccountGroupRelsBycommerceAccountGroupId(
-			long commerceAccountGroupId) {
-
-		commerceNotificationTemplateCommerceAccountGroupRelPersistence.
-			removeByCommerceAccountGroupId(commerceAccountGroupId);
-	}
-
-	@Override
 	public CommerceNotificationTemplateCommerceAccountGroupRel
 		fetchCommerceNotificationTemplateCommerceAccountGroupRel(
 			long commerceNotificationTemplateId, long commerceAccountGroupId) {

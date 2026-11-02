@@ -23,6 +23,7 @@ public class CommerceNotificationTestUtil {
 
 		return CommerceNotificationTemplateLocalServiceUtil.
 			addCommerceNotificationTemplate(
+				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
 				name, description, from, RandomTestUtil.randomLocaleStringMap(),
 				to, null, null, type, true,
 				RandomTestUtil.randomLocaleStringMap(),
@@ -36,6 +37,7 @@ public class CommerceNotificationTestUtil {
 
 		return CommerceNotificationTemplateLocalServiceUtil.
 			addCommerceNotificationTemplate(
+				serviceContext.getUserId(), serviceContext.getScopeGroupId(),
 				name, description, from, RandomTestUtil.randomLocaleStringMap(),
 				to, cc, bcc, type, true, RandomTestUtil.randomLocaleStringMap(),
 				RandomTestUtil.randomLocaleStringMap(), serviceContext);
