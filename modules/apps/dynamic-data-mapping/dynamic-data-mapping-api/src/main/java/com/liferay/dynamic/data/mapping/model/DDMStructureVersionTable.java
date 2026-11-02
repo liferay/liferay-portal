@@ -58,8 +58,8 @@ public class DDMStructureVersionTable
 	public final Column<DDMStructureVersionTable, Long> parentStructureId =
 		createColumn(
 			"parentStructureId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
-	public final Column<DDMStructureVersionTable, String> name = createColumn(
-		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<DDMStructureVersionTable, Clob> name = createColumn(
+		"name", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<DDMStructureVersionTable, Clob> description =
 		createColumn(
 			"description", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
@@ -89,4 +89,4 @@ public class DDMStructureVersionTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1076095707
+// LIFERAY-SERVICE-BUILDER-HASH:2028673286

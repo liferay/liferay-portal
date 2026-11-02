@@ -219,7 +219,7 @@ public class RoleCacheModel
 
 		classPK = objectInput.readLong();
 		name = objectInput.readUTF();
-		title = objectInput.readUTF();
+		title = (String)objectInput.readObject();
 		description = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
@@ -276,10 +276,10 @@ public class RoleCacheModel
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
@@ -321,4 +321,4 @@ public class RoleCacheModel
 	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-954083393
+// LIFERAY-SERVICE-BUILDER-HASH:-1042202261

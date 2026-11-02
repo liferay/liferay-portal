@@ -259,7 +259,7 @@ public class KaleoDefinitionVersionCacheModel
 
 		kaleoDefinitionId = objectInput.readLong();
 		name = objectInput.readUTF();
-		title = objectInput.readUTF();
+		title = (String)objectInput.readObject();
 		description = objectInput.readUTF();
 		content = (String)objectInput.readObject();
 		version = objectInput.readUTF();
@@ -319,10 +319,10 @@ public class KaleoDefinitionVersionCacheModel
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
@@ -443,4 +443,4 @@ public class KaleoDefinitionVersionCacheModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-810601951
+// LIFERAY-SERVICE-BUILDER-HASH:-1759556925

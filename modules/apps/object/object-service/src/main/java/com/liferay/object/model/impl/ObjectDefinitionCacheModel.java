@@ -339,7 +339,9 @@ public class ObjectDefinitionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 		uuid = objectInput.readUTF();
 		externalReferenceCode = objectInput.readUTF();
@@ -388,7 +390,7 @@ public class ObjectDefinitionCacheModel
 
 		enableObjectEntryVersioning = objectInput.readBoolean();
 		friendlyURLSeparator = objectInput.readUTF();
-		label = objectInput.readUTF();
+		label = (String)objectInput.readObject();
 
 		modifiable = objectInput.readBoolean();
 		name = objectInput.readUTF();
@@ -396,7 +398,7 @@ public class ObjectDefinitionCacheModel
 		panelCategoryKey = objectInput.readUTF();
 		pkObjectFieldDBColumnName = objectInput.readUTF();
 		pkObjectFieldName = objectInput.readUTF();
-		pluralLabel = objectInput.readUTF();
+		pluralLabel = (String)objectInput.readObject();
 
 		portlet = objectInput.readBoolean();
 		scope = objectInput.readUTF();
@@ -504,10 +506,10 @@ public class ObjectDefinitionCacheModel
 		}
 
 		if (label == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(label);
+			objectOutput.writeObject(label);
 		}
 
 		objectOutput.writeBoolean(modifiable);
@@ -548,10 +550,10 @@ public class ObjectDefinitionCacheModel
 		}
 
 		if (pluralLabel == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(pluralLabel);
+			objectOutput.writeObject(pluralLabel);
 		}
 
 		objectOutput.writeBoolean(portlet);
@@ -622,4 +624,4 @@ public class ObjectDefinitionCacheModel
 	public int status;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:439145040
+// LIFERAY-SERVICE-BUILDER-HASH:-1223420757

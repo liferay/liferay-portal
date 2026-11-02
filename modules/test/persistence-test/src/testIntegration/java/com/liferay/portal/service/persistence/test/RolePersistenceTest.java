@@ -346,7 +346,7 @@ public class RolePersistenceTest {
 			"externalReferenceCode", true, "roleId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "classNameId", true, "classPK", true, "name",
-			true, "title", true, "type", true, "subtype", true, "status", true);
+			true, "type", true, "subtype", true, "status", true);
 	}
 
 	@Test
@@ -703,4 +703,4 @@ public class RolePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1022849776
+// LIFERAY-SERVICE-BUILDER-HASH:1293982567

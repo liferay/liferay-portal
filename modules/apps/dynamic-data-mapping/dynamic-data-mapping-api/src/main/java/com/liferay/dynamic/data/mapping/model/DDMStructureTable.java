@@ -63,8 +63,8 @@ public class DDMStructureTable extends BaseTable<DDMStructureTable> {
 		"structureKey", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, String> version = createColumn(
 		"version", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<DDMStructureTable, String> name = createColumn(
-		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<DDMStructureTable, Clob> name = createColumn(
+		"name", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, Clob> description = createColumn(
 		"description", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<DDMStructureTable, Clob> definition = createColumn(
@@ -81,4 +81,4 @@ public class DDMStructureTable extends BaseTable<DDMStructureTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-589456746
+// LIFERAY-SERVICE-BUILDER-HASH:-1805191603

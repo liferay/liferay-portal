@@ -80,7 +80,7 @@ public class DDMStructureVersionModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"structureId", Types.BIGINT}, {"version", Types.VARCHAR},
-		{"parentStructureId", Types.BIGINT}, {"name", Types.VARCHAR},
+		{"parentStructureId", Types.BIGINT}, {"name", Types.CLOB},
 		{"description", Types.CLOB}, {"definition", Types.CLOB},
 		{"storageType", Types.VARCHAR}, {"type_", Types.INTEGER},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
@@ -102,7 +102,7 @@ public class DDMStructureVersionModelImpl
 		TABLE_COLUMNS_MAP.put("structureId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("version", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("parentStructureId", Types.BIGINT);
-		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("name", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("description", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("definition", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("storageType", Types.VARCHAR);
@@ -114,7 +114,7 @@ public class DDMStructureVersionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DDMStructureVersion (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,structureVersionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,structureId LONG,version VARCHAR(75) null,parentStructureId LONG,name STRING null,description TEXT null,definition TEXT null,storageType VARCHAR(75) null,type_ INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (structureVersionId, ctCollectionId))";
+		"create table DDMStructureVersion (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,structureVersionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,structureId LONG,version VARCHAR(75) null,parentStructureId LONG,name TEXT null,description TEXT null,definition TEXT null,storageType VARCHAR(75) null,type_ INTEGER,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (structureVersionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table DDMStructureVersion";
@@ -1728,4 +1728,4 @@ public class DDMStructureVersionModelImpl
 	private DDMStructureVersion _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:312466520
+// LIFERAY-SERVICE-BUILDER-HASH:1914058280

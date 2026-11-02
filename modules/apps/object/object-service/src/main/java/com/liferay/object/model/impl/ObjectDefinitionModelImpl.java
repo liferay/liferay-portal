@@ -91,11 +91,11 @@ public class ObjectDefinitionModelImpl
 		{"enableObjectEntrySchedule", Types.BOOLEAN},
 		{"enableObjectEntrySubscription", Types.BOOLEAN},
 		{"enableObjectEntryVersioning", Types.BOOLEAN},
-		{"friendlyURLSeparator", Types.VARCHAR}, {"label", Types.VARCHAR},
+		{"friendlyURLSeparator", Types.VARCHAR}, {"label", Types.CLOB},
 		{"modifiable", Types.BOOLEAN}, {"name", Types.VARCHAR},
 		{"panelAppOrder", Types.VARCHAR}, {"panelCategoryKey", Types.VARCHAR},
 		{"pkObjectFieldDBColumnName", Types.VARCHAR},
-		{"pkObjectFieldName", Types.VARCHAR}, {"pluralLabel", Types.VARCHAR},
+		{"pkObjectFieldName", Types.VARCHAR}, {"pluralLabel", Types.CLOB},
 		{"portlet", Types.BOOLEAN}, {"scope", Types.VARCHAR},
 		{"storageType", Types.VARCHAR}, {"system_", Types.BOOLEAN},
 		{"version", Types.INTEGER}, {"status", Types.INTEGER}
@@ -134,14 +134,14 @@ public class ObjectDefinitionModelImpl
 		TABLE_COLUMNS_MAP.put("enableObjectEntrySubscription", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("enableObjectEntryVersioning", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("friendlyURLSeparator", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("label", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("label", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("modifiable", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("panelAppOrder", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("panelCategoryKey", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("pkObjectFieldDBColumnName", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("pkObjectFieldName", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("pluralLabel", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("pluralLabel", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("portlet", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("scope", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("storageType", Types.VARCHAR);
@@ -151,7 +151,7 @@ public class ObjectDefinitionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectDefinition (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectDefinitionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,accountERObjectFieldId LONG,descriptionObjectFieldId LONG,objectFolderId LONG,titleObjectFieldId LONG,accountEntryRestricted BOOLEAN,active_ BOOLEAN,className VARCHAR(255) null,dbTableName VARCHAR(75) null,description STRING null,enableCategorization BOOLEAN,enableComments BOOLEAN,enableFormContainer BOOLEAN,enableFriendlyURLCustomization BOOLEAN,enableIndexSearch BOOLEAN,enableObjectEntryDraft BOOLEAN,enableObjectEntryHistory BOOLEAN,enableObjectEntrySchedule BOOLEAN,enableObjectEntrySubscription BOOLEAN,enableObjectEntryVersioning BOOLEAN,friendlyURLSeparator VARCHAR(75) null,label STRING null,modifiable BOOLEAN,name VARCHAR(75) null,panelAppOrder VARCHAR(75) null,panelCategoryKey VARCHAR(75) null,pkObjectFieldDBColumnName VARCHAR(75) null,pkObjectFieldName VARCHAR(75) null,pluralLabel STRING null,portlet BOOLEAN,scope VARCHAR(75) null,storageType VARCHAR(255) null,system_ BOOLEAN,version INTEGER,status INTEGER)";
+		"create table ObjectDefinition (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectDefinitionId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,accountERObjectFieldId LONG,descriptionObjectFieldId LONG,objectFolderId LONG,titleObjectFieldId LONG,accountEntryRestricted BOOLEAN,active_ BOOLEAN,className VARCHAR(255) null,dbTableName VARCHAR(75) null,description STRING null,enableCategorization BOOLEAN,enableComments BOOLEAN,enableFormContainer BOOLEAN,enableFriendlyURLCustomization BOOLEAN,enableIndexSearch BOOLEAN,enableObjectEntryDraft BOOLEAN,enableObjectEntryHistory BOOLEAN,enableObjectEntrySchedule BOOLEAN,enableObjectEntrySubscription BOOLEAN,enableObjectEntryVersioning BOOLEAN,friendlyURLSeparator VARCHAR(75) null,label TEXT null,modifiable BOOLEAN,name VARCHAR(75) null,panelAppOrder VARCHAR(75) null,panelCategoryKey VARCHAR(75) null,pkObjectFieldDBColumnName VARCHAR(75) null,pkObjectFieldName VARCHAR(75) null,pluralLabel TEXT null,portlet BOOLEAN,scope VARCHAR(75) null,storageType VARCHAR(255) null,system_ BOOLEAN,version INTEGER,status INTEGER)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectDefinition";
 
@@ -2848,4 +2848,4 @@ public class ObjectDefinitionModelImpl
 	private ObjectDefinition _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1331558791
+// LIFERAY-SERVICE-BUILDER-HASH:-26442371

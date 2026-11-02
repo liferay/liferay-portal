@@ -76,7 +76,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 		{"userId", Types.BIGINT}, {"userName", Types.VARCHAR},
 		{"createDate", Types.TIMESTAMP}, {"modifiedDate", Types.TIMESTAMP},
 		{"classNameId", Types.BIGINT}, {"classPK", Types.BIGINT},
-		{"name", Types.VARCHAR}, {"title", Types.VARCHAR},
+		{"name", Types.VARCHAR}, {"title", Types.CLOB},
 		{"description", Types.CLOB}, {"type_", Types.INTEGER},
 		{"subtype", Types.VARCHAR}, {"status", Types.INTEGER}
 	};
@@ -98,7 +98,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 		TABLE_COLUMNS_MAP.put("classNameId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("classPK", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("title", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("description", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("type_", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("subtype", Types.VARCHAR);
@@ -106,7 +106,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table Role_ (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,roleId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,name VARCHAR(75) null,title STRING null,description TEXT null,type_ INTEGER,subtype VARCHAR(75) null,status INTEGER,primary key (roleId, ctCollectionId))";
+		"create table Role_ (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,roleId LONG not null,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,classNameId LONG,classPK LONG,name VARCHAR(75) null,title TEXT null,description TEXT null,type_ INTEGER,subtype VARCHAR(75) null,status INTEGER,primary key (roleId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table Role_";
 
@@ -1572,4 +1572,4 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 	private Role _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1884810261
+// LIFERAY-SERVICE-BUILDER-HASH:-165960579

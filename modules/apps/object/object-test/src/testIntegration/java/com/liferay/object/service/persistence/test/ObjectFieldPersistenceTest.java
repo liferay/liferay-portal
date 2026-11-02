@@ -416,9 +416,9 @@ public class ObjectFieldPersistenceTest {
 			"objectDefinitionId", true, "businessType", true, "dbColumnName",
 			true, "dbTableName", true, "dbType", true, "description", true,
 			"indexed", true, "indexedAsKeyword", true, "indexedLanguageId",
-			true, "label", true, "localized", true, "name", true, "readOnly",
-			true, "relationshipType", true, "required", true, "state", true,
-			"system", true);
+			true, "localized", true, "name", true, "readOnly", true,
+			"relationshipType", true, "required", true, "state", true, "system",
+			true);
 	}
 
 	@Test
@@ -777,4 +777,4 @@ public class ObjectFieldPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:939036371
+// LIFERAY-SERVICE-BUILDER-HASH:983136310

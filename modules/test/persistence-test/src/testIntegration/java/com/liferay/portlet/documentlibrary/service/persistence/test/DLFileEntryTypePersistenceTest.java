@@ -353,8 +353,8 @@ public class DLFileEntryTypePersistenceTest {
 			"uuid", true, "externalReferenceCode", true, "fileEntryTypeId",
 			true, "groupId", true, "companyId", true, "userId", true,
 			"userName", true, "createDate", true, "modifiedDate", true,
-			"dataDefinitionId", true, "fileEntryTypeKey", true, "name", true,
-			"description", true, "scope", true, "lastPublishDate", true);
+			"dataDefinitionId", true, "fileEntryTypeKey", true, "description",
+			true, "scope", true, "lastPublishDate", true);
 	}
 
 	@Test
@@ -713,4 +713,4 @@ public class DLFileEntryTypePersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:157207824
+// LIFERAY-SERVICE-BUILDER-HASH:-1864396004

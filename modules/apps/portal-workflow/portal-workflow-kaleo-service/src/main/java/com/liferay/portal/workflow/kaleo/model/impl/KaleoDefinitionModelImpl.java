@@ -81,7 +81,7 @@ public class KaleoDefinitionModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"name", Types.VARCHAR},
-		{"title", Types.VARCHAR}, {"description", Types.VARCHAR},
+		{"title", Types.CLOB}, {"description", Types.VARCHAR},
 		{"content", Types.CLOB}, {"scope", Types.VARCHAR},
 		{"version", Types.INTEGER}, {"active_", Types.BOOLEAN},
 		{"system_", Types.BOOLEAN}, {"status", Types.INTEGER}
@@ -103,7 +103,7 @@ public class KaleoDefinitionModelImpl
 		TABLE_COLUMNS_MAP.put("createDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("title", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("scope", Types.VARCHAR);
@@ -114,7 +114,7 @@ public class KaleoDefinitionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table KaleoDefinition (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,kaleoDefinitionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(200) null,title STRING null,description STRING null,content TEXT null,scope VARCHAR(75) null,version INTEGER,active_ BOOLEAN,system_ BOOLEAN,status INTEGER,primary key (kaleoDefinitionId, ctCollectionId))";
+		"create table KaleoDefinition (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,kaleoDefinitionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(200) null,title TEXT null,description STRING null,content TEXT null,scope VARCHAR(75) null,version INTEGER,active_ BOOLEAN,system_ BOOLEAN,status INTEGER,primary key (kaleoDefinitionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table KaleoDefinition";
 
@@ -1629,4 +1629,4 @@ public class KaleoDefinitionModelImpl
 	private KaleoDefinition _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1597085216
+// LIFERAY-SERVICE-BUILDER-HASH:1051312308

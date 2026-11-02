@@ -452,7 +452,7 @@ public class LayoutCacheModel
 		classPK = objectInput.readLong();
 
 		launchSetId = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 		title = (String)objectInput.readObject();
 		description = (String)objectInput.readObject();
 		keywords = objectInput.readUTF();
@@ -545,10 +545,10 @@ public class LayoutCacheModel
 		objectOutput.writeLong(launchSetId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (title == null) {
@@ -762,4 +762,4 @@ public class LayoutCacheModel
 	public long statusDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:288236149
+// LIFERAY-SERVICE-BUILDER-HASH:-1215066771

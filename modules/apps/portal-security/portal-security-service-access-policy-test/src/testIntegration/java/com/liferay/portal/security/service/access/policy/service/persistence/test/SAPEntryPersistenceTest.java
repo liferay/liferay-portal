@@ -241,8 +241,7 @@ public class SAPEntryPersistenceTest {
 			"SAPEntry", "uuid", true, "sapEntryId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true,
 			"modifiedDate", true, "allowedServiceSignatures", true,
-			"defaultSAPEntry", true, "enabled", true, "name", true, "title",
-			true);
+			"defaultSAPEntry", true, "enabled", true, "name", true);
 	}
 
 	@Test
@@ -551,4 +550,4 @@ public class SAPEntryPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-979646221
+// LIFERAY-SERVICE-BUILDER-HASH:-16390770

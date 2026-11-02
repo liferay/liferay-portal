@@ -81,7 +81,7 @@ public class KaleoDefinitionVersionModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"kaleoDefinitionId", Types.BIGINT},
-		{"name", Types.VARCHAR}, {"title", Types.VARCHAR},
+		{"name", Types.VARCHAR}, {"title", Types.CLOB},
 		{"description", Types.VARCHAR}, {"content", Types.CLOB},
 		{"version", Types.VARCHAR}, {"startKaleoNodeId", Types.BIGINT},
 		{"status", Types.INTEGER}, {"statusByUserId", Types.BIGINT},
@@ -103,7 +103,7 @@ public class KaleoDefinitionVersionModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("kaleoDefinitionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("title", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("title", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("content", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("version", Types.VARCHAR);
@@ -115,7 +115,7 @@ public class KaleoDefinitionVersionModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table KaleoDefinitionVersion (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,kaleoDefinitionVersionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,modifiedDate DATE null,kaleoDefinitionId LONG,name VARCHAR(200) null,title STRING null,description STRING null,content TEXT null,version VARCHAR(75) null,startKaleoNodeId LONG,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (kaleoDefinitionVersionId, ctCollectionId))";
+		"create table KaleoDefinitionVersion (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,kaleoDefinitionVersionId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(200) null,createDate DATE null,modifiedDate DATE null,kaleoDefinitionId LONG,name VARCHAR(200) null,title TEXT null,description STRING null,content TEXT null,version VARCHAR(75) null,startKaleoNodeId LONG,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null,primary key (kaleoDefinitionVersionId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP =
 		"drop table KaleoDefinitionVersion";
@@ -1938,4 +1938,4 @@ public class KaleoDefinitionVersionModelImpl
 	private KaleoDefinitionVersion _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-114896182
+// LIFERAY-SERVICE-BUILDER-HASH:-471961956

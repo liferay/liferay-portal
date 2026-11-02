@@ -51,8 +51,8 @@ public class RoleTable extends BaseTable<RoleTable> {
 		"classPK", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<RoleTable, String> name = createColumn(
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<RoleTable, String> title = createColumn(
-		"title", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<RoleTable, Clob> title = createColumn(
+		"title", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<RoleTable, Clob> description = createColumn(
 		"description", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<RoleTable, Integer> type = createColumn(
@@ -67,4 +67,4 @@ public class RoleTable extends BaseTable<RoleTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:179764871
+// LIFERAY-SERVICE-BUILDER-HASH:-44712888

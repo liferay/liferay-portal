@@ -81,7 +81,7 @@ public class ObjectFieldModelImpl
 		{"dbColumnName", Types.VARCHAR}, {"dbTableName", Types.VARCHAR},
 		{"dbType", Types.VARCHAR}, {"description", Types.VARCHAR},
 		{"indexed", Types.BOOLEAN}, {"indexedAsKeyword", Types.BOOLEAN},
-		{"indexedLanguageId", Types.VARCHAR}, {"label", Types.VARCHAR},
+		{"indexedLanguageId", Types.VARCHAR}, {"label", Types.CLOB},
 		{"localized", Types.BOOLEAN}, {"name", Types.VARCHAR},
 		{"readOnly", Types.VARCHAR},
 		{"readOnlyConditionExpression", Types.CLOB},
@@ -112,7 +112,7 @@ public class ObjectFieldModelImpl
 		TABLE_COLUMNS_MAP.put("indexed", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("indexedAsKeyword", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("indexedLanguageId", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("label", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("label", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("localized", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("readOnly", Types.VARCHAR);
@@ -124,7 +124,7 @@ public class ObjectFieldModelImpl
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table ObjectField (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectFieldId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,listTypeDefinitionId LONG,objectDefinitionId LONG,businessType VARCHAR(75) null,dbColumnName VARCHAR(75) null,dbTableName VARCHAR(75) null,dbType VARCHAR(75) null,description STRING null,indexed BOOLEAN,indexedAsKeyword BOOLEAN,indexedLanguageId VARCHAR(75) null,label STRING null,localized BOOLEAN,name VARCHAR(75) null,readOnly VARCHAR(75) null,readOnlyConditionExpression TEXT null,relationshipType VARCHAR(75) null,required BOOLEAN,state_ BOOLEAN,system_ BOOLEAN)";
+		"create table ObjectField (mvccVersion LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,objectFieldId LONG not null primary key,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,listTypeDefinitionId LONG,objectDefinitionId LONG,businessType VARCHAR(75) null,dbColumnName VARCHAR(75) null,dbTableName VARCHAR(75) null,dbType VARCHAR(75) null,description STRING null,indexed BOOLEAN,indexedAsKeyword BOOLEAN,indexedLanguageId VARCHAR(75) null,label TEXT null,localized BOOLEAN,name VARCHAR(75) null,readOnly VARCHAR(75) null,readOnlyConditionExpression TEXT null,relationshipType VARCHAR(75) null,required BOOLEAN,state_ BOOLEAN,system_ BOOLEAN)";
 
 	public static final String TABLE_SQL_DROP = "drop table ObjectField";
 
@@ -2076,4 +2076,4 @@ public class ObjectFieldModelImpl
 	private ObjectField _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1369974226
+// LIFERAY-SERVICE-BUILDER-HASH:-1134771864

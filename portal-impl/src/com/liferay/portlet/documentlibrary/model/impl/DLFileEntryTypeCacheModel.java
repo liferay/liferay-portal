@@ -194,7 +194,9 @@ public class DLFileEntryTypeCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -214,7 +216,7 @@ public class DLFileEntryTypeCacheModel
 
 		dataDefinitionId = objectInput.readLong();
 		fileEntryTypeKey = objectInput.readUTF();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 		description = objectInput.readUTF();
 
 		scope = objectInput.readInt();
@@ -269,10 +271,10 @@ public class DLFileEntryTypeCacheModel
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
@@ -305,4 +307,4 @@ public class DLFileEntryTypeCacheModel
 	public long lastPublishDate;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1721320868
+// LIFERAY-SERVICE-BUILDER-HASH:-221780277

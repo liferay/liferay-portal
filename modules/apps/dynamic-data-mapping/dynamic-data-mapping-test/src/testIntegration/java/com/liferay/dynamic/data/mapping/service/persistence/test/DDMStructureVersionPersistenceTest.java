@@ -269,9 +269,9 @@ public class DDMStructureVersionPersistenceTest {
 			"DDMStructureVersion", "mvccVersion", true, "ctCollectionId", true,
 			"structureVersionId", true, "groupId", true, "companyId", true,
 			"userId", true, "userName", true, "createDate", true, "structureId",
-			true, "version", true, "parentStructureId", true, "name", true,
-			"storageType", true, "type", true, "status", true, "statusByUserId",
-			true, "statusByUserName", true, "statusDate", true);
+			true, "version", true, "parentStructureId", true, "storageType",
+			true, "type", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -616,4 +616,4 @@ public class DDMStructureVersionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1768480986
+// LIFERAY-SERVICE-BUILDER-HASH:1409394290

@@ -77,7 +77,7 @@ public class DLFileEntryTypeModelImpl
 		{"companyId", Types.BIGINT}, {"userId", Types.BIGINT},
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"dataDefinitionId", Types.BIGINT},
-		{"fileEntryTypeKey", Types.VARCHAR}, {"name", Types.VARCHAR},
+		{"fileEntryTypeKey", Types.VARCHAR}, {"name", Types.CLOB},
 		{"description", Types.VARCHAR}, {"scope", Types.INTEGER},
 		{"lastPublishDate", Types.TIMESTAMP}
 	};
@@ -99,14 +99,14 @@ public class DLFileEntryTypeModelImpl
 		TABLE_COLUMNS_MAP.put("modifiedDate", Types.TIMESTAMP);
 		TABLE_COLUMNS_MAP.put("dataDefinitionId", Types.BIGINT);
 		TABLE_COLUMNS_MAP.put("fileEntryTypeKey", Types.VARCHAR);
-		TABLE_COLUMNS_MAP.put("name", Types.VARCHAR);
+		TABLE_COLUMNS_MAP.put("name", Types.CLOB);
 		TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("scope", Types.INTEGER);
 		TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 	}
 
 	public static final String TABLE_SQL_CREATE =
-		"create table DLFileEntryType (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,fileEntryTypeId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dataDefinitionId LONG,fileEntryTypeKey VARCHAR(75) null,name STRING null,description STRING null,scope INTEGER,lastPublishDate DATE null,primary key (fileEntryTypeId, ctCollectionId))";
+		"create table DLFileEntryType (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,fileEntryTypeId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,dataDefinitionId LONG,fileEntryTypeKey VARCHAR(75) null,name TEXT null,description STRING null,scope INTEGER,lastPublishDate DATE null,primary key (fileEntryTypeId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table DLFileEntryType";
 
@@ -1551,4 +1551,4 @@ public class DLFileEntryTypeModelImpl
 	private DLFileEntryType _escapedModel;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:661168555
+// LIFERAY-SERVICE-BUILDER-HASH:-1660242781

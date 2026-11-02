@@ -53,8 +53,8 @@ public class KaleoDefinitionTable extends BaseTable<KaleoDefinitionTable> {
 		"modifiedDate", Date.class, Types.TIMESTAMP, Column.FLAG_DEFAULT);
 	public final Column<KaleoDefinitionTable, String> name = createColumn(
 		"name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<KaleoDefinitionTable, String> title = createColumn(
-		"title", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<KaleoDefinitionTable, Clob> title = createColumn(
+		"title", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<KaleoDefinitionTable, String> description =
 		createColumn(
 			"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
@@ -76,4 +76,4 @@ public class KaleoDefinitionTable extends BaseTable<KaleoDefinitionTable> {
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-711957969
+// LIFERAY-SERVICE-BUILDER-HASH:942797876

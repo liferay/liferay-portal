@@ -57,8 +57,8 @@ public class KaleoDefinitionVersionTable
 			"kaleoDefinitionId", Long.class, Types.BIGINT, Column.FLAG_DEFAULT);
 	public final Column<KaleoDefinitionVersionTable, String> name =
 		createColumn("name", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
-	public final Column<KaleoDefinitionVersionTable, String> title =
-		createColumn("title", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
+	public final Column<KaleoDefinitionVersionTable, Clob> title = createColumn(
+		"title", Clob.class, Types.CLOB, Column.FLAG_DEFAULT);
 	public final Column<KaleoDefinitionVersionTable, String> description =
 		createColumn(
 			"description", String.class, Types.VARCHAR, Column.FLAG_DEFAULT);
@@ -89,4 +89,4 @@ public class KaleoDefinitionVersionTable
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:891777960
+// LIFERAY-SERVICE-BUILDER-HASH:-730987655

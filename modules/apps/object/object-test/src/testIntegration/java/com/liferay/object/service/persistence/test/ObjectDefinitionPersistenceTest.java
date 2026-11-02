@@ -570,11 +570,11 @@ public class ObjectDefinitionPersistenceTest {
 			"enableObjectEntryHistory", true, "enableObjectEntrySchedule", true,
 			"enableObjectEntrySubscription", true,
 			"enableObjectEntryVersioning", true, "friendlyURLSeparator", true,
-			"label", true, "modifiable", true, "name", true, "panelAppOrder",
-			true, "panelCategoryKey", true, "pkObjectFieldDBColumnName", true,
-			"pkObjectFieldName", true, "pluralLabel", true, "portlet", true,
-			"scope", true, "storageType", true, "system", true, "version", true,
-			"status", true);
+			"modifiable", true, "name", true, "panelAppOrder", true,
+			"panelCategoryKey", true, "pkObjectFieldDBColumnName", true,
+			"pkObjectFieldName", true, "portlet", true, "scope", true,
+			"storageType", true, "system", true, "version", true, "status",
+			true);
 	}
 
 	@Test
@@ -995,4 +995,4 @@ public class ObjectDefinitionPersistenceTest {
 	private ClassLoader _dynamicQueryClassLoader;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-114808798
+// LIFERAY-SERVICE-BUILDER-HASH:-1499891932

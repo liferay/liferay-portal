@@ -282,7 +282,7 @@ public class DDMStructureCacheModel
 		classNameId = objectInput.readLong();
 		structureKey = objectInput.readUTF();
 		version = objectInput.readUTF();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 		description = (String)objectInput.readObject();
 		definition = (String)objectInput.readObject();
 		storageType = objectInput.readUTF();
@@ -365,10 +365,10 @@ public class DDMStructureCacheModel
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
@@ -453,4 +453,4 @@ public class DDMStructureCacheModel
 	}
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-182992416
+// LIFERAY-SERVICE-BUILDER-HASH:1954193828

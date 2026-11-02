@@ -301,7 +301,7 @@ public class ObjectFieldCacheModel
 
 		indexedAsKeyword = objectInput.readBoolean();
 		indexedLanguageId = objectInput.readUTF();
-		label = objectInput.readUTF();
+		label = (String)objectInput.readObject();
 
 		localized = objectInput.readBoolean();
 		name = objectInput.readUTF();
@@ -401,10 +401,10 @@ public class ObjectFieldCacheModel
 		}
 
 		if (label == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(label);
+			objectOutput.writeObject(label);
 		}
 
 		objectOutput.writeBoolean(localized);
@@ -474,4 +474,4 @@ public class ObjectFieldCacheModel
 	public boolean system;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1003040820
+// LIFERAY-SERVICE-BUILDER-HASH:-1267564296

@@ -10,5 +10,5 @@ create table SAPEntry (
 	defaultSAPEntry BOOLEAN,
 	enabled BOOLEAN,
 	name VARCHAR(75) null,
-	title STRING null
+	title TEXT null
 );
