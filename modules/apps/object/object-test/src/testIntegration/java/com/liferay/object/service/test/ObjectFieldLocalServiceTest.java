@@ -2997,6 +2997,7 @@ public class ObjectFieldLocalServiceTest {
 	public void testUpdateObjectField() throws Exception {
 		_testUpdateObjectFieldDescriptionMap(Collections.emptyMap());
 		_testUpdateObjectFieldDescriptionMap(null);
+		_testUpdateObjectFieldLabelMap();
 		_testUpdateObjectFieldWithObjectFieldMetadata();
 	}
 
@@ -4079,6 +4080,36 @@ public class ObjectFieldLocalServiceTest {
 		Assert.assertEquals(
 			"This is the description of an object field.",
 			objectField.getDescription(LocaleUtil.US));
+	}
+
+	private void _testUpdateObjectFieldLabelMap() throws Exception {
+		ObjectDefinition objectDefinition =
+			ObjectDefinitionTestUtil.addCustomObjectDefinition();
+
+		ObjectField objectField = _addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"a" + RandomTestUtil.randomString()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).build());
+
+		Map<Locale, String> labelMap = LocalizedMapUtil.getLocalizedMap(
+			RandomTestUtil.randomString(4001));
+
+		objectField = _objectFieldLocalService.updateObjectField(
+			objectField.getExternalReferenceCode(),
+			objectField.getObjectFieldId(), TestPropsValues.getUserId(), 0,
+			objectDefinition.getObjectDefinitionId(),
+			objectField.getBusinessType(), objectField.getDBColumnName(),
+			objectField.getDBTableName(), objectField.getDBType(),
+			objectField.getDescriptionMap(), false, false, null, labelMap,
+			false, objectField.getName(), objectField.getReadOnly(), null,
+			false, false, false, Collections.emptyList());
+
+		Assert.assertEquals(labelMap, objectField.getLabelMap());
 	}
 
 	private void _testUpdateObjectFieldWithObjectFieldMetadata()

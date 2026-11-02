@@ -343,7 +343,7 @@ public class DLFileEntryTypeServiceTest {
 		try {
 			LocaleThreadLocal.setSiteDefaultLocale(LocaleUtil.SPAIN);
 
-			String name = RandomTestUtil.randomString();
+			String name = RandomTestUtil.randomString(4001);
 			String description = RandomTestUtil.randomString();
 			DDMStructure ddmStructure = DDMStructureTestUtil.addStructure(
 				_group.getGroupId(), DLFileEntryMetadata.class.getName(),

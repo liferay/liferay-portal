@@ -4333,18 +4333,21 @@ public class ObjectDefinitionLocalServiceTest {
 				LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie",
 				LocalizedMapUtil.getLocalizedMap("Charlies"), scope, status));
 
+		String label = RandomTestUtil.randomString(4001);
+		String pluralLabel = RandomTestUtil.randomString(4001);
+
 		objectDefinition =
 			_objectDefinitionLocalService.updateCustomObjectDefinition(
 				null, objectDefinition.getObjectDefinitionId(), 0, 0, 0, 0,
 				false, true, objectDefinition.getClassName(), null, true, false,
 				true, true, false, false, true, true, true, true, null,
-				LocalizedMapUtil.getLocalizedMap("Charlie"), "Charlie", null,
-				null, false, LocalizedMapUtil.getLocalizedMap("Charlies"),
+				LocalizedMapUtil.getLocalizedMap(label), "Charlie", null, null,
+				false, LocalizedMapUtil.getLocalizedMap(pluralLabel),
 				objectDefinition.getScope(), objectDefinition.getStatus(),
 				Collections.emptyList(), Collections.emptyList(),
 				Collections.emptyList(), new ServiceContext());
 
-		_assertLabelAndPluralLabel(objectDefinition, "Charlie", "Charlies");
+		_assertLabelAndPluralLabel(objectDefinition, label, pluralLabel);
 
 		Assert.assertTrue(objectDefinition.isActive());
 		Assert.assertTrue(objectDefinition.isEnableCategorization());

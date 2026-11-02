@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.test.rule.Inject;
@@ -155,6 +156,18 @@ public class KaleoDefinitionLocalServiceTest
 		KaleoDefinition kaleoDefinition = addKaleoDefinition(null);
 
 		Assert.assertEquals(1, kaleoDefinition.getVersion());
+
+		String title = RandomTestUtil.randomString(4001);
+
+		kaleoDefinition = addKaleoDefinition(
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), title, null);
+
+		kaleoDefinition = _kaleoDefinitionLocalService.getKaleoDefinition(
+			kaleoDefinition.getKaleoDefinitionId());
+
+		Assert.assertEquals(
+			title, kaleoDefinition.getTitle(LocaleUtil.getDefault()));
 	}
 
 	private void _testAddKaleoDefinitionWithScope() throws Exception {

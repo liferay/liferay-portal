@@ -136,7 +136,9 @@ public class RoleLocalServiceTest {
 
 		_role = _roleLocalService.addRole(
 			RandomTestUtil.randomString(), TestPropsValues.getUserId(), null, 0,
-			RandomTestUtil.randomString(), null,
+			RandomTestUtil.randomString(),
+			Collections.singletonMap(
+				LocaleUtil.US, RandomTestUtil.randomString(4001)),
 			Collections.singletonMap(
 				LocaleUtil.US, RandomTestUtil.randomString(4001)),
 			RoleConstants.TYPE_REGULAR, null, null);

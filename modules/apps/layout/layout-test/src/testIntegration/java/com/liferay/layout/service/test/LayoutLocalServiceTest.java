@@ -276,6 +276,32 @@ public class LayoutLocalServiceTest {
 		}
 	}
 
+	@Test
+	public void testAddLayout() throws Exception {
+		Map<Locale, String> nameMap = HashMapBuilder.put(
+			LocaleUtil.SPAIN, RandomTestUtil.randomString(4001)
+		).put(
+			LocaleUtil.US, RandomTestUtil.randomString()
+		).build();
+
+		Layout layout = _layoutLocalService.addLayout(
+			null, TestPropsValues.getUserId(), _group.getGroupId(), false,
+			LayoutConstants.DEFAULT_PARENT_LAYOUT_ID, nameMap, null, null, null,
+			null, LayoutConstants.TYPE_PORTLET, null, false, false,
+			HashMapBuilder.put(
+				LocaleUtil.SPAIN,
+				"/" + StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).put(
+				LocaleUtil.US,
+				"/" + StringUtil.toLowerCase(RandomTestUtil.randomString())
+			).build(),
+			_serviceContext);
+
+		layout = _layoutLocalService.getLayout(layout.getPlid());
+
+		Assert.assertEquals(nameMap, layout.getNameMap());
+	}
+
 	@Test(expected = DuplicateLayoutExternalReferenceCodeException.class)
 	public void testAddLayoutWithExistingExternalReferenceCode()
 		throws Exception {
