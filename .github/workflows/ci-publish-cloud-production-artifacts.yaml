@@ -21,7 +21,6 @@ jobs:
             -   push-rc-default
             -   push-rc-dxp-operator
             -   push-rc-gcp
-            -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
             -   push-rc-image-dxp-operator
             -   push-rc-infrastructure
@@ -130,15 +129,6 @@ jobs:
         with:
             chart_name: liferay-gcp
             working_directory: ./cloud/helm/gcp
-    check-gcp-infrastructure:
-        needs:
-            -   test-cloud-helm-chart
-            -   test-cloud-helm-chart-smoke
-            -   test-cloud-terraform
-        uses: ./.github/workflows/ci-reusable-check-helm-chart-version.yaml
-        with:
-            chart_name: liferay-gcp-infrastructure
-            working_directory: ./cloud/helm/gcp-infrastructure
     check-gcp-infrastructure-provider:
         needs:
             -   test-cloud-helm-chart
@@ -269,14 +259,6 @@ jobs:
         uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
         with:
             source_image_ref: ${{needs.push-rc-gcp.outputs.image_ref}}
-    promote-rc-gcp-infrastructure:
-        if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-gcp-infrastructure.result == 'success'}}
-        needs:
-            -   approve-release
-            -   push-rc-gcp-infrastructure
-        uses: ./.github/workflows/ci-reusable-promote-helm-chart.yaml
-        with:
-            source_image_ref: ${{needs.push-rc-gcp-infrastructure.outputs.image_ref}}
     promote-rc-gcp-infrastructure-provider:
         if: ${{!cancelled() && needs.approve-release.result == 'success' && needs.push-rc-gcp-infrastructure-provider.result == 'success'}}
         needs:
@@ -529,13 +511,6 @@ jobs:
         with:
             chart_name: liferay-gcp
             working_directory: ./cloud/helm/gcp
-    push-rc-gcp-infrastructure:
-        if: ${{needs.check-gcp-infrastructure.outputs.should_release == 'true'}}
-        needs: check-gcp-infrastructure
-        uses: ./.github/workflows/ci-reusable-push-helm-chart.yaml
-        with:
-            chart_name: liferay-gcp-infrastructure
-            working_directory: ./cloud/helm/gcp-infrastructure
     push-rc-gcp-infrastructure-provider:
         if: ${{needs.check-gcp-infrastructure-provider.outputs.should_release == 'true'}}
         needs: check-gcp-infrastructure-provider
@@ -594,7 +569,6 @@ jobs:
             -   promote-rc-default
             -   promote-rc-dxp-operator
             -   promote-rc-gcp
-            -   promote-rc-gcp-infrastructure
             -   promote-rc-gcp-infrastructure-provider
             -   promote-rc-image-dxp-operator
             -   promote-rc-infrastructure
@@ -615,7 +589,6 @@ jobs:
             -   push-rc-default
             -   push-rc-dxp-operator
             -   push-rc-gcp
-            -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
             -   push-rc-image-dxp-operator
             -   push-rc-infrastructure
@@ -648,7 +621,6 @@ jobs:
                     DIGEST_liferay_default: ${{needs.promote-rc-default.outputs.image_digest}}
                     DIGEST_liferay_dxp_operator: ${{needs.promote-rc-dxp-operator.outputs.image_digest}}
                     DIGEST_liferay_gcp: ${{needs.promote-rc-gcp.outputs.image_digest}}
-                    DIGEST_liferay_gcp_infrastructure: ${{needs.promote-rc-gcp-infrastructure.outputs.image_digest}}
                     DIGEST_liferay_gcp_infrastructure_provider: ${{needs.promote-rc-gcp-infrastructure-provider.outputs.image_digest}}
                     DIGEST_liferay_infrastructure: ${{needs.promote-rc-infrastructure.outputs.image_digest}}
                     DIGEST_liferay_platform: ${{needs.promote-rc-platform.outputs.image_digest}}
@@ -664,7 +636,6 @@ jobs:
                     VERSION_liferay_default: ${{needs.push-rc-default.outputs.chart_version}}
                     VERSION_liferay_dxp_operator: ${{needs.push-rc-dxp-operator.outputs.chart_version}}
                     VERSION_liferay_gcp: ${{needs.push-rc-gcp.outputs.chart_version}}
-                    VERSION_liferay_gcp_infrastructure: ${{needs.push-rc-gcp-infrastructure.outputs.chart_version}}
                     VERSION_liferay_gcp_infrastructure_provider: ${{needs.push-rc-gcp-infrastructure-provider.outputs.chart_version}}
                     VERSION_liferay_infrastructure: ${{needs.push-rc-infrastructure.outputs.chart_version}}
                     VERSION_liferay_platform: ${{needs.push-rc-platform.outputs.chart_version}}
@@ -765,7 +736,6 @@ jobs:
                             liferay-default \
                             liferay-dxp-operator \
                             liferay-gcp \
-                            liferay-gcp-infrastructure \
                             liferay-gcp-infrastructure-provider \
                             liferay-infrastructure \
                             liferay-platform \
@@ -940,7 +910,6 @@ jobs:
                 needs.check-repository.result == 'success' &&
                 (
                     needs.push-rc-gcp-infrastructure-provider.result == 'success' ||
-                    needs.push-rc-gcp-infrastructure.result == 'success' ||
                     needs.push-rc-gcp.result == 'success'
                 )
             }}
@@ -952,7 +921,6 @@ jobs:
             -   push-rc-bootstrap-gcp
             -   push-rc-default
             -   push-rc-gcp
-            -   push-rc-gcp-infrastructure
             -   push-rc-gcp-infrastructure-provider
             -   test-cloud-helm-chart
             -   test-cloud-helm-chart-smoke
@@ -961,7 +929,6 @@ jobs:
         uses: ./.github/workflows/ci-reusable-update-paas-staging-environment-charts.yaml
         with:
             liferay_gcp_image_ref: ${{needs.push-rc-gcp.outputs.image_ref}}
-            liferay_gcp_infrastructure_image_ref: ${{needs.push-rc-gcp-infrastructure.outputs.image_ref}}
             liferay_gcp_infrastructure_provider_image_ref: ${{needs.push-rc-gcp-infrastructure-provider.outputs.image_ref}}
 on:
     push:

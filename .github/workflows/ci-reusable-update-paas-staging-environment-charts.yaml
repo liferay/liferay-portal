@@ -65,43 +65,6 @@ jobs:
 
                     main "${@}"
             -   env:
-                    LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_image_ref}}
-                    PAAS_STAGING_APPLICATIONS_FILE: charts/${{vars.PAAS_STAGING_APPLICATIONS_FILE}}
-                if: ${{inputs.liferay_gcp_infrastructure_image_ref != ''}}
-                name: Point the staging applicationsets to the liferay-gcp-infrastructure RC chart
-                run: |
-                    set -o errexit
-                    set -o nounset
-                    set -o pipefail
-
-                    function main {
-                        yq \
-                            --exit-status \
-                            '.argocdApps.applicationsets["liferay-infrastructure-applicationset"].template.spec.sources[0].repoURL' \
-                            "${PAAS_STAGING_APPLICATIONS_FILE}" \
-                            > /dev/null
-
-                        yq \
-                            --exit-status \
-                            '.argocdApps.applicationsets["liferay-overlay-applicationset"].template.spec.source.repoURL' \
-                            "${PAAS_STAGING_APPLICATIONS_FILE}" \
-                            > /dev/null
-
-                        REPO_URL="oci://${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF%:*}" \
-                        TARGET_REVISION="${LIFERAY_GCP_INFRASTRUCTURE_IMAGE_REF##*:}" \
-                            yq \
-                                --inplace \
-                                '
-                                    .argocdApps.applicationsets["liferay-infrastructure-applicationset"].template.spec.sources[0].repoURL = strenv(REPO_URL) |
-                                    .argocdApps.applicationsets["liferay-infrastructure-applicationset"].template.spec.sources[0].targetRevision = strenv(TARGET_REVISION) |
-                                    .argocdApps.applicationsets["liferay-overlay-applicationset"].template.spec.source.repoURL = strenv(REPO_URL) |
-                                    .argocdApps.applicationsets["liferay-overlay-applicationset"].template.spec.source.targetRevision = strenv(TARGET_REVISION)
-                                ' \
-                                "${PAAS_STAGING_APPLICATIONS_FILE}"
-                    }
-
-                    main "${@}"
-            -   env:
                     LIFERAY_GCP_INFRASTRUCTURE_PROVIDER_IMAGE_REF: ${{inputs.liferay_gcp_infrastructure_provider_image_ref}}
                     PAAS_STAGING_APPLICATIONS_FILE: charts/${{vars.PAAS_STAGING_APPLICATIONS_FILE}}
                 if: ${{inputs.liferay_gcp_infrastructure_provider_image_ref != ''}}
@@ -150,9 +113,6 @@ on:
     workflow_call:
         inputs:
             liferay_gcp_image_ref:
-                required: true
-                type: string
-            liferay_gcp_infrastructure_image_ref:
                 required: true
                 type: string
             liferay_gcp_infrastructure_provider_image_ref:

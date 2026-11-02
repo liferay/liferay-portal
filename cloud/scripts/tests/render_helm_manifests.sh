@@ -25,7 +25,6 @@ function main {
 		default
 		dxp-operator
 		gcp
-		gcp-infrastructure
 		gcp-infrastructure-provider
 		infrastructure
 		observability
