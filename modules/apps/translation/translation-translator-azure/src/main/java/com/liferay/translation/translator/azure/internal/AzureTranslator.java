@@ -81,7 +81,7 @@ public class AzureTranslator extends BaseTranslator {
 				"Ocp-Apim-Subscription-Region",
 				azureTranslatorConfiguration.resourceLocation());
 			options.setBody(
-				_getTranslatorPacketPayload(translatorPacket),
+				_getPayload(translatorPacket.getFieldsMap()),
 				ContentTypes.APPLICATION_JSON, StringPool.UTF8);
 			options.setLocation(
 				URLBuilder.create(
@@ -144,6 +144,15 @@ public class AzureTranslator extends BaseTranslator {
 		}
 	}
 
+	private String _getPayload(Map<String, String> fieldsMap) {
+		JSONArray jsonArray = _jsonFactory.createJSONArray();
+
+		fieldsMap.forEach(
+			(key, value) -> jsonArray.put(JSONUtil.put("Text", value)));
+
+		return jsonArray.toString();
+	}
+
 	private Map<String, String> _getTranslatedFieldsMap(
 		Map<String, String> fieldsMap, JSONArray jsonArray) {
 
@@ -167,19 +176,6 @@ public class AzureTranslator extends BaseTranslator {
 		}
 
 		return translatedFieldsMap;
-	}
-
-	private String _getTranslatorPacketPayload(
-		TranslatorPacket translatorPacket) {
-
-		JSONArray jsonArray = _jsonFactory.createJSONArray();
-
-		Map<String, String> fields = translatorPacket.getFieldsMap();
-
-		fields.forEach(
-			(key, value) -> jsonArray.put(JSONUtil.put("Text", value)));
-
-		return jsonArray.toString();
 	}
 
 	private String _getUserAgent(String userAgent) {
