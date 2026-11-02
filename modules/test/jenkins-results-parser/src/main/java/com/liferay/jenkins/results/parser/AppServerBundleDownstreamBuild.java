@@ -81,11 +81,18 @@ public class AppServerBundleDownstreamBuild extends BaseDownstreamBuild {
 			JenkinsResultsParserUtil.getBuildProperty(
 				"cloud.ci.s3.bucket.bundles.path"));
 		sb.append("/");
-		sb.append(workspaceGitRepository.getName());
-		sb.append("/");
-		sb.append(workspaceGitRepository.getBaseBranchSHA());
-		sb.append("/");
-		sb.append(workspaceGitRepository.getSenderBranchSHA());
+
+		if (axisVariable.equals("analytics.cloud")) {
+			sb.append(workspaceGitRepository.getName());
+			sb.append("/");
+			sb.append(workspaceGitRepository.getBaseBranchSHA());
+			sb.append("/");
+			sb.append(workspaceGitRepository.getSenderBranchSHA());
+		}
+		else {
+			sb.append(portalWorkspace.getS3ObjectPathName());
+		}
+
 		sb.append("/");
 		sb.append(filePath);
 

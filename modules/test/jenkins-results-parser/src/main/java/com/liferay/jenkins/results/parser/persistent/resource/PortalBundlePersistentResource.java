@@ -6,16 +6,42 @@
 package com.liferay.jenkins.results.parser.persistent.resource;
 
 import com.liferay.jenkins.results.parser.BuildDatabase;
+import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.PortalWorkspace;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
 import com.liferay.jenkins.results.parser.Workspace;
 import com.liferay.jenkins.results.parser.WorkspaceGitRepository;
+
+import java.io.IOException;
 
 /**
  * @author Michael Hashimoto
  */
 public class PortalBundlePersistentResource
 	extends BaseBundlePersistentResource {
+
+	@Override
+	public String getBaseS3ObjectPath() {
+		StringBuilder sb = new StringBuilder();
+
+		try {
+			sb.append(
+				JenkinsResultsParserUtil.getBuildProperty(
+					"cloud.ci.s3.bucket.persistent.resources.archives.path"));
+		}
+		catch (IOException ioException) {
+			throw new RuntimeException(ioException);
+		}
+
+		PortalWorkspace portalWorkspace = _getPortalWorkspace();
+
+		sb.append("/");
+		sb.append(getS3ObjectPathName());
+		sb.append("/");
+		sb.append(portalWorkspace.getS3ObjectPathName());
+
+		return sb.toString();
+	}
 
 	@Override
 	public Type getType() {
@@ -30,21 +56,19 @@ public class PortalBundlePersistentResource
 
 	@Override
 	protected WorkspaceGitRepository getBundleWorkspaceGitRepository() {
-		String currentTopLevelBuildURL = getCurrentTopLevelBuildURL();
+		PortalWorkspace portalWorkspace = _getPortalWorkspace();
 
+		return portalWorkspace.getPortalWorkspaceGitRepository();
+	}
+
+	private PortalWorkspace _getPortalWorkspace() {
 		Workspace workspace = getWorkspace();
 
-		if (currentTopLevelBuildURL.contains("portal")) {
-			if (workspace instanceof PortalWorkspace) {
-				PortalWorkspace portalWorkspace = (PortalWorkspace)workspace;
-
-				return portalWorkspace.getPortalWorkspaceGitRepository();
-			}
-
-			return workspace.getPrimaryWorkspaceGitRepository();
+		if (!(workspace instanceof PortalWorkspace)) {
+			throw new RuntimeException("The portal workspace is not set");
 		}
 
-		return workspace.getWorkspaceGitRepository("liferay-portal");
+		return (PortalWorkspace)workspace;
 	}
 
 }
