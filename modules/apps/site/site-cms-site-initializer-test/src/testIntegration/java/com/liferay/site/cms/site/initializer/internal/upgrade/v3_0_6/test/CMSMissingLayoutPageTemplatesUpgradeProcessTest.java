@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_5.test;
+package com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
@@ -128,7 +128,7 @@ public class CMSMissingLayoutPageTemplatesUpgradeProcessTest {
 	}
 
 	private static final String _CLASS_NAME =
-		"com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_5." +
+		"com.liferay.site.cms.site.initializer.internal.upgrade.v3_0_6." +
 			"CMSMissingLayoutPageTemplatesUpgradeProcess";
 
 	private static Company _company;
