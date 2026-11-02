@@ -10,7 +10,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.saml.persistence.exception.DuplicateSamlSpIdpConnectionSamlIdpEntityIdException;
 import com.liferay.saml.persistence.exception.SamlSpIdpConnectionMetadataUrlException;
@@ -137,15 +136,6 @@ public class SamlSpIdpConnectionLocalServiceImpl
 
 		return samlSpIdpConnectionPersistence.findByCompanyId(
 			companyId, start, end);
-	}
-
-	@Override
-	public List<SamlSpIdpConnection> getSamlSpIdpConnections(
-		long companyId, int start, int end,
-		OrderByComparator<SamlSpIdpConnection> orderByComparator) {
-
-		return samlSpIdpConnectionPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
 	}
 
 	@Override

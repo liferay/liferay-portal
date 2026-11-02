@@ -6,7 +6,6 @@
 package com.liferay.saml.persistence.service.impl;
 
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.saml.persistence.internal.util.SamlConfigurationUtil;
 import com.liferay.saml.persistence.model.SamlSpAuthRequest;
@@ -65,15 +64,6 @@ public class SamlSpAuthRequestLocalServiceImpl
 		String samlIdpEntityId, String samlSpAuthRequestKey) {
 
 		return samlSpAuthRequestPersistence.fetchBySIEI_SSARK(
-			samlIdpEntityId, samlSpAuthRequestKey);
-	}
-
-	@Override
-	public SamlSpAuthRequest getSamlSpAuthRequest(
-			String samlIdpEntityId, String samlSpAuthRequestKey)
-		throws PortalException {
-
-		return samlSpAuthRequestPersistence.findBySIEI_SSARK(
 			samlIdpEntityId, samlSpAuthRequestKey);
 	}
 

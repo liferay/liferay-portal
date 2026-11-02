@@ -92,14 +92,6 @@ public class SamlIdpSsoSessionLocalServiceImpl
 	}
 
 	@Override
-	public SamlIdpSsoSession getSamlIdpSso(String samlIdpSsoSessionKey)
-		throws PortalException {
-
-		return samlIdpSsoSessionPersistence.findBySamlIdpSsoSessionKey(
-			samlIdpSsoSessionKey);
-	}
-
-	@Override
 	public SamlIdpSsoSession updateModifiedDate(String samlIdpSsoSessionKey)
 		throws PortalException {
 
