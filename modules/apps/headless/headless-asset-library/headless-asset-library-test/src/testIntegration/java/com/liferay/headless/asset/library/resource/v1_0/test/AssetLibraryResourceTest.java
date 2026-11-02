@@ -441,12 +441,9 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			Group group = _groupLocalService.getGroupByExternalReferenceCode(
 				assetLibraryExternalReferenceCode, testCompany.getCompanyId());
 
-			DepotEntry depotEntry = _depotEntryLocalService.getGroupDepotEntry(
-				group.getGroupId());
-
 			Assert.assertNotNull(
-				_depotEntryPinLocalService.getDepotEntryPin(
-					user.getUserId(), depotEntry.getDepotEntryId()));
+				_depotEntryPinLocalService.fetchGroupDepotEntryPin(
+					group.getGroupId(), user.getUserId()));
 
 			return assetLibraryResource.getAssetLibrary(
 				assetLibraryExternalReferenceCode);

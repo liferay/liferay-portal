@@ -81,26 +81,6 @@ public class DepotEntryPinLocalServiceImpl
 	}
 
 	@Override
-	public List<DepotEntryPin> getDepotEntryDepotEntryPins(
-		long depotEntryId, int start, int end) {
-
-		return depotEntryPinPersistence.findByDepotEntryId(
-			depotEntryId, start, end);
-	}
-
-	@Override
-	public int getDepotEntryDepotEntryPinsCount(long depotEntryId) {
-		return depotEntryPinPersistence.countByDepotEntryId(depotEntryId);
-	}
-
-	@Override
-	public DepotEntryPin getDepotEntryPin(long userId, long depotEntryId)
-		throws PortalException {
-
-		return depotEntryPinPersistence.findByU_D(userId, depotEntryId);
-	}
-
-	@Override
 	public List<DepotEntryPin> getUserDepotEntryPins(
 		long userId, int start, int end) {
 
