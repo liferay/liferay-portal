@@ -186,7 +186,7 @@ test(
 
 test(
 	'Map a channel field to two fixed values at once',
-	{tag: ['@LPD-107968']},
+	{tag: ['@LPD-107968', '@LPD-112214']},
 	async ({
 		connectorsPage,
 		editFieldMappingsPage,
@@ -219,12 +219,27 @@ test(
 		await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
 			'ABC-1ABC-2'
 		);
+
+		await fieldMappingsPage.channelField('SKU').click();
+
+		await editFieldMappingsPage.openMappingRules();
+
+		await editFieldMappingsPage.fallbackLogic.selectOption({
+			label: 'First Nonempty Source',
+		});
+
+		await editFieldMappingsPage.saveButton.click();
+
+		await expect(page).toHaveURL(/\/field-mappings\?/);
+		await expect(fieldMappingsPage.sourceAttributes('SKU')).toHaveText(
+			'ABC-1+1'
+		);
 	}
 );
 
 test(
 	'Edit and clear a channel field mapping from its row actions',
-	{tag: ['@LPD-106221']},
+	{tag: ['@LPD-106221', '@LPD-112214']},
 	async ({
 		connectorsPage,
 		editFieldMappingsPage,
@@ -257,10 +272,32 @@ test(
 
 			await editFieldMappingsPage.mapToSourceAttribute('SKU (sku)');
 
+			await editFieldMappingsPage.openMappingRules();
+
+			await editFieldMappingsPage.stripHTMLTags.check();
+
+			await editFieldMappingsPage.truncate.selectOption('80');
+
 			await editFieldMappingsPage.saveButton.click();
 
 			await expect(page).toHaveURL(/\/field-mappings\?/);
 			await expect(fieldMappingsPage.status('SKU')).toHaveText('Mapped');
+			await expect(
+				fieldMappingsPage.transformationRules('SKU')
+			).toHaveText('Strip HTML TagsTruncate 80 Characters');
+		});
+
+		await test.step('Reopen the channel field with its mapping rules', async () => {
+			await fieldMappingsPage.channelField('SKU').click();
+
+			await editFieldMappingsPage.openMappingRules();
+
+			await expect(editFieldMappingsPage.stripHTMLTags).toBeChecked();
+			await expect(editFieldMappingsPage.truncate).toHaveValue('80');
+
+			await editFieldMappingsPage.cancelButton.click();
+
+			await expect(page).toHaveURL(/\/field-mappings\?/);
 		});
 
 		await test.step('Clear the mapping from the row actions', async () => {
@@ -270,6 +307,9 @@ test(
 				'Required - Not Mapped'
 			);
 			await expect(fieldMappingsPage.sourceAttributes('SKU')).toBeEmpty();
+			await expect(
+				fieldMappingsPage.transformationRules('SKU')
+			).toBeEmpty();
 		});
 	}
 );

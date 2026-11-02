@@ -18,6 +18,7 @@ export class FieldMappingsPage {
 	readonly row: (channelField: string) => Locator;
 	readonly sourceAttributes: (channelField: string) => Locator;
 	readonly status: (channelField: string) => Locator;
+	readonly transformationRules: (channelField: string) => Locator;
 
 	constructor(page: Page) {
 		this.channelField = (channelField) =>
@@ -43,6 +44,8 @@ export class FieldMappingsPage {
 			this.row(channelField).locator('.cell-sourceAttributes');
 		this.status = (channelField) =>
 			this.row(channelField).locator('.cell-status .label');
+		this.transformationRules = (channelField) =>
+			this.row(channelField).locator('.cell-transformationRules');
 	}
 
 	async clearMapping(channelField: string) {
