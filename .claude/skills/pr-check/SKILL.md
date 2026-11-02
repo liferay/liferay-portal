@@ -208,6 +208,8 @@ The procedure runs in two passes over the validations, in the order below. The o
 
 1. [Service Holder Usage](validations/branch/service-holder-usage.md)
 
+1. [PrintWriter Wrapper](validations/branch/print-writer-wrapper.md)
+
 1. [HTML Escaping](validations/branch/html-escaping.md)
 
 1. [Full Portal Build](validations/portal/full-portal-build.md)
