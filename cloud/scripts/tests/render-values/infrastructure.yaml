@@ -23,3 +23,5 @@ license:
 overlayBucket:
     enabled: true
 projectId: liferay-example
+secretNames:
+    -   abc1234-my-api-key

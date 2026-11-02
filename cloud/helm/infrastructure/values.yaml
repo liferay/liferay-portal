@@ -49,4 +49,5 @@ search:
     opensearch: {}
     supportedEngines:
         -   elasticsearch
+secretNames: []
 storage: {}
