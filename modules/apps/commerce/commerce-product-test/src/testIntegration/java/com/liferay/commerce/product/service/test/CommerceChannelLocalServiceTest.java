@@ -11,11 +11,13 @@ import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.product.constants.CommerceChannelConstants;
 import com.liferay.commerce.product.exception.CommerceChannelNameException;
+import com.liferay.commerce.product.exception.CommerceChannelSiteGroupIdException;
 import com.liferay.commerce.product.exception.NoSuchChannelException;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.User;
@@ -23,6 +25,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
+import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -78,14 +81,36 @@ public class CommerceChannelLocalServiceTest {
 				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 				_commerceCurrency.getCode(), _serviceContext));
 
+		long siteGroupId = RandomTestUtil.nextLong();
+
+		AssertUtils.assertFailure(
+			CommerceChannelSiteGroupIdException.class,
+			"No site exists with group ID " + siteGroupId,
+			() -> _commerceChannelLocalService.addCommerceChannel(
+				null, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, siteGroupId,
+				RandomTestUtil.randomString(),
+				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
+				_commerceCurrency.getCode(), _serviceContext));
+
+		Company company = CompanyTestUtil.addCompany();
+
+		AssertUtils.assertFailure(
+			CommerceChannelSiteGroupIdException.class,
+			"No site exists with group ID " + company.getGroupId(),
+			() -> _commerceChannelLocalService.addCommerceChannel(
+				null, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				company.getGroupId(), RandomTestUtil.randomString(),
+				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
+				_commerceCurrency.getCode(), _serviceContext));
+
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.addCommerceChannel(
-				null, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
-				_group.getGroupId(), "<Test>Channel",
-				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
-				_commerceCurrency.getCode(), _serviceContext);
+				null, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, 0,
+				"<Test>Channel", CommerceChannelConstants.CHANNEL_TYPE_SITE,
+				null, _commerceCurrency.getCode(), _serviceContext);
 
 		Assert.assertEquals("Channel", commerceChannel.getName());
+		Assert.assertEquals(0, commerceChannel.getSiteGroupId());
 	}
 
 	@Test
@@ -151,19 +176,54 @@ public class CommerceChannelLocalServiceTest {
 				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
 				_commerceCurrency.getCode(), _serviceContext);
 
-		commerceChannel.setName("<Test>Channel Updated");
+		long commerceChannelId = commerceChannel.getCommerceChannelId();
+
+		long siteGroupId = RandomTestUtil.nextLong();
+
+		AssertUtils.assertFailure(
+			CommerceChannelSiteGroupIdException.class,
+			"No site exists with group ID " + siteGroupId,
+			() -> _commerceChannelLocalService.updateCommerceChannel(
+				commerceChannelId, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+				siteGroupId, RandomTestUtil.randomString(),
+				CommerceChannelConstants.CHANNEL_TYPE_SITE, null,
+				_commerceCurrency.getCode(), RandomTestUtil.randomString(),
+				RandomTestUtil.randomBoolean()));
+
+		commerceChannel = _commerceChannelLocalService.getCommerceChannel(
+			commerceChannelId);
+
+		Assert.assertEquals(
+			_group.getGroupId(), commerceChannel.getSiteGroupId());
+
+		commerceChannel.setSiteGroupId(siteGroupId);
 
 		commerceChannel = _commerceChannelLocalService.updateCommerceChannel(
-			commerceChannel.getCommerceChannelId(),
-			AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, _group.getGroupId(),
-			commerceChannel.getName(),
-			CommerceChannelConstants.CHANNEL_TYPE_SITE,
+			commerceChannel);
+
+		String name = RandomTestUtil.randomString();
+
+		commerceChannel = _commerceChannelLocalService.updateCommerceChannel(
+			commerceChannelId, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT,
+			siteGroupId, name, CommerceChannelConstants.CHANNEL_TYPE_SITE,
+			commerceChannel.getTypeSettingsUnicodeProperties(),
+			commerceChannel.getCommerceCurrencyCode(),
+			commerceChannel.getPriceDisplayType(),
+			commerceChannel.isDiscountsTargetNetPrice());
+
+		Assert.assertEquals(name, commerceChannel.getName());
+		Assert.assertEquals(siteGroupId, commerceChannel.getSiteGroupId());
+
+		commerceChannel = _commerceChannelLocalService.updateCommerceChannel(
+			commerceChannelId, AccountConstants.ACCOUNT_ENTRY_ID_DEFAULT, 0,
+			"<Test>Channel Updated", CommerceChannelConstants.CHANNEL_TYPE_SITE,
 			commerceChannel.getTypeSettingsUnicodeProperties(),
 			commerceChannel.getCommerceCurrencyCode(),
 			commerceChannel.getPriceDisplayType(),
 			commerceChannel.isDiscountsTargetNetPrice());
 
 		Assert.assertEquals("Channel Updated", commerceChannel.getName());
+		Assert.assertEquals(0, commerceChannel.getSiteGroupId());
 	}
 
 	@Inject

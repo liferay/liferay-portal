@@ -19,10 +19,12 @@ import com.liferay.commerce.product.service.CommerceChannelRelLocalService;
 import com.liferay.headless.commerce.admin.channel.client.dto.v1_0.Channel;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Address;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.AddressLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
@@ -52,6 +54,8 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		_commerceCurrency = CommerceCurrencyTestUtil.addCommerceCurrency(
 			testGroup.getCompanyId());
 
+		_group = GroupTestUtil.addGroup();
+
 		_user = UserTestUtil.addUser(testCompany);
 
 		_serviceContext = ServiceContextTestUtil.getServiceContext(
@@ -72,6 +76,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		super.testPatchChannel();
 
 		_testPatchChannelWithAccountExternalReferenceCode();
+		_testPatchChannelWithSiteGroupId();
 	}
 
 	@Override
@@ -80,6 +85,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		super.testPatchChannelByExternalReferenceCode();
 
 		_testPatchChannelByExternalReferenceCodeWithAccountExternalReferenceCode();
+		_testPatchChannelByExternalReferenceCodeWithSiteGroupId();
 	}
 
 	@Override
@@ -88,6 +94,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		super.testPostChannel();
 
 		_testPostChannelWithAccountExternalReferenceCode();
+		_testPostChannelWithSiteGroupId();
 	}
 
 	@Override
@@ -97,6 +104,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		_testPutChannelWithAccountExternalReferenceCode();
 		_testPutChannelWithCommerceChannelSettings();
+		_testPutChannelWithSiteGroupId();
 		_testPutChannelWithoutSiteGroupId();
 	}
 
@@ -107,6 +115,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 
 		_testPutChannelByExternalReferenceCodeWithAccountExternalReferenceCode();
 		_testPutChannelByExternalReferenceCodeWithCommerceChannelSettings();
+		_testPutChannelByExternalReferenceCodeWithSiteGroupId();
 	}
 
 	@Override
@@ -127,7 +136,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				siteGroupId = RandomTestUtil.randomLong();
+				siteGroupId = testGroup.getGroupId();
 				type = CommerceChannelConstants.CHANNEL_TYPE_SITE;
 			}
 		};
@@ -146,7 +155,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 					RandomTestUtil.randomString());
 				id = RandomTestUtil.randomLong();
 				name = StringUtil.toLowerCase(RandomTestUtil.randomString());
-				siteGroupId = RandomTestUtil.randomLong();
+				siteGroupId = _group.getGroupId();
 				type = CommerceChannelConstants.CHANNEL_TYPE_SITE;
 			}
 		};
@@ -305,8 +314,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 	private void _testPatchChannelByExternalReferenceCodeWithAccountExternalReferenceCode()
 		throws Exception {
 
-		Channel postChannel =
-			testPatchChannelByExternalReferenceCode_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		Channel randomPatchChannel = randomPatchChannel();
 
@@ -347,10 +355,31 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			getChannel.getAccountExternalReferenceCode());
 	}
 
+	private void _testPatchChannelByExternalReferenceCodeWithSiteGroupId()
+		throws Exception {
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Channel randomPatchChannel = randomPatchChannel();
+
+		randomPatchChannel.setSiteGroupId(RandomTestUtil.nextLong());
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.patchChannelByExternalReferenceCodeHttpResponse(
+				postChannel.getExternalReferenceCode(), randomPatchChannel));
+
+		Channel getChannel = channelResource.getChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
 	private void _testPatchChannelWithAccountExternalReferenceCode()
 		throws Exception {
 
-		Channel postChannel = testPatchChannel_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		Channel randomPatchChannel = randomPatchChannel();
 
@@ -389,6 +418,24 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			getChannel.getAccountExternalReferenceCode());
 	}
 
+	private void _testPatchChannelWithSiteGroupId() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Channel randomPatchChannel = randomPatchChannel();
+
+		randomPatchChannel.setSiteGroupId(RandomTestUtil.nextLong());
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.patchChannelHttpResponse(
+				postChannel.getId(), randomPatchChannel));
+
+		Channel getChannel = channelResource.getChannel(postChannel.getId());
+
+		Assert.assertEquals(
+			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
 	private void _testPostChannelWithAccountExternalReferenceCode()
 		throws Exception {
 
@@ -401,7 +448,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 		randomChannel.setAccountExternalReferenceCode(
 			accountEntry.getExternalReferenceCode());
 
-		Channel postChannel = testPostChannel_addChannel(randomChannel);
+		Channel postChannel = channelResource.postChannel(randomChannel);
 
 		randomChannel.setAccountId(accountEntry.getAccountEntryId());
 
@@ -415,11 +462,23 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			postChannel.getAccountExternalReferenceCode());
 	}
 
+	private void _testPostChannelWithSiteGroupId() throws Exception {
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setSiteGroupId(RandomTestUtil.nextLong());
+
+		assertHttpResponseStatusCode(
+			400, channelResource.postChannelHttpResponse(randomChannel));
+		assertHttpResponseStatusCode(
+			404,
+			channelResource.getChannelByExternalReferenceCodeHttpResponse(
+				randomChannel.getExternalReferenceCode()));
+	}
+
 	private void _testPutChannelByExternalReferenceCodeWithAccountExternalReferenceCode()
 		throws Exception {
 
-		Channel postChannel =
-			testPutChannelByExternalReferenceCode_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		Channel randomChannel = randomChannel();
 
@@ -500,8 +559,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 	private void _testPutChannelByExternalReferenceCodeWithCommerceChannelSettings()
 		throws Exception {
 
-		Channel postChannel =
-			testPutChannelByExternalReferenceCode_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(
@@ -534,10 +592,31 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			putCommerceChannel.getTypeSettings());
 	}
 
+	private void _testPutChannelByExternalReferenceCodeWithSiteGroupId()
+		throws Exception {
+
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setSiteGroupId(RandomTestUtil.nextLong());
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.putChannelByExternalReferenceCodeHttpResponse(
+				postChannel.getExternalReferenceCode(), randomChannel));
+
+		Channel getChannel = channelResource.getChannelByExternalReferenceCode(
+			postChannel.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
 	private void _testPutChannelWithAccountExternalReferenceCode()
 		throws Exception {
 
-		Channel postChannel = testPutChannel_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		Channel randomChannel = randomChannel();
 
@@ -575,7 +654,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 	}
 
 	private void _testPutChannelWithCommerceChannelSettings() throws Exception {
-		Channel postChannel = testPutChannel_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(
@@ -607,8 +686,26 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 			putCommerceChannel.getTypeSettings());
 	}
 
+	private void _testPutChannelWithSiteGroupId() throws Exception {
+		Channel postChannel = channelResource.postChannel(randomChannel());
+
+		Channel randomChannel = randomChannel();
+
+		randomChannel.setSiteGroupId(RandomTestUtil.nextLong());
+
+		assertHttpResponseStatusCode(
+			400,
+			channelResource.putChannelHttpResponse(
+				postChannel.getId(), randomChannel));
+
+		Channel getChannel = channelResource.getChannel(postChannel.getId());
+
+		Assert.assertEquals(
+			postChannel.getSiteGroupId(), getChannel.getSiteGroupId());
+	}
+
 	private void _testPutChannelWithoutSiteGroupId() throws Exception {
-		Channel postChannel = testPutChannel_addChannel();
+		Channel postChannel = channelResource.postChannel(randomChannel());
 
 		Channel randomChannel = randomChannel();
 
@@ -657,6 +754,7 @@ public class ChannelResourceTest extends BaseChannelResourceTestCase {
 	private CommerceChannelRelLocalService _commerceChannelRelLocalService;
 
 	private CommerceCurrency _commerceCurrency;
+	private Group _group;
 	private ServiceContext _serviceContext;
 	private User _user;
 
