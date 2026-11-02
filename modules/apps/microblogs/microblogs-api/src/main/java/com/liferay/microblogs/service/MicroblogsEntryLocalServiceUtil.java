@@ -37,18 +37,6 @@ public class MicroblogsEntryLocalServiceUtil {
 	 * Never modify this class directly. Add custom service methods to <code>com.liferay.microblogs.service.impl.MicroblogsEntryLocalServiceImpl</code> and rerun ServiceBuilder to regenerate this class.
 	 */
 	public static MicroblogsEntry addMicroblogsEntry(
-			long userId, long creatorClassNameId, long creatorClassPK,
-			String content, int type, long parentMicroblogsEntryId,
-			int socialRelationType,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws PortalException {
-
-		return getService().addMicroblogsEntry(
-			userId, creatorClassNameId, creatorClassPK, content, type,
-			parentMicroblogsEntryId, socialRelationType, serviceContext);
-	}
-
-	public static MicroblogsEntry addMicroblogsEntry(
 			long userId, String content, int type, long parentMicroblogsEntryId,
 			int socialRelationType,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -140,12 +128,6 @@ public class MicroblogsEntryLocalServiceUtil {
 		throws PortalException {
 
 		return getService().deletePersistedModel(persistedModel);
-	}
-
-	public static void deleteUserMicroblogsEntries(long userId)
-		throws PortalException {
-
-		getService().deleteUserMicroblogsEntries(userId);
 	}
 
 	public static <T> T dslQuery(DSLQuery dslQuery) {
@@ -241,16 +223,6 @@ public class MicroblogsEntryLocalServiceUtil {
 		getActionableDynamicQuery() {
 
 		return getService().getActionableDynamicQuery();
-	}
-
-	public static List<MicroblogsEntry> getCompanyMicroblogsEntries(
-		long companyId, int start, int end) {
-
-		return getService().getCompanyMicroblogsEntries(companyId, start, end);
-	}
-
-	public static int getCompanyMicroblogsEntriesCount(long companyId) {
-		return getService().getCompanyMicroblogsEntriesCount(companyId);
 	}
 
 	public static
@@ -357,10 +329,6 @@ public class MicroblogsEntryLocalServiceUtil {
 		return getService().getUserMicroblogsEntriesCount(userId);
 	}
 
-	public static int getUserMicroblogsEntriesCount(long userId, int type) {
-		return getService().getUserMicroblogsEntriesCount(userId, type);
-	}
-
 	public static void updateAsset(
 			MicroblogsEntry microblogsEntry, long[] assetCategoryIds,
 			String[] assetTagNames)
@@ -405,4 +373,4 @@ public class MicroblogsEntryLocalServiceUtil {
 			MicroblogsEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1020735312
+// LIFERAY-SERVICE-BUILDER-HASH:838401632

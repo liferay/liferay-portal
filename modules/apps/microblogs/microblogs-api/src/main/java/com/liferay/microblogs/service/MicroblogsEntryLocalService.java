@@ -56,12 +56,6 @@ public interface MicroblogsEntryLocalService
 	 * Never modify this interface directly. Add custom service methods to <code>com.liferay.microblogs.service.impl.MicroblogsEntryLocalServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface. Consume the microblogs entry local service via injection or a <code>org.osgi.util.tracker.ServiceTracker</code>. Use {@link MicroblogsEntryLocalServiceUtil} if injection and service tracking are not available.
 	 */
 	public MicroblogsEntry addMicroblogsEntry(
-			long userId, long creatorClassNameId, long creatorClassPK,
-			String content, int type, long parentMicroblogsEntryId,
-			int socialRelationType, ServiceContext serviceContext)
-		throws PortalException;
-
-	public MicroblogsEntry addMicroblogsEntry(
 			long userId, String content, int type, long parentMicroblogsEntryId,
 			int socialRelationType, ServiceContext serviceContext)
 		throws PortalException;
@@ -132,8 +126,6 @@ public interface MicroblogsEntryLocalService
 	@Override
 	public PersistedModel deletePersistedModel(PersistedModel persistedModel)
 		throws PortalException;
-
-	public void deleteUserMicroblogsEntries(long userId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public <T> T dslQuery(DSLQuery dslQuery);
@@ -214,13 +206,6 @@ public interface MicroblogsEntryLocalService
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<MicroblogsEntry> getCompanyMicroblogsEntries(
-		long companyId, int start, int end);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCompanyMicroblogsEntriesCount(long companyId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
 
 	/**
@@ -295,9 +280,6 @@ public interface MicroblogsEntryLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getUserMicroblogsEntriesCount(long userId);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getUserMicroblogsEntriesCount(long userId, int type);
-
 	public void updateAsset(
 			MicroblogsEntry microblogsEntry, long[] assetCategoryIds,
 			String[] assetTagNames)
@@ -323,4 +305,4 @@ public interface MicroblogsEntryLocalService
 		MicroblogsEntry microblogsEntry);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-415056833
+// LIFERAY-SERVICE-BUILDER-HASH:1808921885

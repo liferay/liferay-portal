@@ -31,19 +31,6 @@ public class MicroblogsEntryLocalServiceWrapper
 
 	@Override
 	public com.liferay.microblogs.model.MicroblogsEntry addMicroblogsEntry(
-			long userId, long creatorClassNameId, long creatorClassPK,
-			String content, int type, long parentMicroblogsEntryId,
-			int socialRelationType,
-			com.liferay.portal.kernel.service.ServiceContext serviceContext)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _microblogsEntryLocalService.addMicroblogsEntry(
-			userId, creatorClassNameId, creatorClassPK, content, type,
-			parentMicroblogsEntryId, socialRelationType, serviceContext);
-	}
-
-	@Override
-	public com.liferay.microblogs.model.MicroblogsEntry addMicroblogsEntry(
 			long userId, String content, int type, long parentMicroblogsEntryId,
 			int socialRelationType,
 			com.liferay.portal.kernel.service.ServiceContext serviceContext)
@@ -146,13 +133,6 @@ public class MicroblogsEntryLocalServiceWrapper
 
 		return _microblogsEntryLocalService.deletePersistedModel(
 			persistedModel);
-	}
-
-	@Override
-	public void deleteUserMicroblogsEntries(long userId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		_microblogsEntryLocalService.deleteUserMicroblogsEntries(userId);
 	}
 
 	@Override
@@ -271,20 +251,6 @@ public class MicroblogsEntryLocalServiceWrapper
 		getActionableDynamicQuery() {
 
 		return _microblogsEntryLocalService.getActionableDynamicQuery();
-	}
-
-	@Override
-	public java.util.List<com.liferay.microblogs.model.MicroblogsEntry>
-		getCompanyMicroblogsEntries(long companyId, int start, int end) {
-
-		return _microblogsEntryLocalService.getCompanyMicroblogsEntries(
-			companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyMicroblogsEntriesCount(long companyId) {
-		return _microblogsEntryLocalService.getCompanyMicroblogsEntriesCount(
-			companyId);
 	}
 
 	@Override
@@ -415,12 +381,6 @@ public class MicroblogsEntryLocalServiceWrapper
 	}
 
 	@Override
-	public int getUserMicroblogsEntriesCount(long userId, int type) {
-		return _microblogsEntryLocalService.getUserMicroblogsEntriesCount(
-			userId, type);
-	}
-
-	@Override
 	public void updateAsset(
 			com.liferay.microblogs.model.MicroblogsEntry microblogsEntry,
 			long[] assetCategoryIds, String[] assetTagNames)
@@ -478,4 +438,4 @@ public class MicroblogsEntryLocalServiceWrapper
 	private MicroblogsEntryLocalService _microblogsEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1891286322
+// LIFERAY-SERVICE-BUILDER-HASH:-1630374669
