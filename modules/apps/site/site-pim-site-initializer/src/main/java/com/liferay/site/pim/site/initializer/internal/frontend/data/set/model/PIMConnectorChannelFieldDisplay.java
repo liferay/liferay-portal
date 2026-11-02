@@ -17,16 +17,21 @@ public class PIMConnectorChannelFieldDisplay {
 
 	public PIMConnectorChannelFieldDisplay(
 		String apiURL, String channelField, List<Long> fieldMappingIds,
-		String href, Locale locale, boolean required,
-		List<String> sourceAttributes) {
+		String href, Locale locale, String mappingRuleAPIURL,
+		long mappingRuleId, boolean required, List<String> sourceAttributes,
+		List<String> transformationRules, boolean useFirstNonemptySource) {
 
 		_apiURL = apiURL;
 		_channelField = channelField;
 		_fieldMappingIds = fieldMappingIds;
 		_href = href;
 		_locale = locale;
+		_mappingRuleAPIURL = mappingRuleAPIURL;
+		_mappingRuleId = mappingRuleId;
 		_required = required;
 		_sourceAttributes = sourceAttributes;
+		_transformationRules = transformationRules;
+		_useFirstNonemptySource = useFirstNonemptySource;
 	}
 
 	public String getAPIURL() {
@@ -43,6 +48,14 @@ public class PIMConnectorChannelFieldDisplay {
 
 	public String getHref() {
 		return _href;
+	}
+
+	public String getMappingRuleAPIURL() {
+		return _mappingRuleAPIURL;
+	}
+
+	public long getMappingRuleId() {
+		return _mappingRuleId;
 	}
 
 	public List<String> getSourceAttributes() {
@@ -62,12 +75,20 @@ public class PIMConnectorChannelFieldDisplay {
 		return new Status("info", LanguageUtil.get(_locale, "not-mapped"));
 	}
 
+	public List<String> getTransformationRules() {
+		return _transformationRules;
+	}
+
 	public boolean isMapped() {
 		return !_sourceAttributes.isEmpty();
 	}
 
 	public boolean isRequired() {
 		return _required;
+	}
+
+	public boolean isUseFirstNonemptySource() {
+		return _useFirstNonemptySource;
 	}
 
 	public static class Status {
@@ -95,7 +116,11 @@ public class PIMConnectorChannelFieldDisplay {
 	private final List<Long> _fieldMappingIds;
 	private final String _href;
 	private final Locale _locale;
+	private final String _mappingRuleAPIURL;
+	private final long _mappingRuleId;
 	private final boolean _required;
 	private final List<String> _sourceAttributes;
+	private final List<String> _transformationRules;
+	private final boolean _useFirstNonemptySource;
 
 }

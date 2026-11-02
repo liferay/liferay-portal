@@ -4,25 +4,41 @@
  */
 
 import ClayButton from '@clayui/button';
-import {Toolbar} from '@liferay/site-cms-site-initializer';
+import {Toolbar, VerticalNavLayout} from '@liferay/site-cms-site-initializer';
 import {fetch, navigate, sub} from 'frontend-js-web';
 import React, {useEffect, useState} from 'react';
 
 import FieldMappingsSection from './edit_field_mappings/FieldMappingsSection';
+import MappingRulesSection from './edit_field_mappings/MappingRulesSection';
 import getObjectFields from './edit_field_mappings/getObjectFields';
 import newFieldMapping from './edit_field_mappings/newFieldMapping';
 import {
 	IFieldMapping,
+	IMappingRule,
 	IObjectDefinition,
 	TYPE_FIXED_VALUE,
 } from './edit_field_mappings/types';
+
+const EMPTY_MAPPING_RULE = {
+	id: 0,
+	stripHTMLTags: false,
+	textCase: '',
+	trimWhitespace: false,
+	truncateLength: 0,
+	urlEncode: false,
+	useFirstNonemptySource: false,
+};
 
 interface IProps {
 	apiURL: string;
 	backURL: string;
 	channelField: string;
 	channelFieldLabel: string;
+	channelFieldMultiple: boolean;
 	fieldMappings: IFieldMapping[];
+	mappingRule: IMappingRule | null;
+	mappingRuleAPIURL: string;
+	mappingRuleObjectRelationshipObjectFieldName: string;
 	objectDefinitions: IObjectDefinition[];
 	objectEntryId: number;
 	objectRelationshipObjectFieldName: string;
@@ -38,12 +54,34 @@ function isComplete({sourceFieldName, type, value}: IFieldMapping) {
 	return Boolean(sourceFieldName);
 }
 
+function isEmpty({
+	stripHTMLTags,
+	textCase,
+	trimWhitespace,
+	truncateLength,
+	urlEncode,
+	useFirstNonemptySource,
+}: IMappingRule) {
+	return (
+		!stripHTMLTags &&
+		!textCase &&
+		!trimWhitespace &&
+		!truncateLength &&
+		!urlEncode &&
+		!useFirstNonemptySource
+	);
+}
+
 export default function EditPIMConnectorFieldMappings({
 	apiURL,
 	backURL,
 	channelField,
 	channelFieldLabel,
+	channelFieldMultiple,
 	fieldMappings: initialFieldMappings = [],
+	mappingRule: initialMappingRule,
+	mappingRuleAPIURL,
+	mappingRuleObjectRelationshipObjectFieldName,
 	objectDefinitions = [],
 	objectEntryId,
 	objectRelationshipObjectFieldName,
@@ -72,14 +110,58 @@ export default function EditPIMConnectorFieldMappings({
 		return [newFieldMapping()];
 	});
 
+	const [mappingRule, setMappingRule] = useState<IMappingRule>(
+		initialMappingRule ?? EMPTY_MAPPING_RULE
+	);
+
 	useEffect(() => {
 		if (!Number(objectEntryId) || !channelField) {
 			navigate(backURL);
 		}
 	}, [backURL, channelField, objectEntryId]);
 
+	const saveMappingRule = () => {
+		const {id, ...values} = mappingRule;
+
+		if (isEmpty(mappingRule)) {
+			if (!id) {
+				return null;
+			}
+
+			return fetch(`${mappingRuleAPIURL}/${id}`, {method: 'DELETE'});
+		}
+
+		const body: {[key: string]: unknown} = {
+			...values,
+			channelFieldName: channelField,
+		};
+
+		if (!id) {
+			body[mappingRuleObjectRelationshipObjectFieldName] = objectEntryId;
+		}
+
+		return fetch(id ? `${mappingRuleAPIURL}/${id}` : mappingRuleAPIURL, {
+			body: JSON.stringify(body),
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			method: id ? 'PATCH' : 'POST',
+		});
+	};
+
 	const handleSave = async () => {
 		const nextFieldMappings = fieldMappings.filter(isComplete);
+
+		if (!nextFieldMappings.length && !isEmpty(mappingRule)) {
+			Liferay.Util.openToast({
+				message: Liferay.Language.get(
+					'add-at-least-one-source-attribute-to-save-the-mapping-rules-or-turn-the-mapping-rules-off'
+				),
+				type: 'danger',
+			});
+
+			return;
+		}
 
 		const nextIds = new Set(
 			nextFieldMappings.map(({id}) => id).filter(Boolean)
@@ -134,6 +216,12 @@ export default function EditPIMConnectorFieldMappings({
 				throw new Error();
 			}
 
+			const mappingRuleResponse = await saveMappingRule();
+
+			if (mappingRuleResponse && !mappingRuleResponse.ok) {
+				throw new Error();
+			}
+
 			Liferay.Util.openToast({
 				message: sub(
 					Liferay.Language.get('x-was-updated-successfully'),
@@ -175,11 +263,33 @@ export default function EditPIMConnectorFieldMappings({
 				</Toolbar.Item>
 			</Toolbar>
 
-			<FieldMappingsSection
-				fieldMappings={fieldMappings}
-				objectDefinitions={objectDefinitions}
-				setFieldMappings={setFieldMappings}
-				spritemap={spritemap}
+			<VerticalNavLayout
+				items={[
+					{
+						component: (
+							<FieldMappingsSection
+								fieldMappings={fieldMappings}
+								objectDefinitions={objectDefinitions}
+								setFieldMappings={setFieldMappings}
+								spritemap={spritemap}
+							/>
+						),
+						id: 'destination',
+						label: Liferay.Language.get('destination'),
+					},
+					{
+						component: (
+							<MappingRulesSection
+								channelFieldMultiple={channelFieldMultiple}
+								disabled={!initialMappingRule}
+								mappingRule={mappingRule}
+								onChange={setMappingRule}
+							/>
+						),
+						id: 'mappingRules',
+						label: Liferay.Language.get('mapping-rules'),
+					},
+				]}
 			/>
 		</>
 	);

@@ -50,15 +50,6 @@ public class PIMConnectorFieldMappingsUtil {
 
 	public static final String TYPE_FIXED_VALUE = "fixedValue";
 
-	public static ObjectRelationship fetchObjectRelationship(
-		long objectDefinitionId) {
-
-		return ObjectRelationshipLocalServiceUtil.
-			fetchObjectRelationshipByExternalReferenceCode(
-				"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
-				objectDefinitionId);
-	}
-
 	public static List<ObjectEntry> filterObjectEntries(
 		ObjectDefinition objectDefinition,
 		List<ObjectEntry> pimFieldMappingObjectEntries) {
@@ -186,8 +177,11 @@ public class PIMConnectorFieldMappingsUtil {
 	public static List<ObjectEntry> getObjectEntries(ObjectEntry objectEntry)
 		throws PortalException {
 
-		ObjectRelationship objectRelationship = fetchObjectRelationship(
-			objectEntry.getObjectDefinitionId());
+		ObjectRelationship objectRelationship =
+			ObjectRelationshipLocalServiceUtil.
+				fetchObjectRelationshipByExternalReferenceCode(
+					"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS",
+					objectEntry.getObjectDefinitionId());
 
 		if (objectRelationship == null) {
 			return Collections.emptyList();

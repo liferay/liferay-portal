@@ -18,6 +18,7 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -33,6 +34,7 @@ import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
 import com.liferay.site.pim.site.initializer.internal.constants.PIMFDSNames;
 import com.liferay.site.pim.site.initializer.internal.frontend.data.set.model.PIMConnectorChannelFieldDisplay;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingRulesUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -47,6 +49,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -95,6 +98,23 @@ public class PIMConnectorChannelFieldFDSDataProvider
 	}
 
 	private Comparator<PIMConnectorChannelFieldDisplay> _getComparator(
+		Function<PIMConnectorChannelFieldDisplay, List<String>> function) {
+
+		return Comparator.comparing(
+			pimConnectorChannelFieldDisplay -> {
+				List<String> values = function.apply(
+					pimConnectorChannelFieldDisplay);
+
+				if (values.isEmpty()) {
+					return StringPool.BLANK;
+				}
+
+				return values.get(0);
+			},
+			String.CASE_INSENSITIVE_ORDER);
+	}
+
+	private Comparator<PIMConnectorChannelFieldDisplay> _getComparator(
 		String fieldName) {
 
 		if (Objects.equals(fieldName, "channelField")) {
@@ -109,25 +129,18 @@ public class PIMConnectorChannelFieldFDSDataProvider
 		}
 
 		if (Objects.equals(fieldName, "sourceAttributes")) {
-			return Comparator.comparing(
-				(PIMConnectorChannelFieldDisplay
-					pimConnectorChannelFieldDisplay) -> {
-
-					List<String> sourceAttributes =
-						pimConnectorChannelFieldDisplay.getSourceAttributes();
-
-					if (sourceAttributes.isEmpty()) {
-						return StringPool.BLANK;
-					}
-
-					return sourceAttributes.get(0);
-				},
-				String.CASE_INSENSITIVE_ORDER);
+			return _getComparator(
+				PIMConnectorChannelFieldDisplay::getSourceAttributes);
 		}
 
 		if (Objects.equals(fieldName, "status")) {
 			return Comparator.comparing(
 				PIMConnectorChannelFieldDisplay::isMapped);
+		}
+
+		if (Objects.equals(fieldName, "transformationRules")) {
+			return _getComparator(
+				PIMConnectorChannelFieldDisplay::getTransformationRules);
 		}
 
 		return null;
@@ -215,9 +228,12 @@ public class PIMConnectorChannelFieldFDSDataProvider
 
 		Map<String, List<ObjectEntry>> objectEntriesMap = new HashMap<>();
 
+		ObjectEntry pimConnectorObjectEntry = _fetchObjectEntry(
+			httpServletRequest);
+
 		for (ObjectEntry objectEntry :
 				PIMConnectorFieldMappingsUtil.getObjectEntries(
-					_fetchObjectEntry(httpServletRequest))) {
+					pimConnectorObjectEntry)) {
 
 			List<ObjectEntry> objectEntries = objectEntriesMap.computeIfAbsent(
 				MapUtil.getString(objectEntry.getValues(), "channelFieldName"),
@@ -229,9 +245,32 @@ public class PIMConnectorChannelFieldFDSDataProvider
 		Map<String, String> labelMap = _getLabelMap(
 			themeDisplay.getCompanyId(), locale, objectEntriesMap);
 
+		String pimFieldMappingRuleAPIURL =
+			PIMConnectorFieldMappingRulesUtil.getAPIURL(
+				themeDisplay.getCompanyId());
+
+		Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap =
+			PIMConnectorFieldMappingRulesUtil.getObjectEntriesMap(
+				pimConnectorObjectEntry);
+
 		return TransformUtil.transform(
 			pimConnectorChannelFields,
 			pimConnectorChannelField -> {
+				ObjectEntry pimFieldMappingRuleObjectEntry =
+					pimFieldMappingRuleObjectEntriesMap.get(
+						pimConnectorChannelField.getName());
+
+				long pimFieldMappingRuleObjectEntryId = 0;
+				Map<String, Serializable> pimFieldMappingRuleValues =
+					Collections.emptyMap();
+
+				if (pimFieldMappingRuleObjectEntry != null) {
+					pimFieldMappingRuleObjectEntryId =
+						pimFieldMappingRuleObjectEntry.getObjectEntryId();
+					pimFieldMappingRuleValues =
+						pimFieldMappingRuleObjectEntry.getValues();
+				}
+
 				List<ObjectEntry> objectEntries = objectEntriesMap.get(
 					pimConnectorChannelField.getName());
 
@@ -241,8 +280,13 @@ public class PIMConnectorChannelFieldFDSDataProvider
 						objectEntries, ObjectEntry::getObjectEntryId),
 					editFieldMappingsURL + "&channelField=" +
 						URLCodec.encodeURL(pimConnectorChannelField.getName()),
-					locale, pimConnectorChannelField.isRequired(),
-					_getSourceAttributes(labelMap, objectEntries));
+					locale, pimFieldMappingRuleAPIURL,
+					pimFieldMappingRuleObjectEntryId,
+					pimConnectorChannelField.isRequired(),
+					_getSourceAttributes(labelMap, objectEntries),
+					_getTransformationRules(locale, pimFieldMappingRuleValues),
+					MapUtil.getBoolean(
+						pimFieldMappingRuleValues, "useFirstNonemptySource"));
 			});
 	}
 
@@ -328,6 +372,50 @@ public class PIMConnectorChannelFieldFDSDataProvider
 					sourceClassName + StringPool.POUND + sourceFieldName,
 					sourceFieldName);
 			});
+	}
+
+	private List<String> _getTransformationRules(
+		Locale locale, Map<String, Serializable> values) {
+
+		List<String> transformationRules = new ArrayList<>();
+
+		if (MapUtil.getBoolean(values, "stripHTMLTags")) {
+			transformationRules.add(
+				LanguageUtil.get(locale, "strip-html-tags"));
+		}
+
+		String textCase = MapUtil.getString(values, "textCase");
+
+		if (Objects.equals(textCase, "lower")) {
+			transformationRules.add(LanguageUtil.get(locale, "lowercase"));
+		}
+		else if (Objects.equals(textCase, "upper")) {
+			transformationRules.add(LanguageUtil.get(locale, "uppercase"));
+		}
+
+		if (MapUtil.getBoolean(values, "trimWhitespace")) {
+			transformationRules.add(
+				LanguageUtil.get(locale, "trim-whitespace"));
+		}
+
+		int truncateLength = MapUtil.getInteger(values, "truncateLength");
+
+		if (truncateLength > 0) {
+			transformationRules.add(
+				LanguageUtil.format(
+					locale, "truncate-x-characters", truncateLength));
+		}
+
+		if (MapUtil.getBoolean(values, "urlEncode")) {
+			transformationRules.add(LanguageUtil.get(locale, "url-encode"));
+		}
+
+		if (MapUtil.getBoolean(values, "useFirstNonemptySource")) {
+			transformationRules.add(
+				LanguageUtil.get(locale, "first-nonempty-source"));
+		}
+
+		return transformationRules;
 	}
 
 	private List<PIMConnectorChannelFieldDisplay> _sort(

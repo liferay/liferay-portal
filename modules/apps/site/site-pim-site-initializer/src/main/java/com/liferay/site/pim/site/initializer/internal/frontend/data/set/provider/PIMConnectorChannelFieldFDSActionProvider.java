@@ -55,6 +55,9 @@ public class PIMConnectorChannelFieldFDSActionProvider
 						httpServletRequest,
 						"are-you-sure-you-want-to-clear-this-mapping"));
 				dropdownItem.putData("id", "clear");
+				dropdownItem.putData(
+					"mappingRuleAPIURL",
+					pimConnectorChannelFieldDisplay.getMappingRuleAPIURL());
 				dropdownItem.setIcon("times-circle");
 				dropdownItem.setLabel(
 					_language.get(httpServletRequest, "clear"));

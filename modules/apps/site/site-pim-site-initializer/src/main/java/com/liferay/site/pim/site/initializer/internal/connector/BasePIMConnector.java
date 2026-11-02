@@ -113,18 +113,8 @@ public abstract class BasePIMConnector implements PIMConnector {
 			ObjectEntry pimConnectorObjectEntry)
 		throws PortalException {
 
-		Map<String, ObjectEntry> objectEntriesMap = new HashMap<>();
-
-		for (ObjectEntry objectEntry :
-				PIMConnectorFieldMappingRulesUtil.getObjectEntries(
-					pimConnectorObjectEntry)) {
-
-			objectEntriesMap.put(
-				MapUtil.getString(objectEntry.getValues(), "channelFieldName"),
-				objectEntry);
-		}
-
-		return objectEntriesMap;
+		return PIMConnectorFieldMappingRulesUtil.getObjectEntriesMap(
+			pimConnectorObjectEntry);
 	}
 
 	protected Map<String, List<ObjectEntry>> getPIMProductObjectEntriesMap(

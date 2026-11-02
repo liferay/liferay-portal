@@ -5,14 +5,17 @@
 
 package com.liferay.site.pim.site.initializer.internal.display.context;
 
+import com.liferay.object.constants.ObjectFieldConstants;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.model.ObjectRelationship;
 import com.liferay.object.service.ObjectDefinitionService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.object.service.ObjectRelationshipLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONArray;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -25,6 +28,7 @@ import com.liferay.site.pim.site.initializer.connector.PIMConnector;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorChannelField;
 import com.liferay.site.pim.site.initializer.connector.PIMConnectorRegistry;
 import com.liferay.site.pim.site.initializer.constants.PIMObjectFolderConstants;
+import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingRulesUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMConnectorFieldMappingsUtil;
 import com.liferay.site.pim.site.initializer.internal.util.PIMURLUtil;
 
@@ -65,7 +69,8 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 		ObjectEntry objectEntry = _objectEntryLocalService.fetchObjectEntry(
 			_objectEntryId);
 
-		String channelFieldLabel = _getChannelFieldLabel(objectEntry);
+		PIMConnectorChannelField pimConnectorChannelField =
+			_fetchPIMConnectorChannelField(objectEntry);
 
 		return HashMapBuilder.<String, Object>put(
 			"apiURL",
@@ -80,35 +85,77 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 		).put(
 			"channelField", _channelField
 		).put(
-			"channelFieldLabel", channelFieldLabel
+			"channelFieldLabel",
+			() -> {
+				if (pimConnectorChannelField != null) {
+					return pimConnectorChannelField.getLabel(
+						_themeDisplay.getLocale());
+				}
+
+				return _channelField;
+			}
+		).put(
+			"channelFieldMultiple",
+			() -> {
+				if (pimConnectorChannelField != null) {
+					return pimConnectorChannelField.isMultiple();
+				}
+
+				return false;
+			}
 		).put(
 			"fieldMappings", _getFieldMappingsJSONArray(objectEntry)
+		).put(
+			"mappingRule",
+			_getMappingRuleJSONObject(objectEntry, pimConnectorChannelField)
+		).put(
+			"mappingRuleAPIURL",
+			PIMConnectorFieldMappingRulesUtil.getAPIURL(
+				_themeDisplay.getCompanyId())
+		).put(
+			"mappingRuleObjectRelationshipObjectFieldName",
+			_getObjectRelationshipObjectFieldName(
+				"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPING_RULES",
+				objectEntry)
 		).put(
 			"objectDefinitions", _getObjectDefinitionsJSONArray()
 		).put(
 			"objectEntryId", _objectEntryId
 		).put(
 			"objectRelationshipObjectFieldName",
-			_getObjectRelationshipObjectFieldName(objectEntry)
+			_getObjectRelationshipObjectFieldName(
+				"L_PIM_CONNECTOR_TO_PIM_CONNECTOR_FIELD_MAPPINGS", objectEntry)
 		).put(
 			"spritemap", _themeDisplay.getPathThemeSpritemap()
 		).put(
 			"title",
-			LanguageUtil.format(
-				_httpServletRequest, "edit-x", channelFieldLabel, false)
+			() -> {
+				if (pimConnectorChannelField != null) {
+					return LanguageUtil.format(
+						_httpServletRequest, "edit-x",
+						pimConnectorChannelField.getLabel(
+							_themeDisplay.getLocale()),
+						false);
+				}
+
+				return LanguageUtil.format(
+					_httpServletRequest, "edit-x", _channelField, false);
+			}
 		).build();
 	}
 
-	private String _getChannelFieldLabel(ObjectEntry objectEntry) {
+	private PIMConnectorChannelField _fetchPIMConnectorChannelField(
+		ObjectEntry objectEntry) {
+
 		if (objectEntry == null) {
-			return _channelField;
+			return null;
 		}
 
 		PIMConnector pimConnector = _pimConnectorRegistry.getPIMConnector(
 			MapUtil.getString(objectEntry.getValues(), "key"));
 
 		if (pimConnector == null) {
-			return _channelField;
+			return null;
 		}
 
 		for (PIMConnectorChannelField pimConnectorChannelField :
@@ -117,12 +164,11 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 			if (Objects.equals(
 					pimConnectorChannelField.getName(), _channelField)) {
 
-				return pimConnectorChannelField.getLabel(
-					_themeDisplay.getLocale());
+				return pimConnectorChannelField;
 			}
 		}
 
-		return _channelField;
+		return null;
 	}
 
 	private JSONArray _getFieldMappingsJSONArray(ObjectEntry objectEntry)
@@ -160,6 +206,64 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 			});
 	}
 
+	private JSONObject _getMappingRuleJSONObject(
+			ObjectEntry objectEntry,
+			PIMConnectorChannelField pimConnectorChannelField)
+		throws Exception {
+
+		if ((pimConnectorChannelField == null) ||
+			!Objects.equals(
+				pimConnectorChannelField.getType(),
+				ObjectFieldConstants.BUSINESS_TYPE_TEXT)) {
+
+			return null;
+		}
+
+		Map<String, ObjectEntry> pimFieldMappingRuleObjectEntriesMap =
+			PIMConnectorFieldMappingRulesUtil.getObjectEntriesMap(objectEntry);
+
+		ObjectEntry pimFieldMappingRuleObjectEntry =
+			pimFieldMappingRuleObjectEntriesMap.get(_channelField);
+
+		if (pimFieldMappingRuleObjectEntry == null) {
+			return JSONUtil.put(
+				"id", 0
+			).put(
+				"stripHTMLTags", false
+			).put(
+				"textCase", StringPool.BLANK
+			).put(
+				"trimWhitespace", false
+			).put(
+				"truncateLength", 0
+			).put(
+				"urlEncode", false
+			).put(
+				"useFirstNonemptySource", false
+			);
+		}
+
+		Map<String, Serializable> values =
+			pimFieldMappingRuleObjectEntry.getValues();
+
+		return JSONUtil.put(
+			"id", pimFieldMappingRuleObjectEntry.getObjectEntryId()
+		).put(
+			"stripHTMLTags", MapUtil.getBoolean(values, "stripHTMLTags")
+		).put(
+			"textCase", MapUtil.getString(values, "textCase")
+		).put(
+			"trimWhitespace", MapUtil.getBoolean(values, "trimWhitespace")
+		).put(
+			"truncateLength", MapUtil.getInteger(values, "truncateLength")
+		).put(
+			"urlEncode", MapUtil.getBoolean(values, "urlEncode")
+		).put(
+			"useFirstNonemptySource",
+			MapUtil.getBoolean(values, "useFirstNonemptySource")
+		);
+	}
+
 	private JSONArray _getObjectDefinitionsJSONArray() throws Exception {
 		return JSONUtil.toJSONArray(
 			_objectDefinitionService.getCMSObjectDefinitions(
@@ -186,15 +290,16 @@ public class EditPIMConnectorFieldMappingsDisplayContext {
 	}
 
 	private String _getObjectRelationshipObjectFieldName(
-		ObjectEntry objectEntry) {
+		String externalReferenceCode, ObjectEntry objectEntry) {
 
 		if (objectEntry == null) {
 			return StringPool.BLANK;
 		}
 
 		ObjectRelationship objectRelationship =
-			PIMConnectorFieldMappingsUtil.fetchObjectRelationship(
-				objectEntry.getObjectDefinitionId());
+			ObjectRelationshipLocalServiceUtil.
+				fetchObjectRelationshipByExternalReferenceCode(
+					externalReferenceCode, objectEntry.getObjectDefinitionId());
 
 		if (objectRelationship == null) {
 			return StringPool.BLANK;

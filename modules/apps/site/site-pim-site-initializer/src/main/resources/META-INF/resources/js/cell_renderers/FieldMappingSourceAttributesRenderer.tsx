@@ -9,15 +9,20 @@ import React from 'react';
 const MAX_VISIBLE_SOURCE_ATTRIBUTES = 3;
 
 export default function FieldMappingSourceAttributesRenderer({
+	itemData,
 	value,
 }: {
+	itemData?: {useFirstNonemptySource?: boolean};
 	value: string[];
 }) {
 	if (!value?.length) {
 		return null;
 	}
 
-	const visibleValue = value.slice(0, MAX_VISIBLE_SOURCE_ATTRIBUTES);
+	const visibleValue = value.slice(
+		0,
+		itemData?.useFirstNonemptySource ? 1 : MAX_VISIBLE_SOURCE_ATTRIBUTES
+	);
 
 	const hiddenCount = value.length - visibleValue.length;
 

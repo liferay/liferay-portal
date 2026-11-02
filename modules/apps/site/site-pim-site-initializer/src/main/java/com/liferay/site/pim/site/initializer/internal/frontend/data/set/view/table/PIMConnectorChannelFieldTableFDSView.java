@@ -53,6 +53,13 @@ public class PIMConnectorChannelFieldTableFDSView extends BasePIMTableFDSView {
 				true
 			)
 		).add(
+			"transformationRules", "transformation-rules",
+			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
+				"transformationRulesTableCellRenderer"
+			).setSortable(
+				true
+			)
+		).add(
 			"status", "status",
 			fdsTableSchemaField -> fdsTableSchemaField.setContentRenderer(
 				"label"

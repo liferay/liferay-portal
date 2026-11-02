@@ -16,6 +16,16 @@ export interface IFieldMapping {
 	value: string;
 }
 
+export interface IMappingRule {
+	id: number;
+	stripHTMLTags: boolean;
+	textCase: string;
+	trimWhitespace: boolean;
+	truncateLength: number;
+	urlEncode: boolean;
+	useFirstNonemptySource: boolean;
+}
+
 export interface IObjectDefinition {
 	className: string;
 	label: string;

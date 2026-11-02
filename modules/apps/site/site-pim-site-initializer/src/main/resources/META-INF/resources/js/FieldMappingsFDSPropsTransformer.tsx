@@ -8,6 +8,7 @@ import {fetch} from 'frontend-js-web';
 
 import FieldMappingChannelFieldRenderer from './cell_renderers/FieldMappingChannelFieldRenderer';
 import FieldMappingSourceAttributesRenderer from './cell_renderers/FieldMappingSourceAttributesRenderer';
+import FieldMappingTransformationRulesRenderer from './cell_renderers/FieldMappingTransformationRulesRenderer';
 
 export const EVENT_FIELD_MAPPINGS_CHANGE = 'pimConnectorFieldMappings:change';
 
@@ -26,6 +27,11 @@ export default function propsTransformer(props: {[key: string]: any}) {
 					name: 'sourceAttributesTableCellRenderer',
 					type: 'internal',
 				},
+				{
+					component: FieldMappingTransformationRulesRenderer,
+					name: 'transformationRulesTableCellRenderer',
+					type: 'internal',
+				},
 			],
 		},
 		hideManagementBarInEmptyState: true,
@@ -38,6 +44,8 @@ export default function propsTransformer(props: {[key: string]: any}) {
 				action.data.apiURL,
 				itemData.fieldMappingIds,
 				loadData,
+				action.data.mappingRuleAPIURL,
+				itemData.mappingRuleId,
 				itemData.required
 			);
 		},
@@ -48,17 +56,23 @@ function clearFieldMappings(
 	apiURL: string,
 	fieldMappingIds: number[],
 	loadData: Function,
+	mappingRuleAPIURL: string,
+	mappingRuleId: number,
 	required: boolean
 ) {
-	if (!fieldMappingIds?.length) {
+	const urls = (fieldMappingIds ?? []).map(
+		(fieldMappingId) => `${apiURL}/${fieldMappingId}`
+	);
+
+	if (mappingRuleId) {
+		urls.push(`${mappingRuleAPIURL}/${mappingRuleId}`);
+	}
+
+	if (!urls.length) {
 		return;
 	}
 
-	Promise.all(
-		fieldMappingIds.map((fieldMappingId) =>
-			fetch(`${apiURL}/${fieldMappingId}`, {method: 'DELETE'})
-		)
-	)
+	Promise.all(urls.map((url) => fetch(url, {method: 'DELETE'})))
 		.then((responses) => {
 			if (responses.some(({ok}) => !ok)) {
 				throw new Error();
