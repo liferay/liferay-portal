@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.theme.ThemeUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -42,6 +43,8 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 
+import org.springframework.mock.web.MockHttpServletRequest;
+
 /**
  * @author Lourdes Fernández Besada
  */
@@ -58,6 +61,7 @@ public class StatusStrutsActionTest {
 		_setUpLayoutSetLocalService();
 		_setUpRequestDispatcher();
 		_setUpStatusStrutsAction();
+		_setUpThemeUtil();
 	}
 
 	@AfterClass
@@ -78,11 +82,11 @@ public class StatusStrutsActionTest {
 			RandomTestUtil.randomString(), "\n ", _HTML_END);
 
 		String expected = StringBundler.concat(
-			htmlStart, "\n  <div id=\"content\">", _STATUS_PAGE_CONTENT,
-			"</div>\n  ", htmlEnd);
+			htmlStart, "<div id=\"content\">", _STATUS_PAGE_CONTENT, "</div>",
+			htmlEnd);
 		String html = StringBundler.concat(
-			htmlStart, "<div id=\"content\">", RandomTestUtil.randomString(),
-			"</div>", htmlEnd);
+			htmlStart, "<div id=\"content\">", _CONTENT_INCLUDE, "</div>",
+			htmlEnd);
 
 		_sessionErrorsMockedStatic.clearInvocations();
 
@@ -90,13 +94,8 @@ public class StatusStrutsActionTest {
 
 		_sessionErrorsMockedStatic.verifyNoInteractions();
 
-		Exception exception = new Exception();
-
-		Mockito.when(
-			_httpServletRequest.getAttribute(WebKeys.PORTAL_STATUS_EXCEPTION)
-		).thenReturn(
-			exception
-		);
+		_httpServletRequest.setAttribute(
+			WebKeys.PORTAL_STATUS_EXCEPTION, new Exception());
 
 		_sessionErrorsMockedStatic.clearInvocations();
 
@@ -108,16 +107,13 @@ public class StatusStrutsActionTest {
 					_httpServletRequest, Exception.class));
 		}
 		finally {
-			Mockito.reset(_httpServletRequest);
-
-			_setUpHttpServletRequest();
+			_httpServletRequest.removeAttribute(
+				WebKeys.PORTAL_STATUS_EXCEPTION);
 		}
 	}
 
 	@Test
-	public void testExecuteWithThemeContainingElementWithIdContent()
-		throws Exception {
-
+	public void testExecuteWithThemeIncludingContent() throws Exception {
 		String htmlStart = StringBundler.concat(
 			_HTML_START, "\n  ", RandomTestUtil.randomString());
 		String htmlEnd = StringBundler.concat(
@@ -125,18 +121,16 @@ public class StatusStrutsActionTest {
 
 		_testExecute(
 			StringBundler.concat(
-				htmlStart, "\n  <div id=\"content\">", _STATUS_PAGE_CONTENT,
-				"</div>\n  ", htmlEnd),
+				htmlStart, "<div id=\"content\">", _STATUS_PAGE_CONTENT,
+				"</div>", htmlEnd),
 			StringBundler.concat(
-				htmlStart, "<div id=\"content\">",
-				RandomTestUtil.randomString(), "</div>", htmlEnd));
+				htmlStart, "<div id=\"content\">", _CONTENT_INCLUDE, "</div>",
+				htmlEnd));
 	}
 
 	@Test
 	@TestInfo("LPD-1226")
-	public void testExecuteWithThemeWithoutElementWithIdContent()
-		throws Exception {
-
+	public void testExecuteWithThemeWithoutContentInclude() throws Exception {
 		Mockito.reset(_log);
 		Mockito.when(
 			_log.isWarnEnabled()
@@ -161,7 +155,7 @@ public class StatusStrutsActionTest {
 			_log
 		).warn(
 			"Replacing all body content because theme " +
-				_layoutSet.getThemeId() + " lacks a tag with ID \"content\""
+				_layoutSet.getThemeId() + " lacks a content include"
 		);
 
 		Mockito.reset(_log);
@@ -176,17 +170,7 @@ public class StatusStrutsActionTest {
 	}
 
 	private static void _setUpHttpServletRequest() {
-		Mockito.when(
-			_httpServletRequest.getAttribute(WebKeys.THEME_DISPLAY)
-		).thenReturn(
-			_themeDisplay
-		);
-
-		Mockito.when(
-			_httpServletRequest.getServletContext()
-		).thenReturn(
-			_servletContext
-		);
+		_httpServletRequest.setAttribute(WebKeys.THEME_DISPLAY, _themeDisplay);
 	}
 
 	private static void _setUpLayoutSetLocalService() throws Exception {
@@ -217,7 +201,7 @@ public class StatusStrutsActionTest {
 
 				PrintWriter printWriter = pipingServletResponse.getWriter();
 
-				printWriter.println(_STATUS_PAGE_CONTENT);
+				printWriter.print(_STATUS_PAGE_CONTENT);
 
 				return null;
 			}
@@ -244,15 +228,35 @@ public class StatusStrutsActionTest {
 			_statusStrutsAction, "_servletContext", _servletContext);
 	}
 
+	private static void _setUpThemeUtil() {
+		_themeUtilMockedStatic.when(
+			() -> ThemeUtil.replaceBodyContent(
+				Mockito.anyString(), Mockito.anyString())
+		).thenCallRealMethod();
+	}
+
 	private void _testExecute(String expected, String html) throws Exception {
 		_servletResponseUtilMockedStatic.clearInvocations();
 
 		_themeUtilMockedStatic.when(
 			() -> ThemeUtil.include(
-				_servletContext, _httpServletRequest, _httpServletResponse,
-				"portal_normal.ftl", _theme, false)
-		).thenReturn(
-			html
+				_httpServletRequest.getServletContext(), _httpServletRequest,
+				_httpServletResponse, "portal_normal.ftl", _theme, false)
+		).thenAnswer(
+			invocation -> {
+				if (!html.contains(_CONTENT_INCLUDE)) {
+					return html;
+				}
+
+				StringBundler sb =
+					(StringBundler)_httpServletRequest.getAttribute(
+						WebKeys.LAYOUT_CONTENT);
+
+				_httpServletRequest.removeAttribute(WebKeys.LAYOUT_CONTENT);
+
+				return StringUtil.replace(
+					html, _CONTENT_INCLUDE, sb.toString());
+			}
 		);
 
 		_statusStrutsAction.execute(_httpServletRequest, _httpServletResponse);
@@ -267,6 +271,8 @@ public class StatusStrutsActionTest {
 		Assert.assertEquals(expected, argumentCaptor.getValue());
 	}
 
+	private static final String _CONTENT_INCLUDE = "[$CONTENT_INCLUDE$]";
+
 	private static final String _HTML_END = "</body>\n</html>";
 
 	private static final String _HTML_START = StringBundler.concat(
@@ -278,8 +284,8 @@ public class StatusStrutsActionTest {
 
 	private static final Log _log = Mockito.mock(Log.class);
 
-	private static final HttpServletRequest _httpServletRequest = Mockito.mock(
-		HttpServletRequest.class);
+	private static final HttpServletRequest _httpServletRequest =
+		new MockHttpServletRequest();
 	private static final HttpServletResponse _httpServletResponse =
 		Mockito.mock(HttpServletResponse.class);
 	private static final LayoutSet _layoutSet = Mockito.mock(LayoutSet.class);
