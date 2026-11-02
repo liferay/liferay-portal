@@ -696,11 +696,6 @@
 			<category name="Bug Prevention" />
 			<description name="Checks for nested annotations inside `@see`." />
 		</check>
-		<check name="JavaServiceHopCheck">
-			<category name="Performance" />
-			<description name="Flags a service method that delegates to a passthrough service method in the same bundle, so it can call persistence directly and skip the AOP proxy hop." />
-			<property name="enabled" value="true" />
-		</check>
 		<check name="JavaServiceImplCheck">
 			<category name="Bug Prevention" />
 			<description name="Ensures that `afterPropertiesSet` and `destroy` methods in `*ServiceImpl` always call the method with the same name in the superclass." />
