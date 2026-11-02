@@ -389,6 +389,7 @@ describe('MiniCart Items List Actions', () => {
 							).toHaveBeenCalledWith(orderId, {cartItems: []});
 							expect(updateCartModel).toHaveBeenCalledWith({
 								order: {id: orderId},
+								refreshItems: true,
 							});
 							expect(setIsUpdating).toHaveBeenCalledTimes(2);
 							expect(setIsUpdating.mock.calls).toEqual([
