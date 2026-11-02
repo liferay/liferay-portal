@@ -18,7 +18,6 @@ import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
-import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -75,9 +74,18 @@ public class LayoutLocalizationUpgradeProcessTest {
 					_ctCollection1.getCtCollectionId())) {
 
 			layoutLocalization =
+				_layoutLocalizationLocalService.createLayoutLocalization(
+					RandomTestUtil.randomLong());
+
+			layoutLocalization.setGroupId(_group.getGroupId());
+			layoutLocalization.setCompanyId(_group.getCompanyId());
+			layoutLocalization.setContent(RandomTestUtil.randomString());
+			layoutLocalization.setLanguageId("en_US");
+			layoutLocalization.setPlid(RandomTestUtil.randomLong());
+
+			layoutLocalization =
 				_layoutLocalizationLocalService.addLayoutLocalization(
-					_group.getGroupId(), RandomTestUtil.randomString(), "en_US",
-					RandomTestUtil.randomLong(), new ServiceContext());
+					layoutLocalization);
 		}
 
 		_runUpgrade();

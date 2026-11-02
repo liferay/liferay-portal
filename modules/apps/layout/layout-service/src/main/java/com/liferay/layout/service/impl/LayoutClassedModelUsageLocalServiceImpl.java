@@ -12,7 +12,6 @@ import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServ
 import com.liferay.layout.service.base.LayoutClassedModelUsageLocalServiceBaseImpl;
 import com.liferay.layout.util.constants.LayoutClassedModelUsageConstants;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.mass.delete.MassDeleteCacheThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
@@ -185,26 +184,6 @@ public class LayoutClassedModelUsageLocalServiceImpl
 
 		return layoutClassedModelUsagePersistence.countByCN_CPK_T(
 			classNameId, classPK, type);
-	}
-
-	@Override
-	public LayoutClassedModelUsage updateLayoutClassedModelUsage(
-			long classNameId, long classPK, String containerKey,
-			long containerType, long layoutClassedModelUsageId, long plid)
-		throws PortalException {
-
-		LayoutClassedModelUsage layoutClassedModelUsage =
-			layoutClassedModelUsagePersistence.findByPrimaryKey(
-				layoutClassedModelUsageId);
-
-		layoutClassedModelUsage.setClassNameId(classNameId);
-		layoutClassedModelUsage.setClassPK(classPK);
-		layoutClassedModelUsage.setContainerKey(containerKey);
-		layoutClassedModelUsage.setContainerType(containerType);
-		layoutClassedModelUsage.setPlid(plid);
-
-		return layoutClassedModelUsagePersistence.update(
-			layoutClassedModelUsage);
 	}
 
 	private int _getType(long plid) {
