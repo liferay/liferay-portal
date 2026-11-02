@@ -65,9 +65,6 @@ public class AddressCommerceCheckoutStepDisplayContext {
 			(CommerceContext)actionRequest.getAttribute(
 				CommerceWebKeys.COMMERCE_CONTEXT);
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		CommerceOrder commerceOrder = _getCommerceOrder(
 			actionRequest, commerceContext.getCommerceChannelGroupId());
 
@@ -82,26 +79,12 @@ public class AddressCommerceCheckoutStepDisplayContext {
 			commerceAddressId = commerceAddress.getCommerceAddressId();
 		}
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
 		_commerceOrderModelResourcePermission.check(
 			themeDisplay.getPermissionChecker(), commerceOrder,
 			CommerceOrderActionKeys.CHECKOUT_COMMERCE_ORDER);
-
-		boolean useAsBilling = ParamUtil.getBoolean(
-			actionRequest, "use-as-billing");
-
-		CommerceAddress commerceAddress =
-			_commerceAddressService.getCommerceAddress(commerceAddressId);
-
-		if (useAsBilling) {
-			Country country = commerceAddress.getCountry();
-
-			if (!country.isBillingAllowed()) {
-				throw new CommerceOrderShippingAndBillingException();
-			}
-
-			_commerceAddressType =
-				CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING;
-		}
 
 		if (Objects.equals(
 				CommerceCheckoutWebKeys.SHIPPING_ADDRESS_PARAM_NAME,
@@ -111,7 +94,22 @@ public class AddressCommerceCheckoutStepDisplayContext {
 				throw new CommerceOrderShippingAddressException();
 			}
 
+			CommerceAddress commerceAddress =
+				_commerceAddressService.getCommerceAddress(commerceAddressId);
+
+			boolean useAsBilling = ParamUtil.getBoolean(
+				actionRequest, "use-as-billing");
+
 			if (useAsBilling) {
+				Country country = commerceAddress.getCountry();
+
+				if (!country.isBillingAllowed()) {
+					throw new CommerceOrderShippingAndBillingException();
+				}
+
+				_commerceAddressType =
+					CommerceAddressConstants.ADDRESS_TYPE_BILLING_AND_SHIPPING;
+
 				_commerceAddressService.updateCommerceAddress(
 					commerceAddress.getExternalReferenceCode(),
 					commerceAddressId, commerceAddress.getCountryId(),
@@ -159,6 +157,8 @@ public class AddressCommerceCheckoutStepDisplayContext {
 			if (commerceAddressId < 1) {
 				throw new CommerceOrderBillingAddressException();
 			}
+
+			_commerceAddressService.getCommerceAddress(commerceAddressId);
 
 			return updateCommerceOrderAddress(
 				commerceOrder, commerceAddressId,
