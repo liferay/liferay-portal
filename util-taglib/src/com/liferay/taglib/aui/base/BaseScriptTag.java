@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.PositionTagSupport;
+
 import jakarta.servlet.jsp.JspException;
 
 /**
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseScriptTag
-	extends com.liferay.taglib.util.PositionTagSupport {
+	extends PositionTagSupport {
 
 	public int doStartTag() throws JspException {
 		return super.doStartTag();

@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.jsp.JspException;
 
 /**
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseModelContextTag
-	extends com.liferay.taglib.util.IncludeTag {
+	extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -61,7 +63,7 @@ public abstract class BaseModelContextTag
 		return _PAGE;
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:model-context:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:model-context:";
 
 	private static final String _PAGE =
 		"/html/taglib/aui/model_context/page.jsp";

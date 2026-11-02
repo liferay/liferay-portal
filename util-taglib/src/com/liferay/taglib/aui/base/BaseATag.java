@@ -5,7 +5,11 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.jsp.JspException;
+
+import java.util.Map;
 
 /**
  * @author Eduardo Lundgren
@@ -13,7 +17,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseATag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -34,7 +38,7 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		return _cssClass;
 	}
 
-	public java.util.Map<String, Object> getData() {
+	public Map<String, Object> getData() {
 		return _data;
 	}
 
@@ -90,7 +94,7 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<String, Object> data) {
+	public void setData(Map<String, Object> data) {
 		_data = data;
 	}
 
@@ -143,6 +147,7 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		_cssClass = null;
 		_data = null;
 		_href = null;
+		_icon = null;
 		_iconCssClass = null;
 		_id = null;
 		_label = null;
@@ -163,7 +168,7 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 		return _START_PAGE;
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:a:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:a:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/a/end.jsp";
 
@@ -172,7 +177,7 @@ public abstract class BaseATag extends com.liferay.taglib.util.IncludeTag {
 	private String _ariaLabel;
 	private String _ariaRole;
 	private String _cssClass;
-	private java.util.Map<String, Object> _data;
+	private Map<String, Object> _data;
 	private String _href;
 	private String _icon;
 	private String _iconCssClass;

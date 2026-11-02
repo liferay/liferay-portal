@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -15,7 +17,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseWorkflowStatusTag
-	extends com.liferay.taglib.util.IncludeTag {
+	extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -135,21 +137,21 @@ public abstract class BaseWorkflowStatusTag
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "bean", _bean);
-		setNamespacedAttribute(request, "helpMessage", _helpMessage);
-		setNamespacedAttribute(request, "id", _id);
-		setNamespacedAttribute(request, "markupView", _markupView);
-		setNamespacedAttribute(request, "model", _model);
-		setNamespacedAttribute(request, "showHelpMessage", _showHelpMessage);
-		setNamespacedAttribute(request, "showIcon", _showIcon);
-		setNamespacedAttribute(request, "showLabel", _showLabel);
-		setNamespacedAttribute(request, "status", _status);
-		setNamespacedAttribute(request, "statusMessage", _statusMessage);
-		setNamespacedAttribute(request, "version", _version);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "bean", _bean);
+		setNamespacedAttribute(httpServletRequest, "helpMessage", _helpMessage);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
+		setNamespacedAttribute(httpServletRequest, "markupView", _markupView);
+		setNamespacedAttribute(httpServletRequest, "model", _model);
+		setNamespacedAttribute(httpServletRequest, "showHelpMessage", _showHelpMessage);
+		setNamespacedAttribute(httpServletRequest, "showIcon", _showIcon);
+		setNamespacedAttribute(httpServletRequest, "showLabel", _showLabel);
+		setNamespacedAttribute(httpServletRequest, "status", _status);
+		setNamespacedAttribute(httpServletRequest, "statusMessage", _statusMessage);
+		setNamespacedAttribute(httpServletRequest, "version", _version);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:workflow-status:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:workflow-status:";
 
 	private static final String _PAGE =
 		"/html/taglib/aui/workflow_status/page.jsp";

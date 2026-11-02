@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -15,7 +17,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseFieldWrapperTag
-	extends com.liferay.taglib.util.IncludeTag {
+	extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -149,22 +151,22 @@ public abstract class BaseFieldWrapperTag
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "data", _data);
-		setNamespacedAttribute(request, "disabled", _disabled);
-		setNamespacedAttribute(request, "first", _first);
-		setNamespacedAttribute(request, "helpMessage", _helpMessage);
-		setNamespacedAttribute(request, "inlineField", _inlineField);
-		setNamespacedAttribute(request, "inlineLabel", _inlineLabel);
-		setNamespacedAttribute(request, "label", _label);
-		setNamespacedAttribute(request, "last", _last);
-		setNamespacedAttribute(request, "localizeLabel", _localizeLabel);
-		setNamespacedAttribute(request, "name", _name);
-		setNamespacedAttribute(request, "required", _required);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "data", _data);
+		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
+		setNamespacedAttribute(httpServletRequest, "first", _first);
+		setNamespacedAttribute(httpServletRequest, "helpMessage", _helpMessage);
+		setNamespacedAttribute(httpServletRequest, "inlineField", _inlineField);
+		setNamespacedAttribute(httpServletRequest, "inlineLabel", _inlineLabel);
+		setNamespacedAttribute(httpServletRequest, "label", _label);
+		setNamespacedAttribute(httpServletRequest, "last", _last);
+		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(httpServletRequest, "name", _name);
+		setNamespacedAttribute(httpServletRequest, "required", _required);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:field-wrapper:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:field-wrapper:";
 
 	private static final String _END_PAGE =
 		"/html/taglib/aui/field_wrapper/end.jsp";

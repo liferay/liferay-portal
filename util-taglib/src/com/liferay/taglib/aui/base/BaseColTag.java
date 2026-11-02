@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseColTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseColTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -112,18 +114,18 @@ public abstract class BaseColTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "id", _id);
-		setNamespacedAttribute(request, "lg", _lg);
-		setNamespacedAttribute(request, "md", _md);
-		setNamespacedAttribute(request, "sm", _sm);
-		setNamespacedAttribute(request, "span", _span);
-		setNamespacedAttribute(request, "width", _width);
-		setNamespacedAttribute(request, "xs", _xs);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
+		setNamespacedAttribute(httpServletRequest, "lg", _lg);
+		setNamespacedAttribute(httpServletRequest, "md", _md);
+		setNamespacedAttribute(httpServletRequest, "sm", _sm);
+		setNamespacedAttribute(httpServletRequest, "span", _span);
+		setNamespacedAttribute(httpServletRequest, "width", _width);
+		setNamespacedAttribute(httpServletRequest, "xs", _xs);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:col:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:col:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/col/end.jsp";
 

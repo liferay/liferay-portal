@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseButtonTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -161,24 +163,24 @@ public abstract class BaseButtonTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "data", _data);
-		setNamespacedAttribute(request, "disabled", _disabled);
-		setNamespacedAttribute(request, "href", _href);
-		setNamespacedAttribute(request, "icon", _icon);
-		setNamespacedAttribute(request, "iconAlign", _iconAlign);
-		setNamespacedAttribute(request, "id", _id);
-		setNamespacedAttribute(request, "name", _name);
-		setNamespacedAttribute(request, "onClick", _onClick);
-		setNamespacedAttribute(request, "primary", _primary);
-		setNamespacedAttribute(request, "type", _type);
-		setNamespacedAttribute(request, "useDialog", _useDialog);
-		setNamespacedAttribute(request, "useNamespace", _useNamespace);
-		setNamespacedAttribute(request, "value", _value);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "data", _data);
+		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
+		setNamespacedAttribute(httpServletRequest, "href", _href);
+		setNamespacedAttribute(httpServletRequest, "icon", _icon);
+		setNamespacedAttribute(httpServletRequest, "iconAlign", _iconAlign);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
+		setNamespacedAttribute(httpServletRequest, "name", _name);
+		setNamespacedAttribute(httpServletRequest, "onClick", _onClick);
+		setNamespacedAttribute(httpServletRequest, "primary", _primary);
+		setNamespacedAttribute(httpServletRequest, "type", _type);
+		setNamespacedAttribute(httpServletRequest, "useDialog", _useDialog);
+		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(httpServletRequest, "value", _value);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:button:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:button:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/button/end.jsp";
 

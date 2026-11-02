@@ -5,8 +5,12 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
+
+import java.util.Map;
 
 /**
  * @author Eduardo Lundgren
@@ -14,7 +18,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseOptionTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -27,7 +31,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		return _cssClass;
 	}
 
-	public java.util.Map<String, Object> getData() {
+	public Map<String, Object> getData() {
 		return _data;
 	}
 
@@ -63,7 +67,7 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<String, Object> data) {
+	public void setData(Map<String, Object> data) {
 		_data = data;
 	}
 
@@ -116,25 +120,25 @@ public abstract class BaseOptionTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "data", _data);
-		setNamespacedAttribute(request, "disabled", _disabled);
-		setNamespacedAttribute(request, "label", _label);
-		setNamespacedAttribute(request, "localizeLabel", _localizeLabel);
-		setNamespacedAttribute(request, "selected", _selected);
-		setNamespacedAttribute(request, "style", _style);
-		setNamespacedAttribute(request, "useModelValue", _useModelValue);
-		setNamespacedAttribute(request, "value", _value);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "data", _data);
+		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
+		setNamespacedAttribute(httpServletRequest, "label", _label);
+		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(httpServletRequest, "selected", _selected);
+		setNamespacedAttribute(httpServletRequest, "style", _style);
+		setNamespacedAttribute(httpServletRequest, "useModelValue", _useModelValue);
+		setNamespacedAttribute(httpServletRequest, "value", _value);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:option:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:option:";
 
 	private static final String _START_PAGE =
 		"/html/taglib/aui/option/start.jsp";
 
 	private String _cssClass;
-	private java.util.Map<String, Object> _data;
+	private Map<String, Object> _data;
 	private boolean _disabled;
 	private Object _label;
 	private boolean _localizeLabel = true;

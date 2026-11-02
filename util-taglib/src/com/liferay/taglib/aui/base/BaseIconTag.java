@@ -5,8 +5,12 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
+
+import java.util.Map;
 
 /**
  * @author Eduardo Lundgren
@@ -14,7 +18,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseIconTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -31,7 +35,7 @@ public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
 		return _cssClass;
 	}
 
-	public java.util.Map<String, Object> getData() {
+	public Map<String, Object> getData() {
 		return _data;
 	}
 
@@ -71,7 +75,7 @@ public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<String, Object> data) {
+	public void setData(Map<String, Object> data) {
 		_data = data;
 	}
 
@@ -125,26 +129,26 @@ public abstract class BaseIconTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "ariaLabel", _ariaLabel);
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "data", _data);
-		setNamespacedAttribute(request, "id", _id);
-		setNamespacedAttribute(request, "image", _image);
-		setNamespacedAttribute(request, "label", _label);
-		setNamespacedAttribute(request, "markupView", _markupView);
-		setNamespacedAttribute(request, "src", _src);
-		setNamespacedAttribute(request, "target", _target);
-		setNamespacedAttribute(request, "url", _url);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "ariaLabel", _ariaLabel);
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "data", _data);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
+		setNamespacedAttribute(httpServletRequest, "image", _image);
+		setNamespacedAttribute(httpServletRequest, "label", _label);
+		setNamespacedAttribute(httpServletRequest, "markupView", _markupView);
+		setNamespacedAttribute(httpServletRequest, "src", _src);
+		setNamespacedAttribute(httpServletRequest, "target", _target);
+		setNamespacedAttribute(httpServletRequest, "url", _url);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:icon:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:icon:";
 
 	private static final String _PAGE = "/html/taglib/aui/icon/page.jsp";
 
 	private String _ariaLabel;
 	private String _cssClass;
-	private java.util.Map<String, Object> _data;
+	private Map<String, Object> _data;
 	private String _id;
 	private String _image;
 	private String _label;

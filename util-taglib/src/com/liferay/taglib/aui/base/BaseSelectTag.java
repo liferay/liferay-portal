@@ -5,8 +5,12 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.BaseValidatorTagSupport;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
+
+import java.util.Map;
 
 /**
  * @author Eduardo Lundgren
@@ -15,7 +19,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseSelectTag
-	extends com.liferay.taglib.BaseValidatorTagSupport {
+	extends BaseValidatorTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -36,7 +40,7 @@ public abstract class BaseSelectTag
 		return _cssClass;
 	}
 
-	public java.util.Map<String, Object> getData() {
+	public Map<String, Object> getData() {
 		return _data;
 	}
 
@@ -160,7 +164,7 @@ public abstract class BaseSelectTag
 		_cssClass = cssClass;
 	}
 
-	public void setData(java.util.Map<String, Object> data) {
+	public void setData(Map<String, Object> data) {
 		_data = data;
 	}
 
@@ -320,44 +324,44 @@ public abstract class BaseSelectTag
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "bean", _bean);
-		setNamespacedAttribute(request, "changesContext", _changesContext);
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "data", _data);
-		setNamespacedAttribute(request, "disabled", _disabled);
-		setNamespacedAttribute(request, "field", _field);
-		setNamespacedAttribute(request, "first", _first);
-		setNamespacedAttribute(request, "helpMessage", _helpMessage);
-		setNamespacedAttribute(request, "id", _id);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "bean", _bean);
+		setNamespacedAttribute(httpServletRequest, "changesContext", _changesContext);
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "data", _data);
+		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
+		setNamespacedAttribute(httpServletRequest, "field", _field);
+		setNamespacedAttribute(httpServletRequest, "first", _first);
+		setNamespacedAttribute(httpServletRequest, "helpMessage", _helpMessage);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
 		setNamespacedAttribute(
-			request, "ignoreRequestValue", _ignoreRequestValue);
-		setNamespacedAttribute(request, "inlineField", _inlineField);
-		setNamespacedAttribute(request, "inlineLabel", _inlineLabel);
-		setNamespacedAttribute(request, "label", _label);
-		setNamespacedAttribute(request, "last", _last);
-		setNamespacedAttribute(request, "listType", _listType);
+			httpServletRequest, "ignoreRequestValue", _ignoreRequestValue);
+		setNamespacedAttribute(httpServletRequest, "inlineField", _inlineField);
+		setNamespacedAttribute(httpServletRequest, "inlineLabel", _inlineLabel);
+		setNamespacedAttribute(httpServletRequest, "label", _label);
+		setNamespacedAttribute(httpServletRequest, "last", _last);
+		setNamespacedAttribute(httpServletRequest, "listType", _listType);
 		setNamespacedAttribute(
-			request, "listTypeFieldName", _listTypeFieldName);
-		setNamespacedAttribute(request, "localizeLabel", _localizeLabel);
-		setNamespacedAttribute(request, "model", _model);
-		setNamespacedAttribute(request, "multiple", _multiple);
-		setNamespacedAttribute(request, "name", _name);
-		setNamespacedAttribute(request, "onChange", _onChange);
-		setNamespacedAttribute(request, "onClick", _onClick);
-		setNamespacedAttribute(request, "prefix", _prefix);
-		setNamespacedAttribute(request, "required", _required);
-		setNamespacedAttribute(request, "showEmptyOption", _showEmptyOption);
+			httpServletRequest, "listTypeFieldName", _listTypeFieldName);
+		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(httpServletRequest, "model", _model);
+		setNamespacedAttribute(httpServletRequest, "multiple", _multiple);
+		setNamespacedAttribute(httpServletRequest, "name", _name);
+		setNamespacedAttribute(httpServletRequest, "onChange", _onChange);
+		setNamespacedAttribute(httpServletRequest, "onClick", _onClick);
+		setNamespacedAttribute(httpServletRequest, "prefix", _prefix);
+		setNamespacedAttribute(httpServletRequest, "required", _required);
+		setNamespacedAttribute(httpServletRequest, "showEmptyOption", _showEmptyOption);
 		setNamespacedAttribute(
-			request, "showRequiredLabel", _showRequiredLabel);
-		setNamespacedAttribute(request, "suffix", _suffix);
-		setNamespacedAttribute(request, "title", _title);
-		setNamespacedAttribute(request, "useNamespace", _useNamespace);
-		setNamespacedAttribute(request, "value", _value);
-		setNamespacedAttribute(request, "wrapperCssClass", _wrapperCssClass);
+			httpServletRequest, "showRequiredLabel", _showRequiredLabel);
+		setNamespacedAttribute(httpServletRequest, "suffix", _suffix);
+		setNamespacedAttribute(httpServletRequest, "title", _title);
+		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(httpServletRequest, "value", _value);
+		setNamespacedAttribute(httpServletRequest, "wrapperCssClass", _wrapperCssClass);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:select:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:select:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/select/end.jsp";
 
@@ -367,7 +371,7 @@ public abstract class BaseSelectTag
 	private Object _bean;
 	private boolean _changesContext;
 	private String _cssClass;
-	private java.util.Map<String, Object> _data;
+	private Map<String, Object> _data;
 	private boolean _disabled;
 	private String _field;
 	private boolean _first;

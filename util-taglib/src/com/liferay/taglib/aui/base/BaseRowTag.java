@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseRowTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseRowTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -58,12 +60,12 @@ public abstract class BaseRowTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "id", _id);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:row:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:row:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/row/end.jsp";
 

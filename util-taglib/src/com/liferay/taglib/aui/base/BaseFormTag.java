@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseFormTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseFormTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -130,20 +132,20 @@ public abstract class BaseFormTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "action", _action);
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "escapeXml", _escapeXml);
-		setNamespacedAttribute(request, "inlineLabels", _inlineLabels);
-		setNamespacedAttribute(request, "method", _method);
-		setNamespacedAttribute(request, "name", _name);
-		setNamespacedAttribute(request, "onSubmit", _onSubmit);
-		setNamespacedAttribute(request, "portletNamespace", _portletNamespace);
-		setNamespacedAttribute(request, "useNamespace", _useNamespace);
-		setNamespacedAttribute(request, "validateOnBlur", _validateOnBlur);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "action", _action);
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "escapeXml", _escapeXml);
+		setNamespacedAttribute(httpServletRequest, "inlineLabels", _inlineLabels);
+		setNamespacedAttribute(httpServletRequest, "method", _method);
+		setNamespacedAttribute(httpServletRequest, "name", _name);
+		setNamespacedAttribute(httpServletRequest, "onSubmit", _onSubmit);
+		setNamespacedAttribute(httpServletRequest, "portletNamespace", _portletNamespace);
+		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(httpServletRequest, "validateOnBlur", _validateOnBlur);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:form:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:form:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/form/end.jsp";
 

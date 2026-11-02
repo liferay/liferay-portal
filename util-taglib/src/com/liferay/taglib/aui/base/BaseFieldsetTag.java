@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -15,7 +17,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseFieldsetTag
-	extends com.liferay.taglib.util.IncludeTag {
+	extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -131,21 +133,21 @@ public abstract class BaseFieldsetTag
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "collapsed", _collapsed);
-		setNamespacedAttribute(request, "collapsible", _collapsible);
-		setNamespacedAttribute(request, "column", _column);
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "helpMessage", _helpMessage);
-		setNamespacedAttribute(request, "id", _id);
-		setNamespacedAttribute(request, "label", _label);
-		setNamespacedAttribute(request, "localizeLabel", _localizeLabel);
-		setNamespacedAttribute(request, "markupView", _markupView);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "collapsed", _collapsed);
+		setNamespacedAttribute(httpServletRequest, "collapsible", _collapsible);
+		setNamespacedAttribute(httpServletRequest, "column", _column);
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "helpMessage", _helpMessage);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
+		setNamespacedAttribute(httpServletRequest, "label", _label);
+		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(httpServletRequest, "markupView", _markupView);
 		setNamespacedAttribute(
-			request, "panelHeaderLinkCssClass", _panelHeaderLinkCssClass);
+			httpServletRequest, "panelHeaderLinkCssClass", _panelHeaderLinkCssClass);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:fieldset:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:fieldset:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/fieldset/end.jsp";
 

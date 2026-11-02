@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.BaseValidatorTagSupport;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -18,7 +20,7 @@ import java.util.List;
  * @author Julio Camarero
  */
 public abstract class BaseInputTag
-	extends com.liferay.taglib.BaseValidatorTagSupport {
+	extends BaseValidatorTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -545,74 +547,74 @@ public abstract class BaseInputTag
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
 		setNamespacedAttribute(
-			request, "activeLanguageIds", _activeLanguageIds);
-		setNamespacedAttribute(request, "adminMode", _adminMode);
-		setNamespacedAttribute(request, "autoFocus", _autoFocus);
-		setNamespacedAttribute(request, "autoSize", _autoSize);
-		setNamespacedAttribute(request, "bean", _bean);
-		setNamespacedAttribute(request, "buttonIconOff", _buttonIconOff);
-		setNamespacedAttribute(request, "buttonIconOn", _buttonIconOn);
-		setNamespacedAttribute(request, "changesContext", _changesContext);
-		setNamespacedAttribute(request, "checked", _checked);
-		setNamespacedAttribute(request, "classPK", _classPK);
-		setNamespacedAttribute(request, "classTypePK", _classTypePK);
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "data", _data);
+			httpServletRequest, "activeLanguageIds", _activeLanguageIds);
+		setNamespacedAttribute(httpServletRequest, "adminMode", _adminMode);
+		setNamespacedAttribute(httpServletRequest, "autoFocus", _autoFocus);
+		setNamespacedAttribute(httpServletRequest, "autoSize", _autoSize);
+		setNamespacedAttribute(httpServletRequest, "bean", _bean);
+		setNamespacedAttribute(httpServletRequest, "buttonIconOff", _buttonIconOff);
+		setNamespacedAttribute(httpServletRequest, "buttonIconOn", _buttonIconOn);
+		setNamespacedAttribute(httpServletRequest, "changesContext", _changesContext);
+		setNamespacedAttribute(httpServletRequest, "checked", _checked);
+		setNamespacedAttribute(httpServletRequest, "classPK", _classPK);
+		setNamespacedAttribute(httpServletRequest, "classTypePK", _classTypePK);
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "data", _data);
 		setNamespacedAttribute(
-			request, "dateTogglerCheckboxLabel", _dateTogglerCheckboxLabel);
+			httpServletRequest, "dateTogglerCheckboxLabel", _dateTogglerCheckboxLabel);
 		setNamespacedAttribute(
-			request, "defaultLanguageId", _defaultLanguageId);
-		setNamespacedAttribute(request, "disabled", _disabled);
-		setNamespacedAttribute(request, "field", _field);
-		setNamespacedAttribute(request, "fieldParam", _fieldParam);
-		setNamespacedAttribute(request, "first", _first);
-		setNamespacedAttribute(request, "formName", _formName);
-		setNamespacedAttribute(request, "helpMessage", _helpMessage);
-		setNamespacedAttribute(request, "helpTextCssClass", _helpTextCssClass);
+			httpServletRequest, "defaultLanguageId", _defaultLanguageId);
+		setNamespacedAttribute(httpServletRequest, "disabled", _disabled);
+		setNamespacedAttribute(httpServletRequest, "field", _field);
+		setNamespacedAttribute(httpServletRequest, "fieldParam", _fieldParam);
+		setNamespacedAttribute(httpServletRequest, "first", _first);
+		setNamespacedAttribute(httpServletRequest, "formName", _formName);
+		setNamespacedAttribute(httpServletRequest, "helpMessage", _helpMessage);
+		setNamespacedAttribute(httpServletRequest, "helpTextCssClass", _helpTextCssClass);
+		setNamespacedAttribute(httpServletRequest, "iconOff", _iconOff);
+		setNamespacedAttribute(httpServletRequest, "iconOn", _iconOn);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
 		setNamespacedAttribute(
-			request, "languagesDropdownVisible", _languagesDropdownVisible);
-		setNamespacedAttribute(request, "iconOff", _iconOff);
-		setNamespacedAttribute(request, "iconOn", _iconOn);
-		setNamespacedAttribute(request, "id", _id);
+			httpServletRequest, "ignoreRequestValue", _ignoreRequestValue);
+		setNamespacedAttribute(httpServletRequest, "inlineField", _inlineField);
+		setNamespacedAttribute(httpServletRequest, "inlineLabel", _inlineLabel);
+		setNamespacedAttribute(httpServletRequest, "label", _label);
+		setNamespacedAttribute(httpServletRequest, "labelCssClass", _labelCssClass);
+		setNamespacedAttribute(httpServletRequest, "languageId", _languageId);
 		setNamespacedAttribute(
-			request, "ignoreRequestValue", _ignoreRequestValue);
-		setNamespacedAttribute(request, "inlineField", _inlineField);
-		setNamespacedAttribute(request, "inlineLabel", _inlineLabel);
-		setNamespacedAttribute(request, "label", _label);
-		setNamespacedAttribute(request, "labelCssClass", _labelCssClass);
-		setNamespacedAttribute(request, "languageId", _languageId);
+			httpServletRequest, "languagesDropdownDirection", _languagesDropdownDirection);
 		setNamespacedAttribute(
-			request, "languagesDropdownDirection", _languagesDropdownDirection);
-		setNamespacedAttribute(request, "last", _last);
-		setNamespacedAttribute(request, "localized", _localized);
-		setNamespacedAttribute(request, "localizeLabel", _localizeLabel);
-		setNamespacedAttribute(request, "max", _max);
-		setNamespacedAttribute(request, "min", _min);
-		setNamespacedAttribute(request, "model", _model);
-		setNamespacedAttribute(request, "multiple", _multiple);
-		setNamespacedAttribute(request, "name", _name);
-		setNamespacedAttribute(request, "onChange", _onChange);
-		setNamespacedAttribute(request, "onClick", _onClick);
-		setNamespacedAttribute(request, "placeholder", _placeholder);
-		setNamespacedAttribute(request, "prefix", _prefix);
-		setNamespacedAttribute(request, "required", _required);
-		setNamespacedAttribute(request, "resizable", _resizable);
+			httpServletRequest, "languagesDropdownVisible", _languagesDropdownVisible);
+		setNamespacedAttribute(httpServletRequest, "last", _last);
+		setNamespacedAttribute(httpServletRequest, "localized", _localized);
+		setNamespacedAttribute(httpServletRequest, "localizeLabel", _localizeLabel);
+		setNamespacedAttribute(httpServletRequest, "max", _max);
+		setNamespacedAttribute(httpServletRequest, "min", _min);
+		setNamespacedAttribute(httpServletRequest, "model", _model);
+		setNamespacedAttribute(httpServletRequest, "multiple", _multiple);
+		setNamespacedAttribute(httpServletRequest, "name", _name);
+		setNamespacedAttribute(httpServletRequest, "onChange", _onChange);
+		setNamespacedAttribute(httpServletRequest, "onClick", _onClick);
+		setNamespacedAttribute(httpServletRequest, "placeholder", _placeholder);
+		setNamespacedAttribute(httpServletRequest, "prefix", _prefix);
+		setNamespacedAttribute(httpServletRequest, "required", _required);
+		setNamespacedAttribute(httpServletRequest, "resizable", _resizable);
 		setNamespacedAttribute(
-			request, "selectedLanguageId", _selectedLanguageId);
+			httpServletRequest, "selectedLanguageId", _selectedLanguageId);
 		setNamespacedAttribute(
-			request, "showRequiredLabel", _showRequiredLabel);
-		setNamespacedAttribute(request, "suffix", _suffix);
-		setNamespacedAttribute(request, "title", _title);
-		setNamespacedAttribute(request, "type", _type);
-		setNamespacedAttribute(request, "useNamespace", _useNamespace);
-		setNamespacedAttribute(request, "value", _value);
-		setNamespacedAttribute(request, "wrappedField", _wrappedField);
-		setNamespacedAttribute(request, "wrapperCssClass", _wrapperCssClass);
+			httpServletRequest, "showRequiredLabel", _showRequiredLabel);
+		setNamespacedAttribute(httpServletRequest, "suffix", _suffix);
+		setNamespacedAttribute(httpServletRequest, "title", _title);
+		setNamespacedAttribute(httpServletRequest, "type", _type);
+		setNamespacedAttribute(httpServletRequest, "useNamespace", _useNamespace);
+		setNamespacedAttribute(httpServletRequest, "value", _value);
+		setNamespacedAttribute(httpServletRequest, "wrappedField", _wrappedField);
+		setNamespacedAttribute(httpServletRequest, "wrapperCssClass", _wrapperCssClass);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:input:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:input:";
 
 	private static final String _PAGE = "/html/taglib/aui/input/page.jsp";
 

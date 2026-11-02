@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.BaseBodyTagSupport;
+
 import jakarta.servlet.jsp.JspException;
 
 /**
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Julio Camarero
  */
 public abstract class BaseValidatorTagImpl
-	extends com.liferay.taglib.BaseBodyTagSupport {
+	extends BaseBodyTagSupport {
 
 	@Override
 	public int doStartTag() throws JspException {

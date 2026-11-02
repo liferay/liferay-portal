@@ -5,6 +5,8 @@
 
 package com.liferay.taglib.aui.base;
 
+import com.liferay.taglib.util.IncludeTag;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
@@ -14,7 +16,7 @@ import jakarta.servlet.jsp.JspException;
  * @author Nathan Cavanaugh
  * @author Julio Camarero
  */
-public abstract class BaseAlertTag extends com.liferay.taglib.util.IncludeTag {
+public abstract class BaseAlertTag extends IncludeTag {
 
 	@Override
 	public int doStartTag() throws JspException {
@@ -103,17 +105,17 @@ public abstract class BaseAlertTag extends com.liferay.taglib.util.IncludeTag {
 	}
 
 	@Override
-	protected void setAttributes(HttpServletRequest request) {
-		setNamespacedAttribute(request, "animated", _animated);
-		setNamespacedAttribute(request, "closeable", _closeable);
-		setNamespacedAttribute(request, "cssClass", _cssClass);
-		setNamespacedAttribute(request, "destroyOnHide", _destroyOnHide);
-		setNamespacedAttribute(request, "duration", _duration);
-		setNamespacedAttribute(request, "id", _id);
-		setNamespacedAttribute(request, "type", _type);
+	protected void setAttributes(HttpServletRequest httpServletRequest) {
+		setNamespacedAttribute(httpServletRequest, "animated", _animated);
+		setNamespacedAttribute(httpServletRequest, "closeable", _closeable);
+		setNamespacedAttribute(httpServletRequest, "cssClass", _cssClass);
+		setNamespacedAttribute(httpServletRequest, "destroyOnHide", _destroyOnHide);
+		setNamespacedAttribute(httpServletRequest, "duration", _duration);
+		setNamespacedAttribute(httpServletRequest, "id", _id);
+		setNamespacedAttribute(httpServletRequest, "type", _type);
 	}
 
-	protected static final String _ATTRIBUTE_NAMESPACE = "aui:alert:";
+	private static final String _ATTRIBUTE_NAMESPACE = "aui:alert:";
 
 	private static final String _END_PAGE = "/html/taglib/aui/alert/end.jsp";
 
