@@ -40,7 +40,7 @@ public class PLOEntryLanguageIdUpgradeProcessTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testDoUpgrade() throws Exception {
+	public void testUpgrade() throws Exception {
 		String key1 = RandomTestUtil.randomString();
 
 		PLOEntry ploEntry1 = _addPLOEntry(key1, "en_US", "iw_IL");
