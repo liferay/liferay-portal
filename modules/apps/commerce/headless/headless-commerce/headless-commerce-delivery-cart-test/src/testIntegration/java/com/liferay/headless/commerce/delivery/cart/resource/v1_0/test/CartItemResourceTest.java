@@ -11,6 +11,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
 import com.liferay.commerce.constants.CommerceAddressConstants;
 import com.liferay.commerce.constants.CommerceConstants;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
@@ -172,6 +173,7 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		super.testPatchCartItem();
 
 		_testPatchCartItemWithInvalidShippingAddress();
+		_testPatchCartItemWithUnitOfMeasure();
 	}
 
 	@Override
@@ -669,6 +671,94 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 		Assert.assertEquals(
 			Long.valueOf(commerceAddress2.getCommerceAddressId()),
 			patchCartItem.getShippingAddressId());
+	}
+
+	private void _testPatchCartItemWithUnitOfMeasure() throws Exception {
+		CPInstance cpInstance = _addCPInstance(false);
+		String unitOfMeasureKey1 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			testGroup.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey1, BigDecimal.ONE, cpInstance.getSku());
+
+		String unitOfMeasureKey2 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			testGroup.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey2, BigDecimal.ONE, cpInstance.getSku());
+
+		CommercePriceEntry commercePriceEntry =
+			_commercePriceEntryLocalService.getInstanceBaseCommercePriceEntry(
+				cpInstance.getCPInstanceUuid(),
+				CommercePriceListConstants.TYPE_PRICE_LIST, unitOfMeasureKey2);
+
+		commercePriceEntry.setPrice(
+			BigDecimal.valueOf(RandomTestUtil.randomInt(100, 200)));
+
+		commercePriceEntry =
+			_commercePriceEntryLocalService.updateCommercePriceEntry(
+				commercePriceEntry);
+
+		CartItem cartItem = _randomCartItem(cpInstance);
+
+		SkuUnitOfMeasure skuUnitOfMeasure1 = new SkuUnitOfMeasure();
+
+		skuUnitOfMeasure1.setKey(unitOfMeasureKey1);
+
+		cartItem.setSkuUnitOfMeasure(skuUnitOfMeasure1);
+
+		CartItem postCartItem = cartItemResource.postCartItem(
+			_commerceOrder.getCommerceOrderId(), cartItem);
+
+		SkuUnitOfMeasure skuUnitOfMeasure2 = new SkuUnitOfMeasure();
+
+		skuUnitOfMeasure2.setKey(unitOfMeasureKey2);
+
+		CartItem patchCartItem = cartItemResource.patchCartItem(
+			postCartItem.getId(),
+			new CartItem() {
+				{
+					skuUnitOfMeasure = skuUnitOfMeasure2;
+				}
+			});
+
+		Assert.assertEquals(
+			postCartItem.getExternalReferenceCode(),
+			patchCartItem.getExternalReferenceCode());
+		Assert.assertEquals(postCartItem.getId(), patchCartItem.getId());
+		Assert.assertEquals(
+			postCartItem.getQuantity(), patchCartItem.getQuantity());
+
+		SkuUnitOfMeasure patchCartItemSkuUnitOfMeasure =
+			patchCartItem.getSkuUnitOfMeasure();
+
+		Assert.assertEquals(
+			unitOfMeasureKey2, patchCartItemSkuUnitOfMeasure.getKey());
+
+		Price patchCartItemPrice = patchCartItem.getPrice();
+		BigDecimal price = commercePriceEntry.getPrice();
+
+		Assert.assertEquals(
+			price.doubleValue(), patchCartItemPrice.getPrice(), 0.0001);
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.getCommerceOrder(
+				_commerceOrder.getCommerceOrderId());
+
+		commerceOrder.setOrderStatus(
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+
+		_assertProblemException(
+			new CartItem() {
+				{
+					skuUnitOfMeasure = skuUnitOfMeasure1;
+				}
+			},
+			"BAD_REQUEST",
+			currentCartItem -> cartItemResource.patchCartItem(
+				postCartItem.getId(), currentCartItem));
 	}
 
 	private void _testPostCartItemDefaultImage() throws Exception {

@@ -8,17 +8,20 @@ package com.liferay.commerce.service.test;
 import com.liferay.account.model.AccountEntry;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.commerce.account.test.util.CommerceAccountTestUtil;
+import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.context.CommerceContext;
 import com.liferay.commerce.currency.model.CommerceCurrency;
 import com.liferay.commerce.currency.model.CommerceMoney;
 import com.liferay.commerce.currency.service.CommerceCurrencyLocalService;
 import com.liferay.commerce.currency.test.util.CommerceCurrencyTestUtil;
+import com.liferay.commerce.exception.CommerceOrderStatusException;
 import com.liferay.commerce.exception.CommerceOrderValidatorException;
 import com.liferay.commerce.exception.ProductBundleException;
 import com.liferay.commerce.inventory.model.CommerceInventoryBookedQuantity;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouse;
 import com.liferay.commerce.inventory.model.CommerceInventoryWarehouseItem;
 import com.liferay.commerce.inventory.service.CommerceInventoryBookedQuantityLocalService;
+import com.liferay.commerce.inventory.service.CommerceInventoryWarehouseItemLocalService;
 import com.liferay.commerce.model.CPDefinitionInventory;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
@@ -1619,6 +1622,269 @@ public class CommerceOrderItemLocalServiceTest {
 	}
 
 	@Test
+	public void testUpdateCommerceOrderItemUnitOfMeasure() throws Exception {
+		frutillaRule.scenario(
+			"Change the unit of measure of an order item"
+		).given(
+			"A SKU with two units of measure in an order"
+		).when(
+			"I change the unit of measure of the order item"
+		).then(
+			"The order item shall be updated only while the order is open"
+		);
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		CPInstance cpInstance = CPTestUtil.addCPInstance(_group.getGroupId());
+
+		_cpInstances.add(cpInstance);
+
+		String unitOfMeasureKey1 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_group.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey1, BigDecimal.ONE, cpInstance.getSku());
+
+		String unitOfMeasureKey2 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_group.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey2, BigDecimal.ONE, cpInstance.getSku());
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem1 =
+			_commerceInventoryWarehouseItemLocalService.
+				getCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					cpInstance.getSku(), unitOfMeasureKey1);
+
+		_commerceInventoryWarehouseItems.add(
+			_commerceInventoryWarehouseItemLocalService.
+				updateCommerceInventoryWarehouseItem(
+					_user.getUserId(),
+					commerceInventoryWarehouseItem1.
+						getCommerceInventoryWarehouseItemId(),
+					BigDecimal.TEN, BigDecimal.ZERO, unitOfMeasureKey1,
+					commerceInventoryWarehouseItem1.getMvccVersion()));
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem2 =
+			_commerceInventoryWarehouseItemLocalService.
+				getCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					cpInstance.getSku(), unitOfMeasureKey2);
+
+		_commerceInventoryWarehouseItems.add(
+			_commerceInventoryWarehouseItemLocalService.
+				updateCommerceInventoryWarehouseItem(
+					_user.getUserId(),
+					commerceInventoryWarehouseItem2.
+						getCommerceInventoryWarehouseItemId(),
+					BigDecimal.TEN, BigDecimal.ZERO, unitOfMeasureKey2,
+					commerceInventoryWarehouseItem2.getMvccVersion()));
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.addCommerceOrderItem(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(), null, BigDecimal.ONE, 0,
+				BigDecimal.ZERO, unitOfMeasureKey1, _commerceContext,
+				_serviceContext);
+
+		CommerceOrderItem updatedCommerceOrderItem =
+			_commerceOrderItemLocalService.updateCommerceOrderItemUnitOfMeasure(
+				_user.getUserId(), commerceOrderItem.getCommerceOrderItemId(),
+				BigDecimal.ONE, unitOfMeasureKey2, _commerceContext,
+				_serviceContext);
+
+		Assert.assertEquals(
+			commerceOrderItem.getCommerceOrderItemId(),
+			updatedCommerceOrderItem.getCommerceOrderItemId());
+		Assert.assertEquals(
+			unitOfMeasureKey2, updatedCommerceOrderItem.getUnitOfMeasureKey());
+
+		commerceOrder = _commerceOrderLocalService.getCommerceOrder(
+			commerceOrder.getCommerceOrderId());
+
+		commerceOrder.setOrderStatus(
+			CommerceOrderConstants.ORDER_STATUS_PENDING);
+
+		_commerceOrderLocalService.updateCommerceOrder(commerceOrder);
+
+		Assert.assertThrows(
+			CommerceOrderStatusException.class,
+			() ->
+				_commerceOrderItemLocalService.
+					updateCommerceOrderItemUnitOfMeasure(
+						_user.getUserId(),
+						commerceOrderItem.getCommerceOrderItemId(),
+						BigDecimal.ONE, unitOfMeasureKey1, _commerceContext,
+						_serviceContext));
+	}
+
+	@Test
+	public void testUpdateCommerceOrderItemUnitOfMeasureWithChildCommerceOrderItem()
+		throws Exception {
+
+		frutillaRule.scenario(
+			"Change the unit of measure of a product bundle order item"
+		).given(
+			"A product bundle with two units of measure and a dynamic price " +
+				"option in an order"
+		).when(
+			"I change the unit of measure of the bundle order item"
+		).then(
+			"The child order item quantity shall be calculated with the " +
+				"incremental order quantity of the new unit of measure"
+		);
+
+		_commerceInventoryWarehouse =
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouse(
+				ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_commerceChannelRel = CommerceTestUtil.addWarehouseCommerceChannelRel(
+			_commerceInventoryWarehouse.getCommerceInventoryWarehouseId(),
+			_commerceChannel.getCommerceChannelId());
+
+		CPInstance optionCPInstance =
+			CPTestUtil.addCPInstanceWithRandomSkuFromCatalog(
+				_commerceCatalog.getGroupId());
+
+		_cpInstances.add(optionCPInstance);
+
+		String optionKey = FriendlyURLNormalizerUtil.normalize(
+			RandomTestUtil.randomString());
+
+		CommerceOptionValue commerceOptionValue =
+			CommerceProductTestUtil.getCommerceOptionValue(
+				optionCPInstance.getCPInstanceId(), optionKey,
+				_toValueKey(optionKey), BigDecimal.ZERO,
+				CPConstants.PRODUCT_OPTION_PRICE_TYPE_DYNAMIC,
+				BigDecimal.valueOf(3));
+
+		CPDefinition cpDefinition = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, true,
+			true);
+
+		_addOptions(
+			cpDefinition, true, true,
+			Collections.singletonList(commerceOptionValue));
+
+		CPInstance cpInstance = _buildProductBundleSingleOptionCPInstance(
+			cpDefinition.getCPDefinitionId(), _toValueKey(optionKey));
+
+		CommercePriceList commercePriceList =
+			_commercePriceListLocalService.fetchCatalogBaseCommercePriceList(
+				cpInstance.getGroupId());
+
+		_commercePriceEntries.add(
+			CommercePriceEntryTestUtil.addCommercePriceEntry(
+				StringPool.BLANK, cpDefinition.getCProductId(),
+				cpInstance.getCPInstanceUuid(),
+				commercePriceList.getCommercePriceListId(), BigDecimal.ZERO));
+
+		String unitOfMeasureKey1 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_commerceCatalog.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey1, BigDecimal.valueOf(2), cpInstance.getSku());
+
+		String unitOfMeasureKey2 = RandomTestUtil.randomString();
+
+		CPTestUtil.addCPInstanceUnitOfMeasure(
+			_commerceCatalog.getGroupId(), cpInstance.getCPInstanceId(),
+			unitOfMeasureKey2, BigDecimal.valueOf(3), cpInstance.getSku());
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem1 =
+			_commerceInventoryWarehouseItemLocalService.
+				getCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					cpInstance.getSku(), unitOfMeasureKey1);
+
+		_commerceInventoryWarehouseItems.add(
+			_commerceInventoryWarehouseItemLocalService.
+				updateCommerceInventoryWarehouseItem(
+					_user.getUserId(),
+					commerceInventoryWarehouseItem1.
+						getCommerceInventoryWarehouseItemId(),
+					BigDecimal.valueOf(100), BigDecimal.ZERO, unitOfMeasureKey1,
+					commerceInventoryWarehouseItem1.getMvccVersion()));
+
+		CommerceInventoryWarehouseItem commerceInventoryWarehouseItem2 =
+			_commerceInventoryWarehouseItemLocalService.
+				getCommerceInventoryWarehouseItem(
+					_commerceInventoryWarehouse.
+						getCommerceInventoryWarehouseId(),
+					cpInstance.getSku(), unitOfMeasureKey2);
+
+		_commerceInventoryWarehouseItems.add(
+			_commerceInventoryWarehouseItemLocalService.
+				updateCommerceInventoryWarehouseItem(
+					_user.getUserId(),
+					commerceInventoryWarehouseItem2.
+						getCommerceInventoryWarehouseItemId(),
+					BigDecimal.valueOf(100), BigDecimal.ZERO, unitOfMeasureKey2,
+					commerceInventoryWarehouseItem2.getMvccVersion()));
+
+		_commerceInventoryWarehouseItems.add(
+			CommerceInventoryTestUtil.addCommerceInventoryWarehouseItem(
+				_user.getUserId(), _commerceInventoryWarehouse,
+				BigDecimal.valueOf(100), optionCPInstance.getSku(),
+				StringPool.BLANK));
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				_user.getUserId(), _commerceChannel.getGroupId(),
+				_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_commerceOrders.add(commerceOrder);
+
+		CommerceOrderItem commerceOrderItem =
+			_commerceOrderItemLocalService.addCommerceOrderItem(
+				_user.getUserId(), commerceOrder.getCommerceOrderId(),
+				cpInstance.getCPInstanceId(),
+				"[" + commerceOptionValue.toJSON() + "]", BigDecimal.valueOf(6),
+				0, BigDecimal.ZERO, unitOfMeasureKey1, _commerceContext,
+				_serviceContext);
+
+		List<CommerceOrderItem> childCommerceOrderItems =
+			commerceOrderItem.getChildCommerceOrderItems();
+
+		CommerceOrderItem childCommerceOrderItem = childCommerceOrderItems.get(
+			0);
+
+		Assert.assertEquals(
+			BigDecimal.valueOf(9), childCommerceOrderItem.getQuantity());
+
+		_commerceOrderItemLocalService.updateCommerceOrderItemUnitOfMeasure(
+			_user.getUserId(), commerceOrderItem.getCommerceOrderItemId(),
+			BigDecimal.valueOf(6), unitOfMeasureKey2, _commerceContext,
+			_serviceContext);
+
+		childCommerceOrderItem =
+			_commerceOrderItemLocalService.getCommerceOrderItem(
+				childCommerceOrderItem.getCommerceOrderItemId());
+
+		Assert.assertEquals(
+			BigDecimal.valueOf(6), childCommerceOrderItem.getQuantity());
+	}
+
+	@Test
 	public void testUpdateProductBundleWithDynamicOptionWithSKU()
 		throws Exception {
 
@@ -2509,6 +2775,10 @@ public class CommerceOrderItemLocalServiceTest {
 
 	@DeleteAfterTestRun
 	private CommerceInventoryWarehouse _commerceInventoryWarehouse;
+
+	@Inject
+	private CommerceInventoryWarehouseItemLocalService
+		_commerceInventoryWarehouseItemLocalService;
 
 	@DeleteAfterTestRun
 	private List<CommerceInventoryWarehouseItem>
