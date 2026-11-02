@@ -214,10 +214,6 @@ public interface CommerceTermEntryRelLocalService
 		long commerceTermEntryRelId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public CommerceTermEntryRel fetchCommerceTermEntryRel(
-		String className, long classPK, long commerceTermEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public ActionableDynamicQuery getActionableDynamicQuery();
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -255,15 +251,6 @@ public interface CommerceTermEntryRelLocalService
 	public List<CommerceTermEntryRel> getCommerceTermEntryRels(
 		int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTermEntryRel> getCommerceTermEntryRels(
-		long commerceTermEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CommerceTermEntryRel> getCommerceTermEntryRels(
-		long commerceTermEntryId, int start, int end,
-		OrderByComparator<CommerceTermEntryRel> orderByComparator);
-
 	/**
 	 * Returns the number of commerce term entry rels.
 	 *
@@ -271,9 +258,6 @@ public interface CommerceTermEntryRelLocalService
 	 */
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getCommerceTermEntryRelsCount();
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public int getCommerceTermEntryRelsCount(long commerceTermEntryId);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public IndexableActionableDynamicQuery getIndexableActionableDynamicQuery();
@@ -308,4 +292,4 @@ public interface CommerceTermEntryRelLocalService
 		CommerceTermEntryRel commerceTermEntryRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1296572951
+// LIFERAY-SERVICE-BUILDER-HASH:452897165

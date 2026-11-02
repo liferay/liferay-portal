@@ -270,15 +270,6 @@ public class CommerceTermEntryRelLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.commerce.term.model.CommerceTermEntryRel
-		fetchCommerceTermEntryRel(
-			String className, long classPK, long commerceTermEntryId) {
-
-		return _commerceTermEntryRelLocalService.fetchCommerceTermEntryRel(
-			className, classPK, commerceTermEntryId);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery
 		getActionableDynamicQuery() {
 
@@ -339,26 +330,6 @@ public class CommerceTermEntryRelLocalServiceWrapper
 			start, end);
 	}
 
-	@Override
-	public java.util.List<com.liferay.commerce.term.model.CommerceTermEntryRel>
-		getCommerceTermEntryRels(long commerceTermEntryId) {
-
-		return _commerceTermEntryRelLocalService.getCommerceTermEntryRels(
-			commerceTermEntryId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.commerce.term.model.CommerceTermEntryRel>
-		getCommerceTermEntryRels(
-			long commerceTermEntryId, int start, int end,
-			com.liferay.portal.kernel.util.OrderByComparator
-				<com.liferay.commerce.term.model.CommerceTermEntryRel>
-					orderByComparator) {
-
-		return _commerceTermEntryRelLocalService.getCommerceTermEntryRels(
-			commerceTermEntryId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns the number of commerce term entry rels.
 	 *
@@ -368,12 +339,6 @@ public class CommerceTermEntryRelLocalServiceWrapper
 	public int getCommerceTermEntryRelsCount() {
 		return _commerceTermEntryRelLocalService.
 			getCommerceTermEntryRelsCount();
-	}
-
-	@Override
-	public int getCommerceTermEntryRelsCount(long commerceTermEntryId) {
-		return _commerceTermEntryRelLocalService.getCommerceTermEntryRelsCount(
-			commerceTermEntryId);
 	}
 
 	@Override
@@ -446,4 +411,4 @@ public class CommerceTermEntryRelLocalServiceWrapper
 	private CommerceTermEntryRelLocalService _commerceTermEntryRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-991451871
+// LIFERAY-SERVICE-BUILDER-HASH:-320120768

@@ -513,13 +513,6 @@ public class CommerceTermEntryLocalServiceWrapper
 	}
 
 	@Override
-	public com.liferay.portal.kernel.search.Hits search(
-		com.liferay.portal.kernel.search.SearchContext searchContext) {
-
-		return _commerceTermEntryLocalService.search(searchContext);
-	}
-
-	@Override
 	public com.liferay.portal.kernel.search.BaseModelSearchResult
 		<com.liferay.commerce.term.model.CommerceTermEntry>
 				searchCommerceTermEntries(
@@ -643,4 +636,4 @@ public class CommerceTermEntryLocalServiceWrapper
 	private CommerceTermEntryLocalService _commerceTermEntryLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2145785400
+// LIFERAY-SERVICE-BUILDER-HASH:410634098
