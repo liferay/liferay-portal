@@ -208,14 +208,15 @@ public class BasePIMConnectorTest {
 			"executed", _pimConnector.execute(_pimConnectorObjectEntry));
 		Assert.assertEquals(
 			pimConnectorConfigurationValues,
-			_pimConnector._pimConnectorConfigurationValues);
+			_pimConnector.getExecutedPIMConnectorConfigurationValues());
 		Assert.assertEquals(
 			HashMapBuilder.put(
 				"name", Collections.singletonList(fieldMappingObjectEntry)
 			).build(),
-			_pimConnector._pimFieldMappingObjectEntriesMap);
+			_pimConnector.getExecutedPIMFieldMappingObjectEntriesMap());
 		Assert.assertEquals(
-			Collections.emptyMap(), _pimConnector._pimProductObjectEntriesMap);
+			Collections.emptyMap(),
+			_pimConnector.getExecutedPIMProductObjectEntriesMap());
 	}
 
 	@Test
@@ -676,6 +677,24 @@ public class BasePIMConnectorTest {
 	private final Sorts _sorts = Mockito.mock(Sorts.class);
 
 	private class TestPIMConnector extends BasePIMConnector {
+
+		public Map<String, Serializable>
+			getExecutedPIMConnectorConfigurationValues() {
+
+			return _pimConnectorConfigurationValues;
+		}
+
+		public Map<String, List<ObjectEntry>>
+			getExecutedPIMFieldMappingObjectEntriesMap() {
+
+			return _pimFieldMappingObjectEntriesMap;
+		}
+
+		public Map<String, List<ObjectEntry>>
+			getExecutedPIMProductObjectEntriesMap() {
+
+			return _pimProductObjectEntriesMap;
+		}
 
 		@Override
 		public String getKey() {
