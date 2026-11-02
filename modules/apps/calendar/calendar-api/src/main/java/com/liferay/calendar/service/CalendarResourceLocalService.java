@@ -280,9 +280,6 @@ public interface CalendarResourceLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<CalendarResource> getCalendarResources(int start, int end);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<CalendarResource> getCalendarResources(long groupId);
-
 	/**
 	 * Returns all the calendar resources matching the UUID and company.
 	 *
@@ -391,4 +388,4 @@ public interface CalendarResourceLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:864864071
+// LIFERAY-SERVICE-BUILDER-HASH:-341601148

@@ -309,10 +309,6 @@ public class CalendarResourceLocalServiceUtil {
 		return getService().getCalendarResources(start, end);
 	}
 
-	public static List<CalendarResource> getCalendarResources(long groupId) {
-		return getService().getCalendarResources(groupId);
-	}
-
 	/**
 	 * Returns all the calendar resources matching the UUID and company.
 	 *
@@ -452,4 +448,4 @@ public class CalendarResourceLocalServiceUtil {
 			CalendarResourceLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:997615981
+// LIFERAY-SERVICE-BUILDER-HASH:1768988909

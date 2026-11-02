@@ -342,11 +342,6 @@ public class CalendarResourceLocalServiceWrapper
 		return _calendarResourceLocalService.getCalendarResources(start, end);
 	}
 
-	@Override
-	public java.util.List<CalendarResource> getCalendarResources(long groupId) {
-		return _calendarResourceLocalService.getCalendarResources(groupId);
-	}
-
 	/**
 	 * Returns all the calendar resources matching the UUID and company.
 	 *
@@ -537,4 +532,4 @@ public class CalendarResourceLocalServiceWrapper
 	private CalendarResourceLocalService _calendarResourceLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1268399888
+// LIFERAY-SERVICE-BUILDER-HASH:-1005504348
