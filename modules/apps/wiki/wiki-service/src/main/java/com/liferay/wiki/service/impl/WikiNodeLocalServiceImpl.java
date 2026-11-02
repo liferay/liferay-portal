@@ -303,11 +303,6 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 	}
 
 	@Override
-	public WikiNode fetchNodeByUuidAndGroupId(String uuid, long groupId) {
-		return wikiNodePersistence.fetchByUUID_G(uuid, groupId);
-	}
-
-	@Override
 	public WikiNode getNode(long nodeId) throws PortalException {
 		return wikiNodePersistence.findByPrimaryKey(nodeId);
 	}
@@ -338,35 +333,9 @@ public class WikiNodeLocalServiceImpl extends WikiNodeLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<WikiNode> getNodes(long groupId, int start, int end)
-		throws PortalException {
-
-		return getNodes(groupId, WorkflowConstants.STATUS_APPROVED, start, end);
-	}
-
-	@Override
-	public List<WikiNode> getNodes(long groupId, int status, int start, int end)
-		throws PortalException {
-
-		List<WikiNode> nodes = wikiNodePersistence.findByG_S(
-			groupId, status, start, end);
-
-		if (nodes.isEmpty()) {
-			nodes = _addDefaultNode(groupId);
-		}
-
-		return nodes;
-	}
-
-	@Override
 	public int getNodesCount(long groupId) {
 		return wikiNodePersistence.countByG_S(
 			groupId, WorkflowConstants.STATUS_APPROVED);
-	}
-
-	@Override
-	public int getNodesCount(long groupId, int status) {
-		return wikiNodePersistence.countByG_S(groupId, status);
 	}
 
 	@Override

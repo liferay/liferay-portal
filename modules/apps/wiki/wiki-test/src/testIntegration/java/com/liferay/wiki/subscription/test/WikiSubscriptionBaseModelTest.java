@@ -10,6 +10,7 @@ import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.SubscriptionLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.RoleTestUtil;
@@ -73,8 +74,9 @@ public class WikiSubscriptionBaseModelTest
 	protected void addSubscriptionBaseModel(long baseModelId) throws Exception {
 		WikiPage page = WikiPageLocalServiceUtil.getPage(baseModelId);
 
-		WikiPageLocalServiceUtil.subscribePage(
-			user.getUserId(), page.getNodeId(), page.getTitle());
+		SubscriptionLocalServiceUtil.addSubscription(
+			user.getUserId(), page.getGroupId(), WikiPage.class.getName(),
+			page.getResourcePrimKey());
 	}
 
 	@Override

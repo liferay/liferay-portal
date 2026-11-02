@@ -22,6 +22,8 @@ import com.liferay.trash.test.util.WhenCanBeDuplicatedInTrash;
 import com.liferay.wiki.model.WikiNode;
 import com.liferay.wiki.service.WikiNodeLocalServiceUtil;
 
+import java.util.List;
+
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
@@ -73,9 +75,11 @@ public class WikiNodeTrashHandlerTest
 	protected int getNotInTrashBaseModelsCount(BaseModel<?> parentBaseModel)
 		throws Exception {
 
-		return WikiNodeLocalServiceUtil.getNodesCount(
+		List<WikiNode> nodes = WikiNodeLocalServiceUtil.getNodes(
 			(Long)parentBaseModel.getPrimaryKeyObj(),
 			WorkflowConstants.STATUS_APPROVED);
+
+		return nodes.size();
 	}
 
 	@Override

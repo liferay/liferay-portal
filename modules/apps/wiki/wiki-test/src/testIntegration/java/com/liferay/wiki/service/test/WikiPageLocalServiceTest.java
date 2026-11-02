@@ -245,7 +245,7 @@ public class WikiPageLocalServiceTest {
 		Assert.assertEquals(externalReferenceCode, wikiPage1.getUuid());
 
 		WikiPage wikiPage2 =
-			WikiPageLocalServiceUtil.getLatestPageByExternalReferenceCode(
+			WikiPageLocalServiceUtil.fetchLatestPageByExternalReferenceCode(
 				_group.getGroupId(), externalReferenceCode);
 
 		Assert.assertEquals(wikiPage1, wikiPage2);

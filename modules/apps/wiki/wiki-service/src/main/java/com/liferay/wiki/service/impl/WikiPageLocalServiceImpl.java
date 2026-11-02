@@ -449,16 +449,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 	@Override
 	public void addPageResources(
-			long nodeId, String title, boolean addGroupPermissions,
-			boolean addGuestPermissions)
-		throws PortalException {
-
-		addPageResources(
-			getPage(nodeId, title), addGroupPermissions, addGuestPermissions);
-	}
-
-	@Override
-	public void addPageResources(
 			WikiPage page, boolean addGroupPermissions,
 			boolean addGuestPermissions)
 		throws PortalException {
@@ -789,13 +779,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		_portletFileRepository.deletePortletFileEntries(
 			page.getGroupId(), folderId, WorkflowConstants.STATUS_IN_TRASH);
-	}
-
-	@Override
-	public void discardDraft(long nodeId, String title, double version)
-		throws PortalException {
-
-		wikiPagePersistence.removeByN_T_V(nodeId, title, version);
 	}
 
 	@Override
@@ -1160,25 +1143,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			StringBundler.concat(
 				"{nodeId=", nodeId, ", title=", title, ", status=", status,
 				"}"));
-	}
-
-	/**
-	 * Returns the latest wiki page matching the group and the external
-	 * reference code
-	 *
-	 * @param  groupId the primary key of the group
-	 * @param  externalReferenceCode the wiki page's external reference code
-	 * @return the latest matching wiki page
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Override
-	public WikiPage getLatestPageByExternalReferenceCode(
-			long groupId, String externalReferenceCode)
-		throws PortalException {
-
-		return wikiPagePersistence.findByG_ERC_First(
-			groupId, externalReferenceCode,
-			PageVersionComparator.getInstance(false));
 	}
 
 	@Override
@@ -1553,18 +1517,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 	}
 
 	@Override
-	public boolean hasDraftPage(long nodeId, String title) {
-		int count = wikiPagePersistence.countByN_T_S(
-			nodeId, title, WorkflowConstants.STATUS_DRAFT);
-
-		if (count > 0) {
-			return true;
-		}
-
-		return false;
-	}
-
-	@Override
 	public void moveDependentToTrash(WikiPage page, long trashEntryId)
 		throws PortalException {
 
@@ -1935,27 +1887,6 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			WikiPageConstants.REVERTED + " to " + version, false,
 			oldPage.getFormat(), _getParentPageTitle(oldPage),
 			oldPage.getRedirectTitle(), serviceContext);
-	}
-
-	@Override
-	public void subscribePage(long userId, long nodeId, String title)
-		throws PortalException {
-
-		WikiPage page = getPage(nodeId, title);
-
-		_subscriptionLocalService.addSubscription(
-			userId, page.getGroupId(), WikiPage.class.getName(),
-			page.getResourcePrimKey());
-	}
-
-	@Override
-	public void unsubscribePage(long userId, long nodeId, String title)
-		throws PortalException {
-
-		WikiPage page = getPage(nodeId, title);
-
-		_subscriptionLocalService.deleteSubscription(
-			userId, WikiPage.class.getName(), page.getResourcePrimKey());
 	}
 
 	@Override

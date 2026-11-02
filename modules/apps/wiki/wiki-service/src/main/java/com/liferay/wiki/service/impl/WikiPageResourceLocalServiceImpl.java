@@ -40,20 +40,8 @@ public class WikiPageResourceLocalServiceImpl
 	}
 
 	@Override
-	public void deletePageResource(long nodeId, String title)
-		throws PortalException {
-
-		wikiPageResourcePersistence.removeByN_T(nodeId, title);
-	}
-
-	@Override
 	public WikiPageResource fetchPageResource(long nodeId, String title) {
 		return wikiPageResourcePersistence.fetchByN_T(nodeId, title);
-	}
-
-	@Override
-	public WikiPageResource fetchPageResource(String uuid) {
-		return wikiPageResourcePersistence.fetchByUuid_First(uuid, null);
 	}
 
 	@Override
@@ -62,13 +50,6 @@ public class WikiPageResourceLocalServiceImpl
 
 		return wikiPageResourcePersistence.findByPrimaryKey(
 			pageResourcePrimKey);
-	}
-
-	@Override
-	public WikiPageResource getPageResource(long nodeId, String title)
-		throws PortalException {
-
-		return wikiPageResourcePersistence.findByN_T(nodeId, title);
 	}
 
 	@Override
