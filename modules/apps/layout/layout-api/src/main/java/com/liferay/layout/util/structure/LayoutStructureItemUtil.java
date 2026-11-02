@@ -142,12 +142,8 @@ public class LayoutStructureItemUtil {
 		for (String childItemId : layoutStructureItem.getChildrenItemIds()) {
 			childrenItemIds.add(childItemId);
 
-			LayoutStructureItem childLayoutStructureItem =
-				layoutStructure.getLayoutStructureItem(childItemId);
-
 			childrenItemIds.addAll(
-				getChildrenItemIds(
-					childLayoutStructureItem.getItemId(), layoutStructure));
+				getChildrenItemIds(childItemId, layoutStructure));
 		}
 
 		return childrenItemIds;
