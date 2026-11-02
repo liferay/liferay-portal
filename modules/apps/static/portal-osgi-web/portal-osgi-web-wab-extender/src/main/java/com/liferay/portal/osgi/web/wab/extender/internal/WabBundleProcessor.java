@@ -50,7 +50,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -58,6 +59,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import java.net.URL;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -824,12 +827,17 @@ public class WabBundleProcessor {
 		try (OutputStream outputStream = new FileOutputStream(
 				annotatedClassesFile);
 
-			PrintWriter printWriter = new PrintWriter(outputStream)) {
+			Writer writer = new OutputStreamWriter(
+				outputStream, StandardCharsets.UTF_8)) {
 
-			printWriter.println("last.modified=" + _bundle.getLastModified());
+			writer.write(
+				StringBundler.concat(
+					"last.modified=", _bundle.getLastModified(),
+					StringPool.NEW_LINE));
 
 			if (annotatedClasses.isEmpty()) {
-				printWriter.println("annotated.classes=");
+				writer.write("annotated.classes=");
+				writer.write(StringPool.NEW_LINE);
 			}
 			else {
 				StringBundler sb = new StringBundler(
@@ -842,9 +850,9 @@ public class WabBundleProcessor {
 					sb.append(StringPool.COMMA);
 				}
 
-				sb.setIndex(sb.index() - 1);
+				sb.setStringAt(StringPool.NEW_LINE, sb.index() - 1);
 
-				printWriter.println(sb.toString());
+				writer.write(sb.toString());
 			}
 		}
 		catch (IOException ioException) {
