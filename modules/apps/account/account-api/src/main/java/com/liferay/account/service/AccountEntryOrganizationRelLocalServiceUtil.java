@@ -283,14 +283,6 @@ public class AccountEntryOrganizationRelLocalServiceUtil {
 			accountEntryOrganizationRelId);
 	}
 
-	public static AccountEntryOrganizationRel getAccountEntryOrganizationRel(
-			long accountEntryId, long organizationId)
-		throws PortalException {
-
-		return getService().getAccountEntryOrganizationRel(
-			accountEntryId, organizationId);
-	}
-
 	/**
 	 * Returns a range of all the account entry organization rels.
 	 *
@@ -312,14 +304,6 @@ public class AccountEntryOrganizationRelLocalServiceUtil {
 		getAccountEntryOrganizationRels(long accountEntryId) {
 
 		return getService().getAccountEntryOrganizationRels(accountEntryId);
-	}
-
-	public static List<AccountEntryOrganizationRel>
-		getAccountEntryOrganizationRels(
-			long accountEntryId, int start, int end) {
-
-		return getService().getAccountEntryOrganizationRels(
-			accountEntryId, start, end);
 	}
 
 	public static List<AccountEntryOrganizationRel>
@@ -445,4 +429,4 @@ public class AccountEntryOrganizationRelLocalServiceUtil {
 			AccountEntryOrganizationRelLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1191755042
+// LIFERAY-SERVICE-BUILDER-HASH:431109800

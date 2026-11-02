@@ -321,16 +321,6 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 			getAccountEntryOrganizationRel(accountEntryOrganizationRelId);
 	}
 
-	@Override
-	public com.liferay.account.model.AccountEntryOrganizationRel
-			getAccountEntryOrganizationRel(
-				long accountEntryId, long organizationId)
-		throws com.liferay.portal.kernel.exception.PortalException {
-
-		return _accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRel(accountEntryId, organizationId);
-	}
-
 	/**
 	 * Returns a range of all the account entry organization rels.
 	 *
@@ -356,15 +346,6 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 
 		return _accountEntryOrganizationRelLocalService.
 			getAccountEntryOrganizationRels(accountEntryId);
-	}
-
-	@Override
-	public java.util.List<com.liferay.account.model.AccountEntryOrganizationRel>
-		getAccountEntryOrganizationRels(
-			long accountEntryId, int start, int end) {
-
-		return _accountEntryOrganizationRelLocalService.
-			getAccountEntryOrganizationRels(accountEntryId, start, end);
 	}
 
 	@Override
@@ -521,4 +502,4 @@ public class AccountEntryOrganizationRelLocalServiceWrapper
 		_accountEntryOrganizationRelLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-1725304416
+// LIFERAY-SERVICE-BUILDER-HASH:-1477345792

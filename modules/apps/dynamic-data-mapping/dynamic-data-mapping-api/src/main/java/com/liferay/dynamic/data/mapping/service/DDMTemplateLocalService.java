@@ -576,21 +576,6 @@ public interface DDMTemplateLocalService
 	public DDMTemplate getTemplate(long templateId) throws PortalException;
 
 	/**
-	 * Returns the template matching the group and template key.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param classNameId the primary key of the class name for the template's
-	 related model
-	 * @param templateKey the unique string identifying the template
-	 * @return the matching template
-	 * @throws PortalException if a portal exception occurred
-	 */
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public DDMTemplate getTemplate(
-			long groupId, long classNameId, String templateKey)
-		throws PortalException;
-
-	/**
 	 * Returns the template matching the group and template key, optionally
 	 * searching ancestor sites (that have sharing enabled) and global scoped
 	 * sites.
@@ -1234,4 +1219,4 @@ public interface DDMTemplateLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1281899076
+// LIFERAY-SERVICE-BUILDER-HASH:-1250771378

@@ -234,11 +234,6 @@ public interface AccountEntryOrganizationRelLocalService
 			long accountEntryOrganizationRelId)
 		throws PortalException;
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public AccountEntryOrganizationRel getAccountEntryOrganizationRel(
-			long accountEntryId, long organizationId)
-		throws PortalException;
-
 	/**
 	 * Returns a range of all the account entry organization rels.
 	 *
@@ -257,10 +252,6 @@ public interface AccountEntryOrganizationRelLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AccountEntryOrganizationRel> getAccountEntryOrganizationRels(
 		long accountEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AccountEntryOrganizationRel> getAccountEntryOrganizationRels(
-		long accountEntryId, int start, int end);
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<AccountEntryOrganizationRel>
@@ -341,4 +332,4 @@ public interface AccountEntryOrganizationRelLocalService
 		AccountEntryOrganizationRel accountEntryOrganizationRel);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:799721750
+// LIFERAY-SERVICE-BUILDER-HASH:-538013723

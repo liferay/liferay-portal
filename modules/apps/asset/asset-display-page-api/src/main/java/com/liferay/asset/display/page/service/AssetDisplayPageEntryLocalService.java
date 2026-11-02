@@ -262,17 +262,6 @@ public interface AssetDisplayPageEntryLocalService
 		boolean defaultTemplate, int start, int end,
 		OrderByComparator<AssetDisplayPageEntry> orderByComparator);
 
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetDisplayPageEntry>
-		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-			long layoutPageTemplateEntryId);
-
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
-	public List<AssetDisplayPageEntry>
-		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-			long layoutPageTemplateEntryId, int start, int end,
-			OrderByComparator<AssetDisplayPageEntry> orderByComparator);
-
 	/**
 	 * Returns all the asset display page entries matching the UUID and company.
 	 *
@@ -403,4 +392,4 @@ public interface AssetDisplayPageEntryLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:707038117
+// LIFERAY-SERVICE-BUILDER-HASH:200305421

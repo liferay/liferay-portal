@@ -295,25 +295,6 @@ public class AssetDisplayPageEntryLocalServiceUtil {
 			defaultTemplate, start, end, orderByComparator);
 	}
 
-	public static List<AssetDisplayPageEntry>
-		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-			long layoutPageTemplateEntryId) {
-
-		return getService().
-			getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-				layoutPageTemplateEntryId);
-	}
-
-	public static List<AssetDisplayPageEntry>
-		getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-			long layoutPageTemplateEntryId, int start, int end,
-			OrderByComparator<AssetDisplayPageEntry> orderByComparator) {
-
-		return getService().
-			getAssetDisplayPageEntriesByLayoutPageTemplateEntryId(
-				layoutPageTemplateEntryId, start, end, orderByComparator);
-	}
-
 	/**
 	 * Returns all the asset display page entries matching the UUID and company.
 	 *
@@ -480,4 +461,4 @@ public class AssetDisplayPageEntryLocalServiceUtil {
 			AssetDisplayPageEntryLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-712392838
+// LIFERAY-SERVICE-BUILDER-HASH:927094867

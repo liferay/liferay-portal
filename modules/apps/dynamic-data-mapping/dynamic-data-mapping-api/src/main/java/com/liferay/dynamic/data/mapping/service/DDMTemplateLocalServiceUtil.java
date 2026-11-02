@@ -667,23 +667,6 @@ public class DDMTemplateLocalServiceUtil {
 	}
 
 	/**
-	 * Returns the template matching the group and template key.
-	 *
-	 * @param groupId the primary key of the group
-	 * @param classNameId the primary key of the class name for the template's
-	 related model
-	 * @param templateKey the unique string identifying the template
-	 * @return the matching template
-	 * @throws PortalException if a portal exception occurred
-	 */
-	public static DDMTemplate getTemplate(
-			long groupId, long classNameId, String templateKey)
-		throws PortalException {
-
-		return getService().getTemplate(groupId, classNameId, templateKey);
-	}
-
-	/**
 	 * Returns the template matching the group and template key, optionally
 	 * searching ancestor sites (that have sharing enabled) and global scoped
 	 * sites.
@@ -1416,4 +1399,4 @@ public class DDMTemplateLocalServiceUtil {
 			DDMTemplateLocalServiceUtil.class, DDMTemplateLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:1837165258
+// LIFERAY-SERVICE-BUILDER-HASH:-824208749
