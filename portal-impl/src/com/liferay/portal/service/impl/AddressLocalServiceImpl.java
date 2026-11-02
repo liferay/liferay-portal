@@ -134,27 +134,6 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		return address;
 	}
 
-	@Override
-	public Address copyAddress(
-			long sourceAddressId, String className, long classPK,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		Address sourceAddress = addressPersistence.findByPrimaryKey(
-			sourceAddressId);
-
-		return addressLocalService.addAddress(
-			null, serviceContext.getUserId(), className, classPK,
-			sourceAddress.getCountryId(), sourceAddress.getListTypeId(),
-			sourceAddress.getRegionId(), sourceAddress.getCity(),
-			sourceAddress.getDescription(), sourceAddress.isMailing(),
-			sourceAddress.getName(), sourceAddress.isPrimary(),
-			sourceAddress.getStreet1(), sourceAddress.getStreet2(),
-			sourceAddress.getStreet3(), sourceAddress.getSubtype(),
-			sourceAddress.getZip(), sourceAddress.getPhoneNumber(),
-			serviceContext);
-	}
-
 	@Indexable(type = IndexableType.DELETE)
 	@Override
 	@SystemEvent(
@@ -212,11 +191,6 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Address> getAddresses() {
-		return addressPersistence.findAll();
-	}
-
-	@Override
 	public List<Address> getAddresses(
 		long companyId, String className, long classPK) {
 
@@ -251,16 +225,6 @@ public class AddressLocalServiceImpl extends AddressLocalServiceBaseImpl {
 		return addressPersistence.findByC_C_C_L(
 			companyId, _classNameLocalService.getClassNameId(className),
 			classPK, listTypeIds);
-	}
-
-	@Override
-	public List<Address> getListTypeAddresses(
-		long companyId, String className, long classPK, long[] listTypeIds,
-		int start, int end, OrderByComparator<Address> orderByComparator) {
-
-		return addressPersistence.findByC_C_C_L(
-			companyId, _classNameLocalService.getClassNameId(className),
-			classPK, listTypeIds, start, end, orderByComparator);
 	}
 
 	public Address getOrAddEmptyAddress(

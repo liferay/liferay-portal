@@ -90,11 +90,6 @@ public class WebsiteLocalServiceImpl extends WebsiteLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Website> getWebsites() {
-		return websitePersistence.findAll();
-	}
-
-	@Override
 	public List<Website> getWebsites(
 		long companyId, String className, long classPK) {
 

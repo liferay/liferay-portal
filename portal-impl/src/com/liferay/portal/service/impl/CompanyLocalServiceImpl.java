@@ -542,22 +542,6 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	}
 
 	/**
-	 * Returns the company with the web domain.
-	 *
-	 * The method sets mail domain to the web domain to the default name set in
-	 * portal.properties
-	 *
-	 * @param  webId the company's web domain
-	 * @return the company with the web domain
-	 */
-	@Override
-	public Company checkCompany(String webId) throws PortalException {
-		Company company = getCompanyByWebId(webId);
-
-		return checkCompany(company, false);
-	}
-
-	/**
 	 * Checks if the company has an encryption key. It will create a key if one
 	 * does not exist.
 	 *

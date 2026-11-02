@@ -13,7 +13,6 @@ import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.test.util.PropsValuesTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
-import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.model.impl.CompanyImpl;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
@@ -81,20 +80,6 @@ public class CompanyLocalServiceImplTest {
 			new CompanyLocalServiceImpl() {
 
 				@Override
-				public Company checkCompany(String webId)
-					throws PortalException {
-
-					return syncVirtualHost(getCompanyByWebId(webId));
-				}
-
-				@Override
-				public Company getCompanyByWebId(String webId)
-					throws PortalException {
-
-					return company;
-				}
-
-				@Override
 				public Company updateCompany(
 						long companyId, String virtualHostname, String mx,
 						int maxUsers, boolean active)
@@ -121,8 +106,8 @@ public class CompanyLocalServiceImplTest {
 				PropsValuesTestUtil.swapWithSafeCloseable(
 					"COMPANY_DEFAULT_VIRTUAL_HOST_SYNC_ON_STARTUP", true)) {
 
-			Company checkedCompany = companyLocalServiceImpl.checkCompany(
-				PropsValues.COMPANY_DEFAULT_WEB_ID);
+			Company checkedCompany = companyLocalServiceImpl.syncVirtualHost(
+				company);
 
 			Assert.assertEquals(domain, checkedCompany.getMx());
 			Assert.assertEquals(domain, checkedCompany.getVirtualHostname());

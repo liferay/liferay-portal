@@ -6,11 +6,8 @@
 package com.liferay.address.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
-import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.DuplicateRegionException;
-import com.liferay.portal.kernel.exception.NoSuchRegionException;
-import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Address;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Organization;
@@ -156,48 +153,6 @@ public class RegionLocalServiceTest {
 	}
 
 	@Test
-	public void testGetOrAddEmptyRegion() throws Exception {
-
-		// Lazy referencing disabled
-
-		Country country = _addCountry();
-
-		try {
-			_regionLocalService.getOrAddEmptyRegion(
-				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), country.getCountryId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-			Assert.fail();
-		}
-		catch (NoSuchRegionException noSuchRegionException) {
-			Assert.assertNotNull(noSuchRegionException);
-		}
-
-		// Lazy referencing enabled
-
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
-
-			String externalReferenceCode = RandomTestUtil.randomString();
-
-			Region region = _regionLocalService.getOrAddEmptyRegion(
-				externalReferenceCode, TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), country.getCountryId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
-
-			Assert.assertEquals(
-				externalReferenceCode, region.getExternalReferenceCode());
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_EMPTY, region.getStatus());
-			Assert.assertEquals(
-				region,
-				_regionLocalService.fetchRegionByExternalReferenceCode(
-					externalReferenceCode, TestPropsValues.getCompanyId()));
-		}
-	}
-
-	@Test
 	public void testSearchRegions() throws Exception {
 		String keywords = RandomTestUtil.randomString();
 
@@ -318,29 +273,26 @@ public class RegionLocalServiceTest {
 	}
 
 	@Test
-	public void testUpdateRegionWithLazyReferencingEnabled() throws Exception {
+	public void testUpdateRegionWhenStatusIsEmpty() throws Exception {
 		Country country = _addCountry();
 
-		try (SafeCloseable safeCloseable =
-				LazyReferencingThreadLocal.setEnabledWithSafeCloseable(true)) {
+		Region region = _addRegion(country.getCountryId());
 
-			Region region = _regionLocalService.getOrAddEmptyRegion(
-				RandomTestUtil.randomString(), TestPropsValues.getCompanyId(),
-				TestPropsValues.getUserId(), country.getCountryId(),
-				RandomTestUtil.randomString(), RandomTestUtil.randomString());
+		region.setStatus(WorkflowConstants.STATUS_EMPTY);
 
-			String name = RandomTestUtil.randomString();
-			String regionCode = RandomTestUtil.randomString();
+		region = _regionLocalService.updateRegion(region);
 
-			region = _regionLocalService.updateRegion(
-				region.getExternalReferenceCode(), region.getRegionId(), true,
-				name, 0D, regionCode);
+		String name = RandomTestUtil.randomString();
+		String regionCode = RandomTestUtil.randomString();
 
-			Assert.assertEquals(name, region.getName());
-			Assert.assertEquals(regionCode, region.getRegionCode());
-			Assert.assertEquals(
-				WorkflowConstants.STATUS_APPROVED, region.getStatus());
-		}
+		region = _regionLocalService.updateRegion(
+			region.getExternalReferenceCode(), region.getRegionId(), true, name,
+			0D, regionCode);
+
+		Assert.assertEquals(name, region.getName());
+		Assert.assertEquals(regionCode, region.getRegionCode());
+		Assert.assertEquals(
+			WorkflowConstants.STATUS_APPROVED, region.getStatus());
 	}
 
 	private Country _addCountry() throws Exception {

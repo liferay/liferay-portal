@@ -97,11 +97,6 @@ public class EmailAddressLocalServiceImpl
 	}
 
 	@Override
-	public List<EmailAddress> getEmailAddresses() {
-		return emailAddressPersistence.findAll();
-	}
-
-	@Override
 	public List<EmailAddress> getEmailAddresses(
 		long companyId, String className, long classPK) {
 

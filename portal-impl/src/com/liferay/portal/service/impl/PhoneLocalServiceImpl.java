@@ -95,11 +95,6 @@ public class PhoneLocalServiceImpl extends PhoneLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Phone> getPhones() {
-		return phonePersistence.findAll();
-	}
-
-	@Override
 	public List<Phone> getPhones(
 		long companyId, String className, long classPK) {
 

@@ -62,8 +62,7 @@ public class EntityCacheRollbackTest {
 
 					contact.setJobTitle(RandomTestUtil.randomString());
 
-					_contactLocalService.getContactsCount(
-						RandomTestUtil.nextLong(), RandomTestUtil.nextLong());
+					_contactLocalService.getContactsCount();
 
 					_contactPersistence.update(contact);
 

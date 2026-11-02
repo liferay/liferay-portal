@@ -5,7 +5,6 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -193,31 +192,8 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public List<Country> getCompanyCountries(
-		long companyId, boolean active, int start, int end,
-		OrderByComparator<Country> orderByComparator) {
-
-		return countryPersistence.findByC_Active(
-			companyId, active, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<Country> getCompanyCountries(
-		long companyId, int start, int end,
-		OrderByComparator<Country> orderByComparator) {
-
-		return countryPersistence.findByCompanyId(
-			companyId, start, end, orderByComparator);
-	}
-
-	@Override
 	public int getCompanyCountriesCount(long companyId) {
 		return countryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
-	public int getCompanyCountriesCount(long companyId, boolean active) {
-		return countryPersistence.countByC_Active(companyId, active);
 	}
 
 	@Override
@@ -225,13 +201,6 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 		throws PortalException {
 
 		return countryPersistence.findByC_A2(companyId, a2);
-	}
-
-	@Override
-	public Country getCountryByA3(long companyId, String a3)
-		throws PortalException {
-
-		return countryPersistence.findByC_A3(companyId, a3);
 	}
 
 	@Override
@@ -246,38 +215,6 @@ public class CountryLocalServiceImpl extends CountryLocalServiceBaseImpl {
 		throws PortalException {
 
 		return countryPersistence.findByC_Number(companyId, number);
-	}
-
-	@Override
-	public Country getOrAddEmptyCountry(
-			String externalReferenceCode, String a2, String a3, long companyId,
-			String name, long userId)
-		throws PortalException {
-
-		return EmptyModelManagerUtil.getOrAddEmptyModel(
-			Country.class, companyId, externalReferenceCode,
-			this::fetchCountryByExternalReferenceCode,
-			this::getCountryByExternalReferenceCode,
-			() -> {
-				String countryName =
-					(fetchCountryByName(companyId, name) != null) ?
-						externalReferenceCode : name;
-
-				ServiceContext serviceContext = new ServiceContext();
-
-				serviceContext.setCompanyId(companyId);
-				serviceContext.setUserId(userId);
-
-				Country country = countryLocalService.addCountry(
-					externalReferenceCode, a2, a3, false, false, null,
-					countryName, externalReferenceCode, 0D, false, false, false,
-					serviceContext);
-
-				country.setStatus(WorkflowConstants.STATUS_EMPTY);
-
-				return countryPersistence.update(country);
-			},
-			"country");
 	}
 
 	@Override

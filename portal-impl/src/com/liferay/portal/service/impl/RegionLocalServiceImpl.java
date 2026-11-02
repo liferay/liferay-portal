@@ -5,7 +5,6 @@
 
 package com.liferay.portal.service.impl;
 
-import com.liferay.exportimport.kernel.empty.model.EmptyModelManagerUtil;
 import com.liferay.petra.sql.dsl.Column;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
@@ -39,7 +38,6 @@ import com.liferay.portal.kernel.service.persistence.CountryPersistence;
 import com.liferay.portal.kernel.service.persistence.OrganizationPersistence;
 import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Validator;
@@ -150,38 +148,6 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 	}
 
 	@Override
-	public Region getOrAddEmptyRegion(
-			String externalReferenceCode, long companyId, long userId,
-			long countryId, String regionCode, String name)
-		throws PortalException {
-
-		return EmptyModelManagerUtil.getOrAddEmptyModel(
-			Region.class, companyId, externalReferenceCode,
-			this::fetchRegionByExternalReferenceCode,
-			this::getRegionByExternalReferenceCode,
-			() -> {
-				String regionCodeString =
-					(fetchRegion(countryId, regionCode) != null) ?
-						externalReferenceCode : regionCode;
-
-				ServiceContext serviceContext = new ServiceContext();
-
-				serviceContext.setCompanyId(companyId);
-				serviceContext.setUserId(userId);
-
-				Region region = regionLocalService.addRegion(
-					externalReferenceCode, countryId, false,
-					GetterUtil.getString(name), 0D, regionCodeString,
-					serviceContext);
-
-				region.setStatus(WorkflowConstants.STATUS_EMPTY);
-
-				return regionPersistence.update(region);
-			},
-			"region");
-	}
-
-	@Override
 	public Region getRegion(long countryId, String regionCode)
 		throws PortalException {
 
@@ -193,15 +159,6 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 		throws PortalException {
 
 		return regionPersistence.findByC_A(countryId, active);
-	}
-
-	@Override
-	public List<Region> getRegions(
-		long countryId, boolean active, int start, int end,
-		OrderByComparator<Region> orderByComparator) {
-
-		return regionPersistence.findByC_A(
-			countryId, active, start, end, orderByComparator);
 	}
 
 	@Override
@@ -220,16 +177,6 @@ public class RegionLocalServiceImpl extends RegionLocalServiceBaseImpl {
 		Country country = _countryPersistence.findByC_A2(companyId, a2);
 
 		return regionPersistence.findByC_A(country.getCountryId(), active);
-	}
-
-	@Override
-	public int getRegionsCount(long countryId) {
-		return regionPersistence.countByCountryId(countryId);
-	}
-
-	@Override
-	public int getRegionsCount(long countryId, boolean active) {
-		return regionPersistence.countByC_A(countryId, active);
 	}
 
 	@Override

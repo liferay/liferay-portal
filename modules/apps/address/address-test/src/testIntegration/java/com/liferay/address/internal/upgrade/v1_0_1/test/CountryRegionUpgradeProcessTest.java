@@ -10,6 +10,7 @@ import com.liferay.counter.kernel.service.CounterLocalService;
 import com.liferay.petra.sql.dsl.DSLFunctionFactoryUtil;
 import com.liferay.petra.sql.dsl.DSLQueryFactoryUtil;
 import com.liferay.portal.kernel.cache.MultiVMPool;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Country;
 import com.liferay.portal.kernel.model.Region;
@@ -54,8 +55,10 @@ public class CountryRegionUpgradeProcessTest {
 		Country country = _countryLocalService.fetchCountryByA2(
 			TestPropsValues.getCompanyId(), "US");
 
-		_regionsCount = _regionLocalService.getRegionsCount(
-			country.getCountryId());
+		List<Region> regions = _regionLocalService.getRegions(
+			country.getCountryId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		_regionsCount = regions.size();
 	}
 
 	@Test
@@ -78,10 +81,12 @@ public class CountryRegionUpgradeProcessTest {
 				Country country = _countryLocalService.fetchCountryByA2(
 					companyId, "US");
 
+				List<Region> regions = _regionLocalService.getRegions(
+					country.getCountryId(), QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS, null);
+
 				Assert.assertEquals(
-					_regionsCount,
-					_regionLocalService.getRegionsCount(
-						country.getCountryId()));
+					regions.toString(), _regionsCount, regions.size());
 			});
 
 		_verifyCounter();
