@@ -8,11 +8,14 @@ package com.liferay.batch.engine.internal.writer;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
 import com.liferay.batch.engine.unit.BatchEngineUnitConfiguration;
-import com.liferay.petra.io.unsync.UnsyncPrintWriter;
 import com.liferay.petra.string.StringPool;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,43 +34,41 @@ public class JSONTBatchEngineExportTaskItemWriterImpl
 
 		_objectWriter = ObjectWriterFactory.getObjectWriter(includeFieldNames);
 
-		_unsyncPrintWriter = new UnsyncPrintWriter(outputStream);
+		_writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 
-		_unsyncPrintWriter.write(
-			"{\"actions\":\n{\"createBatch\": {\"href\": \"");
+		_writer.write("{\"actions\":\n{\"createBatch\": {\"href\": \"");
 
 		String endpoint =
 			"/o/headless-batch-engine/v1.0/import-task/" +
 				batchEngineUnitConfiguration.getClassName();
 
-		_unsyncPrintWriter.write(endpoint);
+		_writer.write(endpoint);
 
-		_unsyncPrintWriter.write(
+		_writer.write(
 			"\", \"method\": \"POST\"}, \"deleteBatch\": {\"href\": \"");
-		_unsyncPrintWriter.write(endpoint);
-		_unsyncPrintWriter.write(
+		_writer.write(endpoint);
+		_writer.write(
 			"\", \"method\": \"DELETE\"}, \"updateBatch\": {\"href\": \"");
-		_unsyncPrintWriter.write(endpoint);
-		_unsyncPrintWriter.write(
-			"\", \"method\": \"PUT\"}},\n\"configuration\":\n");
-		_unsyncPrintWriter.write(
+		_writer.write(endpoint);
+		_writer.write("\", \"method\": \"PUT\"}},\n\"configuration\":\n");
+		_writer.write(
 			_objectWriter.writeValueAsString(batchEngineUnitConfiguration));
-		_unsyncPrintWriter.write(",\n\"items\": [");
+		_writer.write(",\n\"items\": [");
 	}
 
 	@Override
 	public void close() throws IOException {
-		_unsyncPrintWriter.write("]\n}");
+		_writer.write("]\n}");
 
-		_unsyncPrintWriter.flush();
+		_writer.flush();
 
-		_unsyncPrintWriter.close();
+		_writer.close();
 	}
 
 	@Override
 	public void write(Collection<?> items) throws Exception {
 		if (_itemsStarted) {
-			_unsyncPrintWriter.write(StringPool.COMMA);
+			_writer.write(StringPool.COMMA);
 		}
 
 		Iterator<?> iterator = items.iterator();
@@ -75,13 +76,13 @@ public class JSONTBatchEngineExportTaskItemWriterImpl
 		while (iterator.hasNext()) {
 			Object item = iterator.next();
 
-			_unsyncPrintWriter.write(_objectWriter.writeValueAsString(item));
+			_writer.write(_objectWriter.writeValueAsString(item));
 
 			if (!iterator.hasNext()) {
 				continue;
 			}
 
-			_unsyncPrintWriter.write(StringPool.COMMA);
+			_writer.write(StringPool.COMMA);
 		}
 
 		if (!_itemsStarted) {
@@ -91,6 +92,6 @@ public class JSONTBatchEngineExportTaskItemWriterImpl
 
 	private boolean _itemsStarted;
 	private final ObjectWriter _objectWriter;
-	private final UnsyncPrintWriter _unsyncPrintWriter;
+	private final Writer _writer;
 
 }

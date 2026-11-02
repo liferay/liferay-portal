@@ -7,11 +7,14 @@ package com.liferay.batch.engine.internal.writer;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 
-import com.liferay.petra.io.unsync.UnsyncPrintWriter;
 import com.liferay.petra.string.StringPool;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+
+import java.nio.charset.StandardCharsets;
 
 import java.util.Collection;
 import java.util.List;
@@ -26,23 +29,23 @@ public class JSONLBatchEngineExportTaskItemWriterImpl
 		List<String> includeFieldNames, OutputStream outputStream) {
 
 		_objectWriter = ObjectWriterFactory.getObjectWriter(includeFieldNames);
-		_unsyncPrintWriter = new UnsyncPrintWriter(outputStream);
+		_writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 	}
 
 	@Override
 	public void close() throws IOException {
-		_unsyncPrintWriter.close();
+		_writer.close();
 	}
 
 	@Override
 	public void write(Collection<?> items) throws Exception {
 		for (Object item : items) {
-			_unsyncPrintWriter.write(_objectWriter.writeValueAsString(item));
-			_unsyncPrintWriter.write(StringPool.NEW_LINE);
+			_writer.write(_objectWriter.writeValueAsString(item));
+			_writer.write(StringPool.NEW_LINE);
 		}
 	}
 
 	private final ObjectWriter _objectWriter;
-	private final UnsyncPrintWriter _unsyncPrintWriter;
+	private final Writer _writer;
 
 }
