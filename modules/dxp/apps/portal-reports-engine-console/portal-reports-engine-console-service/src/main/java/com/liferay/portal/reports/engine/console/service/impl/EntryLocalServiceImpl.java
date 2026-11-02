@@ -147,30 +147,6 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 	}
 
 	@Override
-	public void addEntryResources(
-			Entry entry, boolean addCommunityPermissions,
-			boolean addGuestPermissions)
-		throws PortalException {
-
-		_resourceLocalService.addResources(
-			entry.getCompanyId(), entry.getGroupId(), entry.getUserId(),
-			Entry.class.getName(), entry.getEntryId(), false,
-			addCommunityPermissions, addGuestPermissions);
-	}
-
-	@Override
-	public void addEntryResources(
-			Entry entry, String[] communityPermissions,
-			String[] guestPermissions)
-		throws PortalException {
-
-		_resourceLocalService.addModelResources(
-			entry.getCompanyId(), entry.getGroupId(), entry.getUserId(),
-			Entry.class.getName(), entry.getEntryId(), communityPermissions,
-			guestPermissions);
-	}
-
-	@Override
 	public void deleteAttachment(long companyId, String fileName)
 		throws PortalException {
 
@@ -213,16 +189,6 @@ public class EntryLocalServiceImpl extends EntryLocalServiceBaseImpl {
 		Entry entry = entryPersistence.findByPrimaryKey(entryId);
 
 		return deleteEntry(entry);
-	}
-
-	@Override
-	public void generateReport(long entryId) throws PortalException {
-		Entry entry = entryPersistence.findByPrimaryKey(entryId);
-
-		Definition definition = _definitionPersistence.findByPrimaryKey(
-			entry.getDefinitionId());
-
-		generateReport(entryId, definition.getReportName());
 	}
 
 	@Override
