@@ -59,9 +59,15 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			return javaTerm.getContent();
 		}
 
-		boolean lambda = content.contains("->");
-
 		Matcher matcher = _localServiceCallPattern.matcher(content);
+
+		if (!matcher.find()) {
+			return javaTerm.getContent();
+		}
+
+		String rootDirName = SourceUtil.getRootDirName(absolutePath);
+
+		matcher.reset();
 
 		while (matcher.find()) {
 			String reference = matcher.group(1);
@@ -95,8 +101,6 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			String baseImplFullyQualifiedName = _getBaseImplName(
 				localServiceFullyQualifiedName);
 
-			String rootDirName = SourceUtil.getRootDirName(absolutePath);
-
 			File baseImplFile = JavaSourceUtil.getJavaFile(
 				baseImplFullyQualifiedName, rootDirName,
 				getBundleSymbolicNamesMap(absolutePath));
@@ -127,7 +131,7 @@ public class JavaServiceHopCheck extends BaseJavaTermCheck {
 			// the transaction the persistence access requires, so leave it in
 			// place.
 
-			if (lambda &&
+			if (content.contains("->") &&
 				_isInTransactionDisabledLambda(
 					content, matcher.start(), fileName, fileContent,
 					absolutePath, rootDirName, getImportNames(javaTerm))) {
