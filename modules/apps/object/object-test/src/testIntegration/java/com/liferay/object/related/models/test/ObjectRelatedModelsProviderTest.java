@@ -1051,11 +1051,10 @@ public class ObjectRelatedModelsProviderTest {
 			_objectDefinitionLocalService.deleteObjectDefinition(
 				objectDefinition);
 
-			_accountEntryLocalService.deleteAccountEntries(
-				new long[] {
-					accountEntry1.getAccountEntryId(),
-					accountEntry2.getAccountEntryId()
-				});
+			_accountEntryLocalService.deleteAccountEntry(
+				accountEntry1.getAccountEntryId());
+			_accountEntryLocalService.deleteAccountEntry(
+				accountEntry2.getAccountEntryId());
 
 			_assetEntryLocalService.deleteEntry(
 				objectDefinition.getClassName(), objectEntry.getPrimaryKey());

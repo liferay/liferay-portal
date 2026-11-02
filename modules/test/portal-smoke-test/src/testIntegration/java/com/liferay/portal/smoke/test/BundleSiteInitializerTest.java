@@ -6,6 +6,7 @@
 package com.liferay.portal.smoke.test;
 
 import com.liferay.account.model.AccountEntry;
+import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
@@ -672,10 +673,13 @@ public class BundleSiteInitializerTest {
 	private void _assertAccountGroupAssignments(
 		AdminAccountGroup accountGroup, int accountGroupAssignmentsCount) {
 
+		List<AccountGroupRel> accountGroupRels =
+			_accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
+				accountGroup.getId());
+
 		Assert.assertEquals(
-			accountGroupAssignmentsCount,
-			_accountGroupRelLocalService.
-				getAccountGroupRelsCountByAccountGroupId(accountGroup.getId()));
+			accountGroupRels.toString(), accountGroupAssignmentsCount,
+			accountGroupRels.size());
 	}
 
 	private void _assertAccountGroups1() throws Exception {

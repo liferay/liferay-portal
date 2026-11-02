@@ -9,6 +9,7 @@ import com.liferay.account.exception.AccountGroupNameException;
 import com.liferay.account.exception.DefaultAccountGroupException;
 import com.liferay.account.exception.NoSuchGroupException;
 import com.liferay.account.model.AccountGroup;
+import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
 import com.liferay.account.service.test.util.AccountEntryArgs;
@@ -118,26 +119,28 @@ public class AccountGroupLocalServiceTest {
 		AccountEntryTestUtil.addAccountEntry(
 			AccountEntryArgs.withAccountGroups(accountGroup));
 
+		List<AccountGroupRel> accountGroupRels =
+			_accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
+				accountGroup.getAccountGroupId());
+
 		Assert.assertEquals(
-			1,
-			_accountGroupRelLocalService.
-				getAccountGroupRelsCountByAccountGroupId(
-					accountGroup.getAccountGroupId()));
+			accountGroupRels.toString(), 1, accountGroupRels.size());
 
 		_accountGroupLocalService.deleteAccountGroup(accountGroup);
 
+		accountGroupRels =
+			_accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
+				accountGroup.getAccountGroupId());
+
 		Assert.assertEquals(
-			0,
-			_accountGroupRelLocalService.
-				getAccountGroupRelsCountByAccountGroupId(
-					accountGroup.getAccountGroupId()));
+			accountGroupRels.toString(), 0, accountGroupRels.size());
 	}
 
 	@Test
 	public void testDeleteDefaultAccountGroup() throws Exception {
 		try {
 			_accountGroupLocalService.deleteAccountGroup(
-				_accountGroupLocalService.getDefaultAccountGroup(
+				_accountGroupLocalService.checkGuestAccountGroup(
 					TestPropsValues.getCompanyId()));
 		}
 		catch (ModelListenerException modelListenerException) {
@@ -187,7 +190,7 @@ public class AccountGroupLocalServiceTest {
 				TestPropsValues.getCompanyId()));
 
 		AccountGroup defaultAccountGroup =
-			_accountGroupLocalService.getDefaultAccountGroup(
+			_accountGroupLocalService.checkGuestAccountGroup(
 				TestPropsValues.getCompanyId());
 
 		Assert.assertEquals(
@@ -210,7 +213,8 @@ public class AccountGroupLocalServiceTest {
 
 		BaseModelSearchResult<AccountGroup> baseModelSearchResult =
 			_accountGroupLocalService.searchAccountGroups(
-				companyId, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+				companyId, null, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+				null);
 
 		Assert.assertEquals(
 			expectedAccountGroups.size(), baseModelSearchResult.getLength());
@@ -232,8 +236,8 @@ public class AccountGroupLocalServiceTest {
 
 		BaseModelSearchResult<AccountGroup> baseModelSearchResult =
 			_accountGroupLocalService.searchAccountGroups(
-				TestPropsValues.getCompanyId(), keywords, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS,
+				TestPropsValues.getCompanyId(), keywords, null,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				OrderByComparatorFactoryUtil.create(
 					"AccountGroup", "name", true));
 
@@ -298,7 +302,7 @@ public class AccountGroupLocalServiceTest {
 	public void testUpdateDefaultAccountGroup() throws Exception {
 		try {
 			AccountGroup accountGroup =
-				_accountGroupLocalService.getDefaultAccountGroup(
+				_accountGroupLocalService.checkGuestAccountGroup(
 					TestPropsValues.getCompanyId());
 
 			_accountGroupLocalService.updateAccountGroup(
@@ -361,7 +365,8 @@ public class AccountGroupLocalServiceTest {
 
 		BaseModelSearchResult<AccountGroup> baseModelSearchResult =
 			_accountGroupLocalService.searchAccountGroups(
-				TestPropsValues.getCompanyId(), keywords, start, start + delta,
+				TestPropsValues.getCompanyId(), keywords, null, start,
+				start + delta,
 				OrderByComparatorFactoryUtil.create(
 					"AccountGroup", "name", !reversed));
 

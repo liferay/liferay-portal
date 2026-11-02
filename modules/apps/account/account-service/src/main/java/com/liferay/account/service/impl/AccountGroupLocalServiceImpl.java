@@ -208,27 +208,6 @@ public class AccountGroupLocalServiceImpl
 				accountGroupRels, AccountGroupRel::getAccountGroupId));
 	}
 
-	@Override
-	public List<AccountGroup> getAccountGroupsByAccountGroupId(
-		long[] accountGroupIds) {
-
-		return accountGroupPersistence.findByAccountGroupId(accountGroupIds);
-	}
-
-	@Override
-	public int getAccountGroupsCountByAccountEntryId(long accountEntryId) {
-		return _accountGroupRelPersistence.countByC_C(
-			_classNameLocalService.getClassNameId(AccountEntry.class.getName()),
-			accountEntryId);
-	}
-
-	@Override
-	public AccountGroup getDefaultAccountGroup(long companyId)
-		throws PortalException {
-
-		return accountGroupPersistence.findByC_D_First(companyId, true, null);
-	}
-
 	@Indexable(type = IndexableType.REINDEX)
 	public AccountGroup getOrAddEmptyAccountGroup(
 			String externalReferenceCode, long companyId, long userId,
@@ -256,15 +235,6 @@ public class AccountGroupLocalServiceImpl
 		}
 
 		return false;
-	}
-
-	@Override
-	public BaseModelSearchResult<AccountGroup> searchAccountGroups(
-		long companyId, String keywords, int start, int end,
-		OrderByComparator<AccountGroup> orderByComparator) {
-
-		return searchAccountGroups(
-			companyId, keywords, null, start, end, orderByComparator);
 	}
 
 	@Override

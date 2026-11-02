@@ -7,6 +7,7 @@ package com.liferay.account.internal.model.listener.test;
 
 import com.liferay.account.model.AccountEntry;
 import com.liferay.account.model.AccountGroup;
+import com.liferay.account.model.AccountGroupRel;
 import com.liferay.account.model.AccountRole;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
@@ -28,6 +29,8 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -115,11 +118,12 @@ public class AccountEntryModelListenerWhenDeletingAccountEntryTest {
 		_accountEntryLocalService.deleteAccountEntry(
 			_accountEntry.getAccountEntryId());
 
+		List<AccountGroupRel> accountGroupRels =
+			_accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
+				accountGroup.getAccountGroupId());
+
 		Assert.assertEquals(
-			0,
-			_accountGroupRelLocalService.
-				getAccountGroupRelsCountByAccountGroupId(
-					accountGroup.getAccountGroupId()));
+			accountGroupRels.toString(), 0, accountGroupRels.size());
 	}
 
 	@Test

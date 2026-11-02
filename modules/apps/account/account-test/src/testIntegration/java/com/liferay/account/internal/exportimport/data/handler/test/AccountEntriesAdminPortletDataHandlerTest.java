@@ -13,6 +13,7 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryOrganizationRelLocalService;
 import com.liferay.account.service.AccountGroupLocalService;
 import com.liferay.account.service.AccountGroupRelLocalService;
+import com.liferay.account.service.persistence.AccountEntryUtil;
 import com.liferay.account.service.test.util.AccountGroupTestUtil;
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactoryUtil;
@@ -41,6 +42,7 @@ import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.util.ClassUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -321,10 +323,11 @@ public class AccountEntriesAdminPortletDataHandlerTest {
 				exportImportConfiguration, larFile);
 		}
 
-		int accountEntriesCount =
-			_accountEntryLocalService.getAccountEntriesCount(
+		int accountEntriesCount = TransactionTestUtil.invoke(
+			AccountEntryUtil.getPersistence(),
+			accountEntryPersistence -> accountEntryPersistence.countByC_S(
 				TestPropsValues.getCompanyId(),
-				WorkflowConstants.STATUS_APPROVED);
+				WorkflowConstants.STATUS_APPROVED));
 
 		List<ExportImportReportEntry> exportImportReportEntries =
 			_exportImportReportEntryLocalService.getExportImportReportEntries(

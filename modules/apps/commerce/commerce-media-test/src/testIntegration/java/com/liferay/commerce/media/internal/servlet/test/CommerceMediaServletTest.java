@@ -308,7 +308,7 @@ public class CommerceMediaServletTest {
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 
-		accountGroup = _accountGroupLocalService.getDefaultAccountGroup(
+		accountGroup = _accountGroupLocalService.checkGuestAccountGroup(
 			_group.getCompanyId());
 
 		_accountGroupRelLocalService.addAccountGroupRel(

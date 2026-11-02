@@ -250,56 +250,6 @@ public class AccountEntryOrganizationRelLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteAccountEntryOrganizationRelsByAccountEntryId()
-		throws Exception {
-
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			_accountEntry.getAccountEntryId(),
-			_organization.getOrganizationId());
-
-		_assertSearchAccountEntries(true);
-		_assertSearchAccountOrganizations(true);
-
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRelsByAccountEntryId(
-				_accountEntry.getAccountEntryId());
-
-		Assert.assertFalse(
-			_accountEntryOrganizationRelLocalService.
-				hasAccountEntryOrganizationRel(
-					_accountEntry.getAccountEntryId(),
-					_organization.getOrganizationId()));
-
-		_assertSearchAccountEntries(false);
-		_assertSearchAccountOrganizations(false);
-	}
-
-	@Test
-	public void testDeleteAccountEntryOrganizationRelsByOrganizationId()
-		throws Exception {
-
-		_accountEntryOrganizationRelLocalService.addAccountEntryOrganizationRel(
-			_accountEntry.getAccountEntryId(),
-			_organization.getOrganizationId());
-
-		_assertSearchAccountEntries(true);
-		_assertSearchAccountOrganizations(true);
-
-		_accountEntryOrganizationRelLocalService.
-			deleteAccountEntryOrganizationRelsByOrganizationId(
-				_organization.getOrganizationId());
-
-		Assert.assertFalse(
-			_accountEntryOrganizationRelLocalService.
-				hasAccountEntryOrganizationRel(
-					_accountEntry.getAccountEntryId(),
-					_organization.getOrganizationId()));
-
-		_assertSearchAccountEntries(false);
-		_assertSearchAccountOrganizations(false);
-	}
-
-	@Test
 	public void testGetAccountEntryOrganizationRelsByOrganizationId()
 		throws Exception {
 

@@ -749,22 +749,6 @@ public class AccountEntryUserRelLocalServiceTest {
 	}
 
 	@Test
-	public void testIsAccountEntryUser() throws Exception {
-		User user1 = UserTestUtil.addUser();
-
-		Assert.assertFalse(
-			_accountEntryUserRelLocalService.isAccountEntryUser(
-				user1.getUserId()));
-
-		_accountEntryUserRelLocalService.addAccountEntryUserRel(
-			_accountEntry.getAccountEntryId(), user1.getUserId());
-
-		Assert.assertTrue(
-			_accountEntryUserRelLocalService.isAccountEntryUser(
-				user1.getUserId()));
-	}
-
-	@Test
 	public void testSetPersonTypeAccountEntryUser() throws Exception {
 		AccountEntry personTypeAccountEntry =
 			AccountEntryTestUtil.addAccountEntry(AccountEntryArgs.TYPE_PERSON);

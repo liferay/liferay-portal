@@ -400,7 +400,7 @@ public class CommerceMediaResolverTest {
 					cpAttachmentFileEntry.getCPAttachmentFileEntryId()));
 		}
 
-		accountGroup = _accountGroupLocalService.getDefaultAccountGroup(
+		accountGroup = _accountGroupLocalService.checkGuestAccountGroup(
 			_group.getCompanyId());
 
 		_accountGroupRelLocalService.addAccountGroupRel(

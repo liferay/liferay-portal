@@ -18,6 +18,7 @@ import com.liferay.account.model.AccountGroup;
 import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.account.service.AccountEntryUserRelLocalService;
 import com.liferay.account.service.AccountGroupLocalService;
+import com.liferay.account.service.persistence.AccountEntryUtil;
 import com.liferay.account.service.test.util.AccountEntryArgs;
 import com.liferay.account.service.test.util.AccountEntryTestUtil;
 import com.liferay.account.service.test.util.AccountGroupTestUtil;
@@ -85,6 +86,7 @@ import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.TransactionTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -462,29 +464,6 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testActivateAccountEntries() throws Exception {
-		List<AccountEntry> accountEntries =
-			AccountEntryTestUtil.addAccountEntries(
-				2, AccountEntryArgs.STATUS_INACTIVE);
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_assertStatus(
-				accountEntry.getAccountEntryId(),
-				WorkflowConstants.STATUS_INACTIVE);
-		}
-
-		_accountEntryLocalService.activateAccountEntries(
-			ListUtil.toLongArray(
-				accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR));
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_assertStatus(
-				accountEntry.getAccountEntryId(),
-				WorkflowConstants.STATUS_APPROVED);
-		}
-	}
-
-	@Test
 	public void testActivateAccountEntryByModel() throws Exception {
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry(
 			AccountEntryArgs.STATUS_INACTIVE);
@@ -625,28 +604,6 @@ public class AccountEntryLocalServiceTest {
 	}
 
 	@Test
-	public void testDeactivateAccountEntries() throws Exception {
-		List<AccountEntry> accountEntries =
-			AccountEntryTestUtil.addAccountEntries(2);
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_assertStatus(
-				accountEntry.getAccountEntryId(),
-				WorkflowConstants.STATUS_APPROVED);
-		}
-
-		_accountEntryLocalService.deactivateAccountEntries(
-			ListUtil.toLongArray(
-				accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR));
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_assertStatus(
-				accountEntry.getAccountEntryId(),
-				WorkflowConstants.STATUS_INACTIVE);
-		}
-	}
-
-	@Test
 	public void testDeactivateAccountEntryByModel() throws Exception {
 		AccountEntry accountEntry = AccountEntryTestUtil.addAccountEntry();
 
@@ -675,20 +632,6 @@ public class AccountEntryLocalServiceTest {
 		_assertStatus(
 			accountEntry.getAccountEntryId(),
 			WorkflowConstants.STATUS_INACTIVE);
-	}
-
-	@Test
-	public void testDeleteAccountEntries() throws Exception {
-		List<AccountEntry> accountEntries =
-			AccountEntryTestUtil.addAccountEntries(2);
-
-		_accountEntryLocalService.deleteAccountEntries(
-			ListUtil.toLongArray(
-				accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR));
-
-		for (AccountEntry accountEntry : accountEntries) {
-			_assertDeleted(accountEntry);
-		}
 	}
 
 	@Test
@@ -1292,11 +1235,12 @@ public class AccountEntryLocalServiceTest {
 	public void testSearchNoKeywords() throws Exception {
 		AccountEntryTestUtil.addAccountEntry();
 
-		List<AccountEntry> expectedAccountEntries =
-			_accountEntryLocalService.getAccountEntries(
+		List<AccountEntry> expectedAccountEntries = TransactionTestUtil.invoke(
+			AccountEntryUtil.getPersistence(),
+			accountEntryPersistence -> accountEntryPersistence.findByC_S(
 				TestPropsValues.getCompanyId(),
 				WorkflowConstants.STATUS_APPROVED, QueryUtil.ALL_POS,
-				QueryUtil.ALL_POS, null);
+				QueryUtil.ALL_POS, null));
 
 		BaseModelSearchResult<AccountEntry> baseModelSearchResult =
 			_keywordSearch(null);

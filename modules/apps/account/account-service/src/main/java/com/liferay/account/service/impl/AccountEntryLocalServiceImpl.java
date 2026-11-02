@@ -43,9 +43,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
-import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -128,13 +126,6 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class AccountEntryLocalServiceImpl
 	extends AccountEntryLocalServiceBaseImpl {
-
-	@Override
-	public void activateAccountEntries(long[] accountEntryIds)
-		throws PortalException {
-
-		_performActions(accountEntryIds, this::activateAccountEntry);
-	}
 
 	@Override
 	public AccountEntry activateAccountEntry(AccountEntry accountEntry)
@@ -286,13 +277,6 @@ public class AccountEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deactivateAccountEntries(long[] accountEntryIds)
-		throws PortalException {
-
-		_performActions(accountEntryIds, this::deactivateAccountEntry);
-	}
-
-	@Override
 	public AccountEntry deactivateAccountEntry(AccountEntry accountEntry)
 		throws PortalException {
 
@@ -304,14 +288,6 @@ public class AccountEntryLocalServiceImpl
 		throws PortalException {
 
 		return deactivateAccountEntry(getAccountEntry(accountEntryId));
-	}
-
-	@Override
-	public void deleteAccountEntries(long[] accountEntryIds)
-		throws PortalException {
-
-		_performActions(
-			accountEntryIds, accountEntryLocalService::deleteAccountEntry);
 	}
 
 	@Override
@@ -446,20 +422,6 @@ public class AccountEntryLocalServiceImpl
 		}
 
 		return null;
-	}
-
-	@Override
-	public List<AccountEntry> getAccountEntries(
-		long companyId, int status, int start, int end,
-		OrderByComparator<AccountEntry> orderByComparator) {
-
-		return accountEntryPersistence.findByC_S(
-			companyId, status, start, end, orderByComparator);
-	}
-
-	@Override
-	public int getAccountEntriesCount(long companyId, int status) {
-		return accountEntryPersistence.countByC_S(companyId, status);
 	}
 
 	@Override
@@ -1106,24 +1068,6 @@ public class AccountEntryLocalServiceImpl
 		}
 
 		return false;
-	}
-
-	private void _performActions(
-			long[] accountEntryIds,
-			ActionableDynamicQuery.PerformActionMethod<AccountEntry>
-				performActionMethod)
-		throws PortalException {
-
-		ActionableDynamicQuery actionableDynamicQuery =
-			getActionableDynamicQuery();
-
-		actionableDynamicQuery.setAddCriteriaMethod(
-			dynamicQuery -> dynamicQuery.add(
-				RestrictionsFactoryUtil.in(
-					"accountEntryId", ArrayUtil.toArray(accountEntryIds))));
-		actionableDynamicQuery.setPerformActionMethod(performActionMethod);
-
-		actionableDynamicQuery.performActions();
 	}
 
 	private void _populateSearchContext(

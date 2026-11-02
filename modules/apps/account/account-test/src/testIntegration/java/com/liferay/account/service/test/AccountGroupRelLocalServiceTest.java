@@ -158,15 +158,12 @@ public class AccountGroupRelLocalServiceTest {
 			ListUtil.toLongArray(
 				accountEntries, AccountEntry.ACCOUNT_ENTRY_ID_ACCESSOR));
 
-		Assert.assertEquals(
-			2,
-			_accountGroupRelLocalService.
-				getAccountGroupRelsCountByAccountGroupId(
-					_accountGroup.getAccountGroupId()));
-
 		List<AccountGroupRel> accountGroupRels =
 			_accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
 				_accountGroup.getAccountGroupId());
+
+		Assert.assertEquals(
+			accountGroupRels.toString(), 2, accountGroupRels.size());
 
 		for (AccountGroupRel accountGroupRel : accountGroupRels) {
 			Assert.assertEquals(
@@ -199,11 +196,12 @@ public class AccountGroupRelLocalServiceTest {
 			_accountGroup.getAccountGroupId(), AccountEntry.class.getName(),
 			new long[] {_accountEntry.getAccountEntryId()});
 
+		accountGroupRels =
+			_accountGroupRelLocalService.getAccountGroupRelsByAccountGroupId(
+				_accountGroup.getAccountGroupId());
+
 		Assert.assertEquals(
-			0,
-			_accountGroupRelLocalService.
-				getAccountGroupRelsCountByAccountGroupId(
-					_accountGroup.getAccountGroupId()));
+			accountGroupRels.toString(), 0, accountGroupRels.size());
 	}
 
 	@Test

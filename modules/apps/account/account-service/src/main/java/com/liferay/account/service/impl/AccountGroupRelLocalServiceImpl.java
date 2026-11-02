@@ -135,11 +135,6 @@ public class AccountGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteAccountGroupRelsByAccountGroupId(long accountGroupId) {
-		accountGroupRelPersistence.removeByAccountGroupId(accountGroupId);
-	}
-
-	@Override
 	public AccountGroupRel fetchAccountGroupRel(
 		long accountGroupId, String className, long classPK) {
 
@@ -203,15 +198,6 @@ public class AccountGroupRelLocalServiceImpl
 	}
 
 	@Override
-	public List<AccountGroupRel> getAccountGroupRelsByAccountGroupId(
-		long accountGroupId, int start, int end,
-		OrderByComparator<AccountGroupRel> orderByComparator) {
-
-		return accountGroupRelPersistence.findByAccountGroupId(
-			accountGroupId, start, end, orderByComparator);
-	}
-
-	@Override
 	public int getAccountGroupRelsCount(
 		long[] accountGroupIds, String className, long classPK,
 		String keywords) {
@@ -233,11 +219,6 @@ public class AccountGroupRelLocalServiceImpl
 	public int getAccountGroupRelsCount(String className, long classPK) {
 		return accountGroupRelPersistence.countByC_C(
 			_classNameLocalService.getClassNameId(className), classPK);
-	}
-
-	@Override
-	public long getAccountGroupRelsCountByAccountGroupId(long accountGroupId) {
-		return accountGroupRelPersistence.countByAccountGroupId(accountGroupId);
 	}
 
 	@Override
