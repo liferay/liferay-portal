@@ -606,9 +606,7 @@ public class CommerceOrderLocalServiceTest {
 	}
 
 	@Test
-	public void testReorderCommerceOrderWhenAddressIsNotEligible()
-		throws Exception {
-
+	public void testReorderCommerceOrder() throws Exception {
 		_accountEntry = CommerceAccountTestUtil.addBusinessAccountEntry(
 			_user.getUserId(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString() + "@liferay.com",
