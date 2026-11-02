@@ -126,24 +126,6 @@ public class MFATimeBasedOTPEntryLocalServiceImpl
 	}
 
 	@Override
-	public MFATimeBasedOTPEntry resetFailedAttempts(long userId)
-		throws PortalException {
-
-		MFATimeBasedOTPEntry mfaTimeBasedOTPEntry =
-			mfaTimeBasedOTPEntryPersistence.fetchByUserId(userId);
-
-		if (mfaTimeBasedOTPEntry == null) {
-			throw new NoSuchEntryException("User ID " + userId);
-		}
-
-		mfaTimeBasedOTPEntry.setFailedAttempts(0);
-		mfaTimeBasedOTPEntry.setLastFailDate(null);
-		mfaTimeBasedOTPEntry.setLastFailIP(null);
-
-		return mfaTimeBasedOTPEntryPersistence.update(mfaTimeBasedOTPEntry);
-	}
-
-	@Override
 	public MFATimeBasedOTPEntry updateAttempts(
 			long userId, String ipAddress, boolean success)
 		throws PortalException {
