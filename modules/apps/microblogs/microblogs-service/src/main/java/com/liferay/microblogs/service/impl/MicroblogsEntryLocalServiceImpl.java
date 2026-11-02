@@ -69,58 +69,6 @@ public class MicroblogsEntryLocalServiceImpl
 
 	@Override
 	public MicroblogsEntry addMicroblogsEntry(
-			long userId, long creatorClassNameId, long creatorClassPK,
-			String content, int type, long parentMicroblogsEntryId,
-			int socialRelationType, ServiceContext serviceContext)
-		throws PortalException {
-
-		// Microblogs entry
-
-		User user = _userLocalService.getUser(userId);
-
-		Date date = new Date();
-
-		_validate(type, parentMicroblogsEntryId);
-
-		long microblogsEntryId = counterLocalService.increment();
-
-		if (parentMicroblogsEntryId == 0) {
-			parentMicroblogsEntryId = microblogsEntryId;
-		}
-
-		MicroblogsEntry microblogsEntry = microblogsEntryPersistence.create(
-			microblogsEntryId);
-
-		microblogsEntry.setCompanyId(user.getCompanyId());
-		microblogsEntry.setUserId(user.getUserId());
-		microblogsEntry.setUserName(user.getFullName());
-		microblogsEntry.setCreateDate(date);
-		microblogsEntry.setModifiedDate(date);
-		microblogsEntry.setCreatorClassNameId(creatorClassNameId);
-		microblogsEntry.setCreatorClassPK(creatorClassPK);
-		microblogsEntry.setContent(content);
-		microblogsEntry.setType(type);
-		microblogsEntry.setParentMicroblogsEntryId(parentMicroblogsEntryId);
-		microblogsEntry.setSocialRelationType(socialRelationType);
-
-		microblogsEntry = microblogsEntryPersistence.update(microblogsEntry);
-
-		// Resources
-
-		_resourceLocalService.addModelResources(
-			microblogsEntry, serviceContext);
-
-		// Asset
-
-		updateAsset(
-			microblogsEntry, serviceContext.getAssetCategoryIds(),
-			serviceContext.getAssetTagNames());
-
-		return microblogsEntry;
-	}
-
-	@Override
-	public MicroblogsEntry addMicroblogsEntry(
 			long userId, String content, int type, long parentMicroblogsEntryId,
 			int socialRelationType, ServiceContext serviceContext)
 		throws PortalException {
@@ -253,31 +201,6 @@ public class MicroblogsEntryLocalServiceImpl
 	}
 
 	@Override
-	public void deleteUserMicroblogsEntries(long userId)
-		throws PortalException {
-
-		List<MicroblogsEntry> microblogsEntries =
-			microblogsEntryPersistence.findByUserId(userId);
-
-		for (MicroblogsEntry microblogsEntry : microblogsEntries) {
-			deleteMicroblogsEntry(microblogsEntry);
-		}
-	}
-
-	@Override
-	public List<MicroblogsEntry> getCompanyMicroblogsEntries(
-		long companyId, int start, int end) {
-
-		return microblogsEntryPersistence.findByCompanyId(
-			companyId, start, end);
-	}
-
-	@Override
-	public int getCompanyMicroblogsEntriesCount(long companyId) {
-		return microblogsEntryPersistence.countByCompanyId(companyId);
-	}
-
-	@Override
 	public MicroblogsEntry getMicroblogsEntry(long microblogsEntryId)
 		throws PortalException {
 
@@ -327,11 +250,6 @@ public class MicroblogsEntryLocalServiceImpl
 	@Override
 	public int getUserMicroblogsEntriesCount(long userId) {
 		return microblogsEntryPersistence.countByUserId(userId);
-	}
-
-	@Override
-	public int getUserMicroblogsEntriesCount(long userId, int type) {
-		return microblogsEntryPersistence.countByU_T(userId, type);
 	}
 
 	@Override
