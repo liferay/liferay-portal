@@ -32,6 +32,9 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 
@@ -321,7 +324,7 @@ public class EditPIMConnectorDisplayContextTest {
 		Mockito.when(
 			objectEntry.getExternalReferenceCode()
 		).thenReturn(
-			"PIM_CONNECTOR_ERC"
+			_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE
 		);
 
 		Mockito.when(
@@ -342,40 +345,50 @@ public class EditPIMConnectorDisplayContextTest {
 			objectEntry
 		);
 
-		ObjectDefinition configurationObjectDefinition = Mockito.mock(
-			ObjectDefinition.class);
+		ObjectDefinition pimConnectorConfigurationObjectDefinition =
+			Mockito.mock(ObjectDefinition.class);
 
 		Mockito.when(
-			configurationObjectDefinition.getObjectDefinitionId()
+			pimConnectorConfigurationObjectDefinition.getObjectDefinitionId()
 		).thenReturn(
-			_CONFIGURATION_OBJECT_DEFINITION_ID
+			_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_ID
 		);
 
 		Mockito.when(
-			configurationObjectDefinition.getRESTContextPath()
+			pimConnectorConfigurationObjectDefinition.getRESTContextPath()
 		).thenReturn(
-			"/pim/connector-liferay-commerce-configuration"
+			"/pim/connector-configuration-liferay-commerce"
 		);
 
-		ObjectEntry configurationObjectEntry = Mockito.mock(ObjectEntry.class);
+		ObjectEntry pimConnectorConfigurationObjectEntry = Mockito.mock(
+			ObjectEntry.class);
+
+		Calendar calendar = new GregorianCalendar(
+			2026, Calendar.NOVEMBER, 2, 13, 45);
+
+		Date date = calendar.getTime();
 
 		Mockito.when(
-			configurationObjectEntry.getExternalReferenceCode()
+			pimConnectorConfigurationObjectEntry.getExternalReferenceCode()
 		).thenReturn(
-			"PIM_CONNECTOR_ERC"
+			_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE
 		);
 
 		Mockito.when(
-			configurationObjectEntry.getObjectDefinitionId()
+			pimConnectorConfigurationObjectEntry.getObjectDefinitionId()
 		).thenReturn(
-			_CONFIGURATION_OBJECT_DEFINITION_ID
+			_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_ID
 		);
 
 		Mockito.when(
-			configurationObjectEntry.getValues()
+			pimConnectorConfigurationObjectEntry.getValues()
 		).thenReturn(
 			HashMapBuilder.<String, Serializable>put(
 				"clientSecret", RandomTestUtil.randomString()
+			).put(
+				"date", date
+			).put(
+				"dateTime", date
 			).put(
 				"id", RandomTestUtil.randomLong()
 			).put(
@@ -387,9 +400,10 @@ public class EditPIMConnectorDisplayContextTest {
 			"liferay-commerce", "Liferay Commerce");
 
 		Mockito.when(
-			pimConnector.getConfigurationObjectDefinitionExternalReferenceCode()
+			pimConnector.
+				getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode()
 		).thenReturn(
-			_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE
+			_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE
 		);
 
 		try (MockedStatic<ObjectDefinitionLocalServiceUtil>
@@ -403,23 +417,30 @@ public class EditPIMConnectorDisplayContextTest {
 				() ->
 					ObjectDefinitionLocalServiceUtil.
 						fetchObjectDefinitionByExternalReferenceCode(
-							_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
+							_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE,
 							_COMPANY_ID)
 			).thenReturn(
-				configurationObjectDefinition
+				pimConnectorConfigurationObjectDefinition
 			);
 
 			objectEntryLocalServiceUtilMockedStatic.when(
 				() -> ObjectEntryLocalServiceUtil.fetchObjectEntry(
-					"PIM_CONNECTOR_ERC", 0, _CONFIGURATION_OBJECT_DEFINITION_ID)
+					_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE, 0,
+					_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_ID)
 			).thenReturn(
-				configurationObjectEntry
+				pimConnectorConfigurationObjectEntry
 			);
 
 			List<ObjectField> objectFields = ListUtil.fromArray(
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_ENCRYPTED,
 					"Client Secret", false, "clientSecret", true),
+				_mockObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_DATE,
+					RandomTestUtil.randomString(), false, "date", false),
+				_mockObjectField(
+					ObjectFieldConstants.BUSINESS_TYPE_DATE_TIME,
+					RandomTestUtil.randomString(), false, "dateTime", false),
 				_mockObjectField(
 					ObjectFieldConstants.BUSINESS_TYPE_LONG_INTEGER,
 					RandomTestUtil.randomString(), true, "id", false),
@@ -432,7 +453,7 @@ public class EditPIMConnectorDisplayContextTest {
 
 			Mockito.when(
 				objectFieldLocalService.getObjectFields(
-					_CONFIGURATION_OBJECT_DEFINITION_ID)
+					_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_ID)
 			).thenReturn(
 				objectFields
 			);
@@ -452,7 +473,7 @@ public class EditPIMConnectorDisplayContextTest {
 				"pimConnector");
 
 			Assert.assertEquals(
-				"PIM_CONNECTOR_ERC",
+				_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE,
 				pimConnectorJSONObject.getString("externalReferenceCode"));
 
 			JSONArray pimConnectorsJSONArray = (JSONArray)reactData.get(
@@ -464,7 +485,7 @@ public class EditPIMConnectorDisplayContextTest {
 				pimConnectorJSONObject.getJSONObject("configuration");
 
 			Assert.assertEquals(
-				"/o/pim/connector-liferay-commerce-configuration",
+				"/o/pim/connector-configuration-liferay-commerce",
 				configurationJSONObject.getString("apiURL"));
 			Assert.assertEquals(
 				"Liferay Commerce Configuration",
@@ -474,7 +495,7 @@ public class EditPIMConnectorDisplayContextTest {
 				"fields");
 
 			Assert.assertEquals(
-				fieldsJSONArray.toString(), 2, fieldsJSONArray.length());
+				fieldsJSONArray.toString(), 4, fieldsJSONArray.length());
 
 			JSONObject fieldJSONObject = fieldsJSONArray.getJSONObject(0);
 
@@ -487,7 +508,7 @@ public class EditPIMConnectorDisplayContextTest {
 				"clientSecret", fieldJSONObject.getString("name"));
 			Assert.assertTrue(fieldJSONObject.getBoolean("required"));
 
-			fieldJSONObject = fieldsJSONArray.getJSONObject(1);
+			fieldJSONObject = fieldsJSONArray.getJSONObject(3);
 
 			Assert.assertEquals("url", fieldJSONObject.getString("name"));
 
@@ -495,7 +516,7 @@ public class EditPIMConnectorDisplayContextTest {
 				(JSONObject)reactData.get("configuration");
 
 			Assert.assertEquals(
-				"PIM_CONNECTOR_ERC",
+				_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE,
 				configurationValuesJSONObject.getString(
 					"externalReferenceCode"));
 
@@ -505,6 +526,10 @@ public class EditPIMConnectorDisplayContextTest {
 			Assert.assertEquals(
 				Portal.TEMP_OBFUSCATION_VALUE,
 				valuesJSONObject.getString("clientSecret"));
+			Assert.assertEquals(
+				"2026-11-02", valuesJSONObject.getString("date"));
+			Assert.assertEquals(
+				"2026-11-02T13:45", valuesJSONObject.getString("dateTime"));
 			Assert.assertFalse(valuesJSONObject.has("id"));
 			Assert.assertEquals(
 				"https://commerce.minium.com",
@@ -515,10 +540,14 @@ public class EditPIMConnectorDisplayContextTest {
 	private static final long _COMPANY_ID = RandomTestUtil.randomLong();
 
 	private static final String
-		_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
+		_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_EXTERNAL_REFERENCE_CODE =
 			RandomTestUtil.randomString();
 
-	private static final long _CONFIGURATION_OBJECT_DEFINITION_ID =
-		RandomTestUtil.randomLong();
+	private static final long
+		_PIM_CONNECTOR_CONFIGURATION_OBJECT_DEFINITION_ID =
+			RandomTestUtil.randomLong();
+
+	private static final String _PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE =
+		RandomTestUtil.randomString();
 
 }

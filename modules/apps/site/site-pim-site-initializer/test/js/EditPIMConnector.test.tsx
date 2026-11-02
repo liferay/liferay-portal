@@ -45,7 +45,7 @@ const PROPS = {
 	pimConnectors: [
 		{
 			configuration: {
-				apiURL: '/o/pim/connector-liferay-commerce-configuration',
+				apiURL: '/o/pim/connector-configuration-liferay-commerce',
 				fields: [
 					{
 						businessType: 'Encrypted',
@@ -139,7 +139,7 @@ describe('EditPIMConnector', () => {
 		});
 
 		expect(mockFetch.mock.calls[1][0]).toBe(
-			'/o/pim/connector-liferay-commerce-configuration/by-external-reference-code/CONNECTOR_ERC'
+			'/o/pim/connector-configuration-liferay-commerce/by-external-reference-code/CONNECTOR_ERC'
 		);
 		expect(mockFetch.mock.calls[1][1].method).toBe('PUT');
 		expect(getRequestBody(1)).toEqual({

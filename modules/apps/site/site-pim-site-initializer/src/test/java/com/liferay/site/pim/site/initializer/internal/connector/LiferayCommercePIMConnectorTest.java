@@ -137,9 +137,9 @@ public class LiferayCommercePIMConnectorTest {
 	@Test
 	public void testGetConfigurationObjectDefinitionExternalReferenceCode() {
 		Assert.assertEquals(
-			"L_PIM_CONNECTOR_LIFERAY_COMMERCE_CONFIGURATION",
+			"L_PIM_CONNECTOR_CONFIGURATION_LIFERAY_COMMERCE",
 			_liferayCommercePIMConnector.
-				getConfigurationObjectDefinitionExternalReferenceCode());
+				getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode());
 	}
 
 	@Test
