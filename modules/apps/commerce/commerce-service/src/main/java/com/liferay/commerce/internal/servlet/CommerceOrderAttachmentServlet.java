@@ -9,6 +9,7 @@ import com.liferay.commerce.model.CommerceOrderAttachment;
 import com.liferay.commerce.service.CommerceOrderAttachmentService;
 import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.petra.string.CharPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
@@ -97,6 +98,13 @@ public class CommerceOrderAttachmentServlet extends HttpServlet {
 				fileEntry.getFileName(), fileEntry.getContentStream(),
 				fileEntry.getSize(), fileEntry.getMimeType(),
 				HttpHeaders.CONTENT_DISPOSITION_ATTACHMENT);
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			_sendError(httpServletResponse);
 		}
 		catch (Exception exception) {
 			_log.error(exception);

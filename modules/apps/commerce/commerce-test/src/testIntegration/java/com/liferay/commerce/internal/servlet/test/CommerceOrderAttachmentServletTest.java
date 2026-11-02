@@ -38,6 +38,8 @@ import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -102,9 +104,6 @@ public class CommerceOrderAttachmentServletTest {
 
 	@Test
 	public void testDoGet() throws Exception {
-		MockHttpServletResponse mockHttpServletResponse =
-			new MockHttpServletResponse();
-
 		String content = RandomTestUtil.randomString();
 
 		CommerceOrderAttachment commerceOrderAttachment =
@@ -119,64 +118,20 @@ public class CommerceOrderAttachmentServletTest {
 		long commerceOrderAttachmentId =
 			commerceOrderAttachment.getCommerceOrderAttachmentId();
 
-		_servlet.service(
-			_getMockHttpServletRequest(
-				String.valueOf(commerceOrderAttachmentId), null),
-			mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
-
-		mockHttpServletResponse = new MockHttpServletResponse();
-
-		_servlet.service(
-			_getMockHttpServletRequest(RandomTestUtil.randomString(), _user),
-			mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
-
-		mockHttpServletResponse = new MockHttpServletResponse();
-
-		_servlet.service(
-			_getMockHttpServletRequest(
-				StringBundler.concat(
-					RandomTestUtil.randomLong(), StringPool.SLASH,
-					RandomTestUtil.randomLong()),
-				_user),
-			mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
-
-		mockHttpServletResponse = new MockHttpServletResponse();
-
-		_servlet.service(
-			_getMockHttpServletRequest(
-				String.valueOf(commerceOrderAttachmentId), _user),
-			mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
-
-		mockHttpServletResponse = new MockHttpServletResponse();
-
-		_servlet.service(
-			_getMockHttpServletRequest(
-				String.valueOf(RandomTestUtil.randomLong()), _user),
-			mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
+		_assertNotFound(RandomTestUtil.randomString(), _user);
+		_assertNotFound(String.valueOf(RandomTestUtil.randomLong()), _user);
+		_assertNotFound(String.valueOf(commerceOrderAttachmentId), _user);
+		_assertNotFound(String.valueOf(commerceOrderAttachmentId), null);
+		_assertNotFound(
+			StringBundler.concat(
+				RandomTestUtil.randomLong(), StringPool.SLASH,
+				RandomTestUtil.randomLong()),
+			_user);
 
 		_setResourcePermissions(CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS);
 
-		mockHttpServletResponse = new MockHttpServletResponse();
+		MockHttpServletResponse mockHttpServletResponse =
+			new MockHttpServletResponse();
 
 		_servlet.service(
 			_getMockHttpServletRequest(
@@ -198,16 +153,7 @@ public class CommerceOrderAttachmentServletTest {
 		_commerceOrderAttachmentLocalService.updateCommerceOrderAttachment(
 			commerceOrderAttachment);
 
-		mockHttpServletResponse = new MockHttpServletResponse();
-
-		_servlet.service(
-			_getMockHttpServletRequest(
-				String.valueOf(commerceOrderAttachmentId), _user),
-			mockHttpServletResponse);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_NOT_FOUND,
-			mockHttpServletResponse.getStatus());
+		_assertNotFound(String.valueOf(commerceOrderAttachmentId), _user);
 
 		_setResourcePermissions(
 			CommerceOrderActionKeys.MANAGE_COMMERCE_ORDERS,
@@ -222,6 +168,25 @@ public class CommerceOrderAttachmentServletTest {
 
 		Assert.assertEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+	}
+
+	private void _assertNotFound(String pathInfo, User user) throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.commerce.internal.servlet." +
+					"CommerceOrderAttachmentServlet",
+				LoggerTestUtil.OFF)) {
+
+			MockHttpServletResponse mockHttpServletResponse =
+				new MockHttpServletResponse();
+
+			_servlet.service(
+				_getMockHttpServletRequest(pathInfo, user),
+				mockHttpServletResponse);
+
+			Assert.assertEquals(
+				HttpServletResponse.SC_NOT_FOUND,
+				mockHttpServletResponse.getStatus());
+		}
 	}
 
 	private MockHttpServletRequest _getMockHttpServletRequest(
