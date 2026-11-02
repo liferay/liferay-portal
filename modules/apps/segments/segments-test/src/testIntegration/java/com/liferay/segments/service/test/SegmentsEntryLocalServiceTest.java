@@ -239,7 +239,6 @@ public class SegmentsEntryLocalServiceTest {
 	public void testGetSegmentsEntries() throws Exception {
 		_testGetSegmentsEntriesBySourceWithType();
 		_testGetSegmentsEntriesCountWithIncludeAncestorSegmentsEntries();
-		_testGetSegmentsEntriesWithIncludeAncestorSegmentsEntries();
 	}
 
 	@Test
@@ -808,24 +807,6 @@ public class SegmentsEntryLocalServiceTest {
 				childGroup.getGroupId());
 
 		Assert.assertTrue(segmentsEntriesCount > 0);
-	}
-
-	private void _testGetSegmentsEntriesWithIncludeAncestorSegmentsEntries()
-		throws Exception {
-
-		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
-			_group.getGroupId());
-
-		Group childGroup = GroupTestUtil.addGroup(_group.getGroupId());
-
-		_groups.add(0, childGroup);
-
-		List<SegmentsEntry> segmentsEntries =
-			_segmentsEntryLocalService.getSegmentsEntries(
-				childGroup.getGroupId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-				null);
-
-		Assert.assertTrue(segmentsEntries.contains(segmentsEntry));
 	}
 
 	private void _testSearchSegmentsEntries() throws Exception {

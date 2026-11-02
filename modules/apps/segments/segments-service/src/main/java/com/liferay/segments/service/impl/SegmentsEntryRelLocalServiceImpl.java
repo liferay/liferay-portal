@@ -89,11 +89,6 @@ public class SegmentsEntryRelLocalServiceImpl
 	}
 
 	@Override
-	public void deleteSegmentsEntryRels(long classNameId, long classPK) {
-		segmentsEntryRelPersistence.removeByCN_CPK(classNameId, classPK);
-	}
-
-	@Override
 	public void deleteSegmentsEntryRels(
 			long segmentsEntryId, long classNameId, long[] classPKs)
 		throws PortalException {
@@ -134,30 +129,9 @@ public class SegmentsEntryRelLocalServiceImpl
 	}
 
 	@Override
-	public List<SegmentsEntryRel> getSegmentsEntryRels(
-		long groupId, long classNameId, long classPK) {
-
-		return segmentsEntryRelPersistence.findByG_CN_CPK(
-			groupId, classNameId, classPK);
-	}
-
-	@Override
 	public int getSegmentsEntryRelsCount(long segmentsEntryId) {
 		return segmentsEntryRelPersistence.countBySegmentsEntryId(
 			segmentsEntryId);
-	}
-
-	@Override
-	public int getSegmentsEntryRelsCount(long classNameId, long classPK) {
-		return segmentsEntryRelPersistence.countByCN_CPK(classNameId, classPK);
-	}
-
-	@Override
-	public int getSegmentsEntryRelsCount(
-		long groupId, long classNameId, long classPK) {
-
-		return segmentsEntryRelPersistence.countByG_CN_CPK(
-			groupId, classNameId, classPK);
 	}
 
 	@Override

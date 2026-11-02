@@ -142,17 +142,6 @@ public class SegmentsEntryRoleLocalServiceImpl
 	}
 
 	@Override
-	public List<SegmentsEntryRole> getSegmentsEntryRolesByRoleId(long roleId) {
-		return segmentsEntryRolePersistence.findByRoleId(roleId);
-	}
-
-	@Override
-	public int getSegmentsEntryRolesCount(long segmentsEntryId) {
-		return segmentsEntryRolePersistence.countBySegmentsEntryId(
-			segmentsEntryId);
-	}
-
-	@Override
 	public int getSegmentsEntryRolesCountByRoleId(long roleId) {
 		return segmentsEntryRolePersistence.countByRoleId(roleId);
 	}

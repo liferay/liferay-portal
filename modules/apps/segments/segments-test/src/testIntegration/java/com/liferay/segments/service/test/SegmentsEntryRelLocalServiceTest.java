@@ -91,29 +91,6 @@ public class SegmentsEntryRelLocalServiceTest {
 	}
 
 	@Test
-	public void testDeleteSegmentsEntryRelsByClassNameIdAndClassPK()
-		throws PortalException {
-
-		SegmentsEntry segmentsEntry = SegmentsTestUtil.addSegmentsEntry(
-			_group.getGroupId());
-
-		int classNameId = RandomTestUtil.randomInt();
-		int classPK = RandomTestUtil.randomInt();
-
-		_segmentsEntryRelLocalService.addSegmentsEntryRel(
-			segmentsEntry.getSegmentsEntryId(), classNameId, classPK,
-			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
-
-		_segmentsEntryRelLocalService.deleteSegmentsEntryRels(
-			classNameId, classPK);
-
-		Assert.assertEquals(
-			0,
-			_segmentsEntryRelLocalService.getSegmentsEntryRelsCount(
-				segmentsEntry.getSegmentsEntryId()));
-	}
-
-	@Test
 	public void testDeleteSegmentsEntryRelsBySegmentsEntryId()
 		throws PortalException {
 
