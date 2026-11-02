@@ -24,7 +24,7 @@ export function getAPIEndpointsFDSProps(
 		},
 		emptyState: {
 			description: '',
-			image: '/states/empty_state.svg',
+			symbol: 'empty-state',
 			title: Liferay.Language.get('no-api-endpoint-found'),
 		},
 		id: portletId,

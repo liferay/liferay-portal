@@ -24,7 +24,7 @@ export function getAPIApplicationsFDSProps(
 		},
 		emptyState: {
 			description: '',
-			image: '/states/empty_state.svg',
+			symbol: 'empty-state',
 			title: Liferay.Language.get('no-api-application-found'),
 		},
 		filters: getAPIApplicationsFDSFilters(),
