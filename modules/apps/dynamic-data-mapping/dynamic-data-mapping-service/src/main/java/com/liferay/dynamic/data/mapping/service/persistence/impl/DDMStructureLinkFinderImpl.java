@@ -102,8 +102,7 @@ public class DDMStructureLinkFinderImpl
 				"DDMStructure.structureId", groupIds);
 
 			sql = _customSQL.replaceKeywords(
-				sql, "LOWER(CAST_TEXT(DDMStructure.name))", StringPool.LIKE,
-				false, names);
+				sql, "LOWER(DDMStructure.name)", StringPool.LIKE, false, names);
 
 			sql = _customSQL.replaceKeywords(
 				sql, "DDMStructure.description", StringPool.LIKE, true,
@@ -187,8 +186,7 @@ public class DDMStructureLinkFinderImpl
 				"DDMStructure.structureId", groupIds);
 
 			sql = _customSQL.replaceKeywords(
-				sql, "LOWER(CAST_TEXT(DDMStructure.name))", StringPool.LIKE,
-				false, names);
+				sql, "LOWER(DDMStructure.name)", StringPool.LIKE, false, names);
 			sql = _customSQL.replaceKeywords(
 				sql, "DDMStructure.description", StringPool.LIKE, true,
 				descriptions);

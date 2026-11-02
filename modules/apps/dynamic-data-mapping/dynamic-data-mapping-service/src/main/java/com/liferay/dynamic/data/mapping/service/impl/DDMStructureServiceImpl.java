@@ -881,7 +881,7 @@ public class DDMStructureServiceImpl extends DDMStructureServiceBaseImpl {
 				}
 
 				Predicate keywordPredicate = DSLFunctionFactoryUtil.lower(
-					DSLFunctionFactoryUtil.castText(
+					DSLFunctionFactoryUtil.castClobText(
 						DDMStructureTable.INSTANCE.name)
 				).like(
 					keyword

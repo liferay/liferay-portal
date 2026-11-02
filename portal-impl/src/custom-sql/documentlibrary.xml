@@ -164,7 +164,7 @@
 		<![CDATA[
 			[$BASIC_DOCUMENT$]
 			SELECT
-				DISTINCT {DLFileEntryType.*}
+				{DLFileEntryType.*}
 			FROM
 				DLFileEntryType
 			WHERE
@@ -180,19 +180,27 @@
 		<![CDATA[
 			[$BASIC_DOCUMENT$]
 			SELECT
-				DISTINCT {DLFileEntryType.*}
+				{DLFileEntryType.*}
 			FROM
 				DLFileEntryType
-			INNER JOIN
-				DLFileEntryTypes_DLFolders ON
-					DLFileEntryTypes_DLFolders.fileEntryTypeId = DLFileEntryType.fileEntryTypeId
 			WHERE
-				(DLFileEntryType.companyId = ?) AND
-				(DLFileEntryTypes_DLFolders.folderId = ?) AND
-				[$GROUP_ID$]
+				DLFileEntryType.fileEntryTypeId IN
 				(
-					(LOWER(DLFileEntryType.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
-					(DLFileEntryType.description LIKE ? [$AND_OR_NULL_CHECK$])
+					SELECT
+						DISTINCT DLFileEntryType.fileEntryTypeId
+					FROM
+						DLFileEntryType
+					INNER JOIN
+						DLFileEntryTypes_DLFolders ON
+							DLFileEntryTypes_DLFolders.fileEntryTypeId = DLFileEntryType.fileEntryTypeId
+					WHERE
+						(DLFileEntryType.companyId = ?) AND
+						(DLFileEntryTypes_DLFolders.folderId = ?) AND
+						[$GROUP_ID$]
+						(
+							(LOWER(DLFileEntryType.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+							(DLFileEntryType.description LIKE ? [$AND_OR_NULL_CHECK$])
+						)
 				)
 		]]>
 	</sql>

@@ -229,8 +229,7 @@ public class DLFileEntryTypeServiceImpl extends DLFileEntryTypeServiceBaseImpl {
 
 		return dlFileEntryTypePersistence.dslQuery(
 			_getGroupByStep(
-				DSLQueryFactoryUtil.selectDistinct(
-					DLFileEntryTypeTable.INSTANCE),
+				DSLQueryFactoryUtil.select(DLFileEntryTypeTable.INSTANCE),
 				companyId, groupIds, keywords, includeBasicFileEntryType, scope
 			).orderBy(
 				DLFileEntryTypeTable.INSTANCE, orderByComparator
@@ -389,7 +388,8 @@ public class DLFileEntryTypeServiceImpl extends DLFileEntryTypeServiceBaseImpl {
 					}
 
 					Predicate keywordPredicate = DSLFunctionFactoryUtil.lower(
-						DLFileEntryTypeTable.INSTANCE.name
+						DSLFunctionFactoryUtil.castClobText(
+							DLFileEntryTypeTable.INSTANCE.name)
 					).like(
 						keyword
 					).or(

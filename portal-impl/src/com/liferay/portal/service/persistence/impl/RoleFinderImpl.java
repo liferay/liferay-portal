@@ -926,7 +926,8 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 			rolesWherePredicate = Predicate.or(
 				rolesWherePredicate,
 				_getKeywordsPredicate(
-					RoleTable.INSTANCE.title,
+					DSLFunctionFactoryUtil.castClobText(
+						RoleTable.INSTANCE.title),
 					CustomSQLUtil.keywords(title, true)));
 		}
 

@@ -171,7 +171,7 @@
 				(DDMStructureLink.classNameId = ?) AND
 				(DDMStructureLink.classPK = ?) AND
 				(
-					(LOWER(CAST_TEXT(DDMStructure.name)) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+					(LOWER(DDMStructure.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
 					(DDMStructure.description LIKE ? [$AND_OR_NULL_CHECK$])
 				)
 		]]>
@@ -189,7 +189,7 @@
 				(DDMStructureLink.classNameId = ?) AND
 				(DDMStructureLink.classPK = ?) AND
 				(
-					(LOWER(CAST_TEXT(DDMStructure.name)) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+					(LOWER(DDMStructure.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
 					(DDMStructure.description LIKE ? [$AND_OR_NULL_CHECK$])
 				)
 			ORDER BY

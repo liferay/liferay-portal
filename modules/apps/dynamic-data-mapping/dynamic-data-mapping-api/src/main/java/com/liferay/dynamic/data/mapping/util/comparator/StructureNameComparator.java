@@ -20,9 +20,11 @@ import java.util.Locale;
  */
 public class StructureNameComparator extends OrderByComparator<DDMStructure> {
 
-	public static final String ORDER_BY_ASC = "DDMStructure.name ASC";
+	public static final String ORDER_BY_ASC =
+		"CAST_CLOB_TEXT(DDMStructure.name) ASC";
 
-	public static final String ORDER_BY_DESC = "DDMStructure.name DESC";
+	public static final String ORDER_BY_DESC =
+		"CAST_CLOB_TEXT(DDMStructure.name) DESC";
 
 	public static final String[] ORDER_BY_FIELDS = {"name"};
 
