@@ -10,9 +10,6 @@ import com.liferay.asset.kernel.model.AssetTag;
 import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetTagLocalService;
 import com.liferay.portal.aop.AopService;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -383,48 +380,6 @@ public class SubscriptionLocalServiceImpl
 		return subscriptionPersistence.findByC_C_C(
 			companyId, _classNameLocalService.getClassNameId(className),
 			classPK);
-	}
-
-	/**
-	 * @param      className the entity's class name
-	 * @return     the subscriptions to the class name
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public List<Subscription> getSubscriptions(String className) {
-		DynamicQuery dynamicQuery = dynamicQuery();
-
-		Property classNameIdProperty = PropertyFactoryUtil.forName(
-			"classNameId");
-
-		dynamicQuery.add(
-			classNameIdProperty.eq(
-				_classNameLocalService.getClassNameId(className)));
-
-		return dynamicQuery(dynamicQuery);
-	}
-
-	/**
-	 * @param      className the entity's class name
-	 * @return     the subscriptions to the class name
-	 * @deprecated As of Athanasius (7.3.x), with no direct replacement
-	 */
-	@Deprecated
-	@Override
-	public int getSubscriptionsCount(String className) {
-		DynamicQuery dynamicQuery = dynamicQuery();
-
-		Property classNameIdProperty = PropertyFactoryUtil.forName(
-			"classNameId");
-
-		dynamicQuery.add(
-			classNameIdProperty.eq(
-				_classNameLocalService.getClassNameId(className)));
-
-		Long count = dynamicQueryCount(dynamicQuery);
-
-		return count.intValue();
 	}
 
 	/**
