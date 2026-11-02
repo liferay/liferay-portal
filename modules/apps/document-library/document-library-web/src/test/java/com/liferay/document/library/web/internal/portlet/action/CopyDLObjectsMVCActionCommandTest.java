@@ -160,9 +160,9 @@ public class CopyDLObjectsMVCActionCommandTest {
 
 		_setUpDepotGroup(depotGroupId);
 
-		long siteGroupId = RandomTestUtil.randomLong();
-
 		try {
+			long siteGroupId = RandomTestUtil.randomLong();
+
 			ReflectionTestUtil.invoke(
 				_copyDLObjectsMVCActionCommand, "_checkDestinationGroup",
 				new Class<?>[] {Group.class, long[].class, long.class},

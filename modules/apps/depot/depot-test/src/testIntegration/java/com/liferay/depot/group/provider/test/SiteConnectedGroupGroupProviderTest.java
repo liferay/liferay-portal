@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-package com.liferay.depot.internal.group.provider.test;
+package com.liferay.depot.group.provider.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.depot.constants.DepotConstants;
@@ -67,13 +67,17 @@ public class SiteConnectedGroupGroupProviderTest {
 	public void testGetCurrentAndAncestorSiteAndDepotGroupIds()
 		throws Exception {
 
-		long[] groupIds =
+		long[] currentAndAncestorSiteAndDepotGroupIds =
 			_siteConnectedGroupGroupProvider.
 				getCurrentAndAncestorSiteAndDepotGroupIds(_group.getGroupId());
 
 		Assert.assertTrue(
-			ArrayUtil.contains(groupIds, _depotEntry.getGroupId()));
-		Assert.assertTrue(ArrayUtil.contains(groupIds, _group.getGroupId()));
+			ArrayUtil.contains(
+				currentAndAncestorSiteAndDepotGroupIds,
+				_depotEntry.getGroupId()));
+		Assert.assertTrue(
+			ArrayUtil.contains(
+				currentAndAncestorSiteAndDepotGroupIds, _group.getGroupId()));
 	}
 
 	@Test
@@ -81,14 +85,18 @@ public class SiteConnectedGroupGroupProviderTest {
 	public void testGetCurrentAndAncestorSiteAndDepotGroupIdsWithDepotGroup()
 		throws Exception {
 
-		long[] groupIds =
+		long[] currentAndAncestorSiteAndDepotGroupIds =
 			_siteConnectedGroupGroupProvider.
 				getCurrentAndAncestorSiteAndDepotGroupIds(
 					_depotEntry.getGroupId());
 
 		Assert.assertTrue(
-			ArrayUtil.contains(groupIds, _depotEntry.getGroupId()));
-		Assert.assertFalse(ArrayUtil.contains(groupIds, _group.getGroupId()));
+			ArrayUtil.contains(
+				currentAndAncestorSiteAndDepotGroupIds,
+				_depotEntry.getGroupId()));
+		Assert.assertFalse(
+			ArrayUtil.contains(
+				currentAndAncestorSiteAndDepotGroupIds, _group.getGroupId()));
 	}
 
 	@DeleteAfterTestRun
