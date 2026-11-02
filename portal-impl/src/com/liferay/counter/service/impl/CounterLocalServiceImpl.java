@@ -45,11 +45,6 @@ public class CounterLocalServiceImpl
 	}
 
 	@Override
-	public void rename(String oldName, String newName) {
-		counterFinder.rename(oldName, newName);
-	}
-
-	@Override
 	public void reset(String name) {
 		counterFinder.reset(name);
 	}

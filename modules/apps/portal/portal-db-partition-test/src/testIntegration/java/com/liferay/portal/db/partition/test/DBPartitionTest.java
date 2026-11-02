@@ -429,45 +429,6 @@ public class DBPartitionTest extends BaseDBPartitionTestCase {
 	}
 
 	@Test
-	public void testCounterRename() throws Exception {
-		try (SafeCloseable safeCloseable =
-				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
-					COMPANY_IDS[0])) {
-
-			try {
-				DBPartitionUtil.forEachCompanyId(
-					companyId -> _counterLocalService.increment(_CLASS_NAME));
-
-				_counterLocalService.rename(_CLASS_NAME, _CLASS_NAME + ".test");
-
-				DBPartitionUtil.forEachCompanyId(
-					companyId -> {
-						List<String> counterNames =
-							_counterLocalService.getNames();
-
-						if (companyId.equals(COMPANY_IDS[0])) {
-							Assert.assertFalse(
-								counterNames.contains(_CLASS_NAME));
-							Assert.assertTrue(
-								counterNames.contains(_CLASS_NAME + ".test"));
-						}
-						else {
-							Assert.assertFalse(
-								counterNames.contains(_CLASS_NAME + ".test"));
-							Assert.assertTrue(
-								counterNames.contains(_CLASS_NAME));
-						}
-					});
-			}
-			finally {
-				DBPartitionUtil.forEachCompanyId(
-					companyId -> _counterLocalService.reset(
-						_CLASS_NAME + ".test"));
-			}
-		}
-	}
-
-	@Test
 	public void testCounterReset() throws Exception {
 		try (SafeCloseable safeCloseable =
 				CompanyThreadLocal.setCompanyIdWithSafeCloseable(
