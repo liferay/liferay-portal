@@ -7,6 +7,10 @@
 {{- fail "GCP has no managed OpenSearch, so \"search.engine\" must be \"elasticsearch\"" -}}
 {{- end -}}
 
+{{- if $xr.spec.database.restore -}}
+{{- fail "GCP restores through the backup-restore workflow, so \"database.restore\" must be unset" -}}
+{{- end -}}
+
 {{- $cmkEnabled := $xr.spec.cmk.enabled -}}
 {{- $cmkKeyId := dig "liferay-cryptokey" "resource" "status" "atProvider" "id" "" $observedResources -}}
 {{- $environmentId := $xr.spec.environmentId -}}
