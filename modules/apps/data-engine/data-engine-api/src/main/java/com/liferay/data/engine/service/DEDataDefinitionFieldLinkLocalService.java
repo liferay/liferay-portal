@@ -132,8 +132,6 @@ public interface DEDataDefinitionFieldLinkLocalService
 			long deDataDefinitionFieldLinkId)
 		throws PortalException;
 
-	public void deleteDEDataDefinitionFieldLinks(long ddmStructureId);
-
 	public void deleteDEDataDefinitionFieldLinks(
 		long classNameId, long classPK);
 
@@ -410,4 +408,4 @@ public interface DEDataDefinitionFieldLinkLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-860418285
+// LIFERAY-SERVICE-BUILDER-HASH:918931468

@@ -126,8 +126,6 @@ public interface DEDataListViewLocalService
 	public DEDataListView deleteDEDataListView(long deDataListViewId)
 		throws PortalException;
 
-	public void deleteDEDataListViews(long ddmStructureId);
-
 	/**
 	 * @throws PortalException
 	 */
@@ -365,4 +363,4 @@ public interface DEDataListViewLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-621554532
+// LIFERAY-SERVICE-BUILDER-HASH:1050933529

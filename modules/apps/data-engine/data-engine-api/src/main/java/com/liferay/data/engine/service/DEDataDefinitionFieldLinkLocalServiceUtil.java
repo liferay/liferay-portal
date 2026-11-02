@@ -133,10 +133,6 @@ public class DEDataDefinitionFieldLinkLocalServiceUtil {
 			deDataDefinitionFieldLinkId);
 	}
 
-	public static void deleteDEDataDefinitionFieldLinks(long ddmStructureId) {
-		getService().deleteDEDataDefinitionFieldLinks(ddmStructureId);
-	}
-
 	public static void deleteDEDataDefinitionFieldLinks(
 		long classNameId, long classPK) {
 
@@ -493,4 +489,4 @@ public class DEDataDefinitionFieldLinkLocalServiceUtil {
 			DEDataDefinitionFieldLinkLocalService.class);
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:277304681
+// LIFERAY-SERVICE-BUILDER-HASH:-1026760672

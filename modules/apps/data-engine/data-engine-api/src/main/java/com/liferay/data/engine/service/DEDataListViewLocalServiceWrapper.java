@@ -116,11 +116,6 @@ public class DEDataListViewLocalServiceWrapper
 			deDataListViewId);
 	}
 
-	@Override
-	public void deleteDEDataListViews(long ddmStructureId) {
-		_deDataListViewLocalService.deleteDEDataListViews(ddmStructureId);
-	}
-
 	/**
 	 * @throws PortalException
 	 */
@@ -485,4 +480,4 @@ public class DEDataListViewLocalServiceWrapper
 	private DEDataListViewLocalService _deDataListViewLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-236466133
+// LIFERAY-SERVICE-BUILDER-HASH:-1080917394

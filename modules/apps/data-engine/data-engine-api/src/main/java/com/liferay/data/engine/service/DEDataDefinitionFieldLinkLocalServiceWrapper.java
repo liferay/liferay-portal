@@ -141,12 +141,6 @@ public class DEDataDefinitionFieldLinkLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteDEDataDefinitionFieldLinks(long ddmStructureId) {
-		_deDataDefinitionFieldLinkLocalService.deleteDEDataDefinitionFieldLinks(
-			ddmStructureId);
-	}
-
-	@Override
 	public void deleteDEDataDefinitionFieldLinks(
 		long classNameId, long classPK) {
 
@@ -599,4 +593,4 @@ public class DEDataDefinitionFieldLinkLocalServiceWrapper
 		_deDataDefinitionFieldLinkLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-2070426916
+// LIFERAY-SERVICE-BUILDER-HASH:-920022391
