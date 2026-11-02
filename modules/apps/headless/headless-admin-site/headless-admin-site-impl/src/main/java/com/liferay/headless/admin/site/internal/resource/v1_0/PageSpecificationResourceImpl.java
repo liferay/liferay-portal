@@ -203,7 +203,7 @@ public class PageSpecificationResourceImpl
 			!layout.isTypePortlet()) {
 
 			throw new IllegalArgumentException(
-				"Only content, portlet, or asset display pages are supported");
+				"Only content, widget, or asset display pages are supported");
 		}
 
 		return _pageSpecificationDTOConverter.toDTO(
