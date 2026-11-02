@@ -40,7 +40,6 @@ import java.net.URLConnection;
 
 import java.nio.ByteBuffer;
 
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +71,6 @@ import org.osgi.framework.BundleContext;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.support.PersistenceExceptionTranslator;
-import org.springframework.util.ClassUtils;
 
 /**
  * @author Brian Wing Shun Chan
@@ -137,10 +135,6 @@ public class PortalHibernateConfiguration
 		configuration.addProperties(properties);
 
 		properties = configuration.getProperties();
-
-		properties.put(
-			"hibernate.classLoaders",
-			Collections.singleton(ClassUtils.getDefaultClassLoader()));
 
 		if (_dataSource != null) {
 			properties.put("hibernate.connection.datasource", _dataSource);
