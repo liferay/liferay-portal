@@ -77,7 +77,6 @@ import com.liferay.portal.kernel.util.File;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Localization;
-import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -596,105 +595,6 @@ public class LayoutPageTemplateEntryLocalServiceImpl
 
 		return layoutPageTemplateEntryPersistence.findByG_L_S(
 			groupId, layoutPageTemplateCollectionId, status);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int start, int end) {
-
-		return getLayoutPageTemplateEntries(
-			groupId, layoutPageTemplateCollectionId,
-			WorkflowConstants.STATUS_ANY, start, end);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int status,
-		int start, int end) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return layoutPageTemplateEntryPersistence.findByG_L(
-				groupId, layoutPageTemplateCollectionId, start, end);
-		}
-
-		return layoutPageTemplateEntryPersistence.findByG_L_S(
-			groupId, layoutPageTemplateCollectionId, status, start, end);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int status,
-		int start, int end,
-		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			return layoutPageTemplateEntryPersistence.findByG_L(
-				groupId, layoutPageTemplateCollectionId, start, end,
-				orderByComparator);
-		}
-
-		return layoutPageTemplateEntryPersistence.findByG_L_S(
-			groupId, layoutPageTemplateCollectionId, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, int start, int end,
-		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
-
-		return getLayoutPageTemplateEntries(
-			groupId, layoutPageTemplateCollectionId,
-			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, String name,
-		int status, int start, int end,
-		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			if (Validator.isNull(name)) {
-				return layoutPageTemplateEntryPersistence.findByG_L(
-					groupId, layoutPageTemplateCollectionId, start, end,
-					orderByComparator);
-			}
-
-			return layoutPageTemplateEntryPersistence.findByG_L_LikeN(
-				groupId, layoutPageTemplateCollectionId, name, start, end,
-				orderByComparator);
-		}
-
-		if (Validator.isNull(name)) {
-			return layoutPageTemplateEntryPersistence.findByG_L_S(
-				groupId, layoutPageTemplateCollectionId, status, start, end,
-				orderByComparator);
-		}
-
-		return layoutPageTemplateEntryPersistence.findByG_L_LikeN_S(
-			groupId, layoutPageTemplateCollectionId, name, status, start, end,
-			orderByComparator);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry> getLayoutPageTemplateEntries(
-		long groupId, long layoutPageTemplateCollectionId, String name,
-		int start, int end,
-		OrderByComparator<LayoutPageTemplateEntry> orderByComparator) {
-
-		return getLayoutPageTemplateEntries(
-			groupId, layoutPageTemplateCollectionId, name,
-			WorkflowConstants.STATUS_ANY, start, end, orderByComparator);
-	}
-
-	@Override
-	public List<LayoutPageTemplateEntry>
-		getLayoutPageTemplateEntriesByLayoutPrototypeId(
-			long layoutPrototypeId) {
-
-		return layoutPageTemplateEntryPersistence.findByLayoutPrototypeId(
-			layoutPrototypeId);
 	}
 
 	@Override

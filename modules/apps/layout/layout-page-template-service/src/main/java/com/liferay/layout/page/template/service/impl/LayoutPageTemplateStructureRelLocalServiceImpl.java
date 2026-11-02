@@ -9,11 +9,9 @@ import com.liferay.layout.page.template.model.LayoutPageTemplateStructureRel;
 import com.liferay.layout.page.template.service.base.LayoutPageTemplateStructureRelLocalServiceBaseImpl;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.Date;
@@ -72,31 +70,6 @@ public class LayoutPageTemplateStructureRelLocalServiceImpl
 	}
 
 	@Override
-	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
-	public LayoutPageTemplateStructureRel deleteLayoutPageTemplateStructureRel(
-			long layoutPageTemplateStructureId, long segmentsExperienceId)
-		throws PortalException {
-
-		LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
-			layoutPageTemplateStructureRelPersistence.findByL_S(
-				layoutPageTemplateStructureId, segmentsExperienceId);
-
-		layoutPageTemplateStructureRelPersistence.remove(
-			layoutPageTemplateStructureRel);
-
-		return layoutPageTemplateStructureRel;
-	}
-
-	@Override
-	public void deleteLayoutPageTemplateStructureRels(
-		long layoutPageTemplateStructureId) {
-
-		layoutPageTemplateStructureRelPersistence.
-			removeByLayoutPageTemplateStructureId(
-				layoutPageTemplateStructureId);
-	}
-
-	@Override
 	public void deleteLayoutPageTemplateStructureRelsBySegmentsExperienceId(
 		long segmentsExperienceId) {
 
@@ -141,31 +114,6 @@ public class LayoutPageTemplateStructureRelLocalServiceImpl
 
 		layoutPageTemplateStructureRel.setModifiedDate(new Date());
 		layoutPageTemplateStructureRel.setData(data);
-
-		return layoutPageTemplateStructureRelPersistence.update(
-			layoutPageTemplateStructureRel);
-	}
-
-	@Override
-	public LayoutPageTemplateStructureRel updateStatus(
-			long userId, long layoutPageTemplateStructureId,
-			long segmentsExperienceId, int status,
-			ServiceContext serviceContext)
-		throws PortalException {
-
-		LayoutPageTemplateStructureRel layoutPageTemplateStructureRel =
-			layoutPageTemplateStructureRelPersistence.findByL_S(
-				layoutPageTemplateStructureId, segmentsExperienceId);
-
-		layoutPageTemplateStructureRel.setStatus(status);
-
-		User user = _userLocalService.getUser(userId);
-
-		layoutPageTemplateStructureRel.setStatusByUserId(user.getUserId());
-		layoutPageTemplateStructureRel.setStatusByUserName(user.getFullName());
-
-		layoutPageTemplateStructureRel.setStatusDate(
-			serviceContext.getModifiedDate(new Date()));
 
 		return layoutPageTemplateStructureRelPersistence.update(
 			layoutPageTemplateStructureRel);
