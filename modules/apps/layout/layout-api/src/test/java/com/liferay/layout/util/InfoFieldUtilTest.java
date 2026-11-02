@@ -93,6 +93,35 @@ public class InfoFieldUtilTest {
 	}
 
 	@Test
+	public void testForEachInfoFieldAppendsFragmentsMissingFromTree()
+		throws Exception {
+
+		long fragmentEntryLinkId1 = RandomTestUtil.randomLong();
+		long fragmentEntryLinkId2 = RandomTestUtil.randomLong();
+		long missingFragmentEntryLinkId1 = RandomTestUtil.randomLong();
+		long missingFragmentEntryLinkId2 = RandomTestUtil.randomLong();
+		long segmentsExperienceId = RandomTestUtil.randomLong();
+
+		_mockFragmentEntryLinks(
+			segmentsExperienceId,
+			Arrays.asList(
+				_createFragmentEntryLink(missingFragmentEntryLinkId1),
+				_createFragmentEntryLink(fragmentEntryLinkId2),
+				_createFragmentEntryLink(missingFragmentEntryLinkId2),
+				_createFragmentEntryLink(fragmentEntryLinkId1)));
+		_mockLayoutStructureData(
+			segmentsExperienceId,
+			_createFlatLayoutStructure(
+				fragmentEntryLinkId1, fragmentEntryLinkId2));
+
+		Assert.assertEquals(
+			Arrays.asList(
+				fragmentEntryLinkId1, fragmentEntryLinkId2,
+				missingFragmentEntryLinkId1, missingFragmentEntryLinkId2),
+			_collectFragmentEntryLinkIds(segmentsExperienceId));
+	}
+
+	@Test
 	public void testForEachInfoFieldExcludesDeletedFragmentEntryLinks()
 		throws Exception {
 
@@ -220,6 +249,9 @@ public class InfoFieldUtilTest {
 		Assert.assertEquals(
 			Collections.singletonList(fragmentEntryLinkId1),
 			_collectFragmentEntryLinkIds(segmentsExperienceId));
+
+		_layoutPageTemplateStructureLocalServiceUtilMockedStatic.
+			verifyNoInteractions();
 	}
 
 	@Test
@@ -315,6 +347,16 @@ public class InfoFieldUtilTest {
 
 	private void _mockFragmentEntryLinks(
 		long segmentsExperienceId, List<FragmentEntryLink> fragmentEntryLinks) {
+
+		_fragmentEntryLinkLocalServiceUtilMockedStatic.when(
+			() ->
+				FragmentEntryLinkLocalServiceUtil.
+					getFragmentEntryLinksBySegmentsExperienceId(
+						_layout.getGroupId(), segmentsExperienceId,
+						_layout.getPlid())
+		).thenReturn(
+			fragmentEntryLinks
+		);
 
 		_fragmentEntryLinkLocalServiceUtilMockedStatic.when(
 			() ->
