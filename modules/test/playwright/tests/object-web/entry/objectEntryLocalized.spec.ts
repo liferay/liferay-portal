@@ -1781,8 +1781,8 @@ test.describe('Manage object entries through Page Templates', () => {
 
 		await page.getByPlaceholder('Buscar', {exact: true}).click();
 
-		itemValues.forEach((itemValue, index) => {
-			expect(
+		for (const [index, itemValue] of itemValues.entries()) {
+			await expect(
 				page
 					.getByRole('menuitem', {
 						exact: true,
@@ -1790,7 +1790,7 @@ test.describe('Manage object entries through Page Templates', () => {
 					})
 					.nth(index)
 			).toBeVisible();
-		});
+		}
 
 		await objectDefinitionAPIClient.patchObjectDefinition(
 			objectDefinition1.id,
@@ -1812,14 +1812,14 @@ test.describe('Manage object entries through Page Templates', () => {
 
 		await page.getByPlaceholder('Buscar', {exact: true}).click();
 
-		itemValues.forEach((itemValue) => {
-			expect(
+		for (const itemValue of itemValues) {
+			await expect(
 				page.getByRole('menuitem', {
 					exact: true,
 					name: String(itemValue.textField),
 				})
 			).toBeVisible();
-		});
+		}
 	});
 });
 
