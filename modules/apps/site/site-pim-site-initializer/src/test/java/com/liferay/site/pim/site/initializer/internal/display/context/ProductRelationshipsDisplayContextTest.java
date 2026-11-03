@@ -236,6 +236,13 @@ public class ProductRelationshipsDisplayContextTest {
 
 		Mockito.when(
 			language.get(
+				Mockito.any(HttpServletRequest.class), Mockito.eq("edit"))
+		).thenReturn(
+			"Edit"
+		);
+
+		Mockito.when(
+			language.get(
 				Mockito.any(HttpServletRequest.class), Mockito.eq("remove"))
 		).thenReturn(
 			"Remove"
@@ -304,17 +311,38 @@ public class ProductRelationshipsDisplayContextTest {
 					"/edit_content_item?objectEntryId={id}&redirect=/web/cms",
 					"/product"),
 				fdsActionDropdownItem.get("href"));
-			Assert.assertEquals("view", fdsActionDropdownItem.get("icon"));
-			Assert.assertEquals("View", fdsActionDropdownItem.get("label"));
+			Assert.assertEquals("pencil", fdsActionDropdownItem.get("icon"));
+			Assert.assertEquals("Edit", fdsActionDropdownItem.get("label"));
 			Assert.assertNull(fdsActionDropdownItem.get("target"));
 
 			Map<?, ?> data = (Map<?, ?>)fdsActionDropdownItem.get("data");
 
+			Assert.assertEquals("edit", data.get("id"));
+			Assert.assertEquals("get", data.get("method"));
+			Assert.assertEquals("update", data.get("permissionKey"));
+
+			fdsActionDropdownItem = fdsActionDropdownItems.get(1);
+
+			Assert.assertEquals(
+				StringBundler.concat(
+					"http://localhost:8080/c", GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?p_l_mode=read&p_p_state=pop_up&",
+					"objectEntryId={id}"),
+				fdsActionDropdownItem.get("href"));
+			Assert.assertEquals("view", fdsActionDropdownItem.get("icon"));
+			Assert.assertEquals("View", fdsActionDropdownItem.get("label"));
+			Assert.assertEquals(
+				"modal-full-screen", fdsActionDropdownItem.get("target"));
+
+			data = (Map<?, ?>)fdsActionDropdownItem.get("data");
+
+			Assert.assertFalse((Boolean)data.get("disableHeader"));
 			Assert.assertEquals("view", data.get("id"));
 			Assert.assertEquals("get", data.get("method"));
 			Assert.assertEquals("get", data.get("permissionKey"));
+			Assert.assertEquals("View", data.get("title"));
 
-			fdsActionDropdownItem = fdsActionDropdownItems.get(1);
+			fdsActionDropdownItem = fdsActionDropdownItems.get(2);
 
 			Assert.assertEquals(
 				"{actions.setPrimary.href}", fdsActionDropdownItem.get("href"));
