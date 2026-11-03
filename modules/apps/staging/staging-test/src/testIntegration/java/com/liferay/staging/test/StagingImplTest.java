@@ -1480,6 +1480,22 @@ public class StagingImplTest {
 
 		enableLocalStaging(branching);
 
+		LayoutSetBranch layoutSetBranch = null;
+		LayoutSetBranch masterLayoutSetBranch = null;
+
+		if (branching) {
+			masterLayoutSetBranch = _getMasterLayoutSetBranch();
+
+			Group stagingGroup = _group.getStagingGroup();
+
+			layoutSetBranch = _layoutSetBranchLocalService.addLayoutSetBranch(
+				TestPropsValues.getUserId(), stagingGroup.getGroupId(), false,
+				RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+				false, masterLayoutSetBranch.getLayoutSetBranchId(),
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId()));
+		}
+
 		ServiceContextThreadLocal.pushServiceContext(
 			_getStagingServiceContext());
 
@@ -1502,26 +1518,43 @@ public class StagingImplTest {
 
 		ServiceContextThreadLocal.popServiceContext();
 
-		LayoutSetBranch layoutSetBranch = null;
-
-		if (branching) {
-			layoutSetBranch = _getMasterLayoutSetBranch();
-
-			LayoutRevision layoutRevision =
-				_layoutRevisionLocalService.fetchLastLayoutRevision(
-					stagingLayout.getPlid(), true);
-
-			String typeSettings = layoutRevision.getTypeSettings();
-
-			Assert.assertTrue(typeSettings.contains(portletId));
-		}
-
 		Layout liveLayout = _layoutLocalService.getLayout(layout.getPlid());
 
 		LayoutTypePortlet layoutTypePortlet =
 			(LayoutTypePortlet)liveLayout.getLayoutType();
 
 		Assert.assertFalse(layoutTypePortlet.hasPortletId(portletId));
+
+		if (branching) {
+			LayoutRevision layoutRevision =
+				_layoutRevisionLocalService.fetchLatestLayoutRevision(
+					layoutSetBranch.getLayoutSetBranchId(),
+					stagingLayout.getPlid());
+
+			String typeSettings = layoutRevision.getTypeSettings();
+
+			Assert.assertTrue(typeSettings.contains(portletId));
+
+			layoutRevision =
+				_layoutRevisionLocalService.fetchLatestLayoutRevision(
+					masterLayoutSetBranch.getLayoutSetBranchId(),
+					stagingLayout.getPlid());
+
+			typeSettings = layoutRevision.getTypeSettings();
+
+			Assert.assertFalse(typeSettings.contains(portletId));
+
+			_publishLayouts(
+				masterLayoutSetBranch,
+				ExportImportConfigurationParameterMapFactoryUtil.
+					buildParameterMap());
+
+			liveLayout = _layoutLocalService.getLayout(layout.getPlid());
+
+			layoutTypePortlet = (LayoutTypePortlet)liveLayout.getLayoutType();
+
+			Assert.assertFalse(layoutTypePortlet.hasPortletId(portletId));
+		}
 
 		_publishLayouts(
 			layoutSetBranch,
