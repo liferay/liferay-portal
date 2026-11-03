@@ -53,24 +53,24 @@ public class AssetLibraryUtil {
 		return null;
 	}
 
-	public static int toDepotEntryType(String value) {
+	public static int toDepotEntryType(String type) {
 		if (StringUtil.equalsIgnoreCase(
-				value, AssetLibrary.Type.ASSET_LIBRARY.getValue())) {
+				type, AssetLibrary.Type.ASSET_LIBRARY.getValue())) {
 
 			return DepotConstants.TYPE_ASSET_LIBRARY;
 		}
 		else if (StringUtil.equalsIgnoreCase(
-					value, AssetLibrary.Type.DESIGN_LIBRARY.getValue())) {
+					type, AssetLibrary.Type.DESIGN_LIBRARY.getValue())) {
 
 			return DepotConstants.TYPE_DESIGN_LIBRARY;
 		}
 		else if (StringUtil.equalsIgnoreCase(
-					value, AssetLibrary.Type.PROJECT.getValue())) {
+					type, AssetLibrary.Type.PROJECT.getValue())) {
 
 			return DepotConstants.TYPE_PROJECT;
 		}
 		else if (StringUtil.equalsIgnoreCase(
-					value, AssetLibrary.Type.SPACE.getValue())) {
+					type, AssetLibrary.Type.SPACE.getValue())) {
 
 			return DepotConstants.TYPE_SPACE;
 		}
