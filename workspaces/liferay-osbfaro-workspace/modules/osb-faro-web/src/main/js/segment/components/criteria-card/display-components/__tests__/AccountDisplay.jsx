@@ -57,12 +57,12 @@ describe('AccountDisplay', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [
+				accountLifecycleStages: [
 					{
-						priority: 1,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageName: 'Engaged'
+						name: 'Engaged',
+						position: 1
 					}
 				]
 			})
@@ -110,12 +110,12 @@ describe('AccountDisplay', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [
+				accountLifecycleStages: [
 					{
-						priority: 1,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageName: 'Engaged'
+						name: 'Engaged',
+						position: 1
 					}
 				]
 			})
@@ -163,12 +163,12 @@ describe('AccountDisplay', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValueOnce(
 			Promise.resolve({
-				stages: [
+				accountLifecycleStages: [
 					{
-						priority: 1,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageName: 'Engaged'
+						name: 'Engaged',
+						position: 1
 					}
 				]
 			})

@@ -40,18 +40,18 @@ describe('AccountSelectInput', () => {
 
 		API.lifecycle.fetchLifecycle.mockReturnValue(
 			Promise.resolve({
-				stages: [
+				accountLifecycleStages: [
 					{
-						priority: 2,
 						externalReferenceCode: 'erc-stage-1002',
 						id: '1002',
-						stageName: 'Engaged'
+						name: 'Engaged',
+						position: 2
 					},
 					{
-						priority: 1,
 						externalReferenceCode: 'erc-stage-1001',
 						id: '1001',
-						stageName: 'Aware'
+						name: 'Aware',
+						position: 1
 					}
 				]
 			})

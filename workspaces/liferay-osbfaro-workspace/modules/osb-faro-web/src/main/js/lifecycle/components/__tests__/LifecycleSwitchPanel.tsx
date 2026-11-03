@@ -45,12 +45,13 @@ const STAGE = {
 	externalReferenceCode: 'stage',
 	id: 'stage',
 	maxDuration: null,
-	priority: 1,
-	stageName: 'Aware',
+	name: 'Aware',
+	position: 1,
 };
 
 const LIFECYCLES: ILifecycleDetail[] = [
 	{
+		accountLifecycleStages: [STAGE, {...STAGE, id: 'stage-2'}],
 		authorName: 'Anneta Smith',
 		defaultAccountLifecycle: true,
 		description: 'Unifies acquisition and expansion.',
@@ -58,7 +59,6 @@ const LIFECYCLES: ILifecycleDetail[] = [
 		id: '1',
 		modifiedDate: Date.UTC(2026, 9, 2, 17, 53),
 		name: 'Growth and Retention Hub',
-		stages: [STAGE, {...STAGE, id: 'stage-2'}],
 	},
 	{
 		defaultAccountLifecycle: false,
@@ -68,12 +68,12 @@ const LIFECYCLES: ILifecycleDetail[] = [
 		name: 'Partner Lifecycle',
 	},
 	{
+		accountLifecycleStages: [STAGE],
 		authorName: 'Marcus Reed',
 		defaultAccountLifecycle: false,
 		externalReferenceCode: 'erc-3',
 		id: '3',
 		name: 'Expansion Lifecycle',
-		stages: [STAGE],
 	},
 ];
 

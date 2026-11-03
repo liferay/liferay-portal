@@ -20,9 +20,9 @@ const buildStage = (stage: Partial<ILifecycleStage> = {}): ILifecycleStage => {
 		conversionRateToNextStage: 10,
 		description: '',
 		id: `stage-${stageCount}`,
+		name: `Stage ${stageCount}`,
 		percentage: 10,
-		priority: stageCount,
-		stageName: `Stage ${stageCount}`,
+		position: stageCount,
 		...stage,
 	};
 };
@@ -34,9 +34,9 @@ const sampleStages: ILifecycleStage[] = [
 		conversionRateToNextStage: 54,
 		description: 'Accounts with an active deal.',
 		id: '4103',
+		name: 'Pipeline',
 		percentage: 18.2,
-		priority: 3,
-		stageName: 'Pipeline',
+		position: 3,
 	}),
 	buildStage({
 		accountsCount: 13,
@@ -44,9 +44,9 @@ const sampleStages: ILifecycleStage[] = [
 		conversionRateToNextStage: 492,
 		description: 'Cold accounts showing early intent.',
 		id: '4101',
+		name: 'Aware',
 		percentage: 43.6,
-		priority: 1,
-		stageName: 'Aware',
+		position: 1,
 	}),
 	buildStage({
 		accountsCount: 64,
@@ -54,9 +54,9 @@ const sampleStages: ILifecycleStage[] = [
 		conversionRateToNextStage: 64,
 		description: 'Accounts that passed qualification.',
 		id: '4102',
+		name: 'Qualified',
 		percentage: 28.4,
-		priority: 2,
-		stageName: 'Qualified',
+		position: 2,
 	}),
 	buildStage({
 		accountsCount: 0,
@@ -64,9 +64,9 @@ const sampleStages: ILifecycleStage[] = [
 		conversionRateToNextStage: null,
 		description: '',
 		id: '4104',
+		name: 'At Risk',
 		percentage: 0,
-		priority: 4,
-		stageName: 'At Risk',
+		position: 4,
 	}),
 ];
 

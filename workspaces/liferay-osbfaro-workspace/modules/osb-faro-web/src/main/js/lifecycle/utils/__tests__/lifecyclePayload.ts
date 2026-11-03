@@ -337,7 +337,7 @@ describe('buildCreateLifecyclePayload', () => {
 		expect(payload.description).toBe('Lifecycle for qualified accounts');
 		expect(payload.name).toBe('My Lifecycle');
 		expect(
-			payload.stages.map(({priority, stageName}) => [priority, stageName])
+			payload.stages.map(({name, position}) => [position, name])
 		).toEqual([
 			[1, 'Aware'],
 			[2, 'Qualified'],
@@ -423,7 +423,7 @@ describe('buildUpdateLifecyclePayload', () => {
 			],
 		});
 
-		expect(payload.stages.map(({id, priority}) => [priority, id])).toEqual([
+		expect(payload.stages.map(({id, position}) => [position, id])).toEqual([
 			[1, 'stage-3'],
 			[2, 'stage-1'],
 		]);
@@ -462,8 +462,8 @@ describe('stageConfigsFromLifecycle', () => {
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: 30,
-				priority: 1,
-				stageName: 'Aware',
+				name: 'Aware',
+				position: 1,
 			},
 		]);
 
@@ -501,8 +501,8 @@ describe('stageConfigsFromLifecycle', () => {
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: 30,
-				priority: 1,
-				stageName: 'Aware',
+				name: 'Aware',
+				position: 1,
 			},
 		]);
 
@@ -527,8 +527,8 @@ describe('stageConfigsFromLifecycle', () => {
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: 30,
-				priority: 1,
-				stageName: 'Aware',
+				name: 'Aware',
+				position: 1,
 			},
 		]);
 
@@ -542,24 +542,24 @@ describe('stageConfigsFromLifecycle', () => {
 				externalReferenceCode: 'erc-stage-3',
 				id: 'stage-3',
 				maxDuration: null,
-				priority: 3,
-				stageName: 'Pipeline',
+				name: 'Pipeline',
+				position: 3,
 			},
 			{
 				description: 'First',
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: null,
-				priority: 1,
-				stageName: 'Aware',
+				name: 'Aware',
+				position: 1,
 			},
 			{
 				description: 'Second',
 				externalReferenceCode: 'erc-stage-2',
 				id: 'stage-2',
 				maxDuration: null,
-				priority: 2,
-				stageName: 'Qualified',
+				name: 'Qualified',
+				position: 2,
 			},
 		]);
 
@@ -577,16 +577,16 @@ describe('stageConfigsFromLifecycle', () => {
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: null,
-				priority: 1,
-				stageName: 'Aware',
+				name: 'Aware',
+				position: 1,
 			},
 			{
 				description: 'Second',
 				externalReferenceCode: 'erc-stage-2',
 				id: 'stage-2',
 				maxDuration: null,
-				priority: 2,
-				stageName: 'Qualified',
+				name: 'Qualified',
+				position: 2,
 			},
 		]);
 
@@ -604,8 +604,8 @@ describe('stageConfigsFromLifecycle', () => {
 				externalReferenceCode: 'erc-stage-1',
 				id: 'stage-1',
 				maxDuration: null,
-				priority: 1,
-				stageName: 'Aware',
+				name: 'Aware',
+				position: 1,
 			},
 		]);
 

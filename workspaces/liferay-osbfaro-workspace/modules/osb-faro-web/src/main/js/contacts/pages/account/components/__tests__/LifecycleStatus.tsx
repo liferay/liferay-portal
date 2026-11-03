@@ -1,7 +1,6 @@
 import LifecycleStatus from '../LifecycleStatus';
 import React from 'react';
 import {cleanup, render, screen, within} from '@testing-library/react';
-import {LifecycleStages} from 'contacts/pages/account/utils/constants';
 import {useRequest} from 'shared/hooks/useRequest';
 
 jest.unmock('react-dom');
@@ -31,35 +30,35 @@ const DEFAULT_STATUS = {
 		{
 			endDate: '2026-01-16T00:00:00.000Z',
 			id: 'als-aware',
-			priority: 0,
-			stageType: LifecycleStages.AWARE,
+			name: 'Aware',
+			position: 0,
 			startDate: '2026-01-04T00:00:00.000Z',
 		},
 		{
 			id: 'als-engaged',
-			priority: 1,
-			stageType: LifecycleStages.ENGAGED,
+			name: 'Engaged',
+			position: 1,
 			startDate: '2026-01-16T00:00:00.000Z',
 		},
 		{
 			id: 'als-pipeline',
-			priority: 2,
-			stageType: LifecycleStages.PIPELINE,
+			name: 'Pipeline',
+			position: 2,
 		},
 		{
 			id: 'als-onboarding',
-			priority: 3,
-			stageType: LifecycleStages.ONBOARDING,
+			name: 'Onboarding',
+			position: 3,
 		},
 		{
 			id: 'als-established',
-			priority: 4,
-			stageType: LifecycleStages.ESTABLISHED,
+			name: 'Established',
+			position: 4,
 		},
 		{
 			id: 'als-at-risk',
-			priority: 5,
-			stageType: LifecycleStages.AT_RISK,
+			name: 'At Risk',
+			position: 5,
 		},
 	],
 	id: 'al-1',
@@ -271,13 +270,13 @@ describe('LifecycleStatus', () => {
 						accountLifecycleStageStatuses: [
 							{
 								id: 'als-aware',
-								priority: 0,
-								stageType: LifecycleStages.AWARE,
+								name: 'Aware',
+								position: 0,
 							},
 							{
 								id: 'als-at-risk',
-								priority: 1,
-								stageType: LifecycleStages.AT_RISK,
+								name: 'At Risk',
+								position: 1,
 								startDate: '2026-02-01T00:00:00.000Z',
 							},
 						],
@@ -307,8 +306,8 @@ describe('LifecycleStatus', () => {
 						accountLifecycleStageStatuses: [
 							{
 								id: 'als-aware',
-								priority: 0,
-								stageType: LifecycleStages.AWARE,
+								name: 'Aware',
+								position: 0,
 							},
 						],
 						id: 'al-1',
@@ -347,35 +346,35 @@ describe('LifecycleStatus', () => {
 							{
 								endDate: '2026-03-01T00:00:00.000Z',
 								id: 'als-aware',
-								priority: 0,
-								stageType: LifecycleStages.AWARE,
+								name: 'Aware',
+								position: 0,
 								startDate: '2026-02-01T00:00:00.000Z',
 							},
 							{
 								id: 'als-engaged',
-								priority: 1,
-								stageType: LifecycleStages.ENGAGED,
+								name: 'Engaged',
+								position: 1,
 								startDate: '2026-03-01T00:00:00.000Z',
 							},
 							{
 								id: 'als-pipeline',
-								priority: 2,
-								stageType: LifecycleStages.PIPELINE,
+								name: 'Pipeline',
+								position: 2,
 							},
 							{
 								id: 'als-onboarding',
-								priority: 3,
-								stageType: LifecycleStages.ONBOARDING,
+								name: 'Onboarding',
+								position: 3,
 							},
 							{
 								id: 'als-established',
-								priority: 4,
-								stageType: LifecycleStages.ESTABLISHED,
+								name: 'Established',
+								position: 4,
 							},
 							{
 								id: 'als-at-risk',
-								priority: 5,
-								stageType: LifecycleStages.AT_RISK,
+								name: 'At Risk',
+								position: 5,
 							},
 						],
 						id: 'al-1',

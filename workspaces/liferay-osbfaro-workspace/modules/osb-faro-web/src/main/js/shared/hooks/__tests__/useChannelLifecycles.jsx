@@ -14,12 +14,12 @@ describe('useChannelLifecycles', () => {
 			{
 				id: '1',
 				name: 'Customer',
-				stages: [{externalReferenceCode: 'erc-stage-1001', id: '1001'}],
+				accountLifecycleStages: [{externalReferenceCode: 'erc-stage-1001', id: '1001'}],
 			},
 			{
 				id: '2',
 				name: 'Partner',
-				stages: [{externalReferenceCode: 'erc-stage-2001', id: '2001'}],
+				accountLifecycleStages: [{externalReferenceCode: 'erc-stage-2001', id: '2001'}],
 			},
 		];
 

@@ -32,8 +32,8 @@ const buildStage = (
 	},
 	description: 'Cold accounts',
 	maxDuration: 90,
-	priority: 1,
-	stageName: 'Aware',
+	name: 'Aware',
+	position: 1,
 	...stage,
 });
 
@@ -84,9 +84,9 @@ describe('Lifecycle API', () => {
 			expect(sendRequest).toHaveBeenCalledWith({
 				data: {
 					accountLifecycle: {
+						accountLifecycleStages: stages,
 						description: 'Qualified accounts',
 						name: 'Hub',
-						stages,
 					},
 				},
 				method: 'POST',
@@ -108,9 +108,9 @@ describe('Lifecycle API', () => {
 			expect(sendRequest).toHaveBeenCalledWith({
 				data: {
 					accountLifecycle: {
+						accountLifecycleStages: stages,
 						description: 'Qualified accounts',
 						name: 'Hub',
-						stages,
 					},
 				},
 				method: 'PUT',
@@ -136,18 +136,16 @@ describe('Lifecycle API', () => {
 			});
 
 			expect(sendRequest).not.toHaveBeenCalled();
-			expect(
-				metrics.map(({stageName}: {stageName: string}) => stageName)
-			).toEqual(
-				[...lifecycle.stages!]
-					.sort((a, b) => a.priority - b.priority)
-					.map(({stageName}) => stageName)
+			expect(metrics.map(({name}: {name: string}) => name)).toEqual(
+				[...lifecycle.accountLifecycleStages!]
+					.sort((a, b) => a.position - b.position)
+					.map(({name}) => name)
 			);
 			expect(
 				metrics.every(
 					(metric: object) =>
 						'id' in metric &&
-						'priority' in metric &&
+						'position' in metric &&
 						!('stageType' in metric)
 				)
 			).toBe(true);
@@ -167,10 +165,12 @@ describe('Lifecycle API', () => {
 			expect(lifecycle.id).toEqual(expect.any(String));
 			expect(lifecycle.authorName).toEqual(expect.any(String));
 			expect(lifecycle.modifiedDate).toEqual(expect.any(Number));
-			expect(lifecycle.stages!.length).toBeGreaterThanOrEqual(4);
 			expect(
-				lifecycle.stages!.every(
-					(stage) => !!stage.stageName && !('stageType' in stage)
+				lifecycle.accountLifecycleStages!.length
+			).toBeGreaterThanOrEqual(4);
+			expect(
+				lifecycle.accountLifecycleStages!.every(
+					(stage) => !!stage.name && !('stageType' in stage)
 				)
 			).toBe(true);
 		});
@@ -187,7 +187,9 @@ describe('Lifecycle API', () => {
 			expect(sendRequest).not.toHaveBeenCalled();
 			expect(lifecycle.description).toBe('Qualified accounts');
 			expect(lifecycle.name).toBe('Hub');
-			expect(lifecycle.stages![0].id).toEqual(expect.any(String));
+			expect(lifecycle.accountLifecycleStages![0].id).toEqual(
+				expect.any(String)
+			);
 		});
 
 		it('reads the stage field values with the id and external reference code of every mock stage', async () => {
@@ -204,11 +206,11 @@ describe('Lifecycle API', () => {
 
 			expect(sendRequest).not.toHaveBeenCalled();
 			expect(items).toEqual(
-				lifecycle.stages!.map(
-					({externalReferenceCode, id, stageName}) => ({
+				lifecycle.accountLifecycleStages!.map(
+					({externalReferenceCode, id, name}) => ({
 						externalReferenceCode,
 						id,
-						stageName,
+						stageName: name,
 					})
 				)
 			);
@@ -226,8 +228,8 @@ describe('Lifecycle API', () => {
 				lifecycleId: '9',
 				name: 'Renamed Hub',
 				stages: [
-					buildStage({id: '4101', stageName: 'Aware'}),
-					buildStage({priority: 2, stageName: 'Qualified'}),
+					buildStage({id: '4101', name: 'Aware'}),
+					buildStage({name: 'Qualified', position: 2}),
 				],
 			});
 
@@ -243,12 +245,13 @@ describe('Lifecycle API', () => {
 			);
 			expect(lifecycle.id).toBe(updated.id);
 			expect(lifecycle.name).toBe('Renamed Hub');
-			expect(lifecycle.stages!.map(({stageName}) => stageName)).toEqual([
-				'Aware',
-				'Qualified',
-			]);
-			expect(lifecycle.stages![0].id).toBe('4101');
-			expect(lifecycle.stages![1].id).toEqual(expect.any(String));
+			expect(
+				lifecycle.accountLifecycleStages!.map(({name}) => name)
+			).toEqual(['Aware', 'Qualified']);
+			expect(lifecycle.accountLifecycleStages![0].id).toBe('4101');
+			expect(lifecycle.accountLifecycleStages![1].id).toEqual(
+				expect.any(String)
+			);
 		});
 	});
 

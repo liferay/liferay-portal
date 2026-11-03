@@ -63,7 +63,7 @@ const mockedUseRequest = useRequest as jest.Mock;
 const STAGE_NAMES = ['Aware', 'Qualified', 'Pipeline'];
 
 const buildStages = (): ILifecycleStage[] =>
-	STAGE_NAMES.map((stageName, index) => ({
+	STAGE_NAMES.map((name, index) => ({
 		accountLifecycleStageRule: {
 			filterMetadata: JSON.stringify({
 				conditionValue: '1000',
@@ -78,11 +78,12 @@ const buildStages = (): ILifecycleStage[] =>
 		externalReferenceCode: `erc-stage-${index + 1}`,
 		id: `stage-${index}`,
 		maxDuration: 30,
-		priority: index + 1,
-		stageName,
+		name,
+		position: index + 1,
 	})).reverse();
 
 const lifecycle = {
+	accountLifecycleStages: buildStages(),
 	authorName: 'Anneta Smith',
 	description: 'Lifecycle for qualified accounts',
 	externalReferenceCode: 'erc-9',
@@ -90,7 +91,6 @@ const lifecycle = {
 	modifiedDate: 1791556330000,
 	name: 'Growth and Retention Hub',
 	processedDate: 1700000000000,
-	stages: buildStages(),
 };
 
 const mockCatalog =
@@ -299,9 +299,9 @@ describe('EditLifecycle', () => {
 
 		expect(payload.description).toBe('Renamed description');
 		expect(payload.stages[1]).toEqual(
-			expect.objectContaining({id: 'stage-1', stageName: 'Engaged'})
+			expect.objectContaining({id: 'stage-1', name: 'Engaged'})
 		);
-		expect(payload.stages[0].stageName).toBe('Aware');
+		expect(payload.stages[0].name).toBe('Aware');
 	});
 
 	it('moves the selection to the next stage when the selected one is removed', () => {
@@ -371,10 +371,10 @@ describe('EditLifecycle', () => {
 			.calls[0][0];
 
 		expect(
-			payload.stages.map(({id, priority, stageName}: any) => [
-				priority,
+			payload.stages.map(({id, name, position}: any) => [
+				position,
 				id,
-				stageName,
+				name,
 			])
 		).toEqual([
 			[1, 'stage-2', 'Pipeline'],
@@ -547,10 +547,10 @@ describe('EditLifecycle', () => {
 			})
 		);
 		expect(
-			payload.stages.map(({id, priority, stageName}: any) => [
-				priority,
+			payload.stages.map(({id, name, position}: any) => [
+				position,
 				id,
-				stageName,
+				name,
 			])
 		).toEqual([
 			[1, 'stage-0', 'Aware'],

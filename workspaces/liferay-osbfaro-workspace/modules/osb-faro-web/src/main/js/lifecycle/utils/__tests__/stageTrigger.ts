@@ -15,8 +15,8 @@ const buildStage = (
 	externalReferenceCode: '1',
 	id: '1',
 	maxDuration: null,
-	priority: 1,
-	stageName: 'Aware',
+	name: 'Aware',
+	position: 1,
 });
 
 describe('getStageTrigger', () => {
