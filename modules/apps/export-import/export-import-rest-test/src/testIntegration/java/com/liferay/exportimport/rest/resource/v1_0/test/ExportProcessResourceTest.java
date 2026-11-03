@@ -896,6 +896,26 @@ public class ExportProcessResourceTest
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
 	}
 
+	private void _testPostExportProcessWhenFeatureFlagIsDisabled(
+			String featureFlagKey,
+			InstanceExportProcessRequest instanceExportProcessRequest)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, featureFlagKey)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				exportProcessResource.postExportProcessHttpResponse(
+					null, instanceExportProcessRequest));
+		}
+	}
+
 	private void _testPostExportProcessWithAssetLibrariesAndSites()
 		throws Exception {
 
@@ -946,21 +966,10 @@ public class ExportProcessResourceTest
 				_exportImportHelper.getExportImportGroups(fileEntries.get(0)),
 				ExportImportGroup::getExternalReferenceCode));
 
-		for (String featureFlagKey : new String[] {"LPD-41307", "LPD-85946"}) {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.portal.vulcan.internal.jaxrs.exception." +
-						"mapper.WebApplicationExceptionMapper",
-					LoggerTestUtil.WARN);
-				SafeCloseable safeCloseable =
-					FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-						false, featureFlagKey)) {
-
-				assertHttpResponseStatusCode(
-					400,
-					exportProcessResource.postExportProcessHttpResponse(
-						null, instanceExportProcessRequest));
-			}
-		}
+		_testPostExportProcessWhenFeatureFlagIsDisabled(
+			"LPD-41307", instanceExportProcessRequest);
+		_testPostExportProcessWhenFeatureFlagIsDisabled(
+			"LPD-85946", instanceExportProcessRequest);
 	}
 
 	@TestInfo("LPD-90359")

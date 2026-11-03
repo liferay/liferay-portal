@@ -819,6 +819,26 @@ public class ImportProcessResourceTest
 		Assert.assertFalse(errorMessage, errorMessage.contains("java.lang."));
 	}
 
+	private void _testPostImportProcessWhenFeatureFlagIsDisabled(
+			String featureFlagKey,
+			InstanceImportProcessRequest instanceImportProcessRequest)
+		throws Exception {
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.vulcan.internal.jaxrs.exception.mapper." +
+					"WebApplicationExceptionMapper",
+				LoggerTestUtil.WARN);
+			SafeCloseable safeCloseable =
+				FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
+					false, featureFlagKey)) {
+
+			assertHttpResponseStatusCode(
+				400,
+				importProcessResource.postImportProcessHttpResponse(
+					null, instanceImportProcessRequest));
+		}
+	}
+
 	private void _testPostImportProcessWithAssetLibrariesAndSites(
 			long exportImportGroupId)
 		throws Exception {
@@ -852,22 +872,6 @@ public class ImportProcessResourceTest
 				}
 			};
 
-		for (String featureFlagKey : new String[] {"LPD-41307", "LPD-85946"}) {
-			try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
-					"com.liferay.portal.vulcan.internal.jaxrs.exception." +
-						"mapper.WebApplicationExceptionMapper",
-					LoggerTestUtil.WARN);
-				SafeCloseable safeCloseable =
-					FeatureFlagTestUtil.setFeatureFlagsWithSafeCloseable(
-						false, featureFlagKey)) {
-
-				assertHttpResponseStatusCode(
-					400,
-					importProcessResource.postImportProcessHttpResponse(
-						null, instanceImportProcessRequest));
-			}
-		}
-
 		ImportProcess importProcess = importProcessResource.postImportProcess(
 			null, instanceImportProcessRequest);
 
@@ -895,6 +899,11 @@ public class ImportProcessResourceTest
 			},
 			parameterMap.get(
 				PortletDataHandlerKeys.GROUP_EXTERNAL_REFERENCE_CODES));
+
+		_testPostImportProcessWhenFeatureFlagIsDisabled(
+			"LPD-41307", instanceImportProcessRequest);
+		_testPostImportProcessWhenFeatureFlagIsDisabled(
+			"LPD-85946", instanceImportProcessRequest);
 	}
 
 	private void _testPostImportProcessWithLayoutSet(
