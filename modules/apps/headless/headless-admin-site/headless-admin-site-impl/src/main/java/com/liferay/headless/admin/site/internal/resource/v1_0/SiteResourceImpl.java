@@ -13,6 +13,7 @@ import com.liferay.headless.admin.site.dto.v1_0.AnalyticsConfiguration;
 import com.liferay.headless.admin.site.dto.v1_0.GoogleAnalyticsConfiguration;
 import com.liferay.headless.admin.site.dto.v1_0.RatingsTypes;
 import com.liferay.headless.admin.site.dto.v1_0.Site;
+import com.liferay.headless.admin.site.internal.dto.v1_0.util.CreatorUtil;
 import com.liferay.headless.admin.site.resource.v1_0.SiteResource;
 import com.liferay.layout.util.LayoutServiceContextHelper;
 import com.liferay.petra.function.UnsafeFunction;
@@ -1154,6 +1155,9 @@ public class SiteResourceImpl
 							"assetAutoTaggingEnabled")));
 				setContentSharingWithChildrenEnabled(
 					group::isContentSharingWithChildrenEnabled);
+				setCreator(
+					() -> CreatorUtil.toCreator(
+						group.getCreatorUserId(), null));
 				setDefaultLanguageId(group::getDefaultLanguageId);
 				setDescription(
 					() -> group.getDescription(LocaleUtil.getDefault()));
