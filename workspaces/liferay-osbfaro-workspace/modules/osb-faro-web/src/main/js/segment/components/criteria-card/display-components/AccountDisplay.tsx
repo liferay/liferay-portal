@@ -44,7 +44,10 @@ const AccountDisplay: React.FC<IDisplayComponentProps> = ({
 
 			{!isOfKnownType(operatorKey) &&
 				(selectText ? (
-					<LifecycleStageDisplay label={label} value={value} />
+					<LifecycleStageDisplay
+						propertyLabel={label}
+						value={valueIMap}
+					/>
 				) : (
 					<b>{maybeFormatValue(value, type, timeZoneId)}</b>
 				))}
