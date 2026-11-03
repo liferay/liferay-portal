@@ -1554,9 +1554,13 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		Assert.assertEquals(3, jsonArray.length());
 
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		Assert.assertEquals("table", jsonObject.getString("name"));
+		Assert.assertEquals(
+			"table",
+			jsonArray.getJSONObject(
+				0
+			).getString(
+				"name"
+			));
 
 		JSONAssert.assertEquals(
 			JSONUtil.put(
@@ -1579,9 +1583,13 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			).toString(),
 			String.valueOf(jsonArray.getJSONObject(1)), JSONCompareMode.STRICT);
 
-		jsonObject = jsonArray.getJSONObject(2);
-
-		Assert.assertEquals("list", jsonObject.getString("name"));
+		Assert.assertEquals(
+			"list",
+			jsonArray.getJSONObject(
+				2
+			).getString(
+				"name"
+			));
 	}
 
 	private boolean _containsLabel(
