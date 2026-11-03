@@ -553,8 +553,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 		}
 
 		String filterString = JenkinsResultsParserUtil.combine(
-			"r_buildToCaseResult_c_buildId eq '", String.valueOf(getId()),
-			"'");
+			"r_buildToCaseResult_c_buildId eq '", String.valueOf(getId()), "'");
 
 		TestrayProject testrayProject = getTestrayProject();
 
@@ -588,8 +587,8 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 
 		try {
 			entityJSONObjects = _testrayServer.requestGraphQL(
-				"caseResults", new String[] {"attachments"}, filterString,
-				null, maxCount, 0);
+				"caseResults", new String[] {"attachments"}, filterString, null,
+				maxCount, 0);
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
