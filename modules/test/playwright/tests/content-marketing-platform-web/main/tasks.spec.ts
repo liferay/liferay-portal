@@ -11,6 +11,7 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {workflowPagesTest} from '../../../fixtures/workflowPagesTest';
 import {addSpaceUser} from '../../../utils/addSpaceUser';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
+import dragAndDropElement from '../../../utils/dragAndDropElement';
 import getRandomString from '../../../utils/getRandomString';
 import {performUserSwitch} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
@@ -1428,6 +1429,65 @@ test(
 			page.getByRole('button', {name: 'Update State'})
 		).toBeDisabled();
 		await expect(page.getByRole('button', {name: 'Delete'})).toBeDisabled();
+	}
+);
+
+test(
+	'Kanban view can drag tasks to update their state as a project manager',
+	{tag: ['@LPD-112742']},
+	async ({apiHelpers, page, projectPage, projectsPage, tasksPage}) => {
+		const defaultSpace =
+			await apiHelpers.headlessAssetLibrary.createSpace();
+
+		const user = await addSpaceUser(
+			apiHelpers,
+			project.systemProperties.scope.externalReferenceCode,
+			'Project Manager'
+		);
+
+		await apiHelpers.headlessAssetLibrary.putAssetLibraryUserAccount(
+			defaultSpace.externalReferenceCode,
+			user.externalReferenceCode
+		);
+
+		await performUserSwitch(page, user.alternateName);
+
+		await test.step('View the project and open its kanban view', async () => {
+			await projectsPage.goto();
+
+			await projectsPage.getProject(project.title).click();
+
+			await projectPage.tasksTab.click();
+
+			await tasksPage.tableViewButton.click();
+
+			await tasksPage.kanbanView.viewOption.click();
+
+			await expect(
+				tasksPage
+					.getKanbanColumn('Not Started')
+					.getByText(taskNames[0], {exact: true})
+			).toBeVisible();
+		});
+
+		await test.step('Dragging the task to In Progress updates its state', async () => {
+			await dragAndDropElement({
+				dragTarget: tasksPage
+					.getKanbanColumn('Not Started')
+					.getByText(taskNames[0], {exact: true}),
+				dropTarget: tasksPage.getKanbanColumn('In Progress'),
+			});
+
+			await waitForAlert(page, 'State was successfully updated.');
+
+			await expect(
+				tasksPage
+					.getKanbanColumn('In Progress')
+					.getByText(taskNames[0], {exact: true})
+			).toBeVisible();
+		});
+
+		await performUserSwitch(page, 'test');
 	}
 );
 

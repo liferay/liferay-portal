@@ -45,6 +45,9 @@ export class TasksPage {
 	readonly dataSetFragmentPage: DataSetPage;
 	readonly dialogDeleteButton: Locator;
 	readonly dropdownTableViewButton: Locator;
+	readonly kanbanView: {
+		viewOption: Locator;
+	};
 	readonly page: Page;
 	readonly projectTasksTab: Locator;
 	readonly saveButton: Locator;
@@ -130,6 +133,9 @@ export class TasksPage {
 		this.dropdownTableViewButton = page.getByRole('option', {
 			name: 'Table',
 		});
+		this.kanbanView = {
+			viewOption: page.getByRole('option', {name: 'Kanban'}),
+		};
 		this.projectTasksTab = page.getByRole('tab', {name: 'Project Tasks'});
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.tableViewButton = page
@@ -207,6 +213,10 @@ export class TasksPage {
 		return this.bulkUpdateStateDialog.getByRole('combobox', {
 			name: `Transition from ${stepName}`,
 		});
+	}
+
+	getKanbanColumn(name: string) {
+		return this.page.getByRole('group', {exact: true, name});
 	}
 
 	async goto() {
