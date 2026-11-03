@@ -28,6 +28,14 @@ $side-navigation-scope-item-height: 2.5rem;
 	--menubar-primary-nav-link-padding: 0.5rem 1rem;
 	--skeleton-shimmer-color: var(--light-l1);
 
+	flex-shrink: 0;
+	transition: width 0.14s ease-out;
+	width: 0;
+
+	&.side-navigation-open {
+		width: 280px;
+	}
+
 	a.nav-link {
 		--menubar-primary-collapse-icon-font-size: 0.875rem;
 		--menubar-primary-collapse-icon-font-weight: 400;

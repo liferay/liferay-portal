@@ -132,6 +132,11 @@ function SideNavigation({
 				visible ? 'visible' : 'hidden'
 			);
 
+			containerRef.current?.classList.toggle(
+				'side-navigation-open',
+				visible
+			);
+
 			setVisible(visible);
 
 			Liferay.fire('sideNavigationStateChanged', {visible});
@@ -174,7 +179,6 @@ function SideNavigation({
 			categoryImageUrl={categoryImageUrl}
 			colorScheme={colorScheme}
 			colorSchemeSessionKey={colorSchemeSessionKey}
-			containerRef={containerRef}
 			label={label}
 			navigationId="com_liferay_application_list_taglib_side_navigation"
 			onOpenChange={updateVisible}
