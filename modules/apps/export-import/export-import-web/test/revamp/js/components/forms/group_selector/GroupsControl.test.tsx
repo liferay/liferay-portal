@@ -12,7 +12,7 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import SitesControl from '../../../../../../src/main/resources/META-INF/resources/revamp/js/components/forms/site_selector/SitesControl';
+import GroupsControl from '../../../../../../src/main/resources/META-INF/resources/revamp/js/components/forms/group_selector/GroupsControl';
 import {Site} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
 
 const SITES: Site[] = [
@@ -33,16 +33,17 @@ const SITES: Site[] = [
 ];
 
 const renderControl = (
-	props: Partial<React.ComponentProps<typeof SitesControl>> = {}
+	props: Partial<React.ComponentProps<typeof GroupsControl>> = {}
 ) => {
 	const onChange = jest.fn();
 
 	const renderResult = render(
-		<SitesControl
+		<GroupsControl
+			groups={SITES}
 			onChange={onChange}
 			selectedExternalReferenceCodes={[]}
-			sites={SITES}
 			totalCount={SITES.length}
+			type="site"
 			{...props}
 		/>
 	);
@@ -64,7 +65,7 @@ const SITES_PAGE = JSON.stringify({
 	totalCount: SITES.length,
 });
 
-describe('SitesControl', () => {
+describe('GroupsControl', () => {
 	beforeAll(() => {
 		(Liferay.Language.get as jest.Mock).mockImplementation(
 			(key: string) =>
@@ -102,8 +103,8 @@ describe('SitesControl', () => {
 
 	it('names selected sites that go by the same name rather than counting them', () => {
 		renderControl({
+			groups: [SITES[0], {...SITES[1], descriptiveName: 'Marketing'}],
 			selectedExternalReferenceCodes: ['erc-marketing', 'erc-support'],
-			sites: [SITES[0], {...SITES[1], descriptiveName: 'Marketing'}],
 		});
 
 		expect(
@@ -219,7 +220,7 @@ describe('SitesControl', () => {
 
 	describe('selecting spaces', () => {
 		it('names the section and its empty state after spaces', () => {
-			renderControl({type: 'assetLibrary'});
+			renderControl({type: 'space'});
 
 			expect(screen.getByText('spaces')).toBeInTheDocument();
 			expect(
@@ -228,7 +229,7 @@ describe('SitesControl', () => {
 		});
 
 		it('opens a dialog for selecting spaces', async () => {
-			renderControl({type: 'assetLibrary'});
+			renderControl({type: 'space'});
 
 			await userEvent.click(
 				screen.getByRole('button', {name: 'select-spaces'})
@@ -240,7 +241,7 @@ describe('SitesControl', () => {
 		});
 
 		it('reads only the title when exporting', async () => {
-			renderControl({type: 'assetLibrary'});
+			renderControl({type: 'space'});
 
 			await userEvent.click(
 				screen.getByRole('button', {name: 'select-spaces'})
@@ -260,7 +261,7 @@ describe('SitesControl', () => {
 		});
 
 		it('reads title and exists in instance when importing', async () => {
-			renderControl({process: 'import', type: 'assetLibrary'});
+			renderControl({process: 'import', type: 'space'});
 
 			await userEvent.click(
 				screen.getByRole('button', {name: 'select-spaces'})
@@ -287,7 +288,7 @@ describe('SitesControl', () => {
 		it('hands the picked sites back to the row', async () => {
 			const {onChange} = renderControl({
 				apiURL: API_URL,
-				sites: undefined,
+				groups: undefined,
 			});
 
 			await openDialog();
@@ -304,7 +305,7 @@ describe('SitesControl', () => {
 		it('names the sites after they are picked', async () => {
 			const {rerender} = renderControl({
 				apiURL: API_URL,
-				sites: undefined,
+				groups: undefined,
 			});
 
 			await openDialog();
@@ -316,11 +317,12 @@ describe('SitesControl', () => {
 			await userEvent.click(screen.getByRole('button', {name: 'select'}));
 
 			rerender(
-				<SitesControl
+				<GroupsControl
 					apiURL={API_URL}
 					onChange={jest.fn()}
 					selectedExternalReferenceCodes={['erc-support']}
 					totalCount={2}
+					type="site"
 				/>
 			);
 
@@ -332,8 +334,8 @@ describe('SitesControl', () => {
 		it('reopening keeps what was already picked', async () => {
 			renderControl({
 				apiURL: API_URL,
+				groups: undefined,
 				selectedExternalReferenceCodes: ['erc-support'],
-				sites: undefined,
 			});
 
 			await openDialog();
@@ -344,7 +346,7 @@ describe('SitesControl', () => {
 		});
 
 		it('shows where each site sits', async () => {
-			renderControl({apiURL: API_URL, sites: undefined});
+			renderControl({apiURL: API_URL, groups: undefined});
 
 			await openDialog();
 
@@ -356,7 +358,7 @@ describe('SitesControl', () => {
 		});
 
 		it('asks the API for the sites in ascending order', async () => {
-			renderControl({apiURL: API_URL, sites: undefined});
+			renderControl({apiURL: API_URL, groups: undefined});
 
 			await openDialog();
 
@@ -368,7 +370,7 @@ describe('SitesControl', () => {
 		});
 
 		it('asks the API for the sites in descending order', async () => {
-			renderControl({apiURL: API_URL, sites: undefined});
+			renderControl({apiURL: API_URL, groups: undefined});
 
 			await openDialog();
 
@@ -388,7 +390,7 @@ describe('SitesControl', () => {
 		it('keeps the page URL untouched while browsing the sites', async () => {
 			const search = window.location.search;
 
-			renderControl({apiURL: API_URL, sites: undefined});
+			renderControl({apiURL: API_URL, groups: undefined});
 
 			await openDialog();
 
@@ -409,7 +411,7 @@ describe('SitesControl', () => {
 	});
 
 	it('lists the sites from the file by title', async () => {
-		renderControl({sites: [...SITES].reverse()});
+		renderControl({groups: [...SITES].reverse()});
 
 		await openDialog();
 
