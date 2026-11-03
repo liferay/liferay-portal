@@ -237,13 +237,12 @@ public class AccountFaroControllerTest {
 
 		List<?> items = faroFDSResultsDisplay.getItems();
 
-		Assert.assertEquals(
-			items.toString(), accountLifecycles.size(), items.size());
-
 		_assertItem(
 			accountLifecycles.get(0), (Map<String, String>)items.get(0));
 		_assertItem(
 			accountLifecycles.get(1), (Map<String, String>)items.get(1));
+		Assert.assertEquals(
+			items.toString(), accountLifecycles.size(), items.size());
 	}
 
 	private void _assertItem(
