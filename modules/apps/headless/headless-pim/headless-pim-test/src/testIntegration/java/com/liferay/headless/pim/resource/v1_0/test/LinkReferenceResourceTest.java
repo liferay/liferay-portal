@@ -253,7 +253,6 @@ public class LinkReferenceResourceTest
 		href = updateAction.get("href");
 
 		Assert.assertTrue(
-			href,
 			href.endsWith(
 				"/by-external-reference-code/" +
 					objectEntry.getExternalReferenceCode()));
