@@ -261,9 +261,6 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	private void _testPutOptionWithErrors() throws Exception {
-
-		// Connection refused
-
 		Mockito.when(
 			_http.URLtoString(Mockito.any(Http.Options.class))
 		).thenThrow(
@@ -288,8 +285,6 @@ public class LiferayCommerceRESTClientTest {
 		Assert.assertEquals(
 			"Connection refused", responseJSONObject.getString("error"));
 
-		// Forbidden response
-
 		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
 
 		_assertPIMConnectorException(
@@ -297,8 +292,6 @@ public class LiferayCommerceRESTClientTest {
 			curLiferayCommerceRESTClient ->
 				curLiferayCommerceRESTClient.putOption(
 					"color", JSONUtil.put("key", "color")));
-
-		// Server error
 
 		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
 
