@@ -295,12 +295,6 @@ definition {
 			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME");
 	}
 
-	@summary = "Default summary"
-	macro viewNoEntryMenu(rowEntry = null) {
-		AssertElementNotPresent(
-			key_rowEntry = ${rowEntry},
-			locator1 = "Icon#ROW_VERTICAL_ELLIPSIS");
-	}
 
 	@summary = "Default summary"
 	macro viewNoEntryMenuItem(rowEntry = null, menuItem = null) {

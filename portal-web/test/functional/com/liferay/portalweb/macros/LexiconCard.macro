@@ -149,16 +149,6 @@ definition {
 			locator1 = "MenuItem#DISABLED_MENU_ITEM");
 	}
 
-	@summary = "Default summary"
-	macro viewMenuItemNotPresent(item = null, card = null) {
-		Click(
-			key_card = ${card},
-			locator1 = "Card#CARD_ELLIPSIS");
-
-		AssertElementNotPresent(
-			key_menuItem = ${item},
-			locator1 = "MenuItem#ANY_MENU_ITEM");
-	}
 
 	@summary = "Default summary"
 	macro viewNoCardThumbnail(card = null) {

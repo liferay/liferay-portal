@@ -239,41 +239,7 @@ definition {
 			rowEntry = ${depotName});
 	}
 
-	@summary = "Default summary"
-	macro gotoDocumentsAndMediaDocumentPG(dmDocumentTitle = null) {
-		WaitForLiferayEvent.initializeLiferayEventLog();
 
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Permissions",
-			rowEntry = ${dmDocumentTitle});
-
-		if (IsElementPresent(key_title = "Permissions", locator1 = "IFrame#MODAL_ANY")) {
-			IFrame.selectPermissionsFrame();
-		}
-	}
-
-	@summary = "Default summary"
-	macro gotoDocumentsAndMediaHomeFolderPG(siteName = null, pageName = null) {
-		Navigator.gotoSitePage(
-			pageName = ${pageName},
-			siteName = ${siteName});
-
-		DMDocument.enableActionsMenuOnPortlet();
-
-		Navigator.gotoSitePage(
-			pageName = ${pageName},
-			siteName = ${siteName});
-
-		Click(locator1 = "Icon#INFO_DM");
-
-		Click.waitForMenuToggleJSClick(locator1 = "Icon#VERTICAL_ELLIPSIS_BUTTON");
-
-		WaitForLiferayEvent.initializeLiferayEventLog();
-
-		MenuItem.click(menuItem = "Permissions");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-	}
 
 	@summary = "Default summary"
 	macro gotoMessageBoardsCategoryPG(categoryName = null) {

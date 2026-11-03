@@ -46,31 +46,6 @@ definition {
 		DMFolder.viewEntryPresent(dmFolderName = ${dmFolderName});
 	}
 
-	@summary = "Default summary"
-	macro addDMFolderLoginUserPG(viewableBy = null, dmFolderDescription = null, siteName = null, dmFolder = null, dmFolderName = null, userLoginFullName = null, userLoginEmailAddress = null, pageName = null) {
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "test@liferay.com",
-			userLoginFullName = "Test Test");
-
-		if (isSet(siteName)) {
-			Navigator.gotoSitePage(
-				pageName = ${pageName},
-				siteName = ${siteName});
-		}
-		else {
-			Navigator.gotoPage(pageName = ${pageName});
-		}
-
-		DMFolder.addPG(
-			dmFolder = ${dmFolder},
-			dmFolderDescription = ${dmFolderDescription},
-			dmFolderName = ${dmFolderName},
-			viewableBy = ${viewableBy});
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = ${userLoginEmailAddress},
-			userLoginFullName = ${userLoginFullName});
-	}
 
 	@summary = "Default summary"
 	macro addPG(viewableBy = null, addOrRemoveViewPermission = null, roleTitle = null, dmFolderDescription = null, permissionDefinitionKeyList = null, dmFolder = null, dmFolderName = null) {
@@ -684,12 +659,6 @@ definition {
 		IFrame.selectPermissionsFrame();
 	}
 
-	@summary = "Default summary"
-	macro viewNoSubscribe() {
-		Click(locator1 = "Icon#INFO");
-
-		AssertElementNotPresent(locator1 = "Icon#SUBSCRIBE");
-	}
 
 	@summary = "Default summary"
 	macro viewPG(dmFolderName = null) {

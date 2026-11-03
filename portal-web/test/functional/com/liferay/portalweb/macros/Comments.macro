@@ -273,16 +273,6 @@ definition {
 			value1 = "INFO:Comments are unavailable in staged sites.");
 	}
 
-	@summary = "Default summary"
-	macro viewNoActions(entryComment = null) {
-		Click.mouseOverClick(
-			key_entryComment = ${entryComment},
-			locator1 = "Comments#COMMENT_BODY_SPECIFIC");
-
-		AssertElementNotPresent(
-			key_entryComment = ${entryComment},
-			locator1 = "Comments#COMMENT_ACTIONS");
-	}
 
 	@summary = "Default summary"
 	macro viewNoComments(entryComment = null) {

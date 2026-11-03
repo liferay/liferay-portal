@@ -142,23 +142,7 @@ definition {
 			locator1 = "ManagementBar#FILTER_AND_ORDER_ITEM_SELECTED");
 	}
 
-	@summary = "Default summary"
-	macro viewItemsDisabled(textList = null) {
-		for (var text : list ${textList}) {
-			AssertElementPresent(
-				key_text = ${text},
-				locator1 = "Icon#ANY_DISABLED");
-		}
-	}
 
-	@summary = "Default summary"
-	macro viewNoItems(textList = null) {
-		for (var text : list ${textList}) {
-			AssertElementNotPresent(
-				key_text = ${text},
-				locator1 = "Icon#ANY");
-		}
-	}
 
 	@summary = "Default summary"
 	macro viewNumberOfSelectedItems(text = null) {

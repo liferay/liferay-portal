@@ -2233,16 +2233,6 @@ definition {
 			locator1 = "Card#CARD_TITLE");
 	}
 
-	@summary = "Default summary"
-	macro gotoMenuItemViaInfoPanel(menuItem = null) {
-		DMDocument.expandInfo();
-
-		Click(locator1 = "Icon#SIDEBAR_HEADER_ACTION_VERTICAL_ELLIPSIS_BUTTON");
-
-		if (isSet(menuItem)) {
-			MenuItem.clickNoError(menuItem = ${menuItem});
-		}
-	}
 
 	@summary = "Default summary"
 	macro linkImage(navTab = null, dmDocumentURL = null) {
@@ -4137,10 +4127,6 @@ definition {
 			value1 = ${dmDocumentTitle});
 	}
 
-	@summary = "Default summary"
-	macro viewNoAddPermission() {
-		AssertElementNotPresent(locator1 = "Button#PLUS");
-	}
 
 	@summary = "Default summary"
 	macro viewNoCacheControlConfigurationInConsole(responseHeader = null, cacheControlAttribute = null) {
