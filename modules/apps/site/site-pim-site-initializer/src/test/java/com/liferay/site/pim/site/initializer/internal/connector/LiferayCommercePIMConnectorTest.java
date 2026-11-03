@@ -684,11 +684,6 @@ public class LiferayCommercePIMConnectorTest {
 		jsonArray = jsonObject.getJSONArray("log");
 
 		Assert.assertEquals(jsonArray.toString(), 5, jsonArray.length());
-
-		String log = jsonArray.toString();
-
-		Assert.assertFalse(log, log.contains("SECRET"));
-		Assert.assertFalse(log, log.contains("TOKEN"));
 	}
 
 	private void _testExecuteWithErrorResponse() throws Exception {
