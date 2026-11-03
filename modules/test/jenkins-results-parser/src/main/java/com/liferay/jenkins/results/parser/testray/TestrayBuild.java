@@ -552,18 +552,44 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 			return _testrayAttachmentURLMatcher;
 		}
 
-		StringBuilder sb = new StringBuilder();
+		String filterString = JenkinsResultsParserUtil.combine(
+			"r_buildToCaseResult_c_buildId eq '", String.valueOf(getId()),
+			"'");
 
-		sb.append("r_buildToCaseResult_c_buildId eq '");
-		sb.append(getId());
-		sb.append("'");
+		TestrayProject testrayProject = getTestrayProject();
+
+		if (testrayProject != null) {
+			long topLevelBuildTestrayCaseId =
+				testrayProject.getTestrayCaseIdByName("Top Level Build");
+
+			if (topLevelBuildTestrayCaseId > 0) {
+				_testrayAttachmentURLMatcher = _getTestrayAttachmentURLMatcher(
+					JenkinsResultsParserUtil.combine(
+						filterString, " and r_caseToCaseResult_c_caseId eq '",
+						String.valueOf(topLevelBuildTestrayCaseId), "'"),
+					1);
+
+				if (_testrayAttachmentURLMatcher != null) {
+					return _testrayAttachmentURLMatcher;
+				}
+			}
+		}
+
+		_testrayAttachmentURLMatcher = _getTestrayAttachmentURLMatcher(
+			filterString, 5);
+
+		return _testrayAttachmentURLMatcher;
+	}
+
+	private Matcher _getTestrayAttachmentURLMatcher(
+		String filterString, int maxCount) {
 
 		Set<JSONObject> entityJSONObjects;
 
 		try {
 			entityJSONObjects = _testrayServer.requestGraphQL(
-				"caseResults", new String[] {"attachments"}, sb.toString(),
-				null, 5, 0);
+				"caseResults", new String[] {"attachments"}, filterString,
+				null, maxCount, 0);
 		}
 		catch (IOException ioException) {
 			throw new RuntimeException(ioException);
@@ -594,9 +620,7 @@ public class TestrayBuild implements Comparable<TestrayBuild> {
 						attachmentJSONObject.getString("url"));
 
 				if (testrayAttachmentURLMatcher.find()) {
-					_testrayAttachmentURLMatcher = testrayAttachmentURLMatcher;
-
-					return _testrayAttachmentURLMatcher;
+					return testrayAttachmentURLMatcher;
 				}
 			}
 		}

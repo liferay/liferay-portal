@@ -397,7 +397,7 @@ public class TestrayProject {
 	}
 
 	private synchronized void _initTestrayCaseIds() {
-		if (_testrayCases != null) {
+		if (!_testrayCaseIds.isEmpty()) {
 			return;
 		}
 
@@ -407,8 +407,6 @@ public class TestrayProject {
 			JenkinsResultsParserUtil.combine(
 				"Gathering test case IDs for project ", getName(), " at ",
 				JenkinsResultsParserUtil.toDateString(new Date(start))));
-
-		_testrayCases = new HashMap<>();
 
 		String filterString = JenkinsResultsParserUtil.combine(
 			"r_projectToCases_c_projectId eq '", String.valueOf(getId()), "'");
