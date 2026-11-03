@@ -7,10 +7,10 @@ $configuration[0] as $configuration
 | $outputs.marketplace_filestore_ip.value as $marketplace_filestore_ip
 | $outputs.marketplace_volume_handle.value as $marketplace_volume_handle
 | ($configuration.terraform.platform.observability_config.enabled // false) as $observability_enabled
-| "https://monitoring.googleapis.com/v1/projects/\($deployment_context.projectId)/location/global/prometheus" as $prometheus_query_endpoint
 | {
 	"networking.gke.io/load-balancer-type": "External"
 } as $operator_service_annotations
+| "https://monitoring.googleapis.com/v1/projects/\($deployment_context.projectId)/location/global/prometheus" as $prometheus_query_endpoint
 | {
 	platformComponents: {
 		values: {
