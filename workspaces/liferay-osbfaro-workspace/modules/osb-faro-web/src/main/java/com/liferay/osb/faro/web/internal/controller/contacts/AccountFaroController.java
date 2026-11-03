@@ -240,10 +240,12 @@ public class AccountFaroController extends BaseFaroController {
 		throws Exception {
 
 		if (Objects.equals(fieldMappingFieldName, "lifecycleStatus")) {
+			List<Map<String, String>> items = new ArrayList<>();
+		
+			List<AccountLifecycle> accountLifecycles = null;
+
 			FaroProject faroProject =
 				faroProjectLocalService.getFaroProjectByGroupId(groupId);
-
-			List<AccountLifecycle> accountLifecycles = null;
 
 			if (Validator.isNull(accountLifecycleId)) {
 				Results<AccountLifecycle> accountLifecycleResults =
@@ -258,8 +260,6 @@ public class AccountFaroController extends BaseFaroController {
 					contactsEngineClient.getAccountLifecycle(
 						faroProject, accountLifecycleId));
 			}
-
-			List<Map<String, String>> items = new ArrayList<>();
 
 			for (AccountLifecycle accountLifecycle : accountLifecycles) {
 				items.addAll(
