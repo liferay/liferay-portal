@@ -1023,6 +1023,60 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-113649")
+	public void testMoveEntryToTrashWithDeletePermissionOfOrganizationRole()
+		throws Exception {
+
+		_organization = OrganizationTestUtil.addOrganization();
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_ORGANIZATION);
+		_user = UserTestUtil.addOrganizationUser(
+			_organization, _role.getName());
+
+		_testMoveEntryToTrash(_organization.getGroup(), _role, _user);
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testMoveEntryToTrashWithDeletePermissionOfRegularRole()
+		throws Exception {
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(_user.getUserId(), _role);
+
+		_testMoveEntryToTrash(_group, _role, _user);
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testMoveEntryToTrashWithDeletePermissionOfSiteRole()
+		throws Exception {
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+		_user = UserTestUtil.addGroupUser(_group, _role.getName());
+
+		_testMoveEntryToTrash(_group, _role, _user);
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testMoveEntryToTrashWithDeletePermissionOfTeamRole()
+		throws Exception {
+
+		Team team = _teamLocalService.addTeam(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
+
+		_userLocalService.addTeamUser(team.getTeamId(), _user);
+
+		_testMoveEntryToTrash(_group, team.getRole(), _user);
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testMoveEntryToTrashWithoutDeletePermission() throws Exception {
 		BlogsEntry entry = _addEntry();
@@ -1031,6 +1085,25 @@ public class BlogsEntryServiceTest {
 				_groupUser, _permissionChecker)) {
 
 			_blogsEntryService.moveEntryToTrash(entry.getEntryId());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testMoveEntryToTrashWithoutDeletePermissionAsGuest()
+		throws Exception {
+
+		BlogsEntry entry = _addEntry();
+
+		User guestUser = _userLocalService.getGuestUser(
+			_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				guestUser, PermissionCheckerFactoryUtil.create(guestUser))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.moveEntryToTrash(entry.getEntryId()));
 		}
 	}
 
@@ -1333,6 +1406,34 @@ public class BlogsEntryServiceTest {
 			Assert.assertThrows(
 				PrincipalException.MustHavePermission.class,
 				() -> _addEntry2(group, user));
+		}
+	}
+
+	private void _testMoveEntryToTrash(Group group, Role role, User user)
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				group, TestPropsValues.getUserId());
+
+		BlogsEntry entry1 = _addEntry(new Date(), serviceContext);
+		BlogsEntry entry2 = _addEntry(new Date(), serviceContext);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			role.getCompanyId(), _CLASS_NAME_BLOGS_ENTRY,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(entry1.getEntryId()), role.getRoleId(),
+			new String[] {ActionKeys.DELETE});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_blogsEntryService.moveEntryToTrash(entry1.getEntryId());
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.moveEntryToTrash(
+					entry2.getEntryId()));
 		}
 	}
 
