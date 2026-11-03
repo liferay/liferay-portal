@@ -283,7 +283,7 @@ public class RenderLayoutStructureDisplayContext {
 				_getSegmentsEntryIds());
 		}
 
-		if (_collectionItemAncestorExistsMap.computeIfAbsent(
+		if (_hasAncestors.computeIfAbsent(
 				itemId,
 				layoutStructureItemId -> LayoutStructureItemUtil.hasAncestor(
 					layoutStructureItemId,
@@ -1225,8 +1225,7 @@ public class RenderLayoutStructureDisplayContext {
 	private static final Log _log = LogFactoryUtil.getLog(
 		RenderLayoutStructureDisplayContext.class);
 
-	private final Map<String, Boolean> _collectionItemAncestorExistsMap =
-		new HashMap<>();
+	private final Map<String, Boolean> _hasAncestors = new HashMap<>();
 	private final HttpServletRequest _httpServletRequest;
 	private final LayoutStructure _layoutStructure;
 	private LayoutStructureRulesHelper.LayoutStructureRulesResult
