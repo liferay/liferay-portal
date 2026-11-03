@@ -66,6 +66,39 @@ public class DLFileShortcutServiceTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-113625", "LPS-90864"})
+	public void testAddFileShortcut() throws Exception {
+		FileEntry fileEntry = DLAppTestUtil.addFileEntry(_group.getGroupId());
+
+		DLFolder dlFolder = DLTestUtil.addDLFolder(_group.getGroupId());
+
+		DLFolder restrictedDLFolder = _addRestrictedDLFolder();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user)) {
+
+			DLFileShortcut dlFileShortcut =
+				DLFileShortcutServiceUtil.addFileShortcut(
+					null, _group.getGroupId(), _group.getGroupId(),
+					dlFolder.getFolderId(), fileEntry.getFileEntryId(),
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _user.getUserId()));
+
+			Assert.assertEquals(
+				dlFolder.getFolderId(), dlFileShortcut.getFolderId());
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> DLFileShortcutServiceUtil.addFileShortcut(
+					null, _group.getGroupId(), _group.getGroupId(),
+					restrictedDLFolder.getFolderId(),
+					fileEntry.getFileEntryId(),
+					ServiceContextTestUtil.getServiceContext(
+						_group.getGroupId(), _user.getUserId())));
+		}
+	}
+
+	@Test
 	public void testGetGroupFileShortcutsFiltersByPermission()
 		throws Exception {
 
