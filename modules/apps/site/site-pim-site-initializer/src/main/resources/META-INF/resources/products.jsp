@@ -26,6 +26,7 @@ ProductsSectionDisplayContext productsSectionDisplayContext = (ProductsSectionDi
 
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:headless-display
+			additionalProps="<%= productsSectionDisplayContext.getAdditionalProps() %>"
 			apiURL="<%= productsSectionDisplayContext.getAPIURL() %>"
 			bulkActionDropdownItems="<%= productsSectionDisplayContext.getBulkActionDropdownItems() %>"
 			creationMenu="<%= productsSectionDisplayContext.getCreationMenu() %>"

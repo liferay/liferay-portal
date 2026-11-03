@@ -38,6 +38,8 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.Validator;
@@ -72,6 +74,14 @@ public class ProductsSectionDisplayContext {
 					StringUtil.merge(CMSWorkflowConstants.STATUSES, ", "),
 					")")),
 			"&nestedFields=embedded,systemProperties.objectDefinitionBrief");
+	}
+
+	public Map<String, Object> getAdditionalProps() {
+		return HashMapBuilder.<String, Object>put(
+			"brokenLinksCheckerEnabled",
+			GetterUtil.getBoolean(
+				PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED))
+		).build();
 	}
 
 	public List<DropdownItem> getBulkActionDropdownItems() {

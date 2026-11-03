@@ -12,6 +12,7 @@ export {default as SpaceSticker} from './common/components/SpaceSticker';
 export {default as StatusLabel} from './common/components/StatusLabel';
 export {default as Toolbar} from './common/components/Toolbar';
 export {default as VerticalNavLayout} from './common/components/VerticalNavLayout';
+export {openAssetUsageListModal} from './common/components/asset_usage/utils';
 export {default as FieldPicker} from './common/components/forms/FieldPicker';
 export {default as FieldText} from './common/components/forms/FieldText';
 export {default as FieldWrapper} from './common/components/forms/FieldWrapper';
@@ -97,7 +98,10 @@ export {default as ViewVersionHistoryFDSPropsTransformer} from './main_view/prop
 export {default as VocabularyFDSPropsTransformer} from './main_view/props_transformer/VocabularyFDSPropsTransformer';
 export {default as confirmAndDeleteEntryAction} from './main_view/props_transformer/actions/confirmAndDeleteEntryAction';
 export {default as ACTIONS} from './main_view/props_transformer/actions/creationMenuActions';
-export {default as deleteAssetEntriesBulkAction} from './main_view/props_transformer/actions/deleteAssetEntriesBulkAction';
+export {
+	default as deleteAssetEntriesBulkAction,
+	executeBulkDeleteAction,
+} from './main_view/props_transformer/actions/deleteAssetEntriesBulkAction';
 export {default as deleteItemAction} from './main_view/props_transformer/actions/deleteItemAction';
 export {default as manageMembersAction} from './main_view/props_transformer/actions/manageMembersAction';
 export {triggerAssetBulkAction} from './main_view/props_transformer/actions/triggerAssetBulkAction';
