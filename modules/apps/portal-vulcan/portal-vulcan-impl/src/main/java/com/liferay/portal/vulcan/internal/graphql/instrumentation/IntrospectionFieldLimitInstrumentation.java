@@ -198,7 +198,7 @@ public class IntrospectionFieldLimitInstrumentation
 			if (fieldsCount >
 					GoodFaithIntrospection.GOOD_FAITH_MAX_FIELDS_COUNT) {
 
-				return GoodFaithIntrospection.GOOD_FAITH_MAX_FIELDS_COUNT + 1;
+				return fieldsCount;
 			}
 		}
 
