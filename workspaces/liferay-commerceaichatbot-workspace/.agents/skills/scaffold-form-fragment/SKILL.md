@@ -80,7 +80,7 @@ The container injects an `input` object into the template. Read the field's labe
 | Property | Type | Holds |
 | --- | --- | --- |
 | `input.attributes` | map | Type specific metadata, plus `readOnly`. Contents vary by field type |
-| `input.errorMessage` | string | Server side validation message; empty when valid |
+| `input.errorMessage` | string | Validation message from the server; empty when valid |
 | `input.helpText` | string | Author supplied help text |
 | `input.label` | string | The field label |
 | `input.localizable` | boolean | Whether the field stores a value per locale |
@@ -149,6 +149,14 @@ Deploy exactly as a display fragment — the fragment lives in the site initiali
 
 Then bind it: open the page, select the Form Container's field, and choose the fragment from the field's input list. It appears only for fields whose type is in `typeOptions.fieldTypes`.
 
+When the field is placed through the live page API instead, send the fragment's real `html`, `css`, and `js` on the `FormFragment`'s `fragmentInstance`. With an empty `html`, the field renders empty and submits nothing, silently (verified on 2026.Q3.2; see `manage-form-containers`).
+
+### A CMS File Picker Input
+
+DXP has no picker that browses CMS files from a site page (`manage-form-containers`, "Fields"). A custom `file` input can: browse a Space over `/o/search/v1.0/search` and write the picked file's DLFileEntry ID (`embedded.file.id`) into a hidden input named `${input.name}`, which is what the stock input posts and what an edit form fills in (`input.value`, with the name in `input.attributes.fileName`). `input.attributes.allowedFileExtensions` (`.pdf,.txt,.srt`) and `maxFileSize` (MB, `0` for no limit) say what the field accepts. A hidden input is never validated by the browser, so check a required one yourself on the form's `submit`. Verified on 2026.Q3.5 with a Form Container, a DPT edit form and a form in a modal. The `liferay-base` project ships two, `base-cms-file-upload` and `base-cms-image-upload` (`base-form-fragment-site-initializer`), whose code is the import map module `@liferay-base/cms-picker` (`base-cms-picker-js`).
+
+The viewer sees what search lets them see, which for a Space's depot role grants means its members only.
+
 ## Patterns and Gotchas
 
 Four `fieldTypes` mistakes throw and **abort the fragment import** — the collection fails to load and the fragment never appears:
@@ -162,11 +170,11 @@ Four `fieldTypes` mistakes throw and **abort the fragment import** — the colle
 
 **`input` exists only for `type: "input"`.** The renderer injects it behind an `isTypeInput()` check, so referencing `input` from a `component` or `section` fragment throws a reference error at render. `configuration`, `fragmentElement`, `fragmentElementId`, and `fragmentEntryLinkNamespace` are injected for every fragment type.
 
-**Use `fragmentElementId`, not `fragmentEntryLinkNamespace`, for element ids.** Both are injected, and the built in input fragments use `fragmentElementId` throughout — matching them keeps ids consistent with the helpers in `@liferay/fragment-impl/api`, which take it as their `namespace`.
+**Use `fragmentElementId`, not `fragmentEntryLinkNamespace`, for element IDs.** Both are injected, and the built in input fragments use `fragmentElementId` throughout — matching them keeps IDs consistent with the helpers in `@liferay/fragment-impl/api`, which take it as their `namespace`.
 
 **A hidden field still submits.** CSS `display: none` removes a conditionally shown field from view and leaves it in the form, so it posts a value the visitor never entered. Remove it from the DOM in `index.js` instead. Conditional visibility built with `<lfr-drop-zone>` has the same trap — see `scaffold-fragment` → "Drop Zones".
 
-**Public forms are write only.** A form open to anonymous visitors needs `ADD_OBJECT_ENTRY` and **not** `VIEW` on the object; company scope `VIEW` publishes every submission to the world. The visitor's own `POST` still returns the created entry, so the fragment can confirm back what was recorded. Read `rules/guest-access.md` before exposing a form on a public page.
+**Public forms are write only.** A form open to anonymous visitors needs `ADD_OBJECT_ENTRY` and **not** `VIEW` on the object; `VIEW` at the company level publishes every submission to the world. The visitor's own `POST` still returns the created entry, so the fragment can confirm back what was recorded. Read `rules/guest-access.md` before exposing a form on a public page.
 
 **Edit mode styling.** An input fragment with scroll animations or collapsed sections needs the `has-edit-mode-menu` treatment so an author can reach the field. See `scaffold-fragment` → "Edit Mode Awareness".
 

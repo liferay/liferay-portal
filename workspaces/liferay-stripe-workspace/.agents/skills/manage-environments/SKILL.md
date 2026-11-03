@@ -19,7 +19,7 @@ Switch portal configurations per deployment target, promote property changes bet
 
 ## Workspace Environment Model
 
-`configs/` holds one directory per environment. Each directory may contain a `portal-ext.properties` that overrides the common config.
+The `configs` directory holds one directory per environment. Each directory may contain a `portal-ext.properties` that overrides the common config.
 
 ```
 configs/
@@ -107,7 +107,7 @@ curl \
 	--user "test@liferay.com:test"
 ```
 
-Confirm the exact request bodies against the OpenAPI spec (`get-openapi` MCP tool, or fetch `GET /o/object-admin/v1.0/openapi.json` with curl). For source controlled migration, prefer a site-initializer `batch/` file (see `rules/site-initializer-format.md`).
+Confirm the exact request bodies against the OpenAPI spec (`get-openapi` MCP tool, or fetch `GET /o/object-admin/v1.0/openapi.json` with curl). For source controlled migration, prefer the site initializer's `object-definitions` and `list-type-definitions` directories (see `rules/site-initializer-format.md`), or a separate `type: batch` CET for bulk data (see `manage-objects` → the batch CET section). A `batch` directory **inside** a site initializer is packaged and then never read — no initializer handler looks for it.
 
 ### Export Object Data (Batch)
 
@@ -160,7 +160,7 @@ curl \
 
 **Step 3 — Capture object definitions**: Export definitions and place them under `site-initializer/batch/02-object-definition.batch-engine-data.json` using the batch engine data format (see `rules/site-initializer-format.md`).
 
-**Step 4 — Capture fragments**: Copy the deployed fragment source directories into `site-initializer/fragments/group/`.
+**Step 4 — Capture fragments**: Copy the deployed fragment source directories into `site-initializer/fragments/group`.
 
 **Step 5 — Capture picklists**: Export list type definitions to `site-initializer/batch/00-list-type-definition.batch-engine-data.json`.
 
@@ -174,7 +174,7 @@ curl \
 
 1. Trigger the deployment pipeline (CI/CD), or push to the UAT server and run `blade gw initBundle`.
 
-1. Bounce Tomcat on the UAT server to pick up the new properties.
+1. Bounce Tomcat on the UAT server to pick up the new properties, only after the user confirms — a restart on a Cloud environment always needs confirmation (`liferay-rules.md` → "Server Restarts").
 
 ## Success Signal
 

@@ -15,6 +15,6 @@ name: production-standards
 
 ## Production Deployment Guardrails
 
-- **Environment Specific Configs**: mandate `configs/prod/` or `configs/uat/` for environment properties; these must be bundled into Docker images / Liferay Cloud builds, not hot deployed via Blade.
+- **Environment Specific Configs**: mandate the `configs/prod` or `configs/uat` directory for environment properties; these must be bundled into Docker images / Liferay Cloud builds, not hot deployed via Blade.
 - **Secret Management**: explicitly forbid hardcoded credentials. Mandate Liferay's Secret Management or environment variables (e.g., `${env.SECRET_NAME}`).
 - **Performance & Caching**: mandate proper caching headers for custom endpoints / Client Extensions, and use of `Liferay.Util.fetch` to route through authenticated caching layers.

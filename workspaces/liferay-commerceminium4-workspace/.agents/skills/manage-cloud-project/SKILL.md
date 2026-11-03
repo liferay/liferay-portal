@@ -15,7 +15,7 @@ Operate on a Liferay Cloud project from the `lcp` CLI.
 - An `LCP.json` file exists in the workspace.
 - The user references a `console.liferay.*` URL.
 
-"Deploy to dev/uat/prd" alone is not a trigger. Those names also describe local environments under `configs/{env}/`. Require an explicit cloud signal.
+"Deploy to dev/uat/prd" alone is not a trigger. Those names also describe local environments under `configs/{env}`. Require an explicit cloud signal.
 
 ## Establish Context
 
@@ -39,7 +39,7 @@ For any other operation, discover available commands via `lcp --help`.
 
 ## Patterns and Gotchas
 
-- `<project>-<env>` naming overlaps with local `configs/{env}/` directories. Confirm cloud target before assuming.
+- `<project>-<env>` naming overlaps with local `configs/{env}` directories. Confirm cloud target before assuming.
 - `LCP.json` placement controls deploy scope: at repo root, `lcp deploy` deploys all services; from a service folder, it deploys only that one.
 
 ## Composition

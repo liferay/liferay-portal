@@ -79,7 +79,7 @@ Minimum `client-extension.yaml` entry:
     type: objectEntryManager
 ```
 
-The entry takes only these keys. Liferay reaches the microservice at the OAuth entry's `.serviceAddress` plus `resourcePath`. [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) on GitHub shows a working example.
+The entry takes only these keys. Liferay reaches the microservice at the OAuth entry's `.serviceAddress` plus `resourcePath`. [liferay-sample-etc-spring-boot](https://github.com/liferay/liferay-portal/tree/master/workspaces/liferay-sample-workspace/client-extensions/liferay-sample-etc-spring-boot) on GitHub shows a working example. In Docker, set `.serviceAddress` to `host.docker.internal:<port>`.
 
 ### Implement the Microservice
 

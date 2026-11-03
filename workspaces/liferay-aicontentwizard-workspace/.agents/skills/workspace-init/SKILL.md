@@ -13,7 +13,7 @@ Stand up a working Liferay Workspace from zero, or diagnose a workspace that loo
 
 - The user asks to set up, initialize, or scaffold a workspace, or asks for setup help.
 - The server appears down or unreachable.
-- The workspace looks uninitialized — missing `bundles/`, or missing `gradle.properties`.
+- The workspace looks uninitialized — missing the `bundles` directory, or missing `gradle.properties`.
 - Do not run through all steps for a returning user whose server is already running.
 
 > **Note:** These rules apply to local workspace initialization and must not be used to configure higher environments (UAT/Prod).
@@ -24,8 +24,9 @@ Stand up a working Liferay Workspace from zero, or diagnose a workspace that loo
 
 - **Check version**: read `liferay.workspace.product` in `gradle.properties`.
 - **Verify tooling**: check that `blade` (`blade --version`) and Java (`javac -version`) are installed. If missing, provide installation steps.
-- **DXP License**: if `liferay.workspace.product` contains `dxp`, a license file is required. Liferay identifies license files by XML content, not filename — check `bundles/deploy/` for any `.xml` file whose root element is `<license>` or `<licenses>`. If none is found, stop and ask the user to place their license file in `bundles/deploy/` before continuing. For Docker, apply the same check to the directory mounted to the container's deploy path. Community Edition and free tier products do not require a license — skip this check for those.
-- **License is consumed on boot**: Liferay registers the key into the database and deletes the file, so an empty `bundles/deploy/` on an already booted instance is the normal licensed state, not a missing license. Confirm activation from the log instead — `grep --extended-regexp --ignore-case 'license validation passed|License registered' bundles/tomcat*/logs/catalina.out`. Because the license now lives in the database, **clearing `bundles/data` also discards it**; copy a key again into `bundles/deploy/` as part of any such reset.
+- **DXP License**: if `liferay.workspace.product` contains `dxp`, a license file is required. Liferay identifies license files by XML content, not filename — check `bundles/deploy` for any `.xml` file whose root element is `<license>` or `<licenses>`. If none is found, stop and ask the user to place their license file in `bundles/deploy` before continuing. For Docker, apply the same check to the directory mounted to the container's deploy path. Community Edition and free tier products do not require a license — skip this check for those.
+- **License is consumed on boot**: Liferay registers the key into the database and deletes the file, so an empty `bundles/deploy` directory on an already booted instance is the normal licensed state, not a missing license. Confirm activation from the log instead — `grep --extended-regexp --ignore-case 'license validation passed|License registered' bundles/tomcat*/logs/catalina.out`. Because the license now lives in the database, **clearing `bundles/data` also discards it**; copy a key again into `bundles/deploy` as part of any such reset.
+- **Keep an environment directory in Git**: the workspace plugin refuses to configure unless the `configs` directory holds at least one directory besides `common` and `docker`, and Git does not keep an empty directory. A workspace whose `configs/local` is empty therefore works where it was made, but a fresh clone fails on every Gradle call, `blade gw deploy` included, with `The 'configs' directory must contain one directory not named: common, docker` (verified on a 2026.Q3.5 workspace). Commit a file in it: a `portal-ext.properties`, or an empty `.gitkeep`.
 
 ### Environment Readiness and State Sync
 
@@ -45,7 +46,7 @@ Skip this block if MCP is not supported in your DXP version.
 
 #### Tomcat
 
-- **Initialize**: run `blade server init` if `bundles/` does not exist.
+- **Initialize**: run `blade server init` if the `bundles` directory does not exist.
 
 - **Clear the seeded database (Hypersonic, before the first start)**: a downloaded bundle ships with a seeded Hypersonic database in which `test@liferay.com` already exists with the first login flags set. Boot it as is and every `/o/*` call returns 403 no matter what `portal-ext.properties` contains, because those properties are read only when the admin is created.
 
@@ -63,7 +64,7 @@ Skip this block if MCP is not supported in your DXP version.
 
   **Security note**: this is for local development only. BasicAuth sends credentials in every request. For production, use OAuth2 with `OAuth2HeaderAuthVerifier` instead. Never enable BasicAuth on `/o/*` in production.
 
-- **Instance and admin properties (dev only)**: a new workspace ships `configs/local/portal-ext.properties` with nothing but commented-out JDBC lines, so add every line below rather than assuming any of them is already there:
+- **Instance and admin properties (dev only)**: a new workspace ships `configs/local/portal-ext.properties` with nothing but JDBC lines that are commented out, so add every line below rather than assuming any of them is already there:
 
   ```
   admin.email.from.address=test@liferay.com
@@ -85,7 +86,7 @@ Skip this block if MCP is not supported in your DXP version.
 
   The properties above are what skip the manual first login, but they only take effect if this copy happens before the bundle has ever booted. See First Login Bootstrap below.
 
-- **Free port 8080 first**: every Liferay workspace defaults to 8080, so another workspace left running holds it. Run `ss -ltnp | grep ':8080 '` and **wait for the result before launching** — do not batch the check with the start command. If the port is taken, stop that instance with its own `bundles/tomcat*/bin/shutdown.sh` or move this workspace to another port. A bind conflict is easy to misread: Tomcat still logs `Server startup in [N] milliseconds` even though the connector never came up, so the boot looks fine while every request is served by the *other* instance and its separate database — which surfaces as inexplicable login or data failures. Treat `Address already in use` in `catalina.out` as a failed boot regardless of the startup line, and confirm the listening pid belongs to this bundle.
+- **Free port 8080 first**: every Liferay workspace defaults to 8080, so another workspace left running holds it. Run `ss -ltnp | grep ':8080 '` and **wait for the result before launching** — do not batch the check with the start command. If the port is taken, **ask the user** whether to stop that instance (with its own `bundles/tomcat*/bin/shutdown.sh`) or move this workspace to another port — it is a process this session did not start, so the restart permission in `liferay-rules.md` → "Server Restarts" does not cover it. A bind conflict is easy to misread: Tomcat still logs `Server startup in [N] milliseconds` even though the connector never came up, so the boot looks fine while every request is served by the *other* instance and its separate database — which surfaces as inexplicable login or data failures. Treat `Address already in use` in `catalina.out` as a failed boot regardless of the startup line, and confirm the listening pid belongs to this bundle.
 
 - **Start server**: `blade server run` (foreground, recommended for debugging) or `blade server start` (background). These commands are Tomcat only — do not use them for Docker.
 
@@ -97,7 +98,7 @@ Skip this block if MCP is not supported in your DXP version.
 - **Database**: verify the compose file defines a database service (MySQL). Docker has no embedded database; both the database and Liferay containers must be running.
 - **Configuration**: check whether the compose file uses `image:` (prebuilt) or `build:` (custom image):
   - `image: liferay/dxp:...` (prebuilt) → configuration is in `liferay.env` (env vars). See `skills/feature-flags/SKILL.md` for the env var encoding.
-  - `build: ...` → configuration is baked into the image via `configs/docker/`. Rebuild the image to apply changes.
+  - `build: ...` → configuration is baked into the image via `configs/docker`. Rebuild the image to apply changes.
 - **Initial build**: before the first `docker compose up`, build and output client extensions to the volume mounted directory: `./gradlew deploy`.
 - **Start**: `docker compose up` (foreground) or `docker compose up --detach` (background). Run from the directory containing the compose file.
 - **Login**: use credentials defined in `liferay.env` (default: `test@liferay.com` / `test`).
@@ -134,7 +135,7 @@ If the user prompts for setup assistance, guide them through these steps one by 
 ## Success Signal
 
 - `gradle.properties` and `settings.gradle` present
-- `bundles/tomcat*/` present
+- `bundles/tomcat*` directory present
 - HTTP request to `http://localhost:${PORT}` returns 200
 - User can sign in with the default credentials
 - BasicAuth verifier configured (if doing local REST/MCP work)

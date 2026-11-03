@@ -94,7 +94,7 @@ done
 
 A skill committed without its Skill Router row loads only when named exactly. The file is present, the skill is effectively invisible, and nothing fails.
 
-Before collapsing, confirm the mirrors still agree with `.agents/`. Nothing regenerates them and nothing fails when they drift, so a stale mirror means Step 4 silently picks a winner:
+Before collapsing, confirm the mirrors still agree with the `.agents` directory. Nothing regenerates them and nothing fails when they drift, so a stale mirror means Step 4 silently picks a winner:
 
 ```bash
 for dir in "${WORKSPACE}"/.*/; do
@@ -133,7 +133,7 @@ The two trees are not the same shape. A workspace populated by `updateWorkspace`
 | `.agents/liferay-rules.md` | real file | real file |
 | `<vendor>/<entry-point>` | identical copy | symlink to `../.agents/liferay-rules.md` |
 
-So committing is a **collapse**, never a straight copy: write one real file under `.agents/`, then create the symlinks. The relative depth differs between the two cases above — count it from the link's own directory rather than reusing a path.
+So committing is a **collapse**, never a straight copy: write one real file under `.agents`, then create the symlinks. The relative depth differs between the two cases above — count it from the link's own directory rather than reusing a path.
 
 Each vendor names its entry point differently, so read the existing one in the repo rather than assuming a name. Match whatever vendor directories the repository already carries; adding a tree it does not have is a separate decision, not part of contributing a skill.
 
@@ -165,7 +165,7 @@ Commit, then stop. Report the branch, the commit, and the stash.
 - **A straight copy produces the wrong tree.** The workspace's vendor copies are real files; the repo expects symlinks. Copying them over commits duplicated content that the publish step already produces on its own.
 - **The Skill Router row is the difference between shipped and invisible.** It is the single most commonly dropped part of the changeset, and its absence never produces an error.
 - **`commit.md`'s ticket rules read stale state here.** Both of its inference sources describe the user's previous work, not this contribution, and both answer confidently.
-- **Mirror drift is silent.** When `.agents/` and a vendor copy disagree, the collapse resolves it without telling anyone. Diff before, not after.
+- **Mirror drift is silent.** When the `.agents` directory and a vendor copy disagree, the collapse resolves it without telling anyone. Diff before, not after.
 - **The stash is the one step that looks destructive.** Report its ref every time. The user decides when to restore it.
 - **Do not push or open a pull request.** The commit is the deliverable; review is the user's to start.
 
@@ -181,7 +181,7 @@ ls -la "${PORTAL_REPO}"/workspaces/liferay-sample-workspace/.*/skills/<name>/SKI
 grep --count "<name>" "${PORTAL_REPO}/workspaces/liferay-sample-workspace/.agents/liferay-rules.md"
 ```
 
-The symlink listing should show `lrwxrwxrwx` and the `.agents/` target. Whether the contribution is accepted is decided in review, not here.
+The symlink listing should show `lrwxrwxrwx` and the `.agents` target. Whether the contribution is accepted is decided in review, not here.
 
 ## See Also
 

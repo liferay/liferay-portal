@@ -23,16 +23,16 @@ Beginner friendly mentor walkthrough for creating, deploying, and verifying a fi
   - `client-extension.yaml`: use the sample configuration as a base. Ensure the `type` matches the intended extension (e.g., `customElement`).
   - `assets/index.js`: standard entry point for JavaScript logic.
   - `assets/style.css`: standard entry point for component styling.
-- **Autodetection**: remind the user that no `build.gradle` is needed in the extension folder; the Liferay workspace plugin detects everything in `client-extensions/` automatically by finding the `client-extension.yaml`.
+- **Autodetection**: remind the user that no `build.gradle` is needed in the extension folder; the Liferay workspace plugin detects everything in `client-extensions` automatically by finding the `client-extension.yaml`.
 
 ## Deployment Workflow
 
 - **Mechanism**: explain that Blade uses the Gradle Wrapper (`blade gw`) to package the code into a `.zip` file.
 - **Prerequisites**:
-  - **Tomcat**: verify that a `bundles/` folder exists. Ensure the server is running (`http://localhost:${PORT}`).
-  - **Docker**: verify the Liferay container is running and healthy (`curl --fail http://localhost:${PORT}/c/portal/status`). Do not check for `bundles/` — it may not exist in a Docker workspace.
+  - **Tomcat**: verify that a `bundles` folder exists. Ensure the server is running (`http://localhost:${PORT}`).
+  - **Docker**: verify the Liferay container is running and healthy (`curl --fail http://localhost:${PORT}/c/portal/status`). Do not check for the `bundles` directory — it may not exist in a Docker workspace.
 - **Execution**:
-  - **Tomcat**: run `blade gw deploy`. This compiles the assets and copies the zip to `bundles/osgi/client-extensions/`.
+  - **Tomcat**: run `blade gw deploy`. This compiles the assets and copies the zip to `bundles/osgi/client-extensions`.
   - **Docker**: run `./gradlew deploy "-Ddeploy.docker.container.id=$(docker compose ps --quiet liferay)"`. This deploys directly into the running container with no restart needed.
 
 ## Runtime Verification

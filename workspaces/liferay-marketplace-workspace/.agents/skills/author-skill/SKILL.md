@@ -7,7 +7,7 @@ name: author-skill
 
 # Author Skill
 
-Generate a new skill under `.agents/skills/<name>/` that reads like the skills already shipped in this workspace. The conventions are **derived by reading those skills at invoke time**, not codified here — so the output stays correct as those skills evolve.
+Generate a new skill under `.agents/skills/<name>` that reads like the skills already shipped in this workspace. The conventions are **derived by reading those skills at invoke time**, not codified here — so the output stays correct as those skills evolve.
 
 ## When to Invoke
 
@@ -26,7 +26,7 @@ This skill runs in whatever workspace it was shipped into. Resolve every path ag
 
 ### Locate the Skill Tree
 
-`.agents/` is the source of truth. Each other agent directory holds a byte identical copy. Discover that set rather than hardcoding it — today only `.claude/` exists, and more are expected:
+The `.agents` directory is the source of truth. Each other agent directory holds a byte identical copy. Discover that set rather than hardcoding it — today only the `.claude` directory exists, and more are expected:
 
 ```bash
 for dir in .*/; do
@@ -38,7 +38,7 @@ done
 
 ### Phase 1: Survey the Existing Skills
 
-Do this first, every time, before asking the user anything about form. The skills already in `.agents/skills/` **are** the specification for what a skill looks like.
+Do this first, every time, before asking the user anything about form. The skills already in `.agents/skills` **are** the specification for what a skill looks like.
 
 ```bash
 # Which skills exist, and how long they run
@@ -93,7 +93,7 @@ Then surface every conflict explicitly, as a list, with both readings and a ques
 - The spec describes behavior the code does not implement, or the reverse.
 - Two sources disagree on a path, a field name, or a default.
 - The source targets a different product version than the workspace.
-- The source contradicts an existing skill or a rules card in `.agents/rules/`.
+- The source contradicts an existing skill or a rules card in `.agents/rules`.
 
 Proceed only once each is answered, or the user explicitly says to proceed on a stated assumption — in which case write the assumption into the draft.
 
@@ -104,7 +104,7 @@ Write `.agents/skills/<name>/SKILL.md`. This is the working copy for the review 
 - **Name**: kebab case, verb first, matching the neighbors surveyed in Phase 1.
 - **Verified content only.** Every command should be one that was run, or one taken directly from the source. Do not invent API paths, flag keys, field names, or CLI options.
 - **Mark what is inferred** using the convention the surveyed skills already use rather than a new one — see how they word an unverified `## Success Signal`.
-- **Cite rules cards, do not restate them.** A fact that belongs to `.agents/rules/` is referenced from there. A new fact of that kind belongs in a card, with the skill citing it.
+- **Cite rules cards, do not restate them.** A fact that belongs to `.agents/rules` is referenced from there. A new fact of that kind belongs in a card, with the skill citing it.
 - **End the file without a trailing newline.** Every skill and rules card in the workspace does; check the last byte with `tail -c 1 <file> | xxd`, where `0a` means the newline is still there.
 
 ### Phase 5: Review Gate
@@ -116,7 +116,7 @@ Present the complete draft to the user before publishing anything:
 - The Skill Router row proposed for Phase 6.
 - Anything left inferred, assumed, or unverified, named individually.
 
-Revise in place on the `.agents/` copy. Do not create vendor copies and do not touch the Skill Router until the user approves. Waiting keeps each revision round to a single file.
+Revise in place on the `.agents` copy. Do not create vendor copies and do not touch the Skill Router until the user approves. Waiting keeps each revision round to a single file.
 
 ### Phase 6: Publish Into the Workspace
 
@@ -150,7 +150,7 @@ Tell the user this, and point them at `commit-skill`, which collapses the duplic
 
 ## Success Signal
 
-This skill is done when the new skill is **published**, not when it is proven to work. The observable checks are structural — the file exists under `.agents/skills/<name>/`, every agent directory holds an identical copy, and the Skill Router row is present in each entry point file:
+This skill is done when the new skill is **published**, not when it is proven to work. The observable checks are structural — the file exists under `.agents/skills/<name>`, every agent directory holds an identical copy, and the Skill Router row is present in each entry point file:
 
 ```bash
 for dir in .*/; do
