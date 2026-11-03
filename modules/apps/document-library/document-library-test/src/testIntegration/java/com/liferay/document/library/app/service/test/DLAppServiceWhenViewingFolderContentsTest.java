@@ -7,6 +7,7 @@ package com.liferay.document.library.app.service.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFileEntry;
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.document.library.kernel.util.comparator.RepositoryModelReadCountComparator;
@@ -14,16 +15,24 @@ import com.liferay.document.library.kernel.util.comparator.RepositoryModelTitleC
 import com.liferay.document.library.test.util.BaseDLAppTestCase;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
@@ -146,6 +155,95 @@ public class DLAppServiceWhenViewingFolderContentsTest
 				WorkflowConstants.STATUS_APPROVED,
 				ArrayUtil.toStringArray(DLUtil.getAllMediaGalleryMimeTypes()),
 				false));
+	}
+
+	@Test
+	@TestInfo({"LPD-113625", "LPS-43104"})
+	public void testShouldNotReturnFileEntryWithoutViewPermission()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		FileEntry fileEntry = dlAppService.addFileEntry(
+			null, group.getGroupId(), parentFolder.getFolderId(),
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			StringUtil.randomString(), null, StringUtil.randomString(),
+			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
+
+		dlAppService.addFileEntry(
+			null, group.getGroupId(), parentFolder.getFolderId(),
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			StringUtil.randomString(), null, StringUtil.randomString(),
+			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
+
+		for (String roleName :
+				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
+
+			_removeViewPermission(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId(),
+				roleName);
+		}
+
+		_assertFoldersAndFileEntriesAndFileShortcutsCount(
+			2, TestPropsValues.getUser());
+		_assertFoldersAndFileEntriesAndFileShortcutsCount(
+			1,
+			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+
+		User user = UserTestUtil.addGroupUser(group, "User");
+
+		try {
+			_assertFoldersAndFileEntriesAndFileShortcutsCount(1, user);
+		}
+		finally {
+			_userLocalService.deleteUser(user.getUserId());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113625")
+	public void testShouldNotReturnFolderWithoutViewPermission()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		Folder folder = dlAppService.addFolder(
+			null, group.getGroupId(), parentFolder.getFolderId(),
+			StringUtil.randomString(), StringPool.BLANK, serviceContext);
+
+		dlAppService.addFolder(
+			null, group.getGroupId(), parentFolder.getFolderId(),
+			StringUtil.randomString(), StringPool.BLANK, serviceContext);
+
+		Role guestRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), DLFolder.class.getName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(folder.getFolderId()), guestRole.getRoleId(),
+			new String[] {ActionKeys.ACCESS});
+
+		_removeViewPermission(
+			DLFolder.class.getName(), folder.getFolderId(),
+			RoleConstants.SITE_MEMBER);
+
+		_assertFoldersAndFileEntriesAndFileShortcutsCount(
+			2, TestPropsValues.getUser());
+		_assertFoldersAndFileEntriesAndFileShortcutsCount(
+			1,
+			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+
+		User user = UserTestUtil.addGroupUser(group, "User");
+
+		try {
+			_assertFoldersAndFileEntriesAndFileShortcutsCount(1, user);
+		}
+		finally {
+			_userLocalService.deleteUser(user.getUserId());
+		}
 	}
 
 	@Test
@@ -364,8 +462,46 @@ public class DLAppServiceWhenViewingFolderContentsTest
 		}
 	}
 
+	private void _assertFoldersAndFileEntriesAndFileShortcutsCount(
+			int expectedCount, User user)
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			List<Object> foldersAndFileEntriesAndFileShortcuts =
+				dlAppService.getFoldersAndFileEntriesAndFileShortcuts(
+					group.getGroupId(), parentFolder.getFolderId(),
+					WorkflowConstants.STATUS_APPROVED, false, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				foldersAndFileEntriesAndFileShortcuts.toString(), expectedCount,
+				foldersAndFileEntriesAndFileShortcuts.size());
+		}
+	}
+
+	private void _removeViewPermission(
+			String name, long primKey, String roleName)
+		throws Exception {
+
+		Role role = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), roleName);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			TestPropsValues.getCompanyId(), name,
+			ResourceConstants.SCOPE_INDIVIDUAL, String.valueOf(primKey),
+			role.getRoleId(), ActionKeys.VIEW);
+	}
+
 	@Inject
 	private ClassNameLocalService _classNameLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 	@Inject
 	private UserLocalService _userLocalService;
