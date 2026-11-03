@@ -1661,3 +1661,108 @@ test(
 		);
 	}
 );
+
+test(
+	'Bulk actions that do not apply to the whole selection are disabled',
+	{tag: '@LPD-113588'},
+	async ({
+		apiHelpers,
+		documentLibraryEditFolderPage,
+		documentLibraryPage,
+		page,
+		site,
+	}) => {
+		const documentTitle = getRandomString();
+
+		await apiHelpers.headlessDelivery.postDocument(
+			site.id,
+			createReadStream(path.join(__dirname, '/dependencies/image1.jpeg')),
+			{fileName: documentTitle + '.jpeg', title: documentTitle}
+		);
+
+		const folder = await apiHelpers.headlessDelivery.postDocumentFolder(
+			site.id
+		);
+
+		const shortcutTargetTitle = getRandomString();
+
+		await addDocumentShortcut(
+			apiHelpers,
+			site.id,
+			shortcutTargetTitle,
+			folder.id,
+			0
+		);
+
+		const assertPermissionsDisabled = async () => {
+			await page
+				.locator('.management-bar')
+				.getByRole('button', {name: 'Actions'})
+				.click();
+
+			await expect(
+				page.getByRole('menuitem', {name: 'Permissions'})
+			).toBeDisabled();
+
+			await page.keyboard.press('Escape');
+		};
+
+		await test.step('Permissions is disabled for a document and a folder', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await documentLibraryPage.selectFileEntry(documentTitle);
+			await documentLibraryPage.selectFolder(folder.name);
+
+			await assertPermissionsDisabled();
+		});
+
+		await test.step('Permissions is disabled for a document and a shortcut', async () => {
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+
+			await documentLibraryPage.selectFileEntries([
+				documentTitle,
+				shortcutTargetTitle,
+			]);
+
+			await assertPermissionsDisabled();
+		});
+
+		await test.step('Edit Tags is disabled for documents in a folder with a workflow', async () => {
+			const workflowFolder =
+				await apiHelpers.headlessDelivery.postDocumentFolder(site.id);
+
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await documentLibraryPage.goToEditFolder(workflowFolder.name);
+			await page.waitForURL(/edit_folder/);
+			await documentLibraryEditFolderPage.setWorkflow('Single Approver');
+
+			const workflowDocumentTitles = [
+				getRandomString(),
+				getRandomString(),
+			];
+
+			for (const workflowDocumentTitle of workflowDocumentTitles) {
+				await apiHelpers.headlessDelivery.postDocumentFolderDocument(
+					workflowFolder.id,
+					createReadStream(
+						path.join(__dirname, '/dependencies/image1.jpeg')
+					),
+					{
+						fileName: workflowDocumentTitle + '.jpeg',
+						title: workflowDocumentTitle,
+					}
+				);
+			}
+
+			await documentLibraryPage.goto(site.friendlyUrlPath);
+			await page.getByRole('link', {name: workflowFolder.name}).click();
+			await page.waitForURL(/view_folder/);
+
+			await documentLibraryPage.selectFileEntries(workflowDocumentTitles);
+
+			await expect(
+				page.getByRole('button', {name: 'Edit Tags'})
+			).toBeDisabled();
+		});
+	}
+);
