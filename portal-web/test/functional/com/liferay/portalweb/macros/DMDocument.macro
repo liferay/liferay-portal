@@ -1109,15 +1109,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro checkoutViaManagementBar() {
-		Click(locator1 = "ManagementBar#ELLIPSIS");
-
-		MenuItem.click(menuItem = "Checkout");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro configureCacheControl(uncacheableMimeTypes = null, maxAge = null, cacheControl = null) {
 		if (isSet(systemSettingsInstanceScope)) {
 			DMNavigator.openToConfigInSystemSettings(portlet = "Cache Control");
@@ -1569,51 +1560,6 @@ definition {
 			value1 = ${dmDocumentTitle});
 
 		DownloadTempFile();
-	}
-
-	@summary = "Default summary"
-	macro editCategoryTags(multipleDocuments = null, itemNumber = null, editAction = null, categoryNameList = null) {
-		SelectFrame(value1 = "relative=top");
-
-		AssertTextEquals(
-			locator1 = "Modal#HEADER",
-			value1 = "Edit Categories");
-
-		if (${multipleDocuments} == "true") {
-			AssertTextEquals.assertPartialText(
-				locator1 = "Modal#BODY",
-				value1 = "You are editing the common categories for ${itemNumber} items. Select edit or replace current categories.");
-
-			Click(locator1 = "Modal#BODY");
-
-			if (${editAction} == "Append") {
-				Click(locator1 = "Radio#APPEND");
-			}
-			else if (${editAction} == "Replace") {
-				Click(locator1 = "Radio#REPLACE");
-			}
-		}
-		else {
-			AssertTextEquals.assertPartialText(
-				locator1 = "Modal#BODY",
-				value1 = "You are editing the categories for the selected item.");
-		}
-
-		for (var categoryName : list ${categoryNameList}) {
-			Type(
-				locator1 = "DocumentsAndMedia#EDIT_TAGS_FIELD",
-				value1 = ${categoryName});
-
-			KeyPress(
-				locator1 = "DocumentsAndMedia#EDIT_TAGS_FIELD",
-				value1 = "\RETURN");
-		}
-
-		Button.clickSave();
-
-		SelectFrame(value1 = "relative=top");
-
-		Alert.viewSuccessMessageText(successMessage = "Changes Saved");
 	}
 
 	@summary = "Default summary"
@@ -2457,23 +2403,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro removeCategories(categoriesNameList = null) {
-		SelectFrame(value1 = "relative=top");
-
-		for (var categoryName : list ${categoriesNameList}) {
-			Click(
-				key_categoryName = ${categoryName},
-				locator1 = "Icon#REMOVE_CATEGORY");
-		}
-
-		Button.clickSave();
-
-		SelectFrame(value1 = "relative=top");
-
-		Alert.viewSuccessMessageText(successMessage = "Changes Saved");
-	}
-
-	@summary = "Default summary"
 	macro removeOldFriendlyURL(oldFriendlyURL = null) {
 		MouseOver(
 			key_oldFriendlyURL = ${oldFriendlyURL},
@@ -3145,35 +3074,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro validateGuestUserViewPermission(dmDocumentTitle = null, groupName = null) {
-		var latestVersionURL = JSONDocument.getLatestVersionURL(
-			dmDocumentTitle = ${dmDocumentTitle},
-			groupName = ${groupName});
-
-		var curl = '''${latestVersionURL} -I''';
-
-		var responseHeader = JSONCurlUtil.post(${curl});
-
-		if (isSet(guestWithViewPermission)) {
-			if (contains(${responseHeader}, 200)) {
-				echo("A guest user can access this file..");
-			}
-			else {
-				fail("FAIL!");
-			}
-		}
-
-		if (isSet(guestWithoutViewPermission)) {
-			if (contains(${responseHeader}, 404)) {
-				echo("The guest user gets a not found response when the user doesn't have view permissions.");
-			}
-			else {
-				fail("FAIL!");
-			}
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewActionDetailsInKebabMenu() {
 		for (var menuItem : list ${menuItem}) {
 			MenuItem.verifyVisible(menuItem = ${menuItem});
@@ -3304,26 +3204,6 @@ definition {
 
 			AssertTextEquals(
 				locator1 = "AssetCategorization#CATEGORY",
-				value1 = ${categoryName});
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewCategoriesInfo(categoryNameList = null) {
-		DMDocument.expandInfo();
-
-		if (isSet(categoryNameList)) {
-			for (var categoryName : list ${categoryNameList}) {
-				AssertTextEquals(
-					key_categoryName = ${categoryName},
-					locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_CATEGORIES",
-					value1 = ${categoryName});
-			}
-		}
-		else {
-			AssertTextEquals(
-				key_categoryName = ${categoryName},
-				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_CATEGORIES",
 				value1 = ${categoryName});
 		}
 	}
@@ -4116,22 +3996,6 @@ definition {
 		}
 		else {
 			fail("The configured cache control property can be viewed in the console.");
-		}
-	}
-
-	@summary = "Default summary"
-	macro viewNoCategoriesPG(categoryNameList = null) {
-		if (isSet(categoryNameList)) {
-			for (var categoryName : list ${categoryNameList}) {
-				AssertElementNotPresent(
-					key_categoryName = ${categoryName},
-					locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_CATEGORIES");
-			}
-		}
-		else {
-			AssertElementNotPresent(
-				key_categoryName = ${categoryName},
-				locator1 = "DocumentsAndMediaDocument#DOCUMENT_INFO_CATEGORIES");
 		}
 	}
 

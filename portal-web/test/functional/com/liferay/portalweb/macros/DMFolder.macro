@@ -511,13 +511,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro selectFolders(dmFolderName = null) {
-		for (var key_dmFolderName : list ${dmFolderName}) {
-			Check.checkNotVisible(locator1 = "DocumentsAndMedia#ICON_FOLDER_CHECKBOX");
-		}
-	}
-
-	@summary = "Default summary"
 	macro subscribePG() {
 		Click(locator1 = "Icon#INFO_DM");
 

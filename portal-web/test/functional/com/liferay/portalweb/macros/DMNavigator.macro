@@ -3,17 +3,6 @@ definition {
 	var dmDocumentTypeName = "File Upload";
 
 	@summary = "Default summary"
-	macro gotoAddCategoriesPG(dmDocumentTitleList = null) {
-		for (var key_dmDocumentTitle : list ${dmDocumentTitleList}) {
-			Check(locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_CHECKBOX");
-		}
-
-		Click(
-			key_text = "Edit Categories",
-			locator1 = "Button#ANY");
-	}
-
-	@summary = "Default summary"
 	macro gotoAddDocumentTypeCP(dmDocumentTypeName = null) {
 		LexiconEntry.gotoAdd();
 

@@ -39,36 +39,13 @@ definition {
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
 
 		if (${addOrRemoveViewPermission} == "Add") {
-			if (isSet(permissionsBulkEditing)) {
-				for (var permissionDefinitionKey : list ${permissionsKeyList}) {
-					if (IsElementPresent(locator1 = "Permissions#${permissionDefinitionKey}_INDETERMINATE")) {
-						Click.clickNoWaitForVisible(locator1 = "Permissions#${permissionDefinitionKey}_INDETERMINATE");
-					}
-
-					Check.checkNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
-				}
-			}
-			else {
-				for (var permissionDefinitionKey : list ${permissionsKeyList}) {
-					Check.checkNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
-				}
+			for (var permissionDefinitionKey : list ${permissionsKeyList}) {
+				Check.checkNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
 			}
 		}
 		else if (${addOrRemoveViewPermission} == "Remove") {
-			if (isSet(permissionsBulkEditing)) {
-				for (var permissionDefinitionKey : list ${permissionsKeyList}) {
-					if (IsElementPresent(locator1 = "Permissions#${permissionDefinitionKey}_INDETERMINATE")) {
-						Click.clickNoWaitForVisible(locator1 = "Permissions#${permissionDefinitionKey}_INDETERMINATE");
-					}
-					else {
-						Uncheck.uncheckNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
-					}
-				}
-			}
-			else {
-				for (var permissionDefinitionKey : list ${permissionsKeyList}) {
-					Uncheck.uncheckNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
-				}
+			for (var permissionDefinitionKey : list ${permissionsKeyList}) {
+				Uncheck.uncheckNotVisible(locator1 = "Permissions#${permissionDefinitionKey}");
 			}
 		}
 
