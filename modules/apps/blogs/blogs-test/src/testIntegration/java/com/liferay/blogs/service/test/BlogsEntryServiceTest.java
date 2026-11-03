@@ -16,6 +16,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
@@ -53,6 +54,7 @@ import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -785,6 +787,32 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-113649")
+	public void testGetEntryWithoutViewPermissionOfDraft() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		BlogsEntry entry = _addEntry(new Date(), serviceContext);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.getEntry(entry.getEntryId()));
+
+			List<BlogsEntry> blogsEntries = _blogsEntryService.getGroupEntries(
+				_group.getGroupId(), new Date(),
+				WorkflowConstants.STATUS_APPROVED, 100);
+
+			Assert.assertTrue(blogsEntries.isEmpty());
+		}
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testGetEntryWithoutViewPermission() throws Exception {
 		BlogsEntry entry = _addEntry();
@@ -891,6 +919,49 @@ public class BlogsEntryServiceTest {
 
 			Assert.assertTrue(blogsEntries.contains(entry3));
 			Assert.assertTrue(blogsEntries.contains(entry2));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testGetGroupEntriesWithoutGuestViewPermission()
+		throws Exception {
+
+		BlogsEntry entry1 = _addEntry();
+		BlogsEntry entry2 = _addEntry();
+
+		Role guestRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.GUEST);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			TestPropsValues.getCompanyId(), _CLASS_NAME_BLOGS_ENTRY,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(entry2.getEntryId()), guestRole.getRoleId(),
+			ActionKeys.VIEW);
+
+		User guestUser = _userLocalService.getGuestUser(
+			_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				guestUser, PermissionCheckerFactoryUtil.create(guestUser))) {
+
+			Assert.assertEquals(
+				Collections.singletonList(entry1),
+				_blogsEntryService.getGroupEntries(
+					_group.getGroupId(), new Date(),
+					WorkflowConstants.STATUS_APPROVED, 100));
+		}
+
+		_user = UserTestUtil.addUser();
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertEquals(
+				Collections.singletonList(entry1),
+				_blogsEntryService.getGroupEntries(
+					_group.getGroupId(), WorkflowConstants.STATUS_ANY,
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, null));
 		}
 	}
 
