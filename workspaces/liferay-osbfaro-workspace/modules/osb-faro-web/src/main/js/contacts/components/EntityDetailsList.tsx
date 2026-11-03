@@ -32,6 +32,9 @@ export default class EntityDetailsList extends React.Component<IEntityDetailsLis
 		hideBlanks: false,
 	};
 
+	_detailsData: any;
+	_knownCount: any;
+
 	constructor(props: IEntityDetailsListProps) {
 		super(props);
 
@@ -42,9 +45,6 @@ export default class EntityDetailsList extends React.Component<IEntityDetailsLis
 		this.handleToggleBlankRows = this.handleToggleBlankRows.bind(this);
 		this.renderNav = this.renderNav.bind(this);
 	}
-
-	_detailsData: any;
-	_knownCount: any;
 
 	filterDetails({
 		hideBlanks,

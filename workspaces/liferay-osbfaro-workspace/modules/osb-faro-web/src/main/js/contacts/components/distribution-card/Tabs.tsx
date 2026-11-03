@@ -79,6 +79,8 @@ export default class Tabs extends React.Component<ITabsProps> {
 		itemsIList: List(),
 	};
 
+	private _scrollableSectionRef = createRef<ScrollableSection>();
+
 	componentDidUpdate(prevProps: ITabsProps) {
 		const {itemsIList} = this.props;
 
@@ -97,8 +99,6 @@ export default class Tabs extends React.Component<ITabsProps> {
 			}
 		}
 	}
-
-	private _scrollableSectionRef = createRef<ScrollableSection>();
 
 	render() {
 		const {
