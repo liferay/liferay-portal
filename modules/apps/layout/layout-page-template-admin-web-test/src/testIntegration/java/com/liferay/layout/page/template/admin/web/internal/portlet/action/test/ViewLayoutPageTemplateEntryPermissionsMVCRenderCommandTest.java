@@ -16,8 +16,6 @@ import com.liferay.layout.page.template.test.util.LayoutPageTemplateTestUtil;
 import com.liferay.layout.test.util.ContentLayoutTestUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Company;
-import com.liferay.portal.kernel.model.Group;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.service.CompanyLocalService;
@@ -45,7 +43,6 @@ import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import java.util.Collections;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -67,28 +64,18 @@ public class ViewLayoutPageTemplateEntryPermissionsMVCRenderCommandTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@Before
-	public void setUp() throws Exception {
-		_group = _groupLocalService.getGroup(TestPropsValues.getGroupId());
-
-		_company = _companyLocalService.getCompany(_group.getCompanyId());
-
-		_controlPanelLayout = _layoutLocalService.getLayout(
-			_portal.getControlPanelPlid(_company.getCompanyId()));
-
-		FeatureFlagTestUtil.invokeFeatureFlagListeners(
-			_company.getCompanyId(), true, "LPD-57283");
-	}
-
 	@Test
 	@TestInfo({"LPD-106071", "LPD-108813"})
 	public void testRender() throws Exception {
+		FeatureFlagTestUtil.invokeFeatureFlagListeners(
+			TestPropsValues.getCompanyId(), true, "LPD-57283");
+
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			Collections.singletonMap(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()),
 			null, DepotConstants.TYPE_DESIGN_LIBRARY,
 			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId()));
+				TestPropsValues.getGroupId(), TestPropsValues.getUserId()));
 
 		_testRenderRedirectsToPermissionsModal(
 			DisplayPageTemplateTestUtil.addDisplayPageTemplate(
@@ -113,8 +100,13 @@ public class ViewLayoutPageTemplateEntryPermissionsMVCRenderCommandTest {
 	}
 
 	private ThemeDisplay _getThemeDisplay(long groupId) throws Exception {
+		Company company = _companyLocalService.getCompany(
+			TestPropsValues.getCompanyId());
+
 		ThemeDisplay themeDisplay = ContentLayoutTestUtil.getThemeDisplay(
-			_company, _group, _controlPanelLayout);
+			company, _groupLocalService.getGroup(TestPropsValues.getGroupId()),
+			_layoutLocalService.getLayout(
+				_portal.getControlPanelPlid(company.getCompanyId())));
 
 		themeDisplay.setScopeGroupId(groupId);
 
@@ -197,17 +189,11 @@ public class ViewLayoutPageTemplateEntryPermissionsMVCRenderCommandTest {
 				new MockLiferayPortletRenderResponse()));
 	}
 
-	private Company _company;
-
 	@Inject
 	private CompanyLocalService _companyLocalService;
 
-	private Layout _controlPanelLayout;
-
 	@Inject
 	private DepotEntryLocalService _depotEntryLocalService;
-
-	private Group _group;
 
 	@Inject
 	private GroupLocalService _groupLocalService;
