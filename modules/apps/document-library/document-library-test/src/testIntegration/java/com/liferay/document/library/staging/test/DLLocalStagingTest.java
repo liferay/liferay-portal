@@ -266,7 +266,7 @@ public class DLLocalStagingTest {
 
 		_assertLiveURLTitle(fileEntry, "urltitle", "urltitle");
 
-		_updateURLTitle(fileEntry, "modifiedurltitle", serviceContext);
+		_updateURLTitle(fileEntry, serviceContext, "modifiedurltitle");
 
 		_publish();
 
@@ -461,8 +461,8 @@ public class DLLocalStagingTest {
 		_assertLiveURLTitle(fileEntry, "urltitle", "urltitle");
 
 		_updateURLTitle(
-			fileEntry, "modifiedurltitle",
-			_getVideoExternalShortcutServiceContext(url));
+			fileEntry, _getVideoExternalShortcutServiceContext(url),
+			"modifiedurltitle");
 
 		_publish();
 
@@ -722,8 +722,8 @@ public class DLLocalStagingTest {
 	}
 
 	private void _updateURLTitle(
-			FileEntry fileEntry, String urlTitle,
-			ServiceContext serviceContext)
+			FileEntry fileEntry, ServiceContext serviceContext,
+			String urlTitle)
 		throws Exception {
 
 		DLAppLocalServiceUtil.updateFileEntry(
