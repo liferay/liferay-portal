@@ -79,7 +79,7 @@ until tail --lines +$(( ${START_LINE} + 1 )) bundles/tomcat*/logs/catalina.out 2
 
 Use `until grep` rather than `tail --follow=name --retry` polling.
 
-The bundle symbolic name comes from `Bundle-SymbolicName` in `bnd.bnd`. A client extension project's bundle is named after the **project directory with its dashes removed**, not after an entry key: a project `acme-theme` logs `STARTED acmetheme_7.4.13` (seen on 2026.Q2.7 with workspace plugin 17.1.5), so a barrier grepping for `STARTED acme-theme` never matches. For a frontend CX, also wait for `/o/<project directory>` to answer `200`: that is when its CETs are registered.
+The bundle symbolic name comes from `Bundle-SymbolicName` in `bnd.bnd`. A client extension project's bundle is named after the **project directory with its dashes removed**, not after an entry key: a project `acme-theme` logs `STARTED acmetheme_7.4.13` (seen on 2026.Q2.7 with workspace plugin 17.1.5), so a barrier grepping for `STARTED acme-theme` never matches. For a frontend CET, also wait for `/o/<project directory>` to answer `200`: that is when its CETs are registered.
 
 **For a `batch` or `siteInitializer` CET, `STARTED` is not the end of its work.** Wait for what the bundle does after it starts:
 
@@ -108,10 +108,10 @@ When STARTED never appears:
 - **Stale cache**: stop Tomcat, delete `bundles/osgi/state` and `work`, start Tomcat. This is a restart under `liferay-rules.md` → "Server Restarts".
 - **Missing dependency**: read `bnd.bnd` `Import-Package` against the OSGi registry.
 - **`STARTED` appears, yet the module does nothing: an optional import that missed at resolve time.** A package imported `resolution:=optional` is wired only if its provider is already installed when the bundle resolves, and stays unwired after the provider arrives until the bundle is refreshed. Then any DS component with a field of that package's type cannot be built: SCR logs `Field [_x] not found` for **every** field of the class, and a JAX-RS application holding it is not registered (its path answers `404`). Verified on 2026.Q2.7: a fresh build deployed a bridge module before the module exporting its API (deploy order is alphabetical by project), `inspect requirement osgi.wiring.package <bsn>` listed no provider for that package, and a later hot redeploy of the bridge wired it. When the module is useless without the package anyway, import it as mandatory, with a mandatory `@Reference`: the bundle then resolves whenever the provider is installed, in either order (FileInstall resolves waiting bundles), and is refreshed with it on a redeploy. Measured on a second fresh build with the same order: it started after the provider, wired.
-- **A module's log lines never appear.** The base `portal-log4j.xml` sets `<Logger level="ERROR" name="com.liferay" />`. So a custom module whose packages start with `com.liferay.` logs nothing below ERROR: its `_log.warn` and `_log.info` lines are dropped, and `isInfoEnabled()` is false (verified on 2026.Q2.7: a probe's WARN lines were missing while its `System.out` lines showed). Choices:
-  - log what must be seen at ERROR;
-  - add a `<Logger level="INFO" name="<your package>" />` to `META-INF/portal-log4j-ext.xml` on the portal classpath, which is read only at startup;
-  - set the level for the session in Server Administration → Log Levels.
+- **A module's log lines never appear.** The base `portal-log4j.xml` sets `<Logger level="ERROR" name="com.liferay" />`. So a custom module whose packages start with `com.liferay.` logs nothing below ERROR: its `_log.warn` and `_log.info` lines are dropped, and `isInfoEnabled()` is false (verified on 2026.Q2.7: a probe's WARN lines were missing while its `System.out` lines showed). There are three choices:
+  - Add a `<Logger level="INFO" name="<your package>" />` to `META-INF/portal-log4j-ext.xml` on the portal classpath, which is read only at startup.
+  - Log what must be seen at ERROR.
+  - Set the level for the session in Server Administration → Log Levels.
 
   To debug, check by effect, for example a field the module writes, rather than by its log.
 

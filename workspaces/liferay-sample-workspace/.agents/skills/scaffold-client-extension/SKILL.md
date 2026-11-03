@@ -103,7 +103,7 @@ Verified on 2026.Q1:
 
 - **`<script src>` and `<link rel="stylesheet">` in a fragment's `html` are stored, then stripped at render.** The element's tag stays inert, with no error. Keep only the bare tag in `html` and inject the assets from the fragment's `js`, guarded by a `data-*` marker so a second placement does not load them twice. The paths are the yaml's `urls`/`cssURLs` (see "Asset URLs").
 - **A CET referenced as a fragment by its key** (`"fragment": {"key": "<cet-key>"}`) vanishes from the tree and the render, silently.
-- **`jsImportMapsEntry` variant**, when the configuration varies per placement or `htmlAttributes` does not reach the tag: the fragment's `js` runs `import('<bareSpecifier>')`, the module calls `customElements.define` with `observedAttributes`, and the fragment `html` sets those attributes from its configuration with `?has_content`, not `!`, because a value that was never configured is `""`. A Vite library build also needs the `NODE_ENV` define (`react-custom-elements`).
+- **Use the `jsImportMapsEntry` variant** when the configuration varies per placement or `htmlAttributes` does not reach the tag: the fragment's `js` runs `import('<bareSpecifier>')`, the module calls `customElements.define` with `observedAttributes`, and the fragment `html` sets those attributes from its configuration with `?has_content`, not `!`, because a value that was never configured is `""`. A Vite library build also needs the `NODE_ENV` define (`react-custom-elements`).
 
 ```javascript
 if (!document.head.querySelector('[data-<name>-assets]')) {
@@ -153,7 +153,7 @@ assemble:
   url: "main.js"
 ```
 
-**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna executes it again on every navigation in the browser with `document.readyState` already `complete`. A `DOMContentLoaded`-gated init then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
+**Keep DOM listeners out of a `globalJS` file.** Its script tag carries `data-senna-track="temporary"`, so Senna executes it again on every navigation in the browser with `document.readyState` already `complete`. An init that waits for `DOMContentLoaded` then never fires, `querySelector` finds nothing, and the feature silently does nothing. Put reusable logic (fetches, data shaping) in the CET. Attach listeners in the fragment's own `index.js`, which runs right after that instance's markup with `fragmentElement` bound. If a global script must touch the DOM, initialize at once when `document.readyState !== "loading"`, and wait for `DOMContentLoaded` only otherwise. Verified on 2026.Q3.
 
 #### `objectAction` (Spring Boot example)
 
@@ -314,7 +314,7 @@ Call `deploy-and-verify`. For microservice CETs, also start the microservice pro
 | Site initializer not in template list | CET not `ACTIVE`; redeploy and recheck log |
 | CET `STARTED` but its CSS/JS returns 404 | `assemble` missing or not copying the build output into `static` (see `react-custom-elements`) |
 | `createClientExtensionConfig FAILED — Required file "Dockerfile"` / `"LCP.json"` | Microservice CET without its own Dockerfile or LCP.json (see "Every Microservice Project Needs a `Dockerfile` and `LCP.json`") |
-| `type: batch` CET deploys, but the `batch` directory is absent from the zip | `assemble` missing, or nested under the CET's key, reports `NO-SOURCE` silently; make it a **top level** key (see `batch` above) |
+| `type: batch` CET deploys, but the `batch` directory is absent from the zip | An `assemble` block that is missing, or nested under the CET's key, reports `NO-SOURCE` silently; make it a **top level** key (see `batch` above) |
 
 ## CSS Architecture for Custom Elements
 

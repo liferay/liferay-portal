@@ -1,6 +1,6 @@
 ---
 
-description: Create and configure Liferay Data Sets (Frontend Data Sets) over Object entries through the data-set-admin API — table, list, and card views, columns and renderers, filters, default sort, row and creation actions, custom renderer and filter client extensions — then place the Data Set fragment on a page and move the definition between environments. Use when the user asks for a table, list, or card grid of object entries, a filterable listing, or a Data Set that renders nothing or crashes.
+description: Create and configure Liferay Data Sets (Frontend Data Sets) over object entries through the data-set-admin API — table, list, and card views, columns and renderers, filters, default sort, row and creation actions, custom renderer and filter client extensions — then place the Data Set fragment on a page and move the definition between environments. Use when the user asks for a table, list, or card grid of object entries, a filterable listing, or a Data Set that renders nothing or crashes.
 name: manage-data-sets
 
 ---
@@ -24,7 +24,7 @@ Page placement is `manage-pages`, grants are `manage-roles-permissions`, and ren
 - **Feature flag `LPS-164563`** (note the `LPS` prefix). Without it, `data-set-admin` returns `404`. On 2026.Q1 and 2026.Q2 it also needs `LPD-34594` (Root Object Definitions), and stays off while that one is off. See `feature-flags`.
 - **Verified on 2026.Q3 only.** On 2026.Q2 the API and the page fragment exist as below; on 2026.Q1 the page fragment differs (see "Place the Data Set Fragment").
 - **The module has no version segment:** `/o/data-set-admin/data-sets`; `/o/data-set-admin/v1.0/…` returns `404`.
-- **The OpenAPI spec is per resource**, not at the module root: `/o/data-set-admin/<resource>/openapi.json` for `data-sets`, `table-sections`, `sorts`, `actions`, `date-filters`, `selection-filters`, `client-extension-filters`, `list-sections`, `cards-sections`, `snapshots`. Read required fields there. `data-sets` also exposes `validate`, `batch`, `export-batch`, and `permissions`.
+- **The OpenAPI spec is per resource**, not at the module root: `/o/data-set-admin/<resource>/openapi.json` for `actions`, `cards-sections`, `client-extension-filters`, `data-sets`, `date-filters`, `list-sections`, `selection-filters`, `snapshots`, `sorts`, and `table-sections`. Read required fields there. `data-sets` also exposes `batch`, `export-batch`, `permissions`, and `validate`.
 
 ## Workflow
 
@@ -54,11 +54,11 @@ curl \
 - **`restSchema` is not part of the URL.** Set it to the object's `name` (`restSchema: "ObjectEntry"` still renders).
 - **`label` and `listOfItemsPerPage` are plain strings.** A map or an array is silently stored as its Java `toString()` (`{en_US=…}`, `"[10, 20, 50]"`) and shown that way in the admin list. `label_i18n` and `objectDefinitionId` do not exist and are ignored.
 - **Display switches:**
-  - `showSearch` (adds `&search=`) ;
-  - `hideManagementBarInEmptyState` ;
-  - `defaultVisualizationMode` (`table` | `list` | `cards`, lowercase) ;
-  - `snapshotsEnabled` (views saved by the user, stored separately in `/o/data-set-admin/snapshots`) ;
-  - **`active: false` hides the whole fragment**, with no request and no message.
+  - **`active: false` hides the whole fragment**, with no request and no message;
+  - `defaultVisualizationMode` (`table` | `list` | `cards`, lowercase);
+  - `hideManagementBarInEmptyState`;
+  - `showSearch` (adds `&search=`);
+  - `snapshotsEnabled` (views saved by the user, stored separately in `/o/data-set-admin/snapshots`).
 - **`POST /data-sets/validate` takes `{"values": {…}}`.** `{}` returns a `500` NPE, and it does not catch a `label` whose value is a map.
 
 ### Add Children — Only Through the Nested Path
@@ -72,7 +72,7 @@ PATCH  /o/data-set-admin/data-sets/by-external-reference-code/<DS-ERC>/dataSetTo
 DELETE /o/data-set-admin/data-sets/by-external-reference-code/<DS-ERC>/dataSetToDataSet<Child>/<child-erc>   → 204
 ```
 
-The child types are `TableSections`, `ListSections`, `CardsSections`, `Sorts`, `DateFilters`, `SelectionFilters`, `ClientExtensionFilters`, and `Actions`. `/data-sets/{id}/…` works too.
+The child types are `Actions`, `CardsSections`, `ClientExtensionFilters`, `DateFilters`, `ListSections`, `SelectionFilters`, `Sorts`, and `TableSections`. `/data-sets/{id}/…` works too.
 
 - **The root collections** (`/o/data-set-admin/table-sections`, …) answer `409 "Conflict with postObjectEntry"` / `getObjectEntriesPage` to every call.
 - **The references back to the Data Set** on a child are `r_dataSetToDataSet<Child>_l_dataSetERC` / `_l_dataSetId`, with an `_l_` infix.
@@ -170,7 +170,7 @@ This is the UI's shape: filter on the `…ERC` twin with `itemKey: "externalRefe
 - **`include: false` is not honored.** Visitors have a runtime Exclude toggle instead.
 - **`preselectedValues`** had no clear effect in testing; one form made the Filter button disappear.
 
-**Static parameters.** `additionalAPIURLParameters` (e.g. `filter=genre eq 'sf'`) is joined to the visitor's own filters with `and`. On 2026.Q3.2 it was static: no native dynamic token mapping, so the known workaround was a `globalJS` CET that rewrites `fetch` for URLs carrying `liferaydds=true` (verified on 2026.Q2.11). **On 2026.Q3.5 the parameters take tokens, with `LPD-38564` off** (verified live): `FDSAPIURLBuilder._interpolateTokens` replaces, in order, the fragment's `apiURLTokenMappings` (behind `LPD-38564`: release, off by default, on 2026.Q3; hidden dev on 2026.Q1 and 2026.Q2, so only `feature.flag.LPD-38564=true` enables it there), then whatever an `FDSAPIURLResolver` registered for `restApplication + "/" + restSchema` returns, then the defaults `{scopeKey}`, `{siteId}`, `{userExternalReferenceCode}` and `{userId}`. An unresolved `{token}` is still sent literally and matches nothing.
+**Static parameters.** `additionalAPIURLParameters` (e.g. `filter=genre eq 'sf'`) is joined to the visitor's own filters with `and`. On 2026.Q3.2 it was static: no native dynamic token mapping, so the known workaround was a `globalJS` CET that rewrites `fetch` for URLs carrying `liferaydds=true` (verified on 2026.Q2.11). **On 2026.Q3.5 the parameters take tokens, with `LPD-38564` off** (verified live): `FDSAPIURLBuilder._interpolateTokens` replaces, in order, the fragment's `apiURLTokenMappings` (behind `LPD-38564`: release, off by default, on 2026.Q3; hidden dev on 2026.Q1 and 2026.Q2, so only `feature.flag.LPD-38564=true` enables it there), then whatever an `FDSAPIURLResolver` registered for `restApplication + "/" + restSchema` returns, then the defaults `{scopeKey}`, `{siteId}`, `{userExternalReferenceCode}`, and `{userId}`. An unresolved `{token}` is still sent literally and matches nothing.
 
 - **A filter on a custom object that depends on the current user needs a resolver**, since no default token names the user's account or anything beyond the user. An OSGi component does it: `@Component(property = "fds.rest.application.key=/c/<plural>/<ObjectName>", service = FDSAPIURLResolver.class)`, `getSchema()` returning the object name, and `resolve(String baseURL, HttpServletRequest)` returning `StringUtil.replace(baseURL, "{myToken}", value)` (commerce's `AccountEntryFDSAPIURLResolver` is the pattern). Verified with `filter=r_<rel>_accountEntryERC eq '{agentAccountERC}'` filled with the signed in user's person account ERC: each user's page fetched only their own rows.
 - **Read the result off the rendered page:** the fragment's props carry `"apiURL"` (the endpoint plus `nestedFields`) and, as a separate key present only when it has a value, `"additionalAPIURLParameters"` with the tokens already replaced; the browser fetches `apiURL + "&" + additionalAPIURLParameters`. `curl` the page as the user and read both keys; the rows themselves are fetched on the client.
@@ -247,7 +247,7 @@ In the tree (`layouts/<page>/page-definition.json`):
 
 - **On 2026.Q1 the renderer is still `FDSAdminFragmentRenderer`** (below), and the key above does not exist. Place the Data Set with the Page Editor there; this was not verified on 2026.Q1.
 - **The key is the renderer class, with no `siteKey`.** `className` is the **`L_DATA_SET`** definition's class name (`DataSet` is its `name`), never the backing object's.
-- **A 2025.Q3 export names the old renderer, `com.liferay.frontend.data.set.admin.web.internal.fragment.renderer.FDSAdminFragmentRenderer`, with an `itemSelector` carrying `classNameId`, `classPK`, `itemType` and `title`.** That renderer does not exist on 2026.Q3.5, and a fragment element whose renderer is missing is dropped with its children and no log line. Rewrite it to the key above with the `itemSelector` that has two keys; the token resolves to the instance's own `#XXXX` suffix in `editablevalues`. The Data Set is looked up by ERC on every render, so it may be created after the page is imported, and renaming its ERC takes the fragment off the page without a new import.
+- **A 2025.Q3 export names the old renderer, `com.liferay.frontend.data.set.admin.web.internal.fragment.renderer.FDSAdminFragmentRenderer`, with an `itemSelector` carrying `classNameId`, `classPK`, `itemType`, and `title`.** That renderer does not exist on 2026.Q3.5, and a fragment element whose renderer is missing is dropped with its children and no log line. Rewrite it to the key above with the `itemSelector` that has two keys; the token resolves to the instance's own `#XXXX` suffix in `editablevalues`. The Data Set is looked up by ERC on every render, so it may be created after the page is imported, and renaming its ERC takes the fragment off the page without a new import.
 - **Over a live PUT of the whole page,** the same reference goes under `fragmentConfigurationFieldValues.itemSelector = {"type": "Item", "value": {"itemExternalReference": {"className": …, "externalReferenceCode": …}}}`, with `defaultFragmentKey` = the renderer class.
 - **Verify on the rendered page**, not by a GET.
 
@@ -264,7 +264,7 @@ In the tree (`layouts/<page>/page-definition.json`):
 1. `GET /o/data-set-admin/data-sets/by-external-reference-code/<DS-ERC>?nestedFields=dataSetToDataSetActions,dataSetToDataSetCardsSections,dataSetToDataSetClientExtensionFilters,dataSetToDataSetDateFilters,dataSetToDataSetListSections,dataSetToDataSetSelectionFilters,dataSetToDataSetSorts,dataSetToDataSetTableSections`.
 
 1. Strip what is this instance's, not the definition's: `id`, `dateCreated`, `dateModified`, `creator`, the HATEOAS `actions`, `friendlyUrlPath` and `friendlyUrlPath_i18n`, `objectEntryFolderId` and `objectEntryFolderExternalReferenceCode`, `keywords`, `taxonomyCategoryBriefs`, `status`, `scopeId`, and on each child the `r_…_l_dataSetERC` / `r_…_l_dataSetId` references back to the Data Set and the `dataSetToDataSet<Child>ERC` parent field. Keep every `externalReferenceCode` (and `label_i18n`, `defaultLanguageId`). All of these are in a 2025.Q3.2 GET body (verified against the database's `L_<companyId>_DataSet*` tables).
-   - **An older instance's `tableSectionsOrder` holds numeric child IDs**, not ERCs: a set built in the UI on 2025.Q3.2 stored `47861,47857,…` (the `TableSections` entry IDs). Map each ID to its child's ERC before posting; the target takes ERCs there (§2, "Ordering").
+   - **An older instance's `tableSectionsOrder` holds numeric child IDs**, not ERCs: a set built in the UI on 2025.Q3.2 stored `47861,47857,…` (the `TableSections` entry IDs). Map each ID to its child's ERC before posting; the target takes ERCs there ("Add Children — Only Through the Nested Path" → "Ordering").
 
 1. `POST` it to `/data-sets` (or `/data-sets/batch`) as one nested item.
 

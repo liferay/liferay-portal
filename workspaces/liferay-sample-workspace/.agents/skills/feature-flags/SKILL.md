@@ -52,7 +52,7 @@ Reread the state and confirm every required flag is in the desired state. Report
 
 ### Live, No Restart (Runtime Toggle)
 
-A flag can be flipped on the running portal, with no restart, in Instance Settings → Feature Flags (System Settings for system flags). The change is stored as a portal preference. A switch stays greyed out until every flag listed under its "Dependencies" is on, so turn those on first (on 2026.Q2, `LPD-34594` before `LPD-17564`). On a fresh bundle a Liferay Enterprise Search notice can open over the page and block the switches; close it with **Done**.
+A flag can be flipped on the running portal, with no restart, in Instance Settings → Feature Flags (System Settings for system flags). The change is stored as a portal preference. A switch stays grayed out until every flag listed under its "Dependencies" is on, so turn those on first (on 2026.Q2, `LPD-34594` before `LPD-17564`). On a fresh bundle a Liferay Enterprise Search notice can open over the page and block the switches; close it with **Done**.
 
 The screen's endpoint, `POST /o/com-liferay-feature-flag-web/set-enabled` (form params `key` and `enabled`), takes **session auth only** (a browser session or `Liferay.Util.fetch`), not Basic auth or OAuth. Whether a direct call works depends on the release:
 

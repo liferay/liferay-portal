@@ -132,10 +132,7 @@ catch (response) {
 }
 ```
 
-The client also refuses any URL outside the application's registered `homePageURL`. And it mints a token only on an origin that one of the application's redirect URIs starts with; otherwise it rejects with `No redirectURI in … matching origin …` (`OAuth2Client.ts:83–90`). **Those URIs are not in the yaml.** A user agent application gets one per virtual host of the instance, `<protocol>://<host>:<port>/o/oauth2/redirect`, computed when it is provisioned (`OAuth2ProviderApplicationUserAgentConfigurationFactory.java:66–73`). So a page served from a host the instance does not list gets no token, for example `127.0.0.1` on an instance whose only virtual host is `localhost`. To fix it, add the host as a company virtual host, then redeploy the CX:
-
-- `VirtualHostLocalService.updateVirtualHosts(companyId, 0, …)`, keeping every existing host and the default.
-- The redeployed application then listed both `http://127.0.0.1:8680/o/oauth2/redirect` and `http://localhost:8680/o/oauth2/redirect`, and minted tokens from both origins.
+The client also refuses any URL outside the application's registered `homePageURL`. And it mints a token only on an origin that one of the application's redirect URIs starts with; otherwise it rejects with `No redirectURI in … matching origin …` (`OAuth2Client.ts:83–90`). **Those URIs are not in the YAML.** A user agent application gets one per virtual host of the instance, `<protocol>://<host>:<port>/o/oauth2/redirect`, computed when it is provisioned (`OAuth2ProviderApplicationUserAgentConfigurationFactory.java:66–73`). So a page served from a host the instance does not list gets no token, for example `127.0.0.1` on an instance whose only virtual host is `localhost`. To fix it, add the host as a company virtual host with `VirtualHostLocalService.updateVirtualHosts(companyId, 0, …)`, keeping every existing host and the default, then redeploy the CET. The redeployed application then listed both `http://127.0.0.1:8680/o/oauth2/redirect` and `http://localhost:8680/o/oauth2/redirect`, and minted tokens from both origins.
 
 Verified on 2026.Q3.5.
 
@@ -172,4 +169,4 @@ Both the OAuth application bundle and the CET bundle should show `ACTIVE`.
 | 401 right after a redeploy, with a token or credentials that worked before | The deploy rotated the client ID and secret: read the `routes` files again (see "Token Acquisition") |
 | 403 on specific resource | Scope too narrow; add the resource's scope string from `rules/oauth-scopes.md` |
 | Application not in Control Panel | Bundle not `ACTIVE`; run `diag <id>` in Gogo shell |
-| ERC not resolved | ERC field in yaml must match the top level key of the OAuth entry, not its `name` field |
+| ERC not resolved | ERC field in YAML must match the top level key of the OAuth entry, not its `name` field |

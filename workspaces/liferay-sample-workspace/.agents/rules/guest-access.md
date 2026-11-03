@@ -40,7 +40,7 @@ Author it at Control Panel → Security → Service Access Policy, in **Advanced
 Diagnostics and mechanics, verified against 2026.Q2.7 source and a live instance:
 
 - **A SAP denial is a 403 with an empty body** (`{}` / `<Forbidden></Forbidden>`) — `access.control.sanitize.security.exception=true` (the default) strips the "Access denied to <class>#<method>" message. Reveal the exact denied signature by enabling DEBUG on `com.liferay.portal.security.access.control.AccessControlAdvisorImpl` (Server Administration → Log Levels, no restart), or temporarily setting the sanitize property false.
-- **A 403 on a GET is never the permission layer** — permission failures on reads map to **404** (`PrincipalExceptionMapper`). 403 = SAP (empty body) or OAuth scope (see `rules/oauth-scopes.md` for telling those apart).
+- **A 403 on a GET is never the permission layer** — permission failures on reads map to **404** (`PrincipalExceptionMapper`). A 403 comes from SAP (empty body) or from an OAuth scope (see `rules/oauth-scopes.md` for telling those apart).
 - **"Works with Basic auth / signed in" proves nothing about SAP**: requests authenticated with a password get the `SYSTEM_USER_PASSWORD` policy (`*` — everything), while guests get only `SYSTEM_DEFAULT` plus custom entries marked Default. When an admin can do something a guest cannot, this is often why, not permissions.
 - **Only the entry JAX-RS resource method is checked** (service depth 1); nested calls to backing services are skipped. Whitelist the `*ResourceImpl#method`, never the kernel service.
 - **In a plain JAX-RS application (one not built on Vulcan), the first REMOTE service it calls is what gets checked.** A module's public endpoint (`auth.verifier.guest.allowed=true`) that reads object entries through Object REST's manager reaches `ObjectEntryService.getObjectEntry` per row, which Guest's default policy does not list: `SecurityException` from `AccessControlAdvisorImpl.accept`, a 500, **although the application sets `liferay.access.control.disable=true`** (2026.Q2.7). Admit that service signature in a Service Access Policy, knowing it opens the service on every endpoint.
@@ -67,14 +67,14 @@ The action decides which resource name to grant on. Getting this wrong applies c
 
 ## Entries of the File Type Need `DOWNLOAD_FILE`, and Folders Need Their Own VIEW
 
-Two grants beyond entry VIEW that public file rendering depends on (verified 2026.Q2.7):
+Two grants beyond entry VIEW that public file rendering depends on (verified on 2026.Q2.7):
 
 - **`file.link.href` is gated by `DOWNLOAD_FILE`.** A Guest holding only VIEW on an entry of a file type object (Image, Video, CMSBasicDocument, …) gets the entry with an **empty** `file.link.href` (and `file.fileURL` reduced to the bare origin) — a client fragment then feeds garbage to its renderer, which reads as a parsing bug, not a permission gap. Grant Guest `DOWNLOAD_FILE` alongside VIEW — but only on objects whose action set actually includes it (sending an invalid action ID fails the whole permissions PUT). A page that **maps** an image attachment on the server (`ObjectField_<id>#previewURL`) needs no download action: the inline `/documents/…` URL answered a Guest holding only VIEW on the entry (2026.Q3.5).
 - **Object entry folders have their own ACL and default to VIEW for the User role, never Guest.** Entries granted to Guest can still vanish from guest search while visible to admins because the *folder* is not viewable. The folder permissions endpoint is **not scoped**, unlike entry ACLs: `GET/PUT /o/headless-object/v1.0/object-entry-folders/{id}/permissions`. A reindex may be needed for search to pick up the new grant.
 
 ## Public Forms Are Write Only
 
-An object receiving public submissions holds whatever the visitor typed. Grant `ADD_OBJECT_ENTRY` and **not** `VIEW`: VIEW at the company level publishes every name, email, and address to anonymous users. Without `ADD_OBJECT_ENTRY`, a Form Container bound to the object renders **nothing** for the visitor — no form, no fields, no wrapper, no log line (verified 2026.Q3.2; `skills/manage-form-containers/SKILL.md`).
+An object receiving public submissions holds whatever the visitor typed. Grant `ADD_OBJECT_ENTRY` and **not** `VIEW`: VIEW at the company level publishes every name, email, and address to anonymous users. Without `ADD_OBJECT_ENTRY`, a Form Container bound to the object renders **nothing** for the visitor — no form, no fields, no wrapper, no log line (verified on 2026.Q3.2; `skills/manage-form-containers/SKILL.md`).
 
 The consequence is that no *query* over that object is available to the visitor, so never count it in the browser. Put the number on the public object instead.
 
@@ -126,4 +126,4 @@ curl --silent --url "http://localhost:${PORT}/web/<site>/<page>" > /tmp/page.htm
 
 Assert on real values, and confirm placeholder strings are **absent** — placeholders still present mean the data did not resolve. Then open it signed out in a browser: `curl` executes no JavaScript, so anything on the client is unverified until you do.
 
-**With `web.server.host` set (a tunnel), pages fetched on `localhost` carry absolute links and form `action`s to `<public-host>:<local-port>`**, which go nowhere. Harmless for HTML assertions, but run any test that clicks through the page over the public URL.
+**With `web.server.host` set (a tunnel), pages fetched on `localhost` carry absolute links and form `action`s to `<public-host>:<local-port>`**, which go nowhere. This is harmless for HTML assertions, but run any test that clicks through the page over the public URL.

@@ -87,7 +87,7 @@ Each field is a `FormFragment`:
 - **`fieldKey` binds the input to the object field.** The platform writes `ObjectField_<name>`, and a bare `<name>` binds too. The rendered inputs are named `ObjectField_<name>` as well (a 2025.Q3 page's script selecting `input[name="<name>"]` matches nothing on 2026.Q3.5). The system ERC field is `ObjectEntry_externalReferenceCode`. **A field without `fieldKey` still submits and shows the success message, but stores an empty value.**
 - **Keys produced by the Page Editor, per field type:**
 
-| Object field type | `defaultFragmentKey` | Generated `fragmentConfigurationFieldValues` |
+| Object Field Type | `defaultFragmentKey` | Generated `fragmentConfigurationFieldValues` |
 | --- | --- | --- |
 | Text | `INPUTS-text-input` | `showCharactersCount: {"type": "Checkbox", "value": false}` |
 | LongText | `INPUTS-textarea` | `numberOfLines`, `showCharactersCount` (both optional) |
@@ -255,17 +255,17 @@ Layout rules, native elements only and no custom CSS:
 
 ### After Submission — `successFormContainerSubmissionResult`
 
-| `type` | Extra keys | Effect |
+| `type` | Extra Keys | Effect |
 | --- | --- | --- |
-| `EmbeddedMessage` | `message.value_i18n` | Stays on the page and shows the message. The default the platform reads back when none is set |
+| `EmbeddedMessage` | `message.value_i18n` | Stays on the page and shows the message. The default the platform reads back when none is set. |
 | `StayInPage` | — | Reloads the page with an empty form and **no message** |
-| `Url` | `url.value_i18n` | Redirects. **A URL outside the portal's allowed redirect domains stores the entry, then fails with a hidden `500`** (`WARN [PortalImpl] Redirect URL … is not allowed`); the visitor sees the page reload with no feedback. URLs on the portal's own domain work |
+| `Url` | `url.value_i18n` | Redirects. **A URL outside the portal's allowed redirect domains stores the entry, then fails with a hidden `500`** (`WARN [PortalImpl] Redirect URL … is not allowed`); the visitor sees the page reload with no feedback. URLs on the portal's own domain work. |
 | `SitePage` | `itemExternalReference: {"className": "com.liferay.portal.kernel.model.Layout", "externalReferenceCode": "<page-erc>"}` | Redirects to that page |
 | `DisplayPage` | `itemExternalReference: {"className": "com.liferay.layout.page.template.model.LayoutPageTemplateEntry", "externalReferenceCode": "<dpt-erc>"}` | Redirects to that DPT, showing the entry just created (`/web/<site>/e/<dpt-url>/<classNameId>/<entryId>`) |
 
 ## The Element, in the Site Initializer Tree
 
-The tree uses a different vocabulary: a `Form` element with `formConfig.formReference`, not `FormContainer`. See `manage-pages` → "Links, Forms, and Menus in the Tree". Its field children are `INPUTS-*` fragments with `fragmentConfig.inputFieldId: "ObjectField_<field>"`. For a form bound to another object than the DPT's, use `formReference.className` with the suffixed class name; an `ObjectEntry` plus `classType` renders an empty drop zone. The success redirect is `formConfig.formSuccessSubmissionResult`, not the live key above: `manage-pages` → "Links, Forms, and Menus in the Tree".
+The tree uses a different vocabulary: a `Form` element with `formConfig.formReference`, not `FormContainer`. See `manage-pages` → "Links, Forms, and Menus in the Tree". Its field children are `INPUTS-*` fragments with `fragmentConfig.inputFieldId: "ObjectField_<field>"`. For a form bound to a different object from the DPT's, use `formReference.className` with the suffixed class name; an `ObjectEntry` plus `classType` renders an empty drop zone.
 
 **The success result in the tree** is `formConfig.formSuccessSubmissionResult` (`FormLayoutStructureItemImporter._getSuccessMessageJSONObject`; verified on 2026.Q3.5):
 
@@ -274,7 +274,7 @@ The tree uses a different vocabulary: a `Form` element with `formConfig.formRefe
 | `{"message": {"value_i18n": {"en_US": "…"}}, "messageType": "Embedded"}` | The embedded message |
 | `{"itemReference": {"className": "com.liferay.portal.kernel.model.Layout", "fields": [{"fieldName": "friendlyURL", …}, {"fieldName": "privatePage", …}, {"fieldName": "siteKey", "fieldValue": "[$GROUP_KEY$]"}]}}` | A page |
 | `{"defaultDisplayPage": true}` | The new entry on the **default** DPT, by a URL that has no entry ID |
-| `{"defaultDisplayPage": false, "mapping": {"itemReference": {"fields": [{"fieldName": "externalReferenceCode", "fieldValue": "<dpt erc>"}]}}}` | The new entry on **that** DPT, `/e/<dpt-url>/<classNameId>/<id>`. The ERC is looked up in the page's group. An unknown one is stored as the default DPT, with no warning |
+| `{"defaultDisplayPage": false, "mapping": {"itemReference": {"fields": [{"fieldName": "externalReferenceCode", "fieldValue": "<dpt erc>"}]}}}` | The new entry on **that** DPT, `/e/<dpt-url>/<classNameId>/<id>`. The ERC is looked up in the page's group. An unknown one is stored as the default DPT, with no warning. |
 
 The ERC of a DPT made in the tree is generated per database (`rules/page-types.md`), so the last shape works only after that database's ERC has been written into the tree.
 
@@ -419,7 +419,7 @@ Declare it with `typeOptions.fieldTypes` matching the target field (`["text"]` f
 
 ## Reacting to Success in the Browser
 
-There is no submission event to hook. Liferay swaps the form's markup for the success message, and anything inside the Form Container is replaced with it. So put the watcher on the **wrapping** fragment, and look for the success text in `document.body.innerText`, never in `textContent`, which includes the fragment's own inline `<script>` and matches itself on load (verified 2026.Q3.2):
+There is no submission event to hook. Liferay swaps the form's markup for the success message, and anything inside the Form Container is replaced with it. So put the watcher on the **wrapping** fragment, and look for the success text in `document.body.innerText`, never in `textContent`, which includes the fragment's own inline `<script>` and matches itself on load (verified on 2026.Q3.2):
 
 ```javascript
 (function () {
@@ -448,7 +448,7 @@ Use a native `successFormContainerSubmissionResult` whenever one fits. To track 
 
 ## Recipe: Gated Content on a Display Page
 
-"A teaser and a form, then the full content of the same entry", built in the site initializer tree only. Assembled and verified end to end as an anonymous visitor on 2026.Q3.2:
+This recipe builds "A teaser and a form, then the full content of the same entry" in the site initializer tree only. It was assembled and verified end to end as an anonymous visitor on 2026.Q3.2:
 
 1. **Two DPTs for the content type**, both with `"contentType": {"className": "[$OBJECT_DEFINITION_CLASS_NAME:<Content>$]"}` in `display-page-template.json`: the gated one `"defaultTemplate": true` (listing links with `displayPageURL` land on it), the full one `false`.
 
@@ -486,11 +486,11 @@ Two replay traps, measured on 2026.Q2.7:
 
 ## A Form in a Modal
 
-Opening a form page or an edit DPT in `Liferay.Util.openModal` works on 2026.Q3.5, with three conditions (verified in a browser, Add, Edit and Delete each landing in the database):
+Opening a form page or an edit DPT in `Liferay.Util.openModal` works on 2026.Q3.5, with four conditions (verified in a browser, Add, Edit, and Delete each landing in the database):
 
 - **Pass an absolute URL** (`location.origin + path`). A relative `url` throws `TypeError: Failed to construct 'URL': Invalid URL` in `frontend-js-components-web`, and no modal opens.
 - **Leave `size` out.** A modal with a `url` defaults to `full-screen` (`Modal.tsx:315`). `size: 'lg'` gives an iframe about 160 px tall on a desktop viewport: it cut off the submit button of a form with two fields, and a picker overlay opened inside the form was confined to a strip of that height (verified on 2026.Q3.5).
-- **Give the page a bare master.** In `p_p_state=pop_up` a content page or DPT still renders its master's header, menus and footer, inside the modal and over the form. Use a master with only a `DropZone` and the full master's `settings` (theme CSS client extension, style book, global CSS and JS), so the form keeps the site's styling.
+- **Give the page a bare master.** In `p_p_state=pop_up` a content page or DPT still renders its master's header, menus, and footer, inside the modal and over the form. Use a master with only a `DropZone` and the full master's `settings` (theme CSS client extension, style book, global CSS and JS), so the form keeps the site's styling.
 - **Pass context on the URL.** A URL parameter reaches a custom hidden input: `request.getParameter("<name>")` in its FreeMarker, read on the server.
 
 The embedded success message shows inside the modal. `onClose` fires when the user closes it, which is where the opener refreshes its list. An edit form's success reloads the DPT under the entry's new friendly URL, since that URL follows the title field.

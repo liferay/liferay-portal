@@ -101,8 +101,8 @@ Editable type values: `rich-text`, `text`, `image`, `link`, `html`, `background-
 /* Fragment JS, runs once per fragment instance on the page */
 
 // Liferay injects these before this code runs; do not redeclare them:
-// fragmentElement (the root DOM element), fragmentElementId,
-// fragmentEntryLinkNamespace, fragmentNamespace (a string), configuration
+// configuration, fragmentElement (the root DOM element),
+// fragmentElementId, fragmentEntryLinkNamespace, fragmentNamespace (a string)
 ```
 
 ### Add Configuration Fields (Optional)
@@ -149,7 +149,7 @@ Access the value in `index.html` with `[configuration.buttonStyle]` or in `index
 The fragment lives in the `siteInitializer` tree and is created when the site is provisioned. Trigger the initializer (see `build-site` Phase 9 and `rules/site-initializer-format.md`); no separate fragment deploy is needed.
 
 **Iterating on a fragment — fire the initializer again from the tree:**
-Edit the source files in the site initializer tree and fire the initializer again (clean redeploy — that run upserts the FragmentEntry and snapshots placed fragments again; see `rules/site-initializer-format.md` → "Firing the initializer again UPSERTS" for the rule on deploy order and the delete+redeploy fallback). Object data is scoped at the company level and survives either path.
+Edit the source files in the site initializer tree and fire the initializer again (clean redeploy — that run upserts the FragmentEntry and snapshots placed fragments again; see `rules/site-initializer-format.md` → "Firing the initializer again UPSERTS" for the rule on deploy order and the delete + redeploy fallback). Object data is scoped at the company level and survives either path.
 
 **A live fragment API does exist — it just will not save you the reprovision.** `headless-admin-fragment` is real and fully functional (see "The Live Fragment API" below). The reason you still reprovision is **propagation**, not a missing endpoint: Liferay copies a fragment's HTML, CSS and JS into each page's fragment *instance* when it is placed, so updating the library fragment leaves every page already using it untouched.
 
@@ -218,11 +218,11 @@ Inside a site initializer that exception is an `InitializationException` — it 
 
 #### Configuration Quirks by Type
 
+- `colorPalette` takes `typeOptions.colors` — a flat array of hex strings, not `validValues`.
+- `itemSelector` requires `typeOptions.itemType` set to the fully qualified class of the selectable entity (e.g. `com.liferay.journal.model.JournalArticle`).
 - `select` options go in `typeOptions.validValues` (`[{"value": "x", "label": "X"}]`) — a legacy `options` key or a bare array fails validation with `expected type: JSONObject, found: JSONArray`.
 - A `url` field's `defaultValue` must be an absolute value that is not empty (use `"#"` when there is no sensible default) — null/empty throws an NPE during configuration parsing.
 - `videoSelector` hands JS a **JSON string, not a URL**: `JSON.parse(configuration.<field>)` and inject its `html` property (the provider's embed markup) into the DOM.
-- `itemSelector` requires `typeOptions.itemType` set to the fully qualified class of the selectable entity (e.g. `com.liferay.journal.model.JournalArticle`).
-- `colorPalette` takes `typeOptions.colors` — a flat array of hex strings, not `validValues`.
 
 #### Detect Edit Mode Before Running View Behavior
 
@@ -316,7 +316,7 @@ When referencing configuration or editable values in `index.html`, always provid
 ${configuration.myVar!'Default'}
 ```
 
-**`!` only covers a missing value, and a field that was never configured is not missing.** It is present as `""`, so `!'Default'` never fires and the fragment prints an empty string (verified 2026.Q3.2: `A=[${configuration.x!'Default'}]` rendered `A=[]`). When the fallback matters, test for content instead:
+**`!` only covers a missing value, and a field that was never configured is not missing.** It is present as `""`, so `!'Default'` never fires and the fragment prints an empty string (verified on 2026.Q3.2: `A=[${configuration.x!'Default'}]` rendered `A=[]`). When the fallback matters, test for content instead:
 
 ```html
 [#if configuration.myVar?has_content]${configuration.myVar}[#else]Default[/#if]
@@ -400,7 +400,7 @@ Prefer the data attribute plus CSS form regardless of the directive limitation: 
 
 `index.js` is **not** passed through FreeMarker — only `index.html` is. Verified by shipping `/* ${configuration.layout!'grid'} */` in an `index.js` and reading it back from the served page still literal, on a fragment whose `layout` was set to `rows`. So read configuration in JS from the data attributes; a `${...}` written there is inert rather than interpolated (which also means template literals in `index.js` are safe).
 
-**But an inline `<script>` inside `index.html` IS FreeMarker territory** — the processor runs over the whole file, script blocks included. Two consequences (each throws `FragmentEntryContentException` at site initializer import and rolls back the **entire atomic site import**, one failure surfacing per rebuild):
+**But an inline `<script>` inside `index.html` IS FreeMarker territory** — the processor runs over the whole file, script blocks included. This has two consequences (each throws `FragmentEntryContentException` at site initializer import and rolls back the **entire atomic site import**, one failure surfacing per rebuild):
 
 - A JS template literal `` `${jsVar}` `` in an inline script: FreeMarker tries to resolve `jsVar` in its own context and fails with "null or missing". Use `+` string concatenation in inline scripts, or move the code to `index.js`. Before a rebuild, sweep for `${` inside every `<script>` block across the fragments — the count should be 0 (FreeMarker that runs on the server outside script blocks is fine).
 - A raw boolean printed in an inline script needs `?c`, same as anywhere in `index.html`.
@@ -434,12 +434,12 @@ Two fragments that need the same few hundred lines of JS can import them from on
     url: <module>.*.js
 ```
 
-With an `assemble` block that `hashify`s the file into `static`. Each fragment's `index.js` (a module script) then does `import('@<org>/<module>').then(({mount}) => mount({fragmentElement, fragmentElementId, input, …}))`, passing the injected variables the module cannot see. Verified on 2026.Q3.5 with two input fragments:
+Give it an `assemble` block that `hashify`s the file into `static`. Each fragment's `index.js` (a module script) then does `import('@<org>/<module>').then(({mount}) => mount({fragmentElement, fragmentElementId, input, …}))`, passing the injected variables the module cannot see. Verified on 2026.Q3.5 with two input fragments:
 
-- The specifier is in every page's import map once the CX is `STARTED`, and the file downloads only on a page whose fragment imports it, unlike a `globalJS`.
+- The specifier is in every page's import map once the CET is `STARTED`, and the file downloads only on a page whose fragment imports it, unlike a `globalJS`.
 - A `jsImportMapsEntry` is a frontend type, so it cannot share a project with a `siteInitializer` (`rules/client-extension-types.md`); deploy it as its own project. The order between the two does not matter: the import resolves when the page runs.
 - A plain ES module needs no build. Inject its CSS once from the module (a `<style>` with an ID), so the fragments carry none.
-- Catch the import's failure in the fragment and say so on the page: without the CX the field is otherwise dead.
+- Catch the import's failure in the fragment and say so on the page: without the CET the field is otherwise dead.
 
 ### Reads on the Server With `restClient`
 
