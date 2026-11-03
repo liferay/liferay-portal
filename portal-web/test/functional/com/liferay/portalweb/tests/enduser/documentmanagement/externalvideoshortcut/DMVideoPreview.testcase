@@ -153,6 +153,16 @@ definition {
 			mimeType = "video/mp4",
 			sourceFileName = "Document_1.mp4");
 
+		var depotId = JSONGroupAPI._getDepotIdByName(depotName = "Test Depot Name");
+
+		DMNavigator.openToEntryInAdmin(
+			dmDocumentTitle = "DM Video Title In Depot",
+			groupName = "Test Depot Name",
+			site = "false",
+			siteURLKey = "asset-library-${depotId}");
+
+		DMDocument.viewVideoPreviewGeneratingInfo();
+
 		WebContentNavigator.openToAddBasicArticle(
 			groupName = "Site Name",
 			siteURLKey = "site-name");
