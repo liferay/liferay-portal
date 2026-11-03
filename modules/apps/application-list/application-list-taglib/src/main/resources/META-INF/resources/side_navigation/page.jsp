@@ -12,6 +12,14 @@ SideNavigationDisplayContext sideNavigationDisplayContext = new SideNavigationDi
 %>
 
 <div class="side-navigation-container<%= sideNavigationDisplayContext.isVisible() ? " side-navigation-open" : "" %>" id="com_liferay_application_list_taglib_side_navigation_container">
+	<div class="c-slideout c-slideout-fixed c-slideout-push c-slideout-start<%= sideNavigationDisplayContext.isVisible() ? " c-slideout-shown" : "" %>">
+		<section class="skeleton sidebar sidebar-light<%= sideNavigationDisplayContext.isVisible() ? " c-slideout-show" : "" %>" data-qa-id="sideNavigation" data-testid="sideNavigation">
+			<svg class="side-navigation-skeleton">
+				<use href="<%= String.format("%s/skeletons/homes_side_navigation.svg#homes-side-navigation", themeDisplay.getPathThemeImages()) %>" />
+			</svg>
+		</section>
+	</div>
+
 	<react:component
 		module="{SideNavigation} from application-list-taglib"
 		props="<%= sideNavigationDisplayContext.getProps() %>"
