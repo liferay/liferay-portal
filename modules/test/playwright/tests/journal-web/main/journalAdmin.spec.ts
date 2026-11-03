@@ -746,6 +746,8 @@ test(
 				target: page.getByText('Comments', {exact: true}),
 				trigger: page.locator('button[id$="_searchIn"]'),
 			});
+
+			await page.waitForURL(/_searchIn=comments/);
 		};
 
 		await journalPage.goto(site.friendlyUrlPath);
