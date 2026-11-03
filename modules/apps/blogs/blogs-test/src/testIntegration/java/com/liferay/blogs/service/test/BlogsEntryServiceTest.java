@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
@@ -1154,6 +1155,64 @@ public class BlogsEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-113649")
+	public void testOwnerCannotMoveEntryToTrashWithoutOwnerPermission()
+		throws Exception {
+
+		BlogsEntry entry = _addEntry(_groupUser);
+
+		_removeOwnerResourcePermission(entry, ActionKeys.DELETE);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.moveEntryToTrash(entry.getEntryId()));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testOwnerCannotUpdateEntryPermissionsWithoutOwnerPermission()
+		throws Exception {
+
+		BlogsEntry entry = _addEntry(_groupUser);
+
+		PermissionChecker permissionChecker =
+			PermissionCheckerFactoryUtil.create(_groupUser);
+
+		Assert.assertTrue(
+			_blogsEntryModelResourcePermission.contains(
+				permissionChecker, entry, ActionKeys.PERMISSIONS));
+
+		_removeOwnerResourcePermission(entry, ActionKeys.PERMISSIONS);
+
+		Assert.assertFalse(
+			_blogsEntryModelResourcePermission.contains(
+				PermissionCheckerFactoryUtil.create(_groupUser), entry,
+				ActionKeys.PERMISSIONS));
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testOwnerCannotUpdateEntryWithoutOwnerPermission()
+		throws Exception {
+
+		BlogsEntry entry = _addEntry(_groupUser);
+
+		_removeOwnerResourcePermission(entry, ActionKeys.UPDATE);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _updateEntry(entry.getEntryId()));
+		}
+	}
+
+	@Test
 	public void testRestoreEntryFromTrashWithDeletePermission()
 		throws Exception {
 
@@ -1351,6 +1410,20 @@ public class BlogsEntryServiceTest {
 			actionId);
 	}
 
+	private void _removeOwnerResourcePermission(
+			BlogsEntry entry, String actionId)
+		throws Exception {
+
+		Role ownerRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.OWNER);
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			TestPropsValues.getCompanyId(), _CLASS_NAME_BLOGS_ENTRY,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(entry.getEntryId()), ownerRole.getRoleId(),
+			actionId);
+	}
+
 	private void _removeViewResourcePermission(BlogsEntry entry)
 		throws Exception {
 
@@ -1452,6 +1525,10 @@ public class BlogsEntryServiceTest {
 
 	@Inject
 	private BlogsEntryLocalService _blogsEntryLocalService;
+
+	@Inject(filter = "model.class.name=com.liferay.blogs.model.BlogsEntry")
+	private ModelResourcePermission<BlogsEntry>
+		_blogsEntryModelResourcePermission;
 
 	@Inject
 	private BlogsEntryService _blogsEntryService;
