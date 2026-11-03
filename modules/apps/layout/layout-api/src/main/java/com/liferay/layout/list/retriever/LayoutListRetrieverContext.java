@@ -18,6 +18,8 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface LayoutListRetrieverContext {
 
+	public String[] getAudienceEntryERCs();
+
 	public Map<String, String[]> getConfiguration();
 
 	public Object getContextObject();

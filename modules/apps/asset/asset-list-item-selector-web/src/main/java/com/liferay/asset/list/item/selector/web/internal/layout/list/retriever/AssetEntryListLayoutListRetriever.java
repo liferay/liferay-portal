@@ -25,6 +25,7 @@ import com.liferay.layout.list.retriever.SegmentsEntryLayoutListRetriever;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -89,26 +90,8 @@ public class AssetEntryListLayoutListRetriever
 				layoutListRetrieverContext.getPagination(), 0);
 		}
 
-		long[] segmentsEntryIds =
-			layoutListRetrieverContext.getSegmentsEntryIds();
-
-		if (segmentsEntryIds == null) {
-			segmentsEntryIds = new long[] {0};
-		}
-
-		Pagination pagination = layoutListRetrieverContext.getPagination();
-
-		if (pagination == null) {
-			pagination = Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-		}
-
-		InfoPage<AssetEntry> infoPage =
-			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
-				assetListEntry, segmentsEntryIds,
-				_getAssetCategoryIds(layoutListRetrieverContext),
-				_getAssetTagNames(layoutListRetrieverContext),
-				_getKeywords(layoutListRetrieverContext), StringPool.BLANK,
-				pagination.getStart(), pagination.getEnd());
+		InfoPage<AssetEntry> infoPage = _getInfoPage(
+			assetListEntry, layoutListRetrieverContext);
 
 		if (Objects.equals(
 				AssetEntry.class.getName(),
@@ -201,6 +184,42 @@ public class AssetEntryListLayoutListRetriever
 		}
 
 		return group.getGroupId();
+	}
+
+	private InfoPage<AssetEntry> _getInfoPage(
+		AssetListEntry assetListEntry,
+		LayoutListRetrieverContext layoutListRetrieverContext) {
+
+		Pagination pagination = layoutListRetrieverContext.getPagination();
+
+		if (pagination == null) {
+			pagination = Pagination.of(QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+		}
+
+		if (FeatureFlagManagerUtil.isEnabled(
+				assetListEntry.getCompanyId(), "LPD-109242")) {
+
+			return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				_getAssetCategoryIds(layoutListRetrieverContext),
+				assetListEntry, _getAssetTagNames(layoutListRetrieverContext),
+				layoutListRetrieverContext.getAudienceEntryERCs(),
+				pagination.getEnd(), _getKeywords(layoutListRetrieverContext),
+				pagination.getStart(), StringPool.BLANK);
+		}
+
+		long[] segmentsEntryIds =
+			layoutListRetrieverContext.getSegmentsEntryIds();
+
+		if (segmentsEntryIds == null) {
+			segmentsEntryIds = new long[] {0};
+		}
+
+		return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
+			assetListEntry, segmentsEntryIds,
+			_getAssetCategoryIds(layoutListRetrieverContext),
+			_getAssetTagNames(layoutListRetrieverContext),
+			_getKeywords(layoutListRetrieverContext), StringPool.BLANK,
+			pagination.getStart(), pagination.getEnd());
 	}
 
 	private String _getKeywords(

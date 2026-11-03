@@ -18,6 +18,11 @@ public class DefaultLayoutListRetrieverContext
 	implements LayoutListRetrieverContext {
 
 	@Override
+	public String[] getAudienceEntryERCs() {
+		return _audienceEntryERCs;
+	}
+
+	@Override
 	public Map<String, String[]> getConfiguration() {
 		return _configuration;
 	}
@@ -63,6 +68,10 @@ public class DefaultLayoutListRetrieverContext
 		return _segmentsEntryIds;
 	}
 
+	public void setAudienceEntryERCs(String[] audienceEntryERCs) {
+		_audienceEntryERCs = audienceEntryERCs;
+	}
+
 	public void setConfiguration(Map<String, String[]> configuration) {
 		_configuration = configuration;
 	}
@@ -87,6 +96,7 @@ public class DefaultLayoutListRetrieverContext
 		_segmentsEntryIds = segmentsEntryIds;
 	}
 
+	private String[] _audienceEntryERCs;
 	private Map<String, String[]> _configuration;
 	private Object _contextObject;
 	private Map<String, InfoFilter> _infoFilters;
