@@ -40,12 +40,12 @@ export interface ILifecycleStage {
 	externalReferenceCode: string;
 	id: string;
 	maxDuration: number | null;
-	priority: number;
-	stageName: string;
+	name: string;
+	position: number;
 }
 
 export interface ILifecycleDetail extends ILifecycle {
-	stages?: ILifecycleStage[];
+	accountLifecycleStages?: ILifecycleStage[];
 }
 
 export interface ILifecyclesPage {
@@ -211,8 +211,8 @@ export interface ILifecycleStagePayload {
 	description: string;
 	id?: string;
 	maxDuration: number | null;
-	priority: number;
-	stageName: string;
+	name: string;
+	position: number;
 }
 
 interface ICreateLifecycle {
@@ -235,7 +235,13 @@ export async function createLifecycle({
 	}
 
 	return sendRequest({
-		data: {accountLifecycle: {description, name, stages}},
+		data: {
+			accountLifecycle: {
+				accountLifecycleStages: stages,
+				description,
+				name,
+			},
+		},
 		method: 'POST',
 		path: `contacts/${groupId}/account-lifecycle?channelId=${channelId}`,
 	});
@@ -261,7 +267,13 @@ export async function updateLifecycle({
 	}
 
 	return sendRequest({
-		data: {accountLifecycle: {description, name, stages}},
+		data: {
+			accountLifecycle: {
+				accountLifecycleStages: stages,
+				description,
+				name,
+			},
+		},
 		method: 'PUT',
 		path: `contacts/${groupId}/account-lifecycle/${lifecycleId}`,
 	});
@@ -303,8 +315,8 @@ export interface IAccountLifecycleStageStatus {
 	endDate?: number | null;
 	id: string;
 	maxDuration?: number | null;
-	priority: number;
-	stageType: string;
+	name: string;
+	position: number;
 	startDate?: number | null;
 }
 

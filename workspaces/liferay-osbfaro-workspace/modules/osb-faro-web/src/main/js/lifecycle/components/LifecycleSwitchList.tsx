@@ -217,7 +217,7 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 									</ClayList.ItemText>
 								)}
 
-								{!!lifecycle.stages?.length && (
+								{!!lifecycle.accountLifecycleStages?.length && (
 									<div className="mt-2">
 										<ClayLabel
 											displayType="info"
@@ -226,7 +226,9 @@ const LifecycleSwitchList: React.FC<ILifecycleSwitchListProps> = ({
 										>
 											<strong>
 												{getStageCountLabel(
-													lifecycle.stages.length
+													lifecycle
+														.accountLifecycleStages
+														.length
 												)}
 											</strong>
 										</ClayLabel>

@@ -28,7 +28,8 @@ const EditLifecycleForm: React.FC<IEditLifecycleFormProps> = ({lifecycle}) => {
 	const form = useLifecycleSettingsForm({
 		description: lifecycle.description ?? '',
 		name: lifecycle.name ?? '',
-		stageConfigs: () => stageConfigsFromLifecycle(lifecycle.stages),
+		stageConfigs: () =>
+			stageConfigsFromLifecycle(lifecycle.accountLifecycleStages),
 	});
 
 	const {

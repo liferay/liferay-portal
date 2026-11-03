@@ -25,14 +25,15 @@ export const useLifecycleStageOptions = ({
 		}
 	);
 
-	const stages: ILifecycleStage[] = lifecycleDetail?.stages ?? [];
+	const stages: ILifecycleStage[] =
+		lifecycleDetail?.accountLifecycleStages ?? [];
 
 	return {
 		loading:
 			lifecyclesLoading || (Boolean(lifecycle) && lifecycleDetailLoading),
-		options: sortBy(stages, 'priority').map(
-			({externalReferenceCode, stageName}) => ({
-				label: stageName,
+		options: sortBy(stages, 'position').map(
+			({externalReferenceCode, name}) => ({
+				label: name,
 				value: externalReferenceCode,
 			})
 		),

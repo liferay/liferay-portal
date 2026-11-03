@@ -8,14 +8,7 @@ import MultiStepNav from '@clayui/multi-step-nav';
 import React from 'react';
 import StatesRenderer from 'shared/components/states-renderer/StatesRenderer';
 import {formatUTCDate, getCustomDateFormat} from 'shared/util/date';
-import {
-	IAccountLifecycleStageStatus,
-	IAccountLifecycleStatus,
-} from 'shared/api/lifecycle';
-import {
-	LifecycleStages,
-	lifecycleStagesLabelMap,
-} from 'contacts/pages/account/utils/constants';
+import {IAccountLifecycleStatus} from 'shared/api/lifecycle';
 import {sub} from 'shared/util/lang';
 import {Text} from '@clayui/core';
 import {useParams} from 'react-router-dom';
@@ -26,11 +19,7 @@ interface LifecycleStatusProps {
 	className?: string;
 }
 
-const getStageLabel = (stage: IAccountLifecycleStageStatus) => {
-	const entry = lifecycleStagesLabelMap[stage.stageType as LifecycleStages];
-
-	return entry?.label ?? stage.description ?? stage.stageType;
-};
+const AT_RISK_STAGE_NAME = 'At Risk';
 
 const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 	const {
@@ -66,14 +55,14 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 	const lifecycle: IAccountLifecycleStatus | undefined = statusData;
 	const stages = sortBy(
 		lifecycle?.accountLifecycleStageStatuses ?? [],
-		'priority'
+		'position'
 	);
 
 	const progressionStages = stages.filter(
-		(stage) => stage.stageType !== LifecycleStages.AT_RISK
+		(stage) => stage.name !== AT_RISK_STAGE_NAME
 	);
 	const atRiskStage = stages.find(
-		(stage) => stage.stageType === LifecycleStages.AT_RISK
+		(stage) => stage.name === AT_RISK_STAGE_NAME
 	);
 
 	const activeIndex = progressionStages.reduce(
@@ -137,7 +126,7 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 										}
 									>
 										<MultiStepNav.Title>
-											{getStageLabel(stage)}
+											{stage.name}
 										</MultiStepNav.Title>
 										<MultiStepNav.Divider />
 										<MultiStepNav.Indicator
@@ -158,7 +147,7 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 								<MultiStepNav center className="ml-3 pb-0">
 									<MultiStepNav.Item>
 										<MultiStepNav.Title>
-											{getStageLabel(atRiskStage)}
+											{atRiskStage.name}
 										</MultiStepNav.Title>
 										<MultiStepNav.Divider />
 										<ClaySticker
@@ -193,7 +182,7 @@ const LifecycleStatus: React.FC<LifecycleStatusProps> = ({className}) => {
 												size={3}
 												weight="semi-bold"
 											>
-												{getStageLabel(activeStage)}
+												{activeStage.name}
 											</Text>
 											<Text color="secondary" size={3}>
 												{sub(

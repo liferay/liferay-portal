@@ -30,23 +30,15 @@ const buildRule = (
 });
 
 const MOCK_LIFECYCLE: ILifecycleDetail = {
-	authorName: 'Anneta Smith',
-	description: 'Lifecycle for marketing-qualified accounts',
-	externalReferenceCode: 'mock-lifecycle-erc',
-	id: '4100',
-	modifiedDate: 1791556330000,
-	name: LIFECYCLE_NAME,
-	processedDate: 1791460800000,
-	segmentId: '900',
-	stages: [
+	accountLifecycleStages: [
 		{
 			accountLifecycleStageRule: buildRule('Expansion', ''),
 			description: 'Healthy accounts ready for add-ons',
 			externalReferenceCode: 'mock-stage-erc-4104',
 			id: '4104',
 			maxDuration: null,
-			priority: 4,
-			stageName: 'Expansion',
+			name: 'Expansion',
+			position: 4,
 		},
 		{
 			accountLifecycleStageRule: buildRule(
@@ -64,8 +56,8 @@ const MOCK_LIFECYCLE: ILifecycleDetail = {
 			externalReferenceCode: 'mock-stage-erc-4103',
 			id: '4103',
 			maxDuration: 60,
-			priority: 3,
-			stageName: 'Pipeline',
+			name: 'Pipeline',
+			position: 3,
 		},
 		{
 			accountLifecycleStageRule: buildRule(
@@ -83,8 +75,8 @@ const MOCK_LIFECYCLE: ILifecycleDetail = {
 			externalReferenceCode: 'mock-stage-erc-4102',
 			id: '4102',
 			maxDuration: null,
-			priority: 2,
-			stageName: 'Qualified',
+			name: 'Qualified',
+			position: 2,
 		},
 		{
 			accountLifecycleStageRule: buildRule(
@@ -102,10 +94,18 @@ const MOCK_LIFECYCLE: ILifecycleDetail = {
 			externalReferenceCode: 'mock-stage-erc-4101',
 			id: '4101',
 			maxDuration: 90,
-			priority: 1,
-			stageName: 'Aware',
+			name: 'Aware',
+			position: 1,
 		},
 	],
+	authorName: 'Anneta Smith',
+	description: 'Lifecycle for marketing-qualified accounts',
+	externalReferenceCode: 'mock-lifecycle-erc',
+	id: '4100',
+	modifiedDate: 1791556330000,
+	name: LIFECYCLE_NAME,
+	processedDate: 1791460800000,
+	segmentId: '900',
 };
 
 let mockLifecycle = MOCK_LIFECYCLE;
@@ -130,11 +130,7 @@ export const saveMockLifecycle = ({
 }): Promise<ILifecycleDetail> => {
 	mockLifecycle = {
 		...mockLifecycle,
-		description,
-		id: String(Number(mockLifecycle.id) + 1),
-		modifiedDate: Date.now(),
-		name,
-		stages: stages.map((stage) => {
+		accountLifecycleStages: stages.map((stage) => {
 			const stageId = stage.id ?? `mock-stage-${++stageCount}`;
 
 			return {
@@ -143,6 +139,10 @@ export const saveMockLifecycle = ({
 				id: stageId,
 			};
 		}),
+		description,
+		id: String(Number(mockLifecycle.id) + 1),
+		modifiedDate: Date.now(),
+		name,
 	};
 
 	return Promise.resolve(mockLifecycle);
@@ -153,7 +153,10 @@ const MOCK_ACCOUNT_COUNTS = [120, 64, 41, 22, 9];
 const MOCK_AVERAGE_DURATIONS = [9.8, 4.6, 4.5, 12, 0];
 
 export const getMockLifecycleStages = (): Promise<ILifecycleStageMetric[]> => {
-	const stages = sortBy(mockLifecycle.stages ?? [], 'priority');
+	const stages = sortBy(
+		mockLifecycle.accountLifecycleStages ?? [],
+		'position'
+	);
 
 	const counts = stages.map(
 		(stage, index) => MOCK_ACCOUNT_COUNTS[index] ?? 5
@@ -162,7 +165,7 @@ export const getMockLifecycleStages = (): Promise<ILifecycleStageMetric[]> => {
 	const total = counts.reduce((sum, count) => sum + count, 0);
 
 	return Promise.resolve(
-		stages.map(({description, id, priority, stageName}, index) => {
+		stages.map(({description, id, name, position}, index) => {
 			const nextCount = counts[index + 1];
 
 			return {
@@ -174,9 +177,9 @@ export const getMockLifecycleStages = (): Promise<ILifecycleStageMetric[]> => {
 						: (nextCount / counts[index]) * 100,
 				description,
 				id,
+				name,
 				percentage: total ? (counts[index] / total) * 100 : 0,
-				priority,
-				stageName,
+				position,
 			};
 		})
 	);
@@ -184,11 +187,11 @@ export const getMockLifecycleStages = (): Promise<ILifecycleStageMetric[]> => {
 
 export const getMockLifecycleStageFieldValues = () =>
 	Promise.resolve({
-		items: (mockLifecycle.stages ?? []).map(
-			({externalReferenceCode, id, stageName}) => ({
+		items: (mockLifecycle.accountLifecycleStages ?? []).map(
+			({externalReferenceCode, id, name}) => ({
 				externalReferenceCode,
 				id,
-				stageName,
+				stageName: name,
 			})
 		),
 	});

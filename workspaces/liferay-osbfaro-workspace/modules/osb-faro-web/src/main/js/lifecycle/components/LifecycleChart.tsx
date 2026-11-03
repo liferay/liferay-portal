@@ -76,8 +76,8 @@ const StageMetrics = ({
 		conversionRateToNextStage,
 		description,
 		id,
+		name,
 		percentage,
-		stageName: name,
 	},
 }: IStageMetricsProps) => {
 	const barHeight = getBarHeight(percentage, referencePercentage);
@@ -288,7 +288,7 @@ const LifecycleChart = ({
 			);
 		}
 
-		return <StageCards stages={sortBy(stages, 'priority')} />;
+		return <StageCards stages={sortBy(stages, 'position')} />;
 	};
 
 	return (

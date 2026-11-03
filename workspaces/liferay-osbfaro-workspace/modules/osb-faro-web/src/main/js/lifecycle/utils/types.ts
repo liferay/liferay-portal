@@ -24,7 +24,7 @@ export interface ILifecycleStage {
 	conversionRateToNextStage: number | null;
 	description: string;
 	id: string;
+	name: string;
 	percentage: number;
-	priority: number;
-	stageName: string;
+	position: number;
 }

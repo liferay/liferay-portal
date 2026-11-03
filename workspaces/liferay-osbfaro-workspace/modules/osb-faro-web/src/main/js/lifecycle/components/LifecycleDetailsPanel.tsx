@@ -86,7 +86,7 @@ const StageCard: React.FC<{stage: ILifecycleStage}> = ({stage}) => {
 					fields={[
 						{
 							label: Liferay.Language.get('name'),
-							value: stage.stageName,
+							value: stage.name,
 						},
 						{
 							label: Liferay.Language.get('description'),
@@ -112,7 +112,7 @@ const StageCard: React.FC<{stage: ILifecycleStage}> = ({stage}) => {
 
 const StagesTab: React.FC<{stages: ILifecycleStage[]}> = ({stages}) => (
 	<>
-		{sortBy(stages, 'priority').map((stage) => (
+		{sortBy(stages, 'position').map((stage) => (
 			<StageCard key={stage.id} stage={stage} />
 		))}
 	</>
@@ -217,9 +217,10 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 								{
 									label: Liferay.Language.get('stages'),
 									value:
-										lifecycle.stages &&
+										lifecycle.accountLifecycleStages &&
 										getStageCountLabel(
-											lifecycle.stages.length
+											lifecycle.accountLifecycleStages
+												.length
 										),
 								},
 							]}
@@ -227,7 +228,9 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 					</ClayTabs.TabPane>
 
 					<ClayTabs.TabPane className="p-0">
-						<StagesTab stages={lifecycle.stages ?? []} />
+						<StagesTab
+							stages={lifecycle.accountLifecycleStages ?? []}
+						/>
 					</ClayTabs.TabPane>
 				</ClayTabs.Content>
 			</>
