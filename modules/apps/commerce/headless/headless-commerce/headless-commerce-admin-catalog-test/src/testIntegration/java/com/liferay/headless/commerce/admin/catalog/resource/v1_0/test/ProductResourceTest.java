@@ -73,6 +73,7 @@ import com.liferay.object.field.util.ObjectFieldUtil;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
+import com.liferay.petra.function.UnsafeConsumer;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
@@ -415,6 +416,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		Assert.assertEquals(
 			getProduct.getExpirationDate(), postProduct.getExpirationDate());
 
+		_testPatchProductWithInvalidCommerceCatalog();
 		_testPatchProductWithNegativeValue("cost");
 		_testPatchProductWithNegativeValue("depth");
 		_testPatchProductWithNegativeValue("height");
@@ -486,6 +488,7 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		_testPutProductByExternalReferenceCodeBatch();
 		_testPutProductByExternalReferenceCodeWithFutureDisplayDate();
 		_testPutProductByExternalReferenceCodeWithGroupedProducts();
+		_testPutProductByExternalReferenceCodeWithInvalidCommerceCatalog();
 
 		_testPutProductByExternalReferenceCodeWithURLsWhenImportInProcess();
 	}
@@ -615,6 +618,33 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 		throws Exception {
 
 		return productResource.postProduct(product);
+	}
+
+	private CommerceCatalog _addCommerceCatalog() throws Exception {
+		CommerceCatalog commerceCatalog =
+			CommerceCatalogLocalServiceUtil.addCommerceCatalog(
+				RandomTestUtil.randomString(), 0, RandomTestUtil.randomString(),
+				"USD", LocaleUtil.toLanguageId(LocaleUtil.US), false,
+				ServiceContextTestUtil.getServiceContext(
+					testCompany.getGroupId()));
+
+		_commerceCatalogs.add(commerceCatalog);
+
+		return commerceCatalog;
+	}
+
+	private void _assertProblemException(
+			String expectedStatus, Product product,
+			UnsafeConsumer<Product, Exception> unsafeConsumer)
+		throws Exception {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class,
+			() -> unsafeConsumer.accept(product));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals(expectedStatus, problem.getStatus());
 	}
 
 	private ProductVirtualSettings _postProductWithTermsOfUse(
@@ -1294,6 +1324,49 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			Http.Method.GET);
 
 		Assert.assertEquals(value, jsonObject.getString(objectField.getName()));
+	}
+
+	private void _testPatchProductWithInvalidCommerceCatalog()
+		throws Exception {
+
+		CommerceCatalog commerceCatalog = _addCommerceCatalog();
+		Product product = productResource.postProduct(randomProduct());
+
+		_assertProblemException(
+			"BAD_REQUEST",
+			new Product() {
+				{
+					setCatalogExternalReferenceCode(
+						commerceCatalog.getExternalReferenceCode());
+				}
+			},
+			patchProduct -> productResource.patchProduct(
+				product.getProductId(), patchProduct));
+		_assertProblemException(
+			"BAD_REQUEST",
+			new Product() {
+				{
+					setCatalogId(commerceCatalog.getCommerceCatalogId());
+				}
+			},
+			patchProduct -> productResource.patchProduct(
+				product.getProductId(), patchProduct));
+		_assertProblemException(
+			"NOT_FOUND",
+			new Product() {
+				{
+					setCatalogExternalReferenceCode(
+						RandomTestUtil.randomString());
+				}
+			},
+			patchProduct -> productResource.patchProduct(
+				product.getProductId(), patchProduct));
+
+		Product getProduct = productResource.getProduct(product.getProductId());
+
+		Assert.assertEquals(
+			_commerceCatalog.getCommerceCatalogId(),
+			GetterUtil.getLong(getProduct.getCatalogId()));
 	}
 
 	private void _testPatchProductWithNegativeValue(String fieldName)
@@ -2246,6 +2319,28 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 			groupedProduct.getQuantity(), putGroupedProduct.getQuantity());
 	}
 
+	private void _testPutProductByExternalReferenceCodeWithInvalidCommerceCatalog()
+		throws Exception {
+
+		CommerceCatalog commerceCatalog = _addCommerceCatalog();
+		Product product = productResource.postProduct(randomProduct());
+
+		product.setCatalogExternalReferenceCode(
+			commerceCatalog.getExternalReferenceCode());
+
+		_assertProblemException(
+			"BAD_REQUEST", product,
+			putProduct -> productResource.putProductByExternalReferenceCode(
+				putProduct.getExternalReferenceCode(), putProduct));
+
+		Product getProduct = productResource.getProductByExternalReferenceCode(
+			product.getExternalReferenceCode());
+
+		Assert.assertEquals(
+			_commerceCatalog.getCommerceCatalogId(),
+			GetterUtil.getLong(getProduct.getCatalogId()));
+	}
+
 	private void _testPutProductByExternalReferenceCodeWithURLsWhenImportInProcess()
 		throws Exception {
 
@@ -2321,6 +2416,9 @@ public class ProductResourceTest extends BaseProductResourceTestCase {
 
 	@DeleteAfterTestRun
 	private CommerceCatalog _commerceCatalog;
+
+	@DeleteAfterTestRun
+	private List<CommerceCatalog> _commerceCatalogs = new ArrayList<>();
 
 	@DeleteAfterTestRun
 	private CommerceChannel _commerceChannel;

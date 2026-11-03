@@ -19,6 +19,7 @@ import com.liferay.commerce.product.configuration.CProductVersionConfiguration;
 import com.liferay.commerce.product.constants.CPConfigurationEntrySettingConstants;
 import com.liferay.commerce.product.constants.CPInstanceConstants;
 import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelConstants;
+import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.NoSuchCProductException;
 import com.liferay.commerce.product.model.CPConfigurationEntry;
 import com.liferay.commerce.product.model.CPConfigurationEntrySetting;
@@ -496,6 +497,43 @@ public class CPDefinitionLocalServiceTest {
 	public void testAddFutureExpiredCPDefinition() throws Exception {
 		_testAddFutureExpiredCPDefinition();
 		_testAddFutureExpiredCPDefinitionWithStatusExpired();
+	}
+
+	@Test
+	public void testAddOrUpdateCPDefinition() throws Exception {
+		frutillaRule.scenario(
+			"Add or update a product definition with a different group"
+		).given(
+			"A product definition in a catalog"
+		).when(
+			"The product definition is updated with a different group"
+		).then(
+			"A CPDefinitionGroupIdException is thrown"
+		).and(
+			"The product definition stays in its catalog"
+		);
+
+		CPDefinition cpDefinition1 = CPTestUtil.addCPDefinitionFromCatalog(
+			_commerceCatalog.getGroupId(), SimpleCPTypeConstants.NAME, false,
+			false);
+
+		Assert.assertThrows(
+			CPDefinitionGroupIdException.class,
+			() -> _cpDefinitionLocalService.addOrUpdateCPDefinition(
+				cpDefinition1.getCProductExternalReferenceCode(),
+				TestPropsValues.getUserId(), RandomTestUtil.nextLong(), 0, 0,
+				false, false, null, null, 0, false, 0, null, null, 0, null, 1,
+				1, 0, 0, 2026, 1, 1, 0, 0, 2026, false, 0, false, 0, null, null,
+				null, RandomTestUtil.randomLocaleStringMap(), true,
+				SimpleCPTypeConstants.NAME, true, false, true, 0, null, false,
+				0, null, null, false, false, null, 0, 0,
+				WorkflowConstants.STATUS_APPROVED, _serviceContext));
+
+		CPDefinition cpDefinition2 = _cpDefinitionLocalService.getCPDefinition(
+			cpDefinition1.getCPDefinitionId());
+
+		Assert.assertEquals(
+			_commerceCatalog.getGroupId(), cpDefinition2.getGroupId());
 	}
 
 	@Test
