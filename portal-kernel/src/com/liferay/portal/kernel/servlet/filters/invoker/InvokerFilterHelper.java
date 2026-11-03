@@ -40,6 +40,7 @@ import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -96,6 +97,8 @@ public class InvokerFilterHelper {
 
 			_readLiferayFilterWebXML(
 				servletContext, "/WEB-INF/liferay-web.xml");
+
+			_updateURLRegexFilterMappingsMap();
 
 			String servletContextName = GetterUtil.getString(
 				servletContext.getServletContextName());
@@ -165,6 +168,28 @@ public class InvokerFilterHelper {
 		}
 
 		return invokerFilterChain;
+	}
+
+	protected boolean hasURLRegexFilterMapping(
+		Dispatcher dispatcher, String uri) {
+
+		for (FilterMapping filterMapping :
+				_urlRegexFilterMappingsMap.get(dispatcher)) {
+
+			Filter filter = filterMapping.getFilter();
+
+			if ((filter instanceof LiferayFilter liferayFilter) &&
+				!liferayFilter.isFilterEnabled()) {
+
+				continue;
+			}
+
+			if (filterMapping.isMatchURLPatterns(uri)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private List<String> _getFilterNames() {
@@ -428,6 +453,8 @@ public class InvokerFilterHelper {
 		_dynamicPositionFilters.remove(filterName);
 		_filterNames.remove(filterName);
 
+		_updateURLRegexFilterMappingsMap();
+
 		clearFilterChainsCache();
 	}
 
@@ -461,6 +488,40 @@ public class InvokerFilterHelper {
 		}
 	}
 
+	private synchronized void _updateURLRegexFilterMappingsMap() {
+		Map<Dispatcher, FilterMapping[]> urlRegexFilterMappingsMap =
+			new EnumMap<>(Dispatcher.class);
+
+		List<String> filterNames = _getFilterNames();
+
+		for (Dispatcher dispatcher : Dispatcher.values()) {
+			List<FilterMapping> urlRegexFilterMappings = new ArrayList<>();
+
+			for (String filterName : filterNames) {
+				FilterMapping[] filterMappings = _filterMappingsMap.get(
+					filterName);
+
+				if (filterMappings == null) {
+					continue;
+				}
+
+				for (FilterMapping filterMapping : filterMappings) {
+					if (!filterMapping.hasURLRegexPattern(dispatcher)) {
+						continue;
+					}
+
+					urlRegexFilterMappings.add(filterMapping);
+				}
+			}
+
+			urlRegexFilterMappingsMap.put(
+				dispatcher,
+				urlRegexFilterMappings.toArray(new FilterMapping[0]));
+		}
+
+		_urlRegexFilterMappingsMap = urlRegexFilterMappingsMap;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		InvokerFilterHelper.class);
 
@@ -473,6 +534,8 @@ public class InvokerFilterHelper {
 	private final List<String> _filterNames = new CopyOnWriteArrayList<>();
 	private final List<InvokerFilter> _invokerFilters = new ArrayList<>();
 	private ServiceTracker<Filter, FilterMapping> _serviceTracker;
+	private volatile Map<Dispatcher, FilterMapping[]>
+		_urlRegexFilterMappingsMap;
 
 	private class FilterServiceTrackerCustomizer
 		implements ServiceTrackerCustomizer<Filter, FilterMapping> {
@@ -545,6 +608,8 @@ public class InvokerFilterHelper {
 					serviceReference.getProperty("after-filter")),
 				GetterUtil.getString(
 					serviceReference.getProperty("before-filter")));
+
+			_updateURLRegexFilterMappingsMap();
 
 			clearFilterChainsCache();
 

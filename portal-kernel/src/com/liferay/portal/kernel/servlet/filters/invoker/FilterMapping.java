@@ -79,15 +79,7 @@ public class FilterMapping {
 			return false;
 		}
 
-		boolean matchURLPattern = false;
-
-		for (String urlPattern : _urlPatterns) {
-			if (isMatchURLPattern(uri, urlPattern)) {
-				matchURLPattern = true;
-
-				break;
-			}
-		}
+		boolean matchURLPattern = isMatchURLPatterns(uri);
 
 		if (_log.isDebugEnabled()) {
 			if (matchURLPattern) {
@@ -156,6 +148,16 @@ public class FilterMapping {
 			_urlRegexIgnorePattern, _urlRegexPattern);
 	}
 
+	protected boolean hasURLRegexPattern(Dispatcher dispatcher) {
+		if (_dispatchers.contains(dispatcher) &&
+			((_urlRegexIgnorePattern != null) || (_urlRegexPattern != null))) {
+
+			return true;
+		}
+
+		return false;
+	}
+
 	protected boolean isMatchURLPattern(String uri, String urlPattern) {
 		if (urlPattern.equals(uri) || urlPattern.equals(_SLASH_STAR)) {
 			return true;
@@ -174,6 +176,16 @@ public class FilterMapping {
 				 uri.endsWith(urlPattern.substring(1))) {
 
 			return true;
+		}
+
+		return false;
+	}
+
+	protected boolean isMatchURLPatterns(String uri) {
+		for (String urlPattern : _urlPatterns) {
+			if (isMatchURLPattern(uri, urlPattern)) {
+				return true;
+			}
 		}
 
 		return false;

@@ -173,7 +173,8 @@ public class InvokerFilter implements Filter {
 		String queryString = httpServletRequest.getQueryString();
 
 		if (Validator.isNotNull(queryString) &&
-			!_skipQueryStringURIs.contains(uri)) {
+			!_skipQueryStringURIs.contains(uri) &&
+			_invokerFilterHelper.hasURLRegexFilterMapping(_dispatcher, uri)) {
 
 			key = StringBundler.concat(
 				key, StringPool.QUESTION, _scrubQueryString(queryString));
