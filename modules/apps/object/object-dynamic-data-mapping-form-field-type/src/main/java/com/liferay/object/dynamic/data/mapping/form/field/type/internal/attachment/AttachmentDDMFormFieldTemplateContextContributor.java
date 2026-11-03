@@ -47,6 +47,7 @@ import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProvider;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
@@ -118,14 +119,18 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 					return null;
 				}
 
+				String portletId = _portal.getPortletId(httpServletRequest);
+
+				if (Validator.isNull(portletId)) {
+					return null;
+				}
+
 				RequestBackedPortletURLFactory requestBackedPortletURLFactory =
 					RequestBackedPortletURLFactoryUtil.create(
 						httpServletRequest);
 
 				return PortletURLBuilder.create(
-					requestBackedPortletURLFactory.createActionURL(
-						GetterUtil.getString(
-							ddmFormField.getProperty("portletId")))
+					requestBackedPortletURLFactory.createActionURL(portletId)
 				).setActionName(
 					"/object_entries/delete_attachment"
 				).buildString();
@@ -354,9 +359,14 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 					ObjectFieldSettingConstants.
 						VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA)) {
 
+			String portletId = _portal.getPortletId(httpServletRequest);
+
+			if (Validator.isNull(portletId)) {
+				return StringPool.BLANK;
+			}
+
 			return PortletURLBuilder.create(
-				requestBackedPortletURLFactory.createActionURL(
-					GetterUtil.getString(ddmFormField.getProperty("portletId")))
+				requestBackedPortletURLFactory.createActionURL(portletId)
 			).setActionName(
 				"/object_entries/upload_attachment"
 			).setParameter(
@@ -414,6 +424,9 @@ public class AttachmentDDMFormFieldTemplateContextContributor
 
 	@Reference
 	private ObjectFieldLocalService _objectFieldLocalService;
+
+	@Reference
+	private Portal _portal;
 
 	@Reference
 	private UploadServletRequestConfigurationProvider
