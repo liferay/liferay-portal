@@ -106,6 +106,7 @@ const CustomStyles = ({fragmentEntryLink, onValueSelect}) => {
 			{fieldSets.map((fieldSet, index) => {
 				return (
 					<FieldSet
+						collapsed={fieldSet.collapsed}
 						description={fieldSet.description}
 						fields={fieldSet.fields}
 						fragmentEntryLinks={fragmentEntryLinksRef.current}

@@ -466,6 +466,11 @@
 			"$id": "#/properties/fieldSets/items",
 			"additionalProperties": false,
 			"properties": {
+				"collapsed": {
+					"default": false,
+					"title": "The Collapsed Schema",
+					"type": "boolean"
+				},
 				"configurationRole": {
 					"default": "",
 					"enum": [

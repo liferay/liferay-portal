@@ -67,6 +67,7 @@ function getAvailableFields(item, fields, fragmentEntryLinks, viewportSize) {
 }
 
 export function FieldSet({
+	collapsed = false,
 	customComponentModule,
 	description,
 	embedInCollapsableSection = true,
@@ -104,7 +105,7 @@ export function FieldSet({
 			return (
 				<ClayPanel
 					collapsable
-					defaultExpanded
+					defaultExpanded={!collapsed}
 					displayTitle={label}
 					displayType="unstyled"
 					showCollapseIcon
@@ -120,7 +121,7 @@ export function FieldSet({
 	return !!availableFields.length && label && embedInCollapsableSection ? (
 		<ClayPanel
 			collapsable
-			defaultExpanded
+			defaultExpanded={!collapsed}
 			displayTitle={label}
 			displayType="unstyled"
 			showCollapseIcon
@@ -317,6 +318,7 @@ function ConfigurationCustomComponentRenderer({
 }
 
 FieldSet.propTypes = {
+	collapsed: PropTypes.bool,
 	customComponentModule: PropTypes.string,
 	fields: PropTypes.arrayOf(PropTypes.shape(ConfigurationFieldPropTypes)),
 	fragmentEntryLinks: PropTypes.object,

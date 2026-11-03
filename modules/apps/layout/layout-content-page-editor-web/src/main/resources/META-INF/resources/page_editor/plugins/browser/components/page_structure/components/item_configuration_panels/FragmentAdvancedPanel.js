@@ -68,6 +68,7 @@ export function FragmentAdvancedPanel({item}) {
 				fieldSets.map((fieldSet, index) => {
 					return (
 						<FieldSet
+							collapsed={fieldSet.collapsed}
 							customComponentModule={
 								fieldSet.customComponentModule
 							}

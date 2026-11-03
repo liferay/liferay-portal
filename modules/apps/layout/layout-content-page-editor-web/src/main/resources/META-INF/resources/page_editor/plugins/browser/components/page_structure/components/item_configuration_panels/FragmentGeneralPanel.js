@@ -89,6 +89,7 @@ export function FragmentGeneralPanel({item}) {
 					return (
 						<div className="mb-1 panel-group-sm" key={index}>
 							<FieldSet
+								collapsed={fieldSet.collapsed}
 								customComponentModule={
 									fieldSet.customComponentModule
 								}
