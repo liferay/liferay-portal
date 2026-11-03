@@ -193,9 +193,7 @@ public class LiferayCommerceRESTClient {
 
 		JSONObject jsonObject = _jsonFactory.createJSONObject(response);
 
-		if (jsonObject.has("access_token")) {
-			jsonObject.put("access_token", "***");
-		}
+		jsonObject.remove("access_token");
 
 		return jsonObject;
 	}

@@ -148,7 +148,7 @@ public class LiferayCommerceRESTClientTest {
 
 		bodyJSONObject = responseJSONObject.getJSONObject("body");
 
-		Assert.assertEquals("***", bodyJSONObject.getString("access_token"));
+		Assert.assertFalse(bodyJSONObject.has("access_token"));
 		Assert.assertEquals(600, bodyJSONObject.getInt("expires_in"));
 
 		liferayCommerceRESTClient.putOption(
