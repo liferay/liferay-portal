@@ -120,7 +120,9 @@ public class AssetLibraryResourceImpl extends BaseAssetLibraryResourceImpl {
 					() -> group.getDescriptiveName(
 						contextAcceptLanguage.getPreferredLocale()));
 				setExternalReferenceCode(group::getExternalReferenceCode);
-				setType(() -> AssetLibraryUtil.toType(depotEntry.getType()));
+				setType(
+					() -> AssetLibraryUtil.toAssetLibraryType(
+						depotEntry.getType()));
 			}
 		};
 	}

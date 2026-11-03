@@ -166,7 +166,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 					setExternalReferenceCode(
 						exportImportGroup::getExternalReferenceCode);
 					setType(
-						() -> AssetLibraryUtil.toType(
+						() -> AssetLibraryUtil.toAssetLibraryType(
 							exportImportGroup.getDepotType()));
 				}
 			},

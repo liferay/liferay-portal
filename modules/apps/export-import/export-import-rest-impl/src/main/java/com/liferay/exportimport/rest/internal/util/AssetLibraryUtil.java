@@ -36,6 +36,23 @@ public class AssetLibraryUtil {
 		return externalReferenceCodes;
 	}
 
+	public static AssetLibrary.Type toAssetLibraryType(int depotEntryType) {
+		if (depotEntryType == DepotConstants.TYPE_ASSET_LIBRARY) {
+			return AssetLibrary.Type.ASSET_LIBRARY;
+		}
+		else if (depotEntryType == DepotConstants.TYPE_DESIGN_LIBRARY) {
+			return AssetLibrary.Type.DESIGN_LIBRARY;
+		}
+		else if (depotEntryType == DepotConstants.TYPE_PROJECT) {
+			return AssetLibrary.Type.PROJECT;
+		}
+		else if (depotEntryType == DepotConstants.TYPE_SPACE) {
+			return AssetLibrary.Type.SPACE;
+		}
+
+		return null;
+	}
+
 	public static int toDepotEntryType(String value) {
 		if (StringUtil.equalsIgnoreCase(
 				value, AssetLibrary.Type.ASSET_LIBRARY.getValue())) {
@@ -59,23 +76,6 @@ public class AssetLibraryUtil {
 		}
 
 		return DepotConstants.TYPE_ANY;
-	}
-
-	public static AssetLibrary.Type toType(int depotEntryType) {
-		if (depotEntryType == DepotConstants.TYPE_ASSET_LIBRARY) {
-			return AssetLibrary.Type.ASSET_LIBRARY;
-		}
-		else if (depotEntryType == DepotConstants.TYPE_DESIGN_LIBRARY) {
-			return AssetLibrary.Type.DESIGN_LIBRARY;
-		}
-		else if (depotEntryType == DepotConstants.TYPE_PROJECT) {
-			return AssetLibrary.Type.PROJECT;
-		}
-		else if (depotEntryType == DepotConstants.TYPE_SPACE) {
-			return AssetLibrary.Type.SPACE;
-		}
-
-		return null;
 	}
 
 }
