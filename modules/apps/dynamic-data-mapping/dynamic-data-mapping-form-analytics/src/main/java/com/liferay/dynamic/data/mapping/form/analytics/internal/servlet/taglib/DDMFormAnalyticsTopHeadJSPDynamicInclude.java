@@ -25,7 +25,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Leonardo Barros
  */
 @Component(
-	property = "dynamic.include.key=/html/common/themes/top_head.jsp#post",
+	property = "dynamic.include.key=com.liferay.analytics.web#/dynamic_include/top_head.jsp#post",
 	service = DynamicInclude.class
 )
 public class DDMFormAnalyticsTopHeadJSPDynamicInclude

@@ -269,3 +269,5 @@
 		}
 	});
 </aui:script>
+
+<liferay-util:dynamic-include key="com.liferay.analytics.web#/dynamic_include/top_head.jsp#post" />
