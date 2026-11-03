@@ -25,16 +25,6 @@ public class ExportImportGroup {
 		_path = path;
 	}
 
-	public ExportImportGroup(
-		int childGroupsCount, String descriptiveName,
-		String externalReferenceCode, long groupId,
-		String parentGroupExternalReferenceCode, String path) {
-
-		this(
-			childGroupsCount, false, 0, descriptiveName, externalReferenceCode,
-			groupId, parentGroupExternalReferenceCode, path);
-	}
-
 	public int getChildGroupsCount() {
 		return _childGroupsCount;
 	}
