@@ -14,7 +14,11 @@ import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
-import {performUserSwitch, userData} from '../../../utils/performLogin';
+import {
+	performLogout,
+	performUserSwitch,
+	userData,
+} from '../../../utils/performLogin';
 import getPageDefinition from '../../layout-content-page-editor-web/main/utils/getPageDefinition';
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 
@@ -158,7 +162,7 @@ test(
 		const assertActions = async (
 			entryTitle: string,
 			triggerLabel: string,
-			visibleAction: string,
+			visibleAction: RegExp | string,
 			hiddenActions: string[]
 		) => {
 			await clickAndExpectToBeVisible({
@@ -200,6 +204,27 @@ test(
 				'Delete',
 				'Edit',
 				'Permissions',
+				'Subscribe',
+			]);
+		});
+
+		await test.step('A guest sees no actions that change the entries', async () => {
+			await performLogout(page);
+
+			await page.goto(
+				`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`
+			);
+
+			await expect(page.getByRole('button', {name: 'New'})).toBeHidden();
+
+			await assertActions(documentTitle, 'Actions', /^Download/, [
+				'Delete',
+				'Edit',
+			]);
+
+			await assertActions(folder.name, 'More actions', /^Download/, [
+				'Delete',
+				'Edit',
 				'Subscribe',
 			]);
 		});
