@@ -24,6 +24,7 @@ import com.liferay.commerce.discount.service.CommerceDiscountLocalService;
 import com.liferay.commerce.model.CommerceAddress;
 import com.liferay.commerce.model.CommerceOrder;
 import com.liferay.commerce.model.CommerceOrderItem;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.order.rule.constants.COREntryConstants;
 import com.liferay.commerce.order.rule.model.COREntry;
 import com.liferay.commerce.order.rule.service.COREntryLocalService;
@@ -49,6 +50,7 @@ import com.liferay.list.type.model.ListTypeEntry;
 import com.liferay.list.type.service.ListTypeDefinitionLocalService;
 import com.liferay.list.type.service.ListTypeEntryLocalService;
 import com.liferay.petra.function.UnsafeConsumer;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
@@ -62,6 +64,7 @@ import com.liferay.portal.kernel.service.CountryLocalService;
 import com.liferay.portal.kernel.service.RegionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.settings.FallbackKeysSettingsUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.settings.ModifiableSettings;
@@ -78,8 +81,10 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
@@ -89,6 +94,7 @@ import com.liferay.portal.vulcan.util.LocalizedMapUtil;
 
 import java.math.BigDecimal;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -201,6 +207,7 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testGetCart() throws Exception {
 		super.testGetCart();
 
+		_testGetCartWithGuestAccountEntry();
 		_testGetCartWithOffendedOrderRule();
 	}
 
@@ -227,6 +234,14 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	public void testGetCartPaymentURL() throws Exception {
 		_testGetCartPaymentURLWithBusinessAccountEntry();
 		_testGetCartPaymentURLWithGuestAccountEntry();
+	}
+
+	@Override
+	@Test
+	public void testGetChannelAccountCartsPage() throws Exception {
+		super.testGetChannelAccountCartsPage();
+
+		_testGetChannelAccountCartsPageWithGuestAccountEntry();
 	}
 
 	@Override
@@ -684,6 +699,23 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			_accountEntry.getAccountEntryId(), _commerceCurrency.getCode(), 0);
 	}
 
+	private CommerceOrder _addGuestCommerceOrder() throws Exception {
+		AccountEntry accountEntry =
+			_accountEntryLocalService.getGuestAccountEntry(
+				testCompany.getCompanyId());
+		User user = testCompany.getGuestUser();
+
+		CommerceOrder commerceOrder =
+			_commerceOrderLocalService.addCommerceOrder(
+				user.getUserId(), _commerceChannel.getGroupId(),
+				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
+				0);
+
+		_guestCommerceOrders.add(commerceOrder);
+
+		return commerceOrder;
+	}
+
 	private CommerceAddress _addInvalidCommerceAddress() throws Exception {
 		User user = UserTestUtil.addUser(testCompany);
 
@@ -720,6 +752,18 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 		Problem.ProblemException problemException = Assert.assertThrows(
 			Problem.ProblemException.class, () -> unsafeConsumer.accept(cart));
+
+		Problem problem = problemException.getProblem();
+
+		Assert.assertEquals(expectedStatus, problem.getStatus());
+	}
+
+	private void _assertProblemException(
+			String expectedStatus, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		Problem.ProblemException problemException = Assert.assertThrows(
+			Problem.ProblemException.class, unsafeRunnable::run);
 
 		Problem problem = problemException.getProblem();
 
@@ -768,6 +812,35 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		).build();
 	}
 
+	private CartResource _getCartResource(
+			CommerceOrder commerceOrder, String commerceOrderUUID)
+		throws Exception {
+
+		CartResource.Builder builder = CartResource.builder(
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		);
+
+		if (commerceOrder != null) {
+			builder.header(
+				HttpHeaders.COOKIE,
+				StringBundler.concat(
+					_commerceOrderHttpHelper.getCookieName(
+						commerceOrder.getGroupId()),
+					StringPool.EQUAL, commerceOrder.getUuid(), StringPool.PIPE,
+					RandomTestUtil.randomString()));
+		}
+
+		if (Validator.isNotNull(commerceOrderUUID)) {
+			builder.header("Commerce-Cart-UUID", commerceOrderUUID);
+		}
+
+		return builder.build();
+	}
+
 	private Cart _randomGuestCart() throws Exception {
 		Cart cart = randomCart();
 
@@ -811,25 +884,67 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	private void _testGetCartPaymentURLWithGuestAccountEntry()
 		throws Exception {
 
-		AccountEntry accountEntry =
-			_accountEntryLocalService.getGuestAccountEntry(
-				testCompany.getCompanyId());
-
-		CommerceOrder commerceOrder =
-			_commerceOrderLocalService.addCommerceOrder(
-				_user.getUserId(), _commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0);
+		CommerceOrder commerceOrder = _addGuestCommerceOrder();
 
 		String guestToken = URLCodec.encodeURL(
 			_encryptor.encrypt(
 				testCompany.getKeyObj(),
 				String.valueOf(commerceOrder.getCommerceOrderId())));
 
-		String paymentURL = cartResource.getCartPaymentURL(
+		User user = UserTestUtil.getAdminUser(testCompany.getCompanyId());
+
+		CartResource cartResource1 = CartResource.builder(
+		).authentication(
+			user.getEmailAddress(), PropsValues.DEFAULT_ADMIN_PASSWORD
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+
+		String paymentURL = cartResource1.getCartPaymentURL(
 			commerceOrder.getCommerceOrderId(), RandomTestUtil.randomString());
 
 		Assert.assertTrue(paymentURL.contains("guestToken=" + guestToken));
+
+		CartResource cartResource2 = _getCartResource(commerceOrder, null);
+
+		_assertProblemException(
+			"403",
+			() -> cartResource2.getCartPaymentURL(
+				commerceOrder.getCommerceOrderId(),
+				RandomTestUtil.randomString()));
+	}
+
+	private void _testGetCartWithGuestAccountEntry() throws Exception {
+		CommerceOrder commerceOrder1 = _addGuestCommerceOrder();
+
+		CartResource cartResource1 = _getCartResource(commerceOrder1, null);
+
+		Cart cart = cartResource1.getCart(commerceOrder1.getCommerceOrderId());
+
+		Assert.assertEquals(commerceOrder1.getUuid(), cart.getOrderUUID());
+
+		CommerceOrder commerceOrder2 = _addGuestCommerceOrder();
+
+		_assertProblemException(
+			"NOT_FOUND",
+			() -> cartResource1.getCart(commerceOrder2.getCommerceOrderId()));
+
+		CartResource cartResource2 = _getCartResource(
+			null, commerceOrder2.getUuid());
+
+		cart = cartResource2.getCart(commerceOrder2.getCommerceOrderId());
+
+		Assert.assertEquals(commerceOrder2.getUuid(), cart.getOrderUUID());
+
+		CartResource cartResource3 = _getCartResource(
+			commerceOrder1, commerceOrder2.getUuid());
+
+		_assertProblemException(
+			"NOT_FOUND",
+			() -> cartResource3.getCart(commerceOrder1.getCommerceOrderId()));
 	}
 
 	private void _testGetCartWithOffendedOrderRule() throws Exception {
@@ -875,6 +990,21 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 			Assert.assertNull(pageCart.getErrorMessages());
 			Assert.assertNull(pageCart.getValid());
 		}
+	}
+
+	private void _testGetChannelAccountCartsPageWithGuestAccountEntry()
+		throws Exception {
+
+		CommerceOrder commerceOrder = _addGuestCommerceOrder();
+
+		CartResource cartResource = _getCartResource();
+
+		Page<Cart> cartsPage = cartResource.getChannelAccountCartsPage(
+			commerceOrder.getCommerceAccountId(),
+			_commerceChannel.getCommerceChannelId(), null, null,
+			Pagination.of(1, 10), null);
+
+		Assert.assertEquals(0, cartsPage.getTotalCount());
 	}
 
 	private void _testGetChannelCartsPageWithFilter() throws Exception {
@@ -995,20 +1125,15 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 		CommerceTestUtil.runWithGuestCheckoutDisabledOnB2BChannel(
 			_commerceChannel.getGroupId(),
 			() -> {
-				AccountEntry guestAccountEntry =
-					_accountEntryLocalService.getGuestAccountEntry(
-						testCompany.getCompanyId());
-				User guestUser = testCompany.getGuestUser();
+				CommerceOrder commerceOrder = _addGuestCommerceOrder();
 
-				_commerceOrder = _commerceOrderLocalService.addCommerceOrder(
-					guestUser.getUserId(), _commerceChannel.getGroupId(),
-					guestAccountEntry.getAccountEntryId(),
-					_commerceCurrency.getCode(), 0);
+				CartResource cartResource = _getCartResource(
+					commerceOrder, null);
 
 				Problem.ProblemException problemException = Assert.assertThrows(
 					Problem.ProblemException.class,
 					() -> cartResource.patchCart(
-						_commerceOrder.getCommerceOrderId(),
+						commerceOrder.getCommerceOrderId(),
 						new Cart() {
 							{
 								cartItems = new CartItem[] {
@@ -1764,6 +1889,9 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	private CommerceOrder _commerceOrder;
 
 	@Inject
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
+
+	@Inject
 	private CommerceOrderItemLocalService _commerceOrderItemLocalService;
 
 	@Inject
@@ -1783,6 +1911,9 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 
 	@Inject
 	private Encryptor _encryptor;
+
+	@DeleteAfterTestRun
+	private final List<CommerceOrder> _guestCommerceOrders = new ArrayList<>();
 
 	@Inject
 	private ListTypeDefinitionLocalService _listTypeDefinitionLocalService;
