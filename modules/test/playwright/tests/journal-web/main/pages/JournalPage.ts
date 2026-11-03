@@ -280,6 +280,17 @@ export class JournalPage {
 		await expect(dialog).toBeHidden();
 	}
 
+	async search(keywords: string) {
+		const searchInput = this.page.getByRole('searchbox', {
+			name: 'Search for:',
+		});
+
+		await searchInput.fill(keywords);
+		await searchInput.press('Enter');
+
+		await this.page.waitForURL(/_keywords=/);
+	}
+
 	async selectItem(index: number) {
 		await this.page
 			.locator(

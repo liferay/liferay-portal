@@ -9,6 +9,7 @@ import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {changeManagementToolbarView} from '../../../utils/changeManagementToolbarView';
+import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
@@ -282,5 +283,193 @@ test(
 		await infoPanel.getByRole('tab', {name: 'Versions'}).click();
 
 		await expect(versionRow('1.1')).toContainText('Expired');
+	}
+);
+
+test(
+	'Search results can be sorted and navigated by their breadcrumb',
+	{tag: ['@LPS-196842', '@LPS-197163']},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const ddmStructureId = await getBasicWebContentStructureId(apiHelpers);
+
+		for (const title of ['EMEA Guild', 'APAC Guild']) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				ddmStructureId,
+				groupId: site.id,
+				titleMap: {en_US: title},
+			});
+		}
+
+		const folderName = 'Charters';
+
+		const folder = await apiHelpers.jsonWebServicesJournal.addFolder({
+			groupId: site.id,
+			name: folderName,
+		});
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId,
+			folderId: folder.folderId,
+			groupId: site.id,
+			titleMap: {en_US: 'Guild Charter'},
+		});
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await changeManagementToolbarView(page, 'List');
+
+		await journalPage.search('Guild');
+
+		await expect(
+			page.getByText('3 Results Found for "Guild"')
+		).toBeVisible();
+
+		// Sort by title
+
+		const setOrder = async (menuItem: string) => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {name: menuItem}),
+				trigger: page.getByRole('button', {exact: true, name: 'Order'}),
+			});
+		};
+
+		await setOrder('Title');
+		await setOrder('Ascending');
+
+		const rowTitles = page
+			.locator('[data-qa-id="row"]')
+			.getByRole('link', {name: /Guild/});
+
+		await expect(rowTitles).toHaveText([
+			'APAC Guild',
+			'EMEA Guild',
+			'Guild Charter',
+		]);
+
+		await setOrder('Descending');
+
+		await expect(rowTitles).toHaveText([
+			'Guild Charter',
+			'EMEA Guild',
+			'APAC Guild',
+		]);
+
+		// Navigate by breadcrumb
+
+		await page
+			.locator('[data-qa-id="row"]')
+			.filter({hasText: 'Guild Charter'})
+			.getByRole('link', {exact: true, name: folderName})
+			.click();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: 'Guild Charter'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('link', {exact: true, name: 'APAC Guild'})
+		).toBeHidden();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await journalPage.search('Guild');
+
+		await page
+			.locator('[data-qa-id="row"]')
+			.filter({hasText: 'APAC Guild'})
+			.getByRole('link', {exact: true, name: 'Home'})
+			.click();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: folderName})
+		).toBeVisible();
+
+		await setOrder('Modified Date');
+	}
+);
+
+test(
+	'Search location and fields can be picked with the keyboard',
+	{tag: '@LPS-196839'},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const ddmStructureId = await getBasicWebContentStructureId(apiHelpers);
+
+		for (const title of ['Over The Years', 'Over The Earth']) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				content: 'Liferay DXP',
+				ddmStructureId,
+				groupId: site.id,
+				titleMap: {en_US: title},
+			});
+		}
+
+		const folder = await apiHelpers.jsonWebServicesJournal.addFolder({
+			groupId: site.id,
+			name: getRandomString(),
+		});
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			content: 'After many years I understood',
+			ddmStructureId,
+			folderId: folder.folderId,
+			groupId: site.id,
+			titleMap: {en_US: 'Folder Article'},
+		});
+
+		await journalPage.gotoFolder({
+			folderId: folder.folderId,
+			siteUrl: site.friendlyUrlPath,
+		});
+
+		await changeManagementToolbarView(page, 'List');
+
+		await journalPage.search('years');
+
+		const rowTitles = page
+			.locator('[data-qa-id="row"]')
+			.getByRole('link', {name: /Years|Folder Article/});
+
+		const selectOption = async (buttonSelector: string, key: string) => {
+			const button = page.locator(buttonSelector);
+
+			await button.focus();
+			await page.keyboard.press('Enter');
+			await page.keyboard.press(key);
+			await page.keyboard.press('Enter');
+
+			return button;
+		};
+
+		// Search everywhere
+
+		await expect(
+			await selectOption('button[id$="_searchLocation"]', 'ArrowDown')
+		).toHaveText('Everywhere');
+
+		await expect(rowTitles).toHaveCount(2);
+		await expect(
+			rowTitles.filter({hasText: 'Folder Article'})
+		).toBeVisible();
+		await expect(
+			rowTitles.filter({hasText: 'Over The Years'})
+		).toBeVisible();
+
+		await checkAccessibility({page, selectors: ['#main-content']});
+
+		// Search in titles only
+
+		await expect(
+			await selectOption('button[id$="_searchIn"]', 'ArrowDown')
+		).toHaveText('Title Only');
+
+		await expect(rowTitles).toHaveText(['Over The Years']);
+
+		await checkAccessibility({page, selectors: ['#main-content']});
+
+		// Search the current folder
+
+		await selectOption('button[id$="_searchLocation"]', 'ArrowUp');
+
+		await expect(page.getByText('No web content was found.')).toBeVisible();
 	}
 );
