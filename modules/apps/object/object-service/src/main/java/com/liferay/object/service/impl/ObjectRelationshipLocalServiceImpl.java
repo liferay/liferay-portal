@@ -205,6 +205,8 @@ public class ObjectRelationshipLocalServiceImpl
 			_objectDefinitionPersistence.findByPrimaryKey(
 				objectRelationship.getObjectDefinitionId2());
 
+		_validateObjectEntryId(objectDefinition2, primaryKey2);
+
 		if (Objects.equals(
 				objectDefinition1.getScope(), objectDefinition2.getScope()) &&
 			!Objects.equals(
