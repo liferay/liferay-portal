@@ -472,7 +472,34 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 	}
 
 	@Test
-	public void testExportImportWarnsWhenThemeIsNotDeployed() throws Exception {
+	public void testExportImportWarnsWhenThemeHasNoFrontendTokenDefinition()
+		throws Exception {
+
+		String externalReferenceCode = RandomTestUtil.randomString();
+		Group group = getGroup();
+		String name = RandomTestUtil.randomString();
+
+		_addStyleBookEntry(
+			externalReferenceCode, group.getGroupId(), name, StringPool.BLANK,
+			"admin_WAR_admintheme");
+
+		_exportImport();
+
+		Group targetGroup = getTargetGroup();
+
+		ExportImportReportEntry exportImportReportEntry =
+			_getWarningExportImportReportEntry(
+				externalReferenceCode, targetGroup.getGroupId());
+
+		Assert.assertEquals(
+			_getThemeWarningMessage(name),
+			exportImportReportEntry.getErrorMessage());
+	}
+
+	@Test
+	public void testExportImportWarnsWhenThemeIsNotAvailable()
+		throws Exception {
+
 		String externalReferenceCode = RandomTestUtil.randomString();
 		Group group = getGroup();
 		String name = RandomTestUtil.randomString();
@@ -509,7 +536,7 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 					JSONUtil.put("value", RandomTestUtil.randomString())
 				).toString(),
 				RandomTestUtil.randomString(), StringPool.BLANK,
-				"admin_WAR_admintheme",
+				_THEME_ID_CLASSIC,
 				ServiceContextTestUtil.getServiceContext(
 					group.getGroupId(), TestPropsValues.getUserId()));
 
@@ -769,9 +796,7 @@ public abstract class BaseStyleBookBatchEnginePortletDataHandlerTestCase
 	private String _getThemeWarningMessage(String name) {
 		return LanguageUtil.format(
 			LocaleUtil.US,
-			"the-theme-referenced-by-x-is-not-deployed-in-this-environment-" +
-				"and-its-tokens-could-not-be-verified-the-default-theme-will-" +
-					"be-used-until-it-is-available",
+			"the-theme-referenced-by-x-is-not-available-in-this-environment",
 			name);
 	}
 

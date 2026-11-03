@@ -18,8 +18,6 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
-import com.liferay.portal.kernel.model.Theme;
-import com.liferay.portal.kernel.service.ThemeLocalService;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -79,21 +77,15 @@ public class StyleBookImportTaskPostAction implements ImportTaskPostAction {
 					}));
 		}
 
-		Theme theme = _themeLocalService.fetchTheme(
-			styleBookEntry.getCompanyId(), styleBookEntry.getThemeId());
-
-		if ((theme == null) &&
-			StyleBookUtil.isThemeInactive(
+		if (StyleBookUtil.isThemeInactive(
 				styleBookEntry.getCompanyId(), styleBookEntry.getThemeId())) {
 
-			String themeWarningMessage = _language.format(
-				LocaleUtil.US,
-				"the-theme-referenced-by-x-is-not-deployed-in-this-" +
-					"environment-and-its-tokens-could-not-be-verified-the-" +
-						"default-theme-will-be-used-until-it-is-available",
-				styleBookEntry.getName());
-
-			warningMessages.add(themeWarningMessage);
+			warningMessages.add(
+				_language.format(
+					LocaleUtil.US,
+					"the-theme-referenced-by-x-is-not-available-in-this-" +
+						"environment",
+					styleBookEntry.getName()));
 		}
 		else if (_hasMissingTokens(styleBookEntry)) {
 			warningMessages.add(
@@ -165,8 +157,5 @@ public class StyleBookImportTaskPostAction implements ImportTaskPostAction {
 
 	@Reference
 	private StyleBookEntryLocalService _styleBookEntryLocalService;
-
-	@Reference
-	private ThemeLocalService _themeLocalService;
 
 }
