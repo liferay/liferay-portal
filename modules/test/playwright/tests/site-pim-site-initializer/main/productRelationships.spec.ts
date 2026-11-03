@@ -330,8 +330,8 @@ test(
 );
 
 test(
-	'View a related product from the row menu',
-	{tag: ['@LPD-109922']},
+	'Edit and view a related product from the row menu',
+	{tag: ['@LPD-109721', '@LPD-109922']},
 	async ({productPage, productRelationshipsPage, productsPage}) => {
 		const productTitle1 = getRandomString();
 		const productTitle2 = getRandomString();
@@ -349,12 +349,36 @@ test(
 
 			await productRelationshipsPage.addRelationships([productTitle2]);
 
-			await productRelationshipsPage.clickItemAction(
-				'View',
-				productTitle2
-			);
+			await test.step('View the related product as read only in a modal', async () => {
+				await productRelationshipsPage.clickItemAction(
+					'View',
+					productTitle2
+				);
 
-			await expect(productPage.title).toHaveValue(productTitle2);
+				await expect(productRelationshipsPage.viewModal).toBeVisible();
+
+				const titleInput =
+					productRelationshipsPage.viewModalFrame.locator(
+						'[name="ObjectField_title"]'
+					);
+
+				await expect(titleInput).toHaveValue(productTitle2);
+				await expect(titleInput).not.toBeEditable();
+
+				await productRelationshipsPage.viewModalCloseButton.click();
+
+				await expect(productRelationshipsPage.viewModal).toBeHidden();
+			});
+
+			await test.step('Edit the related product from the row menu', async () => {
+				await productRelationshipsPage.clickItemAction(
+					'Edit',
+					productTitle2
+				);
+
+				await expect(productPage.title).toHaveValue(productTitle2);
+				await expect(productPage.title).toBeEditable();
+			});
 		}
 		finally {
 			await productsPage.goto();

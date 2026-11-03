@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page, expect} from '@playwright/test';
+import {FrameLocator, Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../../../utils/clickAndExpectToBeVisible';
 
@@ -14,6 +14,9 @@ export class ProductRelationshipsPage {
 	readonly rows: Locator;
 	readonly selectorConfirmButton: Locator;
 	readonly selectorDialog: Locator;
+	readonly viewModal: Locator;
+	readonly viewModalCloseButton: Locator;
+	readonly viewModalFrame: FrameLocator;
 
 	constructor(page: Page) {
 		this.container = page.locator('.pim-product-relationships');
@@ -29,6 +32,15 @@ export class ProductRelationshipsPage {
 			exact: true,
 			name: 'Save',
 		});
+
+		this.viewModal = page.locator('.modal').filter({
+			has: page.getByRole('heading', {exact: true, name: 'View'}),
+		});
+
+		this.viewModalCloseButton = this.viewModal.getByRole('button', {
+			name: 'Close',
+		});
+		this.viewModalFrame = this.viewModal.frameLocator('iframe');
 	}
 
 	async addRelationships(names: string[]) {
