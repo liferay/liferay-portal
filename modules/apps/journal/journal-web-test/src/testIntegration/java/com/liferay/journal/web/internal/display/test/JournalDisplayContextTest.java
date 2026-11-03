@@ -6,6 +6,8 @@
 package com.liferay.journal.web.internal.display.test;
 
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
+import com.liferay.dynamic.data.mapping.model.DDMStructure;
+import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
 import com.liferay.journal.constants.JournalArticleConstants;
 import com.liferay.journal.constants.JournalFolderConstants;
 import com.liferay.journal.model.JournalArticle;
@@ -21,6 +23,7 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.portlet.bridges.mvc.constants.MVCRenderConstants;
 import com.liferay.portal.kernel.search.Field;
@@ -29,6 +32,9 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFunction;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletRenderResponse;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
@@ -91,6 +97,46 @@ public class JournalDisplayContextTest {
 		_user = UserTestUtil.addUser();
 
 		_serviceContext.setUserId(_user.getUserId());
+	}
+
+	@Test
+	@TestInfo("LPD-113664")
+	public void testGetAddMenuFavItems() throws Exception {
+		DDMStructure ddmStructure1 = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+		DDMStructure ddmStructure2 = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
+
+		Object journalDisplayContext = _getJournalDisplayContext();
+
+		List<DDMStructure> ddmStructures = ReflectionTestUtil.invoke(
+			journalDisplayContext, "getDDMStructures", new Class<?>[0]);
+
+		Assert.assertTrue(ddmStructures.contains(ddmStructure1));
+		Assert.assertTrue(ddmStructures.contains(ddmStructure2));
+
+		Assert.assertArrayEquals(
+			new long[0],
+			ReflectionTestUtil.invoke(
+				journalDisplayContext, "getAddMenuFavItems", new Class<?>[0]));
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.addParameter(
+			"ddmStructureId", String.valueOf(ddmStructure2.getStructureId()));
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay());
+
+		_addMenuFavItemMVCActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		Assert.assertArrayEquals(
+			new long[] {ddmStructure2.getStructureId()},
+			ReflectionTestUtil.invoke(
+				_getJournalDisplayContext(), "getAddMenuFavItems",
+				new Class<?>[0]));
 	}
 
 	@Test
@@ -265,6 +311,15 @@ public class JournalDisplayContextTest {
 		Assert.assertEquals(results.toString(), expectedSize, results.size());
 	}
 
+	private Object _getJournalDisplayContext() throws Exception {
+		MockLiferayPortletRenderRequest mockLiferayPortletRenderRequest =
+			_renderPortlet();
+
+		return mockLiferayPortletRenderRequest.getAttribute(
+			"com.liferay.journal.web.internal.display.context." +
+				"JournalDisplayContext");
+	}
+
 	private Map<Locale, String> _getLocaleStringMap(String value) {
 		return HashMapBuilder.put(
 			LocaleUtil.getDefault(), value
@@ -381,6 +436,7 @@ public class JournalDisplayContextTest {
 		themeDisplay.setPermissionChecker(
 			PermissionCheckerFactoryUtil.create(_user));
 		themeDisplay.setScopeGroupId(_group.getGroupId());
+		themeDisplay.setSignedIn(true);
 		themeDisplay.setSiteGroupId(_group.getGroupId());
 		themeDisplay.setUser(_user);
 
@@ -454,6 +510,9 @@ public class JournalDisplayContextTest {
 			unsafeFunction.apply(
 				_getSearchProps(mockLiferayPortletRenderRequest)));
 	}
+
+	@Inject(filter = "mvc.command.name=/journal/add_menu_fav_item")
+	private MVCActionCommand _addMenuFavItemMVCActionCommand;
 
 	@Inject
 	private CommentManager _commentManager;
