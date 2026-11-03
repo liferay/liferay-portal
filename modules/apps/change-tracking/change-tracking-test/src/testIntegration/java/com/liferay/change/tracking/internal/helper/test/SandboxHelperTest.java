@@ -224,17 +224,16 @@ public class SandboxHelperTest {
 			UserNotificationEvent userNotificationEvent =
 				userNotificationEvents.get(0);
 
-			JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+			JSONObject jsonObject = _jsonFactory.createJSONObject(
 				userNotificationEvent.getPayload());
 
 			Assert.assertEquals(
 				ctCollection.getCtCollectionId(),
-				payloadJSONObject.getLong("classPK"));
+				jsonObject.getLong("classPK"));
 			Assert.assertEquals(
 				PublicationRoleConstants.ROLE_PUBLISHER,
-				payloadJSONObject.getInt("roleValue"));
-			Assert.assertEquals(
-				user.getUserId(), payloadJSONObject.getLong("userId"));
+				jsonObject.getInt("roleValue"));
+			Assert.assertEquals(user.getUserId(), jsonObject.getLong("userId"));
 
 			Assert.assertEquals(1, MailServiceTestUtil.getInboxSize());
 

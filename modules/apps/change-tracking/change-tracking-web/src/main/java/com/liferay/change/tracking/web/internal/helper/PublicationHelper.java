@@ -75,19 +75,21 @@ public class PublicationHelper {
 		Company company = _companyLocalService.getCompany(
 			ctCollection.getCompanyId());
 
-		Group guestGroup = _groupLocalService.getGroup(
-			company.getCompanyId(), GroupConstants.GUEST);
+		Group controlPanelGroup = _groupLocalService.getGroup(
+			company.getCompanyId(), GroupConstants.CONTROL_PANEL);
+
+		String portalURL = company.getPortalURL(controlPanelGroup.getGroupId());
 
 		String portletNamespace = _portal.getPortletNamespace(
 			CTPortletKeys.PUBLICATIONS);
 
 		String reviewChangesURL = _portal.getControlPanelFullURL(
-			guestGroup.getGroupId(), CTPortletKeys.PUBLICATIONS,
+			controlPanelGroup.getGroupId(), CTPortletKeys.PUBLICATIONS,
 			HashMapBuilder.put(
-				portletNamespace + "ctCollectionId",
+				portletNamespace.concat("ctCollectionId"),
 				new String[] {String.valueOf(ctCollection.getCtCollectionId())}
 			).put(
-				portletNamespace + "mvcRenderCommandName",
+				portletNamespace.concat("mvcRenderCommandName"),
 				new String[] {"/change_tracking/view_changes"}
 			).build());
 
@@ -119,9 +121,7 @@ public class PublicationHelper {
 
 			sendEmail(
 				ctCollection.getCompanyId(), ctCollection.getCtCollectionId(),
-				ctCollectionUser,
-				company.getPortalURL(guestGroup.getGroupId()),
-				user.getUserId(), reviewChangesURL,
+				ctCollectionUser, portalURL, user.getUserId(), reviewChangesURL,
 				ServiceContextThreadLocal.getServiceContext());
 		}
 	}

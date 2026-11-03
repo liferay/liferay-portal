@@ -191,6 +191,19 @@ public class InviteUsersMVCResourceCommand
 		int[] roleValues = ParamUtil.getIntegerValues(
 			resourceRequest, "roleValues");
 
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
+
+		String reviewChangesURL = PortletURLBuilder.create(
+			_portal.getControlPanelPortletURL(
+				serviceContext.getRequest(), serviceContext.getScopeGroup(),
+				CTPortletKeys.PUBLICATIONS, 0, 0, PortletRequest.RENDER_PHASE)
+		).setMVCRenderCommandName(
+			"/change_tracking/view_changes"
+		).setParameter(
+			"ctCollectionId", ctCollectionId
+		).buildString();
+
 		for (int i = 0; i < userIds.length; i++) {
 			List<UserGroupRole> userGroupRoles =
 				_userGroupRoleLocalService.getUserGroupRoles(
@@ -233,24 +246,10 @@ public class InviteUsersMVCResourceCommand
 				ctCollectionId, themeDisplay.getUser(), userIds[i],
 				roleValues[i]);
 
-			ServiceContext serviceContext =
-				ServiceContextThreadLocal.getServiceContext();
-
 			_publicationHelper.sendEmail(
 				themeDisplay.getCompanyId(), ctCollectionId,
 				themeDisplay.getUser(), themeDisplay.getPortalURL(), userIds[i],
-				PortletURLBuilder.create(
-					_portal.getControlPanelPortletURL(
-						serviceContext.getRequest(),
-						serviceContext.getScopeGroup(),
-						CTPortletKeys.PUBLICATIONS, 0, 0,
-						PortletRequest.RENDER_PHASE)
-				).setMVCRenderCommandName(
-					"/change_tracking/view_changes"
-				).setParameter(
-					"ctCollectionId", ctCollectionId
-				).buildString(),
-				serviceContext);
+				reviewChangesURL, serviceContext);
 		}
 
 		JSONPortletResponseUtil.writeJSON(
