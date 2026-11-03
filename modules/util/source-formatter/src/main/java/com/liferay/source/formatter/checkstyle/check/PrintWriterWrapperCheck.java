@@ -92,11 +92,15 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 
 		int index = parameterExprDetailASTs.indexOf(exprDetailAST);
 
+		if (index == -1) {
+			return;
+		}
+
 		DetailAST parentDetailAST = getParentWithTokenType(
 			literalNewDetailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
 			TokenTypes.LITERAL_NEW, TokenTypes.RECORD_DEF);
 
-		if ((index == -1) || (parentDetailAST == null) ||
+		if ((parentDetailAST == null) ||
 			(parentDetailAST.getType() == TokenTypes.LITERAL_NEW)) {
 
 			return;
