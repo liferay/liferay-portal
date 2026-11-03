@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.service.component.annotations.Component;
@@ -109,7 +108,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			throw new PIMConnectorException("enter-a-valid-url");
 		}
 
-		Set<String> catalogExternalReferenceCodes = new TreeSet<>();
 		Map<String, JSONObject> optionJSONObjects = new TreeMap<>();
 
 		JSONArray jsonArray = JSONUtil.toJSONArray(
@@ -126,8 +124,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 					throw new PIMConnectorException(
 						"a-product-is-not-mapped-to-a-catalog");
 				}
-
-				catalogExternalReferenceCodes.add(catalogExternalReferenceCode);
 
 				JSONArray productOptionsJSONArray = jsonObject.getJSONArray(
 					"productOptions");
@@ -167,13 +163,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 
 		try {
 			liferayCommerceRESTClient.authenticate();
-
-			for (String catalogExternalReferenceCode :
-					catalogExternalReferenceCodes) {
-
-				liferayCommerceRESTClient.checkCatalog(
-					catalogExternalReferenceCode);
-			}
 
 			for (Map.Entry<String, JSONObject> entry :
 					optionJSONObjects.entrySet()) {

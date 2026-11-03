@@ -11,7 +11,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
-import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.site.pim.site.initializer.exception.PIMConnectorException;
@@ -46,12 +45,6 @@ public class LiferayCommerceRESTClientTest {
 	}
 
 	@Test
-	public void testCheckCatalog() throws Exception {
-		_testCheckCatalogWithErrorResponse();
-		_testCheckCatalogWithIOException();
-	}
-
-	@Test
 	public void testPostImportTask() throws Exception {
 		_testPostImportTask();
 		_testPostImportTaskWithErrorResponse();
@@ -61,6 +54,7 @@ public class LiferayCommerceRESTClientTest {
 	public void testPutOption() throws Exception {
 		_testPutOption();
 		_testPutOptionWithErrorResponse();
+		_testPutOptionWithIOException();
 	}
 
 	private void _assertPIMConnectorException(
@@ -157,18 +151,16 @@ public class LiferayCommerceRESTClientTest {
 		Assert.assertEquals("***", bodyJSONObject.getString("access_token"));
 		Assert.assertEquals(600, bodyJSONObject.getInt("expires_in"));
 
-		liferayCommerceRESTClient.checkCatalog(
-			_CATALOG_EXTERNAL_REFERENCE_CODE);
+		liferayCommerceRESTClient.putOption(
+			"color", JSONUtil.put("key", "color"));
 
 		options = _optionsList.get(1);
 
 		Assert.assertEquals(
-			StringBundler.concat(
-				"http://localhost:8080/o/headless-commerce-admin-catalog/v1.0",
-				"/catalog/by-externalReferenceCode/",
-				_CATALOG_EXTERNAL_REFERENCE_CODE),
+			"http://localhost:8080/o/headless-commerce-admin-catalog/v1.0" +
+				"/options/by-externalReferenceCode/color",
 			options.getLocation());
-		Assert.assertEquals(Http.Method.GET, options.getMethod());
+		Assert.assertEquals(Http.Method.PUT, options.getMethod());
 
 		Map<String, String> headers = options.getHeaders();
 
@@ -190,57 +182,6 @@ public class LiferayCommerceRESTClientTest {
 		_assertPIMConnectorException(
 			"unable-to-authenticate-with-the-remote-instance",
 			LiferayCommerceRESTClient::authenticate);
-	}
-
-	private void _testCheckCatalogWithErrorResponse() throws Exception {
-		_mockHttp(404, JSONUtil.put("status", "NOT_FOUND"));
-
-		_assertPIMConnectorException(
-			"a-catalog-mapped-to-a-product-does-not-exist-in-the-remote-" +
-				"instance",
-			liferayCommerceRESTClient -> liferayCommerceRESTClient.checkCatalog(
-				_CATALOG_EXTERNAL_REFERENCE_CODE));
-
-		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
-
-		_assertPIMConnectorException(
-			"unable-to-authenticate-with-the-remote-instance",
-			liferayCommerceRESTClient -> liferayCommerceRESTClient.checkCatalog(
-				_CATALOG_EXTERNAL_REFERENCE_CODE));
-	}
-
-	private void _testCheckCatalogWithIOException() throws Exception {
-		Mockito.when(
-			_http.URLtoString(Mockito.any(Http.Options.class))
-		).thenThrow(
-			new IOException("Connection refused")
-		);
-
-		LiferayCommerceRESTClient liferayCommerceRESTClient =
-			_createLiferayCommerceRESTClient();
-
-		try {
-			liferayCommerceRESTClient.checkCatalog(
-				_CATALOG_EXTERNAL_REFERENCE_CODE);
-
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
-				"unable-to-connect-to-the-remote-instance",
-				pimConnectorException.getMessage());
-		}
-
-		JSONArray jsonArray = liferayCommerceRESTClient.getLogJSONArray();
-
-		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
-
-		JSONObject jsonObject = jsonArray.getJSONObject(0);
-
-		JSONObject responseJSONObject = jsonObject.getJSONObject("response");
-
-		Assert.assertEquals(
-			"Connection refused", responseJSONObject.getString("error"));
 	}
 
 	private void _testPostImportTask() throws Exception {
@@ -331,8 +272,39 @@ public class LiferayCommerceRESTClientTest {
 				"color", JSONUtil.put("key", "color")));
 	}
 
-	private static final String _CATALOG_EXTERNAL_REFERENCE_CODE =
-		RandomTestUtil.randomString();
+	private void _testPutOptionWithIOException() throws Exception {
+		Mockito.when(
+			_http.URLtoString(Mockito.any(Http.Options.class))
+		).thenThrow(
+			new IOException("Connection refused")
+		);
+
+		LiferayCommerceRESTClient liferayCommerceRESTClient =
+			_createLiferayCommerceRESTClient();
+
+		try {
+			liferayCommerceRESTClient.putOption(
+				"color", JSONUtil.put("key", "color"));
+
+			Assert.fail();
+		}
+		catch (PIMConnectorException pimConnectorException) {
+			Assert.assertEquals(
+				"unable-to-connect-to-the-remote-instance",
+				pimConnectorException.getMessage());
+		}
+
+		JSONArray jsonArray = liferayCommerceRESTClient.getLogJSONArray();
+
+		Assert.assertEquals(jsonArray.toString(), 1, jsonArray.length());
+
+		JSONObject jsonObject = jsonArray.getJSONObject(0);
+
+		JSONObject responseJSONObject = jsonObject.getJSONObject("response");
+
+		Assert.assertEquals(
+			"Connection refused", responseJSONObject.getString("error"));
+	}
 
 	private final Http _http = Mockito.mock(Http.class);
 	private final List<Http.Options> _optionsList = new ArrayList<>();

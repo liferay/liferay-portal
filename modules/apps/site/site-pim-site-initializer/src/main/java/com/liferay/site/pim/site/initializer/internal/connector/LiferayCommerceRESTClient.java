@@ -64,25 +64,6 @@ public class LiferayCommerceRESTClient {
 		_accessToken = jsonObject.getString("access_token");
 	}
 
-	public void checkCatalog(String externalReferenceCode) throws Exception {
-		Http.Options options = _createOptions(
-			"/o/headless-commerce-admin-catalog/v1.0/catalog" +
-				"/by-externalReferenceCode/" +
-					URLCodec.encodeURL(externalReferenceCode));
-
-		_invoke(null, options);
-
-		Http.Response response = options.getResponse();
-
-		if (response.getResponseCode() == HttpServletResponse.SC_NOT_FOUND) {
-			throw new PIMConnectorException(
-				"a-catalog-mapped-to-a-product-does-not-exist-in-the-remote-" +
-					"instance");
-		}
-
-		_checkResponse(options);
-	}
-
 	public JSONArray getLogJSONArray() {
 		return _logJSONArray;
 	}

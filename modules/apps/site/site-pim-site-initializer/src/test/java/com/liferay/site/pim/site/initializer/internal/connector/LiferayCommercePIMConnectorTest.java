@@ -614,13 +614,6 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(
 			"http://localhost:8080/o/oauth2/token", options.getLocation());
 
-		_getOptions(
-			"/catalog/by-externalReferenceCode/" +
-				_CATALOG_EXTERNAL_REFERENCE_CODE_1);
-		_getOptions(
-			"/catalog/by-externalReferenceCode/" +
-				_CATALOG_EXTERNAL_REFERENCE_CODE_2);
-
 		options = _getOptions("/options/by-externalReferenceCode/color");
 
 		Assert.assertEquals(Http.Method.PUT, options.getMethod());
@@ -670,15 +663,13 @@ public class LiferayCommercePIMConnectorTest {
 
 		jsonArray = jsonObject.getJSONArray("log");
 
-		Assert.assertEquals(jsonArray.toString(), 5, jsonArray.length());
+		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
 	}
 
 	private void _testExecuteWithErrorResponse() throws Exception {
 		_mockHttp(
 			HashMapBuilder.put(
-				"/catalog/by-externalReferenceCode/" +
-					_CATALOG_EXTERNAL_REFERENCE_CODE_1,
-				404
+				"/import-task/", 500
 			).build());
 
 		try {
@@ -692,8 +683,7 @@ public class LiferayCommercePIMConnectorTest {
 		}
 		catch (PIMConnectorException pimConnectorException) {
 			Assert.assertEquals(
-				"a-catalog-mapped-to-a-product-does-not-exist-in-the-remote-" +
-					"instance",
+				"the-remote-instance-returned-an-error",
 				pimConnectorException.getMessage());
 
 			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
@@ -706,11 +696,6 @@ public class LiferayCommercePIMConnectorTest {
 		finally {
 			_mockHttp(Collections.emptyMap());
 		}
-
-		Assert.assertTrue(
-			_getOptionsList(
-				"/import-task/"
-			).isEmpty());
 	}
 
 	private void _testExecuteWithFieldMappingRules() throws Exception {
@@ -925,9 +910,9 @@ public class LiferayCommercePIMConnectorTest {
 
 			JSONArray jsonArray = jsonObject.getJSONArray("log");
 
-			Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
+			Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
-			JSONObject logJSONObject = jsonArray.getJSONObject(2);
+			JSONObject logJSONObject = jsonArray.getJSONObject(1);
 
 			JSONObject responseJSONObject = logJSONObject.getJSONObject(
 				"response");
