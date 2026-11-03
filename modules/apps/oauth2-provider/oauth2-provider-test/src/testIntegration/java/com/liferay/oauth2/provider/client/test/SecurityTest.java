@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -574,6 +575,27 @@ public class SecurityTest extends BaseClientTestCase {
 			long companyId = TestPropsValues.getCompanyId();
 
 			_user = UserTestUtil.getAdminUser(companyId);
+
+			boolean agreedToTermsOfUse = _user.isAgreedToTermsOfUse();
+			String reminderQueryAnswer = _user.getReminderQueryAnswer();
+			String reminderQueryQuestion = _user.getReminderQueryQuestion();
+
+			autoCloseables.add(
+				() -> {
+					User user = UserLocalServiceUtil.getUser(_user.getUserId());
+
+					user.setReminderQueryQuestion(reminderQueryQuestion);
+					user.setReminderQueryAnswer(reminderQueryAnswer);
+					user.setAgreedToTermsOfUse(agreedToTermsOfUse);
+
+					UserLocalServiceUtil.updateUser(user);
+				});
+
+			_user.setReminderQueryQuestion(RandomTestUtil.randomString());
+			_user.setReminderQueryAnswer(RandomTestUtil.randomString());
+			_user.setAgreedToTermsOfUse(true);
+
+			_user = UserLocalServiceUtil.updateUser(_user);
 
 			_oAuth2ApplicationLocalService.updateExternalReferenceCode(
 				createOAuth2Application(
