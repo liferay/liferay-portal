@@ -8,12 +8,13 @@
 <%@ include file="/init.jsp" %>
 
 <%
-List<Group> groups = new ArrayList<>();
-
 SiteCommerceChannelTypeDisplayContext siteCommerceChannelTypeDisplayContext = (SiteCommerceChannelTypeDisplayContext)request.getAttribute("site.jsp-portletDisplayContext");
 
 Group channelSiteGroup = siteCommerceChannelTypeDisplayContext.getChannelSite();
+CommerceChannel commerceChannel = siteCommerceChannelTypeDisplayContext.getCommerceChannel();
+long commerceChannelId = siteCommerceChannelTypeDisplayContext.getCommerceChannelId();
 
+List<Group> groups = new ArrayList<>();
 Map<String, Object> site = null;
 
 if (channelSiteGroup != null) {
@@ -25,9 +26,6 @@ if (channelSiteGroup != null) {
 		"name", channelSiteGroup.getName(locale)
 	).build();
 }
-
-CommerceChannel commerceChannel = siteCommerceChannelTypeDisplayContext.getCommerceChannel();
-long commerceChannelId = siteCommerceChannelTypeDisplayContext.getCommerceChannelId();
 
 String searchContainerId = "CommerceChannelSitesSearchContainer";
 
