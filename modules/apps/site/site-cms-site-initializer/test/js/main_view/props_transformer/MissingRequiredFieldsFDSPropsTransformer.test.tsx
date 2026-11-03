@@ -24,6 +24,11 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	useFDSRecordVisit: () => jest.fn(),
 }));
 
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent',
+	() => ({__esModule: true, default: jest.fn(() => null)})
+);
+
 const LANGUAGE_KEYS: Record<string, string> = {
 	'x-missing-required-field': '{0} Missing Required Field',
 	'x-missing-required-fields': '{0} Missing Required Fields',

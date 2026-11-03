@@ -316,17 +316,6 @@ function getAssetListURL(filter: string, sort: string, groupIds: number[]) {
 	return `${SEARCH_URL}?${searchParams}`;
 }
 
-function getAssetsByIdsURL(ids: number[]) {
-	const searchParams = new URLSearchParams({
-		emptySearch: 'true',
-		filter: ids.map((id) => `entryClassPK eq ${id}`).join(' or '),
-		nestedFields: NESTED_FIELDS,
-		pageSize: String(ids.length),
-	});
-
-	return `${SEARCH_URL}?${searchParams}`;
-}
-
 function getQualityAssetsURL(path: string, assetLibraryId?: string) {
 	const searchParams = new URLSearchParams({
 		pageSize: String(GOVERNANCE_ASSET_LIST_PAGE_SIZE),
@@ -379,7 +368,6 @@ function getLongStandingDraftsURL(filter: string, groupIds: number[]) {
 
 export default {
 	getAssetStatistics,
-	getAssetsByIdsURL,
 	getBrokenLinkAssetsURL,
 	getContentAgeDistribution,
 	getContentProgress,

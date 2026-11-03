@@ -346,14 +346,6 @@ describe('GovernanceService.getContentAgeDistribution', () => {
 	});
 });
 
-describe('GovernanceService.getAssetsByIdsURL', () => {
-	it('requests the given assets with the nested fields of the dashboard lists', () => {
-		expect(GovernanceService.getAssetsByIdsURL([1, 2])).toBe(
-			'/o/search/v1.0/search?emptySearch=true&filter=entryClassPK+eq+1+or+entryClassPK+eq+2&nestedFields=embedded%2CsystemProperties.objectDefinitionBrief&pageSize=2'
-		);
-	});
-});
-
 describe('GovernanceService.getBrokenLinkAssetsURL', () => {
 	it('requests the first page of broken link assets sorted by title', () => {
 		expect(GovernanceService.getBrokenLinkAssetsURL()).toBe(

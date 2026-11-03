@@ -24,6 +24,11 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	useFDSRecordVisit: () => jest.fn(),
 }));
 
+jest.mock(
+	'../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent',
+	() => ({__esModule: true, default: jest.fn(() => null)})
+);
+
 const LANGUAGE_KEYS: Record<string, string> = {
 	'x-asset-in-recycle-bin': '{0} Asset in Recycle Bin',
 	'x-assets-in-recycle-bin': '{0} Assets in Recycle Bin',

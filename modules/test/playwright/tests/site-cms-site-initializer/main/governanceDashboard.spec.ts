@@ -263,6 +263,30 @@ async function expectSpaceOption(
 	}
 }
 
+async function viewAndEditContent(page: Page, title: string) {
+	const actionsButton = page.getByRole('button', {name: `${title} Actions`});
+
+	await actionsButton.click();
+
+	await page.getByRole('menuitem', {exact: true, name: 'View'}).click();
+
+	await expect(page.getByTestId('modal-header-name')).toHaveText(title);
+
+	await expect(
+		page
+			.frameLocator('iframe[title="Preview"]')
+			.getByLabel('Title (Read Only)')
+	).toHaveValue(title);
+
+	await page.locator('.modal').getByRole('button', {name: 'Close'}).click();
+
+	await actionsButton.click();
+
+	await page.getByRole('menuitem', {name: 'Edit'}).click();
+
+	await expect(page.getByLabel('Title')).toHaveValue(title);
+}
+
 async function selectSpace(page: Page, spaceName: string) {
 	const searchInput = page.getByRole('textbox', {name: 'Search'});
 
@@ -800,16 +824,8 @@ test.describe('Quality section', () => {
 				).toBeVisible();
 			});
 
-			await test.step('Edit the content from the list', async () => {
-				await page
-					.getByRole('button', {name: `${referringTitle} Actions`})
-					.click();
-
-				await page.getByRole('menuitem', {name: 'Edit'}).click();
-
-				await expect(page.getByLabel('Title')).toHaveValue(
-					referringTitle
-				);
+			await test.step('View and edit the content from the page', async () => {
+				await viewAndEditContent(page, referringTitle);
 			});
 		}
 	);
@@ -945,22 +961,8 @@ test.describe('Quality section', () => {
 				).toBeVisible();
 			});
 
-			await test.step('Offer only the edit action in the page', async () => {
-				await page
-					.getByRole('button', {name: `${title} Actions`})
-					.click();
-
-				const editMenuItem = page.getByRole('menuitem', {name: 'Edit'});
-
-				await expect(editMenuItem).toBeVisible();
-
-				await expect(
-					page.getByRole('menuitem', {name: 'View'})
-				).toBeHidden();
-
-				await editMenuItem.click();
-
-				await expect(page.getByLabel('Title')).toHaveValue(title);
+			await test.step('View and edit the content from the page', async () => {
+				await viewAndEditContent(page, title);
 			});
 
 			await test.step('Check the content leaves the list once the field is filled', async () => {

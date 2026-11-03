@@ -4,9 +4,14 @@
  */
 
 import {IInternalRenderer, IItemsActions} from '@liferay/frontend-data-set-web';
+import {openToast} from 'frontend-js-components-web';
+import {escapeHTML} from 'frontend-js-web';
 import React from 'react';
 
+import ApiHelper from '../../../common/services/ApiHelper';
 import {ISearchAssetObjectEntry} from '../../../common/types/AssetType';
+import {openCMSModal} from '../../../common/utils/openCMSModal';
+import AssetNavigationModalContent from '../../modal/asset_navigation_view/AssetNavigationModalContent';
 import SimpleActionLinkRenderer, {
 	ActionItem,
 } from '../cell_renderers/SimpleActionLinkRenderer';
@@ -14,6 +19,7 @@ import {getFileMimeTypeObjectDefinitionStickerValue} from './transformViewsItemP
 
 export interface AdditionalProps {
 	additionalAPIURLParameters?: string;
+	contentViewURL?: string;
 	fileMimeTypeCssClasses?: Record<string, string>;
 	fileMimeTypeIcons?: Record<string, string>;
 	objectDefinitionCssClasses?: Record<string, string>;
@@ -29,12 +35,88 @@ export interface AssetListFDSProps {
 	searchSuggestionsEnabled?: boolean;
 }
 
+export interface IAssetListItem {
+	id?: number;
+	title?: string;
+}
+
 interface AssetListFDSConfig<T> {
 	renderSubtitle: (itemData: T) => React.ReactNode;
 	titleRendererName: string;
 }
 
-export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
+const NESTED_FIELDS = 'embedded,systemProperties.objectDefinitionBrief';
+
+const SEARCH_URL = '/o/search/v1.0/search';
+
+function getAssetsByIdsURL(ids: number[]) {
+	const searchParams = new URLSearchParams({
+		emptySearch: 'true',
+		filter: ids.map((id) => `entryClassPK eq ${id}`).join(' or '),
+		nestedFields: NESTED_FIELDS,
+		pageSize: String(ids.length),
+	});
+
+	return `${SEARCH_URL}?${searchParams}`;
+}
+
+export async function openAssetViewModal(
+	additionalProps: AdditionalProps,
+	itemData: IAssetListItem,
+	items: IAssetListItem[]
+) {
+	const {data, error} = await ApiHelper.get<{
+		items: ISearchAssetObjectEntry[];
+	}>(getAssetsByIdsURL(items.flatMap(({id}) => id ?? [])));
+
+	const searchAssetObjectEntries = items.flatMap(
+		({id}) => data?.items.find(({embedded}) => embedded?.id === id) ?? []
+	);
+
+	if (!searchAssetObjectEntries.length) {
+		openToast({
+			message: error
+				? escapeHTML(error)
+				: Liferay.Language.get('an-unexpected-error-occurred'),
+			type: 'danger',
+		});
+
+		return;
+	}
+
+	openCMSModal({
+		contentComponent: () =>
+			AssetNavigationModalContent({
+				additionalProps,
+				contentViewURL: additionalProps.contentViewURL ?? '',
+				currentIndex: Math.max(
+					searchAssetObjectEntries.findIndex(
+						({embedded}) => embedded?.id === itemData.id
+					),
+					0
+				),
+				items: searchAssetObjectEntries,
+			}),
+		size: 'full-screen',
+	});
+}
+
+function getViewItemAction(additionalProps: AdditionalProps): IItemsActions {
+	return {
+		data: {id: 'view'},
+		icon: 'view',
+		label: Liferay.Language.get('view'),
+		onClick: ({
+			itemData,
+			items,
+		}: {
+			itemData: IAssetListItem;
+			items: IAssetListItem[];
+		}) => openAssetViewModal(additionalProps, itemData, items),
+	};
+}
+
+export function createAssetListFDSPropsBuilder<T extends IAssetListItem>({
 	renderSubtitle,
 	titleRendererName,
 }: AssetListFDSConfig<T>) {
@@ -85,7 +167,10 @@ export function createAssetListFDSPropsBuilder<T = ISearchAssetObjectEntry>({
 				],
 			},
 			hideManagementBarInEmptyState: true,
-			itemsActions,
+			itemsActions: [
+				...itemsActions,
+				getViewItemAction(remainingAdditionalProps),
+			],
 			searchAsYouType: otherProps.searchAsYouType ?? true,
 			searchSuggestionsEnabled:
 				otherProps.searchSuggestionsEnabled ?? true,

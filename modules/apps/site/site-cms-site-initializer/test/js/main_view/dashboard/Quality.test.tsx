@@ -8,22 +8,14 @@ import {FrontendDataSet} from '@liferay/frontend-data-set-web';
 
 // eslint-disable-next-line @liferay/portal/no-cross-module-deep-import
 import {checkAccessibility} from '@liferay/layout-js-components-web/test/__lib__/index';
-import {render, screen, waitFor} from '@testing-library/react';
+import {render, screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {openToast} from 'frontend-js-components-web';
 import React from 'react';
 
-import ApiHelper from '../../../../src/main/resources/META-INF/resources/js/common/services/ApiHelper';
-import {openCMSModal} from '../../../../src/main/resources/META-INF/resources/js/common/utils/openCMSModal';
 import {GovernanceContext} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/GovernanceContext';
 import {Quality} from '../../../../src/main/resources/META-INF/resources/js/main_view/dashboard/governance/components/Quality';
 import {getBrokenLinksFDSProps} from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/BrokenLinksFDSPropsTransformer';
 import {getMissingRequiredFieldsFDSProps} from '../../../../src/main/resources/META-INF/resources/js/main_view/props_transformer/MissingRequiredFieldsFDSPropsTransformer';
-
-jest.mock('frontend-js-components-web', () => ({
-	...(jest.requireActual('frontend-js-components-web') as object),
-	openToast: jest.fn(),
-}));
 
 jest.mock('frontend-js-web', () => ({
 	...(jest.requireActual('frontend-js-web') as object),
@@ -38,10 +30,6 @@ jest.mock('@liferay/frontend-data-set-web', () => ({
 	FrontendDataSet: jest.fn(() => null),
 }));
 
-jest.mock(
-	'../../../../src/main/resources/META-INF/resources/js/common/utils/openCMSModal',
-	() => ({openCMSModal: jest.fn()})
-);
 jest.mock(
 	'../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent',
 	() => ({__esModule: true, default: jest.fn(() => null)})
@@ -144,18 +132,6 @@ function getFDSPropsArguments(getFDSProps: unknown = getBrokenLinksFDSProps) {
 	return (getFDSProps as jest.Mock).mock.calls[0][0];
 }
 
-async function clickViewAction(itemData: {id: number}, items: {id: number}[]) {
-	renderQuality();
-
-	await userEvent.click(getCard());
-
-	const viewAction = getFDSPropsArguments().itemsActions.find(
-		({data}: {data: {id: string}}) => data.id === 'view'
-	);
-
-	viewAction.onClick({itemData, items});
-}
-
 describe('[CMS Dashboard] Quality', () => {
 	afterEach(() => {
 		jest.restoreAllMocks();
@@ -207,13 +183,7 @@ describe('[CMS Dashboard] Quality', () => {
 
 			expect(getFDSPropsArguments(getFDSProps)).toMatchObject({
 				apiURL: `/o/headless-cms/v1.0/${apiPath}?pageSize=8&sort=title%3Aasc`,
-				itemsActions: [
-					...itemsActions,
-					expect.objectContaining({
-						data: {id: 'view'},
-						onClick: expect.any(Function),
-					}),
-				],
+				itemsActions,
 				searchAsYouType: false,
 				searchSuggestionsEnabled: false,
 			});
@@ -285,85 +255,6 @@ describe('[CMS Dashboard] Quality', () => {
 				],
 			},
 		});
-	});
-
-	it('opens the CMS view modal of the clicked asset among the listed ones', async () => {
-		const getSpy = jest.spyOn(ApiHelper, 'get').mockResolvedValue({
-			data: {
-				items: [
-					{embedded: {id: 2, title: 'Second'}},
-					{embedded: {id: 1, title: 'First'}},
-				],
-			},
-			error: null,
-		} as any);
-
-		await clickViewAction({id: 2}, [{id: 1}, {id: 2}]);
-
-		await waitFor(() => expect(openCMSModal).toHaveBeenCalled());
-
-		const searchParams = new URL(
-			getSpy.mock.calls[0][0] as string,
-			'http://localhost'
-		).searchParams;
-
-		expect(searchParams.get('filter')).toBe(
-			'entryClassPK eq 1 or entryClassPK eq 2'
-		);
-
-		const [{contentComponent}] = (openCMSModal as jest.Mock).mock.calls[0];
-
-		contentComponent();
-
-		expect(
-			jest.requireMock(
-				'../../../../src/main/resources/META-INF/resources/js/main_view/modal/asset_navigation_view/AssetNavigationModalContent'
-			).default
-		).toHaveBeenCalledWith(
-			expect.objectContaining({
-				currentIndex: 1,
-				items: [
-					{embedded: {id: 1, title: 'First'}},
-					{embedded: {id: 2, title: 'Second'}},
-				],
-			})
-		);
-	});
-
-	it('shows the escaped error instead of the view modal when the assets cannot be fetched', async () => {
-		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
-			data: null,
-			error: '<b>Request failed</b>',
-		} as any);
-
-		await clickViewAction({id: 2}, [{id: 2}]);
-
-		await waitFor(() =>
-			expect(openToast).toHaveBeenCalledWith({
-				message: '&lt;b&gt;Request failed&lt;&#047;b&gt;',
-				type: 'danger',
-			})
-		);
-
-		expect(openCMSModal).not.toHaveBeenCalled();
-	});
-
-	it('shows an error instead of the view modal when the search does not return the asset', async () => {
-		jest.spyOn(ApiHelper, 'get').mockResolvedValue({
-			data: {items: []},
-			error: null,
-		} as any);
-
-		await clickViewAction({id: 2}, [{id: 2}]);
-
-		await waitFor(() =>
-			expect(openToast).toHaveBeenCalledWith({
-				message: 'an-unexpected-error-occurred',
-				type: 'danger',
-			})
-		);
-
-		expect(openCMSModal).not.toHaveBeenCalled();
 	});
 
 	it.each(CARDS)(
