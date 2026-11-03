@@ -1,9 +1,12 @@
 import Form from 'shared/components/form';
 import React from 'react';
-import {getPropertyValue, setPropertyValue} from '../utils/custom-inputs';
+import {CustomValue} from 'shared/util/records';
+import {fromJS, List} from 'immutable';
+import {findLifecycleFromValue} from '../utils/custom-inputs';
 import {ISegmentEditorCustomInputBase} from '../utils/types';
 import {Option, Picker} from '@clayui/core';
-import {useLifecycleStageOptions} from 'shared/hooks/useLifecycleStageOptions';
+import {RelationalOperators} from '../utils/constants';
+import {useChannelLifecycles} from 'shared/hooks/useChannelLifecycles';
 import {useParams} from 'react-router-dom';
 
 interface IAccountSelectProps extends ISegmentEditorCustomInputBase {
@@ -21,7 +24,9 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 }) => {
 	const {channelId} = useParams();
 
-	const {options} = useLifecycleStageOptions({channelId, groupId});
+	const {lifecycles} = useChannelLifecycles({channelId, groupId});
+
+	const lifecycle = findLifecycleFromValue(lifecycles, value);
 
 	return (
 		<div className="account-select-input-root criteria-statement">
@@ -36,25 +41,32 @@ const AccountSelectInput: React.FC<IAccountSelectProps> = ({
 
 				<OperatorDropdown />
 
-				<Form.GroupItem>
+				<Form.GroupItem shrink>
 					<Picker
-						disabled={options.length === 0}
-						items={options}
-						onSelectionChange={(stageId) =>
+						aria-label={Liferay.Language.get('lifecycle')}
+						disabled={lifecycles.length === 0}
+						items={lifecycles}
+						onSelectionChange={(selectedLifecycleERC) =>
 							onChange({
 								valid: true,
-								value: setPropertyValue(
-									value,
-									'value',
-									0,
-									String(stageId)
-								),
+								value: value.setIn(
+									['criterionGroup', 'items'],
+									List([
+										fromJS({
+											operatorName:
+												RelationalOperators.NE,
+											propertyName: `lifecycleStatus@${selectedLifecycleERC}`,
+											value: null,
+										}),
+									])
+								) as CustomValue,
 							})
 						}
-						selectedKey={getPropertyValue(value, 'value', 0)}
+						placeholder={Liferay.Language.get('select')}
+						selectedKey={lifecycle?.externalReferenceCode ?? ''}
 					>
-						{({label, value}) => (
-							<Option key={value}>{label}</Option>
+						{({externalReferenceCode, name}) => (
+							<Option key={externalReferenceCode}>{name}</Option>
 						)}
 					</Picker>
 				</Form.GroupItem>
