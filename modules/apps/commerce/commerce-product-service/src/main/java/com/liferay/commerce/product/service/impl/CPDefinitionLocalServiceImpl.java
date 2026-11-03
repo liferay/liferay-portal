@@ -25,6 +25,7 @@ import com.liferay.commerce.product.constants.CommerceChannelAccountEntryRelCons
 import com.liferay.commerce.product.exception.CPDefinitionDeliveryMaxSubscriptionCyclesException;
 import com.liferay.commerce.product.exception.CPDefinitionDisplayDateException;
 import com.liferay.commerce.product.exception.CPDefinitionExpirationDateException;
+import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPDefinitionIgnoreSKUCombinationsException;
 import com.liferay.commerce.product.exception.CPDefinitionMaxSubscriptionCyclesException;
 import com.liferay.commerce.product.exception.CPDefinitionMetaDescriptionException;
@@ -449,6 +450,13 @@ public class CPDefinitionLocalServiceImpl
 				externalReferenceCode, serviceContext.getCompanyId());
 
 			if (cProduct != null) {
+				if (cProduct.getGroupId() != groupId) {
+					throw new CPDefinitionGroupIdException(
+						StringBundler.concat(
+							"Commerce product ", cProduct.getCProductId(),
+							" does not belong to group ", groupId));
+				}
+
 				if (cpDefinitionId == 0) {
 					cpDefinitionId = cProduct.getPublishedCPDefinitionId();
 				}
