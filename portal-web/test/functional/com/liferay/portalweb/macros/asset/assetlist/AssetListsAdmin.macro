@@ -46,32 +46,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addKeywordsFilter(keyWords = null, queryContains = null, queryAndOperator = null) {
-		Panel.expandPanel(panel = "Source");
-
-		if (!(IsSelectedLabel(locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT", value1 = "All Types"))) {
-			Select(
-				locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT",
-				value1 = "All Types");
-		}
-
-		AssetListsAdmin.selectFilterCondition(
-			field = "Keywords",
-			queryAndOperator = ${queryAndOperator},
-			queryContains = ${queryContains});
-
-		Type(
-			locator1 = "AssetLists#FILTER_CONDITION_VALUE",
-			value1 = ${keyWords});
-
-		PortletEntry.save();
-
-		AssertTextEquals(
-			locator1 = "AssetLists#FILTER_CONDITION_VALUE",
-			value1 = ${keyWords});
-	}
-
-	@summary = "Default summary"
 	macro addManualSelection(assetListTitle = null) {
 		if (isSet(depotName)) {
 			LexiconEntry.gotoAddMenuItem(menuItem = "Manual Collection");
@@ -136,32 +110,6 @@ definition {
 		WaitForElementNotPresent(
 			key_text = "Save",
 			locator1 = "Button#ANY_DISABLED");
-
-		PortletEntry.save();
-	}
-
-	@summary = "Default summary"
-	macro addTagsFilter(queryContains = null, queryAndOperator = null, tagNameList = null) {
-		AssetListsAdmin.selectFilterCondition(
-			field = "Tags",
-			queryAndOperator = ${queryAndOperator},
-			queryContains = ${queryContains});
-
-		Click(locator1 = "AssetLists#FILTER_CONDITION_SELECT_BUTTON");
-
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		for (var tagName : list ${tagNameList}) {
-			Check(
-				key_rowEntry = ${tagName},
-				locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_CHECKBOX");
-		}
-
-		SelectFrameTop();
-
-		AssertClick(
-			locator1 = "Button#DONE",
-			value1 = "Done");
 
 		PortletEntry.save();
 	}
@@ -276,56 +224,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro configureScope(otherSite = null, assetListTitle = null, defaultSite = null, selectedAsset = null) {
-		Click(
-			key_title = ${assetListTitle},
-			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
-
-		if (isSet(selectedAsset)) {
-			Panel.expandPanel(panel = "Source");
-
-			Select(
-				locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT",
-				value1 = ${selectedAsset});
-		}
-
-		Panel.expandPanel(panel = "Scope");
-
-		if (isSet(otherSite)) {
-			AssertClick(
-				locator1 = "Configuration#SCOPE_SELECT",
-				value1 = "Select");
-
-			MenuItem.click(menuItem = "Other Site, Asset Library, or Space...");
-
-			SelectFrame(value1 = "relative=top");
-
-			SelectFrame(locator1 = "IFrame#SELECT_SITES");
-
-			Navigator.gotoNavTab(navTab = "My Sites");
-
-			LexiconEntry.changeDisplayStyle(displayStyle = "table");
-
-			LexiconEntry.gotoEntry(rowEntry = ${otherSite});
-		}
-
-		if (isSet(defaultSite)) {
-			AssertClick(
-				locator1 = "Configuration#SCOPE_SELECT",
-				value1 = "Select");
-
-			AssertClick(
-				key_menuItem = ${defaultSite},
-				locator1 = "AssetLists#ASSET_LIST_SCOPE_ITEM",
-				value1 = ${defaultSite});
-		}
-
-		SelectFrameTop();
-
-		PortletEntry.save();
-	}
-
-	@summary = "Default summary"
 	macro deleteEntry(assetListTitle = null) {
 		LexiconList.clickEllipsisItem(
 			item = "Delete",
@@ -423,13 +321,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro gotoEntry(assetListName = null) {
-		Click(
-			key_title = ${assetListName},
-			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
-	}
-
-	@summary = "Default summary"
 	macro gotoEntryMenuItem(item = null, assetListTitle = null) {
 		LexiconList.clickEllipsisItem(
 			item = ${item},
@@ -451,21 +342,6 @@ definition {
 		}
 
 		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-	}
-
-	@summary = "Default summary"
-	macro openSelectAssetTypeFilter() {
-		Button.clickSelect();
-
-		WaitForVisible(locator1 = "ItemSelector#INLINE_MODAL");
-
-		Click(locator1 = "ItemSelector#INLINE_MODAL_FILTER_BUTTON");
-
-		Click(
-			key_filterOption = "Type",
-			locator1 = "ItemSelector#INLINE_MODAL_FILTER_OPTION");
-
-		AssertElementPresent(locator1 = "ItemSelector#INLINE_MODAL_FILTER_ITEMS");
 	}
 
 	@summary = "Default summary"
@@ -651,68 +527,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewAssetList(assetListTitle = null, type = null) {
-		var key_title = ${assetListTitle};
-		var key_type = ${type};
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE",
-			value1 = ${assetListTitle});
-
-		AssertTextEquals.assertPartialText(
-			key_assetTitle = ${assetListTitle},
-			locator1 = "AssetLists#ASSET_TYPE_ROW",
-			value1 = ${type});
-	}
-
-	@summary = "Default summary"
-	macro viewAssetTypeList(itemType = null, assetTypeList = null, itemSubtype = null, assetListName = null) {
-		var key_title = ${assetListName};
-
-		Click(locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
-
-		if (isSet(manualSelection)) {
-			if (isSet(itemType)) {
-				Select(
-					locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT",
-					value1 = ${itemType});
-
-				if (isSet(itemSubtype)) {
-					Select(
-						locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_SUBTYPE_SELECT",
-						value1 = ${itemSubtype});
-				}
-
-				WaitForElementNotPresent(
-					key_text = "Save",
-					locator1 = "Button#ANY_DISABLED");
-
-				PortletEntry.save();
-			}
-
-			AssetListsAdmin.openSelectAssetTypeFilter();
-
-			for (var assetType : list ${assetTypeList}) {
-				AssertElementPresent(
-					key_filterItem = ${assetType},
-					locator1 = "ItemSelector#INLINE_MODAL_FILTER_ITEM");
-			}
-		}
-
-		if (isSet(dynamicSelection)) {
-			Panel.expandPanel(panel = "Source");
-
-			Click(locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT");
-
-			for (var assetType : list ${assetTypeList}) {
-				AssertElementPresent(
-					key_assetType = ${assetType},
-					locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_OPTION");
-			}
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewContent(assetTitleList = null, personalizedVariation = null, assetListTitle = null, assetType = null) {
 		AssetListsAdmin.openViewItems(
 			assetListTitle = ${assetListTitle},
@@ -739,42 +553,6 @@ definition {
 		}
 
 		IFrame.closeFrame();
-	}
-
-	@summary = "Default summary"
-	macro viewNoAssetType(assetListName = null) {
-		var key_title = ${assetListName};
-
-		Click(locator1 = "AssetLists#ASSET_LIST_ENTRY_TITLE");
-
-		if (isSet(manualSelection)) {
-			if (isSet(allAssetsDisabled)) {
-				AssertElementNotPresent(
-					key_text = "Select",
-					locator1 = "Button#ANY");
-			}
-			else {
-				AssetListsAdmin.openSelectAssetTypeFilter();
-
-				for (var assetType : list ${assetType}) {
-					AssertElementNotPresent(
-						key_filterItem = ${assetType},
-						locator1 = "ItemSelector#INLINE_MODAL_FILTER_ITEM");
-				}
-			}
-		}
-
-		if (isSet(dynamicSelection)) {
-			Panel.expandPanel(panel = "Source");
-
-			Click(locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_SELECT");
-
-			for (var assetType : list ${assetType}) {
-				AssertElementNotPresent(
-					key_assetType = ${assetType},
-					locator1 = "APConfiguration#SOURCE_SCOPE_ASSET_TYPE_OPTION");
-			}
-		}
 	}
 
 	@summary = "Default summary"

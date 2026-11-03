@@ -364,20 +364,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro openDepotWebContentStructuresAdmin(depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&_com_liferay_journal_web_portlet_JournalPortlet_mvcPath=%2Fview_ddm_structures.jsp");
-	}
-
-	@summary = "Default summary"
-	macro openDepotWebContentTemplatesAdmin(depotName = null) {
-		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/asset-library-${depotId}/~/control_panel/manage?p_p_id=com_liferay_journal_web_portlet_JournalPortlet&_com_liferay_journal_web_portlet_JournalPortlet_mvcPath=%2Fview_ddm_templates.jsp");
-	}
-
-	@summary = "Default summary"
 	macro openToAddDMEntry(depotName = null, documentTypeName = null, folderName = null) {
 		var depotId = JSONGroupAPI._getDepotIdByName(depotName = ${depotName});
 		var groupId = JSONGroupAPI._getGroupIdByName(

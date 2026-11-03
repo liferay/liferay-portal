@@ -390,15 +390,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewScopesViaMoreIFrame(structureName = null, scopeName = null) {
-		AssertTextEquals(
-			key_tableEntry = ${structureName},
-			key_tableEntryText = ${scopeName},
-			locator1 = "LexiconTable#TABLE_ENTRY_TEXT",
-			value1 = ${scopeName});
-	}
-
-	@summary = "Default summary"
 	macro viewStructuresViaMoreIFrame(structureName = null) {
 		AssertTextEquals(
 			key_rowEntry = ${structureName},

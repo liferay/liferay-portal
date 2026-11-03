@@ -1,64 +1,6 @@
 definition {
 
 	@summary = "Default summary"
-	macro activateStaging(depotName = null, groupId = null, remotePort = null, remoteStaging = null) {
-		Breadcrumb.viewActiveEntry(breadcrumbName = "Staging");
-
-		if (${remoteStaging} == "true") {
-			Check.checkHiddenToggleSwitch(locator1 = "SiteSettingsStaging#STAGING_REMOTE_LIVE");
-
-			Type(
-				locator1 = "SiteSettingsStaging#REMOTE_STAGING_IP",
-				value1 = "localhost");
-
-			if (isSet(remotePort)) {
-				Type(
-					locator1 = "SiteSettingsStaging#REMOTE_STAGING_PORT",
-					value1 = ${remotePort});
-			}
-			else {
-				Type(
-					locator1 = "SiteSettingsStaging#REMOTE_STAGING_PORT",
-					value1 = 8080);
-			}
-
-			Type(
-				locator1 = "SiteSettingsStaging#REMOTE_STAGING_SITE_ID",
-				value1 = ${groupId});
-		}
-		else {
-			Check.checkHiddenToggleSwitch(locator1 = "SiteSettingsStaging#STAGING_LOCAL_LIVE");
-		}
-
-		AssertClickNoError(
-			locator1 = "Button#SAVE",
-			value1 = "Save");
-
-		if (${remoteStaging} == "true") {
-			AssertConfirm(value1 = "Are you sure you want to activate remote staging for ${depotName}?");
-
-			WaitForVisible(locator1 = "Message#SUCCESS");
-
-			AssertTextEquals(
-				locator1 = "Staging#STAGING_INDICATOR_TITLE_DEPOT",
-				value1 = "Staging");
-		}
-		else {
-			AssertConfirm(value1 = "Are you sure you want to activate local staging for ${depotName}?");
-
-			WaitForVisible(locator1 = "Staging#PROCESS_SUCCESSFUL");
-
-			AssertTextEquals(
-				locator1 = "Staging#PROCESS_RESULT",
-				value1 = "SUCCESSFUL");
-
-			AssertTextEquals(
-				locator1 = "Staging#STAGING_INDICATOR_TITLE_DEPOT",
-				value1 = "Staging");
-		}
-	}
-
-	@summary = "Default summary"
 	macro addDepot(depotName = null, depotDescription = null, duplicate = null) {
 		LexiconEntry.gotoAdd();
 
@@ -618,49 +560,6 @@ definition {
 		Button.click(button = "Save");
 
 		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
-	macro remoteStagingSetUp(depotName = null, remotePort = null) {
-		if (isSet(remotePort)) {
-			User.logoutPG();
-
-			User.firstLoginUI(
-				password = PropsUtil.get("default.admin.password"),
-				specificURL = "http://localhost:${remotePort}",
-				userEmailAddress = "test@liferay.com");
-		}
-		else {
-			Navigator.openURL();
-		}
-
-		ApplicationsMenu.gotoPortlet(
-			category = "In Maintenance",
-			panel = "Applications",
-			portlet = "Asset Libraries");
-
-		Depot.addDepot(depotName = "Remote Depot");
-
-		var groupId = Depot.getGroupID(depotName = "Remote Depot");
-
-		if (isSet(remotePort)) {
-			User.loginPG(
-				nodePort = 8080,
-				password = PropsUtil.get("default.admin.password"),
-				userEmailAddress = "test@liferay.com");
-		}
-
-		DepotNavigator.openDepotAdmin();
-
-		DepotNavigator.gotoDepot(depotName = ${depotName});
-
-		DepotNavigator.gotoPortlet(portlet = "Staging");
-
-		Depot.activateStaging(
-			depotName = ${depotName},
-			groupId = ${groupId},
-			remotePort = ${remotePort},
-			remoteStaging = "true");
 	}
 
 	@summary = "Default summary"

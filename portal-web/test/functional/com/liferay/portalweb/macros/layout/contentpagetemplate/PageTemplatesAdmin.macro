@@ -100,11 +100,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro gotoPageTemplate(pageTemplateName = null) {
-		LexiconCard.clickCardTitleLink(card = ${pageTemplateName});
-	}
-
-	@summary = "Default summary"
 	macro gotoPageTemplateEllipsisItem(item = null, pageTemplateName = null) {
 		Click.waitForMenuToggleJSClick(
 			key_card = ${pageTemplateName},
