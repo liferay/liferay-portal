@@ -80,6 +80,20 @@ public class PrintWriterWrapper {
 		_put(new PrintWriter(writer), s);
 	}
 
+	public void method11(Writer writer, String outputPrintWriter) {
+		this.outputPrintWriter = new PrintWriter(writer);
+	}
+
+	public void method12(String s, String outputPrintWriter) {
+		this.outputPrintWriter.println(s);
+	}
+
+	public void method13(Map<String, Object> map, Writer templatePrintWriter) {
+		this.templatePrintWriter = new PrintWriter(templatePrintWriter);
+
+		map.put("writer", this.templatePrintWriter);
+	}
+
 	private void _put(PrintWriter printWriter, String s) {
 		printWriter.print(s);
 
@@ -89,6 +103,9 @@ public class PrintWriterWrapper {
 	private void _write(PrintWriter printWriter, String s) {
 		printWriter.println(s);
 	}
+
+	protected PrintWriter outputPrintWriter;
+	protected PrintWriter templatePrintWriter;
 
 	private final UnsyncPrintWriter _unsyncPrintWriter;
 

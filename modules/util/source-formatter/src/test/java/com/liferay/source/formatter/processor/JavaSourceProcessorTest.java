@@ -1030,6 +1030,8 @@ public class JavaSourceProcessorTest extends BaseSourceProcessorTestCase {
 				message, 46
 			).addExpectedMessage(
 				message, 50
+			).addExpectedMessage(
+				message, 84
 			));
 	}
 
