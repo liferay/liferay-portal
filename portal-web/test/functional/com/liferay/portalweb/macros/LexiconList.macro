@@ -1,12 +1,5 @@
 definition {
 
-	@summary = "Check the checkbox of a list entry"
-	macro checkListCheckbox(listEntry = null) {
-		Check(
-			key_listEntry = ${listEntry},
-			locator1 = "LexiconList#LIST_ENTRY_CHECKBOX");
-	}
-
 	@summary = "Default summary"
 	macro clickEllipsis(userRole = null, listEntry = null) {
 		if (${userRole} == "Guest") {
@@ -28,14 +21,6 @@ definition {
 			userRole = ${userRole});
 
 		MenuItem.clickNoError(menuItem = ${item});
-	}
-
-	@summary = "Go to location by clicking on the breadcrumb item in the entry"
-	macro clickListEntryBreadcrumbItem(listEntry = null) {
-		Click(
-			key_breadcrumbName = ${breadcrumbName},
-			key_listEntry = ${listEntry},
-			locator1 = "LexiconList#LIST_ENTRY_BREADCRUMB_ITEM");
 	}
 
 	@summary = "Default summary"

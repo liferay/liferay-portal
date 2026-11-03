@@ -28,11 +28,4 @@ definition {
 			page = ${page});
 	}
 
-	@summary = "Default summary"
-	macro viewInPage(page = null) {
-		WebContentViewUsages.clickEllipsisItem(
-			item = "View in Page",
-			page = ${page});
-	}
-
 }

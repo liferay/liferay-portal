@@ -130,36 +130,4 @@ definition {
 			site = ${site});
 	}
 
-	@summary = "Default summary"
-	macro updateStructureState(groupName = null, structureState = null) {
-		Variables.assertDefined(parameterList = "${groupName},${structureState}");
-
-		if (!(isSet(site))) {
-			var site = "true";
-		}
-
-		if (${structureState} == "Available") {
-			var ddmStructuresAvailable = "true";
-		}
-
-		if (${structureState} == "Unavailable") {
-			var ddmStructuresAvailable = "false";
-		}
-
-		var depotEntryGroupRelId = JSONGroupAPI._getDepotEntryGroupRelIdByGroupName(
-			groupName = ${groupName},
-			site = ${site});
-		var portalURL = JSONCompany.getPortalURL();
-		var userLoginInfo = JSONUtil2.formatJSONUser();
-
-		var curl = '''
-			${portalURL}/api/jsonws/depot.depotentrygrouprel/update-ddm-structures-available \
-				-u ${userLoginInfo} \
-				-d depotEntryGroupRelId=${depotEntryGroupRelId} \
-				-d ddmStructuresAvailable=${ddmStructuresAvailable}
-		''';
-
-		JSONCurlUtil.post(${curl});
-	}
-
 }

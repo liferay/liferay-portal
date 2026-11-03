@@ -64,20 +64,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewOrder(menuItemList = null) {
-		var key_index = 1;
-
-		for (var menuItem : list ${menuItemList}) {
-			AssertTextEquals.assertPartialText(
-				index = ${key_index},
-				locator1 = "MenuItem#DROPDOWN_MENU_ITEM_SPECIFIC",
-				value1 = ${menuItem});
-
-			var key_index = ${key_index} + 1;
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewPresent(menuItem = null) {
 		AssertElementPresent(
 			key_menuItem = ${menuItem},

@@ -192,25 +192,4 @@ definition {
 		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});
 	}
 
-	@summary = "Default summary"
-	macro updateStatus(groupName = null, statusKey = null, title = null) {
-		Variables.assertDefined(parameterList = "${groupName},${statusKey},${title}");
-
-		var articleId = JSONWebcontentSetter.setArticleId(
-			groupName = ${groupName},
-			title = ${title});
-		var groupId = JSONWebcontentSetter.setGroupId(groupName = ${groupName});
-		var status = JSONWebcontentSetter.setStatus(statusKey = ${statusKey});
-
-		if (!(isSet(version))) {
-			var version = "1.0";
-		}
-
-		JSONWebcontentAPI._updateStatus(
-			articleId = ${articleId},
-			groupId = ${groupId},
-			status = ${status},
-			version = ${version});
-	}
-
 }
