@@ -522,12 +522,6 @@
 	</filter-mapping>
 	<filter-mapping>
 		<filter-name>ETag Filter</filter-name>
-		<url-pattern>^(/c/document_library/get_file|/c/message_boards/get_message_attachment|/c/wiki/get_page_attachment)(\?.*)?$</url-pattern>
-		<dispatcher>FORWARD</dispatcher>
-		<dispatcher>REQUEST</dispatcher>
-	</filter-mapping>
-	<filter-mapping>
-		<filter-name>ETag Filter</filter-name>
 		<url-pattern>/combo/*</url-pattern>
 	</filter-mapping>
 	<filter-mapping>
