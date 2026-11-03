@@ -223,7 +223,7 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private KaleoDefinition _addKaleoDefinition(
-		String scope, ServiceContext serviceContext)
+			String scope, ServiceContext serviceContext)
 		throws Exception {
 
 		return _kaleoDefinitionService.addKaleoDefinition(
@@ -263,16 +263,6 @@ public class KaleoDefinitionServiceImplTest {
 		return serviceContext;
 	}
 
-	private void _setCompanyAdministratorCanPublish(boolean canPublish)
-		throws Exception {
-
-		ConfigurationTestUtil.saveConfiguration(
-			_configuration,
-			HashMapDictionaryBuilder.<String, Object>put(
-				"company.administrator.can.publish", canPublish
-			).build());
-	}
-
 	private String _read() throws Exception {
 		ClassLoader classLoader =
 			BaseKaleoLocalServiceTestCase.class.getClassLoader();
@@ -283,6 +273,16 @@ public class KaleoDefinitionServiceImplTest {
 
 			return StringUtil.read(inputStream);
 		}
+	}
+
+	private void _setCompanyAdministratorCanPublish(boolean canPublish)
+		throws Exception {
+
+		ConfigurationTestUtil.saveConfiguration(
+			_configuration,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"company.administrator.can.publish", canPublish
+			).build());
 	}
 
 	private void _setUpPermissionThreadLocal(User user) {
@@ -962,9 +962,9 @@ public class KaleoDefinitionServiceImplTest {
 	}
 
 	private static Company _company1;
+	private static User _company1AdminUser;
 	private static Company _company2;
 	private static User _company2AdminUser;
-	private static User _company1AdminUser;
 	private static Configuration _configuration;
 
 	@Inject
