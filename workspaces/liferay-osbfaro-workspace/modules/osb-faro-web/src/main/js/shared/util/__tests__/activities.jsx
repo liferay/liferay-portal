@@ -115,6 +115,7 @@ describe('activities', () => {
 		it('adds the campaign\'s page to the campaign group when there is a channel and a group', () => {
 			const event = {
 				applicationId: 'CustomEvent',
+				campaignEntityId: '6beeaea355642c82e8bb7f9c049f58e8',
 				campaignId: '7013a000002QwErtAAG',
 				campaignName: 'Spring Compactor Promo 2026',
 				createDate: '2026-07-16T10:00:00.000Z',
@@ -129,11 +130,33 @@ describe('activities', () => {
 
 			expect(linked.attributes.campaign).toEqual({
 				campaignName: 'Spring Compactor Promo 2026',
-				campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'
+				campaignUrl:
+					'/workspace/23/456/campaigns/6beeaea355642c82e8bb7f9c049f58e8'
 			});
 			expect(unlinked.attributes.campaign).not.toHaveProperty(
 				'campaignUrl'
 			);
+		});
+
+		it('does not link a campaign to the utm_cid the touch carried', () => {
+			const [result] = formatEvents(
+				[
+					{
+						applicationId: 'CustomEvent',
+						campaignEntityId: null,
+						campaignId: '7013a000002QwErtAAG',
+						campaignName: 'Spring Compactor Promo 2026',
+						createDate: '2026-07-16T10:00:00.000Z',
+						name: 'eventName'
+					}
+				],
+				undefined,
+				{channelId: '456', groupId: '23'}
+			);
+
+			expect(result.attributes.campaign).toEqual({
+				campaignName: 'Spring Compactor Promo 2026'
+			});
 		});
 
 		it('includes the raw experience id and name in attributes when the event carries one', () => {
@@ -411,6 +434,7 @@ describe('activities', () => {
 				[
 					{
 						applicationId: 'Page',
+						campaignEntityId: '6beeaea355642c82e8bb7f9c049f58e8',
 						campaignId: '7013a000002QwErtAAG',
 						campaignName: 'Spring Compactor Promo 2026',
 						canonicalUrl: 'https://liferay.com/home',
@@ -427,7 +451,8 @@ describe('activities', () => {
 
 			expect(nestedEvent.attributes.campaign).toEqual({
 				campaignName: 'Spring Compactor Promo 2026',
-				campaignUrl: '/workspace/23/456/campaigns/7013a000002QwErtAAG'
+				campaignUrl:
+					'/workspace/23/456/campaigns/6beeaea355642c82e8bb7f9c049f58e8'
 			});
 		});
 

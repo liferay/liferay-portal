@@ -606,7 +606,7 @@ describe('VerticalTimeline', () => {
 
 		describe('campaign', () => {
 			const CAMPAIGN_URL =
-				'/workspace/23/456/campaigns/7013a000002QwErtAAG';
+				'/workspace/23/456/campaigns/6beeaea355642c82e8bb7f9c049f58e8';
 
 			const expandCampaignEvent = () => {
 				const {container} = renderTimeline({
