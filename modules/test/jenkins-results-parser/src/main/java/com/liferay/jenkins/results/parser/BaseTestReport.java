@@ -58,7 +58,9 @@ public class BaseTestReport implements TestReport {
 	public String getTestClassName() {
 		String testClassName = _jsonObject.optString("testClassName");
 
-		if (!JenkinsResultsParserUtil.isNullOrEmpty(testClassName)) {
+		if (!JenkinsResultsParserUtil.isNullOrEmpty(testClassName) &&
+			!testClassName.equals(_CLASS_NAME_POSHI_RUNNER)) {
+
 			return testClassName;
 		}
 
@@ -111,6 +113,9 @@ public class BaseTestReport implements TestReport {
 		_downstreamBuildReport = downstreamBuildReport;
 		_jsonObject = jsonObject;
 	}
+
+	private static final String _CLASS_NAME_POSHI_RUNNER =
+		"com.liferay.poshi.runner.PoshiRunner";
 
 	private static final Pattern _jUnitTestNamePattern = Pattern.compile(
 		"(?<testClassName>([\\w$]+\\.)+[\\w$]*Test)\\.(?<testName>[\\w$]+)");
