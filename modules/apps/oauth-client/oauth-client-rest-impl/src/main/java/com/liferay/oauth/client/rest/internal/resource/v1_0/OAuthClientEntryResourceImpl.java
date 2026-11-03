@@ -18,10 +18,20 @@ import com.liferay.oauth.client.rest.dto.v1_0.OAuthClientEntry;
 import com.liferay.oauth.client.rest.internal.dto.v1_0.util.OAuthClientASLocalMetadataUtil;
 import com.liferay.oauth.client.rest.resource.v1_0.OAuthClientEntryResource;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.service.PermissionService;
+import com.liferay.portal.kernel.service.ResourceActionLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
+import com.liferay.portal.vulcan.permission.Permission;
+import com.liferay.portal.vulcan.permission.PermissionUtil;
+
+import java.util.Collection;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -161,19 +171,25 @@ public class OAuthClientEntryResourceImpl
 			}
 		}
 
-		return _toOAuthClientEntry(
-			_oAuthClientEntryService.addOAuthClientEntry(
-				oAuthClientEntry.getExternalReferenceCode(),
-				contextUser.getUserId(),
-				oAuthClientEntry.getAuthRequestParametersJSON(),
-				oAuthClientEntry.getAuthServerWellKnownURI(),
-				oAuthClientEntry.getCustomClaims(),
-				oAuthClientEntry.getInfoJSON(),
-				oAuthClientEntry.getMatcherField(),
-				oAuthClientEntry.getMetadataCacheTime(),
-				oAuthClientEntry.getOidcUserInfoMapperJSON(),
-				oAuthClientEntry.getTokenConnectionTimeout(),
-				oAuthClientEntry.getTokenRequestParametersJSON()));
+		com.liferay.oauth.client.persistence.model.OAuthClientEntry
+			serviceBuilderOAuthClientEntry =
+				_oAuthClientEntryService.addOAuthClientEntry(
+					oAuthClientEntry.getExternalReferenceCode(),
+					contextUser.getUserId(),
+					oAuthClientEntry.getAuthRequestParametersJSON(),
+					oAuthClientEntry.getAuthServerWellKnownURI(),
+					oAuthClientEntry.getCustomClaims(),
+					oAuthClientEntry.getInfoJSON(),
+					oAuthClientEntry.getMatcherField(),
+					oAuthClientEntry.getMetadataCacheTime(),
+					oAuthClientEntry.getOidcUserInfoMapperJSON(),
+					oAuthClientEntry.getTokenConnectionTimeout(),
+					oAuthClientEntry.getTokenRequestParametersJSON());
+
+		_updateResourcePermissions(
+			oAuthClientEntry, serviceBuilderOAuthClientEntry);
+
+		return _toOAuthClientEntry(serviceBuilderOAuthClientEntry);
 	}
 
 	@Override
@@ -193,7 +209,7 @@ public class OAuthClientEntryResourceImpl
 						contextCompany.getCompanyId());
 
 		if (serviceBuilderOAuthClientEntry != null) {
-			return _toOAuthClientEntry(
+			serviceBuilderOAuthClientEntry =
 				_oAuthClientEntryService.updateOAuthClientEntry(
 					serviceBuilderOAuthClientEntry.getOAuthClientEntryId(),
 					oAuthClientEntry.getAuthRequestParametersJSON(),
@@ -204,7 +220,12 @@ public class OAuthClientEntryResourceImpl
 					oAuthClientEntry.getMetadataCacheTime(),
 					oAuthClientEntry.getOidcUserInfoMapperJSON(),
 					oAuthClientEntry.getTokenConnectionTimeout(),
-					oAuthClientEntry.getTokenRequestParametersJSON()));
+					oAuthClientEntry.getTokenRequestParametersJSON());
+
+			_updateResourcePermissions(
+				oAuthClientEntry, serviceBuilderOAuthClientEntry);
+
+			return _toOAuthClientEntry(serviceBuilderOAuthClientEntry);
 		}
 
 		return postOAuthClientEntry(oAuthClientEntry);
@@ -274,6 +295,11 @@ public class OAuthClientEntryResourceImpl
 							getAuthServerWellKnownURI()));
 				setOidcUserInfoMapperJSON(
 					serviceBuilderOAuthClientEntry::getOIDCUserInfoMapperJSON);
+				setPermissions(
+					() -> NestedFieldsSupplier.supply(
+						"permissions",
+						fieldName -> _toPermissions(
+							serviceBuilderOAuthClientEntry)));
 				setTokenConnectionTimeout(
 					serviceBuilderOAuthClientEntry::getTokenConnectionTimeout);
 				setTokenRequestParametersJSON(
@@ -281,6 +307,58 @@ public class OAuthClientEntryResourceImpl
 						getTokenRequestParametersJSON);
 			}
 		};
+	}
+
+	private Permission[] _toPermissions(
+			com.liferay.oauth.client.persistence.model.OAuthClientEntry
+				serviceBuilderOAuthClientEntry)
+		throws Exception {
+
+		String className =
+			com.liferay.oauth.client.persistence.model.OAuthClientEntry.class.
+				getName();
+
+		_permissionService.checkPermission(
+			0, className,
+			serviceBuilderOAuthClientEntry.getOAuthClientEntryId());
+
+		Collection<Permission> permissions = PermissionUtil.getPermissions(
+			serviceBuilderOAuthClientEntry.getCompanyId(),
+			_resourceActionLocalService.getResourceActions(className),
+			serviceBuilderOAuthClientEntry.getOAuthClientEntryId(), className,
+			null);
+
+		return permissions.toArray(new Permission[0]);
+	}
+
+	private void _updateResourcePermissions(
+			OAuthClientEntry oAuthClientEntry,
+			com.liferay.oauth.client.persistence.model.OAuthClientEntry
+				serviceBuilderOAuthClientEntry)
+		throws Exception {
+
+		if (oAuthClientEntry.getPermissions() == null) {
+			return;
+		}
+
+		String className =
+			com.liferay.oauth.client.persistence.model.OAuthClientEntry.class.
+				getName();
+
+		_permissionService.checkPermission(
+			0, className,
+			serviceBuilderOAuthClientEntry.getOAuthClientEntryId());
+
+		_resourcePermissionLocalService.updateResourcePermissions(
+			serviceBuilderOAuthClientEntry.getCompanyId(), 0, className,
+			String.valueOf(
+				serviceBuilderOAuthClientEntry.getOAuthClientEntryId()),
+			ModelPermissionsUtil.toModelPermissions(
+				serviceBuilderOAuthClientEntry.getCompanyId(),
+				oAuthClientEntry.getPermissions(),
+				serviceBuilderOAuthClientEntry.getOAuthClientEntryId(),
+				className, _resourceActionLocalService,
+				_resourcePermissionLocalService, _roleLocalService));
 	}
 
 	@Reference
@@ -295,7 +373,19 @@ public class OAuthClientEntryResourceImpl
 	private OAuthClientEntryService _oAuthClientEntryService;
 
 	@Reference
+	private PermissionService _permissionService;
+
+	@Reference
 	private Portal _portal;
+
+	@Reference
+	private ResourceActionLocalService _resourceActionLocalService;
+
+	@Reference
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Reference
+	private RoleLocalService _roleLocalService;
 
 	@Reference
 	private UserLocalService _userLocalService;
