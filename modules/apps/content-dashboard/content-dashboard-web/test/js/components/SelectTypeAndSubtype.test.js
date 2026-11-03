@@ -65,6 +65,7 @@ jest.mock('frontend-js-web', () => ({
 	getOpener: jest.fn(() => ({
 		Liferay: {
 			fire: jest.fn(),
+			on: jest.fn(() => ({detach: jest.fn()})),
 		},
 	})),
 }));

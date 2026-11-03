@@ -5,6 +5,7 @@
 
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import {getOpener} from 'frontend-js-web';
 import React from 'react';
 
 import '@testing-library/jest-dom';
@@ -22,6 +23,7 @@ jest.mock('frontend-js-web', () => ({
 	getOpener: jest.fn(() => ({
 		Liferay: {
 			fire: jest.fn(),
+			on: jest.fn(() => ({detach: jest.fn()})),
 		},
 	})),
 }));
@@ -110,6 +112,40 @@ describe('SelectFileExtension', () => {
 			0
 		);
 		expect(checkedCheckboxesCount).toBe(3);
+	});
+
+	it('sends the selection again once the selection modal has loaded', () => {
+		jest.useFakeTimers();
+
+		const fire = jest.fn();
+		const handlers = {};
+
+		getOpener.mockImplementation(() => ({
+			Liferay: {
+				fire,
+				on: jest.fn((eventName, handler) => {
+					handlers[eventName] = handler;
+
+					return {detach: jest.fn()};
+				}),
+			},
+		}));
+
+		render(<TreeFilter {...mockExtensionsProps} />);
+
+		expect(fire).toHaveBeenCalledTimes(1);
+
+		const [eventName, payload] = fire.mock.calls[0];
+
+		handlers.modalIframeLoaded();
+
+		jest.runAllTimers();
+
+		expect(fire).toHaveBeenCalledTimes(2);
+		expect(fire).toHaveBeenLastCalledWith(eventName, payload);
+		expect(payload.data).toHaveLength(1);
+
+		jest.useRealTimers();
 	});
 
 	it('shows empty state when there are no nodes in the tree', async () => {
