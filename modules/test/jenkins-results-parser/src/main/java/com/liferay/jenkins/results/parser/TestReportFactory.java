@@ -49,6 +49,10 @@ public class TestReportFactory {
 		else if (batchName.startsWith("playwright-js")) {
 			return new PlaywrightTestReport(downstreamBuildReport, jsonObject);
 		}
+		else if (batchName.startsWith("semantic-versioning")) {
+			return new SemanticVersioningTestReport(
+				downstreamBuildReport, jsonObject);
+		}
 
 		return new DefaultTestReport(downstreamBuildReport, jsonObject);
 	}
