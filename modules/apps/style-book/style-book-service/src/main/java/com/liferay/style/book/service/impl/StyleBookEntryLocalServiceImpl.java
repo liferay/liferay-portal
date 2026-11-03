@@ -310,23 +310,27 @@ public class StyleBookEntryLocalServiceImpl
 
 	@Override
 	public String generateStyleBookEntryName(long groupId, String name) {
-		StyleBookEntry styleBookEntry =
-			styleBookEntryPersistence.fetchByG_N_Head_First(
-				groupId, name, true, null);
+		return generateStyleBookEntryName(groupId, name, 0);
+	}
 
-		if (styleBookEntry == null) {
-			return name;
-		}
+	@Override
+	public String generateStyleBookEntryName(
+		long groupId, String name, long styleBookEntryId) {
+
+		String newName = name;
 
 		for (int count = 1;; count++) {
-			String newName = StringUtil.appendParentheticalSuffix(name, count);
+			StyleBookEntry styleBookEntry =
+				styleBookEntryPersistence.fetchByG_N_Head_First(
+					groupId, newName, true, null);
 
-			styleBookEntry = styleBookEntryPersistence.fetchByG_N_Head_First(
-				groupId, newName, true, null);
+			if ((styleBookEntry == null) ||
+				(styleBookEntry.getStyleBookEntryId() == styleBookEntryId)) {
 
-			if (styleBookEntry == null) {
 				return newName;
 			}
+
+			newName = StringUtil.appendParentheticalSuffix(name, count);
 		}
 	}
 

@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -272,6 +273,42 @@ public class StyleBookEntryLocalServiceTest {
 		}
 		catch (NoSuchEntryException noSuchEntryException) {
 		}
+	}
+
+	@Test
+	public void testGenerateStyleBookEntryName() throws Exception {
+		String name = RandomTestUtil.randomString();
+
+		StyleBookEntry styleBookEntry1 =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), false, null, null, name, null,
+				RandomTestUtil.randomString(), _serviceContext);
+
+		Assert.assertEquals(
+			name,
+			_styleBookEntryLocalService.generateStyleBookEntryName(
+				_group.getGroupId(), name,
+				styleBookEntry1.getStyleBookEntryId()));
+
+		String uniqueName = StringUtil.appendParentheticalSuffix(name, 1);
+
+		StyleBookEntry styleBookEntry2 =
+			_styleBookEntryLocalService.addStyleBookEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), false, null, null, uniqueName, null,
+				RandomTestUtil.randomString(), _serviceContext);
+
+		Assert.assertEquals(
+			uniqueName,
+			_styleBookEntryLocalService.generateStyleBookEntryName(
+				_group.getGroupId(), name,
+				styleBookEntry2.getStyleBookEntryId()));
+
+		Assert.assertEquals(
+			StringUtil.appendParentheticalSuffix(name, 2),
+			_styleBookEntryLocalService.generateStyleBookEntryName(
+				_group.getGroupId(), name, 0));
 	}
 
 	@Test
