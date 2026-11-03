@@ -546,6 +546,33 @@ public class ExportImportHelperUtilTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-106614")
+	public void testGetExportablePortletsWithAssetCategoriesAndAssetTags()
+		throws Exception {
+
+		_depotEntry = _addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY);
+
+		_assertRootPortletIds(
+			List.of(
+				AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
+				AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN),
+			List.of(LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS),
+			ExportImportHelperUtil.getExportablePortlets(
+				TestPropsValues.getCompanyId(), false,
+				_depotEntry.getGroupId()));
+
+		_assertRootPortletIds(
+			List.of(
+				AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
+				AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
+				LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS),
+			List.of(),
+			ExportImportHelperUtil.getExportablePortlets(
+				TestPropsValues.getCompanyId(), false,
+				_liveGroup.getGroupId()));
+	}
+
 	@FeatureFlags(
 		featureFlags = {
 			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
@@ -553,7 +580,7 @@ public class ExportImportHelperUtilTest {
 		}
 	)
 	@Test
-	public void testGetExportablePortletsDepotGroup() throws Exception {
+	public void testGetExportablePortletsWithDepotGroup() throws Exception {
 		DepotEntry assetLibraryDepotEntry = _addDepotEntry(
 			DepotConstants.TYPE_ASSET_LIBRARY);
 
@@ -589,33 +616,6 @@ public class ExportImportHelperUtilTest {
 			Assert.assertTrue(
 				portlet.getPortletId(), portletDataHandler.isBatch());
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-106614")
-	public void testGetExportablePortletsWithAssetCategoriesAndAssetTags()
-		throws Exception {
-
-		_depotEntry = _addDepotEntry(DepotConstants.TYPE_ASSET_LIBRARY);
-
-		_assertRootPortletIds(
-			List.of(
-				AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
-				AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN),
-			List.of(LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS),
-			ExportImportHelperUtil.getExportablePortlets(
-				TestPropsValues.getCompanyId(), false,
-				_depotEntry.getGroupId()));
-
-		_assertRootPortletIds(
-			List.of(
-				AssetCategoriesAdminPortletKeys.ASSET_CATEGORIES_ADMIN,
-				AssetTagsAdminPortletKeys.ASSET_TAGS_ADMIN,
-				LayoutAdminPortletKeys.LAYOUT_SET_LAYOUTS),
-			List.of(),
-			ExportImportHelperUtil.getExportablePortlets(
-				TestPropsValues.getCompanyId(), false,
-				_liveGroup.getGroupId()));
 	}
 
 	@Test
