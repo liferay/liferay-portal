@@ -166,34 +166,6 @@ public class GroupImporterTest {
 	}
 
 	@Test
-	public void testImportGroupsWhenGroupDoesNotMatch() throws Exception {
-		_setUpExportImportGroups(_createExportImportGroup("group", null));
-
-		Group group = _setUpGroup("group");
-
-		Mockito.when(
-			_exportImportHelper.isGroupMatching(
-				Mockito.any(), Mockito.eq(group))
-		).thenReturn(
-			false
-		);
-
-		Mockito.when(
-			group.getExternalReferenceCode()
-		).thenReturn(
-			"group"
-		);
-
-		List<String> groupExternalReferenceCodes = _importGroups("group");
-
-		Assert.assertTrue(groupExternalReferenceCodes.isEmpty());
-
-		_verifyReportEntry(
-			"group", ExportImportReportEntryConstants.TYPE_ERROR,
-			"is of a different type");
-	}
-
-	@Test
 	public void testImportGroupsWhenGroupExportImportIsDisabled()
 		throws Exception {
 
@@ -283,6 +255,34 @@ public class GroupImporterTest {
 		}
 
 		Mockito.verifyNoInteractions(_exportImportReportEntryLocalService);
+	}
+
+	@Test
+	public void testImportGroupsWhenGroupIsNotMatching() throws Exception {
+		_setUpExportImportGroups(_createExportImportGroup("group", null));
+
+		Group group = _setUpGroup("group");
+
+		Mockito.when(
+			_exportImportHelper.isGroupMatching(
+				Mockito.any(), Mockito.eq(group))
+		).thenReturn(
+			false
+		);
+
+		Mockito.when(
+			group.getExternalReferenceCode()
+		).thenReturn(
+			"group"
+		);
+
+		List<String> groupExternalReferenceCodes = _importGroups("group");
+
+		Assert.assertTrue(groupExternalReferenceCodes.isEmpty());
+
+		_verifyReportEntry(
+			"group", ExportImportReportEntryConstants.TYPE_ERROR,
+			"is of a different type");
 	}
 
 	@Test
