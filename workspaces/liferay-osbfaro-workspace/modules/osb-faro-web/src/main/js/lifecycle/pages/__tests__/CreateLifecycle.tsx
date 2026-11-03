@@ -44,6 +44,7 @@ jest.mock('lifecycle/hooks/useLifecycleAccountData', () => ({
 }));
 
 jest.mock('shared/actions/alerts', () => ({
+	...jest.requireActual('shared/actions/alerts'),
 	addAlert: jest.fn((alert) => alert),
 }));
 
