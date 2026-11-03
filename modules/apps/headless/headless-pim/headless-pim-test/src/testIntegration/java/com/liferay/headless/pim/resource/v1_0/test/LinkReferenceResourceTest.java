@@ -214,43 +214,6 @@ public class LinkReferenceResourceTest
 			linkReferences.toString(), 2, linkReferences.size());
 	}
 
-	private void _testGetScopeScopeKeyLinksPageWithTrashedObjectEntry()
-		throws Exception {
-
-		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
-
-		ObjectEntry sourceObjectEntry =
-			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
-				depotEntry.getGroupId());
-		ObjectEntry targetObjectEntry =
-			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
-				depotEntry.getGroupId());
-
-		_pimLinkEngine.addPIMLinks(
-			sourceObjectEntry, Arrays.asList(targetObjectEntry), _TYPE);
-
-		_objectEntryLocalService.moveObjectEntryToTrash(
-			TestPropsValues.getUserId(), targetObjectEntry,
-			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
-
-		Page<LinkReference> page = _getLinkReferencesPage(
-			sourceObjectEntry, Pagination.of(1, 20));
-
-		LinkReference linkReference = _getLinkReference(
-			(List<LinkReference>)page.getItems(), targetObjectEntry);
-
-		Map<String, Map<String, String>> actions = linkReference.getActions();
-
-		Assert.assertNotNull(actions.get("get"));
-		Assert.assertNull(actions.get("update"));
-
-		Status status = linkReference.getStatus();
-
-		Assert.assertEquals(
-			Integer.valueOf(WorkflowConstants.STATUS_IN_TRASH),
-			status.getCode());
-	}
-
 	private void _assertLinkReference(
 		List<LinkReference> linkReferences, ObjectEntry objectEntry) {
 
@@ -332,6 +295,43 @@ public class LinkReferenceResourceTest
 			String.valueOf(objectEntry.getGroupId()),
 			objectEntry.getModelClassName(),
 			objectEntry.getExternalReferenceCode(), search, pagination);
+	}
+
+	private void _testGetScopeScopeKeyLinksPageWithTrashedObjectEntry()
+		throws Exception {
+
+		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
+
+		ObjectEntry sourceObjectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+		ObjectEntry targetObjectEntry =
+			PIMBasicProductTestUtil.addPIMBasicProductObjectEntry(
+				depotEntry.getGroupId());
+
+		_pimLinkEngine.addPIMLinks(
+			sourceObjectEntry, Arrays.asList(targetObjectEntry), _TYPE);
+
+		_objectEntryLocalService.moveObjectEntryToTrash(
+			TestPropsValues.getUserId(), targetObjectEntry,
+			ServiceContextTestUtil.getServiceContext(depotEntry.getGroupId()));
+
+		Page<LinkReference> page = _getLinkReferencesPage(
+			sourceObjectEntry, Pagination.of(1, 20));
+
+		LinkReference linkReference = _getLinkReference(
+			(List<LinkReference>)page.getItems(), targetObjectEntry);
+
+		Map<String, Map<String, String>> actions = linkReference.getActions();
+
+		Assert.assertNotNull(actions.get("get"));
+		Assert.assertNull(actions.get("update"));
+
+		Status status = linkReference.getStatus();
+
+		Assert.assertEquals(
+			Integer.valueOf(WorkflowConstants.STATUS_IN_TRASH),
+			status.getCode());
 	}
 
 	private static final String _TYPE = "variant";
