@@ -14,6 +14,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectFieldLocalServiceUtil;
+import com.liferay.petra.function.UnsafeRunnable;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -141,13 +142,11 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecute();
 		_testExecuteWithBooleanProductType();
 		_testExecuteWithCatalogs();
-		_testExecuteWithErrorResponse();
+		_testExecuteWithErrors();
 		_testExecuteWithFieldMappingRules();
 		_testExecuteWithFirstNonemptySourceFieldMappingRule();
 		_testExecuteWithForeignStructureFixedValue();
-		_testExecuteWithInvalidResponse();
 		_testExecuteWithInvalidStructureFieldMapping();
-		_testExecuteWithInvalidURL();
 		_testExecuteWithJoinedValues();
 		_testExecuteWithPicklistProductOptions();
 		_testExecuteWithPicklistProductSpecification();
@@ -155,7 +154,6 @@ public class LiferayCommercePIMConnectorTest {
 		_testExecuteWithProductSpecifications();
 		_testExecuteWithTrailingSlashURL();
 		_testExecuteWithVariantPIMLinks();
-		_testExecuteWithoutCatalog();
 		_testExecuteWithoutUnitOfMeasure();
 	}
 
@@ -240,6 +238,23 @@ public class LiferayCommercePIMConnectorTest {
 			"L_PIM_CONNECTOR_CONFIGURATION_LIFERAY_COMMERCE",
 			_liferayCommercePIMConnector.
 				getPIMConnectorConfigurationObjectDefinitionExternalReferenceCode());
+	}
+
+	private PIMConnectorException _assertPIMConnectorException(
+			String expectedMessage, UnsafeRunnable<Exception> unsafeRunnable)
+		throws Exception {
+
+		try {
+			unsafeRunnable.run();
+		}
+		catch (PIMConnectorException pimConnectorException) {
+			Assert.assertEquals(
+				expectedMessage, pimConnectorException.getMessage());
+
+			return pimConnectorException;
+		}
+
+		throw new AssertionError(expectedMessage);
 	}
 
 	private String _execute(
@@ -666,36 +681,149 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(jsonArray.toString(), 3, jsonArray.length());
 	}
 
-	private void _testExecuteWithErrorResponse() throws Exception {
+	private void _testExecuteWithErrors() throws Exception {
+
+		// Malformed URL
+
+		for (String url :
+				new String[] {
+					null, "ftp://localhost", "http://", "localhost"
+				}) {
+
+			_assertPIMConnectorException(
+				"enter-a-valid-url",
+				() -> _execute(
+					HashMapBuilder.put(
+						"SKU-1",
+						Arrays.asList(
+							_mockPIMProductObjectEntry(
+								"SKU-1",
+								Collections.<String, Serializable>emptyMap()))
+					).build(),
+					_getRequiredObjectEntries(),
+					Collections.<String, ObjectEntry>emptyMap(),
+					HashMapBuilder.<String, Serializable>put(
+						"url", url
+					).build()));
+		}
+
+		Assert.assertTrue(_optionsList.isEmpty());
+
+		// Missing catalog
+
+		PIMConnectorException pimConnectorException =
+			_assertPIMConnectorException(
+				"a-product-is-not-mapped-to-a-catalog",
+				() -> _getProductJSONObject(
+					"SKU-1",
+					ListUtil.fromArray(
+						_mockPIMFieldMappingObjectEntry(
+							"catalogExternalReferenceCode", StringPool.BLANK,
+							"catalog", "dynamicValue", StringPool.BLANK),
+						_mockPIMFieldMappingObjectEntry(
+							"name", StringPool.BLANK, "title", "dynamicValue",
+							StringPool.BLANK),
+						_mockPIMFieldMappingObjectEntry(
+							"productType", StringPool.BLANK, StringPool.BLANK,
+							PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
+							"simple"),
+						_mockPIMFieldMappingObjectEntry(
+							"skus[].sku", StringPool.BLANK, "sku",
+							"dynamicValue", StringPool.BLANK)),
+					Collections.<String, ObjectEntry>emptyMap(),
+					_mockPIMProductObjectEntry(
+						"SKU-1",
+						Collections.<String, Serializable>emptyMap())));
+
+		Assert.assertNull(pimConnectorException.getOutput());
+
+		Assert.assertTrue(_optionsList.isEmpty());
+
+		// Non-JSON response
+
+		Mockito.when(
+			_http.URLtoString(Mockito.any(Http.Options.class))
+		).thenAnswer(
+			invocationOnMock -> {
+				Http.Options options = invocationOnMock.getArgument(
+					0, Http.Options.class);
+
+				_optionsList.add(options);
+
+				Http.Response response = options.getResponse();
+
+				response.setResponseCode(200);
+
+				String location = options.getLocation();
+
+				if (location.endsWith("/o/oauth2/token")) {
+					return "{\"access_token\": \"TOKEN\"}";
+				}
+
+				if (location.contains("/import-task/")) {
+					return "<html>Login</html>";
+				}
+
+				return "{}";
+			}
+		);
+
+		pimConnectorException = _assertPIMConnectorException(
+			"an-unexpected-error-occurred",
+			() -> _execute(
+				HashMapBuilder.put(
+					"SKU-1",
+					Arrays.asList(
+						_mockPIMProductObjectEntry(
+							"SKU-1",
+							HashMapBuilder.<String, Serializable>put(
+								"sku", "SKU-1"
+							).put(
+								"title", "Shirt"
+							).build()))
+				).build(),
+				_getRequiredObjectEntries(),
+				Collections.<String, ObjectEntry>emptyMap(), _configuration));
+
+		JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
+			pimConnectorException.getOutput());
+
+		JSONArray jsonArray = jsonObject.getJSONArray("log");
+
+		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
+
+		JSONObject logJSONObject = jsonArray.getJSONObject(1);
+
+		JSONObject responseJSONObject = logJSONObject.getJSONObject("response");
+
+		Assert.assertEquals(
+			"<html>Login</html>", responseJSONObject.getString("body"));
+
+		_mockHttp(Collections.emptyMap());
+
+		// Remote error
+
 		_mockHttp(
 			HashMapBuilder.put(
 				"/import-task/", 500
 			).build());
 
-		try {
-			_getProductJSONObject(
+		pimConnectorException = _assertPIMConnectorException(
+			"the-remote-instance-returned-an-error",
+			() -> _getProductJSONObject(
 				"SKU-1", _getRequiredObjectEntries(),
 				Collections.<String, ObjectEntry>emptyMap(),
 				_mockPIMProductObjectEntry(
-					"SKU-1", Collections.<String, Serializable>emptyMap()));
+					"SKU-1", Collections.<String, Serializable>emptyMap())));
 
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
-				"the-remote-instance-returned-an-error",
-				pimConnectorException.getMessage());
+		jsonObject = JSONFactoryUtil.createJSONObject(
+			pimConnectorException.getOutput());
 
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				pimConnectorException.getOutput());
+		jsonArray = jsonObject.getJSONArray("log");
 
-			JSONArray jsonArray = jsonObject.getJSONArray("log");
+		Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
 
-			Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
-		}
-		finally {
-			_mockHttp(Collections.emptyMap());
-		}
+		_mockHttp(Collections.emptyMap());
 	}
 
 	private void _testExecuteWithFieldMappingRules() throws Exception {
@@ -854,77 +982,6 @@ public class LiferayCommercePIMConnectorTest {
 			jsonObject.toString(), jsonObject.has("description"));
 	}
 
-	private void _testExecuteWithInvalidResponse() throws Exception {
-		Mockito.when(
-			_http.URLtoString(Mockito.any(Http.Options.class))
-		).thenAnswer(
-			invocationOnMock -> {
-				Http.Options options = invocationOnMock.getArgument(
-					0, Http.Options.class);
-
-				_optionsList.add(options);
-
-				Http.Response response = options.getResponse();
-
-				response.setResponseCode(200);
-
-				String location = options.getLocation();
-
-				if (location.endsWith("/o/oauth2/token")) {
-					return "{\"access_token\": \"TOKEN\"}";
-				}
-
-				if (location.contains("/import-task/")) {
-					return "<html>Login</html>";
-				}
-
-				return "{}";
-			}
-		);
-
-		try {
-			_execute(
-				HashMapBuilder.put(
-					"SKU-1",
-					Arrays.asList(
-						_mockPIMProductObjectEntry(
-							"SKU-1",
-							HashMapBuilder.<String, Serializable>put(
-								"sku", "SKU-1"
-							).put(
-								"title", "Shirt"
-							).build()))
-				).build(),
-				_getRequiredObjectEntries(),
-				Collections.<String, ObjectEntry>emptyMap(), _configuration);
-
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
-				"an-unexpected-error-occurred",
-				pimConnectorException.getMessage());
-
-			JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-				pimConnectorException.getOutput());
-
-			JSONArray jsonArray = jsonObject.getJSONArray("log");
-
-			Assert.assertEquals(jsonArray.toString(), 2, jsonArray.length());
-
-			JSONObject logJSONObject = jsonArray.getJSONObject(1);
-
-			JSONObject responseJSONObject = logJSONObject.getJSONObject(
-				"response");
-
-			Assert.assertEquals(
-				"<html>Login</html>", responseJSONObject.getString("body"));
-		}
-		finally {
-			_mockHttp(Collections.emptyMap());
-		}
-	}
-
 	private void _testExecuteWithInvalidStructureFieldMapping()
 		throws Exception {
 
@@ -943,38 +1000,6 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertFalse(
 			jsonObject.toString(), jsonObject.has("description"));
-	}
-
-	private void _testExecuteWithInvalidURL() throws Exception {
-		for (String url :
-				new String[] {
-					null, "ftp://localhost", "http://", "localhost"
-				}) {
-
-			try {
-				_execute(
-					HashMapBuilder.put(
-						"SKU-1",
-						Arrays.asList(
-							_mockPIMProductObjectEntry(
-								"SKU-1",
-								Collections.<String, Serializable>emptyMap()))
-					).build(),
-					_getRequiredObjectEntries(),
-					Collections.<String, ObjectEntry>emptyMap(),
-					HashMapBuilder.<String, Serializable>put(
-						"url", url
-					).build());
-
-				Assert.fail(url);
-			}
-			catch (PIMConnectorException pimConnectorException) {
-				Assert.assertEquals(
-					"enter-a-valid-url", pimConnectorException.getMessage());
-			}
-		}
-
-		Assert.assertTrue(_optionsList.isEmpty());
 	}
 
 	private void _testExecuteWithJoinedValues() throws Exception {
@@ -1314,40 +1339,6 @@ public class LiferayCommercePIMConnectorTest {
 		Assert.assertEquals(
 			"SKU-2", skuJSONObject.getString("externalReferenceCode"));
 		Assert.assertEquals("SKU-2", skuJSONObject.getString("sku"));
-	}
-
-	private void _testExecuteWithoutCatalog() throws Exception {
-		try {
-			_getProductJSONObject(
-				"SKU-1",
-				ListUtil.fromArray(
-					_mockPIMFieldMappingObjectEntry(
-						"catalogExternalReferenceCode", StringPool.BLANK,
-						"catalog", "dynamicValue", StringPool.BLANK),
-					_mockPIMFieldMappingObjectEntry(
-						"name", StringPool.BLANK, "title", "dynamicValue",
-						StringPool.BLANK),
-					_mockPIMFieldMappingObjectEntry(
-						"productType", StringPool.BLANK, StringPool.BLANK,
-						PIMConnectorFieldMappingsUtil.TYPE_FIXED_VALUE,
-						"simple"),
-					_mockPIMFieldMappingObjectEntry(
-						"skus[].sku", StringPool.BLANK, "sku", "dynamicValue",
-						StringPool.BLANK)),
-				Collections.<String, ObjectEntry>emptyMap(),
-				_mockPIMProductObjectEntry(
-					"SKU-1", Collections.<String, Serializable>emptyMap()));
-
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
-				"a-product-is-not-mapped-to-a-catalog",
-				pimConnectorException.getMessage());
-			Assert.assertNull(pimConnectorException.getOutput());
-		}
-
-		Assert.assertTrue(_optionsList.isEmpty());
 	}
 
 	private void _testExecuteWithoutUnitOfMeasure() throws Exception {
