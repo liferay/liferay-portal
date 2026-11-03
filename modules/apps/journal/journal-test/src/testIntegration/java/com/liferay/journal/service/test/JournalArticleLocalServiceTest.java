@@ -2113,6 +2113,81 @@ public class JournalArticleLocalServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112512")
+	public void testGetArticleDisplayWithJournalArticleFieldFromDepotEntry()
+		throws Exception {
+
+		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		JournalArticle depotJournalArticle = JournalTestUtil.addArticle(
+			depotEntry.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		DataDefinition dataDefinition =
+			DataDefinitionTestUtil.addDataDefinition(
+				"journal", _dataDefinitionResourceFactory, _group.getGroupId(),
+				_readFileToString("ddm_form_with_journal_article.json"),
+				TestPropsValues.getUser());
+
+		AssetEntry assetEntry = _assetEntryLocalService.getEntry(
+			JournalArticle.class.getName(),
+			depotJournalArticle.getResourcePrimKey());
+
+		JournalArticle journalArticle =
+			JournalTestUtil.addArticleWithXMLContent(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				JournalArticleConstants.CLASS_NAME_ID_DEFAULT,
+				StringUtil.replace(
+					_readFileToString(
+						"journal_article_content_with_journal_article.xml"),
+					"[$JOURNAL_ARTICLE_JSON$]",
+					JSONUtil.put(
+						"assetEntryId", assetEntry.getEntryId()
+					).put(
+						"className", JournalArticle.class.getName()
+					).put(
+						"classNameId",
+						PortalUtil.getClassNameId(JournalArticle.class)
+					).put(
+						"classPK", depotJournalArticle.getResourcePrimKey()
+					).put(
+						"title", depotJournalArticle.getTitle(LocaleUtil.US)
+					).put(
+						"type", "Web Content Article"
+					).toString()),
+				dataDefinition.getDataDefinitionKey(), null, LocaleUtil.US);
+
+		DDMTemplate ddmTemplate = DDMTemplateTestUtil.addTemplate(
+			_group.getGroupId(), journalArticle.getDDMStructureId(),
+			PortalUtil.getClassNameId(JournalArticle.class),
+			TemplateConstants.LANG_TYPE_FTL,
+			"<#assign webContentData = jsonFactoryUtil.createJSONObject(" +
+				"WebContent31406873.getData()) />${webContentData.title}",
+			LocaleUtil.US);
+
+		JournalArticleDisplay journalArticleDisplay =
+			_journalArticleLocalService.getArticleDisplay(
+				journalArticle, ddmTemplate.getTemplateKey(), Constants.VIEW,
+				LocaleUtil.toLanguageId(LocaleUtil.US), 1, null, _themeDisplay);
+
+		Assert.assertEquals(
+			depotJournalArticle.getTitle(LocaleUtil.US),
+			StringUtil.trim(journalArticleDisplay.getContent()));
+	}
+
+	@Test
 	public void testGetArticleDisplayWithSimpleData() throws Exception {
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),
