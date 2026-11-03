@@ -341,7 +341,7 @@ public class FragmentEntryProcessorRegistryImpl
 						document));
 		}
 
-		Map<String, String> htmls;
+		Map<String, String> htmls = null;
 
 		try {
 			for (DocumentFragmentEntryProcessor documentFragmentEntryProcessor :
