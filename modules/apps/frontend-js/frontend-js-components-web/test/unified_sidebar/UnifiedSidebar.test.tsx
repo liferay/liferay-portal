@@ -10,6 +10,7 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import UnifiedSidebar from '../../src/main/resources/META-INF/resources/unified_sidebar/UnifiedSidebar';
+import UnifiedSidebarSiteSelector from '../../src/main/resources/META-INF/resources/unified_sidebar/UnifiedSidebarSiteSelector';
 
 const DEFAULT_PROPS = {
 	categoryImageUrl: '/images/test-icon.svg',
@@ -50,19 +51,23 @@ describe('UnifiedSidebar', () => {
 		expect(screen.getByTestId('my-sidebar')).toBeInTheDocument();
 	});
 
-	it('renders the site selector button when both site administration props are provided', () => {
+	it('renders headerActions inside the header', () => {
 		render(
 			<UnifiedSidebar
 				{...DEFAULT_PROPS}
-				siteAdministrationItemSelectedEventName="selectSite"
-				siteAdministrationItemSelectorUrl="/select-site"
+				headerActions={
+					<UnifiedSidebarSiteSelector
+						eventName="selectSite"
+						url="/select-site"
+					/>
+				}
 			/>
 		);
 
 		expect(screen.getByLabelText('go-to-other-site')).toBeInTheDocument();
 	});
 
-	it('does not render the site selector button when site administration props are absent', () => {
+	it('does not render the site selector button when headerActions is absent', () => {
 		render(<UnifiedSidebar {...DEFAULT_PROPS} />);
 
 		expect(
@@ -114,6 +119,23 @@ describe('UnifiedSidebar', () => {
 		);
 
 		await userEvent.click(screen.getByLabelText('close-product-menu'));
+
+		expect(onOpenChange).toHaveBeenCalledWith(false);
+	});
+
+	it('uses the custom headerMessages when provided', async () => {
+		const onOpenChange = jest.fn();
+
+		render(
+			<UnifiedSidebar
+				{...DEFAULT_PROPS}
+				headerMessages={{closeAriaLabel: 'close-site-panel'}}
+				onOpenChange={onOpenChange}
+				open
+			/>
+		);
+
+		await userEvent.click(screen.getByLabelText('close-site-panel'));
 
 		expect(onOpenChange).toHaveBeenCalledWith(false);
 	});

@@ -69,7 +69,7 @@
 				cssClass="autofit-col-end"
 			>
 				<react:component
-					module="{SideNavigationColorSchemeButton} from application-list-taglib"
+					module="{UnifiedSidebarColorSchemeButton} from frontend-js-components-web"
 					props='<%=
 						HashMapBuilder.<String, Object>put(
 							"colorScheme", SessionClicks.get(request, "com_liferay_application_list_taglib_SideNavigationColorScheme", "light")

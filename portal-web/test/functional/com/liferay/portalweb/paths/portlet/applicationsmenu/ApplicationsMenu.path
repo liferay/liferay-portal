@@ -32,7 +32,7 @@
 </tr>
 <tr>
 	<td>PANEL_TITLE</td>
-	<td>//div[@data-qa-id='sideNavigation']//span[@data-qa-id='sideNavigationLabel' and normalize-space()='${key_panel}']</td>
+	<td>//div[@data-qa-id='sideNavigation']//span[@data-qa-id='unifiedSidebarLabel' and normalize-space()='${key_panel}']</td>
 	<td></td>
 </tr>
 <tr>

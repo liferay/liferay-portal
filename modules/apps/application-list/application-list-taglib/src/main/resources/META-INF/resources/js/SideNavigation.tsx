@@ -7,7 +7,11 @@ import ClayEmptyState from '@clayui/empty-state';
 import {ClayVerticalNav} from '@clayui/nav';
 import {SearchResultsMessage} from '@liferay/layout-js-components-web';
 import classNames from 'classnames';
-import {UnifiedSidebar, useId} from 'frontend-js-components-web';
+import {
+	UnifiedSidebar,
+	UnifiedSidebarSiteSelector,
+	useId,
+} from 'frontend-js-components-web';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import SideNavigationItemContent from './SideNavigationItemContent';
@@ -179,16 +183,19 @@ function SideNavigation({
 			categoryImageUrl={categoryImageUrl}
 			colorScheme={colorScheme}
 			colorSchemeSessionKey={colorSchemeSessionKey}
+			headerActions={
+				siteAdministrationItemSelectedEventName &&
+				siteAdministrationItemSelectorUrl ? (
+					<UnifiedSidebarSiteSelector
+						eventName={siteAdministrationItemSelectedEventName}
+						url={siteAdministrationItemSelectorUrl}
+					/>
+				) : undefined
+			}
 			label={label}
 			navigationId="com_liferay_application_list_taglib_side_navigation"
 			onOpenChange={updateVisible}
 			open={visible}
-			siteAdministrationItemSelectedEventName={
-				siteAdministrationItemSelectedEventName
-			}
-			siteAdministrationItemSelectorUrl={
-				siteAdministrationItemSelectorUrl
-			}
 			testId="sideNavigation"
 		>
 			<UnifiedSidebar.Top>

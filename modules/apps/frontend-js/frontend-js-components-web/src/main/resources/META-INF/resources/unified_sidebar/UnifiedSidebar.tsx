@@ -9,9 +9,13 @@ import {sub} from 'frontend-js-web';
 import React, {useRef} from 'react';
 
 import UnifiedSidebarColorSchemeButton from './UnifiedSidebarColorSchemeButton';
-import UnifiedSidebarSiteSelector from './UnifiedSidebarSiteSelector';
 
 import './UnifiedSidebar.scss';
+
+export type HeaderMessages = {
+	backAriaLabel?: string;
+	closeAriaLabel?: string;
+};
 
 export interface UnifiedSidebarProps {
 	canonicalName?: string;
@@ -19,28 +23,16 @@ export interface UnifiedSidebarProps {
 	children?: React.ReactNode;
 	colorScheme?: 'dark' | 'light';
 	colorSchemeSessionKey?: string;
+	headerActions?: React.ReactNode;
+	headerMessages?: HeaderMessages;
 	label: string;
 	navigationId?: string;
 	onOpenChange?: (open: boolean) => void;
 	open?: boolean;
-	siteAdministrationItemSelectedEventName?: string;
-	siteAdministrationItemSelectorUrl?: string;
 	testId?: string;
 }
 
 const PANEL_WIDTH = 280;
-
-const CLOSE_BUTTON_PROPS = Liferay.FeatureFlags['LPD-57922']
-	? {
-			className:
-				'btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm unified-sidebar-close-button',
-		}
-	: undefined;
-
-const HEADER_MESSAGES = {
-	backAriaLabel: Liferay.Language.get('go-back'),
-	closeAriaLabel: Liferay.Language.get('close-product-menu'),
-};
 
 function UnifiedSidebarTop({children}: {children?: React.ReactNode}) {
 	return <>{children}</>;
@@ -52,23 +44,34 @@ export default function UnifiedSidebar({
 	children,
 	colorScheme,
 	colorSchemeSessionKey,
+	headerActions,
+	headerMessages,
 	label,
 	navigationId,
 	onOpenChange,
 	open = false,
-	siteAdministrationItemSelectedEventName,
-	siteAdministrationItemSelectorUrl,
 	testId = 'unified-sidebar',
 }: UnifiedSidebarProps) {
 	const containerRef = useRef<HTMLElement>(null);
+
+	const closeButtonProps = Liferay.FeatureFlags['LPD-57922']
+		? {
+				className:
+					'btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm unified-sidebar-close-button',
+			}
+		: undefined;
+
+	const mergedHeaderMessages = {
+		backAriaLabel: Liferay.Language.get('go-back'),
+		closeAriaLabel: Liferay.Language.get('close-product-menu'),
+		...headerMessages,
+	};
 
 	return (
 		<SidePanel
 			aria-label={sub(Liferay.Language.get('x-menu'), label)}
 			closeOnEscape={false}
-			containerRef={
-				containerRef as unknown as React.RefObject<HTMLElement>
-			}
+			containerRef={containerRef}
 			data-canonical-name={canonicalName}
 			data-qa-id={testId}
 			data-testid={testId}
@@ -82,9 +85,9 @@ export default function UnifiedSidebar({
 		>
 			<SidePanel.Header
 				className="c-mx-1 c-px-2 unified-sidebar-header"
-				closeButtonProps={CLOSE_BUTTON_PROPS}
+				closeButtonProps={closeButtonProps}
 				data-qa-id="unifiedSidebarHeader"
-				messages={HEADER_MESSAGES}
+				messages={mergedHeaderMessages}
 			>
 				<SidePanel.Title className="align-items-center c-my-0 d-flex">
 					<ClaySticker
@@ -103,15 +106,7 @@ export default function UnifiedSidebar({
 						{label}
 					</span>
 
-					{siteAdministrationItemSelectedEventName &&
-						siteAdministrationItemSelectorUrl && (
-							<UnifiedSidebarSiteSelector
-								eventName={
-									siteAdministrationItemSelectedEventName
-								}
-								url={siteAdministrationItemSelectorUrl}
-							/>
-						)}
+					{headerActions}
 
 					{Liferay.FeatureFlags['LPD-57922'] && (
 						<UnifiedSidebarColorSchemeButton
