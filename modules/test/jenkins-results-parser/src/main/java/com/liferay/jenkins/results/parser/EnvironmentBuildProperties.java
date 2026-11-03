@@ -27,8 +27,11 @@ public class EnvironmentBuildProperties extends Properties {
 
 	public static Environment getCurrentEnvironment() {
 		String jenkinsURL = System.getenv("JENKINS_URL");
+		String pluginsWarName = System.getenv("PLUGINS_WAR_NAME");
 
-		if (!JenkinsResultsParserUtil.isURL(jenkinsURL)) {
+		if (!JenkinsResultsParserUtil.isURL(jenkinsURL) &&
+			JenkinsResultsParserUtil.isNullOrEmpty(pluginsWarName)) {
+
 			return Environment.LOCAL;
 		}
 
