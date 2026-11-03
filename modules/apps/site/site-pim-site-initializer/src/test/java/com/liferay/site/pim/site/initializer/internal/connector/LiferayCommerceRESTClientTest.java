@@ -53,16 +53,18 @@ public class LiferayCommerceRESTClientTest {
 	@Test
 	public void testPutOption() throws Exception {
 		_testPutOption();
-		_testPutOptionWithErrorResponse();
-		_testPutOptionWithIOException();
+		_testPutOptionWithErrors();
 	}
 
-	private void _assertPIMConnectorException(
+	private LiferayCommerceRESTClient _assertPIMConnectorException(
 			String expectedMessage, UnsafeConsumer unsafeConsumer)
 		throws Exception {
 
+		LiferayCommerceRESTClient liferayCommerceRESTClient =
+			_createLiferayCommerceRESTClient();
+
 		try {
-			unsafeConsumer.accept(_createLiferayCommerceRESTClient());
+			unsafeConsumer.accept(liferayCommerceRESTClient);
 
 			Assert.fail();
 		}
@@ -70,6 +72,8 @@ public class LiferayCommerceRESTClientTest {
 			Assert.assertEquals(
 				expectedMessage, pimConnectorException.getMessage());
 		}
+
+		return liferayCommerceRESTClient;
 	}
 
 	private LiferayCommerceRESTClient _createLiferayCommerceRESTClient() {
@@ -256,23 +260,10 @@ public class LiferayCommerceRESTClientTest {
 			"application/json", headers.get(HttpHeaders.CONTENT_TYPE));
 	}
 
-	private void _testPutOptionWithErrorResponse() throws Exception {
-		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
+	private void _testPutOptionWithErrors() throws Exception {
 
-		_assertPIMConnectorException(
-			"the-remote-instance-returned-an-error",
-			liferayCommerceRESTClient -> liferayCommerceRESTClient.putOption(
-				"color", JSONUtil.put("key", "color")));
+		// Connection refused
 
-		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
-
-		_assertPIMConnectorException(
-			"unable-to-authenticate-with-the-remote-instance",
-			liferayCommerceRESTClient -> liferayCommerceRESTClient.putOption(
-				"color", JSONUtil.put("key", "color")));
-	}
-
-	private void _testPutOptionWithIOException() throws Exception {
 		Mockito.when(
 			_http.URLtoString(Mockito.any(Http.Options.class))
 		).thenThrow(
@@ -280,19 +271,11 @@ public class LiferayCommerceRESTClientTest {
 		);
 
 		LiferayCommerceRESTClient liferayCommerceRESTClient =
-			_createLiferayCommerceRESTClient();
-
-		try {
-			liferayCommerceRESTClient.putOption(
-				"color", JSONUtil.put("key", "color"));
-
-			Assert.fail();
-		}
-		catch (PIMConnectorException pimConnectorException) {
-			Assert.assertEquals(
+			_assertPIMConnectorException(
 				"unable-to-connect-to-the-remote-instance",
-				pimConnectorException.getMessage());
-		}
+				curLiferayCommerceRESTClient ->
+					curLiferayCommerceRESTClient.putOption(
+						"color", JSONUtil.put("key", "color")));
 
 		JSONArray jsonArray = liferayCommerceRESTClient.getLogJSONArray();
 
@@ -304,6 +287,26 @@ public class LiferayCommerceRESTClientTest {
 
 		Assert.assertEquals(
 			"Connection refused", responseJSONObject.getString("error"));
+
+		// Forbidden response
+
+		_mockHttp(403, JSONUtil.put("status", "FORBIDDEN"));
+
+		_assertPIMConnectorException(
+			"unable-to-authenticate-with-the-remote-instance",
+			curLiferayCommerceRESTClient ->
+				curLiferayCommerceRESTClient.putOption(
+					"color", JSONUtil.put("key", "color")));
+
+		// Server error
+
+		_mockHttp(500, JSONUtil.put("status", "INTERNAL_SERVER_ERROR"));
+
+		_assertPIMConnectorException(
+			"the-remote-instance-returned-an-error",
+			curLiferayCommerceRESTClient ->
+				curLiferayCommerceRESTClient.putOption(
+					"color", JSONUtil.put("key", "color")));
 	}
 
 	private final Http _http = Mockito.mock(Http.class);
