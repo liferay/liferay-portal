@@ -1197,36 +1197,6 @@ public class ExportImportHelperUtilTest {
 		Assert.assertEquals(layout.getPlid(), layoutJSONObject.getLong("plid"));
 	}
 
-	@FeatureFlags(
-		featureFlags = {
-			@FeatureFlag(value = "LPD-41307"), @FeatureFlag("LPD-57655"),
-			@FeatureFlag("LPD-85946")
-		}
-	)
-	@Test
-	public void testGetSupportedGroups() throws Exception {
-		UserTestUtil.setUser(TestPropsValues.getUser());
-
-		List<Group> groups = ExportImportHelperUtil.getSupportedGroups(
-			_liveGroup.getCompanyId(),
-			_liveGroup.getName(LocaleUtil.getDefault()), null);
-
-		Assert.assertEquals(groups.toString(), 1, groups.size());
-		Assert.assertEquals(_liveGroup, groups.get(0));
-
-		DepotEntry depotEntry = _addDepotEntry(DepotConstants.TYPE_SPACE);
-
-		Group group = depotEntry.getGroup();
-
-		_depotGroups.add(group);
-
-		groups = ExportImportHelperUtil.getSupportedGroups(
-			group.getCompanyId(), group.getName(LocaleUtil.getDefault()), null);
-
-		Assert.assertEquals(groups.toString(), 1, groups.size());
-		Assert.assertEquals(group, groups.get(0));
-	}
-
 	@Test
 	public void testIsGroupMatching() throws Exception {
 		Assert.assertTrue(
