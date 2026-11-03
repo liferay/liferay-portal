@@ -77,6 +77,17 @@ describe('RatingsThumbs', () => {
 		});
 	});
 
+	describe('when rendered with signedIn = false', () => {
+		it('is disabled', () => {
+			const [thumbUpButton, thumbDownButton] = renderComponent({
+				signedIn: false,
+			}).getAllByRole('button');
+
+			expect(thumbUpButton.disabled).toBe(true);
+			expect(thumbDownButton.disabled).toBe(true);
+		});
+	});
+
 	describe('when there is no server response', () => {
 		beforeEach(() => {
 			fetch.mockResponse(JSON.stringify({}));
