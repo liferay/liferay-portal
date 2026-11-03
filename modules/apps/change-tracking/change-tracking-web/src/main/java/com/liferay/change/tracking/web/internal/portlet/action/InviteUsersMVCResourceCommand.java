@@ -5,7 +5,6 @@
 
 package com.liferay.change.tracking.web.internal.portlet.action;
 
-import com.liferay.change.tracking.configuration.CTCollectionEmailConfiguration;
 import com.liferay.change.tracking.constants.CTActionKeys;
 import com.liferay.change.tracking.constants.CTConstants;
 import com.liferay.change.tracking.constants.CTPortletKeys;
@@ -15,10 +14,8 @@ import com.liferay.change.tracking.web.internal.helper.PublicationHelper;
 import com.liferay.change.tracking.web.internal.security.permission.resource.CTCollectionPermission;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringPool;
-import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
 import com.liferay.portal.kernel.exception.PortalException;
-import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
@@ -26,13 +23,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Role;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroupRole;
-import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
 import com.liferay.portal.kernel.model.role.RoleConstants;
-import com.liferay.portal.kernel.notifications.NotificationEvent;
-import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
-import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
 import com.liferay.portal.kernel.portlet.JSONPortletResponseUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseTransactionalMVCResourceCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCResourceCommand;
@@ -45,13 +37,9 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
-import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
-import com.liferay.portal.kernel.util.Localization;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
-import com.liferay.portal.kernel.util.SubscriptionSender;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.portlet.PortletException;
@@ -241,68 +229,16 @@ public class InviteUsersMVCResourceCommand
 				continue;
 			}
 
-			_sendNotificationEvent(
-				ctCollectionId, userIds[i], roleValues[i], themeDisplay);
-
-			_sendEmail(ctCollectionId, userIds[i], themeDisplay);
-		}
-
-		JSONPortletResponseUtil.writeJSON(
-			resourceRequest, resourceResponse,
-			JSONUtil.put(
-				"successMessage",
-				_language.get(
-					httpServletRequest, "users-were-invited-successfully")));
-	}
-
-	private void _sendEmail(
-			long ctCollectionId, long receiverUserId, ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		if (!UserNotificationManagerUtil.isDeliver(
-				receiverUserId, CTPortletKeys.PUBLICATIONS, 0,
-				UserNotificationDefinition.NOTIFICATION_TYPE_ADD_ENTRY,
-				UserNotificationDeliveryConstants.TYPE_EMAIL)) {
-
-			return;
-		}
-
-		try {
-			CTCollectionEmailConfiguration ctCollectionEmailConfiguration =
-				_configurationProvider.getCompanyConfiguration(
-					CTCollectionEmailConfiguration.class,
-					themeDisplay.getCompanyId());
-
-			User user = themeDisplay.getUser();
-
-			String fromName = ctCollectionEmailConfiguration.emailFromName();
-
-			if (Validator.isNull(fromName)) {
-				fromName = user.getFullName();
-			}
-
-			String fromAddress =
-				ctCollectionEmailConfiguration.emailFromAddress();
-
-			if (Validator.isNull(fromAddress)) {
-				fromAddress = user.getEmailAddress();
-			}
-
-			User receiverUser = _userLocalService.getUser(receiverUserId);
-
-			String toName = receiverUser.getFullName();
-			String toAddress = receiverUser.getEmailAddress();
-
-			CTCollection ctCollection =
-				_ctCollectionLocalService.getCTCollection(ctCollectionId);
+			_publicationHelper.sendNotificationEvent(
+				ctCollectionId, themeDisplay.getUser(), userIds[i],
+				roleValues[i]);
 
 			ServiceContext serviceContext =
 				ServiceContextThreadLocal.getServiceContext();
 
-			SubscriptionSender subscriptionSender = new SubscriptionSender();
-
-			subscriptionSender.setContextAttribute(
-				"[$PORTAL_PUBLICATION_REVIEW_CHANGES_URL$]",
+			_publicationHelper.sendEmail(
+				themeDisplay.getCompanyId(), ctCollectionId,
+				themeDisplay.getUser(), themeDisplay.getPortalURL(), userIds[i],
 				PortletURLBuilder.create(
 					_portal.getControlPanelPortletURL(
 						serviceContext.getRequest(),
@@ -314,75 +250,19 @@ public class InviteUsersMVCResourceCommand
 				).setParameter(
 					"ctCollectionId", ctCollectionId
 				).buildString(),
-				false);
-			subscriptionSender.setContextAttributes(
-				"[$FROM_ADDRESS$]", fromAddress, "[$FROM_NAME$]", fromName,
-				"[$PORTAL_URL$]", themeDisplay.getPortalURL(), "[$TO_NAME$]",
-				toName, "[$PUBLICATION_NAME$]", ctCollection.getName());
-			subscriptionSender.setFrom(fromAddress, fromName);
-			subscriptionSender.setHtmlFormat(true);
-			subscriptionSender.setLocalizedBodyMap(
-				_localization.getMap(
-					ctCollectionEmailConfiguration.invitationEmailBody()));
-			subscriptionSender.setLocalizedSubjectMap(
-				_localization.getMap(
-					ctCollectionEmailConfiguration.invitationEmailSubject()));
-			subscriptionSender.setMailId("ctCollectionId", ctCollectionId);
-			subscriptionSender.setNotificationType(
-				UserNotificationDefinition.NOTIFICATION_TYPE_ADD_ENTRY);
-			subscriptionSender.setServiceContext(serviceContext);
-
-			subscriptionSender.addRuntimeSubscribers(toAddress, toName);
-
-			subscriptionSender.flushNotificationsAsync();
-		}
-		catch (Exception exception) {
-			throw new SystemException(exception);
-		}
-	}
-
-	private void _sendNotificationEvent(
-			long ctCollectionId, long receiverUserId, int roleValue,
-			ThemeDisplay themeDisplay)
-		throws PortalException {
-
-		if (!UserNotificationManagerUtil.isDeliver(
-				receiverUserId, CTPortletKeys.PUBLICATIONS, 0,
-				UserNotificationDefinition.NOTIFICATION_TYPE_ADD_ENTRY,
-				UserNotificationDeliveryConstants.TYPE_WEBSITE)) {
-
-			return;
+				serviceContext);
 		}
 
-		User user = themeDisplay.getUser();
-
-		NotificationEvent notificationEvent = new NotificationEvent(
-			System.currentTimeMillis(), CTPortletKeys.PUBLICATIONS,
+		JSONPortletResponseUtil.writeJSON(
+			resourceRequest, resourceResponse,
 			JSONUtil.put(
-				"classPK", ctCollectionId
-			).put(
-				"notificationType",
-				UserNotificationDefinition.NOTIFICATION_TYPE_ADD_ENTRY
-			).put(
-				"roleValue", roleValue
-			).put(
-				"userId", user.getUserId()
-			).put(
-				"userName", user.getFullName()
-			));
-
-		notificationEvent.setDeliveryType(
-			UserNotificationDeliveryConstants.TYPE_WEBSITE);
-
-		_userNotificationEventLocalService.addUserNotificationEvent(
-			receiverUserId, notificationEvent);
+				"successMessage",
+				_language.get(
+					httpServletRequest, "users-were-invited-successfully")));
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		InviteUsersMVCResourceCommand.class);
-
-	@Reference
-	private ConfigurationProvider _configurationProvider;
 
 	@Reference
 	private CTCollectionLocalService _ctCollectionLocalService;
@@ -392,9 +272,6 @@ public class InviteUsersMVCResourceCommand
 
 	@Reference
 	private Language _language;
-
-	@Reference
-	private Localization _localization;
 
 	@Reference
 	private Portal _portal;
@@ -410,9 +287,5 @@ public class InviteUsersMVCResourceCommand
 
 	@Reference
 	private UserLocalService _userLocalService;
-
-	@Reference
-	private UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }
