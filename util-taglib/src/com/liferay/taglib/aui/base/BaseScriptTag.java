@@ -141,7 +141,10 @@ public abstract class BaseScriptTag extends PositionTagSupport {
 		_use = use;
 	}
 
+	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_async = false;
 		_blocking = null;
 		_crossOrigin = null;

@@ -93,7 +93,10 @@ public abstract class BaseLinkTag extends PositionTagSupport {
 		_type = type;
 	}
 
+	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_crossOrigin = null;
 		_cssClass = null;
 		_hashedFile = false;

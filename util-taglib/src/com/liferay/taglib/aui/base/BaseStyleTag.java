@@ -37,7 +37,10 @@ public abstract class BaseStyleTag extends PositionTagSupport {
 		_type = type;
 	}
 
+	@Override
 	protected void cleanUp() {
+		super.cleanUp();
+
 		_senna = null;
 		_type = null;
 	}
