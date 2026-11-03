@@ -8,6 +8,8 @@ package com.liferay.portal.security.audit.event.generators.configuration.interna
 import com.liferay.configuration.admin.util.ConfigurationPidUtil;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.metatype.annotations.ExtendedObjectClassDefinition;
 import com.liferay.portal.configuration.persistence.ConfigurationOverridePropertiesUtil;
 import com.liferay.portal.configuration.persistence.ReloadablePersistenceManager;
@@ -18,12 +20,15 @@ import com.liferay.portal.kernel.audit.AuditRouter;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HashMapDictionary;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.event.generators.util.Attribute;
 import com.liferay.portal.security.audit.event.generators.util.AuditMessageBuilder;
+import com.liferay.portal.security.audit.storage.model.AuditEvent;
 
 import java.util.Collections;
 import java.util.Dictionary;
@@ -124,13 +129,22 @@ public class AuditConfigurationModelListener
 			eventType = EventTypes.AUDIT_CONFIG_CHANGE;
 		}
 
+		String classPK = GetterUtil.getString(
+			StringUtil.extractLast(pid, CharPool.TILDE));
+
+		if (classPK.length() > ModelHintsUtil.getMaxLength(
+				AuditEvent.class.getName(), "classPK")) {
+
+			classPK = StringPool.BLANK;
+		}
+
 		long groupId = GetterUtil.getLong(
 			dictionary.get(
 				ExtendedObjectClassDefinition.Scope.GROUP.getPropertyKey()));
 
 		AuditMessage auditMessage = AuditMessageBuilder.buildAuditMessage(
-			groupId, 0, action, rawPid, pid, null, eventType, "configuration",
-			attributes);
+			groupId, 0, action, rawPid, classPK, null, eventType,
+			"configuration", attributes);
 
 		long companyId = GetterUtil.getLong(
 			dictionary.get(
@@ -152,6 +166,8 @@ public class AuditConfigurationModelListener
 		if (Validator.isNotNull(fileName)) {
 			additionalInfoJSONObject.put("fileName", fileName);
 		}
+
+		additionalInfoJSONObject.put("pid", pid);
 
 		String scope = ExtendedObjectClassDefinition.Scope.SYSTEM.getValue();
 
