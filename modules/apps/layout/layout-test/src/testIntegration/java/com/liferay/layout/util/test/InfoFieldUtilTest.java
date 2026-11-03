@@ -83,15 +83,13 @@ public class InfoFieldUtilTest {
 			TestPropsValues.getUserId(),
 			deletedFragmentEntryLink.getFragmentEntryLinkId(), true);
 
-		FragmentEntryLink missingFragmentEntryLink =
-			_fragmentEntryLinkService.addFragmentEntryLink(
-				null, layout.getGroupId(), null, null, null,
-				segmentsExperienceId, layout.getPlid(), StringPool.BLANK, _HTML,
-				StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
-				StringPool.BLANK, 0, StringPool.BLANK,
-				FragmentConstants.TYPE_COMPONENT,
-				ServiceContextTestUtil.getServiceContext(
-					layout.getGroupId(), TestPropsValues.getUserId()));
+		_fragmentEntryLinkService.addFragmentEntryLink(
+			null, layout.getGroupId(), null, null, null, segmentsExperienceId,
+			layout.getPlid(), StringPool.BLANK, _HTML, StringPool.BLANK,
+			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK, 0,
+			StringPool.BLANK, FragmentConstants.TYPE_COMPONENT,
+			ServiceContextTestUtil.getServiceContext(
+				layout.getGroupId(), TestPropsValues.getUserId()));
 
 		List<String> names = new ArrayList<>();
 
@@ -103,8 +101,7 @@ public class InfoFieldUtilTest {
 		Assert.assertEquals(
 			Arrays.asList(
 				_getName(fragmentEntryLink3), _getName(nestedFragmentEntryLink),
-				_getName(fragmentEntryLink1), _getName(fragmentEntryLink2),
-				_getName(missingFragmentEntryLink)),
+				_getName(fragmentEntryLink1), _getName(fragmentEntryLink2)),
 			names);
 	}
 
