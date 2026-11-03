@@ -28,6 +28,8 @@ interface Props {
 	label: string;
 	navigationItemsURL: string;
 	selectedPortletId: string;
+	siteAdministrationItemSelectedEventName: string;
+	siteAdministrationItemSelectorUrl: string;
 	visible: boolean;
 	visibleSessionKey: string;
 }
@@ -55,6 +57,8 @@ function SideNavigation({
 	label,
 	navigationItemsURL,
 	selectedPortletId,
+	siteAdministrationItemSelectedEventName,
+	siteAdministrationItemSelectorUrl,
 	visible: initialVisible,
 	visibleSessionKey,
 }: Props) {
@@ -165,10 +169,16 @@ function SideNavigation({
 			canonicalName={canonicalName}
 			categoryImageUrl={categoryImageUrl}
 			containerRef={containerRef}
-			navigationId="com_liferay_application_list_taglib_side_navigation"
 			label={label}
+			navigationId="com_liferay_application_list_taglib_side_navigation"
 			onOpenChange={updateVisible}
 			open={visible}
+			siteAdministrationItemSelectedEventName={
+				siteAdministrationItemSelectedEventName
+			}
+			siteAdministrationItemSelectorUrl={
+				siteAdministrationItemSelectorUrl
+			}
 			testId="sideNavigation"
 		>
 			<UnifiedSidebar.Top>

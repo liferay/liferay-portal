@@ -4,10 +4,11 @@
  */
 
 import {ClayButtonWithIcon} from '@clayui/button';
-import {openSelectionModal} from 'frontend-js-components-web';
 import React from 'react';
 
-function SideNavigationSiteSelector({
+import openSelectionModal from '../modal/commands/openSelectionModal';
+
+function UnifiedSidebarSiteSelector({
 	eventName,
 	url,
 }: {
@@ -45,4 +46,4 @@ function SideNavigationSiteSelector({
 	);
 }
 
-export default SideNavigationSiteSelector;
+export default UnifiedSidebarSiteSelector;
