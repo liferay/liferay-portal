@@ -128,11 +128,11 @@ public class SchedulerResponseManagerTest {
 	public void testPauseDispatchTriggerJobWithCompanyAdmin() throws Exception {
 		String jobName = StringBundler.concat(
 			"DISPATCH_JOB_", RandomTestUtil.randomString(), "@",
-			TestPropsValues.getCompanyId());
+			_company.getCompanyId());
 
 		Message message = new Message();
 
-		message.put("companyId", TestPropsValues.getCompanyId());
+		message.put("companyId", _company.getCompanyId());
 
 		_scheduleJob(jobName, message);
 
