@@ -36,6 +36,12 @@ public class TestrayRun {
 		"dateCreated", "dateModified", "id", "name"
 	};
 
+	public static String getBatchRunIdString(
+		String batchName, String runIdString) {
+
+		return runIdString + _BATCH_NAME_DELIMITER + batchName;
+	}
+
 	public static String getDefaultRunIdString() {
 		try {
 			return JenkinsResultsParserUtil.getBuildProperty(
@@ -442,6 +448,12 @@ public class TestrayRun {
 
 		String name = getRunIdString();
 
+		int x = name.indexOf(_BATCH_NAME_DELIMITER);
+
+		if (x != -1) {
+			name = name.substring(0, x);
+		}
+
 		for (String optionName : name.split("\\|")) {
 			TestrayFactor.Option testrayFactorOption =
 				TestrayFactory.newTestrayFactorOption(
@@ -529,6 +541,8 @@ public class TestrayRun {
 			throw new RuntimeException(ioException);
 		}
 	}
+
+	private static final String _BATCH_NAME_DELIMITER = "#";
 
 	private static final String _PROPERTY_KEY_FACTOR_NAME =
 		"testray.environment.factor.name";

@@ -10,6 +10,7 @@ import com.liferay.jenkins.results.parser.BuildDatabase;
 import com.liferay.jenkins.results.parser.DownstreamBuild;
 import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
+import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.Retryable;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
@@ -30,10 +31,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -786,6 +791,25 @@ public class TestrayFactory {
 	}
 
 	public static TestrayRun newTestrayRun(
+		TestrayBuild testrayBuild, String batchName, Job job) {
+
+		synchronized (_testrayRuns) {
+			Map<String, String> runIdStrings = _getRunIdStrings(
+				testrayBuild, job);
+
+			String name = runIdStrings.get(batchName);
+
+			if (name == null) {
+				return newTestrayRun(
+					testrayBuild, batchName, job.getTestSuiteName(),
+					job.getJobProperties());
+			}
+
+			return _newTestrayRun(testrayBuild, name);
+		}
+	}
+
+	public static TestrayRun newTestrayRun(
 		TestrayBuild testrayBuild, String batchName, String testSuiteName,
 		Properties properties) {
 
@@ -798,19 +822,7 @@ public class TestrayFactory {
 					"Please set testray.environment.default[master]");
 			}
 
-			String key = testrayBuild.getId() + "__" + name;
-
-			TestrayRun testrayRun = _testrayRuns.get(key);
-
-			if (testrayRun != null) {
-				return testrayRun;
-			}
-
-			testrayRun = new TestrayRun(testrayBuild, name);
-
-			_testrayRuns.put(key, testrayRun);
-
-			return testrayRun;
+			return _newTestrayRun(testrayBuild, name);
 		}
 	}
 
@@ -896,6 +908,101 @@ public class TestrayFactory {
 			status, testrayBuild, topLevelBuildReport);
 	}
 
+	private static Map<String, String> _getRunIdStrings(
+		TestrayBuild testrayBuild, Job job) {
+
+		String key = JenkinsResultsParserUtil.combine(
+			String.valueOf(testrayBuild.getId()), "__", job.getJobName(), "__",
+			job.getTestSuiteName());
+
+		Map<String, String> runIdStrings = _runIdStrings.get(key);
+
+		if (runIdStrings != null) {
+			return runIdStrings;
+		}
+
+		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
+
+		axisTestClassGroups.addAll(job.getAxisTestClassGroups());
+		axisTestClassGroups.addAll(job.getDependentAxisTestClassGroups());
+
+		Set<String> batchNames = new TreeSet<>();
+
+		for (AxisTestClassGroup axisTestClassGroup : axisTestClassGroups) {
+			batchNames.add(axisTestClassGroup.getEnhancedBatchName());
+		}
+
+		Map<String, String> factorRunIdStrings = new HashMap<>();
+
+		Properties jobProperties = job.getJobProperties();
+
+		for (String batchName : batchNames) {
+			String factorRunIdString = TestrayRun.getRunIdString(
+				batchName, job.getTestSuiteName(), jobProperties);
+
+			if (factorRunIdString == null) {
+				continue;
+			}
+
+			factorRunIdStrings.put(batchName, factorRunIdString);
+		}
+
+		runIdStrings = new HashMap<>();
+
+		for (Map.Entry<String, String> entry : factorRunIdStrings.entrySet()) {
+			String runIdString = entry.getValue();
+			String batchName = entry.getKey();
+
+			for (Map.Entry<String, String> otherEntry :
+					factorRunIdStrings.entrySet()) {
+
+				String otherBatchName = otherEntry.getKey();
+
+				if (otherBatchName.equals(batchName) ||
+					!runIdString.equals(otherEntry.getValue())) {
+
+					continue;
+				}
+
+				if ((otherBatchName.length() < batchName.length()) ||
+					((otherBatchName.length() == batchName.length()) &&
+					 (otherBatchName.compareTo(batchName) < 0))) {
+
+					runIdString = TestrayRun.getBatchRunIdString(
+						batchName, runIdString);
+
+					break;
+				}
+			}
+
+			runIdStrings.put(batchName, runIdString);
+		}
+
+		_runIdStrings.put(key, runIdStrings);
+
+		return runIdStrings;
+	}
+
+	private static TestrayRun _newTestrayRun(
+		TestrayBuild testrayBuild, String name) {
+
+		String key = testrayBuild.getId() + "__" + name;
+
+		TestrayRun testrayRun = _testrayRuns.get(key);
+
+		if (testrayRun != null) {
+			return testrayRun;
+		}
+
+		testrayRun = new TestrayRun(testrayBuild, name);
+
+		_testrayRuns.put(key, testrayRun);
+
+		return testrayRun;
+	}
+
+	private static final Map<String, Map<String, String>> _runIdStrings =
+		new ConcurrentHashMap<>();
 	private static final Map<String, RunTestrayFactor> _runTestrayFactors =
 		new ConcurrentHashMap<>();
 	private static final Map<Build, TestrayAttachmentRecorder>
