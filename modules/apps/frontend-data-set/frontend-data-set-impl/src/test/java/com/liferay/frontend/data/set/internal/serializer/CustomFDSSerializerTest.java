@@ -1553,7 +1553,6 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			FDS_NAMES[0], httpServletRequest);
 
 		Assert.assertEquals(3, jsonArray.length());
-
 		Assert.assertEquals(
 			"table",
 			jsonArray.getJSONObject(
