@@ -977,6 +977,15 @@ public class CustomFDSSerializer
 			}
 		}
 
+		// At least one visualization mode must stay available, even when the
+		// persisted ones leave none enabled or deployed
+
+		if (jsonArray.length() == 0) {
+			for (String name : _defaultVisualizationModeNames) {
+				jsonArray.put(() -> defaultViewJSONObjects.get(name));
+			}
+		}
+
 		return jsonArray;
 	}
 
