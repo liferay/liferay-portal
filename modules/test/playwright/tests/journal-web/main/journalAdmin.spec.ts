@@ -8,13 +8,14 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
+import {createCategories} from '../../../helpers/CreateCategories';
 import {changeManagementToolbarView} from '../../../utils/changeManagementToolbarView';
 import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
-import addSingleApproverWorkflow from '../../content-dashboard-web/main/utils/addSingleApproverWorkflow';
 import {waitForAlert} from '../../../utils/waitForAlert';
+import addSingleApproverWorkflow from '../../content-dashboard-web/main/utils/addSingleApproverWorkflow';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 
 const test = mergeTests(
@@ -560,5 +561,225 @@ test(
 				page.getByRole('heading', {name: 'Email From'})
 			).toBeVisible();
 		}
+	}
+);
+
+test(
+	'Web content can be filtered by categories and tags',
+	{tag: '@LPS-197159'},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const vocabularyName = getRandomString();
+
+		const [category] = await createCategories({
+			apiHelpers,
+			categoryNames: [{name: getRandomString()}],
+			siteId: site.id,
+			vocabularyName,
+		});
+
+		const [usedTag, unusedTag] = [getRandomString(), getRandomString()];
+
+		await apiHelpers.headlessAdminTaxonomy.postSiteKeyword({
+			name: unusedTag,
+			siteId: site.id,
+		});
+
+		const contentStructureId =
+			await getBasicWebContentStructureId(apiHelpers);
+
+		const [plainTitle, categorizedTitle, taggedTitle] = [
+			getRandomString(),
+			getRandomString(),
+			getRandomString(),
+		];
+
+		for (const {categoryIds, tags, title} of [
+			{title: plainTitle},
+			{categoryIds: [category.id], title: categorizedTitle},
+			{tags: [usedTag], title: taggedTitle},
+		]) {
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				categoryIds,
+				contentStructureId,
+				datePublished: new Date().toISOString(),
+				siteId: site.id,
+				tags,
+				title,
+			});
+		}
+
+		const titleLink = (title: string) =>
+			page.getByRole('link', {exact: true, name: title});
+
+		const openFilter = async (filterName: string) => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {name: filterName}),
+				trigger: page.getByRole('button', {
+					exact: true,
+					name: 'Filter',
+				}),
+			});
+		};
+
+		// Filter by category
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await openFilter('Categories');
+
+		const categoriesModal = page.frameLocator(
+			'iframe[title="Filter by Categories"]'
+		);
+
+		await clickAndExpectToBeVisible({
+			target: categoriesModal.getByText(category.name, {exact: true}),
+			trigger: categoriesModal.getByText(vocabularyName),
+		});
+
+		await categoriesModal.getByText(category.name, {exact: true}).click();
+
+		await page
+			.getByRole('dialog')
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await expect(
+			page.getByText('1 Result Found With Filters')
+		).toBeVisible();
+		await expect(
+			page.getByText(`Categories: ${category.name}`)
+		).toBeVisible();
+		await expect(titleLink(categorizedTitle)).toBeVisible();
+		await expect(titleLink(plainTitle)).toBeHidden();
+		await expect(titleLink(taggedTitle)).toBeHidden();
+
+		// Filter by tag
+
+		for (const [tag, results] of [
+			[usedTag, 1],
+			[unusedTag, 0],
+		] as const) {
+			await journalPage.goto(site.friendlyUrlPath);
+
+			await openFilter('Tags');
+
+			const tagsModal = page.frameLocator(
+				'iframe[title="Filter by Tags"]'
+			);
+
+			await tagsModal
+				.getByRole('row', {name: tag})
+				.getByRole('checkbox')
+				.check();
+
+			await page
+				.getByRole('dialog')
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			await expect(
+				page.getByText(
+					`${results} Result${results === 1 ? '' : 's'} Found With Filters`
+				)
+			).toBeVisible();
+			await expect(page.getByText(`Tags: ${tag}`)).toBeVisible();
+		}
+
+		await expect(page.getByText('No web content was found.')).toBeVisible();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await openFilter('Tags');
+
+		await page
+			.frameLocator('iframe[title="Filter by Tags"]')
+			.getByRole('row', {name: usedTag})
+			.getByRole('checkbox')
+			.check();
+
+		await page
+			.getByRole('dialog')
+			.getByRole('button', {exact: true, name: 'Select'})
+			.click();
+
+		await expect(titleLink(taggedTitle)).toBeVisible();
+		await expect(titleLink(categorizedTitle)).toBeHidden();
+	}
+);
+
+test(
+	'Comments of web content can be searched by keyword',
+	{tag: '@LPS-202596'},
+	async ({apiHelpers, journalPage, page, site}) => {
+		await apiHelpers.jsonWebServicesJournal.addFolder({
+			groupId: site.id,
+			name: 'Liferay',
+		});
+
+		const structuredContent =
+			await apiHelpers.headlessDelivery.postStructuredContent({
+				contentStructureId:
+					await getBasicWebContentStructureId(apiHelpers),
+				datePublished: new Date().toISOString(),
+				siteId: site.id,
+				title: 'Liferay DXP',
+			});
+
+		for (const comment of [
+			'Welcome to Liferay DXP',
+			'Enjoy using the best DXP on Earth!',
+		]) {
+			await apiHelpers.headlessDelivery.postStructuredContentComment(
+				structuredContent.id,
+				comment
+			);
+		}
+
+		const searchInComments = async () => {
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByText('Comments', {exact: true}),
+				trigger: page.locator('button[id$="_searchIn"]'),
+			});
+		};
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await changeManagementToolbarView(page, 'List');
+
+		// Search for Liferay
+
+		await journalPage.search('Liferay');
+
+		await expect(
+			page.getByText('2 Results Found for "Liferay"')
+		).toBeVisible();
+
+		await searchInComments();
+
+		await expect(
+			page.getByText('1 Result Found for "Liferay"')
+		).toBeVisible();
+		await expect(page.getByText('Welcome to Liferay DXP')).toBeVisible();
+
+		// Search for DXP
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await journalPage.search('DXP');
+
+		await expect(page.getByText('1 Result Found for "DXP"')).toBeVisible();
+		await expect(
+			page.getByRole('link', {exact: true, name: 'Liferay DXP'})
+		).toBeVisible();
+
+		await searchInComments();
+
+		await expect(page.getByText('2 Results Found for "DXP"')).toBeVisible();
+		await expect(page.getByText('Welcome to Liferay DXP')).toBeVisible();
+		await expect(
+			page.getByText('Enjoy using the best DXP on Earth!')
+		).toBeVisible();
 	}
 );
