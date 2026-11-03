@@ -193,7 +193,6 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
@@ -4859,11 +4858,7 @@ public class ObjectEntryLocalServiceImpl
 			"Language ID " + defaultLanguageId + " is not available");
 	}
 
-	private int _getDepotEntryType(long companyId, long groupId) {
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-99403")) {
-			return DepotConstants.TYPE_ANY;
-		}
-
+	private int _getDepotEntryType(long groupId) {
 		DepotEntry depotEntry = _depotEntryLocalService.fetchGroupDepotEntry(
 			groupId);
 
@@ -7588,8 +7583,7 @@ public class ObjectEntryLocalServiceImpl
 			return;
 		}
 
-		int depotEntryType = _getDepotEntryType(
-			assetEntry.getCompanyId(), groupId);
+		int depotEntryType = _getDepotEntryType(groupId);
 
 		long[] assetTagIds = ArrayUtil.unique(
 			ArrayUtil.append(

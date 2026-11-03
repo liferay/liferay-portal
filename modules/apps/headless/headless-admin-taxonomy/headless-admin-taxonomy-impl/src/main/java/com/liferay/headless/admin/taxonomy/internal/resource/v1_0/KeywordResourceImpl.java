@@ -27,7 +27,6 @@ import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.ProjectionList;
 import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Type;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.UserConstants;
@@ -365,10 +364,7 @@ public class KeywordResourceImpl
 			assetTag.getTagId(), assetLibraryGroupIds,
 			DepotConstants.TYPE_SPACE);
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				assetTag.getCompanyId(), "LPD-99403") &&
-			(keyword.getProjects() != null)) {
-
+		if (keyword.getProjects() != null) {
 			Group group = _groupLocalService.getGroup(assetTag.getGroupId());
 
 			if (group.isCMS()) {
@@ -395,10 +391,7 @@ public class KeywordResourceImpl
 
 		long[] projectGroupIds = new long[0];
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				assetTag.getCompanyId(), "LPD-99403") &&
-			group.isCMS()) {
-
+		if (group.isCMS()) {
 			for (long fromKeywordId : fromKeywordIds) {
 				projectGroupIds = ArrayUtil.append(
 					projectGroupIds,
@@ -502,16 +495,10 @@ public class KeywordResourceImpl
 			_checkManageTagPermission(assetLibraryGroupIds);
 		}
 
-		long[] projectGroupIds = {GroupConstants.ANY_PARENT_GROUP_ID};
+		long[] projectGroupIds = TaxonomyGroupUtil.getProjectGroupIds(
+			group.getCompanyId(), keyword.getProjects());
 
-		if (FeatureFlagManagerUtil.isEnabled(
-				group.getCompanyId(), "LPD-99403")) {
-
-			projectGroupIds = TaxonomyGroupUtil.getProjectGroupIds(
-				group.getCompanyId(), keyword.getProjects());
-
-			_checkManageTagPermission(projectGroupIds);
-		}
+		_checkManageTagPermission(projectGroupIds);
 
 		AssetTag assetTag = _assetTagLocalService.addTag(
 			externalReferenceCode, contextUser.getUserId(), siteId,
@@ -568,9 +555,7 @@ public class KeywordResourceImpl
 		int depotEntryType = _getDepotEntryType(groupId);
 
 		boolean searchByDepotEntryType =
-			(FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-99403") &&
-			 (depotEntryType == DepotConstants.TYPE_PROJECT)) ||
+			(depotEntryType == DepotConstants.TYPE_PROJECT) ||
 			(depotEntryType == DepotConstants.TYPE_SPACE);
 
 		return SearchUtil.search(
@@ -740,10 +725,7 @@ public class KeywordResourceImpl
 				assetTag.getTagId(), assetLibraryGroupIds,
 				DepotConstants.TYPE_SPACE);
 
-			if (FeatureFlagManagerUtil.isEnabled(
-					group.getCompanyId(), "LPD-99403") &&
-				(keyword.getProjects() != null)) {
-
+			if (keyword.getProjects() != null) {
 				long[] projectGroupIds = TaxonomyGroupUtil.getProjectGroupIds(
 					group.getCompanyId(), keyword.getProjects());
 
