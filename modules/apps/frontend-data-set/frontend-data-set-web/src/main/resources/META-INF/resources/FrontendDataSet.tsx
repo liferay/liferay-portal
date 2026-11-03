@@ -112,6 +112,29 @@ import type {FDSVisualizationMode} from '@liferay/js-api/data-set';
 const DEFAULT_PAGINATION_DELTA = 20;
 const DEFAULT_PAGINATION_PAGE_NUMBER = 1;
 
+const getDefaultVisibleFieldNames = (
+	views: Array<IView>
+): VisibleFieldNames => {
+	const defaultVisibleFieldNames: VisibleFieldNames = {};
+
+	const view = views.find(
+		({name}) => name && name.toLowerCase().includes('table')
+	);
+
+	const fields = (view?.schema as ITableSchema | undefined)?.fields ?? [];
+
+	if (!fields.some(({hidden}: IField) => hidden)) {
+		return defaultVisibleFieldNames;
+	}
+
+	fields.forEach((field: IField) => {
+		defaultVisibleFieldNames[String(field.fieldName).replaceAll('.', ',')] =
+			!field.hidden;
+	});
+
+	return defaultVisibleFieldNames;
+};
+
 const getSnapshotByERC = (
 	snapshots: Array<ISnapshots> | undefined,
 	erc: string
@@ -367,7 +390,7 @@ const FrontendDataSetContent = ({
 							visibleFieldNames[fieldName];
 					}
 					else {
-						updatedVisibleFieldNames[fieldName] = true;
+						updatedVisibleFieldNames[fieldName] = !field.hidden;
 					}
 				});
 
@@ -608,15 +631,12 @@ const FrontendDataSetContent = ({
 			...initialActiveView,
 		};
 
-		let initialVisibleFieldNames = {};
+		const defaultVisibleFieldNames = getDefaultVisibleFieldNames(views);
 
-		const visibleFieldNames = getVisibleFields();
+		defaultSnapshot.visibleFieldNames = defaultVisibleFieldNames;
 
-		defaultSnapshot.visibleFieldNames = initialVisibleFieldNames;
-
-		if (visibleFieldNames) {
-			initialVisibleFieldNames = visibleFieldNames;
-		}
+		const initialVisibleFieldNames =
+			getVisibleFields() || defaultVisibleFieldNames;
 
 		const view = getView();
 

@@ -1753,6 +1753,8 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 							).put(
 								"fieldName", FIELD_NAMES[0]
 							).put(
+								"hidden", false
+							).put(
 								"label", LABELS[0]
 							).put(
 								"localizeLabel", true
@@ -1766,6 +1768,8 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 							).put(
 								"fieldName", FIELD_NAMES[1]
 							).put(
+								"hidden", false
+							).put(
 								"label", LABELS[1]
 							).put(
 								"localizeLabel", true
@@ -1776,6 +1780,8 @@ public class SystemFDSSerializerTest extends BaseFDSSerializerTestCase {
 								"contentRendererClientExtension", false
 							).put(
 								"fieldName", FIELD_NAMES[2]
+							).put(
+								"hidden", false
 							).put(
 								"label", LABELS[2]
 							).put(

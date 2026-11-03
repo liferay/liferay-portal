@@ -235,6 +235,7 @@ export interface IField {
 	contentRendererModuleURL?: string;
 	expand?: boolean;
 	fieldName: string | [];
+	hidden?: boolean;
 	label: string;
 	localizeLabel?: boolean;
 	sortable?: boolean;

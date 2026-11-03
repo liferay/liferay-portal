@@ -43,6 +43,10 @@ public class FDSTableSchemaField {
 		return _contentRendererClientExtension;
 	}
 
+	public boolean isHidden() {
+		return _hidden;
+	}
+
 	public boolean isLocalizeLabel() {
 		return _localizeLabel;
 	}
@@ -81,6 +85,12 @@ public class FDSTableSchemaField {
 
 	public FDSTableSchemaField setFieldName(String fieldName) {
 		_fieldName = fieldName;
+
+		return this;
+	}
+
+	public FDSTableSchemaField setHidden(boolean hidden) {
+		_hidden = hidden;
 
 		return this;
 	}
@@ -130,6 +140,8 @@ public class FDSTableSchemaField {
 				return fieldName;
 			}
 		).put(
+			"hidden", isHidden()
+		).put(
 			"localizeLabel", isLocalizeLabel()
 		).put(
 			"sortable", isSortable()
@@ -159,6 +171,7 @@ public class FDSTableSchemaField {
 	private boolean _contentRendererClientExtension;
 	private String _contentRendererModuleURL;
 	private String _fieldName;
+	private boolean _hidden;
 	private String _label;
 	private boolean _localizeLabel = true;
 	private boolean _sortable;
