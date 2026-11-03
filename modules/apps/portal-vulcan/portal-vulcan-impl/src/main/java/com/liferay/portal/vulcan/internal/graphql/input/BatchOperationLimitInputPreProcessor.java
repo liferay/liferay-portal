@@ -33,16 +33,16 @@ public class BatchOperationLimitInputPreProcessor
 		HttpServletRequest httpServletRequest,
 		HttpServletResponse httpServletResponse) {
 
-		List<GraphQLSingleInvocationInput> invocationInputs =
+		List<GraphQLSingleInvocationInput> graphQLSingleInvocationInputs =
 			graphQLBatchedInvocationInput.getInvocationInputs();
 
 		if ((_batchOperationLimit > 0) &&
-			(invocationInputs.size() > _batchOperationLimit)) {
+			(graphQLSingleInvocationInputs.size() > _batchOperationLimit)) {
 
 			return new BatchInputPreProcessResult(
 				HttpServletResponse.SC_BAD_REQUEST,
 				StringBundler.concat(
-					"Batch size ", invocationInputs.size(),
+					"Batch size ", graphQLSingleInvocationInputs.size(),
 					" is greater than the batch operation limit of ",
 					_batchOperationLimit));
 		}
