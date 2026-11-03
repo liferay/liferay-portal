@@ -205,6 +205,8 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 					objectRelationship, relatedSystemObjectDefinition,
 					serviceBuilderRelatedObjectEntry);
 
+			String namespace = ObjectEntryInfoItemUtil.getInfoFieldNamespace(
+				parentObjectDefinition, objectRelationship);
 			ObjectEntry objectEntry = ObjectEntryInfoItemUtil.getObjectEntry(
 				parentObjectDefinition, objectEntryManagerRegistry,
 				objectScopeProviderRegistry, serviceBuilderRelatedObjectEntry,
@@ -221,9 +223,6 @@ public class ObjectEntryInfoItemValuesProviderUtil {
 
 			ObjectFieldBag objectFieldBag =
 				parentObjectDefinition.getObjectFieldBag();
-
-			String namespace = ObjectEntryInfoItemUtil.getInfoFieldNamespace(
-				parentObjectDefinition, objectRelationship);
 
 			for (ObjectField relatedObjectField :
 					objectFieldBag.getObjectFields()) {
