@@ -178,6 +178,8 @@ public class LinkReferenceResourceTest
 		Assert.assertNull(actions.get("setPrimary"));
 
 		Assert.assertTrue(linkReference.getPrimary());
+
+		_testGetScopeScopeKeyLinksPageWithTrashedObjectEntry();
 	}
 
 	@Override
@@ -212,8 +214,7 @@ public class LinkReferenceResourceTest
 			linkReferences.toString(), 2, linkReferences.size());
 	}
 
-	@Test
-	public void testGetScopeScopeKeyLinksPageWithTrashedObjectEntry()
+	private void _testGetScopeScopeKeyLinksPageWithTrashedObjectEntry()
 		throws Exception {
 
 		DepotEntry depotEntry = PIMTestUtil.addSpaceDepotEntry();
@@ -237,8 +238,6 @@ public class LinkReferenceResourceTest
 
 		LinkReference linkReference = _getLinkReference(
 			(List<LinkReference>)page.getItems(), targetObjectEntry);
-
-		Assert.assertNotNull(linkReference);
 
 		Map<String, Map<String, String>> actions = linkReference.getActions();
 

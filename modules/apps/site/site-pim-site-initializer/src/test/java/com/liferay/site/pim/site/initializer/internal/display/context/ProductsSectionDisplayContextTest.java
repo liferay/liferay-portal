@@ -59,11 +59,11 @@ public class ProductsSectionDisplayContextTest {
 
 	@Test
 	public void testGetAdditionalProps() {
-		ProductsSectionDisplayContext productsSectionDisplayContext =
-			new ProductsSectionDisplayContext(null);
-
 		try (MockedStatic<PropsUtil> propsUtilMockedStatic = Mockito.mockStatic(
 				PropsUtil.class)) {
+
+			ProductsSectionDisplayContext productsSectionDisplayContext =
+				new ProductsSectionDisplayContext(null);
 
 			propsUtilMockedStatic.when(
 				() -> PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED)
