@@ -171,6 +171,30 @@ const TreeFilter = ({
 	useEffect(() => {
 		handleSelectionChange(selectedKeys);
 
+		const openerWindow = getOpener();
+
+		let timeoutId;
+
+		const modalIframeLoadedHandler = openerWindow.Liferay.on(
+			'modalIframeLoaded',
+			() => {
+				timeoutId = setTimeout(() => {
+					openerWindow.Liferay.fire(itemSelectorSaveEvent, {
+						data: selectedDataOutputTransfomer({
+							data: selectedNodesRef.current,
+							mandatoryFieldsForFiltering,
+						}),
+					});
+				});
+			}
+		);
+
+		return () => {
+			clearTimeout(timeoutId);
+
+			modalIframeLoadedHandler.detach();
+		};
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
