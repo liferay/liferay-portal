@@ -8,6 +8,7 @@ package com.liferay.sharing.internal.configuration;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.UnicodeProperties;
@@ -36,7 +37,19 @@ public class SharingConfigurationFactoryImplTest {
 		throws Exception {
 
 		SharingConfiguration sharingConfiguration =
-			_getGroupSharingConfiguration(false, true);
+			_getGroupSharingConfiguration(false, false, true);
+
+		Assert.assertFalse(sharingConfiguration.isAvailable());
+		Assert.assertFalse(sharingConfiguration.isEnabled());
+	}
+
+	@Test
+	@TestInfo({"LPD-113633", "LPS-99265"})
+	public void testGetGroupSharingConfigurationWhenGroupIsStagingGroup()
+		throws Exception {
+
+		SharingConfiguration sharingConfiguration =
+			_getGroupSharingConfiguration(true, true, true);
 
 		Assert.assertFalse(sharingConfiguration.isAvailable());
 		Assert.assertFalse(sharingConfiguration.isEnabled());
@@ -47,7 +60,7 @@ public class SharingConfigurationFactoryImplTest {
 		throws Exception {
 
 		SharingConfiguration sharingConfiguration =
-			_getGroupSharingConfiguration(true, true);
+			_getGroupSharingConfiguration(true, false, true);
 
 		Assert.assertTrue(sharingConfiguration.isAvailable());
 		Assert.assertTrue(sharingConfiguration.isEnabled());
@@ -58,14 +71,14 @@ public class SharingConfigurationFactoryImplTest {
 		throws Exception {
 
 		SharingConfiguration sharingConfiguration =
-			_getGroupSharingConfiguration(true, false);
+			_getGroupSharingConfiguration(true, false, false);
 
 		Assert.assertFalse(sharingConfiguration.isAvailable());
 		Assert.assertFalse(sharingConfiguration.isEnabled());
 	}
 
 	private SharingConfiguration _getGroupSharingConfiguration(
-			boolean companyEnabled, boolean systemEnabled)
+			boolean companyEnabled, boolean stagingGroup, boolean systemEnabled)
 		throws Exception {
 
 		ConfigurationProvider configurationProvider = Mockito.mock(
@@ -137,6 +150,12 @@ public class SharingConfigurationFactoryImplTest {
 			group.getTypeSettingsProperties()
 		).thenReturn(
 			new UnicodeProperties()
+		);
+
+		Mockito.when(
+			group.isStagingGroup()
+		).thenReturn(
+			stagingGroup
 		);
 
 		return sharingConfigurationFactoryImpl.getGroupSharingConfiguration(
