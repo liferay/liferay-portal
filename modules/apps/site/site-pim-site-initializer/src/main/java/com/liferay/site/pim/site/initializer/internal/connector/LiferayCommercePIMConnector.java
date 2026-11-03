@@ -11,7 +11,6 @@ import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.model.ObjectEntry;
 import com.liferay.petra.function.UnsafeTriFunction;
 import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -184,9 +183,6 @@ public class LiferayCommercePIMConnector extends BasePIMConnector {
 			}
 
 			JSONObject jsonObject = liferayCommerceRESTClient.postImportTask(
-				StringBundler.concat(
-					pimConnectorObjectEntry.getExternalReferenceCode(),
-					StringPool.UNDERLINE, System.currentTimeMillis()),
 				jsonArray);
 
 			return JSONUtil.put(

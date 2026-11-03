@@ -256,7 +256,6 @@ public class LiferayCommerceRESTClientTest {
 			_createLiferayCommerceRESTClient();
 
 		JSONObject jsonObject = liferayCommerceRESTClient.postImportTask(
-			"BATCH-1",
 			JSONUtil.putAll(JSONUtil.put("externalReferenceCode", "SKU-1")));
 
 		Assert.assertEquals("INITIAL", jsonObject.getString("executeStatus"));
@@ -267,8 +266,8 @@ public class LiferayCommerceRESTClientTest {
 			StringBundler.concat(
 				"http://localhost:8080/o/headless-batch-engine/v1.0",
 				"/import-task/com.liferay.headless.commerce.admin.catalog.dto.",
-				"v1_0.Product?createStrategy=UPSERT&externalReferenceCode=",
-				"BATCH-1&importStrategy=ON_ERROR_CONTINUE"),
+				"v1_0.Product?createStrategy=UPSERT&importStrategy=",
+				"ON_ERROR_CONTINUE"),
 			options.getLocation());
 		Assert.assertEquals(Http.Method.POST, options.getMethod());
 
@@ -288,8 +287,7 @@ public class LiferayCommerceRESTClientTest {
 		_assertPIMConnectorException(
 			"the-remote-instance-returned-an-error",
 			liferayCommerceRESTClient ->
-				liferayCommerceRESTClient.postImportTask(
-					"BATCH-1", JSONUtil.putAll()));
+				liferayCommerceRESTClient.postImportTask(JSONUtil.putAll()));
 	}
 
 	private void _testPutOption() throws Exception {

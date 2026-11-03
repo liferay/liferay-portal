@@ -87,17 +87,12 @@ public class LiferayCommerceRESTClient {
 		return _logJSONArray;
 	}
 
-	public JSONObject postImportTask(
-			String externalReferenceCode, JSONArray jsonArray)
-		throws Exception {
-
+	public JSONObject postImportTask(JSONArray jsonArray) throws Exception {
 		Http.Options options = _createOptions(
 			StringBundler.concat(
 				"/o/headless-batch-engine/v1.0/import-task",
 				"/com.liferay.headless.commerce.admin.catalog.dto.v1_0.Product",
-				"?createStrategy=UPSERT&externalReferenceCode=",
-				URLCodec.encodeURL(externalReferenceCode),
-				"&importStrategy=ON_ERROR_CONTINUE"));
+				"?createStrategy=UPSERT&importStrategy=ON_ERROR_CONTINUE"));
 
 		options.addHeader(
 			HttpHeaders.CONTENT_TYPE, ContentTypes.APPLICATION_JSON);

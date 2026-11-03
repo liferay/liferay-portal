@@ -126,12 +126,6 @@ public class LiferayCommercePIMConnectorTest {
 			_objectDefinition
 		);
 
-		Mockito.when(
-			_pimConnectorObjectEntry.getExternalReferenceCode()
-		).thenReturn(
-			_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE
-		);
-
 		_mockHttp(Collections.emptyMap());
 	}
 
@@ -646,20 +640,13 @@ public class LiferayCommercePIMConnectorTest {
 
 		Assert.assertEquals(Http.Method.POST, options.getMethod());
 
-		String location = options.getLocation();
-
-		Assert.assertTrue(
-			location,
-			location.startsWith(
-				StringBundler.concat(
-					"http://localhost:8080/o/headless-batch-engine/v1.0",
-					"/import-task/com.liferay.headless.commerce.admin.catalog.",
-					"dto.v1_0.Product?createStrategy=UPSERT&",
-					"externalReferenceCode=",
-					_PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE,
-					StringPool.UNDERLINE)));
-		Assert.assertTrue(
-			location, location.endsWith("&importStrategy=ON_ERROR_CONTINUE"));
+		Assert.assertEquals(
+			StringBundler.concat(
+				"http://localhost:8080/o/headless-batch-engine/v1.0",
+				"/import-task/com.liferay.headless.commerce.admin.catalog.dto.",
+				"v1_0.Product?createStrategy=UPSERT&importStrategy=",
+				"ON_ERROR_CONTINUE"),
+			options.getLocation());
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
 			_getBody(options));
@@ -1405,9 +1392,6 @@ public class LiferayCommercePIMConnectorTest {
 
 	private static final long _OBJECT_DEFINITION_ID =
 		RandomTestUtil.randomLong();
-
-	private static final String _PIM_CONNECTOR_EXTERNAL_REFERENCE_CODE =
-		RandomTestUtil.randomString();
 
 	private static final Map<String, Serializable> _configuration =
 		HashMapBuilder.<String, Serializable>put(
