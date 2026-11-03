@@ -9,7 +9,7 @@ import {ClayButtonWithIcon} from '@clayui/button';
 import ClayIcon from '@clayui/icon';
 import ClayLabel from '@clayui/label';
 import ClayLayout from '@clayui/layout';
-import {fetch} from 'frontend-js-web';
+import {escapeHTML, fetch} from 'frontend-js-web';
 import fuzzy from 'fuzzy';
 import React, {ComponentType, useEffect, useState} from 'react';
 
@@ -89,7 +89,11 @@ function NameCell({
 	item: IVisualizationModeItem;
 	query: string;
 }) {
-	const fuzzyMatch = fuzzy.match(query, item.label, FUZZY_OPTIONS);
+	const fuzzyMatch = fuzzy.match(
+		escapeHTML(query),
+		escapeHTML(item.label),
+		FUZZY_OPTIONS
+	);
 
 	return (
 		<>

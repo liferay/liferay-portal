@@ -113,6 +113,23 @@ describe('VisualizationModes', () => {
 		expect(within(getRow('list[noun]')).getByRole('switch')).toBeChecked();
 	});
 
+	it('renders the name of a client extension visualization mode as text', async () => {
+		renderVisualizationModes({
+			visualizationModeClientExtensions: [
+				{
+					externalReferenceCode: 'LXC:timeline',
+					icon: 'date',
+					name: '<img alt="injected" src="x">',
+				},
+			],
+		});
+
+		expect(
+			screen.getByText('<img alt="injected" src="x">')
+		).toBeInTheDocument();
+		expect(screen.queryByAltText('injected')).not.toBeInTheDocument();
+	});
+
 	it('persists the order after moving a visualization mode', async () => {
 		renderVisualizationModes();
 
