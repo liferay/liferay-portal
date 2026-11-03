@@ -164,7 +164,7 @@ public class LayoutReportsProductNavigationControlMenuEntry
 
 		Layout layout = themeDisplay.getLayout();
 
-		if (!layout.isTypeContent() && !layout.isTypeAssetDisplay() &&
+		if (!layout.isTypeAssetDisplay() && !layout.isTypeContent() &&
 			!_layoutReportsGooglePageSpeedConfigurationProvider.isEnabled(
 				themeDisplay.getScopeGroup())) {
 
