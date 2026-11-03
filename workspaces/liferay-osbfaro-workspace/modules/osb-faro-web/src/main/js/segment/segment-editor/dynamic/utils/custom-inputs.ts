@@ -1,7 +1,13 @@
-import {ACTIVITY_KEY, Conjunctions, TIME_PERIOD_OPTIONS} from './constants';
+import {
+	ACTIVITY_KEY,
+	Conjunctions,
+	RelationalOperators,
+	TIME_PERIOD_OPTIONS,
+} from './constants';
 import {createNewGroup} from './utils';
 import {CustomValue} from 'shared/util/records';
 import {fromJS, List, Map} from 'immutable';
+import {ILifecycleDetail} from 'shared/api/lifecycle';
 import {isArray} from 'lodash';
 
 /**
@@ -125,6 +131,135 @@ export const getActivityKeysFromValue = (valueIMap: CustomValue): string[] => {
 	}
 
 	return [];
+};
+
+type LifecycleStatusItem = {
+	lifecycleERC?: string;
+	lifecycleStageERC?: string;
+};
+
+/**
+ * Reads the lifecycle and the stage out of a lifecycleStatus item. Returns null
+ * for an item that is not a lifecycleStatus item.
+ * @param {unknown} item - The Immutable Map of the criterion item.
+ * @returns {LifecycleStatusItem|null} The lifecycle and the stage of the item.
+ */
+const toLifecycleStatusItem = (item: unknown): LifecycleStatusItem | null => {
+	if (!Map.isMap(item)) return null;
+
+	const itemIMap = item as Map<string, unknown>;
+
+	const propertyName = itemIMap.get('propertyName');
+
+	if (
+		typeof propertyName !== 'string' ||
+		!propertyName.startsWith('lifecycleStatus')
+	) {
+		return null;
+	}
+
+	const [, lifecycleERC] = propertyName.split('@');
+
+	const value = itemIMap.get('value');
+
+	return {
+		lifecycleERC,
+		lifecycleStageERC:
+			itemIMap.get('operatorName') === RelationalOperators.EQ &&
+			typeof value === 'string' &&
+			value
+				? value
+				: undefined,
+	};
+};
+
+/**
+ * Reads every lifecycleStatus item out of a Lifecycle criterion value. A
+ * lifecycle with no stage or a single stage is stored as a flat lifecycleStatus
+ * item; N stages are stored as an "or" group of lifecycleStatus items. Returns
+ * the items for either shape.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @returns {LifecycleStatusItem[]} The lifecycleStatus items.
+ */
+const getLifecycleStatusItems = (
+	valueIMap: CustomValue
+): LifecycleStatusItem[] => {
+	const items: unknown = valueIMap.getIn(['criterionGroup', 'items']);
+
+	if (!List.isList(items)) return [];
+
+	const itemsList = items as List<unknown>;
+
+	const orGroup = itemsList.find(
+		(item) =>
+			Map.isMap(item) &&
+			(item as Map<string, unknown>).get('conjunctionName') ===
+				Conjunctions.Or
+	) as Map<string, unknown> | undefined;
+
+	const statusItems: unknown = orGroup ? orGroup.get('items') : itemsList;
+
+	if (!List.isList(statusItems)) return [];
+
+	return (statusItems as List<unknown>)
+		.toArray()
+		.map(toLifecycleStatusItem)
+		.filter((item): item is LifecycleStatusItem => item !== null);
+};
+
+/**
+ * Reads the lifecycle external reference code out of a Lifecycle criterion
+ * value. A criterion saved before accounts had several lifecycles holds a stage
+ * without its lifecycle, so its lifecycle is undefined.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @returns {string|undefined} The lifecycle external reference code.
+ */
+export const getLifecycleERCFromValue = (
+	valueIMap: CustomValue
+): string | undefined => getLifecycleStatusItems(valueIMap)[0]?.lifecycleERC;
+
+/**
+ * Reads every stage external reference code out of a Lifecycle criterion
+ * value. A criterion that matches the lifecycle at any stage has none.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @returns {string[]} The stage external reference codes.
+ */
+export const getLifecycleStageERCsFromValue = (
+	valueIMap: CustomValue
+): string[] =>
+	getLifecycleStatusItems(valueIMap)
+		.map(({lifecycleStageERC}) => lifecycleStageERC)
+		.filter((lifecycleStageERC): lifecycleStageERC is string =>
+			Boolean(lifecycleStageERC)
+		);
+
+/**
+ * Finds the lifecycle of a Lifecycle criterion value. A criterion saved before
+ * accounts had several lifecycles has no lifecycle, so it is the lifecycle that
+ * holds its first stage.
+ * @param {ILifecycleDetail[]} lifecycles - The lifecycles of the channel.
+ * @param {CustomValue} valueIMap - The Immutable Map representing the custom input value.
+ * @returns {ILifecycleDetail|undefined} The lifecycle.
+ */
+export const findLifecycleFromValue = (
+	lifecycles: ILifecycleDetail[],
+	valueIMap: CustomValue
+): ILifecycleDetail | undefined => {
+	const lifecycleERC = getLifecycleERCFromValue(valueIMap);
+
+	if (lifecycleERC) {
+		return lifecycles.find(
+			({externalReferenceCode}) => externalReferenceCode === lifecycleERC
+		);
+	}
+
+	const [stageERC] = getLifecycleStageERCsFromValue(valueIMap);
+
+	return lifecycles.find(({accountLifecycleStages = []}) =>
+		accountLifecycleStages.some(
+			({externalReferenceCode}) => externalReferenceCode === stageERC
+		)
+	);
 };
 
 /**
