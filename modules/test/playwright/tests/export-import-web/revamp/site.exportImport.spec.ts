@@ -8,7 +8,7 @@ import {
 	ObjectRelationship,
 	ObjectRelationshipAPI,
 } from '@liferay/object-admin-rest-client-js/v1_0';
-import {Page, expect, mergeTests} from '@playwright/test';
+import {Locator, Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {featureFlagsTest} from '../../../fixtures/featureFlagsTest';
@@ -21,6 +21,7 @@ import {getSiteHomePageScreenshot} from '../../../utils/getSiteHomePageScreensho
 import {waitForFDS} from '../../../utils/waitFor';
 import {pagesPagesTest} from '../../layout-admin-web/main/fixtures/pagesPagesTest';
 import {exportImportPagesTest} from './fixtures/exportImportPagesTest';
+import {taskStatus} from './pages/ExportImportPage';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -34,13 +35,23 @@ const test = mergeTests(
 	styleBookPageTest
 );
 
-[
-	{name: 'com.liferay.site.initializer.masterclass'},
+const siteInitializers: {
+	mask?: (page: Page) => Locator;
+	name: string;
+	taskStatus: taskStatus;
+}[] = [
+	{
+		name: 'com.liferay.site.initializer.masterclass',
+		taskStatus: 'completedWithErrors',
+	},
 	{
 		mask: (page: Page) => page.locator('.user-personal-bar'),
 		name: 'com.liferay.site.initializer.welcome',
+		taskStatus: 'success',
 	},
-].forEach(({mask, name}) => {
+];
+
+siteInitializers.forEach(({mask, name, taskStatus}) => {
 	test(
 		`Can export and import a site created with the ${name} site initializer`,
 		{tag: '@LPD-90359'},
@@ -108,37 +119,41 @@ const test = mergeTests(
 				await exportImportPage.import({
 					folderPath,
 					name: exportName,
-					taskStatus: 'completedWithErrors',
+					taskStatus,
 				});
 			});
 
-			await test.step('Assert the import only reports missing references', async () => {
-				await exportImportPage.goToImportDetails(exportName);
+			if (taskStatus === 'completedWithErrors') {
+				await test.step('Assert the import only reports missing references', async () => {
+					await exportImportPage.goToImportDetails(exportName);
 
-				await exportImportPage.filterReportBy(
-					'Type',
-					'Missing Reference'
-				);
+					await exportImportPage.filterReportBy(
+						'Type',
+						'Missing Reference'
+					);
 
-				await waitForFDS({page});
+					await waitForFDS({page});
 
-				await expect(
-					page
-						.getByRole('cell', {
-							exact: true,
-							name: 'Missing Reference',
-						})
-						.first()
-				).toBeVisible();
+					await expect(
+						page
+							.getByRole('cell', {
+								exact: true,
+								name: 'Missing Reference',
+							})
+							.first()
+					).toBeVisible();
 
-				await exportImportPage.excludeReportFilter();
+					await exportImportPage.excludeReportFilter();
 
-				await waitForFDS({empty: true, page});
+					await waitForFDS({empty: true, page});
 
-				await expect(page.getByText('No Results Found')).toBeVisible();
+					await expect(
+						page.getByText('No Results Found')
+					).toBeVisible();
 
-				await exportImportPage.removeReportFilter();
-			});
+					await exportImportPage.removeReportFilter();
+				});
+			}
 
 			await test.step('Assert the exportable items from site 1 and site 2 are equal', async () => {
 				await exportImportPage.goToExport(site2.friendlyUrlPath);
