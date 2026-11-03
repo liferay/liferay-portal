@@ -68,6 +68,13 @@ public class AddressCommerceCheckoutStepDisplayContext {
 		CommerceOrder commerceOrder = _getCommerceOrder(
 			actionRequest, commerceContext.getCommerceChannelGroupId());
 
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		_commerceOrderModelResourcePermission.check(
+			themeDisplay.getPermissionChecker(), commerceOrder,
+			CommerceOrderActionKeys.CHECKOUT_COMMERCE_ORDER);
+
 		boolean newAddress = ParamUtil.getBoolean(actionRequest, "newAddress");
 
 		long commerceAddressId = ParamUtil.getLong(actionRequest, paramName);
@@ -78,13 +85,6 @@ public class AddressCommerceCheckoutStepDisplayContext {
 
 			commerceAddressId = commerceAddress.getCommerceAddressId();
 		}
-
-		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		_commerceOrderModelResourcePermission.check(
-			themeDisplay.getPermissionChecker(), commerceOrder,
-			CommerceOrderActionKeys.CHECKOUT_COMMERCE_ORDER);
 
 		if (Objects.equals(
 				CommerceCheckoutWebKeys.SHIPPING_ADDRESS_PARAM_NAME,
