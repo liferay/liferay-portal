@@ -9,7 +9,10 @@ import {apiHelpersTest} from '../../../fixtures/apiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import createTempFile from '../../../utils/createTempFile';
+import fillAndClickOutside from '../../../utils/fillAndClickOutside';
 import getRandomString from '../../../utils/getRandomString';
+import {PORTLET_URLS} from '../../../utils/portletUrls';
+import {waitForAlert} from '../../../utils/waitForAlert';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 import getDataStructureDefinition from './utils/getDataStructureDefinition';
 
@@ -253,5 +256,301 @@ test(
 		expect(
 			Math.abs(scrolledToolbarBoundingBox.y - stickyTop)
 		).toBeLessThanOrEqual(1);
+	}
+);
+
+test(
+	'A structure added from a URL with a language prefix is saved once',
+	{
+		tag: '@LPS-77387',
+	},
+	async ({journalEditStructurePage, journalStructuresPage, page, site}) => {
+		const structureName = getRandomString();
+
+		await page.goto(
+			`/en/group${site.friendlyUrlPath}${PORTLET_URLS.journalStructures}`
+		);
+
+		await journalStructuresPage.newButton.click();
+
+		await expect(page).toHaveURL(/\/en\/group\//);
+
+		await page.getByTitle('Text', {exact: true}).dblclick();
+
+		await fillAndClickOutside(
+			page,
+			page.getByRole('textbox', {name: 'Name Required'}),
+			structureName
+		);
+
+		await journalEditStructurePage.save();
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		await expect(
+			page.getByRole('link', {exact: true, name: structureName})
+		).toHaveCount(1);
+	}
+);
+
+test(
+	'The back button of the structure editor shows a tooltip',
+	{
+		tag: '@LPS-177690',
+	},
+	async ({journalEditStructurePage, journalStructuresPage, page, site}) => {
+		const backLink = page.getByRole('link', {name: 'Go to Web Content'});
+		const nameInput = page.getByRole('textbox', {name: 'Name Required'});
+		const structureName = getRandomString();
+		const tooltip = page.getByRole('tooltip');
+
+		// New structure
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		await journalStructuresPage.newButton.click();
+
+		await journalEditStructurePage.propertiesTab.waitFor();
+
+		await backLink.hover();
+
+		await expect(tooltip).toHaveText('Go to Web Content');
+
+		await page.getByTitle('Text', {exact: true}).dblclick();
+
+		await fillAndClickOutside(page, nameInput, structureName);
+
+		await journalEditStructurePage.save();
+
+		// Copy of a structure
+
+		const copyName = `${structureName} (Copy)`;
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		await journalStructuresPage.goToJournalStructureAction(
+			'Make a Copy',
+			structureName
+		);
+
+		await fillAndClickOutside(page, nameInput, copyName);
+
+		await page.getByRole('button', {exact: true, name: 'Copy'}).click();
+
+		await waitForAlert(
+			page,
+			'Success:Your request completed successfully.'
+		);
+
+		await journalEditStructurePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName: copyName,
+		});
+
+		await backLink.hover();
+
+		await expect(tooltip).toHaveText('Go to Web Content');
+	}
+);
+
+test(
+	'The default values of a structure built from a fieldset are kept',
+	{
+		tag: '@LPD-113664',
+	},
+	async ({
+		apiHelpers,
+		journalEditStructureDefaultValuesPage,
+		journalEditStructurePage,
+		journalStructuresPage,
+		page,
+		site,
+	}) => {
+		const fieldsetName = getRandomString();
+		const structureName = getRandomString();
+		const textValue = getRandomString();
+
+		// Add a structure from a fieldset
+
+		await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{name: 'FieldsetText'}],
+				name: fieldsetName,
+			})
+		);
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		await journalStructuresPage.newButton.click();
+
+		await journalEditStructurePage.fieldsetsTab.click();
+
+		await page
+			.getByRole('button', {name: `Press enter to add ${fieldsetName}`})
+			.dblclick();
+
+		await fillAndClickOutside(
+			page,
+			page.getByRole('textbox', {name: 'Name Required'}),
+			structureName
+		);
+
+		await journalEditStructurePage.save();
+
+		// Edit the default values
+
+		await journalEditStructureDefaultValuesPage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		await journalEditStructureDefaultValuesPage.fillTextField(
+			'FieldsetText',
+			textValue
+		);
+
+		await journalEditStructureDefaultValuesPage.save();
+
+		// Check the default values
+
+		await journalEditStructureDefaultValuesPage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		await expect(
+			page.getByRole('textbox', {name: 'FieldsetText'})
+		).toHaveValue(textValue);
+	}
+);
+
+test(
+	'The templates of the global Basic Web Content structure can be managed from the structure',
+	{
+		tag: '@LPD-113664',
+	},
+	async ({journalStructuresPage, page}) => {
+		await journalStructuresPage.goto('/global');
+
+		await journalStructuresPage.goToJournalStructureAction(
+			'Manage Templates',
+			'Basic Web Content'
+		);
+
+		await expect(
+			page.getByRole('heading', {
+				name: 'Templates for Structure: Basic Web Content',
+			})
+		).toBeVisible();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: 'Basic Web Content'})
+		).toBeVisible();
+	}
+);
+
+test(
+	'A structure with every field type can be viewed, edited and deleted',
+	{
+		tag: '@LPS-125933',
+	},
+	async ({journalEditStructurePage, journalStructuresPage, page, site}) => {
+		const fieldTypes = [
+			'Text',
+			'Select from List',
+			'Single Selection',
+			'Multiple Selection',
+			'Grid',
+			'Date',
+			'Numeric',
+			'Image',
+			'Rich Text',
+			'Upload',
+			'Color',
+			'Web Content',
+			'Geolocation',
+			'Link to Page',
+			'Separator',
+		];
+		const backButton = page.getByRole('button', {name: 'Back'});
+		const getFieldLabel = (label: string) =>
+			page
+				.locator('.ddm-form-builder-wrapper')
+				.getByText(label, {exact: true})
+				.and(page.locator(':not(.actions-label)'))
+				.first();
+		const nameInput = page.getByRole('textbox', {name: 'Name Required'});
+		const structureName = getRandomString();
+
+		// Add a structure with every field type
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		await journalStructuresPage.newButton.click();
+
+		for (const fieldType of fieldTypes) {
+			await page.getByTitle(fieldType, {exact: true}).dblclick();
+
+			await backButton.click();
+		}
+
+		await fillAndClickOutside(page, nameInput, structureName);
+
+		await journalEditStructurePage.save();
+
+		// View and edit the fields
+
+		await journalEditStructurePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName,
+		});
+
+		for (const fieldType of fieldTypes) {
+			await expect(getFieldLabel(fieldType)).toBeVisible();
+		}
+
+		await journalEditStructurePage.showFieldProperties('Text');
+
+		await journalEditStructurePage.fillFieldProperty(
+			page.getByRole('textbox', {exact: true, name: 'Label'}),
+			'Text Edit'
+		);
+
+		await backButton.click();
+
+		const editedStructureName = `${structureName} Edit`;
+
+		await fillAndClickOutside(page, nameInput, editedStructureName);
+
+		await journalEditStructurePage.save();
+
+		await journalEditStructurePage.goto({
+			siteUrl: site.friendlyUrlPath,
+			structureName: editedStructureName,
+		});
+
+		await expect(getFieldLabel('Text Edit')).toBeVisible();
+
+		// Delete the structure
+
+		await journalStructuresPage.goto(site.friendlyUrlPath);
+
+		page.once('dialog', (dialog) => dialog.accept());
+
+		await journalStructuresPage.goToJournalStructureAction(
+			'Delete',
+			editedStructureName
+		);
+
+		await waitForAlert(
+			page,
+			'Success:Your request completed successfully.'
+		);
+
+		await expect(
+			page.getByRole('link', {exact: true, name: editedStructureName})
+		).toHaveCount(0);
 	}
 );
