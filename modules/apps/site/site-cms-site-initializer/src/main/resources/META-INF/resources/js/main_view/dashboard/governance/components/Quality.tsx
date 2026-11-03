@@ -48,6 +48,7 @@ import {
 import {PercentageOfTotal} from './PercentageOfTotal';
 
 interface QualityCard<T extends IAssetListItem> {
+	alertMessage?: string;
 	color: MetricColor;
 	countKey: keyof Pick<
 		AssetStatistics,
@@ -115,6 +116,9 @@ function getQualityCards(
 			title: Liferay.Language.get('missing-required-data'),
 		},
 		{
+			alertMessage: Liferay.Language.get(
+				'unlinked-content-may-still-be-in-use.-some-uses-are-not-detected,-such-as-default-display-pages,-api-requests-or-external-links.-review-it-before-deleting-it'
+			),
 			color: 'purple',
 			countKey: 'unlinkedCount',
 			description: Liferay.Language.get(
@@ -190,6 +194,7 @@ function QualityAssetList<T extends IAssetListItem>({
 
 	return (
 		<GovernanceListPanel
+			alertMessage={card.alertMessage}
 			count={statistics?.[card.countKey] ?? 0}
 			description={card.description}
 			emptyStateDescription={card.emptyStateDescription}

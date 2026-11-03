@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import ClayAlert from '@clayui/alert';
 import {Text} from '@clayui/core';
 import ClayLink from '@clayui/link';
 import {
@@ -55,6 +56,7 @@ export function getGovernanceAssetListPanelId(id: string) {
 }
 
 export function GovernanceListPanel({
+	alertMessage,
 	count,
 	description,
 	emptyStateDescription = '',
@@ -64,6 +66,7 @@ export function GovernanceListPanel({
 	title,
 	viewAllHref,
 }: {
+	alertMessage?: string;
 	count: number;
 	description: string;
 	emptyStateDescription?: string;
@@ -103,6 +106,16 @@ export function GovernanceListPanel({
 				</div>
 
 				<span className="text-3 text-secondary">{description}</span>
+
+				{alertMessage ? (
+					<ClayAlert
+						className="mt-3"
+						displayType="info"
+						title={`${Liferay.Language.get('info')}:`}
+					>
+						{alertMessage}
+					</ClayAlert>
+				) : null}
 			</div>
 
 			<div className="cms-fds-fluid cms-governance-asset-list custom-empty-state">

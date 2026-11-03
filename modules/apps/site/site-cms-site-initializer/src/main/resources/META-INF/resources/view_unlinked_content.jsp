@@ -19,6 +19,11 @@ ViewUnlinkedContentSectionDisplayContext viewUnlinkedContentSectionDisplayContex
 		/>
 	</div>
 
+	<clay:alert
+		cssClass="mx-3"
+		message="unlinked-content-may-still-be-in-use.-some-uses-are-not-detected,-such-as-default-display-pages,-api-requests-or-external-links.-review-it-before-deleting-it"
+	/>
+
 	<div class="cms-section custom-empty-state">
 		<frontend-data-set:headless-display
 			additionalProps="<%= viewUnlinkedContentSectionDisplayContext.getAdditionalProps() %>"

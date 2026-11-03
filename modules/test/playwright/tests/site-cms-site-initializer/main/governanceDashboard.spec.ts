@@ -40,6 +40,8 @@ const PNG_BASE64 =
 	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAEABToPCwAAAABJRU5ErkJggg==';
 const TIME_ZONE_BROWSER = 'America/Los_Angeles';
 const TIME_ZONE_USER = 'UTC';
+const UNLINKED_CONTENT_ALERT_MESSAGE =
+	'Unlinked content may still be in use. Some uses are not detected, such as default display pages, API requests or external links. Review it before deleting it.';
 
 test.use({timezoneId: TIME_ZONE_BROWSER});
 
@@ -1044,6 +1046,12 @@ test.describe('Quality section', () => {
 				});
 
 				await expect(
+					unlinkedContentList.getByText(
+						UNLINKED_CONTENT_ALERT_MESSAGE
+					)
+				).toBeVisible();
+
+				await expect(
 					unlinkedContentList.getByText(fileTitle, {exact: true})
 				).toBeVisible();
 
@@ -1061,6 +1069,10 @@ test.describe('Quality section', () => {
 					.click();
 
 				await expect(page).toHaveURL(/unlinked-content\?groupId=/);
+
+				await expect(
+					page.getByText(UNLINKED_CONTENT_ALERT_MESSAGE)
+				).toBeVisible();
 
 				await expect(
 					page.getByText(contentTitle, {exact: true})
