@@ -179,11 +179,8 @@ public class BatchEngineImportTaskLocalServiceImpl
 		try {
 			blob = _getBatchEngineImportTaskSanitizedContentBlob(
 				batchEngineImportTask,
-				() -> {
-					Blob contentBlob = batchEngineImportTask.getContent();
-
-					return contentBlob.getBinaryStream();
-				},
+				() -> openContentInputStream(
+					batchEngineImportTask.getBatchEngineImportTaskId()),
 				value -> null);
 		}
 		catch (Exception exception) {
