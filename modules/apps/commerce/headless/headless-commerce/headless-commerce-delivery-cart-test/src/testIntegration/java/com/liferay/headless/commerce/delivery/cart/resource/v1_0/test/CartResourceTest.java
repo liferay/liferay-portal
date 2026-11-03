@@ -700,16 +700,16 @@ public class CartResourceTest extends BaseCartResourceTestCase {
 	}
 
 	private CommerceOrder _addGuestCommerceOrder() throws Exception {
-		AccountEntry accountEntry =
+		AccountEntry guestAccountEntry =
 			_accountEntryLocalService.getGuestAccountEntry(
 				testCompany.getCompanyId());
-		User user = testCompany.getGuestUser();
+		User guestUser = testCompany.getGuestUser();
 
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.addCommerceOrder(
-				user.getUserId(), _commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0);
+				guestUser.getUserId(), _commerceChannel.getGroupId(),
+				guestAccountEntry.getAccountEntryId(),
+				_commerceCurrency.getCode(), 0);
 
 		_guestCommerceOrders.add(commerceOrder);
 

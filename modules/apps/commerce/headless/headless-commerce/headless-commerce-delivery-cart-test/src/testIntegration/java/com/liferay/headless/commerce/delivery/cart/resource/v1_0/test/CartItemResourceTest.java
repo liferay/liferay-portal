@@ -447,16 +447,16 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 	}
 
 	private CommerceOrder _addGuestCommerceOrder() throws Exception {
-		AccountEntry accountEntry =
+		AccountEntry guestAccountEntry =
 			_accountEntryLocalService.getGuestAccountEntry(
 				testCompany.getCompanyId());
-		User user = testCompany.getGuestUser();
+		User guestUser = testCompany.getGuestUser();
 
 		CommerceOrder commerceOrder =
 			_commerceOrderLocalService.addCommerceOrder(
-				user.getUserId(), _commerceChannel.getGroupId(),
-				accountEntry.getAccountEntryId(), _commerceCurrency.getCode(),
-				0);
+				guestUser.getUserId(), _commerceChannel.getGroupId(),
+				guestAccountEntry.getAccountEntryId(),
+				_commerceCurrency.getCode(), 0);
 
 		_guestCommerceOrders.add(commerceOrder);
 
@@ -928,12 +928,12 @@ public class CartItemResourceTest extends BaseCartItemResourceTestCase {
 			cartItemResource1.postCartItem(
 				commerceOrder1.getCommerceOrderId(), cartItem1));
 
-		CartItem cartItem2 = randomCartItem();
-
 		CommerceOrder commerceOrder2 = _addGuestCommerceOrder();
 
 		CartItemResource cartItemResource2 = _getCartItemResource(
 			null, commerceOrder2.getUuid());
+
+		CartItem cartItem2 = randomCartItem();
 
 		assertEquals(
 			cartItem2,
