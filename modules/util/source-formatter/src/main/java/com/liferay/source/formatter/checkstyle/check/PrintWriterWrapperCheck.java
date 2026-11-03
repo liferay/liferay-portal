@@ -74,38 +74,38 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 	}
 
 	private void _checkArgument(
-		DetailAST detailAST, DetailAST exprDetailAST,
-		DetailAST methodCallDetailAST) {
+		DetailAST literalNewDetailAST, DetailAST exprDetailAST,
+		DetailAST detailAST) {
 
-		if (methodCallDetailAST.getType() != TokenTypes.METHOD_CALL) {
+		if (detailAST.getType() != TokenTypes.METHOD_CALL) {
 			return;
 		}
 
-		DetailAST nameDetailAST = methodCallDetailAST.getFirstChild();
+		DetailAST firstChildDetailAST = detailAST.getFirstChild();
 
-		if (nameDetailAST.getType() != TokenTypes.IDENT) {
+		if (firstChildDetailAST.getType() != TokenTypes.IDENT) {
 			return;
 		}
 
 		List<DetailAST> parameterExprDetailASTs = getParameterExprDetailASTs(
-			methodCallDetailAST);
+			detailAST);
 
 		int index = parameterExprDetailASTs.indexOf(exprDetailAST);
 
-		DetailAST classDefinitionDetailAST = getParentWithTokenType(
-			detailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
+		DetailAST parentDetailAST = getParentWithTokenType(
+			literalNewDetailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
 			TokenTypes.LITERAL_NEW, TokenTypes.RECORD_DEF);
 
-		if ((index == -1) || (classDefinitionDetailAST == null) ||
-			(classDefinitionDetailAST.getType() == TokenTypes.LITERAL_NEW)) {
+		if ((index == -1) || (parentDetailAST == null) ||
+			(parentDetailAST.getType() == TokenTypes.LITERAL_NEW)) {
 
 			return;
 		}
 
-		String methodName = nameDetailAST.getText();
+		String methodName = firstChildDetailAST.getText();
 		boolean printOnly = false;
 
-		DetailAST objBlockDetailAST = classDefinitionDetailAST.findFirstToken(
+		DetailAST objBlockDetailAST = parentDetailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
 		for (DetailAST methodDefinitionDetailAST :
@@ -141,26 +141,26 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 		}
 
 		if (printOnly) {
-			log(detailAST, _MSG_WRITE_DIRECTLY);
+			log(literalNewDetailAST, _MSG_WRITE_DIRECTLY);
 		}
 	}
 
 	private void _checkAssignment(
-		DetailAST detailAST, DetailAST assigneeDetailAST) {
+		DetailAST literalNewDetailAST, DetailAST detailAST) {
 
 		DetailAST variableDefinitionDetailAST = null;
 
-		if (_isThisDot(assigneeDetailAST)) {
+		if (_isThisDot(detailAST)) {
 			variableDefinitionDetailAST = _getFieldDefinitionDetailAST(
-				detailAST, assigneeDetailAST.getLastChild());
+				literalNewDetailAST, detailAST.getLastChild());
 		}
-		else if (assigneeDetailAST.getType() == TokenTypes.IDENT) {
+		else if (detailAST.getType() == TokenTypes.IDENT) {
 			variableDefinitionDetailAST = getVariableDefinitionDetailAST(
-				detailAST, assigneeDetailAST.getText());
+				literalNewDetailAST, detailAST.getText());
 		}
 
 		if (variableDefinitionDetailAST != null) {
-			_checkVariable(detailAST, variableDefinitionDetailAST);
+			_checkVariable(literalNewDetailAST, variableDefinitionDetailAST);
 		}
 	}
 
@@ -178,23 +178,23 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 	}
 
 	private DetailAST _getFieldDefinitionDetailAST(
-		DetailAST detailAST, DetailAST nameDetailAST) {
+		DetailAST literalNewDetailAST, DetailAST detailAST) {
 
-		if (nameDetailAST.getType() != TokenTypes.IDENT) {
+		if (detailAST.getType() != TokenTypes.IDENT) {
 			return null;
 		}
 
-		DetailAST classDefinitionDetailAST = getParentWithTokenType(
-			detailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
+		DetailAST parentDetailAST = getParentWithTokenType(
+			literalNewDetailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
 			TokenTypes.LITERAL_NEW, TokenTypes.RECORD_DEF);
 
-		if ((classDefinitionDetailAST == null) ||
-			(classDefinitionDetailAST.getType() == TokenTypes.LITERAL_NEW)) {
+		if ((parentDetailAST == null) ||
+			(parentDetailAST.getType() == TokenTypes.LITERAL_NEW)) {
 
 			return null;
 		}
 
-		DetailAST objBlockDetailAST = classDefinitionDetailAST.findFirstToken(
+		DetailAST objBlockDetailAST = parentDetailAST.findFirstToken(
 			TokenTypes.OBJBLOCK);
 
 		for (DetailAST variableDefinitionDetailAST :
@@ -202,7 +202,7 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 					objBlockDetailAST, false, TokenTypes.VARIABLE_DEF)) {
 
 			if (Objects.equals(
-					nameDetailAST.getText(),
+					detailAST.getText(),
 					getName(variableDefinitionDetailAST))) {
 
 				return variableDefinitionDetailAST;
@@ -212,9 +212,9 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 		return null;
 	}
 
-	private boolean _isPrintOnly(DetailAST variableDefinitionDetailAST) {
+	private boolean _isPrintOnly(DetailAST detailAST) {
 		for (DetailAST identDetailAST :
-				getVariableCallerDetailASTs(variableDefinitionDetailAST)) {
+				getVariableCallerDetailASTs(detailAST)) {
 
 			DetailAST parentDetailAST = identDetailAST.getParent();
 
