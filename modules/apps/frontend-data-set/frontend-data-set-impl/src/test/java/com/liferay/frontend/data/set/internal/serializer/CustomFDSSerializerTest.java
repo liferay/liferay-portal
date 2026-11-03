@@ -1190,6 +1190,97 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		_resetFDSSerializer();
 
+		// Every visualization mode disabled
+
+		_mockSerializeViewsTable(
+			FDS_NAMES[0],
+			Collections.singletonList(
+				HashMapBuilder.<String, Object>put(
+					"fieldName", FIELD_NAMES[0]
+				).put(
+					"label", LABELS[0]
+				).put(
+					"renderer", "default"
+				).put(
+					"rendererType", "internal"
+				).put(
+					"sortable", false
+				).put(
+					"type", "String"
+				).build()));
+
+		for (String relationshipName :
+				new String[] {
+					"dataSetToDataSetCardsSections",
+					"dataSetToDataSetListSections"
+				}) {
+
+			_mockSerializeViewsCardsOrList(
+				FDS_NAMES[0],
+				HashMapBuilder.put(
+					"image", IMAGES[0]
+				).put(
+					"title", TITLES[0]
+				).build(),
+				relationshipName);
+		}
+
+		Mockito.when(
+			_customFDSSerializer.getDataSetObjectEntryProperties(
+				FDS_NAMES[0], httpServletRequest)
+		).thenReturn(
+			HashMapBuilder.<String, Object>put(
+				"defaultVisualizationMode", "table"
+			).put(
+				"visualizationModes",
+				JSONUtil.putAll(
+					JSONUtil.put(
+						"enabled", false
+					).put(
+						"name", "table"
+					),
+					JSONUtil.put(
+						"enabled", false
+					).put(
+						"name", "cards"
+					),
+					JSONUtil.put(
+						"enabled", false
+					).put(
+						"name", "list"
+					)
+				).toString()
+			).build()
+		);
+
+		JSONArray jsonArray = _customFDSSerializer.serializeViews(
+			FDS_NAMES[0], httpServletRequest);
+
+		Assert.assertEquals(3, jsonArray.length());
+		Assert.assertEquals(
+			"cards",
+			jsonArray.getJSONObject(
+				0
+			).getString(
+				"name"
+			));
+		Assert.assertEquals(
+			"list",
+			jsonArray.getJSONObject(
+				1
+			).getString(
+				"name"
+			));
+		Assert.assertEquals(
+			"table",
+			jsonArray.getJSONObject(
+				2
+			).getString(
+				"name"
+			));
+
+		_resetFDSSerializer();
+
 		// List view
 
 		_mockSerializeViewsCardsOrList(
@@ -1426,8 +1517,6 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			).build()
 		);
 
-		CETManager cetManager = Mockito.mock(CETManager.class);
-
 		FDSVisualizationModeCET fdsVisualizationModeCET = Mockito.mock(
 			FDSVisualizationModeCET.class);
 
@@ -1449,6 +1538,8 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			"date"
 		);
 
+		CETManager cetManager = Mockito.mock(CETManager.class);
+
 		Mockito.when(
 			cetManager.getCET(
 				Mockito.anyLong(), Mockito.eq(cetExternalReferenceCode))
@@ -1458,7 +1549,7 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 
 		_customFDSSerializer.cetManager = cetManager;
 
-		JSONArray jsonArray = _customFDSSerializer.serializeViews(
+		jsonArray = _customFDSSerializer.serializeViews(
 			FDS_NAMES[0], httpServletRequest);
 
 		Assert.assertEquals(3, jsonArray.length());
@@ -1491,86 +1582,6 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		jsonObject = jsonArray.getJSONObject(2);
 
 		Assert.assertEquals("list", jsonObject.getString("name"));
-
-		_resetFDSSerializer();
-
-		// Every visualization mode disabled
-
-		_mockSerializeViewsTable(
-			FDS_NAMES[0],
-			Collections.singletonList(
-				HashMapBuilder.<String, Object>put(
-					"fieldName", FIELD_NAMES[0]
-				).put(
-					"label", LABELS[0]
-				).put(
-					"renderer", "default"
-				).put(
-					"rendererType", "internal"
-				).put(
-					"sortable", false
-				).put(
-					"type", "String"
-				).build()));
-
-		_mockSerializeViewsCardsOrList(
-			FDS_NAMES[0], sectionsMap, "dataSetToDataSetCardsSections");
-		_mockSerializeViewsCardsOrList(
-			FDS_NAMES[0], sectionsMap, "dataSetToDataSetListSections");
-
-		Mockito.when(
-			_customFDSSerializer.getDataSetObjectEntryProperties(
-				FDS_NAMES[0], httpServletRequest)
-		).thenReturn(
-			HashMapBuilder.<String, Object>put(
-				"defaultVisualizationMode", "table"
-			).put(
-				"visualizationModes",
-				JSONUtil.putAll(
-					JSONUtil.put(
-						"enabled", false
-					).put(
-						"name", "table"
-					),
-					JSONUtil.put(
-						"enabled", false
-					).put(
-						"name", "cards"
-					),
-					JSONUtil.put(
-						"enabled", false
-					).put(
-						"name", "list"
-					)
-				).toString()
-			).build()
-		);
-
-		jsonArray = _customFDSSerializer.serializeViews(
-			FDS_NAMES[0], httpServletRequest);
-
-		Assert.assertEquals(3, jsonArray.length());
-		Assert.assertEquals(
-			"cards",
-			jsonArray.getJSONObject(
-				0
-			).getString(
-				"name"
-			));
-		Assert.assertEquals(
-			"list",
-			jsonArray.getJSONObject(
-				1
-			).getString(
-				"name"
-			));
-		Assert.assertEquals(
-			"table",
-			jsonArray.getJSONObject(
-				2
-			).getString(
-				"name"
-			));
 	}
 
 	private boolean _containsLabel(

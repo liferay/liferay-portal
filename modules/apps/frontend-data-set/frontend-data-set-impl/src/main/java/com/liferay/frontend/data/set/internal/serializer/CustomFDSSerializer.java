@@ -947,7 +947,7 @@ public class CustomFDSSerializer
 
 	private JSONArray _getEnabledViewsJSONArray(
 		JSONArray defaultViewsJSONArray, String defaultVisualizationMode,
-		HttpServletRequest httpServletRequest, String visualizationModes) {
+		HttpServletRequest httpServletRequest, String visualizationModesJSON) {
 
 		JSONArray jsonArray = _jsonFactory.createJSONArray();
 
@@ -962,7 +962,8 @@ public class CustomFDSSerializer
 		}
 
 		for (JSONObject visualizationModeJSONObject :
-				_getEnabledVisualizationModeJSONObjects(visualizationModes)) {
+				_getEnabledVisualizationModeJSONObjects(
+					visualizationModesJSON)) {
 
 			String name = visualizationModeJSONObject.getString("name");
 
@@ -990,17 +991,17 @@ public class CustomFDSSerializer
 	}
 
 	private List<JSONObject> _getEnabledVisualizationModeJSONObjects(
-		String visualizationModes) {
+		String visualizationModesJSON) {
 
 		List<JSONObject> enabledVisualizationModeJSONObjects =
 			new ArrayList<>();
 
 		List<String> visualizationModeNames = new ArrayList<>();
 
-		if (Validator.isNotNull(visualizationModes)) {
+		if (Validator.isNotNull(visualizationModesJSON)) {
 			try {
 				JSONArray jsonArray = _jsonFactory.createJSONArray(
-					visualizationModes);
+					visualizationModesJSON);
 
 				for (int i = 0; i < jsonArray.length(); i++) {
 					JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -1024,7 +1025,7 @@ public class CustomFDSSerializer
 				if (_log.isWarnEnabled()) {
 					_log.warn(
 						"Unable to parse visualization modes " +
-							visualizationModes,
+							visualizationModesJSON,
 						exception);
 				}
 			}
