@@ -186,10 +186,10 @@ public class DLAppServiceWhenViewingFolderContentsTest
 		}
 
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
-			2, TestPropsValues.getUser());
-		_assertFoldersAndFileEntriesAndFileShortcutsCount(
 			1,
 			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+		_assertFoldersAndFileEntriesAndFileShortcutsCount(
+			2, TestPropsValues.getUser());
 
 		User user = UserTestUtil.addGroupUser(group, "User");
 
@@ -231,10 +231,10 @@ public class DLAppServiceWhenViewingFolderContentsTest
 			RoleConstants.SITE_MEMBER);
 
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
-			2, TestPropsValues.getUser());
-		_assertFoldersAndFileEntriesAndFileShortcutsCount(
 			1,
 			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+		_assertFoldersAndFileEntriesAndFileShortcutsCount(
+			2, TestPropsValues.getUser());
 
 		User user = UserTestUtil.addGroupUser(group, "User");
 

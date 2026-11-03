@@ -597,7 +597,7 @@ public class DLAppServiceWhenAddingAFileEntryTest extends BaseDLAppTestCase {
 			Assert.assertTrue(expected);
 		}
 		catch (PrincipalException principalException) {
-			Assert.assertFalse(principalException.toString(), expected);
+			Assert.assertFalse(expected);
 		}
 	}
 

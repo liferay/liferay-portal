@@ -369,36 +369,6 @@ public class WebServerServletTest {
 	}
 
 	@Test
-	@TestInfo({"LPD-113625", "LPS-181561"})
-	public void testSendFileWithoutViewPermission() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		Folder folder = _dlAppLocalService.addFolder(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
-
-		String title = RandomTestUtil.randomString() + ".txt";
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
-			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
-			serviceContext);
-
-		_removeResourcePermission(
-			fileEntry.getFileEntryId(), RoleConstants.GUEST, ActionKeys.VIEW);
-		_removeResourcePermission(
-			fileEntry.getFileEntryId(), RoleConstants.SITE_MEMBER,
-			ActionKeys.VIEW);
-
-		_assertSendFile(folder, title);
-	}
-
-	@Test
 	@TestInfo("LPD-113625")
 	public void testSendFileWithOnlyAccessPermissionOnFolder()
 		throws Exception {
@@ -433,6 +403,36 @@ public class WebServerServletTest {
 			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
 			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
 			serviceContext);
+
+		_assertSendFile(folder, title);
+	}
+
+	@Test
+	@TestInfo({"LPD-113625", "LPS-181561"})
+	public void testSendFileWithoutViewPermission() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		String title = RandomTestUtil.randomString() + ".txt";
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.GUEST, ActionKeys.VIEW);
+		_removeResourcePermission(
+			fileEntry.getFileEntryId(), RoleConstants.SITE_MEMBER,
+			ActionKeys.VIEW);
 
 		_assertSendFile(folder, title);
 	}
