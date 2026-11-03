@@ -21,6 +21,7 @@ import com.liferay.object.model.ObjectField;
 import com.liferay.object.service.ObjectEntryLocalService;
 import com.liferay.object.service.ObjectEntryService;
 import com.liferay.object.service.ObjectFieldLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.json.JSONFactoryImpl;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
@@ -32,14 +33,17 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
+import com.liferay.portal.kernel.test.portlet.MockLiferayPortletURL;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProvider;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 
+import jakarta.portlet.ActionRequest;
 import jakarta.portlet.PortletURL;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -97,10 +101,57 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 		_setUpObjectFieldLocalService();
 		_setUpObjectFieldUtilMockedStatic();
 		_setUpPermissionThreadLocalMockedStatic();
+		_setUpPortal();
 		_setUpRequestBackedPortletURLFactoryUtil();
 		_setUpUploadServletRequestConfigurationProvider();
 
 		_ddmFormField.setDDMForm(getDDMForm());
+	}
+
+	@Test
+	public void testGetParametersDeleteURL() {
+		_ddmFormField.setProperty(
+			ObjectFieldSettingConstants.NAME_FILE_SOURCE,
+			ObjectFieldSettingConstants.VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA);
+		_ddmFormField.setProperty("portletId", RandomTestUtil.randomString());
+
+		// With a rendering portlet
+
+		String portletId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_portal.getPortletId(Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			portletId
+		);
+
+		Mockito.when(
+			_requestBackedPortletURLFactory.createActionURL(portletId)
+		).thenReturn(
+			new TestMockLiferayPortletURL()
+		);
+
+		Map<String, Object> parameters =
+			_attachmentDDMFormFieldTemplateContextContributor.getParameters(
+				_ddmFormField, createDDMFormFieldRenderingContext());
+
+		Assert.assertEquals(
+			"http://localhost:8080/object_entries/delete_attachment",
+			parameters.get("deleteURL"));
+
+		// Without a rendering portlet
+
+		Mockito.when(
+			_portal.getPortletId(Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			null
+		);
+
+		parameters =
+			_attachmentDDMFormFieldTemplateContextContributor.getParameters(
+				_ddmFormField, createDDMFormFieldRenderingContext());
+
+		Assert.assertFalse(parameters.containsKey("deleteURL"));
 	}
 
 	@Test
@@ -237,6 +288,49 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 				_attachmentDDMFormFieldTemplateContextContributor.getParameters(
 					_ddmFormField, ddmFormFieldRenderingContext),
 				"url"));
+
+		// Upload URL with a rendering portlet
+
+		_ddmFormField.setProperty(
+			ObjectFieldSettingConstants.NAME_FILE_SOURCE,
+			ObjectFieldSettingConstants.VALUE_USER_COMPUTER_TO_DOCS_AND_MEDIA);
+		_ddmFormField.setProperty("portletId", RandomTestUtil.randomString());
+
+		String portletId = RandomTestUtil.randomString();
+
+		Mockito.when(
+			_portal.getPortletId(Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			portletId
+		);
+
+		Mockito.when(
+			_requestBackedPortletURLFactory.createActionURL(portletId)
+		).thenReturn(
+			new TestMockLiferayPortletURL()
+		);
+
+		Map<String, Object> parameters =
+			_attachmentDDMFormFieldTemplateContextContributor.getParameters(
+				_ddmFormField, createDDMFormFieldRenderingContext());
+
+		Assert.assertEquals(
+			"http://localhost:8080/object_entries/upload_attachment",
+			parameters.get("url"));
+
+		// Upload URL without a rendering portlet
+
+		Mockito.when(
+			_portal.getPortletId(Mockito.any(HttpServletRequest.class))
+		).thenReturn(
+			null
+		);
+
+		parameters =
+			_attachmentDDMFormFieldTemplateContextContributor.getParameters(
+				_ddmFormField, createDDMFormFieldRenderingContext());
+
+		Assert.assertEquals(StringPool.BLANK, parameters.get("url"));
 	}
 
 	private DDMFormFieldRenderingContext _createDDMFormFieldRenderingContext(
@@ -386,6 +480,12 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 		);
 	}
 
+	private void _setUpPortal() {
+		ReflectionTestUtil.setFieldValue(
+			_attachmentDDMFormFieldTemplateContextContributor, "_portal",
+			_portal);
+	}
+
 	private void _setUpRequestBackedPortletURLFactoryUtil() {
 		_requestBackedPortletURLFactoryUtilMockedStatic.when(
 			() -> RequestBackedPortletURLFactoryUtil.create(
@@ -513,11 +613,22 @@ public class AttachmentDDMFormFieldTemplateContextContributorTest
 		Mockito.mock(ObjectFieldLocalService.class);
 	private final PermissionChecker _permissionChecker = Mockito.mock(
 		PermissionChecker.class);
+	private final Portal _portal = Mockito.mock(Portal.class);
 	private final RequestBackedPortletURLFactory
 		_requestBackedPortletURLFactory = Mockito.mock(
 			RequestBackedPortletURLFactory.class);
 	private final UploadServletRequestConfigurationProvider
 		_uploadServletRequestConfigurationProvider = Mockito.mock(
 			UploadServletRequestConfigurationProvider.class);
+
+	private class TestMockLiferayPortletURL extends MockLiferayPortletURL {
+
+		@Override
+		public String toString() {
+			return "http://localhost:8080" +
+				getParameter(ActionRequest.ACTION_NAME);
+		}
+
+	}
 
 }
