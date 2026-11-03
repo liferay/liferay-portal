@@ -11,6 +11,8 @@ import React, {useRef} from 'react';
 import UnifiedSidebarColorSchemeButton from './UnifiedSidebarColorSchemeButton';
 import UnifiedSidebarSiteSelector from './UnifiedSidebarSiteSelector';
 
+import './UnifiedSidebar.scss';
+
 export interface UnifiedSidebarProps {
 	canonicalName?: string;
 	categoryImageUrl: string;
@@ -31,7 +33,7 @@ const PANEL_WIDTH = 280;
 const CLOSE_BUTTON_PROPS = Liferay.FeatureFlags['LPD-57922']
 	? {
 			className:
-				'btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm side-navigation-close-button',
+				'btn btn-monospaced btn-outline-borderless btn-outline-secondary btn-sm unified-sidebar-close-button',
 		}
 	: undefined;
 
@@ -65,7 +67,7 @@ export default function UnifiedSidebar({
 			aria-label={sub(Liferay.Language.get('x-menu'), label)}
 			closeOnEscape={false}
 			containerRef={
-				 containerRef as unknown as React.RefObject<HTMLElement>
+				containerRef as unknown as React.RefObject<HTMLElement>
 			}
 			data-canonical-name={canonicalName}
 			data-qa-id={testId}
@@ -79,7 +81,7 @@ export default function UnifiedSidebar({
 			position="fixed"
 		>
 			<SidePanel.Header
-				className="c-mx-1 c-px-2"
+				className="c-mx-1 c-px-2 unified-sidebar-header"
 				closeButtonProps={CLOSE_BUTTON_PROPS}
 				data-qa-id="unifiedSidebarHeader"
 				messages={HEADER_MESSAGES}
