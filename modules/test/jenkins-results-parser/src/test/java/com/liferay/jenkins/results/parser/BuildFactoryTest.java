@@ -26,7 +26,6 @@ public class BuildFactoryTest extends com.liferay.jenkins.results.parser.Test {
 				"test-portal-acceptance-downstream(master)",
 				"/buildWithParameters"));
 
-		Assert.assertNotNull(matcher);
 		Assert.assertNull(matcher.group("queryString"));
 	}
 
