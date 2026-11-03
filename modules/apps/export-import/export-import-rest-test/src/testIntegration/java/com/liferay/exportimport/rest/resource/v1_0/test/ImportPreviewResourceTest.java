@@ -515,9 +515,6 @@ public class ImportPreviewResourceTest
 	}
 
 	private void _testPostImportPreviewWithAssetLibraries() throws Exception {
-		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
-			testCompany.getCompanyId());
-
 		DepotEntry depotEntry = _depotEntryLocalService.addDepotEntry(
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), RandomTestUtil.randomString()
@@ -530,6 +527,8 @@ public class ImportPreviewResourceTest
 
 		_depotGroup = depotEntry.getGroup();
 
+		Group companyGroup = _stagingGroupHelper.fetchCompanyGroup(
+			testCompany.getCompanyId());
 		Group group = GroupTestUtil.addGroup();
 
 		File file = _exportLayoutAsFile(
