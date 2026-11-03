@@ -14,6 +14,7 @@ import com.liferay.application.list.display.context.logic.PanelCategoryHelper;
 import com.liferay.item.selector.ItemSelector;
 import com.liferay.item.selector.criteria.URLItemSelectorReturnType;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.module.service.Snapshot;
 import com.liferay.portal.kernel.portlet.LiferayPortletURL;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Thiago Buarque
@@ -48,8 +50,19 @@ public class SideNavigationDisplayContext {
 		HttpServletRequest httpServletRequest,
 		PanelAppRegistry panelAppRegistry) {
 
+		this(
+			httpServletRequest, panelAppRegistry,
+			_getApplicationsMenuPanelCategory(
+				httpServletRequest, panelAppRegistry));
+	}
+
+	public SideNavigationDisplayContext(
+		HttpServletRequest httpServletRequest,
+		PanelAppRegistry panelAppRegistry, PanelCategory panelCategory) {
+
 		_httpServletRequest = httpServletRequest;
 		_panelAppRegistry = panelAppRegistry;
+		_panelCategory = panelCategory;
 
 		_panelCategoryHelper = new PanelCategoryHelper(panelAppRegistry);
 
@@ -58,8 +71,10 @@ public class SideNavigationDisplayContext {
 
 		_portletId = _themeDisplay.getPpid();
 
-		_panelCategory = _panelCategoryHelper.getActivePanelCategory(
-			PanelCategoryKeys.APPLICATIONS_MENU, _portletId, _themeDisplay);
+		_siteAdministration =
+			(panelCategory != null) &&
+			Objects.equals(
+				panelCategory.getKey(), PanelCategoryKeys.SITE_ADMINISTRATION);
 	}
 
 	public Map<String, Object> getProps() throws Exception {
@@ -75,10 +90,7 @@ public class SideNavigationDisplayContext {
 		return HashMapBuilder.<String, Object>put(
 			"canonicalName", _panelCategory.getLabel(LocaleUtil.ENGLISH)
 		).put(
-			"categoryImageUrl",
-			String.format(
-				"%s/product_icons/%s_sm.svg",
-				_themeDisplay.getPathThemeImages(), _panelCategory.getKey())
+			"categoryImageUrl", _getCategoryImageURL()
 		).put(
 			"colorScheme", _getColorScheme()
 		).put(
@@ -90,7 +102,7 @@ public class SideNavigationDisplayContext {
 		).put(
 			"items", _getPropsItems()
 		).put(
-			"label", _panelCategory.getLabel(_themeDisplay.getLocale())
+			"label", _getLabel()
 		).put(
 			"navigationItemsURL",
 			() -> {
@@ -151,6 +163,34 @@ public class SideNavigationDisplayContext {
 		return state.equals("visible");
 	}
 
+	private static PanelCategory _getApplicationsMenuPanelCategory(
+		HttpServletRequest httpServletRequest,
+		PanelAppRegistry panelAppRegistry) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PanelCategoryHelper panelCategoryHelper = new PanelCategoryHelper(
+			panelAppRegistry);
+
+		return panelCategoryHelper.getActivePanelCategory(
+			PanelCategoryKeys.APPLICATIONS_MENU, themeDisplay.getPpid(),
+			themeDisplay);
+	}
+
+	private String _getCategoryImageURL() {
+		if (_siteAdministration) {
+			Group group = _themeDisplay.getScopeGroup();
+
+			return group.getLogoURL(_themeDisplay, true);
+		}
+
+		return String.format(
+			"%s/product_icons/%s_sm.svg", _themeDisplay.getPathThemeImages(),
+			_panelCategory.getKey());
+	}
+
 	private String _getColorScheme() {
 		return SessionClicks.get(
 			_httpServletRequest, _COLOR_SCHEME_SESSION_KEY, "light");
@@ -194,6 +234,16 @@ public class SideNavigationDisplayContext {
 		return String.format(
 			"com_liferay_application_list_taglib_SideNavigationExpanded_%sKeys",
 			_panelCategory.getKey());
+	}
+
+	private String _getLabel() throws Exception {
+		if (_siteAdministration) {
+			Group group = _themeDisplay.getScopeGroup();
+
+			return group.getDescriptiveName(_themeDisplay.getLocale());
+		}
+
+		return _panelCategory.getLabel(_themeDisplay.getLocale());
 	}
 
 	private List<Map<String, Object>> _getPanelAppPropsItems(
@@ -363,6 +413,7 @@ public class SideNavigationDisplayContext {
 	private final PanelCategoryHelper _panelCategoryHelper;
 	private final String _portletId;
 	private List<PanelCategory> _rootChildPanelCategories;
+	private final boolean _siteAdministration;
 	private final ThemeDisplay _themeDisplay;
 
 }

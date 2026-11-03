@@ -81,6 +81,24 @@ public class SideNavigationDisplayContextTest {
 	}
 
 	@Test
+	public void testGetLabelReturnsTheSiteNameForSiteAdministration()
+		throws Exception {
+
+		_setUpSiteAdministration();
+
+		Mockito.when(
+			_group.getDescriptiveName(LocaleUtil.US)
+		).thenReturn(
+			"Liferay"
+		);
+
+		Assert.assertEquals(
+			"Liferay",
+			ReflectionTestUtil.invoke(
+				_sideNavigationDisplayContext, "_getLabel", new Class<?>[0]));
+	}
+
+	@Test
 	public void testGetPropsItemsFlattensAScopeIntoAMarkerAndItsApplications()
 		throws Exception {
 
@@ -104,6 +122,28 @@ public class SideNavigationDisplayContextTest {
 
 		Assert.assertEquals("serverAdmin", propsItem.get("id"));
 		Assert.assertEquals("system", propsItem.get("scope"));
+	}
+
+	@Test
+	public void testGetPropsItemsGroupsTheSiteAdministrationCategories()
+		throws Exception {
+
+		_setUpSiteAdministration();
+
+		_setUpPanelApps(
+			"site_administration.content", _createPanelApp("blogs"));
+		_setUpRootChildPanelCategories(
+			_createPanelCategory("site_administration.content"));
+
+		List<Map<String, Object>> propsItems = _getPropsItems();
+
+		Assert.assertEquals(propsItems.toString(), 1, propsItems.size());
+
+		Map<String, Object> propsItem = propsItems.get(0);
+
+		Assert.assertEquals("site_administration.content", propsItem.get("id"));
+		Assert.assertNotNull(propsItem.get("items"));
+		Assert.assertNull(propsItem.get("scope"));
 	}
 
 	@Test
@@ -250,12 +290,23 @@ public class SideNavigationDisplayContextTest {
 	private void _setUpRootChildPanelCategories(
 		PanelCategory... panelCategories) {
 
+		PanelCategory panelCategory = ReflectionTestUtil.getFieldValue(
+			_sideNavigationDisplayContext, "_panelCategory");
+
 		Mockito.when(
 			_panelCategoryHelper.getChildPanelCategories(
-				PanelCategoryKeys.CONTROL_PANEL, _themeDisplay)
+				panelCategory.getKey(), _themeDisplay)
 		).thenReturn(
 			List.of(panelCategories)
 		);
+	}
+
+	private void _setUpSiteAdministration() {
+		ReflectionTestUtil.setFieldValue(
+			_sideNavigationDisplayContext, "_panelCategory",
+			_createPanelCategory(PanelCategoryKeys.SITE_ADMINISTRATION));
+		ReflectionTestUtil.setFieldValue(
+			_sideNavigationDisplayContext, "_siteAdministration", true);
 	}
 
 	private Group _group;
