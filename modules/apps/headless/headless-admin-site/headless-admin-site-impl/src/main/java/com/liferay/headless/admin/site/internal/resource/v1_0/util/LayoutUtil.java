@@ -536,15 +536,9 @@ public class LayoutUtil {
 		if (pageSpecification instanceof
 				ContentPageSpecification contentPageSpecification) {
 
-			try (SafeCloseable safeCloseable =
-					UpdateLayoutStatusThreadLocal.
-						setUpdateLayoutStatusWithSafeCloseable(false)) {
-
-				_updatePageExperiences(
-					fragmentEntryProcessorRegistry, infoItemServiceRegistry,
-					layout, contentPageSpecification.getPageExperiences(),
-					serviceContext);
-			}
+			_updatePageExperiences(
+				fragmentEntryProcessorRegistry, infoItemServiceRegistry, layout,
+				contentPageSpecification.getPageExperiences(), serviceContext);
 		}
 
 		if (status == layout.getStatus()) {
@@ -1302,7 +1296,10 @@ public class LayoutUtil {
 		try (AutoCloseable autoCloseable =
 				LayoutServiceContextHelperUtil.getServiceContextAutoCloseable(
 					layout,
-					UserLocalServiceUtil.getUser(serviceContext.getUserId()))) {
+					UserLocalServiceUtil.getUser(serviceContext.getUserId()));
+			SafeCloseable safeCloseable =
+				UpdateLayoutStatusThreadLocal.
+					setUpdateLayoutStatusWithSafeCloseable(false)) {
 
 			Map<String, SegmentsExperience> actualSegmentsExperiencesMap =
 				new HashMap<>();
