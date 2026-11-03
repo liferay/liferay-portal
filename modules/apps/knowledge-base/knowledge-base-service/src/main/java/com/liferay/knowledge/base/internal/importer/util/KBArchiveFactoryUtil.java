@@ -55,12 +55,21 @@ public class KBArchiveFactoryUtil {
 
 		Collections.sort(entries);
 
+		String[] articleExtensions =
+			kbGroupServiceConfiguration.markdownImporterArticleExtensions();
+
+		String markdownImporterArticleIntro =
+			kbGroupServiceConfiguration.markdownImporterArticleIntro();
+
+		int index = markdownImporterArticleIntro.lastIndexOf(CharPool.PERIOD);
+
+		String markdownImporterArticleIntroWithoutExtension =
+			(index > 0) ? markdownImporterArticleIntro.substring(0, index) :
+				markdownImporterArticleIntro;
+
 		KBArchiveState kbArchiveState = new KBArchiveState(zipReader);
 
 		for (String entry : entries) {
-			String[] articleExtensions =
-				kbGroupServiceConfiguration.markdownImporterArticleExtensions();
-
 			if (!ArrayUtil.exists(articleExtensions, entry::endsWith)) {
 				continue;
 			}
@@ -71,12 +80,15 @@ public class KBArchiveFactoryUtil {
 
 			kbArchiveState.setCurrentFolder(entryParentPath);
 
-			String markdownImporterArticleIntro =
-				kbGroupServiceConfiguration.markdownImporterArticleIntro();
-
 			String entryFileName = String.valueOf(entryPath.getFileName());
 
-			if (entryFileName.endsWith(markdownImporterArticleIntro)) {
+			if (entryFileName.endsWith(markdownImporterArticleIntro) ||
+				ArrayUtil.exists(
+					articleExtensions,
+					articleExtension -> entryFileName.endsWith(
+						markdownImporterArticleIntroWithoutExtension +
+							articleExtension))) {
+
 				kbArchiveState.setCurrentFolderIntroFile(entryPath);
 			}
 			else {
