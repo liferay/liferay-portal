@@ -25,6 +25,7 @@ import com.liferay.dynamic.data.mapping.kernel.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.kernel.DDMFormValues;
 import com.liferay.dynamic.data.mapping.kernel.LocalizedValue;
 import com.liferay.dynamic.data.mapping.model.DDMForm;
+import com.liferay.dynamic.data.mapping.model.DDMFormField;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil;
 import com.liferay.dynamic.data.mapping.test.util.DDMStructureTestUtil;
@@ -40,6 +41,7 @@ import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -52,6 +54,7 @@ import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -92,11 +95,11 @@ public class DLLocalStagingTest {
 			ServiceContextTestUtil.getServiceContext(_liveGroup.getGroupId());
 
 		_addStagingAttribute(
+			serviceContext, PortletDataHandlerKeys.DATA_STRATEGY_MIRROR, true);
+		_addStagingAttribute(
 			serviceContext,
 			StagingUtil.getStagedPortletId(DLPortletKeys.DOCUMENT_LIBRARY_ADMIN),
 			true);
-		_addStagingAttribute(
-			serviceContext, PortletDataHandlerKeys.DATA_STRATEGY_MIRROR, true);
 
 		StagingLocalServiceUtil.enableLocalStaging(
 			TestPropsValues.getUserId(), _liveGroup, false, false,
@@ -202,7 +205,9 @@ public class DLLocalStagingTest {
 		DDMForm sampleDDMForm = DDMStructureTestUtil.getSampleDDMForm(
 			"newField");
 
-		ddmForm.addDDMFormField(sampleDDMForm.getDDMFormFields().get(0));
+		List<DDMFormField> ddmFormFields = sampleDDMForm.getDDMFormFields();
+
+		ddmForm.addDDMFormField(ddmFormFields.get(0));
 
 		DDMStructureLocalServiceUtil.updateStructure(
 			TestPropsValues.getUserId(),
@@ -263,17 +268,14 @@ public class DLLocalStagingTest {
 			_liveGroup,
 			ServiceContextTestUtil.getServiceContext(_liveGroup.getGroupId()));
 
-		Assert.assertFalse(
-			GroupLocalServiceUtil.getGroup(
-				_liveGroup.getGroupId()
-			).hasStagingGroup());
+		Group group = GroupLocalServiceUtil.getGroup(_liveGroup.getGroupId());
+
+		Assert.assertFalse(group.hasStagingGroup());
 
 		FriendlyURLEntry friendlyURLEntry =
 			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
 				_liveGroup.getGroupId(),
 				PortalUtil.getClassNameId(FileEntry.class), urlTitle);
-
-		Assert.assertNotNull(friendlyURLEntry);
 
 		FileEntry liveFileEntry = DLAppLocalServiceUtil.getFileEntry(
 			friendlyURLEntry.getClassPK());
@@ -322,7 +324,6 @@ public class DLLocalStagingTest {
 				DDMStructureLocalServiceUtil.fetchDDMStructureByUuidAndGroupId(
 					ddmStructure.getUuid(), _liveGroup.getGroupId());
 
-			Assert.assertNotNull(liveDDMStructure);
 			Assert.assertEquals(
 				ddmStructure.getName(LocaleUtil.US),
 				liveDDMStructure.getName(LocaleUtil.US));
@@ -356,8 +357,9 @@ public class DLLocalStagingTest {
 
 		_publish();
 
-		Assert.assertEquals(
-			fileEntry.getTitle(), _getLiveFileEntry(fileEntry).getTitle());
+		FileEntry liveFileEntry = _getLiveFileEntry(fileEntry);
+
+		Assert.assertEquals(fileEntry.getTitle(), liveFileEntry.getTitle());
 
 		byte[] bytes = RandomTestUtil.randomBytes();
 		String description = RandomTestUtil.randomString();
@@ -377,16 +379,16 @@ public class DLLocalStagingTest {
 
 		_publish();
 
-		FileEntry liveFileEntry = _getLiveFileEntry(fileEntry);
+		liveFileEntry = _getLiveFileEntry(fileEntry);
 
+		Assert.assertArrayEquals(
+			bytes, FileUtil.getBytes(liveFileEntry.getContentStream()));
 		Assert.assertEquals(description, liveFileEntry.getDescription());
 		Assert.assertEquals(fileName, liveFileEntry.getFileName());
 		Assert.assertEquals(
 			ContentTypes.IMAGE_PNG, liveFileEntry.getMimeType());
 		Assert.assertEquals(title, liveFileEntry.getTitle());
 		Assert.assertEquals("2.0", liveFileEntry.getVersion());
-		Assert.assertArrayEquals(
-			bytes, FileUtil.getBytes(liveFileEntry.getContentStream()));
 
 		DLFileEntryType liveDLFileEntryType = _getDLFileEntryType(
 			liveFileEntry);
@@ -464,7 +466,7 @@ public class DLLocalStagingTest {
 
 		serviceContext.setAttribute(
 			StagingConstants.STAGED_PREFIX + key + StringPool.DOUBLE_DASH,
-			String.valueOf(value));
+			GetterUtil.getString(value));
 	}
 
 	private void _assertDDMFormValues(FileEntry fileEntry, String value)
@@ -472,10 +474,10 @@ public class DLLocalStagingTest {
 
 		DLFileEntry dlFileEntry = (DLFileEntry)fileEntry.getModel();
 
+		FileVersion fileVersion = fileEntry.getFileVersion();
+
 		Map<String, DDMFormValues> ddmFormValuesMap =
-			dlFileEntry.getDDMFormValuesMap(
-				fileEntry.getFileVersion(
-				).getFileVersionId());
+			dlFileEntry.getDDMFormValuesMap(fileVersion.getFileVersionId());
 
 		Assert.assertEquals(
 			ddmFormValuesMap.toString(), 2, ddmFormValuesMap.size());
