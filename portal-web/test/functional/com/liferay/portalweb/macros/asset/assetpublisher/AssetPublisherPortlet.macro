@@ -1474,23 +1474,6 @@ definition {
 		SelectFrameTop();
 	}
 
-	@summary = "Default summary"
-	macro viewManualAssetTypesPG(assetEntryTypes = null) {
-		SelectFrame(locator1 = "IFrame#MODAL_BODY");
-
-		Panel.expandPanel(panel = "Asset Entries");
-
-		Click(locator1 = "APConfiguration#ASSET_SELECTION_MANUAL_ASSET_ENTRIES_SELECT_BUTTON");
-
-		for (var assetEntryType : list ${assetEntryTypes}) {
-			AssertTextEquals.assertPartialText(
-				key_menuItem = ${assetEntryType},
-				locator1 = "MenuItem#ANY_MENU_ITEM",
-				value1 = ${assetEntryType});
-		}
-
-		IFrame.selectTopFrame();
-	}
 
 	@summary = "Default summary"
 	macro viewManualNoAssetsMessagePG() {

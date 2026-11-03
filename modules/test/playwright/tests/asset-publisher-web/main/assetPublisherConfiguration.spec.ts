@@ -298,3 +298,126 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Documents of a global and a site document type can be selected in manual asset selection',
+	{
+		tag: '@LPD-107305',
+	},
+	async ({apiHelpers, assetPublisherPage, pageEditorPage, site}) => {
+
+		// Add a document of a global document type and one of a site document type
+
+		const globalSite =
+			await apiHelpers.headlessAdminUser.getSiteByFriendlyUrlPath(
+				'global'
+			);
+
+		const globalDocumentTypeName = getRandomString();
+
+		const globalDocumentType =
+			await apiHelpers.headlessDelivery.postSiteDocumentDataDefinitionType(
+				String(globalSite.id),
+				globalDocumentTypeName
+			);
+
+		const siteDocumentTypeName = getRandomString();
+
+		await apiHelpers.headlessDelivery.postSiteDocumentDataDefinitionType(
+			String(site.id),
+			siteDocumentTypeName
+		);
+
+		const documents = [];
+
+		try {
+			for (const documentTypeName of [
+				globalDocumentTypeName,
+				siteDocumentTypeName,
+			]) {
+				const title = getRandomString();
+
+				const document = await apiHelpers.headlessDelivery.postDocument(
+					site.id,
+					{
+						buffer: Buffer.from(title),
+						mimeType: 'text/plain',
+						name: `${title}.txt`,
+					},
+					{
+						documentType: {name: documentTypeName},
+						fileName: `${title}.txt`,
+						title,
+					}
+				);
+
+				documents.push({documentTypeName, id: document.id, title});
+			}
+
+			// Open the manual asset selection
+
+			const widgetId = getRandomString();
+
+			const layout = await apiHelpers.headlessDelivery.createSitePage({
+				pageDefinition: getPageDefinition([
+					getWidgetDefinition({
+						id: widgetId,
+						widgetName:
+							'com_liferay_asset_publisher_web_portlet_AssetPublisherPortlet',
+					}),
+				]),
+				siteId: site.id,
+				title: getRandomString(),
+			});
+
+			await pageEditorPage.goto(layout, site.friendlyUrlPath);
+
+			await pageEditorPage.goToWidgetConfiguration(widgetId);
+
+			await assetPublisherPage.changeAssetSelection('Manual');
+
+			const assetEntries =
+				assetPublisherPage.configurationIframe.getByRole('group', {
+					name: 'Asset Entries',
+				});
+
+			await assetEntries.getByRole('button', {name: 'Select'}).click();
+
+			// Both documents are listed with their document type
+
+			const selectAssetDialog =
+				assetPublisherPage.configurationIframe.getByRole('dialog', {
+					name: 'Select Asset',
+				});
+
+			for (const {documentTypeName, title} of documents) {
+				const row = selectAssetDialog
+					.getByRole('row')
+					.filter({hasText: title});
+
+				await expect(row).toContainText(documentTypeName);
+
+				await row.getByRole('checkbox').check();
+			}
+
+			await selectAssetDialog
+				.getByRole('button', {exact: true, name: 'Select'})
+				.click();
+
+			// Both documents are selected
+
+			for (const {title} of documents) {
+				await expect(assetEntries.getByText(title)).toBeVisible();
+			}
+		}
+		finally {
+			for (const {id} of documents) {
+				await apiHelpers.headlessDelivery.deleteDocument(id);
+			}
+
+			await apiHelpers.headlessDelivery.deleteDocumentDataDefinitionType(
+				globalDocumentType.id
+			);
+		}
+	}
+);

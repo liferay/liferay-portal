@@ -927,44 +927,6 @@ definition {
 		}
 	}
 
-	@description = "View document types shown in manual selection."
-	@priority = 4
-	test ViewDocumentTypeShownInManualSelection {
-		var typeName = StringUtil.randomString(8);
-
-		task ("Add a global document type") {
-			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "global");
-
-			DMNavigator.gotoDocumentType();
-
-			DMDocumentType.add(
-				dmDocumentTypeDescription = "Global Document Type Description",
-				dmDocumentTypeFieldNames = "Text",
-				dmDocumentTypeName = ${typeName});
-		}
-
-		task ("Add a document type in normal site") {
-			DMDocument.openDocumentsAndMediaAdmin(siteURLKey = "test-site-name");
-
-			DMNavigator.gotoDocumentType();
-
-			DMDocumentType.add(
-				dmDocumentTypeDescription = "Local Document Type Description",
-				dmDocumentTypeFieldNames = "Text",
-				dmDocumentTypeName = "Local Document Type Name");
-		}
-
-		task ("View document types shown in manual selection") {
-			Navigator.gotoSitePage(
-				pageName = "Asset Publisher Page",
-				siteName = "Test Site Name");
-
-			AssetPublisherPortlet.configureManualAssetSelectionPG();
-
-			AssetPublisherPortlet.viewManualAssetTypesPG(assetEntryTypes = "${typeName},Local Document Type Name");
-		}
-	}
-
 	@description = "View the global web content with custom structure in Asset Publisher."
 	@priority = 3
 	test ViewGlobalWebContentWithCustomStructureInAssetPublisher {
