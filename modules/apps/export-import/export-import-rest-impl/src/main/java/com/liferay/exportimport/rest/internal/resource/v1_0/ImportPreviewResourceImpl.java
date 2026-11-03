@@ -41,6 +41,7 @@ import com.liferay.portal.vulcan.multipart.MultipartBody;
 
 import jakarta.ws.rs.BadRequestException;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -145,8 +146,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 			binaryFile.getInputStream(), binaryFile.getContentType());
 	}
 
-	private AssetLibrary[] _getAssetLibraries(FileEntry fileEntry)
-		throws Exception {
+	private AssetLibrary[] _getAssetLibraries(
+		List<ExportImportGroup> exportImportGroups) {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-41307")) {
@@ -155,9 +156,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		}
 
 		return transformToArray(
-			ListUtil.filter(
-				_exportImportHelper.getExportImportGroups(fileEntry),
-				ExportImportGroup::isDepot),
+			ListUtil.filter(exportImportGroups, ExportImportGroup::isDepot),
 			exportImportGroup -> new AssetLibrary() {
 				{
 					setDescriptiveName(exportImportGroup::getDescriptiveName);
@@ -171,6 +170,18 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				}
 			},
 			AssetLibrary.class);
+	}
+
+	private List<ExportImportGroup> _getExportImportGroups(FileEntry fileEntry)
+		throws Exception {
+
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-85946")) {
+
+			return Collections.emptyList();
+		}
+
+		return _exportImportHelper.getExportImportGroups(fileEntry);
 	}
 
 	private ImportPreview _getImportPreview(
@@ -212,12 +223,15 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				true, scopeGroup, contextAcceptLanguage.getPreferredLocale(),
 				manifestSummary, portlets, portletScoped);
 
+		List<ExportImportGroup> exportImportGroups = _getExportImportGroups(
+			fileEntry);
+
 		return new ImportPreview() {
 			{
 				setAdditionCount(
 					() -> PortletDataHandlerUtil.getAdditionCount(
 						importPortletDataHandlers));
-				setAssetLibraries(() -> _getAssetLibraries(fileEntry));
+				setAssetLibraries(() -> _getAssetLibraries(exportImportGroups));
 				setAuthor(fileEntry::getUserName);
 				setDeletionCount(
 					() -> PortletDataHandlerUtil.getDeletionCount(
@@ -226,21 +240,15 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				setFileName(fileEntry::getFileName);
 				setFileSize(fileEntry::getSize);
 				setPortletDataHandlers(() -> importPortletDataHandlers);
-				setSites(() -> _getSites(fileEntry));
+				setSites(() -> _getSites(exportImportGroups));
 			}
 		};
 	}
 
-	private Site[] _getSites(FileEntry fileEntry) throws Exception {
-		if (!FeatureFlagManagerUtil.isEnabled(
-				contextCompany.getCompanyId(), "LPD-85946")) {
-
-			return new Site[0];
-		}
-
+	private Site[] _getSites(List<ExportImportGroup> exportImportGroups) {
 		return transformToArray(
 			ListUtil.filter(
-				_exportImportHelper.getExportImportGroups(fileEntry),
+				exportImportGroups,
 				exportImportGroup -> !exportImportGroup.isDepot()),
 			exportImportGroup -> new Site() {
 				{
