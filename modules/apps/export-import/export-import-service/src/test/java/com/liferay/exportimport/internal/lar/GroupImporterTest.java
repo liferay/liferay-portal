@@ -642,7 +642,7 @@ public class GroupImporterTest {
 		String externalReferenceCode, String parentExternalReferenceCode) {
 
 		return new ExportImportGroup(
-			0, RandomTestUtil.randomString(), externalReferenceCode,
+			0, false, 0, RandomTestUtil.randomString(), externalReferenceCode,
 			_SOURCE_GROUP_ID, parentExternalReferenceCode,
 			RandomTestUtil.randomString());
 	}
