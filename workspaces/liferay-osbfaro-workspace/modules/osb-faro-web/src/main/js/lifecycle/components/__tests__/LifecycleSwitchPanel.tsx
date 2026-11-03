@@ -3,7 +3,6 @@ import LifecycleSwitchPanel, {
 	LifecyclePanelView,
 } from '../LifecycleSwitchPanel';
 import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import BasePage from 'shared/components/base-page';
 import React, {useState} from 'react';
 import {
@@ -146,8 +145,6 @@ const getPageRequests = () =>
 const renderPanel = (props: React.ComponentProps<typeof Panel> = {}) =>
 	render(
 		<Provider store={mockStore()}>
-			<ModalRenderer />
-
 			<MemoryRouter>
 				<Panel {...props} />
 			</MemoryRouter>
@@ -476,13 +473,13 @@ describe('LifecycleSwitchPanel', () => {
 	});
 
 	describe('the Delete action', () => {
-		const deleteRow = (name: string) => {
+		const deleteRow = async (name: string) => {
 			openRowMenu(name);
 
 			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
 
 			fireEvent.click(
-				within(screen.getByRole('dialog')).getByRole('button', {
+				await within(screen.getByRole('dialog')).findByRole('button', {
 					name: /^delete$/i,
 				})
 			);
@@ -520,12 +517,14 @@ describe('LifecycleSwitchPanel', () => {
 
 			renderPanel({onDefaultDelete});
 
-			deleteRow('Partner Lifecycle');
+			await deleteRow('Partner Lifecycle');
 
 			await waitFor(() => expect(onDefaultDelete).toHaveBeenCalled());
 
-			expect(getPageRequests().pop()).toEqual(
-				expect.objectContaining({refreshCount: 1})
+			await waitFor(() =>
+				expect(getPageRequests().pop()).toEqual(
+					expect.objectContaining({refreshCount: 1})
+				)
 			);
 		});
 
@@ -534,7 +533,7 @@ describe('LifecycleSwitchPanel', () => {
 
 			renderPanel({onDefaultDelete});
 
-			deleteRow('Expansion Lifecycle');
+			await deleteRow('Expansion Lifecycle');
 
 			await waitFor(() =>
 				expect(getPageRequests().pop()).toEqual(
@@ -552,7 +551,7 @@ describe('LifecycleSwitchPanel', () => {
 
 			fireEvent.click(screen.getByText('2', {selector: '.page-link'}));
 
-			deleteRow('Partner Lifecycle');
+			await deleteRow('Partner Lifecycle');
 
 			await waitFor(() =>
 				expect(getPageRequests().pop()).toEqual(
@@ -572,7 +571,7 @@ describe('LifecycleSwitchPanel', () => {
 
 			fireEvent.click(screen.getByText('2', {selector: '.page-link'}));
 
-			deleteRow('Partner Lifecycle');
+			await deleteRow('Partner Lifecycle');
 
 			await waitFor(() =>
 				expect(getPageRequests().pop()).toEqual(
@@ -600,7 +599,7 @@ describe('LifecycleSwitchPanel', () => {
 			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
 
 			fireEvent.click(
-				within(screen.getByRole('dialog')).getByRole('button', {
+				await within(screen.getByRole('dialog')).findByRole('button', {
 					name: /^delete$/i,
 				})
 			);
@@ -622,7 +621,7 @@ describe('LifecycleSwitchPanel', () => {
 			fireEvent.click(screen.getByRole('menuitem', {name: /^delete$/i}));
 
 			fireEvent.click(
-				within(screen.getByRole('dialog')).getByRole('button', {
+				await within(screen.getByRole('dialog')).findByRole('button', {
 					name: /^delete$/i,
 				})
 			);

@@ -1,6 +1,5 @@
 import * as API from 'shared/api';
 import mockStore from 'test/mock-store';
-import ModalRenderer from 'shared/components/ModalRenderer';
 import React from 'react';
 import {
 	cleanup,
@@ -52,13 +51,14 @@ const ActionsProbe = ({
 	onShowDetails?: () => void;
 	onView?: () => void;
 }) => {
-	const {actions, manageNotificationsModal} = useLifecycleActions({
-		lifecycle,
-		onDefaultChange,
-		onDelete,
-		onShowDetails,
-		onView,
-	});
+	const {actions, deleteLifecycleModal, manageNotificationsModal} =
+		useLifecycleActions({
+			lifecycle,
+			onDefaultChange,
+			onDelete,
+			onShowDetails,
+			onView,
+		});
 
 	return (
 		<>
@@ -76,6 +76,8 @@ const ActionsProbe = ({
 				))}
 			</ul>
 
+			{deleteLifecycleModal}
+
 			{manageNotificationsModal}
 		</>
 	);
@@ -88,8 +90,6 @@ const LocationProbe = () => (
 const renderActions = (props: React.ComponentProps<typeof ActionsProbe>) =>
 	render(
 		<Provider store={mockStore()}>
-			<ModalRenderer />
-
 			<MemoryRouter initialEntries={['/workspace/23/123/lifecycle/1']}>
 				<ActionsProbe {...props} />
 
@@ -99,10 +99,7 @@ const renderActions = (props: React.ComponentProps<typeof ActionsProbe>) =>
 	);
 
 const getLabels = () =>
-	screen
-		.getAllByRole('button')
-		.filter((button) => !button.closest('.modal-renderer-root'))
-		.map(({textContent}) => textContent);
+	screen.getAllByRole('button').map(({textContent}) => textContent);
 
 describe('useLifecycleActions', () => {
 	beforeEach(() => {
@@ -278,9 +275,11 @@ describe('useLifecycleActions', () => {
 		const openDeleteModal = () =>
 			fireEvent.click(screen.getByRole('button', {name: /^delete$/i}));
 
-		const confirmDelete = () =>
+		const confirmDelete = async () =>
 			fireEvent.click(
-				within(getDialog()).getByRole('button', {name: /^delete$/i})
+				await within(getDialog()).findByRole('button', {
+					name: /^delete$/i,
+				})
 			);
 
 		const growthHub = {
@@ -337,7 +336,7 @@ describe('useLifecycleActions', () => {
 
 			openDeleteModal();
 
-			confirmDelete();
+			await confirmDelete();
 
 			await waitFor(() =>
 				expect(onDelete).toHaveBeenCalledWith(defaultLifecycle)
@@ -354,12 +353,15 @@ describe('useLifecycleActions', () => {
 			).toBeNull();
 		});
 
-		it('asks for confirmation with the lifecycle name in quotes', () => {
+		it('asks for confirmation with the lifecycle name in quotes', async () => {
 			renderActions({lifecycle: growthHub});
 
 			openDeleteModal();
 
-			expect(getDialog()).toHaveClass('modal-danger');
+			expect(
+				await screen.findByText(/delete "growth hub"\?/i)
+			).toBeInTheDocument();
+			expect(getDialog().parentElement).toHaveClass('modal-danger');
 			expect(getDialog()).toHaveTextContent(/delete "growth hub"\?/i);
 			expect(getDialog()).toHaveTextContent(
 				/delete the lifecycle "growth hub".+account data will not be removed/i
@@ -367,16 +369,20 @@ describe('useLifecycleActions', () => {
 			expect(API.lifecycle.deleteLifecycle).not.toHaveBeenCalled();
 		});
 
-		it('sends nothing when cancelled', () => {
+		it('sends nothing when cancelled', async () => {
 			renderActions({lifecycle: growthHub});
 
 			openDeleteModal();
 
 			fireEvent.click(
-				within(getDialog()).getByRole('button', {name: /cancel/i})
+				await within(getDialog()).findByRole('button', {
+					name: /cancel/i,
+				})
 			);
 
-			expect(screen.queryByRole('dialog')).toBeNull();
+			await waitFor(() =>
+				expect(screen.queryByRole('dialog')).toBeNull()
+			);
 			expect(API.lifecycle.deleteLifecycle).not.toHaveBeenCalled();
 		});
 
@@ -387,7 +393,7 @@ describe('useLifecycleActions', () => {
 
 			openDeleteModal();
 
-			confirmDelete();
+			await confirmDelete();
 
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledTimes(1);
 			expect(API.lifecycle.deleteLifecycle).toHaveBeenCalledWith({
@@ -424,7 +430,7 @@ describe('useLifecycleActions', () => {
 
 			openDeleteModal();
 
-			confirmDelete();
+			await confirmDelete();
 
 			await waitFor(() =>
 				expect(screen.getByTestId('location')).toHaveTextContent(
@@ -451,7 +457,7 @@ describe('useLifecycleActions', () => {
 
 			openDeleteModal();
 
-			confirmDelete();
+			await confirmDelete();
 
 			await waitFor(() =>
 				expect(addAlert).toHaveBeenCalledWith(
