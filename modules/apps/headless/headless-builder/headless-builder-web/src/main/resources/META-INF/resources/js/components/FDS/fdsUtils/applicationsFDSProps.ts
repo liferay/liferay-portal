@@ -24,6 +24,11 @@ export function getAPIApplicationsFDSProps(
 		},
 		emptyState: {
 			description: '',
+			filtered: {
+				filters: {symbol: 'search-state'},
+				search: {symbol: 'search-state'},
+				searchAndFilters: {symbol: 'search-state'},
+			},
 			symbol: 'empty-state',
 			title: Liferay.Language.get('no-api-application-found'),
 		},

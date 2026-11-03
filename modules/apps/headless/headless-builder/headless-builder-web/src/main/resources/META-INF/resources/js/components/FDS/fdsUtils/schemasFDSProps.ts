@@ -17,6 +17,11 @@ export function getAPISchemasFDSProps(
 		apiURL: urlPath,
 		emptyState: {
 			description: '',
+			filtered: {
+				filters: {symbol: 'search-state'},
+				search: {symbol: 'search-state'},
+				searchAndFilters: {symbol: 'search-state'},
+			},
 			symbol: 'empty-state',
 			title: Liferay.Language.get('no-api-schema-found'),
 		},
