@@ -12,6 +12,7 @@ import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 import com.puppycrawl.tools.checkstyle.utils.TokenUtil;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Shuyang Zhou
@@ -147,16 +148,16 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 	private void _checkAssignment(
 		DetailAST detailAST, DetailAST assigneeDetailAST) {
 
+		DetailAST variableDefinitionDetailAST = null;
+
 		if (_isThisDot(assigneeDetailAST)) {
-			assigneeDetailAST = assigneeDetailAST.getLastChild();
+			variableDefinitionDetailAST = _getFieldDefinitionDetailAST(
+				detailAST, assigneeDetailAST.getLastChild());
 		}
-
-		if (assigneeDetailAST.getType() != TokenTypes.IDENT) {
-			return;
+		else if (assigneeDetailAST.getType() == TokenTypes.IDENT) {
+			variableDefinitionDetailAST = getVariableDefinitionDetailAST(
+				detailAST, assigneeDetailAST.getText());
 		}
-
-		DetailAST variableDefinitionDetailAST = getVariableDefinitionDetailAST(
-			detailAST, assigneeDetailAST.getText());
 
 		if (variableDefinitionDetailAST != null) {
 			_checkVariable(detailAST, variableDefinitionDetailAST);
@@ -174,6 +175,41 @@ public class PrintWriterWrapperCheck extends BaseCheck {
 
 			log(detailAST, _MSG_WRITE_DIRECTLY);
 		}
+	}
+
+	private DetailAST _getFieldDefinitionDetailAST(
+		DetailAST detailAST, DetailAST nameDetailAST) {
+
+		if (nameDetailAST.getType() != TokenTypes.IDENT) {
+			return null;
+		}
+
+		DetailAST classDefinitionDetailAST = getParentWithTokenType(
+			detailAST, TokenTypes.CLASS_DEF, TokenTypes.ENUM_DEF,
+			TokenTypes.LITERAL_NEW, TokenTypes.RECORD_DEF);
+
+		if ((classDefinitionDetailAST == null) ||
+			(classDefinitionDetailAST.getType() == TokenTypes.LITERAL_NEW)) {
+
+			return null;
+		}
+
+		DetailAST objBlockDetailAST = classDefinitionDetailAST.findFirstToken(
+			TokenTypes.OBJBLOCK);
+
+		for (DetailAST variableDefinitionDetailAST :
+				getAllChildTokens(
+					objBlockDetailAST, false, TokenTypes.VARIABLE_DEF)) {
+
+			if (Objects.equals(
+					nameDetailAST.getText(),
+					getName(variableDefinitionDetailAST))) {
+
+				return variableDefinitionDetailAST;
+			}
+		}
+
+		return null;
 	}
 
 	private boolean _isPrintOnly(DetailAST variableDefinitionDetailAST) {
