@@ -94,9 +94,10 @@ public class DBCopyTablesProcess {
 
 			Statement statement = targetConnection.createStatement()) {
 
-			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
 			Map<String, List<String>> columnDefinitionsMap = new TreeMap<>(
 				String.CASE_INSENSITIVE_ORDER);
+
+			DatabaseMetaData databaseMetaData = sourceConnection.getMetaData();
 
 			try (ResultSet resultSet = databaseMetaData.getColumns(
 					sourceConnection.getCatalog(), sourceConnection.getSchema(),
@@ -109,7 +110,19 @@ public class DBCopyTablesProcess {
 						continue;
 					}
 
+					List<String> targetColumnNames = _targetColumnNamesMap.get(
+						tableName);
+
 					String columnName = resultSet.getString("COLUMN_NAME");
+
+					if ((targetColumnNames != null) &&
+						ListUtil.exists(
+							targetColumnNames,
+							targetColumnName -> StringUtil.equalsIgnoreCase(
+								targetColumnName, columnName))) {
+
+						continue;
+					}
 
 					String columnDefinition = StringBundler.concat(
 						columnName, " ",
@@ -117,9 +130,6 @@ public class DBCopyTablesProcess {
 							resultSet.getInt("COLUMN_SIZE"),
 							resultSet.getInt("DATA_TYPE"),
 							resultSet.getInt("DECIMAL_DIGITS")));
-
-					List<String> targetColumnNames = _targetColumnNamesMap.get(
-						tableName);
 
 					if (targetColumnNames == null) {
 						if (resultSet.getInt("NULLABLE") ==
@@ -130,15 +140,11 @@ public class DBCopyTablesProcess {
 
 						List<String> columnDefinitions =
 							columnDefinitionsMap.computeIfAbsent(
-								tableName, key -> new ArrayList<>());
+								tableName, newTableName -> new ArrayList<>());
 
 						columnDefinitions.add(columnDefinition);
 					}
-					else if (!ListUtil.exists(
-								targetColumnNames,
-								targetColumnName -> StringUtil.equalsIgnoreCase(
-									targetColumnName, columnName))) {
-
+					else {
 						statement.executeUpdate(
 							StringBundler.concat(
 								"alter table ", tableName, " add ",
