@@ -149,18 +149,19 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 
 	const lifecycle = openLifecycle ?? data;
 
-	const {actions, manageNotificationsModal} = useLifecycleActions({
-		lifecycle,
-		onDefaultChange: () => {
-			if (!openLifecycle) {
-				refetch();
-			}
+	const {actions, deleteLifecycleModal, manageNotificationsModal} =
+		useLifecycleActions({
+			lifecycle,
+			onDefaultChange: () => {
+				if (!openLifecycle) {
+					refetch();
+				}
 
-			onDefaultChange?.(lifecycleId);
-		},
-		onDelete,
-		onView,
-	});
+				onDefaultChange?.(lifecycleId);
+			},
+			onDelete,
+			onView,
+		});
 
 	const renderBody = () => {
 		if (!openLifecycle && loading) {
@@ -262,6 +263,8 @@ const LifecycleDetailsPanel: React.FC<ILifecycleDetailsPanelProps> = ({
 			</SidePanel.Header>
 
 			<SidePanel.Body className="p-0">{renderBody()}</SidePanel.Body>
+
+			{deleteLifecycleModal}
 
 			{manageNotificationsModal}
 		</>

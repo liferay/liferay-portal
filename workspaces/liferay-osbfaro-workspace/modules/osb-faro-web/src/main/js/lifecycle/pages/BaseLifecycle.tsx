@@ -202,12 +202,13 @@ const BaseLifecycle = () => {
 			})
 			.catch(noop);
 
-	const {actions, manageNotificationsModal} = useLifecycleActions({
-		lifecycle: openLifecycle,
-		onDefaultChange: () => changeDefault(lifecycle!.id),
-		onShowDetails: () =>
-			setPanelView({lifecycleId: lifecycle!.id, type: 'details'}),
-	});
+	const {actions, deleteLifecycleModal, manageNotificationsModal} =
+		useLifecycleActions({
+			lifecycle: openLifecycle,
+			onDefaultChange: () => changeDefault(lifecycle!.id),
+			onShowDetails: () =>
+				setPanelView({lifecycleId: lifecycle!.id, type: 'details'}),
+		});
 
 	const processing = lifecycle?.processedDate == null;
 
@@ -388,6 +389,8 @@ const BaseLifecycle = () => {
 				triggerRef={switchButtonRef}
 				view={panelView}
 			/>
+
+			{deleteLifecycleModal}
 
 			{manageNotificationsModal}
 		</BasePage>
