@@ -1,0 +1,27 @@
+diff --git a/freemarker/ext/jakarta/jsp/JspTagModelBase.java b/freemarker/ext/jakarta/jsp/JspTagModelBase.java
+index 2c5a642994804..69c903e9979e7 100644
+--- a/freemarker/ext/jakarta/jsp/JspTagModelBase.java
++++ b/freemarker/ext/jakarta/jsp/JspTagModelBase.java
+@@ -19,6 +19,7 @@
+ 
+ package freemarker.ext.jakarta.jsp;
+ 
++import java.beans.Introspector;
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
+ import java.math.BigDecimal;
+@@ -58,11 +59,9 @@ class JspTagModelBase {
+                 if (methodName.startsWith("set") && (methodName.length() > 3) &&
+                     Character.isUpperCase(methodName.charAt(3))) {
+ 
+-                    String fieldName =
+-                        methodName.substring(3, 4).toLowerCase()
+-                        + methodName.substring(4);
+-
+-                    propertySetters.put(fieldName, method);
++                    propertySetters.put(
++                        Introspector.decapitalize(methodName.substring(3)),
++                        method);
+                 }
+             }
+         }
