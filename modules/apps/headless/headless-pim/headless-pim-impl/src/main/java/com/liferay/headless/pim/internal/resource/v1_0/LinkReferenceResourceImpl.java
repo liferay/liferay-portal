@@ -156,6 +156,32 @@ public class LinkReferenceResourceImpl extends BaseLinkReferenceResourceImpl {
 					"method", "PUT"
 				).build();
 			}
+		).put(
+			"update",
+			() -> {
+				if (objectEntry.isInTrash() ||
+					!_hasPermission(objectEntry, ActionKeys.UPDATE)) {
+
+					return null;
+				}
+
+				return HashMapBuilder.put(
+					"href",
+					() -> {
+						ObjectDefinition objectDefinition =
+							objectEntry.getObjectDefinition();
+
+						return StringBundler.concat(
+							"/o", objectDefinition.getRESTContextPath(),
+							"/scopes/", objectEntry.getGroupId(),
+							"/by-external-reference-code/",
+							URLCodec.encodeURL(
+								objectEntry.getExternalReferenceCode()));
+					}
+				).put(
+					"method", "PATCH"
+				).build();
+			}
 		).build();
 	}
 

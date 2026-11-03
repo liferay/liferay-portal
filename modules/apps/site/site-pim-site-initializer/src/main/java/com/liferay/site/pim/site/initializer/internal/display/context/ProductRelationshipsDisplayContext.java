@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
+import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -142,6 +143,27 @@ public class ProductRelationshipsDisplayContext {
 					"/edit_content_item?objectEntryId={id}&redirect=",
 					themeDisplay.getURLCurrent())
 			).setIcon(
+				"pencil"
+			).setLabel(
+				LanguageUtil.get(_httpServletRequest, "edit")
+			).setMethod(
+				"get"
+			).setPermissionKey(
+				"update"
+			).build(
+				"edit"
+			),
+			FDSActionDropdownItemBuilder.setData(
+				HashMapBuilder.<String, Object>put(
+					"disableHeader", false
+				).build()
+			).setHref(
+				StringBundler.concat(
+					themeDisplay.getPortalURL(), themeDisplay.getPathMain(),
+					GroupConstants.CMS_FRIENDLY_URL,
+					"/edit_content_item?p_l_mode=read&p_p_state=",
+					LiferayWindowState.POP_UP, "&objectEntryId={id}")
+			).setIcon(
 				"view"
 			).setLabel(
 				LanguageUtil.get(_httpServletRequest, "view")
@@ -149,6 +171,10 @@ public class ProductRelationshipsDisplayContext {
 				"get"
 			).setPermissionKey(
 				"get"
+			).setTarget(
+				"modal-full-screen"
+			).setTitle(
+				LanguageUtil.get(_httpServletRequest, "view")
 			).build(
 				"view"
 			),
