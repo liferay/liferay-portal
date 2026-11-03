@@ -1517,6 +1517,8 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 			).build()
 		);
 
+		CETManager cetManager = Mockito.mock(CETManager.class);
+
 		FDSVisualizationModeCET fdsVisualizationModeCET = Mockito.mock(
 			FDSVisualizationModeCET.class);
 
@@ -1537,8 +1539,6 @@ public class CustomFDSSerializerTest extends BaseFDSSerializerTestCase {
 		).thenReturn(
 			"date"
 		);
-
-		CETManager cetManager = Mockito.mock(CETManager.class);
 
 		Mockito.when(
 			cetManager.getCET(
