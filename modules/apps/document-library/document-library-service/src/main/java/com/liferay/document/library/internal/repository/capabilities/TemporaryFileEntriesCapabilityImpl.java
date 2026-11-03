@@ -157,7 +157,7 @@ public class TemporaryFileEntriesCapabilityImpl
 		throws PortalException {
 
 		try {
-			Folder folder = _addTempFolder(temporaryFileEntriesScope);
+			Folder folder = _getTempFolder(temporaryFileEntriesScope);
 
 			return _documentRepository.getRepositoryFileEntries(
 				temporaryFileEntriesScope.getUserId(), folder.getFolderId(),
