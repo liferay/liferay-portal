@@ -80,88 +80,7 @@ definition {
 			dmDocumentTitle = "Document_1.doc");
 	}
 
-	@description = "This case covers LPS-201021. Site administrator have permissions to add an external video shortcut."
-	@priority = 4
-	test CanAddExternalVideoShortcutAsSiteAdministrator {
-		HeadlessSite.addSite(siteName = "Site Name");
 
-		JSONUser.addUser(
-			userEmailAddress = "user@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.addUserToSite(
-			groupName = "Site Name",
-			userEmailAddress = "user@liferay.com");
-
-		JSONRole.assignSiteRoleToUser(
-			groupName = "Site Name",
-			roleTitle = "Site Administrator",
-			userEmailAddress = "user@liferay.com");
-
-		ApplicationsMenu.gotoPortlet(
-			category = "Users",
-			panel = "Control Panel",
-			portlet = "Users and Organizations");
-
-		LexiconEntry.viewEntryName(rowEntry = "userfn userln");
-
-		User.impersonateCP(userName = "userfn");
-
-		UserBar.gotoMySite(siteName = "Site Name");
-
-		ProductMenu.gotoPortlet(
-			category = "Content & Data",
-			portlet = "Documents and Media");
-
-		DMNavigator.gotoAddDocumentTypeCP(dmDocumentTypeName = "External Video Shortcut");
-	}
-
-	@description = "This is a test for LPS-128366, it ensures that the folder permissions are removed after removing permissions during folder addition."
-	@priority = 3
-	@refactordone
-	test CanAddFolderWithViewOnlyByOwnerPermissions {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconEntry.changeDisplayStyle(displayStyle = "list");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMFolder.addPG(
-			addOrRemoveViewPermission = "Remove",
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			permissionDefinitionKeyList = "ADD_SUBFOLDER,ADD_SHORTCUT,ADD_DOCUMENT,SUBSCRIBE",
-			roleTitle = "Site Member",
-			viewableBy = "Owner");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMFolder.viewFolderPermissionsPG(dmFolder = "DM Folder Name");
-
-		for (var permissionDefinitionKey : list "CONFIGURATION_PERMISSIONS_ADD_SUBFOLDER_CHECKBOX,CONFIGURATION_PERMISSIONS_ADD_SHORTCUT_CHECKBOX,CONFIGURATION_PERMISSIONS_ADD_DOCUMENT_CHECKBOX,CONFIGURATION_PERMISSIONS_SUBSCRIBE_CHECKBOX,CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX") {
-			PermissionsInline.viewPermissionsRemoved(
-				permissionDefinitionKey = ${permissionDefinitionKey},
-				roleTitle = "Site Member");
-		}
-
-		for (var permissionDefinitionKey : list "CONFIGURATION_PERMISSIONS_VIEW_CHECKBOX,CONFIGURATION_PERMISSIONS_ACCESS_CHECKBOX") {
-			PermissionsInline.viewPermissionsRemoved(
-				permissionDefinitionKey = ${permissionDefinitionKey},
-				roleTitle = "Guest");
-		}
-	}
 
 	@description = "This is a test for LPS-90864. It checks that a site member can add shortcut to folder with permissions."
 	@priority = 4
@@ -411,114 +330,7 @@ definition {
 		Notifications.viewNoNotifications(activePanel = "Notifications");
 	}
 
-	@description = "This test covers LPS-118268. It ensures that the user without document view permission can not view the document via the display page."
-	@priority = 4
-	@refactordone
-	test CannotViewDocumentInDisplayPageWithoutPermissions {
-		property portal.acceptance = "true";
 
-		JSONLayoutpagetemplate.addDisplayPageTemplateEntry(
-			contentType = "Document",
-			displayPageTemplateEntryName = "Display Page Name",
-			groupName = "Guest",
-			subType = "Basic Document");
-
-		DisplayPageTemplatesAdmin.openDisplayPagesAdmin(siteURLKey = "guest");
-
-		DisplayPageTemplatesAdmin.gotoDisplayPage(displayPageName = "Display Page Name");
-
-		PageEditor.addWidget(portletName = "Documents and Media");
-
-		PageEditor.publish();
-
-		DisplayPageTemplatesAdmin.markDisplayPageAsDefault(displayPageName = "Display Page Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentFile = "Document_1.jpg",
-			dmDocumentTitle = "DM Document Title");
-
-		var dmFileEntryId = JSONDocument.getFileEntryId(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "guest");
-
-		DMNavigator.gotoDocumentPermissionsCP(dmDocumentTitle = "DM Document Title");
-
-		PermissionsInline.addOrRemoveViewPermissionFromAllRoles(
-			addOrRemoveViewPermission = "Remove",
-			roleList = "guest");
-
-		User.logoutPG();
-
-		Navigator.openWithAppendToBaseURL(urlAppend = "group/guest/d/${dmFileEntryId}");
-
-		AssertElementNotPresent(
-			key_dmDocumentTitle = "DM Document Title",
-			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE");
-	}
-
-	@priority = 5
-	@refactordone
-	test CannotViewMultipleDocumentsAsSiteMember {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		HeadlessSite.addSite(siteName = "Site Name");
-
-		JSONUser.addUserToSite(
-			groupName = "Site Name",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 2,
-			groupName = "Site Name",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		Navigator.gotoSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		DMDocument.enableActionsMenuOnPortlet();
-
-		Refresh();
-
-		DMDocument.addMultiplePG(
-			dmDocumentFileList = "Document_1.jpeg,Document_2.docx,Document_3.mp3",
-			viewableBy = "Owner");
-
-		User.logoutPG();
-
-		User.loginUserPG(
-			password = PropsUtil.get("default.admin.password"),
-			userEmailAddress = "userea@liferay.com");
-
-		Navigator.gotoSitePage(
-			pageName = "Documents and Media Page",
-			siteName = "Site Name");
-
-		for (var dmDocumentTitle : list "Document_1.jpeg,Document_2.docx,Document_3.mp3") {
-			DMDocument.cannotViewCP(dmDocumentTitle = ${dmDocumentTitle});
-		}
-	}
 
 	@priority = 5
 	@refactordone
@@ -648,68 +460,6 @@ definition {
 			dmDocumentTitle = "DM Document Title");
 	}
 
-	@description = "This test covers LPS-100096. It ensures that a document type cannot be edited without permissions."
-	@priority = 4
-	@refactordone
-	test EntryCanNotBeEditedWithoutPermissions {
-		property portal.acceptance = "true";
-
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "Userfn",
-			userLastName = "Userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONRole.addRegularRole(roleKey = "Depot Regrole Name");
-
-		JSONRole.assignRoleToUser(
-			roleTitle = "Depot Regrole Name",
-			userEmailAddress = "userea@liferay.com");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "VIEW_CONTROL_PANEL",
-			resourceName = 90,
-			roleTitle = "Depot Regrole Name");
-
-		Permissions.definePermissionViaJSONAPI(
-			resourceAction = "ACCESS_IN_CONTROL_PANEL",
-			resourceName = "com_liferay_document_library_web_portlet_DLAdminPortlet",
-			roleTitle = "Depot Regrole Name");
-
-		DMNavigator.openDocumentTypesAdmin(siteURLKey = "guest");
-
-		DMDocumentType.add(
-			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text",
-			dmDocumentTypeName = "DM Document Type Name");
-
-		LexiconEntry.gotoEntryMenuItem(
-			menuItem = "Edit",
-			rowEntry = "DM Document Type Name");
-
-		WaitForSPARefresh();
-
-		var documentTypeURL = selenium.getLocation();
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		DMNavigator.openDocumentTypesAdmin(siteURLKey = "guest");
-
-		LexiconEntry.viewNoEntryMenu(rowEntry = "DM Document Type Name");
-
-		Navigator.openSpecificURL(url = ${documentTypeURL});
-
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#ERROR",
-			value1 = "You do not have the required permissions.");
-	}
 
 	@description = "This is a test for LPS-136833. It checks that a guest cannot add a document in a folder without permissions."
 	@priority = 3
@@ -806,39 +556,6 @@ definition {
 		DMFolder.viewNoSubscribe();
 	}
 
-	@description = "This is a test for LPS-136836. It checks that a guest cannot update comments in a file without permissions."
-	@priority = 3
-	test GuestCannotUpdateComments {
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		JSONDocument.addComment(
-			commentBody = "DM Document Comment",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest");
-
-		User.logoutPG();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoDocumentPG(dmDocumentTitle = "DM Document Title");
-
-		Comments.viewNoActions(entryComment = "DM Document Comment");
-	}
 
 	@description = "This is a test for LPS-136837. It checks that a guest cannot update a folder without permissions."
 	@priority = 3
@@ -1194,65 +911,6 @@ definition {
 		ManagementBar.viewItemsDisabled(textList = "trash");
 	}
 
-	@description = "This is a test for LPS-136847. It checks that a site member cannot override a checkout process without permissions."
-	@priority = 3
-	test SiteMemberCannotOverrideCheckout {
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONUser.addUserToSite(
-			groupName = "Guest",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.enableActionsMenuOnPortlet();
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMDocument.checkoutPG(dmDocumentTitle = "DM Document Title");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		LexiconCard.viewMenuItemNotPresent(
-			card = "DM Document Title",
-			item = "Cancel Checkout");
-
-		DMNavigator.gotoDocumentPG(dmDocumentTitle = "DM Document Title");
-
-		DMDocument.gotoMenuItemViaInfoPanel();
-
-		MenuItem.viewNotPresent(menuItem = "Cancel Checkout");
-	}
 
 	@description = "This is a test for LPS-136848. It checks that a site member cannot subscribe to a folder without permissions."
 	@priority = 3
@@ -1306,56 +964,6 @@ definition {
 		DMFolder.viewNoSubscribe();
 	}
 
-	@description = "This is a test for LPS-136849. It checks that a site member cannot update comments without permissions."
-	@priority = 3
-	test SiteMemberCannotUpdateComments {
-		JSONUser.addUser(
-			userEmailAddress = "userea@liferay.com",
-			userFirstName = "userfn",
-			userLastName = "userln",
-			userScreenName = "usersn");
-
-		JSONUser.setFirstPassword(
-			agreeToTermsAndAnswerReminderQuery = "true",
-			requireReset = "false",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONUser.addUserToSite(
-			groupName = "Guest",
-			userEmailAddress = "userea@liferay.com");
-
-		JSONLayout.addPublicLayout(
-			groupName = "Guest",
-			layoutName = "Documents and Media Page");
-
-		JSONLayout.addWidgetToPublicLayout(
-			column = 1,
-			groupName = "Guest",
-			layoutName = "Documents and Media Page",
-			widgetName = "Documents and Media");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest",
-			mimeType = "text/plain",
-			sourceFileName = "Document_1.txt");
-
-		JSONDocument.addComment(
-			commentBody = "DM Document Comment",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Guest");
-
-		User.logoutAndLoginPG(
-			userLoginEmailAddress = "userea@liferay.com",
-			userLoginFullName = "userfn userln");
-
-		Navigator.gotoPage(pageName = "Documents and Media Page");
-
-		DMNavigator.gotoDocumentPG(dmDocumentTitle = "DM Document Title");
-
-		Comments.viewNoActions(entryComment = "DM Document Comment");
-	}
 
 	@description = "This is a test for LPS-136843. It checks that a site member cannot update the permissions of a file without permissions."
 	@priority = 3
