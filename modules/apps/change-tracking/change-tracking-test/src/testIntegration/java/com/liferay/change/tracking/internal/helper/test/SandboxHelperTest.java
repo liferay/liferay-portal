@@ -17,9 +17,12 @@ import com.liferay.change.tracking.service.CTCollectionTemplateLocalService;
 import com.liferay.change.tracking.service.CTPreferencesLocalService;
 import com.liferay.portal.configuration.test.util.CompanyConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.change.tracking.CTCollectionThreadLocal;
+import com.liferay.portal.kernel.json.JSONFactory;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -27,6 +30,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -35,10 +39,14 @@ import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.mail.MailMessage;
+import com.liferay.portal.test.mail.MailServiceTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
+import com.liferay.portal.test.rule.SynchronousMailTestRule;
 
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Assert;
 import org.junit.ClassRule;
@@ -55,7 +63,8 @@ public class SandboxHelperTest {
 	@ClassRule
 	@Rule
 	public static final AggregateTestRule aggregateTestRule =
-		new LiferayIntegrationTestRule();
+		new AggregateTestRule(
+			new LiferayIntegrationTestRule(), SynchronousMailTestRule.INSTANCE);
 
 	@Test
 	public void testSandbox() throws Exception {
@@ -203,6 +212,41 @@ public class SandboxHelperTest {
 					publisherUser.getCompanyId(),
 					RoleConstants.PUBLICATIONS_USER, publisherUser.getUserId(),
 					false));
+
+			List<UserNotificationEvent> userNotificationEvents =
+				_userNotificationEventLocalService.getUserNotificationEvents(
+					publisherUser.getUserId());
+
+			Assert.assertEquals(
+				userNotificationEvents.toString(), 1,
+				userNotificationEvents.size());
+
+			UserNotificationEvent userNotificationEvent =
+				userNotificationEvents.get(0);
+
+			JSONObject payloadJSONObject = _jsonFactory.createJSONObject(
+				userNotificationEvent.getPayload());
+
+			Assert.assertEquals(
+				ctCollection.getCtCollectionId(),
+				payloadJSONObject.getLong("classPK"));
+			Assert.assertEquals(
+				PublicationRoleConstants.ROLE_PUBLISHER,
+				payloadJSONObject.getInt("roleValue"));
+			Assert.assertEquals(
+				user.getUserId(), payloadJSONObject.getLong("userId"));
+
+			Assert.assertEquals(1, MailServiceTestUtil.getInboxSize());
+
+			MailMessage mailMessage = MailServiceTestUtil.getLastMailMessage();
+
+			String to = mailMessage.getFirstHeaderValue("To");
+
+			Assert.assertTrue(to.contains(publisherUser.getEmailAddress()));
+
+			String body = mailMessage.getBody();
+
+			Assert.assertTrue(body.contains(ctCollection.getName()));
 		}
 	}
 
@@ -291,6 +335,9 @@ public class SandboxHelperTest {
 	private GroupLocalService _groupLocalService;
 
 	@Inject
+	private JSONFactory _jsonFactory;
+
+	@Inject
 	private Portal _portal;
 
 	@Inject
@@ -301,5 +348,9 @@ public class SandboxHelperTest {
 
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@Inject
+	private UserNotificationEventLocalService
+		_userNotificationEventLocalService;
 
 }
