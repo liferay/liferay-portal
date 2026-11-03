@@ -613,8 +613,7 @@ public class ExportImportHelperUtilTest {
 			PortletDataHandler portletDataHandler =
 				portlet.getPortletDataHandlerInstance();
 
-			Assert.assertTrue(
-				portlet.getPortletId(), portletDataHandler.isBatch());
+			Assert.assertTrue(portletDataHandler.isBatch());
 		}
 	}
 
