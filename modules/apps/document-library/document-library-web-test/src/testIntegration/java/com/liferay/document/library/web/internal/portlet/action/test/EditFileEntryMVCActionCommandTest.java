@@ -34,17 +34,24 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.PortletConfigFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionRequest;
 import com.liferay.portal.kernel.test.portlet.MockLiferayPortletActionResponse;
 import com.liferay.portal.kernel.test.portlet.MockPortletSession;
@@ -315,6 +322,59 @@ public class EditFileEntryMVCActionCommandTest {
 			_group.getGroupId(), tempFileEntry1.getFolderId(), "image (1).jpg");
 
 		Assert.assertEquals("image (1)", actualFileEntry.getTitle());
+	}
+
+	@Test
+	@TestInfo("LPD-113625")
+	public void testProcessActionAddMultipleFileEntriesViewableByOwner()
+		throws Exception {
+
+		FileEntry tempFileEntry1 = TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(), _TEMP_FOLDER_NAME,
+			TempFileEntryUtil.getTempFileName("test.jpg"), _getInputStream(),
+			ContentTypes.IMAGE_JPEG);
+		FileEntry tempFileEntry2 = TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), TestPropsValues.getUserId(), _TEMP_FOLDER_NAME,
+			TempFileEntryUtil.getTempFileName("test.gif"), _getInputStream(),
+			ContentTypes.IMAGE_GIF);
+
+		_processAction(
+			_getMockLiferayPortletActionRequest(
+				HashMapBuilder.putAll(
+					_getParameters(
+						Constants.ADD_MULTIPLE, tempFileEntry1.getFolderId(),
+						tempFileEntry1.getRepositoryId(),
+						new String[] {
+							tempFileEntry1.getFileName(),
+							tempFileEntry2.getFileName()
+						})
+				).put(
+					"inputPermissionsViewRole",
+					new String[] {RoleConstants.OWNER}
+				).build()),
+			new MockLiferayPortletActionResponse());
+
+		for (String fileName : new String[] {"test.gif", "test.jpg"}) {
+			FileEntry fileEntry = _dlAppLocalService.getFileEntryByFileName(
+				_group.getGroupId(), tempFileEntry1.getFolderId(), fileName);
+
+			for (String roleName :
+					new String[] {
+						RoleConstants.GUEST, RoleConstants.SITE_MEMBER
+					}) {
+
+				Role role = RoleLocalServiceUtil.getRole(
+					_group.getCompanyId(), roleName);
+
+				Assert.assertFalse(
+					fileName + " " + roleName,
+					ResourcePermissionLocalServiceUtil.hasResourcePermission(
+						_group.getCompanyId(), DLFileEntry.class.getName(),
+						ResourceConstants.SCOPE_INDIVIDUAL,
+						String.valueOf(fileEntry.getFileEntryId()),
+						role.getRoleId(), ActionKeys.VIEW));
+			}
+		}
 	}
 
 	@Test
