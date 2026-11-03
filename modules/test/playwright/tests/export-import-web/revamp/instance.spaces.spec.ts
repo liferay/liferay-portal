@@ -35,9 +35,7 @@ test(
 		globalMenuPage,
 		page,
 	}) => {
-		const space = await apiHelpers.headlessAssetLibrary.createAssetLibrary({
-			name: getRandomString(),
-		});
+		const space = await apiHelpers.headlessAssetLibrary.createSpace();
 
 		const objectEntryFolder =
 			await apiHelpers.objectFolder.createObjectEntryFolder({
