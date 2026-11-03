@@ -11,6 +11,7 @@ import com.liferay.asset.kernel.model.AssetCategory;
 import com.liferay.asset.kernel.model.AssetEntry;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.asset.kernel.model.AssetVocabulary;
+import com.liferay.asset.kernel.service.AssetEntryLocalService;
 import com.liferay.asset.kernel.service.AssetVocabularyLocalService;
 import com.liferay.asset.kernel.service.persistence.AssetEntryQuery;
 import com.liferay.asset.list.asset.entry.provider.AssetListAssetEntryProvider;
@@ -49,6 +50,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -848,6 +850,50 @@ public class AssetListAssetEntryProviderTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112512")
+	public void testGetDynamicAssetEntriesByDoesNotContainsAnyKeywordsFromDepotEntry()
+		throws Exception {
+
+		_depotEntry = _addDepotEntry();
+
+		FileEntry fileEntry1 = _addFileEntry(
+			_depotEntry.getGroupId(), "Text " + RandomTestUtil.randomString());
+		FileEntry fileEntry2 = _addFileEntry(
+			_depotEntry.getGroupId(), "Text " + RandomTestUtil.randomString());
+
+		_addFileEntry(
+			_depotEntry.getGroupId(), "Image " + RandomTestUtil.randomString());
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_depotEntry.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				UnicodePropertiesBuilder.create(
+					true
+				).put(
+					"anyAssetType", true
+				).put(
+					"filters",
+					String.valueOf(
+						AssetListTestUtil.getFiltersJSONArray(
+							AssetListTestUtil.getKeywordsFilterJSONObject(
+								"not-contains", "any", "Image")))
+				).put(
+					"groupIds", String.valueOf(_depotEntry.getGroupId())
+				).buildString(),
+				_serviceContext);
+
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+				null, null, StringPool.BLANK,
+				String.valueOf(TestPropsValues.getUserId()), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			2, _getAssetEntry(fileEntry1), _getAssetEntry(fileEntry2));
+	}
+
+	@Test
 	public void testGetDynamicAssetEntriesByKeywords() throws Exception {
 		JournalArticle journalArticle1 = JournalTestUtil.addArticle(
 			_group.getGroupId(),
@@ -883,6 +929,38 @@ public class AssetListAssetEntryProviderTest {
 				String.valueOf(TestPropsValues.getUserId()), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS),
 			1, _getAssetEntry(journalArticle1));
+	}
+
+	@Test
+	@TestInfo("LPD-112512")
+	public void testGetDynamicAssetEntriesFromDepotEntry() throws Exception {
+		_depotEntry = _addDepotEntry();
+
+		JournalArticle depotJournalArticle = JournalTestUtil.addArticle(
+			_depotEntry.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		FileEntry depotFileEntry = _addFileEntry(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+
+		JournalArticle journalArticle = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+		_assertAssetListEntryResults(
+			_getDepotDynamicAssetEntriesInfoPage(
+				false, _depotEntry.getGroupId(), _group.getGroupId()),
+			2, _getAssetEntry(depotJournalArticle),
+			_getAssetEntry(journalArticle));
+		_assertAssetListEntryResults(
+			_getDepotDynamicAssetEntriesInfoPage(false, _group.getGroupId()), 1,
+			_getAssetEntry(journalArticle));
+
+		_assertAssetListEntryResults(
+			_getDepotDynamicAssetEntriesInfoPage(
+				true, _depotEntry.getGroupId()),
+			2, _getAssetEntry(depotJournalArticle),
+			_getAssetEntry(depotFileEntry));
 	}
 
 	@Test
@@ -1491,6 +1569,88 @@ public class AssetListAssetEntryProviderTest {
 				String.valueOf(TestPropsValues.getUserId()), QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS),
 			1, _getAssetEntry(journalArticle1));
+	}
+
+	@Test
+	@TestInfo("LPD-112512")
+	public void testGetManualAssetEntriesFromDepotEntry() throws Exception {
+		_depotEntry = _addDepotEntry();
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			_depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		AssetEntry assetEntry = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_depotEntry.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, _serviceContext);
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry.getEntryId()},
+			SegmentsEntryConstants.ID_DEFAULT, _serviceContext);
+
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+				null, null, StringPool.BLANK,
+				String.valueOf(TestPropsValues.getUserId()), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS),
+			1, assetEntry);
+	}
+
+	@Test
+	@TestInfo("LPD-112512")
+	public void testGetManualAssetEntriesFromDepotEntryWithDeletedAssetEntrySelection()
+		throws Exception {
+
+		_depotEntry = _addDepotEntry();
+
+		AssetEntry assetEntry1 = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_depotEntry.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+		AssetEntry assetEntry2 = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_depotEntry.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+		AssetEntry assetEntry3 = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_depotEntry.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_depotEntry.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, _serviceContext);
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {
+				assetEntry1.getEntryId(), assetEntry2.getEntryId(),
+				assetEntry3.getEntryId()
+			},
+			SegmentsEntryConstants.ID_DEFAULT, _serviceContext);
+
+		_assetListEntryLocalService.deleteAssetEntrySelection(
+			assetListEntry.getAssetListEntryId(),
+			SegmentsEntryConstants.ID_DEFAULT, 1);
+
+		InfoPage<AssetEntry> infoPage =
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+				null, null, StringPool.BLANK,
+				String.valueOf(TestPropsValues.getUserId()), QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+		Assert.assertEquals(
+			Arrays.asList(assetEntry1, assetEntry3), infoPage.getPageItems());
 	}
 
 	@Test
@@ -2114,6 +2274,26 @@ public class AssetListAssetEntryProviderTest {
 					assetEntry.getEntryId() == assetEntry3.getEntryId()));
 	}
 
+	private DepotEntry _addDepotEntry() throws Exception {
+		return _depotEntryLocalService.addDepotEntry(
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), RandomTestUtil.randomString()
+			).build(),
+			DepotConstants.TYPE_ASSET_LIBRARY,
+			ServiceContextTestUtil.getServiceContext());
+	}
+
+	private FileEntry _addFileEntry(long groupId, String title)
+		throws Exception {
+
+		return DLAppTestUtil.addFileEntryWithWorkflow(
+			TestPropsValues.getUserId(), groupId, 0, StringPool.BLANK, title,
+			true, ServiceContextTestUtil.getServiceContext(groupId));
+	}
+
 	private JournalArticle _addJournalArticle(long[] assetCategoryIds)
 		throws Exception {
 
@@ -2289,6 +2469,11 @@ public class AssetListAssetEntryProviderTest {
 			_getAssetEntry(journalArticle2));
 	}
 
+	private AssetEntry _getAssetEntry(FileEntry fileEntry) {
+		return _assetEntryLocalService.fetchEntry(
+			DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+	}
+
 	private AssetEntry _getAssetEntry(JournalArticle journalArticle)
 		throws Exception {
 
@@ -2311,6 +2496,43 @@ public class AssetListAssetEntryProviderTest {
 
 		return assetListEntrySegmentsEntryRel.
 			getAssetListEntrySegmentsEntryRelId();
+	}
+
+	private InfoPage<AssetEntry> _getDepotDynamicAssetEntriesInfoPage(
+			boolean anyAssetType, long... groupIds)
+		throws Exception {
+
+		UnicodePropertiesBuilder.UnicodePropertiesWrapper
+			unicodePropertiesWrapper = UnicodePropertiesBuilder.create(
+				true
+			).put(
+				"groupIds", StringUtil.merge(groupIds)
+			);
+
+		if (anyAssetType) {
+			unicodePropertiesWrapper.put("anyAssetType", true);
+		}
+		else {
+			unicodePropertiesWrapper.put(
+				"anyAssetType",
+				String.valueOf(_portal.getClassNameId(JournalArticle.class))
+			).put(
+				"classNameIds", JournalArticle.class.getName()
+			);
+		}
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_depotEntry.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				unicodePropertiesWrapper.buildString(), _serviceContext);
+
+		return _assetListAssetEntryProvider.getAssetEntriesInfoPage(
+			assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+			null, null, StringPool.BLANK,
+			String.valueOf(TestPropsValues.getUserId()), QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS);
 	}
 
 	private String _getTypeSettings(JSONObject... filterJSONObjects) {
@@ -2348,6 +2570,9 @@ public class AssetListAssetEntryProviderTest {
 		return new String(
 			FileUtil.getBytes(getClass(), "dependencies/" + fileName));
 	}
+
+	@Inject
+	private AssetEntryLocalService _assetEntryLocalService;
 
 	@Inject
 	private AssetListAssetEntryProvider _assetListAssetEntryProvider;
