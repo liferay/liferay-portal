@@ -24,9 +24,12 @@ import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.constants.TestDataConstants;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -84,6 +87,79 @@ public class FileShortcutStagedModelDataHandlerTest
 
 			Assert.assertNull(exportedFileShortcut);
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-113633")
+	public void testFileEntryInAnotherGroup() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		try {
+			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+				null, TestPropsValues.getUserId(), group.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				RandomTestUtil.randomString() + ".txt",
+				ContentTypes.TEXT_PLAIN, RandomTestUtil.randomBytes(), null,
+				null, null,
+				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+			FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
+				null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+				fileEntry.getFileEntryId(),
+				ServiceContextTestUtil.getServiceContext(
+					stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+			exportImportStagedModel(fileShortcut);
+
+			DLFileShortcut importedDLFileShortcut =
+				DLFileShortcutLocalServiceUtil.getDLFileShortcutByUuidAndGroupId(
+					fileShortcut.getUuid(), liveGroup.getGroupId());
+
+			Assert.assertEquals(
+				fileEntry.getFileEntryId(),
+				importedDLFileShortcut.getToFileEntryId());
+		}
+		finally {
+			GroupLocalServiceUtil.deleteGroup(group);
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113633")
+	public void testUpdateFileShortcutTarget() throws Exception {
+		FileEntry fileEntry1 = _addFileEntry();
+		FileEntry fileEntry2 = _addFileEntry();
+
+		FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
+			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			fileEntry1.getFileEntryId(),
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		exportImportStagedModel(fileShortcut);
+
+		fileShortcut = DLAppLocalServiceUtil.updateFileShortcut(
+			TestPropsValues.getUserId(), fileShortcut.getFileShortcutId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			fileEntry2.getFileEntryId(),
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId(), TestPropsValues.getUserId()));
+
+		exportImportStagedModel(fileShortcut);
+
+		DLFileShortcut importedDLFileShortcut =
+			DLFileShortcutLocalServiceUtil.getDLFileShortcutByUuidAndGroupId(
+				fileShortcut.getUuid(), liveGroup.getGroupId());
+
+		FileEntry importedFileEntry2 =
+			DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+				fileEntry2.getUuid(), liveGroup.getGroupId());
+
+		Assert.assertEquals(
+			importedFileEntry2.getFileEntryId(),
+			importedDLFileShortcut.getToFileEntryId());
 	}
 
 	@Override
@@ -194,4 +270,14 @@ public class FileShortcutStagedModelDataHandlerTest
 			folder.getUuid(), group.getGroupId());
 	}
 
+
+	private FileEntry _addFileEntry() throws Exception {
+		return DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(), null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId()));
+	}
 }
