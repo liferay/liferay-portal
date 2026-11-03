@@ -43,7 +43,9 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.ServiceLoader;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -833,8 +835,40 @@ public class DBCopyTablesProcessTest {
 
 		_runDBCopyTablesProcess();
 
+		_assertColumnType("charColumn", "character varying(10)");
+
+		if (_sourceDB.getDBType() == DBType.ORACLE) {
+			_assertColumnType("id", "numeric(30,0)");
+		}
+		else {
+			_assertColumnType("id", "integer");
+		}
+
 		_assertColumnType("testColumn", "character varying(75) not null");
 
+		try (Connection connection = _targetDataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select attname from pg_attribute where attrelid = " +
+					"?::regclass and attnum > 0 order by attnum")) {
+
+			preparedStatement.setString(1, _targetTableName);
+
+			List<String> columnNames = new ArrayList<>();
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				while (resultSet.next()) {
+					columnNames.add(resultSet.getString("attname"));
+				}
+			}
+
+			Assert.assertEquals(
+				Arrays.asList("id", "charcolumn", "testcolumn"), columnNames);
+		}
+
+		_assertValues(
+			"charColumn", value -> null, new Object[_TABLE_SIZE],
+			Function.identity());
 		_assertValues(
 			"testColumn", Function.identity(), values, Function.identity());
 	}
