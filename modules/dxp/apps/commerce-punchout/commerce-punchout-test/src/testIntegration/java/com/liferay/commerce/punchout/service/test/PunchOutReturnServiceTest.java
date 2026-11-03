@@ -115,12 +115,14 @@ public class PunchOutReturnServiceTest {
 			Assert.assertNull(
 				_punchOutReturnService.returnToPunchOutVendor(
 					_commerceOrder, _getURL("/redirect")));
+
 			Assert.assertEquals(1, _requestsCount.get());
 
 			Assert.assertEquals(
 				_REDIRECT_URL,
 				_punchOutReturnService.returnToPunchOutVendor(
 					_commerceOrder, _getURL("/return")));
+
 			Assert.assertEquals(2, _requestsCount.get());
 		}
 	}
