@@ -46,6 +46,16 @@ public class FieldSetSerDes {
 
 		sb.append("{");
 
+		if (fieldSet.getCollapsed() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"collapsed\": ");
+
+			sb.append(fieldSet.getCollapsed());
+		}
+
 		if (fieldSet.getConfigurationRole() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -124,6 +134,13 @@ public class FieldSetSerDes {
 
 		Map<String, String> map = new TreeMap<>();
 
+		if (fieldSet.getCollapsed() == null) {
+			map.put("collapsed", null);
+		}
+		else {
+			map.put("collapsed", String.valueOf(fieldSet.getCollapsed()));
+		}
+
 		if (fieldSet.getConfigurationRole() == null) {
 			map.put("configurationRole", null);
 		}
@@ -173,7 +190,10 @@ public class FieldSetSerDes {
 
 		@Override
 		protected boolean parseMaps(String jsonParserFieldName) {
-			if (Objects.equals(jsonParserFieldName, "configurationRole")) {
+			if (Objects.equals(jsonParserFieldName, "collapsed")) {
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "configurationRole")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -196,7 +216,12 @@ public class FieldSetSerDes {
 			FieldSet fieldSet, String jsonParserFieldName,
 			Object jsonParserFieldValue) {
 
-			if (Objects.equals(jsonParserFieldName, "configurationRole")) {
+			if (Objects.equals(jsonParserFieldName, "collapsed")) {
+				if (jsonParserFieldValue != null) {
+					fieldSet.setCollapsed((Boolean)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "configurationRole")) {
 				if (jsonParserFieldValue != null) {
 					fieldSet.setConfigurationRole(
 						FieldSet.ConfigurationRole.create(
@@ -319,4 +344,4 @@ public class FieldSetSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-859182732
+// LIFERAY-REST-BUILDER-HASH:1727938869

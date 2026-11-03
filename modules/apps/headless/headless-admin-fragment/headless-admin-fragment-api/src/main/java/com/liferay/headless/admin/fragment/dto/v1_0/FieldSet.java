@@ -63,6 +63,51 @@ public class FieldSet implements Serializable {
 	}
 
 	@io.swagger.v3.oas.annotations.media.Schema(
+		description = "Whether the field set is collapsed by default in the page editor's configuration panel."
+	)
+	public Boolean getCollapsed() {
+		if (_collapsedSupplier != null) {
+			collapsed = _collapsedSupplier.get();
+
+			_collapsedSupplier = null;
+		}
+
+		return collapsed;
+	}
+
+	public void setCollapsed(Boolean collapsed) {
+		this.collapsed = collapsed;
+
+		_collapsedSupplier = null;
+	}
+
+	@JsonIgnore
+	public void setCollapsed(
+		UnsafeSupplier<Boolean, Exception> collapsedUnsafeSupplier) {
+
+		_collapsedSupplier = () -> {
+			try {
+				return collapsedUnsafeSupplier.get();
+			}
+			catch (RuntimeException runtimeException) {
+				throw runtimeException;
+			}
+			catch (Exception exception) {
+				throw new RuntimeException(exception);
+			}
+		};
+	}
+
+	@GraphQLField(
+		description = "Whether the field set is collapsed by default in the page editor's configuration panel."
+	)
+	@JsonProperty(access = JsonProperty.Access.READ_WRITE)
+	protected Boolean collapsed;
+
+	@JsonIgnore
+	private Supplier<Boolean> _collapsedSupplier;
+
+	@io.swagger.v3.oas.annotations.media.Schema(
 		description = "The role of the field set in the page editor's configuration panel."
 	)
 	@JsonGetter("configurationRole")
@@ -280,6 +325,18 @@ public class FieldSet implements Serializable {
 		StringBundler sb = new StringBundler();
 
 		sb.append("{");
+
+		Boolean collapsed = getCollapsed();
+
+		if (collapsed != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"collapsed\": ");
+
+			sb.append(collapsed);
+		}
 
 		ConfigurationRole configurationRole = getConfigurationRole();
 
@@ -509,4 +566,4 @@ public class FieldSet implements Serializable {
 	private Map<String, Serializable> _extendedProperties;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1979280094
+// LIFERAY-REST-BUILDER-HASH:519750598

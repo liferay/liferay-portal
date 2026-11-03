@@ -25,6 +25,27 @@ public class FieldSet implements Cloneable, Serializable {
 		return FieldSetSerDes.toDTO(json);
 	}
 
+	public Boolean getCollapsed() {
+		return collapsed;
+	}
+
+	public void setCollapsed(Boolean collapsed) {
+		this.collapsed = collapsed;
+	}
+
+	public void setCollapsed(
+		UnsafeSupplier<Boolean, Exception> collapsedUnsafeSupplier) {
+
+		try {
+			collapsed = collapsedUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected Boolean collapsed;
+
 	public ConfigurationRole getConfigurationRole() {
 		return configurationRole;
 	}
@@ -183,4 +204,4 @@ public class FieldSet implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:12701754
+// LIFERAY-REST-BUILDER-HASH:552100560
