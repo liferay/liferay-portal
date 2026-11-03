@@ -18,6 +18,7 @@ import com.liferay.asset.list.constants.AssetListConstants;
 import com.liferay.asset.list.constants.AssetListEntryTypeConstants;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntryLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.test.util.AssetListTestUtil;
@@ -1096,6 +1097,87 @@ public class AssetListAssetEntryProviderTest {
 	}
 
 	@Test
+	public void testGetDynamicAssetEntriesWithAudienceEntryPrioritized()
+		throws Exception {
+
+		AssetVocabulary assetVocabulary = AssetTestUtil.addVocabulary(
+			_group.getGroupId());
+
+		AssetCategory assetCategory1 = AssetTestUtil.addCategory(
+			_group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		JournalArticle journalArticle1 = _addJournalArticle(
+			new long[] {assetCategory1.getCategoryId()});
+
+		AssetCategory assetCategory2 = AssetTestUtil.addCategory(
+			_group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		JournalArticle journalArticle2 = _addJournalArticle(
+			new long[] {assetCategory2.getCategoryId()});
+
+		AssetCategory assetCategory3 = AssetTestUtil.addCategory(
+			_group.getGroupId(), assetVocabulary.getVocabularyId());
+
+		_addJournalArticle(new long[] {assetCategory3.getCategoryId()});
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_DYNAMIC,
+				_getTypeSettings(
+					AssetListTestUtil.getFilterJSONObject(
+						"contains", "assetCategories", "any",
+						String.valueOf(assetCategory1.getCategoryId()))),
+				_serviceContext);
+
+		String audienceEntryERC1 = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC1, 0,
+				_getTypeSettings(
+					AssetListTestUtil.getFilterJSONObject(
+						"contains", "assetCategories", "any",
+						String.valueOf(assetCategory2.getCategoryId()))),
+				_serviceContext);
+
+		String audienceEntryERC2 = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC2, 1,
+				_getTypeSettings(
+					AssetListTestUtil.getFilterJSONObject(
+						"contains", "assetCategories", "any",
+						String.valueOf(assetCategory3.getCategoryId()))),
+				_serviceContext);
+
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				new long[0][], assetListEntry, null,
+				new String[] {RandomTestUtil.randomString()}, QueryUtil.ALL_POS,
+				StringPool.BLANK, QueryUtil.ALL_POS,
+				String.valueOf(TestPropsValues.getUserId())),
+			1, _getAssetEntry(journalArticle1));
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				new long[0][], assetListEntry, null,
+				new String[] {audienceEntryERC2, audienceEntryERC1},
+				QueryUtil.ALL_POS, StringPool.BLANK, QueryUtil.ALL_POS,
+				String.valueOf(TestPropsValues.getUserId())),
+			1, _getAssetEntry(journalArticle2));
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				new long[0][], assetListEntry, null, null, QueryUtil.ALL_POS,
+				StringPool.BLANK, QueryUtil.ALL_POS,
+				String.valueOf(TestPropsValues.getUserId())),
+			1, _getAssetEntry(journalArticle1));
+	}
+
+	@Test
 	public void testGetDynamicAssetEntriesWithMultipleClassNameIds()
 		throws Exception {
 
@@ -1676,6 +1758,84 @@ public class AssetListAssetEntryProviderTest {
 	}
 
 	@Test
+	public void testGetManualAssetEntriesWithAudienceEntryPrioritized()
+		throws Exception {
+
+		AssetListEntry assetListEntry =
+			_assetListEntryLocalService.addAssetListEntry(
+				RandomTestUtil.randomString(), TestPropsValues.getUserId(),
+				_group.getGroupId(), RandomTestUtil.randomString(),
+				AssetListEntryTypeConstants.TYPE_MANUAL, _serviceContext);
+
+		AssetEntry assetEntry1 = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry1.getEntryId()},
+			SegmentsEntryConstants.ID_DEFAULT, _serviceContext);
+
+		String audienceEntryERC1 = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC1, 0,
+				null, _serviceContext);
+
+		AssetEntry assetEntry2 = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry2.getEntryId()}, audienceEntryERC1,
+			_serviceContext);
+
+		String audienceEntryERC2 = RandomTestUtil.randomString();
+
+		_assetListEntryAudienceEntryRelLocalService.
+			addAssetListEntryAudienceEntryRel(
+				TestPropsValues.getUserId(), _group.getGroupId(),
+				assetListEntry.getAssetListEntryId(), audienceEntryERC2, 1,
+				null, _serviceContext);
+
+		AssetEntry assetEntry3 = _getAssetEntry(
+			JournalTestUtil.addArticle(
+				_group.getGroupId(),
+				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID));
+
+		_assetListEntryLocalService.addAssetEntrySelections(
+			assetListEntry.getAssetListEntryId(),
+			new long[] {assetEntry3.getEntryId()}, audienceEntryERC2,
+			_serviceContext);
+
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				new long[0][], assetListEntry, null,
+				new String[] {RandomTestUtil.randomString()}, QueryUtil.ALL_POS,
+				StringPool.BLANK, QueryUtil.ALL_POS,
+				String.valueOf(TestPropsValues.getUserId())),
+			1, assetEntry1);
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				new long[0][], assetListEntry, null,
+				new String[] {audienceEntryERC2, audienceEntryERC1},
+				QueryUtil.ALL_POS, StringPool.BLANK, QueryUtil.ALL_POS,
+				String.valueOf(TestPropsValues.getUserId())),
+			1, assetEntry2);
+		_assertAssetListEntryResults(
+			_assetListAssetEntryProvider.getAssetEntriesInfoPage(
+				new long[0][], assetListEntry, null, null, QueryUtil.ALL_POS,
+				StringPool.BLANK, QueryUtil.ALL_POS,
+				String.valueOf(TestPropsValues.getUserId())),
+			1, assetEntry1);
+	}
+
+	@Test
 	public void testGetManualAssetEntriesWithSegmentsEntryNotPrioritized()
 		throws Exception {
 
@@ -2191,6 +2351,10 @@ public class AssetListAssetEntryProviderTest {
 
 	@Inject
 	private AssetListAssetEntryProvider _assetListAssetEntryProvider;
+
+	@Inject
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Inject
 	private AssetListEntryLocalService _assetListEntryLocalService;
