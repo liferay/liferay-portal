@@ -54,7 +54,7 @@ public class LiferayCommerceRESTClient {
 			),
 			options);
 
-		if (!_isSuccessful(options)) {
+		if (!_isSuccessfulResponse(options)) {
 			throw new PIMConnectorException(
 				"unable-to-authenticate-with-the-remote-instance");
 		}
@@ -144,7 +144,7 @@ public class LiferayCommerceRESTClient {
 				"unable-to-authenticate-with-the-remote-instance");
 		}
 
-		if (!_isSuccessful(options)) {
+		if (!_isSuccessfulResponse(options)) {
 			throw new PIMConnectorException(
 				"the-remote-instance-returned-an-error");
 		}
@@ -197,7 +197,7 @@ public class LiferayCommerceRESTClient {
 		}
 	}
 
-	private boolean _isSuccessful(Http.Options options) {
+	private boolean _isSuccessfulResponse(Http.Options options) {
 		Http.Response response = options.getResponse();
 
 		if ((response.getResponseCode() >= HttpServletResponse.SC_OK) &&
