@@ -1255,6 +1255,41 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-113649")
+	public void testSubscribeEntryWithSubscribePermissionOfRegularRole()
+		throws Exception {
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(_user.getUserId(), _role);
+
+		_resourcePermissionLocalService.addResourcePermission(
+			_role.getCompanyId(), BlogsConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			_role.getRoleId(), ActionKeys.SUBSCRIBE);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			_blogsEntryService.subscribe(_group.getGroupId());
+		}
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			_role.getCompanyId(), BlogsConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_GROUP, String.valueOf(_group.getGroupId()),
+			_role.getRoleId(), ActionKeys.SUBSCRIBE);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_user, PermissionCheckerFactoryUtil.create(_user))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.subscribe(_group.getGroupId()));
+		}
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testSubscribeEntryWithoutSubscribePermission()
 		throws Exception {
@@ -1266,6 +1301,52 @@ public class BlogsEntryServiceTest {
 				user, PermissionCheckerFactoryUtil.create(user))) {
 
 			_blogsEntryService.subscribe(_group.getGroupId());
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testSubscribeEntryWithoutSubscribePermissionAsGuest()
+		throws Exception {
+
+		User guestUser = _userLocalService.getGuestUser(
+			_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				guestUser, PermissionCheckerFactoryUtil.create(guestUser))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.subscribe(_group.getGroupId()));
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testSubscribeEntryWithoutSubscribePermissionOfSiteMember()
+		throws Exception {
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, _permissionChecker)) {
+
+			_blogsEntryService.subscribe(_group.getGroupId());
+		}
+
+		Role ownerRole = _roleLocalService.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.OWNER);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			TestPropsValues.getCompanyId(), BlogsConstants.RESOURCE_NAME,
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(_group.getGroupId()), ownerRole.getRoleId(),
+			new String[] {ActionKeys.PERMISSIONS});
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				_groupUser, PermissionCheckerFactoryUtil.create(_groupUser))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _blogsEntryService.subscribe(_group.getGroupId()));
 		}
 	}
 
