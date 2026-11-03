@@ -24,3 +24,18 @@ export const baseFDSProps: Partial<IFrontendDataSetProps> = {
 	sidePanelId: 'none',
 	style: 'fluid',
 };
+
+export function getEmptyState(
+	title: string
+): IFrontendDataSetProps['emptyState'] {
+	return {
+		description: '',
+		filtered: {
+			filters: {symbol: 'search-state'},
+			search: {symbol: 'search-state'},
+			searchAndFilters: {symbol: 'search-state'},
+		},
+		symbol: 'empty-state',
+		title,
+	};
+}
