@@ -12,6 +12,7 @@ import com.liferay.document.library.kernel.service.DLAppLocalService;
 import com.liferay.document.library.test.util.BaseWebServerTestCase;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
@@ -21,12 +22,15 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -99,6 +103,50 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 			_regularUser, null);
 
 		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+	}
+
+	@Test
+	@TestInfo({"LPD-113633", "LPS-95290"})
+	public void testServiceWithStagingGroup() throws Exception {
+		GroupTestUtil.enableLocalStaging(group);
+
+		Group stagingGroup = GroupLocalServiceUtil.getGroup(
+			group.getGroupId());
+
+		stagingGroup = stagingGroup.getStagingGroup();
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM,
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), (byte[])null, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId()));
+
+		String url = StringBundler.concat(
+			StringPool.SLASH, fileEntry.getGroupId(), StringPool.SLASH,
+			fileEntry.getFolderId(), StringPool.SLASH, fileEntry.getFileName(),
+			StringPool.SLASH, fileEntry.getUuid());
+
+		MockHttpServletResponse mockHttpServletResponse = service(
+			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
+			TestPropsValues.getUser(), null);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_regularUser));
+		PrincipalThreadLocal.setName(_regularUser.getUserId());
+
+		mockHttpServletResponse = service(
+			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
+			_regularUser, null);
+
+		Assert.assertNotEquals(
 			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 	}
 
