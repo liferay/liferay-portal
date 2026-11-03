@@ -457,6 +457,33 @@ public class DBCopyTablesProcessTest {
 
 	@Test
 	@TestInfo("LPD-110099")
+	public void testRunWithLongTableName() throws Exception {
+		String tableName =
+			"TestTableWithANameLongerThanTheSixtyThreeBytesPostgreSQLAllowsXX";
+
+		_sourceTableName = _normalizeName(tableName);
+
+		_sourceDB.runSQL("create table " + tableName + " (id INTEGER)");
+
+		_runDBCopyTablesProcess();
+
+		try (Connection connection = _targetDataSource.getConnection();
+
+			PreparedStatement preparedStatement = connection.prepareStatement(
+				"select count(*) as count_ from pg_class where relname = ?")) {
+
+			preparedStatement.setString(
+				1, StringUtil.toLowerCase(tableName.substring(0, 63)));
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				Assert.assertTrue(resultSet.next());
+				Assert.assertEquals(0, resultSet.getInt("count_"));
+			}
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-110099")
 	public void testRunWithReservedWords() throws Exception {
 		_sourceTableName = _normalizeName("verbose");
 
