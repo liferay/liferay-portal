@@ -779,7 +779,13 @@ describe('CreateLifecycle', () => {
 			mockedCreateStageConfig.mockReturnValue(buildStage(true));
 
 			(API.lifecycle.fetchLifecyclesPage as jest.Mock).mockResolvedValue({
-				items: [{id: '5', name: '  my LIFECYCLE '}],
+				items: [
+					{
+						externalReferenceCode: 'erc-5',
+						id: '5',
+						name: '  my LIFECYCLE ',
+					},
+				],
 			});
 		});
 
