@@ -191,6 +191,7 @@ public class TestrayJobHistory extends BaseJobHistory {
 		}
 
 		List<String> errorMessages = new ArrayList<>();
+		List<String> excludedBatchNames = _getExcludedBatchNames();
 
 		for (TestrayRoutine testrayRoutine : _testrayRoutines) {
 			TopLevelBuildReport topLevelBuildReport =
@@ -229,6 +230,14 @@ public class TestrayJobHistory extends BaseJobHistory {
 					expectedTestCounts.entrySet()) {
 
 				String batchName = entry.getKey();
+
+				if (_isExcludedBatchName(batchName, excludedBatchNames)) {
+					System.out.println(
+						"Skipping CI history validation for batch " +
+							batchName);
+
+					continue;
+				}
 
 				String errorMessage = getErrorMessage(
 					batchName, entry.getValue(),
@@ -510,6 +519,35 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return status;
 	}
 
+	private List<String> _getExcludedBatchNames() {
+		List<String> excludedBatchNames = new ArrayList<>();
+
+		try {
+			String propertyValue = JenkinsResultsParserUtil.getBuildProperty(
+				"test.history.batch.names.excluded",
+				getPortalUpstreamBranchName());
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(propertyValue)) {
+				return excludedBatchNames;
+			}
+
+			for (String batchName : propertyValue.split(",")) {
+				batchName = batchName.trim();
+
+				if (batchName.isEmpty()) {
+					continue;
+				}
+
+				excludedBatchNames.add(batchName);
+			}
+		}
+		catch (IOException ioException) {
+			ioException.printStackTrace();
+		}
+
+		return excludedBatchNames;
+	}
+
 	private int _getIntegerBuildProperty(
 		int defaultValue, String propertyName, String... opts) {
 
@@ -551,6 +589,21 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return _getIntegerBuildProperty(
 			_TEST_COUNT_THRESHOLD, "test.history.batch.test.count.threshold",
 			getPortalUpstreamBranchName(), batchName);
+	}
+
+	private boolean _isExcludedBatchName(
+		String batchName, List<String> excludedBatchNames) {
+
+		if (excludedBatchNames.contains(batchName) ||
+			(batchName.endsWith("_stable") &&
+			 excludedBatchNames.contains(
+				 batchName.substring(
+					 0, batchName.length() - "_stable".length())))) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final int _TEST_COUNT_MINIMUM = 25;
