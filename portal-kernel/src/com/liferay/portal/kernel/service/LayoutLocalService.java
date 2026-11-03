@@ -1516,6 +1516,12 @@ public interface LayoutLocalService
 			String colorSchemeId, String css)
 		throws PortalException;
 
+	public Layout updateMasterLayoutPageTemplateEntry(
+			long groupId, boolean privateLayout, long layoutId,
+			String masterLayoutPageTemplateEntryERC,
+			String masterLayoutPageTemplateEntryScopeERC)
+		throws PortalException;
+
 	/**
 	 * Updates the layout replacing its master layout page template entry
 	 * external reference code
@@ -1739,4 +1745,4 @@ public interface LayoutLocalService
 		throws E;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:2037369851
+// LIFERAY-SERVICE-BUILDER-HASH:-1167632332

@@ -2041,6 +2041,18 @@ public class LayoutLocalServiceWrapper
 			groupId, privateLayout, layoutId, themeId, colorSchemeId, css);
 	}
 
+	@Override
+	public Layout updateMasterLayoutPageTemplateEntry(
+			long groupId, boolean privateLayout, long layoutId,
+			String masterLayoutPageTemplateEntryERC,
+			String masterLayoutPageTemplateEntryScopeERC)
+		throws com.liferay.portal.kernel.exception.PortalException {
+
+		return _layoutLocalService.updateMasterLayoutPageTemplateEntry(
+			groupId, privateLayout, layoutId, masterLayoutPageTemplateEntryERC,
+			masterLayoutPageTemplateEntryScopeERC);
+	}
+
 	/**
 	 * Updates the layout replacing its master layout page template entry
 	 * external reference code
@@ -2363,4 +2375,4 @@ public class LayoutLocalServiceWrapper
 	private LayoutLocalService _layoutLocalService;
 
 }
-// LIFERAY-SERVICE-BUILDER-HASH:-253017056
+// LIFERAY-SERVICE-BUILDER-HASH:-1857659609
