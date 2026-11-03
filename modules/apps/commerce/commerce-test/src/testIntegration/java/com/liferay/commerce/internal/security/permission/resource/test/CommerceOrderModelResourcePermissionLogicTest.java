@@ -125,36 +125,36 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 			Collections.emptyList(),
 			_filterActionIds(_commerceOrder1, null, null, _guestUser));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, null, _commerceOrder1.getUuid()),
-				_guestUser));
+				_guestUser, ActionKeys.VIEW));
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, null, RandomTestUtil.randomString()),
-				_guestUser));
+				_guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, _commerceOrder1.getUuid(), null),
-				_guestUser));
+				_guestUser, ActionKeys.VIEW));
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, RandomTestUtil.randomString(), null),
-				_guestUser));
+				_guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, _commerceOrder1.getUuid(),
 					_commerceOrder1.getUuid()),
-				_guestUser));
+				_guestUser, ActionKeys.VIEW));
 
 		MockHttpServletRequest mockHttpServletRequest =
 			new MockHttpServletRequest();
@@ -167,53 +167,53 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 			_commerceOrder1.getUuid());
 
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1, mockHttpServletRequest,
-				_guestUser));
+			_contains(
+				_commerceOrder1, mockHttpServletRequest, _guestUser,
+				ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(ActionKeys.VIEW, _commerceOrder1, null, _guestUser));
+			_contains(_commerceOrder1, null, _guestUser, ActionKeys.VIEW));
 
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(_commerceOrder1, null, null),
-				_user));
+				_user, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, null, _commerceOrder1.getUuid()),
-				_user));
+				_user, ActionKeys.VIEW));
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, null, RandomTestUtil.randomString()),
-				_user));
+				_user, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, _commerceOrder1.getUuid(), null),
-				_user));
+				_user, ActionKeys.VIEW));
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, RandomTestUtil.randomString(), null),
-				_user));
+				_user, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(
 					_commerceOrder1, _commerceOrder1.getUuid(),
 					_commerceOrder1.getUuid()),
-				_user));
+				_user, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder1,
+			_contains(
+				_commerceOrder1,
 				_createMockHttpServletRequest(_commerceOrder1, null, null),
-				TestPropsValues.getUser()));
+				TestPropsValues.getUser(), ActionKeys.VIEW));
 
 		Assert.assertTrue(_commerceOrder2.isGuestOrder());
 		Assert.assertEquals(
@@ -222,22 +222,22 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 
 		Assert.assertFalse(_commerceOrder3.isGuestOrder());
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder3,
+			_contains(
+				_commerceOrder3,
 				_createMockHttpServletRequest(_commerceOrder3, null, null),
-				_guestUser));
+				_guestUser, ActionKeys.VIEW));
 		Assert.assertTrue(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder3,
+			_contains(
+				_commerceOrder3,
 				_createMockHttpServletRequest(_commerceOrder3, null, null),
-				_user));
+				_user, ActionKeys.VIEW));
 
 		Assert.assertFalse(_commerceOrder4.isGuestOrder());
 		Assert.assertFalse(
-			_hasPermission(
-				ActionKeys.VIEW, _commerceOrder4,
+			_contains(
+				_commerceOrder4,
 				_createMockHttpServletRequest(_commerceOrder4, null, null),
-				_user));
+				_user, ActionKeys.VIEW));
 	}
 
 	private AccountEntry _addAccountEntry(
@@ -250,6 +250,33 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 			RandomTestUtil.randomString(), null, null,
 			RandomTestUtil.randomString() + "@liferay.com", null, null, type,
 			WorkflowConstants.STATUS_APPROVED, serviceContext);
+	}
+
+	private boolean _contains(
+			CommerceOrder commerceOrder, HttpServletRequest httpServletRequest,
+			User user, String actionId)
+		throws Exception {
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setRequest(httpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			PermissionChecker permissionChecker =
+				PermissionCheckerFactoryUtil.create(user);
+
+			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+					user, permissionChecker)) {
+
+				return _commerceOrderModelResourcePermission.contains(
+					permissionChecker, commerceOrder, actionId);
+			}
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	private MockHttpServletRequest _createMockHttpServletRequest(
@@ -297,42 +324,15 @@ public class CommerceOrderModelResourcePermissionLogicTest {
 				CommerceOrderActionKeys.MANAGE_COMMERCE_ORDER_SHIPPING_OPTIONS,
 				CommerceOrderActionKeys.VIEW_BILLING_ADDRESS),
 			actionId -> {
-				if (_hasPermission(
-						actionId, commerceOrder, mockHttpServletRequest,
-						user)) {
+				if (_contains(
+						commerceOrder, mockHttpServletRequest, user,
+						actionId)) {
 
 					return actionId;
 				}
 
 				return null;
 			});
-	}
-
-	private boolean _hasPermission(
-			String actionId, CommerceOrder commerceOrder,
-			HttpServletRequest httpServletRequest, User user)
-		throws Exception {
-
-		ServiceContext serviceContext = new ServiceContext();
-
-		serviceContext.setRequest(httpServletRequest);
-
-		ServiceContextThreadLocal.pushServiceContext(serviceContext);
-
-		try {
-			PermissionChecker permissionChecker =
-				PermissionCheckerFactoryUtil.create(user);
-
-			try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-					user, permissionChecker)) {
-
-				return _commerceOrderModelResourcePermission.contains(
-					permissionChecker, commerceOrder, actionId);
-			}
-		}
-		finally {
-			ServiceContextThreadLocal.popServiceContext();
-		}
 	}
 
 	@Inject
