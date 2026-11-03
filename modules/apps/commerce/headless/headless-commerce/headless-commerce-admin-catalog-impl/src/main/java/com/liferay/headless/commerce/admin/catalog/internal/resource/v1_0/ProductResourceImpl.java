@@ -28,6 +28,7 @@ import com.liferay.commerce.pricing.service.CommercePricingClassCPDefinitionRelS
 import com.liferay.commerce.pricing.service.CommercePricingClassService;
 import com.liferay.commerce.product.constants.CPAttachmentFileEntryConstants;
 import com.liferay.commerce.product.constants.CPPortletKeys;
+import com.liferay.commerce.product.exception.CPDefinitionGroupIdException;
 import com.liferay.commerce.product.exception.CPDefinitionProductTypeNameException;
 import com.liferay.commerce.product.exception.NoSuchCPDefinitionException;
 import com.liferay.commerce.product.exception.NoSuchCatalogException;
@@ -131,6 +132,7 @@ import com.liferay.headless.commerce.core.util.LanguageUtils;
 import com.liferay.headless.common.spi.odata.entity.EntityFieldsUtil;
 import com.liferay.journal.service.JournalArticleService;
 import com.liferay.petra.function.UnsafeFunction;
+import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.change.tracking.CTAware;
@@ -529,6 +531,30 @@ public class ProductResourceImpl
 		if (cpDefinition == null) {
 			throw new NoSuchCPDefinitionException(
 				"Unable to find product with ID " + id);
+		}
+
+		CommerceCatalog commerceCatalog = null;
+
+		if (Validator.isNotNull(product.getCatalogExternalReferenceCode())) {
+			commerceCatalog =
+				_commerceCatalogLocalService.
+					getCommerceCatalogByExternalReferenceCode(
+						product.getCatalogExternalReferenceCode(),
+						contextCompany.getCompanyId());
+		}
+		else if (product.getCatalogId() != null) {
+			commerceCatalog = _commerceCatalogLocalService.getCommerceCatalog(
+				product.getCatalogId());
+		}
+
+		if ((commerceCatalog != null) &&
+			(commerceCatalog.getGroupId() != cpDefinition.getGroupId())) {
+
+			throw new CPDefinitionGroupIdException(
+				StringBundler.concat(
+					"Product ", cpDefinition.getCProductId(),
+					" does not belong to group ",
+					commerceCatalog.getGroupId()));
 		}
 
 		cpDefinition = _updateProduct(cpDefinition, product);
