@@ -15,10 +15,12 @@ import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -1086,6 +1088,32 @@ public class SegmentsExperimentLocalServiceTest {
 			SegmentsExperimentConstants.STATUS_FINISHED_WINNER);
 	}
 
+	@Test
+	public void testUpdateSegmentsExperimentStatusWithDeletedUser()
+		throws Exception {
+
+		SegmentsExperiment segmentsExperiment = _addSegmentsExperiment();
+
+		User user = UserTestUtil.addUser();
+
+		segmentsExperiment.setUserId(user.getUserId());
+
+		segmentsExperiment =
+			_segmentsExperimentLocalService.updateSegmentsExperiment(
+				segmentsExperiment);
+
+		_userLocalService.deleteUser(user);
+
+		segmentsExperiment =
+			_segmentsExperimentLocalService.updateSegmentsExperimentStatus(
+				segmentsExperiment.getSegmentsExperimentId(),
+				SegmentsExperimentConstants.STATUS_RUNNING);
+
+		Assert.assertEquals(
+			SegmentsExperimentConstants.STATUS_RUNNING,
+			segmentsExperiment.getStatus());
+	}
+
 	@Test(expected = SegmentsExperimentStatusException.class)
 	public void testUpdateSegmentsExperimentToRunningWithExistingExperimentInRunning()
 		throws Exception {
@@ -1299,5 +1327,8 @@ public class SegmentsExperimentLocalServiceTest {
 	@Inject
 	private SegmentsExperimentRelLocalService
 		_segmentsExperimentRelLocalService;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
