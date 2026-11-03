@@ -158,6 +158,45 @@ public class DLAppServiceWhenViewingFolderContentsTest
 	}
 
 	@Test
+	public void testShouldNotReturnDraftsIfNotOwner() throws Exception {
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(group.getGroupId());
+
+		dlAppService.addFileEntry(
+			null, group.getGroupId(), parentFolder.getFolderId(),
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			StringUtil.randomString(), null, StringUtil.randomString(),
+			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
+
+		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
+
+		dlAppService.addFileEntry(
+			null, group.getGroupId(), parentFolder.getFolderId(),
+			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
+			StringUtil.randomString(), null, StringUtil.randomString(),
+			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
+
+		User user = UserTestUtil.addGroupUser(group, "User");
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user)) {
+
+			List<Object> foldersAndFileEntriesAndFileShortcuts =
+				dlAppService.getFoldersAndFileEntriesAndFileShortcuts(
+					group.getGroupId(), parentFolder.getFolderId(),
+					WorkflowConstants.STATUS_APPROVED, false, QueryUtil.ALL_POS,
+					QueryUtil.ALL_POS);
+
+			Assert.assertEquals(
+				foldersAndFileEntriesAndFileShortcuts.toString(), 1,
+				foldersAndFileEntriesAndFileShortcuts.size());
+		}
+		finally {
+			_userLocalService.deleteUser(user.getUserId());
+		}
+	}
+
+	@Test
 	@TestInfo({"LPD-113625", "LPS-43104"})
 	public void testShouldNotReturnFileEntryWithoutViewPermission()
 		throws Exception {
@@ -186,8 +225,7 @@ public class DLAppServiceWhenViewingFolderContentsTest
 		}
 
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
-			1,
-			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+			1, _userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
 			2, TestPropsValues.getUser());
 
@@ -231,8 +269,7 @@ public class DLAppServiceWhenViewingFolderContentsTest
 			RoleConstants.SITE_MEMBER);
 
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
-			1,
-			_userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
+			1, _userLocalService.getGuestUser(TestPropsValues.getCompanyId()));
 		_assertFoldersAndFileEntriesAndFileShortcutsCount(
 			2, TestPropsValues.getUser());
 
@@ -240,45 +277,6 @@ public class DLAppServiceWhenViewingFolderContentsTest
 
 		try {
 			_assertFoldersAndFileEntriesAndFileShortcutsCount(1, user);
-		}
-		finally {
-			_userLocalService.deleteUser(user.getUserId());
-		}
-	}
-
-	@Test
-	public void testShouldNotReturnDraftsIfNotOwner() throws Exception {
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(group.getGroupId());
-
-		dlAppService.addFileEntry(
-			null, group.getGroupId(), parentFolder.getFolderId(),
-			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
-			StringUtil.randomString(), null, StringUtil.randomString(),
-			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
-
-		serviceContext.setWorkflowAction(WorkflowConstants.ACTION_SAVE_DRAFT);
-
-		dlAppService.addFileEntry(
-			null, group.getGroupId(), parentFolder.getFolderId(),
-			StringUtil.randomString(), ContentTypes.APPLICATION_OCTET_STREAM,
-			StringUtil.randomString(), null, StringUtil.randomString(),
-			StringPool.BLANK, (byte[])null, null, null, null, serviceContext);
-
-		User user = UserTestUtil.addGroupUser(group, "User");
-
-		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
-				user)) {
-
-			List<Object> foldersAndFileEntriesAndFileShortcuts =
-				dlAppService.getFoldersAndFileEntriesAndFileShortcuts(
-					group.getGroupId(), parentFolder.getFolderId(),
-					WorkflowConstants.STATUS_APPROVED, false, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS);
-
-			Assert.assertEquals(
-				foldersAndFileEntriesAndFileShortcuts.toString(), 1,
-				foldersAndFileEntriesAndFileShortcuts.size());
 		}
 		finally {
 			_userLocalService.deleteUser(user.getUserId());

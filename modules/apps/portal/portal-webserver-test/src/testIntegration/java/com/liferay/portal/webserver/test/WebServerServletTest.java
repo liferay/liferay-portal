@@ -299,6 +299,45 @@ public class WebServerServletTest {
 	}
 
 	@Test
+	@TestInfo("LPD-113625")
+	public void testSendFileWithOnlyAccessPermissionOnFolder()
+		throws Exception {
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group.getGroupId(), TestPropsValues.getUserId());
+
+		Folder folder = _dlAppLocalService.addFolder(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			serviceContext);
+
+		for (String roleName :
+				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
+
+			Role role = RoleLocalServiceUtil.getRole(
+				_group.getCompanyId(), roleName);
+
+			ResourcePermissionLocalServiceUtil.setResourcePermissions(
+				_group.getCompanyId(), DLFolder.class.getName(),
+				ResourceConstants.SCOPE_INDIVIDUAL,
+				String.valueOf(folder.getFolderId()), role.getRoleId(),
+				new String[] {ActionKeys.ACCESS});
+		}
+
+		String title = RandomTestUtil.randomString() + ".txt";
+
+		_dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), _group.getGroupId(),
+			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
+			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
+			serviceContext);
+
+		_assertSendFile(folder, title);
+	}
+
+	@Test
 	public void testSendFileWithoutDownloadPermission() throws Exception {
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(
@@ -366,45 +405,6 @@ public class WebServerServletTest {
 		finally {
 			UserLocalServiceUtil.deleteUser(user);
 		}
-	}
-
-	@Test
-	@TestInfo("LPD-113625")
-	public void testSendFileWithOnlyAccessPermissionOnFolder()
-		throws Exception {
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				_group.getGroupId(), TestPropsValues.getUserId());
-
-		Folder folder = _dlAppLocalService.addFolder(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			serviceContext);
-
-		for (String roleName :
-				new String[] {RoleConstants.GUEST, RoleConstants.SITE_MEMBER}) {
-
-			Role role = RoleLocalServiceUtil.getRole(
-				_group.getCompanyId(), roleName);
-
-			ResourcePermissionLocalServiceUtil.setResourcePermissions(
-				_group.getCompanyId(), DLFolder.class.getName(),
-				ResourceConstants.SCOPE_INDIVIDUAL,
-				String.valueOf(folder.getFolderId()), role.getRoleId(),
-				new String[] {ActionKeys.ACCESS});
-		}
-
-		String title = RandomTestUtil.randomString() + ".txt";
-
-		_dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), _group.getGroupId(),
-			folder.getFolderId(), title, ContentTypes.TEXT_PLAIN,
-			TestDataConstants.TEST_BYTE_ARRAY, null, null, null,
-			serviceContext);
-
-		_assertSendFile(folder, title);
 	}
 
 	@Test
@@ -687,9 +687,7 @@ public class WebServerServletTest {
 		return layout.getIconImageId();
 	}
 
-	private void _assertSendFile(Folder folder, String title)
-		throws Exception {
-
+	private void _assertSendFile(Folder folder, String title) throws Exception {
 		MockHttpServletResponse mockHttpServletResponse = _sendFile(
 			folder, title, _user);
 

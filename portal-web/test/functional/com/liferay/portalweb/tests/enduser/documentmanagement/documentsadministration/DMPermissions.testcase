@@ -34,8 +34,6 @@ definition {
 		}
 	}
 
-
-
 	@priority = 4
 	@refactordone
 	test CanAddDocumentAsSiteRoleWithPermissions {
@@ -241,8 +239,6 @@ definition {
 		DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
 	}
 
-
-
 	@priority = 4
 	@refactordone
 	test CannotAddDocumentAsSiteRoleWithoutPermissions {
@@ -415,7 +411,6 @@ definition {
 		Notifications.viewNoNotifications(activePanel = "Notifications");
 	}
 
-
 	@description = "This test covers LPS-118268. It ensures that the user without document view permission can not view the document via the display page."
 	@priority = 4
 	@refactordone
@@ -465,10 +460,6 @@ definition {
 			key_dmDocumentTitle = "DM Document Title",
 			locator1 = "DocumentsAndMedia#DESCRIPTIVE_LIST_DOCUMENT_TITLE");
 	}
-
-
-
-
 
 	@priority = 5
 	@refactordone
@@ -603,8 +594,6 @@ definition {
 
 		MenuItem.viewNotPresent(menuItem = "File Upload");
 	}
-
-
 
 	@description = "This test covers LPS-93031. It ensures that the document still can be viewed after the author is deleted."
 	@priority = 4
@@ -888,8 +877,6 @@ definition {
 		MenuItem.viewNotPresent(menuItem = "Edit");
 	}
 
-
-
 	@description = "This test covers LPS-106905. It ensures that a site admin user is able to select an image from the global site in WCD."
 	@priority = 3
 	@refactordone
@@ -974,7 +961,6 @@ definition {
 
 		AssertElementNotPresent(locator1 = "Toolbar#ADD");
 	}
-
 
 	@description = "This is a test for LPS-136841. It checks that a site member cannot add a document in a folder without permissions."
 	@priority = 3
@@ -1486,7 +1472,5 @@ definition {
 
 		MenuItem.viewNotPresent(menuItem = "Permissions");
 	}
-
-
 
 }

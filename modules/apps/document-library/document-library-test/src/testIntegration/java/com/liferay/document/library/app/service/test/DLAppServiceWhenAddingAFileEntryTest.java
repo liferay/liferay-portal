@@ -461,6 +461,16 @@ public class DLAppServiceWhenAddingAFileEntryTest extends BaseDLAppTestCase {
 	}
 
 	@Test
+	public void testShouldSucceedIfDuplicateNameInOtherFolder()
+		throws Exception {
+
+		DLAppServiceTestUtil.addFileEntry(
+			group.getGroupId(), parentFolder.getFolderId());
+		DLAppServiceTestUtil.addFileEntry(
+			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+	}
+
+	@Test
 	@TestInfo("LPD-113625")
 	public void testShouldSucceedIfUserHasAddDocumentPermission()
 		throws Exception {
@@ -485,16 +495,6 @@ public class DLAppServiceWhenAddingAFileEntryTest extends BaseDLAppTestCase {
 			group, RoleConstants.SITE_MEMBER);
 
 		_assertAddFileEntry(true, siteMemberUser);
-	}
-
-	@Test
-	public void testShouldSucceedIfDuplicateNameInOtherFolder()
-		throws Exception {
-
-		DLAppServiceTestUtil.addFileEntry(
-			group.getGroupId(), parentFolder.getFolderId());
-		DLAppServiceTestUtil.addFileEntry(
-			group.getGroupId(), DLFolderConstants.DEFAULT_PARENT_FOLDER_ID);
 	}
 
 	@Ignore
@@ -573,12 +573,6 @@ public class DLAppServiceWhenAddingAFileEntryTest extends BaseDLAppTestCase {
 			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 	}
 
-	private static final String _TEST_GPX =
-		"/com/liferay/document/library/dependencies/test.gpx";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		DLAppServiceWhenAddingAFileEntryTest.class);
-
 	private void _assertAddFileEntry(boolean expected, User user)
 		throws Exception {
 
@@ -601,6 +595,12 @@ public class DLAppServiceWhenAddingAFileEntryTest extends BaseDLAppTestCase {
 		}
 	}
 
+	private static final String _TEST_GPX =
+		"/com/liferay/document/library/dependencies/test.gpx";
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		DLAppServiceWhenAddingAFileEntryTest.class);
+
 	@Inject
 	private AssetCategoryLocalService _assetCategoryLocalService;
 
@@ -612,11 +612,11 @@ public class DLAppServiceWhenAddingAFileEntryTest extends BaseDLAppTestCase {
 
 	private long[] _fileEntryIds;
 
-	@DeleteAfterTestRun
-	private User[] _users;
-
 	@Inject
 	private UserLocalService _userLocalService;
+
+	@DeleteAfterTestRun
+	private User[] _users;
 
 	private class AddFileEntryThread extends DoAsUserThread {
 
