@@ -35,6 +35,7 @@ jest.mock('shared/hooks/useCurrentUser', () => ({
 }));
 
 jest.mock('shared/actions/alerts', () => ({
+	...jest.requireActual('shared/actions/alerts'),
 	addAlert: jest.fn((alert) => alert),
 }));
 
@@ -109,9 +110,11 @@ const mockCatalog =
 
 const renderPage = () =>
 	render(
-		<MemoryRouter>
-			<EditLifecycle />
-		</MemoryRouter>
+		<Provider store={mockStore()}>
+			<MemoryRouter>
+				<EditLifecycle />
+			</MemoryRouter>
+		</Provider>
 	);
 
 const lifecycleURL = toRoute(Routes.LIFECYCLE_DASHBOARD, {
