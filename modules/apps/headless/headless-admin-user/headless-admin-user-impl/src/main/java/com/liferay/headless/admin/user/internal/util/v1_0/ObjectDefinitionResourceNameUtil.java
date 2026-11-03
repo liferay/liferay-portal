@@ -58,27 +58,33 @@ public class ObjectDefinitionResourceNameUtil {
 		String resourceName) {
 
 		if (StringUtil.startsWith(resourceName, _PREFIX_CLASS_NAME)) {
-			ObjectDefinition objectDefinition = _fetchObjectDefinition(
-				companyId, objectDefinitionLocalService, _PREFIX_CLASS_NAME,
-				resourceName);
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						resourceName.substring(_PREFIX_CLASS_NAME.length()),
+						companyId);
 
 			if (objectDefinition != null) {
 				return objectDefinition.getClassName();
 			}
 		}
 		else if (StringUtil.startsWith(resourceName, _PREFIX_PORTLET_ID)) {
-			ObjectDefinition objectDefinition = _fetchObjectDefinition(
-				companyId, objectDefinitionLocalService, _PREFIX_PORTLET_ID,
-				resourceName);
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						resourceName.substring(_PREFIX_PORTLET_ID.length()),
+						companyId);
 
 			if (objectDefinition != null) {
 				return objectDefinition.getPortletId();
 			}
 		}
 		else if (StringUtil.startsWith(resourceName, _PREFIX_RESOURCE_NAME)) {
-			ObjectDefinition objectDefinition = _fetchObjectDefinition(
-				companyId, objectDefinitionLocalService, _PREFIX_RESOURCE_NAME,
-				resourceName);
+			ObjectDefinition objectDefinition =
+				objectDefinitionLocalService.
+					fetchObjectDefinitionByExternalReferenceCode(
+						resourceName.substring(_PREFIX_RESOURCE_NAME.length()),
+						companyId);
 
 			if (objectDefinition != null) {
 				return _PREFIX_RESOURCE_NAME +
@@ -87,16 +93,6 @@ public class ObjectDefinitionResourceNameUtil {
 		}
 
 		return resourceName;
-	}
-
-	private static ObjectDefinition _fetchObjectDefinition(
-		long companyId,
-		ObjectDefinitionLocalService objectDefinitionLocalService,
-		String prefix, String resourceName) {
-
-		return objectDefinitionLocalService.
-			fetchObjectDefinitionByExternalReferenceCode(
-				resourceName.substring(prefix.length()), companyId);
 	}
 
 	private static String _getResourceName(

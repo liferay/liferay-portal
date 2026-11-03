@@ -86,76 +86,101 @@ public class ObjectDefinitionResourceNameUtilTest {
 	public void testToExternalReferenceCodeResourceName() {
 		Assert.assertEquals(
 			_PREFIX_CLASS_NAME + _EXTERNAL_REFERENCE_CODE,
-			_toExternalReferenceCodeResourceName(_CLASS_NAME));
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService, _CLASS_NAME));
 		Assert.assertEquals(
 			_PREFIX_PORTLET_ID + _EXTERNAL_REFERENCE_CODE,
-			_toExternalReferenceCodeResourceName(_PORTLET_ID));
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService, _PORTLET_ID));
 		Assert.assertEquals(
 			_PREFIX_RESOURCE_NAME + _EXTERNAL_REFERENCE_CODE,
-			_toExternalReferenceCodeResourceName(
-				_PREFIX_RESOURCE_NAME + _OBJECT_DEFINITION_ID));
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService,
+					_PREFIX_RESOURCE_NAME + _OBJECT_DEFINITION_ID));
 
 		String className = _PREFIX_CLASS_NAME + RandomTestUtil.randomString();
 
 		Assert.assertEquals(
-			className, _toExternalReferenceCodeResourceName(className));
+			className,
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService, className));
 
 		String portletId = _PREFIX_PORTLET_ID + RandomTestUtil.randomString();
 
 		Assert.assertEquals(
-			portletId, _toExternalReferenceCodeResourceName(portletId));
+			portletId,
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService, portletId));
 
 		String resourceName =
 			_PREFIX_RESOURCE_NAME + RandomTestUtil.randomLong();
 
 		Assert.assertEquals(
-			resourceName, _toExternalReferenceCodeResourceName(resourceName));
+			resourceName,
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService, resourceName));
 
 		resourceName = RandomTestUtil.randomString();
 
 		Assert.assertEquals(
-			resourceName, _toExternalReferenceCodeResourceName(resourceName));
+			resourceName,
+			ObjectDefinitionResourceNameUtil.
+				toExternalReferenceCodeResourceName(
+					_COMPANY_ID, _objectDefinitionLocalService, resourceName));
 	}
 
 	@Test
 	public void testToResourceName() {
 		Assert.assertEquals(
 			_CLASS_NAME,
-			_toResourceName(_PREFIX_CLASS_NAME + _EXTERNAL_REFERENCE_CODE));
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService,
+				_PREFIX_CLASS_NAME + _EXTERNAL_REFERENCE_CODE));
 		Assert.assertEquals(
 			_PORTLET_ID,
-			_toResourceName(_PREFIX_PORTLET_ID + _EXTERNAL_REFERENCE_CODE));
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService,
+				_PREFIX_PORTLET_ID + _EXTERNAL_REFERENCE_CODE));
 		Assert.assertEquals(
 			_PREFIX_RESOURCE_NAME + _OBJECT_DEFINITION_ID,
-			_toResourceName(_PREFIX_RESOURCE_NAME + _EXTERNAL_REFERENCE_CODE));
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService,
+				_PREFIX_RESOURCE_NAME + _EXTERNAL_REFERENCE_CODE));
 
 		String className = _PREFIX_CLASS_NAME + RandomTestUtil.randomString();
 
-		Assert.assertEquals(className, _toResourceName(className));
+		Assert.assertEquals(
+			className,
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService, className));
 
 		String portletId = _PREFIX_PORTLET_ID + RandomTestUtil.randomString();
 
-		Assert.assertEquals(portletId, _toResourceName(portletId));
+		Assert.assertEquals(
+			portletId,
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService, portletId));
 
 		String resourceName =
 			_PREFIX_RESOURCE_NAME + RandomTestUtil.randomString();
 
-		Assert.assertEquals(resourceName, _toResourceName(resourceName));
+		Assert.assertEquals(
+			resourceName,
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService, resourceName));
 
 		resourceName = RandomTestUtil.randomString();
 
-		Assert.assertEquals(resourceName, _toResourceName(resourceName));
-	}
-
-	private String _toExternalReferenceCodeResourceName(String resourceName) {
-		return ObjectDefinitionResourceNameUtil.
-			toExternalReferenceCodeResourceName(
-				_COMPANY_ID, _objectDefinitionLocalService, resourceName);
-	}
-
-	private String _toResourceName(String resourceName) {
-		return ObjectDefinitionResourceNameUtil.toResourceName(
-			_COMPANY_ID, _objectDefinitionLocalService, resourceName);
+		Assert.assertEquals(
+			resourceName,
+			ObjectDefinitionResourceNameUtil.toResourceName(
+				_COMPANY_ID, _objectDefinitionLocalService, resourceName));
 	}
 
 	private static final String _CLASS_NAME =

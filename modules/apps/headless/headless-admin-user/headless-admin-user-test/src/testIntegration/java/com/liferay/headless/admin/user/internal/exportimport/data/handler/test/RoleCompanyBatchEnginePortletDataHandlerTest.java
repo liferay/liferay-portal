@@ -38,6 +38,7 @@ import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -240,31 +241,6 @@ public class RoleCompanyBatchEnginePortletDataHandlerTest
 			String.valueOf(role.getCompanyId()), role.getRoleId(), actionId);
 	}
 
-	private boolean _hasUnresolvedPermissionWarning(
-		long companyId, String externalReferenceCode, String permissionName) {
-
-		return ListUtil.exists(
-			_exportImportReportEntryLocalService.getExportImportReportEntries(
-				QueryUtil.ALL_POS, QueryUtil.ALL_POS),
-			exportImportReportEntry -> {
-				String errorMessage = exportImportReportEntry.getErrorMessage();
-
-				if (Validator.isNotNull(errorMessage) &&
-					errorMessage.contains(permissionName) &&
-					(exportImportReportEntry.getCompanyId() == companyId) &&
-					(exportImportReportEntry.getType() ==
-						ExportImportReportEntryConstants.TYPE_WARNING) &&
-					Objects.equals(
-						exportImportReportEntry.getClassExternalReferenceCode(),
-						externalReferenceCode)) {
-
-					return true;
-				}
-
-				return false;
-			});
-	}
-
 	private void _testExportImportDataWithObjectDefinitionPermissions()
 		throws Exception {
 
@@ -274,8 +250,6 @@ public class RoleCompanyBatchEnginePortletDataHandlerTest
 		addEntry(externalReferenceCode, group.getGroupId());
 
 		_objectDefinition1 = ObjectDefinitionTestUtil.publishObjectDefinition();
-		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
-
 		Role role = _getRole(externalReferenceCode, group.getGroupId());
 
 		_addResourcePermission(
@@ -286,6 +260,9 @@ public class RoleCompanyBatchEnginePortletDataHandlerTest
 		_addResourcePermission(
 			_objectDefinition1.getResourceName(), role,
 			ObjectActionKeys.ADD_OBJECT_ENTRY);
+
+		_objectDefinition2 = ObjectDefinitionTestUtil.publishObjectDefinition();
+
 		_addResourcePermission(
 			_objectDefinition2.getResourceName(), role,
 			ObjectActionKeys.ADD_OBJECT_ENTRY);
@@ -298,7 +275,7 @@ public class RoleCompanyBatchEnginePortletDataHandlerTest
 					ObjectFieldUtil.createObjectField(
 						ObjectFieldConstants.BUSINESS_TYPE_TEXT,
 						ObjectFieldConstants.DB_TYPE_STRING,
-						RandomTestUtil.randomString(), "text")),
+						RandomTestUtil.randomString(), StringUtil.randomId())),
 				ObjectDefinitionConstants.SCOPE_COMPANY,
 				targetCompanyAdminUser.getUserId());
 
@@ -322,12 +299,35 @@ public class RoleCompanyBatchEnginePortletDataHandlerTest
 		Group targetGroup = getTargetGroup();
 
 		Assert.assertTrue(
-			_hasUnresolvedPermissionWarning(
-				targetGroup.getCompanyId(), externalReferenceCode,
-				StringBundler.concat(
-					ObjectConstants.RESOURCE_NAME, StringPool.POUND,
-					_objectDefinition2.getExternalReferenceCode(),
-					StringPool.POUND, ObjectActionKeys.ADD_OBJECT_ENTRY)));
+			ListUtil.exists(
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntries(
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS),
+				exportImportReportEntry -> {
+					String errorMessage =
+						exportImportReportEntry.getErrorMessage();
+
+					if (Validator.isNotNull(errorMessage) &&
+						errorMessage.contains(
+							StringBundler.concat(
+								ObjectConstants.RESOURCE_NAME, StringPool.POUND,
+								_objectDefinition2.getExternalReferenceCode(),
+								StringPool.POUND,
+								ObjectActionKeys.ADD_OBJECT_ENTRY)) &&
+						(exportImportReportEntry.getCompanyId() ==
+							targetGroup.getCompanyId()) &&
+						(exportImportReportEntry.getType() ==
+							ExportImportReportEntryConstants.TYPE_WARNING) &&
+						Objects.equals(
+							exportImportReportEntry.
+								getClassExternalReferenceCode(),
+							externalReferenceCode)) {
+
+						return true;
+					}
+
+					return false;
+				}));
 
 		Role targetRole = _getRole(
 			externalReferenceCode, targetGroup.getGroupId());

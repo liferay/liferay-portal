@@ -538,7 +538,7 @@ public class RoleResourceImpl
 			return;
 		}
 
-		List<String> unresolvedPermissionNames = new ArrayList<>();
+		List<String> unresolvedResourceActions = new ArrayList<>();
 
 		for (RolePermission rolePermission : role.getRolePermissions()) {
 			int scope = Math.toIntExact(rolePermission.getScope());
@@ -577,7 +577,7 @@ public class RoleResourceImpl
 						_log.warn(noSuchResourceActionException);
 					}
 
-					unresolvedPermissionNames.add(
+					unresolvedResourceActions.add(
 						StringBundler.concat(
 							rolePermission.getResourceName(), StringPool.POUND,
 							actionId));
@@ -585,7 +585,7 @@ public class RoleResourceImpl
 			}
 		}
 
-		if (unresolvedPermissionNames.isEmpty()) {
+		if (unresolvedResourceActions.isEmpty()) {
 			return;
 		}
 
@@ -602,7 +602,7 @@ public class RoleResourceImpl
 				"the-following-permissions-were-not-imported-because-their-" +
 					"resources-do-not-exist-x",
 				StringUtil.merge(
-					unresolvedPermissionNames, StringPool.COMMA_AND_SPACE)),
+					unresolvedResourceActions, StringPool.COMMA_AND_SPACE)),
 			null, _LABEL_LANGUAGE_KEY);
 	}
 

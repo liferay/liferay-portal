@@ -832,13 +832,13 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 		Assert.assertTrue(
 			_hasResourcePermission(
-				ActionKeys.ACCESS_IN_CONTROL_PANEL,
-				objectDefinition.getPortletId(),
+				ActionKeys.VIEW, objectDefinition.getClassName(),
 				String.valueOf(testCompany.getCompanyId()), roleId,
 				ResourceConstants.SCOPE_COMPANY));
 		Assert.assertTrue(
 			_hasResourcePermission(
-				ActionKeys.VIEW, objectDefinition.getClassName(),
+				ActionKeys.ACCESS_IN_CONTROL_PANEL,
+				objectDefinition.getPortletId(),
 				String.valueOf(testCompany.getCompanyId()), roleId,
 				ResourceConstants.SCOPE_COMPANY));
 		Assert.assertTrue(
