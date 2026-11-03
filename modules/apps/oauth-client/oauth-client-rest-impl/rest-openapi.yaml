@@ -25,6 +25,10 @@ components:
                     type: string
                 oAuthASMetadataJSON:
                     type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
         OAuthClientEntry:
             properties:
                 authRequestParametersJSON:
@@ -59,6 +63,10 @@ components:
                     type: object
                 oidcUserInfoMapperJSON:
                     type: string
+                permissions:
+                    items:
+                        type: permission
+                    type: array
                 tokenConnectionTimeout:
                     format: int32
                     type: integer
