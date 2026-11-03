@@ -117,6 +117,33 @@ describe('EditDataMask', () => {
 		);
 	});
 
+	it('shows a custom data mask read-only without the update action', async () => {
+		fetch.mockResponseOnce(
+			JSON.stringify({
+				actions: {get: {}},
+				detectionRegex: 'a+',
+				id: 1,
+				maskType: {key: 'custom', name: 'Custom'},
+				name: 'Mask',
+				replacementValue: '***',
+			})
+		);
+
+		render(<EditDataMask backURL={BACK_URL} dataMaskId={1} />);
+
+		expect(
+			await screen.findByRole('textbox', {name: /^name/})
+		).toBeDisabled();
+		expect(
+			screen.queryByRole('button', {name: 'save'})
+		).not.toBeInTheDocument();
+		expect(
+			screen.queryByText(
+				'system-masks-are-read-only-and-cannot-be-edited'
+			)
+		).not.toBeInTheDocument();
+	});
+
 	it('goes back with an error toast when the data mask cannot be loaded', async () => {
 		fetch.mockResponseOnce(JSON.stringify({title: 'Data mask not found'}), {
 			status: 404,
