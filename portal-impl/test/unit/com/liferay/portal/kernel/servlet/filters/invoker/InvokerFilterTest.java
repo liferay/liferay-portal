@@ -5,18 +5,32 @@
 
 package com.liferay.portal.kernel.servlet.filters.invoker;
 
+import com.liferay.portal.kernel.cache.PortalCache;
+import com.liferay.portal.kernel.cache.PortalCacheHelperUtil;
+import com.liferay.portal.kernel.cache.PortalCacheManagerNames;
+import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.servlet.HttpMethods;
+import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
+import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.ProxyFactory;
+import com.liferay.portal.servlet.filters.BasePortalFilter;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LogEntry;
 import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.tools.ToolDependencies;
 
+import jakarta.servlet.Filter;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.Assert;
@@ -24,9 +38,14 @@ import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
+
 import org.springframework.mock.web.MockFilterChain;
+import org.springframework.mock.web.MockFilterConfig;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.mock.web.MockServletContext;
 
 /**
  * @author Mika Koivisto
@@ -40,6 +59,76 @@ public class InvokerFilterTest {
 	@Before
 	public void setUp() {
 		ToolDependencies.wireCaches();
+	}
+
+	@Test
+	public void testGetInvokerFilterChain() throws Exception {
+		PortalUtil portalUtil = new PortalUtil();
+
+		portalUtil.setPortal(ProxyFactory.newDummyInstance(Portal.class));
+
+		MockServletContext mockServletContext = new MockServletContext();
+
+		MockFilterConfig mockFilterConfig = new MockFilterConfig(
+			mockServletContext, "Include Invoker Filter");
+
+		mockFilterConfig.addInitParameter("dispatcher", "INCLUDE");
+
+		InvokerFilter invokerFilter = new InvokerFilter();
+
+		invokerFilter.init(mockFilterConfig);
+
+		List<ServiceRegistration<Filter>> serviceRegistrations =
+			new ArrayList<>();
+
+		try {
+			BasePortalFilter basePortalFilter = new BasePortalFilter() {
+			};
+
+			basePortalFilter.setFilterEnabled(false);
+
+			serviceRegistrations.add(
+				_registerFilter(
+					basePortalFilter, RandomTestUtil.randomString(),
+					mockServletContext.getServletContextName()));
+
+			_getInvokerFilterChain(invokerFilter, "p=1");
+			_getInvokerFilterChain(invokerFilter, "p=2");
+
+			PortalCache<String, InvokerFilterChain> portalCache =
+				PortalCacheHelperUtil.getPortalCache(
+					PortalCacheManagerNames.SINGLE_VM,
+					"Include Invoker Filter");
+
+			Assert.assertEquals(
+				Collections.singletonList("/test.jsp"), portalCache.getKeys());
+
+			serviceRegistrations.add(
+				_registerFilter(
+					ProxyFactory.newDummyInstance(Filter.class),
+					RandomTestUtil.randomString(),
+					mockServletContext.getServletContextName()));
+
+			_getInvokerFilterChain(invokerFilter, "p=1");
+			_getInvokerFilterChain(invokerFilter, "p=2");
+
+			List<String> keys = portalCache.getKeys();
+
+			Collections.sort(keys);
+
+			Assert.assertEquals(
+				Arrays.asList("/test.jsp", "/test.jsp?p=1", "/test.jsp?p=2"),
+				keys);
+		}
+		finally {
+			for (ServiceRegistration<Filter> serviceRegistration :
+					serviceRegistrations) {
+
+				serviceRegistration.unregister();
+			}
+
+			invokerFilter.destroy();
+		}
 	}
 
 	@Test
@@ -136,6 +225,38 @@ public class InvokerFilterTest {
 
 			Assert.assertTrue(message.startsWith("Rejected " + urlPrefix));
 		}
+	}
+
+	private void _getInvokerFilterChain(
+		InvokerFilter invokerFilter, String queryString) {
+
+		MockHttpServletRequest mockHttpServletRequest =
+			new MockHttpServletRequest(HttpMethods.GET, "/test.jsp");
+
+		mockHttpServletRequest.setQueryString(queryString);
+
+		invokerFilter.getInvokerFilterChain(
+			mockHttpServletRequest, "/test.jsp", new MockFilterChain());
+	}
+
+	private ServiceRegistration<Filter> _registerFilter(
+		Filter filter, String filterName, String servletContextName) {
+
+		BundleContext bundleContext = SystemBundleUtil.getBundleContext();
+
+		return bundleContext.registerService(
+			Filter.class, filter,
+			HashMapDictionaryBuilder.<String, Object>put(
+				"dispatcher", "INCLUDE"
+			).put(
+				"init-param.url-regex-ignore-pattern", ".+/ignore/.+"
+			).put(
+				"servlet-context-name", servletContextName
+			).put(
+				"servlet-filter-name", filterName
+			).put(
+				"url-pattern", "*.jsp"
+			).build());
 	}
 
 }
