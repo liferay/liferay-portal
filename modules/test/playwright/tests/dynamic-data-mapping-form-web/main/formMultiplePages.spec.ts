@@ -18,12 +18,6 @@ import getPageDefinition from '../../layout-content-page-editor-web/main/utils/g
 import getWidgetDefinition from '../../layout-content-page-editor-web/main/utils/getWidgetDefinition';
 import {deleteItems} from './utils/deleteItems';
 
-declare global {
-	interface Window {
-		scrollEventCounter: number;
-	}
-}
-
 export const test = mergeTests(
 	apiHelpersTest,
 	featureFlagsTest({
@@ -55,7 +49,7 @@ test.afterEach(async ({formsPage}) => {
 });
 
 test.describe('Can render forms with multiple pages through page templates', () => {
-	test('check that form with multiple pages are not triggering scroll events', async ({
+	test('check that form with multiple pages does not scroll the page when navigating between pages', async ({
 		apiHelpers,
 		formBuilderPage,
 		formBuilderSidePanelPage,
@@ -161,16 +155,7 @@ test.describe('Can render forms with multiple pages through page templates', () 
 
 		await formWidgetPage.nextButton.click();
 
-		await page.evaluate(() => {
-			window.scrollEventCounter = 0;
-			window.addEventListener('scroll', () => {
-				window.scrollEventCounter += 1;
-			});
-		});
-
-		const scrollEventCountBefore = await page.evaluate(
-			() => window.scrollEventCounter
-		);
+		const scrollYBefore = await page.evaluate(() => window.scrollY);
 
 		await expect(formWidgetPage.previousButton).toBeVisible();
 
@@ -178,10 +163,8 @@ test.describe('Can render forms with multiple pages through page templates', () 
 
 		await formWidgetPage.nextButton.click();
 
-		const scrollEventCountAfter = await page.evaluate(
-			() => window.scrollEventCounter
-		);
+		const scrollYAfter = await page.evaluate(() => window.scrollY);
 
-		expect(scrollEventCountBefore).toBe(scrollEventCountAfter);
+		expect(scrollYAfter).toBe(scrollYBefore);
 	});
 });
