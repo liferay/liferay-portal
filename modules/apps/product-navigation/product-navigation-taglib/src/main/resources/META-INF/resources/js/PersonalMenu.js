@@ -8,7 +8,7 @@ import {ClayDropDownWithItems} from '@clayui/drop-down';
 import ClayIcon from '@clayui/icon';
 import ClayLoadingIndicator from '@clayui/loading-indicator';
 import ClaySticker from '@clayui/sticker';
-import {SideNavigationColorSchemeButton} from '@liferay/application-list-taglib';
+import {UnifiedSidebarColorSchemeButton} from 'frontend-js-components-web';
 import {fetch, loadModule, sub} from 'frontend-js-web';
 import PropTypes from 'prop-types';
 import React, {useEffect, useRef, useState} from 'react';
@@ -129,7 +129,7 @@ function PersonalMenu({
 			>
 				{userLabel}
 
-				<SideNavigationColorSchemeButton className="c-ml-2 c-mr-n1" />
+				<UnifiedSidebarColorSchemeButton className="c-ml-2 c-mr-n1" />
 			</div>
 		);
 
