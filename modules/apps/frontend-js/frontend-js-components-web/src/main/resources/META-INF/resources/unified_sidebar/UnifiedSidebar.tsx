@@ -8,6 +8,8 @@ import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
+import UnifiedSidebarSiteSelector from './UnifiedSidebarSiteSelector';
+
 export interface UnifiedSidebarProps {
 	canonicalName?: string;
 	categoryImageUrl: string;
@@ -17,6 +19,8 @@ export interface UnifiedSidebarProps {
 	navigationId?: string;
 	onOpenChange?: (open: boolean) => void;
 	open?: boolean;
+	siteAdministrationItemSelectedEventName?: string;
+	siteAdministrationItemSelectorUrl?: string;
 	testId?: string;
 }
 
@@ -47,6 +51,8 @@ export default function UnifiedSidebar({
 	navigationId,
 	onOpenChange,
 	open = false,
+	siteAdministrationItemSelectedEventName,
+	siteAdministrationItemSelectorUrl,
 	testId = 'unified-sidebar',
 }: UnifiedSidebarProps) {
 	return (
@@ -80,11 +86,7 @@ export default function UnifiedSidebar({
 						data-qa-id="unifiedSidebarProductIcon"
 						displayType="outline"
 					>
-						<img
-							alt=""
-							className="c-mx-1"
-							src={categoryImageUrl}
-						/>
+						<img alt="" className="c-mx-1" src={categoryImageUrl} />
 					</ClaySticker>
 
 					<span
@@ -93,6 +95,16 @@ export default function UnifiedSidebar({
 					>
 						{label}
 					</span>
+
+					{siteAdministrationItemSelectedEventName &&
+						siteAdministrationItemSelectorUrl && (
+							<UnifiedSidebarSiteSelector
+								eventName={
+									siteAdministrationItemSelectedEventName
+								}
+								url={siteAdministrationItemSelectorUrl}
+							/>
+						)}
 				</SidePanel.Title>
 			</SidePanel.Header>
 

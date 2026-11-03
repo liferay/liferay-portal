@@ -106,12 +106,15 @@ const renderComponent = ({
 	render(
 		<SideNavigation
 			canonicalName="sideNavigationCanonicalName"
+			categoryImageUrl="categoryImageUrl"
 			expandedKeys={expandedKeys}
 			expandedKeysSessionKey="expandedKeysSessionKey"
 			items={items}
 			label="Applications"
 			navigationItemsURL="navigationItemsURL"
 			selectedPortletId={selectedPortletId}
+			siteAdministrationItemSelectedEventName="siteAdministrationItemSelectedEventName"
+			siteAdministrationItemSelectorUrl="siteAdministrationItemSelectorUrl"
 			visible
 			visibleSessionKey="visibleSessionKey"
 		/>
