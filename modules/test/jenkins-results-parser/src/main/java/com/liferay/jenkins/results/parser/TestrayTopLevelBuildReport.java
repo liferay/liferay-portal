@@ -6,6 +6,7 @@
 package com.liferay.jenkins.results.parser;
 
 import com.liferay.jenkins.results.parser.testray.TestrayBuild;
+import com.liferay.jenkins.results.parser.testray.TestrayCloudBucket;
 import com.liferay.jenkins.results.parser.testray.TestrayCloudObject;
 
 import org.json.JSONObject;
@@ -14,6 +15,36 @@ import org.json.JSONObject;
  * @author Michael Hashimoto
  */
 public class TestrayTopLevelBuildReport extends BaseTopLevelBuildReport {
+
+	public JSONObject getBuildDatabaseJSONObject() {
+		if (!TestrayCloudBucket.hasGoogleApplicationCredentials()) {
+			return null;
+		}
+
+		JenkinsMaster jenkinsMaster = getJenkinsMaster();
+
+		TestrayCloudBucket testrayCloudBucket =
+			TestrayCloudBucket.getInstance();
+
+		TestrayCloudObject buildDatabaseTestrayCloudObject =
+			testrayCloudBucket.getTestrayCloudObject(
+				JenkinsResultsParserUtil.combine(
+					getStartYearMonth(), "/", jenkinsMaster.getName(), "/",
+					getJobName(), "/", String.valueOf(getBuildNumber()),
+					"/build-database.json.gz"));
+
+		if (buildDatabaseTestrayCloudObject == null) {
+			return null;
+		}
+
+		String value = buildDatabaseTestrayCloudObject.getValue();
+
+		if (JenkinsResultsParserUtil.isNullOrEmpty(value)) {
+			return null;
+		}
+
+		return new JSONObject(value);
+	}
 
 	@Override
 	public JSONObject getBuildReportJSONObject() {

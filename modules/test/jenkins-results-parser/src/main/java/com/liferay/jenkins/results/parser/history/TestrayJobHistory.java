@@ -8,6 +8,7 @@ package com.liferay.jenkins.results.parser.history;
 import com.liferay.jenkins.results.parser.DownstreamBuildReport;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 import com.liferay.jenkins.results.parser.TestClassReport;
+import com.liferay.jenkins.results.parser.TestrayTopLevelBuildReport;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
 import com.liferay.jenkins.results.parser.testray.TestrayBuild;
 import com.liferay.jenkins.results.parser.testray.TestrayProject;
@@ -19,8 +20,13 @@ import java.io.IOException;
 
 import java.net.URL;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -128,6 +134,9 @@ public class TestrayJobHistory extends BaseJobHistory {
 					latestTestrayBuild = testrayBuild;
 
 					latestBuild = true;
+
+					_latestTopLevelBuildReports.put(
+						testrayRoutine.getId(), topLevelBuildReport);
 				}
 
 				for (DownstreamBuildReport downstreamBuildReport :
@@ -164,6 +173,85 @@ public class TestrayJobHistory extends BaseJobHistory {
 					JenkinsResultsParserUtil.getCurrentTimeMillis() - start)));
 
 		_populated = true;
+	}
+
+	public void validate() {
+		if (!_populated) {
+			populate();
+		}
+
+		Map<String, Integer> testCounts = new HashMap<>();
+
+		for (BatchHistory batchHistory : getBatchHistories()) {
+			List<TestClassHistory> testClassHistories =
+				batchHistory.getTestClassHistories();
+
+			testCounts.put(
+				batchHistory.getBatchName(), testClassHistories.size());
+		}
+
+		List<String> errorMessages = new ArrayList<>();
+
+		for (TestrayRoutine testrayRoutine : _testrayRoutines) {
+			TopLevelBuildReport topLevelBuildReport =
+				_latestTopLevelBuildReports.get(testrayRoutine.getId());
+
+			if (topLevelBuildReport == null) {
+				errorMessages.add(
+					"Unable to find a build report for routine " +
+						testrayRoutine.getURL());
+
+				continue;
+			}
+
+			JSONObject buildDatabaseJSONObject = null;
+
+			if (topLevelBuildReport instanceof TestrayTopLevelBuildReport) {
+				TestrayTopLevelBuildReport testrayTopLevelBuildReport =
+					(TestrayTopLevelBuildReport)topLevelBuildReport;
+
+				buildDatabaseJSONObject =
+					testrayTopLevelBuildReport.getBuildDatabaseJSONObject();
+			}
+
+			if (buildDatabaseJSONObject == null) {
+				errorMessages.add(
+					"Unable to find a build database for " +
+						topLevelBuildReport.getBuildURL());
+
+				continue;
+			}
+
+			Map<String, Integer> expectedTestCounts = getExpectedTestCounts(
+				buildDatabaseJSONObject);
+
+			for (Map.Entry<String, Integer> entry :
+					expectedTestCounts.entrySet()) {
+
+				String batchName = entry.getKey();
+
+				String errorMessage = getErrorMessage(
+					batchName, entry.getValue(),
+					_getTestCount(testCounts, batchName),
+					_getTestCountThreshold(batchName), _getTestCountMinimum());
+
+				if (errorMessage == null) {
+					continue;
+				}
+
+				errorMessages.add(
+					JenkinsResultsParserUtil.combine(
+						errorMessage, " in ",
+						String.valueOf(topLevelBuildReport.getBuildURL())));
+			}
+		}
+
+		if (errorMessages.isEmpty()) {
+			return;
+		}
+
+		throw new RuntimeException(
+			"Invalid CI history:\n" + String.join("\n", errorMessages));
 	}
 
 	public void writeCIHistoryJSONFile(String filePath) throws IOException {
@@ -279,6 +367,76 @@ public class TestrayJobHistory extends BaseJobHistory {
 		JenkinsResultsParserUtil.write(filePath, sb.toString());
 	}
 
+	protected static String getErrorMessage(
+		String batchName, int expectedTestCount, Integer testCount,
+		int testCountThreshold, int testCountMinimum) {
+
+		if (testCount == null) {
+			return "Batch " + batchName + " is missing from the CI history";
+		}
+
+		if ((expectedTestCount <= testCountMinimum) ||
+			((testCount * 100L) >=
+				(expectedTestCount * (long)testCountThreshold))) {
+
+			return null;
+		}
+
+		return JenkinsResultsParserUtil.combine(
+			"Batch ", batchName, " has ", String.valueOf(testCount), " of ",
+			String.valueOf(expectedTestCount), " expected tests, below the ",
+			String.valueOf(testCountThreshold), "% threshold");
+	}
+
+	protected static Map<String, Integer> getExpectedTestCounts(
+		JSONObject buildDatabaseJSONObject) {
+
+		Map<String, Integer> expectedTestCounts = new HashMap<>();
+
+		JSONObject jobsJSONObject = buildDatabaseJSONObject.optJSONObject(
+			"jobs");
+
+		if (jobsJSONObject == null) {
+			return expectedTestCounts;
+		}
+
+		for (String jobKey : jobsJSONObject.keySet()) {
+			JSONObject jobJSONObject = jobsJSONObject.getJSONObject(jobKey);
+
+			JSONArray batchesJSONArray = jobJSONObject.optJSONArray("batches");
+
+			if (batchesJSONArray == null) {
+				continue;
+			}
+
+			for (int i = 0; i < batchesJSONArray.length(); i++) {
+				JSONObject batchJSONObject = batchesJSONArray.getJSONObject(i);
+
+				Set<String> testClassNames = new HashSet<>();
+
+				JSONArray segmentsJSONArray = batchJSONObject.optJSONArray(
+					"segments");
+
+				if (segmentsJSONArray != null) {
+					for (int j = 0; j < segmentsJSONArray.length(); j++) {
+						JSONObject segmentJSONObject =
+							segmentsJSONArray.getJSONObject(j);
+
+						_addTestClassNames(
+							segmentJSONObject.optJSONArray("axes"),
+							testClassNames);
+					}
+				}
+
+				expectedTestCounts.merge(
+					batchJSONObject.getString("batch_name"),
+					testClassNames.size(), Math::max);
+			}
+		}
+
+		return expectedTestCounts;
+	}
+
 	protected TestrayJobHistory(
 		int maxBuildCount, String portalUpstreamBranchName,
 		List<TestrayRoutine> testrayRoutines) {
@@ -289,6 +447,62 @@ public class TestrayJobHistory extends BaseJobHistory {
 		_testrayRoutines = testrayRoutines;
 	}
 
+	private static void _addTestClassNames(
+		JSONArray axesJSONArray, Set<String> testClassNames) {
+
+		if (axesJSONArray == null) {
+			return;
+		}
+
+		for (int i = 0; i < axesJSONArray.length(); i++) {
+			JSONObject axisJSONObject = axesJSONArray.getJSONObject(i);
+
+			_addTestClassNames(
+				testClassNames, axisJSONObject.optJSONArray("test_classes"));
+
+			JSONArray testTasksJSONArray = axisJSONObject.optJSONArray(
+				"test_tasks");
+
+			if (testTasksJSONArray == null) {
+				continue;
+			}
+
+			for (int j = 0; j < testTasksJSONArray.length(); j++) {
+				JSONObject testTaskJSONObject =
+					testTasksJSONArray.getJSONObject(j);
+
+				_addTestClassNames(
+					testClassNames,
+					testTaskJSONObject.optJSONArray("test_classes"));
+			}
+		}
+	}
+
+	private static void _addTestClassNames(
+		Set<String> testClassNames, JSONArray testClassesJSONArray) {
+
+		if (testClassesJSONArray == null) {
+			return;
+		}
+
+		for (int i = 0; i < testClassesJSONArray.length(); i++) {
+			JSONObject testClassJSONObject = testClassesJSONArray.getJSONObject(
+				i);
+
+			String testClassName = testClassJSONObject.optString("name");
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(testClassName)) {
+				testClassName = testClassJSONObject.optString("file");
+			}
+
+			if (JenkinsResultsParserUtil.isNullOrEmpty(testClassName)) {
+				continue;
+			}
+
+			testClassNames.add(testClassName);
+		}
+	}
+
 	private String _fixStatus(String status) {
 		status = status.replace("FIXED", "PASSED");
 		status = status.replace("REGRESSION", "FAILED");
@@ -296,6 +510,55 @@ public class TestrayJobHistory extends BaseJobHistory {
 		return status;
 	}
 
+	private int _getIntegerBuildProperty(
+		int defaultValue, String propertyName, String... opts) {
+
+		try {
+			String propertyValue = JenkinsResultsParserUtil.getBuildProperty(
+				propertyName, opts);
+
+			if (JenkinsResultsParserUtil.isInteger(propertyValue)) {
+				return Integer.parseInt(propertyValue);
+			}
+		}
+		catch (IOException ioException) {
+			ioException.printStackTrace();
+		}
+
+		return defaultValue;
+	}
+
+	private Integer _getTestCount(
+		Map<String, Integer> testCounts, String batchName) {
+
+		Integer testCount = testCounts.get(batchName);
+
+		if ((testCount != null) || !batchName.endsWith("_stable")) {
+			return testCount;
+		}
+
+		return testCounts.get(
+			batchName.substring(0, batchName.length() - "_stable".length()));
+	}
+
+	private int _getTestCountMinimum() {
+		return _getIntegerBuildProperty(
+			_TEST_COUNT_MINIMUM, "test.history.batch.test.count.minimum",
+			getPortalUpstreamBranchName());
+	}
+
+	private int _getTestCountThreshold(String batchName) {
+		return _getIntegerBuildProperty(
+			_TEST_COUNT_THRESHOLD, "test.history.batch.test.count.threshold",
+			getPortalUpstreamBranchName(), batchName);
+	}
+
+	private static final int _TEST_COUNT_MINIMUM = 25;
+
+	private static final int _TEST_COUNT_THRESHOLD = 90;
+
+	private final Map<Long, TopLevelBuildReport> _latestTopLevelBuildReports =
+		new HashMap<>();
 	private final int _maxBuildCount;
 	private boolean _populated;
 	private final List<TestrayRoutine> _testrayRoutines;
