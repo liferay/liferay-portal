@@ -936,12 +936,12 @@ public class AssetListAssetEntryProviderTest {
 	public void testGetDynamicAssetEntriesFromDepotEntry() throws Exception {
 		_depotEntry = _addDepotEntry();
 
+		FileEntry depotFileEntry = _addFileEntry(
+			_depotEntry.getGroupId(), RandomTestUtil.randomString());
+
 		JournalArticle depotJournalArticle = JournalTestUtil.addArticle(
 			_depotEntry.getGroupId(),
 			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID);
-
-		FileEntry depotFileEntry = _addFileEntry(
-			_depotEntry.getGroupId(), RandomTestUtil.randomString());
 
 		JournalArticle journalArticle = JournalTestUtil.addArticle(
 			_group.getGroupId(),

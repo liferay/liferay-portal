@@ -133,7 +133,6 @@ public class DepotAssetRendererFactoryTrackerTest {
 						journalArticleAssetRendererFactory -> Objects.equals(
 							journalArticleAssetRendererFactory.getClassName(),
 							JournalArticle.class.getName())));
-
 				Assert.assertTrue(
 					ListUtil.exists(
 						assetRendererFactories,
@@ -152,9 +151,7 @@ public class DepotAssetRendererFactoryTrackerTest {
 					AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
 						TestPropsValues.getCompanyId(), true);
 
-				Assert.assertTrue(
-					assetRendererFactories.toString(),
-					assetRendererFactories.isEmpty());
+				Assert.assertTrue(assetRendererFactories.isEmpty());
 			});
 	}
 

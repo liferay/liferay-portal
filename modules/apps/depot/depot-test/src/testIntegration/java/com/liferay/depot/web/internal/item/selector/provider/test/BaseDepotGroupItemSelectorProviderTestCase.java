@@ -130,14 +130,17 @@ public abstract class BaseDepotGroupItemSelectorProviderTestCase {
 
 		Group group = layoutPrototype.getGroup();
 
-		List<Group> groups = getGroupItemSelectorProvider().getGroups(
+		GroupItemSelectorProvider groupItemSelectorProvider =
+			getGroupItemSelectorProvider();
+
+		List<Group> groups = groupItemSelectorProvider.getGroups(
 			group.getCompanyId(), group.getGroupId(), null, 0, 20);
 
 		Assert.assertEquals(groups.toString(), 1, groups.size());
 
 		Assert.assertEquals(
 			1,
-			getGroupItemSelectorProvider().getGroupsCount(
+			groupItemSelectorProvider.getGroupsCount(
 				group.getCompanyId(), group.getGroupId(), null));
 	}
 
