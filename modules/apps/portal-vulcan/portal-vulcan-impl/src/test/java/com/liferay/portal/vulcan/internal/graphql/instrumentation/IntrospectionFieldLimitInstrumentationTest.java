@@ -6,6 +6,7 @@
 package com.liferay.portal.vulcan.internal.graphql.instrumentation;
 
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
 import com.liferay.portal.vulcan.internal.graphql.exception.IntrospectionFieldLimitExceededException;
@@ -28,7 +29,6 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -146,17 +146,9 @@ public class IntrospectionFieldLimitInstrumentationTest {
 	private void _assertIntrospectionFieldLimitExceeded(
 		String message, String query) {
 
-		try {
-			_beginExecuteOperation(query);
-
-			Assert.fail();
-		}
-		catch (IntrospectionFieldLimitExceededException
-					introspectionFieldLimitExceededException) {
-
-			Assert.assertEquals(
-				message, introspectionFieldLimitExceededException.getMessage());
-		}
+		AssertUtils.assertFailure(
+			IntrospectionFieldLimitExceededException.class, message,
+			() -> _beginExecuteOperation(query));
 	}
 
 	private void _beginExecuteOperation(String query) {
