@@ -122,12 +122,13 @@ test.describe('Prompts - FDS Table', () => {
 
 	test(
 		'Offers the row actions',
-		{tag: '@LPD-98309'},
+		{tag: ['@LPD-98309', '@LPD-110884']},
 		async ({fdsTablePage, page}) => {
 			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
 				'Edit',
 				'Duplicate',
 				'Delete',
+				'Permissions',
 			]);
 		}
 	);
@@ -403,6 +404,43 @@ test.describe('Prompts - Status filter', () => {
 
 			await expect(promptsPage.row(activeName)).toBeVisible();
 			await expect(promptsPage.row(inactiveName)).toBeHidden();
+		}
+	);
+});
+
+test.describe('Prompts - Permissions', () => {
+	test(
+		'Opens the permissions modal of a prompt from the three-dot menu',
+		{tag: '@LPD-110884'},
+		async ({apiHelpers, page, promptsPage}) => {
+			const name = promptName();
+
+			const prompt = await createPrompt(apiHelpers, name);
+
+			await promptsPage.goto();
+
+			await promptsPage.search(name);
+			await promptsPage.clickAction(name, 'Permissions');
+
+			await expect(
+				page.getByRole('dialog', {name: 'Permissions'})
+			).toBeVisible();
+			await expect(
+				page.locator('iframe[title="Permissions"]')
+			).toHaveAttribute(
+				'src',
+				new RegExp(`resourcePrimKey=${prompt.id}(&|$)`)
+			);
+
+			const permissionsFrame = page.frameLocator(
+				'iframe[title="Permissions"]'
+			);
+
+			for (const action of ['Delete', 'Permissions', 'Update', 'View']) {
+				await expect(
+					permissionsFrame.getByText(action, {exact: true}).first()
+				).toBeVisible();
+			}
 		}
 	);
 });

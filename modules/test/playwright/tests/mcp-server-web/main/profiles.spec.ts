@@ -10,7 +10,9 @@ import {loginTest} from '../../../fixtures/loginTest';
 import {mcpServerWebPagesTest} from '../../../fixtures/mcpServerWebPagesTest';
 import {DataApiHelpers} from '../../../helpers/ApiHelpers';
 import {FDSTablePage} from '../../../pages/mcp-server-web/FDSTablePage';
+import createUserWithPermissions from '../../../utils/createUserWithPermissions';
 import getRandomString from '../../../utils/getRandomString';
+import {performUserSwitchViaApi} from '../../../utils/performLogin';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {
 	expectFDSTableColumns,
@@ -27,6 +29,9 @@ const baseTest = mergeTests(
 );
 
 const DATA_MASKS_API = 'data-masks';
+
+const MCP_SERVER_PORTLET =
+	'com_liferay_mcp_server_web_internal_portlet_MCPServerPortlet';
 
 const OTHER_TOOL_NAME = 'getAuditEventsPage';
 
@@ -204,11 +209,12 @@ test.describe('Profiles - FDS Table', () => {
 
 	test(
 		'Offers the row actions',
-		{tag: '@LPD-99230'},
+		{tag: ['@LPD-99230', '@LPD-110884']},
 		async ({fdsTablePage, page}) => {
 			await expectFDSTableRowActions(fdsTablePage, page, seededItemName, [
 				'Edit',
 				'Delete',
+				'Permissions',
 			]);
 		}
 	);
@@ -1218,6 +1224,61 @@ test.describe('Profiles - Status', () => {
 			);
 
 			expect(saved.profileStatus.key).toBe('active');
+		}
+	);
+});
+
+test.describe('Profiles - Permissions', () => {
+	test(
+		'Hides the New button and the three-dot menu without permissions',
+		{tag: '@LPD-110884'},
+		async ({apiHelpers, page, profilesPage}) => {
+			const name = profileName();
+
+			await createProfile(apiHelpers, name);
+
+			const companyId = await page.evaluate(() =>
+				Liferay.ThemeDisplay.getCompanyId()
+			);
+			const {className} = await apiHelpers.get(
+				`${apiHelpers.baseUrl}object-admin/v1.0/object-definitions/by-external-reference-code/L_MCP_SERVER_PROFILE`
+			);
+
+			const user = await createUserWithPermissions({
+				apiHelpers,
+				rolePermissions: [
+					{
+						actionIds: ['VIEW_CONTROL_PANEL'],
+						primaryKey: companyId,
+						resourceName: '90',
+						scope: 1,
+					},
+					{
+						actionIds: ['ACCESS_IN_CONTROL_PANEL', 'VIEW'],
+						primaryKey: companyId,
+						resourceName: MCP_SERVER_PORTLET,
+						scope: 1,
+					},
+					{
+						actionIds: ['VIEW'],
+						primaryKey: companyId,
+						resourceName: className,
+						scope: 1,
+					},
+				],
+			});
+
+			await performUserSwitchViaApi(page, user.alternateName);
+
+			await profilesPage.goto();
+
+			await profilesPage.search(name);
+
+			await expect(profilesPage.row(name)).toBeVisible();
+			await expect(
+				profilesPage.row(name).getByRole('button', {name: 'Actions'})
+			).toBeHidden();
+			await expect(profilesPage.newProfileButton).toBeHidden();
 		}
 	);
 });
