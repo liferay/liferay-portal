@@ -498,9 +498,11 @@ test.describe('Collection Display', () => {
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
-		await expect(page.getByRole('cell', {name: 'textField'})).toBeVisible();
 		await expect(
-			page.getByRole('cell', {name: 'Relationship'})
+			page.getByRole('columnheader', {name: 'textField'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('columnheader', {name: 'Relationship'})
 		).toBeVisible();
 
 		await viewObjectDefinitionsPage.goto();
@@ -511,9 +513,11 @@ test.describe('Collection Display', () => {
 
 		await page.goto(`/web${site.friendlyUrlPath}${layout.friendlyUrlPath}`);
 
-		await expect(page.getByRole('cell', {name: 'textField'})).toBeVisible();
 		await expect(
-			page.getByRole('cell', {name: 'Relationship'})
+			page.getByRole('columnheader', {name: 'textField'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('columnheader', {name: 'Relationship'})
 		).not.toBeVisible();
 	});
 });
