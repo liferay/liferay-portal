@@ -214,7 +214,6 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 		String searchAPIURL = _getSearchAPIURL(user1);
 
 		Assert.assertTrue(
-			searchAPIURL,
 			searchAPIURL.contains(
 				"groupIds/any(g:g in (" + memberDepotEntry.getGroupId() +
 					"))"));
@@ -225,8 +224,7 @@ public class ViewRelatedAssetsSectionDisplayContextTest
 
 		searchAPIURL = _getSearchAPIURL(user2);
 
-		Assert.assertTrue(
-			searchAPIURL, searchAPIURL.contains("groupIds/any(g:g in (-1))"));
+		Assert.assertTrue(searchAPIURL.contains("groupIds/any(g:g in (-1))"));
 
 		_depotEntryLocalService.deleteDepotEntry(memberDepotEntry);
 		_depotEntryLocalService.deleteDepotEntry(nonmemberDepotEntry);
