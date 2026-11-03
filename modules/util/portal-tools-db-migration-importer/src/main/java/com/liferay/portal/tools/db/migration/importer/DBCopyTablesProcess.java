@@ -767,6 +767,60 @@ public class DBCopyTablesProcess {
 	private void _loadColumnsMetadata() throws Exception {
 		_loadColumnNamesMap(
 			_sourceColumnNamesMap, _sourceColumnsType, _sourceDataSource);
+
+		Set<String> toolTableNames = new HashSet<>();
+
+		try (Connection connection = _sourceDataSource.getConnection()) {
+			DatabaseMetaData databaseMetaData = connection.getMetaData();
+
+			String databaseProductName =
+				databaseMetaData.getDatabaseProductName();
+
+			String sql = null;
+
+			if (databaseProductName.startsWith("DB2")) {
+				Collections.addAll(
+					toolTableNames, "ADVISE_INDEX", "ADVISE_INSTANCE",
+					"ADVISE_MQT", "ADVISE_PARTITION", "ADVISE_TABLE",
+					"ADVISE_WORKLOAD", "EXPLAIN_ACTUALS", "EXPLAIN_ARGUMENT",
+					"EXPLAIN_DIAGNOSTIC", "EXPLAIN_DIAGNOSTIC_DATA",
+					"EXPLAIN_INSTANCE", "EXPLAIN_OBJECT", "EXPLAIN_OPERATOR",
+					"EXPLAIN_PREDICATE", "EXPLAIN_STATEMENT", "EXPLAIN_STREAM",
+					"OBJECT_METRICS");
+			}
+			else if (databaseProductName.equals("Microsoft SQL Server")) {
+				sql = "select name from sys.tables where is_ms_shipped = 1";
+			}
+			else if (databaseProductName.equals("Oracle")) {
+				sql =
+					"select job_name from user_datapump_jobs union select " +
+						"log_table from user_mview_logs";
+			}
+
+			if (sql != null) {
+				try (PreparedStatement preparedStatement =
+						connection.prepareStatement(sql);
+
+					ResultSet resultSet = preparedStatement.executeQuery()) {
+
+					while (resultSet.next()) {
+						toolTableNames.add(resultSet.getString(1));
+					}
+				}
+			}
+		}
+
+		for (String toolTableName : toolTableNames) {
+			if (_sourceColumnNamesMap.remove(toolTableName) == null) {
+				continue;
+			}
+
+			System.out.println(
+				StringBundler.concat(
+					"Skipping table ", toolTableName, _partitionMessage,
+					" because it belongs to a database tool"));
+		}
+
 		_loadColumnNamesMap(
 			_targetColumnNamesMap, _targetColumnsType, _targetDataSource);
 	}
