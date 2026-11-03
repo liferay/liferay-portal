@@ -229,25 +229,6 @@ $side-navigation-scope-item-height: 2.5rem;
 	}
 }
 
-html#{$cadmin-selector} {
-	.side-navigation-header {
-		.side-navigation-close-button {
-			margin-bottom: auto;
-			margin-top: auto;
-
-			@include media-breakpoint-up(lg) {
-				@include sr-only();
-				@include sr-only-focusable();
-
-				&:active,
-				&:focus {
-					position: absolute;
-				}
-			}
-		}
-	}
-}
-
 @keyframes shimmer {
 	100% {
 		transform: translateX(100%);

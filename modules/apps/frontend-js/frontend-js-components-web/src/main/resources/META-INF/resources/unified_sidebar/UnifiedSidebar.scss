@@ -1,0 +1,20 @@
+@import 'cadmin-variables';
+
+html#{$cadmin-selector} {
+	.unified-sidebar-header {
+		.unified-sidebar-close-button {
+			margin-bottom: auto;
+			margin-top: auto;
+
+			@include media-breakpoint-up(lg) {
+				@include sr-only();
+				@include sr-only-focusable();
+
+				&:active,
+				&:focus {
+					position: absolute;
+				}
+			}
+		}
+	}
+}
