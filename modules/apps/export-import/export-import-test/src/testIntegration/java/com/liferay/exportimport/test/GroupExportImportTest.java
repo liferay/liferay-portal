@@ -561,15 +561,13 @@ public class GroupExportImportTest {
 			String externalReferenceCode)
 		throws Exception {
 
-		List<ExportImportReportEntry> exportImportReportEntries =
-			_exportImportReportEntryLocalService.getExportImportReportEntries(
-				TestPropsValues.getCompanyId(),
-				exportImportConfiguration.getExportImportConfigurationId());
-
 		Assert.assertTrue(
-			exportImportReportEntries.toString(),
 			ListUtil.exists(
-				exportImportReportEntries,
+				_exportImportReportEntryLocalService.
+					getExportImportReportEntries(
+						TestPropsValues.getCompanyId(),
+						exportImportConfiguration.
+							getExportImportConfigurationId()),
 				exportImportReportEntry -> {
 					if (Objects.equals(
 							externalReferenceCode,
