@@ -1972,25 +1972,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro viewFieldLabel(fieldName = null, fieldFieldLabel = null) {
-		if (${fieldName} == "Boolean") {
-			AssertElementPresent(
-				key_fieldLabel = ${fieldFieldLabel},
-				locator1 = "Checkbox#CHECKBOX_LABEL");
-		}
-		else {
-			if (!(isSet(index))) {
-				var index = 1;
-			}
-
-			AssertElementPresent(
-				key_fieldFieldLabel = ${fieldFieldLabel},
-				key_index = ${index},
-				locator1 = "DDMEditStructure#FORM_FIELD_CONTAINER_LABEL_ANY");
-		}
-	}
-
-	@summary = "Default summary"
 	macro viewFieldSearchable(fieldFieldLabel = null, searchableType = null) {
 		AssertClick.assertPartialTextClickAt(
 			key_fieldFieldLabel = ${fieldFieldLabel},

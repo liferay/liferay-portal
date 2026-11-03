@@ -28,19 +28,6 @@ definition {
 	}
 
 	@summary = "Default summary"
-	macro addFavoriteStructure(structureName = null) {
-		AssertTextEquals.assertPartialText(
-			locator1 = "Message#INFO_1",
-			value1 = "You can add as many as 7 favorites in your quick menu.");
-
-		Click(
-			key_rowEntry = ${structureName},
-			locator1 = "Icon#ADD_FAVORITE");
-
-		Alert.viewSuccessMessage();
-	}
-
-	@summary = "Default summary"
 	macro addLocalization(localizedManageTranslations = null, locale2 = null, localization2Name = null, locale = null, localizedDone = null, localization1Name = null) {
 		Click(locator1 = "Button#LOCALIZATION_GENERIC");
 
@@ -343,58 +330,6 @@ definition {
 		}
 
 		SelectFrame(value1 = "relative=top");
-	}
-
-	@summary = "Default summary"
-	macro viewFavoriteStructureViaIFrame(structureName = null, indexNumber = null) {
-		AssertTextEquals(
-			locator1 = "WC#ADD_TO_FAVORITES",
-			value1 = "Add to Favorites (${indexNumber})");
-
-		ScrollBy(value1 = "0, 50");
-
-		AssertElementPresent(
-			key_rowEntry = ${structureName},
-			locator1 = "Icon#REMOVE_FAVORITE");
-	}
-
-	@summary = "Default summary"
-	macro viewFavoriteStructureViaPlusButton(structureName = null) {
-		LexiconEntry.gotoAdd();
-
-		MenuItem.viewPresent(menuItem = "More");
-
-		MenuItem.viewPresent(menuItem = "Favorites");
-
-		MenuItem.viewPresent(menuItem = ${structureName});
-	}
-
-	@summary = "Default summary"
-	macro viewNoFavoriteStructure() {
-		AssertTextEquals(
-			locator1 = "WC#ADD_TO_FAVORITES",
-			value1 = "Add to Favorites (0)");
-	}
-
-	@summary = "Default summary"
-	macro viewStructuresViaMoreIFrame(structureName = null) {
-		AssertTextEquals(
-			key_rowEntry = ${structureName},
-			locator1 = "ContentRow#ENTRY_CONTENT_ENTRY_NAME_LINK",
-			value1 = ${structureName});
-	}
-
-	@summary = "Default summary"
-	macro viewTableEntryCP(structureName = null, structureDescription = null) {
-		var key_ddlDataDefinitionName = ${structureName};
-
-		AssertTextEquals(
-			locator1 = "DDMSelectStructure#DDM_STRUCTURE_TABLE_NAME",
-			value1 = ${structureName});
-
-		AssertTextEquals(
-			locator1 = "DDMSelectStructure#DDM_STRUCTURE_TABLE_DESCRIPTION",
-			value1 = ${structureDescription});
 	}
 
 }
