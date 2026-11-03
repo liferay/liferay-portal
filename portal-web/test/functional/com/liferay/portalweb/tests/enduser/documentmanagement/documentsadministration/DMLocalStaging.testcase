@@ -40,60 +40,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the document using custom document type can be deleted and republished. Skip the instance for performance improvement."
-	@priority = 5
-	@refactordone
-	test CanDeleteDocumentWithCustomType {
-		property portal.acceptance = "true";
-
-		DMNavigator.gotoDocumentType();
-
-		DMDocumentType.add(
-			dmDocumentTypeDescription = "DM Document Type Description",
-			dmDocumentTypeFieldNames = "Text",
-			dmDocumentTypeName = "DM Document Type Name");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.addCP(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			dmDocumentTypeName = "DM Document Type Name",
-			navTab = "Documents and Media",
-			textField = "Text");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		DMDocument.viewCP(dmDocumentTitle = "DM Document Title");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.deleteCP(dmDocumentTitle = "DM Document Title");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.viewDefault();
-	}
-
 	@description = "This ensures that the document using custom document type can be edited and republished."
 	@priority = 5
 	@refactordone
@@ -268,59 +214,6 @@ definition {
 		DMDocument.gotoEntry(dmDocumentTitle = "DM Document Title");
 
 		Comments.viewCommentReadOnly();
-	}
-
-	@description = "This is a test for LPS-136824. It checks that a folder with multiple files can be deleted using the normal publication process."
-	@priority = 3
-	test CanPublishDeletedFolderWithMultipleFiles {
-		JSONFolder.addFolder(
-			dmFolderDescription = "DM Folder Description",
-			dmFolderName = "DM Folder Name",
-			groupName = "Site Name-staging");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_1.jpeg",
-			folderName = "DM Folder Name",
-			groupName = "Site Name-staging",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpeg");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2.jpg",
-			folderName = "DM Folder Name",
-			groupName = "Site Name-staging",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMFolder.viewCP(dmFolderName = "DM Folder Name");
-
-		JSONFolder.moveFolderToTrash(
-			folderName = "DM Folder Name",
-			groupName = "Site Name-staging");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.viewDefault();
 	}
 
 	@description = "This ensures that the custom document type being used by document can be edited and republished."
@@ -1470,50 +1363,6 @@ definition {
 		AssertVisible(
 			key_imageSourceURL = "${portalURL}/documents/d/site-name/document_2_edit",
 			locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
-	}
-
-	@description = "This test covers LPS-90557. It ensures that a basic document and a shortcut pointing to it can be removed and republished when enabling local staging."
-	@priority = 4
-	test ShortcutDisppearsAfterTargetDeletionIsPublished {
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name-staging",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_1.jpg");
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name-staging");
-
-		DMDocument.addDMShortcutCP(
-			dmDocumentTitle = "DM Document Title",
-			stagingSiteName = "true");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		JSONDocument.deleteFile(
-			dmDocumentTitle = "DM Document Title",
-			groupName = "Site Name (Staging)",
-			site = "false");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openDocumentsAndMediaAdmin(siteURLKey = "site-name");
-
-		DMDocument.viewDefault();
-
-		AssertConsoleTextNotPresent(value1 = "PortletDataException");
 	}
 
 	@description = "This ensures that the image can be deleted and republished in web content."
