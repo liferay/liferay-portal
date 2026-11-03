@@ -23,9 +23,11 @@ import com.liferay.asset.list.internal.util.AssetListOrderByColumnUtil;
 import com.liferay.asset.list.model.AssetListEntry;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRel;
 import com.liferay.asset.list.model.AssetListEntryAssetEntryRelModel;
+import com.liferay.asset.list.model.AssetListEntryAudienceEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRel;
 import com.liferay.asset.list.model.AssetListEntrySegmentsEntryRelModel;
 import com.liferay.asset.list.service.AssetListEntryAssetEntryRelLocalService;
+import com.liferay.asset.list.service.AssetListEntryAudienceEntryRelLocalService;
 import com.liferay.asset.list.service.AssetListEntrySegmentsEntryRelLocalService;
 import com.liferay.asset.list.util.comparator.AssetListEntrySegmentsEntryRelPriorityComparator;
 import com.liferay.asset.util.AssetHelper;
@@ -111,13 +113,60 @@ public class AssetListAssetEntryProviderImpl
 				AssetListEntryTypeConstants.TYPE_MANUAL)) {
 
 			return _getManualAssetEntries(
-				assetListEntry, segmentsEntryIds, assetCategoryIds,
-				assetTagNames, keywords, start, end);
+				assetCategoryIds, assetListEntry, assetTagNames, end,
+				_getGroupIds(assetListEntry, segmentsEntryIds), keywords,
+				start);
 		}
 
 		return _getDynamicAssetEntries(
 			assetListEntry, segmentsEntryIds, assetCategoryIds, assetTagNames,
 			keywords, userId, start, end);
+	}
+
+	@Override
+	public InfoPage<AssetEntry> getAssetEntriesInfoPage(
+		long[][] assetCategoryIds, AssetListEntry assetListEntry,
+		String[][] assetTagNames, String[] audienceEntryERCs, int end,
+		String keywords, int start, String userId) {
+
+		AssetListEntryAudienceEntryRel assetListEntryAudienceEntryRel =
+			_assetListEntryAudienceEntryRelLocalService.
+				fetchAssetListEntryAudienceEntryRel(
+					assetListEntry.getAssetListEntryId(), audienceEntryERCs);
+
+		if (assetListEntryAudienceEntryRel == null) {
+			return getAssetEntriesInfoPage(
+				assetListEntry, new long[] {SegmentsEntryConstants.ID_DEFAULT},
+				assetCategoryIds, assetTagNames, keywords, userId, start, end);
+		}
+
+		if (Objects.equals(
+				assetListEntry.getType(),
+				AssetListEntryTypeConstants.TYPE_MANUAL)) {
+
+			return _getManualAssetEntries(
+				assetCategoryIds, assetListEntry, assetTagNames, end,
+				_getGroupIds(
+					_assetListEntryAssetEntryRelLocalService.
+						getAssetListEntryAssetEntryRels(
+							assetListEntry.getAssetListEntryId(),
+							assetListEntryAudienceEntryRel.
+								getAudienceEntryERC(),
+							SegmentsEntryConstants.ID_DEFAULT,
+							QueryUtil.ALL_POS, QueryUtil.ALL_POS)),
+				keywords, start);
+		}
+
+		return _getDynamicAssetEntries(
+			assetCategoryIds,
+			_createAssetEntryQuery(
+				assetListEntry,
+				UnicodePropertiesBuilder.create(
+					true
+				).fastLoad(
+					assetListEntryAudienceEntryRel.getTypeSettings()
+				).build()),
+			assetListEntry, assetTagNames, end, keywords, start);
 	}
 
 	@Override
@@ -610,18 +659,13 @@ public class AssetListAssetEntryProviderImpl
 		String userId, int start, int end) {
 
 		if (!_assetListConfiguration.combineAssetsFromAllSegmentsDynamic()) {
-			AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
-				assetListEntry,
-				_getFirstSegmentsEntryId(assetListEntry, segmentsEntryIds),
-				userId);
-
-			assetEntryQuery.setEnd(end);
-			assetEntryQuery.setStart(start);
-
-			return _dynamicSearch(
-				assetListEntry.getCompanyId(), assetCategoryIds,
-				Collections.singletonList(assetEntryQuery), assetTagNames,
-				keywords, start, end);
+			return _getDynamicAssetEntries(
+				assetCategoryIds,
+				getAssetEntryQuery(
+					assetListEntry,
+					_getFirstSegmentsEntryId(assetListEntry, segmentsEntryIds),
+					userId),
+				assetListEntry, assetTagNames, end, keywords, start);
 		}
 
 		return _dynamicSearch(
@@ -631,6 +675,20 @@ public class AssetListAssetEntryProviderImpl
 				segmentsEntryId -> getAssetEntryQuery(
 					assetListEntry, segmentsEntryId, userId)),
 			assetTagNames, keywords, start, end);
+	}
+
+	private InfoPage<AssetEntry> _getDynamicAssetEntries(
+		long[][] assetCategoryIds, AssetEntryQuery assetEntryQuery,
+		AssetListEntry assetListEntry, String[][] assetTagNames, int end,
+		String keywords, int start) {
+
+		assetEntryQuery.setEnd(end);
+		assetEntryQuery.setStart(start);
+
+		return _dynamicSearch(
+			assetListEntry.getCompanyId(), assetCategoryIds,
+			Collections.singletonList(assetEntryQuery), assetTagNames, keywords,
+			start, end);
 	}
 
 	private SearchContext _getDynamicSearchContext(
@@ -792,12 +850,10 @@ public class AssetListAssetEntryProviderImpl
 	}
 
 	private InfoPage<AssetEntry> _getManualAssetEntries(
-		AssetListEntry assetListEntry, long[] segmentsEntryIds,
-		long[][] assetCategoryIds, String[][] assetTagNames, String keywords,
-		int start, int end) {
-
-		Map<AssetListEntryAssetEntryRel, Long> groupIds = _getGroupIds(
-			assetListEntry, segmentsEntryIds);
+		long[][] assetCategoryIds, AssetListEntry assetListEntry,
+		String[][] assetTagNames, int end,
+		Map<AssetListEntryAssetEntryRel, Long> groupIds, String keywords,
+		int start) {
 
 		if (MapUtil.isEmpty(groupIds)) {
 			return InfoPage.of(Collections.emptyList());
@@ -1029,6 +1085,10 @@ public class AssetListAssetEntryProviderImpl
 	@Reference
 	private AssetListEntryAssetEntryRelLocalService
 		_assetListEntryAssetEntryRelLocalService;
+
+	@Reference
+	private AssetListEntryAudienceEntryRelLocalService
+		_assetListEntryAudienceEntryRelLocalService;
 
 	@Reference
 	private AssetListEntrySegmentsEntryRelLocalService
