@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import java.text.ParseException;
@@ -972,13 +971,7 @@ public abstract class BaseBuild implements Build {
 		String jobURL = JenkinsResultsParserUtil.combine(
 			jenkinsMaster.getRemoteURL(), "job/", _jobName);
 
-		try {
-			return JenkinsResultsParserUtil.encode(jobURL);
-		}
-		catch (MalformedURLException | URISyntaxException exception) {
-			throw new RuntimeException(
-				"Unable to encode job URL " + jobURL, exception);
-		}
+		return JenkinsResultsParserUtil.normalizeURL(jobURL);
 	}
 
 	@Override

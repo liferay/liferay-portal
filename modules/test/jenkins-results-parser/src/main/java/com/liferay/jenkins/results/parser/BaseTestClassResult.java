@@ -10,8 +10,6 @@ import com.liferay.jenkins.results.parser.test.clazz.JUnitTestClass;
 import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 import com.liferay.jenkins.results.parser.test.clazz.group.AxisTestClassGroup;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import java.util.ArrayList;
@@ -235,13 +233,7 @@ public abstract class BaseTestClassResult implements TestClassResult {
 		String testClassReportURL = sb.toString();
 
 		if (testClassReportURL.startsWith("http")) {
-			try {
-				return JenkinsResultsParserUtil.encode(testClassReportURL);
-			}
-			catch (MalformedURLException | URISyntaxException exception) {
-				System.out.println(
-					"Unable to encode the test report " + testClassReportURL);
-			}
+			return JenkinsResultsParserUtil.normalizeURL(testClassReportURL);
 		}
 
 		return testClassReportURL;

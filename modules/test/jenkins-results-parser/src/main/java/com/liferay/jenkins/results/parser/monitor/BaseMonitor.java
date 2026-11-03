@@ -9,9 +9,6 @@ import com.liferay.jenkins.results.parser.Dom4JUtil;
 import com.liferay.jenkins.results.parser.JenkinsMaster;
 import com.liferay.jenkins.results.parser.JenkinsResultsParserUtil;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -199,13 +196,7 @@ public abstract class BaseMonitor implements Monitor {
 		String jobURL = JenkinsResultsParserUtil.combine(
 			jenkinsMaster.getRemoteURL(), "job/", jobName);
 
-		try {
-			return JenkinsResultsParserUtil.encode(jobURL);
-		}
-		catch (MalformedURLException | URISyntaxException exception) {
-			throw new RuntimeException(
-				"Unable to encode job URL " + jobURL, exception);
-		}
+		return JenkinsResultsParserUtil.normalizeURL(jobURL);
 	}
 
 	protected String getRequiredParameter(

@@ -24,7 +24,7 @@ import org.json.JSONObject;
 public class JenkinsStopBuildUtil {
 
 	public static AbortResult abortBuild(String buildURL) throws Exception {
-		String normalizedBuildURL = JenkinsResultsParserUtil.fixURL(
+		String normalizedBuildURL = JenkinsResultsParserUtil.normalizeURL(
 			JenkinsResultsParserUtil.getLocalURL(buildURL));
 
 		if (!_isBuilding(normalizedBuildURL)) {
@@ -65,7 +65,7 @@ public class JenkinsStopBuildUtil {
 			JenkinsMaster jenkinsMaster, long queueId)
 		throws Exception {
 
-		String normalizedURL = JenkinsResultsParserUtil.fixURL(
+		String normalizedURL = JenkinsResultsParserUtil.normalizeURL(
 			JenkinsResultsParserUtil.getLocalURL(jenkinsMaster.getURL()));
 
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
@@ -217,7 +217,7 @@ public class JenkinsStopBuildUtil {
 	}
 
 	private static void _stopBuild(String buildURL) throws Exception {
-		String normalizedBuildURL = JenkinsResultsParserUtil.fixURL(
+		String normalizedBuildURL = JenkinsResultsParserUtil.normalizeURL(
 			JenkinsResultsParserUtil.getLocalURL(buildURL));
 
 		if (!_isBuilding(normalizedBuildURL)) {

@@ -1655,7 +1655,7 @@ public class JenkinsResultsParserUtil {
 	}
 
 	public static String getCacheFileKey(String urlString, String postContent) {
-		String key = fixURL(urlString);
+		String key = normalizeURL(urlString);
 
 		key.replace("//", "/");
 

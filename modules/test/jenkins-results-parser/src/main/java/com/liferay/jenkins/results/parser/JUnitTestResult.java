@@ -10,8 +10,6 @@ import com.liferay.jenkins.results.parser.test.clazz.TestClass;
 
 import java.io.IOException;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import java.util.Date;
@@ -160,13 +158,7 @@ public class JUnitTestResult extends BaseTestResult {
 		String testReportURL = sb.toString();
 
 		if (testReportURL.startsWith("http")) {
-			try {
-				return JenkinsResultsParserUtil.encode(testReportURL);
-			}
-			catch (MalformedURLException | URISyntaxException exception) {
-				System.out.println(
-					"Unable to encode the test report " + testReportURL);
-			}
+			return JenkinsResultsParserUtil.normalizeURL(testReportURL);
 		}
 
 		return testReportURL;

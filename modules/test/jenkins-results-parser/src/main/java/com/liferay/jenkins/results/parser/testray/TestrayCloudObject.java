@@ -58,7 +58,7 @@ public class TestrayCloudObject {
 	}
 
 	public String getURLString() {
-		return JenkinsResultsParserUtil.fixURL(String.valueOf(_url));
+		return JenkinsResultsParserUtil.normalizeURL(String.valueOf(_url));
 	}
 
 	public String getValue() {
