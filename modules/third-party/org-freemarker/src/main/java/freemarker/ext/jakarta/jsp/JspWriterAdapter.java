@@ -27,7 +27,7 @@ import jakarta.servlet.jsp.JspWriter;
 import freemarker.template.utility.SecurityUtilities;
 
 class JspWriterAdapter extends JspWriter {
-    static final char[] NEWLINE = SecurityUtilities.getSystemProperty("line.separator", "\n").toCharArray();
+    static final String NEWLINE = SecurityUtilities.getSystemProperty("line.separator", "\n");
     
     private final Writer out;
     
@@ -185,4 +185,15 @@ class JspWriterAdapter extends JspWriter {
         throws IOException {
         out.write(arg0, arg1, arg2);
     }
+
+    @Override
+    public void write(String s) throws IOException {
+        out.write(s);
+    }
+
+    @Override
+    public void write(String s, int offset, int length) throws IOException {
+        out.write(s, offset, length);
+    }
 }
+/* @generated */
