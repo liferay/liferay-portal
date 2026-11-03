@@ -176,6 +176,8 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-41307") &&
+			!FeatureFlagManagerUtil.isEnabled(
 				contextCompany.getCompanyId(), "LPD-85946")) {
 
 			return Collections.emptyList();
@@ -246,6 +248,12 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 	}
 
 	private Site[] _getSites(List<ExportImportGroup> exportImportGroups) {
+		if (!FeatureFlagManagerUtil.isEnabled(
+				contextCompany.getCompanyId(), "LPD-85946")) {
+
+			return new Site[0];
+		}
+
 		return transformToArray(
 			ListUtil.filter(
 				exportImportGroups,

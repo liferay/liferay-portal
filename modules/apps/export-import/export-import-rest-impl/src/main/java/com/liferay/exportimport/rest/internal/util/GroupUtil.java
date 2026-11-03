@@ -5,10 +5,15 @@
 
 package com.liferay.exportimport.rest.internal.util;
 
+import com.liferay.exportimport.rest.dto.v1_0.AssetLibrary;
+import com.liferay.exportimport.rest.dto.v1_0.Site;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.staging.StagingGroupHelper;
@@ -46,6 +51,31 @@ public class GroupUtil {
 		}
 
 		return group;
+	}
+
+	public static String[] getGroupExternalReferenceCodes(
+		long companyId, AssetLibrary[] assetLibraries, Site[] sites) {
+
+		if (ArrayUtil.isNotEmpty(assetLibraries) &&
+			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-41307")) {
+
+			throw new BadRequestException(
+				"Asset libraries require the feature flag \"LPD-41307\"");
+		}
+
+		if (ArrayUtil.isNotEmpty(sites) &&
+			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")) {
+
+			throw new BadRequestException(
+				"Sites require the feature flag \"LPD-85946\"");
+		}
+
+		return ArrayUtil.append(
+			TransformUtil.transform(
+				assetLibraries, AssetLibrary::getExternalReferenceCode,
+				String.class),
+			TransformUtil.transform(
+				sites, Site::getExternalReferenceCode, String.class));
 	}
 
 	public static Group getLiveGroup(Group stagingGroup) {

@@ -94,7 +94,9 @@ public class GroupExportImportParameterUtil {
 	public static boolean isGroupExportImportEnabled(
 		long companyId, long groupId) {
 
-		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")) {
+		if (!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-41307") &&
+			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-85946")) {
+
 			return false;
 		}
 

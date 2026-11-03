@@ -7,34 +7,12 @@ package com.liferay.exportimport.rest.internal.util;
 
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.exportimport.rest.dto.v1_0.AssetLibrary;
-import com.liferay.petra.function.transform.TransformUtil;
-import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringUtil;
-
-import jakarta.ws.rs.BadRequestException;
 
 /**
  * @author Alejandro Tardín
  */
 public class AssetLibraryUtil {
-
-	public static String[] getExternalReferenceCodes(
-		AssetLibrary[] assetLibraries, long companyId) {
-
-		String[] externalReferenceCodes = TransformUtil.transform(
-			assetLibraries, AssetLibrary::getExternalReferenceCode,
-			String.class);
-
-		if (ArrayUtil.isNotEmpty(externalReferenceCodes) &&
-			!FeatureFlagManagerUtil.isEnabled(companyId, "LPD-41307")) {
-
-			throw new BadRequestException(
-				"Asset libraries require the feature flag \"LPD-41307\"");
-		}
-
-		return externalReferenceCodes;
-	}
 
 	public static AssetLibrary.Type toAssetLibraryType(int depotEntryType) {
 		if (depotEntryType == DepotConstants.TYPE_ASSET_LIBRARY) {

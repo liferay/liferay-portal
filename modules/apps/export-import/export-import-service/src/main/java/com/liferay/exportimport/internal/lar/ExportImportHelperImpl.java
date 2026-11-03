@@ -889,7 +889,9 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 		StagingGroupHelper stagingGroupHelper =
 			StagingGroupHelperUtil.getStagingGroupHelper();
 
-		if (((group.isRegularSite() && group.isSite()) ||
+		if (((group.isRegularSite() && group.isSite() &&
+			  FeatureFlagManagerUtil.isEnabled(
+				  group.getCompanyId(), "LPD-85946")) ||
 			 (group.isDepot() &&
 			  FeatureFlagManagerUtil.isEnabled(
 				  group.getCompanyId(), "LPD-41307"))) &&

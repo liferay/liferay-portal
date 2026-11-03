@@ -20,9 +20,7 @@ import com.liferay.exportimport.rest.dto.v1_0.ExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.FromLastPublishDateFilter;
 import com.liferay.exportimport.rest.dto.v1_0.InstanceExportProcessRequest;
 import com.liferay.exportimport.rest.dto.v1_0.ProcessProgress;
-import com.liferay.exportimport.rest.dto.v1_0.Site;
 import com.liferay.exportimport.rest.dto.v1_0.Status;
-import com.liferay.exportimport.rest.internal.util.AssetLibraryUtil;
 import com.liferay.exportimport.rest.internal.util.BackgroundTaskUtil;
 import com.liferay.exportimport.rest.internal.util.GroupUtil;
 import com.liferay.exportimport.rest.internal.util.LayoutUtil;
@@ -48,7 +46,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.ContentDispositionUtil;
-import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -243,13 +240,10 @@ public class ExportProcessResourceImpl extends BaseExportProcessResourceImpl {
 		return _postExportProcess(
 			_toExportProcessRequest(instanceExportProcessRequest),
 			GroupUtil.getCompanyGroup(contextCompany.getCompanyId()), portletId,
-			ArrayUtil.append(
-				AssetLibraryUtil.getExternalReferenceCodes(
-					instanceExportProcessRequest.getAssetLibraries(),
-					contextCompany.getCompanyId()),
-				transform(
-					instanceExportProcessRequest.getSites(),
-					Site::getExternalReferenceCode, String.class)),
+			GroupUtil.getGroupExternalReferenceCodes(
+				contextCompany.getCompanyId(),
+				instanceExportProcessRequest.getAssetLibraries(),
+				instanceExportProcessRequest.getSites()),
 			null);
 	}
 
