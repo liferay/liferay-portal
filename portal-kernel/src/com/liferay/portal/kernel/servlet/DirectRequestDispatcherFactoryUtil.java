@@ -8,9 +8,7 @@ package com.liferay.portal.kernel.servlet;
 import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.RequestDispatcher;
@@ -52,9 +50,7 @@ public class DirectRequestDispatcherFactoryUtil {
 	private static RequestDispatcher _getRequestDispatcher(
 		ServletContext servletContext, String path) {
 
-		if (!GetterUtil.getBoolean(
-				PropsUtil.get(PropsKeys.DIRECT_SERVLET_CONTEXT_ENABLED))) {
-
+		if (!PropsValues.DIRECT_SERVLET_CONTEXT_ENABLED) {
 			return servletContext.getRequestDispatcher(path);
 		}
 
