@@ -91,20 +91,20 @@ export class ExportImportDataSelectionPage {
 			.uncheck();
 	}
 
-	async selectGroup(groupName: string) {
-		await this._selectItem(
-			groupName,
-			this.selectSitesButton,
-			this.siteSelectorDialog
-		);
-	}
-
 	async selectOnlyObjectDefinition(label: string) {
 		await this.uncheckAllItems();
 
 		await this.expandSection('Objects');
 
 		await this.section.getByRole('checkbox', {name: label}).check();
+	}
+
+	async selectSite(siteName: string) {
+		await this._selectItem(
+			siteName,
+			this.selectSitesButton,
+			this.siteSelectorDialog
+		);
 	}
 
 	async selectSpace(spaceName: string) {

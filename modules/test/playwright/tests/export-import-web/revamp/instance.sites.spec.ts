@@ -67,7 +67,7 @@ test(
 				objectDefinition.name
 			);
 
-			await exportImportDataSelectionPage.selectGroup(group.name);
+			await exportImportDataSelectionPage.selectSite(group.name);
 
 			return await exportAndDownloadLar(exportImportPage);
 		});
@@ -90,7 +90,7 @@ test(
 						page.getByText('No sites are selected.')
 					).toBeVisible();
 
-					await exportImportDataSelectionPage.selectGroup(group.name);
+					await exportImportDataSelectionPage.selectSite(group.name);
 				},
 			});
 		});
