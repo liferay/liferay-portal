@@ -22,6 +22,8 @@ import {useSideNavigationStuck} from './useSideNavigationStuck';
 interface Props {
 	canonicalName: string;
 	categoryImageUrl: string;
+	colorScheme: 'dark' | 'light';
+	colorSchemeSessionKey: string;
 	expandedKeys: Array<React.Key>;
 	expandedKeysSessionKey: string;
 	items: Array<SideNavigationItem>;
@@ -51,6 +53,8 @@ function countNavigableItems(
 function SideNavigation({
 	canonicalName,
 	categoryImageUrl,
+	colorScheme,
+	colorSchemeSessionKey,
 	expandedKeys: externalExpandedKeys,
 	expandedKeysSessionKey,
 	items: externalItems,
@@ -168,6 +172,8 @@ function SideNavigation({
 		<UnifiedSidebar
 			canonicalName={canonicalName}
 			categoryImageUrl={categoryImageUrl}
+			colorScheme={colorScheme}
+			colorSchemeSessionKey={colorSchemeSessionKey}
 			containerRef={containerRef}
 			label={label}
 			navigationId="com_liferay_application_list_taglib_side_navigation"
