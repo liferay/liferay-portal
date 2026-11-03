@@ -37,9 +37,11 @@ jest.mock(
 const renderComponent = ({
 	commentsAndRatingsEnabled,
 	siteSelectionEnabled,
+	spaceSelectionEnabled,
 }: {
 	commentsAndRatingsEnabled?: boolean;
 	siteSelectionEnabled?: boolean;
+	spaceSelectionEnabled?: boolean;
 } = {}) =>
 	render(
 		<NewImport
@@ -49,6 +51,7 @@ const renderComponent = ({
 			importProcessAPIURL="/o/export-import/v1.0/import-processes"
 			scope={SCOPES.SITE}
 			siteSelectionEnabled={siteSelectionEnabled}
+			spaceSelectionEnabled={spaceSelectionEnabled}
 		/>
 	);
 
@@ -79,6 +82,7 @@ const goToDataSelectionStep = async (
 	options: {
 		commentsAndRatingsEnabled?: boolean;
 		siteSelectionEnabled?: boolean;
+		spaceSelectionEnabled?: boolean;
 	} = {}
 ) => {
 	const result = renderComponent(options);
@@ -499,7 +503,7 @@ describe('NewImport', () => {
 	});
 
 	it('hides the spaces section when the file has no spaces', async () => {
-		await goToDataSelectionStep({siteSelectionEnabled: true});
+		await goToDataSelectionStep({spaceSelectionEnabled: true});
 
 		await screen.findByRole('checkbox', {name: 'Design'});
 
@@ -508,16 +512,55 @@ describe('NewImport', () => {
 		).not.toBeInTheDocument();
 	});
 
+	it('offers only the spaces among the asset libraries of the file', async () => {
+		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
+			Promise.resolve({
+				data: {
+					...mockImportPreview,
+					assetLibraries: [
+						{
+							descriptiveName: 'Book',
+							existsInInstance: false,
+							externalReferenceCode: 'erc-book',
+							type: 'Space',
+						},
+						{
+							descriptiveName: 'Pictures',
+							existsInInstance: true,
+							externalReferenceCode: 'erc-pictures',
+							type: 'AssetLibrary',
+						},
+					],
+				},
+				error: null,
+			})
+		);
+
+		await goToDataSelectionStep({spaceSelectionEnabled: true});
+
+		expect(
+			await screen.findByText(
+				'import-complete-spaces-from-your-file,-including-all-their-content'
+			)
+		).toBeInTheDocument();
+
+		await user.click(screen.getByRole('button', {name: 'select-spaces'}));
+
+		expect(await screen.findByText('Book')).toBeInTheDocument();
+		expect(screen.queryByText('Pictures')).not.toBeInTheDocument();
+	});
+
 	it('imports only the spaces selected in the spaces section', async () => {
 		(postImportPreview as jest.Mock).mockImplementationOnce(() =>
 			Promise.resolve({
 				data: {
 					...mockImportPreview,
-					previewAssetLibraries: [
+					assetLibraries: [
 						{
 							descriptiveName: 'Book',
 							existsInInstance: false,
 							externalReferenceCode: 'erc-book',
+							type: 'Space',
 						},
 					],
 				},
@@ -527,7 +570,10 @@ describe('NewImport', () => {
 
 		fetch.mockResponse(JSON.stringify({id: 1}));
 
-		await goToDataSelectionStep({siteSelectionEnabled: true});
+		await goToDataSelectionStep({
+			siteSelectionEnabled: true,
+			spaceSelectionEnabled: true,
+		});
 
 		for (const name of ['Design', 'Site Builder', 'Content & Data']) {
 			await user.click(screen.getByRole('checkbox', {name}));
@@ -565,7 +611,7 @@ describe('NewImport', () => {
 		)!;
 
 		expect(JSON.parse(String(init?.body))).toMatchObject({
-			assetLibraryExternalReferenceCodes: ['erc-book'],
+			assetLibraries: [{externalReferenceCode: 'erc-book'}],
 			portletDataHandlers: [],
 			sites: [],
 		});

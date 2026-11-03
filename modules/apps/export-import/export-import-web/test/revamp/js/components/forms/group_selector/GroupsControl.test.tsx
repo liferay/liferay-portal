@@ -13,7 +13,10 @@ import React from 'react';
 import '@testing-library/jest-dom';
 
 import GroupsControl from '../../../../../../src/main/resources/META-INF/resources/revamp/js/components/forms/group_selector/GroupsControl';
-import {Site} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
+import {
+	AssetLibrary,
+	Site,
+} from '../../../../../../src/main/resources/META-INF/resources/revamp/js/types/exportImportPreview';
 
 const SITES: Site[] = [
 	{
@@ -219,8 +222,28 @@ describe('GroupsControl', () => {
 	});
 
 	describe('selecting spaces', () => {
+		const SPACES: AssetLibrary[] = [
+			{
+				descriptiveName: 'Book',
+				existsInInstance: true,
+				externalReferenceCode: 'erc-book',
+				type: 'Space',
+			},
+			{
+				descriptiveName: 'Catalog',
+				existsInInstance: false,
+				externalReferenceCode: 'erc-catalog',
+				type: 'Space',
+			},
+		];
+
+		const openSpacesDialog = () =>
+			userEvent.click(
+				screen.getByRole('button', {name: 'select-spaces'})
+			);
+
 		it('names the section and its empty state after spaces', () => {
-			renderControl({type: 'space'});
+			renderControl({groups: SPACES, type: 'space'});
 
 			expect(screen.getByText('spaces')).toBeInTheDocument();
 			expect(
@@ -228,26 +251,36 @@ describe('GroupsControl', () => {
 			).toBeInTheDocument();
 		});
 
-		it('opens a dialog for selecting spaces', async () => {
-			renderControl({type: 'space'});
+		it('opens a dialog named after spaces', async () => {
+			renderControl({groups: SPACES, type: 'space'});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-spaces'})
-			);
+			await openSpacesDialog();
 
 			expect(
 				await screen.findByRole('dialog', {name: 'select-spaces'})
 			).toBeInTheDocument();
 		});
 
+		it('hands the picked spaces back to the row', async () => {
+			const {onChange} = renderControl({groups: SPACES, type: 'space'});
+
+			await openSpacesDialog();
+
+			const row = await findRow('Catalog');
+
+			await userEvent.click(within(row).getByRole('checkbox'));
+
+			await userEvent.click(screen.getByRole('button', {name: 'select'}));
+
+			expect(onChange).toHaveBeenCalledWith(['erc-catalog']);
+		});
+
 		it('reads only the title when exporting', async () => {
-			renderControl({type: 'space'});
+			renderControl({groups: SPACES, type: 'space'});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-spaces'})
-			);
+			await openSpacesDialog();
 
-			await screen.findByText('Support');
+			await screen.findByText('Catalog');
 
 			const columnHeaders = screen
 				.getAllByRole('columnheader')
@@ -261,13 +294,11 @@ describe('GroupsControl', () => {
 		});
 
 		it('reads title and exists in instance when importing', async () => {
-			renderControl({process: 'import', type: 'space'});
+			renderControl({groups: SPACES, process: 'import', type: 'space'});
 
-			await userEvent.click(
-				screen.getByRole('button', {name: 'select-spaces'})
-			);
+			await openSpacesDialog();
 
-			await screen.findByText('Support');
+			await screen.findByText('Catalog');
 
 			const columnHeaders = screen
 				.getAllByRole('columnheader')
