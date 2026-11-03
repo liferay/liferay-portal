@@ -16,8 +16,10 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Organization;
+import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.Role;
+import com.liferay.portal.kernel.model.Team;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -29,11 +31,15 @@ import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.TeamLocalService;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.test.context.ContextUserReplace;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.OrganizationTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -136,6 +142,69 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	@Test
+	@TestInfo("LPD-113649")
+	public void testAddEntryWithAddEntryPermissionOfOrganizationRole()
+		throws Exception {
+
+		_organization = OrganizationTestUtil.addOrganization();
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_ORGANIZATION);
+		_user = UserTestUtil.addOrganizationUser(
+			_organization, _role.getName());
+
+		_testAddEntry(
+			_organization.getGroup(), _role,
+			ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID), _user);
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testAddEntryWithAddEntryPermissionOfRegularRole()
+		throws Exception {
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+		_user = UserTestUtil.addUser();
+
+		_roleLocalService.addUserRole(_user.getUserId(), _role);
+
+		_testAddEntry(
+			_group, _role, ResourceConstants.SCOPE_COMPANY,
+			String.valueOf(_group.getCompanyId()), _user);
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testAddEntryWithAddEntryPermissionOfSiteRole()
+		throws Exception {
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_SITE);
+		_user = UserTestUtil.addGroupUser(_group, _role.getName());
+
+		_testAddEntry(
+			_group, _role, ResourceConstants.SCOPE_GROUP_TEMPLATE,
+			String.valueOf(GroupConstants.DEFAULT_PARENT_GROUP_ID), _user);
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testAddEntryWithAddEntryPermissionOfTeamRole()
+		throws Exception {
+
+		Team team = _teamLocalService.addTeam(
+			TestPropsValues.getUserId(), _group.getGroupId(),
+			RandomTestUtil.randomString(), null,
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
+
+		_user = UserTestUtil.addGroupUser(_group, RoleConstants.SITE_MEMBER);
+
+		_userLocalService.addTeamUser(team.getTeamId(), _user);
+
+		_testAddEntry(
+			_group, team.getRole(), ResourceConstants.SCOPE_GROUP,
+			String.valueOf(_group.getGroupId()), _user);
+	}
+
 	@Test(expected = PrincipalException.MustHavePermission.class)
 	public void testAddEntryWithoutAddEntryPermission1() throws Exception {
 		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
@@ -151,6 +220,23 @@ public class BlogsEntryServiceTest {
 				_groupUser, _permissionChecker)) {
 
 			_addEntry2();
+		}
+	}
+
+	@Test
+	@TestInfo("LPD-113649")
+	public void testAddEntryWithoutAddEntryPermissionAsGuest()
+		throws Exception {
+
+		User guestUser = _userLocalService.getGuestUser(
+			_group.getCompanyId());
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				guestUser, PermissionCheckerFactoryUtil.create(guestUser))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _addEntry2(_group, guestUser));
 		}
 	}
 
@@ -1167,14 +1253,17 @@ public class BlogsEntryServiceTest {
 	}
 
 	private void _addEntry2() throws PortalException {
+		_addEntry2(_group, _groupUser);
+	}
+
+	private void _addEntry2(Group group, User user) throws PortalException {
 		_blogsEntryService.addEntry(
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
 			RandomTestUtil.randomString(), RandomTestUtil.randomString(), 1, 1,
 			1990, 1, 1, true, false, new String[0],
 			RandomTestUtil.randomString(), null, null,
-			ServiceContextTestUtil.getServiceContext(
-				_group, _groupUser.getUserId()));
+			ServiceContextTestUtil.getServiceContext(group, user.getUserId()));
 	}
 
 	private void _addResourcePermission(String actionId, String name)
@@ -1220,6 +1309,33 @@ public class BlogsEntryServiceTest {
 		}
 	}
 
+	private void _testAddEntry(
+			Group group, Role role, int scope, String primKey, User user)
+		throws Exception {
+
+		_resourcePermissionLocalService.addResourcePermission(
+			role.getCompanyId(), BlogsConstants.RESOURCE_NAME, scope, primKey,
+			role.getRoleId(), ActionKeys.ADD_ENTRY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			_addEntry2(group, user);
+		}
+
+		_resourcePermissionLocalService.removeResourcePermission(
+			role.getCompanyId(), BlogsConstants.RESOURCE_NAME, scope, primKey,
+			role.getRoleId(), ActionKeys.ADD_ENTRY);
+
+		try (ContextUserReplace contextUserReplace = new ContextUserReplace(
+				user, PermissionCheckerFactoryUtil.create(user))) {
+
+			Assert.assertThrows(
+				PrincipalException.MustHavePermission.class,
+				() -> _addEntry2(group, user));
+		}
+	}
+
 	private void _updateEntry(long entryId) throws PortalException {
 		_blogsEntryService.updateEntry(
 			entryId, RandomTestUtil.randomString(),
@@ -1258,7 +1374,19 @@ public class BlogsEntryServiceTest {
 	@Inject
 	private ResourcePermissionLocalService _resourcePermissionLocalService;
 
+	@DeleteAfterTestRun
+	private Role _role;
+
 	@Inject
 	private RoleLocalService _roleLocalService;
+
+	@Inject
+	private TeamLocalService _teamLocalService;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
