@@ -41,6 +41,8 @@ export default class UtmParameterInput extends React.Component<
 	IUtmParameterInputProps,
 	IUtmParameterInputState
 > {
+	_mounted = false;
+
 	constructor(props: IUtmParameterInputProps) {
 		super(props);
 		this.fieldValuesDataSourceFn = this.fieldValuesDataSourceFn.bind(this);
@@ -80,8 +82,6 @@ export default class UtmParameterInput extends React.Component<
 	componentWillUnmount() {
 		this._mounted = false;
 	}
-
-	_mounted = false;
 
 	getOperators() {
 		return getCustomInputOperators(this.props.property.type);
