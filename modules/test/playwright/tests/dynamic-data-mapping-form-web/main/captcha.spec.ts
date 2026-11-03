@@ -74,13 +74,13 @@ test(
 		// Switch the form to Portuguese
 
 		await clickAndExpectToBeVisible({
-			target: page.getByRole('link', {name: 'português-Brasil'}),
+			target: page.getByRole('menuitem', {name: 'português-Brasil'}),
 			trigger: formViewPage.languageSelector,
 		});
 
 		await clickAndExpectToBeVisible({
 			target: page.getByText('Verificação de texto'),
-			trigger: page.getByRole('link', {name: 'português-Brasil'}),
+			trigger: page.getByRole('menuitem', {name: 'português-Brasil'}),
 		});
 
 		// The CAPTCHA labels now follow the form's display language (LPD-94997)

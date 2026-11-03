@@ -458,7 +458,9 @@ test('Select from list with multiple selections allowed is auto-filled by data p
 
 	await formViewPage.languageSelector.click();
 
-	await formPreviewPage.getByRole('link', {name: 'português-Brasil'}).click();
+	await formPreviewPage
+		.getByRole('menuitem', {name: 'português-Brasil'})
+		.click();
 
 	await triggerRule();
 

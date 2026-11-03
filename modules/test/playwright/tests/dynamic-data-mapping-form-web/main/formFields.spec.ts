@@ -641,7 +641,7 @@ test.describe('Manage fields through Form Builder page', () => {
 				.click();
 
 			await newTabPage
-				.getByRole('link', {name: 'português-Brasil'})
+				.getByRole('menuitem', {name: 'português-Brasil'})
 				.click();
 
 			await expect(
