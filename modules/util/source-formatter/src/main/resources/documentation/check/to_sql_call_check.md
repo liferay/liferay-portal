@@ -1,4 +1,4 @@
-## UnusedToSQLStringCheck
+## ToSQLCallCheck
 
 Do not discard the result of `toSQL(ASTNodeListener)`. That method builds the whole SQL text of the node in a `StringBundler` and returns it, so a statement that calls it only to walk the tree for its `ASTNodeListener` builds a string that nobody reads.
 

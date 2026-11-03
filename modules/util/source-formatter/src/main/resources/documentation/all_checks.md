@@ -561,6 +561,7 @@ TextBlockCheck | [Styling](styling_checks.md#styling-checks) | .java | Finds usa
 ThreadLocalUtilCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds new instances of `java.lang.Thread` (use `ThreadLocalUtil.create` instead). |
 ThreadLocalVariableNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java | Checks for consistent naming on variables of type '*ThreadLocal'. |
 ThreadNameCheck | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java | Checks that names of threads follow naming conventions. |
+[ToSQLCallCheck](check/to_sql_call_check.md#tosqlcallcheck) | [Performance](performance_checks.md#performance-checks) | .java | Finds `toSQL(ASTNodeListener)` calls whose SQL string is unused, which should pass a consumer that ignores the text to `toSQL(Consumer, ASTNodeListener)` instead. |
 TransactionalTestRuleCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds usage of `TransactionalTestRule` in `*StagedModelDataHandlerTest`. |
 TryWithResourcesCheck | [Performance](performance_checks.md#performance-checks) | .java | Ensures using Try-With-Resources statement to properly close the resource. |
 [TypeNameCheck](https://checkstyle.sourceforge.io/checks/naming/typename.html) | [Naming Conventions](naming_conventions_checks.md#naming-conventions-checks) | .java | Checks that type names conform to a specified pattern. |
@@ -574,7 +575,6 @@ UnparameterizedClassCheck | [Bug Prevention](bug_prevention_checks.md#bug-preven
 UnprocessedExceptionCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds cases where an `Exception` is swallowed without being processed. |
 UnusedMethodCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds private methods that are not used. |
 UnusedParameterCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds parameters in private methods that are not used. |
-[UnusedToSQLStringCheck](check/unused_to_sql_string_check.md#unusedtosqlstringcheck) | [Performance](performance_checks.md#performance-checks) | .java | Finds `toSQL(ASTNodeListener)` calls whose SQL string is unused, which should pass a consumer that ignores the text to `toSQL(Consumer, ASTNodeListener)` instead. |
 UnusedVariableCheck | [Performance](performance_checks.md#performance-checks) | .java | Finds variables that are declared, but not used. |
 UnwrappedVariableInfoCheck | [Bug Prevention](bug_prevention_checks.md#bug-prevention-checks) | .java | Finds cases where the variable should be wrapped into an inner class in order to defer array elements initialization. |
 UpgradeBNDDeclarativeServicesCheck | [Upgrade](upgrade_checks.md#upgrade-checks) | .bnd, .ftl, .gradle, .java, .json, .jsp, .jspf, .scss, or .vm | Adds `-dsannotations-options: inherit` to `bnd.bnd` if it does not yet exist. |
