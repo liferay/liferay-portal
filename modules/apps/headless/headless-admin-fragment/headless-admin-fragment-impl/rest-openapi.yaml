@@ -266,6 +266,10 @@ components:
             description:
                 A group of related fields in a fragment's configuration.
             properties:
+                collapsed:
+                    description:
+                        Whether the field set is collapsed by default in the page editor's configuration panel.
+                    type: boolean
                 configurationRole:
                     description:
                         The role of the field set in the page editor's configuration panel.
