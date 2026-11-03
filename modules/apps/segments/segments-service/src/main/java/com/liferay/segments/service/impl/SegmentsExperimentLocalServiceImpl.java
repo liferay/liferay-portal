@@ -494,6 +494,8 @@ public class SegmentsExperimentLocalServiceImpl
 
 		if ((serviceContext == null) ||
 			(serviceContext.getUserId() == segmentsExperiment.getUserId()) ||
+			(_userLocalService.fetchUser(segmentsExperiment.getUserId()) ==
+				null) ||
 			!UserNotificationManagerUtil.isDeliver(
 				segmentsExperiment.getUserId(),
 				SegmentsPortletKeys.SEGMENTS_EXPERIMENT, 0,
