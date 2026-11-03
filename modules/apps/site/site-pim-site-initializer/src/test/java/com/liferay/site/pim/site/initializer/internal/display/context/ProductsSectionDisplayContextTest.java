@@ -13,6 +13,8 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.test.rule.LiferayUnitTestRule;
@@ -53,6 +55,40 @@ public class ProductsSectionDisplayContextTest {
 				"&nestedFields=embedded,systemProperties.",
 				"objectDefinitionBrief"),
 			productsSectionDisplayContext.getAPIURL());
+	}
+
+	@Test
+	public void testGetAdditionalProps() {
+		ProductsSectionDisplayContext productsSectionDisplayContext =
+			new ProductsSectionDisplayContext(null);
+
+		try (MockedStatic<PropsUtil> propsUtilMockedStatic = Mockito.mockStatic(
+				PropsUtil.class)) {
+
+			propsUtilMockedStatic.when(
+				() -> PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED)
+			).thenReturn(
+				"false"
+			);
+
+			Map<String, Object> additionalProps =
+				productsSectionDisplayContext.getAdditionalProps();
+
+			Assert.assertFalse(
+				(Boolean)additionalProps.get("brokenLinksCheckerEnabled"));
+
+			propsUtilMockedStatic.when(
+				() -> PropsUtil.get(PropsKeys.CMS_BROKEN_LINKS_CHECKER_ENABLED)
+			).thenReturn(
+				"true"
+			);
+
+			additionalProps =
+				productsSectionDisplayContext.getAdditionalProps();
+
+			Assert.assertTrue(
+				(Boolean)additionalProps.get("brokenLinksCheckerEnabled"));
+		}
 	}
 
 	@Test
