@@ -234,9 +234,8 @@ public class EditPIMConnectorDisplayContext {
 			return null;
 		}
 
-		PIMConnector pimConnector = null;
-
 		String key = MapUtil.getString(objectEntry.getValues(), "key");
+		PIMConnector pimConnector = null;
 
 		for (PIMConnector curPIMConnector : _pimConnectors) {
 			if (Objects.equals(curPIMConnector.getKey(), key)) {
