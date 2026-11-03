@@ -33,16 +33,12 @@ import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -100,15 +96,49 @@ public class InfoFieldUtil {
 			return;
 		}
 
-		List<FragmentEntryLink> fragmentEntryLinks =
-			FragmentEntryLinkLocalServiceUtil.
-				getFragmentEntryLinksBySegmentsExperienceId(
-					layout.getGroupId(), segmentsExperienceId, layout.getPlid(),
-					false);
+		Map<Long, FragmentEntryLink> fragmentEntryLinksMap = new HashMap<>();
 
 		for (FragmentEntryLink fragmentEntryLink :
-				_sortByLayoutStructure(
-					fragmentEntryLinks, layout, segmentsExperienceId)) {
+				FragmentEntryLinkLocalServiceUtil.
+					getFragmentEntryLinksBySegmentsExperienceId(
+						layout.getGroupId(), segmentsExperienceId,
+						layout.getPlid(), false)) {
+
+			fragmentEntryLinksMap.put(
+				fragmentEntryLink.getFragmentEntryLinkId(), fragmentEntryLink);
+		}
+
+		LayoutPageTemplateStructure layoutPageTemplateStructure =
+			LayoutPageTemplateStructureLocalServiceUtil.
+				fetchLayoutPageTemplateStructure(
+					layout.getGroupId(), layout.getPlid());
+
+		LayoutStructure layoutStructure = LayoutStructure.of(
+			layoutPageTemplateStructure.getData(segmentsExperienceId));
+
+		for (String itemId :
+				LayoutStructureItemUtil.getChildrenItemIds(
+					layoutStructure.getMainItemId(), layoutStructure)) {
+
+			LayoutStructureItem layoutStructureItem =
+				layoutStructure.getLayoutStructureItem(itemId);
+
+			if (!(layoutStructureItem instanceof
+					FragmentStyledLayoutStructureItem)) {
+
+				continue;
+			}
+
+			FragmentStyledLayoutStructureItem
+				fragmentStyledLayoutStructureItem =
+					(FragmentStyledLayoutStructureItem)layoutStructureItem;
+
+			FragmentEntryLink fragmentEntryLink = fragmentEntryLinksMap.get(
+				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId());
+
+			if (fragmentEntryLink == null) {
+				continue;
+			}
 
 			forEachInfoField(
 				fragmentEntryLink, fragmentRendererController, consumer);
@@ -201,69 +231,6 @@ public class InfoFieldUtil {
 		Matcher matcher = _pattern.matcher(fragmentEntryLink.getHtml());
 
 		return matcher.replaceAll(defaultElementName);
-	}
-
-	private static List<FragmentEntryLink> _sortByLayoutStructure(
-		List<FragmentEntryLink> fragmentEntryLinks, Layout layout,
-		long segmentsExperienceId) {
-
-		if (fragmentEntryLinks.size() < 2) {
-			return fragmentEntryLinks;
-		}
-
-		LayoutPageTemplateStructure layoutPageTemplateStructure =
-			LayoutPageTemplateStructureLocalServiceUtil.
-				fetchLayoutPageTemplateStructure(
-					layout.getGroupId(), layout.getPlid());
-
-		if (layoutPageTemplateStructure == null) {
-			return fragmentEntryLinks;
-		}
-
-		String data = layoutPageTemplateStructure.getData(segmentsExperienceId);
-
-		if (Validator.isNull(data)) {
-			return fragmentEntryLinks;
-		}
-
-		LayoutStructure layoutStructure = LayoutStructure.of(data);
-
-		Map<Long, Integer> fragmentEntryLinkIndexes = new HashMap<>();
-
-		int index = 0;
-
-		for (String itemId :
-				LayoutStructureItemUtil.getChildrenItemIds(
-					layoutStructure.getMainItemId(), layoutStructure)) {
-
-			LayoutStructureItem layoutStructureItem =
-				layoutStructure.getLayoutStructureItem(itemId);
-
-			if (!(layoutStructureItem instanceof
-					FragmentStyledLayoutStructureItem)) {
-
-				continue;
-			}
-
-			FragmentStyledLayoutStructureItem
-				fragmentStyledLayoutStructureItem =
-					(FragmentStyledLayoutStructureItem)layoutStructureItem;
-
-			fragmentEntryLinkIndexes.put(
-				fragmentStyledLayoutStructureItem.getFragmentEntryLinkId(),
-				index++);
-		}
-
-		List<FragmentEntryLink> sortedFragmentEntryLinks = new ArrayList<>(
-			fragmentEntryLinks);
-
-		sortedFragmentEntryLinks.sort(
-			Comparator.comparingInt(
-				fragmentEntryLink -> fragmentEntryLinkIndexes.getOrDefault(
-					fragmentEntryLink.getFragmentEntryLinkId(),
-					Integer.MAX_VALUE)));
-
-		return sortedFragmentEntryLinks;
 	}
 
 	private static final Pattern _pattern = Pattern.compile("\\$\\{[^}]*\\}");
