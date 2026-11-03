@@ -117,4 +117,5 @@ export {
 export {default as Treeview} from './treeview/Treeview';
 export {default as UnifiedSidebar} from './unified_sidebar/UnifiedSidebar';
 export type {UnifiedSidebarProps} from './unified_sidebar/UnifiedSidebar';
+export {default as UnifiedSidebarColorSchemeButton} from './unified_sidebar/UnifiedSidebarColorSchemeButton';
 export {default as UnifiedSidebarSiteSelector} from './unified_sidebar/UnifiedSidebarSiteSelector';

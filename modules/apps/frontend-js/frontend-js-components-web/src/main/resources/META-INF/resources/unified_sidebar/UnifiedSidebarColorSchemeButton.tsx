@@ -12,7 +12,7 @@ const COLOR_SCHEME_SESSION_KEY =
 
 const REDUCED_MOTION_CLASS_NAME = 'c-prefers-reduced-motion';
 
-function SideNavigationColorSchemeButton({
+function UnifiedSidebarColorSchemeButton({
 	className,
 	colorScheme: initialColorScheme = 'light',
 	colorSchemeSessionKey = COLOR_SCHEME_SESSION_KEY,
@@ -110,4 +110,4 @@ function SideNavigationColorSchemeButton({
 	);
 }
 
-export default SideNavigationColorSchemeButton;
+export default UnifiedSidebarColorSchemeButton;

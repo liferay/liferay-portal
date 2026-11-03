@@ -9,7 +9,7 @@ import React from 'react';
 
 import '@testing-library/jest-dom';
 
-import SideNavigationColorSchemeButton from '../src/main/resources/META-INF/resources/js/SideNavigationColorSchemeButton';
+import UnifiedSidebarColorSchemeButton from '../../src/main/resources/META-INF/resources/unified_sidebar/UnifiedSidebarColorSchemeButton';
 
 const runAnimationFrames = () =>
 	act(() => {
@@ -17,7 +17,7 @@ const runAnimationFrames = () =>
 		jest.runOnlyPendingTimers();
 	});
 
-describe('SideNavigationColorSchemeButton', () => {
+describe('UnifiedSidebarColorSchemeButton', () => {
 	const util = Liferay.Util;
 
 	beforeEach(() => {
@@ -44,7 +44,7 @@ describe('SideNavigationColorSchemeButton', () => {
 
 	const renderComponent = () => {
 		render(
-			<SideNavigationColorSchemeButton
+			<UnifiedSidebarColorSchemeButton
 				colorScheme="light"
 				colorSchemeSessionKey="colorScheme"
 			/>

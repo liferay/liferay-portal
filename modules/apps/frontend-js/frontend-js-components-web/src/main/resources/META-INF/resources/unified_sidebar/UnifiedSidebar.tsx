@@ -8,12 +8,15 @@ import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
 import React from 'react';
 
+import UnifiedSidebarColorSchemeButton from './UnifiedSidebarColorSchemeButton';
 import UnifiedSidebarSiteSelector from './UnifiedSidebarSiteSelector';
 
 export interface UnifiedSidebarProps {
 	canonicalName?: string;
 	categoryImageUrl: string;
 	children?: React.ReactNode;
+	colorScheme?: 'dark' | 'light';
+	colorSchemeSessionKey?: string;
 	containerRef?: React.RefObject<HTMLElement | null>;
 	label: string;
 	navigationId?: string;
@@ -46,6 +49,8 @@ export default function UnifiedSidebar({
 	canonicalName,
 	categoryImageUrl,
 	children,
+	colorScheme,
+	colorSchemeSessionKey,
 	containerRef,
 	label,
 	navigationId,
@@ -105,6 +110,14 @@ export default function UnifiedSidebar({
 								url={siteAdministrationItemSelectorUrl}
 							/>
 						)}
+
+					{Liferay.FeatureFlags['LPD-57922'] && (
+						<UnifiedSidebarColorSchemeButton
+							className="c-ml-2"
+							colorScheme={colorScheme}
+							colorSchemeSessionKey={colorSchemeSessionKey}
+						/>
+					)}
 				</SidePanel.Title>
 			</SidePanel.Header>
 
