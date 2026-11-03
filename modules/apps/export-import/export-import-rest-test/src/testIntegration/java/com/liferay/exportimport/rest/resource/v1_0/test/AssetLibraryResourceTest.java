@@ -105,15 +105,17 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 			String externalReferenceCode, String filterString)
 		throws Exception {
 
-		Page<AssetLibrary> page =
+		Page<AssetLibrary> assetLibrariesPage =
 			assetLibraryResource.getExportPreviewAssetLibrariesPage(
 				null, filterString, null, null);
 
-		page = assetLibraryResource.getExportPreviewAssetLibrariesPage(
-			null, filterString, Pagination.of(1, (int)page.getTotalCount()),
-			null);
+		assetLibrariesPage =
+			assetLibraryResource.getExportPreviewAssetLibrariesPage(
+				null, filterString,
+				Pagination.of(1, (int)assetLibrariesPage.getTotalCount()),
+				null);
 
-		for (AssetLibrary assetLibrary : page.getItems()) {
+		for (AssetLibrary assetLibrary : assetLibrariesPage.getItems()) {
 			if (externalReferenceCode.equals(
 					assetLibrary.getExternalReferenceCode())) {
 
@@ -208,13 +210,14 @@ public class AssetLibraryResourceTest extends BaseAssetLibraryResourceTestCase {
 
 		Group group = depotEntry.getGroup();
 
-		Page<AssetLibrary> page =
+		Page<AssetLibrary> assetLibrariesPage =
 			assetLibraryResource.getExportPreviewAssetLibrariesPage(
 				group.getDescriptiveName(), null, Pagination.of(1, 10), null);
 
-		Assert.assertEquals(1, page.getTotalCount());
+		Assert.assertEquals(1, assetLibrariesPage.getTotalCount());
 
-		List<AssetLibrary> assetLibraries = (List<AssetLibrary>)page.getItems();
+		List<AssetLibrary> assetLibraries =
+			(List<AssetLibrary>)assetLibrariesPage.getItems();
 
 		AssetLibrary assetLibrary = assetLibraries.get(0);
 
