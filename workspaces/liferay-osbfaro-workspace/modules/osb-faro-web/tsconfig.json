@@ -14,16 +14,16 @@
 				"../../../../../../../modules/apps/frontend-data-set/frontend-data-set-web/src/main/resources/META-INF/resources/index.ts"
 			],
 			"react": [
-				"../../../node_modules/@types/react/index"
+				"../../../../../node_modules/@types/react/index"
 			],
 			"react-dom": [
-				"../../../node_modules/@types/react-dom/index"
+				"../../../../../node_modules/@types/react-dom/index"
 			],
 			"react-dom/client": [
-				"../../../node_modules/@types/react-dom/client"
+				"../../../../../node_modules/@types/react-dom/client"
 			],
 			"react/jsx-runtime": [
-				"../../../node_modules/@types/react/jsx-runtime"
+				"../../../../../node_modules/@types/react/jsx-runtime"
 			],
 			"~/*": [
 				"*"
