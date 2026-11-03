@@ -6,7 +6,7 @@
 import {SidePanel} from '@clayui/core';
 import ClaySticker from '@clayui/sticker';
 import {sub} from 'frontend-js-web';
-import React from 'react';
+import React, {useRef} from 'react';
 
 import UnifiedSidebarColorSchemeButton from './UnifiedSidebarColorSchemeButton';
 import UnifiedSidebarSiteSelector from './UnifiedSidebarSiteSelector';
@@ -17,7 +17,6 @@ export interface UnifiedSidebarProps {
 	children?: React.ReactNode;
 	colorScheme?: 'dark' | 'light';
 	colorSchemeSessionKey?: string;
-	containerRef?: React.RefObject<HTMLElement | null>;
 	label: string;
 	navigationId?: string;
 	onOpenChange?: (open: boolean) => void;
@@ -51,7 +50,6 @@ export default function UnifiedSidebar({
 	children,
 	colorScheme,
 	colorSchemeSessionKey,
-	containerRef,
 	label,
 	navigationId,
 	onOpenChange,
@@ -60,12 +58,14 @@ export default function UnifiedSidebar({
 	siteAdministrationItemSelectorUrl,
 	testId = 'unified-sidebar',
 }: UnifiedSidebarProps) {
+	const containerRef = useRef<HTMLElement>(null);
+
 	return (
 		<SidePanel
 			aria-label={sub(Liferay.Language.get('x-menu'), label)}
 			closeOnEscape={false}
 			containerRef={
-				containerRef as unknown as React.RefObject<HTMLElement>
+				 containerRef as unknown as React.RefObject<HTMLElement>
 			}
 			data-canonical-name={canonicalName}
 			data-qa-id={testId}
