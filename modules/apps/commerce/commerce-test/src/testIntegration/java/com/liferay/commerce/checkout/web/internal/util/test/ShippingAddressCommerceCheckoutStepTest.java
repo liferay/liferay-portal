@@ -88,11 +88,11 @@ public class ShippingAddressCommerceCheckoutStepTest {
 				RandomTestUtil.randomString(),
 				new long[] {TestPropsValues.getUserId()}, null, serviceContext);
 
+		_user = UserTestUtil.addUser(_group.getGroupId());
+
 		Role role = _roleLocalService.getRole(
 			_group.getCompanyId(),
 			AccountRoleConstants.ROLE_NAME_ACCOUNT_BUYER);
-
-		_user = UserTestUtil.addUser(_group.getGroupId());
 
 		_userGroupRoleLocalService.addUserGroupRole(
 			_user.getUserId(), accountEntry.getAccountEntryGroupId(),
