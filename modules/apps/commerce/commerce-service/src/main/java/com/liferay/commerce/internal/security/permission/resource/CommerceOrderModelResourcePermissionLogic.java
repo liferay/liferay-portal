@@ -12,25 +12,39 @@ import com.liferay.account.service.AccountEntryLocalService;
 import com.liferay.commerce.constants.CommerceOrderActionKeys;
 import com.liferay.commerce.constants.CommerceOrderConstants;
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.product.model.CommerceChannel;
 import com.liferay.commerce.product.service.CommerceChannelLocalService;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.util.CommerceChannelConfigurationUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.cookies.CookiesManagerUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.module.service.Snapshot;
+import com.liferay.portal.kernel.security.access.control.AccessControlUtil;
+import com.liferay.portal.kernel.security.auth.AccessControlContext;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionLogic;
 import com.liferay.portal.kernel.security.permission.resource.PortletResourcePermission;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.WorkflowDefinitionLinkLocalService;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.Validator;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Andrea Di Giorgi
@@ -134,6 +148,12 @@ public class CommerceOrderModelResourcePermissionLogic
 			_hasRoleAccountSupplier(permissionChecker, commerceOrder)) {
 
 			return true;
+		}
+
+		if (commerceOrder.isGuestOrder() &&
+			!_hasValidCommerceOrderUUID(commerceOrder)) {
+
+			return false;
 		}
 
 		if ((accountEntry.getAccountEntryId() !=
@@ -616,6 +636,66 @@ public class CommerceOrderModelResourcePermissionLogic
 
 		return false;
 	}
+
+	private boolean _hasValidCommerceOrderUUID(CommerceOrder commerceOrder) {
+		HttpServletRequest httpServletRequest = null;
+
+		AccessControlContext accessControlContext =
+			AccessControlUtil.getAccessControlContext();
+
+		if (accessControlContext != null) {
+			httpServletRequest = accessControlContext.getRequest();
+		}
+
+		if (httpServletRequest == null) {
+			ServiceContext serviceContext =
+				ServiceContextThreadLocal.getServiceContext();
+
+			if (serviceContext != null) {
+				httpServletRequest = serviceContext.getRequest();
+			}
+		}
+
+		if (httpServletRequest == null) {
+			return true;
+		}
+
+		String commerceOrderUUID = httpServletRequest.getHeader(
+			"Commerce-Cart-UUID");
+
+		if (Validator.isNotNull(commerceOrderUUID)) {
+			return Objects.equals(commerceOrder.getUuid(), commerceOrderUUID);
+		}
+
+		CommerceOrderHttpHelper commerceOrderHttpHelper =
+			_commerceOrderHttpHelperSnapshot.get();
+
+		String cookieName = commerceOrderHttpHelper.getCookieName(
+			commerceOrder.getGroupId());
+
+		HttpServletRequest originalHttpServletRequest =
+			PortalUtil.getOriginalServletRequest(httpServletRequest);
+
+		HttpSession httpSession = originalHttpServletRequest.getSession(false);
+
+		if (httpSession != null) {
+			commerceOrderUUID = (String)httpSession.getAttribute(cookieName);
+		}
+
+		if (Validator.isNull(commerceOrderUUID)) {
+			commerceOrderUUID = StringUtil.extractFirst(
+				CookiesManagerUtil.getCookieValue(
+					cookieName, httpServletRequest, true),
+				StringPool.PIPE);
+		}
+
+		return Objects.equals(commerceOrder.getUuid(), commerceOrderUUID);
+	}
+
+	private static final Snapshot<CommerceOrderHttpHelper>
+		_commerceOrderHttpHelperSnapshot = new Snapshot<>(
+			CommerceOrderModelResourcePermissionLogic.class,
+			CommerceOrderHttpHelper.class);
 
 	private final AccountEntryLocalService _accountEntryLocalService;
 	private final CommerceChannelLocalService _commerceChannelLocalService;

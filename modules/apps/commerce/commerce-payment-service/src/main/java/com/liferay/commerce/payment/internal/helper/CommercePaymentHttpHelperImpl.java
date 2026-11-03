@@ -6,6 +6,7 @@
 package com.liferay.commerce.payment.internal.helper;
 
 import com.liferay.commerce.model.CommerceOrder;
+import com.liferay.commerce.order.CommerceOrderHttpHelper;
 import com.liferay.commerce.payment.helper.CommercePaymentHttpHelper;
 import com.liferay.commerce.service.CommerceOrderLocalService;
 import com.liferay.commerce.service.CommerceOrderService;
@@ -22,6 +23,7 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 import java.nio.charset.StandardCharsets;
 
@@ -76,6 +78,16 @@ public class CommercePaymentHttpHelperImpl
 
 			PermissionThreadLocal.setPermissionChecker(
 				PermissionCheckerFactoryUtil.create(guestUser));
+
+			HttpServletRequest originalHttpServletRequest =
+				_portal.getOriginalServletRequest(httpServletRequest);
+
+			HttpSession httpSession = originalHttpServletRequest.getSession();
+
+			httpSession.setAttribute(
+				_commerceOrderHttpHelper.getCookieName(
+					commerceOrder.getGroupId()),
+				commerceOrder.getUuid());
 		}
 		else {
 			PermissionThreadLocal.setPermissionChecker(
@@ -97,6 +109,9 @@ public class CommercePaymentHttpHelperImpl
 
 		return _encryptor.encrypt(key, String.valueOf(commerceOrderId));
 	}
+
+	@Reference
+	private CommerceOrderHttpHelper _commerceOrderHttpHelper;
 
 	@Reference
 	private CommerceOrderLocalService _commerceOrderLocalService;

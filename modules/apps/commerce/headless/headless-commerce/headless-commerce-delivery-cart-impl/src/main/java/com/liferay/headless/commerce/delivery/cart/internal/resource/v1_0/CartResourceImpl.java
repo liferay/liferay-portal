@@ -100,6 +100,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.BigDecimalUtil;
 import com.liferay.portal.kernel.util.CalendarFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -126,6 +127,7 @@ import java.security.Key;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -147,7 +149,11 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 	@Override
 	public Response deleteCart(Long cartId) throws Exception {
-		_commerceOrderService.deleteCommerceOrder(cartId);
+		CommerceOrder commerceOrder = _commerceOrderService.getCommerceOrder(
+			cartId);
+
+		_commerceOrderService.deleteCommerceOrder(
+			commerceOrder.getCommerceOrderId());
 
 		Response.ResponseBuilder responseBuilder = Response.noContent();
 
@@ -236,6 +242,15 @@ public class CartResourceImpl extends BaseCartResourceImpl {
 
 		CommerceChannel commerceChannel =
 			_commerceChannelLocalService.getCommerceChannel(channelId);
+
+		long[] commerceAccountIds = _getCommerceAccountIds(
+			commerceChannel.getGroupId());
+
+		if ((commerceAccountIds != null) &&
+			!ArrayUtil.contains(commerceAccountIds, accountId)) {
+
+			return Page.of(Collections.emptyList());
+		}
 
 		return SearchUtil.search(
 			null,

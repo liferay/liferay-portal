@@ -45,6 +45,12 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 	@Override
 	public void deleteCartComment(Long commentId) throws Exception {
+		CommerceOrderNote commerceOrderNote =
+			_commerceOrderNoteService.getCommerceOrderNote(commentId);
+
+		_commerceOrderService.getCommerceOrder(
+			commerceOrderNote.getCommerceOrderId());
+
 		_commerceOrderNoteService.deleteCommerceOrderNote(commentId);
 	}
 
@@ -95,6 +101,12 @@ public class CartCommentResourceImpl extends BaseCartCommentResourceImpl {
 
 	@Override
 	public CartComment getCartComment(Long commentId) throws Exception {
+		CommerceOrderNote commerceOrderNote =
+			_commerceOrderNoteService.getCommerceOrderNote(commentId);
+
+		_commerceOrderService.getCommerceOrder(
+			commerceOrderNote.getCommerceOrderId());
+
 		return _toOrderNote(GetterUtil.getLong(commentId));
 	}
 
