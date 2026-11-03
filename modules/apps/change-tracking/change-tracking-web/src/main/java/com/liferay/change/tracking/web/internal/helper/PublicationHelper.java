@@ -17,6 +17,7 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.configuration.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -29,10 +30,12 @@ import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.UserNotificationDefinition;
 import com.liferay.portal.kernel.notifications.UserNotificationManagerUtil;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
@@ -69,6 +72,28 @@ public class PublicationHelper {
 
 		Group group = getOrAddGroup(ctCollection);
 
+		Company company = _companyLocalService.getCompany(
+			ctCollection.getCompanyId());
+
+		Group guestGroup = _groupLocalService.getGroup(
+			company.getCompanyId(), GroupConstants.GUEST);
+
+		String portletNamespace = _portal.getPortletNamespace(
+			CTPortletKeys.PUBLICATIONS);
+
+		String reviewChangesURL = _portal.getControlPanelFullURL(
+			guestGroup.getGroupId(), CTPortletKeys.PUBLICATIONS,
+			HashMapBuilder.put(
+				portletNamespace + "ctCollectionId",
+				new String[] {String.valueOf(ctCollection.getCtCollectionId())}
+			).put(
+				portletNamespace + "mvcRenderCommandName",
+				new String[] {"/change_tracking/view_changes"}
+			).build());
+
+		User ctCollectionUser = _userLocalService.getUser(
+			ctCollection.getUserId());
+
 		for (int i = 0; i < userIds.length; i++) {
 			User user = _userLocalService.fetchUser(userIds[i]);
 
@@ -87,6 +112,17 @@ public class PublicationHelper {
 
 			_userGroupRoleLocalService.addUserGroupRole(
 				user.getUserId(), group.getGroupId(), role.getRoleId());
+
+			sendNotificationEvent(
+				ctCollection.getCtCollectionId(), ctCollectionUser,
+				user.getUserId(), roleValues[i]);
+
+			sendEmail(
+				ctCollection.getCompanyId(), ctCollection.getCtCollectionId(),
+				ctCollectionUser,
+				company.getPortalURL(guestGroup.getGroupId()),
+				user.getUserId(), reviewChangesURL,
+				ServiceContextThreadLocal.getServiceContext());
 		}
 	}
 
@@ -279,6 +315,9 @@ public class PublicationHelper {
 
 		return new String[] {ActionKeys.VIEW};
 	}
+
+	@Reference
+	private CompanyLocalService _companyLocalService;
 
 	@Reference
 	private ConfigurationProvider _configurationProvider;
