@@ -6428,73 +6428,67 @@ public class ObjectEntryLocalServiceTest {
 				Collections.singletonList(objectField),
 				ObjectDefinitionConstants.SCOPE_COMPANY);
 
-		try {
-			ObjectField extensionObjectField = _addCustomObjectField(
-				new TextObjectFieldBuilder(
-				).labelMap(
-					LocalizedMapUtil.getLocalizedMap(
-						RandomTestUtil.randomString())
-				).name(
-					"a" + RandomTestUtil.randomString()
-				).objectDefinitionId(
-					objectDefinition.getObjectDefinitionId()
-				).build());
+		ObjectField extensionObjectField = _addCustomObjectField(
+			new TextObjectFieldBuilder(
+			).labelMap(
+				LocalizedMapUtil.getLocalizedMap(RandomTestUtil.randomString())
+			).name(
+				"a" + RandomTestUtil.randomString()
+			).objectDefinitionId(
+				objectDefinition.getObjectDefinitionId()
+			).build());
 
-			String extensionValue1 = "a" + RandomTestUtil.randomString();
+		String extensionValue1 = "a" + RandomTestUtil.randomString();
 
-			ObjectEntry objectEntry1 = _addObjectEntry(
-				0, objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					extensionObjectField.getName(), extensionValue1
-				).put(
-					objectField.getName(), "a" + RandomTestUtil.randomString()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry1 = _addObjectEntry(
+			0, objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				extensionObjectField.getName(), extensionValue1
+			).put(
+				objectField.getName(), "a" + RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 
-			String extensionValue2 = "b" + RandomTestUtil.randomString();
+		String extensionValue2 = "b" + RandomTestUtil.randomString();
 
-			ObjectEntry objectEntry2 = _addObjectEntry(
-				0, objectDefinition,
-				HashMapBuilder.<String, Serializable>put(
-					extensionObjectField.getName(), extensionValue2
-				).put(
-					objectField.getName(), "b" + RandomTestUtil.randomString()
-				).build(),
-				ServiceContextTestUtil.getServiceContext());
+		ObjectEntry objectEntry2 = _addObjectEntry(
+			0, objectDefinition,
+			HashMapBuilder.<String, Serializable>put(
+				extensionObjectField.getName(), extensionValue2
+			).put(
+				objectField.getName(), "b" + RandomTestUtil.randomString()
+			).build(),
+			ServiceContextTestUtil.getServiceContext());
 
-			Column<?, String> extensionColumn =
-				(Column<?, String>)_objectFieldLocalService.getColumn(
-					objectDefinition.getObjectDefinitionId(),
-					extensionObjectField.getName());
+		Column<?, String> extensionColumn =
+			(Column<?, String>)_objectFieldLocalService.getColumn(
+				objectDefinition.getObjectDefinitionId(),
+				extensionObjectField.getName());
 
-			Predicate predicate = extensionColumn.in(
-				new String[] {extensionValue1, extensionValue2});
+		Predicate predicate = extensionColumn.in(
+			new String[] {extensionValue1, extensionValue2});
 
-			Assert.assertEquals(
-				Arrays.asList(
-					objectEntry2.getObjectEntryId(),
-					objectEntry1.getObjectEntryId()),
-				_getPrimaryKeys(
-					objectDefinition, predicate,
-					new Sort[] {
-						new Sort(
-							extensionObjectField.getName(), Sort.STRING_TYPE,
-							true)
-					}));
-			Assert.assertEquals(
-				Arrays.asList(
-					objectEntry1.getObjectEntryId(),
-					objectEntry2.getObjectEntryId()),
-				_getPrimaryKeys(
-					objectDefinition, predicate,
-					new Sort[] {
-						new Sort(objectField.getName(), Sort.STRING_TYPE, false)
-					}));
-		}
-		finally {
-			_objectDefinitionLocalService.deleteObjectDefinition(
-				objectDefinition);
-		}
+		Assert.assertEquals(
+			Arrays.asList(
+				objectEntry2.getObjectEntryId(),
+				objectEntry1.getObjectEntryId()),
+			_getPrimaryKeys(
+				objectDefinition, predicate,
+				new Sort[] {
+					new Sort(
+						extensionObjectField.getName(), Sort.STRING_TYPE, true)
+				}));
+		Assert.assertEquals(
+			Arrays.asList(
+				objectEntry1.getObjectEntryId(),
+				objectEntry2.getObjectEntryId()),
+			_getPrimaryKeys(
+				objectDefinition, predicate,
+				new Sort[] {
+					new Sort(objectField.getName(), Sort.STRING_TYPE, false)
+				}));
+
+		_objectDefinitionLocalService.deleteObjectDefinition(objectDefinition);
 	}
 
 	@Test
