@@ -41,6 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Andrea Sbarra
@@ -238,7 +239,7 @@ public class EditPIMConnectorDisplayContext {
 		String key = MapUtil.getString(objectEntry.getValues(), "key");
 
 		for (PIMConnector curPIMConnector : _pimConnectors) {
-			if (key.equals(curPIMConnector.getKey())) {
+			if (Objects.equals(curPIMConnector.getKey(), key)) {
 				pimConnector = curPIMConnector;
 
 				break;
