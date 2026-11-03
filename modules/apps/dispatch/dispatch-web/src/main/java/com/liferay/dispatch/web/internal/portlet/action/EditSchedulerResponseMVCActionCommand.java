@@ -42,7 +42,6 @@ public class EditSchedulerResponseMVCActionCommand
 			ActionRequest actionRequest, ActionResponse actionResponse)
 		throws Exception {
 
-		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 		String groupName = ParamUtil.getString(actionRequest, "groupName");
 		String jobName = ParamUtil.getString(actionRequest, "jobName");
 		StorageType storageType = StorageType.valueOf(
@@ -53,6 +52,8 @@ public class EditSchedulerResponseMVCActionCommand
 
 		PermissionChecker permissionChecker =
 			themeDisplay.getPermissionChecker();
+
+		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		if (Objects.equals(cmd, "pause")) {
 			_schedulerResponseManager.pause(
