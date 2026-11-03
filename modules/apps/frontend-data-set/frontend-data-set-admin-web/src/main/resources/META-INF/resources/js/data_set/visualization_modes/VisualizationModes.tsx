@@ -17,8 +17,8 @@ import OrderableTable from '../../components/OrderableTable';
 import Toggle from '../../components/Toggle';
 import {
 	DEFAULT_FETCH_HEADERS,
+	DEFAULT_VISUALIZATION_MODES,
 	FUZZY_OPTIONS,
-	OBJECT_RELATIONSHIP,
 } from '../../utils/constants';
 import getDataSetResourceURL from '../../utils/getDataSetResourceURL';
 import getVisualizationModes, {
@@ -185,11 +185,9 @@ export default function VisualizationModes(props: IDataSetSectionProps) {
 			return;
 		}
 
-		const fields = [
-			OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
-			OBJECT_RELATIONSHIP.DATA_SET_LIST_SECTIONS,
-			OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
-		].join(',');
+		const fields = DEFAULT_VISUALIZATION_MODES.map(
+			({relationship}) => relationship
+		).join(',');
 
 		fetch(
 			getDataSetResourceURL({

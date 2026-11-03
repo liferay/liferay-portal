@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {DEFAULT_VISUALIZATION_MODES, OBJECT_RELATIONSHIP} from './constants';
+import {DEFAULT_VISUALIZATION_MODES} from './constants';
 import {
 	IDataSet,
 	IDataSetVisualizationMode,
@@ -16,12 +16,6 @@ interface IPersistedVisualizationMode {
 	name: string;
 	[key: string]: unknown;
 }
-
-const VISUALIZATION_MODE_RELATIONSHIPS: {[name: string]: string} = {
-	cards: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
-	list: OBJECT_RELATIONSHIP.DATA_SET_LIST_SECTIONS,
-	table: OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
-};
 
 function parseVisualizationModes(
 	visualizationModes?: string
@@ -104,9 +98,9 @@ export default function getVisualizationModes({
 export function getMappedVisualizationModeNames(dataSet: {
 	[key: string]: any;
 }): string[] {
-	return Object.keys(VISUALIZATION_MODE_RELATIONSHIPS).filter(
-		(name) => !!dataSet[VISUALIZATION_MODE_RELATIONSHIPS[name]]?.length
-	);
+	return DEFAULT_VISUALIZATION_MODES.filter(
+		({relationship}) => !!dataSet[relationship]?.length
+	).map(({mode}) => mode);
 }
 
 export function isVisualizationModeDisplayed({

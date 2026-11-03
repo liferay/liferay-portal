@@ -74,9 +74,10 @@ export interface ISchemas {
 		'x-filterable'?: IFilterable;
 	};
 }
-export interface IBaseVisualizationMode<Mode extends string> {
+export interface IDefaultVisualizationMode {
 	label: string;
-	mode: Mode;
+	mode: string;
+	relationship: string;
 	thumbnail: string;
 }
 

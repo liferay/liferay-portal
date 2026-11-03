@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {IBaseVisualizationMode} from './types';
+import {IDefaultVisualizationMode} from './types';
 
 const DEFAULT_FETCH_HEADERS = {
 	'Accept': 'application/json',
@@ -36,20 +36,23 @@ const FDS_DEFAULT_PROPS = {
 	},
 };
 
-const DEFAULT_VISUALIZATION_MODES: Array<IBaseVisualizationMode<any>> = [
+const DEFAULT_VISUALIZATION_MODES: Array<IDefaultVisualizationMode> = [
 	{
 		label: Liferay.Language.get('cards'),
 		mode: 'cards',
+		relationship: OBJECT_RELATIONSHIP.DATA_SET_CARDS_SECTIONS,
 		thumbnail: 'cards2',
 	},
 	{
 		label: Liferay.Language.get('list[noun]'),
 		mode: 'list',
+		relationship: OBJECT_RELATIONSHIP.DATA_SET_LIST_SECTIONS,
 		thumbnail: 'list',
 	},
 	{
 		label: Liferay.Language.get('table'),
 		mode: 'table',
+		relationship: OBJECT_RELATIONSHIP.DATA_SET_TABLE_SECTIONS,
 		thumbnail: 'table',
 	},
 ];
