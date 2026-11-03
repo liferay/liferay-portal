@@ -33,8 +33,11 @@ const test = mergeTests(
 const APPLICATION_NAME = 'cms/basic-web-contents';
 const DATE_DISPLAYED = '12/31/2099, 10:00 AM';
 const DATE_INPUT = '12/31/2099 10:00 AM';
+const FILE_APPLICATION_NAME = 'cms/basic-documents';
 const LONG_STANDING_DRAFT_AGE_DAYS = 45;
 const PAST_DATE = '2020-01-01T00:00:00Z';
+const PNG_BASE64 =
+	'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGNgAAACAAEABToPCwAAAABJRU5ErkJggg==';
 const TIME_ZONE_BROWSER = 'America/Los_Angeles';
 const TIME_ZONE_USER = 'UTC';
 
@@ -980,6 +983,125 @@ test.describe('Quality section', () => {
 					spaceName,
 					text: 'No Missing Required Data',
 				});
+			});
+		}
+	);
+
+	test(
+		'Lists the approved assets nothing uses and drops a file once a content embeds it',
+		{tag: '@LPD-105769'},
+		async ({apiHelpers, page}) => {
+			const spaceName = `space ${getRandomString()}`;
+			const contentTitle = `content ${getRandomString()}`;
+			const fileTitle = `file ${getRandomString()}`;
+
+			let fileExternalReferenceCode: string;
+
+			await test.step('Publish a content and a file nothing uses', async () => {
+				await apiHelpers.headlessAssetLibrary.createSpace({
+					name: spaceName,
+				});
+
+				const content = await apiHelpers.objectEntry.postObjectEntry(
+					{
+						objectEntryFolderExternalReferenceCode: 'L_CONTENTS',
+						title: contentTitle,
+					},
+					APPLICATION_NAME,
+					spaceName
+				);
+
+				const file = await apiHelpers.objectEntry.postObjectEntry(
+					{
+						file: {
+							fileBase64: PNG_BASE64,
+							name: `${getRandomString()}.png`,
+						},
+						objectEntryFolderExternalReferenceCode: 'L_FILES',
+						title: fileTitle,
+					},
+					FILE_APPLICATION_NAME,
+					spaceName
+				);
+
+				fileExternalReferenceCode = file.externalReferenceCode;
+
+				for (const objectEntry of [content, file]) {
+					apiHelpers.data.push({
+						id: objectEntry.id,
+						type: 'document',
+					});
+
+					expect(objectEntry.id).toBeTruthy();
+				}
+			});
+
+			await test.step('Check the dashboard lists both as unlinked', async () => {
+				const unlinkedContentList = await openQualityList(page, {
+					cardTitle: 'Unlinked Content',
+					spaceName,
+					text: contentTitle,
+				});
+
+				await expect(
+					unlinkedContentList.getByText(fileTitle, {exact: true})
+				).toBeVisible();
+
+				await expect(
+					unlinkedContentList.getByText(
+						'This asset is not used in any content or page.',
+						{exact: true}
+					)
+				).toHaveCount(2);
+			});
+
+			await test.step('Open the unlinked content page of the space', async () => {
+				await page
+					.getByRole('link', {name: 'View All Unlinked Content'})
+					.click();
+
+				await expect(page).toHaveURL(/unlinked-content\?groupId=/);
+
+				await expect(
+					page.getByText(contentTitle, {exact: true})
+				).toBeVisible();
+
+				await expect(
+					page.getByText(fileTitle, {exact: true})
+				).toBeVisible();
+			});
+
+			await test.step('View and edit the content from the page', async () => {
+				await viewAndEditContent(page, contentTitle);
+			});
+
+			await test.step('Check the file leaves the list once a content embeds it', async () => {
+				const embeddingContent =
+					await apiHelpers.objectEntry.postObjectEntry(
+						{
+							content: getDocumentHTML(fileExternalReferenceCode),
+							objectEntryFolderExternalReferenceCode:
+								'L_CONTENTS',
+							title: `content ${getRandomString()}`,
+						},
+						APPLICATION_NAME,
+						spaceName
+					);
+
+				apiHelpers.data.push({
+					id: embeddingContent.id,
+					type: 'document',
+				});
+
+				const unlinkedContentList = await openQualityList(page, {
+					cardTitle: 'Unlinked Content',
+					spaceName,
+					text: contentTitle,
+				});
+
+				await expect(
+					unlinkedContentList.getByText(fileTitle, {exact: true})
+				).toBeHidden();
 			});
 		}
 	);
