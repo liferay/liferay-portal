@@ -72,7 +72,7 @@ const CONTENT_AGE_RANGES: ContentAgeRange[] = [
 
 const CONTRIBUTORS_AGGREGATION_NAME = 'contributors';
 
-const LONG_STANDING_DRAFT_DAYS = 30;
+export const LONG_STANDING_DRAFT_DAYS = 30;
 
 export const GOVERNANCE_ASSET_LIST_PAGE_SIZE = 8;
 
