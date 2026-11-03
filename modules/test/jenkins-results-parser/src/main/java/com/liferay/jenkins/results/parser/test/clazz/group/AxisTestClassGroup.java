@@ -156,11 +156,6 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 		return getBatchName();
 	}
 
-	@Override
-	public Job getJob() {
-		return _batchTestClassGroup.getJob();
-	}
-
 	public JSONObject getJSONObject() {
 		JSONObject jsonObject = new JSONObject();
 
@@ -186,6 +181,11 @@ public class AxisTestClassGroup extends BaseTestClassGroup {
 		}
 
 		return jsonObject;
+	}
+
+	@Override
+	public Job getJob() {
+		return _batchTestClassGroup.getJob();
 	}
 
 	@Override
