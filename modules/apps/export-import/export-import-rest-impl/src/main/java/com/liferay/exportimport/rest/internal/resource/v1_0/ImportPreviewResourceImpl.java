@@ -145,20 +145,6 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 			binaryFile.getInputStream(), binaryFile.getContentType());
 	}
 
-	private boolean _existsInInstance(ExportImportGroup exportImportGroup) {
-		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
-			exportImportGroup.getExternalReferenceCode(),
-			contextCompany.getCompanyId());
-
-		if ((group != null) &&
-			_exportImportHelper.isGroupMatching(exportImportGroup, group)) {
-
-			return true;
-		}
-
-		return false;
-	}
-
 	private AssetLibrary[] _getAssetLibraries(FileEntry fileEntry)
 		throws Exception {
 
@@ -176,7 +162,7 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 				{
 					setDescriptiveName(exportImportGroup::getDescriptiveName);
 					setExistsInInstance(
-						() -> _existsInInstance(exportImportGroup));
+						() -> _hasMatchingGroup(exportImportGroup));
 					setExternalReferenceCode(
 						exportImportGroup::getExternalReferenceCode);
 					setType(
@@ -261,13 +247,27 @@ public class ImportPreviewResourceImpl extends BaseImportPreviewResourceImpl {
 					setChildSitesCount(exportImportGroup::getChildGroupsCount);
 					setDescriptiveName(exportImportGroup::getDescriptiveName);
 					setExistsInInstance(
-						() -> _existsInInstance(exportImportGroup));
+						() -> _hasMatchingGroup(exportImportGroup));
 					setExternalReferenceCode(
 						exportImportGroup::getExternalReferenceCode);
 					setPath(exportImportGroup::getPath);
 				}
 			},
 			Site.class);
+	}
+
+	private boolean _hasMatchingGroup(ExportImportGroup exportImportGroup) {
+		Group group = groupLocalService.fetchGroupByExternalReferenceCode(
+			exportImportGroup.getExternalReferenceCode(),
+			contextCompany.getCompanyId());
+
+		if ((group != null) &&
+			_exportImportHelper.isGroupMatching(exportImportGroup, group)) {
+
+			return true;
+		}
+
+		return false;
 	}
 
 	private void _validateImportFile(
