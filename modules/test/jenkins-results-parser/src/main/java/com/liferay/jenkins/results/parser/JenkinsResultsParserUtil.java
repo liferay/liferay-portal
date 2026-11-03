@@ -3038,24 +3038,24 @@ public class JenkinsResultsParserUtil {
 		String baseInvocationURL, String blacklist, int invokedBatchSize,
 		String jobName) {
 
-		URIBuilder uriBuilder = newURIBuilder(getJenkinsLoadBalancerURL());
-
-		uriBuilder.addParameter("baseInvocationURL", baseInvocationURL);
-
-		if (blacklist != null) {
-			uriBuilder.addParameter("blacklist", blacklist);
-		}
-
-		if (invokedBatchSize > 0) {
-			uriBuilder.addParameter(
-				"invokedJobBatchSize", String.valueOf(invokedBatchSize));
-		}
-
-		if (!isNullOrEmpty(jobName)) {
-			uriBuilder.addParameter("jobName", jobName);
-		}
-
 		try {
+			URIBuilder uriBuilder = newURIBuilder(getJenkinsLoadBalancerURL());
+
+			uriBuilder.addParameter("baseInvocationURL", baseInvocationURL);
+
+			if (blacklist != null) {
+				uriBuilder.addParameter("blacklist", blacklist);
+			}
+
+			if (invokedBatchSize > 0) {
+				uriBuilder.addParameter(
+					"invokedJobBatchSize", String.valueOf(invokedBatchSize));
+			}
+
+			if (!isNullOrEmpty(jobName)) {
+				uriBuilder.addParameter("jobName", jobName);
+			}
+
 			JSONObject jsonObject = toJSONObject(uriBuilder.toString(), false);
 
 			return jsonObject.getString("mostAvailableMasterURL");
