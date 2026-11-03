@@ -198,6 +198,30 @@ public class OAuthClientASLocalMetadataSerDes {
 			sb.append("\"");
 		}
 
+		if (oAuthClientASLocalMetadata.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0;
+				 i < oAuthClientASLocalMetadata.getPermissions().length; i++) {
+
+				sb.append(oAuthClientASLocalMetadata.getPermissions()[i]);
+
+				if ((i + 1) <
+						oAuthClientASLocalMetadata.getPermissions().length) {
+
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -320,6 +344,15 @@ public class OAuthClientASLocalMetadataSerDes {
 					oAuthClientASLocalMetadata.getOAuthASMetadataJSON()));
 		}
 
+		if (oAuthClientASLocalMetadata.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions",
+				String.valueOf(oAuthClientASLocalMetadata.getPermissions()));
+		}
+
 		return map;
 	}
 
@@ -374,6 +407,9 @@ public class OAuthClientASLocalMetadataSerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "oAuthASMetadataJSON")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 
@@ -451,6 +487,26 @@ public class OAuthClientASLocalMetadataSerDes {
 				if (jsonParserFieldValue != null) {
 					oAuthClientASLocalMetadata.setOAuthASMetadataJSON(
 						(String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.oauth.client.rest.client.permission.Permission[]
+						permissionsArray = new
+						com.liferay.oauth.client.rest.client.permission.
+							Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.oauth.client.rest.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					oAuthClientASLocalMetadata.setPermissions(permissionsArray);
 				}
 			}
 		}
@@ -540,4 +596,4 @@ public class OAuthClientASLocalMetadataSerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-759609169
+// LIFERAY-REST-BUILDER-HASH:-1955090014

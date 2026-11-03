@@ -638,6 +638,14 @@ public abstract class BaseOAuthClientEntryResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (oAuthClientEntry.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			if (Objects.equals(
 					"tokenConnectionTimeout", additionalAssertFieldName)) {
 
@@ -929,6 +937,17 @@ public abstract class BaseOAuthClientEntryResourceTestCase {
 				if (!Objects.deepEquals(
 						oAuthClientEntry1.getOidcUserInfoMapperJSON(),
 						oAuthClientEntry2.getOidcUserInfoMapperJSON())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						oAuthClientEntry1.getPermissions(),
+						oAuthClientEntry2.getPermissions())) {
 
 					return false;
 				}
@@ -1511,6 +1530,11 @@ public abstract class BaseOAuthClientEntryResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		if (entityFieldName.equals("tokenConnectionTimeout")) {
 			sb.append(
 				String.valueOf(oAuthClientEntry.getTokenConnectionTimeout()));
@@ -1883,4 +1907,4 @@ public abstract class BaseOAuthClientEntryResourceTestCase {
 		_oAuthClientEntryResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:1242866101
+// LIFERAY-REST-BUILDER-HASH:674444241

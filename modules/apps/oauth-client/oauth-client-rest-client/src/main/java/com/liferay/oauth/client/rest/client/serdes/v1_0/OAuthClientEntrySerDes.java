@@ -229,6 +229,26 @@ public class OAuthClientEntrySerDes {
 			sb.append("\"");
 		}
 
+		if (oAuthClientEntry.getPermissions() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"permissions\": ");
+
+			sb.append("[");
+
+			for (int i = 0; i < oAuthClientEntry.getPermissions().length; i++) {
+				sb.append(oAuthClientEntry.getPermissions()[i]);
+
+				if ((i + 1) < oAuthClientEntry.getPermissions().length) {
+					sb.append(", ");
+				}
+			}
+
+			sb.append("]");
+		}
+
 		if (oAuthClientEntry.getTokenConnectionTimeout() != null) {
 			if (sb.length() > 1) {
 				sb.append(", ");
@@ -391,6 +411,15 @@ public class OAuthClientEntrySerDes {
 				String.valueOf(oAuthClientEntry.getOidcUserInfoMapperJSON()));
 		}
 
+		if (oAuthClientEntry.getPermissions() == null) {
+			map.put("permissions", null);
+		}
+		else {
+			map.put(
+				"permissions",
+				String.valueOf(oAuthClientEntry.getPermissions()));
+		}
+
 		if (oAuthClientEntry.getTokenConnectionTimeout() == null) {
 			map.put("tokenConnectionTimeout", null);
 		}
@@ -475,6 +504,9 @@ public class OAuthClientEntrySerDes {
 			else if (Objects.equals(
 						jsonParserFieldName, "oidcUserInfoMapperJSON")) {
 
+				return false;
+			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
 				return false;
 			}
 			else if (Objects.equals(
@@ -583,6 +615,26 @@ public class OAuthClientEntrySerDes {
 						(String)jsonParserFieldValue);
 				}
 			}
+			else if (Objects.equals(jsonParserFieldName, "permissions")) {
+				if (jsonParserFieldValue != null) {
+					Object[] jsonParserFieldValues =
+						(Object[])jsonParserFieldValue;
+
+					com.liferay.oauth.client.rest.client.permission.Permission[]
+						permissionsArray = new
+						com.liferay.oauth.client.rest.client.permission.
+							Permission[jsonParserFieldValues.length];
+
+					for (int i = 0; i < permissionsArray.length; i++) {
+						permissionsArray[i] =
+							com.liferay.oauth.client.rest.client.permission.
+								Permission.toDTO(
+									(String)jsonParserFieldValues[i]);
+					}
+
+					oAuthClientEntry.setPermissions(permissionsArray);
+				}
+			}
 			else if (Objects.equals(
 						jsonParserFieldName, "tokenConnectionTimeout")) {
 
@@ -686,4 +738,4 @@ public class OAuthClientEntrySerDes {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1074559361
+// LIFERAY-REST-BUILDER-HASH:-2106906992

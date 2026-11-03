@@ -171,7 +171,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-as-local-metadatas' -d $'{"dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "issuer": ___, "localWellKnownEnabled": ___, "localWellKnownURI": ___, "metadataJSON": ___, "oAuthASLocalWellKnownURI": ___, "oAuthASMetadataJSON": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'POST' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-as-local-metadatas' -d $'{"dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "issuer": ___, "localWellKnownEnabled": ___, "localWellKnownURI": ___, "metadataJSON": ___, "oAuthASLocalWellKnownURI": ___, "oAuthASMetadataJSON": ___, "permissions": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.tags.Tags(
@@ -312,7 +312,7 @@ public abstract class BaseOAuthClientASLocalMetadataResourceImpl
 	/**
 	 * Invoke this method with the command line:
 	 *
-	 * curl -X 'PUT' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-as-local-metadata/by-external-reference-code/{externalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "issuer": ___, "localWellKnownEnabled": ___, "localWellKnownURI": ___, "metadataJSON": ___, "oAuthASLocalWellKnownURI": ___, "oAuthASMetadataJSON": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
+	 * curl -X 'PUT' 'http://localhost:8080/o/oauth-client/v1.0/oauth-client-as-local-metadata/by-external-reference-code/{externalReferenceCode}' -d $'{"dateCreated": ___, "dateModified": ___, "externalReferenceCode": ___, "issuer": ___, "localWellKnownEnabled": ___, "localWellKnownURI": ___, "metadataJSON": ___, "oAuthASLocalWellKnownURI": ___, "oAuthASMetadataJSON": ___, "permissions": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
 	@com.liferay.portal.vulcan.feature.flag.FeatureFlag("LPD-49855")
 	@io.swagger.v3.oas.annotations.Parameters(
@@ -1138,4 +1138,4 @@ public abstract class BaseOAuthClientASLocalMetadataResourceImpl
 		LogFactoryUtil.getLog(BaseOAuthClientASLocalMetadataResourceImpl.class);
 
 }
-// LIFERAY-REST-BUILDER-HASH:-648053654
+// LIFERAY-REST-BUILDER-HASH:2093851844

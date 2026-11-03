@@ -239,6 +239,35 @@ public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
 
 	protected String oAuthASMetadataJSON;
 
+	public com.liferay.oauth.client.rest.client.permission.Permission[]
+		getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.oauth.client.rest.client.permission.Permission[]
+			permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.oauth.client.rest.client.permission.Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected com.liferay.oauth.client.rest.client.permission.Permission[]
+		permissions;
+
 	@Override
 	public OAuthClientASLocalMetadata clone()
 		throws CloneNotSupportedException {
@@ -275,4 +304,4 @@ public class OAuthClientASLocalMetadata implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:1122266084
+// LIFERAY-REST-BUILDER-HASH:1234310487

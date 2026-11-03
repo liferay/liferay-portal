@@ -307,6 +307,35 @@ public class OAuthClientEntry implements Cloneable, Serializable {
 
 	protected String oidcUserInfoMapperJSON;
 
+	public com.liferay.oauth.client.rest.client.permission.Permission[]
+		getPermissions() {
+
+		return permissions;
+	}
+
+	public void setPermissions(
+		com.liferay.oauth.client.rest.client.permission.Permission[]
+			permissions) {
+
+		this.permissions = permissions;
+	}
+
+	public void setPermissions(
+		UnsafeSupplier
+			<com.liferay.oauth.client.rest.client.permission.Permission[],
+			 Exception> permissionsUnsafeSupplier) {
+
+		try {
+			permissions = permissionsUnsafeSupplier.get();
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	protected com.liferay.oauth.client.rest.client.permission.Permission[]
+		permissions;
+
 	public Integer getTokenConnectionTimeout() {
 		return tokenConnectionTimeout;
 	}
@@ -386,4 +415,4 @@ public class OAuthClientEntry implements Cloneable, Serializable {
 	}
 
 }
-// LIFERAY-REST-BUILDER-HASH:-1727517471
+// LIFERAY-REST-BUILDER-HASH:1618659294

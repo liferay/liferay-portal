@@ -664,6 +664,14 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 				continue;
 			}
 
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (oAuthClientASLocalMetadata.getPermissions() == null) {
+					valid = false;
+				}
+
+				continue;
+			}
+
 			throw new IllegalArgumentException(
 				"Invalid additional assert field name " +
 					additionalAssertFieldName);
@@ -904,6 +912,17 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 				if (!Objects.deepEquals(
 						oAuthClientASLocalMetadata1.getOAuthASMetadataJSON(),
 						oAuthClientASLocalMetadata2.getOAuthASMetadataJSON())) {
+
+					return false;
+				}
+
+				continue;
+			}
+
+			if (Objects.equals("permissions", additionalAssertFieldName)) {
+				if (!Objects.deepEquals(
+						oAuthClientASLocalMetadata1.getPermissions(),
+						oAuthClientASLocalMetadata2.getPermissions())) {
 
 					return false;
 				}
@@ -1371,6 +1390,11 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 			return sb.toString();
 		}
 
+		if (entityFieldName.equals("permissions")) {
+			throw new IllegalArgumentException(
+				"Invalid entity field " + entityFieldName);
+		}
+
 		throw new IllegalArgumentException(
 			"Invalid entity field " + entityFieldName);
 	}
@@ -1689,4 +1713,4 @@ public abstract class BaseOAuthClientASLocalMetadataResourceTestCase {
 		OAuthClientASLocalMetadataResource _oAuthClientASLocalMetadataResource;
 
 }
-// LIFERAY-REST-BUILDER-HASH:-633496622
+// LIFERAY-REST-BUILDER-HASH:-1416362184
