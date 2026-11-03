@@ -50,7 +50,7 @@ public class IntrospectionFieldLimitInstrumentationTest {
 		SchemaParser schemaParser = new SchemaParser();
 
 		_graphQLSchema = schemaGenerator.makeExecutableSchema(
-			schemaParser.parse("type Query { hello: String }"),
+			schemaParser.parse("type Query {hello: String}"),
 			RuntimeWiring.newRuntimeWiring(
 			).build());
 	}
@@ -58,19 +58,19 @@ public class IntrospectionFieldLimitInstrumentationTest {
 	@Test
 	public void testBeginExecuteOperation() {
 		_beginExecuteOperation(
-			"{ __schema { directives { args { name } } types { fields { args " +
-				"{ name } } } } }");
+			"{__schema {directives {args {name}} types {fields {args " +
+				"{name}}}}}");
 		_beginExecuteOperation(
-			"{ __schema { types { enumValues { name } fields { type { " +
-				"enumValues { name } } } } } }");
+			"{__schema {types {enumValues {name} fields {type {" +
+				"enumValues {name}}}}}}");
 		_beginExecuteOperation(
-			"{ __schema { types { ofType { ofType { ofType { name } } } " +
-				"possibleTypes { ofType { ofType { name } } } } } }");
+			"{__schema {types {ofType {ofType {ofType {name}}} possibleTypes " +
+				"{ofType {ofType {name}}}}}}");
 		_beginExecuteOperation(
-			"{ a: __type(name: \"Query\") { enumValues { name } } b: " +
-				"__type(name: \"Query\") { enumValues { name } } }");
+			"{a: __type(name: \"Query\") {enumValues {name}} b: __type(name: " +
+				"\"Query\") {enumValues {name}}}");
 		_beginExecuteOperation(
-			"{ a: __typename b: __typename __schema { queryType { name } } }");
+			"{a: __typename b: __typename __schema {queryType {name}}}");
 		_beginExecuteOperation(IntrospectionQuery.INTROSPECTION_QUERY);
 	}
 
@@ -79,19 +79,18 @@ public class IntrospectionFieldLimitInstrumentationTest {
 		_assertIntrospectionFieldLimitExceeded(
 			"Maximum query depth exceeded. 21 > 20",
 			StringBundler.concat(
-				"{ __schema { types { ", "ofType { ".repeat(20), "name",
-				" }".repeat(20), " } } }"));
+				"{__schema {types {", "ofType {".repeat(20), "name",
+				"}".repeat(20), "}}}"));
 	}
 
 	@Test
 	public void testBeginExecuteOperationWithMaxFieldsCountExceeded() {
 		_assertIntrospectionFieldLimitExceeded(
 			"Field count is greater than the introspection field limit of 500",
-			"{ __schema { types { " + _getAliasedFields("name", 501) +
-				" } } }");
+			"{__schema {types {" + _getAliasedFields("name", 501) + "}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"Field count is greater than the introspection field limit of 500",
-			_getNestedFragments(40, "__schema { types { name } }"));
+			_getNestedFragments(40, "__schema {types {name}}"));
 	}
 
 	@Test
@@ -99,17 +98,17 @@ public class IntrospectionFieldLimitInstrumentationTest {
 		_assertIntrospectionFieldLimitExceeded(
 			"List of lists field count is greater than the introspection " +
 				"list of lists field limit of 2",
-			"{ __schema { types { interfaces { possibleTypes { name } } } } }");
+			"{__schema {types {interfaces {possibleTypes {name}}}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"List of lists field count is greater than the introspection " +
 				"list of lists field limit of 2",
-			"{ __type(name: \"Query\") { interfaces { possibleTypes { fields " +
-				"{ name } } } } }");
+			"{__type(name: \"Query\") {interfaces {possibleTypes {fields " +
+				"{name}}}}}");
 	}
 
 	@Test
 	public void testBeginExecuteOperationWithNonintrospectionQuery() {
-		_beginExecuteOperation("{ " + _getAliasedFields("hello", 501) + " }");
+		_beginExecuteOperation("{" + _getAliasedFields("hello", 501) + "}");
 		_beginExecuteOperation(_getNestedFragments(40, "hello"));
 	}
 
@@ -117,30 +116,28 @@ public class IntrospectionFieldLimitInstrumentationTest {
 	public void testBeginExecuteOperationWithRepeatedField() {
 		_assertIntrospectionFieldLimitExceeded(
 			"Query.__schema is present more than once",
-			"{ a: __schema { queryType { name } } b: __schema { queryType { " +
-				"name } } }");
+			"{a: __schema {queryType {name}} b: __schema {queryType {name}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"__Field.args is present more than once",
-			"{ __schema { types { fields { a: args { name } b: args { name } " +
-				"} } } }");
+			"{__schema {types {fields {a: args {name} b: args {name}}}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"__Field.name is present more than once",
-			"{ __schema { types { fields { a: name b: name } } } }");
+			"{__schema {types {fields {a: name b: name}}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"__Schema.directives is present more than once",
 			StringBundler.concat(
-				"{ ...Root } fragment Root on Query { __schema { ",
-				"...Directives } } fragment Directives on __Schema { a: ",
-				"directives { name } b: directives { name } }"));
+				"{...Root} fragment Root on Query {__schema {...Directives}} ",
+				"fragment Directives on __Schema {a: directives {name} b: ",
+				"directives {name}}"));
 		_assertIntrospectionFieldLimitExceeded(
 			"__Schema.types is present more than once",
-			"{ __schema { a: types { name } b: types { name } } }");
+			"{__schema {a: types {name} b: types {name}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"__Type.__typename is present more than once",
-			"{ __schema { types { a: __typename b: __typename } } }");
+			"{__schema {types {a: __typename b: __typename}}}");
 		_assertIntrospectionFieldLimitExceeded(
 			"__Type.fields is present more than once",
-			"{ __schema { types { fields { type { fields { name } } } } } }");
+			"{__schema {types {fields {type {fields {name}}}}}}");
 	}
 
 	private void _assertIntrospectionFieldLimitExceeded(
@@ -178,14 +175,17 @@ public class IntrospectionFieldLimitInstrumentationTest {
 	}
 
 	private String _getAliasedFields(String fieldName, int count) {
-		StringBundler sb = new StringBundler(count * 4);
+		StringBundler sb = new StringBundler(count * 5);
 
 		for (int i = 0; i < count; i++) {
-			sb.append(" a");
+			sb.append("a");
 			sb.append(i);
 			sb.append(": ");
 			sb.append(fieldName);
+			sb.append(" ");
 		}
+
+		sb.setIndex(sb.index() - 1);
 
 		return sb.toString();
 	}
@@ -193,23 +193,23 @@ public class IntrospectionFieldLimitInstrumentationTest {
 	private String _getNestedFragments(int depth, String selection) {
 		StringBundler sb = new StringBundler((depth * 7) + 6);
 
-		sb.append("{ ...F0 }");
+		sb.append("{...F0}");
 
 		for (int i = 0; i < depth; i++) {
 			sb.append(" fragment F");
 			sb.append(i);
-			sb.append(" on Query { ...F");
+			sb.append(" on Query {...F");
 			sb.append(i + 1);
 			sb.append(" ...F");
 			sb.append(i + 1);
-			sb.append(" }");
+			sb.append("}");
 		}
 
 		sb.append(" fragment F");
 		sb.append(depth);
-		sb.append(" on Query { ");
+		sb.append(" on Query {");
 		sb.append(selection);
-		sb.append(" }");
+		sb.append("}");
 
 		return sb.toString();
 	}
