@@ -93,6 +93,14 @@ definition {
 			SignOut.signOutOfSpecificURL(url = "http://www.able.com:8080");
 		}
 
+		task ("Add a custom table to the default schema and to the www.able.com partition") {
+			var companyId = JSONCompany.getCompanyId(portalInstanceName = "www.able.com");
+
+			SQL.executeSettingAutoCommitSQLStatement(
+				autoCommit = "true",
+				sqlStatement = "create table CustomTable (id bigint not null, name varchar(75)); insert into CustomTable values (1, 'Default'); create table lpartition_${companyId}.CustomTable (id bigint not null, name varchar(75)); insert into lpartition_${companyId}.CustomTable values (1, 'Able');");
+		}
+
 		task ("Export origin database schema definition") {
 			DBMigrationExportImport.dbSchemaDefinitionExport();
 		}
@@ -113,6 +121,66 @@ definition {
 			DBMigrationExportImport.switchToPostgreSQLDB();
 
 			Portlet.startServer(deleteLiferayHome = "false");
+		}
+
+		task ("Ensure that the custom tables were migrated") {
+			SignIn.signInTestSetup();
+
+			ServerAdministration.openServerAdmin();
+
+			var script = '''
+				import com.liferay.petra.lang.SafeCloseable;
+				import com.liferay.portal.kernel.dao.jdbc.DataAccess;
+				import com.liferay.portal.kernel.model.Company;
+				import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+				import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
+				import com.liferay.portal.kernel.util.PortalUtil;
+
+				import java.sql.Connection;
+				import java.sql.ResultSet;
+				import java.sql.Statement;
+
+				Company company = CompanyLocalServiceUtil.getCompanyByWebId("www.able.com");
+
+				def names = [];
+
+				for (companyId in [PortalUtil.getDefaultCompanyId(), company.getCompanyId()]) {
+					SafeCloseable safeCloseable = CompanyThreadLocal.setCompanyIdWithSafeCloseable(companyId);
+
+					Connection connection = null;
+					Statement statement = null;
+					ResultSet resultSet = null;
+
+					try {
+						connection = DataAccess.getConnection();
+
+						statement = connection.createStatement();
+
+						resultSet = statement.executeQuery("select name from CustomTable");
+
+						while (resultSet.next()) {
+							names.add(resultSet.getString(1));
+						}
+					}
+					finally {
+						DataAccess.cleanUp(connection, statement, resultSet);
+
+						safeCloseable.close();
+					}
+				}
+
+				out.println("Custom table rows: " + names.join(", "));
+			''';
+
+			ServerAdministration.executeScript(
+				language = "Groovy",
+				script = ${script});
+
+			AssertTextEquals.assertPartialText(
+				locator1 = "ServerAdministrationScript#OUTPUT_FIELD",
+				value1 = "Custom table rows: Default, Able");
+
+			SignOut.signOut();
 		}
 
 		task ("Ensure that www.able.com is accessible and its assets visible") {
