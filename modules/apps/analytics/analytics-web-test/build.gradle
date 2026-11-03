@@ -1,0 +1,5 @@
+dependencies {
+	testIntegrationImplementation project(":apps:analytics:analytics-settings-api")
+	testIntegrationImplementation project(":apps:portal-configuration:portal-configuration-test-util")
+	testIntegrationImplementation project(":test:arquillian-extension-junit-bridge")
+}
