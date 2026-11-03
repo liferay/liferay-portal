@@ -34,7 +34,6 @@ definition {
 		}
 	}
 
-
 	@description = "This is a test for LPS-90864. It checks that a site member can add shortcut to folder with permissions."
 	@priority = 4
 	test CanAddShortcutToFolderAsSiteMemberWithPermissions {
@@ -110,8 +109,6 @@ definition {
 
 		DMDocument.viewPG(dmDocumentTitle = "DM Document Title");
 	}
-
-
 
 	@description = "This is a test for LPS-155227. It checks that a user can not receive notifications without the subscribe permission of the folder."
 	@priority = 4
@@ -193,8 +190,6 @@ definition {
 		Notifications.viewNoNotifications(activePanel = "Notifications");
 	}
 
-
-
 	@description = "This test covers LPS-93031. It ensures that the document still can be viewed after the author is deleted."
 	@priority = 4
 	@refactordone
@@ -247,10 +242,6 @@ definition {
 			dmDocumentFileName = "Document_1.jpg",
 			dmDocumentTitle = "DM Document Title");
 	}
-
-
-
-
 
 	@description = "This test covers LPS-106905. It ensures that a site admin user is able to select an image from the global site in WCD."
 	@priority = 3
@@ -313,13 +304,5 @@ definition {
 			imageFileName = "document_1",
 			webContentTitle = "WC WebContent Title");
 	}
-
-
-
-
-
-
-
-
 
 }

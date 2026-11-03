@@ -4,7 +4,6 @@
  */
 
 import {expect, mergeTests} from '@playwright/test';
-
 import {createReadStream} from 'fs';
 import path from 'path';
 
@@ -177,7 +176,10 @@ test(
 
 			for (const hiddenAction of hiddenActions) {
 				await expect(
-					page.getByRole('menuitem', {exact: true, name: hiddenAction})
+					page.getByRole('menuitem', {
+						exact: true,
+						name: hiddenAction,
+					})
 				).toBeHidden();
 			}
 
@@ -330,7 +332,10 @@ test(
 			await expect(page.getByText(folder.name).first()).toBeVisible();
 		};
 
-		const addDocumentRolePermissions = (primaryKey: string, scope: number) => [
+		const addDocumentRolePermissions = (
+			primaryKey: string,
+			scope: number
+		) => [
 			{
 				actionIds: ['ADD_DOCUMENT'],
 				primaryKey,
@@ -346,7 +351,7 @@ test(
 
 		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
 			regularRole.id,
-			regularRoleUser.id
+			Number(regularRoleUser.id)
 		);
 
 		const addDocumentRole = await apiHelpers.headlessAdminUser.postRole({
@@ -357,7 +362,7 @@ test(
 
 		await apiHelpers.headlessAdminUser.postRoleUserAccountAssociation(
 			addDocumentRole.id,
-			addDocumentUser.id
+			Number(addDocumentUser.id)
 		);
 
 		const siteMember = await addUser();
@@ -387,7 +392,7 @@ test(
 
 			await apiHelpers.headlessAdminUser.deleteRoleUserAccountAssociation(
 				addDocumentRole.id,
-				addDocumentUser.id
+				Number(addDocumentUser.id)
 			);
 
 			await viewAs(addDocumentUser.alternateName);
