@@ -1317,54 +1317,6 @@ definition {
 			siteName = "site-name");
 	}
 
-	@description = "This test covers LPS-155794. It ensures that an image that was published on a site can still be accessed after local staging is disabled."
-	@priority = 4
-	test ImageIsStillAccessibleAfterDisablingStaging {
-		var portalURL = PropsUtil.get("portal.url");
-
-		JSONDocument.addFileWithUploadedFile(
-			dmDocumentDescription = "DM Document Description",
-			dmDocumentTitle = "Document_2",
-			groupName = "Site Name-staging",
-			mimeType = "image/jpeg",
-			sourceFileName = "Document_2.jpg");
-
-		DMNavigator.openToEditEntryInSite(
-			dmDocumentTitle = "Document_2",
-			groupName = "Site Name (Staging)",
-			site = "false",
-			siteURLKey = "site-name-staging");
-
-		DMDocument.editFriendlyURL(
-			dmDocumentTitle = "Document_2",
-			friendlyURLEdit = "document_2_edit");
-
-		Navigator.gotoStagedSitePage(
-			pageName = "Staging DM Page",
-			siteName = "Site Name");
-
-		Staging.gotoPublishToLive();
-
-		Staging.publishToLive();
-
-		DMNavigator.openToEntryInAdmin(
-			dmDocumentTitle = "Document_2",
-			groupName = "Site Name",
-			siteURLKey = "site-name");
-
-		var latestVersionURL = DMDocument.getLatestVersionURL();
-
-		Staging.openStagingAdmin(siteURLKey = "site-name-staging");
-
-		Staging.deactivateStagingCP(siteName = "Site Name");
-
-		Navigator.openSpecificURL(url = ${latestVersionURL});
-
-		AssertVisible(
-			key_imageSourceURL = "${portalURL}/documents/d/site-name/document_2_edit",
-			locator1 = "DocumentsAndMediaDocument#DOCUMENT_VIEWPORT_PREVIEW");
-	}
-
 	@description = "This ensures that the image can be deleted and republished in web content."
 	@priority = 4
 	@refactordone

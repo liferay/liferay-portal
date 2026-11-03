@@ -41,7 +41,13 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.friendly.url.model.FriendlyURLEntry;
+import com.liferay.friendly.url.service.FriendlyURLEntryLocalService;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 
@@ -182,6 +188,49 @@ public class DLLocalStagingTest {
 	}
 
 	@Test
+	@TestInfo({"LPD-113633", "LPS-155794"})
+	public void testPublishFileEntryWithURLTitleAndDisableStaging()
+		throws Exception {
+
+		byte[] bytes = RandomTestUtil.randomBytes();
+		String urlTitle = StringUtil.toLowerCase(RandomTestUtil.randomString());
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			null, TestPropsValues.getUserId(), _stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString() + ".jpg", ContentTypes.IMAGE_JPEG,
+			RandomTestUtil.randomString(), urlTitle, StringPool.BLANK,
+			StringPool.BLANK, bytes, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				_stagingGroup.getGroupId()));
+
+		_publish();
+
+		StagingLocalServiceUtil.disableStaging(
+			_liveGroup,
+			ServiceContextTestUtil.getServiceContext(_liveGroup.getGroupId()));
+
+		Assert.assertFalse(
+			GroupLocalServiceUtil.getGroup(
+				_liveGroup.getGroupId()
+			).hasStagingGroup());
+
+		FriendlyURLEntry friendlyURLEntry =
+			_friendlyURLEntryLocalService.fetchFriendlyURLEntry(
+				_liveGroup.getGroupId(),
+				PortalUtil.getClassNameId(FileEntry.class), urlTitle);
+
+		Assert.assertNotNull(friendlyURLEntry);
+
+		FileEntry liveFileEntry = DLAppLocalServiceUtil.getFileEntry(
+			friendlyURLEntry.getClassPK());
+
+		Assert.assertEquals(fileEntry.getUuid(), liveFileEntry.getUuid());
+		Assert.assertArrayEquals(
+			bytes, FileUtil.getBytes(liveFileEntry.getContentStream()));
+	}
+
+	@Test
 	@TestInfo({"LPD-113633", "LPS-136824"})
 	public void testPublishFolderMovedToRecycleBin() throws Exception {
 		Folder folder = DLAppLocalServiceUtil.addFolder(
@@ -240,6 +289,9 @@ public class DLLocalStagingTest {
 			ExportImportConfigurationParameterMapFactoryUtil.
 				buildFullPublishParameterMap());
 	}
+
+	@Inject
+	private static FriendlyURLEntryLocalService _friendlyURLEntryLocalService;
 
 	@DeleteAfterTestRun
 	private Group _liveGroup;
