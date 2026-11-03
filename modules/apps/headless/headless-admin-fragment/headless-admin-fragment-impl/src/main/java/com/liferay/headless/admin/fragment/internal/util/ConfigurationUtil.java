@@ -1450,6 +1450,14 @@ public class ConfigurationUtil {
 
 		FieldSet fieldSet = new FieldSet();
 
+		fieldSet.setCollapsed(
+			() -> {
+				if (!fieldSetJSONObject.has("collapsed")) {
+					return null;
+				}
+
+				return fieldSetJSONObject.getBoolean("collapsed");
+			});
 		fieldSet.setConfigurationRole(
 			() -> FieldSet.ConfigurationRole.create(
 				fieldSetJSONObject.getString("configurationRole")));
@@ -1475,15 +1483,11 @@ public class ConfigurationUtil {
 			InfoItemServiceRegistry infoItemServiceRegistry)
 		throws Exception {
 
-		JSONObject fieldSetJSONObject = JSONFactoryUtil.createJSONObject();
-
-		if (fieldSet.getConfigurationRole() != null) {
-			fieldSetJSONObject.put(
-				"configurationRole",
-				String.valueOf(fieldSet.getConfigurationRole()));
-		}
-
-		fieldSetJSONObject.put(
+		return JSONUtil.put(
+			"collapsed", fieldSet.getCollapsed()
+		).put(
+			"configurationRole", fieldSet.getConfigurationRoleAsString()
+		).put(
 			"customComponentModule", fieldSet.getCustomComponentModule()
 		).put(
 			"fields",
@@ -1494,8 +1498,6 @@ public class ConfigurationUtil {
 		).put(
 			"label", fieldSet.getLabel()
 		);
-
-		return fieldSetJSONObject;
 	}
 
 	private static FragmentConfigurationFieldValue
