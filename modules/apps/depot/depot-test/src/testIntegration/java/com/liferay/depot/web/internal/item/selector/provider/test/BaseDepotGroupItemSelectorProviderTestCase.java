@@ -9,13 +9,26 @@ import com.liferay.depot.model.DepotEntry;
 import com.liferay.depot.service.DepotEntryGroupRelLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
 import com.liferay.item.selector.provider.GroupItemSelectorProvider;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateCollectionTypeConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateConstants;
+import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
+import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionLocalService;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.LayoutPrototype;
+import com.liferay.portal.kernel.service.LayoutPrototypeLocalService;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
+import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
@@ -78,6 +91,54 @@ public abstract class BaseDepotGroupItemSelectorProviderTestCase {
 			1,
 			getGroupItemSelectorProvider().getGroupsCount(
 				stagingGroup.getCompanyId(), stagingGroup.getGroupId(), null));
+	}
+
+	@Test
+	@TestInfo({"LPD-112512", "LPS-118395"})
+	public void testGetGroupsLayoutPrototype() throws Exception {
+		DepotEntry depotEntry = _addDepotEntry(getDepotType());
+
+		_depotEntryGroupRelLocalService.addDepotEntryGroupRel(
+			depotEntry.getDepotEntryId(), _group.getGroupId());
+
+		ServiceContext serviceContext =
+			ServiceContextTestUtil.getServiceContext(
+				_group, TestPropsValues.getUserId());
+
+		LayoutPageTemplateCollection layoutPageTemplateCollection =
+			_layoutPageTemplateCollectionLocalService.
+				addLayoutPageTemplateCollection(
+					null, TestPropsValues.getUserId(), _group.getGroupId(),
+					LayoutPageTemplateConstants.
+						PARENT_LAYOUT_PAGE_TEMPLATE_COLLECTION_ID_DEFAULT,
+					null, RandomTestUtil.randomString(), StringPool.BLANK,
+					LayoutPageTemplateCollectionTypeConstants.BASIC,
+					serviceContext);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			_layoutPageTemplateEntryLocalService.addLayoutPageTemplateEntry(
+				null, TestPropsValues.getUserId(), _group.getGroupId(),
+				layoutPageTemplateCollection.
+					getLayoutPageTemplateCollectionId(),
+				null, RandomTestUtil.randomString(),
+				LayoutPageTemplateEntryTypeConstants.WIDGET_PAGE, 0,
+				WorkflowConstants.STATUS_APPROVED, serviceContext);
+
+		LayoutPrototype layoutPrototype =
+			_layoutPrototypeLocalService.getLayoutPrototype(
+				layoutPageTemplateEntry.getLayoutPrototypeId());
+
+		Group group = layoutPrototype.getGroup();
+
+		List<Group> groups = getGroupItemSelectorProvider().getGroups(
+			group.getCompanyId(), group.getGroupId(), null, 0, 20);
+
+		Assert.assertEquals(groups.toString(), 1, groups.size());
+
+		Assert.assertEquals(
+			1,
+			getGroupItemSelectorProvider().getGroupsCount(
+				group.getCompanyId(), group.getGroupId(), null));
 	}
 
 	@Test
@@ -177,5 +238,16 @@ public abstract class BaseDepotGroupItemSelectorProviderTestCase {
 
 	@DeleteAfterTestRun
 	private Group _group;
+
+	@Inject
+	private LayoutPageTemplateCollectionLocalService
+		_layoutPageTemplateCollectionLocalService;
+
+	@Inject
+	private LayoutPageTemplateEntryLocalService
+		_layoutPageTemplateEntryLocalService;
+
+	@Inject
+	private LayoutPrototypeLocalService _layoutPrototypeLocalService;
 
 }
