@@ -15,37 +15,6 @@ definition {
 		HeadlessSite.addSite(siteName = "Test Site Name");
 	}
 
-	@description = "This is a test for LPS-202596. The content creator could filter web contents by Status type."
-	@priority = 3
-	test CanFilterByStatusType {
-		task ("Given a site administrator has a web content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-		}
-
-		task ("When open the dropdown menu of Filter") {
-			Click(locator1 = "ManagementBar#FILTER");
-		}
-
-		task ("Then View Any, Draft, Approved, Expired and Scheduled are under Filter by Status section") {
-			var i = 1;
-
-			for (var menuItem : list "Any,Draft,Approved,Expired,Scheduled") {
-				AssertVisible(
-					index = ${i},
-					key_menuItem = ${menuItem},
-					key_subheader = "Filter by Status",
-					locator1 = "MenuItem#GROUPED_DROPDOWN_MENU_ITEM_BY_INDEX");
-
-				var i = ${i} + 1;
-			}
-		}
-	}
-
 	@description = "This is a test for LPS-202596. The content creator could search comments associated to web contents by keywords."
 	@priority = 3
 	test CanSearchWebContentCommentsByKeyword {
@@ -167,60 +136,6 @@ definition {
 						locator1 = "WebContentSearchResults#COMMENT");
 				}
 			}
-		}
-	}
-
-	@description = "This is a test for LPS-197694. The user could configure notifications on the configuration page of Web Content admin in asset library."
-	@priority = 4
-	test ConfigureWebContentNotificationsInAssetLibrary {
-		task ("Given a user accesses to the web content admin in asset library") {
-			JSONDepot.addDepot(depotName = "Test Depot Name");
-
-			DepotNavigator.openDepotWebContentAdmin(depotName = "Test Depot Name");
-		}
-
-		task ("When the user navigates to the configuration page") {
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
-
-			MenuItem.click(menuItem = "Configuration");
-		}
-
-		task ("Then the user can configure notifications") {
-			AssertVisible(
-				locator1 = "MenuBar#SHEET_TERTIARY_TITLE",
-				tertiaryTitle = "Notifications");
-
-			MenuBar.click(menuBar = "Email From");
-
-			AssertElementPresent(
-				key_title = "Email From",
-				locator1 = "Header#H2_TITLE");
-		}
-	}
-
-	@description = "This is a test for LPS-197694. The user could configure notifications on the configuration page of Web Content admin in site."
-	@priority = 4
-	test ConfigureWebContentNotificationsInSite {
-		task ("Given a user accesses to the web content admin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-		}
-
-		task ("When the user navigates to the configuration page") {
-			Click.waitForMenuToggleJSClick(locator1 = "Icon#HEADER_VERTICAL_ELLIPSIS");
-
-			MenuItem.click(menuItem = "Configuration");
-		}
-
-		task ("Then the user can configure notifications") {
-			AssertVisible(
-				locator1 = "MenuBar#SHEET_TERTIARY_TITLE",
-				tertiaryTitle = "Notifications");
-
-			MenuBar.click(menuBar = "Email From");
-
-			AssertElementPresent(
-				key_title = "Email From",
-				locator1 = "Header#H2_TITLE");
 		}
 	}
 
@@ -918,55 +833,6 @@ definition {
 			AssertTextEquals(
 				locator1 = "WC#INFO_PANEL_SUBTITLE",
 				value1 = "WC Structure Name");
-		}
-	}
-
-	@description = "This is a test for LPS-146458. View the available status filters of Web Content admin."
-	@priority = 5
-	test ViewStatusFiltersOfWebContentAdmin {
-		property portal.acceptance = "true";
-
-		task ("Add a published web content based on Basic Web Content") {
-			JSONWebcontent.addWebContent(
-				content = "Web Content Content",
-				groupName = "Test Site Name",
-				title = "Web Content Title");
-		}
-
-		task ("View the available status filters of Web Content admin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WaitForPageLoad();
-
-			Click(locator1 = "ManagementBar#FILTER");
-
-			for (var filterName : list "Draft,Scheduled,Approved,Expired") {
-				MenuItem.viewVisible(menuItem = ${filterName});
-			}
-
-			for (var filterName : list "Denied,Pending") {
-				MenuItem.viewNotPresent(menuItem = ${filterName});
-			}
-		}
-
-		task ("Enable Single Approver Workflow for Web Content Article at site level") {
-			Workflow.openWorkflowAdmin(siteURLKey = "test-site-name");
-
-			Workflow.configureWorkflow(
-				workflowDefinition = "Single Approver",
-				workflowResourceValue = "Web Content Article");
-		}
-
-		task ("View the available status filters of Web Content admin") {
-			WebContentNavigator.openWebContentAdmin(siteURLKey = "test-site-name");
-
-			WaitForPageLoad();
-
-			Click(locator1 = "ManagementBar#FILTER");
-
-			for (var filterName : list "Draft,Denied,Pending,Scheduled,Approved,Expired") {
-				MenuItem.viewVisible(menuItem = ${filterName});
-			}
 		}
 	}
 

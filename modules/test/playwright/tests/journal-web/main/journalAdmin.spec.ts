@@ -13,6 +13,7 @@ import {checkAccessibility} from '../../../utils/checkAccessibility';
 import {clickAndExpectToBeVisible} from '../../../utils/clickAndExpectToBeVisible';
 import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
+import addSingleApproverWorkflow from '../../content-dashboard-web/main/utils/addSingleApproverWorkflow';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import {journalPagesTest} from './fixtures/journalPagesTest';
 
@@ -471,5 +472,93 @@ test(
 		await selectOption('button[id$="_searchLocation"]', 'ArrowUp');
 
 		await expect(page.getByText('No web content was found.')).toBeVisible();
+	}
+);
+
+test(
+	'Status filter lists the workflow statuses when a workflow is enabled',
+	{tag: ['@LPS-146458', '@LPS-202596']},
+	async ({apiHelpers, journalPage, page, site}) => {
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+			groupId: site.id,
+		});
+
+		const statusMenuItems = page
+			.getByRole('group', {name: 'Filter by Status'})
+			.getByRole('menuitem');
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			target: statusMenuItems.first(),
+			trigger: page.getByRole('button', {exact: true, name: 'Filter'}),
+		});
+
+		await expect(statusMenuItems).toHaveText([
+			'Any',
+			'Draft',
+			'Approved',
+			'Expired',
+			'Scheduled',
+		]);
+
+		// Enable a workflow
+
+		await addSingleApproverWorkflow({
+			apiHelpers,
+			className: 'com.liferay.journal.model.JournalArticle',
+			siteId: site.id,
+		});
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			target: statusMenuItems.first(),
+			trigger: page.getByRole('button', {exact: true, name: 'Filter'}),
+		});
+
+		await expect(statusMenuItems).toHaveText([
+			'Any',
+			'Draft',
+			'Pending',
+			'Denied',
+			'Approved',
+			'Expired',
+			'Scheduled',
+		]);
+	}
+);
+
+test(
+	'Notifications can be configured from a site and an asset library',
+	{tag: '@LPS-197694'},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const assetLibrary =
+			await apiHelpers.headlessAssetLibrary.createAssetLibrary();
+
+		for (const groupURL of [
+			site.friendlyUrlPath,
+			`/asset-library-${assetLibrary.id}`,
+		]) {
+			await journalPage.goto(groupURL);
+
+			await clickAndExpectToBeVisible({
+				autoClick: true,
+				target: page.getByRole('menuitem', {name: 'Configuration'}),
+				trigger: page.getByRole('button', {
+					exact: true,
+					name: 'Options',
+				}),
+			});
+
+			await expect(page.getByText('Notifications')).toBeVisible();
+
+			await page.getByText('Email From', {exact: true}).click();
+
+			await expect(
+				page.getByRole('heading', {name: 'Email From'})
+			).toBeVisible();
+		}
 	}
 );
