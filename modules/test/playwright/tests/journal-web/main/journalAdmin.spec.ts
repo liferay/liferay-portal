@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {expect, mergeTests} from '@playwright/test';
+import {Page, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {isolatedSiteTest} from '../../../fixtures/isolatedSiteTest';
@@ -16,7 +16,9 @@ import getRandomString from '../../../utils/getRandomString';
 import getBasicWebContentStructureId from '../../../utils/structured-content/getBasicWebContentStructureId';
 import {waitForAlert} from '../../../utils/waitForAlert';
 import addSingleApproverWorkflow from '../../content-dashboard-web/main/utils/addSingleApproverWorkflow';
+import addConnectedDepot from '../../depot-web/main/utils/addConnectedDepot';
 import {journalPagesTest} from './fixtures/journalPagesTest';
+import getDataStructureDefinition from './utils/getDataStructureDefinition';
 
 const test = mergeTests(
 	dataApiHelpersTest,
@@ -781,5 +783,282 @@ test(
 		await expect(
 			page.getByText('Enjoy using the best DXP on Earth!')
 		).toBeVisible();
+	}
+);
+
+async function selectHighlightedStructures(page: Page, names: string[]) {
+	await clickAndExpectToBeVisible({
+		autoClick: true,
+		target: page.getByRole('menuitem', {name: 'Configuration'}),
+		trigger: page.getByRole('button', {exact: true, name: 'Options'}),
+	});
+
+	await page.getByLabel('Select Highlighted Structures').click();
+
+	const dialog = page.getByRole('dialog', {name: 'Select Structures'});
+
+	for (const name of names) {
+		await dialog
+			.frameLocator('iframe')
+			.getByRole('row', {name: `Select ${name}`})
+			.getByRole('checkbox')
+			.check();
+	}
+
+	await dialog.getByRole('button', {exact: true, name: 'Add'}).click();
+
+	for (const name of names) {
+		await expect(page.getByRole('cell', {exact: true, name})).toBeVisible();
+	}
+
+	await expect(async () => {
+		await page
+			.getByRole('button', {exact: true, name: 'Save'})
+			.click({timeout: 2000});
+
+		await expect(page.locator('.alert-success')).toBeVisible({
+			timeout: 3000,
+		});
+	}).toPass({timeout: 20000});
+}
+
+test(
+	'Highlighted structures get their own sheet in the web content admin',
+	{tag: '@LPS-196819'},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const structureName = getRandomString();
+
+		const structure = await apiHelpers.dataEngine.createStructure(
+			site.id,
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{name: 'Text'}],
+				name: structureName,
+			})
+		);
+
+		const folder = await apiHelpers.jsonWebServicesJournal.addFolder({
+			groupId: site.id,
+			name: 'Archive',
+		});
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+			groupId: site.id,
+			titleMap: {en_US: 'Liferay DXP'},
+		});
+
+		for (const [title, folderId] of [
+			['Liferay LXC', 0],
+			['Liferay Commerce', folder.folderId],
+		]) {
+			await apiHelpers.jsonWebServicesJournal.addWebContent({
+				contentFields: [{name: 'Text', value: getRandomString()}],
+				ddmStructureId: structure.id,
+				ddmTemplateKey: '',
+				folderId,
+				groupId: site.id,
+				titleMap: {en_US: String(title)},
+			});
+		}
+
+		const titleLink = (title: string) =>
+			page.getByRole('link', {exact: true, name: title});
+
+		const openStructureSheet = async () => {
+			await journalPage.goto(site.friendlyUrlPath);
+
+			await page
+				.getByRole('menuitem', {exact: true, name: structureName})
+				.click();
+
+			await expect(
+				page.getByRole('heading', {name: structureName})
+			).toBeVisible();
+		};
+
+		// Highlight the structure
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Configuration'}),
+			trigger: page.getByRole('button', {exact: true, name: 'Options'}),
+		});
+
+		await expect(page.getByText('No Structures Selected')).toBeVisible();
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await selectHighlightedStructures(page, [structureName]);
+
+		// Check the content library sheet
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await changeManagementToolbarView(page, 'List');
+
+		await expect(
+			page.getByRole('heading', {name: 'Content Library'})
+		).toBeVisible();
+
+		for (const title of ['Archive', 'Liferay DXP', 'Liferay LXC']) {
+			await expect(titleLink(title)).toBeVisible();
+		}
+
+		const newMenu = page.getByRole('menu');
+
+		await clickAndExpectToBeVisible({
+			target: newMenu,
+			trigger: journalPage.newButton,
+		});
+
+		for (const type of ['Basic Web Content', 'Folder', structureName]) {
+			await expect(
+				newMenu.getByRole('menuitem', {exact: true, name: type})
+			).toBeVisible();
+		}
+
+		await page.keyboard.press('Escape');
+
+		await journalPage.search('Liferay');
+
+		for (const title of [
+			'Liferay Commerce',
+			'Liferay DXP',
+			'Liferay LXC',
+		]) {
+			await expect(titleLink(title)).toBeVisible();
+		}
+
+		// Check the structure sheet
+
+		await openStructureSheet();
+
+		for (const title of ['Liferay Commerce', 'Liferay LXC']) {
+			await expect(titleLink(title)).toBeVisible();
+		}
+
+		for (const title of ['Archive', 'Liferay DXP']) {
+			await expect(titleLink(title)).toBeHidden();
+		}
+
+		for (const view of ['Cards', 'Table', 'List']) {
+			await openStructureSheet();
+
+			await changeManagementToolbarView(page, view);
+
+			await page
+				.locator('[data-qa-id="row"]')
+				.filter({hasText: 'Liferay LXC'})
+				.getByRole('checkbox')
+				.check();
+
+			await page.getByRole('button', {name: 'Toggle Info Panel'}).click();
+
+			const infoPanel = page.locator('.sidebar');
+
+			await expect(
+				infoPanel.getByRole('heading', {name: 'Liferay LXC'})
+			).toBeVisible();
+			await expect(
+				infoPanel.getByText(structureName, {exact: true}).first()
+			).toBeVisible();
+		}
+
+		await openStructureSheet();
+
+		await journalPage.search('Liferay');
+
+		await expect(titleLink('Liferay LXC')).toBeVisible();
+		await expect(titleLink('Liferay DXP')).toBeHidden();
+	}
+);
+
+test(
+	'Highlighted structures can come from an asset library or the global site',
+	{tag: '@LPS-196819'},
+	async ({apiHelpers, journalPage, page, site}) => {
+		const assetLibrary = await addConnectedDepot(apiHelpers, site, {
+			ddmStructuresAvailable: true,
+		});
+
+		const structureName = getRandomString();
+
+		const structure = await apiHelpers.dataEngine.createStructure(
+			String(assetLibrary.siteId),
+			getDataStructureDefinition({
+				defaultLanguageId: 'en_US',
+				fields: [{name: 'Text'}],
+				name: structureName,
+			})
+		);
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			ddmStructureId: await getBasicWebContentStructureId(apiHelpers),
+			groupId: assetLibrary.siteId,
+			titleMap: {en_US: 'EMEA Guild'},
+		});
+
+		await apiHelpers.jsonWebServicesJournal.addWebContent({
+			contentFields: [{name: 'Text', value: getRandomString()}],
+			ddmStructureId: structure.id,
+			ddmTemplateKey: '',
+			groupId: assetLibrary.siteId,
+			titleMap: {en_US: 'LXC'},
+		});
+
+		const assetLibraryURL = `/asset-library-${assetLibrary.id}`;
+
+		// Highlight the structure in the asset library
+
+		await journalPage.goto(assetLibraryURL);
+
+		await selectHighlightedStructures(page, [structureName]);
+
+		await journalPage.goto(assetLibraryURL);
+
+		await changeManagementToolbarView(page, 'List');
+
+		for (const title of ['EMEA Guild', 'LXC']) {
+			await expect(
+				page.getByRole('link', {exact: true, name: title})
+			).toBeVisible();
+		}
+
+		await page
+			.getByRole('menuitem', {exact: true, name: structureName})
+			.click();
+
+		await expect(
+			page.getByRole('link', {exact: true, name: 'LXC'})
+		).toBeVisible();
+		await expect(
+			page.getByRole('link', {exact: true, name: 'EMEA Guild'})
+		).toBeHidden();
+
+		// Check the structures available in the connected site
+
+		await journalPage.goto(site.friendlyUrlPath);
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {name: 'Configuration'}),
+			trigger: page.getByRole('button', {exact: true, name: 'Options'}),
+		});
+
+		await page.getByLabel('Select Highlighted Structures').click();
+
+		const structuresFrame = page
+			.getByRole('dialog', {name: 'Select Structures'})
+			.frameLocator('iframe');
+
+		await expect(
+			structuresFrame.getByRole('row', {name: 'Select Basic Web Content'})
+		).toContainText('Global');
+		await expect(
+			structuresFrame.getByRole('row', {name: `Select ${structureName}`})
+		).toContainText('Asset Library or Space');
 	}
 );
