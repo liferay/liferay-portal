@@ -34,8 +34,6 @@ definition {
 		}
 	}
 
-
-
 	@description = "This test covers LPS-93031. It ensures that the document still can be viewed after the author is deleted."
 	@priority = 4
 	@refactordone
