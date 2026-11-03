@@ -576,6 +576,19 @@ export class HeadlessDeliveryApiHelper {
 		);
 	}
 
+	async postStructuredContentComment(
+		structuredContentId: number,
+		text: string
+	) {
+		return this.apiHelpers.post(
+			`${this.apiHelpers.baseUrl}${this.basePath}/structured-contents/${structuredContentId}/comments`,
+			{
+				data: {text},
+				failOnStatusCode: true,
+			}
+		);
+	}
+
 	async postStructuredContentFolder(
 		siteId: number | string,
 		structuredContentFolder?: TStructuredContentFolder
