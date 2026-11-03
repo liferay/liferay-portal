@@ -27,6 +27,9 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.router.configuration.LoggingAuditMessageProcessorConfiguration;
+import com.liferay.portal.security.audit.router.configuration.PersistentAuditMessageProcessorConfiguration;
+import com.liferay.portal.security.audit.storage.model.AuditEvent;
+import com.liferay.portal.security.audit.storage.service.AuditEventLocalService;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
@@ -106,10 +109,12 @@ public class AuditConfigurationModelListenerTest {
 		_testOnAfterSaveWithGroupScope();
 		_testOnAfterSaveWithLock();
 		_testOnAfterSaveWithLoggingAuditMessageProcessor();
+		_testOnAfterSaveWithPersistentAuditMessageProcessor();
 		_testOnAfterSaveWithPortletInstanceScope();
 		_testOnAfterSaveWithRejection();
 		_testOnAfterSaveWithReload();
 		_testOnAfterSaveWithRewrite();
+		_testOnAfterSaveWithSingletonConfiguration();
 	}
 
 	private Configuration _addConfiguration(
@@ -162,7 +167,12 @@ public class AuditConfigurationModelListenerTest {
 
 	private AuditMessage _fetchAuditMessage(String eventType, String pid) {
 		for (AuditMessage auditMessage : _auditMessages) {
-			if (Objects.equals(auditMessage.getClassPK(), pid) &&
+			JSONObject additionalInfoJSONObject =
+				auditMessage.getAdditionalInfo();
+
+			if ((additionalInfoJSONObject != null) &&
+				Objects.equals(
+					additionalInfoJSONObject.getString("pid"), pid) &&
 				Objects.equals(auditMessage.getEventType(), eventType)) {
 
 				return auditMessage;
@@ -238,6 +248,9 @@ public class AuditConfigurationModelListenerTest {
 			EventTypes.ADD, configuration.getPid());
 
 		Assert.assertEquals(factoryPid, auditMessage.getClassName());
+		Assert.assertEquals(
+			StringUtil.extractLast(configuration.getPid(), CharPool.TILDE),
+			auditMessage.getClassPK());
 
 		_assertAttribute(auditMessage, "key");
 		_assertNotContains(auditMessage, value);
@@ -434,6 +447,44 @@ public class AuditConfigurationModelListenerTest {
 		}
 	}
 
+	private void _testOnAfterSaveWithPersistentAuditMessageProcessor()
+		throws Exception {
+
+		String factoryPid = RandomTestUtil.randomString(76);
+
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					PersistentAuditMessageProcessorConfiguration.class.
+						getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"bufferSize", 1
+					).build())) {
+
+			Configuration configuration =
+				_configurationAdmin.getFactoryConfiguration(
+					factoryPid, RandomTestUtil.randomString(76),
+					StringPool.QUESTION);
+
+			_configurations.add(configuration);
+
+			configuration.update(
+				HashMapDictionaryBuilder.<String, Object>put(
+					"key", RandomTestUtil.randomString()
+				).build());
+		}
+
+		List<AuditEvent> auditEvents = _auditEventLocalService.getAuditEvents(
+			TestPropsValues.getCompanyId(), 0, 0, null, null, null, null,
+			factoryPid, null, null, null, null, EventTypes.ADD, null, 0, null,
+			true, 0, 1);
+
+		Assert.assertEquals(auditEvents.toString(), 1, auditEvents.size());
+
+		AuditEvent auditEvent = auditEvents.get(0);
+
+		Assert.assertEquals(StringPool.BLANK, auditEvent.getClassPK());
+	}
+
 	private void _testOnAfterSaveWithPortletInstanceScope() throws Exception {
 		Configuration configuration = _addConfiguration(
 			RandomTestUtil.randomString() + ".scoped",
@@ -560,6 +611,28 @@ public class AuditConfigurationModelListenerTest {
 			serviceRegistration.unregister();
 		}
 	}
+
+	private void _testOnAfterSaveWithSingletonConfiguration() throws Exception {
+		Configuration configuration = _configurationAdmin.getConfiguration(
+			RandomTestUtil.randomString(), StringPool.QUESTION);
+
+		_configurations.add(configuration);
+
+		configuration.update(
+			HashMapDictionaryBuilder.<String, Object>put(
+				"key", RandomTestUtil.randomString()
+			).build());
+
+		AuditMessage auditMessage = _getAuditMessage(
+			EventTypes.ADD, configuration.getPid());
+
+		Assert.assertEquals(
+			configuration.getPid(), auditMessage.getClassName());
+		Assert.assertEquals(StringPool.BLANK, auditMessage.getClassPK());
+	}
+
+	@Inject
+	private AuditEventLocalService _auditEventLocalService;
 
 	private final List<AuditMessage> _auditMessages =
 		new CopyOnWriteArrayList<>();
