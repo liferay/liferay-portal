@@ -138,6 +138,7 @@ describe('Kanban Task', () => {
 					hasAddTaskPermission: true,
 					itemsActions: [],
 					loadData: mockLoadData,
+					states: [],
 					...contextOverrides,
 				}}
 			>
@@ -288,6 +289,7 @@ describe('Kanban Task', () => {
 					hasAddTaskPermission: true,
 					itemsActions: [],
 					loadData: mockLoadData,
+					states: [],
 				}}
 			>
 				<Task {...taskWithDueDate} />
@@ -395,6 +397,7 @@ describe('Kanban Task', () => {
 						hasAddTaskPermission: true,
 						itemsActions: [],
 						loadData: mockLoadData,
+						states: [],
 					}}
 				>
 					<Task {...taskWithSubscription} />
@@ -430,6 +433,7 @@ describe('Kanban Task', () => {
 						hasAddTaskPermission: true,
 						itemsActions: [],
 						loadData: mockLoadData,
+						states: [],
 					}}
 				>
 					<Task {...taskWithSubscription} />

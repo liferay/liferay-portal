@@ -6,23 +6,15 @@
 import {render} from '@testing-library/react';
 import React from 'react';
 
-import {ColumnView} from '../../js/components/props_transformer/views/kanban_view/components/Column';
+import Column from '../../js/components/props_transformer/views/kanban_view/components/Column';
 import {KanbanViewContext} from '../../js/components/props_transformer/views/kanban_view/context';
 
 let capturedDropSpec: any;
 const mockOpenCMPModal = jest.fn();
-const mockStateFlow = {
-	objectStates: [
-		{
-			key: 'inProgress',
-			objectStateTransitions: [{key: 'done'}],
-		},
-		{
-			key: 'done',
-			objectStateTransitions: [],
-		},
-	],
-};
+const mockStates = [
+	{key: 'done', name: 'Done', nextStates: []},
+	{key: 'inProgress', name: 'In Progress', nextStates: ['done']},
+];
 
 jest.mock('react-dnd', () => ({
 	DndProvider: ({children}: any) => <>{children}</>,
@@ -43,7 +35,7 @@ jest.mock(
 	() => () => <div data-testid="task" />
 );
 
-const renderColumnView = (props: any, contextProps: any = {}) =>
+const renderColumn = (props: any, contextProps: any = {}) =>
 	render(
 		<KanbanViewContext.Provider
 			value={{
@@ -51,14 +43,15 @@ const renderColumnView = (props: any, contextProps: any = {}) =>
 				changeTaskStatus: jest.fn(),
 				hasAddTaskPermission: true,
 				loadData: () => {},
+				states: mockStates,
 				...contextProps,
 			}}
 		>
-			<ColumnView {...props} />
+			<Column {...props} />
 		</KanbanViewContext.Provider>
 	);
 
-describe('Kanban ColumnView', () => {
+describe('Kanban Column', () => {
 	const defaultColumn = {
 		displayType: 'info',
 		icon: {color: '#fff', name: 'star'},
@@ -75,10 +68,7 @@ describe('Kanban ColumnView', () => {
 			tasks: [],
 		};
 
-		renderColumnView({
-			column,
-			stateFlow: mockStateFlow,
-		});
+		renderColumn({column});
 
 		const task = {
 			actions: {update: true},
@@ -99,10 +89,7 @@ describe('Kanban ColumnView', () => {
 			tasks: [],
 		};
 
-		renderColumnView({
-			column,
-			stateFlow: mockStateFlow,
-		});
+		renderColumn({column});
 
 		const task = {
 			actions: {update: true},
@@ -123,10 +110,7 @@ describe('Kanban ColumnView', () => {
 			tasks: [],
 		};
 
-		renderColumnView({
-			column,
-			stateFlow: mockStateFlow,
-		});
+		renderColumn({column});
 
 		const task = {
 			actions: {update: false},
@@ -149,13 +133,7 @@ describe('Kanban ColumnView', () => {
 			tasks: [],
 		};
 
-		renderColumnView(
-			{
-				column,
-				stateFlow: mockStateFlow,
-			},
-			{changeTaskStatus: mockChangeTaskStatus}
-		);
+		renderColumn({column}, {changeTaskStatus: mockChangeTaskStatus});
 
 		const task = {
 			actions: {update: true},
@@ -174,11 +152,8 @@ describe('Kanban ColumnView', () => {
 	});
 
 	it('hides the add task button without add task permission', () => {
-		const {queryByText} = renderColumnView(
-			{
-				column: defaultColumn,
-				stateFlow: mockStateFlow,
-			},
+		const {queryByText} = renderColumn(
+			{column: defaultColumn},
 			{hasAddTaskPermission: false}
 		);
 
@@ -186,20 +161,17 @@ describe('Kanban ColumnView', () => {
 	});
 
 	it('renders header and tasks', () => {
-		const {getAllByTestId, getByText} = renderColumnView({
+		const {getAllByTestId, getByRole, getByText} = renderColumn({
 			column: defaultColumn,
-			stateFlow: mockStateFlow,
 		});
 
+		expect(getByRole('group', {name: 'In Progress'})).toBeInTheDocument();
 		expect(getByText('In Progress')).toBeInTheDocument();
 		expect(getAllByTestId('task').length).toBe(1);
 	});
 
 	it('shows the add task button with add task permission', () => {
-		const {getByText} = renderColumnView({
-			column: defaultColumn,
-			stateFlow: mockStateFlow,
-		});
+		const {getByText} = renderColumn({column: defaultColumn});
 
 		expect(getByText('add-task')).toBeInTheDocument();
 	});

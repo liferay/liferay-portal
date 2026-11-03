@@ -49,6 +49,7 @@ describe('KanbanView mapping and lifecycle', () => {
 				hasAddTaskPermission
 				items={items}
 				itemsActions={[]}
+				states={[]}
 			/>
 		);
 
