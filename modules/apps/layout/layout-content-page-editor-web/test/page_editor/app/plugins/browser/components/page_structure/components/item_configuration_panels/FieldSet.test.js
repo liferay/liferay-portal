@@ -24,6 +24,53 @@ describe('FieldSet', () => {
 		jest.restoreAllMocks();
 	});
 
+	it('collapses the panel when collapsed is true', () => {
+		render(
+			<FieldSet
+				collapsed
+				fields={[
+					{
+						dataType: 'string',
+						label: 'First Field',
+						name: 'firstField',
+						type: 'text',
+					},
+				]}
+				label="My Section"
+				languageId="en_US"
+				onValueSelect={jest.fn()}
+				values={{}}
+			/>
+		);
+
+		expect(
+			screen.getByRole('button', {name: 'My Section'})
+		).toHaveAttribute('aria-expanded', 'false');
+	});
+
+	it('expands the panel when collapsed is not set', () => {
+		render(
+			<FieldSet
+				fields={[
+					{
+						dataType: 'string',
+						label: 'First Field',
+						name: 'firstField',
+						type: 'text',
+					},
+				]}
+				label="My Section"
+				languageId="en_US"
+				onValueSelect={jest.fn()}
+				values={{}}
+			/>
+		);
+
+		expect(
+			screen.getByRole('button', {name: 'My Section'})
+		).toHaveAttribute('aria-expanded', 'true');
+	});
+
 	it('renders the custom component when customComponentModule is present', async () => {
 		frontendJsWebMock.loadModule.mockResolvedValue(() => (
 			<div>Custom Component</div>
