@@ -129,7 +129,6 @@ public class FileShortcutStagedModelDataHandlerTest
 	@TestInfo("LPD-113633")
 	public void testUpdateFileShortcutTarget() throws Exception {
 		FileEntry fileEntry1 = _addFileEntry();
-		FileEntry fileEntry2 = _addFileEntry();
 
 		FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
 			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
@@ -139,6 +138,8 @@ public class FileShortcutStagedModelDataHandlerTest
 				stagingGroup.getGroupId(), TestPropsValues.getUserId()));
 
 		exportImportStagedModel(fileShortcut);
+
+		FileEntry fileEntry2 = _addFileEntry();
 
 		fileShortcut = DLAppLocalServiceUtil.updateFileShortcut(
 			TestPropsValues.getUserId(), fileShortcut.getFileShortcutId(),

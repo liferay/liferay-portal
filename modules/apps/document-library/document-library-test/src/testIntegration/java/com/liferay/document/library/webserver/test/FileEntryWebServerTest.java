@@ -22,7 +22,6 @@ import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
-import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
@@ -111,10 +110,7 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 	public void testServiceWithStagingGroup() throws Exception {
 		GroupTestUtil.enableLocalStaging(group);
 
-		Group stagingGroup = GroupLocalServiceUtil.getGroup(
-			group.getGroupId());
-
-		stagingGroup = stagingGroup.getStagingGroup();
+		Group stagingGroup = group.getStagingGroup();
 
 		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
 			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
