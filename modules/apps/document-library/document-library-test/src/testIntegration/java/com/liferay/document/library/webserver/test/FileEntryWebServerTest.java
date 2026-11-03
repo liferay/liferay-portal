@@ -106,47 +106,6 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 	}
 
 	@Test
-	@TestInfo({"LPD-113633", "LPS-95290"})
-	public void testServiceWithStagingGroup() throws Exception {
-		GroupTestUtil.enableLocalStaging(group);
-
-		Group stagingGroup = group.getStagingGroup();
-
-		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(),
-			ContentTypes.APPLICATION_OCTET_STREAM,
-			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
-			RandomTestUtil.randomString(), (byte[])null, null, null, null,
-			ServiceContextTestUtil.getServiceContext(
-				stagingGroup.getGroupId()));
-
-		String url = StringBundler.concat(
-			StringPool.SLASH, fileEntry.getGroupId(), StringPool.SLASH,
-			fileEntry.getFolderId(), StringPool.SLASH, fileEntry.getFileName(),
-			StringPool.SLASH, fileEntry.getUuid());
-
-		MockHttpServletResponse mockHttpServletResponse = service(
-			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
-			TestPropsValues.getUser(), null);
-
-		Assert.assertEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-
-		PermissionThreadLocal.setPermissionChecker(
-			PermissionCheckerFactoryUtil.create(_regularUser));
-		PrincipalThreadLocal.setName(_regularUser.getUserId());
-
-		mockHttpServletResponse = service(
-			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
-			_regularUser, null);
-
-		Assert.assertNotEquals(
-			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
-	}
-
-	@Test
 	public void testServiceWithRegularRoleWithOnlyDownloadPermission()
 		throws Exception {
 
@@ -191,6 +150,47 @@ public class FileEntryWebServerTest extends BaseWebServerTestCase {
 		finally {
 			_roleLocalService.deleteRole(regularRole);
 		}
+	}
+
+	@Test
+	@TestInfo({"LPD-113633", "LPS-95290"})
+	public void testServiceWithStagingGroup() throws Exception {
+		GroupTestUtil.enableLocalStaging(group);
+
+		Group stagingGroup = group.getStagingGroup();
+
+		FileEntry fileEntry = _dlAppLocalService.addFileEntry(
+			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM,
+			RandomTestUtil.randomString(), null, RandomTestUtil.randomString(),
+			RandomTestUtil.randomString(), (byte[])null, null, null, null,
+			ServiceContextTestUtil.getServiceContext(
+				stagingGroup.getGroupId()));
+
+		String url = StringBundler.concat(
+			StringPool.SLASH, fileEntry.getGroupId(), StringPool.SLASH,
+			fileEntry.getFolderId(), StringPool.SLASH, fileEntry.getFileName(),
+			StringPool.SLASH, fileEntry.getUuid());
+
+		MockHttpServletResponse mockHttpServletResponse = service(
+			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
+			TestPropsValues.getUser(), null);
+
+		Assert.assertEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
+
+		PermissionThreadLocal.setPermissionChecker(
+			PermissionCheckerFactoryUtil.create(_regularUser));
+		PrincipalThreadLocal.setName(_regularUser.getUserId());
+
+		mockHttpServletResponse = service(
+			Method.GET, url, Collections.emptyMap(), Collections.emptyMap(),
+			_regularUser, null);
+
+		Assert.assertNotEquals(
+			HttpServletResponse.SC_OK, mockHttpServletResponse.getStatus());
 	}
 
 	private void _addDownloadResourcePermission(Role guestRole)

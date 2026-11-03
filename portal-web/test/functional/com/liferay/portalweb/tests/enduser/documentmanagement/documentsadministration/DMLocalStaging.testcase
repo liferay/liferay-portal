@@ -179,7 +179,6 @@ definition {
 			value1 = "Error:At least one field must be added.");
 	}
 
-
 	@description = "This is a test for LPS-91043. It asserts that user can not publish from old versions to live."
 	@priority = 4
 	test CanNotPublishFromOldVersions {
@@ -323,7 +322,6 @@ definition {
 
 		DMDocument.viewDefault();
 	}
-
 
 	@description = "This ensures that the custom document type being used by document can be edited and republished."
 	@priority = 4
@@ -617,8 +615,6 @@ definition {
 		}
 	}
 
-
-
 	@description = "This is a test for LPS-136822. It checks that a document type can be updated and published using the normal publication process."
 	@priority = 3
 	test CanPublishUpdatedDocumentType {
@@ -683,7 +679,6 @@ definition {
 			dmDocumentTitle = "Document_1.jpeg",
 			dmDocumentType = "DM Document Type Name");
 	}
-
 
 	@description = "This is a test for LPS-136831. It checks that a file can be replaced and republished."
 	@priority = 3

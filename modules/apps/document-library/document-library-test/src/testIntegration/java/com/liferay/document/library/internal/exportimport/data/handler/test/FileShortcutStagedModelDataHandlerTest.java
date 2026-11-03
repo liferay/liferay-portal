@@ -98,9 +98,8 @@ public class FileShortcutStagedModelDataHandlerTest
 			FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
 				null, TestPropsValues.getUserId(), group.getGroupId(),
 				DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-				RandomTestUtil.randomString() + ".txt",
-				ContentTypes.TEXT_PLAIN, RandomTestUtil.randomBytes(), null,
-				null, null,
+				RandomTestUtil.randomString() + ".txt", ContentTypes.TEXT_PLAIN,
+				RandomTestUtil.randomBytes(), null, null, null,
 				ServiceContextTestUtil.getServiceContext(group.getGroupId()));
 
 			FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
@@ -113,8 +112,9 @@ public class FileShortcutStagedModelDataHandlerTest
 			exportImportStagedModel(fileShortcut);
 
 			DLFileShortcut importedDLFileShortcut =
-				DLFileShortcutLocalServiceUtil.getDLFileShortcutByUuidAndGroupId(
-					fileShortcut.getUuid(), liveGroup.getGroupId());
+				DLFileShortcutLocalServiceUtil.
+					getDLFileShortcutByUuidAndGroupId(
+						fileShortcut.getUuid(), liveGroup.getGroupId());
 
 			Assert.assertEquals(
 				fileEntry.getFileEntryId(),
@@ -271,7 +271,6 @@ public class FileShortcutStagedModelDataHandlerTest
 			folder.getUuid(), group.getGroupId());
 	}
 
-
 	private FileEntry _addFileEntry() throws Exception {
 		return DLAppLocalServiceUtil.addFileEntry(
 			null, TestPropsValues.getUserId(), stagingGroup.getGroupId(),
@@ -281,4 +280,5 @@ public class FileShortcutStagedModelDataHandlerTest
 			ServiceContextTestUtil.getServiceContext(
 				stagingGroup.getGroupId()));
 	}
+
 }
