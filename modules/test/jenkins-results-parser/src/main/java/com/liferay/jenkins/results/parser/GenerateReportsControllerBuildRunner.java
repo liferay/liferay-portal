@@ -70,7 +70,7 @@ public class GenerateReportsControllerBuildRunner
 
 		for (String reportName : reportNames) {
 			if (reportName.startsWith("Flaky Test")) {
-				_invoke(jenkinsGitHubURL, reportName, "slave");
+				_invoke(jenkinsGitHubURL, reportName, "slave-mem");
 
 				continue;
 			}
