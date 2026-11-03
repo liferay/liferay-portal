@@ -17,11 +17,14 @@ import com.liferay.petra.io.unsync.UnsyncByteArrayOutputStream;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.encryptor.EncryptorUtil;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
@@ -80,6 +83,11 @@ public class BatchEngineImportTaskLocalServiceTest {
 		_testUpdateBatchEngineImportTask(
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTask(BatchEngineTaskExecuteStatus.FAILED);
+		_testUpdateBatchEngineImportTaskAfterFailedUpdate();
+		_testUpdateBatchEngineImportTaskWithClearedFinderCache(
+			BatchEngineTaskExecuteStatus.COMPLETED);
+		_testUpdateBatchEngineImportTaskWithClearedFinderCache(
+			BatchEngineTaskExecuteStatus.FAILED);
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
 			BatchEngineTaskExecuteStatus.COMPLETED);
 		_testUpdateBatchEngineImportTaskWithMalformedContent(
@@ -272,6 +280,95 @@ public class BatchEngineImportTaskLocalServiceTest {
 			batchEngineImportTask, batchEngineTaskExecuteStatus);
 
 		content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content, content.contains(emailAddress));
+		Assert.assertFalse(content, content.contains(password));
+	}
+
+	private void _testUpdateBatchEngineImportTaskAfterFailedUpdate()
+		throws Exception {
+
+		String emailAddress = RandomTestUtil.randomString() + "@liferay.com";
+		String password = RandomTestUtil.randomString();
+
+		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			_CLASS_NAME_USER_ACCOUNT,
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"emailAddress", emailAddress
+				).put(
+					"password", password
+				)
+			).toString());
+
+		batchEngineImportTask = _updateExecuteStatus(
+			batchEngineImportTask, BatchEngineTaskExecuteStatus.STARTED);
+
+		String externalReferenceCode =
+			batchEngineImportTask.getExternalReferenceCode();
+
+		int externalReferenceCodeMaxLength = ModelHintsUtil.getMaxLength(
+			BatchEngineImportTask.class.getName(), "externalReferenceCode");
+
+		batchEngineImportTask.setExternalReferenceCode(
+			RandomTestUtil.randomString(externalReferenceCodeMaxLength + 1));
+
+		try {
+			_updateExecuteStatus(
+				batchEngineImportTask, BatchEngineTaskExecuteStatus.COMPLETED);
+
+			Assert.fail();
+		}
+		catch (SystemException systemException) {
+		}
+
+		batchEngineImportTask.setExternalReferenceCode(externalReferenceCode);
+
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.batch.engine.service.impl." +
+					"BatchEngineImportTaskLocalServiceImpl",
+				LoggerTestUtil.ERROR)) {
+
+			_updateExecuteStatus(
+				batchEngineImportTask, BatchEngineTaskExecuteStatus.FAILED);
+
+			List<LogEntry> logEntries = logCapture.getLogEntries();
+
+			Assert.assertTrue(logEntries.toString(), logEntries.isEmpty());
+		}
+
+		String content = _readContent(batchEngineImportTask);
+
+		Assert.assertTrue(content, content.contains(emailAddress));
+		Assert.assertFalse(content, content.contains(password));
+	}
+
+	private void _testUpdateBatchEngineImportTaskWithClearedFinderCache(
+			BatchEngineTaskExecuteStatus batchEngineTaskExecuteStatus)
+		throws Exception {
+
+		String emailAddress = RandomTestUtil.randomString() + "@liferay.com";
+		String password = RandomTestUtil.randomString();
+
+		BatchEngineImportTask batchEngineImportTask = _addBatchEngineImportTask(
+			_CLASS_NAME_USER_ACCOUNT,
+			JSONUtil.putAll(
+				JSONUtil.put(
+					"emailAddress", emailAddress
+				).put(
+					"password", password
+				)
+			).toString());
+
+		batchEngineImportTask = _updateExecuteStatus(
+			batchEngineImportTask, BatchEngineTaskExecuteStatus.STARTED);
+
+		FinderCacheUtil.clearCache();
+
+		batchEngineImportTask = _updateExecuteStatus(
+			batchEngineImportTask, batchEngineTaskExecuteStatus);
+
+		String content = _readContent(batchEngineImportTask);
 
 		Assert.assertTrue(content, content.contains(emailAddress));
 		Assert.assertFalse(content, content.contains(password));
