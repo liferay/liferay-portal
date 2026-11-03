@@ -16,8 +16,11 @@ import com.liferay.oauth.client.persistence.service.OAuthClientEntryService;
 import com.liferay.oauth.client.rest.dto.v1_0.OAuthClientASLocalMetadata;
 import com.liferay.oauth.client.rest.dto.v1_0.OAuthClientEntry;
 import com.liferay.oauth.client.rest.internal.dto.v1_0.util.OAuthClientASLocalMetadataUtil;
+import com.liferay.oauth.client.rest.internal.resource.v1_0.util.DateRangeUtil;
 import com.liferay.oauth.client.rest.resource.v1_0.OAuthClientEntryResource;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.service.PermissionService;
 import com.liferay.portal.kernel.service.ResourceActionLocalService;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
@@ -27,11 +30,15 @@ import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.vulcan.fields.NestedFieldsSupplier;
 import com.liferay.portal.vulcan.pagination.Page;
+import com.liferay.portal.vulcan.pagination.Pagination;
 import com.liferay.portal.vulcan.permission.ModelPermissionsUtil;
 import com.liferay.portal.vulcan.permission.Permission;
 import com.liferay.portal.vulcan.permission.PermissionUtil;
 
+import java.io.Serializable;
+
 import java.util.Collection;
+import java.util.Map;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -89,6 +96,13 @@ public class OAuthClientEntryResourceImpl
 
 				return com.liferay.oauth.client.persistence.model.
 					OAuthClientEntry.class;
+			}
+
+			@Override
+			public Map<String, Serializable> getParameters(
+				PortletDataContext portletDataContext) {
+
+				return DateRangeUtil.getParameters(portletDataContext);
 			}
 
 			@Override
@@ -229,6 +243,18 @@ public class OAuthClientEntryResourceImpl
 		}
 
 		return postOAuthClientEntry(oAuthClientEntry);
+	}
+
+	@Override
+	public Page<OAuthClientEntry> read(
+			Filter filter, Pagination pagination, Sort[] sorts,
+			Map<String, Serializable> parameters, String search)
+		throws Exception {
+
+		return DateRangeUtil.filter(
+			OAuthClientEntry::getDateModified,
+			super.read(filter, pagination, sorts, parameters, search),
+			parameters);
 	}
 
 	private OAuthClientASLocalMetadata _toOAuthClientASLocalMetadata(
