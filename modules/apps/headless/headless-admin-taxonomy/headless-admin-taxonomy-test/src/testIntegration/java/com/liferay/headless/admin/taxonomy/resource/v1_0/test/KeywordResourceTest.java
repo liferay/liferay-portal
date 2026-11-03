@@ -26,7 +26,6 @@ import com.liferay.headless.admin.taxonomy.client.problem.Problem;
 import com.liferay.headless.admin.taxonomy.client.resource.v1_0.KeywordResource;
 import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringBundler;
-import com.liferay.portal.kernel.feature.flag.constants.FeatureFlagConstants;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
@@ -54,8 +53,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.props.test.util.PropsTemporarySwapper;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 
 import java.util.Arrays;
@@ -395,7 +392,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		}
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	@TestInfo("LPD-90751")
@@ -442,7 +438,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		super.testGraphQLGetKeywordsRankedPage();
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPatchSiteKeyword() throws Exception {
@@ -476,7 +471,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		testGroup = originalTestGroup;
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPostSiteKeyword() throws Exception {
@@ -522,7 +516,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 				testGroup.getGroupId(), randomKeyword));
 
 		_testPostSiteKeywordWithAnyParentGroupIdProject();
-		_testPostSiteKeywordWithFeatureFlagDisabled();
 		_testPostSiteKeywordWithUnknownProjects();
 		_testPostSiteKeywordWithoutProjectManageTagPermission();
 
@@ -581,7 +574,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		_testPutAssetLibraryKeywordByExternalReferenceCodeWithNewKeyword();
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPutKeyword() throws Exception {
@@ -604,7 +596,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		_testPutKeywordWithoutAssetLibraryManageTagPermission();
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPutKeywordMerge() throws Exception {
@@ -654,7 +645,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		testGroup = originalTestGroup;
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Override
 	@Test
 	public void testPutSiteKeywordByExternalReferenceCode() throws Exception {
@@ -1033,24 +1023,6 @@ public class KeywordResourceTest extends BaseKeywordResourceTestCase {
 		_assertAssetTagGroupRels(
 			DepotConstants.TYPE_PROJECT, keyword,
 			GroupConstants.ANY_PARENT_GROUP_ID);
-	}
-
-	private void _testPostSiteKeywordWithFeatureFlagDisabled()
-		throws Exception {
-
-		try (PropsTemporarySwapper propsTemporarySwapper =
-				new PropsTemporarySwapper(
-					FeatureFlagConstants.getKey("LPD-99403"),
-					Boolean.FALSE.toString())) {
-
-			Keyword keyword = _postKeywordWithProjects(_randomProject());
-
-			Assert.assertNull(keyword.getProjects());
-
-			_assertAssetTagGroupRels(
-				DepotConstants.TYPE_PROJECT, keyword,
-				GroupConstants.ANY_PARENT_GROUP_ID);
-		}
 	}
 
 	private void _testPostSiteKeywordWithUnknownProjects() throws Exception {

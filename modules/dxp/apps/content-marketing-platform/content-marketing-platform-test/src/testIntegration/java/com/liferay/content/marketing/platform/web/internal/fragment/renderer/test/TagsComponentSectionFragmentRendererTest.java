@@ -8,7 +8,6 @@ package com.liferay.content.marketing.platform.web.internal.fragment.renderer.te
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.object.service.ObjectEntryLocalService;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.AssertUtils;
@@ -17,7 +16,6 @@ import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -73,7 +71,7 @@ public class TagsComponentSectionFragmentRendererTest
 			).put(
 				"objectEntryKeywords", new String[] {keyword1, keyword2}
 			).put(
-				"projectGroupId", GroupConstants.DEFAULT_PARENT_GROUP_ID
+				"projectGroupId", cmpProjectObjectEntry.getGroupId()
 			).build(),
 			getProps());
 
@@ -89,12 +87,11 @@ public class TagsComponentSectionFragmentRendererTest
 			).put(
 				"objectEntryKeywords", new String[] {keyword1, keyword2}
 			).put(
-				"projectGroupId", GroupConstants.DEFAULT_PARENT_GROUP_ID
+				"projectGroupId", cmpProjectObjectEntry.getGroupId()
 			).build(),
 			getProps());
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Test
 	public void testGetPropsWithCMPProjectObjectEntry() throws Exception {
 		Map<String, Object> props = getProps();

@@ -5295,7 +5295,6 @@ public class ObjectEntryLocalServiceTest {
 				objectEntry.getClass(), objectEntry.getPrimaryKeyObj()));
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Test
 	public void testCopyAndMoveObjectEntryWithAssetTagScopedByDepotEntryType()
 		throws Exception {

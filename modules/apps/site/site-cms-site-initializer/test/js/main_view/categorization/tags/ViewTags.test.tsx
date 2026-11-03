@@ -27,10 +27,6 @@ const defaultProps = {
 };
 
 describe('[CMS Categorization] Components: ViewTags', () => {
-	beforeEach(() => {
-		Liferay.FeatureFlags['LPD-99403'] = true;
-	});
-
 	afterEach(() => {
 		jest.clearAllMocks();
 	});

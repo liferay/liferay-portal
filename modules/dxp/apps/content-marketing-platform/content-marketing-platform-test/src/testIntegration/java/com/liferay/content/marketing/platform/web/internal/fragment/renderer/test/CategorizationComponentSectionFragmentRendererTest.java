@@ -8,11 +8,9 @@ package com.liferay.content.marketing.platform.web.internal.fragment.renderer.te
 import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.fragment.renderer.FragmentRenderer;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.test.AssertUtils;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.util.HashMapBuilder;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
@@ -53,7 +51,7 @@ public class CategorizationComponentSectionFragmentRendererTest
 			).put(
 				"personasVocabularyERC", "L_CMP_PERSONAS"
 			).put(
-				"projectGroupId", GroupConstants.DEFAULT_PARENT_GROUP_ID
+				"projectGroupId", cmpProjectObjectEntry.getGroupId()
 			).put(
 				"selectedFunnelStageCategories",
 				JSONFactoryUtil.createJSONArray()
@@ -63,7 +61,6 @@ public class CategorizationComponentSectionFragmentRendererTest
 			getProps());
 	}
 
-	@FeatureFlag("LPD-99403")
 	@Test
 	public void testGetPropsWithCMPProjectObjectEntry() throws Exception {
 		Map<String, Object> props = getProps();

@@ -6,7 +6,6 @@
 import {Dialog, expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../../fixtures/dataApiHelpersTest';
-import {featureFlagsTest} from '../../../../fixtures/featureFlagsTest';
 import {loginTest} from '../../../../fixtures/loginTest';
 import {applyFDSSelectionFilter} from '../../../../utils/applyFDSSelectionFilter';
 import {checkAccessibility} from '../../../../utils/checkAccessibility';
@@ -653,7 +652,6 @@ const cmpProjectScopeTest = mergeTests(
 	cmpPagesTest,
 	cmsPagesTest,
 	dataApiHelpersTest,
-	featureFlagsTest({'LPD-99403': {enabled: true}}),
 	loginTest()
 );
 

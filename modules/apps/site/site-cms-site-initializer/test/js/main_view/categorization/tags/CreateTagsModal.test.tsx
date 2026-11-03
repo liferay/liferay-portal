@@ -32,8 +32,6 @@ const defaultProps = {
 
 describe('CreateTagsModal', () => {
 	beforeEach(() => {
-		Liferay.FeatureFlags['LPD-99403'] = true;
-
 		jest.spyOn(SpaceService, 'getSpaces').mockResolvedValue([] as any);
 		jest.spyOn(ApiHelper, 'getAll').mockResolvedValue([]);
 		jest.spyOn(
