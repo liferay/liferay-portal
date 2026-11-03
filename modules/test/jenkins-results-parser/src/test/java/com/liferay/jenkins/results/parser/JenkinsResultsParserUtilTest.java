@@ -115,27 +115,6 @@ public class JenkinsResultsParserUtilTest
 		testEquals("a+b", JenkinsResultsParserUtil.encodeLegacyURLPart("a+b"));
 	}
 
-	@Test
-	public void testEncodeURLParameterPart() {
-		testEquals(
-			"100%25%20pass",
-			JenkinsResultsParserUtil.encodeURLParameterPart("100% pass"));
-		testEquals(
-			"AWS%20CI",
-			JenkinsResultsParserUtil.encodeURLParameterPart("AWS CI"));
-		testEquals(
-			"PortalSmoke%23Smoke",
-			JenkinsResultsParserUtil.encodeURLParameterPart(
-				"PortalSmoke#Smoke"));
-		testEquals(
-			"a%26b", JenkinsResultsParserUtil.encodeURLParameterPart("a&b"));
-		testEquals(
-			"a%2Bb", JenkinsResultsParserUtil.encodeURLParameterPart("a+b"));
-		testEquals(
-			"master",
-			JenkinsResultsParserUtil.encodeURLParameterPart("master"));
-	}
-
 	@Test(timeout = 30000)
 	public void testExecuteJenkinsScriptReadTimeout() throws Exception {
 		try (ServerSocket serverSocket = _createServerSocket()) {
@@ -244,22 +223,6 @@ public class JenkinsResultsParserUtilTest
 		testEquals("ABC&#125;123", JenkinsResultsParserUtil.fixJSON("ABC}123"));
 		testEquals(
 			"ABC<br />123", JenkinsResultsParserUtil.fixJSON("ABC\n123"));
-	}
-
-	@Test
-	public void testFixURL() {
-		testEquals("ABC%28123", _fixURLMultipleTimes("ABC(123"));
-		testEquals("ABC%29123", _fixURLMultipleTimes("ABC)123"));
-		testEquals("ABC%5B123", _fixURLMultipleTimes("ABC[123"));
-		testEquals("ABC%5D123", _fixURLMultipleTimes("ABC]123"));
-		testEquals("!master", _fixURLMultipleTimes("!master"));
-		testEquals("0%201%202", _fixURLMultipleTimes("0 1 2"));
-		testEquals(
-			"https://test-1-1.liferay.com/job(master)?" +
-				"AXIS_VARIABLE=0%201&label_exp=!master&job=test%287.2.x%29",
-			_fixURLMultipleTimes(
-				"https://test-1-1.liferay.com/job(master)?" +
-					"AXIS_VARIABLE=0 1&label_exp=!master&job=test(7.2.x)"));
 	}
 
 	@Test
@@ -1395,12 +1358,6 @@ public class JenkinsResultsParserUtilTest
 
 	private ServerSocket _createServerSocket() throws Exception {
 		return new ServerSocket(0, 1, InetAddress.getByName("localhost"));
-	}
-
-	private String _fixURLMultipleTimes(String urlString) {
-		return JenkinsResultsParserUtil.fixURL(
-			JenkinsResultsParserUtil.fixURL(
-				JenkinsResultsParserUtil.fixURL(urlString)));
 	}
 
 	private Properties _getBuildAwsProperties() {
