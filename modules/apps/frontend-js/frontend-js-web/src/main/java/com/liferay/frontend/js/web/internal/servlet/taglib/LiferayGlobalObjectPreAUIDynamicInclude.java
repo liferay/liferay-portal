@@ -437,28 +437,24 @@ public class LiferayGlobalObjectPreAUIDynamicInclude
 			(ThemeDisplay)httpServletRequest.getAttribute(
 				WebKeys.THEME_DISPLAY);
 
-		sb.append("FeatureFlags: {\n");
+		sb.append("FeatureFlags: {");
 
 		for (FeatureFlag featureFlag :
 				_featureFlagManager.getFeatureFlags(
-					CompanyConstants.SYSTEM, null)) {
+					CompanyConstants.SYSTEM, FeatureFlag::isEnabled)) {
 
 			sb.append(StringPool.APOSTROPHE);
 			sb.append(featureFlag.getKey());
-			sb.append("': ");
-			sb.append(featureFlag.isEnabled());
-			sb.append(",\n");
+			sb.append("':true,");
 		}
 
 		for (FeatureFlag featureFlag :
 				_featureFlagManager.getFeatureFlags(
-					themeDisplay.getCompanyId(), null)) {
+					themeDisplay.getCompanyId(), FeatureFlag::isEnabled)) {
 
 			sb.append(StringPool.APOSTROPHE);
 			sb.append(featureFlag.getKey());
-			sb.append("': ");
-			sb.append(featureFlag.isEnabled());
-			sb.append(",\n");
+			sb.append("':true,");
 		}
 
 		sb.append("},\n");

@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.upload.configuration.UploadServletRequestConfigurationProvider;
 import com.liferay.portal.kernel.util.FastDateFormatFactory;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PrefsProps;
@@ -45,6 +46,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.function.Predicate;
@@ -187,29 +189,38 @@ public class LiferayGlobalObjectPreAUIDynamicIncludeTest {
 		return fastDateFormatFactory;
 	}
 
-	private FeatureFlagManager _mockFeatureFlagManager() {
-		FeatureFlagManager featureFlagManager = Mockito.mock(
-			FeatureFlagManager.class);
-
+	private FeatureFlag _mockFeatureFlag(boolean enabled, String key) {
 		FeatureFlag featureFlag = Mockito.mock(FeatureFlag.class);
 
 		Mockito.when(
 			featureFlag.getKey()
 		).thenReturn(
-			"LPD-00042"
+			key
 		);
 
 		Mockito.when(
 			featureFlag.isEnabled()
 		).thenReturn(
-			true
+			enabled
 		);
+
+		return featureFlag;
+	}
+
+	private FeatureFlagManager _mockFeatureFlagManager() {
+		FeatureFlagManager featureFlagManager = Mockito.mock(
+			FeatureFlagManager.class);
+
+		List<FeatureFlag> featureFlags = Arrays.asList(
+			_mockFeatureFlag(true, "LPD-00042"),
+			_mockFeatureFlag(false, "LPD-00043"));
 
 		Mockito.when(
 			featureFlagManager.getFeatureFlags(
 				Mockito.anyLong(), Mockito.any(Predicate.class))
-		).thenReturn(
-			Arrays.asList(featureFlag)
+		).thenAnswer(
+			invocation -> ListUtil.filter(
+				featureFlags, invocation.getArgument(1))
 		);
 
 		return featureFlagManager;
