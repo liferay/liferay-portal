@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.repository.RepositoryProviderUtil;
 import com.liferay.portal.kernel.repository.capabilities.TemporaryFileEntriesCapability;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.RepositoryLocalServiceUtil;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
@@ -166,6 +167,35 @@ public class TemporaryFileEntriesCapabilityTest {
 
 			Assert.assertEquals(fileName, fileEntry.getFileName());
 		}
+	}
+
+	@Test
+	@TestInfo("LPD-113193")
+	public void testGetTempFileNamesDoesNotAddTemporaryFolders()
+		throws Exception {
+
+		String folderName = RandomTestUtil.randomString();
+
+		Assert.assertArrayEquals(
+			new String[0],
+			TempFileEntryUtil.getTempFileNames(
+				_group.getGroupId(), _user.getUserId(), folderName));
+
+		Assert.assertEquals(
+			0,
+			getFoldersAndFileEntriesAndFileShortcutsCount(
+				_getLocalRepository()));
+
+		String fileName = RandomTestUtil.randomString() + ".jpg";
+
+		TempFileEntryUtil.addTempFileEntry(
+			_group.getGroupId(), _user.getUserId(), folderName, fileName,
+			getInputStream(), ContentTypes.IMAGE_JPEG);
+
+		Assert.assertArrayEquals(
+			new String[] {fileName},
+			TempFileEntryUtil.getTempFileNames(
+				_group.getGroupId(), _user.getUserId(), folderName));
 	}
 
 	protected int getFoldersAndFileEntriesAndFileShortcutsCount(
