@@ -268,10 +268,26 @@ describe('Lifecycle API', () => {
 				{id: '9', name: 'Partner Lifecycle'},
 			];
 
+			const mockLifecyclesRequests = (items: {id: string}[]) =>
+				(sendRequest as jest.Mock).mockImplementation(
+					({path}: {path: string}) =>
+						Promise.resolve(
+							path.endsWith('/account-lifecycle')
+								? {
+										items,
+										lastPage: 1,
+										page: 1,
+										pageSize: items.length,
+										totalCount: items.length,
+									}
+								: items.find(({id}) => path.endsWith(`/${id}`))
+						)
+				);
+
 			beforeEach(() => {
 				featureFlags.ENABLE_LIFECYCLE_DELETE_MOCK_DATA = true;
 
-				(sendRequest as jest.Mock).mockResolvedValue(lifecycles);
+				mockLifecyclesRequests(lifecycles);
 			});
 
 			afterEach(() => (sendRequest as jest.Mock).mockReset());
@@ -335,18 +351,7 @@ describe('Lifecycle API', () => {
 						pageSize: 20,
 					});
 
-				beforeEach(() =>
-					(sendRequest as jest.Mock).mockImplementation(
-						({path}: {path: string}) =>
-							Promise.resolve(
-								path.endsWith('/account-lifecycle')
-									? withDefault
-									: withDefault.find(({id}) =>
-											path.endsWith(`/${id}`)
-										)
-							)
-					)
-				);
+				beforeEach(() => mockLifecyclesRequests(withDefault));
 
 				it('makes the next lifecycle by name the default', async () => {
 					await deleteLifecycle({
