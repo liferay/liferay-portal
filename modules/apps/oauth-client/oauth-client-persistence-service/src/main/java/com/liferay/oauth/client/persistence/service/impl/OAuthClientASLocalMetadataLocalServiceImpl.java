@@ -20,9 +20,11 @@ import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.Http;
@@ -174,7 +176,8 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			oAuthClientASLocalMetadataPersistence.findByPrimaryKey(
 				oAuthClientASLocalMetadataId);
 
-		return deleteOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
+		return oAuthClientASLocalMetadataLocalService.
+			deleteOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
 	}
 
 	@Override
@@ -186,10 +189,12 @@ public class OAuthClientASLocalMetadataLocalServiceImpl
 			oAuthClientASLocalMetadataPersistence.findByC_LWKURI(
 				companyId, localWellKnownURI);
 
-		return deleteOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
+		return oAuthClientASLocalMetadataLocalService.
+			deleteOAuthClientASLocalMetadata(oAuthClientASLocalMetadata);
 	}
 
 	@Override
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public OAuthClientASLocalMetadata deleteOAuthClientASLocalMetadata(
 			OAuthClientASLocalMetadata oAuthClientASLocalMetadata)
 		throws PortalException {

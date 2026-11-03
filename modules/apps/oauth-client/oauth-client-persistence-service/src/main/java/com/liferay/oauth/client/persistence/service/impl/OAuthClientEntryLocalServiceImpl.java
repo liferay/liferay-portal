@@ -25,9 +25,11 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.InetAddressUtil;
@@ -161,7 +163,8 @@ public class OAuthClientEntryLocalServiceImpl
 		OAuthClientEntry oAuthClientEntry =
 			oAuthClientEntryPersistence.findByPrimaryKey(oAuthClientEntryId);
 
-		return deleteOAuthClientEntry(oAuthClientEntry);
+		return oAuthClientEntryLocalService.deleteOAuthClientEntry(
+			oAuthClientEntry);
 	}
 
 	@Override
@@ -173,10 +176,12 @@ public class OAuthClientEntryLocalServiceImpl
 			oAuthClientEntryPersistence.findByC_A_C(
 				companyId, authServerWellKnownURI, clientId);
 
-		return deleteOAuthClientEntry(oAuthClientEntry);
+		return oAuthClientEntryLocalService.deleteOAuthClientEntry(
+			oAuthClientEntry);
 	}
 
 	@Override
+	@SystemEvent(type = SystemEventConstants.TYPE_DELETE)
 	public OAuthClientEntry deleteOAuthClientEntry(
 			OAuthClientEntry oAuthClientEntry)
 		throws PortalException {
