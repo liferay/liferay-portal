@@ -1917,6 +1917,58 @@ test.describe('Page types configuration', () => {
 			).toHaveAttribute('target', '_blank');
 		}
 	);
+
+	test(
+		'Canceling the configuration of a Link to URL page stays in Pages',
+		{
+			tag: '@LPS-76981',
+		},
+		async ({
+			apiHelpers,
+			page,
+			pageConfigurationPage,
+			pagesAdminPage,
+			site,
+		}) => {
+			await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				title: getRandomString(),
+			});
+
+			const linkToURLTitle = getRandomString();
+
+			await apiHelpers.jsonWebServicesLayout.addLayout({
+				groupId: site.id,
+				options: {
+					type: 'url',
+				},
+				title: linkToURLTitle,
+			});
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pageConfigurationPage.setInputValueAndSave(
+				page.getByLabel('URL').first(),
+				linkToURLTitle,
+				'General',
+				'https://www.liferay.com'
+			);
+
+			// Cancel the configuration
+
+			await pagesAdminPage.goto(site.friendlyUrlPath);
+
+			await pagesAdminPage.clickOnAction('Configure', linkToURLTitle);
+
+			await page
+				.getByRole('button', {exact: true, name: 'Cancel'})
+				.click();
+
+			await expect(page).toHaveURL(
+				/com_liferay_layout_admin_web_portlet_GroupPagesPortlet/
+			);
+		}
+	);
 });
 
 test.describe('Utility Page', () => {
