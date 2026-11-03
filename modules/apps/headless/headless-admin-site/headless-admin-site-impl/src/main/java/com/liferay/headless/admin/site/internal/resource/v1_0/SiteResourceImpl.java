@@ -32,6 +32,8 @@ import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.LayoutSetPrototype;
+import com.liferay.portal.kernel.search.Sort;
+import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
@@ -82,6 +84,8 @@ import java.io.Serializable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -161,17 +165,22 @@ public class SiteResourceImpl
 
 				// The sites admin API does not support OData filtering, so the
 				// selection is narrowed with the query parameter the batch
-				// engine forwards to the resource instead of with a filter. An
-				// import reads a key of its own, because a batch import outside
-				// an export import is not narrowed by a query parameter its
-				// caller happened to pass.
+				// engine forwards to the resource instead of with a filter. The
+				// date range is passed as parameters of its own and applied by
+				// the read method. An import reads a key of its own, because a
+				// batch import outside an export import is not narrowed by a
+				// query parameter its caller happened to pass.
 
 				String[] groupExternalReferenceCodes =
 					_getGroupExternalReferenceCodes(portletDataContext);
 
 				return HashMapBuilder.<String, Serializable>put(
+					_END_DATE, portletDataContext.getEndDate()
+				).put(
 					_SELECTED_EXTERNAL_REFERENCE_CODES,
 					groupExternalReferenceCodes
+				).put(
+					_START_DATE, portletDataContext.getStartDate()
 				).put(
 					"externalReferenceCodes", groupExternalReferenceCodes
 				).build();
@@ -362,6 +371,55 @@ public class SiteResourceImpl
 		Group finalGroup = group;
 
 		return _toSite(finalGroup);
+	}
+
+	@Override
+	public Page<Site> read(
+			Filter filter, Pagination pagination, Sort[] sorts,
+			Map<String, Serializable> parameters, String search)
+		throws Exception {
+
+		Date endDate = (Date)parameters.get(_END_DATE);
+		Date startDate = (Date)parameters.get(_START_DATE);
+
+		if ((endDate == null) && (startDate == null)) {
+			return super.read(filter, pagination, sorts, parameters, search);
+		}
+
+		String[] externalReferenceCodes = ArrayUtil.filter(
+			(String[])parameters.get("externalReferenceCodes"),
+			externalReferenceCode -> {
+				Group group =
+					_groupLocalService.fetchGroupByExternalReferenceCode(
+						externalReferenceCode, contextCompany.getCompanyId());
+
+				if (group == null) {
+					return false;
+				}
+
+				Date modifiedDate = group.getModifiedDate();
+
+				if (((endDate != null) && modifiedDate.after(endDate)) ||
+					((startDate != null) && modifiedDate.before(startDate))) {
+
+					return false;
+				}
+
+				return true;
+			});
+
+		if (ArrayUtil.isEmpty(externalReferenceCodes)) {
+			return Page.of(Collections.emptyList());
+		}
+
+		return super.read(
+			filter, pagination, sorts,
+			HashMapBuilder.<String, Serializable>putAll(
+				parameters
+			).put(
+				"externalReferenceCodes", externalReferenceCodes
+			).build(),
+			search);
 	}
 
 	@Override
@@ -1287,6 +1345,8 @@ public class SiteResourceImpl
 		}
 	}
 
+	private static final String _END_DATE = "endDate";
+
 	private static final String[] _EXCLUDED_TYPE_SETTINGS = {
 		GooglePlacesWebKeys.GOOGLE_PLACES_API_KEY, "defaultSiteRoleIds",
 		"defaultTeamIds", "googleMapsAPIKey"
@@ -1294,6 +1354,8 @@ public class SiteResourceImpl
 
 	private static final String _SELECTED_EXTERNAL_REFERENCE_CODES =
 		"selectedExternalReferenceCodes";
+
+	private static final String _START_DATE = "startDate";
 
 	@Reference
 	private GroupLocalService _groupLocalService;
