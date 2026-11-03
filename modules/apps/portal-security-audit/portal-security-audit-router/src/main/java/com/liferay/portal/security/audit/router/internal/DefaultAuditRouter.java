@@ -28,10 +28,12 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
 import com.liferay.portal.security.audit.configuration.AuditConfiguration;
 import com.liferay.portal.security.audit.constants.AuditEventConstants;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.router.internal.constants.AuditConstants;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -65,7 +67,10 @@ public class DefaultAuditRouter implements AuditRouter {
 
 	@Override
 	public void route(AuditMessage auditMessage) throws AuditException {
-		if (!_auditEnabled) {
+		if (!_auditEnabled &&
+			!Objects.equals(
+				auditMessage.getEventType(), EventTypes.AUDIT_CONFIG_CHANGE)) {
+
 			if (_log.isDebugEnabled()) {
 				_log.debug(
 					"Audit disabled, not processing message: " + auditMessage);

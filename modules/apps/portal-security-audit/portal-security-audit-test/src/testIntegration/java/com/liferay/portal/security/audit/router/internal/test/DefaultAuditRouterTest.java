@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.lang.SafeCloseable;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.configuration.test.util.ConfigurationTemporarySwapper;
 import com.liferay.portal.kernel.audit.AuditException;
 import com.liferay.portal.kernel.audit.AuditMessage;
 import com.liferay.portal.kernel.audit.AuditRouter;
@@ -36,6 +37,8 @@ import com.liferay.portal.kernel.test.util.UserGroupTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
+import com.liferay.portal.security.audit.configuration.AuditConfiguration;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
@@ -284,6 +287,7 @@ public class DefaultAuditRouterTest {
 
 		Assert.assertFalse(_auditMessages.contains(auditMessage));
 
+		_testRouteWhenAuditIsDisabled();
 		_testRouteWhenFeatureFlagIsDisabled();
 	}
 
@@ -312,6 +316,32 @@ public class DefaultAuditRouterTest {
 			expectedResourceAction, auditMessage.getResourceAction());
 		Assert.assertEquals(
 			expectedResourceType, auditMessage.getResourceType());
+	}
+
+	private void _testRouteWhenAuditIsDisabled() throws Exception {
+		try (ConfigurationTemporarySwapper configurationTemporarySwapper =
+				new ConfigurationTemporarySwapper(
+					AuditConfiguration.class.getName(),
+					HashMapDictionaryBuilder.<String, Object>put(
+						"enabled", false
+					).build())) {
+
+			AuditMessage auditMessage = _getAuditMessage(
+				RandomTestUtil.randomString(), null, EventTypes.ADD,
+				RandomTestUtil.randomLong());
+
+			_auditRouter.route(auditMessage);
+
+			Assert.assertFalse(_auditMessages.contains(auditMessage));
+
+			auditMessage = _getAuditMessage(
+				RandomTestUtil.randomString(), null,
+				EventTypes.AUDIT_CONFIG_CHANGE, RandomTestUtil.randomLong());
+
+			_auditRouter.route(auditMessage);
+
+			Assert.assertTrue(_auditMessages.contains(auditMessage));
+		}
 	}
 
 	private void _testRouteWhenFeatureFlagIsDisabled() throws Exception {

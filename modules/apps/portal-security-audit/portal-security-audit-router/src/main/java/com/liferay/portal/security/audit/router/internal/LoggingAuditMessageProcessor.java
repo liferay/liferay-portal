@@ -13,10 +13,12 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.audit.AuditMessageProcessor;
+import com.liferay.portal.security.audit.event.generators.constants.EventTypes;
 import com.liferay.portal.security.audit.formatter.LogMessageFormatter;
 import com.liferay.portal.security.audit.router.configuration.LoggingAuditMessageProcessorConfiguration;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -75,7 +77,10 @@ public class LoggingAuditMessageProcessor implements AuditMessageProcessor {
 	}
 
 	private void _process(AuditMessage auditMessage) throws Exception {
-		if (_loggingAuditMessageProcessorConfiguration.enabled() &&
+		if ((_loggingAuditMessageProcessorConfiguration.enabled() ||
+			 Objects.equals(
+				 auditMessage.getEventType(),
+				 EventTypes.AUDIT_CONFIG_CHANGE)) &&
 			(_log.isInfoEnabled() ||
 			 _loggingAuditMessageProcessorConfiguration.outputToConsole())) {
 
