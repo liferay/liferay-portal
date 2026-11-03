@@ -5,6 +5,7 @@ export interface UserSessionEvent {
 	acquisitionProperties: Array<{name: string; value: string}>;
 	applicationId: string;
 	assetTitle: string;
+	campaignEntityId: string | null;
 	campaignId: string | null;
 	campaignName: string | null;
 	canonicalUrl: string;
@@ -100,6 +101,7 @@ export default gql`
 						}
 						applicationId
 						assetTitle
+						campaignEntityId
 						campaignId
 						campaignName
 						canonicalUrl

@@ -228,6 +228,7 @@ export const formatEvents = (
 			acquisitionProperties,
 			applicationId,
 			assetTitle,
+			campaignEntityId,
 			canonicalUrl,
 			createDate,
 			eventDate,
@@ -263,17 +264,20 @@ export const formatEvents = (
 				// and only an event that carried one has it, so the details of
 				// an event without a campaign show no campaign at all. The
 				// group carries the campaign's page too, which the details
-				// link the name to.
+				// link the name to. The page is keyed by the campaign's own
+				// id rather than the utm_cid the touch carried, and only a
+				// resolved campaign has one.
 
 				...(campaign && {
 					campaign: {
 						campaignName: campaign.campaignName,
-						...(channelId &&
+						...(campaignEntityId &&
+							channelId &&
 							groupId && {
 								campaignUrl: toRoute(Routes.CAMPAIGNS_DETAIL, {
 									channelId,
 									groupId,
-									id: campaign.campaignId,
+									id: campaignEntityId,
 								}),
 							}),
 					},

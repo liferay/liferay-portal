@@ -27,6 +27,8 @@ export default () => ({
 					applicationId: 'Page',
 					assetTitle:
 						'Tandem Rollers & Compactors - Full Product Range | RoadTech',
+					campaignEntityId:
+						'ba591be1183fb0c808d131e666e386157829d65b46eadefeb88da80f3f36ec8b',
 					campaignId: '7013a000002QwErtAAG',
 					campaignName: 'Q1 Compactor Promo - EMEA',
 					canonicalUrl:
@@ -51,6 +53,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'CustomEvent',
 					assetTitle: 'Compare Models',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl:
@@ -79,6 +82,8 @@ export default () => ({
 					applicationId: 'Page',
 					assetTitle:
 						'Tandem Rollers & Compactors - Full Product Range | RoadTech',
+					campaignEntityId:
+						'ba591be1183fb0c808d131e666e386157829d65b46eadefeb88da80f3f36ec8b',
 					campaignId: '7013a000002QwErtAAG',
 					campaignName: 'Q1 Compactor Promo - EMEA',
 					canonicalUrl:
@@ -103,6 +108,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Request a Quote - Hamm HD+ 90i Tandem Roller',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl:
@@ -130,6 +136,7 @@ export default () => ({
 					applicationId: 'Page',
 					assetTitle:
 						'Hamm HD+ 901 Live Compaction Demo - Asphalt Paving',
+					campaignEntityId: null,
 					campaignId: '7013a000002XyZbAAK',
 					campaignName: null,
 					canonicalUrl:
@@ -153,6 +160,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'CustomEvent',
 					assetTitle: 'Play Demo Video',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl:
@@ -179,6 +187,8 @@ export default () => ({
 					],
 					applicationId: 'Page',
 					assetTitle: 'Spring Compactor Promo - Landing | RoadTech',
+					campaignEntityId:
+						'ba591be1183fb0c808d131e666e386157829d65b46eadefeb88da80f3f36ec8b',
 					campaignId: '7013a000002QwErtAAG',
 					campaignName: 'Q1 Compactor Promo - EMEA',
 					canonicalUrl:
@@ -223,6 +233,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Support - RoadTech',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://marketplace.roadtech.com/support',
@@ -243,6 +254,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Home - RoadTech',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://marketplace.roadtech.com',
@@ -284,6 +296,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'HubSpot',
 					assetTitle: null,
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://hubspot.com',
@@ -307,6 +320,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'HubSpot',
 					assetTitle: null,
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://hubspot.com',
@@ -353,6 +367,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Home - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://learn-dev.liferay.com/home',
@@ -400,6 +415,7 @@ export default () => ({
 					applicationId: 'Page',
 					assetTitle:
 						'Content Management System - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl:
@@ -428,6 +444,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Home - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://learn-dev.liferay.com/home',
@@ -453,6 +470,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Home - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://learn-dev.liferay.com',
@@ -478,6 +496,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Home - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://learn-dev.liferay.com',
@@ -504,6 +523,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Security - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl:
@@ -531,6 +551,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'Page',
 					assetTitle: 'Home - learn-dev.lxc.liferay.com',
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://learn-dev.liferay.com',
@@ -578,6 +599,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'HubSpot',
 					assetTitle: null,
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://hubspot.com',
@@ -601,6 +623,7 @@ export default () => ({
 					acquisitionProperties: [],
 					applicationId: 'HubSpot',
 					assetTitle: null,
+					campaignEntityId: null,
 					campaignId: null,
 					campaignName: null,
 					canonicalUrl: 'https://hubspot.com',
