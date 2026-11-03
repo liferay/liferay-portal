@@ -10,9 +10,12 @@ import com.liferay.asset.kernel.AssetRendererFactoryRegistryUtil;
 import com.liferay.asset.kernel.model.AssetRendererFactory;
 import com.liferay.depot.constants.DepotConstants;
 import com.liferay.depot.model.DepotEntry;
+import com.liferay.depot.service.DepotAppCustomizationLocalService;
 import com.liferay.depot.service.DepotEntryLocalService;
+import com.liferay.document.library.constants.DLPortletKeys;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.model.JournalFolder;
 import com.liferay.petra.function.UnsafeRunnable;
@@ -22,6 +25,7 @@ import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
@@ -101,6 +105,57 @@ public class DepotAssetRendererFactoryTrackerTest {
 		Assert.assertTrue(
 			assetRendererFactories.toString(),
 			assetRendererFactories.size() > 4);
+	}
+
+	@Test
+	@TestInfo("LPD-112512")
+	public void testOnlyEnabledAssetRendererFactoriesAreSelectableForADepotGroup()
+		throws Exception {
+
+		_depotAppCustomizationLocalService.updateDepotAppCustomization(
+			_depotEntry.getDepotEntryId(), false,
+			DLPortletKeys.DOCUMENT_LIBRARY_ADMIN);
+
+		_withGroup(
+			_groupLocalService.fetchGroup(_depotEntry.getGroupId()),
+			() -> {
+				List<AssetRendererFactory<?>> assetRendererFactories =
+					AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
+						TestPropsValues.getCompanyId(), true);
+
+				Assert.assertEquals(
+					assetRendererFactories.toString(), 2,
+					assetRendererFactories.size());
+
+				Assert.assertTrue(
+					ListUtil.exists(
+						assetRendererFactories,
+						journalArticleAssetRendererFactory -> Objects.equals(
+							journalArticleAssetRendererFactory.getClassName(),
+							JournalArticle.class.getName())));
+
+				Assert.assertTrue(
+					ListUtil.exists(
+						assetRendererFactories,
+						journalFolderAssetRendererFactory -> Objects.equals(
+							journalFolderAssetRendererFactory.getClassName(),
+							JournalFolder.class.getName())));
+			});
+
+		_depotAppCustomizationLocalService.updateDepotAppCustomization(
+			_depotEntry.getDepotEntryId(), false, JournalPortletKeys.JOURNAL);
+
+		_withGroup(
+			_groupLocalService.fetchGroup(_depotEntry.getGroupId()),
+			() -> {
+				List<AssetRendererFactory<?>> assetRendererFactories =
+					AssetRendererFactoryRegistryUtil.getAssetRendererFactories(
+						TestPropsValues.getCompanyId(), true);
+
+				Assert.assertTrue(
+					assetRendererFactories.toString(),
+					assetRendererFactories.isEmpty());
+			});
 	}
 
 	@Test
@@ -206,6 +261,10 @@ public class DepotAssetRendererFactoryTrackerTest {
 			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
+
+	@Inject
+	private DepotAppCustomizationLocalService
+		_depotAppCustomizationLocalService;
 
 	@DeleteAfterTestRun
 	private DepotEntry _depotEntry;
