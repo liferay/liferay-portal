@@ -226,7 +226,7 @@ public class JenkinsMaster implements JenkinsNode<JenkinsMaster> {
 	}
 
 	public QueueItem fetchQueueItem(long queueId) throws IOException {
-		String response;
+		String response = null;
 
 		try {
 			URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(

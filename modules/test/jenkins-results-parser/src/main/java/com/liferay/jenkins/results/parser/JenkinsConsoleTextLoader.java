@@ -202,11 +202,9 @@ public class JenkinsConsoleTextLoader {
 	}
 
 	private synchronized void _update() throws IOException {
-		boolean hasMoreData = true;
-
 		long cacheFileSize = JenkinsResultsParserUtil.getCacheFileSize(
 			consoleLogFileKey);
-
+		boolean hasMoreData = true;
 		URIBuilder uriBuilder = JenkinsResultsParserUtil.newURIBuilder(
 			buildURL + "/logText/progressiveHtml");
 
