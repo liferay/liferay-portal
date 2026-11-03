@@ -212,7 +212,6 @@ definition {
 		AssertElementPresent(locator1 = "Ratings#YOUR_RATING_STAR_EMPTY");
 	}
 
-
 	@summary = "Default summary"
 	macro viewNoRateStackedStar(averageStarCount = null) {
 		for (var ratingStarCount : list "1,2,3,4,5") {

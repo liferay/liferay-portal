@@ -603,7 +603,6 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-
 	@summary = "Default summary"
 	macro moveToRecycleBinPG(entryTitle = null, entryContent = null) {
 		var key_entryContent = ${entryContent};
@@ -1270,7 +1269,6 @@ definition {
 		}
 	}
 
-
 	@summary = "Default summary"
 	macro viewNoCP(entryTitle = null) {
 		AssertElementNotPresent(
@@ -1367,8 +1365,6 @@ definition {
 	macro viewPermissionsNoPermission() {
 		AssertElementNotPresent(locator1 = "Link#PERMISSIONS");
 	}
-
-
 
 	@summary = "Default summary"
 	macro viewPG(readingTime = null, entrySubtitle = null, entryCardTitle = null, entryTitle = null, entryContent = null) {

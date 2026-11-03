@@ -21,7 +21,6 @@ definition {
 		Alert.viewSuccessMessage();
 	}
 
-
 	@summary = "Default summary"
 	macro configureCommentEditable(commentEditable = null) {
 		if (${commentEditable} == "true") {

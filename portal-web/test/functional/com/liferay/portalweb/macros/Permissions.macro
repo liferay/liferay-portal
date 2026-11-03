@@ -78,7 +78,6 @@ definition {
 			roleType = ${roleType});
 	}
 
-
 	@summary = "Default summary"
 	macro setUpRegRoleLoginUserCP(roleTitle = null, userLastName = null, userScreenName = null, userEmailAddress = null, userFirstName = null) {
 		JSONUser.addUser(
@@ -197,8 +196,6 @@ definition {
 			userLoginFullName = ${userLoginFullName});
 	}
 
-
-
 	@summary = "Default summary"
 	macro setUpSiteRoleLoginUserPG(roleTitle = null, userLastName = null, userScreenName = null, roleKey = null, userEmailAddress = null, siteName = null, userFirstName = null, userLoginFullName = null, userLoginEmailAddress = null, pageName = null, roleDescription = null, portletName = null) {
 		JSONUser.addUser(
@@ -241,6 +238,5 @@ definition {
 			userLoginEmailAddress = ${userLoginEmailAddress},
 			userLoginFullName = ${userLoginFullName});
 	}
-
 
 }

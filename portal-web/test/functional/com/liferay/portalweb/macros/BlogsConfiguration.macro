@@ -106,7 +106,6 @@ definition {
 		Uncheck.uncheckToggleSwitch(locator1 = "Checkbox#ENABLE_RSS_SUBSCRIPTION");
 	}
 
-
 	@summary = "Default summary"
 	macro viewDefaultConfiguration() {
 		AssertTextEquals.assertValue(
@@ -159,7 +158,6 @@ definition {
 			value1 = "atom_1.0");
 	}
 
-
 	@summary = "Default summary"
 	macro viewNoPermissionPG() {
 		var key_text = "New Entry";
@@ -187,8 +185,6 @@ definition {
 		}
 	}
 
-
-
 	@summary = "Default summary"
 	macro viewScopeDefaultNoEntryCP(contentScopeName = null) {
 		Navigator.openURL();
@@ -214,6 +210,5 @@ definition {
 			locator1 = "Select#SCOPE",
 			value1 = ${scopeSelection});
 	}
-
 
 }

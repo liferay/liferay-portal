@@ -1,6 +1,5 @@
 definition {
 
-
 	@summary = "Default summary"
 	macro addDraft(entrySubtitle = null, siteURLKey = null, entryTitle = null, entryContent = null, layoutName = null) {
 		if (isSet(siteURLKey)) {
