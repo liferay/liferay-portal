@@ -106,17 +106,12 @@ const renderComponent = ({
 	render(
 		<SideNavigation
 			canonicalName="sideNavigationCanonicalName"
-			categoryImageUrl="categoryImageUrl"
-			colorScheme="light"
-			colorSchemeSessionKey="colorSchemeSessionKey"
 			expandedKeys={expandedKeys}
 			expandedKeysSessionKey="expandedKeysSessionKey"
 			items={items}
 			label="Applications"
 			navigationItemsURL="navigationItemsURL"
 			selectedPortletId={selectedPortletId}
-			siteAdministrationItemSelectedEventName="siteAdministrationItemSelectedEventName"
-			siteAdministrationItemSelectorUrl="siteAdministrationItemSelectorUrl"
 			visible
 			visibleSessionKey="visibleSessionKey"
 		/>
@@ -190,13 +185,7 @@ describe('SideNavigation', () => {
 	it('renders the side navigation header', () => {
 		renderComponent();
 
-		const title = screen.getByText('Applications');
-
-		expect(title).toBeInTheDocument();
-
-		const icon = screen.getByTestId('sideNavigationProductIcon');
-
-		expect(icon).toHaveAttribute('src', 'categoryImageUrl');
+		expect(screen.getByText('Applications')).toBeInTheDocument();
 	});
 
 	it('renders each navigation item', () => {
