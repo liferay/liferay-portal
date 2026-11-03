@@ -80,8 +80,6 @@ definition {
 			dmDocumentTitle = "Document_1.doc");
 	}
 
-
-
 	@description = "This is a test for LPS-90864. It checks that a site member can add shortcut to folder with permissions."
 	@priority = 4
 	test CanAddShortcutToFolderAsSiteMemberWithPermissions {
@@ -330,8 +328,6 @@ definition {
 		Notifications.viewNoNotifications(activePanel = "Notifications");
 	}
 
-
-
 	@priority = 5
 	@refactordone
 	test CanRemoveAddDocumentPermissionsForRegRole {
@@ -460,7 +456,6 @@ definition {
 			dmDocumentTitle = "DM Document Title");
 	}
 
-
 	@description = "This is a test for LPS-136833. It checks that a guest cannot add a document in a folder without permissions."
 	@priority = 3
 	test GuestCannotAddDocumentInFolder {
@@ -555,7 +550,6 @@ definition {
 
 		DMFolder.viewNoSubscribe();
 	}
-
 
 	@description = "This is a test for LPS-136837. It checks that a guest cannot update a folder without permissions."
 	@priority = 3
@@ -911,7 +905,6 @@ definition {
 		ManagementBar.viewItemsDisabled(textList = "trash");
 	}
 
-
 	@description = "This is a test for LPS-136848. It checks that a site member cannot subscribe to a folder without permissions."
 	@priority = 3
 	test SiteMemberCannotSubscribeToFolder {
@@ -963,7 +956,6 @@ definition {
 
 		DMFolder.viewNoSubscribe();
 	}
-
 
 	@description = "This is a test for LPS-136843. It checks that a site member cannot update the permissions of a file without permissions."
 	@priority = 3

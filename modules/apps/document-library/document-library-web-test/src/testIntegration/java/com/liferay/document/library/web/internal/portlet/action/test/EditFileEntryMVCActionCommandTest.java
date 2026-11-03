@@ -47,8 +47,8 @@ import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
-import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
-import com.liferay.portal.kernel.service.RoleLocalServiceUtil;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
+import com.liferay.portal.kernel.service.RoleLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.ReflectionTestUtil;
 import com.liferay.portal.kernel.test.TestInfo;
@@ -363,12 +363,11 @@ public class EditFileEntryMVCActionCommandTest {
 						RoleConstants.GUEST, RoleConstants.SITE_MEMBER
 					}) {
 
-				Role role = RoleLocalServiceUtil.getRole(
+				Role role = _roleLocalService.getRole(
 					_group.getCompanyId(), roleName);
 
 				Assert.assertFalse(
-					fileName + " " + roleName,
-					ResourcePermissionLocalServiceUtil.hasResourcePermission(
+					_resourcePermissionLocalService.hasResourcePermission(
 						_group.getCompanyId(), DLFileEntry.class.getName(),
 						ResourceConstants.SCOPE_INDIVIDUAL,
 						String.valueOf(fileEntry.getFileEntryId()),
@@ -915,5 +914,11 @@ public class EditFileEntryMVCActionCommandTest {
 
 	@Inject
 	private PortletLocalService _portletLocalService;
+
+	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
+	private RoleLocalService _roleLocalService;
 
 }

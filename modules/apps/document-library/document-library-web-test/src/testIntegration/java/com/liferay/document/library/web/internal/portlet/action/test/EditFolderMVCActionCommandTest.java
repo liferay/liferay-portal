@@ -63,8 +63,6 @@ public class EditFolderMVCActionCommandTest {
 	@Test
 	@TestInfo({"LPD-113625", "LPS-128366"})
 	public void testProcessActionAddFolderViewableByOwner() throws Exception {
-		String name = RandomTestUtil.randomString();
-
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
@@ -72,7 +70,11 @@ public class EditFolderMVCActionCommandTest {
 			Constants.CMD, Constants.ADD);
 		mockLiferayPortletActionRequest.addParameter(
 			"inputPermissionsViewRole", RoleConstants.OWNER);
+
+		String name = RandomTestUtil.randomString();
+
 		mockLiferayPortletActionRequest.addParameter("name", name);
+
 		mockLiferayPortletActionRequest.addParameter(
 			"parentFolderId",
 			String.valueOf(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID));
@@ -106,7 +108,6 @@ public class EditFolderMVCActionCommandTest {
 				_group.getCompanyId(), roleName);
 
 			Assert.assertFalse(
-				roleName,
 				_resourcePermissionLocalService.hasResourcePermission(
 					_group.getCompanyId(), DLFolder.class.getName(),
 					ResourceConstants.SCOPE_INDIVIDUAL,

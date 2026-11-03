@@ -373,12 +373,12 @@ public class FileEntryDisplayContextHelperTest {
 
 		_serviceRegistrations.add(
 			bundleContext.registerService(
-			ModelResourcePermission.class,
-			new MockModelResourcePermission(
-				overrideCheckOutPermission, updatePermission),
-			MapUtil.singletonDictionary(
-				"model.class.name",
-				"com.liferay.portal.kernel.repository.model.FileEntry")));
+				ModelResourcePermission.class,
+				new MockModelResourcePermission(
+					overrideCheckOutPermission, updatePermission),
+				MapUtil.singletonDictionary(
+					"model.class.name",
+					"com.liferay.portal.kernel.repository.model.FileEntry")));
 	}
 
 	private static final MockedStatic<FrameworkUtil>
