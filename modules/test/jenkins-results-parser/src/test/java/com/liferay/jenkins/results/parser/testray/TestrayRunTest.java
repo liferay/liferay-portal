@@ -11,6 +11,7 @@ import java.util.Collections;
 
 import org.junit.Test;
 
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 /**
@@ -42,6 +43,48 @@ public class TestrayRunTest extends com.liferay.jenkins.results.parser.Test {
 			testrayBuild, RandomTestUtil.randomString());
 
 		testEquals(Collections.emptyList(), testrayRun.getTestrayFactors());
+	}
+
+	@Test
+	public void testGetTestrayFactorsBatchRunIdString() throws Exception {
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		TestrayServer testrayServer = Mockito.mock(TestrayServer.class);
+
+		Mockito.doReturn(
+			testrayServer
+		).when(
+			testrayBuild
+		).getTestrayServer();
+
+		TestrayRun testrayRun = new TestrayRun(
+			testrayBuild,
+			TestrayRun.getBatchRunIdString(
+				RandomTestUtil.randomString(), "MySQL 8.0|Tomcat 10.1"));
+
+		try (MockedStatic<TestrayFactory> testrayFactoryMockedStatic =
+				Mockito.mockStatic(TestrayFactory.class)) {
+
+			testrayFactoryMockedStatic.when(
+				() -> TestrayFactory.newTestrayFactorOption(
+					Mockito.anyString(), Mockito.any(TestrayServer.class))
+			).thenReturn(
+				Mockito.mock(TestrayFactor.Option.class)
+			);
+
+			testEquals(Collections.emptyList(), testrayRun.getTestrayFactors());
+
+			testrayFactoryMockedStatic.verify(
+				() -> TestrayFactory.newTestrayFactorOption(
+					"MySQL 8.0", testrayServer));
+			testrayFactoryMockedStatic.verify(
+				() -> TestrayFactory.newTestrayFactorOption(
+					"Tomcat 10.1", testrayServer));
+			testrayFactoryMockedStatic.verify(
+				() -> TestrayFactory.newTestrayFactorOption(
+					Mockito.anyString(), Mockito.any(TestrayServer.class)),
+				Mockito.times(2));
+		}
 	}
 
 }

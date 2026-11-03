@@ -7,6 +7,7 @@ package com.liferay.jenkins.results.parser.testray;
 
 import com.liferay.jenkins.results.parser.DownstreamBuild;
 import com.liferay.jenkins.results.parser.DownstreamBuildReport;
+import com.liferay.jenkins.results.parser.Job;
 import com.liferay.jenkins.results.parser.RandomTestUtil;
 import com.liferay.jenkins.results.parser.TopLevelBuild;
 import com.liferay.jenkins.results.parser.TopLevelBuildReport;
@@ -16,7 +17,10 @@ import java.io.File;
 
 import java.net.URL;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -81,6 +85,105 @@ public class TestrayFactoryTest
 		Assert.assertNull(
 			TestrayFactory.newDownstreamBuildTestrayCaseResult(
 				downstreamBuild, testrayContext));
+	}
+
+	@Test
+	public void testNewTestrayRun() throws Exception {
+		Job job = _mockJob(
+			"modules-integration-db-partition-postgresql163",
+			"modules-integration-mysql80", "modules-integration-postgresql163");
+
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "modules-integration-db-partition-postgresql163",
+			job);
+
+		testEquals(
+			"PostgreSQL 16.3#modules-integration-db-partition-postgresql163",
+			testrayRun.getRunIdString());
+
+		testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "modules-integration-mysql80", job);
+
+		testEquals("MySQL 8.0", testrayRun.getRunIdString());
+
+		testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "modules-integration-postgresql163", job);
+
+		testEquals("PostgreSQL 16.3", testrayRun.getRunIdString());
+
+		testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "unit-postgresql163", job);
+
+		testEquals("PostgreSQL 16.3", testrayRun.getRunIdString());
+	}
+
+	@Test
+	public void testNewTestrayRunSameLengthBatchNames() throws Exception {
+		Job job = _mockJob("a-mysql80", "b-mysql80");
+
+		TestrayBuild testrayBuild = Mockito.mock(TestrayBuild.class);
+
+		TestrayRun testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "a-mysql80", job);
+
+		testEquals("MySQL 8.0", testrayRun.getRunIdString());
+
+		testrayRun = TestrayFactory.newTestrayRun(
+			testrayBuild, "b-mysql80", job);
+
+		testEquals("MySQL 8.0#b-mysql80", testrayRun.getRunIdString());
+	}
+
+	private Job _mockJob(String... batchNames) {
+		List<AxisTestClassGroup> axisTestClassGroups = new ArrayList<>();
+
+		for (String batchName : batchNames) {
+			AxisTestClassGroup axisTestClassGroup = Mockito.mock(
+				AxisTestClassGroup.class);
+
+			Mockito.when(
+				axisTestClassGroup.getEnhancedBatchName()
+			).thenReturn(
+				batchName
+			);
+
+			axisTestClassGroups.add(axisTestClassGroup);
+		}
+
+		Job job = Mockito.mock(Job.class);
+
+		Mockito.when(
+			job.getAxisTestClassGroups()
+		).thenReturn(
+			axisTestClassGroups
+		);
+
+		Mockito.when(
+			job.getJobName()
+		).thenReturn(
+			RandomTestUtil.randomString()
+		);
+
+		Properties properties = new Properties();
+
+		properties.setProperty(
+			"testray.environment.factor.name[database]",
+			RandomTestUtil.randomString());
+		properties.setProperty(
+			"testray.environment.factor.value[database][mysql80]", "MySQL 8.0");
+		properties.setProperty(
+			"testray.environment.factor.value[database][postgresql163]",
+			"PostgreSQL 16.3");
+
+		Mockito.when(
+			job.getJobProperties()
+		).thenReturn(
+			properties
+		);
+
+		return job;
 	}
 
 	private void _testNewDownstreamBuildTestrayCaseResult(
