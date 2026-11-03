@@ -138,7 +138,7 @@ public class PIMConnectorContainerResponseFilterTest {
 		Assert.assertEquals(
 			"failed", jsonObject.getString("lastExecutionStatus"));
 
-		_addPIMConnectorFieldMappingObjectEntry("catalogId");
+		_addPIMConnectorFieldMappingObjectEntry("catalogExternalReferenceCode");
 		_addPIMConnectorFieldMappingObjectEntry("name");
 		_addPIMConnectorFieldMappingObjectEntry("productType");
 		_addPIMConnectorFieldMappingObjectEntry("skus[].sku");
